@@ -45,3 +45,12 @@ The [Tuna projector campaign review](tuna-projector-campaign-review.md) and its
 
 The [Tuna admission follow-up](tuna-projector-admission-review.md) verifies the compiler,
 qualification analyzer, structural checks and digest-bound submission path.
+
+The [ordered-response evidence-boundary review](tuna-ordered-response-evidence-boundary-review.md)
+accepts the martingale derivation and serial dispatch design while requiring stricter
+operational receipt and numeric validation before successor approval.
+The [repair review](tuna-ordered-response-admission-review.md) accepts the exact
+hash-bound descriptive case after those repairs; causal inference remains unadmitted.
+The [model provenance](tuna-ordered-response-review-provenance.json) binds both reports.
+The correct frozen policy receipt passes the exact case; explicit terms-schema
+validation before future packet reuse remains a nonblocking follow-up in the work plan.

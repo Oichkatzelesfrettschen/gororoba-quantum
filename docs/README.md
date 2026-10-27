@@ -56,6 +56,15 @@ The approved [QX conformance batch](evidence/tuna-projector-geometry/qx-conforma
 The user-authorized [Tuna qualification](design/tuna-projector-qualification-admission.md)
 [completed with qualification refusal](evidence/tuna-projector-geometry/tuna-qualification.md):
 all shots were retained, while contrast and repeated-readout consistency screens failed.
+The [ordered readout-response successor](design/tuna-readout-ordered-response-admission.md)
+qualifies a bounded descriptive comparison with serial single-job dispatch and explicit drift limits;
+its [upstream report](notes/quantum_inspire/upstream-readout-report.md) remains unsent.
+The [receipt-chain repair admission](evidence/tuna-projector-geometry/readout-ordered-response-reviewed-admission.json)
+binds the repaired campaign; the earlier `readout-ordered-response-admission.json` is a historical pre-review observation.
+The [verification receipt](evidence/tuna-projector-geometry/readout-ordered-response-verification.json)
+records 116 passing focused tests, static checks, compiler replay and the 59-file historical-byte comparison.
+The [requested high-effort peer review](archive/reviews/tuna-ordered-response-admission-review.md)
+accepts the exact descriptive case for owner approval while retaining its causal limits.
 The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
 native execution limits, billing units and MCP observations. The
 [current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized

@@ -2679,6 +2679,7 @@
     "scripts/qi_shot_record_line.py",
     "scripts/qi_tuna17_device_context.py",
     "scripts/qi_tuna_qualification.py",
+    "scripts/qi_tuna_readout_destination_analysis.py",
     "scripts/qi_tuna_readout_diagnostics.py",
     "scripts/qi_tuna_readout_response_mixture.py",
     "scripts/qi_walsh_exemplar_analysis.py",
@@ -2904,6 +2905,9 @@
     "scripts/qi_shot_record_line.py",
     "scripts/qi_tuna17_device_context.py",
     "scripts/qi_tuna_qualification.py",
+    "scripts/qi_tuna_readout_destination_analysis.py",
+    "scripts/qi_tuna_readout_diagnostics.py",
+    "scripts/qi_tuna_readout_response_mixture.py",
     "scripts/qi_walsh_exemplar_analysis.py",
     "scripts/qi_walsh_exemplar_cases.py",
     "scripts/qi_zero_divisor_cases.py",
@@ -3269,7 +3273,8 @@
    "historical_imported_by": [
     "scripts/opensquirrel_fullprecision.py",
     "scripts/qi_projector_compiler_admission.py",
-    "scripts/qi_toolchain_check.py"
+    "scripts/qi_toolchain_check.py",
+    "scripts/qi_tuna_readout_mapping_cases.py"
    ]
   },
   {
@@ -13054,6 +13059,33 @@
    "sys",
    "typing"
   ],
+  "scripts/qi_tuna_destination_sequential_cases.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "qi_tuna_readout_mapping_cases",
+   "typing"
+  ],
+  "scripts/qi_tuna_destination_sequential_run.py": [
+   "__future__",
+   "acquisition_decisions",
+   "argparse",
+   "collections",
+   "datetime",
+   "html",
+   "json",
+   "math",
+   "pathlib",
+   "qi_platform",
+   "qi_projector_live_admission",
+   "qi_tuna_destination_sequential_cases",
+   "qi_tuna_readout_destination_analysis",
+   "qi_tuna_readout_mapping_cases",
+   "time",
+   "typing",
+   "urllib"
+  ],
   "scripts/qi_tuna_qualification.py": [
    "__future__",
    "argparse",
@@ -13064,6 +13096,24 @@
    "numpy",
    "parallel",
    "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_readout_destination_analysis.py": [
+   "__future__",
+   "acquisition_decisions",
+   "argparse",
+   "collections",
+   "datetime",
+   "decimal",
+   "hashlib",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_projector_compiler_admission",
+   "qi_projector_live_admission",
+   "re",
    "sys",
    "typing"
   ],

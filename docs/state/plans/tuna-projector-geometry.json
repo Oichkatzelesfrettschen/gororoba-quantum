@@ -13,7 +13,7 @@
   },
   "scope": "Derive and validate illustrative projector moments, retain datasource diagnostics, generate compiler-checked qualification cases, and acquire only after approval of each provider case. Algebra-specific certification and causal backaction claims require successor controls.",
   "owner": "codex-tuna-projector-geometry",
-  "next_action": "Qualify the destination-invariance comparison analyzer, dependence model and actual ordering; obtain served acquisition timing or state the remaining boundary before a separately approved diagnostic run.",
+  "next_action": "Obtain owner approval of campaign 53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76; re-admit immediately before any dispatch. Keep causal attribution unresolved and terms-schema reuse separately tracked.",
   "steps": [
     {
       "id": "source-and-instrument-audit",
@@ -541,6 +541,230 @@
           "scope_sha256": "5c175bb5d1d0a6353b013ff1ed00def7d6d529e5ebcc7c25638bb1334a98220c"
         }
       ]
+    },
+    {
+      "id": "destination-uncertainty-contract",
+      "state": "done",
+      "action": "Qualify conditional-response uncertainty and explicit temporal-drift sensitivity",
+      "acceptance": "A proved finite-sample bound states its estimand, assumptions, drift limits and inconclusive outcomes",
+      "receipts": [
+        {
+          "result": "Conditional Hoeffding derivation independently inspected; 17 focused tests pass. The qualified estimand is realized predictable response; causal attribution and stationary population power remain unresolved.",
+          "observed_at": "2026-10-27T19:12:04.645506+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "scripts/qi_tuna_readout_destination_analysis.py",
+              "sha256": "77a49337ddbbc238da3d164b4349bcd945f504f8e9f3bc4ccf50053088bae06f"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_readout_destination_analysis.py",
+              "sha256": "d8679bdb634ca0d4b7b14b726d9d2373e0d04034cd17d0f7ca53d0adf2922d17"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-response-uncertainty.md",
+              "sha256": "5a7724d48cab159f23b40cd81395807254bb6fbe20a755bced22a4ca0526dc05"
+            }
+          ],
+          "scope_sha256": "b7cb6655cc31de991c3d9be137de1f811084a42edfd46f83ba440d77131c9938"
+        },
+        {
+          "result": "The accepted conditional Hoeffding derivation is unchanged. The repaired analyzer enforces the operational evidence chain and strict numeric contracts; 54 analyzer tests pass within 116 combined focused tests. Attribution remains unresolved.",
+          "observed_at": "2026-10-27T19:36:17.751936+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "scripts/qi_tuna_readout_destination_analysis.py",
+              "sha256": "d0ee875b448366a1a8a53d09d387abb7de32066f6214694e205b7e43505781c7"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_readout_destination_analysis.py",
+              "sha256": "021c01eedaa3f752aced1c2fa8043c8e159d8871def82fc85430e47313b2b73f"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-response-uncertainty.md",
+              "sha256": "5a7724d48cab159f23b40cd81395807254bb6fbe20a755bced22a4ca0526dc05"
+            }
+          ],
+          "scope_sha256": "b7cb6655cc31de991c3d9be137de1f811084a42edfd46f83ba440d77131c9938"
+        }
+      ]
+    },
+    {
+      "id": "destination-analyzer-freeze",
+      "state": "done",
+      "action": "Freeze and test the exact-case comparison analyzer",
+      "acceptance": "Digest-bound analyzer rejects malformed, partial, changed and unordered evidence and reproduces all terminal outcomes",
+      "receipts": [
+        {
+          "result": "Conditional Hoeffding derivation independently inspected; 17 focused tests pass. The qualified estimand is realized predictable response; causal attribution and stationary population power remain unresolved.",
+          "observed_at": "2026-10-27T19:12:04.645506+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "scripts/qi_tuna_readout_destination_analysis.py",
+              "sha256": "77a49337ddbbc238da3d164b4349bcd945f504f8e9f3bc4ccf50053088bae06f"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_readout_destination_analysis.py",
+              "sha256": "d8679bdb634ca0d4b7b14b726d9d2373e0d04034cd17d0f7ca53d0adf2922d17"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-response-uncertainty.md",
+              "sha256": "5a7724d48cab159f23b40cd81395807254bb6fbe20a755bced22a4ca0526dc05"
+            }
+          ],
+          "scope_sha256": "5f19d3e19f8426b02e5061b74490c60b4d47b1fdf2b81a6e541a680b608a5c24"
+        },
+        {
+          "result": "The accepted conditional Hoeffding derivation is unchanged. The repaired analyzer enforces the operational evidence chain and strict numeric contracts; 54 analyzer tests pass within 116 combined focused tests. Attribution remains unresolved.",
+          "observed_at": "2026-10-27T19:36:17.751936+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "scripts/qi_tuna_readout_destination_analysis.py",
+              "sha256": "d0ee875b448366a1a8a53d09d387abb7de32066f6214694e205b7e43505781c7"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_readout_destination_analysis.py",
+              "sha256": "021c01eedaa3f752aced1c2fa8043c8e159d8871def82fc85430e47313b2b73f"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-response-uncertainty.md",
+              "sha256": "5a7724d48cab159f23b40cd81395807254bb6fbe20a755bced22a4ca0526dc05"
+            }
+          ],
+          "scope_sha256": "5f19d3e19f8426b02e5061b74490c60b4d47b1fdf2b81a6e541a680b608a5c24"
+        }
+      ]
+    },
+    {
+      "id": "destination-order-admission",
+      "state": "done",
+      "action": "Verify serial acquisition ordering and fresh structural admission",
+      "acceptance": "Single-job manifests and guarded submission bind exact hashes, pause, queue, backend and credit checks",
+      "receipts": [
+        {
+          "result": "Compiler replay, exact binding check and 69 focused tests pass. Fresh hash-bound read-only admission passes; future timestamp ordering remains an acquisition check.",
+          "observed_at": "2026-10-27T19:18:45.597996+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-readout-destination-sequential/campaign.json",
+              "sha256": "29b55c2309b1982cd48a69457d0b450f801fbcc00de159bc84ab0292c0e78691"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-ordered-response-admission.json",
+              "sha256": "e06024b92cf5b150f3e3c38d9a1a8992afcfaeecc5807f820d9997415a4e6efb"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_sequential_run.py",
+              "sha256": "3b444c5f0d3e7c04349121afe24e0029726fc9d862114e50c0d98cca9be3b78b"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_sequential.py",
+              "sha256": "e934b3721f74cd2afc5e54b87af872e09a12ed651f74ef15d8771047d143ba36"
+            }
+          ],
+          "scope_sha256": "92b20d692e0ceabd6f1d78a55fffa8c9455f7687edfbbfb04143bcb96a5b2e2f"
+        },
+        {
+          "result": "Full compiler replay, exact bindings and 116 focused tests pass. Hash-bound read-only admission for the repaired campaign passes; future job timestamp ordering remains an acquisition check.",
+          "observed_at": "2026-10-27T19:36:17.752934+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-readout-destination-sequential/campaign.json",
+              "sha256": "53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-ordered-response-reviewed-admission.json",
+              "sha256": "db3c7ff692b9cbd7090e025ec53c6e9dc5269a920be28a9f8374cb3b63d4f8ef"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_sequential_run.py",
+              "sha256": "9edff4223e583b45d3c66bc3e6c7349a73b6e36925fec8774990b5a33a6490a5"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_sequential.py",
+              "sha256": "0944e22b0dc9a2d411400eaf9832bd92eb9f4c9ec69d26f27b46a0e7eea36f50"
+            }
+          ],
+          "scope_sha256": "92b20d692e0ceabd6f1d78a55fffa8c9455f7687edfbbfb04143bcb96a5b2e2f"
+        }
+      ]
+    },
+    {
+      "id": "destination-upstream-report",
+      "state": "done",
+      "action": "Verify upstream contact routes and prepare an unsent discrepancy report",
+      "acceptance": "Primary-source routes and sanitized backend-specific reproduction separate semantics from hardware response",
+      "receipts": [
+        {
+          "result": "Primary-source support, GitHub and GitLab routes verified. Backend-specific reports prepared and unsent; historical issues are contextual rather than deployed-cause evidence.",
+          "observed_at": "2026-10-27T19:18:45.598265+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "docs/notes/quantum_inspire/upstream-readout-report.md",
+              "sha256": "1e22ffdb4d9d646cf5eb63cb61359bde14ec04d74ad747f884e968f5ee026bfd"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-upstream-public-sources.json",
+              "sha256": "0d41ce21f5a26f8fe1b2e8373598090231de0901ebdf906e6aed9d29770021f7"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-upstream-issue-context.json",
+              "sha256": "9a41ed686dc91c5c75a3ed280bff76ba430a1cd75a1f3abeca4d98561843c7d6"
+            }
+          ],
+          "scope_sha256": "eb858765538d25543fbf1ebe513918125a32d40df79023b4868c2383ea04456b"
+        }
+      ]
+    },
+    {
+      "id": "destination-integrated-verification",
+      "state": "done",
+      "action": "Review and verify the frozen next-run case",
+      "acceptance": "Focused tests, static checks, compiler replay and plan checks pass before exact-case approval is requested",
+      "receipts": [
+        {
+          "result": "116 focused tests, pinned Ruff/mypy, compiler replay, exact bindings, links, inventory, plan and research registry checks pass. Requested high-effort Daybreak follow-up accepts the exact descriptive case; future terms-schema reuse remains bounded. Owner hardware approval is pending.",
+          "observed_at": "2026-10-27T19:38:11.004233+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-ordered-response-verification.json",
+              "sha256": "41f8834b9f36e66aa0c83aaccb45494af7fc56a83bebaceb5a2feebd07d5019d"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-ordered-response-admission-review.md",
+              "sha256": "15c0874720bdb6f91eab0aed58bebf9dee37a8e46b0119431af3cc34bae717be"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-ordered-response-review-provenance.json",
+              "sha256": "0e48f089a1d32f87fca8e4dd9075d52cb4aff68f27f326900647d92fb5075886"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-ordered-response-reviewed-admission.json",
+              "sha256": "db3c7ff692b9cbd7090e025ec53c6e9dc5269a920be28a9f8374cb3b63d4f8ef"
+            }
+          ],
+          "scope_sha256": "87a63512d0a6ee25faae499dcdce3bc12debb2a4e1db5700708851de1f31aa49"
+        }
+      ]
+    },
+    {
+      "id": "destination-owner-approval",
+      "state": "todo",
+      "action": "Obtain owner approval of the frozen six-job descriptive response case",
+      "acceptance": "Explicit owner approval names the reviewed campaign, written case, zero-credit budget and remaining causal limits before provider dispatch"
+    },
+    {
+      "id": "destination-terms-schema-reuse",
+      "state": "todo",
+      "action": "Validate the policy receipt schema explicitly before reusing the validators for another packet",
+      "acceptance": "Shared schema admission and a prebinding malformed-schema test pass; the new packet receives its own frozen identities and approval"
     }
   ]
 }
