@@ -2303,13 +2303,13 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-state-prep-remeasure.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-detuning-sign-retrieval.json",
    "name": "core-281",
    "seconds": 6.2,
    "tier": "pr",
    "runtime": "qiskit-2.5",
    "replays": [
-    "docs/evidence/submitted_circuits/comparison-state-prep-remeasure.json"
+    "docs/evidence/submitted_circuits/comparison-detuning-sign-retrieval.json"
    ]
   },
   {
@@ -3460,6 +3460,14 @@
   {
    "suite": "sources",
    "cwd": ".",
+   "cmd": "shellcheck docs/evidence/cd-tower-domain/replay_rocq.sh",
+   "name": "sources-415",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
    "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
    "name": "sources-410",
    "seconds": 0.1,
@@ -3836,6 +3844,17 @@
    "name": "core-682",
    "seconds": 35.0,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_detuning_sign.py results/live/2026-10-27T173602.753176Z --check results/live/2026-10-27T173602.753176Z/detuning-sign-decisions.json",
+   "name": "core-n21-detuning-sign-replay",
+   "seconds": 3.0,
+   "tier": "pr",
+   "replays": [
+    "results/live/2026-10-27T173602.753176Z/detuning-sign-decisions.json"
+   ]
   },
   {
    "suite": "core",
@@ -4432,7 +4451,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-9",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-10",
    "name": "core-670",
    "seconds": 12.0,
    "tier": "pr"
