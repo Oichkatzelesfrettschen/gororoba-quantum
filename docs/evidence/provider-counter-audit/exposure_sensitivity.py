@@ -27,7 +27,7 @@ from parallel import ordered_map  # noqa: E402
 
 RETAINED = ROOT / "docs/evidence/quandela/belenos_leakage_rca.json"
 OUT = Path(__file__).with_name("exposure_sensitivity.json")
-SCHEMA = "quandela-exposure-sensitivity-v1"
+SCHEMA = "quandela-exposure-sensitivity-v2"
 
 
 def scenario(scale: str) -> dict[str, Any]:
@@ -134,12 +134,16 @@ def box_kite(run: Path, fresh: dict[str, dict[str, Any]]) -> dict[str, Any]:
     return {"run": run.name, "duration_s": duration, "replays_retained": replays, "blocks": blocks}
 
 
-def record() -> dict[str, Any]:
-    runs = sorted(
-        p.parent
-        for p in (ROOT / "results/quandela/runs").glob("*/analysis.json")
-        if corrected_blocks(json.loads(p.read_text(encoding="utf-8")))
-    )
+def record(inventory: list[str] | None = None) -> dict[str, Any]:
+    """Every scenario over inventory (run directory names), or over every retained run with a dark-corrected
+    one-photon block when inventory is None."""
+    if inventory is None:
+        inventory = sorted(
+            p.parent.name
+            for p in (ROOT / "results/quandela/runs").glob("*/analysis.json")
+            if corrected_blocks(json.loads(p.read_text(encoding="utf-8")))
+        )
+    runs = [ROOT / "results/quandela/runs" / name for name in inventory]
     items = [("root_cause", "", s) for s in SCENARIOS]
     items += [("one_photon", str(run.relative_to(ROOT)), s) for run in runs for s in SCENARIOS]
     results = ordered_map(evaluate, items, min_items=1)
@@ -148,6 +152,7 @@ def record() -> dict[str, Any]:
     keys = ("ideal_exceeds_floor", "no_single_parameter_reaches_floor", "convention_order")
     return {
         "schema": SCHEMA,
+        "inventory": inventory,
         "root_cause": {
             "retained_record": str(RETAINED.relative_to(ROOT)),
             "scenarios": rows,
@@ -164,7 +169,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
-    text = json.dumps(record(), indent=1, sort_keys=True) + "\n"
+    # --check recomputes the retained inventory, the audit's frozen surface, so a run retained later leaves it valid.
+    inventory = json.loads(OUT.read_text(encoding="utf-8"))["inventory"] if args.check else None
+    text = json.dumps(record(inventory), indent=1, sort_keys=True) + "\n"
     if args.check:
         # The root-cause TVDs come from 24 x 24 complex unitaries whose last bits differ between BLAS builds, so
         # numbers compare within qd_belenos_mesh.close_relative and strings, flags and orders compare exactly.

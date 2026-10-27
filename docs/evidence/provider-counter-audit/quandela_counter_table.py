@@ -3,8 +3,8 @@
 Reads results/quandela/runs/*/raw/result.json and submission.json without writing them, decodes the inner Perceval
 result (one result or a results_list), and records, per iteration, nb_shots_used, the returned sample sum of its
 BSCount, physical_perf and logical_perf beside the outer shots and duration, the submission's max_shots and
-max_samples, and the min_detected_photons filter the run's case records state. `--check` recomputes the table and
-fails when the retained JSON differs.
+max_samples, and the min_detected_photons filter the run's case records state. A provider-error payload leaves the
+sample count unavailable. `--check` recomputes the retained inventory of runs and fails when the retained JSON differs.
 """
 
 from __future__ import annotations
@@ -20,9 +20,12 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+from parallel import ordered_map  # noqa: E402
+
 RUNS = ROOT / "results/quandela/runs"
 OUT = Path(__file__).with_name("quandela_counter_table.json")
-SCHEMA = "quandela-counter-table-v1"
+SCHEMA = "quandela-counter-table-v2"
 
 
 def unzip(text: str) -> str:
@@ -33,10 +36,17 @@ def unzip(text: str) -> str:
     return text
 
 
-def sample_sum(results: str) -> tuple[int, int]:
-    """Sum of BSCount counts and the number of distinct states."""
-    pairs = re.findall(r"\|[0-9,]+>=(\d+)", unzip(results))
-    return sum(int(n) for n in pairs), len(pairs)
+def sample_sum(results: str) -> tuple[int | None, int | None, str]:
+    """Sum of BSCount counts, the number of distinct states, and the payload kind.
+
+    A serialized BSCount starts with ':PCVL:BSCount:' and may be empty ({}); any other payload (a provider
+    RuntimeError string) carries no sample count, so both counts stay unavailable.
+    """
+    text = unzip(results)
+    if not text.startswith(":PCVL:BSCount:"):
+        return None, None, "provider_error"
+    pairs = re.findall(r"\|[0-9,]+>=(\d+)", text)
+    return sum(int(n) for n in pairs), len(pairs), "bscount"
 
 
 def number(value: Any) -> Any:
@@ -81,12 +91,13 @@ def run_row(run: Path) -> dict[str, Any]:
     for entry in entries:
         fields = entry
         results = entry.get("results")
-        samples, states = sample_sum(results) if isinstance(results, str) else (None, None)
+        samples, states, kind = sample_sum(results) if isinstance(results, str) else (None, None, "absent")
         iterations.append(
             {
                 "nb_shots_used": number(fields.get("nb_shots_used")),
                 "samples": samples,
                 "distinct_states": states,
+                "result_kind": kind,
                 "physical_perf": number(fields.get("physical_perf")),
                 "logical_perf": number(fields.get("logical_perf")),
             }
@@ -103,17 +114,20 @@ def run_row(run: Path) -> dict[str, Any]:
     return row
 
 
-def table() -> dict[str, Any]:
-    runs = sorted(p.parent.parent for p in RUNS.glob("*/raw/result.json"))
-    rows = [run_row(run) for run in runs]
-    return {"schema": SCHEMA, "runs": rows, "run_count": len(rows)}
+def table(inventory: list[str] | None = None) -> dict[str, Any]:
+    """The table over inventory (run directory names), or over every retained run when inventory is None."""
+    names = inventory if inventory is not None else sorted(p.parent.parent.name for p in RUNS.glob("*/raw/result.json"))
+    rows = ordered_map(run_row, [RUNS / name for name in names], min_items=1)
+    return {"schema": SCHEMA, "inventory": names, "runs": rows, "run_count": len(rows)}
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
-    text = json.dumps(table(), indent=1, sort_keys=True) + "\n"
+    # --check recomputes the retained inventory, the audit's frozen surface, so a run retained later leaves it valid.
+    inventory = json.loads(OUT.read_text(encoding="utf-8"))["inventory"] if args.check else None
+    text = json.dumps(table(inventory), indent=1, sort_keys=True) + "\n"
     if args.check:
         if OUT.read_text(encoding="utf-8") != text:
             print(f"{OUT.relative_to(ROOT)} differs from the recomputed table", file=sys.stderr)
