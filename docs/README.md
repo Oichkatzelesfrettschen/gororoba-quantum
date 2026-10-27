@@ -241,6 +241,7 @@ differs from it only in the `cd_core.py` digest.
 |---|---|
 | [design/tuna-order-pilot-adversarial-admission.md](design/tuna-order-pilot-adversarial-admission.md) | descriptive pilot preregistration, adversarial findings and execution admission |
 | [design/hypercomplex-operator-evidence.md](design/hypercomplex-operator-evidence.md) | algebra falsifiers, operator encodings, library roles and device evidence |
+| [design/heron-idle-readout-attribution.md](design/heron-idle-readout-attribution.md) | own-partner, near-field and far-field split of the Kingston idle readout phase rate, by complementary reader classes |
 | [runbooks/hypercomplex-operator-cases.md](runbooks/hypercomplex-operator-cases.md) | frozen provider cases, pacing, costs and approval boundary |
 | [state/hypercomplex-libraries/libraries.md](state/hypercomplex-libraries/libraries.md) | expanded Python distribution roles and documented candidates |
 | [evidence/submitted_circuits/README.md](evidence/submitted_circuits/README.md) | complete retained IBM job-input comparison and immutable replay successor |
