@@ -105,7 +105,7 @@ PLANNING_SHOTS = 8192
 # can only report that wastes its quantum time. This module sits in live_run.EXPERIMENT_SOURCE_MANIFEST, so the digest
 # below is bound to every run's experiment digest.
 MODEL_SCATTER_FLOOR: float | None = None
-MODEL_SCATTER_DIAGNOSTIC_SHA256: str | None = "c8036f7d2b41018467c534785c977e5203d5e20798b8c8eb7b5902949861179f"
+MODEL_SCATTER_DIAGNOSTIC_SHA256: str | None = "c39c5b7202fd6d2cd44629a86eed1402a0d234e95502540f37c8216bccc3c080"
 MODEL_SCATTER_FLOOR_FILE = "docs/evidence/measurement_sequence/scatter-floor.json"
 SCATTER_FLOOR_SCHEMA = "measurement-sequence-scatter-floor-v1"
 # An illustrative floor for the sweeps and the Aer validation, which exercise the mechanism. It is not a measurement

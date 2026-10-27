@@ -700,7 +700,7 @@
     "experiment_digest": "e7a8829f997050ed3fe81722f0b5b1249d6ed5e9979fa41b778f5c9363624485",
     "record_sha256": "89d3b609b45284bbdcd38219b5a441752185425420687eefcbc4b0303be3dff5",
     "run": "2026-10-26T031010.724660Z",
-    "scatter_module_sha256": "612c605ba151ba232fda750bdfbc570d237a1a19500c0cdc7214ba54216678ed"
+    "scatter_module_sha256": "6375b59d40c2f789f4e81b0b5f372853ff5b6ddeb87a2c20bf2581a7c3ef2ea8"
   },
   "summary": {
     "floor": 0.018784131556028254,

@@ -11302,7 +11302,7 @@
         },
         {
           "path": "docs/evidence/measurement_sequence/scatter-floor.json",
-          "sha256": "c8036f7d2b41018467c534785c977e5203d5e20798b8c8eb7b5902949861179f"
+          "sha256": "c39c5b7202fd6d2cd44629a86eed1402a0d234e95502540f37c8216bccc3c080"
         },
         {
           "path": "docs/evidence/measurement_sequence/minimum-detectable-measured-floor.json",
