@@ -698,7 +698,7 @@ def verify_source_rights(
         verify_dagstuhl_evidence(root, entry, document[1])
     elif published and urlsplit(rights["evidence_url"]).netloc == "www.nature.com":
         article = re.fullmatch(
-            r"https://www\.nature\.com/articles/(s415[0-9]{2}-[0-9]{3}-[0-9]{5}-[0-9x])", rights["evidence_url"]
+            r"https://www\.nature\.com/articles/(s415[0-9]{2}-[0-9]{3}-[0-9]{4,5}-[0-9x])", rights["evidence_url"]
         )
         if article is None:
             raise ValueError("published Nature evidence route")
