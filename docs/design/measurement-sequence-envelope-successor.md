@@ -1,6 +1,7 @@
 # Measurement-sequence envelope successor: relaxation to the ground state, crosstalk-free carryover readers
 
-Status: design v3.3, frozen for implementation after the Codex review of v3.2; it needs a
+Status: design v3.4, the frozen v3.3 with two corrections its implementation forced (a per-qubit shape bound at
+the fitted T, and a per-qubit settle test against the other qubits' median and MAD); it needs a
 deduplicated `collect.json` (each PUB's placed calibration stored once), built in its own pull request first. The
 width-32 envelope run of 2026-10-27 (`results/live/2026-10-27T014422.881898Z`) executed as planned, billed 38 s, and
 returned no device verdict because its reset screen withheld all 32 qubits
@@ -38,19 +39,25 @@ already uses, and refines the best interval by golden-section search in log k wi
 continuous in the counts `propagate_many` differentiates. The record drops `q`, `p_init` and `p_init_se`, reports T as
 `t1_s`, and adds the shape, the fit's chi-square and its p-value.
 
-The shape enters no chain. Its effect is bounded instead: at dry run the planner evaluates the signed difference
-between the rate-averaged and the exponential measure-arm prediction over the admitted domain (shapes 0.25 to the
-exponential edge, T over the live layout's calibrated range with a factor 2.5 either side, the live arm durations),
-and binds its maximum in the dry-run record. By Jensen's inequality rate variance raises survival at every time past
-zero, so the difference has one sign wherever the prediction rises with survival; the analysis adds the bound
-linearly to the departure's shared systematic in `pooled_z`, not in quadrature, and the dry-run evaluation checks
-the sign over the domain.
-At shape 0.25 on the retained contexts it reaches 0.0017, against the 0.0188 floor.
+The shape enters no chain. Its effect is bounded instead, per qubit: at the qubit's fitted T and its live arm
+durations, the analysis takes the largest absolute difference between the rate-averaged and the exponential N = 16
+measure prediction over the shapes 0.25 to 64 (`msq_successor_analysis.shape_bounds`). The bound is a function of the
+qubit's fit and context alone, so it is fixed before the departure is read, and it covers a shape the series leaves
+loosely determined. The analysis adds each kept qubit's bound linearly to its shared systematic, which `pooled_z` sums
+across qubits without quadrature. The sign of the difference follows the curvature of the chain's prediction in the
+decay rate, not survival alone; on the retained contexts the rate-averaged prediction lies below the exponential one
+at every evaluated point, and the bound uses the absolute value either way. On the retained run's 23 selected qubits
+the bound has median 0.00052 and maximum 0.0016, against the 0.0188 floor
+([successor-replay.json](../evidence/measurement_sequence/successor-replay.json)). A layout-wide domain (T from the
+smallest calibrated T1 over 2.5 to the largest times 2.5) gives 0.0074, because it evaluates lifetimes no selected
+qubit has; the per-qubit bound replaces it.
 
 ## Admission gate
 
 A qubit's T1 series enters the analysis when the gamma-rate fit's chi-square, with dof equal to the delays after the
-bracket minus 2, has a p-value at or above 0.01 / W. On the retained run 28 of 30 informative qubits pass. The gate
+bracket minus 2, has a p-value at or above 0.01 / W. On the retained run 28 of the exploratory analysis's 30
+informative qubits pass, and 29 of the 31 the successor's q = 1 planning error makes informative (q154 joins); the
+rejects are q50 and q109, both near p = 1e-6. The gate
 rejects shapes no rate mixture produces, such as a fast-decay component; it does not test q.
 
 ## Relaxation target
@@ -81,8 +88,13 @@ composite q-consistency veto, not an estimate of q. Over the qubits that pass ev
 mu and a between-qubit scatter tau, with tau estimated about the weighted mean (DerSimonian-Laird moments) and floored
 at 0.0019, the retained run's pilot value on the qubits that pass its pattern screen. A common-mean z,
 mu / se(mu) with weights 1 / (s^2 + tau^2), beyond 3 in either direction withholds the device-level departure verdict;
-a qubit whose own (g - mu) / sqrt(s^2 + tau^2) exceeds 3 in magnitude is withheld. Because tau is fitted about mu, a
-common gap cannot hide in the scatter term.
+because tau is fitted about mu, a common gap cannot hide in the scatter term. Each qubit is tested against the other
+qubits alone, by their median and normal-consistent MAD (tau floored at 0.0019, the median's standard error added):
+a qubit whose |g - median| / sqrt(s^2 + tau^2 + se^2) exceeds 3 is withheld. A scatter fitted with the tested qubit
+inside it lets k equal outliers among n reach at most sqrt(n / k - 1) in z, and a moment fit that leaves only the
+tested qubit out still caps two outliers among 8 near 2.4; the median and MAD ignore any minority of outliers. The
+per-qubit test detects a gap near (3 + 1.28) sqrt(s^2 + 0.0019^2), about 0.013 at the retained s of 0.0023, with
+power 0.9; on healthy simulated gaps it withholds a given qubit about 0.3 % of the time.
 
 ## Carryover readers
 
@@ -146,8 +158,11 @@ over the admitted grid, so the null covers the qubits the case selects.
   2 standard errors inside calibrates selection failure and is exempt from the issuance requirement.
 - q arm: true q at each selected qubit's tolerance bound (its largest-sensitivity contexts included); the complete
   pipeline's false-fire bound must stay below 0.01 there too.
-- Settle arms: a common gap and a sparse same-sign gap on two qubits, at 8, 9 and the full selected width, sized to
-  the scatter floor times 4; the common-mean veto and the per-qubit veto must fire with power at least 0.9.
+- Settle arms: a common gap at 8, 9 and the full selected width, sized to the scatter floor times 4, which the
+  common-mean veto must catch with power at least 0.9; and a sparse same-sign gap on two qubits at the same widths,
+  sized to the per-qubit test's detectable gap (3 + 1.28) sqrt(s^2 + 0.0019^2) at the run's median s, which the
+  per-qubit veto must withhold with power at least 0.9. A sparse gap below that size is the veto's stated blind
+  spot; its effect on the pooled departure is at most its share of the selected qubits.
 - Plateau arm: the retained (T1, q) values as truth, q near 0.7; the equilibrium bound and the settle veto must
   withhold its departure verdict.
 - Each arm reports the unconditional false-fire rate, the false-fire rate conditional on a verdict being issued, and
@@ -178,10 +193,10 @@ states it as what the run measures.
 
 ## Cost, size and approval scope
 
-The equilibrium row costs about 8192 x (400 + 20 + 9) us = 3.5 s and the twelve readers about 3.3 s, so attempt 1 at
-width 32 expects about 45 s; the dry run's planner sets the ceilings (on the retained dry run: attempt 1 57 s,
+The equilibrium row costs about 8192 x (400 + 20 + 9) us = 3.5 s, the twelve readers about 3.3 s and the eight
+sentinel rows added in the middle and tail thirds about 3 to 4 s, so attempt 1 at width 32 expects about 49 s; the dry run's planner sets the ceilings (on the retained dry run: attempt 1 57 s,
 fallback 90 s, 147 s for both) and the case quotes the expected charge against attempt 1's ceiling. Storing each
-PUB's placed calibration once removes 22.1 MB of the retained run's 42.4 MB `collect.json`, so 13 more rows fit
+PUB's placed calibration once removes 22.1 MB of the retained run's 42.4 MB `collect.json`, so the 21 added rows fit
 under the 45 MB limit with room for the wider width tiers; the dry run measures record, collection and raw sizes
 before the case. An attempt stays one job, and the change is a constructor and analysis change inside the
 `msq-envelope-v1` contract, which binds both by digest.
@@ -197,12 +212,16 @@ before the case. An attempt stays one job, and the change is a constructor and a
    then the batched null with all arms at the chosen width.
 5. The case on a rehearsal dry run, approval, then `scripts/approved_run.sh`.
 
-Falsifiers: q_hat below 0.86 on most qubits (the departure verdict is withheld and q = 1 is wrong); a pooled settle z
+Falsifiers: q_hat below its per-qubit tolerance on most qubits (the departure verdict is withheld and q = 1 is
+wrong); a pooled settle z
 beyond 3; fewer than 8 selected qubits; either order condition failing; a carryover arm's zero-fire bound at or above
 0.01 or its informative-device rate below 80 %; a plateau arm whose departure verdict is not withheld.
 
 ## Superseded designs
 
+- v3.3 bound the shape term over a layout-wide lifetime domain (0.0074 on the retained run, 40 % of the floor)
+  and tested each qubit's settle gap against a scatter fitted with that qubit inside it, which caps two equal
+  outliers among 16 below z = 3; it also sized the sparse settle arm below the per-qubit test's detectable gap.
 - v1 bounded carryover with two single-circuit history-control jobs; review found an understated allocation bias,
   inter-job drift above the margin and a T2 null that cannot move the settle gap.
 - v2 equalized every member's end state with an `sx; measure; reset` coin; Codex found the departure resting on the

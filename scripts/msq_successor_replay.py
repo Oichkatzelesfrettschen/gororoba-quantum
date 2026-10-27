@@ -32,9 +32,6 @@ import msq_successor_analysis as su  # noqa: E402
 SCHEMA = "msq-successor-replay-v1"
 # Consecutive delay-arm member rows whose order the sentinel reads, by step count N.
 SENTINEL_ROWS = {"n4": (8, 9, 10, 11), "n8": (12, 13, 14, 15)}
-# The replay's shape domain: the bound is largest at the smallest shape, and three shapes keep the replay within the
-# pull-request gate budget.
-SHAPE_SHAPES = (0.25, 1.0, 4.0)
 NOT_EVALUABLE = {
     "carryover_readers": "the retained run holds no reader members",
     "equilibrium_row": "the retained run holds no ground-start 400 us row",
@@ -118,17 +115,8 @@ def run(path: Path) -> dict[str, Any]:
     count = ea.count_rule(width)
     live = [q for q in qubits if rows[q]["usable"]]
     pool = [q for q in eligible if rows[q]["informative"]]
-    domain = su.shape_systematic({"contexts": {q: contexts[q] for q in pool}, "shapes": SHAPE_SHAPES})
-    at_calibrated = su.shape_systematic(
-        {
-            "contexts": {q: contexts[q] for q in pool},
-            "shapes": SHAPE_SHAPES[:1],
-            "t_factor": 1.0,
-            "t_points": 1,
-            "t_scope": "qubit",
-        }
-    )
-    decision = su.device_decision(rows, eligible, count, domain["bound"])
+    bounds = su.shape_bounds({q: rows[q] for q in pool}, contexts)
+    decision = su.device_decision(rows, eligible, count, bounds)
     selected = set(decision["selected"])
     informative = [q for q in live if rows[q]["informative_before_admission"]]
     admitted = [q for q in informative if rows[q]["admission"]["passes"]]
@@ -159,8 +147,12 @@ def run(path: Path) -> dict[str, Any]:
         "job_id": loaded["job_id"],
         "scatter_floor": floor,
         "summary": summary,
-        "shape_systematic": domain,
-        "shape_systematic_at_calibrated_t1": at_calibrated,
+        "shape_bounds": {
+            "shapes": list(su.SHAPE_DOMAIN_SHAPES),
+            "median": median(list(bounds.values())),
+            "largest": max(bounds.values()),
+            "by_qubit": {str(q): bounds[q] for q in sorted(bounds)},
+        },
         "decision": decision,
         "not_evaluable": NOT_EVALUABLE,
         "order_sentinel": sentinel(loaded),

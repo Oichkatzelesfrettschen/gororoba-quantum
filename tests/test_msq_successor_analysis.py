@@ -10,8 +10,10 @@ import numpy as np
 import pytest
 
 import measurement_sequence_analysis as msa
-import msq_envelope_null as null
 import msq_successor_analysis as su
+
+# ANU QRNG docs/evidence/anu_qrng/draw-2026-10-27T200026Z.json, index 0.
+TEST_SEED = 585
 
 
 def check(condition: bool, message: str = "check failed") -> None:
@@ -180,10 +182,23 @@ def test_shape_systematic_per_qubit_scope_reads_the_calibrated_lifetime() -> Non
         su.shape_systematic({"contexts": ctx_map, "t_scope": "device"})
 
 
+def test_shape_bounds_read_each_qubit_at_its_fitted_lifetime() -> None:
+    ctx_map = bare_contexts(msa.FIXTURE_QUBITS[:2])
+    rows = su.evaluate(ground_counts(ctx_map), ctx_map)
+    bounds = su.shape_bounds(rows, ctx_map, (0.25, 4.0))
+    for q, row in rows.items():
+        t_s = row["fitted"]["t1_s"]
+        exponential = su.gamma_measure_p0(ctx_map[q], t_s, su.EXPONENTIAL)
+        direct = max(abs(su.gamma_measure_p0(ctx_map[q], t_s, k) - exponential) for k in (0.25, 4.0))
+        check(abs(bounds[q] - direct) < 1e-15 and 0 < bounds[q] < 0.01, f"{q}: {bounds[q]} {direct}")
+    with pytest.raises(msa.AnalysisError):
+        su.shape_bounds(rows, ctx_map, (0.25, math.inf))
+
+
 def test_shape_adjusted_adds_the_bound_to_the_shared_systematic_linearly() -> None:
     ctx_map = bare_contexts()
     rows = su.evaluate(ground_counts(ctx_map), ctx_map)
-    adjusted = su.shape_adjusted(rows, 0.002)
+    adjusted = su.shape_adjusted(rows, dict.fromkeys(rows, 0.002))
     for q, row in rows.items():
         before = row["departure_n16"]["se_systematic"]
         check(abs(adjusted[q]["departure_n16"]["se_systematic"] - before - 0.002) < 1e-15)
@@ -261,7 +276,7 @@ def test_q_hat_is_not_clipped_and_the_tolerance_follows_the_sensitivity() -> Non
 
 
 def gaps(count: int, shift: float, scatter: float = 0.0, se: float = 0.003) -> dict[int, tuple[float, float]]:
-    generator = np.random.default_rng(null.NULL_SEED)
+    generator = np.random.default_rng(TEST_SEED)
     noise = generator.standard_normal(count)
     return {q: (shift + scatter * float(noise[q]) + se * float(generator.standard_normal()), se) for q in range(count)}
 
@@ -288,16 +303,25 @@ def test_settle_veto_withholds_an_isolated_gap() -> None:
     check(veto["withheld_qubits"] == [5], f"{veto['withheld_qubits']}")
 
 
-def test_settle_veto_masks_outliers_by_their_own_scatter() -> None:
-    # tau is fitted about the weighted mean, so k equal outliers among n qubits reach at most sqrt(n / k - 1) in z.
-    data = gaps(16, 0.0)
-    for q in (3, 7):
-        data[q] = (0.1, 0.003)
-    check(su.settle_veto(data)["withheld_qubits"] == [], "two outliers among 16 stay below z = 3")
-    wide = gaps(40, 0.0)
-    for q in (3, 7):
-        wide[q] = (0.1, 0.003)
-    check(set(su.settle_veto(wide)["withheld_qubits"]) == {3, 7}, "two outliers among 40 reach z = 3")
+def test_settle_veto_judges_each_qubit_against_the_others() -> None:
+    # A moment fit of tau over the tested qubit and the other outliers caps their z near sqrt(n / k - 1); the median
+    # and MAD of the other qubits ignore a minority of outliers.
+    for count in (8, 9, 16):
+        data = {q: (0.0, 0.0023) for q in range(count)}
+        for q in (3, 5):
+            data[q] = (0.1, 0.0023)
+        check(set(su.settle_veto(data)["withheld_qubits"]) == {3, 5}, f"two outliers among {count}")
+
+
+def test_settle_veto_sparse_gap_at_the_detectable_size() -> None:
+    # Per-qubit sensitivity: (SETTLE_Z + z_0.9) * sqrt(s^2 + floor^2) at s = 0.0023 is about 0.0129.
+    detectable = (su.SETTLE_Z + 1.2816) * math.sqrt(0.0023**2 + su.SETTLE_TAU_FLOOR**2)
+    data = {q: (0.0, 0.0023) for q in range(16)}
+    for q in (3, 5):
+        data[q] = (detectable * 1.05, 0.0023)
+    check(set(su.settle_veto(data)["withheld_qubits"]) == {3, 5}, f"{su.settle_veto(data)['per_qubit']}")
+    single = su.settle_veto({0: (0.05, 0.0023)})
+    check(single["per_qubit"]["0"]["z"] is None and not single["withheld_qubits"])
 
 
 def test_settle_veto_estimates_tau_about_the_weighted_mean() -> None:
@@ -314,7 +338,7 @@ def test_settle_veto_estimates_tau_about_the_weighted_mean() -> None:
 def shot_arrays(
     carry: float, readers: int = 12, shots: int = 8192, contrast: float = 0.98, shuffle: bool = False
 ) -> tuple[list[np.ndarray], list[np.ndarray]]:
-    generator = np.random.default_rng(null.NULL_SEED)
+    generator = np.random.default_rng(TEST_SEED)
     previous = [(generator.random(shots) < 0.3).astype(np.int8) for _ in range(readers)]
     read = []
     for bits in previous:
@@ -358,7 +382,7 @@ def correlated_pairs(
     shuffle: bool, pairs: int = 2, qubits: int = 8, shots: int = 8192
 ) -> list[tuple[np.ndarray, np.ndarray]]:
     """Consecutive rows that share a per-shot latent phase: the same shot index correlates, a shifted one does not."""
-    generator = np.random.default_rng(null.NULL_SEED)
+    generator = np.random.default_rng(TEST_SEED)
     out = []
     for _ in range(pairs):
         latent = generator.standard_normal((qubits, shots))
@@ -392,7 +416,7 @@ def eight_rows() -> dict[int, dict[str, Any]]:
 
 def test_device_decision_reports_a_clean_null_and_adds_the_shape_bound() -> None:
     rows = eight_rows()
-    decision = su.device_decision(rows, list(rows), 2, 0.002)
+    decision = su.device_decision(rows, list(rows), 2, dict.fromkeys(rows, 0.002))
     check(decision["withheld"] is None and decision["device"]["status"] == "informative", f"{decision['withheld']}")
     check(not decision["device"]["departs_below"]["device"], f"{decision['device']['departs_below']}")
     check(len(decision["selected"]) == 8 and not decision["settle_veto"]["common_veto"])
@@ -400,11 +424,11 @@ def test_device_decision_reports_a_clean_null_and_adds_the_shape_bound() -> None
 
 def test_device_decision_withholds_below_eight_qubits_and_on_a_common_gap() -> None:
     rows = eight_rows()
-    few = su.device_decision(rows, list(rows)[:7], 2, 0.0)
+    few = su.device_decision(rows, list(rows)[:7], 2, dict.fromkeys(rows, 0.0))
     check(few["device"] is None and "fewer than 8" in few["withheld"][0], f"{few['withheld']}")
     shifted = {
         q: {**r, "settle_n16": {**r["settle_n16"], "gap_difference": r["settle_n16"]["gap_difference"] + 0.02}}
         for q, r in rows.items()
     }
-    veto = su.device_decision(shifted, list(rows), 2, 0.0)
+    veto = su.device_decision(shifted, list(rows), 2, dict.fromkeys(rows, 0.0))
     check(veto["settle_veto"]["common_veto"] and veto["device"] is None, f"{veto['withheld']}")

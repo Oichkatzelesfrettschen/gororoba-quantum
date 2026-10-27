@@ -7,12 +7,15 @@ the successor's relaxation model (docs/design/measurement-sequence-envelope-succ
 - every chain runs with q fixed at 1 and T1 replaced by T, the inverse-mean-rate time of a gamma-rate fit of the
   in-job T1 series (`fit_gamma_rate`); the record carries the shape, the chi-square and its p-value in place of q,
   p_init and p_init_se;
-- `shape_systematic` bounds the signed difference between the rate-averaged and the exponential measure prediction,
-  and `shape_adjusted` adds that bound linearly to each qubit's shared systematic, the term `pooled_z` sums linearly;
+- `shape_bounds` bounds, at each qubit's fitted T, the difference between the rate-averaged and the exponential
+  measure prediction over the admitted shapes, and `shape_adjusted` adds each bound linearly to that qubit's shared
+  systematic, the term `pooled_z` sums linearly across qubits; `shape_systematic` evaluates the same difference over
+  a calibration domain for the dry run's report;
 - the admission gate keeps a qubit whose gamma-rate fit has p-value at or above 0.01 / W;
 - `equilibrium_estimate` and `q_screen` estimate the job-local relaxation target from a ground-start row and withhold
   a qubit whose lower bound falls below its own tolerance;
-- `settle_veto` fits a DerSimonian-Laird random-effects model to the settle gaps about their weighted mean;
+- `settle_veto` fits a DerSimonian-Laird random-effects model to the settle gaps about their weighted mean and tests
+  each qubit against the fit of the others;
 - `carryover_reader` and `order_sentinel` are pure statistics over shot-ordered bit arrays.
 """
 
@@ -57,6 +60,7 @@ EQUILIBRIUM_DELAY_S = 400e-6
 # Between-qubit scatter of the settle gap: the retained run's value on the qubits that pass its pattern screen.
 SETTLE_TAU_FLOOR = 0.0019
 SETTLE_Z = 3.0
+MAD_NORMAL = 1.4826
 # Shape-systematic domain: T over the layout's calibrated range with this factor on either side.
 SHAPE_T_FACTOR = 2.5
 SHAPE_DOMAIN_SHAPES = (0.25, 0.5, 1.0, 2.0, 4.0, 16.0, 64.0)
@@ -323,14 +327,39 @@ def shape_systematic(domain: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def shape_adjusted(rows: dict[Any, dict[str, Any]], bound: float) -> dict[Any, dict[str, Any]]:
-    """Rows whose departure systematic carries the shape bound linearly: pooled_z sums each qubit's systematic
-    across qubits without quadrature, so the bound stays a device-shared term."""
+def _shape_bound(item: tuple[dict[str, Any], float, tuple[float, ...]]) -> float:
+    ctx, t_s, shapes = item
+    return max(abs(v) for v in _shape_row((ctx, shapes, (t_s,))))
+
+
+def shape_bounds(
+    rows: dict[Any, dict[str, Any]], contexts: dict[Any, dict[str, Any]], shapes: Sequence[float] = SHAPE_DOMAIN_SHAPES
+) -> dict[Any, float]:
+    """Each qubit's largest |rate-averaged - exponential| N = 16 measure P0 at its own fitted T over the shapes.
+
+    The chains run exponential at the fitted inverse-mean-rate time, and the fit leaves the shape loosely determined,
+    so the bound takes the worst admitted shape at the T the chains use; it is a function of the qubit's fit and
+    context alone, fixed before the departure is read.
+    """
+    grid = tuple(float(k) for k in shapes)
+    if not grid or any(not 0 < k < math.inf for k in grid):
+        raise msa.AnalysisError("the shape bound needs finite positive shapes")
+    qubits = [q for q in rows if q in contexts]
+    values = ordered_map(
+        _shape_bound, [(contexts[q], float(rows[q]["fitted"]["t1_s"]), grid) for q in qubits], min_items=2
+    )
+    return dict(zip(qubits, values, strict=True))
+
+
+def shape_adjusted(rows: dict[Any, dict[str, Any]], bounds: dict[Any, float]) -> dict[Any, dict[str, Any]]:
+    """Rows whose departure systematic carries each qubit's shape bound linearly: pooled_z sums each qubit's
+    systematic across qubits without quadrature, so the bounds stay a device-shared term."""
     out: dict[Any, dict[str, Any]] = {}
     for qubit, row in rows.items():
         if not row.get("usable"):
             out[qubit] = row
             continue
+        bound = bounds[qubit]
         departure = {**row["departure_n16"], "se_systematic": row["departure_n16"]["se_systematic"] + bound}
         out[qubit] = {**row, "departure_n16": departure, "shape_systematic": bound}
     return out
@@ -701,14 +730,45 @@ def q_screen(estimate: dict[str, Any], sensitivity: float, width: int, alpha: fl
 # --- settle veto --------------------------------------------------------------------------------------------
 
 
+def _random_effects(g: np.ndarray, s2: np.ndarray) -> tuple[float, float, float, float]:
+    """(mu, se of mu, DerSimonian-Laird tau, floored tau) of gaps g with variances s2."""
+    w0 = 1 / s2
+    mean0 = float(np.sum(w0 * g) / np.sum(w0))
+    q_statistic = float(np.sum(w0 * (g - mean0) ** 2))
+    n = len(g)
+    denominator = float(np.sum(w0) - np.sum(w0**2) / np.sum(w0))
+    tau2 = max((q_statistic - (n - 1)) / denominator, 0.0) if n > 1 and denominator > 0 else 0.0
+    tau = max(math.sqrt(tau2), SETTLE_TAU_FLOOR)
+    w = 1 / (s2 + tau**2)
+    return float(np.sum(w * g) / np.sum(w)), 1 / math.sqrt(float(np.sum(w))), math.sqrt(tau2), tau
+
+
+def _robust_others(g: np.ndarray, s2: np.ndarray) -> tuple[float, float, float]:
+    """(center, se of center, floored tau) of the other qubits' gaps by median and MAD.
+
+    The median and the normal-consistent MAD (1.4826 x the median absolute deviation) stay put while fewer than half
+    the gaps are outliers, so a second outlier among the others does not widen the scatter a qubit is judged against;
+    tau^2 is the MAD variance minus the median sampling variance, floored at SETTLE_TAU_FLOOR. The median's standard
+    error is sqrt(pi / 2) sqrt(s^2 + tau^2) / sqrt(n) at the median s^2.
+    """
+    center = float(np.median(g))
+    spread = MAD_NORMAL * float(np.median(np.abs(g - center)))
+    sampling = float(np.median(s2))
+    tau = max(math.sqrt(max(spread**2 - sampling, 0.0)), SETTLE_TAU_FLOOR)
+    return center, math.sqrt(math.pi / 2 * (sampling + tau**2) / len(g)), tau
+
+
 def settle_veto(gaps: dict[Any, tuple[float, float]]) -> dict[str, Any]:
     """Random-effects veto over the settle gaps (gap, standard error) of the qubits that pass every other gate.
 
     The between-qubit scatter tau comes from the DerSimonian-Laird moments about the inverse-variance weighted mean
     and is floored at SETTLE_TAU_FLOOR. With weights 1 / (s^2 + tau^2) the common mean mu has standard error
-    1 / sqrt(sum of weights); |mu / se| beyond SETTLE_Z withholds the device-level departure verdict. A qubit with
-    |g - mu| / sqrt(s^2 + tau^2) beyond SETTLE_Z is withheld. Because tau is fitted about the weighted mean, a gap
-    common to the qubits moves mu and leaves the scatter alone.
+    1 / sqrt(sum of weights); |mu / se| beyond SETTLE_Z withholds the device-level departure verdict. Because tau is
+    fitted about the weighted mean, a gap common to the qubits moves mu and leaves the scatter alone. Each qubit is
+    tested against the other qubits by a robust center and scale (`_robust_others`): with mu_-i, se_-i and tau_-i
+    taken without it, a qubit with |g - mu_-i| / sqrt(s^2 + tau_-i^2 + se_-i^2) beyond SETTLE_Z is withheld, so
+    neither its own gap nor a minority of other outliers widens the scatter it is judged against. With one qubit the
+    per-qubit test is not evaluated.
     """
     if not gaps:
         return {"evaluable": False, "reason": "no qubit reaches the settle veto", "common_veto": False}
@@ -717,21 +777,24 @@ def settle_veto(gaps: dict[Any, tuple[float, float]]) -> dict[str, Any]:
     s2 = np.array([gaps[q][1] ** 2 for q in qubits])
     if not np.all(s2 > 0):
         raise msa.AnalysisError("a settle gap needs a positive standard error")
-    w0 = 1 / s2
-    mean0 = float(np.sum(w0 * g) / np.sum(w0))
-    q_statistic = float(np.sum(w0 * (g - mean0) ** 2))
     n = len(qubits)
-    denominator = float(np.sum(w0) - np.sum(w0**2) / np.sum(w0))
-    tau2 = max((q_statistic - (n - 1)) / denominator, 0.0) if n > 1 and denominator > 0 else 0.0
-    tau = max(math.sqrt(tau2), SETTLE_TAU_FLOOR)
-    w = 1 / (s2 + tau**2)
-    mu = float(np.sum(w * g) / np.sum(w))
-    se_mu = 1 / math.sqrt(float(np.sum(w)))
+    mu, se_mu, tau_dl, tau = _random_effects(g, s2)
     z_common = mu / se_mu
     per_qubit = {}
-    for q, gap, variance in zip(qubits, g.tolist(), s2.tolist(), strict=True):
-        z = (gap - mu) / math.sqrt(variance + tau**2)
-        per_qubit[str(q)] = {"gap": gap, "z": z, "withheld": abs(z) > SETTLE_Z}
+    for i, q in enumerate(qubits):
+        if n < 2:
+            per_qubit[str(q)] = {"gap": float(g[i]), "z": None, "withheld": False}
+            continue
+        others = np.arange(n) != i
+        mu_i, se_i, tau_i = _robust_others(g[others], s2[others])
+        z = (float(g[i]) - mu_i) / math.sqrt(float(s2[i]) + tau_i**2 + se_i**2)
+        per_qubit[str(q)] = {
+            "gap": float(g[i]),
+            "z": z,
+            "mu_others": mu_i,
+            "tau_others": tau_i,
+            "withheld": abs(z) > SETTLE_Z,
+        }
     return {
         "evaluable": True,
         "qubits": n,
@@ -739,7 +802,7 @@ def settle_veto(gaps: dict[Any, tuple[float, float]]) -> dict[str, Any]:
         "se_mu": se_mu,
         "z_common": z_common,
         "common_veto": abs(z_common) > SETTLE_Z,
-        "tau_dl": math.sqrt(tau2),
+        "tau_dl": tau_dl,
         "tau": tau,
         "tau_floor": SETTLE_TAU_FLOOR,
         "per_qubit": per_qubit,
@@ -850,7 +913,7 @@ def device_decision(
     rows: dict[int, dict[str, Any]],
     eligible: Sequence[int],
     count: int,
-    shape_bound: float,
+    shape_bounds_by_qubit: dict[Any, float],
     device_count: int = MIN_KEPT,
 ) -> dict[str, Any]:
     """The settle veto, the departure and the count rule over the qubits that pass every gate independent of settle.
@@ -858,8 +921,8 @@ def device_decision(
     `eligible` lists the qubits that passed the gates outside this module (execution eligibility, the pattern screen,
     the carryover screen, the equilibrium bound); a row also needs to be informative, which includes the admission
     gate. A common-mean settle veto, or fewer than `device_count` qualifying qubits, withholds the device verdict and
-    leaves every kept qubit's row; `count` is the count rule's size, and `shape_bound` enters each departure's
-    shared systematic linearly.
+    leaves every kept qubit's row; `count` is the count rule's size, and each kept qubit's entry of
+    `shape_bounds_by_qubit` (`shape_bounds`) enters its departure's shared systematic linearly.
     """
     pool = {q: r for q, r in rows.items() if q in set(eligible) and r.get("usable") and r.get("informative")}
     veto = settle_veto({q: (r["settle_n16"]["gap_difference"], r["settle_n16"]["se"]) for q, r in pool.items()})
@@ -872,13 +935,13 @@ def device_decision(
         reasons.append(f"{len(kept)} qualifying qubits, fewer than {device_count}")
     verdict = None
     if not reasons:
-        verdict = msa.device_verdict(shape_adjusted(kept, shape_bound), count)
+        verdict = msa.device_verdict(shape_adjusted(kept, shape_bounds_by_qubit), count)
     return {
         "eligible": sorted(eligible),
         "pool": sorted(pool),
         "selected": sorted(kept),
         "settle_veto": veto,
-        "shape_bound": shape_bound,
+        "shape_bounds": {str(q): shape_bounds_by_qubit[q] for q in sorted(kept)},
         "count_rule": count,
         "withheld": reasons or None,
         "device": verdict,
