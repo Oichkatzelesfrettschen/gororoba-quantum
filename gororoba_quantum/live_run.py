@@ -187,6 +187,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "modular_arithmetic.py",
     "msq_envelope.py",
     "msq_envelope_analysis.py",
+    "msq_successor_analysis.py",
     "n21_exact_planning.py",
     "native_preflight.py",
     "order_finding.py",

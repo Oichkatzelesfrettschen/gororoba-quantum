@@ -146,8 +146,9 @@ the run's remaining all-withheld risk.
 
 ## Null calibration
 
-`msq_envelope_null.py` is the batched estimator of #589, extended to the gamma-rate fit (shape scan, nested Brent
-profile, golden-section refinement) with scalar bit-identity tests at an interior shape, the 0.25 lower edge and the
+`msq_successor_null.py` is the successor's batched null. It reuses the batched primitives of `msq_envelope_null.py`
+(#589), which stays the retained envelope family's null with its bytes unchanged, and adds the batched gamma-rate fit
+(shape scan, nested Brent profile, golden-section refinement) with scalar bit-identity tests at an interior shape, the 0.25 lower edge and the
 exponential edge, and a 400-replicate width-32 benchmark before any cost is quoted. Each replicate draws, per qubit, a
 calibration resampled from the retained run's 30 informative qubits (T1, T2, readout errors, sx error), a rate shape
 resampled from the retained run's admitted shapes with T equal to that calibration's T1, the sx-error residual as
@@ -204,7 +205,7 @@ states it as what the run measures.
 The equilibrium row costs about 8192 x (400 + 20 + 9) us = 3.5 s, the twelve readers about 3.3 s and the eight
 sentinel rows added in the middle and tail thirds about 3 to 4 s, so attempt 1 at width 32 expects about 49 s against
 the retained run's 38 s bill; the planner prices the 109-PUB job at 39.88 s against its 31.18 s for the retained
-88 PUBs (`results/live/2026-10-27T225534.897899Z`). The dry run's planner sets the ceilings (on the retained dry run: attempt 1 57 s,
+88 PUBs. The dry run's planner sets the ceilings (on the retained dry run: attempt 1 57 s,
 fallback 90 s, 147 s for both) and the case quotes the expected charge against attempt 1's ceiling. Storing each
 PUB's placed calibration once removes 22.1 MB of the retained run's 42.4 MB `collect.json`, so the 21 added rows fit
 under the 45 MB limit with room for the wider width tiers; the dry run measures record, collection and raw sizes
