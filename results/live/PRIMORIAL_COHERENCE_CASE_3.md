@@ -171,8 +171,20 @@ Made from commit ce37063 (the decision code above, pushed before any submission)
 | `2026-10-27T005728.992643Z` | coherence_probes, 22 paths | 99 | 800 | `0191048c876174937a497ecb42d393050290b1c1f53a7924b43dc7bec786741c` |
 | `2026-10-27T005842.636425Z` | primorial_gap88, 22 paths (representative) | 105 | 4000 | `bc0d5c16b2e8573f06fc30bb72e720cea28d55a934d8ceb19b865ade7be2565b` |
 
-The first five are the binding approved records. Stage 2's binding dry run is made after the decision at its
-path subset and N2; it must match the representative in campaign, member structure, policy and delay.
+These records, made from ce37063, are superseded: commit 386011f changed `falsify` before any submission, and
+Kingston recalibrated to 2026-10-26T17:47:10-07:00. The binding approved records, each made immediately before
+its own submission from 386011f:
+
+| record | campaign | record.json sha256 | submitted run |
+| --- | --- | --- | --- |
+| `2026-10-27T010649.227019Z` | prep0 (A) | `f1accbbcb4fe43b7b1d8cea867b28e35d6c7bab241a1267e5537bb6e3742e836` | `2026-10-27T010741.272123Z` |
+| `2026-10-27T010823.590534Z` | x_history (A) | `3259a74820355d38868fb269b2ff5db9c3720efbd2dec14068f9f310a652e84a` | `2026-10-27T010917.104805Z` |
+| `2026-10-27T010945.923159Z` | x_history (B) | `380b115c39506022d4a48d005f541357e6ab1060597b77cf7a43c769eae01ba2` | `2026-10-27T011025.944327Z` |
+| `2026-10-27T011052.603194Z` | prep0 (B) | `b03a55314dec5870521a6e246adccf74547230dba3a4fe52ec8ed8a5ad1e65ff` | `2026-10-27T011140.821404Z` |
+| `2026-10-27T011212.783117Z` | coherence_probes | `83e278b2d903686bf643fe24c3aebe22df17a5c9d0911a911e30fade842984c5` | `2026-10-27T011538.241671Z` |
+| `2026-10-27T013519.244840Z` | primorial_gap88, 4000 shots | `3e2eab8a7a076f9fb04ae81da78a0bf6608ce4a84d21d18b043a915acdcf705c` | `2026-10-27T013626.332783Z` |
+
+Results: [case3/README.md](../../docs/evidence/primorial_cover/case3/README.md).
 
 ## Commands
 
