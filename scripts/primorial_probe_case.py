@@ -1551,6 +1551,10 @@ def discrimination(observed: dict[str, float], decision: dict[str, Any]) -> dict
     }
 
 
+# A republished label counts as the decision's calibration only on this many matching reads of its snapshot.
+RELABEL_READS = 2
+
+
 def falsify(
     run_dir: Path,
     decision: dict[str, Any],
@@ -1567,7 +1571,8 @@ def falsify(
     check (``crosstalk_verdict``) reads consistent; otherwise it is descriptive. A member that executed under
     another calibration label still counts as the decision's when the decision records a channel_digest and every
     snapshot of ``stage2_snapshots`` (exported at that member's execution start, read again after an interval)
-    carries the same digest over the stage-2 qubits and covers that label.
+    carries the same digest over the stage-2 qubits and at least RELABEL_READS of them cover that label: the read
+    at collection and the confirming re-read the case preregisters.
     """
     record, entry, paths = _group_record(run_dir, "primorial_gap88")
     if paths != decision["stage2_paths"]:
@@ -1592,9 +1597,8 @@ def falsify(
     reasons = []
     qubits = sorted({q for path in paths for q in path})
     digests = [[str(s["calibration"]), channel_digest(s, qubits)] for s in (stage2_snapshots or [])]
-    same = {str(decision["calibration"])} | {
-        label for label, digest in digests if digest == decision.get("channel_digest")
-    }
+    matching = [label for label, digest in digests if digest == decision.get("channel_digest")]
+    same = {str(decision["calibration"])} | {label for label in set(matching) if matching.count(label) >= RELABEL_READS}
     if any(changed for _, changed in executed):
         reasons.append(f"a stage-2 member's calibration changed during its shots: {sorted(executed)}")
     if not {label for label, _ in executed} <= same or any(d != decision.get("channel_digest") for _, d in digests):

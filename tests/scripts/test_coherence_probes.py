@@ -355,6 +355,6 @@ def test_falsify_names_out_of_band_coefficients(tmp_path: Path) -> None:
     same, moved = _snapshot("C1"), _snapshot("C1", e10=0.02)
     if case.falsify(tmp_path, relabeled, {"outcome": "consistent"}, [same, same])["claim"] != "device":
         raise AssertionError("equal channel values under a new label were refused")
-    for reads in ([moved, same], [same, moved], []):
+    for reads in ([moved, same], [same, moved], [same], []):
         if case.falsify(tmp_path, relabeled, {"outcome": "consistent"}, reads)["claim"] != "descriptive":
             raise AssertionError(f"a differing or missing re-read admitted a device claim: {len(reads)} reads")
