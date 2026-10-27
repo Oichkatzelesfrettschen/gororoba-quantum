@@ -1,7 +1,7 @@
 # Readout attribution on ibm_kingston: written case
 
-Status: awaiting the owner's approval. Nothing under this case has been submitted. The design, its two reviews and
-the validation evidence are in [heron-idle-readout-attribution.md](../../docs/design/heron-idle-readout-attribution.md).
+Status: approved by the owner on 2026-10-27 and submitted that day as job `dbgfiu1j4t8s73ac91f0` on the backup
+account; the run awaits collection. The design, its two reviews and the validation evidence are in [heron-idle-readout-attribution.md](../../docs/design/heron-idle-readout-attribution.md).
 
 ## Question
 
@@ -55,14 +55,19 @@ withdrawn or unresolved) and the replication of the probe's shift by a t-only ru
 
 ## Binding record
 
-Filled from the dry run made immediately before approval; if the calibration moves before the submit, the submit
-writes `approval_required` and the dry run is remade with identical flags under the same approval.
+Filled from the binding dry run that `scripts/approved_run.sh` made and submitted in one invocation; if the
+calibration had moved before the submit, the submit would have written `approval_required` and the runner would have
+planned again with identical flags under the same approval.
 
 | Field | Value |
 |---|---|
-| Run directory | pending |
-| record.json sha256 | pending |
-| Calibration | pending |
+| Seeds | `--seed-transpiler qrng:docs/evidence/anu_qrng/draw-2026-10-27T191741Z.json#0`, `--seed-simulator ...#1` |
+| Binding dry run | `results/live/2026-10-27T191809.705421Z` |
+| record.json sha256 | `d4778defcfd6e4451c858a3317cf74abdd6af09013fbf71aa1d0ead60c58b8e4` |
+| Calibration | 2026-10-27T12:00:41-07:00, fingerprint `4c64033641083258a2b7c977f31b582493a4c7cc86528f7ea07887a10b60b179` |
+| Self-check | b -0.162 kHz [-0.333, 0.017], class agreement, additive, attribution unresolved: passes |
+| Submitted run | `results/live/2026-10-27T191953.122214Z`, job `dbgfiu1j4t8s73ac91f0`, `submission.complete` true |
+| Backup remaining at plan | 197 s |
 
 ## Commands
 
