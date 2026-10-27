@@ -2156,6 +2156,13 @@
       "run": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00",
       "family": "single-chip teleportation rehearsal on qpu:belenos",
       "question": "job-00 of the teleportation rehearsal, sent under the anchor gate while the platform record held one state: does the chip teleport the six Pauli eigenstates above the classical bound, and does it return the requested three-click samples (near the anchor state) or almost none (the state the held record describes)?"
+    },
+    {
+      "id": "kingston-idle-penalty-probe",
+      "provider": "ibm",
+      "run": "results/live/2026-10-26T202817.431767Z",
+      "family": "idle-penalty",
+      "question": "On 31 coupled ibm_kingston pairs in one dynamic job, does relaxation, free or echoed dephasing, or readout elsewhere on the chip charge an idle qubit more than the reported T1 and Hahn-echo T2 predict, per physical qubit?"
     }
   ],
   "claims": [
@@ -4394,7 +4401,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "d3996987bc5d7433ed1d22140d74b28c815517073c3dba06352df7acb8ec778d"
+          "sha256": "4dce67ce39d77f4bccae33fb8f141b922b040d63a8f09bcd0f8228bd4a78372e"
         }
       ],
       "documents": [
@@ -5588,7 +5595,7 @@
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "d3996987bc5d7433ed1d22140d74b28c815517073c3dba06352df7acb8ec778d"
+          "sha256": "4dce67ce39d77f4bccae33fb8f141b922b040d63a8f09bcd0f8228bd4a78372e"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -10482,8 +10489,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-7/result.json",
-          "sha256": "7fa63ce87a541b1ad61143f6e42e847eec35355c77b894e45ca0638beaec068f"
+          "path": "docs/evidence/algebra-device-conjectures-8/result.json",
+          "sha256": "358a3b6bbf7e6bb77848d1a3648846ec50b34010054a5dd546097b0be502d2cb"
         }
       ],
       "gates": {
@@ -11264,6 +11271,70 @@
       "related_claims": [
         "hw-n21-feedback-null-scheduled-idle",
         "hw-n21-orbit-phase"
+      ]
+    },
+    {
+      "id": "kingston-idle-penalty-multipliers-and-readout-phase",
+      "statement": "On ibm_kingston (execution calibration 2026-10-26T14:25:32-07:00; one job of 44 dynamic PUBs at 4096 shots and a 20 us repetition delay over 31 coupled pairs, 62 qubits) the relaxation multiplier kappa_1 = Gamma_1 T1_reported has median 1.057 [0.978, 1.183], so the preregistered optimistic-T1 decision reads absent or unresolved; Ramsey decay runs faster than the reported Hahn-echo T2 (kappa_2* median 1.451 [1.276, 1.905]) and faster than the measured echo decay (ratio 1.269 [1.170, 1.330], echo gain present); and the readout of every replica's partner during a probe's 40 us idle changes the probe's Ramsey phase rate by -2.72 +- 0.53 kHz against the after arm and -2.73 +- 0.54 kHz against the quiet Ramsey arm in the pair mean, with the quiet null at -0.010 +- 0.020 kHz (decision present). The preregistered visibility decision reads present through the chi-square of pair departures alone: probe 74 loses 0.57 visibility and the pair median is -0.006.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration, one job, one fixed placement; pair means of the two probes are the statistical unit, and all pairs share each wide PUB's shots and readout environment. The visibility chi-square uses conditional lower-bound errors, so it establishes pair-to-pair departures, not a device-mean loss. The phase-rate sign is the analyzer's atan2 convention. Every replica's partner reads at once, so the design separates neither a probe's own partner from chip-wide readout nor a readout-tone mechanism from transient excitation or leakage. Medians carry order-statistic intervals over this cohort. The analyzer refuses a run whose service schedule departs from the compiled instructions, the planned idles or the reader trains.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/collect.json",
+          "sha256": "a055a7d4fead2ae05a425cb5c223e275f9b843aaeb56959f1f83bf366813583e"
+        },
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/record.json",
+          "sha256": "647dd3223df2a1053e01e7190efe325c336af24719ef4398438b1b01352252c6"
+        },
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/idle-penalty-report.json",
+          "sha256": "2bee55b8eb66048a87ce0673fb8afa51ac3e28a58d4be779719e098ea5b1eb47"
+        }
+      ],
+      "documents": [
+        "results/live/IDLE_PENALTY_PROBE_FINDINGS.md",
+        "results/live/IDLE_PENALTY_PROBE_CASE.md"
+      ],
+      "acquisitions": [
+        "kingston-idle-penalty-probe"
+      ],
+      "related_claims": [
+        "hw-n21-feedback-null-scheduled-idle",
+        "kingston-qet-scheduled-idle-coherent-phase"
+      ]
+    },
+    {
+      "id": "kingston-idle-penalty-retained-kappa-qubits",
+      "statement": "Exploratory, after the data: on the same run the pure-dephasing multiplier (1/T2_measured - kappa_1 / 2 T1_reported) / (1/T2_reported - 1/2 T1_reported) has cohort median 1.88 free and 1.20 echoed (order statistics over point estimates, per-qubit range -0.67 to 17.9 free); the reader's final excitation after its train is at most 0.038 (median -0.0005), and static ZZ through it predicts at most 0.16 kHz of the phase rate; and of the qubits behind the retained idle kappa near 3 (73, 79, 92, 93, 94, 95), the placed 73 and 94 read nominal on relaxation, dephasing and readout while 95 shows excess free dephasing only.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Chosen after the data; the bands do not propagate shared reference or reported-value uncertainty. The final-excitation bound does not cover transient population during the train. The historical comparison spans two weeks and different circuits, so drift, calibration normalization and circuit context are not separated; 79, 92 and 93 were not placed.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory.json",
+          "sha256": "092d66f8327b62c35ce94c2c273faf06a37df6559d93a86707a253a62acb4cd7"
+        },
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/idle-penalty-report.json",
+          "sha256": "2bee55b8eb66048a87ce0673fb8afa51ac3e28a58d4be779719e098ea5b1eb47"
+        }
+      ],
+      "documents": [
+        "results/live/IDLE_PENALTY_PROBE_FINDINGS.md",
+        "results/live/IDLE_PENALTY_PROBE_CASE.md"
+      ],
+      "acquisitions": [
+        "kingston-idle-penalty-probe"
+      ],
+      "depends_on": [
+        "kingston-idle-penalty-multipliers-and-readout-phase"
+      ],
+      "related_claims": [
+        "hw-n21-feedback-null-scheduled-idle"
       ]
     }
   ]
