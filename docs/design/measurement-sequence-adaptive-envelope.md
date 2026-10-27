@@ -4,7 +4,7 @@ Status: design v3.3. v1 and v2 each received an adversarial self-review, a Codex
 an advisor review (reports under the ignored `docs/local/reviews/`); v3 answers the v2 review's five P1 and eleven P2/P3
 findings (A to P), v3.1 answers the scoped v3 re-check (B, C and E refuted, a new aggregate-cap P1), and v3.2 answers
 the v3.1 re-check (E refuted again, a fallback falsifier that contradicted the trigger); v3.3 replaces the random
-patterns, which the v3.2 re-check showed can align a neighbor's column with the target's, by an orthogonal design. Nothing here has run. Every charge figure is the planner's, and every measurement names its record.
+patterns, which the v3.2 re-check showed can align a neighbor's column with the target's, by an orthogonal design. The width-32 run executed on 2026-10-27 and its reset screen withheld every qubit; [the findings](../../results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md) record the outcome and the margin defect. Every charge figure is the planner's unless it names a billed job, and every measurement names its record.
 
 ## Problem
 
@@ -206,7 +206,7 @@ Execution-time eligibility (Finding H). The analysis reads every execution start
 for every PUB that contributes to a qubit. A qubit stays usable only if it passes `rule`'s eligibility on each of them;
 a missing start or a calibration that changes within the job between PUBs fails it closed. The device verdict needs at
 least 8 usable qubits after every withholding step; below that the run reports per-qubit results and no device verdict
-(Finding L).
+(Finding L). `msq_envelope_analysis.collected` withholds the pinching analysis entirely below 8 kept qubits rather than reporting per-qubit results; a successor implements the per-qubit report.
 
 ## Charge
 
@@ -224,7 +224,7 @@ attempts' summed ceilings, as the most the envelope can bill.
 | 24 | not measured | | | | | | | |
 | 32 | 31.2 s (one 88-PUB job); expected 37.7 s | 57 s | 52.8 s; expected 59.3 s | 90 s | 147 s | 15.3 MB | 20 MB | 19.3 min under load |
 
-The backup instance reported 369 s remaining at the width-32 dry run (`results/live/2026-10-27T012214.435220Z`); the primorial-coherence branch's run (`results/live/2026-10-26T045124.175747Z`,
+The collected width-32 run billed 38 s with 35.36 s of circuit time; its `collect.json` is 42.4 MB and its run directory, `raw/` included, 361 MB, so the table's size columns describe the submit-free dry run. The backup instance reported 369 s remaining at the width-32 dry run (`results/live/2026-10-27T012214.435220Z`); the primorial-coherence branch's run (`results/live/2026-10-26T045124.175747Z`,
 job dbfdotnpc3tc739n8nm0, 23 s) shares the instance, and the branch that merges second regenerates its job inventory.
 
 ## Sequence
