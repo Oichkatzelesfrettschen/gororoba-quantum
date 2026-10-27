@@ -222,3 +222,119 @@ def test_campaign_index_and_byte_replay_bind_every_case(tmp_path: Path, budgets:
 def test_budget_validation_rejects_unusable_envelopes(changes: dict[str, Any], budgets: Budgets) -> None:
     with pytest.raises(ValueError):
         replace(budgets, **changes).validate()
+
+
+@pytest.mark.parametrize("families", [("quarter-mass",), ("mub-six", "quarter-mass")])
+def test_every_requested_family_requires_an_admitted_route(families: tuple[str, ...], budgets: Budgets) -> None:
+    with pytest.raises(ValueError, match="quarter-mass requires at least one admitted route"):
+        build(budgets, families, ("ascella",))
+
+
+def test_cli_rejects_an_uncovered_family_before_writing(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    import experiment_cases
+
+    destination = tmp_path / "cases"
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "experiment_cases.py",
+            "--out",
+            str(destination),
+            "--families",
+            "quarter-mass",
+            "--routes",
+            "ascella",
+            "--tuna-shots",
+            "1024",
+            "--qx-shots",
+            "1024",
+            "--photonic-samples",
+            "1024",
+            "--photonic-shots",
+            "2048",
+            "--execution-seconds",
+            "60",
+            "--photonic-credits",
+            "2",
+        ],
+    )
+    with pytest.raises(ValueError, match="quarter-mass requires at least one admitted route"):
+        experiment_cases.main()
+    if destination.exists():
+        raise RuntimeError("an unsupported route must fail before publishing any output")
+
+
+@pytest.fixture
+def historical_campaign(tmp_path: Path, budgets: Budgets) -> tuple[Path, dict[str, str]]:
+    files = build(budgets, ("quarter-mass",), ("qx",))
+    historical = dict(files)
+    provenance = json.loads(historical["provenance.json"])
+    provenance["sources"]["scripts/experiment_cases.py"] = "0" * 64
+    historical["provenance.json"] = json.dumps(provenance, indent=1, sort_keys=True) + "\n"
+    directory = tmp_path / "historical"
+    write_files(directory, historical)
+    return directory, files
+
+
+def test_companion_receipt_preserves_history_and_keeps_default_check_strict(
+    historical_campaign: tuple[Path, dict[str, str]], tmp_path: Path
+) -> None:
+    from experiment_cases import attest_existing
+
+    directory, files = historical_campaign
+    before = {name: (directory / name).read_bytes() for name in files}
+    with pytest.raises(ValueError, match="campaign bytes differ: provenance.json"):
+        check(directory, files)
+    receipt_path = tmp_path / "regeneration.json"
+    attest_existing(directory, files, receipt_path)
+    attest_existing(directory, files, receipt_path)
+    check(directory, files, receipt_path)
+    if before != {name: (directory / name).read_bytes() for name in files}:
+        raise RuntimeError("a regeneration receipt must preserve every historical artifact byte")
+    receipt = json.loads(receipt_path.read_bytes())
+    versions = receipt["current_provenance"]["versions"]
+    if "python" not in versions or "sympy" not in versions:
+        raise RuntimeError("current regeneration must bind the Python and symbolic algebra runtimes")
+    if receipt["generation"] != {
+        key: json.loads(files["campaign.json"])[key] for key in ("budgets", "families", "routes")
+    }:
+        raise RuntimeError("the receipt must bind generation arguments")
+    receipt_path.write_text("{}")
+    with pytest.raises(ValueError, match="existing replay receipt differs"):
+        attest_existing(directory, files, receipt_path)
+    with pytest.raises(ValueError, match="outside the historical bundle"):
+        attest_existing(directory, files, directory / "receipt.json")
+
+
+@pytest.mark.parametrize(
+    "mutation", ["source", "runtime", "arguments", "historical-provenance", "artifact", "inventory"]
+)
+def test_companion_receipt_rejects_stale_or_changed_inputs(
+    mutation: str, historical_campaign: tuple[Path, dict[str, str]], tmp_path: Path
+) -> None:
+    from experiment_cases import attest_existing
+
+    directory, files = historical_campaign
+    receipt_path = tmp_path / "regeneration.json"
+    attest_existing(directory, files, receipt_path)
+    if mutation in {"source", "runtime"}:
+        provenance = json.loads(files["provenance.json"])
+        if mutation == "source":
+            provenance["sources"]["scripts/experiment_cases.py"] = "1" * 64
+        else:
+            provenance["versions"]["python"] = "different-runtime"
+        files["provenance.json"] = json.dumps(provenance)
+    elif mutation == "arguments":
+        campaign = json.loads(files["campaign.json"])
+        campaign["budgets"]["qx_shots"] += 1
+        files["campaign.json"] = json.dumps(campaign)
+    elif mutation == "historical-provenance":
+        path = directory / "provenance.json"
+        path.write_bytes(path.read_bytes() + b" ")
+    elif mutation == "artifact":
+        path = directory / "campaign.json"
+        path.write_bytes(path.read_bytes() + b" ")
+    else:
+        (directory / "extra.json").write_text("{}")
+    with pytest.raises(ValueError, match="receipt differs|artifact digests|campaign bytes|inventory"):
+        check(directory, files, receipt_path)

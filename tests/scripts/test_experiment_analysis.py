@@ -110,7 +110,7 @@ def add_readout_controls(case: Path, zero: list[str], one: list[str]) -> None:
     save(case / "results.json", collection)
 
 
-def qd_run(path: Path, *, incident: int | None = None) -> None:
+def qd_run(path: Path, *, detected: int | None = None) -> None:
     """Build real collector-format bytes that qd_platform.run_facts verifies."""
     import qd_platform
 
@@ -145,7 +145,7 @@ def qd_run(path: Path, *, incident: int | None = None) -> None:
         "platform_at_plan": {"price_per_shot": 1e-6},
     }
     save(path / "submission.json", submission)
-    fields = {} if incident is None else {"nb_shots_used": incident}
+    fields = {} if detected is None else {"nb_shots_used": detected}
     answer = {
         "job_id": "fixture-job",
         "shots": 20,
@@ -287,13 +287,17 @@ def test_missing_jobs_and_short_counts_cannot_finish_campaign(tmp_path: Path) ->
         raise AssertionError("short and failed acquisitions need explicit incomplete states")
 
 
-def test_qd_adapter_uses_receipt_validation_and_explicit_incident_denominator(tmp_path: Path) -> None:
+def test_qd_detection_counter_does_not_become_an_incident_photon_denominator(tmp_path: Path) -> None:
     case = tmp_path / "optical"
-    qd_run(case, incident=20)
+    qd_run(case, detected=20)
     result = analysis.analyze_runs([case])
     row = result["batches"][0]["settings"][0]
-    if row["counts"] != [6, 2, 2, 0] or row["incident_shots"] != 20 or row["unreturned_events"] != 10:
+    if row["counts"] != [6, 2, 2, 0] or row["provider_detected_shots"] != 20:
         raise AssertionError(row)
+    if row["accepted_vs_detected_fraction"] != 0.5 or row["detected_but_unaccepted_events"] != 10:
+        raise AssertionError("twenty detected events and ten accepted samples must report one-half acceptance")
+    if any(row[key] is not None for key in ("incident_shots", "unreturned_events", "unreturned_fraction")):
+        raise AssertionError("the provider detection counter cannot establish undetected-photon loss")
     collection = json.loads((case / "results.json").read_text())
     collection["result_sha256"] = "corrupted"
     save(case / "results.json", collection)
@@ -460,8 +464,11 @@ def test_balanced_contrast_requires_executed_order_and_repeated_identity() -> No
     if contrast["status"] != "descriptive-contrast-admitted" or abs(contrast["dark_minus_bright"] + 0.7) > 1e-12:
         raise AssertionError(contrast)
     batches[3]["settings"][0]["compiled_source_sha256"] = "changed-dark"
-    if analysis.balanced_contrasts(batches)["tuna_17"]["dark_minus_bright"] is not None:
+    changed = analysis.balanced_contrasts(batches)["tuna_17"]
+    if changed["dark_minus_bright"] is not None:
         raise AssertionError("a requested repeat cannot certify the returned operator identity")
+    if changed["descriptive_dark_minus_bright"] is None:
+        raise AssertionError("failed admission must preserve the explicitly descriptive observed contrast")
     batches[3]["settings"][0]["compiled_source_sha256"] = "dark-source"
     batches[3]["settings"][0]["execution_envelope"]["lower"] = 10
     if analysis.balanced_contrasts(batches)["tuna_17"]["status"] != "inconclusive":

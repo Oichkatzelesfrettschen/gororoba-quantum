@@ -285,6 +285,7 @@ def analyze_counts(
         result["success"] = {
             "count": number,
             "denominator": total,
+            "denominator_scope": "all returned events, including events outside the logical subspace",
             "observed": number / total if total else None,
             "requested": math.fsum(ideal[index] for index in success),
             "compiled": math.fsum(compiled[index] for index in success),
@@ -576,9 +577,14 @@ def analyze_qd(case: Path, endpoints: int, precision: float, confidence: float) 
         counts, other = decode_photonic_counts(entry["counts"], circuit["modes"])
         if len(counts) != len(row["requested_probabilities"]):
             raise ValueError("optical predictions must retain every physical output mode")
-        # Worker nb_shots_used names an explicit incident-trial denominator;
-        # top-level shots can instead mean the requested per-iteration cap.
-        incident = entry.get("result_fields", {}).get("nb_shots_used")
+        # Quandela bills a shot when at least one photon is detected. The
+        # accepted samples can be a subset of those events; source pulses and
+        # undetected photons need an independently documented counter.
+        detected = entry.get("result_fields", {}).get("nb_shots_used")
+        if detected is not None:
+            _count(detected, "provider detected shots")
+            if sum(counts) + sum(other.values()) > detected:
+                raise ValueError("accepted optical events exceed provider detected shots")
         remote = remote_compiled_prediction(entry.get("result_fields", {}), circuit["modes"])
         analyzed_row = dict(row)
         if remote["status"] == "reconstructed":
@@ -588,12 +594,20 @@ def analyze_qd(case: Path, endpoints: int, precision: float, confidence: float) 
             analyzed_row,
             counts,
             other_events=other,
-            incident_shots=incident,
+            incident_shots=None,
             endpoints=endpoints,
             precision=precision,
             confidence=confidence,
         )
         statistics["remote_compiled_prediction"] = remote
+        accepted = statistics["returned_event_denominator"]
+        statistics["provider_detected_shots"] = detected
+        statistics["accepted_vs_detected_fraction"] = accepted / detected if detected else None
+        statistics["detected_but_unaccepted_events"] = None if detected is None else detected - accepted
+        statistics["denominator_boundary"] = (
+            "nb_shots_used counts provider detection events; accepted samples can be a subset. "
+            "Incident source pulses and undetected-photon loss remain unknown."
+        )
         statistics["execution_envelope"] = {
             "lower": collected.get("status", {}).get("start_time"),
             "upper": collected.get("collected_utc"),
@@ -698,7 +712,7 @@ def balanced_contrasts(batches: list[dict[str, Any]]) -> dict[str, Any]:
                 )
             identities.append(identity)
             if "success" not in setting or setting["success"]["observed"] is None:
-                reasons.append("an arm lacks its unconditional herald estimate")
+                reasons.append("an arm lacks its all-returned-events herald estimate")
             if batch.get("acquisition_admission") != "empirical-controls-met":
                 reasons.append("an arm lacks completed device-control and precision admission")
         if len(identities) == 4 and (
@@ -707,16 +721,21 @@ def balanced_contrasts(batches: list[dict[str, Any]]) -> dict[str, Any]:
             or identities[1] != identities[2]
         ):
             reasons.append("repeated arms lack identical recorded compiled operators and inputs")
-        estimate = None
-        if not reasons:
-            estimate = (
+        descriptive_estimate = None
+        if (
+            len(settings) == 4
+            and all(setting.get("success", {}).get("observed") is not None for setting in settings)
+            and [setting.get("contrast_weight") for setting in settings] == [1, -1, -1, 1]
+        ):
+            descriptive_estimate = (
                 math.fsum(setting["contrast_weight"] * setting["success"]["observed"] for setting in settings) / 2
             )
         results[backend] = {
             "status": "inconclusive" if reasons else "descriptive-contrast-admitted",
             "arms": [setting["name"] for setting in settings],
             "weights": [setting["contrast_weight"] for setting in settings],
-            "dark_minus_bright": estimate,
+            "dark_minus_bright": descriptive_estimate if not reasons else None,
+            "descriptive_dark_minus_bright": descriptive_estimate,
             "reasons": sorted(set(reasons)),
             "boundary": (
                 "executed order and repeated identity admit a descriptive contrast; unequal timing and device drift "
@@ -804,6 +823,7 @@ def analyze_runs(
                 "scripts/qd_platform.py",
                 "scripts/qd_belenos_mesh.py",
                 "gororoba_quantum/parallel.py",
+                "docs/runbooks/quandela-credit-optimization.md",
             )
         ],
         "scope": "campaign-inventory" if campaign else "supplied-cases-only",

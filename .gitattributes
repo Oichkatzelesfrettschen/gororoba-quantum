@@ -21,3 +21,5 @@ docs/evidence/simulation-notebook-audit/kaggle_sources/*.txt -text -whitespace
 # Preserve sanitizer output hashes, including captured diagnostic whitespace.
 docs/evidence/quantum-task-artifact-retention/**/captures/*.txt -text -whitespace
 docs/evidence/quantum-task-artifact-retention/**/inventory.json -text
+# Generated operator matrices and payloads have a byte-exact replay gate.
+docs/evidence/quantum-experiment-conformance/cases/** linguist-generated=true

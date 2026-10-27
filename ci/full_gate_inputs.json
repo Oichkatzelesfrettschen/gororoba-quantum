@@ -758,7 +758,8 @@
       "docs/evidence/quantum-experiment-conformance/cases/**",
       "docs/evidence/quantum_inspire/catalogue.json",
       "docs/evidence/quandela/catalogue.json",
-      "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json"
+      "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+      "docs/evidence/quantum-experiment-conformance/regeneration-route-admission.json"
     ]
   }
 }
