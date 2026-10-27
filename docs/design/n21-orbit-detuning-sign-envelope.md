@@ -69,6 +69,7 @@ on compiled FakeFez plans, and that an arm moved to another qubit fails it.
 | Bound | Value | Enforced by |
 |---|---|---|
 | Backends | ibm_fez, ibm_kingston, ibm_marrakesh | preflight (`DESIGN_BACKENDS`) |
+| Account | the primary, whose remaining seconds exceed the 40 s ceiling; the backup only when they do not, named in the case | runner (`GOROROBA_IBM_ACCOUNT`) |
 | Doses | 0 to 14,016 dt in steps of 1,752 dt (7.008 us), nine doses | preflight (`EXPECTED_DESIGN`) |
 | Members | 56, one PUB each, in one dynamic job | preflight (`DESIGN_MEMBERS`, budget plan) |
 | Shots | 4,096 per PUB | preflight, runner |

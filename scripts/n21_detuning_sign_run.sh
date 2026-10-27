@@ -19,7 +19,9 @@ set -eu
 PYTHON=${PYTHON:-python3}
 export PYTHON
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
-export GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform
+# The saved account in the environment plans and submits, the primary when GOROROBA_IBM_ACCOUNT is unset or empty;
+# the case names the account, and --collect runs under the same one.
+export GOROROBA_IBM_ACCOUNT="${GOROROBA_IBM_ACCOUNT:-}"
 ATTEMPTS=4
 
 usage() {
