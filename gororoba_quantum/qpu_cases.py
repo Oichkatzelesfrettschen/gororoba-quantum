@@ -361,6 +361,27 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
             design.get("ground_control_split") is True, "ramsey_windows is recorded only with ground_control_split"
         )
         arguments.extend(["--ramsey-windows", ",".join(str(value) for value in windows)])
+    if "window_doses" in design:
+        from diagnostic_experiments import n21_window_doses
+
+        doses = design["window_doses"]
+        try:
+            checked_doses = n21_window_doses(doses) if isinstance(doses, list) else None
+        except ValueError as error:
+            raise ValueError(f"window_doses: {error}") from error
+        _require(
+            checked_doses is not None and list(checked_doses) == doses,
+            "window_doses is a sorted list of distinct doses",
+        )
+        _require(
+            design.get("family") == "n21-orbit-rca"
+            and not any(
+                name in design
+                for name in ("overlap_split", "ground_control_split", "ramsey_windows", "segmented_sweep")
+            ),
+            "window_doses is recorded only for n21-orbit-rca without another sweep",
+        )
+        arguments.extend(["--window-doses-dt", ",".join(str(value) for value in doses)])
     if "segmented_sweep" in design:
         from diagnostic_experiments import n21_segmented_config
 
@@ -1964,6 +1985,19 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "",
             ]
             if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("window_sweep")
+            else []
+        ),
+        *(
+            [
+                "--window-doses-dt is the window-dose sweep: the nominal bracketed pair with D dt of added idle "
+                "after the control's reset on every qubit at each listed dose D, and at each nonzero dose a pair "
+                "that spends the same idle as delay(D/4), X, delay(D/2), X, delay(D/4) on the work bits for 1 and "
+                "16, which refocuses a static detuning of the work superposition; the feed-forward contrast "
+                "difference of each pair against its dose gives the decay of the contrast with added idle and the "
+                "echo's restoration of it.",
+                "",
+            ]
+            if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("window_doses")
             else []
         ),
         *(
