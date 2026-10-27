@@ -631,18 +631,26 @@ def read_tree_record(record_path: str) -> dict[str, Any]:
 
 
 def check_tree(shard: int | None = None) -> int:
+    """Account every seed literal of the tree, or of one shard; the whole tree also runs check_tree_once."""
     found, flags = scan(shard)
-    claimed = claimed_records(MANIFEST_ROOT) | owned_records(validate=shard in (None, 0))
-    allocations = load(ALLOCATIONS, "allocations")
-    check(found, load(BASELINE, "seeds"), allocations, claimed, read_tree_record, shard, flags)
-    if shard in (None, 0):
-        reserved = load(ALLOCATIONS, "reserved")
-        tracked = tracked_files()
-        paths = sorted({row["path"] for row in reserved if row["path"] in tracked})
-        files = {item[0]: item[1] for item in parallel.ordered_map(reserved_file, paths) if item is not None}
-        check_reserved(reserved, allocations, load(ALLOCATIONS, "runtime"), claimed, read_tree_record, files)
+    claimed = claimed_records(MANIFEST_ROOT) | owned_records(validate=False)
+    check(found, load(BASELINE, "seeds"), load(ALLOCATIONS, "allocations"), claimed, read_tree_record, shard, flags)
+    if shard is None:
+        check_tree_once()
     print(f"seed provenance: {sum(found.values())} seed literals accounted")
     return 0
+
+
+def check_tree_once() -> None:
+    """The checks no shard repeats: owned-draw validation and the reserved rows. The pull-request tests run it
+    as its own test, so no shard carries it on top of its scan."""
+    claimed = claimed_records(MANIFEST_ROOT) | owned_records(validate=True)
+    allocations = load(ALLOCATIONS, "allocations")
+    reserved = load(ALLOCATIONS, "reserved")
+    tracked = tracked_files()
+    paths = sorted({row["path"] for row in reserved if row["path"] in tracked})
+    files = {item[0]: item[1] for item in parallel.ordered_map(reserved_file, paths) if item is not None}
+    check_reserved(reserved, allocations, load(ALLOCATIONS, "runtime"), claimed, read_tree_record, files)
 
 
 def check_runtime_tree() -> int:
