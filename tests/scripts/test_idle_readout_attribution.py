@@ -11,6 +11,7 @@ import numpy as np
 import pytest
 
 import idle_penalty as ip
+import idle_readout as ir
 
 DT = 4e-9
 SHOTS = 4096
@@ -152,11 +153,10 @@ def test_batched_rows_equal_single_replicate_runs(geo: ra.Geometry) -> None:
 
 
 def test_class_strings_and_member_names_have_one_home() -> None:
-    import idle_penalty as ip
 
-    _expect(ra.PARTITIONS is ip.PARTITIONS and ra.PATTERNS is ip.PATTERNS, "the analyzer holds its own class strings")
-    _expect(ra.half_member is ip.half_member, "the analyzer holds its own member names")
-    group = ip.idle_readout_group()
+    _expect(ra.PARTITIONS is ir.PARTITIONS and ra.PATTERNS is ir.PATTERNS, "the analyzer holds its own class strings")
+    _expect(ra.half_member is ir.half_member, "the analyzer holds its own member names")
+    group = ir.idle_readout_group()
     patterned = {m.name: m.replica_bodies for m in group.members if m.replica_bodies is not None}
     for partition, pattern, probe in itertools.product(ra.PARTITIONS, ra.PATTERNS, ra.ROLES):
         for short in (False, True):
@@ -205,6 +205,7 @@ def test_patterned_exposure_accepts_aligned_classes() -> None:
     [
         ([600, 9000, 600], 0, "misses the trains"),
         ([600, 600, 600], 2, "quiet partner reads"),
+        ([600, 3000, 3000], 0, "replica 0 idle"),
     ],
 )
 def test_patterned_exposure_refuses(starts: list[int], quiet_reads: int, fragment: str) -> None:

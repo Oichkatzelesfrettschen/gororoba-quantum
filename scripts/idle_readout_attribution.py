@@ -37,13 +37,14 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import numpy as np  # noqa: E402
 
 import idle_penalty as ip  # noqa: E402
+import idle_readout as ir  # noqa: E402
 
 PAIRS = 31
 OTHERS = PAIRS - 1
 NEAR_HOPS = 3
 # The class strings and member names are idle_penalty's, the campaign's single home for them.
-PARTITIONS = ip.PARTITIONS
-PATTERNS = ip.PATTERNS
+PARTITIONS = ir.PARTITIONS
+PATTERNS = ir.PATTERNS
 RESOLVED_Z = 3.29
 MATERIAL_KHZ = 0.5
 SHARE_OWNERSHIP = 0.5
@@ -57,7 +58,7 @@ REPLICATION_ALPHA = 1e-3
 ROLES = (ip.TARGET, ip.SPECTATOR)
 
 
-half_member = ip.half_member
+half_member = ir.half_member
 
 
 @dataclass(frozen=True)
@@ -528,8 +529,8 @@ def _effective(body: str) -> str:
 def patterned_exposure(timelines: dict[str, list[tuple[Any, Any]]], bodies: dict[str, tuple[str, ...]]) -> list[str]:
     """Departures of a patterned member's schedule from its classes: within a class every replica shares one
     schedule; every probe repeats its quiet Ramsey reference; a reading partner plays its whole train inside its
-    probe's idle and a quiet partner reads only at the end; every quiet replica's probe idle contains every reading
-    replica's train in absolute schedule time."""
+    probe's idle and a quiet partner reads only at the end; every probe idle contains every other reading replica's
+    train in absolute schedule time."""
     import idle_penalty_report as report
 
     reasons = []
@@ -570,12 +571,12 @@ def patterned_exposure(timelines: dict[str, list[tuple[Any, Any]]], bodies: dict
                 reasons.append(f"{name} replica {k}: reader train leaves the probe idle")
             else:
                 trains[k] = (between[0][1], between[-1][2])
+        # Each coefficient reads the trains of every other reading replica as the probe's exposure (n_same in R_p,
+        # n_opp in Q_p), so every probe idle, reading or quiet, must contain every other reader's train.
         for k, (start, end) in windows.items():
-            if "quiet" not in names[k]:
-                continue
-            outside = [j for j, (t0, t1) in trains.items() if t0 < start or t1 > end]
+            outside = [j for j, (t0, t1) in trains.items() if j != k and (t0 < start or t1 > end)]
             if outside:
-                reasons.append(f"{name}: quiet replica {k} idle {start}-{end} misses the trains of replicas {outside}")
+                reasons.append(f"{name}: replica {k} idle {start}-{end} misses the trains of replicas {outside}")
     return reasons
 
 

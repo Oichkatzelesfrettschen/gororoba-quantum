@@ -193,6 +193,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "crossed_tile_template.py",
     "diagnostic_controls.py",
     "idle_penalty.py",
+    "idle_readout.py",
     "qpu_cases.py",
     "qpu_planning.py",
     "qrng_seeds.py",

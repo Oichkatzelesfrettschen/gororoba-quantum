@@ -21,6 +21,7 @@ from qiskit_aer import AerSimulator
 from qiskit_ibm_runtime.fake_provider import FakeKingston
 
 import idle_penalty as ip
+import idle_readout as ir
 import live_run
 import packing
 from experiments import Group, Member
@@ -214,7 +215,7 @@ def test_body_digest_ignores_relabeling_and_numeric_type_and_names_a_stray_qubit
 
 
 def test_idle_readout_holds_55_members_over_31_replicas_and_8_templates() -> None:
-    group = ip.idle_readout_group()
+    group = ir.idle_readout_group()
     patterned = [member for member in group.members if member.replica_bodies is not None]
     _expect(
         len(group.members) == 55 and len(patterned) == 32, f"{len(group.members)} members, {len(patterned)} patterned"
@@ -224,10 +225,10 @@ def test_idle_readout_holds_55_members_over_31_replicas_and_8_templates() -> Non
     names = [member.name for member in group.members]
     _expect(len(set(names)) == 55, "member names repeat")
     expected = {
-        ip.half_member(probe, partition, pattern, quadrature, short)
+        ir.half_member(probe, partition, pattern, quadrature, short)
         for probe in (ip.TARGET, ip.SPECTATOR)
-        for partition in ip.PARTITIONS
-        for pattern in ip.PATTERNS
+        for partition in ir.PARTITIONS
+        for pattern in ir.PATTERNS
         for quadrature in ip.QUADRATURES
         for short in (False, True)
     }
@@ -237,7 +238,7 @@ def test_idle_readout_holds_55_members_over_31_replicas_and_8_templates() -> Non
 
 
 def test_idle_readout_bodies_follow_the_class_strings_and_share_one_ideal_law() -> None:
-    group = ip.idle_readout_group()
+    group = ir.idle_readout_group()
     bodies = {name: (circuit, ideal) for name, circuit, ideal in group.body_templates}
     bodies |= {member.name: (member.circuit, member.ideal) for member in group.members if member.replica_bodies is None}
     for member in group.members:
@@ -245,9 +246,9 @@ def test_idle_readout_bodies_follow_the_class_strings_and_share_one_ideal_law() 
             continue
         _expect(len(member.replica_bodies) == 31, f"{member.name}: {len(member.replica_bodies)} bodies")
         partition, pattern = member.name.split("_half_")[1].split("_")[0][:2], member.name.split("_half_")[1][2]
-        reading = ip.PATTERNS[pattern]
+        reading = ir.PATTERNS[pattern]
         short = "short" in member.name
-        for index, (cls, body) in enumerate(zip(ip.PARTITIONS[partition], member.replica_bodies, strict=True)):
+        for index, (cls, body) in enumerate(zip(ir.PARTITIONS[partition], member.replica_bodies, strict=True)):
             quiet = "quiet" in body
             _expect(quiet == (cls != reading), f"{member.name} replica {index}: class {cls} runs {body}")
             _expect(("short" in body) == short, f"{member.name} replica {index}: window of {body}")
@@ -262,14 +263,14 @@ def test_idle_readout_bodies_follow_the_class_strings_and_share_one_ideal_law() 
 def test_quiet_bodies_hold_the_probe_window_and_drop_only_the_reads() -> None:
     reads = {"meas_quiet": (ip.MEAS_DT, ip.MEAS_COUNT), "meas_short_quiet": (ip.SHORT_MEAS_DT, ip.SHORT_MEAS_COUNT)}
     circuits = {name: circuit for name, circuit, _ in ip.idle_penalty_circuits()}
-    for name, quiet, _ in ip.readout_templates():
+    for name, quiet, _ in ir.readout_templates():
         kind = "meas_short_quiet" if "short_quiet" in name else "meas_quiet"
         idle, count = reads[kind]
         delays = sorted(int(i.operation.duration) for i in quiet.data if i.operation.name == "delay")
-        _expect(delays == [count * (ip.MEASURE_DT + ip.MEAS_GAP_DT), idle], f"{name}: delays {delays}")
+        _expect(delays == [count * (ir.MEASURE_DT + ip.MEAS_GAP_DT), idle], f"{name}: delays {delays}")
         _expect(quiet.count_ops().get("measure") == 2, f"{name}: the quiet body reads more than the final pair")
     during = circuits["idle_meas_during_x"].count_ops()
-    quiet_ops = next(c for n, c, _ in ip.readout_templates() if n == "idle_meas_quiet_x").count_ops()
+    quiet_ops = next(c for n, c, _ in ir.readout_templates() if n == "idle_meas_quiet_x").count_ops()
     _expect(
         during["measure"] - quiet_ops["measure"] == ip.MEAS_COUNT, "the reading body does not add the train's reads"
     )
@@ -278,7 +279,7 @@ def test_quiet_bodies_hold_the_probe_window_and_drop_only_the_reads() -> None:
 def test_the_nominal_measure_duration_is_the_registered_kingston_duration() -> None:
     targets = json.loads((ROOT / "docs/evidence/heron_platform/targets.json").read_text())["backends"]["ibm_kingston"]
     durations = {round(d / targets["dt"]) for d in targets["instructions"]["measure"]["duration"]}
-    _expect(durations == {ip.MEASURE_DT}, f"registered measure durations {durations} dt against {ip.MEASURE_DT}")
+    _expect(durations == {ir.MEASURE_DT}, f"registered measure durations {durations} dt against {ir.MEASURE_DT}")
 
 
 def test_quiet_partner_idle_must_fit_the_probe_idle() -> None:
@@ -288,7 +289,7 @@ def test_quiet_partner_idle_must_fit_the_probe_idle() -> None:
     wide.delay(ip.MEAS_DT, pair[0], unit="dt")
     wide.delay(ip.MEAS_DT, pair[1], unit="dt")
     wide.measure(list(pair), [0, 1])
-    reasons = ip.routed_readout_violations([wide], target)
+    reasons = ir.routed_readout_violations([wide], target)
     _expect(any("does not fit" in reason for reason in reasons), f"an idle that fills the window passed: {reasons}")
 
 
@@ -303,7 +304,7 @@ def _pinned_paths() -> list[list[int]]:
 
 def _tiny_group() -> Group:
     circuits = {name: (circuit, ideal) for name, circuit, ideal in ip.idle_penalty_circuits()}
-    quiet = {name: (circuit, ideal) for name, circuit, ideal in ip.readout_templates()}
+    quiet = {name: (circuit, ideal) for name, circuit, ideal in ir.readout_templates()}
     during, quiet_x = circuits["idle_meas_during_x"], quiet["idle_meas_quiet_x"]
     members = [Member("idle_cz_kick", *circuits["idle_cz_kick"]), Member("idle_meas_during_x", *during)]
     members.append(
@@ -318,7 +319,7 @@ def _tiny_group() -> Group:
         "tiny_readout",
         tuple(members),
         lambda _: {},
-        routed_violations=ip.routed_readout_violations,
+        routed_violations=ir.routed_readout_violations,
         body_templates=(("idle_meas_quiet_x", quiet_x[0], quiet_x[1]),),
     )
 
@@ -498,7 +499,7 @@ def test_registered_group_plans_55_entries_and_8_templates_on_the_31_pinned_pair
     case = (ROOT / "results/live/IDLE_PENALTY_REPEAT_CASE.md").read_text()
     pin = next(line for line in case.splitlines() if line.startswith("ibm_kingston:"))
     paths = [[int(q) for q in path.split(",")] for path in pin.split(":", 1)[1].split("/")]
-    group = ip.idle_readout_group()
+    group = ir.idle_readout_group()
     log: dict[str, Any] = {}
     candidates = live_run.select_candidates(group, [snapshot], 1, log, paths[0])
     policy = live_run.ReplicaPolicy(None, len(paths), True, True)

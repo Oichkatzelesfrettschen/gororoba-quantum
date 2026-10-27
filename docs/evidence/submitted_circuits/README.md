@@ -51,7 +51,10 @@ the campaign. It binds the direct dependencies.
 
 The [idle-penalty pin successor](comparison-idle-penalty-pin.json) rebinds the same retrieval offline after
 `live_run.py` admitted `idle_penalty` to `--pin-layout`; it differs from the idle-penalty successor only in the
-`live_run.py` digest and the offline validation time. Gate `core-281` checks it.
+`live_run.py` digest and the offline validation time.
+
+The [idle-readout successor](comparison-idle-readout.json) rebinds the same retrieval offline after `live_run.py`
+gained role-patterned members and listed `idle_readout.py` in its experiment manifest. Gate `core-281` checks it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
@@ -65,7 +68,7 @@ Replay from the repository root with the interpreter qualified against `ci/requi
 export PYTHON="${REPLAY_PYTHON:?Set REPLAY_PYTHON to the qualified qiskit-2.5 interpreter}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 "$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check \
-  --out docs/evidence/submitted_circuits/comparison-idle-penalty-pin.json
+  --out docs/evidence/submitted_circuits/comparison-idle-readout.json
 ```
 
 QPY reserialization depends on the Qiskit version: Qiskit 2.5.2 reproduces all 28 original rows, while Qiskit 2.6.0
