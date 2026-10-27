@@ -1591,15 +1591,13 @@ def falsify(
     }
     reasons = []
     qubits = sorted({q for path in paths for q in path})
-    digests = {str(s["calibration"]): channel_digest(s, qubits) for s in (stage2_snapshots or [])}
+    digests = [[str(s["calibration"]), channel_digest(s, qubits)] for s in (stage2_snapshots or [])]
     same = {str(decision["calibration"])} | {
-        label for label, digest in digests.items() if digest == decision.get("channel_digest")
+        label for label, digest in digests if digest == decision.get("channel_digest")
     }
     if any(changed for _, changed in executed):
         reasons.append(f"a stage-2 member's calibration changed during its shots: {sorted(executed)}")
-    if not {label for label, _ in executed} <= same or any(
-        d != decision.get("channel_digest") for d in digests.values()
-    ):
+    if not {label for label, _ in executed} <= same or any(d != decision.get("channel_digest") for _, d in digests):
         reasons.append(
             f"stage 2 executed under {sorted(executed)}, the decision read {decision['calibration']}; "
             f"channel digests {digests} against {decision.get('channel_digest')}"

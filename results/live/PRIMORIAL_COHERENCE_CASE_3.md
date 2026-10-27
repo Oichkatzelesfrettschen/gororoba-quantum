@@ -1,6 +1,6 @@
 # Case: primorial coherence case 3, the split excitation law on 22 ibm_kingston paths
 
-Status: approved by the user on 2026-10-26 ("have the Advisor review the case. then execute and collect"),
+Status: approved by the user on 2026-10-27 (UTC) ("have the Advisor review the case. then execute and collect"),
 within the envelope the user was shown: 22 paths including 147-148-149, the backup account, a 20 us repetition
 delay, and about 25 to 40 s of quantum time.
 
@@ -61,9 +61,9 @@ The controls run as four jobs in the order prep0, x_history, x_history, prep0 ov
 paths, 32768 shots each at 20 us. Counts pool by arm. The k-th prep0 job pairs with the k-th x_history job, so
 each pair reads the history difference once with the x_history job after and once before its prep0 partner. A
 two-proportion test between the replicates of one arm at alpha 0.01 / (2 x 66) marks a qubit heterogeneous,
-and its hd interval widens to the hull of the pooled and per-pair intervals. A heterogeneous q147, or a q147
-history difference whose two pairs disagree in sign, reads its excess as a job-identity effect rather than a
-history effect.
+and its hd interval widens to the hull of the pooled and per-pair intervals. A heterogeneous q147, or a raw
+per-pair difference x_k - p_k on q147 (from the split output's counts, before the clamp at zero) that changes
+sign between the two pairs, reads its excess as a job-identity effect rather than a history effect.
 
 ## Paths
 
@@ -115,7 +115,8 @@ Each fixed before any case-3 shot, in the code at this case's commit:
    d spreads; `pooled_discrimination` pools the paths with d of at least 2. lambda near 1 reads the excess as a
    population before the circuit at its all-|1> history value, near 0 as an absorbed flip, and between them as
    a population scaled by how often the previous shot left the qubit excited, which the gap-88 job's mixed
-   history makes the physical expectation.
+   history makes the physical expectation. lambda's standard error omits hd's own interval; the report brackets
+   lambda by rerunning `discrimination` with the split centers at both ends of each path's hd interval.
 3. **Calibration identity.** `falsify` counts a stage-2 member as executed under the decision's calibration when
    its label matches, or when every snapshot exported at its execution start (read once after collection and
    again at least 10 minutes later) carries the decision's channel digest: sha256 of each stage-2 qubit's e10,
@@ -138,7 +139,8 @@ The case stops and returns to the user when:
 - a control ends in error 1305 or bills above its 8 s ceiling;
 - `state_prep_split.py` or `--decide-paths` refuses its inputs, including a channel difference between the
   controls and the stage-1 snapshot;
-- the stage-2 dry run would exceed 30 s or the case total 40 s.
+- the billed seconds so far plus stage 2 scaled from case 2's billed rate (11 s at 2700 shots, so N2 x 11 /
+  2700 s) exceed 40 s, or the stage-2 dry run exceeds its 30 s ceiling.
 
 ## Expected seconds
 
