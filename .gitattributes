@@ -23,3 +23,4 @@ docs/evidence/quantum-task-artifact-retention/**/captures/*.txt -text -whitespac
 docs/evidence/quantum-task-artifact-retention/**/inventory.json -text
 # Generated operator matrices and payloads have a byte-exact replay gate.
 docs/evidence/quantum-experiment-conformance/cases/** linguist-generated=true
+docs/evidence/quantum-experiment-conformance/local-toolchain.json linguist-generated=true

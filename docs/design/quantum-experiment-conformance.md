@@ -63,7 +63,9 @@ do not identify reusable physical preparation and measurement instruments.
 
 Tuna-17 lowering records the requested operator, routed unrounded operator, rounded native operator,
 rotation grid, layout, measurement destinations and compiler identity. Reset-free QX twins reproduce the
-rounded payload with a compact physical-to-logical map. QX measurement registers and Tuna classical-bit
+rounded payload with a compact physical-to-logical map. Local libqasm/OpenSquirrel admission checks all
+emitted payloads and preserves control sequences; its serialized angle changes remain explicit.
+QX measurement registers and Tuna classical-bit
 registers require their respective recorded decoding rules.
 
 Ascella uses a single connected source and six logical modes. Input selection belongs to the complete

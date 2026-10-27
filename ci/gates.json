@@ -5060,6 +5060,17 @@
    "name": "core-quantum-experiment-analysis",
    "seconds": 3.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/experiment_toolchain.py --campaign docs/evidence/quantum-experiment-conformance/cases/campaign.json --out docs/evidence/quantum-experiment-conformance/local-toolchain.json --check",
+   "name": "core-quantum-experiment-toolchain",
+   "seconds": 30.0,
+   "tier": "full",
+   "requires": [
+    "qi"
+   ]
   }
  ],
  "excluded": [

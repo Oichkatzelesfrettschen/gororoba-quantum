@@ -65,6 +65,27 @@ provider/family share that correction; counts across settings and batches retain
 The intervals condition on independent Bernoulli trials. Temporal diagnostics describe observed variation
 and supply neither an independence certificate nor a correction for unobserved drift.
 
+## Local provider compiler admission
+
+[local-toolchain.json](local-toolchain.json) binds all 384 cQASM payloads in the 128 QI cases, their
+manifest and campaign digests, retained compiler configurations, producing sources and pinned stack.
+Local libqasm analysis and OpenSquirrel decomposition admit every payload and preserve every barrier
+and measurement destination. OpenSquirrel normalizes rotation angles when serializing 122 payloads;
+those lexical gate-sequence changes remain in the record. The receipt establishes parser, declared-pass
+and control-sequence admission, while the complete unitary reference remains the native-operator record.
+Platform scheduling and physical execution remain unobserved.
+
+```sh
+export QI_PYTHON=/path/to/quantum-inspire/environment/bin/python
+"$PYTHON" -B -W error scripts/experiment_toolchain.py \
+  --campaign docs/evidence/quantum-experiment-conformance/cases/campaign.json \
+  --out docs/evidence/quantum-experiment-conformance/local-toolchain.json --check
+```
+
+A pinned QI stack repeats all compilation and requires byte-identical receipts. A host without that stack
+checks the retained digest chain and reports that compilation was skipped. The required-QI gate refuses
+a missing stack. The original global QI toolchain record and its producing source keep their bytes.
+
 ## Prospective acquisition cases
 
 The [written acquisition review](../../runbooks/quantum-experiment-acquisition.md) names each device or
