@@ -109,6 +109,23 @@ and the Kaggle noise-snapshot rule.
   invocation on the same record sends nothing. Calibration reads,
   transpilation, noise simulation, result retrieval, and `--preserve-raw`
   need no approval.
+- Envelope approval. A record whose `envelope` section carries schema
+  `msq-envelope-v1` (`--family measurement-sequence-envelope`) is the one
+  exception to value binding. The approval binds the experiment digest, the
+  family definition, shots, seeds, Sampler policy, instance, dependency
+  versions, the layout rule `msq_envelope.layout_rule` and its width, the
+  repetition delay and its 50 us fallback, the per-attempt ceilings and their
+  sum, and the replan bound; calibration values are inputs the submission
+  re-reads. At submit live_run plans on the live calibration, and before each
+  send `envelope_drift` recompiles the family on a fresh snapshot and compares
+  the fused PUBs' QPY digest and manifests with the plan; a change of the
+  rule's qubit set, a carried dt duration, the capabilities, the exclusions or
+  the compiled bytes re-plans, at most `msq_envelope.MAX_REPLANS` times. Each
+  attempt writes `approval-consumed-attempt-N.json`, and attempt 2
+  (`--envelope-fallback RUN_DIR`) runs only on the fallback signature of
+  `msq_envelope.fallback_permitted`, within the summed cap
+  ([design](../../design/measurement-sequence-adaptive-envelope.md)). Every
+  other family keeps value binding.
 - Calibration is a property of the run. live_run.py fetches each backend's
   Target and properties afresh in the process that decides, compiles,
   simulates, and submits; no calibration value is cached or read back from a

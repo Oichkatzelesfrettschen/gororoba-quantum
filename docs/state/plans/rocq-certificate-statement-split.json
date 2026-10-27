@@ -1,0 +1,61 @@
+{
+  "schema": "work-plan-v1",
+  "id": "rocq-certificate-statement-split",
+  "kind": "implementation",
+  "summary": "Give every Rocq certificate a separate statement file whose digest is pinned and a check file that ascribes the proved theorem to that statement and prints its assumptions, so a reviewer audits the statement without reading the proof.",
+  "sources": [
+    "docs/evidence/formal_certificates/README.md",
+    "docs/evidence/formal_certificates/replay_rocq.sh",
+    "docs/evidence/folding_proofs/README.md",
+    "docs/notes/formal_evidence_dependencies.md",
+    "docs/notes/papers/openai-2026-jacobsthal-quadratic-bound.md",
+    "https://github.com/leanprover/comparator",
+    "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/ComparatorChallenges/Jacobsthal.json"
+  ],
+  "state": "planned",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The owner asked for this plan after a comparison with the openai/math Comparator layout, where each challenge file states the theorem, a separate solution module proves it, and a JSON lists the permitted axioms. The Rocq bundles here pin whole .v files and compare rocq compile and rocq check output, so statement and proof share one reviewed file."
+  },
+  "scope": "Every Rocq certificate replayed by a docs/evidence/*/replay_rocq.sh bundle (proofs/*.v and the folding_proofs sources). Each exported theorem gains a statement file holding only the definitions its type needs and the statement as a Prop, and a check file that requires the unchanged proof, ascribes the theorem to the statement and prints its assumptions against an allow-list. Proof files, receipts and ledgers keep their bytes; new files carry the split. Lean, Comparator and the openai/math library stay out of scope.",
+  "owner": "Rocq certificate statements",
+  "next_action": "Inventory every replay bundle: proof files, exported theorems, the statement each README claims, and the definitions each statement depends on.",
+  "related": [
+    "rocq-proof-change-replay"
+  ],
+  "steps": [
+    {
+      "id": "inventory-statements",
+      "action": "List every replay bundle under docs/evidence/ that runs rocq, each proof file it compiles, each theorem its README names as checked, and for each theorem the definitions its type mentions and the file that defines them.",
+      "acceptance": "A retained table with one row per checked theorem naming bundle, proof file, theorem, defining files of every definition in its type and the README claim it supports; a theorem named in a README but absent from the proof file is a finding.",
+      "state": "todo"
+    },
+    {
+      "id": "design-statement-check",
+      "action": "Write the mechanism: a statement file that defines only what the theorem type needs and states it as a Prop, a check file that requires the proof and the statement and ascribes the theorem (Definition check : Statement := theorem), and an allow-list of assumptions compared with Print Assumptions output. Rocq inductive types are generative, so a statement file that re-declares an Inductive of the proof file creates a distinct type that never converts; decide between module-type ascription of the unchanged proof (Module Check : StatementSig := ProofLib), a statement file the proof already requires, and plain Definitions that convert by unfolding.",
+      "acceptance": "A design note under docs/design/ that names the trusted base (the statement files, the allow-list, the pinned Rocq toolchain and rocq check), the failure each check catches, and three falsifiers that each make the check fail: a mutated statement, a proof-side redefinition of a statement definition, and a statement whose type mentions an inductive declared in the proof file handled by the rejected route.",
+      "state": "todo",
+      "depends_on": [
+        "inventory-statements"
+      ]
+    },
+    {
+      "id": "pilot-formal-certificates",
+      "action": "Apply the design to docs/evidence/formal_certificates (FoldAverageDescent, TerminalChannelSeparation, TerminalChannelSeparationReal): add the statement and check files, pin their digests, extend replay_rocq.sh, and run the replay under the toolchain of toolchain.txt.",
+      "acceptance": "The extended replay passes with zero warnings, the existing compile and kernel receipts still compare equal, and both falsifiers of the design fail the check as predicted, with outputs retained.",
+      "state": "todo",
+      "depends_on": [
+        "design-statement-check"
+      ]
+    },
+    {
+      "id": "extend-all-bundles",
+      "action": "Apply the same split to every remaining bundle of the inventory and add a gate that checks each statement file digest and each assumption allow-list.",
+      "acceptance": "Every inventory row has a pinned statement file and a passing check, the gate is registered in ci/gates.json, and each bundle README lists its statement files beside its proof files.",
+      "state": "todo",
+      "depends_on": [
+        "pilot-formal-certificates"
+      ]
+    }
+  ]
+}

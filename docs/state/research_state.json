@@ -2137,6 +2137,13 @@
       "question": "Does a per-pair record-independent rz on B, fixed by that pair's reference arms, restore the channel floor margin, how large is the information excess in the compensated frame, and what does a 50 us repetition delay cost?"
     },
     {
+      "id": "kingston-measurement-sequence-scatter-floor",
+      "provider": "ibm",
+      "run": "results/live/2026-10-26T031010.724660Z",
+      "family": "measurement-sequence-diagnostic",
+      "question": "On 38 pairwise uncoupled ibm_kingston qubits (the main pinching family's eight and thirty chosen by a calibration-only rule), how far does the readout-corrected P0 of the 32-sx unitary sequence at N = 16 lie from the pinching analysis's Bloch-iteration prediction, qubit by qubit, and does the residual follow T2 as the drive-dephasing lead from IQM Garnet predicts?"
+    },
+    {
       "id": "iqm-garnet-mock-qet-ladder-accept",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept",
@@ -3405,7 +3412,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata, with closed equations for every stratum in a5-rank-strata-equations; item 4 (smooth strata, singular loci and normal links) is discharged by a5-strata-regularity, which decomposes R_8 minus 0 into twelve orbits of G_2(C) x SO(2, C) x C^* and gives a Whitney stratification with every transverse germ; item 5 (kernel bundles) is discharged on D_(5,12) and D_(5,16) by a5-kernel-bundles; kernel bundles on the nullity-8 and nullity-4 strata, attachments and integral invariants (roadmap items 6-8) remain open.",
+      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata, with closed equations for every stratum in a5-rank-strata-equations; item 4 (smooth strata, singular loci and normal links) is discharged by a5-strata-regularity, which decomposes R_8 minus 0 into twelve orbits of G_2(C) x SO(2, C) x C^* and gives a Whitney stratification with every transverse germ; item 5 (kernel bundles) is discharged on D_(5,16), D_(5,12) and D_(5,8) by a5-kernel-bundles and a5-kernel-bundles-nullity8; kernel bundles on the nullity-4 strata, attachments and integral invariants (roadmap items 6-8) remain open.",
       "evidence": [],
       "documents": [
         "docs/RESEARCH_ROADMAP.md",
@@ -3424,7 +3431,8 @@
         "a5-zero-divisor-strata",
         "a5-rank-strata-equations",
         "a5-strata-regularity",
-        "a5-kernel-bundles"
+        "a5-kernel-bundles",
+        "a5-kernel-bundles-nullity8"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -6455,7 +6463,9 @@
         "core-731": "replay",
         "core-732": "admission",
         "core-733": "replay",
-        "core-734": "admission"
+        "core-734": "admission",
+        "core-753": "regression",
+        "core-754": "admission"
       },
       "acquisitions": [],
       "assumptions": [
@@ -6465,6 +6475,95 @@
         "a5-zero-divisor-strata",
         "a5-strata-regularity",
         "a5-stiefel-universal"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-kernel-bundles-nullity8",
+      "statement": "On the five nullity-8 orbits of the A_5 zero-divisor set (W8, E8-bar, Iso, X_+, X_-), compact G_2 x U(1) reaches tangent rank 15 generically, so no orbit is homogeneous and the compact-orbit moduli have dimensions 8, 6, 6, 4, 4 with complete invariants (real-frame Gram data, associative and coassociative form values, and mu on E8-bar). Connected stabilizers are trivial generically, SU(2) at real-frame rank two or associative rank three acting on the complex rank-4 kernel as 2 V_1 on W8 and 2 V_0 + V_1 on E8-bar and X_+-, and a U(1) circle on Iso where all four associative three-form values vanish; the full compact stabilizer component group is Z/2 on W8 and trivial otherwise. Along exact degenerations into nullity 12 the kernel limit depends on the approach at thirteen of fifteen incidences, canonical only for X_+- -> B9. The unit sections retract onto V_2(R^7) x S^1 (W8, X_+-), V_2(R^7) x T^2 (E8-bar) and G_2 (Iso); the kernel bundles have U(4) Pfaffian transition data and complex classes 2 xi (W8, reduced class 0), C^2 + xi with the nonzero order-two class of reduced K^0(V_2(R^7)) (E8-bar, X_+-) and C^4 (Iso), with every Chern, Stiefel-Whitney and Pontryagin class zero.",
+      "domain": "geometry",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proofs in docs/evidence/a5-kernel-bundles-nullity8/README.md, produced by a Codex CLI program (docs/design/a5-kernel-bundles-nullity8-program.md) under orchestrator review. Nine producers replay byte for byte (replay gates) with mutation self-tests (admission gates); verify_nullity8_independent.py re-derives the ranks, stabilizer strata, boundary path dependence, stabilizer dimensions and cores, and classes from cd_core at independent points. Arguments rather than computations: completeness of the invariants through rank-stratified normal forms, exhaustiveness of the stabilizer strata, the Mostow retractions, the W8 mapping-torus step, the K-theory over the cores, and X_+- -> B9 canonicity through the constant-rank lemma. Open: actual (not only stable) triviality of 2 xi on W8, the set of all boundary limits (the attaching data of roadmap item 6), incidences beyond the exact paths tested by the verifier, nullity 4, and roadmap items 6-8; not formalized in Rocq.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/compact-orbit-ranks-result.json",
+          "sha256": "6f83755e2e2660a8fd2fd18ba4c845916d69cf6445e63e3700b3dcea6cfc2582"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/w8-orbit-moduli-result.json",
+          "sha256": "3a3875c7eeddcccc4af5f3651bb151409313fa6f391e44108fa372808bd6ae6a"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/remaining-orbit-moduli-result.json",
+          "sha256": "a08e1af4daa66a9c55eb89adf24d6e826c4812194ae21face7f61601907710a5"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/stabilizer-fiber-samples-result.json",
+          "sha256": "3e1dc533998eb53539a894fb2d3713e598f3ba18c34c6d34f502bca2493ea331"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/stabilizer-strata-result.json",
+          "sha256": "c9744fec60c50609378c8c979c2cfa20877f739dabb8e2abc969d16f9bdc20aa"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/boundary-specializations-result.json",
+          "sha256": "78b56be630d124eb59334f6ffce9f1c83ae60dc50b0ec22d4ddf5f675affa1a7"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/unit-section-topology-result.json",
+          "sha256": "5bcebb5175d9d4e481034c899b698f590dbd67fe3f05dfa0c3b71c36f1c5850d"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/kernel-transition-atlas-result.json",
+          "sha256": "e1e99192ebb3f99d84c0fed873299840b8da72b87d9a1a5983e8d06bb3f299c9"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/kernel-bundle-classes-result.json",
+          "sha256": "da9bac66f86e49d920cbaa94ad4932e82192ee488375979e641c42ffbe1f8ca8"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/verification.json",
+          "sha256": "8fb07bcdab306e59910d329b20f789be8056b494f16f149bf3fb0ce56b2f4e9b"
+        }
+      ],
+      "documents": [
+        "docs/evidence/a5-kernel-bundles-nullity8/README.md",
+        "docs/evidence/a5-kernel-bundles-nullity8/verification.md",
+        "docs/design/a5-kernel-bundles-nullity8-program.md"
+      ],
+      "gates": {
+        "core-735": "replay",
+        "core-736": "admission",
+        "core-737": "replay",
+        "core-738": "admission",
+        "core-739": "replay",
+        "core-740": "admission",
+        "core-741": "replay",
+        "core-742": "admission",
+        "core-743": "replay",
+        "core-744": "admission",
+        "core-745": "replay",
+        "core-746": "admission",
+        "core-747": "replay",
+        "core-748": "admission",
+        "core-749": "replay",
+        "core-750": "admission",
+        "core-751": "replay",
+        "core-752": "admission",
+        "core-753": "regression",
+        "core-755": "admission"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "a5-kernel-bundles",
+        "a5-strata-regularity",
+        "a5-zero-divisor-strata"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -11275,6 +11374,41 @@
         "kingston-qet-window-phase-static",
         "kingston-qet-compensated-information-excess",
         "hw-n21-feedback-null-scheduled-idle"
+      ]
+    },
+    {
+      "id": "kingston-gate-model-scatter-floor",
+      "statement": "On ibm_kingston (calibration 2026-10-25T19:36:09-07:00; one static job of six PUBs at 8192 shots over 38 pairwise uncoupled qubits, 15 s charged) the readout-corrected P0 of the 32-sx unitary sequence at N = 16 differs from the pinching analysis's sign-pooled Bloch-iteration prediction by a root-mean-square of 0.0152 over all 38 informative qubits, 0.0188 over the eight main qubits and 0.0141 over the thirty further qubits, against a statistical root-mean-square standard error of 0.0024. The preregistered floor, the larger of the all-qubit and main-qubit values, is 0.018784. The mean residual is +0.0110: the model underpredicts P0 on 32 of 38 qubits (all eight main qubits), by up to +0.039 on q91 and +0.034 on q45, and overpredicts it on six. The residual does not follow T2 in the drive-dephasing lead's direction: its Spearman correlation with T2 is -0.29 (two-sided p 0.080; 9 of the 12 longest-T2 qubits positive, 2 of the 12 shortest negative) and with the sx error -0.33 (p 0.044).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One calibration window, one job, one backend; the floor is the root-mean-square of a model residual that includes counting noise, and it measures the sign-even part of the gate-model error because the pooled unitary arm is blind to the first-order axis tilt. The mean residual is positive, so the model underpredicts P0 systematically on this device and the floor mixes a common offset (+0.011) with qubit-to-qubit scatter. The correlations come from 38 qubits chosen by readout error, rank-based with a t-approximation p value, and are descriptive: the T2 test does not support the Garnet drive-dephasing lead and neither establishes a mechanism nor excludes one. The model takes the Target T1 at execution and the planning excitation, not a fit.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-26T031010.724660Z/collect.json",
+          "sha256": "0fd6b3a2213e01f9b7aea7f221631f5c0416ff69becbde14dde1c84ef950af90"
+        },
+        {
+          "path": "results/live/2026-10-26T031010.724660Z/record.json",
+          "sha256": "89d3b609b45284bbdcd38219b5a441752185425420687eefcbc4b0303be3dff5"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/scatter-floor.json",
+          "sha256": "c39c5b7202fd6d2cd44629a86eed1402a0d234e95502540f37c8216bccc3c080"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/minimum-detectable-measured-floor.json",
+          "sha256": "4d3d6a7a4031e3bcda5f4b21c5f5d4c2bc1cc95239874e2973d66ea74a63e33d"
+        }
+      ],
+      "gates": {
+        "core-msq-scatter-floor-replay": "replay"
+      },
+      "documents": [
+        "docs/design/measurement-sequence-pinching.md"
+      ],
+      "acquisitions": [
+        "kingston-measurement-sequence-scatter-floor"
       ]
     },
     {

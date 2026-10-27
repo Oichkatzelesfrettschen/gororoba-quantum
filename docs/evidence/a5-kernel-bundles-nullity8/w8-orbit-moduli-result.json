@@ -1,0 +1,462 @@
+{
+  "full_compact_rank_rows": 3,
+  "full_rank_raw_invariant_differential_ranks": [
+    9
+  ],
+  "inputs": {
+    "docs/evidence/a5-kernel-bundles-nullity8/compact_orbit_ranks.py": "fa5d010de34b95bf67a7445ec1e196c9926dc320d6ba888b293a2a2f6f627900",
+    "docs/evidence/a5-kernel-bundles-nullity8/w8_orbit_moduli.py": "0f8461ed83e32ade6f17c9d8f73d4451aec973b1ce3213612bf385b8a5e9cede",
+    "docs/evidence/a5-kernel-bundles/kernel_symmetry.py": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194",
+    "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280"
+  },
+  "moduli_description": {
+    "before_phase_quotient": "real Gram matrix, four associative three-form values, and one coassociative four-form value",
+    "gram_slice_parameters": [
+      "bilinear magnitude",
+      "first real norm",
+      "real mixed product",
+      "imaginary mixed product"
+    ],
+    "phase_slice": "make the nonzero common bilinear square positive real; the residual phase is simultaneous sign",
+    "rank_stratified_completeness": "Gram data classifies frames of rank at most two; after Gram-Schmidt, one three-form value classifies rank three, while the four three-form values and the four-form value obey the recorded quadratic identity and give the residual rank-four sphere coordinates",
+    "residual_identification": "simultaneous sign reverses all four three-form values and fixes the four-form value"
+  },
+  "mutation": null,
+  "observed_real_frame_ranks": [
+    2,
+    3,
+    4
+  ],
+  "pass": true,
+  "rows": [
+    {
+      "canonical_gram_data": {
+        "bilinear_square_magnitude": "1",
+        "canonical_gram": [
+          [
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "four_gram_parameters": [
+          "1",
+          "1",
+          "0",
+          "0"
+        ],
+        "norm_squared": "2",
+        "reconstructed_gram": [
+          [
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "reconstruction_holds": true
+      },
+      "compact_tangent_rank": 12,
+      "constraint_rank": 5,
+      "form_identity": {
+        "four_form": "0",
+        "gram_determinant": "0",
+        "identity_holds": true,
+        "identity_left": "0",
+        "triple_dual": [
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "triple_norm_numerator": "0"
+      },
+      "g2_tangent_rank": 11,
+      "g2_tangents_are_invariant_stationary": true,
+      "generic_level_set_kernel_matches_g2_tangent": true,
+      "move": "representative",
+      "phase_moves_raw_g2_invariants": true,
+      "phase_preserves_w8_unit_constraints": true,
+      "raw_invariant_differential_rank": 4,
+      "raw_invariant_level_set_tangent_dimension": 19,
+      "raw_invariants": {
+        "gram_11": "0",
+        "gram_12": "0",
+        "gram_13": "0",
+        "gram_14": "0",
+        "gram_22": "1",
+        "gram_23": "0",
+        "gram_24": "0",
+        "gram_33": "0",
+        "gram_34": "0",
+        "gram_44": "1",
+        "phi_123": "0",
+        "phi_124": "0",
+        "phi_134": "0",
+        "phi_234": "0",
+        "psi_1234": "0"
+      },
+      "real_frame_rank": 2,
+      "unit_section_tangent_dimension": 23
+    },
+    {
+      "canonical_gram_data": {
+        "bilinear_square_magnitude": "1",
+        "canonical_gram": [
+          [
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "2",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "1"
+          ]
+        ],
+        "four_gram_parameters": [
+          "1",
+          "1",
+          "0",
+          "0"
+        ],
+        "norm_squared": "4",
+        "reconstructed_gram": [
+          [
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "2",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "1"
+          ]
+        ],
+        "reconstruction_holds": true
+      },
+      "compact_tangent_rank": 15,
+      "constraint_rank": 5,
+      "form_identity": {
+        "four_form": "0",
+        "gram_determinant": "0",
+        "identity_holds": true,
+        "identity_left": "0",
+        "triple_dual": [
+          "1",
+          "0",
+          "0",
+          "0"
+        ],
+        "triple_norm_numerator": "0"
+      },
+      "g2_tangent_rank": 14,
+      "g2_tangents_are_invariant_stationary": true,
+      "generic_level_set_kernel_matches_g2_tangent": true,
+      "move": "unipotent",
+      "phase_moves_raw_g2_invariants": true,
+      "phase_preserves_w8_unit_constraints": true,
+      "raw_invariant_differential_rank": 9,
+      "raw_invariant_level_set_tangent_dimension": 14,
+      "raw_invariants": {
+        "gram_11": "0",
+        "gram_12": "0",
+        "gram_13": "0",
+        "gram_14": "0",
+        "gram_22": "1",
+        "gram_23": "0",
+        "gram_24": "0",
+        "gram_33": "1",
+        "gram_34": "0",
+        "gram_44": "2",
+        "phi_123": "0",
+        "phi_124": "0",
+        "phi_134": "0",
+        "phi_234": "1",
+        "psi_1234": "0"
+      },
+      "real_frame_rank": 3,
+      "unit_section_tangent_dimension": 23
+    },
+    {
+      "canonical_gram_data": {
+        "bilinear_square_magnitude": "1",
+        "canonical_gram": [
+          [
+            "169/72",
+            "0",
+            "0",
+            "65/72"
+          ],
+          [
+            "0",
+            "97/72",
+            "-65/72",
+            "0"
+          ],
+          [
+            "0",
+            "-65/72",
+            "97/72",
+            "0"
+          ],
+          [
+            "65/72",
+            "0",
+            "0",
+            "25/72"
+          ]
+        ],
+        "four_gram_parameters": [
+          "1",
+          "169/72",
+          "0",
+          "65/72"
+        ],
+        "norm_squared": "97/18",
+        "reconstructed_gram": [
+          [
+            "169/72",
+            "0",
+            "0",
+            "65/72"
+          ],
+          [
+            "0",
+            "97/72",
+            "-65/72",
+            "0"
+          ],
+          [
+            "0",
+            "-65/72",
+            "97/72",
+            "0"
+          ],
+          [
+            "65/72",
+            "0",
+            "0",
+            "25/72"
+          ]
+        ],
+        "reconstruction_holds": true
+      },
+      "compact_tangent_rank": 15,
+      "constraint_rank": 5,
+      "form_identity": {
+        "four_form": "0",
+        "gram_determinant": "0",
+        "identity_holds": true,
+        "identity_left": "0",
+        "triple_dual": [
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "triple_norm_numerator": "0"
+      },
+      "g2_tangent_rank": 14,
+      "g2_tangents_are_invariant_stationary": true,
+      "generic_level_set_kernel_matches_g2_tangent": true,
+      "move": "unipotent_boost",
+      "phase_moves_raw_g2_invariants": true,
+      "phase_preserves_w8_unit_constraints": true,
+      "raw_invariant_differential_rank": 9,
+      "raw_invariant_level_set_tangent_dimension": 14,
+      "raw_invariants": {
+        "gram_11": "97/72",
+        "gram_12": "0",
+        "gram_13": "0",
+        "gram_14": "65/72",
+        "gram_22": "169/72",
+        "gram_23": "-65/72",
+        "gram_24": "0",
+        "gram_33": "25/72",
+        "gram_34": "0",
+        "gram_44": "97/72",
+        "phi_123": "0",
+        "phi_124": "0",
+        "phi_134": "0",
+        "phi_234": "0",
+        "psi_1234": "0"
+      },
+      "real_frame_rank": 3,
+      "unit_section_tangent_dimension": 23
+    },
+    {
+      "canonical_gram_data": {
+        "bilinear_square_magnitude": "1",
+        "canonical_gram": [
+          [
+            "125/64",
+            "0",
+            "0",
+            "123/64"
+          ],
+          [
+            "0",
+            "61/64",
+            "-123/64",
+            "0"
+          ],
+          [
+            "0",
+            "-123/64",
+            "269/64",
+            "0"
+          ],
+          [
+            "123/64",
+            "0",
+            "0",
+            "205/64"
+          ]
+        ],
+        "four_gram_parameters": [
+          "1",
+          "125/64",
+          "0",
+          "123/64"
+        ],
+        "norm_squared": "165/16",
+        "reconstructed_gram": [
+          [
+            "125/64",
+            "0",
+            "0",
+            "123/64"
+          ],
+          [
+            "0",
+            "61/64",
+            "-123/64",
+            "0"
+          ],
+          [
+            "0",
+            "-123/64",
+            "269/64",
+            "0"
+          ],
+          [
+            "123/64",
+            "0",
+            "0",
+            "205/64"
+          ]
+        ],
+        "reconstruction_holds": true
+      },
+      "compact_tangent_rank": 15,
+      "constraint_rank": 5,
+      "form_identity": {
+        "four_form": "-5/16",
+        "gram_determinant": "205/256",
+        "identity_holds": true,
+        "identity_left": "205/256",
+        "triple_dual": [
+          "1/16",
+          "0",
+          "0",
+          "-7/16"
+        ],
+        "triple_norm_numerator": "45/64"
+      },
+      "g2_tangent_rank": 14,
+      "g2_tangents_are_invariant_stationary": true,
+      "generic_level_set_kernel_matches_g2_tangent": true,
+      "move": "composite",
+      "phase_moves_raw_g2_invariants": true,
+      "phase_preserves_w8_unit_constraints": true,
+      "raw_invariant_differential_rank": 9,
+      "raw_invariant_level_set_tangent_dimension": 14,
+      "raw_invariants": {
+        "gram_11": "61/64",
+        "gram_12": "0",
+        "gram_13": "0",
+        "gram_14": "123/64",
+        "gram_22": "125/64",
+        "gram_23": "-123/64",
+        "gram_24": "0",
+        "gram_33": "205/64",
+        "gram_34": "0",
+        "gram_44": "269/64",
+        "phi_123": "7/16",
+        "phi_124": "0",
+        "phi_134": "0",
+        "phi_234": "1/16",
+        "psi_1234": "-5/16"
+      },
+      "real_frame_rank": 4,
+      "unit_section_tangent_dimension": 23
+    }
+  ],
+  "schema": "a5-kernel-bundles-nullity8-w8-orbit-moduli-v1"
+}
