@@ -247,26 +247,82 @@ def test_decide_paths_voids_sets_n2_and_sizes_the_family(tmp_path: Path, monkeyp
     _pinned_run(tmp_path, "coherence_probes", 800, measured, [{"tag": 0}, {"tag": 1}, {"tag": 2}])
     calls: list[tuple[list[list[int]], int, int]] = []
 
-    def fake(snapshot: Any, paths: Any, probe_shots: int, shots: int, family: int = 1, eps: Any = None) -> Any:
+    def fake(
+        snapshot: Any, paths: Any, probe_shots: int, shots: int, family: int = 1, eps: Any = None, env: Any = None
+    ) -> Any:
         calls.append(([layout for layout, _ in paths], shots, family))
         need = {0: 2500, 2: 3100}
         return [
-            {"layout": layout, "decision": {"proceed": True, "p95_shots_identify_all": need[probe["tag"]]}}
+            {
+                "layout": layout,
+                "shots_per_reading": 2 * shots,
+                "decision": {"proceed": True, "p95_shots_identify_all": need[probe["tag"]]},
+            }
             for layout, probe in paths
         ]
 
     monkeypatch.setattr(case, "decide_many", fake)
-    verdict = case.decide_paths({"calibration": "C1"}, tmp_path)
+    verdict = case.decide_paths(_snapshot("C1"), tmp_path)
     if verdict["voided"] != [[0, 1, 2]] or verdict["stage2_paths"] != [[58, 71, 72], [33, 39, 53]]:
         raise AssertionError(verdict)
     # The largest need, 3100 per reading, sets N2 = 100 * ceil(3100 / 200) = 1600 per circuit.
     if verdict["gap88_shots"] != 1600 or calls[0][1:] != (3200, 1) or calls[1][1:] != (1600, 2):
         raise AssertionError((verdict["gap88_shots"], calls))
     try:
-        case.decide_paths({"calibration": "C2"}, tmp_path)
+        case.decide_paths(_snapshot("C2"), tmp_path)
     except SystemExit:
         return
     raise AssertionError("a snapshot of another calibration was accepted")
+
+
+def _snapshot(label: str, e10: float = 0.01) -> dict[str, Any]:
+    """A calibration snapshot with every qubit at one readout and an x instruction on each."""
+    qubits = [{"e10": e10, "e01": 0.01, "t1": 2e-4, "t2": 1e-4, "frequency": None} for _ in range(156)]
+    x = [{"qargs": [q], "duration": 3.2e-8, "error": 3e-4} for q in range(156)]
+    return {"calibration": label, "qubits": qubits, "instructions": {"x": x}}
+
+
+def test_decide_paths_admits_a_positive_path_at_the_cap(tmp_path: Path, monkeypatch: Any) -> None:
+    healthy = _readout_laws([(0.006, 0.009), (0.004, 0.012), (0.010, 0.013)])
+    measured = {"cp_readout_0": [healthy[0]] * 3, "cp_readout_1": [healthy[1]] * 3}
+    _pinned_run(tmp_path, "coherence_probes", 800, measured, [{"tag": 0}, {"tag": 1}, {"tag": 2}])
+
+    def fake(
+        snapshot: Any, paths: Any, probe_shots: int, shots: int, family: int = 1, eps: Any = None, env: Any = None
+    ) -> Any:
+        # Path tag 1 predicts a visible coherent shift (proceed False) with its identification need covered.
+        return [
+            {
+                "layout": layout,
+                "shots_per_reading": 2 * shots,
+                "decision": {"proceed": probe["tag"] != 1, "p95_shots_identify_all": 2000},
+            }
+            for layout, probe in paths
+        ]
+
+    monkeypatch.setattr(case, "decide_many", fake)
+    plain = case.decide_paths(_snapshot("C1"), tmp_path, gap88_cap=4000)
+    if plain["stage2_paths"] != [[58, 71, 72], [33, 39, 53]] or plain["gap88_shots"] != 1600:
+        raise AssertionError(plain)
+    positive = case.decide_paths(_snapshot("C1"), tmp_path, gap88_cap=4000, positive=[[0, 1, 2]])
+    if positive["stage2_paths"] != [[58, 71, 72], [0, 1, 2], [33, 39, 53]] or positive["gap88_shots"] != 4000:
+        raise AssertionError(positive)
+    if [row["entry"] for row in positive["decisions"]] != ["proceed", "positive", "proceed"]:
+        raise AssertionError(positive["decisions"])
+
+
+def test_discrimination_places_observations_between_the_two_centers() -> None:
+    decision = {
+        "falsifier": {"shift_center": {"01": 0.03, "02": 0.02}, "shift_spread": {"01": 0.01, "02": 0.01}},
+        "terminal_center": {"01": 0.0, "02": 0.0},
+    }
+    half = case.discrimination({"01": 0.015, "02": 0.01}, decision)
+    if abs(half["lambda"] - 0.5) > 1e-12 or abs(half["separation"] - (13**0.5)) > 1e-12:
+        raise AssertionError(half)
+    rows = [{"path": [0], "discrimination": half}, {"path": [1], "discrimination": {"separation": 0.5}}]
+    pooled = case.pooled_discrimination(rows)
+    if pooled is None or pooled["paths"] != [[0]] or abs(pooled["lambda"] - 0.5) > 1e-12:
+        raise AssertionError(pooled)
 
 
 def test_falsify_names_out_of_band_coefficients(tmp_path: Path) -> None:
@@ -279,7 +335,7 @@ def test_falsify_names_out_of_band_coefficients(tmp_path: Path) -> None:
     record["policy"]["design"]["pin_layout"]["replicas"] = [[58, 71, 72], [33, 39, 53]]
     (tmp_path / "record.json").write_text(json.dumps(record))
     band = {k: [-0.05, 0.05] for k in keys}
-    decision = {
+    decision: dict[str, Any] = {
         "calibration": "C1",
         "gap88_shots": 1600,
         "stage2_paths": [[58, 71, 72], [33, 39, 53]],
@@ -293,3 +349,12 @@ def test_falsify_names_out_of_band_coefficients(tmp_path: Path) -> None:
         raise AssertionError(verdict)
     if case.falsify(tmp_path, decision, None)["claim"] != "descriptive":
         raise AssertionError("a missing crosstalk check admitted a device claim")
+    # A republished label counts as the decision's calibration only when every re-read carries its digest.
+    stage2 = sorted({q for path in decision["stage2_paths"] for q in path})
+    relabeled = {**decision, "calibration": "C0", "channel_digest": case.channel_digest(_snapshot("C0"), stage2)}
+    same, moved = _snapshot("C1"), _snapshot("C1", e10=0.02)
+    if case.falsify(tmp_path, relabeled, {"outcome": "consistent"}, [same, same])["claim"] != "device":
+        raise AssertionError("equal channel values under a new label were refused")
+    for reads in ([moved, same], [same, moved], [same], []):
+        if case.falsify(tmp_path, relabeled, {"outcome": "consistent"}, reads)["claim"] != "descriptive":
+            raise AssertionError(f"a differing or missing re-read admitted a device claim: {len(reads)} reads")

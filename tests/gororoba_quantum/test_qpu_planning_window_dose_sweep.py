@@ -14,6 +14,10 @@ def test_window_dose_sweep_plan() -> None:
     qpu_planning_contracts._verify_window_dose_sweep_only()
 
 
+def test_detuning_sign_plan() -> None:
+    qpu_planning_contracts._verify_detuning_sign_plan_only()
+
+
 @pytest.mark.audit
 def test_window_dose_sweep_packs_replicas() -> None:
     qpu_planning_contracts._verify_window_dose_packing_only()

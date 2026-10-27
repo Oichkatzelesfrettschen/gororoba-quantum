@@ -62,7 +62,11 @@ digest and the offline validation time.
 
 The [adaptive-envelope successor](comparison-adaptive-envelope.json) rebinds the idle-penalty retrieval offline
 after `live_run.py` gained the measurement-sequence envelope's approval, fallback and replan contract beside the
-window doses; its 41 rows equal the window-dose successor's. Gate `core-281` checks it.
+window doses; its 41 rows equal the window-dose successor's.
+
+The [detuning-sign successor](comparison-detuning-sign.json) rebinds the idle-penalty retrieval offline after
+`live_run.py` gained `--detuning-sign`; its 41 rows equal the adaptive-envelope successor's, and it differs from that
+successor only in the `live_run.py` digest and the offline validation time. Gate `core-281` checks it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
@@ -76,7 +80,7 @@ Replay from the repository root with the interpreter qualified against `ci/requi
 export PYTHON="${REPLAY_PYTHON:?Set REPLAY_PYTHON to the qualified qiskit-2.5 interpreter}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 "$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check \
-  --out docs/evidence/submitted_circuits/comparison-adaptive-envelope.json
+  --out docs/evidence/submitted_circuits/comparison-detuning-sign.json
 ```
 
 QPY reserialization depends on the Qiskit version: Qiskit 2.5.2 reproduces all 28 original rows, while Qiskit 2.6.0

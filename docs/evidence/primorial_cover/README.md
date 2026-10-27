@@ -294,6 +294,10 @@ gap-88 circuits to 23 one-hop-separated Kingston paths per PUB at a short repeti
 paths' preparation excitation with the state-prep-control family and `scripts/state_prep_excess.py`, and decides
 per path (`primorial_probe_case.py --decide-paths`, `--crosstalk`, `--falsify`); [case2/](case2/README.md)
 holds its path ranking and probe excitation check.
+[PRIMORIAL_COHERENCE_CASE_3.md](../../../results/live/PRIMORIAL_COHERENCE_CASE_3.md) reruns those paths under a
+per-qubit split of the preparation excess (`scripts/state_prep_split.py`) with counterbalanced controls and a
+channel-digest calibration identity; [case3/](case3/README.md) holds its split, decision, falsification and
+results.
 - **Schedule.** The probe job runs a 25.0 ms column of 98 circuits, about 20.9 s of QPU time at 757 shots;
   the untwirled gap-88 job of 104 circuits (gap-88, null, null, gap-88 per setting and 8 basis
   preparations) a 26.3 ms column, 75.8 and 85.4 s at the paths' budgets.

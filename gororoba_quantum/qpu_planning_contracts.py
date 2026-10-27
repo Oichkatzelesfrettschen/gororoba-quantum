@@ -3112,6 +3112,129 @@ def _verify_window_dose_sweep_only() -> None:
     )
 
 
+def _verify_detuning_sign_plan(snapshot: live_run.Snapshot) -> None:
+    """A detuning-sign plan holds its arms without feed-forward, keeps each idle top-level and binds the flag.
+
+    The group holds window_dose and window_dose_y without feed-forward at
+    every dose, the echo pair at the largest dose and the work Ramsey arms;
+    no compiled arm holds an if_else, and every qubit of a Ramsey arm holds
+    one delay of exactly its dose. The policy and the configuration carry
+    detuning_sign, record_groups, family_contracts and the written command
+    rebuild it, and live_run refuses the flag without doses and heralds.
+    """
+    plain = qpu_planning.settings(_args("n21-orbit-rca", window_doses_dt=WINDOW_DOSES))
+    _require("detuning_sign" not in plain, "an absent detuning-sign flag entered the policy")
+    pin = {"backend": snapshot.name, "qubits": PINNED_ORBIT_LAYOUT}
+    arguments = _args(
+        "n21-orbit-rca", init_herald=True, window_doses_dt=WINDOW_DOSES, detuning_sign=True, pin_layout=pin
+    )
+    settings = qpu_planning.settings(arguments)
+    _require(settings.get("detuning_sign") is True, f"the policy binds {settings}")
+    traces: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(live_run, [snapshot], arguments, traces)
+    _require(bool(candidates), f"FakeFez refuses the detuning-sign test: {traces.get('family_rejections')}")
+    (choice,), configuration = candidates[0]
+    expected = [
+        arm[1] if arm[0] == "ramsey" else qpe_diagnostics.n21_dose_name(arm[1], arm[2], False)
+        for arm in diagnostic_experiments.n21_detuning_sign_arms(tuple(WINDOW_DOSES))
+    ]
+    names = [member.name for member in choice.group.members]
+    _require(names == expected, f"the detuning-sign test plans {names}")
+    _require(
+        configuration.get("window_doses") == WINDOW_DOSES
+        and configuration.get("detuning_sign") is True
+        and configuration.get("init_herald") is True,
+        f"the detuning-sign configuration reads {configuration}",
+    )
+    roles = configuration["dose_roles"]
+    _require(roles == qpu_planning.dose_roles(choice), f"the configuration binds dose roles {roles}")
+    compiled = dict(zip(names, choice.isas, strict=True))
+    layout = list(choice.layout)
+    members = {member.name: member for member in choice.group.members}
+    for role in ("one", "sixteen"):
+        arm = qpe_diagnostics.n21_work_ramsey_name(role, "x", WINDOW_DOSES[-1])
+        # The pooled rebuild compiles each Ramsey arm exactly as live_run._compile does on the plan's layout.
+        serial = live_run._compile(members[arm].circuit, choice.snap, choice.seed, choice.layout)
+        _require(serial == compiled[arm], f"{arm}: the pooled compile differs from live_run._compile")
+        (responses,) = qpu_planning._responses(
+            layout, [(compiled[arm], compiled[arm.replace("_x_d", "_y_d")])], qpu_planning._ramsey_read
+        )
+        _require(responses == [int(k == roles[role]) for k in range(4)], f"{arm} turns with {responses}")
+        # Mutation: the same arm on another logical qubit turns with that qubit instead.
+        other = next(k for k in range(4) if k not in roles.values())
+        moved = [
+            live_run._compile(
+                qpe_diagnostics.n21_work_ramsey(role, q, WINDOW_DOSES[-1], qubit=other, init_herald=True),
+                choice.snap,
+                choice.seed,
+                choice.layout,
+            )
+            for q in ("x", "y")
+        ]
+        _require(
+            qpu_planning._responses(layout, [(moved[0], moved[1])], qpu_planning._ramsey_read) != [responses],
+            "a Ramsey arm on the wrong qubit passes the role check",
+        )
+    for name, isa in zip(names, choice.isas, strict=True):
+        _require(all(inner.operation.name != "if_else" for inner in isa.data), f"{name} feeds forward")
+        key = qpe_diagnostics.n21_work_ramsey_key(name)
+        if key is None:
+            continue
+        delays = sorted(
+            (isa.find_bit(inner.qubits[0]).index, int(inner.operation.duration))
+            for inner in isa.data
+            if inner.operation.name == "delay" and isa.find_bit(inner.qubits[0]).index in PINNED_ORBIT_LAYOUT
+        )
+        want = sorted((wire, key[2]) for wire in PINNED_ORBIT_LAYOUT) if key[2] else []
+        _require(delays == want, f"{name} idles {delays}, not {want}")
+    rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
+    _require([member.name for member in rebuilt[0].members] == names, "record_groups does not rebuild the test")
+    contracts = diagnostic_experiments.family_contracts("n21-orbit-rca", 0.08, 0.05, 0.8, configuration=configuration)
+    _require([contract.name for contract in contracts] == [f"{name}_read" for name in names], "contracts differ")
+    fixture = qpu_cases._fixture()
+    location = Path("results/live/fixture/record.json")
+    fixture["policy"]["design"].update(family="n21-orbit-rca", window_doses=WINDOW_DOSES, init_herald=True)
+    fixture["policy"]["design"]["detuning_sign"] = True
+    fixture["family_configuration"] = {
+        **fixture.get("family_configuration", {}),
+        "name": "n21-orbit-rca",
+        "window_doses": WINDOW_DOSES,
+        "detuning_sign": True,
+    }
+    replay = qpu_cases._reproduction_arguments(fixture, location)
+    case = " ".join(qpu_cases._scientific_case("n21-orbit-rca", fixture))
+    _require(
+        "--detuning-sign" in replay
+        and "--detuning-sign replaces the window-dose sweep" in case
+        and "--window-doses-dt is the window-dose sweep" not in case,
+        f"a detuning-sign record's written command or case text omits the test: {replay}",
+    )
+    ceilings = ["--max-execution-seconds", "10", "--max-total-execution-seconds", "10"]
+    for argv in (
+        ["--family", "n21-orbit-rca", "--detuning-sign", "--init-herald", *ceilings],
+        ["--family", "n21-orbit-rca", "--window-doses-dt", "0,3500,7000", "--detuning-sign", *ceilings],
+    ):
+        stderr = io.StringIO()
+        with redirect_stderr(stderr), contextlib.suppress(SystemExit):
+            live_run.main(argv)
+        message = "--detuning-sign requires --window-doses-dt and --init-herald"
+        _require(message in stderr.getvalue(), f"live_run {argv} reads {stderr.getvalue()!r}")
+
+
+def _verify_detuning_sign_plan_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_detuning_sign_plan(snapshot)
+    print(
+        "QPU planning: an n21-orbit-rca detuning-sign test plans both quadratures of the free-idle no-feedback "
+        "member, the echo pair and the work Ramsey arms without feed-forward, keeps each idle top-level, binds the "
+        "flag in the configuration, policy, contracts and written command, and refuses it without doses and heralds"
+    )
+
+
 SEGMENTED_SWEEP: dict[str, Any] = {
     "delays_dt": [0, 693, 819],
     "segments": 4,
