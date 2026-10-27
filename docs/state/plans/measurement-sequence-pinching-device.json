@@ -12,7 +12,7 @@
     "status": "verified",
     "note": "Owner approved the width-32 run and ratified the envelope doctrine; attempt 1 submitted."
   },
-  "next_action": "Wait for Kingston job dbg08t9j4t8s73abaghg, then collect and run the envelope analysis.",
+  "next_action": "Merge PR #516, then design the successor case with a pre-set reset margin; register the run once the backup inventory is re-observed.",
   "scope": "Heron r2 (ibm_kingston) pinching run under a calibration-adaptive envelope approval: layout rule at width tier 16/24/32, terminal resets, reset controls, Hadamard crosstalk patterns, 20 us repetition delay with a 50 us fallback attempt, preregistered screens and stochastic null.",
   "owner": "measurement-sequence-pinching branch",
   "steps": [
@@ -92,13 +92,35 @@
       "id": "submit-collect",
       "action": "Submit under the envelope (job dbg08t9j4t8s73abaghg, record results/live/2026-10-27T014422.881898Z), collect, run --envelope-fallback on the qualifying error signature, and run msq_envelope_analysis.",
       "acceptance": "Retained raw shots and collect.json with the envelope screens and the pinching verdict.",
-      "state": "doing"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Attempt 1 completed at 20 us, billed 38 s; the reset screen withheld all 32 qubits, so the preregistered device verdict is withheld.",
+          "observed_at": "2026-10-27T03:41:20+00:00",
+          "revision": "bac05773b33a85f6239b3d2de05b013178c345cc",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T014422.881898Z/collect.json",
+              "sha256": "e0a690e4610096ed20c7c8ec082d66a4d3c4f181b1fcced7fa350218574e7fb3"
+            },
+            {
+              "ref": "results/live/2026-10-27T014422.881898Z/raw/dbg08t9j4t8s73abaghg/index.json",
+              "sha256": "219780d1c62e6a7ed202ffb0970675c83d0f7f62db96131aa31e919347d4418c"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "22dcbfd628188ad4ce3893723c66d16d97647f8ec973aaa3d70dcaeec3ece604"
+            }
+          ],
+          "scope_sha256": "98316f0941a8839518724325907fd5c9728db6f2930a952841db9351833e3a77"
+        }
+      ]
     },
     {
       "id": "retain-register",
-      "action": "Retain the collected run: research_state.json entry and claim, the retained-job audit and backup inventory, and a submitted-circuit comparison successor that names the new job.",
+      "action": "Retain the collected run (done, awaiting_observation in the backup audit); add its research_state acquisition and claim after the other sessions' backup-instance runs land on main and the inventory is re-observed.",
       "acceptance": "tests and gates lanes green with the run retained.",
-      "state": "todo"
+      "state": "doing"
     },
     {
       "id": "pr-review-merge",
