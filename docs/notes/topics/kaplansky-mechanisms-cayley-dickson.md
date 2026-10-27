@@ -6,10 +6,9 @@ conjecture for group algebras of torsion-free groups
 group algebra, with a torsion-free group ([family 197](../papers/openai-2026-torsion-free-not-directly-finite.md)),
 and the Kadison-Kaplansky projection conjecture for reduced group C*-algebras of torsion-free groups
 ([family 285](../papers/openai-2026-kadison-kaplansky-projection.md)), whose projection lies outside the group
-ring. The Cayley-Dickson algebras of `cd_core` are
-twisted group algebras `R^sigma[Z_2^k]` of a torsion group, with `e_p e_q = sigma(p, q) e_(p xor q)` and
-`sigma = cd_sign`. No theorem is shared between the two settings; this note compares mechanisms. Tags: [P] source
-statement, [E] exact computation in
+ring. The Cayley-Dickson algebras of `cd_core` are twisted group algebras `R^sigma[Z_2^k]` of a torsion group, with
+`e_p e_q = sigma(p, q) e_(p xor q)` and `sigma = cd_sign`. No theorem is shared between the two settings; this note
+compares mechanisms. Tags: [P] source statement, [E] exact computation in
 [kaplansky-cd-mechanisms](../../evidence/kaplansky-cd-mechanisms/README.md) (gate sources-412), [T] written
 argument, [I] interpretation.
 
@@ -18,9 +17,9 @@ argument, [I] interpretation.
 | Property | Group algebras `K[G]`, `G` torsion-free | Cayley-Dickson algebra of dimension `D = 2^k` |
 | --- | --- | --- |
 | Torsion zero divisors `(1 - g)(1 + g) = 0` | excluded by hypothesis | absent: `e_m^2 = -1` for every `m != 0` [E] |
-| No zero divisors | false over `F_2` (family 196) [P] | holds for `D <= 8`, fails for every `D >= 16` |
-| Direct finiteness (every group) | false over `F_2` with `G` torsion-free (family 197) [P]; true in characteristic zero | holds at every `D` [T] |
-| No idempotents besides 0, 1 | group ring of family 285's group satisfies it; the reduced C*-completion does not [P] | holds at every `D`, and no nonzero nilpotents [T] |
+| No zero divisors | false over `F_2` (family 196) [P] | holds for `D <= 8`; fails at `D = 16` [E] and at every larger `D`, which contains the sedenions as the subalgebra `(a, 0)` [T] |
+| Direct finiteness (every group) | false over `F_2` with `G` torsion-free (family 197) [P]; true in characteristic zero | holds at every `D`, from `ker L_a = ker R_a` ([math/0511691](../math-0511691.md) Corollary 9.3) [P] |
+| No idempotents besides 0, 1 | group ring of family 285's group satisfies it; the reduced C*-completion does not [P] | holds at every `D`, and no nonzero nilpotents [T], from power-associativity ([math/0405424](../papers/math-0405424.md)) |
 | A unit is never a zero divisor; inverses are unique | holds (associativity) | both false from `D = 16`: `e_1 + e_10` is a zero divisor with two distinct two-sided inverses [E] |
 
 ## Zero products as fiber cancellation
@@ -96,13 +95,14 @@ multiplication by `a` also annihilates.
 
 ## Idempotents and nilpotents
 
-[T] Every `x = r + p` with `p` pure satisfies `x^2 = 2 r x - N(x)`, since `p^2 = -N(p)`. If `x^2 = x` with `p != 0`,
-comparing pure parts gives `r = 1/2`, and the real part gives `r^2 - N(p) = r`, so `N(p) = -1/4`, impossible; with
-`p = 0`, `x` is 0 or 1. For nilpotents, `p^2 = -N(p)` makes `R + R p` a subalgebra isomorphic to `C` when `p != 0`
-(`R` alone when `p = 0`); it contains every power of `x`, and `C` has no nonzero nilpotents, so `x^n = 0` forces
-`x = 0`. The
-untwisted `R[Z_2^k]` has the idempotents `(1 +- g)/2` for every `g != 0`; the sign table turns `g` into a unit with
-`e_m^2 = -1` [E], and `((1 + e_m)/2)^2 = e_m / 2`.
+[P] Every Cayley-Dickson algebra is flexible and power-associative, and a pure `p` satisfies `p^2 = -|p|^2 e_0`
+(Moreno, [math/0405424](../papers/math-0405424.md), p. 2). [T] Hence every `x = r + p` with `p` pure satisfies
+`x^2 = 2 r x - N(x)`. If `x^2 = x` with `p != 0`, comparing pure parts gives `r = 1/2`, and the real part gives
+`r^2 - N(p) = r`, so `N(p) = -1/4`, impossible; with `p = 0`, `x` is 0 or 1. For nilpotents, `R + R p` is a
+subalgebra isomorphic to `C` when `p != 0` (`R` alone when `p = 0`); power-associativity places every power of `x`
+in it, and `C` has no nonzero nilpotents, so `x^n = 0` forces `x = 0`. The untwisted `R[Z_2^k]` has the idempotents
+`(1 +- g)/2` for every `g != 0`; the sign table turns `g` into a unit with `e_m^2 = -1` [E], and
+`((1 + e_m)/2)^2 = e_m / 2`.
 
 ## Units that are zero divisors
 
