@@ -211,6 +211,26 @@
             }
           ],
           "scope_sha256": "6fbc8f2105cd20f9639659395f7d00a1ba2667215b2d69d1f4658c7fb5871524"
+        },
+        {
+          "result": "Revalidated on the registry records: acquisition kingston-primorial-q147-remeasure and claim kingston-q147-two-read-persistence are registered, the backup audit covers job dbggr6giudkc73e4fijg with awaiting_observation empty, and research_state.py --check passes.",
+          "observed_at": "2026-10-27T23:17:06+00:00",
+          "revision": "53e0c1ec8c5db4ef00f9a98a6515107da9a277bb",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=kingston-primorial-q147-remeasure",
+              "sha256": "d15d138691acbedb23cd5e6fcef40368438c4a37a9e716aa7e15c7ecf6ce2f93"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=kingston-q147-two-read-persistence",
+              "sha256": "c3541a3944183ccce06751d07e2cd2decfb3609c78aa0df374f89f014cb9b767"
+            },
+            {
+              "ref": "results/live/qpu-job-retention-audit.f59f9992321c.json",
+              "sha256": "88975ced695bb7752d5a2b857fdf1df4ce60c70066f86b04c6b0e32c23c7537d"
+            }
+          ],
+          "scope_sha256": "6fbc8f2105cd20f9639659395f7d00a1ba2667215b2d69d1f4658c7fb5871524"
         }
       ]
     }

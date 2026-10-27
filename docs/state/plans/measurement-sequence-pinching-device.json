@@ -209,6 +209,26 @@
             }
           ],
           "scope_sha256": "26696832075fb0a3b177ea68ff5c4cc001da29a4d14bd16694f0474e17d1dfbc"
+        },
+        {
+          "result": "Revalidated on the registry records: acquisition kingston-measurement-sequence-envelope and claim kingston-measurement-sequence-envelope-reset-screen are registered, the backup audit covers job dbg08t9j4t8s73abaghg with awaiting_observation empty, and research_state.py --check passes.",
+          "observed_at": "2026-10-27T23:17:06+00:00",
+          "revision": "53e0c1ec8c5db4ef00f9a98a6515107da9a277bb",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=kingston-measurement-sequence-envelope",
+              "sha256": "832d924be5fb55d02836f83bea9d586a2d6c368247eac18b67178e3386fc8b9b"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=kingston-measurement-sequence-envelope-reset-screen",
+              "sha256": "7fb3e64f9a2dc67eb9937f5aac4d579a3c0e3f41b59567d7ef7a7df7fc625efa"
+            },
+            {
+              "ref": "results/live/qpu-job-retention-audit.f59f9992321c.json",
+              "sha256": "88975ced695bb7752d5a2b857fdf1df4ce60c70066f86b04c6b0e32c23c7537d"
+            }
+          ],
+          "scope_sha256": "26696832075fb0a3b177ea68ff5c4cc001da29a4d14bd16694f0474e17d1dfbc"
         }
       ]
     },
