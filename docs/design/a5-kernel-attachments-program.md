@@ -163,3 +163,10 @@ probe and the result, and run the cheap ones. Seeds:
 4. **Compatibility (deliverable 3).**
 5. **Attaching maps (deliverable 4).**
 6. **Section 5 questions**, interleaved as soon as the tools exist.
+
+## Orchestrator notes
+
+- Item 1 (committed `ac03e96`): the antiholomorphic first-order part lives on the scalar border and every tested
+  boundary-kernel frame has a zero scalar row. Test whether this is structural, for example whether every partner of a
+  doubly pure `y` is itself pure (zero real part) on the whole nullity >= 8 locus. A proof promotes the complex-linearity
+  verdict from 21 tested points to every boundary point at first order; record it as a section 5 question either way.
