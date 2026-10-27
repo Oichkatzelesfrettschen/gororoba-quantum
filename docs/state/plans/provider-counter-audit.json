@@ -15,7 +15,7 @@
   },
   "owner": "provider-counter audit operator",
   "scope": "Every registered provider and simulator adapter, retained result format and scientific consumer of a shot, sample, cap, billing or exposure counter; Quandela first. Read-only provider retrieval only; no executions, uploads, bookings, QRNG draws or spending. The unmerged five-experiment branch (feature/quantum-experiment-conformance) adopts provider_counters after both merge.",
-  "next_action": "Route qd_platform collection and the Quandela analyzers through provider_counters records beside the verbatim raw fields; then qualify the three claim boundaries the audit README marks.",
+  "next_action": "Open the contract pull request (inventory, contract table, provider_counters.py, fixtures and sensitivity replays), then repair qd_teleportation_rehearsal.analyze so an unconditional benchmark verdict needs an observed attempt profile.",
   "related": [
     "ascella-belenos-entanglement-teleportation"
   ],
@@ -90,29 +90,29 @@
           "scope_sha256": "40069b3f8f1ec9be0902197ebda84401ce7b7d4fc61bc7ccb4c41741d0723d8e"
         },
         {
-          "result": "Revalidated after the teleportation row update: counter table and census replay with --check.",
-          "observed_at": "2026-10-27T21:14:14+00:00",
-          "revision": "4298dd246674156539eebbdc895a1bb9ea7009f5",
+          "result": "Revalidated over frozen inventories from main d333878: 81 Quandela runs (six provider-error iterations unavailable), 392 Quantum Inspire results, 776 IQM circuits and 59 IBM jobs replay with --check.",
+          "observed_at": "2026-10-27T21:52:46+00:00",
+          "revision": "8776ac4a21961a9adfae181b412c379815f50868",
           "evidence": [
             {
               "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
-              "sha256": "3b23db97da519db600cb736524a21ec82abbc5ed2c13002707fd3b3dd1939caa"
+              "sha256": "84b9d15ea4a58a67a1832d4c77a4026617c1f4f0b113fe6eab6edd9253bcef9b"
             },
             {
               "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.json",
-              "sha256": "f0750d81796a502b61302e397d00feafd8af413a3f9f336c97bafba090363b60"
+              "sha256": "a5f4b993cfab92216dff4a2e7309f0806aa559730a1180af2d35f9cf77b6b969"
             },
             {
               "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.py",
-              "sha256": "99c40af728f90ceca72235703189bfb69726b1f7e1be0e10eccdfe02637e0bad"
+              "sha256": "167b0156a16b38866e2c96fe276aa91bdeed844464267986d41d446443b00409"
             },
             {
               "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.json",
-              "sha256": "a2095b244a573237b8572f690e073342eceee48b7f224d408f3f5db0acfc8964"
+              "sha256": "2175aa93e4244b36fb7068566b86347d593f9ed3bde8b5f612f7a6c3e606ffeb"
             },
             {
               "ref": "docs/evidence/provider-counter-audit/README.md",
-              "sha256": "518f6d69c6321137619add0c6eefa6d6c2f69b8d0ba11424b5d90b4099db7bb6"
+              "sha256": "65029ef3a5d5f8a93c1e1f3eca2a59bd78ed8827f4c8b5cd9ddad6475fd550d0"
             }
           ],
           "scope_sha256": "40069b3f8f1ec9be0902197ebda84401ce7b7d4fc61bc7ccb4c41741d0723d8e"
@@ -196,40 +196,34 @@
             }
           ],
           "scope_sha256": "0dd0e47dba14ef614ef8d56c07b5c607869527c12346cd4481e78daad0ba9ee6"
+        },
+        {
+          "result": "Revalidated: pooled sensitivity over its frozen six-run inventory replays with --check; root-cause conclusions invariant.",
+          "observed_at": "2026-10-27T21:52:46+00:00",
+          "revision": "8776ac4a21961a9adfae181b412c379815f50868",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.py",
+              "sha256": "f42c62782b6b27be7bb95ab0edd8289df44030b41fb1166611df0635fa3c5e92"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.json",
+              "sha256": "eaea41cf0445a8e0fff26f25c9517c499e939196115a76197af717da6d299253"
+            }
+          ],
+          "scope_sha256": "0dd0e47dba14ef614ef8d56c07b5c607869527c12346cd4481e78daad0ba9ee6"
         }
       ]
     },
     {
       "id": "teleportation-benchmark-repair",
-      "state": "done",
+      "state": "doing",
       "action": "Make qd_teleportation_rehearsal.analyze report the benchmark at detection events and modeled attempts as conditional comparisons, with the unconditional verdict inconclusive unless an observed attempt profile exists.",
-      "acceptance": "A fixture with equal detections and differing latent trials keeps the unconditional verdict inconclusive while the conditional statistics replay the retained analysis.",
-      "receipts": [
-        {
-          "result": "DECISION_CASES confines the decision rule to job-00; prepare and check refuse it elsewhere; job-00's analysis replays inconclusive and all 49 teleportation tests pass.",
-          "observed_at": "2026-10-27T21:14:14+00:00",
-          "revision": "4298dd246674156539eebbdc895a1bb9ea7009f5",
-          "evidence": [
-            {
-              "ref": "scripts/qd_teleportation_rehearsal.py",
-              "sha256": "aa145d5252afc88fc9bde7001da82b6c0dc61c0b186b12e0f05e6c0e0782ec9c"
-            },
-            {
-              "ref": "tests/scripts/test_qd_teleportation_rehearsal.py",
-              "sha256": "5a7013bda8f9aea529d67766c237b130bcaf3105ab552d9dd6c76027291a86b6"
-            },
-            {
-              "ref": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json",
-              "sha256": "c517763c77c48192551dfcb133b422d404b5bba403c3c4dd6eb2d4699ded520d"
-            }
-          ],
-          "scope_sha256": "ad9c4bd424b404312735d59216dedf27a74f86c506284b475e78cc1d1c7c5436"
-        }
-      ]
+      "acceptance": "A fixture with equal detections and differing latent trials keeps the unconditional verdict inconclusive while the conditional statistics replay the retained analysis."
     },
     {
       "id": "collection-boundaries",
-      "state": "doing",
+      "state": "todo",
       "action": "Route qd_platform collection and the Quandela analyzers through provider_counters records beside the verbatim raw fields.",
       "acceptance": "New records carry counter semantics and iteration scope; retained raw bytes and analyses keep their hashes."
     },

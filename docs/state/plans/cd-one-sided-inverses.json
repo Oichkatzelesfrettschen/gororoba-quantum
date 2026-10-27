@@ -37,6 +37,18 @@
             }
           ],
           "scope_sha256": "5cdec5df38ff69009c02a286ca33d4272e94fd8340ca75ef8e9263d32cfd62a9"
+        },
+        {
+          "result": "Revalidation after the Not established section gained the Rocq functor references: the written lemmas are unchanged, and scripts/cd_one_sided_inverses.py --check reproduces docs/evidence/cd-one-sided-inverses/record.json under the pinned interpreter, so every checked element satisfies the theorem.",
+          "observed_at": "2026-10-27T20:58:39+00:00",
+          "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+          "evidence": [
+            {
+              "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+              "sha256": "f4916450e4f9ce2baff1a6c38e0b2d04352c35e852c6a80f402ff09f29c21044"
+            }
+          ],
+          "scope_sha256": "5cdec5df38ff69009c02a286ca33d4272e94fd8340ca75ef8e9263d32cfd62a9"
         }
       ]
     },
@@ -105,6 +117,22 @@
             }
           ],
           "scope_sha256": "38a78b0e32a989c69af542b1fa3d8bf76de04f175ab09150e8e0e8a2999dc13d"
+        },
+        {
+          "result": "Revalidation: formalization.yaml validates against the retained v0.4.schema.json with jsonschema 4.26.0; the 32 listed declarations exist in their files, their statements sit under alignment, and every named source exists in the tree.",
+          "observed_at": "2026-10-27T20:58:39+00:00",
+          "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+          "evidence": [
+            {
+              "ref": "formalization.yaml",
+              "sha256": "5091ed1c757bfb768137331856a75b6d4adfaded62f6e48d2d85489c8440974c"
+            },
+            {
+              "ref": "docs/evidence/formalization-yaml-schema/v0.4.schema.json",
+              "sha256": "25ff6b25ca4511635aff4443cf20480c15e59dddf19591c730950b442ea54fce"
+            }
+          ],
+          "scope_sha256": "38a78b0e32a989c69af542b1fa3d8bf76de04f175ab09150e8e0e8a2999dc13d"
         }
       ]
     }
@@ -148,6 +176,26 @@
         {
           "ref": "formalization.yaml",
           "sha256": "944f8ca2628b5fd0027b4c695ded13e86ea2115cb8e453245dd77a9537a4ae58"
+        }
+      ],
+      "scope_sha256": "809badae45058c580f3efdc8ce5b0c6fa02a7a8a25ed6e2aac4066e3d0225bdf"
+    },
+    {
+      "result": "Revalidation at the bridge revision; the written-proof and formalization-index steps carry fresh receipts and the gated record reproduces.",
+      "observed_at": "2026-10-27T20:58:39+00:00",
+      "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+      "evidence": [
+        {
+          "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+          "sha256": "f4916450e4f9ce2baff1a6c38e0b2d04352c35e852c6a80f402ff09f29c21044"
+        },
+        {
+          "ref": "docs/evidence/cd-one-sided-inverses/record.json",
+          "sha256": "72da8d44264f05683345614e5b4187bd9162ed2cb97a3813697570d0ace6d9c9"
+        },
+        {
+          "ref": "formalization.yaml",
+          "sha256": "5091ed1c757bfb768137331856a75b6d4adfaded62f6e48d2d85489c8440974c"
         }
       ],
       "scope_sha256": "809badae45058c580f3efdc8ce5b0c6fa02a7a8a25ed6e2aac4066e3d0225bdf"
