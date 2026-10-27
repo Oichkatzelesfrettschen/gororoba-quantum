@@ -182,3 +182,12 @@ time of writing. The plan took 8 min 37 s of wall time at nice 19 with a 1.3 GiB
 
 The planner's model values come from 32,768 sampled shots per member (a simulation radius of about 0.055 per
 contrast); the decisions read the idle replay's exact per-replica laws instead.
+
+## Result
+
+Kingston job `dbg04idjm0ks73efj0j0` ran this envelope's 50 us revision on 2026-10-27 and billed 86 s. D1 holds
+(-0.246 +- 0.005), D2 reads kappa_P = 1.77 [1.17, 2.56] under a misfit scale factor of 85, and D3 reads the echo
+removing idle loss beyond the Target model, delta = 1.17 [0.84, 1.51]; the all-idle amendment was not computed. The
+[findings](../../results/live/2026-10-27T014354.701394Z/FINDINGS.md) carry the contrasts, the serialized schedule
+and the reading, which the
+[detuning-sign envelope](n21-orbit-detuning-sign-envelope.md) tested as a per-replica frame-offset precession.
