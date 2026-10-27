@@ -152,6 +152,16 @@ records the case's power and null-bound probabilities; and
 [`scripts/ascella_new_mesh_score.py`](../../../scripts/ascella_new_mesh_score.py),
 scores the offsets once on the 147 unseen meshes of jobs 04 and 05
 ([design](../../design/ascella-signed-coherence-conformance.md#new-seed-meshes-case-job-04-and-job-05)).
+[`replication-offsets.json`](replication-offsets.json), from
+[`scripts/ascella_replication_offsets.py`](../../../scripts/ascella_replication_offsets.py),
+carries P-B unchanged and the same family refitted on all 233 retained meshes
+for plan
+[`ascella-replication-meshes-case`](../../state/plans/ascella-replication-meshes-case.json),
+frozen before its seeds were drawn; and
+[`replication-score.json`](replication-score.json), from
+[`scripts/ascella_replication_score.py`](../../../scripts/ascella_replication_score.py),
+scores both once on the 168 unseen meshes of jobs 06 and 07
+([design](../../design/ascella-signed-coherence-conformance.md#replication-case-job-06-and-job-07)).
 [`heater-coupling.json`](heater-coupling.json), from
 [`scripts/ascella_heater_coupling.py`](../../../scripts/ascella_heater_coupling.py),
 scores the heater-coupling families of plan

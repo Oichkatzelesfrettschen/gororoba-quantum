@@ -1934,3 +1934,102 @@ with static offsets does not express. The applied voltages that Perceval#799
 requests remain the direct test of that remainder. The 147 meshes are spent
 for confirmatory use. The owner's further 96-iteration jobs belong to a later,
 separate plan.
+
+## Replication case (job-06 and job-07)
+
+Plan
+[`ascella-replication-meshes-case`](../state/plans/ascella-replication-meshes-case.json)
+asks two questions of meshes that no fit has seen.
+
+- **Replication.** Does P-B, unchanged, carry the fixed per-mesh error again,
+  on independent seeds?
+- **Training size.** Does the same family carry more of that error when it is
+  refitted on every retained perturbed mesh?
+
+Noise simulation cannot answer either question. The quantity under test is
+the error that Ascella's calibrated control applies to each served mesh, and
+no simulator holds that calibration (Perceval#799).
+
+The predictors were frozen and pushed in `bc15673`, before the seeds were
+drawn. They live in
+[`replication-offsets.json`](../evidence/ascella-order-coefficients/replication-offsets.json),
+written by
+[`scripts/ascella_replication_offsets.py`](../../scripts/ascella_replication_offsets.py),
+whose replay gate is `core-ascella-signed-coherence-replication-offsets-replay`.
+
+| Predictor | Training meshes | Free offsets |
+|---|---|---|
+| R-B, P-B of `new-mesh-offsets.json` unchanged | 86 | 258 |
+| R-C, refitted on job-00, the 56 meshes of jobs 02 and 03 and the 147 of jobs 04 and 05 | 233 | 258 |
+
+The acquisition runs at 32,768 samples and 32,768 max_shots per iteration.
+Every eighth position is the seed-0 anchor.
+
+- **Job-06** runs 96 iterations: 12 anchors and 84 seeds. The seeds are the
+  first 84 usable values of the ANU QRNG draw `draw-2026-10-27T003715Z.json`,
+  retrieved after `bc15673`. A usable value is nonzero, is not a repeat and is
+  not a seed of jobs 02, 04 or 05.
+- **Job-07** runs 96 iterations when job-06 completed with every iteration
+  counted, and 88 (`job-07-i88`) otherwise. The rule reads completion alone,
+  never an X count.
+
+The two retained points bound the duration. Job-04 ran 80 iterations in
+243 s and job-05 ran 88 in 265 s. The line through them puts 96 iterations
+near 287 s, inside the 300 s max_duration, whose expiry behavior the provider
+does not document. Each job costs 1.032768 credits.
+
+The contract of
+[`scripts/ascella_new_mesh_score.py`](../../scripts/ascella_new_mesh_score.py)
+applies under the design of
+[`scripts/ascella_replication_score.py`](../../scripts/ascella_replication_score.py),
+with these changes:
+- The references are jobs 00, 02, 03, 04 and 05-i88, and every mesh they
+  served is excluded.
+- Job-05-i88's anchors set the anchor baseline.
+- A partial job stays descriptive, and the primary reads the other job alone.
+
+The outcomes are, in order:
+1. not read;
+2. both carried;
+3. R-B carried only;
+4. R-C carried only;
+5. inconclusive: anticorrelated;
+6. inconclusive: anchors moved;
+7. bounded, when both upper shares lie below P-B's new-seed share of 10.5 %;
+8. inconclusive.
+
+Under `ascella_new_seed_sizing.branch`, with the new-seed counting variance,
+96 + 96 iterations give 168 meshes. The critical r is 0.199. Power is 0.946
+at a latent r of 0.318 and 0.741 at 0.25.
+
+**Outcome.** The owner approved two 96-iteration jobs on 2026-10-26.
+- Job-06 (`d54d0e9d`) ran at 00:43 UTC on 2026-10-27. It returned 96 of 96
+  iterations in 288 s, which admitted `job-07-i96`.
+- Job-07 (`f27ad639`) returned 96 of 96 iterations in 289 s.
+
+Each job cost 1.032768 credits
+([job-06 run](../../results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06/README.md),
+[job-07 run](../../results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96/README.md),
+[score](../evidence/ascella-order-coefficients/replication-score.json)).
+
+The score ran once. All 168 perturbed meshes (84 and 84) were new. Both jobs'
+anchors read steady: shifts of −0.0020 and −0.0008 from job-05-i88, each with
+a 99 % half-width of 0.0024.
+
+| Predictor | Pearson r | One-sided p | Reading | Positive-direction share (99.5 % bounds) | Slope |
+|---|---|---|---|---|---|
+| R-B, P-B unchanged (86 training meshes) | 0.240 | 8.8e-4 | carried | 6.0 % (0.2 to 18.2 %) | 0.20 |
+| R-C, refitted on 233 meshes | 0.404 | 3.1e-8 | carried | 16.9 % (5.2 to 32.2 %) | 0.44 |
+
+The outcome is **both carried**.
+- The carried P-B offsets predict independent meshes a second time. Their
+  share, 6.0 %, lies inside the new-seed interval of 1.4 % to 25.6 %.
+- The refit on 233 meshes carries more: r 0.404 against 0.240 on the same
+  meshes. The P-A, P-B and R-C readings rise with training size (28, 56 and
+  203 perturbed meshes), so the offsets are still underdetermined rather than
+  exhausted.
+
+Even at R-C's upper bound, about two thirds of the compilation-induced
+variance lies outside static element offsets on the returned circuit. The
+applied voltages that Perceval#799 requests remain the direct test of that
+remainder. The 168 meshes are spent for confirmatory use.

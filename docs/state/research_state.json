@@ -2,6 +2,20 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-signed-coherence-replication-job-06",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06",
+      "family": "photonic signed-coherence replication meshes",
+      "question": "Do the carried P-B offsets, unchanged, and the same family refitted on all 233 retained meshes predict the analyzer statistic of 84 meshes no fit has seen, served by theta2-x-arm0 at fresh QRNG compilation seeds beside 12 seed-0 anchors?"
+    },
+    {
+      "id": "qd-ascella-signed-coherence-replication-job-07",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96",
+      "family": "photonic signed-coherence replication meshes",
+      "question": "Do the same frozen predictors carry on 84 further unseen meshes, the job's size of 96 iterations admitted by job-06's completion?"
+    },
+    {
       "id": "qd-ascella-signed-coherence-new-seeds-job-04",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04",
@@ -2480,6 +2494,48 @@
       "depends_on": [
         "ascella-signed-coherence-fixed-mesh-offsets",
         "ascella-signed-coherence-seed-repeat"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "ascella-signed-coherence-replication-offsets",
+      "statement": "On 168 meshes no fit had seen, served on qpu:ascella by theta2-x-arm0 at fresh QRNG compilation seeds in jobs d54d0e9d and f27ad639 (84 meshes each, 96 iterations each), the heater and coupler offsets of claim ascella-signed-coherence-new-seed-offsets, frozen unchanged (R-B), predict the X statistic at within-job-centered Pearson r 0.240 (t 3.18 on 165 degrees of freedom, one-sided p 8.8e-4, alpha 0.005), carried, a positive-direction share of 6.0 % with one-sided 99.5 % Fisher-z bounds of 0.2 % and 18.2 %. The same family refitted on job-00 and the 233 perturbed meshes of jobs 02 to 05 (R-C) reads r 0.404 (t 5.67, p 3.1e-8), carried, a share of 16.9 % (5.2 % to 32.2 %). Both jobs' anchors stayed within the gross-shift margin (shifts -0.0020 and -0.0008 against job-05-i88, 99 % half-widths 0.0024, margin 0.0119).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One logical setting, two jobs and one element-offset family under two training sets, scored once by scripts/ascella_replication_score.py, whose predictors and contract were committed and pushed (bc15673) before the ANU QRNG draw that seeded the jobs. The outcome is both carried: static element offsets on the returned circuit carry a replicated, minor part of the fixed per-mesh error, and the refit on more meshes carries more, so the new-seed share was limited in part by training size; at least two thirds of the compilation-induced variance stays outside both predictors at their upper bounds. The shares are plug-in estimates conditional on the retained compilation variance. Job-07's size followed job-06's completion alone. The result names no physical mechanism for the offsets and spends these 168 meshes for confirmatory use.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06/results.json",
+          "sha256": "ed728d01a828c59b171c849c5b01fe25f36ce78c6e06155ee55410fd65749e8c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96/results.json",
+          "sha256": "d3083e0fcb7a55b42bffbcea0e96c7fa4ee335c1659d72aad9c3d0f08b4db39b"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/replication-offsets.json",
+          "sha256": "b541d774066373141dc1fcec175d20e43c0e98d51d8732e47735751adf6c7d0a"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/replication-score.json",
+          "sha256": "ae5a109a1c0e19aced9d5c25fda807b269d56b72eeb91fbbc7cbba857de1e2af"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-replication-offsets-replay": "replay",
+        "core-ascella-signed-coherence-replication-score-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence-replication-job-06",
+        "qd-ascella-signed-coherence-replication-job-07"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-new-seed-offsets"
       ],
       "supersedes": []
     },
