@@ -2637,6 +2637,7 @@
     "scripts/local_simulation_replay.py",
     "scripts/lsq_conditioning_study.py",
     "scripts/mod15_signed_multiplier_census.py",
+    "scripts/n21_detuning_sign.py",
     "scripts/n21_dose_decisions.py",
     "scripts/n21_exact_crosscheck.py",
     "scripts/n21_exact_model_validation.py",
@@ -11861,6 +11862,21 @@
    "snapshot_laws",
    "sys",
    "time",
+   "typing"
+  ],
+  "scripts/n21_detuning_sign.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "hashlib",
+   "json",
+   "math",
+   "n21_exact_planning",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qpe_diagnostics",
+   "sys",
    "typing"
   ],
   "scripts/n21_dose_decisions.py": [
