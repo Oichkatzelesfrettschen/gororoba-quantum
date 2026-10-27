@@ -1,5 +1,5 @@
 {
- "script_sha256": "c02405a5591686bb9d2ddcd9ea436dbdc77ab743ac2447044fc2fbc0cdedfaa1",
+ "script_sha256": "45aca619e78bd6a18129c81fdeb49460e899807027522b077fb7e4e5cf05a985",
  "versions": {
   "python": "3.14.8",
   "python_flint": "0.9.0"
@@ -2159,5 +2159,5 @@
   "W8_note": "2 xi has reduced class 2x = 0, so it is stably trivial; rank 4 over a 12-dimensional core lies outside the stable range, so actual triviality is undecided",
   "verdict": "confirmed (fibers and K-bookkeeping computed; bundle identifications are arguments)"
  },
- "total_s": 21.0
+ "total_s": 23.4
 }

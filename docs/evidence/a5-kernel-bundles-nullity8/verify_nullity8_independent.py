@@ -618,6 +618,11 @@ def curve_job(job: tuple[str, str, str, str, list[list[Any]]]) -> dict[str, Any]
     }
 
 
+def _iso_three_forms(key: str) -> Any:
+    """Three-form values at the Iso representative moved by the named non-compact element."""
+    return three_form_values(split_to_y(moved("Iso", key)))
+
+
 def compare_limits(rows: Sequence[dict[str, Any]]) -> dict[str, Any]:
     leads = [[[Fraction(x) for x in v] for v in r["_lead"]] for r in rows]
     names = [r["curve"] for r in rows]
@@ -858,19 +863,20 @@ def run_all() -> dict[str, Any]:
     all_jobs = off_jobs + core_jobs + circle_jobs
     s2_rows = parallel.ordered_map(compact_point, all_jobs, min_items=1)
     ymap = {lab: y for lab, _e, y in all_jobs}
-    for r in s2_rows:
-        r["three_form_values"] = three_form_values(ymap[r["label"]])
+    forms = parallel.ordered_map(three_form_values, [ymap[r["label"]] for r in s2_rows], min_items=1)
+    for r, values in zip(s2_rows, forms, strict=True):
+        r["three_form_values"] = values
     s2_by = {r["label"]: r for r in s2_rows}
-    iso_neg = []
-    for key in ("rep", "g1", "g2", "g3"):
-        r = by[f"Iso/{key}"]
-        iso_neg.append(
-            {
-                "label": r["label"],
-                "three_form_values": three_form_values(split_to_y(moved("Iso", key))),
-                "stabilizer_dim": r["stabilizer_dim"],
-            }
-        )
+    iso_keys = ("rep", "g1", "g2", "g3")
+    iso_forms = parallel.ordered_map(_iso_three_forms, list(iso_keys), min_items=1)
+    iso_neg = [
+        {
+            "label": by[f"Iso/{key}"]["label"],
+            "three_form_values": values,
+            "stabilizer_dim": by[f"Iso/{key}"]["stabilizer_dim"],
+        }
+        for key, values in zip(iso_keys, iso_forms, strict=True)
+    ]
     expect_kernel = {
         "W8": {"V_1": 2},
         "E8bar": {"V_0": 2, "V_1": 1},
