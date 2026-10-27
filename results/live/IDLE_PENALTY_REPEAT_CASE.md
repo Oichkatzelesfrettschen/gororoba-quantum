@@ -35,8 +35,8 @@ Decisions 2 to 5 apply to both points, and the focal jobs run in point 1's calib
 The first run, Kingston job `dbfrg3fpc3tc739o4kag` ([findings](IDLE_PENALTY_PROBE_FINDINGS.md), case
 [IDLE_PENALTY_PROBE_CASE.md](IDLE_PENALTY_PROBE_CASE.md)), measured per-qubit idle multipliers and a readout-time
 phase rate on 31 ordered coupled pairs under the 2026-10-26T14:25:32-07:00 calibration. Its question (d) asks
-whether those values hold across a calibration. This repeat runs the identical campaign on the identical 31
-ordered pairs under a calibration whose reported T1 and T2 have been remeasured, and compares the two runs with
+whether those values hold across a calibration. This repeat runs the identical campaign on 30 of
+those ordered pairs (the amendment above drops (155,154)) under a calibration whose reported T1 and T2 have been remeasured, and compares the two runs with
 `scripts/idle_penalty_report.py --compare`.
 
 A remeasured T1/T2 is required because kappa normalizes against the reported values: a calibration stamp that
@@ -129,19 +129,59 @@ What the outcomes mean:
 
 ## Binding records
 
-Filled from the dry run made after the T1/T2 refresh:
+Point 1 comes from the dry run made under the 07:53 calibration of 2026-10-27, point 2 from the dry run made
+after the T1/T2 refresh:
 
-| Field | Value |
-|---|---|
-| Run directory | pending |
-| record.json sha256 | pending |
-| Calibration | pending |
-| Campaign digest | must equal `bf6be296...`, the first run's |
-| Placement | all 30 pinned paths admitted, checked against a fresh live export |
-| Policy | 4096 shots, rep_delay 20 us, ceiling 25 s per job and in total, no isolated reference, no DD, no twirl |
+| Field | Point 1 | Point 2 |
+|---|---|---|
+| Dry run | `results/live/2026-10-27T155934.096853Z` | pending |
+| record.json sha256 | `eec53fb559e794b6b9853ada5940ed0568a8e4cca0dcdb2ea7d02f21c5bcba86` | pending |
+| Planning calibration | 2026-10-27T07:53:14-07:00, fingerprint `e983c383c927b0c4...` | pending |
+| Submitted run | `results/live/2026-10-27T160530.294787Z`, job `dbgcnp5rd2mc73cuf5p0`, primary | pending |
+| Execution calibration | 2026-10-27T09:07:55-07:00, reported T1 and T2 of 2026-10-26T07:32-07:00 | pending |
+| Charge | 16 s, 101 s remaining before the submit | pending |
+| Seeds | ANU `docs/evidence/anu_qrng/draw-2026-10-27T155928Z.json` indices 0 and 1 | pending |
+| Campaign digest | `bf6be296...`, the first run's | must equal `bf6be296...` |
+| Placement | all 30 pinned paths admitted, checked against a fresh live export | same check |
+| Policy | 4096 shots, rep_delay 20 us, ceiling 25 s per job and in total, no isolated reference, no DD, no twirl | same |
 
 If the calibration values move before the submit, the submit writes `approval_required` and sends nothing; the
 dry run is remade with the identical flags and submitted under this approval.
+
+## Results, point 1
+
+Job `dbgcnp5rd2mc73cuf5p0` executed under the 2026-10-27T09:07:55-07:00 calibration, which carried the first
+run's reported T1 and T2 on all 60 qubits, so each kappa ratio below is the ratio of fitted physical rates across
+about 19 hours. The reports are `idle-penalty-report.json`, `idle-penalty-compare.json` and
+`idle-penalty-repeat-decisions.json` in `results/live/2026-10-27T160530.294787Z/`; the exposure gate and the
+`--compare` identity checks passed.
+
+1. **Admission**: T1 moved on 0 and T2 on 0 of 60 qubits, "not admitted" by construction; recorded, not applied.
+2. **Multiplier stability**: "unresolved" on all three. Every median-ratio interval lies inside [0.8, 1.25] and
+   every Pearson r falls below 0.5.
+
+   | Multiplier | Pearson r | Median second/first ratio [95%] | Verdict |
+   |---|---|---|---|
+   | kappa_1 | 0.195 | 0.939 [0.836, 1.052] | unresolved |
+   | kappa_2* | 0.357 | 0.906 [0.801, 0.998] | unresolved |
+   | kappa_2e | 0.318 | 0.961 [0.840, 1.028] | unresolved |
+
+3. **Single-run decisions replicate**: optimistic_t1 "absent or unresolved", echo_gain "present", readout_shift
+   "present" with mean -2.627 kHz (se 0.557) against the after-readout arm and -2.632 kHz (se 0.557) against the
+   quiet arm.
+4. **Visibility** reads "pairwise heterogeneity" in both runs: the repeat's pair-mean t statistics are -2.48 and
+   -2.28 against the -3.396 threshold.
+5. **Pair pattern** of the readout shift: Pearson r 0.988 over 30 pairs, "pair pattern stable".
+
+The focal jobs ran minutes later in the same calibration window and reproduce one another's multipliers at Pearson
+r 0.91 to 0.99 with median ratios from 0.97 to 1.06 ([focal decision 4](IDLE_PENALTY_FOCAL_CASE.md#results)). Against
+that test-retest floor, the cross-day r of 0.20 to 0.36 measures drift of the per-qubit physical rates while the
+cohort medians hold within 10 %. A post hoc check, outside the preregistered rule, rules out leverage by a few
+qubits: Spearman rank correlations are 0.38, 0.52 and 0.43, and leaving out the region qubits 73, 94 and 95 gives
+Pearson 0.23, 0.37 and 0.36. The first run's heavy tail regressed toward the cohort: qubit 144 read kappa_1 5.54
+on the first run and 1.16 on the repeat, and qubit 47 read kappa_2* 5.43 and 2.56. A noise model can therefore
+carry one cohort multiplier per endpoint across a day, and a per-qubit multiplier only within one calibration
+window. Point 2 asks whether the same holds when the reported normalization is remeasured.
 
 ## Commands
 

@@ -61,6 +61,9 @@ calibration that admits it, and the case reports which focal qubit the calibrati
   per job, 50 s in total.
 - Expected credits: none beyond the plan's QPU seconds.
 - Seeds: one ANU draw at binding time serves the repeat (indices 0 and 1), job X (2 and 3) and job Y (4 and 5).
+  X's first binding dry run (`results/live/2026-10-27T155932.900236Z`, indices 2 and 3) failed its `--self-check`:
+  the quiet null read "present" at t -3.92 on Aer predictions, a shot-noise excursion of the simulated null. Its
+  redo took indices 6 and 7 and passed; indices 2 and 3 seed no submitted run.
 - Order: the stability repeat submits first, then X, then Y, all from dry runs made under one calibration. No 50 us
   fallback; a zero-execution service error stops the remaining jobs and goes to the owner.
 
@@ -104,16 +107,60 @@ live export, and carried campaign digest
 
 ## Binding records
 
-Filled from the dry runs made right after the repeat's dry run:
+Filled from the dry runs made right after the repeat's dry run, all under the 2026-10-27T07:53:14-07:00
+calibration, on the backup account (229 s remaining before the submits), each with ANU draw
+`docs/evidence/anu_qrng/draw-2026-10-27T155928Z.json`:
 
-| Job | Run directory | record.json sha256 | Calibration |
-|---|---|---|---|
-| X | pending | pending | pending |
-| Y | pending | pending | pending |
+| Job | Dry run | record.json sha256 | Fingerprint | Seeds | Submitted run | Kingston job |
+|---|---|---|---|---|---|---|
+| X | `2026-10-27T160617.546354Z` | `8b9d38a161d2e55a7da448b6c1772a8e74405cc34d3a4fcd96d52357618686c2` | `3d2ec293bf643113...` | 6, 7 | `2026-10-27T160738.258133Z` | `dbgcoptrd2mc73cuf88g` |
+| Y | `2026-10-27T155933.767848Z` | `5b63f75ad51e0a3665b16500900e856383bbbf85c97877d329d6d07b9b6a5639` | `2a8706580960f953...` | 4, 5 | `2026-10-27T160529.294491Z` | `dbgcnpljm0ks73egc610` |
 
-Each job's campaign digest must equal `bf6be296...`, the first run's. If the calibration values move before a
+Run directories are under `results/live/`. Each job charged 16 s and executed under the 2026-10-27T09:07:55-07:00
+calibration. Each job's campaign digest equals `bf6be296...`, the first run's. If the calibration values move before a
 submit, that submit writes `approval_required` and sends nothing; its dry run is remade with the identical flags
 and submitted under this approval.
+
+## Results
+
+`scripts/idle_penalty_focal_decisions.py` wrote
+`results/live/2026-10-27T160738.258133Z/idle-penalty-focal-decisions.json` from the repeat's, X's and Y's reports.
+
+1. **Per focal qubit** (descriptive; value, standard error, reading):
+
+   | Qubit | Job, partner | kappa_1 | kappa_2* | kappa_2e |
+   |---|---|---|---|---|
+   | 79 | X, 73 | 0.945 (0.023) nominal | 1.029 (0.050) nominal | 1.018 (0.047) nominal |
+   | 92 | X, 91 | 1.583 (0.031) elevated | 1.598 (0.096) unresolved | 1.331 (0.086) unresolved |
+   | 93 | Y, 94 | 1.373 (0.029) nominal | 1.327 (0.065) nominal | 1.187 (0.059) nominal |
+
+   Qubit 92's kappa_1 ranks at 0.83 in X's cohort. One elevated reading among three qubits is what three random
+   qubits show with probability 0.79, so it decides nothing.
+2. **Historical reading**: "unresolved". Over the region 73, 79, 92, 93, 94 and 95 against the 64 other cohort
+   qubits, kappa_1 reads region median 1.399 against 1.070 (one-sided exact p 0.031) and kappa_2* reads 1.709
+   against 1.228 (p 0.113). Neither p falls below 0.025, and the region's medians lie above the rest's. The region
+   reads moderately above the cohort today, at about half the multiplier near 3 the retained runs fitted.
+3. **Same window**: the repeat, X and Y all report the 2026-10-27T09:07:55-07:00 execution calibration.
+4. **Test-retest floor**, over qubits that keep role and partner:
+
+   | Pair of runs | n | kappa_1 r, median ratio [95%] | kappa_2* r, median ratio [95%] | kappa_2e r, median ratio [95%] |
+   |---|---|---|---|---|
+   | repeat, X | 50 | 0.975, 1.009 [0.987, 1.029] | 0.986, 0.969 [0.930, 0.995] | 0.942, 1.000 [0.967, 1.023] |
+   | repeat, Y | 58 | 0.920, 1.026 [0.991, 1.057] | 0.966, 1.019 [1.000, 1.056] | 0.935, 1.001 [0.967, 1.032] |
+   | X, Y | 48 | 0.936, 1.009 [0.987, 1.034] | 0.953, 1.058 [1.016, 1.107] | 0.914, 1.012 [0.991, 1.087] |
+
+   Within one calibration window the per-qubit multipliers reproduce at r 0.91 to 0.99, against 0.20 to 0.36
+   across the repeat's 19 hours ([repeat results](IDLE_PENALTY_REPEAT_CASE.md#results-point-1)).
+
+Context qubits for the N=21 replay (value and reading):
+
+| Qubit | Job, role, partner | kappa_1 | kappa_2* | kappa_2e |
+|---|---|---|---|---|
+| 104 | X, target, 103 | 0.642 unresolved | 1.115 nominal | 0.877 nominal |
+| 106 | X, target, 107 | 1.093 nominal | 1.077 nominal | 1.009 nominal |
+| 124 | Y, target, 123 | 0.335 unresolved | 1.070 nominal | 1.030 nominal |
+| 125 | X, spectator, 126 | 1.107 nominal | 1.123 nominal | 0.878 nominal |
+| 126 | X, target, 125 | 0.474 unresolved | 1.154 nominal | 0.287 unresolved |
 
 ## Commands
 
