@@ -87,6 +87,22 @@
             }
           ],
           "scope_sha256": "87a9347778034317e67760f3afe5d2ad4bc2bb608bebda6dfe09c04a5ae8a601"
+        },
+        {
+          "result": "Revalidated after the case recorded its approval and binding table: the rule section and the analysis script are unchanged, and scripts/remeasure_history.py --self-test passes.",
+          "observed_at": "2026-10-27T20:58:01+00:00",
+          "revision": "3011bcc9011873becd687a281af551b5fd8a569f",
+          "evidence": [
+            {
+              "ref": "scripts/remeasure_history.py",
+              "sha256": "a598540e2ba00098af8530968f1dd39ec0197874dbf9afe66482f9d9bfaeca93"
+            },
+            {
+              "ref": "results/live/PRIMORIAL_Q147_REMEASURE_CASE.md",
+              "sha256": "5aaace7a071386036c3c690b8ed766a28181166c0fddcb6c73927cd91ba1d12f"
+            }
+          ],
+          "scope_sha256": "87a9347778034317e67760f3afe5d2ad4bc2bb608bebda6dfe09c04a5ae8a601"
         }
       ]
     },
