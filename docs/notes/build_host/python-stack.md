@@ -18,6 +18,7 @@ at those versions, except the linters.
 | python-rustworkx, python-sympy | rustworkx 0.18.1, sympy 1.14.0 |
 | python-matplotlib | matplotlib 3.11.2 |
 | python-stim, python-mthree (with python-runningman), python-qiskit-experiments, python-quimb, python-cotengra, python-pyzx, python-galois | stim 1.16.0, mthree 3.0.0, qiskit-experiments 0.14.2, quimb 1.15.0, cotengra 0.8.2, pyzx 0.10.7, galois 0.4.11: the `quantum-tools` group a Kaggle kernel installs with `push --with quantum-tools` (`scripts/kaggle_run.py` PIN_GROUPS) |
+| singular, msolve | Singular 4.4.1 and msolve 0.11.0 (cachyos-extra-v3, built against flint): Groebner bases and eliminations for the algebraic-geometry replays; msolve runs over prime fields only, multithreaded with `-t`, see [PYTHON.md](../../PYTHON.md#libraries-by-job) |
 | python-flint | python-flint 0.9.0 (CI pin): exact rank modulo p (`nmod_mat`) and RREF null spaces (`fmpq_mat`) in `scripts/exact_rank.py`, and SymPy 1.14.0's ground types, which it selects when the version is on SymPy's tested list |
 | iqm-resonance-stack | IQM OS 4.7 client stack (iqm-client 36.0.0, qiskit 2.1.2, cirq-core 1.7.0, qrisp 0.9.10) as a separate Python 3.13 environment under /opt/iqm-resonance-stack, interpreter `iqm-python` (docs/notes/iqm/README.md) |
 | python-pytorch-opt-cuda, python-pandas | torch and pandas for python-octonion and python-cayley-dickson only |
