@@ -1,0 +1,6370 @@
+{
+  "exceptional_incidences": [
+    "E8bar->VB",
+    "E8bar->Va+",
+    "E8bar->Va-",
+    "Iso->VB",
+    "W8->VB",
+    "X+->VB",
+    "X-->VB"
+  ],
+  "falsifier": "An exceptional row lacks a projectively nonzero degenerate direction; an admitted quadratic arc leaves the source closure; a Schur form is non-skew or has rank outside zero or two; a retained second-order limit disagrees; a pairwise plane equality disagrees with its exact union rank; the witness family is misrepresented as a full curve-selection image; or the Schur-block mutation survives.",
+  "inputs": {
+    "docs/design/a5-kernel-attachments-program.md": "fc573781091d7f5041ca965397558dc9da9a3eed376371860c5dd8917a2d3e6c",
+    "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "4690a3554238391172159c55fd93573bb38dfc27e714ae916f2ac507a121a757",
+    "docs/evidence/a5-kernel-attachments/first_order_normal_cones.py": "3939456f9341309bc866a12d3e853f672669fa44e5ba802ca30d2b8f217c2666",
+    "docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json": "427deba1f7cc4d471d136f8c16029607d2fed23d54a291d92f555e403f4fcc9f",
+    "docs/evidence/a5-kernel-attachments/path_supported_basepoints.py": "e37fca13aaed86398f71b2a6b6f28ce8fb1add4c8a082411ca5755f1be47cf75",
+    "docs/evidence/a5-kernel-attachments/schur_degeneracy_witnesses.py": "f3a2f9fd7ffe24052fd2f52a67fe3e80826be6f1160f1fa1cbfbbf3be00a51f5",
+    "docs/evidence/a5-kernel-bundles-nullity8/boundary-specializations-result.json": "78b56be630d124eb59334f6ffce9f1c83ae60dc50b0ec22d4ddf5f675affa1a7",
+    "docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py": "f7d978febf6a286b11df3ea25b30b7c8dcd9e28763a46769a153f0246419b387",
+    "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
+    "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
+    "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+  },
+  "mutation_control": {
+    "baseline": {
+      "boundary_bordered_rank": 10,
+      "boundary_pivot_determinant": "-36",
+      "boundary_pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "boundary_pivot_pfaffian": "-6*I",
+      "drop_schur_correction": false,
+      "effective_form": [
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "4*I",
+          "-4"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "4",
+          "4*I"
+        ],
+        [
+          "0",
+          "0",
+          "-4*I",
+          "-4",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "4",
+          "-4*I",
+          "0",
+          "0"
+        ]
+      ],
+      "effective_form_skew": true,
+      "effective_restricted_rank": 2,
+      "first_restricted_rank": 0,
+      "first_restriction": [
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "formal_first_residual_verified": true,
+      "formal_second_residual_verified": true,
+      "limiting_plane_dimension": 4,
+      "limiting_plane_inside_boundary_kernel": true,
+      "limiting_plane_rref": [
+        [
+          "0",
+          "1",
+          "0",
+          "I",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "-I",
+          "0",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "1",
+          "I",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "-I",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "1",
+          "-I",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "-I",
+          "-1",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "1",
+          "I",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "-I",
+          "1"
+        ]
+      ],
+      "pass": true,
+      "schur_correction": [
+        [
+          "0",
+          "4*I",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "-4*I",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "4*I",
+          "4*I",
+          "-4"
+        ],
+        [
+          "0",
+          "0",
+          "-4*I",
+          "0",
+          "4",
+          "4*I"
+        ],
+        [
+          "0",
+          "0",
+          "-4*I",
+          "-4",
+          "0",
+          "-4*I"
+        ],
+        [
+          "0",
+          "0",
+          "4",
+          "-4*I",
+          "4*I",
+          "0"
+        ]
+      ],
+      "second_restriction": [
+        [
+          "0",
+          "-4*I",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "4*I",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "-4*I",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "4*I",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "4*I"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "-4*I",
+          "0"
+        ]
+      ]
+    },
+    "detected": true,
+    "input_change": "replace D_2+C_1^T*B_0^-1*C_1 by D_2",
+    "mutated": {
+      "boundary_bordered_rank": 10,
+      "boundary_pivot_determinant": "-36",
+      "boundary_pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "boundary_pivot_pfaffian": "-6*I",
+      "drop_schur_correction": true,
+      "effective_form": [
+        [
+          "0",
+          "-4*I",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "4*I",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "-4*I",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "4*I",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "4*I"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "-4*I",
+          "0"
+        ]
+      ],
+      "effective_form_skew": true,
+      "effective_restricted_rank": 6,
+      "first_restricted_rank": 0,
+      "first_restriction": [
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ]
+      ],
+      "formal_first_residual_verified": false,
+      "formal_second_residual_verified": false,
+      "limiting_plane_dimension": 0,
+      "limiting_plane_inside_boundary_kernel": false,
+      "limiting_plane_rref": [],
+      "pass": false,
+      "schur_correction": [
+        [
+          "0",
+          "4*I",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "-4*I",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "4*I",
+          "4*I",
+          "-4"
+        ],
+        [
+          "0",
+          "0",
+          "-4*I",
+          "0",
+          "4",
+          "4*I"
+        ],
+        [
+          "0",
+          "0",
+          "-4*I",
+          "-4",
+          "0",
+          "-4*I"
+        ],
+        [
+          "0",
+          "0",
+          "4",
+          "-4*I",
+          "4*I",
+          "0"
+        ]
+      ],
+      "second_restriction": [
+        [
+          "0",
+          "-4*I",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "4*I",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "-4*I",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "4*I",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "4*I"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "0",
+          "-4*I",
+          "0"
+        ]
+      ]
+    },
+    "name": "drop_second_order_schur_correction",
+    "target": "E8bar->Va+:middle-coordinate-sheet-+1"
+  },
+  "pair_comparisons": [
+    {
+      "first_approach": "transverse-line-1",
+      "incidence": "E8bar->VB",
+      "limiting_plane_intersection_dimension": 2,
+      "limiting_plane_union_dimension": 6,
+      "limiting_planes_equal": false,
+      "pass": true,
+      "same_projective_first_direction": false,
+      "same_second_order_coefficient": true,
+      "second_approach": "transverse-line-2"
+    },
+    {
+      "first_approach": "middle-coordinate-sheet--1",
+      "incidence": "E8bar->Va+",
+      "limiting_plane_intersection_dimension": 4,
+      "limiting_plane_union_dimension": 4,
+      "limiting_planes_equal": true,
+      "pass": true,
+      "same_projective_first_direction": true,
+      "same_second_order_coefficient": true,
+      "second_approach": "middle-coordinate-sheet-+1"
+    },
+    {
+      "first_approach": "middle-coordinate-sheet--1",
+      "incidence": "E8bar->Va-",
+      "limiting_plane_intersection_dimension": 4,
+      "limiting_plane_union_dimension": 4,
+      "limiting_planes_equal": true,
+      "pass": true,
+      "same_projective_first_direction": true,
+      "same_second_order_coefficient": true,
+      "second_approach": "middle-coordinate-sheet-+1"
+    },
+    {
+      "first_approach": "fixed-degeneracy-second-jet-1",
+      "incidence": "Iso->VB",
+      "limiting_plane_intersection_dimension": 4,
+      "limiting_plane_union_dimension": 4,
+      "limiting_planes_equal": true,
+      "pass": true,
+      "same_projective_first_direction": true,
+      "same_second_order_coefficient": false,
+      "second_approach": "fixed-degeneracy-second-jet-2"
+    },
+    {
+      "first_approach": "fixed-degeneracy-second-jet-plus",
+      "incidence": "W8->VB",
+      "limiting_plane_intersection_dimension": 3,
+      "limiting_plane_union_dimension": 5,
+      "limiting_planes_equal": false,
+      "pass": true,
+      "same_projective_first_direction": true,
+      "same_second_order_coefficient": false,
+      "second_approach": "fixed-degeneracy-second-jet-minus"
+    },
+    {
+      "first_approach": "null-fiber-line-1",
+      "incidence": "X+->VB",
+      "limiting_plane_intersection_dimension": 4,
+      "limiting_plane_union_dimension": 4,
+      "limiting_planes_equal": true,
+      "pass": true,
+      "same_projective_first_direction": false,
+      "same_second_order_coefficient": true,
+      "second_approach": "null-fiber-line-2"
+    },
+    {
+      "first_approach": "null-fiber-line-1",
+      "incidence": "X-->VB",
+      "limiting_plane_intersection_dimension": 4,
+      "limiting_plane_union_dimension": 4,
+      "limiting_planes_equal": true,
+      "pass": true,
+      "same_projective_first_direction": false,
+      "same_second_order_coefficient": true,
+      "second_approach": "null-fiber-line-2"
+    }
+  ],
+  "pass": true,
+  "schema": "a5-kernel-attachments-schur-degeneracy-witnesses-v1",
+  "scope": {
+    "claim_boundary": "The record supplies two exact degree-at-most-two arcs per incidence, proves that each normal projection lies on the coordinate-slice first-order degeneracy locus, and computes the actual arc's Schur-corrected limit. It is a lower-bound witness family, not a classification of the full formal slice image or a two-sided curve-selection certificate.",
+    "passage": "the seven exceptional nullity-8 to nullity-12 first-order rows"
+  },
+  "summary": {
+    "equal_plane_pair_count": 5,
+    "exceptional_incidence_count": 7,
+    "quadratic_witness_count": 14,
+    "same_first_direction_unequal_plane_count": 1,
+    "unequal_plane_pair_count": 2
+  },
+  "tools": {
+    "sympy": "1.14.0"
+  },
+  "witnesses": [
+    {
+      "approach": "transverse-line-1",
+      "boundary_point_matches_path_supported_certificate": true,
+      "curve": {
+        "boundary_orbit_verified": true,
+        "boundary_pattern": "111111110000",
+        "closure_containment_proved": true,
+        "closure_generator_max_degree": 4,
+        "containment_argument": "each substituted generator has degree at most the recorded bound and vanishes at one more distinct rational parameter",
+        "containment_sample_parameters": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "expected_boundary_pattern": "111111110000",
+        "expected_open_pattern": "010000000000",
+        "left_nullities_at_0_1_2_3": [
+          12,
+          8,
+          8,
+          8
+        ],
+        "nullity_jump_verified": true,
+        "open_orbit_samples_verified": true,
+        "open_patterns": [
+          "010000000000",
+          "010000000000",
+          "010000000000"
+        ],
+        "open_sample_parameters": [
+          1,
+          2,
+          3
+        ],
+        "pass": true,
+        "path_degree": 1,
+        "substituted_degree_bound": 4
+      },
+      "first_order_split_coefficients": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-2",
+        "-2",
+        "-1",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "incidence": "E8bar->VB",
+      "normal_projection": {
+        "coordinates": [
+          "4",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "-2",
+          "0"
+        ],
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "projectively_nonzero": true
+      },
+      "pass": true,
+      "path_lies_in_coordinate_slice": false,
+      "recomputed_prior_limit_pass": true,
+      "recomputed_prior_plane_union_dimension": 4,
+      "retained_record_contains_approach": true,
+      "retained_record_plane_matches": true,
+      "schur": {
+        "boundary_bordered_rank": 10,
+        "boundary_pivot_determinant": "-3600",
+        "boundary_pivot_indices": [
+          0,
+          2,
+          1,
+          3,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14
+        ],
+        "boundary_pivot_pfaffian": "-60*I",
+        "drop_schur_correction": false,
+        "effective_form": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-32*I/3"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "32*I/3",
+            "0"
+          ]
+        ],
+        "effective_form_skew": true,
+        "effective_restricted_rank": 2,
+        "first_restricted_rank": 0,
+        "first_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "formal_first_residual_verified": true,
+        "formal_second_residual_verified": true,
+        "limiting_plane_dimension": 4,
+        "limiting_plane_inside_boundary_kernel": true,
+        "limiting_plane_rref": [
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "3/4",
+            "-5*I/4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-2*I",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "pass": true,
+        "schur_correction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-32*I/3"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "32*I/3",
+            "0"
+          ]
+        ],
+        "second_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "second_order_split_coefficients": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "slice_columns_zero_based": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9
+      ]
+    },
+    {
+      "approach": "transverse-line-2",
+      "boundary_point_matches_path_supported_certificate": true,
+      "curve": {
+        "boundary_orbit_verified": true,
+        "boundary_pattern": "111111110000",
+        "closure_containment_proved": true,
+        "closure_generator_max_degree": 4,
+        "containment_argument": "each substituted generator has degree at most the recorded bound and vanishes at one more distinct rational parameter",
+        "containment_sample_parameters": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "expected_boundary_pattern": "111111110000",
+        "expected_open_pattern": "010000000000",
+        "left_nullities_at_0_1_2_3": [
+          12,
+          8,
+          8,
+          8
+        ],
+        "nullity_jump_verified": true,
+        "open_orbit_samples_verified": true,
+        "open_patterns": [
+          "010000000000",
+          "010000000000",
+          "010000000000"
+        ],
+        "open_sample_parameters": [
+          1,
+          2,
+          3
+        ],
+        "pass": true,
+        "path_degree": 1,
+        "substituted_degree_bound": 4
+      },
+      "first_order_split_coefficients": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "2",
+        "-2",
+        "-1",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "incidence": "E8bar->VB",
+      "normal_projection": {
+        "coordinates": [
+          "4",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "2",
+          "0"
+        ],
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "projectively_nonzero": true
+      },
+      "pass": true,
+      "path_lies_in_coordinate_slice": false,
+      "recomputed_prior_limit_pass": true,
+      "recomputed_prior_plane_union_dimension": 4,
+      "retained_record_contains_approach": true,
+      "retained_record_plane_matches": true,
+      "schur": {
+        "boundary_bordered_rank": 10,
+        "boundary_pivot_determinant": "-3600",
+        "boundary_pivot_indices": [
+          0,
+          2,
+          1,
+          3,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14
+        ],
+        "boundary_pivot_pfaffian": "-60*I",
+        "drop_schur_correction": false,
+        "effective_form": [
+          [
+            "0",
+            "32*I/3",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "-32*I/3",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "effective_form_skew": true,
+        "effective_restricted_rank": 2,
+        "first_restricted_rank": 0,
+        "first_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "formal_first_residual_verified": true,
+        "formal_second_residual_verified": true,
+        "limiting_plane_dimension": 4,
+        "limiting_plane_inside_boundary_kernel": true,
+        "limiting_plane_rref": [
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "3/4",
+            "-5*I/4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-2*I",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "-I",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "I"
+          ]
+        ],
+        "pass": true,
+        "schur_correction": [
+          [
+            "0",
+            "32*I/3",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "-32*I/3",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "second_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "second_order_split_coefficients": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "slice_columns_zero_based": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9
+      ]
+    },
+    {
+      "approach": "middle-coordinate-sheet--1",
+      "boundary_point_matches_path_supported_certificate": true,
+      "curve": {
+        "boundary_orbit_verified": true,
+        "boundary_pattern": "010100101000",
+        "closure_containment_proved": true,
+        "closure_generator_max_degree": 4,
+        "containment_argument": "each substituted generator has degree at most the recorded bound and vanishes at one more distinct rational parameter",
+        "containment_sample_parameters": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "expected_boundary_pattern": "010100101000",
+        "expected_open_pattern": "010000000000",
+        "left_nullities_at_0_1_2_3": [
+          12,
+          8,
+          8,
+          8
+        ],
+        "nullity_jump_verified": true,
+        "open_orbit_samples_verified": true,
+        "open_patterns": [
+          "010000000000",
+          "010000000000",
+          "010000000000"
+        ],
+        "open_sample_parameters": [
+          1,
+          2,
+          3
+        ],
+        "pass": true,
+        "path_degree": 2,
+        "substituted_degree_bound": 8
+      },
+      "first_order_split_coefficients": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "incidence": "E8bar->Va+",
+      "normal_projection": {
+        "coordinates": [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "-2"
+        ],
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "projectively_nonzero": true
+      },
+      "pass": true,
+      "path_lies_in_coordinate_slice": false,
+      "recomputed_prior_limit_pass": true,
+      "recomputed_prior_plane_union_dimension": 4,
+      "retained_record_contains_approach": true,
+      "retained_record_plane_matches": true,
+      "schur": {
+        "boundary_bordered_rank": 10,
+        "boundary_pivot_determinant": "-36",
+        "boundary_pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "boundary_pivot_pfaffian": "-6*I",
+        "drop_schur_correction": false,
+        "effective_form": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "4*I",
+            "-4"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "4",
+            "4*I"
+          ],
+          [
+            "0",
+            "0",
+            "-4*I",
+            "-4",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "4",
+            "-4*I",
+            "0",
+            "0"
+          ]
+        ],
+        "effective_form_skew": true,
+        "effective_restricted_rank": 2,
+        "first_restricted_rank": 0,
+        "first_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "formal_first_residual_verified": true,
+        "formal_second_residual_verified": true,
+        "limiting_plane_dimension": 4,
+        "limiting_plane_inside_boundary_kernel": true,
+        "limiting_plane_rref": [
+          [
+            "0",
+            "1",
+            "0",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "-1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "1"
+          ]
+        ],
+        "pass": true,
+        "schur_correction": [
+          [
+            "0",
+            "4*I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "-4*I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "4*I",
+            "4*I",
+            "-4"
+          ],
+          [
+            "0",
+            "0",
+            "-4*I",
+            "0",
+            "4",
+            "4*I"
+          ],
+          [
+            "0",
+            "0",
+            "-4*I",
+            "-4",
+            "0",
+            "-4*I"
+          ],
+          [
+            "0",
+            "0",
+            "4",
+            "-4*I",
+            "4*I",
+            "0"
+          ]
+        ],
+        "second_restriction": [
+          [
+            "0",
+            "-4*I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "4*I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "-4*I",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "4*I",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "4*I"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "-4*I",
+            "0"
+          ]
+        ]
+      },
+      "second_order_split_coefficients": [
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "approach": "middle-coordinate-sheet-+1",
+      "boundary_point_matches_path_supported_certificate": true,
+      "curve": {
+        "boundary_orbit_verified": true,
+        "boundary_pattern": "010100101000",
+        "closure_containment_proved": true,
+        "closure_generator_max_degree": 4,
+        "containment_argument": "each substituted generator has degree at most the recorded bound and vanishes at one more distinct rational parameter",
+        "containment_sample_parameters": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "expected_boundary_pattern": "010100101000",
+        "expected_open_pattern": "010000000000",
+        "left_nullities_at_0_1_2_3": [
+          12,
+          8,
+          8,
+          8
+        ],
+        "nullity_jump_verified": true,
+        "open_orbit_samples_verified": true,
+        "open_patterns": [
+          "010000000000",
+          "010000000000",
+          "010000000000"
+        ],
+        "open_sample_parameters": [
+          1,
+          2,
+          3
+        ],
+        "pass": true,
+        "path_degree": 2,
+        "substituted_degree_bound": 8
+      },
+      "first_order_split_coefficients": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "incidence": "E8bar->Va+",
+      "normal_projection": {
+        "coordinates": [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "2"
+        ],
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "projectively_nonzero": true
+      },
+      "pass": true,
+      "path_lies_in_coordinate_slice": false,
+      "recomputed_prior_limit_pass": true,
+      "recomputed_prior_plane_union_dimension": 4,
+      "retained_record_contains_approach": true,
+      "retained_record_plane_matches": true,
+      "schur": {
+        "boundary_bordered_rank": 10,
+        "boundary_pivot_determinant": "-36",
+        "boundary_pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "boundary_pivot_pfaffian": "-6*I",
+        "drop_schur_correction": false,
+        "effective_form": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "4*I",
+            "-4"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "4",
+            "4*I"
+          ],
+          [
+            "0",
+            "0",
+            "-4*I",
+            "-4",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "4",
+            "-4*I",
+            "0",
+            "0"
+          ]
+        ],
+        "effective_form_skew": true,
+        "effective_restricted_rank": 2,
+        "first_restricted_rank": 0,
+        "first_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "formal_first_residual_verified": true,
+        "formal_second_residual_verified": true,
+        "limiting_plane_dimension": 4,
+        "limiting_plane_inside_boundary_kernel": true,
+        "limiting_plane_rref": [
+          [
+            "0",
+            "1",
+            "0",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "-1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "1"
+          ]
+        ],
+        "pass": true,
+        "schur_correction": [
+          [
+            "0",
+            "4*I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "-4*I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "4*I",
+            "4*I",
+            "-4"
+          ],
+          [
+            "0",
+            "0",
+            "-4*I",
+            "0",
+            "4",
+            "4*I"
+          ],
+          [
+            "0",
+            "0",
+            "-4*I",
+            "-4",
+            "0",
+            "-4*I"
+          ],
+          [
+            "0",
+            "0",
+            "4",
+            "-4*I",
+            "4*I",
+            "0"
+          ]
+        ],
+        "second_restriction": [
+          [
+            "0",
+            "-4*I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "4*I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "-4*I",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "4*I",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "4*I"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "-4*I",
+            "0"
+          ]
+        ]
+      },
+      "second_order_split_coefficients": [
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "approach": "middle-coordinate-sheet--1",
+      "boundary_point_matches_path_supported_certificate": true,
+      "curve": {
+        "boundary_orbit_verified": true,
+        "boundary_pattern": "010010100100",
+        "closure_containment_proved": true,
+        "closure_generator_max_degree": 4,
+        "containment_argument": "each substituted generator has degree at most the recorded bound and vanishes at one more distinct rational parameter",
+        "containment_sample_parameters": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "expected_boundary_pattern": "010010100100",
+        "expected_open_pattern": "010000000000",
+        "left_nullities_at_0_1_2_3": [
+          12,
+          8,
+          8,
+          8
+        ],
+        "nullity_jump_verified": true,
+        "open_orbit_samples_verified": true,
+        "open_patterns": [
+          "010000000000",
+          "010000000000",
+          "010000000000"
+        ],
+        "open_sample_parameters": [
+          1,
+          2,
+          3
+        ],
+        "pass": true,
+        "path_degree": 2,
+        "substituted_degree_bound": 8
+      },
+      "first_order_split_coefficients": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "incidence": "E8bar->Va-",
+      "normal_projection": {
+        "coordinates": [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "-2"
+        ],
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "projectively_nonzero": true
+      },
+      "pass": true,
+      "path_lies_in_coordinate_slice": false,
+      "recomputed_prior_limit_pass": true,
+      "recomputed_prior_plane_union_dimension": 4,
+      "retained_record_contains_approach": true,
+      "retained_record_plane_matches": true,
+      "schur": {
+        "boundary_bordered_rank": 10,
+        "boundary_pivot_determinant": "-36",
+        "boundary_pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "boundary_pivot_pfaffian": "6*I",
+        "drop_schur_correction": false,
+        "effective_form": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "4*I",
+            "-4"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "4",
+            "4*I"
+          ],
+          [
+            "0",
+            "0",
+            "-4*I",
+            "-4",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "4",
+            "-4*I",
+            "0",
+            "0"
+          ]
+        ],
+        "effective_form_skew": true,
+        "effective_restricted_rank": 2,
+        "first_restricted_rank": 0,
+        "first_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "formal_first_residual_verified": true,
+        "formal_second_residual_verified": true,
+        "limiting_plane_dimension": 4,
+        "limiting_plane_inside_boundary_kernel": true,
+        "limiting_plane_rref": [
+          [
+            "0",
+            "1",
+            "0",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "-1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "-1"
+          ]
+        ],
+        "pass": true,
+        "schur_correction": [
+          [
+            "0",
+            "-4*I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "4*I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "-4*I",
+            "4*I",
+            "-4"
+          ],
+          [
+            "0",
+            "0",
+            "4*I",
+            "0",
+            "4",
+            "4*I"
+          ],
+          [
+            "0",
+            "0",
+            "-4*I",
+            "-4",
+            "0",
+            "4*I"
+          ],
+          [
+            "0",
+            "0",
+            "4",
+            "-4*I",
+            "-4*I",
+            "0"
+          ]
+        ],
+        "second_restriction": [
+          [
+            "0",
+            "4*I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "-4*I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "4*I",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-4*I",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-4*I"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "4*I",
+            "0"
+          ]
+        ]
+      },
+      "second_order_split_coefficients": [
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "approach": "middle-coordinate-sheet-+1",
+      "boundary_point_matches_path_supported_certificate": true,
+      "curve": {
+        "boundary_orbit_verified": true,
+        "boundary_pattern": "010010100100",
+        "closure_containment_proved": true,
+        "closure_generator_max_degree": 4,
+        "containment_argument": "each substituted generator has degree at most the recorded bound and vanishes at one more distinct rational parameter",
+        "containment_sample_parameters": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "expected_boundary_pattern": "010010100100",
+        "expected_open_pattern": "010000000000",
+        "left_nullities_at_0_1_2_3": [
+          12,
+          8,
+          8,
+          8
+        ],
+        "nullity_jump_verified": true,
+        "open_orbit_samples_verified": true,
+        "open_patterns": [
+          "010000000000",
+          "010000000000",
+          "010000000000"
+        ],
+        "open_sample_parameters": [
+          1,
+          2,
+          3
+        ],
+        "pass": true,
+        "path_degree": 2,
+        "substituted_degree_bound": 8
+      },
+      "first_order_split_coefficients": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "incidence": "E8bar->Va-",
+      "normal_projection": {
+        "coordinates": [
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "2"
+        ],
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "projectively_nonzero": true
+      },
+      "pass": true,
+      "path_lies_in_coordinate_slice": false,
+      "recomputed_prior_limit_pass": true,
+      "recomputed_prior_plane_union_dimension": 4,
+      "retained_record_contains_approach": true,
+      "retained_record_plane_matches": true,
+      "schur": {
+        "boundary_bordered_rank": 10,
+        "boundary_pivot_determinant": "-36",
+        "boundary_pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "boundary_pivot_pfaffian": "6*I",
+        "drop_schur_correction": false,
+        "effective_form": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "4*I",
+            "-4"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "4",
+            "4*I"
+          ],
+          [
+            "0",
+            "0",
+            "-4*I",
+            "-4",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "4",
+            "-4*I",
+            "0",
+            "0"
+          ]
+        ],
+        "effective_form_skew": true,
+        "effective_restricted_rank": 2,
+        "first_restricted_rank": 0,
+        "first_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "formal_first_residual_verified": true,
+        "formal_second_residual_verified": true,
+        "limiting_plane_dimension": 4,
+        "limiting_plane_inside_boundary_kernel": true,
+        "limiting_plane_rref": [
+          [
+            "0",
+            "1",
+            "0",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "-1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "-1"
+          ]
+        ],
+        "pass": true,
+        "schur_correction": [
+          [
+            "0",
+            "-4*I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "4*I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "-4*I",
+            "4*I",
+            "-4"
+          ],
+          [
+            "0",
+            "0",
+            "4*I",
+            "0",
+            "4",
+            "4*I"
+          ],
+          [
+            "0",
+            "0",
+            "-4*I",
+            "-4",
+            "0",
+            "4*I"
+          ],
+          [
+            "0",
+            "0",
+            "4",
+            "-4*I",
+            "-4*I",
+            "0"
+          ]
+        ],
+        "second_restriction": [
+          [
+            "0",
+            "4*I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "-4*I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "4*I",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-4*I",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-4*I"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "4*I",
+            "0"
+          ]
+        ]
+      },
+      "second_order_split_coefficients": [
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "approach": "fixed-degeneracy-second-jet-1",
+      "boundary_point_matches_path_supported_certificate": true,
+      "curve": {
+        "boundary_orbit_verified": true,
+        "boundary_pattern": "111111110000",
+        "closure_containment_proved": true,
+        "closure_generator_max_degree": 2,
+        "containment_argument": "each substituted generator has degree at most the recorded bound and vanishes at one more distinct rational parameter",
+        "containment_sample_parameters": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "expected_boundary_pattern": "111111110000",
+        "expected_open_pattern": "101000000000",
+        "left_nullities_at_0_1_2_3": [
+          12,
+          8,
+          8,
+          8
+        ],
+        "nullity_jump_verified": true,
+        "open_orbit_samples_verified": true,
+        "open_patterns": [
+          "101000000000",
+          "101000000000",
+          "101000000000"
+        ],
+        "open_sample_parameters": [
+          1,
+          2,
+          3
+        ],
+        "pass": true,
+        "path_degree": 2,
+        "substituted_degree_bound": 4
+      },
+      "first_order_split_coefficients": [
+        "1",
+        "0",
+        "1",
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "incidence": "Iso->VB",
+      "normal_projection": {
+        "coordinates": [
+          "1",
+          "0",
+          "1",
+          "1",
+          "1",
+          "0",
+          "0",
+          "0"
+        ],
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "projectively_nonzero": true
+      },
+      "pass": true,
+      "path_lies_in_coordinate_slice": true,
+      "recomputed_prior_limit_pass": true,
+      "recomputed_prior_plane_union_dimension": 4,
+      "retained_record_contains_approach": false,
+      "retained_record_plane_matches": null,
+      "schur": {
+        "boundary_bordered_rank": 10,
+        "boundary_pivot_determinant": "-14400",
+        "boundary_pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          8,
+          9,
+          10,
+          11
+        ],
+        "boundary_pivot_pfaffian": "120*I",
+        "drop_schur_correction": false,
+        "effective_form": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-2*I/5",
+            "0",
+            "2/5",
+            "2*I/5"
+          ],
+          [
+            "0",
+            "2*I/5",
+            "0",
+            "0",
+            "0",
+            "-1/5"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-2/5",
+            "0",
+            "0",
+            "0",
+            "-I/5"
+          ],
+          [
+            "0",
+            "-2*I/5",
+            "1/5",
+            "0",
+            "I/5",
+            "0"
+          ]
+        ],
+        "effective_form_skew": true,
+        "effective_restricted_rank": 2,
+        "first_restricted_rank": 0,
+        "first_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "formal_first_residual_verified": true,
+        "formal_second_residual_verified": true,
+        "limiting_plane_dimension": 4,
+        "limiting_plane_inside_boundary_kernel": true,
+        "limiting_plane_rref": [
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "I",
+            "I",
+            "-1",
+            "0",
+            "0",
+            "-2*I",
+            "2",
+            "0",
+            "0",
+            "-2",
+            "-2*I"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "0",
+            "-1",
+            "I",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "-2*I",
+            "0",
+            "2*I",
+            "2",
+            "-2",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "1",
+            "-I",
+            "-1",
+            "0",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "2*I",
+            "2",
+            "-2*I",
+            "0",
+            "2"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "-1",
+            "I",
+            "2",
+            "-I",
+            "2*I",
+            "0"
+          ]
+        ],
+        "pass": true,
+        "schur_correction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "second_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-2*I/5",
+            "0",
+            "2/5",
+            "2*I/5"
+          ],
+          [
+            "0",
+            "2*I/5",
+            "0",
+            "0",
+            "0",
+            "-1/5"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-2/5",
+            "0",
+            "0",
+            "0",
+            "-I/5"
+          ],
+          [
+            "0",
+            "-2*I/5",
+            "1/5",
+            "0",
+            "I/5",
+            "0"
+          ]
+        ]
+      },
+      "second_order_split_coefficients": [
+        "1/2",
+        "1",
+        "3/2",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "approach": "fixed-degeneracy-second-jet-2",
+      "boundary_point_matches_path_supported_certificate": true,
+      "curve": {
+        "boundary_orbit_verified": true,
+        "boundary_pattern": "111111110000",
+        "closure_containment_proved": true,
+        "closure_generator_max_degree": 2,
+        "containment_argument": "each substituted generator has degree at most the recorded bound and vanishes at one more distinct rational parameter",
+        "containment_sample_parameters": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "expected_boundary_pattern": "111111110000",
+        "expected_open_pattern": "101000000000",
+        "left_nullities_at_0_1_2_3": [
+          12,
+          8,
+          8,
+          8
+        ],
+        "nullity_jump_verified": true,
+        "open_orbit_samples_verified": true,
+        "open_patterns": [
+          "101000000000",
+          "101000000000",
+          "101000000000"
+        ],
+        "open_sample_parameters": [
+          1,
+          2,
+          3
+        ],
+        "pass": true,
+        "path_degree": 2,
+        "substituted_degree_bound": 4
+      },
+      "first_order_split_coefficients": [
+        "1",
+        "0",
+        "1",
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "incidence": "Iso->VB",
+      "normal_projection": {
+        "coordinates": [
+          "1",
+          "0",
+          "1",
+          "1",
+          "1",
+          "0",
+          "0",
+          "0"
+        ],
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "projectively_nonzero": true
+      },
+      "pass": true,
+      "path_lies_in_coordinate_slice": true,
+      "recomputed_prior_limit_pass": true,
+      "recomputed_prior_plane_union_dimension": 4,
+      "retained_record_contains_approach": false,
+      "retained_record_plane_matches": null,
+      "schur": {
+        "boundary_bordered_rank": 10,
+        "boundary_pivot_determinant": "-14400",
+        "boundary_pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          8,
+          9,
+          10,
+          11
+        ],
+        "boundary_pivot_pfaffian": "120*I",
+        "drop_schur_correction": false,
+        "effective_form": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-8*I/5",
+            "0",
+            "8/5",
+            "8*I/5"
+          ],
+          [
+            "0",
+            "8*I/5",
+            "0",
+            "0",
+            "0",
+            "-4/5"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-8/5",
+            "0",
+            "0",
+            "0",
+            "-4*I/5"
+          ],
+          [
+            "0",
+            "-8*I/5",
+            "4/5",
+            "0",
+            "4*I/5",
+            "0"
+          ]
+        ],
+        "effective_form_skew": true,
+        "effective_restricted_rank": 2,
+        "first_restricted_rank": 0,
+        "first_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "formal_first_residual_verified": true,
+        "formal_second_residual_verified": true,
+        "limiting_plane_dimension": 4,
+        "limiting_plane_inside_boundary_kernel": true,
+        "limiting_plane_rref": [
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "I",
+            "I",
+            "-1",
+            "0",
+            "0",
+            "-2*I",
+            "2",
+            "0",
+            "0",
+            "-2",
+            "-2*I"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "0",
+            "-1",
+            "I",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "-2*I",
+            "0",
+            "2*I",
+            "2",
+            "-2",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "1",
+            "-I",
+            "-1",
+            "0",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "2*I",
+            "2",
+            "-2*I",
+            "0",
+            "2"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "-1",
+            "I",
+            "2",
+            "-I",
+            "2*I",
+            "0"
+          ]
+        ],
+        "pass": true,
+        "schur_correction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "second_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-8*I/5",
+            "0",
+            "8/5",
+            "8*I/5"
+          ],
+          [
+            "0",
+            "8*I/5",
+            "0",
+            "0",
+            "0",
+            "-4/5"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-8/5",
+            "0",
+            "0",
+            "0",
+            "-4*I/5"
+          ],
+          [
+            "0",
+            "-8*I/5",
+            "4/5",
+            "0",
+            "4*I/5",
+            "0"
+          ]
+        ]
+      },
+      "second_order_split_coefficients": [
+        "1",
+        "1",
+        "2",
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "approach": "fixed-degeneracy-second-jet-plus",
+      "boundary_point_matches_path_supported_certificate": true,
+      "curve": {
+        "boundary_orbit_verified": true,
+        "boundary_pattern": "111111110000",
+        "closure_containment_proved": true,
+        "closure_generator_max_degree": 2,
+        "containment_argument": "each substituted generator has degree at most the recorded bound and vanishes at one more distinct rational parameter",
+        "containment_sample_parameters": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "expected_boundary_pattern": "111111110000",
+        "expected_open_pattern": "100000000000",
+        "left_nullities_at_0_1_2_3": [
+          12,
+          8,
+          8,
+          8
+        ],
+        "nullity_jump_verified": true,
+        "open_orbit_samples_verified": true,
+        "open_patterns": [
+          "100000000000",
+          "100000000000",
+          "100000000000"
+        ],
+        "open_sample_parameters": [
+          1,
+          2,
+          3
+        ],
+        "pass": true,
+        "path_degree": 2,
+        "substituted_degree_bound": 4
+      },
+      "first_order_split_coefficients": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "incidence": "W8->VB",
+      "normal_projection": {
+        "coordinates": [
+          "0",
+          "0",
+          "0",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "projectively_nonzero": true
+      },
+      "pass": true,
+      "path_lies_in_coordinate_slice": true,
+      "recomputed_prior_limit_pass": true,
+      "recomputed_prior_plane_union_dimension": 4,
+      "retained_record_contains_approach": false,
+      "retained_record_plane_matches": null,
+      "schur": {
+        "boundary_bordered_rank": 10,
+        "boundary_pivot_determinant": "-4",
+        "boundary_pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          8,
+          9,
+          12,
+          13
+        ],
+        "boundary_pivot_pfaffian": "-2*I",
+        "drop_schur_correction": false,
+        "effective_form": [
+          [
+            "0",
+            "0",
+            "-1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1",
+            "0",
+            "0",
+            "-2*I",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "2*I",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "effective_form_skew": true,
+        "effective_restricted_rank": 2,
+        "first_restricted_rank": 0,
+        "first_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "formal_first_residual_verified": true,
+        "formal_second_residual_verified": true,
+        "limiting_plane_dimension": 4,
+        "limiting_plane_inside_boundary_kernel": true,
+        "limiting_plane_rref": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "I",
+            "0",
+            "0",
+            "-I/2",
+            "0",
+            "1/2",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "I",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "I"
+          ]
+        ],
+        "pass": true,
+        "schur_correction": [
+          [
+            "0",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "-I",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "I",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "0"
+          ]
+        ],
+        "second_restriction": [
+          [
+            "0",
+            "-I",
+            "-1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1",
+            "0",
+            "0",
+            "-I",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "I",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "0"
+          ]
+        ]
+      },
+      "second_order_split_coefficients": [
+        "0",
+        "0",
+        "1/2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1/2",
+        "0",
+        "0",
+        "0"
+      ],
+      "slice_columns_zero_based": [
+        2,
+        7,
+        8,
+        9,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "approach": "fixed-degeneracy-second-jet-minus",
+      "boundary_point_matches_path_supported_certificate": true,
+      "curve": {
+        "boundary_orbit_verified": true,
+        "boundary_pattern": "111111110000",
+        "closure_containment_proved": true,
+        "closure_generator_max_degree": 2,
+        "containment_argument": "each substituted generator has degree at most the recorded bound and vanishes at one more distinct rational parameter",
+        "containment_sample_parameters": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "expected_boundary_pattern": "111111110000",
+        "expected_open_pattern": "100000000000",
+        "left_nullities_at_0_1_2_3": [
+          12,
+          8,
+          8,
+          8
+        ],
+        "nullity_jump_verified": true,
+        "open_orbit_samples_verified": true,
+        "open_patterns": [
+          "100000000000",
+          "100000000000",
+          "100000000000"
+        ],
+        "open_sample_parameters": [
+          1,
+          2,
+          3
+        ],
+        "pass": true,
+        "path_degree": 2,
+        "substituted_degree_bound": 4
+      },
+      "first_order_split_coefficients": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "incidence": "W8->VB",
+      "normal_projection": {
+        "coordinates": [
+          "0",
+          "0",
+          "0",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "projectively_nonzero": true
+      },
+      "pass": true,
+      "path_lies_in_coordinate_slice": true,
+      "recomputed_prior_limit_pass": true,
+      "recomputed_prior_plane_union_dimension": 4,
+      "retained_record_contains_approach": false,
+      "retained_record_plane_matches": null,
+      "schur": {
+        "boundary_bordered_rank": 10,
+        "boundary_pivot_determinant": "-4",
+        "boundary_pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          8,
+          9,
+          12,
+          13
+        ],
+        "boundary_pivot_pfaffian": "-2*I",
+        "drop_schur_correction": false,
+        "effective_form": [
+          [
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "-1",
+            "0",
+            "0",
+            "-2*I",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "2*I",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "effective_form_skew": true,
+        "effective_restricted_rank": 2,
+        "first_restricted_rank": 0,
+        "first_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "formal_first_residual_verified": true,
+        "formal_second_residual_verified": true,
+        "limiting_plane_dimension": 4,
+        "limiting_plane_inside_boundary_kernel": true,
+        "limiting_plane_rref": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "I",
+            "0",
+            "0",
+            "I/2",
+            "0",
+            "-1/2",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "I",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "I"
+          ]
+        ],
+        "pass": true,
+        "schur_correction": [
+          [
+            "0",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "-I",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "I",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "0"
+          ]
+        ],
+        "second_restriction": [
+          [
+            "0",
+            "-I",
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "-1",
+            "0",
+            "0",
+            "-I",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "I",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "0"
+          ]
+        ]
+      },
+      "second_order_split_coefficients": [
+        "0",
+        "0",
+        "1/2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1/2",
+        "0",
+        "0",
+        "0"
+      ],
+      "slice_columns_zero_based": [
+        2,
+        7,
+        8,
+        9,
+        11,
+        12,
+        13,
+        14
+      ]
+    },
+    {
+      "approach": "null-fiber-line-1",
+      "boundary_point_matches_path_supported_certificate": true,
+      "curve": {
+        "boundary_orbit_verified": true,
+        "boundary_pattern": "111111110000",
+        "closure_containment_proved": true,
+        "closure_generator_max_degree": 4,
+        "containment_argument": "each substituted generator has degree at most the recorded bound and vanishes at one more distinct rational parameter",
+        "containment_sample_parameters": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "expected_boundary_pattern": "111111110000",
+        "expected_open_pattern": "010100000000",
+        "left_nullities_at_0_1_2_3": [
+          12,
+          8,
+          8,
+          8
+        ],
+        "nullity_jump_verified": true,
+        "open_orbit_samples_verified": true,
+        "open_patterns": [
+          "010100000000",
+          "010100000000",
+          "010100000000"
+        ],
+        "open_sample_parameters": [
+          1,
+          2,
+          3
+        ],
+        "pass": true,
+        "path_degree": 1,
+        "substituted_degree_bound": 4
+      },
+      "first_order_split_coefficients": [
+        "-2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "incidence": "X+->VB",
+      "normal_projection": {
+        "coordinates": [
+          "2",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "projectively_nonzero": true
+      },
+      "pass": true,
+      "path_lies_in_coordinate_slice": false,
+      "recomputed_prior_limit_pass": true,
+      "recomputed_prior_plane_union_dimension": 4,
+      "retained_record_contains_approach": true,
+      "retained_record_plane_matches": true,
+      "schur": {
+        "boundary_bordered_rank": 10,
+        "boundary_pivot_determinant": "-3600",
+        "boundary_pivot_indices": [
+          0,
+          2,
+          1,
+          3,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14
+        ],
+        "boundary_pivot_pfaffian": "-60*I",
+        "drop_schur_correction": false,
+        "effective_form": [
+          [
+            "0",
+            "8*I/3",
+            "0",
+            "0",
+            "0",
+            "8/3"
+          ],
+          [
+            "-8*I/3",
+            "0",
+            "0",
+            "0",
+            "-8/3",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "8/3",
+            "0",
+            "0",
+            "0",
+            "-8*I/3"
+          ],
+          [
+            "-8/3",
+            "0",
+            "0",
+            "0",
+            "8*I/3",
+            "0"
+          ]
+        ],
+        "effective_form_skew": true,
+        "effective_restricted_rank": 2,
+        "first_restricted_rank": 0,
+        "first_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "formal_first_residual_verified": true,
+        "formal_second_residual_verified": true,
+        "limiting_plane_dimension": 4,
+        "limiting_plane_inside_boundary_kernel": true,
+        "limiting_plane_rref": [
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "3/4",
+            "-5*I/4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-2*I",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "-1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "1"
+          ]
+        ],
+        "pass": true,
+        "schur_correction": [
+          [
+            "0",
+            "8*I/3",
+            "0",
+            "0",
+            "0",
+            "8/3"
+          ],
+          [
+            "-8*I/3",
+            "0",
+            "0",
+            "0",
+            "-8/3",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "8/3",
+            "0",
+            "0",
+            "0",
+            "-8*I/3"
+          ],
+          [
+            "-8/3",
+            "0",
+            "0",
+            "0",
+            "8*I/3",
+            "0"
+          ]
+        ],
+        "second_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "second_order_split_coefficients": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "slice_columns_zero_based": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9
+      ]
+    },
+    {
+      "approach": "null-fiber-line-2",
+      "boundary_point_matches_path_supported_certificate": true,
+      "curve": {
+        "boundary_orbit_verified": true,
+        "boundary_pattern": "111111110000",
+        "closure_containment_proved": true,
+        "closure_generator_max_degree": 4,
+        "containment_argument": "each substituted generator has degree at most the recorded bound and vanishes at one more distinct rational parameter",
+        "containment_sample_parameters": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "expected_boundary_pattern": "111111110000",
+        "expected_open_pattern": "010100000000",
+        "left_nullities_at_0_1_2_3": [
+          12,
+          8,
+          8,
+          8
+        ],
+        "nullity_jump_verified": true,
+        "open_orbit_samples_verified": true,
+        "open_patterns": [
+          "010100000000",
+          "010100000000",
+          "010100000000"
+        ],
+        "open_sample_parameters": [
+          1,
+          2,
+          3
+        ],
+        "pass": true,
+        "path_degree": 1,
+        "substituted_degree_bound": 4
+      },
+      "first_order_split_coefficients": [
+        "-2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-2",
+        "1",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "incidence": "X+->VB",
+      "normal_projection": {
+        "coordinates": [
+          "2",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "projectively_nonzero": true
+      },
+      "pass": true,
+      "path_lies_in_coordinate_slice": false,
+      "recomputed_prior_limit_pass": true,
+      "recomputed_prior_plane_union_dimension": 4,
+      "retained_record_contains_approach": false,
+      "retained_record_plane_matches": null,
+      "schur": {
+        "boundary_bordered_rank": 10,
+        "boundary_pivot_determinant": "-3600",
+        "boundary_pivot_indices": [
+          0,
+          2,
+          1,
+          3,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14
+        ],
+        "boundary_pivot_pfaffian": "-60*I",
+        "drop_schur_correction": false,
+        "effective_form": [
+          [
+            "0",
+            "8*I/3",
+            "0",
+            "0",
+            "0",
+            "8/3"
+          ],
+          [
+            "-8*I/3",
+            "0",
+            "0",
+            "0",
+            "-8/3",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "8/3",
+            "0",
+            "0",
+            "0",
+            "-8*I/3"
+          ],
+          [
+            "-8/3",
+            "0",
+            "0",
+            "0",
+            "8*I/3",
+            "0"
+          ]
+        ],
+        "effective_form_skew": true,
+        "effective_restricted_rank": 2,
+        "first_restricted_rank": 0,
+        "first_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "formal_first_residual_verified": true,
+        "formal_second_residual_verified": true,
+        "limiting_plane_dimension": 4,
+        "limiting_plane_inside_boundary_kernel": true,
+        "limiting_plane_rref": [
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "3/4",
+            "-5*I/4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-2*I",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "-1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "1"
+          ]
+        ],
+        "pass": true,
+        "schur_correction": [
+          [
+            "0",
+            "8*I/3",
+            "0",
+            "0",
+            "0",
+            "8/3"
+          ],
+          [
+            "-8*I/3",
+            "0",
+            "0",
+            "0",
+            "-8/3",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "8/3",
+            "0",
+            "0",
+            "0",
+            "-8*I/3"
+          ],
+          [
+            "-8/3",
+            "0",
+            "0",
+            "0",
+            "8*I/3",
+            "0"
+          ]
+        ],
+        "second_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "second_order_split_coefficients": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "slice_columns_zero_based": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9
+      ]
+    },
+    {
+      "approach": "null-fiber-line-1",
+      "boundary_point_matches_path_supported_certificate": true,
+      "curve": {
+        "boundary_orbit_verified": true,
+        "boundary_pattern": "111111110000",
+        "closure_containment_proved": true,
+        "closure_generator_max_degree": 4,
+        "containment_argument": "each substituted generator has degree at most the recorded bound and vanishes at one more distinct rational parameter",
+        "containment_sample_parameters": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "expected_boundary_pattern": "111111110000",
+        "expected_open_pattern": "010010000000",
+        "left_nullities_at_0_1_2_3": [
+          12,
+          8,
+          8,
+          8
+        ],
+        "nullity_jump_verified": true,
+        "open_orbit_samples_verified": true,
+        "open_patterns": [
+          "010010000000",
+          "010010000000",
+          "010010000000"
+        ],
+        "open_sample_parameters": [
+          1,
+          2,
+          3
+        ],
+        "pass": true,
+        "path_degree": 1,
+        "substituted_degree_bound": 4
+      },
+      "first_order_split_coefficients": [
+        "-2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "2",
+        "-1",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "incidence": "X-->VB",
+      "normal_projection": {
+        "coordinates": [
+          "-6",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "projectively_nonzero": true
+      },
+      "pass": true,
+      "path_lies_in_coordinate_slice": false,
+      "recomputed_prior_limit_pass": true,
+      "recomputed_prior_plane_union_dimension": 4,
+      "retained_record_contains_approach": true,
+      "retained_record_plane_matches": true,
+      "schur": {
+        "boundary_bordered_rank": 10,
+        "boundary_pivot_determinant": "-3600",
+        "boundary_pivot_indices": [
+          0,
+          2,
+          1,
+          3,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14
+        ],
+        "boundary_pivot_pfaffian": "-60*I",
+        "drop_schur_correction": false,
+        "effective_form": [
+          [
+            "0",
+            "8*I",
+            "0",
+            "0",
+            "0",
+            "-8"
+          ],
+          [
+            "-8*I",
+            "0",
+            "0",
+            "0",
+            "8",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-8",
+            "0",
+            "0",
+            "0",
+            "-8*I"
+          ],
+          [
+            "8",
+            "0",
+            "0",
+            "0",
+            "8*I",
+            "0"
+          ]
+        ],
+        "effective_form_skew": true,
+        "effective_restricted_rank": 2,
+        "first_restricted_rank": 0,
+        "first_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "formal_first_residual_verified": true,
+        "formal_second_residual_verified": true,
+        "limiting_plane_dimension": 4,
+        "limiting_plane_inside_boundary_kernel": true,
+        "limiting_plane_rref": [
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "3/4",
+            "-5*I/4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-2*I",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "-1"
+          ]
+        ],
+        "pass": true,
+        "schur_correction": [
+          [
+            "0",
+            "8*I",
+            "0",
+            "0",
+            "0",
+            "-8"
+          ],
+          [
+            "-8*I",
+            "0",
+            "0",
+            "0",
+            "8",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-8",
+            "0",
+            "0",
+            "0",
+            "-8*I"
+          ],
+          [
+            "8",
+            "0",
+            "0",
+            "0",
+            "8*I",
+            "0"
+          ]
+        ],
+        "second_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "second_order_split_coefficients": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "slice_columns_zero_based": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9
+      ]
+    },
+    {
+      "approach": "null-fiber-line-2",
+      "boundary_point_matches_path_supported_certificate": true,
+      "curve": {
+        "boundary_orbit_verified": true,
+        "boundary_pattern": "111111110000",
+        "closure_containment_proved": true,
+        "closure_generator_max_degree": 4,
+        "containment_argument": "each substituted generator has degree at most the recorded bound and vanishes at one more distinct rational parameter",
+        "containment_sample_parameters": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "expected_boundary_pattern": "111111110000",
+        "expected_open_pattern": "010010000000",
+        "left_nullities_at_0_1_2_3": [
+          12,
+          8,
+          8,
+          8
+        ],
+        "nullity_jump_verified": true,
+        "open_orbit_samples_verified": true,
+        "open_patterns": [
+          "010010000000",
+          "010010000000",
+          "010010000000"
+        ],
+        "open_sample_parameters": [
+          1,
+          2,
+          3
+        ],
+        "pass": true,
+        "path_degree": 1,
+        "substituted_degree_bound": 4
+      },
+      "first_order_split_coefficients": [
+        "-2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "incidence": "X-->VB",
+      "normal_projection": {
+        "coordinates": [
+          "-6",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "projectively_nonzero": true
+      },
+      "pass": true,
+      "path_lies_in_coordinate_slice": false,
+      "recomputed_prior_limit_pass": true,
+      "recomputed_prior_plane_union_dimension": 4,
+      "retained_record_contains_approach": false,
+      "retained_record_plane_matches": null,
+      "schur": {
+        "boundary_bordered_rank": 10,
+        "boundary_pivot_determinant": "-3600",
+        "boundary_pivot_indices": [
+          0,
+          2,
+          1,
+          3,
+          4,
+          6,
+          8,
+          10,
+          12,
+          14
+        ],
+        "boundary_pivot_pfaffian": "-60*I",
+        "drop_schur_correction": false,
+        "effective_form": [
+          [
+            "0",
+            "8*I",
+            "0",
+            "0",
+            "0",
+            "-8"
+          ],
+          [
+            "-8*I",
+            "0",
+            "0",
+            "0",
+            "8",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-8",
+            "0",
+            "0",
+            "0",
+            "-8*I"
+          ],
+          [
+            "8",
+            "0",
+            "0",
+            "0",
+            "8*I",
+            "0"
+          ]
+        ],
+        "effective_form_skew": true,
+        "effective_restricted_rank": 2,
+        "first_restricted_rank": 0,
+        "first_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ],
+        "formal_first_residual_verified": true,
+        "formal_second_residual_verified": true,
+        "limiting_plane_dimension": 4,
+        "limiting_plane_inside_boundary_kernel": true,
+        "limiting_plane_rref": [
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "3/4",
+            "-5*I/4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-2*I",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "-1"
+          ]
+        ],
+        "pass": true,
+        "schur_correction": [
+          [
+            "0",
+            "8*I",
+            "0",
+            "0",
+            "0",
+            "-8"
+          ],
+          [
+            "-8*I",
+            "0",
+            "0",
+            "0",
+            "8",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-8",
+            "0",
+            "0",
+            "0",
+            "-8*I"
+          ],
+          [
+            "8",
+            "0",
+            "0",
+            "0",
+            "8*I",
+            "0"
+          ]
+        ],
+        "second_restriction": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "second_order_split_coefficients": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "slice_columns_zero_based": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9
+      ]
+    }
+  ]
+}

@@ -131,6 +131,36 @@ Evidence:
 [`first-order-normal-cones-result.json`](first-order-normal-cones-result.json), and the
 [ledger](ledger.md#ledger-rows).
 
+## Second jets can change the limiting plane on a fixed first-order direction
+
+The seven exceptional first-order rows need the Schur-corrected form
+
+`F^T A(e) F + C_1^T B_0^-1 C_1`
+
+for an arc with first coefficient `d` and second coefficient `e`. The exact
+[`schur_degeneracy_witnesses.py`](schur_degeneracy_witnesses.py) replay supplies two degree-at-most-two arcs at the
+path-supported point of every exceptional incidence. All 14 arcs remain in the declared source closure, enter its
+nullity-8 orbit away from the boundary, and have projectively nonzero normal projections on the coordinate-slice
+tangent cone. Every projected first-order form vanishes. Every Schur-corrected form is skew of rank two and yields a
+four-plane inside the six-dimensional boundary kernel. Every approach already retained by the nullity-8 record
+reproduces its retained plane.
+
+Five paired limits agree. The two E8-bar-to-`VB` directions give distinct four-planes with two-dimensional
+intersection. The sharper result occurs for `W8` to `VB`: two exact quadratic arcs have the same projective first
+coefficient and different second coefficients, but their four-planes intersect in dimension three. Thus the
+projective first-order degeneracy direction does not determine the limit plane. The control pair for `Iso` to `VB`
+also fixes its first coefficient and varies its second coefficient, but both arcs give the same plane. Higher-jet
+dependence is incidence-specific.
+
+The exact-arc family is a lower bound on each Gauss fiber. The replay does not classify every formal arc above the
+coordinate-slice degeneracy locus and does not supply the required two-sided real curve-selection certificate. The
+falsifier was an exact arc leaving its declared source or nullity, a projected direction outside the tangent cone or
+with nonzero first-order rank, a non-skew or wrong-rank Schur form, a retained-plane mismatch, a pairwise equality
+inconsistent with exact union rank, an overstated completeness claim, or a surviving Schur-block mutation. Deleting
+`C_1^T B_0^-1 C_1` from the E8-bar-to-`V^a_+` witness changes the effective rank from two to six and fails. Evidence:
+[`schur-degeneracy-witnesses-result.json`](schur-degeneracy-witnesses-result.json) and the
+[ledger](ledger.md#ledger-rows).
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?
@@ -187,6 +217,15 @@ component, or a sheet mapping wholly into the other sheet’s image, falsifies t
 [`first-order-normal-cones-result.json`](first-order-normal-cones-result.json) and the
 [regularity record](../a5-strata-regularity/README.md#theorem-6-transverse-germs).
 
+### Does a first-order degeneracy direction determine its higher-order plane?
+
+The question matters because a positive answer would make one normal blow-up sufficient after a pointwise correction.
+The cheapest decisive probe fixes the first coefficient and varies exact second coefficients. The `W8`-to-`VB`
+witnesses give different four-planes with three-dimensional intersection, so the answer is negative in general. The
+`Iso`-to-`VB` control pair gives the same plane, so second-jet dependence is not automatic. Equality of the two `W8`
+planes, or failure of either exact arc, falsifies the result. Evidence:
+[`schur-degeneracy-witnesses-result.json`](schur-degeneracy-witnesses-result.json).
+
 ## Replay
 
 ```sh
@@ -209,6 +248,10 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-attachments/first_order_normal_cones.py --self-test
 "$PYTHON" docs/evidence/a5-kernel-attachments/first_order_normal_cones.py \
     --check docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/schur_degeneracy_witnesses.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-attachments/schur_degeneracy_witnesses.py --self-test
+"$PYTHON" docs/evidence/a5-kernel-attachments/schur_degeneracy_witnesses.py \
+    --check docs/evidence/a5-kernel-attachments/schur-degeneracy-witnesses-result.json
 ```
 
 The `--check` command constructs the sorted, two-space-indented JSON plus its final newline in memory and compares
