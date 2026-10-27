@@ -645,6 +645,66 @@
     ],
     "core-694": [
       "docs/evidence/a5-zero-divisor-strata/**"
+    ],
+    "core-713": [
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**"
+    ],
+    "core-714": [
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**"
+    ],
+    "core-716": [
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**"
+    ],
+    "core-718": [
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**"
+    ],
+    "core-722": [
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**"
+    ],
+    "core-723": [
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**"
+    ],
+    "core-724": [
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**"
+    ],
+    "core-726": [
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**"
+    ],
+    "core-727": [
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**"
+    ],
+    "core-728": [
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**"
+    ],
+    "core-730": [
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**"
+    ],
+    "core-732": [
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**"
     ]
   }
 }
