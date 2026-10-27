@@ -73,6 +73,11 @@ PDF page indices.
   resource floor of [factoring-notes.md](../../design/factoring-notes.md); Gidney's estimate remains the cost
   reference there.
 
+- [I] Finite ingredient. The [quarter-mass conformance suite](../../design/quantum-experiment-conformance.md)
+  implements the ideal one-step amplification identity with two qubits, omitted-stage controls and a matched
+  full-target preparation. That finite identity supplies neither the factoring construction nor immunity
+  from device error.
+
 ## Relevance
 
 - [I] Calibration-aware compilation on IBM hardware: none.

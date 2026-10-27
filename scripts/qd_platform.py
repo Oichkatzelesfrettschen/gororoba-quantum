@@ -1256,6 +1256,16 @@ def plan(
         if not math.isfinite(value) or value < 0:
             raise PlatformError(f"{name} {value} is not a finite, non-negative number")
     manifest, circuit, cases_sha256 = load_case(case_dir)
+    if "max_credits" in manifest:
+        case_ceiling = manifest["max_credits"]
+        if (
+            isinstance(case_ceiling, bool)
+            or not isinstance(case_ceiling, int | float)
+            or not math.isfinite(case_ceiling)
+            or case_ceiling <= 0
+            or max_credits > case_ceiling
+        ):
+            raise PlatformError(f"--max-credits {max_credits} exceeds or invalidates the case ceiling {case_ceiling!r}")
     if platform not in manifest["platforms"]:
         raise PlatformError(f"cases.json admits {manifest['platforms']}, not {platform}")
     row = explorer_row(platform)
@@ -1432,7 +1442,10 @@ def submit(
     """
     if not approval.strip():
         raise PlatformError("a nonempty approval is required")
-    if load_case(case_dir)[0].get("draft"):
+    manifest = load_case(case_dir)[0]
+    if manifest.get("acquisition_admission", "ready") != "ready":
+        raise PlatformError(f"{manifest['job']}: acquisition admission is {manifest['acquisition_admission']}")
+    if manifest.get("draft"):
         raise PlatformError(f"{case_dir} is a draft without frozen seeds and order; rebuild it from its draw")
     lock = Path(os.environ.get(TOKEN_ENV, "")).with_name("submit.lock")
     with open(lock, "a", encoding="utf-8") as handle:
