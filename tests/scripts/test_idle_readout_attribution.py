@@ -44,8 +44,8 @@ def _observed(geo: ra.Geometry, laws: dict[str, np.ndarray]) -> dict[str, np.nda
 
 
 def test_geometry_matches_the_design(geo: ra.Geometry) -> None:
-    _expect(int(geo.isolated.sum()) == 20 and len(geo.isolated_pairs) == 15, "isolated probes moved")
-    _expect(sorted(len(v) for v in ra.strata_of(geo).values()) == [7, 8, 16], "strata moved")
+    _expect(int(geo.isolated.sum()) == 18 and len(geo.isolated_pairs) == 14, "isolated probes moved")
+    _expect(sorted(len(v) for v in ra.strata_of(geo).values()) == [6, 8, 16], "strata moved")
 
 
 def test_improper_coloring_is_refused() -> None:

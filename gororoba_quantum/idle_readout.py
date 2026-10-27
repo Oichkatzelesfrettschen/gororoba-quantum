@@ -5,7 +5,7 @@ members: replica k of a patterned member runs the reading body when pair k's cla
 and the quiet body (a body template) otherwise, so one fused PUB holds readers and quiet pairs at once. A quiet
 body is the reading body with the partner's train replaced by an idle of the same nominal span inside the same
 barrier window; the probe's idle is unchanged, so the pattern changes which partners read and nothing else. The
-group runs on the 31 pinned ordered pairs the class strings index (live_run.plan refuses it unpinned). The design
+group runs on the 30 pinned ordered pairs the class strings index (live_run.plan refuses it unpinned). The design
 is docs/design/heron-idle-readout-attribution.md and the analysis scripts/idle_readout_attribution.py.
 """
 
@@ -49,8 +49,8 @@ MEASURE_DT = 545
 # within three CZ hops on ibm_kingston, so every reader within three hops of a probe sits in the
 # opposite class (scripts/idle_readout_attribution.geometry refuses a string that is not).
 PARTITIONS = {
-    "p1": "ABABAAABBABABBBBBABBAABAAABBBAA",
-    "p2": "ABBBAAABBBBBBBBBAABBAAAAAABABAA",
+    "p1": "ABABAAABBABABBBBBABBAABAABBBAA",
+    "p2": "ABBBAAABBBBBBBBBAABBAAAAABABAA",
 }
 # Pattern a reads the partners of class A pairs and holds class B quiet; pattern b swaps them.
 PATTERNS = {"a": "A", "b": "B"}

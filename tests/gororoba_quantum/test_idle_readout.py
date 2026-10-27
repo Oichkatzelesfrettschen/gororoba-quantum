@@ -214,7 +214,7 @@ def test_body_digest_ignores_relabeling_and_numeric_type_and_names_a_stray_qubit
 # --- registered idle_readout group -------------------------------------------------------------
 
 
-def test_idle_readout_holds_55_members_over_31_replicas_and_8_templates() -> None:
+def test_idle_readout_holds_55_members_over_30_replicas_and_8_templates() -> None:
     group = ir.idle_readout_group()
     patterned = [member for member in group.members if member.replica_bodies is not None]
     _expect(
@@ -244,7 +244,7 @@ def test_idle_readout_bodies_follow_the_class_strings_and_share_one_ideal_law() 
     for member in group.members:
         if member.replica_bodies is None:
             continue
-        _expect(len(member.replica_bodies) == 31, f"{member.name}: {len(member.replica_bodies)} bodies")
+        _expect(len(member.replica_bodies) == 30, f"{member.name}: {len(member.replica_bodies)} bodies")
         partition, pattern = member.name.split("_half_")[1].split("_")[0][:2], member.name.split("_half_")[1][2]
         reading = ir.PATTERNS[pattern]
         short = "short" in member.name
@@ -486,14 +486,14 @@ def test_idle_readout_runs_only_on_a_pin_that_names_one_path_per_body() -> None:
     one_path = {"backend": "viable", "qubits": _pinned_paths()[0]}
     for overrides, message in (
         ({"groups": ["idle_readout"]}, "runs on the paths --pin-layout names"),
-        ({"groups": ["idle_readout"], "pin_layout": one_path, "max_replicas": 1}, r"one body to each of \[31\]"),
+        ({"groups": ["idle_readout"], "pin_layout": one_path, "max_replicas": 1}, r"one body to each of \[30\]"),
     ):
         with pytest.raises(live_run.LiveRunError, match=message):
             live_run.plan(service, _fixture_args(**overrides))
 
 
 @pytest.mark.audit
-def test_registered_group_plans_55_entries_and_8_templates_on_the_31_pinned_pairs() -> None:
+def test_registered_group_plans_55_entries_and_8_templates_on_the_30_pinned_pairs() -> None:
     """The registered group on FakeKingston with every pinned pair: 55 executed entries, no template entry."""
     snapshot = _fake_snapshot(FakeKingston())
     case = (ROOT / "results/live/IDLE_PENALTY_REPEAT_CASE.md").read_text()

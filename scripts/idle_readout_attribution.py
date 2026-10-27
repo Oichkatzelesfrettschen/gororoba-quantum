@@ -4,17 +4,17 @@ The design is docs/design/heron-idle-readout-attribution.md.
 
 For probe p of pair k the phase rate in a readout window is modeled as
 delta_p = a_p own + c_p near + b f_other: own is 1 when the pair's partner reads, near when every other pair's
-reader within three CZ hops of p reads, and f_other is the fraction of the 30 other pairs whose partner reads.
+reader within three CZ hops of p reads, and f_other is the fraction of the 29 other pairs whose partner reads.
 Two partitions of the pairs into classes A and B, each a 2-coloring of the three-hop pair conflict graph, put
 every within-three-hop reader in the opposite class. Pattern a reads class A partners and holds class B quiet;
 pattern b swaps them. Per partition, a probe of class X reads
 
-    R_p = a_p + b n_same / 30    (its own class's pattern)
-    Q_p = c_p + b n_opp / 30     (the opposite pattern)
+    R_p = a_p + b n_same / 29    (its own class's pattern)
+    Q_p = c_p + b n_opp / 29     (the opposite pattern)
     D_p = a_p + c_p + b          (the all-read arm)
 
 and D_p - R_p - Q_p is zero under the model. Isolated probes, with no other pair's reader within three hops,
-carry no near term, so 30 Q_p / n_opp estimates b there.
+carry no near term, so 29 Q_p / n_opp estimates b there.
 
 Every estimate runs on arrays with a leading replicate axis, so the observed estimate and every bootstrap replicate
 go through one implementation: `estimate` on the observed laws is `estimate` on a one-replicate batch. Each law is
@@ -39,7 +39,7 @@ import numpy as np  # noqa: E402
 import idle_penalty as ip  # noqa: E402
 import idle_readout as ir  # noqa: E402
 
-PAIRS = 31
+PAIRS = 30
 OTHERS = PAIRS - 1
 NEAR_HOPS = 3
 # The class strings and member names are idle_penalty's, the campaign's single home for them.
@@ -186,7 +186,7 @@ def _own_other(geo: Geometry, partition: str, shifts: dict[tuple[str, str], np.n
 
 
 def _b(geo: Geometry, q_per_partition: dict[str, np.ndarray], pairs: np.ndarray) -> np.ndarray:
-    """Median over the given pair indices (replicate, n) of the pair's mean 30 Q / n_opp over its isolated roles,
+    """Median over the given pair indices (replicate, n) of the pair's mean OTHERS Q / n_opp over its isolated roles,
     per partition, then the mean of the partitions' medians."""
     medians = []
     weight = geo.isolated.astype(float)
@@ -485,7 +485,7 @@ def synthetic_laws(
 
 
 def pinned_geometry() -> Geometry:
-    """The geometry of the probe's 31 ordered pairs on Kingston's coupler graph."""
+    """The geometry of the repeat case's 30 pinned ordered pairs on Kingston's coupler graph."""
     case = (ROOT / "results/live/IDLE_PENALTY_REPEAT_CASE.md").read_text()
     pin = next(line for line in case.splitlines() if line.startswith("ibm_kingston:"))
     paths = [tuple(int(q) for q in path.split(",")) for path in pin.split(":", 1)[1].split("/")]

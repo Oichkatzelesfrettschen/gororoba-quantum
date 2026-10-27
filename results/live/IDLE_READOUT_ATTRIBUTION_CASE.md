@@ -13,21 +13,22 @@ within-three-hop excess c_p and a chip baseline b, by playing the trains on comp
 
 ## Why a simulation cannot answer it
 
-Aer carries no readout crosstalk: the dry run's predictions read b = -0.071 kHz with an interval [-0.174, 0.127]
+Aer carries no readout crosstalk: the dry run's predictions read b = +0.037 kHz with an interval [-0.169, 0.211]
 that contains zero, an additive model and an unresolved attribution, which is the null every measured value is
 read against. The shift exists only on the device.
 
 ## Design
 
-- Campaign `idle_readout` (`gororoba_quantum/idle_penalty.py`): 55 PUBs in one dynamic job. 23 members kept from the
+- Campaign `idle_readout` (`gororoba_quantum/idle_readout.py`): 55 PUBs in one dynamic job. 23 members kept from the
   probe carry the all-read shift, its short-window unwrap and its quiet references; 32 patterned members play the
   trains on class A or class B partners under two class partitions, long and short windows, both quadratures and
   both probe roles. Quiet replicas run the reading body with the partner's train replaced by an idle.
-- Placement: the probe's 31 ordered pairs, pinned (the same pin string as
-  [IDLE_PENALTY_REPEAT_CASE.md](IDLE_PENALTY_REPEAT_CASE.md)); the class strings index those paths in pin order.
-- Validation (not binding): a dry run under the 2026-10-26T20:57:35-07:00 calibration admitted all 31 paths; a
+- Placement: the stability repeat's 30 ordered pairs, pinned (the pin string of
+  [IDLE_PENALTY_REPEAT_CASE.md](IDLE_PENALTY_REPEAT_CASE.md) after its amendment of 2026-10-27, which drops
+  (155,154)); the class strings index those paths in pin order.
+- Validation (not binding): a dry run under the 2026-10-27T07:53:14-07:00 calibration admitted all 30 paths; a
   local ALAP schedule of every patterned PUB put each replica's probe window at 561 to 10561 dt and every reading
-  train inside every quiet window (7680 pairs); the predictions passed the self-check.
+  train inside every quiet window (7168 pairs); the predictions passed the self-check.
 
 ## Backend, account, shots and seconds
 
@@ -71,7 +72,7 @@ From `gororoba_quantum/`, with `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=40
 ```sh
 "$PYTHON" live_run.py --groups idle_readout --backends ibm_kingston --max-pending 300 --shots 4096 \
   --rep-delay 0.00002 --no-isolated-reference --max-execution-seconds 30 --max-total-execution-seconds 30 \
-  --reserve-seconds 60 --pin-layout "$PIN" --max-replicas 31 \
+  --reserve-seconds 60 --pin-layout "$PIN" --max-replicas 30 \
   --seed-transpiler "qrng:$D#0" --seed-simulator "qrng:$D#1" --out ../results/live
 "$PYTHON" ../scripts/idle_readout_attribution.py RUN --self-check \
   --seed "qrng:docs/evidence/anu_qrng/draw-2026-10-27T034547Z.json#2"

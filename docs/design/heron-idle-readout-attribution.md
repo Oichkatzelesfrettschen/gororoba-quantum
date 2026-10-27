@@ -5,8 +5,9 @@ phase rate on idling qubits while readout trains played: a pair mean of -2.72 kH
 references, up to -21.5 kHz on one probe, with a quiet null at -0.010 kHz. Every replica read at once, so the run
 cannot say whether a probe's shift comes from its own coupled partner's readout, from readout a few couplers away,
 or from readout anywhere on the chip. This campaign splits the shift into three patterned contrasts in one job on
-the probe's 31 ordered pairs. The split is an intervention on CZ-graph distance; it identifies no physical
-mechanism (Limits).
+30 of the probe's 31 ordered pairs, the cohort of the stability repeat's amendment of 2026-10-27, which drops
+(155,154) after qubit 155's readout error left the exclusion limit. The split is an intervention on CZ-graph
+distance; it identifies no physical mechanism (Limits).
 
 ## Estimand
 
@@ -15,7 +16,7 @@ For probe p (one qubit of pair k), the phase rate in a readout window is modeled
     delta_p = a_p * own + c_p * near + b * f_other
 
 - `own` is 1 when the probe's own partner plays its train;
-- `f_other` is the fraction of the 30 other pairs' partners that play, and `b` the baseline coefficient per
+- `f_other` is the fraction of the 29 other pairs' partners that play, and `b` the baseline coefficient per
   reading partner fraction, one per chip;
 - `near` is 1 when every reading partner of another pair within three CZ hops of p plays, and `c_p` is the
   within-three-hop excess above that baseline.
@@ -27,43 +28,43 @@ The quiet reference fixes delta at zero. The probe's during arm sets own = near 
 
 Pairs k and j conflict when any qubit of one lies within three CZ hops of any qubit of the other on the Kingston
 coupler graph (`docs/evidence/heron_platform/targets.json`, `backends.ibm_kingston.instructions.cz.qargs`). On the
-31 pinned pairs that graph is bipartite: 28 edges, maximum degree 3, five components of 23, 4, 2, 1 and 1 pairs.
+30 pinned pairs that graph is bipartite: 28 edges, maximum degree 3, four components of 23, 4, 2 and 1 pairs.
 A 2-coloring puts every within-three-hop reader of a probe in the opposite class. Two partitions, both proper
 colorings, differ by which components flip; each is stored explicitly in its patterned members, in pin order:
 
-    P1  ABABAAABBABABBBBBABBAABAAABBBAA   (15 A, 16 B)
-    P2  ABBBAAABBBBBBBBBAABBAAAAAABABAA   (15 A, 16 B)
+    P1  ABABAAABBABABBBBBABBAABAABBBAA   (14 A, 16 B)
+    P2  ABBBAAABBBBBBBBBAABBAAAAABABAA   (14 A, 16 B)
 
-P2 changes the same-class relation for 150 of the 437 non-conflicting pair-pairs, so a far-reader set and the
-pattern PUB a probe draws each coefficient from both change between the partitions. Five components bound how far
+P2 changes the same-class relation for 144 of the 407 non-conflicting pair-pairs, so a far-reader set and the
+pattern PUB a probe draws each coefficient from both change between the partitions. Four components bound how far
 a second proper coloring can move; the partitions counterbalance pattern-PUB offsets and part of the far-reader
 membership, not all of it.
 
 For each partition, pattern A plays the train on class A partners and holds class B partners quiet over the same
 window; pattern B swaps them. For a probe in class X with n_same reading other-pair partners in its own class and
-n_opp in the opposite class (n_same + n_opp = 30):
+n_opp in the opposite class (n_same + n_opp = 29):
 
-- the own-class pattern: `R_p = a_p + b n_same / 30`;
-- the opposite pattern: `Q_p = c_p + b n_opp / 30`;
+- the own-class pattern: `R_p = a_p + b n_same / 29`;
+- the opposite pattern: `Q_p = c_p + b n_opp / 29`;
 - the all-read arm: `D_p = a_p + c_p + b`;
 - the residual `D_p - R_p - Q_p` is zero under the model.
 
 ## Isolated probes and b
 
-20 of the 62 probes (8 targets reading spectators, 12 spectators reading targets; 10 in each class under both
-partitions, from 7 isolated pairs in A and 8 in B) have no
+18 of the 60 probes (7 targets reading spectators, 11 spectators reading targets; 8 in class A and 10 in class B
+under both partitions, from 6 isolated pairs in A and 8 in B) have no
 other pair's reader within three hops. For them `near` is identically zero, `c_p` is structurally absent, and
-`Q_p = b n_opp / 30`. Their `30 Q_p / n_opp` estimate b; the residuals of the remaining isolated probes about that
+`Q_p = b n_opp / 29`. Their `29 Q_p / n_opp` estimate b; the residuals of the remaining isolated probes about that
 estimate are a far-field homogeneity diagnostic and enter no share.
 
-- **b functional**: the median over isolated physical pairs of the pair's mean `30 Q_p / n_opp` across its isolated
-  roles (15 pairs; five contribute both roles), per partition; the pooled b is the mean of the two per-partition
+- **b functional**: the median over isolated physical pairs of the pair's mean `29 Q_p / n_opp` across its isolated
+  roles (14 pairs; four contribute both roles), per partition; the pooled b is the mean of the two per-partition
   medians.
 - **Class agreement** (diagnostic): b from class A and from class B isolated pairs, each with its bootstrap
-  interval. With 7 and 8 isolated pairs per class it detects only a disagreement several times b's own interval
+  interval. With 6 and 8 isolated pairs per class it detects only a disagreement several times b's own interval
   width; non-overlapping intervals mark every decision below "unresolved", and overlap establishes no
   homogeneity.
-- **Coefficients**: `a_p = R_p - b n_same / 30` and, for non-isolated probes, `c_p = Q_p - b n_opp / 30`, per
+- **Coefficients**: `a_p = R_p - b n_same / 29` and, for non-isolated probes, `c_p = Q_p - b n_opp / 29`, per
   partition and averaged over the two partitions.
 
 ## Resampling
@@ -115,7 +116,7 @@ Total: 55 PUBs.
    per-replica digest of the compiled body's canonical instruction sequence on its logical qubits.
    `_archived_entries` restores both, and after `packing.split` every replica's archived body must match its
    digest and the group record's tuple, so a mislabeled body refuses collection.
-5. idle_penalty.py: a readout campaign group with the 23 retained members, the 32 patterned members and the
+5. idle_readout.py: a readout campaign group with the 23 retained members, the 32 patterned members and the
    templates, listed in `standalone_campaign_groups` and `EXPERIMENT_SOURCE_MANIFEST`.
 6. A new analyzer, scripts/idle_readout_attribution.py, built on idle_penalty_report.py's loading, unfolding,
    phase and unwrap functions:
@@ -152,7 +153,7 @@ collects on its own code, and this branch merges into it only after both collect
 
 ## Placement, shots and seconds
 
-- Placement: the probe's 31 ordered pairs, pinned.
+- Placement: the stability repeat's 30 ordered pairs, pinned.
 - Shots: 4096; per-probe phase-rate shot noise was about 0.11 kHz in the probe.
 - Seconds: 16 s x 55 / 44 = 20 s expected at 20 us by count scaling; the binding dry run's estimate governs.
   Ceiling 30 s.
@@ -165,7 +166,7 @@ descriptive; the cohort decisions use the bootstrap.
 
 1. **Per-probe labels** (descriptive) on two axes for a_p and c_p: "resolved" when |estimate| exceeds 3.29 times its
    bootstrap standard error, else "unresolved"; and "material" when the 95% interval lies wholly outside
-   [-0.5, 0.5] kHz, "negligible" when it lies wholly inside, else "indeterminate". The family is 62 a_p and 42 c_p
+   [-0.5, 0.5] kHz, "negligible" when it lies wholly inside, else "indeterminate". The family is 60 a_p and 42 c_p
    labels; a probe-level claim needs a later replication.
 2. **Far-field baseline**: b "present" when its 95% interval excludes zero and class agreement holds.
 3. **Additivity**: the median residual over all probes (the model sets it to zero on every probe), with its
@@ -182,7 +183,7 @@ descriptive; the cohort decisions use the bootstrap.
    - otherwise "own-partner", "within-three-hop" or "baseline" when exactly one share's interval lies above 0.5;
    - otherwise "mixed".
 5. **Replication of the probe's shift**: the all-read pair-mean shift `meas_during` against both quiet references
-   is negative with a t statistic below the one-sided alpha 1e-3 quantile of t on 30 degrees of freedom (-3.385),
+   is negative with a t statistic below the one-sided alpha 1e-3 quantile of t on 29 degrees of freedom (-3.396),
    with the quiet null not reading present. No decision here uses the chi-square branch of the probe's rule.
 
 ## Limits
@@ -205,7 +206,7 @@ descriptive; the cohort decisions use the bootstrap.
   and its binding dry run, before any submit.
 
 Done: the analyzer and its planted-law mutation tests; the measured-run loader with the collector refusals, the
-one-calibration rule and the per-class exposure gate; the execution changes; a validation dry run on the 31
-pinned pairs under the 2026-10-26T20:57:35-07:00 calibration, whose local ALAP schedule puts every replica's probe
-window at 561 to 10561 dt and every reading train inside it (7680 quiet-window and train pairs), and whose
-predictions pass the self-check (b -0.071 kHz, interval [-0.174, 0.127]; additive; attribution unresolved).
+one-calibration rule and the per-class exposure gate; the execution changes; a validation dry run on the 30
+pinned pairs under the 2026-10-27T07:53:14-07:00 calibration, whose local ALAP schedule puts every replica's probe
+window at 561 to 10561 dt and every reading train inside it (7168 quiet-window and train pairs), and whose
+predictions pass the self-check (b +0.037 kHz, interval [-0.169, 0.211]; additive; attribution unresolved).
