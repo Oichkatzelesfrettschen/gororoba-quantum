@@ -10,7 +10,11 @@ the misaligned shots, which share the drift but not the predecessor.
 
 Carryover. The ro0 row (measure only) follows a row ending near |1> in most shots, so its conditional difference reads
 the excitation one previous end state leaves through the terminal reset, the repetition delay and the service's
-initialization, scaled by the readout contrast.
+initialization, scaled by the readout contrast. The pattern rows read the same quantity per qubit with far more shots:
+each prepares a fixed bit on each qubit (x or nothing, then read), so among consecutive pattern rows a qubit's P1 on
+rows that read ground after a row that prepared 1, minus after one that prepared 0, is D; on rows that prepare 1 the
+carried excitation is flipped by the x and enters with the opposite sign. The two estimates combine by inverse
+variance. Both rest on column-wise order; under any other order they read about zero.
 
 T1 series. The analysis corrects the t1 rows through the ro0 and t1-0 brackets and fits y_k = q (1 - e_k) - e_k with
 e_k = exp(-t_k / T1). This section fits four nuisance models per informative qubit with inverse binomial-variance
@@ -47,6 +51,7 @@ from scipy.stats import gamma as gamma_distribution
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import measurement_sequence_analysis as msa  # noqa: E402
+from diagnostic_experiments import msqe_pattern_bits  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 SCHEMA = "msq-envelope-raw-diagnostics-v1"
@@ -206,6 +211,50 @@ def carryover(bits: np.ndarray, members: list[str], qubits: list[int]) -> dict[s
         "median_difference": float(np.median(differences)),
         "mean_difference": mean,
         "mean_se": se,
+    }
+
+
+def pattern_carryover(bits: np.ndarray, members: list[str], qubits: list[int]) -> dict[str, Any]:
+    """Per-qubit carryover D from consecutive pattern rows, conditioned on the predecessor row's prepared bit."""
+    pattern = msqe_pattern_bits(len(qubits))
+    prefix = "msqe_pat"
+    per_qubit: dict[str, dict[str, Any]] = {}
+    pairs = [
+        (int(members[k - 1][len(prefix) :]), int(member[len(prefix) :]), k)
+        for k, member in enumerate(members)
+        if k and member.startswith(prefix) and members[k - 1].startswith(prefix)
+    ]
+    for g, qubit in enumerate(qubits):
+        cells = {(a, b): [0, 0] for a in (0, 1) for b in (0, 1)}
+        for previous, current, row in pairs:
+            cell = cells[(pattern[previous][g], pattern[current][g])]
+            cell[0] += int(bits[row, g].sum())
+            cell[1] += int(bits.shape[2])
+        estimates = []
+        # Ground rows: P1 after a 1 minus after a 0. Excited rows: the x flips carried excitation to 0, so P1 after a 0
+        # minus after a 1. Keys are (previous prepared bit, current prepared bit).
+        for larger, smaller in (((1, 0), (0, 0)), ((0, 1), (1, 1))):
+            (ka, na), (kb, nb) = cells[larger], cells[smaller]
+            pa, pb = ka / na, kb / nb
+            se = math.sqrt(max(pa * (1 - pa), 1.0 / na) / na + max(pb * (1 - pb), 1.0 / nb) / nb)
+            estimates.append((pa - pb, se))
+        weights = [1 / se**2 for _, se in estimates]
+        value = sum(w * d for w, (d, _) in zip(weights, estimates, strict=True)) / sum(weights)
+        per_qubit[str(qubit)] = {
+            "difference": value,
+            "se": 1 / math.sqrt(sum(weights)),
+            "ground_rows": {"difference": estimates[0][0], "se": estimates[0][1]},
+            "excited_rows": {"difference": estimates[1][0], "se": estimates[1][1]},
+            "shots": {f"previous_{a}_current_{b}": cells[(a, b)][1] for a, b in sorted(cells)},
+        }
+    values = [v["difference"] for v in per_qubit.values()]
+    return {
+        "row_pairs": len(pairs),
+        "per_qubit": per_qubit,
+        "median_difference": float(np.median(values)),
+        "median_se": float(np.median([v["se"] for v in per_qubit.values()])),
+        "mean_difference": float(np.mean(values)),
+        "mean_se": math.sqrt(sum(v["se"] ** 2 for v in per_qubit.values())) / len(per_qubit),
     }
 
 
@@ -383,6 +432,7 @@ def run(path: Path) -> dict[str, Any]:
         "executor_chunks": loaded["chunks"],
         "adjacency": adjacency(bits, members),
         "carryover": carryover(bits, members, qubits),
+        "pattern_carryover": pattern_carryover(bits, members, qubits),
         "t1_series": t1_section(loaded, path),
     }
 

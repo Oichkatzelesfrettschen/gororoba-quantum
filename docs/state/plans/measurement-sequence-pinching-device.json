@@ -205,6 +205,26 @@
             }
           ],
           "scope_sha256": "98316f0941a8839518724325907fd5c9728db6f2930a952841db9351833e3a77"
+        },
+        {
+          "result": "Attempt 1 completed at 20 us, billed 38 s; the reset screen withheld all 32 qubits, so the preregistered device verdict is withheld. The findings add the run's shot-order diagnostics.",
+          "observed_at": "2026-10-27T17:35:12+00:00",
+          "revision": "76d68f494edc4939f44aee7f0bb3bed5183971ab",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T014422.881898Z/collect.json",
+              "sha256": "e0a690e4610096ed20c7c8ec082d66a4d3c4f181b1fcced7fa350218574e7fb3"
+            },
+            {
+              "ref": "results/live/2026-10-27T014422.881898Z/raw/dbg08t9j4t8s73abaghg/index.json",
+              "sha256": "219780d1c62e6a7ed202ffb0970675c83d0f7f62db96131aa31e919347d4418c"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "ea115e67afae5e55dbfe521c82fd8f6664156cbd66a9e401e97eb2eafe6c2742"
+            }
+          ],
+          "scope_sha256": "98316f0941a8839518724325907fd5c9728db6f2930a952841db9351833e3a77"
         }
       ]
     },
@@ -276,6 +296,26 @@
             {
               "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
               "sha256": "53a6a14a58eba3bc468a159414ca2bac8af756717b70161f1c6d07b605a06793"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "PR #516 merged as bd6fb9e after four Codex rounds (clean at 12f85c4) with lint, types, tests and gates green; the findings add the run's shot-order diagnostics.",
+          "observed_at": "2026-10-27T17:35:12+00:00",
+          "revision": "76d68f494edc4939f44aee7f0bb3bed5183971ab",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "0f372d12b4e18c81c8915170ae6d9c44fba9b062f3a44aeeab3c67b97207f690"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "ea115e67afae5e55dbfe521c82fd8f6664156cbd66a9e401e97eb2eafe6c2742"
             }
           ],
           "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"

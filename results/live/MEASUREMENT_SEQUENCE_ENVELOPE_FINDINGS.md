@@ -77,7 +77,9 @@ fused PUB is one member row on all 32 qubits, and the executor reports one chunk
   minus after a previous final 0 is median +0.0002, mean +0.0000 +- 0.0006 over 32 qubits. The excitation an end
   state leaves through the terminal reset, the 20 us repetition delay and `init_qubits` is below about 0.0012 (two
   standard errors), too small to produce the +0.0185 departure offset through any member allocation (at most 2.31
-  per unit, [carryover-sensitivity.json](../../docs/evidence/measurement_sequence/carryover-sensitivity.json)).
+  per unit, [carryover-sensitivity.json](../../docs/evidence/measurement_sequence/carryover-sensitivity.json)). The 35
+  consecutive pattern-row pairs, conditioned on the predecessor's prepared bit, read it per qubit at a median standard
+  error of 0.0003: median +0.00025, mean +0.00045 +- 0.00006. Carryover is real and about 0.0005.
 - Phase-sensitive adjacency. Consecutive delay-arm rows correlate at the same shot by a median 0.034 (19 row pairs)
   and consecutive unitary rows by 0.051 (3 pairs), against 0.003 and -0.001 one column away; measure and settle rows
   read 0.004 and 0.006, pattern rows near zero. Outcomes that depend on the qubit's phase stay correlated across
