@@ -1303,6 +1303,43 @@ def _verify_state_prep_family() -> None:
     _require(qpu_planning.settings(subset_args)["state_prep_arms"] == ["prep0"], "the policy lost the arm selection")
     _require("state_prep_arms" not in qpu_planning.settings(args), "an omitted selection entered the policy")
     _verify_state_prep_history(snapshot, qubits[:7])
+    _verify_state_prep_remeasure(snapshot, qubits[:7])
+
+
+def _verify_state_prep_remeasure(snapshot: Any, qubits: list[int]) -> None:
+    """prep0, x_remeasure and remeasure fuse three static PUBs in that row order, in one job, two bits per read arm."""
+    args = _args(
+        "state-prep-control",
+        layout=qubits,
+        state_prep_arms=["remeasure", "prep0", "x_remeasure"],
+        optimize=True,
+        shot_tiers=[4096, 8192],
+        optimizer_candidates=1,
+        max_execution_seconds=60,
+        max_total_execution_seconds=120.0,
+        reserve_seconds=0.0,
+    )
+    candidates = qpu_planning.family_candidates(live_run, [snapshot], args, {})
+    _require(len(candidates) == 1, "the remeasure selection produced no candidate")
+    choices, configuration = candidates[0]
+    _require(list(configuration["arms"]) == ["prep0", "x_remeasure", "remeasure"], f"arms {configuration['arms']}")
+    _require(
+        "static prep0 and x_remeasure and remeasure PUBs in that row order" in configuration["placement_contract"],
+        f"placement contract {configuration['placement_contract']!r}",
+    )
+    pubs = live_run.execution_pubs(choices)
+    _require([pub.kind for pub in pubs] == ["static"] * 3, f"the remeasure arms fused into {[p.kind for p in pubs]}")
+    arms = [{component.entry.name.split("_q")[0].removeprefix("spc_") for component in pub.components} for pub in pubs]
+    _require(arms == [{"prep0"}, {"x_remeasure"}, {"remeasure"}], f"PUB rows hold {arms}, not one arm each in order")
+    for pub, bits in zip(pubs, (1, 2, 2), strict=True):
+        covered = sorted(q for component in pub.components for q in component.manifest()["physical_qubits"])
+        _require(covered == sorted(qubits), f"{pub.name}: measures {covered}, not every named qubit")
+        widths = {len(component.manifest()["registers_by_replica"][0]) for component in pub.components}
+        _require(widths == {1}, f"{pub.name}: a component spans {widths} registers")
+        _require(pub.circuit.num_clbits == bits * len(qubits), f"{pub.name}: {pub.circuit.num_clbits} bits")
+    batches = live_run.submission_batches(choices, "static", 8192)
+    _require([len(batch) for batch in batches] == [3], f"static jobs {[len(b) for b in batches]}")
+    _require(not live_run.submission_batches(choices, "dynamic", 8192), "a dynamic job appeared")
 
 
 def _verify_state_prep_history(snapshot: Any, qubits: list[int]) -> None:
