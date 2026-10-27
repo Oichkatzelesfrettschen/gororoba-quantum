@@ -6,14 +6,14 @@
   "sources": [
     "docs/design/quantum-experiment-conformance.md"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "verified",
-    "note": "All scoped mathematical, operator, payload, analysis and local compiler checks pass at the recorded source. Acquisition and physical interpretation remain outside this completed software scope."
+    "note": "The canonical runner baseline and current source pass deterministic and compiler validation; acquisition remains outside the completed implementation scope."
   },
   "scope": "Implement finite quantum experiment references, guarded cases, analysis and correction records across five proposals. Provider execution and acquisition completion are separate obligations.",
   "owner": "quantum experiment implementer",
-  "next_action": "Bind the canonical successor cases in the runner-image ledger, refresh import/replay registries, and validate the complete pipeline.",
+  "next_action": "Review separately approved acquisition cases after current runtime, budget and instrument qualification checks.",
   "steps": [
     {
       "id": "audit-contracts",
@@ -56,6 +56,42 @@
               "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
             }
           ]
+        },
+        {
+          "scope_sha256": "d7a5192f50ae6713983f9a29a4bb116e2c4e0b32f3803705e039fef12837c731",
+          "result": "The correction document grounds all five outcomes in repository sources and separates finite identities, compiler predictions, device questions and unresolved physical claims. Revalidated against canonical runner artifacts with 169 focused and registry tests, full Ruff and mypy, and the pinned QI compiler replay. Provider execution remains separate.",
+          "observed_at": "2026-10-27T21:46:24.737420+00:00",
+          "revision": "90586f6da8953c9f80d27c39acc4eb44f77c4642",
+          "evidence": [
+            {
+              "ref": "docs/design/quantum-experiment-conformance.md",
+              "sha256": "ca73bafcf4a2481b2e7a4919043b1f2d375568cf3f5feb0d65fd5077223f9f88"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-cases/reference.json",
+              "sha256": "9439f7af9c6e63795da74b2760ca2e6608d8a02fdc78dd707c650303802c8b07"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-canonical.json",
+              "sha256": "b82c7f2e01d28d736f0fa1ddd594f6cd334059eb04892455be37f8398495bede"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-cases/provenance.json",
+              "sha256": "bedaf57f2b65f42a4707b95e5dfea28027351f9fc6c207643d24bef4d9376bf8"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json",
+              "sha256": "509a9b75e389264b23380e61e84281dd3e9fea45bfc91e107ccedebfc11bd30b"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-toolchain.json",
+              "sha256": "8dd0c6f6c44aff7b5f41bb396d318024a6ad05c3b3be20e39bf6b94f06d60a0a"
+            }
+          ]
         }
       ]
     },
@@ -63,7 +99,41 @@
       "id": "integrate-suites",
       "action": "Integrate references, cases and analyzers.",
       "acceptance": "Focused deterministic tests and operator checks pass with guarded execution interfaces. Local libqasm analysis and OpenSquirrel replay admit every emitted QI payload and preserve its control sequence. Canonical runner-image arithmetic binds the prospective baseline and its replay registry.",
-      "state": "doing"
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "eeafc951cf19321ebe87c4e1c292a0452c46fae4bc80eff61b7f1f8d67be22de",
+          "result": "Canonical payloads, complete operator references, topology and output maps pass deterministic tests, runner-image byte replay and local parser/pass/control admission. Revalidated against canonical runner artifacts with 169 focused and registry tests, full Ruff and mypy, and the pinned QI compiler replay. Provider execution remains separate.",
+          "observed_at": "2026-10-27T21:46:24.737420+00:00",
+          "revision": "90586f6da8953c9f80d27c39acc4eb44f77c4642",
+          "evidence": [
+            {
+              "ref": "scripts/experiment_cases.py",
+              "sha256": "def114087d4c61c6b84ecb1f5cfd08856489dc35990035ca187ec6d599f3cf40"
+            },
+            {
+              "ref": "tests/scripts/test_experiment_cases.py",
+              "sha256": "b326f406bcd0251911950e99ba1d9d5f755a45175da0198f860a8f155f5d46b7"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-canonical.json",
+              "sha256": "b82c7f2e01d28d736f0fa1ddd594f6cd334059eb04892455be37f8398495bede"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-cases/provenance.json",
+              "sha256": "bedaf57f2b65f42a4707b95e5dfea28027351f9fc6c207643d24bef4d9376bf8"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json",
+              "sha256": "509a9b75e389264b23380e61e84281dd3e9fea45bfc91e107ccedebfc11bd30b"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-toolchain.json",
+              "sha256": "8dd0c6f6c44aff7b5f41bb396d318024a6ad05c3b3be20e39bf6b94f06d60a0a"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "retain-validation",
@@ -114,6 +184,46 @@
               "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
             }
           ]
+        },
+        {
+          "scope_sha256": "a839223c8df9d0e5da6780acdc7f8755fcc2f060f3e45f415d7fc1656bcb22c6",
+          "result": "Validation, source-bound receipts, provider observations, cases and acquisition review are retained; seed provenance and all Markdown links pass. Revalidated against canonical runner artifacts with 169 focused and registry tests, full Ruff and mypy, and the pinned QI compiler replay. Provider execution remains separate.",
+          "observed_at": "2026-10-27T21:46:24.737420+00:00",
+          "revision": "90586f6da8953c9f80d27c39acc4eb44f77c4642",
+          "evidence": [
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
+              "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
+            },
+            {
+              "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+              "sha256": "cbb4f8b6cd7b778cecf154fc98be4b1292605d66e3eb86c2dc90649235e6b452"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/provider-observation.json",
+              "sha256": "873a909ce8b6a2a0612140aa9f21238c1ae4719f5afa89d79888b3f2ea872e7c"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-canonical.json",
+              "sha256": "b82c7f2e01d28d736f0fa1ddd594f6cd334059eb04892455be37f8398495bede"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-cases/provenance.json",
+              "sha256": "bedaf57f2b65f42a4707b95e5dfea28027351f9fc6c207643d24bef4d9376bf8"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json",
+              "sha256": "509a9b75e389264b23380e61e84281dd3e9fea45bfc91e107ccedebfc11bd30b"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-toolchain.json",
+              "sha256": "8dd0c6f6c44aff7b5f41bb396d318024a6ad05c3b3be20e39bf6b94f06d60a0a"
+            }
+          ]
         }
       ]
     }
@@ -124,5 +234,41 @@
     "fano-sign-lift-investigation",
     "spectral-projection-estimands",
     "quarter-mass-amplification-conformance"
+  ],
+  "disposition": "completed",
+  "resolution": "Scoped software and bounded mathematical investigations pass canonical replay, focused and registry tests, lint, types and local compiler admission. Provider acquisition, instrument qualification and physical interpretation retain separate prerequisites.",
+  "receipts": [
+    {
+      "scope_sha256": "3dbe28cc9850d87bcedb25f4774cc5adf258c9a2596ce4c78c7fbc8c2dcac8c7",
+      "result": "Scoped software and bounded mathematical investigations pass canonical replay, focused and registry tests, lint, types and local compiler admission. Provider acquisition, instrument qualification and physical interpretation retain separate prerequisites.",
+      "observed_at": "2026-10-27T21:46:24.737420+00:00",
+      "revision": "90586f6da8953c9f80d27c39acc4eb44f77c4642",
+      "evidence": [
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/validation-canonical.json",
+          "sha256": "b82c7f2e01d28d736f0fa1ddd594f6cd334059eb04892455be37f8398495bede"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/runner-cases/provenance.json",
+          "sha256": "bedaf57f2b65f42a4707b95e5dfea28027351f9fc6c207643d24bef4d9376bf8"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json",
+          "sha256": "509a9b75e389264b23380e61e84281dd3e9fea45bfc91e107ccedebfc11bd30b"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/runner-toolchain.json",
+          "sha256": "8dd0c6f6c44aff7b5f41bb396d318024a6ad05c3b3be20e39bf6b94f06d60a0a"
+        },
+        {
+          "ref": "docs/design/quantum-experiment-conformance.md",
+          "sha256": "ca73bafcf4a2481b2e7a4919043b1f2d375568cf3f5feb0d65fd5077223f9f88"
+        },
+        {
+          "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+          "sha256": "cbb4f8b6cd7b778cecf154fc98be4b1292605d66e3eb86c2dc90649235e6b452"
+        }
+      ]
+    }
   ]
 }
