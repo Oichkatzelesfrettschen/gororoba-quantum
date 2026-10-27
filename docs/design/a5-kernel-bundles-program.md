@@ -229,3 +229,9 @@ flag, or labeled as an argument in the README and ledger.
 
 After the fixes, rerun every `--out`, `--self-test` (normal and -O), every `test_*.py`, ruff, mypy, and record a
 ledger row per fix. The same rules as before apply: no staging or commits, the orchestrator reviews and commits.
+
+Verifier result (committed 1fbddb2): [verification.md](../evidence/a5-kernel-bundles/verification.md) confirms all five
+statements from cd_core at independent moved points; no refutation. Add to Round 2: link `verification.md` from the
+evidence README (one sentence naming it as the independent verification), and state in the README the convention
+under which the central weights are quoted (the verifier's weights are -(w + t) of the record's, with
+R_(e16) = -(Y_Phi + J) and L_(e16) = -Phi on the base). Do not edit the verifier's three files.
