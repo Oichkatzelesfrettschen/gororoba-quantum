@@ -448,6 +448,10 @@ def documents(job: Job) -> dict[str, bytes]:
             "family_alpha": 0.01,
             "interpretation": "compilation dependence of one logical setting's analyzer response",
         }
+        # The REPLICATION_DRAW jobs' retained manifests, whose digests their submissions and plan
+        # ascella-replication-meshes-case bind, carry this new-seed block and rule text as built; that plan,
+        # replication-offsets.json and ascella_replication_score.py are their analysis contract, and compilation_seeds
+        # states their full skip set.
         if job.seed_draw != SEED_DRAW:
             seed_record["rule"] += ", job-02's seeds skipped, from usable value draw_start"
             seed_record["draw_start"] = job.draw_start

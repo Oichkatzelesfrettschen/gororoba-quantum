@@ -26,3 +26,15 @@ The cases digest is
 The token's Ascella totals moved to 15 jobs, 1,860 seconds and 9.24576 free
 credits. The preregistered score reads this run with job-06 in
 [`replication-score.json`](../../../../docs/evidence/ascella-order-coefficients/replication-score.json).
+
+**Manifest provenance.** This run's `cases.json`, as submitted, names
+`ascella-new-seed-meshes-case.json` and `new-mesh-offsets.json` under
+`preregistered`, and its seed rule mentions job-02's seeds alone. The request
+builder writes that block for every job seeded from a draw other than job-02's.
+The bytes stay as submitted, because their digest binds the submission and the
+score's acquisition check. The analysis contract is plan
+[`ascella-replication-meshes-case`](../../../../docs/state/plans/ascella-replication-meshes-case.json),
+with
+[`replication-offsets.json`](../../../../docs/evidence/ascella-order-coefficients/replication-offsets.json)
+and `scripts/ascella_replication_score.py`. The seeds skip every seed of jobs
+02, 04 and 05 (`ascella_coherence_request.compilation_seeds`).

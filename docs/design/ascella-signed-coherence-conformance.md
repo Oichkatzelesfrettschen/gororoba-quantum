@@ -2000,6 +2000,11 @@ The outcomes are, in order:
 7. bounded, when both upper shares lie below P-B's new-seed share of 10.5 %;
 8. inconclusive.
 
+The replication manifests, as built and submitted, carry the new-seed
+`preregistered` block and seed-rule text. This plan, which binds their
+digests, is their analysis contract, and `compilation_seeds` states their full
+skip set.
+
 Under `ascella_new_seed_sizing.branch`, with the new-seed counting variance,
 96 + 96 iterations give 168 meshes. The critical r is 0.199. Power is 0.946
 at a latent r of 0.318 and 0.741 at 0.25.
