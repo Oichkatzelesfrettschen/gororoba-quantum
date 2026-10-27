@@ -88,6 +88,34 @@
             }
           ],
           "scope_sha256": "40069b3f8f1ec9be0902197ebda84401ce7b7d4fc61bc7ccb4c41741d0723d8e"
+        },
+        {
+          "result": "Revalidated over frozen inventories from main d333878: 81 Quandela runs (six provider-error iterations unavailable), 392 Quantum Inspire results, 776 IQM circuits and 59 IBM jobs replay with --check.",
+          "observed_at": "2026-10-27T21:52:46+00:00",
+          "revision": "8776ac4a21961a9adfae181b412c379815f50868",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+              "sha256": "84b9d15ea4a58a67a1832d4c77a4026617c1f4f0b113fe6eab6edd9253bcef9b"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.json",
+              "sha256": "a5f4b993cfab92216dff4a2e7309f0806aa559730a1180af2d35f9cf77b6b969"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.py",
+              "sha256": "167b0156a16b38866e2c96fe276aa91bdeed844464267986d41d446443b00409"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.json",
+              "sha256": "2175aa93e4244b36fb7068566b86347d593f9ed3bde8b5f612f7a6c3e606ffeb"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/README.md",
+              "sha256": "65029ef3a5d5f8a93c1e1f3eca2a59bd78ed8827f4c8b5cd9ddad6475fd550d0"
+            }
+          ],
+          "scope_sha256": "40069b3f8f1ec9be0902197ebda84401ce7b7d4fc61bc7ccb4c41741d0723d8e"
         }
       ]
     },
@@ -165,6 +193,22 @@
             {
               "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.json",
               "sha256": "d5a5aff861f8fa7032516df33c815ddc6f683bc9581a7ae2b394717091f309c8"
+            }
+          ],
+          "scope_sha256": "0dd0e47dba14ef614ef8d56c07b5c607869527c12346cd4481e78daad0ba9ee6"
+        },
+        {
+          "result": "Revalidated: pooled sensitivity over its frozen six-run inventory replays with --check; root-cause conclusions invariant.",
+          "observed_at": "2026-10-27T21:52:46+00:00",
+          "revision": "8776ac4a21961a9adfae181b412c379815f50868",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.py",
+              "sha256": "f42c62782b6b27be7bb95ab0edd8289df44030b41fb1166611df0635fa3c5e92"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.json",
+              "sha256": "eaea41cf0445a8e0fff26f25c9517c499e939196115a76197af717da6d299253"
             }
           ],
           "scope_sha256": "0dd0e47dba14ef614ef8d56c07b5c607869527c12346cd4481e78daad0ba9ee6"
