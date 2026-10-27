@@ -299,14 +299,9 @@ def _mutation_task(mutation: str) -> tuple[str, dict[str, Any]]:
 
 
 def build_record() -> dict[str, Any]:
-    baseline = transition_atlas_checks()
-    mutations = dict(
-        parallel.ordered_map(
-            _mutation_task,
-            ["drop_matrix_entry", "perturb_transition", "transpose_metric"],
-            min_items=1,
-        )
-    )
+    records = dict(parallel.ordered_map(_mutation_task, list(MUTATIONS), min_items=1))
+    baseline = records[""]
+    mutations = {mutation: records[mutation] for mutation in MUTATIONS if mutation}
     matrix_mutation = mutations["drop_matrix_entry"]
     transition_mutation = mutations["perturb_transition"]
     metric_mutation = mutations["transpose_metric"]

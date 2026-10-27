@@ -50,6 +50,7 @@ SOURCE_PATHS = (
 )
 
 RationalMatrix: TypeAlias = tuple[tuple[Fraction, ...], ...]
+GaussianPoint: TypeAlias = tuple[independent.Gq, ...]
 PointTask = tuple[str, str, tuple[Fraction, ...], str]
 
 
@@ -60,6 +61,42 @@ def _require(condition: bool, message: str) -> None:
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _mostow_x_core_split(orbit_name: str) -> GaussianPoint:
+    """Return an explicit Mostow-adapted X core point in split coordinates."""
+    if orbit_name not in ("X+", "X-"):
+        raise ValueError(f"the Mostow-adapted core is defined only for an X branch, not {orbit_name!r}")
+    imaginary_unit = independent.Gq(Fraction(0), Fraction(1))
+    original = [independent.Gq() for _index in range(15)]
+    original[0] = independent.Gq(1)
+    original[1] = -imaginary_unit
+    original[2] = independent.Gq(1)
+    if orbit_name == "X+":
+        original[8] = -imaginary_unit
+        original[9] = independent.Gq(-1)
+        original[10] = imaginary_unit
+    else:
+        original[8] = imaginary_unit
+        original[9] = independent.Gq(1)
+        original[10] = -imaginary_unit
+    return tuple(
+        value * independent.i_pow(-independent.popcount(index)) for index, value in enumerate(original, start=1)
+    )
+
+
+def _gaussian_split_from_rational(point: Sequence[Fraction]) -> GaussianPoint:
+    return tuple(independent.Gq(value) for value in point)
+
+
+def _real_from_gaussian_split(point: Sequence[independent.Gq]) -> tuple[Fraction, ...]:
+    _require(len(point) == 15, "a split point needs fifteen coordinates")
+    real_point = [Fraction(0)] * 32
+    for index, value in enumerate(point, start=1):
+        original = independent.i_pow(independent.popcount(index)) * value
+        real_point[index] = original.re
+        real_point[16 + index] = original.im
+    return tuple(real_point)
 
 
 def _matrix_rank(matrix: Sequence[Sequence[Fraction]]) -> int:
@@ -182,16 +219,26 @@ def _representation_data(
     }
 
 
-def _row(task: PointTask) -> dict[str, Any]:
-    orbit_name, move_name, split_point, mutation = task
-    point = tuple(symmetry.equations.y_from_split(split_point))
+def _direct_tangent_rank_real(point: Sequence[Fraction]) -> int:
+    tangent_vectors = [ranks._direct_derivation_tangent(derivation, point) for derivation in ranks.COMPACT_DERIVATIONS]
+    tangent_vectors.append(ranks._phase_tangent(point))
+    return symmetry.equations.qrank(tangent_vectors)
+
+
+def _analyze_point(
+    orbit_name: str,
+    move_name: str,
+    split_point: GaussianPoint,
+    point: tuple[Fraction, ...],
+    mutation: str,
+) -> dict[str, Any]:
     tangent_rank, coefficient_rows, base_stabilizers, domain_stabilizers = _compact_data(point, mutation)
     point_fixed = parallel.ordered_map(
         _point_fixed_task,
         [(matrix, point) for matrix in base_stabilizers],
         min_items=1,
     )
-    independent_tangent_rank = ranks._direct_tangent_rank(split_point, "")
+    independent_tangent_rank = _direct_tangent_rank_real(point)
     if mutation == "include_moving_direction":
         return {
             "orbit": orbit_name,
@@ -301,6 +348,19 @@ def _row(task: PointTask) -> dict[str, Any]:
     }
 
 
+def _row(task: PointTask) -> dict[str, Any]:
+    orbit_name, move_name, rational_split_point, mutation = task
+    split_point = _gaussian_split_from_rational(rational_split_point)
+    point = tuple(symmetry.equations.y_from_split(rational_split_point))
+    return _analyze_point(orbit_name, move_name, split_point, point, mutation)
+
+
+def _mostow_core_row(orbit_name: str) -> dict[str, Any]:
+    split_point = _mostow_x_core_split(orbit_name)
+    point = _real_from_gaussian_split(split_point)
+    return _analyze_point(orbit_name, "Mostow-adapted core", split_point, point, "")
+
+
 def _point_fixed_task(task: tuple[RationalMatrix, tuple[Fraction, ...]]) -> bool:
     matrix, point = task
     return not any(stabilizer._matrix_vector(matrix, point))
@@ -354,6 +414,7 @@ def build_record(mutation: str = "") -> dict[str, Any]:
         }
 
     rows = parallel.ordered_map(_row, _normal_tasks(), min_items=1)
+    core_rows = parallel.ordered_map(_mostow_core_row, ["X+", "X-"], min_items=1)
     positive_rows = [row for row in rows if row["stabilizer_dimension"] > 0]
     trivial_rows = [row for row in rows if row["stabilizer_dimension"] == 0]
     signatures = sorted({_row_signature(row) for row in positive_rows}, key=str)
@@ -362,8 +423,10 @@ def build_record(mutation: str = "") -> dict[str, Any]:
         "mutation": None,
         "inputs": {str(path.relative_to(ROOT)): _sha256(path) for path in SOURCE_PATHS},
         "rows": rows,
+        "mostow_adapted_core_rows": core_rows,
         "summary": {
             "fixtures": len(rows),
+            "mostow_adapted_core_fixtures": len(core_rows),
             "trivial_connected_stabilizer_fixtures": len(trivial_rows),
             "positive_dimensional_stabilizer_fixtures": len(positive_rows),
             "positive_dimensional_representation_signatures": [list(signature) for signature in signatures],
@@ -371,10 +434,16 @@ def build_record(mutation: str = "") -> dict[str, Any]:
         },
         "scope": (
             "The rows classify the connected stabilizers and fiber representations at the recorded representative "
-            "and three exact noncompact moves per complex orbit. They do not by themselves prove that these are all "
-            "compact stabilizer strata."
+            "and three exact noncompact moves per complex orbit. The two additional core rows compute the X fiber "
+            "at explicit Mostow-adapted points. They do not by themselves prove that these are all compact "
+            "stabilizer strata."
         ),
-        "pass": all(row["pass"] for row in rows) and bool(positive_rows) and bool(trivial_rows),
+        "pass": (
+            all(row["pass"] for row in rows)
+            and all(row["pass"] and row["representation"]["decomposition"] == "2 V_0 + V_1" for row in core_rows)
+            and bool(positive_rows)
+            and bool(trivial_rows)
+        ),
     }
 
 
@@ -389,6 +458,13 @@ def self_test() -> None:
         min_items=1,
     )
     _require(normal["pass"], "normal stabilizer and fiber sample record failed")
+    _require(
+        all(
+            row["move"] == "Mostow-adapted core" and row["representation"]["decomposition"] == "2 V_0 + V_1"
+            for row in normal["mostow_adapted_core_rows"]
+        ),
+        "a Mostow-adapted X core has the wrong fiber representation",
+    )
     _require(not moving_mutation["pass"], "moving-direction mutation survived")
     _require(
         not all(moving_mutation["rows"][0]["point_fixed"]),

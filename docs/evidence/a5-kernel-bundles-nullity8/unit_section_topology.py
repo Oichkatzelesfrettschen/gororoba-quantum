@@ -26,6 +26,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import compact_orbit_ranks as compact_ranks  # noqa: E402
 import kernel_symmetry as symmetry  # noqa: E402
+import remaining_orbit_moduli as remaining_moduli  # noqa: E402
 import stabilizer_fiber_samples as samples  # noqa: E402
 import stabilizer_representation as stabilizer  # noqa: E402
 import stabilizer_strata as strata  # noqa: E402
@@ -42,8 +43,10 @@ FULL_COMPACT_DIMENSION = 16
 SOURCE_PATHS = (
     HERE / "unit_section_topology.py",
     HERE / "compact_orbit_ranks.py",
+    HERE / "remaining_orbit_moduli.py",
     HERE / "stabilizer_fiber_samples.py",
     HERE / "stabilizer_strata.py",
+    HERE / "w8_orbit_moduli.py",
     KERNEL_BUNDLES / "nullity-sixteen-bundle-result.json",
     KERNEL_BUNDLES / "kernel_symmetry.py",
     REGULARITY / "strata_regularity.py",
@@ -53,6 +56,7 @@ SOURCE_PATHS = (
 RationalMatrix: TypeAlias = tuple[tuple[Fraction, ...], ...]
 GaussianPoint: TypeAlias = tuple[independent.Gq, ...]
 AbelianGroup: TypeAlias = tuple[int, tuple[int, ...]]
+CompactFixture: TypeAlias = tuple[str, tuple[Fraction, ...], GaussianPoint, str]
 
 
 def _require(condition: bool, message: str) -> None:
@@ -275,6 +279,13 @@ def _compact_boost_tangent(point: Sequence[independent.Gq]) -> tuple[Fraction, .
 
 
 def _compact_point(orbit_name: str) -> tuple[tuple[Fraction, ...], GaussianPoint, str]:
+    if orbit_name in ("X+", "X-"):
+        split_point = samples._mostow_x_core_split(orbit_name)
+        return (
+            samples._real_from_gaussian_split(split_point),
+            split_point,
+            "Mostow-adapted core point",
+        )
     if orbit_name != "Iso":
         split_point = tuple(Fraction(value) for value in independent.REPS[orbit_name])
         return (
@@ -288,16 +299,20 @@ def _compact_point(orbit_name: str) -> tuple[tuple[Fraction, ...], GaussianPoint
     return tuple(real_point), tuple(split_point), "coassociative core point"
 
 
-def _compact_stabilizer_row(task: tuple[str, str]) -> dict[str, Any]:
-    orbit_name, mutation = task
-    real_point, split_point, point_label = _compact_point(orbit_name)
+def _compact_fixtures() -> tuple[CompactFixture, ...]:
+    return tuple((orbit_name, *_compact_point(orbit_name)) for orbit_name in ORBIT_NAMES)
+
+
+def _compact_stabilizer_row(task: tuple[CompactFixture, str]) -> dict[str, Any]:
+    fixture, mutation = task
+    orbit_name, real_point, split_point, point_label = fixture
+    if mutation not in ("", "delete_boost"):
+        raise ValueError(f"unknown compact mutation {mutation!r}")
     compact = stabilizer._compact_triples()
     tangent_columns = [stabilizer._matrix_vector(triple[0], real_point) for _name, triple in compact]
     boost_tangent = _compact_boost_tangent(split_point)
-    if mutation != "delete_boost":
+    if mutation == "":
         tangent_columns.append(boost_tangent)
-    elif mutation != "delete_boost":
-        raise ValueError(f"unknown compact mutation {mutation!r}")
     generator_count = len(tangent_columns)
     tangent_rank = symmetry._rank(tangent_columns)
     tangent_rows = [[tangent_columns[column][row] for column in range(generator_count)] for row in range(32)]
@@ -341,13 +356,152 @@ def _compact_stabilizer_row(task: tuple[str, str]) -> dict[str, Any]:
             if generator_count == FULL_COMPACT_DIMENSION
             else [[str(row[14])] for row in coefficients]
         ),
-        "boost_adds_tangent_dimension": compact_ranks._direct_tangent_rank(
-            tuple(Fraction(value.re) for value in split_point), ""
-        )
-        < tangent_rank
-        if all(value.im == 0 for value in split_point)
-        else tangent_rank == 15,
+        "boost_adds_tangent_dimension": tangent_rank > _k0_rank,
         "pass": compact_type in ("SU(2)", "U(1)"),
+    }
+
+
+def _linear_vector(*terms: tuple[sp.Expr, Sequence[sp.Expr]]) -> tuple[sp.Expr, ...]:
+    return tuple(
+        sum((coefficient * vector[index] for coefficient, vector in terms), sp.Integer(0)) for index in range(7)
+    )
+
+
+def _external_invariant_differences(real_point: Sequence[Fraction], orbit_name: str) -> dict[str, sp.Expr]:
+    phase_real, phase_imaginary, boost_real, boost_imaginary = sp.symbols("a b c d", real=True)
+    state = remaining_moduli._state_from_real_coordinates(real_point)
+    first_real, first_imaginary, second_real, second_imaginary = remaining_moduli._frame(state)
+    boosted_first_real = _linear_vector((boost_real, first_real), (boost_imaginary, second_real))
+    boosted_first_imaginary = _linear_vector((boost_real, first_imaginary), (boost_imaginary, second_imaginary))
+    boosted_second_real = _linear_vector((-boost_imaginary, first_real), (boost_real, second_real))
+    boosted_second_imaginary = _linear_vector((-boost_imaginary, first_imaginary), (boost_real, second_imaginary))
+    transformed_frame = (
+        _linear_vector((phase_real, boosted_first_real), (-phase_imaginary, boosted_first_imaginary)),
+        _linear_vector((phase_imaginary, boosted_first_real), (phase_real, boosted_first_imaginary)),
+        _linear_vector((phase_real, boosted_second_real), (-phase_imaginary, boosted_second_imaginary)),
+        _linear_vector((phase_imaginary, boosted_second_real), (phase_real, boosted_second_imaginary)),
+    )
+    transformed_state = tuple(
+        [
+            *(coordinate for vector in transformed_frame for coordinate in vector),
+            phase_real * state[28] - phase_imaginary * state[29],
+            phase_imaginary * state[28] + phase_real * state[29],
+        ]
+    )
+    return {
+        name: sp.expand(function(transformed_state) - function(state))
+        for name, function in remaining_moduli._invariant_functions(orbit_name, "")
+    }
+
+
+def _remainder(expression: sp.Expr, relations: Sequence[sp.Expr]) -> sp.Expr:
+    phase_real, phase_imaginary, boost_real, boost_imaginary = sp.symbols("a b c d", real=True)
+    basis = sp.groebner(relations, phase_real, phase_imaginary, boost_real, boost_imaginary)
+    return sp.factor(basis.reduce(sp.expand(expression))[1])
+
+
+def _all_zero(expressions: Sequence[sp.Expr], relations: Sequence[sp.Expr]) -> bool:
+    return all(_remainder(expression, relations) == 0 for expression in expressions)
+
+
+def _external_component_row(task: tuple[CompactFixture, dict[str, Any]]) -> dict[str, Any]:
+    fixture, compact_row = task
+    orbit_name, real_point, _split_point, point_label = fixture
+    differences = _external_invariant_differences(real_point, orbit_name)
+    phase_real, phase_imaginary, boost_real, boost_imaginary = sp.symbols("a b c d", real=True)
+    circle_relations = (
+        phase_real**2 + phase_imaginary**2 - 1,
+        boost_real**2 + boost_imaginary**2 - 1,
+    )
+    decisive: dict[str, str]
+    if orbit_name == "W8":
+        gram_remainder = _remainder(differences["gram_11"], circle_relations)
+        branch_relations = (boost_real**2 + boost_imaginary**2 - 1,)
+        branches_preserve_all = all(
+            _all_zero(
+                [expression.subs({phase_real: phase_sign, phase_imaginary: 0}) for expression in differences.values()],
+                branch_relations,
+            )
+            for phase_sign in (-1, 1)
+        )
+        decisive = {"gram_11_remainder": sp.sstr(gram_remainder)}
+        external_image = "{phase=+1,phase=-1} x S^1_boost"
+        component_group = "Z/2"
+        certificate_pass = gram_remainder == phase_imaginary**2 and branches_preserve_all
+        image_connected = False
+    elif orbit_name == "E8bar":
+        phase_fixed_differences = {
+            name: sp.expand(expression.subs({phase_real: 1, phase_imaginary: 0}))
+            for name, expression in differences.items()
+        }
+        boost_relation = (boost_real**2 + boost_imaginary**2 - 1,)
+        gram_remainder = _remainder(phase_fixed_differences["gram_14"], boost_relation)
+        form_remainder = _remainder(phase_fixed_differences["phi_123"], boost_relation)
+        decisive = {
+            "mu_real_difference": sp.sstr(sp.factor(differences["mu_real"])),
+            "mu_imaginary_difference": sp.sstr(sp.factor(differences["mu_imaginary"])),
+            "gram_14_remainder_after_phase_fixing": sp.sstr(gram_remainder),
+            "phi_123_remainder_after_phase_fixing": sp.sstr(form_remainder),
+        }
+        external_image = "identity"
+        component_group = "0"
+        certificate_pass = (
+            differences["mu_real"] == -4 * phase_imaginary
+            and differences["mu_imaginary"] == 4 * (phase_real - 1)
+            and gram_remainder == 15 * boost_imaginary**2
+            and form_remainder == boost_real - 1
+            and all(
+                expression.subs({phase_real: 1, phase_imaginary: 0, boost_real: 1, boost_imaginary: 0}) == 0
+                for expression in differences.values()
+            )
+        )
+        image_connected = True
+    elif orbit_name == "Iso":
+        all_torus_preserves = _all_zero(list(differences.values()), circle_relations)
+        decisive = {"all_invariant_remainders_vanish": str(all_torus_preserves).lower()}
+        external_image = "S^1_phase x S^1_boost"
+        component_group = "0"
+        certificate_pass = all_torus_preserves
+        image_connected = True
+    else:
+        branch_sign = 1 if orbit_name == "X+" else -1
+        normal_equation = phase_real * boost_imaginary + branch_sign * phase_imaginary * boost_real
+        graph_equation = phase_real * boost_real - branch_sign * phase_imaginary * boost_imaginary - 1
+        phi_123_remainder = _remainder(differences["phi_123"], circle_relations)
+        phi_124_remainder = _remainder(differences["phi_124"], circle_relations)
+        graph_substitution = {
+            boost_real: phase_real,
+            boost_imaginary: -phase_imaginary if orbit_name == "X+" else phase_imaginary,
+        }
+        graph_preserves_all = _all_zero(
+            [expression.subs(graph_substitution) for expression in differences.values()],
+            (phase_real**2 + phase_imaginary**2 - 1,),
+        )
+        decisive = {
+            "phi_123_remainder": sp.sstr(phi_123_remainder),
+            "phi_124_remainder": sp.sstr(phi_124_remainder),
+        }
+        external_image = "phase+boost=0 graph circle" if orbit_name == "X+" else "boost-phase=0 graph circle"
+        component_group = "0"
+        expected_phi_124 = -2 * graph_equation if orbit_name == "X+" else 2 * graph_equation
+        certificate_pass = (
+            sp.expand(phi_123_remainder - 2 * normal_equation) == 0
+            and sp.expand(phi_124_remainder - expected_phi_124) == 0
+            and graph_preserves_all
+        )
+        image_connected = True
+    pointwise_compact_fiber_connected = compact_row["connected_compact_stabilizer"] in ("SU(2)", "U(1)")
+    return {
+        "orbit": orbit_name,
+        "point": point_label,
+        "complete_invariant_count": len(differences),
+        "external_image": external_image,
+        "external_image_connected": image_connected,
+        "pointwise_compact_fiber_connected": pointwise_compact_fiber_connected,
+        "pointwise_compact_fiber_source": compact_row["connected_compact_stabilizer"],
+        "component_group": component_group,
+        "decisive_invariant_identities": decisive,
+        "pass": certificate_pass and pointwise_compact_fiber_connected,
     }
 
 
@@ -478,7 +632,8 @@ def _topology_inputs(stiefel_boundary: int) -> dict[str, Any]:
     }
 
 
-def _core_record(mutation: str) -> dict[str, Any]:
+def _core_record(task: tuple[str, tuple[CompactFixture, ...]]) -> dict[str, Any]:
+    mutation, compact_fixtures = task
     if mutation not in ("", "delete_boost", "stiefel_euler_boundary_one"):
         raise ValueError(f"unknown mutation {mutation!r}")
     compact_mutation = "delete_boost" if mutation == "delete_boost" else ""
@@ -486,15 +641,22 @@ def _core_record(mutation: str) -> dict[str, Any]:
     complex_rows = parallel.ordered_map(_complex_stabilizer_row, list(ORBIT_NAMES), min_items=1)
     compact_rows = parallel.ordered_map(
         _compact_stabilizer_row,
-        [(orbit_name, compact_mutation) for orbit_name in ORBIT_NAMES],
+        [(fixture, compact_mutation) for fixture in compact_fixtures],
         min_items=1,
     )
     complex_by_orbit = {row["orbit"]: row for row in complex_rows}
     compact_by_orbit = {row["orbit"]: row for row in compact_rows}
+    component_rows = parallel.ordered_map(
+        _external_component_row,
+        [(fixture, compact_by_orbit[fixture[0]]) for fixture in compact_fixtures],
+        min_items=1,
+    )
+    components_by_orbit = {row["orbit"]: row for row in component_rows}
     orbit_models = []
     for orbit_name in ORBIT_NAMES:
         complex_row = complex_by_orbit[orbit_name]
         compact_row = compact_by_orbit[orbit_name]
+        component_row = components_by_orbit[orbit_name]
         observed_compact_dimension = int(compact_row["compact_stabilizer_dimension"])
         maximal_compact_dimension = int(complex_row["maximal_compact_dimension"])
         external_torus_rank = int(complex_row["external_torus_projection_rank"])
@@ -525,10 +687,17 @@ def _core_record(mutation: str) -> dict[str, Any]:
                 "remaining_external_torus_rank": remaining_torus_rank,
                 "expected_compact_stabilizer_dimension": expected_compact_dimension,
                 "fixture_is_mostow_adapted": observed_compact_dimension == maximal_compact_dimension,
+                "compact_stabilizer_component_group": component_row["component_group"],
+                "core_construction": (
+                    "mapping torus of V_2(R^7) with identity monodromy"
+                    if orbit_name == "W8"
+                    else "connected maximal-compact homogeneous quotient"
+                ),
                 "pass": (
                     maximal_compact_dimension == expected_compact_dimension
                     and core != "unclassified"
                     and core_dimension == FULL_COMPACT_DIMENSION - maximal_compact_dimension
+                    and component_row["pass"]
                 ),
             }
         )
@@ -537,11 +706,13 @@ def _core_record(mutation: str) -> dict[str, Any]:
         "mutation": mutation or None,
         "complex_stabilizers": complex_rows,
         "compact_stabilizers": compact_rows,
+        "compact_stabilizer_components": component_rows,
         "orbit_models": orbit_models,
         "topology_inputs": topology,
         "pass": (
             all(row["pass"] for row in complex_rows)
             and all(row["pass"] for row in compact_rows)
+            and all(row["pass"] for row in component_rows)
             and all(row["pass"] for row in orbit_models)
             and all(row["compact_generator_count"] == FULL_COMPACT_DIMENSION for row in compact_rows)
             and topology["stiefel_factor"]["authority_matches"]
@@ -549,17 +720,22 @@ def _core_record(mutation: str) -> dict[str, Any]:
     }
 
 
-def _mutation_core(mutation: str) -> dict[str, Any]:
-    return _core_record(mutation)
+def _core_record_task(task: tuple[str, tuple[CompactFixture, ...]]) -> tuple[str, dict[str, Any]]:
+    mutation, _compact_fixtures_value = task
+    return mutation, _core_record(task)
 
 
 def build_record() -> dict[str, Any]:
-    baseline = _core_record("")
-    mutations = parallel.ordered_map(
-        _mutation_core,
-        ["delete_boost", "stiefel_euler_boundary_one"],
-        min_items=1,
+    compact_fixtures = _compact_fixtures()
+    records = dict(
+        parallel.ordered_map(
+            _core_record_task,
+            [(mutation, compact_fixtures) for mutation in ("", "delete_boost", "stiefel_euler_boundary_one")],
+            min_items=1,
+        )
     )
+    baseline = records[""]
+    mutations = [records["delete_boost"], records["stiefel_euler_boundary_one"]]
     mutation_control = {
         "delete_boost": {
             "detected": not mutations[0]["pass"],

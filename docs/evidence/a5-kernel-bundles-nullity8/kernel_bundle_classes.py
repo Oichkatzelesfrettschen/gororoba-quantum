@@ -19,6 +19,8 @@ from fractions import Fraction
 from pathlib import Path
 from typing import Any, TypeAlias
 
+import sympy as sp
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 KERNEL_BUNDLES = HERE.parent / "a5-kernel-bundles"
@@ -127,8 +129,10 @@ def _load_inputs(mutation: str) -> tuple[dict[str, dict[str, Any]], dict[str, st
         mutated["kernel_symmetry"]["lie_algebra"]["decomposition"]["base_phase_lift"] = 0
         mutation_record["target"] = "constant base-phase lift multiplicity"
     elif mutation == "remove_e8_path_dependence":
-        incidence = next(value for value in mutated["boundary"]["incidences"] if value["high_orbit"] == "E8bar")
-        incidence["comparison"]["path_dependent"] = False
+        incidence = next(value for value in mutated["boundary"]["incidences"] if value["incidence"] == "E8bar->B9")
+        reference_plane = copy.deepcopy(incidence["approaches"][0]["kernel_limit"]["limiting_plane_rref"])
+        for approach in incidence["approaches"]:
+            approach["kernel_limit"]["limiting_plane_rref"] = copy.deepcopy(reference_plane)
         mutation_record["target"] = incidence["incidence"]
     return mutated, digests, mutation_record
 
@@ -163,10 +167,12 @@ def _phase_certificate(kernel_symmetry: dict[str, Any], mutation: str) -> dict[s
 
 
 def _representation_counts(fiber_samples: dict[str, Any]) -> dict[str, dict[str, Any]]:
-    rows = [row for row in fiber_samples["rows"] if row["move"] == "representative"]
+    representative_rows = [row for row in fiber_samples["rows"] if row["move"] == "representative"]
+    core_rows = fiber_samples["mostow_adapted_core_rows"]
     output: dict[str, dict[str, Any]] = {}
     for orbit in ("W8", "E8bar", "X+", "X-"):
-        row = next(value for value in rows if value["orbit"] == orbit)
+        source_rows = core_rows if orbit in ("X+", "X-") else representative_rows
+        row = next(value for value in source_rows if value["orbit"] == orbit)
         decomposition = row["representation"]["irreducible_decomposition"]
         trivial_lines = sum(int(value["multiplicity"]) for value in decomposition if int(value["highest_weight"]) == 0)
         standard_doublets = sum(
@@ -184,6 +190,7 @@ def _representation_counts(fiber_samples: dict[str, Any]) -> dict[str, dict[str,
             ),
             "equivariant_automorphism_group_connected": not unsupported,
             "source_decomposition": row["representation"]["decomposition"],
+            "source_point": row["move"],
             "unsupported_irreducibles": unsupported,
         }
     return output
@@ -197,6 +204,7 @@ def _integer_pair(row: Sequence[str]) -> tuple[int, int]:
 
 def _external_circle_data(topology: dict[str, Any]) -> dict[str, dict[str, Any]]:
     output: dict[str, dict[str, Any]] = {}
+    component_rows = {row["orbit"]: row for row in topology["compact_stabilizer_components"]}
     for row in topology["complex_stabilizers"]:
         orbit = str(row["orbit"])
         nonzero_rows = [
@@ -215,32 +223,64 @@ def _external_circle_data(topology: dict[str, Any]) -> dict[str, dict[str, Any]]
             "nonzero_projection_rows": [list(value) for value in nonzero_rows],
             "primitive_projection_rows": [list(value) for value in primitive_rows],
             "phase_circle_supplies_primitive_quotient": phase_supplies_quotient,
+            "full_compact_external_image": component_rows[orbit]["external_image"],
+            "compact_stabilizer_component_group": component_rows[orbit]["component_group"],
+            "full_compact_component_certificate_passes": component_rows[orbit]["pass"],
         }
     return output
 
 
+def _limiting_plane_from_approach(approach: dict[str, Any]) -> sp.Matrix:
+    return sp.Matrix(
+        [
+            [sp.sympify(value, locals={"I": sp.I}) for value in row]
+            for row in approach["kernel_limit"]["limiting_plane_rref"]
+        ]
+    )
+
+
+def _planes_equal(first: sp.Matrix, second: sp.Matrix) -> bool:
+    return first.rank() == 4 and second.rank() == 4 and sp.Matrix.vstack(first, second).rank() == 4
+
+
 def _sheet_data(boundary: dict[str, Any]) -> dict[str, Any]:
     incidences = [value for value in boundary["incidences"] if value["high_orbit"] == "E8bar"]
-    sheet_comparisons = [
-        value["comparison"]["sheet_comparison"]
-        for value in incidences
-        if value["comparison"]["sheet_comparison"] is not None
-    ]
+    recomputed_rows = []
+    for incidence in incidences:
+        approaches = incidence["approaches"]
+        planes = [_limiting_plane_from_approach(approach) for approach in approaches]
+        path_dependent = any(
+            not _planes_equal(planes[left_index], planes[right_index])
+            for left_index in range(len(planes))
+            for right_index in range(left_index + 1, len(planes))
+        )
+        sheet_indices = [
+            index
+            for index, approach in enumerate(approaches)
+            if str(approach["approach"]).startswith("middle-coordinate-sheet")
+        ]
+        sheet_limits_equal = None
+        if len(sheet_indices) == 2:
+            sheet_limits_equal = _planes_equal(planes[sheet_indices[0]], planes[sheet_indices[1]])
+        recomputed_rows.append(
+            {
+                "incidence": incidence["incidence"],
+                "path_dependent": path_dependent,
+                "recorded_path_dependent": incidence["comparison"]["path_dependent"],
+                "recorded_comparison_matches": path_dependent == incidence["comparison"]["path_dependent"],
+                "sheet_limits_equal": sheet_limits_equal,
+            }
+        )
+    sheet_rows = [row for row in recomputed_rows if row["sheet_limits_equal"] is not None]
     return {
         "incidence_count": len(incidences),
-        "path_dependent_incidence_count": sum(bool(value["comparison"]["path_dependent"]) for value in incidences),
-        "explicit_middle_coordinate_sheet_comparisons": len(sheet_comparisons),
-        "explicit_middle_coordinate_sheet_limits_equal": all(
-            value["sheet_limits_equal"] for value in sheet_comparisons
+        "path_dependent_incidence_count": sum(bool(row["path_dependent"]) for row in recomputed_rows),
+        "recorded_comparisons_match_recomputed_planes": all(
+            row["recorded_comparison_matches"] for row in recomputed_rows
         ),
-        "incidences": [
-            {
-                "incidence": value["incidence"],
-                "path_dependent": value["comparison"]["path_dependent"],
-                "sheet_comparison": value["comparison"]["sheet_comparison"],
-            }
-            for value in incidences
-        ],
+        "explicit_middle_coordinate_sheet_comparisons": len(sheet_rows),
+        "explicit_middle_coordinate_sheet_limits_equal": all(row["sheet_limits_equal"] for row in sheet_rows),
+        "incidences": recomputed_rows,
     }
 
 
@@ -261,14 +301,19 @@ def _classification_row(task: tuple[str, dict[str, dict[str, Any]], int]) -> dic
     if orbit == "Iso":
         return {
             "orbit": display_name,
+            "row_status": "inferred from the graph-torus section and standard topology inputs",
             "compact_core": "G_2",
             "ordinary_complex_bundle": "C^4",
             "ordinary_classification": "trivial",
             "ordinary_classification_status": "inferred from the graph-torus section",
             "reduced_K0": "Z",
-            "reduced_K_class": {"free": [0], "torsion": []},
+            "reduced_K0_status": "inferred from the Hodgkin K-group input",
+            "reduced_K_class": {"status": "inferred", "free": [0], "torsion": []},
             "structure_group_reduction": "identity after the graph-section trivialization",
+            "structure_group_reduction_status": "inferred",
             "underlying_real_bundle": "R^8",
+            "underlying_real_bundle_status": "inferred",
+            "underlying_real_bundle_reason": "the graph-section trivializes the complex rank-four bundle",
             "characteristic_classes": _zero_characteristic_classes(4, "the graph-section trivialization"),
         }
 
@@ -279,11 +324,11 @@ def _classification_row(task: tuple[str, dict[str, dict[str, Any]], int]) -> dic
     if orbit == "E8bar":
         compact_core = "V_2(R^7) x T^2"
         reduced_group = "Z^3 + (Z/2)^2"
-        class_coordinates = {"free": [0, 0, 0], "torsion": [residue, 0]}
+        class_coordinates = {"status": "inferred", "free": [0, 0, 0], "torsion": [residue, 0]}
     else:
         compact_core = "V_2(R^7) x S^1"
         reduced_group = "Z + Z/2"
-        class_coordinates = {"free": [0], "torsion": [residue]}
+        class_coordinates = {"status": "inferred", "free": [0], "torsion": [residue]}
     doublet_term = "xi" if doublets == 1 else f"{doublets} xi"
     ordinary_bundle = doublet_term if trivial_lines == 0 else f"C^{trivial_lines} + {doublet_term}"
     if residue:
@@ -291,8 +336,13 @@ def _classification_row(task: tuple[str, dict[str, dict[str, Any]], int]) -> dic
     else:
         ordinary_type = "ordinary class retained as 2 xi; stable triviality does not cancel in rank four"
     real_bundle = "2 xi_R; stably trivial, with actual triviality not inferred"
+    real_bundle_reason = "realification of the associated bundle; stable K-theory does not prove actual triviality"
     if trivial_lines == 2 and doublets == 1:
         real_bundle = "R^4 + xi_R = R^8"
+        real_bundle_reason = (
+            "xi_R is the orthogonal complement of the associative plane span(x_1,x_2,x_1 x_2), so "
+            "xi_R + span(x_1,x_2,x_1 x_2)=R^7 and one further trivial line gives R^4+xi_R=R^8"
+        )
     reduction = (
         "diagonal SU(2)=Sp(1) inside Sp(2) and SU(4)"
         if trivial_lines == 0
@@ -300,17 +350,22 @@ def _classification_row(task: tuple[str, dict[str, dict[str, Any]], int]) -> dic
     )
     return {
         "orbit": display_name,
+        "row_status": "inferred from observed representation multiplicities and standard topology inputs",
         "compact_core": compact_core,
         "fiber_representation": representation["source_decomposition"],
         "ordinary_complex_bundle": ordinary_bundle,
         "ordinary_classification": ordinary_type,
         "ordinary_classification_status": "inferred from the compact-core associated bundle and circle pullback",
         "reduced_K0": reduced_group,
+        "reduced_K0_status": "inferred from Kunneth and the committed Stiefel K-groups",
         "reduced_K_class": class_coordinates,
         "stiefel_torsion_generator_order": generator_order,
         "stiefel_torsion_residue": residue,
         "structure_group_reduction": reduction,
+        "structure_group_reduction_status": "inferred from the associated representation",
         "underlying_real_bundle": real_bundle,
+        "underlying_real_bundle_status": "inferred",
+        "underlying_real_bundle_reason": real_bundle_reason,
         "characteristic_classes": _zero_characteristic_classes(
             4,
             "xi has SU(2) structure, its c2 pulls back from H^4(V_2(R^7))=0, and the external multiplicity bundles "
@@ -359,11 +414,21 @@ def class_checks(mutation: str = "") -> dict[str, Any]:
             row["equivariant_automorphism_group_connected"] for row in representations.values()
         ),
         "phase_lift_is_periodic": phase["pass"],
-        "W8_phase_is_remaining_circle": external["W8"]["primitive_projection_rows"] == [[0, 1]],
-        "E8_has_both_external_circles": external["E8bar"]["external_projection_rank"] == 0,
-        "Iso_projects_to_both_external_circles": external["Iso"]["external_projection_rank"] == 2,
-        "X_phase_supplies_remaining_circle": external["X+"]["phase_circle_supplies_primitive_quotient"]
-        and external["X-"]["phase_circle_supplies_primitive_quotient"],
+        "full_compact_component_certificates_pass": all(
+            row["full_compact_component_certificate_passes"] for row in external.values()
+        ),
+        "W8_has_two_phase_components": external["W8"]["full_compact_external_image"]
+        == "{phase=+1,phase=-1} x S^1_boost"
+        and external["W8"]["compact_stabilizer_component_group"] == "Z/2",
+        "E8_external_image_is_identity": external["E8bar"]["full_compact_external_image"] == "identity"
+        and external["E8bar"]["compact_stabilizer_component_group"] == "0",
+        "Iso_external_image_is_connected_two_torus": external["Iso"]["full_compact_external_image"]
+        == "S^1_phase x S^1_boost"
+        and external["Iso"]["compact_stabilizer_component_group"] == "0",
+        "X_external_images_are_connected_graph_circles": external["X+"]["compact_stabilizer_component_group"] == "0"
+        and external["X-"]["compact_stabilizer_component_group"] == "0"
+        and external["X+"]["full_compact_external_image"] == "phase+boost=0 graph circle"
+        and external["X-"]["full_compact_external_image"] == "boost-phase=0 graph circle",
         "stiefel_generator_has_order_two": generator_order == 2,
         "stable_residues_match": rows_by_orbit["W8"]["stiefel_torsion_residue"] == 0
         and rows_by_orbit["E8-bar"]["stiefel_torsion_residue"] == 1
@@ -371,6 +436,7 @@ def class_checks(mutation: str = "") -> dict[str, Any]:
         and rows_by_orbit["X_-"]["stiefel_torsion_residue"] == 1,
         "all_E8_boundary_incidences_are_path_dependent": sheets["incidence_count"] == 5
         and sheets["path_dependent_incidence_count"] == 5,
+        "recorded_E8_comparisons_match_recomputed_planes": sheets["recorded_comparisons_match_recomputed_planes"],
         "aligned_sheet_normal_limits_agree": sheets["explicit_middle_coordinate_sheet_comparisons"] == 2
         and sheets["explicit_middle_coordinate_sheet_limits_equal"],
     }
@@ -396,9 +462,9 @@ def class_checks(mutation: str = "") -> dict[str, Any]:
                 "both local sheets restrict the single global pullback class C^2+xi; external torus directions add "
                 "no Kunneth cross-term"
             ),
-            "attaching_data": (
-                "the rank-four plane inside a boundary rank-six kernel has no canonical global extension because "
-                "every E8-bar boundary incidence is path-dependent"
+            "attaching_data_status": (
+                "not computed: path dependence proves the datum is not one inclusion, but the full limit set in "
+                "Gr(4,K_0) remains unknown"
             ),
         },
         "inference_scope": (
@@ -417,14 +483,9 @@ def _mutation_task(mutation: str) -> tuple[str, dict[str, Any]]:
 
 
 def build_record() -> dict[str, Any]:
-    baseline = class_checks()
-    mutations = dict(
-        parallel.ordered_map(
-            _mutation_task,
-            ["add_e8_doublet", "kill_stiefel_torsion", "break_phase_period", "remove_e8_path_dependence"],
-            min_items=1,
-        )
-    )
+    records = dict(parallel.ordered_map(_mutation_task, list(MUTATIONS), min_items=1))
+    baseline = records[""]
+    mutations = {mutation: records[mutation] for mutation in MUTATIONS if mutation}
     mutation_control = {
         "add_e8_doublet": {
             "detected": not mutations["add_e8_doublet"]["pass"],

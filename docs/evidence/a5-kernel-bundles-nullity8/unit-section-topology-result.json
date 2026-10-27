@@ -1,4 +1,81 @@
 {
+  "compact_stabilizer_components": [
+    {
+      "complete_invariant_count": 15,
+      "component_group": "Z/2",
+      "decisive_invariant_identities": {
+        "gram_11_remainder": "b**2"
+      },
+      "external_image": "{phase=+1,phase=-1} x S^1_boost",
+      "external_image_connected": false,
+      "orbit": "W8",
+      "pass": true,
+      "point": "representative",
+      "pointwise_compact_fiber_connected": true,
+      "pointwise_compact_fiber_source": "SU(2)"
+    },
+    {
+      "complete_invariant_count": 17,
+      "component_group": "0",
+      "decisive_invariant_identities": {
+        "gram_14_remainder_after_phase_fixing": "15*d**2",
+        "mu_imaginary_difference": "4*(a - 1)",
+        "mu_real_difference": "-4*b",
+        "phi_123_remainder_after_phase_fixing": "c - 1"
+      },
+      "external_image": "identity",
+      "external_image_connected": true,
+      "orbit": "E8bar",
+      "pass": true,
+      "point": "representative",
+      "pointwise_compact_fiber_connected": true,
+      "pointwise_compact_fiber_source": "SU(2)"
+    },
+    {
+      "complete_invariant_count": 15,
+      "component_group": "0",
+      "decisive_invariant_identities": {
+        "all_invariant_remainders_vanish": "true"
+      },
+      "external_image": "S^1_phase x S^1_boost",
+      "external_image_connected": true,
+      "orbit": "Iso",
+      "pass": true,
+      "point": "coassociative core point",
+      "pointwise_compact_fiber_connected": true,
+      "pointwise_compact_fiber_source": "U(1)"
+    },
+    {
+      "complete_invariant_count": 15,
+      "component_group": "0",
+      "decisive_invariant_identities": {
+        "phi_123_remainder": "2*(a*d + b*c)",
+        "phi_124_remainder": "-2*(a*c - b*d - 1)"
+      },
+      "external_image": "phase+boost=0 graph circle",
+      "external_image_connected": true,
+      "orbit": "X+",
+      "pass": true,
+      "point": "Mostow-adapted core point",
+      "pointwise_compact_fiber_connected": true,
+      "pointwise_compact_fiber_source": "SU(2)"
+    },
+    {
+      "complete_invariant_count": 15,
+      "component_group": "0",
+      "decisive_invariant_identities": {
+        "phi_123_remainder": "2*(a*d - b*c)",
+        "phi_124_remainder": "2*(a*c + b*d - 1)"
+      },
+      "external_image": "boost-phase=0 graph circle",
+      "external_image_connected": true,
+      "orbit": "X-",
+      "pass": true,
+      "point": "Mostow-adapted core point",
+      "pointwise_compact_fiber_connected": true,
+      "pointwise_compact_fiber_source": "SU(2)"
+    }
+  ],
   "compact_stabilizers": [
     {
       "boost_adds_tangent_dimension": false,
@@ -85,12 +162,12 @@
       "point": "coassociative core point"
     },
     {
-      "boost_adds_tangent_dimension": true,
-      "boost_projection_dimension": 0,
+      "boost_adds_tangent_dimension": false,
+      "boost_projection_dimension": 1,
       "compact_generator_count": 16,
-      "compact_stabilizer_dimension": 3,
+      "compact_stabilizer_dimension": 4,
       "connected_compact_stabilizer": "SU(2)",
-      "external_torus_projection_rank": 0,
+      "external_torus_projection_rank": 1,
       "external_torus_projection_rows": [
         [
           "0",
@@ -103,22 +180,26 @@
         [
           "0",
           "0"
+        ],
+        [
+          "-4",
+          "-4"
         ]
       ],
-      "full_compact_tangent_rank": 13,
+      "full_compact_tangent_rank": 12,
       "mutation": null,
       "orbit": "X+",
       "pass": true,
-      "phase_projection_dimension": 0,
-      "point": "representative"
+      "phase_projection_dimension": 1,
+      "point": "Mostow-adapted core point"
     },
     {
-      "boost_adds_tangent_dimension": true,
-      "boost_projection_dimension": 0,
+      "boost_adds_tangent_dimension": false,
+      "boost_projection_dimension": 1,
       "compact_generator_count": 16,
-      "compact_stabilizer_dimension": 3,
+      "compact_stabilizer_dimension": 4,
       "connected_compact_stabilizer": "SU(2)",
-      "external_torus_projection_rank": 0,
+      "external_torus_projection_rank": 1,
       "external_torus_projection_rows": [
         [
           "0",
@@ -131,14 +212,18 @@
         [
           "0",
           "0"
+        ],
+        [
+          "4",
+          "-4"
         ]
       ],
-      "full_compact_tangent_rank": 13,
+      "full_compact_tangent_rank": 12,
       "mutation": null,
       "orbit": "X-",
       "pass": true,
-      "phase_projection_dimension": 0,
-      "point": "representative"
+      "phase_projection_dimension": 1,
+      "point": "Mostow-adapted core point"
     }
   ],
   "complex_stabilizers": [
@@ -339,9 +424,11 @@
   ],
   "inputs": {
     "docs/evidence/a5-kernel-bundles-nullity8/compact_orbit_ranks.py": "fa5d010de34b95bf67a7445ec1e196c9926dc320d6ba888b293a2a2f6f627900",
-    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer_fiber_samples.py": "afcfb6bd89367bd5da667b2271303007f364fa0c08de94996c9a399032ec3673",
-    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer_strata.py": "5e59a895a5b4a90901644c4a330f594c03b11271c7e4fb3c8ac72449390e8dec",
-    "docs/evidence/a5-kernel-bundles-nullity8/unit_section_topology.py": "54a8351945ff002b0ef962c77845f9af9ecdd6a7efa20b7688eb72ffca1be2c0",
+    "docs/evidence/a5-kernel-bundles-nullity8/remaining_orbit_moduli.py": "35babc8bed7f94c52872f828a3da4e1428fe304b9e2bf2ae0dab60bf8393d0f6",
+    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer_fiber_samples.py": "09d88b77345e2ed06cab8e12bf63edeed8f99b65601791ba3134c35bdc6ec9f8",
+    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer_strata.py": "5c400f4ae0010c107b1bb2e3f82acccdac5b8bd77e8cafab22e4213b02417449",
+    "docs/evidence/a5-kernel-bundles-nullity8/unit_section_topology.py": "18e5a48b38588bcb13148bacc2842c25eabc8a5f9604e2ef0d55bb346c7689c6",
+    "docs/evidence/a5-kernel-bundles-nullity8/w8_orbit_moduli.py": "0f8461ed83e32ade6f17c9d8f73d4451aec973b1ce3213612bf385b8a5e9cede",
     "docs/evidence/a5-kernel-bundles/kernel_symmetry.py": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194",
     "docs/evidence/a5-kernel-bundles/nullity-sixteen-bundle-result.json": "33196fa92daa52bc9a30142674235182fa6875df7d2c6b3fde58bbfa726b66ec",
     "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
@@ -360,6 +447,8 @@
   },
   "orbit_models": [
     {
+      "compact_stabilizer_component_group": "Z/2",
+      "core_construction": "mapping torus of V_2(R^7) with identity monodromy",
       "core_dimension": 12,
       "expected_compact_stabilizer_dimension": 4,
       "external_torus_projection_rank": 1,
@@ -373,6 +462,8 @@
       "unit_section_dimension": 23
     },
     {
+      "compact_stabilizer_component_group": "0",
+      "core_construction": "connected maximal-compact homogeneous quotient",
       "core_dimension": 13,
       "expected_compact_stabilizer_dimension": 3,
       "external_torus_projection_rank": 0,
@@ -386,6 +477,8 @@
       "unit_section_dimension": 21
     },
     {
+      "compact_stabilizer_component_group": "0",
+      "core_construction": "connected maximal-compact homogeneous quotient",
       "core_dimension": 14,
       "expected_compact_stabilizer_dimension": 2,
       "external_torus_projection_rank": 2,
@@ -399,26 +492,30 @@
       "unit_section_dimension": 21
     },
     {
+      "compact_stabilizer_component_group": "0",
+      "core_construction": "connected maximal-compact homogeneous quotient",
       "core_dimension": 12,
       "expected_compact_stabilizer_dimension": 4,
       "external_torus_projection_rank": 1,
-      "fixture_is_mostow_adapted": false,
+      "fixture_is_mostow_adapted": true,
       "maximal_compact_core": "V_2(R^7) x S^1",
       "maximal_compact_stabilizer_dimension": 4,
-      "observed_compact_stabilizer_dimension_at_fixture": 3,
+      "observed_compact_stabilizer_dimension_at_fixture": 4,
       "orbit": "X+",
       "pass": true,
       "remaining_external_torus_rank": 1,
       "unit_section_dimension": 19
     },
     {
+      "compact_stabilizer_component_group": "0",
+      "core_construction": "connected maximal-compact homogeneous quotient",
       "core_dimension": 12,
       "expected_compact_stabilizer_dimension": 4,
       "external_torus_projection_rank": 1,
-      "fixture_is_mostow_adapted": false,
+      "fixture_is_mostow_adapted": true,
       "maximal_compact_core": "V_2(R^7) x S^1",
       "maximal_compact_stabilizer_dimension": 4,
-      "observed_compact_stabilizer_dimension_at_fixture": 3,
+      "observed_compact_stabilizer_dimension_at_fixture": 4,
       "orbit": "X-",
       "pass": true,
       "remaining_external_torus_rank": 1,

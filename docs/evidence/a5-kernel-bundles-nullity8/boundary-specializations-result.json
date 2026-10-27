@@ -7060,10 +7060,138 @@
       "boundary_orbit": "B9",
       "comparison": {
         "canonical_certificate": {
-          "argument": "the reduced transverse germ is one smooth normal line; rescaling its nonzero normal parameter leaves the restricted-matrix kernel unchanged, orbit-tangent changes come from group curves tending to the identity, and the full constant-lift stabilizer preserves the limiting plane",
+          "argument": "the reduced transverse germ is one smooth complex normal line; the constant-rank lemma makes every boundary-orbit tangent restrict to zero on the boundary kernel, and the exact identity F^T A(i d) F=i F^T A(d) F makes every nonzero complex normal multiple have the same kernel",
           "constant_lift_stabilizer_dimension": 3,
           "expected_constant_lift_stabilizer_dimension": 3,
           "limiting_plane_invariant_under_full_constant_lift_stabilizer": true,
+          "normal_restriction_certificate": {
+            "all_boundary_orbit_tangents_restrict_to_zero": true,
+            "boundary_orbit_restriction_ranks": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "boundary_orbit_tangent_count": 16,
+            "complex_nonzero_normal_multiples_have_same_kernel": true,
+            "imaginary_normal_equals_i_times_normal": true,
+            "imaginary_normal_restriction": [
+              [
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "0",
+                "0",
+                "-25*I/52",
+                "0",
+                "-5/4"
+              ],
+              [
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "25*I/52",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "5/4",
+                "0",
+                "0",
+                "0",
+                "0"
+              ]
+            ],
+            "imaginary_normal_restriction_rank": 2,
+            "mutation_coordinate": null,
+            "normal_restriction": [
+              [
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "0",
+                "0",
+                "-25/52",
+                "0",
+                "5*I/4"
+              ],
+              [
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "25/52",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "-5*I/4",
+                "0",
+                "0",
+                "0",
+                "0"
+              ]
+            ],
+            "normal_restriction_rank": 2,
+            "pass": true
+          },
           "pass": true,
           "transverse_germ": {
             "dimension": 1,
@@ -8948,10 +9076,138 @@
       "boundary_orbit": "B9",
       "comparison": {
         "canonical_certificate": {
-          "argument": "the reduced transverse germ is one smooth normal line; rescaling its nonzero normal parameter leaves the restricted-matrix kernel unchanged, orbit-tangent changes come from group curves tending to the identity, and the full constant-lift stabilizer preserves the limiting plane",
+          "argument": "the reduced transverse germ is one smooth complex normal line; the constant-rank lemma makes every boundary-orbit tangent restrict to zero on the boundary kernel, and the exact identity F^T A(i d) F=i F^T A(d) F makes every nonzero complex normal multiple have the same kernel",
           "constant_lift_stabilizer_dimension": 3,
           "expected_constant_lift_stabilizer_dimension": 3,
           "limiting_plane_invariant_under_full_constant_lift_stabilizer": true,
+          "normal_restriction_certificate": {
+            "all_boundary_orbit_tangents_restrict_to_zero": true,
+            "boundary_orbit_restriction_ranks": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "boundary_orbit_tangent_count": 16,
+            "complex_nonzero_normal_multiples_have_same_kernel": true,
+            "imaginary_normal_equals_i_times_normal": true,
+            "imaginary_normal_restriction": [
+              [
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "0",
+                "0",
+                "-1089*I/52",
+                "0",
+                "-165/4"
+              ],
+              [
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "1089*I/52",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "165/4",
+                "0",
+                "0",
+                "0",
+                "0"
+              ]
+            ],
+            "imaginary_normal_restriction_rank": 2,
+            "mutation_coordinate": null,
+            "normal_restriction": [
+              [
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "0",
+                "0",
+                "-1089/52",
+                "0",
+                "165*I/4"
+              ],
+              [
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "1089/52",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0"
+              ],
+              [
+                "0",
+                "-165*I/4",
+                "0",
+                "0",
+                "0",
+                "0"
+              ]
+            ],
+            "normal_restriction_rank": 2,
+            "pass": true
+          },
           "pass": true,
           "transverse_germ": {
             "dimension": 1,
@@ -10300,7 +10556,7 @@
     }
   ],
   "inputs": {
-    "docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py": "6f003bb88b2320921fad156e2eb9b3680eaa71ef1b6514aab926f59b7944ae72",
+    "docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py": "ad0eaafa415c47037a9dda07576585e95dec075358244243bd51b9b3dff33893",
     "docs/evidence/a5-kernel-bundles/aligned_orbit_moduli.py": "c4b9fec07e4881ad9884bfdb48e0d3a83ffa741aed65f4702a4001c4f078769c",
     "docs/evidence/a5-kernel-bundles/aligned_stabilizer_representation.py": "66b900530f8ff547ccd49e7450da556405fa246c336b551945890ab4e3188376",
     "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
@@ -10318,6 +10574,14 @@
       "mutation": "delete the second-order Schur correction",
       "target": "E8bar->Va+"
     },
+    "imaginary_normal": {
+      "baseline_imaginary_relation": true,
+      "detected": true,
+      "downstream_certificate_changed": true,
+      "mutated_imaginary_relation": false,
+      "mutation": "add one split-coordinate basis vector to the imaginary normal direction",
+      "target": "X+->B9"
+    },
     "path": {
       "closure_containment_changed": true,
       "detected": true,
@@ -10327,12 +10591,12 @@
   },
   "pass": true,
   "schema": "a5-kernel-bundles-nullity8-boundary-specializations-v1",
-  "scope": "The record treats every nullity-twelve orbit in the committed closure table. It compares two exact algebraic approaches at one verified point of each boundary orbit and classifies the connected compact stabilizer that fixes the whole path. Different limiting planes refute a path-independent canonical inclusion; matching planes would not by themselves prove one.",
+  "scope": "The record treats every nullity-twelve orbit in the committed closure table. It compares two exact algebraic approaches at one verified point of each boundary orbit and classifies the connected compact stabilizer that fixes the whole path. Different limiting planes refute a path-independent canonical inclusion; matching planes would not by themselves prove one. The 33 paths do not compute the full fiber of the closed kernel Gauss graph in Gr(4,K_0), so they do not supply the attaching data required by roadmap item 6.",
   "summary": {
     "approach_count": 33,
     "canonical_incidence_count": 2,
     "incidence_count": 15,
     "path_dependent_incidence_count": 13,
-    "standing_question_answer": "There is no universal canonical inclusion: thirteen incidences are path-dependent. The X_+ to B9 and X_- to B9 incidences have canonical limits because their transverse germs are smooth normal lines and the full constant-lift stabilizers preserve the limiting planes."
+    "standing_question_answer": "There is no universal canonical inclusion: thirteen incidences are path-dependent. The X_+ to B9 and X_- to B9 incidences have canonical limits because their transverse germs are smooth normal lines, boundary-orbit tangents restrict to zero, and F^T A(i d) F=i F^T A(d) F."
   }
 }

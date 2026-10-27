@@ -1999,9 +1999,9 @@
   "inputs": {
     "docs/evidence/a5-kernel-bundles-nullity8/remaining-orbit-moduli-result.json": "a08e1af4daa66a9c55eb89adf24d6e826c4812194ae21face7f61601907710a5",
     "docs/evidence/a5-kernel-bundles-nullity8/remaining_orbit_moduli.py": "35babc8bed7f94c52872f828a3da4e1428fe304b9e2bf2ae0dab60bf8393d0f6",
-    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer-fiber-samples-result.json": "e2a50ed6749fb0ba6c36a503ddff7250235a6692b48d80f425cd5e11ad9963be",
-    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer_fiber_samples.py": "afcfb6bd89367bd5da667b2271303007f364fa0c08de94996c9a399032ec3673",
-    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer_strata.py": "5e59a895a5b4a90901644c4a330f594c03b11271c7e4fb3c8ac72449390e8dec",
+    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer-fiber-samples-result.json": "3e1dc533998eb53539a894fb2d3713e598f3ba18c34c6d34f502bca2493ea331",
+    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer_fiber_samples.py": "09d88b77345e2ed06cab8e12bf63edeed8f99b65601791ba3134c35bdc6ec9f8",
+    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer_strata.py": "5c400f4ae0010c107b1bb2e3f82acccdac5b8bd77e8cafab22e4213b02417449",
     "docs/evidence/a5-kernel-bundles-nullity8/w8-orbit-moduli-result.json": "3a3875c7eeddcccc4af5f3651bb151409313fa6f391e44108fa372808bd6ae6a",
     "docs/evidence/a5-kernel-bundles-nullity8/w8_orbit_moduli.py": "0f8461ed83e32ade6f17c9d8f73d4451aec973b1ce3213612bf385b8a5e9cede",
     "docs/evidence/a5-kernel-bundles/aligned_orbit_moduli.py": "c4b9fec07e4881ad9884bfdb48e0d3a83ffa741aed65f4702a4001c4f078769c",

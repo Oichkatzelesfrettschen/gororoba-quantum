@@ -4,16 +4,19 @@ This evidence directory executes the
 [nullity-eight kernel-bundle program](../../design/a5-kernel-bundles-nullity8-program.md). The first exact result
 computes the connected compact `G_2 x U(1)` tangent ranks on the five complex nullity-eight orbits from the
 [regularity record](../a5-strata-regularity/README.md): `W8`, E8-bar, the isotropic orbit `Iso`, and the two branches
-`X_+` and `X_-`. The record also gives complete compact-orbit invariants and moduli spaces for all five orbits.
-Transition data and bundle classes remain open.
+`X_+` and `X_-`. The record gives complete compact-orbit invariants and moduli spaces, connected stabilizer strata,
+boundary-limit comparisons, unit-section topology, the principal-Pfaffian transition atlas, and ordinary and stable
+bundle classes for all five orbits. The full Grassmannian attaching limit sets remain open.
 
-Every calculation uses integer or rational arithmetic. [`compact-orbit-ranks-result.json`](compact-orbit-ranks-result.json)
-is the output of [`compact_orbit_ranks.py`](compact_orbit_ranks.py) `--out`, and
-[`w8-orbit-moduli-result.json`](w8-orbit-moduli-result.json) is the output of
-[`w8_orbit_moduli.py`](w8_orbit_moduli.py) `--out`, and
-[`remaining-orbit-moduli-result.json`](remaining-orbit-moduli-result.json) is the output of
-[`remaining_orbit_moduli.py`](remaining_orbit_moduli.py) `--out`. Each producer carries a byte-exact `--check` and
-mutation-bearing `--self-test`.
+Every calculation uses integer, rational, or Gaussian-rational arithmetic. The nine retained JSON files are the
+`--out` products of `compact_orbit_ranks.py`, `w8_orbit_moduli.py`, `remaining_orbit_moduli.py`,
+`stabilizer_fiber_samples.py`, `stabilizer_strata.py`, `boundary_specializations.py`,
+`unit_section_topology.py`, `kernel_transition_atlas.py`, and `kernel_bundle_classes.py` in this directory. Each
+producer carries a byte-exact `--check` and mutation-bearing `--self-test`.
+
+The [independent verification](verification.md) re-derives all five statement groups from the Cayley-Dickson
+specification at separately constructed moved points and reports no refutation. Its producer and two outputs remain
+independent artifacts and are not imported by the nine producers in this record.
 
 ## Every nullity-eight orbit has generic compact rank fifteen
 
@@ -38,9 +41,10 @@ points.
 
 The pointwise rows are **Observed** in the result record. The generic statement is **Inferred** from those exact
 rows: rank fifteen is the largest possible rank of the fifteen-generator tangent matrix, and the nonvanishing of a
-maximal minor persists on an open neighborhood. Therefore every orbit has generic compact tangent rank fifteen. The
-local dimensions of the principal compact-orbit quotients are the unit-section dimensions minus fifteen, namely
-eight on `W8`, six on E8-bar and `Iso`, and four on both `X` branches.
+maximal minor persists on an open neighborhood. The minor is real-analytic on the connected unit section, so the
+zero set of that nonzero minor is nowhere dense. Therefore every orbit has generic compact tangent rank fifteen.
+The local dimensions of the principal compact-orbit quotients are the unit-section dimensions minus fifteen,
+namely eight on `W8`, six on E8-bar and `Iso`, and four on both `X` branches.
 
 The representative data also expose a real compact-orbit refinement inside four complex orbits. The recorded points
 of `W8`, E8-bar, `X_+`, and `X_-` have rank twelve even though each orbit contains rank-fifteen points. The recorded
@@ -206,6 +210,12 @@ The inverse-Killing Casimir separates two fiber types:
 | `X_-`, representative and first unipotent move | `SU(2)` | `2 V_0 + V_1` |
 | every sampled rank-fifteen point | trivial | `4 V_0` |
 
+The producer also evaluates the two explicit Mostow-adapted core points. Put `m=e_1-i e_2`. The `X_+` point is
+`(m+e_3,0,-i m+i e_3)`, and the `X_-` point is `(m+e_3,0,i m-i e_3)`. Both points remain in their respective open
+orbits, have compact `G_2 x U(1)_phase` stabilizer `SU(2)`, and give the fiber `2 V_0+V_1`. The topology producer
+adds the compact boost and computes the full adapted stabilizer `SU(2)` plus one circle, of dimension four. The
+bundle-class producer reads these core rows rather than the non-adapted representative rows for both `X` branches.
+
 For `2 V_1`, the Casimir spectrum is `3/8` with multiplicity four. For `2 V_0+V_1`, the spectrum is zero with
 multiplicity two and `3/8` with multiplicity two. The different representations refute a single universal fiber
 type for all `SU(2)` stabilizer loci. The result is **Observed** on the twenty exact fixtures. The open-rank argument
@@ -230,10 +240,14 @@ rotates with phase weight two. E8-bar has nonzero `mu`, which rotates with phase
 outside `Iso`, so at least one complex-bilinear pairing is nonzero and again has phase weight two. Any of these
 nonzero scalars forces the infinitesimal phase coefficient to vanish.
 
-The standard compact `G_2` frame isotropy gives the remaining classification. The pointwise stabilizer is `SU(2)`
-for a real two-frame and for an associative real three-frame. It is trivial for a nonassociative real three-frame or
-for a frame of rank at least four. For a rank-three frame, associativity is expressed entirely in the recorded
-invariants: for any independent triple of frame vectors,
+The standard compact `G_2` frame isotropy gives the remaining classification. The compact group is transitive on
+ordered orthonormal two-frames with pointwise stabilizer `SU(2)`; that `SU(2)` acts transitively on the unit sphere
+in the quaternionic complement. Consequently the pointwise stabilizer is `SU(2)` for a real two-frame and for an
+associative real three-frame, and it is trivial for a nonassociative real three-frame or a real frame of rank at
+least four. The octonionic cross-product model, associative and coassociative planes, and these compact `G_2`
+isotropy facts are standard inputs from Reese Harvey and H. Blaine Lawson Jr., “Calibrated Geometries,” *Acta
+Mathematica* 148 (1982), 47–157, section IV. For a rank-three frame, associativity is expressed entirely in the
+recorded invariants: for any independent triple of frame vectors,
 
 `phi(x_i,x_j,x_k)^2 = det(G_{ijk})`.
 
@@ -309,17 +323,30 @@ Exact approaches to the same boundary point give different limiting four-planes 
 
 Each unequal pair is an **Observed** counterexample to a path-independent inclusion. The two remaining incidences,
 `X_+` to `B9` and `X_-` to `B9`, have equal limits on the two exact approaches. **Inferred:** the inclusion is
-canonical because the committed reduced transverse germ is a smooth one-dimensional normal line, rescaling its
-nonzero normal parameter leaves the restricted-matrix kernel unchanged, changes along the orbit arise from group
-curves tending to the identity, and the full three-dimensional constant-lift stabilizer of the boundary point
-preserves the limiting plane. Thus a nullity-eight kernel is not canonically a subspace of the adjacent
-nullity-twelve kernel in general; only these two incidences carry the canonical inclusion established here.
+canonical by the constant-rank lemma. If `A(t)` has constant rank along the boundary orbit and `F` frames
+`ker(A(0))`, then `F^T A'(0) F=0`; first-order limits depend only on the normal component. The producer verifies all
+sixteen boundary-orbit tangent restrictions as zero on both branches. The reduced transverse germ is one smooth
+complex normal line generated by `d`, and the producer computes
+
+`F^T A(i d) F = i F^T A(d) F`
+
+with both restricted forms of rank two. Hence every nonzero complex normal multiple gives a nonzero scalar multiple
+of the same restricted form and has the same four-dimensional kernel. Tangential approaches whose first nonzero
+normal term occurs at higher order reduce to that same form. The full three-dimensional boundary stabilizer also
+preserves the limiting plane, providing a compatible necessary check. Thus a nullity-eight kernel is not
+canonically a subspace of the adjacent nullity-twelve kernel in general; only these two incidences carry the
+canonical inclusion established here.
+
+For each of the thirteen path-dependent incidences, the unequal limits prove that the attaching datum is not one
+inclusion of a rank-four kernel into the boundary rank-six kernel. The 33 paths do not compute the full set of limits
+in `Gr(4,K_0)`, namely the fiber of the closed kernel Gauss graph over the boundary point. That limit set is the
+attaching data required by roadmap item 6, and it remains open.
 
 The two middle-coordinate sheets approaching each aligned E8-bar boundary `V^a_+` and `V^a_-` have the same
 four-plane for the tested normal direction. A boundary-stabilizer unipotent move produces a four-plane whose
 intersection with that sheet limit has dimension three, so each full incidence remains path-dependent. Equality of
-the two tested sheet limits therefore supplies local attaching data but does not establish equality of the bundles
-over the two sheets.
+the two tested sheet limits is one comparison inside the unknown limit set; it supplies neither the full local
+attaching data nor equality of the bundles over the two sheets.
 
 For each path, the producer also solves the connected compact stabilizer fixing every coefficient of the path and
 decomposes the limiting plane, its quotient, and the full boundary kernel. Fourteen paths preserve `SU(2)` and give
@@ -338,7 +365,9 @@ twelve or eight, a limiting or quotient dimension other than four or two, a plan
 claimed canonical plane changed by another approach, a preserved stabilizer moving the plane, a representation sum
 different from the boundary representation, or a surviving mutation. Adding a middle-coordinate term to the
 `W8`-to-`B9` path breaks closure containment. Deleting the second-order Schur correction on the
-E8-bar-to-`V^a_+` path changes the effective rank from two to six. Both mutations fail downstream checks.
+E8-bar-to-`V^a_+` path changes the effective rank from two to six. Adding one split-coordinate basis vector to the
+imaginary normal breaks the exact scalar relation and the downstream `X_+`-to-`B9` canonicity certificate. All three
+mutations fail downstream checks.
 
 ## The unit sections retract onto three compact core types
 
@@ -369,12 +398,23 @@ radical. The remaining reductive dimensions are three, two, and four. The prior 
 identifies the semisimple factor as `SU(2)` on `W8`, E8-bar, and the `X` branches. The two-dimensional reductive
 quotient on `Iso` is a torus.
 
-The exact external projection ranks are one on `W8`, zero on E8-bar, two on `Iso`, and one on each `X` branch.
-**Inferred:** the connected stabilizer tori have saturated projection images: boost alone on `W8`, both external
-circles on `Iso`, and the diagonal or antidiagonal external circle on `X_-` or `X_+`. E8-bar projects to neither
-external circle. The ordered-frame normal forms identify the maximal compact groups as `U(2)`, `SU(2)`, `T^2`, and
-`U(2)`, respectively; the ordered frame and external torus element determine the compensating `G_2` element, so no
-additional finite stabilizer component remains. Quotienting the graph subtori leaves these compact cores:
+The exact external projection ranks are one on `W8`, zero on E8-bar, two on `Iso`, and one on each `X` branch. The
+producer also substitutes a general compact phase `(a,b)` and boost `(c,d)` into the complete invariant tuples, with
+`a^2+b^2=c^2+d^2=1`. The decisive reduced identities are:
+
+- on `W8`, the `gram_11` difference is `b^2`, and both branches `a=+1` and `a=-1` preserve every invariant for the
+  full boost circle;
+- on E8-bar, the middle-coordinate differences `-4b` and `4(a-1)` force phase one, after which `gram_14` gives
+  `15d^2` and `phi_123` gives `c-1`, forcing the identity boost;
+- on the coassociative `Iso` core, every invariant difference vanishes modulo the two circle equations;
+- at the Mostow-adapted `X_+` core, `phi_123` and `phi_124` give `ad+bc=0` and `ac-bd=1`; at the `X_-` core they
+  give `ad-bc=0` and `ac+bd=1`. These equations are the connected antidiagonal and diagonal graph circles.
+
+Completeness of the invariant tuples and connectedness of the pointwise `SU(2)` or trivial fibers then give the
+full compact stabilizer component groups. They are `Z/2` on `W8` and trivial on E8-bar, `Iso`, `X_+`, and `X_-`.
+Thus the `W8` stabilizer image is `{phase=+1,phase=-1} x S^1_boost`; E8-bar has identity external image; `Iso` has
+the full two-torus; and both `X` images are connected graph circles. The corresponding compact cores have these
+homotopy types:
 
 | Unit section | Compact core | Core dimension | Fundamental group |
 | --- | --- | ---: | --- |
@@ -383,16 +423,20 @@ additional finite stabilizer component remains. Quotienting the graph subtori le
 | `Iso` | `G_2` | 14 | `0` |
 | `X_+`, `X_-` | `V_2(R^7) x S^1` | 12 | `Z` |
 
-**Inferred:** Mostow's homogeneous-space decomposition makes `H/S` a real vector bundle over `K/L`, where `S` is
-the algebraic point stabilizer and `L` its maximal compact subgroup. The vector fibers and the removed radial factor
-are contractible, so each unit section has the homotopy type in the table. The argument uses G. D. Mostow, “On
-Covariant Fiberings of Klein Spaces,” *American Journal of Mathematics* 77 (1955), 247–278.
+**Inferred:** Write the identity component of the algebraic point stabilizer as `S^0=L_C semidirect U`, with
+unipotent radical `U`. The map `H/L_C -> H/S^0` has contractible fiber `U`, and Mostow's covariant-fibering theorem
+retracts the reductive homogeneous space `H/L_C` onto `K/L`. The finite component calculation above is then applied
+explicitly; on `W8` it gives the mapping torus rather than a connected homogeneous quotient. The vector fibers and
+the removed radial factor are contractible, so each unit section has the homotopy type in the table. The
+nonreductive covariant-fibering reference is G. D. Mostow, “Covariant Fiberings of Klein Spaces II,” *American
+Journal of Mathematics* 84 (1962), 466–474; this sequel replaces the former citation to the 1955 first paper alone.
 
 The recorded `X_+` and `X_-` representatives are not Mostow-adapted: their intersection with the fixed compact form
-is only `SU(2)`, of dimension three, while the nilpotent-radical calculation gives a four-dimensional maximal compact
-subgroup after conjugation. In contrast, the selected `W8`, E8-bar, and coassociative `Iso` points are adapted. The
-non-adapted `X` representatives require the full complex stabilizer; a compact tangent rank at one point would give
-the wrong core.
+is only `SU(2)`, of dimension three. The explicit points `(m+e_3,0,-i m+i e_3)` and
+`(m+e_3,0,i m-i e_3)`, with `m=e_1-i e_2`, are adapted: their full compact stabilizers are `SU(2)` plus one circle,
+of dimension four, matching the reductive quotient after the two-dimensional unipotent radical is removed. The
+selected `W8`, E8-bar, and coassociative `Iso` points are adapted as well. The non-adapted representatives alone
+would give the wrong core and are no longer used for the `X` bundle-class input.
 
 The cellular and Kunneth calculations give the groups needed by the bundle invariants. The `V_2(R^7)` factor uses
 the committed cells in degrees `0,5,6,11` and boundary `d_6=2`. For `G_2`, the standard cells in degrees
@@ -456,8 +500,9 @@ g_IJ g_JI = I_4,
 g_IJ g_JK = g_IK.
 ```
 
-These formulas are rational-function identities on every overlap. The exact representatives exercise all 45
-ordered double-overlap matrices and all 135 ordered triple-overlap identities. Every transition determinant is
+These formulas are rational-function identities on every overlap. The exact representatives exercise 45 ordered
+double-overlap matrices: 15 identities and 30 genuine overlaps. They also exercise 135 ordered triple-overlap
+identities, including repeated-chart cases; 30 triples have three distinct charts. Every transition determinant is
 nonzero, and every realification commutes with the fiber complex structure `J`.
 
 The ambient Euclidean metric induces the Hermitian Gram matrix `G_I=F_I^* F_I`. Frame reconstruction gives
@@ -490,19 +535,24 @@ associated bundles on the Stiefel factor:
 - `Iso` uses its graph-torus section and gives `C^4`.
 
 The external circles add no extra class. The exact constant phase lift is right multiplication by `e_16`; its
-matrix squares to `-I_32`, so its exponential has period `2 pi` and returns as the identity on every kernel. The
-external stabilizer projection is the boost circle on `W8`, zero on E8-bar, and the primitive diagonal or
-antidiagonal circle on the two `X` branches. Thus the phase circle supplies the remaining circle on `W8` and each
-`X` branch. On E8-bar the phase lift removes one torus direction. The remaining boost direction is an
-`SU(2)`-equivariant family over `S^1`. Its isotypic automorphism group is `GL(2,C)` for `2 V_1` and
-`GL(2,C) x GL(1,C)` for `2 V_0+V_1`; both groups are connected, so their multiplicity bundles over the circle are
-trivial. The kernel bundles are consequently pullbacks of the displayed Stiefel-factor bundles.
+matrix squares to `-I_32`, so its exponential has period `2 pi` and returns as the identity on every kernel. On
+`W8`, the disconnected stabilizer makes the core a mapping torus: choose the compensating element in the connected
+centralizer of the pointwise `SU(2)` and join it to the identity. The monodromy on `xi tensor C^2` is the constant
+fiber map `1 tensor m` for some `m` in connected `GL(2,C)`. The mapping torus is therefore isomorphic to the pullback
+of `2 xi` from `V_2(R^7)`, even though the full phase loop represents twice the generator of the core circle.
+
+E8-bar has identity external stabilizer image, while the two `X` branches have primitive connected graph circles.
+The remaining E8-bar boost direction is an `SU(2)`-equivariant family over `S^1`; the `X` multiplicity family is
+likewise over its quotient circle. Their isotypic automorphism group is `GL(2,C) x GL(1,C)`, which is connected, so
+the multiplicity bundles are trivial. The kernel bundles are consequently pullbacks of the displayed
+Stiefel-factor bundles.
 
 For `Iso`, the maximal compact stabilizer projects onto both external circles. Writing that stabilizer as the graph
 of a two-torus homomorphism gives an explicit section `g -> (g,1,1)` after identifying the quotient with `G_2`.
 Every associated complex bundle is therefore trivial.
 
-The ordinary and stable classifications are:
+**Inferred.** The ordinary and stable classifications, including the written free K-coordinates and the full `Iso`
+row, are:
 
 | Orbit | Compact core | Ordinary complex bundle | Reduced complex K-class | Ordinary conclusion | Underlying real bundle |
 | --- | --- | --- | --- | --- | --- |
@@ -511,12 +561,18 @@ The ordinary and stable classifications are:
 | `Iso` | `G_2` | `C^4` | `0` in `Z` | complex and real trivial | `R^8` |
 | `X_+`, `X_-` | `V_2(R^7) x S^1` | `C^2+xi` | `(0,x)` in `Z+Z/2` | complex nontrivial | `R^4+xi_R=R^8` |
 
+The real equality on E8-bar and the two `X` branches is geometric rather than a stable-cancellation claim. Over
+`V_2(R^7)`, the ordered frame `(x_1,x_2)` and its cross product `x_1 x x_2` span a trivial associative three-plane,
+while `xi_R` is its orthogonal complement. Thus
+`xi_R + span(x_1,x_2,x_1 x x_2)=R^7`; adjoining one more trivial real line gives
+`R^4+xi_R=R^8`.
+
 The rank-four cancellation inequality does not apply to `2 xi` on the eleven-dimensional Stiefel factor because
 `11>2*4`. The result therefore records the ordinary `W8` class as the concrete associated bundle `2 xi` and makes
 no equality claim with `C^4`. The same limitation applies to the actual real triviality of `2 xi_R`. This residual
 is an unstable equivalence question; the zero reduced complex K-class alone cannot decide it.
 
-Each bundle has total Chern class one. The bundle `xi` has `SU(2)` structure, its `c_2` pulls back from
+**Inferred.** Each bundle has total Chern class one. The bundle `xi` has `SU(2)` structure, its `c_2` pulls back from
 `H^4(V_2(R^7))=0`, and its higher Chern classes vanish by rank. The phase and boost multiplicity bundles are
 trivial, so the torus factors add no line class. Every underlying real bundle consequently has total
 Stiefel-Whitney and Pontryagin classes one. These characteristic classes do not detect the three nonzero order-two
@@ -544,7 +600,9 @@ a disconnected isotypic automorphism group, a Stiefel generator order other than
 coordinate, a Chern class incompatible with the associated description, or a canonical E8-bar attaching plane.
 Adding one E8-bar doublet changes the fiber dimension, killing the order-two generator changes the E8-bar residue,
 flipping one phase-matrix entry breaks the exact square, and removing one E8-bar path-dependence result changes the
-boundary count. All four mutations fail downstream checks in
+boundary count. The path-dependence mutation changes geometric inputs: it replaces every retained limiting-plane
+matrix of the E8-bar-to-`B9` incidence by the same plane, then the downstream plane comparison lowers the recomputed
+path-dependent incidence count from five to four. All four mutations fail downstream checks in
 [`kernel-bundle-classes-result.json`](kernel-bundle-classes-result.json). The standard associated-bundle, Kunneth,
 and cancellation inputs are the same ones cited in the
 [high-nullity bundle record](../a5-kernel-bundles/README.md#standard-topology-references).
@@ -603,12 +661,9 @@ export PYTHON="${PYTHON:-python3}"
     --check docs/evidence/a5-kernel-bundles-nullity8/kernel-bundle-classes-result.json
 ```
 
-The measured `--check` wall times were 7.84 seconds for the compact-rank producer and 3.18 seconds for the `W8`
-moduli producer, and 1.94 seconds for the remaining-orbit producer on the 2026-10-26 build host with four workers.
-The sampled stabilizer and representation producer checked in 9.19 seconds. Each check builds the sorted,
+The measured `--check` wall times on the 2026-10-27 build host with four workers were 3.09 seconds for compact
+ranks, 1.42 seconds for `W8` moduli, 1.90 seconds for remaining-orbit moduli, 5.31 seconds for stabilizer/fiber
+samples, 1.73 seconds for stabilizer strata, 8.36 seconds for boundary specializations, 3.34 seconds for unit-section
+topology, 5.44 seconds for the transition atlas, and 1.03 seconds for bundle classes. Each check builds the sorted,
 two-space-indented JSON plus its final newline in memory, compares the UTF-8 bytes with the retained record, writes
-no repository file, and exits nonzero on a difference. The exhaustive stabilizer-stratum producer checked in 8.23
-seconds. The boundary-specialization producer checked in 9.91 seconds.
-The unit-section topology producer checked in 4.45 seconds.
-The nullity-eight transition-atlas producer checked in 7.68 seconds.
-The bundle-class producer checked in 0.68 seconds.
+no repository file, and exits nonzero on a difference.

@@ -486,7 +486,7 @@ def _curve_certificate(path: PathSpec) -> dict[str, Any]:
 
 
 @cache
-def _matrix_for_split(split_point: RationalVector) -> sp.Matrix:
+def _matrix_for_split(split_point: Sequence[Fraction | sp.Expr]) -> sp.Matrix:
     return kernel_frames._bordered_matrix(kernel_frames._original_z_from_split(split_point))
 
 
@@ -921,7 +921,47 @@ def _analyze_path_task(path: PathSpec) -> PathAnalysis:
     return _analyze_path(path)
 
 
-def _canonical_x_b9_certificate(analysis: PathAnalysis) -> dict[str, Any]:
+def _normal_restriction_certificate(analysis: PathAnalysis, perturb_imaginary_normal: bool = False) -> dict[str, Any]:
+    boundary_frame = analysis.boundary_kernel
+    normal_direction = analysis.path.coefficients[1]
+    imaginary_direction = [sp.I * value for value in normal_direction]
+    mutation_coordinate = None
+    if perturb_imaginary_normal:
+        mutation_coordinate = 0
+        imaginary_direction[mutation_coordinate] += 1
+    normal_restriction = sp.simplify(boundary_frame.T * _matrix_for_split(normal_direction) * boundary_frame)
+    imaginary_restriction = sp.simplify(
+        boundary_frame.T * _matrix_for_split(tuple(imaginary_direction)) * boundary_frame
+    )
+    orbit_tangents = regularity.h_generators(analysis.path.coefficients[0])
+    orbit_restriction_ranks = [
+        sp.simplify(boundary_frame.T * _matrix_for_split(tuple(tangent)) * boundary_frame).rank()
+        for tangent in orbit_tangents
+    ]
+    imaginary_relation = sp.simplify(imaginary_restriction - sp.I * normal_restriction) == sp.zeros(
+        BOUNDARY_KERNEL_DIMENSION
+    )
+    return {
+        "normal_restriction": _matrix_rows(normal_restriction),
+        "imaginary_normal_restriction": _matrix_rows(imaginary_restriction),
+        "normal_restriction_rank": normal_restriction.rank(),
+        "imaginary_normal_restriction_rank": imaginary_restriction.rank(),
+        "imaginary_normal_equals_i_times_normal": imaginary_relation,
+        "boundary_orbit_tangent_count": len(orbit_tangents),
+        "boundary_orbit_restriction_ranks": orbit_restriction_ranks,
+        "all_boundary_orbit_tangents_restrict_to_zero": all(rank == 0 for rank in orbit_restriction_ranks),
+        "complex_nonzero_normal_multiples_have_same_kernel": imaginary_relation and normal_restriction.rank() == 2,
+        "mutation_coordinate": mutation_coordinate,
+        "pass": (
+            normal_restriction.rank() == 2
+            and imaginary_restriction.rank() == 2
+            and imaginary_relation
+            and all(rank == 0 for rank in orbit_restriction_ranks)
+        ),
+    }
+
+
+def _canonical_x_b9_certificate(analysis: PathAnalysis, perturb_imaginary_normal: bool = False) -> dict[str, Any]:
     named_triples = symmetry._expected_lie_triples("")
     base_generators = [triple[0] for _name, triple in named_triples]
     domain_generators = [triple[1] for _name, triple in named_triples]
@@ -943,6 +983,7 @@ def _canonical_x_b9_certificate(analysis: PathAnalysis) -> dict[str, Any]:
     closure_key = "Xp" if analysis.path.high_orbit == "X+" else "Xm"
     germ = regularity.EXPECTED_GERMS[(closure_key, "B9")]
     smooth_normal_line = germ == (1, 1, 1, -1, 1, None)
+    normal_restriction = _normal_restriction_certificate(analysis, perturb_imaginary_normal)
     return {
         "transverse_germ": {
             "dimension": germ[0],
@@ -954,12 +995,13 @@ def _canonical_x_b9_certificate(analysis: PathAnalysis) -> dict[str, Any]:
         "constant_lift_stabilizer_dimension": len(coefficients),
         "expected_constant_lift_stabilizer_dimension": 3,
         "limiting_plane_invariant_under_full_constant_lift_stabilizer": plane_invariant,
+        "normal_restriction_certificate": normal_restriction,
         "argument": (
-            "the reduced transverse germ is one smooth normal line; rescaling its nonzero normal parameter leaves "
-            "the restricted-matrix kernel unchanged, orbit-tangent changes come from group curves tending to the "
-            "identity, and the full constant-lift stabilizer preserves the limiting plane"
+            "the reduced transverse germ is one smooth complex normal line; the constant-rank lemma makes every "
+            "boundary-orbit tangent restrict to zero on the boundary kernel, and the exact identity "
+            "F^T A(i d) F=i F^T A(d) F makes every nonzero complex normal multiple have the same kernel"
         ),
-        "pass": smooth_normal_line and len(coefficients) == 3 and plane_invariant,
+        "pass": smooth_normal_line and len(coefficients) == 3 and plane_invariant and normal_restriction["pass"],
     }
 
 
@@ -1028,6 +1070,11 @@ def _incidence_row(incidence: str, analyses: Sequence[PathAnalysis]) -> dict[str
     }
 
 
+def _incidence_task(task: tuple[str, tuple[PathAnalysis, ...]]) -> dict[str, Any]:
+    incidence, analyses = task
+    return _incidence_row(incidence, analyses)
+
+
 def _path_mutation_control(path: PathSpec) -> dict[str, Any]:
     first_order = list(path.coefficients[1])
     first_order[7] += 1
@@ -1059,17 +1106,68 @@ def _schur_mutation_control(path: PathSpec) -> dict[str, Any]:
     }
 
 
+def _imaginary_normal_mutation_control(analysis: PathAnalysis) -> dict[str, Any]:
+    baseline = _canonical_x_b9_certificate(analysis)
+    mutated = _canonical_x_b9_certificate(analysis, perturb_imaginary_normal=True)
+    return {
+        "mutation": "add one split-coordinate basis vector to the imaginary normal direction",
+        "target": analysis.path.incidence,
+        "baseline_imaginary_relation": baseline["normal_restriction_certificate"][
+            "imaginary_normal_equals_i_times_normal"
+        ],
+        "mutated_imaginary_relation": mutated["normal_restriction_certificate"][
+            "imaginary_normal_equals_i_times_normal"
+        ],
+        "downstream_certificate_changed": baseline["pass"] and not mutated["pass"],
+        "detected": not mutated["pass"],
+    }
+
+
+def _mutation_control_task(task: tuple[str, PathSpec | PathAnalysis]) -> tuple[str, dict[str, Any]]:
+    mutation_name, target = task
+    if mutation_name == "path":
+        if not isinstance(target, PathSpec):
+            raise TypeError("the path mutation needs a path specification")
+        return mutation_name, _path_mutation_control(target)
+    if mutation_name == "frame":
+        if not isinstance(target, PathSpec):
+            raise TypeError("the frame mutation needs a path specification")
+        return mutation_name, _schur_mutation_control(target)
+    if mutation_name == "imaginary_normal":
+        if not isinstance(target, PathAnalysis):
+            raise TypeError("the normal mutation needs an analyzed path")
+        return mutation_name, _imaginary_normal_mutation_control(target)
+    raise ValueError(f"unknown boundary mutation {mutation_name!r}")
+
+
 def build_record() -> dict[str, Any]:
     paths = _path_specs()
     analyses = parallel.ordered_map(_analyze_path_task, paths, min_items=1)
     by_incidence: dict[str, list[PathAnalysis]] = {}
     for analysis in analyses:
         by_incidence.setdefault(str(analysis.row["incidence"]), []).append(analysis)
-    incidence_rows = [_incidence_row(incidence, by_incidence[incidence]) for incidence in sorted(by_incidence)]
-    path_mutation = _path_mutation_control(next(path for path in paths if path.incidence == "W8->B9"))
-    schur_mutation = _schur_mutation_control(
-        next(path for path in paths if path.incidence == "E8bar->Va+" and _path_degree(path) == 2)
+    incidence_rows = parallel.ordered_map(
+        _incidence_task,
+        [(incidence, tuple(by_incidence[incidence])) for incidence in sorted(by_incidence)],
+        min_items=1,
     )
+    mutation_control = dict(
+        parallel.ordered_map(
+            _mutation_control_task,
+            [
+                ("path", next(path for path in paths if path.incidence == "W8->B9")),
+                (
+                    "frame",
+                    next(path for path in paths if path.incidence == "E8bar->Va+" and _path_degree(path) == 2),
+                ),
+                ("imaginary_normal", by_incidence["X+->B9"][0]),
+            ],
+            min_items=1,
+        )
+    )
+    path_mutation = mutation_control["path"]
+    schur_mutation = mutation_control["frame"]
+    imaginary_normal_mutation = mutation_control["imaginary_normal"]
     path_dependent_count = sum(bool(row["comparison"]["path_dependent"]) for row in incidence_rows)
     canonical_count = sum(bool(row["comparison"]["canonical_inclusion"]) for row in incidence_rows)
     result = {
@@ -1084,15 +1182,17 @@ def build_record() -> dict[str, Any]:
             "standing_question_answer": (
                 "There is no universal canonical inclusion: thirteen incidences are path-dependent. The X_+ to B9 "
                 "and X_- to B9 incidences have canonical limits because their transverse germs are smooth normal "
-                "lines and the full constant-lift stabilizers preserve the limiting planes."
+                "lines, boundary-orbit tangents restrict to zero, and F^T A(i d) F=i F^T A(d) F."
             ),
         },
-        "mutation_control": {"path": path_mutation, "frame": schur_mutation},
+        "mutation_control": mutation_control,
         "scope": (
             "The record treats every nullity-twelve orbit in the committed closure table. It compares two exact "
             "algebraic approaches at one verified point of each boundary orbit and classifies the connected compact "
             "stabilizer that fixes the whole path. Different limiting planes refute a path-independent canonical "
-            "inclusion; matching planes would not by themselves prove one."
+            "inclusion; matching planes would not by themselves prove one. The 33 paths do not compute the full "
+            "fiber of the closed kernel Gauss graph in Gr(4,K_0), so they do not supply the attaching data required "
+            "by roadmap item 6."
         ),
         "pass": (
             len(incidence_rows) == 15
@@ -1104,6 +1204,8 @@ def build_record() -> dict[str, Any]:
             and path_mutation["closure_containment_changed"]
             and schur_mutation["detected"]
             and schur_mutation["downstream_rank_changed"]
+            and imaginary_normal_mutation["detected"]
+            and imaginary_normal_mutation["downstream_certificate_changed"]
         ),
     }
     return result
@@ -1121,6 +1223,11 @@ def self_test() -> None:
     _require(
         record["mutation_control"]["frame"]["downstream_rank_changed"],
         "Schur mutation changed no downstream rank",
+    )
+    _require(record["mutation_control"]["imaginary_normal"]["detected"], "imaginary-normal mutation survived")
+    _require(
+        record["mutation_control"]["imaginary_normal"]["downstream_certificate_changed"],
+        "imaginary-normal mutation changed no downstream canonicity certificate",
     )
 
 

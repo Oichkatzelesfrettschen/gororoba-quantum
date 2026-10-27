@@ -415,13 +415,15 @@ def build_record(mutation: str = "") -> dict[str, Any]:
     coassociative_candidates = parallel.ordered_map(_coassociative_candidate, candidate_tasks, min_items=1)
     open_iso_candidates = [candidate for candidate in coassociative_candidates if candidate[0]["is_open_Iso"]]
     _require(bool(open_iso_candidates), "the coassociative enumeration found no open Iso point")
-    w8_row = _analyze_canonical_point("W8 associative rank three", _w8_associative_point(), mutation)
-    iso_rows = parallel.ordered_map(
+    canonical_rows = parallel.ordered_map(
         _analyze_canonical_task,
-        [("Iso coassociative", candidate, mutation) for candidate in open_iso_candidates],
+        [
+            ("W8 associative rank three", _w8_associative_point(), mutation),
+            *(("Iso coassociative", candidate, mutation) for candidate in open_iso_candidates),
+        ],
         min_items=1,
     )
-    canonical_rows = [w8_row, *iso_rows]
+    iso_rows = canonical_rows[1:]
     iso_weight_signatures = {
         tuple((entry["weight"], entry["multiplicity"]) for entry in row["representation"]["weight_multiplicities"])
         for row in iso_rows

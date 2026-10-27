@@ -1,18 +1,24 @@
 {
   "E8_sheet_behavior": {
     "abstract_bundle_class": "both local sheets restrict the single global pullback class C^2+xi; external torus directions add no Kunneth cross-term",
-    "attaching_data": "the rank-four plane inside a boundary rank-six kernel has no canonical global extension because every E8-bar boundary incidence is path-dependent",
+    "attaching_data_status": "not computed: path dependence proves the datum is not one inclusion, but the full limit set in Gr(4,K_0) remains unknown",
     "status": "inferred"
   },
   "external_circle_inputs": {
     "E8bar": {
+      "compact_stabilizer_component_group": "0",
       "external_projection_rank": 0,
+      "full_compact_component_certificate_passes": true,
+      "full_compact_external_image": "identity",
       "nonzero_projection_rows": [],
       "phase_circle_supplies_primitive_quotient": false,
       "primitive_projection_rows": []
     },
     "Iso": {
+      "compact_stabilizer_component_group": "0",
       "external_projection_rank": 2,
+      "full_compact_component_certificate_passes": true,
+      "full_compact_external_image": "S^1_phase x S^1_boost",
       "nonzero_projection_rows": [
         [
           1,
@@ -36,7 +42,10 @@
       ]
     },
     "W8": {
+      "compact_stabilizer_component_group": "Z/2",
       "external_projection_rank": 1,
+      "full_compact_component_certificate_passes": true,
+      "full_compact_external_image": "{phase=+1,phase=-1} x S^1_boost",
       "nonzero_projection_rows": [
         [
           0,
@@ -52,7 +61,10 @@
       ]
     },
     "X+": {
+      "compact_stabilizer_component_group": "0",
       "external_projection_rank": 1,
+      "full_compact_component_certificate_passes": true,
+      "full_compact_external_image": "phase+boost=0 graph circle",
       "nonzero_projection_rows": [
         [
           -2,
@@ -68,7 +80,10 @@
       ]
     },
     "X-": {
+      "compact_stabilizer_component_group": "0",
       "external_projection_rank": 1,
+      "full_compact_component_certificate_passes": true,
+      "full_compact_external_image": "boost-phase=0 graph circle",
       "nonzero_projection_rows": [
         [
           2,
@@ -86,20 +101,20 @@
   },
   "inference_scope": "The pass flag covers producer bindings, ranks, representation multiplicities, phase periodicity, external projections, K-residue arithmetic, and boundary comparisons. Associated-bundle identifications, graph-section triviality, Kunneth pullbacks, and ordinary equivalence statements are written mathematical arguments.",
   "input_digests": {
-    "boundary_result_sha256": "e2848139b03174d1f2b0b82507f60033fab8c2a39044cb361faa918f60c9eef5",
-    "boundary_script_sha256": "6f003bb88b2320921fad156e2eb9b3680eaa71ef1b6514aab926f59b7944ae72",
-    "fiber_samples_result_sha256": "e2a50ed6749fb0ba6c36a503ddff7250235a6692b48d80f425cd5e11ad9963be",
-    "fiber_samples_script_sha256": "afcfb6bd89367bd5da667b2271303007f364fa0c08de94996c9a399032ec3673",
+    "boundary_result_sha256": "0e05ea1c5def142010a6ecd449de2333f7f1585615ef3de420da17befc06fea0",
+    "boundary_script_sha256": "ad0eaafa415c47037a9dda07576585e95dec075358244243bd51b9b3dff33893",
+    "fiber_samples_result_sha256": "3e1dc533998eb53539a894fb2d3713e598f3ba18c34c6d34f502bca2493ea331",
+    "fiber_samples_script_sha256": "09d88b77345e2ed06cab8e12bf63edeed8f99b65601791ba3134c35bdc6ec9f8",
     "kernel_symmetry_result_sha256": "fa6af754e697dbf4a7490c1312449477817ca8e69f4c9add577ea3ef23e333d5",
     "kernel_symmetry_script_sha256": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194",
     "nullity_sixteen_result_sha256": "33196fa92daa52bc9a30142674235182fa6875df7d2c6b3fde58bbfa726b66ec",
     "nullity_sixteen_script_sha256": "5056c561fda79f7f3995eda0a56278a318b1b0d65a1d4d41a9da9aa8e574a766",
-    "stabilizer_strata_result_sha256": "2fb97528d392f82fc13d19bc397f71ced5a51c4cfec012951363b9372ad372da",
-    "stabilizer_strata_script_sha256": "5e59a895a5b4a90901644c4a330f594c03b11271c7e4fb3c8ac72449390e8dec",
-    "topology_result_sha256": "a27b9df6ba8982582b2da8886c80ad5bb31e0fe534b023b6da66779ef46f5af7",
-    "topology_script_sha256": "54a8351945ff002b0ef962c77845f9af9ecdd6a7efa20b7688eb72ffca1be2c0",
-    "transition_atlas_result_sha256": "12edacaa41c75bbf17363467d4890849dee4deb4c7182d7a808aaf372d7b7b33",
-    "transition_atlas_script_sha256": "3a0c4b33c4408ea23adfc1cc261ecc9123c10c96d7491bd839e5df53c839f4ab"
+    "stabilizer_strata_result_sha256": "c9744fec60c50609378c8c979c2cfa20877f739dabb8e2abc969d16f9bdc20aa",
+    "stabilizer_strata_script_sha256": "5c400f4ae0010c107b1bb2e3f82acccdac5b8bd77e8cafab22e4213b02417449",
+    "topology_result_sha256": "1d2ed4bca3fcb761d1084cba7342421b2cb18d1b5cfa9ff2110898706c0eb673",
+    "topology_script_sha256": "18e5a48b38588bcb13148bacc2842c25eabc8a5f9604e2ef0d55bb346c7689c6",
+    "transition_atlas_result_sha256": "e1e99192ebb3f99d84c0fed873299840b8da72b87d9a1a5983e8d06bb3f299c9",
+    "transition_atlas_script_sha256": "beceae739687bef5e712d7024049b14f3689baa28e924922c6f487fca4b44b2f"
   },
   "mutation": {
     "name": null,
@@ -125,17 +140,19 @@
   },
   "observed_checks": {
     "E8_and_X_have_two_lines_plus_one_doublet": true,
-    "E8_has_both_external_circles": true,
-    "Iso_projects_to_both_external_circles": true,
+    "E8_external_image_is_identity": true,
+    "Iso_external_image_is_connected_two_torus": true,
     "W8_has_two_doublets": true,
-    "W8_phase_is_remaining_circle": true,
-    "X_phase_supplies_remaining_circle": true,
+    "W8_has_two_phase_components": true,
+    "X_external_images_are_connected_graph_circles": true,
     "aligned_sheet_normal_limits_agree": true,
     "all_E8_boundary_incidences_are_path_dependent": true,
     "all_transition_rows_have_rank_four": true,
     "equivariant_automorphism_groups_connected": true,
     "fiber_dimensions_are_four": true,
+    "full_compact_component_certificates_pass": true,
     "phase_lift_is_periodic": true,
+    "recorded_E8_comparisons_match_recomputed_planes": true,
     "stable_residues_match": true,
     "stiefel_generator_has_order_two": true,
     "topology_models_match": true,
@@ -171,18 +188,24 @@
       "ordinary_classification_status": "inferred from the compact-core associated bundle and circle pullback",
       "ordinary_complex_bundle": "2 xi",
       "reduced_K0": "Z + Z/2",
+      "reduced_K0_status": "inferred from Kunneth and the committed Stiefel K-groups",
       "reduced_K_class": {
         "free": [
           0
         ],
+        "status": "inferred",
         "torsion": [
           0
         ]
       },
+      "row_status": "inferred from observed representation multiplicities and standard topology inputs",
       "stiefel_torsion_generator_order": 2,
       "stiefel_torsion_residue": 0,
       "structure_group_reduction": "diagonal SU(2)=Sp(1) inside Sp(2) and SU(4)",
-      "underlying_real_bundle": "2 xi_R; stably trivial, with actual triviality not inferred"
+      "structure_group_reduction_status": "inferred from the associated representation",
+      "underlying_real_bundle": "2 xi_R; stably trivial, with actual triviality not inferred",
+      "underlying_real_bundle_reason": "realification of the associated bundle; stable K-theory does not prove actual triviality",
+      "underlying_real_bundle_status": "inferred"
     },
     {
       "characteristic_classes": {
@@ -206,21 +229,27 @@
       "ordinary_classification_status": "inferred from the compact-core associated bundle and circle pullback",
       "ordinary_complex_bundle": "C^2 + xi",
       "reduced_K0": "Z^3 + (Z/2)^2",
+      "reduced_K0_status": "inferred from Kunneth and the committed Stiefel K-groups",
       "reduced_K_class": {
         "free": [
           0,
           0,
           0
         ],
+        "status": "inferred",
         "torsion": [
           1,
           0
         ]
       },
+      "row_status": "inferred from observed representation multiplicities and standard topology inputs",
       "stiefel_torsion_generator_order": 2,
       "stiefel_torsion_residue": 1,
       "structure_group_reduction": "SU(2) as diag(I_2,Q) inside Sp(2) and SU(4) after pairing the two trivial lines",
-      "underlying_real_bundle": "R^4 + xi_R = R^8"
+      "structure_group_reduction_status": "inferred from the associated representation",
+      "underlying_real_bundle": "R^4 + xi_R = R^8",
+      "underlying_real_bundle_reason": "xi_R is the orthogonal complement of the associative plane span(x_1,x_2,x_1 x_2), so xi_R + span(x_1,x_2,x_1 x_2)=R^7 and one further trivial line gives R^4+xi_R=R^8",
+      "underlying_real_bundle_status": "inferred"
     },
     {
       "characteristic_classes": {
@@ -243,14 +272,20 @@
       "ordinary_classification_status": "inferred from the graph-torus section",
       "ordinary_complex_bundle": "C^4",
       "reduced_K0": "Z",
+      "reduced_K0_status": "inferred from the Hodgkin K-group input",
       "reduced_K_class": {
         "free": [
           0
         ],
+        "status": "inferred",
         "torsion": []
       },
+      "row_status": "inferred from the graph-torus section and standard topology inputs",
       "structure_group_reduction": "identity after the graph-section trivialization",
-      "underlying_real_bundle": "R^8"
+      "structure_group_reduction_status": "inferred",
+      "underlying_real_bundle": "R^8",
+      "underlying_real_bundle_reason": "the graph-section trivializes the complex rank-four bundle",
+      "underlying_real_bundle_status": "inferred"
     },
     {
       "characteristic_classes": {
@@ -274,18 +309,24 @@
       "ordinary_classification_status": "inferred from the compact-core associated bundle and circle pullback",
       "ordinary_complex_bundle": "C^2 + xi",
       "reduced_K0": "Z + Z/2",
+      "reduced_K0_status": "inferred from Kunneth and the committed Stiefel K-groups",
       "reduced_K_class": {
         "free": [
           0
         ],
+        "status": "inferred",
         "torsion": [
           1
         ]
       },
+      "row_status": "inferred from observed representation multiplicities and standard topology inputs",
       "stiefel_torsion_generator_order": 2,
       "stiefel_torsion_residue": 1,
       "structure_group_reduction": "SU(2) as diag(I_2,Q) inside Sp(2) and SU(4) after pairing the two trivial lines",
-      "underlying_real_bundle": "R^4 + xi_R = R^8"
+      "structure_group_reduction_status": "inferred from the associated representation",
+      "underlying_real_bundle": "R^4 + xi_R = R^8",
+      "underlying_real_bundle_reason": "xi_R is the orthogonal complement of the associative plane span(x_1,x_2,x_1 x_2), so xi_R + span(x_1,x_2,x_1 x_2)=R^7 and one further trivial line gives R^4+xi_R=R^8",
+      "underlying_real_bundle_status": "inferred"
     },
     {
       "characteristic_classes": {
@@ -309,18 +350,24 @@
       "ordinary_classification_status": "inferred from the compact-core associated bundle and circle pullback",
       "ordinary_complex_bundle": "C^2 + xi",
       "reduced_K0": "Z + Z/2",
+      "reduced_K0_status": "inferred from Kunneth and the committed Stiefel K-groups",
       "reduced_K_class": {
         "free": [
           0
         ],
+        "status": "inferred",
         "torsion": [
           1
         ]
       },
+      "row_status": "inferred from observed representation multiplicities and standard topology inputs",
       "stiefel_torsion_generator_order": 2,
       "stiefel_torsion_residue": 1,
       "structure_group_reduction": "SU(2) as diag(I_2,Q) inside Sp(2) and SU(4) after pairing the two trivial lines",
-      "underlying_real_bundle": "R^4 + xi_R = R^8"
+      "structure_group_reduction_status": "inferred from the associated representation",
+      "underlying_real_bundle": "R^4 + xi_R = R^8",
+      "underlying_real_bundle_reason": "xi_R is the orthogonal complement of the associative plane span(x_1,x_2,x_1 x_2), so xi_R + span(x_1,x_2,x_1 x_2)=R^7 and one further trivial line gives R^4+xi_R=R^8",
+      "underlying_real_bundle_status": "inferred"
     }
   ],
   "representation_inputs": {
@@ -330,6 +377,7 @@
       "equivariant_automorphism_group": "GL(2,C) x GL(1,C)",
       "equivariant_automorphism_group_connected": true,
       "source_decomposition": "2 V_0 + V_1",
+      "source_point": "representative",
       "standard_doublets": 1,
       "trivial_lines": 2,
       "unsupported_irreducibles": []
@@ -340,6 +388,7 @@
       "equivariant_automorphism_group": "GL(2,C)",
       "equivariant_automorphism_group_connected": true,
       "source_decomposition": "2 V_1",
+      "source_point": "representative",
       "standard_doublets": 2,
       "trivial_lines": 0,
       "unsupported_irreducibles": []
@@ -350,6 +399,7 @@
       "equivariant_automorphism_group": "GL(2,C) x GL(1,C)",
       "equivariant_automorphism_group_connected": true,
       "source_decomposition": "2 V_0 + V_1",
+      "source_point": "Mostow-adapted core",
       "standard_doublets": 1,
       "trivial_lines": 2,
       "unsupported_irreducibles": []
@@ -360,13 +410,14 @@
       "equivariant_automorphism_group": "GL(2,C) x GL(1,C)",
       "equivariant_automorphism_group_connected": true,
       "source_decomposition": "2 V_0 + V_1",
+      "source_point": "Mostow-adapted core",
       "standard_doublets": 1,
       "trivial_lines": 2,
       "unsupported_irreducibles": []
     }
   },
   "schema": "a5-kernel-bundles-nullity8-classes-v1",
-  "script_sha256": "0639000bc782b27c4ea1bf368c0793e6fbdc9b70ad74d8d90f9b8ee3f13735f9",
+  "script_sha256": "c079480fcf2cdc6f12d4973fe342fc415fae79739ce3368e5cb701832d06e3cb",
   "sheet_inputs": {
     "explicit_middle_coordinate_sheet_comparisons": 2,
     "explicit_middle_coordinate_sheet_limits_equal": true,
@@ -375,44 +426,41 @@
       {
         "incidence": "E8bar->B9",
         "path_dependent": true,
-        "sheet_comparison": null
+        "recorded_comparison_matches": true,
+        "recorded_path_dependent": true,
+        "sheet_limits_equal": null
       },
       {
         "incidence": "E8bar->V",
         "path_dependent": true,
-        "sheet_comparison": null
+        "recorded_comparison_matches": true,
+        "recorded_path_dependent": true,
+        "sheet_limits_equal": null
       },
       {
         "incidence": "E8bar->VB",
         "path_dependent": true,
-        "sheet_comparison": null
+        "recorded_comparison_matches": true,
+        "recorded_path_dependent": true,
+        "sheet_limits_equal": null
       },
       {
         "incidence": "E8bar->Va+",
         "path_dependent": true,
-        "sheet_comparison": {
-          "approaches": [
-            "middle-coordinate-sheet-+1",
-            "middle-coordinate-sheet--1"
-          ],
-          "limiting_plane_union_dimension": 4,
-          "sheet_limits_equal": true
-        }
+        "recorded_comparison_matches": true,
+        "recorded_path_dependent": true,
+        "sheet_limits_equal": true
       },
       {
         "incidence": "E8bar->Va-",
         "path_dependent": true,
-        "sheet_comparison": {
-          "approaches": [
-            "middle-coordinate-sheet-+1",
-            "middle-coordinate-sheet--1"
-          ],
-          "limiting_plane_union_dimension": 4,
-          "sheet_limits_equal": true
-        }
+        "recorded_comparison_matches": true,
+        "recorded_path_dependent": true,
+        "sheet_limits_equal": true
       }
     ],
-    "path_dependent_incidence_count": 5
+    "path_dependent_incidence_count": 5,
+    "recorded_comparisons_match_recomputed_planes": true
   },
   "stiefel_generator_order": 2,
   "torsion_propagation": {
