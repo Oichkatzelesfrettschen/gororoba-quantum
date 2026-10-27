@@ -11,7 +11,7 @@ the only path from the repository to Kaggle:
 
 - ``push ENTRY --slug SLUG [-- ARGS]`` (ARGS after ``--`` go to ENTRY) resolves ENTRY's repository imports
   (``import X`` and ``from X import`` naming a module under gororoba_quantum/
-  or scripts/, transitively), bundles them with any ``--include`` file, or
+  or scripts/, transitively, less KERNEL_EXCLUDED_IMPORTS), bundles them with any ``--include`` file, or
   every tracked file of an ``--include`` directory, as a zip embedded in a
   generated ``run.py``, writes kernel-metadata.json
   (private, internet for the pinned pip install) and pushes the kernel.
@@ -217,6 +217,13 @@ CI_ENV_FILES = (
 # Kaggle's SaveKernel accepts a 706,414-byte run.py and refuses a 1,662,849-byte
 # one with HTTP 400 (2026-10-16); the guard sits between the two.
 KERNEL_SOURCE_LIMIT = 1_000_000
+# Function-level imports the closure leaves out, by importing file: each one
+# serves only a provider cloud call that authenticates with a token file
+# outside every checkout, and a kernel holds no provider token.
+# quandela_qrng.draw imports qd_platform for qd_platform.request alone. Other
+# lazy imports of the same module (qd_platform's offline load_case and
+# template_experiment) and every module-level import stay in the closure.
+KERNEL_EXCLUDED_IMPORTS = {"scripts/quandela_qrng.py": frozenset({"qd_platform"})}
 # Files every kernel carries: its program and instructions, and the
 # hypercomplex stack check with the tables it must reproduce.
 KERNEL_FILES = (
@@ -310,6 +317,20 @@ def module_path(name: str) -> Path | None:
     return None
 
 
+def eager_imports(tree: ast.Module) -> set[int]:
+    """The ids of the import statements that run when the module is imported: every one outside a function body."""
+    eager: set[int] = set()
+    stack: list[ast.AST] = list(tree.body)
+    while stack:
+        node = stack.pop()
+        if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.Lambda):
+            continue
+        if isinstance(node, ast.Import | ast.ImportFrom):
+            eager.add(id(node))
+        stack.extend(ast.iter_child_nodes(node))
+    return eager
+
+
 def import_closure(entry: Path) -> list[Path]:
     seen: set[Path] = set()
     stack = [entry]
@@ -318,12 +339,17 @@ def import_closure(entry: Path) -> list[Path]:
         if path in seen:
             continue
         seen.add(path)
-        for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"), filename=str(path))):
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        eager = eager_imports(tree)
+        excluded = KERNEL_EXCLUDED_IMPORTS.get(path.relative_to(ROOT).as_posix(), frozenset())
+        for node in ast.walk(tree):
             names: list[str] = []
             if isinstance(node, ast.Import):
                 names = [alias.name for alias in node.names]
             elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
                 names = [node.module]
+            if id(node) not in eager:
+                names = [name for name in names if name.split(".")[0] not in excluded]
             for name in names:
                 found = module_path(name)
                 if found is not None and found not in seen:
@@ -712,6 +738,11 @@ def self_test(args: argparse.Namespace) -> int:
 
     entry = "scripts/design_c_cubic_noise.py"
     data = "docs/evidence/calibration/ibm_kingston.json"
+    # An offline entry that calls qd_platform's token-free helpers keeps it in its closure.
+    for offline in ("scripts/local_optical_operator_replay.py", "scripts/local_photonic_compiler_crosscheck.py"):
+        require(
+            ROOT / "scripts/qd_platform.py" in import_closure(ROOT / offline), f"{offline} closure lacks qd_platform"
+        )
     for machine in (DEFAULT_MACHINE, GPU_MACHINE, TPU_MACHINE):
         submission = _self_test_kernel(entry, data, machine)
     _native_tls_self_test()
@@ -1281,6 +1312,10 @@ def _self_test_kernel(entry: str, data: str, machine: str) -> dict[str, Any]:
         expected = (entry, data, "gororoba_quantum/calibration_snapshot.py", "gororoba_quantum/cd_core.py")
         for needed in (*expected, *KERNEL_FILES):
             require(needed in submission["bundle"], f"bundle lacks {needed}")
+        # The entry reaches qd_platform only through quandela_qrng.draw's lazy import.
+        require(
+            "scripts/qd_platform.py" not in submission["bundle"], "bundle carries a lazily imported provider client"
+        )
         for rel, digest in submission["bundle"].items():
             require(digest == sha256((ROOT / rel).read_bytes()), f"bundle digest of {rel} differs from the tree")
         metadata = json.loads((run_dir / "kernel/kernel-metadata.json").read_text(encoding="utf-8"))

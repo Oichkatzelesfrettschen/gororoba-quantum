@@ -19,6 +19,7 @@ while IFS= read -r path; do
     docs/evidence/cd-sign-python-translation/* | \
     docs/evidence/cd-associator-point-indicators/* | \
     docs/evidence/cd-annihilator-symmetry/* | \
+    docs/evidence/cd-annihilator-symmetry-real/* | \
     scripts/cd_sign_source_ast.py | \
     docs/evidence/folding_proofs/* | \
     docs/evidence/formal_certificates/* | \

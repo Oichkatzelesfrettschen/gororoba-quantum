@@ -1,0 +1,13 @@
+Require CdAnnihilatorSymmetryReal.
+Print Assumptions CdAnnihilatorSymmetryReal.norm_mul.
+Print Assumptions CdAnnihilatorSymmetryReal.adjoint.
+Print Assumptions CdAnnihilatorSymmetryReal.re_commutator.
+Print Assumptions CdAnnihilatorSymmetryReal.re_associator.
+Print Assumptions CdAnnihilatorSymmetryReal.conj_mul_left.
+Print Assumptions CdAnnihilatorSymmetryReal.conj_mul_right.
+Print Assumptions CdAnnihilatorSymmetryReal.lemma_9_2.
+Print Assumptions CdAnnihilatorSymmetryReal.kernel_equality.
+Print Assumptions CdAnnihilatorSymmetryReal.purity_left.
+Print Assumptions CdAnnihilatorSymmetryReal.purity_right.
+Print Assumptions CdAnnihilatorSymmetryReal.right_inverse_form.
+Print Assumptions CdAnnihilatorSymmetryReal.direct_finiteness.
