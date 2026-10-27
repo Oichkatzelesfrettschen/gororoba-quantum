@@ -15,6 +15,7 @@ run directly with --self-test it checks both families' exact laws.
 from __future__ import annotations
 
 import argparse
+import functools
 import math
 from dataclasses import replace
 from typing import Any
@@ -72,6 +73,7 @@ FAMILY_NAMES = (
     "measurement-sequence",
     "measurement-sequence-diagnostic",
     "measurement-sequence-envelope",
+    "measurement-sequence-relaxation",
     "latency-recovery",
 )
 # Families that run on one pinned patch (--patch-qubits, patch_characterization.PATCH_ROLES).
@@ -1058,6 +1060,250 @@ def msqe_groups(
     return groups
 
 
+# measurement-sequence-relaxation: the envelope's constructor with the successor's rows (docs/design/
+# measurement-sequence-envelope-successor.md). Every member keeps the envelope's terminal reset, so the family stays
+# one dynamic job and row r of every qubit fuses into PUB r in the order below:
+#   head        the main family's static members (delay arm at every N, unitary arm, ro0, t1 series), whose delay
+#               rows at N = 4 and N = 8 are the first order-sentinel segment;
+#   readers     each measure row at N = 2, 4, 8 is followed directly by one carryover reader, a ground-start member
+#               that idles the pre-readout wait, reads into final and resets: under column-wise execution reader shot
+#               j follows its predecessor's shot j;
+#   sentinels   a block of four delay-arm rows (N = 4 twice, N = 8 twice) between the N = 4 and N = 8 reader blocks
+#               and another among the patterns, so each third of the job holds one order-sentinel segment;
+#   equilibrium a ground-start member that idles MSQR_EQUILIBRIUM_SECONDS, then the pre-readout wait, reads and
+#               resets, directly after the last reader; the four N = 16 measure rows follow it;
+#   tail        the settle arm, the reset controls and the width tier's patterns with the second sentinel block.
+MSQR_FAMILY = "measurement-sequence-relaxation"
+# Step counts whose four signed measure rows each carry a reader, in job order.
+MSQR_READER_STEPS = (2, 4, 8)
+MSQR_READERS = len(MSQR_READER_STEPS) * len(MSQ_SIGNED)
+# The equilibrium row's idle from the initialized state, rounded up to the Target's timing granularity.
+MSQR_EQUILIBRIUM_SECONDS = 400.0e-6
+# A sentinel block: (steps, signed member) of its four delay-arm rows. Rows (0, 1) and (2, 3) are its two pairs of
+# consecutive rows; the head's pairs are the delay rows (8, 9) and (12, 13) of the job.
+MSQR_SENTINEL_ROWS = (
+    (4, MSQ_SIGNED[0]),
+    (4, MSQ_SIGNED[1]),
+    (8, MSQ_SIGNED[0]),
+    (8, MSQ_SIGNED[1]),
+)
+# Sentinel segment numbers by position in the job: the head's delay rows are segment 0.
+MSQR_SENTINEL_MIDDLE, MSQR_SENTINEL_TAIL = 1, 2
+# The middle block follows the reader block of this step count.
+MSQR_SENTINEL_AFTER_STEPS = 4
+
+
+def msqr_reader_member(index: int, qubit: int) -> str:
+    return f"msqr_reader{index}_q{qubit}"
+
+
+def msqr_equilibrium_member(qubit: int) -> str:
+    return f"msqr_eq_q{qubit}"
+
+
+def msqr_sentinel_member(segment: int, index: int, qubit: int) -> str:
+    """msqr_sent{segment}{index}_n{N}_q{qubit}: row `index` of the segment's block of delay-arm rows."""
+    return f"msqr_sent{segment}{index}_n{MSQR_SENTINEL_ROWS[index][0]}_q{qubit}"
+
+
+def msqr_reader_circuit(index: int, qubit: int, prereadout_dt: int) -> QuantumCircuit:
+    """The pre-readout idle, then the final measurement of a qubit that starts in |0>, as ro0 does."""
+    if type(index) is not int or not 0 <= index < MSQR_READERS:
+        raise ValueError(f"unknown carryover reader {index!r}")
+    if type(prereadout_dt) is not int or prereadout_dt <= 0:
+        raise ValueError("the pre-readout delay must be a positive integer number of dt")
+    circuit = QuantumCircuit(
+        QuantumRegister(1, "q"), ClassicalRegister(1, "final"), name=msqr_reader_member(index, qubit)
+    )
+    circuit.delay(prereadout_dt, 0, unit="dt")
+    circuit.measure(0, 0)
+    circuit.reset(0)
+    return circuit
+
+
+def msqr_equilibrium_circuit(qubit: int, equilibrium_dt: int, prereadout_dt: int) -> QuantumCircuit:
+    """The equilibrium idle from the initialized state, the pre-readout idle, then the final measurement."""
+    if type(equilibrium_dt) is not int or equilibrium_dt <= 0:
+        raise ValueError(f"the equilibrium idle must be a positive integer number of dt, got {equilibrium_dt!r}")
+    if type(prereadout_dt) is not int or prereadout_dt <= 0:
+        raise ValueError("the pre-readout delay must be a positive integer number of dt")
+    circuit = QuantumCircuit(
+        QuantumRegister(1, "q"), ClassicalRegister(1, "final"), name=msqr_equilibrium_member(qubit)
+    )
+    circuit.delay(equilibrium_dt, 0, unit="dt")
+    circuit.delay(prereadout_dt, 0, unit="dt")
+    circuit.measure(0, 0)
+    circuit.reset(0)
+    return circuit
+
+
+def msqr_row_count(width: int) -> int:
+    """PUBs of the family at layout width `width`: the envelope's rows plus the readers, the equilibrium row and the
+    two sentinel blocks."""
+    base = 4 * len(MSQ_STEPS) + 4 + 1 + len(MSQ_T1_MICROSECONDS) + 4 * len(MSQ_DYNAMIC_STEPS) + 4
+    return (
+        base + len(MSQE_RESET_CONTROLS) + len(msqe_pattern_bits(width)) + MSQR_READERS + 1 + 2 * len(MSQR_SENTINEL_ROWS)
+    )
+
+
+def msqr_members(
+    qubit: int,
+    delay_dt: int,
+    settle_dt: int,
+    prereadout_dt: int,
+    t1_dt: tuple[int, ...],
+    equilibrium_dt: int,
+    pattern_column: tuple[int, ...],
+) -> tuple[Member, ...]:
+    """One qubit's members in job order (the layout above); pattern_column holds its bit in each pattern."""
+    static, dynamic = msq_members(qubit, delay_dt, settle_dt, prereadout_dt, t1_dt)
+    by_name = {m.name: _with_terminal_reset(m) for m in (*static, *dynamic)}
+    delay_ideal = np.asarray([msq_delay_p0(), 1.0 - msq_delay_p0()])
+
+    def measure_rows(steps: int) -> list[Member]:
+        return [by_name[msq_member("measure", steps, signed, qubit)] for signed in MSQ_SIGNED]
+
+    def reader(index: int) -> Member:
+        return Member(
+            msqr_reader_member(index, qubit),
+            msqr_reader_circuit(index, qubit, prereadout_dt),
+            np.asarray([1.0, 0.0]),
+            weights=np.asarray([1.0, 0.0]),
+        )
+
+    def sentinels(segment: int) -> list[Member]:
+        members = []
+        for index, (steps, signed) in enumerate(MSQR_SENTINEL_ROWS):
+            name = msqr_sentinel_member(segment, index, qubit)
+            circuit = msq_circuit("delay", steps, signed[2], qubit, name, delay_dt, settle_dt, prereadout_dt)
+            circuit.reset(0)
+            members.append(Member(name, circuit, delay_ideal, weights=msq_weights(steps, "delay")))
+        return members
+
+    rows = [by_name[m.name] for m in static]
+    index = 0
+    for steps in MSQR_READER_STEPS:
+        for member in measure_rows(steps):
+            rows += [member, reader(index)]
+            index += 1
+        if steps == MSQR_SENTINEL_AFTER_STEPS:
+            rows += sentinels(MSQR_SENTINEL_MIDDLE)
+    rows.append(
+        Member(
+            msqr_equilibrium_member(qubit),
+            msqr_equilibrium_circuit(qubit, equilibrium_dt, prereadout_dt),
+            np.asarray([1.0, 0.0]),
+            weights=np.asarray([1.0, 0.0]),
+        )
+    )
+    rows += measure_rows(MSQ_STEPS[-1])
+    rows += [by_name[msq_member("settle", MSQ_SETTLE_STEPS, signed, qubit)] for signed in MSQ_SIGNED]
+    rows += [
+        Member(
+            msqe_reset_member(control, qubit),
+            msqe_reset_circuit(control, qubit, prereadout_dt),
+            np.asarray([0.0, 0.0, 1.0, 0.0] if control == "rc1" else [1.0, 0.0, 0.0, 0.0]),
+            weights=np.asarray([0.0, 1.0, 0.0, 1.0]),
+        )
+        for control in MSQE_RESET_CONTROLS
+    ]
+    patterns = [
+        Member(
+            msqe_pattern_member(k, qubit),
+            msqe_pattern_circuit(k, bit, qubit, prereadout_dt),
+            np.asarray([1.0 - bit, float(bit)]),
+            weights=np.asarray([0.0, 1.0]),
+        )
+        for k, bit in enumerate(pattern_column)
+    ]
+    # The second sentinel block sits mid-pattern, so it lies in the job's last third at every width tier.
+    split = len(patterns) // 2
+    return (*rows, *patterns[:split], *sentinels(MSQR_SENTINEL_TAIL), *patterns[split:])
+
+
+def _msqr_summary(distributions: dict[str, np.ndarray], qubit: int) -> dict[str, float]:
+    """The envelope's summary plus each reader's and the equilibrium row's final P1."""
+    result = _msqe_summary(distributions, qubit)
+    for index in range(MSQR_READERS):
+        if (name := msqr_reader_member(index, qubit)) in distributions:
+            result[f"q{qubit}_msqr_p1_reader{index}"] = float(distributions[name][1])
+    if (name := msqr_equilibrium_member(qubit)) in distributions:
+        result[f"q{qubit}_msqr_p1_eq"] = float(distributions[name][1])
+    return result
+
+
+def _msqr_summarizer(qubit: int) -> Summary:
+    def summarize(distributions: dict[str, np.ndarray]) -> dict[str, float]:
+        return _msqr_summary(distributions, qubit)
+
+    return summarize
+
+
+def msqr_groups(
+    qubits: list[int],
+    measurement_delay_dt: Any,
+    settle_delay_dt: Any,
+    prereadout_delay_dt: Any,
+    t1_delays_dt: Any,
+    equilibrium_delay_dt: Any,
+) -> list[Group]:
+    """One group per qubit in layout order; row r fuses across the qubits into one dynamic PUB."""
+    delays = msq_delays(qubits, measurement_delay_dt)
+    settles = msq_delays(qubits, settle_delay_dt, "settle")
+    prereadouts = msq_delays(qubits, prereadout_delay_dt, "pre-readout")
+    t1_dt = msq_t1_delays(t1_delays_dt)
+    if type(equilibrium_delay_dt) is not int or equilibrium_delay_dt <= 0:
+        raise ValueError(f"the equilibrium idle must be a positive integer number of dt, got {equilibrium_delay_dt!r}")
+    bits = msqe_pattern_bits(len(qubits))
+    return [
+        Group(
+            f"msqr_q{qubit}",
+            msqr_members(
+                qubit,
+                delays[qubit],
+                settles[qubit],
+                prereadouts[qubit],
+                t1_dt,
+                equilibrium_delay_dt,
+                tuple(row[rank] for row in bits),
+            ),
+            _msqr_summarizer(qubit),
+        )
+        for rank, qubit in enumerate(qubits)
+    ]
+
+
+def msqr_sentinel_pairs() -> tuple[tuple[tuple[str, str], ...], ...]:
+    """The pairs of consecutive delay-arm rows (row stems) that read the job's shot order, by segment.
+
+    Segment 0 is the head's delay rows at N = 4 and N = 8; segments MSQR_SENTINEL_MIDDLE and MSQR_SENTINEL_TAIL are
+    the first and second pairs of each sentinel block (MSQR_SENTINEL_ROWS).
+    """
+
+    def stem(name: str) -> str:
+        return name.rpartition("_q")[0]
+
+    head = tuple(
+        (stem(msq_member("delay", steps, MSQ_SIGNED[0], 0)), stem(msq_member("delay", steps, MSQ_SIGNED[1], 0)))
+        for steps in (4, 8)
+    )
+    blocks = tuple(
+        tuple(
+            (stem(msqr_sentinel_member(segment, first, 0)), stem(msqr_sentinel_member(segment, first + 1, 0)))
+            for first in range(0, len(MSQR_SENTINEL_ROWS), 2)
+        )
+        for segment in (MSQR_SENTINEL_MIDDLE, MSQR_SENTINEL_TAIL)
+    )
+    return (head, *blocks)
+
+
+@functools.cache
+def msqr_row_stems(width: int) -> tuple[str, ...]:
+    """The member name of each job row without its qubit suffix, in job order: the one source of the row layout."""
+    members = msqr_members(0, 1, 1, 1, (0, 1, 2, 3, 4), 1, tuple(row[0] for row in msqe_pattern_bits(width)))
+    return tuple(member.name.rpartition("_q")[0] for member in members)
+
+
 # measurement-sequence-diagnostic: the gate-model scatter floor of the pinching analysis. Each named qubit runs the
 # members of the main family that need no measurement history and carry the model's unitary-arm test: the four
 # signed unitary members at N = 16, ro0, and the t1 member at idle 0 (ro1). Their circuits come from msq_circuit,
@@ -1741,9 +1987,9 @@ def family_contracts(
         if configuration is None or not configuration.get("qubits"):
             raise ValueError("measurement-sequence contracts need the configuration's named qubits")
         return measurement_sequence_contracts([int(qubit) for qubit in configuration["qubits"]], alpha, power)
-    if family == MSQE_FAMILY:
+    if family in (MSQE_FAMILY, MSQR_FAMILY):
         if configuration is None or not configuration.get("qubits"):
-            raise ValueError("measurement-sequence-envelope contracts need the configuration's named qubits")
+            raise ValueError(f"{family} contracts need the configuration's named qubits")
         return measurement_sequence_contracts([int(qubit) for qubit in configuration["qubits"]], alpha, power)
     if family == MSQD_FAMILY:
         if configuration is None or not configuration.get("qubits"):
@@ -1994,6 +2240,15 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
             family["settle_delay_dt"],
             family["prereadout_delay_dt"],
             family["t1_delays_dt"],
+        )
+    if family.get("name") == MSQR_FAMILY:
+        return msqr_groups(
+            [int(qubit) for qubit in family["qubits"]],
+            family["measurement_delay_dt"],
+            family["settle_delay_dt"],
+            family["prereadout_delay_dt"],
+            family["t1_delays_dt"],
+            family["equilibrium_delay_dt"],
         )
     if family.get("name") == MSQD_FAMILY:
         return msq_diagnostic_groups([int(qubit) for qubit in family["qubits"]], family["prereadout_delay_dt"])

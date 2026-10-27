@@ -30,6 +30,7 @@ import measurement_sequence_analysis
 import measurement_sequence_scatter
 import msq_envelope
 import msq_envelope_analysis
+import msq_successor_analysis
 import n21_exact_planning
 import parallel
 from diagnostic_experiments import (
@@ -45,6 +46,9 @@ from diagnostic_experiments import (
     MSQD_FAMILY,
     MSQE_FAMILY,
     MSQE_RESET_CONTROLS,
+    MSQR_EQUILIBRIUM_SECONDS,
+    MSQR_FAMILY,
+    MSQR_SENTINEL_ROWS,
     N21_FAMILIES,
     N21_OVERLAP_ARM,
     PATCH_FAMILIES,
@@ -59,6 +63,8 @@ from diagnostic_experiments import (
     msq_diagnostic_groups,
     msqe_groups,
     msqe_pattern_bits,
+    msqr_groups,
+    msqr_row_count,
     n21_group,
     n21_orbit_rca_group,
     state_prep_arms,
@@ -188,7 +194,7 @@ def contract_configuration(family: str, configuration: dict[str, Any]) -> dict[s
     """
     return (
         {"configuration": configuration}
-        if family in (STATE_PREP_FAMILY, MSQ_FAMILY, MSQD_FAMILY, MSQE_FAMILY, "n21-orbit-rca")
+        if family in (STATE_PREP_FAMILY, MSQ_FAMILY, MSQD_FAMILY, MSQE_FAMILY, MSQR_FAMILY, "n21-orbit-rca")
         else {}
     )
 
@@ -1328,7 +1334,8 @@ def measurement_sequence_candidates(
     excludes a named qubit refuses the snapshot.
     """
     diagnostic = args.family == MSQD_FAMILY
-    envelope = args.family == MSQE_FAMILY
+    relaxation = args.family == MSQR_FAMILY
+    envelope = args.family in (MSQE_FAMILY, MSQR_FAMILY)
     declared = getattr(args, "layout", None)
     if declared is None and not envelope:
         raise runtime.LiveRunError(f"{args.family} needs --layout: it has no retained default qubits")
@@ -1336,9 +1343,11 @@ def measurement_sequence_candidates(
     if envelope:
         width = int(args.layout_width)
         # Every member holds a terminal reset, so every PUB is dynamic: the main family's rows, two reset controls
-        # and the width tier's patterns.
+        # and the width tier's patterns, and for the relaxation family its readers, equilibrium row and sentinels.
         expected_kinds = ["dynamic"] * (
-            4 * len(MSQ_STEPS)
+            msqr_row_count(width)
+            if relaxation
+            else 4 * len(MSQ_STEPS)
             + 4
             + 1
             + len(MSQ_T1_MICROSECONDS)
@@ -1356,6 +1365,7 @@ def measurement_sequence_candidates(
             + ["dynamic"] * (4 * len(MSQ_DYNAMIC_STEPS) + 4)
         )
     candidates = []
+    equilibrium_dt = 0
     for snapshot in snapshots:
         try:
             if envelope:
@@ -1388,8 +1398,12 @@ def measurement_sequence_candidates(
                 t1_delays = [
                     rounded_delay(runtime, snapshot, microseconds * 1e-6) for microseconds in MSQ_T1_MICROSECONDS
                 ]
-                build = msqe_groups if envelope else measurement_sequence_groups
-                groups = build(qubits, delays, settles, prereadouts, t1_delays)
+                if relaxation:
+                    equilibrium_dt = rounded_delay(runtime, snapshot, MSQR_EQUILIBRIUM_SECONDS)
+                    groups = msqr_groups(qubits, delays, settles, prereadouts, t1_delays, equilibrium_dt)
+                else:
+                    build = msqe_groups if envelope else measurement_sequence_groups
+                    groups = build(qubits, delays, settles, prereadouts, t1_delays)
             if snapshot.admission_target is None:
                 snapshot.admission_target = runtime.build_admission_target(snapshot)
             get_plugin = getattr(snapshot.backend, "get_translation_stage_plugin", None)
@@ -1421,10 +1435,14 @@ def measurement_sequence_candidates(
                         )
                     if arm in MSQE_RESET_CONTROLS:
                         measures, delays_expected, steps = 2, 1, 0
-                    elif arm.startswith("pat"):
+                    elif arm.startswith("pat") or arm == "ro0" or (relaxation and arm.startswith("reader")):
                         measures, delays_expected, steps = 1, 1, 0
-                    elif arm == "ro0":
-                        measures, delays_expected, steps = 1, 1, 0
+                    elif relaxation and arm == "eq":
+                        measures, delays_expected, steps = 1, 2, 0
+                    elif relaxation and arm.startswith("sent"):
+                        # A sentinel is a delay-arm row: one idle per step and the pre-readout idle.
+                        steps = MSQR_SENTINEL_ROWS[int(arm.removeprefix("sent")[1:])][0]
+                        measures, delays_expected = 1, 1 + steps
                     elif arm == "t1":
                         index = int(member.name.split("_d")[1].split("_")[0])
                         measures, delays_expected = 1, 1 + int(t1_delays[index] > 0)
@@ -1503,7 +1521,7 @@ def measurement_sequence_candidates(
                 (
                     choices,
                     {
-                        "name": MSQE_FAMILY,
+                        "name": args.family,
                         "qubits": qubits,
                         "layout_source": "msq_envelope.layout_rule",
                         "layout_width": width,
@@ -1516,6 +1534,7 @@ def measurement_sequence_candidates(
                         "prereadout_delay_dt": {str(qubit): dt for qubit, dt in prereadouts.items()},
                         "t1_delays_dt": t1_delays,
                         "pattern_bits": [list(row) for row in msqe_pattern_bits(width)],
+                        **({"equilibrium_delay_dt": equilibrium_dt} if relaxation else {}),
                         "placement_contract": (
                             "one single-qubit placement per qubit the layout rule keeps; every qubit runs each member "
                             "in the same shots; every member ends in a reset, so every PUB is dynamic"
@@ -1713,7 +1732,7 @@ def family_candidates(
         return patch_candidates(runtime, snapshots, args, trace)
     if args.family == STATE_PREP_FAMILY:
         return state_prep_candidates(runtime, snapshots, args, trace)
-    if args.family in (MSQ_FAMILY, MSQD_FAMILY, MSQE_FAMILY):
+    if args.family in (MSQ_FAMILY, MSQD_FAMILY, MSQE_FAMILY, MSQR_FAMILY):
         return measurement_sequence_candidates(runtime, snapshots, args, trace)
     if args.family == LATENCY_RECOVERY_FAMILY:
         return latency_recovery_candidates(runtime, snapshots, args, trace)
@@ -2400,9 +2419,14 @@ def measured_family(
     *,
     correction_evidence: list[dict[str, Any]] | None = None,
     replica_registers: dict[str, dict[str, list[str]]] | None = None,
+    shot_order: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """The family analysis of a collected record: the precision endpoints and, for measurement-sequence, the
     preregistered pinching decisions beside them.
+
+    shot_order serves the measurement-sequence-relaxation family: "registers" holds the shot-ordered registers of
+    the PUBs msq_successor_analysis.required_pubs names, "chunks" the executor's chunk_timing as lists of PUB
+    indices, and "reason" why either could not be read; an absent entry withholds every qubit.
 
     The pinching analysis (measurement_sequence_analysis.collected) reads every member of both jobs through one
     readout correction, so it runs only when the members executed under one calibration
@@ -2429,6 +2453,23 @@ def measured_family(
         if reason:
             return {**analysis, "envelope": {"schema": msq_envelope_analysis.SCHEMA, "withheld": reason}}
         return {**analysis, "envelope": msq_envelope_analysis.collected(record, distributions, executed)}
+    if name == MSQR_FAMILY:
+        members = sorted(name for name in distributions if name.startswith("msq"))
+        reason = runtime._comparisons_withheld(members, executed) if members else "no measured members"
+        if reason:
+            return {**analysis, "relaxation": {"schema": msq_successor_analysis.SCHEMA, "withheld": reason}}
+        evidence = shot_order or {}
+        if evidence.get("reason"):
+            return {
+                **analysis,
+                "relaxation": {"schema": msq_successor_analysis.SCHEMA, "withheld": str(evidence["reason"])},
+            }
+        return {
+            **analysis,
+            "relaxation": msq_successor_analysis.collected(
+                record, distributions, executed, evidence.get("registers"), evidence.get("chunks")
+            ),
+        }
     if name != MSQ_FAMILY:
         return analysis
     members = sorted(name for name in distributions if name.startswith("msq_"))

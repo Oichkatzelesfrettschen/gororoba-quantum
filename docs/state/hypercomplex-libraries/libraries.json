@@ -1880,7 +1880,10 @@
    "imported_by": [
     "scripts/kaggle_run.py"
    ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": [
+    "scripts/kaggle_run.py"
+   ]
   },
   {
    "distribution": "kagglesdk",
@@ -1894,7 +1897,10 @@
    "imported_by": [
     "scripts/kaggle_run.py"
    ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": [
+    "scripts/kaggle_run.py"
+   ]
   },
   {
    "distribution": "kingdon",
@@ -2760,6 +2766,7 @@
     "gororoba_quantum/modular_arithmetic.py",
     "gororoba_quantum/msq_envelope_analysis.py",
     "gororoba_quantum/msq_envelope_null.py",
+    "gororoba_quantum/msq_successor_analysis.py",
     "gororoba_quantum/n21_exact_planning.py",
     "gororoba_quantum/native_preflight_contracts.py",
     "gororoba_quantum/order_finding.py",
@@ -2877,6 +2884,8 @@
     "scripts/measurement_sequence_scatter_validation.py",
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/msq_envelope_exploratory.py",
+    "scripts/msq_envelope_raw_diagnostics.py",
+    "scripts/msq_successor_replay.py",
     "scripts/n21_detuning_sign.py",
     "scripts/n21_dose_decisions.py",
     "scripts/n21_exact_crosscheck.py",
@@ -6251,6 +6260,7 @@
     "gororoba_quantum/measurement_sequence_scatter.py",
     "gororoba_quantum/msq_envelope_analysis.py",
     "gororoba_quantum/msq_envelope_null.py",
+    "gororoba_quantum/msq_successor_analysis.py",
     "gororoba_quantum/placement_feasibility.py",
     "gororoba_quantum/primorial_cover.py",
     "gororoba_quantum/variance.py",
@@ -6289,6 +6299,7 @@
     "scripts/iqm_qet_ladder.py",
     "scripts/lsq_conditioning_study.py",
     "scripts/measurement_sequence_scatter_validation.py",
+    "scripts/msq_envelope_raw_diagnostics.py",
     "scripts/n21_dose_decisions.py",
     "scripts/n21_orbit_context_refit.py",
     "scripts/n21_orbit_rca.py",
@@ -6390,7 +6401,10 @@
    "imported_by": [
     "scripts/kaggle_sessions.py"
    ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": [
+    "scripts/kaggle_sessions.py"
+   ]
   },
   {
    "distribution": "setuptools",
@@ -8177,6 +8191,7 @@
    "et_campaign",
    "experiment_optimizer",
    "experiments",
+   "functools",
    "latency_recovery",
    "local_compute",
    "math",
@@ -8615,6 +8630,7 @@
    "math",
    "maximal_experiments",
    "msq_envelope",
+   "msq_successor_analysis",
    "native_preflight",
    "numpy",
    "os",
@@ -8766,12 +8782,16 @@
   "gororoba_quantum/msq_successor_analysis.py": [
    "__future__",
    "collections",
+   "diagnostic_experiments",
    "functools",
+   "hashlib",
    "json",
    "math",
    "measurement_sequence_analysis",
+   "msq_envelope_analysis",
    "numpy",
    "parallel",
+   "pathlib",
    "scipy",
    "statistics",
    "typing"
@@ -9179,6 +9199,7 @@
    "measurement_sequence_scatter",
    "msq_envelope",
    "msq_envelope_analysis",
+   "msq_successor_analysis",
    "n21_exact_planning",
    "numpy",
    "packing",

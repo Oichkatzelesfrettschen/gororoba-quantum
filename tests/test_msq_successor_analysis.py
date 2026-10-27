@@ -9,8 +9,11 @@ from typing import Any
 import numpy as np
 import pytest
 
+import diagnostic_experiments as de
+import live_run
 import measurement_sequence_analysis as msa
 import msq_successor_analysis as su
+import qpu_planning
 
 # ANU QRNG docs/evidence/anu_qrng/draw-2026-10-27T200026Z.json, index 0.
 TEST_SEED = 585
@@ -432,3 +435,357 @@ def test_device_decision_withholds_below_eight_qubits_and_on_a_common_gap() -> N
     }
     veto = su.device_decision(shifted, list(rows), 2, dict.fromkeys(rows, 0.0))
     check(veto["settle_veto"]["common_veto"] and veto["device"] is None, f"{veto['withheld']}")
+
+
+# --- the collected record of the relaxation family ----------------------------------------------------------
+
+DT = 4e-9
+EQUILIBRIUM_DT = 100000
+RUN_SHOTS = 8192
+RUN_WIDTH = 16
+
+
+class Run:
+    """A synthetic collected run of the relaxation family: model-device probabilities realized shot by shot."""
+
+    def __init__(self, record: dict[str, Any], distributions: dict[str, Any], executed: dict[str, Any]) -> None:
+        self.record, self.distributions, self.executed = record, distributions, executed
+        self.registers: dict[str, dict[str, list[str]]] = {}
+        self.chunks: list[list[int]] = []
+        self.contexts: dict[int, dict[str, Any]] = {}
+
+
+def build_run(
+    carry: float = 0.0002,
+    shuffle: bool = False,
+    correlation: float = 0.3,
+    thermal: float = 0.0,
+    width: int = RUN_WIDTH,
+) -> Run:
+    """Column-wise shot order: consecutive sentinel rows share a per-shot uniform with probability `correlation`, and
+    a reader's P1 carries `carry` times the readout contrast after a predecessor bit of 1. `shuffle` permutes every
+    row's shots independently, which removes the same-shot structure."""
+    generator = np.random.default_rng(TEST_SEED)
+    qubits = [3 * k + 1 for k in range(width)]
+    base: dict[int, dict[str, Any]] = {}
+    for part in (qubits[:8], qubits[8:16]):
+        if part:
+            base.update(base_contexts(tuple(part)))
+    stems = de.msqr_row_stems(width)
+    models = {q: msa.device_model(base[q], p_init=0.0, p_thermal=thermal) for q in base}
+    final = {q: c["final"] for q, c in msa.device_counts(models, base, RUN_SHOTS).items()}
+    pairs = {second: first for segment in de.msqr_sentinel_pairs() for first, second in segment}
+    pattern_bits = [[int(b) for b in row] for row in de.msqe_pattern_bits(width)]
+    pubs = [f"pub_{k:03d}" for k in range(len(stems))]
+    bits: dict[tuple[int, int], np.ndarray] = {}
+    uniform: dict[tuple[int, int], np.ndarray] = {}
+    for k, stem in enumerate(stems):
+        for rank, q in enumerate(qubits):
+            ctx = base[q]
+            contrast = 1 - ctx["e01"] - ctx["e10"]
+            fresh = generator.random(RUN_SHOTS)
+            if stem in pairs:
+                shared = generator.random(RUN_SHOTS) < correlation
+                fresh = np.where(shared, uniform[(k - 1, rank)], fresh)
+            uniform[(k, rank)] = fresh
+            member = f"{stem}_q{q}"
+            if stem.startswith("msqr_reader"):
+                p1 = ctx["e01"] + contrast * carry * bits[(k - 1, rank)]
+            elif stem == "msqr_eq":
+                excited = thermal * (1 - math.exp(-EQUILIBRIUM_DT * DT / ctx["t1_cal_s"]))
+                p1 = np.full(RUN_SHOTS, ctx["e01"] + contrast * excited)
+            elif stem.startswith("msqr_sent"):
+                steps, signed = sentinel_template(stem)
+                template = de.msq_member("delay", steps, signed, q)
+                p1 = np.full(RUN_SHOTS, final[q][template][0] / RUN_SHOTS)
+            elif stem.startswith("msqe_rc"):
+                p1 = np.full(RUN_SHOTS, ctx["e01"])
+            elif stem.startswith("msqe_pat"):
+                bit = pattern_bits[int(stem.removeprefix("msqe_pat"))][rank]
+                p1 = np.full(RUN_SHOTS, 1 - ctx["e10"] if bit else ctx["e01"])
+            else:
+                p1 = np.full(RUN_SHOTS, final[q][member][0] / RUN_SHOTS)
+            row = (fresh < p1).astype(np.int8)
+            bits[(k, rank)] = generator.permutation(row) if shuffle else row
+    distributions: dict[str, Any] = {}
+    executed: dict[str, Any] = {}
+    components: list[list[dict[str, Any]]] = [[] for _ in stems]
+    registers: dict[str, dict[str, list[str]]] = {}
+    for k, stem in enumerate(stems):
+        registers[pubs[k]] = {}
+        for rank, q in enumerate(qubits):
+            ctx = base[q]
+            member = f"{stem}_q{q}"
+            register = f"g{rank}_r0_final"
+            line = bits[(k, rank)]
+            registers[pubs[k]][register] = [str(int(b)) for b in line]
+            ones = int(line.sum())
+            law = np.zeros(2 ** (member_steps(stem) + 1))
+            law[0], law[1] = 1 - ones / RUN_SHOTS, ones / RUN_SHOTS
+            distributions[member] = [law]
+            executed[member] = {
+                "shots": RUN_SHOTS,
+                "pub": pubs[k],
+                "calibration": "run",
+                "calibration_changed_during_shots": False,
+                "placed_qubit_calibration": {
+                    str(q): {
+                        "T1": ctx["t1_cal_s"] * 1e6,
+                        "T2": ctx["t2_s"] * 1e6,
+                        "prob_meas1_prep0": ctx["e01"],
+                        "prob_meas0_prep1": ctx["e10"],
+                        "readout_error": (ctx["e01"] + ctx["e10"]) / 2,
+                    }
+                },
+                "placed_gate_calibration": {
+                    str(q): {
+                        "sx_error": ctx["sx_error"],
+                        "sx_duration_s": ctx["sx_duration_s"],
+                        "measure_duration_s": ctx["window_s"],
+                    }
+                },
+            }
+            components[k].append(
+                {
+                    "member": member,
+                    "physical_qubits": [q],
+                    "registers_by_replica": [[register]],
+                }
+            )
+    in_dt = {str(q): round(base[q]["delay_s"] / DT) for q in qubits}
+    record = {
+        "family_configuration": {
+            "name": de.MSQR_FAMILY,
+            "qubits": qubits,
+            "layout_width": width,
+            "dt_seconds": DT,
+            "measurement_delay_dt": in_dt,
+            "settle_delay_dt": {str(q): round(base[q]["settle_s"] / DT) for q in qubits},
+            "prereadout_delay_dt": {str(q): round(base[q]["prereadout_s"] / DT) for q in qubits},
+            "t1_delays_dt": [round(d / DT) for d in base[qubits[0]]["t1_delays_s"]],
+            "equilibrium_delay_dt": EQUILIBRIUM_DT,
+            "pattern_bits": pattern_bits,
+        },
+        "execution_pubs": [{"name": pubs[k], "components": components[k]} for k in range(len(stems))],
+        "groups": [{"backend": "ibm_kingston"}],
+    }
+    run = Run(record, distributions, executed)
+    run.registers, run.chunks, run.contexts = registers, [list(range(len(stems)))], base
+    return run
+
+
+def sentinel_template(stem: str) -> tuple[int, tuple[str, str, int]]:
+    """(N, signed member) of the delay-arm row a sentinel row copies."""
+    index = int(stem.removeprefix("msqr_sent")[1])
+    steps, signed = de.MSQR_SENTINEL_ROWS[index]
+    return steps, signed
+
+
+def member_steps(stem: str) -> int:
+    """The mid-circuit register width of a member's law: the measure and settle arms hold N bits, the rest none."""
+    if stem.startswith(("msq_measure_n", "msq_settle_n")):
+        return int(stem.split("_n")[1].split("_")[0])
+    return 1 if stem.startswith("msqe_rc") else 0
+
+
+@pytest.fixture(scope="module")
+def run() -> Run:
+    return build_run()
+
+
+@pytest.fixture(scope="module")
+def verdict(run: Run) -> dict[str, Any]:
+    return su.collected(run.record, run.distributions, run.executed, run.registers, run.chunks, FLOOR)
+
+
+def test_collected_reaches_a_verdict_on_a_planted_ground_state_run(verdict: dict[str, Any]) -> None:
+    check("withheld" not in verdict, f"{verdict.get('withheld')}")
+    check(verdict["order"]["passes"] and verdict["order"]["chunk"]["passes"], f"{verdict['order']}")
+    for segment, result in verdict["order"]["sentinels"]["segments"].items():
+        check(result["passes"] and result["z"] > 3, f"segment {segment}: {result}")
+    check(len(verdict["selected"]) >= 8, f"{len(verdict['selected'])} selected: {verdict['decision']['withheld']}")
+    decision = verdict["decision"]
+    check(decision["withheld"] is None and decision["device"] is not None, f"{decision['withheld']}")
+    check(decision["device"]["status"] == "informative", f"{decision['device']}")
+    check(decision["settle_veto"]["common_veto"] is False, "a null run trips the common settle veto")
+    kept = [verdict["screens"][str(q)] for q in verdict["selected"]]
+    check(all(s["carryover"]["passes"] and s["equilibrium"]["passes"] for s in kept), "a selected qubit fails a gate")
+    check(all(abs(s["equilibrium"]["q_hat"] - 1) < 0.05 for s in kept), "q_hat misses the planted q = 1")
+    check(all(abs(s["carryover"]["d"]) < 4 * s["carryover"]["se"] + 5e-4 for s in kept), "carryover misses 0.0002")
+    check(all(s["carryover"]["vertex"]["allocation"] > 0 for s in kept), "no vertex allocation")
+
+
+def test_collected_record_serializes_to_plain_json(verdict: dict[str, Any]) -> None:
+    import json
+
+    text = json.dumps(verdict, allow_nan=False)
+    check(0 < len(text) < 5_000_000, f"{len(text)} bytes")
+
+
+def test_collected_reports_the_delay_arm_beside_the_echo_time(verdict: dict[str, Any]) -> None:
+    for q in verdict["selected"]:
+        entry = verdict["delay_descriptive"][str(q)]
+        check(entry["t2_echo_s"] > 0 and "measured_minus_modeled" in entry, f"q{q}: {entry}")
+
+
+def test_collected_withholds_every_qubit_when_the_shot_order_is_lost(run: Run) -> None:
+    lost = build_run(shuffle=True)
+    result = su.collected(lost.record, lost.distributions, lost.executed, lost.registers, lost.chunks, FLOOR)
+    check(result["selected"] == [] and "withheld" in result, f"{result.get('withheld')}")
+    check(not result["order"]["sentinels"]["passes"] and result["order"]["chunk"]["passes"], f"{result['order']}")
+    check("screens" not in result and "decision" not in result, "a failed order condition left statistics evaluated")
+    check(any(not s["passes"] for s in result["order"]["sentinels"]["segments"].values()), "no sentinel failed")
+
+
+def test_collected_withholds_every_qubit_when_the_executor_reports_two_chunks(run: Run) -> None:
+    count = len(run.record["execution_pubs"])
+    split = [list(range(40)), list(range(40, count))]
+    result = su.collected(run.record, run.distributions, run.executed, run.registers, split, FLOOR)
+    check(result["selected"] == [] and not result["order"]["chunk"]["passes"], f"{result['order']['chunk']}")
+    check(result["order"]["sentinels"]["passes"], "the sentinels still pass on a column-wise run")
+    check("decision" not in result, "a failed chunk condition left statistics evaluated")
+    absent = su.collected(run.record, run.distributions, run.executed, run.registers, None, FLOOR)
+    check(absent["selected"] == [] and not absent["order"]["chunk"]["passes"], "absent chunk metadata must fail")
+    partial = su.collected(run.record, run.distributions, run.executed, run.registers, [list(range(count - 1))], FLOOR)
+    check(not partial["order"]["chunk"]["passes"], "one chunk that omits a PUB must fail")
+
+
+def test_collected_fails_closed_on_absent_registers_and_a_reordered_job(run: Run) -> None:
+    check(
+        "unavailable"
+        in su.collected(run.record, run.distributions, run.executed, None, run.chunks, FLOOR)["order"]["sentinels"][
+            "reason"
+        ],
+        "absent registers",
+    )
+    layout = su.job_layout(run.record)
+    reader = layout["names"][layout["stems"].index("msqr_reader3")]
+    registers = {name: bits for name, bits in run.registers.items() if name != reader}
+    result = su.collected(run.record, run.distributions, run.executed, registers, run.chunks, FLOOR)
+    check(result["withheld"].startswith("AnalysisError") and reader in result["withheld"], f"{result['withheld']}")
+    reordered = {**run.record, "execution_pubs": list(reversed(run.record["execution_pubs"]))}
+    result = su.collected(reordered, run.distributions, run.executed, run.registers, run.chunks, FLOOR)
+    check("row layout" in result["withheld"], f"{result['withheld']}")
+    mismatch = {
+        **run.distributions,
+        f"msqr_reader3_q{layout['qubits'][0]}": [np.array([0.5, 0.5])],
+    }
+    result = su.collected(run.record, mismatch, run.executed, run.registers, run.chunks, FLOOR)
+    check("differ from the collector's counts" in result["withheld"], f"{result['withheld']}")
+
+
+def test_required_pubs_name_the_sentinel_reader_and_predecessor_rows(run: Run) -> None:
+    names = su.required_pubs(run.record)
+    check(len(names) == 12 + 12 + 12, f"{len(names)} PUBs")
+    layout = su.job_layout(run.record)
+    for k in range(12):
+        row = layout["stems"].index(f"msqr_reader{k}")
+        check(layout["names"][row] in names and layout["names"][row - 1] in names, f"reader {k}")
+
+
+def test_collected_withholds_every_qubit_under_a_planted_carryover() -> None:
+    hot = build_run(carry=0.01, width=8)
+    result = su.collected(hot.record, hot.distributions, hot.executed, hot.registers, hot.chunks, FLOOR)
+    check(result["order"]["passes"], f"{result['order']}")
+    flagged = [s["carryover"] for s in result["screens"].values() if s["carryover"] is not None]
+    check(bool(flagged) and not any(c["passes"] for c in flagged), "a planted carryover of 0.01 passed the screen")
+    check(result["selected"] == [] and result["decision"]["withheld"], f"{result['decision']['withheld']}")
+
+
+def test_collected_withholds_every_qubit_when_the_relaxation_target_is_far_from_one() -> None:
+    warm = build_run(thermal=0.14, width=8)
+    result = su.collected(warm.record, warm.distributions, warm.executed, warm.registers, warm.chunks, FLOOR)
+    check(result["order"]["passes"], f"{result['order']}")
+    rows = [s["equilibrium"] for s in result["screens"].values() if s["equilibrium"] is not None]
+    check(bool(rows) and not any(r["passes"] for r in rows), "a 14 % equilibrium excitation passed the q bound")
+    check(all(r["q_hat"] < 0.85 for r in rows if "q_hat" in r), f"{[r.get('q_hat') for r in rows]}")
+    check(result["selected"] == [], "qubits selected under q near 0.7")
+
+
+def test_measured_family_hands_the_order_evidence_to_the_analysis(run: Run, monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: list[tuple[Any, ...]] = []
+
+    def stub(*arguments: Any) -> dict[str, Any]:
+        seen.append(arguments)
+        return {"schema": "stub"}
+
+    monkeypatch.setattr(qpu_planning.msq_successor_analysis, "collected", stub)
+    ready = {"registers": run.registers, "chunks": run.chunks}
+    analysis = qpu_planning.measured_family(run.record, run.distributions, run.executed, live_run, shot_order=ready)
+    check(analysis["relaxation"] == {"schema": "stub"}, f"{analysis}")
+    check(seen[0][3] is run.registers and seen[0][4] is run.chunks, "registers and chunks must reach the analysis")
+    qpu_planning.measured_family(run.record, run.distributions, run.executed, live_run)
+    check(seen[1][3] is None and seen[1][4] is None, "absent evidence must reach the analysis as None")
+    unreadable = qpu_planning.measured_family(
+        run.record, run.distributions, run.executed, live_run, shot_order={"reason": "digest differs"}
+    )
+    check(unreadable["relaxation"]["withheld"] == "digest differs" and len(seen) == 2, f"{unreadable['relaxation']}")
+    first = next(iter(run.executed))
+    changed = {**run.executed, first: {**run.executed[first], "calibration": "other"}}
+    withheld = qpu_planning.measured_family(run.record, run.distributions, changed, live_run, shot_order=ready)
+    check("did not all run under one calibration" in withheld["relaxation"]["withheld"], f"{withheld['relaxation']}")
+    check(len(seen) == 2, "a split calibration must stop before the analysis")
+
+
+def test_retained_chunks_read_the_digest_checked_metadata(tmp_path: Any) -> None:
+    import hashlib
+    import json
+
+    raw = tmp_path / "raw" / "job"
+    raw.mkdir(parents=True)
+    metadata = json.dumps({"executor": {"chunk_timing": [{"parts": [{"idx_item": 0}, {"idx_item": 1}]}]}}).encode()
+    (raw / su.RESULT_METADATA).write_bytes(metadata)
+    index = {"files": {su.RESULT_METADATA: hashlib.sha256(metadata).hexdigest()}}
+    (raw / "index.json").write_text(json.dumps(index))
+    check(su.retained_chunks(tmp_path) == [[0, 1]], "chunks")
+    (raw / su.RESULT_METADATA).write_bytes(metadata + b" ")
+    with pytest.raises(ValueError):
+        su.retained_chunks(tmp_path)
+    (tmp_path / "raw" / "second").mkdir()
+    with pytest.raises(ValueError):
+        su.retained_chunks(tmp_path)
+
+
+def test_carryover_allocation_bounds_every_mixture_of_classes() -> None:
+    ctx_map = contexts((msa.FIXTURE_QUBITS[0],))
+    q = msa.FIXTURE_QUBITS[0]
+    counts = ground_counts(ctx_map)[q]
+    bound = 0.002
+    result = su.carryover_allocation((q, {"final": counts["final"]}, ctx_map[q], bound))
+    check(result["allocation"] > 0.3, f"{result}")
+    check(result["positive_classes"] and result["negative_classes"], f"{result}")
+    every = {name: (ones + 0.0, n) for name, (ones, n) in counts["final"].items()}
+    reference = su._departure(q, every, ctx_map[q])
+    base = msa.device_counts({q: msa.device_model(ctx_map[q], p_init=0.0)}, ctx_map, su.VERTEX_SHOTS)[q]["final"]
+    moved = msa.device_counts({q: msa.device_model(ctx_map[q], p_init=bound)}, ctx_map, su.VERTEX_SHOTS)[q]["final"]
+    shifted = {
+        name: (ones + (moved[name][0] - base[name][0]) / su.VERTEX_SHOTS * n, n)
+        for name, (ones, n) in counts["final"].items()
+    }
+    everything = abs(su._departure(q, shifted, ctx_map[q]) - reference)
+    check(everything <= result["allocation"] * bound * (1 + 1e-9), f"{everything} exceeds the vertex bound")
+    with pytest.raises(msa.AnalysisError):
+        su.carryover_allocation((q, {"final": counts["final"]}, ctx_map[q], 0.0))
+
+
+def test_delay_descriptive_recovers_a_planted_free_evolution_time() -> None:
+    q = msa.FIXTURE_QUBITS[0]
+    ctx_map = bare_contexts((q,))
+    planted = 0.5 * ctx_map[q]["t2_s"]
+    counts = msa.device_counts({q: msa.device_model(ctx_map[q], p_init=0.0, t2_s=planted)}, ctx_map, SHOTS)
+    rows = su.evaluate(counts, ctx_map)
+    entry = su.delay_descriptive((q, rows[q], ctx_map[q]))
+    free = entry["t2_free_s"]
+    check(free is not None and abs(free / planted - 1) < 0.1, f"{free} vs {planted}")
+    check(entry["t2_echo_s"] == ctx_map[q]["t2_s"] and abs(entry["measured_minus_modeled"]) > 0.01, f"{entry}")
+    nominal = su.evaluate(ground_counts(ctx_map), ctx_map)
+    same = su.delay_descriptive((q, nominal[q], ctx_map[q]))
+    check(same["t2_free_s"] is not None and abs(same["t2_free_s"] / ctx_map[q]["t2_s"] - 1) < 0.1, f"{same}")
+
+
+def test_departure_value_equals_the_row_residual_bit_for_bit() -> None:
+    ctx_map = contexts((msa.FIXTURE_QUBITS[0],))
+    q = msa.FIXTURE_QUBITS[0]
+    counts = ground_counts(ctx_map, eps=0.004)[q]
+    row = su.evaluate(ground_counts(ctx_map, eps=0.004), ctx_map)[q]
+    check(su._departure(q, counts["final"], ctx_map[q]) == row["departure_n16"]["difference"], "residual differs")

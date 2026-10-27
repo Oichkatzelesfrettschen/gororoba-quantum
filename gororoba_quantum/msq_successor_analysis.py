@@ -16,24 +16,31 @@ the successor's relaxation model (docs/design/measurement-sequence-envelope-succ
   a qubit whose lower bound falls below its own tolerance;
 - `settle_veto` fits a DerSimonian-Laird random-effects model to the settle gaps about their weighted mean and tests
   each qubit against the fit of the others;
-- `carryover_reader` and `order_sentinel` are pure statistics over shot-ordered bit arrays.
+- `carryover_reader` and `order_sentinel` are pure statistics over shot-ordered bit arrays;
+- `collected` composes the pieces over a collected record of the measurement-sequence-relaxation family: the order
+  conditions first (a failure withholds every qubit and leaves the rest unevaluated), then the selection, the settle
+  veto, the departure and count rule, and the descriptive delay arm.
 """
 
 from __future__ import annotations
 
 import functools
+import hashlib
 import json
 import math
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
+from pathlib import Path
 from statistics import NormalDist
 from typing import Any
 
 import numpy as np
-from scipy.optimize import minimize_scalar
+from scipy.optimize import brentq, minimize_scalar
 from scipy.stats import chi2
 from scipy.stats import gamma as gamma_distribution
 
+import diagnostic_experiments as de
 import measurement_sequence_analysis as msa
+import msq_envelope_analysis as ea
 from parallel import ordered_map
 
 SCHEMA = "msq-successor-analysis-v1"
@@ -946,3 +953,433 @@ def device_decision(
         "withheld": reasons or None,
         "device": verdict,
     }
+
+
+# --- the collected record -----------------------------------------------------------------------------------
+
+RESULT_METADATA = "result_metadata.json"
+# The excitation planted to find the sign of each member class's effect on the departure: large enough that
+# whole-shot rounding hides no shift. A class's P1 moves linearly with the planted excitation.
+VERTEX_PROBE = 0.01
+VERTEX_SHOTS = 10**7
+# The delay arm's free-evolution time is searched over this many log-spaced points up to 2 T1.
+T2_FREE_POINTS = 60
+T2_FREE_FLOOR_S = 1e-6
+
+
+def retained_chunks(run_dir: Path) -> list[list[int]]:
+    """The executor's chunk_timing of the run's one job as lists of PUB indices, read from the retained result
+    metadata after its digest check against the raw index."""
+    raws = sorted(path for path in (run_dir / "raw").iterdir() if path.is_dir())
+    if len(raws) != 1:
+        raise ValueError(f"{run_dir / 'raw'} holds {len(raws)} jobs; the order condition reads one")
+    index = json.loads((raws[0] / "index.json").read_text())
+    data = (raws[0] / RESULT_METADATA).read_bytes()
+    if hashlib.sha256(data).hexdigest() != index["files"].get(RESULT_METADATA):
+        raise ValueError(f"{raws[0] / RESULT_METADATA} differs from its indexed digest")
+    chunks = json.loads(data)["executor"]["chunk_timing"]
+    return [[int(part["idx_item"]) for part in chunk["parts"]] for chunk in chunks]
+
+
+def _stem(member: str) -> str:
+    return member.rpartition("_q")[0]
+
+
+def job_layout(record: Mapping[str, Any]) -> dict[str, Any]:
+    """The PUB order of a record of the relaxation family, checked against the family's row layout.
+
+    Returns the layout qubits, the PUB names in job order, each row's stem and the final-bit register of each
+    (PUB index, qubit). A PUB list that differs from `msqr_row_stems` raises, so the adjacency the readers and the
+    sentinels rely on is the constructor's.
+    """
+    configuration = record["family_configuration"]
+    qubits = [int(q) for q in configuration["qubits"]]
+    width = int(configuration["layout_width"])
+    pubs = record["execution_pubs"]
+    stems = [_stem(pub["components"][0]["member"]) for pub in pubs]
+    if tuple(stems) != de.msqr_row_stems(width):
+        raise msa.AnalysisError("the record's PUB order differs from the relaxation family's row layout")
+    registers: dict[tuple[int, int], str] = {}
+    for k, pub in enumerate(pubs):
+        components = pub["components"]
+        if [int(c["physical_qubits"][0]) for c in components] != qubits:
+            raise msa.AnalysisError(f"{pub['name']}: the components do not follow the layout order")
+        for qubit, component in zip(qubits, components, strict=True):
+            if component["member"] != f"{stems[k]}_q{qubit}" or len(component["registers_by_replica"]) != 1:
+                raise msa.AnalysisError(f"{pub['name']}: component {component['member']} breaks the row layout")
+            finals = [r for r in component["registers_by_replica"][0] if r.endswith("_final")]
+            if len(finals) != 1:
+                raise msa.AnalysisError(f"{pub['name']}: {component['member']} has no single final register")
+            registers[(k, qubit)] = finals[0]
+    return {
+        "qubits": qubits,
+        "width": width,
+        "names": [pub["name"] for pub in pubs],
+        "stems": stems,
+        "registers": registers,
+    }
+
+
+def shot_rows(width: int) -> set[int]:
+    """Job rows whose shot-ordered bits the analysis reads: the sentinel rows, the readers and their predecessors."""
+    stems = de.msqr_row_stems(width)
+    index = {stem: k for k, stem in enumerate(stems)}
+    rows = {index[stem] for segment in de.msqr_sentinel_pairs() for pair in segment for stem in pair}
+    for k, stem in enumerate(stems):
+        if stem.startswith("msqr_reader"):
+            rows.update((k - 1, k))
+    return rows
+
+
+def required_pubs(record: Mapping[str, Any]) -> set[str]:
+    """Names of the PUBs whose retained shot-ordered registers `collected` reads."""
+    layout = job_layout(record)
+    return {layout["names"][k] for k in shot_rows(layout["width"])}
+
+
+def _row_bits(
+    layout: Mapping[str, Any],
+    registers: Mapping[str, Mapping[str, Sequence[str]]],
+    row: int,
+    distributions: Mapping[str, Any],
+    executed: Mapping[str, Any],
+) -> np.ndarray:
+    """The shot-ordered final bits of one row, one line per layout qubit, bound to the collector's counts."""
+    pub = layout["names"][row]
+    if pub not in registers:
+        raise msa.AnalysisError(f"{pub}: shot-ordered registers are absent")
+    lines = []
+    for qubit in layout["qubits"]:
+        member = f"{layout['stems'][row]}_q{qubit}"
+        bitstrings = registers[pub].get(layout["registers"][(row, qubit)])
+        if bitstrings is None:
+            raise msa.AnalysisError(f"{pub}: register of {member} is absent")
+        text = "".join(bitstrings).encode()
+        if len(text) != len(bitstrings):
+            raise msa.AnalysisError(f"{pub}: {member} holds a multi-bit register")
+        line = np.frombuffer(text, dtype=np.uint8).astype(np.int8) - ord("0")
+        if not bool(np.all((line == 0) | (line == 1))):
+            raise msa.AnalysisError(f"{pub}: {member} holds a bit that is neither 0 nor 1")
+        ones, shots = ea.member_ones(dict(distributions), dict(executed), member)
+        if line.size != shots or int(line.sum()) != ones:
+            raise msa.AnalysisError(f"{pub}: the registers of {member} differ from the collector's counts")
+        lines.append(line)
+    return np.array(lines)
+
+
+def order_conditions(
+    layout: Mapping[str, Any],
+    registers: Mapping[str, Mapping[str, Sequence[str]]] | None,
+    chunks: Sequence[Sequence[int]] | None,
+    distributions: Mapping[str, Any],
+    executed: Mapping[str, Any],
+) -> dict[str, Any]:
+    """The two preregistered order conditions: the executor reports one chunk holding every PUB, and the order
+    sentinels pass in each third of the job. The first rules out a reported split of the job and no more; the second
+    reads the shot-order signature (same-shot correlation of consecutive rows) in the job's head, middle and tail."""
+    count = len(layout["names"])
+    chunk: dict[str, Any]
+    if chunks is None:
+        chunk = {"passes": False, "reason": "the executor's chunk_timing is absent"}
+    else:
+        chunk = {
+            "chunks": len(chunks),
+            "pubs": count,
+            "passes": len(chunks) == 1 and sorted(chunks[0]) == list(range(count)),
+        }
+    result: dict[str, Any] = {"chunk": chunk, "sentinels": {}}
+    if registers is None:
+        result["sentinels"] = {"passes": False, "reason": "shot-ordered registers are unavailable"}
+        result["passes"] = False
+        return result
+    index = {stem: k for k, stem in enumerate(layout["stems"])}
+    segments = {}
+    for segment, pairs in enumerate(de.msqr_sentinel_pairs()):
+        rows = sorted(index[stem] for pair in pairs for stem in pair)
+        if {3 * k // count for k in rows} != {segment}:
+            raise msa.AnalysisError(f"sentinel segment {segment} does not lie in its own third of the job")
+        data = {k: _row_bits(layout, registers, k, distributions, executed) for k in rows}
+        segments[str(segment)] = order_sentinel([(data[index[a]], data[index[b]]) for a, b in pairs])
+    result["sentinels"] = {"segments": segments, "passes": all(v["passes"] for v in segments.values())}
+    result["passes"] = bool(chunk["passes"] and result["sentinels"]["passes"])
+    return result
+
+
+def _class_members(qubit: int) -> dict[str, list[str]]:
+    """Every member class that enters the departure, with its members for one qubit."""
+    table = {f"{arm}-{n}": list(msa.member_names(arm, n, qubit)) for arm, n in msa.group_keys()}
+    table["ro0"] = [msa.ro0_name(qubit)]
+    for k, name in enumerate(msa.t1_names(qubit)):
+        table[f"t1-{k}"] = [name]
+    return table
+
+
+def _departure(qubit: int, final: Mapping[str, Any], ctx: dict[str, Any]) -> float:
+    """The N = 16 measure residual `_evaluate` reports, from the counts alone: the same inputs through `quantities`
+    once, without the delta-method propagation that only the standard errors read."""
+    obs = msa.observations({name: tuple(value) for name, value in final.items()}, qubit)
+    keys = [*obs, "sx_shift", "window_fraction"]
+    x = [*(k / n for k, n in obs.values()), 0.0, msa.WINDOW_RELAX_FRACTION]
+    index = {key: i for i, key in enumerate(keys)}
+    scale = x[index["t1-0"]] - x[index["ro0"]]
+    if not scale >= msa.READOUT_CONTRAST_FLOOR:
+        raise msa.AnalysisError(f"readout scale {scale:.4f} lies below the {msa.READOUT_CONTRAST_FLOOR} floor")
+    weights = series_weights(scale, [msa.var(*obs[f"t1-{k}"]) for k in range(msa.T1_COUNT)])
+    value = quantities(dict(zip(keys, x, strict=True)), {**ctx, "weights": weights})
+    return float(value[f"diff:measure-{msa.TOP_STEPS}"])
+
+
+def carryover_allocation(item: tuple[int, dict[str, Any], dict[str, Any], float]) -> dict[str, Any]:
+    """A_q: the qubit's departure shift per unit carried-over excitation at the allocation vertex, at q = 1.
+
+    A circuit inherits an excitation in [0, D] from its predecessor, so a member class can carry any excitation up to
+    the bound U on |D|. The departure is the sum of the classes' linear responses, so its extreme shifts sit at the
+    vertices that put U on every class of one sign: the classes whose single-class response is positive, and their
+    mirror, the classes whose response is negative. The signs come from planting a probe excitation on one class at a
+    time in the run's own counts; U is then planted on each vertex, the departure refit, and A_q is the larger
+    absolute shift over U. item = (qubit, member counts {"final": ...}, planned context, U).
+    """
+    qubit, member_counts, ctx, bound = item
+    if not bound > 0:
+        raise msa.AnalysisError("the carryover bound must be positive")
+    final = member_counts["final"]
+    base = msa.device_counts({qubit: msa.device_model(ctx, p_init=0.0)}, {qubit: ctx}, VERTEX_SHOTS)[qubit]["final"]
+    probed = msa.device_counts({qubit: msa.device_model(ctx, p_init=VERTEX_PROBE)}, {qubit: ctx}, VERTEX_SHOTS)[qubit][
+        "final"
+    ]
+    classes = _class_members(qubit)
+
+    def planted(names: Sequence[str], excitation: float) -> dict[str, tuple[float, int]]:
+        out = dict(final)
+        for name in names:
+            ones, shots = final[name]
+            moved = (probed[name][0] - base[name][0]) / VERTEX_SHOTS * (excitation / VERTEX_PROBE)
+            out[name] = (ones + moved * shots, shots)
+        return out
+
+    reference = _departure(qubit, final, ctx)
+    response = {
+        label: (_departure(qubit, planted(names, VERTEX_PROBE), ctx) - reference) / VERTEX_PROBE
+        for label, names in classes.items()
+    }
+    vertices = {
+        "positive": [name for label, names in classes.items() if response[label] > 0 for name in names],
+        "negative": [name for label, names in classes.items() if response[label] < 0 for name in names],
+    }
+    shifts = {
+        side: _departure(qubit, planted(names, bound), ctx) - reference if names else 0.0
+        for side, names in vertices.items()
+    }
+    return {
+        "allocation": max(abs(v) for v in shifts.values()) / bound,
+        "bound": bound,
+        "shifts": shifts,
+        "positive_classes": sorted(label for label in classes if response[label] > 0),
+        "negative_classes": sorted(label for label in classes if response[label] < 0),
+    }
+
+
+def carryover_screen(
+    item: tuple[int, dict[str, Any], dict[str, Any], list[np.ndarray], list[np.ndarray], float, int],
+) -> dict[str, Any]:
+    """The reader statistic with its vertex allocation: U from the readers, A_q at U, then the screen.
+
+    item = (qubit, member counts, planned context, predecessor bits, reader bits, readout contrast, width).
+    """
+    qubit, member_counts, ctx, predecessors, readers, contrast, width = item
+    first = carryover_reader(predecessors, readers, contrast, 1.0, width)
+    if not first["evaluable"]:
+        return first
+    vertex = carryover_allocation((qubit, member_counts, ctx, first["upper_bound"]))
+    out = carryover_reader(predecessors, readers, contrast, vertex["allocation"], width)
+    out["vertex"] = vertex
+    return out
+
+
+def delay_descriptive(item: tuple[int, dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
+    """The delay arm's N = 16 P0 against the idle model at the calibrated echo T2, and the free-evolution dephasing
+    time T2 (at most 2 T1) at which the model reproduces it, or None when the measured P0 lies outside the model's
+    range. item = (qubit, successor row, context)."""
+    qubit, row, ctx = item
+    top = str(msa.TOP_STEPS)
+    entry = row["p0"]["delay"][top]
+    t1 = float(row["fitted"]["t1_s"])
+    gate = msa.sx_gate(ctx, 0.0)
+    tau = msa.tau_of("delay", ctx, msa.WINDOW_RELAX_FRACTION)
+
+    def modeled(t2: float) -> float:
+        return (1 + msa.corrected_z("delay", msa.TOP_STEPS, t1, t2, tau, 0.0, gate, 1.0)) / 2 - entry["p0"]
+
+    grid = np.geomspace(T2_FREE_FLOOR_S, 2 * t1, T2_FREE_POINTS)
+    values = [modeled(float(t2)) for t2 in grid]
+    free: float | None = None
+    for left, right, f_left, f_right in zip(grid[:-1], grid[1:], values[:-1], values[1:], strict=True):
+        if f_left == 0.0:
+            free = float(left)
+            break
+        if f_left * f_right < 0.0:
+            root = brentq(lambda x: modeled(math.exp(x)), math.log(left), math.log(right), xtol=1e-12)
+            free = math.exp(root)
+            break
+    return {
+        "qubit": qubit,
+        "measured_p0": entry["p0"],
+        "measured_minus_modeled": entry["measured_minus_modeled"],
+        "t2_echo_s": ctx["t2_s"],
+        "t2_free_s": free,
+    }
+
+
+def collected(
+    record: Mapping[str, Any],
+    distributions: dict[str, list[np.ndarray]],
+    executed: dict[str, Any],
+    registers: Mapping[str, Mapping[str, Sequence[str]]] | None,
+    chunks: Sequence[Sequence[int]] | None,
+    floor: float | None = None,
+) -> dict[str, Any]:
+    """The analysis of a collected record of the measurement-sequence-relaxation family, or the reason it is withheld.
+
+    The order conditions run first; when either fails every qubit is withheld and no later statistic is evaluated.
+    Otherwise the qubits that pass execution-time eligibility, the pattern screen, the carryover screen and the
+    equilibrium bound form the pool; the admission gate, the mutation test, the settle veto, the departure and the
+    count rule decide over it (`device_decision`), and the delay arm is reported beside the calibrated echo T2.
+    """
+    try:
+        return _collected(record, distributions, executed, registers, chunks, floor)
+    except (msa.AnalysisError, KeyError, ValueError) as error:
+        return {"schema": SCHEMA, "withheld": f"{type(error).__name__}: {error}"}
+
+
+def _collected(
+    record: Mapping[str, Any],
+    distributions: dict[str, list[np.ndarray]],
+    executed: dict[str, Any],
+    registers: Mapping[str, Mapping[str, Sequence[str]]] | None,
+    chunks: Sequence[Sequence[int]] | None,
+    floor: float | None,
+) -> dict[str, Any]:
+    if floor is None:
+        floor, reason = msa.bound_floor(msa.record_backends(dict(record)))
+        if floor is None:
+            return {"schema": SCHEMA, "withheld": reason}
+    layout = job_layout(record)
+    qubits, width = layout["qubits"], layout["width"]
+    configuration = record["family_configuration"]
+    order = order_conditions(layout, registers, chunks, distributions, executed)
+    result: dict[str, Any] = {"schema": SCHEMA, "order": order, "count_rule": ea.count_rule(width), "selected": []}
+    if not order["passes"]:
+        result["withheld"] = "an order condition failed; every qubit is withheld and no later statistic is evaluated"
+        return result
+    if registers is None:
+        raise msa.AnalysisError("shot-ordered registers are unavailable")
+    contexts = msa.contexts_from_record(dict(record), executed)
+    counts = msa.member_counts_from_distributions(distributions, executed, qubits)
+    for q in qubits:
+        needed = [
+            *msa.t1_names(q),
+            msa.ro0_name(q),
+            *(m for arm, n in msa.group_keys() for m in msa.member_names(arm, n, q)),
+        ]
+        absent = [name for name in needed if name not in counts[q]["final"]]
+        if absent:
+            raise msa.AnalysisError(f"q{q}: missing measured members {absent}")
+    planned = with_planning(contexts, floor)
+    rows = evaluate(counts, planned, width)
+    dt = float(configuration["dt_seconds"])
+    equilibrium_s = int(configuration["equilibrium_delay_dt"]) * dt
+    index = {stem: k for k, stem in enumerate(layout["stems"])}
+    pattern_bits = [[int(b) for b in row] for row in configuration["pattern_bits"]]
+    shots = {k: _row_bits(layout, registers, k, distributions, executed) for k in sorted(shot_rows(width))}
+    readers = [k for stem, k in index.items() if stem.startswith("msqr_reader")]
+    for k in readers:
+        if not layout["stems"][k - 1].startswith("msq_measure_n"):
+            raise msa.AnalysisError(f"{layout['stems'][k]} does not follow a measure row")
+    screens: dict[str, dict[str, Any]] = {}
+    work = []
+    for rank, qubit in enumerate(qubits):
+        names = sorted(name for name in executed if name.endswith(f"_q{qubit}") and name.startswith("msq"))
+        eligibility = ea.execution_eligibility(executed, qubit, names)
+        ro0 = ea.member_ones(distributions, executed, msa.ro0_name(qubit))
+        ro1 = ea.member_ones(distributions, executed, msa.t1_names(qubit)[0])
+        controls = {
+            c: ea.member_ones(distributions, executed, de.msqe_reset_member(c, qubit)) for c in de.MSQE_RESET_CONTROLS
+        }
+        patterns = ea.pattern_screen(
+            [row[rank] for row in pattern_bits],
+            [
+                ea.member_ones(distributions, executed, de.msqe_pattern_member(k, qubit))
+                for k in range(len(pattern_bits))
+            ],
+            width,
+        )
+        screens[str(qubit)] = {
+            "execution_eligibility": eligibility,
+            "patterns": patterns,
+            "reset_diagnostic": ea.reset_screen(controls["rc1"], controls["rc0"], ro0, ro1, width),
+            "carryover": None,
+            "equilibrium": None,
+        }
+        row = rows[qubit]
+        if eligibility is None and patterns["passes"] and row["usable"]:
+            work.append((rank, qubit))
+    carryover_items = [
+        (
+            qubit,
+            counts[qubit],
+            planned[qubit],
+            [shots[k - 1][rank] for k in readers],
+            [shots[k][rank] for k in readers],
+            float(rows[qubit]["readout"]["scale"]),
+            width,
+        )
+        for rank, qubit in work
+    ]
+    for (_, qubit), outcome in zip(work, ordered_map(carryover_screen, carryover_items, min_items=2), strict=True):
+        screens[str(qubit)]["carryover"] = outcome
+    for _, qubit in work:
+        obs = msa.observations(counts[qubit]["final"], qubit)
+        screen = screens[str(qubit)]
+        try:
+            eq_name = de.msqr_equilibrium_member(qubit)
+            eq_ones = ea.member_ones(distributions, executed, eq_name)
+            row = rows[qubit]
+            estimate = equilibrium_estimate({**obs, "eq": eq_ones}, planned[qubit], equilibrium_s)
+            sensitivity = q_sensitivity(planned[qubit], float(row["fitted"]["t1_s"]))
+            screen["equilibrium"] = {**estimate, **q_screen(estimate, sensitivity, width)}
+        except msa.AnalysisError as error:
+            screen["equilibrium"] = {"passes": False, "reason": str(error)}
+    eligible = []
+    for qubit in qubits:
+        screen = screens[str(qubit)]
+        screen["kept"] = bool(
+            screen["carryover"] is not None
+            and screen["carryover"]["passes"]
+            and screen["equilibrium"] is not None
+            and screen["equilibrium"]["passes"]
+        )
+        if screen["kept"]:
+            eligible.append(qubit)
+    pool = [q for q in eligible if rows[q]["informative"]]
+    bounds = shape_bounds({q: rows[q] for q in pool}, planned)
+    decision = device_decision(rows, eligible, ea.count_rule(width), bounds)
+    usable = [q for q in qubits if rows[q]["usable"]]
+    delay = dict(
+        zip(
+            usable,
+            ordered_map(delay_descriptive, [(q, rows[q], planned[q]) for q in usable], min_items=2),
+            strict=True,
+        )
+    )
+    result.update(
+        {
+            "screens": screens,
+            "eligible_qubits": eligible,
+            "selected": decision["selected"],
+            "decision": decision,
+            "delay_descriptive": {str(q): v for q, v in delay.items()},
+            "scatter_floor": floor,
+            "qubits": {str(q): rows[q] for q in qubits},
+        }
+    )
+    return result
