@@ -37,11 +37,19 @@ record is `docs/state/plans/cd-tower-ordered-domain-rocq.json`.
 | `right_inverse_affine`, `direct_finiteness` | a (<a, a> b - conj(a)) = 0 and a b = 1 implies b a = 1 | integer file (the integer-cleared family) |
 | `CdTowerField.right_inverse_form` | a b = 1 implies b = conj(a)/<a, a> + w with a w = 0, over an ordered field | real file (the affine family) |
 
-The bridge theorems `ZBridge.kernel_equality`, `ZBridge.direct_finiteness`,
-`ZBridge.flexible`, `ZBridge.lemma_9_5` and `ZBridge.purity_left` are the
-integer file's statements word for word, with Lemma 9.5 and flexibility new
-on the integer tower; `RBridge` restates the same five on the real tower and
-`RFieldBridge.right_inverse_form` restates the real file's affine family.
+`ZBridge` and `RBridge` each restate all eighteen theorems of the table above
+except `right_inverse_form`: `conj_conj`, `conj_mul`, `dot_conj`, `norm_mul`,
+`adjoint`, `re_commutator`, `re_associator`, `flexible`, `conj_mul_left`,
+`conj_mul_right`, `lemma_9_2`, `kernel_equality`, `purity_left`,
+`purity_right`, `lemma_9_5`, `annihilator_orthogonal`, `right_inverse_affine`
+and `direct_finiteness`. Each statement is written in the vocabulary of the
+integer or real tower file, with the adjoined unit spelled `(zero k, one k)`;
+the `to_tower` tactic rewrites every operation to the instance's through the
+`*_eq` lemmas and the functor's theorem closes the goal by conversion. The
+integer statements of `CdAnnihilatorSymmetry.v` and `CdImaginarySumConference.v`
+appear word for word, and Lemmas 9.2 and 9.5, flexibility and the real-part
+lemmas are new on the integer tower. `RFieldBridge.right_inverse_form`
+restates the real file's affine family.
 
 The proofs are those of the two files with the coefficient-specific steps
 replaced by the signature: `lra` and `nia` become the order axioms
@@ -58,11 +66,12 @@ Every theorem rests on the type theory that `rocq check` re-verifies
 ([kernel.txt](kernel.txt)) for the two bridge libraries together: the
 Calculus of Inductive Constructions with a predicative Set and no rewrite
 rules; the imported-library context names the four real-construction and
-classical axioms of Stdlib's reals, as the real bundles do. The nine queries
-of [assumptions_z.txt](assumptions_z.txt), on `ZTower` and `ZBridge`, each
-read "Closed under the global context": the integer statements hold without
-an axiom. The ten queries of [assumptions_r.txt](assumptions_r.txt), on
-`RTower`, `RBridge` and `RFieldBridge`, each list exactly
+classical axioms of Stdlib's reals, as the real bundles do. The 23 queries
+of [assumptions_z.txt](assumptions_z.txt), five on `ZTower` and all eighteen
+`ZBridge` theorems, each read "Closed under the global context": the integer
+statements hold without an axiom. The 24 queries of
+[assumptions_r.txt](assumptions_r.txt), five on `RTower`, all eighteen
+`RBridge` theorems and `RFieldBridge.right_inverse_form`, each list exactly
 `ClassicalDedekindReals.sig_forall_dec` and
 `FunctionalExtensionality.functional_extensionality_dep`, the two axioms of
 Stdlib's construction of the reals. The queries live in two files because the

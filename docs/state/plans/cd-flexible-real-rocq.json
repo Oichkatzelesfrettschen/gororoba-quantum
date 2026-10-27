@@ -91,6 +91,38 @@
             }
           ],
           "scope_sha256": "2002d985e6effb487523476145cd24620819639dc4100ca4d7f742342140692d"
+        },
+        {
+          "result": "Revalidation at the revision that bridges every functor theorem: edits recording Lemma 9.5, Corollary 2.9, the ordered-domain functor and its bridges changed bound note, map and index files, and the acceptance reruns: the cd-annihilator-symmetry, cd-annihilator-symmetry-real and cd-tower-domain replays pass against their receipts and sha256sum -c accepts each ledger; tests/test_evidence_ledgers.py and tests/ci/test_rocq_ci_pins.py pass (16 unmarked, 44 audit) under the pinned interpreter; ci/check_rocq_ci_pins.py reports 15 bundles agreeing; formalization.yaml validates against the retained v0.4 schema with jsonschema 4.26.0; check_markdown_links.py resolves every link of 705 files.",
+          "observed_at": "2026-10-27T20:58:39+00:00",
+          "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/replay_rocq.sh",
+              "sha256": "baadc680d44005a4a04d7606a5e9b3ff63ad469e07ce730d967fb06e32662279"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/source_hashes.sha256",
+              "sha256": "6ea3f7c87ffd13e4d807fcfc0fb317d6d4be831533e9ffc7af5927a48523013e"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/README.md",
+              "sha256": "92fe465d58f6c6e5d7d8bd4ecacd4877f752a416eb9af213cdc51734f53eb617"
+            },
+            {
+              "ref": "docs/notes/math-0511691.md",
+              "sha256": "275501f8a4ae7ed3a77e088e89ca0d92dd16d362e95c9827df32f51196bc3295"
+            },
+            {
+              "ref": "docs/README.md",
+              "sha256": "35a98fc4105e87fde8eb63b19f4bc17e2bf449a336f52c463521cc9e1e5d6dcb"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "5091ed1c757bfb768137331856a75b6d4adfaded62f6e48d2d85489c8440974c"
+            }
+          ],
+          "scope_sha256": "2002d985e6effb487523476145cd24620819639dc4100ca4d7f742342140692d"
         }
       ]
     }
