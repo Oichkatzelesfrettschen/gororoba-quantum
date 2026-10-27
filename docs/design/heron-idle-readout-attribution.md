@@ -148,7 +148,7 @@ collects on its own code, and this branch merges into it only after both collect
 - **Self-check**: Aer has no readout crosstalk, and the dry run's predicted laws are shot-sampled at the job's
   shots, so the null is checked at cohort level: b's interval contains zero, the counts of "resolved" a_p and c_p
   labels do not exceed the 99th percentile of a binomial count at the label's two-sided rate (0.001) over the
-  family, the median residual's interval lies inside [-0.5, 0.5] kHz, and decision 4 reads "mixed".
+  family, the median residual's interval lies inside [-0.5, 0.5] kHz, and decision 4 reads "unresolved".
 
 ## Placement, shots and seconds
 
@@ -168,12 +168,16 @@ descriptive; the cohort decisions use the bootstrap.
    [-0.5, 0.5] kHz, "negligible" when it lies wholly inside, else "indeterminate". The family is 62 a_p and 42 c_p
    labels; a probe-level claim needs a later replication.
 2. **Far-field baseline**: b "present" when its 95% interval excludes zero and class agreement holds.
-3. **Additivity**: the median residual over probes with resolved D_p, with its interval. "Additive" when the
+3. **Additivity**: the median residual over all probes (the model sets it to zero on every probe), with its
+   interval. "Additive" when the
    interval lies inside [-0.5, 0.5] kHz, "non-additive" when it lies wholly beyond one edge, else "unresolved".
    On "non-additive", R_p and Q_p are reported as patterned contrasts and decisions 2, 4 and the a_p/c_p labels
    are withdrawn.
 4. **Attribution**, over probes whose D_p is resolved in the replicate (selection redone in each replicate), from
-   the medians of a_p / D_p, c_p / D_p (non-isolated probes only) and b / D_p:
+   the medians of a_p / D_p, c_p / D_p (non-isolated probes only) and b / D_p. It reads "unresolved" when class
+   agreement fails (first, since a pattern-PUB offset also breaks additivity), "withdrawn" on non-additivity,
+   "unresolved" when fewer than 10 probes resolve D_p in the observed data or fewer than 97.5% of replicates
+   resolve any; otherwise:
    - "opposed" when any two of the three medians have opposite signs with intervals excluding zero;
    - otherwise "own-partner", "within-three-hop" or "baseline" when exactly one share's interval lies above 0.5;
    - otherwise "mixed".

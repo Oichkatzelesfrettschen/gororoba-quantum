@@ -288,6 +288,13 @@
    "value": 44477,
    "record": "docs/evidence/anu_qrng/draw-2026-10-26T021247Z.json",
    "index": 0
+  },
+  {
+   "path": "tests/scripts/test_idle_readout_attribution.py",
+   "name": "BOOTSTRAP_SEED",
+   "value": 16771,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T034547Z.json",
+   "index": 0
   }
  ],
  "runtime": [
