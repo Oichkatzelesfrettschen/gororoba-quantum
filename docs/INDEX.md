@@ -13,7 +13,7 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 | Location | Contents | Git treatment |
 | --- | --- | --- |
 | `docs/pdf/` | 43 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 186 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/local_source_cache/` | 187 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 5 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
@@ -273,6 +273,7 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Chiribella and Xie 2013 -- Optimal design and quantum benchmarks for coherent state amplifiers (arXiv 1301.1170)](notes/papers/1301.1170.md) | [PDF](https://arxiv.org/pdf/1301.1170v6) | `1301.1170v6.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1301.1170v6) |
 | [Anderson et al. 2020 -- Quantum teleportation using highly coherent emission from telecom C-band quantum dots (arXiv 1901.02260)](notes/papers/1901.02260.md) | [PDF](https://arxiv.org/pdf/1901.02260v1) | `1901.02260v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1901.02260v1) |
 | [Ma et al. 2012 -- Experimental quantum teleportation over a high-loss free-space channel (arXiv 1210.1282)](notes/papers/1210.1282.md) | [PDF](https://arxiv.org/pdf/1210.1282v1) | `1210.1282v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1210.1282v1) |
+| [Ma et al. 2012 -- Experimental quantum teleportation over a high-loss free-space channel (Optics Express 20(21), 23126, version of record)](notes/papers/1210.1282.md) | [DOI](https://doi.org/10.1364/OE.20.023126) | `oe-20-21-23126.pdf` | [OSA Open Access License, non-commercial](https://doi.org/10.1364/OA_License_v1) |
 | [van Enk and Blume-Kohout 2013 -- When quantum tomography goes wrong: drift of quantum sources and other errors (arXiv 1302.0932)](notes/papers/1302.0932.md) | [PDF](https://arxiv.org/pdf/1302.0932v2) | `1302.0932v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1302.0932v2) |
 | [Quandela 2026 -- Roadmap 2026-2033 (March 2026) and the Quandela-Welinq interconnect announcement](notes/quandela/roadmap-2026-03.md) | [PDF](https://www.quandela.com/wp-content/uploads/2026/03/Quandela-Roadmap-190326-web.pdf) | `quandela-roadmap-2026-03.pdf` | [Rehosting permission unestablished](https://www.quandela.com/legal-terms/) |
 | [de Marrais 2008: Voyage by Catamaran, zero-divisor ensembles of the 2^N-ions](notes/papers/0804.3416.md) | [PDF](https://arxiv.org/pdf/0804.3416v2) | `0804.3416v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0804.3416v2) |
