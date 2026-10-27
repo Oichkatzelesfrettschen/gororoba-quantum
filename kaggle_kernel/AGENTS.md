@@ -58,6 +58,10 @@ and what it must prove before its output counts.
 
 ## Package stack
 
+The repository's central Python guide [docs/PYTHON.md](../docs/PYTHON.md)
+documents multi-environment library roles, dependency manifests and
+interpreter routing. Kernel packages are pinned as follows:
+
 | Package | Pin | Kernel source |
 | --- | --- | --- |
 | qiskit | 2.6.0 | PyPI |
