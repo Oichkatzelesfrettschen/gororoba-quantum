@@ -31,7 +31,9 @@ Decisions (docs/design/n21-orbit-detuning-sign-envelope.md):
   MIN_REPLICAS resolved replicas.
 - D3, echo: the echo's phase at the largest dose minus the free-idle phase at dose 0, per replica, against three
   standard errors. At least ECHO_HOLDS of the replicas whose free-idle phase moved by more than three standard
-  errors over the sweep returning within three standard errors reads as precession during the dose.
+  errors over the sweep (the fitted rate times the largest dose) returning within three standard errors reads as
+  precession during the dose.
+- D1 also reports the weighted line with a free intercept, and every rate its largest phase step between doses.
 - Every replica's rates, the per-qubit offsets and their standard errors are reported, not decided.
 
 Preflight. --preflight RECORD_DIR checks a fresh dry-run record against the approved envelope before it is
@@ -201,6 +203,8 @@ def rate(times_us: Sequence[float], phases: Sequence[tuple[float, float, float, 
         "offset_rad": float(coefficients[0]),
         "chi2": chi2,
         "df": df,
+        # A step near pi between doses is where a rate above the 1 / (2 step) limit would alias.
+        "max_step_rad": float(np.max(np.abs(np.diff(theta)))),
     }
 
 
@@ -216,11 +220,14 @@ def replica_fit(item: tuple[Sequence[float], Mapping[str, Any]]) -> dict[str, An
     for role in ROLES:
         out[role] = rate(times_us, [phase(x, y) for x, y in zip(quad[f"{role}_x"], quad[f"{role}_y"], strict=True)])
     echo = phase(*quad["echo"])
-    moved = wrapped(orbit[-1][0] - orbit[0][0])
     returned = wrapped(echo[0] - orbit[0][0])
+    # The precession over the sweep is the fitted rate times the largest dose, which a whole number of turns
+    # cannot hide; without a rate it is the wrapped phase change.
+    fitted = out["orbit"]
+    span = 2 * math.pi * times_us[-1] * 1e-3
     out["echo"] = {
-        "moved_rad": moved,
-        "moved_se": math.hypot(orbit[-1][1], orbit[0][1]),
+        "moved_rad": fitted["khz"] * span if fitted["khz"] is not None else wrapped(orbit[-1][0] - orbit[0][0]),
+        "moved_se": fitted["se_khz"] * span if fitted["khz"] is not None else math.hypot(orbit[-1][1], orbit[0][1]),
         "returned_rad": returned,
         "returned_se": math.hypot(echo[1], orbit[0][1]),
     }
@@ -251,12 +258,17 @@ def decide(fits: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
             verdict = "refuted: the orbit's phase rate is not the Ramsey offset difference"
         else:
             verdict = "inconclusive: the interval overlaps the band without lying inside it"
+        # Reported beside the decision: a free intercept shows a rate common to every replica that the line
+        # through the origin would fold into its slope.
+        design = np.stack([np.ones_like(pred), pred], axis=1)
+        intercept, free_slope = np.linalg.solve(design.T @ (design * w[:, None]), design.T @ (w * f_o))
         out["d1_slope"] = {
             "slope": slope,
             "lower": low,
             "upper": high,
             "chi2": chi2,
             "df": df,
+            "with_intercept": {"intercept_khz": float(intercept), "slope": float(free_slope)},
             "verdict": verdict,
         }
     resolved = [(o, p) for o, so, p, sp in rows if abs(o) > RESOLVED * so and abs(p) > RESOLVED * sp]
@@ -285,8 +297,14 @@ def decide(fits: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     return out
 
 
-def quadratures(run_dir: Path, record: Mapping[str, Any]) -> tuple[list[float], list[dict[str, Any]], list[Any]]:
-    """Dose times in us, each replica's quadrature estimates, and each replica's initial layout."""
+def quadratures(
+    run_dir: Path, record: Mapping[str, Any]
+) -> tuple[list[float], list[dict[str, Any]], list[dict[str, int]]]:
+    """Dose times in us, each replica's quadrature estimates, and each replica's dose-time work qubits.
+
+    The family configuration's dose_roles names the logical index whose initial qubit holds each work role at
+    the dose (qpu_planning.dose_roles).
+    """
     import n21_exact_planning
     import qpe_diagnostics
 
@@ -335,7 +353,11 @@ def quadratures(run_dir: Path, record: Mapping[str, Any]) -> tuple[list[float], 
         }
         for r in range(replicas)
     ]
-    layouts = [replica["initial_layout"] for replica in record["groups"][0]["replicas"]]
+    roles = configuration.get("dose_roles") or {"one": 1, "sixteen": 3}
+    layouts = [
+        {role: replica["initial_layout"][index] for role, index in roles.items()}
+        for replica in record["groups"][0]["replicas"]
+    ]
     return [d * DT_SECONDS * 1e6 for d in doses], per_replica, layouts
 
 
@@ -352,7 +374,7 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     fits = parallel.ordered_map(replica_fit, [(times, quad) for quad in per_replica], min_items=2)
     out = decide(fits)
     out["replicas"] = [
-        {"replica": r, "qubit_one": layout[1], "qubit_sixteen": layout[3], **fit}
+        {"replica": r, "qubit_one": layout["one"], "qubit_sixteen": layout["sixteen"], **fit}
         for r, (layout, fit) in enumerate(zip(layouts, fits, strict=True))
     ]
     out["run"] = run_dir.name

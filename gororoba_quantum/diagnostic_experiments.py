@@ -29,6 +29,7 @@ from qpe_diagnostics import (
     N21_SPECTATOR_KINDS,
     N21_SPECTATOR_QUADRATURES,
     N21_SPECTATOR_SPLIT_KINDS,
+    N21_WORK_RAMSEY_QUBITS,
     folded_diagnostic,
     folded_ideal,
     folded_terminal_weights,
@@ -552,6 +553,7 @@ def n21_orbit_rca_group(
     segmented: dict[str, Any] | None = None,
     window_doses: tuple[int, ...] = (),
     detuning_sign: bool = False,
+    dose_roles: dict[str, int] | None = None,
 ) -> Group:
     """Pair feed-forward with its omitted-correction control in each window variant.
 
@@ -608,8 +610,11 @@ def n21_orbit_rca_group(
     echo_half_dt. It excludes every other configuration.
 
     detuning_sign, with window_doses and init_herald, replaces the sweep
-    with the detuning-sign test (n21_detuning_sign_group).
+    with the detuning-sign test (n21_detuning_sign_group), whose Ramsey arms
+    sit on dose_roles.
     """
+    if dose_roles is not None and not detuning_sign:
+        raise ValueError("dose_roles is a detuning_sign configuration")
     if detuning_sign and not window_doses:
         raise ValueError("detuning_sign is a window_doses configuration")
     if window_doses:
@@ -629,7 +634,7 @@ def n21_orbit_rca_group(
         if detuning_sign:
             if not init_herald:
                 raise ValueError("detuning_sign members are dynamic through their heralds; it requires init_herald")
-            return n21_detuning_sign_group(window_doses)
+            return n21_detuning_sign_group(window_doses, dose_roles)
         return n21_window_dose_group(window_doses, init_herald)
     if ramsey_windows and not ground_control_split:
         raise ValueError("ramsey_windows is a ground_control_split configuration")
@@ -806,25 +811,41 @@ _N21_WORK_READ = (1.0, 0.0, -1.0, 0.0)
 def n21_detuning_sign_arms(doses: tuple[int, ...]) -> tuple[tuple[str, str, int], ...]:
     """(kind, name stem, dose) of every detuning-sign member, in member order.
 
-    kind is orbit or ramsey. The orbit arms are window_dose and window_dose_y
-    without feed-forward at every dose, then window_dose_echo and
-    window_dose_echo_y at the largest dose; the Ramsey arms read the work
-    bits for 1 and for 16 in X and Y at every dose.
+    kind is orbit or ramsey. Dose by dose, the arms are window_dose and
+    window_dose_y without feed-forward and the Ramsey arms of the work bits
+    for 1 and for 16 in X and Y, so drift over the job enters every reading
+    of a dose alike; window_dose_echo and window_dose_echo_y at the largest
+    dose close the list. The first arm is window_dose at dose 0, the group's
+    primary.
     """
     checked = n21_window_doses(doses)
-    top = checked[-1]
-    orbit = [("orbit", variant, dose) for variant in ("window_dose", "window_dose_y") for dose in checked]
-    orbit += [("orbit", variant, top) for variant in ("window_dose_echo", "window_dose_echo_y")]
-    ramsey = [
-        ("ramsey", n21_work_ramsey_name(role, quadrature, dose), dose)
-        for role in ("one", "sixteen")
-        for quadrature in N21_SPECTATOR_QUADRATURES
-        for dose in checked
-    ]
-    return tuple(orbit + ramsey)
+    arms: list[tuple[str, str, int]] = []
+    for dose in checked:
+        arms += [("orbit", variant, dose) for variant in ("window_dose", "window_dose_y")]
+        arms += [
+            ("ramsey", n21_work_ramsey_name(role, quadrature, dose), dose)
+            for role in ("one", "sixteen")
+            for quadrature in N21_SPECTATOR_QUADRATURES
+        ]
+    arms += [("orbit", variant, checked[-1]) for variant in ("window_dose_echo", "window_dose_echo_y")]
+    return tuple(arms)
 
 
-def n21_detuning_sign_group(doses: tuple[int, ...]) -> Group:
+def n21_detuning_dose_roles(roles: Any) -> dict[str, int]:
+    """The logical index of each work role's dose-time qubit, validated; None gives the unrouted 1 and 3."""
+    if roles is None:
+        return dict(N21_WORK_RAMSEY_QUBITS)
+    if (
+        not isinstance(roles, dict)
+        or set(roles) != set(N21_WORK_RAMSEY_QUBITS)
+        or any(type(index) is not int or not 0 <= index < 4 for index in roles.values())
+        or roles["one"] == roles["sixteen"]
+    ):
+        raise ValueError(f"dose_roles maps one and sixteen to two distinct logical indices 0 to 3, not {roles!r}")
+    return {role: roles[role] for role in N21_WORK_RAMSEY_QUBITS}
+
+
+def n21_detuning_sign_group(doses: tuple[int, ...], dose_roles: dict[str, int] | None = None) -> Group:
     """The detuning-sign test as one heralded n21_orbit_rca group.
 
     The free-idle window-dose member without feed-forward reads the cosine
@@ -834,9 +855,13 @@ def n21_detuning_sign_group(doses: tuple[int, ...]) -> Group:
     its sign. The work Ramsey arms read each of those bits' own offsets in
     the same job. The echo pair at the largest dose reads the phase the
     echo leaves, which equals the undosed phase when the precession runs
-    during the dose. summarize reports each orbit arm's parity and each
-    Ramsey arm's (-1)^b1 under the stem of its member name.
+    during the dose. dose_roles names the logical index whose initial qubit
+    holds each work role at the dose (n21_detuning_dose_roles), where the
+    Ramsey arms put their qubit on the equator. summarize reports each orbit
+    arm's parity and each Ramsey arm's (-1)^b1 under the stem of its member
+    name.
     """
+    roles = n21_detuning_dose_roles(dose_roles)
     clbits = N21_ORBIT_HERALDED_CLBITS
     members = []
     for kind, stem, dose in n21_detuning_sign_arms(doses):
@@ -859,7 +884,7 @@ def n21_detuning_sign_group(doses: tuple[int, ...]) -> Group:
             members.append(
                 Member(
                     stem,
-                    n21_work_ramsey(role, quadrature, dose, init_herald=True),
+                    n21_work_ramsey(role, quadrature, dose, qubit=roles[role], init_herald=True),
                     lift_phase_law(n21_work_ramsey_law(quadrature), clbits),
                     weights=lift_phase_values(_N21_WORK_READ, clbits),
                 )
@@ -978,7 +1003,9 @@ def family_contracts(
         if (configuration or {}).get("detuning_sign"):
             # One precision endpoint per member on its read; the preregistered
             # analysis (scripts/n21_detuning_sign.py) fits the phases.
-            group = n21_detuning_sign_group(tuple((configuration or {})["window_doses"]))
+            group = n21_detuning_sign_group(
+                tuple((configuration or {})["window_doses"]), (configuration or {}).get("dose_roles")
+            )
             share = alpha / len(group.members)
             return tuple(
                 ObservableContract(
@@ -1144,6 +1171,7 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
                 family.get("segmented_sweep"),
                 tuple(int(dose) for dose in family.get("window_doses", ())),
                 bool(family.get("detuning_sign", False)),
+                family.get("dose_roles"),
             )
         ]
     if family.get("name") in N21_FAMILIES:

@@ -14,11 +14,14 @@ free-idle arm that its one-rate decay family does not describe (chi2 427 on 5). 
 no-feedback member's law shows the relaxation offset at the Target model's value at every dose and a coherence
 that turns with the dose: per replica, the measured coherence over the modeled one is a cosine of the dose at
 4 to 30 kHz with rms residual 0.02 to 0.07, and the Hahn echo holds each replica at its undosed value (correlation
-0.986 across 19 replicas). During the dose each replica holds one excitation shared between the adjacent work bits
-for 1 and 16, with the bit for 4 and the reset control in |0> and no work bit beside another replica's qubit, so a
-ZZ term gives both branches the same phase and cannot turn their relative phase. What remains is a frame offset of
-each work bit, its frequency off the frame the gates track, which turns the relative phase at the offset of the
-bit for 16 minus that of the bit for 1.
+0.986 across 19 replicas). Routing the controlled swaps moves the logical roles, so the compiled program, not the
+logical circuit, names the qubits: a Z turn on one physical qubit during the dose moves the coherence only on each
+replica's initial-layout positions 0 and 3, in all 19 replicas (exact evaluation of the retained ISA). During the
+dose each replica holds one excitation shared between those two qubits; its other two qubits are in |0>, and no
+superposed qubit neighbors another replica's qubit, so a ZZ term gives both branches the same phase and cannot turn
+their relative phase. What remains is a frame offset of each of the two qubits, its frequency off the frame the
+gates track, which turns the relative phase at the offset of the qubit holding the bit for 16 minus that of the
+qubit holding the bit for 1.
 
 The sweep read only the cosine of that phase, so it gives the rate's magnitude without its sign, and the
 idle-penalty probe's Ramsey offsets come from another calibration, so they cannot be compared replica by replica.
@@ -36,18 +39,30 @@ The `n21-orbit-rca` family with `--init-herald --window-doses-dt D,D,... --detun
   the two phase bits (the cosine of the relative phase);
 - `window_dose_y`, the same circuit with P(-pi/2) on the control where the feedback member conditions it, so the
   second round reads the sine;
-- `n21_work_ramsey_{one,sixteen}_{x,y}`: H on the work bit for 1 or for 16, the other qubits in |0>, a barrier,
-  `delay(D)` on all four wires, a barrier, then H (X) or Sdg H (Y) and a readout of that bit.
+- `n21_work_ramsey_{one,sixteen}_{x,y}`: H on the qubit that holds the work bit for 1 or for 16 during the dose,
+  the other qubits in |0>, a barrier, `delay(D)` on all four wires, a barrier, then H (X) or Sdg H (Y) and a
+  readout of that qubit.
+
+A Ramsey arm has no two-qubit gate, so its logical qubit k stays on initial-layout position k, while routing moves
+the orbit's roles. The planner therefore locates the roles in the compiled orbit arms (`qpu_planning.dose_roles`):
+it turns each initial qubit by 0.4 rad during the dose, evaluates both quadratures exactly, and requires a turn of
++1 on one qubit (the bit for 16), -1 on another (the bit for 1) and 0 on the other two, identical at every nonzero
+dose. It rebuilds the Ramsey arms on those logical indices, requires each to turn with its own qubit alone, and
+records the indices as `dose_roles` in the family configuration, which `--submit` binds with the rest of the
+approved record. On FakeFez the roles fall on positions 3 and 1 of the pinned layout and on 0 and 3 of the
+planner's own, so no fixed assignment serves.
 
 At the largest dose the echo member, `window_dose_echo` and `window_dose_echo_y`, spends the dose as
-`delay(D/4) X delay(D/2) X delay(D/4)` on the work bits for 1 and 16. None of the members feeds forward, so the
+`delay(D/4) X delay(D/2) X delay(D/4)` on the work bits for 1 and 16. The members run dose by dose, the orbit and
+Ramsey readings of one dose next to each other, so drift over the job enters each dose's readings alike. None of the members feeds forward, so the
 service runs the replicas in parallel and the planner's timing holds (the sweep's 3.6x underrun came from the
 serialized feed-forward branches). The initialization herald measures every qubit before the circuit and makes
 every member dynamic, so all PUBs share one job and one calibration; the analysis keeps only shots whose herald
 reads all zeros. `tests/gororoba_quantum/test_detuning_sign.py` evaluates every member exactly: each keeps its
 ideal law, a Z rotation on the bit for 16 (for 1) during the dose turns the orbit's quadrature pair by plus (minus)
 its angle, a rotation of a work bit turns its own Ramsey pair by plus its angle and leaves the other bit's at zero,
-and the echo returns the undosed phase.
+and the echo returns the undosed phase; `qpu_planning_contracts._verify_detuning_sign_plan` checks the role probe
+on compiled FakeFez plans, and that an arm moved to another qubit fails it.
 
 ## Bounds
 
@@ -83,14 +98,17 @@ Each member's herald-kept counts give a quadrature: an orbit member's control co
 given b0 = 1, which cancels the relaxation offset both branches share, and a Ramsey member's X or Y. A phase is
 atan2(sine, cosine) with its delta-method error; phases unwrap along the dose order over the leading doses whose
 amplitude exceeds three standard errors, and a weighted line through at least four of them gives the rate, its
-error scaled by sqrt(max(1, chi2/df)). The dose spacing of about 7 us leaves rates up to 71 kHz unambiguous.
+error scaled by sqrt(max(1, chi2/df)). The dose spacing of about 7 us leaves rates up to 71 kHz unambiguous; each
+fit reports its largest phase step between doses, and a step near pi marks a rate at that limit.
 
 - D1, slope: the weighted line through the origin of f_orbit on f_sixteen - f_one across replicas with all three
   rates. It holds when its 95 percent interval lies inside [0.8, 1.2] and is refuted when the interval misses that
-  band; at least six replicas.
+  band; at least six replicas. A line with a free intercept is reported beside it, so a rate common to every
+  replica shows as an intercept rather than a moved slope.
 - D2, sign: among replicas whose prediction and orbit rate both exceed three standard errors, the fraction with
   agreeing signs; at least 0.9 holds, below 0.75 refutes (random signs give 0.5); at least six resolved replicas.
-- D3, echo: among replicas whose free-idle phase moved by more than three standard errors over the sweep, the
+- D3, echo: among replicas whose free-idle phase moved by more than three standard errors over the sweep (the
+  fitted rate times the largest dose, which a whole number of turns cannot hide), the
   fraction whose echo phase at the largest dose lies within three standard errors of the undosed phase; at least
   0.8 reads as precession during the dose.
 

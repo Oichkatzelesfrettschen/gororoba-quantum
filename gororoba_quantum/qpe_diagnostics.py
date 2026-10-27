@@ -355,11 +355,16 @@ def n21_dose_key(name: str) -> tuple[str, int, bool] | None:
     return variant, int(dose), suffix == "_feedback"
 
 
-# A work Ramsey member puts the work bit for 1 (logical qubit 1) or for 16
-# (logical qubit 3) on the equator with every other qubit in |0>, the
-# condition of that bit while the orbit's single work excitation sits on it,
-# idles every qubit dose_dt between barriers and reads the bit in X or Y into
-# clbit 1 of the phase register; clbit 0 stays unwritten and reads 0.
+# A work Ramsey member puts the qubit that holds the work bit for 1 or for 16
+# during the orbit's dose on the equator with every other qubit in |0>, the
+# condition of that qubit while the orbit's single work excitation sits on
+# it, idles every qubit dose_dt between barriers and reads the qubit in X or
+# Y into clbit 1 of the phase register; clbit 0 stays unwritten and reads 0.
+# Routing the orbit's controlled swaps moves the roles between physical
+# qubits, while a member without two-qubit gates keeps logical qubit k on its
+# initial physical qubit, so the member takes the logical index whose initial
+# qubit holds the role at the dose (qpu_planning.dose_roles); unrouted, the
+# roles sit on logical qubits 1 and 3.
 N21_WORK_RAMSEY_PREFIX = "n21_work_ramsey_"
 N21_WORK_RAMSEY_QUBITS = {"one": 1, "sixteen": 3}
 
@@ -386,7 +391,9 @@ def n21_work_ramsey_key(name: str) -> tuple[str, str, int] | None:
     return role, quadrature, int(dose)
 
 
-def n21_work_ramsey(role: str, quadrature: str, dose_dt: int, *, init_herald: bool = False) -> QuantumCircuit:
+def n21_work_ramsey(
+    role: str, quadrature: str, dose_dt: int, *, qubit: int | None = None, init_herald: bool = False
+) -> QuantumCircuit:
     """Ramsey of one orbit work bit over a free idle of dose_dt, on the orbit's four logical qubits.
 
     H puts the bit on the equator, a barrier over every qubit opens the
@@ -395,12 +402,15 @@ def n21_work_ramsey(role: str, quadrature: str, dose_dt: int, *, init_herald: bo
     or Y (sdg, h) into clbit 1. A frame offset f of the bit turns
     <X> + i<Y> by 2 pi f t, the same sense in which the orbit's quadrature
     pair turns with the offset of the work bit for 16 minus that of the bit
-    for 1 (tests/gororoba_quantum/test_detuning_sign.py). init_herald
-    prepends the orbit's herald readouts and barrier, which also makes the
-    member dynamic so it shares the orbit members' job.
+    for 1 (tests/gororoba_quantum/test_detuning_sign.py). qubit is the
+    logical index on the equator, N21_WORK_RAMSEY_QUBITS[role] when omitted.
+    init_herald prepends the orbit's herald readouts and barrier, which also
+    makes the member dynamic so it shares the orbit members' job.
     """
     name = n21_work_ramsey_name(role, quadrature, dose_dt)
-    qubit = N21_WORK_RAMSEY_QUBITS[role]
+    qubit = N21_WORK_RAMSEY_QUBITS[role] if qubit is None else qubit
+    if type(qubit) is not int or not 0 <= qubit <= len(N21_ORBIT_BITS):
+        raise ValueError(f"a work Ramsey qubit is a logical index of the orbit's four qubits, not {qubit!r}")
     control = QuantumRegister(1, "ctrl")
     work = QuantumRegister(len(N21_ORBIT_BITS), "w")
     phase = ClassicalRegister(2, "phase")

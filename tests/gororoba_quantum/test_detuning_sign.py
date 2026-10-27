@@ -143,3 +143,19 @@ def test_refusals() -> None:
     _require(qpe_diagnostics.n21_dose_key("n21_orbit_window_dose_y_d0_feedback") is None)
     for bad in ("n21_work_ramsey_four_x_d0", "n21_work_ramsey_one_z_d0", "n21_work_ramsey_one_x_d1"):
         _require(qpe_diagnostics.n21_work_ramsey_key(bad) is None, bad)
+
+
+def test_work_ramsey_takes_the_dose_time_qubit() -> None:
+    # Routing can leave the work bit for 1 on the control's initial qubit at the dose; the arm then turns with it.
+    rate = 0.6 / DOSES[-1]
+    jobs = [
+        (qpe_diagnostics.n21_work_ramsey("one", quadrature, DOSES[-1], qubit=0, init_herald=True), {0: rate})
+        for quadrature in ("x", "y")
+    ]
+    _require(_ramsey_phase(*ordered_map(_detuned_law, jobs, min_items=1)) == pytest.approx(0.6, abs=1e-9))
+    group = diagnostic_experiments.n21_detuning_sign_group(DOSES, {"one": 0, "sixteen": 3})
+    arm = next(m for m in group.members if m.name == qpe_diagnostics.n21_work_ramsey_name("one", "x", 0))
+    _require([arm.circuit.find_bit(i.qubits[0]).index for i in arm.circuit.data if i.operation.name == "h"] == [0, 0])
+    for bad in ({"one": 1, "sixteen": 1}, {"one": 4, "sixteen": 3}, {"one": 1}):
+        with pytest.raises(ValueError, match="dose_roles"):
+            diagnostic_experiments.n21_detuning_sign_group(DOSES, bad)

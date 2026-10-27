@@ -2991,7 +2991,10 @@ def _verify_detuning_sign_plan(snapshot: live_run.Snapshot) -> None:
     candidates = qpu_planning.family_candidates(live_run, [snapshot], arguments, traces)
     _require(bool(candidates), f"FakeFez refuses the detuning-sign test: {traces.get('family_rejections')}")
     (choice,), configuration = candidates[0]
-    expected = [member.name for member in diagnostic_experiments.n21_detuning_sign_group(tuple(WINDOW_DOSES)).members]
+    expected = [
+        arm[1] if arm[0] == "ramsey" else qpe_diagnostics.n21_dose_name(arm[1], arm[2], False)
+        for arm in diagnostic_experiments.n21_detuning_sign_arms(tuple(WINDOW_DOSES))
+    ]
     names = [member.name for member in choice.group.members]
     _require(names == expected, f"the detuning-sign test plans {names}")
     _require(
@@ -3000,6 +3003,31 @@ def _verify_detuning_sign_plan(snapshot: live_run.Snapshot) -> None:
         and configuration.get("init_herald") is True,
         f"the detuning-sign configuration reads {configuration}",
     )
+    roles = configuration["dose_roles"]
+    _require(roles == qpu_planning.dose_roles(choice), f"the configuration binds dose roles {roles}")
+    compiled = dict(zip(names, choice.isas, strict=True))
+    layout = list(choice.layout)
+    for role in ("one", "sixteen"):
+        arm = qpe_diagnostics.n21_work_ramsey_name(role, "x", WINDOW_DOSES[-1])
+        responses = qpu_planning._responses(
+            layout, compiled[arm], compiled[arm.replace("_x_d", "_y_d")], qpu_planning._ramsey_read
+        )
+        _require(responses == [int(k == roles[role]) for k in range(4)], f"{arm} turns with {responses}")
+        # Mutation: the same arm on another logical qubit turns with that qubit instead.
+        other = next(k for k in range(4) if k not in roles.values())
+        moved = [
+            live_run._compile(
+                qpe_diagnostics.n21_work_ramsey(role, q, WINDOW_DOSES[-1], qubit=other, init_herald=True),
+                choice.snap,
+                choice.seed,
+                choice.layout,
+            )
+            for q in ("x", "y")
+        ]
+        _require(
+            qpu_planning._responses(layout, moved[0], moved[1], qpu_planning._ramsey_read) != responses,
+            "a Ramsey arm on the wrong qubit passes the role check",
+        )
     for name, isa in zip(names, choice.isas, strict=True):
         _require(all(inner.operation.name != "if_else" for inner in isa.data), f"{name} feeds forward")
         key = qpe_diagnostics.n21_work_ramsey_key(name)

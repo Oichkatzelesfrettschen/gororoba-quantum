@@ -189,7 +189,7 @@ def _signed_run(tmp_path: Path) -> list[float]:
     record = {
         "execution_pubs": pubs,
         "shots": shots,
-        "family_configuration": {"window_doses": doses, "detuning_sign": True},
+        "family_configuration": {"window_doses": doses, "detuning_sign": True, "dose_roles": {"one": 0, "sixteen": 3}},
         "groups": [
             {"replicas": [{"initial_layout": [4 * r, 4 * r + 1, 4 * r + 2, 4 * r + 3]} for r in range(replicas)]}
         ],
@@ -207,4 +207,4 @@ def test_analyze_reads_the_signed_rates_from_shot_registers(tmp_path: Path) -> N
     _require(out["d1_slope"]["verdict"].startswith("holds"), out["d1_slope"])
     _require(out["d2_sign"]["verdict"].startswith("holds"), out["d2_sign"])
     _require(out["d3_echo"]["verdict"].startswith("holds"), out["d3_echo"])
-    _require(out["replicas"][1]["qubit_one"] == 5 and out["replicas"][1]["qubit_sixteen"] == 7, out["replicas"][1])
+    _require(out["replicas"][1]["qubit_one"] == 4 and out["replicas"][1]["qubit_sixteen"] == 7, out["replicas"][1])
