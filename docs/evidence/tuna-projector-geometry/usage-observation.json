@@ -1,0 +1,12 @@
+{
+  "schema": "qi-usage-summary-v1",
+  "retrieved_utc": "2026-10-27T16:08:31+00:00",
+  "source": "qi_usage read-only account ledger; totals only",
+  "totals": {
+    "change": 0,
+    "by_domain": {},
+    "by_backend_type_id": {},
+    "execution_seconds": 4947.0062179999995,
+    "shots_done": 7770112
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "observed_utc": "2026-10-27T15:52:45.015773+00:00",
+  "packages": {
+    "requests": "2.34.2",
+    "prometheus-client": null,
+    "quantuminspire": "4.1.0",
+    "qiskit-quantuminspire": "0.18.5"
+  },
+  "dns": [
+    "131.180.205.138"
+  ],
+  "grafana_health": {
+    "http_status": 200,
+    "body": "{\n  \"database\": \"ok\",\n  \"version\": \"13.1.1\",\n  \"commit\": \"e784b7782a43822971f896b3377dc736346a9c66\"\n}",
+    "elapsed_seconds": 0.5304373460821807
+  },
+  "prometheus_ready": {
+    "error": "HTTPSConnectionPool(host='prometheus.qi2.qutech.support', port=443): Max retries exceeded with url: /-/ready (Caused by ConnectTimeoutError(<HTTPSConnection(host='prometheus.qi2.qutech.support', port=443) at 0x7fbf09ebb9d0>, 'Connection to prometheus.qi2.qutech.support timed out. (connect timeout=6)'))",
+    "elapsed_seconds": 6.0065726389875636
+  }
+}

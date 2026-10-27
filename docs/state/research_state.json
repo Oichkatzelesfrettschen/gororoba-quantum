@@ -2177,6 +2177,13 @@
       "run": "results/live/2026-10-26T202817.431767Z",
       "family": "idle-penalty",
       "question": "On 31 coupled ibm_kingston pairs in one dynamic job, does relaxation, free or echoed dephasing, or readout elsewhere on the chip charge an idle qubit more than the reported T1 and Hahn-echo T2 predict, per physical qubit?"
+    },
+    {
+      "id": "qi-qx-projector-geometry-conformance",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx",
+      "family": "sequential projector geometry remote conformance",
+      "question": "Do the three approved QX terminal circuits reproduce the frozen herald, joint-acceptance and signed-moment tolerances before Tuna qualification?"
     }
   ],
   "claims": [
@@ -11597,6 +11604,45 @@
       "related_claims": [
         "hw-n21-feedback-null-scheduled-idle"
       ]
+    },
+    {
+      "id": "qi-qx-projector-geometry-conformance",
+      "statement": "All 18 preregistered projector-geometry QX discrepancy checks pass across three 2048-shot terminal circuits; the jobs report 1.254351 seconds total execution and zero recorded transaction charges.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "Finite-shot conformance of the three named noiseless QX circuits. The result establishes neither Tuna behavior nor early classical-bit retention, calibration, causal measurement disturbance or a new algebra theorem. Zero charges describe the retained collection and account ledger.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json",
+          "sha256": "ceb6efcf570c43a6e772254716119fa8f555d20279832acd5a9d5968ffbc9c62"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/results.json",
+          "sha256": "a0929b26fa2899f2386ee99eccf1226db30c8cd4731dca4de752e1fabf62d3c4"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/design-at-approval.md",
+          "sha256": "d13acc9a43da288c439c6cff1cdffc809ca4945a7127cc4e67d96ef913515b9c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/qx-conformance.md"
+      ],
+      "gates": {
+        "core-qi-projector-conformance": "replay"
+      },
+      "acquisitions": [
+        "qi-qx-projector-geometry-conformance"
+      ],
+      "assumptions": [
+        "The retained raw shot strings follow the observed QX qubit-zero-rightmost convention.",
+        "The frozen finite-shot discrepancy screen is a conformance qualification, not a hardware significance test."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": []
     }
   ]
 }

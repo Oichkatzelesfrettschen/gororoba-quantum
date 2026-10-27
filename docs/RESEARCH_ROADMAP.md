@@ -71,7 +71,7 @@ proposed work, in dependency order:
 | mathematical claim | open | 2 |
 | numerical or stochastic simulation | established | 11 |
 | numerical or stochastic simulation | superseded | 1 |
-| preregistered emulator control | established | 12 |
+| preregistered emulator control | established | 13 |
 | preregistered hardware inference | established | 66 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |

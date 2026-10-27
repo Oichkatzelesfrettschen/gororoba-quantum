@@ -1,0 +1,180 @@
+{
+  "schema": "work-plan-v1",
+  "id": "tuna-projector-geometry",
+  "kind": "investigation",
+  "summary": "Qualify sequential-projector moment readout on Tuna-17 with exact controls, compiler receipts, calibration limitations and separately approved QX and hardware acquisitions.",
+  "sources": [
+    "docs/design/tuna-projector-geometry.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Source, offline compilation and approved QX conformance have scope-bound receipts. The QX acquisition is registered, all 18 checks pass and recorded charges are zero. Tuna qualification and physical interpretation remain open."
+  },
+  "scope": "Derive and validate illustrative projector moments, retain datasource diagnostics, generate compiler-checked qualification cases, and acquire only after approval of each provider case. Algebra-specific certification and causal backaction claims require successor controls.",
+  "owner": "codex-tuna-projector-geometry",
+  "next_action": "Obtain separate approval of the frozen Tuna three-circuit 4096-shot qualification case, then refresh live hardware status, account pause, queue and free-use conditions before any hardware submission.",
+  "steps": [
+    {
+      "id": "source-and-instrument-audit",
+      "action": "Consolidate primary-source derivation and datasource connectivity observations",
+      "acceptance": "Design cites inspected source scope and diagnostic evidence separates provider connectivity from local dependencies",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Primary-source design and public datasource connectivity observations retained; remote calibration data remains unavailable.",
+          "observed_at": "2026-10-27T15:56:43.805269+00:00",
+          "revision": "0da3fc555a453f6eeff0392f39d39186c906a536",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-projector-geometry.md",
+              "sha256": "9c9eacec3b37331676f2f4aed7d060e9bbf1bff3cc61a6d2c59a2f1ddf5374e0"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/README.md",
+              "sha256": "b9c322de34e8ea2380cbccf81417306f7ef0419e1cf3488d6d323ec63301a016"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/datasource-connectivity.json",
+              "sha256": "19f695aac7392c69881481b23c1b326ae0e3ada0124f909da3ca07a50be44f09"
+            }
+          ],
+          "scope_sha256": "17239e90eee1a497c0873137f33ce64e79335ff18de80283383a8cbbaa7918d1"
+        },
+        {
+          "result": "Source-bound offline verification passed within the evidence files; provider execution remains pending approval.",
+          "observed_at": "2026-10-27T16:03:17.456099+00:00",
+          "revision": "0da3fc555a453f6eeff0392f39d39186c906a536",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-projector-geometry.md",
+              "sha256": "6b979dc2dc986a3ad6c73e92a7b000b49b18e77caab0017a84f02301c10d8143"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/README.md",
+              "sha256": "a75c9951745c6c889ce4457bb47185decb99a9670796c955b649212d4f23fa5a"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/datasource-connectivity.json",
+              "sha256": "19f695aac7392c69881481b23c1b326ae0e3ada0124f909da3ca07a50be44f09"
+            }
+          ],
+          "scope_sha256": "17239e90eee1a497c0873137f33ce64e79335ff18de80283383a8cbbaa7918d1"
+        },
+        {
+          "result": "Source derivation, fixed QX discrepancy screen, calibration connection diagnosis and account ledger observation retained.",
+          "observed_at": "2026-10-27T16:12:16.923390+00:00",
+          "revision": "0da3fc555a453f6eeff0392f39d39186c906a536",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-projector-geometry.md",
+              "sha256": "d13acc9a43da288c439c6cff1cdffc809ca4945a7127cc4e67d96ef913515b9c"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/README.md",
+              "sha256": "a75c9951745c6c889ce4457bb47185decb99a9670796c955b649212d4f23fa5a"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/datasource-connectivity.json",
+              "sha256": "19f695aac7392c69881481b23c1b326ae0e3ada0124f909da3ca07a50be44f09"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/usage-observation.json",
+              "sha256": "bb32387fb3fd779f565c421b70ad557fecb0b3c26755d8c65b7a2327c700626c"
+            }
+          ],
+          "scope_sha256": "17239e90eee1a497c0873137f33ce64e79335ff18de80283383a8cbbaa7918d1"
+        }
+      ]
+    },
+    {
+      "id": "compiler-and-analysis-conformance",
+      "action": "Verify physical edges, local compilation, bit mapping and exact moment tests",
+      "acceptance": "Retained compiler receipt and focused tests pass for the generated qualification manifest",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Source-bound offline verification passed within the evidence files; provider execution remains pending approval.",
+          "observed_at": "2026-10-27T16:03:17.457042+00:00",
+          "revision": "0da3fc555a453f6eeff0392f39d39186c906a536",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/local-verification.json",
+              "sha256": "e929c3fb4a87983a73a1ccff9082034ee5f5b3c469d2e7d0c2278ce6a1928ad3"
+            },
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-projector-geometry/local-compiler-receipt.json",
+              "sha256": "82dc69a238ddb381161b6d31524ad1d3eae05b692e8b2d74607925cb94343361"
+            },
+            {
+              "ref": "scripts/qi_projector_geometry.py",
+              "sha256": "8f8a1daa28dc1f22e5ff86bc67a61e4e5c03a8a926a35268ccf2aeddffa9f56c"
+            },
+            {
+              "ref": "tests/scripts/test_qi_projector_geometry.py",
+              "sha256": "79d10554304724857e51b18628616e4681690caae7ad9b664677ea943b11c3f4"
+            }
+          ],
+          "scope_sha256": "075e68a8b532200ce2935dcfaaf2029f569a9cf0cb019bf86c8be73e5173c1ff"
+        }
+      ]
+    },
+    {
+      "id": "qx-conformance-case",
+      "action": "Present the concrete QX case and collect conformance results after explicit approval",
+      "acceptance": "Approved three-circuit 2048-shot batch has bound raw results and descriptive analysis",
+      "state": "done",
+      "depends_on": [
+        "compiler-and-analysis-conformance"
+      ],
+      "receipts": [
+        {
+          "result": "Approved QX batch completed all 6144 shots in 1.254351 provider execution seconds with zero recorded charges; all 18 frozen checks pass and the integer-count replay matches. Research registry, library inventory, 13 focused tests, Markdown links and diff checks pass.",
+          "observed_at": "2026-10-27T16:29:43.488941+00:00",
+          "revision": "0da3fc555a453f6eeff0392f39d39186c906a536",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json",
+              "sha256": "ceb6efcf570c43a6e772254716119fa8f555d20279832acd5a9d5968ffbc9c62"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/results.json",
+              "sha256": "a0929b26fa2899f2386ee99eccf1226db30c8cd4731dca4de752e1fabf62d3c4"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/submission.json",
+              "sha256": "cd28627c7c58f068171a8469be80c53a8e6c708d24573a77e720de3106455642"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/qx-conformance.md",
+              "sha256": "7e27da595a9b748f43bdd00e95d14f96d92b75e20e33083bb9a78f9dddb02570"
+            },
+            {
+              "ref": "scripts/qi_projector_conformance.py",
+              "sha256": "91673afc2ab504a13413d78ec2b512bcd99370fb56b135e35eb7f0ad20b8aff9"
+            }
+          ],
+          "scope_sha256": "a743d65d920e8a4a15665f3818526aabfbd5d834f198c0c655137b50bd207c5a"
+        }
+      ]
+    },
+    {
+      "id": "tuna-qualification-case",
+      "action": "Refresh hardware status and usage then present the Tuna qualification case",
+      "acceptance": "Separate approval binds the three-circuit 4096-shot batch before submission and retained raw collection",
+      "state": "todo",
+      "depends_on": [
+        "qx-conformance-case"
+      ]
+    },
+    {
+      "id": "qualification-interpretation",
+      "action": "Analyze counts and qualification controls within recorded calibration limits",
+      "acceptance": "Report distinguishes illustrative geometry, instrument acceptance, placement confounding and unresolved causal mechanisms",
+      "state": "todo",
+      "depends_on": [
+        "tuna-qualification-case"
+      ]
+    }
+  ]
+}

@@ -4987,6 +4987,17 @@
    "name": "core-755",
    "seconds": 7.2,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_projector_conformance.py --check results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json",
+   "name": "core-qi-projector-conformance",
+   "seconds": 0.4,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json"
+   ]
   }
  ],
  "excluded": [
