@@ -916,23 +916,33 @@ def finish_rows(rows: dict[int, dict[str, Any]], contexts: dict[int, dict[str, A
     return rows
 
 
+def qubit_batch(item: tuple[int, dict[str, Any], list[dict[str, Any]]]) -> list[dict[str, Any]]:
+    """evaluate_qubit_rows of one qubit's batch, in the item form parallel.ordered_map passes."""
+    return evaluate_qubit_rows(*item)
+
+
 def evaluate_batch(
     counts: list[dict[int, dict[str, Any]]], planned: list[dict[int, dict[str, Any]]]
 ) -> list[dict[int, dict[str, Any]]]:
     """msa.evaluate for every replicate: counts[r] and planned[r] hold the kept qubits of replicate r.
 
-    A qubit shares its context across replicates, so the replicates that kept it form one batch.
+    A qubit shares its context across replicates, so the replicates that kept it form one batch, and the qubits'
+    batches map through parallel.ordered_map; inside a block mapped by `run` the pool's worker initializer leaves
+    one worker, so the map runs in that worker's process.
     """
     members: dict[int, list[int]] = {}
     for r, contexts in enumerate(planned):
         for q in contexts:
             members.setdefault(q, []).append(r)
-    done: dict[tuple[int, int], dict[str, Any]] = {}
+    items = []
     for q, replicas in members.items():
         ctx = planned[replicas[0]][q]
         if any(planned[r][q] != ctx for r in replicas):
             raise msa.AnalysisError(f"qubit {q} changes its context across the replicates of one block")
-        for r, row in zip(replicas, evaluate_qubit_rows(q, ctx, [counts[r][q] for r in replicas]), strict=True):
+        items.append((q, ctx, [counts[r][q] for r in replicas]))
+    done: dict[tuple[int, int], dict[str, Any]] = {}
+    for (q, replicas), rows in zip(members.items(), ordered_map(qubit_batch, items, min_items=2), strict=True):
+        for r, row in zip(replicas, rows, strict=True):
             done[(r, q)] = row
     return [finish_rows({q: done[(r, q)] for q in contexts}, contexts) for r, contexts in enumerate(planned)]
 
