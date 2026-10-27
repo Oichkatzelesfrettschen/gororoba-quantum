@@ -201,12 +201,11 @@ descriptive; the cohort decisions use the bootstrap.
 
 ## Open before a case
 
-- The measured-run loader of scripts/idle_readout_attribution.py: the collector refusals and the one-calibration
-  rule of idle_penalty_report.load, and the per-class exposure gate on the service schedule.
 - A written case with the binding dry run, the bootstrap seed's draw and index, and the owner's approval of that
   case before any submit.
 
-Done: the analyzer and its planted-law mutation tests; the execution changes; a validation dry run on the 31
+Done: the analyzer and its planted-law mutation tests; the measured-run loader with the collector refusals, the
+one-calibration rule and the per-class exposure gate; the execution changes; a validation dry run on the 31
 pinned pairs under the 2026-10-26T20:57:35-07:00 calibration, whose local ALAP schedule puts every replica's probe
 window at 561 to 10561 dt and every reading train inside it (7680 quiet-window and train pairs), and whose
 predictions pass the self-check (b -0.071 kHz, interval [-0.174, 0.127]; additive; attribution unresolved).

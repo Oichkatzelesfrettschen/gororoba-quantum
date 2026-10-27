@@ -4,10 +4,13 @@ from __future__ import annotations
 
 import dataclasses
 import itertools
+from typing import Any
 
 import idle_readout_attribution as ra
 import numpy as np
 import pytest
+
+import idle_penalty as ip
 
 DT = 4e-9
 SHOTS = 4096
@@ -162,3 +165,48 @@ def test_class_strings_and_member_names_have_one_home() -> None:
             ]
             _expect(all("quiet" not in b for b in reading), "a reading class replica runs a quiet body")
             _expect(sum("quiet" not in b for b in bodies) == len(reading), "a quiet class replica reads")
+
+
+def _line(start: int, window: int, reads: int, quiet_reader: bool = False) -> tuple[Any, Any]:
+    """(probe, reader) instances of one replica: reset, a pulse, the idle, a pulse, the joint read; the reader's
+    train sits late in the window as the ALAP schedule puts it."""
+    probe = (("reset", 0, start), ("sx", start, start + 10), ("sx", start + 10 + window, start + 20 + window))
+    final = ("measure", start + 20 + window, start + 565 + window)
+    reader = [("reset", 0, start)]
+    if not quiet_reader:
+        first = start + 10 + window - reads * 609
+        reader += [("measure", first + 609 * r, first + 609 * r + 545) for r in range(reads)]
+    return probe + (final,), tuple(reader) + (final,)
+
+
+def _timelines(starts: list[int], bodies: tuple[str, ...], quiet_reads: int = 0) -> dict[str, list[Any]]:
+    name = "idle_meas_half_p1a_x"
+    replicas = []
+    for start, body in zip(starts, bodies, strict=True):
+        quiet = "quiet" in body
+        probe, reader = _line(start, ip.MEAS_DT, quiet_reads if quiet else ip.MEAS_COUNT, quiet and not quiet_reads)
+        replicas.append((probe, reader))
+    reference = [(_line(start, ip.MEAS_DT, 0, True)[0], _line(start, ip.MEAS_DT, 0, True)[1]) for start in starts]
+    return {name: replicas, f"idle_ramsey_x_{ip.MEAS_DT}dt": reference}
+
+
+BODIES = ("idle_meas_during_x", "idle_meas_quiet_x", "idle_meas_during_x")
+
+
+def test_patterned_exposure_accepts_aligned_classes() -> None:
+    timelines = _timelines([600, 600, 600], BODIES)
+    reasons = ra.patterned_exposure(timelines, {"idle_meas_half_p1a_x": BODIES})
+    _expect(reasons == [], str(reasons))
+
+
+@pytest.mark.parametrize(
+    ("starts", "quiet_reads", "fragment"),
+    [
+        ([600, 9000, 600], 0, "misses the trains"),
+        ([600, 600, 600], 2, "quiet partner reads"),
+    ],
+)
+def test_patterned_exposure_refuses(starts: list[int], quiet_reads: int, fragment: str) -> None:
+    timelines = _timelines(starts, BODIES, quiet_reads)
+    reasons = ra.patterned_exposure(timelines, {"idle_meas_half_p1a_x": BODIES})
+    _expect(any(fragment in reason for reason in reasons), str(reasons))

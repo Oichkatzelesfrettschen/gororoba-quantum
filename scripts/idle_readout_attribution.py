@@ -449,6 +449,124 @@ def load_predicted(run: Path) -> tuple[Geometry, dict[str, np.ndarray], float, i
     return geo, laws, float(targets["backends"][group["backend"]]["dt"]), int(record["shots"])
 
 
+def _effective(body: str) -> str:
+    """The retained-arm name a patterned replica's body stands for: the reader arm itself, or for a quiet template
+    the reader arm of the same window, whose probe idle it repeats."""
+    return body.replace("meas_short_quiet_", "meas_short_").replace("meas_quiet_", "meas_during_")
+
+
+def patterned_exposure(timelines: dict[str, list[tuple[Any, Any]]], bodies: dict[str, tuple[str, ...]]) -> list[str]:
+    """Departures of a patterned member's schedule from its classes: within a class every replica shares one
+    schedule; every probe repeats its quiet Ramsey reference; a reading partner plays its whole train inside its
+    probe's idle and a quiet partner reads only at the end; every quiet replica's probe idle contains every reading
+    replica's train in absolute schedule time."""
+    import idle_penalty_report as report
+
+    reasons = []
+    for name, names in bodies.items():
+        replicas = timelines[name]
+        probe = report._probe(name)
+        gapped = [(report._gaps(t), report._gaps(sp)) for t, sp in replicas]
+        for body in sorted(set(names)):
+            classes = {gapped[k] for k, b in enumerate(names) if b == body}
+            if len(classes) != 1:
+                reasons.append(f"{name}: {len(classes)} distinct schedules among replicas running {body}")
+        windows, trains = {}, {}
+        for k, body in enumerate(names):
+            arm = _effective(body)
+            planned = report.planned_idles(arm)[probe]
+            idles = [gap for _, gap in gapped[k][probe] if gap]
+            if idles != planned:
+                reasons.append(f"{name} replica {k}: probe idles {idles}, planned {planned}")
+            reference = report.quiet_reference(arm)
+            if reference not in timelines or report._gaps(timelines[reference][k][probe]) != gapped[k][probe]:
+                reasons.append(f"{name} replica {k}: probe schedule differs from {reference}")
+            probe_line, reader_line = replicas[k][probe], replicas[k][1 - probe]
+            pulses = [i for i in probe_line if i[0] not in ("reset", "measure")]
+            reads = [i for i in reader_line if i[0] == "measure"]
+            if len(pulses) != 2:
+                reasons.append(f"{name} replica {k}: {len(pulses)} probe pulses, planned 2")
+                continue
+            windows[k] = (pulses[0][2], pulses[1][1])
+            between = reads[:-1]
+            if "quiet" in body:
+                if between:
+                    reasons.append(f"{name} replica {k}: quiet partner reads {len(between)} times in the window")
+                continue
+            count = ip.SHORT_MEAS_COUNT if "short" in arm else ip.MEAS_COUNT
+            if len(between) != count:
+                reasons.append(f"{name} replica {k}: {len(between)} reader reads, planned {count}")
+            elif not (windows[k][0] <= between[0][1] and between[-1][2] <= windows[k][1]):
+                reasons.append(f"{name} replica {k}: reader train leaves the probe idle")
+            else:
+                trains[k] = (between[0][1], between[-1][2])
+        for k, (start, end) in windows.items():
+            if "quiet" not in names[k]:
+                continue
+            outside = [j for j, (t0, t1) in trains.items() if t0 < start or t1 > end]
+            if outside:
+                reasons.append(f"{name}: quiet replica {k} idle {start}-{end} misses the trains of replicas {outside}")
+    return reasons
+
+
+def load_measured(run: Path) -> tuple[Geometry, dict[str, np.ndarray], float, int, dict[str, Any]]:
+    """A collected run's measured laws, after the collector refusals, the one-calibration rule and the exposure
+    gate: the retained members through idle_penalty_report.exposure_violations, the patterned members through
+    patterned_exposure, and every replica's compiled instructions against the service schedule."""
+    import idle_penalty_report as report
+    import scheduled_idle_replay
+    from qiskit import qpy
+
+    import law_encoding
+
+    record = json.loads((run / "record.json").read_text())
+    group = next(g for g in record["groups"] if g["group"] == "idle_readout")
+    roles = report.role_map(group)
+    geo = geometry(roles, _couplers(group["backend"]))
+    names = [m["name"] for m in group["members"] if not m["reference"]]
+    bodies = {m["name"]: tuple(m["replica_bodies"]) for m in group["members"] if m.get("replica_bodies")}
+    collected = json.loads((run / "collect.json").read_text())
+    block = next(c for c in collected if isinstance(c, dict) and c.get("group") == "idle_readout")
+    for key in ("comparisons_withheld", "summary_unavailable", "calibration_dependent_summaries_unavailable"):
+        if key in block:
+            raise report.RefusedAnalysis(f"the collector set {key}: {block[key]}")
+    executed = block["executed"]
+    missing = [n for n in names if n not in executed or n not in block["measured"]]
+    if missing:
+        raise report.RefusedAnalysis(f"members without an execution record or law: {missing}")
+    stamps = {executed[n].get("calibration") for n in names}
+    straddling = [n for n in names if executed[n].get("calibration_changed_during_shots")]
+    if None in stamps or straddling or len(stamps) != 1:
+        raise report.RefusedAnalysis(f"calibrations {sorted(map(str, stamps))}, straddling {straddling}")
+    files = report._raw_pub_files(run)
+    with (run / "isa.qpy").open("rb") as stream:
+        fused = {circuit.name: circuit for circuit in qpy.load(stream)}
+    reasons = []
+    for pub in record["execution_pubs"]:
+        rows = scheduled_idle_replay.schedule_rows(files[pub["name"]])
+        for component in pub["components"]:
+            if component["group"] != "idle_readout":
+                continue
+            replicas = scheduled_idle_replay.component_replicas(record, component)
+            for k, (qubits, registers) in enumerate(zip(replicas, component["registers_by_replica"], strict=True)):
+                try:
+                    scheduled_idle_replay.padded_replica(fused[pub["name"]], rows, qubits, registers, insert=False)
+                except RuntimeError as error:
+                    reasons.append(f"{component['member']} replica {k}: {error}")
+    timelines = report.schedule_timelines(run, executed, names, roles)
+    retained = [n for n in names if n not in bodies]
+    reasons += report.exposure_violations({n: timelines[n] for n in retained})
+    reasons += patterned_exposure(timelines, bodies)
+    if reasons:
+        raise report.RefusedAnalysis("scheduled exposure: " + "; ".join(reasons[:8]))
+    laws = {
+        n: np.asarray([[law_encoding.dense(stored) for stored in block["measured"][n]]], dtype=float) for n in names
+    }
+    targets = json.loads((ROOT / "docs/evidence/heron_platform/targets.json").read_text())
+    identity = {"source": "measured", "calibration": stamps.pop(), "record_sha256": report._sha256(run / "record.json")}
+    return geo, laws, float(targets["backends"][group["backend"]]["dt"]), int(record["shots"]), identity
+
+
 def self_check(out: dict[str, Any]) -> list[str]:
     """The design's cohort-level null on predictions that carry no readout crosstalk; empty when it holds."""
     from scipy import stats
@@ -484,9 +602,19 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.seed is None:
         parser.error("--seed takes a qrng:<draw>#<index> value")
-    geo, laws, dt, shots = load_predicted(args.run)
+    import idle_penalty_report as report
+
+    try:
+        if args.self_check or not (args.run / "collect.json").exists():
+            geo, laws, dt, shots = load_predicted(args.run)
+            identity: dict[str, Any] = {"source": "predicted"}
+        else:
+            geo, laws, dt, shots, identity = load_measured(args.run)
+    except report.RefusedAnalysis as refusal:
+        print(f"refused: {refusal}")
+        return 2
     out = analyze(geo, laws, dt, shots, args.seed, args.replicates)
-    out["identity"] = {"run": qrng_seeds.repo_relative(args.run), "source": "predicted", "seed": args.seed_source}
+    out["identity"] = identity | {"run": qrng_seeds.repo_relative(args.run), "seed": args.seed_source}
     text = json.dumps(out, indent=1, sort_keys=True, allow_nan=True) + "\n"
     if args.out:
         args.out.write_text(text)
