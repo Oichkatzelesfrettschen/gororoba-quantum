@@ -135,3 +135,43 @@ probe and the result, and run the cheap ones. Seeds:
 3. **Unit-section topology (N4).**
 4. **Transitions, structure groups, classes (deliverable 3-4).**
 5. **Section 4 questions**, interleaved as soon as the tools exist.
+
+## Round 2: review fixes (orchestrator, 2026-10-27)
+
+Deliverables 1-4 are complete and committed (through b5f9c71). The critical review at
+[docs/archive/reviews/2026-10-27-a5-kernel-bundles-nullity8-critical.md](../archive/reviews/2026-10-27-a5-kernel-bundles-nullity8-critical.md)
+found no fatal defect and confirms every stated class. Fix the following in the existing scripts and README; the
+orchestrator adds the replay gates (the review's SERIOUS 2) and folds in the independent verifier's result when it
+arrives.
+
+1. **SERIOUS 1, component groups.** The element (1, boost(pi), phase(pi)) fixes every mu = 0 point and lies outside
+   the identity component of the W8 compact stabilizer, so the README sentence "no additional finite stabilizer
+   component remains" and "the phase circle supplies the remaining circle on W8" are false as stated, and the ledger's
+   item-4 Observed label overstates a Lie-algebra projection. Compute the component group of the full compact
+   stabilizer exactly on every orbit (W8, E8-bar including whether finite boost elements other than boost(pi) occur,
+   Iso, X_+-). Replace the W8 class argument by the mapping-torus argument: the core is homotopy equivalent to
+   V_2(R^7) x S^1 with constant monodromy 1 (x) m, m in the connected GL(2, C), so the bundle is pr^*(2 xi) with
+   reduced class 0. Correct the ledger labels.
+2. **SLOPPY 3, X_+- -> B9 canonicity.** Replace the group-curve argument (those curves have no lift) by the
+   constant-rank lemma: first-order limits depend only on the normal direction, and F^T A(i d) F = i F^T A(d) F makes
+   every complex normal direction give the same plane; compute that identity exactly in the script.
+3. **SLOPPY 4.** State in the README that path dependence shows the attaching datum is not an inclusion and that the
+   set of all limits (the attaching data item 6 needs) is not yet computed.
+4. **SLOPPY 5 and the literals.** Label in the README every JSON entry the script marks inferred (free K-coordinates,
+   the Iso row, characteristic classes). Give the reason for R^4 + xi_R = R^8 (xi_R plus the span of
+   (x_1, x_2, x_1 x_2) is the trivial R^7), not cancellation. Rebuild `remove_e8_path_dependence` so it perturbs an
+   input and fails through a downstream computation.
+5. **SLOPPY 6.** Argue that the X fiber representation is constant along its stratum and that the stratum is connected,
+   or compute it at a Mostow-adapted point.
+6. **SLOPPY 8.** Check the Mostow citation for stabilizers with a unipotent radical (the 1962 sequel is the likely
+   source) and cite the standard G_2 isotropy facts.
+7. **Serial loops.** Pool the baseline runs with their mutations in `boundary_specializations.py` (and its incidence-row
+   comprehension), `kernel_transition_atlas.py`, `unit_section_topology.py` (and avoid recomputing the coassociative
+   enumeration per core), `stabilizer_strata.py` and `kernel_bundle_classes.py`.
+8. **Cosmetic.** The README introduction's "Transition data and bundle classes remain open", stale timings, the 45
+   double overlaps including 15 identities, the unreachable `elif` in `_compact_stabilizer_row`, and the
+   open-to-generic analyticity sentence.
+
+After the fixes, rerun every `--out` in dependency order until every `--check` holds, every `--self-test` (normal and
+-O), ruff and mypy, and record a ledger row per fix. Same rules: no staging or commits, files only inside the evidence
+directory.
