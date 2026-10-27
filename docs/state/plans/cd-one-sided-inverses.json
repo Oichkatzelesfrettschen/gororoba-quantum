@@ -22,21 +22,71 @@
   "steps": [
     {
       "id": "written-proof",
-      "state": "doing",
+      "state": "done",
       "action": "Write Lemmas 1 to 4, the kernel-equality theorem and the inverse corollary by induction on the doubling, with no use of associativity.",
-      "acceptance": "Fails if any lemma step uses an identity that the doubling does not preserve, or if a checked element violates the theorem."
+      "acceptance": "Fails if any lemma step uses an identity that the doubling does not preserve, or if a checked element violates the theorem.",
+      "receipts": [
+        {
+          "result": "Lemmas 1 to 4, the theorem and the corollary are written by induction on the doubling; every checked element of the record satisfies them.",
+          "observed_at": "2026-10-27T15:37:26+00:00",
+          "revision": "6d6e5e486f1d124dae60aacf002fc92b32d75ed4",
+          "evidence": [
+            {
+              "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+              "sha256": "92b49cd2734806e0aa3e96bb9e1222eb99544023d7828aaff7103478365ae4ed"
+            }
+          ],
+          "scope_sha256": "5cdec5df38ff69009c02a286ca33d4272e94fd8340ca75ef8e9263d32cfd62a9"
+        }
+      ]
     },
     {
       "id": "exact-replay",
-      "state": "todo",
+      "state": "done",
       "action": "Check the basis identities through dimension 128 and the kernel equality with the two-sided inverse law on every signed two-blade, three-unit sum and doubly pure grid element at dimensions 16 and 32; retain the record and gate it.",
-      "acceptance": "Fails if --check departs from the retained bytes, if pooled and serial runs differ, or if any element raises."
+      "acceptance": "Fails if --check departs from the retained bytes, if pooled and serial runs differ, or if any element raises.",
+      "receipts": [
+        {
+          "result": "--check reproduces the record pooled (5.7 s) and serial (19.7 s, GOROROBA_WORKERS=1); 0 of 1932 zero divisors violate the kernel equality or the inverse law.",
+          "observed_at": "2026-10-27T15:37:26+00:00",
+          "revision": "6d6e5e486f1d124dae60aacf002fc92b32d75ed4",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-one-sided-inverses/record.json",
+              "sha256": "8d757d40e436e4104678b7504649e1ff084e9886378f7bb12a46e91edd04670d"
+            },
+            {
+              "ref": "scripts/cd_one_sided_inverses.py",
+              "sha256": "6d195394676122d31c84256301e526f76ab8cb3f0c814b168fe8221d016224b0"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-record-check-08",
+              "sha256": "515ff5145869f2c9265d1eec7d07c1fcb656689be3db753038bd017d9fe4923b"
+            }
+          ],
+          "scope_sha256": "d4b6beac879399b2d997fcb35f833e5ed8e4cf7473e8a035e0f4aa852eefdd37"
+        }
+      ]
     },
     {
       "id": "formalization-index",
-      "state": "todo",
+      "state": "done",
       "action": "Write the root formalization.yaml in the mathlib-initiative v0.4 schema with every exported theorem, its file and its kernel-checked axiom list.",
-      "acceptance": "Fails if the file does not validate against v0.4.schema.json or names a declaration, file or source that the tree lacks."
+      "acceptance": "Fails if the file does not validate against v0.4.schema.json or names a declaration, file or source that the tree lacks.",
+      "receipts": [
+        {
+          "result": "formalization.yaml validates against v0.4.schema.json with jsonschema 4.26.0; every declaration, file and source it names exists in the tree.",
+          "observed_at": "2026-10-27T15:37:26+00:00",
+          "revision": "6d6e5e486f1d124dae60aacf002fc92b32d75ed4",
+          "evidence": [
+            {
+              "ref": "formalization.yaml",
+              "sha256": "9da52cc4bb21607294772e9a03e0944f82d793be4e1bf5e91c3349a2c91cd5ec"
+            }
+          ],
+          "scope_sha256": "c3e54c0446904aef498848c4dac99e9244a78fba969f539aa0208ae5a715228b"
+        }
+      ]
     }
   ]
 }
