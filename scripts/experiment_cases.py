@@ -8,6 +8,7 @@ keeps an optical case outside the remote runner's acquisition boundary.
 from __future__ import annotations
 
 import argparse
+import difflib
 import hashlib
 import importlib.metadata
 import json
@@ -570,7 +571,23 @@ def replay_receipt(directory: Path, files: dict[str, str]) -> bytes:
         name: hashlib.sha256(text.encode()).hexdigest() for name, text in files.items() if name != "provenance.json"
     }
     if historical.get("artifacts") != artifacts or current.get("artifacts") != artifacts:
-        raise ValueError("historical artifact digests differ from the complete regenerated inventory")
+        changed = [name for name, value in artifacts.items() if historical.get("artifacts", {}).get(name) != value]
+        details = []
+        for name in changed[:4]:
+            details.extend(
+                list(
+                    difflib.unified_diff(
+                        (directory / name).read_text().splitlines(),
+                        files[name].splitlines(),
+                        fromfile=name,
+                        tofile="regenerated",
+                    )
+                )[:16]
+            )
+        raise ValueError(
+            f"historical artifact digests differ from the complete regenerated inventory: {len(changed)} files; "
+            f"libc={platform.libc_ver()}; python={platform.python_version()}\n" + "\n".join(details)
+        )
     for name, text in files.items():
         if name != "provenance.json" and (directory / name).read_bytes() != text.encode():
             raise ValueError(f"campaign bytes differ: {name}")

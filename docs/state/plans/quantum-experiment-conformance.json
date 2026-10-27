@@ -6,14 +6,14 @@
   "sources": [
     "docs/design/quantum-experiment-conformance.md"
   ],
-  "state": "closed",
+  "state": "active",
   "reconciliation": {
     "status": "verified",
-    "note": "The canonical runner baseline and current source pass deterministic and compiler validation; acquisition remains outside the completed implementation scope."
+    "note": "Hosted admission exposed a serial sedenion construction stage, a seed-module identity collision, and a canonical replay mismatch under the hosted gate allocation; validation is reopened."
   },
   "scope": "Implement finite quantum experiment references, guarded cases, analysis and correction records across five proposals. Provider execution and acquisition completion are separate obligations.",
   "owner": "quantum experiment implementer",
-  "next_action": "Review separately approved acquisition cases after current runtime, budget and instrument qualification checks.",
+  "next_action": "Repair sedenion worker dispatch and module identity, establish worker-count replay invariance, and repeat hosted admission.",
   "steps": [
     {
       "id": "audit-contracts",
@@ -99,7 +99,7 @@
       "id": "integrate-suites",
       "action": "Integrate references, cases and analyzers.",
       "acceptance": "Focused deterministic tests and operator checks pass with guarded execution interfaces. Local libqasm analysis and OpenSquirrel replay admit every emitted QI payload and preserve its control sequence. Canonical runner-image arithmetic binds the prospective baseline and its replay registry.",
-      "state": "done",
+      "state": "doing",
       "receipts": [
         {
           "scope_sha256": "eeafc951cf19321ebe87c4e1c292a0452c46fae4bc80eff61b7f1f8d67be22de",
@@ -235,8 +235,6 @@
     "spectral-projection-estimands",
     "quarter-mass-amplification-conformance"
   ],
-  "disposition": "completed",
-  "resolution": "Scoped software and bounded mathematical investigations pass canonical replay, focused and registry tests, lint, types and local compiler admission. Provider acquisition, instrument qualification and physical interpretation retain separate prerequisites.",
   "receipts": [
     {
       "scope_sha256": "3dbe28cc9850d87bcedb25f4774cc5adf258c9a2596ce4c78c7fbc8c2dcac8c7",

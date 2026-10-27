@@ -11168,6 +11168,7 @@
    "__future__",
    "argparse",
    "dataclasses",
+   "difflib",
    "experiment_references",
    "functools",
    "hashlib",

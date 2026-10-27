@@ -6,14 +6,14 @@
   "sources": [
     "docs/design/quantum-experiment-conformance.md"
   ],
-  "state": "closed",
+  "state": "active",
   "reconciliation": {
     "status": "verified",
-    "note": "The canonical runner baseline and current source pass deterministic and compiler validation; acquisition remains outside the completed implementation scope."
+    "note": "Hosted admission exposed a serial sedenion construction stage, a seed-module identity collision, and a canonical replay mismatch under the hosted gate allocation; validation is reopened."
   },
   "scope": "Implement certified sedenion LCU dark, bright and sign-mutation controls with unconditional herald probabilities. Provider execution and acquisition completion are separate obligations.",
   "owner": "quantum experiment implementer",
-  "next_action": "Review separately approved acquisition cases after current runtime, budget and instrument qualification checks.",
+  "next_action": "Repair sedenion worker dispatch and module identity, establish worker-count replay invariance, and repeat hosted admission.",
   "steps": [
     {
       "id": "certify-operator",
@@ -123,7 +123,7 @@
       "id": "compile-controls",
       "action": "Generate routed Tuna and QX payloads and admitted Ascella dilation controls.",
       "acceptance": "Payloads validate topology, normalization, port maps and full operator contracts. Local libqasm analysis and OpenSquirrel replay admit every emitted QI payload and preserve its control sequence. Canonical runner-image arithmetic binds the prospective baseline and its replay registry.",
-      "state": "done",
+      "state": "todo",
       "receipts": [
         {
           "scope_sha256": "85cf36d51cdf55cd7ae89d3e828827bd4facaf11fea0ebccbe1bc83fa89a586f",
@@ -252,8 +252,6 @@
       ]
     }
   ],
-  "disposition": "completed",
-  "resolution": "Scoped software and bounded mathematical investigations pass canonical replay, focused and registry tests, lint, types and local compiler admission. Provider acquisition, instrument qualification and physical interpretation retain separate prerequisites.",
   "receipts": [
     {
       "scope_sha256": "f8857c33b8e237fe5b1ca57fa665514dd91d222731e7bfd9acc434ef92f19898",
