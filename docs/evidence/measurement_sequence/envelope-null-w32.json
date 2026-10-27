@@ -1,0 +1,17 @@
+{
+ "ceiling": 0.01,
+ "common_residual": 0.011,
+ "count_rule": 4,
+ "fired_verdicts": {},
+ "fires": 0,
+ "floor": 0.018784131556028254,
+ "independent_residual_sd": 0.0105,
+ "mean_kept": 31.925,
+ "passes": true,
+ "replicates": 400,
+ "schema": "msq-envelope-null-v1",
+ "seed": 56182,
+ "upper_bound_95": 0.007461355528799602,
+ "width": 32,
+ "withheld_replicates": 0
+}
