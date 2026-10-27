@@ -8509,6 +8509,7 @@
    "parallel",
    "pathlib",
    "placement_feasibility",
+   "pub_calibration",
    "qiskit",
    "qiskit_aer",
    "qiskit_ibm_runtime",
@@ -8913,6 +8914,9 @@
    "enum",
    "math",
    "typing"
+  ],
+  "gororoba_quantum/pub_calibration.py": [
+   "__future__"
   ],
   "gororoba_quantum/pub_shot_allocation.py": [
    "__future__",

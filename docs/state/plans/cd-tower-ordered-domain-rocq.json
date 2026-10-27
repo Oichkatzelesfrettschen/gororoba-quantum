@@ -51,6 +51,26 @@
             }
           ],
           "scope_sha256": "5fbef3ae3481c712ba64728c1c726a2c2bd3234990098a848b9816e18802d9b3"
+        },
+        {
+          "result": "Revalidation after the bridges grew to all eighteen functor theorems: the 23 integer queries of assumptions_z.txt are closed under the global context and the 24 real queries of assumptions_r.txt list exactly ClassicalDedekindReals.sig_forall_dec and FunctionalExtensionality.functional_extensionality_dep; the signature, its instances and the ring declaration are unchanged.",
+          "observed_at": "2026-10-27T20:58:39+00:00",
+          "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerDomain.v",
+              "sha256": "d71f220a1e1fa18d5ecc343126a21b1fa082754c9b25d115303e09b66c1da2d3"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/assumptions_z.txt",
+              "sha256": "028c8f49fbae48ce3d2157c4fc70e7365ec811a36aa2f6ea05708feed1750ce6"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/assumptions_r.txt",
+              "sha256": "3a0ca7c63ac0707517f1d7adb4aa30d2ba8fe95b72b981e0d410c1d5a346d421"
+            }
+          ],
+          "scope_sha256": "5fbef3ae3481c712ba64728c1c726a2c2bd3234990098a848b9816e18802d9b3"
         }
       ]
     },
@@ -86,6 +106,30 @@
             }
           ],
           "scope_sha256": "1154118d8e5d233ffe751e6cadc9f12a9f1dbc869707bb3d885bf0009ffb727c"
+        },
+        {
+          "result": "Revalidation: CdTowerDomainZ.v and CdTowerDomainR.v compile under rocq 9.3.0 with -w @all and no output; ZBridge and RBridge restate all eighteen functor theorems in the vocabulary of the integer and real tower files, each closing by conversion after the to_tower rewrites; CdTowerDomain.v is unchanged and rocq check reproduces kernel.txt.",
+          "observed_at": "2026-10-27T20:58:39+00:00",
+          "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerDomain.v",
+              "sha256": "d71f220a1e1fa18d5ecc343126a21b1fa082754c9b25d115303e09b66c1da2d3"
+            },
+            {
+              "ref": "proofs/CdTowerDomainZ.v",
+              "sha256": "339f820a5c8395403e75214f82a45efa0860948ca6869f2751b57b9add3b1586"
+            },
+            {
+              "ref": "proofs/CdTowerDomainR.v",
+              "sha256": "ab5fe69e515e52ef9f64227a624ee5f981db1411dec94119f8c93b3959921a45"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/kernel.txt",
+              "sha256": "882de7e58a24b8eb660b82644f9bd1351555365ca2c71004e57c6d431a8674e6"
+            }
+          ],
+          "scope_sha256": "1154118d8e5d233ffe751e6cadc9f12a9f1dbc869707bb3d885bf0009ffb727c"
         }
       ]
     },
@@ -114,6 +158,26 @@
             {
               "ref": "docs/evidence/cd-tower-domain/assumptions_r.txt",
               "sha256": "679e375bac2ec61564552e3ced3a38c9bd74b64cd6585404f579d3658885808a"
+            }
+          ],
+          "scope_sha256": "6f7ba12042fb275a9570f17786098d7bb4c19bd603f186bacb234f648a935d21"
+        },
+        {
+          "result": "Revalidation: RFieldBridge.right_inverse_form is unchanged and its Print Assumptions lists exactly the two real-construction axioms.",
+          "observed_at": "2026-10-27T20:58:39+00:00",
+          "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerDomain.v",
+              "sha256": "d71f220a1e1fa18d5ecc343126a21b1fa082754c9b25d115303e09b66c1da2d3"
+            },
+            {
+              "ref": "proofs/CdTowerDomainR.v",
+              "sha256": "ab5fe69e515e52ef9f64227a624ee5f981db1411dec94119f8c93b3959921a45"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/assumptions_r.txt",
+              "sha256": "3a0ca7c63ac0707517f1d7adb4aa30d2ba8fe95b72b981e0d410c1d5a346d421"
             }
           ],
           "scope_sha256": "6f7ba12042fb275a9570f17786098d7bb4c19bd603f186bacb234f648a935d21"
@@ -184,6 +248,62 @@
             }
           ],
           "scope_sha256": "49a390d68dd1fb91375e9834225d21f246da2a1f15b3e5229bd56cf068f306d3"
+        },
+        {
+          "result": "Revalidation at the revision that bridges every functor theorem: edits recording Lemma 9.5, Corollary 2.9, the ordered-domain functor and its bridges changed bound note, map and index files, and the acceptance reruns: the cd-annihilator-symmetry, cd-annihilator-symmetry-real and cd-tower-domain replays pass against their receipts and sha256sum -c accepts each ledger; tests/test_evidence_ledgers.py and tests/ci/test_rocq_ci_pins.py pass (16 unmarked, 44 audit) under the pinned interpreter; ci/check_rocq_ci_pins.py reports 15 bundles agreeing; formalization.yaml validates against the retained v0.4 schema with jsonschema 4.26.0; check_markdown_links.py resolves every link of 705 files.",
+          "observed_at": "2026-10-27T20:58:39+00:00",
+          "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-tower-domain/replay_rocq.sh",
+              "sha256": "a0f6e78058cb67f933135f9297d483b9223824869e5b64d72a7c66ab457a106e"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/source_hashes.sha256",
+              "sha256": "f53479b57920961ef3d30ba14d02cc3c6e13abd7d5ba4a8b66735fdd4bb1caf5"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/README.md",
+              "sha256": "a7dce394ee40fbb4e4559d83292c87be7912e9adc07e810f5bd58c17ab4403c8"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-415",
+              "sha256": "c287fc57530d1be9672860d94413eabd45d24dc2c4f7477ed950ce2a3087366c"
+            },
+            {
+              "ref": "ci/rocq_changed.sh",
+              "sha256": "ffb41b72f2528a26380d892f0caae51ef2a9ac6f08a48b929e7482092e8e8d53"
+            },
+            {
+              "ref": "scripts/rocq_kaggle_replay.py",
+              "sha256": "9b63a9a243bdb92f20b53c16d77e05271bfd6356c2fd4fae43232f58c98deeb1"
+            },
+            {
+              "ref": "tests/test_evidence_ledgers.py",
+              "sha256": "ff14450765ebd34ae56bfd0f12d595976197d49337e6e83e2b7106c75b8bedf5"
+            },
+            {
+              "ref": ".github/workflows/ci.yml",
+              "sha256": "9b76a5aac2357bb6657410041a05c792379072aae71453ca7afb23bec6423e87"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "5091ed1c757bfb768137331856a75b6d4adfaded62f6e48d2d85489c8440974c"
+            },
+            {
+              "ref": "docs/notes/math-0511691.md",
+              "sha256": "275501f8a4ae7ed3a77e088e89ca0d92dd16d362e95c9827df32f51196bc3295"
+            },
+            {
+              "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+              "sha256": "f4916450e4f9ce2baff1a6c38e0b2d04352c35e852c6a80f402ff09f29c21044"
+            },
+            {
+              "ref": "docs/README.md",
+              "sha256": "35a98fc4105e87fde8eb63b19f4bc17e2bf449a336f52c463521cc9e1e5d6dcb"
+            }
+          ],
+          "scope_sha256": "49a390d68dd1fb91375e9834225d21f246da2a1f15b3e5229bd56cf068f306d3"
         }
       ]
     }
@@ -201,6 +321,22 @@
         {
           "ref": "docs/evidence/cd-tower-domain/README.md",
           "sha256": "aafd28a392081c7f04c0e5f2ec41e4375d1befb49f900d2e35d98e1519e5354e"
+        }
+      ],
+      "scope_sha256": "756570db4feaecafd19d689c578aae9d859aa883c622b48442e12e12e7ec1ccf"
+    },
+    {
+      "result": "Revalidation at the bridge revision; every step carries a fresh receipt.",
+      "observed_at": "2026-10-27T20:58:39+00:00",
+      "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+      "evidence": [
+        {
+          "ref": "proofs/CdTowerDomain.v",
+          "sha256": "d71f220a1e1fa18d5ecc343126a21b1fa082754c9b25d115303e09b66c1da2d3"
+        },
+        {
+          "ref": "docs/evidence/cd-tower-domain/README.md",
+          "sha256": "a7dce394ee40fbb4e4559d83292c87be7912e9adc07e810f5bd58c17ab4403c8"
         }
       ],
       "scope_sha256": "756570db4feaecafd19d689c578aae9d859aa883c622b48442e12e12e7ec1ccf"
