@@ -52,6 +52,30 @@
             }
           ],
           "scope_sha256": "3bf75c948099c3c1b6d8392da7f50c1d12ffac1be311c7c7ad82e798bef1130b"
+        },
+        {
+          "result": "Revalidation after the header comment credits the purity theorem to Lemma 9.4 alone: both files compile under rocq 9.3.0 with -w @all and no output; the twelve Print Assumptions queries and rocq check reproduce the unchanged receipts.",
+          "observed_at": "2026-10-27T19:19:06+00:00",
+          "revision": "aa1e38c62ef3c534232e2ea12fc556d7c5b27b07",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerReal.v",
+              "sha256": "5cb866c0e3d34da4d8ae14217ebd47e332cb86ca2e289069651e260b56334251"
+            },
+            {
+              "ref": "proofs/CdAnnihilatorSymmetryReal.v",
+              "sha256": "8975f9854cdabdc687472038c87e1cec9679d1ed24138c4a73a91873cc63902e"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/assumptions.txt",
+              "sha256": "9befe6997b2e40f995e81589f3b784b03a676c93a6c6232b81baa106d05754d5"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/kernel.txt",
+              "sha256": "882de7e58a24b8eb660b82644f9bd1351555365ca2c71004e57c6d431a8674e6"
+            }
+          ],
+          "scope_sha256": "3bf75c948099c3c1b6d8392da7f50c1d12ffac1be311c7c7ad82e798bef1130b"
         }
       ]
     },
@@ -84,6 +108,30 @@
             }
           ],
           "scope_sha256": "afd3fd722f2be474ff262c32785edd20c347da5d6040f13f539cf1de5d9257d0"
+        },
+        {
+          "result": "Revalidation after the ledger rebind: replay_rocq.sh passes against its receipts; tests/ci/test_rocq_ci_pins.py and tests/test_evidence_ledgers.py pass (59 tests); formalization.yaml validates against the retained v0.4 schema with jsonschema 4.26.0; check_markdown_links.py resolves every link of 703 files.",
+          "observed_at": "2026-10-27T19:19:06+00:00",
+          "revision": "aa1e38c62ef3c534232e2ea12fc556d7c5b27b07",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/replay_rocq.sh",
+              "sha256": "baadc680d44005a4a04d7606a5e9b3ff63ad469e07ce730d967fb06e32662279"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/source_hashes.sha256",
+              "sha256": "ef49740b8b497d2f057a0c59d1ade3b01ab93cc32088afeeac75175583264e2f"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-414",
+              "sha256": "12e06a087443cdea1eee593fc570e9e68d5b07b98192bf2bc866a71f2e422e83"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "0031d9a40138665a3bf7de74db39790aec6d5d6191bb5333607352d58315b470"
+            }
+          ],
+          "scope_sha256": "afd3fd722f2be474ff262c32785edd20c347da5d6040f13f539cf1de5d9257d0"
         }
       ]
     }
@@ -97,6 +145,22 @@
         {
           "ref": "proofs/CdAnnihilatorSymmetryReal.v",
           "sha256": "f28b93814371c99c627e8d0580873e95bd6fcda51e34a86f450f0b5b6973606f"
+        },
+        {
+          "ref": "docs/evidence/cd-annihilator-symmetry-real/README.md",
+          "sha256": "06cd51fd16780d395966461bd5939e603ccc0a70bc67a8a3b5e40778ca405275"
+        }
+      ],
+      "scope_sha256": "33d4c1e07653dabf976a8b1862f2341a2b4c0cdcf317bdc84bb3a5152894f6d3"
+    },
+    {
+      "result": "Revalidation at the revision that credits the purity theorem to Lemma 9.4; both steps carry fresh receipts.",
+      "observed_at": "2026-10-27T19:19:06+00:00",
+      "revision": "aa1e38c62ef3c534232e2ea12fc556d7c5b27b07",
+      "evidence": [
+        {
+          "ref": "proofs/CdAnnihilatorSymmetryReal.v",
+          "sha256": "8975f9854cdabdc687472038c87e1cec9679d1ed24138c4a73a91873cc63902e"
         },
         {
           "ref": "docs/evidence/cd-annihilator-symmetry-real/README.md",
