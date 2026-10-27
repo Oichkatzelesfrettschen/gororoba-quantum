@@ -37,6 +37,7 @@ LEDGERS = [
     (".", "docs/evidence/cd-associator-census/source_hashes.sha256"),
     (".", "docs/evidence/cd-sign-python-semantics/source_hashes.sha256"),
     (".", "docs/evidence/cd-annihilator-symmetry/source_hashes.sha256"),
+    (".", "docs/evidence/cd-annihilator-symmetry-real/source_hashes.sha256"),
     ("docs/evidence/four_support_geometry", "SHA256SUMS"),
     ("docs/evidence/four_support_doubling", "SHA256SUMS"),
     ("docs/evidence/four_support_homology", "SHA256SUMS"),
