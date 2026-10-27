@@ -7,11 +7,11 @@ in the owner's artifact store. The corrected design records the unsupported infe
 
 ## Evidence surfaces
 
-- [reference.json](runner-cases/reference.json) contains exact basis overlaps, the Tao candidate's derived residuals,
+- [reference.json](runner-identity-controls/reference.json) contains exact basis overlaps, the Tao candidate's derived residuals,
   Fano rank and sign-lift counterexample, sedenion product and herald normalization, spectral estimands and
   full quarter-mass amplification matrices.
-- [campaign.json](runner-cases/campaign.json) freezes setting identities, case digests, endpoint counts, requested
-  acquisition order and operator-supplied ceilings. [provenance.json](runner-cases/provenance.json) binds producer
+- [campaign.json](runner-identity-controls/campaign.json) freezes setting identities, case digests, endpoint counts, requested
+  acquisition order and operator-supplied ceilings. [provenance.json](runner-identity-controls/provenance.json) binds producer
   sources, retained compiler catalogues, package versions and generated artifact bytes.
 - [seeds.json](cases/seeds.json) assigns unused indices 2 through 58 of the retained ANU draw
   `draw-2026-10-26T220128Z.json` to 57 distinct optical meshes. Repeated contrast arms reproduce their
@@ -25,7 +25,7 @@ The Fano and spectral outputs complete bounded mathematical investigations. Thei
 remain outside the admitted cases. The primary dimension-six hardware family uses the three reference bases;
 Tao is an offline candidate comparison. Hardware results remain prospective throughout this bundle.
 
-The [canonical validation receipt](validation-canonical.json) binds the runner-image baseline, parallel
+The historical [canonical validation receipt](validation-canonical.json) binds the earlier runner baseline, parallel
 regeneration, all 384 local compiler admissions, 169 focused and registry tests, full Ruff and mypy.
 The historical [validation receipt](validation.json) retains its source revision, runtime versions,
 85 focused tests, gate measurements and measured compiler-only probability shifts.
@@ -41,10 +41,9 @@ export PYTHON=/path/to/pinned/environment/bin/python
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 export GOROROBA_WORKERS=4 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
 "$PYTHON" scripts/experiment_analysis.py --size --endpoints 648
-sh ci/runner_image.sh sh -c '"$PYTHON" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-cases \
+sh ci/runner_image.sh sh -c 'export PYTHONHASHSEED=0 GOROROBA_WORKERS=4; "$PYTHON" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-identity-controls \
   --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 \
-  --execution-seconds 300 --photonic-credits 1.00315 \
-  --replay-receipt docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json'
+  --execution-seconds 300 --photonic-credits 1.00315'
 "$PYTHON" scripts/experiment_cases.py --self-test
 "$PYTHON" scripts/experiment_analysis.py --self-test
 sh ci/pr_checks.sh tests tests/scripts/test_experiment_references.py \
@@ -52,24 +51,23 @@ sh ci/pr_checks.sh tests tests/scripts/test_experiment_references.py \
   tests/scripts/test_hypercomplex_cases.py
 ```
 
-The canonical baseline is [runner-cases](runner-cases/campaign.json), generated through
-`ci/runner_image_records.py write` in the repository's Ubuntu runner arithmetic and bound in the runner
-ledger. Its gate declares every generated record. The
-[pooling replay receipt](runner-pooling-replay.json), also written and bound in that image, preserves
-the canonical bundle while admitting order-preserving parallel transition construction. Every one of
-the 633 non-provenance files regenerates identically. The
-[serial-transition producer snapshot](runner-producer-serial-transitions.txt) matches the original
-producer digest in canonical provenance; the receipt names the corrected producer. Use the runner image for byte-exact regeneration;
-identical package versions on another userland are insufficient. The arithmetic comparison found 119
-changed files, including 16 native payloads, when the build-host baseline was regenerated in the runner.
+The canonical baseline is [runner-identity-controls](runner-identity-controls/campaign.json), generated
+through `ci/runner_image_records.py write` and bound in the active runner ledger. All eighteen same-basis
+settings use exact reversible input permutations, and their native grid preserves the complete operator
+to the declared tolerance. General matrix synthesis introduced environment-dependent roundoff into the
+unrounded diagnostics of the computational input-2 identity control; its original serialized payload and
+native prediction matched. The successor removes that unnecessary synthesis and retains strict byte replay.
 
-The original [build-host candidate](cases/campaign.json), its provenance, its
-[regeneration receipt](regeneration-route-admission.json) and its [compiler receipt](local-toolchain.json)
-retain their bytes as historical evidence. They are superseded acquisition candidates. Their producer
-bindings refer to their recorded revision and arithmetic, rather than the current generator. The original
-[seed mapping](cases/seeds.json) remains the allocation home: canonical manifests bind that mapping's
-hash and named static identifier. A copied acquisition case therefore neither consumes a CLI runtime seed
-nor claims an entire QRNG draw. Repeated arms reproduce their named compilation identifier.
+The earlier [runner candidate](runner-cases/campaign.json), its [pooling receipt](runner-pooling-replay.json)
+and [serial producer snapshot](runner-producer-serial-transitions.txt) retain their historical bytes.
+[validation-canonical.json](validation-canonical.json) preserves every one of their 635 image bindings;
+the active ledger now admits the successor. The original [build-host candidate](cases/campaign.json),
+[regeneration receipt](regeneration-route-admission.json) and [compiler receipt](local-toolchain.json)
+also remain historical. Identical package versions on another userland are insufficient for byte replay.
+
+The original [seed mapping](cases/seeds.json) remains the allocation home: canonical manifests bind that
+mapping's hash and named static identifier. A copied acquisition case therefore neither consumes a CLI
+runtime seed nor claims an entire QRNG draw. Repeated arms reproduce their named compilation identifier.
 
 `--out DIRECTORY` writes a fresh candidate; existing different bytes are refused. Keep runtime planning
 and collection files outside the immutable generated inventory. The guarded provider runners own those
@@ -86,7 +84,7 @@ and supply neither an independence certificate nor a correction for unobserved d
 The [supplemental validation](validation-toolchain.json) records 102 passing focused tests, full lint
 and types, source identities and the required-QI live replay.
 
-[runner-toolchain.json](runner-toolchain.json) binds all 384 cQASM payloads in the 128 QI cases, their
+[identity-control-toolchain.json](identity-control-toolchain.json) binds all 384 cQASM payloads in the 128 QI cases, their
 manifest and campaign digests, retained compiler configurations, producing sources and pinned stack.
 Local libqasm analysis and OpenSquirrel decomposition admit every payload and preserve every barrier
 and measurement destination. OpenSquirrel normalizes rotation angles when serializing 122 payloads;
@@ -97,8 +95,8 @@ Platform scheduling and physical execution remain unobserved.
 ```sh
 export QI_PYTHON=/path/to/quantum-inspire/environment/bin/python
 "$PYTHON" -B -W error scripts/experiment_toolchain.py \
-  --campaign docs/evidence/quantum-experiment-conformance/runner-cases/campaign.json \
-  --out docs/evidence/quantum-experiment-conformance/runner-toolchain.json --check
+  --campaign docs/evidence/quantum-experiment-conformance/runner-identity-controls/campaign.json \
+  --out docs/evidence/quantum-experiment-conformance/identity-control-toolchain.json --check
 ```
 
 A pinned QI stack repeats all compilation and requires byte-identical receipts. A host without that stack

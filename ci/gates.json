@@ -5067,14 +5067,14 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-cases --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315 --replay-receipt docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json",
+   "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-identity-controls --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
    "name": "core-quantum-experiment-cases",
    "seconds": 15.0,
    "tier": "full",
    "replays": [
-    "docs/evidence/quantum-experiment-conformance/runner-cases",
-    "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json"
-   ]
+    "docs/evidence/quantum-experiment-conformance/runner-identity-controls"
+   ],
+   "workers": "all"
   },
   {
    "suite": "core",
@@ -5087,7 +5087,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/experiment_toolchain.py --campaign docs/evidence/quantum-experiment-conformance/runner-cases/campaign.json --out docs/evidence/quantum-experiment-conformance/runner-toolchain.json --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/experiment_toolchain.py --campaign docs/evidence/quantum-experiment-conformance/runner-identity-controls/campaign.json --out docs/evidence/quantum-experiment-conformance/identity-control-toolchain.json --check",
    "name": "core-quantum-experiment-toolchain",
    "seconds": 30.0,
    "tier": "full",
@@ -5095,7 +5095,7 @@
     "qi"
    ],
    "replays": [
-    "docs/evidence/quantum-experiment-conformance/runner-toolchain.json"
+    "docs/evidence/quantum-experiment-conformance/identity-control-toolchain.json"
    ]
   }
  ],

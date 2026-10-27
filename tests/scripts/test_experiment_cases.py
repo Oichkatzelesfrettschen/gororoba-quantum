@@ -54,6 +54,31 @@ def test_reference_settings_cover_all_inputs_and_controls() -> None:
         np.testing.assert_allclose(Operator(row["source_circuit"]).data, row["matrix"], atol=1e-12)
 
 
+@pytest.mark.parametrize("basis", ["computational", "product_fourier", "product_chirped"])
+@pytest.mark.parametrize("column", range(6))
+def test_identity_transitions_use_exact_reversible_controls(basis: str, column: int) -> None:
+    from experiment_cases import _mub_setting, _permutation
+    from qiskit.quantum_info import Operator
+
+    row = _mub_setting((basis, basis, column))
+    if "source_circuit" not in row:
+        raise RuntimeError(
+            "identity transitions require a reversible input permutation, independent of matrix synthesis"
+        )
+    np.testing.assert_array_equal(row["matrix"], _permutation(8, row["active_outputs"][column]))
+    np.testing.assert_array_equal(row["optical_matrix"], _permutation(6, column))
+    np.testing.assert_allclose(Operator(row["source_circuit"]).data, row["matrix"], atol=1e-14, rtol=0)
+    native = qi_native(
+        row["matrix"],
+        row["name"],
+        physical_qubits=row["placement"],
+        deterministic=True,
+        source_circuit=row["source_circuit"],
+    )
+    if native["operator_error"] > 1e-12:
+        raise RuntimeError("the recorded native grid must preserve the exact identity-transition control")
+
+
 def test_transition_operators_dispatch_through_ordered_pool(monkeypatch: pytest.MonkeyPatch) -> None:
     import experiment_cases as cases
 

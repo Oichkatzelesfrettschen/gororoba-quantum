@@ -112,24 +112,58 @@ def _mub_jobs() -> list[tuple[str, str, int]]:
     ]
 
 
+def _input_permutation_circuit(width: int, target: int) -> Any:
+    """Swap basis labels zero and target through a reversible binary change of coordinates."""
+    from qiskit import QuantumCircuit
+
+    if type(width) is not int or width < 2 or type(target) is not int or not 0 <= target < 2**width:
+        raise ValueError("input permutation requires a supported register width and basis label")
+    circuit = QuantumCircuit(width)
+    if target == 0:
+        return circuit
+    pivot = (target & -target).bit_length() - 1
+    changed = [bit for bit in range(width) if bit != pivot and target & (1 << bit)]
+    for bit in changed:
+        circuit.cx(pivot, bit)
+    controls = [bit for bit in range(width) if bit != pivot]
+    circuit.mcx(controls, pivot, ctrl_state=0)
+    for bit in reversed(changed):
+        circuit.cx(pivot, bit)
+    return circuit
+
+
 def _mub_setting(arguments: tuple[str, str, int]) -> dict[str, Any]:
     preparation, measurement, column = arguments
-    return {
+    identity_transition = preparation == measurement
+    matrix = (
+        _permutation(8, ACTIVE_INDICES[column])
+        if identity_transition
+        else embedded_basis(measurement).conj().T
+        @ embedded_basis(preparation)
+        @ _permutation(8, ACTIVE_INDICES[column])
+    )
+    optical = (
+        _permutation(6, column)
+        if identity_transition
+        else transition_matrix(preparation, measurement) @ _permutation(6, column)
+    )
+    row = {
         "name": f"{preparation}-to-{measurement}-input-{column}",
         "family": "mub-six",
         "preparation_basis": preparation,
         "measurement_basis": measurement,
         "input_column": column,
-        "matrix": embedded_basis(measurement).conj().T
-        @ embedded_basis(preparation)
-        @ _permutation(8, ACTIVE_INDICES[column]),
-        "optical_matrix": transition_matrix(preparation, measurement) @ _permutation(6, column),
+        "matrix": matrix,
+        "optical_matrix": optical,
         "active_outputs": list(ACTIVE_INDICES),
         "optical_active_outputs": list(range(6)),
         "success_outputs": [],
         "optical_success_outputs": [],
         "placement": (11, 13, 14),
     }
+    if identity_transition:
+        row["source_circuit"] = _input_permutation_circuit(3, ACTIVE_INDICES[column])
+    return row
 
 
 def _quarter_mass_setting(arguments: tuple[str, Any]) -> dict[str, Any]:

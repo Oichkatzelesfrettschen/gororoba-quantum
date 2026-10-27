@@ -29,7 +29,7 @@ proof, a physical wormhole measurement, a protection experiment, an infinite-gro
 1. Select the provider and scientific family prospectively. Retain a campaign inventory containing every
    selected case and its digest. A reduced pilot gets its own scope and precision calculation; it cannot
    inherit the full family's conclusion from a selected set of favorable outcomes.
-2. Copy the canonical `runner-cases` cases into the provider's normal run area. The earlier build-host
+2. Copy the canonical `runner-identity-controls` cases into the provider's normal run area. The earlier build-host and runner
    manifests are historical candidates and stay outside acquisition admission. Keep their payload and case-manifest bytes
    identical. Planning, checkpoint and raw collection files belong beside the copied cases, outside the
    deterministic evidence inventory.

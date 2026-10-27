@@ -58,7 +58,9 @@ Embed `(a,b)` at computational index `4*a+b`. Logical labels `0..5` correspond t
 `0,1,2,4,5,6`; qubit indices `3,7` are leakage labels. Extend every six-dimensional unitary by identity
 on the leakage subspace. For each ordered preparation/measurement basis pair and each of six inputs,
 implement `U_s^dagger U_r`, including input preparation. The three bases produce 54 settings.
-Same-basis settings are compiled identity-transition controls. Independently compiled transition matrices
+Same-basis settings use exact reversible input permutations as identity-transition controls, avoiding
+numerical matrix synthesis of an algebraically exact permutation. The native rotation grid preserves
+those complete control operators within the recorded admission tolerance. Independently compiled transition matrices
 do not identify reusable physical preparation and measurement instruments.
 
 Tuna-17 lowering records the requested operator, routed unrounded operator, rounded native operator,

@@ -26,3 +26,5 @@ docs/evidence/quantum-experiment-conformance/cases/** linguist-generated=true
 docs/evidence/quantum-experiment-conformance/local-toolchain.json linguist-generated=true
 docs/evidence/quantum-experiment-conformance/runner-cases/** linguist-generated=true
 docs/evidence/quantum-experiment-conformance/runner-toolchain.json linguist-generated=true
+docs/evidence/quantum-experiment-conformance/runner-identity-controls/** linguist-generated=true
+docs/evidence/quantum-experiment-conformance/identity-control-toolchain.json linguist-generated=true
