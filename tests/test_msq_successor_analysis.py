@@ -595,7 +595,13 @@ def run() -> Run:
 
 @pytest.fixture(scope="module")
 def verdict(run: Run) -> dict[str, Any]:
-    return su.collected(run.record, run.distributions, run.executed, run.registers, run.chunks, FLOOR)
+    """The family analysis through measured_family, as live_run.collect calls it, at the registered scatter floor."""
+    shot_order = {"registers": run.registers, "chunks": run.chunks}
+    analysis = qpu_planning.measured_family(
+        run.record, run.distributions, run.executed, live_run, shot_order=shot_order
+    )
+    result: dict[str, Any] = analysis["relaxation"]
+    return result
 
 
 def test_collected_reaches_a_verdict_on_a_planted_ground_state_run(verdict: dict[str, Any]) -> None:

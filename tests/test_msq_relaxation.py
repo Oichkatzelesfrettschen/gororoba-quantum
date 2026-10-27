@@ -172,3 +172,12 @@ def test_the_retained_envelope_family_is_unchanged() -> None:
     members = de.msqe_groups([3], {3: 545}, {3: 500}, {3: 500}, T1_IDLES)[0].members
     check(not any(m.name.startswith("msqr_") for m in members), "the envelope gained a successor member")
     check(len(members) == de.msqr_row_count(5) - 21, "the envelope's row count moved")
+
+
+def test_every_successor_member_has_a_summary_entry() -> None:
+    group = groups([7])[0]
+    summary = group.summarize({member.name: np.asarray(member.ideal, dtype=float) for member in group.members})
+    for member in group.members:
+        if member.name.startswith("msqr_"):
+            tag = member.name.split("_")[1]
+            check(any(key.startswith("q7_msqr_") and key.endswith(tag) for key in summary), f"{member.name}: no entry")

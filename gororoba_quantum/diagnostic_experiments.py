@@ -1229,6 +1229,10 @@ def _msqr_summary(distributions: dict[str, np.ndarray], qubit: int) -> dict[str,
             result[f"q{qubit}_msqr_p1_reader{index}"] = float(distributions[name][1])
     if (name := msqr_equilibrium_member(qubit)) in distributions:
         result[f"q{qubit}_msqr_p1_eq"] = float(distributions[name][1])
+    for segment in (MSQR_SENTINEL_MIDDLE, MSQR_SENTINEL_TAIL):
+        for index in range(len(MSQR_SENTINEL_ROWS)):
+            if (name := msqr_sentinel_member(segment, index, qubit)) in distributions:
+                result[f"q{qubit}_msqr_p0_sent{segment}{index}"] = _msq_final_p0(distributions[name])
     return result
 
 
