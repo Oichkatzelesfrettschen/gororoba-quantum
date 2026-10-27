@@ -1,0 +1,73 @@
+{
+  "schema": "work-plan-v1",
+  "id": "provider-counter-audit",
+  "kind": "implementation",
+  "summary": "Name the population of every provider counter, trace counters to scientific sinks, repair collection and photonic estimators, and reconcile affected historical analyses and claims.",
+  "sources": [
+    "docs/evidence/provider-counter-audit/README.md",
+    "gororoba_quantum/provider_counters.py",
+    "docs/notes/quandela/strategy.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Inventory, contract and sensitivity evidence retained; estimator repairs and claim-boundary qualifications remain open."
+  },
+  "owner": "provider-counter audit operator",
+  "scope": "Every registered provider and simulator adapter, retained result format and scientific consumer of a shot, sample, cap, billing or exposure counter; Quandela first. Read-only provider retrieval only; no executions, uploads, bookings, QRNG draws or spending. The unmerged five-experiment branch (feature/quantum-experiment-conformance) adopts provider_counters after both merge.",
+  "next_action": "Open the contract pull request (inventory, contract table, provider_counters.py, fixtures and sensitivity replays), then repair qd_teleportation_rehearsal.analyze so an unconditional benchmark verdict needs an observed attempt profile.",
+  "related": [
+    "ascella-belenos-entanglement-teleportation"
+  ],
+  "claims": [
+    "qd-belenos-bright-block-routing-deficit",
+    "qd-belenos-random-meshes-no-class-fits-under-receipt-model",
+    "qd-belenos-q1-leak-needs-single-job-and-large-budget",
+    "qd-belenos-q1-leak-single-job-form-whatever-seed",
+    "qd-belenos-teleportation-rehearsal-job-00"
+  ],
+  "steps": [
+    {
+      "id": "freeze-and-inventory",
+      "state": "doing",
+      "action": "Freeze the audit revision and source hashes and tabulate every retained provider counter.",
+      "acceptance": "quandela_counter_table.py and gate_model_counter_census.py replay with --check over every retained Quandela, Quantum Inspire, IQM and IBM run."
+    },
+    {
+      "id": "counter-contract",
+      "state": "todo",
+      "action": "Add gororoba_quantum/provider_counters.py with population, scope, status, ratio and total rules and deterministic fixtures.",
+      "acceptance": "tests/gororoba_quantum/test_provider_counters.py passes in the tests lane and its audit replays pass under -m audit."
+    },
+    {
+      "id": "exposure-sensitivity",
+      "state": "todo",
+      "action": "Recompute every retained exposure-dependent dark subtraction under none, physical_perf-model and job-duration exposure.",
+      "acceptance": "exposure_sensitivity.py --check replays and reports each decisive comparison per scenario."
+    },
+    {
+      "id": "teleportation-benchmark-repair",
+      "state": "todo",
+      "action": "Make qd_teleportation_rehearsal.analyze report the benchmark at detection events and modeled attempts as conditional comparisons, with the unconditional verdict inconclusive unless an observed attempt profile exists.",
+      "acceptance": "A fixture with equal detections and differing latent trials keeps the unconditional verdict inconclusive while the conditional statistics replay the retained analysis."
+    },
+    {
+      "id": "collection-boundaries",
+      "state": "todo",
+      "action": "Route qd_platform collection and the Quandela analyzers through provider_counters records beside the verbatim raw fields.",
+      "acceptance": "New records carry counter semantics and iteration scope; retained raw bytes and analyses keep their hashes."
+    },
+    {
+      "id": "claim-boundaries",
+      "state": "todo",
+      "action": "Qualify the boundaries of the claims the reconciliation table marks conditional or needing qualification, citing the exposure-sensitivity record.",
+      "acceptance": "scripts/research_state.py check passes and each named claim cites docs/evidence/provider-counter-audit/exposure_sensitivity.json."
+    },
+    {
+      "id": "review-and-merge",
+      "state": "todo",
+      "action": "Run the hosted review and merge procedure for each pull request.",
+      "acceptance": "pr.yml lint, types, tests and gates green and the Codex loop clean on each head."
+    }
+  ]
+}

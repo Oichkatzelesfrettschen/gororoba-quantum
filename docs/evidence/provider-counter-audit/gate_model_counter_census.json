@@ -1,0 +1,21 @@
+{
+ "ibm": {
+  "jobs": 56,
+  "mismatches": []
+ },
+ "iqm": {
+  "circuits": 776,
+  "circuits_without_requested_shots": 0,
+  "heralded_circuits": 229,
+  "heralded_retention_range": [
+   0.2345,
+   0.98925
+  ],
+  "mismatches": []
+ },
+ "quantum_inspire": {
+  "mismatches": [],
+  "results": 392
+ },
+ "schema": "gate-model-counter-census-v1"
+}
