@@ -121,11 +121,12 @@ orbit's own gates set, would make the orbit and the Ramsey rates differ.
 
 ## Plan at the dry run
 
-`sh scripts/n21_detuning_sign_run.sh` on the primary account at commit `9ae65a9` planned dry run
-`2026-10-27T164013.602230Z` on ibm_kingston at calibration 2026-10-27T09:07:55-07:00 and the preflight admitted it:
+`sh scripts/n21_detuning_sign_run.sh` on the primary account at commit `d50cd17` planned dry run
+`2026-10-27T171005.467816Z` on ibm_kingston at calibration 2026-10-27T09:07:55-07:00 and the preflight admitted it:
 19 replicas, the 20 us repetition delay, 56 PUBs of 4,096 shots in one dynamic job under a 40 s ceiling, estimated
-charge 15.35 s against 101 s remaining on the primary instance, in 436 s of planning on a shared host at load 12 to
-15. The planner bound `dose_roles` one = 0, sixteen = 3.
+charge 15.35 s against 101 s remaining on the primary instance, in 292 s of planning. The planner bound `dose_roles`
+one = 0, sixteen = 3. Its compiled program is byte-identical to that of the dry run at `9ae65a9`, whose Ramsey arms
+compiled serially, so the pooled rebuild changes no circuit.
 An exact probe of the planned ISA, a 0.4 rad turn on each physical qubit of every replica during the largest dose,
 moved the orbit's quadrature pair by +1 turn on the qubit bound to the bit for 16, -1 on the qubit for 1 and 0 on
 the other two, and each Ramsey arm by +1 on its own qubit alone, in 19 of 19 replicas. The record is not retained;
