@@ -152,8 +152,7 @@ def observed_categories(manifest: Mapping[str, Any], results: Mapping[str, Any])
     for entry in results.get("iterations") or []:
         if "counts" not in entry:
             continue
-        values = entry["iteration"]["circuit_params"]
-        index = next(k for k, s in enumerate(settings) if rehearsal.parameters_equal(values, s["circuit_params"]))
+        index = rehearsal.bound_setting(settings, entry)
         setting = settings[index]
         for key, count in entry["counts"].items():
             name = category(setting["label"], setting["basis"], rehearsal.event_vector(key), layout)
@@ -380,8 +379,7 @@ def observed_distributions(
     for entry in results.get("iterations") or []:
         if "counts" not in entry:
             continue
-        values = entry["iteration"]["circuit_params"]
-        index = next(k for k, s in enumerate(settings) if rehearsal.parameters_equal(values, s["circuit_params"]))
+        index = rehearsal.bound_setting(settings, entry)
         for key, count in entry["counts"].items():
             vector = rehearsal.event_vector(key)
             out[index][vector] = out[index].get(vector, 0.0) + float(count)

@@ -24,8 +24,12 @@ Each template iteration carries its own compilation_seed, the service's per-iter
 value per input in the order of the iterations, and validation requires exactly the case's seeds. The analysis draws
 nothing.
 
-A Request is the budget-free part of a case: its layout, its seeds and its anchor read, the platform read whose
-performance figures preregister the decision rule, size max_shots and serve the --anchor gate. A Job adds the budgets
+A Request is the budget-free part of a case: its layout, its seeds, its anchor read (the platform read whose
+performance figures preregister the analysis, size max_shots and serve the --anchor gate), its rule and its block
+count. job-00 follows the decision rule (DECISION): six iterations and a beats-classical verdict against the bound
+at the modeled attempts. job-01 follows the descriptive rule (DESCRIPTIVE): two blocks of the six inputs, block B in
+mirrored order, an anytime-valid lower confidence bound on the accepted events' average correctness, a block
+homogeneity veto, and two classical comparisons that hold only under the assumptions each names. A Job adds the budgets
 and the written case's plan arguments. job-00 takes the 2026-10-24 read ANCHOR_READ as its anchor; a later case takes
 its own platform read, so its decision rule describes the chip state it is sent into and only the live gate applies.
 --prepare JOB derives such a case from its retained read (CASES/JOB/platform-read/catalogue.json): the layout,
@@ -65,6 +69,7 @@ import json
 import math
 import sys
 import tempfile
+import warnings
 from collections.abc import Callable, Iterator, Mapping, Sequence
 from contextlib import contextmanager, nullcontext
 from dataclasses import dataclass
@@ -137,11 +142,16 @@ LAYOUT = (8, 14, 9, 12, 13, 11, 10, 15)
 # The compilation_seed of each iteration (+Z, -Z, +X, -X, +Y, -Y): indices 0 to 5, in index order, of the ANU QRNG
 # draw docs/evidence/anu_qrng/draw-2026-10-25T204252Z.json, registered in docs/evidence/qrng_seeds/allocations.json.
 COMPILATION_SEEDS = (42862, 37522, 45230, 47441, 29246, 17743)
-# The compilation_seed of each job-01 iteration, in the same order: indices 0 to 5, in index order, of the Cisco
-# Outshift QRNG draw docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json, registered in
-# docs/evidence/qrng_seeds/allocations.json.
-JOB_01_COMPILATION_SEEDS = (8608, 30481, 4339, 55973, 12504, 37710)
+# The compilation_seed of each job-01 iteration in submission order. Block A (+Z, -Z, +X, -X, +Y, -Y) takes indices
+# 0 to 5 of the Cisco Outshift QRNG draw docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json and block B (-Y,
+# +Y, -X, +X, -Z, +Z) indices 0 to 5 of the ANU QRNG draw docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json, each in
+# index order, registered in docs/evidence/qrng_seeds/allocations.json.
+JOB_01_COMPILATION_SEEDS = (8608, 30481, 4339, 55973, 12504, 37710, 5573, 39099, 45322, 55527, 43939, 10803)
 CASE_SEEDS = {"job-00": COMPILATION_SEEDS, "job-01": JOB_01_COMPILATION_SEEDS}
+DECISION = "decision-v1"
+DESCRIPTIVE = "descriptive-v2"
+# The rule and the block count of each seeded case.
+CASE_DESIGNS = {"job-00": (DECISION, 1), "job-01": (DESCRIPTIVE, 2)}
 ANALYZER_MODES = (Q0, Q1, A0, A1)
 RECEIVER_MODES = (B0, B1)
 HERALD_MODES = (H0, H1)
@@ -170,18 +180,41 @@ COMPILE_SECONDS = 10.0
 # The written case's seconds exceed the modeled compile and acquisition time by this factor, in whole minutes.
 SECONDS_MARGIN = 1.25
 SECONDS_QUANTUM = 60
+# The descriptive rule's preregistered samples per iteration.
+DESCRIPTIVE_SAMPLES = 1200
+# The six-state classical value of a two-copy input sector under free postselection.
+TWO_COPY_BOUND = 0.75
+# Each input's attempts lie within this factor of the modeled profile in the attempt-box comparison; the five noise
+# variants of job-00's derivation need at most 1.0964.
+BOX_RATIO = 1.1
+HOMOGENEITY_ALPHA = 0.01
+BREAK_EVEN_CEILING = 3.0
+BREAK_EVEN_TOLERANCE = 0.005
+TWO_COPY_ASSUMPTIONS = (
+    "one label-blind trace-nonincreasing instrument acts on every input",
+    "equal optical attempts per input (uniform priors), since unequal priors raise the six-state value",
+    "the input source emits at most two copies per attempt (Perceval's truncated source model)",
+    "the classical device may postselect on photon number with no acceptance constraint",
+)
+BOX_ASSUMPTIONS = (
+    "one label-blind trace-nonincreasing instrument acts on every input",
+    "single-copy inputs: acceptance blind to photon number",
+    "each input's optical attempts lie within the ratio of the modeled profile",
+)
 
 
 @dataclass(frozen=True)
 class Request:
     """The budget-free part of a case: the chip mode of each logical mode, the compilation seed of each iteration in
-    design order, and the repository path of the anchor read, whose performance figures preregister the decision
-    rule, size max_shots and serve the --anchor gate."""
+    submission order (schedule), the repository path of the anchor read, whose performance figures preregister the
+    analysis, size max_shots and serve the --anchor gate, and the case's rule and block count."""
 
     name: str
     layout: tuple[int, ...]
     seeds: tuple[int, ...]
     anchor_read: str
+    rule: str = DECISION
+    blocks: int = 1
 
     @property
     def directory(self) -> Path:
@@ -378,6 +411,18 @@ def inputs() -> list[dict[str, Any]]:
     return rows
 
 
+def schedule(request: Request) -> list[dict[str, Any]]:
+    """The iterations in submission order. A decision case runs the six inputs once in design order; a descriptive
+    case runs block A in design order and block B in mirrored order, which balances a linear drift across inputs,
+    each row naming its block."""
+    rows = inputs()
+    if request.rule == DECISION:
+        require(request.blocks == 1, f"{request.name}: a decision case runs one block")
+        return rows
+    require(request.rule == DESCRIPTIVE and request.blocks == 2, f"{request.name}: rule {request.rule!r}")
+    return [{**row, "block": block} for block, order in (("A", rows), ("B", rows[::-1])) for row in order]
+
+
 def ideal(label: str, layout: Sequence[int]) -> dict[str, float]:
     accepted, correct = scored(label, ideal_clicks(label, layout), layout)
     return {
@@ -423,9 +468,10 @@ def circuit_document(mesh: dict[str, Any], layout: Sequence[int]) -> dict[str, A
 
 
 def request_parts(request: Request) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    """The six manifest settings and the one template circuit they share."""
-    require(len(request.seeds) == len(SIX_STATES), f"{request.name}: {len(request.seeds)} seeds for six inputs")
-    built = ordered_map(build_setting, [(index, row, request) for index, row in enumerate(inputs())], min_items=1)
+    """The manifest settings in submission order and the one template circuit they share."""
+    rows = schedule(request)
+    require(len(request.seeds) == len(rows), f"{request.name}: {len(request.seeds)} seeds for {len(rows)} iterations")
+    built = ordered_map(build_setting, [(index, row, request) for index, row in enumerate(rows)], min_items=1)
     template = built[0][0]
     for index, (mesh, _) in enumerate(built):
         require(mesh == template, f"input {index} needs another mesh than input 0")
@@ -461,7 +507,16 @@ def documents(job: Job) -> dict[str, bytes]:
         "design": DESIGN,
         "settings": settings,
         "circuit": {"file": "circuit.json", "sha256": sha256_bytes(circuit_bytes)},
-        "preregistered": {
+        "preregistered": preregistration(job.request, derived),
+    }
+    return {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": circuit_bytes}
+
+
+def preregistration(request: Request, derived: Mapping[str, Any]) -> dict[str, Any]:
+    """The manifest's preregistered analysis: the decision rule's verdict values, or the descriptive rule's planned
+    count, lambda, homogeneity level and comparisons."""
+    if request.rule == DECISION:
+        return {
             "claim_level": "C1",
             "alpha": ALPHA,
             "beta": BETA,
@@ -471,9 +526,18 @@ def documents(job: Job) -> dict[str, bytes]:
             "sample_probability": derived["sample_probability"],
             "decision_count": derived["decision_count"],
             "interpretation": "local conformance of the single-chip teleportation circuit family",
-        },
+        }
+    return {
+        "rule": DESCRIPTIVE,
+        "alpha": ALPHA,
+        "planned_accepted": derived["planned_accepted"],
+        "lambda": derived["lambda"],
+        "homogeneity_alpha": HOMOGENEITY_ALPHA,
+        "sample_probability": derived["sample_probability"],
+        "comparisons": derived["comparisons"],
+        "interpretation": "accepted-event correctness of twelve known-input compiled circuits; the comparisons hold "
+        "only under the assumptions each names",
     }
-    return {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": circuit_bytes}
 
 
 def operator_of(setting: dict[str, Any]) -> np.ndarray:
@@ -487,7 +551,8 @@ def validate(manifest: dict[str, Any], circuit: dict[str, Any]) -> None:
     require(manifest.get("job") in JOBS, f"{owner}: job is not registered")
     job = JOBS[manifest["job"]]
     layout = job.request.layout
-    count = len(inputs())
+    rows = schedule(job.request)
+    count = len(rows)
     for key, value in (
         ("family", FAMILY),
         ("platforms", [PLATFORM]),
@@ -515,7 +580,6 @@ def validate(manifest: dict[str, Any], circuit: dict[str, Any]) -> None:
     )
     require(iteration_form(manifest) == "template", f"{owner}: the iterations do not form a template job")
     require("compilation_seed" not in manifest, f"{owner}: the manifest names one compilation_seed for all iterations")
-    rows = inputs()
     settings = manifest["settings"]
     require(len(settings) == len(rows), f"{owner}: {len(settings)} settings, not {len(rows)}")
     template_experiment(manifest, circuit)
@@ -755,8 +819,12 @@ def pooled(scores: Mapping[str, Mapping[str, float]]) -> float:
 
 
 def simulation(request: Request) -> dict[str, Any]:
-    """Every variant's per-input scores and pooled fidelity."""
-    settings, circuit = request_parts(request)
+    """Every variant's per-input scores and pooled fidelity; the blocks of a descriptive case repeat each input's
+    unitary, so each label is simulated once."""
+    built, circuit = request_parts(request)
+    settings = [
+        setting for index, setting in enumerate(built) if setting["label"] not in {s["label"] for s in built[:index]}
+    ]
     out: dict[str, Any] = {}
     for variant in variants(request):
         rows = ordered_map(
@@ -805,15 +873,82 @@ def derive(sim: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
-def expected_seconds(derived: Mapping[str, Any], samples: int, clock_mhz: float) -> float:
-    """The written case's seconds: COMPILE_SECONDS per iteration plus each input's samples over the clock rate times its
-    modeled three-click probability per pulse, times SECONDS_MARGIN, rounded up to SECONDS_QUANTUM.
+def vertex_bound(attempts: dict[str, int]) -> float:
+    """attempts_benchmark's certified bound at one attempt profile. qd_classical_benchmark._require_optimal admits an
+    inaccurate optimum and _free_postselection_bound certifies the bound from the projected witness, so cvxpy's
+    inaccuracy warning on an extreme profile carries no defect and is silenced here alone."""
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", message="Solution may be inaccurate", category=UserWarning)
+        return attempts_benchmark(attempts).certified
+
+
+def box_bound(probability: Mapping[str, float], ratio: float) -> float:
+    """The largest classical bound over attempt profiles whose every input lies within `ratio` of samples over its
+    modeled three-click probability.
+
+    For a fixed accepted instrument the pooled score is a linear-fractional function of the attempts, and the maximum
+    over instruments of such functions is quasi-convex, so its maximum over the box lies at one of the 64 vertices;
+    each vertex is solved in its own process."""
+    labels = [label for label, *_ in SIX_STATES]
+    vertices = [
+        {label: max(1, round(1e12 * factor / probability[label])) for label, factor in zip(labels, signs, strict=True)}
+        for signs in itertools.product((1.0 / ratio, ratio), repeat=len(labels))
+    ]
+    return round(max(ordered_map(vertex_bound, vertices, min_items=1)), 9)
+
+
+def derive_descriptive(sim: Mapping[str, Any], request: Request) -> dict[str, Any]:
+    """The descriptive rule's planned values: the anchor transmission variant's accepted shares and three-click
+    probabilities, the planned accepted count n* at DESCRIPTIVE_SAMPLES per iteration, lambda = sqrt(8 ln(1/alpha)
+    / n*), the forecast pooled correctness and lower bound, and the two comparisons with their bounds."""
+    transmitted = sim["anchor per-mode transmission"]["inputs"]
+    labels = [label for label, *_ in SIX_STATES]
+    probability = {label: float(transmitted[label]["sample_probability"]) for label in labels}
+    shares = {label: float(transmitted[label]["accepted_share"]) for label in labels}
+    planned = math.floor(sum(request.blocks * DESCRIPTIVE_SAMPLES * shares[label] for label in labels))
+    lam = math.sqrt(8.0 * math.log(1.0 / ALPHA) / planned)
+    forecast = float(sim["anchor per-mode transmission"]["pooled"])
+    lower = forecast - lam / 8.0 - math.log(1.0 / ALPHA) / (lam * planned)
+    box = box_bound(probability, BOX_RATIO)
+    comparisons: list[dict[str, Any]] = [
+        {
+            "name": "two-copy",
+            "bound": TWO_COPY_BOUND,
+            "assumptions": list(TWO_COPY_ASSUMPTIONS),
+            "forecast_margin": lower - TWO_COPY_BOUND,
+        },
+        {
+            "name": "attempt-box",
+            "bound": box,
+            "ratio": BOX_RATIO,
+            "assumptions": list(BOX_ASSUMPTIONS),
+            "forecast_margin": lower - box,
+        },
+    ]
+    return {
+        "rule": DESCRIPTIVE,
+        "blocks": request.blocks,
+        "samples_per_iteration": DESCRIPTIVE_SAMPLES,
+        "sample_probability": probability,
+        "accepted_share": shares,
+        "least_accepted_share": min(shares.values()),
+        "planned_accepted": planned,
+        "lambda": lam,
+        "forecast_fidelity": forecast,
+        "forecast_lower_bound": lower,
+        "comparisons": comparisons,
+    }
+
+
+def expected_seconds(derived: Mapping[str, Any], samples: int, clock_mhz: float, blocks: int = 1) -> float:
+    """The written case's seconds: COMPILE_SECONDS per iteration plus each iteration's samples over the clock rate
+    times its input's modeled three-click probability per pulse, times SECONDS_MARGIN, rounded up to SECONDS_QUANTUM.
 
     Job-00's derivation gives 120 s. The model is unverified on the chip: job-00 ran 292 s in the degraded state, in
     which every iteration ran to its max_shots."""
     probability = derived["sample_probability"]
-    acquisition = sum(samples / (clock_mhz * 1e6 * probability[label]) for label, *_ in SIX_STATES)
-    modeled = COMPILE_SECONDS * len(SIX_STATES) + acquisition
+    acquisition = blocks * sum(samples / (clock_mhz * 1e6 * probability[label]) for label, *_ in SIX_STATES)
+    modeled = COMPILE_SECONDS * len(SIX_STATES) * blocks + acquisition
     return float(math.ceil(modeled * SECONDS_MARGIN / SECONDS_QUANTUM) * SECONDS_QUANTUM)
 
 
@@ -894,7 +1029,8 @@ def shot_estimate(request: Request, case_dir: Path) -> dict[str, Any]:
 def justify(request: Request) -> dict[str, Any]:
     """The simulated variants and the values derived from them; check compares them with noise-model.json."""
     sim = simulation(request)
-    return {"schema": "qd-teleportation-noise-model-v1", "variants": sim, "derived": derive(sim)}
+    derived = derive(sim) if request.rule == DECISION else derive_descriptive(sim, request)
+    return {"schema": "qd-teleportation-noise-model-v1", "variants": sim, "derived": derived}
 
 
 # ---------------------------------------------------------------- results
@@ -959,7 +1095,10 @@ def analyze_results(
     the modeled attempts, and `beats-classical` must clear it; `at-or-below-classical` must fall below the smaller of
     the two, so neither verdict rests on the candidate profile that favors it. A partial result (an error or canceled
     job) scores its counted iterations descriptively, lists the uncounted entry kinds and the inputs left without
-    counts, and is inconclusive, since a stop the service chose may depend on the outcomes."""
+    counts, and is inconclusive, since a stop the service chose may depend on the outcomes. A descriptive case
+    goes to analyze_descriptive."""
+    if manifest["preregistered"].get("rule") == DESCRIPTIVE:
+        return analyze_descriptive(manifest, results, table)
     frame_table = frames()
     if table is not None and {k: tuple(v) for k, v in table.items()} != frame_table:
         raise ProtocolError(f"the frame table {dict(table)} differs from the propagated {frame_table}")
@@ -983,11 +1122,9 @@ def analyze_results(
                 raise ProtocolError("an iteration carries no counts")
             uncounted.append(next((kind for kind in UNCOUNTED if kind in entry), "uncounted"))
             continue
-        values = entry.get("iteration", {}).get("circuit_params")
-        matches = [s for s in settings if values is not None and parameters_equal(values, s["circuit_params"])]
-        if len(matches) != 1 or matches[0]["label"] in rows:
+        setting = settings[bound_setting(settings, entry)]
+        if setting["label"] in rows:
             raise ProtocolError("an iteration does not bind to exactly one unused setting by its circuit_params")
-        setting = matches[0]
         accepted, rejected = tally(entry["counts"], layout)
         shots = entry.get("result_fields", {}).get("nb_shots_used")
         samples = sum(entry["counts"].values())
@@ -1097,6 +1234,188 @@ def parameters_equal(left: Mapping[str, float], right: Mapping[str, float]) -> b
     return sorted(left) == sorted(right) and all(math.isclose(left[k], right[k], abs_tol=1e-12) for k in left)
 
 
+def bound_setting(settings: Sequence[Mapping[str, Any]], entry: Mapping[str, Any]) -> int:
+    """The index of the one setting a result iteration binds to: equal circuit_params, and the same compilation_seed
+    whenever the iteration carries one, since the blocks of a descriptive case repeat each input's parameters."""
+    iteration = entry.get("iteration", {})
+    values, seed = iteration.get("circuit_params"), iteration.get("compilation_seed")
+    matches = [
+        index
+        for index, setting in enumerate(settings)
+        if values is not None
+        and parameters_equal(values, setting["circuit_params"])
+        and (seed is None or seed == setting.get("compilation_seed"))
+    ]
+    if len(matches) != 1:
+        raise ProtocolError("an iteration does not bind to exactly one setting by its circuit_params and seed")
+    return matches[0]
+
+
+def anytime_lower_bound(correct: int, accepted: int, lam: float, alpha: float) -> float:
+    """The lower confidence bound F_hat - lambda / 8 - ln(1/alpha) / (lambda n) on the average conditional correctness
+    of n accepted events. prod_j exp(lambda (X_j - mu_j) - lambda^2 / 8) is a nonnegative supermartingale for any
+    conditional means mu_j (Hoeffding's lemma), so Ville's inequality bounds it at every stopping time."""
+    return correct / accepted - lam / 8.0 - math.log(1.0 / alpha) / (lam * accepted)
+
+
+def homogeneity(table: Sequence[Sequence[int]], alpha: float) -> dict[str, Any]:
+    """A chi-square test of block against outcome category for one input; empty categories are dropped, and a block
+    without events leaves the test undefined."""
+    from scipy.stats import chi2_contingency
+
+    columns = [index for index in range(len(table[0])) if any(row[index] for row in table)]
+    reduced = [[row[index] for index in columns] for row in table]
+    if len(columns) < 2 or any(sum(row) == 0 for row in reduced):
+        return {"status": "untestable", "categories": len(columns)}
+    result = chi2_contingency(reduced, correction=False)
+    p_value = float(result.pvalue)
+    return {
+        "status": "differ" if p_value < alpha else "consistent",
+        "statistic": float(result.statistic),
+        "dof": int(result.dof),
+        "p_value": p_value,
+    }
+
+
+def break_even_ratio(probability: Mapping[str, float], lower: float) -> dict[str, Any]:
+    """The largest attempt-box ratio r at which the lower bound still exceeds box_bound(r), by bisection to
+    BREAK_EVEN_TOLERANCE on [1, BREAK_EVEN_CEILING]."""
+    if box_bound(probability, 1.0) >= lower:
+        return {"status": "below-one", "ratio": None}
+    if box_bound(probability, BREAK_EVEN_CEILING) < lower:
+        return {"status": "at-least-ceiling", "ratio": BREAK_EVEN_CEILING}
+    low, high = 1.0, BREAK_EVEN_CEILING
+    while high - low > BREAK_EVEN_TOLERANCE:
+        middle = (low + high) / 2.0
+        low, high = (middle, high) if box_bound(probability, middle) < lower else (low, middle)
+    return {"status": "found", "ratio": low}
+
+
+def analyze_descriptive(
+    manifest: Mapping[str, Any], results: Mapping[str, Any], table: Mapping[str, tuple[int, int]] | None = None
+) -> dict[str, Any]:
+    """Score a descriptive case: per-iteration counts, the pooled accepted-event correctness with its anytime-valid
+    lower bound, the block homogeneity veto and the two model-conditional comparisons.
+
+    Each result iteration binds to its setting by circuit_params and compilation_seed. No provider field is read as
+    optical attempts. A partial job, an input without counts or an empty pooled set keeps every count descriptive and
+    evaluates no comparison; a blocks-differ flag vetoes both."""
+    frame_table = frames()
+    if table is not None and {k: tuple(v) for k, v in table.items()} != frame_table:
+        raise ProtocolError(f"the frame table {dict(table)} differs from the propagated {frame_table}")
+    settings = manifest["settings"]
+    preregistered = manifest["preregistered"]
+    layout = tuple(manifest["layout"]["chip_modes"])
+    partial = results.get("partial") is True
+    iterations = results.get("iterations")
+    if iterations is None and partial:
+        iterations = []
+    if not isinstance(iterations, list) or len(iterations) > len(settings):
+        raise ProtocolError(f"results hold {None if iterations is None else len(iterations)} iterations")
+    if not partial and len(iterations) != len(settings):
+        raise ProtocolError(f"results hold {len(iterations)} iterations, not {len(settings)}")
+    rows: dict[int, dict[str, Any]] = {}
+    uncounted: list[str] = []
+    for entry in iterations:
+        if "counts" not in entry:
+            if not partial:
+                raise ProtocolError("an iteration carries no counts")
+            uncounted.append(next((kind for kind in UNCOUNTED if kind in entry), "uncounted"))
+            continue
+        index = bound_setting(settings, entry)
+        if index in rows:
+            raise ProtocolError("two result iterations bind to one setting")
+        setting = settings[index]
+        accepted, rejected = tally(entry["counts"], layout)
+        correct = 0
+        for (pattern, raw), count in accepted.items():
+            x, z = frame_table[pattern]
+            correct += count if decode_bit(setting["basis"], raw, x, z) == expected_bit(setting["label"]) else 0
+        samples = sum(entry["counts"].values())
+        total = sum(accepted.values())
+        fields = entry.get("result_fields", {})
+        rows[index] = {
+            "label": setting["label"],
+            "block": setting["block"],
+            "basis": setting["basis"],
+            "compilation_seed": setting["compilation_seed"],
+            "samples": samples,
+            "accepted": total,
+            "correct": correct,
+            "wrong": total - correct,
+            "rejected": rejected,
+            "accepted_per_sample": total / samples if samples else None,
+            "nb_shots_used": fields.get("nb_shots_used"),
+            "physical_perf": fields.get("physical_perf"),
+        }
+    absent = [f"{settings[i]['label']}/{settings[i]['block']}" for i in range(len(settings)) if i not in rows]
+    accepted_total = sum(row["accepted"] for row in rows.values())
+    correct_total = sum(row["correct"] for row in rows.values())
+    alpha, lam = preregistered["alpha"], preregistered["lambda"]
+    fidelity = correct_total / accepted_total if accepted_total else None
+    lower = anytime_lower_bound(correct_total, accepted_total, lam, alpha) if accepted_total else None
+    tests: dict[str, Any] = {}
+    level = preregistered["homogeneity_alpha"] / len(SIX_STATES)
+    for label, *_ in SIX_STATES:
+        blocks = {row["block"]: row for row in rows.values() if row["label"] == label}
+        if set(blocks) != {"A", "B"}:
+            tests[label] = {"status": "untestable", "reason": "a block returned no counted iteration"}
+            continue
+        counts = [
+            [blocks[name]["correct"], blocks[name]["wrong"], *(blocks[name]["rejected"][r] for r in REJECTIONS)]
+            for name in ("A", "B")
+        ]
+        tests[label] = homogeneity(counts, level)
+    differ = sorted(label for label, test in tests.items() if test["status"] == "differ")
+    comparisons = []
+    for comparison in preregistered["comparisons"]:
+        record = {key: value for key, value in comparison.items() if key != "forecast_margin"}
+        if partial or absent or lower is None:
+            record["label"], record["margin"] = "not-evaluated", None
+        elif differ:
+            record["label"], record["margin"] = "vetoed-blocks-differ", lower - comparison["bound"]
+        else:
+            record["margin"] = lower - comparison["bound"]
+            record["label"] = "exceeds-under-assumptions" if record["margin"] > 0 else "not-shown"
+        comparisons.append(record)
+    evaluated = not (partial or absent or lower is None or differ)
+    break_even = (
+        break_even_ratio(preregistered["sample_probability"], lower)
+        if evaluated and lower is not None
+        else {"status": "not-evaluated", "ratio": None}
+    )
+    return {
+        "schema": "qd-teleportation-analysis-v2",
+        "rule": DESCRIPTIVE,
+        "iterations": [rows[index] for index in sorted(rows)],
+        "partial": partial,
+        "iterations_without_counts": absent,
+        "uncounted_iterations": uncounted,
+        "pooled": {
+            "accepted": accepted_total,
+            "correct": correct_total,
+            "fidelity": fidelity,
+            "alpha": alpha,
+            "lambda": lam,
+            "lower_bound": lower,
+        },
+        "homogeneity": {"alpha_per_input": level, "tests": tests, "differ": differ},
+        "comparisons": comparisons,
+        "break_even_ratio": break_even,
+        "status": (
+            "partial job: descriptive counts only"
+            if partial
+            else "iterations without counts: " + ", ".join(absent)
+            if absent
+            else "no accepted event"
+            if lower is None
+            else "blocks differ: " + ", ".join(differ)
+            if differ
+            else "complete"
+        ),
+    }
+
+
 def simulated_iteration(item: tuple[dict[str, Any], dict[str, Any], Variant, int]) -> dict[str, Any]:
     """One results.json iteration: the setting's expected counts under the variant, by largest remainder."""
     setting, circuit, variant, samples = item
@@ -1109,7 +1428,7 @@ def simulated_iteration(item: tuple[dict[str, Any], dict[str, Any], Variant, int
     for vector in sorted(exact, key=lambda v: (counts[v] - exact[v], v))[:shortfall]:
         counts[vector] += 1
     return {
-        "iteration": {"circuit_params": setting["circuit_params"]},
+        "iteration": {"circuit_params": setting["circuit_params"], "compilation_seed": setting["compilation_seed"]},
         "counts": {",".join(str(c) for c in vector): n for vector, n in sorted(counts.items()) if n},
         "samples": samples,
         "result_fields": {"nb_shots_used": samples},
@@ -1171,7 +1490,7 @@ def check() -> int:
             f"{job.name}: the credit ceiling {job.credit_ceiling} is below the per-job price plus max_shots",
         )
         clock = read_perfs(json.loads((ROOT / job.request.anchor_read).read_text(encoding="utf-8")))[2]["clock_mhz"]
-        seconds = expected_seconds(derived, job.samples, clock)
+        seconds = expected_seconds(derived, job.samples, clock, job.request.blocks)
         require(
             job.expected_seconds == seconds and seconds <= MAX_DURATION,
             f"{job.name}: expected {job.expected_seconds} s, derived {seconds:g} s against max_duration {MAX_DURATION}",
@@ -1306,13 +1625,31 @@ def model_at(perfs: Mapping[str, Any], request: Request | None = None) -> dict[s
         variant_scores, [(variant, s["label"], s, circuit, request.layout) for s in settings], min_items=1
     )
     pooled_fidelity = pooled({s["label"]: row for s, row in zip(settings, rows, strict=True)})
-    mean_score = retained_derivation(request.name)["mean_score"]
-    return {
-        "figures": figures,
-        "pooled_fidelity": pooled_fidelity,
-        "mean_score": mean_score,
-        "inside_justified_range": pooled_fidelity >= mean_score,
-    }
+    record: dict[str, Any] = {"figures": figures, "pooled_fidelity": pooled_fidelity}
+    if request.rule == DECISION:
+        mean_score = retained_derivation(request.name)["mean_score"]
+        record.update(mean_score=mean_score, inside_justified_range=pooled_fidelity >= mean_score)
+        return record
+    from qd_record_watch import digest
+
+    prepared = json.loads((ROOT / request.anchor_read).read_text(encoding="utf-8"))["processors"][PLATFORM]["perfs"]
+    record.update(perfs_sha256=digest(perfs), prepared_perfs_sha256=digest(prepared))
+    record["inside_justified_range"] = record["perfs_sha256"] == record["prepared_perfs_sha256"]
+    return record
+
+
+def admission_failure(model: Mapping[str, Any]) -> str:
+    """Why a model record refuses admission: the decision rule's pooled fidelity below its mean score, or a live
+    performance record that differs from a descriptive case's prepared read."""
+    if "mean_score" in model:
+        return (
+            f"model pooled fidelity {model['pooled_fidelity']:.4f} is below the justified mean score "
+            f"{model['mean_score']}"
+        )
+    return (
+        f"the live performance record {model['perfs_sha256'][:12]} differs from the prepared read "
+        f"{model['prepared_perfs_sha256'][:12]}"
+    )
 
 
 def dry_run(job: Job, anchor: bool) -> int:
@@ -1370,14 +1707,7 @@ def planned(job: Job, out: Path, suffix: str, model: dict[str, Any]) -> int:
     except PlatformError as error:
         return retain_refusal(job, out, suffix, model, str(error))
     if not model["inside_justified_range"]:
-        return retain_refusal(
-            job,
-            out,
-            suffix,
-            model,
-            f"model pooled fidelity {model['pooled_fidelity']:.4f} is below the justified mean score "
-            f"{model['mean_score']}",
-        )
+        return retain_refusal(job, out, suffix, model, admission_failure(model))
     manifest = json.loads((out / "cases.json").read_text(encoding="utf-8"))
     validate_body(checked["body"], manifest)
     record = {key: value for key, value in checked.items() if key != "body"}
@@ -1391,7 +1721,8 @@ def planned(job: Job, out: Path, suffix: str, model: dict[str, Any]) -> int:
     print(
         f"{job.name}: {PLATFORM} {checked['platform_at_plan']['status']}, ceiling {checked['credit_ceiling']:g} "
         f"credits, estimated {checked['estimated_shots']} shots, body {record['body_sha256_without_process_id']}, "
-        f"model pooled fidelity {model['pooled_fidelity']:.4f} against {model['mean_score']}"
+        f"model pooled fidelity {model['pooled_fidelity']:.4f}"
+        + (f" against {model['mean_score']}" if "mean_score" in model else ", live record equals the prepared read")
     )
     return 0
 
@@ -1410,8 +1741,9 @@ def staged(run: Path) -> Job:
 
 
 def binding(job: Job, admitted: dict[str, Any]) -> Callable[[dict[str, Any]], None]:
-    """The verify step: the planned body is the retained body beyond process_id, and the noise model's pooled fidelity
-    at the live figures reaches F*. The model of an admitted request lands in `admitted`."""
+    """The verify step: the planned body is the retained body beyond process_id, and the live record admits the case
+    (the decision rule's pooled fidelity at the live figures reaches F*; a descriptive case's live perfs equal its
+    prepared read). The model of an admitted request lands in `admitted`."""
     out = CASES / job.name
 
     def bound(checked: dict[str, Any]) -> None:
@@ -1423,10 +1755,7 @@ def binding(job: Job, admitted: dict[str, Any]) -> Callable[[dict[str, Any]], No
             raise PlatformError(f"the planned body {fresh} differs from the retained body {frozen} beyond process_id")
         model = live_model(job.request)
         if not model["inside_justified_range"]:
-            raise PlatformError(
-                f"model pooled fidelity {model['pooled_fidelity']:.4f} at the live figures is below the justified "
-                f"mean score {model['mean_score']}"
-            )
+            raise PlatformError(f"at the live figures, {admission_failure(model)}")
         admitted.update(model)
 
     return bound
@@ -1496,12 +1825,14 @@ def prepare(name: str) -> int:
     """Derive the case `name` from its retained platform read and print the rows that register it.
 
     CASES/name/platform-read/catalogue.json, written by `qd_platform.py snapshot --out` that directory, is the case's
-    fresh read and its anchor read. choose_layout places the logical modes on it, justify derives the decision rule
-    and the sample budget under its figures (noise-model.json), and estimate_required_shots under its perfs sizes
+    fresh read and its anchor read. choose_layout places the logical modes on it, justify derives the case's rule
+    (CASE_DESIGNS) and its budget under its figures (noise-model.json), and estimate_required_shots under its perfs
+    sizes
     max_shots (shot-estimate.json) on the request staged in a temporary directory. The job bills 1 + max_shots * 1e-6
-    credits, and its expected seconds follow expected_seconds at the read's clock. A read without decision power
-    (bernoulli_decision_count) or whose expected seconds exceed max_duration retains nothing: a job cut off at
-    max_duration bills its max_shots and decides nothing. The REQUESTS and JOBS rows printed last enter the
+    credits, and its expected seconds follow expected_seconds at the read's clock. A decision case without decision
+    power (bernoulli_decision_count), or any case whose expected seconds exceed max_duration, retains nothing: a job
+    cut off at max_duration bills its max_shots. A descriptive case prints the forecast against each comparison. The
+    REQUESTS and JOBS rows printed last enter the
     script in the change that retains these files, and `JOB`, --check, --body JOB and --plan JOB follow. A rerun
     re-derives and compares a retained noise-model.json and reuses a retained shot-estimate.json, so a failed live
     estimate resumes without rewriting a retained file."""
@@ -1510,14 +1841,15 @@ def prepare(name: str) -> int:
     read = request_dir / READ
     require(read.is_file(), f"{read.relative_to(ROOT)} is absent; snapshot the platform into it first")
     t_out, dark, figures = read_perfs(json.loads(read.read_text(encoding="utf-8")))
-    request = Request(name, choose_layout(t_out, dark), CASE_SEEDS[name], str(read.relative_to(ROOT)))
+    rule, blocks = CASE_DESIGNS[name]
+    request = Request(name, choose_layout(t_out, dark), CASE_SEEDS[name], str(read.relative_to(ROOT)), rule, blocks)
     retained = request_dir / "noise-model.json"
     record = justify(request)
     if retained.is_file():
         close(record, json.loads(retained.read_text(encoding="utf-8")), f"{name}/noise-model.json")
     derived = record["derived"]
     samples = int(derived["samples_per_iteration"])
-    seconds = expected_seconds(derived, samples, figures["clock_mhz"])
+    seconds = expected_seconds(derived, samples, figures["clock_mhz"], blocks)
     require(
         seconds <= MAX_DURATION,
         f"{name}: {samples} samples per iteration need an expected {seconds:g} s, above max_duration {MAX_DURATION} s",
@@ -1537,9 +1869,19 @@ def prepare(name: str) -> int:
             estimate = write_estimate(request, stage)
     shots = int(estimate["shots_per_iteration"])
     credits = round(PER_JOB_CREDITS + shots * PRICE_PER_SHOT, 6)
+    if rule == DESCRIPTIVE:
+        print(
+            f"forecast: correctness {derived['forecast_fidelity']:.4f}, "
+            f"lower bound {derived['forecast_lower_bound']:.4f} "
+            f"at n* = {derived['planned_accepted']}; "
+            + "; ".join(
+                f"{c['name']} {c['bound']:.4f} margin {c['forecast_margin']:+.4f}" for c in derived["comparisons"]
+            )
+        )
+    design = "" if rule == DECISION else f", DESCRIPTIVE, {blocks}"
     print(
         f'REQUESTS["{name}"] = Request("{name}", {request.layout}, {name.upper().replace("-", "_")}_COMPILATION_SEEDS, '
-        f'"{request.anchor_read}")'
+        f'"{request.anchor_read}"{design})'
     )
     print(f'JOBS["{name}"] = Job(REQUESTS["{name}"], {samples}, {shots:_}, {credits}, {seconds})')
     return 0
@@ -1573,9 +1915,18 @@ def analyze(run: Path, replay: bool = False) -> int:
     if replay:
         retained = json.loads((run / "analysis.json").read_text(encoding="utf-8"))
         close(json.loads(json.dumps(record)), retained, f"{run.name}/analysis.json")
-        print(f"{run.name}: analysis.json replays, verdict {record['verdict']}")
+        outcome = f"verdict {record['verdict']}" if "verdict" in record else record["status"]
+        print(f"{run.name}: analysis.json replays, {outcome}")
         return 0
     write_json(run / "analysis.json", record)
+    if record["schema"] == "qd-teleportation-analysis-v2":
+        pooled_row = record["pooled"]
+        print(
+            f"{record['status']}: correctness {pooled_row['fidelity']} over {pooled_row['accepted']} accepted, lower "
+            f"bound {pooled_row['lower_bound']}; "
+            + "; ".join(f"{c['name']} {c['label']}" for c in record["comparisons"])
+        )
+        return 0
     pooled_row = record["pooled"]
     if pooled_row["fidelity"] is None:
         figures = "pooled conditional fidelity unavailable (no accepted event)"
