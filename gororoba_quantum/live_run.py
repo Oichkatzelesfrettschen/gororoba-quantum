@@ -4323,11 +4323,15 @@ def envelope_plan(
 ENVELOPE_VALUE_REASON = "calibration values changed on compiled instructions"
 
 
-def envelope_drift(record: Mapping[str, Any], choices: list[Choice], fresh: Snapshot) -> list[str]:
+def envelope_drift(
+    record: Mapping[str, Any], choices: list[Choice], fresh: Snapshot, args: argparse.Namespace | None = None
+) -> list[str]:
     """Why the envelope's plan on fresh differs from the planned one, or [] when it would send the same bytes.
 
     The layout rule's qubits, every dt duration the circuits carry (measure, settle and pre-readout idles and the t1
-    idles), capabilities and exclusions must hold; calibration values alone do not move the plan.
+    idles), capabilities and exclusions must hold; calibration values alone do not move the plan. With args, the
+    constructor also compiles the family on fresh, and its fused PUB circuits and manifests must equal the planned
+    ones byte for byte, so the sent plan is the constructor's output on that snapshot.
     """
     configuration = record["family_configuration"]
     reasons: list[str] = []
@@ -4365,6 +4369,17 @@ def envelope_drift(record: Mapping[str, Any], choices: list[Choice], fresh: Snap
             for reason in choice_change_reasons(choice, fresh)
             if reason != ENVELOPE_VALUE_REASON
         )
+    if reasons or args is None:
+        return reasons
+    trace: dict[str, Any] = {}
+    rebuilt = qpu_planning.measurement_sequence_candidates(runtime, [fresh], args, trace)
+    if not rebuilt:
+        return [f"the constructor admits no plan on the fresh snapshot: {trace.get('family_rejections')}"]
+    planned, fresh_pubs = execution_pubs(choices), execution_pubs(rebuilt[0][0])
+    if _qpy_digest([pub.circuit for pub in planned]) != _qpy_digest([pub.circuit for pub in fresh_pubs]):
+        reasons.append("the constructor compiles different PUB circuits on the fresh snapshot")
+    if [pub.manifest() for pub in planned] != [pub.manifest() for pub in fresh_pubs]:
+        reasons.append("the constructor builds a different PUB manifest on the fresh snapshot")
     return reasons
 
 
@@ -5288,7 +5303,7 @@ def submit(
         if envelope:
             # The batch sends the constructor's output on this snapshot: the rule must keep the planned layout and the
             # circuits' durations and exclusions must hold, or the invocation re-plans on it.
-            moved = envelope_drift(record, owners, fresh)
+            moved = envelope_drift(record, owners, fresh, args)
             fresh_bytes = snapshot_bytes(fresh)
             directory = getattr(args, "envelope_snapshot_dir", None)
             digest = (

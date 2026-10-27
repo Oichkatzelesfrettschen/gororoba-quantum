@@ -109,8 +109,15 @@ The width-32 dry run on the live Kingston calibration (implemented workload, end
 planned in 19.3 min of wall time and 773 s of CPU on a host at load average 21 over 12 CPUs, after the compiled-ideal
 proof, the noise simulation, the record encoding and the delay-noise assembly were made parallel or memoized (from
 41 min). The rule's qubit set at widths 16, 24 and 32 was the same on the 15:18 and 17:47 PDT calibrations of
-2026-10-26, about four republishes apart, so a plan of that length meets an unchanged set. Width 32 passes every
-limit, so the tier rule selects it and the smaller tiers are not measured (Findings I, J, K).
+2026-10-26, while the width-16 set computed on the 11:06 PDT calibration differs from the 15:18 one in four qubits: the
+set moves on a scale of hours. A move during a plan costs a re-plan, and a fourth move refuses before the approval
+marker is written, so it spends time, not quota. Width 32 passes every limit, so the tier rule selects it and the
+smaller tiers are not measured (Findings I, J, K).
+
+Before each send, `envelope_drift` with the run's arguments recompiles the family on the pre-send snapshot and
+compares the fused PUB circuits' QPY digest and manifests with the planned ones; any difference raises a re-plan, so
+the sent bytes are the constructor's output on the last snapshot (Finding A). Two reads of one calibration rebuild
+identical bytes.
 
 What width buys. `pooled_z` adds the gate-model systematic linearly (shared across qubits), so the pooled departure
 standard error is flat in width (0.0168 at 8 qubits, 0.0167 at 44). Width buys per-qubit coverage and the count rule.
@@ -205,7 +212,7 @@ least 8 usable qubits after every withholding step; below that the run reports p
 
 Recomputed from the envelope dry run through `budget_plan` for each width tier, with the end reset, the control members
 and the per-shot initialization, and filled in the table below. One client-side Sampler job per attempt; the ceiling is
-the case's choice, at least `ceil(1.5 * planner charge)`, which a gate recomputes from the retained plan. The planner charge is an estimate, not
+the case's choice, at least `ceil(1.5 * expected charge)`. The planner prices each PUB as shots times the scheduled circuit plus the repetition delay; the two retained 20 us Kingston controls (`results/live/2026-10-18T214519.655411Z`, `2026-10-18T220218.089776Z`) ran 8.98 us per shot longer than that model, so the expected charge adds 9 us per shot. The planner charge is an estimate, not
 billing: the service can split one job into sub-jobs and charge about 2 s of overhead each
 (`docs/notes/ibm_heron_platform.md`), and no submit-free evidence bounds that split, so the case states the ceiling as
 the bound and the planner value as the expectation (Finding O). The case also states `envelope_cap`, the two
@@ -215,7 +222,7 @@ attempts' summed ceilings, as the most the envelope can bill.
 |---|---|---|---|---|---|---|---|---|
 | 16 | not measured | | | | | | | |
 | 24 | not measured | | | | | | | |
-| 32 | 31.2 s (one 88-PUB job) | 50 s | 52.8 s | 80 s | 130 s | 15.3 MB | 20 MB | 19.3 min under load |
+| 32 | 31.2 s (one 88-PUB job); expected 37.7 s | 57 s | 52.8 s; expected 59.3 s | 90 s | 147 s | 15.3 MB | 20 MB | 19.3 min under load |
 
 The backup instance reports 412 s remaining; the primorial-coherence branch's run (`results/live/2026-10-26T045124.175747Z`,
 job dbfdotnpc3tc739n8nm0, 23 s) shares the instance, and the branch that merges second regenerates its job inventory.
