@@ -340,6 +340,38 @@ def test_interval_inventory_includes_success_endpoints(tmp_path: Path) -> None:
         raise AssertionError("the success estimator was omitted from multiplicity accounting")
 
 
+def test_campaign_dispatches_independent_case_analyses(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    first, second = tmp_path / "qubit", tmp_path / "optical"
+    qi_run(first)
+    qd_run(second)
+    dispatches = []
+    original = analysis.ordered_map
+
+    def dispatch(function: Any, jobs: Any, **options: Any) -> Any:
+        dispatches.append((function.__name__, len(jobs), options))
+        return original(function, jobs, **options)
+
+    monkeypatch.setenv("GOROROBA_WORKERS", "1")
+    monkeypatch.setattr(analysis, "ordered_map", dispatch)
+    result = analysis.analyze_runs([first, second])
+    if ("_analyze_case", 2, {"min_items": 1}) not in dispatches:
+        raise RuntimeError("independent campaign cases must reach the ordered worker pool")
+    if [batch["case"] for batch in result["batches"]] != ["qubit", "optical"]:
+        raise RuntimeError("case dispatch must preserve requested campaign order")
+
+
+def test_serial_and_pooled_campaign_reports_match(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    first, second = tmp_path / "qubit", tmp_path / "optical"
+    qi_run(first)
+    qd_run(second)
+    monkeypatch.setenv("GOROROBA_WORKERS", "1")
+    serial = analysis.analyze_runs([first, second])
+    monkeypatch.setenv("GOROROBA_WORKERS", "2")
+    pooled = analysis.analyze_runs([first, second])
+    if json.dumps(serial, sort_keys=True) != json.dumps(pooled, sort_keys=True):
+        raise RuntimeError("worker allocation changed report identities, denominators or analysis bytes")
+
+
 def test_empty_success_partition_has_no_estimator_and_optical_default_covers_648() -> None:
     result = analysis.analyze_counts(reference(success_outputs=[]), [1, 1, 0, 0])
     if "success" in result or analysis.DEFAULT_ENDPOINTS != 648 or analysis.required_shots() != 1575:

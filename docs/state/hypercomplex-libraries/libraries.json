@@ -2240,6 +2240,7 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "gororoba_quantum/operator_arithmetic.py",
     "scripts/rank_locus_nullity12_refinement.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
@@ -2537,6 +2538,7 @@
     "gororoba_quantum/msq_envelope_null.py",
     "gororoba_quantum/n21_exact_planning.py",
     "gororoba_quantum/native_preflight_contracts.py",
+    "gororoba_quantum/operator_arithmetic.py",
     "gororoba_quantum/order_finding.py",
     "gororoba_quantum/parameter_binding_contracts.py",
     "gororoba_quantum/patch_characterization.py",
@@ -4575,6 +4577,7 @@
     "gororoba_quantum/designs.py",
     "gororoba_quantum/diagnostic_controls.py",
     "gororoba_quantum/diagnostic_experiments.py",
+    "gororoba_quantum/dimension_six_circuits.py",
     "gororoba_quantum/dynamic_density.py",
     "gororoba_quantum/et_campaign.py",
     "gororoba_quantum/et_planning.py",
@@ -6778,6 +6781,7 @@
     "gororoba_quantum/circle_kernel_attachments.py",
     "gororoba_quantum/complex_skew.py",
     "gororoba_quantum/complex_skew_contracts.py",
+    "gororoba_quantum/dimension_six_circuits.py",
     "gororoba_quantum/experiment_references.py",
     "gororoba_quantum/four_support_doubling.py",
     "gororoba_quantum/four_support_geometry.py",
@@ -8208,6 +8212,14 @@
    "ripple_experiments",
    "typing"
   ],
+  "gororoba_quantum/dimension_six_circuits.py": [
+   "__future__",
+   "experiment_references",
+   "functools",
+   "math",
+   "qiskit",
+   "sympy"
+  ],
   "gororoba_quantum/dynamic_density.py": [
    "__future__",
    "argparse",
@@ -8872,6 +8884,13 @@
    "rank_charts",
    "skew_schur_charts",
    "sympy",
+   "typing"
+  ],
+  "gororoba_quantum/operator_arithmetic.py": [
+   "__future__",
+   "math",
+   "mpmath",
+   "numpy",
    "typing"
   ],
   "gororoba_quantum/order_finding.py": [
@@ -11177,6 +11196,7 @@
    "argparse",
    "dataclasses",
    "difflib",
+   "dimension_six_circuits",
    "experiment_references",
    "functools",
    "hashlib",
@@ -11185,6 +11205,7 @@
    "json",
    "math",
    "numpy",
+   "operator_arithmetic",
    "parallel",
    "pathlib",
    "platform",
@@ -11489,6 +11510,7 @@
    "json",
    "math",
    "numpy",
+   "operator_arithmetic",
    "parallel",
    "pathlib",
    "qi_zero_divisor_cases",

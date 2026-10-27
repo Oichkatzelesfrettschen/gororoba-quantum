@@ -29,6 +29,12 @@ from hypercomplex_operators import (  # noqa: E402
     order_interferometer,
     periodic_generator,
 )
+from operator_arithmetic import (  # noqa: E402
+    DECIMAL_PRECISION,
+    frobenius_residual,
+    native_operator,
+    probabilities,
+)
 from parallel import ordered_map  # noqa: E402
 
 
@@ -221,14 +227,26 @@ def qi_native(
     ]
     native_matrix = np.asarray(Operator(native).data)[row_order]
     compiled_matrix = np.asarray(Operator(compiled).data)[row_order]
+    if deterministic:
+        scalar_native = native_operator(native, row_order)
+        scalar_compiled = native_operator(compiled, row_order)
+        if not (
+            np.allclose(scalar_native, native_matrix, atol=1e-12, rtol=0)
+            and np.allclose(scalar_compiled, compiled_matrix, atol=1e-12, rtol=0)
+        ):
+            raise ValueError("scalar native operators differ from the independent Qiskit reconstruction")
+        native_matrix, compiled_matrix = scalar_native, scalar_compiled
     # Layout permutations are part of the comparison, not an inferred device error.
     if compiled.layout is not None:
         requested = np.asarray(Operator.from_circuit(compiled).data)
         if not np.allclose(np.abs(requested[:, 0]) ** 2, np.abs(matrix[:, 0]) ** 2, atol=1e-10):
             raise ValueError("transpiler layout changes the promised initial-state law")
-    overlap = np.vdot(compiled_matrix.reshape(-1), native_matrix.reshape(-1))
-    alignment = overlap / abs(overlap) if abs(overlap) else 1
-    error = float(np.linalg.norm(native_matrix - alignment * compiled_matrix, ord=2))
+    if deterministic:
+        error = frobenius_residual(compiled_matrix, native_matrix)
+    else:
+        overlap = np.vdot(compiled_matrix.reshape(-1), native_matrix.reshape(-1))
+        alignment = overlap / abs(overlap) if abs(overlap) else 1
+        error = float(np.linalg.norm(native_matrix - alignment * compiled_matrix, ord=2))
     text.append("barrier q")
     text.extend(f"b[{logical}] = measure q[{placement[physical]}]" for logical, physical in enumerate(final_layout))
     text.append("")
@@ -238,16 +256,16 @@ def qi_native(
         "kind": "hypercomplex-operator",
         "nqubits": qubits,
         "operator_error": error,
-        "requested_probabilities": (np.abs(matrix[:, 0]) ** 2).tolist(),
-        "native_probabilities": (np.abs(native_matrix[:, 0]) ** 2).tolist(),
+        "requested_probabilities": probabilities(matrix) if deterministic else (np.abs(matrix[:, 0]) ** 2).tolist(),
+        "native_probabilities": probabilities(native_matrix)
+        if deterministic
+        else (np.abs(native_matrix[:, 0]) ** 2).tolist(),
         "native_operator": encoded(native_matrix),
         "measurement_mapping": final_layout,
         "observable_partition": [[index, index + 1] for index in range(0, len(matrix), 2)],
     }
     if deterministic:
-        unrounded_overlap = np.vdot(matrix.ravel(), compiled_matrix.ravel())
-        unrounded_alignment = unrounded_overlap / abs(unrounded_overlap) if abs(unrounded_overlap) else 1
-        unrounded_error = float(np.linalg.norm(compiled_matrix - unrounded_alignment * matrix, ord=2))
+        unrounded_error = frobenius_residual(matrix, compiled_matrix)
         if unrounded_error > 1e-10:
             raise ValueError("compiled operator differs from the requested operator beyond global phase")
         record.update(
@@ -261,6 +279,21 @@ def qi_native(
             seed_source="deterministic-no-randomized-passes",
             cz_count=int(native.count_ops().get("cz", 0)),
             unrounded_operator_error=unrounded_error,
+            operator_error_metric="phase-aligned-frobenius-residual",
+            operator_arithmetic=f"scalar-binary64-with-{DECIMAL_PRECISION}-decimal-trigonometry",
+            independent_operator_check="complete Qiskit operators agree within absolute tolerance 1e-12",
+            source_circuit_policy="declared-primitive-circuit"
+            if source_circuit is not None
+            else "generic-matrix-synthesis",
+            unrounded_global_phase=float(compiled.global_phase),
+            unrounded_gate_sequence=[
+                {
+                    "name": instruction.operation.name,
+                    "qubits": [compiled.find_bit(qubit).index for qubit in instruction.qubits],
+                    "parameters": [float(value) for value in instruction.operation.params],
+                }
+                for instruction in compiled.data
+            ],
         )
     return record
 

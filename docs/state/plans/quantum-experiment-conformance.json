@@ -6,14 +6,14 @@
   "sources": [
     "docs/design/quantum-experiment-conformance.md"
   ],
-  "state": "closed",
+  "state": "active",
   "reconciliation": {
     "status": "verified",
-    "note": "The exact identity-control successor and all scoped references pass deterministic and compiler validation. The historical numerical-synthesis candidates retain their bytes and receipts; acquisition remains separate."
+    "note": "Review found a serial campaign-analysis stage; local numerical and provider contracts remain intact while ordered per-case dispatch is validated."
   },
   "scope": "Implement finite quantum experiment references, guarded cases, analysis and correction records across five proposals. Provider execution and acquisition completion are separate obligations.",
   "owner": "quantum experiment implementer",
-  "next_action": "Prepare separately approved acquisition cases after current runtime, budget and instrument qualification checks.",
+  "next_action": "Pool complete per-case analyses, prove serial/pooled report equality, and refresh validation receipts.",
   "steps": [
     {
       "id": "audit-contracts",
@@ -139,7 +139,7 @@
       "id": "integrate-suites",
       "action": "Integrate references, cases and analyzers.",
       "acceptance": "Focused deterministic tests and operator checks pass with guarded execution interfaces. Local libqasm analysis and OpenSquirrel replay admit every emitted QI payload and preserve its control sequence. Canonical runner-image arithmetic binds the prospective baseline and its replay registry.",
-      "state": "done",
+      "state": "doing",
       "receipts": [
         {
           "scope_sha256": "eeafc951cf19321ebe87c4e1c292a0452c46fae4bc80eff61b7f1f8d67be22de",
@@ -420,7 +420,5 @@
         }
       ]
     }
-  ],
-  "disposition": "completed",
-  "resolution": "The scoped implementation and bounded investigations pass complete operator tests, exact identity-control lowering, canonical byte replay, local compiler admission and registry checks. Provider acquisition and physical interpretation retain separate prerequisites."
+  ]
 }

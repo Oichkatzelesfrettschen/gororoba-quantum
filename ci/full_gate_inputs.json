@@ -755,16 +755,16 @@
       "docs/evidence/a5-rank-strata-equations/**"
     ],
     "core-quantum-experiment-cases": [
-      "docs/evidence/quantum-experiment-conformance/runner-identity-controls/**",
+      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/**",
       "docs/evidence/quantum_inspire/catalogue.json",
       "docs/evidence/quandela/catalogue.json",
       "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
       "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
-      "docs/evidence/quantum-experiment-conformance/runner-identity-controls/provenance.json"
+      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/provenance.json"
     ],
     "core-quantum-experiment-toolchain": [
-      "docs/evidence/quantum-experiment-conformance/runner-identity-controls/**",
-      "docs/evidence/quantum-experiment-conformance/identity-control-toolchain.json",
+      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/**",
+      "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain.json",
       "docs/evidence/quantum_inspire/catalogue.json",
       "docs/notes/quantum_inspire/requirements-qi.txt"
     ]

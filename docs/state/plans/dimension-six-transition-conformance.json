@@ -6,14 +6,14 @@
   "sources": [
     "docs/design/quantum-experiment-conformance.md"
   ],
-  "state": "closed",
+  "state": "active",
   "reconciliation": {
     "status": "verified",
-    "note": "The exact identity-control successor and all scoped references pass deterministic and compiler validation. The historical numerical-synthesis candidates retain their bytes and receipts; acquisition remains separate."
+    "note": "Review found a serial campaign-analysis stage; local numerical and provider contracts remain intact while ordered per-case dispatch is validated."
   },
   "scope": "Implement ideal, compiled and measured dimension-six transition conformance on Tuna-17, QX and Ascella. Provider execution and acquisition completion are separate obligations.",
   "owner": "quantum experiment implementer",
-  "next_action": "Prepare separately approved acquisition cases after current runtime, budget and instrument qualification checks.",
+  "next_action": "Pool complete per-case analyses, prove serial/pooled report equality, and refresh validation receipts.",
   "steps": [
     {
       "id": "certify-bases",
@@ -445,7 +445,5 @@
         }
       ]
     }
-  ],
-  "disposition": "completed",
-  "resolution": "The scoped implementation and bounded investigations pass complete operator tests, exact identity-control lowering, canonical byte replay, local compiler admission and registry checks. Provider acquisition and physical interpretation retain separate prerequisites."
+  ]
 }

@@ -63,12 +63,23 @@ numerical matrix synthesis of an algebraically exact permutation. The native rot
 those complete control operators within the recorded admission tolerance. Independently compiled transition matrices
 do not identify reusable physical preparation and measurement instruments.
 
+Cross-basis settings compose the explicit preparation and inverse measurement circuits. The qutrit
+Fourier factorization uses fixed two-level rotations and the analytic mixing angle `2 atan(sqrt(2))`.
+Conditional high-qubit H and S factors preserve leakage labels 3 and 7. Full eight-dimensional operator
+checks validate the factors and their composition before native lowering.
+
 Tuna-17 lowering records the requested operator, routed unrounded operator, rounded native operator,
 rotation grid, layout, measurement destinations and compiler identity. Reset-free QX twins reproduce the
 rounded payload with a compact physical-to-logical map. Local libqasm/OpenSquirrel admission checks all
 emitted payloads and preserves control sequences; its serialized angle changes remain explicit.
 QX measurement registers and Tuna classical-bit
 registers require their respective recorded decoding rules.
+
+Retained native operators use fixed scalar binary64 updates with trigonometric constants rounded from
+fifty decimal digits. Independent Qiskit reconstruction must agree within absolute tolerance `1e-12`.
+The recorded error metric is the phase-aligned Frobenius residual, explicitly distinguished from the
+earlier spectral-norm diagnostics. The exact Frobenius norm bounds the spectral norm; the numerical
+residual remains an implementation check rather than a certified interval or hardware observation.
 
 Ascella uses a single connected source and six logical modes. Input selection belongs to the complete
 requested unitary. Reconstruct the full optical operator to the existing `1e-9` admission tolerance.

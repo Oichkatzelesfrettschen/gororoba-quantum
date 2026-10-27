@@ -745,6 +745,16 @@ def balanced_contrasts(batches: list[dict[str, Any]]) -> dict[str, Any]:
     return results
 
 
+def _analyze_case(arguments: tuple[Path, int, float, float]) -> dict[str, Any]:
+    path, endpoints, precision, confidence = arguments
+    manifest = json.loads((path / "cases.json").read_text(encoding="utf-8"))
+    if manifest.get("schema") == "qi-hypercomplex-cases-v1":
+        return analyze_qi(path, endpoints, precision, confidence)
+    if manifest.get("schema") == "qd-hypercomplex-cases-v1":
+        return analyze_qd(path, endpoints, precision, confidence)
+    raise ValueError("unsupported experiment manifest schema")
+
+
 def analyze_runs(
     directories: list[Path],
     *,
@@ -780,17 +790,9 @@ def analyze_runs(
             raise ValueError("a supplied run falls outside the campaign inventory")
         missing = [expected[path] for path in expected if path not in resolved]
         sources = [_source(campaign, campaign.parent)]
-    results = []
-    for path in resolved:
-        manifest = json.loads((path / "cases.json").read_text(encoding="utf-8"))
-        if manifest.get("schema") == "qi-hypercomplex-cases-v1":
-            result = analyze_qi(path, endpoints, precision, confidence)
-        elif manifest.get("schema") == "qd-hypercomplex-cases-v1":
-            result = analyze_qd(path, endpoints, precision, confidence)
-        else:
-            raise ValueError("unsupported experiment manifest schema")
+    results = ordered_map(_analyze_case, [(path, endpoints, precision, confidence) for path in resolved], min_items=1)
+    for path, result in zip(resolved, results, strict=True):
         result["case"] = path.relative_to(campaign.parent.resolve()).as_posix() if campaign else path.name
-        results.append(result)
     groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
     interval_families: dict[str, int] = defaultdict(int)
     for batch in results:

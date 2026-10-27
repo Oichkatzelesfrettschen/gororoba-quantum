@@ -22,20 +22,21 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from hypercomplex_cases import encoded, photonic_template, qi_native, write_files
+from hypercomplex_cases import encoded, qi_native, write_files
 from qi_zero_divisor_cases import CASES, CATALOGUE, catalogue_check, logical
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+from dimension_six_circuits import transition_circuit  # noqa: E402
 from experiment_references import (  # noqa: E402
     ACTIVE_INDICES,
     BASIS_NAMES,
-    embedded_basis,
     quarter_mass_operators,
     reference_report,
     sedenion_operators,
     transition_matrix,
 )
+from operator_arithmetic import photonic_template, probabilities  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 from qrng_seeds import resolve  # noqa: E402
 
@@ -112,41 +113,17 @@ def _mub_jobs() -> list[tuple[str, str, int]]:
     ]
 
 
-def _input_permutation_circuit(width: int, target: int) -> Any:
-    """Swap basis labels zero and target through a reversible binary change of coordinates."""
-    from qiskit import QuantumCircuit
-
-    if type(width) is not int or width < 2 or type(target) is not int or not 0 <= target < 2**width:
-        raise ValueError("input permutation requires a supported register width and basis label")
-    circuit = QuantumCircuit(width)
-    if target == 0:
-        return circuit
-    pivot = (target & -target).bit_length() - 1
-    changed = [bit for bit in range(width) if bit != pivot and target & (1 << bit)]
-    for bit in changed:
-        circuit.cx(pivot, bit)
-    controls = [bit for bit in range(width) if bit != pivot]
-    circuit.mcx(controls, pivot, ctrl_state=0)
-    for bit in reversed(changed):
-        circuit.cx(pivot, bit)
-    return circuit
-
-
 def _mub_setting(arguments: tuple[str, str, int]) -> dict[str, Any]:
     preparation, measurement, column = arguments
-    identity_transition = preparation == measurement
-    matrix = (
-        _permutation(8, ACTIVE_INDICES[column])
-        if identity_transition
-        else embedded_basis(measurement).conj().T
-        @ embedded_basis(preparation)
-        @ _permutation(8, ACTIVE_INDICES[column])
+    transition = (
+        np.eye(6, dtype=np.complex128) if preparation == measurement else transition_matrix(preparation, measurement)
     )
-    optical = (
-        _permutation(6, column)
-        if identity_transition
-        else transition_matrix(preparation, measurement) @ _permutation(6, column)
-    )
+    matrix = np.eye(8, dtype=np.complex128)
+    matrix[np.ix_(ACTIVE_INDICES, ACTIVE_INDICES)] = transition
+    target = ACTIVE_INDICES[column]
+    matrix[:, [0, target]] = matrix[:, [target, 0]]
+    optical = transition.copy()
+    optical[:, [0, column]] = optical[:, [column, 0]]
     row = {
         "name": f"{preparation}-to-{measurement}-input-{column}",
         "family": "mub-six",
@@ -161,8 +138,7 @@ def _mub_setting(arguments: tuple[str, str, int]) -> dict[str, Any]:
         "optical_success_outputs": [],
         "placement": (11, 13, 14),
     }
-    if identity_transition:
-        row["source_circuit"] = _input_permutation_circuit(3, ACTIVE_INDICES[column])
+    row["source_circuit"] = transition_circuit(preparation, measurement, column)
     return row
 
 
@@ -207,6 +183,25 @@ def _sedenion_setting(name: str) -> dict[str, Any]:
     (first, second), phase, _ = CASES[name]
     witness = sedenion_operators()["witness"]
     source = logical(name)
+    if phase not in (0.0, math.pi):
+        raise ValueError("the signed witness requires relative phase zero or pi")
+    relative_sign = 1 if phase == 0 else -1
+    columns = np.arange(16)
+    difference = first ^ second
+    pivot = (difference & -difference).bit_length() - 1
+    pivot_mask = 1 << pivot
+    lower = columns & ~pivot_mask
+    upper = lower | pivot_mask
+    preparation_operator = np.zeros((16, 16), dtype=np.complex128)
+    inverse_root_two = math.sqrt(0.5)
+    preparation_operator[lower ^ first, columns] = inverse_root_two
+    preparation_operator[upper ^ (difference ^ pivot_mask) ^ first, columns] = (
+        relative_sign * (1 - 2 * ((columns >> pivot) & 1)) * inverse_root_two
+    )
+    requested = witness @ np.kron(np.eye(2), preparation_operator)
+    requested[requested == 0] = 0
+    if not np.allclose(Operator(source).data, requested, atol=1e-12, rtol=0):
+        raise ValueError("the source circuit differs from the exact signed-pair preparation")
     input_indices = [first, second, first + 16, second + 16]
     outputs = sorted({1 ^ first, 10 ^ first, 1 ^ second, 10 ^ second})
     output_indices = outputs + [index + 16 for index in outputs]
@@ -214,7 +209,7 @@ def _sedenion_setting(name: str) -> dict[str, Any]:
     complete_inputs = input_data | {index + 16 for index in input_data}
     input_indices += sorted(complete_inputs - set(input_indices))
     restricted = witness[np.ix_(output_indices, input_indices)]
-    preparation = np.array([[1, 1], [np.exp(1j * phase), -np.exp(1j * phase)]]) / np.sqrt(2)
+    preparation = np.array([[1, 1], [relative_sign, -relative_sign]]) * inverse_root_two
     complete_preparation = np.eye(len(input_indices), dtype=np.complex128)
     complete_preparation[:4, :4] = np.kron(np.eye(2), preparation)
     optical = restricted @ complete_preparation
@@ -229,7 +224,7 @@ def _sedenion_setting(name: str) -> dict[str, Any]:
     return {
         "name": name,
         "family": "sedenion-lcu",
-        "matrix": np.asarray(Operator(source).data),
+        "matrix": requested,
         "source_circuit": source,
         "optical_matrix": optical,
         "active_outputs": list(range(32)),
@@ -387,15 +382,15 @@ def _qd_cases(setting: dict[str, Any], budgets: Budgets) -> dict[str, str]:
     matrix = np.eye(12, dtype=np.complex128)
     matrix[:size, :size] = setting["optical_matrix"]
     circuit, parameters = photonic_template(matrix)
-    probabilities = (np.abs(matrix[:, 0]) ** 2).tolist()
+    law = probabilities(matrix)
     row = {
         **_metadata(setting),
         "kind": "science",
         "circuit_params": parameters,
         "operator": encoded(matrix),
         "column": [[float(value.real), float(value.imag)] for value in matrix[:, 0]],
-        "requested_probabilities": probabilities,
-        "native_probabilities": probabilities,
+        "requested_probabilities": law,
+        "native_probabilities": law,
         "prediction_scope": "logical template; provider compiled mesh remains unobserved",
         "active_outputs": setting["optical_active_outputs"],
         "success_outputs": setting["optical_success_outputs"],
@@ -554,6 +549,8 @@ def build(
         "scripts/qi_zero_divisor_cases.py",
         "gororoba_quantum/experiment_references.py",
         "gororoba_quantum/cd_core.py",
+        "gororoba_quantum/dimension_six_circuits.py",
+        "gororoba_quantum/operator_arithmetic.py",
         "docs/evidence/quantum_inspire/catalogue.json",
         "docs/evidence/quandela/catalogue.json",
         SEED_DRAW,
@@ -568,7 +565,7 @@ def build(
                     "python": platform.python_version(),
                     **{
                         name: importlib.metadata.version(name)
-                        for name in ("numpy", "scipy", "qiskit", "perceval-quandela", "sympy")
+                        for name in ("numpy", "scipy", "qiskit", "perceval-quandela", "sympy", "mpmath")
                     },
                 },
                 "artifacts": {name: hashlib.sha256(text.encode()).hexdigest() for name, text in sorted(files.items())},
@@ -658,9 +655,22 @@ def check(directory: Path, files: dict[str, str], receipt_path: Path | None = No
             )
         return
     _check_inventory(directory, files)
-    for name, text in files.items():
-        if (directory / name).read_bytes() != text.encode():
-            raise ValueError(f"campaign bytes differ: {name}")
+    changed = [name for name, text in files.items() if (directory / name).read_bytes() != text.encode()]
+    if changed:
+        first = changed[0]
+        details = list(
+            difflib.unified_diff(
+                (directory / first).read_text().splitlines(),
+                files[first].splitlines(),
+                fromfile=first,
+                tofile="regenerated",
+            )
+        )[:24]
+        raise ValueError(
+            f"campaign bytes differ: {first}\n"
+            + "\n".join(details)
+            + f"\nComplete mismatch inventory ({len(changed)} files): {changed}"
+        )
 
 
 def self_test() -> None:
