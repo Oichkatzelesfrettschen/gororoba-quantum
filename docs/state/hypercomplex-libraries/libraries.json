@@ -8873,6 +8873,9 @@
    "kernel_limits",
    "sympy"
   ],
+  "gororoba_quantum/pub_calibration.py": [
+   "__future__"
+  ],
   "gororoba_quantum/pub_shot_allocation.py": [
    "__future__",
    "dataclasses",
@@ -14001,7 +14004,6 @@
    "perceval-quandela"
   ],
   "playwright": [],
-  "pub_calibration": [],
   "pyadic": [],
   "pydantic": [
    "pydantic"
@@ -14067,7 +14069,6 @@
   "kingdon",
   "octonion",
   "playwright",
-  "pub_calibration",
   "pyadic",
   "pyoctonion",
   "pyquaternion",
