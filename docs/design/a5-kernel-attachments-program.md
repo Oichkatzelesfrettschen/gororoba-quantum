@@ -360,3 +360,9 @@ about a thousand generators.
      so the falsifiers are the standard-basis-point control, characteristic agreement and a generator-deletion
      mutation. Every Singular call under `prlimit --as=4294967296` with the 300 s timeout; a row that still times
      out stays blocked with its stage. No wall-clock values in the record.
+
+- **Long runs (owner decision).** One elimination at a time may run under a 24 GiB address-space cap with a 12-hour
+  ceiling, ending when the engine finishes. It runs with the engine's progress output on (Singular `option(prot)`,
+  msolve `-v 2`), streamed to a log beside a 10 s memory and CPU sample trace, and stops when host `MemAvailable`
+  falls below 4 GiB. A job ends early only on a measured stall (no degree advance and no pair-count decrease over a
+  sustained window), never on a fixed short timeout; the progress log is the evidence for either outcome.
