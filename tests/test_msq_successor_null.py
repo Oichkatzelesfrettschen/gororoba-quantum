@@ -9,6 +9,7 @@ from typing import Any
 import numpy as np
 import pytest
 
+import diagnostic_experiments as de
 import measurement_sequence_analysis as msa
 import msq_successor_analysis as su
 import msq_successor_null_batch as nl
@@ -259,20 +260,39 @@ def test_carryover_arms_plant_the_boundary_less_three_standard_errors(setup: nl.
     check(abs(setup.allocation[0] * carried[0] - margin) < 1e-9, "offset 0 is not the boundary")
 
 
-def test_q_arm_plants_each_tolerance_bound(setup: nl.Setup) -> None:
+def test_q_arm_plants_the_screen_bound_plus_its_confidence_margin(setup: nl.Setup) -> None:
     drawn, truths = planted_slots(setup, small("q-tolerance"))
     for j, truth in zip(drawn.calibration, truths, strict=True):
-        check(truth.q == setup.tolerance[j] and 0.7 < truth.q < 1.0 and not truth.excitation, f"{truth}")
+        check(truth.q == setup.q_planted[j] and not truth.excitation, f"{truth}")
+        check(setup.tolerance[j] < truth.q < min(setup.tolerance[j] + 0.05, 1.0), f"{truth.q} {setup.tolerance[j]}")
+    # At the expected counts the screen's lower confidence bound sits on the tolerance bound.
+    ctx = setup.contexts[0]
+    counts = nl.expected_counts(
+        ctx, nl.Truth(ctx["t1_cal_s"], math.inf, setup.q_planted[0], 1.0, {}, 0.0, 0.0), setup.equilibrium_s, nl.SHOTS
+    )
+    keys = {"ro0": msa.ro0_name(0), "eq": de.msqr_equilibrium_member(0)}
+    keys.update({f"t1-{k}": name for k, name in enumerate(msa.t1_names(0))})
+    estimate = su.equilibrium_estimate({key: counts[name] for key, name in keys.items()}, ctx, setup.equilibrium_s)
+    screen = su.q_screen(estimate, su.q_sensitivity(ctx, estimate["t1_s"]), setup.width)
+    # Whole expected counts leave the bound within a tenth of a standard error of the tolerance.
+    check(abs(screen["lower_bound"] - screen["tolerance"]) < 0.1 * estimate["se"], f"{screen}")
 
 
 def test_settle_arms_plant_their_gaps_at_the_stated_sizes(setup: nl.Setup) -> None:
     floor = su.SETTLE_TAU_FLOOR
     _, common = planted_slots(setup, small("settle-common"))
     check(all(t.gap == 4 * floor for t in common), f"{[t.gap for t in common]}")
-    _, sparse = planted_slots(setup, small("settle-sparse"))
-    size = (3 + 1.28) * math.sqrt(setup.settle_se**2 + floor**2)
-    check([t.gap for t in sparse] == [size, size, *[0.0] * (len(sparse) - 2)], f"{[t.gap for t in sparse]}")
-    check(size > 4 * floor * 1.0 and size < 0.02, f"sparse size {size}")
+    drawn, sparse = planted_slots(setup, small("settle-sparse"))
+    losses = [setup.sparse_loss[j][8] for j in drawn.calibration[: nl.SPARSE_QUBITS]]
+    check([t.loss for t in sparse] == [*losses, *[0.0] * (len(sparse) - 2)], f"{[t.loss for t in sparse]}")
+    check(all(t.gap == 0.0 for t in sparse), "the sparse arm plants a settle-only shift")
+    spread = setup.settle_se**2 + floor**2
+    size = (3 + 1.28) * math.sqrt(spread * (1 + math.pi / 2 / 7))
+    check(abs(nl.sparse_gap(setup.settle_se, 8) - size) < 1e-15 and 4 * floor < size < 0.02, f"sparse size {size}")
+    # The planted measure-arm loss gives the stated settle gap at the noise-free counts.
+    ctx = setup.contexts[drawn.calibration[0]]
+    gap = nl.tail_gap(ctx, losses[0], setup.equilibrium_s) - nl.tail_gap(ctx, 0.0, setup.equilibrium_s)
+    check(abs(abs(gap) / size - 1) < 0.01, f"planted gap {gap} against {size}")
     # A planted gap shifts the settle members' P(1) by -contrast * gap and no other member.
     ctx = setup.contexts[0]
     base = nl.Truth(ctx["t1_cal_s"], 3.0, 1.0, 1.0, {}, 0.0, 0.0)
@@ -285,12 +305,24 @@ def test_settle_arms_plant_their_gaps_at_the_stated_sizes(setup: nl.Setup) -> No
             check(abs(delta + contrast * 0.01) < 1e-12, f"{name}: {delta}")
         else:
             check(delta == 0.0, f"{name}: {delta}")
+    # A measure-arm loss moves the measure members and leaves the settle members alone.
+    lossy = nl.member_probabilities(ctx, 5, base._replace(loss=0.002), setup.equilibrium_s)
+    for name in still:
+        moved_by = lossy[name] - still[name]
+        if "_settle_" in name:
+            check(moved_by == 0.0, f"{name}: {moved_by}")
+    check(any(lossy[n] != still[n] for n in still if "_measure_" in n), "the loss moved no measure member")
 
 
 def test_plateau_and_gamma_arms_plant_their_truth(setup: nl.Setup) -> None:
-    drawn, truths = planted_slots(setup, small("plateau"))
+    drawn, truths = planted_slots(setup, small("plateau-retained"))
     check(all(math.isinf(t.shape) and (t.t_s, t.q) in setup.plateau for t in truths), "plateau pairs")
     check(0.6 < float(np.median([q for _, q in setup.plateau])) < 0.8, "the plateau q is not near 0.7")
+    low = [setup.plateau[i] for i in setup.plateau_low]
+    check(bool(low) and all(q < min(setup.tolerance) for _, q in low), f"{low}")
+    check(len(low) < len(setup.plateau), "every retained pair lies below the tolerance bounds")
+    drawn, truths = planted_slots(setup, small("plateau-low"))
+    check(all(math.isinf(t.shape) and (t.t_s, t.q) in low for t in truths), "plateau-low pairs")
     drawn, truths = planted_slots(setup, small("gamma"))
     for j, t in zip(drawn.calibration, truths, strict=True):
         check(t.q == 1.0 and not t.excitation and t.gap == 0.0 and t.reader == 0.0, f"{t}")
@@ -360,7 +392,7 @@ def test_block_equals_the_scalar_pipeline_through_the_carryover_screen(setup: nl
 
 
 def test_block_equals_the_scalar_pipeline_through_the_equilibrium_bound(setup: nl.Setup) -> None:
-    block_equals_reference(setup, small("plateau", 8), [0])
+    block_equals_reference(setup, small("plateau-low", 8), [0])
 
 
 def test_blocking_leaves_the_rows_alone(setup: nl.Setup) -> None:
@@ -424,12 +456,12 @@ def test_the_record_names_its_inputs_and_reports_the_arm_statistics(setup: nl.Se
     check(record["cases"]["8-qubits"]["common_veto_rate"] == 1.0, "a 4 x floor common gap escaped the veto")
 
 
-def test_every_arm_completes_a_small_run(setup: nl.Setup) -> None:
-    for arm in nl.ARMS:
-        cases = nl.arm_cases(arm, setup.width)
-        check(len(cases) == {"carryover-boundary": 3, "settle-common": 3, "settle-sparse": 3}.get(arm, 1), arm)
-        rows = nl.analyse_block((setup, cases[-1]._replace(active=8), TEST_SEED, [0]))
-        check(len(rows) == 1 and rows[0]["i"] == 0, arm)
+@pytest.mark.parametrize("arm", nl.ARMS)
+def test_every_arm_completes_a_small_run(setup: nl.Setup, arm: str) -> None:
+    cases = nl.arm_cases(arm, setup.width)
+    check(len(cases) == {"carryover-boundary": 3, "settle-common": 3, "settle-sparse": 3}.get(arm, 1), arm)
+    rows = nl.analyse_block((setup, cases[-1]._replace(active=8), TEST_SEED, [0]))
+    check(len(rows) == 1 and rows[0]["i"] == 0, arm)
 
 
 @pytest.mark.audit

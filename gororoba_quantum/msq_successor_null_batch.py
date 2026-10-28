@@ -450,11 +450,16 @@ CONFIDENCE = 0.95
 FALSE_FIRE_CEILING = 0.01
 ISSUANCE_FLOOR = 0.8
 CARRYOVER_VERDICTS = 299
-# The sparse settle gap's detectable size is (SETTLE_Z + SETTLE_POWER_Z) sqrt(s^2 + tau^2): 1.28 is the one-sided
-# normal quantile of power 0.9.
+# The sparse settle gap's detectable size is (SETTLE_Z + SETTLE_POWER_Z) times the per-qubit test's denominator
+# (`sparse_gap`): 1.28 is the one-sided normal quantile of power 0.9.
 SETTLE_POWER_Z = 1.28
 COMMON_GAP_FACTOR = 4.0
 SPARSE_QUBITS = 2
+# The measure-arm loss per step that probes the gap's slope, and the secant steps that solve for the planted size.
+SPARSE_LOSS_PROBE = 0.005
+SPARSE_ITERATIONS = 3
+# Fixed-point steps of the q arm's planted value, whose q_hat and standard error depend on q.
+Q_ITERATIONS = 4
 BOUNDARY_OFFSETS = (0, 1, 2)
 # Standard errors inside the boundary that the carryover arms solve for, and the fixed-point steps of the solve.
 CARRIED_OFFSETS = (0.0, 1.0, 2.0, 3.0)
@@ -469,7 +474,8 @@ ARMS = (
     "q-tolerance",
     "settle-common",
     "settle-sparse",
-    "plateau",
+    "plateau-low",
+    "plateau-retained",
     "gamma",
 )
 ROOT = Path(__file__).resolve().parents[1]
@@ -490,10 +496,13 @@ class Setup(NamedTuple):
     negative: tuple[tuple[str, ...], ...]
     carried: tuple[dict[float, float], ...]
     tolerance: tuple[float, ...]
+    q_planted: tuple[float, ...]
     settle_se: float
+    sparse_loss: tuple[dict[int, float], ...]
     vertex_base: tuple[dict[str, tuple[int, int]], ...]
     vertex_probed: tuple[dict[str, tuple[int, int]], ...]
     plateau: tuple[tuple[float, float], ...]
+    plateau_low: tuple[int, ...]
     digests: dict[str, str]
 
 
@@ -652,23 +661,33 @@ def build_setup(record_dir: Path) -> Setup:
     constants = list(ordered_map(calibration_constants, list(pool), min_items=2))
     plateau, plateau_digest = plateau_pairs()
     dt = float(configuration["dt_seconds"])
+    width = int(configuration["layout_width"])
+    equilibrium_s = int(configuration["equilibrium_delay_dt"]) * dt
+    tolerance = tuple(c["tolerance"] for c in constants)
+    settle_se = float(np.median([c["settle_se"] for c in constants]))
+    pools = tuple(sorted({m or width for m in SETTLE_POOLS}))
+    q_items = [(ctx, bound, equilibrium_s, width) for ctx, bound in zip(pool, tolerance, strict=True)]
+    loss_items = [(ctx, equilibrium_s, settle_se, pools) for ctx in pool]
     return Setup(
         qubits=qubits,
-        width=int(configuration["layout_width"]),
+        width=width,
         contexts=pool,
         floor=floor,
-        equilibrium_s=int(configuration["equilibrium_delay_dt"]) * dt,
+        equilibrium_s=equilibrium_s,
         pattern_bits=tuple(tuple(int(b) for b in row) for row in configuration["pattern_bits"]),
         slopes=tuple(c["slope"] for c in constants),
         allocation=tuple(c["allocation"] for c in constants),
         positive=tuple(c["positive"] for c in constants),
         negative=tuple(c["negative"] for c in constants),
         carried=tuple(c["carried"] for c in constants),
-        tolerance=tuple(c["tolerance"] for c in constants),
-        settle_se=float(np.median([c["settle_se"] for c in constants])),
+        tolerance=tolerance,
+        q_planted=tuple(ordered_map(planted_q, q_items, min_items=2)),
+        settle_se=settle_se,
+        sparse_loss=tuple(ordered_map(sparse_losses, loss_items, min_items=2)),
         vertex_base=tuple(c["base"] for c in constants),
         vertex_probed=tuple(c["probed"] for c in constants),
         plateau=plateau,
+        plateau_low=tuple(i for i, (_, q) in enumerate(plateau) if q < min(tolerance)),
         digests={"snapshot_sha256": digest, "plateau_sha256": plateau_digest},
     )
 
@@ -678,8 +697,9 @@ def build_setup(record_dir: Path) -> Setup:
 
 class Truth(NamedTuple):
     """One qubit's truth in a replicate: the mean lifetime and the rate shape (inf: exponential), the relaxation
-    target q, the sx-error factor, the carried excitation of each member class, the reader's carried excitation and
-    the settle arm's planted gap in corrected P0."""
+    target q, the sx-error factor, the carried excitation of each member class, the reader's carried excitation, the
+    settle arm's planted gap in corrected P0 and the z lost per pinch in the measure arm alone (a post-measurement
+    tail that the settle arm's idles let decay, `msa.device_model` with eps_settle = 0)."""
 
     t_s: float
     shape: float
@@ -688,6 +708,7 @@ class Truth(NamedTuple):
     excitation: dict[str, float]
     reader: float
     gap: float
+    loss: float = 0.0
 
 
 def lifetimes(t_s: float, shape: float) -> tuple[Floats, Floats]:
@@ -723,8 +744,9 @@ def member_probabilities(ctx: dict[str, Any], qubit: int, truth: Truth, equilibr
         excitation = truth.excitation.get(f"{arm}-{n}", 0.0)
         tau = np.full(nodes, msa.tau_of(arm, shaped))
         shift = -contrast * truth.gap if arm == "settle" else 0.0
+        loss = np.full(nodes, truth.loss if arm == "measure" else 0.0)
         for sign in (1, -1):
-            chain = en.chain_rows(arm, n, t1, t2, tau, np.zeros(nodes), gate, sx, sign)
+            chain = en.chain_rows(arm, n, t1, t2, tau, loss, gate, sx, sign)
             p1 = observe(chain[:, 2, 2] * (1 - 2 * excitation) + chain[:, 2, 3] * q, shift)
             for tag, name in zip(msa.SIGNED, msa.member_names(arm, n, qubit), strict=True):
                 if (1 if tag[0] == "p" else -1) == sign:
@@ -734,6 +756,67 @@ def member_probabilities(ctx: dict[str, Any], qubit: int, truth: Truth, equilibr
         start = q + 1 - 2 * truth.excitation.get(f"t1-{k}", 0.0)
         out[name] = observe(q - start * np.exp(-ctx["t1_delays_s"][k] / t1))
     out[de.msqr_equilibrium_member(qubit)] = observe(q - (q - 1) * np.exp(-equilibrium_s / t1))
+    return out
+
+
+def expected_counts(ctx: dict[str, Any], truth: Truth, equilibrium_s: float, shots: int) -> dict[str, tuple[int, int]]:
+    """The rounded expected (ones, shots) of every member of qubit 0 under `truth`, the equilibrium row included."""
+    probabilities = member_probabilities(ctx, 0, truth, equilibrium_s)
+    return {name: (round(p * shots), shots) for name, p in probabilities.items()}
+
+
+def planted_q(item: tuple[dict[str, Any], float, float, int]) -> float:
+    """The q arm's planted relaxation target at one calibration: the q at which the screen (`su.q_screen`, Bonferroni
+    over the width, tolerance at the fitted T) puts the lower confidence bound of the expected counts at SHOTS on its
+    tolerance, so about half the draws pass it. Each fixed-point step moves q by the tolerance less the lower
+    confidence bound, which also absorbs q_hat's offset from the planted q. item = (context, the tolerance at the
+    calibrated T1 as the start, equilibrium idle, width)."""
+    ctx, bound, equilibrium_s, width = item
+    keys = {"ro0": msa.ro0_name(0), "eq": de.msqr_equilibrium_member(0)}
+    keys.update({f"t1-{k}": name for k, name in enumerate(msa.t1_names(0))})
+    q = bound
+    for _ in range(Q_ITERATIONS):
+        counts = expected_counts(ctx, Truth(ctx["t1_cal_s"], math.inf, q, 1.0, {}, 0.0, 0.0), equilibrium_s, SHOTS)
+        estimate = su.equilibrium_estimate({key: counts[name] for key, name in keys.items()}, ctx, equilibrium_s)
+        screen = su.q_screen(estimate, su.q_sensitivity(ctx, estimate["t1_s"]), width)
+        q += screen["tolerance"] - screen["lower_bound"]
+    return q
+
+
+def sparse_gap(settle_se: float, pool: int) -> float:
+    """The sparse settle arm's planted gap at `pool` qubits: (SETTLE_Z + SETTLE_POWER_Z) times the per-qubit test's
+    denominator sqrt(s^2 + tau^2 + se^2), tau at its floor and se the median standard error of the pool - 1 others
+    (`su._robust_others`). A second planted qubit among the others moves their median and MAD, which this size
+    leaves out; the arm measures the power that remains."""
+    spread = settle_se**2 + su.SETTLE_TAU_FLOOR**2
+    return (su.SETTLE_Z + SETTLE_POWER_Z) * math.sqrt(spread + math.pi / 2 * spread / (pool - 1))
+
+
+def tail_gap(ctx: dict[str, Any], loss: float, equilibrium_s: float) -> float:
+    """The noise-free settle gap of one calibration under a measure-arm loss per pinch: the expected counts at
+    su.VERTEX_SHOTS through su._evaluate."""
+    counts = expected_counts(
+        ctx, Truth(ctx["t1_cal_s"], math.inf, 1.0, 1.0, {}, 0.0, 0.0, loss), equilibrium_s, su.VERTEX_SHOTS
+    )
+    del counts[de.msqr_equilibrium_member(0)]
+    row = su._evaluate((0, {"final": counts}, ctx), False)
+    return float(row["settle_n16"]["gap_difference"])
+
+
+def sparse_losses(item: tuple[dict[str, Any], float, float, tuple[int, ...]]) -> dict[int, float]:
+    """The measure-arm loss per pinch whose noise-free settle gap, less the gap at no loss, has the size
+    `sparse_gap` at each pool width: a secant from SPARSE_LOSS_PROBE, then SPARSE_ITERATIONS secant steps.
+    item = (context, equilibrium idle, median settle standard error, pool widths)."""
+    ctx, equilibrium_s, settle_se, pools = item
+    base = tail_gap(ctx, 0.0, equilibrium_s)
+    slope = abs(tail_gap(ctx, SPARSE_LOSS_PROBE, equilibrium_s) - base) / SPARSE_LOSS_PROBE
+    out = {}
+    for pool in pools:
+        target = sparse_gap(settle_se, pool)
+        loss = target / slope
+        for _ in range(SPARSE_ITERATIONS):
+            loss *= target / abs(tail_gap(ctx, loss, equilibrium_s) - base)
+        out[pool] = loss
     return out
 
 
@@ -762,7 +845,8 @@ def arm_cases(arm: str, width: int) -> list[Case]:
 
 
 def minimum_verdicts(arm: str) -> int:
-    return CARRYOVER_VERDICTS if arm in ("carryover-positive", "carryover-negative") else 0
+    counted = ("carryover-positive", "carryover-negative", "q-tolerance", "plateau-retained")
+    return CARRYOVER_VERDICTS if arm in counted else 0
 
 
 def carried(setup: Setup, case: Case, j: int) -> float:
@@ -771,25 +855,29 @@ def carried(setup: Setup, case: Case, j: int) -> float:
     return setup.carried[j][case.param]
 
 
-def slot_truth(setup: Setup, case: Case, j: int, slot: int, shape: float, residual: float, pair: int) -> Truth:
+def slot_truth(setup: Setup, case: Case, j: int, slot: int, shape: float, residual: float, pair: float) -> Truth:
     """The truth of slot `slot` at calibration j in one case. A carryover arm plants the excitation on the member
-    classes of the allocation vertex whose shift has the arm's sign; the reader carries the same excitation."""
+    classes of the allocation vertex whose shift has the arm's sign; the reader carries the same excitation. The
+    sparse settle arm plants a measure-arm loss on its first SPARSE_QUBITS slots; the plateau arms take the retained
+    pair at the uniform draw `pair`, plateau-low among the pairs below every tolerance bound."""
     ctx = setup.contexts[j]
-    t_s, q, excitation, reader, gap = ctx["t1_cal_s"], 1.0, {}, 0.0, 0.0
+    t_s, q, excitation, reader, gap, loss = ctx["t1_cal_s"], 1.0, {}, 0.0, 0.0, 0.0
     if case.arm in ("carryover-positive", "carryover-negative", "carryover-boundary"):
         reader = carried(setup, case, j)
         labels = setup.negative[j] if case.arm == "carryover-negative" else setup.positive[j]
         excitation = dict.fromkeys(labels, reader)
     elif case.arm == "q-tolerance":
-        q = setup.tolerance[j]
+        q = setup.q_planted[j]
     elif case.arm == "settle-common":
         gap = COMMON_GAP_FACTOR * su.SETTLE_TAU_FLOOR
     elif case.arm == "settle-sparse" and slot < SPARSE_QUBITS:
-        gap = (su.SETTLE_Z + SETTLE_POWER_Z) * math.sqrt(setup.settle_se**2 + su.SETTLE_TAU_FLOOR**2)
-    elif case.arm == "plateau":
-        (t_s, q), shape = setup.plateau[pair], math.inf
+        loss = setup.sparse_loss[j][case.active]
+    elif case.arm == "plateau-low":
+        (t_s, q), shape = setup.plateau[setup.plateau_low[int(pair * len(setup.plateau_low))]], math.inf
+    elif case.arm == "plateau-retained":
+        (t_s, q), shape = setup.plateau[int(pair * len(setup.plateau))], math.inf
     factor = max(0.0, 1.0 + residual / setup.slopes[j])
-    return Truth(t_s, shape, q, factor, excitation, reader, gap)
+    return Truth(t_s, shape, q, factor, excitation, reader, gap, loss)
 
 
 class Drawn(NamedTuple):
@@ -835,20 +923,21 @@ def draw_bits(
 def draw_replicate(setup: Setup, case: Case, seed: int, index: int) -> Drawn:
     """Replicate `index` of a case: the draws follow one fixed order whatever the arm, so the cases of an arm and the
     arms of a seed share their noise. Per qubit: a calibration resampled from the layout's, a rate shape log-uniform
-    over the admitted shapes, the sx-error residual (common +0.011 and independent SD 0.0105), a retained (T1, q)
-    pair for the plateau arm; then binomial member, equilibrium and pattern counts and the shot-ordered bits."""
+    over the admitted shapes, the sx-error residual (common +0.011 and independent SD 0.0105), a uniform draw that
+    picks the plateau arms' retained (T1, q) pair; then binomial member, equilibrium and pattern counts and the
+    shot-ordered bits."""
     generator = replicate_generator(seed, index)
     width = len(setup.qubits)
     calibration = generator.integers(0, width, size=width)
     low, high = math.log(su.SHAPE_DOMAIN_SHAPES[0]), math.log(su.SHAPE_DOMAIN_SHAPES[-1])
     shapes = np.exp(low + (high - low) * generator.random(width))
     residuals = en.COMMON_RESIDUAL + en.INDEPENDENT_RESIDUAL_SD * generator.standard_normal(width)
-    pairs = generator.integers(0, len(setup.plateau), size=width)
+    pairs = generator.random(width)
     out = Drawn(index, [], [], [], [], [], [], [])
     for slot in range(case.active):
         j, qubit = int(calibration[slot]), setup.qubits[slot]
         ctx = setup.contexts[j]
-        truth = slot_truth(setup, case, j, slot, float(shapes[slot]), float(residuals[slot]), int(pairs[slot]))
+        truth = slot_truth(setup, case, j, slot, float(shapes[slot]), float(residuals[slot]), float(pairs[slot]))
         probabilities = member_probabilities(ctx, qubit, truth, setup.equilibrium_s)
         names = sorted(name for name in probabilities if name != de.msqr_equilibrium_member(qubit))
         ones = generator.binomial(SHOTS, [probabilities[name] for name in names])
@@ -1359,8 +1448,10 @@ def case_statistics(arm: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
     work = sum(row["work"] for row in rows)
     unconditional = upper_bound(fires, n) if n else 1.0
     conditional = upper_bound(fires, issued) if issued else 1.0
-    planted = sum(1 for row in rows if row["planted_in_pool"] == SPARSE_QUBITS)
-    sparse = sum(1 for row in rows if row["planted_withheld"] == SPARSE_QUBITS)
+    planted = sum(row["planted_in_pool"] for row in rows)
+    sparse = sum(row["planted_withheld"] for row in rows)
+    both = sum(1 for row in rows if row["planted_in_pool"] == SPARSE_QUBITS)
+    both_withheld = sum(1 for row in rows if row["planted_withheld"] == SPARSE_QUBITS)
     stats: dict[str, Any] = {
         "replicates": n,
         "issued": issued,
@@ -1379,23 +1470,23 @@ def case_statistics(arm: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
         "equilibrium_failure_rate": sum(row["equilibrium_failed"] for row in rows) / work if work else None,
         "common_veto_rate": sum(1 for row in rows if row["common_veto"]) / n if n else None,
         "sparse_gap_withheld_rate": sparse / planted if planted else None,
+        "sparse_gap_both_withheld_rate": both_withheld / both if both else None,
     }
     targets: dict[str, bool] = {}
-    if arm in ("carryover-positive", "carryover-negative"):
+    if arm in ("carryover-positive", "carryover-negative", "q-tolerance", "plateau-retained"):
         targets = {
             "verdicts_at_least_299": issued >= CARRYOVER_VERDICTS,
             "false_fire_bound_given_issued_below_ceiling": conditional < FALSE_FIRE_CEILING,
-            "informative_rate_at_least_80_percent": n > 0 and issued >= ISSUANCE_FLOOR * n,
+            "false_fire_bound_below_ceiling": unconditional < FALSE_FIRE_CEILING,
         }
-    elif arm == "q-tolerance":
-        targets = {"false_fire_bound_given_issued_below_ceiling": conditional < FALSE_FIRE_CEILING}
     elif arm == "settle-common":
         targets = {"common_veto_power_at_least_90_percent": n > 0 and stats["common_veto_rate"] >= 0.9}
     elif arm == "settle-sparse":
         targets = {
             "per_qubit_veto_power_at_least_90_percent": planted > 0 and sparse >= 0.9 * planted,
+            "false_fire_bound_below_ceiling": unconditional < FALSE_FIRE_CEILING,
         }
-    elif arm == "plateau":
+    elif arm == "plateau-low":
         targets = {"departure_verdict_withheld": issued == 0}
     elif arm == "gamma":
         targets = {"informative_rate_at_least_80_percent": n > 0 and issued >= ISSUANCE_FLOOR * n}

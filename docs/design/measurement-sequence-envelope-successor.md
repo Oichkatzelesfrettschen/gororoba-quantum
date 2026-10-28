@@ -1,8 +1,8 @@
 # Measurement-sequence envelope successor: relaxation to the ground state, crosstalk-free carryover readers
 
-Status: design v3.5, the frozen v3.3 with the corrections its implementation forced: a per-qubit shape bound at
-the fitted T and a per-qubit settle test against the other qubits' median and MAD (v3.4), and a reader statistic
-stratified by reader and divided by the squared readout contrast (v3.5). It builds on the deduplicated
+Status: design v3.6, the frozen v3.3 with the corrections its implementation forced: a per-qubit shape bound at
+the fitted T and a per-qubit settle test against the other qubits' median and MAD (v3.4), a reader statistic
+stratified by reader and divided by the squared readout contrast (v3.5), and null arms that can each fail (v3.6). It builds on the deduplicated
 `collect.json` (each PUB's placed calibration stored once), which main carries. The
 width-32 envelope run of 2026-10-27 (`results/live/2026-10-27T014422.881898Z`) executed as planned, billed 38 s, and
 returned no device verdict because its reset screen withheld all 32 qubits
@@ -95,9 +95,13 @@ because tau is fitted about mu, a common gap cannot hide in the scatter term. Ea
 qubits alone, by their median and normal-consistent MAD (tau floored at 0.0019, the median's standard error added):
 a qubit whose |g - median| / sqrt(s^2 + tau^2 + se^2) exceeds 3 is withheld. A scatter fitted with the tested qubit
 inside it lets k equal outliers among n reach at most sqrt(n / k - 1) in z, and a moment fit that leaves only the
-tested qubit out still caps two outliers among 8 near 2.4; the median and MAD ignore any minority of outliers. The
-per-qubit test detects a gap near (3 + 1.28) sqrt(s^2 + 0.0019^2), about 0.013 at the retained s of 0.0023, with
-power 0.9; on healthy simulated gaps it withholds a given qubit about 0.3 % of the time.
+tested qubit out still caps two outliers among 8 near 2.4; the median and MAD keep a minority of outliers from
+masking a qubit, though a second outlier among few others still moves them. The per-qubit test's detectable gap is
+(3 + 1.28) times its own denominator, sqrt(s^2 + tau^2 + se^2) with se^2 = (pi / 2)(s^2 + tau^2) / (n - 1) at n
+pooled qubits: 0.0145, 0.0143 and 0.0135 at 8, 9 and 24 qubits on the rehearsal's median s of 0.0024. One outlier
+alone reaches per-qubit power 0.84 to 0.93 near that size on synthetic gaps; a second outlier among 7 others lowers
+it to about 0.72 at 8 qubits, which the sparse null arm measures. On healthy simulated gaps the test withholds a
+given qubit about 0.3 % of the time.
 
 ## Carryover readers
 
@@ -166,20 +170,31 @@ over the admitted grid, so the null covers the qubits the case selects.
 
 - Carryover arms: true D_q three reader standard errors inside the acceptance boundary (D_q = 0.0047 / A_q - 3 SE),
   one sign shared by every qubit in an arm, a positive and a negative arm, each run until it has issued at least 299
-  verdicts, so a zero-fire bound conditional on issuing falls below 0.01 per sign. A separate boundary arm at 0, 1 and
-  2 standard errors inside calibrates selection failure and is exempt from the issuance requirement.
-- q arm: true q at each selected qubit's tolerance bound (its largest-sensitivity contexts included); the complete
-  pipeline's false-fire bound must stay below 0.01 there too.
+  verdicts, so a zero-fire bound conditional on issuing falls below 0.01 per sign; the unconditional bound over every
+  replicate run must also fall below 0.01. The negative arm's worst-case allocation loads measure-16 and the T1
+  bracket rows but no settle member, so the common settle veto withholds about a quarter of its replicates; the
+  unconditional bound, not an issuance floor, shows that this withholding manufactures no clean result. A separate
+  boundary arm at 0, 1 and 2 standard errors inside calibrates selection failure and is exempt from the issuance
+  requirement.
+- q arm: true q where the screen's lower confidence bound at the expected counts sits on the tolerance bound, so
+  about half the qubits pass; run until 299 verdicts are issued, with the conditional and unconditional false-fire
+  bounds below 0.01. A q planted on the bound itself fails the screen in nearly every draw and tests nothing
+  downstream.
 - Settle arms: a common gap at 8, 9 and the full selected width, sized to the scatter floor times 4, which the
-  common-mean veto must catch with power at least 0.9; and a sparse same-sign gap on two qubits at the same widths,
-  sized to the per-qubit test's detectable gap (3 + 1.28) sqrt(s^2 + 0.0019^2) at the run's median s, which the
-  per-qubit veto must withhold with power at least 0.9. A sparse gap below that size is the veto's stated blind
-  spot; its effect on the pooled departure is at most its share of the selected qubits.
-- Plateau arm: the retained (T1, q) values as truth, q near 0.7; the equilibrium bound and the settle veto must
-  withhold its departure verdict.
+  common-mean veto must catch with power at least 0.9; and a sparse defect on two qubits at the same widths, planted
+  as a per-pinch loss in the measure arm alone (the post-measurement tail the settle idles let decay, the
+  `eps_settle = 0` device of `msa.device_model`), sized so its noise-free settle gap equals the detectable gap above.
+  The per-qubit veto must withhold each planted qubit with power at least 0.9, scored per qubit, and the departure
+  false-fire bound over all replicates must stay below 0.01, which measures the departure bias a missed tail leaves.
+  A tail below that size is the veto's stated blind spot.
+- Plateau arms: plateau-low draws only the retained (T1, q) pairs with q below every tolerance bound, and the
+  equilibrium bound and the settle veto must withhold its departure verdict; plateau-retained draws all 30 retained
+  pairs (q from 0.28 to 1.02, the retained device itself) and runs until 299 verdicts are issued with the conditional
+  and unconditional false-fire bounds below 0.01.
 - Each arm reports the unconditional false-fire rate, the false-fire rate conditional on a verdict being issued, and
   the informative-device rate (a verdict issued); the gamma arms must issue a verdict in at least 80 % of replicates,
-  so that withholding cannot manufacture a clean bound.
+  so that withholding cannot manufacture a clean bound. A device verdict counts the departure, count-rule and
+  mutation results; the settle gap tests appear under `settle_descriptive` and never fire.
 - The order conditions gate data validity and leave every downstream statistic unevaluated when they fail, so they
   stay out of the null; a member-count simulator has no shot order.
 - The null's bound is the error guarantee of the whole pipeline; the per-component levels (admission, carryover, q_hat,
@@ -229,11 +244,19 @@ before the case. An attempt stays one job, and the change is a constructor and a
 
 Falsifiers: q_hat below its per-qubit tolerance on most qubits (the departure verdict is withheld and q = 1 is
 wrong); a pooled settle z
-beyond 3; fewer than 8 selected qubits; either order condition failing; a carryover arm's zero-fire bound at or above
-0.01 or its informative-device rate below 80 %; a plateau arm whose departure verdict is not withheld.
+beyond 3; fewer than 8 selected qubits; either order condition failing; a carryover, q or plateau-retained arm's
+conditional or unconditional zero-fire bound at or above 0.01; a gamma arm's informative-device rate below 80 %; a
+plateau-low arm whose departure verdict is not withheld; a sparse settle arm with a departure false-fire bound at or
+above 0.01.
 
 ## Superseded designs
 
+- v3.5's null could not fail where it mattered. Its sparse settle arm shifted only the settle arm, so a missed gap
+  could never move the departure, and it scored both planted qubits jointly against a per-qubit target with a size
+  that left out the median's standard error; its q arm planted q on the tolerance bound, which the screen withholds
+  in 97.5 % of draws, so the arm issued no verdict; its plateau arm drew all 30 retained pairs, 8 of them at or above
+  the lowest tolerance bound, while its target required that no verdict issue; and its carryover arms carried an 80 %
+  issuance floor that the negative arm's settle-veto withholding (27 %) breaks with zero fires in 459 replicates.
 - v3.4 pooled the twelve readers into one conditional difference and divided it by the readout contrast once; the
   bit conditioning dilutes D by a second contrast factor (understating D by up to 1 - c), and pooling admits a
   composition bias of about 0.21 times a baseline that differs between reader blocks.

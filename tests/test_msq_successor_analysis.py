@@ -472,6 +472,15 @@ def test_device_decision_reports_a_clean_null_and_adds_the_shape_bound() -> None
     check(len(decision["selected"]) == 8 and not decision["settle_veto"]["common_veto"])
 
 
+def test_device_decision_fires_a_planted_departure_through_the_settle_reclassification() -> None:
+    """A loss common to the measure and settle arms is a departure, and settle_descriptive keeps its device flag."""
+    ctx_map = bare_contexts(msa.FIXTURE_QUBITS)
+    rows = su.evaluate(ground_counts(ctx_map, eps=0.01, eps_settle=0.01), ctx_map)
+    decision = su.device_decision(rows, list(rows), 2, dict.fromkeys(rows, 0.002))
+    check(decision["withheld"] is None, f"{decision['withheld']}")
+    check(msa.device_flags(decision["device"])["departs_below"], f"{msa.device_flags(decision['device'])}")
+
+
 def test_device_decision_withholds_below_eight_qubits_and_on_a_common_gap() -> None:
     rows = eight_rows()
     few = su.device_decision(rows, list(rows)[:7], 2, dict.fromkeys(rows, 0.0))
