@@ -1139,6 +1139,18 @@ def corpus_pairing_sign() -> dict[str, object]:
     return {"linear_word": str(word), "linear_state": str(state), "hermitian_both_routes": str(hermitian_state)}
 
 
+def _dark_law_holds(angles: tuple[float, float]) -> bool:
+    """At (theta, phi), the order interferometer's dark probability equals ||[A, B]||^2/8 = sin^2 theta sin^2 phi."""
+    from hypercomplex_operators import order_interferometer, quaternion_matrix
+
+    theta, phi = angles
+    a = math.cos(theta) * np.eye(2) + math.sin(theta) * quaternion_matrix([0.0, 1.0, 0.0, 0.0])
+    b = math.cos(phi) * np.eye(2) + math.sin(phi) * quaternion_matrix([0.0, 0.0, 1.0, 0.0])
+    dark = float(np.sum(np.abs(order_interferometer(theta, phi)[2:, 0]) ** 2))
+    bracket = float(np.linalg.norm(a @ b - b @ a) ** 2 / 8)
+    return abs(dark - bracket) < 1e-12 and abs(dark - (math.sin(theta) * math.sin(phi)) ** 2) < 1e-12
+
+
 def quaternion_order_bridge() -> dict[str, object]:
     """The quaternion encoding of the Ascella order interferometer carries the corpus's sl(2) bracket.
 
@@ -1146,7 +1158,7 @@ def quaternion_order_bridge() -> dict[str, object]:
     H = -iI, E = (J - iK)/2, F = -(J + iK)/2, and [I, J] = 2K is [H, E] = 2E in the compact real form. The
     interferometer's dark probability is ||[A, B]||_F^2 / 8 = sin^2(theta) sin^2(phi), the squared bracket coefficient.
     """
-    from hypercomplex_operators import order_interferometer, quaternion_matrix
+    from hypercomplex_operators import quaternion_matrix
 
     s1 = np.array([[0, 1], [1, 0]], dtype=complex)
     s2 = np.array([[0, -1j], [1j, 0]])
@@ -1157,13 +1169,36 @@ def quaternion_order_bridge() -> dict[str, object]:
     require(np.allclose(qi @ qj - qj @ qi, 2 * qk), "[I, J] != 2K")
     chevalley = np.allclose(-1j * qi, h) and np.allclose((qj - 1j * qk) / 2, e) and np.allclose(-(qj + 1j * qk) / 2, f)
     require(chevalley, "H, E, F are not the stated combinations of I, J, K")
-    for theta, phi in ((math.pi / 4, math.pi / 4), (0.3, -1.1), (1.2, 0.7)):
-        a = math.cos(theta) * np.eye(2) + math.sin(theta) * qi
-        b = math.cos(phi) * np.eye(2) + math.sin(phi) * qj
-        dark = float(np.sum(np.abs(order_interferometer(theta, phi)[2:, 0]) ** 2))
-        bracket = float(np.linalg.norm(a @ b - b @ a) ** 2 / 8)
-        require(abs(dark - bracket) < 1e-12 and abs(dark - (math.sin(theta) * math.sin(phi)) ** 2) < 1e-12, "dark law")
+    angles = [(math.pi / 4, math.pi / 4), (0.3, -1.1), (1.2, 0.7)]
+    require(all(parallel.ordered_map(_dark_law_holds, angles)), "dark probability != ||[A, B]||^2 / 8")
     return {"I, J, K": "i sigma_3, i sigma_2, i sigma_1", "dark": "||[A, B]||^2 / 8", "angle_pairs_checked": 3}
+
+
+def _clifford_failures(dim: int) -> int:
+    """Number of index pairs a <= b whose gammas break {Gamma_a, Gamma_b} = 2 delta_ab at this dimension.
+
+    At 8 dimensions it also requires the chirality split 16 = 8_s + 8_c; at 16 it requires the failing pairs to be
+    the index pairs of cd_core.sedenion_zero_divisor_corpus.
+    """
+    from cd_core import sedenion_zero_divisor_corpus
+
+    left = cd_table(dim).transpose(0, 2, 1)  # left[a][r, q] = coefficient of e_r in e_a e_q
+    conj = left * np.array([1] + [-1] * (dim - 1), dtype=np.int64)[:, None, None]
+    gammas = np.zeros((dim, 2 * dim, 2 * dim), dtype=np.int64)
+    gammas[:, :dim, dim:], gammas[:, dim:, :dim] = left, conj
+    product = np.einsum("aij,bjk->abik", gammas, gammas)
+    target = 2 * np.einsum("ab,ik->abik", np.eye(dim, dtype=np.int64), np.eye(2 * dim, dtype=np.int64))
+    bad = np.any(product + product.transpose(1, 0, 2, 3) != target, axis=(2, 3))
+    failing = {(int(a), int(b)) for a, b in np.argwhere(np.triu(bad))}
+    if dim == 8:
+        chirality = np.linalg.multi_dot(list(gammas))
+        sign = int(chirality[0, 0])
+        split = np.diag(np.array([sign] * 8 + [-sign] * 8, dtype=np.int64))
+        require(not failing and np.array_equal(chirality, split), "octonion gammas fail Cl(8) or 16 = 8_s + 8_c")
+    else:
+        divisors = {(i, j) for i, j, *_ in sedenion_zero_divisor_corpus()}
+        require(failing == divisors, "sedenion Clifford failures differ from the zero-divisor index pairs")
+    return len(failing)
 
 
 def octonion_clifford() -> dict[str, object]:
@@ -1173,28 +1208,8 @@ def octonion_clifford() -> dict[str, object]:
     sedenions the failing index pairs are exactly those of cd_core.sedenion_zero_divisor_corpus. Every pair is
     tested at once as one integer array.
     """
-    from cd_core import sedenion_zero_divisor_corpus
-
-    out: dict[str, object] = {}
-    for dim in (8, 16):
-        left = cd_table(dim).transpose(0, 2, 1)  # left[a][r, q] = coefficient of e_r in e_a e_q
-        conj = left * np.array([1] + [-1] * (dim - 1), dtype=np.int64)[:, None, None]
-        gammas = np.zeros((dim, 2 * dim, 2 * dim), dtype=np.int64)
-        gammas[:, :dim, dim:], gammas[:, dim:, :dim] = left, conj
-        product = np.einsum("aij,bjk->abik", gammas, gammas)
-        target = 2 * np.einsum("ab,ik->abik", np.eye(dim, dtype=np.int64), np.eye(2 * dim, dtype=np.int64))
-        bad = np.any(product + product.transpose(1, 0, 2, 3) != target, axis=(2, 3))
-        failing = {(int(a), int(b)) for a, b in np.argwhere(np.triu(bad))}
-        out[str(dim)] = len(failing)
-        if dim == 8:
-            chirality = np.linalg.multi_dot(list(gammas))
-            sign = int(chirality[0, 0])
-            split = np.diag(np.array([sign] * 8 + [-sign] * 8, dtype=np.int64))
-            require(not failing and np.array_equal(chirality, split), "octonion gammas fail Cl(8) or 16 = 8_s + 8_c")
-        else:
-            divisors = {(i, j) for i, j, *_ in sedenion_zero_divisor_corpus()}
-            require(failing == divisors, "sedenion Clifford failures differ from the zero-divisor index pairs")
-    return {"failing_pairs_by_dimension": out, "sedenion_failures_are_zero_divisor_pairs": True}
+    failures = dict(zip(("8", "16"), parallel.ordered_map(_clifford_failures, [8, 16]), strict=True))
+    return {"failing_pairs_by_dimension": failures, "sedenion_failures_are_zero_divisor_pairs": True}
 
 
 def _clifford_sign(a: int, b: int) -> int:
