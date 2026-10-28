@@ -1167,28 +1167,26 @@ def octonion_clifford() -> dict[str, object]:
     """Gamma_a = [[0, L_a], [L_conj(a), 0]] generates Cl(8) on the octonions; at 16 dimensions it fails on 42 pairs.
 
     The relation needs L_a L_conj(b) + L_b L_conj(a) = 2 delta_ab, which alternativity gives at 8 dimensions. On the
-    sedenions the failing index pairs are exactly those of cd_core.sedenion_zero_divisor_corpus.
+    sedenions the failing index pairs are exactly those of cd_core.sedenion_zero_divisor_corpus. Every pair is
+    tested at once as one integer array.
     """
     from cd_core import sedenion_zero_divisor_corpus
 
     out: dict[str, object] = {}
     for dim in (8, 16):
         left = cd_table(dim).transpose(0, 2, 1)  # left[a][r, q] = coefficient of e_r in e_a e_q
-        conj = np.array([left[0]] + [-left[a] for a in range(1, dim)])
-        zero = np.zeros((dim, dim), dtype=np.int64)
-        gammas = np.array([np.block([[zero, left[a]], [conj[a], zero]]) for a in range(dim)])
-        anti = np.einsum("aij,bjk->abik", gammas, gammas) + np.einsum("bij,ajk->abik", gammas, gammas)
-        ident = np.eye(2 * dim, dtype=np.int64)
-        failing = {
-            (a, b)
-            for a, b in itertools.combinations_with_replacement(range(dim), 2)
-            if not np.array_equal(anti[a, b], 2 * ident * (a == b))
-        }
+        conj = left * np.array([1] + [-1] * (dim - 1), dtype=np.int64)[:, None, None]
+        gammas = np.zeros((dim, 2 * dim, 2 * dim), dtype=np.int64)
+        gammas[:, :dim, dim:], gammas[:, dim:, :dim] = left, conj
+        product = np.einsum("aij,bjk->abik", gammas, gammas)
+        target = 2 * np.einsum("ab,ik->abik", np.eye(dim, dtype=np.int64), np.eye(2 * dim, dtype=np.int64))
+        bad = np.any(product + product.transpose(1, 0, 2, 3) != target, axis=(2, 3))
+        failing = {(int(a), int(b)) for a, b in np.argwhere(np.triu(bad))}
         out[str(dim)] = len(failing)
         if dim == 8:
             chirality = np.linalg.multi_dot(list(gammas))
             sign = int(chirality[0, 0])
-            split = np.block([[sign * np.eye(8, dtype=np.int64), zero], [zero, -sign * np.eye(8, dtype=np.int64)]])
+            split = np.diag(np.array([sign] * 8 + [-sign] * 8, dtype=np.int64))
             require(not failing and np.array_equal(chirality, split), "octonion gammas fail Cl(8) or 16 = 8_s + 8_c")
         else:
             divisors = {(i, j) for i, j, *_ in sedenion_zero_divisor_corpus()}
@@ -1202,29 +1200,34 @@ def _clifford_sign(a: int, b: int) -> int:
     return (-1) ** (swaps + bin(a & b).count("1"))
 
 
+def _column_signs(table: np.ndarray) -> np.ndarray:
+    """s[a, b, x] with (e_a e_b) e_x = s e_a (e_b e_x), for an 8 x 8 basis sign table, over all a, b, x at once."""
+    a, b, x = np.meshgrid(np.arange(8), np.arange(8), np.arange(8), indexing="ij")
+    return table[a, b] * table[a ^ b, x] * table[b, x] * table[a, b ^ x]
+
+
 def associator_characters() -> dict[str, object]:
     """Column signs s(x) with (e_a e_b) e_x = s(x) e_a (e_b e_x) over the eight octonion basis columns.
 
     Every pair of distinct imaginary units gives a nontrivial character of F_2^3 whose kernel is the quaternion
     subalgebra {0, a, b, a ^ b}. The associative Cl(0,3) sign table on the same index set and a = b (alternativity)
     give the trivial character, so they are mutation arms of a sign interferometer on eight modes; no quaternionic
-    pair can be one, because two distinct units generate a quaternion subalgebra that four columns leave.
+    pair can be one, because two distinct units generate a quaternion subalgebra that four columns leave. All 64
+    ordered pairs are evaluated as one array.
     """
-
-    def octonion(p: int, q: int) -> int:
-        return cd_sign(8, p, q)
-
-    def signs(sign: Callable[[int, int], int], a: int, b: int) -> list[int]:
-        return [sign(a, b) * sign(a ^ b, x) * sign(b, x) * sign(a, b ^ x) for x in range(8)]
-
-    for a, b in itertools.combinations(range(1, 8), 2):
-        s = signs(octonion, a, b)
-        character = all(s[x] * s[y] == s[x ^ y] for x in range(8) for y in range(8))
-        require(character and {x for x in range(8) if s[x] == 1} == {0, a, b, a ^ b}, f"pair {(a, b)}: {s}")
-    clifford = all(signs(_clifford_sign, a, b) == [1] * 8 for a, b in itertools.product(range(8), repeat=2))
-    alternative = all(signs(octonion, a, a) == [1] * 8 for a in range(8))
-    require(clifford and alternative, "a mutation arm carries a nontrivial associator character")
-    return {"octonion_pairs_nontrivial": 21, "cl03_trivial": True, "a_equals_b_trivial": True}
+    index = np.arange(8)
+    octonion = _column_signs(cd_table(8)[index[:, None], index[None, :], index[:, None] ^ index[None, :]])
+    clifford = _column_signs(np.array([[_clifford_sign(p, q) for q in range(8)] for p in range(8)], dtype=np.int64))
+    character = octonion[:, :, :, None] * octonion[:, :, None, :] == octonion[:, :, index[:, None] ^ index[None, :]]
+    a, b, x = np.meshgrid(index, index, index, indexing="ij")
+    in_kernel = (x == 0) | (x == a) | (x == b) | (x == (a ^ b))
+    distinct = (a != b) & (a > 0) & (b > 0)
+    require(bool(np.all(character[distinct[:, :, 0]])), "an octonion pair's column signs are not a character")
+    require(bool(np.array_equal((octonion == 1)[distinct[:, :, 0]], in_kernel[distinct[:, :, 0]])), "kernel != H")
+    require(bool(np.all(clifford == 1)), "the Cl(0,3) mutation carries a nontrivial associator character")
+    require(bool(np.all(octonion[index, index] == 1)), "a = b carries a nontrivial associator character")
+    pairs = int(np.count_nonzero(np.triu(distinct[:, :, 0])))
+    return {"octonion_pairs_nontrivial": pairs, "cl03_trivial": True, "a_equals_b_trivial": True}
 
 
 ALBERT_CHECK = ROOT / "docs/notes/packages/manual/checks/albert_algebra.py"
