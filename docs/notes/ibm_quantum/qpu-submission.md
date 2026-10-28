@@ -178,8 +178,10 @@ and the Kaggle noise-snapshot rule.
   per instance, while the historical-job and campaign accounting bind the
   default instance. The `ibm_account.py --self-test` in gate `core-self-test-05` (`tests/test_cli_self_tests.py`)
   holds the account selection and the instance refusal.
-- Retaining a collected run. A run directory joins the tree with every
-  register that enumerates retained jobs, in one change: the instance's job
+- Retaining a collected run. `sh scripts/retain_run.sh RUN ID FAMILY
+  QUESTION`, under the run's `GOROROBA_IBM_ACCOUNT`, joins a run directory to
+  the tree with every register that enumerates retained jobs, in one change,
+  and leaves only the claim to write: the runtime seed rows, the instance's job
   inventory (`scripts/observe_qpu_job_inventory.py`, a service read), the
   retention audit (`scripts/reconcile_qpu_inventory.py`, which writes each
   instance's audit and creates the file exclusively), the submitted-circuit
