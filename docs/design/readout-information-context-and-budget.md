@@ -436,6 +436,10 @@ submission. An admitted analysis receipt still needs to bind that snapshot and
 selected metadata revisions to the independently trusted submission and
 collection anchors. Recomputing the expected digest from mutable files would
 establish consistency only. That trusted receipt lifecycle remains unintegrated.
+The offline retention tests include a collector process that exits before
+publishing its acquisition index; recollection acquires the released job lock
+and binds the raw bytes already written. That test covers the observed local
+filesystem behavior, not arbitrary filesystem failures or provider provenance.
 
 The local `project_reporter_shots` helper projects ordered single-register
 Qiskit bitstrings onto two specified classical-bit indices without constructing
