@@ -512,18 +512,21 @@ def linfinity_counterexample() -> dict[str, object]:
 
 
 def virasoro_cocycle(window: int = 8) -> int:
-    """The central term of the Virasoro bracket satisfies the cocycle (Jacobi) identity on a window of modes."""
-    c = sp.Symbol("c")
+    """The central term of the Virasoro bracket satisfies the cocycle (Jacobi) identity on a window of modes.
 
-    def omega(m: int, n: int) -> sp.Expr:
-        return c / 12 * (m**3 - m) * (1 if m + n == 0 else 0)
+    The term is (c/12) w(m, n) with w(m, n) = (m^3 - m) delta_(m+n,0), so the Jacobi residual of the triple
+    (m, n, p) is c/12 times an integer; the whole window is evaluated at once in integer arithmetic.
+    """
+    modes = np.arange(-window, window + 1, dtype=np.int64)
+    m, n, p = np.meshgrid(modes, modes, modes, indexing="ij")
 
-    checked = 0
-    for m, n, p in itertools.product(range(-window, window + 1), repeat=3):
-        total = (m - n) * omega(m + n, p) + (n - p) * omega(n + p, m) + (p - m) * omega(p + m, n)
-        require(sp.simplify(total) == 0, f"Virasoro cocycle fails at {(m, n, p)}")
-        checked += 1
-    return checked
+    def omega(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+        return (x**3 - x) * (x + y == 0)
+
+    residual = (m - n) * omega(m + n, p) + (n - p) * omega(n + p, m) + (p - m) * omega(p + m, n)
+    failing = np.argwhere(residual != 0)
+    require(failing.size == 0, f"Virasoro cocycle fails at {[tuple(int(modes[k]) for k in f) for f in failing[:3]]}")
+    return int(residual.size)
 
 
 # ---------------------------------------------------------------- mode-algebra vacuum engine
