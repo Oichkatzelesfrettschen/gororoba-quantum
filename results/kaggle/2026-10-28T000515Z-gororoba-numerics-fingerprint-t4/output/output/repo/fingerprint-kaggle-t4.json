@@ -1,0 +1,370 @@
+{
+ "both-pinned": {
+  "environment": {
+   "blas": [
+    {
+     "architecture": "Haswell",
+     "internal_api": "openblas",
+     "version": "0.3.34.106.0"
+    },
+    {
+     "architecture": null,
+     "internal_api": "openmp",
+     "version": null
+    },
+    {
+     "architecture": "Haswell",
+     "internal_api": "openblas",
+     "version": "0.3.31.dev"
+    },
+    {
+     "architecture": "Haswell",
+     "internal_api": "openblas",
+     "version": "0.3.15"
+    }
+   ],
+   "cpu_features": [
+    "AVX",
+    "AVX2",
+    "AVX512BW",
+    "AVX512CD",
+    "AVX512DQ",
+    "AVX512F",
+    "AVX512VL",
+    "BMI",
+    "BMI2",
+    "CX16",
+    "F16C",
+    "FMA3",
+    "LAHF",
+    "LZCNT",
+    "MMX",
+    "MOVBE",
+    "POPCNT",
+    "SSE",
+    "SSE2",
+    "SSE3",
+    "SSE41",
+    "SSE42",
+    "SSSE3",
+    "X86_V2",
+    "X86_V3"
+   ],
+   "env": {
+    "NPY_DISABLE_CPU_FEATURES": "X86_V4 AVX512_ICL AVX512_SPR",
+    "OPENBLAS_CORETYPE": "Haswell"
+   },
+   "glibc": "glibc 2.39",
+   "machine": "x86_64",
+   "numpy": "2.5.4",
+   "processor": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+   "python": "3.14.7",
+   "runtime_module": "numpy",
+   "scipy": "1.18.1"
+  },
+  "kernels": {
+   "chi2_sf": "1a16f8d015ab40c575bfbedc6f817e8804260d020b876c0d01390c5cb4c6b8d9",
+   "corrected_z": "90f6dddacb7233880b0d1bf5e2710d1af6098f5be934215544e0bad47ace363b",
+   "expm_stack": "b91a0f07e82ba4f05295024738929c1d71a74dba50933c5f3e18365deca783a1",
+   "fit_gamma_rate": "cefdf06540daecbd191fcbd0e4b36a6fa41f467fdc0bf4ddc92d8b8433d30507",
+   "math_exp": "b614736bbde984436320276cdc46361c08bd67c199901073d8f7437e5a585a07",
+   "math_pow": "7c847efa35863b341abcc82532054623eeb0a570468d5f5000cc0a84e9d9ec70",
+   "matmul_single": "fc3e70be324fd4fc8951d6d60d459dcba079d7978aec391ad8c31d6ed14c254d",
+   "matmul_stack": "7fdfb3c6d09b3130e2db61b31896f5452e05b04fea778cfb0dbc6d4958f6a980",
+   "matrix_power_16": "3b1af9c95ef7090d524ec05673bb623c039a3c89dffdb95862da633e1c46b50d",
+   "np_exp": "b614736bbde984436320276cdc46361c08bd67c199901073d8f7437e5a585a07",
+   "np_power": "7c847efa35863b341abcc82532054623eeb0a570468d5f5000cc0a84e9d9ec70"
+  },
+  "seconds": {
+   "chi2_sf": 0.049831654999991315,
+   "corrected_z": 0.011743674000001647,
+   "expm_stack": 0.0007856610000089859,
+   "fit_gamma_rate": 0.22843370399999685,
+   "math_exp": 0.01358506399998305,
+   "math_pow": 0.01824887899999794,
+   "matmul_single": 0.0004915089999713018,
+   "matmul_stack": 0.0007171700000299097,
+   "matrix_power_16": 0.0033938560000024154,
+   "np_exp": 0.0008554460000027575,
+   "np_power": 0.0024081660000092597
+  },
+  "stderr": ""
+ },
+ "default": {
+  "environment": {
+   "blas": [
+    {
+     "architecture": "SkylakeX",
+     "internal_api": "openblas",
+     "version": "0.3.34.106.0"
+    },
+    {
+     "architecture": null,
+     "internal_api": "openmp",
+     "version": null
+    },
+    {
+     "architecture": "SkylakeX",
+     "internal_api": "openblas",
+     "version": "0.3.31.dev"
+    },
+    {
+     "architecture": "SkylakeX",
+     "internal_api": "openblas",
+     "version": "0.3.15"
+    }
+   ],
+   "cpu_features": [
+    "AVX",
+    "AVX2",
+    "AVX512BW",
+    "AVX512CD",
+    "AVX512DQ",
+    "AVX512F",
+    "AVX512VL",
+    "AVX512_SKX",
+    "BMI",
+    "BMI2",
+    "CX16",
+    "F16C",
+    "FMA3",
+    "LAHF",
+    "LZCNT",
+    "MMX",
+    "MOVBE",
+    "POPCNT",
+    "SSE",
+    "SSE2",
+    "SSE3",
+    "SSE41",
+    "SSE42",
+    "SSSE3",
+    "X86_V2",
+    "X86_V3",
+    "X86_V4"
+   ],
+   "env": {
+    "NPY_DISABLE_CPU_FEATURES": null,
+    "OPENBLAS_CORETYPE": null
+   },
+   "glibc": "glibc 2.39",
+   "machine": "x86_64",
+   "numpy": "2.5.4",
+   "processor": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+   "python": "3.14.7",
+   "runtime_module": "numpy",
+   "scipy": "1.18.1"
+  },
+  "kernels": {
+   "chi2_sf": "1a16f8d015ab40c575bfbedc6f817e8804260d020b876c0d01390c5cb4c6b8d9",
+   "corrected_z": "07ad626a3d645f6d3ae80a41f94d24133b17fa3d7f56db44c1250d38fbac2f65",
+   "expm_stack": "d4588d4335732b46eadf868dddcdc29a72a77a50754fe062c974ca58dd252842",
+   "fit_gamma_rate": "e170c71ea4d4a036c6c19a22f4c01189acd6c7a05691ea871133b67593167e06",
+   "math_exp": "b614736bbde984436320276cdc46361c08bd67c199901073d8f7437e5a585a07",
+   "math_pow": "7c847efa35863b341abcc82532054623eeb0a570468d5f5000cc0a84e9d9ec70",
+   "matmul_single": "fc3e70be324fd4fc8951d6d60d459dcba079d7978aec391ad8c31d6ed14c254d",
+   "matmul_stack": "7fdfb3c6d09b3130e2db61b31896f5452e05b04fea778cfb0dbc6d4958f6a980",
+   "matrix_power_16": "3b1af9c95ef7090d524ec05673bb623c039a3c89dffdb95862da633e1c46b50d",
+   "np_exp": "1d9d490779bbe9b84589ff42958d84852509334c3e5352f59eef0134d58a5b25",
+   "np_power": "b78b9a975648843a2b9c1036699b5c708b90ba47946ec8e06120fdaf45e82d0e"
+  },
+  "seconds": {
+   "chi2_sf": 0.051440248000005795,
+   "corrected_z": 0.01086640199997646,
+   "expm_stack": 0.0008061740000471218,
+   "fit_gamma_rate": 0.23830383000000666,
+   "math_exp": 0.009438359000000673,
+   "math_pow": 0.018249223000054826,
+   "matmul_single": 0.00044353499998806,
+   "matmul_stack": 0.0002324559999919984,
+   "matrix_power_16": 0.0012145970000005946,
+   "np_exp": 0.00014786599996341465,
+   "np_power": 0.0057599799999934476
+  },
+  "stderr": ""
+ },
+ "numpy-no-avx512": {
+  "environment": {
+   "blas": [
+    {
+     "architecture": "SkylakeX",
+     "internal_api": "openblas",
+     "version": "0.3.34.106.0"
+    },
+    {
+     "architecture": null,
+     "internal_api": "openmp",
+     "version": null
+    },
+    {
+     "architecture": "SkylakeX",
+     "internal_api": "openblas",
+     "version": "0.3.31.dev"
+    },
+    {
+     "architecture": "SkylakeX",
+     "internal_api": "openblas",
+     "version": "0.3.15"
+    }
+   ],
+   "cpu_features": [
+    "AVX",
+    "AVX2",
+    "AVX512BW",
+    "AVX512CD",
+    "AVX512DQ",
+    "AVX512F",
+    "AVX512VL",
+    "BMI",
+    "BMI2",
+    "CX16",
+    "F16C",
+    "FMA3",
+    "LAHF",
+    "LZCNT",
+    "MMX",
+    "MOVBE",
+    "POPCNT",
+    "SSE",
+    "SSE2",
+    "SSE3",
+    "SSE41",
+    "SSE42",
+    "SSSE3",
+    "X86_V2",
+    "X86_V3"
+   ],
+   "env": {
+    "NPY_DISABLE_CPU_FEATURES": "X86_V4 AVX512_ICL AVX512_SPR",
+    "OPENBLAS_CORETYPE": null
+   },
+   "glibc": "glibc 2.39",
+   "machine": "x86_64",
+   "numpy": "2.5.4",
+   "processor": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+   "python": "3.14.7",
+   "runtime_module": "numpy",
+   "scipy": "1.18.1"
+  },
+  "kernels": {
+   "chi2_sf": "1a16f8d015ab40c575bfbedc6f817e8804260d020b876c0d01390c5cb4c6b8d9",
+   "corrected_z": "07ad626a3d645f6d3ae80a41f94d24133b17fa3d7f56db44c1250d38fbac2f65",
+   "expm_stack": "d4588d4335732b46eadf868dddcdc29a72a77a50754fe062c974ca58dd252842",
+   "fit_gamma_rate": "cefdf06540daecbd191fcbd0e4b36a6fa41f467fdc0bf4ddc92d8b8433d30507",
+   "math_exp": "b614736bbde984436320276cdc46361c08bd67c199901073d8f7437e5a585a07",
+   "math_pow": "7c847efa35863b341abcc82532054623eeb0a570468d5f5000cc0a84e9d9ec70",
+   "matmul_single": "fc3e70be324fd4fc8951d6d60d459dcba079d7978aec391ad8c31d6ed14c254d",
+   "matmul_stack": "7fdfb3c6d09b3130e2db61b31896f5452e05b04fea778cfb0dbc6d4958f6a980",
+   "matrix_power_16": "3b1af9c95ef7090d524ec05673bb623c039a3c89dffdb95862da633e1c46b50d",
+   "np_exp": "b614736bbde984436320276cdc46361c08bd67c199901073d8f7437e5a585a07",
+   "np_power": "7c847efa35863b341abcc82532054623eeb0a570468d5f5000cc0a84e9d9ec70"
+  },
+  "seconds": {
+   "chi2_sf": 0.049698268000042845,
+   "corrected_z": 0.010971310999991601,
+   "expm_stack": 0.000932998999985557,
+   "fit_gamma_rate": 0.23029782499997964,
+   "math_exp": 0.00973019299999578,
+   "math_pow": 0.017545417000008,
+   "matmul_single": 0.00043001399996001055,
+   "matmul_stack": 0.0002159279999887076,
+   "matrix_power_16": 0.0011778349999644888,
+   "np_exp": 0.0006578559999752542,
+   "np_power": 0.002374384999995982
+  },
+  "stderr": ""
+ },
+ "openblas-haswell": {
+  "environment": {
+   "blas": [
+    {
+     "architecture": "Haswell",
+     "internal_api": "openblas",
+     "version": "0.3.34.106.0"
+    },
+    {
+     "architecture": null,
+     "internal_api": "openmp",
+     "version": null
+    },
+    {
+     "architecture": "Haswell",
+     "internal_api": "openblas",
+     "version": "0.3.31.dev"
+    },
+    {
+     "architecture": "Haswell",
+     "internal_api": "openblas",
+     "version": "0.3.15"
+    }
+   ],
+   "cpu_features": [
+    "AVX",
+    "AVX2",
+    "AVX512BW",
+    "AVX512CD",
+    "AVX512DQ",
+    "AVX512F",
+    "AVX512VL",
+    "AVX512_SKX",
+    "BMI",
+    "BMI2",
+    "CX16",
+    "F16C",
+    "FMA3",
+    "LAHF",
+    "LZCNT",
+    "MMX",
+    "MOVBE",
+    "POPCNT",
+    "SSE",
+    "SSE2",
+    "SSE3",
+    "SSE41",
+    "SSE42",
+    "SSSE3",
+    "X86_V2",
+    "X86_V3",
+    "X86_V4"
+   ],
+   "env": {
+    "NPY_DISABLE_CPU_FEATURES": null,
+    "OPENBLAS_CORETYPE": "Haswell"
+   },
+   "glibc": "glibc 2.39",
+   "machine": "x86_64",
+   "numpy": "2.5.4",
+   "processor": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+   "python": "3.14.7",
+   "runtime_module": "numpy",
+   "scipy": "1.18.1"
+  },
+  "kernels": {
+   "chi2_sf": "1a16f8d015ab40c575bfbedc6f817e8804260d020b876c0d01390c5cb4c6b8d9",
+   "corrected_z": "90f6dddacb7233880b0d1bf5e2710d1af6098f5be934215544e0bad47ace363b",
+   "expm_stack": "b91a0f07e82ba4f05295024738929c1d71a74dba50933c5f3e18365deca783a1",
+   "fit_gamma_rate": "e170c71ea4d4a036c6c19a22f4c01189acd6c7a05691ea871133b67593167e06",
+   "math_exp": "b614736bbde984436320276cdc46361c08bd67c199901073d8f7437e5a585a07",
+   "math_pow": "7c847efa35863b341abcc82532054623eeb0a570468d5f5000cc0a84e9d9ec70",
+   "matmul_single": "fc3e70be324fd4fc8951d6d60d459dcba079d7978aec391ad8c31d6ed14c254d",
+   "matmul_stack": "7fdfb3c6d09b3130e2db61b31896f5452e05b04fea778cfb0dbc6d4958f6a980",
+   "matrix_power_16": "3b1af9c95ef7090d524ec05673bb623c039a3c89dffdb95862da633e1c46b50d",
+   "np_exp": "1d9d490779bbe9b84589ff42958d84852509334c3e5352f59eef0134d58a5b25",
+   "np_power": "b78b9a975648843a2b9c1036699b5c708b90ba47946ec8e06120fdaf45e82d0e"
+  },
+  "seconds": {
+   "chi2_sf": 0.05323355600000923,
+   "corrected_z": 0.011803165000003446,
+   "expm_stack": 0.0010154870000178562,
+   "fit_gamma_rate": 0.2523236279999992,
+   "math_exp": 0.009531643999991957,
+   "math_pow": 0.01801829099997576,
+   "matmul_single": 0.0004542990000118152,
+   "matmul_stack": 0.0006295480000062526,
+   "matrix_power_16": 0.003582538999978624,
+   "np_exp": 0.00014160199998514145,
+   "np_power": 0.005886347000000569
+  },
+  "stderr": ""
+ }
+}
