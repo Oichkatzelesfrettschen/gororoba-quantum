@@ -6416,9 +6416,17 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
     return out
 
 
-def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
+def collect(service: QiskitRuntimeService, run_dir: Path, *, actor_record_sha256: str | None = None) -> None:
     """Measured replica distributions against the noise model of the calibration in force at execution."""
     record = json.loads((run_dir / "record.json").read_text())
+    if actor_record_sha256 is not None or record.get("family_configuration", {}).get("name") == "readout-actor":
+        import readout_actor_family
+
+        try:
+            readout_actor_family.collect(sys.modules[__name__], service, run_dir, actor_record_sha256)
+        except (ValueError, OSError) as error:
+            raise LiveRunError(str(error)) from error
+        return
     _require_record_instance(service, record, f"{run_dir}: collect")
     qpy_bytes = (run_dir / "isa.qpy").read_bytes()
     groups = {g.name: g for g in [*all_experiment_groups(), *record_groups(record)]}
@@ -6964,7 +6972,9 @@ def main(argv: list[str] | None = None) -> int:
         help="withhold these physical qubits of BACKEND from placement whatever their calibration; repeatable",
     )
     parser.add_argument(
-        "--family", choices=FAMILY_NAMES, help="complete experiment family with statistical design admission"
+        "--family",
+        choices=(*FAMILY_NAMES, "readout-actor"),
+        help="complete experiment family or descriptive full-PUB acquisition",
     )
     parser.add_argument(
         "--optimize", action="store_true", help="search bounded shot and replica tiers for the experiment family"
@@ -7301,7 +7311,52 @@ def main(argv: list[str] | None = None) -> int:
             "this QPU usage; a dry run carries it so the approved record's policy matches the submission"
         ),
     )
+    parser.add_argument("--actor-case", type=Path, help="complete full-PUB actor operational case")
+    parser.add_argument("--actor-reviewed-record", type=Path, help="independently reviewed actor dry-run directory")
+    parser.add_argument("--actor-reviewed-sha256", help="independently retained reviewed actor record digest")
+    parser.add_argument(
+        "--actor-record-sha256", help="independently retained actor submission record digest for collection"
+    )
     args = parser.parse_args(argv)
+    if args.actor_case is not None and args.family != "readout-actor":
+        parser.error("--actor-case applies only to --family readout-actor")
+    if args.family == "readout-actor" and (args.actor_case is None or args.out is None):
+        parser.error("readout-actor requires --actor-case and --out")
+    if (args.actor_reviewed_record is None) != (args.actor_reviewed_sha256 is None):
+        parser.error("actor reviewed-record path and digest must be supplied together")
+    if args.submit and args.family == "readout-actor" and args.actor_reviewed_record is None:
+        parser.error("readout-actor submission requires an independently reviewed record and digest")
+    if args.actor_reviewed_record is not None and args.family != "readout-actor":
+        parser.error("actor reviewed-record flags apply only to --family readout-actor")
+    if args.family == "readout-actor" and (
+        args.optimize or args.native_dry_run or args.rep_delay is not None or args.pin_layout is not None
+    ):
+        parser.error(
+            "readout-actor binds allocation, delay and layout in its case; optimizer and native mock are unsupported"
+        )
+    if args.family == "readout-actor":
+        allowed = {
+            "--family",
+            "--actor-case",
+            "--actor-reviewed-record",
+            "--actor-reviewed-sha256",
+            "--out",
+            "--backends",
+            "--max-execution-seconds",
+            "--max-total-execution-seconds",
+            "--submit",
+            "--approved-record",
+            "--approved-record-sha256",
+        }
+        unexpected = [
+            argument.split("=", 1)[0]
+            for argument in (argv if argv is not None else sys.argv[1:])
+            if argument.startswith("--") and argument.split("=", 1)[0] not in allowed
+        ]
+        if unexpected:
+            parser.error(f"readout-actor takes its complete operational settings from --actor-case: {unexpected}")
+    if args.actor_record_sha256 is not None and args.collect is None:
+        parser.error("--actor-record-sha256 requires --collect")
     global SEED_TRANSPILER, SEED_SIMULATOR
     SEED_TRANSPILER, SEED_SIMULATOR = args.seed_transpiler, args.seed_simulator
     exclusions: dict[str, set[int]] = {}
@@ -7559,12 +7614,19 @@ def main(argv: list[str] | None = None) -> int:
     service = ibm_account.open_service(QiskitRuntimeService)
     try:
         if args.collect:
-            collect(service, args.collect)
+            collect(service, args.collect, actor_record_sha256=args.actor_record_sha256)
             return 0
         if args.preserve_raw:
             preserved = preserve_raw(service, args.preserve_raw)
             print(f"raw results preserved for {len(preserved)} jobs under {args.preserve_raw / RAW_DIRECTORY}")
             return 0
+        if args.family == "readout-actor":
+            import readout_actor_family
+
+            try:
+                return readout_actor_family.run_cli(sys.modules[__name__], service, args)
+            except ValueError as error:
+                raise LiveRunError(str(error)) from error
         if args.envelope_fallback:
             evidence = envelope_fallback_setup(service, args)
             print(f"envelope fallback admitted: {evidence}")

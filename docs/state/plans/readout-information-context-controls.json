@@ -9,7 +9,7 @@
   "state": "active",
   "reconciliation": {
     "status": "unresolved",
-    "note": "The IBM qualification lacks an admitted runner, sparse full-register collection, frozen carryover and inference contracts, reference allocations and a complete bounded charge; IQM needs an enforceable credit ceiling."
+    "note": "The full-PUB software route passes integration tests and a submit-free live Target compile. Acquisition still requires frozen carryover, inference, reference allocations and complete bounded charge contracts; IQM requires an enforceable credit ceiling."
   },
   "steps": [
     {
@@ -26,7 +26,7 @@
     },
     {
       "id": "case",
-      "state": "doing",
+      "state": "todo",
       "action": "Construct a source-bound provider candidate",
       "acceptance": "Bind inputs, mappings, intervention, control mutations, execution order and a finite uncertainty and multiplicity contract."
     },
@@ -38,7 +38,7 @@
     },
     {
       "id": "sparse-retention",
-      "state": "todo",
+      "state": "doing",
       "action": "Design and verify scalable full-register retention",
       "acceptance": "Preserve full shared-PUB shots and project only declared outcomes before any dense or int64 conversion; bind raw receipt, physical maps, preparations and compiled identities, check cross-register alignment and missing data, and measure wide-record memory while preserving provider ordering limits."
     },
@@ -65,9 +65,49 @@
       "state": "todo",
       "action": "Refresh admission and request exact-case approval",
       "acceptance": "Present the reviewed case and provider limits; obtain explicit authorization before any job, upload, booking or provider draw."
+    },
+    {
+      "id": "full-pub-integration",
+      "state": "done",
+      "action": "Integrate and verify full-PUB planning, sparse collection and adjudication",
+      "acceptance": "Software tests cover source and approval binding, full-register ownership, sparse output, partial collection, recovery and digest dispatch; a submit-free live Target compilation passes. Scientific acquisition admission remains separate.",
+      "receipts": [
+        {
+          "result": "Full-PUB planning, approval binding, sparse collection and adjudication pass 147 focused tests; full mypy passes 650 files. Submit-free live Target compilation succeeds in results/live/2026-10-28T221449.819104Z. Outputs remain descriptive and the smoke case remains unapproved.",
+          "observed_at": "2026-10-28T22:18:00.645194+00:00",
+          "revision": "1d77f0d84e256020a4ea9940bbef942bc49f900b",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "da1ecf7ef0fcba2bc478af34f099acf700e5770a5da67a3af40beaba3d685b05"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "e34f6c2da752bf2588f4f25a6eb2122cf047cb5631f85e8626626fba2be67a3d"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "36461833b63ef10fd866c1e91adeaebca123a7bf7ceafe8287320caa46318d5f"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "c6ada6b7eb3eed9cd0e29e7d74eb6ce5f69d013d3bc29b9bb9d58494a5e9a069"
+            },
+            {
+              "ref": "scripts/readout_information_controls.py",
+              "sha256": "de6cd96e58568416a74a35f7a8f3d2437747646b9b4f41d9e2f9aa266decfd89"
+            },
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "5704ec2a2cabb31cb38ca8b689304b491853161d0475110fedecd4d1ba6926db"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        }
+      ]
     }
   ],
   "scope": "Design an IBM actor-reporter and paired-error case, with separately admitted IQM, QX and Ascella cases; exact case approval precedes provider actions.",
   "owner": "readout-information experiment",
-  "next_action": "Freeze qualification tolerances and reference allocations, bind supported ordering and inference evidence, and calculate the complete pilot-through-confirmation ceiling before independent case review."
+  "next_action": "Freeze the IBM sampling, selection, reference, carryover and complete cost contract; independently review the exact case before fresh admission and explicit approval."
 }

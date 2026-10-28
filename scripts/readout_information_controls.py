@@ -10,11 +10,23 @@ import argparse
 import json
 import math
 from fractions import Fraction
+from typing import TypedDict
 
 import numpy as np
 from scipy.stats import entropy
 
 MIN_NONZERO_PROBABILITY = Fraction(1, 10**12)
+
+
+class ParityErrorSummary(TypedDict):
+    """Exact descriptive values retain their scalar and paired types for callers."""
+
+    counts: tuple[int, ...]
+    marginal_errors: tuple[Fraction, Fraction]
+    parity_error: Fraction
+    improvement: Fraction
+    maximum_improvement: Fraction
+    boundary: str
 
 
 def noise_distribution(flip_probability: Fraction, shared: bool) -> tuple[Fraction, ...]:
@@ -134,7 +146,7 @@ def observed_information(counts: list[list[int]]) -> dict[str, object]:
     }
 
 
-def parity_error_summary(preparation: tuple[int, int], outputs: list[tuple[int, int]]) -> dict[str, object]:
+def parity_error_summary(preparation: tuple[int, int], outputs: list[tuple[int, int]]) -> ParityErrorSummary:
     """Describe paired errors exactly; the result is not a confidence bound.
 
     The caller must authenticate preparation, mapping, ordering and the source

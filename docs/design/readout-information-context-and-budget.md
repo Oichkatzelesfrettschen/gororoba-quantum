@@ -370,32 +370,60 @@ input allocations, durations and their provenance alongside the estimate.
 
 ### Runner and sampling integration gates
 
-The source catalogue is not registered as an IBM execution family. The
-approved-run wrapper binds `live_run.py`; it cannot submit this catalogue as a
-case without a new registered construction and analysis path. The runner's
-experiment digest covers its declared source manifest, not the new scripts
-automatically, so a case must bind every constructor, analyzer and cost
-dependency explicitly. The runner groups PUBs by shot count; different
-discovery and confirmation tiers can produce separate jobs and overhead.
+The [full-PUB actor family](../../gororoba_quantum/readout_actor_family.py)
+registers `live_run.py --family readout-actor --actor-case CASE.json`. The
+operational case names the backend, complete measured width, two reporters,
+disjoint actors, declared pair and group projections, each allocation's arm,
+preparation, stage, shots and repetition delay, resource ceilings, and explicit
+reference, carryover and selection rules. Its inference field accepts
+`descriptive`; a declaration cannot enable a confirmatory verdict. The CLI
+requires an output directory and execution ceilings matching the case.
 
-The runner currently forms dense distributions indexed by all classical bits.
-A 156-bit member would require an array of size `2**156` and cannot use that
-path. A practical implementation needs validated small-component packing with
-the intended full measurement footprint or a separately reviewed sparse
-full-shot path. The preferred path retains the complete aligned shot record
-from one full-register PUB and projects only declared small outcomes. The
-current `collect` path writes raw registers first but subsequently calls the
-dense distribution conversion; the legacy adjudicator also narrows full
-bitstrings to `int64`. Both paths need an explicit case-specific sparse
-branch before they can process a 156-bit case. The current full-register
-barrier also crosses the disjoint ownership required by the existing packing
-and archive validators, so simply wrapping it in a packed group is insufficient.
-An independently bound receipt must protect the raw index as well as its files.
+The family plans before generic dense ideals are constructed. It compiles on
+the complete fresh Target, checks preparation and measurement wiring, preserves
+the full-register barrier, and requires equal terminal-measurement start ticks.
+Each circuit remains a whole PUB with one synchronization owner. Generic packed
+components keep their strict ownership validation. The family binds its local
+source dependency closure, bounded prepared-bit ideals, QPY archive, calibration,
+account instance and explicit allocation to the existing approved-record checks.
+Shot and delay tiers create separate submission batches; their summed ceilings
+and the account reserve must fit the fresh quota. Cost estimates remain
+scenarios rather than evidence of physical initialization or provider scheduling.
+
+The unapproved case writer binds the record, QPY and operational case bytes,
+and gives a binding-run command that compares every fresh plan against the
+separately reviewed record. Actor submission requires that reviewed record and
+its digest even when called directly. Before the first provider call, a
+digest-keyed marker under the repository's common Git directory is created
+exclusively; linked worktrees and copied reviewed directories share that marker.
+The marker also closes the attempt if a process fails before provider contact.
+Separate clones or hosts do not share this local registry and require an
+independent coordination mechanism. The marker and hashes establish local
+one-time use and byte identity, not the authenticity of the user's review.
+
+The generic collector and legacy adjudicator retain their dense and `int64`
+paths for existing families. Actor records dispatch before those paths and
+retain full shot strings before computing declared projections. Collection
+requires `--collect RUN --actor-record-sha256 SHA256`, where the digest is an
+independently retained submission-record anchor. Offline adjudication uses
+`adjudicate.py RUN --actor-collection-sha256 SHA256`, binding the immutable
+collection receipt and its acquisition artifacts. A locally recomputed digest
+establishes consistency only; the operator must retain the anchor independently
+of the files being verified. Missing or changed bindings reject analysis.
+
+The [integration regression](../../tests/gororoba_quantum/test_readout_actor_family.py)
+uses a 156-bit synthetic backend and actual raw serialization to exercise
+planning, mocked approved submission, collection and offline adjudication.
+It makes dense conversion fail if reached and tests changed approval, quota,
+instance, source, calibration, preparation and measurement mappings. Mocked
+submission checks establish software behavior, not hardware alignment or cost.
 The current [ownership regression](../../tests/scripts/test_readout_barrier_ownership.py)
 shows that component-local barriers pass, while the validator rejects both a
 cross-component synchronization barrier and a cross-component CZ. A future
-versioned validator must distinguish those operations without discarding the
-synchronization barrier or weakening the rule for computational gates.
+versioned packed-component validator would need to distinguish those operations
+without discarding synchronization or weakening computational-gate ownership.
+The full-PUB route avoids that reconstruction and validates its restricted
+preparation, delay, full barrier and measurement instruction set directly.
 The case must check its required synchronization against compiled and served
 schedule evidence; source instruction order alone is insufficient.
 Ordered raw bitstrings within one PUB do not establish the
@@ -406,10 +434,10 @@ requires it.
 
 | Stage | Observed execution path | Sparse-case obligation |
 |---|---|---|
-| Construction | The logical catalogue builds one full-register circuit; it does not register an execution family. | Bind the constructor, physical layout, preparation and global-barrier ownership to an approved family. |
-| Planning and submission | Existing group and simulation machinery expects component distributions; the approved-run wrapper only submits registered `live_run.py` cases. | Avoid dense ideal and noise paths for the full register, or prove a compatible representation; bind the exact QPY and source closure. |
-| Raw serialization | `write_raw_result` retains each PUB register's ordered bitstrings, metadata and file digests before analysis. | Bind the index itself to a trusted receipt, plus PUB identity, register names, widths, counts and measurement map. |
-| Collection and adjudication | Standard collection calls `_distribution`, which allocates `2**clbits`; legacy `adjudicate.bit_values` converts complete strings to `int64`. | Project declared bits before either conversion and preserve the original full shots. |
+| Construction | The full-PUB actor family validates physical preparation, complete measurement wiring and a global synchronization barrier. | Freeze a complete operational case and retain the compiled evidence. |
+| Planning and submission | Actor planning uses prepared-bit ideals and existing approval checks before generic dense group construction. | Review the exact allocation, cost scenario, source closure and QPY; approve the case separately. |
+| Raw serialization | `write_raw_result` retains ordered bitstrings and an immutable acquisition index. | Retain submission and collection digest anchors independently of the analyzed files. |
+| Collection and adjudication | Actor records dispatch to sparse projection before dense conversion or `int64` narrowing. | Validate the complete ledger, receipt and QPY chain; preserve full raw shots. |
 | Inference | The current paired helpers return descriptive values. | Validate assignment, ordering, sampling and multiplicity evidence before a separately reviewed analyzer issues a decision. |
 
 Projecting multiple components from the same full-register shot preserves the
@@ -432,10 +460,16 @@ collection and metrics updates. Concurrent identical collectors preserve the
 same indexed bytes; a conflicting collector refuses the existing raw file.
 Metrics revisions continue through the existing index and cannot alter those snapshot bytes. The snapshot
 is also written by `preserve_raw`, whose weaker checks do not authenticate a
-submission. An admitted analysis receipt still needs to bind that snapshot and
-selected metadata revisions to the independently trusted submission and
-collection anchors. Recomputing the expected digest from mutable files would
-establish consistency only. That trusted receipt lifecycle remains unintegrated.
+submission. The actor collector binds that snapshot, QPY and projection
+receipts to an externally supplied submission-record digest; the offline
+adjudicator requires the independently retained collection digest. Operational
+provenance therefore depends on the origin and retention of those external
+anchors. Recomputing the expected digest from mutable files establishes
+consistency only. Neither the anchor chain nor matching bit counts establishes
+physical shot alignment or statistical independence.
+Adjudication checks every raw PUB and the result-metadata file named by the
+anchored acquisition index, using bounded file reads. That byte check does not
+establish that the provider's metadata proves physical shot ordering.
 
 The local `project_reporter_shots` helper projects ordered single-register
 Qiskit bitstrings onto two specified classical-bit indices without constructing
@@ -492,6 +526,19 @@ construction, 126,180 KiB after serialization, 126,180 KiB after parsing, and
 elapsed time was 0.254 s. High-water readings are cumulative, and Python's
 allocator can retain freed input memory. This test includes synthetic parsing
 but not provider collection, QPY parsing, receipt validation or real results.
+
+The full-PUB offline [audit test](../../tests/gororoba_quantum/test_readout_actor_family.py)
+executes planning, fake submission, raw serialization, receipt verification and
+adjudication for one 156-bit PUB with 40,000 synthetic shots. Linux
+`/proc/self/status` reports initial `VmRSS` and `VmHWM` of 227,428 KiB and
+final `VmRSS` of 264,932 KiB and `VmHWM` of 276,764 KiB on the local pinned
+Python 3.14.7 run. The process high-water includes imports and input creation;
+the fixture's identical synthetic shots do not model provider output or bound
+other shot distributions. Replay the measurement with:
+
+```sh
+"$PYTHON" -m pytest -q -s -m audit tests/gororoba_quantum/test_readout_actor_family.py::test_full_width_collection_includes_input_and_parsing_memory
+```
 
 ```sh
 "$PYTHON" - <<'PY'
