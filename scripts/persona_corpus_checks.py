@@ -568,14 +568,21 @@ def l_infinity_and_affine() -> dict[str, object]:
     def omega(x: np.ndarray, m: int, y: np.ndarray, n: int) -> int:
         return m * form(x, y) if m + n == 0 else 0
 
-    failures = 0
-    for ia, ib, ic in itertools.product(range(3), repeat=3):
-        for ma, mb in itertools.product(range(-3, 4), repeat=2):
-            mc = -ma - mb
-            x, y, z = sl2[ia], sl2[ib], sl2[ic]
-            total = omega(x @ y - y @ x, ma + mb, z, mc) + omega(y @ z - z @ y, mb + mc, x, ma)
-            total += omega(z @ x - x @ z, mc + ma, y, mb)
-            failures += total != 0
+    # The cocycle identity omega([x,y] t^(m+n), z t^p) + cyclic = 0 for p = -m-n, with omega(u t^p, v t^q) =
+    # p delta_{p+q,0} tr(uv), evaluated for every basis triple and mode pair at once; T2 and T3 are the cyclic
+    # relabellings tr([x_b, x_c] x_a) and tr([x_c, x_a] x_b) indexed by (a, b, c).
+    basis = np.array(sl2)
+    commutator = np.einsum("aij,bjk->abik", basis, basis) - np.einsum("bij,ajk->abik", basis, basis)
+    triple = np.einsum("abij,cji->abc", commutator, basis)  # tr([x_a, x_b] x_c)
+    modes = np.arange(-3, 4)
+    ma, mb = np.meshgrid(modes, modes, indexing="ij")
+    mc = -ma - mb
+    total = (
+        (ma + mb)[None, None, None] * triple[..., None, None]
+        + (mb + mc)[None, None, None] * triple.transpose(2, 0, 1)[..., None, None]
+        + (mc + ma)[None, None, None] * triple.transpose(1, 2, 0)[..., None, None]
+    )
+    failures = int(np.count_nonzero(total))
     require(failures == 0, "m delta (x|y) is not a 2-cocycle on the loop algebra")
     x, y = sl2[1], sl2[2]
     corpus_central = 1  # m delta_{m+n,0} at m = 1, the same for (x, y) and (2x, y)
@@ -1112,33 +1119,44 @@ def ascella_two_photon_associator(visibility: float = ASCELLA_HOM_VISIBILITY) ->
     return out
 
 
+SECTIONS: dict[str, Callable[..., object]] = {
+    "sl2": sl2_brackets,
+    "e8": e8_structure,
+    "albert": albert_symmetry_dimensions,
+    "moufang": moufang_split,
+    "kac": kac_determinant,
+    "coulomb_gas": coulomb_gas,
+    "sugawara": sugawara_sl2,
+    "l_infinity_and_affine": l_infinity_and_affine,
+    "scalar_eom": scalar_equation_of_motion,
+    "numerology": frequency_numerology,
+    "casimir": casimir,
+    "fields": fields_and_powers,
+    "euler_heisenberg": euler_heisenberg,
+    "field_gravity": gravity_of_field,
+    "scalar_potential": scalar_potential,
+    "zero_point": zero_point,
+    "lqg": loop_quantum_gravity,
+    "predictions": prediction_sizes,
+    "su5": su5_assignments,
+    "existing_notes": existing_note_rechecks,
+    "spin_up_profiles": spin_up_profiles,
+    "algebra_rechecks": algebra_rechecks,
+    "ascella_two_photon_associator": ascella_two_photon_associator,
+}
+
+
+def run_section(item: tuple[str, int]) -> object:
+    """One independent section by name; the Kac section takes the highest level."""
+    name, max_kac_level = item
+    return kac_determinant(max_kac_level) if name == "kac" else SECTIONS[name]()
+
+
 def run(max_kac_level: int) -> dict[str, object]:
-    sections: dict[str, Callable[[], object]] = {
-        "sl2": sl2_brackets,
-        "e8": e8_structure,
-        "albert": albert_symmetry_dimensions,
-        "moufang": moufang_split,
-        "kac": lambda: kac_determinant(max_kac_level),
-        "coulomb_gas": coulomb_gas,
-        "sugawara": sugawara_sl2,
-        "l_infinity_and_affine": l_infinity_and_affine,
-        "scalar_eom": scalar_equation_of_motion,
-        "numerology": frequency_numerology,
-        "casimir": casimir,
-        "fields": fields_and_powers,
-        "euler_heisenberg": euler_heisenberg,
-        "field_gravity": gravity_of_field,
-        "scalar_potential": scalar_potential,
-        "zero_point": zero_point,
-        "lqg": loop_quantum_gravity,
-        "predictions": prediction_sizes,
-        "su5": su5_assignments,
-        "existing_notes": existing_note_rechecks,
-        "spin_up_profiles": spin_up_profiles,
-        "algebra_rechecks": algebra_rechecks,
-        "ascella_two_photon_associator": ascella_two_photon_associator,
-    }
-    return {name: function() for name, function in sections.items()}
+    """Every section through the order-preserving process pool; nested maps inside a worker run in its slot."""
+    names = list(SECTIONS)
+    results = parallel.ordered_map(run_section, [(name, max_kac_level) for name in names], min_items=2)
+    return dict(zip(names, results, strict=True))
 
 
 def main() -> int:

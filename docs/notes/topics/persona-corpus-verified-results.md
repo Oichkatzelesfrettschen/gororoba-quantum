@@ -48,9 +48,13 @@ its dry run, written case and the owner's approval.
   - The Maurer-Cartan equation sum l_n(alpha, ..., alpha)/n! = 0 holds for degree-1 alpha when the sum converges.
   - l_n = 0 for n > 2 gives a differential graded Lie algebra; it is an ordinary Lie algebra only when V = V_0. [T]
   - An L-infinity quasi-isomorphism is a morphism whose linear part f_1 induces the isomorphism on cohomology. [T]
-- Spectral triple (A, H, D): D is self-adjoint with compact resolvent and [D, a] is bounded [P]. Compact resolvent is
-  what makes the spectral action Tr f(D/Lambda) finite [T]. D encodes the metric through Connes' distance;
-  curvature enters through the heat-kernel expansion. [P]
+- Spectral triple (A, H, D): D is self-adjoint with compact resolvent and [D, a] is bounded [P].
+  - Compact resolvent makes the spectral action Tr f(D/Lambda) a finite sum when the cutoff f has compact support,
+    since only finitely many eigenvalues lie in any bounded window. [T]
+  - A rapidly decreasing cutoff also needs summability. With eigenvalues sqrt(log(n + 1)), f(x) = exp(-x^2) gives the
+    divergent sum of 1/(n + 1). Theta-summability, Tr exp(-t D^2) < infinity for t > 0, restores finiteness for
+    Gaussian-type f. [T]
+  - D encodes the metric through Connes' distance; curvature enters through the heat-kernel expansion. [P]
 - Affine (Kac-Moody) algebra: [x t^m, y t^n] = [x,y] t^{m+n} + m delta_{m+n,0} (x|y) K. The invariant form is
   needed for bilinearity. With (x|y) = tr(xy) the cocycle identity holds on every sl(2) loop triple tested. [E]
 - Postnikov towers have Eilenberg-MacLane layers K(pi_n, n). [P]
@@ -240,7 +244,9 @@ Three statements of the Pais note were corrected there:
 - The Superforce electron ratio 8.8e-46 is relative to c^4/G; against the c^4/(2G) the sentence names, it is
   1.75e-45.
 - The spin-up radiation of about 2.7e-13 W is a scale estimate. A uniform ramp radiates only at its ends; a sin^2
-  ramp averages 3.3e-12 W and peaks at 6.7e-12 W, still negligible.
+  ramp averages 3.3e-12 W and peaks at 6.7e-12 W. Neither duration nor final rate bounds the power, which follows
+  the square of omega'' (a 0.1 s quintic smoothstep peaks near 9e-8 W), so the note now states the two evaluated
+  profiles only.
 - The 0.254 MeV Cherenkov threshold uses the index of water at 400 nm.
 
 Not re-derived: the Kingston measurements, the product-state values 0.581 and -0.247, and the vacuum-model cutoff

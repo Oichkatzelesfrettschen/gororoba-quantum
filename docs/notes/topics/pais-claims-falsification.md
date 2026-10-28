@@ -102,8 +102,10 @@ radiates only as a magnetic dipole through the moment's second derivative
 (a charged spherical shell has `m = Q R^2 omega / 3` and no electric dipole):
 spinning the worked example up to 30000 RPM in 1 s radiates of order 2.7e-13 W, the scale
 `mu0 (Q R^2 omega / (3 tau^2))^2 / (6 pi c^3)`. The power depends on the ramp: a uniform ramp has `m'' = 0`
-between its ends, and a sin^2 ramp averages 3.3e-12 W with a peak of 6.7e-12 W, so every smooth one-second
-spin-up stays below 1e-11 W.
+between its ends, and a sin^2 ramp averages 3.3e-12 W with a peak of 6.7e-12 W. Both evaluated profiles stay below
+1e-11 W. Duration and final rate do not bound the power, which goes as the square of the angular jerk: a quintic
+smoothstep over the last 0.1 s of the second peaks near 9e-8 W. A general bound therefore needs a bound on omega''.
+Every such value stays far below any power the patents claim.
 
 **Eq. 2 integrates an acceleration that a vibration cannot sustain.** [P] The
 vibrating case is `S_max = f_G gamma^2 (sigma^2/eps0) R_v nu^2 t_op` (the craft
