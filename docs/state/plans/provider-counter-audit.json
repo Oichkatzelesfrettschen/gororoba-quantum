@@ -8,14 +8,14 @@
     "gororoba_quantum/provider_counters.py",
     "docs/notes/quandela/strategy.md"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
-    "status": "unresolved",
-    "note": "Inventory, contract and sensitivity evidence retained; estimator repairs and claim-boundary qualifications remain open."
+    "status": "verified",
+    "note": "Retained raw bytes, manifests and analyses keep their paths and hashes; the counter table, censuses, sweep and exposure sensitivity replay with --check, and the three qualified claims cite the audit README."
   },
   "owner": "provider-counter audit operator",
   "scope": "Every registered provider and simulator adapter, retained result format and scientific consumer of a shot, sample, cap, billing or exposure counter; Quandela first. Read-only provider retrieval only; no executions, uploads, bookings, QRNG draws or spending. The unmerged five-experiment branch (feature/quantum-experiment-conformance) adopts provider_counters after both merge.",
-  "next_action": "Give review-and-merge its receipt over #605, #606, #608, #612, #613, #617 and the analyze_qd contract-check pull request (handoff task D3) and close the plan (D4).",
+  "next_action": "None; the plan is closed.",
   "related": [
     "ascella-belenos-entanglement-teleportation"
   ],
@@ -773,9 +773,67 @@
     },
     {
       "id": "review-and-merge",
-      "state": "doing",
+      "state": "done",
       "action": "Run the hosted review and merge procedure for each pull request.",
-      "acceptance": "pr.yml lint, types, tests and gates green and the Codex loop clean on each head."
+      "acceptance": "pr.yml lint, types, tests and gates green and the Codex loop clean on each head.",
+      "receipts": [
+        {
+          "result": "Seven pull requests merged into main as merge commits #605 3d993eec, #606 8c70375b, #608 d1a1bbb6, #612 d893af92, #613 9005136c, #617 0f2993c3 and #622 b48f3307; on each final head the Codex review posted a clean comment for that head, every review thread was resolved, and the pr.yml checks lint, types, tests and gates passed with mergeable_state clean.",
+          "observed_at": "2026-10-28T01:45:05+00:00",
+          "revision": "b48f33074c8e906bb988560c02749b166c98e6aa",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/provider_counters.py",
+              "sha256": "184240f314ed7cb4689d933697e99b8d2216e58b5fe8169e1880ac62166d5125"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_provider_counters.py",
+              "sha256": "3b6ffc7b8c296fe19d5994c5b8a369390a83d116a73170c4bb97abf422dfe5df"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/README.md",
+              "sha256": "eeba281f7539927f31e579a7abe58bb740fe0939b9b84bf7a9a9d9da4938f82c"
+            }
+          ],
+          "scope_sha256": "4d0ffe329df02b4d08c0801b421881f727f7ead396167123ed1bb14bdaedb023"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "Every provider counter has a named population: Quandela nb_shots_used counts detection events censored at max_shots, an iterated job's top-level shots is the job-level max_shots cap, and no result field counts source triggers; IQM heralding, Quantum Inspire, IBM and simulator shots stay within their populations. provider_counters.py carries the contract and the quandela_record view, the counter-arithmetic sweep classifies every consumer, the exposure sensitivity leaves the root-cause conclusions invariant, the teleportation rule is confined to job-00, and three Belenos claim boundaries are qualified. Four provider questions stay named limitations in the audit README, mapped onto Perceval issues 798 and 799.",
+  "receipts": [
+    {
+      "result": "Every step is done with a receipt over the current bytes: the counter table and the gate-model and simulator censuses replay with --check, the counter-arithmetic sweep classifies every finding, provider_counters and its quandela_record view pass their contract and audit tests, the exposure sensitivity replays, the three claim boundaries cite the audit README, and the seven pull requests merged through the hosted review.",
+      "observed_at": "2026-10-28T01:45:05+00:00",
+      "revision": "b48f33074c8e906bb988560c02749b166c98e6aa",
+      "evidence": [
+        {
+          "ref": "docs/evidence/provider-counter-audit/README.md",
+          "sha256": "eeba281f7539927f31e579a7abe58bb740fe0939b9b84bf7a9a9d9da4938f82c"
+        },
+        {
+          "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.json",
+          "sha256": "a5f4b993cfab92216dff4a2e7309f0806aa559730a1180af2d35f9cf77b6b969"
+        },
+        {
+          "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.json",
+          "sha256": "eaea41cf0445a8e0fff26f25c9517c499e939196115a76197af717da6d299253"
+        },
+        {
+          "ref": "docs/evidence/provider-counter-audit/sweeps/findings.json",
+          "sha256": "55321b958d8a92d978369924ef102e68f30ecaa21f8d078fbc72e5eb4aaaa7b7"
+        },
+        {
+          "ref": "docs/evidence/provider-counter-audit/simulator_counter_census.json",
+          "sha256": "80c95e52c8d8e72c46df1c1651319327b3d7ed1d36cd1a885c6c40cf79c9c872"
+        },
+        {
+          "ref": "gororoba_quantum/provider_counters.py",
+          "sha256": "184240f314ed7cb4689d933697e99b8d2216e58b5fe8169e1880ac62166d5125"
+        }
+      ],
+      "scope_sha256": "4738cc7602e9e23a20cd1b23a332db3011594380aa3ededc838da653b8039427"
     }
   ]
 }
