@@ -142,6 +142,7 @@ The repository audit recognizes four operational statuses across all Python dist
 | `OQ_PYTHON` | Open Quantum SDK | [open_quantum/README.md](notes/open_quantum/README.md) |
 | `QD_PYTHON` | the Quandela MCP server; Perceval itself runs on `$PYTHON` | [quandela/README.md](notes/quandela/README.md) |
 | `iqm-python` | IQM Resonance client stack | [iqm/README.md](notes/iqm/README.md) |
+| `QB_PYTHON` (Python 3.13) | qBraid SDK (`qbraid`, `qbraid-core`). The guide's venv is the portable default; the build host sets `QB_PYTHON` to `qbraid-python` from the `qbraid-stack` package | [qbraid/README.md](notes/qbraid/README.md) |
 | Kaggle kernel | simulations of 14 qubits or fewer | [kaggle/README.md](notes/kaggle/README.md) |
 
 Every interpreter starts with
@@ -184,6 +185,7 @@ many also run under `-O`, so a check raises explicitly instead of using
 | Batched density-matrix sweeps | jax | error-scale sweeps in `jax_bridge` on CPU | [jax-bridge-structure-report.md](notes/kaggle/jax-bridge-structure-report.md) |
 | Tensor networks, contraction order | quimb, cotengra, opt_einsum | networks beyond a few tensors | [numerics_best_practice.md](notes/topics/numerics_best_practice.md) |
 | Photonic circuits | perceval, exqalibur | Quandela runs and their simulations | [quandela/README.md](notes/quandela/README.md) |
+| qBraid sessions and device calls | qbraid, qbraid-core | a call through the qBraid SDK. The credit snapshot uses the default interpreter's HTTP client and does not import these packages. Pins stay in the qBraid requirements file; the library register marks both distributions separate | [qbraid/README.md](notes/qbraid/README.md), [requirements-qbraid.txt](notes/qbraid/requirements-qbraid.txt), [libraries.md](state/hypercomplex-libraries/libraries.md) |
 | Cayley-Dickson cross-checks | hypercomplex (recursive products, `Fraction` witnesses); hyprat (exact rational coefficients, annihilators, regular representations); hypercomplex-engine (fast basis signs above dimension 16; hypercomplex-algebra wraps it and is not independent); cayley-dickson (recursive products), cayley-calculator, octonion-sedenion, pyoctonion, octonion (PyTorch batches) | an independent witness for a `cd_core` result, through a declared map checked on every basis pair; splitoct serves as the split-signature negative control | [packages/README.md](notes/packages/README.md), `scripts/algebra_package_tables.py` |
 | Quaternions | numpy-quaternion (vectorized fields), quaternionic (Numba arrays), pyquaternion (scalar rotations) | quaternion subalgebra checks and rotation bookkeeping | [packages/README.md](notes/packages/README.md) |
 | Clifford and geometric algebra | clifford, galgebra (symbolic), kingdon (generated operators) | associative envelopes and rotor controls; they never supply an octonion or sedenion product | [packages/README.md](notes/packages/README.md) |
