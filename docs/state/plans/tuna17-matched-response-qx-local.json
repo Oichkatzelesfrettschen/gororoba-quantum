@@ -4,7 +4,7 @@
   "kind": "investigation",
   "summary": "Run the Tuna-17 matched-response programs on local qxelarator to fix the ideal law of the emitted programs before any Tuna-17 batch.",
   "sources": [
-    "docs/notes/topics/reference-corpus-falsification.md",
+    "docs/notes/topics/persona-corpus-verified-results.md",
     "docs/design/tuna17-zero-divisor-matched-response.md"
   ],
   "state": "inbox",

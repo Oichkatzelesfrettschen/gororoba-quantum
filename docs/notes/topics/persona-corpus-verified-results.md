@@ -21,6 +21,10 @@ its dry run, written case and the owner's approval.
 
 - sl(2,C) with H, E, F: [H,E] = 2E, [H,F] = -2F, [E,F] = H, structure constants c_HE^E = 2, c_HF^F = -2,
   c_EF^H = 1. The same brackets hold in the spin-1 representation, so they govern every spin, not only spin 1/2. [E]
+- The Ascella quaternion encoding carries that bracket. `quaternion_matrix` sends i, j, k to I = i sigma_3,
+  J = i sigma_2 and K = IJ = i sigma_1, so H = -iI, E = (J - iK)/2, F = -(J + iK)/2, and [I, J] = 2K is [H, E] = 2E in
+  the compact real form. The order interferometer's dark probability is ||[A, B]||_F^2/8 = sin^2(theta) sin^2(phi),
+  the squared bracket coefficient. [E]
 - E8: 240 roots, 112 of the form +-e_i +-e_j and 128 of the form (1/2)(+-1, ..., +-1) with an even number of minus
   signs; inner products {-2, -1, 0, 1, 2}, with <alpha, -alpha> = -2. [E]
 - The Gosset polytope 4_21 is the convex hull of those roots: 8-dimensional, 56 neighbours per vertex, 6720 edges.
@@ -33,7 +37,14 @@ its dry run, written case and the owner's approval.
   - dim Der(J3(O)) = 52 (f4), so Aut(J3(O)) = F4;
   - the Lie algebra preserving the cubic norm N(X) = T(X^3)/3 - T(X)T(X^2)/2 + T(X)^3/6 has dimension 78 (e6).
 
-  The same code reproduces the first two rows of the Freudenthal magic square over R, C, H: 3/8, 8/16, 21/35. [E]
+  The same code reproduces the first two rows of the Freudenthal magic square over R, C, H: 3/8, 8/16, 21/35. Its
+  octonion Jordan table matches the SageMath-checked product of
+  [albert_algebra.py](../packages/manual/checks/albert_algebra.py) on all 729 basis pairs, through the signed map
+  between their slot conventions. [E]
+- Octonion left multiplication gives Gamma_a = [[0, L_a], [L_conj(a), 0]] with {Gamma_a, Gamma_b} = 2 delta_ab, and
+  the chirality Gamma_0 ... Gamma_7 splits 16 = 8_s + 8_c. The concrete link between triality and the octonions is
+  this alternativity, not the doubling process itself: on the sedenions the same construction fails on exactly the
+  42 index pairs of `cd_core.sedenion_zero_divisor_corpus`. [E]
 - The octonionic triality triple (L_a R_a, L_a, R_a), i.e. the Moufang identity a(xy)a = (ax)(ya), holds in all 1344
   octonion cases tested. It fails in 10752 of 26880 sedenion cases (first witness a = e1 + e2, x = e1, y = e12), so
   triality does not continue up the Cayley-Dickson tower. [E]
@@ -46,6 +57,8 @@ its dry run, written case and the owner's approval.
 - L-infinity algebras: l_n has degree 2 - n, and the generalized Jacobi identity carries (-1)^{i(j-1)} besides the
   Koszul sign (Lada-Markl) [P].
   - The Maurer-Cartan equation sum l_n(alpha, ..., alpha)/n! = 0 holds for degree-1 alpha when the sum converges.
+    With l_1 = d, l_2 = [ , ] and l_n = 0 for n > 2 it is d alpha + [alpha, alpha]/2 = 0, the differential graded
+    Lie algebra equation; the signs of the n >= 3 terms follow the sign convention of the higher brackets. [T]
   - l_n = 0 for n > 2 gives a differential graded Lie algebra; it is an ordinary Lie algebra only when V = V_0. [T]
   - An L-infinity quasi-isomorphism is a morphism whose linear part f_1 induces the isomorphism on cohomology. [T]
 - Spectral triple (A, H, D): D is self-adjoint with compact resolvent and [D, a] is bounded [P].
@@ -69,6 +82,10 @@ its dry run, written case and the owner's approval.
   Only the (1,1) normal-ordered term of L_2 contributes. The (0,2) term vanishes because J_2 annihilates the
   level-2 singlet (the corpus gave a different reason). The consistent structure-constant convention is the one
   with i: real antisymmetric constants contract to -2h^v delta. [E]
+- The corpus's "purely algebraic" pairing (J^a_n u, v) = (u, J^a_-n v) is not well defined. In the Chevalley basis
+  it sends e_n to e_-n; the state h_0 e_-1|0> = 2 e_-1|0> paired with f_-1|0> gives -2k through the word and +2k
+  through the reduced state. The Hermitian adjoint e <-> f agrees on both routes. The corpus's results stand,
+  because they use no pairing beyond <0|0> = 1. [E]
 - Level-2 Gram matrix: [[4h + c/2, 6h], [6h, 8h^2 + 4h]] on (L_-2, L_-1^2). Its determinant is
   2h(16h^2 + (2c - 10)h + c), with roots (5 - c +- sqrt((c - 1)(c - 25)))/16. At c = 1/2 these are the Ising weights
   1/2 and 1/16. [E]
@@ -151,15 +168,32 @@ The endpoint is D = P({0,3} or {1,2}) - P({0,2} or {1,3}), conditioned on two cl
 - **Distinguishable photons:** D = 0 on every route. The associator appears only through two-photon interference.
   The mixture model D = V/(V + 1.5(1 - V)) ties the measured D to the published HOM visibility.
 
-**Device question.** Does the per-run HOM visibility in `perfs_at_plan`
-([calibration.md](../quandela/calibration.md)) predict the two-photon law of a compiled 4-mode unitary, or does a
-mesh phase error (the residual of plans ascella-perturbed-compilation-case and ascella-heater-coupling-families)
-move it? A 0.01 standard error on D takes 2630 two-click events per arm; four arms at that depth cost well under
-one credit.
+**Device question.** Does a compiled 4-mode unitary carry a route- or mesh-dependent error (the residual of plans
+ascella-perturbed-compilation-case and ascella-heater-coupling-families) beyond the source's photon overlap? Both
+control routes read -f(M) for every overlap M, so the closure C = Delta + 2 mean(D_control) is 0 without any HOM
+figure, and a departure isolates the route error. A 0.01 standard error on D takes 2630 two-click events per arm;
+four arms at that depth cost well under one credit.
 
 **Written case.** [ascella-two-photon-associator-case.md](../../design/ascella-two-photon-associator-case.md) freezes the
-eight-iteration request and states seconds, credits (ceiling 1.262144), the HOM-floor decision and the procedure; it
-waits for the owner's approval.
+eight-iteration request and states seconds, credits (ceiling 1.262144), both preregistered decisions (the associator
+contrast and the visibility closure) and the procedure. The owner approved it on 2026-10-28 to run at the live HOM.
+
+**Retained evidence for the bracket itself.** The sl(2) bracket above already has a hardware realization: the
+order interferometer reads D = ||[A, B]||^2/8, and its commuting-generator mutation sets the bracket to zero. In job
+`739a5271` (2026-10-24) all 27 preregistered endpoints qualified, the mutation difference read 0.1646 against an
+ideal 0.1727 (radius 0.0229) and the mutation dark output 0.0008 against 0
+([retained run](../../../results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/README.md)).
+On jobs 04 to 07 the fitted element offsets predict the mesh-specific error's direction, not its amplitude
+([replication case](../../design/ascella-signed-coherence-conformance.md#replication-case-job-06-and-job-07)). [R]
+
+**A second design, unwritten: the associator character on eight modes.** For distinct imaginary units e_a, e_b the
+column signs s(x), defined by (e_a e_b) e_x = s(x) e_a (e_b e_x), form a nontrivial character of F_2^3 whose kernel
+is the quaternion subalgebra {0, a, b, a ^ b} (all 21 pairs [E]). A diagonal of those +-1 phases between two
+pair-analyzer layers turns the character into dark outputs on the four columns outside the kernel. The mutation
+keeps the mesh and swaps in the associative Cl(0,3) sign table on the same index set, whose character is trivial
+[E]; a = b is a second mutation and the zero-phase mesh the null. Its device question, whether the frozen offset model
+transfers to a mesh family it was never fitted on, is single-photon and complements the two-photon run; it is the
+inbox plan [ascella-associator-character-case](../../state/plans/ascella-associator-character-case.json).
 
 ### QX as the falsifier for Tuna-17: the QET passivity ladder without real-time feed-forward
 
@@ -210,13 +244,14 @@ reference checked against exact diagonalization at 12-14 qubits.
 
 ### Systems with credits before the end of November
 
-- **IQM.** 30 credits expire 2026-11-01, and the plan grants up to 30 a month "based on availability". Garnet costs
-  0.50 credits a second ([iqm/README.md](../iqm/README.md)). The QET ladder with genuine feed-forward through
+- **IQM.** The live balance read 2.50 credits on 2026-10-28, expiring 2026-11-01 00:00 UTC; the plan grants up to 30
+  a month "based on availability". Garnet costs 0.50 credits a second ([iqm/README.md](../iqm/README.md)). The QET ladder with genuine feed-forward through
   `cc_prx` (Pais note item 3) separates a Heron-specific feed-forward loss from a protocol error. It first needs a
   garnet:mock compile and one priced batch to qualify a non-pi conditional angle.
 - **Quandela.** November's 200 credits cover the Ascella run above many times over.
-- **Other providers.** [provider-credits.md](../../runbooks/provider-credits.md) reads their balances; none of their
-  backends adds a test of section 1 or 2.
+- **Other providers.** [provider-credits.md](../../runbooks/provider-credits.md) reads their balances; on 2026-10-28 Open
+  Quantum held 25 Spark and 0 Full credits (every upload public) and Quantum Inspire's free-tier ledger had changed
+  by 0. None of their backends adds a test of section 1 or 2.
 
 ### Classical next step
 
@@ -249,6 +284,22 @@ Three statements of the Pais note were corrected there:
   profiles only.
 - The 0.254 MeV Cherenkov threshold uses the index of water at 400 nm.
 
+**Two decompositions reconciled.** This corpus was decomposed twice, independently, and the two first stated five
+quantities with different definitions. `decomposition_reconciliation` recomputes each from its definition [E]:
+
+| Quantity | Definitions compared | Resolved value |
+|---|---|---|
+| Power at 1e13 V/m over 1 cm^2 | cycle-averaged c eps0 E^2/2 against the corpus's own eps0 E^2 c A | 1.33e19 W averaged, 2.65e19 W instantaneous peak; the corpus's 1e15 W is short by 4.1 to 4.4 decades either way |
+| Gravity of the field over 1 m | order estimates 2 G u/c^4 and 8 pi G u/c^4 | (8 pi/3) G u R^2/c^4 = 3.1e-29 from linearised GR with the traceless stress (active density 2u/c^2) of a uniform sphere; the corpus's laser focus (u = I/c, R = 10 um) gives 2.3e-40, 2.3e-17 of the ~1e-23 strain LIGO resolves |
+| Casimir modulation | lattice spacing l_P, the corpus's 2.7e-35 m, or l_P sqrt(8 pi gamma) | 6.2e25, 3.7e25 or 2.5e25 periods per nanometre; 0.1 nm of roughness multiplies the modulation by 10^(-3.3e50), 10^(-1.2e50) or 10^(-5.5e49) |
+| Strong-field dispersion at 500 nm | bound with alpha and E/E_S at most 1, against the corpus's own laser field | bound (k l_P)^2 = 4.1e-56; at 2.74e12 V/m with alpha = 1/137 it is 1.3e-69 |
+| Maurer-Cartan signs | a sign (-1)^(n(n-1)/2) required, against the plain sum | the plain sum reproduces the differential graded Lie algebra equation; higher signs are convention [T] |
+
+Three corpus figures that only one decomposition checked are recomputed as well [E]: 1e13 V/m stores 4.4e14 J/m^3, not
+the 1e9 J/m^3 of the corpus's sanity check; M_Pl/alpha is 1.67e21 GeV, not the stated 1e20; and the
+Euler-Heisenberg shift reaches the corpus's 1e-12 J/m^3 already at 7.1e9 V/m, so its 1e16 V/m threshold marks
+nothing.
+
 Not re-derived: the Kingston measurements, the product-state values 0.581 and -0.247, and the vacuum-model cutoff
 errors that the [vacuum_models](../../evidence/vacuum_models/README.md) replay defines.
 
@@ -260,18 +311,20 @@ errors that the [vacuum_models](../../evidence/vacuum_models/README.md) replay d
 | 4_21 is a 4D projection; it embeds E8 into the sedenions | 8-dimensional [E]; Aut(S) has dimension 14 [R] |
 | <alpha, beta> = 2 for alpha = +-beta | <alpha, -alpha> = -2 [E] |
 | The displayed n = 3 L-infinity identity | holds for a bracket with nonzero Jacobiator [E] |
+| The linear contravariant pairing (J_n u, v) = (u, J_-n v) | -2k from the word against +2k from the state [E] |
 | Kac-Moody central term without the invariant form | not bilinear [E] |
 | f_opt = f_Planck alpha^-1 phi^n | any frequency lies within phi^(1/2) of the grid; 148 Hz needs n = -206.9 [E] |
 | Tourmaline amplifies Casimir by more than 1e3 | at most 1, 0.22 at the stated eps [E] |
-| Rotating fields curve spacetime measurably | 7e-30 over a metre at 1e13 V/m [E]; [R] Pais note |
+| Rotating fields curve spacetime measurably | 3.1e-29 over a metre at 1e13 V/m, 2.3e-40 across the laser focus [E]; [R] Pais note |
 | Coherent fields engineer the vacuum | displaced vacuum [T] |
-| Three generations as 8_v, 8_s, 8_c in E8 | the 248 is real, so fermions in it are vector-like [T]; [U] Distler-Garibaldi 2010 |
+| Three generations as 8_v, 8_s, 8_c in E8 | the 248 is real, so fermions in it are vector-like [T]; Distler and Garibaldi, arXiv 0905.2658, find that any embedding of the gravity and Standard Model groups in a form of E8 "lacks certain representation-theoretic properties required by physical reality" ([P] abstract read 2026-10-28) |
 | SU(5) assignments (L in the 10; u^c, e^c in the 5bar) | the corpus's "10" has 8 states and its "5bar" 7 [E] |
 | v ~ 1e20 GeV with lambda ~ 0.1-1 and m ~ 1 meV | radial mass 1.8e19 to 5.8e19 GeV; 1 meV needs lambda = 3e-64 [E] |
-| E_crit ~ 1e13 V/m; 1e15 W over 1 cm^2 | 1.5e10 V/m from the corpus's own density; 1.3e19 W [E] |
+| E_crit ~ 1e13 V/m; 1e15 W over 1 cm^2 | 1.5e10 V/m from the corpus's own density; 1.33e19 W averaged, 2.65e19 W peak [E] |
+| 1e13 V/m stores 1e9 J/m^3; vev ~ M_Pl/alpha ~ 1e20 GeV | 4.4e14 J/m^3; 1.67e21 GeV [E] |
 | ZPE with a Higgs cutoff is 1e9 J/m^3, "consistent" | 6.4e43 J/m^3, and the prefactor is 1/(8 pi^2) [E] |
 | LQG area sqrt(sum j(j+1)); a = 2.7e-35 m; spin networks are a lattice | sum of roots; 3.95e-35 m [E]; no background lattice [T] |
-| Casimir modulation, photon and GW dispersion signatures | 10^(-5.5e49), 4e-56 and 7e-81 [E] |
+| Casimir modulation, photon and GW dispersion signatures | at most 10^(-5.5e49) after 0.1 nm roughness for any of the three spacings, 4e-56 and 7e-81 [E] |
 | ZPE extraction limited by Carnot | ground states are passive [T]; Kingston [R] |
 | Master action and its equations of motion | delta-function metric; index mismatch [T]; scalar EOM follows in neither convention [E] |
 | ZPE integrals, dodecaplex arrays, aether boundary, (infinity, n) spectral triples, "fractal" Postnikov towers, E8 selection rules, Yukawas from E8 coefficients | no definitions or observables |
