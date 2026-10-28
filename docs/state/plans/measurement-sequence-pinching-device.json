@@ -157,6 +157,26 @@
             }
           ],
           "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after merging main: the calibration-wait paragraph #616 added leaves AGENTS.md (QPU time and calibration) and qpu-submission.md binding an msq-envelope-v1 record's layout rule, bounds, ceilings and constructor in place of the dry run's calibration values, and the attempt-1 approval marker is unchanged.",
+          "observed_at": "2026-10-28T00:56:52+00:00",
+          "revision": "8b5fd53b411bccd8665cb9f209728b235652932b",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "be176e74db7bd523d7122a2bc4a2f33985e08311e480de03f145a48a3530154c"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "b072641ac08f519068935e050226281897df6f511737411a4e9096d419cda6c3"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
         }
       ]
     },
