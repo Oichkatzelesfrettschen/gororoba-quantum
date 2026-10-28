@@ -288,6 +288,7 @@ differs from it only in the `cd_core.py` digest.
 | [design/n21-orbit-detuning-sign-envelope.md](design/n21-orbit-detuning-sign-envelope.md) | calibration-adaptive approval envelope, bounds and decisions D1-D3 of the N=21 orbit detuning-sign test (orbit phase rate against work-bit Ramsey offsets) |
 | [design/provider-access-requests.md](design/provider-access-requests.md) | access-request drafts for Quantinuum, D-Wave, Classiq, OQC, Rigetti, SuperQ and Kipu, with the review checklist |
 | [design/factoring-notes.md](design/factoring-notes.md) | factoring and the Cayley-Dickson ladder |
+| [design/gpu-exact-modular-linear-algebra.md](design/gpu-exact-modular-linear-algebra.md) | exact F_p linear algebra on the build host's tensor cores: INT8 and FP8 digit products, an HMM and pinned-staging memory hierarchy, recursive PLUQ, Freivalds verification, measured throughput |
 | [design/numpy-validation.md](design/numpy-validation.md) | numerical environment validation |
 | [design/bdsc-tuna17-pauli-pilot.md](design/bdsc-tuna17-pauli-pilot.md) | Tuna-17 pilot of the BDSC target as a four-qubit local Pauli readout: bank, placement, analysis |
 | [design/iqm-garnet-timing-pilot.md](design/iqm-garnet-timing-pilot.md) | IQM Garnet billing pilot: per-job, per-shot, per-circuit and active-reset cost |
