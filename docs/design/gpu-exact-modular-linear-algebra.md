@@ -66,9 +66,18 @@ All figures come from probes on the build host (RTX 4070 Ti, compute capability 
   Transparent huge pages (`MADV_HUGEPAGE`, THP in madvise mode) and `cudaMemAdviseSetReadMostly` on the inputs change
   no timing. Four staging slots instead of two slow `n = 32768` to 10.8 to 14.2 s: each slot takes 256 MiB of device
   memory, and the extra pressure makes the driver evict and re-migrate input tiles.
-- So within device memory the product runs at about three times its INT8 floor; past device memory the bound is the
-  UVM driver's residency management of the inputs. Explicit residency (inputs copied into a device tile cache under a
-  fixed budget with LRU replacement, the UVM driver used only as the transport) is the next design step.
+- Explicit residency removes the UVM driver from the operand path. Each input tile is band-copied by eight host
+  threads into a pinned staging tile, copied to the device on a load stream, split once into int8 digits and kept in
+  a device digit cache with LRU replacement under a budget derived from free device memory; output tiles accumulate on
+  the device and drain through pinned staging. With a result arena allocated and faulted once and reused, the exact
+  product takes 0.56 to 0.62 s at `n = 16384` (about 15 TOP/s effective) and 5.3 s at `n = 32768` (about 13 TOP/s),
+  exact on sampled entries over three runs; at `n = 32768` the 32 input tiles load once with at most one eviction.
+- First-touch page faults bound a freshly allocated result. After the process generates and frees large temporaries
+  (two `n = 32768` random matrices through int64 intermediates), faulting a new 4 GiB array runs at 2.3 GiB/s against
+  9.2 GiB/s in a fresh process, and in the full product it ran at 0.6 GiB/s, which cost 6.8 s at `n = 32768`. A CUDA
+  context alone, or a GPU access to pageable memory, leaves fault throughput at 8 to 10 GiB/s. So the library owns a
+  result arena that it allocates and faults once and reuses across products, and benchmarks report the first call
+  separately.
 
 ## Layer 1: the exact modular product
 
@@ -157,9 +166,10 @@ contents. A Rust port fits `open_gororoba`, which already depends on `cudarc` 0.
 
 ## Order
 
-1. HMM migration is established and the INT8 product runs on HMM inputs with a device-side output and pinned drain
-   (1.3 s at `n = 16384`). Next: an explicit device tile cache for inputs under a fixed budget, measured at
-   `n = 32768` and `65536` against the 3.5 s INT8-plus-transfer floor at `n = 32768`.
+1. The exact INT8 product runs with an explicit device digit cache, pinned staging both ways and a reused result
+   arena (0.56 s at `n = 16384`, 5.3 s at `n = 32768`). Next: `n = 65536` (operands past host-pinned budgets, result
+   16 GiB) against the INT8-plus-transfer floor, and a cache-aware loop order that keeps a B column panel resident
+   when the digit cache holds less than both operands.
 2. Layer 2 with the tiled layout and the prefetch pipeline, measured against staging; Nsight Systems confirms the
    prefetches remove demand faults.
 3. Layer 3: fused base-case kernel, then recursive PLUQ; rank against FLINT up to `n = 8192`.
