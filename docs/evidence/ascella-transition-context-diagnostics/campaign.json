@@ -1,0 +1,118 @@
+{
+  "confidence": 0.95,
+  "credit_ceiling_per_job": 1.131072,
+  "detected_shot_cap_per_setting": 131072,
+  "endpoints": 280,
+  "execution_stop_seconds": 300,
+  "family": "20 observations including five prior settings; 13 categories and one leakage aggregate each",
+  "jobs": [
+    {
+      "context": "singleton",
+      "directory": "results/quandela/runs/ascella-context-single-identity-2",
+      "labels": [
+        "identity-2"
+      ],
+      "manifest": "cases/single-identity-2/cases.json",
+      "manifest_sha256": "8cad2048bebe645764d396c3f1bee774660b7e30dca374a1a399bd1457715ba9",
+      "name": "single-identity-2"
+    },
+    {
+      "context": "singleton",
+      "directory": "results/quandela/runs/ascella-context-single-identity-5",
+      "labels": [
+        "identity-5"
+      ],
+      "manifest": "cases/single-identity-5/cases.json",
+      "manifest_sha256": "88d88004c1b35dfc28394078b5f26c01ff18a06f072c765b37e24e23fe1a12e4",
+      "name": "single-identity-5"
+    },
+    {
+      "context": "singleton",
+      "directory": "results/quandela/runs/ascella-context-single-cross-4",
+      "labels": [
+        "cross-4"
+      ],
+      "manifest": "cases/single-cross-4/cases.json",
+      "manifest_sha256": "8075ceef6e68209d385bdfca7001b85a69aec850e44908f02ea617a1504d548e",
+      "name": "single-cross-4"
+    },
+    {
+      "context": "singleton",
+      "directory": "results/quandela/runs/ascella-context-single-identity-0",
+      "labels": [
+        "identity-0"
+      ],
+      "manifest": "cases/single-identity-0/cases.json",
+      "manifest_sha256": "de9a7718013377447f0fc6173dcafb714d65a30ba2dc1e7e298453b9e720c9a1",
+      "name": "single-identity-0"
+    },
+    {
+      "context": "singleton",
+      "directory": "results/quandela/runs/ascella-context-single-cross-0",
+      "labels": [
+        "cross-0"
+      ],
+      "manifest": "cases/single-cross-0/cases.json",
+      "manifest_sha256": "bf8d368e77eefca823353796bcf38980159b93f6f9b306ddf46009db5bc88b3d",
+      "name": "single-cross-0"
+    },
+    {
+      "context": "forward",
+      "directory": "results/quandela/runs/ascella-context-packed-forward",
+      "labels": [
+        "identity-2",
+        "identity-5",
+        "cross-4",
+        "identity-0",
+        "cross-0"
+      ],
+      "manifest": "cases/packed-forward/cases.json",
+      "manifest_sha256": "5b3773de73119bcafaa646fdaced6fc5e98bc197494054de259713ea05b83f53",
+      "name": "packed-forward"
+    },
+    {
+      "context": "reverse",
+      "directory": "results/quandela/runs/ascella-context-packed-reverse",
+      "labels": [
+        "cross-0",
+        "identity-0",
+        "cross-4",
+        "identity-5",
+        "identity-2"
+      ],
+      "manifest": "cases/packed-reverse/cases.json",
+      "manifest_sha256": "2e9da6253ecf5cf60dca6b722204d2819e9ff3dc3cd211e1b6755ced9be961fa",
+      "name": "packed-reverse"
+    }
+  ],
+  "prior_run": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+  "samples_per_setting": 65536,
+  "schema": "ascella-transition-context-campaign-v1",
+  "selection": [
+    {
+      "label": "identity-2",
+      "name": "computational-to-computational-input-2"
+    },
+    {
+      "label": "identity-5",
+      "name": "computational-to-computational-input-5"
+    },
+    {
+      "label": "cross-4",
+      "name": "product_fourier-to-product_chirped-input-4"
+    },
+    {
+      "label": "identity-0",
+      "name": "computational-to-computational-input-0"
+    },
+    {
+      "label": "cross-0",
+      "name": "product_fourier-to-product_chirped-input-0"
+    }
+  ],
+  "source_manifest": {
+    "file": "docs/evidence/ascella-cancellation-transition-acquisition/cases/dimension-six-transition-pilot/cases.json",
+    "sha256": "10bc07066311984fac15badbe8d55e6dd035da6f37dd68efb841fc6e5433c7dc"
+  },
+  "total_credit_ceiling": 7.917504000000001
+}

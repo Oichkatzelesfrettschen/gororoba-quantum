@@ -1,0 +1,206 @@
+{
+  "schema": "work-plan-v1",
+  "id": "retention-bookkeeping-per-record",
+  "kind": "implementation",
+  "summary": "Bind retained-run bookkeeping to per-job records so a retention appends facts instead of re-binding aggregate files, and cut retention wall time.",
+  "sources": [
+    "docs/design/retention-bookkeeping-per-record.md"
+  ],
+  "state": "closed",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Costs measured on #618 and on the build host and hosted runner; see the design note."
+  },
+  "scope": "Registry evidence, algebra-device bundle sources and the submitted-circuit comparison bind per-job records; the audit check verifies every raw archive through one translate per register on the parallel pool; the registry check computes each view input once; one command retains a run and a test rejects a retained run without an acquisition.",
+  "owner": "claude-code",
+  "next_action": "None; a new retention runs scripts/retain_run.sh.",
+  "steps": [
+    {
+      "id": "registry-records",
+      "action": "research_state.py accepts FILE.json#COLLECTION/FIELD=VALUE evidence; hw-charge-prediction-residuals and hw-ghost-calibration-replay bind their jobs' audit rows",
+      "acceptance": "research_state.py --check and --self-test pass; an appended audit job leaves both claims byte-identical",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "research_state.py --check (core-270) and --self-test (core-271) pass at 406e277; with a job appended to the inventory and audit as retain_run.sh writes one, the digests of all 35 audit-row references the registry cites are unchanged and --check rejects the unregistered run (acquisition run set differs from the retained-run audit).",
+          "observed_at": "2026-10-28T03:42:39.374142+00:00",
+          "revision": "406e277a6af8dae83a3f790ca68617ab537d3dec",
+          "evidence": [
+            {
+              "ref": "scripts/research_state.py",
+              "sha256": "37efc66dd002d21555fe8aa03183415e7671e5871d0dd5a11bc0df2b9fe1a1f8"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=hw-charge-prediction-residuals",
+              "sha256": "18e044f48c45c35c828301eb6c0c79cdb17dc975def8d10a557bbf69f7dc659a"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=hw-ghost-calibration-replay",
+              "sha256": "bc3d5783e42598c924be2eb524f3057b7400fa1827a9072717185d1e26315466"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-270",
+              "sha256": "35ccc4d8ae48048b208936907c599e2c01410e1edc326866a92c822cf25ca45c"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-271",
+              "sha256": "448028c3a0c4bf132b6b2f366587d5997d530c073914075d8d2b467504a571e7"
+            }
+          ],
+          "scope_sha256": "6de404f9aa694936958abd1d3860f68af8bc828ffd4d24fd04171b8cec22b024"
+        }
+      ]
+    },
+    {
+      "id": "bundle-records",
+      "action": "algebra_device_conjectures.py records and verifies # sources by plan_records.evidence_digest; one successor bundle freezes",
+      "acceptance": "core-670 passes on the successor and stays green after an appended audit job",
+      "state": "done",
+      "depends_on": [
+        "registry-records"
+      ],
+      "receipts": [
+        {
+          "result": "core-670 passes on docs/evidence/algebra-device-conjectures-12 (22 proposals, 334 acquisitions) at 406e277 and passes again with a job appended to the inventory and audit.",
+          "observed_at": "2026-10-28T03:42:39.374142+00:00",
+          "revision": "406e277a6af8dae83a3f790ca68617ab537d3dec",
+          "evidence": [
+            {
+              "ref": "scripts/algebra_device_conjectures.py",
+              "sha256": "97b9c2a87166c290aa378faf950c3b42a69b9d62a5441364ada6188174d839f4"
+            },
+            {
+              "ref": "docs/evidence/algebra-device-conjectures-12/manifest.json",
+              "sha256": "0fe3491c209bc7d38597c394445079737f2b92cb57d13ad9bb11fcc0308055c7"
+            },
+            {
+              "ref": "docs/evidence/algebra-device-conjectures-12/result.json",
+              "sha256": "a95bcc841475c3d2aa129c68560ab06f34386a57eece29e679e8ef1a70a2d943"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-670",
+              "sha256": "1ee403d0f75ddd2dc49a3e59007116a4a318007618cadff87f6c4951a00af1a3"
+            }
+          ],
+          "scope_sha256": "2191579e0fd8d9cc793e52e3ec17e45b2c754395c74c123c464af62a3992fa87"
+        }
+      ]
+    },
+    {
+      "id": "comparison-rows",
+      "action": "compare_submitted_circuits.py keeps one immutable row file per job and appends missing jobs; core-281 checks the row directory",
+      "acceptance": "core-281 passes; --write for one new job adds one file and changes no other",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "core-281 (compare_submitted_circuits.py --check-rows) passes at 406e277; the append and split tests pass: an append retrieves only jobs without a row and keeps existing rows, and one row file per job refuses an occupied row.",
+          "observed_at": "2026-10-28T03:42:39.374142+00:00",
+          "revision": "406e277a6af8dae83a3f790ca68617ab537d3dec",
+          "evidence": [
+            {
+              "ref": "scripts/compare_submitted_circuits.py",
+              "sha256": "f4a09c11354074974f2268af2e48ec636f832260f9de8f2a1a4db61eb85ce888"
+            },
+            {
+              "ref": "tests/scripts/test_compare_submitted_circuits.py",
+              "sha256": "0cf29cb6464f3918846cd046a122a39d724617ebb5d63ac1abccf2ccd9d96fe5"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-281",
+              "sha256": "3b8541a52013c4578ed8bcf38e8605ba87cd96f509389ee7c7fb9b6585cb3a61"
+            }
+          ],
+          "scope_sha256": "22951a89e07e630224496c2368a1a474e98d32a8c254ff5edb2666397bd14df8"
+        }
+      ]
+    },
+    {
+      "id": "incremental-raw",
+      "action": "reconcile_qpu_inventory.py validates each shot register with one translate over the joined strings and verifies the archives through parallel.ordered_map; every check verifies every archive",
+      "acceptance": "core-196 passes, re-deriving every retained audit row through the translate and pooled path; a test matches the translate against the per-shot rule; local check time measured",
+      "state": "done",
+      "reason": "The profile placed the audit's cost in the per-shot re.fullmatch, not in re-verifying unchanged archives, so the faster check replaced the verification ledger and no trust ledger is kept (docs/design/retention-bookkeeping-per-record.md).",
+      "receipts": [
+        {
+          "result": "core-196 (reconcile_qpu_inventory.py --check) passes at 406e277 in 69.5 s at host load average 26, re-deriving every retained audit row through the translate and pooled path; the binary-rows tests match the translate against the per-shot rule. The design note records 156 s to 12 s on the build host.",
+          "observed_at": "2026-10-28T03:42:39.374142+00:00",
+          "revision": "406e277a6af8dae83a3f790ca68617ab537d3dec",
+          "evidence": [
+            {
+              "ref": "scripts/reconcile_qpu_inventory.py",
+              "sha256": "88151eb1e3dc17f4c5c165504c2b7daa3801d8b6347f33a90d036d29dd0f8c2a"
+            },
+            {
+              "ref": "tests/scripts/test_reconcile_binary_rows.py",
+              "sha256": "a3d9828bf48cd9fc1925e3906f456cd7412a28e4cf13ce5f772090d001d238e3"
+            },
+            {
+              "ref": "docs/design/retention-bookkeeping-per-record.md",
+              "sha256": "f5a6b86fdd0462ae9c2ed777bde55a850f3196519cb44182e36fbadc8b56f478"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-196",
+              "sha256": "8a5a19145f05517b8383d1fb8bba4cf0f22125a4b35ac0fa87c9b49aeef81366"
+            }
+          ],
+          "scope_sha256": "7b6101911bc9b634cc127e0a3e9a712de18d779fd166a2808ef53eb627dd15d8"
+        }
+      ]
+    },
+    {
+      "id": "retain-command",
+      "action": "scripts/retain_run.sh chains seed rows, inventory, audit, acquisition stub and views; registry check memoized; a test rejects a retained run without an acquisition",
+      "acceptance": "one command retains a run end to end; the test fails on a planted unregistered run",
+      "state": "done",
+      "depends_on": [
+        "registry-records"
+      ],
+      "receipts": [
+        {
+          "result": "test_retain_run.py passes at 406e277: retention appends every register of the run's instance, and a refused acquisition fails the retention; a planted audit job without an acquisition fails research_state.py --check.",
+          "observed_at": "2026-10-28T03:42:39.374142+00:00",
+          "revision": "406e277a6af8dae83a3f790ca68617ab537d3dec",
+          "evidence": [
+            {
+              "ref": "scripts/retain_run.sh",
+              "sha256": "debee5953d0b112d2a8474563379d001dd8de843e87a62243afb6270e176e21f"
+            },
+            {
+              "ref": "tests/scripts/test_retain_run.py",
+              "sha256": "354c01416cbb97d5a83746e460ef352a834b706d4bb0dd8b7a18cdb3d4a0d5a2"
+            },
+            {
+              "ref": "scripts/research_state.py",
+              "sha256": "37efc66dd002d21555fe8aa03183415e7671e5871d0dd5a11bc0df2b9fe1a1f8"
+            }
+          ],
+          "scope_sha256": "aca6a133101d17e1cc4cf2bf66fc71f7b12f948fd39d6e8f3f7ff07e6721254b"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "Retained-run bookkeeping binds per-job records: the registry claims, the algebra-device bundle sources and the submitted-circuit comparison rows each change only for the jobs they cite, the audit check verifies every archive through one translate per register on the parallel pool, and scripts/retain_run.sh retains a run in one command whose registry step cannot be skipped.",
+  "receipts": [
+    {
+      "result": "All five steps hold their acceptance at 406e277: core-196, core-270, core-271, core-281 and core-670 pass, the retention, comparison and binary-row tests pass, and a job appended to the inventory and audit leaves every cited audit-row digest unchanged and core-670 green while research_state.py --check rejects the unregistered run.",
+      "observed_at": "2026-10-28T03:43:06.525268+00:00",
+      "revision": "406e277a6af8dae83a3f790ca68617ab537d3dec",
+      "evidence": [
+        {
+          "ref": "docs/design/retention-bookkeeping-per-record.md",
+          "sha256": "f5a6b86fdd0462ae9c2ed777bde55a850f3196519cb44182e36fbadc8b56f478"
+        },
+        {
+          "ref": "scripts/retain_run.sh",
+          "sha256": "debee5953d0b112d2a8474563379d001dd8de843e87a62243afb6270e176e21f"
+        },
+        {
+          "ref": "scripts/research_state.py",
+          "sha256": "37efc66dd002d21555fe8aa03183415e7671e5871d0dd5a11bc0df2b9fe1a1f8"
+        }
+      ],
+      "scope_sha256": "730fa5f8904a7537e682a3a6d60f6605a1a0927825ff8d1a52fdee0cf6e38c5f"
+    }
+  ]
+}

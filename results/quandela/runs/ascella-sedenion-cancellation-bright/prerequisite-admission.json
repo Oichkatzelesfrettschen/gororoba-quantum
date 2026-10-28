@@ -1,0 +1,45 @@
+{
+  "analysis_source_sha256": "3063f1a26626370aed77845f8bb00a2379d6848e5002ea9d62fafbcded652fbd",
+  "campaign_sha256": "a805f0d5969291539839f896e612ecd689f6b54cd8a75a35c61460fa7929ce5b",
+  "case": "sedenion-cancellation-bright",
+  "decision": {
+    "admitted": true,
+    "measured_predecessor_durations": [
+      4.0
+    ],
+    "pilot_packing_model_seconds": null,
+    "predecessor_cases": [
+      "sedenion-cancellation-dark"
+    ],
+    "runtime_boundary": "The first dark acquisition qualifies unknown runtime under a 300-second stop limit.",
+    "scientific_boundary": "Negative optical performance retains the diagnostic controls and pilot question."
+  },
+  "predecessor_sources": [
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/cases.json",
+      "sha256": "71962299f2cb30c1597fe2282f6a1b07a83f11e027942a8b0ad76e4f4b9a591f"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/submission.json",
+      "sha256": "066521dbc0121df39d14968380e1ff31b2bcef16f020e75ac8ee55d42ed8618c"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/job-body.json",
+      "sha256": "f77614008dabaae92c9932e9610783e0e159c8de19327c860dc68fa2c4e9a02d"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/results.json",
+      "sha256": "57d75cc0e87e444c6c49a0e5777799488d47e09f987aa369805ce0ad71c9a8b1"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/raw/result.json",
+      "sha256": "1146fe63bdb9c7edf4c05e18662212c026baa926414c84f3f157f6b0ef403d7b"
+    }
+  ],
+  "reviewed_case": {
+    "file": "docs/evidence/ascella-cancellation-transition-acquisition/README.md",
+    "sha256": "cfff293cf02f493c1f760cbc3f009de2a69a307b99d12e75b9c3d73f7e737751"
+  },
+  "schema": "ascella-cohort-prerequisite-admission-v1",
+  "source_case_sha256": "83932b19a538d8fd1b7b89125b125cf0cc242bdd7b6301922f49997280b7e239"
+}

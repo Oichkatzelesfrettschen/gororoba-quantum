@@ -1,0 +1,60 @@
+{
+ "schema": "submitted-circuit-row-v1",
+ "row": {
+  "job_id": "db87o8or1c5c738lu910",
+  "run": "results/live/2026-10-15T070853.550532Z",
+  "retained_file": "results/live/2026-10-15T070853.550532Z/isa.qpy",
+  "retained_sha256": "c8996f472748a40ae516c130b8b351894ce34aec9de92226af4d8b0db8327bd7",
+  "order_source": "record.json submission.jobs[].pubs",
+  "expected_pubs": [
+   "ibm_kingston_static_pub_01",
+   "ibm_kingston_static_pub_02",
+   "ibm_kingston_static_pub_03",
+   "ibm_kingston_static_pub_04",
+   "ibm_kingston_static_pub_05",
+   "ibm_kingston_static_pub_06",
+   "ibm_kingston_static_pub_07",
+   "ibm_kingston_static_pub_08",
+   "ibm_kingston_static_pub_09",
+   "ibm_kingston_static_pub_10",
+   "ibm_kingston_static_pub_11",
+   "ibm_kingston_static_pub_12",
+   "ibm_kingston_static_pub_13",
+   "ibm_kingston_static_pub_14"
+  ],
+  "items": 14,
+  "item_kinds": [
+   "CircuitItem"
+  ],
+  "positional_matches": 14,
+  "submitted_qpy_sha256": [
+   "ac0800eba09f77d1fd8b95a220fe4ad58704d97b3109e4ec083373241a5f4482",
+   "59d38b2d062d83627e95f9d1db9636dd2d96112450a7a6e187dd849024776c77",
+   "219e83937f75feea8d28ff6973ec8c8e797ba876f58370aeaf50912c53ff20fc",
+   "c54ca973d737ca9fbc48d8828dcf50d7da1c365d0a574dc1d85b3c4821ab1194",
+   "c535ff205f9fb34a8d4d44bed71df84c838d4ffb8bf18bdb18cfc98415305149",
+   "763914d7855a4f25ede21b8a4c0e0870c25dc031157026721628551f59e3b94b",
+   "07b5897b318b23b890cbaa7271a37badd7e6b53e89031232edcb6d21fcae9caf",
+   "56e9e7888c9763ec1c9c247c3e3b9fe7633ccc1d380ef8b61673c717e184a735",
+   "a4725e05f1ca6fea3dca01dfb573724edba3f98b97cd0c3f42840fcc777a4c00",
+   "9c297fae77b80d6b31af3db41f0506f1a377202528d85b21db48a7bba05bebe6",
+   "31d03843206352f29604e7fe8f0797256581ed4e064bd11ca368a0eda93cb06b",
+   "cc106a448bb4371509a828489b1cdb2eee3073c89e11c1fc93834cd57d67acff",
+   "290975dda67a1f11e3df47b2b843035acae472db1f82e4c00d44b1b717034055",
+   "ba449cc0e35c9def95db4f1edf730555982e68938633965a1f2d287b32cb18a2"
+  ]
+ },
+ "provenance": {
+  "origin": {
+   "file": "docs/evidence/submitted_circuits/comparison-qpy18-full-retrieval.json",
+   "sha256": "1e7072ce8d059b90298559dac822c2ac1b47eda45081f5d96346ce08f2d52c58"
+  },
+  "retrieved_utc": "2026-10-28T00:35:31.259774+00:00",
+  "operation": "read existing job inputs; submissions and uploads excluded",
+  "runtime_versions": {
+   "qiskit": "2.6.0",
+   "qiskit-ibm-runtime": "0.50.0"
+  },
+  "collector_sha256": "77eaddfaac4f54e8a6986bf92547bbb92a721404507fbd9d529fd3c2596093c9"
+ }
+}

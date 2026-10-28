@@ -70,6 +70,27 @@ def test_a_change_reaches_the_gates_that_check_it(tree: Path, changed: list[str]
         raise AssertionError(f"{changed} reached {reached(tree, changed)}, expected {expected}")
 
 
+def test_a_name_imported_from_a_module_is_no_module(tree: Path) -> None:
+    (tree / "scripts/helper.py").write_text("import leaf\nfrom leaf import collect\n")
+    (tree / "scripts/leaf.py").write_text("def collect() -> None: ...\n")
+    (tree / "evidence").mkdir()
+    (tree / "evidence/collect.py").write_text("")
+    if reached(tree, ["evidence/collect.py"]):
+        raise AssertionError("a function imported from a module must not match a file of the same stem")
+    if reached(tree, ["scripts/leaf.py"]) != {"proposal"}:
+        raise AssertionError("the imported module itself stays a dependency")
+
+
+@pytest.mark.parametrize("statement", ["from pkg import sub", "from . import sub"])
+def test_a_name_imported_from_a_package_or_relatively_is_a_submodule(tree: Path, statement: str) -> None:
+    (tree / "scripts/helper.py").write_text(f"{statement}\n")
+    (tree / "scripts/pkg").mkdir()
+    (tree / "scripts/pkg/__init__.py").write_text("")
+    (tree / "scripts/pkg/sub.py").write_text("")
+    if reached(tree, ["scripts/pkg/sub.py"]) != {"proposal"}:
+        raise AssertionError(f"{statement!r} names a submodule, which must stay a dependency")
+
+
 @pytest.mark.parametrize("pin", ["requirements.txt", "ci/requirements-replay.txt", "ci/patches/fix.patch"])
 def test_a_runtime_pin_change_reaches_every_gate(tree: Path, pin: str) -> None:
     if reached(tree, [pin]) != {"proposal", "other", "scoped"}:

@@ -1,0 +1,472 @@
+{
+  "schema": "ascella-acquisition-provider-observation-v1",
+  "observed_at": "2026-10-27 23:30:06 UTC",
+  "scope": "Read-only platform, offer, token occupancy and usage; architecture/documentation bulk fields stripped by connector.",
+  "availability": {
+    "max_concurrent_jobs": 1,
+    "max_jobs_in_queue": 1,
+    "max_running_qt_jobs": 10,
+    "num_concurrent_jobs": 0,
+    "num_jobs_in_queue": 0,
+    "num_running_qt_jobs": 0,
+    "platform_queue": {
+      "count": null,
+      "status": "requires-dashboard-session",
+      "dashboard_url": "https://cloud.quandela.com/webide/",
+      "action": "Offer to open the dashboard and read the platform card's pending jobs after sign-in.",
+      "source": "GET /api/platform-permissions/users/{user_id}?count_jobs=true; waiting_jobs",
+      "boundary": "The job token cannot read this dashboard interface. Token occupancy and cumulative job usage do not determine platform queue depth or queue position. The dashboard count's user/global scope requires authenticated verification."
+    }
+  },
+  "ascella": {
+    "perfs": {
+      "Clock (MHz)": 13.33,
+      "Dark counts (detection/s)": [
+        353,
+        323,
+        289,
+        125,
+        130,
+        422,
+        227,
+        561,
+        3285,
+        3851,
+        5003,
+        686
+      ],
+      "HOM (%)": 86.78,
+      "g2 (%)": 2
+    },
+    "specs": {
+      "architecture": {
+        "stripped": true,
+        "chars": 3672
+      },
+      "available_commands": [
+        "probs",
+        "samples",
+        "sample_count",
+        "entropy",
+        "entropy_demo"
+      ],
+      "commands": "pcvlar:zip:eJydkEsKwjAURbdyl9CktZ+x4Aqcl2iDBvKjeQW7e19/WBUcOAmPm5OTmyCDQAZrEiHnUfJ6DM4p33GcwyunUSCZm1c09BoHqBjt2GpHKL9RcdixovwNy2wHS/EGJ+r5rtiHS9raVajR4BKCxRk0RKunyvwAASFfQf4ZFGswKXly6tEm5XgzgcY4IcbT4j3NULMw90BpOVTiGlw0VpEJvk1ad3NeYfNs/1dB1BDN3+3kamyvYeBOq1ZKSF6LP7RP2d6MsA==",
+      "connected_input_modes": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "constraints": {
+        "max_mode_count": 12,
+        "max_photon_count": 6,
+        "max_sample_count": null,
+        "min_mode_count": 1,
+        "min_photon_count": 1,
+        "support_multi_photon": false
+      },
+      "default_mitigations": "pcvlar:zip:eJxTMFAwVDBQyMksLlEwAAAS5AMe",
+      "description": "Ascella QPU",
+      "detector": "threshold",
+      "documentation": {
+        "stripped": true,
+        "chars": 1340
+      },
+      "known_mitigations": [
+        "PhotonRecycling",
+        "CompilationAveraging",
+        "DistinguishablePhoton",
+        "DetectorBalancing"
+      ],
+      "min_client_version": "0.10.0",
+      "parameters": {
+        "final_mode_number": "number of modes of the output states. States having a photon on unused modes will be ignored. Useful when using computed circuits (default input_state.m)",
+        "use_photon_recycling": "Legacy - Use the mitigation setter instead - boolean enabling the Photon Recycling noise mitigation process. Replaces default mitigation if no user-defined mitigation is given, else it is ignored (Default False)"
+      },
+      "pcvl_version": "1.3.0",
+      "pre_shots_compatibility": false,
+      "processor_name": "qpu:ascella",
+      "software_versions": {
+        "exqalibur": "1.4.1",
+        "hardware-core-quandela": "3.9.11",
+        "mosaiq-arcturus": "2.1.5.2.post4",
+        "pcvl-worker": "2.1.1",
+        "perceval-quandela": "1.3.0",
+        "universalchipworker": "2.1.3"
+      },
+      "type": "qpu"
+    },
+    "status": "calibration",
+    "type": "qpu",
+    "bulk_fields": {
+      "architecture": "present",
+      "documentation": "present"
+    },
+    "record_fields": {
+      "commands": "present",
+      "available_commands": "present",
+      "default_mitigations": "present",
+      "known_mitigations": "present",
+      "architecture": "present",
+      "type": "present",
+      "record_type": "present"
+    }
+  },
+  "platforms": {
+    "explorer": [
+      {
+        "name": "qpu:belenos",
+        "type": "qpu",
+        "status": "maintenance",
+        "description": "Belenos QPU",
+        "max_duration": 300,
+        "price_per_shot": 0.000001,
+        "bookable": true,
+        "is_locked": false,
+        "is_offer_platform": true,
+        "statistic": {
+          "2026-10-20": {
+            "availability": 81.96000000000001
+          },
+          "2026-10-21": {
+            "availability": 82.28
+          },
+          "2026-10-22": {
+            "availability": 81.74
+          },
+          "2026-10-23": {
+            "availability": 80.98
+          },
+          "2026-10-24": {
+            "availability": 83.07
+          },
+          "2026-10-25": {
+            "availability": 88.65
+          },
+          "2026-10-26": {
+            "availability": 32.4
+          },
+          "2026-10-27": {
+            "availability": 0
+          }
+        },
+        "maintenance": {
+          "maintenance_title": "Maintenance",
+          "start_time": "2026-10-26T08:30:00Z",
+          "end_time": "2026-10-29T11:30:00Z",
+          "time_zone": "Europe/Paris"
+        }
+      },
+      {
+        "name": "sim:belenos",
+        "type": "simulator",
+        "status": "available",
+        "description": "Belenos simulator",
+        "max_duration": 300,
+        "price_per_shot": 0,
+        "bookable": false,
+        "is_locked": false,
+        "is_offer_platform": true,
+        "statistic": {
+          "2026-10-20": {
+            "availability": 99.89999999999999
+          },
+          "2026-10-21": {
+            "availability": 99.87
+          },
+          "2026-10-22": {
+            "availability": 99.9
+          },
+          "2026-10-23": {
+            "availability": 99.9
+          },
+          "2026-10-24": {
+            "availability": 99.9
+          },
+          "2026-10-25": {
+            "availability": 99.9
+          },
+          "2026-10-26": {
+            "availability": 99.9
+          },
+          "2026-10-27": {
+            "availability": 99.88
+          }
+        },
+        "maintenance": null
+      },
+      {
+        "name": "qpu:ascella",
+        "type": "qpu",
+        "status": "calibration",
+        "description": "Ascella QPU",
+        "max_duration": 300,
+        "price_per_shot": 0.000001,
+        "bookable": true,
+        "is_locked": false,
+        "is_offer_platform": true,
+        "statistic": {
+          "2026-10-20": {
+            "availability": 89.97
+          },
+          "2026-10-21": {
+            "availability": 89.4
+          },
+          "2026-10-22": {
+            "availability": 89.83
+          },
+          "2026-10-23": {
+            "availability": 90.81
+          },
+          "2026-10-24": {
+            "availability": 92.25
+          },
+          "2026-10-25": {
+            "availability": 92.22000000000001
+          },
+          "2026-10-26": {
+            "availability": 92.10000000000001
+          },
+          "2026-10-27": {
+            "availability": 92.14
+          }
+        },
+        "maintenance": null
+      },
+      {
+        "name": "sim:ascella",
+        "type": "simulator",
+        "status": "available",
+        "description": "Arcturus simulator",
+        "max_duration": 300,
+        "price_per_shot": 0,
+        "bookable": false,
+        "is_locked": false,
+        "is_offer_platform": true,
+        "statistic": {
+          "2026-10-20": {
+            "availability": 99.89999999999999
+          },
+          "2026-10-21": {
+            "availability": 99.89999999999999
+          },
+          "2026-10-22": {
+            "availability": 99.91000000000001
+          },
+          "2026-10-23": {
+            "availability": 99.89999999999999
+          },
+          "2026-10-24": {
+            "availability": 99.91
+          },
+          "2026-10-25": {
+            "availability": 99.89999999999999
+          },
+          "2026-10-26": {
+            "availability": 99.9
+          },
+          "2026-10-27": {
+            "availability": 99.87
+          }
+        },
+        "maintenance": null
+      },
+      {
+        "name": "sim:slos",
+        "type": "simulator",
+        "status": "available",
+        "description": "Simulator with SLOS backend",
+        "max_duration": 300,
+        "price_per_shot": 0,
+        "bookable": false,
+        "is_locked": false,
+        "is_offer_platform": true,
+        "statistic": {
+          "2026-10-20": {
+            "availability": 99.9
+          },
+          "2026-10-21": {
+            "availability": 99.9
+          },
+          "2026-10-22": {
+            "availability": 99.9
+          },
+          "2026-10-23": {
+            "availability": 99.91
+          },
+          "2026-10-24": {
+            "availability": 99.9
+          },
+          "2026-10-25": {
+            "availability": 99.9
+          },
+          "2026-10-26": {
+            "availability": 99.9
+          },
+          "2026-10-27": {
+            "availability": 99.88
+          }
+        },
+        "maintenance": null
+      },
+      {
+        "name": "sim:sampling",
+        "type": "simulator",
+        "status": "available",
+        "description": "Boson sampler simulator with Clifford&Clifford 2017 backend",
+        "max_duration": 300,
+        "price_per_shot": 0,
+        "bookable": true,
+        "is_locked": false,
+        "is_offer_platform": true,
+        "statistic": {
+          "2026-10-20": {
+            "availability": 99.91
+          },
+          "2026-10-21": {
+            "availability": 99.9
+          },
+          "2026-10-22": {
+            "availability": 99.91
+          },
+          "2026-10-23": {
+            "availability": 99.91
+          },
+          "2026-10-24": {
+            "availability": 99.92
+          },
+          "2026-10-25": {
+            "availability": 99.91
+          },
+          "2026-10-26": {
+            "availability": 99.92
+          },
+          "2026-10-27": {
+            "availability": 99.88
+          }
+        },
+        "maintenance": null
+      },
+      {
+        "name": "sim:gpu:small",
+        "type": "simulator",
+        "status": "available",
+        "description": "Clifford on GPU",
+        "max_duration": 300,
+        "price_per_shot": 0,
+        "bookable": false,
+        "is_locked": false,
+        "is_offer_platform": true,
+        "statistic": {
+          "2026-10-20": {
+            "availability": 99.9
+          },
+          "2026-10-21": {
+            "availability": 99.88
+          },
+          "2026-10-22": {
+            "availability": 99.9
+          },
+          "2026-10-23": {
+            "availability": 99.91
+          },
+          "2026-10-24": {
+            "availability": 99.91
+          },
+          "2026-10-25": {
+            "availability": 99.9
+          },
+          "2026-10-26": {
+            "availability": 99.91
+          },
+          "2026-10-27": {
+            "availability": 99.88
+          }
+        },
+        "maintenance": null
+      },
+      {
+        "name": "sim:gpu:medium",
+        "type": "simulator",
+        "status": "decommissioned",
+        "description": "Clifford on GPU",
+        "max_duration": 300,
+        "price_per_shot": 0,
+        "bookable": false,
+        "is_locked": true,
+        "is_offer_platform": true,
+        "statistic": {
+          "2026-10-20": {
+            "availability": 0
+          },
+          "2026-10-21": {
+            "availability": 0
+          },
+          "2026-10-22": {
+            "availability": 0
+          },
+          "2026-10-23": {
+            "availability": 0
+          },
+          "2026-10-24": {
+            "availability": 0
+          },
+          "2026-10-25": {
+            "availability": 0
+          },
+          "2026-10-26": {
+            "availability": 0
+          },
+          "2026-10-27": {
+            "availability": 0
+          }
+        },
+        "maintenance": null
+      }
+    ],
+    "public": [
+      {
+        "name": "qpu:belenos",
+        "type": "qpu",
+        "status": "maintenance"
+      },
+      {
+        "name": "qpu:ascella",
+        "type": "qpu",
+        "status": "available"
+      }
+    ]
+  },
+  "usage": {
+    "result": [
+      {
+        "total_jobs": 81,
+        "usage": [
+          {
+            "credits": 0,
+            "duration_seconds": 1860,
+            "free_credits": 9.24576,
+            "nb_jobs": 15,
+            "platform_name": "qpu:ascella"
+          },
+          {
+            "credits": 0,
+            "duration_seconds": 1128,
+            "free_credits": 16,
+            "nb_jobs": 17,
+            "platform_name": "sim:belenos"
+          },
+          {
+            "credits": 0,
+            "duration_seconds": 5570,
+            "free_credits": 50.26742,
+            "nb_jobs": 49,
+            "platform_name": "qpu:belenos"
+          }
+        ]
+      }
+    ]
+  }
+}

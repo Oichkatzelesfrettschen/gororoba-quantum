@@ -1,0 +1,20 @@
+{
+  "analysis_source_sha256": "3063f1a26626370aed77845f8bb00a2379d6848e5002ea9d62fafbcded652fbd",
+  "campaign_sha256": "a805f0d5969291539839f896e612ecd689f6b54cd8a75a35c61460fa7929ce5b",
+  "case": "sedenion-cancellation-dark",
+  "decision": {
+    "admitted": true,
+    "measured_predecessor_durations": [],
+    "pilot_packing_model_seconds": null,
+    "predecessor_cases": [],
+    "runtime_boundary": "The first dark acquisition qualifies unknown runtime under a 300-second stop limit.",
+    "scientific_boundary": "Negative optical performance retains the diagnostic controls and pilot question."
+  },
+  "predecessor_sources": [],
+  "reviewed_case": {
+    "file": "docs/evidence/ascella-cancellation-transition-acquisition/README.md",
+    "sha256": "cfff293cf02f493c1f760cbc3f009de2a69a307b99d12e75b9c3d73f7e737751"
+  },
+  "schema": "ascella-cohort-prerequisite-admission-v1",
+  "source_case_sha256": "02edc487ad4c49d4a65c9a79de570d06b0a8797c02a62143c1456e431e9d5433"
+}

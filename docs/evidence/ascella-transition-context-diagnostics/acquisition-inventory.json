@@ -1,0 +1,85 @@
+{
+ "runs": [
+  {
+   "accepted_samples": 65536,
+   "credit_charge": 1.065536,
+   "directory": "results/quandela/runs/ascella-context-single-identity-2",
+   "duration_seconds": 4,
+   "job_id": "7a72902c-47e5-424e-b05a-77513afd583f",
+   "name": "single-identity-2",
+   "raw_sha256": "0016903582be6bb9dbd79dd159ce7fe07a8ab740c1b4eb270941f8355b9d5e85",
+   "result_sha256": "fa7d26b1a906cfa6150069d65198e6c429583702fb7909ff9999e49293ff13cc",
+   "status": "completed"
+  },
+  {
+   "accepted_samples": 65536,
+   "credit_charge": 1.065536,
+   "directory": "results/quandela/runs/ascella-context-single-identity-5",
+   "duration_seconds": 3,
+   "job_id": "36f13b4f-f0d3-498d-899b-3aaac60ce4fd",
+   "name": "single-identity-5",
+   "raw_sha256": "3e28bd28e4158f940a7f37dbba17c7eba4f8e47ed07035aac5def06c45440909",
+   "result_sha256": "1dd35b7f17165d543f1e8bf875472690cd89aa62d419e2b83212a5022058dc5e",
+   "status": "completed"
+  },
+  {
+   "accepted_samples": 65536,
+   "credit_charge": 1.065536,
+   "directory": "results/quandela/runs/ascella-context-single-cross-4",
+   "duration_seconds": 3,
+   "job_id": "9c8e5f8b-25b8-4356-b288-4540d8261da6",
+   "name": "single-cross-4",
+   "raw_sha256": "9200c07a2c1d0cba67651e2eea20732f48ed06f7c6d83d83773ac0936c6a0356",
+   "result_sha256": "6dc2164e778a21ec66af3bad2a473bcfbd709932fe4c9f81a5009496b33ed336",
+   "status": "completed"
+  },
+  {
+   "accepted_samples": 65536,
+   "credit_charge": 1.065536,
+   "directory": "results/quandela/runs/ascella-context-single-identity-0",
+   "duration_seconds": 4,
+   "job_id": "2c3e0a37-48be-4d97-8d92-d28c71faf42d",
+   "name": "single-identity-0",
+   "raw_sha256": "aab871d70476828c0f856f75d960a99d411755c178999d9877403e20f20ed652",
+   "result_sha256": "26b5c4ac8de1a8e32bb6915a7e7fe4dbb4fc8ef1d8900960bf6a664e3c4c174e",
+   "status": "completed"
+  },
+  {
+   "accepted_samples": 65536,
+   "credit_charge": 1.065536,
+   "directory": "results/quandela/runs/ascella-context-single-cross-0",
+   "duration_seconds": 4,
+   "job_id": "e4b16f35-2c25-4c06-adc9-ab1c00d88825",
+   "name": "single-cross-0",
+   "raw_sha256": "71d74acaed40084526e55b1fb2ca2111782ee9b712fa6146d6dd49661e005ab6",
+   "result_sha256": "2faaa954ef3999719fabed4d4324704428e3be4b170e6b00d032b405fb034d91",
+   "status": "completed"
+  },
+  {
+   "accepted_samples": 327680,
+   "credit_charge": 1.131072,
+   "directory": "results/quandela/runs/ascella-context-packed-forward",
+   "duration_seconds": 16,
+   "job_id": "caa55f3d-c3bb-4896-b124-21dd6a99a592",
+   "name": "packed-forward",
+   "raw_sha256": "6c9691a89f91b174d1aaac54ca25be99412f5ab04cce78f3985889bc8ebecf9f",
+   "result_sha256": "66d869d6f388ac291d4cf9cece7b92cab3820d3371ebd3b0f62a755fb43ccf13",
+   "status": "completed"
+  },
+  {
+   "accepted_samples": 327680,
+   "credit_charge": 1.131072,
+   "directory": "results/quandela/runs/ascella-context-packed-reverse",
+   "duration_seconds": 16,
+   "job_id": "d99e0c03-f86b-41fe-b4f6-61f5a912d9e4",
+   "name": "packed-reverse",
+   "raw_sha256": "c0cb8c18f156e26f795abd7344f94a323dd6fb896e895f8698e9e082a16584a5",
+   "result_sha256": "f481f90454400e7c0194ac9bf8daac632b63a9b8360051f964ef7c32a2386c44",
+   "status": "completed"
+  }
+ ],
+ "schema": "ascella-transition-context-inventory-v1",
+ "total_accepted_samples": 983040,
+ "total_credit_charge": 7.589824,
+ "total_duration_seconds": 50
+}

@@ -1,0 +1,74 @@
+{
+ "runs": [
+  {
+   "accepted_samples": 65536,
+   "case": "sedenion-cancellation-dark",
+   "credit_charge": 1.065536,
+   "directory": "results/quandela/runs/ascella-sedenion-cancellation-dark",
+   "duration_seconds": 4,
+   "job_id": "f6563568-92c1-49da-ba0d-d8d9c3956084",
+   "raw_result_sha256": "1146fe63bdb9c7edf4c05e18662212c026baa926414c84f3f157f6b0ef403d7b",
+   "results_sha256": "57d75cc0e87e444c6c49a0e5777799488d47e09f987aa369805ce0ad71c9a8b1",
+   "status": "completed"
+  },
+  {
+   "accepted_samples": 65536,
+   "case": "sedenion-cancellation-bright",
+   "credit_charge": 1.065536,
+   "directory": "results/quandela/runs/ascella-sedenion-cancellation-bright",
+   "duration_seconds": 4,
+   "job_id": "c5ababa8-bafa-48e7-9b5b-eb8b9e7117a9",
+   "raw_result_sha256": "6667cbde614732311653efc8f1344deb59b1805c8e22c41515cca771ff6314e3",
+   "results_sha256": "d2fd603086f70f596c17e6ed16f790ec48240a6973ac2b4f6d6940b72afc3055",
+   "status": "completed"
+  },
+  {
+   "accepted_samples": 65536,
+   "case": "sedenion-cancellation-bright-repeat",
+   "credit_charge": 1.065536,
+   "directory": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat",
+   "duration_seconds": 4,
+   "job_id": "31b67f2d-70e1-472c-808f-4129624b9352",
+   "raw_result_sha256": "471b5e677a340b0f9af197008f766553eef89a27482b39bfecfd26deea52bc5e",
+   "results_sha256": "c44b8e606a1833c1ce395e0a86c4358cbd32eb902a60e39eb8de2e5fa5534818",
+   "status": "completed"
+  },
+  {
+   "accepted_samples": 65536,
+   "case": "sedenion-cancellation-dark-repeat",
+   "credit_charge": 1.065536,
+   "directory": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat",
+   "duration_seconds": 4,
+   "job_id": "47608a12-8bed-4cc4-99b7-b33553a35a64",
+   "raw_result_sha256": "39e55e39b7e76dc045f8c63ae266f70462740eb22490de26c99e2bfa645265db",
+   "results_sha256": "31baad9a069c2cf31a48d2df2b1de8f96de400149bdb42c672080e98de968540",
+   "status": "completed"
+  },
+  {
+   "accepted_samples": 65536,
+   "case": "sedenion-cancellation-fixture",
+   "credit_charge": 1.065536,
+   "directory": "results/quandela/runs/ascella-sedenion-cancellation-fixture",
+   "duration_seconds": 4,
+   "job_id": "6fb5c991-5544-4ff9-83d3-cbbf25ef2840",
+   "raw_result_sha256": "cada045a6c0cb3913c07d3ee1591181c8a4cdbb5fba2615aae2b4362f9a4f9b5",
+   "results_sha256": "346288da849d088aac7dbb3d02d28c3610f2b62aabd1651abc459457b3dea03d",
+   "status": "completed"
+  },
+  {
+   "accepted_samples": 786432,
+   "case": "dimension-six-transition-pilot",
+   "credit_charge": 1.131072,
+   "directory": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+   "duration_seconds": 37,
+   "job_id": "a81a0052-1e4c-4c04-8a5a-7e703dfce5df",
+   "raw_result_sha256": "d4c2e716d0a12f0f936fe6b189e57186b01cebe44107329d565c9b704dfe4ccd",
+   "results_sha256": "ddc3c45df61e786b411e314d02d5f16bf289dde4b4ae8f0217b7e9898cc8b00f",
+   "status": "completed"
+  }
+ ],
+ "schema": "ascella-cancellation-transition-acquisition-inventory-v1",
+ "total_accepted_samples": 1114112,
+ "total_credit_charge": 6.458752,
+ "total_duration_seconds": 57
+}

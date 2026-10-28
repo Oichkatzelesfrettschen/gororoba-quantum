@@ -5,6 +5,25 @@ claim boundaries. The [evidence bundle](../evidence/quantum-experiment-conforman
 exact payloads, complete setting inventory, seed assignments, shot design and aggregate credit ceilings.
 This procedure turns those prospective cases into separately approved provider acquisitions.
 
+The [Ascella cancellation and dimension-six case](../evidence/ascella-cancellation-transition-acquisition/README.md)
+freezes five ordered cancellation jobs and a packed twelve-setting pilot, including duration qualification,
+complete-output confidence bounds and the full-campaign expansion rule.
+The [retained Ascella findings](../evidence/ascella-cancellation-transition-acquisition/findings.md) record
+complete acquisitions, passing cancellation controls and the pilot's failed expansion qualification.
+The [Ascella transition context case](../evidence/ascella-transition-context-diagnostics/README.md)
+compares single-setting jobs with forward and reverse requested iterator orders using retained meshes.
+The [context findings](../evidence/ascella-transition-context-diagnostics/findings.md) record changing
+output distributions despite matched returned meshes and leave physical order and drift unresolved.
+The [Ascella mesh and output-port case](../evidence/ascella-transition-mesh-port-diagnostics/README.md)
+crosses independent compilation identifiers with three physical output maps and matched anchors.
+The [day-separated matched-mesh case](../evidence/ascella-transition-day-repeat/README.md) repeats
+five settings at least 24 hours after the forward context job on the following Pacific calendar day.
+The [source-compatible successor](../evidence/ascella-transition-day-repeat-ci/README.md) binds the
+current parallel analyzer and launcher; the original case preserves its earlier source identities.
+The [original returned-mesh analysis source](../evidence/ascella-cancellation-transition-acquisition/analysis-sources/returned-mesh-reference.py)
+preserves the bytes bound by the retained pilot analysis. The current analyzer pools independent settings;
+its replay reproduces the retained values with a new source digest.
+
 ## Questions and controls
 
 | Family and execution surface | Device or implementation question | Controls and reported outcome |
