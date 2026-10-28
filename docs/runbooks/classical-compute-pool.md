@@ -65,7 +65,7 @@ eliminates the first variable.
 | Iso to `N+` | msolve 0.11, prime 32009, 4 threads | degree 8 reached in 3 min; matrix allocation exceeded the 12 GiB cap |
 
 msolve reaches in minutes the degrees Singular reaches in hours, and its limit is memory. Coefficients below 2^16
-take 16-bit storage, so a prime near 32009 halves the matrix memory of a 31-bit prime. Each elimination therefore
+take 16-bit storage, so a prime near 32009 halves the matrix memory of a 30-bit prime such as 1073741789. Each elimination therefore
 goes to the largest single machine free: a Kaggle CPU session (30 GB) first, the Azure VM (84 GB) through a case
 when 30 GB is exhausted.
 
