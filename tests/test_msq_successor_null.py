@@ -199,7 +199,12 @@ def test_memo_distinguishes_weights() -> None:
 
 from pathlib import Path  # noqa: E402
 
-RECORD = Path(__file__).resolve().parent.parent / "results/live/2026-10-28T163139.827337Z"
+# The fields build_setup reads from the width-24 rehearsal record, with its snapshot cut to the layout qubits
+# (tests/data/msq_successor_null/trim_record.py); the audit test below rebuilds it from the retained record.
+RECORD = Path(__file__).resolve().parent / "data/msq_successor_null/record"
+RETAINED_RECORD = Path(__file__).resolve().parent.parent / "results/live/2026-10-28T163139.827337Z"
+# The retained sparse calibration's scale of the 8-qubit pool on RETAINED_RECORD's snapshot.
+SPARSE_SCALE_8 = 1.25
 
 
 # One worker builds the shared setup; the planted tests run at 8 qubits, so it solves only that pool's losses.
@@ -208,7 +213,7 @@ pytestmark = pytest.mark.xdist_group("msq-successor-null")
 
 @pytest.fixture(scope="module")
 def setup() -> nl.Setup:
-    return nl.build_setup(RECORD, sparse_pools=(8,))
+    return nl.with_sparse_scale(nl.build_setup(RECORD), {8: SPARSE_SCALE_8})
 
 
 def small(arm: str, active: int = 8, param: float = 3.0) -> nl.Case:
@@ -331,15 +336,29 @@ def test_settle_arms_plant_their_gaps_at_the_stated_sizes(setup: nl.Setup) -> No
     check(any(lossy[n] != still[n] for n in still if "_measure_" in n), "the loss moved no measure member")
 
 
-def test_sparse_scale_evidence_covers_every_pool_of_the_layout(setup: nl.Setup) -> None:
+@pytest.mark.audit
+def test_sparse_scale_evidence_covers_every_pool_of_the_layout(tmp_path: Path) -> None:
+    import importlib.util
+
     record = json.loads((nl.ROOT / nl.SPARSE_SCALE_EVIDENCE).read_text())
-    pools = {m or setup.width for m in nl.SETTLE_POOLS}
-    scales = nl.sparse_scales(record["snapshot_sha256"], setup.width)[0]
-    check(set(scales) == pools and record["snapshot_sha256"] == setup.digests["snapshot_sha256"], "")
+    retained, _, digest = nl.load_snapshot(RETAINED_RECORD)
+    width = int(retained["family_configuration"]["layout_width"])
+    pools = {m or width for m in nl.SETTLE_POOLS}
+    scales = nl.sparse_scales(record["snapshot_sha256"], width)[0]
+    check(set(scales) == pools and record["snapshot_sha256"] == digest, "")
     check(record["seed"] == nl.SPARSE_CALIBRATION_SEED != nl.SUCCESSOR_NULL_SEED, "the calibration seed")
-    check(setup.sparse_scale == {8: scales[8]}, f"{setup.sparse_scale}")
-    check(nl.sparse_scales("0" * 64, setup.width) == ({}, ""), "the scales serve another snapshot")
-    check(nl.sparse_scales(record["snapshot_sha256"], setup.width + 8) == ({}, ""), "the scales serve another width")
+    check(scales[8] == SPARSE_SCALE_8, f"{scales}")
+    check(nl.sparse_scales("0" * 64, width) == ({}, ""), "the scales serve another snapshot")
+    check(nl.sparse_scales(record["snapshot_sha256"], width + 8) == ({}, ""), "the scales serve another width")
+    spec = importlib.util.spec_from_file_location("trim_record", RECORD.parent / "trim_record.py")
+    if spec is None or spec.loader is None:
+        raise AssertionError("trim_record.py is unreadable")
+    trim = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(trim)
+    trim.trim(RETAINED_RECORD, tmp_path)
+    for path in sorted(RECORD.rglob("*.json")):
+        rebuilt = tmp_path / path.relative_to(RECORD)
+        check(rebuilt.read_bytes() == path.read_bytes(), f"{path.name} differs from the retained record's trim")
     for pool, entry in record["pools"].items():
         last = entry["points"][-1]
         check(last["scale"] == entry["scale"] == scales[int(pool)], f"pool {pool}")

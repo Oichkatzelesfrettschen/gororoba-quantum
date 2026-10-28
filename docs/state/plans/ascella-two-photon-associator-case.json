@@ -1,0 +1,15 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-two-photon-associator-case",
+  "kind": "investigation",
+  "summary": "One qpu:ascella job of eight template iterations: two photons through L_a L_b against L_(ab) with a quaternion control; written case awaits the owner, including the HOM-floor decision.",
+  "sources": [
+    "docs/design/ascella-two-photon-associator-case.md"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "next_action": "Owner approved submission at the live HOM (2026-10-28). Run the written procedure on a host holding the Quandela token with access to api.cloud.quandela.com; the cloud session that prepared the case has neither."
+}
