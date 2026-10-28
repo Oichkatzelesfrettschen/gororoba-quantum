@@ -485,6 +485,14 @@ SETTLE_POOLS = (8, 9, None)
 # The settle-sparse power target holds for every pool of SETTLE_POOLS at once, so each pool's one-sided bound takes a
 # Bonferroni share of 1 - CONFIDENCE.
 SPARSE_FAMILY_CONFIDENCE = 1 - (1 - CONFIDENCE) / len(SETTLE_POOLS)
+# The settle-sparse power target reads each pool's first SPARSE_POWER_REPLICATES replicates, the sample its family
+# bound was set at; the replicates after them serve the exposed-verdict count alone.
+SPARSE_POWER_REPLICATES = 300
+# Exposed verdicts each settle-sparse pool runs to: the least zero-fire count whose bound at the family confidence
+# falls below FALSE_FIRE_CEILING.
+SPARSE_EXPOSED_VERDICTS = 408
+# Arms whose counted verdicts are the exposed ones: issued and selecting a planted qubit.
+EXPOSED_ARMS = (*MINORITY_ARMS, "settle-sparse")
 READERS = len(de.MSQR_READER_STEPS) * len(de.MSQ_SIGNED)
 PLATEAU_EVIDENCE = "docs/evidence/measurement_sequence/envelope-run-exploratory.json"
 ARMS = (
@@ -670,15 +678,19 @@ def plateau_pairs() -> tuple[tuple[tuple[float, float], ...], str]:
     return pairs, hashlib.sha256(data).hexdigest()
 
 
-def sparse_scales() -> tuple[dict[int, float], str]:
+def sparse_scales(snapshot_sha256: str, width: int) -> tuple[dict[int, float], str]:
     """The measured detectable-gap scale of each calibrated pool size from SPARSE_SCALE_EVIDENCE, and the file's
-    sha256; empty before the first calibration."""
+    sha256; empty before the first calibration and for a snapshot or layout width the calibration did not run on."""
     path = ROOT / SPARSE_SCALE_EVIDENCE
     if not path.exists():
         return {}, ""
     data = path.read_bytes()
-    pools = json.loads(data)["pools"]
-    return {int(pool): float(entry["scale"]) for pool, entry in pools.items()}, hashlib.sha256(data).hexdigest()
+    record = json.loads(data)
+    if record["snapshot_sha256"] != snapshot_sha256 or int(record["layout_width"]) != width:
+        return {}, ""
+    return {int(pool): float(entry["scale"]) for pool, entry in record["pools"].items()}, hashlib.sha256(
+        data
+    ).hexdigest()
 
 
 def with_sparse_scale(setup: Setup, scale: dict[int, float]) -> Setup:
@@ -708,7 +720,7 @@ def build_setup(record_dir: Path) -> Setup:
     equilibrium_s = int(configuration["equilibrium_delay_dt"]) * dt
     tolerance = tuple(c["tolerance"] for c in constants)
     settle_se = float(np.median([c["settle_se"] for c in constants]))
-    scale, scale_digest = sparse_scales()
+    scale, scale_digest = sparse_scales(digest, width)
     q_items = [(ctx, bound, equilibrium_s, width) for ctx, bound in zip(pool, tolerance, strict=True)]
     setup = Setup(
         qubits=qubits,
@@ -890,8 +902,10 @@ def arm_cases(arm: str, width: int) -> list[Case]:
 
 
 def minimum_verdicts(arm: str) -> int:
-    """The verdicts an arm runs to: issued verdicts for the carryover arms and plateau-retained, verdicts that select
-    a planted qubit (`summarize`, "counted") for the minority arms."""
+    """The verdicts each case of an arm runs to: issued verdicts for the carryover arms and plateau-retained, verdicts
+    that select a planted qubit (`summarize`, "counted") for the minority arms and, per pool, the sparse settle arm."""
+    if arm == "settle-sparse":
+        return SPARSE_EXPOSED_VERDICTS
     counted = ("carryover-positive", "carryover-negative", "plateau-retained", *MINORITY_ARMS)
     return CARRYOVER_VERDICTS if arm in counted else 0
 
@@ -905,8 +919,8 @@ def sparse_loss(setup: Setup, j: int, pool: int) -> float:
     """The sparse arm's planted measure-arm loss at calibration j and pool size `pool`."""
     if pool not in setup.sparse_scale:
         raise ValueError(
-            f"pool size {pool} has no measured sparse gap scale in {SPARSE_SCALE_EVIDENCE}; "
-            "run scripts/msq_successor_null.py RECORD_DIR --calibrate-sparse"
+            f"pool size {pool} has no measured sparse gap scale for this snapshot and layout width in "
+            f"{SPARSE_SCALE_EVIDENCE}; run scripts/msq_successor_null.py RECORD_DIR --calibrate-sparse"
         )
     return setup.sparse_loss[j][pool]
 
@@ -1313,7 +1327,7 @@ def summarize(setup: Setup, case: Case, state: State, selection: dict[str, Any])
             1 for q in planted if q in state.work and not screens[str(q)]["equilibrium"]["passes"]
         ),
         "planted_selected": planted_selected,
-        "counted": issued and (planted_selected > 0 or case.arm not in MINORITY_ARMS),
+        "counted": issued and (planted_selected > 0 or case.arm not in EXPOSED_ARMS),
     }
 
 
@@ -1463,9 +1477,9 @@ def run_arm(
     needed: int | None = None,
 ) -> dict[str, Any]:
     """The rows of replicates 0 to cap - 1 whose index is congruent to `shard` modulo `shards`, for every case of the
-    arm, as a shard record. An unsharded run of an arm with a verdict requirement stops after the round that reaches
-    it in counted verdicts; `merge_records` applies the same cut to every record, so the bytes do not depend on the
-    sharding."""
+    arm, as a shard record. An unsharded run of an arm with a verdict requirement stops each case after the round that
+    reaches it in that case's counted verdicts; `merge_records` applies the same cut to every case of every record,
+    so the bytes do not depend on the sharding."""
     if not 0 <= shard < shards or cap < 1:
         raise ValueError(f"shard {shard} of {shards} with {cap} replicates")
     cases = list(arm_cases(arm, setup.width) if cases is None else cases)
@@ -1474,13 +1488,14 @@ def run_arm(
     rows: dict[str, list[dict[str, Any]]] = {case.label: [] for case in cases}
     rounds = [indices] if shards > 1 or not needed else [indices[k : k + ROUND] for k in range(0, len(indices), ROUND)]
     for chunk in rounds:
+        running = [case for case in cases if not needed or sum(r["counted"] for r in rows[case.label]) < needed]
+        if not running:
+            break
         items = [
-            (setup, case, seed, chunk[k : k + NULL_BLOCK]) for case in cases for k in range(0, len(chunk), NULL_BLOCK)
+            (setup, case, seed, chunk[k : k + NULL_BLOCK]) for case in running for k in range(0, len(chunk), NULL_BLOCK)
         ]
         for (_, case, _, _), block in zip(items, ordered_map(analyse_block, items, min_items=2), strict=True):
             rows[case.label].extend(block)
-        if needed and sum(row["counted"] for row in rows[cases[0].label]) >= needed:
-            break
     return {
         "schema": SCHEMA,
         "arm": arm,
@@ -1531,6 +1546,9 @@ def case_statistics(arm: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
     planted_total = n * PLANTED_QUBITS if arm in ("settle-sparse", *MINORITY_ARMS) else 0
     exposed = [row for row in rows if row["issued"] and row["planted_selected"] > 0]
     exposed_fires = sum(1 for row in exposed if row["fired"])
+    head = rows[:SPARSE_POWER_REPLICATES] if arm == "settle-sparse" else []
+    target_planted = sum(row["planted_in_pool"] for row in head)
+    target_withheld = sum(row["planted_withheld"] for row in head)
     stats: dict[str, Any] = {
         "replicates": n,
         "issued": issued,
@@ -1556,6 +1574,11 @@ def case_statistics(arm: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
         "per_qubit_veto_power_upper_family": upper_bound(sparse, planted, SPARSE_FAMILY_CONFIDENCE)
         if planted
         else None,
+        "power_target_planted": target_planted,
+        "power_target_withheld": target_withheld,
+        "power_target_upper_family": upper_bound(target_withheld, target_planted, SPARSE_FAMILY_CONFIDENCE)
+        if target_planted
+        else None,
         "planted_equilibrium_withheld_rate": (
             sum(row["planted_equilibrium_failed"] for row in rows) / planted_total if planted_total else None
         ),
@@ -1565,6 +1588,10 @@ def case_statistics(arm: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
         "exposed": len(exposed),
         "exposed_fires": exposed_fires,
         "false_fire_upper_95_given_exposed": upper_bound(exposed_fires, len(exposed)) if exposed else 1.0,
+        "false_fire_upper_family_given_exposed": upper_bound(exposed_fires, len(exposed), SPARSE_FAMILY_CONFIDENCE)
+        if exposed
+        else 1.0,
+        "false_fire_upper_family": upper_bound(fires, n, SPARSE_FAMILY_CONFIDENCE) if n else 1.0,
     }
     targets: dict[str, bool] = {}
     if arm in ("carryover-positive", "carryover-negative", "plateau-retained"):
@@ -1585,12 +1612,17 @@ def case_statistics(arm: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
         if arm == "q-tolerance":
             targets["false_fire_bound_below_ceiling"] = unconditional < FALSE_FIRE_CEILING
     elif arm == "settle-sparse":
-        # One-sided: the arm fails when any pool's per-qubit power is shown below SPARSE_TARGET_POWER at the family's
-        # 95 %.
+        # One-sided over the three pools at the family's 95 %: the arm fails when a pool's per-qubit power over its
+        # first SPARSE_POWER_REPLICATES replicates is shown below SPARSE_TARGET_POWER, or when a missed tail moves
+        # the departure in the verdicts that select a planted qubit.
         targets = {
-            "per_qubit_veto_power_not_below_90_percent_family": planted > 0
-            and stats["per_qubit_veto_power_upper_family"] >= SPARSE_TARGET_POWER,
-            "false_fire_bound_below_ceiling": unconditional < FALSE_FIRE_CEILING,
+            "per_qubit_veto_power_not_below_90_percent_family": n >= SPARSE_POWER_REPLICATES
+            and target_planted > 0
+            and stats["power_target_upper_family"] >= SPARSE_TARGET_POWER,
+            f"exposed_verdicts_at_least_{SPARSE_EXPOSED_VERDICTS}": len(exposed) >= SPARSE_EXPOSED_VERDICTS,
+            "false_fire_bound_given_exposed_below_ceiling_family": stats["false_fire_upper_family_given_exposed"]
+            < FALSE_FIRE_CEILING,
+            "false_fire_bound_below_ceiling_family": stats["false_fire_upper_family"] < FALSE_FIRE_CEILING,
         }
     elif arm == "plateau-low":
         targets = {"departure_verdict_withheld": issued == 0}
@@ -1649,8 +1681,8 @@ def calibrate_sparse_scale(setup: Setup, pool: int, seed: int, replicates: int) 
     latest before a bracket exists), and ends at the first point within one binomial standard error of the target.
     A planted loss changes how many uniforms the binomial draws take, so the power is a noisy step function of the
     scale and each point runs `replicates` replicates."""
-    if seed == SUCCESSOR_NULL_SEED:
-        raise ValueError("the sparse calibration draws from the null's own seed")
+    if seed in (SUCCESSOR_NULL_SEED, SPARSE_CONFIRMATION_SEED):
+        raise ValueError("the sparse calibration draws from a null's own seed")
     points: list[dict[str, float]] = []
     scale = 1.0
     for step in range(SPARSE_CALIBRATION_STEPS):
@@ -1675,6 +1707,8 @@ def calibrate_sparse_scale(setup: Setup, pool: int, seed: int, replicates: int) 
         if (b["power"] - a["power"]) * (b["scale"] - a["scale"]) <= 0:
             raise ValueError(f"pool {pool}: the measured power does not rise with the scale: {points}")
         scale = a["scale"] + (SPARSE_TARGET_POWER - a["power"]) * (b["scale"] - a["scale"]) / (b["power"] - a["power"])
+        if scale <= 0:
+            raise ValueError(f"pool {pool}: the secant steps to the non-positive scale {scale}: {points}")
     raise ValueError(f"pool {pool}: no scale within one standard error after {SPARSE_CALIBRATION_STEPS} points")
 
 

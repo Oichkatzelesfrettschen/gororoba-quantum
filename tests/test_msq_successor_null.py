@@ -332,6 +332,9 @@ def test_sparse_scale_evidence_covers_every_pool_of_the_layout(setup: nl.Setup) 
     pools = {m or setup.width for m in nl.SETTLE_POOLS}
     check(set(setup.sparse_scale) == pools and record["snapshot_sha256"] == setup.digests["snapshot_sha256"], "")
     check(record["seed"] == nl.SPARSE_CALIBRATION_SEED != nl.SUCCESSOR_NULL_SEED, "the calibration seed")
+    check(nl.sparse_scales(record["snapshot_sha256"], setup.width)[0] == setup.sparse_scale, "")
+    check(nl.sparse_scales("0" * 64, setup.width) == ({}, ""), "the scales serve another snapshot")
+    check(nl.sparse_scales(record["snapshot_sha256"], setup.width + 8) == ({}, ""), "the scales serve another width")
     for pool, entry in record["pools"].items():
         last = entry["points"][-1]
         check(last["scale"] == entry["scale"] == setup.sparse_scale[int(pool)], f"pool {pool}")
@@ -339,8 +342,9 @@ def test_sparse_scale_evidence_covers_every_pool_of_the_layout(setup: nl.Setup) 
 
 
 def test_the_sparse_calibration_steps_to_the_target_power(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
-    with pytest.raises(ValueError, match="own seed"):
-        nl.calibrate_sparse_scale(setup, 8, nl.SUCCESSOR_NULL_SEED, 10)
+    for seed in (nl.SUCCESSOR_NULL_SEED, nl.SPARSE_CONFIRMATION_SEED):
+        with pytest.raises(ValueError, match="own seed"):
+            nl.calibrate_sparse_scale(setup, 8, seed, 10)
     # A power linear in the scale, 0.70 at 1 and 0.95 at 2: the secant lands at 1.8.
     monkeypatch.setattr(
         nl, "sparse_power", lambda _s, _p, scale, _seed, _n: (round(1000 * (0.45 + 0.25 * scale)), 1000)
@@ -350,12 +354,21 @@ def test_the_sparse_calibration_steps_to_the_target_power(setup: nl.Setup, monke
     monkeypatch.setattr(nl, "sparse_power", lambda _s, _p, scale, _seed, _n: (round(1000 * (0.9 - 0.1 * scale)), 1000))
     with pytest.raises(ValueError, match="does not rise"):
         nl.calibrate_sparse_scale(setup, 8, nl.SPARSE_CALIBRATION_SEED, 10)
+    # Two shallow points above the target, 0.95 at 1 and 0.96 at 1.25, extrapolate to a negative scale.
+    monkeypatch.setattr(
+        nl, "sparse_power", lambda _s, _p, scale, _seed, _n: (round(1000 * (0.91 + 0.04 * scale)), 1000)
+    )
+    with pytest.raises(ValueError, match="non-positive"):
+        nl.calibrate_sparse_scale(setup, 8, nl.SPARSE_CALIBRATION_SEED, 10)
 
 
 def test_the_sparse_power_target_takes_a_bonferroni_share_per_pool() -> None:
     check(abs(nl.SPARSE_FAMILY_CONFIDENCE - (1 - 0.05 / len(nl.SETTLE_POOLS))) < 1e-15, "family confidence")
     seeds = {nl.SUCCESSOR_NULL_SEED, nl.SPARSE_CALIBRATION_SEED, nl.SPARSE_CONFIRMATION_SEED}
     check(len(seeds) == 3, "the confirmation null shares a seed with the null or the calibration")
+    check(nl.upper_bound(0, nl.SPARSE_EXPOSED_VERDICTS, nl.SPARSE_FAMILY_CONFIDENCE) < nl.FALSE_FIRE_CEILING, "")
+    check(nl.upper_bound(0, nl.SPARSE_EXPOSED_VERDICTS - 1, nl.SPARSE_FAMILY_CONFIDENCE) >= nl.FALSE_FIRE_CEILING, "")
+    check(nl.minimum_verdicts("settle-sparse") == nl.SPARSE_EXPOSED_VERDICTS, "")
     # 524 of 599 planted gaps withheld: shown below 0.9 at 95 % for one pool, not at the three-pool family's 95 %.
     withheld = [2] * 262 + [0] * 37 + [0]
     rows: list[dict[str, Any]] = [
@@ -516,13 +529,19 @@ def test_two_shards_merge_to_the_bytes_of_one_run(setup: nl.Setup) -> None:
     check(whole["replicates"] == {"8-qubits": 2, "9-qubits": 2}, f"{whole['replicates']}")
 
 
-def test_the_verdict_requirement_cuts_every_sharding_at_one_replicate(setup: nl.Setup) -> None:
-    cases = [small("gamma", 12, 0.0)]
-    whole = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 3, cases=cases, needed=2)])
-    halves = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 3, k, 2, cases=cases, needed=2) for k in (0, 1)])
+def test_the_verdict_requirement_cuts_every_sharding_at_one_replicate(
+    setup: nl.Setup, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # One replicate a round: the 9-qubit case reaches two verdicts at its second replicate while the 8-qubit case
+    # issues fewer and runs to the cap.
+    monkeypatch.setattr(nl, "ROUND", 1)
+    cases = [small("gamma", 9, 0.0), small("gamma", 8, 0.0)]
+    whole = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 4, cases=cases, needed=2)])
+    halves = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 4, k, 2, cases=cases, needed=2) for k in (0, 1)])
     check(nl.dumps(whole) == nl.dumps(halves), "the cut depends on the sharding")
-    rows = whole["cases"]["12-qubits"]["rows"]
-    check(sum(r["issued"] for r in rows) == 2 and rows[-1]["issued"], "the run did not stop at its second verdict")
+    rows = whole["cases"]["9-qubits"]["rows"]
+    check(len(rows) == 2 and sum(r["issued"] for r in rows) == 2, "the 9-qubit case did not stop at its second verdict")
+    check(whole["replicates"]["8-qubits"] == 4, "the 8-qubit case stopped with the first case")
 
 
 def test_merge_refuses_incomplete_or_mismatched_shards(setup: nl.Setup) -> None:

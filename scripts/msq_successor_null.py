@@ -61,6 +61,8 @@ def main(argv: list[str] | None = None) -> int:
     else:
         if args.record_dir is None or args.arm is None:
             parser.error("RECORD_DIR and --arm are required unless --merge or --summarize is given")
+        if args.arm == "settle-sparse" and args.seed == nl.SPARSE_CALIBRATION_SEED:
+            parser.error("the sparse settle null draws from the calibration's own seed")
         setup = nl.build_setup(args.record_dir)
         shard = nl.run_arm(
             setup,
