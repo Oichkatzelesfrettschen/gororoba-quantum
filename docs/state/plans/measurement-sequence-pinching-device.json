@@ -12,7 +12,7 @@
     "status": "verified",
     "note": "Owner approved the width-32 run and ratified the envelope doctrine; attempt 1 submitted."
   },
-  "next_action": "Extend the stochastic null to the relaxation family (latent-end-state carryover arms, plateau truth, coverage over the rehearsal snapshot), then rehearse at the retained flags and write the successor case for approval; register the earlier run once the backup inventory can be re-observed.",
+  "next_action": "Run the successor null's arms on the width-24 rehearsal record (results/live/2026-10-28T001935.805967Z), retain them, then write the successor case for approval with the width decision (24 now, or 32 when a calibration admits it); register the earlier run once the backup inventory can be re-observed.",
   "scope": "Heron r2 (ibm_kingston) pinching run under a calibration-adaptive envelope approval: layout rule at width tier 16/24/32, terminal resets, reset controls, Hadamard crosstalk patterns, 20 us repetition delay with a 50 us fallback attempt, preregistered screens and stochastic null.",
   "owner": "measurement-sequence-pinching branch",
   "steps": [
@@ -494,6 +494,30 @@
             {
               "ref": "docs/runbooks/vectorized-fits.md",
               "sha256": "5c67264229c46ab107d4a1d64a8054f3263ba872ddaac6bb59b25b8e60fa8342"
+            }
+          ],
+          "scope_sha256": "c1b3b02f804e86b0a8674e6f16498620476903c78f969f215ec63f7c6138eb39"
+        },
+        {
+          "result": "Revalidated after the runbook gained its cross-host, library-choice and quadrature-accuracy section; the retained envelope null, its tests and envelope-null-w32.json keep their bytes.",
+          "observed_at": "2026-10-28T00:30:31+00:00",
+          "revision": "8421e251e305b5580d96e199c829ea76cf7fa9fc",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/msq_envelope_null.py",
+              "sha256": "f7b7e622cb02148b863022ef363f7675b5e6059e1b475779d9d80c4ae77eea42"
+            },
+            {
+              "ref": "tests/test_msq_envelope.py",
+              "sha256": "0fbc98562cb2461b06490589893c1e6ab5d2f9321e82be928c16dec9ee3dd16d"
+            },
+            {
+              "ref": "docs/evidence/measurement_sequence/envelope-null-w32.json",
+              "sha256": "6ed17f600fd9bff894b0ae265670f6b355b6af66f34ccf11be4b54f2cd5f6975"
+            },
+            {
+              "ref": "docs/runbooks/vectorized-fits.md",
+              "sha256": "b13fea7fd1b7f401189731e09768667a9e1f5136ec87e9c168c3c5d7672b720d"
             }
           ],
           "scope_sha256": "c1b3b02f804e86b0a8674e6f16498620476903c78f969f215ec63f7c6138eb39"
