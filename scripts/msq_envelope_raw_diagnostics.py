@@ -156,13 +156,28 @@ def conditional(current: np.ndarray, previous: np.ndarray) -> tuple[float, float
     return p1 - p0, se
 
 
-def lagged(bits: np.ndarray, k: int, g: int, back: int, offset: int) -> tuple[float, float] | None:
-    current, previous = bits[k, g], bits[k - back, g]
+def lag_cells(bits: np.ndarray, back: int, offset: int) -> dict[tuple[int, int], tuple[float, float]]:
+    """`conditional` of every row k >= back and group against row k - back, the previous row's bits shifted by
+    `offset` shots, in row-major (k, group) order: the same class counts and float operations on whole arrays."""
+    current, previous = bits[back:], bits[: bits.shape[0] - back]
     if offset > 0:
-        current, previous = current[:-offset], previous[offset:]
+        current, previous = current[..., :-offset], previous[..., offset:]
     elif offset < 0:
-        current, previous = current[-offset:], previous[:offset]
-    return conditional(current, previous)
+        current, previous = current[..., -offset:], previous[..., :offset]
+    marked = previous == 1
+    n1 = marked.sum(axis=-1)
+    n0 = previous.shape[-1] - n1
+    c1 = (current.astype(bool) & marked).sum(axis=-1)
+    c0 = current.sum(axis=-1, dtype=np.int64) - c1
+    valid = (n1 >= MIN_SIDE) & (n0 >= MIN_SIDE)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        p1, p0 = c1 / n1, c0 / n0
+        se = np.sqrt(np.maximum(p1 * (1 - p1), 1.0 / n1) / n1 + np.maximum(p0 * (1 - p0), 1.0 / n0) / n0)
+    rows, groups = np.nonzero(valid)
+    return {
+        (int(k) + back, int(g)): (d, e)
+        for k, g, d, e in zip(rows, groups, (p1 - p0)[valid].tolist(), se[valid].tolist(), strict=True)
+    }
 
 
 def adjacency(bits: np.ndarray, members: list[str]) -> dict[str, Any]:
@@ -170,12 +185,7 @@ def adjacency(bits: np.ndarray, members: list[str]) -> dict[str, Any]:
     summaries = {}
     tables: dict[tuple[int, int], dict[int, list[float]]] = {}
     for back, offset in LAGS:
-        cells = {}
-        for k in range(back, rows):
-            for g in range(groups):
-                value = lagged(bits, k, g, back, offset)
-                if value is not None:
-                    cells[(k, g)] = value
+        cells = lag_cells(bits, back, offset)
         z = np.array([d / se for d, se in cells.values()])
         summaries[f"rows_back_{back}_shot_offset_{offset:+d}"] = {
             "cells": len(cells),

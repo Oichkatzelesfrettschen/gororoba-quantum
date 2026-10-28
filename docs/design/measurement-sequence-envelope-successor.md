@@ -140,7 +140,8 @@ decay during its idle, an upper bound that lowers g and raises D). A stratum wit
 combine with weights g^2 / (p (1 - p) (1 / n1_k + 1 / n0_k)) at the reader P1 pooled over every stratum and both
 classes, so a weight carries no reader outcome and the combination stays unbiased (weights from each stratum's own
 variance read D about 8 % low on the null's carryover arm), and a baseline that differs between the N = 2, 4 and 8
-blocks cannot enter through pooling. Every qubit reads ground in both conditioning classes, so readout crosstalk
+blocks cannot enter through pooling. The standard error propagates each conditioning class's own binomial variance
+through those fixed weights, so a differing baseline widens it. Every qubit reads ground in both conditioning classes, so readout crosstalk
 cannot enter the contrast. Sized from the retained run's ro0 P1 (0.006) at 8192 shots, the twelve readers give a
 per-qubit standard error near 0.0006.
 

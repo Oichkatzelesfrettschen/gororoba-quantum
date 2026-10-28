@@ -972,6 +972,7 @@ def carryover_reader(
                     int(zeros.size),
                     int(ones.sum() + zeros.sum()),
                     divisor,
+                    int(ones.sum()),
                 )
             )
             shots += int(previous.size)
@@ -985,12 +986,18 @@ def carryover_reader(
             ),
             "passes": False,
         }
-    pooled = math.fsum(k for _, _, _, k, _ in strata) / math.fsum(n1 + n0 for _, n1, n0, _, _ in strata)
-    spread = max(pooled * (1 - pooled), 1.0 / math.fsum(n1 + n0 for _, n1, n0, _, _ in strata))
-    weights = [g**2 / (spread * (1 / n1 + 1 / n0)) for _, n1, n0, _, g in strata]
+    pooled = math.fsum(k for _, _, _, k, _, _ in strata) / math.fsum(n1 + n0 for _, n1, n0, _, _, _ in strata)
+    spread = max(pooled * (1 - pooled), 1.0 / math.fsum(n1 + n0 for _, n1, n0, _, _, _ in strata))
+    weights = [g**2 / (spread * (1 / n1 + 1 / n0)) for _, n1, n0, _, g, _ in strata]
     total = math.fsum(weights)
-    difference = math.fsum(w * d / g for w, (d, _, _, _, g) in zip(weights, strata, strict=True)) / total
-    se = 1 / math.sqrt(total)
+    difference = math.fsum(w * d / g for w, (d, _, _, _, g, _) in zip(weights, strata, strict=True)) / total
+    # Each conditioning class's own binomial variance (at least one count's) enters through the fixed weights, so a
+    # baseline that differs between strata widens the standard error; the weights keep the outcome-free spread.
+    variance = math.fsum(
+        w**2 * (class_variance(k1, n1) + class_variance(k - k1, n0)) / g**2
+        for w, (_, n1, n0, k, g, k1) in zip(weights, strata, strict=True)
+    )
+    se = math.sqrt(variance) / total
     z = NormalDist().inv_cdf(1 - alpha / width)
     upper = abs(difference) + z * se
     bias = allocation * upper
@@ -1005,9 +1012,15 @@ def carryover_reader(
         "margin": margin,
         "shots": shots,
         "readers": len(strata),
-        "divisors": [g for *_, g in strata],
+        "divisors": [g for _, _, _, _, g, _ in strata],
         "passes": bias < margin,
     }
+
+
+def class_variance(ones: int, shots: int) -> float:
+    """The binomial variance of one conditioning class's mean, at least that of one count in its shots."""
+    p = ones / shots
+    return max(p * (1 - p), 1.0 / shots) / shots
 
 
 def order_sentinel(pairs: Sequence[tuple[np.ndarray, np.ndarray]], z_min: float = ORDER_Z) -> dict[str, Any]:

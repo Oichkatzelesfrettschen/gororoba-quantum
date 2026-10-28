@@ -600,10 +600,10 @@ def predecessor_name(index: int, qubit: int) -> str:
 
 
 def reader_standard_error(ctx: dict[str, Any], predecessor_ones: Sequence[int], excitation: float) -> float:
-    """The standard error of the reader statistic's estimate of D for a carried excitation: each reader's conditional
-    difference has the variance of two conditioning classes (the predecessor read 1 or 0) at the reader P1 pooled over
-    all readers and both classes, divided by its divisor (the contrast times the predecessor bit's separation of its
-    latent end states), and the twelve combine by inverse variance, as `su.carryover_reader` weights them. The
+    """The standard error of the reader statistic's estimate of D for a carried excitation, as `su.carryover_reader`
+    propagates it: each reader's conditional difference, divided by its divisor (the contrast times the predecessor
+    bit's separation of its latent end states), has the binomial variance of its two conditioning classes, and the
+    twelve combine with weights set at the P1 pooled over every reader and both classes. The
     in-circuit reader reads the excitation the next shot starts with, so no decay enters."""
     e01, e10 = ctx["e01"], ctx["e10"]
     contrast = 1 - e01 - e10
@@ -625,8 +625,11 @@ def reader_standard_error(ctx: dict[str, Any], predecessor_ones: Sequence[int], 
     shots = sum(n1 + n0 for n1, n0, _, _, _ in classes)
     pooled = sum(n1 * p1 + n0 * p0 for n1, n0, p1, p0, _ in classes) / shots
     spread = max(pooled * (1 - pooled), 1.0 / shots)
-    inverse = sum(g**2 / (spread * (1 / n1 + 1 / n0)) for n1, n0, _, _, g in classes)
-    return 1.0 / math.sqrt(inverse)
+    weights = [g**2 / (spread * (1 / n1 + 1 / n0)) for n1, n0, _, _, g in classes]
+    variance = 0.0
+    for w, (n1, n0, p1, p0, g) in zip(weights, classes, strict=True):
+        variance += w**2 * (max(p1 * (1 - p1), 1.0 / n1) / n1 + max(p0 * (1 - p0), 1.0 / n0) / n0) / g**2
+    return math.sqrt(variance) / sum(weights)
 
 
 def calibration_constants(ctx: dict[str, Any]) -> dict[str, Any]:
@@ -1026,10 +1029,8 @@ def draw_replicate(setup: Setup, case: Case, seed: int, index: int) -> Drawn:
         patterns = generator.binomial(
             SHOTS, [1 - ctx["e10"] if row[slot] else ctx["e01"] for row in setup.pattern_bits]
         )
-        predecessors, readers, predecessor_ones = draw_bits(generator, ctx, truth, probabilities, qubit)
+        predecessors, readers, _ = draw_bits(generator, ctx, truth, probabilities, qubit)
         counts = {name: (int(k), SHOTS) for name, k in zip(names, ones, strict=True)}
-        for i, k in enumerate(predecessor_ones):
-            counts[predecessor_name(i, qubit)] = (k, SHOTS)
         out.calibration.append(j)
         out.truths.append(truth)
         out.counts.append({"final": counts})
