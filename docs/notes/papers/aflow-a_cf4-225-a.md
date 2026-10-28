@@ -29,6 +29,20 @@ shell. The repository's audit notes the prototype is shared by copper and
 other materials; FCC here is a structural correspondence, not a
 copper-specific physical prediction.
 
+## Lattice the projection spans
+
+[I] The 19 projected points are exactly the points of Z^3 with |v|^2 <= 2
+(multiplicities 220, 22 each and 1 each by squared norm 0, 1, 2). Their
+integer span is Z^3, the primitive cubic lattice (Pm-3m, Pearson cP1); the
+12-point cuboctahedral shell alone spans D3, the FCC lattice of this
+prototype (Fm-3m, cF4), at index 2 in Z^3. The full 19-point set is the
+first two coordination shells of the simple cubic lattice, six neighbors at
+radius 1 and then twelve at sqrt(2), which is the reversed shell order the
+synthesis note records against FCC. The FCC prototype matches the
+cuboctahedral shell only. The counting argument and an spglib and SeeK-path
+cross-check are in the [lattice cross-check
+evidence](../../evidence/seekpath-lattice-crosscheck/README.md#d14-coordinate-projection).
+
 ## Mapping and evidence boundary
 
 [I] AFLOW supplies only the prototype designation. All projections, point

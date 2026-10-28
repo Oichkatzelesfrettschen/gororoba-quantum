@@ -10685,6 +10685,17 @@
    "sys",
    "typing"
   ],
+  "scripts/calibration_watch.py": [
+   "__future__",
+   "argparse",
+   "ibm_account",
+   "json",
+   "live_run",
+   "math",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
   "scripts/capture_iqm_docs.py": [
    "__future__",
    "argparse",

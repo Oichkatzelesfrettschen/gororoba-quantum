@@ -187,7 +187,12 @@ def test_retained_teleportation_iteration_reads_as_censored_detection_events() -
         raise AssertionError("the job total sums iterations; the top-level shots is one iteration's cap")
 
 
-REPLAYS = ("quandela_counter_table.py", "gate_model_counter_census.py", "exposure_sensitivity.py")
+REPLAYS = (
+    "quandela_counter_table.py",
+    "gate_model_counter_census.py",
+    "simulator_counter_census.py",
+    "exposure_sensitivity.py",
+)
 
 
 @pytest.mark.audit
@@ -202,3 +207,107 @@ def test_audit_replays_reproduce_their_retained_output_without_touching_inputs(s
     after = subprocess.run(status, cwd=ROOT, check=True, capture_output=True, text=True).stdout
     if before != after:
         raise AssertionError(f"a replay changed retained evidence: {after}")
+
+
+RUNS = ROOT / "results/quandela/runs"
+
+
+def view(run: str) -> pc.QuandelaRecord:
+    import qd_platform
+
+    directory = RUNS / run
+    results = json.loads((directory / "results.json").read_text(encoding="utf-8"))
+    budgets = qd_platform.iteration_budgets(json.loads((directory / "cases.json").read_text(encoding="utf-8")))
+    return pc.quandela_record(results, budgets)
+
+
+def test_record_view_of_an_iterated_mesh_job_types_every_counter() -> None:
+    record = view("2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03")
+    if (
+        not record.iterated
+        or record.top_level.population is not Population.REQUESTED_CAP
+        or record.top_level.value != 3000
+    ):
+        raise AssertionError(record.top_level)
+    if record.detection_events.value != 24000 or len(record.iterations) != 16:
+        raise AssertionError(record.detection_events)
+    first = record.iterations[0]
+    if first is None or first.acceptance().value != 1.0 or first.detection_events.terminated_by != "max_samples":
+        raise AssertionError(first)
+
+
+def test_record_view_of_a_single_job_reads_its_top_level_shots_as_detections() -> None:
+    record = view("2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04")
+    (only,) = record.iterations
+    if record.iterated or record.top_level.population is not Population.DETECTION_EVENT or only is None:
+        raise AssertionError(record)
+    if only.detection_events.value != 10000 or only.samples.value != 10000:
+        raise AssertionError(only.record())
+
+
+@pytest.mark.parametrize(
+    ("run", "expected"),
+    [
+        ("2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14", "unavailable top-level shots"),
+        ("2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04", "both"),
+        ("2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00", "max_shots"),
+    ],
+)
+def test_record_view_of_the_retained_edge_cases(run: str, expected: str) -> None:
+    record = view(run)
+    if expected == "unavailable top-level shots":
+        if record.top_level.available:
+            raise AssertionError("mesh job-14's top-level shots differs from its request")
+        return
+    stops = {i.detection_events.terminated_by for i in record.iterations if i is not None}
+    if stops != {expected}:
+        raise AssertionError(stops)
+
+
+@pytest.mark.parametrize("run", ["ascella-static-input-readiness", "ascella-hypercomplex-order-pilot"])
+def test_record_view_leaves_an_uncounted_answer_unavailable(run: str) -> None:
+    record = view(run)
+    uncounted = any(i is not None for i in record.iterations) or record.detection_events.available
+    if not record.partial or uncounted or record.top_level.available:
+        raise AssertionError(record.record())
+
+
+def test_record_view_keeps_a_counted_partial_answer_with_no_samples() -> None:
+    # qd_platform.result_summary parses ':PCVL:BSCount:{}' of a cancelled single job into this summary.
+    results = {"shots": 100, "shots_used": 100, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}
+    (only,) = pc.quandela_record(results, [(1000, 2000)]).iterations
+    if only is None or only.detection_events.value != 100 or only.samples.value != 0:
+        raise AssertionError("an empty counted answer observes its detections and zero samples")
+    if only.acceptance().value != 0.0:
+        raise AssertionError(only.acceptance())
+    uncounted = {k: v for k, v in results.items() if k != "shots_used"}
+    if pc.quandela_record(uncounted, [(1000, 2000)]).iterations != (None,):
+        raise AssertionError("an answer without shots_used and without counts stays uncounted")
+
+
+def test_record_view_reads_an_absent_result_as_unavailable() -> None:
+    # qd_platform.collect writes result_absent, and no answer fields, when an error job's result route answers 404.
+    results = {"status": {"status": "error", "shots": 0}, "result_absent": "GET result: HTTP 404"}
+    record = pc.quandela_record(results, [(1000, 2000)])
+    if record.iterations or record.top_level.available or record.detection_events.available or not record.partial:
+        raise AssertionError(record.record())
+
+
+@pytest.mark.audit
+def test_record_view_agrees_with_the_counter_table_on_every_retained_run() -> None:
+    import re
+
+    table = json.loads((AUDIT / "quandela_counter_table.json").read_text(encoding="utf-8"))
+    for row in table["runs"]:
+        directory = RUNS / row["run"]
+        if not (directory / "results.json").is_file() or not (directory / "cases.json").is_file():
+            continue
+        record = view(row["run"])
+        body = (directory / "job-body.json").read_text(encoding="utf-8")
+        caps = {int(v) for v in re.findall(r'max_shots\\?"?\s*[:=]\s*(\d+)', body)}
+        if record.iterated and record.top_level.available and record.top_level.value not in caps:
+            raise AssertionError(f"{row['run']}: the top-level cap is not the job body's max_shots")
+        counted = [i for i in record.iterations if i is not None]
+        reported = [i["nb_shots_used"] for i in row["iterations"]]
+        if record.iterated and not record.partial and [i.detection_events.value for i in counted] != reported:
+            raise AssertionError(f"{row['run']}: detection events differ from the raw nb_shots_used")
