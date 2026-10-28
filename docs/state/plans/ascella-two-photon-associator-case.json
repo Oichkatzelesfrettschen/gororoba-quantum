@@ -1,0 +1,14 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-two-photon-associator-case",
+  "kind": "investigation",
+  "summary": "One qpu:ascella job of eight template iterations: two photons through L_a L_b against L_(ab) with a quaternion control; written case awaits the owner, including the HOM-floor decision.",
+  "sources": [
+    "docs/design/ascella-two-photon-associator-case.md"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  }
+}
