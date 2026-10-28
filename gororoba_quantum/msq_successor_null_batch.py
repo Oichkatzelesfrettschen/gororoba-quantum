@@ -450,11 +450,24 @@ CONFIDENCE = 0.95
 FALSE_FIRE_CEILING = 0.01
 ISSUANCE_FLOOR = 0.8
 CARRYOVER_VERDICTS = 299
-# The sparse settle gap's detectable size is (SETTLE_Z + SETTLE_POWER_Z) times the per-qubit test's denominator
+# The single-outlier detectable settle gap is (SETTLE_Z + SETTLE_POWER_Z) times the per-qubit test's denominator
 # (`sparse_gap`): 1.28 is the one-sided normal quantile of power 0.9.
 SETTLE_POWER_Z = 1.28
+SPARSE_TARGET_POWER = 0.9
 COMMON_GAP_FACTOR = 4.0
-SPARSE_QUBITS = 2
+# The sparse and minority arms plant their truth on this many leading slots; the rest stay healthy.
+PLANTED_QUBITS = 2
+MINORITY_ARMS = ("q-minority", "plateau-minority")
+# The measured detectable gap of each pool size, as a multiple of `sparse_gap`: the scale at which the per-qubit
+# settle veto withholds SPARSE_TARGET_POWER of PLANTED_QUBITS planted gaps (`calibrate_sparse_scale`).
+SPARSE_SCALE_EVIDENCE = "docs/evidence/measurement_sequence/msq-successor-sparse-scale.json"
+# ANU QRNG docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json, index 2: the calibration draws apart from the null's.
+SPARSE_CALIBRATION_SEED = 26209
+# Replicates per calibration point (per-qubit power standard error about 0.01), the second point's scale and the
+# secant steps before the calibration gives up.
+SPARSE_CALIBRATION_REPLICATES = 500
+SPARSE_CALIBRATION_STEP = 1.25
+SPARSE_CALIBRATION_STEPS = 6
 # The measure-arm loss per step that probes the gap's slope, and the secant steps that solve for the planted size.
 SPARSE_LOSS_PROBE = 0.005
 SPARSE_ITERATIONS = 3
@@ -472,10 +485,12 @@ ARMS = (
     "carryover-negative",
     "carryover-boundary",
     "q-tolerance",
+    "q-minority",
     "settle-common",
     "settle-sparse",
     "plateau-low",
     "plateau-retained",
+    "plateau-minority",
     "gamma",
 )
 ROOT = Path(__file__).resolve().parents[1]
@@ -498,6 +513,7 @@ class Setup(NamedTuple):
     tolerance: tuple[float, ...]
     q_planted: tuple[float, ...]
     settle_se: float
+    sparse_scale: dict[int, float]
     sparse_loss: tuple[dict[int, float], ...]
     vertex_base: tuple[dict[str, tuple[int, int]], ...]
     vertex_probed: tuple[dict[str, tuple[int, int]], ...]
@@ -647,6 +663,26 @@ def plateau_pairs() -> tuple[tuple[tuple[float, float], ...], str]:
     return pairs, hashlib.sha256(data).hexdigest()
 
 
+def sparse_scales() -> tuple[dict[int, float], str]:
+    """The measured detectable-gap scale of each calibrated pool size from SPARSE_SCALE_EVIDENCE, and the file's
+    sha256; empty before the first calibration."""
+    path = ROOT / SPARSE_SCALE_EVIDENCE
+    if not path.exists():
+        return {}, ""
+    data = path.read_bytes()
+    pools = json.loads(data)["pools"]
+    return {int(pool): float(entry["scale"]) for pool, entry in pools.items()}, hashlib.sha256(data).hexdigest()
+
+
+def with_sparse_scale(setup: Setup, scale: dict[int, float]) -> Setup:
+    """`setup` with the sparse arm's planted losses solved at `scale` times `sparse_gap` for each pool size."""
+    items = [
+        (ctx, setup.equilibrium_s, {pool: factor * sparse_gap(setup.settle_se, pool) for pool, factor in scale.items()})
+        for ctx in setup.contexts
+    ]
+    return setup._replace(sparse_scale=dict(scale), sparse_loss=tuple(ordered_map(sparse_losses, items, min_items=2)))
+
+
 def build_setup(record_dir: Path) -> Setup:
     """The null's fixed inputs from a dry-run record directory."""
     record, properties, digest = load_snapshot(record_dir)
@@ -665,10 +701,9 @@ def build_setup(record_dir: Path) -> Setup:
     equilibrium_s = int(configuration["equilibrium_delay_dt"]) * dt
     tolerance = tuple(c["tolerance"] for c in constants)
     settle_se = float(np.median([c["settle_se"] for c in constants]))
-    pools = tuple(sorted({m or width for m in SETTLE_POOLS}))
+    scale, scale_digest = sparse_scales()
     q_items = [(ctx, bound, equilibrium_s, width) for ctx, bound in zip(pool, tolerance, strict=True)]
-    loss_items = [(ctx, equilibrium_s, settle_se, pools) for ctx in pool]
-    return Setup(
+    setup = Setup(
         qubits=qubits,
         width=width,
         contexts=pool,
@@ -683,13 +718,15 @@ def build_setup(record_dir: Path) -> Setup:
         tolerance=tolerance,
         q_planted=tuple(ordered_map(planted_q, q_items, min_items=2)),
         settle_se=settle_se,
-        sparse_loss=tuple(ordered_map(sparse_losses, loss_items, min_items=2)),
+        sparse_scale={},
+        sparse_loss=tuple({} for _ in pool),
         vertex_base=tuple(c["base"] for c in constants),
         vertex_probed=tuple(c["probed"] for c in constants),
         plateau=plateau,
         plateau_low=tuple(i for i, (_, q) in enumerate(plateau) if q < min(tolerance)),
-        digests={"snapshot_sha256": digest, "plateau_sha256": plateau_digest},
+        digests={"snapshot_sha256": digest, "plateau_sha256": plateau_digest, "sparse_scale_sha256": scale_digest},
     )
+    return with_sparse_scale(setup, scale)
 
 
 # --- truth of one qubit --------------------------------------------------------------------------------------
@@ -784,10 +821,10 @@ def planted_q(item: tuple[dict[str, Any], float, float, int]) -> float:
 
 
 def sparse_gap(settle_se: float, pool: int) -> float:
-    """The sparse settle arm's planted gap at `pool` qubits: (SETTLE_Z + SETTLE_POWER_Z) times the per-qubit test's
-    denominator sqrt(s^2 + tau^2 + se^2), tau at its floor and se the median standard error of the pool - 1 others
-    (`su._robust_others`). A second planted qubit among the others moves their median and MAD, which this size
-    leaves out; the arm measures the power that remains."""
+    """The single-outlier detectable settle gap at `pool` qubits: (SETTLE_Z + SETTLE_POWER_Z) times the per-qubit
+    test's denominator sqrt(s^2 + tau^2 + se^2), tau at its floor and se the median standard error of the pool - 1
+    others (`su._robust_others`). A second planted qubit among the others moves their median and MAD, which this
+    size leaves out; the sparse arm plants it times the pool's measured scale (`calibrate_sparse_scale`)."""
     spread = settle_se**2 + su.SETTLE_TAU_FLOOR**2
     return (su.SETTLE_Z + SETTLE_POWER_Z) * math.sqrt(spread + math.pi / 2 * spread / (pool - 1))
 
@@ -803,16 +840,17 @@ def tail_gap(ctx: dict[str, Any], loss: float, equilibrium_s: float) -> float:
     return float(row["settle_n16"]["gap_difference"])
 
 
-def sparse_losses(item: tuple[dict[str, Any], float, float, tuple[int, ...]]) -> dict[int, float]:
-    """The measure-arm loss per pinch whose noise-free settle gap, less the gap at no loss, has the size
-    `sparse_gap` at each pool width: a secant from SPARSE_LOSS_PROBE, then SPARSE_ITERATIONS secant steps.
-    item = (context, equilibrium idle, median settle standard error, pool widths)."""
-    ctx, equilibrium_s, settle_se, pools = item
+def sparse_losses(item: tuple[dict[str, Any], float, dict[int, float]]) -> dict[int, float]:
+    """The measure-arm loss per pinch whose noise-free settle gap, less the gap at no loss, has the target size of
+    each pool width: a secant from SPARSE_LOSS_PROBE, then SPARSE_ITERATIONS secant steps. item = (context,
+    equilibrium idle, {pool width: target gap})."""
+    ctx, equilibrium_s, targets = item
+    if not targets:
+        return {}
     base = tail_gap(ctx, 0.0, equilibrium_s)
     slope = abs(tail_gap(ctx, SPARSE_LOSS_PROBE, equilibrium_s) - base) / SPARSE_LOSS_PROBE
     out = {}
-    for pool in pools:
-        target = sparse_gap(settle_se, pool)
+    for pool, target in sorted(targets.items()):
         loss = target / slope
         for _ in range(SPARSE_ITERATIONS):
             loss *= target / abs(tail_gap(ctx, loss, equilibrium_s) - base)
@@ -845,8 +883,25 @@ def arm_cases(arm: str, width: int) -> list[Case]:
 
 
 def minimum_verdicts(arm: str) -> int:
-    counted = ("carryover-positive", "carryover-negative", "q-tolerance", "plateau-retained")
+    """The verdicts an arm runs to: issued verdicts for the carryover arms and plateau-retained, verdicts that select
+    a planted qubit (`summarize`, "counted") for the minority arms."""
+    counted = ("carryover-positive", "carryover-negative", "plateau-retained", *MINORITY_ARMS)
     return CARRYOVER_VERDICTS if arm in counted else 0
+
+
+def planted_count(arm: str, active: int) -> int:
+    """The leading slots that carry the arm's planted truth in the sparse and minority arms; zero elsewhere."""
+    return min(PLANTED_QUBITS, active) if arm in ("settle-sparse", *MINORITY_ARMS) else 0
+
+
+def sparse_loss(setup: Setup, j: int, pool: int) -> float:
+    """The sparse arm's planted measure-arm loss at calibration j and pool size `pool`."""
+    if pool not in setup.sparse_scale:
+        raise ValueError(
+            f"pool size {pool} has no measured sparse gap scale in {SPARSE_SCALE_EVIDENCE}; "
+            "run scripts/msq_successor_null.py RECORD_DIR --calibrate-sparse"
+        )
+    return setup.sparse_loss[j][pool]
 
 
 def carried(setup: Setup, case: Case, j: int) -> float:
@@ -858,23 +913,25 @@ def carried(setup: Setup, case: Case, j: int) -> float:
 def slot_truth(setup: Setup, case: Case, j: int, slot: int, shape: float, residual: float, pair: float) -> Truth:
     """The truth of slot `slot` at calibration j in one case. A carryover arm plants the excitation on the member
     classes of the allocation vertex whose shift has the arm's sign; the reader carries the same excitation. The
-    sparse settle arm plants a measure-arm loss on its first SPARSE_QUBITS slots; the plateau arms take the retained
-    pair at the uniform draw `pair`, plateau-low among the pairs below every tolerance bound."""
+    sparse settle arm plants a measure-arm loss on its first PLANTED_QUBITS slots; the plateau arms take the retained
+    pair at the uniform draw `pair`, plateau-low among the pairs below every tolerance bound. The minority arms plant
+    the q arm's value or a retained pair on their first PLANTED_QUBITS slots alone."""
     ctx = setup.contexts[j]
     t_s, q, excitation, reader, gap, loss = ctx["t1_cal_s"], 1.0, {}, 0.0, 0.0, 0.0
+    planted = slot < planted_count(case.arm, case.active)
     if case.arm in ("carryover-positive", "carryover-negative", "carryover-boundary"):
         reader = carried(setup, case, j)
         labels = setup.negative[j] if case.arm == "carryover-negative" else setup.positive[j]
         excitation = dict.fromkeys(labels, reader)
-    elif case.arm == "q-tolerance":
+    elif case.arm == "q-tolerance" or (case.arm == "q-minority" and planted):
         q = setup.q_planted[j]
     elif case.arm == "settle-common":
         gap = COMMON_GAP_FACTOR * su.SETTLE_TAU_FLOOR
-    elif case.arm == "settle-sparse" and slot < SPARSE_QUBITS:
-        loss = setup.sparse_loss[j][case.active]
+    elif case.arm == "settle-sparse" and planted:
+        loss = sparse_loss(setup, j, case.active)
     elif case.arm == "plateau-low":
         (t_s, q), shape = setup.plateau[setup.plateau_low[int(pair * len(setup.plateau_low))]], math.inf
-    elif case.arm == "plateau-retained":
+    elif case.arm == "plateau-retained" or (case.arm == "plateau-minority" and planted):
         (t_s, q), shape = setup.plateau[int(pair * len(setup.plateau))], math.inf
     factor = max(0.0, 1.0 + residual / setup.slopes[j])
     return Truth(t_s, shape, q, factor, excitation, reader, gap, loss)
@@ -1221,15 +1278,17 @@ def select_replicate(setup: Setup, state: State, carryover: Any, equilibrium: An
 
 def summarize(setup: Setup, case: Case, state: State, selection: dict[str, Any]) -> dict[str, Any]:
     """The replicate's record row: whether a verdict was issued, which device verdicts fired and the figures the
-    arm's targets read, all integers and booleans."""
+    arm's targets read, all integers and booleans. A minority arm's verdict counts toward its requirement only when
+    it selects a planted qubit."""
     decision = selection["decision"]
     verdict = decision["device"]
     issued = verdict is not None and verdict["status"] == "informative"
     fired = sorted(name for name, flag in msa.device_flags(verdict).items() if flag) if verdict is not None else []
     veto = decision["settle_veto"]
     withheld_qubits = set(veto.get("withheld_qubits", []))
-    planted = [setup.qubits[s] for s in range(min(SPARSE_QUBITS, case.active))]
+    planted = [setup.qubits[s] for s in range(planted_count(case.arm, case.active))]
     screens = state.screens
+    planted_selected = sum(1 for q in planted if q in decision["selected"])
     return {
         "i": state.drawn.replicate,
         "issued": issued,
@@ -1243,6 +1302,11 @@ def summarize(setup: Setup, case: Case, state: State, selection: dict[str, Any])
         "common_veto": bool(veto.get("common_veto", False)),
         "planted_in_pool": sum(1 for q in planted if q in decision["pool"]),
         "planted_withheld": sum(1 for q in planted if q in withheld_qubits),
+        "planted_equilibrium_failed": sum(
+            1 for q in planted if q in state.work and not screens[str(q)]["equilibrium"]["passes"]
+        ),
+        "planted_selected": planted_selected,
+        "counted": issued and (planted_selected > 0 or case.arm not in MINORITY_ARMS),
     }
 
 
@@ -1393,7 +1457,8 @@ def run_arm(
 ) -> dict[str, Any]:
     """The rows of replicates 0 to cap - 1 whose index is congruent to `shard` modulo `shards`, for every case of the
     arm, as a shard record. An unsharded run of an arm with a verdict requirement stops after the round that reaches
-    it; `merge_records` applies the same cut to every record, so the bytes do not depend on the sharding."""
+    it in counted verdicts; `merge_records` applies the same cut to every record, so the bytes do not depend on the
+    sharding."""
     if not 0 <= shard < shards or cap < 1:
         raise ValueError(f"shard {shard} of {shards} with {cap} replicates")
     cases = list(arm_cases(arm, setup.width) if cases is None else cases)
@@ -1407,7 +1472,7 @@ def run_arm(
         ]
         for (_, case, _, _), block in zip(items, ordered_map(analyse_block, items, min_items=2), strict=True):
             rows[case.label].extend(block)
-        if needed and sum(row["issued"] for row in rows[cases[0].label]) >= needed:
+        if needed and sum(row["counted"] for row in rows[cases[0].label]) >= needed:
             break
     return {
         "schema": SCHEMA,
@@ -1418,6 +1483,8 @@ def run_arm(
         "layout_width": setup.width,
         "snapshot_sha256": setup.digests["snapshot_sha256"],
         "plateau_sha256": setup.digests["plateau_sha256"],
+        "sparse_scale": {str(pool): factor for pool, factor in sorted(setup.sparse_scale.items())},
+        "sparse_scale_sha256": setup.digests["sparse_scale_sha256"],
         "cap": cap,
         "minimum_verdicts": needed,
         "shard": {"index": shard, "count": shards},
@@ -1434,6 +1501,8 @@ IDENTITY = (
     "layout_width",
     "snapshot_sha256",
     "plateau_sha256",
+    "sparse_scale",
+    "sparse_scale_sha256",
     "cap",
     "minimum_verdicts",
 )
@@ -1450,8 +1519,11 @@ def case_statistics(arm: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
     conditional = upper_bound(fires, issued) if issued else 1.0
     planted = sum(row["planted_in_pool"] for row in rows)
     sparse = sum(row["planted_withheld"] for row in rows)
-    both = sum(1 for row in rows if row["planted_in_pool"] == SPARSE_QUBITS)
-    both_withheld = sum(1 for row in rows if row["planted_withheld"] == SPARSE_QUBITS)
+    both = sum(1 for row in rows if row["planted_in_pool"] == PLANTED_QUBITS)
+    both_withheld = sum(1 for row in rows if row["planted_withheld"] == PLANTED_QUBITS)
+    planted_total = n * PLANTED_QUBITS if arm in ("settle-sparse", *MINORITY_ARMS) else 0
+    exposed = [row for row in rows if row["issued"] and row["planted_selected"] > 0]
+    exposed_fires = sum(1 for row in exposed if row["fired"])
     stats: dict[str, Any] = {
         "replicates": n,
         "issued": issued,
@@ -1471,19 +1543,42 @@ def case_statistics(arm: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
         "common_veto_rate": sum(1 for row in rows if row["common_veto"]) / n if n else None,
         "sparse_gap_withheld_rate": sparse / planted if planted else None,
         "sparse_gap_both_withheld_rate": both_withheld / both if both else None,
+        "planted_in_pool": planted,
+        "planted_withheld": sparse,
+        "per_qubit_veto_power_upper_95": upper_bound(sparse, planted) if planted else None,
+        "planted_equilibrium_withheld_rate": (
+            sum(row["planted_equilibrium_failed"] for row in rows) / planted_total if planted_total else None
+        ),
+        "planted_selected_rate": sum(row["planted_selected"] for row in rows) / planted_total
+        if planted_total
+        else None,
+        "exposed": len(exposed),
+        "exposed_fires": exposed_fires,
+        "false_fire_upper_95_given_exposed": upper_bound(exposed_fires, len(exposed)) if exposed else 1.0,
     }
     targets: dict[str, bool] = {}
-    if arm in ("carryover-positive", "carryover-negative", "q-tolerance", "plateau-retained"):
+    if arm in ("carryover-positive", "carryover-negative", "plateau-retained"):
         targets = {
             "verdicts_at_least_299": issued >= CARRYOVER_VERDICTS,
             "false_fire_bound_given_issued_below_ceiling": conditional < FALSE_FIRE_CEILING,
             "false_fire_bound_below_ceiling": unconditional < FALSE_FIRE_CEILING,
         }
-    elif arm == "settle-common":
-        targets = {"common_veto_power_at_least_90_percent": n > 0 and stats["common_veto_rate"] >= 0.9}
-    elif arm == "settle-sparse":
+    elif arm in MINORITY_ARMS:
         targets = {
-            "per_qubit_veto_power_at_least_90_percent": planted > 0 and sparse >= 0.9 * planted,
+            "exposed_verdicts_at_least_299": len(exposed) >= CARRYOVER_VERDICTS,
+            "false_fire_bound_given_exposed_below_ceiling": stats["false_fire_upper_95_given_exposed"]
+            < FALSE_FIRE_CEILING,
+            "false_fire_bound_below_ceiling": unconditional < FALSE_FIRE_CEILING,
+        }
+    elif arm in ("settle-common", "q-tolerance"):
+        targets = {"common_veto_power_at_least_90_percent": n > 0 and stats["common_veto_rate"] >= 0.9}
+        if arm == "q-tolerance":
+            targets["false_fire_bound_below_ceiling"] = unconditional < FALSE_FIRE_CEILING
+    elif arm == "settle-sparse":
+        # One-sided: the arm fails when the per-qubit power is shown below SPARSE_TARGET_POWER at 95 %.
+        targets = {
+            "per_qubit_veto_power_not_below_90_percent": planted > 0
+            and upper_bound(sparse, planted) >= SPARSE_TARGET_POWER,
             "false_fire_bound_below_ceiling": unconditional < FALSE_FIRE_CEILING,
         }
     elif arm == "plateau-low":
@@ -1516,7 +1611,7 @@ def merge_records(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
         if needed:
             total = 0
             for k, row in enumerate(rows):
-                total += int(row["issued"])
+                total += int(row["counted"])
                 if total >= needed:
                     rows = rows[: k + 1]
                     break
@@ -1525,6 +1620,75 @@ def merge_records(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
     out["cases"] = cases
     out["replicates"] = {label: len(case["rows"]) for label, case in cases.items()}
     return out
+
+
+def sparse_power(setup: Setup, pool: int, scale: float, seed: int, replicates: int) -> tuple[int, int]:
+    """(planted gaps the per-qubit veto withheld, planted gaps in the pool) of the sparse arm at `pool` qubits with
+    the planted gap at `scale` times `sparse_gap`."""
+    trial = with_sparse_scale(setup, {pool: scale})
+    case = Case("settle-sparse", f"{pool}-qubits", pool, 0.0)
+    stats = merge_records([run_arm(trial, "settle-sparse", seed, replicates, cases=[case])])["cases"][case.label]
+    return int(stats["planted_withheld"]), int(stats["planted_in_pool"])
+
+
+def calibrate_sparse_scale(setup: Setup, pool: int, seed: int, replicates: int) -> dict[str, Any]:
+    """The scale of `sparse_gap` at which the per-qubit settle veto withholds SPARSE_TARGET_POWER of the planted gaps
+    at `pool` qubits, measured on `seed`, which differs from the null's. The scale starts at 1 and
+    SPARSE_CALIBRATION_STEP, then steps along the secant through the two points that bracket the target (the two
+    latest before a bracket exists), and ends at the first point within one binomial standard error of the target.
+    A planted loss changes how many uniforms the binomial draws take, so the power is a noisy step function of the
+    scale and each point runs `replicates` replicates."""
+    if seed == SUCCESSOR_NULL_SEED:
+        raise ValueError("the sparse calibration draws from the null's own seed")
+    points: list[dict[str, float]] = []
+    scale = 1.0
+    for step in range(SPARSE_CALIBRATION_STEPS):
+        withheld, planted = sparse_power(setup, pool, scale, seed, replicates)
+        if planted == 0:
+            raise ValueError(f"pool {pool}: no planted gap reached the pool at scale {scale}")
+        power = withheld / planted
+        se = math.sqrt(max(power * (1 - power), 1.0 / planted) / planted)
+        points.append({"scale": scale, "withheld": withheld, "planted": planted, "power": power, "se": se})
+        if abs(power - SPARSE_TARGET_POWER) <= se:
+            return {"scale": scale, "gap": scale * sparse_gap(setup.settle_se, pool), "points": points}
+        if step == 0:
+            scale = SPARSE_CALIBRATION_STEP
+            continue
+        below = [p for p in points if p["power"] < SPARSE_TARGET_POWER]
+        above = [p for p in points if p["power"] > SPARSE_TARGET_POWER]
+        if below and above:
+            a = max(below, key=lambda p: p["power"])
+            b = min(above, key=lambda p: p["power"])
+        else:
+            a, b = points[-2], points[-1]
+        if (b["power"] - a["power"]) * (b["scale"] - a["scale"]) <= 0:
+            raise ValueError(f"pool {pool}: the measured power does not rise with the scale: {points}")
+        scale = a["scale"] + (SPARSE_TARGET_POWER - a["power"]) * (b["scale"] - a["scale"]) / (b["power"] - a["power"])
+    raise ValueError(f"pool {pool}: no scale within one standard error after {SPARSE_CALIBRATION_STEPS} points")
+
+
+def sparse_calibration_record(
+    setup: Setup, seed: int, seed_source: Any, record_name: str, replicates: int = SPARSE_CALIBRATION_REPLICATES
+) -> dict[str, Any]:
+    """The measured scale of every pool size the sparse arm runs at the setup's layout width, as the record
+    SPARSE_SCALE_EVIDENCE holds."""
+    pools = sorted({m or setup.width for m in SETTLE_POOLS})
+    return {
+        "schema": "msq-successor-sparse-scale-v1",
+        "record": record_name,
+        "snapshot_sha256": setup.digests["snapshot_sha256"],
+        "layout_width": setup.width,
+        "seed": seed,
+        "seed_source": seed_source,
+        "replicates": replicates,
+        "target_power": SPARSE_TARGET_POWER,
+        "settle_se": setup.settle_se,
+        "pools": {
+            str(pool): {"formula_gap": sparse_gap(setup.settle_se, pool)}
+            | calibrate_sparse_scale(setup, pool, seed, replicates)
+            for pool in pools
+        },
+    }
 
 
 def dumps(record: dict[str, Any]) -> str:

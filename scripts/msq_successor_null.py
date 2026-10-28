@@ -4,7 +4,10 @@
 record's snapshot (docs/design/measurement-sequence-envelope-successor.md, "Null calibration") and writes a record
 of schema msq-successor-null-v1. ``--shard INDEX --shards COUNT`` runs the replicates congruent to INDEX modulo
 COUNT and writes a shard record; ``--merge FILE...`` combines shard records into the arm's record, byte for byte
-the record of one unsharded run. The seed is a QRNG value (``--seed qrng:<draw>#<index>``) or the default.
+the record of one unsharded run. ``RECORD_DIR --calibrate-sparse --out FILE`` measures the sparse settle arm's
+detectable-gap scale of every pool size on its own seed (``--calibration-seed``) and writes the record that
+msq_successor_null_batch.SPARSE_SCALE_EVIDENCE names. The seed is a QRNG value (``--seed qrng:<draw>#<index>``)
+or the default.
 GOROROBA_WORKERS caps the worker count.
 """
 
@@ -32,10 +35,25 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--shard", type=int, default=0)
     parser.add_argument("--shards", type=int, default=1)
     parser.add_argument("--merge", nargs="+", type=Path, metavar="FILE", help="combine shard records")
+    parser.add_argument("--calibrate-sparse", action="store_true", help="measure the sparse detectable-gap scale")
+    qrng_seeds.add_seed_argument(
+        parser, "--calibration-seed", default=nl.SPARSE_CALIBRATION_SEED, help="qrng:<draw>#<index>"
+    )
     parser.add_argument("--out", type=Path)
     args = parser.parse_args(argv)
     if args.merge:
         record = nl.merge_records([json.loads(path.read_text()) for path in args.merge])
+    elif args.calibrate_sparse:
+        if args.record_dir is None:
+            parser.error("RECORD_DIR is required with --calibrate-sparse")
+        record = nl.sparse_calibration_record(
+            nl.build_setup(args.record_dir),
+            args.calibration_seed,
+            qrng_seeds.seed_record(
+                "scripts/msq_successor_null.py", "--calibration-seed", "settle-sparse", args.calibration_seed_source
+            ),
+            args.record_dir.name,
+        )
     else:
         if args.record_dir is None or args.arm is None:
             parser.error("RECORD_DIR and --arm are required unless --merge is given")
