@@ -343,3 +343,20 @@ the row 4-plane in `Gr(4,9)`.
   normal-cone deformation only), and the Nakayama count `s` of the Schur coordinates above at that basepoint. Pool
   the rows; every Singular call under `prlimit --as=4294967296` with a 300 s timeout. Report the measured cost per
   row; a row that exceeds the timeout is recorded as blocked with its stage, and the run continues.
+
+## Orchestrator note after 2k-a
+
+2k-a is committed (`8960e73`): `s = 1` for `VB` and `V^a+-` into `N+-`, 3 for `B9` and `V`, 17 for `Iso`; the eight
+`E8bar`, `W8` and `X+-` rows time out at the count. Their count ran `std(J + m I)` over all 126 Pfaffian coordinates,
+about a thousand generators.
+
+- **2k-b.** One producer, `nullity16_rees_fibers.py`, two parts.
+  1. For the eight blocked rows, first keep a set of Pfaffian coordinates whose normal forms modulo `std(J)` are
+     linearly independent (one normal-form pass, then exact rank over the coefficient field); a coordinate in the
+     span of the others modulo `J` is a redundant generator of `I`. Then run the Nakayama count on the survivors only.
+  2. For every row with a count, the Nakayama-reduced Rees fiber exactly as `nakayama_rees_fibers.py` computes it,
+     modulo 32003 and over `Q(i)`, with the `21 x s` analogue embedding (36 or 126 columns) and its rank. A row with
+     `s = 1` has a one-point fiber; record it and its embedded point. No committed Schur arcs exist for these rows,
+     so the falsifiers are the standard-basis-point control, characteristic agreement and a generator-deletion
+     mutation. Every Singular call under `prlimit --as=4294967296` with the 300 s timeout; a row that still times
+     out stays blocked with its stage. No wall-clock values in the record.
