@@ -441,7 +441,7 @@ class Prepared(NamedTuple):
     keys: list[str]
     x: list[float]
     variances: list[float]
-    index: dict[str, int]
+    position: dict[str, int]
     ctx: dict[str, Any]
     readout: dict[str, float]
     usable: bool
@@ -489,7 +489,7 @@ def _evaluate(item: tuple[int, dict[str, Any], dict[str, Any]], descriptive: boo
     prepared = prepare(qubit, member_counts, ctx)
     if not prepared.usable:
         return unusable_row(qubit, prepared.readout)
-    keys, x, variances, index = prepared.keys, prepared.x, prepared.variances, prepared.index
+    keys, x, variances, index = prepared.keys, prepared.x, prepared.variances, prepared.position
     ctx = prepared.ctx
     value, se, shared = msa.propagate_many(
         lambda xs: quantities(dict(zip(keys, xs, strict=True)), ctx),

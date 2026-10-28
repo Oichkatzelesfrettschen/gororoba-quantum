@@ -2533,6 +2533,7 @@
     "gororoba_quantum/msq_envelope_analysis.py",
     "gororoba_quantum/msq_envelope_null.py",
     "gororoba_quantum/msq_successor_analysis.py",
+    "gororoba_quantum/msq_successor_null_batch.py",
     "gororoba_quantum/n21_exact_planning.py",
     "gororoba_quantum/native_preflight_contracts.py",
     "gororoba_quantum/order_finding.py",
@@ -6181,6 +6182,7 @@
     "gororoba_quantum/msq_envelope_analysis.py",
     "gororoba_quantum/msq_envelope_null.py",
     "gororoba_quantum/msq_successor_analysis.py",
+    "gororoba_quantum/msq_successor_null_batch.py",
     "gororoba_quantum/placement_feasibility.py",
     "gororoba_quantum/primorial_cover.py",
     "gororoba_quantum/variance.py",
@@ -8794,6 +8796,23 @@
    "pathlib",
    "scipy",
    "statistics",
+   "typing"
+  ],
+  "gororoba_quantum/msq_successor_null_batch.py": [
+   "__future__",
+   "collections",
+   "diagnostic_experiments",
+   "hashlib",
+   "json",
+   "math",
+   "measurement_sequence_analysis",
+   "msq_envelope_analysis",
+   "msq_envelope_null",
+   "msq_successor_analysis",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
    "typing"
   ],
   "gororoba_quantum/n21_exact_planning.py": [
@@ -12179,6 +12198,15 @@
    "scipy",
    "sys",
    "typing"
+  ],
+  "scripts/msq_successor_null.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "msq_successor_null_batch",
+   "pathlib",
+   "qrng_seeds",
+   "sys"
   ],
   "scripts/msq_successor_replay.py": [
    "__future__",
