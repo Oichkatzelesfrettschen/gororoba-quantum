@@ -46,7 +46,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     qrng_seeds.add_seed_argument(parser, "--seed", default=nl.SUCCESSOR_NULL_SEED, help="qrng:<draw>#<index>")
     parser.add_argument("--shard", type=int, default=0)
-    parser.add_argument("--shards", type=int, default=1)
+    parser.add_argument("--shards", type=int, help="the shard count; given, even as 1, the run writes shard records")
     parser.add_argument("--merge", nargs="+", type=Path, metavar="FILE", help="combine shard records")
     parser.add_argument("--summarize", nargs="+", type=Path, metavar="FILE", help="summarize finished arm records")
     parser.add_argument("--calibrate-sparse", action="store_true", help="measure the sparse detectable-gap scale")
@@ -83,11 +83,8 @@ def main(argv: list[str] | None = None) -> int:
             runs = [run._replace(limits=expand_limits(run, labels[run.arm])) for run in runs]
         except ValueError as error:
             parser.error(str(error))
-        shards = nl.run_arms(setup, runs, args.shard, args.shards)
-        args.out_dir.mkdir(parents=True, exist_ok=True)
-        for run, shard in zip(runs, shards, strict=True):
-            name = f"{run.arm}-shard{args.shard}.json" if args.shards > 1 else f"{run.arm}.json"
-            (args.out_dir / name).write_text(nl.dumps(shard if args.shards > 1 else nl.merge_records([shard])))
+        records = nl.run_arms(setup, runs, args.shard, 1 if args.shards is None else args.shards)
+        write_arm_records(args.out_dir, records, args.shard if args.shards is not None else None)
         return 0
     else:
         if args.record_dir is None or args.arm is None:
@@ -101,11 +98,11 @@ def main(argv: list[str] | None = None) -> int:
             args.seed,
             args.replicates,
             args.shard,
-            args.shards,
+            1 if args.shards is None else args.shards,
             qrng_seeds.seed_record("scripts/msq_successor_null.py", "--seed", args.arm, args.seed_source),
             args.record_dir.name,
         )
-        record = shard if args.shards > 1 else nl.merge_records([shard])
+        record = shard if args.shards is not None else nl.merge_records([shard])
     text = nl.dumps(record)
     if args.out:
         args.out.write_text(text)
@@ -143,6 +140,17 @@ def plan_runs(arms: list[str], caps: list[str], record_name: str, limits: list[s
         record = qrng_seeds.seed_record("scripts/msq_successor_null.py", "--seed", arm, source)
         runs.append(nl.ArmRun(arm, seed, overrides.get(arm, cap), record, record_name, limits=stops.get(arm)))
     return runs
+
+
+def write_arm_records(out_dir: Path, records: list[dict[str, object]], shard: int | None) -> None:
+    """Write each arm's record to DIR/ARM.json, or its shard record to DIR/ARM-shardINDEX.json when `shard` names
+    the index of an explicit --shards run (a single shard included), so the runbook's merge reads every shard."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for record in records:
+        if shard is None:
+            (out_dir / f"{record['arm']}.json").write_text(nl.dumps(nl.merge_records([record])))
+        else:
+            (out_dir / f"{record['arm']}-shard{shard}.json").write_text(nl.dumps(record))
 
 
 def expand_limits(run: nl.ArmRun, labels: set[str]) -> dict[str, int] | None:

@@ -635,6 +635,18 @@ def test_one_pool_writes_each_arm_the_bytes_of_its_own_run(setup: nl.Setup, monk
         nl.run_arms(setup, [gamma, gamma])
 
 
+def test_an_explicit_single_shard_writes_a_shard_record(setup: nl.Setup, tmp_path: Path) -> None:
+    import msq_successor_null
+
+    run = nl.ArmRun("gamma", TEST_SEED, 1, cases=[small("gamma", 8, 0.0)])
+    records = nl.run_arms(setup, [run], 0, 1)
+    msq_successor_null.write_arm_records(tmp_path / "shards", records, 0)
+    msq_successor_null.write_arm_records(tmp_path / "whole", records, None)
+    shard = json.loads((tmp_path / "shards" / "gamma-shard0.json").read_text())
+    check(sorted(path.name for path in (tmp_path / "shards").iterdir()) == ["gamma-shard0.json"], "shard name")
+    check(nl.dumps(nl.merge_records([shard])) == (tmp_path / "whole" / "gamma.json").read_text(), "merge differs")
+
+
 def test_the_null_plan_names_every_arm_once_at_its_seed() -> None:
     import msq_successor_null
 
