@@ -25,7 +25,7 @@ S_3 ball without boundary: spacegroup 221 Pm-3m point group m-3m
 simple cubic: 6 faces
 face-centered cubic: 14 faces
 body-centered cubic: 12 faces
-== 4. Prompt example cells, verbatim, and the heavy-hex cell
+== 4. Textbook cells and the heavy-hex layer
 FCC Cu conventional cell: spacegroup 225 Fm-3m bravais cF2 inversion True warnings ['DeprecationWarning']
   path GAMMA-X X-U K-GAMMA GAMMA-L L-W W-X
   points GAMMA (0 0 0), K (3/8 3/8 3/4), L (1/2 1/2 1/2), U (5/8 1/4 5/8), W (1/2 1/4 3/4), W_2 (3/4 1/4 1/2), X (1/2 0 1/2)

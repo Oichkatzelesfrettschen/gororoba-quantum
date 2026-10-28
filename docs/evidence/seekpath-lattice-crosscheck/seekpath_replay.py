@@ -16,8 +16,8 @@ Sections:
 2. The star lattices S_3 (tetrahedral boundary) and S_2 (Tuna-17), whose point groups are compared field by field
    with the boundary_symmetry rows of docs/evidence/cd-star-lattice/census.json.
 3. Brillouin-zone face counts of the cubic lattices from seekpath.brillouinzone.BZ.
-4. The three example cells of a prompt that proposed SeeK-path for this repository, run verbatim, plus the
-   five-site heavy-hex cell.
+4. Textbook cells: the conventional FCC copper cell, a one-site cubic cell, a two-site honeycomb layer and a
+   five-site heavy-hex layer, each with a vacuum axis where planar.
 5. The dimension guard: a 14 x 14 lattice.
 
 Usage, from the repository root, with SEEKPATH_PYTHON an interpreter that imports seekpath and scipy:
@@ -221,8 +221,8 @@ def section_bz() -> None:
         require(faces == expected[name], f"{name} face count")
 
 
-def section_prompt_cells() -> None:
-    print("== 4. Prompt example cells, verbatim, and the heavy-hex cell")
+def section_textbook_cells() -> None:
+    print("== 4. Textbook cells and the heavy-hex layer")
     hexagonal = [[1.0, 0.0, 0.0], [-0.5, 3**0.5 / 2, 0.0], [0.0, 0.0, 10.0]]
     cells: list[tuple[str, Cell]] = [
         ("FCC Cu conventional cell", (
@@ -261,7 +261,7 @@ def main() -> int:
     section_d14()
     section_star(census)
     section_bz()
-    section_prompt_cells()
+    section_textbook_cells()
     section_dimension()
     return 0
 

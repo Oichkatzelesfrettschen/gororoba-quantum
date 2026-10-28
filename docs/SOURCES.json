@@ -1950,6 +1950,12 @@
       "venue": "Computational Materials Science 128, 140-184 (2017)",
       "receipt_url": "https://api.crossref.org/works/10.1016/j.commatsci.2016.10.015"
     },
+    "docs/notes/papers/1808.01590.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1080/27660400.2024.2384822",
+      "venue": "Science and Technology of Advanced Materials: Methods 4(1), 2384822 (2024)",
+      "receipt_url": "https://api.crossref.org/works/10.1080/27660400.2024.2384822"
+    },
     "docs/notes/papers/1103.1528.md": {
       "status": "journal-identity-verified",
       "doi": "10.1038/nature09997",
@@ -4442,6 +4448,15 @@
       "sha256": "da37850767ddde56b7d3733a1ca5352df246bdb9c8c5a82d3932e6246bf540ae",
       "bytes": 10100,
       "reading_scope": "Crossref DOI metadata: title, journal, volume, pages, issue date and license list",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/1808.01590.md",
+      "url": "https://api.crossref.org/works/10.1080/27660400.2024.2384822",
+      "retrieved_at_utc": "2026-10-28T00:29:31+00:00",
+      "sha256": "65e92297afc7d7c8d4b275645ee1d4bf573a04a518f2a22ab9b94d308bb3b243",
+      "bytes": 7941,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, issue, article number, publication date and license list",
       "retention": "external_reference; mutable response hash identifies inspected bytes"
     }
   ],

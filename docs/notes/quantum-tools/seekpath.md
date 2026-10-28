@@ -283,8 +283,9 @@ flags.
   P re-bases. A band calculation uses `primitive_lattice` and
   `primitive_positions`, or the `*_orig_cell` functions to stay in the input
   frame.
-- seekpath implements HPKOT labels. The Setyawan-Curtarolo labels used by
-  AFLOW and the Materials Project differ for many lattices, and HPKOT was
+- seekpath implements HPKOT labels. The Setyawan-Curtarolo labels, which
+  the HPKOT paper (2016) reports in use by aflowlib and the Materials
+  Project, differ for many lattices, and HPKOT was
   designed because the Setyawan-Curtarolo standard primitive cell departs
   from the crystallographic conventional cell
   ([1602.06402 introduction](../papers/1602.06402.md#relation-to-setyawan-curtarolo)).

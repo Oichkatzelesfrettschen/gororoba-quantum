@@ -69,10 +69,10 @@ Wigner-Seitz cell of its reciprocal, and FCC and BCC are reciprocal to each
 other up to scale, so the Wigner-Seitz cell of FCC is the rhombic
 dodecahedron and that of BCC the truncated octahedron.
 
-## Prompt cells and heavy-hex
+## Textbook cells and heavy-hex
 
-Section 4 runs verbatim the three cells of a prompt that proposed SeeK-path
-for this repository. The conventional FCC copper cell returns Fm-3m, `cF2`
+Section 4 runs, unchanged, the three cells of an external prompt that
+proposed SeeK-path for this repository. The conventional FCC copper cell returns Fm-3m, `cF2`
 and the HPKOT short path Gamma-X-U | K-Gamma-L-W-X; the one-site cubic cell
 returns Pm-3m, `cP2` and Gamma-X-M-Gamma-R-X | R-M; the two-site honeycomb
 layer returns P6/mmm, `hP2` and the full three-dimensional path
