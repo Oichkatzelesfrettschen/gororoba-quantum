@@ -589,21 +589,21 @@ def test_each_case_stops_at_its_own_verdict_count(setup: nl.Setup, monkeypatch: 
 def test_a_limit_leaves_the_merged_bytes_and_refuses_a_case_it_cuts_short(
     setup: nl.Setup, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    # The 9-qubit case reaches its two verdicts at its second replicate, so a limit of 2 changes no byte and a
-    # limit of 1 stops it short of both its count and its cap.
+    # The 9-qubit case issues its verdict at its first replicate, so a limit of 1 changes no byte of the cap-2 run,
+    # while at a count of 2 the same limit stops it short of both its count and its cap.
     monkeypatch.setattr(nl, "ROUND", 1)
     cases = [small("gamma", 9, 0.0)]
-    whole = nl.dumps(nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 3, cases=cases, needed=2)]))
+    whole = nl.dumps(nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 2, cases=cases, needed=1)]))
 
-    def sharded(limit: int) -> dict[str, Any]:
-        run = nl.ArmRun("gamma", TEST_SEED, 3, cases=cases, needed=2, limits={"9-qubits": limit})
+    def sharded(needed: int) -> dict[str, Any]:
+        run = nl.ArmRun("gamma", TEST_SEED, 2, cases=cases, needed=needed, limits={"9-qubits": 1})
         return nl.merge_records([nl.run_arms(setup, [run], k, 2)[0] for k in (0, 1)])
 
-    check(nl.dumps(sharded(2)) == whole, "a limit at the verdict cut changed the record")
+    check(nl.dumps(sharded(1)) == whole, "a limit at the verdict cut changed the record")
     with pytest.raises(ValueError, match="larger --limit"):
-        sharded(1)
+        sharded(2)
     with pytest.raises(ValueError):
-        nl.run_arms(setup, [nl.ArmRun("gamma", TEST_SEED, 3, cases=cases, limits={"7-qubits": 2})])
+        nl.run_arms(setup, [nl.ArmRun("gamma", TEST_SEED, 2, cases=cases, limits={"7-qubits": 1})])
 
 
 def test_the_round_size_leaves_the_record_bytes_unchanged(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -624,9 +624,9 @@ def test_a_computed_round_gives_every_worker_whole_blocks(monkeypatch: pytest.Mo
 
 
 def test_one_pool_writes_each_arm_the_bytes_of_its_own_run(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
-    # The gamma case stops at its second verdict while the settle case shares its rounds and runs to the cap.
+    # The gamma case stops at its first verdict while the settle case shares its rounds and runs to the cap.
     monkeypatch.setattr(nl, "ROUND", 1)
-    gamma = nl.ArmRun("gamma", TEST_SEED, 3, cases=[small("gamma", 9, 0.0)], needed=2)
+    gamma = nl.ArmRun("gamma", TEST_SEED, 2, cases=[small("gamma", 9, 0.0)], needed=1)
     settle = nl.ArmRun("settle-common", TEST_SEED, 2, cases=[small("settle-common", 8, 0.0)])
     joint = [nl.dumps(nl.merge_records([record])) for record in nl.run_arms(setup, [gamma, settle])]
     alone = [nl.dumps(nl.merge_records([nl.run_arms(setup, [run])[0]])) for run in (gamma, settle)]
