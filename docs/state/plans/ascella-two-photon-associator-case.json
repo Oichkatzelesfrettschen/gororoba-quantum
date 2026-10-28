@@ -10,5 +10,6 @@
   "reconciliation": {
     "status": "unresolved",
     "note": "Captured context; triage and evidence review pending."
-  }
+  },
+  "next_action": "Owner approved submission at the live HOM (2026-10-28). Run the written procedure on a host holding the Quandela token with access to api.cloud.quandela.com; the cloud session that prepared the case has neither."
 }

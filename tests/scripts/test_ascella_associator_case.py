@@ -24,35 +24,63 @@ def _state(occupied: tuple[int, ...]) -> str:
     return ",".join("1" if mode in occupied else "0" for mode in range(case.MODES))
 
 
-def test_analysis_recovers_ideal_and_excludes_outside_events(tmp_path: Path) -> None:
-    manifest = json.loads((case.CASE / "cases.json").read_text())
+def _iterations(manifest: dict, visibility: float, flip_control: bool = False) -> list[dict]:
+    """Counts proportional to the mixture law of each setting, plus 7 events outside the logical block."""
     iterations = []
     for setting in manifest["settings"]:
-        counts = {_state((int(p[0]), int(p[1]))): 500 for p in setting["ideal"]["two_click_law_indistinguishable"]}
+        law = case.two_click_law(case.route_operator(setting["block"], setting["route"]), visibility)
+        if flip_control and setting["block"] == "control" and setting["route"] == "Lab":
+            law = case.two_click_law(case.route_operator("associator", "LaLb"), visibility)
+        counts = {_state((int(p[0]), int(p[1]))): round(100000 * v) for p, v in law.items() if v > 1e-12}
         counts[_state((0, 9))] = 7
         iterations.append({"counts": counts})
+    return iterations
+
+
+def _analyze(tmp_path: Path, iterations: list[dict], hom: float | None) -> dict:
+    manifest = json.loads((case.CASE / "cases.json").read_text())
     (tmp_path / "cases.json").write_text(json.dumps(manifest))
     (tmp_path / "results.json").write_text(json.dumps({"iterations": iterations}))
-    record = case.analyze(tmp_path)
-    if record["associator"]["Delta"] != 2.0 or record["control"]["Delta"] != 0.0:
-        raise AssertionError(f"ideal counts give {record}")
-    if record["excluded_events"] != 7 * 8:
-        raise AssertionError("events outside the logical block were not excluded")
-    if (
-        record["decisions"]["associator_realised"] is not True
-        or record["decisions"]["calibration_sufficient"] != "undecided"
-    ):
-        raise AssertionError(f"decisions without a submission record: {record['decisions']}")
-    (tmp_path / "submission.json").write_text(json.dumps({"perfs_at_plan": {"HOM (%)": 100.0}}))
-    if case.analyze(tmp_path)["decisions"]["calibration_sufficient"] is not True:
-        raise AssertionError("ideal counts at HOM 100 % fail the calibration decision")
-    (tmp_path / "submission.json").write_text(json.dumps({"perfs_at_plan": {"HOM (%)": 50.0}}))
-    if case.analyze(tmp_path)["decisions"]["calibration_sufficient"] is not False:
-        raise AssertionError("ideal counts at HOM 50 % pass the calibration decision")
-    truncated = iterations[:6] + [{"missing": True}, {"missing": True}]
-    (tmp_path / "results.json").write_text(json.dumps({"iterations": truncated}))
-    partial = case.analyze(tmp_path)
-    if partial["decisions"]["associator_realised"] != "undecided" or partial["control"]["Delta"] is None:
-        raise AssertionError(f"a truncated control block decided or lost its estimate: {partial['decisions']}")
-    if partial["decisions"]["calibration_sufficient"] is not False:
-        raise AssertionError("the complete associator block lost its calibration decision")
+    if hom is not None:
+        (tmp_path / "submission.json").write_text(json.dumps({"perfs_at_plan": {"HOM (%)": hom}}))
+    return case.analyze(tmp_path)
+
+
+def test_closure_holds_at_any_visibility_and_needs_no_hom(tmp_path: Path) -> None:
+    manifest = json.loads((case.CASE / "cases.json").read_text())
+    record = _analyze(tmp_path, _iterations(manifest, 0.6), None)
+    decisions = record["decisions"]
+    if decisions["associator_realised"] is not True or decisions["visibility_closure"] is not True:
+        raise AssertionError(f"V = 0.6 counts fail the closure: {decisions}")
+    if abs(decisions["compensated_contrast"] - 1) > 1e-4 or abs(decisions["in_situ_visibility"] - 0.6) > 1e-4:
+        raise AssertionError(f"compensation or in-situ visibility off: {decisions}")
+    if decisions["hom_comparison"] is not None or record["excluded_events"] != 7 * 8:
+        raise AssertionError("HOM comparison without a submission record, or exclusions miscounted")
+
+
+def test_hom_comparison_is_descriptive_and_reads_the_submission(tmp_path: Path) -> None:
+    manifest = json.loads((case.CASE / "cases.json").read_text())
+    record = _analyze(tmp_path, _iterations(manifest, 0.8), 87.28)
+    comparison = record["decisions"]["hom_comparison"]
+    if comparison is None or comparison["within_tolerance"] is not False:
+        raise AssertionError(f"V = 0.80 against HOM 87.28 % should depart: {comparison}")
+    if record["decisions"]["visibility_closure"] is not True:
+        raise AssertionError("the closure depends on the HOM figure")
+
+
+def test_route_dependent_error_breaks_the_closure(tmp_path: Path) -> None:
+    manifest = json.loads((case.CASE / "cases.json").read_text())
+    record = _analyze(tmp_path, _iterations(manifest, 0.875, flip_control=True), None)
+    if record["decisions"]["visibility_closure"] is not False:
+        raise AssertionError(f"a flipped control route passes the closure: {record['decisions']}")
+
+
+def test_truncated_block_leaves_decisions_undecided(tmp_path: Path) -> None:
+    manifest = json.loads((case.CASE / "cases.json").read_text())
+    iterations = _iterations(manifest, 0.875)[:6] + [{"missing": True}, {"missing": True}]
+    record = _analyze(tmp_path, iterations, 87.5)
+    decisions = record["decisions"]
+    if decisions["associator_realised"] != "undecided" or decisions["visibility_closure"] != "undecided":
+        raise AssertionError(f"a truncated control block decided: {decisions}")
+    if record["control"]["Delta"] is None or decisions["hom_comparison"] is None:
+        raise AssertionError("partial estimates or the complete associator block's comparison were lost")
