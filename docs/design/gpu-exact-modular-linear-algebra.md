@@ -124,11 +124,18 @@ Rank, echelon form and the PLUQ factorization follow the recursive scheme of FFL
 half; factor the left half recursively; apply the row permutation to the right half; solve the triangular system for
 the top right block by recursive modular TRSM, which again reduces to modular GEMM; update the bottom right block
 with one modular GEMM (the Schur complement); recurse on it. Almost every operation becomes a Layer 1 product. The
-base case (blocks of 64 to 256 columns) runs as one fused CUDA kernel (CuPy `RawKernel`) that performs the pivot
-search and row operations mod `p` in int32 on the device, with no per-column round trip to Python. A first
-prototype that looped over columns in Python lost to FLINT (8.27 s against 0.35 s at `n = 1024`); the same blocked
-algorithm with FP64 trailing updates already tied FLINT at `n = 4096` (10.3 s against 9.9 s), and the INT8 product
-replaces that FP64 update at 146 times the FP64 rate.
+base case is one cooperative CuPy `RawKernel` over a column block of `W = 256`: pivot search, Fermat inverse and row
+elimination mod `p` in int32, one software grid barrier per column, pivot rows frozen by a flag and swapped by the
+host once per block. The triangular solve recurses to leaves of 256 rows, each an explicit inverse of the unit-lower
+block followed by one INT8 product; cublasLt requires int8 operands with `M` a multiple of 32 and `K`, `N` multiples
+of 16, so blocks are zero-padded. On random full-rank matrices modulo 32003 it factors `n = 1024` in 0.011 s, `n =
+4096` in 0.049 s and `n = 8192` in 0.15 to 0.17 s, against 0.056 s, 1.36 s and 6.6 s for python-flint 0.9.0
+`nmod_mat.rank()` (torch 2.14.1, cupy 14.2.0, CUDA driver 13.4, runtime 13.3). Ranks match FLINT on eleven matrix
+classes (full, low rank, rank one and `n - 1`, sparse, zeroed rows and columns, permutation, Vandermonde with
+repeated nodes, Hankel) in square, tall, wide and odd shapes modulo 32003 and 32009, and every factorization passes
+Freivalds with four vectors plus 256 exact sampled entries. The leaf inverse is a one-block kernel that idles 59 of
+60 SMs and takes 35 to 44 % of the profiled time; batching all leaf inverses of a solve into one many-block launch
+is the next step.
 
 ## Layer 4: where it enters the replays
 
@@ -172,6 +179,7 @@ contents. A Rust port fits `open_gororoba`, which already depends on `cudarc` 0.
    when the digit cache holds less than both operands.
 2. Layer 2 with the tiled layout and the prefetch pipeline, measured against staging; Nsight Systems confirms the
    prefetches remove demand faults.
-3. Layer 3: fused base-case kernel, then recursive PLUQ; rank against FLINT up to `n = 8192`.
+3. Layer 3 runs (fused base case, recursive PLUQ, rank equal to FLINT up to `n = 8192`, 39 times faster there).
+   Next: batched leaf inverses, then `n = 16384` and rectangular Macaulay shapes.
 4. Layer 4: the fiber-cone degree ranks for `E8bar` to `VB`.
 5. Package, tests, the owner's PyPI decision.
