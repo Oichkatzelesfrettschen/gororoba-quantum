@@ -2,7 +2,8 @@
 
 The read is BackendProperties fetched with refresh=True: last_update_date is the stamp live_run.py records as a
 run's calibration, and t1/t2 are the reported values a run normalizes against. The first poll writes the baseline
-file and reports no change. A later poll reports a change when the stamp differs from the baseline's and, with
+file and reports no change. A later poll reports a change when the stamp names another instant than the baseline's
+(last_update_date carries the reading host's UTC offset, so a baseline read elsewhere compares by instant) and, with
 --qubits, when the reported T1 and the reported T2 each differ on at least --min-moved of those qubits (default:
 half of them, rounded up). Kingston republishes its stamp every 15 to 60 minutes while T1 and T2 refresh together
 once a day, so a case that waits on the daily refresh names its qubits; a stamp change alone serves a case that
@@ -26,6 +27,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import ibm_account  # noqa: E402
+from live_run import same_calibration_instant  # noqa: E402
 
 CHANGED, UNCHANGED, READ_FAILED = 0, 1, 3
 
@@ -56,7 +58,8 @@ def moved(baseline: dict[str, Any], now: dict[str, Any], key: str) -> int:
 def decide(baseline: dict[str, Any], now: dict[str, Any], min_moved: int) -> tuple[bool, str]:
     """Whether NOW is a new calibration in the sense the watch asks for, and a one-line summary."""
     t1, t2, n = moved(baseline, now, "t1_us"), moved(baseline, now, "t2_us"), len(now["t1_us"])
-    changed = now["stamp"] != baseline["stamp"] and (n == 0 or (t1 >= min_moved and t2 >= min_moved))
+    new_stamp = not same_calibration_instant(now["stamp"], baseline["stamp"])
+    changed = new_stamp and (n == 0 or (t1 >= min_moved and t2 >= min_moved))
     return changed, f"stamp={now['stamp']} t1_moved={t1} t2_moved={t2} n={n} min_moved={min_moved}"
 
 

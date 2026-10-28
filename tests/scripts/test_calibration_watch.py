@@ -18,10 +18,11 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import calibration_watch  # noqa: E402
 
 # Stands in for "$PYTHON scripts/calibration_watch.py ARGS": each call takes the next exit status from STATUSES
-# (space separated, the last one repeating) and prints a line naming the call.
+# (space separated, the last one repeating), sleeps SLEEP seconds, and prints a line naming the call.
 FAKE = """#!/bin/sh
 n=$(( $(cat "$CALLS" 2>/dev/null || echo 0) + 1 ))
 echo "$n" > "$CALLS"
+sleep "${SLEEP:-0}"
 set -- $STATUSES
 while [ "$n" -gt 1 ] && [ $# -gt 1 ]; do shift; n=$((n - 1)); done
 echo "poll $(cat "$CALLS") status $1"
@@ -49,6 +50,8 @@ def test_a_stamp_change_alone_counts_without_qubits() -> None:
     now = calibration_watch.reading(_props("2026-10-27T16:36:38-07:00", {}, {}), [])
     _expect(calibration_watch.decide(base, now, 0)[0], "a new stamp is a change when no qubits are named")
     _expect(not calibration_watch.decide(base, base, 0)[0], "the same stamp is no change")
+    utc = calibration_watch.reading(_props("2026-10-27T23:09:17+00:00", {}, {}), [])
+    _expect(not calibration_watch.decide(base, utc, 0)[0], "one instant under another UTC offset is no change")
 
 
 def test_named_qubits_need_both_t1_and_t2_to_move() -> None:
@@ -73,13 +76,15 @@ def test_named_qubits_need_both_t1_and_t2_to_move() -> None:
     _expect(not calibration_watch.decide(base, refreshed, 3)[0], "two moved T1 values fall short of three")
 
 
-def _wait(tmp_path: Path, statuses: str, *args: str) -> subprocess.CompletedProcess[str]:
+def _wait(
+    tmp_path: Path, statuses: str, *args: str, interval: str = "0", sleep: str = "0"
+) -> subprocess.CompletedProcess[str]:
     fake = tmp_path / "fake_python"
     fake.write_text(FAKE)
     fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
-    env = os.environ | {"PYTHON": str(fake), "CALLS": str(tmp_path / "calls"), "STATUSES": statuses}
+    env = os.environ | {"PYTHON": str(fake), "CALLS": str(tmp_path / "calls"), "STATUSES": statuses, "SLEEP": sleep}
     return subprocess.run(
-        ["sh", str(ROOT / "scripts/wait_calibration.sh"), "--interval", "0", *args, "--", "ibm_kingston"],
+        ["sh", str(ROOT / "scripts/wait_calibration.sh"), "--interval", interval, *args, "--", "ibm_kingston"],
         cwd=ROOT,
         env=env,
         capture_output=True,
@@ -94,7 +99,7 @@ def _wait(tmp_path: Path, statuses: str, *args: str) -> subprocess.CompletedProc
     [
         ("1 1 0", "60", 0, "poll 3 status 0"),
         ("1 3 1 0", "60", 0, "poll 4 status 0"),
-        ("1", "0", 2, "deadline: poll 1 status 1"),
+        ("1", "0", 2, "deadline: "),
         ("1 3 3 3 3 3", "60", 3, "poll 6 status 3"),
         ("2", "60", 2, "poll 1 status 2"),
     ],
@@ -105,3 +110,12 @@ def test_wait_loop_exits_on_change_deadline_failures_and_usage(
     result = _wait(tmp_path, statuses, "--deadline", deadline, "--log", str(tmp_path / "log"))
     _expect(result.returncode == code, f"{statuses}: exit {result.returncode}\n{result.stdout}{result.stderr}")
     _expect(line in result.stdout + result.stderr, f"{statuses}: {result.stdout}{result.stderr}")
+
+
+@pytest.mark.parametrize(("statuses", "interval", "sleep"), [("1 0", "2", "0"), ("0", "0", "3")])
+def test_a_change_after_the_deadline_never_releases_the_chain(
+    tmp_path: Path, statuses: str, interval: str, sleep: str
+) -> None:
+    result = _wait(tmp_path, statuses, "--deadline", "1", interval=interval, sleep=sleep)
+    _expect(result.returncode == 2, f"exit {result.returncode}\n{result.stdout}{result.stderr}")
+    _expect("deadline" in result.stderr, result.stderr)

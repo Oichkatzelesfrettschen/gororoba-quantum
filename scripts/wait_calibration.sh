@@ -46,21 +46,30 @@ cleanup() {
 trap cleanup EXIT
 trap 'exit 130' INT TERM HUP
 
+# Every poll and sleep is bounded by the time left, and a change read after the deadline counts as the deadline, so
+# the chained run never starts late.
 while :; do
+	left=$((end - $(date +%s)))
+	[ "$left" -gt 0 ] || { echo "deadline: $(tail -n 1 "$out")" >&2; exit 2; }
 	status=0
-	timeout -k 10 120 "$PYTHON" scripts/calibration_watch.py "$@" >"$out" 2>&1 &
+	timeout -k 10 "$((left < 120 ? left : 120))" "$PYTHON" scripts/calibration_watch.py "$@" >"$out" 2>&1 &
 	child=$!
 	wait "$child" || status=$?
 	child=
 	echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) $(tail -n 1 "$out")" >>"$log"
 	case $status in
-	0) tail -n 1 "$out"; exit 0 ;;
+	0)
+		[ "$(date +%s)" -lt "$end" ] || { echo "deadline: change read late: $(tail -n 1 "$out")" >&2; exit 2; }
+		tail -n 1 "$out"
+		exit 0
+		;;
 	1) fails=0 ;;
 	2) cat "$out" >&2; exit 2 ;;
 	*) fails=$((fails + 1)); [ "$fails" -lt 5 ] || { tail -n 1 "$out" >&2; exit 3; } ;;
 	esac
-	[ "$(date +%s)" -lt "$end" ] || { echo "deadline: $(tail -n 1 "$out")" >&2; exit 2; }
-	sleep "$interval" &
+	left=$((end - $(date +%s)))
+	[ "$left" -gt 0 ] || { echo "deadline: $(tail -n 1 "$out")" >&2; exit 2; }
+	sleep "$((left < interval ? left : interval))" &
 	child=$!
 	wait "$child"
 	child=
