@@ -54,7 +54,9 @@ A further provider adds one adapter class and one PROVIDERS entry.
 The script renders docs/state/RESEARCH_STATE.md in full and the marked
 sections of README.md and docs/RESEARCH_ROADMAP.md. --check fails on any
 rule violation or rendered difference; --write rewrites the rendered text;
---self-test applies mutations to the registry that each rule must reject.
+--self-test applies mutations to the registry that each rule must reject;
+--add-acquisition ID PROVIDER RUN FAMILY QUESTION appends one acquisition as
+text, which scripts/retain_run.sh calls when it retains an IBM run.
 """
 
 from __future__ import annotations
@@ -248,6 +250,13 @@ class IbmRuns:
             require(
                 audit.get("inventory_sha256") == digest(inventory),
                 "the retention audit binds a different service inventory",
+            )
+            # A run collected after the inventory's observation sits outside the audit's jobs, so the registry
+            # cannot match it to an acquisition; the change that retains it observes the instance again.
+            require(
+                not audit.get("awaiting_observation"),
+                f"{audit_file.name}: {', '.join(audit['awaiting_observation'])} await observation; "
+                "retain runs with scripts/retain_run.sh, which observes the instance's inventory",
             )
             self.jobs += audit["jobs"]
             self.services.append(service)
@@ -907,14 +916,16 @@ def _status(statuses: Counter[str]) -> str:
     return ", ".join(f"{count} {status}" for status, count in sorted(statuses.items()))
 
 
-def _acquisition_table(registry: dict[str, Any], context: Context, origin: Path, with_claims: bool) -> list[str]:
+def _acquisition_table(
+    registry: dict[str, Any], context: Context, origin: Path, with_claims: bool, rows: list[dict[str, Any]]
+) -> list[str]:
     header = "| Run | Provider | Family | Backend | Jobs | PUBs or circuits | Status | Charge |"
     rule = "| --- | --- | --- | --- | ---: | ---: | --- | ---: |"
     if with_claims:
         header += " Claims |"
         rule += " --- |"
     lines = [header, rule]
-    for row in _acquisition_rows(registry, context):
+    for row in rows:
         line = (
             f"| {_link(row['run'], origin, Path(row['run']).name)} | {context.providers[row['provider']].title} | "
             f"{_cell(row['family'])} | {', '.join(row['backends'])} | {row['jobs']} | {row['circuits']} | "
@@ -968,7 +979,8 @@ def _claim_entry(claim: dict[str, Any], origin: Path) -> list[str]:
     return lines
 
 
-def render_state_document(registry: dict[str, Any], context: Context) -> str:
+def render_state_document(registry: dict[str, Any], context: Context, rows: list[dict[str, Any]] | None = None) -> str:
+    rows = _acquisition_rows(registry, context) if rows is None else rows
     origin = STATE_DOCUMENT
     lines = [
         "# Research state",
@@ -998,10 +1010,10 @@ def render_state_document(registry: dict[str, Any], context: Context) -> str:
         "An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one",
         "circuit and charges the account ledger's change.",
         "",
-        *_acquisition_table(registry, context, origin, with_claims=True),
+        *_acquisition_table(registry, context, origin, with_claims=True, rows=rows),
         "",
     ]
-    for row in _acquisition_rows(registry, context):
+    for row in rows:
         detail = f", {row['detail']}" if row["detail"] else ""
         lines.append(f"- **{row['id']}** ({Path(row['run']).name}{detail}): {row['question']}")
     lines.append("")
@@ -1039,7 +1051,10 @@ def evidence_class_matrix(registry: dict[str, Any]) -> list[str]:
     return lines
 
 
-def render_readme_section(registry: dict[str, Any], context: Context) -> list[str]:
+def render_readme_section(
+    registry: dict[str, Any], context: Context, rows: list[dict[str, Any]] | None = None
+) -> list[str]:
+    rows = _acquisition_rows(registry, context) if rows is None else rows
     origin = ROOT / "README.md"
     return [
         "## Research state",
@@ -1054,7 +1069,7 @@ def render_readme_section(registry: dict[str, Any], context: Context) -> list[st
         f"The {_link('docs/evidence/evidence-closure/README.md', origin, 'derived closure view')} preserves",
         "cross-branch coverage, denominator gaps and unresolved dependencies separately from this registry.",
         "",
-        *_acquisition_table(registry, context, origin, with_claims=False),
+        *_acquisition_table(registry, context, origin, with_claims=False, rows=rows),
         "",
         *_account_lines(context),
     ]
@@ -1100,10 +1115,12 @@ def _replace_section(text: str, section: list[str], name: str) -> str:
 def rendered(registry: dict[str, Any], context: Context) -> dict[Path, str]:
     readme = ROOT / "README.md"
     roadmap = ROOT / "docs/RESEARCH_ROADMAP.md"
+    # Every provider adapter re-reads its retained runs on each runs() call, so the views share one read.
+    rows = _acquisition_rows(registry, context)
     return {
-        STATE_DOCUMENT: render_state_document(registry, context),
+        STATE_DOCUMENT: render_state_document(registry, context, rows),
         readme: _replace_section(
-            readme.read_text(encoding="utf-8"), render_readme_section(registry, context), "README.md"
+            readme.read_text(encoding="utf-8"), render_readme_section(registry, context, rows), "README.md"
         ),
         roadmap: _replace_section(
             roadmap.read_text(encoding="utf-8"), render_roadmap_section(registry, context), "RESEARCH_ROADMAP.md"
@@ -1678,13 +1695,45 @@ def _check_declared_retained_summary(qi: QuantumInspireRuns) -> None:
     require("declared unretained" not in line, f"a retained declared job enters the unretained summary: {line}")
 
 
+def add_acquisition(entry: dict[str, str]) -> None:
+    """Append one acquisition to the registry file as text, keeping the hand formatting of every other entry, and
+    refuse an entry the registry rules reject."""
+    require(set(entry) == ACQUISITION_KEYS and all(entry.values()), "an acquisition needs every field")
+    text = REGISTRY.read_text(encoding="utf-8")
+    registry = json.loads(text)
+    require(entry["id"] not in {row["id"] for row in registry["acquisitions"]}, f"{entry['id']} is registered")
+    require(entry["run"] not in {row["run"] for row in registry["acquisitions"]}, f"{entry['run']} is registered")
+    head, separator, tail = text.partition('\n  ],\n  "claims": [\n')
+    require(bool(separator), "the registry's acquisitions list ends in an unexpected layout")
+    block = "\n".join("    " + line for line in json.dumps(entry, indent=2, ensure_ascii=False).splitlines())
+    updated = f"{head},\n{block}{separator}{tail}"
+    validate(json.loads(updated), Context())
+    REGISTRY.write_text(updated, encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--check", action="store_true", help="validate and compare every rendered section")
     mode.add_argument("--write", action="store_true", help="validate and rewrite every rendered section")
     mode.add_argument("--self-test", action="store_true", help="apply registry mutations each rule must reject")
+    mode.add_argument(
+        "--add-acquisition",
+        nargs=5,
+        metavar=("ID", "PROVIDER", "RUN", "FAMILY", "QUESTION"),
+        help="append one acquisition, then --write renders the views",
+    )
     arguments = parser.parse_args()
+    if arguments.add_acquisition:
+        try:
+            add_acquisition(
+                dict(zip(("id", "provider", "run", "family", "question"), arguments.add_acquisition, strict=True))
+            )
+        except (ValueError, KeyError, TypeError, OSError) as error:
+            print(f"research state: {error}", file=sys.stderr)
+            return 1
+        print(f"research state: registered acquisition {arguments.add_acquisition[0]}")
+        return 0
     try:
         registry = load_json(REGISTRY)
         context = Context()

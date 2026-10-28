@@ -39,15 +39,23 @@ primary.
 
 ## Changes
 
-| Lever | Change | Predicted effect | Falsifier |
+| Lever | Change | Effect | Falsifier |
 |---|---|---|---|
 | Per-record registry evidence | `research_state.py` accepts `FILE.json#COLLECTION/FIELD=VALUE` evidence, digested by `plan_records.evidence_digest` (the plan tracker's receipt rule); the two audit claims bind their jobs' audit rows | an appended job leaves both claims unchanged | a retention that edits either claim |
 | Per-record bundle sources | `algebra_device_conjectures.py` records and verifies a `#` source by the same rule; one successor bundle freezes under it | no bundle refreeze per retention | a retention that stales the bundle |
-| Per-job comparison rows | the comparison becomes one immutable row file per job; `--write` retrieves and appends only missing jobs; `--check` re-derives every audited job | one small file per new job instead of a 2,300-line successor | a retention that rewrites an existing row |
-| Incremental raw verification | the audit check skips archives whose index digest a verification ledger records; the nightly tier verifies everything | local audit check from 156 s to seconds | an audit written with the ledger that differs from one written without it |
-| Registry check memoization | acquisition rows and provider facts computed once per process | 24.6 s to about 12 s locally | a rendered view that differs |
-| One retention command | `scripts/retain_run.sh RUN` chains the seed rows, inventory read, audit, acquisition stub and views; a test fails a retained run without an acquisition | the registry step can no longer be skipped (Codex P1 on #614) | a retained run on main without an acquisition |
+| Per-job comparison rows | one immutable row file per job under `jobs/qiskit-<release>/`; `--append` retrieves only jobs without a row; `--check-rows` re-derives every audited job (#625) | one small file per new job instead of a 2,300-line successor | a retention that rewrites an existing row |
+| Audit verification speed | each shot string's `re.fullmatch` (167 million calls, nearly all of the check's time) becomes one translate over the joined register, and the per-archive verification runs through `parallel.ordered_map` | 156 s to 12 s on the build host; every audit row byte-identical, only `replay_source_sha256` moves | an audit row that differs between the serial and pooled paths |
+| Registry check | the views compute the acquisition rows once instead of three times | 31.7 s to 17.5 s at one load | a rendered view that differs |
+| One retention command | `scripts/retain_run.sh RUN ID FAMILY QUESTION` chains the seed rows, inventory read, audit, comparison rows, ghost index, acquisition (`research_state.py --add-acquisition`) and views; `research_state.py --check` fails while an audit lists a run awaiting observation | the registry step can no longer be skipped (Codex P1 on #614); 69 s end to end on the backup instance at load average 30 | a retained run on main whose audit still awaits observation |
 
-Retained successors keep their bytes; each change applies from its merge onward. Calibration history keeps its
+Retained successors keep their bytes; each change applies from its merge onward. Two self-bindings remain and no
+longer ripple: each audit records its producer's sha256 and the bundle result its producer's, but the claims, the
+bundle sources and the comparison rows bind job records, so regenerating an audit after a producer edit changes
+that one field and nothing downstream. A cache of verified archives was the first design for the audit speed; the
+profile placed the cost in the per-shot match instead, so the audit verifies every archive on every run and keeps no
+trust ledger. Two whole-file bindings stay open: plan receipts that bind a shared Markdown note flag its plans for
+revalidation on any edit of the note, and the comparison's QPY digests follow the Qiskit release (35 of 684 retained
+circuits serialize differently under 2.5.2 and 2.6.0 at one QPY format), so a Qiskit pin change refills the row
+ledger. Calibration history keeps its
 full snapshots, which are replay inputs rather than bindings; trimming them to the placed qubits is a separate
 question for `ghost_calibrations.py`.

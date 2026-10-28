@@ -13789,8 +13789,10 @@
    "decimal",
    "hashlib",
    "json",
+   "parallel",
    "pathlib",
    "re",
+   "sys",
    "typing"
   ],
   "scripts/remeasure_history.py": [
