@@ -2319,6 +2319,13 @@
       "question": "Does the readout-driven phase pull on idling ibm_kingston qubits replicate, and how does it split between the probe's own partner, readers within three CZ hops and a chip-wide baseline?"
     },
     {
+      "id": "kingston-idle-penalty-repeat-point2",
+      "provider": "ibm",
+      "run": "results/live/2026-10-28T000644.379196Z",
+      "family": "idle-penalty",
+      "question": "Stability repeat, point 2: after Kingston refreshed its reported T1 and T2, do the 30 coupled pairs of the idle-penalty probe reproduce their per-qubit multipliers and readout-driven phase pull?"
+    },
+    {
       "id": "kingston-idle-penalty-repeat-point1",
       "provider": "ibm",
       "run": "results/live/2026-10-27T160530.294787Z",
@@ -10907,8 +10914,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-11/result.json",
-          "sha256": "2adffea0302857c4b05534d2d9ec90520b8d37cd06bf10c5bce5ac2c4bb24217"
+          "path": "docs/evidence/algebra-device-conjectures-10/result.json",
+          "sha256": "5a14acf6ff2f04ad6e648600a90c3dca8642d4e3c6d9ad6b03766bb3c2a3a0e8"
         }
       ],
       "gates": {
@@ -12131,6 +12138,42 @@
       ]
     },
     {
+      "id": "kingston-idle-penalty-repeat-refreshed-calibration",
+      "statement": "On ibm_kingston (backup instance, one job of 44 dynamic PUBs at 4096 shots over 30 of the probe's 31 coupled pairs, execution calibration 2026-10-27T16:56:11-07:00, whose reported T1 differs from the first run's on 58 and T2 on 60 of 60 qubits; 16 s billed) the preregistered multiplier-stability decision reads unresolved for kappa_1 (Pearson r -0.041, median second/first ratio 0.872 [0.705, 0.974]), kappa_2* (0.339, 0.876 [0.683, 1.061]) and kappa_2e (-0.043, 0.869 [0.719, 1.008]). The single-run decisions replicate: optimistic_t1 absent or unresolved, echo gain present, and the readout phase pull present at -2.66 +- 0.57 kHz against the after arm and -2.67 +- 0.56 kHz against the quiet arm with the quiet null absent; its per-pair pattern correlates with the first run's at r 0.987 (pair pattern stable). Visibility reads pairwise heterogeneity (pair-mean t -2.39 and -1.93 against -3.396).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job and one placement against one first run 28 hours earlier; the 25 s ceiling and pair means are the statistical unit as in the probe. The reading that IBM's reported normalization removes the per-qubit multiplier pattern while the fitted rates keep theirs (rates against point 1 at r 0.63 to 0.81, reported T1 across the refresh at r 0.51) and the 13 to 16 % fall of the fitted rates are post hoc and of moderate confidence; point 1 ran on the primary instance and enters only through its retained report.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-28T000644.379196Z/idle-penalty-repeat-decisions.json",
+          "sha256": "40dd0b535fb031dd7dd056c4471f2d296371871b9af3a35206d2dadb46eff12b"
+        },
+        {
+          "path": "results/live/2026-10-28T000644.379196Z/idle-penalty-compare.json",
+          "sha256": "e622b4ba94eb2cc74fa40d5830186ff705d224118943ee82437d985f89b8b92b"
+        },
+        {
+          "path": "results/live/2026-10-28T000644.379196Z/idle-penalty-report.json",
+          "sha256": "0196948a32017eab5bf4dcdfc29c4990ff646b0a56e893f8af4d8b65c7e718cf"
+        },
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/idle-penalty-report.json",
+          "sha256": "2bee55b8eb66048a87ce0673fb8afa51ac3e28a58d4be779719e098ea5b1eb47"
+        }
+      ],
+      "documents": [
+        "results/live/IDLE_PENALTY_REPEAT_CASE.md"
+      ],
+      "acquisitions": [
+        "kingston-idle-penalty-repeat-point2"
+      ],
+      "related_claims": [
+        "kingston-idle-penalty-multipliers-and-readout-phase",
+        "kingston-idle-penalty-focal-region"
+      ]
+    },
+    {
       "id": "kingston-idle-penalty-repeat-point1-stability",
       "statement": "On ibm_kingston (primary instance, one job of 44 dynamic PUBs at 4096 shots and a 20 us repetition delay over 30 of the first run's 31 ordered pairs, execution calibration 2026-10-27T09:07:55-07:00, 16 s billed) the preregistered admission reads not admitted, because the calibration carried the first run's reported T1 and T2 on all 60 qubits, so each multiplier ratio compares fitted physical rates about 19 hours apart. Multiplier stability reads unresolved on all three: Pearson r 0.195 (kappa_1), 0.357 (kappa_2*) and 0.318 (kappa_2e), each below 0.5, with median second/first ratios 0.939 [0.836, 1.052], 0.906 [0.801, 0.998] and 0.961 [0.840, 1.028]. The single-run decisions replicate: optimistic T1 absent or unresolved, echo gain present, and the readout shift present and negative at -2.627 +- 0.557 kHz against the after arm and -2.632 +- 0.557 kHz against the quiet arm, with the quiet null at -0.005 +- 0.020 kHz. Visibility reads pairwise heterogeneity (pair-mean t -2.48 and -2.28 against -3.396), and the readout shift's pair pattern is stable at Pearson r 0.988 over 30 pairs.",
       "domain": "hardware",
@@ -12170,7 +12213,8 @@
         "kingston-idle-penalty-multipliers-and-readout-phase"
       ],
       "related_claims": [
-        "kingston-idle-penalty-focal-region"
+        "kingston-idle-penalty-focal-region",
+        "kingston-idle-penalty-repeat-refreshed-calibration"
       ]
     },
     {

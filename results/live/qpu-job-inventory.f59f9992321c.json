@@ -1,12 +1,12 @@
 {
   "account_usage": {
-    "usage_consumed_seconds": 424,
+    "usage_consumed_seconds": 440,
     "usage_limit_seconds": 600,
     "usage_period": {
-      "end_time": "2026-10-27T22:59:56.816Z",
-      "start_time": "2026-09-29T22:59:56.816Z"
+      "end_time": "2026-10-28T00:23:56.594Z",
+      "start_time": "2026-09-30T00:23:56.594Z"
     },
-    "usage_remaining_seconds": 176
+    "usage_remaining_seconds": 160
   },
   "complete_service_inventory": true,
   "instance_crn_hash": "f59f9992321c",
@@ -394,10 +394,26 @@
         "running": "2026-10-27T20:46:20.53523Z"
       },
       "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-28T00:07:28.205110+00:00",
+      "final_qpu_charge_seconds": 16,
+      "input_schema_version": "v2.0",
+      "job_id": "dbgjpg1q260s73bte67g",
+      "pub_count": 44,
+      "shots_per_pub": 4096,
+      "status": "DONE",
+      "timestamps": {
+        "created": "2026-10-28T00:07:28.20511Z",
+        "finished": "2026-10-28T00:07:58.373164Z",
+        "running": "2026-10-28T00:07:30.114714Z"
+      },
+      "usage_status": "complete"
     }
   ],
   "new_qpu_submissions": 0,
-  "observed_at": "2026-10-27T22:59:56.884682+00:00",
+  "observed_at": "2026-10-28T00:23:56.659482+00:00",
   "retrieval_boundary": "Read-only service.jobs(limit=None), decoded QuantumProgram inputs and finalized metrics. Physical jobs require a finished status (DONE, ERROR or CANCELLED) and positive settled charge; local simulations and mock results are separate evidence.",
   "schema": "completed-qpu-job-inventory-v1"
 }

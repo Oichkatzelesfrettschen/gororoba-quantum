@@ -4461,7 +4461,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-11",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-10",
    "name": "core-670",
    "seconds": 12.0,
    "tier": "pr"
