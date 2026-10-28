@@ -14,7 +14,7 @@ step, like any spend ([provider-credits.md](provider-credits.md)).
 | Build host | Ryzen 5 5600X3D, 12 threads | 62 GiB, 63 GiB swap | RTX 4070 Ti, 12 GiB | none | shared with every local session | none | measured ([substrates.md](../notes/kaggle/substrates.md)) |
 | Kaggle CPU session | 4 cores (Xeon 2.20 GHz, no AVX-512) | 30 GB | none | 12 h | 5 batch sessions per account | unmetered | measured ([workflow.md](../notes/kaggle/workflow.md), [substrates.md](../notes/kaggle/substrates.md)) |
 | Kaggle GPU session | 4 cores | 29 GB | 2 x T4, 15 GiB each | 12 h | 2 batch sessions per account | 30 GPU-hours a week | measured |
-| Kaggle TPU VM | 96 cores (v3-8, documented) | 330 GB (documented) | TPU only | 9 h | one | 20 TPU-hours a week | documented; unreachable until the account passes Kaggle identity verification ([tpu-research.md](../notes/kaggle/tpu-research.md)) |
+| Kaggle TPU VM | 96 cores (v3-8, documented) | 330 GB (v3-8, documented); the v5e-8 host is unmeasured | TPU only | 9 h | one | 20 TPU-hours a week | the account is identity-verified, but v5e-8 batch sessions queue for hours (one read `QUEUED` 7 h 08 min after its push) and none has started yet; queued time draws no quota ([tpu-research.md](../notes/kaggle/tpu-research.md)) |
 | GitHub Actions, public repository | 4 vCPU | 16 GB | none | 6 h per job | matrix fan-out | free | documented (GitHub hosted-runner reference); allowed offload, logs are public |
 | Azure trial, `Standard_FX4mds_v2` | 4 vCPU | 84 GB | none | until deallocated | one (4-vCPU regional cap) | trial credit by the hour | quota read ([azure/README.md](../notes/azure/README.md)); GPU families have quota 0 |
 | AWS free plan | - | - | - | - | - | credits | `ec2:RunInstances` is denied by the project's policy ([aws/README.md](../notes/aws/README.md)) |
@@ -22,7 +22,7 @@ step, like any spend ([provider-credits.md](provider-credits.md)).
 At full fan-out the reachable pool is the build host plus five Kaggle CPU sessions and two Kaggle GPU sessions:
 62 + 5 x 30 + 2 x 29 = 270 GB of RAM in eight separate machines, and 12 + 4 x 15 = 72 GiB of VRAM on five GPUs. The
 largest single address space reachable without a spend case is the build host's 62 GiB plus swap; with a case it is
-the Azure VM's 84 GB; after identity verification it would be the TPU VM's host RAM.
+the Azure VM's 84 GB; a TPU VM's host RAM is larger once a queued session starts.
 
 ## What pooling buys
 
