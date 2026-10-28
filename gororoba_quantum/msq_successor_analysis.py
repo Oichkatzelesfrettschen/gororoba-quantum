@@ -910,8 +910,10 @@ def carryover_reader(
     predecessors[i] holds the final bits of the member row that reader i follows and readers[i] the reader's bits,
     both indexed by shot: under column-wise execution reader shot j follows predecessor shot j. Each reader gives its
     own conditional difference, the reader's P1 after a predecessor 1 minus after a predecessor 0, and the readers
-    combine by inverse-variance weights, so a baseline that differs between the measure blocks (whose predecessors
-    end at different P1) cannot enter through the pooling. A reader whose conditioning class holds fewer than
+    combine by inverse-variance weights whose variances use the reader P1 pooled over every reader and both
+    conditioning classes, so a weight depends on the class sizes alone and a stratum that drew fewer excited shots
+    gains no weight; a baseline that differs between the measure blocks (whose predecessors end at different P1)
+    cannot enter through the pooling. A reader whose conditioning class holds fewer than
     MIN_SIDE shots drops out.
 
     Two readout contrasts dilute D: the reader reads the carried excitation through its own contrast c, and the
@@ -931,9 +933,16 @@ def carryover_reader(
         previous, current = np.asarray(before).ravel(), np.asarray(after).ravel()
         if previous.shape != current.shape:
             raise msa.AnalysisError("a reader and its predecessor differ in shots")
-        value = conditional_difference(current, previous)
-        if value is not None:
-            strata.append(value)
+        ones, zeros = current[previous == 1], current[previous == 0]
+        if ones.size >= MIN_SIDE and zeros.size >= MIN_SIDE:
+            strata.append(
+                (
+                    float(ones.mean()) - float(zeros.mean()),
+                    int(ones.size),
+                    int(zeros.size),
+                    int(ones.sum() + zeros.sum()),
+                )
+            )
             shots += int(previous.size)
     margin = SCREEN_FRACTION * BOUND_FLOOR
     if not strata:
@@ -942,9 +951,11 @@ def carryover_reader(
             "reason": f"every reader has a conditioning class of fewer than {MIN_SIDE} shots",
             "passes": False,
         }
-    weights = [1 / se**2 for _, se in strata]
+    pooled = math.fsum(k for *_, k in strata) / math.fsum(n1 + n0 for _, n1, n0, _ in strata)
+    spread = max(pooled * (1 - pooled), 1.0 / math.fsum(n1 + n0 for _, n1, n0, _ in strata))
+    weights = [1 / (spread * (1 / n1 + 1 / n0)) for _, n1, n0, _ in strata]
     total = math.fsum(weights)
-    combined = math.fsum(w * d for w, (d, _) in zip(weights, strata, strict=True)) / total
+    combined = math.fsum(w * d for w, (d, *_) in zip(weights, strata, strict=True)) / total
     difference, se = combined / contrast**2, 1 / math.sqrt(total) / contrast**2
     z = NormalDist().inv_cdf(1 - alpha / width)
     upper = abs(difference) + z * se

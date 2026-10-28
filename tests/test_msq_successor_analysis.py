@@ -378,11 +378,12 @@ def shot_arrays(
     e10: float = 0.014,
     shuffle: bool = False,
     baselines: tuple[float, ...] = (),
+    stream: int = 0,
 ) -> tuple[list[np.ndarray], list[np.ndarray]]:
     """Predecessor bits and reader bits from a latent end state: the predecessor's recorded bit reads the latent state
     through the assignment errors (discrimination overlap), and the reader's excitation `carry` follows the latent
     state, not the recorded bit. `baselines[i]` adds a bit-independent excitation to reader i."""
-    generator = np.random.default_rng(TEST_SEED)
+    generator = np.random.default_rng([TEST_SEED, stream])
     contrast = 1 - e01 - e10
     previous, read = [], []
     for i in range(readers):
@@ -939,3 +940,36 @@ def test_relaxation_shot_order_reads_a_run_and_reports_a_malformed_one(tmp_path:
         write_metadata(bad)
         reason = live_run.relaxation_shot_order(run.record, tmp_path)
         check(reason is not None and "unreadable" in reason["reason"], f"{bad}: {reason}")
+
+
+def per_stratum_estimate(previous: list[np.ndarray], read: list[np.ndarray], contrast: float) -> float:
+    """The combined difference over contrast squared with each stratum weighted by the inverse of its own estimated
+    variance, the weighting that read D low."""
+    strata = [su.conditional_difference(after, before) for before, after in zip(previous, read, strict=True)]
+    weights = [1 / s[1] ** 2 for s in strata if s]
+    values = [s[0] for s in strata if s]
+    return sum(w * v for w, v in zip(weights, values, strict=True)) / sum(weights) / contrast**2
+
+
+REPLICATES = 200
+
+
+@pytest.mark.parametrize(("e01", "e10", "contrast"), [(0.004, 0.014, 0.982), (0.004, 0.096, 0.9)])
+def test_carryover_reader_is_unbiased_over_replicates_and_the_per_stratum_weights_are_not(
+    e01: float, e10: float, contrast: float
+) -> None:
+    d = 0.004
+    new = np.array(
+        [
+            su.carryover_reader(*shot_arrays(d, e01=e01, e10=e10, stream=k), contrast, 1.0, 32)["d"]
+            for k in range(REPLICATES)
+        ]
+    )
+    old = np.array(
+        [per_stratum_estimate(*shot_arrays(d, e01=e01, e10=e10, stream=k), contrast) for k in range(REPLICATES)]
+    )
+    spread = float(new.std(ddof=1)) / math.sqrt(REPLICATES)
+    # The reader reads D through the predecessor bit's separation of the latent states, which is c at most, so the
+    # estimate lies between D and D / c.
+    check(d - 2 * spread < float(new.mean()) < d / contrast + 2 * spread, f"mean {new.mean()} against {d}: {spread}")
+    check(float(old.mean()) < d - 2 * spread, f"the per-stratum weights read {old.mean()} against {d}, spread {spread}")

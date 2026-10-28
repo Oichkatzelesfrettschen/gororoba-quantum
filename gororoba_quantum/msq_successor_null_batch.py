@@ -560,22 +560,30 @@ def predecessor_name(index: int, qubit: int) -> str:
 
 def reader_standard_error(ctx: dict[str, Any], predecessor_ones: Sequence[int], excitation: float) -> float:
     """The standard error of the reader statistic's estimate of D for a carried excitation: each reader's conditional
-    difference has the binomial variance of its two conditioning classes (the predecessor read 1 or 0) at the
-    reader P1 that the excitation and the latent-state posterior give, and the twelve combine by inverse variance and
-    divide by the squared readout contrast."""
+    difference has the variance of two conditioning classes (the predecessor read 1 or 0) at the reader P1 pooled over
+    all readers and both classes, as `su.carryover_reader` weights them, and the twelve combine by inverse variance
+    and divide by the squared readout contrast."""
     e01, e10 = ctx["e01"], ctx["e10"]
     contrast = 1 - e01 - e10
     survive = math.exp(-ctx["prereadout_s"] / ctx["t1_cal_s"])
-    inverse = 0.0
+    classes = []
     for ones in predecessor_ones:
         n1, n0 = ones, SHOTS - ones
         latent = min(max((ones / SHOTS - e01) / contrast, 0.0), 1.0)
         after_one = latent * (1 - e10) / (latent * (1 - e10) + (1 - latent) * e01)
         after_zero = latent * e10 / (latent * e10 + (1 - latent) * (1 - e01))
-        p1 = e01 + contrast * excitation * survive * after_one
-        p0 = e01 + contrast * excitation * survive * after_zero
-        variance = max(p1 * (1 - p1), 1.0 / n1) / n1 + max(p0 * (1 - p0), 1.0 / n0) / n0
-        inverse += 1.0 / variance
+        classes.append(
+            (
+                n1,
+                n0,
+                e01 + contrast * excitation * survive * after_one,
+                e01 + contrast * excitation * survive * after_zero,
+            )
+        )
+    shots = sum(n1 + n0 for n1, n0, _, _ in classes)
+    pooled = sum(n1 * p1 + n0 * p0 for n1, n0, p1, p0 in classes) / shots
+    spread = max(pooled * (1 - pooled), 1.0 / shots)
+    inverse = sum(1.0 / (spread * (1 / n1 + 1 / n0)) for n1, n0, _, _ in classes)
     return 1.0 / math.sqrt(inverse) / contrast**2
 
 
