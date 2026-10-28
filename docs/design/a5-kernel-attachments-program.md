@@ -372,3 +372,12 @@ about a thousand generators.
   the proposed change; it edits no file. The orchestrator applies the change, runs the gates and commits.
   The session runs in the `read-only` sandbox at `model_reasoning_effort=medium`, so a write attempt fails rather
   than lands.
+
+- **Nullity-16 Rees fibers, Iso rows.** The regenerated record completes and passes eight rows (VB, Va+-, B9, V into
+  N+-) with the generator-deletion mutation detected; the eight permitted E8bar, W8 and X+- rows block at
+  `modular_nakayama_and_embedding`. Iso->N+ and Iso->N- block at `modular_rees_fiber`: the germ keeps six slice
+  variables after `elimpart` and needs all 17 generators (the Nakayama count agrees in both characteristics), and the
+  global `dp` basis of the graph ideal still advances at degree 10 when the 300 s cap ends it, while a block ordering
+  exhausts 4 GiB in 110 s. Owner decision: the two Iso modular eliminations run one at a time under the long-run
+  policy after the E8bar->VB elimination ends, never concurrently with it; Iso stays outside `PERMITTED_BLOCKED`
+  until a retained long run stalls or exhausts 24 GiB.
