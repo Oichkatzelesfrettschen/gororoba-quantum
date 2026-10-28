@@ -353,6 +353,8 @@ def test_the_sparse_calibration_steps_to_the_target_power(setup: nl.Setup, monke
 
 def test_the_sparse_power_target_takes_a_bonferroni_share_per_pool() -> None:
     check(abs(nl.SPARSE_FAMILY_CONFIDENCE - (1 - 0.05 / len(nl.SETTLE_POOLS))) < 1e-15, "family confidence")
+    seeds = {nl.SUCCESSOR_NULL_SEED, nl.SPARSE_CALIBRATION_SEED, nl.SPARSE_CONFIRMATION_SEED}
+    check(len(seeds) == 3, "the confirmation null shares a seed with the null or the calibration")
     # 524 of 599 planted gaps withheld: shown below 0.9 at 95 % for one pool, not at the three-pool family's 95 %.
     withheld = [2] * 262 + [0] * 37 + [0]
     rows: list[dict[str, Any]] = [

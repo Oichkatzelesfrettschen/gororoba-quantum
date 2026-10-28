@@ -463,6 +463,9 @@ MINORITY_ARMS = ("q-minority", "plateau-minority")
 SPARSE_SCALE_EVIDENCE = "docs/evidence/measurement_sequence/successor-sparse-scale.json"
 # ANU QRNG docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json, index 2: the calibration draws apart from the null's.
 SPARSE_CALIBRATION_SEED = 26209
+# ANU QRNG docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json, index 3: the settle-sparse null that decides the
+# family power target (`--arm settle-sparse --seed qrng:...#3`), drawn after SUCCESSOR_NULL_SEED's counts were read.
+SPARSE_CONFIRMATION_SEED = 15296
 # Replicates per calibration point (per-qubit power standard error about 0.01), the second point's scale and the
 # secant steps before the calibration gives up.
 SPARSE_CALIBRATION_REPLICATES = 500

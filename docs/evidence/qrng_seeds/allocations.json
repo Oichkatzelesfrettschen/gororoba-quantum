@@ -395,6 +395,13 @@
    "index": 2
   },
   {
+   "path": "gororoba_quantum/msq_successor_null_batch.py",
+   "name": "SPARSE_CONFIRMATION_SEED",
+   "value": 15296,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json",
+   "index": 3
+  },
+  {
    "path": "tests/test_msq_successor_null.py",
    "name": "TEST_SEED",
    "value": 39316,

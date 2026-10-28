@@ -229,6 +229,24 @@ over the admitted grid, so the null covers the qubits the case selects.
   threshold 3, so the case states plainly that a run whose sub-millisecond frequency noise falls about eight-fold
   below the retained level fails the sentinels and withholds every qubit.
 
+Null results at width 24 on the rehearsal dry run `results/live/2026-10-28T001935.805967Z`, seed
+`SUCCESSOR_NULL_SEED` unless stated, every arm with 0 false fires. Each row replays byte for byte with
+`"$PYTHON" scripts/msq_successor_null.py RECORD_DIR --arm ARM --replicates CAP [--seed ...]`.
+
+| Arm | Replicates | Result |
+|---|---|---|
+| carryover-positive | 346 | 299 issued; bounds 0.0100 issued, 0.0086 overall |
+| carryover-negative | 461 | 299 issued (common veto 28 %); bounds 0.0100, 0.0065 |
+| carryover-boundary | 300 per offset | issued 0, 0 and 11 at 0, 1 and 2 SE inside (descriptive) |
+| q-tolerance | 300 | common veto 100 %; overall bound 0.0099 |
+| q-minority | 438 | 299 exposed verdicts; bounds 0.0100 exposed, 0.0068 overall |
+| settle-common | 300 per width | common veto 100 % at 8, 9 and 24 qubits |
+| settle-sparse, `SPARSE_CONFIRMATION_SEED` | 300 per width | power 0.903, 0.906, 0.935 at 8, 9, 24; family bounds 0.927, 0.930, 0.955 |
+| plateau-low | 300 | every departure verdict withheld |
+| plateau-retained | 14943 | 299 issued (2.0 %); bounds 0.0100 issued, 0.0002 overall |
+| plateau-minority | 1057 | 299 exposed verdicts; bounds 0.0100, 0.0028 |
+| gamma | 400 | 398 informative (99.5 %); bound 0.0075 |
+
 ## What the run can detect
 
 The departure test's sensitivity is set by the per-qubit gate-model systematic (about 0.016 to 0.019), which
@@ -278,7 +296,8 @@ width or whose departure false-fire bound reaches 0.01.
   stopping tolerance. Its null at the preregistered seed failed at 9 qubits: 524 of 599 planted gaps withheld,
   bound 0.8965 (8 and 24 qubits: 539/600 and 549/599). The family bound on the same counts is 0.9022, a verdict
   read after the counts were known, so the v3.8 verdict comes from a settle-sparse null on a fresh seed, ANU QRNG
-  `docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json` index 3. The calibration is unchanged.
+  `docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json` index 3 (`SPARSE_CONFIRMATION_SEED`, passed as `--seed`). The calibration is
+  unchanged.
 - v3.6's q arm planted its deficit on every qubit and required 299 issued verdicts; the deficit moves every settle
   gap, the common settle veto withheld 99.7 % of 3000 replicates, and the arm issued none. Its sparse arm planted the
   single-outlier detectable gap, at which two outliers reach per-qubit power 0.72, 0.74 and 0.86 at 8, 9 and 24
