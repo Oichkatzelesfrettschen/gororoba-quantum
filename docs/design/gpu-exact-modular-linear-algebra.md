@@ -53,6 +53,23 @@ All figures come from probes on the build host (RTX 4070 Ti, compute capability 
   and 145.6 s at `n = 32768` (8 GiB of host operands), exact on sampled entries: the single-threaded pageable to
   pinned host copy halves throughput against fully pinned operands.
 
+- Warm timings (a warm-up product first, three repeats, tile 8192, idle host) of the HMM product with SAM migration:
+  inputs and output on HMM with per-tile prefetch take 1.7 to 3.0 s at `n = 16384` and 7.2 to 24 s at `n = 32768`;
+  with the output tile accumulated in device memory, copied asynchronously into two pinned staging tiles and copied
+  by eight host threads into the pageable result, `n = 16384` takes 1.29 to 1.33 s (6.7 TOP/s effective) and
+  `n = 32768` 7.8 to 8.0 s, exact on sampled entries. Nsight Systems at `n = 32768` attributes 3.33 s to the INT8
+  GEMMs (about 83 TOP/s per 8192-cubed product, near peak), 0.4 s to split and combine kernels, and 3.6 s to GPU idle
+  time, during which the host waits in `cudaDeviceSynchronize` while the UVM driver threads service migrations.
+- `cudaMemPrefetchAsync` on an HMM range costs host time proportional to its length even when the range is already
+  device-resident (about 35 ms per 128 MiB tile); skipping prefetch of tracked resident tiles cuts prefetch host time
+  from 5.2 s to 0.97 s at `n = 32768` without changing the wall time, so prefetch issue is off the critical path.
+  Transparent huge pages (`MADV_HUGEPAGE`, THP in madvise mode) and `cudaMemAdviseSetReadMostly` on the inputs change
+  no timing. Four staging slots instead of two slow `n = 32768` to 10.8 to 14.2 s: each slot takes 256 MiB of device
+  memory, and the extra pressure makes the driver evict and re-migrate input tiles.
+- So within device memory the product runs at about three times its INT8 floor; past device memory the bound is the
+  UVM driver's residency management of the inputs. Explicit residency (inputs copied into a device tile cache under a
+  fixed budget with LRU replacement, the UVM driver used only as the transport) is the next design step.
+
 ## Layer 1: the exact modular product
 
 `C = A B mod p` for `p < 2^15`. Each residue `a` in `[0, p)` becomes signed base-256 digits `a = 256 a1 + a0` with
@@ -140,9 +157,9 @@ contents. A Rust port fits `open_gororoba`, which already depends on `cudarc` 0.
 
 ## Order
 
-1. HMM migration is established (above). Port the exact INT8 product onto HMM operands in the tiled layout, with
-   CUDA 13 prefetch through `cuda-python` per tile, and measure it against the 3.71 s staging result at `n = 16384`
-   and at sizes past device memory.
+1. HMM migration is established and the INT8 product runs on HMM inputs with a device-side output and pinned drain
+   (1.3 s at `n = 16384`). Next: an explicit device tile cache for inputs under a fixed budget, measured at
+   `n = 32768` and `65536` against the 3.5 s INT8-plus-transfer floor at `n = 32768`.
 2. Layer 2 with the tiled layout and the prefetch pipeline, measured against staging; Nsight Systems confirms the
    prefetches remove demand faults.
 3. Layer 3: fused base-case kernel, then recursive PLUQ; rank against FLINT up to `n = 8192`.
