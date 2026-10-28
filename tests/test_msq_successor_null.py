@@ -202,9 +202,13 @@ from pathlib import Path  # noqa: E402
 RECORD = Path(__file__).resolve().parent.parent / "results/live/2026-10-28T001935.805967Z"
 
 
+# One worker builds the shared setup; the planted tests run at 8 qubits, so it solves only that pool's losses.
+pytestmark = pytest.mark.xdist_group("msq-successor-null")
+
+
 @pytest.fixture(scope="module")
 def setup() -> nl.Setup:
-    return nl.build_setup(RECORD)
+    return nl.build_setup(RECORD, sparse_pools=(8,))
 
 
 def small(arm: str, active: int = 8, param: float = 3.0) -> nl.Case:
@@ -330,14 +334,15 @@ def test_settle_arms_plant_their_gaps_at_the_stated_sizes(setup: nl.Setup) -> No
 def test_sparse_scale_evidence_covers_every_pool_of_the_layout(setup: nl.Setup) -> None:
     record = json.loads((nl.ROOT / nl.SPARSE_SCALE_EVIDENCE).read_text())
     pools = {m or setup.width for m in nl.SETTLE_POOLS}
-    check(set(setup.sparse_scale) == pools and record["snapshot_sha256"] == setup.digests["snapshot_sha256"], "")
+    scales = nl.sparse_scales(record["snapshot_sha256"], setup.width)[0]
+    check(set(scales) == pools and record["snapshot_sha256"] == setup.digests["snapshot_sha256"], "")
     check(record["seed"] == nl.SPARSE_CALIBRATION_SEED != nl.SUCCESSOR_NULL_SEED, "the calibration seed")
-    check(nl.sparse_scales(record["snapshot_sha256"], setup.width)[0] == setup.sparse_scale, "")
+    check(setup.sparse_scale == {8: scales[8]}, f"{setup.sparse_scale}")
     check(nl.sparse_scales("0" * 64, setup.width) == ({}, ""), "the scales serve another snapshot")
     check(nl.sparse_scales(record["snapshot_sha256"], setup.width + 8) == ({}, ""), "the scales serve another width")
     for pool, entry in record["pools"].items():
         last = entry["points"][-1]
-        check(last["scale"] == entry["scale"] == setup.sparse_scale[int(pool)], f"pool {pool}")
+        check(last["scale"] == entry["scale"] == scales[int(pool)], f"pool {pool}")
         check(abs(last["power"] - nl.SPARSE_TARGET_POWER) <= last["se"], f"pool {pool}: {last}")
 
 
@@ -536,12 +541,12 @@ def test_the_verdict_requirement_cuts_every_sharding_at_one_replicate(
     # issues fewer and runs to the cap.
     monkeypatch.setattr(nl, "ROUND", 1)
     cases = [small("gamma", 9, 0.0), small("gamma", 8, 0.0)]
-    whole = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 4, cases=cases, needed=2)])
-    halves = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 4, k, 2, cases=cases, needed=2) for k in (0, 1)])
+    whole = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 3, cases=cases, needed=2)])
+    halves = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 3, k, 2, cases=cases, needed=2) for k in (0, 1)])
     check(nl.dumps(whole) == nl.dumps(halves), "the cut depends on the sharding")
     rows = whole["cases"]["9-qubits"]["rows"]
     check(len(rows) == 2 and sum(r["issued"] for r in rows) == 2, "the 9-qubit case did not stop at its second verdict")
-    check(whole["replicates"]["8-qubits"] == 4, "the 8-qubit case stopped with the first case")
+    check(whole["replicates"]["8-qubits"] == 3, "the 8-qubit case stopped with the first case")
 
 
 def test_merge_refuses_incomplete_or_mismatched_shards(setup: nl.Setup) -> None:

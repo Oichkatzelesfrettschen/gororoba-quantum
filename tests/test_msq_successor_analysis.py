@@ -655,6 +655,10 @@ def member_steps(stem: str) -> int:
     return 1 if stem.startswith("msqe_rc") else 0
 
 
+# One worker builds the planted run and its analysis.
+pytestmark = pytest.mark.xdist_group("msq-successor-analysis")
+
+
 @pytest.fixture(scope="module")
 def run() -> Run:
     return build_run()

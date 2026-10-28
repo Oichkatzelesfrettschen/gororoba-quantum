@@ -702,8 +702,9 @@ def with_sparse_scale(setup: Setup, scale: dict[int, float]) -> Setup:
     return setup._replace(sparse_scale=dict(scale), sparse_loss=tuple(ordered_map(sparse_losses, items, min_items=2)))
 
 
-def build_setup(record_dir: Path) -> Setup:
-    """The null's fixed inputs from a dry-run record directory."""
+def build_setup(record_dir: Path, sparse_pools: Sequence[int] | None = None) -> Setup:
+    """The null's fixed inputs from a dry-run record directory, with the sparse arm's planted losses solved for
+    `sparse_pools` (every measured pool size when None)."""
     record, properties, digest = load_snapshot(record_dir)
     configuration = record["family_configuration"]
     floor, reason = msa.bound_floor(msa.record_backends(record))
@@ -745,7 +746,9 @@ def build_setup(record_dir: Path) -> Setup:
         plateau_low=tuple(i for i, (_, q) in enumerate(plateau) if q < min(tolerance)),
         digests={"snapshot_sha256": digest, "plateau_sha256": plateau_digest, "sparse_scale_sha256": scale_digest},
     )
-    return with_sparse_scale(setup, scale)
+    return with_sparse_scale(
+        setup, {pool: factor for pool, factor in scale.items() if sparse_pools is None or pool in sparse_pools}
+    )
 
 
 # --- truth of one qubit --------------------------------------------------------------------------------------
