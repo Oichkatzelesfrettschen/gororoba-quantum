@@ -1,7 +1,7 @@
 {
  "approval": "User: Afterward: test independent compiled meshes and output-port permutations, then repeat selected matched meshes tomorrow to measure drift. User requested execution through CI.",
  "case": "docs/evidence/ascella-transition-day-repeat/README.md",
- "enabled": false,
+ "enabled": true,
  "jobs": [
   {
    "admit_statuses": [],
