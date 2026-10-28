@@ -18,7 +18,7 @@ step, like any spend ([provider-credits.md](provider-credits.md)).
 | GitHub Actions, public repository | 4 vCPU | 16 GB | none | 6 h per job | matrix fan-out | free | documented (GitHub hosted-runner reference); allowed offload, logs are public |
 | Azure trial, `Standard_FX4mds_v2` | 4 vCPU | 84 GB | none | until deallocated | one (4-vCPU regional cap) | trial credit by the hour | quota read ([azure/README.md](../notes/azure/README.md)); GPU families have quota 0 |
 | AWS free plan | - | - | - | - | - | credits | `ec2:RunInstances` is denied by the project's policy ([aws/README.md](../notes/aws/README.md)) |
-| qBraid Lab, included server (Free plan) | 1.8 vCPU limit | 4 GB | none | 100 CPU-hours a month | one subscription server | included | `GET /compute-sessions/usage`, `GET /compute/profiles` ([qbraid/README.md](../notes/qbraid/README.md#lab-compute)); the 25 GB `8vCPU_25GB` server is tagged Pro (100 USD a month) |
+| qBraid Lab, included server (Free plan) | 1.8 vCPU limit | 4 GB | none | 100 CPU-hours a month | one subscription server | included | `GET /compute-sessions/usage`, `GET /compute/profiles` ([qbraid/README.md](../notes/qbraid/README.md)); the 25 GB `8vCPU_25GB` server is tagged Pro (100 USD a month) |
 | qBraid on-demand instances | 4 to 96 vCPU | 6 to 384 GB | GPU profiles exist | until stopped | per instance | 15 to 576 credits an hour (100 credits = 1 USD) | the wallet holds 0 credits with auto-recharge off, so none can start without a purchase |
 
 At full fan-out the reachable pool is the build host plus five Kaggle CPU sessions and two Kaggle GPU sessions:
