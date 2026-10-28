@@ -11613,6 +11613,45 @@
       "license_bytes": 11357,
       "copy_status": "unchanged",
       "conditions": "Preserve the complete original crate archive, including LICENSE.APACHE and LICENSE.MPL; no modifications or relabeling. Either license of the Apache-2.0 OR MPL-2.0 choice permits unchanged redistribution."
+    },
+    {
+      "title": "SCSCP C/C++ library (libscscp)",
+      "authors": [
+        "Mickael Gastineau (IMCCE)"
+      ],
+      "version": "1.0.3",
+      "sha256": "a9d07b26e8f53dc723a521e991ffaa0fa62c7d37202d65919fc0ae391608ae1a",
+      "bytes": 894717,
+      "retrieved_at_utc": "2026-10-28T00:21:46+00:00",
+      "license_identifier": "CECILL-C",
+      "reading_scope": "readme.txt license statement, AUTHORS, and the CeCILL-C and CeCILL v2 license texts; the archive is the build input of the Arch AUR package scscp 1.0.3-2, a Macaulay2 build dependency.",
+      "compatibility": "Builds through the AUR scscp 1.0.3-2 PKGBUILD, whose pinned sha256 matches these bytes",
+      "inspected_files": [
+        {
+          "file": "scscp-1.0.3/readme.txt",
+          "sha256": "b8303c162e6408e27fb456499219a277fd5d9e919cef5a4d060d90d3221092f6",
+          "bytes": 1081
+        },
+        {
+          "file": "scscp-1.0.3/AUTHORS",
+          "sha256": "a30ff374254b209b868ada89d2878f98add091f71c7ce215b5cf9cf8a529003e",
+          "bytes": 39
+        },
+        {
+          "file": "scscp-1.0.3/COPYING_CECILL_V2.LIB",
+          "sha256": "be1261d1841e6cc5b81b6e742eb1d8af4e5d84a5650fb55fdfc2068b8c295b62",
+          "bytes": 21101
+        }
+      ],
+      "path": "docs/source_archives/scscp-1.0.3.tar.gz",
+      "source_url": "https://web.archive.org/web/20230613103250id_/https://www.imcce.fr/content/medias/recherche/equipes/asd/trip/scscp/download/scscp-1.0.3.tar.gz",
+      "original_url": "https://www.imcce.fr/content/medias/recherche/equipes/asd/trip/scscp/download/scscp-1.0.3.tar.gz",
+      "note": "docs/notes/scscp-source-archive.md",
+      "license_member": "scscp-1.0.3/COPYING_CECILL_C.LIB",
+      "license_sha256": "b48f5dc16f144cd79ddaadce3cc8ef183778a0b4f75ab4362e134b347ca20f3d",
+      "license_bytes": 21863,
+      "copy_status": "unchanged",
+      "conditions": "Preserve the complete original source archive, including author credits, copyright and license notices; no modifications or relabeling. The library is dual-licensed CeCILL-C or CeCILL v2.0 at the recipient's choice; this copy is redistributed under CeCILL-C."
     }
   ]
 }
