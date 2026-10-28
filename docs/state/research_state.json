@@ -10914,8 +10914,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-10/result.json",
-          "sha256": "5a14acf6ff2f04ad6e648600a90c3dca8642d4e3c6d9ad6b03766bb3c2a3a0e8"
+          "path": "docs/evidence/algebra-device-conjectures-11/result.json",
+          "sha256": "cb6c5119ea64c64af115556321936dd098f5931d2a8ef1faad20d8e0ec09e904"
         }
       ],
       "gates": {
