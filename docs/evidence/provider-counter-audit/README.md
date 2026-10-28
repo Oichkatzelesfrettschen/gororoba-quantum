@@ -182,4 +182,15 @@ The audit leaves these as named limitations rather than measurements:
 - the source-trigger count of an iteration.
 
 [Perceval issue 798](https://github.com/Quandela/Perceval/issues/798) carries the result-contract questions of the
-teleportation plan.
+teleportation plan, and [Perceval issue 799](https://github.com/Quandela/Perceval/issues/799) the per-job calibration
+requests. They reach these four limitations only in part:
+
+| Limitation | Request that reaches it |
+|---|---|
+| `nb_shots_used` under a filter above one photon | 798 item 3 asks for the definition of `nb_shots_used` in general, not for this case |
+| `physical_perf` | none |
+| gating and dark-count exposure | 798 item 5 and 799 item 3 ask for per-output background or dark-count rates, not the gating or the exposure window a rate multiplies |
+| source triggers per iteration | 798 item 3 asks for the definition of an eligible trial, not for a per-iteration count |
+
+Neither issue states the audit's reading that `nb_shots_used` counts detection events censored at `max_shots`, so a
+provider answer either confirms that reading or corrects the counter table.
