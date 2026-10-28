@@ -3592,6 +3592,11 @@
   "mutation_endpoint": "Delta_control = D(LaLb) - D(Lab) on the control block",
   "detection_sigmas": 5,
   "mutation_tolerance": 0.05,
+  "closure_endpoint": "C = Delta + 2 mean(D_control): the control block's D is -f(V) for every V, so C = 0 for every visibility and a departure is route- or mesh-dependent error",
+  "closure_tolerance": 0.05,
+  "compensated_contrast": "Delta / (-2 mean D_control), 1 for every V under the two-photon mixture",
+  "in_situ_visibility": "V_eff = 1.5 f / (1 + 0.5 f) with f = -mean D_control, compared with the HOM read",
+  "hom_comparison": "descriptive: |Delta - Delta_pred(V_HOM)| with the HOM read's tolerance calibration_tolerance; no decision, since HOM visibility differs from the photon overlap through g2",
   "calibration_tolerance": 0.05,
   "visibility_model": "Delta_pred = 2 V / (V + 1.5 (1 - V)), V the HOM fraction read at submission",
   "interpretation": "two-photon interference realisation of the octonion associator on the compiled mesh"

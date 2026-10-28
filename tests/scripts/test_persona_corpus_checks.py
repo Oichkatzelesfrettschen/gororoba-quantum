@@ -79,3 +79,42 @@ def test_ascella_associator_shows_only_through_two_photon_interference() -> None
     result = claims.ascella_two_photon_associator()
     if result["route_difference_ideal"] != 2.0 or result["route_difference_control"] != 0.0:
         raise AssertionError(f"route differences {result}")
+
+
+def test_corpus_linear_pairing_contradicts_itself_and_the_hermitian_one_agrees() -> None:
+    result = claims.corpus_pairing_sign()
+    if (result["linear_word"], result["linear_state"]) != ("-2*k", "2*k"):
+        raise AssertionError(f"pairing {result}")
+
+
+def test_quaternion_encoding_carries_the_sl2_bracket_into_the_order_interferometer() -> None:
+    if claims.quaternion_order_bridge()["angle_pairs_checked"] != 3:
+        raise AssertionError("order-interferometer bridge")
+
+
+def test_octonion_gammas_generate_cl8_and_sedenions_fail_on_zero_divisor_pairs() -> None:
+    result = claims.octonion_clifford()
+    if result["failing_pairs_by_dimension"] != {"8": 0, "16": 42}:
+        raise AssertionError(f"Clifford failures {result}")
+
+
+def test_associator_columns_are_characters_with_trivial_mutations() -> None:
+    result = claims.associator_characters()
+    if result != {"octonion_pairs_nontrivial": 21, "cl03_trivial": True, "a_equals_b_trivial": True}:
+        raise AssertionError(f"associator characters {result}")
+
+
+@pytest.mark.audit
+def test_jordan_table_matches_the_sage_checked_albert_product() -> None:
+    if claims.albert_table_cross_check()["pairs_checked"] != 729:
+        raise AssertionError("Albert cross-check")
+
+
+def test_two_decompositions_reconcile_to_derived_values() -> None:
+    result = claims.decomposition_reconciliation()
+    estimates, derived = result["field_gravity_estimates_over_1m"], result["field_gravity_derived_over_1m"]
+    if not (isinstance(estimates, list) and isinstance(derived, float) and estimates[0] < derived < estimates[1]):
+        raise AssertionError(f"gravity coefficient {result}")
+    peak, average = result["peak_power_instantaneous_W"], result["peak_power_cycle_average_W"]
+    if not (isinstance(peak, float) and isinstance(average, float)) or abs(peak / (2 * average) - 1) > 1e-12:
+        raise AssertionError("instantaneous and averaged power")

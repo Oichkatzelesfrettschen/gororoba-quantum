@@ -72,6 +72,7 @@ CORPUS_VEV_GEV = 1e20  # "v ~ Planck mass/alpha_EM ~ 10^20 GeV"
 CORPUS_SCALAR_MASS_EV = 1e-3
 CORPUS_QUARTIC = (0.1, 1.0)  # "lambda ... ~ 0.1 - 1.0"
 CORPUS_ZPE_DENSITY = 1e9  # "rho_ZPE ~ 10^9 J/m^3 (check) CONSISTENT"
+CORPUS_FIELD_ENERGY_J_M3 = 1e9  # "E_field ~ 10^13 V/m -> energy density ~ 10^9 J/m^3"
 HIGGS_GEV = 125.0
 IMMIRZI = 0.2375
 CORPUS_LATTICE_M = 2.7e-35  # "a_lattice = l_Planck sqrt(8 pi gamma) ~ 2.7 x 10^-35 m"
@@ -1119,6 +1120,251 @@ def ascella_two_photon_associator(visibility: float = ASCELLA_HOM_VISIBILITY) ->
     return out
 
 
+def corpus_pairing_sign() -> dict[str, object]:
+    """The corpus's linear pairing (J^a_n u, v) = (u, J^a_-n v) is not well defined; the Hermitian adjoint is.
+
+    In the Chevalley basis the corpus's rule sends e_n to e_-n. The state h_0 e_-1|0> equals 2 e_-1|0>, yet pairing
+    it with f_-1|0> through the word gives <0|e_1 h_0 f_-1|0> = -2k while the reduced state gives +2k: the map is
+    no anti-automorphism. The adjoint e <-> f, which sugawara_sl2 uses, gives 2k on both routes when the same state is
+    paired with e_-1|0>.
+    """
+    word = affine_vev((("e", 1), ("h", 0), ("f", -1)))
+    state = 2 * affine_vev((("e", 1), ("f", -1)))
+    require(sp.simplify(word + state) == 0 and state != 0, "the linear pairing no longer contradicts itself")
+    # Paired with e_-1|0>, whose adjoint e <-> f gives the nonzero <0|f_1 e_-1|0> = k, so a wrong sign would show.
+    hermitian_word = affine_vev((("f", 1), ("h", 0), ("e", -1)))
+    hermitian_state = 2 * affine_vev((("f", 1), ("e", -1)))
+    require(hermitian_state != 0, "the Hermitian check pairs vanishing matrix elements")
+    require(sp.simplify(hermitian_word - hermitian_state) == 0, "the Hermitian pairing is inconsistent")
+    return {"linear_word": str(word), "linear_state": str(state), "hermitian_both_routes": str(hermitian_state)}
+
+
+def _dark_law_holds(angles: tuple[float, float]) -> bool:
+    """At (theta, phi), the order interferometer's dark probability equals ||[A, B]||^2/8 = sin^2 theta sin^2 phi."""
+    from hypercomplex_operators import order_interferometer, quaternion_matrix
+
+    theta, phi = angles
+    a = math.cos(theta) * np.eye(2) + math.sin(theta) * quaternion_matrix([0.0, 1.0, 0.0, 0.0])
+    b = math.cos(phi) * np.eye(2) + math.sin(phi) * quaternion_matrix([0.0, 0.0, 1.0, 0.0])
+    dark = float(np.sum(np.abs(order_interferometer(theta, phi)[2:, 0]) ** 2))
+    bracket = float(np.linalg.norm(a @ b - b @ a) ** 2 / 8)
+    return abs(dark - bracket) < 1e-12 and abs(dark - (math.sin(theta) * math.sin(phi)) ** 2) < 1e-12
+
+
+def quaternion_order_bridge() -> dict[str, object]:
+    """The quaternion encoding of the Ascella order interferometer carries the corpus's sl(2) bracket.
+
+    hypercomplex_operators.quaternion_matrix sends i, j, k to I = i sigma_3, J = i sigma_2 and K = IJ = i sigma_1, so
+    H = -iI, E = (J - iK)/2, F = -(J + iK)/2, and [I, J] = 2K is [H, E] = 2E in the compact real form. The
+    interferometer's dark probability is ||[A, B]||_F^2 / 8 = sin^2(theta) sin^2(phi), the squared bracket coefficient.
+    """
+    from hypercomplex_operators import quaternion_matrix
+
+    s1 = np.array([[0, 1], [1, 0]], dtype=complex)
+    s2 = np.array([[0, -1j], [1j, 0]])
+    s3 = np.array([[1, 0], [0, -1]], dtype=complex)
+    h, e, f = s3, np.array([[0, 1], [0, 0]], dtype=complex), np.array([[0, 0], [1, 0]], dtype=complex)
+    qi, qj, qk = (quaternion_matrix(v) for v in ([0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]))
+    require(np.allclose(qi, 1j * s3) and np.allclose(qj, 1j * s2) and np.allclose(qk, 1j * s1), "chi(i, j, k)")
+    require(np.allclose(qi @ qj - qj @ qi, 2 * qk), "[I, J] != 2K")
+    chevalley = np.allclose(-1j * qi, h) and np.allclose((qj - 1j * qk) / 2, e) and np.allclose(-(qj + 1j * qk) / 2, f)
+    require(chevalley, "H, E, F are not the stated combinations of I, J, K")
+    angles = [(math.pi / 4, math.pi / 4), (0.3, -1.1), (1.2, 0.7)]
+    require(all(parallel.ordered_map(_dark_law_holds, angles)), "dark probability != ||[A, B]||^2 / 8")
+    return {"I, J, K": "i sigma_3, i sigma_2, i sigma_1", "dark": "||[A, B]||^2 / 8", "angle_pairs_checked": 3}
+
+
+def _clifford_failures(dim: int) -> int:
+    """Number of index pairs a <= b whose gammas break {Gamma_a, Gamma_b} = 2 delta_ab at this dimension.
+
+    At 8 dimensions it also requires the chirality split 16 = 8_s + 8_c; at 16 it requires the failing pairs to be
+    the index pairs of cd_core.sedenion_zero_divisor_corpus.
+    """
+    from cd_core import sedenion_zero_divisor_corpus
+
+    left = cd_table(dim).transpose(0, 2, 1)  # left[a][r, q] = coefficient of e_r in e_a e_q
+    conj = left * np.array([1] + [-1] * (dim - 1), dtype=np.int64)[:, None, None]
+    gammas = np.zeros((dim, 2 * dim, 2 * dim), dtype=np.int64)
+    gammas[:, :dim, dim:], gammas[:, dim:, :dim] = left, conj
+    product = np.einsum("aij,bjk->abik", gammas, gammas)
+    target = 2 * np.einsum("ab,ik->abik", np.eye(dim, dtype=np.int64), np.eye(2 * dim, dtype=np.int64))
+    bad = np.any(product + product.transpose(1, 0, 2, 3) != target, axis=(2, 3))
+    failing = {(int(a), int(b)) for a, b in np.argwhere(np.triu(bad))}
+    if dim == 8:
+        chirality = np.linalg.multi_dot(list(gammas))
+        sign = int(chirality[0, 0])
+        split = np.diag(np.array([sign] * 8 + [-sign] * 8, dtype=np.int64))
+        require(not failing and np.array_equal(chirality, split), "octonion gammas fail Cl(8) or 16 = 8_s + 8_c")
+    else:
+        divisors = {(i, j) for i, j, *_ in sedenion_zero_divisor_corpus()}
+        require(failing == divisors, "sedenion Clifford failures differ from the zero-divisor index pairs")
+    return len(failing)
+
+
+def octonion_clifford() -> dict[str, object]:
+    """Gamma_a = [[0, L_a], [L_conj(a), 0]] generates Cl(8) on the octonions; at 16 dimensions it fails on 42 pairs.
+
+    The relation needs L_a L_conj(b) + L_b L_conj(a) = 2 delta_ab, which alternativity gives at 8 dimensions. On the
+    sedenions the failing index pairs are exactly those of cd_core.sedenion_zero_divisor_corpus. Every pair is
+    tested at once as one integer array.
+    """
+    failures = dict(zip(("8", "16"), parallel.ordered_map(_clifford_failures, [8, 16]), strict=True))
+    return {"failing_pairs_by_dimension": failures, "sedenion_failures_are_zero_divisor_pairs": True}
+
+
+def _clifford_sign(a: int, b: int) -> int:
+    """Sign of e_A e_B in Cl(0,3), blades indexed by bit masks: reordering swaps, times -1 per shared generator."""
+    swaps = sum(bin(a >> (i + 1)).count("1") for i in range(3) if b >> i & 1)
+    return (-1) ** (swaps + bin(a & b).count("1"))
+
+
+def _column_signs(table: np.ndarray) -> np.ndarray:
+    """s[a, b, x] with (e_a e_b) e_x = s e_a (e_b e_x), for an 8 x 8 basis sign table, over all a, b, x at once."""
+    a, b, x = np.meshgrid(np.arange(8), np.arange(8), np.arange(8), indexing="ij")
+    return table[a, b] * table[a ^ b, x] * table[b, x] * table[a, b ^ x]
+
+
+def associator_characters() -> dict[str, object]:
+    """Column signs s(x) with (e_a e_b) e_x = s(x) e_a (e_b e_x) over the eight octonion basis columns.
+
+    Every pair of distinct imaginary units gives a nontrivial character of F_2^3 whose kernel is the quaternion
+    subalgebra {0, a, b, a ^ b}. The associative Cl(0,3) sign table on the same index set and a = b (alternativity)
+    give the trivial character, so they are mutation arms of a sign interferometer on eight modes; no quaternionic
+    pair can be one, because two distinct units generate a quaternion subalgebra that four columns leave. All 64
+    ordered pairs are evaluated as one array.
+    """
+    index = np.arange(8)
+    octonion = _column_signs(cd_table(8)[index[:, None], index[None, :], index[:, None] ^ index[None, :]])
+    clifford = _column_signs(np.array([[_clifford_sign(p, q) for q in range(8)] for p in range(8)], dtype=np.int64))
+    character = octonion[:, :, :, None] * octonion[:, :, None, :] == octonion[:, :, index[:, None] ^ index[None, :]]
+    a, b, x = np.meshgrid(index, index, index, indexing="ij")
+    in_kernel = (x == 0) | (x == a) | (x == b) | (x == (a ^ b))
+    distinct = (a != b) & (a > 0) & (b > 0)
+    require(bool(np.all(character[distinct[:, :, 0]])), "an octonion pair's column signs are not a character")
+    require(bool(np.array_equal((octonion == 1)[distinct[:, :, 0]], in_kernel[distinct[:, :, 0]])), "kernel != H")
+    require(bool(np.all(clifford == 1)), "the Cl(0,3) mutation carries a nontrivial associator character")
+    require(bool(np.all(octonion[index, index] == 1)), "a = b carries a nontrivial associator character")
+    pairs = int(np.count_nonzero(np.triu(distinct[:, :, 0])))
+    return {"octonion_pairs_nontrivial": pairs, "cl03_trivial": True, "a_equals_b_trivial": True}
+
+
+ALBERT_CHECK = ROOT / "docs/notes/packages/manual/checks/albert_algebra.py"
+
+
+def _albert_reference_pair(pair: tuple[int, int]) -> list[Fraction]:
+    """2 B_i o B_j from albert_algebra.py's Fraction product, which is checked against SageMath."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("albert_algebra_check", ALBERT_CHECK)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"cannot load {ALBERT_CHECK}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    i, j = pair
+    return [2 * v for v in module.flatten(module.jordan(8, module.basis_element(i), module.basis_element(j)))]
+
+
+def albert_table_cross_check() -> dict[str, int]:
+    """jordan_double_product(8) against albert_algebra.py on all 729 basis pairs, through the signed slot map.
+
+    albert_algebra.py stores (alpha, beta, gamma, x, y, z) with x at (0,1), y at (0,2) and z at (1,2); here the slots
+    are (0,1), (1,2) and (2,0). So slot (1,2) is z, and slot (2,0) holds w with y = conj(w).
+    """
+    table = jordan_double_product(8)
+    # Basis element k here is sign[k] times albert_algebra.py's element target[k].
+    target = list(range(11)) + list(range(19, 27)) + list(range(11, 19))
+    sign = [1] * 19 + [1] + [-1] * 7
+    pairs = list(itertools.product(range(27), repeat=2))
+    values = [v for row in parallel.ordered_map(_albert_reference_pair, pairs) for v in row]
+    require(all(v.denominator == 1 for v in values), "a doubled reference product is not integral")
+    reference = np.array([int(v) for v in values], dtype=np.int64).reshape(27, 27, 27)
+    target_index, sign_vector = np.array(target), np.array(sign, dtype=np.int64)
+    here = np.zeros_like(table)
+    here[:, :, target_index] = table * sign_vector
+    expected = np.outer(sign_vector, sign_vector)[:, :, None] * reference[np.ix_(target_index, target_index)]
+    mismatches = int(np.count_nonzero(np.any(here != expected, axis=2)))
+    require(mismatches == 0, f"{mismatches} Jordan products differ from albert_algebra.py")
+    return {"pairs_checked": len(pairs)}
+
+
+LIGO_STRAIN = 1e-23  # order of the design strain sensitivity near 100 Hz
+
+
+def decomposition_reconciliation() -> dict[str, object]:
+    """Quantities that two independent decompositions of the corpus first stated with different definitions.
+
+    Each is recomputed from its definition here, so the note can state which definition gives which number.
+    - Peak power: a wave of field amplitude E carries the instantaneous peak flux c eps0 E^2 and the cycle average
+      half of it; the corpus's own formula eps0 E^2 c A is the instantaneous peak.
+    - Field gravity: linearised GR with the traceless electromagnetic stress gives the active density
+      (u + p_1 + p_2 + p_3)/c^2 = 2u/c^2. A uniform sphere of radius R then has
+      Phi(0) - Phi(R) = -(2 pi/3) G (2u/c^2) R^2, so h_00 differs between centre and surface by (8 pi/3) G u R^2/c^4.
+      The coefficients 2 and 8 pi of the earlier order estimates bracket it.
+    - Casimir modulation: the corpus names three lattice spacings; Gaussian surface roughness sigma multiplies
+      cos(2 pi d/a) by exp(-2 pi^2 sigma^2/a^2) at every one of them.
+    - Strong-field dispersion: (k l_P)^2 bounds the corpus's term when its alpha and E/E_S are at most 1; at the
+      corpus's own laser field the factor (E/E_S)^2 lowers it further.
+    """
+    fields = fields_and_powers()
+    instantaneous = EPS0 * CORPUS_FIELD_V_M**2 * C * CORPUS_AREA_M2
+    require(close(instantaneous, 2 * fields["peak_power_W"], 1e-12), "instantaneous peak != twice the cycle average")
+
+    def sphere_strain(density: float, radius: float) -> float:
+        return 8 * math.pi / 3 * G * density * radius**2 / C**4
+
+    field_density = EPS0 * CORPUS_FIELD_V_M**2 / 2
+    derived = sphere_strain(field_density, 1.0)
+    lower, upper = 2 * G * field_density / C**4, 8 * math.pi * G * field_density / C**4
+    require(lower < derived < upper, "the derived gravity coefficient leaves the two estimates' bracket")
+    laser_density = CORPUS_LASER_W_CM2 * 1e4 / C
+    laser_strain = sphere_strain(laser_density, 1e-5)
+    require(laser_strain / LIGO_STRAIN < 1e-15, "laser-focus strain within 15 decades of LIGO")
+
+    planck_length = planck()["length_m"]
+    spacings = {
+        "planck_length": planck_length,
+        "corpus_2.7e-35": CORPUS_LATTICE_M,
+        "l_P_sqrt(8_pi_gamma)": loop_quantum_gravity()["lattice_length_m"],
+    }
+    roughness = 1e-10
+    casimir = {
+        name: {
+            "periods_per_nm": 1e-9 / a,
+            "log10_modulation_after_0.1nm_roughness": -2 * math.pi**2 * (roughness / a) ** 2 / math.log(10),
+        }
+        for name, a in spacings.items()
+    }
+    require(all(v["log10_modulation_after_0.1nm_roughness"] < -1e49 for v in casimir.values()), "Casimir modulation")
+
+    laser = fields["laser_field_V_m"]
+    schwinger = M_E**2 * C**3 / (E_CHARGE * HBAR)
+    bound = (2 * math.pi / 500e-9 * planck_length) ** 2
+    at_laser = ALPHA * (laser / schwinger) ** 2 * bound
+    require(at_laser < bound < 1e-55, "dispersion bound ordering")
+
+    planck_gev = math.sqrt(HBAR * C / G) * C**2 / GEV
+    vev = planck_gev / ALPHA
+    field_energy_ratio = field_density / CORPUS_FIELD_ENERGY_J_M3
+    shift_coefficient = 3 * ALPHA / (45 * math.pi) / schwinger**2 * EPS0 / 2  # Euler-Heisenberg shift = coef E^4
+    threshold = (CORPUS_VACUUM_DENSITY_BOUND / shift_coefficient) ** 0.25
+    require(threshold < CORPUS_VACUUM_FIELD_V_M, "the stated threshold is not above the Euler-Heisenberg crossing")
+    return {
+        "peak_power_instantaneous_W": instantaneous,
+        "peak_power_cycle_average_W": fields["peak_power_W"],
+        "field_gravity_derived_over_1m": derived,
+        "field_gravity_estimates_over_1m": [lower, upper],
+        "laser_focus_strain": laser_strain,
+        "laser_focus_strain_over_ligo": laser_strain / LIGO_STRAIN,
+        "casimir_by_spacing": casimir,
+        "dispersion_bound_500nm": bound,
+        "dispersion_at_corpus_laser_500nm": at_laser,
+        "vev_planck_mass_over_alpha_GeV": vev,
+        "vev_over_corpus": vev / CORPUS_VEV_GEV,
+        "field_energy_over_corpus": field_energy_ratio,
+        "euler_heisenberg_field_for_corpus_bound_V_m": threshold,
+    }
+
+
 SECTIONS: dict[str, Callable[..., object]] = {
     "sl2": sl2_brackets,
     "e8": e8_structure,
@@ -1143,6 +1389,12 @@ SECTIONS: dict[str, Callable[..., object]] = {
     "spin_up_profiles": spin_up_profiles,
     "algebra_rechecks": algebra_rechecks,
     "ascella_two_photon_associator": ascella_two_photon_associator,
+    "corpus_pairing_sign": corpus_pairing_sign,
+    "quaternion_order_bridge": quaternion_order_bridge,
+    "octonion_clifford": octonion_clifford,
+    "associator_characters": associator_characters,
+    "albert_table_cross_check": albert_table_cross_check,
+    "decomposition_reconciliation": decomposition_reconciliation,
 }
 
 

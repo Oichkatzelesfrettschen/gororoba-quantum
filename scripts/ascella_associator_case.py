@@ -65,6 +65,8 @@ BODY_TOLERANCE = 1e-9
 # Decision constants the design document preregisters.
 MUTATION_TOLERANCE = 0.05
 CALIBRATION_TOLERANCE = 0.05
+# |Delta + 2 mean D_control| tolerance: the control block measures the same visibility factor f(V) in the job.
+CLOSURE_TOLERANCE = 0.05
 DETECTION_SIGMAS = 5
 
 
@@ -219,6 +221,13 @@ def documents() -> dict[str, bytes]:
             "mutation_endpoint": "Delta_control = D(LaLb) - D(Lab) on the control block",
             "detection_sigmas": DETECTION_SIGMAS,
             "mutation_tolerance": MUTATION_TOLERANCE,
+            "closure_endpoint": "C = Delta + 2 mean(D_control): the control block's D is -f(V) for every V, so C = 0 "
+            "for every visibility and a departure is route- or mesh-dependent error",
+            "closure_tolerance": CLOSURE_TOLERANCE,
+            "compensated_contrast": "Delta / (-2 mean D_control), 1 for every V under the two-photon mixture",
+            "in_situ_visibility": "V_eff = 1.5 f / (1 + 0.5 f) with f = -mean D_control, compared with the HOM read",
+            "hom_comparison": "descriptive: |Delta - Delta_pred(V_HOM)| with the HOM read's tolerance "
+            "calibration_tolerance; no decision, since HOM visibility differs from the photon overlap through g2",
             "calibration_tolerance": CALIBRATION_TOLERANCE,
             "visibility_model": "Delta_pred = 2 V / (V + 1.5 (1 - V)), V the HOM fraction read at submission",
             "interpretation": "two-photon interference realisation of the octonion associator on the compiled mesh",
@@ -293,7 +302,8 @@ def analyze(run: Path) -> dict[str, Any]:
     results = json.loads((run / "results.json").read_text())
     entries = results.get("iterations") or []
     tallies: dict[str, dict[str, list[int]]] = {b: {"LaLb": [0, 0, 0], "Lab": [0, 0, 0]} for b in PAIRS}
-    excluded = 0
+    excluded = {"three_or_more_clicks": 0, "two_clicks_outside_block": 0, "fewer_than_two_clicks": 0}
+    accepted = 0
     counted = {block: 0 for block in PAIRS}
     for setting, entry in zip(manifest["settings"], entries, strict=False):
         counts = entry.get("counts") if isinstance(entry, dict) else None
@@ -305,13 +315,28 @@ def analyze(run: Path) -> dict[str, Any]:
             occupation = [int(c) for c in state.strip("|>").split(",")]
             occupied = [m for m, n in enumerate(occupation) if n > 0]
             if len(occupied) != 2 or max(occupied) >= LOGICAL:
-                excluded += count
+                cause = (
+                    "three_or_more_clicks"
+                    if len(occupied) > 2
+                    else "two_clicks_outside_block"
+                    if len(occupied) == 2
+                    else "fewer_than_two_clicks"
+                )
+                excluded[cause] += count
                 continue
+            accepted += count
             pair = f"{occupied[0]}{occupied[1]}"
             tally[0] += count if pair in PLUS_PAIRS else 0
             tally[1] += count if pair in MINUS_PAIRS else 0
             tally[2] += count
-    out: dict[str, Any] = {"excluded_events": excluded}
+    out: dict[str, Any] = {
+        "excluded_events": sum(excluded.values()),
+        "excluded_by_cause": excluded,
+        "accepted_two_click_events": accepted,
+        "multiphoton_estimate": multiphoton_estimate(
+            excluded["three_or_more_clicks"], accepted, submission_perf(run, "Transmittance (%)")
+        ),
+    }
     for block, routes in tallies.items():
         # A block decides only when all four ABBA iterations returned counts; a partial block stays descriptive.
         out[f"{block}_counted_iterations"] = counted[block]
@@ -336,42 +361,86 @@ def analyze(run: Path) -> dict[str, Any]:
     return out
 
 
-def submission_visibility(run: Path) -> float | None:
-    """The HOM fraction submission.json recorded at plan time (perfs_at_plan["HOM (%)"] / 100), else None."""
+def submission_perf(run: Path, name: str) -> float | None:
+    """A percentage submission.json recorded at plan time (perfs_at_plan[name] / 100), else None."""
     path = run / "submission.json"
     if not path.exists():
         return None
-    hom = json.loads(path.read_text()).get("perfs_at_plan", {}).get("HOM (%)")
-    if isinstance(hom, bool) or not isinstance(hom, int | float) or not 0 < hom <= 100:
+    value = json.loads(path.read_text()).get("perfs_at_plan", {}).get(name)
+    if isinstance(value, bool) or not isinstance(value, int | float) or not 0 < value <= 100:
         return None
-    return float(hom) / 100
+    return float(value) / 100
+
+
+def submission_visibility(run: Path) -> float | None:
+    """The HOM fraction submission.json recorded at plan time (perfs_at_plan["HOM (%)"] / 100), else None."""
+    return submission_perf(run, "HOM (%)")
+
+
+def multiphoton_estimate(three_click: int, accepted: int, transmittance: float | None) -> dict[str, Any] | None:
+    """Model estimate, not a bound, of accepted two-click events that come from three-photon emission.
+
+    With independent per-photon transmittance eta, a three-photon event leaves exactly two detected photons
+    3 (1 - eta)/eta times as often as three, so that multiple of the three-click count estimates the lossy events
+    inside the accepted sample. Threshold detectors merge bunched photons, which this model ignores, and loss
+    that is correlated between photons breaks it; the estimate therefore carries no decision.
+    """
+    if transmittance is None or accepted == 0:
+        return None
+    ratio = 3 * (1 - transmittance) / transmittance
+    return {
+        "transmittance": transmittance,
+        "lossy_per_three_click": ratio,
+        "estimated_lossy_events": ratio * three_click,
+        "estimated_share_of_accepted": ratio * three_click / accepted,
+        "model": "independent per-photon loss; bunching on threshold detectors ignored; descriptive",
+    }
+
+
+def visibility_from_contrast(f: float) -> float:
+    """Inverse of f(V) = V / (V + 1.5 (1 - V)): V = 1.5 f / (1 + 0.5 f)."""
+    return 1.5 * f / (1 + 0.5 * f)
 
 
 def decisions(record: dict[str, Any], visibility: float | None) -> dict[str, Any]:
-    """The design's two preregistered decisions; either stays undecided when its inputs are missing or a block it
-    needs lacks any of its four ABBA iterations.
+    """The design's two preregistered decisions and the descriptive HOM comparison.
 
     Associator realised: Delta > DETECTION_SIGMAS se and |Delta_control| <= max(MUTATION_TOLERANCE, 3 se_control).
-    Calibration sufficient: |Delta - Delta_pred(V)| <= max(CALIBRATION_TOLERANCE, 3 se), V the submission HOM.
+    Visibility closure: |Delta + 2 mean D_control| <= max(CLOSURE_TOLERANCE, 3 se). Both control routes measure
+    -f(V), so the closure holds at every photon overlap and needs no HOM figure; it uses both complete blocks. A
+    decision stays undecided when a block it needs lacks any of its four ABBA iterations. The HOM comparison
+    |Delta - Delta_pred(V_HOM)| is descriptive.
     """
     associator, control = record.get("associator", {}), record.get("control", {})
     complete = {block: record.get(f"{block}_counted_iterations") == len(ROUTE_ORDER) for block in PAIRS}
-    out: dict[str, Any] = {"visibility": visibility, "complete_blocks": complete}
-    if not (complete["associator"] and complete["control"]) or None in (associator.get("Delta"), control.get("Delta")):
+    out: dict[str, Any] = {"visibility_hom": visibility, "complete_blocks": complete}
+    both = complete["associator"] and complete["control"]
+    if not both or None in (associator.get("Delta"), control.get("Delta")):
         out["associator_realised"] = "undecided"
+        out["visibility_closure"] = "undecided"
     else:
         detected = associator["Delta"] > DETECTION_SIGMAS * associator["se"]
         null = abs(control["Delta"]) <= max(MUTATION_TOLERANCE, 3 * control["se"])
         out["associator_realised"] = detected and null
-    if not complete["associator"] or associator.get("Delta") is None or visibility is None:
-        out["calibration_sufficient"] = "undecided"
-        out["Delta_predicted"] = None
-    else:
+        first, second = control["routes"]["LaLb"], control["routes"]["Lab"]
+        mean_control = (first["D"] + second["D"]) / 2
+        closure = associator["Delta"] + 2 * mean_control
+        closure_se = math.sqrt(associator["se"] ** 2 + first["se"] ** 2 + second["se"] ** 2)
+        out["closure"] = closure
+        out["closure_se"] = closure_se
+        out["visibility_closure"] = abs(closure) <= max(CLOSURE_TOLERANCE, 3 * closure_se)
+        out["compensated_contrast"] = associator["Delta"] / (-2 * mean_control) if mean_control < 0 else None
+        out["in_situ_visibility"] = visibility_from_contrast(-mean_control) if mean_control < 0 else None
+    if complete["associator"] and associator.get("Delta") is not None and visibility is not None:
         predicted = predicted_difference(visibility)
-        out["Delta_predicted"] = predicted
-        departure = abs(associator["Delta"] - predicted)
-        out["calibration_departure"] = departure
-        out["calibration_sufficient"] = departure <= max(CALIBRATION_TOLERANCE, 3 * associator["se"])
+        out["hom_comparison"] = {
+            "Delta_predicted": predicted,
+            "departure": abs(associator["Delta"] - predicted),
+            "within_tolerance": abs(associator["Delta"] - predicted)
+            <= max(CALIBRATION_TOLERANCE, 3 * associator["se"]),
+        }
+    else:
+        out["hom_comparison"] = None
     return out
 
 
