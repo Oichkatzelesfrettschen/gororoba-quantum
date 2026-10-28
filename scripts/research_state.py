@@ -76,6 +76,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import iqm_jobs  # noqa: E402
+import plan_records  # noqa: E402
 import qd_platform  # noqa: E402
 import qi_platform  # noqa: E402
 
@@ -754,9 +755,12 @@ def validate(registry: dict[str, Any], context: Context) -> None:
                 isinstance(item, dict) and set(item) == {"path", "sha256"},
                 f"{owner}: evidence entries carry path and sha256",
             )
-            path = ROOT / item["path"]
+            path = ROOT / evidence_file(item["path"])
             require(path.is_file(), f"{owner}: evidence {item['path']} is missing")
-            require(context.digest(path) == item["sha256"], f"{owner}: evidence {item['path']} digest differs")
+            # A FILE.json#COLLECTION/FIELD=VALUE entry binds the digest of the one record it selects, so a record
+            # appended to a shared ledger leaves the claim's evidence unchanged.
+            found = plan_records.evidence_digest(ROOT, item["path"]) if "#" in item["path"] else context.digest(path)
+            require(found == item["sha256"], f"{owner}: evidence {item['path']} digest differs")
         for document in claim["documents"]:
             require((ROOT / document).is_file(), f"{owner}: document {document} is missing")
         gates = claim.setdefault("gates", {})
@@ -853,6 +857,21 @@ def validate(registry: dict[str, Any], context: Context) -> None:
 # Rendering
 
 
+def evidence_file(reference: str) -> str:
+    """The repository file an evidence entry names: its path, without a #COLLECTION/FIELD=VALUE record selector."""
+    return reference.partition("#")[0]
+
+
+def _evidence_links(claim: dict[str, Any], origin: Path) -> list[str]:
+    """One link per evidence file, labeled with the count of records a claim binds in it."""
+    files = Counter(evidence_file(item["path"]) for item in claim["evidence"])
+    records = Counter(evidence_file(item["path"]) for item in claim["evidence"] if "#" in item["path"])
+    return [
+        _link(name, origin, Path(name).name + (f" ({records[name]} records)" if records[name] else ""))
+        for name in files
+    ]
+
+
 def _link(target: str, origin: Path, label: str | None = None) -> str:
     relative = os.path.relpath(ROOT / target, origin.parent)
     return f"[{label or target}]({Path(relative).as_posix()})"
@@ -914,7 +933,7 @@ def _claim_entry(claim: dict[str, Any], origin: Path) -> list[str]:
         lines.append(f"  Proof origin: {claim['proof_origin']}.")
     if claim["assumptions"]:
         lines.append(f"  Assumptions: {'; '.join(claim['assumptions'])}.")
-    sources = [_link(item["path"], origin, Path(item["path"]).name) for item in claim["evidence"]]
+    sources = _evidence_links(claim, origin)
     sources += [_link(document, origin, Path(document).name) for document in claim["documents"]]
     if sources:
         lines.append(f"  Evidence: {', '.join(sources)}.")
@@ -1144,6 +1163,15 @@ def _mutations() -> Iterable[tuple[str, Callable[[dict[str, Any]], None], str]]:
     def altered_evidence(registry: dict[str, Any]) -> None:
         claim(registry, lambda c: bool(c.get("evidence")))["evidence"][0]["sha256"] = "0" * 64
 
+    def altered_record_evidence(registry: dict[str, Any]) -> None:
+        entry = claim(registry, lambda c: any("#" in item["path"] for item in c["evidence"]))
+        next(item for item in entry["evidence"] if "#" in item["path"])["sha256"] = "0" * 64
+
+    def absent_record_evidence(registry: dict[str, Any]) -> None:
+        entry = claim(registry, lambda c: any("#" in item["path"] for item in c["evidence"]))
+        item = next(item for item in entry["evidence"] if "#" in item["path"])
+        item["path"] = evidence_file(item["path"]) + "#jobs/job_id=absent"
+
     def drop_acquisition(registry: dict[str, Any], provider: str) -> None:
         entries = registry["acquisitions"]
         entries.remove([entry for entry in entries if entry["provider"] == provider][-1])
@@ -1249,6 +1277,8 @@ def _mutations() -> Iterable[tuple[str, Callable[[dict[str, Any]], None], str]]:
     yield "kernel receipt outside the pinned evidence", receipt_unpinned, "pinned as evidence"
     yield "unknown gate", unknown_gate, "is not in ci/gates.json"
     yield "altered evidence bytes", altered_evidence, "digest differs"
+    yield "altered record evidence", altered_record_evidence, "digest differs"
+    yield "record evidence selecting no record", absent_record_evidence, "digest differs"
     yield "audited run without an acquisition", missing_run, "run set differs from the retained-run audit"
     yield "Quantum Inspire run without an acquisition", missing_qi_run, "run set differs from the Quantum Inspire"
     yield "acquisition naming an unretained Quantum Inspire run", extra_qi_acquisition, "not a retained Quantum Inspire"
