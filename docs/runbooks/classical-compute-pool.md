@@ -17,14 +17,14 @@ step, like any spend ([provider-credits.md](provider-credits.md)).
 | Kaggle TPU VM | 96 cores (v3-8, documented) | 330 GB (v3-8, documented); the v5e-8 host is unmeasured | TPU only | 9 h | one | 20 TPU-hours a week | the account is identity-verified, but v5e-8 batch sessions queue for hours (one read `QUEUED` 7 h 08 min after its push) and none has started yet; queued time draws no quota ([tpu-research.md](../notes/kaggle/tpu-research.md)) |
 | GitHub Actions, public repository | 4 vCPU | 16 GB | none | 6 h per job | matrix fan-out | free | documented (GitHub hosted-runner reference); allowed offload, logs are public |
 | Azure trial, `Standard_FX4mds_v2` | 4 vCPU | 84 GB | none | until deallocated | one (4-vCPU regional cap) | trial credit by the hour | quota read ([azure/README.md](../notes/azure/README.md)); GPU families have quota 0 |
-| AWS free plan | - | - | - | - | - | credits | `ec2:RunInstances` is denied by the project's policy ([aws/README.md](../notes/aws/README.md)) |
+| AWS free plan, us-east-2 on-demand EC2 | 16 vCPU quota | 128 GiB (`r7i.4xlarge`, 1.0584 USD an hour; `x2iedn.xlarge`, 4 vCPU, 0.8336 USD an hour) | none | until terminated | one 16-vCPU instance | the plan's 100 USD credits | `run-instances --dry-run` succeeds in us-east-2 and fails in every other Region; spot requests are denied ([aws/README.md](../notes/aws/README.md)) |
 | qBraid Lab, included server (Free plan) | 1.8 vCPU limit | 4 GB | none | 100 CPU-hours a month | one subscription server | included | `GET /compute-sessions/usage`, `GET /compute/profiles` ([qbraid/README.md](../notes/qbraid/README.md)); the 25 GB `8vCPU_25GB` server is tagged Pro (100 USD a month) |
 | qBraid on-demand instances | 4 to 96 vCPU | 6 to 384 GB | GPU profiles exist | until stopped | per instance | 15 to 576 credits an hour (100 credits = 1 USD) | the wallet holds 0 credits with auto-recharge off, so none can start without a purchase |
 
 At full fan-out the reachable pool is the build host plus five Kaggle CPU sessions and two Kaggle GPU sessions:
 62 + 5 x 30 + 2 x 29 = 270 GB of RAM in eight separate machines, and 12 + 4 x 15 = 72 GiB of VRAM on five GPUs. The
 largest single address space reachable without a spend case is the build host's 62 GiB plus swap; with a case it is
-the Azure VM's 84 GB; a TPU VM's host RAM is larger once a queued session starts.
+the AWS `r7i.4xlarge`'s 128 GiB; a TPU VM's host RAM is larger once a queued session starts.
 
 ## Access audit
 
@@ -35,7 +35,7 @@ Read 2026-10-28 between 19:30 and 20:10 UTC with each service's own read-only ca
 | Kaggle | GPU 0.07 of 30 h and TPU 0 of 20 h used, both reset 2026-10-31T00:00Z; AI models 1.48 of 10 USD daily (refill 2026-10-29T18:25Z) and of 100 USD monthly | five CPU and two GPU batch sessions; one TPU batch session, queued; Model Proxy tasks on the full catalog |
 | GitHub Actions | the repository is public | standard hosted runners at no cost; logs and artifacts are public |
 | Azure | subscription Enabled; eastus total regional vCPU 0 of 4 used, `StandardFXmdsv2Family` 0 of 4, low-priority 0 of 3 | one 4-vCPU VM, the 84 GB `Standard_FX4mds_v2` the largest, after a spend case |
-| AWS | `aws sts get-caller-identity` fails: the browser session expired | nothing until `aws login --profile gororoba`; instance launch stays denied by policy |
+| AWS | after `aws login` (re-read 20:05 UTC) the identity resolves; in us-east-2 on-demand `run-instances --dry-run` succeeds (on-demand standard quota 16 vCPU) while spot is denied; us-east-1 denies EC2, Lambda, CodeBuild, SageMaker, Batch and ECS by service control policy | one on-demand instance up to 16 vCPU and 128 GiB, after a spend case naming hours and the terminate step |
 | qBraid | tier Free; 0 credits, auto-recharge off; Lab CPU 0 of 100 h (renews 2026-11-10); server stopped; AI 0 of 5 USD (resets 2026-11-18, all models) | the 4 GB included server, started from the Lab web page (the read routes include no start call), and the 5 USD AI allowance |
 
 ## What pooling buys
@@ -60,7 +60,7 @@ Pooling decomposes into four levels, and only the first three work across these 
 | Tool | Build host | Kaggle, GitHub Actions, Azure VM |
 | --- | --- | --- |
 | msolve | Arch package (0.11.0) | `pip install passagemath-msolve==10.8.13`; the wheel ships a standalone `sage_wheels/bin/msolve` (0.10.1) with FLINT, GMP, MPFR and libgomp bundled, run directly |
-| Singular | Arch package (4.4.1) | `pip install passagemath-singular`, or `conda-forge::singular` (4.4.1) through micromamba |
+| Singular | Arch package (4.4.1) | `pip install passagemath-singular==10.8.13`; the wheel ships a standalone `sage_wheels/bin/Singular` (4.4.1) with `primdec.lib` and `matrix.lib`, run directly; or `conda-forge::singular` (4.4.1) through micromamba |
 | FLINT | Arch package; python-flint 0.9.0 | `pip install python-flint` |
 | GPU product and PLUQ | CUDA 13, torch, CuPy | Kaggle T4: torch and CuPy preinstalled; `torch._int_mm` needs `M` a multiple of 32 and `K`, `N` multiples of 16 |
 
@@ -77,11 +77,15 @@ eliminates the first variable.
 | E8-bar to `VB` | msolve 0.11, prime 1073741789, 8 threads | exhausted 24 GiB after 25 min |
 | Iso to `N+`, 18 generators in 24 variables | Singular, split prime, `dp` or direct `eliminate` | no basis in 20 min at 6 GiB |
 | Iso to `N+` | msolve 0.11, prime 32009, 4 threads | degree 8 reached in 3 min; matrix allocation exceeded the 12 GiB cap |
+| E8-bar to `N+`, 21 generators in 31 variables | msolve 0.10.1, prime 32009, Kaggle CPU session | degree 6 complete; exhausted 30 GB at degree 7 (407,116 pairs) after 34 min |
+| W8 to `N+`, 24 generators in 32 variables | msolve 0.10.1, prime 32009, Kaggle CPU session | degree 9 complete; exhausted 30 GB at the degree-10 matrix (3.3M x 11.4M) after 64 min |
+| Iso to `N+`, degree-2 fiber relations by local syzygies (1,072 generators) | Singular, `ds`, prime 32009 | 85-dimensional fiber in degree 2, 68 quadric relations, in 79 s under 0.5 GiB |
+| Iso to `N+`, degree-3 fiber relations by local syzygies (6,784 generators) | Singular, `ds`, prime 32009 | exhausted 12 GiB in `syz` after 15 min |
 
 msolve reaches in minutes the degrees Singular reaches in hours, and its limit is memory. Coefficients below 2^16
 take 16-bit storage, so a prime near 32009 halves the matrix memory of a 30-bit prime such as 1073741789. Each elimination therefore
-goes to the largest single machine free: a Kaggle CPU session (30 GB) first, the Azure VM (84 GB) through a case
-when 30 GB is exhausted.
+goes to the largest single machine free: a Kaggle CPU session (30 GB) first, then through a spend case the AWS
+`r7i.4xlarge` (128 GiB) or the Azure VM (84 GB) when 30 GB is exhausted.
 
 ## Sample optimizations (measured here; yours may vary)
 

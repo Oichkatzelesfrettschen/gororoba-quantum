@@ -24,7 +24,8 @@ and the CLI stay the authority.
 | Plan end | 2027-04-24T18:14Z | same, `accountPlanExpirationDate` |
 | Month-to-date cost | 0 USD | `aws ce get-cost-and-usage` |
 | Region | us-east-2, the project's single Region; the Agent Toolkit service runs in us-east-1 | AWS Settings; [starter rules](aws-starter-rules.md) |
-| Denied by the project's policy | `braket:*` reads and tasks, `ec2:RunInstances` | `aws iam simulate-principal-policy`, observed errors |
+| Denied by the project's policy | `braket:*` reads and tasks; spot instance requests; EC2, Lambda, CodeBuild, SageMaker, Batch and ECS outside us-east-2 | `aws iam simulate-principal-policy`, observed errors |
+| EC2 in us-east-2 | on-demand `run-instances --dry-run` succeeds (read 2026-10-28); on-demand standard quota 16 vCPU | `ec2 run-instances --dry-run`, `service-quotas get-service-quota --quota-code L-1216C47A` |
 
 On the free plan AWS charges nothing: usage draws the credits, and the plan
 ends when they run out or at its expiration date. Charges begin only after
