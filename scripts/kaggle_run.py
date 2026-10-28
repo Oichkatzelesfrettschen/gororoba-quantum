@@ -577,6 +577,21 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     return submission
 
 
+def kaggle_api() -> Any:
+    """An authenticated KaggleApi. The kaggle and kagglesdk distributions sit in the operator's interpreter, outside
+    the CI pins: CI never contacts Kaggle, and `verify` reads retained receipts offline."""
+    try:
+        from kaggle.api.kaggle_api_extended import KaggleApi
+    except ModuleNotFoundError as error:
+        raise SystemExit(
+            f"{sys.executable} lacks the kaggle SDK ({error}); status, collect and accelerator pushes need the "
+            "kaggle and kagglesdk distributions, so run kaggle_run.py under the interpreter that holds them"
+        ) from error
+    api = KaggleApi()
+    api.authenticate()
+    return api
+
+
 def latest_state(ref: str) -> str | None:
     """The KernelWorkerStatus name of the kernel's latest version; None when the account holds no kernel at ref.
 
@@ -584,13 +599,11 @@ def latest_state(ref: str) -> str | None:
     or 404 (the Kaggle CLI's kernels_status reports a 401 or 403 as a wrong
     slug); every other failure raises, so the push that asked refuses.
     """
-    from kaggle.api.kaggle_api_extended import KaggleApi
+    api = kaggle_api()
     from kagglesdk.kernels.types.kernels_api_service import ApiGetKernelSessionStatusRequest
     from requests.exceptions import HTTPError
 
     owner, slug = ref.split("/")
-    api = KaggleApi()
-    api.authenticate()
     request = ApiGetKernelSessionStatusRequest()
     request.user_name = owner
     request.kernel_slug = slug
@@ -1571,11 +1584,9 @@ def download_version(owner: str, slug: str, version: int, target: Path) -> list[
     """
     import urllib.request
 
-    from kaggle.api.kaggle_api_extended import KaggleApi
+    api = kaggle_api()
     from kagglesdk.kernels.types.kernels_api_service import ApiListKernelSessionOutputRequest
 
-    api = KaggleApi()
-    api.authenticate()
     written: list[str] = []
     token: str | None = None
     log: str | None = None
