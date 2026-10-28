@@ -1,0 +1,3589 @@
+{
+ "analysis_dependencies": [
+  {
+   "ref": "scripts/experiment_analysis.py",
+   "sha256": "737504232eeca0e5112df232fe76bcabd198d3bc17b2018c55a1871e846ec3b2"
+  },
+  {
+   "ref": "scripts/qd_platform.py",
+   "sha256": "08941de901160d6f419b51905693d9921e3af34add328a82a5030ac4f55d9178"
+  },
+  {
+   "ref": "scripts/qd_belenos_mesh.py",
+   "sha256": "225e5070a17f2d1114c3c0ef9a23422485da2bc184efd8cbe6e6b181c262392b"
+  }
+ ],
+ "analysis_environment": {
+  "numpy": "2.5.4",
+  "perceval-quandela": "1.3.1",
+  "python": "3.14.8",
+  "scipy": "1.18.1"
+ },
+ "analysis_source_sha256": "3063f1a26626370aed77845f8bb00a2379d6848e5002ea9d62fafbcded652fbd",
+ "campaign_sha256": "a805f0d5969291539839f896e612ecd689f6b54cd8a75a35c61460fa7929ce5b",
+ "cohort_id": "ascella-cancellation-transition-screening",
+ "complete": true,
+ "confidence_family": {
+  "endpoints": 243,
+  "familywise_confidence": 0.95,
+  "includes_missing_settings": true
+ },
+ "jobs": [
+  {
+   "directory": "results/quandela/runs/ascella-sedenion-cancellation-dark",
+   "duration_seconds": 4.0,
+   "sources": [
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/cases.json",
+     "sha256": "71962299f2cb30c1597fe2282f6a1b07a83f11e027942a8b0ad76e4f4b9a591f"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/submission.json",
+     "sha256": "066521dbc0121df39d14968380e1ff31b2bcef16f020e75ac8ee55d42ed8618c"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/job-body.json",
+     "sha256": "f77614008dabaae92c9932e9610783e0e159c8de19327c860dc68fa2c4e9a02d"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/results.json",
+     "sha256": "57d75cc0e87e444c6c49a0e5777799488d47e09f987aa369805ce0ad71c9a8b1"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/raw/result.json",
+     "sha256": "1146fe63bdb9c7edf4c05e18662212c026baa926414c84f3f157f6b0ef403d7b"
+    }
+   ],
+   "status": "collected"
+  },
+  {
+   "directory": "results/quandela/runs/ascella-sedenion-cancellation-bright",
+   "duration_seconds": 4.0,
+   "sources": [
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright/cases.json",
+     "sha256": "a6a6acee80c525a8131cfe3d028d96163a4d0176eaa464f0515f39f634b97a5a"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright/submission.json",
+     "sha256": "98833b55f91f68f96c719031865aef74e817be101a5d4c782b5e67a433261e19"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright/job-body.json",
+     "sha256": "f2d942bc5a47bb97746fdf2e4991f01e42ee603176f5032982f7e6144d915bf2"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright/results.json",
+     "sha256": "d2fd603086f70f596c17e6ed16f790ec48240a6973ac2b4f6d6940b72afc3055"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright/raw/result.json",
+     "sha256": "6667cbde614732311653efc8f1344deb59b1805c8e22c41515cca771ff6314e3"
+    }
+   ],
+   "status": "collected"
+  },
+  {
+   "directory": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat",
+   "duration_seconds": 4.0,
+   "sources": [
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat/cases.json",
+     "sha256": "d6e5deaa84e62e3f0371c55b8ef8672a17e7ec7ca7b5879cb3cc228975cfb251"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat/submission.json",
+     "sha256": "342edb43daf60df5a27772952891543c407a34cd660173e1c5f38f2cf11018d8"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat/job-body.json",
+     "sha256": "17a5074ab70d011a9de9e15b4bb2a41b222fa4afc8b223b6801bbc21a24a65c5"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat/results.json",
+     "sha256": "c44b8e606a1833c1ce395e0a86c4358cbd32eb902a60e39eb8de2e5fa5534818"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat/raw/result.json",
+     "sha256": "471b5e677a340b0f9af197008f766553eef89a27482b39bfecfd26deea52bc5e"
+    }
+   ],
+   "status": "collected"
+  },
+  {
+   "directory": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat",
+   "duration_seconds": 4.0,
+   "sources": [
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat/cases.json",
+     "sha256": "1b9c158847a337f7fefed08b3b0e692f44709e71e0eb02c92610155e50a2ae8e"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat/submission.json",
+     "sha256": "e50e2c848b85a0aaa52c80fab79ba477b79036b3002b3592af63106735ee3121"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat/job-body.json",
+     "sha256": "9b9a1d602affd862f928a3986872fc7aad390d458a2026a40080fd38d0e2dd55"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat/results.json",
+     "sha256": "31baad9a069c2cf31a48d2df2b1de8f96de400149bdb42c672080e98de968540"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat/raw/result.json",
+     "sha256": "39e55e39b7e76dc045f8c63ae266f70462740eb22490de26c99e2bfa645265db"
+    }
+   ],
+   "status": "collected"
+  },
+  {
+   "directory": "results/quandela/runs/ascella-sedenion-cancellation-fixture",
+   "duration_seconds": 4.0,
+   "sources": [
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-fixture/cases.json",
+     "sha256": "a8fe9257e527e5a9a8d5418eb85acd9686e2d10b61367d57d1c2a1879c9197c2"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-fixture/submission.json",
+     "sha256": "ee0b39efb5c69753aa31c7a3df8b61f3a1a19b55d9aa07e0aa630417a2b178be"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-fixture/job-body.json",
+     "sha256": "812a2d1af54a78f9970835525b8f769b0ca1b6c26ec1861d73fd985725be3a95"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-fixture/results.json",
+     "sha256": "346288da849d088aac7dbb3d02d28c3610f2b62aabd1651abc459457b3dea03d"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-sedenion-cancellation-fixture/raw/result.json",
+     "sha256": "cada045a6c0cb3913c07d3ee1591181c8a4cdbb5fba2615aae2b4362f9a4f9b5"
+    }
+   ],
+   "status": "collected"
+  },
+  {
+   "directory": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+   "duration_seconds": 37.0,
+   "sources": [
+    {
+     "ref": "results/quandela/runs/ascella-dimension-six-transition-pilot/cases.json",
+     "sha256": "5c3bb52a1329e983af3c1629b533212883810a8d82bc38c23c3dad58b70b823a"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-dimension-six-transition-pilot/submission.json",
+     "sha256": "0f61ea17fe1fad33492729156c2340e56897aa846332808a014a9a2cb4376307"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-dimension-six-transition-pilot/job-body.json",
+     "sha256": "63e64d59eade9b4b1a676eaf542ee70d599dcd4edea93f419301838b50ad9f07"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-dimension-six-transition-pilot/results.json",
+     "sha256": "ddc3c45df61e786b411e314d02d5f16bf289dde4b4ae8f0217b7e9898cc8b00f"
+    },
+    {
+     "ref": "results/quandela/runs/ascella-dimension-six-transition-pilot/raw/result.json",
+     "sha256": "d4c2e716d0a12f0f936fe6b189e57186b01cebe44107329d565c9b704dfe4ccd"
+    }
+   ],
+   "status": "collected"
+  }
+ ],
+ "qualification": {
+  "cancellation_interface_complete": true,
+  "cancellation_scientific_qualification": "pass",
+  "contrast_estimable": true,
+  "descriptive_dark_minus_bright": -0.9946212768554688,
+  "expansion_boundary": "only the twelve-setting pilot qualifies expansion; cancellation performance is a separate scientific outcome",
+  "full_expansion_eligible": false,
+  "pilot_interface_complete": true,
+  "pilot_qualification": "fail",
+  "pilot_start_eligible": true,
+  "repeat_checks": [
+   {
+    "arm": "dark",
+    "difference_interval": [
+     -0.0017877383165672564,
+     0.0008420780306560383
+    ],
+    "returned_identity_matches": true,
+    "status": "pass"
+   },
+   {
+    "arm": "bright",
+    "difference_interval": [
+     -0.0005031186902914042,
+     0.0028828418474579065
+    ],
+    "returned_identity_matches": true,
+    "status": "pass"
+   }
+  ],
+  "temporal_balance": {
+   "boundary": "execution order does not establish equal shot timing or cancellation of linear drift",
+   "executed_order_established": true,
+   "linear_drift_cancellation": "unassessed"
+  }
+ },
+ "qualification_profile_sha256": "10a966a7af73530a281586e7c32842c8c2fa737b89dd23dd79fbd88c48eda6c4",
+ "schema": "ascella-experiment-analysis-v1",
+ "settings": [
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    64,
+    83,
+    31587,
+    32674,
+    123,
+    49,
+    22,
+    42,
+    247,
+    256,
+    336,
+    40,
+    13
+   ],
+   "category_intervals": [
+    [
+     0.00058702005776543,
+     0.0015141829276962354
+    ],
+    [
+     0.0008143230839795738,
+     0.00186629214275055
+    ],
+    [
+     0.47472980156646727,
+     0.4892341809261682
+    ],
+    [
+     0.4913090130198771,
+     0.5058227518859908
+    ],
+    [
+     0.0013129690418722643,
+     0.0025877184231080114
+    ],
+    [
+     0.0004144764038050524,
+     0.0012294080094949137
+    ],
+    [
+     0.00013214028144741,
+     0.0006891982997617987
+    ],
+    [
+     0.00033688828987802553,
+     0.0010936370565946076
+    ],
+    [
+     0.002944238228739302,
+     0.0047394302842098035
+    ],
+    [
+     0.0030655831055605765,
+     0.004892675224832119
+    ],
+    [
+     0.004155124489855218,
+     0.0062439827463220765
+    ],
+    [
+     0.00031515500316162825,
+     0.001054419904466109
+    ],
+    [
+     5.5094142880454184e-05,
+     0.0004925589891916131
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 0.00032504808245662696,
+     "status": "pass"
+    },
+    "herald": {
+     "detail": [
+      0.0016208578476030343,
+      0.0030119612158479797
+     ],
+     "status": "pass"
+    },
+    "leakage": {
+     "detail": [
+      0.015388422878283875,
+      0.019176437078701068
+     ],
+     "status": "pass"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 15,
+   "execution_envelope": {
+    "lower": 1793144994.566196,
+    "upper": "2026-10-27T23:50:09+00:00"
+   },
+   "herald": {
+    "count": 147,
+    "denominator": 65536,
+    "interval": [
+     0.0016208578476030343,
+     0.0030119612158479797
+    ],
+    "observed": 0.0022430419921875
+   },
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 13,
+    "zero_click": 0
+   },
+   "invalid_events": 13,
+   "iteration_index": 0,
+   "iterator_temporal_order": "single entry within a separate job",
+   "leakage_count": 1128,
+   "leakage_interval": [
+    0.015388422878283875,
+    0.019176437078701068
+   ],
+   "observed_category_probabilities": [
+    0.0009765625,
+    0.0012664794921875,
+    0.4819793701171875,
+    0.498565673828125,
+    0.0018768310546875,
+    0.0007476806640625,
+    0.000335693359375,
+    0.000640869140625,
+    0.0037689208984375,
+    0.00390625,
+    0.005126953125,
+    0.0006103515625,
+    0.0001983642578125
+   ],
+   "observed_to_requested_tv_upper": 0.030182344711041836,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    64,
+    83,
+    31587,
+    32674,
+    123,
+    49,
+    22,
+    42,
+    247,
+    256,
+    336,
+    40
+   ],
+   "pilot_role": "cancellation",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "pass",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "6677d3ceffb56fc452b6fb3b62b559633f5321a02802d8ab473d428204bd04ee",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     8.485521309764905e-09,
+     4.278705965263957e-08,
+     0.5003248991230166,
+     0.499674951917543,
+     7.015709916148164e-08,
+     1.1539095679510181e-08,
+     7.452531701638094e-09,
+     4.886405260146995e-10,
+     1.7262667448021073e-09,
+     1.9917082170738125e-09,
+     4.277068887545921e-09,
+     5.4447806741861175e-11
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.0,
+    0.0,
+    0.5000000000000001,
+    0.5000000000000001,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 0.00032504808245662696,
+   "sequence_position": 0,
+   "setting_id": "sedenion-lcu/dark",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    34412,
+    30864,
+    28,
+    15,
+    27,
+    13,
+    10,
+    13,
+    34,
+    45,
+    45,
+    10,
+    20
+   ],
+   "category_intervals": [
+    [
+     0.5178340301367328,
+     0.5323295708575173
+    ],
+    [
+     0.46370683948877073,
+     0.47819614330681404
+    ],
+    [
+     0.00019005604489624487,
+     0.0008139439759654925
+    ],
+    [
+     7.082554948294016e-05,
+     0.0005376018972909844
+    ],
+    [
+     0.00018014021261956125,
+     0.0007934085996764641
+    ],
+    [
+     5.5094142880454184e-05,
+     0.0004925589891916131
+    ],
+    [
+     3.365287113387481e-05,
+     0.0004229023174145046
+    ],
+    [
+     5.5094142880454184e-05,
+     0.0004925589891916131
+    ],
+    [
+     0.0002513419607241045,
+     0.0009354137391278267
+    ],
+    [
+     0.00036986654248488747,
+     0.0011520927048884948
+    ],
+    [
+     0.00036986654248488747,
+     0.0011520927048884948
+    ],
+    [
+     3.365287113387481e-05,
+     0.0004229023174145046
+    ],
+    [
+     0.00011380586358860191,
+     0.000646674889837055
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 6.597796424949683e-05,
+     "status": "pass"
+    },
+    "herald": {
+     "detail": [
+      0.9950393065232875,
+      0.996880394772646
+     ],
+     "status": "pass"
+    },
+    "leakage": {
+     "detail": [
+      0.0025419940607693797,
+      0.004226386877261851
+     ],
+     "status": "pass"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 15,
+   "execution_envelope": {
+    "lower": 1793145065.924771,
+    "upper": "2026-10-27T23:51:16+00:00"
+   },
+   "herald": {
+    "count": 65276,
+    "denominator": 65536,
+    "interval": [
+     0.9950393065232875,
+     0.996880394772646
+    ],
+    "observed": 0.99603271484375
+   },
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 20,
+    "zero_click": 0
+   },
+   "invalid_events": 20,
+   "iteration_index": 0,
+   "iterator_temporal_order": "single entry within a separate job",
+   "leakage_count": 217,
+   "leakage_interval": [
+    0.0025419940607693797,
+    0.004226386877261851
+   ],
+   "observed_category_probabilities": [
+    0.52508544921875,
+    0.470947265625,
+    0.00042724609375,
+    0.0002288818359375,
+    0.0004119873046875,
+    0.0001983642578125,
+    0.000152587890625,
+    0.0001983642578125,
+    0.000518798828125,
+    0.0006866455078125,
+    0.0006866455078125,
+    0.000152587890625,
+    0.00030517578125
+   ],
+   "observed_to_requested_tv_upper": 0.03824244124681681,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    34412,
+    30864,
+    28,
+    15,
+    27,
+    13,
+    10,
+    13,
+    34,
+    45,
+    45,
+    10
+   ],
+   "pilot_role": "cancellation",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "pass",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "ac0358beee017f710d92a84eb99510d5dc71e6dbc38ce3b44d871719a6bf7440",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     0.49993402203575055,
+     0.5000657968320263,
+     2.1512563920486538e-08,
+     2.0577168922494865e-08,
+     1.655724214536193e-08,
+     3.963867596824753e-08,
+     4.413492176900471e-08,
+     2.966795027755062e-08,
+     1.478567782081307e-11,
+     6.251339929855546e-09,
+     2.755900020808856e-09,
+     2.16745655469697e-11
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.5000000000000001,
+    0.5000000000000001,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 6.597796424949683e-05,
+   "sequence_position": 1,
+   "setting_id": "sedenion-lcu/bright",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    35011,
+    30343,
+    21,
+    27,
+    23,
+    12,
+    4,
+    11,
+    15,
+    27,
+    17,
+    11,
+    14
+   ],
+   "category_intervals": [
+    [
+     0.5269805888138619,
+     0.5414603825993588
+    ],
+    [
+     0.45576579680674933,
+     0.47023984043684364
+    ],
+    [
+     0.00012290304693820172,
+     0.0006680044331806779
+    ],
+    [
+     0.00018014021261956125,
+     0.0007934085996764641
+    ],
+    [
+     0.00014150850936922002,
+     0.0007102652048146781
+    ],
+    [
+     4.7627630385552816e-05,
+     0.0004696506630550813
+    ],
+    [
+     3.5634405502020444e-06,
+     0.00027075413928001195
+    ],
+    [
+     4.0467849327448714e-05,
+     0.0004464444232579103
+    ],
+    [
+     7.082554948294016e-05,
+     0.0005376018972909844
+    ],
+    [
+     0.00018014021261956125,
+     0.0007934085996764641
+    ],
+    [
+     8.746264012822871e-05,
+     0.0005817681745034875
+    ],
+    [
+     4.0467849327448714e-05,
+     0.0004464444232579103
+    ],
+    [
+     6.283568206801878e-05,
+     0.0005152006841164497
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 6.597796424949683e-05,
+     "status": "pass"
+    },
+    "herald": {
+     "detail": [
+      0.9963772760823546,
+      0.9979221483707454
+     ],
+     "status": "pass"
+    },
+    "leakage": {
+     "detail": [
+      0.0014534368663515998,
+      0.0027828052030002114
+     ],
+     "status": "pass"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 15,
+   "execution_envelope": {
+    "lower": 1793145094.887863,
+    "upper": "2026-10-27T23:51:47+00:00"
+   },
+   "herald": {
+    "count": 65354,
+    "denominator": 65536,
+    "interval": [
+     0.9963772760823546,
+     0.9979221483707454
+    ],
+    "observed": 0.997222900390625
+   },
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 14,
+    "zero_click": 0
+   },
+   "invalid_events": 14,
+   "iteration_index": 0,
+   "iterator_temporal_order": "single entry within a separate job",
+   "leakage_count": 134,
+   "leakage_interval": [
+    0.0014534368663515998,
+    0.0027828052030002114
+   ],
+   "observed_category_probabilities": [
+    0.5342254638671875,
+    0.4629974365234375,
+    0.0003204345703125,
+    0.0004119873046875,
+    0.0003509521484375,
+    0.00018310546875,
+    6.103515625e-05,
+    0.0001678466796875,
+    0.0002288818359375,
+    0.0004119873046875,
+    0.0002593994140625,
+    0.0001678466796875,
+    0.000213623046875
+   ],
+   "observed_to_requested_tv_upper": 0.045963768517359796,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    35011,
+    30343,
+    21,
+    27,
+    23,
+    12,
+    4,
+    11,
+    15,
+    27,
+    17,
+    11
+   ],
+   "pilot_role": "cancellation",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "pass",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "ac0358beee017f710d92a84eb99510d5dc71e6dbc38ce3b44d871719a6bf7440",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     0.49993402203575055,
+     0.5000657968320263,
+     2.1512563920486538e-08,
+     2.0577168922494865e-08,
+     1.655724214536193e-08,
+     3.963867596824753e-08,
+     4.413492176900471e-08,
+     2.966795027755062e-08,
+     1.478567782081307e-11,
+     6.251339929855546e-09,
+     2.755900020808856e-09,
+     2.16745655469697e-11
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.5000000000000001,
+    0.5000000000000001,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 6.597796424949683e-05,
+   "sequence_position": 2,
+   "setting_id": "sedenion-lcu/bright-repeat",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    59,
+    57,
+    32234,
+    32876,
+    109,
+    46,
+    20,
+    18,
+    28,
+    39,
+    26,
+    13,
+    11
+   ],
+   "category_intervals": [
+    [
+     0.0005286963650529225,
+     0.0014200528065652096
+    ],
+    [
+     0.0005055777455869147,
+     0.0013821934855919736
+    ],
+    [
+     0.48459705516297696,
+     0.49910892845166716
+    ],
+    [
+     0.4943908496351317,
+     0.5089045694091892
+    ],
+    [
+     0.0011360306034039261,
+     0.0023376050265646623
+    ],
+    [
+     0.00038095350516512773,
+     0.0011714856984901439
+    ],
+    [
+     0.00011380586358860191,
+     0.000646674889837055
+    ],
+    [
+     9.607349199920283e-05,
+     0.0006035684882474658
+    ],
+    [
+     0.00019005604489624487,
+     0.0008139439759654925
+    ],
+    [
+     0.0003043695631931363,
+     0.0010347319505955143
+    ],
+    [
+     0.000170321779984995,
+     0.0007727785793390989
+    ],
+    [
+     5.5094142880454184e-05,
+     0.0004925589891916131
+    ],
+    [
+     4.0467849327448714e-05,
+     0.0004464444232579103
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 0.00032504808245662696,
+     "status": "pass"
+    },
+    "herald": {
+     "detail": [
+      0.0012242228992807233,
+      0.0024629358782590725
+     ],
+     "status": "pass"
+    },
+    "leakage": {
+     "detail": [
+      0.0037990968812854076,
+      0.005806726150411796
+     ],
+     "status": "pass"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 15,
+   "execution_envelope": {
+    "lower": 1793145123.628718,
+    "upper": "2026-10-27T23:52:14+00:00"
+   },
+   "herald": {
+    "count": 116,
+    "denominator": 65536,
+    "interval": [
+     0.0012242228992807233,
+     0.0024629358782590725
+    ],
+    "observed": 0.00177001953125
+   },
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 11,
+    "zero_click": 0
+   },
+   "invalid_events": 11,
+   "iteration_index": 0,
+   "iterator_temporal_order": "single entry within a separate job",
+   "leakage_count": 310,
+   "leakage_interval": [
+    0.0037990968812854076,
+    0.005806726150411796
+   ],
+   "observed_category_probabilities": [
+    0.0009002685546875,
+    0.0008697509765625,
+    0.491851806640625,
+    0.50164794921875,
+    0.0016632080078125,
+    0.000701904296875,
+    0.00030517578125,
+    0.000274658203125,
+    0.00042724609375,
+    0.0005950927734375,
+    0.000396728515625,
+    0.0001983642578125,
+    0.0001678466796875
+   ],
+   "observed_to_requested_tv_upper": 0.017714776279929165,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    59,
+    57,
+    32234,
+    32876,
+    109,
+    46,
+    20,
+    18,
+    28,
+    39,
+    26,
+    13
+   ],
+   "pilot_role": "cancellation",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "pass",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "6677d3ceffb56fc452b6fb3b62b559633f5321a02802d8ab473d428204bd04ee",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     8.485521309764905e-09,
+     4.278705965263957e-08,
+     0.5003248991230166,
+     0.499674951917543,
+     7.015709916148164e-08,
+     1.1539095679510181e-08,
+     7.452531701638094e-09,
+     4.886405260146995e-10,
+     1.7262667448021073e-09,
+     1.9917082170738125e-09,
+     4.277068887545921e-09,
+     5.4447806741861175e-11
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.0,
+    0.0,
+    0.5000000000000001,
+    0.5000000000000001,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 0.00032504808245662696,
+   "sequence_position": 3,
+   "setting_id": "sedenion-lcu/dark-repeat",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    7729,
+    8518,
+    7872,
+    8957,
+    8327,
+    7952,
+    7319,
+    8064,
+    237,
+    219,
+    280,
+    31,
+    31
+   ],
+   "category_intervals": [
+    [
+     0.11330676007098445,
+     0.12267483641333826
+    ],
+    [
+     0.1251449384638482,
+     0.1349115118892103
+    ],
+    [
+     0.11545123143377525,
+     0.12489374143412425
+    ],
+    [
+     0.1317378038024407,
+     0.14171390835676487
+    ],
+    [
+     0.1222778357157445,
+     0.13195060798307284
+    ],
+    [
+     0.11665115553703094,
+     0.1261348670913283
+    ],
+    [
+     0.10716117134903055,
+     0.11631004577552809
+    ],
+    [
+     0.11833130947421461,
+     0.1278721828599781
+    ],
+    [
+     0.002809758952704845,
+     0.004568811552663791
+    ],
+    [
+     0.0025686944868519444,
+     0.004260704981897854
+    ],
+    [
+     0.003390505406728966,
+     0.005299998961730352
+    ],
+    [
+     0.00022033977094982303,
+     0.0008750286115802964
+    ],
+    [
+     0.00022033977094982303,
+     0.0008750286115802964
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 0.0001662285980164782,
+     "status": "pass"
+    },
+    "herald": {
+     "detail": [
+      0.4974424444156022,
+      0.5119556024884927
+     ],
+     "status": "pass"
+    },
+    "leakage": {
+     "detail": [
+      0.010649263996516427,
+      0.013846411390486413
+     ],
+     "status": "pass"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 15,
+   "execution_envelope": {
+    "lower": 1793145153.416191,
+    "upper": "2026-10-27T23:52:48+00:00"
+   },
+   "herald": {
+    "count": 33076,
+    "denominator": 65536,
+    "interval": [
+     0.4974424444156022,
+     0.5119556024884927
+    ],
+    "observed": 0.50469970703125
+   },
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 31,
+    "zero_click": 0
+   },
+   "invalid_events": 31,
+   "iteration_index": 0,
+   "iterator_temporal_order": "single entry within a separate job",
+   "leakage_count": 798,
+   "leakage_interval": [
+    0.010649263996516427,
+    0.013846411390486413
+   ],
+   "observed_category_probabilities": [
+    0.1179351806640625,
+    0.129974365234375,
+    0.1201171875,
+    0.1366729736328125,
+    0.1270599365234375,
+    0.121337890625,
+    0.1116790771484375,
+    0.123046875,
+    0.0036163330078125,
+    0.0033416748046875,
+    0.0042724609375,
+    0.0004730224609375,
+    0.0004730224609375
+   ],
+   "observed_to_requested_tv_upper": 0.05177698654173243,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    7729,
+    8518,
+    7872,
+    8957,
+    8327,
+    7952,
+    7319,
+    8064,
+    237,
+    219,
+    280,
+    31
+   ],
+   "pilot_role": "cancellation",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "pass",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "04d17bdc22a02c7b1d15a3c25a61e058ff57d93134d31e51f9500fdfa63ba272",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     0.12497487131003104,
+     0.1250108957906049,
+     0.12497365170967739,
+     0.12496676965185577,
+     0.12496107041562492,
+     0.12495740831479445,
+     0.12507261469803616,
+     0.12508262061421538,
+     1.622208756360551e-08,
+     1.0263268349749392e-08,
+     3.929549612083639e-08,
+     3.1714308002651035e-08
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.12500000000000003,
+    0.12500000000000003,
+    0.12500000000000003,
+    0.12500000000000003,
+    0.12500000000000003,
+    0.12500000000000003,
+    0.12500000000000003,
+    0.12500000000000003,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 0.0001662285980164782,
+   "sequence_position": 4,
+   "setting_id": "sedenion-lcu/fixture",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    65313,
+    10,
+    15,
+    10,
+    20,
+    9,
+    17,
+    19,
+    29,
+    36,
+    46,
+    12,
+    0
+   ],
+   "category_intervals": [
+    [
+     0.9956707107989536,
+     0.9973778523726218
+    ],
+    [
+     3.365287113387481e-05,
+     0.0004229023174145046
+    ],
+    [
+     7.082554948294016e-05,
+     0.0005376018972909844
+    ],
+    [
+     3.365287113387481e-05,
+     0.0004229023174145046
+    ],
+    [
+     0.00011380586358860191,
+     0.000646674889837055
+    ],
+    [
+     2.7228972346648064e-05,
+     0.00039897753672014853
+    ],
+    [
+     8.746264012822871e-05,
+     0.0005817681745034875
+    ],
+    [
+     0.00010485887351621447,
+     0.0006251999068776662
+    ],
+    [
+     0.000200064256985199,
+     0.0008343895399749696
+    ],
+    [
+     0.00027236345362548474,
+     0.0009753260160760632
+    ],
+    [
+     0.00038095350516512773,
+     0.0011714856984901439
+    ],
+    [
+     4.7627630385552816e-05,
+     0.0004696506630550813
+    ],
+    [
+     0.0,
+     0.00014009548504949739
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 2.851057702974699e-07,
+     "status": "pass"
+    },
+    "identity": {
+     "detail": [
+      0.9956707107989536,
+      0.9973778523726218
+     ],
+     "status": "pass"
+    },
+    "leakage": {
+     "detail": [
+      0.0017765968083351565,
+      0.0032223031199519196
+     ],
+     "status": "pass"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 14,
+   "execution_envelope": {
+    "lower": 1793145221.910272,
+    "upper": "2026-10-27T23:54:29+00:00"
+   },
+   "herald": null,
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 0,
+    "zero_click": 0
+   },
+   "invalid_events": 0,
+   "iteration_index": 0,
+   "iterator_temporal_order": "unassessed within a packed job",
+   "leakage_count": 159,
+   "leakage_interval": [
+    0.0017765968083351565,
+    0.0032223031199519196
+   ],
+   "observed_category_probabilities": [
+    0.9965972900390625,
+    0.000152587890625,
+    0.0002288818359375,
+    0.000152587890625,
+    0.00030517578125,
+    0.0001373291015625,
+    0.0002593994140625,
+    0.0002899169921875,
+    0.0004425048828125,
+    0.00054931640625,
+    0.000701904296875,
+    0.00018310546875,
+    0.0
+   ],
+   "observed_to_requested_tv_upper": 0.005778131821875233,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    65313,
+    10,
+    15,
+    10,
+    20,
+    9,
+    17,
+    19,
+    29,
+    36,
+    46,
+    12
+   ],
+   "pilot_role": "identity",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "pass",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "df379daaeb63192008e848e9e2dda5c5228b40cffed310395450973c50d9c083",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     0.9999997148942298,
+     1.7140999700461483e-08,
+     4.163543355878106e-08,
+     4.541915154544413e-08,
+     4.188610529748931e-09,
+     6.526262431630023e-08,
+     9.786186437709716e-09,
+     4.771483389531188e-08,
+     5.197544047842754e-08,
+     1.9237630795119755e-09,
+     5.839877271612422e-11,
+     3.2806584924096083e-13
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 2.851057702974699e-07,
+   "sequence_position": 5,
+   "setting_id": "mub-six/computational-to-computational-input-0",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    71,
+    65299,
+    7,
+    11,
+    8,
+    9,
+    14,
+    20,
+    29,
+    33,
+    23,
+    12,
+    0
+   ],
+   "category_intervals": [
+    [
+     0.0006698071247820621,
+     0.0016448494409958536
+    ],
+    [
+     0.9954311884473362,
+     0.9971902410472951
+    ],
+    [
+     1.5796483750868457e-05,
+     0.0003497275124357071
+    ],
+    [
+     4.0467849327448714e-05,
+     0.0004464444232579103
+    ],
+    [
+     2.1253140081626953e-05,
+     0.000374611208226252
+    ],
+    [
+     2.7228972346648064e-05,
+     0.00039897753672014853
+    ],
+    [
+     6.283568206801878e-05,
+     0.0005152006841164497
+    ],
+    [
+     0.00011380586358860191,
+     0.000646674889837055
+    ],
+    [
+     0.000200064256985199,
+     0.0008343895399749696
+    ],
+    [
+     0.00024093410951404702,
+     0.0009153572630479454
+    ],
+    [
+     0.00014150850936922002,
+     0.0007102652048146781
+    ],
+    [
+     4.7627630385552816e-05,
+     0.0004696506630550813
+    ],
+    [
+     0.0,
+     0.00014009548504949739
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 3.6140332591560845e-07,
+     "status": "pass"
+    },
+    "identity": {
+     "detail": [
+      0.9954311884473362,
+      0.9971902410472951
+     ],
+     "status": "pass"
+    },
+    "leakage": {
+     "detail": [
+      0.0014150121875818216,
+      0.0027297139395831504
+     ],
+     "status": "pass"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 14,
+   "execution_envelope": {
+    "lower": 1793145221.910272,
+    "upper": "2026-10-27T23:54:29+00:00"
+   },
+   "herald": null,
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 0,
+    "zero_click": 0
+   },
+   "invalid_events": 0,
+   "iteration_index": 1,
+   "iterator_temporal_order": "unassessed within a packed job",
+   "leakage_count": 131,
+   "leakage_interval": [
+    0.0014150121875818216,
+    0.0027297139395831504
+   ],
+   "observed_category_probabilities": [
+    0.0010833740234375,
+    0.9963836669921875,
+    0.0001068115234375,
+    0.0001678466796875,
+    0.0001220703125,
+    0.0001373291015625,
+    0.000213623046875,
+    0.00030517578125,
+    0.0004425048828125,
+    0.0005035400390625,
+    0.0003509521484375,
+    0.00018310546875,
+    0.0
+   ],
+   "observed_to_requested_tv_upper": 0.006007527702097651,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    71,
+    65299,
+    7,
+    11,
+    8,
+    9,
+    14,
+    20,
+    29,
+    33,
+    23,
+    12
+   ],
+   "pilot_role": "identity",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "pass",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "52afc138041a57faeadf8cb145bc21376a0279a9a153924e7b8e5fc686b01911",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     1.542282638792356e-09,
+     0.9999996385966741,
+     3.43891098250586e-08,
+     1.0827613408895026e-08,
+     7.286003782637881e-08,
+     1.5340216123532978e-07,
+     1.9872649008360026e-08,
+     5.400472984689943e-08,
+     9.71234279130796e-09,
+     8.96193887999225e-10,
+     3.1907516001179564e-10,
+     3.5771302696983324e-09
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 3.6140332591560845e-07,
+   "sequence_position": 6,
+   "setting_id": "mub-six/computational-to-computational-input-1",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    46,
+    470,
+    60799,
+    24,
+    26,
+    98,
+    73,
+    189,
+    878,
+    1143,
+    1586,
+    192,
+    12
+   ],
+   "category_intervals": [
+    [
+     0.00038095350516512773,
+     0.0011714856984901439
+    ],
+    [
+     0.006011674656921283,
+     0.008475974844135882
+    ],
+    [
+     0.923894482669475,
+     0.9314191523894247
+    ],
+    [
+     0.00015099960278986988,
+     0.0007312129670710524
+    ],
+    [
+     0.000170321779984995,
+     0.0007727785793390989
+    ],
+    [
+     0.0009986945174739958,
+     0.002139418088072948
+    ],
+    [
+     0.0006936794140336937,
+     0.001681967221444757
+    ],
+    [
+     0.0021701726036890043,
+     0.0037439608045941267
+    ],
+    [
+     0.011793039975248823,
+     0.015143642291153689
+    ],
+    [
+     0.015604998583014342,
+     0.019417553157260087
+    ],
+    [
+     0.022033670310903745,
+     0.026506080682256898
+    ],
+    [
+     0.0022098214112284444,
+     0.003795837338021387
+    ],
+    [
+     4.7627630385552816e-05,
+     0.0004696506630550813
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 4.652521914628516e-07,
+     "status": "pass"
+    },
+    "identity": {
+     "detail": [
+      0.923894482669475,
+      0.9314191523894247
+     ],
+     "status": "fail"
+    },
+    "leakage": {
+     "detail": [
+      0.05870457331264471,
+      0.06572109763529824
+     ],
+     "status": "fail"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 14,
+   "execution_envelope": {
+    "lower": 1793145221.910272,
+    "upper": "2026-10-27T23:54:29+00:00"
+   },
+   "herald": null,
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 12,
+    "zero_click": 0
+   },
+   "invalid_events": 12,
+   "iteration_index": 2,
+   "iterator_temporal_order": "unassessed within a packed job",
+   "leakage_count": 4073,
+   "leakage_interval": [
+    0.05870457331264471,
+    0.06572109763529824
+   ],
+   "observed_category_probabilities": [
+    0.000701904296875,
+    0.007171630859375,
+    0.9277191162109375,
+    0.0003662109375,
+    0.000396728515625,
+    0.001495361328125,
+    0.0011138916015625,
+    0.0028839111328125,
+    0.013397216796875,
+    0.0174407958984375,
+    0.024200439453125,
+    0.0029296875,
+    0.00018310546875
+   ],
+   "observed_to_requested_tv_upper": 0.08007753983271006,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    46,
+    470,
+    60799,
+    24,
+    26,
+    98,
+    73,
+    189,
+    878,
+    1143,
+    1586,
+    192
+   ],
+   "pilot_role": "identity",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "fail",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "f795bd33cfb7841445a3a6b6efc1236d94d24a5394d2c284cff9ed2def8ae940",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     1.4433571755068244e-07,
+     7.353614380354295e-08,
+     0.9999995347478084,
+     1.7259576861504483e-08,
+     6.55660854824498e-08,
+     2.1115733630576754e-08,
+     5.4699981814016904e-08,
+     1.9756705267055295e-08,
+     6.78364504609773e-08,
+     8.243958441054622e-10,
+     2.782974737702034e-10,
+     4.310318655236248e-11
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 4.652521914628516e-07,
+   "sequence_position": 7,
+   "setting_id": "mub-six/computational-to-computational-input-2",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    59,
+    13,
+    20,
+    65197,
+    127,
+    5,
+    40,
+    13,
+    16,
+    17,
+    21,
+    6,
+    2
+   ],
+   "category_intervals": [
+    [
+     0.0005286963650529225,
+     0.0014200528065652096
+    ],
+    [
+     5.5094142880454184e-05,
+     0.0004925589891916131
+    ],
+    [
+     0.00011380586358860191,
+     0.000646674889837055
+    ],
+    [
+     0.9937056683300495,
+     0.9958036912293132
+    ],
+    [
+     0.0013639116759974592,
+     0.0026587943898782325
+    ],
+    [
+     6.823812623053501e-06,
+     0.00029796806082524585
+    ],
+    [
+     0.00031515500316162825,
+     0.001054419904466109
+    ],
+    [
+     5.5094142880454184e-05,
+     0.0004925589891916131
+    ],
+    [
+     7.904103421692036e-05,
+     0.0005597847541599275
+    ],
+    [
+     8.746264012822871e-05,
+     0.0005817681745034875
+    ],
+    [
+     0.00012290304693820172,
+     0.0006680044331806779
+    ],
+    [
+     1.094876354307286e-05,
+     0.0003242259109143957
+    ],
+    [
+     2.1993305322919144e-07,
+     0.000212007657852136
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 5.231639119947599e-07,
+     "status": "pass"
+    },
+    "identity": {
+     "detail": [
+      0.9937056683300495,
+      0.9958036912293132
+     ],
+     "status": "pass"
+    },
+    "leakage": {
+     "detail": [
+      0.001211588922566183,
+      0.00244506619063256
+     ],
+     "status": "pass"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 14,
+   "execution_envelope": {
+    "lower": 1793145221.910272,
+    "upper": "2026-10-27T23:54:29+00:00"
+   },
+   "herald": null,
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 2,
+    "zero_click": 0
+   },
+   "invalid_events": 2,
+   "iteration_index": 3,
+   "iterator_temporal_order": "unassessed within a packed job",
+   "leakage_count": 115,
+   "leakage_interval": [
+    0.001211588922566183,
+    0.00244506619063256
+   ],
+   "observed_category_probabilities": [
+    0.0009002685546875,
+    0.0001983642578125,
+    0.00030517578125,
+    0.9948272705078125,
+    0.0019378662109375,
+    7.62939453125e-05,
+    0.0006103515625,
+    0.0001983642578125,
+    0.000244140625,
+    0.0002593994140625,
+    0.0003204345703125,
+    9.1552734375e-05,
+    3.0517578125e-05
+   ],
+   "observed_to_requested_tv_upper": 0.007851575315258114,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    59,
+    13,
+    20,
+    65197,
+    127,
+    5,
+    40,
+    13,
+    16,
+    17,
+    21,
+    6
+   ],
+   "pilot_role": "identity",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "pass",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "007c66affd1b599ff6cc8b3ce67eb33bf21cf72b066b0e0dd181157871085ed1",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     2.183683062248853e-09,
+     2.576998761706019e-09,
+     1.332543271613556e-08,
+     0.999999476836088,
+     6.589594858534231e-09,
+     1.756540763844468e-08,
+     6.484725667561275e-10,
+     3.1186134731174323e-07,
+     1.3700176462719228e-07,
+     3.0931495217673574e-08,
+     3.0761235673266936e-11,
+     4.4895402380794643e-10
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 5.231639119947599e-07,
+   "sequence_position": 8,
+   "setting_id": "mub-six/computational-to-computational-input-3",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    82,
+    26,
+    77,
+    20,
+    65215,
+    14,
+    7,
+    15,
+    29,
+    24,
+    17,
+    9,
+    1
+   ],
+   "category_intervals": [
+    [
+     0.0008021691415081565,
+     0.0018479479995555323
+    ],
+    [
+     0.000170321779984995,
+     0.0007727785793390989
+    ],
+    [
+     0.0007416904101722389,
+     0.0017559402300460056
+    ],
+    [
+     0.00011380586358860191,
+     0.000646674889837055
+    ],
+    [
+     0.9940080784642212,
+     0.9960504790795651
+    ],
+    [
+     6.283568206801878e-05,
+     0.0005152006841164497
+    ],
+    [
+     1.5796483750868457e-05,
+     0.0003497275124357071
+    ],
+    [
+     7.082554948294016e-05,
+     0.0005376018972909844
+    ],
+    [
+     0.000200064256985199,
+     0.0008343895399749696
+    ],
+    [
+     0.00015099960278986988,
+     0.0007312129670710524
+    ],
+    [
+     8.746264012822871e-05,
+     0.0005817681745034875
+    ],
+    [
+     2.7228972346648064e-05,
+     0.00039897753672014853
+    ],
+    [
+     1.5699150227874579e-09,
+     0.00017890309849055583
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 1.9256956382716818e-07,
+     "status": "pass"
+    },
+    "identity": {
+     "detail": [
+      0.9940080784642212,
+      0.9960504790795651
+     ],
+     "status": "pass"
+    },
+    "leakage": {
+     "detail": [
+      0.001048446061072795,
+      0.002211672829717294
+     ],
+     "status": "pass"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 14,
+   "execution_envelope": {
+    "lower": 1793145221.910272,
+    "upper": "2026-10-27T23:54:29+00:00"
+   },
+   "herald": null,
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 1,
+    "zero_click": 0
+   },
+   "invalid_events": 1,
+   "iteration_index": 4,
+   "iterator_temporal_order": "unassessed within a packed job",
+   "leakage_count": 102,
+   "leakage_interval": [
+    0.001048446061072795,
+    0.002211672829717294
+   ],
+   "observed_category_probabilities": [
+    0.001251220703125,
+    0.000396728515625,
+    0.0011749267578125,
+    0.00030517578125,
+    0.9951019287109375,
+    0.000213623046875,
+    0.0001068115234375,
+    0.0002288818359375,
+    0.0004425048828125,
+    0.0003662109375,
+    0.0002593994140625,
+    0.0001373291015625,
+    1.52587890625e-05
+   ],
+   "observed_to_requested_tv_upper": 0.007571522322579906,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    82,
+    26,
+    77,
+    20,
+    65215,
+    14,
+    7,
+    15,
+    29,
+    24,
+    17,
+    9
+   ],
+   "pilot_role": "identity",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "pass",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "b1cbb9ef80b1604849371b8bfb641e1c25b71e5525dfacc7fb608d74ca89ec6f",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     1.591999637093421e-08,
+     4.3067995593739903e-10,
+     4.503423019845265e-09,
+     1.8831126012070093e-09,
+     0.9999998074304364,
+     7.033767555473032e-08,
+     5.196629468776655e-09,
+     1.0369412806815812e-08,
+     1.7911937744215838e-08,
+     6.362225427108537e-08,
+     4.372967636428041e-10,
+     1.9571454686926897e-09
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 1.9256956382716818e-07,
+   "sequence_position": 9,
+   "setting_id": "mub-six/computational-to-computational-input-4",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    37,
+    92,
+    84,
+    92,
+    19,
+    62036,
+    21,
+    115,
+    762,
+    873,
+    1268,
+    135,
+    2
+   ],
+   "category_intervals": [
+    [
+     0.0002829715002863614,
+     0.0009951872181421996
+    ],
+    [
+     0.0009245074300137683,
+     0.002030600847372177
+    ],
+    [
+     0.0008264956114852736,
+     0.0018846179459600797
+    ],
+    [
+     0.0009245074300137683,
+     0.002030600847372177
+    ],
+    [
+     0.00010485887351621447,
+     0.0006251999068776662
+    ],
+    [
+     0.9432613196848744,
+     0.9497970048306574
+    ],
+    [
+     0.00012290304693820172,
+     0.0006680044331806779
+    ],
+    [
+     0.001211588922566183,
+     0.00244506619063256
+    ],
+    [
+     0.010135866123729482,
+     0.013261358348669698
+    ],
+    [
+     0.011721444654265473,
+     0.015062674506831717
+    ],
+    [
+     0.017412940626831394,
+     0.021423712972299308
+    ],
+    [
+     0.0014662634421219911,
+     0.002800484104026308
+    ],
+    [
+     2.1993305322919144e-07,
+     0.000212007657852136
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 2.5048397435479846e-07,
+     "status": "pass"
+    },
+    "identity": {
+     "detail": [
+      0.9432613196848744,
+      0.9497970048306574
+     ],
+     "status": "fail"
+    },
+    "leakage": {
+     "detail": [
+      0.04540630416893638,
+      0.051649137047346194
+     ],
+     "status": "fail"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 14,
+   "execution_envelope": {
+    "lower": 1793145221.910272,
+    "upper": "2026-10-27T23:54:29+00:00"
+   },
+   "herald": null,
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 2,
+    "zero_click": 0
+   },
+   "invalid_events": 2,
+   "iteration_index": 5,
+   "iterator_temporal_order": "unassessed within a packed job",
+   "leakage_count": 3176,
+   "leakage_interval": [
+    0.04540630416893638,
+    0.051649137047346194
+   ],
+   "observed_category_probabilities": [
+    0.0005645751953125,
+    0.00140380859375,
+    0.00128173828125,
+    0.00140380859375,
+    0.0002899169921875,
+    0.94659423828125,
+    0.0003204345703125,
+    0.0017547607421875,
+    0.011627197265625,
+    0.0133209228515625,
+    0.01934814453125,
+    0.0020599365234375,
+    3.0517578125e-05
+   ],
+   "observed_to_requested_tv_upper": 0.06008909764717117,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    37,
+    92,
+    84,
+    92,
+    19,
+    62036,
+    21,
+    115,
+    762,
+    873,
+    1268,
+    135
+   ],
+   "pilot_role": "identity",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "fail",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "3caaccf131295a6c0fa8297db81c3c2516154dc0ffbec8e8a6c39ee88c093083",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     4.641700191475361e-09,
+     2.9719059989171655e-08,
+     2.907914097864558e-08,
+     2.004166310042969e-08,
+     5.2472366864035206e-09,
+     0.9999997495160257,
+     5.7703519812869515e-08,
+     1.706793448860368e-08,
+     2.1219170905634085e-08,
+     5.99888182076789e-08,
+     8.364992948532751e-10,
+     4.939230713810537e-09
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 2.5048397435479846e-07,
+   "sequence_position": 10,
+   "setting_id": "mub-six/computational-to-computational-input-5",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    10250,
+    11314,
+    10495,
+    11567,
+    11044,
+    10772,
+    4,
+    10,
+    14,
+    19,
+    17,
+    7,
+    23
+   ],
+   "category_intervals": [
+    [
+     0.15117843754629767,
+     0.16172674802567952
+    ],
+    [
+     0.16719834806346484,
+     0.17817280745114855
+    ],
+    [
+     0.15486555228050364,
+     0.16551534986845706
+    ],
+    [
+     0.17101027694951187,
+     0.1820807006504424
+    ],
+    [
+     0.1631313862021459,
+     0.17400122411760086
+    ],
+    [
+     0.15903548491068278,
+     0.16979755407932232
+    ],
+    [
+     3.5634405502020444e-06,
+     0.00027075413928001195
+    ],
+    [
+     3.365287113387481e-05,
+     0.0004229023174145046
+    ],
+    [
+     6.283568206801878e-05,
+     0.0005152006841164497
+    ],
+    [
+     0.00010485887351621447,
+     0.0006251999068776662
+    ],
+    [
+     8.746264012822871e-05,
+     0.0005817681745034875
+    ],
+    [
+     1.5796483750868457e-05,
+     0.0003497275124357071
+    ],
+    [
+     0.00014150850936922002,
+     0.0007102652048146781
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 0.00012812052768317844,
+     "status": "pass"
+    },
+    "cross_basis_tv": {
+     "detail": 0.03632553771057511,
+     "status": "pass"
+    },
+    "leakage": {
+     "detail": [
+      0.0009491753149617659,
+      0.0020669336807723126
+     ],
+     "status": "pass"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 14,
+   "execution_envelope": {
+    "lower": 1793145221.910272,
+    "upper": "2026-10-27T23:54:29+00:00"
+   },
+   "herald": null,
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 23,
+    "zero_click": 0
+   },
+   "invalid_events": 23,
+   "iteration_index": 6,
+   "iterator_temporal_order": "unassessed within a packed job",
+   "leakage_count": 94,
+   "leakage_interval": [
+    0.0009491753149617659,
+    0.0020669336807723126
+   ],
+   "observed_category_probabilities": [
+    0.156402587890625,
+    0.172637939453125,
+    0.1601409912109375,
+    0.1764984130859375,
+    0.16851806640625,
+    0.16436767578125,
+    6.103515625e-05,
+    0.000152587890625,
+    0.000213623046875,
+    0.0002899169921875,
+    0.0002593994140625,
+    0.0001068115234375,
+    0.0003509521484375
+   ],
+   "observed_to_requested_tv_upper": 0.03632553771057511,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    10250,
+    11314,
+    10495,
+    11567,
+    11044,
+    10772,
+    4,
+    10,
+    14,
+    19,
+    17,
+    7
+   ],
+   "pilot_role": "cross-basis",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "pass",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "09f3f4d35c8000185679dcbc73bc31cadb79a0046ac8b8e7fe1242535f921588",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     0.1666740338910202,
+     0.1666622826218889,
+     0.16658397851391393,
+     0.16672552392463513,
+     0.1666256183365137,
+     0.16672830112143483,
+     6.1345464451465295e-09,
+     6.76511727186658e-08,
+     1.0745264728564844e-08,
+     9.965665499402567e-08,
+     6.1013734015958e-08,
+     1.6389219773269185e-08
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.16666666666666666,
+    0.16666666666666669,
+    0.16666666666666669,
+    0.16666666666666666,
+    0.16666666666666669,
+    0.16666666666666669,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 0.00012812052768317844,
+   "sequence_position": 11,
+   "setting_id": "mub-six/product_fourier-to-product_chirped-input-0",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    11241,
+    10103,
+    8902,
+    12465,
+    12148,
+    10442,
+    9,
+    17,
+    64,
+    47,
+    56,
+    7,
+    35
+   ],
+   "category_intervals": [
+    [
+     0.1660986483029701,
+     0.1770450486841456
+    ],
+    [
+     0.14896667410321923,
+     0.15945308158128743
+    ],
+    [
+     0.13091159326844432,
+     0.14086189699268523
+    ],
+    [
+     0.18454807123695793,
+     0.19594369854794522
+    ],
+    [
+     0.17976780337045534,
+     0.19105130356814706
+    ],
+    [
+     0.15406784347838673,
+     0.16469586282954474
+    ],
+    [
+     2.7228972346648064e-05,
+     0.00039897753672014853
+    ],
+    [
+     8.746264012822871e-05,
+     0.0005817681745034875
+    ],
+    [
+     0.00058702005776543,
+     0.0015141829276962354
+    ],
+    [
+     0.00039208505357213883,
+     0.0011908350239441417
+    ],
+    [
+     0.0004940667262545184,
+     0.0013632163834364254
+    ],
+    [
+     1.5796483750868457e-05,
+     0.0003497275124357071
+    ],
+    [
+     0.0002618193737496499,
+     0.0009554023921074792
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 0.0001713648301484273,
+     "status": "pass"
+    },
+    "cross_basis_tv": {
+     "detail": 0.06822402495051562,
+     "status": "fail"
+    },
+    "leakage": {
+     "detail": [
+      0.002782909020902829,
+      0.0045346421250514225
+     ],
+     "status": "pass"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 14,
+   "execution_envelope": {
+    "lower": 1793145221.910272,
+    "upper": "2026-10-27T23:54:29+00:00"
+   },
+   "herald": null,
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 35,
+    "zero_click": 0
+   },
+   "invalid_events": 35,
+   "iteration_index": 7,
+   "iterator_temporal_order": "unassessed within a packed job",
+   "leakage_count": 235,
+   "leakage_interval": [
+    0.002782909020902829,
+    0.0045346421250514225
+   ],
+   "observed_category_probabilities": [
+    0.1715240478515625,
+    0.1541595458984375,
+    0.135833740234375,
+    0.1902008056640625,
+    0.18536376953125,
+    0.159332275390625,
+    0.0001373291015625,
+    0.0002593994140625,
+    0.0009765625,
+    0.0007171630859375,
+    0.0008544921875,
+    0.0001068115234375,
+    0.0005340576171875
+   ],
+   "observed_to_requested_tv_upper": 0.06822402495051562,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    11241,
+    10103,
+    8902,
+    12465,
+    12148,
+    10442,
+    9,
+    17,
+    64,
+    47,
+    56,
+    7
+   ],
+   "pilot_role": "cross-basis",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "fail",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "926635753fa7182a8b83101960b9a8fa178b34869e8616a4dfa309f7dca6df98",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     0.16673291590592404,
+     0.1666414551050151,
+     0.16677145361095527,
+     0.16662004820364168,
+     0.16664267989748113,
+     0.16659111863038017,
+     5.491134198857085e-08,
+     3.1851472561146606e-08,
+     1.1573505996998759e-07,
+     7.671866919350545e-08,
+     4.919659418995545e-08,
+     2.3346441371654393e-10
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.16666666666666669,
+    0.16666666666666666,
+    0.16666666666666669,
+    0.16666666666666669,
+    0.16666666666666666,
+    0.16666666666666669,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 0.0001713648301484273,
+   "sequence_position": 12,
+   "setting_id": "mub-six/product_fourier-to-product_chirped-input-1",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    10503,
+    9726,
+    11134,
+    13281,
+    10271,
+    10126,
+    41,
+    40,
+    94,
+    114,
+    155,
+    26,
+    25
+   ],
+   "category_intervals": [
+    [
+     0.15498596533804132,
+     0.16563904184400208
+    ],
+    [
+     0.1432961155977178,
+     0.1536201908618271
+    ],
+    [
+     0.1644869115012351,
+     0.17539188053668053
+    ],
+    [
+     0.1968594734810845,
+     0.2085310125860271
+    ],
+    [
+     0.15149443496966453,
+     0.16205152630418426
+    ],
+    [
+     0.14931270694642843,
+     0.1598088506902645
+    ],
+    [
+     0.0003259952308159321,
+     0.0010740543088017772
+    ],
+    [
+     0.00031515500316162825,
+     0.001054419904466109
+    ],
+    [
+     0.0009491753149617659,
+     0.0020669336807723126
+    ],
+    [
+     0.0011989663829948811,
+     0.002427185180969613
+    ],
+    [
+     0.0017245649747930207,
+     0.003152307066468528
+    ],
+    [
+     0.000170321779984995,
+     0.0007727785793390989
+    ],
+    [
+     0.00016060623610351091,
+     0.0007520486329306053
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 0.00027068991665140025,
+     "status": "pass"
+    },
+    "cross_basis_tv": {
+     "detail": 0.06473336547896849,
+     "status": "fail"
+    },
+    "leakage": {
+     "detail": [
+      0.006361228875339762,
+      0.00888921821123249
+     ],
+     "status": "pass"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 14,
+   "execution_envelope": {
+    "lower": 1793145221.910272,
+    "upper": "2026-10-27T23:54:29+00:00"
+   },
+   "herald": null,
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 25,
+    "zero_click": 0
+   },
+   "invalid_events": 25,
+   "iteration_index": 8,
+   "iterator_temporal_order": "unassessed within a packed job",
+   "leakage_count": 495,
+   "leakage_interval": [
+    0.006361228875339762,
+    0.00888921821123249
+   ],
+   "observed_category_probabilities": [
+    0.1602630615234375,
+    0.148406982421875,
+    0.169891357421875,
+    0.2026519775390625,
+    0.1567230224609375,
+    0.154510498046875,
+    0.0006256103515625,
+    0.0006103515625,
+    0.001434326171875,
+    0.001739501953125,
+    0.0023651123046875,
+    0.000396728515625,
+    0.0003814697265625
+   ],
+   "observed_to_requested_tv_upper": 0.06473336547896849,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    10503,
+    9726,
+    11134,
+    13281,
+    10271,
+    10126,
+    41,
+    40,
+    94,
+    114,
+    155,
+    26
+   ],
+   "pilot_role": "cross-basis",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "fail",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "fb95a5132d24a90d05e7efa856158946230dbf9f4286281fc3a3c5489d38334a",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     0.16674159032527394,
+     0.16686226362199955,
+     0.16660130305083354,
+     0.1666382302426411,
+     0.16652576238455694,
+     0.1666306810719834,
+     1.7907776408995902e-08,
+     3.747696391804186e-08,
+     8.102344986781091e-08,
+     2.6012093020405055e-08,
+     6.11760973655973e-09,
+     7.648180139969395e-10
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.16666666666666669,
+    0.16666666666666669,
+    0.16666666666666666,
+    0.16666666666666669,
+    0.16666666666666669,
+    0.16666666666666666,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 0.00027068991665140025,
+   "sequence_position": 13,
+   "setting_id": "mub-six/product_fourier-to-product_chirped-input-2",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    10961,
+    11081,
+    10251,
+    12066,
+    10317,
+    10718,
+    11,
+    15,
+    36,
+    27,
+    23,
+    10,
+    20
+   ],
+   "category_intervals": [
+    [
+     0.16188140613182625,
+     0.17271861439340727
+    ],
+    [
+     0.16368864201067418,
+     0.1745729541248849
+    ],
+    [
+     0.15119348486672352,
+     0.16174221383389364
+    ],
+    [
+     0.17853150073879034,
+     0.18978552939686494
+    ],
+    [
+     0.15218664684104727,
+     0.1627629183543247
+    ],
+    [
+     0.15822247278837548,
+     0.1689628572033524
+    ],
+    [
+     4.0467849327448714e-05,
+     0.0004464444232579103
+    ],
+    [
+     7.082554948294016e-05,
+     0.0005376018972909844
+    ],
+    [
+     0.00027236345362548474,
+     0.0009753260160760632
+    ],
+    [
+     0.00018014021261956125,
+     0.0007934085996764641
+    ],
+    [
+     0.00014150850936922002,
+     0.0007102652048146781
+    ],
+    [
+     3.365287113387481e-05,
+     0.0004229023174145046
+    ],
+    [
+     0.00011380586358860191,
+     0.000646674889837055
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 0.00021651442777164242,
+     "status": "pass"
+    },
+    "cross_basis_tv": {
+     "detail": 0.04000355838368928,
+     "status": "pass"
+    },
+    "leakage": {
+     "detail": [
+      0.0015562962411440268,
+      0.002923991780913143
+     ],
+     "status": "pass"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 14,
+   "execution_envelope": {
+    "lower": 1793145221.910272,
+    "upper": "2026-10-27T23:54:29+00:00"
+   },
+   "herald": null,
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 20,
+    "zero_click": 0
+   },
+   "invalid_events": 20,
+   "iteration_index": 9,
+   "iterator_temporal_order": "unassessed within a packed job",
+   "leakage_count": 142,
+   "leakage_interval": [
+    0.0015562962411440268,
+    0.002923991780913143
+   ],
+   "observed_category_probabilities": [
+    0.1672515869140625,
+    0.1690826416015625,
+    0.1564178466796875,
+    0.184112548828125,
+    0.1574249267578125,
+    0.163543701171875,
+    0.0001678466796875,
+    0.0002288818359375,
+    0.00054931640625,
+    0.0004119873046875,
+    0.0003509521484375,
+    0.000152587890625,
+    0.00030517578125
+   ],
+   "observed_to_requested_tv_upper": 0.04000355838368928,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    10961,
+    11081,
+    10251,
+    12066,
+    10317,
+    10718,
+    11,
+    15,
+    36,
+    27,
+    23,
+    10
+   ],
+   "pilot_role": "cross-basis",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "pass",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "d40ef220df7e7a7ab6cd4d90597cc83b7fca93a0818288f18d2cccfd489108da",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     0.1667014887989705,
+     0.16658050610711614,
+     0.1666277083638401,
+     0.16657527110127185,
+     0.1667828702540799,
+     0.16673196795434464,
+     2.814926068650169e-08,
+     1.1822923536948841e-07,
+     2.530008119583207e-08,
+     1.4957076144300045e-09,
+     1.19718460069832e-08,
+     2.274245464199777e-09
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.16666666666666666,
+    0.16666666666666669,
+    0.16666666666666669,
+    0.16666666666666666,
+    0.16666666666666669,
+    0.16666666666666669,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 0.00021651442777164242,
+   "sequence_position": 14,
+   "setting_id": "mub-six/product_fourier-to-product_chirped-input-3",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    10079,
+    9876,
+    9837,
+    11288,
+    9716,
+    10697,
+    38,
+    188,
+    824,
+    1122,
+    1641,
+    202,
+    28
+   ],
+   "category_intervals": [
+    [
+     0.14860560646221402,
+     0.15908183414294405
+    ],
+    [
+     0.1455519931854473,
+     0.15594128242364869
+    ],
+    [
+     0.14496542480353786,
+     0.15533783882172317
+    ],
+    [
+     0.1668066645914664,
+     0.1777711495288026
+    ],
+    [
+     0.14314573869580594,
+     0.1534654364889695
+    ],
+    [
+     0.15790631452570716,
+     0.16863823974591227
+    ],
+    [
+     0.0002936409907253007,
+     0.0010149884355092598
+    ],
+    [
+     0.0021569671828793892,
+     0.0037266578490085943
+    ],
+    [
+     0.011020570017585166,
+     0.014268431917018034
+    ],
+    [
+     0.015301816655777619,
+     0.01907996661706684
+    ],
+    [
+     0.022835459388456308,
+     0.02738250268735641
+    ],
+    [
+     0.0023423242371697593,
+     0.003968421148627038
+    ],
+    [
+     0.00019005604489624487,
+     0.0008139439759654925
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 0.00022982886869278303,
+     "status": "pass"
+    },
+    "cross_basis_tv": {
+     "detail": 0.08725882557665435,
+     "status": "fail"
+    },
+    "leakage": {
+     "detail": [
+      0.058258939083403204,
+      0.06525133924753786
+     ],
+     "status": "fail"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 14,
+   "execution_envelope": {
+    "lower": 1793145221.910272,
+    "upper": "2026-10-27T23:54:29+00:00"
+   },
+   "herald": null,
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 28,
+    "zero_click": 0
+   },
+   "invalid_events": 28,
+   "iteration_index": 10,
+   "iterator_temporal_order": "unassessed within a packed job",
+   "leakage_count": 4043,
+   "leakage_interval": [
+    0.058258939083403204,
+    0.06525133924753786
+   ],
+   "observed_category_probabilities": [
+    0.1537933349609375,
+    0.15069580078125,
+    0.1501007080078125,
+    0.1722412109375,
+    0.14825439453125,
+    0.1632232666015625,
+    0.000579833984375,
+    0.00286865234375,
+    0.0125732421875,
+    0.017120361328125,
+    0.0250396728515625,
+    0.003082275390625,
+    0.00042724609375
+   ],
+   "observed_to_requested_tv_upper": 0.08725882557665435,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    10079,
+    9876,
+    9837,
+    11288,
+    9716,
+    10697,
+    38,
+    188,
+    824,
+    1122,
+    1641,
+    202
+   ],
+   "pilot_role": "cross-basis",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "fail",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "c8692ee9aa2706b303424e6b192172d4c932ec521e5cc7e5d68b1b3768e9c03c",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     0.1667920789197727,
+     0.16676459291360232,
+     0.1666098224114674,
+     0.1666729493854732,
+     0.16658122354382834,
+     0.16657912517601142,
+     2.020291911552547e-09,
+     6.73467346589541e-08,
+     3.704750725324324e-08,
+     9.338924492088574e-08,
+     7.650650732016285e-09,
+     1.954150315410554e-10
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.16666666666666669,
+    0.16666666666666666,
+    0.16666666666666669,
+    0.16666666666666669,
+    0.16666666666666666,
+    0.16666666666666669,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 0.00022982886869278303,
+   "sequence_position": 15,
+   "setting_id": "mub-six/product_fourier-to-product_chirped-input-4",
+   "status": "collected"
+  },
+  {
+   "accepted_events": 65536,
+   "accepted_vs_detected_fraction": 1.0,
+   "category_counts": [
+    9441,
+    9637,
+    12409,
+    13730,
+    8733,
+    11476,
+    13,
+    11,
+    13,
+    22,
+    8,
+    10,
+    33
+   ],
+   "category_intervals": [
+    [
+     0.13901111930503268,
+     0.1492089459170525
+    ],
+    [
+     0.14195782747815175,
+     0.15224281064407225
+    ],
+    [
+     0.18370350430359034,
+     0.19507953007945908
+    ],
+    [
+     0.20363749249202504,
+     0.21545339046954912
+    ],
+    [
+     0.12837327296383624,
+     0.13824349915705952
+    ],
+    [
+     0.1696390743195495,
+     0.18067520836865586
+    ],
+    [
+     5.5094142880454184e-05,
+     0.0004925589891916131
+    ],
+    [
+     4.0467849327448714e-05,
+     0.0004464444232579103
+    ],
+    [
+     5.5094142880454184e-05,
+     0.0004925589891916131
+    ],
+    [
+     0.00013214028144741,
+     0.0006891982997617987
+    ],
+    [
+     2.1253140081626953e-05,
+     0.000374611208226252
+    ],
+    [
+     3.365287113387481e-05,
+     0.0004229023174145046
+    ],
+    [
+     0.00024093410951404702,
+     0.0009153572630479454
+    ]
+   ],
+   "cohort_id": "ascella-cancellation-transition-screening",
+   "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+   "criteria": {
+    "compilation": {
+     "detail": 7.053977567193902e-05,
+     "status": "pass"
+    },
+    "cross_basis_tv": {
+     "detail": 0.09284977033036754,
+     "status": "fail"
+    },
+    "leakage": {
+     "detail": [
+      0.0011485936424943596,
+      0.002355544924136694
+     ],
+     "status": "pass"
+    },
+    "precision": {
+     "detail": {
+      "half_width": 0.01
+     },
+     "status": "pass"
+    }
+   },
+   "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+   "endpoint_count": 14,
+   "execution_envelope": {
+    "lower": 1793145221.910272,
+    "upper": "2026-10-27T23:54:29+00:00"
+   },
+   "herald": null,
+   "incident_shots": null,
+   "interface_complete": true,
+   "invalid_components": {
+    "other_photon_number": 33,
+    "zero_click": 0
+   },
+   "invalid_events": 33,
+   "iteration_index": 11,
+   "iterator_temporal_order": "unassessed within a packed job",
+   "leakage_count": 110,
+   "leakage_interval": [
+    0.0011485936424943596,
+    0.002355544924136694
+   ],
+   "observed_category_probabilities": [
+    0.1440582275390625,
+    0.1470489501953125,
+    0.1893463134765625,
+    0.209503173828125,
+    0.1332550048828125,
+    0.17510986328125,
+    0.0001983642578125,
+    0.0001678466796875,
+    0.0001983642578125,
+    0.000335693359375,
+    0.0001220703125,
+    0.000152587890625,
+    0.0005035400390625
+   ],
+   "observed_to_requested_tv_upper": 0.09284977033036754,
+   "photon_loss_fraction": null,
+   "physical_port_counts": [
+    9441,
+    9637,
+    12409,
+    13730,
+    8733,
+    11476,
+    13,
+    11,
+    13,
+    22,
+    8,
+    10
+   ],
+   "pilot_role": "cross-basis",
+   "precision_met": true,
+   "provider_detected_shots": 65536,
+   "qualification": "fail",
+   "remote_compiled_prediction": {
+    "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+    "computed_circuit_sha256": "999b5cd50203fcdb8345b297e9a5e03ebe38f2c433ce22120b1f0a5cc2e7e1ab",
+    "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+    "input_mode": 0,
+    "probabilities": [
+     0.16664945566963735,
+     0.1666641791225798,
+     0.16662170529374246,
+     0.16670667869841238,
+     0.16669672417683137,
+     0.1666607868050352,
+     4.4153174398280054e-08,
+     3.320322848878688e-07,
+     4.721832433925708e-08,
+     2.9716005136368243e-08,
+     1.7021728883027653e-08,
+     9.224398120395626e-11
+    ],
+    "status": "reconstructed"
+   },
+   "requested_probabilities": [
+    0.16666666666666669,
+    0.16666666666666669,
+    0.16666666666666666,
+    0.16666666666666669,
+    0.16666666666666669,
+    0.16666666666666666,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "requested_to_returned_tv": 7.053977567193902e-05,
+   "sequence_position": 16,
+   "setting_id": "mub-six/product_fourier-to-product_chirped-input-5",
+   "status": "collected"
+  }
+ ]
+}

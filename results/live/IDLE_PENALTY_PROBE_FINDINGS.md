@@ -173,8 +173,12 @@ multiplier stays near 1.6.
 
 ## Open
 
-- **Stability across calibrations (question d).** It needs a repeat on the same ordered 31 pairs under a refreshed
-  T1/T2, compared with `--compare`; [IDLE_PENALTY_REPEAT_CASE.md](IDLE_PENALTY_REPEAT_CASE.md) preregisters it.
+- **Stability across calibrations (question d).** The repeat on 30 of the 31 ordered pairs ran at two points
+  ([IDLE_PENALTY_REPEAT_CASE.md](IDLE_PENALTY_REPEAT_CASE.md#results-point-2)): the readout shift replicates with a
+  stable pair pattern (r 0.99), while every per-qubit multiplier reads "unresolved" (r -0.04 to 0.36) and the cohort
+  medians fell 12 to 13 % over 28 hours. Post hoc, the fitted physical rates keep their per-qubit pattern across a
+  same-day T1/T2 refresh while the reported normalization does not; a third point under a further refresh tests
+  that reading.
 - **Readout attribution, and whether phase rate and visibility loss share a cause.** This needs a campaign whose
   replica classes differ: focal partner only, background readers only, all readers, and none.
 - **The unplaced historical qubits 79, 92 and 93.** One guarded job cannot hold all three, because 93 neighbors both

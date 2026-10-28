@@ -50,6 +50,12 @@ Core stack and neighbors:
 | [qiskit-addon-utils.md](qiskit-addon-utils.md) | qiskit-addon-utils | 0.4.0 |
 | [qiskit-mitigation.md](qiskit-mitigation.md) | qiskit-mitigation (hardware executor tasks; not run) | 0.1.1 |
 
+Crystallography (a cache virtual environment, pinned nowhere):
+
+| Manual | Package | Host version |
+| --- | --- | --- |
+| [seekpath.md](seekpath.md) | seekpath, spglib | 2.2.2, 2.8.0 |
+
 ## Substrates
 
 | Substrate | Where | Limits that matter for these tools |

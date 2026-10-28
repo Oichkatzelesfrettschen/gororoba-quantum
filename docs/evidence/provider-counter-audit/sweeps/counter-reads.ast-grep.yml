@@ -1,0 +1,12 @@
+id: provider-counter-read
+language: python
+severity: info
+message: a provider counter field is read
+rule:
+  any:
+    - pattern: $X[$K]
+    - pattern: $X.get($K)
+    - pattern: $X.get($K, $D)
+constraints:
+  K:
+    regex: ^["'](nb_shots_used|shots_used|physical_perf|logical_perf|global_perf|duration|number_of_shots|shots_done|shots_requested)["']$

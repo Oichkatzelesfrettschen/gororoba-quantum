@@ -1,0 +1,11 @@
+# Ascella CI day-separated matched-mesh repeat
+
+The [original written case](../ascella-transition-day-repeat/README.md) specifies five transition settings, the baseline and the user's authorization. This successor keeps the same operators, parameters, compilation identifiers, acceptance budget and scientific comparisons while binding the order-preserving parallel analysis source and the GitHub-hosted Quandela scheduler.
+
+The forward baseline started at 2026-10-27 17:38:05.339165 Pacific time. The scheduler admits a request no earlier than 2026-10-28 17:38:06 Pacific and no later than 23:59 Pacific that same day. The result analyzer additionally requires the provider's recorded start to occur at least 24 hours after the baseline and on the following Pacific date. A late provider start remains retained but cannot qualify the comparison.
+
+One `qpu:ascella` job requests 65,536 accepted events per setting with a 131,072 detected-shot cap per setting. The stop limit is 300 seconds and the ceiling is 1.131072 credits. All twelve output ports and invalid photon categories are retained. The 140-endpoint simultaneous family compares the five settings with their baseline under IID accepted-event intervals. Returned input and compiled-circuit records determine mesh identity; matching digital records do not establish unchanged analog controls. The packed list does not establish physical iteration chronology, and incident-pulse loss is unknown.
+
+The [scheduler case](../../../results/quandela/schedules/ascella-transition-day-repeat.json) binds the request, reviewed case, price, timing and attribution checks. The [CI check](../../../scripts/ascella_transition_ci_check.py) retains the result analysis in the run directory and reports a failed matched check if any returned mesh differs. The scheduler retains checkpoints and raw output on its results branch, and a results pull request requires registry integration. An ambiguous submission requires provider reconciliation; it never authorizes a blind retry.
+
+The local timer and hosted scheduler must not both be armed for this job. Complete a read-only hosted plan check and then disable the local timer before enabling the hosted workflow. The original 54-setting campaign remains subject to a fresh qualification cohort.

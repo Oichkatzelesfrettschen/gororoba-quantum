@@ -1,0 +1,1390 @@
+{
+ "analysis_source_sha256": "be4adbe91d0b7abd2da97fe8be445fe0f2ca7ece30169e34bbfdb0982e849f59",
+ "campaign_sha256": "67d974effd0b698da3882aebb73eaeba0deed37f472570637d3c1a0ea8383af7",
+ "comparisons": [
+  {
+   "first": "prior",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.06408870174016659,
+    -0.055581787551517554
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0628509521484375,
+   "second": "singleton",
+   "second_events": 65536,
+   "setting": "identity-2",
+   "simultaneous_total_variation_bounds": [
+    0.05428179422711067,
+    0.07290127277356005
+   ]
+  },
+  {
+   "first": "singleton",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.0014359636570091332,
+    0.0014054571778191628
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0005645751953125,
+   "second": "forward",
+   "second_events": 65536,
+   "setting": "identity-2",
+   "simultaneous_total_variation_bounds": [
+    0.0,
+    0.005897562013152199
+   ]
+  },
+  {
+   "first": "singleton",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.0015520442788672126,
+    0.0012469823906540163
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0004425048828125,
+   "second": "reverse",
+   "second_events": 65536,
+   "setting": "identity-2",
+   "simultaneous_total_variation_bounds": [
+    0.0,
+    0.005722002638103368
+   ]
+  },
+  {
+   "first": "forward",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.0015344755627861566,
+    0.0012599201537629309
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.00042724609375,
+   "second": "reverse",
+   "second_events": 65536,
+   "setting": "identity-2",
+   "simultaneous_total_variation_bounds": [
+    0.0,
+    0.005707749150555746
+   ]
+  },
+  {
+   "first": "prior",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.050747449496720214,
+    -0.04332211433125579
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.048919677734375,
+   "second": "singleton",
+   "second_events": 65536,
+   "setting": "identity-5",
+   "simultaneous_total_variation_bounds": [
+    0.04153158275251124,
+    0.057342855773956515
+   ]
+  },
+  {
+   "first": "singleton",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    0.015397474284319907,
+    0.020575513229546632
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0192108154296875,
+   "second": "forward",
+   "second_events": 65536,
+   "setting": "identity-5",
+   "simultaneous_total_variation_bounds": [
+    0.013981495134139354,
+    0.02584989515843915
+   ]
+  },
+  {
+   "first": "singleton",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    0.057894074325847235,
+    0.06616976295458693
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0654144287109375,
+   "second": "reverse",
+   "second_events": 65536,
+   "setting": "identity-5",
+   "simultaneous_total_variation_bounds": [
+    0.0567552635661267,
+    0.07470710439146074
+   ]
+  },
+  {
+   "first": "forward",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    0.03844114041374705,
+    0.04964970935282057
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0462188720703125,
+   "second": "reverse",
+   "second_events": 65536,
+   "setting": "identity-5",
+   "simultaneous_total_variation_bounds": [
+    0.03623552533637191,
+    0.057831954700778974
+   ]
+  },
+  {
+   "first": "prior",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.06176762227239712,
+    -0.05274672733366499
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0572662353515625,
+   "second": "singleton",
+   "second_events": 65536,
+   "setting": "cross-4",
+   "simultaneous_total_variation_bounds": [
+    0.02680161696770804,
+    0.0949026521546392
+   ]
+  },
+  {
+   "first": "singleton",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.004082518503633044,
+    -0.0007988526919470726
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0037841796875,
+   "second": "forward",
+   "second_events": 65536,
+   "setting": "cross-4",
+   "simultaneous_total_variation_bounds": [
+    7.536075037705982e-05,
+    0.03864256873874083
+   ]
+  },
+  {
+   "first": "singleton",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.004247557505212078,
+    -0.001030370553971175
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0052947998046875,
+   "second": "reverse",
+   "second_events": 65536,
+   "setting": "cross-4",
+   "simultaneous_total_variation_bounds": [
+    5.340703473166042e-05,
+    0.04012626384050653
+   ]
+  },
+  {
+   "first": "forward",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.0014873419901896485,
+    0.0010907851265865123
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.00518798828125,
+   "second": "reverse",
+   "second_events": 65536,
+   "setting": "cross-4",
+   "simultaneous_total_variation_bounds": [
+    0.0,
+    0.03964988749282399
+   ]
+  },
+  {
+   "first": "prior",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    0.022664936823882778,
+    0.028992208051279986
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0276336669921875,
+   "second": "singleton",
+   "second_events": 65536,
+   "setting": "identity-0",
+   "simultaneous_total_variation_bounds": [
+    0.021657762725866694,
+    0.03443972489320708
+   ]
+  },
+  {
+   "first": "singleton",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.02907008238633317,
+    -0.022770103295924125
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0277252197265625,
+   "second": "forward",
+   "second_events": 65536,
+   "setting": "identity-0",
+   "simultaneous_total_variation_bounds": [
+    0.021715708271829882,
+    0.03450915644546242
+   ]
+  },
+  {
+   "first": "singleton",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.026163133307957956,
+    -0.019086956413487018
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0237579345703125,
+   "second": "reverse",
+   "second_events": 65536,
+   "setting": "identity-0",
+   "simultaneous_total_variation_bounds": [
+    0.017715053314200774,
+    0.03135749793053682
+   ]
+  },
+  {
+   "first": "forward",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    0.001474707102437656,
+    0.005115388858374666
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0040283203125,
+   "second": "reverse",
+   "second_events": 65536,
+   "setting": "identity-0",
+   "simultaneous_total_variation_bounds": [
+    0.00125033995005871,
+    0.00861612559066571
+   ]
+  },
+  {
+   "first": "prior",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.0008160883287438164,
+    0.001578646691417236
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.005950927734375,
+   "second": "singleton",
+   "second_events": 65536,
+   "setting": "cross-0",
+   "simultaneous_total_variation_bounds": [
+    0.0,
+    0.04030659693392995
+   ]
+  },
+  {
+   "first": "singleton",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    0.02709101828021874,
+    0.03353662786939653
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.030517578125,
+   "second": "forward",
+   "second_events": 65536,
+   "setting": "cross-0",
+   "simultaneous_total_variation_bounds": [
+    0.011846127836533141,
+    0.06690676126002587
+   ]
+  },
+  {
+   "first": "singleton",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    0.00039971848762959976,
+    0.0034747556495340953
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0057525634765625,
+   "second": "reverse",
+   "second_events": 65536,
+   "setting": "cross-0",
+   "simultaneous_total_variation_bounds": [
+    0.00013206165782287036,
+    0.040494540759711
+   ]
+  },
+  {
+   "first": "forward",
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.031870626041621684,
+    -0.024882545970829895
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.02838134765625,
+   "second": "reverse",
+   "second_events": 65536,
+   "setting": "cross-0",
+   "simultaneous_total_variation_bounds": [
+    0.010462678090065505,
+    0.06508022688906902
+   ]
+  }
+ ],
+ "complete": true,
+ "confidence": 0.95,
+ "confidence_boundary": "Simultaneous intervals assume IID events within each setting; time and calibration can confound context.",
+ "endpoints": 280,
+ "jobs": [
+  {
+   "duration_seconds": 4,
+   "name": "single-identity-2",
+   "sources": [
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-2/cases.json",
+     "sha256": "3f5e2ee932fae8321e2313d3579a1c1591bbaacb44efa7d64b35cfaa2c1d38ed"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-2/submission.json",
+     "sha256": "df8b71b09662643e24b3fbce8e371ffca219f6ba7ca3196753c268ec5ca128a9"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-2/job-body.json",
+     "sha256": "cca66a10057e01a071432297c87ac810a2b701812541b2e7eabc0ff48713ba4a"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-2/results.json",
+     "sha256": "fa7d26b1a906cfa6150069d65198e6c429583702fb7909ff9999e49293ff13cc"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-2/raw/result.json",
+     "sha256": "0016903582be6bb9dbd79dd159ce7fe07a8ab740c1b4eb270941f8355b9d5e85"
+    }
+   ],
+   "start_time": 1793147695.250911,
+   "status": "completed"
+  },
+  {
+   "duration_seconds": 3,
+   "name": "single-identity-5",
+   "sources": [
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-5/cases.json",
+     "sha256": "5d974722a7d675cc97a2d7b6002764dbf19e2ef8ce00bf630f71774a244fc1a8"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-5/submission.json",
+     "sha256": "aec936cf6eed720465d0e0d771cb5e36b164dd85b705f722a951daaa7cf82da6"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-5/job-body.json",
+     "sha256": "e7772a072547083158c13170b024135d4b4fb6a0737d07b78786da22e027ed48"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-5/results.json",
+     "sha256": "1dd35b7f17165d543f1e8bf875472690cd89aa62d419e2b83212a5022058dc5e"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-5/raw/result.json",
+     "sha256": "3e28bd28e4158f940a7f37dbba17c7eba4f8e47ed07035aac5def06c45440909"
+    }
+   ],
+   "start_time": 1793147725.731906,
+   "status": "completed"
+  },
+  {
+   "duration_seconds": 3,
+   "name": "single-cross-4",
+   "sources": [
+    {
+     "file": "results/quandela/runs/ascella-context-single-cross-4/cases.json",
+     "sha256": "6f7b42c02ad66968ecf58d72f4cc29509458e2de73ff9fc87941ec1e75c5b13e"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-cross-4/submission.json",
+     "sha256": "e63b1e8bcd7b53f41365294e0cda1c6ad18cf63208987022d19aabfb863713df"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-cross-4/job-body.json",
+     "sha256": "bb8653e76729fb96c129f2c78cd9be2a052e1f27399e7c0d27799912965c8e78"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-cross-4/results.json",
+     "sha256": "6dc2164e778a21ec66af3bad2a473bcfbd709932fe4c9f81a5009496b33ed336"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-cross-4/raw/result.json",
+     "sha256": "9200c07a2c1d0cba67651e2eea20732f48ed06f7c6d83d83773ac0936c6a0356"
+    }
+   ],
+   "start_time": 1793147755.628536,
+   "status": "completed"
+  },
+  {
+   "duration_seconds": 4,
+   "name": "single-identity-0",
+   "sources": [
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-0/cases.json",
+     "sha256": "e49d2a0d77a2703f8df0f380fa4c815c029d53cfc28196d20e7bc3c3e0bbcee1"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-0/submission.json",
+     "sha256": "e7ca280c156d67dddcc4062a8bd83dc026adbd8676dad6344e2d770c41609125"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-0/job-body.json",
+     "sha256": "a8e9c0af37a1fd911fba990c36f51d864e0bd2a15e84f222dafd38242406f3f3"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-0/results.json",
+     "sha256": "26b5c4ac8de1a8e32bb6915a7e7fe4dbb4fc8ef1d8900960bf6a664e3c4c174e"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-identity-0/raw/result.json",
+     "sha256": "aab871d70476828c0f856f75d960a99d411755c178999d9877403e20f20ed652"
+    }
+   ],
+   "start_time": 1793147785.305029,
+   "status": "completed"
+  },
+  {
+   "duration_seconds": 4,
+   "name": "single-cross-0",
+   "sources": [
+    {
+     "file": "results/quandela/runs/ascella-context-single-cross-0/cases.json",
+     "sha256": "2e025b79e4c8a63d93e2b9ef78b44a90ea14fecac97000823be17fe6f5ff2304"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-cross-0/submission.json",
+     "sha256": "14f4b3984598cd933bf485bf14064189df13f4d58e4ff79caca90be8853232d1"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-cross-0/job-body.json",
+     "sha256": "1a5baada8328ff52747e4df62db2fcbcf8562f33bc3995c1bfbe8bf281683918"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-cross-0/results.json",
+     "sha256": "2faaa954ef3999719fabed4d4324704428e3be4b170e6b00d032b405fb034d91"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-single-cross-0/raw/result.json",
+     "sha256": "71d74acaed40084526e55b1fb2ca2111782ee9b712fa6146d6dd49661e005ab6"
+    }
+   ],
+   "start_time": 1793147814.834893,
+   "status": "completed"
+  },
+  {
+   "duration_seconds": 16,
+   "name": "packed-forward",
+   "sources": [
+    {
+     "file": "results/quandela/runs/ascella-context-packed-forward/cases.json",
+     "sha256": "8b7e58ef72a27d552308fbab26e54b0605080ece6f80bfda39703079d422d42b"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-packed-forward/submission.json",
+     "sha256": "174c8c33506e3597b908101c2beb1d409f91d7a90234ac3d619e22acfa8b0383"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-packed-forward/job-body.json",
+     "sha256": "44cfc9c07696bd52edfa54daefe0d7656722e83b2e387742ae2c53e4a9841044"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-packed-forward/results.json",
+     "sha256": "66d869d6f388ac291d4cf9cece7b92cab3820d3371ebd3b0f62a755fb43ccf13"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-packed-forward/raw/result.json",
+     "sha256": "6c9691a89f91b174d1aaac54ca25be99412f5ab04cce78f3985889bc8ebecf9f"
+    }
+   ],
+   "start_time": 1793147885.339165,
+   "status": "completed"
+  },
+  {
+   "duration_seconds": 16,
+   "name": "packed-reverse",
+   "sources": [
+    {
+     "file": "results/quandela/runs/ascella-context-packed-reverse/cases.json",
+     "sha256": "84d86e0a5304f79a56ecef9a658d8f631a666cb545bf4109764654529a5b353d"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-packed-reverse/submission.json",
+     "sha256": "3360420269016f49276aae685ac0065c4aa4d4ed4e42c8d015094cadbc3cc012"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-packed-reverse/job-body.json",
+     "sha256": "d6dfd3bd0ae2993c379ab8d687c3c271bcabb18f4a699cec8db624250146d8ec"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-packed-reverse/results.json",
+     "sha256": "f481f90454400e7c0194ac9bf8daac632b63a9b8360051f964ef7c32a2386c44"
+    },
+    {
+     "file": "results/quandela/runs/ascella-context-packed-reverse/raw/result.json",
+     "sha256": "c0cb8c18f156e26f795abd7344f94a323dd6fb896e895f8698e9e082a16584a5"
+    }
+   ],
+   "start_time": 1793147937.770013,
+   "status": "completed"
+  }
+ ],
+ "observations": {
+  "cross-0": {
+   "forward": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     9941,
+     11130,
+     10229,
+     11134,
+     10510,
+     10486,
+     24,
+     99,
+     421,
+     540,
+     867,
+     131,
+     24
+    ],
+    "detected_shots": 65536,
+    "leakage": 2106,
+    "mesh": [
+     "09f3f4d35c8000185679dcbc73bc31cadb79a0046ac8b8e7fe1242535f921588",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "product_fourier-to-product_chirped-input-0",
+    "returned_probabilities": [
+     0.1666740338910202,
+     0.1666622826218889,
+     0.16658397851391393,
+     0.16672552392463513,
+     0.1666256183365137,
+     0.16672830112143483,
+     6.1345464451465295e-09,
+     6.76511727186658e-08,
+     1.0745264728564844e-08,
+     9.965665499402567e-08,
+     6.1013734015958e-08,
+     1.6389219773269185e-08
+    ]
+   },
+   "reverse": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     10132,
+     11394,
+     10647,
+     11806,
+     10743,
+     10568,
+     14,
+     19,
+     51,
+     55,
+     73,
+     12,
+     22
+    ],
+    "detected_shots": 65536,
+    "leakage": 246,
+    "mesh": [
+     "09f3f4d35c8000185679dcbc73bc31cadb79a0046ac8b8e7fe1242535f921588",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "product_fourier-to-product_chirped-input-0",
+    "returned_probabilities": [
+     0.1666740338910202,
+     0.1666622826218889,
+     0.16658397851391393,
+     0.16672552392463513,
+     0.1666256183365137,
+     0.16672830112143483,
+     6.1345464451465295e-09,
+     6.76511727186658e-08,
+     1.0745264728564844e-08,
+     9.965665499402567e-08,
+     6.1013734015958e-08,
+     1.6389219773269185e-08
+    ]
+   },
+   "singleton": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     10263,
+     11503,
+     10582,
+     11636,
+     10776,
+     10657,
+     9,
+     11,
+     21,
+     21,
+     10,
+     10,
+     37
+    ],
+    "detected_shots": 65536,
+    "leakage": 119,
+    "mesh": [
+     "09f3f4d35c8000185679dcbc73bc31cadb79a0046ac8b8e7fe1242535f921588",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "product_fourier-to-product_chirped-input-0",
+    "returned_probabilities": [
+     0.1666740338910202,
+     0.1666622826218889,
+     0.16658397851391393,
+     0.16672552392463513,
+     0.1666256183365137,
+     0.16672830112143483,
+     6.1345464451465295e-09,
+     6.76511727186658e-08,
+     1.0745264728564844e-08,
+     9.965665499402567e-08,
+     6.1013734015958e-08,
+     1.6389219773269185e-08
+    ]
+   }
+  },
+  "cross-4": {
+   "forward": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     10936,
+     10753,
+     10265,
+     11789,
+     10570,
+     11093,
+     9,
+     6,
+     32,
+     20,
+     16,
+     10,
+     37
+    ],
+    "detected_shots": 65536,
+    "leakage": 130,
+    "mesh": [
+     "c8692ee9aa2706b303424e6b192172d4c932ec521e5cc7e5d68b1b3768e9c03c",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "product_fourier-to-product_chirped-input-4",
+    "returned_probabilities": [
+     0.1667920789197727,
+     0.16676459291360232,
+     0.1666098224114674,
+     0.1666729493854732,
+     0.16658122354382834,
+     0.16657912517601142,
+     2.020291911552547e-09,
+     6.73467346589541e-08,
+     3.704750725324324e-08,
+     9.338924492088574e-08,
+     7.650650732016285e-09,
+     1.954150315410554e-10
+    ]
+   },
+   "reverse": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     10955,
+     10681,
+     10212,
+     11889,
+     10382,
+     11300,
+     14,
+     7,
+     24,
+     26,
+     18,
+     8,
+     20
+    ],
+    "detected_shots": 65536,
+    "leakage": 117,
+    "mesh": [
+     "c8692ee9aa2706b303424e6b192172d4c932ec521e5cc7e5d68b1b3768e9c03c",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "product_fourier-to-product_chirped-input-4",
+    "returned_probabilities": [
+     0.1667920789197727,
+     0.16676459291360232,
+     0.1666098224114674,
+     0.1666729493854732,
+     0.16658122354382834,
+     0.16657912517601142,
+     2.020291911552547e-09,
+     6.73467346589541e-08,
+     3.704750725324324e-08,
+     9.338924492088574e-08,
+     7.650650732016285e-09,
+     1.954150315410554e-10
+    ]
+   },
+   "singleton": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     10978,
+     10715,
+     10229,
+     11713,
+     10481,
+     11130,
+     13,
+     20,
+     73,
+     65,
+     75,
+     16,
+     28
+    ],
+    "detected_shots": 65536,
+    "leakage": 290,
+    "mesh": [
+     "c8692ee9aa2706b303424e6b192172d4c932ec521e5cc7e5d68b1b3768e9c03c",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "product_fourier-to-product_chirped-input-4",
+    "returned_probabilities": [
+     0.1667920789197727,
+     0.16676459291360232,
+     0.1666098224114674,
+     0.1666729493854732,
+     0.16658122354382834,
+     0.16657912517601142,
+     2.020291911552547e-09,
+     6.73467346589541e-08,
+     3.704750725324324e-08,
+     9.338924492088574e-08,
+     7.650650732016285e-09,
+     1.954150315410554e-10
+    ]
+   }
+  },
+  "identity-0": {
+   "forward": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     65319,
+     10,
+     23,
+     9,
+     11,
+     11,
+     13,
+     13,
+     29,
+     48,
+     31,
+     18,
+     1
+    ],
+    "detected_shots": 65536,
+    "leakage": 153,
+    "mesh": [
+     "df379daaeb63192008e848e9e2dda5c5228b40cffed310395450973c50d9c083",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "computational-to-computational-input-0",
+    "returned_probabilities": [
+     0.9999997148942298,
+     1.7140999700461483e-08,
+     4.163543355878106e-08,
+     4.541915154544413e-08,
+     4.188610529748931e-09,
+     6.526262431630023e-08,
+     9.786186437709716e-09,
+     4.771483389531188e-08,
+     5.197544047842754e-08,
+     1.9237630795119755e-09,
+     5.839877271612422e-11,
+     3.2806584924096083e-13
+    ]
+   },
+   "reverse": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     65055,
+     14,
+     32,
+     20,
+     21,
+     25,
+     23,
+     40,
+     57,
+     81,
+     135,
+     31,
+     2
+    ],
+    "detected_shots": 65536,
+    "leakage": 369,
+    "mesh": [
+     "df379daaeb63192008e848e9e2dda5c5228b40cffed310395450973c50d9c083",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "computational-to-computational-input-0",
+    "returned_probabilities": [
+     0.9999997148942298,
+     1.7140999700461483e-08,
+     4.163543355878106e-08,
+     4.541915154544413e-08,
+     4.188610529748931e-09,
+     6.526262431630023e-08,
+     9.786186437709716e-09,
+     4.771483389531188e-08,
+     5.197544047842754e-08,
+     1.9237630795119755e-09,
+     5.839877271612422e-11,
+     3.2806584924096083e-13
+    ]
+   },
+   "singleton": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     63502,
+     57,
+     31,
+     17,
+     22,
+     55,
+     31,
+     73,
+     480,
+     507,
+     677,
+     80,
+     4
+    ],
+    "detected_shots": 65536,
+    "leakage": 1852,
+    "mesh": [
+     "df379daaeb63192008e848e9e2dda5c5228b40cffed310395450973c50d9c083",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "computational-to-computational-input-0",
+    "returned_probabilities": [
+     0.9999997148942298,
+     1.7140999700461483e-08,
+     4.163543355878106e-08,
+     4.541915154544413e-08,
+     4.188610529748931e-09,
+     6.526262431630023e-08,
+     9.786186437709716e-09,
+     4.771483389531188e-08,
+     5.197544047842754e-08,
+     1.9237630795119755e-09,
+     5.839877271612422e-11,
+     3.2806584924096083e-13
+    ]
+   }
+  },
+  "identity-2": {
+   "forward": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     15,
+     372,
+     64937,
+     30,
+     9,
+     23,
+     53,
+     9,
+     32,
+     26,
+     21,
+     9,
+     0
+    ],
+    "detected_shots": 65536,
+    "leakage": 150,
+    "mesh": [
+     "f795bd33cfb7841445a3a6b6efc1236d94d24a5394d2c284cff9ed2def8ae940",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "computational-to-computational-input-2",
+    "returned_probabilities": [
+     1.4433571755068244e-07,
+     7.353614380354295e-08,
+     0.9999995347478084,
+     1.7259576861504483e-08,
+     6.55660854824498e-08,
+     2.1115733630576754e-08,
+     5.4699981814016904e-08,
+     1.9756705267055295e-08,
+     6.78364504609773e-08,
+     8.243958441054622e-10,
+     2.782974737702034e-10,
+     4.310318655236248e-11
+    ]
+   },
+   "reverse": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     21,
+     386,
+     64939,
+     24,
+     7,
+     18,
+     59,
+     5,
+     30,
+     20,
+     18,
+     9,
+     0
+    ],
+    "detected_shots": 65536,
+    "leakage": 141,
+    "mesh": [
+     "f795bd33cfb7841445a3a6b6efc1236d94d24a5394d2c284cff9ed2def8ae940",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "computational-to-computational-input-2",
+    "returned_probabilities": [
+     1.4433571755068244e-07,
+     7.353614380354295e-08,
+     0.9999995347478084,
+     1.7259576861504483e-08,
+     6.55660854824498e-08,
+     2.1115733630576754e-08,
+     5.4699981814016904e-08,
+     1.9756705267055295e-08,
+     6.78364504609773e-08,
+     8.243958441054622e-10,
+     2.782974737702034e-10,
+     4.310318655236248e-11
+    ]
+   },
+   "singleton": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     19,
+     397,
+     64918,
+     20,
+     6,
+     25,
+     59,
+     8,
+     32,
+     23,
+     21,
+     8,
+     0
+    ],
+    "detected_shots": 65536,
+    "leakage": 151,
+    "mesh": [
+     "f795bd33cfb7841445a3a6b6efc1236d94d24a5394d2c284cff9ed2def8ae940",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "computational-to-computational-input-2",
+    "returned_probabilities": [
+     1.4433571755068244e-07,
+     7.353614380354295e-08,
+     0.9999995347478084,
+     1.7259576861504483e-08,
+     6.55660854824498e-08,
+     2.1115733630576754e-08,
+     5.4699981814016904e-08,
+     1.9756705267055295e-08,
+     6.78364504609773e-08,
+     8.243958441054622e-10,
+     2.782974737702034e-10,
+     4.310318655236248e-11
+    ]
+   }
+  },
+  "identity-5": {
+   "forward": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     34,
+     67,
+     68,
+     95,
+     20,
+     63980,
+     25,
+     37,
+     347,
+     344,
+     469,
+     45,
+     5
+    ],
+    "detected_shots": 65536,
+    "leakage": 1272,
+    "mesh": [
+     "3caaccf131295a6c0fa8297db81c3c2516154dc0ffbec8e8a6c39ee88c093083",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "computational-to-computational-input-5",
+    "returned_probabilities": [
+     4.641700191475361e-09,
+     2.9719059989171655e-08,
+     2.907914097864558e-08,
+     2.004166310042969e-08,
+     5.2472366864035206e-09,
+     0.9999997495160257,
+     5.7703519812869515e-08,
+     1.706793448860368e-08,
+     2.1219170905634085e-08,
+     5.99888182076789e-08,
+     8.364992948532751e-10,
+     4.939230713810537e-09
+    ]
+   },
+   "reverse": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     52,
+     119,
+     140,
+     89,
+     19,
+     60958,
+     25,
+     148,
+     956,
+     1208,
+     1637,
+     176,
+     9
+    ],
+    "detected_shots": 65536,
+    "leakage": 4159,
+    "mesh": [
+     "3caaccf131295a6c0fa8297db81c3c2516154dc0ffbec8e8a6c39ee88c093083",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "computational-to-computational-input-5",
+    "returned_probabilities": [
+     4.641700191475361e-09,
+     2.9719059989171655e-08,
+     2.907914097864558e-08,
+     2.004166310042969e-08,
+     5.2472366864035206e-09,
+     0.9999997495160257,
+     5.7703519812869515e-08,
+     1.706793448860368e-08,
+     2.1219170905634085e-08,
+     5.99888182076789e-08,
+     8.364992948532751e-10,
+     4.939230713810537e-09
+    ]
+   },
+   "singleton": {
+    "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+    "counts": [
+     15,
+     30,
+     54,
+     125,
+     10,
+     65209,
+     5,
+     15,
+     20,
+     30,
+     18,
+     5,
+     0
+    ],
+    "detected_shots": 65536,
+    "leakage": 93,
+    "mesh": [
+     "3caaccf131295a6c0fa8297db81c3c2516154dc0ffbec8e8a6c39ee88c093083",
+     "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+    ],
+    "name": "computational-to-computational-input-5",
+    "returned_probabilities": [
+     4.641700191475361e-09,
+     2.9719059989171655e-08,
+     2.907914097864558e-08,
+     2.004166310042969e-08,
+     5.2472366864035206e-09,
+     0.9999997495160257,
+     5.7703519812869515e-08,
+     1.706793448860368e-08,
+     2.1219170905634085e-08,
+     5.99888182076789e-08,
+     8.364992948532751e-10,
+     4.939230713810537e-09
+    ]
+   }
+  }
+ },
+ "order_boundary": "Iterator list position attributes a setting; physical execution order inside a packed job is not recorded.",
+ "prior": {
+  "duration_seconds": 37,
+  "sources": [
+   {
+    "file": "results/quandela/runs/ascella-dimension-six-transition-pilot/cases.json",
+    "sha256": "5c3bb52a1329e983af3c1629b533212883810a8d82bc38c23c3dad58b70b823a"
+   },
+   {
+    "file": "results/quandela/runs/ascella-dimension-six-transition-pilot/submission.json",
+    "sha256": "0f61ea17fe1fad33492729156c2340e56897aa846332808a014a9a2cb4376307"
+   },
+   {
+    "file": "results/quandela/runs/ascella-dimension-six-transition-pilot/job-body.json",
+    "sha256": "63e64d59eade9b4b1a676eaf542ee70d599dcd4edea93f419301838b50ad9f07"
+   },
+   {
+    "file": "results/quandela/runs/ascella-dimension-six-transition-pilot/results.json",
+    "sha256": "ddc3c45df61e786b411e314d02d5f16bf289dde4b4ae8f0217b7e9898cc8b00f"
+   },
+   {
+    "file": "results/quandela/runs/ascella-dimension-six-transition-pilot/raw/result.json",
+    "sha256": "d4c2e716d0a12f0f936fe6b189e57186b01cebe44107329d565c9b704dfe4ccd"
+   }
+  ],
+  "start_time": 1793145221.910272
+ },
+ "prior_observations": {
+  "cross-0": {
+   "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+   "counts": [
+    10250,
+    11314,
+    10495,
+    11567,
+    11044,
+    10772,
+    4,
+    10,
+    14,
+    19,
+    17,
+    7,
+    23
+   ],
+   "detected_shots": 65536,
+   "leakage": 94,
+   "mesh": [
+    "09f3f4d35c8000185679dcbc73bc31cadb79a0046ac8b8e7fe1242535f921588",
+    "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+   ],
+   "name": "product_fourier-to-product_chirped-input-0",
+   "returned_probabilities": [
+    0.1666740338910202,
+    0.1666622826218889,
+    0.16658397851391393,
+    0.16672552392463513,
+    0.1666256183365137,
+    0.16672830112143483,
+    6.1345464451465295e-09,
+    6.76511727186658e-08,
+    1.0745264728564844e-08,
+    9.965665499402567e-08,
+    6.1013734015958e-08,
+    1.6389219773269185e-08
+   ]
+  },
+  "cross-4": {
+   "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+   "counts": [
+    10079,
+    9876,
+    9837,
+    11288,
+    9716,
+    10697,
+    38,
+    188,
+    824,
+    1122,
+    1641,
+    202,
+    28
+   ],
+   "detected_shots": 65536,
+   "leakage": 4043,
+   "mesh": [
+    "c8692ee9aa2706b303424e6b192172d4c932ec521e5cc7e5d68b1b3768e9c03c",
+    "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+   ],
+   "name": "product_fourier-to-product_chirped-input-4",
+   "returned_probabilities": [
+    0.1667920789197727,
+    0.16676459291360232,
+    0.1666098224114674,
+    0.1666729493854732,
+    0.16658122354382834,
+    0.16657912517601142,
+    2.020291911552547e-09,
+    6.73467346589541e-08,
+    3.704750725324324e-08,
+    9.338924492088574e-08,
+    7.650650732016285e-09,
+    1.954150315410554e-10
+   ]
+  },
+  "identity-0": {
+   "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+   "counts": [
+    65313,
+    10,
+    15,
+    10,
+    20,
+    9,
+    17,
+    19,
+    29,
+    36,
+    46,
+    12,
+    0
+   ],
+   "detected_shots": 65536,
+   "leakage": 159,
+   "mesh": [
+    "df379daaeb63192008e848e9e2dda5c5228b40cffed310395450973c50d9c083",
+    "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+   ],
+   "name": "computational-to-computational-input-0",
+   "returned_probabilities": [
+    0.9999997148942298,
+    1.7140999700461483e-08,
+    4.163543355878106e-08,
+    4.541915154544413e-08,
+    4.188610529748931e-09,
+    6.526262431630023e-08,
+    9.786186437709716e-09,
+    4.771483389531188e-08,
+    5.197544047842754e-08,
+    1.9237630795119755e-09,
+    5.839877271612422e-11,
+    3.2806584924096083e-13
+   ]
+  },
+  "identity-2": {
+   "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+   "counts": [
+    46,
+    470,
+    60799,
+    24,
+    26,
+    98,
+    73,
+    189,
+    878,
+    1143,
+    1586,
+    192,
+    12
+   ],
+   "detected_shots": 65536,
+   "leakage": 4073,
+   "mesh": [
+    "f795bd33cfb7841445a3a6b6efc1236d94d24a5394d2c284cff9ed2def8ae940",
+    "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+   ],
+   "name": "computational-to-computational-input-2",
+   "returned_probabilities": [
+    1.4433571755068244e-07,
+    7.353614380354295e-08,
+    0.9999995347478084,
+    1.7259576861504483e-08,
+    6.55660854824498e-08,
+    2.1115733630576754e-08,
+    5.4699981814016904e-08,
+    1.9756705267055295e-08,
+    6.78364504609773e-08,
+    8.243958441054622e-10,
+    2.782974737702034e-10,
+    4.310318655236248e-11
+   ]
+  },
+  "identity-5": {
+   "boundary": "The counts condition on returned accepted events; incident pulses are unknown.",
+   "counts": [
+    37,
+    92,
+    84,
+    92,
+    19,
+    62036,
+    21,
+    115,
+    762,
+    873,
+    1268,
+    135,
+    2
+   ],
+   "detected_shots": 65536,
+   "leakage": 3176,
+   "mesh": [
+    "3caaccf131295a6c0fa8297db81c3c2516154dc0ffbec8e8a6c39ee88c093083",
+    "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264"
+   ],
+   "name": "computational-to-computational-input-5",
+   "returned_probabilities": [
+    4.641700191475361e-09,
+    2.9719059989171655e-08,
+    2.907914097864558e-08,
+    2.004166310042969e-08,
+    5.2472366864035206e-09,
+    0.9999997495160257,
+    5.7703519812869515e-08,
+    1.706793448860368e-08,
+    2.1219170905634085e-08,
+    5.99888182076789e-08,
+    8.364992948532751e-10,
+    4.939230713810537e-09
+   ]
+  }
+ },
+ "schema": "ascella-transition-context-analysis-v1"
+}
