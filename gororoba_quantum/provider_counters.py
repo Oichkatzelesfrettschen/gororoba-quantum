@@ -374,7 +374,9 @@ def quandela_record(results: Mapping[str, Any], budgets: Sequence[tuple[int, int
     The job body's job-level max_shots equals the largest of them on every retained iterated job, so that value
     classifies the top-level shots. A single job reports its detection events as the top-level shots. An answer
     whose payload carried no counts (a provider error or a partial job) leaves every sample counter unavailable
-    rather than zero, although the collected record writes samples 0 for it.
+    rather than zero, although the collected record writes samples 0 for it. qd_platform.result_summary writes
+    shots_used only for a parsed single answer, so a partial answer with an empty BSCount and shots_used stays
+    counted, with its observed zero samples.
     """
     partial = results.get("partial") is True
     entries = results.get("iterations")
@@ -384,7 +386,11 @@ def quandela_record(results: Mapping[str, Any], budgets: Sequence[tuple[int, int
     top = quandela_top_level_shots(results, iterated, job_max_shots)
     if not iterated:
         (max_samples, max_shots) = budgets[0] if budgets else (None, None)
-        counted = "counts" in results and isinstance(results.get("samples"), int) and bool(results.get("counts"))
+        counted = (
+            "counts" in results
+            and isinstance(results.get("samples"), int)
+            and (bool(results.get("counts")) or "shots_used" in results)
+        )
         if partial and not counted:
             # A partial answer without counts reports shots 0 as a default, not as an observed detection count.
             top = unavailable("shots", Population.DETECTION_EVENT, "job", "partial answer without counts")

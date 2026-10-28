@@ -267,6 +267,19 @@ def test_record_view_leaves_an_uncounted_answer_unavailable(run: str) -> None:
         raise AssertionError(record.record())
 
 
+def test_record_view_keeps_a_counted_partial_answer_with_no_samples() -> None:
+    # qd_platform.result_summary parses ':PCVL:BSCount:{}' of a cancelled single job into this summary.
+    results = {"shots": 100, "shots_used": 100, "partial": True, "counts": {}, "samples": 0, "result_fields": {}}
+    (only,) = pc.quandela_record(results, [(1000, 2000)]).iterations
+    if only is None or only.detection_events.value != 100 or only.samples.value != 0:
+        raise AssertionError("an empty counted answer observes its detections and zero samples")
+    if only.acceptance().value != 0.0:
+        raise AssertionError(only.acceptance())
+    uncounted = {k: v for k, v in results.items() if k != "shots_used"}
+    if pc.quandela_record(uncounted, [(1000, 2000)]).iterations != (None,):
+        raise AssertionError("an answer without shots_used and without counts stays uncounted")
+
+
 @pytest.mark.audit
 def test_record_view_agrees_with_the_counter_table_on_every_retained_run() -> None:
     import re
