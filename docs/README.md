@@ -259,6 +259,7 @@ differs from it only in the `cd_core.py` digest.
 | [coherent-error-families-report.md](notes/topics/coherent-error-families-report.md) | coherent error families, drift and Rocq replays |
 | [relativistic-metrology-scale.md](notes/topics/relativistic-metrology-scale.md) | the Belenos light cone as a mode-reachability set; relativistic and astronomical phases against the measured device instabilities, with the falsifiers of an astronomical coupling |
 | [pais-claims-falsification.md](notes/topics/pais-claims-falsification.md) | the Pais Superforce (c^4/G as unification) decomposed into Planck-unit identities, the measured alpha_s(M_Pl) shortfall, the Friedmann identity and the active-mass and Cherenkov refutations of permittivity engineering; the Pais patent equations against Maxwell, QED and general-relativity bounds; the NAWCAD null; the QET passivity ladder and its information-excess endpoint as the QPU-testable mechanism |
+| [persona-corpus-verified-results.md](notes/topics/persona-corpus-verified-results.md) | what survives of an LLM-persona corpus once checked from first principles: E8, triality and the Albert algebra (f4 derivations, e6 norm group, magic-square rows), corrected L-infinity, spectral-triple and affine definitions, the Sugawara central charge, the Coulomb gas and the Kac determinant with its constant to level 5, verified Casimir, QED and zero-point figures; the runs they admit (two-photon octonion associator on Ascella, QX-checked QET ladder on Tuna-17, IQM and IBM follow-ups), corrections to earlier notes, and the removed claims |
 | [open_gororoba_survey_deep_notes.md](notes/topics/open_gororoba_survey_deep_notes.md) | deep notes on the open_gororoba Rocq corpus |
 | [prior_work_synthesis.md](notes/prior_work_synthesis.md) | what is known, what is new, labeled per claim |
 | [koebisu_rank_stratum_research.md](notes/koebisu_rank_stratum_research.md) | dimension-32 rank question |
@@ -271,6 +272,7 @@ differs from it only in the `cd_core.py` digest.
 
 | File | Contents |
 |---|---|
+| [design/ascella-two-photon-associator-case.md](design/ascella-two-photon-associator-case.md) | written case for one qpu:ascella job: two photons through L_a L_b against L_(ab) (a = (e6+e7)/sqrt2, b = (e5+e7)/sqrt2) with a quaternion control; the associator appears only in two-photon interference; preregistered Delta endpoints, HOM-visibility model, credits, seconds and the HOM-floor decision |
 | [design/tuna-order-pilot-adversarial-admission.md](design/tuna-order-pilot-adversarial-admission.md) | descriptive pilot preregistration, adversarial findings and execution admission |
 | [design/hypercomplex-operator-evidence.md](design/hypercomplex-operator-evidence.md) | algebra falsifiers, operator encodings, library roles and device evidence |
 | [design/heron-idle-readout-attribution.md](design/heron-idle-readout-attribution.md) | own-partner, near-field and far-field split of the Kingston idle readout phase rate, by complementary reader classes |
