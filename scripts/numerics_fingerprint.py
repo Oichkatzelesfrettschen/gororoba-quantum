@@ -18,9 +18,11 @@ import os
 import platform
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+REPEATS = 3
 CONFIGURATIONS = {
     "default": {},
     "numpy-no-avx512": {"NPY_DISABLE_CPU_FEATURES": "X86_V4 AVX512_ICL AVX512_SPR"},
@@ -35,8 +37,9 @@ def digest(values) -> str:
     return hashlib.sha256(np.ascontiguousarray(np.asarray(values, dtype=float)).tobytes()).hexdigest()
 
 
-def kernels() -> dict[str, str]:
-    """sha256 of each kernel's float64 output bytes over fixed grids."""
+def kernels() -> tuple[dict[str, str], dict[str, float]]:
+    """sha256 of each kernel's float64 output bytes over fixed grids, and each kernel's best-of-REPEATS seconds with
+    every memo cache cleared before each repeat."""
     import numpy as np
     from scipy.linalg import expm
     from scipy.stats import chi2
@@ -45,47 +48,62 @@ def kernels() -> dict[str, str]:
     import measurement_sequence_analysis as msa
     import msq_successor_analysis as sa
 
-    out: dict[str, str] = {}
     x = -np.linspace(0.0, 50.0, 100003)
-    out["np_exp"] = digest(np.exp(x))
-    out["math_exp"] = digest([math.exp(v) for v in x])
     base = 1.0 + np.linspace(0.0, 5.0, 100003)
     k = np.linspace(0.25, 1000.0, 100003)
-    out["np_power"] = digest(base ** (-k))
-    out["math_pow"] = digest([math.pow(b, -kk) for b, kk in zip(base.tolist(), k.tolist(), strict=True)])
     index = np.arange(4096 * 16, dtype=float).reshape(4096, 4, 4)
     a, b = np.sin(index * 0.37) * 0.5, np.cos(index * 0.11) * 0.5
-    out["matmul_stack"] = digest(a @ b)
-    out["matmul_single"] = digest([a[i] @ b[i] for i in range(256)])
-    out["matrix_power_16"] = digest(np.linalg.matrix_power(a @ b * 0.6, 16))
-    gens = []
-    for t1 in np.linspace(50e-6, 400e-6, 16):
-        for t2 in np.linspace(20e-6, 300e-6, 16):
-            om = (math.pi / 2) / 36e-9
-            gens.append(
-                np.array([[-1 / t2, 0, 0, 0], [0, -1 / t2, -om, 0], [0, om, -1 / t1, 1 / t1], [0, 0, 0, 0]]) * 36e-9
-            )
-    out["expm_stack"] = digest(expm(np.array(gens)))
-    out["chi2_sf"] = digest([chi2.sf(s, d) for s in np.linspace(0.1, 60.0, 200) for d in (1, 2, 3, 4, 8)])
-    gate = (0.0005, 36e-9, 1.0, 0.0, 0.0)
-    out["corrected_z"] = digest(
+    om = (math.pi / 2) / 36e-9
+    gens = np.array(
         [
+            np.array([[-1 / t2, 0, 0, 0], [0, -1 / t2, -om, 0], [0, om, -1 / t1, 1 / t1], [0, 0, 0, 0]]) * 36e-9
+            for t1 in np.linspace(50e-6, 400e-6, 16)
+            for t2 in np.linspace(20e-6, 300e-6, 16)
+        ]
+    )
+    gate = (0.0005, 36e-9, 1.0, 0.0, 0.0)
+    delays = [0.0, 20e-6, 50e-6, 100e-6, 200e-6, 400e-6]
+
+    def fits() -> list[float]:
+        out: list[float] = []
+        for t_true in np.linspace(80e-6, 300e-6, 6):
+            for shape in (0.5, 4.0, 64.0, math.inf):
+                y = [1 - 2 * float(sa.survival(np.array([d]), float(t_true), shape)[0]) for d in delays]
+                y = [v + 1e-3 * math.sin(7.0 * i + t_true * 1e4) for i, v in enumerate(y)]
+                fit = sa.fit_gamma_rate(delays, y, [1e6] * len(delays))
+                out += [fit["t_s"], fit["shape"] if math.isfinite(fit["shape"]) else -1.0, fit["chi2"]]
+        return out
+
+    work = {
+        "np_exp": lambda: np.exp(x),
+        "math_exp": lambda: [math.exp(v) for v in x.tolist()],
+        "np_power": lambda: base ** (-k),
+        "math_pow": lambda: [math.pow(p, -q) for p, q in zip(base.tolist(), k.tolist(), strict=True)],
+        "matmul_stack": lambda: a @ b,
+        "matmul_single": lambda: [a[i] @ b[i] for i in range(256)],
+        "matrix_power_16": lambda: np.linalg.matrix_power(a @ b * 0.6, 16),
+        "expm_stack": lambda: expm(gens),
+        "chi2_sf": lambda: [chi2.sf(s, d) for s in np.linspace(0.1, 60.0, 200) for d in (1, 2, 3, 4, 8)],
+        "corrected_z": lambda: [
             msa.corrected_z(arm, n, t1, 150e-6, 2e-6, 0.001, gate, 0.98)
             for arm in ("measure", "delay", "unitary", "settle")
             for n in (2, 4, 8, 16)
             for t1 in np.linspace(80e-6, 350e-6, 12)
-        ]
-    )
-    delays = [0.0, 20e-6, 50e-6, 100e-6, 200e-6, 400e-6]
-    fits = []
-    for t_true in np.linspace(80e-6, 300e-6, 6):
-        for shape in (0.5, 4.0, 64.0, math.inf):
-            y = [1 - 2 * float(sa.survival(np.array([d]), float(t_true), shape)[0]) for d in delays]
-            y = [v + 1e-3 * math.sin(7.0 * i + t_true * 1e4) for i, v in enumerate(y)]
-            fit = sa.fit_gamma_rate(delays, y, [1e6] * len(delays))
-            fits += [fit["t_s"], fit["shape"] if math.isfinite(fit["shape"]) else -1.0, fit["chi2"]]
-    out["fit_gamma_rate"] = digest(fits)
-    return out
+        ],
+        "fit_gamma_rate": fits,
+    }
+    digests: dict[str, str] = {}
+    seconds: dict[str, float] = {}
+    for name, thunk in work.items():
+        best = math.inf
+        for _ in range(REPEATS):
+            msa.sx_map.cache_clear()
+            sa._fit.cache_clear()
+            start = time.perf_counter()
+            value = thunk()
+            best = min(best, time.perf_counter() - start)
+        digests[name], seconds[name] = digest(value), best
+    return digests, seconds
 
 
 def environment() -> dict[str, object]:
@@ -119,7 +137,8 @@ def environment() -> dict[str, object]:
 
 
 def child() -> int:
-    print(json.dumps({"environment": environment(), "kernels": kernels()}))
+    digests, seconds = kernels()
+    print(json.dumps({"environment": environment(), "kernels": digests, "seconds": seconds}))
     return 0
 
 
