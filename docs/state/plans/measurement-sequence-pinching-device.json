@@ -629,6 +629,26 @@
             }
           ],
           "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "PR #516 merged as bd6fb9e after four Codex rounds (clean at 12f85c4) with lint, types, tests and gates green; revalidated over live_run.py as the successor branch carries it (the relaxation family's order evidence), which leaves the merged envelope path unchanged.",
+          "observed_at": "2026-10-28T18:04:31+00:00",
+          "revision": "a1355f00792ea7536d324c9163a94e984d17574b",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "4ad08ac8f29918ee5fa6da4f40543e26743a82b357d383618d79160369882eaa"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
         }
       ]
     },
