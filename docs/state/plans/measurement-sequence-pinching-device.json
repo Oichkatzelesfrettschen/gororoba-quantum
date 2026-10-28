@@ -609,6 +609,26 @@
             }
           ],
           "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "Revalidated after the successor's in-circuit carryover readers add the reader idle to live_run.py's calibration drift check; the retained envelope run, its family and its findings are unchanged.",
+          "observed_at": "2026-10-28T16:30:09+00:00",
+          "revision": "619cd7c622bdd9528f9c42efcd09a17ef0d359e3",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "cc301c45e8afe6b88cdc7cda24cce39274edeb3c7640c12722ae573ba28a6a18"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
         }
       ]
     },
