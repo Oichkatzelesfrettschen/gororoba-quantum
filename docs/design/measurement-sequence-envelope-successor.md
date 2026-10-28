@@ -1,10 +1,10 @@
 # Measurement-sequence envelope successor: relaxation to the ground state, crosstalk-free carryover readers
 
-Status: design v3.8, the frozen v3.3 with the corrections its implementation forced: a per-qubit shape bound at
+Status: design v3.9, the frozen v3.3 with the corrections its implementation forced: a per-qubit shape bound at
 the fitted T and a per-qubit settle test against the other qubits' median and MAD (v3.4), a reader statistic
-stratified by reader and divided by the squared readout contrast (v3.5), null arms that can each fail (v3.6), and
-minority q arms with a measured sparse detectable gap (v3.7), and a sparse power target bounded over its three
-widths as one family (v3.8). It builds on the deduplicated
+stratified by reader and divided by the squared readout contrast (v3.5), null arms that can each fail (v3.6),
+minority q arms with a measured sparse detectable gap (v3.7), a sparse power target bounded over its three widths
+as one family (v3.8), and a sparse arm that runs to 408 exposed verdicts per width (v3.9). It builds on the deduplicated
 `collect.json` (each PUB's placed calibration stored once), which main carries. The
 width-32 envelope run of 2026-10-27 (`results/live/2026-10-27T014422.881898Z`) executed as planned, billed 38 s, and
 returned no device verdict because its reset screen withheld all 32 qubits
@@ -187,8 +187,9 @@ over the admitted grid, so the null covers the qubits the case selects.
 - q arms: true q where the screen's lower confidence bound at the expected counts sits on the tolerance bound, so
   about half the qubits pass the equilibrium screen. Planted on every qubit (q-tolerance), the deficit moves every
   settle gap together and the common settle veto withholds the device verdict in nearly every replicate, so that arm
-  tests the veto: common-veto power at least 0.9 and the unconditional false-fire bound below 0.01 over 300
-  replicates. Planted on two qubits with the rest at q = 1 (q-minority), the common veto stays quiet and the deficit
+  tests the veto: common-veto power at least 0.9 over 300 replicates. Its unconditional false-fire bound below 0.01
+  then holds by withholding and only confirms that 300 replicates ran; the minority arm carries the false-fire
+  question. Planted on two qubits with the rest at q = 1 (q-minority), the common veto stays quiet and the deficit
   must pass or fail the per-qubit screens on its own; the arm runs until 299 issued verdicts select at least one
   planted qubit (exposed verdicts) and requires the false-fire bound over exposed verdicts and the unconditional
   bound below 0.01. It reports how often the equilibrium screen and the settle veto withheld a planted qubit and how
@@ -198,11 +199,17 @@ over the admitted grid, so the null covers the qubits the case selects.
   common-mean veto must catch with power at least 0.9; and a sparse defect on two qubits at the same widths, planted
   as a per-pinch loss in the measure arm alone (the post-measurement tail the settle idles let decay, the
   `eps_settle = 0` device of `msa.device_model`), sized so its noise-free settle gap equals the measured two-outlier
-  detectable gap above. Scored per planted qubit, the arm fails when the one-sided Clopper-Pearson upper bound on the
-  veto's power falls below 0.9 at any width, each width's bound at 1 - 0.05/3 (Bonferroni over the three widths, a
-  family-wise 95 %), which detects a calibration that overstates the power; and the departure
-  false-fire bound over all replicates must stay below 0.01, which measures the departure bias a missed tail leaves.
-  A tail below that size is the veto's stated blind spot.
+  detectable gap above. Every bound of this arm is one-sided at 1 - 0.05/3 per width (Bonferroni over the three
+  widths, a family-wise 95 %). Scored per planted qubit over each width's first 300 replicates, the arm fails when
+  the Clopper-Pearson upper bound on the veto's power falls below 0.9, which detects a calibration that overstates
+  the power by about 0.03 or more (a width fails at 523 or fewer withheld of 600 planted gaps, which happens half
+  the time at true power 0.872). The bound counts the two planted gaps of a replicate as independent trials,
+  though they correlate (about 0.43, 0.25 and 0 at 8, 9 and 24 qubits), so a calibration of true power 0.9 fails
+  about 6 to 7 % of nulls rather than 5 %: the test errs strict. A missed tail moves the departure only in a verdict
+  that selects a planted qubit (an exposed verdict), so each width runs until 408 exposed verdicts, the least
+  zero-fire count whose bound falls below 0.01 at the family confidence, and the exposed and unconditional
+  false-fire bounds must both stay below 0.01; this measures the departure bias a missed tail leaves. A tail below
+  the detectable gap is the veto's stated blind spot.
 - Plateau arms: plateau-low draws only the retained (T1, q) pairs with q below every tolerance bound, and the
   equilibrium bound and the settle veto must withhold its departure verdict; plateau-retained draws all 30 retained
   pairs (q from 0.28 to 1.02, the retained device itself) and runs until 299 verdicts are issued with the conditional
@@ -233,24 +240,26 @@ Null results at width 24 on the rehearsal dry run `results/live/2026-10-28T00193
 false fires. [successor-null.json](../evidence/measurement_sequence/successor-null.json) retains each arm record's
 statistics without its rows, with the sha256 of the full record (`scripts/msq_successor_null.py --summarize`
 writes it and refuses a record whose statistics this code would not compute from its rows). A row replays byte for
-byte with `"$PYTHON" scripts/msq_successor_null.py results/live/2026-10-28T001935.805967Z --arm ARM --replicates
+byte under the pinned `ci-py3.14.7` interpreter and the numeric environment of
+[ci/AGENTS.md](../../ci/AGENTS.md#layout-and-gates) (one Python build and libm; another CPython build flips
+individual rows) with `"$PYTHON" scripts/msq_successor_null.py results/live/2026-10-28T001935.805967Z --arm ARM --replicates
 CAP` at the cap below, adding `--seed qrng:docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json#3` for the
 `SPARSE_CONFIRMATION_SEED` row; every other row runs at the default `SUCCESSOR_NULL_SEED`. An arm with a verdict
 count stops at it, so its replicates fall below its cap.
 
 | Arm | Cap | Replicates | Result |
 |---|---|---|---|
-| carryover-positive | 1500 | 346 | 299 issued; bounds 0.0100 issued, 0.0086 overall |
-| carryover-negative | 1500 | 461 | 299 issued (common veto 28 %); bounds 0.0100, 0.0065 |
+| carryover-positive | 1500 | 346 | 299 issued; bounds 0.00997 issued, 0.0086 overall |
+| carryover-negative | 1500 | 461 | 299 issued (common veto 28 %); bounds 0.00997, 0.0065 |
 | carryover-boundary | 300 | 300 per offset | issued 0, 0 and 11 at 0, 1 and 2 SE inside (descriptive) |
 | q-tolerance | 300 | 300 | common veto 100 %; overall bound 0.0099 |
-| q-minority | 1500 | 438 | 299 exposed verdicts; bounds 0.0100 exposed, 0.0068 overall |
+| q-minority | 1500 | 438 | 299 exposed verdicts; bounds 0.00997 exposed, 0.0068 overall |
 | settle-common | 300 | 300 per width | common veto 100 % at 8, 9 and 24 qubits |
-| settle-sparse, `SPARSE_CONFIRMATION_SEED` | 300 | 300 per width | power 0.903, 0.906, 0.935 at 8, 9, 24; family bounds 0.927, 0.930, 0.955 |
-| settle-sparse, `SUCCESSOR_NULL_SEED` | 300 | 300 per width | power 0.898, 0.875, 0.917; the v3.7 failure (Superseded designs) |
+| settle-sparse, `SPARSE_CONFIRMATION_SEED` | 20000 | 9259, 2855, 2837 at 8, 9, 24 | 408 exposed verdicts per width, family exposed bound 0.00998; power over the first 300 replicates 0.903, 0.906, 0.935 (family bounds 0.927, 0.930, 0.955), over every replicate 0.909, 0.905, 0.924 |
+| settle-sparse, `SUCCESSOR_NULL_SEED` | 300 | 300 per width | power 0.898, 0.875, 0.917; the v3.7 run (Superseded designs), short of the v3.9 exposed count |
 | plateau-low | 300 | 300 | every departure verdict withheld |
-| plateau-retained | 20000 | 14943 | 299 issued (2.0 %); bounds 0.0100 issued, 0.0002 overall |
-| plateau-minority | 3000 | 1057 | 299 exposed verdicts; bounds 0.0100, 0.0028 |
+| plateau-retained | 20000 | 14943 | 299 issued (2.0 %); bounds 0.00997 issued, 0.0002 overall |
+| plateau-minority | 3000 | 1057 | 299 exposed verdicts; bounds 0.00997, 0.0028 |
 | gamma | 400 | 400 | 398 informative (99.5 %); bound 0.0075 |
 
 ## What the run can detect
@@ -293,10 +302,16 @@ conditional or unconditional zero-fire bound at or above 0.01; a minority arm wi
 an exposed or unconditional bound at or above 0.01; a q-tolerance or settle-common arm whose common veto fires in
 under 90 % of replicates; a gamma arm's informative-device rate below 80 %; a plateau-low arm whose departure verdict
 is not withheld; a sparse settle arm whose per-qubit power upper bound at the family's 95 % falls below 0.9 at any
-width or whose departure false-fire bound reaches 0.01.
+width, with fewer than 408 exposed verdicts at a width, or whose exposed or unconditional false-fire bound at the
+family's 95 % reaches 0.01.
 
 ## Superseded designs
 
+- v3.8 scored the sparse arm's departure false-fire bound over all 300 replicates of each width. A missed tail
+  moves the departure only in the verdicts that select a planted qubit, of which the confirmation null held 13, 42
+  and 38 at 8, 9 and 24 qubits (exposed bounds 0.206, 0.069 and 0.076); the unconditional bound passed because the
+  veto and the selection withheld the rest. It also applied the three-width Bonferroni share to the power bound
+  alone, where it loosens, and not to the false-fire bound, where 0 fires in 300 replicates gives 0.01356.
 - v3.7 bounded each width's sparse power at 95 % on its own. With power exactly 0.9 at every width the arm then
   fails at one width or more in up to 14 % of nulls, and more often within the calibration's one-standard-error
   stopping tolerance. Its null at the preregistered seed failed at 9 qubits: 524 of 599 planted gaps withheld,
