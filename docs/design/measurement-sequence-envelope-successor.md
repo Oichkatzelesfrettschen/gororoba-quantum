@@ -266,9 +266,9 @@ shards of `--shard K --shards 5` (`--merge`), which cuts it at the same replicat
 
 | Arm | Cap | Replicates | Result |
 |---|---|---|---|
-| carryover-positive | 1500 | 369 | 299 issued; bounds 0.00997 issued, 0.0081 overall |
-| carryover-negative | 1500 | 416 | 299 issued (common veto 22 %); bounds 0.00997, 0.0072 |
-| carryover-boundary | 300 | 300 per offset | issued 0, 0 and 3 at 0, 1 and 2 SE inside (descriptive) |
+| carryover-positive | 1500 | 352 | 299 issued; bounds 0.00997 issued, 0.0085 overall |
+| carryover-negative | 1500 | 378 | 299 issued (common veto 16 %); bounds 0.00997, 0.0079 |
+| carryover-boundary | 300 | 300 per offset | issued 0 at 0, 1 and 2 SE inside (descriptive) |
 | q-tolerance | 300 | 300 | common veto 99.7 %; overall bound 0.0099 |
 | q-minority | 1500 | 447 | 299 exposed verdicts; bounds 0.00997 exposed, 0.0067 overall |
 | settle-common | 300 | 300 per width | common veto 99.7 %, 100 % and 100 % at 8, 9 and 24 qubits |
