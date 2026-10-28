@@ -10,7 +10,9 @@
     "usage_remaining_seconds": 176
   },
   "acquisition_count": 24,
-  "awaiting_observation": [],
+  "awaiting_observation": [
+    "results/live/2026-10-28T000644.379196Z/raw/dbgjpg1q260s73bte67g"
+  ],
   "failed_charge_seconds": "4",
   "failed_job_count": 2,
   "final_charge_seconds": "424",
