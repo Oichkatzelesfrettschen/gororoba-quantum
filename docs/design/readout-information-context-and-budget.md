@@ -470,6 +470,10 @@ physical shot alignment or statistical independence.
 Adjudication checks every raw PUB and the result-metadata file named by the
 anchored acquisition index, using bounded file reads. That byte check does not
 establish that the provider's metadata proves physical shot ordering.
+The offline retention tests include a collector process that exits before
+publishing its acquisition index; recollection acquires the released job lock
+and binds the raw bytes already written. That test covers the observed local
+filesystem behavior, not arbitrary filesystem failures or provider provenance.
 
 The local `project_reporter_shots` helper projects ordered single-register
 Qiskit bitstrings onto two specified classical-bit indices without constructing

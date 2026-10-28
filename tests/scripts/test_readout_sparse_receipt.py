@@ -4,6 +4,8 @@ import fcntl
 import hashlib
 import io
 import json
+import multiprocessing
+import os
 import threading
 from concurrent.futures import ThreadPoolExecutor
 
@@ -310,6 +312,45 @@ def test_interrupted_raw_collection_replays_without_replacing_raw(tmp_path, monk
     write_raw_result(tmp_path, "job-1", Job(), [Pub()], ["actor-active"])
     if (directory / "pub_00.json").read_bytes() != raw:
         raise AssertionError("recollection must preserve raw bytes written before interruption")
+
+
+def test_killed_raw_collector_releases_lock_and_recovers(tmp_path, monkeypatch) -> None:
+    class Pub:
+        data: dict = {}
+        metadata: dict = {}
+
+    class Job:
+        def metrics(self) -> dict:
+            return {}
+
+    publish = live_run._write_once_atomically
+
+    def kill_before_index(target, text) -> None:
+        if target.name == "acquisition-index.json":
+            os._exit(73)
+        publish(target, text)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(live_run, "_write_once_atomically", kill_before_index)
+        process = multiprocessing.get_context("fork").Process(
+            target=write_raw_result, args=(tmp_path, "job-1", Job(), [Pub()], ["actor-active"])
+        )
+        process.start()
+        process.join(timeout=10)
+        if process.is_alive():
+            process.kill()
+            process.join()
+            raise AssertionError("the interrupted collector must terminate")
+        if process.exitcode != 73:
+            raise AssertionError("the child must exit immediately before index publication")
+    directory = tmp_path / "raw" / "job-1"
+    raw = (directory / "pub_00.json").read_bytes()
+    if (directory / "acquisition-index.json").exists():
+        raise AssertionError("the killed process must not publish a partial index")
+    write_raw_result(tmp_path, "job-1", Job(), [Pub()], ["actor-active"])
+    index = json.loads((directory / "acquisition-index.json").read_bytes())
+    if (directory / "pub_00.json").read_bytes() != raw or index["files"]["pub_00.json"] != digest(raw):
+        raise AssertionError("recollection must release the abandoned lock and bind the original raw bytes")
 
 
 @pytest.mark.parametrize("mutation", ["anchor", "raw", "index_digest", "manifest", "family", "missing_binding"])
