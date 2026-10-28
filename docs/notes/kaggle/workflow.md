@@ -55,7 +55,7 @@ GPU matters for sweeps and batched trials, not for single circuits.
 `scripts/kaggle_run.py` is the path from the repository to Kaggle. It runs under the operator's interpreter that
 holds the kaggle and kagglesdk distributions (the build host's system `python3`, from the `kaggle-api` and
 `python-kagglesdk` packages); the CI pins carry neither, since CI never contacts Kaggle and `verify` reads receipts
-offline. A CPU `push` needs only the `kaggle` CLI, while `status`, `collect` and an accelerator push import the SDK
+offline. A CPU `push` and `status` need only the `kaggle` CLI, while `collect` and an accelerator push import the SDK
 and stop with a named error under an interpreter that lacks it:
 
 - `push ENTRY --slug SLUG [--include FILE] [-- ARGS]` bundles ENTRY with

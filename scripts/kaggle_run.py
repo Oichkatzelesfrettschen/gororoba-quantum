@@ -584,7 +584,7 @@ def kaggle_api() -> Any:
         from kaggle.api.kaggle_api_extended import KaggleApi
     except ModuleNotFoundError as error:
         raise SystemExit(
-            f"{sys.executable} lacks the kaggle SDK ({error}); status, collect and accelerator pushes need the "
+            f"{sys.executable} lacks the kaggle SDK ({error}); collect and accelerator pushes need the "
             "kaggle and kagglesdk distributions, so run kaggle_run.py under the interpreter that holds them"
         ) from error
     api = KaggleApi()
