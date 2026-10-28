@@ -360,6 +360,47 @@ pass. The record certifies basepoints, slices, reduced germs, and the ten comple
 computes neither a nullity-16 Gauss fiber nor an attaching map. A changed germ or completed count, a blocked row that
 fails to name its stage, or a surviving source-ideal mutation falsifies the retained outcome.
 
+## The nullity-16 Rees-fiber attempt stops after survivor reduction
+
+[`nullity16_rees_fibers.py`](nullity16_rees_fibers.py) applies the prescribed one-pass normal-form reduction to the
+126 four-Pfaffian coordinates of the eight rows that timed out above, then asks for the Nakayama-reduced Rees fiber
+modulo 32003 and over `Q(i)`. The retained
+[`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json) certifies these exact survivor-selection
+results before the next modular stage reaches its resource boundary:
+
+| Incidence family | Independent survivors | Coefficient monomials |
+| --- | ---: | ---: |
+| `E8bar->N+`, `E8bar->N-` | 103 of 126 | 3,741 |
+| `W8->N+`, `W8->N-` | 124 of 126 | 2,589 |
+| `X+->N+`, `X-->N-` | 69 of 126 | 727 |
+| `X+->N-`, `X-->N+` | 69 of 126 | 731 |
+
+All eight survivor-reduced rows then reach the 300-second limit at `modular_nakayama_and_embedding`. The other ten
+rows stop immediately at that modular stage because Singular reports `2nd module does not lie in the first` for
+`lift(LiftBasis,FullF)`. The producer uses the committed minimal local Nakayama generators as `F` and constructs
+`LiftBasis = J + mF + G`. Those generators span `I/(mI+J)`, but they need not generate every original Schur
+coordinate as a module over the global polynomial ring. The requested lift of all 36 or 126 coordinates is therefore
+undefined. The zero rows printed after the failed lift carry no mathematical information and enter no claim.
+
+Three capped generation attempts exercised the same algebraic formulation. Attempts one and two stopped during
+aggregation after their mutation targets blocked; they took 11:00.74 at 264,204 KiB peak RSS and 11:03.41 at
+264,424 KiB peak RSS. Attempt three retained the blocked mutation outcome and took 11:02.23 at 264,312 KiB peak
+RSS. Every Singular call had a 4 GiB address-space cap and a 300-second timeout, the Python controller had the
+standing 16 GiB cap, and the producer imposed no wall-clock gate.
+
+The retained record has `pass=false`: all 18 incidences are blocked and zero Rees fibers complete. The record
+certifies only the eight exact survivor ranks above and the stage-specific cost outcome. It certifies no full Schur
+embedding, standard-basis-point control, characteristic comparison, Rees fiber, generator-deletion mutation, real
+fiber, or attaching map. A successful modular count, a valid full embedding of the original coordinates, or a
+detected generator-deletion mutation falsifies this blocked outcome.
+
+The optimized self-test replays the same blocked invariants successfully. The byte-exact check does not pass: the
+`blocked_diagnostic` field retains `/usr/bin/time` measurements from the failed Singular lift, so a fresh run changes
+the JSON bytes even when every survivor rank and blocked stage agrees. The retained record digest is
+`ee1b8663a034439aa1b09616a6299f39b3358d09f04449ab48ff82108a716f63`; the replay digest was
+`81d51f41f84778acde79552507fb1e0a47ed665a90220f2cd535cf74fea7056a`. Fixing that serialization and regenerating
+the result would exceed the sub-step's three-attempt cap. The replay failure therefore remains part of the blocker.
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?
@@ -469,6 +510,12 @@ prlimit --as=17179869184 -- "$PYTHON" -B -W error -O \
     docs/evidence/a5-kernel-attachments/nullity16_basepoints.py --self-test
 prlimit --as=17179869184 -- "$PYTHON" docs/evidence/a5-kernel-attachments/nullity16_basepoints.py \
     --check docs/evidence/a5-kernel-attachments/nullity16-basepoints-result.json
+prlimit --as=17179869184 -- "$PYTHON" -B -W error \
+    docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py --self-test
+prlimit --as=17179869184 -- "$PYTHON" -B -W error -O \
+    docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py --self-test
+prlimit --as=17179869184 -- "$PYTHON" docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py \
+    --check docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json
 ```
 
 The `--check` command constructs the sorted, two-space-indented JSON plus its final newline in memory and compares

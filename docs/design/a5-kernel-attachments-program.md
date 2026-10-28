@@ -366,3 +366,7 @@ about a thousand generators.
   msolve `-v 2`), streamed to a log beside a 10 s memory and CPU sample trace, and stops when host `MemAvailable`
   falls below 4 GiB. A job ends early only on a measured stall (no degree advance and no pair-count decrease over a
   sustained window), never on a fixed short timeout; the progress log is the evidence for either outcome.
+
+- **Roles (owner direction, supersedes earlier sub-step wording).** Codex diagnoses and Claude implements. A Codex
+  turn reads the tree, runs read-only probes and reports each defect as file:line, failing statement, root cause and
+  the proposed change; it edits no file. The orchestrator applies the change, runs the gates and commits.
