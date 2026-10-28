@@ -311,3 +311,135 @@ def test_record_view_agrees_with_the_counter_table_on_every_retained_run() -> No
         reported = [i["nb_shots_used"] for i in row["iterations"]]
         if record.iterated and not record.partial and [i.detection_events.value for i in counted] != reported:
             raise AssertionError(f"{row['run']}: detection events differ from the raw nb_shots_used")
+
+
+def conformance_run(directory: Path, answers: list[tuple[str, int | None]], shots: int) -> None:
+    """A collector-format qd-hypercomplex run that qd_platform.run_facts verifies and analyze_qd reads.
+
+    answers lists each computation's BSCount body and its nb_shots_used (None leaves the field out); one answer is a
+    single job, more are the iterations of a template job. shots is the answer's top-level shots.
+    """
+    import hashlib
+
+    import qd_platform
+
+    def save(path: Path, value: object) -> str:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+
+    steps = len(answers)
+    row = {
+        "family": "mub6",
+        "kind": "science",
+        "requested_probabilities": [0.5, 0.5, 0.0, 0.0],
+        "native_probabilities": [0.6, 0.4, 0.0, 0.0],
+        "active_outputs": [0, 1],
+        "leakage_outputs": [2, 3],
+        "logical_output_labels": ["0", "1", "leak2", "leak3"],
+        "success_outputs": [0],
+        "measurement_mapping": [0, 1],
+        "register_kind": "classical",
+        "register_width": 2,
+    }
+    template = {"circuit_params": {}, "column": 0} if steps > 1 else {}
+    circuit = {"schema": "qd-template-circuit-v1", "modes": 4, "input_state": [1, 0, 0, 0], "ops": [], "parameters": 0}
+    manifest = {
+        "schema": "qd-hypercomplex-cases-v1",
+        "family": "mub6",
+        "job": "fixture",
+        "platforms": ["qpu:ascella"],
+        "gate_form": "template",
+        "command": "sample_count",
+        "iterations": steps,
+        "settings": [{"name": f"setting-{k}", **row, **template} for k in range(steps)],
+        "max_samples": 10 * steps,
+        "max_shots": 20 * steps,
+        "circuit": {"file": "circuit.json", "sha256": save(directory / "circuit.json", circuit)},
+    }
+    body = {"payload": {"test": "retained-payload"}}
+    save(directory / "job-body.json", body)
+    save(
+        directory / "submission.json",
+        {
+            "schema": "qd-submission-v1",
+            "cases_sha256": save(directory / "cases.json", manifest),
+            "job_id": "fixture-job",
+            "platform": "qpu:ascella",
+            "approval": "fixture approval",
+            "submitted_utc": "2026-10-27T12:00:00+00:00",
+            "body_sha256": hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest(),
+            "per_job_credits": 1.0,
+            "platform_at_plan": {"price_per_shot": 1e-6},
+        },
+    )
+    entries = [
+        {"results": f":PCVL:BSCount:{{{counts}}}", **({} if used is None else {"nb_shots_used": used})}
+        for counts, used in answers
+    ]
+    inner = (
+        entries[0]
+        if steps == 1
+        else {"results_list": [{**e, "iteration": {"index": k}} for k, e in enumerate(entries)]}
+    )
+    save(directory / "raw/result.json", {"job_id": "fixture-job", "shots": shots, "results": json.dumps(inner)})
+    raw = (directory / "raw/result.json").read_bytes()
+    status = {"status": "completed", "shots": shots}
+    expected = qd_platform.expected_iterations(manifest)
+    save(
+        directory / "results.json",
+        {
+            "schema": "qd-collection-v1",
+            "job_id": "fixture-job",
+            "status": status,
+            "collected_utc": "2026-10-27T12:01:00+00:00",
+            "data": {"payload": body["payload"]},
+            "result_sha256": hashlib.sha256(raw).hexdigest(),
+            **qd_platform.result_summary(raw, "fixture-job", status, expected=expected),
+        },
+    )
+
+
+@pytest.mark.parametrize(
+    ("answers", "shots", "single_reports"),
+    [
+        ([("|1,0,0,0>=6;|0,1,0,0>=2;|0,0,1,0>=2", None)], 20, False),
+        ([("|1,0,0,0>=6;|0,1,0,0>=2;|0,0,1,0>=2", 20)], 20, True),
+        ([("|1,0,0,0>=6;|0,1,0,0>=2;|0,0,1,0>=2", 20), ("|1,0,0,0>=3;|0,1,0,0>=1", 16)], 20, True),
+    ],
+)
+def test_experiment_analysis_acceptance_agrees_with_the_contract_ratio(
+    tmp_path: Path, answers: list[tuple[str, int | None]], shots: int, single_reports: bool
+) -> None:
+    # analyze_qd divides the accepted logical events by the entry's nb_shots_used; the contract reads the same
+    # population as LOGICAL_ACCEPTED within DETECTION_EVENT. A single answer's result fields carry no nb_shots_used,
+    # so analyze_qd leaves that fraction unavailable while the view takes the top-level shots as its detections.
+    import experiment_analysis
+    import qd_platform
+
+    case = tmp_path / "run"
+    conformance_run(case, answers, shots)
+    analysis = experiment_analysis.analyze_qd(case, experiment_analysis.DEFAULT_ENDPOINTS, 0.05, 0.95)
+    manifest = json.loads((case / "cases.json").read_text(encoding="utf-8"))
+    results = json.loads((case / "results.json").read_text(encoding="utf-8"))
+    record = pc.quandela_record(results, qd_platform.iteration_budgets(manifest))
+    if len(analysis["settings"]) != len(answers) or len(record.iterations) != len(answers):
+        raise AssertionError(analysis["incomplete"])
+    for index, (setting, iteration) in enumerate(zip(analysis["settings"], record.iterations, strict=True)):
+        if iteration is None:
+            raise AssertionError(f"iteration {index} is uncounted")
+        accepted = observed(
+            "accepted", setting["returned_event_denominator"], Population.LOGICAL_ACCEPTED, f"iteration:{index}"
+        )
+        contract = pc.ratio(accepted, iteration.detection_events, "logical events per detection event")
+        if contract.value is None:
+            raise AssertionError(contract.reason)
+        if not single_reports:
+            if setting["accepted_vs_detected_fraction"] is not None or setting["provider_detected_shots"] is not None:
+                raise AssertionError("a single answer's result fields carry no nb_shots_used")
+            continue
+        if (
+            setting["accepted_vs_detected_fraction"] != contract.value
+            or setting["provider_detected_shots"] != iteration.detection_events.value
+        ):
+            raise AssertionError(f"iteration {index}: {setting['accepted_vs_detected_fraction']} != {contract.value}")
