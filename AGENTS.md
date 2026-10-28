@@ -8,9 +8,13 @@ supplies what it leaves unstated. CLAUDE.md loads it.
 
 The modules run as scripts from gororoba_quantum/ and form no installable
 package; requirements.txt pins the tested runtime and pyproject.toml carries
-lint and type-check configuration only. [ci/AGENTS.md](ci/AGENTS.md) holds the
-gate machinery: runner and shards, the gate ledger and premerge cache, the
-Python and Qiskit pins, replay runtimes, the Rocq replays and gate cost.
+lint and type-check configuration only. [docs/PYTHON.md](docs/PYTHON.md) is the
+central documentation hub for all Python interpreters, dependency manifests,
+multi-environment audit, library roles and the 362-distribution inventory
+([docs/state/hypercomplex-libraries/libraries.md](docs/state/hypercomplex-libraries/libraries.md)).
+[ci/AGENTS.md](ci/AGENTS.md) holds the gate machinery: runner and shards, the
+gate ledger and premerge cache, the Python and Qiskit pins, replay runtimes, the
+Rocq replays and gate cost.
 
 **Pull requests and the audit.** The workflow `pr.yml` runs
 `sh ci/pr_checks.sh lint|types|tests|gates` on every pull request push: Ruff
@@ -230,9 +234,11 @@ Binding rules for circuit and hardware work, before the notes open:
 The full rules, witnesses, observables and the Cayley-Dickson package table are
 in [docs/notes/algebra_circuit_rules.md](docs/notes/algebra_circuit_rules.md).
 The Heron r2 execution facts are in
-[docs/notes/ibm_heron_platform.md](docs/notes/ibm_heron_platform.md), and the
+[docs/notes/ibm_heron_platform.md](docs/notes/ibm_heron_platform.md), the
 build-host Python stack in
-[docs/notes/build_host/python-stack.md](docs/notes/build_host/python-stack.md).
+[docs/notes/build_host/python-stack.md](docs/notes/build_host/python-stack.md),
+and the repository Python documentation hub and multi-environment inventory in
+[docs/PYTHON.md](docs/PYTHON.md).
 
 ## QPU time and calibration
 
