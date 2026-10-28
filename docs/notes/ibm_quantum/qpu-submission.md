@@ -126,6 +126,15 @@ and the Kaggle noise-snapshot rule.
   of one case run as parallel invocations, each with its own seeds and
   account. The case's binding table records the dry run, its digest and
   calibration after the submit.
+- A case that waits on a calibration chains the runner after
+  `sh scripts/wait_calibration.sh [--interval S] [--deadline S] -- BACKEND
+  --baseline FILE [--qubits LIST] [--min-moved N]`, which reads the backend's
+  published properties every 60 s by default (one read takes about 5 s) and
+  exits 0 once the stamp moves and, with `--qubits`, once the reported T1 and
+  T2 each moved on `--min-moved` of those qubits (default half). Kingston
+  republishes its stamp every 15 to 60 minutes and refreshes T1 and T2 once a
+  day; the published stamp trails the calibration by 5 minutes or more, so a
+  job can execute under a calibration its plan never read.
 - Envelope approval. A record whose `envelope` section carries schema
   `msq-envelope-v1` (`--family measurement-sequence-envelope`) is the one
   exception to value binding. The approval binds the experiment digest, the

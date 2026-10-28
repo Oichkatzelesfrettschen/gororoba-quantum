@@ -30,6 +30,9 @@ first of two points:
 
 Decisions 2 to 5 apply to both points, and the focal jobs run in point 1's calibration window.
 
+Both points ran: point 1 on 2026-10-27 at 09:07 PDT, point 2 on 2026-10-27 at 17:07 PDT after the refresh that
+Kingston's 16:36:38-07:00 calibration carried ([point 1](#results-point-1), [point 2](#results-point-2)).
+
 ## Question
 
 The first run, Kingston job `dbfrg3fpc3tc739o4kag` ([findings](IDLE_PENALTY_PROBE_FINDINGS.md), case
@@ -134,13 +137,13 @@ after the T1/T2 refresh:
 
 | Field | Point 1 | Point 2 |
 |---|---|---|
-| Dry run | `results/live/2026-10-27T155934.096853Z` | pending |
-| record.json sha256 | `eec53fb559e794b6b9853ada5940ed0568a8e4cca0dcdb2ea7d02f21c5bcba86` | pending |
-| Planning calibration | 2026-10-27T07:53:14-07:00, fingerprint `e983c383c927b0c4...` | pending |
-| Submitted run | `results/live/2026-10-27T160530.294787Z`, job `dbgcnp5rd2mc73cuf5p0`, primary | pending |
-| Execution calibration | 2026-10-27T09:07:55-07:00, reported T1 and T2 of 2026-10-26T07:32-07:00 | pending |
-| Charge | 16 s, 101 s remaining before the submit | pending |
-| Seeds | ANU `docs/evidence/anu_qrng/draw-2026-10-27T155928Z.json` indices 0 and 1 | pending |
+| Dry run | `results/live/2026-10-27T155934.096853Z` | `results/live/2026-10-28T000211.008810Z` |
+| record.json sha256 | `eec53fb559e794b6b9853ada5940ed0568a8e4cca0dcdb2ea7d02f21c5bcba86` | `98b4371a2e13198490810328675b69653c8dd5ad88ca6cd3b0855f56544e817a` |
+| Planning calibration | 2026-10-27T07:53:14-07:00, fingerprint `e983c383c927b0c4...` | 2026-10-27T16:36:38-07:00, fingerprint `c08add92e94f75d4...` |
+| Submitted run | `results/live/2026-10-27T160530.294787Z`, job `dbgcnp5rd2mc73cuf5p0`, primary | `results/live/2026-10-28T000644.379196Z`, job `dbgjpg1q260s73bte67g`, backup (the primary held 68 s, and 68 less 60 falls below 25) |
+| Execution calibration | 2026-10-27T09:07:55-07:00, reported T1 and T2 of 2026-10-26T07:32-07:00 | 2026-10-27T16:56:11-07:00; its reported T1 differs from the first run's on 58 and T2 on 60 of 60 qubits |
+| Charge | 16 s, 101 s remaining before the submit | 16 s, 176 s remaining on the backup before the submit |
+| Seeds | ANU `docs/evidence/anu_qrng/draw-2026-10-27T155928Z.json` indices 0 and 1 | the same draw, indices 8 and 9 (first seed pair; every check passed) |
 | Campaign digest | `bf6be296...`, the first run's | must equal `bf6be296...` |
 | Placement | all 30 pinned paths admitted, checked against a fresh live export | same check |
 | Policy | 4096 shots, rep_delay 20 us, ceiling 25 s per job and in total, no isolated reference, no DD, no twirl | same |
@@ -179,9 +182,77 @@ that test-retest floor, the cross-day r of 0.20 to 0.36 measures drift of the pe
 cohort medians hold within 10 %. A post hoc check, outside the preregistered rule, rules out leverage by a few
 qubits: Spearman rank correlations are 0.38, 0.52 and 0.43, and leaving out the region qubits 73, 94 and 95 gives
 Pearson 0.23, 0.37 and 0.36. The first run's heavy tail regressed toward the cohort: qubit 144 read kappa_1 5.54
-on the first run and 1.16 on the repeat, and qubit 47 read kappa_2* 5.43 and 2.56. A noise model can therefore
-carry one cohort multiplier per endpoint across a day, and a per-qubit multiplier only within one calibration
-window. Point 2 asks whether the same holds when the reported normalization is remeasured.
+on the first run and 1.16 on the repeat, and qubit 47 read kappa_2* 5.43 and 2.56. Over these 19 hours a per-qubit
+multiplier carries only within one calibration window. Point 2 asks whether the same holds when the reported
+normalization is remeasured; it finds the cohort medians 12 to 13 % below the first run's 28 hours on, so a cohort
+multiplier carries across a day only to within that margin.
+
+## Results, point 2
+
+Job `dbgjpg1q260s73bte67g` executed under the 2026-10-27T16:56:11-07:00 calibration. The reports are
+`idle-penalty-report.json`, `idle-penalty-compare.json` and `idle-penalty-repeat-decisions.json` in
+`results/live/2026-10-28T000644.379196Z/`; the exposure gate and the `--compare` identity checks passed.
+
+1. **Admission**: reported T1 moved on 58 and T2 on 60 of 60 qubits against the first run, "admitted".
+2. **Multiplier stability**: "unresolved" on all three. Every Pearson r falls below 0.5, and every median-ratio
+   interval reaches below 0.8.
+
+   | Multiplier | Pearson r | Median second/first ratio [95%] | Verdict |
+   |---|---|---|---|
+   | kappa_1 | -0.041 | 0.872 [0.705, 0.974] | unresolved |
+   | kappa_2* | 0.339 | 0.876 [0.683, 1.061] | unresolved |
+   | kappa_2e | -0.043 | 0.869 [0.719, 1.008] | unresolved |
+
+3. **Single-run decisions replicate**: optimistic_t1 "absent or unresolved", echo_gain "present", readout_shift
+   "present" with mean -2.662 kHz (se 0.566) against the after-readout arm and -2.675 kHz (se 0.560) against the
+   quiet arm; its quiet null reads -0.013 kHz (se 0.022), "absent".
+4. **Visibility** reads "pairwise heterogeneity" in both runs: the pair-mean t statistics are -2.39 and -1.93
+   against the -3.396 threshold.
+5. **Pair pattern** of the readout shift: Pearson r 0.987 over 30 pairs, "pair pattern stable".
+
+The readout endpoints hold across both points and the refresh: the shift's cohort mean stays within 0.04 kHz of
+point 1's and its pair pattern at r 0.99, so the readout Stark shift is a fixed property of each reader-probe pair
+on this cohort.
+
+The low multiplier correlations come from neither fit noise nor leverage. Within each run, the reliability of every
+kappa (one minus the mean squared fit error over the between-qubit variance) is 0.93 or more, and the focal jobs
+reproduce the multipliers at r 0.91 to 0.99 within one window. A post hoc check, outside the preregistered rule,
+finds Spearman rank correlations of -0.01, 0.27 and -0.02 against the first run, Pearson -0.05, 0.34 and -0.05
+with region qubits 73, 94 and 95 left out, and no single left-out qubit that lifts any r above 0.42.
+
+A second post hoc comparison applies the `compare()` statistics to the fitted physical rates (Gamma_1 =
+kappa_1 / T1_reported, 1/T2* = kappa_2* / T2_reported, 1/T2e = kappa_2e / T2_reported) and to the reported values
+themselves, over the same 60 qubits:
+
+| Quantity | Point 2 against the first run: r, median ratio [95%] | Point 2 against point 1: r, median ratio [95%] |
+|---|---|---|
+| Gamma_1 | 0.444, 0.841 [0.757, 0.951] | 0.632, 0.954 [0.843, 1.047] |
+| 1/T2* | 0.697, 0.868 [0.744, 0.987] | 0.696, 0.958 [0.863, 1.014] |
+| 1/T2e | 0.665, 0.853 [0.771, 0.946] | 0.806, 0.952 [0.851, 0.997] |
+| reported T1 | 0.511, 0.943 [0.855, 1.003] | 0.511, 0.943 [0.855, 1.003] |
+| reported T2 | 0.742, 0.996 [0.882, 1.070] | 0.742, 0.996 [0.882, 1.070] |
+| kappa_1 | -0.041, 0.872 [0.705, 0.974] | -0.106, 0.924 [0.724, 1.014] |
+| kappa_2* | 0.339, 0.876 [0.683, 1.061] | 0.377, 0.972 [0.804, 1.135] |
+| kappa_2e | -0.043, 0.869 [0.719, 1.008] | -0.083, 0.894 [0.803, 1.037] |
+
+Point 1 carried the first run's reported values, so its reported-T rows against point 2 equal those of the first
+run. Two readings follow, both post hoc and of moderate confidence:
+
+- The device drifted. The cohort's fitted decay rates fell by 13 to 16 % between the first run and point 2, and the
+  Gamma_1 and 1/T2e intervals lie wholly below 1, so the qubits relaxed and dephased more slowly on the evening of
+  2026-10-27 than on the afternoon of 2026-10-26. The kappa medians fell with them.
+- The reported normalization adds per-qubit variance. Between point 1 and point 2, 8 hours apart, the fitted rates
+  keep their per-qubit pattern at r 0.63 to 0.81 with intervals inside [0.8, 1.25], which the `compare()` rule
+  reads "stable" on all three, while the multipliers normalized by the refreshed T1 and T2 fall to r -0.11 to 0.38.
+  The reported T1 itself repeats at only r 0.51 across the refresh. "What the outcomes mean" locates drift in the
+  normalization when the physical rate holds, and the case fixed no numerical rule for "holds": the point 1 to
+  point 2 rows meet the `compare()` rule, and the first-run to point 2 rows do not.
+
+A noise model therefore carries per-qubit fitted rates across a same-day calibration refresh, and a cohort
+multiplier across a day only to within about 15 %; a multiplier scaled by IBM's reported T1 or T2 keeps no
+per-qubit information across a refresh. A third point under a further refresh in which the fitted rates again read
+"stable" against point 2 while the multipliers do not would raise the normalization reading, and fitted rates that
+lose their per-qubit pattern there would lower it.
 
 ## Commands
 
