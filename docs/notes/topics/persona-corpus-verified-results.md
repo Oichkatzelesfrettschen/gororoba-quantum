@@ -153,7 +153,9 @@ mesh phase error (the residual of plans ascella-perturbed-compilation-case and a
 move it? A 0.01 standard error on D takes 2630 two-click events per arm; four arms at that depth cost well under
 one credit.
 
-**Next step.** Compile the two 4 x 4 blocks with `qd_platform.plan` on `sim:ascella`, then write the case.
+**Written case.** [ascella-two-photon-associator-case.md](../../design/ascella-two-photon-associator-case.md) freezes the
+eight-iteration request and states seconds, credits (ceiling 1.262144), the HOM-floor decision and the procedure; it
+waits for the owner's approval.
 
 ### QX as the falsifier for Tuna-17: the QET passivity ladder without real-time feed-forward
 

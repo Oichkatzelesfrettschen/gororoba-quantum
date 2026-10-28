@@ -2571,6 +2571,7 @@
     "scripts/aer_gpu_probe.py",
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
+    "scripts/ascella_associator_case.py",
     "scripts/ascella_coherence_analysis.py",
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_coherence_request.py",
@@ -3700,6 +3701,7 @@
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [
+    "scripts/ascella_associator_case.py",
     "scripts/ascella_coherence_request.py",
     "scripts/ascella_experiment_analysis.py",
     "scripts/ascella_experiment_request.py",
@@ -9898,6 +9900,22 @@
    "sys",
    "typing",
    "urllib"
+  ],
+  "scripts/ascella_associator_case.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "hypercomplex_cases",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_platform",
+   "sys",
+   "typing"
   ],
   "scripts/ascella_coherence_analysis.py": [
    "__future__",
