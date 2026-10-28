@@ -38,3 +38,14 @@ def test_analysis_recovers_ideal_and_excludes_outside_events(tmp_path: Path) -> 
         raise AssertionError(f"ideal counts give {record}")
     if record["excluded_events"] != 7 * 8:
         raise AssertionError("events outside the logical block were not excluded")
+    if (
+        record["decisions"]["associator_realised"] is not True
+        or record["decisions"]["calibration_sufficient"] != "undecided"
+    ):
+        raise AssertionError(f"decisions without a submission record: {record['decisions']}")
+    (tmp_path / "submission.json").write_text(json.dumps({"perfs_at_plan": {"HOM (%)": 100.0}}))
+    if case.analyze(tmp_path)["decisions"]["calibration_sufficient"] is not True:
+        raise AssertionError("ideal counts at HOM 100 % fail the calibration decision")
+    (tmp_path / "submission.json").write_text(json.dumps({"perfs_at_plan": {"HOM (%)": 50.0}}))
+    if case.analyze(tmp_path)["decisions"]["calibration_sufficient"] is not False:
+        raise AssertionError("ideal counts at HOM 50 % pass the calibration decision")

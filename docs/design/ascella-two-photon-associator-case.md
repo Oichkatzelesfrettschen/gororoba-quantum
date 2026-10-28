@@ -157,6 +157,9 @@ Before the submit, the plan must show:
 - Perceval's `estimate_required_shots` for the 16384 samples within the 2097152-shot cap; `plan` refuses
   otherwise, and the case then needs a revised budget and a new approval.
 
+`--analyze` reads the HOM figure that `submission.json` recorded at plan time (`perfs_at_plan`), computes
+Delta_pred, and writes both decisions to `analysis.json`; a decision whose inputs are missing reads `undecided`.
+
 A run directory whose plan refuses leaves the tree before anything is committed. Every directory under
 `results/quandela/runs/` reads as a sent job.
 

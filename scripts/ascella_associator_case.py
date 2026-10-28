@@ -328,6 +328,44 @@ def analyze(run: Path) -> dict[str, Any]:
             }
         else:
             out[block] = {"routes": estimates, "Delta": None}
+    out["decisions"] = decisions(out, submission_visibility(run))
+    return out
+
+
+def submission_visibility(run: Path) -> float | None:
+    """The HOM fraction submission.json recorded at plan time (perfs_at_plan["HOM (%)"] / 100), else None."""
+    path = run / "submission.json"
+    if not path.exists():
+        return None
+    hom = json.loads(path.read_text()).get("perfs_at_plan", {}).get("HOM (%)")
+    if isinstance(hom, bool) or not isinstance(hom, int | float) or not 0 < hom <= 100:
+        return None
+    return float(hom) / 100
+
+
+def decisions(record: dict[str, Any], visibility: float | None) -> dict[str, Any]:
+    """The design's two preregistered decisions; either stays undecided when its inputs are missing.
+
+    Associator realised: Delta > DETECTION_SIGMAS se and |Delta_control| <= max(MUTATION_TOLERANCE, 3 se_control).
+    Calibration sufficient: |Delta - Delta_pred(V)| <= max(CALIBRATION_TOLERANCE, 3 se), V the submission HOM.
+    """
+    associator, control = record.get("associator", {}), record.get("control", {})
+    out: dict[str, Any] = {"visibility": visibility}
+    if associator.get("Delta") is None or control.get("Delta") is None:
+        out["associator_realised"] = "undecided"
+    else:
+        detected = associator["Delta"] > DETECTION_SIGMAS * associator["se"]
+        null = abs(control["Delta"]) <= max(MUTATION_TOLERANCE, 3 * control["se"])
+        out["associator_realised"] = detected and null
+    if associator.get("Delta") is None or visibility is None:
+        out["calibration_sufficient"] = "undecided"
+        out["Delta_predicted"] = None
+    else:
+        predicted = predicted_difference(visibility)
+        out["Delta_predicted"] = predicted
+        departure = abs(associator["Delta"] - predicted)
+        out["calibration_departure"] = departure
+        out["calibration_sufficient"] = departure <= max(CALIBRATION_TOLERANCE, 3 * associator["se"])
     return out
 
 
