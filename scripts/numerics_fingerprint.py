@@ -112,7 +112,9 @@ def environment() -> dict[str, object]:
     from threadpoolctl import threadpool_info
 
     runtime = np.show_runtime.__module__
-    features = [name for name, on in np._core._multiarray_umath.__cpu_features__.items() if on]
+    # The CPU dispatch table lives in the private numpy._core package, which the NumPy stubs omit.
+    umath = np._core._multiarray_umath  # type: ignore[attr-defined]
+    features = [name for name, on in umath.__cpu_features__.items() if on]
     return {
         "python": sys.version.split()[0],
         "numpy": np.__version__,

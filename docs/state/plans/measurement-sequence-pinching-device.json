@@ -217,6 +217,26 @@
             }
           ],
           "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after merging main, whose qpu-submission.md moves run retention to scripts/retain_run.sh and per-job comparison rows: AGENTS.md (QPU time and calibration) and qpu-submission.md still bind an msq-envelope-v1 record's layout rule, bounds, ceilings and constructor in place of the dry run's calibration values, and the attempt-1 approval marker is unchanged.",
+          "observed_at": "2026-10-28T05:10:26+00:00",
+          "revision": "908970ff4600b42b71255b9b338901542f32f420",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "be176e74db7bd523d7122a2bc4a2f33985e08311e480de03f145a48a3530154c"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "de41bacad0b120d42453cf1a57a0045b9ba1ccbcd7bbf5b3069daa6df6f47af5"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
         }
       ]
     },
