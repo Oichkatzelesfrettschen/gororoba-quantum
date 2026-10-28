@@ -135,7 +135,8 @@ SEMGREP=/usr/bin/semgrep AST_GREP=ast-grep "$PYTHON" docs/evidence/provider-coun
 | `iqm_jobs`, `iqm_cancellation_probe`, `iqm_signed_probe` | heralded shot counts | supported | heralding retention reported; conditional estimators use returned shots |
 | `bdsc_stray_mode_veto.stray_report` `ungated_stray_share_bound` | stray dark rate x job `duration` / samples | model-dependent, labeled | wall time, which includes compilation, is an upper exposure, so the bound only rules out a stray detector live for the whole job; the retained shares lie far below it |
 | `qd_rehearsal_secondary.record_state` | returned samples / requested `max_samples` (the job total, `job.samples x count`) | outside the trial contract, labeled | a budget-delivery share, not a trial ratio: it sorts the record into a preregistered state and enters no verdict of `qd_teleportation_rehearsal` |
-| `experiment_analysis.analyze_qd` `accepted_vs_detected_fraction` | accepted samples / `nb_shots_used` | supported | an acceptance fraction of logical samples among detection events; the record's `denominator_boundary` states that incident pulses stay unknown |
+| `experiment_analysis.analyze_qd` `accepted_vs_detected_fraction` | accepted samples / `nb_shots_used` | supported, contract-checked | an acceptance fraction of logical samples among detection events; the record's `denominator_boundary` states that incident pulses stay unknown. `test_experiment_analysis_acceptance_agrees_with_the_contract_ratio` builds collector-format runs and proves the fraction equals `provider_counters.ratio` of logical-accepted over detection-event counters on each iteration of a template job. A single answer carries no `nb_shots_used` in its result fields, so `analyze_qd` leaves that fraction unavailable while `quandela_record` reads the top-level `shots` as the detection count: an omission, never a wrong value. No retained run reaches the fraction, because teleportation job-00 returned no samples and the five other `qd-hypercomplex-cases-v1` runs `analyze_qd` accepts ended in provider errors |
+| `experiment_analysis.analyze_qi` `incident_shots` | returned shots, `len(shots)` | supported, misnamed | the value counts circuit executions, the right gate-model population, and every returned shot decodes, so `unreturned_events` is 0; only the field name says incident. The name stays because the conformance records bind `experiment_analysis.py` |
 | `photonic_repeat_readout.observation`, which `photonic_compilation_audit` imports | per-mode one-click counts / the one-click total | supported | each frequency conditions on reported total occupation one, the claim's boundary, and the one-click, vacuum and multiple-click counts must sum to the returned samples; `nb_shots_used`, `physical_perf`, `logical_perf` and `global_perf` are copied as `reported_*` without arithmetic, and neither pooled script reads them |
 
 The root-cause run itself also contradicts the timing model. Under that model, 7 of its 24 modes expect more dark
@@ -181,4 +182,15 @@ The audit leaves these as named limitations rather than measurements:
 - the source-trigger count of an iteration.
 
 [Perceval issue 798](https://github.com/Quandela/Perceval/issues/798) carries the result-contract questions of the
-teleportation plan.
+teleportation plan, and [Perceval issue 799](https://github.com/Quandela/Perceval/issues/799) the per-job calibration
+requests. They reach these four limitations only in part:
+
+| Limitation | Request that reaches it |
+|---|---|
+| `nb_shots_used` under a filter above one photon | 798 item 3 asks for the definition of `nb_shots_used` in general, not for this case |
+| `physical_perf` | none |
+| gating and dark-count exposure | 798 item 5 and 799 item 3 ask for per-output background or dark-count rates, not the gating or the exposure window a rate multiplies |
+| source triggers per iteration | 798 item 3 asks for the definition of an eligible trial, not for a per-iteration count |
+
+Neither issue states the audit's reading that `nb_shots_used` counts detection events censored at `max_shots`, so a
+provider answer either confirms that reading or corrects the counter table.
