@@ -381,3 +381,14 @@ about a thousand generators.
   exhausts 4 GiB in 110 s. Owner decision: the two Iso modular eliminations run one at a time under the long-run
   policy after the E8bar->VB elimination ends, never concurrently with it; Iso stays outside `PERMITTED_BLOCKED`
   until a retained long run stalls or exhausts 24 GiB.
+
+- **Modular field choice.** Singular 4.4 `eliminate` over a prime field homogenizes the input, computes its Hilbert
+  series ("std in char. p, homogenized") and runs a Hilbert-driven `stdhilb` before dehomogenizing; over the algebraic
+  extension `(32003,I)` with `minpoly=I2+1` it runs a plain sugar `std`, which on the inhomogeneous graph ideals
+  postpones reductions without bound. The E8bar->VB elimination in `F_{32003^2}` logged 37,523 postponed reductions
+  against 3,034 new basis elements in 12,700 s and then exhausted 24 GiB; the same script at the split prime 32009
+  (`i = 10754`, since 32009 = 1 mod 4), plain or explicitly homogenized, logged at most two postponements and 61,000
+  to 90,000 reductions in 900 s under 1 GiB. Reduction modulo a degree-one prime of `Z[i]` checks the Gaussian
+  computation as validly as the inert prime, so modular replays use a split prime with `i` as a field element. The
+  Iso->N+- eliminations at `F_{32003^2}` each exhausted 24 GiB after about 2.7 h; their split-prime, homogenized reruns
+  queue behind the split-prime E8bar->VB run.
