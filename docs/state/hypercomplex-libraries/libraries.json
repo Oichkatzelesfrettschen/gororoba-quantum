@@ -2703,6 +2703,8 @@
     "scripts/qi_zero_divisor_cases.py",
     "scripts/qi_zz_map_analysis.py",
     "scripts/rank_locus_nullity12_refinement.py",
+    "scripts/readout_information_controls.py",
+    "scripts/readout_sparse_projection.py",
     "scripts/render_rank_sector_norms.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_wide_control_job.py",
@@ -2942,6 +2944,8 @@
     "scripts/qi_zero_divisor_cases.py",
     "scripts/qi_zz_map_analysis.py",
     "scripts/rank_locus_nullity12_refinement.py",
+    "scripts/readout_information_controls.py",
+    "scripts/readout_sparse_projection.py",
     "scripts/render_rank_sector_norms.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_wide_control_job.py",
@@ -4698,6 +4702,9 @@
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_zero_divisor_cases.py",
+    "scripts/readout_actor_schedule_replay.py",
+    "scripts/readout_information_circuits.py",
+    "scripts/readout_sparse_receipt.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_folded_jobs.py",
     "scripts/review_wide_control_job.py",
@@ -4850,6 +4857,9 @@
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_zero_divisor_cases.py",
+    "scripts/readout_actor_schedule_replay.py",
+    "scripts/readout_information_circuits.py",
+    "scripts/readout_sparse_receipt.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_folded_jobs.py",
     "scripts/review_wide_control_job.py",
@@ -6260,6 +6270,7 @@
     "scripts/qi_shot_record_line.py",
     "scripts/qi_zz_map_analysis.py",
     "scripts/rank_sector_endpoint_decomposition.py",
+    "scripts/readout_information_controls.py",
     "scripts/remeasure_history.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
@@ -6339,6 +6350,7 @@
     "scripts/qi_shot_record_line.py",
     "scripts/qi_zz_map_analysis.py",
     "scripts/rank_sector_endpoint_decomposition.py",
+    "scripts/readout_information_controls.py",
     "scripts/remeasure_history.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
@@ -8649,6 +8661,7 @@
    "coherence_window",
    "collections",
    "concurrent",
+   "contextlib",
    "copy",
    "correction_collection",
    "crossed_tile_template",
@@ -8661,6 +8674,7 @@
    "et_rows",
    "experiment_optimizer",
    "experiments",
+   "fcntl",
    "hashlib",
    "heapq",
    "ibm_account",
@@ -8690,6 +8704,7 @@
    "rustworkx",
    "subprocess",
    "sys",
+   "tempfile",
    "threading",
    "time",
    "typing",
@@ -13910,6 +13925,55 @@
    "scipy",
    "statistics",
    "sys",
+   "typing"
+  ],
+  "scripts/readout_actor_cost_model.py": [
+   "fractions"
+  ],
+  "scripts/readout_actor_schedule_replay.py": [
+   "__future__",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "qiskit",
+   "readout_information_circuits",
+   "sys",
+   "typing"
+  ],
+  "scripts/readout_information_circuits.py": [
+   "qiskit"
+  ],
+  "scripts/readout_information_controls.py": [
+   "__future__",
+   "argparse",
+   "fractions",
+   "json",
+   "math",
+   "numpy",
+   "scipy"
+  ],
+  "scripts/readout_information_iqm.py": [
+   "math",
+   "typing"
+  ],
+  "scripts/readout_sparse_projection.py": [
+   "__future__",
+   "hashlib",
+   "json",
+   "numpy",
+   "typing"
+  ],
+  "scripts/readout_sparse_receipt.py": [
+   "__future__",
+   "hashlib",
+   "hmac",
+   "io",
+   "json",
+   "qiskit",
+   "re",
+   "readout_sparse_projection",
    "typing"
   ],
   "scripts/reconcile_qpu_inventory.py": [

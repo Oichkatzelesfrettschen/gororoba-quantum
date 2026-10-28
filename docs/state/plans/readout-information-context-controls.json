@@ -1,0 +1,73 @@
+{
+  "schema": "work-plan-v1",
+  "id": "readout-information-context-controls",
+  "kind": "experiment",
+  "summary": "Design a budgeted actor-reporter test with paired parity-error and activity-response controls.",
+  "sources": [
+    "docs/design/readout-information-context-and-budget.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The IBM qualification lacks an admitted runner, sparse full-register collection, frozen carryover and inference contracts, reference allocations and a complete bounded charge; IQM needs an enforceable credit ceiling."
+  },
+  "steps": [
+    {
+      "id": "prior-art",
+      "state": "todo",
+      "action": "Compare targeted prior art and retained experiments",
+      "acceptance": "Identify nearest published and internal experiments, distinguish the proposed endpoint, and record remaining novelty uncertainty."
+    },
+    {
+      "id": "controls",
+      "state": "todo",
+      "action": "Validate paired-error and information controls",
+      "acceptance": "Verify exact error-table identities, information controls and counterexamples, then independently review a sampling-bound analyzer for the selected endpoint."
+    },
+    {
+      "id": "case",
+      "state": "doing",
+      "action": "Construct a source-bound provider candidate",
+      "acceptance": "Bind inputs, mappings, intervention, control mutations, execution order and a finite uncertainty and multiplicity contract."
+    },
+    {
+      "id": "budget",
+      "state": "todo",
+      "action": "Qualify native placement and resource ceilings",
+      "acceptance": "Measure or conservatively bound current compiled runtime, cost and provider ordering under the independent account limits; retain unresolved billing risks."
+    },
+    {
+      "id": "sparse-retention",
+      "state": "todo",
+      "action": "Design and verify scalable full-register retention",
+      "acceptance": "Preserve full shared-PUB shots and project only declared outcomes before any dense or int64 conversion; bind raw receipt, physical maps, preparations and compiled identities, check cross-register alignment and missing data, and measure wide-record memory while preserving provider ordering limits."
+    },
+    {
+      "id": "paired-admission",
+      "state": "todo",
+      "action": "Bind paired-score sampling and confirmation evidence",
+      "acceptance": "Freeze both same-shot score variances and their joint four-cell law, selection, multiplicity, power and dependence rules; refuse confirmation without authenticated acquisition and validated assumptions."
+    },
+    {
+      "id": "runner-binding",
+      "state": "todo",
+      "action": "Integrate the candidate with the approved IBM execution path",
+      "acceptance": "Register the family, bind constructor and analyzer dependencies and compiled layouts to a complete approval record, and account for distinct shot tiers and sub-jobs."
+    },
+    {
+      "id": "review",
+      "state": "todo",
+      "action": "Review and freeze the candidate",
+      "acceptance": "Resolve scientific, implementation, prior-art and accounting findings and bind exact candidate artifacts before fresh admission."
+    },
+    {
+      "id": "approval",
+      "state": "todo",
+      "action": "Refresh admission and request exact-case approval",
+      "acceptance": "Present the reviewed case and provider limits; obtain explicit authorization before any job, upload, booking or provider draw."
+    }
+  ],
+  "scope": "Design an IBM actor-reporter and paired-error case, with separately admitted IQM, QX and Ascella cases; exact case approval precedes provider actions.",
+  "owner": "readout-information experiment",
+  "next_action": "Freeze qualification tolerances and reference allocations, bind supported ordering and inference evidence, and calculate the complete pilot-through-confirmation ceiling before independent case review."
+}

@@ -29,6 +29,7 @@ from __future__ import annotations
 import argparse
 import copy
 import dataclasses
+import fcntl
 import hashlib
 import heapq
 import io
@@ -38,11 +39,13 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 from collections import OrderedDict
-from collections.abc import Callable, Collection, Mapping
+from collections.abc import Callable, Collection, Iterator, Mapping
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from decimal import ROUND_HALF_EVEN, Decimal, InvalidOperation
@@ -7705,6 +7708,24 @@ def write_raw_result(run_dir: Path, job_id: str, job: Any, result: Any, pub_name
     """
     directory = run_dir / RAW_DIRECTORY / job_id
     directory.mkdir(parents=True, exist_ok=True)
+    with _raw_collection_lock(directory):
+        return _write_raw_result_locked(directory, job_id, job, result, pub_names)
+
+
+@contextmanager
+def _raw_collection_lock(directory: Path) -> Iterator[None]:
+    """Serialize writers and metrics revisions for one retained job."""
+    with (directory / ".collection.lock").open("a", encoding="utf-8") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+
+
+def _write_raw_result_locked(
+    directory: Path, job_id: str, job: Any, result: Any, pub_names: list[str]
+) -> dict[str, Any]:
     files: dict[str, Any] = {}
     for index, pub_result in enumerate(result):
         registers: dict[str, Any] = {}
@@ -7729,17 +7750,15 @@ def write_raw_result(run_dir: Path, job_id: str, job: Any, result: Any, pub_name
         text = json.dumps(payload, indent=1, sort_keys=True) + "\n"
         digest = hashlib.sha256(text.encode()).hexdigest()
         target = directory / name
-        if target.exists():
-            if hashlib.sha256(target.read_bytes()).hexdigest() != digest:
-                raise LiveRunError(f"{target} differs from the result the service returned; raw evidence is write-once")
-        else:
-            _write_text_atomically(target, text)
+        _write_once_atomically(target, text)
         digests[name] = digest
+    acquisition_index = json.dumps({"job_id": job_id, "files": digests}, indent=1, sort_keys=True) + "\n"
+    _write_once_atomically(directory / "acquisition-index.json", acquisition_index)
     _write_text_atomically(
         directory / "index.json",
         json.dumps(_merged_index(directory, job_id, digests), indent=1, sort_keys=True) + "\n",
     )
-    snapshot_metrics(run_dir, job_id, job)
+    _snapshot_metrics_locked(directory, job_id, job)
     return {"directory": f"{RAW_DIRECTORY}/{job_id}", "files": digests}
 
 
@@ -7760,6 +7779,11 @@ def snapshot_metrics(run_dir: Path, job_id: str, job: Any) -> str:
     pending at retrieval carries the finalized metrics in its raw evidence.
     """
     directory = run_dir / RAW_DIRECTORY / job_id
+    with _raw_collection_lock(directory):
+        return _snapshot_metrics_locked(directory, job_id, job)
+
+
+def _snapshot_metrics_locked(directory: Path, job_id: str, job: Any) -> str:
     metrics = job.metrics() if hasattr(job, "metrics") else {}
     metrics_text = json.dumps(_scrub_instances(_jsonable(metrics)), indent=1, sort_keys=True) + "\n"
     snapshots = _metrics_snapshots(directory)
@@ -7799,6 +7823,28 @@ def _write_text_atomically(target: Path, text: str) -> None:
         handle.write(text)
 
     _replace_atomically(target, write, "w")
+
+
+def _write_once_atomically(target: Path, text: str) -> None:
+    """Publish complete bytes once and reject a different existing snapshot."""
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=target.parent, delete=False) as handle:
+        temporary = Path(handle.name)
+        try:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+            try:
+                os.link(temporary, target)
+            except FileExistsError:
+                if target.read_bytes() != text.encode("utf-8"):
+                    raise LiveRunError(f"{target} differs from the immutable acquisition snapshot") from None
+            directory_fd = os.open(target.parent, os.O_RDONLY | os.O_DIRECTORY)
+            try:
+                os.fsync(directory_fd)
+            finally:
+                os.close(directory_fd)
+        finally:
+            temporary.unlink(missing_ok=True)
 
 
 def preserve_raw(service: QiskitRuntimeService, run_dir: Path) -> dict[str, Any]:
