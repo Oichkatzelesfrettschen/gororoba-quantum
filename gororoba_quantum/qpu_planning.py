@@ -2452,7 +2452,8 @@ def measured_family(
 
     shot_order serves the measurement-sequence-relaxation family: "registers" holds the shot-ordered registers of
     the PUBs msq_successor_analysis.required_pubs names, "chunks" the executor's chunk_timing as lists of PUB
-    indices, and "reason" why either could not be read; an absent entry withholds every qubit.
+    indices or None with "chunk_reason" when it could not be read, and "reason" why the registers could not be read;
+    a reason or an absent entry withholds every qubit.
 
     The pinching analysis (measurement_sequence_analysis.collected) reads every member of both jobs through one
     readout correction, so it runs only when the members executed under one calibration
@@ -2493,7 +2494,12 @@ def measured_family(
         return {
             **analysis,
             "relaxation": msq_successor_analysis.collected(
-                record, distributions, executed, evidence.get("registers"), evidence.get("chunks")
+                record,
+                distributions,
+                executed,
+                evidence.get("registers"),
+                evidence.get("chunks"),
+                chunk_reason=evidence.get("chunk_reason"),
             ),
         }
     if name != MSQ_FAMILY:

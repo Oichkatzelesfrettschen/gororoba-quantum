@@ -780,6 +780,30 @@ def test_collected_reports_a_lost_shot_order_and_still_decides(narrow: tuple[Run
     check(evaluated > 0 and result["selected"] == reference["selected"], "a shuffled order changed the selection")
 
 
+def test_collected_reports_an_unreadable_chunk_timing_and_still_decides(narrow: tuple[Run, dict[str, Any]]) -> None:
+    small, reference = narrow
+    result = su.collected(
+        small.record, small.distributions, small.executed, small.registers, None, FLOOR, chunk_reason="unreadable: x"
+    )
+    check(result["order"]["chunk"] == {"passes": False, "reason": "unreadable: x"}, f"{result['order']['chunk']}")
+    check(result["selected"] == reference["selected"], "an unreadable chunk_timing changed the selection")
+
+
+def test_pattern_crosscheck_compares_the_magnitude_with_the_reader_bound(verdict: dict[str, Any]) -> None:
+    """U bounds |D|, so a carryover of either sign beyond U is the falsifier."""
+    compared = 0
+    for q, entry in verdict["pattern_crosscheck"]["per_qubit"].items():
+        carryover = verdict["screens"][q]["carryover"]
+        if "exceeds_reader_bound_z" not in entry:
+            continue
+        compared += 1
+        expected = (abs(entry["d"]) - carryover["upper_bound"]) / entry["se"]
+        check(entry["exceeds_reader_bound_z"] == expected, f"q{q}: {entry} against U {carryover['upper_bound']}")
+    check(
+        compared > 0 and any(e["d"] < 0 for e in verdict["pattern_crosscheck"]["per_qubit"].values()), "no negative D"
+    )
+
+
 def test_collected_reports_a_split_job_and_still_decides(narrow: tuple[Run, dict[str, Any]]) -> None:
     small, reference = narrow
     count = len(small.record["execution_pubs"])
@@ -852,9 +876,11 @@ def test_collected_withholds_every_qubit_when_the_relaxation_target_is_far_from_
 
 def test_measured_family_hands_the_order_evidence_to_the_analysis(run: Run, monkeypatch: pytest.MonkeyPatch) -> None:
     seen: list[tuple[Any, ...]] = []
+    reasons: list[Any] = []
 
-    def stub(*arguments: Any) -> dict[str, Any]:
+    def stub(*arguments: Any, chunk_reason: Any = None) -> dict[str, Any]:
         seen.append(arguments)
+        reasons.append(chunk_reason)
         return {"schema": "stub"}
 
     monkeypatch.setattr(qpu_planning.msq_successor_analysis, "collected", stub)
@@ -864,15 +890,19 @@ def test_measured_family_hands_the_order_evidence_to_the_analysis(run: Run, monk
     check(seen[0][3] is run.registers and seen[0][4] is run.chunks, "registers and chunks must reach the analysis")
     qpu_planning.measured_family(run.record, run.distributions, run.executed, live_run)
     check(seen[1][3] is None and seen[1][4] is None, "absent evidence must reach the analysis as None")
+    lost = {"registers": run.registers, "chunks": None, "chunk_reason": "the chunk_timing is unreadable"}
+    qpu_planning.measured_family(run.record, run.distributions, run.executed, live_run, shot_order=lost)
+    check(seen[2][3] is run.registers and seen[2][4] is None, "an unreadable chunk_timing must still analyse")
+    check(reasons == [None, None, "the chunk_timing is unreadable"], f"{reasons}")
     unreadable = qpu_planning.measured_family(
         run.record, run.distributions, run.executed, live_run, shot_order={"reason": "digest differs"}
     )
-    check(unreadable["relaxation"]["withheld"] == "digest differs" and len(seen) == 2, f"{unreadable['relaxation']}")
+    check(unreadable["relaxation"]["withheld"] == "digest differs" and len(seen) == 3, f"{unreadable['relaxation']}")
     first = next(iter(run.executed))
     changed = {**run.executed, first: {**run.executed[first], "calibration": "other"}}
     withheld = qpu_planning.measured_family(run.record, run.distributions, changed, live_run, shot_order=ready)
     check("did not all run under one calibration" in withheld["relaxation"]["withheld"], f"{withheld['relaxation']}")
-    check(len(seen) == 2, "a split calibration must stop before the analysis")
+    check(len(seen) == 3, "a split calibration must stop before the analysis")
 
 
 def test_retained_chunks_read_the_digest_checked_metadata(tmp_path: Any) -> None:
@@ -1063,8 +1093,15 @@ def test_relaxation_shot_order_reads_a_run_and_reports_a_malformed_one(tmp_path:
         [1],
     ):
         write_metadata(bad)
-        reason = live_run.relaxation_shot_order(run.record, tmp_path)
-        check(reason is not None and "unreadable" in reason["reason"], f"{bad}: {reason}")
+        lost = live_run.relaxation_shot_order(run.record, tmp_path)
+        check(lost is not None and "reason" not in lost, f"{bad}: an unreadable chunk_timing withheld the run")
+        if lost is None:
+            raise AssertionError("no order evidence")
+        check(lost["chunks"] is None and "unreadable" in lost["chunk_reason"], f"{bad}: {lost}")
+        check(set(lost["registers"]) == set(needed), f"{bad}: the registers were dropped")
+    (raw / "pub_00.json").write_bytes(b"{}")
+    reason = live_run.relaxation_shot_order(run.record, tmp_path)
+    check(reason is not None and "unreadable" in reason["reason"], f"a register file off its digest: {reason}")
 
 
 def per_stratum_estimate(previous: list[np.ndarray], read: list[np.ndarray], contrast: float) -> float:

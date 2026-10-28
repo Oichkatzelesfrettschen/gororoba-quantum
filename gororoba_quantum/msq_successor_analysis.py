@@ -1249,6 +1249,7 @@ def order_conditions(
     chunks: Sequence[Sequence[int]] | None,
     distributions: Mapping[str, Any],
     executed: Mapping[str, Any],
+    chunk_reason: str | None = None,
 ) -> dict[str, Any]:
     """The two order conditions, reported as diagnostics: the executor reports one chunk holding every PUB, and the
     order sentinels pass in each third of the job. The first rules out a reported split of the job and no more; the
@@ -1258,7 +1259,7 @@ def order_conditions(
     count = len(layout["names"])
     chunk: dict[str, Any]
     if chunks is None:
-        chunk = {"passes": False, "reason": "the executor's chunk_timing is absent"}
+        chunk = {"passes": False, "reason": chunk_reason or "the executor's chunk_timing is absent"}
     else:
         chunk = {
             "chunks": len(chunks),
@@ -1297,7 +1298,7 @@ def pattern_crosscheck(
     Under the submitted order a pattern row's shot follows the previous pattern row's shot, so each qubit's P1 on
     rows that prepare 0 after a row that prepared 1, minus after a row that prepared 0, reads the carried excitation
     across a real shot boundary (and, on rows that prepare 1, the x maps it to the opposite sign); the two combine by
-    inverse variance and divide by the readout scale. `exceeds_reader_bound_z` is (D_pattern - U) / se_pattern
+    inverse variance and divide by the readout scale. `exceeds_reader_bound_z` is (|D_pattern| - U) / se_pattern
     against the qubit's reader bound U: a large value refutes either the in-circuit bound or the claim that
     measure-arm predecessors cover every predecessor class. A shuffled order reads zero here, so the check can fail
     only toward the falsifier."""
@@ -1336,7 +1337,7 @@ def pattern_crosscheck(
         entry: dict[str, Any] = {"d": difference / scale, "se": se / scale, "row_pairs": len(pairs)}
         carryover = screens[str(qubit)].get("carryover")
         if carryover and carryover.get("evaluable"):
-            entry["exceeds_reader_bound_z"] = (entry["d"] - carryover["upper_bound"]) / entry["se"]
+            entry["exceeds_reader_bound_z"] = (abs(entry["d"]) - carryover["upper_bound"]) / entry["se"]
             entry["exceeds_reader_bound"] = entry["exceeds_reader_bound_z"] > z
         per_qubit[str(qubit)] = entry
     return {"z": z, "per_qubit": per_qubit}
@@ -1567,16 +1568,18 @@ def collected(
     registers: Mapping[str, Mapping[str, Sequence[str]]] | None,
     chunks: Sequence[Sequence[int]] | None,
     floor: float | None = None,
+    *,
+    chunk_reason: str | None = None,
 ) -> dict[str, Any]:
     """The analysis of a collected record of the measurement-sequence-relaxation family, or the reason it is withheld.
 
-    The order conditions run first; when either fails every qubit is withheld and no later statistic is evaluated.
-    Otherwise the qubits that pass execution-time eligibility, the pattern screen, the carryover screen and the
+    The order conditions are reported and decide nothing; unavailable shot-ordered registers withhold every qubit.
+    The qubits that pass execution-time eligibility, the pattern screen, the carryover screen and the
     equilibrium bound form the pool; the admission gate, the mutation test, the settle veto, the departure and the
     count rule decide over it (`device_decision`), and the delay arm is reported beside the calibrated echo T2.
     """
     try:
-        return _collected(record, distributions, executed, registers, chunks, floor)
+        return _collected(record, distributions, executed, registers, chunks, floor, chunk_reason)
     except (msa.AnalysisError, KeyError, ValueError, TypeError, IndexError) as error:
         return {
             "schema": SCHEMA,
@@ -1594,6 +1597,7 @@ def _collected(
     registers: Mapping[str, Mapping[str, Sequence[str]]] | None,
     chunks: Sequence[Sequence[int]] | None,
     floor: float | None,
+    chunk_reason: str | None = None,
 ) -> dict[str, Any]:
     if floor is None:
         floor, reason = msa.bound_floor(msa.record_backends(dict(record)))
@@ -1602,7 +1606,7 @@ def _collected(
     layout = job_layout(record)
     qubits, width = layout["qubits"], layout["width"]
     configuration = record["family_configuration"]
-    order = order_conditions(layout, registers, chunks, distributions, executed)
+    order = order_conditions(layout, registers, chunks, distributions, executed, chunk_reason)
     result: dict[str, Any] = {"schema": SCHEMA, "order": order, "count_rule": ea.count_rule(width), "selected": []}
     if registers is None:
         raise msa.AnalysisError("shot-ordered registers are unavailable")

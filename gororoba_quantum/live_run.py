@@ -6862,18 +6862,20 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
 
 def relaxation_shot_order(record: dict[str, Any], run_dir: Path) -> dict[str, Any] | None:
     """The relaxation family's order evidence: the shot-ordered registers of the PUBs its analysis reads and the
-    executor's chunk_timing, both from the raw files written before analysis; None for every other family. A file
-    that fails its digest check or the record's PUB layout becomes the reason the analysis withholds."""
+    executor's chunk_timing, both from the raw files written before analysis; None for every other family. A
+    register file that fails its digest check or the record's PUB layout becomes the reason the analysis withholds;
+    an unreadable chunk_timing becomes None with its reason, since the chunk condition is a reported diagnostic."""
     if record.get("family_configuration", {}).get("name") != MSQR_FAMILY:
         return None
     try:
         names = msq_successor_analysis.required_pubs(record)
-        return {
-            "registers": qpu_planning.n21_exact_planning.retained_registers(run_dir, names),
-            "chunks": msq_successor_analysis.retained_chunks(run_dir),
-        }
+        registers = qpu_planning.n21_exact_planning.retained_registers(run_dir, names)
     except (OSError, ValueError, KeyError, LookupError) as error:
         return {"reason": f"the order evidence is unreadable: {error}"}
+    try:
+        return {"registers": registers, "chunks": msq_successor_analysis.retained_chunks(run_dir)}
+    except (OSError, ValueError, KeyError, LookupError, TypeError, AttributeError) as error:
+        return {"registers": registers, "chunks": None, "chunk_reason": f"the chunk_timing is unreadable: {error}"}
 
 
 def invocation_usage(record: dict[str, Any], jobs_out: dict[str, dict[str, Any]]) -> dict[str, Any]:
