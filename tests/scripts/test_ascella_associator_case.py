@@ -49,3 +49,10 @@ def test_analysis_recovers_ideal_and_excludes_outside_events(tmp_path: Path) -> 
     (tmp_path / "submission.json").write_text(json.dumps({"perfs_at_plan": {"HOM (%)": 50.0}}))
     if case.analyze(tmp_path)["decisions"]["calibration_sufficient"] is not False:
         raise AssertionError("ideal counts at HOM 50 % pass the calibration decision")
+    truncated = iterations[:6] + [{"missing": True}, {"missing": True}]
+    (tmp_path / "results.json").write_text(json.dumps({"iterations": truncated}))
+    partial = case.analyze(tmp_path)
+    if partial["decisions"]["associator_realised"] != "undecided" or partial["control"]["Delta"] is None:
+        raise AssertionError(f"a truncated control block decided or lost its estimate: {partial['decisions']}")
+    if partial["decisions"]["calibration_sufficient"] is not False:
+        raise AssertionError("the complete associator block lost its calibration decision")

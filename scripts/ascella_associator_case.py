@@ -294,10 +294,12 @@ def analyze(run: Path) -> dict[str, Any]:
     entries = results.get("iterations") or []
     tallies: dict[str, dict[str, list[int]]] = {b: {"LaLb": [0, 0, 0], "Lab": [0, 0, 0]} for b in PAIRS}
     excluded = 0
+    counted = {block: 0 for block in PAIRS}
     for setting, entry in zip(manifest["settings"], entries, strict=False):
         counts = entry.get("counts") if isinstance(entry, dict) else None
         if not counts:
             continue
+        counted[setting["block"]] += 1
         tally = tallies[setting["block"]][setting["route"]]
         for state, count in counts.items():
             occupation = [int(c) for c in state.strip("|>").split(",")]
@@ -311,6 +313,8 @@ def analyze(run: Path) -> dict[str, Any]:
             tally[2] += count
     out: dict[str, Any] = {"excluded_events": excluded}
     for block, routes in tallies.items():
+        # A block decides only when all four ABBA iterations returned counts; a partial block stays descriptive.
+        out[f"{block}_counted_iterations"] = counted[block]
         estimates: dict[str, dict[str, float] | None] = {}
         for route, (plus, minus, total) in routes.items():
             if total == 0:
@@ -344,20 +348,22 @@ def submission_visibility(run: Path) -> float | None:
 
 
 def decisions(record: dict[str, Any], visibility: float | None) -> dict[str, Any]:
-    """The design's two preregistered decisions; either stays undecided when its inputs are missing.
+    """The design's two preregistered decisions; either stays undecided when its inputs are missing or a block it
+    needs lacks any of its four ABBA iterations.
 
     Associator realised: Delta > DETECTION_SIGMAS se and |Delta_control| <= max(MUTATION_TOLERANCE, 3 se_control).
     Calibration sufficient: |Delta - Delta_pred(V)| <= max(CALIBRATION_TOLERANCE, 3 se), V the submission HOM.
     """
     associator, control = record.get("associator", {}), record.get("control", {})
-    out: dict[str, Any] = {"visibility": visibility}
-    if associator.get("Delta") is None or control.get("Delta") is None:
+    complete = {block: record.get(f"{block}_counted_iterations") == len(ROUTE_ORDER) for block in PAIRS}
+    out: dict[str, Any] = {"visibility": visibility, "complete_blocks": complete}
+    if not (complete["associator"] and complete["control"]) or None in (associator.get("Delta"), control.get("Delta")):
         out["associator_realised"] = "undecided"
     else:
         detected = associator["Delta"] > DETECTION_SIGMAS * associator["se"]
         null = abs(control["Delta"]) <= max(MUTATION_TOLERANCE, 3 * control["se"])
         out["associator_realised"] = detected and null
-    if associator.get("Delta") is None or visibility is None:
+    if not complete["associator"] or associator.get("Delta") is None or visibility is None:
         out["calibration_sufficient"] = "undecided"
         out["Delta_predicted"] = None
     else:
