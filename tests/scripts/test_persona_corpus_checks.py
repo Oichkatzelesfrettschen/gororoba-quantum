@@ -112,8 +112,9 @@ def test_jordan_table_matches_the_sage_checked_albert_product() -> None:
 
 def test_two_decompositions_reconcile_to_derived_values() -> None:
     result = claims.decomposition_reconciliation()
-    low, high = result["field_gravity_estimates_over_1m"]
-    if not low < result["field_gravity_derived_over_1m"] < high:
+    estimates, derived = result["field_gravity_estimates_over_1m"], result["field_gravity_derived_over_1m"]
+    if not (isinstance(estimates, list) and isinstance(derived, float) and estimates[0] < derived < estimates[1]):
         raise AssertionError(f"gravity coefficient {result}")
-    if abs(result["peak_power_instantaneous_W"] / (2 * result["peak_power_cycle_average_W"]) - 1) > 1e-12:
+    peak, average = result["peak_power_instantaneous_W"], result["peak_power_cycle_average_W"]
+    if not (isinstance(peak, float) and isinstance(average, float)) or abs(peak / (2 * average) - 1) > 1e-12:
         raise AssertionError("instantaneous and averaged power")

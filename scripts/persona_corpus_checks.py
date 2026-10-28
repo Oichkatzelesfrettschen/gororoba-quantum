@@ -1149,7 +1149,7 @@ def quaternion_order_bridge() -> dict[str, object]:
     s2 = np.array([[0, -1j], [1j, 0]])
     s3 = np.array([[1, 0], [0, -1]], dtype=complex)
     h, e, f = s3, np.array([[0, 1], [0, 0]], dtype=complex), np.array([[0, 0], [1, 0]], dtype=complex)
-    qi, qj, qk = (quaternion_matrix(v) for v in ([0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]))
+    qi, qj, qk = (quaternion_matrix(v) for v in ([0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]))
     require(np.allclose(qi, 1j * s3) and np.allclose(qj, 1j * s2) and np.allclose(qk, 1j * s1), "chi(i, j, k)")
     require(np.allclose(qi @ qj - qj @ qi, 2 * qk), "[I, J] != 2K")
     chevalley = np.allclose(-1j * qi, h) and np.allclose((qj - 1j * qk) / 2, e) and np.allclose(-(qj + 1j * qk) / 2, f)
