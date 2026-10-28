@@ -111,6 +111,8 @@ differs from it only in the `cd_core.py` digest.
 | [quaternionic-foundational-source-review.md](notes/papers/quaternionic-foundational-source-review.md) | historical QQM citation identities and remaining reading obligations |
 | [quaternionic-optical-bound-reading.md](notes/papers/quaternionic-optical-bound-reading.md) | model-specific optical bound and Procopio/Adler exchange body-reading addendum |
 | [aflow-a_cf4-225-a.md](notes/papers/aflow-a_cf4-225-a.md) | AFLOW crystallographic prototype A_cF4_225_a |
+| [1602.06402.md](notes/papers/1602.06402.md) | Hinuma et al. 2017 HPKOT band paths: the crystallographic k-point convention SeeK-path implements and its departures from Setyawan-Curtarolo |
+| [1808.01590.md](notes/papers/1808.01590.md) | Togo, Shinohara and Tanaka spglib: iterative tolerance-driven space-group search |
 | [elkies-2013-m256.md](notes/papers/elkies-2013-m256.md) | Elkies 2013 course page on error-correcting codes |
 | [mckay-hadamard-matrices.md](notes/papers/mckay-hadamard-matrices.md) | McKay Hadamard equivalence-class data and the retained order-16 list |
 | [schafer-1954-cayley-dickson-flexible.md](notes/papers/schafer-1954-cayley-dickson-flexible.md) | Schafer 1954 flexibility of Cayley-Dickson algebras, metadata and secondary statement |
@@ -233,6 +235,7 @@ differs from it only in the `cd_core.py` digest.
 | [evidence/formalization-yaml-schema/README.md](evidence/formalization-yaml-schema/README.md) | retained bytes of the mathlib-initiative v0.4 schema with its checksum and the validation command for `formalization.yaml` |
 | [kaplansky-mechanisms-cayley-dickson.md](notes/topics/kaplansky-mechanisms-cayley-dickson.md) | Kaplansky's zero-divisor, direct-finiteness and idempotent conjectures against the Cayley-Dickson twisted group algebras: zero products as an F_2 XOR skeleton times the gauge-invariant cocycle cross-ratio chi, the Fano plane in openai/math families 196 and 197, the GHZ qubit reading of the zero divisors |
 | [evidence/cd-star-lattice/README.md](evidence/cd-star-lattice/README.md) | exact star-lattice census bound to the Tuna-17 catalogue topology, with SL(2, q) and PGL(2, 7) certificates and a nauty replay |
+| [evidence/seekpath-lattice-crosscheck/README.md](evidence/seekpath-lattice-crosscheck/README.md) | spglib and SeeK-path replay: the D14 coordinate projection spans Z^3 (Pm-3m), the S_3 and S_2 point groups match the star-lattice census, cubic Brillouin-zone shapes |
 | [evidence/albuquerque-majid-convention/README.md](evidence/albuquerque-majid-convention/README.md) | replay of the Albuquerque-Majid cochain recursion against cd_sign: transposed map exact on 5,460 pairs, untransposed control fails, associators agree on 37,448 triples |
 | [evidence/kaplansky-cd-mechanisms/README.md](evidence/kaplansky-cd-mechanisms/README.md) | exact replay of the Kaplansky mechanisms note: chi predicts every two-blade zero product at D = 8, 16, 32 (0, 336, 5040), none off the XOR skeleton, Fano complements as subgroup cosets, pure two-sided annihilators, zero Bloch vectors on the support of i xor j |
 | [evidence/cd-imaginary-sum-conference/README.md](evidence/cd-imaginary-sum-conference/README.md) | Rocq proof, for every Cayley-Dickson dimension, that right multiplication by the imaginary sum is a skew conference matrix, with its kernel receipts and the bridge to cd_sign |
@@ -375,6 +378,7 @@ differs from it only in the `cd_core.py` digest.
 | [belenos-first-load-hypothesis-2026-10-18.md](archive/handoffs/belenos-first-load-hypothesis-2026-10-18.md) | Belenos first-load hypothesis |
 | [box-kite-case-generator.md](archive/handoffs/box-kite-case-generator.md) | box-kite case generator handoff |
 | [belenos-recovery-watch.md](archive/handoffs/belenos-recovery-watch.md) | Belenos recovery watch, issue #556 procedure and the job-01 rehearsal build |
+| [provider-counter-audit.md](archive/handoffs/provider-counter-audit.md) | provider-counter audit: merged PRs, collection-boundary tasks, coverage gaps, closure and open provider questions |
 | [handoff-notes-2026-10-15.md](archive/handoffs/handoff-notes-2026-10-15.md) | chat-session decisions and falsification results |
 | [handoff-notes.md](archive/handoffs/handoff-notes.md) | program handoff sections |
 | [archive/reviews/README.md](archive/reviews/README.md) | review and audit reports; [docs audit](archive/reviews/docs-audit.md) |

@@ -1,0 +1,42 @@
+{
+ "admission": {
+  "admitted": true,
+  "shared": 60,
+  "t1_moved": 58,
+  "t2_moved": 60
+ },
+ "first": "results/live/2026-10-26T202817.431767Z",
+ "replication": {
+  "echo_gain": {
+   "first": "present",
+   "replicated": true,
+   "second": "present"
+  },
+  "optimistic_t1": {
+   "first": "absent or unresolved",
+   "replicated": true,
+   "second": "absent or unresolved"
+  },
+  "readout_shift": {
+   "first": [
+    "present",
+    "negative"
+   ],
+   "replicated": true,
+   "second": [
+    "present",
+    "negative"
+   ]
+  }
+ },
+ "second": "results/live/2026-10-28T000644.379196Z",
+ "shift_pair_pattern": {
+  "n": 30,
+  "pearson_r": 0.9874862097836989,
+  "verdict": "pair pattern stable"
+ },
+ "visibility": {
+  "first": "pairwise heterogeneity",
+  "second": "pairwise heterogeneity"
+ }
+}
