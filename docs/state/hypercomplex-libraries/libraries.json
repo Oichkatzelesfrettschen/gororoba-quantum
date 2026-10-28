@@ -13072,6 +13072,15 @@
    "sys",
    "typing"
   ],
+  "scripts/qi_tuna_destination_analysis_receipt.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "re",
+   "typing"
+  ],
   "scripts/qi_tuna_destination_one_analysis.py": [
    "__future__",
    "acquisition_decisions",
@@ -13155,6 +13164,18 @@
    "time",
    "typing",
    "urllib"
+  ],
+  "scripts/qi_tuna_final_result_receipt.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "hashlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "re",
+   "typing"
   ],
   "scripts/qi_tuna_qualification.py": [
    "__future__",

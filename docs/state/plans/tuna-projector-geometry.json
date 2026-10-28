@@ -13,7 +13,7 @@
   },
   "scope": "Derive and validate illustrative projector moments, retain datasource diagnostics, generate compiler-checked qualification cases, and acquire only after approval of each provider case. Algebra-specific certification and causal backaction claims require successor controls.",
   "owner": "codex-tuna-projector-geometry",
-  "next_action": "Execute the three exactly approved nominal-one jobs through the reviewed deadline-bound serial runner, preserve every identity and collect all dispatched shots; then analyze/register and inspect QI acquisition artifacts through read-only routes.",
+  "next_action": "Await authorization to send the prepared QI support request for per-job acquisition mapping, thresholds, served schedules and retained IQ. The three additional jobs are complete. Develop the remaining readout-discrimination controls after upstream evidence arrives; further hardware requires a new approved case accounting for the measured 1936.258985-second creation-to-queue wait and observed benchmarking context.",
   "steps": [
     {
       "id": "source-and-instrument-audit",
@@ -1376,27 +1376,223 @@
     },
     {
       "id": "destination-one-acquisition",
-      "state": "doing",
+      "state": "done",
       "action": "Execute the three approved nominal-one jobs after fresh admission",
-      "acceptance": "Submit at most three serial 4096-shot jobs within the frozen horizon and zero-credit policy; preserve every dispatched identity and recover only through read-only collection."
+      "acceptance": "Submit at most three serial 4096-shot jobs within the frozen horizon and zero-credit policy; preserve every dispatched identity and recover only through read-only collection.",
+      "receipts": [
+        {
+          "result": "All three approved nominal-one jobs completed and retained12288orderedshots,16.783859reportedseconds andzeroledgercharges. Providercreation followedprecedingfinish by46.329855/45.412798seconds andprecedingrawcollection. The longestcreation-to-queuedintervalwas1936.258985seconds;benchmarkingcontextretained.",
+          "observed_at": "2026-10-28T00:42:13.287047+00:00",
+          "revision": "f7e85775b96cfbffd8b8982b0fb3e3317c54edc2",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/execution-state.json",
+              "sha256": "d6c48bc8f5a03cbe56ebcb01f38658df81db3d760a3986139e24cd1c44490c81"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis.json",
+              "sha256": "646ebac7281991ce466c5381b5a56e511755cb33d9019adc7b14bb1e0ed693f1"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-ledger-revalidation.json",
+              "sha256": "b93855409cd37f9abd5ec6d559f110d906b82b0efc3d5df9007ae2749562d761"
+            }
+          ],
+          "scope_sha256": "bc40d1bba09a6485dfab149bd5aef430bc5439339b354f6d6ca3ca056530a3b5"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-analysis-encoding-receipt",
+      "state": "done",
+      "action": "Reconcile runtime and canonical analysis byte contracts without changing acquired evidence",
+      "acceptance": "Preserve emitted runtime bytes, replay a separate canonical copy through the frozen analyzer and validate both exact encodings, identical numbers/decision, completed state and all frozen source identities; pass mutation/preservation regressions.",
+      "receipts": [
+        {
+          "result": "Both exactJSONbytecontracts replayidenticalfrozenanalysisobjects,numbersanddecision. The originalruntimebytesremainpreserved;canonicalCLI andencodingreceipt normal/-O checks pass.21newregressions and300combinedfocusedtests,pinnedRuff/mypypass.",
+          "observed_at": "2026-10-28T00:42:13.287047+00:00",
+          "revision": "f7e85775b96cfbffd8b8982b0fb3e3317c54edc2",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-canonical.json",
+              "sha256": "ba74fbfb5f26ec5463059b26d66138b571be8792a2dbbd32dc58bd5a5bf9ab1a"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json",
+              "sha256": "b89b115df823113dc8430c7eebddee1898a3906ac7109ea0624edd6803be0027"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_analysis_receipt.py",
+              "sha256": "89cd6f8fc0e77298740f61e59dc3141e572ad66edff461db4dadd559cc786915"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_analysis_receipt.py",
+              "sha256": "9df0b11ad0e9e9de144ab38435d36b5a20a5ee7545c555083c8209f7411bb616"
+            }
+          ],
+          "scope_sha256": "ae9a5cfe0e5948e4fb9b42daa5a27b545bf8a1bfa004de239cdb7494b3c00e5b"
+        }
+      ]
     },
     {
       "id": "destination-one-retained-analysis",
-      "state": "todo",
+      "state": "done",
       "action": "Analyze and register the three-job case with immutable receipts",
-      "acceptance": "Replay the frozen independent primary endpoint, retain raw shots, register acquisitions and refresh scoped usage evidence."
+      "acceptance": "Replay the frozen independent primary endpoint, retain raw shots, register acquisitions and refresh scoped usage evidence.",
+      "receipts": [
+        {
+          "result": "The frozen nominal-one endpoint establishes bounded selected-cell response equivalence. All raw tables match independent vectorized counts; canonical and runtime encodings retain identical values. Three acquisitions and one independent primaryclaim are registered;285claims319acquisitions,432zero-changeledgerjobs,prior429rowsunchanged. Both newreceipt and historicalprefix replaygates pass.",
+          "observed_at": "2026-10-28T00:47:09.996842+00:00",
+          "revision": "f7e85775b96cfbffd8b8982b0fb3e3317c54edc2",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-canonical.json",
+              "sha256": "ba74fbfb5f26ec5463059b26d66138b571be8792a2dbbd32dc58bd5a5bf9ab1a"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json",
+              "sha256": "b89b115df823113dc8430c7eebddee1898a3906ac7109ea0624edd6803be0027"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/nominal-one-destination-response.md",
+              "sha256": "2e29558c8860556fb75d965f2342f2db444bb6392863bcdb4a2b158b277c2d7a"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-ledger-revalidation.json",
+              "sha256": "b93855409cd37f9abd5ec6d559f110d906b82b0efc3d5df9007ae2749562d761"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=qi-tuna-destination-one-response",
+              "sha256": "df6e2814f0d29479a2ae1f897628456f046ed8ef41e9d7067d5870374269e12e"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-qi-tuna-destination-one-response",
+              "sha256": "2f56f641e9ca2e060ee38bca097bc2e7f15b6ea5e35dfbbd844b1f8e1be6b507"
+            },
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=qi-tuna-destination-one-baseline-before",
+              "sha256": "179513ee254a875b66791410cf48473aca0ac8e4cfdbd6769765b11f93313d61"
+            },
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=qi-tuna-destination-one-rotated",
+              "sha256": "f377b0cec2644d13e26197e7cb8173e93647b49531e9c9217212b0ff6f3ec508"
+            },
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=qi-tuna-destination-one-baseline-after",
+              "sha256": "d697cd91321e5e8c7b6378e5260d6cf52f001dc7dd897ef9fa906f4676a729ff"
+            }
+          ],
+          "scope_sha256": "e9da2880d51e77c31325f7eb4a715f7b54446917d130d06332b09eb70d6207fc"
+        }
+      ]
     },
     {
       "id": "destination-job-artifact-research",
-      "state": "todo",
+      "state": "done",
       "action": "Inspect QI per-job acquisition mapping, thresholds, served schedules and retained IQ",
-      "acceptance": "Document verified read-only routes, returned fields and measured availability for all six retained destination jobs; prepare a job-specific unsent request for missing upstream evidence."
+      "acceptance": "Document verified read-only routes, returned fields and measured availability for all six retained destination jobs; prepare a job-specific unsent request for missing upstream evidence.",
+      "receipts": [
+        {
+          "result": "Read-only6job audit verifiesstoredsources,zero generatedsiblings andbinaryfinal-result equivalence. Metadata404 isconsistentwithzero metadata routes inlive53pathAPI;boundedlogs time out;Grafana anddirectPrometheus TCP probesfail. The report separates unavailable account surfaces from unknowninternalretention and prepares anunsenttieredproviderrequest foracquisitionmaps,pre-packinglabels,IQ,thresholdsandschedules.",
+          "observed_at": "2026-10-28T00:47:09.996842+00:00",
+          "revision": "f7e85775b96cfbffd8b8982b0fb3e3317c54edc2",
+          "evidence": [
+            {
+              "ref": "docs/notes/quantum_inspire/destination-response-upstream-request.md",
+              "sha256": "8aa625640ee46002eac2ba3e3e2a3c63780d2757f8e3566355111bf3851ae0b0"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-job-artifact-observations.json",
+              "sha256": "2dba65de58d86cb1a456a4bbcf61961bb543d51bfdce4eaea499b10db403109f"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-final-result-equivalence.json",
+              "sha256": "3946f6ef9a543ee30cf5433309fffe00680271e5d2a17b45a275c685ec2a0ce7"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-job-log-observation.json",
+              "sha256": "6d51375448902d493a636c306d032528cf86469586651901224702c35df486d2"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-served-api-observation.json",
+              "sha256": "d0fd91d54574518cda5a0b24ce052913834bfbc93b060fc4197872c36bcd89b9"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-calibration-connectivity.json",
+              "sha256": "5864b9fc7d872a9e1f978d0c49f7cd82654df7e359541520965bd0d356368903"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-prometheus-version-scope.json",
+              "sha256": "7b836275f858296a2c77cf2c9d4683e43c636628187c8ce297299fd4da3bc32d"
+            }
+          ],
+          "scope_sha256": "5b449d856460018e12fd1fb42be467e75c0c8953eee6033175c85a055f0ca0b0"
+        }
+      ]
+    },
+    {
+      "id": "destination-final-result-projection-replay",
+      "state": "done",
+      "action": "Retain lossless final-result projections and independently replay endpoint equality",
+      "acceptance": "Reconstruct every observed provider response from metadata and retained raw/results, match initial API hashes, derive equality checks independently, pass mutation tests and obtain focused peer-review closure.",
+      "receipts": [
+        {
+          "result": "Six lossless API-response reconstructions match original observed hashes. Normal and optimized checks, 45 mutation regressions, 345 combined focused tests, pinned Ruff/mypy and three replay gates pass. Requested high-effort Codex review closes the ancillary provenance finding with bounded PASS. API capture trust and physical-causality limits remain explicit.",
+          "observed_at": "2026-10-28T01:02:33.467693+00:00",
+          "revision": "f7e85775b96cfbffd8b8982b0fb3e3317c54edc2",
+          "evidence": [
+            {
+              "ref": "docs/archive/reviews/tuna-destination-final-result-projection-review.md",
+              "sha256": "dea97954103a7635bb527d758bf91c24e12594d42e0dac3a7b96bf190dfb7d1f"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-destination-final-result-projection-review.json",
+              "sha256": "7e30e65d61076f85e41fdc614d663711c46e9e9a11e3cde659ece678cf30a042"
+            },
+            {
+              "ref": "scripts/qi_tuna_final_result_receipt.py",
+              "sha256": "3547faacb440146963ecf72092f7883537b5a183133ebf4c84631a578d71f4ed"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_final_result_receipt.py",
+              "sha256": "7e4374b2f4c27ad1b4c3ea9a476675b0f986052219161c6e782209a64413c6d5"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-final-result-projections.json",
+              "sha256": "2b42398c3c63ccdea406e221b71b95a43457c3f1cde493a9d460935f5ece1666"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-final-result-checked-receipt.json",
+              "sha256": "8ba414576cf0c20c127da2c81ff976fd62d4976450be830615d30de2abc6d2b6"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-final-result-projection-replay.md",
+              "sha256": "4f0ba6f846f98183fd43e8a14709268f8fbf1cc3f5234dc0ed5eb4f0b20b32af"
+            }
+          ],
+          "scope_sha256": "800723ab9e9c277dc7581af11bcd0eec9132d25d639bbeca58c0bb1a62ad9274"
+        }
+      ]
     },
     {
       "id": "destination-one-integration-verification",
-      "state": "todo",
+      "state": "done",
       "action": "Verify the retained nominal-one and upstream-investigation artifacts",
-      "acceptance": "Run focused tests, byte replays, registry, inventory, link and plan checks; retain a bounded verification receipt."
+      "acceptance": "Run focused tests, byte replays, registry, inventory, link and plan checks; retain a bounded verification receipt.",
+      "receipts": [
+        {
+          "result": "Retained acquisition, API projections and both requested peer reviews pass scoped integration checks: 345 tests, three replay gates, normal/optimized exact replays, pinned style/types, registry, provider ledger, 362-distribution inventory, Markdown links and plan validation. Rechecked 147 historical files, 23 acquired source files, 284 prior claims, 316 prior acquisitions and 429 ledger rows. Further hardware and upstream sending remain separately gated.",
+          "observed_at": "2026-10-28T01:03:55.579087+00:00",
+          "revision": "f7e85775b96cfbffd8b8982b0fb3e3317c54edc2",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-retention-verification.json",
+              "sha256": "0da0a728d34689a4391843b5204d4f33a5ea884b05732a072ecd9e83e255a017"
+            }
+          ],
+          "scope_sha256": "8890614e5ae5767f63fa41a004fc23a38d59f6ed85a7f9f481c4420b68546ca7"
+        }
+      ]
     }
   ]
 }

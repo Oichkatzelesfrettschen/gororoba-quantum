@@ -5045,6 +5045,32 @@
     "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/analysis.json",
     "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-recovery-order.json"
    ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_destination_analysis_receipt.py results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response --check results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json",
+   "name": "core-qi-tuna-destination-one-response",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis.json",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-canonical.json",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_final_result_receipt.py docs/evidence/tuna-projector-geometry/destination-final-result-projections.json --check docs/evidence/tuna-projector-geometry/destination-final-result-checked-receipt.json",
+   "name": "core-qi-tuna-final-result-equivalence",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/tuna-projector-geometry/destination-final-result-projections.json",
+    "docs/evidence/tuna-projector-geometry/destination-final-result-checked-receipt.json",
+    "docs/evidence/tuna-projector-geometry/destination-final-result-equivalence.json"
+   ]
   }
  ],
  "excluded": [

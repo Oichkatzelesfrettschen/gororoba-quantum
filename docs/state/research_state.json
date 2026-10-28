@@ -2,6 +2,27 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qi-tuna-destination-one-baseline-before",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before",
+      "family": "nominal-one classical-destination response comparison",
+      "question": "What early/final binary response does the nominal-one control return in the baseline-before position of the separately approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-one-rotated",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations",
+      "family": "nominal-one classical-destination response comparison",
+      "question": "What early/final binary response does the nominal-one control return in the rotated-destinations position of the separately approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-one-baseline-after",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after",
+      "family": "nominal-one classical-destination response comparison",
+      "question": "What early/final binary response does the nominal-one control return in the baseline-after position of the separately approved destination comparison?"
+    },
+    {
       "id": "qi-tuna-destination-zero-baseline-before",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before",
@@ -2215,6 +2236,47 @@
     }
   ],
   "claims": [
+    {
+      "id": "qi-tuna-destination-one-response",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "statement": "The three complete 4096-shot nominal-one Tuna-17 jobs establish all 12 selected realized predictable destination-response cell contrasts within 0.10, with all 12 baseline endpoint intervals within 0.10, under the frozen simultaneous 99% martingale contract.",
+      "boundary": "The endpoint covers marginal early/final cells on declared qubits 4, 11 and 6 and one nominal preparation. It establishes neither physical populations, QND readout, causal destination dependence, full-register invariance nor projector geometry. The old six-job endpoint remains unavailable; the zero/one comparison is retrospective. Further hardware requires another approved case accounting for measured waits and benchmarking context.",
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/nominal-one-destination-response.md",
+        "docs/notes/quantum_inspire/destination-response-upstream-request.md"
+      ],
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-canonical.json",
+          "sha256": "ba74fbfb5f26ec5463059b26d66138b571be8792a2dbbd32dc58bd5a5bf9ab1a"
+        },
+        {
+          "path": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json",
+          "sha256": "b89b115df823113dc8430c7eebddee1898a3906ac7109ea0624edd6803be0027"
+        }
+      ],
+      "gates": {
+        "core-qi-tuna-destination-one-response": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-destination-one-baseline-before",
+        "qi-tuna-destination-one-rotated",
+        "qi-tuna-destination-one-baseline-after"
+      ],
+      "assumptions": [
+        "Trusted chronological binary shot records, coherent provider/local timestamps and the declared inverse decoder.",
+        "Conditional-response targets and finite-sample uncertainty follow the frozen three-job mathematical contract; transient bounds remain unverified."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qi-tuna-destination-case-deadline",
+        "qi-tuna-destination-zero-prefix-response"
+      ]
+    },
     {
       "domain": "hardware",
       "documents": [

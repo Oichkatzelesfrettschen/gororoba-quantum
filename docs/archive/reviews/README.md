@@ -73,3 +73,11 @@ its [provenance](tuna-destination-one-locked-admission-review.json) identifies t
 The [final nominal-one admission review](tuna-destination-one-admission-review.md) closes both
 findings and passes the exact three-job case; its
 [provenance](tuna-destination-one-admission-review.json) binds the final packet and requested model.
+The [acquired-data review](tuna-destination-one-acquired-review.md) passes the primary result and
+encoding reconciliation while identifying an ancillary API-provenance gap; its
+[provenance](tuna-destination-one-acquired-review.json) records the requested model.
+The [lossless projection replay](../../evidence/tuna-projector-geometry/destination-final-result-projection-replay.md)
+adds retained response metadata and checked reconstruction against the original API hashes.
+The [projection closure review](tuna-destination-final-result-projection-review.md) independently
+reconstructs all six responses and closes the provenance finding within the API-capture trust boundary;
+its [provenance](tuna-destination-final-result-projection-review.json) records the requested model and effort.

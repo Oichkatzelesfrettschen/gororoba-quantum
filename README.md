@@ -40,7 +40,7 @@ acquisition of every provider:
 | numerical or stochastic simulation | established | 11 |
 | numerical or stochastic simulation | superseded | 1 |
 | preregistered emulator control | established | 13 |
-| preregistered hardware inference | established | 68 |
+| preregistered hardware inference | established | 69 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |
@@ -370,12 +370,15 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [prepared-zero-baseline-before](results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before) | Quantum Inspire | nominal-zero classical-destination response prefix | tuna_17 | 1 | 1 | completed | 0 ledger change |
 | [prepared-zero-rotated-destinations](results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations) | Quantum Inspire | nominal-zero classical-destination response prefix | tuna_17 | 1 | 1 | completed | 0 ledger change |
 | [prepared-zero-baseline-after](results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after) | Quantum Inspire | nominal-zero classical-destination response prefix | tuna_17 | 1 | 1 | completed | 0 ledger change |
+| [prepared-one-baseline-before](results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before) | Quantum Inspire | nominal-one classical-destination response comparison | tuna_17 | 1 | 1 | completed | 0 ledger change |
+| [prepared-one-rotated-destinations](results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations) | Quantum Inspire | nominal-one classical-destination response comparison | tuna_17 | 1 | 1 | completed | 0 ledger change |
+| [prepared-one-baseline-after](results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after) | Quantum Inspire | nominal-one classical-destination response comparison | tuna_17 | 1 | 1 | completed | 0 ledger change |
 
 The IBM service inventory observed at 2026-10-26T22:47:13.538509+00:00 holds 41 physical jobs with 499 settled seconds; the account then reported 499 of 600 s consumed in the rolling window ending 2026-10-26T22:47:13.488Z. That is an observation, not a current balance or an authorization.
 
 The IBM service inventory observed at 2026-10-25T23:36:01.130164+00:00 holds 4 physical jobs with 150 settled seconds; the account then reported 150 of 600 s consumed in the rolling window ending 2026-10-25T23:36:01.079Z. That is an observation, not a current balance or an authorization.
 
-The Quantum Inspire ledger retrieved at 2026-10-27T20:56:38+00:00 lists 429 jobs with 7800832 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+The Quantum Inspire ledger retrieved at 2026-10-28T00:24:11+00:00 lists 432 jobs with 7813120 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 81 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 

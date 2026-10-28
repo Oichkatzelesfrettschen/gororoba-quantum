@@ -1,0 +1,59 @@
+{
+  "after_job_count": 432,
+  "after_sha256": "f3453cadeab341c9e1648c798cc742ee6fc2ea2468973aebee565d6c4c31623a",
+  "all_previous_job_rows_equal": true,
+  "all_previous_transaction_rows_retained": true,
+  "approved_job_rows": [
+    {
+      "backend_type_id": 7,
+      "batch_job": 896259,
+      "charged": 0,
+      "created_on": "2026-10-27T23:29:24.090225Z",
+      "execution_time_in_seconds": 5.672132,
+      "finished_at": "2026-10-27T23:37:46.723242Z",
+      "job": 1620359,
+      "number_of_shots": 4096,
+      "queued_at": "2026-10-27T23:37:40.541621Z",
+      "shots_done": 4096,
+      "status": "completed"
+    },
+    {
+      "backend_type_id": 7,
+      "batch_job": 896287,
+      "charged": 0,
+      "created_on": "2026-10-27T23:38:33.053097Z",
+      "execution_time_in_seconds": 5.576922,
+      "finished_at": "2026-10-27T23:47:01.938259Z",
+      "job": 1620485,
+      "number_of_shots": 4096,
+      "queued_at": "2026-10-27T23:46:56.126783Z",
+      "shots_done": 4096,
+      "status": "completed"
+    },
+    {
+      "backend_type_id": 7,
+      "batch_job": 896316,
+      "charged": 0,
+      "created_on": "2026-10-27T23:47:47.351057Z",
+      "execution_time_in_seconds": 5.534805,
+      "finished_at": "2026-10-28T00:20:09.478877Z",
+      "job": 1620614,
+      "number_of_shots": 4096,
+      "queued_at": "2026-10-28T00:20:03.610042Z",
+      "shots_done": 4096,
+      "status": "completed"
+    }
+  ],
+  "approved_transaction_rows": [],
+  "before_job_count": 429,
+  "before_revision": "f7e85775b96cfbffd8b8982b0fb3e3317c54edc2",
+  "before_sha256": "d7218af908bdbc36f5b13ba949e7761406efcf58e480fa345ae821113f9d913b",
+  "boundary": "Account-wide snapshot; scoped comparison preserves prior rows and identifies the three newly approved acquisitions.",
+  "new_job_ids": [
+    1620359,
+    1620485,
+    1620614
+  ],
+  "observed_utc": "2026-10-28T00:28:45.633400+00:00",
+  "schema": "qi-destination-one-ledger-revalidation-v1"
+}

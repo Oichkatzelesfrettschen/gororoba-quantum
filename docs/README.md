@@ -78,6 +78,14 @@ uses three serial jobs, a measured-wait allowance and its own
 The [final admission verification](evidence/tuna-projector-geometry/destination-one-admission-verification.json)
 retains the exact packet, 279 focused tests, historical-file comparison and requested high-effort
 [peer-review acceptance](archive/reviews/tuna-destination-one-admission-review.md).
+The [completed nominal-one acquisition](evidence/tuna-projector-geometry/nominal-one-destination-response.md)
+retains 12,288 shots and bounded response equivalence, while the repeated-readout anomaly persists.
+The [upstream evidence request](notes/quantum_inspire/destination-response-upstream-request.md) records
+the verified API/datasource limits and the unsent acquisition-map, settings and IQ request.
+The [lossless final-result projection replay](evidence/tuna-projector-geometry/destination-final-result-projection-replay.md)
+makes the six endpoint-equivalence observations independently checkable from retained acquisition data.
+The [retention verification](evidence/tuna-projector-geometry/destination-one-retention-verification.json)
+binds the acquired evidence, final reviews, focused checks and measured preservation comparisons.
 The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
 native execution limits, billing units and MCP observations. The
 [current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized

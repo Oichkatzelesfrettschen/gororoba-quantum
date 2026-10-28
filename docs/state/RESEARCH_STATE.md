@@ -30,7 +30,7 @@ The IBM service inventory observed at 2026-10-26T22:47:13.538509+00:00 holds 41 
 
 The IBM service inventory observed at 2026-10-25T23:36:01.130164+00:00 holds 4 physical jobs with 150 settled seconds; the account then reported 150 of 600 s consumed in the rolling window ending 2026-10-25T23:36:01.079Z. That is an observation, not a current balance or an authorization.
 
-The Quantum Inspire ledger retrieved at 2026-10-27T20:56:38+00:00 lists 429 jobs with 7800832 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+The Quantum Inspire ledger retrieved at 2026-10-28T00:24:11+00:00 lists 432 jobs with 7813120 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 81 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
@@ -357,6 +357,9 @@ circuit and charges the account ledger's change.
 | [prepared-zero-baseline-before](../../results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before) | Quantum Inspire | nominal-zero classical-destination response prefix | tuna_17 | 1 | 1 | completed | 0 ledger change | qi-tuna-destination-case-deadline, qi-tuna-destination-zero-prefix-response |
 | [prepared-zero-rotated-destinations](../../results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations) | Quantum Inspire | nominal-zero classical-destination response prefix | tuna_17 | 1 | 1 | completed | 0 ledger change | qi-tuna-destination-case-deadline, qi-tuna-destination-zero-prefix-response |
 | [prepared-zero-baseline-after](../../results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after) | Quantum Inspire | nominal-zero classical-destination response prefix | tuna_17 | 1 | 1 | completed | 0 ledger change | qi-tuna-destination-case-deadline, qi-tuna-destination-zero-prefix-response |
+| [prepared-one-baseline-before](../../results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before) | Quantum Inspire | nominal-one classical-destination response comparison | tuna_17 | 1 | 1 | completed | 0 ledger change | qi-tuna-destination-one-response |
+| [prepared-one-rotated-destinations](../../results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations) | Quantum Inspire | nominal-one classical-destination response comparison | tuna_17 | 1 | 1 | completed | 0 ledger change | qi-tuna-destination-one-response |
+| [prepared-one-baseline-after](../../results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after) | Quantum Inspire | nominal-one classical-destination response comparison | tuna_17 | 1 | 1 | completed | 0 ledger change | qi-tuna-destination-one-response |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -674,6 +677,9 @@ circuit and charges the account ledger's change.
 - **qi-tuna-destination-zero-baseline-before** (prepared-zero-baseline-before, batch job 895781, 4096 of 4096 shots done): What early/final binary response does the nominal-zero control return in the baseline-before position of the approved destination comparison?
 - **qi-tuna-destination-zero-rotated** (prepared-zero-rotated-destinations, batch job 895833, 4096 of 4096 shots done): What early/final binary response does the nominal-zero control return in the rotated-destinations position of the approved destination comparison?
 - **qi-tuna-destination-zero-baseline-after** (prepared-zero-baseline-after, batch job 895884, 4096 of 4096 shots done): What early/final binary response does the nominal-zero control return in the baseline-after position of the approved destination comparison?
+- **qi-tuna-destination-one-baseline-before** (prepared-one-baseline-before, batch job 896259, 4096 of 4096 shots done): What early/final binary response does the nominal-one control return in the baseline-before position of the separately approved destination comparison?
+- **qi-tuna-destination-one-rotated** (prepared-one-rotated-destinations, batch job 896287, 4096 of 4096 shots done): What early/final binary response does the nominal-one control return in the rotated-destinations position of the separately approved destination comparison?
+- **qi-tuna-destination-one-baseline-after** (prepared-one-baseline-after, batch job 896316, 4096 of 4096 shots done): What early/final binary response does the nominal-one control return in the baseline-after position of the separately approved destination comparison?
 
 ## Established claims
 
@@ -1196,6 +1202,13 @@ circuit and charges the account ledger's change.
   Evidence: [conformance.json](../../results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json), [results.json](../../results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/results.json), [design-at-approval.md](../../results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/design-at-approval.md), [qx-conformance.md](../evidence/tuna-projector-geometry/qx-conformance.md).
   Gates: replayed by core-qi-projector-conformance.
   Acquisitions: qi-qx-projector-geometry-conformance.
+- **qi-tuna-destination-one-response** (preregistered hardware inference, hardware). The three complete 4096-shot nominal-one Tuna-17 jobs establish all 12 selected realized predictable destination-response cell contrasts within 0.10, with all 12 baseline endpoint intervals within 0.10, under the frozen simultaneous 99% martingale contract.
+  Boundary: The endpoint covers marginal early/final cells on declared qubits 4, 11 and 6 and one nominal preparation. It establishes neither physical populations, QND readout, causal destination dependence, full-register invariance nor projector geometry. The old six-job endpoint remains unavailable; the zero/one comparison is retrospective. Further hardware requires another approved case accounting for measured waits and benchmarking context.
+  Assumptions: Trusted chronological binary shot records, coherent provider/local timestamps and the declared inverse decoder.; Conditional-response targets and finite-sample uncertainty follow the frozen three-job mathematical contract; transient bounds remain unverified..
+  Evidence: [analysis-canonical.json](../../results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-canonical.json), [analysis-serialization-receipt.json](../../results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json), [nominal-one-destination-response.md](../evidence/tuna-projector-geometry/nominal-one-destination-response.md), [destination-response-upstream-request.md](../notes/quantum_inspire/destination-response-upstream-request.md).
+  Gates: replayed by core-qi-tuna-destination-one-response.
+  Acquisitions: qi-tuna-destination-one-baseline-before, qi-tuna-destination-one-rotated, qi-tuna-destination-one-baseline-after.
+  Related claims: qi-tuna-destination-case-deadline, qi-tuna-destination-zero-prefix-response.
 - **qi-tuna-destination-case-deadline** (preregistered hardware inference, hardware). The approved six-job destination comparison stopped at its 3600-second request deadline after three nominal-zero submissions. All 12,288 submitted shots were retained in 14.356782 reported execution seconds with zero charges; the frozen whole-case decision is implementation route unavailable because the nominal-one acquisitions are absent.
   Boundary: Operational incomplete-case outcome. Read-only recovery collected the third already submitted job after the executor stopped. The whole-case equivalence/departure endpoint remains unavailable; further submissions require a separately approved case.
   Assumptions: Provider timestamp fields and result identities describe the recorded service operations.; The frozen complete-case decision requires both nominal preparations..

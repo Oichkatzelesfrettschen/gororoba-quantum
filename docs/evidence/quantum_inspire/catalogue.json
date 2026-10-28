@@ -6,7 +6,7 @@
     "role": "member"
    }
   ],
-  "projects": 152,
+  "projects": 155,
   "reservations": 0,
   "teams": [
    {
@@ -512,9 +512,9 @@
    "nqubits": 5,
    "protocol_version": 2,
    "queue": {
-    "avg_wait_time_in_queue_secs": 3308957.0,
-    "max_wait_time_in_queue_secs": 8408780.0,
-    "min_wait_time_in_queue_secs": 1578131.0,
+    "avg_wait_time_in_queue_secs": 3321404.0,
+    "max_wait_time_in_queue_secs": 8421228.0,
+    "min_wait_time_in_queue_secs": 1590579.0,
     "number_of_jobs_in_queue": 8
    },
    "status": "offline",
@@ -966,9 +966,9 @@
    "nqubits": 9,
    "protocol_version": 2,
    "queue": {
-    "avg_wait_time_in_queue_secs": 4324509.0,
-    "max_wait_time_in_queue_secs": 5655275.0,
-    "min_wait_time_in_queue_secs": 1936019.0,
+    "avg_wait_time_in_queue_secs": 4336957.0,
+    "max_wait_time_in_queue_secs": 5667723.0,
+    "min_wait_time_in_queue_secs": 1948467.0,
     "number_of_jobs_in_queue": 8
    },
    "status": "offline",
@@ -1136,10 +1136,10 @@
    "nqubits": 17,
    "protocol_version": 2,
    "queue": {
-    "avg_wait_time_in_queue_secs": 600.0,
-    "max_wait_time_in_queue_secs": 1649.0,
-    "min_wait_time_in_queue_secs": 9.0,
-    "number_of_jobs_in_queue": 51
+    "avg_wait_time_in_queue_secs": 272.0,
+    "max_wait_time_in_queue_secs": 530.0,
+    "min_wait_time_in_queue_secs": 15.0,
+    "number_of_jobs_in_queue": 24
    },
    "status": "executing",
    "supports_raw_data": true,
@@ -1343,7 +1343,7 @@
   {
    "backend_type_id": 1,
    "id": 1,
-   "last_heartbeat": "2026-10-27T20:53:45.323198Z",
+   "last_heartbeat": "2026-10-28T00:21:14.590026Z",
    "location": "Cloud",
    "message": {
     "content": ""
@@ -1387,7 +1387,7 @@
   {
    "backend_type_id": 5,
    "id": 5,
-   "last_heartbeat": "2026-10-27T20:53:49.317475Z",
+   "last_heartbeat": "2026-10-28T00:21:13.477837Z",
    "location": "TU/eindhoven",
    "message": {
     "content": ""
@@ -1398,7 +1398,7 @@
   {
    "backend_type_id": 6,
    "id": 6,
-   "last_heartbeat": "2026-10-27T20:53:48.840280Z",
+   "last_heartbeat": "2026-10-28T00:21:08.878562Z",
    "location": "TU Delft",
    "message": {
     "content": "Please be aware that Q8 is affected by a spurious two-level system (TLS)"
@@ -1409,7 +1409,7 @@
   {
    "backend_type_id": 7,
    "id": 7,
-   "last_heartbeat": "2026-10-27T20:53:40.864146Z",
+   "last_heartbeat": "2026-10-28T00:21:08.734767Z",
    "location": "TU Delft",
    "message": {
     "content": ""
@@ -1431,6 +1431,6 @@
    "version": "3.0"
   }
  ],
- "retrieved_utc": "2026-10-27T20:53:49+00:00",
+ "retrieved_utc": "2026-10-28T00:21:17+00:00",
  "schema": "qi-catalogue-v1"
 }
