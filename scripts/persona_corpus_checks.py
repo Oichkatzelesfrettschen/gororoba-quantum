@@ -1260,14 +1260,14 @@ def albert_table_cross_check() -> dict[str, int]:
     target = list(range(11)) + list(range(19, 27)) + list(range(11, 19))
     sign = [1] * 19 + [1] + [-1] * 7
     pairs = list(itertools.product(range(27), repeat=2))
-    reference = dict(zip(pairs, parallel.ordered_map(_albert_reference_pair, pairs), strict=True))
-    mismatches = 0
-    for a, b in pairs:
-        here = [Fraction(0)] * 27
-        for r in range(27):
-            here[target[r]] = Fraction(sign[r] * int(table[a, b, r]))
-        expected = [sign[a] * sign[b] * v for v in reference[(target[a], target[b])]]
-        mismatches += here != expected
+    values = [v for row in parallel.ordered_map(_albert_reference_pair, pairs) for v in row]
+    require(all(v.denominator == 1 for v in values), "a doubled reference product is not integral")
+    reference = np.array([int(v) for v in values], dtype=np.int64).reshape(27, 27, 27)
+    target_index, sign_vector = np.array(target), np.array(sign, dtype=np.int64)
+    here = np.zeros_like(table)
+    here[:, :, target_index] = table * sign_vector
+    expected = np.outer(sign_vector, sign_vector)[:, :, None] * reference[np.ix_(target_index, target_index)]
+    mismatches = int(np.count_nonzero(np.any(here != expected, axis=2)))
     require(mismatches == 0, f"{mismatches} Jordan products differ from albert_algebra.py")
     return {"pairs_checked": len(pairs)}
 
