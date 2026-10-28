@@ -54,7 +54,11 @@ A further provider adds one adapter class and one PROVIDERS entry.
 The script renders docs/state/RESEARCH_STATE.md in full and the marked
 sections of README.md and docs/RESEARCH_ROADMAP.md. --check fails on any
 rule violation or rendered difference; --write rewrites the rendered text;
---self-test applies mutations to the registry that each rule must reject.
+--self-test applies mutations to the registry that each rule must reject;
+--add-acquisition ID PROVIDER RUN FAMILY QUESTION appends one acquisition as
+text, which scripts/retain_run.sh calls when it retains an IBM run; it holds
+every rule except that a claim cite the new acquisition, which --check and
+--write require once the operator writes that claim.
 """
 
 from __future__ import annotations
@@ -76,6 +80,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import iqm_jobs  # noqa: E402
+import plan_records  # noqa: E402
 import qd_platform  # noqa: E402
 import qi_platform  # noqa: E402
 
@@ -247,6 +252,13 @@ class IbmRuns:
             require(
                 audit.get("inventory_sha256") == digest(inventory),
                 "the retention audit binds a different service inventory",
+            )
+            # A run collected after the inventory's observation sits outside the audit's jobs, so the registry
+            # cannot match it to an acquisition; the change that retains it observes the instance again.
+            require(
+                not audit.get("awaiting_observation"),
+                f"{audit_file.name}: {', '.join(audit['awaiting_observation'])} await observation; "
+                "retain runs with scripts/retain_run.sh, which observes the instance's inventory",
             )
             self.jobs += audit["jobs"]
             self.services.append(service)
@@ -704,7 +716,10 @@ def _static_check(command: str) -> bool:
     return PINNED_TOOL.sub("", command.strip(), count=1).startswith(CHECK_PREFIXES)
 
 
-def validate(registry: dict[str, Any], context: Context) -> None:
+def validate(registry: dict[str, Any], context: Context, uncited: frozenset[str] = frozenset()) -> None:
+    """Every registry rule. UNCITED names acquisitions exempt from claim coverage: add_acquisition saves a newly
+    retained run's acquisition before the operator writes the claim that cites it, and --check and --write, which
+    pass no exemption, keep every acquisition cited."""
     require(registry.get("schema") == SCHEMA, f"registry schema must be {SCHEMA}")
     require(set(registry) == {"schema", "acquisitions", "claims"}, "registry keys differ from the schema")
 
@@ -754,9 +769,12 @@ def validate(registry: dict[str, Any], context: Context) -> None:
                 isinstance(item, dict) and set(item) == {"path", "sha256"},
                 f"{owner}: evidence entries carry path and sha256",
             )
-            path = ROOT / item["path"]
+            path = ROOT / evidence_file(item["path"])
             require(path.is_file(), f"{owner}: evidence {item['path']} is missing")
-            require(context.digest(path) == item["sha256"], f"{owner}: evidence {item['path']} digest differs")
+            # A FILE.json#COLLECTION/FIELD=VALUE entry binds the digest of the one record it selects, so a record
+            # appended to a shared ledger leaves the claim's evidence unchanged.
+            found = plan_records.evidence_digest(ROOT, item["path"]) if "#" in item["path"] else context.digest(path)
+            require(found == item["sha256"], f"{owner}: evidence {item['path']} digest differs")
         for document in claim["documents"]:
             require((ROOT / document).is_file(), f"{owner}: document {document} is missing")
         gates = claim.setdefault("gates", {})
@@ -847,10 +865,25 @@ def validate(registry: dict[str, Any], context: Context) -> None:
 
     cited = {acquisition for claim in claims for acquisition in claim["acquisitions"]}
     for acquisition in acquisition_ids:
-        require(acquisition in cited, f"acquisition {acquisition} supports no claim")
+        require(acquisition in cited or acquisition in uncited, f"acquisition {acquisition} supports no claim")
 
 
 # Rendering
+
+
+def evidence_file(reference: str) -> str:
+    """The repository file an evidence entry names: its path, without a #COLLECTION/FIELD=VALUE record selector."""
+    return reference.partition("#")[0]
+
+
+def _evidence_links(claim: dict[str, Any], origin: Path) -> list[str]:
+    """One link per evidence file, labeled with the count of records a claim binds in it."""
+    files = Counter(evidence_file(item["path"]) for item in claim["evidence"])
+    records = Counter(evidence_file(item["path"]) for item in claim["evidence"] if "#" in item["path"])
+    return [
+        _link(name, origin, Path(name).name + (f" ({records[name]} records)" if records[name] else ""))
+        for name in files
+    ]
 
 
 def _link(target: str, origin: Path, label: str | None = None) -> str:
@@ -888,14 +921,16 @@ def _status(statuses: Counter[str]) -> str:
     return ", ".join(f"{count} {status}" for status, count in sorted(statuses.items()))
 
 
-def _acquisition_table(registry: dict[str, Any], context: Context, origin: Path, with_claims: bool) -> list[str]:
+def _acquisition_table(
+    registry: dict[str, Any], context: Context, origin: Path, with_claims: bool, rows: list[dict[str, Any]]
+) -> list[str]:
     header = "| Run | Provider | Family | Backend | Jobs | PUBs or circuits | Status | Charge |"
     rule = "| --- | --- | --- | --- | ---: | ---: | --- | ---: |"
     if with_claims:
         header += " Claims |"
         rule += " --- |"
     lines = [header, rule]
-    for row in _acquisition_rows(registry, context):
+    for row in rows:
         line = (
             f"| {_link(row['run'], origin, Path(row['run']).name)} | {context.providers[row['provider']].title} | "
             f"{_cell(row['family'])} | {', '.join(row['backends'])} | {row['jobs']} | {row['circuits']} | "
@@ -914,7 +949,7 @@ def _claim_entry(claim: dict[str, Any], origin: Path) -> list[str]:
         lines.append(f"  Proof origin: {claim['proof_origin']}.")
     if claim["assumptions"]:
         lines.append(f"  Assumptions: {'; '.join(claim['assumptions'])}.")
-    sources = [_link(item["path"], origin, Path(item["path"]).name) for item in claim["evidence"]]
+    sources = _evidence_links(claim, origin)
     sources += [_link(document, origin, Path(document).name) for document in claim["documents"]]
     if sources:
         lines.append(f"  Evidence: {', '.join(sources)}.")
@@ -949,7 +984,8 @@ def _claim_entry(claim: dict[str, Any], origin: Path) -> list[str]:
     return lines
 
 
-def render_state_document(registry: dict[str, Any], context: Context) -> str:
+def render_state_document(registry: dict[str, Any], context: Context, rows: list[dict[str, Any]] | None = None) -> str:
+    rows = _acquisition_rows(registry, context) if rows is None else rows
     origin = STATE_DOCUMENT
     lines = [
         "# Research state",
@@ -979,10 +1015,10 @@ def render_state_document(registry: dict[str, Any], context: Context) -> str:
         "An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one",
         "circuit and charges the account ledger's change.",
         "",
-        *_acquisition_table(registry, context, origin, with_claims=True),
+        *_acquisition_table(registry, context, origin, with_claims=True, rows=rows),
         "",
     ]
-    for row in _acquisition_rows(registry, context):
+    for row in rows:
         detail = f", {row['detail']}" if row["detail"] else ""
         lines.append(f"- **{row['id']}** ({Path(row['run']).name}{detail}): {row['question']}")
     lines.append("")
@@ -1020,7 +1056,10 @@ def evidence_class_matrix(registry: dict[str, Any]) -> list[str]:
     return lines
 
 
-def render_readme_section(registry: dict[str, Any], context: Context) -> list[str]:
+def render_readme_section(
+    registry: dict[str, Any], context: Context, rows: list[dict[str, Any]] | None = None
+) -> list[str]:
+    rows = _acquisition_rows(registry, context) if rows is None else rows
     origin = ROOT / "README.md"
     return [
         "## Research state",
@@ -1035,7 +1074,7 @@ def render_readme_section(registry: dict[str, Any], context: Context) -> list[st
         f"The {_link('docs/evidence/evidence-closure/README.md', origin, 'derived closure view')} preserves",
         "cross-branch coverage, denominator gaps and unresolved dependencies separately from this registry.",
         "",
-        *_acquisition_table(registry, context, origin, with_claims=False),
+        *_acquisition_table(registry, context, origin, with_claims=False, rows=rows),
         "",
         *_account_lines(context),
     ]
@@ -1081,10 +1120,12 @@ def _replace_section(text: str, section: list[str], name: str) -> str:
 def rendered(registry: dict[str, Any], context: Context) -> dict[Path, str]:
     readme = ROOT / "README.md"
     roadmap = ROOT / "docs/RESEARCH_ROADMAP.md"
+    # Every provider adapter re-reads its retained runs on each runs() call, so the views share one read.
+    rows = _acquisition_rows(registry, context)
     return {
-        STATE_DOCUMENT: render_state_document(registry, context),
+        STATE_DOCUMENT: render_state_document(registry, context, rows),
         readme: _replace_section(
-            readme.read_text(encoding="utf-8"), render_readme_section(registry, context), "README.md"
+            readme.read_text(encoding="utf-8"), render_readme_section(registry, context, rows), "README.md"
         ),
         roadmap: _replace_section(
             roadmap.read_text(encoding="utf-8"), render_roadmap_section(registry, context), "RESEARCH_ROADMAP.md"
@@ -1143,6 +1184,15 @@ def _mutations() -> Iterable[tuple[str, Callable[[dict[str, Any]], None], str]]:
 
     def altered_evidence(registry: dict[str, Any]) -> None:
         claim(registry, lambda c: bool(c.get("evidence")))["evidence"][0]["sha256"] = "0" * 64
+
+    def altered_record_evidence(registry: dict[str, Any]) -> None:
+        entry = claim(registry, lambda c: any("#" in item["path"] for item in c["evidence"]))
+        next(item for item in entry["evidence"] if "#" in item["path"])["sha256"] = "0" * 64
+
+    def absent_record_evidence(registry: dict[str, Any]) -> None:
+        entry = claim(registry, lambda c: any("#" in item["path"] for item in c["evidence"]))
+        item = next(item for item in entry["evidence"] if "#" in item["path"])
+        item["path"] = evidence_file(item["path"]) + "#jobs/job_id=absent"
 
     def drop_acquisition(registry: dict[str, Any], provider: str) -> None:
         entries = registry["acquisitions"]
@@ -1249,6 +1299,8 @@ def _mutations() -> Iterable[tuple[str, Callable[[dict[str, Any]], None], str]]:
     yield "kernel receipt outside the pinned evidence", receipt_unpinned, "pinned as evidence"
     yield "unknown gate", unknown_gate, "is not in ci/gates.json"
     yield "altered evidence bytes", altered_evidence, "digest differs"
+    yield "altered record evidence", altered_record_evidence, "digest differs"
+    yield "record evidence selecting no record", absent_record_evidence, "digest differs"
     yield "audited run without an acquisition", missing_run, "run set differs from the retained-run audit"
     yield "Quantum Inspire run without an acquisition", missing_qi_run, "run set differs from the Quantum Inspire"
     yield "acquisition naming an unretained Quantum Inspire run", extra_qi_acquisition, "not a retained Quantum Inspire"
@@ -1648,13 +1700,45 @@ def _check_declared_retained_summary(qi: QuantumInspireRuns) -> None:
     require("declared unretained" not in line, f"a retained declared job enters the unretained summary: {line}")
 
 
+def add_acquisition(entry: dict[str, str]) -> None:
+    """Append one acquisition to the registry file as text, keeping the hand formatting of every other entry, and
+    refuse an entry the registry rules reject."""
+    require(set(entry) == ACQUISITION_KEYS and all(entry.values()), "an acquisition needs every field")
+    text = REGISTRY.read_text(encoding="utf-8")
+    registry = json.loads(text)
+    require(entry["id"] not in {row["id"] for row in registry["acquisitions"]}, f"{entry['id']} is registered")
+    require(entry["run"] not in {row["run"] for row in registry["acquisitions"]}, f"{entry['run']} is registered")
+    head, separator, tail = text.partition('\n  ],\n  "claims": [\n')
+    require(bool(separator), "the registry's acquisitions list ends in an unexpected layout")
+    block = "\n".join("    " + line for line in json.dumps(entry, indent=2, ensure_ascii=False).splitlines())
+    updated = f"{head},\n{block}{separator}{tail}"
+    validate(json.loads(updated), Context(), uncited=frozenset({entry["id"]}))
+    REGISTRY.write_text(updated, encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--check", action="store_true", help="validate and compare every rendered section")
     mode.add_argument("--write", action="store_true", help="validate and rewrite every rendered section")
     mode.add_argument("--self-test", action="store_true", help="apply registry mutations each rule must reject")
+    mode.add_argument(
+        "--add-acquisition",
+        nargs=5,
+        metavar=("ID", "PROVIDER", "RUN", "FAMILY", "QUESTION"),
+        help="append one acquisition before its claim exists; write the claim, then --write renders the views",
+    )
     arguments = parser.parse_args()
+    if arguments.add_acquisition:
+        try:
+            add_acquisition(
+                dict(zip(("id", "provider", "run", "family", "question"), arguments.add_acquisition, strict=True))
+            )
+        except (ValueError, KeyError, TypeError, OSError) as error:
+            print(f"research state: {error}", file=sys.stderr)
+            return 1
+        print(f"research state: registered acquisition {arguments.add_acquisition[0]}")
+        return 0
     try:
         registry = load_json(REGISTRY)
         context = Context()

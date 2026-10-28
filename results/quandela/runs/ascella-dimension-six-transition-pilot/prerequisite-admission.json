@@ -1,0 +1,133 @@
+{
+  "analysis_source_sha256": "3063f1a26626370aed77845f8bb00a2379d6848e5002ea9d62fafbcded652fbd",
+  "campaign_sha256": "a805f0d5969291539839f896e612ecd689f6b54cd8a75a35c61460fa7929ce5b",
+  "case": "dimension-six-transition-pilot",
+  "decision": {
+    "admitted": true,
+    "measured_predecessor_durations": [
+      4.0,
+      4.0,
+      4.0,
+      4.0,
+      4.0
+    ],
+    "pilot_packing_model_seconds": 108.0,
+    "predecessor_cases": [
+      "sedenion-cancellation-dark",
+      "sedenion-cancellation-bright",
+      "sedenion-cancellation-bright-repeat",
+      "sedenion-cancellation-dark-repeat",
+      "sedenion-cancellation-fixture"
+    ],
+    "runtime_boundary": "The first dark acquisition qualifies unknown runtime under a 300-second stop limit.",
+    "scientific_boundary": "Negative optical performance retains the diagnostic controls and pilot question."
+  },
+  "predecessor_sources": [
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/cases.json",
+      "sha256": "71962299f2cb30c1597fe2282f6a1b07a83f11e027942a8b0ad76e4f4b9a591f"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/submission.json",
+      "sha256": "066521dbc0121df39d14968380e1ff31b2bcef16f020e75ac8ee55d42ed8618c"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/job-body.json",
+      "sha256": "f77614008dabaae92c9932e9610783e0e159c8de19327c860dc68fa2c4e9a02d"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/results.json",
+      "sha256": "57d75cc0e87e444c6c49a0e5777799488d47e09f987aa369805ce0ad71c9a8b1"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/raw/result.json",
+      "sha256": "1146fe63bdb9c7edf4c05e18662212c026baa926414c84f3f157f6b0ef403d7b"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright/cases.json",
+      "sha256": "a6a6acee80c525a8131cfe3d028d96163a4d0176eaa464f0515f39f634b97a5a"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright/submission.json",
+      "sha256": "98833b55f91f68f96c719031865aef74e817be101a5d4c782b5e67a433261e19"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright/job-body.json",
+      "sha256": "f2d942bc5a47bb97746fdf2e4991f01e42ee603176f5032982f7e6144d915bf2"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright/results.json",
+      "sha256": "d2fd603086f70f596c17e6ed16f790ec48240a6973ac2b4f6d6940b72afc3055"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright/raw/result.json",
+      "sha256": "6667cbde614732311653efc8f1344deb59b1805c8e22c41515cca771ff6314e3"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat/cases.json",
+      "sha256": "d6e5deaa84e62e3f0371c55b8ef8672a17e7ec7ca7b5879cb3cc228975cfb251"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat/submission.json",
+      "sha256": "342edb43daf60df5a27772952891543c407a34cd660173e1c5f38f2cf11018d8"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat/job-body.json",
+      "sha256": "17a5074ab70d011a9de9e15b4bb2a41b222fa4afc8b223b6801bbc21a24a65c5"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat/results.json",
+      "sha256": "c44b8e606a1833c1ce395e0a86c4358cbd32eb902a60e39eb8de2e5fa5534818"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat/raw/result.json",
+      "sha256": "471b5e677a340b0f9af197008f766553eef89a27482b39bfecfd26deea52bc5e"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat/cases.json",
+      "sha256": "1b9c158847a337f7fefed08b3b0e692f44709e71e0eb02c92610155e50a2ae8e"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat/submission.json",
+      "sha256": "e50e2c848b85a0aaa52c80fab79ba477b79036b3002b3592af63106735ee3121"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat/job-body.json",
+      "sha256": "9b9a1d602affd862f928a3986872fc7aad390d458a2026a40080fd38d0e2dd55"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat/results.json",
+      "sha256": "31baad9a069c2cf31a48d2df2b1de8f96de400149bdb42c672080e98de968540"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat/raw/result.json",
+      "sha256": "39e55e39b7e76dc045f8c63ae266f70462740eb22490de26c99e2bfa645265db"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-fixture/cases.json",
+      "sha256": "a8fe9257e527e5a9a8d5418eb85acd9686e2d10b61367d57d1c2a1879c9197c2"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-fixture/submission.json",
+      "sha256": "ee0b39efb5c69753aa31c7a3df8b61f3a1a19b55d9aa07e0aa630417a2b178be"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-fixture/job-body.json",
+      "sha256": "812a2d1af54a78f9970835525b8f769b0ca1b6c26ec1861d73fd985725be3a95"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-fixture/results.json",
+      "sha256": "346288da849d088aac7dbb3d02d28c3610f2b62aabd1651abc459457b3dea03d"
+    },
+    {
+      "ref": "results/quandela/runs/ascella-sedenion-cancellation-fixture/raw/result.json",
+      "sha256": "cada045a6c0cb3913c07d3ee1591181c8a4cdbb5fba2615aae2b4362f9a4f9b5"
+    }
+  ],
+  "reviewed_case": {
+    "file": "docs/evidence/ascella-cancellation-transition-acquisition/README.md",
+    "sha256": "cfff293cf02f493c1f760cbc3f009de2a69a307b99d12e75b9c3d73f7e737751"
+  },
+  "schema": "ascella-cohort-prerequisite-admission-v1",
+  "source_case_sha256": "10bc07066311984fac15badbe8d55e6dd035da6f37dd68efb841fc6e5433c7dc"
+}

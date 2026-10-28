@@ -1,0 +1,201 @@
+{
+  "account_credit_expiry_utc": null,
+  "cases": [
+    {
+      "directory": "results/quandela/runs/ascella-sedenion-cancellation-dark",
+      "manifest": "cases/sedenion-cancellation-dark/cases.json",
+      "name": "sedenion-cancellation-dark",
+      "settings": [
+        "sedenion-lcu/dark"
+      ],
+      "sha256": "02edc487ad4c49d4a65c9a79de570d06b0a8797c02a62143c1456e431e9d5433"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-sedenion-cancellation-bright",
+      "manifest": "cases/sedenion-cancellation-bright/cases.json",
+      "name": "sedenion-cancellation-bright",
+      "settings": [
+        "sedenion-lcu/bright"
+      ],
+      "sha256": "83932b19a538d8fd1b7b89125b125cf0cc242bdd7b6301922f49997280b7e239"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat",
+      "manifest": "cases/sedenion-cancellation-bright-repeat/cases.json",
+      "name": "sedenion-cancellation-bright-repeat",
+      "settings": [
+        "sedenion-lcu/bright-repeat"
+      ],
+      "sha256": "fd7403893b227d037cd957a94188eeb9274c1b253e41cff0709f77f2cf371dd0"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat",
+      "manifest": "cases/sedenion-cancellation-dark-repeat/cases.json",
+      "name": "sedenion-cancellation-dark-repeat",
+      "settings": [
+        "sedenion-lcu/dark-repeat"
+      ],
+      "sha256": "d5561e196e6d46cd32ddb756d89ecf0c5c3b366ad854dba139048005b96663e8"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-sedenion-cancellation-fixture",
+      "manifest": "cases/sedenion-cancellation-fixture/cases.json",
+      "name": "sedenion-cancellation-fixture",
+      "settings": [
+        "sedenion-lcu/fixture"
+      ],
+      "sha256": "b51fec7b4ef6eea7aac877b11e9b1de8324edd5dd5763ef229feb4c99860c47a"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "manifest": "cases/dimension-six-transition-pilot/cases.json",
+      "name": "dimension-six-transition-pilot",
+      "settings": [
+        "mub-six/computational-to-computational-input-0",
+        "mub-six/computational-to-computational-input-1",
+        "mub-six/computational-to-computational-input-2",
+        "mub-six/computational-to-computational-input-3",
+        "mub-six/computational-to-computational-input-4",
+        "mub-six/computational-to-computational-input-5",
+        "mub-six/product_fourier-to-product_chirped-input-0",
+        "mub-six/product_fourier-to-product_chirped-input-1",
+        "mub-six/product_fourier-to-product_chirped-input-2",
+        "mub-six/product_fourier-to-product_chirped-input-3",
+        "mub-six/product_fourier-to-product_chirped-input-4",
+        "mub-six/product_fourier-to-product_chirped-input-5"
+      ],
+      "sha256": "10bc07066311984fac15badbe8d55e6dd035da6f37dd68efb841fc6e5433c7dc"
+    }
+  ],
+  "cohort_id": "ascella-cancellation-transition-screening",
+  "credit_ceiling": 6.786432,
+  "execution_stop_seconds_per_job": 300,
+  "qualification_profile": {
+    "file": "docs/evidence/ascella-cancellation-transition-acquisition/qualification-profile.json",
+    "sha256": "10a966a7af73530a281586e7c32842c8c2fa737b89dd23dd79fbd88c48eda6c4"
+  },
+  "remaining_account_credits": null,
+  "schema": "ascella-cancellation-transition-campaign-v1",
+  "settings": [
+    {
+      "case": "results/quandela/runs/ascella-sedenion-cancellation-dark",
+      "iteration_index": 0,
+      "pilot_role": "cancellation",
+      "sequence_position": 0,
+      "setting_id": "sedenion-lcu/dark"
+    },
+    {
+      "case": "results/quandela/runs/ascella-sedenion-cancellation-bright",
+      "iteration_index": 0,
+      "pilot_role": "cancellation",
+      "sequence_position": 1,
+      "setting_id": "sedenion-lcu/bright"
+    },
+    {
+      "case": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat",
+      "iteration_index": 0,
+      "pilot_role": "cancellation",
+      "sequence_position": 2,
+      "setting_id": "sedenion-lcu/bright-repeat"
+    },
+    {
+      "case": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat",
+      "iteration_index": 0,
+      "pilot_role": "cancellation",
+      "sequence_position": 3,
+      "setting_id": "sedenion-lcu/dark-repeat"
+    },
+    {
+      "case": "results/quandela/runs/ascella-sedenion-cancellation-fixture",
+      "iteration_index": 0,
+      "pilot_role": "cancellation",
+      "sequence_position": 4,
+      "setting_id": "sedenion-lcu/fixture"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "iteration_index": 0,
+      "pilot_role": "identity",
+      "sequence_position": 5,
+      "setting_id": "mub-six/computational-to-computational-input-0"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "iteration_index": 1,
+      "pilot_role": "identity",
+      "sequence_position": 6,
+      "setting_id": "mub-six/computational-to-computational-input-1"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "iteration_index": 2,
+      "pilot_role": "identity",
+      "sequence_position": 7,
+      "setting_id": "mub-six/computational-to-computational-input-2"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "iteration_index": 3,
+      "pilot_role": "identity",
+      "sequence_position": 8,
+      "setting_id": "mub-six/computational-to-computational-input-3"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "iteration_index": 4,
+      "pilot_role": "identity",
+      "sequence_position": 9,
+      "setting_id": "mub-six/computational-to-computational-input-4"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "iteration_index": 5,
+      "pilot_role": "identity",
+      "sequence_position": 10,
+      "setting_id": "mub-six/computational-to-computational-input-5"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "iteration_index": 6,
+      "pilot_role": "cross-basis",
+      "sequence_position": 11,
+      "setting_id": "mub-six/product_fourier-to-product_chirped-input-0"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "iteration_index": 7,
+      "pilot_role": "cross-basis",
+      "sequence_position": 12,
+      "setting_id": "mub-six/product_fourier-to-product_chirped-input-1"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "iteration_index": 8,
+      "pilot_role": "cross-basis",
+      "sequence_position": 13,
+      "setting_id": "mub-six/product_fourier-to-product_chirped-input-2"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "iteration_index": 9,
+      "pilot_role": "cross-basis",
+      "sequence_position": 14,
+      "setting_id": "mub-six/product_fourier-to-product_chirped-input-3"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "iteration_index": 10,
+      "pilot_role": "cross-basis",
+      "sequence_position": 15,
+      "setting_id": "mub-six/product_fourier-to-product_chirped-input-4"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "iteration_index": 11,
+      "pilot_role": "cross-basis",
+      "sequence_position": 16,
+      "setting_id": "mub-six/product_fourier-to-product_chirped-input-5"
+    }
+  ],
+  "summed_execution_stop_seconds": 1800
+}

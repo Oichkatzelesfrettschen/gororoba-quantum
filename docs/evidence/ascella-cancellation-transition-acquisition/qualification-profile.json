@@ -1,0 +1,26 @@
+{
+  "cohort_id": "ascella-cancellation-transition-screening",
+  "confirmation": "The full 54-setting acquisition uses a fresh cohort and a separately frozen confidence family.",
+  "denominator": "All returned accepted events, including invalid photon-number outcomes; incident pulses unknown.",
+  "detected_shot_cap_per_setting": 131072,
+  "endpoint_definition": "17*(12 physical ports + 1 invalid category)+17 leakage aggregates+5 heralds",
+  "endpoints": 243,
+  "expansion": "All twelve pilot settings qualify once; a failed or incomplete pilot stops automatic expansion.",
+  "familywise_confidence": 0.95,
+  "leakage_includes_invalid": true,
+  "precision": 0.01,
+  "samples_per_setting": 65536,
+  "sampling_model": "Simultaneous Clopper-Pearson intervals conditional on IID Bernoulli trials within settings.",
+  "schema": "ascella-experiment-qualification-v1",
+  "thresholds": {
+    "bright_herald_lower": 0.98,
+    "compilation_tv": 0.01,
+    "cross_basis_tv_upper": 0.05,
+    "dark_herald_upper": 0.02,
+    "fixture_lower": 0.47,
+    "fixture_upper": 0.53,
+    "identity_lower": 0.95,
+    "leakage_upper": 0.02,
+    "repeat_difference": 0.01
+  }
+}

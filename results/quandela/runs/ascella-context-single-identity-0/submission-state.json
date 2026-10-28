@@ -1,0 +1,131 @@
+{
+ "body_sha256": "6b029f3028e93d833ed1f080af618cac241ece38f940d74a4162ccdc92022805",
+ "cases_sha256": "e49d2a0d77a2703f8df0f380fa4c815c029d53cfc28196d20e7bc3c3e0bbcee1",
+ "job_id": "2c3e0a37-48be-4d97-8d92-d28c71faf42d",
+ "phase": "posted",
+ "platform": "qpu:ascella",
+ "receipt": {
+  "admitted_statuses": [
+   "available"
+  ],
+  "approval": "execute those 7 diagnostic jobs, analyze, and whatever else afterward: five separate jobs repeating identity inputs 2 and 5, Fourier-to-chirped input 4, identity 0 and Fourier-to-chirped 0; one packed job and one reverse packed job; original parameters and seeds; 65,536 accepted events per setting; at most 7.917504 credits.",
+  "availability_at_plan": {
+   "max_concurrent_jobs": 1,
+   "max_jobs_in_queue": 1,
+   "max_running_qt_jobs": 10,
+   "num_concurrent_jobs": 0,
+   "num_jobs_in_queue": 0,
+   "num_running_qt_jobs": 0
+  },
+  "body_sha256": "6b029f3028e93d833ed1f080af618cac241ece38f940d74a4162ccdc92022805",
+  "case": "ascella-context-single-identity-0",
+  "cases_sha256": "e49d2a0d77a2703f8df0f380fa4c815c029d53cfc28196d20e7bc3c3e0bbcee1",
+  "credit_ceiling": 1.131072,
+  "estimated_credits": 1.065536,
+  "estimated_shots": 65536,
+  "expected_seconds": 300,
+  "max_credits": 1.131072,
+  "max_samples": 65536,
+  "max_shots": 131072,
+  "payload_version_basis": "declared",
+  "per_job_credits": 1,
+  "perfs_at_plan": {
+   "Clock (MHz)": 13.33,
+   "Dark counts (detection/s)": [
+    352.0,
+    342.0,
+    284.0,
+    93.0,
+    110.0,
+    424.0,
+    220.0,
+    562.0,
+    2704.0,
+    3501.0,
+    4431.0,
+    574.0
+   ],
+   "HOM (%)": 87.74,
+   "g2 (%)": 2.0
+  },
+  "platform": "qpu:ascella",
+  "platform_at_plan": {
+   "bookable": true,
+   "description": "Ascella QPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "qpu:ascella",
+   "price_per_shot": 1e-06,
+   "statistic": {
+    "2026-10-21": {
+     "availability": 89.4
+    },
+    "2026-10-22": {
+     "availability": 89.83
+    },
+    "2026-10-23": {
+     "availability": 90.81
+    },
+    "2026-10-24": {
+     "availability": 92.25
+    },
+    "2026-10-25": {
+     "availability": 92.22000000000001
+    },
+    "2026-10-26": {
+     "availability": 92.10000000000001
+    },
+    "2026-10-27": {
+     "availability": 0.0
+    },
+    "2026-10-28": {
+     "availability": 86.59
+    }
+   },
+   "status": "available",
+   "type": "qpu"
+  },
+  "schema": "qd-submission-v1",
+  "status_at_plan": {
+   "explorer": "available",
+   "processor": "available"
+  },
+  "usage_before": [
+   {
+    "total_jobs": 90,
+    "usage": [
+     {
+      "credits": 0.0,
+      "duration_seconds": 1927,
+      "free_credits": 18.901120000000002,
+      "nb_jobs": 24,
+      "platform_name": "qpu:ascella"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 1128,
+      "free_credits": 16.0,
+      "nb_jobs": 17,
+      "platform_name": "sim:belenos"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 5570,
+      "free_credits": 50.26742,
+      "nb_jobs": 49,
+      "platform_name": "qpu:belenos"
+     }
+    ]
+   }
+  ],
+  "versions": {
+   "exqalibur": "1.4.2",
+   "perceval-quandela": "1.3.1"
+  }
+ },
+ "schema": "qd-submission-state-v1",
+ "started_utc": "2026-10-28T00:36:21+00:00",
+ "submitted_utc": "2026-10-28T00:36:24+00:00"
+}

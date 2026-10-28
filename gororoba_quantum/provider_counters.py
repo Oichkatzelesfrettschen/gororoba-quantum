@@ -342,6 +342,106 @@ def quandela_top_level_shots(outer: Mapping[str, Any], iterated: bool, job_max_s
     return Counter("shots", value, Population.REQUESTED_CAP, "job", Status.REQUESTED, "job answer shots")
 
 
+@dataclass(frozen=True)
+class QuandelaRecord:
+    """Typed counters of one collected Quandela record (qd_platform.collect's results.json).
+
+    iterations holds one IterationCounters per result entry that carries counts, in result order, and None for an
+    entry a partial answer left uncounted; top_level is the answer's top-level shots; detection_events totals the
+    counted iterations' detection events, unavailable unless every iteration was counted.
+    """
+
+    iterated: bool
+    partial: bool
+    iterations: tuple[IterationCounters | None, ...]
+    top_level: Counter
+    detection_events: Counter
+
+    def record(self) -> dict[str, Any]:
+        return {
+            "iterated": self.iterated,
+            "partial": self.partial,
+            "iterations": [None if i is None else i.record() for i in self.iterations],
+            "top_level": self.top_level.record(),
+            "detection_events": self.detection_events.record(),
+        }
+
+
+def quandela_record(results: Mapping[str, Any], budgets: Sequence[tuple[int, int]]) -> QuandelaRecord:
+    """The typed view of a collected Quandela record, leaving the record's verbatim fields untouched.
+
+    budgets lists each iteration's (max_samples, max_shots), qd_platform.iteration_budgets of the run's cases.json.
+    The job body's job-level max_shots equals the largest of them on every retained iterated job, so that value
+    classifies the top-level shots. A single job reports its detection events as the top-level shots. An answer
+    whose payload carried no counts (a provider error or a partial job) leaves every sample counter unavailable
+    rather than zero, although the collected record writes samples 0 for it. qd_platform.result_summary writes
+    shots_used only for a parsed single answer, so a partial answer with an empty BSCount and shots_used stays
+    counted, with its observed zero samples. A record whose result route answered 404 (qd_platform.collect's
+    result_absent) carries no answer: no iterations, a partial reading and unavailable counters.
+    """
+    if isinstance(results.get("result_absent"), str):
+        reason = f"result absent: {results['result_absent']}"
+        return QuandelaRecord(
+            False,
+            True,
+            (),
+            unavailable("shots", Population.DETECTION_EVENT, "job", reason),
+            unavailable("detection_events", Population.DETECTION_EVENT, "job", reason),
+        )
+    partial = results.get("partial") is True
+    entries = results.get("iterations")
+    iterated = isinstance(entries, list)
+    caps = [shots for _, shots in budgets]
+    job_max_shots = max(caps) if caps else None
+    top = quandela_top_level_shots(results, iterated, job_max_shots)
+    if not iterated:
+        (max_samples, max_shots) = budgets[0] if budgets else (None, None)
+        counted = (
+            "counts" in results
+            and isinstance(results.get("samples"), int)
+            and (bool(results.get("counts")) or "shots_used" in results)
+        )
+        if partial and not counted:
+            # A partial answer without counts reports shots 0 as a default, not as an observed detection count.
+            top = unavailable("shots", Population.DETECTION_EVENT, "job", "partial answer without counts")
+            iteration: IterationCounters | None = None
+        else:
+            # A single answer's result fields carry no nb_shots_used; the top-level shots is its detection count.
+            entry = {"nb_shots_used": top.value} if top.available else {}
+            iteration = quandela_iteration(
+                entry, int(results["samples"]), "iteration:0", max_shots=max_shots, max_samples=max_samples
+            )
+        iterations: tuple[IterationCounters | None, ...] = (iteration,)
+    else:
+        if len(entries or []) > len(budgets) or (not partial and len(entries or []) != len(budgets)):
+            raise CounterError(f"{len(entries or [])} result entries for {len(budgets)} iteration budgets")
+        built: list[IterationCounters | None] = []
+        for index, entry in enumerate(entries or []):
+            if "counts" not in entry:
+                built.append(None)
+                continue
+            max_samples, max_shots = budgets[index]
+            fields = entry.get("result_fields") if isinstance(entry.get("result_fields"), Mapping) else {}
+            built.append(
+                quandela_iteration(
+                    fields, int(entry["samples"]), f"iteration:{index}", max_shots=max_shots, max_samples=max_samples
+                )
+            )
+        iterations = tuple(built)
+    terms = [
+        i.detection_events
+        if i is not None
+        else unavailable("nb_shots_used", Population.DETECTION_EVENT, f"iteration:{k}", "uncounted entry")
+        for k, i in enumerate(iterations)
+    ]
+    detection = (
+        total(terms, "detection_events", "job")
+        if terms
+        else unavailable("detection_events", Population.DETECTION_EVENT, "job", "no result entry")
+    )
+    return QuandelaRecord(iterated, partial, iterations, top, detection)
+
+
 def exposure_seconds(
     samples: int, physical_perf: Any, clock_mhz: Any, duration_s: Any, scope: str
 ) -> dict[str, Counter]:

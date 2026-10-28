@@ -1,0 +1,28 @@
+rules:
+  - id: provider-counter-arithmetic
+    languages: [python]
+    severity: INFO
+    message: a provider counter field reaches a division, product, difference or sum
+    mode: taint
+    pattern-sources:
+      - patterns:
+          - pattern-either:
+              - pattern: $X[$K]
+              - pattern: $X.get($K, ...)
+          - metavariable-regex:
+              metavariable: $K
+              regex: ^["'](nb_shots_used|shots_used|physical_perf|logical_perf|global_perf|duration|number_of_shots|shots_done|shots_requested|samples)["']$
+      - patterns:
+          - pattern: $X.$A
+          - metavariable-regex:
+              metavariable: $A
+              regex: ^(nb_shots_used|shots_used|physical_perf|number_of_shots|shots_done|shots_requested)$
+    pattern-sinks:
+      - pattern-either:
+          - pattern: $L / $R
+          - pattern: $L // $R
+          - pattern: $L * $R
+          - pattern: $L - $R
+          - pattern: sum(...)
+          - pattern: math.fsum(...)
+          - pattern: np.sum(...)
