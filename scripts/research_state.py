@@ -56,7 +56,9 @@ sections of README.md and docs/RESEARCH_ROADMAP.md. --check fails on any
 rule violation or rendered difference; --write rewrites the rendered text;
 --self-test applies mutations to the registry that each rule must reject;
 --add-acquisition ID PROVIDER RUN FAMILY QUESTION appends one acquisition as
-text, which scripts/retain_run.sh calls when it retains an IBM run.
+text, which scripts/retain_run.sh calls when it retains an IBM run; it holds
+every rule except that a claim cite the new acquisition, which --check and
+--write require once the operator writes that claim.
 """
 
 from __future__ import annotations
@@ -714,7 +716,10 @@ def _static_check(command: str) -> bool:
     return PINNED_TOOL.sub("", command.strip(), count=1).startswith(CHECK_PREFIXES)
 
 
-def validate(registry: dict[str, Any], context: Context) -> None:
+def validate(registry: dict[str, Any], context: Context, uncited: frozenset[str] = frozenset()) -> None:
+    """Every registry rule. UNCITED names acquisitions exempt from claim coverage: add_acquisition saves a newly
+    retained run's acquisition before the operator writes the claim that cites it, and --check and --write, which
+    pass no exemption, keep every acquisition cited."""
     require(registry.get("schema") == SCHEMA, f"registry schema must be {SCHEMA}")
     require(set(registry) == {"schema", "acquisitions", "claims"}, "registry keys differ from the schema")
 
@@ -860,7 +865,7 @@ def validate(registry: dict[str, Any], context: Context) -> None:
 
     cited = {acquisition for claim in claims for acquisition in claim["acquisitions"]}
     for acquisition in acquisition_ids:
-        require(acquisition in cited, f"acquisition {acquisition} supports no claim")
+        require(acquisition in cited or acquisition in uncited, f"acquisition {acquisition} supports no claim")
 
 
 # Rendering
@@ -1707,7 +1712,7 @@ def add_acquisition(entry: dict[str, str]) -> None:
     require(bool(separator), "the registry's acquisitions list ends in an unexpected layout")
     block = "\n".join("    " + line for line in json.dumps(entry, indent=2, ensure_ascii=False).splitlines())
     updated = f"{head},\n{block}{separator}{tail}"
-    validate(json.loads(updated), Context())
+    validate(json.loads(updated), Context(), uncited=frozenset({entry["id"]}))
     REGISTRY.write_text(updated, encoding="utf-8")
 
 
@@ -1721,7 +1726,7 @@ def main() -> int:
         "--add-acquisition",
         nargs=5,
         metavar=("ID", "PROVIDER", "RUN", "FAMILY", "QUESTION"),
-        help="append one acquisition, then --write renders the views",
+        help="append one acquisition before its claim exists; write the claim, then --write renders the views",
     )
     arguments = parser.parse_args()
     if arguments.add_acquisition:

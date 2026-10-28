@@ -1,9 +1,10 @@
 #!/bin/sh
 # Retain one collected IBM run with every register that enumerates retained jobs, in one command: the runtime seed
 # rows, a fresh observation of the run's instance, that instance's retention audit, the submitted-circuit row and
-# the ghost calibration index of a default-instance run, the run's acquisition, and the rendered registry views.
-# The claim that cites the run stays the operator's text. research_state.py --check fails while an audit lists a
-# run awaiting observation, so a run retained without this sequence cannot pass the registry.
+# the ghost calibration index of a default-instance run, and the run's acquisition. The claim that cites the run
+# stays the operator's text: every acquisition must support a claim, so research_state.py --write renders the views
+# once that claim is written. research_state.py --check fails while an audit lists a run awaiting observation, so a
+# run retained without this sequence cannot pass the registry.
 #
 # Each register appends: the audit rows and comparison rows are per job and the claims and the algebra-device
 # bundle bind job records (docs/design/retention-bookkeeping-per-record.md), so no earlier evidence changes.
@@ -53,5 +54,4 @@ if [ "$audit" = results/live/qpu-job-retention-audit.json ]; then
 	"$PYTHON" scripts/ghost_calibrations.py --add
 fi
 "$PYTHON" scripts/research_state.py --add-acquisition "$id" ibm "$run" "$family" "$question"
-"$PYTHON" scripts/research_state.py --write
-echo "retain_run: retained $run as $id; write the claim that cites it, then scripts/research_state.py --write"
+echo "retain_run: retained $run as $id; write the claim that cites it, then run scripts/research_state.py --write"

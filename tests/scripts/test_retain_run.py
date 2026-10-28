@@ -71,13 +71,12 @@ def test_retention_appends_every_register_of_the_run_instance(
         "scripts/reconcile_qpu_inventory.py",
         *registers,
         "scripts/research_state.py",
-        "scripts/research_state.py",
     ]
     if steps != expected or (tmp_path / audit).read_text() != "audit\n" or (tmp_path / f"{audit}.new").exists():
         raise AssertionError(f"{steps}")
 
 
-def test_a_refused_acquisition_stops_before_the_views(tmp_path: Path) -> None:
+def test_a_refused_acquisition_fails_the_retention(tmp_path: Path) -> None:
     result, steps = _retain(tmp_path, "results/live/qpu-job-inventory.f59f9992321c.json", fail_add="1")
     if (
         result.returncode != 1
