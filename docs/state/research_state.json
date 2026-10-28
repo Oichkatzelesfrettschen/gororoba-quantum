@@ -2324,6 +2324,20 @@
       "run": "results/live/2026-10-28T000644.379196Z",
       "family": "idle-penalty",
       "question": "Stability repeat, point 2: after Kingston refreshed its reported T1 and T2, do the 30 coupled pairs of the idle-penalty probe reproduce their per-qubit multipliers and readout-driven phase pull?"
+    },
+    {
+      "id": "kingston-idle-penalty-repeat-point1",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T160530.294787Z",
+      "family": "idle-penalty",
+      "question": "Stability repeat, point 1: on 30 of the first run's 31 ordered pairs, under a later calibration that still carries the first run's reported T1 and T2, do the per-qubit idle multipliers, the single-run decisions and the readout-shift pair pattern repeat?"
+    },
+    {
+      "id": "kingston-n21-detuning-sign",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T173602.753176Z",
+      "family": "N=21 orbit detuning sign",
+      "question": "Does the N=21 orbit's relative phase turn at the Ramsey frame offset of the work qubit for 16 minus that of the work qubit for 1, with its sign, and does a Hahn echo return it?"
     }
   ],
   "claims": [
@@ -4619,7 +4633,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "de0922cf9e28c376904536f7a07543e54d824e039e0600954542c20ec2a5287e"
+          "sha256": "02881eea33f4d39b0b4857e622dd081c600be8ec7a78d478a6a284289375cb2a"
         }
       ],
       "documents": [
@@ -5813,7 +5827,7 @@
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "de0922cf9e28c376904536f7a07543e54d824e039e0600954542c20ec2a5287e"
+          "sha256": "02881eea33f4d39b0b4857e622dd081c600be8ec7a78d478a6a284289375cb2a"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -10900,8 +10914,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-10/result.json",
-          "sha256": "5a14acf6ff2f04ad6e648600a90c3dca8642d4e3c6d9ad6b03766bb3c2a3a0e8"
+          "path": "docs/evidence/algebra-device-conjectures-11/result.json",
+          "sha256": "cb6c5119ea64c64af115556321936dd098f5931d2a8ef1faad20d8e0ec09e904"
         }
       ],
       "gates": {
@@ -12157,6 +12171,86 @@
       "related_claims": [
         "kingston-idle-penalty-multipliers-and-readout-phase",
         "kingston-idle-penalty-focal-region"
+      ]
+    },
+    {
+      "id": "kingston-idle-penalty-repeat-point1-stability",
+      "statement": "On ibm_kingston (primary instance, one job of 44 dynamic PUBs at 4096 shots and a 20 us repetition delay over 30 of the first run's 31 ordered pairs, execution calibration 2026-10-27T09:07:55-07:00, 16 s billed) the preregistered admission reads not admitted, because the calibration carried the first run's reported T1 and T2 on all 60 qubits, so each multiplier ratio compares fitted physical rates about 19 hours apart. Multiplier stability reads unresolved on all three: Pearson r 0.195 (kappa_1), 0.357 (kappa_2*) and 0.318 (kappa_2e), each below 0.5, with median second/first ratios 0.939 [0.836, 1.052], 0.906 [0.801, 0.998] and 0.961 [0.840, 1.028]. The single-run decisions replicate: optimistic T1 absent or unresolved, echo gain present, and the readout shift present and negative at -2.627 +- 0.557 kHz against the after arm and -2.632 +- 0.557 kHz against the quiet arm, with the quiet null at -0.005 +- 0.020 kHz. Visibility reads pairwise heterogeneity (pair-mean t -2.48 and -2.28 against -3.396), and the readout shift's pair pattern is stable at Pearson r 0.988 over 30 pairs.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Not a test across a T1/T2 refresh: admission failed by construction, so the point reads drift of the fitted physical rates over 19 hours, not of IBM's reported normalization. One job and one calibration; pair means of the two probes are the statistical unit. The low correlations measure per-qubit drift against the focal jobs' test-retest floor (r 0.91 to 0.99 in one window); the leverage checks that support that reading are post hoc. Medians carry order-statistic intervals over this cohort.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-27T160530.294787Z/idle-penalty-repeat-decisions.json",
+          "sha256": "27a8b5be301592acb0daea392ec7efe14263f954e50038e69d8033b66019aa2d"
+        },
+        {
+          "path": "results/live/2026-10-27T160530.294787Z/idle-penalty-compare.json",
+          "sha256": "9cec612981c9b8b88047ce9774705fb9e1302451fa098ef09d4fc4433c2491df"
+        },
+        {
+          "path": "results/live/2026-10-27T160530.294787Z/idle-penalty-report.json",
+          "sha256": "5e2c3e75774bf7214e27756fc546459a736e2f26808195630d955113aadfe8c3"
+        },
+        {
+          "path": "results/live/2026-10-27T160530.294787Z/collect.json",
+          "sha256": "efe610466b15a9b023d3032fdf925becad96c07462adf475dd36bb6a5648bbe7"
+        },
+        {
+          "path": "results/live/2026-10-27T160530.294787Z/record.json",
+          "sha256": "93b2240b849b25b0daddeb0f11efadb05037f1fbc60f477e5d5112cadebdbde7"
+        }
+      ],
+      "documents": [
+        "results/live/IDLE_PENALTY_REPEAT_CASE.md",
+        "results/live/IDLE_PENALTY_PROBE_FINDINGS.md"
+      ],
+      "acquisitions": [
+        "kingston-idle-penalty-repeat-point1"
+      ],
+      "depends_on": [
+        "kingston-idle-penalty-multipliers-and-readout-phase"
+      ],
+      "related_claims": [
+        "kingston-idle-penalty-focal-region",
+        "kingston-idle-penalty-repeat-refreshed-calibration"
+      ]
+    },
+    {
+      "id": "kingston-n21-detuning-sign-precession",
+      "statement": "On ibm_kingston (primary instance, 19 four-qubit N=21 orbit replicas in one dynamic job of 56 PUBs at 4096 shots and a 20 us repetition delay, planned at calibration 2026-10-27T09:07:55-07:00 and executed under 2026-10-27T10:34:08-07:00, 17 s billed against a 15.35 s plan) the orbit's relative phase turns at the Ramsey frame offset of the work qubit for 16 minus that of the work qubit for 1: the slope through the origin is 1.010 [0.977, 1.043] over 18 replicas (D1 holds), the orbit turns with the sign of the offset difference on 17 of 17 resolved replicas (D2 holds), and a Hahn echo returns the undosed phase within three standard errors on 17 of 17 moved replicas (D3 holds). The pair 58 and 69, whose offsets are equal, reads -0.18 +- 0.25 kHz, as the offset difference predicts.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration. The slope's chi-square of 106.8 on 17 degrees of freedom puts the scatter at 2.5 times shot noise, and the interval carries sqrt(chi2/df). Orbit and Ramsey members run as separate PUBs, so frequency wander between them is not separated from a shift the orbit's own gates impose (largest residual: pair 3 and 0 at -5.62 +- 0.17 kHz against -3.75 predicted). The pair 88 and 91 resolves too few doses for a rate and enters no decision. Reading the window-dose sweep's residual as this precession carries the mechanism across a different calibration and instance.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-27T173602.753176Z/detuning-sign-decisions.json",
+          "sha256": "89358388a379a10ae1613796bf6c131eb7e8c0b87e950a31520afd9ace4231b1"
+        },
+        {
+          "path": "results/live/2026-10-27T173602.753176Z/collect.json",
+          "sha256": "de96b87b24a73efdc0fd45fe447deb92b622352c702ecc5fe03569fd61a79784"
+        },
+        {
+          "path": "results/live/2026-10-27T173602.753176Z/record.json",
+          "sha256": "8d082ac026d2045c246f4f02527a81d90053de486a25ab4585e45d04dd060f77"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-27T173602.753176Z/FINDINGS.md",
+        "docs/design/n21-orbit-detuning-sign-envelope.md"
+      ],
+      "gates": {
+        "core-n21-detuning-sign-replay": "replay"
+      },
+      "acquisitions": [
+        "kingston-n21-detuning-sign"
+      ],
+      "related_claims": [
+        "kingston-n21-window-dose-idle-excess",
+        "hw-idle-detuning-scale"
       ]
     }
   ]
