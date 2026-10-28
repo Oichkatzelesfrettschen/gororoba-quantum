@@ -68,3 +68,71 @@ msolve reaches in minutes the degrees Singular reaches in hours, and its limit i
 take 16-bit storage, so a prime near 32009 halves the matrix memory of a 31-bit prime. Each elimination therefore
 goes to the largest single machine free: a Kaggle CPU session (30 GB) first, the Azure VM (84 GB) through a case
 when 30 GB is exhausted.
+
+## Sample optimizations (measured here; yours may vary)
+
+Each sample below carries the date and the conditions it was measured under, because Kaggle images, queues and quotas
+change without notice.
+
+**Where to run what.**
+
+- A Kaggle CPU session has 30 GB, 4 cores and a 12 h limit, so one elimination fits one session, and five sessions
+  run at once per account (2026-10-28, Kaggle CPU batch session)
+- A Kaggle GPU session's host is also a 29 GB, 4-core machine, so a CPU elimination runs there when the weekly GPU hours
+  (30 h, reset Saturday 00:00 UTC) would otherwise expire unused (2026-10-28, Kaggle GPU batch session)
+- The Azure trial VM (`Standard_FX4mds_v2`, 84 GB) is the next step up and needs a written spend case with expected
+  hours and a deallocation step (2026-10-28, Azure trial account)
+
+**msolve.**
+
+- A prime below 2^16 (32009 here) stores coefficients in 16 bits, about half the matrix memory of a prime above 2^16
+  such as 1073741789, which lies below 2^30 (2026-10-28, msolve)
+- The [install table](#installing-the-tools-on-each-substrate) lists the passagemath-msolve 10.8.13 wheel; it ships a
+  standalone msolve 0.10.1 binary at `sage_wheels/bin/msolve` with FLINT, GMP, MPFR and libgomp bundled, and it runs on
+  any host where pip installs it (2026-10-28, passagemath-msolve 10.8.13 wheel)
+- The Kaggle kernel used for these runs embeds the input file, installs the wheel, runs `msolve -e 1 -g 2` with `-t` set
+  to every core, logs `MemAvailable` and the solver's resident set every 30 s, and writes the gzipped basis and a
+  `result.json` (2026-10-28, Kaggle CPU batch session)
+- msolve on the Iso Rees graph ideal (18 generators, 24 variables) reached degree 8 in 3 minutes before a 12 GiB cap,
+  while Singular had not finished the same ideal in 20 minutes; the
+  [measured-memory table](#measured-memory-of-the-a_5-rees-eliminations) records the same numbers (2026-10-28, msolve
+  and Singular)
+
+**Singular pitfalls (Singular 4.4.1).**
+
+- Over an algebraic extension such as `(32003,I)` with `minpoly = I^2+1`, `eliminate` skips its Hilbert-driven path and
+  runs a plain sugar-strategy `std`; use a split prime `p = 1 mod 4` with `i` as a field element, for example 32009 with
+  `i = 10754`, whose square is -1 modulo 32009 (2026-10-28, Singular 4.4.1)
+- An explicit `homog(...)` before `eliminate` also skips the Hilbert step (2026-10-28, Singular 4.4.1)
+- `std(Graph)` before `eliminate` was the bottleneck of the Rees fiber scripts: a 3-generator graph ideal in 11
+  variables did not finish `std(Graph)` in 15 minutes (2026-10-28, Singular 4.4.1)
+- Selecting Nakayama-lemma generators (minimal generators chosen in `I/(mI+J)`, a vector space over `R/m`) by the prefix
+  rank of the normal-form coefficient matrix replaces a `std` per candidate and gives the same selection; one phase went
+  from a 300 s timeout to 14 s (2026-10-28, Singular 4.4.1)
+- `ord` is a reserved name and cannot name a variable (2026-10-28, Singular 4.4.1)
+- Singular string literals do not interpret `\n`; put a literal newline inside the string (2026-10-28, Singular 4.4.1)
+
+**Kaggle Model Proxy (AI inference).**
+
+The daily and monthly quota reader is in [provider-credits.md](provider-credits.md).
+
+- `kaggle benchmarks auth` mints a local token that lasts about 2 h and is limited to the 8 models in `LLMS_AVAILABLE`;
+  the full catalog (Claude Opus 5.5, GPT-6 Sol and Astra, Gemini 4 Argon and others) runs only through
+  `kaggle benchmarks tasks push` and `kaggle benchmarks tasks run -m MODEL` (2026-10-28, Kaggle CLI)
+- Set an output-token cap on each prompt, because the proxy reserves the worst-case cost from the default cap up front:
+  a GPT-6 Astra run failed with a 403 when that reservation (6.41 USD) exceeded the remaining quota
+  (2026-10-28, Kaggle Model Proxy)
+- The daily 10 USD allowance refills on a rolling 24 h clock from first use and the monthly 100 USD on a rolling month,
+  so an unspent day is lost (2026-10-28, Kaggle Model Proxy)
+- `grok-4.6` is listed by `kaggle benchmarks tasks models`, but the proxy answers 404 for it (2026-10-28, Kaggle Model
+  Proxy)
+- `kaggle benchmarks tasks download TASK` fetches every model's run JSON, which holds the response
+  (2026-10-28, Kaggle CLI)
+- One six-model question of about 1,000 input words cost 1.48 USD (2026-10-28, Kaggle Model Proxy)
+
+**Storage.**
+
+- The API reports usage (the sum of `totalBytes` over the account's datasets and models), but no call reports the
+  214.75 GB private dataset and model caps, which come only from the account settings page; the
+  [Kaggle guide](../notes/kaggle/README.md) records them as read from that page
+  (2026-10-28, Kaggle API and settings page)
