@@ -1,0 +1,123 @@
+{
+ "admitted_statuses": [
+  "available"
+ ],
+ "approval": "Run the five-job sedenion cancellation suite first, then a 12-setting dimension-six pilot. Those are the best immediate acquisitions from this plan. Optimize for science and mathematics elucidations even at the expense of credits.",
+ "availability_at_plan": {
+  "max_concurrent_jobs": 1,
+  "max_jobs_in_queue": 1,
+  "max_running_qt_jobs": 10,
+  "num_concurrent_jobs": 0,
+  "num_jobs_in_queue": 0,
+  "num_running_qt_jobs": 0
+ },
+ "body_sha256": "9bb961a0f7e72306e7ea0b8a851315a94221dbf35805ac958e33032753140b21",
+ "case": "ascella-sedenion-cancellation-bright",
+ "cases_sha256": "a6a6acee80c525a8131cfe3d028d96163a4d0176eaa464f0515f39f634b97a5a",
+ "credit_ceiling": 1.131072,
+ "estimated_credits": 1.065536,
+ "estimated_shots": 65536,
+ "expected_seconds": 300,
+ "job_id": "c5ababa8-bafa-48e7-9b5b-eb8b9e7117a9",
+ "max_credits": 1.131072,
+ "max_samples": 65536,
+ "max_shots": 131072,
+ "payload_version_basis": "declared",
+ "per_job_credits": 1,
+ "perfs_at_plan": {
+  "Clock (MHz)": 13.33,
+  "Dark counts (detection/s)": [
+   320.0,
+   296.0,
+   271.0,
+   104.0,
+   131.0,
+   385.0,
+   218.0,
+   517.0,
+   2589.0,
+   3186.0,
+   4111.0,
+   607.0
+  ],
+  "HOM (%)": 87.58,
+  "g2 (%)": 2.1
+ },
+ "platform": "qpu:ascella",
+ "platform_at_plan": {
+  "bookable": true,
+  "description": "Ascella QPU",
+  "is_locked": false,
+  "is_offer_platform": true,
+  "maintenance": null,
+  "max_duration": 300,
+  "name": "qpu:ascella",
+  "price_per_shot": 1e-06,
+  "statistic": {
+   "2026-10-20": {
+    "availability": 89.97
+   },
+   "2026-10-21": {
+    "availability": 89.4
+   },
+   "2026-10-22": {
+    "availability": 89.83
+   },
+   "2026-10-23": {
+    "availability": 90.81
+   },
+   "2026-10-24": {
+    "availability": 92.25
+   },
+   "2026-10-25": {
+    "availability": 92.22000000000001
+   },
+   "2026-10-26": {
+    "availability": 92.10000000000001
+   },
+   "2026-10-27": {
+    "availability": 91.96000000000001
+   }
+  },
+  "status": "available",
+  "type": "qpu"
+ },
+ "schema": "qd-submission-v1",
+ "status_at_plan": {
+  "explorer": "available",
+  "processor": "available"
+ },
+ "submitted_utc": "2026-10-27T23:51:02+00:00",
+ "usage_before": [
+  {
+   "total_jobs": 82,
+   "usage": [
+    {
+     "credits": 0.0,
+     "duration_seconds": 1864,
+     "free_credits": 10.311296,
+     "nb_jobs": 16,
+     "platform_name": "qpu:ascella"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 1128,
+     "free_credits": 16.0,
+     "nb_jobs": 17,
+     "platform_name": "sim:belenos"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 5570,
+     "free_credits": 50.26742,
+     "nb_jobs": 49,
+     "platform_name": "qpu:belenos"
+    }
+   ]
+  }
+ ],
+ "versions": {
+  "exqalibur": "1.4.2",
+  "perceval-quandela": "1.3.1"
+ }
+}

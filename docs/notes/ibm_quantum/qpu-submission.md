@@ -126,6 +126,15 @@ and the Kaggle noise-snapshot rule.
   of one case run as parallel invocations, each with its own seeds and
   account. The case's binding table records the dry run, its digest and
   calibration after the submit.
+- A case that waits on a calibration chains the runner after
+  `sh scripts/wait_calibration.sh [--interval S] [--deadline S] -- BACKEND
+  --baseline FILE [--qubits LIST] [--min-moved N]`, which reads the backend's
+  published properties every 60 s by default (one read takes about 5 s) and
+  exits 0 once the stamp moves and, with `--qubits`, once the reported T1 and
+  T2 each moved on `--min-moved` of those qubits (default half). Kingston
+  republishes its stamp every 15 to 60 minutes and refreshes T1 and T2 once a
+  day; the published stamp trails the calibration by 5 minutes or more, so a
+  job can execute under a calibration its plan never read.
 - Envelope approval. A record whose `envelope` section carries schema
   `msq-envelope-v1` (`--family measurement-sequence-envelope`) is the one
   exception to value binding. The approval binds the experiment digest, the
@@ -169,19 +178,20 @@ and the Kaggle noise-snapshot rule.
   per instance, while the historical-job and campaign accounting bind the
   default instance. The `ibm_account.py --self-test` in gate `core-self-test-05` (`tests/test_cli_self_tests.py`)
   holds the account selection and the instance refusal.
-- Retaining a collected run. A run directory joins the tree with every
-  register that enumerates retained jobs, in one change: the instance's job
+- Retaining a collected run. `sh scripts/retain_run.sh RUN ID FAMILY
+  QUESTION`, under the run's `GOROROBA_IBM_ACCOUNT`, joins a run directory to
+  the tree with every register that enumerates retained jobs, in one change,
+  and leaves only the claim to write: the runtime seed rows, the instance's job
   inventory (`scripts/observe_qpu_job_inventory.py`, a service read), the
   retention audit (`scripts/reconcile_qpu_inventory.py`, which writes each
   instance's audit and creates the file exclusively), the submitted-circuit
-  comparison (a successor written by `scripts/compare_submitted_circuits.py
-  --write --out NEW_PATH --seed PREVIOUS`, a service read of the missing jobs'
-  submitted programs under the replay interpreter of gate core-281, because
-  QPY digests follow the Qiskit version; the procedure is in
+  comparison (`scripts/compare_submitted_circuits.py --append`, a read of
+  each new audited job's submitted program that writes one row file per job
+  under the running Qiskit release's ledger; the procedure is in
   [the comparison README](../../evidence/submitted_circuits/README.md)), and
   the registry (`scripts/research_state.py --write`, with the claim that cites
   the run). Run-family registers (the ghost, scaffolding-exposure and
   local-member CZ records) follow the gates that read the run. Gate core-281
-  fails while an audited job is missing from the comparison, and the
+  fails while an audited job has no comparison row, and the
   `research_state.py --check` gate while a retained run is missing from the
   registry.

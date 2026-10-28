@@ -59,6 +59,11 @@ OUT = ROOT / "docs/evidence/submitted_circuits/comparison.json"
 SCHEMA = "submitted-circuit-comparison-v3"
 SUCCESSOR_SCHEMA = "submitted-circuit-comparison-v4"
 REBIND_SCHEMA = "submitted-circuit-comparison-v5"
+# One immutable file per audited job under ROWS/qiskit-<release>/<job_id>.json: a retention appends one row, and the
+# check re-derives every row from the retained circuits, so no file binds the audit's or this script's bytes.
+ROWS = Path("docs/evidence/submitted_circuits/jobs")
+ROW_SCHEMA = "submitted-circuit-row-v1"
+ROW_PROVENANCE = {"origin", "retrieved_utc", "operation", "runtime_versions", "collector_sha256"}
 DIRECT_DEPENDENCIES = (
     "gororoba_quantum/ibm_account.py",
     "gororoba_quantum/parallel.py",
@@ -112,6 +117,38 @@ def expected_circuits(path: Path, names: list[str] | None) -> list[Any]:
     return [by_name[name] for name in names]
 
 
+def retrieve_row(service: Any, instance: str, job: dict[str, Any]) -> dict[str, Any]:
+    """One audited job's comparison row: its submitted program read through job.inputs, compared in order with the
+    retained circuits the job's record names."""
+    path, names = expected_order(job)
+    expected = expected_circuits(path, names)
+    if names is None:
+        names = [circuit.name for circuit in expected]
+        source = "retained submission order"
+    else:
+        source = "record.json submission.jobs[].pubs"
+    ibm_account.require_instance(
+        ibm_account.recorded_instance(ROOT / job["run"]), instance, f"{job['job_id']}: submitted-circuit lookup"
+    )
+    items = service.job(job["job_id"]).inputs["quantum_program"].items
+    circuits = [getattr(item, "circuit", None) for item in items]
+    matched = sum(
+        got is not None and index < len(expected) and got == expected[index] for index, got in enumerate(circuits)
+    )
+    return {
+        "job_id": job["job_id"],
+        "run": job["run"],
+        "retained_file": path.relative_to(ROOT).as_posix(),
+        "retained_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        "order_source": source,
+        "expected_pubs": names,
+        "items": len(items),
+        "item_kinds": sorted({type(item).__name__ for item in items}),
+        "positional_matches": matched,
+        "submitted_qpy_sha256": [qpy_digest(c) if c is not None else None for c in circuits],
+    }
+
+
 def write(output: Path = OUT, seed: Path | None = None) -> int:
     output = output.resolve()
     seed = seed.resolve() if seed is not None else None
@@ -137,38 +174,7 @@ def write(output: Path = OUT, seed: Path | None = None) -> int:
         if job["job_id"] in seeded:
             rows.append(seeded[job["job_id"]])
             continue
-        path, names = expected_order(job)
-        expected = expected_circuits(path, names)
-        if names is None:
-            names = [circuit.name for circuit in expected]
-            source = "retained submission order"
-        else:
-            source = "record.json submission.jobs[].pubs"
-        ibm_account.require_instance(
-            ibm_account.recorded_instance(ROOT / job["run"]),
-            live_run._instance_hash(service),
-            f"{job['job_id']}: submitted-circuit lookup",
-        )
-        items = service.job(job["job_id"]).inputs["quantum_program"].items
-        circuits = [getattr(item, "circuit", None) for item in items]
-        submitted_digests = [qpy_digest(c) if c is not None else None for c in circuits]
-        matched = sum(
-            got is not None and index < len(expected) and got == expected[index] for index, got in enumerate(circuits)
-        )
-        rows.append(
-            {
-                "job_id": job["job_id"],
-                "run": job["run"],
-                "retained_file": path.relative_to(ROOT).as_posix(),
-                "retained_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-                "order_source": source,
-                "expected_pubs": names,
-                "items": len(items),
-                "item_kinds": sorted({type(item).__name__ for item in items}),
-                "positional_matches": matched,
-                "submitted_qpy_sha256": submitted_digests,
-            }
-        )
+        rows.append(retrieve_row(service, live_run._instance_hash(service), job))
         retrieved.append(job["job_id"])
         print(json.dumps({k: v for k, v in rows[-1].items() if k != "expected_pubs"}), flush=True)
     _check_rows(rows, {job["job_id"]: job for job in audited})
@@ -328,12 +334,111 @@ def check(output: Path = OUT, *, collector_snapshot: Path | None = None) -> int:
     return 0
 
 
+def runtime_versions() -> dict[str, str]:
+    return {name: importlib.metadata.version(name) for name in ("qiskit", "qiskit-ibm-runtime")}
+
+
+def default_rows() -> Path:
+    """The row ledger of the running Qiskit: QPY bytes follow the Qiskit release, so each release keeps its own."""
+    return ROOT / ROWS / f"qiskit-{runtime_versions()['qiskit']}"
+
+
+def _row_document(row: dict[str, Any], provenance: dict[str, Any]) -> dict[str, Any]:
+    return {"schema": ROW_SCHEMA, "row": row, "provenance": provenance}
+
+
+def append_rows(directory: Path) -> int:
+    """Retrieve and retain a row for each audited job the ledger lacks; existing rows keep their bytes."""
+    directory = directory.resolve()
+    require(directory == default_rows().resolve(), f"rows of this Qiskit go to {default_rows().relative_to(ROOT)}")
+    audited = audit_jobs()
+    present = {path.stem for path in directory.glob("*.json")}
+    missing = [job for job in audited if job["job_id"] not in present]
+    if missing:
+        from qiskit_ibm_runtime import QiskitRuntimeService
+
+        import live_run
+
+        service = ibm_account.open_service(QiskitRuntimeService)
+        instance = live_run._instance_hash(service)
+        collector = hashlib.sha256((ROOT / "scripts/compare_submitted_circuits.py").read_bytes()).hexdigest()
+        for job in missing:
+            row = retrieve_row(service, instance, job)
+            _check_rows([row], {job["job_id"]: job}, complete=False)
+            provenance = {
+                "origin": "service",
+                "retrieved_utc": datetime.now(UTC).isoformat(),
+                "operation": "read existing job inputs; submissions and uploads excluded",
+                "runtime_versions": runtime_versions(),
+                "collector_sha256": collector,
+            }
+            _retain(directory / f"{job['job_id']}.json", _row_document(row, provenance))
+    print(f"submitted-circuit rows: {len(missing)} retrieved, {len(audited) - len(missing)} already retained")
+    return check_rows(directory)
+
+
+def split(comparison: Path, directory: Path) -> int:
+    """Retain each row of a whole-audit comparison as its own row file, offline, after re-deriving every row."""
+    comparison, directory = comparison.resolve(), directory.resolve()
+    require(directory == default_rows().resolve(), f"rows of this Qiskit go to {default_rows().relative_to(ROOT)}")
+    data = json.loads(comparison.read_text(encoding="utf-8"))
+    require(data.get("schema") in {SUCCESSOR_SCHEMA, REBIND_SCHEMA}, "split reads a v4 or v5 comparison")
+    provenance = data["provenance"]
+    require(provenance["runtime_versions"] == runtime_versions(), "the comparison was retrieved under another runtime")
+    _check_rows(data["jobs"], {job["job_id"]: job for job in audit_jobs()})
+    origin = {
+        "file": comparison.relative_to(ROOT).as_posix(),
+        "sha256": hashlib.sha256(comparison.read_bytes()).hexdigest(),
+    }
+    for row in data["jobs"]:
+        _retain(
+            directory / f"{row['job_id']}.json",
+            _row_document(
+                row,
+                {
+                    "origin": origin,
+                    "retrieved_utc": provenance["retrieved_utc"],
+                    "operation": provenance["operation"],
+                    "runtime_versions": provenance["runtime_versions"],
+                    "collector_sha256": provenance["sources_sha256"]["scripts/compare_submitted_circuits.py"],
+                },
+            ),
+        )
+    return check_rows(directory)
+
+
+def check_rows(directory: Path) -> int:
+    """Offline: the ledger holds exactly one row per audited job, each retrieved under the running Qiskit, and every
+    row's submitted digests equal the retained circuits' QPY digests recomputed now."""
+    directory = directory.resolve()
+    versions = runtime_versions()
+    require(directory.name == f"qiskit-{versions['qiskit']}", f"{directory.name}: rows of another Qiskit release")
+    rows = []
+    for path in sorted(directory.glob("*.json")):
+        document = json.loads(path.read_text(encoding="utf-8"))
+        require(document.get("schema") == ROW_SCHEMA, f"{path.name}: unexpected schema")
+        require(set(document) == {"schema", "row", "provenance"}, f"{path.name}: unexpected keys")
+        require(document["row"]["job_id"] == path.stem, f"{path.name}: names another job")
+        provenance = document["provenance"]
+        require(set(provenance) == ROW_PROVENANCE, f"{path.name}: provenance keys differ")
+        require(provenance["runtime_versions"]["qiskit"] == versions["qiskit"], f"{path.name}: another Qiskit")
+        rows.append(document["row"])
+    _check_rows(rows, {job["job_id"]: job for job in audit_jobs()})
+    items = sum(row["items"] for row in rows)
+    print(f"submitted circuits: {len(rows)} job rows, {items} items, each equal to its expected circuit in order")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
     mode.add_argument("--rebind", type=Path, help="revalidate a retained v4 comparison offline into a new successor")
+    mode.add_argument("--append", action="store_true", help="retrieve a row for each audited job the ledger lacks")
+    mode.add_argument("--check-rows", action="store_true", help="check the row ledger offline")
+    mode.add_argument("--split", type=Path, help="retain each row of a v4 or v5 comparison as its own row file")
+    parser.add_argument("--rows", type=Path, help="row ledger directory; default: this Qiskit release's")
     parser.add_argument("--collector-snapshot", type=Path, help="exact historical collector text; required by --rebind")
     parser.add_argument(
         "--out", type=Path, default=OUT, help="comparison to retain or check; existing bytes are immutable"
@@ -342,6 +447,15 @@ def main() -> int:
         "--seed", type=Path, help="validated v3 comparison whose job rows are reused without service reads"
     )
     args = parser.parse_args()
+    rows = args.rows or default_rows()
+    if args.append:
+        return append_rows(rows)
+    if args.check_rows:
+        return check_rows(rows)
+    if args.split is not None:
+        return split(args.split, rows)
+    if args.rows is not None:
+        parser.error("--rows requires --append, --check-rows or --split")
     if args.rebind is not None:
         if args.collector_snapshot is None or args.seed is not None:
             parser.error("--rebind requires --collector-snapshot and excludes --seed")

@@ -112,7 +112,8 @@ aliases near 35 kHz.
 
 ## Retention
 
-The backup inventory was observed before this submission, so the backup retention audit lists the raw archive
-under `awaiting_observation`; the run joins coverage and the research registry at the next inventory observation.
+The backup-instance inventory observed on 2026-10-27 covers this job and both failed attempts, whose collections
+record their final 2 s charges; `docs/state/research_state.json` registers the three runs under claim
+`kingston-n21-window-dose-idle-excess`.
 The runtime seed ledger row for draw `docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json`, indices 0 and 1, names
 dry run `2026-10-27T003928.422192Z` with the two resubmitted dry runs of the same envelope.

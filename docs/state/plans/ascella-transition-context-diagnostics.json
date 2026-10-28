@@ -1,0 +1,340 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-transition-context-diagnostics",
+  "kind": "experiment",
+  "summary": "Test whether dimension-six transition residuals change with singleton and packed iterator context, requested order, mesh and output port.",
+  "sources": [
+    "docs/evidence/ascella-cancellation-transition-acquisition/findings.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "All seven authorized jobs, matched meshes, source-bound analyses, accounting and acquisition entries are retained."
+  },
+  "scope": "Acquire and analyze five singleton, forward-packed and reverse-packed diagnostic jobs; develop and execute scoped independent-mesh and port-permutation controls; prepare the next-day matched-mesh comparison.",
+  "owner": "Ascella transition diagnostic acquisition",
+  "next_action": "Verify and schedule the source-bound matched-mesh repeat after the 24-hour Pacific time boundary.",
+  "steps": [
+    {
+      "id": "audit-baseline",
+      "action": "Audit prior pilot inputs, meshes and provider readiness.",
+      "acceptance": "Confirm exact five settings, seed and source hashes, live limits and chronological boundaries.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Validated the retained pilot result and all seven read-only provider preflights; Ascella offer and processor reported available.",
+          "observed_at": "2026-10-28T00:34:13.735837+00:00",
+          "revision": "cd887891e5ffaa00217353dd3b046d58015f1ab1",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-transition-context-diagnostics/preflight-summary.json",
+              "sha256": "25461f105e1747b16b285897fc8715aebdfb4a08dcddd6a4711fe4452d877966"
+            },
+            {
+              "ref": "results/quandela/runs/ascella-dimension-six-transition-pilot/results.json",
+              "sha256": "ddc3c45df61e786b411e314d02d5f16bf289dde4b4ae8f0217b7e9898cc8b00f"
+            }
+          ],
+          "scope_sha256": "58687708597549840bdb72788b662e7117ec41b5417145d88ee1c2eaf908de30"
+        }
+      ]
+    },
+    {
+      "id": "freeze-design",
+      "action": "Freeze diagnostic hypotheses, sample budgets, contrasts and stopping rules.",
+      "acceptance": "The case specifies seven jobs, 15 settings, multiplicity and mesh matching before submission.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Froze seven jobs, fifteen new observations and five prior observations in a 280-endpoint confidence family.",
+          "observed_at": "2026-10-28T00:34:14.247906+00:00",
+          "revision": "cd887891e5ffaa00217353dd3b046d58015f1ab1",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-transition-context-diagnostics/README.md",
+              "sha256": "1c918fda9c343201aa4e844a62e022d5f3d3a1b214ef4a970e8327f4108d6d85"
+            },
+            {
+              "ref": "docs/evidence/ascella-transition-context-diagnostics/campaign.json",
+              "sha256": "67d974effd0b698da3882aebb73eaeba0deed37f472570637d3c1a0ea8383af7"
+            }
+          ],
+          "scope_sha256": "dcec1428f511432f8f888872b7b7bb27e3f86ba65192fce60540b92598891a4a"
+        }
+      ]
+    },
+    {
+      "id": "build-cases",
+      "action": "Construct source-bound singleton, forward and reverse cases.",
+      "acceptance": "The payloads retain all 12 outputs, original parameters and seed allocations.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Constructed five singleton cases and forward/reverse packed cases from the exact retained parameters and seeds.",
+          "observed_at": "2026-10-28T00:34:14.756953+00:00",
+          "revision": "cd887891e5ffaa00217353dd3b046d58015f1ab1",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-transition-context-diagnostics/campaign.json",
+              "sha256": "67d974effd0b698da3882aebb73eaeba0deed37f472570637d3c1a0ea8383af7"
+            },
+            {
+              "ref": "scripts/ascella_transition_context.py",
+              "sha256": "be4adbe91d0b7abd2da97fe8be445fe0f2ca7ece30169e34bbfdb0982e849f59"
+            }
+          ],
+          "scope_sha256": "493ef48265d728c683e366affabc9d6f7f2ecbb8f77736cd81fdeadd87589e3c"
+        },
+        {
+          "result": "Revalidated source-bound diagnostic cases after parallelizing independent returned-mesh reconstructions.",
+          "observed_at": "2026-10-28T00:50:39.970523+00:00",
+          "revision": "cd887891e5ffaa00217353dd3b046d58015f1ab1",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-transition-context-diagnostics/campaign.json",
+              "sha256": "67d974effd0b698da3882aebb73eaeba0deed37f472570637d3c1a0ea8383af7"
+            },
+            {
+              "ref": "scripts/ascella_transition_context.py",
+              "sha256": "dfbf84493d38533bea504d5f6565365d89ea2caee763bdaa67faf575908af3e1"
+            }
+          ],
+          "scope_sha256": "493ef48265d728c683e366affabc9d6f7f2ecbb8f77736cd81fdeadd87589e3c"
+        }
+      ]
+    },
+    {
+      "id": "validate-cases",
+      "action": "Verify SDK operators, serialized payloads and analysis failure modes.",
+      "acceptance": "Local tests and read-only preflights validate every requested job.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Five focused tests, Ruff and mypy passed. Provider SDK validated seven complete read-only payloads.",
+          "observed_at": "2026-10-28T00:34:15.239911+00:00",
+          "revision": "cd887891e5ffaa00217353dd3b046d58015f1ab1",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-transition-context-diagnostics/preflight-summary.json",
+              "sha256": "25461f105e1747b16b285897fc8715aebdfb4a08dcddd6a4711fe4452d877966"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_transition_context.py",
+              "sha256": "654a7016384f56b7f8bf1d5d9b5d4ea526b4e927820e6707b3038896078c83ee"
+            }
+          ],
+          "scope_sha256": "ce299e7245f7cf68355619ac859f1b95edebf51aec97a96e0816118f3dcdc3c7"
+        },
+        {
+          "result": "Six focused tests and SDK preflights pass; the parallel successor reproduces every earlier analysis value.",
+          "observed_at": "2026-10-28T00:50:40.400450+00:00",
+          "revision": "cd887891e5ffaa00217353dd3b046d58015f1ab1",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-transition-context-diagnostics/preflight-summary.json",
+              "sha256": "25461f105e1747b16b285897fc8715aebdfb4a08dcddd6a4711fe4452d877966"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_transition_context.py",
+              "sha256": "e968b44b0138eaac340faf0e9a4b2410e7ed0c28cddfb8b43365adc918a4d22c"
+            }
+          ],
+          "scope_sha256": "ce299e7245f7cf68355619ac859f1b95edebf51aec97a96e0816118f3dcdc3c7"
+        }
+      ]
+    },
+    {
+      "id": "acquire-singletons",
+      "action": "Submit and collect five ordered single-setting jobs.",
+      "acceptance": "Each complete raw result and returned mesh is retained before the next job.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Five distinct singleton jobs completed with 65,536 accepted events each; raw results and returned meshes were retained.",
+          "observed_at": "2026-10-28T00:37:30.849280+00:00",
+          "revision": "cd887891e5ffaa00217353dd3b046d58015f1ab1",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/ascella-context-single-identity-2/results.json",
+              "sha256": "fa7d26b1a906cfa6150069d65198e6c429583702fb7909ff9999e49293ff13cc"
+            },
+            {
+              "ref": "results/quandela/runs/ascella-context-single-identity-5/results.json",
+              "sha256": "1dd35b7f17165d543f1e8bf875472690cd89aa62d419e2b83212a5022058dc5e"
+            },
+            {
+              "ref": "results/quandela/runs/ascella-context-single-cross-4/results.json",
+              "sha256": "6dc2164e778a21ec66af3bad2a473bcfbd709932fe4c9f81a5009496b33ed336"
+            },
+            {
+              "ref": "results/quandela/runs/ascella-context-single-identity-0/results.json",
+              "sha256": "26b5c4ac8de1a8e32bb6915a7e7fe4dbb4fc8ef1d8900960bf6a664e3c4c174e"
+            },
+            {
+              "ref": "results/quandela/runs/ascella-context-single-cross-0/results.json",
+              "sha256": "2faaa954ef3999719fabed4d4324704428e3be4b170e6b00d032b405fb034d91"
+            }
+          ],
+          "scope_sha256": "316ff04fccdb8e7fa620c9f6680b16b7d161965b9c906a6bef2747ae93135f93"
+        }
+      ]
+    },
+    {
+      "id": "acquire-packed",
+      "action": "Submit and collect forward and reversed five-setting jobs.",
+      "acceptance": "Both complete iterators retain per-setting attribution and all outputs.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Forward and reverse packed jobs completed, retaining 327,680 accepted events each and all returned iteration records.",
+          "observed_at": "2026-10-28T00:39:43.069061+00:00",
+          "revision": "cd887891e5ffaa00217353dd3b046d58015f1ab1",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/ascella-context-packed-forward/results.json",
+              "sha256": "66d869d6f388ac291d4cf9cece7b92cab3820d3371ebd3b0f62a755fb43ccf13"
+            },
+            {
+              "ref": "results/quandela/runs/ascella-context-packed-reverse/results.json",
+              "sha256": "f481f90454400e7c0194ac9bf8daac632b63a9b8360051f964ef7c32a2386c44"
+            }
+          ],
+          "scope_sha256": "2cfba3c111553efe6acb2d74cbd01fb1ce82636418c7c6a4fa3e64aead3d2f4f"
+        }
+      ]
+    },
+    {
+      "id": "analyze-context",
+      "action": "Adjudicate context comparisons and account for returned mesh identities.",
+      "acceptance": "Confidence bounds, temporal limitations and negative or incomplete results are retained.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Twenty comparisons retain all outputs under a 280-endpoint family; every comparison has matching returned mesh and input. The results establish distribution changes with context or time but do not identify physical order or causal mechanism.",
+          "observed_at": "2026-10-28T00:43:24.936448+00:00",
+          "revision": "cd887891e5ffaa00217353dd3b046d58015f1ab1",
+          "evidence": [
+            {
+              "ref": "results/quandela/ascella-transition-context-analysis.json",
+              "sha256": "fd9c3f0765559dc405e20a771a809a7672b220490aacb46b4cc71db1c2d09bdf"
+            },
+            {
+              "ref": "docs/evidence/ascella-transition-context-diagnostics/findings.md",
+              "sha256": "e5dc605052e4ec170622effc1cc5b40026c47dd9f8442c2c2fbedfb7e70760da"
+            }
+          ],
+          "scope_sha256": "cb83b407b6b6924a64514072c523791082b0258fdccbe924df0dc89b084564a8"
+        },
+        {
+          "result": "The ordered parallel replay preserves all prior outcomes; 20 matched-mesh comparisons retain the 280-endpoint family.",
+          "observed_at": "2026-10-28T00:50:40.847385+00:00",
+          "revision": "cd887891e5ffaa00217353dd3b046d58015f1ab1",
+          "evidence": [
+            {
+              "ref": "results/quandela/ascella-transition-context-parallel-analysis.json",
+              "sha256": "1d7c75b26e2d0faef501432b2060c803b26793d71662c3ec5dccfd5fd3997902"
+            },
+            {
+              "ref": "docs/evidence/ascella-transition-context-diagnostics/findings.md",
+              "sha256": "3d719187e6636159fc350670f4c376892f6a85399e94edb3643e42f0d82138e8"
+            }
+          ],
+          "scope_sha256": "cb83b407b6b6924a64514072c523791082b0258fdccbe924df0dc89b084564a8"
+        }
+      ]
+    },
+    {
+      "id": "register-results",
+      "action": "Reconcile acquisitions, accounting, claims and local tests.",
+      "acceptance": "The registry and evidence inventories include each result with source hashes.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Seven completed jobs, 983,040 accepted events, 50 provider seconds and 7.589824 consumed credits are registered and retained.",
+          "observed_at": "2026-10-28T00:43:25.371090+00:00",
+          "revision": "cd887891e5ffaa00217353dd3b046d58015f1ab1",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-transition-context-diagnostics/acquisition-inventory.json",
+              "sha256": "0f702ebf3742b67ed0c2ba6429a50c31263e88d347a5986dbdc70e365d3d8888"
+            },
+            {
+              "ref": "docs/evidence/ascella-transition-context-diagnostics/account-after.json",
+              "sha256": "3b801708d7effca58b58455b57994838b271a0397e6e518808c61e590b62887a"
+            }
+          ],
+          "scope_sha256": "7f2131df36699877a7164ba5ba3a261750cc8db103cb000e4dbf137b112ef31f"
+        }
+      ]
+    },
+    {
+      "id": "design-mesh-port",
+      "action": "Develop independent compilation and output-port permutation follow-up.",
+      "acceptance": "A bounded prospective case tests the remaining mechanisms without assuming causality.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Six SDK preflights and the full 132-entry allocation and permutation audit pass. The prospective case bounds 120 fresh compilation identifiers and twelve anchors to 6.786432 credits.",
+          "observed_at": "2026-10-28T00:50:41.312918+00:00",
+          "revision": "cd887891e5ffaa00217353dd3b046d58015f1ab1",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-transition-mesh-port-diagnostics/README.md",
+              "sha256": "b830b259e48b26826484232a93f40d5df4ae1ffaf63b3a4c110885e1b14cb530"
+            },
+            {
+              "ref": "docs/evidence/ascella-transition-mesh-port-diagnostics/campaign.json",
+              "sha256": "f64cffbd76f142955b92509f5c7e7deb6c54b3cf0c5d818addbe34a21ca3bcc8"
+            },
+            {
+              "ref": "docs/evidence/ascella-transition-mesh-port-diagnostics/preflight-summary.json",
+              "sha256": "88aace41107008c7ff3afdd4159f7db7c12b6da7f3a76e14c45640e929854a2d"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_transition_interventions.py",
+              "sha256": "46f9415a94914ddfeb48566e84127ace6ded31a63b6c22cfd248f5fc30619f3c"
+            }
+          ],
+          "scope_sha256": "46daca5e78136f2b7cc78e18d39d05e7b1c9b382381fd1da27e7a398ead7b6b8"
+        }
+      ]
+    },
+    {
+      "id": "acquire-mesh-port",
+      "action": "Execute the authorized, validated mesh and port follow-up.",
+      "acceptance": "Retain and analyze the next cohort under a frozen approved budget.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Six complete jobs retained 8,650,752 accepted events, fifteen groups of eight unique meshes, and twelve matched anchors; the analysis and acquisition inventory bind their results.",
+          "observed_at": "2026-10-28T01:06:08.771697+00:00",
+          "revision": "cd887891e5ffaa00217353dd3b046d58015f1ab1",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-transition-mesh-port-diagnostics/acquisition-inventory.json",
+              "sha256": "47a36edf6274811b15285b0bb381fc8ae6598924f97a9cd3196c6e3e52d6fdd4"
+            },
+            {
+              "ref": "results/quandela/ascella-transition-mesh-port-analysis.json",
+              "sha256": "927bef0f733efd2b61c648bee59c539ae03b538e4eae1f463fc410bb2695df07"
+            },
+            {
+              "ref": "docs/evidence/ascella-transition-mesh-port-diagnostics/findings.md",
+              "sha256": "4902cd536c98337ba496b807c02ab11b29801c865acd6d7f3975282e2ae4f81a"
+            }
+          ],
+          "scope_sha256": "266f83a25e99ced0ff750b553c0702baa7653b03d3b05ca166c9b3bca5531c39"
+        }
+      ]
+    },
+    {
+      "id": "prepare-day-repeat",
+      "action": "Prepare matched-mesh repetitions after the Pacific calendar day changes.",
+      "acceptance": "A written next-day case states the time boundary and retained-identity checks.",
+      "state": "doing"
+    }
+  ],
+  "related": [
+    "ascella-cancellation-transition-acquisition"
+  ]
+}

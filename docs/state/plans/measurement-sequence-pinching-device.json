@@ -12,7 +12,7 @@
     "status": "verified",
     "note": "Owner approved the width-32 run and ratified the envelope doctrine; attempt 1 submitted."
   },
-  "next_action": "Merge PR #516, then design the successor case with a pre-set reset margin; register the run once the backup inventory is re-observed.",
+  "next_action": "Design the successor case with its reset margin set before the run from the endpoint bias a reset residual puts on the N = 16 endpoint, and measure the cross-shot history it bounds (results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md).",
   "scope": "Heron r2 (ibm_kingston) pinching run under a calibration-adaptive envelope approval: layout rule at width tier 16/24/32, terminal resets, reset controls, Hadamard crosstalk patterns, 20 us repetition delay with a 50 us fallback attempt, preregistered screens and stochastic null.",
   "owner": "measurement-sequence-pinching branch",
   "steps": [
@@ -137,6 +137,66 @@
             }
           ],
           "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after merging main: AGENTS.md (QPU time and calibration) and qpu-submission.md still bind an msq-envelope-v1 record's layout rule, bounds, ceilings and constructor in place of the dry run's calibration values, and the attempt-1 approval marker is unchanged.",
+          "observed_at": "2026-10-27T23:09:56+00:00",
+          "revision": "b480f1d67e7bb4b8c3f0e672f3340d68565ee392",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "be176e74db7bd523d7122a2bc4a2f33985e08311e480de03f145a48a3530154c"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "6356035deab7899cb353432d87f8c8d7821fec4a9cfaefad1d148cbdd236d7b8"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after merging main: the calibration-wait paragraph #616 added leaves AGENTS.md (QPU time and calibration) and qpu-submission.md binding an msq-envelope-v1 record's layout rule, bounds, ceilings and constructor in place of the dry run's calibration values, and the attempt-1 approval marker is unchanged.",
+          "observed_at": "2026-10-28T00:56:52+00:00",
+          "revision": "8b5fd53b411bccd8665cb9f209728b235652932b",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "be176e74db7bd523d7122a2bc4a2f33985e08311e480de03f145a48a3530154c"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "b072641ac08f519068935e050226281897df6f511737411a4e9096d419cda6c3"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after the retention-procedure paragraph of qpu-submission.md moved to the unseeded current-runtime comparison: AGENTS.md (QPU time and calibration) and qpu-submission.md still bind an msq-envelope-v1 record's layout rule, bounds, ceilings and constructor in place of the dry run's calibration values, and the attempt-1 approval marker is unchanged.",
+          "observed_at": "2026-10-28T01:16:36+00:00",
+          "revision": "ac236fba886790e23e41a1cae6000ae253a16aca",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "be176e74db7bd523d7122a2bc4a2f33985e08311e480de03f145a48a3530154c"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "e0542c045028e1bcf3a2ec6855e37d6934179cd940ff901d26f81fd115bbcba8"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
         }
       ]
     },
@@ -172,13 +232,85 @@
       "id": "retain-register",
       "action": "Retain the collected run (done, awaiting_observation in the backup audit); add its research_state acquisition and claim after the other sessions' backup-instance runs land on main and the inventory is re-observed.",
       "acceptance": "tests and gates lanes green with the run retained.",
-      "state": "doing"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "The backup re-observation covers job dbg08t9j4t8s73abaghg (audit awaiting_observation empty); research_state.json registers acquisition kingston-measurement-sequence-envelope and claim kingston-measurement-sequence-envelope-reset-screen, and research_state.py --check passes.",
+          "observed_at": "2026-10-27T23:09:05+00:00",
+          "revision": "b480f1d67e7bb4b8c3f0e672f3340d68565ee392",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "01c5325de760038485ae4b486aeb120fd16cf5c2d4fca9b0d8d2ded4be4073f2"
+            },
+            {
+              "ref": "results/live/qpu-job-retention-audit.f59f9992321c.json",
+              "sha256": "88975ced695bb7752d5a2b857fdf1df4ce60c70066f86b04c6b0e32c23c7537d"
+            }
+          ],
+          "scope_sha256": "26696832075fb0a3b177ea68ff5c4cc001da29a4d14bd16694f0474e17d1dfbc"
+        },
+        {
+          "result": "Revalidated on the registry records: acquisition kingston-measurement-sequence-envelope and claim kingston-measurement-sequence-envelope-reset-screen are registered, the backup audit covers job dbg08t9j4t8s73abaghg with awaiting_observation empty, and research_state.py --check passes.",
+          "observed_at": "2026-10-27T23:17:06+00:00",
+          "revision": "53e0c1ec8c5db4ef00f9a98a6515107da9a277bb",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=kingston-measurement-sequence-envelope",
+              "sha256": "832d924be5fb55d02836f83bea9d586a2d6c368247eac18b67178e3386fc8b9b"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=kingston-measurement-sequence-envelope-reset-screen",
+              "sha256": "7fb3e64f9a2dc67eb9937f5aac4d579a3c0e3f41b59567d7ef7a7df7fc625efa"
+            },
+            {
+              "ref": "results/live/qpu-job-retention-audit.f59f9992321c.json",
+              "sha256": "88975ced695bb7752d5a2b857fdf1df4ce60c70066f86b04c6b0e32c23c7537d"
+            }
+          ],
+          "scope_sha256": "26696832075fb0a3b177ea68ff5c4cc001da29a4d14bd16694f0474e17d1dfbc"
+        },
+        {
+          "result": "Revalidated after main's backup re-observation of 2026-10-28: acquisition kingston-measurement-sequence-envelope and claim kingston-measurement-sequence-envelope-reset-screen are registered, the backup audit's jobs list covers dbg08t9j4t8s73abaghg with awaiting_observation empty, and research_state.py --check passes. The audit reference binds the job's row, so later observations that leave the row unchanged keep the receipt fresh.",
+          "observed_at": "2026-10-28T00:55:21+00:00",
+          "revision": "18c9128a98ba592a02af443634baf9391b88b798",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=kingston-measurement-sequence-envelope",
+              "sha256": "832d924be5fb55d02836f83bea9d586a2d6c368247eac18b67178e3386fc8b9b"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=kingston-measurement-sequence-envelope-reset-screen",
+              "sha256": "7fb3e64f9a2dc67eb9937f5aac4d579a3c0e3f41b59567d7ef7a7df7fc625efa"
+            },
+            {
+              "ref": "results/live/qpu-job-retention-audit.f59f9992321c.json#jobs/job_id=dbg08t9j4t8s73abaghg",
+              "sha256": "7253e2743ecde54703bc76896e1f5b8602377722bd519bffb880a34d46d47d2f"
+            }
+          ],
+          "scope_sha256": "26696832075fb0a3b177ea68ff5c4cc001da29a4d14bd16694f0474e17d1dfbc"
+        }
+      ]
     },
     {
       "id": "pr-review-merge",
       "action": "Push the branch, update the PR #516 body, run the Codex review loop to a clean head, and merge.",
       "acceptance": "PR #516 merged with all four checks green and every review thread resolved.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "PR #516 merged as bd6fb9e9412c1060d0176cf7228561bd2950a598 on 2026-10-27T16:14:40Z; the merge commit is an ancestor of this branch.",
+          "observed_at": "2026-10-27T23:09:32+00:00",
+          "revision": "b480f1d67e7bb4b8c3f0e672f3340d68565ee392",
+          "evidence": [
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "22dcbfd628188ad4ce3893723c66d16d97647f8ec973aaa3d70dcaeec3ece604"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        }
+      ]
     }
   ]
 }

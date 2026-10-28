@@ -208,7 +208,7 @@ class Index:
         citing = sorted(
             claim["id"]
             for claim in self.claims.values()
-            if rel in {entry["path"] for entry in claim["evidence"]} or rel in claim["documents"]
+            if rel in {entry["path"].partition("#")[0] for entry in claim["evidence"]} or rel in claim["documents"]
         )
         return {"path": rel, "runs": owners, "claims_citing": citing}
 

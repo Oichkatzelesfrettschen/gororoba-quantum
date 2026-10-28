@@ -36,12 +36,16 @@ import argparse
 import hashlib
 import json
 import re
+import sys
 from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+from parallel import ordered_map  # noqa: E402
+
 HISTORICAL_JOBS = {"db5qmqclf4us73c4e1ug", "db67fqsvf2bc73d0pk4g", "db67frimb58s738bci4g"}
 # The owner's 180-second campaign cap covers the non-historical jobs created
 # before this instant; a later program is bounded by its own approved
@@ -61,6 +65,15 @@ def require(condition: bool, message: str) -> None:
 
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+BINARY_DIGITS = str.maketrans("", "", "01")
+
+
+def binary_rows(bits: list[str], width: int) -> bool:
+    """Whether every shot string holds exactly width characters, each 0 or 1. Joining and translating the strings
+    runs in C, where a regular-expression match per shot dominated the audit's run time."""
+    return set(map(len, bits)) == {width} and not "".join(bits).translate(BINARY_DIGITS)
 
 
 def read(path: Path) -> Any:
@@ -212,6 +225,117 @@ def failed_row(job: dict[str, Any], run: Path | None, charge: Decimal) -> dict[s
     }
 
 
+def archived_row(task: tuple[dict[str, Any], Path, Decimal]) -> dict[str, Any]:
+    """One completed job's audit row after verifying its lossless archive: every indexed raw and metrics digest,
+    the settled charge and timestamps, each PUB's order and shot denominator, every register's binary width, and
+    the run's collection or retrospective-retention evidence. Archives share no state, so the audit verifies them
+    through parallel.ordered_map in inventory order."""
+    job, index_path, charge = task
+    identity = job["job_id"]
+    directory = index_path.parent
+    run = directory.parent.parent
+    index = read(index_path)
+    sources = {str(index_path.relative_to(ROOT)): digest(index_path)}
+    require("result_metadata.json" in index["files"], "indexed result metadata is missing")
+    indexed = set(index["files"]) | set(index["metrics"]) | {"index.json"}
+    present = {path.name for path in directory.iterdir() if path.is_file()}
+    require(present == indexed, f"raw files and index differ: {sorted(present ^ indexed)}")
+    for name, expected in index["files"].items():
+        require(
+            name in {"result_metadata.json"} or bool(re.fullmatch(r"pub_[0-9]+\.json", name)),
+            "raw filename differs",
+        )
+        path = directory / name
+        require(digest(path) == expected, f"raw data digest differs: {path.name}")
+        sources[str(path.relative_to(ROOT))] = expected
+    names = index["metrics"]
+    hashes = index["metrics_sha256"]
+    require(len(names) == len(hashes) and bool(names), "metrics index cardinality differs")
+    require(len(set(names)) == len(names), "metrics index repeats a snapshot")
+    for name, expected in zip(names, hashes, strict=True):
+        require(bool(re.fullmatch(r"job_metrics(?:\.[0-9]+)?\.json", name)), "metrics filename differs")
+        path = directory / name
+        require(digest(path) == expected, "metrics digest differs")
+        sources[str(path.relative_to(ROOT))] = expected
+    latest = index.get("metrics_latest")
+    if latest is None:
+        require(len(names) == 1, "multiple historical metrics require an explicit latest identity")
+        latest = names[0]
+    require(latest in names, "latest metrics missing from index")
+    final_metrics = read(directory / latest)
+    require(final_metrics["usage"]["status"] == "complete", "retained usage is unsettled")
+    require(Decimal(str(final_metrics["usage"]["qpu_charge_time_seconds"])) == charge, "retained charge differs")
+    for stage in ("running", "finished"):
+        require(
+            timestamp(job["timestamps"][stage]) == timestamp(final_metrics["timestamps"][stage]),
+            f"inventory {stage} timestamp differs from the retained final metrics",
+        )
+    pub_paths = sorted(directory.glob("pub_*.json"), key=lambda path: int(path.stem.split("_")[1]))
+    require(len(pub_paths) == job["pub_count"], "decoded service PUB count differs from raw count")
+    require(job["shots_per_pub"] > 0 and job["pub_count"] > 0, "empty physical acquisition")
+    for pub_number, path in enumerate(pub_paths):
+        require(path.name in index["files"], "unindexed raw PUB")
+        pub = read(path)
+        require(pub["pub_index"] == pub_number, "PUB order differs")
+        require(bool(pub["registers"]), "PUB registers missing")
+        for register in pub["registers"].values():
+            bits = register["bitstrings"]
+            require(register["num_shots"] == job["shots_per_pub"] == len(bits), "shot denominator differs")
+            width = register["num_bits"]
+            require(width > 0 and binary_rows(bits, width), "register width or binary data differs")
+    collection = run / "collect.json"
+    if collection.exists():
+        header = read(collection)[0]
+        entry = header["jobs"][identity]
+        require(header["submission_complete"] is True, "collection is incomplete")
+        require(entry["backend"] == job["backend"], "collection backend differs")
+        require(entry["usage"]["usage_status"] == "final", "collection usage is unsettled")
+        require(Decimal(str(entry["usage"]["qpu_charge_time_seconds"])) == charge, "collection charge differs")
+        # Newer collections carry the raw ledger in collect.json; the pilot
+        # preserved its ledger in raw/preserved.json, which then must exist
+        # and joins the audit's source files.
+        if "raw" in entry:
+            ledger = entry["raw"]
+        else:
+            preserved = run / "raw/preserved.json"
+            require(preserved.exists(), "collection without an inline raw ledger lacks raw/preserved.json")
+            ledger = read(preserved)["jobs"][identity]
+            sources[str(preserved.relative_to(ROOT))] = digest(preserved)
+        require(
+            ledger["directory"] == str(directory.relative_to(run)) and ledger["files"] == index["files"],
+            "collection raw ledger differs from the retained index",
+        )
+        submitted = read(run / "record.json")["submission"]["qpy_archive_sha256"]
+        require(digest(run / "isa.qpy") == submitted, "isa.qpy differs from the submitted circuit archive")
+        evidence_names = ["record.json", "collect.json", "isa.qpy"]
+        provenance = "registered_collection"
+    else:
+        retention = read(run / "retention.json")
+        require(
+            retention["job_id"] == identity and retention["backend"] == job["backend"], "retention identity differs"
+        )
+        require(retention["final_qpu_charge_seconds"] == job["final_qpu_charge_seconds"], "retention charge differs")
+        submitted = read(run / "submitted-input.json")
+        require(
+            digest(run / "submitted-circuits.qpy") == submitted["circuit_archive_sha256"],
+            "recovered QPY digest differs",
+        )
+        evidence_names = ["retention.json", "submitted-input.json", "submitted-circuits.qpy"]
+        provenance = "retrospective_descriptive"
+    for name in evidence_names:
+        path = run / name
+        sources[str(path.relative_to(ROOT))] = digest(path)
+    return {
+        **job,
+        "run": str(run.relative_to(ROOT)),
+        "provenance": provenance,
+        "submitted_pub_shots": job["pub_count"] * job["shots_per_pub"],
+        "raw_data_files": len(index["files"]),
+        "metrics_snapshots": len(names),
+        "source_files": sources,
+    }
+
+
 def reconcile(snapshot_path: Path) -> dict[str, Any]:
     default_path, other_paths = inventory_family(snapshot_path)
     snapshot = read(snapshot_path)
@@ -261,7 +385,8 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
     require(set(archives) == completed, "service jobs and retained archive identities differ")
     collections = failed_collections(instance, default_instance)
     require(not is_default or HISTORICAL_JOBS <= set(identities), "historical accounting identities missing")
-    rows = []
+    rows: list[dict[str, Any]] = []
+    tasks: list[tuple[int, tuple[dict[str, Any], Path, Decimal]]] = []
     for job in jobs:
         identity = job["job_id"]
         if unexecuted(job):
@@ -285,116 +410,10 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
             rows.append(failed_row(job, collections.get(identity), charge))
             continue
         require(charge.is_finite() and charge > 0, f"physical charge missing for {identity}")
-        index_path = archives[identity]
-        directory = index_path.parent
-        run = directory.parent.parent
-        index = read(index_path)
-        sources = {str(index_path.relative_to(ROOT)): digest(index_path)}
-        require("result_metadata.json" in index["files"], "indexed result metadata is missing")
-        indexed = set(index["files"]) | set(index["metrics"]) | {"index.json"}
-        present = {path.name for path in directory.iterdir() if path.is_file()}
-        require(present == indexed, f"raw files and index differ: {sorted(present ^ indexed)}")
-        for name, expected in index["files"].items():
-            require(
-                name in {"result_metadata.json"} or bool(re.fullmatch(r"pub_[0-9]+\.json", name)),
-                "raw filename differs",
-            )
-            path = directory / name
-            require(digest(path) == expected, f"raw data digest differs: {path.name}")
-            sources[str(path.relative_to(ROOT))] = expected
-        names = index["metrics"]
-        hashes = index["metrics_sha256"]
-        require(len(names) == len(hashes) and bool(names), "metrics index cardinality differs")
-        require(len(set(names)) == len(names), "metrics index repeats a snapshot")
-        for name, expected in zip(names, hashes, strict=True):
-            require(bool(re.fullmatch(r"job_metrics(?:\.[0-9]+)?\.json", name)), "metrics filename differs")
-            path = directory / name
-            require(digest(path) == expected, "metrics digest differs")
-            sources[str(path.relative_to(ROOT))] = expected
-        latest = index.get("metrics_latest")
-        if latest is None:
-            require(len(names) == 1, "multiple historical metrics require an explicit latest identity")
-            latest = names[0]
-        require(latest in names, "latest metrics missing from index")
-        final_metrics = read(directory / latest)
-        require(final_metrics["usage"]["status"] == "complete", "retained usage is unsettled")
-        require(Decimal(str(final_metrics["usage"]["qpu_charge_time_seconds"])) == charge, "retained charge differs")
-        for stage in ("running", "finished"):
-            require(
-                timestamp(job["timestamps"][stage]) == timestamp(final_metrics["timestamps"][stage]),
-                f"inventory {stage} timestamp differs from the retained final metrics",
-            )
-        pub_paths = sorted(directory.glob("pub_*.json"), key=lambda path: int(path.stem.split("_")[1]))
-        require(len(pub_paths) == job["pub_count"], "decoded service PUB count differs from raw count")
-        require(job["shots_per_pub"] > 0 and job["pub_count"] > 0, "empty physical acquisition")
-        for pub_number, path in enumerate(pub_paths):
-            require(path.name in index["files"], "unindexed raw PUB")
-            pub = read(path)
-            require(pub["pub_index"] == pub_number, "PUB order differs")
-            require(bool(pub["registers"]), "PUB registers missing")
-            for register in pub["registers"].values():
-                bits = register["bitstrings"]
-                require(register["num_shots"] == job["shots_per_pub"] == len(bits), "shot denominator differs")
-                width = register["num_bits"]
-                require(
-                    width > 0 and all(re.fullmatch(r"[01]+", value) and len(value) == width for value in bits),
-                    "register width or binary data differs",
-                )
-        collection = run / "collect.json"
-        if collection.exists():
-            header = read(collection)[0]
-            entry = header["jobs"][identity]
-            require(header["submission_complete"] is True, "collection is incomplete")
-            require(entry["backend"] == job["backend"], "collection backend differs")
-            require(entry["usage"]["usage_status"] == "final", "collection usage is unsettled")
-            require(Decimal(str(entry["usage"]["qpu_charge_time_seconds"])) == charge, "collection charge differs")
-            # Newer collections carry the raw ledger in collect.json; the pilot
-            # preserved its ledger in raw/preserved.json, which then must exist
-            # and joins the audit's source files.
-            if "raw" in entry:
-                ledger = entry["raw"]
-            else:
-                preserved = run / "raw/preserved.json"
-                require(preserved.exists(), "collection without an inline raw ledger lacks raw/preserved.json")
-                ledger = read(preserved)["jobs"][identity]
-                sources[str(preserved.relative_to(ROOT))] = digest(preserved)
-            require(
-                ledger["directory"] == str(directory.relative_to(run)) and ledger["files"] == index["files"],
-                "collection raw ledger differs from the retained index",
-            )
-            submitted = read(run / "record.json")["submission"]["qpy_archive_sha256"]
-            require(digest(run / "isa.qpy") == submitted, "isa.qpy differs from the submitted circuit archive")
-            evidence_names = ["record.json", "collect.json", "isa.qpy"]
-            provenance = "registered_collection"
-        else:
-            retention = read(run / "retention.json")
-            require(
-                retention["job_id"] == identity and retention["backend"] == job["backend"], "retention identity differs"
-            )
-            require(
-                retention["final_qpu_charge_seconds"] == job["final_qpu_charge_seconds"], "retention charge differs"
-            )
-            submitted = read(run / "submitted-input.json")
-            require(
-                digest(run / "submitted-circuits.qpy") == submitted["circuit_archive_sha256"],
-                "recovered QPY digest differs",
-            )
-            evidence_names = ["retention.json", "submitted-input.json", "submitted-circuits.qpy"]
-            provenance = "retrospective_descriptive"
-        for name in evidence_names:
-            path = run / name
-            sources[str(path.relative_to(ROOT))] = digest(path)
-        rows.append(
-            {
-                **job,
-                "run": str(run.relative_to(ROOT)),
-                "provenance": provenance,
-                "submitted_pub_shots": job["pub_count"] * job["shots_per_pub"],
-                "raw_data_files": len(index["files"]),
-                "metrics_snapshots": len(names),
-                "source_files": sources,
-            }
-        )
+        tasks.append((len(rows), (job, archives[identity], charge)))
+        rows.append({})
+    for (position, _), row in zip(tasks, ordered_map(archived_row, [task for _, task in tasks]), strict=True):
+        rows[position] = row
     total = sum(Decimal(str(row["final_qpu_charge_seconds"])) for row in rows)
     in_window = window_charge(rows, usage)
     require(in_window == Decimal(consumed), "final charges inside the usage period differ from the consumed seconds")

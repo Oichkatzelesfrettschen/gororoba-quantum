@@ -36,7 +36,9 @@ below from CODATA constants and the cited measurements, raising when a stated in
   measured alpha_s(m_Z) = 0.1180 runs to alpha_s(M_Pl) = 0.0189 at three loops (0.0191 at one loop), so the strong
   force at L_P is c^4/G divided by 52.9.
 - **The Schrodinger step inserts what it finds.** [E] hbar^2/(2 m L^3) reaches c^4/(2G) only at the Planck mass and
-  length; an electron at its Compton wavelength gives 8.8e-46 of it.
+  length; an electron at its reduced Compton wavelength gives 1.75e-45 of it, which is 8.8e-46 of c^4/G (the value
+  [persona-corpus-verified-results.md](persona-corpus-verified-results.md#4-corrections-to-earlier-repository-notes)
+  recomputes; this line earlier printed the c^4/G ratio against the c^4/(2G) referent).
 - **The cosmic "coincidence" is the Friedmann equation.** [E] Critical density inside the Hubble radius gives
   M_H c^2/R_H = c^4/(2G) for every Hubble rate; the measured flatness Omega_K = 0.001 +- 0.002 is the only content
   of the July version's Eq. 1.
@@ -46,7 +48,7 @@ below from CODATA constants and the cited measurements, raising when a stated in
   gravitational mass scale as n^4.
   - [E] Kreuzer's 5e-5 null on fluorine against bromine would then require the two materials to match in index to
     1.25e-5, and the lunar 4e-12 null on aluminum against iron to 1e-12.
-  - [E] c/n would also be the invariant speed in water, yet electrons above 0.254 MeV outrun it and emit Cherenkov
+  - [E] c/n would also be the invariant speed in water, yet electrons above 0.254 MeV (the index of water at 400 nm) outrun it and emit Cherenkov
     light.
 - **The constant is a ceiling, not an agent.** [I] c^4/G is 4 times Gibbons' maximal tension c^4/(4G) of
   classical GR. Its independence of hbar marks it as classical.
@@ -98,7 +100,12 @@ densities, so its fields are static, `div S = -du/dt = 0`, and it radiates
 nothing. Eq. 1 is a momentum density times c^2. [E] An accelerating spin
 radiates only as a magnetic dipole through the moment's second derivative
 (a charged spherical shell has `m = Q R^2 omega / 3` and no electric dipole):
-spinning the worked example up to 30000 RPM in 1 s radiates about 2.7e-13 W.
+spinning the worked example up to 30000 RPM in 1 s radiates of order 2.7e-13 W, the scale
+`mu0 (Q R^2 omega / (3 tau^2))^2 / (6 pi c^3)`. The power depends on the ramp: a uniform ramp has `m'' = 0`
+between its ends, and a sin^2 ramp averages 3.3e-12 W with a peak of 6.7e-12 W. Both evaluated profiles stay below
+1e-11 W. Duration and final rate do not bound the power, which goes as the square of the angular jerk: a quintic
+smoothstep over the last 0.1 s of the second peaks near 9e-8 W. A general bound therefore needs a bound on omega''.
+Every such value stays far below any power the patents claim.
 
 **Eq. 2 integrates an acceleration that a vibration cannot sustain.** [P] The
 vibrating case is `S_max = f_G gamma^2 (sigma^2/eps0) R_v nu^2 t_op` (the craft

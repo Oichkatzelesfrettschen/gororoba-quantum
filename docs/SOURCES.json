@@ -1563,6 +1563,45 @@
         "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Third-party material in the article is covered only where the article's credit lines say so. Repository licensing does not relabel the source PDF.",
         "publisher_title": "Quantum teleportation using highly coherent emission from telecom C-band quantum dots"
       }
+    },
+    {
+      "title": "Spglib: a software library for crystal symmetry search",
+      "authors": [
+        "Atsushi Togo",
+        "Kohei Shinohara",
+        "Isao Tanaka"
+      ],
+      "version": "Science and Technology of Advanced Materials: Methods 4(1), 2384822 (2024), published online 2024-10-16; publisher PDF as deposited in the NIMS Materials Data Repository",
+      "source_url": "https://mdr.nims.go.jp/filesets/d30a5177-949d-44e2-880b-5f08d13673e3/download",
+      "note": "docs/notes/papers/1808.01590.md",
+      "audited_at_utc": "2026-10-28T00:43:42+00:00",
+      "sha256": "b5cab7d7ac26711726f13fff5380957c25c938e3b0e53a55f532d96c21bc0a85",
+      "bytes": 1562000,
+      "pages": 16,
+      "acquisition": "download",
+      "path": "docs/pdf/27660400.2024.2384822.pdf",
+      "status": "retained",
+      "redistribution": "explicit_license_verified",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "b5cab7d7ac26711726f13fff5380957c25c938e3b0e53a55f532d96c21bc0a85",
+        "verified_at_utc": "2026-10-28T00:43:42+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "evidence_url": "https://api.crossref.org/works/10.1080/27660400.2024.2384822",
+        "evidence_sha256": "65e92297afc7d7c8d4b275645ee1d4bf573a04a518f2a22ab9b94d308bb3b243",
+        "evidence_locator": "Crossref message.license entry for content-version vor; message.DOI and message.title; the PDF's XMP prism:doi and its page-2 Open Access paragraph",
+        "evidence_path": "docs/evidence/source_rights/crossref-10.1080_27660400.2024.2384822.json",
+        "evidence_retrieved_at_utc": "2026-10-28T00:29:31+00:00",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "observed_license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "doi": "10.1080/27660400.2024.2384822",
+        "publisher_title": "Spglib: a software library for crystal symmetry search",
+        "reading_scope": "Crossref version-of-record license, DOI and title; the PDF cover page, XMP DOI and page-2 Open Access paragraph; the note carries the content reading scope.",
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "Crossref registers CC BY 4.0 for the version of record with no embargo, the publisher article page's structured data names the same license, and the PDF's page 2 states the article is distributed under the Creative Commons Attribution License.",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Repository licensing does not relabel the source PDF."
+      }
     }
   ],
   "aliases": [
@@ -1943,6 +1982,18 @@
       "doi": "10.7151/dmgaa.1088",
       "venue": "Discussiones Mathematicae - General Algebra and Applications 24(2), 251-265 (2004)",
       "receipt_url": "https://api.crossref.org/works/10.7151/dmgaa.1088"
+    },
+    "docs/notes/papers/1602.06402.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1016/j.commatsci.2016.10.015",
+      "venue": "Computational Materials Science 128, 140-184 (2017)",
+      "receipt_url": "https://api.crossref.org/works/10.1016/j.commatsci.2016.10.015"
+    },
+    "docs/notes/papers/1808.01590.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1080/27660400.2024.2384822",
+      "venue": "Science and Technology of Advanced Materials: Methods 4(1), 2384822 (2024)",
+      "receipt_url": "https://api.crossref.org/works/10.1080/27660400.2024.2384822"
     },
     "docs/notes/papers/1103.1528.md": {
       "status": "journal-identity-verified",
@@ -4428,6 +4479,24 @@
       "retrieved_at_utc": "2026-10-27T15:47:14+00:00",
       "reading_scope": "Comparator challenge finitelyPresented_counterexample in full: finitely presented group with an element of odd prime order",
       "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "note": "docs/notes/papers/1602.06402.md",
+      "url": "https://api.crossref.org/works/10.1016/j.commatsci.2016.10.015",
+      "retrieved_at_utc": "2026-10-28T00:09:05+00:00",
+      "sha256": "da37850767ddde56b7d3733a1ca5352df246bdb9c8c5a82d3932e6246bf540ae",
+      "bytes": 10100,
+      "reading_scope": "Crossref DOI metadata: title, journal, volume, pages, issue date and license list",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/1808.01590.md",
+      "url": "https://api.crossref.org/works/10.1080/27660400.2024.2384822",
+      "retrieved_at_utc": "2026-10-28T00:29:31+00:00",
+      "sha256": "65e92297afc7d7c8d4b275645ee1d4bf573a04a518f2a22ab9b94d308bb3b243",
+      "bytes": 7941,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, issue, article number, publication date and license list",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",
@@ -11549,6 +11618,66 @@
         "reading_scope": "LICENSE title and section 4 redistribution terms; the full file list of the manuscript directory at the pinned commit and a search of its 16 text files and the PDF text layer for license, copyright and Creative Commons notices, which found none.",
         "evidence_summary": "Apache-2.0 covers the repository as a software license; no CC BY 4.0 or CC0 grant names the manuscript."
       }
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/1602.06402v4",
+      "note": "docs/notes/papers/1602.06402.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "066a0b0a16556d73766cc4965a7c391ee76ae68b611b5d91036048dca7bc5283",
+      "bytes": 1946944,
+      "pages": 164,
+      "audited_at_utc": "2026-10-28T00:10:33+00:00",
+      "excluded_published_path": "docs/pdf/1602.06402v4.pdf",
+      "local_cache_path": "docs/local_source_cache/1602.06402v4.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "div.abs-license > a[title=\"Rights to this article\"] on exact-version abstract page",
+      "rights_reason": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1602.06402v4",
+        "evidence_locator": "div.abs-license > a[title=\"Rights to this article\"] on exact-version abstract page",
+        "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+        "verified": true,
+        "pdf_sha256": "066a0b0a16556d73766cc4965a7c391ee76ae68b611b5d91036048dca7bc5283",
+        "verified_at_utc": "2026-10-28T00:10:33+00:00",
+        "evidence_sha256": "259f4594198270dac527b39cc1dd00589765bb376dbbc6bdefc566c8816fe3f4",
+        "evidence_retrieved_at_utc": "2026-10-28T00:10:33+00:00",
+        "reading_scope": "Source-specific rights statement and operative terms.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1602.06402v4.html"
+      }
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/1808.01590v2",
+      "note": "docs/notes/papers/1808.01590.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "2676f767065fcc0f280ae9c2111865e76c9ec67c03ce86bad6f244ef4ee71d40",
+      "bytes": 293898,
+      "pages": 13,
+      "audited_at_utc": "2026-10-28T00:11:31+00:00",
+      "excluded_published_path": "docs/pdf/1808.01590v2.pdf",
+      "local_cache_path": "docs/local_source_cache/1808.01590v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "div.abs-license > a[title=\"Rights to this article\"] on exact-version abstract page",
+      "rights_reason": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1808.01590v2",
+        "evidence_locator": "div.abs-license > a[title=\"Rights to this article\"] on exact-version abstract page",
+        "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+        "verified": true,
+        "pdf_sha256": "2676f767065fcc0f280ae9c2111865e76c9ec67c03ce86bad6f244ef4ee71d40",
+        "verified_at_utc": "2026-10-28T00:11:31+00:00",
+        "evidence_sha256": "9c4f2b8e067b3e4c7e36bad7354907d697cd900d3130c3660b3ca7ed60815975",
+        "evidence_retrieved_at_utc": "2026-10-28T00:11:31+00:00",
+        "reading_scope": "Source-specific rights statement and operative terms.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1808.01590v2.html"
+      }
     }
   ],
   "local_cache_policy": "docs/local_source_cache/ preserves optional personal reading copies. Published inventories and Git-tracked files exclude that cache. Missing cache files are permitted; present registered copies must match their original PDF size and SHA-256.",
@@ -11850,6 +11979,61 @@
       "license_bytes": 11357,
       "copy_status": "unchanged",
       "conditions": "Preserve the complete original crate archive, including LICENSE.APACHE and LICENSE.MPL; no modifications or relabeling. Either license of the Apache-2.0 OR MPL-2.0 choice permits unchanged redistribution."
+    },
+    {
+      "title": "SeeK-path",
+      "authors": [
+        "Giovanni Pizzi",
+        "Timo Reents (maintainer)",
+        "contributors"
+      ],
+      "version": "2.2.2",
+      "sha256": "d3bb08b7fb21d5cff5fc27aff9904a865da5e0648fc0f8fef699642d88e27f2b",
+      "bytes": 44937,
+      "retrieved_at_utc": "2026-10-28T00:10:24+00:00",
+      "license_identifier": "MIT",
+      "reading_scope": "Signatures and docstrings of every public and helper function; the hpkot.get_path flow; the bodies of check_spglib_version, get_dot_access_dataset, get_cell_params, pointgroup_has_inversion, get_spgroup_data_realtime and BZ._initialize_BZ; band_path_data path and point files of cP1, cP2, cF1, cF2, hP1, hP2; README and pyproject metadata.",
+      "compatibility": "Installed in an isolated virtual environment with spglib 2.8.0, numpy 2.5.4 and scipy 1.18.1 on Python 3.14.8; the installed package tree is byte-identical to the archive's seekpath/ directory",
+      "inspected_files": [
+        {
+          "file": "seekpath-2.2.2/README.md",
+          "sha256": "3f0e23b4c09430a4de6ac82c9394b7bcdb0972168da1b16e5672624ec8220de9",
+          "bytes": 3097
+        },
+        {
+          "file": "seekpath-2.2.2/pyproject.toml",
+          "sha256": "5b3acf3735108b302a04483745d3d442e42113fd10a41e370fb944e12b5f7ac1",
+          "bytes": 1584
+        },
+        {
+          "file": "seekpath-2.2.2/seekpath/__init__.py",
+          "sha256": "d55f66b026697dcec60f02e66b335a07924c0894e47128dd4aacf3c242760ded",
+          "bytes": 2098
+        },
+        {
+          "file": "seekpath-2.2.2/seekpath/getpaths.py",
+          "sha256": "ea6fefada1ed76bfa2457a06d9c0374ccee72e12257a8797b7d8fc3aaec2a790",
+          "bytes": 26506
+        },
+        {
+          "file": "seekpath-2.2.2/seekpath/hpkot/__init__.py",
+          "sha256": "2044e9ea1fc706e3ec8a716c4677e26fac7ee330a7d21d0ce93c645072676ff9",
+          "bytes": 21342
+        },
+        {
+          "file": "seekpath-2.2.2/seekpath/brillouinzone/brillouinzone.py",
+          "sha256": "1856714ab2d4f443afb42555241e0bf27858a5a214a83e9358558b985b31f254",
+          "bytes": 16591
+        }
+      ],
+      "path": "docs/source_archives/seekpath-2.2.2.tar.gz",
+      "source_url": "https://files.pythonhosted.org/packages/source/s/seekpath/seekpath-2.2.2.tar.gz",
+      "note": "docs/notes/quantum-tools/seekpath.md",
+      "license_member": "seekpath-2.2.2/LICENSE.txt",
+      "license_sha256": "4f7b45f47ca69c4fce34f7229e94b808e37f4c3ff586a506b471c2d28bcb66ea",
+      "license_bytes": 1474,
+      "copy_status": "unchanged",
+      "conditions": "Preserve the complete original source archive, including author credits, copyright and license notices; no modifications or relabeling. The MIT license permits unchanged redistribution with its notice."
     }
   ]
 }

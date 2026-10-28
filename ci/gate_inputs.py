@@ -86,14 +86,19 @@ def module_index(root: Path) -> dict[str, set[Path]]:
 
 
 def references_of(tree: ast.Module) -> tuple[tuple[str, ...], tuple[str, ...]]:
-    """The module names a source imports and the ``.py`` string literals it names, in walk order."""
+    """The module names a source imports and the ``.py`` string literals it names, in walk order.
+
+    ``from MODULE import NAME`` contributes MODULE and ``MODULE:NAME`` (``.`` prefixes keep a relative MODULE),
+    because NAME is a submodule only when MODULE is a package; dependencies() resolves it as a module then alone.
+    """
     names: list[str] = []
     literals: list[str] = []
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             names.extend(alias.name for alias in node.names)
         elif isinstance(node, ast.ImportFrom):
-            names.extend([node.module or "", *(alias.name for alias in node.names)])
+            module = "." * node.level + (node.module or "")
+            names.extend([node.module or "", *(f"{module}:{alias.name}" for alias in node.names)])
         elif isinstance(node, ast.Constant) and isinstance(node.value, str) and node.value.endswith(".py"):
             literals.append(node.value)
     return tuple(names), tuple(literals)
@@ -141,7 +146,15 @@ def dependencies(
                     if candidate.is_relative_to(root) and candidate.is_file():
                         pending.append(candidate)
         for name in names:
-            pending.extend(modules.get(name.rsplit(".", 1)[-1], ()))
+            module, separator, member = name.partition(":")
+            if not separator:
+                pending.extend(modules.get(name.rsplit(".", 1)[-1], ()))
+                continue
+            # A name imported from a module is an attribute, so it resolves only under a relative import or a
+            # package: matching it by stem tied every importer of live_run's collect() to an unrelated collect.py.
+            owner = module.lstrip(".").rsplit(".", 1)[-1]
+            if module.startswith(".") or any(path.name == "__init__.py" for path in modules.get(owner, ())):
+                pending.extend(modules.get(member, ()))
     return found
 
 

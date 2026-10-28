@@ -28,8 +28,15 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from cd_core import cd_multiply_exact, cd_sign, left_mult_matrix_exact  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
-DEFAULT_MANIFEST = ROOT / "docs/evidence/algebra-device-conjectures-10/manifest.json"
+sys.path.insert(0, str(ROOT / "scripts"))
+import plan_records  # noqa: E402
+
+DEFAULT_MANIFEST = ROOT / "docs/evidence/algebra-device-conjectures-12/manifest.json"
 SCHEMA = "algebra-device-conjectures-v1"
+# Files the check imports and runs: research_state's provider adapters re-derive every acquisition's facts and
+# parallel.ordered_map keeps item order, so a behavior change in either fails the replay as a fact difference.
+# A freeze binds them by behavior, not by bytes, and leaves them out of the sources.
+EXECUTED_SOURCES = frozenset({"scripts/research_state.py", "gororoba_quantum/parallel.py"})
 
 
 def require(condition: bool, message: str) -> None:
@@ -65,8 +72,21 @@ def _provider_facts(name: str) -> tuple[str, Any]:
     return name, research_state.PROVIDERS[name]().runs()
 
 
+def source_digest(reference: str) -> str | None:
+    """The sha256 a source binds: a file's bytes, or for FILE.json#COLLECTION/FIELD=VALUE the digest of the one
+    record it selects (plan_records.evidence_digest), so a record appended to a shared ledger leaves it fresh.
+    None when the file is missing or the selector matches no single record."""
+    path = local_path(reference.partition("#")[0])
+    if not path.is_file():
+        return None
+    return plan_records.evidence_digest(ROOT, reference) if "#" in reference else digest(path)
+
+
 def _source_record(path: str) -> dict[str, str]:
-    return {"path": path, "sha256": digest(local_path(path))}
+    found = source_digest(path)
+    if found is None:
+        raise ValueError(f"source missing: {path}")
+    return {"path": path, "sha256": found}
 
 
 def _uncommitted() -> list[str]:
@@ -116,7 +136,8 @@ def freeze_manifest(manifest: dict[str, Any], census_path: Path, reason: str, pr
     providers = {name: adapter() for name, adapter in research_state.PROVIDERS.items()}
     facts = dict(ordered_map(_provider_facts, list(providers), min_items=1))
     acquisitions = []
-    paths = set(manifest["additional_sources"])
+    additional = [path for path in manifest["additional_sources"] if path not in EXECUTED_SOURCES]
+    paths = set(additional)
     for claim in claims:
         paths.update(item["path"] for item in claim["evidence"])
         paths.update(claim["documents"])
@@ -139,6 +160,7 @@ def freeze_manifest(manifest: dict[str, Any], census_path: Path, reason: str, pr
     manifest = {
         **manifest,
         "supersedes": predecessor,
+        "additional_sources": additional,
         "base_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "companion_pin": (ROOT / "ci/open_gororoba.pin").read_text().strip(),
         "claims": claims,
@@ -162,9 +184,9 @@ def freeze_manifest(manifest: dict[str, Any], census_path: Path, reason: str, pr
 
 
 def _verify_source(source: dict[str, str]) -> None:
-    path = local_path(source["path"])
-    require(path.is_file(), f"source missing: {source['path']}")
-    require(digest(path) == source["sha256"], f"source digest differs: {source['path']}")
+    found = source_digest(source["path"])
+    require(found is not None, f"source missing: {source['path']}")
+    require(found == source["sha256"], f"source digest differs: {source['path']}")
 
 
 def prose_paths(manifest: dict[str, Any]) -> set[str]:
@@ -188,8 +210,7 @@ def prose_paths(manifest: dict[str, Any]) -> set[str]:
 
 
 def _source_drift(source: dict[str, str]) -> bool:
-    path = local_path(source["path"])
-    return not path.is_file() or digest(path) != source["sha256"]
+    return source_digest(source["path"]) != source["sha256"]
 
 
 def drifted_prose(manifest: dict[str, Any]) -> list[str]:

@@ -1,0 +1,28 @@
+{
+ "schema": "primorial-coherence-preregistration-v1",
+ "case": "results/live/PRIMORIAL_COHERENCE_CASE.md",
+ "commit": "339d4f2a604209dddfb4b0b8eb11b0257c3b46d5",
+ "decision_sources_sha256": {
+  "scripts/primorial_probe_case.py": "0b263356e2637ef12f34496bcaf6253b62708bcb6070d5e31d563538aa7a05b1",
+  "scripts/primorial_bound_residuals.py": "cabcde732f34d71aa2fb8bd83c3666c23247bd58663b91ab6914304836c6d6ef",
+  "scripts/primorial_cover_noise.py": "4a3c03f251bcd215d0a4afd99828274fc19250083f5c5997647735868684a23a",
+  "scripts/primorial_null_residuals.py": "aff76da3109a3d95b8dea0c581284bb85d6801c5ebd3a2f83c97cd6673368398",
+  "gororoba_quantum/primorial_tomography.py": "e8c5be162e6362db297587a8b694a6854dbe24efaa2730556de873cc8703f91c",
+  "gororoba_quantum/coherence_probes.py": "34f7519f3af74997f51645988f29c51e68ae309c66b9a706ca00127a30bcab77",
+  "gororoba_quantum/primorial_campaigns.py": "9a25bd47e17da28cef61a92592eaef2fc2954b02bad7a1394af60a97c66a325b",
+  "gororoba_quantum/conditional_ramsey.py": "2ba6de1ce013c5c22adffc934ceefbbc7aaa7794f3f93a4b73c417f47317055f",
+  "gororoba_quantum/calibration_snapshot.py": "95f0ce6ef3e74d95f29002d2355c24476e3a6ce310da25bafd563e8848840725",
+  "gororoba_quantum/snapshot_laws.py": "f3bc7775535d5c99c30e2cff12230ee0fecbfff3a044d5b660e036f8ce1d9aca"
+ },
+ "probe_summary": "groups[0].summary of the stage-1 collected record: coherence_probes.summarize on the raw distributions with the in-job readout calibration only; summary_readout_corrected is not used, because the backend-reported readout comes from another calibration",
+ "extract": "python3 -I -c \"import json,sys; json.dump(json.load(open(sys.argv[1]))['groups'][0]['summary'], open(sys.argv[2],'w'))\" STAGE1_RECORD/collect.json STAGE1_DIR/probe-summary.json",
+ "decide": "\"$PYTHON\" scripts/primorial_probe_case.py --decide --snapshot STAGE1_DIR/calibration-snapshot.json --layout 0,1,2 --probe-summary STAGE1_DIR/probe-summary.json --probe-shots 800 --gap88-shots N2 --out STAGE1_DIR/decision-N2.json",
+ "probe_shots": 800,
+ "stage2_shots_rule": "N2 = min(3200, max(1600, 100 * ceil(p95_shots_identify_all / 200))) from --decide at N2 = 3200; --decide is re-run at that N2 and stage 2 proceeds only when it proceeds",
+ "stop_rules": [
+  "the execution calibration recorded at stage 1's execution start differs from calibration-snapshot.json: the decision is void, report and ask",
+  "the calibration changes between the stages: stop and ask the user; stage 1 is not repeated without a fresh approval",
+  "a void estimate under the case's voiding rules: stop",
+  "--decide does not proceed: stage 2 is not sent"
+ ]
+}

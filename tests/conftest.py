@@ -36,6 +36,25 @@ def pytest_configure(config: pytest.Config) -> None:
     # xdist resolves -n auto before configure, so the pool size reads the
     # caller's cap and the workers it spawns inherit the one-slot setting.
     os.environ["GOROROBA_WORKERS"] = "1"
+    create_perceval_data_directory()
+
+
+def create_perceval_data_directory() -> None:
+    """Create Perceval's persistent-data directory before xdist spawns its workers.
+
+    perceval.utils.persistent_data.PersistentData tests os.path.exists and then calls os.makedirs on import, and
+    reports the FileExistsError of a worker that loses that race as a UserWarning, which filterwarnings = error
+    turns into a failure. A directory that already exists leaves every worker's import nothing to create.
+    """
+    configured = os.environ.get("PCVL_PERSISTENT_PATH")
+    if configured:
+        Path(configured).mkdir(parents=True, exist_ok=True)
+        return
+    try:
+        from platformdirs import PlatformDirs
+    except ImportError:
+        return  # without platformdirs no Perceval is installed to import
+    Path(PlatformDirs("perceval-quandela", "quandela").user_data_dir).mkdir(parents=True, exist_ok=True)
 
 
 # The call phase of a test outside the audit marker fails past this many
