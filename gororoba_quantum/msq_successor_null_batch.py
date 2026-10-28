@@ -35,7 +35,7 @@ import msq_envelope_analysis as ea
 import msq_envelope_null as en
 import msq_successor_analysis as su
 from msq_envelope_null import libm_map, minimize_rows
-from parallel import ordered_map
+from parallel import ordered_map, workers
 
 Floats = npt.NDArray[np.float64]
 Ints = npt.NDArray[np.intp]
@@ -1456,8 +1456,10 @@ def ensure_many(batches: Sequence[Batch], memo: FitMemo) -> None:
 
 # --- arms, shards and the record -----------------------------------------------------------------------------
 
-# Replicates per round of an unsharded run that stops at its verdict count.
-ROUND = 4 * NULL_BLOCK
+# Replicates per round of an unsharded run that stops at its verdict count; None sizes each round by `round_size`.
+ROUND: int | None = None
+# Blocks each pool worker holds per round, across the running cases.
+BLOCKS_PER_WORKER = 2
 
 
 def upper_bound(fires: int, replicates: int, confidence: float = CONFIDENCE) -> float:
@@ -1465,6 +1467,15 @@ def upper_bound(fires: int, replicates: int, confidence: float = CONFIDENCE) -> 
     if fires >= replicates:
         return 1.0
     return float(beta.ppf(confidence, fires + 1, replicates - fires))
+
+
+def round_size(running: int) -> int:
+    """Replicates per case in the next round of an unsharded run: a whole number of blocks that gives every pool
+    worker BLOCKS_PER_WORKER blocks across the `running` cases. `merge_records` cuts each case at its verdict
+    requirement, so the size sets only how far past the cut a case runs, never the record's bytes."""
+    if ROUND is not None:
+        return ROUND
+    return NULL_BLOCK * max(1, -(-BLOCKS_PER_WORKER * workers() // running))
 
 
 def run_arm(
@@ -1489,11 +1500,13 @@ def run_arm(
     needed = minimum_verdicts(arm) if needed is None else needed
     indices = [i for i in range(cap) if i % shards == shard]
     rows: dict[str, list[dict[str, Any]]] = {case.label: [] for case in cases}
-    rounds = [indices] if shards > 1 or not needed else [indices[k : k + ROUND] for k in range(0, len(indices), ROUND)]
-    for chunk in rounds:
+    position = 0
+    while position < len(indices):
         running = [case for case in cases if not needed or sum(r["counted"] for r in rows[case.label]) < needed]
         if not running:
             break
+        size = len(indices) if shards > 1 or not needed else round_size(len(running))
+        chunk, position = indices[position : position + size], position + size
         items = [
             (setup, case, seed, chunk[k : k + NULL_BLOCK]) for case in running for k in range(0, len(chunk), NULL_BLOCK)
         ]

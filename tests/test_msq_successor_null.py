@@ -550,6 +550,23 @@ def test_the_verdict_requirement_cuts_every_sharding_at_one_replicate(
     check(whole["replicates"]["6-qubits"] == 3, "the 6-qubit case stopped with the first case")
 
 
+def test_the_round_size_leaves_the_record_bytes_unchanged(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
+    # Rounds of one replicate and rounds of two blocks run the 9-qubit case past its cut by different amounts.
+    cases = [small("gamma", 9, 0.0), small("gamma", 6, 0.0)]
+    records = []
+    for size in (1, 2 * nl.NULL_BLOCK):
+        monkeypatch.setattr(nl, "ROUND", size)
+        records.append(nl.dumps(nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 3, cases=cases, needed=2)])))
+    check(records[0] == records[1], "the round size changed the record")
+
+
+def test_a_computed_round_gives_every_worker_whole_blocks(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(nl, "ROUND", None)
+    monkeypatch.setattr(nl, "workers", lambda: 12)
+    check(nl.round_size(1) == 24 * nl.NULL_BLOCK and nl.round_size(3) == 8 * nl.NULL_BLOCK, "worker blocks")
+    check(nl.round_size(25) == nl.NULL_BLOCK, "a round holds at least one block per case")
+
+
 def test_merge_refuses_incomplete_or_mismatched_shards(setup: nl.Setup) -> None:
     cases = [small("gamma", 8, 0.0)]
     one = nl.run_arm(setup, "gamma", TEST_SEED, 2, 0, 2, cases=cases)
