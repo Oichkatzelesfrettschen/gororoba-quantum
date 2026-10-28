@@ -3,6 +3,7 @@ functions of msq_successor_analysis, then the replicate generator, the arms and 
 
 from __future__ import annotations
 
+import json
 import math
 from typing import Any
 
@@ -282,17 +283,28 @@ def test_settle_arms_plant_their_gaps_at_the_stated_sizes(setup: nl.Setup) -> No
     floor = su.SETTLE_TAU_FLOOR
     _, common = planted_slots(setup, small("settle-common"))
     check(all(t.gap == 4 * floor for t in common), f"{[t.gap for t in common]}")
-    drawn, sparse = planted_slots(setup, small("settle-sparse"))
-    losses = [setup.sparse_loss[j][8] for j in drawn.calibration[: nl.SPARSE_QUBITS]]
+    # The calibration draw precedes every truth, so the gamma case names the planted slots' calibrations; only
+    # those two solve their loss.
+    planted = nl.draw_replicate(setup, small("gamma"), TEST_SEED, 0).calibration[: nl.PLANTED_QUBITS]
+    size = nl.sparse_gap(setup.settle_se, 8)
+    solved = {j: nl.sparse_losses((setup.contexts[j], setup.equilibrium_s, {8: 1.3 * size})) for j in set(planted)}
+    scaled = setup._replace(
+        sparse_scale={8: 1.3}, sparse_loss=tuple(solved.get(j, {}) for j in range(len(setup.contexts)))
+    )
+    drawn, sparse = planted_slots(scaled, small("settle-sparse"))
+    losses = [scaled.sparse_loss[j][8] for j in drawn.calibration[: nl.PLANTED_QUBITS]]
     check([t.loss for t in sparse] == [*losses, *[0.0] * (len(sparse) - 2)], f"{[t.loss for t in sparse]}")
     check(all(t.gap == 0.0 for t in sparse), "the sparse arm plants a settle-only shift")
     spread = setup.settle_se**2 + floor**2
     size = (3 + 1.28) * math.sqrt(spread * (1 + math.pi / 2 / 7))
     check(abs(nl.sparse_gap(setup.settle_se, 8) - size) < 1e-15 and 4 * floor < size < 0.02, f"sparse size {size}")
-    # The planted measure-arm loss gives the stated settle gap at the noise-free counts.
+    # The planted measure-arm loss gives the scaled settle gap at the noise-free counts.
     ctx = setup.contexts[drawn.calibration[0]]
     gap = nl.tail_gap(ctx, losses[0], setup.equilibrium_s) - nl.tail_gap(ctx, 0.0, setup.equilibrium_s)
-    check(abs(abs(gap) / size - 1) < 0.01, f"planted gap {gap} against {size}")
+    check(abs(abs(gap) / (1.3 * size) - 1) < 0.01, f"planted gap {gap} against {1.3 * size}")
+    # A pool size without a measured scale refuses to plant.
+    with pytest.raises(ValueError, match="no measured sparse gap scale"):
+        nl.draw_replicate(scaled, small("settle-sparse", 9), TEST_SEED, 0)
     # A planted gap shifts the settle members' P(1) by -contrast * gap and no other member.
     ctx = setup.contexts[0]
     base = nl.Truth(ctx["t1_cal_s"], 3.0, 1.0, 1.0, {}, 0.0, 0.0)
@@ -312,6 +324,53 @@ def test_settle_arms_plant_their_gaps_at_the_stated_sizes(setup: nl.Setup) -> No
         if "_settle_" in name:
             check(moved_by == 0.0, f"{name}: {moved_by}")
     check(any(lossy[n] != still[n] for n in still if "_measure_" in n), "the loss moved no measure member")
+
+
+def test_sparse_scale_evidence_covers_every_pool_of_the_layout(setup: nl.Setup) -> None:
+    record = json.loads((nl.ROOT / nl.SPARSE_SCALE_EVIDENCE).read_text())
+    pools = {m or setup.width for m in nl.SETTLE_POOLS}
+    check(set(setup.sparse_scale) == pools and record["snapshot_sha256"] == setup.digests["snapshot_sha256"], "")
+    check(record["seed"] == nl.SPARSE_CALIBRATION_SEED != nl.SUCCESSOR_NULL_SEED, "the calibration seed")
+    for pool, entry in record["pools"].items():
+        last = entry["points"][-1]
+        check(last["scale"] == entry["scale"] == setup.sparse_scale[int(pool)], f"pool {pool}")
+        check(abs(last["power"] - nl.SPARSE_TARGET_POWER) <= last["se"], f"pool {pool}: {last}")
+
+
+def test_the_sparse_calibration_steps_to_the_target_power(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
+    with pytest.raises(ValueError, match="own seed"):
+        nl.calibrate_sparse_scale(setup, 8, nl.SUCCESSOR_NULL_SEED, 10)
+    # A power linear in the scale, 0.70 at 1 and 0.95 at 2: the secant lands at 1.8.
+    monkeypatch.setattr(
+        nl, "sparse_power", lambda _s, _p, scale, _seed, _n: (round(1000 * (0.45 + 0.25 * scale)), 1000)
+    )
+    out = nl.calibrate_sparse_scale(setup, 8, nl.SPARSE_CALIBRATION_SEED, 10)
+    check(abs(out["scale"] - 1.8) < 0.05 and len(out["points"]) == 3, f"{out}")
+    monkeypatch.setattr(nl, "sparse_power", lambda _s, _p, scale, _seed, _n: (round(1000 * (0.9 - 0.1 * scale)), 1000))
+    with pytest.raises(ValueError, match="does not rise"):
+        nl.calibrate_sparse_scale(setup, 8, nl.SPARSE_CALIBRATION_SEED, 10)
+
+
+def test_minority_arms_plant_two_slots_and_count_verdicts_that_select_one(setup: nl.Setup) -> None:
+    drawn, truths = planted_slots(setup, small("q-minority"))
+    expected = [setup.q_planted[j] for j in drawn.calibration[: nl.PLANTED_QUBITS]]
+    check([t.q for t in truths] == [*expected, *[1.0] * (len(truths) - 2)], f"{[t.q for t in truths]}")
+    drawn, truths = planted_slots(setup, small("plateau-minority"))
+    check(all(math.isinf(t.shape) and (t.t_s, t.q) in setup.plateau for t in truths[:2]), "minority plateau pairs")
+    check(
+        all(
+            t.q == 1.0 and t.t_s == setup.contexts[j]["t1_cal_s"]
+            for j, t in zip(drawn.calibration[2:], truths[2:], strict=True)
+        ),
+        "",
+    )
+    rows = nl.analyse_block((setup, small("q-minority", 10), TEST_SEED, [0, 1, 2]))
+    check(all(r["counted"] == (r["issued"] and r["planted_selected"] > 0) for r in rows), f"{rows}")
+    check(any(r["counted"] for r in rows), "no q-minority verdict selected a planted qubit")
+    stats = nl.case_statistics("q-minority", rows)
+    check(
+        stats["exposed"] == sum(r["counted"] for r in rows) and "exposed_verdicts_at_least_299" in stats["targets"], ""
+    )
 
 
 def test_plateau_and_gamma_arms_plant_their_truth(setup: nl.Setup) -> None:

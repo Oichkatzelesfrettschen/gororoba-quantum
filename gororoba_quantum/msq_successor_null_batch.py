@@ -460,7 +460,7 @@ PLANTED_QUBITS = 2
 MINORITY_ARMS = ("q-minority", "plateau-minority")
 # The measured detectable gap of each pool size, as a multiple of `sparse_gap`: the scale at which the per-qubit
 # settle veto withholds SPARSE_TARGET_POWER of PLANTED_QUBITS planted gaps (`calibrate_sparse_scale`).
-SPARSE_SCALE_EVIDENCE = "docs/evidence/measurement_sequence/msq-successor-sparse-scale.json"
+SPARSE_SCALE_EVIDENCE = "docs/evidence/measurement_sequence/successor-sparse-scale.json"
 # ANU QRNG docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json, index 2: the calibration draws apart from the null's.
 SPARSE_CALIBRATION_SEED = 26209
 # Replicates per calibration point (per-qubit power standard error about 0.01), the second point's scale and the
