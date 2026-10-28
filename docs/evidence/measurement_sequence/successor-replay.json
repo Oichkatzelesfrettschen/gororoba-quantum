@@ -42,17 +42,17 @@
    "model_scatter_floor_measured": true,
    "mutation_test_failed_qubits": [],
    "mutation_test_passes": true,
-   "settle_deepened_by_gap": {
-    "device": false,
-    "pooled_z": 1.154562974497519,
-    "qubits": [],
-    "status": "none"
-   },
-   "settle_reduced_by_gap": {
-    "device": false,
-    "pooled_z": 1.154562974497519,
-    "qubits": [],
-    "status": "none"
+   "settle_descriptive": {
+    "settle_deepened_by_gap": {
+     "pooled_z": 1.154562974497519,
+     "qubits": [],
+     "status": "none"
+    },
+    "settle_reduced_by_gap": {
+     "pooled_z": 1.154562974497519,
+     "qubits": [],
+     "status": "none"
+    }
    },
    "status": "informative",
    "uninformative_qubits": {},

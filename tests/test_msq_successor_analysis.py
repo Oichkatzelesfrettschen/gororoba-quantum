@@ -748,7 +748,7 @@ def test_required_pubs_name_the_sentinel_reader_and_predecessor_rows(run: Run) -
 
 
 def test_collected_withholds_every_qubit_under_a_planted_carryover() -> None:
-    hot = build_run(carry=0.01, width=8)
+    hot = build_run(carry=0.01, width=4)
     result = su.collected(hot.record, hot.distributions, hot.executed, hot.registers, hot.chunks, FLOOR)
     check(result["order"]["passes"], f"{result['order']}")
     flagged = [s["carryover"] for s in result["screens"].values() if s["carryover"] is not None]
@@ -757,7 +757,7 @@ def test_collected_withholds_every_qubit_under_a_planted_carryover() -> None:
 
 
 def test_collected_withholds_every_qubit_when_the_relaxation_target_is_far_from_one() -> None:
-    warm = build_run(thermal=0.14, width=8)
+    warm = build_run(thermal=0.14, width=4)
     result = su.collected(warm.record, warm.distributions, warm.executed, warm.registers, warm.chunks, FLOOR)
     check(result["order"]["passes"], f"{result['order']}")
     rows = [s["equilibrium"] for s in result["screens"].values() if s["equilibrium"] is not None]
@@ -973,3 +973,22 @@ def test_carryover_reader_is_unbiased_over_replicates_and_the_per_stratum_weight
     # estimate lies between D and D / c.
     check(d - 2 * spread < float(new.mean()) < d / contrast + 2 * spread, f"mean {new.mean()} against {d}: {spread}")
     check(float(old.mean()) < d - 2 * spread, f"the per-stratum weights read {old.mean()} against {d}, spread {spread}")
+
+
+def test_settle_gap_is_reported_and_never_a_device_verdict() -> None:
+    """The successor preregisters the departure, the count rule and the mutation test; a settle gap the pooled test
+    attributes appears under settle_descriptive and never as a device flag."""
+    attributed = {"qubits": [1, 2], "pooled_z": 4.2, "status": "attributed", "device": True}
+    quiet = {"qubits": [], "pooled_z": 0.1, "status": "none", "device": False}
+    verdict = {
+        "status": "informative",
+        "departs_below": quiet,
+        "exceeds_prediction": quiet,
+        "settle_reduced_by_gap": attributed,
+        "settle_deepened_by_gap": quiet,
+    }
+    out = su.settle_descriptive(verdict)
+    check(set(msa.device_flags(out)) == {"departs_below", "exceeds_prediction"}, f"{msa.device_flags(out)}")
+    check(not any(msa.device_flags(out).values()), f"{msa.device_flags(out)}")
+    reported = out["settle_descriptive"]["settle_reduced_by_gap"]
+    check(reported["status"] == "attributed" and "device" not in reported, f"{reported}")

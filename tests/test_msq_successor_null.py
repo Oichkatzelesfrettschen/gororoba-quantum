@@ -196,7 +196,7 @@ def test_memo_distinguishes_weights() -> None:
 
 from pathlib import Path  # noqa: E402
 
-RECORD = Path(__file__).resolve().parent.parent / "results/live/2026-10-27T225534.897899Z"
+RECORD = Path(__file__).resolve().parent.parent / "results/live/2026-10-28T001935.805967Z"
 
 
 @pytest.fixture(scope="module")

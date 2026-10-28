@@ -1007,6 +1007,17 @@ def order_sentinel(pairs: Sequence[tuple[np.ndarray, np.ndarray]], z_min: float 
 # --- device decision ----------------------------------------------------------------------------------------
 
 
+SETTLE_VERDICTS = ("settle_reduced_by_gap", "settle_deepened_by_gap")
+
+
+def settle_descriptive(verdict: dict[str, Any]) -> dict[str, Any]:
+    """The device verdict with the settle gap reported, not decided: the successor's settle arm is a veto
+    (`settle_veto`), so its pooled gap and the qubits beyond it appear under `settle_descriptive` without a `device`
+    flag, and `msa.device_flags` reads only the departure verdicts."""
+    settle = {name: {k: v for k, v in verdict[name].items() if k != "device"} for name in SETTLE_VERDICTS}
+    return {**{k: v for k, v in verdict.items() if k not in SETTLE_VERDICTS}, "settle_descriptive": settle}
+
+
 def device_decision(
     rows: dict[int, dict[str, Any]],
     eligible: Sequence[int],
@@ -1033,7 +1044,7 @@ def device_decision(
         reasons.append(f"{len(kept)} qualifying qubits, fewer than {device_count}")
     verdict = None
     if not reasons:
-        verdict = msa.device_verdict(shape_adjusted(kept, shape_bounds_by_qubit), count)
+        verdict = settle_descriptive(msa.device_verdict(shape_adjusted(kept, shape_bounds_by_qubit), count))
     return {
         "eligible": sorted(eligible),
         "pool": sorted(pool),
@@ -1488,17 +1499,19 @@ def _collected(
         absent = [name for name in needed if name not in counts[q]["final"]]
         if absent:
             raise msa.AnalysisError(f"q{q}: missing measured members {absent}")
-    planned = with_planning(contexts, floor)
-    rows = evaluate(counts, planned, width)
-    dt = float(configuration["dt_seconds"])
-    equilibrium_s = int(configuration["equilibrium_delay_dt"]) * dt
+    # Every shot-ordered register and the reader placement are validated before the per-qubit fits, so a record
+    # that fails closed costs no analysis.
     index = {stem: k for k, stem in enumerate(layout["stems"])}
-    pattern_bits = [[int(b) for b in row] for row in configuration["pattern_bits"]]
     shots = {k: _row_bits(layout, registers, k, distributions, executed) for k in sorted(shot_rows(width))}
     readers = [k for stem, k in index.items() if stem.startswith("msqr_reader")]
     for k in readers:
         if not layout["stems"][k - 1].startswith("msq_measure_n"):
             raise msa.AnalysisError(f"{layout['stems'][k]} does not follow a measure row")
+    planned = with_planning(contexts, floor)
+    rows = evaluate(counts, planned, width)
+    dt = float(configuration["dt_seconds"])
+    equilibrium_s = int(configuration["equilibrium_delay_dt"]) * dt
+    pattern_bits = [[int(b) for b in row] for row in configuration["pattern_bits"]]
     screens: dict[str, dict[str, Any]] = {}
     work = []
     for rank, qubit in enumerate(qubits):
