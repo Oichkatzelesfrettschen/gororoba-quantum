@@ -35,6 +35,12 @@ def test_octonion_left_multiplication_generates_cl8_and_sedenions_fail_on_42_pai
         raise AssertionError("D4 diagram symmetry group is not S3")
 
 
+def test_octonion_associator_columns_are_characters_and_mutations_are_trivial() -> None:
+    result = checks.associator_characters()
+    if result != {"octonion_pairs_nontrivial": 21, "cl03_trivial": True, "a_equals_b_trivial": True}:
+        raise AssertionError(f"associator characters {result}")
+
+
 def test_sugawara_central_charge_and_pairing_sign() -> None:
     result = checks.sugawara_su2()
     if result["central_charge"] != "3*K/(K + 1)":
@@ -49,17 +55,18 @@ def test_coulomb_gas_reproduces_the_kac_table() -> None:
         raise AssertionError("Feigin-Fuchs central charge")
 
 
-@pytest.mark.parametrize("level", [1, 2, 3, 4])
-def test_kac_determinant_and_constant(level: int) -> None:
+@pytest.mark.parametrize(("level", "constant", "degree"), [(1, 2, 1), (2, 32, 3), (3, 2304, 6), (4, 37748736, 12)])
+def test_kac_determinant_and_constant(level: int, constant: int, degree: int) -> None:
     result = checks.kac_determinant(level)
-    if level == 2 and result["K_N"] != 32:
-        raise AssertionError(f"K_2 = {result['K_N']}")
+    if result["K_N"] != constant or result["degree_in_h"] != degree:
+        raise AssertionError(f"level {level}: {result}")
 
 
 @pytest.mark.audit
 def test_kac_determinant_level_five() -> None:
-    if checks.kac_determinant(5)["K_N"] != 8697308774400:
-        raise AssertionError("K_5 changed")
+    result = checks.kac_determinant(5)
+    if result["K_N"] != 8697308774400 or result["degree_in_h"] != 20:
+        raise AssertionError(f"level 5: {result}")
 
 
 def test_small_identities_and_physical_orders() -> None:

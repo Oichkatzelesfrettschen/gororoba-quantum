@@ -1,0 +1,15 @@
+{
+  "schema": "work-plan-v1",
+  "id": "tuna17-matched-response-qx-local",
+  "kind": "investigation",
+  "summary": "Run the Tuna-17 matched-response programs on local qxelarator to fix the ideal law of the emitted programs before any Tuna-17 batch.",
+  "sources": [
+    "docs/notes/topics/reference-corpus-falsification.md",
+    "docs/design/tuna17-zero-divisor-matched-response.md"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  }
+}

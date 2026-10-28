@@ -1,0 +1,14 @@
+{
+  "schema": "work-plan-v1",
+  "id": "reference-corpus-source-registration",
+  "kind": "investigation",
+  "summary": "Register Distler-Garibaldi 0905.2658, Lada-Stasheff hep-th/9209099, Chamseddine-Connes hep-th/9606001, Rovelli-Speziale gr-qc/0205108, Fermi 0908.1832 and GW170817 1710.05834.",
+  "sources": [
+    "docs/notes/topics/reference-corpus-falsification.md"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  }
+}

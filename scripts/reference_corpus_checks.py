@@ -265,6 +265,44 @@ def clifford_from_left_multiplication(dim: int) -> dict[str, int]:
     return result
 
 
+def clifford_sign(a: int, b: int) -> int:
+    """Sign of e_A e_B in Cl(0,3) with blades indexed by bit masks: reordering swaps times -1 per shared generator."""
+    swaps = sum(bin(a >> (i + 1)).count("1") for i in range(3) if b >> i & 1)
+    return (-1) ** (swaps + bin(a & b).count("1"))
+
+
+def associator_characters() -> dict[str, object]:
+    """Column signs s(x) with (e_a e_b) e_x = s(x) e_a (e_b e_x) over the 8 basis columns x.
+
+    For the octonions every pair of distinct imaginary units gives a nontrivial character of F_2^3 whose kernel is
+    the quaternion subalgebra {0, a, b, a^b}; the associative Cl(0,3) sign table on the same index set, and a = b
+    under alternativity, give the trivial character. These are the ideal arm and mutation arms of a sign
+    interferometer on eight modes.
+    """
+
+    def signs(sign: Callable[[int, int], int], a: int, b: int) -> list[int]:
+        return [sign(a, b) * sign(a ^ b, x) * sign(b, x) * sign(a, b ^ x) for x in range(8)]
+
+    def octonion(p: int, q: int) -> int:
+        return cd_sign(8, p, q)
+
+    nontrivial = 0
+    for a, b in itertools.combinations(range(1, 8), 2):
+        s = signs(octonion, a, b)
+        character = all(s[x] * s[y] == s[x ^ y] for x in range(8) for y in range(8))
+        kernel = {x for x in range(8) if s[x] == 1}
+        require(character and kernel == {0, a, b, a ^ b}, f"octonion pair {(a, b)} column signs {s}")
+        nontrivial += 1
+    clifford_trivial = all(signs(clifford_sign, a, b) == [1] * 8 for a, b in itertools.product(range(8), repeat=2))
+    alternative_trivial = all(signs(octonion, a, a) == [1] * 8 for a in range(8))
+    require(clifford_trivial and alternative_trivial, "a mutation arm carries a nontrivial associator character")
+    return {
+        "octonion_pairs_nontrivial": nontrivial,
+        "cl03_trivial": clifford_trivial,
+        "a_equals_b_trivial": alternative_trivial,
+    }
+
+
 def d4_diagram_symmetries() -> int:
     cartan = np.array([[2, -1, 0, 0], [-1, 2, -1, -1], [0, -1, 2, 0], [0, -1, 0, 2]])
     count = sum(np.array_equal(cartan[np.ix_(p, p)], cartan) for p in itertools.permutations(range(4)))
@@ -793,6 +831,7 @@ def checks(cross_check: bool, kac_levels: Sequence[int]) -> dict[str, object]:
         "clifford_octonion": clifford_from_left_multiplication(8),
         "clifford_sedenion": clifford_from_left_multiplication(16),
         "d4_symmetries": d4_diagram_symmetries(),
+        "associator_characters": associator_characters(),
         "albert": albert_algebra(cross_check),
         "linfinity": linfinity_counterexample(),
         "virasoro_cocycle_triples": virasoro_cocycle(),

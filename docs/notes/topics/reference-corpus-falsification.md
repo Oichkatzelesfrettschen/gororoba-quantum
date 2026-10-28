@@ -114,7 +114,7 @@ on the curve c = 13 - 6t - 6/t, with t = (m + 1)/m reproducing the corpus's h_{r
 1)/(4m(m+1)). The constant has a closed form the corpus did not reach: K_N = prod_{rs <= N} ((2r)^s s!)^{p(N - rs)
 - p(N - r(s+1))}, giving 32, 2304, 37748736 and 8697308774400 at N = 2 to 5 [E]. The corpus's rejected guess gives
 8, 96, 6144 and 5898240, so its rejection holds. [E] The degree of the determinant in h equals the total number of
-parts of the partitions of N and the zero count sum p(N - rs) (2, 6, 12, 20 at N = 2 to 5); with the null subspace
+parts of the partitions of N and the zero count sum p(N - rs) (1, 3, 6, 12, 20 at N = 1 to 5); with the null subspace
 of dimension p(N - rs) as a lower bound on each zero's order, that degree count is what makes the multiplicities
 exact for generic c, the step the corpus left open.
 
@@ -236,13 +236,19 @@ with a mutation arm and a null arm ([algebra_circuit_rules.md](../algebra_circui
    all 27 preregistered endpoints qualified, the mutation difference read 0.1646 against an ideal 0.1727 (radius
    0.0229), the mutation dark output read 0.0008 against 0, and 1.27 percent of events fell outside the logical
    block ([retained run](../../../results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/README.md)).
-   Seven later jobs found a mesh-specific coherent error whose fitted element offsets predict its direction, not
-   its amplitude ([replication case](../../design/ascella-signed-coherence-conformance.md#replication-case-job-06-and-job-07)).
-   **Candidate, unsubmitted:** an associator-character interferometer on 8 of the 12 modes. A diagonal of +-1
-   phases set by the octonion associator signs of one column, read through pair analyzers, gives one F_2^3
-   character per setting; the mutation is a quaternionic (associative) triple, whose character is trivial, and
-   the null is the zero-phase mesh. Its device question is whether the frozen offset model transfers to a mesh
-   family it was never fitted on. Noise simulation cannot answer that, because the offsets are properties of the
+   Seven later jobs found a mesh-specific coherent error; on the new-seed and replication jobs (04 to 07) the
+   fitted element offsets predict its direction, not its amplitude
+   ([replication case](../../design/ascella-signed-coherence-conformance.md#replication-case-job-06-and-job-07)).
+   **Candidate, unsubmitted:** an associator-character interferometer on 8 of the 12 modes. For distinct
+   imaginary units e_a, e_b the column signs s(x), defined by (e_a e_b) e_x = s(x) e_a (e_b e_x), form a
+   nontrivial character of F_2^3 whose kernel is the quaternion subalgebra {0, a, b, a XOR b}; [E] this holds for
+   all 21 pairs. A diagonal of those +-1 phases between two pair-analyzer layers turns the character into dark
+   outputs on the four columns outside the kernel. The mutation keeps the mesh shape and replaces the octonion
+   sign table with the associative Cl(0,3) table on the same index set, whose character is trivial for every
+   pair [E], so the ideal dark outputs fall to zero; a = b (trivial by alternativity [E]) is a second mutation,
+   and the zero-phase mesh is the null. A quaternionic triple cannot serve, because any two distinct octonion
+   units generate a quaternion subalgebra that the remaining columns leave. Its device question is whether the
+   frozen offset model transfers to a mesh family it was never fitted on. Noise simulation cannot answer that, because the offsets are properties of the
    served meshes. It needs a local Perceval dry run, the frozen predictor and a written case before approval.
 2. **QX as the falsifier for Tuna-17.** No corpus claim reaches Tuna-17 scale on its own. The 42-pair result
    connects to the zero-divisor witnesses of the
