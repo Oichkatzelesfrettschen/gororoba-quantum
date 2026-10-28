@@ -28,7 +28,7 @@ and neither establishes a theorem or authorizes a QPU run.
 
 The IBM service inventory observed at 2026-10-26T22:47:13.538509+00:00 holds 41 physical jobs with 499 settled seconds; the account then reported 499 of 600 s consumed in the rolling window ending 2026-10-26T22:47:13.488Z. That is an observation, not a current balance or an authorization.
 
-The IBM service inventory observed at 2026-10-27T22:59:56.884682+00:00 holds 24 physical jobs with 424 settled seconds; the account then reported 424 of 600 s consumed in the rolling window ending 2026-10-27T22:59:56.816Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-28T00:23:56.659482+00:00 holds 25 physical jobs with 440 settled seconds; the account then reported 440 of 600 s consumed in the rolling window ending 2026-10-28T00:23:56.594Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
@@ -372,6 +372,7 @@ circuit and charges the account ledger's change.
 | [2026-10-27T160738.258133Z](../../results/live/2026-10-27T160738.258133Z) | IBM Quantum | idle-penalty | ibm_kingston | 1 | 44 | DONE | 16 s | kingston-idle-penalty-focal-region |
 | [2026-10-27T191953.122214Z](../../results/live/2026-10-27T191953.122214Z) | IBM Quantum | idle-readout attribution | ibm_kingston | 1 | 55 | DONE | 16 s | kingston-idle-readout-attribution-mixed |
 | [2026-10-27T204605.871056Z](../../results/live/2026-10-27T204605.871056Z) | IBM Quantum | state-prep-control (two-read arms, 20 us) | ibm_kingston | 1 | 3 | DONE | 5 s | kingston-q147-two-read-persistence |
+| [2026-10-28T000644.379196Z](../../results/live/2026-10-28T000644.379196Z) | IBM Quantum | idle-penalty | ibm_kingston | 1 | 44 | DONE | 16 s | kingston-idle-penalty-repeat-refreshed-calibration |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -704,6 +705,7 @@ circuit and charges the account ledger's change.
 - **kingston-idle-penalty-focal-x** (2026-10-27T160738.258133Z): Focal placement X: do qubits 79 and 92 and the N=21 context qubits 104, 106, 125 and 126 carry an idle multiplier beyond the reported T1 and T2?
 - **kingston-idle-readout-attribution** (2026-10-27T191953.122214Z): Does the readout-driven phase pull on idling ibm_kingston qubits replicate, and how does it split between the probe's own partner, readers within three CZ hops and a chip-wide baseline?
 - **kingston-primorial-q147-remeasure** (2026-10-27T204605.871056Z): Is q147's excited read on ibm_kingston a population that a second measurement reads back, or a misassignment, and does the previous shot's readout event set it?
+- **kingston-idle-penalty-repeat-point2** (2026-10-28T000644.379196Z): Stability repeat, point 2: after Kingston refreshed its reported T1 and T2, do the 30 coupled pairs of the idle-penalty probe reproduce their per-qubit multipliers and readout-driven phase pull?
 
 ## Established claims
 
@@ -1614,6 +1616,11 @@ circuit and charges the account ledger's change.
   Evidence: [idle-readout-attribution.json](../../results/live/2026-10-27T191953.122214Z/idle-readout-attribution.json), [collect.json](../../results/live/2026-10-27T191953.122214Z/collect.json), [IDLE_READOUT_ATTRIBUTION_CASE.md](../../results/live/IDLE_READOUT_ATTRIBUTION_CASE.md), [heron-idle-readout-attribution.md](../design/heron-idle-readout-attribution.md).
   Acquisitions: kingston-idle-readout-attribution.
   Depends on: kingston-idle-penalty-multipliers-and-readout-phase.
+- **kingston-idle-penalty-repeat-refreshed-calibration** (preregistered hardware inference, hardware). On ibm_kingston (backup instance, one job of 44 dynamic PUBs at 4096 shots over 30 of the probe's 31 coupled pairs, execution calibration 2026-10-27T16:56:11-07:00, whose reported T1 differs from the first run's on 58 and T2 on 60 of 60 qubits; 16 s billed) the preregistered multiplier-stability decision reads unresolved for kappa_1 (Pearson r -0.041, median second/first ratio 0.872 [0.705, 0.974]), kappa_2* (0.339, 0.876 [0.683, 1.061]) and kappa_2e (-0.043, 0.869 [0.719, 1.008]). The single-run decisions replicate: optimistic_t1 absent or unresolved, echo gain present, and the readout phase pull present at -2.66 +- 0.57 kHz against the after arm and -2.67 +- 0.56 kHz against the quiet arm with the quiet null absent; its per-pair pattern correlates with the first run's at r 0.987 (pair pattern stable). Visibility reads pairwise heterogeneity (pair-mean t -2.39 and -1.93 against -3.396).
+  Boundary: One job and one placement against one first run 28 hours earlier; the 25 s ceiling and pair means are the statistical unit as in the probe. The reading that IBM's reported normalization removes the per-qubit multiplier pattern while the fitted rates keep theirs (rates against point 1 at r 0.63 to 0.81, reported T1 across the refresh at r 0.51) and the 13 to 16 % fall of the fitted rates are post hoc and of moderate confidence; point 1 ran on the primary instance and enters only through its retained report.
+  Evidence: [idle-penalty-repeat-decisions.json](../../results/live/2026-10-28T000644.379196Z/idle-penalty-repeat-decisions.json), [idle-penalty-compare.json](../../results/live/2026-10-28T000644.379196Z/idle-penalty-compare.json), [idle-penalty-report.json](../../results/live/2026-10-28T000644.379196Z/idle-penalty-report.json), [idle-penalty-report.json](../../results/live/2026-10-26T202817.431767Z/idle-penalty-report.json), [IDLE_PENALTY_REPEAT_CASE.md](../../results/live/IDLE_PENALTY_REPEAT_CASE.md).
+  Acquisitions: kingston-idle-penalty-repeat-point2.
+  Related claims: kingston-idle-penalty-multipliers-and-readout-phase, kingston-idle-penalty-focal-region.
 
 ## Exploratory claims
 
