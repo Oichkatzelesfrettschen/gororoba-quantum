@@ -1,0 +1,52 @@
+{
+  "schema": "ascella-acquisition-account-after-v1",
+  "observed_at": "2026-10-27T23:57:10Z",
+  "usage": {
+    "result": [
+      {
+        "total_jobs": 87,
+        "usage": [
+          {
+            "credits": 0,
+            "duration_seconds": 1917,
+            "free_credits": 15.704512,
+            "nb_jobs": 21,
+            "platform_name": "qpu:ascella"
+          },
+          {
+            "credits": 0,
+            "duration_seconds": 1128,
+            "free_credits": 16,
+            "nb_jobs": 17,
+            "platform_name": "sim:belenos"
+          },
+          {
+            "credits": 0,
+            "duration_seconds": 5570,
+            "free_credits": 50.26742,
+            "nb_jobs": 49,
+            "platform_name": "qpu:belenos"
+          }
+        ]
+      }
+    ]
+  },
+  "availability": {
+    "max_concurrent_jobs": 1,
+    "max_jobs_in_queue": 1,
+    "max_running_qt_jobs": 10,
+    "num_concurrent_jobs": 0,
+    "num_jobs_in_queue": 0,
+    "num_running_qt_jobs": 0,
+    "platform_queue": {
+      "count": null,
+      "status": "requires-dashboard-session",
+      "dashboard_url": "https://cloud.quandela.com/webide/",
+      "action": "Offer to open the dashboard and read the platform card's pending jobs after sign-in.",
+      "source": "GET /api/platform-permissions/users/{user_id}?count_jobs=true; waiting_jobs",
+      "boundary": "The job token cannot read this dashboard interface. Token occupancy and cumulative job usage do not determine platform queue depth or queue position. The dashboard count's user/global scope requires authenticated verification."
+    }
+  },
+  "remaining_account_credits": null,
+  "account_credit_expiry_utc": null
+}

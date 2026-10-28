@@ -1,0 +1,494 @@
+{
+  "analysis_dependencies": [
+    {
+      "ref": "scripts/experiment_analysis.py",
+      "sha256": "737504232eeca0e5112df232fe76bcabd198d3bc17b2018c55a1871e846ec3b2"
+    },
+    {
+      "ref": "scripts/qd_platform.py",
+      "sha256": "08941de901160d6f419b51905693d9921e3af34add328a82a5030ac4f55d9178"
+    },
+    {
+      "ref": "scripts/qd_belenos_mesh.py",
+      "sha256": "225e5070a17f2d1114c3c0ef9a23422485da2bc184efd8cbe6e6b181c262392b"
+    }
+  ],
+  "analysis_environment": {
+    "numpy": "2.5.4",
+    "perceval-quandela": "1.3.1",
+    "python": "3.14.8",
+    "scipy": "1.18.1"
+  },
+  "analysis_source_sha256": "3063f1a26626370aed77845f8bb00a2379d6848e5002ea9d62fafbcded652fbd",
+  "campaign_sha256": "a805f0d5969291539839f896e612ecd689f6b54cd8a75a35c61460fa7929ce5b",
+  "cohort_id": "ascella-cancellation-transition-screening",
+  "complete": false,
+  "confidence_family": {
+    "endpoints": 243,
+    "familywise_confidence": 0.95,
+    "includes_missing_settings": true
+  },
+  "jobs": [
+    {
+      "directory": "results/quandela/runs/ascella-sedenion-cancellation-dark",
+      "duration_seconds": 4.0,
+      "sources": [
+        {
+          "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/cases.json",
+          "sha256": "71962299f2cb30c1597fe2282f6a1b07a83f11e027942a8b0ad76e4f4b9a591f"
+        },
+        {
+          "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/submission.json",
+          "sha256": "066521dbc0121df39d14968380e1ff31b2bcef16f020e75ac8ee55d42ed8618c"
+        },
+        {
+          "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/job-body.json",
+          "sha256": "f77614008dabaae92c9932e9610783e0e159c8de19327c860dc68fa2c4e9a02d"
+        },
+        {
+          "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/results.json",
+          "sha256": "57d75cc0e87e444c6c49a0e5777799488d47e09f987aa369805ce0ad71c9a8b1"
+        },
+        {
+          "ref": "results/quandela/runs/ascella-sedenion-cancellation-dark/raw/result.json",
+          "sha256": "1146fe63bdb9c7edf4c05e18662212c026baa926414c84f3f157f6b0ef403d7b"
+        }
+      ],
+      "status": "collected"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-sedenion-cancellation-bright",
+      "status": "missing"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat",
+      "status": "missing"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat",
+      "status": "missing"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-sedenion-cancellation-fixture",
+      "status": "missing"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "status": "missing"
+    }
+  ],
+  "qualification": {
+    "cancellation_interface_complete": false,
+    "cancellation_scientific_qualification": "inconclusive",
+    "contrast_estimable": false,
+    "descriptive_dark_minus_bright": null,
+    "expansion_boundary": "only the twelve-setting pilot qualifies expansion; cancellation performance is a separate scientific outcome",
+    "full_expansion_eligible": false,
+    "pilot_interface_complete": false,
+    "pilot_qualification": "inconclusive",
+    "pilot_start_eligible": false,
+    "repeat_checks": [
+      {
+        "arm": "dark",
+        "difference_interval": null,
+        "returned_identity_matches": false,
+        "status": "inconclusive"
+      },
+      {
+        "arm": "bright",
+        "difference_interval": null,
+        "returned_identity_matches": false,
+        "status": "inconclusive"
+      }
+    ],
+    "temporal_balance": {
+      "boundary": "execution order does not establish equal shot timing or cancellation of linear drift",
+      "executed_order_established": false,
+      "linear_drift_cancellation": "unassessed"
+    }
+  },
+  "qualification_profile_sha256": "10a966a7af73530a281586e7c32842c8c2fa737b89dd23dd79fbd88c48eda6c4",
+  "schema": "ascella-experiment-analysis-v1",
+  "settings": [
+    {
+      "accepted_events": 65536,
+      "accepted_vs_detected_fraction": 1.0,
+      "category_counts": [
+        64,
+        83,
+        31587,
+        32674,
+        123,
+        49,
+        22,
+        42,
+        247,
+        256,
+        336,
+        40,
+        13
+      ],
+      "category_intervals": [
+        [
+          0.00058702005776543,
+          0.0015141829276962354
+        ],
+        [
+          0.0008143230839795738,
+          0.00186629214275055
+        ],
+        [
+          0.47472980156646727,
+          0.4892341809261682
+        ],
+        [
+          0.4913090130198771,
+          0.5058227518859908
+        ],
+        [
+          0.0013129690418722643,
+          0.0025877184231080114
+        ],
+        [
+          0.0004144764038050524,
+          0.0012294080094949137
+        ],
+        [
+          0.00013214028144741,
+          0.0006891982997617987
+        ],
+        [
+          0.00033688828987802553,
+          0.0010936370565946076
+        ],
+        [
+          0.002944238228739302,
+          0.0047394302842098035
+        ],
+        [
+          0.0030655831055605765,
+          0.004892675224832119
+        ],
+        [
+          0.004155124489855218,
+          0.0062439827463220765
+        ],
+        [
+          0.00031515500316162825,
+          0.001054419904466109
+        ],
+        [
+          5.5094142880454184e-05,
+          0.0004925589891916131
+        ]
+      ],
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "confidence_boundary": "the frozen simultaneous coverage is conditional on IID Bernoulli trials within settings",
+      "criteria": {
+        "compilation": {
+          "detail": 0.00032504808245662696,
+          "status": "pass"
+        },
+        "herald": {
+          "detail": [
+            0.0016208578476030343,
+            0.0030119612158479797
+          ],
+          "status": "pass"
+        },
+        "leakage": {
+          "detail": [
+            0.015388422878283875,
+            0.019176437078701068
+          ],
+          "status": "pass"
+        },
+        "precision": {
+          "detail": {
+            "half_width": 0.01
+          },
+          "status": "pass"
+        }
+      },
+      "denominator_boundary": "all accepted returned events; provider shots count detected events and leave incident pulses unknown",
+      "endpoint_count": 15,
+      "execution_envelope": {
+        "lower": 1793144994.566196,
+        "upper": "2026-10-27T23:50:09+00:00"
+      },
+      "herald": {
+        "count": 147,
+        "denominator": 65536,
+        "interval": [
+          0.0016208578476030343,
+          0.0030119612158479797
+        ],
+        "observed": 0.0022430419921875
+      },
+      "incident_shots": null,
+      "interface_complete": true,
+      "invalid_components": {
+        "other_photon_number": 13,
+        "zero_click": 0
+      },
+      "invalid_events": 13,
+      "iteration_index": 0,
+      "iterator_temporal_order": "single entry within a separate job",
+      "leakage_count": 1128,
+      "leakage_interval": [
+        0.015388422878283875,
+        0.019176437078701068
+      ],
+      "observed_category_probabilities": [
+        0.0009765625,
+        0.0012664794921875,
+        0.4819793701171875,
+        0.498565673828125,
+        0.0018768310546875,
+        0.0007476806640625,
+        0.000335693359375,
+        0.000640869140625,
+        0.0037689208984375,
+        0.00390625,
+        0.005126953125,
+        0.0006103515625,
+        0.0001983642578125
+      ],
+      "observed_to_requested_tv_upper": 0.030182344711041836,
+      "photon_loss_fraction": null,
+      "physical_port_counts": [
+        64,
+        83,
+        31587,
+        32674,
+        123,
+        49,
+        22,
+        42,
+        247,
+        256,
+        336,
+        40
+      ],
+      "pilot_role": "cancellation",
+      "precision_met": true,
+      "provider_detected_shots": 65536,
+      "qualification": "pass",
+      "remote_compiled_prediction": {
+        "boundary": "the reconstructed returned operator predicts ideal one-photon counts; the device may differ",
+        "computed_circuit_sha256": "6677d3ceffb56fc452b6fb3b62b559633f5321a02802d8ab473d428204bd04ee",
+        "computed_input_sha256": "a7cbc7e89562902c4c449039efada5ded9b1fb3c1f9dd0d6f368598600289264",
+        "input_mode": 0,
+        "probabilities": [
+          8.485521309764905e-09,
+          4.278705965263957e-08,
+          0.5003248991230166,
+          0.499674951917543,
+          7.015709916148164e-08,
+          1.1539095679510181e-08,
+          7.452531701638094e-09,
+          4.886405260146995e-10,
+          1.7262667448021073e-09,
+          1.9917082170738125e-09,
+          4.277068887545921e-09,
+          5.4447806741861175e-11
+        ],
+        "status": "reconstructed"
+      },
+      "requested_probabilities": [
+        0.0,
+        0.0,
+        0.5000000000000001,
+        0.5000000000000001,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "requested_to_returned_tv": 0.00032504808245662696,
+      "sequence_position": 0,
+      "setting_id": "sedenion-lcu/dark",
+      "status": "collected"
+    },
+    {
+      "case": "results/quandela/runs/ascella-sedenion-cancellation-bright",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 0,
+      "pilot_role": "cancellation",
+      "qualification": "inconclusive",
+      "sequence_position": 1,
+      "setting_id": "sedenion-lcu/bright",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 0,
+      "pilot_role": "cancellation",
+      "qualification": "inconclusive",
+      "sequence_position": 2,
+      "setting_id": "sedenion-lcu/bright-repeat",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 0,
+      "pilot_role": "cancellation",
+      "qualification": "inconclusive",
+      "sequence_position": 3,
+      "setting_id": "sedenion-lcu/dark-repeat",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-sedenion-cancellation-fixture",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 0,
+      "pilot_role": "cancellation",
+      "qualification": "inconclusive",
+      "sequence_position": 4,
+      "setting_id": "sedenion-lcu/fixture",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 0,
+      "pilot_role": "identity",
+      "qualification": "inconclusive",
+      "sequence_position": 5,
+      "setting_id": "mub-six/computational-to-computational-input-0",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 1,
+      "pilot_role": "identity",
+      "qualification": "inconclusive",
+      "sequence_position": 6,
+      "setting_id": "mub-six/computational-to-computational-input-1",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 2,
+      "pilot_role": "identity",
+      "qualification": "inconclusive",
+      "sequence_position": 7,
+      "setting_id": "mub-six/computational-to-computational-input-2",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 3,
+      "pilot_role": "identity",
+      "qualification": "inconclusive",
+      "sequence_position": 8,
+      "setting_id": "mub-six/computational-to-computational-input-3",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 4,
+      "pilot_role": "identity",
+      "qualification": "inconclusive",
+      "sequence_position": 9,
+      "setting_id": "mub-six/computational-to-computational-input-4",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 5,
+      "pilot_role": "identity",
+      "qualification": "inconclusive",
+      "sequence_position": 10,
+      "setting_id": "mub-six/computational-to-computational-input-5",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 6,
+      "pilot_role": "cross-basis",
+      "qualification": "inconclusive",
+      "sequence_position": 11,
+      "setting_id": "mub-six/product_fourier-to-product_chirped-input-0",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 7,
+      "pilot_role": "cross-basis",
+      "qualification": "inconclusive",
+      "sequence_position": 12,
+      "setting_id": "mub-six/product_fourier-to-product_chirped-input-1",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 8,
+      "pilot_role": "cross-basis",
+      "qualification": "inconclusive",
+      "sequence_position": 13,
+      "setting_id": "mub-six/product_fourier-to-product_chirped-input-2",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 9,
+      "pilot_role": "cross-basis",
+      "qualification": "inconclusive",
+      "sequence_position": 14,
+      "setting_id": "mub-six/product_fourier-to-product_chirped-input-3",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 10,
+      "pilot_role": "cross-basis",
+      "qualification": "inconclusive",
+      "sequence_position": 15,
+      "setting_id": "mub-six/product_fourier-to-product_chirped-input-4",
+      "status": "missing"
+    },
+    {
+      "case": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "cohort_id": "ascella-cancellation-transition-screening",
+      "interface_complete": false,
+      "iteration_index": 11,
+      "pilot_role": "cross-basis",
+      "qualification": "inconclusive",
+      "sequence_position": 16,
+      "setting_id": "mub-six/product_fourier-to-product_chirped-input-5",
+      "status": "missing"
+    }
+  ]
+}

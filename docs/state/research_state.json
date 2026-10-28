@@ -2184,6 +2184,48 @@
       "run": "results/live/2026-10-26T202817.431767Z",
       "family": "idle-penalty",
       "question": "On 31 coupled ibm_kingston pairs in one dynamic job, does relaxation, free or echoed dephasing, or readout elsewhere on the chip charge an idle qubit more than the reported T1 and Hahn-echo T2 predict, per physical qubit?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-dark",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-dark",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-bright",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-bright",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-bright-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-dark-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-fixture",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-fixture",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-dimension-six-transition-pilot",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "family": "dimension-six transition screening",
+      "question": "Do six computational identity inputs and six Fourier-to-chirped inputs qualify Ascella transition distributions against their returned meshes and leakage criteria?"
     }
   ],
   "claims": [
@@ -11641,6 +11683,90 @@
       ],
       "related_claims": [
         "hw-n21-feedback-null-scheduled-idle"
+      ]
+    },
+    {
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "evidence": [
+        {
+          "path": "results/quandela/ascella-cancellation-transition-returned-mesh-analysis.json",
+          "sha256": "64cda022b6abf96beb4da9d2dc3da075d1af6ad18410f81a7aa88881d4ab1998"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/qualification-profile.json",
+          "sha256": "10a966a7af73530a281586e7c32842c8c2fa737b89dd23dd79fbd88c48eda6c4"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/acquisition-inventory.json",
+          "sha256": "4c32a9c2084d2eb9336cd589aab8127cdfc708f708d5684e1d9f45fcbeb68208"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/account-after.json",
+          "sha256": "03d10f05953c979c072ff1b0bf511aca9b6b2fca64463812f0b6b88557e7ef11"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-cancellation-transition-acquisition/README.md",
+        "docs/evidence/ascella-cancellation-transition-acquisition/findings.md"
+      ],
+      "gates": {},
+      "assumptions": [
+        "Simultaneous Clopper-Pearson coverage is conditional on IID events within each setting; accepted-event proportions include invalid photon-number outcomes."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "ascella-cancellation-repeated-mesh-heralds",
+      "statement": "Five Ascella acquisitions each retain 65,536 accepted events and pass the frozen cancellation, bright, mutation, leakage, precision and repeat criteria. Herald counts in dark, bright, bright-repeat, dark-repeat and fixture order are 147, 65,276, 65,354, 116 and 33,076. Both repeated pairs return identical compiled circuit/input serializations, and separate execution envelopes establish the requested order.",
+      "boundary": "One five-job screening cohort on qpu:ascella, with a fixed family of 243 endpoints shared with the twelve-setting pilot. The measurements establish finite output-probability conformance. Unequal interjob spacing leaves linear-drift cancellation unassessed; incident-photon loss and spacetime effects remain outside the measured surface.",
+      "acquisitions": [
+        "qd-ascella-sedenion-cancellation-dark",
+        "qd-ascella-sedenion-cancellation-bright",
+        "qd-ascella-sedenion-cancellation-bright-repeat",
+        "qd-ascella-sedenion-cancellation-dark-repeat",
+        "qd-ascella-sedenion-cancellation-fixture"
+      ]
+    },
+    {
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "evidence": [
+        {
+          "path": "results/quandela/ascella-cancellation-transition-returned-mesh-analysis.json",
+          "sha256": "64cda022b6abf96beb4da9d2dc3da075d1af6ad18410f81a7aa88881d4ab1998"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/qualification-profile.json",
+          "sha256": "10a966a7af73530a281586e7c32842c8c2fa737b89dd23dd79fbd88c48eda6c4"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/acquisition-inventory.json",
+          "sha256": "4c32a9c2084d2eb9336cd589aab8127cdfc708f708d5684e1d9f45fcbeb68208"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/account-after.json",
+          "sha256": "03d10f05953c979c072ff1b0bf511aca9b6b2fca64463812f0b6b88557e7ef11"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-cancellation-transition-acquisition/README.md",
+        "docs/evidence/ascella-cancellation-transition-acquisition/findings.md"
+      ],
+      "gates": {},
+      "assumptions": [
+        "Simultaneous Clopper-Pearson coverage is conditional on IID events within each setting; accepted-event proportions include invalid photon-number outcomes."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "ascella-dimension-six-pilot-qualification",
+      "statement": "The completed twelve-setting Ascella pilot retains 65,536 accepted events per setting. Computational identity inputs 2 and 5 fail the correct-output and leakage criteria; Fourier-to-chirped inputs 1, 2, 4 and 5 fail the conservative returned-mesh total-variation upper-bound criterion. Six settings pass and six fail; expansion to all 54 settings remains ineligible under the frozen decision rule.",
+      "boundary": "A fixed pilot of six identity settings and six cross-basis settings, with all returned port and invalid-event categories and 243 simultaneous endpoints. Failure of an upper-bound qualification rule alone does not establish true total variation above its threshold. Returned-mesh predictions and device histograms are distinct evidence surfaces; the pilot identifies neither a causal error mechanism nor a universal dimension-six MUB bound.",
+      "acquisitions": [
+        "qd-ascella-dimension-six-transition-pilot"
       ]
     }
   ]

@@ -1,0 +1,308 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-cancellation-transition-acquisition",
+  "kind": "experiment",
+  "summary": "Qualify and acquire Ascella cancellation and dimension-six transition data with science-first sample budgets and compatible iteration packing.",
+  "sources": [
+    "docs/runbooks/quantum-experiment-acquisition.md"
+  ],
+  "state": "closed",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Canonical operators, live preflights, six acquired raw results, complete returned meshes, corrected simultaneous analysis, independent review and provider accounting agree within their stated boundaries."
+  },
+  "scope": "Prepare packed or separately ordered Ascella cancellation acquisitions, then a twelve-setting dimension-six pilot, with frozen scientific criteria, live readiness and bounded approval. Full-campaign expansion requires pilot qualification.",
+  "owner": "Ascella cancellation and transition acquisition",
+  "next_action": "Prepare a separate case for mesh and physical-port residual diagnostics before broad acquisition.",
+  "steps": [
+    {
+      "id": "audit-provider",
+      "action": "Audit live capabilities, occupancy, pricing and retained runtime evidence.",
+      "acceptance": "Read-only observations distinguish offer/processor readiness, token occupancy, usage versus remaining balance, expiry authority and known timing limits.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Read-only account routes and browser inventory establish balance-access limits. Ascella processor and offer refresh report available.",
+          "observed_at": "2026-10-27T23:37:35.870174+00:00",
+          "revision": "000eca9435a671b3dcbb172e3345edba3cf89835",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/account-access-observation.json",
+              "sha256": "f8b615b9b9db351c96e3ecd5240aad9106c438fb874af8361655e8f332a15c36"
+            }
+          ],
+          "scope_sha256": "f046b0c1fc0baeb503da62318f2e5a5ebbf83a481585ce9a9b16440d96b310b8"
+        }
+      ]
+    },
+    {
+      "id": "design-acquisition",
+      "action": "Choose packing, per-setting counts, repetition design and qualification rules.",
+      "acceptance": "The frozen design preserves separately observed cancellation-arm ordering, per-iteration mesh attribution, complete output categories, and a preregistered pilot expansion rule; compatible repetitions and transition settings pack within measured duration limits.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Frozen six-job screening design: five separately timed cancellation iterators, one twelve-setting pilot, duration qualification and fixed243-endpoint family.",
+          "observed_at": "2026-10-27T23:42:01.722122+00:00",
+          "revision": "000eca9435a671b3dcbb172e3345edba3cf89835",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/README.md",
+              "sha256": "e476984e7fa60f4155a18046cf81f9412af12258f55efc0e5d97796b9aa70bd5"
+            },
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/qualification-profile.json",
+              "sha256": "10a966a7af73530a281586e7c32842c8c2fa737b89dd23dd79fbd88c48eda6c4"
+            }
+          ],
+          "scope_sha256": "cfcae90a554c9a8476f1ff3343aff4b2b99c258cbe37ffa378ec99952c700a56"
+        },
+        {
+          "result": "Frozen reviewed six-job screening design and prerequisite guard.",
+          "observed_at": "2026-10-27T23:49:29.700399+00:00",
+          "revision": "000eca9435a671b3dcbb172e3345edba3cf89835",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/README.md",
+              "sha256": "cfff293cf02f493c1f760cbc3f009de2a69a307b99d12e75b9c3d73f7e737751"
+            },
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/qualification-profile.json",
+              "sha256": "10a966a7af73530a281586e7c32842c8c2fa737b89dd23dd79fbd88c48eda6c4"
+            }
+          ],
+          "scope_sha256": "cfcae90a554c9a8476f1ff3343aff4b2b99c258cbe37ffa378ec99952c700a56"
+        }
+      ]
+    },
+    {
+      "id": "build-cases",
+      "action": "Construct cancellation and twelve-setting pilot successors from canonical operators.",
+      "acceptance": "Payloads preserve all setting identities, source hashes, seed allocations, all twelve output ports and bounded budgets.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Built all seventeen selected canonical settings in six iterator cases; full local operator reconstruction passed.",
+          "observed_at": "2026-10-27T23:42:02.125339+00:00",
+          "revision": "000eca9435a671b3dcbb172e3345edba3cf89835",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/campaign.json",
+              "sha256": "a805f0d5969291539839f896e612ecd689f6b54cd8a75a35c61460fa7929ce5b"
+            },
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/local-validation.json",
+              "sha256": "316cb4db6d35088f4c46afac6d11d7d9cc77db7ebd01f0056efa38b529c8ac7f"
+            }
+          ],
+          "scope_sha256": "e93bd699745cd5e362a8ac3149b2aa4337784bfeed31a65cd0a4e1164e30ffed"
+        }
+      ]
+    },
+    {
+      "id": "validate-payloads",
+      "action": "Verify local operators, provider iterator payloads and analysis fixtures.",
+      "acceptance": "Complete unitary, budget, seed, ordering and collection/analysis checks pass without creating jobs.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Seventeen complete operators reconstructed; six live preflights pass. Focused request and guard tests9pass; dedicated analyzer12tests and Ruff/mypy pass.",
+          "observed_at": "2026-10-27T23:49:30.074034+00:00",
+          "revision": "000eca9435a671b3dcbb172e3345edba3cf89835",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/local-validation-confirmed.json",
+              "sha256": "316cb4db6d35088f4c46afac6d11d7d9cc77db7ebd01f0056efa38b529c8ac7f"
+            },
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/dark-read-only-plan.json",
+              "sha256": "4ea3ca7883dfb3863a4c36cb9f2e68401b7f6c3376c2536149e2bb7c64bf7ac0"
+            },
+            {
+              "ref": "scripts/ascella_experiment_analysis.py",
+              "sha256": "3063f1a26626370aed77845f8bb00a2379d6848e5002ea9d62fafbcded652fbd"
+            },
+            {
+              "ref": "scripts/ascella_experiment_run.py",
+              "sha256": "97a37448fda553eb9e060369516d64873cecf54d4c3c2e43f693c7c7a202a582"
+            }
+          ],
+          "scope_sha256": "38b7f2fe8d2e99f8bcbce5ae116aafc344ffa782c62dce9d6162043b3ffece25"
+        },
+        {
+          "result": "All seventeen complete operators and six live preflights pass. Corrected returned-mesh criterion has14 analyzer tests plus9 request and guard tests, Ruff and mypy; original source retained.",
+          "observed_at": "2026-10-28T00:02:06.726768+00:00",
+          "revision": "000eca9435a671b3dcbb172e3345edba3cf89835",
+          "evidence": [
+            {
+              "ref": "scripts/ascella_experiment_analysis.py",
+              "sha256": "bc40d3b6a94e71affe3aeaccd9ce52d232021f602efff82128f68c4bd562a05a"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_experiment_analysis.py",
+              "sha256": "ddc88fb68076fdddd72b557b3544326eba45b88d915e4e2e7d2f0a3cb02b7b2d"
+            },
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/local-validation-confirmed.json",
+              "sha256": "316cb4db6d35088f4c46afac6d11d7d9cc77db7ebd01f0056efa38b529c8ac7f"
+            }
+          ],
+          "scope_sha256": "38b7f2fe8d2e99f8bcbce5ae116aafc344ffa782c62dce9d6162043b3ffece25"
+        },
+        {
+          "result": "All seventeen complete operators and six live preflights pass. Twenty-three regular focused tests pass across the request, guard and analyzer modules; the complete seventeen-setting audit test passes separately. Ruff and mypy pass. The returned-mesh criterion and raw-count attribution pass regression checks.",
+          "observed_at": "2026-10-28T00:06:00.015152+00:00",
+          "revision": "000eca9435a671b3dcbb172e3345edba3cf89835",
+          "evidence": [
+            {
+              "ref": "scripts/ascella_experiment_analysis.py",
+              "sha256": "bc40d3b6a94e71affe3aeaccd9ce52d232021f602efff82128f68c4bd562a05a"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_experiment_analysis.py",
+              "sha256": "068d4b13f1010a067aba469477c543c6dbd56d0688d535b09c29d9fc5aad5308"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_experiment_request.py",
+              "sha256": "c2f38776c048dacd9d3ed1acc27f1ae8de3cece3c6c47836d676cc4d15f32a53"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_experiment_run.py",
+              "sha256": "fe3592f81d4f8b25f189551456c6c1649742a3f4d22ca2ff0c5bdc20dc8cf1fc"
+            },
+            {
+              "ref": "results/quandela/ascella-cancellation-transition-returned-mesh-analysis.json",
+              "sha256": "64cda022b6abf96beb4da9d2dc3da075d1af6ad18410f81a7aa88881d4ab1998"
+            }
+          ],
+          "scope_sha256": "38b7f2fe8d2e99f8bcbce5ae116aafc344ffa782c62dce9d6162043b3ffece25"
+        }
+      ]
+    },
+    {
+      "id": "freeze-case",
+      "action": "Freeze the written acquisition case and runtime/credit ceilings.",
+      "acceptance": "The case names current status, forecasts and limitations, exact payloads, scientific criteria and approval bounds.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Frozen written case:6.786432-credit ceiling,65,536 samples per setting,131,072 detected-shot cap per setting,300-second job stop, first dark duration qualification.",
+          "observed_at": "2026-10-27T23:49:30.445146+00:00",
+          "revision": "000eca9435a671b3dcbb172e3345edba3cf89835",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/README.md",
+              "sha256": "cfff293cf02f493c1f760cbc3f009de2a69a307b99d12e75b9c3d73f7e737751"
+            },
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/campaign.json",
+              "sha256": "a805f0d5969291539839f896e612ecd689f6b54cd8a75a35c61460fa7929ce5b"
+            }
+          ],
+          "scope_sha256": "4a5cc01473712d5fbd95037a7cf5f0fa06f5564728fc68c50e1f18bb3b9e4c93"
+        }
+      ]
+    },
+    {
+      "id": "acquire-cancellation",
+      "action": "Acquire and retain the cancellation sequence under the approved case.",
+      "acceptance": "Lossless raw results, mesh identity and executed-order evidence support a bounded qualification verdict.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Five ordered cancellation jobs completed at 65,536 events and4seconds each. Frozen scientific qualification passes; repeated mesh/input identities and executed order match.",
+          "observed_at": "2026-10-27T23:53:57.330177+00:00",
+          "revision": "000eca9435a671b3dcbb172e3345edba3cf89835",
+          "evidence": [
+            {
+              "ref": "results/quandela/ascella-cancellation-screening-analysis.json",
+              "sha256": "df685d3dfa1559639a5b4576238dac096aaa12e4f17cbc3a96a41f3eb7cfdd63"
+            }
+          ],
+          "scope_sha256": "9ee84b4e79a6e0ac47bda3673cc436b4f2e39131825aa7f5ffbd72049dccc3bc"
+        }
+      ]
+    },
+    {
+      "id": "acquire-pilot",
+      "action": "Acquire the twelve-setting pilot after cancellation qualification.",
+      "acceptance": "All selected settings, controls and output categories are retained and adjudicated against the frozen rule.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Twelve pilot settings complete at 65,536 events each in 37 seconds; all raw histograms match independent decoding. Six settings pass and six fail the frozen qualification.",
+          "observed_at": "2026-10-28T00:02:07.277786+00:00",
+          "revision": "000eca9435a671b3dcbb172e3345edba3cf89835",
+          "evidence": [
+            {
+              "ref": "results/quandela/ascella-cancellation-transition-returned-mesh-analysis.json",
+              "sha256": "64cda022b6abf96beb4da9d2dc3da075d1af6ad18410f81a7aa88881d4ab1998"
+            },
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/acquisition-inventory.json",
+              "sha256": "4c32a9c2084d2eb9336cd589aab8127cdfc708f708d5684e1d9f45fcbeb68208"
+            }
+          ],
+          "scope_sha256": "7682514d58f5ddce51f626620702ec1ca952838f04013372b850c33d22c6fb88"
+        }
+      ]
+    },
+    {
+      "id": "decide-expansion",
+      "action": "Decide full-campaign and cross-day replication from preregistered criteria.",
+      "acceptance": "The decision records acquired evidence, residual uncertainty and any successor approval requirements.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Withheld full 54-setting expansion under frozen pilot rule. Completed six jobs, seventeen settings and 1,114,112 events in 57 seconds for 6.458752 credits; remaining balance and exact expiry unavailable to job token.",
+          "observed_at": "2026-10-28T00:02:07.699156+00:00",
+          "revision": "000eca9435a671b3dcbb172e3345edba3cf89835",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/findings.md",
+              "sha256": "e2f8d923c09f8e6a45ffb48b73a0e3c4be20b0cd76e9085a08c7944e8ddb9c31"
+            },
+            {
+              "ref": "results/quandela/ascella-cancellation-transition-returned-mesh-analysis.json",
+              "sha256": "64cda022b6abf96beb4da9d2dc3da075d1af6ad18410f81a7aa88881d4ab1998"
+            },
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/account-after.json",
+              "sha256": "03d10f05953c979c072ff1b0bf511aca9b6b2fca64463812f0b6b88557e7ef11"
+            }
+          ],
+          "scope_sha256": "f5718e52be002ab11760aadd1b0acda9434fb4f9063edbcfc1d7d37ab66ccb20"
+        }
+      ]
+    }
+  ],
+  "related": [
+    "quantum-experiment-conformance",
+    "sedenion-herald-conformance",
+    "dimension-six-transition-conformance"
+  ],
+  "disposition": "completed",
+  "resolution": "All six scoped jobs completed and all seventeen settings were adjudicated. Cancellation passes, the twelve-setting pilot fails, and expansion stops under the frozen rule. Total consumption is 6.458752 credits and 57 execution seconds. A separate mechanism-diagnostic case is the next research question.",
+  "receipts": [
+    {
+      "result": "Completed six approved Ascella jobs covering five ordered cancellation settings and twelve pilot settings. Cancellation qualifies; the pilot fails and prevents full-campaign expansion. Raw results, returned meshes, accounting, corrected analysis and six acquisition registry entries are retained.",
+      "observed_at": "2026-10-28T00:06:00.576340+00:00",
+      "revision": "000eca9435a671b3dcbb172e3345edba3cf89835",
+      "evidence": [
+        {
+          "ref": "docs/evidence/ascella-cancellation-transition-acquisition/findings.md",
+          "sha256": "e2f8d923c09f8e6a45ffb48b73a0e3c4be20b0cd76e9085a08c7944e8ddb9c31"
+        },
+        {
+          "ref": "docs/evidence/ascella-cancellation-transition-acquisition/acquisition-inventory.json",
+          "sha256": "4c32a9c2084d2eb9336cd589aab8127cdfc708f708d5684e1d9f45fcbeb68208"
+        },
+        {
+          "ref": "results/quandela/ascella-cancellation-transition-returned-mesh-analysis.json",
+          "sha256": "64cda022b6abf96beb4da9d2dc3da075d1af6ad18410f81a7aa88881d4ab1998"
+        }
+      ],
+      "scope_sha256": "596eb1c4e37c7aabe3025e50768369bf644fdb6c02226dcc7e811706c28f0044"
+    }
+  ]
+}
