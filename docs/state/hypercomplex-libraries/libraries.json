@@ -2669,7 +2669,7 @@
     "scripts/packed_pauli_analysis.py",
     "scripts/pais_claim_bounds.py",
     "scripts/patch_window_analysis.py",
-    "scripts/persona_corpus_claim_bounds.py",
+    "scripts/persona_corpus_checks.py",
     "scripts/photonic_compilation_audit.py",
     "scripts/photonic_repeat_readout.py",
     "scripts/photonic_repeat_readout_pooled.py",
@@ -4358,7 +4358,7 @@
     "scripts/a5_zero_divisor_strata.py",
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
-    "scripts/persona_corpus_claim_bounds.py",
+    "scripts/persona_corpus_checks.py",
     "scripts/rank_locus_gap_directions.py",
     "scripts/rank_locus_padic_lift.py",
     "scripts/rank_locus_quadric_germ.py",
@@ -6237,7 +6237,7 @@
     "scripts/pais_claim_bounds.py",
     "scripts/pais_superforce_bounds.py",
     "scripts/patch_window_analysis.py",
-    "scripts/persona_corpus_claim_bounds.py",
+    "scripts/persona_corpus_checks.py",
     "scripts/primorial_probe_case.py",
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_mesh.py",
@@ -6814,7 +6814,7 @@
     "scripts/algebra_device_conjectures.py",
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
-    "scripts/persona_corpus_claim_bounds.py",
+    "scripts/persona_corpus_checks.py",
     "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_second_order.py"
    ],
@@ -12641,7 +12641,7 @@
    "sys",
    "typing"
   ],
-  "scripts/persona_corpus_claim_bounds.py": [
+  "scripts/persona_corpus_checks.py": [
    "__future__",
    "argparse",
    "cd_core",

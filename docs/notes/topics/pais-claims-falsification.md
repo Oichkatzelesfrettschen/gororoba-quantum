@@ -37,7 +37,7 @@ below from CODATA constants and the cited measurements, raising when a stated in
   force at L_P is c^4/G divided by 52.9.
 - **The Schrodinger step inserts what it finds.** [E] hbar^2/(2 m L^3) reaches c^4/(2G) only at the Planck mass and
   length; an electron at its reduced Compton wavelength gives 1.75e-45 of it, which is 8.8e-46 of c^4/G (the value
-  [persona-corpus-claims-falsification.md](persona-corpus-claims-falsification.md#re-derivation-of-the-earlier-notes)
+  [persona-corpus-verified-results.md](persona-corpus-verified-results.md#4-corrections-to-earlier-repository-notes)
   recomputes; this line earlier printed the c^4/G ratio against the c^4/(2G) referent).
 - **The cosmic "coincidence" is the Friedmann equation.** [E] Critical density inside the Hubble radius gives
   M_H c^2/R_H = c^4/(2G) for every Hubble rate; the measured flatness Omega_K = 0.001 +- 0.002 is the only content

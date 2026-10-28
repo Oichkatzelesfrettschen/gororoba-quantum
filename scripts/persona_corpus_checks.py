@@ -1,11 +1,12 @@
-"""First-principles checks of an external LLM-persona corpus and re-derivations of the repository's falsifications.
+"""First-principles checks behind the verified results of an LLM-persona corpus, and the run designs they admit.
 
 The corpus mixes a review of a mathematics reference draft (Lie algebras, E8, triality, the Albert algebra,
 L-infinity algebras, spectral triples), a speculative "scalar-ZPE / crystalline aether / E8" synthesis, and a
 derivation of the Sugawara construction, the Coulomb gas and the Kac determinant. Every number and identity that
-docs/notes/topics/persona-corpus-claims-falsification.md tags [E] comes from a function here, which raises when a
-stated identity or inequality fails. The last two functions recompute, independently of the scripts that own
-them, the numbers of the repository's earlier falsification notes (pais-claims-falsification.md,
+docs/notes/topics/persona-corpus-verified-results.md tags [E] comes from a function here, which raises when a
+stated identity or inequality fails. ascella_two_photon_associator computes the ideal laws of the Ascella run the
+note proposes. existing_note_rechecks and algebra_rechecks recompute, independently of the scripts that own
+them, the numbers of the repository's earlier notes (pais-claims-falsification.md,
 qpu_vacuum_cd_review_reconciliation.md, octonion_structure_checks.md).
 
 Exact results use integer, rational or FLINT arithmetic: the Albert-algebra symmetry dimensions are integer ranks,
@@ -13,7 +14,7 @@ the Kac determinant, Coulomb-gas weights and Sugawara central charge are SymPy i
 Physical constants are CODATA values from scipy.constants.
 
 Usage:
-    "$PYTHON" scripts/persona_corpus_claim_bounds.py [--audit] [--out FILE]
+    "$PYTHON" scripts/persona_corpus_checks.py [--audit] [--out FILE]
 
 --audit adds the level-5 Kac determinant (about 5 s); the default stops at level 4.
 """
@@ -1035,6 +1036,82 @@ def algebra_rechecks() -> dict[str, object]:
     }
 
 
+# Ascella HOM visibility at the two calibration reads of docs/notes/quandela/calibration.md (87.46 % and 88.8 %).
+ASCELLA_HOM_VISIBILITY = 0.875
+ASSOCIATOR_PAIR = ((6, 7), (5, 7))  # a = (e6 + e7)/sqrt2, b = (e5 + e7)/sqrt2
+ASSOCIATIVE_PAIR = ((1, 2), (1, 3))  # both inside the quaternions spanned by e0..e3
+PHOTON_INPUTS = (2, 3)
+
+
+def octonion_left(vector: np.ndarray) -> np.ndarray:
+    """L_v as a matrix, columns indexed by the input basis vector."""
+    return np.einsum("p,pqr->rq", vector, cd_table(8).astype(float))
+
+
+def two_click_law(unitary: np.ndarray, inputs: tuple[int, int], visibility: float) -> dict[str, float]:
+    """Two-click probabilities of two photons through a real unitary, threshold detectors, partial indistinguishability.
+
+    The photon pair is the mixture visibility x (indistinguishable) + (1 - visibility) x (distinguishable); an
+    indistinguishable pair exits (o1, o2), o1 != o2, with |U_o1x U_o2y + U_o1y U_o2x|^2, a distinguishable one with
+    |U_o1x U_o2y|^2 + |U_o1y U_o2x|^2. Bunched outcomes give one click and are dropped; the law is unnormalized.
+    """
+    x, y = inputs
+    law = {}
+    for o1, o2 in itertools.combinations(range(len(unitary)), 2):
+        direct, exchange = unitary[o1, x] * unitary[o2, y], unitary[o1, y] * unitary[o2, x]
+        quantum = (direct + exchange) ** 2
+        classical = direct**2 + exchange**2
+        value = visibility * quantum + (1 - visibility) * classical
+        if value > 1e-12:
+            law[f"{o1}{o2}"] = float(value)
+    return law
+
+
+def ascella_two_photon_associator(visibility: float = ASCELLA_HOM_VISIBILITY) -> dict[str, object]:
+    """Two photons through L_a L_b against L_(ab): the associator is visible only through two-photon interference.
+
+    With a = (e6 + e7)/sqrt2, b = (e5 + e7)/sqrt2 and photons in modes 2 and 3, both maps keep span(e0..e3), so the
+    run needs a 4-mode interferometer. Indistinguishable photons exit on pairs {03, 12} after L_a L_b and on
+    {02, 13} after L_(ab); distinguishable photons give the same uniform law after both. The endpoint is
+    D = P({03, 12} | two clicks) - P({02, 13} | two clicks). The associative control takes a, b inside the
+    quaternions, where L_a L_b = L_(ab) and the two routes cannot differ.
+    """
+    eye = np.eye(8)
+    table = cd_table(8).astype(float)
+    out: dict[str, object] = {"visibility": visibility, "inputs": list(PHOTON_INPUTS)}
+    for label, ((i, j), (k, m)) in (("associator", ASSOCIATOR_PAIR), ("associative_control", ASSOCIATIVE_PAIR)):
+        a = (eye[i] + eye[j]) / math.sqrt(2)
+        b = (eye[k] + eye[m]) / math.sqrt(2)
+        product = np.einsum("p,q,pqr->r", a, b, table)
+        routes = {"LaLb": octonion_left(a) @ octonion_left(b), "Lab": octonion_left(product)}
+        arm: dict[str, object] = {"a": f"(e{i} + e{j})/sqrt2", "b": f"(e{k} + e{m})/sqrt2"}
+        for name, unitary in routes.items():
+            require(np.allclose(unitary.T @ unitary, eye), f"{name} is not orthogonal")
+            require(not np.abs(unitary[4:, :4]).max() > 1e-12, f"{name} leaves span(e0..e3)")
+            for v_label, v in (("ideal", 1.0), ("calibrated", visibility), ("distinguishable", 0.0)):
+                law = two_click_law(unitary[:4, :4], PHOTON_INPUTS, v)
+                total = sum(law.values())
+                endpoint = (law.get("03", 0) + law.get("12", 0) - law.get("02", 0) - law.get("13", 0)) / total
+                arm[f"{name}_{v_label}"] = {"two_click_mass": total, "D": endpoint, "law": law}
+        out[label] = arm
+    assoc = out["associator"]
+    control = out["associative_control"]
+    if not isinstance(assoc, dict) or not isinstance(control, dict):
+        raise RuntimeError("arms missing")
+    require(abs(assoc["LaLb_ideal"]["D"] - 1) < 1e-12 and abs(assoc["Lab_ideal"]["D"] + 1) < 1e-12, "ideal D != +-1")
+    require(abs(assoc["LaLb_distinguishable"]["D"]) < 1e-12, "distinguishable photons see the associator")
+    require(control["LaLb_ideal"]["law"] == control["Lab_ideal"]["law"], "the associative control separates routes")
+    calibrated = assoc["LaLb_calibrated"]["D"]
+    # D is a difference of multinomial frequencies with values +-1 or 0 per event: var(D) = (q - D^2)/n, q the
+    # probability mass on the four counted pairs; n two-click events give standard error 0.01 at the calibrated law.
+    counted = sum(assoc["LaLb_calibrated"]["law"].get(k, 0) for k in ("03", "12", "02", "13"))
+    q = counted / assoc["LaLb_calibrated"]["two_click_mass"]
+    out["route_difference_ideal"] = assoc["LaLb_ideal"]["D"] - assoc["Lab_ideal"]["D"]
+    out["route_difference_control"] = control["LaLb_ideal"]["D"] - control["Lab_ideal"]["D"]
+    out["two_click_events_for_0.01_standard_error"] = math.ceil((q - calibrated**2) / 1e-4)
+    return out
+
+
 def run(max_kac_level: int) -> dict[str, object]:
     sections: dict[str, Callable[[], object]] = {
         "sl2": sl2_brackets,
@@ -1059,6 +1136,7 @@ def run(max_kac_level: int) -> dict[str, object]:
         "existing_notes": existing_note_rechecks,
         "spin_up_profiles": spin_up_profiles,
         "algebra_rechecks": algebra_rechecks,
+        "ascella_two_photon_associator": ascella_two_photon_associator,
     }
     return {name: function() for name, function in sections.items()}
 

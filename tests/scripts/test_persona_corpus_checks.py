@@ -1,8 +1,8 @@
-"""Contracts of the first-principles checks of the persona corpus and of the earlier falsification notes."""
+"""Contracts of the checks behind the persona-corpus verified results, their run designs and the earlier notes."""
 
 from __future__ import annotations
 
-import persona_corpus_claim_bounds as claims
+import persona_corpus_checks as claims
 import pytest
 
 
@@ -73,3 +73,9 @@ def test_only_the_known_slip_disagrees_in_the_existing_notes() -> None:
     claims.algebra_rechecks()
     if claims.spin_up_profiles()["sin2_ramp_peak_W"] < 10 * claims.spin_up_profiles()["scale_estimate_W"]:
         raise AssertionError("profile factor")
+
+
+def test_ascella_associator_shows_only_through_two_photon_interference() -> None:
+    result = claims.ascella_two_photon_associator()
+    if result["route_difference_ideal"] != 2.0 or result["route_difference_control"] != 0.0:
+        raise AssertionError(f"route differences {result}")
