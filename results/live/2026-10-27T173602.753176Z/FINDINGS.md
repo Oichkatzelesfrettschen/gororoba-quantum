@@ -73,5 +73,6 @@ idle-penalty Ramsey comparison, built on positions 1 and 3, is withdrawn.
 
 ## Retention
 
-The primary inventory was observed before this submission, so the retention audit lists the raw archive under
-`awaiting_observation`; the run joins coverage and the research registry at the next inventory observation.
+The primary inventory observed at 2026-10-28T00:29:17Z lists the job settled at 17 s, and the regenerated retention
+audit binds its raw archive. The research registry holds the run as acquisition `kingston-n21-detuning-sign` under
+claim `kingston-n21-detuning-sign-precession`.
