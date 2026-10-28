@@ -2338,6 +2338,139 @@
       "run": "results/live/2026-10-27T173602.753176Z",
       "family": "N=21 orbit detuning sign",
       "question": "Does the N=21 orbit's relative phase turn at the Ramsey frame offset of the work qubit for 16 minus that of the work qubit for 1, with its sign, and does a Hahn echo return it?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-dark",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-dark",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-bright",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-bright",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-bright-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-dark-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-fixture",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-fixture",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-dimension-six-transition-pilot",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "family": "dimension-six transition screening",
+      "question": "Do six computational identity inputs and six Fourier-to-chirped inputs qualify Ascella transition distributions against their returned meshes and leakage criteria?"
+    },
+    {
+      "id": "qd-ascella-context-single-identity-2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-context-single-identity-2",
+      "family": "dimension-six singleton and iterator context",
+      "question": "How do prior-pilot, singleton, forward-packed and reverse-packed transition outputs compare when the returned compiled mesh and input are matched?"
+    },
+    {
+      "id": "qd-ascella-context-single-identity-5",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-context-single-identity-5",
+      "family": "dimension-six singleton and iterator context",
+      "question": "How do prior-pilot, singleton, forward-packed and reverse-packed transition outputs compare when the returned compiled mesh and input are matched?"
+    },
+    {
+      "id": "qd-ascella-context-single-cross-4",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-context-single-cross-4",
+      "family": "dimension-six singleton and iterator context",
+      "question": "How do prior-pilot, singleton, forward-packed and reverse-packed transition outputs compare when the returned compiled mesh and input are matched?"
+    },
+    {
+      "id": "qd-ascella-context-single-identity-0",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-context-single-identity-0",
+      "family": "dimension-six singleton and iterator context",
+      "question": "How do prior-pilot, singleton, forward-packed and reverse-packed transition outputs compare when the returned compiled mesh and input are matched?"
+    },
+    {
+      "id": "qd-ascella-context-single-cross-0",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-context-single-cross-0",
+      "family": "dimension-six singleton and iterator context",
+      "question": "How do prior-pilot, singleton, forward-packed and reverse-packed transition outputs compare when the returned compiled mesh and input are matched?"
+    },
+    {
+      "id": "qd-ascella-context-packed-forward",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-context-packed-forward",
+      "family": "dimension-six singleton and iterator context",
+      "question": "How do prior-pilot, singleton, forward-packed and reverse-packed transition outputs compare when the returned compiled mesh and input are matched?"
+    },
+    {
+      "id": "qd-ascella-context-packed-reverse",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-context-packed-reverse",
+      "family": "dimension-six singleton and iterator context",
+      "question": "How do prior-pilot, singleton, forward-packed and reverse-packed transition outputs compare when the returned compiled mesh and input are matched?"
+    },
+    {
+      "id": "qd-ascella-transition-mesh-port-1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-transition-mesh-port-1",
+      "family": "dimension-six compilation and output-port diagnostics",
+      "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
+    },
+    {
+      "id": "qd-ascella-transition-mesh-port-2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-transition-mesh-port-2",
+      "family": "dimension-six compilation and output-port diagnostics",
+      "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
+    },
+    {
+      "id": "qd-ascella-transition-mesh-port-3",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-transition-mesh-port-3",
+      "family": "dimension-six compilation and output-port diagnostics",
+      "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
+    },
+    {
+      "id": "qd-ascella-transition-mesh-port-4",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-transition-mesh-port-4",
+      "family": "dimension-six compilation and output-port diagnostics",
+      "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
+    },
+    {
+      "id": "qd-ascella-transition-mesh-port-5",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-transition-mesh-port-5",
+      "family": "dimension-six compilation and output-port diagnostics",
+      "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
+    },
+    {
+      "id": "qd-ascella-transition-mesh-port-6",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-transition-mesh-port-6",
+      "family": "dimension-six compilation and output-port diagnostics",
+      "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
     }
   ],
   "claims": [
@@ -12416,6 +12549,181 @@
         "kingston-n21-window-dose-idle-excess",
         "hw-idle-detuning-scale"
       ]
+    },
+    {
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "evidence": [
+        {
+          "path": "results/quandela/ascella-cancellation-transition-returned-mesh-analysis.json",
+          "sha256": "64cda022b6abf96beb4da9d2dc3da075d1af6ad18410f81a7aa88881d4ab1998"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/qualification-profile.json",
+          "sha256": "10a966a7af73530a281586e7c32842c8c2fa737b89dd23dd79fbd88c48eda6c4"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/acquisition-inventory.json",
+          "sha256": "4c32a9c2084d2eb9336cd589aab8127cdfc708f708d5684e1d9f45fcbeb68208"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/account-after.json",
+          "sha256": "03d10f05953c979c072ff1b0bf511aca9b6b2fca64463812f0b6b88557e7ef11"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-cancellation-transition-acquisition/README.md",
+        "docs/evidence/ascella-cancellation-transition-acquisition/findings.md"
+      ],
+      "gates": {},
+      "assumptions": [
+        "Simultaneous Clopper-Pearson coverage is conditional on IID events within each setting; accepted-event proportions include invalid photon-number outcomes."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "ascella-cancellation-repeated-mesh-heralds",
+      "statement": "Five Ascella acquisitions each retain 65,536 accepted events and pass the frozen cancellation, bright, mutation, leakage, precision and repeat criteria. Herald counts in dark, bright, bright-repeat, dark-repeat and fixture order are 147, 65,276, 65,354, 116 and 33,076. Both repeated pairs return identical compiled circuit/input serializations, and separate execution envelopes establish the requested order.",
+      "boundary": "One five-job screening cohort on qpu:ascella, with a fixed family of 243 endpoints shared with the twelve-setting pilot. The measurements establish finite output-probability conformance. Unequal interjob spacing leaves linear-drift cancellation unassessed; incident-photon loss and spacetime effects remain outside the measured surface.",
+      "acquisitions": [
+        "qd-ascella-sedenion-cancellation-dark",
+        "qd-ascella-sedenion-cancellation-bright",
+        "qd-ascella-sedenion-cancellation-bright-repeat",
+        "qd-ascella-sedenion-cancellation-dark-repeat",
+        "qd-ascella-sedenion-cancellation-fixture"
+      ]
+    },
+    {
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "evidence": [
+        {
+          "path": "results/quandela/ascella-cancellation-transition-returned-mesh-analysis.json",
+          "sha256": "64cda022b6abf96beb4da9d2dc3da075d1af6ad18410f81a7aa88881d4ab1998"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/qualification-profile.json",
+          "sha256": "10a966a7af73530a281586e7c32842c8c2fa737b89dd23dd79fbd88c48eda6c4"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/acquisition-inventory.json",
+          "sha256": "4c32a9c2084d2eb9336cd589aab8127cdfc708f708d5684e1d9f45fcbeb68208"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/account-after.json",
+          "sha256": "03d10f05953c979c072ff1b0bf511aca9b6b2fca64463812f0b6b88557e7ef11"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-cancellation-transition-acquisition/README.md",
+        "docs/evidence/ascella-cancellation-transition-acquisition/findings.md"
+      ],
+      "gates": {},
+      "assumptions": [
+        "Simultaneous Clopper-Pearson coverage is conditional on IID events within each setting; accepted-event proportions include invalid photon-number outcomes."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "ascella-dimension-six-pilot-qualification",
+      "statement": "The completed twelve-setting Ascella pilot retains 65,536 accepted events per setting. Computational identity inputs 2 and 5 fail the correct-output and leakage criteria; Fourier-to-chirped inputs 1, 2, 4 and 5 fail the conservative returned-mesh total-variation upper-bound criterion. Six settings pass and six fail; expansion to all 54 settings remains ineligible under the frozen decision rule.",
+      "boundary": "A fixed pilot of six identity settings and six cross-basis settings, with all returned port and invalid-event categories and 243 simultaneous endpoints. Failure of an upper-bound qualification rule alone does not establish true total variation above its threshold. Returned-mesh predictions and device histograms are distinct evidence surfaces; the pilot identifies neither a causal error mechanism nor a universal dimension-six MUB bound.",
+      "acquisitions": [
+        "qd-ascella-dimension-six-transition-pilot"
+      ]
+    },
+    {
+      "id": "ascella-transition-context-matched-mesh",
+      "statement": "Seven Ascella jobs retain fifteen complete observations of five dimension-six settings. All twenty comparisons against the prior pilot or another diagnostic context return matching compiled circuit and input serializations. Identity input 5 has leakage of 0.142%, 1.941% and 6.346% in singleton, forward and reverse requests; the singleton-versus-reverse total-variation interval is [0.0568, 0.0747]. Identity input 2 has about 6.21% leakage in the prior pilot and about 0.23% in each new context.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Twenty observations across the original pilot and seven follow-up jobs, with a 280-endpoint simultaneous family under IID trials within each observation. Matching returned serializations do not establish identical applied analog controls. Distinct job times confound packing and drift, and packed-iteration physical order is not recorded. The study identifies no unique physical cause and measures neither incident-photon loss nor a universal MUB bound.",
+      "evidence": [
+        {
+          "path": "results/quandela/ascella-transition-context-analysis.json",
+          "sha256": "fd9c3f0765559dc405e20a771a809a7672b220490aacb46b4cc71db1c2d09bdf"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-context-diagnostics/campaign.json",
+          "sha256": "67d974effd0b698da3882aebb73eaeba0deed37f472570637d3c1a0ea8383af7"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-context-diagnostics/acquisition-inventory.json",
+          "sha256": "0f702ebf3742b67ed0c2ba6429a50c31263e88d347a5986dbdc70e365d3d8888"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-context-diagnostics/account-after.json",
+          "sha256": "3b801708d7effca58b58455b57994838b271a0397e6e518808c61e590b62887a"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-transition-context-diagnostics/README.md",
+        "docs/evidence/ascella-transition-context-diagnostics/findings.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-context-single-identity-2",
+        "qd-ascella-context-single-identity-5",
+        "qd-ascella-context-single-cross-4",
+        "qd-ascella-context-single-identity-0",
+        "qd-ascella-context-single-cross-0",
+        "qd-ascella-context-packed-forward",
+        "qd-ascella-context-packed-reverse"
+      ],
+      "assumptions": [
+        "Clopper-Pearson coverage is conditional on IID events within each observation; all returned invalid categories remain in the denominator."
+      ],
+      "depends_on": [
+        "ascella-dimension-six-pilot-qualification"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-transition-mesh-port-variation",
+      "statement": "Six Ascella jobs measured 132 settings, with 8,650,752 accepted events. Fifteen setting and output-map groups each returned eight distinct new meshes, and all twelve anchors matched their reference mesh and input serializations. Mean identity-input-5 leakage was 2.44% on the original map, 0.22% on the logical swap, and 0.48% on the outer swap; matched identity-input-0 anchors also varied across jobs.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Five selected settings and three output maps, with 1,876 simultaneous endpoints under IID accepted events per observation. Each map changes the compiled operator. Mesh, time, analog controls, calibration and detector response may confound the observed associations; incident-pulse loss and physical iteration order remain unknown.",
+      "evidence": [
+        {
+          "path": "results/quandela/ascella-transition-mesh-port-analysis.json",
+          "sha256": "927bef0f733efd2b61c648bee59c539ae03b538e4eae1f463fc410bb2695df07"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-mesh-port-diagnostics/campaign.json",
+          "sha256": "f64cffbd76f142955b92509f5c7e7deb6c54b3cf0c5d818addbe34a21ca3bcc8"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-mesh-port-diagnostics/acquisition-inventory.json",
+          "sha256": "47a36edf6274811b15285b0bb381fc8ae6598924f97a9cd3196c6e3e52d6fdd4"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-transition-mesh-port-diagnostics/README.md",
+        "docs/evidence/ascella-transition-mesh-port-diagnostics/findings.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-transition-mesh-port-1",
+        "qd-ascella-transition-mesh-port-2",
+        "qd-ascella-transition-mesh-port-3",
+        "qd-ascella-transition-mesh-port-4",
+        "qd-ascella-transition-mesh-port-5",
+        "qd-ascella-transition-mesh-port-6"
+      ],
+      "assumptions": [
+        "Simultaneous binomial intervals assume IID accepted events within each observation."
+      ],
+      "depends_on": [
+        "ascella-transition-context-matched-mesh"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }

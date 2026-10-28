@@ -1,0 +1,69 @@
+{
+  "cases": [
+    {
+      "case": "sedenion-cancellation-dark",
+      "cases_sha256": "02edc487ad4c49d4a65c9a79de570d06b0a8797c02a62143c1456e431e9d5433",
+      "detected_shots_per_iteration": 131072,
+      "iterator_form": "template",
+      "modes": 12,
+      "samples_per_iteration": 65536,
+      "template_operations": 342,
+      "validated_complete_operators": 1
+    },
+    {
+      "case": "sedenion-cancellation-bright",
+      "cases_sha256": "83932b19a538d8fd1b7b89125b125cf0cc242bdd7b6301922f49997280b7e239",
+      "detected_shots_per_iteration": 131072,
+      "iterator_form": "template",
+      "modes": 12,
+      "samples_per_iteration": 65536,
+      "template_operations": 342,
+      "validated_complete_operators": 1
+    },
+    {
+      "case": "sedenion-cancellation-bright-repeat",
+      "cases_sha256": "fd7403893b227d037cd957a94188eeb9274c1b253e41cff0709f77f2cf371dd0",
+      "detected_shots_per_iteration": 131072,
+      "iterator_form": "template",
+      "modes": 12,
+      "samples_per_iteration": 65536,
+      "template_operations": 342,
+      "validated_complete_operators": 1
+    },
+    {
+      "case": "sedenion-cancellation-dark-repeat",
+      "cases_sha256": "d5561e196e6d46cd32ddb756d89ecf0c5c3b366ad854dba139048005b96663e8",
+      "detected_shots_per_iteration": 131072,
+      "iterator_form": "template",
+      "modes": 12,
+      "samples_per_iteration": 65536,
+      "template_operations": 342,
+      "validated_complete_operators": 1
+    },
+    {
+      "case": "sedenion-cancellation-fixture",
+      "cases_sha256": "b51fec7b4ef6eea7aac877b11e9b1de8324edd5dd5763ef229feb4c99860c47a",
+      "detected_shots_per_iteration": 131072,
+      "iterator_form": "template",
+      "modes": 12,
+      "samples_per_iteration": 65536,
+      "template_operations": 342,
+      "validated_complete_operators": 1
+    },
+    {
+      "case": "dimension-six-transition-pilot",
+      "cases_sha256": "10bc07066311984fac15badbe8d55e6dd035da6f37dd68efb841fc6e5433c7dc",
+      "detected_shots_per_iteration": 131072,
+      "iterator_form": "template",
+      "modes": 12,
+      "samples_per_iteration": 65536,
+      "template_operations": 342,
+      "validated_complete_operators": 12
+    }
+  ],
+  "endpoint_family": 243,
+  "provider_submissions": 0,
+  "schema": "ascella-experiment-local-validation-v1",
+  "worst_iid_interval_half_width": 0.007256899259250521,
+  "zero_event_iid_upper_bound": 0.00014009548504949739
+}

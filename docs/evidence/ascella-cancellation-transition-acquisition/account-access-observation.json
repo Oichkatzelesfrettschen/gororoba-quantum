@@ -1,0 +1,28 @@
+{
+  "boundary": "Job token routes do not establish account balance; browser inventory contains zero connected browser surfaces.",
+  "browser_inventory": {
+    "apps": [],
+    "browsers": []
+  },
+  "credit_expiry_utc": null,
+  "remaining_credits": null,
+  "routes": [
+    {
+      "auth": true,
+      "host": "https://api.cloud.quandela.com",
+      "http_status": 404,
+      "refused": true,
+      "retrieved_utc": "2026-10-27T23:35:31+00:00",
+      "route": "/api/user"
+    },
+    {
+      "auth": false,
+      "host": "https://api.cloud.quandela.com",
+      "http_status": 404,
+      "refused": true,
+      "retrieved_utc": "2026-10-27T23:35:32+00:00",
+      "route": "/api/public/offer/list"
+    }
+  ],
+  "schema": "ascella-account-access-observation-v1"
+}
