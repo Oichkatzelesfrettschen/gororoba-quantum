@@ -18,11 +18,25 @@ step, like any spend ([provider-credits.md](provider-credits.md)).
 | GitHub Actions, public repository | 4 vCPU | 16 GB | none | 6 h per job | matrix fan-out | free | documented (GitHub hosted-runner reference); allowed offload, logs are public |
 | Azure trial, `Standard_FX4mds_v2` | 4 vCPU | 84 GB | none | until deallocated | one (4-vCPU regional cap) | trial credit by the hour | quota read ([azure/README.md](../notes/azure/README.md)); GPU families have quota 0 |
 | AWS free plan | - | - | - | - | - | credits | `ec2:RunInstances` is denied by the project's policy ([aws/README.md](../notes/aws/README.md)) |
+| qBraid Lab, included server (Free plan) | 1.8 vCPU limit | 4 GB | none | 100 CPU-hours a month | one subscription server | included | `GET /compute-sessions/usage`, `GET /compute/profiles` ([qbraid/README.md](../notes/qbraid/README.md#lab-compute)); the 25 GB `8vCPU_25GB` server is tagged Pro (100 USD a month) |
+| qBraid on-demand instances | 4 to 96 vCPU | 6 to 384 GB | GPU profiles exist | until stopped | per instance | 15 to 576 credits an hour (100 credits = 1 USD) | the wallet holds 0 credits with auto-recharge off, so none can start without a purchase |
 
 At full fan-out the reachable pool is the build host plus five Kaggle CPU sessions and two Kaggle GPU sessions:
 62 + 5 x 30 + 2 x 29 = 270 GB of RAM in eight separate machines, and 12 + 4 x 15 = 72 GiB of VRAM on five GPUs. The
 largest single address space reachable without a spend case is the build host's 62 GiB plus swap; with a case it is
 the Azure VM's 84 GB; a TPU VM's host RAM is larger once a queued session starts.
+
+## Access audit
+
+Read 2026-10-28 between 19:30 and 20:10 UTC with each service's own read-only call.
+
+| Service | State at the read | What it allows now |
+| --- | --- | --- |
+| Kaggle | GPU 0.07 of 30 h and TPU 0 of 20 h used, both reset 2026-10-31T00:00Z; AI models 1.48 of 10 USD daily (refill 2026-10-29T18:25Z) and of 100 USD monthly | five CPU and two GPU batch sessions; one TPU batch session, queued; Model Proxy tasks on the full catalog |
+| GitHub Actions | the repository is public | standard hosted runners at no cost; logs and artifacts are public |
+| Azure | subscription Enabled; eastus total regional vCPU 0 of 4 used, `StandardFXmdsv2Family` 0 of 4, low-priority 0 of 3 | one 4-vCPU VM, the 84 GB `Standard_FX4mds_v2` the largest, after a spend case |
+| AWS | `aws sts get-caller-identity` fails: the browser session expired | nothing until `aws login --profile gororoba`; instance launch stays denied by policy |
+| qBraid | tier Free; 0 credits, auto-recharge off; Lab CPU 0 of 100 h (renews 2026-11-10); server stopped; AI 0 of 5 USD (resets 2026-11-18, all models) | the 4 GB included server, started from the Lab web page (the read routes include no start call), and the 5 USD AI allowance |
 
 ## What pooling buys
 
