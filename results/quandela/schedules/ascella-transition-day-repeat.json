@@ -1,0 +1,40 @@
+{
+  "approval": "User: Afterward: test independent compiled meshes and output-port permutations, then repeat selected matched meshes tomorrow to measure drift. User requested execution through CI.",
+  "case": "docs/evidence/ascella-transition-day-repeat/README.md",
+  "enabled": false,
+  "jobs": [
+    {
+      "admit_statuses": [
+        "available"
+      ],
+      "after": null,
+      "body_sha256": null,
+      "case_dir": "results/quandela/cases/ascella_transition_day_repeat/matched",
+      "expected_seconds": 300,
+      "inputs_sha256": {
+        "cases.json": "e4380ab064a89a40c4a4f1c28df8bfdc55c2dbb238696b97db7d33cc99462e7a",
+        "circuit.json": "736cf0c7b417911d07676cbce3cea4ab7fb08f9a89269b700c3d51679b9c83a2"
+      },
+      "key": "matched-repeat",
+      "latest_start": "2026-10-29T06:59:00Z",
+      "matched_check": [
+        "scripts/ascella_transition_ci_check.py",
+        "--matched-check",
+        "{run}"
+      ],
+      "max_credits": 1.131072,
+      "not_before": "2026-10-29T00:38:06Z",
+      "per_job_credits": 1,
+      "plan_check": [
+        "scripts/ascella_transition_ci_check.py",
+        "--plan-check",
+        "{plan}"
+      ],
+      "run_name": "qpu_ascella-transition-matched-mesh-day-repeat"
+    }
+  ],
+  "max_total_credits": 1.131072,
+  "name": "ascella-transition-day-repeat",
+  "platform": "qpu:ascella",
+  "schema": "qd-schedule-v1"
+}
