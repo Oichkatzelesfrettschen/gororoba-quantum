@@ -88,12 +88,15 @@ def boxed(points: Iterable[Sequence[int]]) -> Cell:
     )
 
 
+def minor(rows: tuple[Sequence[int], Sequence[int], Sequence[int]]) -> int:
+    """Exact integer determinant of three integer rows; a worker for ordered_map."""
+    (a, b, c), (d, e, f), (g, h, i) = rows
+    return a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g)
+
+
 def span_index(points: Iterable[Sequence[int]]) -> int:
     """Index in Z^3 of the integer span: the gcd of all 3 x 3 minors."""
-    g = 0
-    for rows in itertools.combinations(points, 3):
-        g = math.gcd(g, abs(round(np.linalg.det(np.array(rows, dtype=float)))))
-    return g
+    return math.gcd(*ordered_map(minor, list(itertools.combinations(points, 3))))
 
 
 def point_group(cell: Cell, planar: bool) -> list[np.ndarray]:
@@ -116,10 +119,16 @@ def element_order(matrix: np.ndarray) -> int:
     raise ReplayError("element order exceeds 12")
 
 
+def operation_facts(matrix: np.ndarray) -> tuple[int, int]:
+    """Exact determinant and element order of one integer rotation; a worker for ordered_map."""
+    return minor((matrix[0].tolist(), matrix[1].tolist(), matrix[2].tolist())), element_order(matrix)
+
+
 def group_profile(ops: list[np.ndarray], planar: bool) -> dict[str, Any]:
     """Order, determinants and element orders; a planar set's -1 is diag(-1, -1, 1), its determinant the 2 x 2 one."""
-    dets = Counter(str(round(np.linalg.det(m))) for m in ops)
-    orders = Counter(str(element_order(m)) for m in ops)
+    facts = ordered_map(operation_facts, ops)
+    dets = Counter(str(det) for det, _ in facts)
+    orders = Counter(str(order) for _, order in facts)
     minus = np.diag([-1, -1, 1]) if planar else -np.eye(3, dtype=int)
     minus_one = any(np.array_equal(m, minus) for m in ops)
     return {
