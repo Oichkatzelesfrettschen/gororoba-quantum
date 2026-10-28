@@ -5,8 +5,12 @@ shows it only through two-photon interference. The mathematics and ideal laws co
 [persona-corpus-verified-results.md](../notes/topics/persona-corpus-verified-results.md#ascella-the-octonion-associator-in-two-photon-interference).
 [scripts/ascella_associator_case.py](../../scripts/ascella_associator_case.py) builds the frozen request in
 [results/quandela/cases/ascella_two_photon_associator/job-00](../../results/quandela/cases/ascella_two_photon_associator/job-00/cases.json),
-checks it, and analyses the collected run. Nothing has been sent. The job waits for the owner's approval of this
-case.
+checks it, and analyses the collected run.
+
+**Approval.** On 2026-10-28 the owner approved the case to run at the live HOM rather than wait for the 90 % floor,
+and asked whether the low visibility needs a changed run, a calibration or a compensation. The section
+[HOM below the floor](#hom-below-the-floor) answers that before any data exists. The job stays the same, and the
+second decision is re-registered as an in-job visibility closure. Nothing has been sent.
 
 ## Mathematics
 
@@ -28,7 +32,7 @@ case.
 
 ## Request
 
-`cases.json` sha256 `4e402cdab702530f4654d272defb88b749fde0a6d24c56d979a0561e4b17ec10`; `circuit.json` sha256
+`cases.json` sha256 `88ca9404e085a0f276c97bc65cd2047fa4ce60c0c022b27bc1e88d5371bc6ec0`; `circuit.json` sha256
 `6fbd0669df30b6e66862212ff21978438557945bdc577ee3fd59730e684f221f`.
 
 **Mode map.** Algebra modes 2, 0, 3, 1 sit on logical modes 0, 1, 2, 3. The two photons therefore enter logical
@@ -54,21 +58,82 @@ sqrt((q - D^2)/n), with q the share of events on P+ or P-. Then:
 - Delta = D(LaLb) - D(Lab) on the associator block;
 - Delta_control is the same on the control block.
 
-**Model.** Under the two-photon mixture of visibility V, Delta_pred = 2V/(V + 1.5(1 - V)). V is the HOM fraction
-the plan records at submission. The model ignores g2 and dark counts; their measured shares are reported.
-[E] Delta_pred is 1.65 at V = 0.875 and 2 at V = 1, and Delta_control = 0 at every V.
+**Model.** Two photons whose internal states overlap with M = Tr(rho_1 rho_2) give the exact mixture
+M P_indistinguishable + (1 - M) P_distinguishable. Every route then reads D = +-f(M), with f(M) = M/(M + 1.5(1 - M)).
+Specifically:
+- L_a L_b on the associator block reads +f, and L_(ab) reads -f;
+- both control routes read -f.
+
+[E] Delta = 2f(M) is 1.65 at M = 0.875 and 2 at M = 1; Delta_control = 0 at every M.
 
 **Decisions.**
 
 1. **Associator realised:** Delta exceeds 5 standard errors and Delta_control lies within 0.05 of 0, or within
    3 standard errors if that is wider. Otherwise the run does not show it.
-2. **Calibration sufficient:** |Delta - Delta_pred(V_HOM)| <= 0.05, or 3 standard errors if wider. A larger
-   departure means Ascella's published HOM figure does not predict the compiled two-photon law. Mesh phase error
-   and mode-dependent distinguishability are the named alternatives.
-3. **Descriptive only:** the per-pair laws and the excluded share. These carry no decision.
+2. **Visibility closure:** C = Delta + 2 mean(D_control) lies within 0.05 of 0, or within 3 standard errors if
+   that is wider. C vanishes at every photon overlap, because both blocks carry the same factor f(M); the decision
+   needs no HOM figure. A departure means an error that depends on the route or the mesh: mesh phase error,
+   mode-dependent loss, or distinguishability that differs between input pairs.
+3. **Descriptive only:**
+   - the compensated contrast Delta/(-2 mean D_control), which is 1 at every M;
+   - the in-situ overlap M_eff = 1.5f/(1 + 0.5f) with f = -mean D_control;
+   - the comparison |Delta - Delta_pred(V_HOM)| against the HOM read, with its earlier 0.05 tolerance;
+   - the per-pair laws and the excluded share.
 
-With 4096 eligible events per route, the standard error of Delta is about 0.013 at V = 0.875. Both decisions are
-then resolved well inside their tolerances.
+   These carry no decision.
+
+Both decisions need all four ABBA iterations of both blocks; a truncated block leaves them undecided and keeps its
+estimates as descriptive output. With 4096 eligible events per route, the standard error of Delta is about 0.011
+and that of C about 0.016 at M = 0.875.
+
+## HOM below the floor
+
+The owner asked whether HOM below 90 % needs a changed run, and whether the job can be calibrated and compensated.
+[E] figures come from `ascella_associator_case.py` and `persona_corpus_checks.py`.
+
+**Decision 1 does not depend on the HOM.**
+- Distinguishability only scales the contrast: Delta = 2f(M) is 1.64 at M = 0.873, 1.22 at 0.70 and 0.80 at 0.50.
+- Even at 0.50 that is about 45 standard errors (145 at M = 0.875).
+- The control's route difference is 0 at every M.
+- No budget change is needed. At lower M, two-click events take a larger share of samples (0.53 at M = 0.875,
+  0.60 at 0.60), so the counts grow rather than shrink.
+
+**The old decision 2 depended on the HOM figure in ways the device does not control.** [E] dDelta/dV is 2.66 at
+V = 0.875. Three effects consume the 0.05 tolerance without any device error:
+
+1. **Calibration drift.** The two retained Ascella HOM reads, 87.28 % and 88.8 %, move Delta_pred by 0.041.
+2. **g2 offset.** HOM visibility is not the photon overlap M: multiphoton emission (g2 1.9 % at the last read)
+   lowers the visibility below M. [U] The relation is M ~ (V_HOM + g2)/(1 - g2) to first order (Ollivier et al.,
+   PRL 126, 063602, 2021, not retained here). That correction is near 0.04 in V, or 0.1 in Delta.
+3. **Different objects.** The HOM figure is measured on Quandela's own two-photon test, not on this compiled mesh,
+   which is the same reason strategy rule 1 records ("the HOM figure measures the source's indistinguishability,
+   not the mesh").
+
+A run could therefore have failed decision 2 on a perfect mesh.
+
+**Calibration is already inside the job.** The control block runs the same source, the same input pair and the
+same detectors through a mesh whose two routes are identical. Its D is -f(M), so it measures the photon overlap in
+situ, during the job, on the input pair that matters. Re-registering decision 2 as the closure
+C = Delta + 2 mean D_control = 0 removes M from the test exactly:
+- [E] C = 0 at M = 1, 0.888, 0.875, 0.80, 0.70, 0.576 and 0.50.
+- [E] Synthetic counts at M = 0.6 pass the closure and recover M_eff = 0.600.
+- [E] A control route replaced by the associator law fails it.
+
+The ABBA order already brackets drift within each block.
+
+**Compensation.** The compensated contrast Delta/(-2 mean D_control) equals 1 for every M under the mixture, so it
+reports how much of the associator survives the mesh, with the source's distinguishability divided out.
+
+**What cannot be compensated.**
+- The cloud exposes no control of the source's spectral filter, delay or pulse settings, so the overlap itself
+  cannot be raised from the request. The job measures it instead.
+- Multiphoton events (g2) that lose a photon can enter as two-click events. They are not route-symmetric in
+  general and are not removed by the closure.
+- At g2 1.9 % and Ascella's few-percent transmittance, their share of two-click events is small, but it is
+  unmeasured. The excluded three-click share, which `--analyze` reports, bounds their source.
+
+**What changed.** Only the analysis and the preregistered block of `cases.json`, before any data exists. The circuit,
+the eight iterations, the budgets, the credit ceiling and the procedure are unchanged.
 
 ## Written acquisition case
 
@@ -106,14 +171,13 @@ expected charge is the same or less. The monthly free grant is 200 credits, rese
 - Perceval's `estimate_required_shots` at the plan gives the first two-photon timing point. The measured duration
   sizes any repeat.
 
-**HOM rule: the owner's decision.**
+**HOM rule: decided.**
 - Strategy design rule 1 ([strategy.md](../notes/quandela/strategy.md)) holds two-photon cases until the live HOM
   exceeds `HOM_FLOOR` (90 %). The last Ascella read was 87.28 % ([preflight of 2026-10-24](../evidence/ascella-order-coefficients/case-preflight/preflight.json)),
   so `plan` will print the HOM warning.
-- Unlike the Belenos block whose leak prompted the rule, this endpoint models V explicitly. A lower V lowers
-  Delta_pred (1.65 at 0.875) but leaves both decisions valid.
-- Recommendation: submit at the live V and record it, rather than wait for 90 %. If the owner prefers the rule as
-  written, the case waits for a plan that reads above 90 % and is otherwise unchanged.
+- The owner approved submission at the live HOM on 2026-10-28.
+- The closure above makes both decisions independent of the HOM figure. The warning is recorded, and the plan
+  proceeds.
 
 **Dark counts and multiphoton noise.**
 - Detectors 8 to 11 carried most dark counts at the last read (9,908 of 12,159 per second). A dark count on modes
@@ -157,8 +221,13 @@ Before the submit, the plan must show:
 - Perceval's `estimate_required_shots` for the 16384 samples within the 2097152-shot cap; `plan` refuses
   otherwise, and the case then needs a revised budget and a new approval.
 
-`--analyze` reads the HOM figure that `submission.json` recorded at plan time (`perfs_at_plan`), computes
-Delta_pred, and writes both decisions to `analysis.json`; a decision whose inputs are missing reads `undecided`.
+`--analyze` writes both decisions, the closure, the compensated contrast and the in-situ overlap to `analysis.json`.
+It also writes the descriptive HOM comparison, using the HOM figure that `submission.json` recorded at plan time
+(`perfs_at_plan`). A decision whose inputs are missing reads `undecided`.
+
+**Where to run it.** The submitting host needs the Quandela token file (`QUANDELA_TOKEN_FILE`) and network access to
+`api.cloud.quandela.com`. The cloud session that prepared this case has neither, so the procedure runs on the build
+host.
 
 A run directory whose plan refuses leaves the tree before anything is committed. Every directory under
 `results/quandela/runs/` reads as a sent job.

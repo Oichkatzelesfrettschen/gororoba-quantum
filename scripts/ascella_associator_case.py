@@ -65,6 +65,8 @@ BODY_TOLERANCE = 1e-9
 # Decision constants the design document preregisters.
 MUTATION_TOLERANCE = 0.05
 CALIBRATION_TOLERANCE = 0.05
+# |Delta + 2 mean D_control| tolerance: the control block measures the same visibility factor f(V) in the job.
+CLOSURE_TOLERANCE = 0.05
 DETECTION_SIGMAS = 5
 
 
@@ -219,6 +221,13 @@ def documents() -> dict[str, bytes]:
             "mutation_endpoint": "Delta_control = D(LaLb) - D(Lab) on the control block",
             "detection_sigmas": DETECTION_SIGMAS,
             "mutation_tolerance": MUTATION_TOLERANCE,
+            "closure_endpoint": "C = Delta + 2 mean(D_control): the control block's D is -f(V) for every V, so C = 0 "
+            "for every visibility and a departure is route- or mesh-dependent error",
+            "closure_tolerance": CLOSURE_TOLERANCE,
+            "compensated_contrast": "Delta / (-2 mean D_control), 1 for every V under the two-photon mixture",
+            "in_situ_visibility": "V_eff = 1.5 f / (1 + 0.5 f) with f = -mean D_control, compared with the HOM read",
+            "hom_comparison": "descriptive: |Delta - Delta_pred(V_HOM)| with the HOM read's tolerance "
+            "calibration_tolerance; no decision, since HOM visibility differs from the photon overlap through g2",
             "calibration_tolerance": CALIBRATION_TOLERANCE,
             "visibility_model": "Delta_pred = 2 V / (V + 1.5 (1 - V)), V the HOM fraction read at submission",
             "interpretation": "two-photon interference realisation of the octonion associator on the compiled mesh",
@@ -347,31 +356,50 @@ def submission_visibility(run: Path) -> float | None:
     return float(hom) / 100
 
 
+def visibility_from_contrast(f: float) -> float:
+    """Inverse of f(V) = V / (V + 1.5 (1 - V)): V = 1.5 f / (1 + 0.5 f)."""
+    return 1.5 * f / (1 + 0.5 * f)
+
+
 def decisions(record: dict[str, Any], visibility: float | None) -> dict[str, Any]:
-    """The design's two preregistered decisions; either stays undecided when its inputs are missing or a block it
-    needs lacks any of its four ABBA iterations.
+    """The design's two preregistered decisions and the descriptive HOM comparison.
 
     Associator realised: Delta > DETECTION_SIGMAS se and |Delta_control| <= max(MUTATION_TOLERANCE, 3 se_control).
-    Calibration sufficient: |Delta - Delta_pred(V)| <= max(CALIBRATION_TOLERANCE, 3 se), V the submission HOM.
+    Visibility closure: |Delta + 2 mean D_control| <= max(CLOSURE_TOLERANCE, 3 se). Both control routes measure
+    -f(V), so the closure holds at every photon overlap and needs no HOM figure; it uses both complete blocks. A
+    decision stays undecided when a block it needs lacks any of its four ABBA iterations. The HOM comparison
+    |Delta - Delta_pred(V_HOM)| is descriptive.
     """
     associator, control = record.get("associator", {}), record.get("control", {})
     complete = {block: record.get(f"{block}_counted_iterations") == len(ROUTE_ORDER) for block in PAIRS}
-    out: dict[str, Any] = {"visibility": visibility, "complete_blocks": complete}
-    if not (complete["associator"] and complete["control"]) or None in (associator.get("Delta"), control.get("Delta")):
+    out: dict[str, Any] = {"visibility_hom": visibility, "complete_blocks": complete}
+    both = complete["associator"] and complete["control"]
+    if not both or None in (associator.get("Delta"), control.get("Delta")):
         out["associator_realised"] = "undecided"
+        out["visibility_closure"] = "undecided"
     else:
         detected = associator["Delta"] > DETECTION_SIGMAS * associator["se"]
         null = abs(control["Delta"]) <= max(MUTATION_TOLERANCE, 3 * control["se"])
         out["associator_realised"] = detected and null
-    if not complete["associator"] or associator.get("Delta") is None or visibility is None:
-        out["calibration_sufficient"] = "undecided"
-        out["Delta_predicted"] = None
-    else:
+        first, second = control["routes"]["LaLb"], control["routes"]["Lab"]
+        mean_control = (first["D"] + second["D"]) / 2
+        closure = associator["Delta"] + 2 * mean_control
+        closure_se = math.sqrt(associator["se"] ** 2 + first["se"] ** 2 + second["se"] ** 2)
+        out["closure"] = closure
+        out["closure_se"] = closure_se
+        out["visibility_closure"] = abs(closure) <= max(CLOSURE_TOLERANCE, 3 * closure_se)
+        out["compensated_contrast"] = associator["Delta"] / (-2 * mean_control) if mean_control < 0 else None
+        out["in_situ_visibility"] = visibility_from_contrast(-mean_control) if mean_control < 0 else None
+    if complete["associator"] and associator.get("Delta") is not None and visibility is not None:
         predicted = predicted_difference(visibility)
-        out["Delta_predicted"] = predicted
-        departure = abs(associator["Delta"] - predicted)
-        out["calibration_departure"] = departure
-        out["calibration_sufficient"] = departure <= max(CALIBRATION_TOLERANCE, 3 * associator["se"])
+        out["hom_comparison"] = {
+            "Delta_predicted": predicted,
+            "departure": abs(associator["Delta"] - predicted),
+            "within_tolerance": abs(associator["Delta"] - predicted)
+            <= max(CALIBRATION_TOLERANCE, 3 * associator["se"]),
+        }
+    else:
+        out["hom_comparison"] = None
     return out
 
 
