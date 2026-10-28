@@ -12,7 +12,7 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 
 | Location | Contents | Git treatment |
 | --- | --- | --- |
-| `docs/pdf/` | 45 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
+| `docs/pdf/` | 46 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
 | `docs/local_source_cache/` | 202 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 6 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
@@ -84,6 +84,7 @@ each source license in force.
 | [Google Quantum AI and Collaborators 2023 -- Non-Abelian braiding of graph vertices in a superconducting processor](notes/papers/2210.10255.md) | [2210.10255v2.pdf](pdf/2210.10255v2.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Matsumoto et al. 2026 -- Two-qubit logic and teleportation with mobile spin qubits in silicon (Nature 653, 391)](notes/papers/s41586-026-10423-9.md) | [s41586-026-10423-9.pdf](pdf/s41586-026-10423-9.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Wu et al. 2026 -- Simultaneous high-fidelity single-qubit gates in a spin qubit array (Nature Physics)](notes/papers/s41567-026-03466-2.md) | [s41567-026-03466-2.pdf](pdf/s41567-026-03466-2.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Togo, Shinohara and Tanaka 2024 -- Spglib: a software library for crystal symmetry search (Sci. Technol. Adv. Mater. Methods 4, 2384822)](notes/papers/1808.01590.md) | [27660400.2024.2384822.pdf](pdf/27660400.2024.2384822.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Ejlli et al. 2019 -- Upper limits on the amplitude of ultra-high-frequency gravitational waves from graviton to photon conversion (Eur. Phys. J. C 79, 1032)](notes/papers/s10052-019-7542-5.md) | [s10052-019-7542-5.pdf](pdf/s10052-019-7542-5.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Pais 2023 -- SUPERFORCE, the Fundamental Force of Unification (OSF 9kebt_v1)](notes/papers/pais-superforce-sources.md) | [pais-2023-superforce.pdf](pdf/pais-2023-superforce.pdf) | [CC0-1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
 | [Particle Data Group 2024 -- Review of Particle Physics, chapter 9 Quantum Chromodynamics](notes/papers/pais-superforce-sources.md) | [rpp2024-rev-qcd.pdf](pdf/rpp2024-rev-qcd.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |

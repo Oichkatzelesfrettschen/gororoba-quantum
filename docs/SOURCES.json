@@ -1563,6 +1563,45 @@
         "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Third-party material in the article is covered only where the article's credit lines say so. Repository licensing does not relabel the source PDF.",
         "publisher_title": "Quantum teleportation using highly coherent emission from telecom C-band quantum dots"
       }
+    },
+    {
+      "title": "Spglib: a software library for crystal symmetry search",
+      "authors": [
+        "Atsushi Togo",
+        "Kohei Shinohara",
+        "Isao Tanaka"
+      ],
+      "version": "Science and Technology of Advanced Materials: Methods 4(1), 2384822 (2024), published online 2024-10-16; publisher PDF as deposited in the NIMS Materials Data Repository",
+      "source_url": "https://mdr.nims.go.jp/filesets/d30a5177-949d-44e2-880b-5f08d13673e3/download",
+      "note": "docs/notes/papers/1808.01590.md",
+      "audited_at_utc": "2026-10-28T00:43:42+00:00",
+      "sha256": "b5cab7d7ac26711726f13fff5380957c25c938e3b0e53a55f532d96c21bc0a85",
+      "bytes": 1562000,
+      "pages": 16,
+      "acquisition": "download",
+      "path": "docs/pdf/27660400.2024.2384822.pdf",
+      "status": "retained",
+      "redistribution": "explicit_license_verified",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "b5cab7d7ac26711726f13fff5380957c25c938e3b0e53a55f532d96c21bc0a85",
+        "verified_at_utc": "2026-10-28T00:43:42+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "evidence_url": "https://api.crossref.org/works/10.1080/27660400.2024.2384822",
+        "evidence_sha256": "65e92297afc7d7c8d4b275645ee1d4bf573a04a518f2a22ab9b94d308bb3b243",
+        "evidence_locator": "Crossref message.license entry for content-version vor; message.DOI and message.title; the PDF's XMP prism:doi and its page-2 Open Access paragraph",
+        "evidence_path": "docs/evidence/source_rights/crossref-10.1080_27660400.2024.2384822.json",
+        "evidence_retrieved_at_utc": "2026-10-28T00:29:31+00:00",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "observed_license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "doi": "10.1080/27660400.2024.2384822",
+        "publisher_title": "Spglib: a software library for crystal symmetry search",
+        "reading_scope": "Crossref version-of-record license, DOI and title; the PDF cover page, XMP DOI and page-2 Open Access paragraph; the note carries the content reading scope.",
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "Crossref registers CC BY 4.0 for the version of record with no embargo, the publisher article page's structured data names the same license, and the PDF's page 2 states the article is distributed under the Creative Commons Attribution License.",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Repository licensing does not relabel the source PDF."
+      }
     }
   ],
   "aliases": [
