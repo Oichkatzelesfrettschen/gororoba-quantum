@@ -228,6 +228,22 @@
             }
           ],
           "scope_sha256": "b6b98abb7782f096e7546b9b9fe059dfa35f740cd99966c934136117f1e114ee"
+        },
+        {
+          "result": "Revalidated after a counted partial single answer with an empty BSCount keeps its detections and zero samples: 21 contract tests and 4 audit tests pass.",
+          "observed_at": "2026-10-28T00:08:10+00:00",
+          "revision": "5ecdcdff98fe13a98a71112ae9d42d9c497b32f3",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/provider_counters.py",
+              "sha256": "3b588a1715e65cedac2bef26a7674d6ee859db86c5686335e73b8be27e0452a9"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_provider_counters.py",
+              "sha256": "2e46f966493f49820b77355a0e521d395328382c73fea357fd2f01c57f134800"
+            }
+          ],
+          "scope_sha256": "b6b98abb7782f096e7546b9b9fe059dfa35f740cd99966c934136117f1e114ee"
         }
       ]
     },
@@ -361,6 +377,26 @@
             {
               "ref": "tests/gororoba_quantum/test_provider_counters.py",
               "sha256": "73a241318c00d0b08056bf6004928af98168331476f63eff223e713e278e27b4"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.json",
+              "sha256": "a5f4b993cfab92216dff4a2e7309f0806aa559730a1180af2d35f9cf77b6b969"
+            }
+          ],
+          "scope_sha256": "040ab6f64beb959f30d2277b00cbeacb4507303076eb7e9c5cd8a9be95ca17d1"
+        },
+        {
+          "result": "Revalidated after the counted-empty partial answer fix: quandela_record still types all 81 inventoried runs (52 iterated caps, 1 unmatched cap unavailable, 16 single detection counts, 12 uncounted or partial answers unavailable); 21 contract tests and 4 audit tests pass; no retained byte changes.",
+          "observed_at": "2026-10-28T00:08:10+00:00",
+          "revision": "5ecdcdff98fe13a98a71112ae9d42d9c497b32f3",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/provider_counters.py",
+              "sha256": "3b588a1715e65cedac2bef26a7674d6ee859db86c5686335e73b8be27e0452a9"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_provider_counters.py",
+              "sha256": "2e46f966493f49820b77355a0e521d395328382c73fea357fd2f01c57f134800"
             },
             {
               "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.json",
