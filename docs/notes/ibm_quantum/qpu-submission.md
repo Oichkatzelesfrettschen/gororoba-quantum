@@ -178,20 +178,20 @@ and the Kaggle noise-snapshot rule.
   per instance, while the historical-job and campaign accounting bind the
   default instance. The `ibm_account.py --self-test` in gate `core-self-test-05` (`tests/test_cli_self_tests.py`)
   holds the account selection and the instance refusal.
-- Retaining a collected run. A run directory joins the tree with every
-  register that enumerates retained jobs, in one change: the instance's job
+- Retaining a collected run. `sh scripts/retain_run.sh RUN ID FAMILY
+  QUESTION`, under the run's `GOROROBA_IBM_ACCOUNT`, joins a run directory to
+  the tree with every register that enumerates retained jobs, in one change,
+  and leaves only the claim to write: the runtime seed rows, the instance's job
   inventory (`scripts/observe_qpu_job_inventory.py`, a service read), the
   retention audit (`scripts/reconcile_qpu_inventory.py`, which writes each
   instance's audit and creates the file exclusively), the submitted-circuit
-  comparison (a successor written by `scripts/compare_submitted_circuits.py
-  --write --out NEW_PATH`, an unseeded service read of every audited job's
-  submitted programs under the current pinned interpreter, because QPY
-  digests follow the Qiskit version and the Qiskit 2.5.2 replay interpreter
-  cannot load the QPY format 18 that Qiskit 2.6.0 writes; the procedure is in
+  comparison (`scripts/compare_submitted_circuits.py --append`, a read of
+  each new audited job's submitted program that writes one row file per job
+  under the running Qiskit release's ledger; the procedure is in
   [the comparison README](../../evidence/submitted_circuits/README.md)), and
   the registry (`scripts/research_state.py --write`, with the claim that cites
   the run). Run-family registers (the ghost, scaffolding-exposure and
   local-member CZ records) follow the gates that read the run. Gate core-281
-  fails while an audited job is missing from the comparison, and the
+  fails while an audited job has no comparison row, and the
   `research_state.py --check` gate while a retained run is missing from the
   registry.

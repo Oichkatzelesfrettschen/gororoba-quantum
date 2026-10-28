@@ -18,6 +18,8 @@ The [Ascella mesh and output-port case](../evidence/ascella-transition-mesh-port
 crosses independent compilation identifiers with three physical output maps and matched anchors.
 The [day-separated matched-mesh case](../evidence/ascella-transition-day-repeat/README.md) repeats
 five settings at least 24 hours after the forward context job on the following Pacific calendar day.
+The [source-compatible successor](../evidence/ascella-transition-day-repeat-ci/README.md) binds the
+current parallel analyzer and launcher; the original case preserves its earlier source identities.
 The [original returned-mesh analysis source](../evidence/ascella-cancellation-transition-acquisition/analysis-sources/returned-mesh-reference.py)
 preserves the bytes bound by the retained pilot analysis. The current analyzer pools independent settings;
 its replay reproduces the retained values with a new source digest.

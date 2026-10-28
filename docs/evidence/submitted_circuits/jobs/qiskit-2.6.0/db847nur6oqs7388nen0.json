@@ -1,0 +1,42 @@
+{
+ "schema": "submitted-circuit-row-v1",
+ "row": {
+  "job_id": "db847nur6oqs7388nen0",
+  "run": "results/live/2026-10-15T030748.903241Z",
+  "retained_file": "results/live/2026-10-15T030748.903241Z/isa.qpy",
+  "retained_sha256": "4c510ab848e9a18658a68b1a826be5cece7680580d7fdda7e55857be849ccf51",
+  "order_source": "record.json submission.jobs[].pubs",
+  "expected_pubs": [
+   "ibm_kingston_dynamic_pub_01",
+   "ibm_kingston_dynamic_pub_02",
+   "ibm_kingston_dynamic_pub_03",
+   "ibm_kingston_dynamic_pub_04",
+   "ibm_kingston_dynamic_pub_05"
+  ],
+  "items": 5,
+  "item_kinds": [
+   "CircuitItem"
+  ],
+  "positional_matches": 5,
+  "submitted_qpy_sha256": [
+   "161beaec0c7ac99f5ca0b97f529275753a4d21ad3df6d02c23177fa6e3022270",
+   "66d751cef91d96b1dccd0b37b6fa3fa61fcf1392b3c8d14e1bc85be295798f45",
+   "1f481df920211f2429a730fe00fd3f7d8bb7d716223fb0411c5eea1cdae6024d",
+   "730eeaed93c67fa1b6c47a4cf99a2e137144143ada80229a6a3604bd3296c002",
+   "654638e77ee9f96ec74aa868efcff9702a4516a2b4a0255820d15603fd10151f"
+  ]
+ },
+ "provenance": {
+  "origin": {
+   "file": "docs/evidence/submitted_circuits/comparison-qpy18-full-retrieval.json",
+   "sha256": "1e7072ce8d059b90298559dac822c2ac1b47eda45081f5d96346ce08f2d52c58"
+  },
+  "retrieved_utc": "2026-10-28T00:35:31.259774+00:00",
+  "operation": "read existing job inputs; submissions and uploads excluded",
+  "runtime_versions": {
+   "qiskit": "2.6.0",
+   "qiskit-ibm-runtime": "0.50.0"
+  },
+  "collector_sha256": "77eaddfaac4f54e8a6986bf92547bbb92a721404507fbd9d529fd3c2596093c9"
+ }
+}

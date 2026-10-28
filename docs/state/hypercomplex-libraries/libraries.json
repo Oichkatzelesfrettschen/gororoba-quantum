@@ -9837,6 +9837,7 @@
    "math",
    "parallel",
    "pathlib",
+   "plan_records",
    "platform",
    "research_state",
    "subprocess",
@@ -13918,8 +13919,10 @@
    "decimal",
    "hashlib",
    "json",
+   "parallel",
    "pathlib",
    "re",
+   "sys",
    "typing"
   ],
   "scripts/remeasure_history.py": [
@@ -14048,6 +14051,7 @@
    "os",
    "parallel",
    "pathlib",
+   "plan_records",
    "qd_platform",
    "qi_platform",
    "re",

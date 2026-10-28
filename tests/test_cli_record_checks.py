@@ -9,8 +9,7 @@ A check stays on its own gate in ci/gates.json when a claim in docs/state/resear
 that gate, when a script or a retained file names the gate (scripts/research_state.py --check, core-270;
 scripts/n21_exact_model_validation.py --check, core-485, named in retained case addenda), when it
 belongs to the sources suite, when its command carries more than one script invocation, or when its gate
-declares a runtime or a requirement (scripts/compare_submitted_circuits.py --check, core-281, recomputes QPY
-digests under the historical qiskit-2.5 runtime; scripts/qi_toolchain_check.py --check, core-368, needs the
+declares a runtime or a requirement (scripts/qi_toolchain_check.py --check, core-368, needs the
 Quantum Inspire stack that `--requires qi` selects).
 scripts/aer_blocking_probe.py keeps its gates for the reason tests/test_cli_self_tests.py states.
 
