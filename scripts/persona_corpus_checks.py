@@ -1125,15 +1125,18 @@ def corpus_pairing_sign() -> dict[str, object]:
 
     In the Chevalley basis the corpus's rule sends e_n to e_-n. The state h_0 e_-1|0> equals 2 e_-1|0>, yet pairing
     it with f_-1|0> through the word gives <0|e_1 h_0 f_-1|0> = -2k while the reduced state gives +2k: the map is
-    no anti-automorphism. The adjoint e <-> f, which sugawara_sl2 uses, agrees on both routes.
+    no anti-automorphism. The adjoint e <-> f, which sugawara_sl2 uses, gives 2k on both routes when the same state is
+    paired with e_-1|0>.
     """
     word = affine_vev((("e", 1), ("h", 0), ("f", -1)))
     state = 2 * affine_vev((("e", 1), ("f", -1)))
     require(sp.simplify(word + state) == 0 and state != 0, "the linear pairing no longer contradicts itself")
-    hermitian_word = affine_vev((("f", 1), ("h", 0), ("f", -1)))
-    hermitian_state = 2 * affine_vev((("f", 1), ("f", -1)))
+    # Paired with e_-1|0>, whose adjoint e <-> f gives the nonzero <0|f_1 e_-1|0> = k, so a wrong sign would show.
+    hermitian_word = affine_vev((("f", 1), ("h", 0), ("e", -1)))
+    hermitian_state = 2 * affine_vev((("f", 1), ("e", -1)))
+    require(hermitian_state != 0, "the Hermitian check pairs vanishing matrix elements")
     require(sp.simplify(hermitian_word - hermitian_state) == 0, "the Hermitian pairing is inconsistent")
-    return {"linear_word": str(word), "linear_state": str(state), "hermitian_agrees": True}
+    return {"linear_word": str(word), "linear_state": str(state), "hermitian_both_routes": str(hermitian_state)}
 
 
 def quaternion_order_bridge() -> dict[str, object]:

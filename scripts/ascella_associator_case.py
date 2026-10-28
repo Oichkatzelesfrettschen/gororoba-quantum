@@ -302,7 +302,8 @@ def analyze(run: Path) -> dict[str, Any]:
     results = json.loads((run / "results.json").read_text())
     entries = results.get("iterations") or []
     tallies: dict[str, dict[str, list[int]]] = {b: {"LaLb": [0, 0, 0], "Lab": [0, 0, 0]} for b in PAIRS}
-    excluded = 0
+    excluded = {"three_or_more_clicks": 0, "two_clicks_outside_block": 0, "fewer_than_two_clicks": 0}
+    accepted = 0
     counted = {block: 0 for block in PAIRS}
     for setting, entry in zip(manifest["settings"], entries, strict=False):
         counts = entry.get("counts") if isinstance(entry, dict) else None
@@ -314,13 +315,28 @@ def analyze(run: Path) -> dict[str, Any]:
             occupation = [int(c) for c in state.strip("|>").split(",")]
             occupied = [m for m, n in enumerate(occupation) if n > 0]
             if len(occupied) != 2 or max(occupied) >= LOGICAL:
-                excluded += count
+                cause = (
+                    "three_or_more_clicks"
+                    if len(occupied) > 2
+                    else "two_clicks_outside_block"
+                    if len(occupied) == 2
+                    else "fewer_than_two_clicks"
+                )
+                excluded[cause] += count
                 continue
+            accepted += count
             pair = f"{occupied[0]}{occupied[1]}"
             tally[0] += count if pair in PLUS_PAIRS else 0
             tally[1] += count if pair in MINUS_PAIRS else 0
             tally[2] += count
-    out: dict[str, Any] = {"excluded_events": excluded}
+    out: dict[str, Any] = {
+        "excluded_events": sum(excluded.values()),
+        "excluded_by_cause": excluded,
+        "accepted_two_click_events": accepted,
+        "multiphoton_estimate": multiphoton_estimate(
+            excluded["three_or_more_clicks"], accepted, submission_perf(run, "Transmittance (%)")
+        ),
+    }
     for block, routes in tallies.items():
         # A block decides only when all four ABBA iterations returned counts; a partial block stays descriptive.
         out[f"{block}_counted_iterations"] = counted[block]
@@ -345,15 +361,40 @@ def analyze(run: Path) -> dict[str, Any]:
     return out
 
 
-def submission_visibility(run: Path) -> float | None:
-    """The HOM fraction submission.json recorded at plan time (perfs_at_plan["HOM (%)"] / 100), else None."""
+def submission_perf(run: Path, name: str) -> float | None:
+    """A percentage submission.json recorded at plan time (perfs_at_plan[name] / 100), else None."""
     path = run / "submission.json"
     if not path.exists():
         return None
-    hom = json.loads(path.read_text()).get("perfs_at_plan", {}).get("HOM (%)")
-    if isinstance(hom, bool) or not isinstance(hom, int | float) or not 0 < hom <= 100:
+    value = json.loads(path.read_text()).get("perfs_at_plan", {}).get(name)
+    if isinstance(value, bool) or not isinstance(value, int | float) or not 0 < value <= 100:
         return None
-    return float(hom) / 100
+    return float(value) / 100
+
+
+def submission_visibility(run: Path) -> float | None:
+    """The HOM fraction submission.json recorded at plan time (perfs_at_plan["HOM (%)"] / 100), else None."""
+    return submission_perf(run, "HOM (%)")
+
+
+def multiphoton_estimate(three_click: int, accepted: int, transmittance: float | None) -> dict[str, Any] | None:
+    """Model estimate, not a bound, of accepted two-click events that come from three-photon emission.
+
+    With independent per-photon transmittance eta, a three-photon event leaves exactly two detected photons
+    3 (1 - eta)/eta times as often as three, so that multiple of the three-click count estimates the lossy events
+    inside the accepted sample. Threshold detectors merge bunched photons, which this model ignores, and loss
+    that is correlated between photons breaks it; the estimate therefore carries no decision.
+    """
+    if transmittance is None or accepted == 0:
+        return None
+    ratio = 3 * (1 - transmittance) / transmittance
+    return {
+        "transmittance": transmittance,
+        "lossy_per_three_click": ratio,
+        "estimated_lossy_events": ratio * three_click,
+        "estimated_share_of_accepted": ratio * three_click / accepted,
+        "model": "independent per-photon loss; bunching on threshold detectors ignored; descriptive",
+    }
 
 
 def visibility_from_contrast(f: float) -> float:

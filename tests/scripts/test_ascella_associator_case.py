@@ -56,6 +56,32 @@ def test_closure_holds_at_any_visibility_and_needs_no_hom(tmp_path: Path) -> Non
         raise AssertionError(f"compensation or in-situ visibility off: {decisions}")
     if decisions["hom_comparison"] is not None or record["excluded_events"] != 7 * 8:
         raise AssertionError("HOM comparison without a submission record, or exclusions miscounted")
+    if record["excluded_by_cause"] != {
+        "three_or_more_clicks": 0,
+        "two_clicks_outside_block": 56,
+        "fewer_than_two_clicks": 0,
+    }:
+        raise AssertionError(f"exclusion causes {record['excluded_by_cause']}")
+    if record["multiphoton_estimate"] is not None:
+        raise AssertionError("a multiphoton estimate without a recorded transmittance")
+
+
+def test_multiphoton_estimate_scales_three_click_events_by_the_loss_ratio(tmp_path: Path) -> None:
+    manifest = json.loads((case.CASE / "cases.json").read_text())
+    iterations = _iterations(manifest, 0.875)
+    for entry in iterations:
+        entry["counts"][_state((0, 1, 2))] = 2
+    (tmp_path / "cases.json").write_text(json.dumps(manifest))
+    (tmp_path / "results.json").write_text(json.dumps({"iterations": iterations}))
+    (tmp_path / "submission.json").write_text(
+        json.dumps({"perfs_at_plan": {"HOM (%)": 87.34, "Transmittance (%)": 5.2}})
+    )
+    record = case.analyze(tmp_path)
+    estimate = record["multiphoton_estimate"]
+    if record["excluded_by_cause"]["three_or_more_clicks"] != 16 or estimate is None:
+        raise AssertionError(f"three-click count or estimate {record['excluded_by_cause']}, {estimate}")
+    if abs(estimate["estimated_lossy_events"] - 16 * 3 * 0.948 / 0.052) > 1e-6:
+        raise AssertionError(f"loss ratio {estimate}")
 
 
 def test_hom_comparison_is_descriptive_and_reads_the_submission(tmp_path: Path) -> None:

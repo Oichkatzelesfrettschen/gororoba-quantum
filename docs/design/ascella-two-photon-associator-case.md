@@ -129,8 +129,13 @@ reports how much of the associator survives the mesh, with the source's distingu
   cannot be raised from the request. The job measures it instead.
 - Multiphoton events (g2) that lose a photon can enter as two-click events. They are not route-symmetric in
   general and are not removed by the closure.
-- At g2 1.9 % and Ascella's few-percent transmittance, their share of two-click events is small, but it is
-  unmeasured. The excluded three-click share, which `--analyze` reports, bounds their source.
+- A three-click count does not bound them: losing one photon of three turns a three-click event into an accepted
+  two-click event. `--analyze` counts exclusions by cause (three or more clicks, two clicks outside the logical
+  block, fewer than two clicks) and reports a model estimate. With independent per-photon transmittance eta, a
+  three-photon event leaves exactly two detected photons 3(1 - eta)/eta times as often as three, about 55 times at
+  the 5.2 % read of 2026-10-28, so that multiple of the three-click count estimates the lossy events in the accepted
+  sample. Bunching on threshold detectors and correlated loss fall outside the model, so the estimate is
+  descriptive and enters no decision.
 
 **What changed.** Only the analysis and the preregistered block of `cases.json`, before any data exists. The circuit,
 the eight iterations, the budgets, the credit ceiling and the procedure are unchanged.
