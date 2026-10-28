@@ -237,6 +237,26 @@
             }
           ],
           "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after merging main, whose AGENTS.md adds pointers to docs/PYTHON.md in its layout and Heron r2 paragraphs: the QPU time and calibration section and qpu-submission.md still bind an msq-envelope-v1 record's layout rule, bounds, ceilings and constructor in place of the dry run's calibration values, and the attempt-1 approval marker is unchanged.",
+          "observed_at": "2026-10-28T20:25:22+00:00",
+          "revision": "24fcd03e110603354c27cd1b84574476c9844a40",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "ca088c3df091d91eafd9f4c01a1ef7fff81bde12e691baef5dec9e01e07c2abe"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "de41bacad0b120d42453cf1a57a0045b9ba1ccbcd7bbf5b3069daa6df6f47af5"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
         }
       ]
     },
