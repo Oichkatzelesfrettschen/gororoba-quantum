@@ -33,6 +33,15 @@ All figures come from probes on the build host (RTX 4070 Ti, compute capability 
   `cudaMemPrefetchAsync` through CuPy the same GEMM ran at 0.28 TFLOP/s. Warm HMM access therefore runs about 45x
   below device-resident FP32, and the prefetch as issued did not help: either the pages are read across PCIe
   without migrating, or CuPy calls the pre-CUDA-13 `cudaMemPrefetchAsync` signature and migrates nothing.
+- The NVIDIA UVM driver ships with `uvm_disable_sam_migration=Y`: under HMM the device reads system-allocated
+  memory remotely across PCIe and never migrates it. Nsight Systems recorded no migrations, and the GEMM kernels on
+  HMM pointers ran at 28.6 ms median at `n = 2048` against 0.6 ms resident. With `options nvidia_uvm
+  uvm_disable_sam_migration=0` (in `/etc/modprobe.d/nvidia-uvm-sam.conf`, applied by reloading `nvidia_uvm`), the same
+  `n = 4096` GEMM on raw numpy memory runs at 27.6 TFLOP/s on repeated access against 28.1 resident, 98 percent of
+  device speed with no copy in the program; Nsight records 33.6 MB migrated to the device, 27.1 MB back, 1,714 GPU and
+  6,610 CPU page faults. HMM with SAM migration is therefore the primary Layer 2 path.
+- The staging path with an eight-thread band copy from pageable into pinned buffers computes the exact `n = 16384`
+  product in 3.71 s (2.37 TOP/s effective), exact on sampled entries, against 27.6 s with a single-threaded copy.
 - `cudaMallocManaged` oversubscription worked (1.69 GiB of operands on 599 MiB free) but ran at 0.09 TFLOP/s: a
   GEMM's access order migrates pages back and forth across PCIe.
 - The exact INT8 modular product (below) ran 34x and 51x faster than FLINT `nmod_mat` multiplication at
@@ -131,11 +140,9 @@ contents. A Rust port fits `open_gororoba`, which already depends on `cudarc` 0.
 
 ## Order
 
-1. Establish that HMM pages migrate: issue `cudaMemPrefetchAsync` through the CUDA 13 signature (location struct
-   and flags, via `cuda-python` bindings rather than CuPy's wrapper), trace one GEMM under Nsight Systems with
-   page-fault and migration tracing, and require warm HMM GEMM throughput within 2x of device-resident. If the
-   migrations do not occur, the HMM path stays a fallback and the staging path (with a multithreaded host copy)
-   carries Layer 2.
+1. HMM migration is established (above). Port the exact INT8 product onto HMM operands in the tiled layout, with
+   CUDA 13 prefetch through `cuda-python` per tile, and measure it against the 3.71 s staging result at `n = 16384`
+   and at sizes past device memory.
 2. Layer 2 with the tiled layout and the prefetch pipeline, measured against staging; Nsight Systems confirms the
    prefetches remove demand faults.
 3. Layer 3: fused base-case kernel, then recursive PLUQ; rank against FLINT up to `n = 8192`.
