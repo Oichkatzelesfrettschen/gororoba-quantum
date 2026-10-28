@@ -145,7 +145,7 @@ Every number is the corpus's own input run through CODATA constants [E].
 | tourmaline f = v_s/(2d) ~ 3.5 MHz at 7000 m/s, 1 mm | 3.5 MHz | survives as arithmetic on the assumed v_s |
 | f_opt = f_Planck alpha^-1 phi^n | n = -206.9 for 148 Hz, -185.9 for 3.5 MHz | no content: phi^n steps by 1.618, so some integer n lands within a factor 1.27 of any frequency |
 | a = l_P sqrt(8 pi gamma) ~ 2.7e-35 m, gamma = 0.2375 | 3.95e-35 m; the root of the j = 1/2 area gap is 3.67e-35 m | refuted by 1.46 |
-| Casimir modulation cos(2 pi d/a), d ~ 1 nm | 6.2e25 periods per nanometer | untestable: any position jitter averages it to zero |
+| Casimir modulation cos(2 pi d/a), d ~ 1 nm | 3.7e25 periods per nanometer at the corpus's a = 2.7e-35 m | untestable: any position jitter averages it to zero |
 | strong-field dispersion (E/E_S)^2 (k l_P)^2 | 6.9e-68 at 2.74e12 V/m, 800 nm | untestable |
 
 [I] Further failures of the audit register:

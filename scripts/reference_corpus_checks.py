@@ -20,22 +20,26 @@ import importlib.util
 import itertools
 import json
 import math
+import sys
 from collections.abc import Callable, Sequence
 from fractions import Fraction
 from functools import cache
 from pathlib import Path
 
 import numpy as np
-import pais_claim_bounds as claim_bounds
-import pais_superforce_bounds as superforce
 import sympy as sp
 from scipy import constants as sc
-
-from cd_core import cd_sign, sedenion_zero_divisor_corpus
-from hypercomplex_operators import order_interferometer, quaternion_matrix
-from parallel import ordered_map
+from scipy import sparse
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+import pais_claim_bounds as claim_bounds  # noqa: E402
+import pais_superforce_bounds as superforce  # noqa: E402
+
+from cd_core import cd_sign, sedenion_zero_divisor_corpus  # noqa: E402
+from hypercomplex_operators import order_interferometer, quaternion_matrix  # noqa: E402
+from parallel import ordered_map  # noqa: E402
+
 ALBERT_CHECK = ROOT / "docs/notes/packages/manual/checks/albert_algebra.py"
 PRIME = 1_000_003
 
@@ -89,12 +93,9 @@ def modular_rank(matrix: np.ndarray, prime: int = PRIME) -> int:
     return rank
 
 
-def gram(blocks: Sequence[np.ndarray]) -> np.ndarray:
-    """Exact integer A^T A from float64 blocks of a small-integer A; every partial sum stays below 2^53."""
-    total = sum(block.T @ block for block in blocks)
-    rounded = np.rint(total)
-    require(bool(np.all(np.abs(total - rounded) == 0)), "A^T A left the exact float64 integers")
-    return rounded.astype(np.int64)
+def gram(matrix: sparse.csr_array) -> np.ndarray:
+    """Exact A^T A of a sparse integer matrix; scipy's sparse product runs in integer C loops, outside BLAS."""
+    return np.asarray((matrix.T @ matrix).toarray(), dtype=np.int64)
 
 
 # ---------------------------------------------------------------- Lie algebra sl(2) and su(2)
@@ -174,7 +175,7 @@ def e8_structure() -> dict[str, object]:
     reflected = roots[None, :, :] - (gramm[:, :, None] // 4) * roots[:, None, :]
     closed = all(tuple(v) in index for v in reflected.reshape(-1, 8))
     require(closed, "E8 roots not closed under reflections")
-    rank = int(np.linalg.matrix_rank(roots.astype(float)))
+    rank = modular_rank(roots)
     require(rank == 8, f"root span has rank {rank}")
     edges = int(np.count_nonzero(gramm == 4)) // 2
     require(edges == 6720, f"4_21 has {edges} edges")
@@ -375,19 +376,18 @@ def albert_cross_check(doubled: np.ndarray) -> int:
     return len(pairs)
 
 
-def derivation_constraints(doubled: np.ndarray, block: int = 54) -> list[np.ndarray]:
+def derivation_constraints(doubled: np.ndarray, block: int = 54) -> sparse.csr_array:
     """Rows of D(x o y) = D(x) o y + x o D(y) on basis pairs i <= j, linear in the 729 entries D[a, b]."""
-    eye = np.eye(27)
+    eye = np.eye(27, dtype=np.int64)
     first, second = np.triu_indices(27)
     blocks = []
     for start in range(0, len(first), block):
         pi, pj = first[start : start + block], second[start : start + block]
-        jij = doubled[pi, pj].astype(float)
-        rows = np.einsum("ak,nb->nkab", eye, jij)
-        rows -= np.einsum("nb,ank->nkab", eye[pi], doubled[:, pj, :].astype(float))
-        rows -= np.einsum("nb,nak->nkab", eye[pj], doubled[pi, :, :].astype(float))
-        blocks.append(rows.reshape(-1, 729))
-    return blocks
+        rows = np.einsum("ak,nb->nkab", eye, doubled[pi, pj])
+        rows -= np.einsum("nb,ank->nkab", eye[pi], doubled[:, pj, :])
+        rows -= np.einsum("nb,nak->nkab", eye[pj], doubled[pi, :, :])
+        blocks.append(sparse.csr_array(rows.reshape(-1, 729)))
+    return sparse.csr_array(sparse.vstack(blocks, format="csr"))
 
 
 def norm_trilinear(doubled: np.ndarray) -> np.ndarray:
@@ -408,16 +408,16 @@ def norm_value(trilinear72: np.ndarray, x: Sequence[int]) -> Fraction:
     return Fraction(int(np.einsum("ijk,i,j,k->", trilinear72.astype(object), v, v, v)), 72)
 
 
-def structure_constraints(trilinear72: np.ndarray) -> np.ndarray:
+def structure_constraints(trilinear72: np.ndarray) -> sparse.csr_array:
     """Rows of t(TX, Y, Z) + t(X, TY, Z) + t(X, Y, TZ) = 0 on basis triples i <= j <= k."""
-    eye = np.eye(27)
+    eye = np.eye(27, dtype=np.int64)
     triples = np.array(list(itertools.combinations_with_replacement(range(27), 3)))
     ti, tj, tk = triples.T
-    t = trilinear72.astype(float)
+    t = trilinear72
     first = np.einsum("nb,na->nab", eye[ti], t[:, tj, tk].T)
     second = np.einsum("nb,na->nab", eye[tj], t[ti, :, tk])
     third = np.einsum("nb,na->nab", eye[tk], t[ti, tj, :])
-    return (first + second + third).reshape(len(triples), 729)
+    return sparse.csr_array((first + second + third).reshape(len(triples), 729))
 
 
 def characteristic_discriminant(trilinear72: np.ndarray, doubled: np.ndarray, x: Sequence[int]) -> Fraction:
@@ -438,14 +438,13 @@ def albert_algebra(cross_check: bool) -> dict[str, object]:
     require(np.array_equal(doubled, doubled.transpose(1, 0, 2)), "Jordan product not commutative")
     checked_pairs = albert_cross_check(doubled) if cross_check else 0
 
-    blocks = derivation_constraints(doubled)
-    der_rank = modular_rank(gram(blocks))
+    derivation = derivation_constraints(doubled)
+    der_rank = modular_rank(gram(derivation))
     require(der_rank == 729 - 52, f"derivation constraints have rank {der_rank} mod {PRIME}")
     left = doubled.transpose(0, 2, 1)  # left[i][k, j] = coordinate k of 2 e_i o e_j
     inner = np.array([left[i] @ left[j] - left[j] @ left[i] for i, j in itertools.combinations(range(27), 2)])
     flat_inner = inner.reshape(len(inner), 729)
-    residual = max(float(np.abs(block @ flat_inner.T.astype(float)).max()) for block in blocks)
-    require(residual == 0.0, "an inner derivation [L_x, L_y] fails the derivation rule")
+    require(not np.any(derivation @ flat_inner.T), "an inner derivation [L_x, L_y] fails the derivation rule")
     inner_rank = modular_rank(flat_inner)
     require(inner_rank == 52, f"inner derivations span rank {inner_rank}")
 
@@ -454,15 +453,15 @@ def albert_algebra(cross_check: bool) -> dict[str, object]:
     require(norm_value(trilinear, identity) == 1, "N(I) != 1")
     require(norm_value(trilinear, [2, 3, 5] + [0] * 24) == 30, "N(diag(2, 3, 5)) != 30")
     constraints = structure_constraints(trilinear)
-    str_rank = modular_rank(gram([constraints]))
+    str_rank = modular_rank(gram(constraints))
     require(str_rank == 729 - 78, f"reduced structure constraints have rank {str_rank} mod {PRIME}")
     traceless = [left[0] - left[1], left[1] - left[2]] + [left[k] for k in range(3, 27)]
     candidates = np.concatenate([flat_inner, np.array(traceless).reshape(26, 729)])
-    require(float(np.abs(constraints @ candidates.T.astype(float)).max()) == 0.0, "candidate fails norm invariance")
+    require(not np.any(constraints @ candidates.T), "candidate fails norm invariance")
     str_explicit = modular_rank(candidates)
     require(str_explicit == 78, f"explicit reduced structure elements span {str_explicit}")
-    scaling = np.eye(27).reshape(729)
-    require(float(np.abs(constraints @ scaling).max()) > 0, "the identity map preserves N")
+    scaling = np.eye(27, dtype=np.int64).reshape(729)
+    require(bool(np.any(constraints @ scaling)), "the identity map preserves N")
 
     samples = [
         [1, 2, 3] + [((7 * k) % 5) - 2 for k in range(24)],
@@ -787,7 +786,7 @@ def physics() -> dict[str, float]:
     out["lqg_scale_m"] = lp * math.sqrt(8 * math.pi * CORPUS_IMMIRZI)
     out["lqg_scale_over_corpus"] = out["lqg_scale_m"] / CORPUS_LATTICE
     out["lqg_area_gap_root_m"] = lp * math.sqrt(4 * math.sqrt(3) * math.pi * CORPUS_IMMIRZI)
-    out["casimir_periods_per_nm"] = 1e-9 / lp
+    out["casimir_periods_per_nm"] = 1e-9 / CORPUS_LATTICE
     k_optical = 2 * math.pi / OPTICAL_WAVELENGTH
     out["dispersion_factor"] = (out["laser_field_V_m"] / claim_bounds.schwinger_field()) ** 2 * (k_optical * lp) ** 2
     out["tourmaline_frequency_Hz"] = CORPUS_SOUND_SPEED / (2 * CORPUS_SPACING)
@@ -838,7 +837,7 @@ def checks(cross_check: bool, kac_levels: Sequence[int]) -> dict[str, object]:
         "sugawara": sugawara_su2(),
         "coulomb_gas": coulomb_gas(),
         "kac_level_two": level_two_ising(),
-        "kac": [kac_determinant(n) for n in kac_levels],
+        "kac": ordered_map(kac_determinant, list(kac_levels), min_items=1),
         "physics": physics(),
     }
 
