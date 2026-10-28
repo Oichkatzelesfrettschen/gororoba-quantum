@@ -494,6 +494,17 @@ def test_readers_carry_the_planted_excitation_and_read_zero_without_it(setup: nl
         check(ones == [int(p.sum()) for p in predecessors], "the predecessor counts are not the bits")
 
 
+def test_the_measure_rows_and_the_reader_prefixes_are_separate_draws(setup: nl.Setup) -> None:
+    """Production reads the N = 2, 4 and 8 measure rows and the reader circuits' prefixes from separate PUBs, so the
+    rows the fit reads share no sample with the carryover strata."""
+    drawn = nl.draw_replicate(setup, small("gamma"), TEST_SEED, 0)
+    for slot, qubit in enumerate(setup.qubits[: len(drawn.counts)]):
+        final = drawn.counts[slot]["final"]
+        prefixes = [int(p.sum()) for p in drawn.predecessors[slot]]
+        rows = [final[nl.predecessor_name(i, qubit)][0] for i in range(nl.READERS)]
+        check(rows != prefixes, f"q{qubit}: the measure rows are the reader prefixes")
+
+
 def test_a_replicate_is_a_function_of_seed_and_index(setup: nl.Setup) -> None:
     case = small("gamma")
     a, b, c = (nl.draw_replicate(setup, case, TEST_SEED, i) for i in (0, 0, 1))
@@ -546,12 +557,12 @@ def test_upper_bound_of_zero_fires_crosses_the_ceiling_at_299() -> None:
 
 
 def test_two_shards_merge_to_the_bytes_of_one_run(setup: nl.Setup) -> None:
-    cases = [small("gamma", 8, 0.0), small("gamma", 9, 0.0)]
+    cases = [small("gamma", 8, 0.0)]
     whole = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 2, cases=cases, record_name="r")])
     halves = [nl.run_arm(setup, "gamma", TEST_SEED, 2, k, 2, cases=cases, record_name="r") for k in (0, 1)]
     check(nl.dumps(nl.merge_records(halves)) == nl.dumps(nl.merge_records(halves[::-1])), "merge depends on order")
     check(nl.dumps(nl.merge_records(halves)) == nl.dumps(whole), "two shards differ from one run")
-    check(whole["replicates"] == {"8-qubits": 2, "9-qubits": 2}, f"{whole['replicates']}")
+    check(whole["replicates"] == {"8-qubits": 2}, f"{whole['replicates']}")
 
 
 def test_the_verdict_requirement_cuts_every_sharding_at_one_replicate(

@@ -1039,6 +1039,45 @@ def test_the_reader_divisor_is_the_posterior_separation_of_the_overlap_model() -
     check(high["d"] > result["d"], "errors from above must not lower D")
 
 
+def test_the_reader_standard_error_carries_each_stratum_s_own_variance() -> None:
+    """A reader baseline 0.02 higher in the N = 2 block, at 8192 shots, latent excitation 0.47, 0.31 and 0.18 and
+    errors 0.006 / 0.014: the reported standard error matches the binomial one at the class sizes, which the spread
+    pooled over every stratum puts about 7 % low."""
+    e01, e10, d, shots = 0.006, 0.014, 0.002, 8192
+    contrast = 1 - e01 - e10
+    previous: list[np.ndarray] = []
+    read: list[np.ndarray] = []
+    exact = []
+    for p, base in [(0.47, 0.02)] * 4 + [(0.31, 0.0)] * 4 + [(0.18, 0.0)] * 4:
+        bits: list[int] = []
+        reads: list[int] = []
+        for state, p_state in ((1, p), (0, 1 - p)):
+            p_bit = 1 - e10 if state else e01
+            p_read = e01 + base + contrast * d * state
+            for bit, p_b in ((1, p_bit), (0, 1 - p_bit)):
+                for value, p_r in ((1, p_read), (0, 1 - p_read)):
+                    n = round(shots * p_state * p_b * p_r)
+                    bits += [bit] * n
+                    reads += [value] * n
+        before, after = np.asarray(bits, dtype=np.int8), np.asarray(reads, dtype=np.int8)
+        previous.append(before)
+        read.append(after)
+        ones, zeros = after[before == 1], after[before == 0]
+        p1, p0 = float(ones.mean()), float(zeros.mean())
+        exact.append((ones.size, zeros.size, p1 * (1 - p1) / ones.size + p0 * (1 - p0) / zeros.size))
+    result = su.carryover_reader(previous, read, readout(e01, e10), 1.0, 32)
+    divisors = result["divisors"]
+    pooled = sum(float(r.sum()) for r in read) / sum(r.size for r in read)
+    weights = [
+        g**2 / (pooled * (1 - pooled) * (1 / n1 + 1 / n0)) for g, (n1, n0, _) in zip(divisors, exact, strict=True)
+    ]
+    binomial = math.sqrt(sum(w**2 * v / g**2 for w, g, (_, _, v) in zip(weights, divisors, exact, strict=True))) / sum(
+        weights
+    )
+    check(abs(result["se"] / binomial - 1) < 0.01, f"se {result['se']} against the binomial {binomial}")
+    check(1 / math.sqrt(sum(weights)) < 0.95 * binomial, "the pooled spread no longer understates this case")
+
+
 def test_carryover_reader_is_free_of_block_baselines_through_stratification() -> None:
     """A bit-independent baseline that differs between the measure blocks moves a pooled difference by Simpson
     weighting; per-reader strata leave it out."""
