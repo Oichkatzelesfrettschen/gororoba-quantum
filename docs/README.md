@@ -310,6 +310,7 @@ differs from it only in the `cd_core.py` digest.
 | [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela billing rule measured per job, packing limits and cost planning |
 | [runbooks/quandela-scheduled-runs.md](runbooks/quandela-scheduled-runs.md) | unattended submission of approved, spaced Quandela jobs from a committed schedule through GitHub Actions |
 | [runbooks/provider-credits.md](runbooks/provider-credits.md) | read-only daily snapshot of every provider's free allotment, alert thresholds and the systemd user timer |
+| [runbooks/classical-compute-pool.md](runbooks/classical-compute-pool.md) | free classical capacity per substrate (build host, Kaggle, GitHub Actions, Azure trial), what pooling across machines buys, tool installs per substrate, measured memory of the A_5 Rees eliminations |
 | [runbooks/critical-peer-review.md](runbooks/critical-peer-review.md) | reviewer checklist for quantum-hardware results: preregistration, multiplicity, effect size, dependent correlations, drift, provenance, simulation boundary and claim wording |
 | [QUANTUM_DISPATCH.md](../plans/QUANTUM_DISPATCH.md) | quantum dispatch plan |
 | [coherence-case-science-review.md](../plans/reviews/coherence-case-science-review.md) | coherence-window case, science review |
