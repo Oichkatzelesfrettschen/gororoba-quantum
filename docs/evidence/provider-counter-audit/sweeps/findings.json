@@ -1177,7 +1177,7 @@
    "tool": "semgrep"
   },
   {
-   "class": "supported as labeled: returned samples over the requested sample budget, a delivery state (README)",
+   "class": "outside the trial contract, labeled: returned samples over the requested budget, a delivery share",
    "file": "scripts/qd_rehearsal_secondary.py",
    "function": "record_state",
    "line": 75,
@@ -1185,7 +1185,7 @@
    "tool": "semgrep"
   },
   {
-   "class": "supported as labeled: returned samples over the requested sample budget, a delivery state (README)",
+   "class": "outside the trial contract, labeled: returned samples over the requested budget, a delivery share",
    "file": "scripts/qd_rehearsal_secondary.py",
    "function": "record_state",
    "line": 76,

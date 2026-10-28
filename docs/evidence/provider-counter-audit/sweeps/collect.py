@@ -4,8 +4,9 @@ counter-arithmetic.semgrep.yml is an intraprocedural taint rule from a provider 
 shots_used, physical_perf, logical_perf, global_perf, duration, number_of_shots, shots_done, shots_requested,
 samples) to a division, product, difference or sum; counter-reads.ast-grep.yml lists every subscript or .get read
 of those fields except samples. Every finding is named by file, line and enclosing function, and takes the class of
-its (file, function) or else of its file from CLASSES. An unclassified finding exits 1, so a rule or code change
-that reaches new arithmetic forces a classification. Without --write the collector compares findings.json; semgrep
+its (file, function) or else of its file from CLASSES; a finding in an unclassified file exits 1. A finding new
+to a classified file takes that file's class and any line shift changes the output, so a replay on a later commit
+runs --write and reviews the diff of findings.json. Without --write the collector compares findings.json; semgrep
 and ast-grep come from SEMGREP and AST_GREP or the PATH, and their versions enter the output.
 """
 
@@ -27,8 +28,8 @@ ROOT = HERE.parents[3]
 OUT = HERE / "findings.json"
 SEMGREP_RULES = HERE / "counter-arithmetic.semgrep.yml"
 AST_GREP_RULES = HERE / "counter-reads.ast-grep.yml"
-# A taint fixpoint that a per-rule timeout cuts short drops findings by machine load; no timeout and one
-# worker make the finding set a function of the sources alone.
+# Full scans at semgrep's default per-rule timeout and worker count return load-dependent finding sets; with no
+# timeout and one worker repeated scans of the same tree agree.
 SEMGREP_FLAGS = ("--metrics=off", "--disable-version-check", "--timeout", "0", "--jobs", "1")
 PATTERNS = ("scripts/*.py", "gororoba_quantum/*.py", "docs/evidence/*.py")
 
@@ -41,7 +42,7 @@ ECHO = "supported: counter echoed into a record without arithmetic"
 LOCAL = "supported: a local Perceval simulator's documented filter share"
 SINK = "inventoried sink: classified in the README sink table"
 UNGATED = "model-dependent, labeled: wall time as an upper detector exposure (README sink table)"
-DELIVERY = "supported as labeled: returned samples over the requested sample budget, a delivery state (README)"
+DELIVERY = "outside the trial contract, labeled: returned samples over the requested budget, a delivery share"
 ACCEPTANCE = "supported: accepted samples over detection events, an acceptance fraction (README sink table)"
 FALSE = "false positive: taint reaches statevector probabilities through a mapping that also holds shots_done"
 

@@ -27,8 +27,8 @@ export PYTHON="${PYTHON:-python3}" GLIBC_TUNABLES=glibc.rtld.optional_static_tls
 [provider_counters.py](../../../gororoba_quantum/provider_counters.py) carries the contract as code. A `Counter`
 names its population, scope, status (observed, requested, modeled, unavailable) and source. `ratio` divides only
 an inner population by one that contains it, and `total` sums only one population and status over disjoint
-scopes. A requested cap or billing quantity never becomes a denominator, a missing counter stays unavailable, and
-a modeled exposure carries its assumptions.
+scopes. A requested cap or billing quantity never becomes the denominator of a trial ratio, a missing counter
+stays unavailable, and a modeled exposure carries its assumptions.
 
 ## Quandela counter contract
 
@@ -95,12 +95,14 @@ counter table. Every simulator counter is supported as recorded.
 [sweeps/collect.py](sweeps/collect.py) runs two rules over every tracked Python file of `scripts/`,
 `gororoba_quantum/` and `docs/evidence/` and writes [sweeps/findings.json](sweeps/findings.json).
 [counter-arithmetic.semgrep.yml](sweeps/counter-arithmetic.semgrep.yml) is an intraprocedural taint rule (semgrep
-1.164.0) from a provider counter field to a division, product, difference or sum; it runs with no per-rule timeout
-and one worker, because a timed-out taint fixpoint drops findings by machine load.
+1.164.0) from a provider counter field to a division, product, difference or sum; two full runs at its default settings
+returned different finding sets, and with no per-rule timeout and one worker three full runs matched byte for
+byte, so it runs with those flags (a taint fixpoint cut short by load is the likely cause).
 [counter-reads.ast-grep.yml](sweeps/counter-reads.ast-grep.yml) (ast-grep 0.42.3) lists every subscript or `.get`
-read of those fields. The collector names each finding by file, line and enclosing function, assigns it a class,
-and exits 1 on an unclassified finding, so a rule or code change that reaches new counter arithmetic needs a
-classification before the sweep passes again.
+read of those fields. The collector names each finding by file, line and enclosing function and assigns it the class of
+its function or else of its file; a finding in an unclassified file exits 1. A new finding in an already
+classified file takes that file's class, and any line shift in a scanned file changes findings.json, so a replay
+on a later commit runs `--write` and reviews the diff of findings.json, classes included.
 
 The 171 findings (65 taint, 106 reads) fall into these classes: the audit's own replays and contract; Target and
 circuit instruction durations, which name no provider result field; gate-model shots compared or summed within
@@ -109,7 +111,8 @@ iterations as detection events (`qd_platform.result_summary`, `evidence_closure.
 `duration` read as wall time (the job-05 iteration rule of `ascella_new_mesh_score`, the bridge and dwell
 duration windows of `qd_belenos_mesh`, `bdsc_stationarity` seconds per sample, `qd_schedule`); counters echoed
 without arithmetic; a local Perceval simulator's documented filter share; the inventoried sinks below; three
-consumers the sink table adds below; and one false positive, where taint reaches statevector probabilities in
+consumers the sink table adds below (the stray-mode ungated bound, the rehearsal delivery share and the
+five-experiment acceptance fraction); and one false positive, where taint reaches statevector probabilities in
 `local_photonic_compiler_crosscheck.qi_case` through a mapping that also holds `shots_done`. Semgrep cannot parse
 `scripts/gl52_split_conjugators.py`; its counter words name transpiled schedule durations in dt and seeded
 samples of a coset graph, both outside counter scope. Neither tool is in the CI environment, so the collector is
@@ -131,9 +134,9 @@ SEMGREP=/usr/bin/semgrep AST_GREP=ast-grep "$PYTHON" docs/evidence/provider-coun
 | `bdsc_stray_mode_veto`, `bdsc_diagnostic`, `bdsc_stationarity` | `physical_perf` as a covariate or ordering | supported as an uninterpreted diagnostic | ranks against dark rate / `physical_perf` are reported as conditional and drive no reading |
 | `iqm_jobs`, `iqm_cancellation_probe`, `iqm_signed_probe` | heralded shot counts | supported | heralding retention reported; conditional estimators use returned shots |
 | `bdsc_stray_mode_veto.stray_report` `ungated_stray_share_bound` | stray dark rate x job `duration` / samples | model-dependent, labeled | wall time, which includes compilation, is an upper exposure, so the bound only rules out a stray detector live for the whole job; the retained shares lie far below it |
-| `qd_rehearsal_secondary.record_state` | returned samples / requested `max_samples` (the job total, `job.samples x count`) | supported as labeled | a delivery share that sorts the record into a preregistered state; it reads as no trial rate and enters no verdict of `qd_teleportation_rehearsal` |
+| `qd_rehearsal_secondary.record_state` | returned samples / requested `max_samples` (the job total, `job.samples x count`) | outside the trial contract, labeled | a budget-delivery share, not a trial ratio: it sorts the record into a preregistered state and enters no verdict of `qd_teleportation_rehearsal` |
 | `experiment_analysis.analyze_qd` `accepted_vs_detected_fraction` | accepted samples / `nb_shots_used` | supported | an acceptance fraction of logical samples among detection events; the record's `denominator_boundary` states that incident pulses stay unknown |
-| `photonic_repeat_readout.observation` and the two compilation audits | one-click samples / photon-filtered samples | supported | every frequency conditions on reported total occupation one, the claim's boundary; `nb_shots_used`, `physical_perf`, `logical_perf` and `global_perf` are echoed as `reported_*` without arithmetic |
+| `photonic_repeat_readout.observation`, which `photonic_compilation_audit` imports | per-mode one-click counts / the one-click total | supported | each frequency conditions on reported total occupation one, the claim's boundary, and the one-click, vacuum and multiple-click counts must sum to the returned samples; `nb_shots_used`, `physical_perf`, `logical_perf` and `global_perf` are copied as `reported_*` without arithmetic, and neither pooled script reads them |
 
 The root-cause run itself also contradicts the timing model. Under that model, 7 of its 24 modes expect more dark
 clicks than they recorded; mode 0, for one, expects 5.85 and recorded 0 (Poisson probability 0.0029). Dark counts
