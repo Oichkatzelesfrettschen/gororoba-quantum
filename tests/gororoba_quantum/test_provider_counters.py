@@ -280,6 +280,14 @@ def test_record_view_keeps_a_counted_partial_answer_with_no_samples() -> None:
         raise AssertionError("an answer without shots_used and without counts stays uncounted")
 
 
+def test_record_view_reads_an_absent_result_as_unavailable() -> None:
+    # qd_platform.collect writes result_absent, and no answer fields, when an error job's result route answers 404.
+    results = {"status": {"status": "error", "shots": 0}, "result_absent": "GET result: HTTP 404"}
+    record = pc.quandela_record(results, [(1000, 2000)])
+    if record.iterations or record.top_level.available or record.detection_events.available or not record.partial:
+        raise AssertionError(record.record())
+
+
 @pytest.mark.audit
 def test_record_view_agrees_with_the_counter_table_on_every_retained_run() -> None:
     import re

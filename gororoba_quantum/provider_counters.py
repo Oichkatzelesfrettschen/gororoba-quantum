@@ -376,8 +376,18 @@ def quandela_record(results: Mapping[str, Any], budgets: Sequence[tuple[int, int
     whose payload carried no counts (a provider error or a partial job) leaves every sample counter unavailable
     rather than zero, although the collected record writes samples 0 for it. qd_platform.result_summary writes
     shots_used only for a parsed single answer, so a partial answer with an empty BSCount and shots_used stays
-    counted, with its observed zero samples.
+    counted, with its observed zero samples. A record whose result route answered 404 (qd_platform.collect's
+    result_absent) carries no answer: no iterations, a partial reading and unavailable counters.
     """
+    if isinstance(results.get("result_absent"), str):
+        reason = f"result absent: {results['result_absent']}"
+        return QuandelaRecord(
+            False,
+            True,
+            (),
+            unavailable("shots", Population.DETECTION_EVENT, "job", reason),
+            unavailable("detection_events", Population.DETECTION_EVENT, "job", reason),
+        )
     partial = results.get("partial") is True
     entries = results.get("iterations")
     iterated = isinstance(entries, list)
