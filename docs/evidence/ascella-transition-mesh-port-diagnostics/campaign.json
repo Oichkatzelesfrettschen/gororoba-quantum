@@ -1,0 +1,145 @@
+{
+  "baseline_analysis": {
+    "file": "results/quandela/ascella-transition-context-parallel-analysis.json",
+    "sha256": "1d7c75b26e2d0faef501432b2060c803b26793d71662c3ec5dccfd5fd3997902"
+  },
+  "confidence": 0.95,
+  "credit_ceiling_per_job": 1.131072,
+  "dependencies": [
+    {
+      "file": "scripts/ascella_transition_context.py",
+      "sha256": "dfbf84493d38533bea504d5f6565365d89ea2caee763bdaa67faf575908af3e1"
+    },
+    {
+      "file": "scripts/qd_platform.py",
+      "sha256": "08941de901160d6f419b51905693d9921e3af34add328a82a5030ac4f55d9178"
+    },
+    {
+      "file": "scripts/anu_qrng.py",
+      "sha256": "6dfb9876bd02df4656114a6c660956d584974ecbb1d7250e1bf40885aafcfaae"
+    },
+    {
+      "file": "scripts/hypercomplex_cases.py",
+      "sha256": "ccda90e4da975ff6d9808f0210bdf05040ad1206809ca071ff45a04c87649120"
+    },
+    {
+      "file": "gororoba_quantum/operator_arithmetic.py",
+      "sha256": "1e0d010226bbf4e822f07bb2508338155efe2f91287694b5c81363dcabb72700"
+    },
+    {
+      "file": "gororoba_quantum/parallel.py",
+      "sha256": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
+    }
+  ],
+  "detected_shot_cap_per_setting": 131072,
+  "endpoints": 1876,
+  "execution_stop_seconds": 300,
+  "family": "132 new observations and two retained singleton anchors; 14 endpoints each",
+  "jobs": [
+    {
+      "directory": "results/quandela/runs/ascella-transition-mesh-port-1",
+      "manifest": "cases/mesh-port-1/cases.json",
+      "manifest_sha256": "6fb21a2662a68246542bc9947a58bbbb1454e7f1fd2474aaae0921158799c171",
+      "name": "mesh-port-1"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-transition-mesh-port-2",
+      "manifest": "cases/mesh-port-2/cases.json",
+      "manifest_sha256": "841ab1eb0b2aabe2a9b782dc8babd82dd41357ff55b471b58ba3dc439a412274",
+      "name": "mesh-port-2"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-transition-mesh-port-3",
+      "manifest": "cases/mesh-port-3/cases.json",
+      "manifest_sha256": "a95b26ec5406f2b510e9abafa99416618818321b34675c0abf721b98ab600049",
+      "name": "mesh-port-3"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-transition-mesh-port-4",
+      "manifest": "cases/mesh-port-4/cases.json",
+      "manifest_sha256": "9797347742026f27a3bd62533daf6ee2d63da2a643bc60a843009bc72e1afb4f",
+      "name": "mesh-port-4"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-transition-mesh-port-5",
+      "manifest": "cases/mesh-port-5/cases.json",
+      "manifest_sha256": "f159645cd346a4d1e8554ff18501046380e5a3b78eb9760c1fe7416f435b3086",
+      "name": "mesh-port-5"
+    },
+    {
+      "directory": "results/quandela/runs/ascella-transition-mesh-port-6",
+      "manifest": "cases/mesh-port-6/cases.json",
+      "manifest_sha256": "27e1ebe9b3fab9cf55e6eb53996b3dcf66d023287b4ee21d6462820e37fa90a2",
+      "name": "mesh-port-6"
+    }
+  ],
+  "port_maps": {
+    "logical-swap": [
+      3,
+      1,
+      5,
+      0,
+      4,
+      2,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "original": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "outer-swap": [
+      0,
+      1,
+      8,
+      3,
+      4,
+      9,
+      6,
+      7,
+      2,
+      5,
+      10,
+      11
+    ]
+  },
+  "producer_sha256": "4122d9081d23732ebc30770fbdb5014ee29ea184ddf59ff09e703fbc59ff8786",
+  "replicates_per_condition": 8,
+  "samples_per_setting": 65536,
+  "schema": "ascella-transition-mesh-port-campaign-v1",
+  "seed_allocation": {
+    "file": "docs/evidence/ascella-transition-mesh-port-diagnostics/seed-allocation.json",
+    "sha256": "dd4518d911492d6e90f1038c9b75adef54bf263212dd821261996491762a83f6"
+  },
+  "seed_exclusion_source": {
+    "file": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+    "sha256": "ce99de214cf0d488c35408b9a05472b92f9b9e450900a14f93a68da72e72410c"
+  },
+  "source_draw": {
+    "file": "docs/evidence/anu_qrng/draw-2026-10-28T003533Z.json",
+    "sha256": "50a7c7b34bc4d04aec679ef34fba05e86bc7e676512b0b17bb5628018d1216b1"
+  },
+  "source_manifest": {
+    "file": "docs/evidence/ascella-cancellation-transition-acquisition/cases/dimension-six-transition-pilot/cases.json",
+    "sha256": "10bc07066311984fac15badbe8d55e6dd035da6f37dd68efb841fc6e5433c7dc"
+  },
+  "total_credit_ceiling": 6.786432,
+  "written_case": {
+    "file": "docs/evidence/ascella-transition-mesh-port-diagnostics/README.md",
+    "sha256": "b830b259e48b26826484232a93f40d5df4ae1ffaf63b3a4c110885e1b14cb530"
+  }
+}

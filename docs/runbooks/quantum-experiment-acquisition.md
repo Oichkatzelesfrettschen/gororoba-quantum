@@ -10,6 +10,14 @@ freezes five ordered cancellation jobs and a packed twelve-setting pilot, includ
 complete-output confidence bounds and the full-campaign expansion rule.
 The [retained Ascella findings](../evidence/ascella-cancellation-transition-acquisition/findings.md) record
 complete acquisitions, passing cancellation controls and the pilot's failed expansion qualification.
+The [Ascella transition context case](../evidence/ascella-transition-context-diagnostics/README.md)
+compares single-setting jobs with forward and reverse requested iterator orders using retained meshes.
+The [context findings](../evidence/ascella-transition-context-diagnostics/findings.md) record changing
+output distributions despite matched returned meshes and leave physical order and drift unresolved.
+The [Ascella mesh and output-port case](../evidence/ascella-transition-mesh-port-diagnostics/README.md)
+crosses independent compilation identifiers with three physical output maps and matched anchors.
+The [day-separated matched-mesh case](../evidence/ascella-transition-day-repeat/README.md) repeats
+five settings at least 24 hours after the forward context job on the following Pacific calendar day.
 
 ## Questions and controls
 

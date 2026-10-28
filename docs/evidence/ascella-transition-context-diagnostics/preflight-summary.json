@@ -1,0 +1,79 @@
+{
+  "jobs": [
+    {
+      "body_sha256": "629248c57e8ab8247b607ba52c2e8bd80e789205725087ea14609e3c93352804",
+      "cases_sha256": "8cad2048bebe645764d396c3f1bee774660b7e30dca374a1a399bd1457715ba9",
+      "credit_ceiling": 1.131072,
+      "job": "single-identity-2",
+      "status_at_plan": {
+        "explorer": "available",
+        "processor": "available"
+      }
+    },
+    {
+      "body_sha256": "208dc5cc34758f3609f8c136cc9ead371913b8928d69e20188e6f0be1177bd12",
+      "cases_sha256": "88d88004c1b35dfc28394078b5f26c01ff18a06f072c765b37e24e23fe1a12e4",
+      "credit_ceiling": 1.131072,
+      "job": "single-identity-5",
+      "status_at_plan": {
+        "explorer": "available",
+        "processor": "available"
+      }
+    },
+    {
+      "body_sha256": "96094f31c51cfc6c627d65d98205f0f543bcae7d247d182d19cde36db10e5b0d",
+      "cases_sha256": "8075ceef6e68209d385bdfca7001b85a69aec850e44908f02ea617a1504d548e",
+      "credit_ceiling": 1.131072,
+      "job": "single-cross-4",
+      "status_at_plan": {
+        "explorer": "available",
+        "processor": "available"
+      }
+    },
+    {
+      "body_sha256": "fc20c65ff80ba07c00c97d720efb164948f056710aea06fe481f43a198d933cc",
+      "cases_sha256": "de9a7718013377447f0fc6173dcafb714d65a30ba2dc1e7e298453b9e720c9a1",
+      "credit_ceiling": 1.131072,
+      "job": "single-identity-0",
+      "status_at_plan": {
+        "explorer": "available",
+        "processor": "available"
+      }
+    },
+    {
+      "body_sha256": "2a4cef02e934a80372f4a14fbf751bf4ea3fd5a3db53b834fc571b4c1ca1d9a2",
+      "cases_sha256": "bf8d368e77eefca823353796bcf38980159b93f6f9b306ddf46009db5bc88b3d",
+      "credit_ceiling": 1.131072,
+      "job": "single-cross-0",
+      "status_at_plan": {
+        "explorer": "available",
+        "processor": "available"
+      }
+    },
+    {
+      "body_sha256": "edd4611f12669bca6d07b37f282d81f26cf30ba68483b47d5d4b434648dbafb5",
+      "cases_sha256": "5b3773de73119bcafaa646fdaced6fc5e98bc197494054de259713ea05b83f53",
+      "credit_ceiling": 1.131072,
+      "job": "packed-forward",
+      "status_at_plan": {
+        "explorer": "available",
+        "processor": "available"
+      }
+    },
+    {
+      "body_sha256": "90afc26bb418ad04749b168e0713fb07b682e1466f9de03d5965a8c43581b38f",
+      "cases_sha256": "2e9da6253ecf5cf60dca6b722204d2819e9ff3dc3cd211e1b6755ced9be961fa",
+      "credit_ceiling": 1.131072,
+      "job": "packed-reverse",
+      "status_at_plan": {
+        "explorer": "available",
+        "processor": "available"
+      }
+    }
+  ],
+  "prior": {
+    "duration_seconds": 37,
+    "start_time": 1793145221.910272
+  },
+  "schema": "ascella-transition-context-preflight-v1"
+}

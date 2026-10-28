@@ -1,0 +1,35 @@
+{
+  "schema": "ascella-transition-context-account-after-v1",
+  "observed_utc": "2026-10-28 00:40:54 UTC",
+  "token_usage": {
+    "result": [
+      {
+        "total_jobs": 94,
+        "usage": [
+          {
+            "credits": 0,
+            "duration_seconds": 1967,
+            "free_credits": 23.294336000000005,
+            "nb_jobs": 28,
+            "platform_name": "qpu:ascella"
+          },
+          {
+            "credits": 0,
+            "duration_seconds": 1128,
+            "free_credits": 16,
+            "nb_jobs": 17,
+            "platform_name": "sim:belenos"
+          },
+          {
+            "credits": 0,
+            "duration_seconds": 5570,
+            "free_credits": 50.26742,
+            "nb_jobs": 49,
+            "platform_name": "qpu:belenos"
+          }
+        ]
+      }
+    ]
+  },
+  "boundary": "Token consumption is not an account balance or expiry."
+}
