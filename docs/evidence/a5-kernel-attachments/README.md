@@ -298,6 +298,68 @@ reaches a 30-minute timeout at 14 GB; and the degree-by-degree fiber cone takes 
 8 GiB in degree 3. The withdrawn iterated-blow-up draft took `sat(...)[1]`, which in Singular 4.4 keeps one
 generator of the saturation, so its earlier E8-bar residual-base measurement carries no information.
 
+## Nullity-16 basepoints, germs, and Schur-coordinate counts
+
+[`nullity16_basepoints.py`](nullity16_basepoints.py) selects the canonical `N+` or `N-` census endpoint reached by a
+committed path for each of the 18 incidences into nullity 16 and writes
+[`nullity16-basepoints-result.json`](nullity16-basepoints-result.json). At each endpoint the producer constructs the
+nine-dimensional coordinate slice complementary to the boundary orbit, intersects the reduced source-closure
+components through the origin, and computes the germ through the global-ordering deformation to the normal cone.
+The boundary matrix `C_z` has rank six and a nine-dimensional kernel. For a nullity-12 source the producer uses the
+36 upper-triangle entries of the rank-two Schur form; for a nullity-8 source it uses the 126 principal four-Pfaffians
+of the rank-four form. The Nakayama count is the dimension of the coordinate ideal modulo the source-germ maximal
+ideal.
+
+All 18 reduced germs reproduce the committed `(dimension, multiplicity, embedding dimension, components)` tuple.
+Ten Nakayama calculations complete, while the other eight reach the 300-second limit after their germ calculation
+has completed:
+
+| Incidence family | Reduced germ | Nakayama count or blocked stage |
+| --- | --- | --- |
+| `B9->N+`, `B9->N-` | `(3,1,3,1)` | 3 |
+| `V->N+`, `V->N-` | `(2,2,3,1)` | 3 |
+| `VB->N+`, `VB->N-` | `(1,1,1,1)` | 1 |
+| `Va+->N+`, `Va-->N-` | `(1,1,1,1)` | 1 |
+| `E8bar->N+`, `E8bar->N-` | `(5,3,8,1)` | blocked at `nakayama_count` |
+| `Iso->N+`, `Iso->N-` | `(5,2,6,1)` | 17 |
+| `W8->N+`, `W8->N-` | `(6,2,7,1)` | blocked at `nakayama_count` |
+| `X+->N+`, `X-->N-` | `(4,2,7,1)` | blocked at `nakayama_count` |
+| `X+->N-`, `X-->N+` | `(4,1,4,1)` | blocked at `nakayama_count` |
+
+The retained generation pooled four workers and measured these row costs. Each peak is the largest completed
+Singular timing-wrapper measurement for the row. A timeout kills the Nakayama wrapper with its process group, so the
+starred peaks measure the completed germ stage only; the timed-out Nakayama process's peak resident memory remains
+unmeasured.
+
+| Incidence | Row wall time (s) | Measured Singular peak RSS (KiB) | Outcome |
+| --- | ---: | ---: | --- |
+| `B9->N+` | 0.546 | 20,368 | completed |
+| `B9->N-` | 0.616 | 20,372 | completed |
+| `V->N+` | 0.745 | 22,932 | completed |
+| `V->N-` | 0.804 | 22,648 | completed |
+| `VB->N+` | 0.786 | 20,044 | completed |
+| `VB->N-` | 0.757 | 19,860 | completed |
+| `Va+->N+` | 0.623 | 20,324 | completed |
+| `Va-->N-` | 0.708 | 20,140 | completed |
+| `E8bar->N+` | 312.797 | 35,416* | blocked at `nakayama_count` |
+| `E8bar->N-` | 321.191 | 34,760* | blocked at `nakayama_count` |
+| `Iso->N+` | 20.146 | 159,428 | completed |
+| `Iso->N-` | 10.382 | 160,008 | completed |
+| `W8->N+` | 301.466 | 19,392* | blocked at `nakayama_count` |
+| `W8->N-` | 300.675 | 19,800* | blocked at `nakayama_count` |
+| `X+->N+` | 301.544 | 21,068* | blocked at `nakayama_count` |
+| `X+->N-` | 300.696 | 21,176* | blocked at `nakayama_count` |
+| `X-->N+` | 300.646 | 21,160* | blocked at `nakayama_count` |
+| `X-->N-` | 300.909 | 20,732* | blocked at `nakayama_count` |
+
+The full capped generation took 10:36.31 and reached 160,008 KiB peak resident memory. Every Singular call had a
+4 GiB address-space cap and a 300-second timeout; the producer imposed no wall-clock gate. Deleting the first exact
+generator of the `Va+` source closure changes the `Va+->N+` germ from `(1,1,1,1)` to `(2,1,2,1)`, so the mutation
+control is detected. The record has `pass=false` because eight counts remain blocked, while all ten completed rows
+pass. The record certifies basepoints, slices, reduced germs, and the ten completed local generator counts. It
+computes neither a nullity-16 Gauss fiber nor an attaching map. A changed germ or completed count, a blocked row that
+fails to name its stage, or a surviving source-ideal mutation falsifies the retained outcome.
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?
@@ -401,6 +463,12 @@ prlimit --as=17179869184 -- "$PYTHON" docs/evidence/a5-kernel-attachments/holomo
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-attachments/schur_degeneracy_witnesses.py --self-test
 "$PYTHON" docs/evidence/a5-kernel-attachments/schur_degeneracy_witnesses.py \
     --check docs/evidence/a5-kernel-attachments/schur-degeneracy-witnesses-result.json
+prlimit --as=17179869184 -- "$PYTHON" -B -W error \
+    docs/evidence/a5-kernel-attachments/nullity16_basepoints.py --self-test
+prlimit --as=17179869184 -- "$PYTHON" -B -W error -O \
+    docs/evidence/a5-kernel-attachments/nullity16_basepoints.py --self-test
+prlimit --as=17179869184 -- "$PYTHON" docs/evidence/a5-kernel-attachments/nullity16_basepoints.py \
+    --check docs/evidence/a5-kernel-attachments/nullity16-basepoints-result.json
 ```
 
 The `--check` command constructs the sorted, two-space-indented JSON plus its final newline in memory and compares
