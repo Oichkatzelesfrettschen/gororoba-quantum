@@ -184,9 +184,10 @@ and the Kaggle noise-snapshot rule.
   retention audit (`scripts/reconcile_qpu_inventory.py`, which writes each
   instance's audit and creates the file exclusively), the submitted-circuit
   comparison (a successor written by `scripts/compare_submitted_circuits.py
-  --write --out NEW_PATH --seed PREVIOUS`, a service read of the missing jobs'
-  submitted programs under the replay interpreter of gate core-281, because
-  QPY digests follow the Qiskit version; the procedure is in
+  --write --out NEW_PATH`, an unseeded service read of every audited job's
+  submitted programs under the current pinned interpreter, because QPY
+  digests follow the Qiskit version and the Qiskit 2.5.2 replay interpreter
+  cannot load the QPY format 18 that Qiskit 2.6.0 writes; the procedure is in
   [the comparison README](../../evidence/submitted_circuits/README.md)), and
   the registry (`scripts/research_state.py --write`, with the claim that cites
   the run). Run-family registers (the ghost, scaffolding-exposure and

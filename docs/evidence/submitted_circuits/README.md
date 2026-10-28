@@ -117,8 +117,8 @@ the earlier serializer.
 An offline rebind successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
 named files and the pinned Qiskit/runtime versions bound the replay; the provenance does not claim a complete
-transitive import closure. Every earlier comparison retains its recorded bytes; a 2.5.2 comparison checks only
-under an interpreter qualified against `ci/requirements-replay.txt` (`REPLAY_PYTHON`).
+transitive import closure. Every earlier comparison retains its recorded bytes; each binds an earlier audit digest
+and job set, so none checks against the current audit.
 
 Replay the active comparison from the repository root with the current pinned interpreter:
 

@@ -12219,7 +12219,7 @@
     },
     {
       "id": "kingston-n21-detuning-sign-precession",
-      "statement": "On ibm_kingston (primary instance, 19 four-qubit N=21 orbit replicas in one dynamic job of 56 PUBs at 4096 shots and a 20 us repetition delay, calibration 2026-10-27T09:07:55-07:00, 17 s billed against a 15.35 s plan) the orbit's relative phase turns at the Ramsey frame offset of the work qubit for 16 minus that of the work qubit for 1: the slope through the origin is 1.010 [0.977, 1.043] over 18 replicas (D1 holds), the orbit turns with the sign of the offset difference on 17 of 17 resolved replicas (D2 holds), and a Hahn echo returns the undosed phase within three standard errors on 17 of 17 moved replicas (D3 holds). The pair 58 and 69, whose offsets are equal, reads -0.18 +- 0.25 kHz, as the offset difference predicts.",
+      "statement": "On ibm_kingston (primary instance, 19 four-qubit N=21 orbit replicas in one dynamic job of 56 PUBs at 4096 shots and a 20 us repetition delay, planned at calibration 2026-10-27T09:07:55-07:00 and executed under 2026-10-27T10:34:08-07:00, 17 s billed against a 15.35 s plan) the orbit's relative phase turns at the Ramsey frame offset of the work qubit for 16 minus that of the work qubit for 1: the slope through the origin is 1.010 [0.977, 1.043] over 18 replicas (D1 holds), the orbit turns with the sign of the offset difference on 17 of 17 resolved replicas (D2 holds), and a Hahn echo returns the undosed phase within three standard errors on 17 of 17 moved replicas (D3 holds). The pair 58 and 69, whose offsets are equal, reads -0.18 +- 0.25 kHz, as the offset difference predicts.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",

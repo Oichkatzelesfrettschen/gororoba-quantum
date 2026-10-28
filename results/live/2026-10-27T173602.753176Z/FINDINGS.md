@@ -7,7 +7,8 @@ and the Hahn echo refocuses it.
 
 ## Run
 
-ibm_kingston job `dbge2jpj4t8s73ac6fk0` on the primary instance, at calibration 2026-10-27T09:07:55-07:00, under the
+ibm_kingston job `dbge2jpj4t8s73ac6fk0` on the primary instance, planned at calibration 2026-10-27T09:07:55-07:00 and
+executed under 2026-10-27T10:34:08-07:00 (`collect.json`), under the
 approved envelope [n21-orbit-detuning-sign-envelope.md](../../../docs/design/n21-orbit-detuning-sign-envelope.md).
 `scripts/n21_detuning_sign_run.sh --submit` planned `2026-10-27T173041.727190Z` on the calibration in force, the
 preflight admitted it, and this run submitted it: 19 replicas, 56 PUBs of 4,096 shots in one dynamic job at the
