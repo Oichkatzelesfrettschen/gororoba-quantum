@@ -197,7 +197,8 @@ Only an AVX-512 CPU exercises the dispatch cap, so `ci/avx512_replay.sh` runs
 every such replay gate on an `avx512f` CPU and reports not run, exit 0, on any
 other; each CI gate shard runs it, since GitHub assigns runner CPUs of both
 kinds.
-The library inventory `docs/state/hypercomplex-libraries` maps each import
+The library inventory `docs/state/hypercomplex-libraries` (documented in
+the central Python guide [docs/PYTHON.md](../docs/PYTHON.md)) maps each import
 through the regenerating interpreter's installed distributions, so it is
 written under the system python3, which holds every optional package:
 `PYTHON=python3 python3 scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries`.
