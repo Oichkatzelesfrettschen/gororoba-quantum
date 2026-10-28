@@ -1598,6 +1598,15 @@ class SourceArchiveChecks(unittest.TestCase):
         self.entry["note"] = "docs/notes/papers/sub/research-source.md"
         self.reject("archive owning note path")
 
+    def test_owning_note_may_be_a_tool_manual(self) -> None:
+        self.note = self.root / "docs/notes/quantum-tools/research-source.md"
+        self.note.parent.mkdir()
+        self.entry["note"] = self.note.relative_to(self.root).as_posix()
+        self.write_note()
+        self.assertEqual(verify_source_archives(self.root, self.registry), 1)
+        self.entry["note"] = "docs/notes/packages/research-source.md"
+        self.reject("archive owning note path")
+
     def test_uninspected_symlink_is_preserved_without_following_it(self) -> None:
         member = tarfile.TarInfo(f"{self.prefix}/uninspected-link")
         member.type = tarfile.SYMTYPE
@@ -1837,6 +1846,33 @@ class SourceArchiveChecks(unittest.TestCase):
         self.entry["source_url"] = "https://static.crates.io/crates/research/research-0.1.0.crate"
         self.entry["license_identifier"] = "MIT"
         self.reject("archive license text identity")
+
+    def test_pypi_sdist_route_is_bound_to_archive_root(self) -> None:
+        old_prefix = self.prefix
+        self.prefix = "research-2.2.2"
+        for member, _ in self.members:
+            member.name = member.name.replace(old_prefix, self.prefix)
+        self.entry.update(
+            source_url="https://files.pythonhosted.org/packages/source/r/research/research-2.2.2.tar.gz",
+            version="2.2.2",
+            license_member=self.members[0][0].name,
+        )
+        self.entry["inspected_files"][0]["file"] = self.members[1][0].name
+        self.write_archive()
+        self.assertEqual(verify_source_archives(self.root, self.registry), 1)
+        self.entry["version"] = "2.2.1"
+        self.reject("archive pinned version")
+        self.entry["version"] = "2.2.2"
+        for url in (
+            "https://files.pythonhosted.org/packages/source/s/research/research-2.2.2.tar.gz",
+            "https://files.pythonhosted.org/packages/source/r/research/other-2.2.2.tar.gz",
+            "https://files.pythonhosted.org/packages/source/r/research/research-2.2.2.zip",
+            "http://files.pythonhosted.org/packages/source/r/research/research-2.2.2.tar.gz",
+        ):
+            with self.subTest(url=url):
+                self.entry["source_url"] = url
+                self.write_note()
+                self.reject("archive source route")
 
 
 class HostedArxivCaptureChecks(unittest.TestCase):

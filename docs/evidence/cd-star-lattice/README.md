@@ -71,6 +71,14 @@ carry the file's line numbers; the [source note](../../notes/papers/mckay-hadama
 records the page's equivalence relation and that it maps no line to Hall's or
 Sloane's labels.
 
+[seekpath_replay.py](../seekpath-lattice-crosscheck/seekpath_replay.py)
+recomputes the point groups of S_3 and S_2 with spglib, an independent
+symmetry search over integer rotations, and matches the `tetrahedral_3d`
+and dimension-2 `boundary_symmetry` rows field by field: m-3 (Th, order 24)
+for S_3, and C4 as the z-fixing subgroup of spglib's 4/m for S_2
+([cross-check](../seekpath-lattice-crosscheck/README.md#star-lattices)).
+spglib accepts three-dimensional lattices only, so n >= 4 stays with nauty.
+
 `boundary_symmetry` describes the group of signed permutation matrices that
 maps the boundary set onto itself: order, determinant counts, element-order
 profile, stabilizer of e_0 and whether -1 belongs to it. `check_types` lists

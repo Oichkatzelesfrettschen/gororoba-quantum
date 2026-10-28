@@ -853,6 +853,15 @@ def source_archive_prefix(entry: dict[str, Any]) -> str:
     if crate is not None:
         require(version == crate[2], "archive pinned version")
         return f"{crate[1]}-{crate[2]}"
+    # A PyPI source distribution sits under the project's first letter and is rooted at NAME-VERSION.
+    sdist = re.fullmatch(
+        r"https://files\.pythonhosted\.org/packages/source/([a-z0-9])/([a-z0-9][a-z0-9_.-]*)/\2-([0-9]+(?:\.[0-9]+)+)\.tar\.gz",
+        source_url,
+    )
+    if sdist is not None:
+        require(sdist[1] == sdist[2][0], "archive source route")
+        require(version == sdist[3], "archive pinned version")
+        return f"{sdist[2]}-{sdist[3]}"
     interval = re.fullmatch(
         r"https://coqinterval\.gitlabpages\.inria\.fr/releases/interval-([0-9]+\.[0-9]+\.[0-9]+)\.tar\.gz",
         source_url,
@@ -983,7 +992,7 @@ def verify_source_archives(root: Path, registry: dict[str, Any]) -> int:
         prefix = source_archive_prefix(entry)
         relative_note = require_text(entry.get("note"), "archive owning note")
         require(
-            re.fullmatch(r"docs/notes/(?:papers/)?[A-Za-z0-9_.-]+\.md", relative_note) is not None,
+            re.fullmatch(r"docs/notes/(?:papers/|quantum-tools/)?[A-Za-z0-9_.-]+\.md", relative_note) is not None,
             "archive owning note path",
         )
         note = root / relative_note

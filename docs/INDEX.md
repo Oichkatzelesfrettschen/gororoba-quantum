@@ -13,7 +13,7 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 | Location | Contents | Git treatment |
 | --- | --- | --- |
 | `docs/pdf/` | 45 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 200 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/local_source_cache/` | 202 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 5 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
@@ -305,6 +305,8 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Wilmot 2025: exceptional Lie algebra G2 and non-associative algebras from Clifford algebra (arXiv 2505.06011)](notes/papers/2505.06011.md) | [PDF](https://arxiv.org/pdf/2505.06011v1) | `2505.06011v1.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2505.06011v1) |
 | [Chapman, Guterman, Vishkautsan and Zhilina 2022: roots and critical points of polynomials over Cayley-Dickson algebras (arXiv 2205.05605)](notes/papers/2205.05605.md) | [PDF](https://arxiv.org/pdf/2205.05605v1) | `2205.05605v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2205.05605v1) |
 | [R. B. Brown 1967: on generalized Cayley-Dickson algebras (Pacific J. Math. 20)](notes/papers/brown-1967-generalized-cayley-dickson.md) | [PDF](http://msp.org/pjm/1967/20-3/pjm-v20-n3-p03-s.pdf) | `brown-1967-generalized-cayley-dickson.pdf` | [Rehosting permission unestablished](https://msp.org/pjm/1967/20-3/p03.xhtml) |
+| [Hinuma et al. 2017 -- Band structure diagram paths based on crystallography (arXiv 1602.06402)](notes/papers/1602.06402.md) | [PDF](https://arxiv.org/pdf/1602.06402v4) | `1602.06402v4.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1602.06402v4) |
+| [Togo, Shinohara and Tanaka 2024 -- Spglib: a software library for crystal symmetry search (arXiv 1808.01590)](notes/papers/1808.01590.md) | [PDF](https://arxiv.org/pdf/1808.01590v2) | `1808.01590v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1808.01590v2) |
 | [Chan and Dokovic 2006: conjugacy classes of subalgebras of the real sedenions](notes/papers/chan-dokovic-2006-sedenion-subalgebras.md) | [PDF](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/E3602D99D8C6C96F78EADAD2EDC1BC27/S0008439500006020a.pdf/div-class-title-conjugacy-classes-of-subalgebras-of-the-real-sedenions-div.pdf) | `chan-dokovic-2006-sedenion-subalgebras.pdf` | [Rehosting permission unestablished](https://www.cambridge.org/core/journals/canadian-mathematical-bulletin/article/conjugacy-classes-of-subalgebras-of-the-real-sedenions/E3602D99D8C6C96F78EADAD2EDC1BC27) |
 
 ## Licensed software source snapshots
@@ -330,6 +332,7 @@ are checked by `verify_sources.py` without extraction or execution.
 | [Mathematical Components](notes/papers/mathcomp-coqeal-matrix-certificates.md) | [mathcomp-9931c88.tar.gz](source_archives/mathcomp-9931c88.tar.gz) | CECILL-B |
 | [CoqEAL](notes/papers/mathcomp-coqeal-matrix-certificates.md) | [coqeal-8fd26cf.tar.gz](source_archives/coqeal-8fd26cf.tar.gz) | MIT |
 | [wheel (Rust crate)](notes/wheel-rust-crate.md) | [wheel-0.1.0.crate](source_archives/wheel-0.1.0.crate) | Apache-2.0 OR MPL-2.0 |
+| [SeeK-path](notes/quantum-tools/seekpath.md) | [seekpath-2.2.2.tar.gz](source_archives/seekpath-2.2.2.tar.gz) | MIT |
 
 ## Repository research certificates
 
