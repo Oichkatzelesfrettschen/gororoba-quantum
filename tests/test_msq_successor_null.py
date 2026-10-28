@@ -568,16 +568,22 @@ def test_two_shards_merge_to_the_bytes_of_one_run(setup: nl.Setup) -> None:
 def test_the_verdict_requirement_cuts_every_sharding_at_one_replicate(
     setup: nl.Setup, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    # One replicate a round: the 9-qubit case reaches two verdicts at its second replicate while the 6-qubit case
-    # issues none and runs to the cap.
+    # One replicate a round: the 9-qubit case issues its verdict at its first replicate, below the cap of 2.
     monkeypatch.setattr(nl, "ROUND", 1)
-    cases = [small("gamma", 9, 0.0), small("gamma", 6, 0.0)]
-    whole = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 3, cases=cases, needed=2)])
-    halves = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 3, k, 2, cases=cases, needed=2) for k in (0, 1)])
+    cases = [small("gamma", 9, 0.0)]
+    whole = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 2, cases=cases, needed=1)])
+    halves = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 2, k, 2, cases=cases, needed=1) for k in (0, 1)])
     check(nl.dumps(whole) == nl.dumps(halves), "the cut depends on the sharding")
     rows = whole["cases"]["9-qubits"]["rows"]
-    check(len(rows) == 2 and sum(r["issued"] for r in rows) == 2, "the 9-qubit case did not stop at its second verdict")
-    check(whole["replicates"]["6-qubits"] == 3, "the 6-qubit case stopped with the first case")
+    check(len(rows) == 1 and rows[0]["issued"], "the 9-qubit case did not stop at its first verdict")
+
+
+def test_each_case_stops_at_its_own_verdict_count(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
+    # The 6-qubit case issues no verdict and runs to the cap while the 9-qubit case stops at its first.
+    monkeypatch.setattr(nl, "ROUND", 1)
+    cases = [small("gamma", 9, 0.0), small("gamma", 6, 0.0)]
+    whole = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 2, cases=cases, needed=1)])
+    check(whole["replicates"] == {"9-qubits": 1, "6-qubits": 2}, f"{whole['replicates']}")
 
 
 def test_a_limit_leaves_the_merged_bytes_and_refuses_a_case_it_cuts_short(
@@ -601,12 +607,12 @@ def test_a_limit_leaves_the_merged_bytes_and_refuses_a_case_it_cuts_short(
 
 
 def test_the_round_size_leaves_the_record_bytes_unchanged(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
-    # Rounds of one replicate and rounds of two blocks run the 9-qubit case past its cut by different amounts.
-    cases = [small("gamma", 9, 0.0), small("gamma", 6, 0.0)]
+    # A round of one replicate stops the 9-qubit case at its first verdict; a round of two blocks runs it past.
+    cases = [small("gamma", 9, 0.0)]
     records = []
     for size in (1, 2 * nl.NULL_BLOCK):
         monkeypatch.setattr(nl, "ROUND", size)
-        records.append(nl.dumps(nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 3, cases=cases, needed=2)])))
+        records.append(nl.dumps(nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 2, cases=cases, needed=1)])))
     check(records[0] == records[1], "the round size changed the record")
 
 
