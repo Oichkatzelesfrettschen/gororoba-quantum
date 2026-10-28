@@ -42,13 +42,15 @@ continuous in the counts `propagate_many` differentiates. The record drops `q`, 
 
 The shape enters no chain. Its effect is bounded instead, per qubit: at the qubit's fitted T and its live arm
 durations, the analysis takes the largest absolute difference between the rate-averaged and the exponential N = 16
-measure prediction over the shapes 0.25 to 64 (`msq_successor_analysis.shape_bounds`). The bound is a function of the
+measure prediction over the shapes 0.25 to 64 (`msq_successor_analysis.shape_bounds`); the rate average is a 64-node
+generalized Gauss-Laguerre rule in Golub-Welsch form (normalized weights with no Gamma(k), stable for every grid
+shape), within 2e-6 to 5e-6 of a 256-node rule where the integrand kinks at T2 = 2 T1. The bound is a function of the
 qubit's fit and context alone, so it is fixed before the departure is read, and it covers a shape the series leaves
 loosely determined. The analysis adds each kept qubit's bound linearly to its shared systematic, which `pooled_z` sums
 across qubits without quadrature. The sign of the difference follows the curvature of the chain's prediction in the
 decay rate, not survival alone; on the retained contexts the rate-averaged prediction lies below the exponential one
 at every evaluated point, and the bound uses the absolute value either way. On the retained run's 23 selected qubits
-the bound has median 0.00052 and maximum 0.0016, against the 0.0188 floor
+the bound has median 0.000485 and maximum 0.00161, against the 0.0188 floor
 ([successor-replay.json](../evidence/measurement_sequence/successor-replay.json)). A layout-wide domain (T from the
 smallest calibrated T1 over 2.5 to the largest times 2.5) gives 0.0074, because it evaluates lifetimes no selected
 qubit has; the per-qubit bound replaces it.
@@ -105,8 +107,10 @@ near 0.18). Under column-wise execution a reader's shot j follows the predecesso
 after a predecessor final 1, minus after a final 0, estimates D_q, the excitation an |1> end state leaves at the next
 shot's start, diluted twice: the reader reads it through its own contrast c, and the predecessor's measured bit
 separates the predecessor's end states by at most c (exactly c under discrimination overlap, nearly 1 when the
-readout error is decay). Each reader gives its own conditional difference, the twelve combine by inverse variance
-(so a baseline that differs between the N = 2, 4 and 8 blocks, whose predecessors end at different P1, cannot enter
+readout error is decay). Each reader gives its own conditional difference, and the twelve combine with weights set by
+their class sizes at the pooled reader P1, var_k = p (1 - p) (1 / n1_k + 1 / n0_k), so the weights carry no outcome
+and the combination stays unbiased at P1 near 0.006 (weights from each stratum's own variance read D about 8 % low on
+the null's carryover arm) (a baseline that differs between the N = 2, 4 and 8 blocks, whose predecessors end at different P1, cannot enter
 through pooling), and the combination divided by c^2 bounds |D_q| from above. Every qubit reads ground in both
 conditioning classes, so readout crosstalk cannot enter the contrast. Sized from the retained run's ro0 P1 (0.006) at
 8192 shots, the twelve readers give a per-qubit standard error near 0.0006.
@@ -146,7 +150,7 @@ the run's remaining all-withheld risk.
 
 ## Null calibration
 
-`msq_successor_null.py` is the successor's batched null. It reuses the batched primitives of `msq_envelope_null.py`
+`msq_successor_null_batch.py`, run through `scripts/msq_successor_null.py`, is the successor's batched null. It reuses the batched primitives of `msq_envelope_null.py`
 (#589), which stays the retained envelope family's null with its bytes unchanged, and adds the batched gamma-rate fit
 (shape scan, nested Brent profile, golden-section refinement) with scalar bit-identity tests at an interior shape, the 0.25 lower edge and the
 exponential edge, and a 400-replicate width-32 benchmark before any cost is quoted. Each replicate draws, per qubit, a
