@@ -17,9 +17,10 @@ the successor's relaxation model (docs/design/measurement-sequence-envelope-succ
 - `settle_veto` fits a DerSimonian-Laird random-effects model to the settle gaps about their weighted mean and tests
   each qubit against the fit of the others;
 - `carryover_reader` and `order_sentinel` are pure statistics over shot-ordered bit arrays;
-- `collected` composes the pieces over a collected record of the measurement-sequence-relaxation family: the order
-  conditions first (a failure withholds every qubit and leaves the rest unevaluated), then the selection, the settle
-  veto, the departure and count rule, and the descriptive delay arm.
+- `collected` composes the pieces over a collected record of the measurement-sequence-relaxation family: the
+  selection, the settle veto, the departure and count rule, the descriptive delay arm, and the order conditions and
+  the pattern-row cross-shot carryover as reported diagnostics, since every reader reads its predecessor's excitation
+  inside one circuit.
 """
 
 from __future__ import annotations
@@ -76,6 +77,9 @@ SHAPE_DOMAIN_T_POINTS = 3
 SIGN_TOLERANCE = 1e-12
 # A conditional difference needs this many shots on each side of its conditioning bit.
 MIN_SIDE = 50
+# A reader stratum whose predecessor bit separates its latent end states by less than this, times the readout
+# contrast, drops out (`carryover_reader`).
+READER_MIN_SEPARATION = 0.5
 ORDER_Z = 3.0
 MIN_KEPT = 8
 
@@ -378,15 +382,22 @@ def shape_bounds(
 
 def shape_adjusted(rows: dict[Any, dict[str, Any]], bounds: dict[Any, float]) -> dict[Any, dict[str, Any]]:
     """Rows whose departure systematic carries each qubit's shape bound linearly: pooled_z sums each qubit's
-    systematic across qubits without quadrature, so the bounds stay a device-shared term."""
+    systematic across qubits without quadrature, so the bounds stay a device-shared term. The total departure
+    standard error and the per-qubit decisions are recomputed at the widened systematic, so the count rule reads the
+    same uncertainty the pooled z does."""
     out: dict[Any, dict[str, Any]] = {}
     for qubit, row in rows.items():
         if not row.get("usable"):
             out[qubit] = row
             continue
         bound = bounds[qubit]
-        departure = {**row["departure_n16"], "se_systematic": row["departure_n16"]["se_systematic"] + bound}
-        out[qubit] = {**row, "departure_n16": departure, "shape_systematic": bound}
+        before = row["departure_n16"]
+        systematic = before["se_systematic"] + bound
+        total = math.sqrt(before["se_statistical"] ** 2 + systematic**2)
+        departure = {**before, "se_systematic": systematic, "se": total}
+        contrast = row["contrast_n16"]
+        decisions = msa.decide(contrast["contrast"], contrast["se"], before["difference"], total)
+        out[qubit] = {**row, "departure_n16": departure, "decisions": decisions, "shape_systematic": bound}
     return out
 
 
@@ -897,35 +908,53 @@ def conditional_difference(current: np.ndarray, previous: np.ndarray) -> tuple[f
     return p1 - p0, se
 
 
+def readout_errors(readout: Mapping[str, float]) -> tuple[float, float]:
+    """(e01, e10) of a qubit from its in-job readout record: scale = 1 - e01 - e10 and offset = e10 - e01, with
+    e01 the ro0 member's P1 and e10 the first t1 member's P0, which decay during that member's idle can only raise."""
+    scale, offset = float(readout["scale"]), float(readout["offset"])
+    return (1.0 - scale - offset) / 2.0, (1.0 - scale + offset) / 2.0
+
+
+def reader_divisor(m: float, e01: float, e10: float) -> float:
+    """What a reader's conditional difference is per unit carried excitation, at predecessor P1 m: the reader's
+    contrast c times the predecessor bit's separation of its latent end states, (m - e01)(1 - m - e10) / (m (1 - m)).
+
+    Under discrimination overlap the latent excitation p satisfies m = e01 + c p and the separation is
+    c p (1 - p) / (m (1 - m)), which this equals times c; under decay the separation is about 1 and the divisor about
+    c, which is never below this value. The value falls as either error grows, so errors taken from above keep the
+    estimate of D from below."""
+    if not 0.0 < m < 1.0:
+        return 0.0
+    return (m - e01) * (1.0 - m - e10) / (m * (1.0 - m))
+
+
 def carryover_reader(
     predecessors: Sequence[np.ndarray],
     readers: Sequence[np.ndarray],
-    contrast: float,
+    readout: Mapping[str, float],
     allocation: float,
     width: int,
     alpha: float = FAMILY_ALPHA,
 ) -> dict[str, Any]:
-    """The excitation an |1> end state leaves at the next shot, from reader members that read ground only.
+    """The excitation an |1> end state leaves at the next shot, from in-circuit readers.
 
-    predecessors[i] holds the final bits of the member row that reader i follows and readers[i] the reader's bits,
-    both indexed by shot: under column-wise execution reader shot j follows predecessor shot j. Each reader gives its
-    own conditional difference, the reader's P1 after a predecessor 1 minus after a predecessor 0, and the readers
-    combine by inverse-variance weights whose variances use the reader P1 pooled over every reader and both
-    conditioning classes, so a weight depends on the class sizes alone and a stratum that drew fewer excited shots
-    gains no weight; a baseline that differs between the measure blocks (whose predecessors end at different P1)
-    cannot enter through the pooling. A reader whose conditioning class holds fewer than
-    MIN_SIDE shots drops out.
+    predecessors[i] holds the final bits of reader member i and readers[i] the bits of its `reader` register, which
+    the same circuit measures after its terminal reset and the reader idle, both indexed by shot, so shot j of a
+    reader reads the end state of shot j of its own predecessor. Each reader stratum gives its own conditional
+    difference, the reader P1 after a predecessor 1 minus after a predecessor 0, and divides it by `reader_divisor` at
+    the stratum's predecessor P1 and the qubit's readout errors (`readout_errors`). The strata combine by
+    inverse-variance weights whose variances use the reader P1 pooled over every stratum and both conditioning
+    classes, so a weight depends on the class sizes and the divisor alone, never on the reader outcomes, and a
+    baseline that differs between the measure blocks cannot enter through the pooling. A stratum whose conditioning
+    class holds fewer than MIN_SIDE shots, or whose divisor falls below READER_MIN_SEPARATION, drops out.
 
-    Two readout contrasts dilute D: the reader reads the carried excitation through its own contrast c, and the
-    predecessor's measured bit separates its end states by a difference of at most c. The estimate is the combined
-    difference over `contrast ** 2` (the qubit's readout scale squared), which bounds |D| from above whether the
-    readout error is discrimination overlap or decay; the contrast is taken as fixed because D sits near zero. U is the
-    one-sided upper confidence bound of |D| (Bonferroni over `width`), and the screen keeps the qubit when
+    U is the one-sided upper confidence bound of |D| (Bonferroni over `width`), and the screen keeps the qubit when
     allocation * U lies below SCREEN_FRACTION * BOUND_FLOOR.
     """
     if len(predecessors) != len(readers) or not readers:
-        raise msa.AnalysisError("each reader needs one predecessor row")
-    if not contrast > 0:
+        raise msa.AnalysisError("each reader needs one predecessor register")
+    e01, e10 = readout_errors(readout)
+    if not 1.0 - e01 - e10 > 0:
         raise msa.AnalysisError("the readout contrast must be positive")
     strata = []
     shots = 0
@@ -934,13 +963,15 @@ def carryover_reader(
         if previous.shape != current.shape:
             raise msa.AnalysisError("a reader and its predecessor differ in shots")
         ones, zeros = current[previous == 1], current[previous == 0]
-        if ones.size >= MIN_SIDE and zeros.size >= MIN_SIDE:
+        divisor = reader_divisor(ones.size / previous.size, e01, e10) if previous.size else 0.0
+        if ones.size >= MIN_SIDE and zeros.size >= MIN_SIDE and divisor >= READER_MIN_SEPARATION:
             strata.append(
                 (
                     float(ones.mean()) - float(zeros.mean()),
                     int(ones.size),
                     int(zeros.size),
                     int(ones.sum() + zeros.sum()),
+                    divisor,
                 )
             )
             shots += int(previous.size)
@@ -948,15 +979,18 @@ def carryover_reader(
     if not strata:
         return {
             "evaluable": False,
-            "reason": f"every reader has a conditioning class of fewer than {MIN_SIDE} shots",
+            "reason": (
+                f"every reader has a conditioning class of fewer than {MIN_SIDE} shots or a divisor below "
+                f"{READER_MIN_SEPARATION}"
+            ),
             "passes": False,
         }
-    pooled = math.fsum(k for *_, k in strata) / math.fsum(n1 + n0 for _, n1, n0, _ in strata)
-    spread = max(pooled * (1 - pooled), 1.0 / math.fsum(n1 + n0 for _, n1, n0, _ in strata))
-    weights = [1 / (spread * (1 / n1 + 1 / n0)) for _, n1, n0, _ in strata]
+    pooled = math.fsum(k for _, _, _, k, _ in strata) / math.fsum(n1 + n0 for _, n1, n0, _, _ in strata)
+    spread = max(pooled * (1 - pooled), 1.0 / math.fsum(n1 + n0 for _, n1, n0, _, _ in strata))
+    weights = [g**2 / (spread * (1 / n1 + 1 / n0)) for _, n1, n0, _, g in strata]
     total = math.fsum(weights)
-    combined = math.fsum(w * d for w, (d, *_) in zip(weights, strata, strict=True)) / total
-    difference, se = combined / contrast**2, 1 / math.sqrt(total) / contrast**2
+    difference = math.fsum(w * d / g for w, (d, _, _, _, g) in zip(weights, strata, strict=True)) / total
+    se = 1 / math.sqrt(total)
     z = NormalDist().inv_cdf(1 - alpha / width)
     upper = abs(difference) + z * se
     bias = allocation * upper
@@ -971,6 +1005,7 @@ def carryover_reader(
         "margin": margin,
         "shots": shots,
         "readers": len(strata),
+        "divisors": [g for *_, g in strata],
         "passes": bias < margin,
     }
 
@@ -1104,9 +1139,9 @@ def _stem(member: str) -> str:
 def job_layout(record: Mapping[str, Any]) -> dict[str, Any]:
     """The PUB order of a record of the relaxation family, checked against the family's row layout.
 
-    Returns the layout qubits, the PUB names in job order, each row's stem and the final-bit register of each
-    (PUB index, qubit). A PUB list that differs from `msqr_row_stems` raises, so the adjacency the readers and the
-    sentinels rely on is the constructor's.
+    Returns the layout qubits, the PUB names in job order, each row's stem, the final-bit register of each
+    (PUB index, qubit) and the `reader` register of each reader row's (PUB index, qubit). A PUB list that differs
+    from `msqr_row_stems` raises, so the rows the sentinels and the pattern cross-check pair are the constructor's.
     """
     configuration = record["family_configuration"]
     qubits = [int(q) for q in configuration["qubits"]]
@@ -1116,6 +1151,7 @@ def job_layout(record: Mapping[str, Any]) -> dict[str, Any]:
     if tuple(stems) != de.msqr_row_stems(width):
         raise msa.AnalysisError("the record's PUB order differs from the relaxation family's row layout")
     registers: dict[tuple[int, int], str] = {}
+    reader_registers: dict[tuple[int, int], str] = {}
     for k, pub in enumerate(pubs):
         components = pub["components"]
         if [int(c["physical_qubits"][0]) for c in components] != qubits:
@@ -1127,24 +1163,37 @@ def job_layout(record: Mapping[str, Any]) -> dict[str, Any]:
             if len(finals) != 1:
                 raise msa.AnalysisError(f"{pub['name']}: {component['member']} has no single final register")
             registers[(k, qubit)] = finals[0]
+            if stems[k].startswith("msqr_reader"):
+                found = [r for r in component["registers_by_replica"][0] if r.endswith("_reader")]
+                if len(found) != 1:
+                    raise msa.AnalysisError(f"{pub['name']}: {component['member']} has no single reader register")
+                reader_registers[(k, qubit)] = found[0]
     return {
         "qubits": qubits,
         "width": width,
         "names": [pub["name"] for pub in pubs],
         "stems": stems,
         "registers": registers,
+        "reader_registers": reader_registers,
     }
 
 
 def shot_rows(width: int) -> set[int]:
-    """Job rows whose shot-ordered bits the analysis reads: the sentinel rows, the readers and their predecessors."""
+    """Job rows whose shot-ordered bits the analysis reads: the sentinel rows and the reader rows."""
     stems = de.msqr_row_stems(width)
     index = {stem: k for k, stem in enumerate(stems)}
     rows = {index[stem] for segment in de.msqr_sentinel_pairs() for pair in segment for stem in pair}
-    for k, stem in enumerate(stems):
-        if stem.startswith("msqr_reader"):
-            rows.update((k - 1, k))
+    rows.update(k for k, stem in enumerate(stems) if stem.startswith("msqr_reader"))
     return rows
+
+
+def reader_ones(law: np.ndarray, shots: int) -> int:
+    """Shots whose reader bit (the highest clbit) reads 1, from a reader member's joint law over its clbits."""
+    values = np.asarray(law, dtype=float)
+    ones = shots * float(values[values.size // 2 :].sum())
+    if abs(ones - round(ones)) > 1e-2 * max(1.0, shots / 1e4):
+        raise msa.AnalysisError(f"P(reader = 1) is not a whole-shot count: {ones}")
+    return round(ones)
 
 
 def required_pubs(record: Mapping[str, Any]) -> set[str]:
@@ -1159,15 +1208,20 @@ def _row_bits(
     row: int,
     distributions: Mapping[str, Any],
     executed: Mapping[str, Any],
+    register: str = "final",
 ) -> np.ndarray:
-    """The shot-ordered final bits of one row, one line per layout qubit, bound to the collector's counts."""
+    """The shot-ordered bits of one row's `final` or `reader` register, one line per layout qubit, bound to the
+    collector's counts."""
+    names = layout["registers"] if register == "final" else layout["reader_registers"]
     pub = layout["names"][row]
     if pub not in registers:
         raise msa.AnalysisError(f"{pub}: shot-ordered registers are absent")
     lines = []
     for qubit in layout["qubits"]:
         member = f"{layout['stems'][row]}_q{qubit}"
-        bitstrings = registers[pub].get(layout["registers"][(row, qubit)])
+        if (row, qubit) not in names:
+            raise msa.AnalysisError(f"{pub}: {member} has no {register} register")
+        bitstrings = registers[pub].get(names[(row, qubit)])
         if bitstrings is None:
             raise msa.AnalysisError(f"{pub}: register of {member} is absent")
         text = "".join(bitstrings).encode()
@@ -1176,7 +1230,13 @@ def _row_bits(
         line = np.frombuffer(text, dtype=np.uint8).astype(np.int8) - ord("0")
         if not bool(np.all((line == 0) | (line == 1))):
             raise msa.AnalysisError(f"{pub}: {member} holds a bit that is neither 0 nor 1")
-        ones, shots = ea.member_ones(dict(distributions), dict(executed), member)
+        if register == "final":
+            ones, shots = ea.member_ones(dict(distributions), dict(executed), member)
+        else:
+            if member not in distributions or len(distributions[member]) != 1:
+                raise msa.AnalysisError(f"{member}: the reader statistic reads exactly one replica")
+            shots = int(executed[member]["shots"])
+            ones = reader_ones(distributions[member][0], shots)
         if line.size != shots or int(line.sum()) != ones:
             raise msa.AnalysisError(f"{pub}: the registers of {member} differ from the collector's counts")
         lines.append(line)
@@ -1190,9 +1250,11 @@ def order_conditions(
     distributions: Mapping[str, Any],
     executed: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """The two preregistered order conditions: the executor reports one chunk holding every PUB, and the order
-    sentinels pass in each third of the job. The first rules out a reported split of the job and no more; the second
-    reads the shot-order signature (same-shot correlation of consecutive rows) in the job's head, middle and tail."""
+    """The two order conditions, reported as diagnostics: the executor reports one chunk holding every PUB, and the
+    order sentinels pass in each third of the job. The first rules out a reported split of the job and no more; the
+    second reads the shot-order signature (same-shot correlation of consecutive rows) in the job's head, middle and
+    tail. No verdict reads them: each reader reads its predecessor inside one circuit, and the carryover allocation
+    is the worst case over the member classes whatever row precedes a member."""
     count = len(layout["names"])
     chunk: dict[str, Any]
     if chunks is None:
@@ -1219,6 +1281,65 @@ def order_conditions(
     result["sentinels"] = {"segments": segments, "passes": all(v["passes"] for v in segments.values())}
     result["passes"] = bool(chunk["passes"] and result["sentinels"]["passes"])
     return result
+
+
+def pattern_crosscheck(
+    layout: Mapping[str, Any],
+    configuration: Mapping[str, Any],
+    distributions: Mapping[str, Any],
+    executed: Mapping[str, Any],
+    rows: Mapping[int, dict[str, Any]],
+    screens: Mapping[str, dict[str, Any]],
+    width: int,
+) -> dict[str, Any]:
+    """The cross-shot carryover from consecutive pattern rows, as a reported check on the in-circuit readers.
+
+    Under the submitted order a pattern row's shot follows the previous pattern row's shot, so each qubit's P1 on
+    rows that prepare 0 after a row that prepared 1, minus after a row that prepared 0, reads the carried excitation
+    across a real shot boundary (and, on rows that prepare 1, the x maps it to the opposite sign); the two combine by
+    inverse variance and divide by the readout scale. `exceeds_reader_bound_z` is (D_pattern - U) / se_pattern
+    against the qubit's reader bound U: a large value refutes either the in-circuit bound or the claim that
+    measure-arm predecessors cover every predecessor class. A shuffled order reads zero here, so the check can fail
+    only toward the falsifier."""
+    pattern_bits = [[int(b) for b in row] for row in configuration["pattern_bits"]]
+    stems = layout["stems"]
+    prefix = "msqe_pat"
+    pairs = [
+        (int(stems[k - 1][len(prefix) :]), int(stems[k][len(prefix) :]))
+        for k in range(1, len(stems))
+        if stems[k].startswith(prefix) and stems[k - 1].startswith(prefix)
+    ]
+    per_qubit: dict[str, Any] = {}
+    z = NormalDist().inv_cdf(1 - FAMILY_ALPHA / width)
+    for rank, qubit in enumerate(layout["qubits"]):
+        if not rows[qubit].get("usable"):
+            continue
+        cells: dict[tuple[int, int], list[int]] = {(a, b): [0, 0] for a in (0, 1) for b in (0, 1)}
+        for previous, current in pairs:
+            ones, shots = ea.member_ones(dict(distributions), dict(executed), de.msqe_pattern_member(current, qubit))
+            cell = cells[(pattern_bits[previous][rank], pattern_bits[current][rank])]
+            cell[0], cell[1] = cell[0] + ones, cell[1] + shots
+        estimates = []
+        for larger, smaller in (((1, 0), (0, 0)), ((0, 1), (1, 1))):
+            (ka, na), (kb, nb) = cells[larger], cells[smaller]
+            if na < MIN_SIDE or nb < MIN_SIDE:
+                continue
+            pa, pb = ka / na, kb / nb
+            se = math.sqrt(max(pa * (1 - pa), 1.0 / na) / na + max(pb * (1 - pb), 1.0 / nb) / nb)
+            estimates.append((pa - pb, se))
+        if not estimates:
+            continue
+        scale = float(rows[qubit]["readout"]["scale"])
+        weights = [1 / se**2 for _, se in estimates]
+        difference = math.fsum(w * d for w, (d, _) in zip(weights, estimates, strict=True)) / math.fsum(weights)
+        se = 1 / math.sqrt(math.fsum(weights))
+        entry: dict[str, Any] = {"d": difference / scale, "se": se / scale, "row_pairs": len(pairs)}
+        carryover = screens[str(qubit)].get("carryover")
+        if carryover and carryover.get("evaluable"):
+            entry["exceeds_reader_bound_z"] = (entry["d"] - carryover["upper_bound"]) / entry["se"]
+            entry["exceeds_reader_bound"] = entry["exceeds_reader_bound_z"] > z
+        per_qubit[str(qubit)] = entry
+    return {"z": z, "per_qubit": per_qubit}
 
 
 def _class_members(qubit: int) -> dict[str, list[str]]:
@@ -1296,19 +1417,19 @@ def carryover_allocation(item: tuple[int, dict[str, Any], dict[str, Any], float]
 
 
 def carryover_screen(
-    item: tuple[int, dict[str, Any], dict[str, Any], list[np.ndarray], list[np.ndarray], float, int],
+    item: tuple[int, dict[str, Any], dict[str, Any], list[np.ndarray], list[np.ndarray], Mapping[str, float], int],
 ) -> dict[str, Any]:
     """The reader statistic with its vertex allocation: U from the readers, A_q at U, then the screen.
 
-    item = (qubit, member counts, planned context, predecessor bits, reader bits, readout scale, width). The scale
-    enters `carryover_reader` squared (see there): one factor for the reader's readout, one for the predecessor's bit.
+    item = (qubit, member counts, planned context, predecessor bits, reader bits, in-job readout record, width); the
+    readout record gives `carryover_reader` the readout errors its divisor needs.
     """
-    qubit, member_counts, ctx, predecessors, readers, contrast, width = item
-    first = carryover_reader(predecessors, readers, contrast, 1.0, width)
+    qubit, member_counts, ctx, predecessors, readers, readout, width = item
+    first = carryover_reader(predecessors, readers, readout, 1.0, width)
     if not first["evaluable"]:
         return first
     vertex = carryover_allocation((qubit, member_counts, ctx, first["upper_bound"]))
-    out = carryover_reader(predecessors, readers, contrast, vertex["allocation"], width)
+    out = carryover_reader(predecessors, readers, readout, vertex["allocation"], width)
     out["vertex"] = vertex
     return out
 
@@ -1403,7 +1524,7 @@ def select_and_decide(
             planned[qubit],
             list(predecessors[qubit]),
             list(readers[qubit]),
-            float(rows[qubit]["readout"]["scale"]),
+            dict(rows[qubit]["readout"]),
             width,
         )
         for qubit in work
@@ -1483,9 +1604,6 @@ def _collected(
     configuration = record["family_configuration"]
     order = order_conditions(layout, registers, chunks, distributions, executed)
     result: dict[str, Any] = {"schema": SCHEMA, "order": order, "count_rule": ea.count_rule(width), "selected": []}
-    if not order["passes"]:
-        result["withheld"] = "an order condition failed; every qubit is withheld and no later statistic is evaluated"
-        return result
     if registers is None:
         raise msa.AnalysisError("shot-ordered registers are unavailable")
     contexts = msa.contexts_from_record(dict(record), executed)
@@ -1499,14 +1617,11 @@ def _collected(
         absent = [name for name in needed if name not in counts[q]["final"]]
         if absent:
             raise msa.AnalysisError(f"q{q}: missing measured members {absent}")
-    # Every shot-ordered register and the reader placement are validated before the per-qubit fits, so a record
+    # Every shot-ordered register is validated against the collector's counts before the per-qubit fits, so a record
     # that fails closed costs no analysis.
-    index = {stem: k for k, stem in enumerate(layout["stems"])}
-    shots = {k: _row_bits(layout, registers, k, distributions, executed) for k in sorted(shot_rows(width))}
-    readers = [k for stem, k in index.items() if stem.startswith("msqr_reader")]
-    for k in readers:
-        if not layout["stems"][k - 1].startswith("msq_measure_n"):
-            raise msa.AnalysisError(f"{layout['stems'][k]} does not follow a measure row")
+    readers = [k for k, stem in enumerate(layout["stems"]) if stem.startswith("msqr_reader")]
+    finals = {k: _row_bits(layout, registers, k, distributions, executed) for k in readers}
+    reads = {k: _row_bits(layout, registers, k, distributions, executed, "reader") for k in readers}
     planned = with_planning(contexts, floor)
     rows = evaluate(counts, planned, width)
     dt = float(configuration["dt_seconds"])
@@ -1551,8 +1666,8 @@ def _collected(
         counts,
         screens,
         [qubit for _, qubit in work],
-        {qubit: [shots[k - 1][rank] for k in readers] for rank, qubit in work},
-        {qubit: [shots[k][rank] for k in readers] for rank, qubit in work},
+        {qubit: [finals[k][rank] for k in readers] for rank, qubit in work},
+        {qubit: [reads[k][rank] for k in readers] for rank, qubit in work},
         equilibrium_obs,
         equilibrium_s,
     )
@@ -1565,9 +1680,11 @@ def _collected(
             strict=True,
         )
     )
+    crosscheck = pattern_crosscheck(layout, configuration, distributions, executed, rows, screens, width)
     result.update(
         {
             "screens": screens,
+            "pattern_crosscheck": crosscheck,
             "eligible_qubits": eligible,
             "selected": decision["selected"],
             "decision": decision,

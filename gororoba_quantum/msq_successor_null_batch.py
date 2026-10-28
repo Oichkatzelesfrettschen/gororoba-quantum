@@ -589,11 +589,12 @@ def residual_slope(ctx: dict[str, Any]) -> float:
 
 
 def reader_stems() -> list[tuple[int, int]]:
-    """(steps, signed index) of the measure row each reader follows, in reader order."""
+    """(steps, signed index) of the measure member each reader repeats, in reader order."""
     return [(steps, s) for steps in de.MSQR_READER_STEPS for s in range(len(de.MSQ_SIGNED))]
 
 
 def predecessor_name(index: int, qubit: int) -> str:
+    """The measure member whose law reader `index`'s final bit follows."""
     steps, s = reader_stems()[index]
     return msa.member_names("measure", steps, qubit)[s]
 
@@ -601,11 +602,11 @@ def predecessor_name(index: int, qubit: int) -> str:
 def reader_standard_error(ctx: dict[str, Any], predecessor_ones: Sequence[int], excitation: float) -> float:
     """The standard error of the reader statistic's estimate of D for a carried excitation: each reader's conditional
     difference has the variance of two conditioning classes (the predecessor read 1 or 0) at the reader P1 pooled over
-    all readers and both classes, as `su.carryover_reader` weights them, and the twelve combine by inverse variance
-    and divide by the squared readout contrast."""
+    all readers and both classes, divided by its divisor (the contrast times the predecessor bit's separation of its
+    latent end states), and the twelve combine by inverse variance, as `su.carryover_reader` weights them. The
+    in-circuit reader reads the excitation the next shot starts with, so no decay enters."""
     e01, e10 = ctx["e01"], ctx["e10"]
     contrast = 1 - e01 - e10
-    survive = math.exp(-ctx["prereadout_s"] / ctx["t1_cal_s"])
     classes = []
     for ones in predecessor_ones:
         n1, n0 = ones, SHOTS - ones
@@ -616,15 +617,16 @@ def reader_standard_error(ctx: dict[str, Any], predecessor_ones: Sequence[int], 
             (
                 n1,
                 n0,
-                e01 + contrast * excitation * survive * after_one,
-                e01 + contrast * excitation * survive * after_zero,
+                e01 + contrast * excitation * after_one,
+                e01 + contrast * excitation * after_zero,
+                contrast * (after_one - after_zero),
             )
         )
-    shots = sum(n1 + n0 for n1, n0, _, _ in classes)
-    pooled = sum(n1 * p1 + n0 * p0 for n1, n0, p1, p0 in classes) / shots
+    shots = sum(n1 + n0 for n1, n0, _, _, _ in classes)
+    pooled = sum(n1 * p1 + n0 * p0 for n1, n0, p1, p0, _ in classes) / shots
     spread = max(pooled * (1 - pooled), 1.0 / shots)
-    inverse = sum(1.0 / (spread * (1 / n1 + 1 / n0)) for n1, n0, _, _ in classes)
-    return 1.0 / math.sqrt(inverse) / contrast**2
+    inverse = sum(g**2 / (spread * (1 / n1 + 1 / n0)) for n1, n0, _, _, g in classes)
+    return 1.0 / math.sqrt(inverse)
 
 
 def calibration_constants(ctx: dict[str, Any]) -> dict[str, Any]:
@@ -984,20 +986,18 @@ def draw_bits(
     generator: np.random.Generator, ctx: dict[str, Any], truth: Truth, probabilities: dict[str, float], qubit: int
 ) -> tuple[list[np.ndarray], list[np.ndarray], list[int]]:
     """Shot-ordered predecessor and reader bits of one qubit. A predecessor's latent end state is excited with the
-    member's excited probability and is read through the assignment errors; the reader starts in the ground state
-    plus the carried excitation times the latent end state, which relaxes over the pre-readout wait, and is read
-    through the assignment errors. Returns the predecessors' bits, the readers' bits and the predecessors' ones."""
+    member's excited probability and is read through the assignment errors; the in-circuit reader holds the carried
+    excitation times the latent end state, the excitation the next shot starts with, and is read through the
+    assignment errors. Returns the predecessors' bits, the readers' bits and the predecessors' ones."""
     e01, e10 = ctx["e01"], ctx["e10"]
     contrast = 1 - e01 - e10
-    t1, weights = lifetimes(truth.t_s, truth.shape)
-    survive = float(np.sum(weights * np.exp(-ctx["prereadout_s"] / t1)))
     names = [predecessor_name(i, qubit) for i in range(READERS)]
     p1 = np.array([probabilities[name] for name in names])
     p_latent = np.clip((p1 - e01) / contrast, 0.0, 1.0)
     uniform = generator.random((3, READERS, SHOTS))
     latent = uniform[0] < p_latent[:, None]
     predecessor = (uniform[1] < np.where(latent, 1 - e10, e01)).astype(np.int8)
-    reader = (uniform[2] < e01 + contrast * truth.reader * survive * latent).astype(np.int8)
+    reader = (uniform[2] < e01 + contrast * truth.reader * latent).astype(np.int8)
     return list(predecessor), list(reader), [int(row.sum()) for row in predecessor]
 
 
@@ -1163,8 +1163,8 @@ def allocations(
 def carryover_rows(
     items: Sequence[tuple[Any, ...]], setup: Setup, memo: FitMemo, index_of: dict[int, int]
 ) -> list[dict[str, Any]]:
-    """su.carryover_screen of every item (qubit, counts, planned context, predecessor bits, reader bits, readout
-    scale, width): the reader statistic, the vertex allocation at its bound, then the screen."""
+    """su.carryover_screen of every item (qubit, counts, planned context, predecessor bits, reader bits, in-job
+    readout record, width): the reader statistic, the vertex allocation at its bound, then the screen."""
     firsts = [su.carryover_reader(item[3], item[4], item[5], 1.0, item[6]) for item in items]
     todo = [k for k, first in enumerate(firsts) if first["evaluable"]]
     vertex = allocations(

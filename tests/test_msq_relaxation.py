@@ -15,6 +15,7 @@ import qpe_diagnostics
 TIERS = (5, 16, 24, 32)
 T1_IDLES = [0, 5000, 12500, 25000, 50000]
 EQUILIBRIUM_DT = 100000
+READER_IDLE_DT = 5000
 
 
 def check(condition: bool, message: str = "check failed") -> None:
@@ -26,7 +27,7 @@ def check(condition: bool, message: str = "check failed") -> None:
 def groups(qubits: list[int]) -> list[Any]:
     per = {q: 545 for q in qubits}
     fixed = {q: 500 for q in qubits}
-    return de.msqr_groups(qubits, per, fixed, fixed, T1_IDLES, EQUILIBRIUM_DT)
+    return de.msqr_groups(qubits, per, fixed, fixed, T1_IDLES, EQUILIBRIUM_DT, READER_IDLE_DT)
 
 
 @pytest.mark.parametrize("width", TIERS)
@@ -125,9 +126,20 @@ def test_new_members_match_their_exact_oracle() -> None:
 
 def test_reader_and_equilibrium_circuits() -> None:
     by_name = {m.name: m for m in groups([7])[0].members}
-    reader = by_name[de.msqr_reader_member(5, 7)].circuit
-    names = [op.operation.name for op in reader.data]
-    check(names == ["delay", "measure", "reset"], f"reader instructions {names}")
+    for index in range(de.MSQR_READERS):
+        steps, signed = de.msqr_reader_stem(index)
+        reader = by_name[de.msqr_reader_member(index, 7)]
+        predecessor = by_name[de.msq_member("measure", steps, signed, 7)]
+        names = [op.operation.name for op in reader.circuit.data]
+        head = [op.operation.name for op in predecessor.circuit.data]
+        # The predecessor's own circuit through its terminal reset, then the reader idle, measurement and reset.
+        check(names == [*head, "delay", "measure", "reset"], f"reader {index} instructions {names}")
+        tail = reader.circuit.data[-3:]
+        check(tail[0].operation.params[0] == READER_IDLE_DT, f"reader {index} idles {tail[0].operation.params[0]}")
+        check([r.name for r in reader.circuit.cregs] == ["final", "mcm", "reader"], f"{reader.circuit.cregs}")
+        check(reader.circuit.find_bit(tail[1].clbits[0]).index == steps + 1, "the reader bit is the last clbit")
+        check(np.array_equal(reader.ideal[: predecessor.ideal.size], predecessor.ideal), "the predecessor's law")
+        check(not reader.ideal[predecessor.ideal.size :].any(), "the reader reads ground in the ideal law")
     equilibrium = by_name[de.msqr_equilibrium_member(7)].circuit
     delays = [op.operation.params[0] for op in equilibrium.data if op.operation.name == "delay"]
     check(delays == [EQUILIBRIUM_DT, 500], f"equilibrium idles {delays}")
@@ -139,7 +151,32 @@ def test_reader_and_equilibrium_circuits() -> None:
         with pytest.raises(ValueError):
             de.msqr_equilibrium_circuit(7, bad, 500)  # type: ignore[arg-type]
     with pytest.raises(ValueError):
-        de.msqr_reader_circuit(de.MSQR_READERS, 7, 500)
+        de.msqr_reader_circuit(de.MSQR_READERS, 7, 545, 500, 500, READER_IDLE_DT)
+    with pytest.raises(ValueError):
+        de.msqr_reader_circuit(0, 7, 545, 500, 500, 0)
+
+
+def test_the_reader_idle_is_the_rep_delay_floor_rounded_down() -> None:
+    import qpu_planning
+
+    check(de.MSQR_READER_IDLE_SECONDS == qpu_planning.REP_DELAY_FLOOR_SECONDS["Heron"], "the reader idle")
+
+    class Target:
+        dt, granularity = 4.0e-9, 16
+
+    class Snapshot:
+        class backend:  # noqa: N801
+            target = Target
+
+    floored = qpu_planning.floored_delay(None, Snapshot, de.MSQR_READER_IDLE_SECONDS)
+    check(floored == 4992 and floored * Target.dt <= de.MSQR_READER_IDLE_SECONDS, f"floored to {floored} dt")
+    check(qpu_planning.rounded_delay(None, Snapshot, de.MSQR_READER_IDLE_SECONDS) == 5008, "rounded_delay rounds up")
+
+
+def test_the_shortest_reader_matches_its_exact_oracle() -> None:
+    reader = {m.name: m for m in groups([7])[0].members}[de.msqr_reader_member(0, 7)]
+    law = qpe_diagnostics.ideal_compiled_probabilities(reader.circuit)
+    check(bool(np.allclose(law, reader.ideal, rtol=0, atol=1e-10)), f"{reader.name}: exact oracle {law}")
 
 
 def test_record_groups_and_contracts_rebuild_the_family() -> None:
@@ -152,6 +189,7 @@ def test_record_groups_and_contracts_rebuild_the_family() -> None:
         "prereadout_delay_dt": {str(q): 500 for q in qubits},
         "t1_delays_dt": T1_IDLES,
         "equilibrium_delay_dt": EQUILIBRIUM_DT,
+        "reader_idle_delay_dt": READER_IDLE_DT,
     }
     rebuilt = de.record_groups({"family_configuration": configuration})
     check([g.name for g in rebuilt] == ["msqr_q3", "msqr_q9"], "group names")
@@ -165,7 +203,9 @@ def test_record_groups_and_contracts_rebuild_the_family() -> None:
     check(contracts == envelope and len(contracts) > 0, "the successor reads the main family's endpoints")
     check(live_run.is_envelope_family(de.MSQR_FAMILY) and live_run.is_envelope_family(de.MSQE_FAMILY), "envelope")
     with pytest.raises(ValueError):
-        de.msqr_groups(qubits, {3: 545, 9: 545}, {3: 500, 9: 500}, {3: 500, 9: 500}, T1_IDLES, 0)
+        de.msqr_groups(qubits, {3: 545, 9: 545}, {3: 500, 9: 500}, {3: 500, 9: 500}, T1_IDLES, 0, READER_IDLE_DT)
+    with pytest.raises(ValueError):
+        de.msqr_groups(qubits, {3: 545, 9: 545}, {3: 500, 9: 500}, {3: 500, 9: 500}, T1_IDLES, EQUILIBRIUM_DT, 0)
 
 
 def test_the_retained_envelope_family_is_unchanged() -> None:

@@ -236,8 +236,11 @@ def test_shape_adjusted_adds_the_bound_to_the_shared_systematic_linearly() -> No
     adjusted = su.shape_adjusted(rows, dict.fromkeys(rows, 0.002))
     for q, row in rows.items():
         before = row["departure_n16"]["se_systematic"]
-        check(abs(adjusted[q]["departure_n16"]["se_systematic"] - before - 0.002) < 1e-15)
-        check(adjusted[q]["departure_n16"]["se"] == row["departure_n16"]["se"], "the per-qubit se moves")
+        after = adjusted[q]["departure_n16"]
+        check(abs(after["se_systematic"] - before - 0.002) < 1e-15)
+        check(abs(after["se"] - math.hypot(after["se_statistical"], after["se_systematic"])) < 1e-15, "total se")
+        z = adjusted[q]["decisions"]["departure"]["z"]
+        check(abs(z - after["difference"] / after["se"]) < 1e-12, f"q{q}: the decision reads the unwidened se")
     z0 = msa.pooled_z(
         [
             (
@@ -259,6 +262,29 @@ def test_shape_adjusted_adds_the_bound_to_the_shared_systematic_linearly() -> No
         ]
     )
     check(z0 is not None and z1 is not None and abs(z1) < abs(z0), f"{z0} {z1}")
+
+
+def test_the_count_rule_reads_the_shape_widened_decisions() -> None:
+    """Eight rows at difference 0.0062 with statistical and systematic errors 0.001 each depart at z 4.4; a shape bound
+    of 0.002 widens every z to 1.96 and the pooled z to about 2.05, so no device verdict may fire through either the
+    pooled z or the count rule."""
+    rows = eight_rows()
+    planted: dict[int, dict[str, Any]] = {}
+    for q, row in rows.items():
+        departure = {
+            **row["departure_n16"],
+            "difference": 0.0062,
+            "se_statistical": 0.001,
+            "se_systematic": 0.001,
+            "se": math.hypot(0.001, 0.001),
+        }
+        contrast = row["contrast_n16"]
+        decisions = msa.decide(contrast["contrast"], contrast["se"], 0.0062, departure["se"])
+        planted[q] = {**row, "departure_n16": departure, "decisions": decisions}
+    adjusted = su.shape_adjusted(planted, dict.fromkeys(planted, 0.002))
+    check(all(abs(r["decisions"]["departure"]["z"] - 1.96) < 0.01 for r in adjusted.values()), "adjusted z")
+    flags = msa.device_flags(msa.device_verdict(adjusted))
+    check(not any(flags.values()), f"a device verdict fired on shape-widened rows: {flags}")
 
 
 # --- equilibrium estimator ----------------------------------------------------------------------------------
@@ -398,9 +424,14 @@ def shot_arrays(
     return previous, read
 
 
+def readout(e01: float = 0.006, e10: float = 0.014) -> dict[str, float]:
+    """The in-job readout record of a qubit with these assignment errors (prepare's scale and offset)."""
+    return {"scale": 1 - e01 - e10, "offset": e10 - e01}
+
+
 def test_carryover_reader_recovers_a_planted_carryover() -> None:
     previous, read = shot_arrays(0.01)
-    result = su.carryover_reader(previous, read, 0.98, 1.59, 32)
+    result = su.carryover_reader(previous, read, readout(), 1.59, 32)
     check(abs(result["d"] - 0.01) < 4 * result["se"], f"{result}")
     check(0.0003 < result["se"] < 0.001 and result["readers"] == 12, f"standard error {result['se']}")
     check(not result["passes"], f"{result}")
@@ -408,7 +439,7 @@ def test_carryover_reader_recovers_a_planted_carryover() -> None:
 
 def test_carryover_reader_reads_zero_without_carryover_and_passes_the_screen() -> None:
     previous, read = shot_arrays(0.0)
-    result = su.carryover_reader(previous, read, 0.98, 1.59, 32)
+    result = su.carryover_reader(previous, read, readout(), 1.59, 32)
     check(abs(result["d"]) < 4 * result["se"] and 0.0003 < result["se"] < 0.0007, f"{result}")
     check(result["passes"] and result["bias_bound"] < 0.25 * 0.0188, f"{result}")
     check(abs(result["upper_bound"] - (abs(result["d"]) + result["z"] * result["se"])) < 1e-15)
@@ -416,16 +447,16 @@ def test_carryover_reader_reads_zero_without_carryover_and_passes_the_screen() -
 
 def test_carryover_reader_reads_about_zero_under_shuffled_order() -> None:
     previous, read = shot_arrays(0.01, shuffle=True)
-    result = su.carryover_reader(previous, read, 0.98, 1.59, 32)
+    result = su.carryover_reader(previous, read, readout(), 1.59, 32)
     check(abs(result["d"]) < 4 * result["se"], f"{result}")
 
 
 def test_carryover_reader_refuses_misaligned_input() -> None:
     previous, read = shot_arrays(0.0, readers=2)
     with pytest.raises(msa.AnalysisError):
-        su.carryover_reader(previous, read[:1], 0.98, 1.59, 32)
+        su.carryover_reader(previous, read[:1], readout(), 1.59, 32)
     with pytest.raises(msa.AnalysisError):
-        su.carryover_reader(previous, read, 0.0, 1.59, 32)
+        su.carryover_reader(previous, read, {"scale": 0.0, "offset": 0.0}, 1.59, 32)
 
 
 def correlated_pairs(
@@ -518,10 +549,13 @@ def build_run(
     thermal: float = 0.0,
     width: int = RUN_WIDTH,
 ) -> Run:
-    """Column-wise shot order: consecutive sentinel rows share a per-shot uniform with probability `correlation`, and
-    a reader's P1 carries `carry` times the readout contrast after a predecessor bit of 1. `shuffle` permutes every
-    row's shots independently, which removes the same-shot structure."""
+    """Column-wise shot order: consecutive sentinel rows share a per-shot uniform with probability `correlation`. A
+    reader row's final bit reads its latent end state through the assignment errors and its reader bit carries
+    `carry` times the readout contrast on that latent state, in the same shot. `shuffle` permutes every row's shots
+    independently (a reader row's two registers together), which removes the cross-row same-shot structure."""
     generator = np.random.default_rng(TEST_SEED)
+    # Shuffles draw from their own stream, so a shuffled run realizes the same shots in another row order.
+    orderer = np.random.default_rng([TEST_SEED, 1])
     qubits = [3 * k + 1 for k in range(width)]
     base: dict[int, dict[str, Any]] = {}
     for part in (qubits[:8], qubits[8:16]):
@@ -534,8 +568,8 @@ def build_run(
     pattern_bits = [[int(b) for b in row] for row in de.msqe_pattern_bits(width)]
     pubs = [f"pub_{k:03d}" for k in range(len(stems))]
     bits: dict[tuple[int, int], np.ndarray] = {}
+    reads: dict[tuple[int, int], np.ndarray] = {}
     uniform: dict[tuple[int, int], np.ndarray] = {}
-    latent: dict[tuple[int, int], np.ndarray] = {}
     for k, stem in enumerate(stems):
         for rank, q in enumerate(qubits):
             ctx = base[q]
@@ -547,7 +581,8 @@ def build_run(
             uniform[(k, rank)] = fresh
             member = f"{stem}_q{q}"
             if stem.startswith("msqr_reader"):
-                p1 = ctx["e01"] + contrast * carry * latent[(k - 1, rank)]
+                steps, signed = de.msqr_reader_stem(int(stem.removeprefix("msqr_reader")))
+                p1 = np.full(RUN_SHOTS, final[q][de.msq_member("measure", steps, signed, q)][0] / RUN_SHOTS)
             elif stem == "msqr_eq":
                 excited = thermal * (1 - math.exp(-EQUILIBRIUM_DT * DT / ctx["t1_cal_s"]))
                 p1 = np.full(RUN_SHOTS, ctx["e01"] + contrast * excited)
@@ -562,18 +597,19 @@ def build_run(
                 p1 = np.full(RUN_SHOTS, 1 - ctx["e10"] if bit else ctx["e01"])
             else:
                 p1 = np.full(RUN_SHOTS, final[q][member][0] / RUN_SHOTS)
-            if k + 1 < len(stems) and stems[k + 1].startswith("msqr_reader"):
-                # The predecessor's end state is latent; its recorded bit reads it through the assignment errors.
-                p_latent = np.clip((p1 - ctx["e01"]) / contrast, 0.0, 1.0)
-                latent[(k, rank)] = (fresh < p_latent).astype(np.int8)
+            if stem.startswith("msqr_reader"):
+                # The predecessor's end state is latent; its recorded bit reads it through the assignment errors and
+                # the in-circuit reader carries the excitation it leaves.
+                latent = fresh < np.clip((p1 - ctx["e01"]) / contrast, 0.0, 1.0)
                 row = np.where(
-                    latent[(k, rank)] == 1,
-                    generator.random(RUN_SHOTS) >= ctx["e10"],
-                    generator.random(RUN_SHOTS) < ctx["e01"],
+                    latent, generator.random(RUN_SHOTS) >= ctx["e10"], generator.random(RUN_SHOTS) < ctx["e01"]
                 ).astype(np.int8)
-            else:
-                row = (fresh < p1).astype(np.int8)
-            bits[(k, rank)] = generator.permutation(row) if shuffle else row
+                read = (generator.random(RUN_SHOTS) < ctx["e01"] + contrast * carry * latent).astype(np.int8)
+                order = orderer.permutation(RUN_SHOTS) if shuffle else np.arange(RUN_SHOTS)
+                bits[(k, rank)], reads[(k, rank)] = row[order], read[order]
+                continue
+            row = (fresh < p1).astype(np.int8)
+            bits[(k, rank)] = orderer.permutation(row) if shuffle else row
     distributions: dict[str, Any] = {}
     executed: dict[str, Any] = {}
     components: list[list[dict[str, Any]]] = [[] for _ in stems]
@@ -586,9 +622,20 @@ def build_run(
             register = f"g{rank}_r0_final"
             line = bits[(k, rank)]
             registers[pubs[k]][register] = [str(int(b)) for b in line]
-            ones = int(line.sum())
-            law = np.zeros(2 ** (member_steps(stem) + 1))
-            law[0], law[1] = 1 - ones / RUN_SHOTS, ones / RUN_SHOTS
+            names = [register]
+            if (k, rank) in reads:
+                # The reader member's law over final, its N mcm bits (all 0 here) and the reader bit on top.
+                read = reads[(k, rank)]
+                names.append(f"g{rank}_r0_reader")
+                registers[pubs[k]][names[-1]] = [str(int(b)) for b in read]
+                law = np.zeros(2 ** (member_steps(stem) + 1))
+                top = law.size // 2
+                for f, r in ((0, 0), (1, 0), (0, 1), (1, 1)):
+                    law[f + top * r] = float(np.sum((line == f) & (read == r))) / RUN_SHOTS
+            else:
+                ones = int(line.sum())
+                law = np.zeros(2 ** (member_steps(stem) + 1))
+                law[0], law[1] = 1 - ones / RUN_SHOTS, ones / RUN_SHOTS
             distributions[member] = [law]
             executed[member] = {
                 "shots": RUN_SHOTS,
@@ -616,7 +663,7 @@ def build_run(
                 {
                     "member": member,
                     "physical_qubits": [q],
-                    "registers_by_replica": [[register]],
+                    "registers_by_replica": [names],
                 }
             )
     in_dt = {str(q): round(base[q]["delay_s"] / DT) for q in qubits}
@@ -631,6 +678,7 @@ def build_run(
             "prereadout_delay_dt": {str(q): round(base[q]["prereadout_s"] / DT) for q in qubits},
             "t1_delays_dt": [round(d / DT) for d in base[qubits[0]]["t1_delays_s"]],
             "equilibrium_delay_dt": EQUILIBRIUM_DT,
+            "reader_idle_delay_dt": 5000,
             "pattern_bits": pattern_bits,
         },
         "execution_pubs": [{"name": pubs[k], "components": components[k]} for k in range(len(stems))],
@@ -649,9 +697,12 @@ def sentinel_template(stem: str) -> tuple[int, tuple[str, str, int]]:
 
 
 def member_steps(stem: str) -> int:
-    """The mid-circuit register width of a member's law: the measure and settle arms hold N bits, the rest none."""
+    """The clbits of a member's law beyond final: the measure and settle arms hold N bits, a reader its predecessor's N
+    and the reader bit, a reset control one, the rest none."""
     if stem.startswith(("msq_measure_n", "msq_settle_n")):
         return int(stem.split("_n")[1].split("_")[0])
+    if stem.startswith("msqr_reader"):
+        return de.msqr_reader_stem(int(stem.removeprefix("msqr_reader")))[0] + 1
     return 1 if stem.startswith("msqe_rc") else 0
 
 
@@ -705,36 +756,46 @@ def test_collected_reports_the_delay_arm_beside_the_echo_time(verdict: dict[str,
         check(entry["t2_echo_s"] > 0 and "measured_minus_modeled" in entry, f"q{q}: {entry}")
 
 
-def test_collected_withholds_every_qubit_when_the_shot_order_is_lost(run: Run) -> None:
-    lost = build_run(shuffle=True)
+@pytest.fixture(scope="module")
+def narrow() -> tuple[Run, dict[str, Any]]:
+    """A width-4 run and its analysis, the reference the order tests compare against."""
+    small = build_run(width=4)
+    return small, su.collected(small.record, small.distributions, small.executed, small.registers, small.chunks, FLOOR)
+
+
+def test_collected_reports_a_lost_shot_order_and_still_decides(narrow: tuple[Run, dict[str, Any]]) -> None:
+    """The readers read inside one circuit, so a shuffled row order fails the sentinels as a report and leaves the
+    carryover screen and the selection as they are on the ordered run."""
+    _, reference = narrow
+    lost = build_run(shuffle=True, width=4)
     result = su.collected(lost.record, lost.distributions, lost.executed, lost.registers, lost.chunks, FLOOR)
-    check(result["selected"] == [] and "withheld" in result, f"{result.get('withheld')}")
+    check("withheld" not in result and "decision" in result, f"{result.get('withheld')}")
     check(not result["order"]["sentinels"]["passes"] and result["order"]["chunk"]["passes"], f"{result['order']}")
-    check("screens" not in result and "decision" not in result, "a failed order condition left statistics evaluated")
     check(any(not s["passes"] for s in result["order"]["sentinels"]["segments"].values()), "no sentinel failed")
+    evaluated = 0
+    for q, screen in result["screens"].items():
+        if screen["carryover"] is not None:
+            evaluated += 1
+            check(screen["carryover"]["d"] == reference["screens"][q]["carryover"]["d"], f"q{q}: the shuffle moved D")
+    check(evaluated > 0 and result["selected"] == reference["selected"], "a shuffled order changed the selection")
 
 
-def test_collected_withholds_every_qubit_when_the_executor_reports_two_chunks(run: Run) -> None:
-    count = len(run.record["execution_pubs"])
+def test_collected_reports_a_split_job_and_still_decides(narrow: tuple[Run, dict[str, Any]]) -> None:
+    small, reference = narrow
+    count = len(small.record["execution_pubs"])
     split = [list(range(40)), list(range(40, count))]
-    result = su.collected(run.record, run.distributions, run.executed, run.registers, split, FLOOR)
-    check(result["selected"] == [] and not result["order"]["chunk"]["passes"], f"{result['order']['chunk']}")
-    check(result["order"]["sentinels"]["passes"], "the sentinels still pass on a column-wise run")
-    check("decision" not in result, "a failed chunk condition left statistics evaluated")
-    absent = su.collected(run.record, run.distributions, run.executed, run.registers, None, FLOOR)
-    check(absent["selected"] == [] and not absent["order"]["chunk"]["passes"], "absent chunk metadata must fail")
-    partial = su.collected(run.record, run.distributions, run.executed, run.registers, [list(range(count - 1))], FLOOR)
-    check(not partial["order"]["chunk"]["passes"], "one chunk that omits a PUB must fail")
+    result = su.collected(small.record, small.distributions, small.executed, small.registers, split, FLOOR)
+    check(not result["order"]["chunk"]["passes"] and result["order"]["sentinels"]["passes"], f"{result['order']}")
+    check(result["selected"] == reference["selected"], "a reported split changed the selection")
+    layout = su.job_layout(small.record)
+    for chunks in (None, [list(range(count - 1))]):
+        order = su.order_conditions(layout, small.registers, chunks, small.distributions, small.executed)
+        check(not order["chunk"]["passes"], f"chunks {chunks} must fail the report")
 
 
 def test_collected_fails_closed_on_absent_registers_and_a_reordered_job(run: Run) -> None:
-    check(
-        "unavailable"
-        in su.collected(run.record, run.distributions, run.executed, None, run.chunks, FLOOR)["order"]["sentinels"][
-            "reason"
-        ],
-        "absent registers",
-    )
+    absent = su.collected(run.record, run.distributions, run.executed, None, run.chunks, FLOOR)
+    check("unavailable" in absent["withheld"], f"absent registers: {absent.get('withheld')}")
     layout = su.job_layout(run.record)
     reader = layout["names"][layout["stems"].index("msqr_reader3")]
     registers = {name: bits for name, bits in run.registers.items() if name != reader}
@@ -749,15 +810,25 @@ def test_collected_fails_closed_on_absent_registers_and_a_reordered_job(run: Run
     }
     result = su.collected(run.record, mismatch, run.executed, run.registers, run.chunks, FLOOR)
     check("differ from the collector's counts" in result["withheld"], f"{result['withheld']}")
+    # A law whose final bit matches but whose reader bit does not.
+    name = f"msqr_reader3_q{layout['qubits'][0]}"
+    law = np.asarray(run.distributions[name][0], dtype=float)
+    top = law.size // 2
+    moved = law.copy()
+    moved[0], moved[top] = law[0] + law[top], 0.0
+    result = su.collected(
+        run.record, {**run.distributions, name: [moved]}, run.executed, run.registers, run.chunks, FLOOR
+    )
+    check("differ from the collector's counts" in result["withheld"], f"{result['withheld']}")
 
 
-def test_required_pubs_name_the_sentinel_reader_and_predecessor_rows(run: Run) -> None:
+def test_required_pubs_name_the_sentinel_and_reader_rows(run: Run) -> None:
     names = su.required_pubs(run.record)
-    check(len(names) == 12 + 12 + 12, f"{len(names)} PUBs")
+    check(len(names) == 12 + 12, f"{len(names)} PUBs")
     layout = su.job_layout(run.record)
     for k in range(12):
         row = layout["stems"].index(f"msqr_reader{k}")
-        check(layout["names"][row] in names and layout["names"][row - 1] in names, f"reader {k}")
+        check(layout["names"][row] in names and (row, layout["qubits"][0]) in layout["reader_registers"], f"{k}")
 
 
 def test_collected_withholds_every_qubit_under_a_planted_carryover() -> None:
@@ -886,15 +957,56 @@ def test_departure_value_equals_the_row_residual_bit_for_bit() -> None:
 
 
 def test_carryover_reader_recovers_the_planted_excitation_under_overlap_readout_error() -> None:
-    """At contrast 0.9 the one-factor division reads D low by about the contrast; dividing by the squared contrast
-    returns D, and never less than D beyond noise (the estimate may exceed D by at most the factor 1 / c)."""
+    """At contrast 0.9 the reader divisor returns D within noise under discrimination overlap."""
     d = 0.01
     previous, read = shot_arrays(d, e01=0.04, e10=0.06)
-    result = su.carryover_reader(previous, read, 0.9, 1.0, 32)
-    check(result["d"] > d - 3 * result["se"], f"estimate {result['d']} falls below {d}: {result}")
-    check(result["d"] < d / 0.9 + 3 * result["se"], f"estimate {result['d']} exceeds D / c: {result}")
-    single = su.carryover_reader(previous, read, 0.9, 1.0, 32)
+    result = su.carryover_reader(previous, read, readout(0.04, 0.06), 1.0, 32)
+    check(abs(result["d"] - d) < 3 * result["se"], f"estimate {result['d']} against {d}: {result}")
+    single = su.carryover_reader(previous, read, readout(0.04, 0.06), 1.0, 32)
     check(single["d"] == result["d"], "deterministic")
+
+
+def expected_strata(
+    d: float, e01: float, e10: float, latent: tuple[float, ...], shots: int
+) -> tuple[list[np.ndarray], list[np.ndarray]]:
+    """Predecessor and reader bits whose cell counts are the overlap model's expectations at `shots` per stratum:
+    latent end state p, recorded bit through (e01, e10), reader excitation d on the latent state alone."""
+    contrast = 1 - e01 - e10
+    previous, read = [], []
+    for p in latent:
+        bits: list[int] = []
+        reads: list[int] = []
+        for state, p_state in ((1, p), (0, 1 - p)):
+            p_bit = 1 - e10 if state else e01
+            p_read = e01 + contrast * d * state
+            for bit, p_b in ((1, p_bit), (0, 1 - p_bit)):
+                for value, p_r in ((1, p_read), (0, 1 - p_read)):
+                    n = round(shots * p_state * p_b * p_r)
+                    bits += [bit] * n
+                    reads += [value] * n
+        previous.append(np.asarray(bits, dtype=np.int8))
+        read.append(np.asarray(reads, dtype=np.int8))
+    return previous, read
+
+
+def test_the_reader_divisor_is_the_posterior_separation_of_the_overlap_model() -> None:
+    """At e01 = 0.019, e10 = 0.005 and latent excitation 0.47, 0.31 and 0.18 the squared contrast reads D about 2 %
+    low (the posterior separation falls below c away from p = 0.5); the stratum divisor returns D."""
+    e01, e10, d = 0.019, 0.005, 0.01
+    contrast = 1 - e01 - e10
+    for p in (0.47, 0.31, 0.18):
+        m = e01 + contrast * p
+        separation = p * (1 - e10) / m - p * e10 / (1 - m)
+        check(abs(su.reader_divisor(m, e01, e10) - contrast * separation) < 1e-12, f"divisor at p {p}")
+    previous, read = expected_strata(d, e01, e10, (0.47,) * 4 + (0.31,) * 4 + (0.18,) * 4, 400_000)
+    result = su.carryover_reader(previous, read, readout(e01, e10), 1.0, 32)
+    check(abs(result["d"] / d - 1) < 2e-3, f"the divisor reads {result['d']} against {d}")
+    strata = [su.conditional_difference(after, before) for before, after in zip(previous, read, strict=True)]
+    old = sum(stratum[0] for stratum in strata if stratum is not None) / len(strata) / contrast**2
+    check(old / d < 0.99, f"the squared contrast reads {old} against {d}")
+    # Readout errors taken from above lower the divisor and raise the estimate.
+    high = su.carryover_reader(previous, read, readout(e01 + 0.005, e10 + 0.01), 1.0, 32)
+    check(high["d"] > result["d"], "errors from above must not lower D")
 
 
 def test_carryover_reader_is_free_of_block_baselines_through_stratification() -> None:
@@ -902,14 +1014,14 @@ def test_carryover_reader_is_free_of_block_baselines_through_stratification() ->
     weighting; per-reader strata leave it out."""
     baselines = (0.001,) * 4 + (0.0,) * 8
     previous, read = shot_arrays(0.0, baselines=baselines)
-    result = su.carryover_reader(previous, read, 0.98, 1.0, 32)
+    result = su.carryover_reader(previous, read, readout(), 1.0, 32)
     check(abs(result["d"]) < 4 * result["se"], f"{result}")
     pooled = su.conditional_difference(np.concatenate(read), np.concatenate(previous))
     check(pooled is not None and pooled[0] > 0.0001, f"the pooled estimate should carry the composition term: {pooled}")
     thin = [np.zeros(10, dtype=np.int8)] * 2
-    dropped = su.carryover_reader([*previous, *thin], [*read, *thin], 0.98, 1.0, 32)
+    dropped = su.carryover_reader([*previous, *thin], [*read, *thin], readout(), 1.0, 32)
     check(dropped["readers"] == 12 and dropped["d"] == result["d"], "an under-populated reader must drop out")
-    empty = su.carryover_reader(thin, thin, 0.98, 1.0, 32)
+    empty = su.carryover_reader(thin, thin, readout(), 1.0, 32)
     check(not empty["evaluable"] and not empty["passes"], f"{empty}")
 
 
@@ -974,7 +1086,7 @@ def test_carryover_reader_is_unbiased_over_replicates_and_the_per_stratum_weight
     d = 0.004
     new = np.array(
         [
-            su.carryover_reader(*shot_arrays(d, e01=e01, e10=e10, stream=k), contrast, 1.0, 32)["d"]
+            su.carryover_reader(*shot_arrays(d, e01=e01, e10=e10, stream=k), readout(e01, e10), 1.0, 32)["d"]
             for k in range(REPLICATES)
         ]
     )
@@ -982,9 +1094,8 @@ def test_carryover_reader_is_unbiased_over_replicates_and_the_per_stratum_weight
         [per_stratum_estimate(*shot_arrays(d, e01=e01, e10=e10, stream=k), contrast) for k in range(REPLICATES)]
     )
     spread = float(new.std(ddof=1)) / math.sqrt(REPLICATES)
-    # The reader reads D through the predecessor bit's separation of the latent states, which is c at most, so the
-    # estimate lies between D and D / c.
-    check(d - 2 * spread < float(new.mean()) < d / contrast + 2 * spread, f"mean {new.mean()} against {d}: {spread}")
+    # Each stratum divides by its own posterior separation times the contrast, so the estimate is unbiased.
+    check(abs(float(new.mean()) - d) < 2.5 * spread, f"mean {new.mean()} against {d}: {spread}")
     check(float(old.mean()) < d - 2 * spread, f"the per-stratum weights read {old.mean()} against {d}, spread {spread}")
 
 

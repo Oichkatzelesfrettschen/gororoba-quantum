@@ -48,6 +48,7 @@ from diagnostic_experiments import (
     MSQE_RESET_CONTROLS,
     MSQR_EQUILIBRIUM_SECONDS,
     MSQR_FAMILY,
+    MSQR_READER_IDLE_SECONDS,
     MSQR_SENTINEL_ROWS,
     N21_FAMILIES,
     N21_OVERLAP_ARM,
@@ -1280,6 +1281,15 @@ def rounded_delay(runtime: Any, snapshot: Any, seconds: float) -> int:
     return granularity * math.ceil(seconds / float(target.dt) / granularity)
 
 
+def floored_delay(runtime: Any, snapshot: Any, seconds: float) -> int:
+    """seconds in dt, rounded down to the Target's timing granularity: an idle that must not exceed `seconds`."""
+    target = snapshot.backend.target
+    if target.dt is None or target.dt <= 0:
+        raise runtime.LiveRunError("the measurement-sequence idles need a positive Target dt")
+    granularity = max(1, int(target.granularity))
+    return granularity * math.floor(seconds / float(target.dt) / granularity)
+
+
 def settle_delay(runtime: Any, snapshot: Any) -> int:
     """MSQ_SETTLE_SECONDS in dt, rounded up to the Target's timing granularity."""
     return rounded_delay(runtime, snapshot, MSQ_SETTLE_SECONDS)
@@ -1400,7 +1410,10 @@ def measurement_sequence_candidates(
                 ]
                 if relaxation:
                     equilibrium_dt = rounded_delay(runtime, snapshot, MSQR_EQUILIBRIUM_SECONDS)
-                    groups = msqr_groups(qubits, delays, settles, prereadouts, t1_delays, equilibrium_dt)
+                    reader_idle_dt = floored_delay(runtime, snapshot, MSQR_READER_IDLE_SECONDS)
+                    groups = msqr_groups(
+                        qubits, delays, settles, prereadouts, t1_delays, equilibrium_dt, reader_idle_dt
+                    )
                 else:
                     build = msqe_groups if envelope else measurement_sequence_groups
                     groups = build(qubits, delays, settles, prereadouts, t1_delays)
@@ -1534,7 +1547,11 @@ def measurement_sequence_candidates(
                         "prereadout_delay_dt": {str(qubit): dt for qubit, dt in prereadouts.items()},
                         "t1_delays_dt": t1_delays,
                         "pattern_bits": [list(row) for row in msqe_pattern_bits(width)],
-                        **({"equilibrium_delay_dt": equilibrium_dt} if relaxation else {}),
+                        **(
+                            {"equilibrium_delay_dt": equilibrium_dt, "reader_idle_delay_dt": reader_idle_dt}
+                            if relaxation
+                            else {}
+                        ),
                         "placement_contract": (
                             "one single-qubit placement per qubit the layout rule keeps; every qubit runs each member "
                             "in the same shots; every member ends in a reset, so every PUB is dynamic"

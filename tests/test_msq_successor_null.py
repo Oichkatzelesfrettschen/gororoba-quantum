@@ -462,8 +462,9 @@ def test_readers_carry_the_planted_excitation_and_read_zero_without_it(setup: nl
         truth = nl.Truth(ctx["t1_cal_s"], math.inf, 1.0, 1.0, {}, reader, 0.0)
         probabilities = nl.member_probabilities(ctx, 5, truth, setup.equilibrium_s)
         predecessors, readers, ones = nl.draw_bits(generator, ctx, truth, probabilities, 5)
-        out = su.carryover_reader(predecessors, readers, contrast, 1.0, 32)
-        check(abs(out["d"] - reader) < 4 * out["se"] + 0.1 * reader, f"planted {reader}: {out['d']} +- {out['se']}")
+        readout = {"scale": contrast, "offset": ctx["e10"] - ctx["e01"]}
+        out = su.carryover_reader(predecessors, readers, readout, 1.0, 32)
+        check(abs(out["d"] - reader) < 4 * out["se"], f"planted {reader}: {out['d']} +- {out['se']}")
         check(
             all(
                 abs(int(p.sum()) - probabilities[nl.predecessor_name(i, 5)] * SHOTS) < 6 * math.sqrt(SHOTS) / 2

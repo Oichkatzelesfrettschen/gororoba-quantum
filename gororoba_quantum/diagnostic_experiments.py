@@ -1065,9 +1065,10 @@ def msqe_groups(
 # one dynamic job and row r of every qubit fuses into PUB r in the order below:
 #   head        the main family's static members (delay arm at every N, unitary arm, ro0, t1 series), whose delay
 #               rows at N = 4 and N = 8 are the first order-sentinel segment;
-#   readers     each measure row at N = 2, 4, 8 is followed directly by one carryover reader, a ground-start member
-#               that idles the pre-readout wait, reads into final and resets: under column-wise execution reader shot
-#               j follows its predecessor's shot j;
+#   readers     each measure row at N = 2, 4, 8 is followed by one carryover reader: the same signed measure member,
+#               then its terminal reset, an idle of MSQR_READER_IDLE_SECONDS and a measurement into the 1-bit register
+#               `reader`, then a reset. The reader reads the excitation the predecessor's end state leaves in the same
+#               shot, so no PUB order enters it;
 #   sentinels   a block of four delay-arm rows (N = 4 twice, N = 8 twice) between the N = 4 and N = 8 reader blocks
 #               and another among the patterns, so each third of the job holds one order-sentinel segment;
 #   equilibrium a ground-start member that idles MSQR_EQUILIBRIUM_SECONDS, then the pre-readout wait, reads and
@@ -1079,6 +1080,11 @@ MSQR_READER_STEPS = (2, 4, 8)
 MSQR_READERS = len(MSQR_READER_STEPS) * len(MSQ_SIGNED)
 # The equilibrium row's idle from the initialized state, rounded up to the Target's timing granularity.
 MSQR_EQUILIBRIUM_SECONDS = 400.0e-6
+# A reader's idle between its terminal reset and its measurement: the Heron r2 rep_delay floor
+# (qpu_planning.REP_DELAY_FLOOR_SECONDS), rounded down to the Target's granularity. Between shots the executor adds at
+# least this delay and the init reset, each a map that shrinks a difference in excitation, so the reader bounds the
+# excitation the next shot starts with.
+MSQR_READER_IDLE_SECONDS = 20.0e-6
 # A sentinel block: (steps, signed member) of its four delay-arm rows. Rows (0, 1) and (2, 3) are its two pairs of
 # consecutive rows; the head's pairs are the delay rows (8, 9) and (12, 13) of the job.
 MSQR_SENTINEL_ROWS = (
@@ -1106,19 +1112,36 @@ def msqr_sentinel_member(segment: int, index: int, qubit: int) -> str:
     return f"msqr_sent{segment}{index}_n{MSQR_SENTINEL_ROWS[index][0]}_q{qubit}"
 
 
-def msqr_reader_circuit(index: int, qubit: int, prereadout_dt: int) -> QuantumCircuit:
-    """The pre-readout idle, then the final measurement of a qubit that starts in |0>, as ro0 does."""
+def msqr_reader_stem(index: int) -> tuple[int, tuple[str, str, int]]:
+    """(steps, signed member) of the measure member that reader `index` repeats, in reader order."""
     if type(index) is not int or not 0 <= index < MSQR_READERS:
         raise ValueError(f"unknown carryover reader {index!r}")
-    if type(prereadout_dt) is not int or prereadout_dt <= 0:
-        raise ValueError("the pre-readout delay must be a positive integer number of dt")
-    circuit = QuantumCircuit(
-        QuantumRegister(1, "q"), ClassicalRegister(1, "final"), name=msqr_reader_member(index, qubit)
-    )
-    circuit.delay(prereadout_dt, 0, unit="dt")
-    circuit.measure(0, 0)
+    return MSQR_READER_STEPS[index // len(MSQ_SIGNED)], MSQ_SIGNED[index % len(MSQ_SIGNED)]
+
+
+def msqr_reader_circuit(
+    index: int, qubit: int, delay_dt: int, settle_dt: int, prereadout_dt: int, reader_idle_dt: int
+) -> QuantumCircuit:
+    """The signed measure member of `msqr_reader_stem`, its terminal reset, the reader idle, then a measurement into
+    the register `reader` and a reset: clbit 0 is the predecessor's final bit and clbit N + 1 the reader's."""
+    steps, signed = msqr_reader_stem(index)
+    if type(reader_idle_dt) is not int or reader_idle_dt <= 0:
+        raise ValueError(f"the reader idle must be a positive integer number of dt, got {reader_idle_dt!r}")
+    name = msqr_reader_member(index, qubit)
+    circuit = msq_circuit("measure", steps, signed[2], qubit, name, delay_dt, settle_dt, prereadout_dt)
+    reader = ClassicalRegister(1, "reader")
+    circuit.add_register(reader)
+    circuit.reset(0)
+    circuit.delay(reader_idle_dt, 0, unit="dt")
+    circuit.measure(0, reader[0])
     circuit.reset(0)
     return circuit
+
+
+def msqr_reader_law(steps: int) -> np.ndarray:
+    """Ideal law of a reader over its N + 2 clbits: the measure member's law with the reader bit at 0."""
+    law = msq_measure_law(steps)
+    return np.concatenate([law, np.zeros_like(law)])
 
 
 def msqr_equilibrium_circuit(qubit: int, equilibrium_dt: int, prereadout_dt: int) -> QuantumCircuit:
@@ -1153,6 +1176,7 @@ def msqr_members(
     prereadout_dt: int,
     t1_dt: tuple[int, ...],
     equilibrium_dt: int,
+    reader_idle_dt: int,
     pattern_column: tuple[int, ...],
 ) -> tuple[Member, ...]:
     """One qubit's members in job order (the layout above); pattern_column holds its bit in each pattern."""
@@ -1164,11 +1188,13 @@ def msqr_members(
         return [by_name[msq_member("measure", steps, signed, qubit)] for signed in MSQ_SIGNED]
 
     def reader(index: int) -> Member:
+        steps, _ = msqr_reader_stem(index)
+        weights = msq_weights(steps, "measure")
         return Member(
             msqr_reader_member(index, qubit),
-            msqr_reader_circuit(index, qubit, prereadout_dt),
-            np.asarray([1.0, 0.0]),
-            weights=np.asarray([1.0, 0.0]),
+            msqr_reader_circuit(index, qubit, delay_dt, settle_dt, prereadout_dt, reader_idle_dt),
+            msqr_reader_law(steps),
+            weights=np.concatenate([weights, weights]),
         )
 
     def sentinels(segment: int) -> list[Member]:
@@ -1222,11 +1248,13 @@ def msqr_members(
 
 
 def _msqr_summary(distributions: dict[str, np.ndarray], qubit: int) -> dict[str, float]:
-    """The envelope's summary plus each reader's and the equilibrium row's final P1."""
+    """The envelope's summary plus each reader's reader-bit and final P1 and the equilibrium row's final P1."""
     result = _msqe_summary(distributions, qubit)
     for index in range(MSQR_READERS):
         if (name := msqr_reader_member(index, qubit)) in distributions:
-            result[f"q{qubit}_msqr_p1_reader{index}"] = float(distributions[name][1])
+            law = np.asarray(distributions[name])
+            result[f"q{qubit}_msqr_p1_reader{index}"] = float(law[law.size // 2 :].sum())
+            result[f"q{qubit}_msqr_p1_reader{index}_final"] = float(law[1::2].sum())
     if (name := msqr_equilibrium_member(qubit)) in distributions:
         result[f"q{qubit}_msqr_p1_eq"] = float(distributions[name][1])
     for segment in (MSQR_SENTINEL_MIDDLE, MSQR_SENTINEL_TAIL):
@@ -1250,6 +1278,7 @@ def msqr_groups(
     prereadout_delay_dt: Any,
     t1_delays_dt: Any,
     equilibrium_delay_dt: Any,
+    reader_idle_delay_dt: Any,
 ) -> list[Group]:
     """One group per qubit in layout order; row r fuses across the qubits into one dynamic PUB."""
     delays = msq_delays(qubits, measurement_delay_dt)
@@ -1258,6 +1287,8 @@ def msqr_groups(
     t1_dt = msq_t1_delays(t1_delays_dt)
     if type(equilibrium_delay_dt) is not int or equilibrium_delay_dt <= 0:
         raise ValueError(f"the equilibrium idle must be a positive integer number of dt, got {equilibrium_delay_dt!r}")
+    if type(reader_idle_delay_dt) is not int or reader_idle_delay_dt <= 0:
+        raise ValueError(f"the reader idle must be a positive integer number of dt, got {reader_idle_delay_dt!r}")
     bits = msqe_pattern_bits(len(qubits))
     return [
         Group(
@@ -1269,6 +1300,7 @@ def msqr_groups(
                 prereadouts[qubit],
                 t1_dt,
                 equilibrium_delay_dt,
+                reader_idle_delay_dt,
                 tuple(row[rank] for row in bits),
             ),
             _msqr_summarizer(qubit),
@@ -1304,7 +1336,7 @@ def msqr_sentinel_pairs() -> tuple[tuple[tuple[str, str], ...], ...]:
 @functools.cache
 def msqr_row_stems(width: int) -> tuple[str, ...]:
     """The member name of each job row without its qubit suffix, in job order: the one source of the row layout."""
-    members = msqr_members(0, 1, 1, 1, (0, 1, 2, 3, 4), 1, tuple(row[0] for row in msqe_pattern_bits(width)))
+    members = msqr_members(0, 1, 1, 1, (0, 1, 2, 3, 4), 1, 1, tuple(row[0] for row in msqe_pattern_bits(width)))
     return tuple(member.name.rpartition("_q")[0] for member in members)
 
 
@@ -2253,6 +2285,7 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
             family["prereadout_delay_dt"],
             family["t1_delays_dt"],
             family["equilibrium_delay_dt"],
+            family["reader_idle_delay_dt"],
         )
     if family.get("name") == MSQD_FAMILY:
         return msq_diagnostic_groups([int(qubit) for qubit in family["qubits"]], family["prereadout_delay_dt"])

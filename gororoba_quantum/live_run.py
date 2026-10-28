@@ -4551,6 +4551,10 @@ def envelope_drift(
         equilibrium = qpu_planning.rounded_delay(runtime, fresh, diagnostic_experiments.MSQR_EQUILIBRIUM_SECONDS)
         if equilibrium != configuration["equilibrium_delay_dt"]:
             reasons.append(f"equilibrium idle {configuration['equilibrium_delay_dt']} -> {equilibrium}")
+    if "reader_idle_delay_dt" in configuration:
+        reader_idle = qpu_planning.floored_delay(runtime, fresh, diagnostic_experiments.MSQR_READER_IDLE_SECONDS)
+        if reader_idle != configuration["reader_idle_delay_dt"]:
+            reasons.append(f"reader idle {configuration['reader_idle_delay_dt']} -> {reader_idle}")
     for choice in choices:
         reasons.extend(
             f"{choice.group.name}: {reason}"
