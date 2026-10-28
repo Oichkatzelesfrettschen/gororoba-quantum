@@ -261,7 +261,8 @@ replays byte for byte under the pinned `ci-py3.14.7` interpreter and the numeric
 individual rows) with `"$PYTHON" scripts/msq_successor_null.py results/live/2026-10-28T163139.827337Z --arm ARM
 --replicates CAP` at the cap below, adding `--seed qrng:docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json#3` for
 the settle-sparse row (`SPARSE_CONFIRMATION_SEED`); every other row runs at the default `SUCCESSOR_NULL_SEED`. An arm
-with a verdict count stops at it, so its replicates fall below its cap. The plateau-retained record merges five
+with a verdict count stops at it, so its replicates fall below its cap. `--arms all --out-dir DIR` writes every row's record through one
+process pool at these caps and seeds ([null-shards.md](../runbooks/null-shards.md)). The plateau-retained record merges five
 shards of `--shard K --shards 5` (`--merge`), which cuts it at the same replicate as an unsharded run.
 
 | Arm | Cap | Replicates | Result |

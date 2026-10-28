@@ -586,6 +586,26 @@ def test_each_case_stops_at_its_own_verdict_count(setup: nl.Setup, monkeypatch: 
     check(whole["replicates"] == {"9-qubits": 1, "6-qubits": 2}, f"{whole['replicates']}")
 
 
+def test_a_limit_leaves_the_merged_bytes_and_refuses_a_case_it_cuts_short(
+    setup: nl.Setup, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # The 9-qubit case issues its verdict at its first replicate, so a limit of 1 changes no byte of the cap-2 run,
+    # while at a count of 2 the same limit stops it short of both its count and its cap.
+    monkeypatch.setattr(nl, "ROUND", 1)
+    cases = [small("gamma", 9, 0.0)]
+    whole = nl.dumps(nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 2, cases=cases, needed=1)]))
+
+    def sharded(needed: int) -> dict[str, Any]:
+        run = nl.ArmRun("gamma", TEST_SEED, 2, cases=cases, needed=needed, limits={"9-qubits": 1})
+        return nl.merge_records([nl.run_arms(setup, [run], k, 2)[0] for k in (0, 1)])
+
+    check(nl.dumps(sharded(1)) == whole, "a limit at the verdict cut changed the record")
+    with pytest.raises(ValueError, match="larger --limit"):
+        sharded(2)
+    with pytest.raises(ValueError):
+        nl.run_arms(setup, [nl.ArmRun("gamma", TEST_SEED, 2, cases=cases, limits={"7-qubits": 1})])
+
+
 def test_the_round_size_leaves_the_record_bytes_unchanged(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
     # A round of one replicate stops the 9-qubit case at its first verdict; a round of two blocks runs it past.
     cases = [small("gamma", 9, 0.0)]
@@ -601,6 +621,65 @@ def test_a_computed_round_gives_every_worker_whole_blocks(monkeypatch: pytest.Mo
     monkeypatch.setattr(nl, "workers", lambda: 12)
     check(nl.round_size(1) == 24 * nl.NULL_BLOCK and nl.round_size(3) == 8 * nl.NULL_BLOCK, "worker blocks")
     check(nl.round_size(25) == nl.NULL_BLOCK, "a round holds at least one block per case")
+
+
+def test_one_pool_writes_each_arm_the_bytes_of_its_own_run(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
+    # The gamma case stops at its first verdict while the settle case shares its rounds and runs to the cap.
+    monkeypatch.setattr(nl, "ROUND", 1)
+    gamma = nl.ArmRun("gamma", TEST_SEED, 2, cases=[small("gamma", 9, 0.0)], needed=1)
+    settle = nl.ArmRun("settle-common", TEST_SEED, 2, cases=[small("settle-common", 8, 0.0)])
+    joint = [nl.dumps(nl.merge_records([record])) for record in nl.run_arms(setup, [gamma, settle])]
+    alone = [nl.dumps(nl.merge_records([nl.run_arms(setup, [run])[0]])) for run in (gamma, settle)]
+    check(joint == alone, "an arm's record depends on the arms it shares the pool with")
+    with pytest.raises(ValueError):
+        nl.run_arms(setup, [gamma, gamma])
+
+
+def test_an_explicit_single_shard_writes_a_shard_record(setup: nl.Setup, tmp_path: Path) -> None:
+    import msq_successor_null
+
+    run = nl.ArmRun("gamma", TEST_SEED, 1, cases=[small("gamma", 8, 0.0)])
+    records = nl.run_arms(setup, [run], 0, 1)
+    msq_successor_null.write_arm_records(tmp_path / "shards", records, 0)
+    msq_successor_null.write_arm_records(tmp_path / "whole", records, None)
+    shard = json.loads((tmp_path / "shards" / "gamma-shard0.json").read_text())
+    check(sorted(path.name for path in (tmp_path / "shards").iterdir()) == ["gamma-shard0.json"], "shard name")
+    check(nl.dumps(nl.merge_records([shard])) == (tmp_path / "whole" / "gamma.json").read_text(), "merge differs")
+
+
+def test_the_null_plan_names_every_arm_once_at_its_seed() -> None:
+    import msq_successor_null
+
+    import qrng_seeds
+
+    check([arm for arm, _, _ in nl.NULL_PLAN] == list(nl.ARMS), "NULL_PLAN differs from ARMS")
+    spellings = {arm: spelling for arm, _, spelling in nl.NULL_PLAN if spelling is not None}
+    check(set(spellings) == {"settle-sparse"}, f"{spellings}")
+    seed, _ = qrng_seeds.parse_value(spellings["settle-sparse"], [])
+    check(seed == nl.SPARSE_CONFIRMATION_SEED, f"the settle-sparse spelling resolves to {seed}")
+    runs = msq_successor_null.plan_runs(["all"], ["gamma=37"], "r")
+    check([run.arm for run in runs] == list(nl.ARMS), "--arms all runs every arm in ARMS order")
+    by_arm = {run.arm: run for run in runs}
+    check(by_arm["gamma"].cap == 37 and by_arm["plateau-retained"].cap == 20000, "caps")
+    check(by_arm["settle-sparse"].seed == nl.SPARSE_CONFIRMATION_SEED, "the settle-sparse seed")
+    check(by_arm["settle-sparse"].seed_source["sources"] == [spellings["settle-sparse"]], "the seed spelling")
+    check(by_arm["gamma"].seed == nl.SUCCESSOR_NULL_SEED and by_arm["gamma"].seed_source["sources"] == ["default"], "")
+    for bad in (["gamma=0"], ["gamma=x"], ["q-tolerance=5"]):
+        with pytest.raises(ValueError):
+            msq_successor_null.plan_runs(["gamma"], bad, "r")
+    limited = msq_successor_null.plan_runs(
+        ["settle-sparse"], [], "r", ["settle-sparse=50", "settle-sparse/8-qubits=90"]
+    )
+    labels = {"8-qubits", "9-qubits", "24-qubits"}
+    check(
+        msq_successor_null.expand_limits(limited[0], labels) == {"8-qubits": 90, "9-qubits": 50, "24-qubits": 50},
+        "an ARM=N limit covers the cases without their own",
+    )
+    with pytest.raises(ValueError):
+        msq_successor_null.expand_limits(limited[0]._replace(limits={"7-qubits": 5}), labels)
+    for bad in (["gamma/x=0"], ["q-tolerance=5"]):
+        with pytest.raises(ValueError):
+            msq_successor_null.plan_runs(["gamma"], [], "r", bad)
 
 
 def test_merge_refuses_incomplete_or_mismatched_shards(setup: nl.Setup) -> None:
