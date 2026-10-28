@@ -199,7 +199,7 @@ def test_memo_distinguishes_weights() -> None:
 
 from pathlib import Path  # noqa: E402
 
-RECORD = Path(__file__).resolve().parent.parent / "results/live/2026-10-28T001935.805967Z"
+RECORD = Path(__file__).resolve().parent.parent / "results/live/2026-10-28T163139.827337Z"
 
 
 # One worker builds the shared setup; the planted tests run at 8 qubits, so it solves only that pool's losses.
@@ -538,16 +538,16 @@ def test_two_shards_merge_to_the_bytes_of_one_run(setup: nl.Setup) -> None:
 def test_the_verdict_requirement_cuts_every_sharding_at_one_replicate(
     setup: nl.Setup, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    # One replicate a round: the 9-qubit case reaches two verdicts at its second replicate while the 8-qubit case
-    # issues fewer and runs to the cap.
+    # One replicate a round: the 9-qubit case reaches two verdicts at its second replicate while the 6-qubit case
+    # issues none and runs to the cap.
     monkeypatch.setattr(nl, "ROUND", 1)
-    cases = [small("gamma", 9, 0.0), small("gamma", 8, 0.0)]
+    cases = [small("gamma", 9, 0.0), small("gamma", 6, 0.0)]
     whole = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 3, cases=cases, needed=2)])
     halves = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 3, k, 2, cases=cases, needed=2) for k in (0, 1)])
     check(nl.dumps(whole) == nl.dumps(halves), "the cut depends on the sharding")
     rows = whole["cases"]["9-qubits"]["rows"]
     check(len(rows) == 2 and sum(r["issued"] for r in rows) == 2, "the 9-qubit case did not stop at its second verdict")
-    check(whole["replicates"]["8-qubits"] == 3, "the 8-qubit case stopped with the first case")
+    check(whole["replicates"]["6-qubits"] == 3, "the 6-qubit case stopped with the first case")
 
 
 def test_merge_refuses_incomplete_or_mismatched_shards(setup: nl.Setup) -> None:

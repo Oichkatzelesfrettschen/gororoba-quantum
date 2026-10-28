@@ -65,6 +65,7 @@ from diagnostic_experiments import (
     msqe_groups,
     msqe_pattern_bits,
     msqr_groups,
+    msqr_reader_stem,
     msqr_row_count,
     n21_group,
     n21_orbit_rca_group,
@@ -1440,15 +1441,23 @@ def measurement_sequence_candidates(
                         raise runtime.LiveRunError(f"{group.name}: {violations}")
                     operations = isa.count_ops()
                     arm = member.name.split("_")[1]
-                    # The envelope's terminal resets and the reset controls' mid-circuit reset survive compilation.
-                    resets_expected = (2 if arm in MSQE_RESET_CONTROLS else 1) if envelope else 0
+                    # The envelope's terminal resets, the reset controls' mid-circuit reset and a reader's reset before
+                    # its idle survive compilation.
+                    reader = relaxation and arm.startswith("reader")
+                    two_resets = arm in MSQE_RESET_CONTROLS or reader
+                    resets_expected = (2 if two_resets else 1) if envelope else 0
                     if operations.get("reset", 0) != resets_expected:
                         raise runtime.LiveRunError(
                             f"{member.name}: compiled {operations.get('reset', 0)} resets, not {resets_expected}"
                         )
                     if arm in MSQE_RESET_CONTROLS:
                         measures, delays_expected, steps = 2, 1, 0
-                    elif arm.startswith("pat") or arm == "ro0" or (relaxation and arm.startswith("reader")):
+                    elif reader:
+                        # The repeated measure member (N mid-circuit and one final measurement, one pre-readout
+                        # idle), then the reader idle and the reader measurement.
+                        steps = msqr_reader_stem(int(arm.removeprefix("reader")))[0]
+                        measures, delays_expected = steps + 2, 2
+                    elif arm.startswith("pat") or arm == "ro0":
                         measures, delays_expected, steps = 1, 1, 0
                     elif relaxation and arm == "eq":
                         measures, delays_expected, steps = 1, 2, 0
