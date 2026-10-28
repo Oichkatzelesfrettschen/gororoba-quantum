@@ -52,5 +52,9 @@ gh workflow run null-shards.yml --ref BRANCH -f record_dir=RECORD -f arms=all \
 gh run download RUN_ID --dir OUT
 ```
 
-Each artifact `null-shard-K` holds the shard records, `lscpu` and `/usr/bin/time -v` of its job, which give the
-runner's per-replicate speed.
+`gh run download` extracts each artifact `null-shard-K` into its own directory, holding the shard records, `lscpu`
+and `/usr/bin/time -v` of its job (the runner's per-replicate speed), so the merge reads across them:
+
+```sh
+"$PYTHON" -B scripts/msq_successor_null.py --merge OUT/null-shard-*/ARM-shard*.json --out OUT/ARM.json
+```
