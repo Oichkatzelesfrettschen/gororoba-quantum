@@ -370,3 +370,5 @@ about a thousand generators.
 - **Roles (owner direction, supersedes earlier sub-step wording).** Codex diagnoses and Claude implements. A Codex
   turn reads the tree, runs read-only probes and reports each defect as file:line, failing statement, root cause and
   the proposed change; it edits no file. The orchestrator applies the change, runs the gates and commits.
+  The session runs in the `read-only` sandbox at `model_reasoning_effort=medium`, so a write attempt fails rather
+  than lands.
