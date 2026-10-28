@@ -2303,12 +2303,12 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-qpy18-full-retrieval.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check-rows",
    "name": "core-281",
    "seconds": 10.0,
    "tier": "pr",
    "replays": [
-    "docs/evidence/submitted_circuits/comparison-qpy18-full-retrieval.json"
+    "docs/evidence/submitted_circuits/jobs"
    ]
   },
   {

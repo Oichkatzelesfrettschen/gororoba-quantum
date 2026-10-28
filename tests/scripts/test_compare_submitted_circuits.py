@@ -171,3 +171,77 @@ def test_offline_rebind_preserves_service_origin_and_checks_archived_collector(t
     snapshot.write_text("wrong historical collector")
     with pytest.raises(SystemExit, match="provenance source changed"):
         comparison.check(successor)
+
+
+def _service(circuit, reads):
+    from qiskit_ibm_runtime.quantum_program import CircuitItem
+
+    def job(job_id):
+        reads.append(job_id)
+        return SimpleNamespace(inputs={"quantum_program": SimpleNamespace(items=[CircuitItem(circuit)])})
+
+    return SimpleNamespace(job=job)
+
+
+def test_append_retrieves_only_jobs_without_a_row_and_keeps_existing_rows(tmp_path, monkeypatch) -> None:
+    _, row, circuit = fixture_rows(tmp_path, monkeypatch)
+    rows = comparison.default_rows()
+    provenance = {
+        "origin": "service",
+        "retrieved_utc": "2026-10-28T00:00:00+00:00",
+        "operation": "read existing job inputs; submissions and uploads excluded",
+        "runtime_versions": comparison.runtime_versions(),
+        "collector_sha256": "0" * 64,
+    }
+    comparison._retain(rows / "seeded.json", comparison._row_document(row, provenance))
+    prior = (rows / "seeded.json").read_bytes()
+    reads: list[str] = []
+    monkeypatch.setattr(comparison.ibm_account, "open_service", lambda constructor: _service(circuit, reads))
+    monkeypatch.setitem(sys.modules, "live_run", SimpleNamespace(_instance_hash=lambda service: "fixture"))
+    comparison.append_rows(rows)
+    if reads != ["missing"] or (rows / "seeded.json").read_bytes() != prior:
+        raise RuntimeError("an append must read only the job without a row and keep every existing row's bytes")
+    comparison.append_rows(rows)
+    if reads != ["missing"]:
+        raise RuntimeError("a complete ledger needs no service read")
+    tampered = json.loads((rows / "missing.json").read_text())
+    tampered["row"]["submitted_qpy_sha256"] = ["0" * 64]
+    (rows / "missing.json").write_text(json.dumps(tampered))
+    with pytest.raises(SystemExit, match="differ from the retained circuits"):
+        comparison.check_rows(rows)
+
+
+def test_split_retains_one_row_per_job_and_refuses_an_occupied_row(tmp_path, monkeypatch) -> None:
+    _, row, _ = fixture_rows(tmp_path, monkeypatch)
+    missing = copy.deepcopy(row) | {"job_id": "missing", "run": "results/live/missing"}
+    source = tmp_path / "comparison.json"
+    source.write_text(
+        json.dumps(
+            {
+                "schema": comparison.SUCCESSOR_SCHEMA,
+                "jobs": [row, missing],
+                "provenance": {
+                    "retrieved_utc": "2026-10-28T00:35:31+00:00",
+                    "operation": "read existing job inputs; submissions and uploads excluded",
+                    "runtime_versions": comparison.runtime_versions(),
+                    "sources_sha256": {"scripts/compare_submitted_circuits.py": "1" * 64},
+                },
+            }
+        )
+    )
+    rows = comparison.default_rows()
+    comparison.split(source, rows)
+    written = json.loads((rows / "missing.json").read_text())
+    expected_origin = {"file": "comparison.json", "sha256": hashlib.sha256(source.read_bytes()).hexdigest()}
+    if written["row"] != missing or written["provenance"]["origin"] != expected_origin:
+        raise RuntimeError("a split row must carry its comparison row and the comparison's identity")
+    with pytest.raises(FileExistsError):
+        comparison.split(source, rows)
+
+
+def test_check_rows_refuses_a_ledger_of_another_qiskit_release(tmp_path, monkeypatch) -> None:
+    fixture_rows(tmp_path, monkeypatch)
+    other = tmp_path / comparison.ROWS / "qiskit-0.0.0"
+    other.mkdir(parents=True)
+    with pytest.raises(SystemExit, match="rows of another Qiskit release"):
+        comparison.check_rows(other)

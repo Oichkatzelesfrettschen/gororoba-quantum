@@ -1,0 +1,52 @@
+{
+ "schema": "submitted-circuit-row-v1",
+ "row": {
+  "job_id": "db847oiraffc73fbmfk0",
+  "run": "results/live/2026-10-15T030748.903241Z",
+  "retained_file": "results/live/2026-10-15T030748.903241Z/isa.qpy",
+  "retained_sha256": "4c510ab848e9a18658a68b1a826be5cece7680580d7fdda7e55857be849ccf51",
+  "order_source": "record.json submission.jobs[].pubs",
+  "expected_pubs": [
+   "ibm_kingston_static_pub_01",
+   "ibm_kingston_static_pub_02",
+   "ibm_kingston_static_pub_03",
+   "ibm_kingston_static_pub_04",
+   "ibm_kingston_static_pub_05",
+   "ibm_kingston_static_pub_06",
+   "ibm_kingston_static_pub_07",
+   "ibm_kingston_static_pub_08",
+   "ibm_kingston_static_pub_09",
+   "ibm_kingston_static_pub_10"
+  ],
+  "items": 10,
+  "item_kinds": [
+   "CircuitItem"
+  ],
+  "positional_matches": 10,
+  "submitted_qpy_sha256": [
+   "8981bc0fd869232795093bda5f805877cf7440a48820df6bf06a04f04f527a19",
+   "3521e2c0bc16dac75f2eb62b83b2d83cc5a577e09fafe8d904576e4aab3ce86a",
+   "a32b13a01a5a1003c654c6e132653a872914cde82edcf2578ffb4f444f6a51e7",
+   "af247e84d28e51aa9abbc18cf2d688db619b7912eca66db75a326a2672d8f6c5",
+   "f7f6b0b6f4fb241cbfab4a07ae4e42cde8b95636c3cdc469f935a4010de08a7b",
+   "0f2967d0bfee003fc7c383e83478415f4eca8000de404739b1f71d1bdc398cf2",
+   "851da8f6b51478cc943bdda6d5bac406ec3316d583333895da78dc6926e33b92",
+   "fcbc051788e7af580ea6bf5e0bcae716c3949b7468f32db4a4073c606e995ef0",
+   "db3bd3c00f44ee32d0ecd96a996f69e90e0148396eb2566d9fcdb522d4e85e14",
+   "e4d83fc83ef2dd23e353be3dbf4ce3fa740bf6e5eeec31edbff169036d9eb691"
+  ]
+ },
+ "provenance": {
+  "origin": {
+   "file": "docs/evidence/submitted_circuits/comparison-qpy18-full-retrieval.json",
+   "sha256": "1e7072ce8d059b90298559dac822c2ac1b47eda45081f5d96346ce08f2d52c58"
+  },
+  "retrieved_utc": "2026-10-28T00:35:31.259774+00:00",
+  "operation": "read existing job inputs; submissions and uploads excluded",
+  "runtime_versions": {
+   "qiskit": "2.6.0",
+   "qiskit-ibm-runtime": "0.50.0"
+  },
+  "collector_sha256": "77eaddfaac4f54e8a6986bf92547bbb92a721404507fbd9d529fd3c2596093c9"
+ }
+}

@@ -111,8 +111,7 @@ job `dbge2jpj4t8s73ac6fk0`. Both runs retain an `isa.qpy` in QPY format 18, whic
 unseeded under Qiskit 2.6.0 and qiskit-ibm-runtime 0.50.0, reads all 43 jobs' submitted inputs through the
 read-only job interface, and records 786 items, each equal to its retained circuit in order, with QPY digests
 serialized by 2.6.0. Its collector bytes equal the archived [collector text](collector-idle-penalty-retrieval.py.txt).
-Gate `core-281` checks it on the current runtime; the 2.5.2 comparisons above keep their bytes as the record of
-the earlier serializer.
+The 2.5.2 comparisons above keep their bytes as the record of the earlier serializer.
 
 An offline rebind successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
@@ -120,13 +119,25 @@ named files and the pinned Qiskit/runtime versions bound the replay; the provena
 transitive import closure. Every earlier comparison retains its recorded bytes; each binds an earlier audit digest
 and job set, so none checks against the current audit.
 
-Replay the active comparison from the repository root with the current pinned interpreter:
+The [row ledger](jobs/) replaces whole-audit successors. `jobs/qiskit-<release>/<job_id>.json` holds one audited
+job's row with its own provenance (origin, retrieval time, runtime versions, collector digest) and keeps its bytes
+once written. The QPY-18 full retrieval was split into `jobs/qiskit-2.6.0/` offline (`--split`), each row naming the
+comparison file and digest it came from. `--append` reads only the audited jobs without a row through the read-only
+job interface and writes one file each, so a retention adds one row per new job. `--check-rows` requires exactly one
+row per audited job, retrieved under the running Qiskit release, and re-derives every submitted digest from the
+retained circuits; it binds neither the audit's bytes nor this script's, because the re-derivation is the check.
+QPY bytes follow the Qiskit release (35 of 684 circuits serialize differently under 2.5.2 and 2.6.0 even at QPY
+format 17 with the generator version masked), so a Qiskit pin change fills a new `jobs/qiskit-<release>/` by
+`--append` and leaves the earlier ledger as its record.
+
+Replay the row ledger from the repository root with the current pinned interpreter, and append rows for newly
+audited jobs:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
-"$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check \
-  --out docs/evidence/submitted_circuits/comparison-qpy18-full-retrieval.json
+"$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check-rows
+"$PYTHON" -B -W error scripts/compare_submitted_circuits.py --append
 ```
 
 QPY reserialization depends on the Qiskit version: Qiskit 2.5.2 reproduces all 28 original rows, while Qiskit 2.6.0

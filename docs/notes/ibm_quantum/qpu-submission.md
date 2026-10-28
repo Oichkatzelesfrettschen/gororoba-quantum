@@ -183,15 +183,13 @@ and the Kaggle noise-snapshot rule.
   inventory (`scripts/observe_qpu_job_inventory.py`, a service read), the
   retention audit (`scripts/reconcile_qpu_inventory.py`, which writes each
   instance's audit and creates the file exclusively), the submitted-circuit
-  comparison (a successor written by `scripts/compare_submitted_circuits.py
-  --write --out NEW_PATH`, an unseeded service read of every audited job's
-  submitted programs under the current pinned interpreter, because QPY
-  digests follow the Qiskit version and the Qiskit 2.5.2 replay interpreter
-  cannot load the QPY format 18 that Qiskit 2.6.0 writes; the procedure is in
+  comparison (`scripts/compare_submitted_circuits.py --append`, a read of
+  each new audited job's submitted program that writes one row file per job
+  under the running Qiskit release's ledger; the procedure is in
   [the comparison README](../../evidence/submitted_circuits/README.md)), and
   the registry (`scripts/research_state.py --write`, with the claim that cites
   the run). Run-family registers (the ghost, scaffolding-exposure and
   local-member CZ records) follow the gates that read the run. Gate core-281
-  fails while an audited job is missing from the comparison, and the
+  fails while an audited job has no comparison row, and the
   `research_state.py --check` gate while a retained run is missing from the
   registry.
