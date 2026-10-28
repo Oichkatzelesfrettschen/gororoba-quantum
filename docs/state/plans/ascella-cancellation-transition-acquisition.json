@@ -176,6 +176,26 @@
             }
           ],
           "scope_sha256": "38b7f2fe8d2e99f8bcbce5ae116aafc344ffa782c62dce9d6162043b3ffece25"
+        },
+        {
+          "result": "The source-bound pilot analyzer pools setting qualification in order; serial and four-worker replays agree byte for byte and reproduce the retained analysis apart from the source digest. The historical source bytes are retained. Focused mutation and analysis checks passed.",
+          "observed_at": "2026-10-28T01:40:53.529773+00:00",
+          "revision": "8c223d2c3b787ab06ed07bb3eae437db30058764",
+          "evidence": [
+            {
+              "ref": "scripts/ascella_experiment_analysis.py",
+              "sha256": "b9c495807ee9ee19a411bd7891a7545bb4a93d7adc5a62b0fdc23e266cc39bdc"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_experiment_analysis.py",
+              "sha256": "852aa1a7f564855e5075ec987f42e5f5dc2924c311dc8511920b97f073b2fb37"
+            },
+            {
+              "ref": "docs/evidence/ascella-cancellation-transition-acquisition/analysis-sources/returned-mesh-reference.py",
+              "sha256": "bc40d3b6a94e71affe3aeaccd9ce52d232021f602efff82128f68c4bd562a05a"
+            }
+          ],
+          "scope_sha256": "38b7f2fe8d2e99f8bcbce5ae116aafc344ffa782c62dce9d6162043b3ffece25"
         }
       ]
     },

@@ -11,6 +11,8 @@ from typing import Any
 import ascella_transition_context as context
 import ascella_transition_day_repeat as repeat
 
+repeat.BUNDLE = Path("docs/evidence/ascella-transition-day-repeat-ci")
+
 
 def check_plan(plan: dict[str, Any]) -> None:
     """Reject a scheduler plan that differs from the source-bound case."""
@@ -32,11 +34,42 @@ def check_plan(plan: dict[str, Any]) -> None:
 def check_result(directory: Path) -> dict[str, Any]:
     """Retain the complete analysis under the scheduler's dynamically named run."""
     absolute = directory.resolve()
-    relative = absolute.relative_to(repeat.ROOT)
+    absolute.relative_to(repeat.ROOT)
     if absolute.parent != (repeat.ROOT / "results/quandela/runs").resolve():
         raise ValueError("the scheduled result must be a retained Quandela run")
-    repeat.RUN = relative
-    result = repeat.analyze(repeat.ROOT / repeat.BUNDLE)
+    bundle = repeat.ROOT / repeat.BUNDLE
+    campaign, expected = repeat._reported_case(bundle)
+    manifest, _, _ = repeat.qd.load_case(absolute)
+    if manifest != expected:
+        raise ValueError("the retained next-day manifest differs from its reviewed case")
+    baseline, earlier = context.read_run(repeat.ROOT / repeat.BASE_RUN)
+    measured, later = context.read_run(absolute)
+    start = measured["start_time"]
+    if (
+        isinstance(start, bool)
+        or not isinstance(start, int | float)
+        or not repeat.time_allowed(start, campaign["baseline_start_unix"])
+    ):
+        raise ValueError("the provider start lies outside the registered next-day window")
+    if [row["name"] for row in earlier] != [row["name"] for row in later]:
+        raise ValueError("the returned settings differ from the matched baseline")
+    comparisons = context.ordered_map(repeat._comparison_job, list(zip(earlier, later, strict=True)), min_items=1)
+    result = {
+        "schema": "ascella-transition-day-repeat-analysis-v1",
+        "campaign_sha256": context._sha((bundle / "campaign.json").read_bytes()),
+        "analysis_source_sha256": context._sha(Path(repeat.__file__).read_bytes()),
+        "scheduled_analysis_source_sha256": context._sha(Path(__file__).read_bytes()),
+        "confidence": 0.95,
+        "endpoints": 140,
+        "baseline": baseline,
+        "repeat": measured,
+        "comparisons": comparisons,
+        "matched_meshes": sum(row["matched_mesh"] for row in comparisons),
+        "boundary": (
+            "Same recorded mesh does not establish unchanged analog calibration; "
+            "elapsed time and context can confound drift."
+        ),
+    }
     collected = context._read(absolute / "results.json")
     repeat.validate_registration(
         result,

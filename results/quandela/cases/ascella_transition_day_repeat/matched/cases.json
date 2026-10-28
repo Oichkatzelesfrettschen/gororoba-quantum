@@ -34,8 +34,8 @@
     "primary": "all physical output categories, invalid outcomes and leakage"
   },
   "reviewed_case": {
-    "file": "docs/evidence/ascella-transition-day-repeat/README.md",
-    "sha256": "2380107232ef8ea615a3aaeb1d49779559544237dd783ca6f29aabfe768e5ddb"
+    "file": "docs/evidence/ascella-transition-day-repeat-ci/README.md",
+    "sha256": "0cf580f39771dd2a183dc01084e6b95b4ba80f9d7fbce0212269f5d4608b3be9"
   },
   "runtime_question": "Qualify 342-operation template on Ascella; dry-run supplies no runtime forecast.",
   "schema": "qd-hypercomplex-cases-v1",

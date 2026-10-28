@@ -337,6 +337,38 @@ def test_complete_iterator_cohort_qualifies_pilot_and_separates_temporal_balance
         raise AssertionError("provider detection counts became source-pulse counts")
 
 
+def test_reordered_echo_is_refused_before_qualification() -> None:
+    first = setting(circuit_params={"theta": 0.1})
+    second = setting(circuit_params={"theta": 0.2})
+    echoed = {
+        "iteration": {
+            "circuit_params": second["circuit_params"],
+            "compilation_seed": second["compilation_seed"],
+            "max_samples": 65536,
+            "max_shots": 131072,
+        }
+    }
+    with pytest.raises(ValueError, match="echoed"):
+        analysis.attribute_iteration(first, echoed, profile())
+
+
+def test_qualification_worker_preserves_per_setting_metadata(monkeypatch: pytest.MonkeyPatch) -> None:
+    row = setting()
+    entry: dict[str, Any] = {"counts": {}, "result_fields": {}}
+    monkeypatch.setattr(analysis, "attribute_iteration", lambda *args: None)
+    monkeypatch.setattr(
+        analysis,
+        "qualify_setting",
+        lambda *args: {"accepted_events": 65536, "remote_compiled_prediction": {"status": "reconstructed"}},
+    )
+    result = analysis._qualify_entry((row, entry, profile(), {"start_time": 10}, "later", 12))
+    if not result["interface_complete"] or result["execution_envelope"] != {"lower": 10, "upper": "later"}:
+        raise AssertionError("parallel qualification changed its retained metadata")
+    if result["iterator_temporal_order"] != "unassessed within a packed job":
+        raise AssertionError("parallel qualification changed the physical-order boundary")
+
+
+@pytest.mark.audit
 @pytest.mark.parametrize("change", ["seed", "parameters", "samples", "shots", "reorder"])
 def test_raw_echo_mutations_and_reordered_iterator_refuse_attribution(tmp_path: Path, change: str) -> None:
     campaign = campaign_copy(tmp_path)

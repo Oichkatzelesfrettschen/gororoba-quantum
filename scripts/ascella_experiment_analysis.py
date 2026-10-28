@@ -499,6 +499,26 @@ def cohort_summary(rows: list[dict[str, Any]], profile: dict[str, Any]) -> dict[
     }
 
 
+def _qualify_entry(
+    arguments: tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any], Any, int],
+) -> dict[str, Any]:
+    row, entry, profile, status, collected_utc, count = arguments
+    attribute_iteration(row, entry, profile)
+    statistics = qualify_setting(row, entry.get("counts", {}), entry.get("result_fields", {}), profile)
+    statistics.update(
+        status="collected",
+        interface_complete=bool(
+            statistics["accepted_events"] == profile["samples_per_setting"]
+            and statistics["remote_compiled_prediction"]["status"] == "reconstructed"
+        ),
+    )
+    statistics["execution_envelope"] = {"lower": status.get("start_time"), "upper": collected_utc}
+    statistics["iterator_temporal_order"] = (
+        "unassessed within a packed job" if count > 1 else "single entry within a separate job"
+    )
+    return statistics
+
+
 def analyze_campaign(campaign_path: Path, directories: list[Path], *, root: Path = ROOT) -> dict[str, Any]:
     """Analyze the frozen seventeen-setting family, preserving absent and failed acquisitions."""
     campaign = _json(campaign_path)
@@ -599,25 +619,14 @@ def analyze_campaign(campaign_path: Path, directories: list[Path], *, root: Path
             entries = collected.get("iterations")
             if not isinstance(entries, list) or len(entries) != len(actual["settings"]):
                 raise ValueError("the collection omits the complete returned iterator inventory")
-            qualified = []
-            for row, entry in zip(actual["settings"], entries, strict=True):
-                attribute_iteration(row, entry, profile)
-                statistics = qualify_setting(row, entry.get("counts", {}), entry.get("result_fields", {}), profile)
-                statistics.update(
-                    status="collected",
-                    interface_complete=bool(
-                        statistics["accepted_events"] == profile["samples_per_setting"]
-                        and statistics["remote_compiled_prediction"]["status"] == "reconstructed"
-                    ),
-                )
-                statistics["execution_envelope"] = {
-                    "lower": collected["status"].get("start_time"),
-                    "upper": collected.get("collected_utc"),
-                }
-                statistics["iterator_temporal_order"] = (
-                    "unassessed within a packed job" if len(entries) > 1 else "single entry within a separate job"
-                )
-                qualified.append(statistics)
+            qualified = ordered_map(
+                _qualify_entry,
+                [
+                    (row, entry, profile, collected["status"], collected.get("collected_utc"), len(entries))
+                    for row, entry in zip(actual["settings"], entries, strict=True)
+                ],
+                min_items=1,
+            )
             for statistics in qualified:
                 results[statistics["setting_id"]] = statistics
             jobs.append(
