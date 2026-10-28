@@ -1,0 +1,11 @@
+{
+ "schema": "kaggle-aer-collect-v2",
+ "kernel": "probablyeric/gororoba-numerics-fingerprint/1",
+ "capture": "2026-10-27T234315.874348Z",
+ "state": "FAILED",
+ "collected_utc": "2026-10-27T234315Z",
+ "submission_sha256": "a138c5bd496e5995c7acefb2922ab246182b015462572c6682f6008a401c9f82",
+ "predecessor_sha256": null,
+ "files": {},
+ "error": "ModuleNotFoundError: No module named 'kaggle'"
+}

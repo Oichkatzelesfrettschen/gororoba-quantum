@@ -265,3 +265,36 @@ end of each run.
 
 Block sizes 8, 16, 25 and 50 give 50, 54, 42 and 44 s for the pooled 400 replicates at load 14 to 19; the choice
 of 25 divides 400 into 16 equal blocks.
+
+## Library, dispatch and cross-host choices
+
+`scripts/numerics_fingerprint.py --out FILE` hashes the float64 output of every kernel the measurement-sequence nulls
+run, over fixed grids, in a fresh interpreter per dispatch configuration (default; NumPy without AVX-512,
+`NPY_DISABLE_CPU_FEATURES="X86_V4 AVX512_ICL AVX512_SPR"`; OpenBLAS `OPENBLAS_CORETYPE=Haswell`; both): `np.exp`
+and `math.exp`, `np.power` and `math.pow`, `chi2.sf`, stacked and single 4 x 4 `@`, `matrix_power(., 16)` on a
+stack, `scipy.linalg.expm` on a stack of sx generators, `measurement_sequence_analysis.corrected_z` and
+`msq_successor_analysis.fit_gamma_rate`. A null splits replicates across hosts only when every host's digests equal
+the build host's.
+
+| Measurement | Result |
+|---|---|
+| Kaggle CPU kernel (`results/kaggle/2026-10-27T233744Z-gororoba-numerics-fingerprint`: Intel Xeon 2.20 GHz without AVX-512, glibc 2.39, `--ci-env` pins) against the build host (Ryzen 5 5600X3D, glibc 2.44), all four configurations | all 11 digests equal: shards from Kaggle CPU kernels merge byte for byte with build-host shards |
+| stacked `a @ b`, `np.linalg.matrix_power` and `scipy.linalg.expm` on (R, 4, 4) against the per-matrix calls | 0 mismatches over 4096 and 256 rows: a batched chain may stack these |
+| `np.einsum("rij,rjk->rik")` against stacked `@` | 25108 of 65536 values differ: einsum and tensordot stay out of a bit-identical path |
+| Numba 0.68 `@njit(fastmath=False)` 4 x 4 product loop against OpenBLAS | 0.55 against 3.5 us per row, but 62143 of 65536 values differ; its `math.exp` equals libm. Numba, JAX and CuPy sit outside the CI pins, so a gate or replay cannot use them |
+| scalar `chain_matrix` against the stacked chain | 40 us per call against 0.6 us per row; a serial 31-qubit successor replay spends about half its 21 s in `chain_matrix` and a fifth in SciPy's bounded Brent, all per-call overhead on 4 x 4 and 5-element arrays |
+| accuracy against Arb (python-flint, 200 bits) and mpmath (50 digits) | `expm` of the sx generator 2.5e-13 relative; `(1 + x)^(-k)` survival 1.1e-13 for k up to 1000 (`exp(-k log1p x)` 1.3e-15) |
+| rate average over Gamma(k) at 64 nodes against adaptive quad and 1024-node references | quantile midpoint rule 1.6e-5 to 3.8e-5 low at k = 0.25 to 1; generalized Gauss-Laguerre within 5e-7. SciPy's `roots_genlaguerre` weights carry Gamma(k) and overflow near k = 170; the Golub-Welsch form (`eigh_tridiagonal` of the Laguerre Jacobi matrix, weights the squared first eigenvector components) sums to 1 within 1e-15 and reproduces three Gamma(k, 1) moments to 2e-15 for k = 0.25 to 1000 |
+
+| Kaggle T4 machine's host CPU (`results/kaggle/2026-10-28T000515Z-gororoba-numerics-fingerprint-t4`: Intel Xeon 2.00 GHz with AVX-512, OpenBLAS SkylakeX kernel) | default dispatch differs from the build host in 5 of 11 digests (`np_exp`, `np_power`, `corrected_z`, `expm_stack`, `fit_gamma_rate`); the NumPy pin alone leaves `corrected_z` and `expm_stack` (OpenBLAS) different; both pins together equal the build host in all 11 |
+| AVX-512 against both pins on that CPU, best of three | `np.exp` 0.15 against 0.86 ms per 100k values, `np.power` 5.76 against 2.41 ms (slower), stacked `matrix_power(., 16)` 1.21 against 3.39 ms per 4096 rows; the production functions: `corrected_z` 10.87 against 11.74 ms, `fit_gamma_rate` 238.3 against 228.4 ms (the pinned run is faster) |
+
+Conditional AVX-512 therefore buys nothing on the production path, which is interpreter overhead, and costs the bit
+identity a merged or replayed record needs: AVX-512 `exp`, AVX-512 `power` and OpenBLAS's SkylakeX products each round
+differently from the AVX2 path. Every host runs with both pins set before NumPy loads, as the hosted lane sets them,
+and runs the fingerprint before its shards are trusted; a host that still differs runs whole arms rather than shards
+of one. The vectorizable lever that remains is the stacked 4 x 4 product (2.8 times faster under SkylakeX); a batched
+path that wants it on every ISA writes the product as explicit elementwise multiplies and adds in a fixed order,
+which NumPy's ufuncs round identically at every SIMD width, and its scalar reference must use the same product, so it
+applies only to code whose reference is not a retained replay. The floating-point budget is many orders below
+the statistical one: the null's precision is set by its replicate count and its one-sided binomial bound.

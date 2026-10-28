@@ -69,6 +69,7 @@ import ibm_account
 import law_encoding
 import local_compute
 import msq_envelope
+import msq_successor_analysis
 import packing
 import parallel
 import placement_feasibility
@@ -80,6 +81,7 @@ from coherence_window import COHERENCE_PRECISION
 from diagnostic_experiments import (
     FAMILY_NAMES,
     MSQE_FAMILY,
+    MSQR_FAMILY,
     N21_FAMILIES,
     PATCH_FAMILIES,
     n21_ramsey_windows,
@@ -185,6 +187,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "modular_arithmetic.py",
     "msq_envelope.py",
     "msq_envelope_analysis.py",
+    "msq_successor_analysis.py",
     "n21_exact_planning.py",
     "native_preflight.py",
     "order_finding.py",
@@ -4418,8 +4421,11 @@ class EnvelopeReplan(LiveRunError):
     """The live calibration changed the envelope's plan after its pre-submit check; the invocation re-plans."""
 
 
+ENVELOPE_FAMILIES = (MSQE_FAMILY, MSQR_FAMILY)
+
+
 def is_envelope_family(name: Any) -> bool:
-    return name == MSQE_FAMILY
+    return name in ENVELOPE_FAMILIES
 
 
 def approved_is_envelope(approved_dir: Path | None) -> bool:
@@ -4541,6 +4547,14 @@ def envelope_drift(
     ]
     if t1 != list(configuration["t1_delays_dt"]):
         reasons.append(f"t1 idles {configuration['t1_delays_dt']} -> {t1}")
+    if "equilibrium_delay_dt" in configuration:
+        equilibrium = qpu_planning.rounded_delay(runtime, fresh, diagnostic_experiments.MSQR_EQUILIBRIUM_SECONDS)
+        if equilibrium != configuration["equilibrium_delay_dt"]:
+            reasons.append(f"equilibrium idle {configuration['equilibrium_delay_dt']} -> {equilibrium}")
+    if "reader_idle_delay_dt" in configuration:
+        reader_idle = qpu_planning.floored_delay(runtime, fresh, diagnostic_experiments.MSQR_READER_IDLE_SECONDS)
+        if reader_idle != configuration["reader_idle_delay_dt"]:
+            reasons.append(f"reader idle {configuration['reader_idle_delay_dt']} -> {reader_idle}")
     for choice in choices:
         reasons.extend(
             f"{choice.group.name}: {reason}"
@@ -6624,7 +6638,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         gate_calibration_family = record.get("family_configuration", {}).get("name") in (
             "measurement-sequence",
             "measurement-sequence-diagnostic",
-            "measurement-sequence-envelope",
+            *ENVELOPE_FAMILIES,
         )
         # Every windowed component of the job replays in one batch per
         # calibration, in manifest order, and replay_entries gives each batch
@@ -6839,10 +6853,29 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             replica_registers=(
                 qpu_planning.n21_exact_planning.retained_registers(run_dir, bounded_pubs) if bounded_pubs else None
             ),
+            shot_order=relaxation_shot_order(record, run_dir),
         )
     out[0]["invocation_usage"] = invocation_usage(record, jobs_out)
     checkpoint(out, final=True)
     print(json.dumps(out, indent=2))
+
+
+def relaxation_shot_order(record: dict[str, Any], run_dir: Path) -> dict[str, Any] | None:
+    """The relaxation family's order evidence: the shot-ordered registers of the PUBs its analysis reads and the
+    executor's chunk_timing, both from the raw files written before analysis; None for every other family. A
+    register file that fails its digest check or the record's PUB layout becomes the reason the analysis withholds;
+    an unreadable chunk_timing becomes None with its reason, since the chunk condition is a reported diagnostic."""
+    if record.get("family_configuration", {}).get("name") != MSQR_FAMILY:
+        return None
+    try:
+        names = msq_successor_analysis.required_pubs(record)
+        registers = qpu_planning.n21_exact_planning.retained_registers(run_dir, names)
+    except (OSError, ValueError, KeyError, LookupError) as error:
+        return {"reason": f"the order evidence is unreadable: {error}"}
+    try:
+        return {"registers": registers, "chunks": msq_successor_analysis.retained_chunks(run_dir)}
+    except (OSError, ValueError, KeyError, LookupError, TypeError, AttributeError) as error:
+        return {"registers": registers, "chunks": None, "chunk_reason": f"the chunk_timing is unreadable: {error}"}
 
 
 def invocation_usage(record: dict[str, Any], jobs_out: dict[str, dict[str, Any]]) -> dict[str, Any]:
@@ -7014,13 +7047,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--fallback-max-execution-seconds",
         type=float,
-        help="measurement-sequence-envelope: the 50 us attempt's execution ceiling, bound into the envelope cap",
+        help="measurement-sequence-envelope and -relaxation: the 50 us attempt's execution ceiling, "
+        "bound into the envelope cap",
     )
     parser.add_argument(
         "--layout-width",
         type=int,
         choices=(16, 24, 32),
-        help="measurement-sequence-envelope: the qubit count msq_envelope.layout_rule keeps on the live calibration",
+        help="measurement-sequence-envelope and -relaxation: the qubit count msq_envelope.layout_rule keeps "
+        "on the live calibration",
     )
     parser.add_argument(
         "--state-prep-arms",
@@ -7365,20 +7400,20 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--layout applies to the state-prep-control and measurement-sequence families only")
     if args.family in layout_families[1:] and args.layout is None:
         parser.error(f"{args.family} requires --layout: the physical qubits whose measurement it characterizes")
-    if (args.layout_width is not None) != (args.family == "measurement-sequence-envelope"):
-        parser.error("measurement-sequence-envelope requires --layout-width, and only it takes one")
+    if (args.layout_width is not None) != is_envelope_family(args.family):
+        parser.error(f"{' and '.join(ENVELOPE_FAMILIES)} require --layout-width, and only they take one")
     if args.envelope_fallback and (
-        args.submit or args.approved_record or args.family != "measurement-sequence-envelope" or not args.out
+        args.submit or args.approved_record or not is_envelope_family(args.family) or not args.out
     ):
         parser.error(
             "--envelope-fallback takes attempt 1's planning flags and --out; it derives --submit and the approval "
             "from attempt 1's record"
         )
-    if args.family == "measurement-sequence-envelope" and (
+    if is_envelope_family(args.family) and (
         args.rep_delay is None or args.max_execution_seconds is None or args.fallback_max_execution_seconds is None
     ):
         parser.error(
-            "measurement-sequence-envelope binds --rep-delay, --max-execution-seconds and "
+            f"{args.family} binds --rep-delay, --max-execution-seconds and "
             "--fallback-max-execution-seconds into its envelope"
         )
     if args.state_prep_arms is not None:
@@ -7464,7 +7499,7 @@ def main(argv: list[str] | None = None) -> int:
         "state-prep-control",
         "measurement-sequence",
         "measurement-sequence-diagnostic",
-        "measurement-sequence-envelope",
+        *ENVELOPE_FAMILIES,
     ) and args.max_replicas not in (None, 1):
         parser.error(f"{args.family} pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "latency-recovery" and args.max_replicas not in (None, 1):
