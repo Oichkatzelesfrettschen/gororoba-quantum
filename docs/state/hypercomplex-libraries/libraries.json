@@ -10314,6 +10314,10 @@
    "sys",
    "typing"
   ],
+  "scripts/ascella_transition_local_repeat.py": [
+   "ascella_transition_day_repeat",
+   "pathlib"
+  ],
   "scripts/ascella_twelve_output.py": [
    "__future__",
    "ascella_compilation_reading",

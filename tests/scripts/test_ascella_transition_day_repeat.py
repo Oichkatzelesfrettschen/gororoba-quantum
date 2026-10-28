@@ -4,15 +4,44 @@ from __future__ import annotations
 
 import importlib
 import json
+import runpy
+import subprocess
+import sys
+import types
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
 import pytest
 
+ROOT = Path(__file__).resolve().parents[2]
+
 
 def module() -> Any:
     return importlib.import_module("ascella_transition_day_repeat")
+
+
+def test_local_launcher_selects_the_source_compatible_successor(monkeypatch: pytest.MonkeyPatch) -> None:
+    runner = types.ModuleType("ascella_transition_day_repeat")
+    runner.main = lambda: 0  # type: ignore[attr-defined]
+    monkeypatch.setitem(sys.modules, "ascella_transition_day_repeat", runner)
+    with pytest.raises(SystemExit) as exited:
+        runpy.run_path(str(ROOT / "scripts/ascella_transition_local_repeat.py"), run_name="__main__")
+    if exited.value.code != 0 or runner.BUNDLE != Path("docs/evidence/ascella-transition-day-repeat-ci"):
+        raise AssertionError("the launcher did not select the source-compatible successor")
+
+
+@pytest.mark.audit
+def test_local_launcher_checks_the_source_compatible_successor() -> None:
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "scripts/ascella_transition_local_repeat.py"), "--check"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode:
+        raise AssertionError(result.stdout + result.stderr)
 
 
 def test_repeat_waits_at_least_one_day_and_only_the_next_pacific_date() -> None:

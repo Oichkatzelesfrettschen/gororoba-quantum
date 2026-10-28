@@ -26,7 +26,7 @@
     },
     {
       "file": "scripts/ascella_transition_day_repeat_service.sh",
-      "sha256": "a881dcbcf88206384b917c0a380328dbd5206f3ce640b1ebdf07ea0f9129fc8f"
+      "sha256": "ef87916f886a0c3f888e8cb14f90c8da37d82eb92ce1cfc29b3157ed6a5ac61c"
     },
     {
       "file": "gororoba_quantum/parallel.py",
