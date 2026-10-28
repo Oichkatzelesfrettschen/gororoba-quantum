@@ -14,7 +14,7 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 | --- | --- | --- |
 | `docs/pdf/` | 45 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
 | `docs/local_source_cache/` | 202 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
-| `docs/source_archives/` | 5 licensed original software archives, with exact inspected members and notices | Tracked |
+| `docs/source_archives/` | 6 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
 The local cache lives inside `docs/`. A fresh checkout receives the public notes
