@@ -3,6 +3,7 @@ functions of msq_successor_analysis, then the replicate generator, the arms and 
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 from typing import Any
@@ -547,6 +548,26 @@ def test_the_record_names_its_inputs_and_reports_the_arm_statistics(setup: nl.Se
         f"{list(stats)}",
     )
     check(record["cases"]["8-qubits"]["common_veto_rate"] == 1.0, "a 4 x floor common gap escaped the veto")
+
+
+def test_the_summary_keeps_each_record_digest_and_drops_the_rows(setup: nl.Setup) -> None:
+    cases = [small("settle-common", 8, 0.0)]
+    shard = nl.run_arm(setup, "settle-common", TEST_SEED, 2, seed_source="default", record_name="r", cases=cases)
+    text = nl.dumps(nl.merge_records([shard]))
+    summary = nl.null_summary([text])
+    (entry,) = summary["records"]
+    check(
+        summary["schema"] == nl.SUMMARY_SCHEMA and entry["record_sha256"] == hashlib.sha256(text.encode()).hexdigest(),
+        "",
+    )
+    check("rows" not in entry["cases"]["8-qubits"] and entry["cases"]["8-qubits"]["replicates"] == 2, f"{entry}")
+    check(all(entry[key] == shard[key] for key in nl.IDENTITY), "identity")
+    with pytest.raises(ValueError, match="shard record"):
+        nl.null_summary([nl.dumps(shard)])
+    stale = json.loads(text)
+    stale["cases"]["8-qubits"]["targets"] = {}
+    with pytest.raises(ValueError, match="merge the record again"):
+        nl.null_summary([nl.dumps(stale)])
 
 
 @pytest.mark.parametrize("arm", nl.ARMS)

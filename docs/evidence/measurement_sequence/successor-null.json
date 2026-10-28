@@ -1,0 +1,976 @@
+{
+ "records": [
+  {
+   "arm": "carryover-boundary",
+   "cap": 300,
+   "cases": {
+    "0-se-inside": {
+     "common_veto_rate": 0.0,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 0,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": null,
+     "false_fire_upper_95": 0.009936081944457708,
+     "false_fire_upper_95_given_exposed": 1.0,
+     "false_fire_upper_95_given_issued": 1.0,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.0,
+     "issued": 0,
+     "mean_selected": 0.09666666666666666,
+     "per_qubit_veto_power_upper_95": null,
+     "per_qubit_veto_power_upper_family": null,
+     "planted_equilibrium_withheld_rate": null,
+     "planted_in_pool": 0,
+     "planted_selected_rate": null,
+     "planted_withheld": 0,
+     "replicates": 300,
+     "selection_failure_rate": 0.9959610027855154,
+     "sparse_gap_both_withheld_rate": null,
+     "sparse_gap_withheld_rate": null,
+     "targets": {}
+    },
+    "1-se-inside": {
+     "common_veto_rate": 0.0,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 0,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": null,
+     "false_fire_upper_95": 0.009936081944457708,
+     "false_fire_upper_95_given_exposed": 1.0,
+     "false_fire_upper_95_given_issued": 1.0,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.0,
+     "issued": 0,
+     "mean_selected": 0.9633333333333334,
+     "per_qubit_veto_power_upper_95": null,
+     "per_qubit_veto_power_upper_family": null,
+     "planted_equilibrium_withheld_rate": null,
+     "planted_in_pool": 0,
+     "planted_selected_rate": null,
+     "planted_withheld": 0,
+     "replicates": 300,
+     "selection_failure_rate": 0.9593201448871552,
+     "sparse_gap_both_withheld_rate": null,
+     "sparse_gap_withheld_rate": null,
+     "targets": {}
+    },
+    "2-se-inside": {
+     "common_veto_rate": 0.0,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 0,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": 0.0,
+     "false_fire_upper_95": 0.009936081944457708,
+     "false_fire_upper_95_given_exposed": 1.0,
+     "false_fire_upper_95_given_issued": 0.2384041903808526,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.03666666666666667,
+     "issued": 11,
+     "mean_selected": 3.9133333333333336,
+     "per_qubit_veto_power_upper_95": null,
+     "per_qubit_veto_power_upper_family": null,
+     "planted_equilibrium_withheld_rate": null,
+     "planted_in_pool": 0,
+     "planted_selected_rate": null,
+     "planted_withheld": 0,
+     "replicates": 300,
+     "selection_failure_rate": 0.8348892294830709,
+     "sparse_gap_both_withheld_rate": null,
+     "sparse_gap_withheld_rate": null,
+     "targets": {}
+    }
+   },
+   "layout_width": 24,
+   "minimum_verdicts": 0,
+   "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
+   "record": "2026-10-28T001935.805967Z",
+   "record_sha256": "7a1c5d812b54f5f4aff28b73bbeb2f6b83d25d227f52a42d8b2e705ad73b0738",
+   "replicates": {
+    "0-se-inside": 300,
+    "1-se-inside": 300,
+    "2-se-inside": 300
+   },
+   "schema": "msq-successor-null-v1",
+   "seed": 35417,
+   "seed_source": {
+    "experiment": "carryover-boundary",
+    "flag": "--seed",
+    "script": "scripts/msq_successor_null.py",
+    "sources": [
+     "default"
+    ]
+   },
+   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "sparse_scale": {
+    "24": 1.069749373433584,
+    "8": 1.25,
+    "9": 1.1651380005405836
+   },
+   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+  },
+  {
+   "arm": "carryover-negative",
+   "cap": 1500,
+   "cases": {
+    "all": {
+     "common_veto_rate": 0.2754880694143167,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 0,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": 0.0,
+     "false_fire_upper_95": 0.00647726613463827,
+     "false_fire_upper_95_given_exposed": 1.0,
+     "false_fire_upper_95_given_issued": 0.009969146792899269,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.648590021691974,
+     "issued": 299,
+     "mean_selected": 10.92407809110629,
+     "per_qubit_veto_power_upper_95": null,
+     "per_qubit_veto_power_upper_family": null,
+     "planted_equilibrium_withheld_rate": null,
+     "planted_in_pool": 0,
+     "planted_selected_rate": null,
+     "planted_withheld": 0,
+     "replicates": 461,
+     "selection_failure_rate": 0.5412287060529177,
+     "sparse_gap_both_withheld_rate": null,
+     "sparse_gap_withheld_rate": null,
+     "targets": {
+      "false_fire_bound_below_ceiling": true,
+      "false_fire_bound_given_issued_below_ceiling": true,
+      "verdicts_at_least_299": true
+     }
+    }
+   },
+   "layout_width": 24,
+   "minimum_verdicts": 299,
+   "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
+   "record": "2026-10-28T001935.805967Z",
+   "record_sha256": "5b9f1880509ff2d404c9e5f60c515c85e4b4fc6185c9012d6e6f1f0aefd55108",
+   "replicates": {
+    "all": 461
+   },
+   "schema": "msq-successor-null-v1",
+   "seed": 35417,
+   "seed_source": {
+    "experiment": "carryover-negative",
+    "flag": "--seed",
+    "script": "scripts/msq_successor_null.py",
+    "sources": [
+     "default"
+    ]
+   },
+   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "sparse_scale": {
+    "24": 1.069749373433584,
+    "8": 1.25,
+    "9": 1.1651380005405836
+   },
+   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+  },
+  {
+   "arm": "carryover-positive",
+   "cap": 1500,
+   "cases": {
+    "all": {
+     "common_veto_rate": 0.002890173410404624,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 0,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": 0.0,
+     "false_fire_upper_95": 0.008620811613261874,
+     "false_fire_upper_95_given_exposed": 1.0,
+     "false_fire_upper_95_given_issued": 0.009969146792899269,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.8641618497109826,
+     "issued": 299,
+     "mean_selected": 10.234104046242775,
+     "per_qubit_veto_power_upper_95": null,
+     "per_qubit_veto_power_upper_family": null,
+     "planted_equilibrium_withheld_rate": null,
+     "planted_in_pool": 0,
+     "planted_selected_rate": null,
+     "planted_withheld": 0,
+     "replicates": 346,
+     "selection_failure_rate": 0.5695652173913044,
+     "sparse_gap_both_withheld_rate": null,
+     "sparse_gap_withheld_rate": null,
+     "targets": {
+      "false_fire_bound_below_ceiling": true,
+      "false_fire_bound_given_issued_below_ceiling": true,
+      "verdicts_at_least_299": true
+     }
+    }
+   },
+   "layout_width": 24,
+   "minimum_verdicts": 299,
+   "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
+   "record": "2026-10-28T001935.805967Z",
+   "record_sha256": "1eb2dd003036d7a74da342908765dd83aa35a0192b62280ba1d1873ffc22f1fd",
+   "replicates": {
+    "all": 346
+   },
+   "schema": "msq-successor-null-v1",
+   "seed": 35417,
+   "seed_source": {
+    "experiment": "carryover-positive",
+    "flag": "--seed",
+    "script": "scripts/msq_successor_null.py",
+    "sources": [
+     "default"
+    ]
+   },
+   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "sparse_scale": {
+    "24": 1.069749373433584,
+    "8": 1.25,
+    "9": 1.1651380005405836
+   },
+   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+  },
+  {
+   "arm": "gamma",
+   "cap": 400,
+   "cases": {
+    "all": {
+     "common_veto_rate": 0.005,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 0,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": 0.0,
+     "false_fire_upper_95": 0.007461355528799602,
+     "false_fire_upper_95_given_exposed": 1.0,
+     "false_fire_upper_95_given_issued": 0.007498708846630895,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.995,
+     "issued": 398,
+     "mean_selected": 23.7875,
+     "per_qubit_veto_power_upper_95": null,
+     "per_qubit_veto_power_upper_family": null,
+     "planted_equilibrium_withheld_rate": null,
+     "planted_in_pool": 0,
+     "planted_selected_rate": null,
+     "planted_withheld": 0,
+     "replicates": 400,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": null,
+     "sparse_gap_withheld_rate": null,
+     "targets": {
+      "informative_rate_at_least_80_percent": true
+     }
+    }
+   },
+   "layout_width": 24,
+   "minimum_verdicts": 0,
+   "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
+   "record": "2026-10-28T001935.805967Z",
+   "record_sha256": "4243a4c52d632d3b6de54cbfa18a86e40c4b87a776233ab4f21118f4278d5623",
+   "replicates": {
+    "all": 400
+   },
+   "schema": "msq-successor-null-v1",
+   "seed": 35417,
+   "seed_source": {
+    "experiment": "gamma",
+    "flag": "--seed",
+    "script": "scripts/msq_successor_null.py",
+    "sources": [
+     "default"
+    ]
+   },
+   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "sparse_scale": {
+    "24": 1.069749373433584,
+    "8": 1.25,
+    "9": 1.1651380005405836
+   },
+   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+  },
+  {
+   "arm": "plateau-low",
+   "cap": 300,
+   "cases": {
+    "all": {
+     "common_veto_rate": 0.0,
+     "equilibrium_failure_rate": 1.0,
+     "exposed": 0,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": null,
+     "false_fire_upper_95": 0.009936081944457708,
+     "false_fire_upper_95_given_exposed": 1.0,
+     "false_fire_upper_95_given_issued": 1.0,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.0,
+     "issued": 0,
+     "mean_selected": 0.0,
+     "per_qubit_veto_power_upper_95": null,
+     "per_qubit_veto_power_upper_family": null,
+     "planted_equilibrium_withheld_rate": null,
+     "planted_in_pool": 0,
+     "planted_selected_rate": null,
+     "planted_withheld": 0,
+     "replicates": 300,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": null,
+     "sparse_gap_withheld_rate": null,
+     "targets": {
+      "departure_verdict_withheld": true
+     }
+    }
+   },
+   "layout_width": 24,
+   "minimum_verdicts": 0,
+   "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
+   "record": "2026-10-28T001935.805967Z",
+   "record_sha256": "f75bb39cdbfe5c0c39616c1218edaedf985429b3e82bfdc6fc46c2ba48989b4a",
+   "replicates": {
+    "all": 300
+   },
+   "schema": "msq-successor-null-v1",
+   "seed": 35417,
+   "seed_source": {
+    "experiment": "plateau-low",
+    "flag": "--seed",
+    "script": "scripts/msq_successor_null.py",
+    "sources": [
+     "default"
+    ]
+   },
+   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "sparse_scale": {
+    "24": 1.069749373433584,
+    "8": 1.25,
+    "9": 1.1651380005405836
+   },
+   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+  },
+  {
+   "arm": "plateau-minority",
+   "cap": 3000,
+   "cases": {
+    "all": {
+     "common_veto_rate": 0.003784295175023652,
+     "equilibrium_failure_rate": 0.06984829329962074,
+     "exposed": 299,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": 0.0,
+     "false_fire_upper_95": 0.0028301712898431597,
+     "false_fire_upper_95_given_exposed": 0.009969146792899269,
+     "false_fire_upper_95_given_issued": 0.0028409068923432278,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.9962157048249763,
+     "issued": 1053,
+     "mean_selected": 22.09271523178808,
+     "per_qubit_veto_power_upper_95": 0.038888466394326075,
+     "per_qubit_veto_power_upper_family": 0.044627827445337505,
+     "planted_equilibrium_withheld_rate": 0.836329233680227,
+     "planted_in_pool": 335,
+     "planted_selected_rate": 0.15515610217596973,
+     "planted_withheld": 7,
+     "replicates": 1057,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": 0.0,
+     "sparse_gap_withheld_rate": 0.020895522388059702,
+     "targets": {
+      "exposed_verdicts_at_least_299": true,
+      "false_fire_bound_below_ceiling": true,
+      "false_fire_bound_given_exposed_below_ceiling": true
+     }
+    }
+   },
+   "layout_width": 24,
+   "minimum_verdicts": 299,
+   "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
+   "record": "2026-10-28T001935.805967Z",
+   "record_sha256": "994c7a70f0d38988e4c6494d60f6c2fbf0a18400a872780cec689c6d901cd02d",
+   "replicates": {
+    "all": 1057
+   },
+   "schema": "msq-successor-null-v1",
+   "seed": 35417,
+   "seed_source": {
+    "experiment": "plateau-minority",
+    "flag": "--seed",
+    "script": "scripts/msq_successor_null.py",
+    "sources": [
+     "default"
+    ]
+   },
+   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "sparse_scale": {
+    "24": 1.069749373433584,
+    "8": 1.25,
+    "9": 1.1651380005405836
+   },
+   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+  },
+  {
+   "arm": "plateau-retained",
+   "cap": 20000,
+   "cases": {
+    "all": {
+     "common_veto_rate": 0.16623168038546476,
+     "equilibrium_failure_rate": 0.836779797878196,
+     "exposed": 0,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": 0.0,
+     "false_fire_upper_95": 0.00020045720440762545,
+     "false_fire_upper_95_given_exposed": 1.0,
+     "false_fire_upper_95_given_issued": 0.009969146792899269,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.020009368935287427,
+     "issued": 299,
+     "mean_selected": 3.846884829016931,
+     "per_qubit_veto_power_upper_95": null,
+     "per_qubit_veto_power_upper_family": null,
+     "planted_equilibrium_withheld_rate": null,
+     "planted_in_pool": 0,
+     "planted_selected_rate": null,
+     "planted_withheld": 0,
+     "replicates": 14943,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": null,
+     "sparse_gap_withheld_rate": null,
+     "targets": {
+      "false_fire_bound_below_ceiling": true,
+      "false_fire_bound_given_issued_below_ceiling": true,
+      "verdicts_at_least_299": true
+     }
+    }
+   },
+   "layout_width": 24,
+   "minimum_verdicts": 299,
+   "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
+   "record": "2026-10-28T001935.805967Z",
+   "record_sha256": "f864cc42c43715a9fcb3103fdd531a7de06532bee2aaa7dbd24ba734d9711049",
+   "replicates": {
+    "all": 14943
+   },
+   "schema": "msq-successor-null-v1",
+   "seed": 35417,
+   "seed_source": {
+    "experiment": "plateau-retained",
+    "flag": "--seed",
+    "script": "scripts/msq_successor_null.py",
+    "sources": [
+     "default"
+    ]
+   },
+   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "sparse_scale": {
+    "24": 1.069749373433584,
+    "8": 1.25,
+    "9": 1.1651380005405836
+   },
+   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+  },
+  {
+   "arm": "q-minority",
+   "cap": 1500,
+   "cases": {
+    "all": {
+     "common_veto_rate": 0.00684931506849315,
+     "equilibrium_failure_rate": 0.04286939125464419,
+     "exposed": 299,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": 0.0,
+     "false_fire_upper_95": 0.006816234766836907,
+     "false_fire_upper_95_given_exposed": 0.009969146792899269,
+     "false_fire_upper_95_given_issued": 0.006863081601795803,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.9931506849315068,
+     "issued": 435,
+     "mean_selected": 22.71232876712329,
+     "per_qubit_veto_power_upper_95": 0.08426484552640055,
+     "per_qubit_veto_power_upper_family": 0.09122461425694366,
+     "planted_equilibrium_withheld_rate": 0.5136986301369864,
+     "planted_in_pool": 423,
+     "planted_selected_rate": 0.4531963470319635,
+     "planted_withheld": 26,
+     "replicates": 438,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": 0.009615384615384616,
+     "sparse_gap_withheld_rate": 0.061465721040189124,
+     "targets": {
+      "exposed_verdicts_at_least_299": true,
+      "false_fire_bound_below_ceiling": true,
+      "false_fire_bound_given_exposed_below_ceiling": true
+     }
+    }
+   },
+   "layout_width": 24,
+   "minimum_verdicts": 299,
+   "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
+   "record": "2026-10-28T001935.805967Z",
+   "record_sha256": "e4cd7c33c176380194d99b051aefe8280a751ebdee0d87825cfc5fd3a3055c53",
+   "replicates": {
+    "all": 438
+   },
+   "schema": "msq-successor-null-v1",
+   "seed": 35417,
+   "seed_source": {
+    "experiment": "q-minority",
+    "flag": "--seed",
+    "script": "scripts/msq_successor_null.py",
+    "sources": [
+     "default"
+    ]
+   },
+   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "sparse_scale": {
+    "24": 1.069749373433584,
+    "8": 1.25,
+    "9": 1.1651380005405836
+   },
+   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+  },
+  {
+   "arm": "q-tolerance",
+   "cap": 300,
+   "cases": {
+    "all": {
+     "common_veto_rate": 1.0,
+     "equilibrium_failure_rate": 0.5197551474680022,
+     "exposed": 0,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": null,
+     "false_fire_upper_95": 0.009936081944457708,
+     "false_fire_upper_95_given_exposed": 1.0,
+     "false_fire_upper_95_given_issued": 1.0,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.0,
+     "issued": 0,
+     "mean_selected": 11.42,
+     "per_qubit_veto_power_upper_95": null,
+     "per_qubit_veto_power_upper_family": null,
+     "planted_equilibrium_withheld_rate": null,
+     "planted_in_pool": 0,
+     "planted_selected_rate": null,
+     "planted_withheld": 0,
+     "replicates": 300,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": null,
+     "sparse_gap_withheld_rate": null,
+     "targets": {
+      "common_veto_power_at_least_90_percent": true,
+      "false_fire_bound_below_ceiling": true
+     }
+    }
+   },
+   "layout_width": 24,
+   "minimum_verdicts": 0,
+   "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
+   "record": "2026-10-28T001935.805967Z",
+   "record_sha256": "1f96000a84a6b379c0dc9086cf31fbe3407e0a70865f2f2c43c24dce9af4d71e",
+   "replicates": {
+    "all": 300
+   },
+   "schema": "msq-successor-null-v1",
+   "seed": 35417,
+   "seed_source": {
+    "experiment": "q-tolerance",
+    "flag": "--seed",
+    "script": "scripts/msq_successor_null.py",
+    "sources": [
+     "default"
+    ]
+   },
+   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "sparse_scale": {
+    "24": 1.069749373433584,
+    "8": 1.25,
+    "9": 1.1651380005405836
+   },
+   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+  },
+  {
+   "arm": "settle-common",
+   "cap": 300,
+   "cases": {
+    "24-qubits": {
+     "common_veto_rate": 1.0,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 0,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": null,
+     "false_fire_upper_95": 0.009936081944457708,
+     "false_fire_upper_95_given_exposed": 1.0,
+     "false_fire_upper_95_given_issued": 1.0,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.0,
+     "issued": 0,
+     "mean_selected": 23.783333333333335,
+     "per_qubit_veto_power_upper_95": null,
+     "per_qubit_veto_power_upper_family": null,
+     "planted_equilibrium_withheld_rate": null,
+     "planted_in_pool": 0,
+     "planted_selected_rate": null,
+     "planted_withheld": 0,
+     "replicates": 300,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": null,
+     "sparse_gap_withheld_rate": null,
+     "targets": {
+      "common_veto_power_at_least_90_percent": true
+     }
+    },
+    "8-qubits": {
+     "common_veto_rate": 1.0,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 0,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": null,
+     "false_fire_upper_95": 0.009936081944457708,
+     "false_fire_upper_95_given_exposed": 1.0,
+     "false_fire_upper_95_given_issued": 1.0,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.0,
+     "issued": 0,
+     "mean_selected": 7.956666666666667,
+     "per_qubit_veto_power_upper_95": null,
+     "per_qubit_veto_power_upper_family": null,
+     "planted_equilibrium_withheld_rate": null,
+     "planted_in_pool": 0,
+     "planted_selected_rate": null,
+     "planted_withheld": 0,
+     "replicates": 300,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": null,
+     "sparse_gap_withheld_rate": null,
+     "targets": {
+      "common_veto_power_at_least_90_percent": true
+     }
+    },
+    "9-qubits": {
+     "common_veto_rate": 1.0,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 0,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": null,
+     "false_fire_upper_95": 0.009936081944457708,
+     "false_fire_upper_95_given_exposed": 1.0,
+     "false_fire_upper_95_given_issued": 1.0,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.0,
+     "issued": 0,
+     "mean_selected": 8.94,
+     "per_qubit_veto_power_upper_95": null,
+     "per_qubit_veto_power_upper_family": null,
+     "planted_equilibrium_withheld_rate": null,
+     "planted_in_pool": 0,
+     "planted_selected_rate": null,
+     "planted_withheld": 0,
+     "replicates": 300,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": null,
+     "sparse_gap_withheld_rate": null,
+     "targets": {
+      "common_veto_power_at_least_90_percent": true
+     }
+    }
+   },
+   "layout_width": 24,
+   "minimum_verdicts": 0,
+   "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
+   "record": "2026-10-28T001935.805967Z",
+   "record_sha256": "11780d8f20ff7c7a673860852e025873b29b95eecbe00f5a4f9b1f5889099485",
+   "replicates": {
+    "24-qubits": 300,
+    "8-qubits": 300,
+    "9-qubits": 300
+   },
+   "schema": "msq-successor-null-v1",
+   "seed": 35417,
+   "seed_source": {
+    "experiment": "settle-common",
+    "flag": "--seed",
+    "script": "scripts/msq_successor_null.py",
+    "sources": [
+     "default"
+    ]
+   },
+   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "sparse_scale": {
+    "24": 1.069749373433584,
+    "8": 1.25,
+    "9": 1.1651380005405836
+   },
+   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+  },
+  {
+   "arm": "settle-sparse",
+   "cap": 300,
+   "cases": {
+    "24-qubits": {
+     "common_veto_rate": 0.0,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 38,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": 0.0,
+     "false_fire_upper_95": 0.009936081944457708,
+     "false_fire_upper_95_given_exposed": 0.07580765168296455,
+     "false_fire_upper_95_given_issued": 0.009936081944457708,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 1.0,
+     "issued": 300,
+     "mean_selected": 21.933333333333334,
+     "per_qubit_veto_power_upper_95": 0.9505945295948287,
+     "per_qubit_veto_power_upper_family": 0.9545772834439451,
+     "planted_equilibrium_withheld_rate": 0.0,
+     "planted_in_pool": 598,
+     "planted_selected_rate": 0.065,
+     "planted_withheld": 559,
+     "replicates": 300,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": 0.87248322147651,
+     "sparse_gap_withheld_rate": 0.9347826086956522,
+     "targets": {
+      "false_fire_bound_below_ceiling": true,
+      "per_qubit_veto_power_not_below_90_percent_family": true
+     }
+    },
+    "8-qubits": {
+     "common_veto_rate": 0.0,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 13,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": 0.0,
+     "false_fire_upper_95": 0.009936081944457708,
+     "false_fire_upper_95_given_exposed": 0.20581666518655062,
+     "false_fire_upper_95_given_issued": 0.20581666518655062,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.043333333333333335,
+     "issued": 13,
+     "mean_selected": 6.133333333333334,
+     "per_qubit_veto_power_upper_95": 0.9221060990879886,
+     "per_qubit_veto_power_upper_family": 0.9271208582026913,
+     "planted_equilibrium_withheld_rate": 0.0,
+     "planted_in_pool": 597,
+     "planted_selected_rate": 0.09666666666666666,
+     "planted_withheld": 539,
+     "replicates": 300,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": 0.8518518518518519,
+     "sparse_gap_withheld_rate": 0.9028475711892797,
+     "targets": {
+      "false_fire_bound_below_ceiling": true,
+      "per_qubit_veto_power_not_below_90_percent_family": true
+     }
+    },
+    "9-qubits": {
+     "common_veto_rate": 0.0,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 42,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": 0.0,
+     "false_fire_upper_95": 0.009936081944457708,
+     "false_fire_upper_95_given_exposed": 0.06884260784039488,
+     "false_fire_upper_95_given_issued": 0.06884260784039488,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.14,
+     "issued": 42,
+     "mean_selected": 7.123333333333333,
+     "per_qubit_veto_power_upper_95": 0.9252598539121346,
+     "per_qubit_veto_power_upper_family": 0.9301694509633222,
+     "planted_equilibrium_withheld_rate": 0.0,
+     "planted_in_pool": 598,
+     "planted_selected_rate": 0.09333333333333334,
+     "planted_withheld": 542,
+     "replicates": 300,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": 0.8422818791946308,
+     "sparse_gap_withheld_rate": 0.9063545150501672,
+     "targets": {
+      "false_fire_bound_below_ceiling": true,
+      "per_qubit_veto_power_not_below_90_percent_family": true
+     }
+    }
+   },
+   "layout_width": 24,
+   "minimum_verdicts": 0,
+   "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
+   "record": "2026-10-28T001935.805967Z",
+   "record_sha256": "70638a12da6071f6bfc772bef570678a2752a647e2624c5ecce32a528f813f02",
+   "replicates": {
+    "24-qubits": 300,
+    "8-qubits": 300,
+    "9-qubits": 300
+   },
+   "schema": "msq-successor-null-v1",
+   "seed": 15296,
+   "seed_source": {
+    "experiment": "settle-sparse",
+    "flag": "--seed",
+    "script": "scripts/msq_successor_null.py",
+    "sources": [
+     "qrng:docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json#3"
+    ]
+   },
+   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "sparse_scale": {
+    "24": 1.069749373433584,
+    "8": 1.25,
+    "9": 1.1651380005405836
+   },
+   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+  },
+  {
+   "arm": "settle-sparse",
+   "cap": 300,
+   "cases": {
+    "24-qubits": {
+     "common_veto_rate": 0.0,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 48,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": 0.0,
+     "false_fire_upper_95": 0.009936081944457708,
+     "false_fire_upper_95_given_exposed": 0.0605034093488943,
+     "false_fire_upper_95_given_issued": 0.009936081944457708,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 1.0,
+     "issued": 300,
+     "mean_selected": 21.97,
+     "per_qubit_veto_power_upper_95": 0.9343898650956478,
+     "per_qubit_veto_power_upper_family": 0.938987202143751,
+     "planted_equilibrium_withheld_rate": 0.0,
+     "planted_in_pool": 599,
+     "planted_selected_rate": 0.08333333333333333,
+     "planted_withheld": 549,
+     "replicates": 300,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": 0.8394648829431438,
+     "sparse_gap_withheld_rate": 0.9165275459098498,
+     "targets": {
+      "false_fire_bound_below_ceiling": true,
+      "per_qubit_veto_power_not_below_90_percent_family": true
+     }
+    },
+    "8-qubits": {
+     "common_veto_rate": 0.0,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 18,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": 0.0,
+     "false_fire_upper_95": 0.009936081944457708,
+     "false_fire_upper_95_given_exposed": 0.1533175539572782,
+     "false_fire_upper_95_given_issued": 0.1533175539572782,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.06,
+     "issued": 18,
+     "mean_selected": 6.166666666666667,
+     "per_qubit_veto_power_upper_95": 0.9179678029767703,
+     "per_qubit_veto_power_upper_family": 0.9230994449046083,
+     "planted_equilibrium_withheld_rate": 0.0,
+     "planted_in_pool": 600,
+     "planted_selected_rate": 0.10166666666666667,
+     "planted_withheld": 539,
+     "replicates": 300,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": 0.8566666666666667,
+     "sparse_gap_withheld_rate": 0.8983333333333333,
+     "targets": {
+      "false_fire_bound_below_ceiling": true,
+      "per_qubit_veto_power_not_below_90_percent_family": true
+     }
+    },
+    "9-qubits": {
+     "common_veto_rate": 0.0,
+     "equilibrium_failure_rate": 0.0,
+     "exposed": 51,
+     "exposed_fires": 0,
+     "false_fire_rate": 0.0,
+     "false_fire_rate_given_issued": 0.0,
+     "false_fire_upper_95": 0.009936081944457708,
+     "false_fire_upper_95_given_exposed": 0.05704795236044276,
+     "false_fire_upper_95_given_issued": 0.05704795236044276,
+     "fired_verdicts": {},
+     "fires": 0,
+     "informative_device_rate": 0.17,
+     "issued": 51,
+     "mean_selected": 7.193333333333333,
+     "per_qubit_veto_power_upper_95": 0.896458656696576,
+     "per_qubit_veto_power_upper_family": 0.9022041788161874,
+     "planted_equilibrium_withheld_rate": 0.0,
+     "planted_in_pool": 599,
+     "planted_selected_rate": 0.125,
+     "planted_withheld": 524,
+     "replicates": 300,
+     "selection_failure_rate": 0.0,
+     "sparse_gap_both_withheld_rate": 0.8127090301003345,
+     "sparse_gap_withheld_rate": 0.8747913188647746,
+     "targets": {
+      "false_fire_bound_below_ceiling": true,
+      "per_qubit_veto_power_not_below_90_percent_family": true
+     }
+    }
+   },
+   "layout_width": 24,
+   "minimum_verdicts": 0,
+   "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
+   "record": "2026-10-28T001935.805967Z",
+   "record_sha256": "57a4b82e8668a50393752431e3f0eba18368e3828008c374b4aa42fd4aacbf38",
+   "replicates": {
+    "24-qubits": 300,
+    "8-qubits": 300,
+    "9-qubits": 300
+   },
+   "schema": "msq-successor-null-v1",
+   "seed": 35417,
+   "seed_source": {
+    "experiment": "settle-sparse",
+    "flag": "--seed",
+    "script": "scripts/msq_successor_null.py",
+    "sources": [
+     "default"
+    ]
+   },
+   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "sparse_scale": {
+    "24": 1.069749373433584,
+    "8": 1.25,
+    "9": 1.1651380005405836
+   },
+   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+  }
+ ],
+ "schema": "msq-successor-null-summary-v1"
+}

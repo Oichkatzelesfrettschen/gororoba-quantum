@@ -441,6 +441,7 @@ def shape_bound_rows(ctx: dict[str, Any], t_s: Floats, shapes: Sequence[float] =
 # --- snapshot, layout and per-calibration constants ----------------------------------------------------------
 
 SCHEMA = "msq-successor-null-v1"
+SUMMARY_SCHEMA = "msq-successor-null-summary-v1"
 # ANU QRNG docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json, index 0.
 SUCCESSOR_NULL_SEED = 35417
 SHOTS = 8192
@@ -464,7 +465,7 @@ SPARSE_SCALE_EVIDENCE = "docs/evidence/measurement_sequence/successor-sparse-sca
 # ANU QRNG docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json, index 2: the calibration draws apart from the null's.
 SPARSE_CALIBRATION_SEED = 26209
 # ANU QRNG docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json, index 3: the settle-sparse null that decides the
-# family power target (`--arm settle-sparse --seed qrng:...#3`), drawn after SUCCESSOR_NULL_SEED's counts were read.
+# family power target (`--arm settle-sparse --seed qrng:...#3`), chosen after SUCCESSOR_NULL_SEED's counts were read.
 SPARSE_CONFIRMATION_SEED = 15296
 # Replicates per calibration point (per-qubit power standard error about 0.01), the second point's scale and the
 # secant steps before the calibration gives up.
@@ -1703,3 +1704,30 @@ def sparse_calibration_record(
 
 def dumps(record: dict[str, Any]) -> str:
     return json.dumps(record, indent=1, sort_keys=True) + "\n"
+
+
+def null_summary(texts: Sequence[str]) -> dict[str, Any]:
+    """The retained summary of finished arm records, given as their file texts: each record's identity, the sha256
+    of its bytes, its replicate counts and every case's statistics without the rows. A shard record, or a record
+    whose statistics differ from those this module computes from its rows, is refused."""
+    entries = []
+    for text in texts:
+        record = json.loads(text)
+        label = f"{record['arm']} at seed {record['seed']}"
+        if "shard" in record:
+            raise ValueError(f"{label}: a shard record; merge its shards first")
+        if dumps(merge_records([{**record, "shard": {"index": 0, "count": 1}}])) != text:
+            raise ValueError(f"{label}: the statistics differ from this module's; merge the record again")
+        entries.append(
+            {key: record[key] for key in IDENTITY}
+            | {
+                "record_sha256": hashlib.sha256(text.encode()).hexdigest(),
+                "replicates": record["replicates"],
+                "cases": {
+                    name: {key: value for key, value in case.items() if key != "rows"}
+                    for name, case in record["cases"].items()
+                },
+            }
+        )
+    entries.sort(key=lambda entry: (entry["arm"], entry["seed"]))
+    return {"schema": SUMMARY_SCHEMA, "records": entries}

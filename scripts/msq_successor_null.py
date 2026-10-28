@@ -6,8 +6,9 @@ of schema msq-successor-null-v1. ``--shard INDEX --shards COUNT`` runs the repli
 COUNT and writes a shard record; ``--merge FILE...`` combines shard records into the arm's record, byte for byte
 the record of one unsharded run. ``RECORD_DIR --calibrate-sparse --out FILE`` measures the sparse settle arm's
 detectable-gap scale of every pool size on its own seed (``--calibration-seed``) and writes the record that
-msq_successor_null_batch.SPARSE_SCALE_EVIDENCE names. The seed is a QRNG value (``--seed qrng:<draw>#<index>``)
-or the default.
+msq_successor_null_batch.SPARSE_SCALE_EVIDENCE names. ``--summarize FILE...`` writes the row-free summary of
+finished arm records that docs/evidence/measurement_sequence/successor-null.json retains. The seed is a QRNG value
+(``--seed qrng:<draw>#<index>``) or the default.
 GOROROBA_WORKERS caps the worker count.
 """
 
@@ -35,6 +36,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--shard", type=int, default=0)
     parser.add_argument("--shards", type=int, default=1)
     parser.add_argument("--merge", nargs="+", type=Path, metavar="FILE", help="combine shard records")
+    parser.add_argument("--summarize", nargs="+", type=Path, metavar="FILE", help="summarize finished arm records")
     parser.add_argument("--calibrate-sparse", action="store_true", help="measure the sparse detectable-gap scale")
     qrng_seeds.add_seed_argument(
         parser, "--calibration-seed", default=nl.SPARSE_CALIBRATION_SEED, help="qrng:<draw>#<index>"
@@ -43,6 +45,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.merge:
         record = nl.merge_records([json.loads(path.read_text()) for path in args.merge])
+    elif args.summarize:
+        record = nl.null_summary([path.read_text() for path in args.summarize])
     elif args.calibrate_sparse:
         if args.record_dir is None:
             parser.error("RECORD_DIR is required with --calibrate-sparse")
@@ -56,7 +60,7 @@ def main(argv: list[str] | None = None) -> int:
         )
     else:
         if args.record_dir is None or args.arm is None:
-            parser.error("RECORD_DIR and --arm are required unless --merge is given")
+            parser.error("RECORD_DIR and --arm are required unless --merge or --summarize is given")
         setup = nl.build_setup(args.record_dir)
         shard = nl.run_arm(
             setup,

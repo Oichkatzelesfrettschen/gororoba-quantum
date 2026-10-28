@@ -229,23 +229,29 @@ over the admitted grid, so the null covers the qubits the case selects.
   threshold 3, so the case states plainly that a run whose sub-millisecond frequency noise falls about eight-fold
   below the retained level fails the sentinels and withholds every qubit.
 
-Null results at width 24 on the rehearsal dry run `results/live/2026-10-28T001935.805967Z`, seed
-`SUCCESSOR_NULL_SEED` unless stated, every arm with 0 false fires. Each row replays byte for byte with
-`"$PYTHON" scripts/msq_successor_null.py RECORD_DIR --arm ARM --replicates CAP [--seed ...]`.
+Null results at width 24 on the rehearsal dry run `results/live/2026-10-28T001935.805967Z`, every arm with 0
+false fires. [successor-null.json](../evidence/measurement_sequence/successor-null.json) retains each arm record's
+statistics without its rows, with the sha256 of the full record (`scripts/msq_successor_null.py --summarize`
+writes it and refuses a record whose statistics this code would not compute from its rows). A row replays byte for
+byte with `"$PYTHON" scripts/msq_successor_null.py results/live/2026-10-28T001935.805967Z --arm ARM --replicates
+CAP` at the cap below, adding `--seed qrng:docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json#3` for the
+`SPARSE_CONFIRMATION_SEED` row; every other row runs at the default `SUCCESSOR_NULL_SEED`. An arm with a verdict
+count stops at it, so its replicates fall below its cap.
 
-| Arm | Replicates | Result |
-|---|---|---|
-| carryover-positive | 346 | 299 issued; bounds 0.0100 issued, 0.0086 overall |
-| carryover-negative | 461 | 299 issued (common veto 28 %); bounds 0.0100, 0.0065 |
-| carryover-boundary | 300 per offset | issued 0, 0 and 11 at 0, 1 and 2 SE inside (descriptive) |
-| q-tolerance | 300 | common veto 100 %; overall bound 0.0099 |
-| q-minority | 438 | 299 exposed verdicts; bounds 0.0100 exposed, 0.0068 overall |
-| settle-common | 300 per width | common veto 100 % at 8, 9 and 24 qubits |
-| settle-sparse, `SPARSE_CONFIRMATION_SEED` | 300 per width | power 0.903, 0.906, 0.935 at 8, 9, 24; family bounds 0.927, 0.930, 0.955 |
-| plateau-low | 300 | every departure verdict withheld |
-| plateau-retained | 14943 | 299 issued (2.0 %); bounds 0.0100 issued, 0.0002 overall |
-| plateau-minority | 1057 | 299 exposed verdicts; bounds 0.0100, 0.0028 |
-| gamma | 400 | 398 informative (99.5 %); bound 0.0075 |
+| Arm | Cap | Replicates | Result |
+|---|---|---|---|
+| carryover-positive | 1500 | 346 | 299 issued; bounds 0.0100 issued, 0.0086 overall |
+| carryover-negative | 1500 | 461 | 299 issued (common veto 28 %); bounds 0.0100, 0.0065 |
+| carryover-boundary | 300 | 300 per offset | issued 0, 0 and 11 at 0, 1 and 2 SE inside (descriptive) |
+| q-tolerance | 300 | 300 | common veto 100 %; overall bound 0.0099 |
+| q-minority | 1500 | 438 | 299 exposed verdicts; bounds 0.0100 exposed, 0.0068 overall |
+| settle-common | 300 | 300 per width | common veto 100 % at 8, 9 and 24 qubits |
+| settle-sparse, `SPARSE_CONFIRMATION_SEED` | 300 | 300 per width | power 0.903, 0.906, 0.935 at 8, 9, 24; family bounds 0.927, 0.930, 0.955 |
+| settle-sparse, `SUCCESSOR_NULL_SEED` | 300 | 300 per width | power 0.898, 0.875, 0.917; the v3.7 failure (Superseded designs) |
+| plateau-low | 300 | 300 | every departure verdict withheld |
+| plateau-retained | 20000 | 14943 | 299 issued (2.0 %); bounds 0.0100 issued, 0.0002 overall |
+| plateau-minority | 3000 | 1057 | 299 exposed verdicts; bounds 0.0100, 0.0028 |
+| gamma | 400 | 400 | 398 informative (99.5 %); bound 0.0075 |
 
 ## What the run can detect
 
