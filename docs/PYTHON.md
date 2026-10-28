@@ -99,7 +99,9 @@ Climb in this order and stop at the first rung that meets the budget.
 7. **Shard.** A pooled, batched run that still exceeds one host's budget
    shards to Kaggle CPU sessions by item range, once the user has approved
    the written case every simulator job and notebook session needs
-   ([AGENTS.md](../AGENTS.md) "Hardware services").
+   ([AGENTS.md](../AGENTS.md) "Hardware services"). The successor null also
+   shards to the public repository's hosted runners
+   ([null-shards.md](runbooks/null-shards.md)).
 
 ## Correctness rules
 

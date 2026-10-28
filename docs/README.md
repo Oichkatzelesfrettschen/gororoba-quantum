@@ -358,6 +358,7 @@ differs from it only in the `cd_core.py` digest.
 |---|---|
 | [ci-runtime.md](runbooks/ci-runtime.md) | timing denominators, bottlenecks and replay selection |
 | [vectorized-fits.md](runbooks/vectorized-fits.md) | batched classical fits across replicates |
+| [null-shards.md](runbooks/null-shards.md) | the successor null through one pool, Kaggle kernels and hosted-runner shards |
 
 ### State and records
 

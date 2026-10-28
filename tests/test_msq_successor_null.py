@@ -567,6 +567,40 @@ def test_a_computed_round_gives_every_worker_whole_blocks(monkeypatch: pytest.Mo
     check(nl.round_size(25) == nl.NULL_BLOCK, "a round holds at least one block per case")
 
 
+def test_one_pool_writes_each_arm_the_bytes_of_its_own_run(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
+    # The gamma case stops at its second verdict while the settle case shares its rounds and runs to the cap.
+    monkeypatch.setattr(nl, "ROUND", 1)
+    gamma = nl.ArmRun("gamma", TEST_SEED, 3, cases=[small("gamma", 9, 0.0)], needed=2)
+    settle = nl.ArmRun("settle-common", TEST_SEED, 2, cases=[small("settle-common", 8, 0.0)])
+    joint = [nl.dumps(nl.merge_records([record])) for record in nl.run_arms(setup, [gamma, settle])]
+    alone = [nl.dumps(nl.merge_records([nl.run_arms(setup, [run])[0]])) for run in (gamma, settle)]
+    check(joint == alone, "an arm's record depends on the arms it shares the pool with")
+    with pytest.raises(ValueError):
+        nl.run_arms(setup, [gamma, gamma])
+
+
+def test_the_null_plan_names_every_arm_once_at_its_seed() -> None:
+    import msq_successor_null
+
+    import qrng_seeds
+
+    check([arm for arm, _, _ in nl.NULL_PLAN] == list(nl.ARMS), "NULL_PLAN differs from ARMS")
+    spellings = {arm: spelling for arm, _, spelling in nl.NULL_PLAN if spelling is not None}
+    check(set(spellings) == {"settle-sparse"}, f"{spellings}")
+    seed, _ = qrng_seeds.parse_value(spellings["settle-sparse"], [])
+    check(seed == nl.SPARSE_CONFIRMATION_SEED, f"the settle-sparse spelling resolves to {seed}")
+    runs = msq_successor_null.plan_runs(["all"], ["gamma=37"], "r")
+    check([run.arm for run in runs] == list(nl.ARMS), "--arms all runs every arm in ARMS order")
+    by_arm = {run.arm: run for run in runs}
+    check(by_arm["gamma"].cap == 37 and by_arm["plateau-retained"].cap == 20000, "caps")
+    check(by_arm["settle-sparse"].seed == nl.SPARSE_CONFIRMATION_SEED, "the settle-sparse seed")
+    check(by_arm["settle-sparse"].seed_source["sources"] == [spellings["settle-sparse"]], "the seed spelling")
+    check(by_arm["gamma"].seed == nl.SUCCESSOR_NULL_SEED and by_arm["gamma"].seed_source["sources"] == ["default"], "")
+    for bad in (["gamma=0"], ["gamma=x"], ["q-tolerance=5"]):
+        with pytest.raises(ValueError):
+            msq_successor_null.plan_runs(["gamma"], bad, "r")
+
+
 def test_merge_refuses_incomplete_or_mismatched_shards(setup: nl.Setup) -> None:
     cases = [small("gamma", 8, 0.0)]
     one = nl.run_arm(setup, "gamma", TEST_SEED, 2, 0, 2, cases=cases)

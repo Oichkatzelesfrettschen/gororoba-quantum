@@ -508,7 +508,35 @@ ARMS = (
     "plateau-minority",
     "gamma",
 )
+# The null the design's table cites: each arm's cap and seed spelling (None runs SUCCESSOR_NULL_SEED), in ARMS
+# order. An arm with a verdict count stops at it, so the cap bounds its replicates.
+NULL_PLAN: tuple[tuple[str, int, str | None], ...] = (
+    ("carryover-positive", 1500, None),
+    ("carryover-negative", 1500, None),
+    ("carryover-boundary", 300, None),
+    ("q-tolerance", 300, None),
+    ("q-minority", 1500, None),
+    ("settle-common", 300, None),
+    ("settle-sparse", 20000, "qrng:docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json#3"),
+    ("plateau-low", 300, None),
+    ("plateau-retained", 20000, None),
+    ("plateau-minority", 3000, None),
+    ("gamma", 400, None),
+)
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class ArmRun(NamedTuple):
+    """One arm of a `run_arms` call: its seed, cap and record fields, and the test overrides of its cases and verdict
+    requirement (None takes the arm's own)."""
+
+    arm: str
+    seed: int
+    cap: int
+    seed_source: Any = None
+    record_name: str = ""
+    cases: Sequence[Case] | None = None
+    needed: int | None = None
 
 
 class Setup(NamedTuple):
@@ -1490,44 +1518,73 @@ def run_arm(
     cases: Sequence[Case] | None = None,
     needed: int | None = None,
 ) -> dict[str, Any]:
-    """The rows of replicates 0 to cap - 1 whose index is congruent to `shard` modulo `shards`, for every case of the
-    arm, as a shard record. An unsharded run of an arm with a verdict requirement stops each case after the round that
-    reaches it in that case's counted verdicts; `merge_records` applies the same cut to every case of every record,
-    so the bytes do not depend on the sharding."""
-    if not 0 <= shard < shards or cap < 1:
-        raise ValueError(f"shard {shard} of {shards} with {cap} replicates")
-    cases = list(arm_cases(arm, setup.width) if cases is None else cases)
-    needed = minimum_verdicts(arm) if needed is None else needed
-    indices = [i for i in range(cap) if i % shards == shard]
-    rows: dict[str, list[dict[str, Any]]] = {case.label: [] for case in cases}
-    position = 0
-    while position < len(indices):
-        running = [case for case in cases if not needed or sum(r["counted"] for r in rows[case.label]) < needed]
-        if not running:
+    """`run_arms` of one arm."""
+    return run_arms(setup, [ArmRun(arm, seed, cap, seed_source, record_name, cases, needed)], shard, shards)[0]
+
+
+def run_arms(setup: Setup, runs: Sequence[ArmRun], shard: int = 0, shards: int = 1) -> list[dict[str, Any]]:
+    """The shard record of each run: the rows of replicates 0 to cap - 1 whose index is congruent to `shard` modulo
+    `shards`, for every case of the arm. Every round draws the blocks of every arm's running cases into one pool map,
+    sized by `round_size` over all of them. An unsharded run of an arm with a verdict requirement stops each case
+    after the round that reaches it in that case's counted verdicts; `merge_records` applies the same cut to every
+    case of every record, so the bytes depend neither on the sharding nor on the other arms of the call."""
+    if not 0 <= shard < shards or any(run.cap < 1 for run in runs):
+        raise ValueError(f"shard {shard} of {shards} with caps {[run.cap for run in runs]}")
+    if len({run.arm for run in runs}) != len(runs):
+        raise ValueError("an arm appears twice in one call")
+    # Per run: its cases, verdict requirement, shard indices, rows by case and the next index position.
+    states: list[tuple[ArmRun, list[Case], int, list[int], dict[str, list[dict[str, Any]]], list[int]]] = []
+    for run in runs:
+        cases = list(arm_cases(run.arm, setup.width) if run.cases is None else run.cases)
+        needed = minimum_verdicts(run.arm) if run.needed is None else run.needed
+        indices = [i for i in range(run.cap) if i % shards == shard]
+        states.append((run, cases, needed, indices, {case.label: [] for case in cases}, [0]))
+    while True:
+        work = []
+        for run, cases, needed, indices, rows, position in states:
+            if position[0] >= len(indices):
+                continue
+            running = [case for case in cases if not needed or sum(r["counted"] for r in rows[case.label]) < needed]
+            if running:
+                work.append((run, needed, indices, rows, position, running))
+            else:
+                position[0] = len(indices)
+        if not work:
             break
-        size = len(indices) if shards > 1 or not needed else round_size(len(running))
-        chunk, position = indices[position : position + size], position + size
-        items = [
-            (setup, case, seed, chunk[k : k + NULL_BLOCK]) for case in running for k in range(0, len(chunk), NULL_BLOCK)
-        ]
-        for (_, case, _, _), block in zip(items, ordered_map(analyse_block, items, min_items=2), strict=True):
+        size = round_size(sum(len(running) for *_, running in work))
+        items: list[tuple[Setup, Case, int, list[int]]] = []
+        owners: list[dict[str, list[dict[str, Any]]]] = []
+        for run, needed, indices, rows, position, running in work:
+            step = len(indices) if shards > 1 or not needed else size
+            chunk = indices[position[0] : position[0] + step]
+            position[0] += step
+            for case in running:
+                for k in range(0, len(chunk), NULL_BLOCK):
+                    items.append((setup, case, run.seed, chunk[k : k + NULL_BLOCK]))
+                    owners.append(rows)
+        for (_, case, _, _), rows, block in zip(
+            items, owners, ordered_map(analyse_block, items, min_items=2), strict=True
+        ):
             rows[case.label].extend(block)
-    return {
-        "schema": SCHEMA,
-        "arm": arm,
-        "seed": seed,
-        "seed_source": seed_source,
-        "record": record_name,
-        "layout_width": setup.width,
-        "snapshot_sha256": setup.digests["snapshot_sha256"],
-        "plateau_sha256": setup.digests["plateau_sha256"],
-        "sparse_scale": {str(pool): factor for pool, factor in sorted(setup.sparse_scale.items())},
-        "sparse_scale_sha256": setup.digests["sparse_scale_sha256"],
-        "cap": cap,
-        "minimum_verdicts": needed,
-        "shard": {"index": shard, "count": shards},
-        "cases": {label: {"rows": sorted(found, key=lambda row: row["i"])} for label, found in rows.items()},
-    }
+    return [
+        {
+            "schema": SCHEMA,
+            "arm": run.arm,
+            "seed": run.seed,
+            "seed_source": run.seed_source,
+            "record": run.record_name,
+            "layout_width": setup.width,
+            "snapshot_sha256": setup.digests["snapshot_sha256"],
+            "plateau_sha256": setup.digests["plateau_sha256"],
+            "sparse_scale": {str(pool): factor for pool, factor in sorted(setup.sparse_scale.items())},
+            "sparse_scale_sha256": setup.digests["sparse_scale_sha256"],
+            "cap": run.cap,
+            "minimum_verdicts": needed,
+            "shard": {"index": shard, "count": shards},
+            "cases": {label: {"rows": sorted(found, key=lambda row: row["i"])} for label, found in rows.items()},
+        }
+        for run, _, needed, _, rows, _ in states
+    ]
 
 
 IDENTITY = (
