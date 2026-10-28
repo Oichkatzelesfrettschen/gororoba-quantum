@@ -21,7 +21,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any, NamedTuple
 
@@ -527,8 +527,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ArmRun(NamedTuple):
-    """One arm of a `run_arms` call: its seed, cap and record fields, and the test overrides of its cases and verdict
-    requirement (None takes the arm's own)."""
+    """One arm of a `run_arms` call: its seed, cap and record fields, the test overrides of its cases and verdict
+    requirement (None takes the arm's own), and per-case stop limits. A case runs only the replicates below its limit
+    (the cap by default); a limit enters no record, and `merge_records` refuses a case it stops short of both its cap
+    and its verdict count, so every merged record is the record of the run without limits."""
 
     arm: str
     seed: int
@@ -537,6 +539,7 @@ class ArmRun(NamedTuple):
     record_name: str = ""
     cases: Sequence[Case] | None = None
     needed: int | None = None
+    limits: Mapping[str, int] | None = None
 
 
 class Setup(NamedTuple):
@@ -1524,11 +1527,12 @@ def run_arm(
 
 
 def run_arms(setup: Setup, runs: Sequence[ArmRun], shard: int = 0, shards: int = 1) -> list[dict[str, Any]]:
-    """The shard record of each run: the rows of replicates 0 to cap - 1 whose index is congruent to `shard` modulo
-    `shards`, for every case of the arm. Every round draws the blocks of every arm's running cases into one pool map,
-    sized by `round_size` over all of them. An unsharded run of an arm with a verdict requirement stops each case
-    after the round that reaches it in that case's counted verdicts; `merge_records` applies the same cut to every
-    case of every record, so the bytes depend neither on the sharding nor on the other arms of the call."""
+    """The shard record of each run: the rows of the replicates below each case's limit (0 to cap - 1 without one)
+    whose index is congruent to `shard` modulo `shards`, for every case of the arm. Every round draws the blocks of
+    every arm's running cases into one pool map, sized by `round_size` over all of them. An unsharded run of an arm
+    with a verdict requirement stops each case after the round that reaches it in that case's counted verdicts;
+    `merge_records` applies the same cut to every case of every record, so the bytes depend neither on the sharding
+    nor on the other arms of the call."""
     if not 0 <= shard < shards or any(run.cap < 1 for run in runs):
         raise ValueError(f"shard {shard} of {shards} with caps {[run.cap for run in runs]}")
     if len({run.arm for run in runs}) != len(runs):
@@ -1538,6 +1542,9 @@ def run_arms(setup: Setup, runs: Sequence[ArmRun], shard: int = 0, shards: int =
     for run in runs:
         cases = list(arm_cases(run.arm, setup.width) if run.cases is None else run.cases)
         needed = minimum_verdicts(run.arm) if run.needed is None else run.needed
+        unknown = set(run.limits or {}) - {case.label for case in cases}
+        if unknown:
+            raise ValueError(f"{run.arm} has no case {sorted(unknown)}")
         indices = [i for i in range(run.cap) if i % shards == shard]
         states.append((run, cases, needed, indices, {case.label: [] for case in cases}, [0]))
     while True:
@@ -1545,7 +1552,12 @@ def run_arms(setup: Setup, runs: Sequence[ArmRun], shard: int = 0, shards: int =
         for run, cases, needed, indices, rows, position in states:
             if position[0] >= len(indices):
                 continue
-            running = [case for case in cases if not needed or sum(r["counted"] for r in rows[case.label]) < needed]
+            running = [
+                case
+                for case in cases
+                if (not needed or sum(r["counted"] for r in rows[case.label]) < needed)
+                and indices[position[0]] < (run.limits or {}).get(case.label, run.cap)
+            ]
             if running:
                 work.append((run, needed, indices, rows, position, running))
             else:
@@ -1560,8 +1572,10 @@ def run_arms(setup: Setup, runs: Sequence[ArmRun], shard: int = 0, shards: int =
             chunk = indices[position[0] : position[0] + step]
             position[0] += step
             for case in running:
-                for k in range(0, len(chunk), NULL_BLOCK):
-                    items.append((setup, case, run.seed, chunk[k : k + NULL_BLOCK]))
+                limit = (run.limits or {}).get(case.label, run.cap)
+                mine = [i for i in chunk if i < limit]
+                for k in range(0, len(mine), NULL_BLOCK):
+                    items.append((setup, case, run.seed, mine[k : k + NULL_BLOCK]))
                     owners.append(rows)
         for (_, case, _, _), rows, block in zip(
             items, owners, ordered_map(analyse_block, items, min_items=2), strict=True
@@ -1725,13 +1739,18 @@ def merge_records(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
         rows = sorted((row for record in records for row in record["cases"][label]["rows"]), key=lambda r: r["i"])
         if [row["i"] for row in rows] != list(range(len(rows))):
             raise ValueError(f"case {label}: the replicate indices are not a prefix of 0 to cap - 1")
-        if needed:
-            total = 0
-            for k, row in enumerate(rows):
-                total += int(row["counted"])
-                if total >= needed:
-                    rows = rows[: k + 1]
-                    break
+        total = 0
+        for k, row in enumerate(rows):
+            total += int(row["counted"])
+            if needed and total >= needed:
+                rows = rows[: k + 1]
+                break
+        else:
+            if len(rows) != first["cap"]:
+                raise ValueError(
+                    f"case {label} stops at {len(rows)} of {first['cap']} replicates with {total} of {needed} "
+                    "verdicts: rerun it with a larger --limit"
+                )
         cases[label] = {"rows": rows, **case_statistics(arm, rows)}
     out = {key: first[key] for key in IDENTITY}
     out["cases"] = cases

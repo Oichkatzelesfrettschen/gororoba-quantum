@@ -4,10 +4,12 @@
 record's snapshot (docs/design/measurement-sequence-envelope-successor.md, "Null calibration") and writes a record
 of schema msq-successor-null-v1. ``RECORD_DIR --arms ARM... --out-dir DIR`` (``--arms all`` for every arm) runs
 the arms of msq_successor_null_batch.NULL_PLAN at its caps and seeds from one setup through one process pool and
-writes DIR/ARM.json, the bytes each single-arm run writes; ``--cap ARM=N`` replaces an arm's cap.
+writes DIR/ARM.json, the bytes each single-arm run writes; ``--cap ARM=N`` replaces an arm's cap, and ``--limit
+ARM=N`` or ``ARM/CASE=N`` stops a case below replicate N without entering the record.
 ``--shard INDEX --shards COUNT`` runs the replicates congruent to INDEX modulo COUNT and writes a shard record
-(DIR/ARM-shardINDEX.json under ``--arms``), which runs every case to its cap; ``--merge FILE...`` combines shard
-records into the arm's record, byte for byte the record of one unsharded run. ``RECORD_DIR --calibrate-sparse
+(DIR/ARM-shardINDEX.json under ``--arms``), which runs every case to its limit; ``--merge FILE...`` combines shard
+records into the arm's record, byte for byte the record of one unsharded run, and refuses a case its limit cut
+short of its verdict count. ``RECORD_DIR --calibrate-sparse
 --out FILE`` measures the sparse settle arm's detectable-gap scale of every pool size on its own seed
 (``--calibration-seed``) and writes the record that msq_successor_null_batch.SPARSE_SCALE_EVIDENCE names.
 ``--summarize FILE...`` writes the row-free summary of finished arm records that
@@ -35,6 +37,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--arm", choices=nl.ARMS)
     parser.add_argument("--arms", nargs="+", choices=[*nl.ARMS, "all"], help="NULL_PLAN arms through one pool")
     parser.add_argument("--cap", action="append", default=[], metavar="ARM=N", help="an --arms cap override")
+    parser.add_argument(
+        "--limit", action="append", default=[], metavar="ARM[/CASE]=N", help="an --arms per-case stop limit"
+    )
     parser.add_argument("--out-dir", type=Path, help="the record directory of --arms")
     parser.add_argument(
         "--replicates", type=int, default=400, help="replicates (the cap, for an arm with a verdict count)"
@@ -69,10 +74,16 @@ def main(argv: list[str] | None = None) -> int:
         if args.record_dir is None or args.out_dir is None or args.arm is not None:
             parser.error("--arms needs RECORD_DIR and --out-dir and replaces --arm")
         try:
-            runs = plan_runs(args.arms, args.cap, args.record_dir.name)
+            runs = plan_runs(args.arms, args.cap, args.record_dir.name, args.limit)
         except ValueError as error:
             parser.error(str(error))
-        shards = nl.run_arms(nl.build_setup(args.record_dir), runs, args.shard, args.shards)
+        setup = nl.build_setup(args.record_dir)
+        labels = {run.arm: {case.label for case in nl.arm_cases(run.arm, setup.width)} for run in runs}
+        try:
+            runs = [run._replace(limits=expand_limits(run, labels[run.arm])) for run in runs]
+        except ValueError as error:
+            parser.error(str(error))
+        shards = nl.run_arms(setup, runs, args.shard, args.shards)
         args.out_dir.mkdir(parents=True, exist_ok=True)
         for run, shard in zip(runs, shards, strict=True):
             name = f"{run.arm}-shard{args.shard}.json" if args.shards > 1 else f"{run.arm}.json"
@@ -103,9 +114,10 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
-def plan_runs(arms: list[str], caps: list[str], record_name: str) -> list[nl.ArmRun]:
+def plan_runs(arms: list[str], caps: list[str], record_name: str, limits: list[str] | None = None) -> list[nl.ArmRun]:
     """The ArmRun of each named arm (every arm for "all") at its NULL_PLAN cap and seed, a --cap ARM=N replacing the
-    cap, with the seed_source a single-arm run of the same seed spelling records."""
+    cap, with the seed_source a single-arm run of the same seed spelling records. Each --limit ARM=N or ARM/CASE=N
+    lands in the arm's `limits` under the key "*" or CASE, which `expand_limits` resolves against the arm's cases."""
     plan = {arm: (cap, spelling) for arm, cap, spelling in nl.NULL_PLAN}
     chosen = list(nl.ARMS) if "all" in arms else list(dict.fromkeys(arms))
     overrides: dict[str, int] = {}
@@ -114,6 +126,13 @@ def plan_runs(arms: list[str], caps: list[str], record_name: str) -> list[nl.Arm
         if arm not in chosen or not value.isdigit() or int(value) < 1:
             raise ValueError(f"--cap {entry}: name a chosen arm and a positive replicate count")
         overrides[arm] = int(value)
+    stops: dict[str, dict[str, int]] = {}
+    for entry in limits or []:
+        name, _, value = entry.partition("=")
+        arm, _, case = name.partition("/")
+        if arm not in chosen or not value.isdigit() or int(value) < 1:
+            raise ValueError(f"--limit {entry}: name a chosen arm and a positive replicate count")
+        stops.setdefault(arm, {})[case or "*"] = int(value)
     runs = []
     for arm in chosen:
         cap, spelling = plan[arm]
@@ -122,8 +141,23 @@ def plan_runs(arms: list[str], caps: list[str], record_name: str) -> list[nl.Arm
         else:
             seed, source = qrng_seeds.parse_value(spelling, [nl.SUCCESSOR_NULL_SEED])
         record = qrng_seeds.seed_record("scripts/msq_successor_null.py", "--seed", arm, source)
-        runs.append(nl.ArmRun(arm, seed, overrides.get(arm, cap), record, record_name))
+        runs.append(nl.ArmRun(arm, seed, overrides.get(arm, cap), record, record_name, limits=stops.get(arm)))
     return runs
+
+
+def expand_limits(run: nl.ArmRun, labels: set[str]) -> dict[str, int] | None:
+    """The run's per-case limits over the case labels of its arm: an ARM=N limit ("*") applies to every case that
+    names no limit of its own."""
+    if not run.limits:
+        return None
+    named = {label: value for label, value in run.limits.items() if label != "*"}
+    if set(named) - labels:
+        raise ValueError(
+            f"--limit: {run.arm} has no case {sorted(set(named) - labels)}; its cases are {sorted(labels)}"
+        )
+    if "*" in run.limits:
+        named = {label: named.get(label, run.limits["*"]) for label in labels}
+    return named
 
 
 if __name__ == "__main__":

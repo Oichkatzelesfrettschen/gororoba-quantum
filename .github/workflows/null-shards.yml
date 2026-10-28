@@ -3,7 +3,7 @@ name: null-shards
 # Shards of the measurement-sequence successor's classical null on hosted runners. Each matrix job runs
 # scripts/msq_successor_null.py --arms ... --shard K --shards N on a dry-run record of the dispatched ref and
 # uploads its shard records with the runner's CPU and timing; docs/runbooks/null-shards.md merges them. A shard
-# runs every case to its cap, so a cap near the arm's verdict count (--cap) bounds the work. The repository is
+# runs every case to its limit, so a limit near the case's verdict count (--limit) bounds the work. The repository is
 # public, so the logs and artifacts are public too; the null reads only files the dispatched ref already holds.
 on:
   workflow_dispatch:
@@ -17,8 +17,8 @@ on:
         required: true
         type: string
         default: all
-      caps:
-        description: space-separated ARM=N cap overrides
+      limits:
+        description: space-separated ARM=N or ARM/CASE=N stop limits
         required: false
         type: string
         default: ""
@@ -69,7 +69,7 @@ jobs:
         env:
           RECORD_DIR: ${{ inputs.record_dir }}
           ARMS: ${{ inputs.arms }}
-          CAPS: ${{ inputs.caps }}
+          LIMITS: ${{ inputs.limits }}
           SHARD: ${{ matrix.shard }}
           SHARDS: ${{ inputs.shards }}
         run: |
@@ -77,7 +77,7 @@ jobs:
           out="$RUNNER_TEMP/null"
           mkdir -p "$out"
           set --
-          for cap in $CAPS; do set -- "$@" --cap "$cap"; done
+          for limit in $LIMITS; do set -- "$@" --limit "$limit"; done
           lscpu > "$out/cpu-shard$SHARD.txt"
           # ARMS splits into the arm names, which argparse checks against NULL_PLAN.
           # shellcheck disable=SC2086

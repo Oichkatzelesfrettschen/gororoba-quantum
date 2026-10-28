@@ -580,6 +580,26 @@ def test_the_verdict_requirement_cuts_every_sharding_at_one_replicate(
     check(whole["replicates"]["6-qubits"] == 3, "the 6-qubit case stopped with the first case")
 
 
+def test_a_limit_leaves_the_merged_bytes_and_refuses_a_case_it_cuts_short(
+    setup: nl.Setup, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # The 9-qubit case reaches its two verdicts at its second replicate, so a limit of 2 changes no byte and a
+    # limit of 1 stops it short of both its count and its cap.
+    monkeypatch.setattr(nl, "ROUND", 1)
+    cases = [small("gamma", 9, 0.0)]
+    whole = nl.dumps(nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 3, cases=cases, needed=2)]))
+
+    def sharded(limit: int) -> dict[str, Any]:
+        run = nl.ArmRun("gamma", TEST_SEED, 3, cases=cases, needed=2, limits={"9-qubits": limit})
+        return nl.merge_records([nl.run_arms(setup, [run], k, 2)[0] for k in (0, 1)])
+
+    check(nl.dumps(sharded(2)) == whole, "a limit at the verdict cut changed the record")
+    with pytest.raises(ValueError, match="larger --limit"):
+        sharded(1)
+    with pytest.raises(ValueError):
+        nl.run_arms(setup, [nl.ArmRun("gamma", TEST_SEED, 3, cases=cases, limits={"7-qubits": 2})])
+
+
 def test_the_round_size_leaves_the_record_bytes_unchanged(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
     # Rounds of one replicate and rounds of two blocks run the 9-qubit case past its cut by different amounts.
     cases = [small("gamma", 9, 0.0), small("gamma", 6, 0.0)]
@@ -629,6 +649,19 @@ def test_the_null_plan_names_every_arm_once_at_its_seed() -> None:
     for bad in (["gamma=0"], ["gamma=x"], ["q-tolerance=5"]):
         with pytest.raises(ValueError):
             msq_successor_null.plan_runs(["gamma"], bad, "r")
+    limited = msq_successor_null.plan_runs(
+        ["settle-sparse"], [], "r", ["settle-sparse=50", "settle-sparse/8-qubits=90"]
+    )
+    labels = {"8-qubits", "9-qubits", "24-qubits"}
+    check(
+        msq_successor_null.expand_limits(limited[0], labels) == {"8-qubits": 90, "9-qubits": 50, "24-qubits": 50},
+        "an ARM=N limit covers the cases without their own",
+    )
+    with pytest.raises(ValueError):
+        msq_successor_null.expand_limits(limited[0]._replace(limits={"7-qubits": 5}), labels)
+    for bad in (["gamma/x=0"], ["q-tolerance=5"]):
+        with pytest.raises(ValueError):
+            msq_successor_null.plan_runs(["gamma"], [], "r", bad)
 
 
 def test_merge_refuses_incomplete_or_mismatched_shards(setup: nl.Setup) -> None:
