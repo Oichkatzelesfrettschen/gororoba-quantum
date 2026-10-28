@@ -40,7 +40,7 @@ acquisition of every provider:
 | numerical or stochastic simulation | established | 11 |
 | numerical or stochastic simulation | superseded | 1 |
 | preregistered emulator control | established | 12 |
-| preregistered hardware inference | established | 74 |
+| preregistered hardware inference | established | 76 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |
@@ -381,13 +381,15 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-27T013626.332783Z](results/live/2026-10-27T013626.332783Z) | IBM Quantum | primorial gap-88 tomography | ibm_kingston | 1 | 105 | DONE | 16 s |
 | [2026-10-27T014354.701394Z](results/live/2026-10-27T014354.701394Z) | IBM Quantum | N=21 orbit window dose | ibm_kingston | 1 | 26 | DONE | 86 s |
 | [2026-10-27T014422.881898Z](results/live/2026-10-27T014422.881898Z) | IBM Quantum | measurement-sequence envelope | ibm_kingston | 1 | 88 | DONE | 38 s |
+| [2026-10-27T160530.294787Z](results/live/2026-10-27T160530.294787Z) | IBM Quantum | idle-penalty | ibm_kingston | 1 | 44 | DONE | 16 s |
 | [2026-10-27T160529.294491Z](results/live/2026-10-27T160529.294491Z) | IBM Quantum | idle-penalty | ibm_kingston | 1 | 44 | DONE | 16 s |
 | [2026-10-27T160738.258133Z](results/live/2026-10-27T160738.258133Z) | IBM Quantum | idle-penalty | ibm_kingston | 1 | 44 | DONE | 16 s |
+| [2026-10-27T173602.753176Z](results/live/2026-10-27T173602.753176Z) | IBM Quantum | N=21 orbit detuning sign | ibm_kingston | 1 | 56 | DONE | 17 s |
 | [2026-10-27T191953.122214Z](results/live/2026-10-27T191953.122214Z) | IBM Quantum | idle-readout attribution | ibm_kingston | 1 | 55 | DONE | 16 s |
 | [2026-10-27T204605.871056Z](results/live/2026-10-27T204605.871056Z) | IBM Quantum | state-prep-control (two-read arms, 20 us) | ibm_kingston | 1 | 3 | DONE | 5 s |
 | [2026-10-28T000644.379196Z](results/live/2026-10-28T000644.379196Z) | IBM Quantum | idle-penalty | ibm_kingston | 1 | 44 | DONE | 16 s |
 
-The IBM service inventory observed at 2026-10-26T22:47:13.538509+00:00 holds 41 physical jobs with 499 settled seconds; the account then reported 499 of 600 s consumed in the rolling window ending 2026-10-26T22:47:13.488Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-28T00:29:17.005404+00:00 holds 43 physical jobs with 532 settled seconds; the account then reported 532 of 600 s consumed in the rolling window ending 2026-10-28T00:29:16.938Z. That is an observation, not a current balance or an authorization.
 
 The IBM service inventory observed at 2026-10-28T00:23:56.659482+00:00 holds 25 physical jobs with 440 settled seconds; the account then reported 440 of 600 s consumed in the rolling window ending 2026-10-28T00:23:56.594Z. That is an observation, not a current balance or an authorization.
 
