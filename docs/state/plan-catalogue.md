@@ -23,7 +23,7 @@ Work completion describes the recorded obligation. Scientific claims and provide
   Next: Write a successor case that varies the time between q147's reads at a fixed measurement count, separating a measurement-driven transition from decay (docs/evidence/primorial\_cover/q147-remeasure/README.md, Inference). Historical receipt inputs changed; revalidation required.
 
 - **[provider-counter-audit](plans/provider-counter-audit.json)** (active; unresolved): Name the population of every provider counter, trace counters to scientific sinks, repair collection and photonic estimators, and reconcile affected historical analyses and claims. [Context](../../docs/evidence/provider-counter-audit/README.md).
-  Next: Merge the handoff (#612) and the record view; then reopen claim-boundaries for its changed acceptance (handoff D2), run the coverage tasks G1 to G4 and close the plan (D3, D4). Blocked: reconciliation evidence unresolved.
+  Next: Merge the handoff (#612) and the record view; then reopen claim-boundaries for its changed acceptance (handoff D2), run the coverage tasks G1 to G4 and close the plan (D3, D4). Blocked: reconciliation evidence unresolved. Historical receipt inputs changed; revalidation required.
 
 ## Paused
 
