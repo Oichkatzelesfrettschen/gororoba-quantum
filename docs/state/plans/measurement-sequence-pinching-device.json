@@ -12,7 +12,7 @@
     "status": "verified",
     "note": "Owner approved the width-32 run and ratified the envelope doctrine; attempt 1 submitted."
   },
-  "next_action": "Land the successor branch with its retained v3.8 null (docs/evidence/measurement_sequence/successor-null.json), then write the successor case for approval from that null on the width-24 rehearsal record (results/live/2026-10-28T001935.805967Z), with the width decision (24 now, or 32 once its sparse detectable gap is calibrated).",
+  "next_action": "Land the successor branch with its retained v4.0 null (docs/evidence/measurement_sequence/successor-null.json), then write the successor case for approval from that null on the width-24 rehearsal record (results/live/2026-10-28T163139.827337Z), with the width decision (24 now, or 32 once its sparse detectable gap is calibrated).",
   "scope": "Heron r2 (ibm_kingston) pinching run under a calibration-adaptive envelope approval: layout rule at width tier 16/24/32, terminal resets, reset controls, Hadamard crosstalk patterns, 20 us repetition delay with a 50 us fallback attempt, preregistered screens and stochastic null.",
   "owner": "measurement-sequence-pinching branch",
   "steps": [

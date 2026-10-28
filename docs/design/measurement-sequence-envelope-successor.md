@@ -1,10 +1,11 @@
 # Measurement-sequence envelope successor: relaxation to the ground state, crosstalk-free carryover readers
 
-Status: design v3.9, the frozen v3.3 with the corrections its implementation forced: a per-qubit shape bound at
+Status: design v4.0, the frozen v3.3 with the corrections its implementation forced: a per-qubit shape bound at
 the fitted T and a per-qubit settle test against the other qubits' median and MAD (v3.4), a reader statistic
 stratified by reader and divided by the squared readout contrast (v3.5), null arms that can each fail (v3.6),
 minority q arms with a measured sparse detectable gap (v3.7), a sparse power target bounded over its three widths
-as one family (v3.8), and a sparse arm that runs to 408 exposed verdicts per width (v3.9). It builds on the deduplicated
+as one family (v3.8), a sparse arm that runs to 408 exposed verdicts per width (v3.9), and carryover readers inside their
+predecessors' circuits with a posterior-contrast divisor (v4.0). It builds on the deduplicated
 `collect.json` (each PUB's placed calibration stored once), which main carries. The
 width-32 envelope run of 2026-10-27 (`results/live/2026-10-27T014422.881898Z`) executed as planned, billed 38 s, and
 returned no device verdict because its reset screen withheld all 32 qubits
@@ -80,8 +81,8 @@ prediction at the qubit's context, and a qubit whose q_hat lower confidence boun
 below 1 - 0.25 x 0.0188 / |dP0/dq| is withheld. On the retained contexts |dP0/dq| spans 0.021 to 0.065, so the bound
 runs from about 0.77 to 0.93; the smallest healthy-q lower confidence bound there is 0.988. The rule needs no power against a 1 to 3 % thermal population, which gives q of at least
 0.94 and a departure shift below 0.004 at the largest sensitivity; against q near 0.7 the row reads e near 0.12 at T near 250 us, more than
-twenty standard errors from q = 1. The row runs directly after a carryover reader (below), whose predecessor-
-conditioned excitation the readers measure, so a hot predecessor cannot fake a low q beyond the measured carryover.
+twenty standard errors from q = 1. The carryover readers (below) bound the excitation any
+predecessor leaves at the next shot's start, so a hot predecessor cannot fake a low q beyond the measured carryover.
 The analysis reports q_hat as a job-local effective relaxation target, not as a thermal population.
 
 Settle veto. The settle arm differs from the measure arm by sixteen 2 us idles placed after each pinch and before
@@ -113,41 +114,58 @@ given qubit about 0.3 % of the time.
 
 ## Carryover readers
 
-Twelve new members read ground only: measure, then the terminal reset. Each runs directly after a measure-arm row
-that ends near 50/50 (four after the N = 2 rows, P1 near 0.47; four after N = 4, P1 near 0.31; four after N = 8, P1
-near 0.18). Under column-wise execution a reader's shot j follows the predecessor's shot j, so a qubit's reader P1
-after a predecessor final 1, minus after a final 0, estimates D_q, the excitation an |1> end state leaves at the next
-shot's start, diluted twice: the reader reads it through its own contrast c, and the predecessor's measured bit
-separates the predecessor's end states by at most c (exactly c under discrimination overlap, nearly 1 when the
-readout error is decay). Each reader gives its own conditional difference, and the twelve combine with weights set by
-their class sizes at the pooled reader P1, var_k = p (1 - p) (1 / n1_k + 1 / n0_k), so the weights carry no outcome
-and the combination stays unbiased at P1 near 0.006 (weights from each stratum's own variance read D about 8 % low on
-the null's carryover arm) (a baseline that differs between the N = 2, 4 and 8 blocks, whose predecessors end at different P1, cannot enter
-through pooling), and the combination divided by c^2 bounds |D_q| from above. Every qubit reads ground in both
-conditioning classes, so readout crosstalk cannot enter the contrast. Sized from the retained run's ro0 P1 (0.006) at
-8192 shots, the twelve readers give a per-qubit standard error near 0.0006.
+Twelve reader members carry the carryover measurement inside one circuit. Reader i repeats the signed measure member
+it follows in the job (four at N = 2, P1 near 0.47; four at N = 4, P1 near 0.31; four at N = 8, P1 near 0.18), then
+the terminal reset, an idle of the Heron r2 rep_delay floor (`qpu_planning.REP_DELAY_FLOOR_SECONDS`, 20 us, rounded
+down to the Target's granularity by `qpu_planning.floored_delay`), a measurement into the 1-bit register `reader`,
+and a reset. Shot j of the `reader` register reads the excitation the end state of shot j of the same circuit
+leaves, so no PUB order enters the estimate, which the executor does not guarantee
+([repetition-rate-execution.md](../notes/ibm_quantum/repetition-rate-execution.md)). Between shots the executor
+adds at least the same delay and the `init_qubits` reset; every reset or idle maps populations linearly, so a
+difference in excitation between predecessor classes after it is the difference before it times r1 - r0, with
+|r1 - r0| <= 1, and the in-circuit D bounds the excitation the next shot starts with. Three assumptions remain and the
+case states them: the qubit's evolution from the terminal reset to the next shot is Markovian (no memory in a
+two-level defect or the resonator outlasts the reset), the executor's rep_delay starts after the terminal reset
+completes, so the in-circuit idle is a prefix of the cross-shot sequence, and excitation and leakage do not cancel
+between predecessor classes (the reader reads |2> as 1). The idles are phase-covariant, so no assumption on the
+coherences after the reset enters.
+
+A qubit's reader P1 after a predecessor final 1, minus after a final 0, estimates D_q times the reader's contrast c
+times the predecessor bit's separation of its latent end states. Under discrimination overlap that separation is
+c p (1 - p) / (m (1 - m)) at latent excitation p and measured P1 m = e01 + c p, which falls below c away from
+p = 0.5 (at e01 0.019, e10 0.005 and p = 0.18 it is 0.94 c); under decay it is about 1. Each stratum therefore
+divides by g = (m - e01)(1 - m - e10) / (m (1 - m)), the overlap value and the smaller of the two, with m the
+stratum's own predecessor P1 and the errors from the job's ro0 and first t1 members (e10 from the t1 member includes
+decay during its idle, an upper bound that lowers g and raises D). A stratum with g below 0.5 drops out. The strata
+combine with weights g^2 / (p (1 - p) (1 / n1_k + 1 / n0_k)) at the reader P1 pooled over every stratum and both
+classes, so a weight carries no reader outcome and the combination stays unbiased (weights from each stratum's own
+variance read D about 8 % low on the null's carryover arm), and a baseline that differs between the N = 2, 4 and 8
+blocks cannot enter through pooling. Every qubit reads ground in both conditioning classes, so readout crosstalk
+cannot enter the contrast. Sized from the retained run's ro0 P1 (0.006) at 8192 shots, the twelve readers give a
+per-qubit standard error near 0.0006.
 
 Screen: a qubit stays usable when B_q = A_q * U_q lies below 0.25 * 0.0188 = 0.0047, with U_q the one-sided upper
 confidence bound of |D_q| (Bonferroni over W) and A_q the qubit's departure shift per unit excitation at the
 allocation vertex: the vertex is chosen from the signs of single-class sensitivities, then
 `msq_successor_analysis.carryover_allocation` plants U_q at the vertex and its mirror, refits on the run's own counts
 at q = 1 and takes the larger absolute shift. The vertex bounds every allocation whose carryover keeps one sign
-across predecessor classes; a carryover whose sign differs between classes can reach 1.6 to 1.8 times A_q * U_q, and
-the case states the one-sign assumption, since the readers measure D only after measure-arm predecessors. At D near 0.0002, B reaches about 0.0029 at the
-retained run's median allocation coefficient (1.59) and 0.0043 at its largest (2.31). The pattern-row estimator stays
-a reported cross-check. The carryover screen replaces `msq_envelope_analysis.reset_screen` as a gate; the reset
-controls rc1 and rc0 stay as a reported diagnostic.
+across predecessor classes, whatever row precedes a member; a carryover whose sign differs between classes can
+reach 1.6 to 1.8 times A_q * U_q, and the case states the one-sign assumption, since the readers measure D only
+after measure-arm predecessors. At D near 0.0002, B reaches about 0.0029 at the retained run's median allocation
+coefficient (1.59) and 0.0043 at its largest (2.31). The carryover screen replaces
+`msq_envelope_analysis.reset_screen` as a gate; the reset controls rc1 and rc0 stay as a reported diagnostic.
 
-Order. The readers read about zero under any order but column-wise, so two preregistered conditions establish the
-order and fail closed, withholding every qubit when either fails: the executor's `chunk_timing` reports one chunk
-holding every PUB (no repository source documents the order of `chunk_timing`'s parts as execution order, so the
-chunk condition rules out a reported split and no more), and order sentinels pass in each third of the job. The
-constructor places two pairs of consecutive delay-arm rows at N = 4 or N = 8 at the head, between the reader blocks
-and among the pattern rows at the tail; each segment's same-shot conditional differences, minus the mean of the
-one-column-misaligned ones, must reach pooled one-sided z above 3. On the retained run a single N = 4 or N = 8 pair
-gives z 10 to 21, so two pairs per segment pass with a wide margin, while the N = 1 pairs give -0.7 to 2.0 and are
-not used; a run whose frequency noise falls far enough to fail this withholds every qubit, which the case states as
-the run's remaining all-withheld risk.
+Cross-check. Consecutive pattern rows read the cross-shot carryover under the submitted order: a qubit's P1 on rows
+that prepare 0 after a row that prepared 1, minus after a row that prepared 0 (and the opposite sign on rows that
+prepare 1, whose x flips the carried excitation), divided by the readout scale. `pattern_crosscheck` reports it per
+qubit with (|D_pattern| - U) / se against the reader bound. A value above the Bonferroni z refutes the bound
+direction or the claim that measure-arm predecessors cover every predecessor class; a shuffled order reads zero
+here, so this check can fail only toward the falsifier.
+
+Order. No verdict reads the PUB order beyond a cross-shot term the reader bound already covers (the equilibrium
+row and the pattern screen see at most U exp(-400 us / T1) from the shot before). The executor's `chunk_timing` (one chunk holding every PUB) and the order
+sentinels (two pairs of consecutive delay-arm rows at N = 4 or N = 8 in each third of the job, pooled one-sided z
+above 3) are reported, and a run whose frequency noise is too low for the sentinels loses nothing.
 
 ## Verdicts
 
@@ -222,45 +240,42 @@ over the admitted grid, so the null covers the qubits the case selects.
   the informative-device rate (a verdict issued); the gamma arms must issue a verdict in at least 80 % of replicates,
   so that withholding cannot manufacture a clean bound. A device verdict counts the departure, count-rule and
   mutation results; the settle gap tests appear under `settle_descriptive` and never fire.
-- The order conditions gate data validity and leave every downstream statistic unevaluated when they fail, so they
-  stay out of the null; a member-count simulator has no shot order.
+- No verdict reads the shot or PUB order (the readers sit in their predecessors' circuits and the order diagnostics
+  are reported), so the null, a member-count simulator without shot order, covers the whole verdict path.
 - The null's bound is the error guarantee of the whole pipeline; the per-component levels (admission, carryover, q_hat,
   settle) are tuning choices it calibrates.
 - Coverage: the null runs on the rehearsal dry run's calibrations. The binding run's mechanical check
   (`scripts/approved_run.sh --check`) refuses the submit when a selected qubit's live T1, T2, readout error or sx error
   differs from the rehearsal snapshot by more than a factor the case states, so the binding run executes inside the
   domain the null covered, and a refusal sends nothing.
-- Availability: every null rate is conditional on the order conditions passing, since a member-count simulator has no
-  shot order. The order sentinels read incidental phase noise, not a marker the circuit creates; no deterministic
-  cross-shot marker exists under `init_qubits`. The retained run's head segment reaches pooled z 24.7 against the
-  threshold 3, so the case states plainly that a run whose sub-millisecond frequency noise falls about eight-fold
-  below the retained level fails the sentinels and withholds every qubit.
+- Availability: the null rates hold whatever order the executor runs the PUBs in. The order sentinels read incidental
+  phase noise and are reported; a run whose sub-millisecond frequency noise falls below their reach loses no verdict.
 
-Null results at width 24 on the rehearsal dry run `results/live/2026-10-28T001935.805967Z`, every arm with 0
-false fires. [successor-null.json](../evidence/measurement_sequence/successor-null.json) retains each arm record's
-statistics without its rows, with the sha256 of the full record (`scripts/msq_successor_null.py --summarize`
-writes it and refuses a record whose statistics this code would not compute from its rows). A row replays byte for
-byte under the pinned `ci-py3.14.7` interpreter and the numeric environment of
+Null results at width 24 on the rehearsal dry run `results/live/2026-10-28T163139.827337Z`, every arm with 0
+false fires and every target met. [successor-null.json](../evidence/measurement_sequence/successor-null.json) retains
+each arm record's statistics without its rows, with the sha256 of the full record (`scripts/msq_successor_null.py
+--summarize` writes it and refuses a record whose statistics this code would not compute from its rows). A row
+replays byte for byte under the pinned `ci-py3.14.7` interpreter and the numeric environment of
 [ci/AGENTS.md](../../ci/AGENTS.md#layout-and-gates) (one Python build and libm; another CPython build flips
-individual rows) with `"$PYTHON" scripts/msq_successor_null.py results/live/2026-10-28T001935.805967Z --arm ARM --replicates
-CAP` at the cap below, adding `--seed qrng:docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json#3` for the
-`SPARSE_CONFIRMATION_SEED` row; every other row runs at the default `SUCCESSOR_NULL_SEED`. An arm with a verdict
-count stops at it, so its replicates fall below its cap.
+individual rows) with `"$PYTHON" scripts/msq_successor_null.py results/live/2026-10-28T163139.827337Z --arm ARM
+--replicates CAP` at the cap below, adding `--seed qrng:docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json#3` for
+the settle-sparse row (`SPARSE_CONFIRMATION_SEED`); every other row runs at the default `SUCCESSOR_NULL_SEED`. An arm
+with a verdict count stops at it, so its replicates fall below its cap. The plateau-retained record merges five
+shards of `--shard K --shards 5` (`--merge`), which cuts it at the same replicate as an unsharded run.
 
 | Arm | Cap | Replicates | Result |
 |---|---|---|---|
-| carryover-positive | 1500 | 346 | 299 issued; bounds 0.00997 issued, 0.0086 overall |
-| carryover-negative | 1500 | 461 | 299 issued (common veto 28 %); bounds 0.00997, 0.0065 |
-| carryover-boundary | 300 | 300 per offset | issued 0, 0 and 11 at 0, 1 and 2 SE inside (descriptive) |
-| q-tolerance | 300 | 300 | common veto 100 %; overall bound 0.0099 |
-| q-minority | 1500 | 438 | 299 exposed verdicts; bounds 0.00997 exposed, 0.0068 overall |
-| settle-common | 300 | 300 per width | common veto 100 % at 8, 9 and 24 qubits |
-| settle-sparse, `SPARSE_CONFIRMATION_SEED` | 20000 | 9259, 2855, 2837 at 8, 9, 24 | 408 exposed verdicts per width, family exposed bound 0.00998; power over the first 300 replicates 0.903, 0.906, 0.935 (family bounds 0.927, 0.930, 0.955), over every replicate 0.909, 0.905, 0.924 |
-| settle-sparse, `SUCCESSOR_NULL_SEED` | 300 | 300 per width | power 0.898, 0.875, 0.917; the v3.7 run (Superseded designs), short of the v3.9 exposed count |
+| carryover-positive | 1500 | 369 | 299 issued; bounds 0.00997 issued, 0.0081 overall |
+| carryover-negative | 1500 | 416 | 299 issued (common veto 22 %); bounds 0.00997, 0.0072 |
+| carryover-boundary | 300 | 300 per offset | issued 0, 0 and 3 at 0, 1 and 2 SE inside (descriptive) |
+| q-tolerance | 300 | 300 | common veto 99.7 %; overall bound 0.0099 |
+| q-minority | 1500 | 447 | 299 exposed verdicts; bounds 0.00997 exposed, 0.0067 overall |
+| settle-common | 300 | 300 per width | common veto 99.7 %, 100 % and 100 % at 8, 9 and 24 qubits |
+| settle-sparse | 20000 | 8895, 3207, 2105 at 8, 9, 24 | 408 exposed verdicts per width, family exposed bound 0.00998; power over the first 300 replicates 0.912, 0.924, 0.897 (family bounds 0.936, 0.946, 0.922), over every replicate 0.909, 0.916, 0.895 |
 | plateau-low | 300 | 300 | every departure verdict withheld |
-| plateau-retained | 20000 | 14943 | 299 issued (2.0 %); bounds 0.00997 issued, 0.0002 overall |
-| plateau-minority | 3000 | 1057 | 299 exposed verdicts; bounds 0.00997, 0.0028 |
-| gamma | 400 | 400 | 398 informative (99.5 %); bound 0.0075 |
+| plateau-retained | 20000 | 15710 | 299 issued (1.9 %); bounds 0.00997 issued, 0.0002 overall |
+| plateau-minority | 3000 | 1040 | 299 exposed verdicts; bounds 0.00997, 0.0029 |
+| gamma | 400 | 400 | 396 informative (99 %); bound 0.0075 |
 
 ## What the run can detect
 
@@ -274,11 +289,11 @@ states it as what the run measures.
 
 ## Cost, size and approval scope
 
-The equilibrium row costs about 8192 x (400 + 20 + 9) us = 3.5 s, the twelve readers about 3.3 s and the eight
-sentinel rows added in the middle and tail thirds about 3 to 4 s, so attempt 1 at width 32 expects about 49 s against
-the retained run's 38 s bill; the planner prices the 109-PUB job at 39.88 s against its 31.18 s for the retained
-88 PUBs. The dry run's planner sets the ceilings (on the retained dry run: attempt 1 57 s,
-fallback 90 s, 147 s for both) and the case quotes the expected charge against attempt 1's ceiling. Storing each
+The equilibrium row costs about 8192 x (400 + 20 + 9) us = 3.5 s, and each in-circuit reader adds its 20 us idle and
+a measurement to a measure row's shot. The planner prices the width-24 dry run's 101-PUB job
+(`results/live/2026-10-28T163139.827337Z`) at 41.58 s against an attempt-1 ceiling of 57 s; the same job with
+standalone reader PUBs priced at 38.15 s. The dry run's planner sets the ceilings and the case quotes the expected
+charge against attempt 1's ceiling. Storing each
 PUB's placed calibration once removes 22.1 MB of the retained run's 42.4 MB `collect.json`, so the 21 added rows fit
 under the 45 MB limit with room for the wider width tiers; the dry run measures record, collection and raw sizes
 before the case. An attempt stays one job, and the change is a constructor and analysis change inside the
@@ -290,14 +305,15 @@ before the case. An attempt stays one job, and the change is a constructor and a
 2. Reviews of v3.2: the advisor, then Codex gpt-daybreak-blue in tmux.
 3. Implementation: the gamma-rate fit at q = 1 and its shape systematic, the equilibrium row and q_hat, the settle
    veto with in-job tau, the admission gate, the carryover readers and their screen with the vertex sensitivity, the
-   order sentinels and the chunk condition, descriptive delay; tests and lanes.
+   order sentinels and the chunk condition (reported), descriptive delay; tests and lanes.
 4. A sizing replay over the retained run's counts of every gate it can evaluate (no readers or equilibrium row there),
    then the batched null with all arms at the chosen width.
 5. The case on a rehearsal dry run, approval, then `scripts/approved_run.sh`.
 
 Falsifiers: q_hat below its per-qubit tolerance on most qubits (the departure verdict is withheld and q = 1 is
 wrong); a pooled settle z
-beyond 3; fewer than 8 selected qubits; either order condition failing; a carryover or plateau-retained arm's
+beyond 3; fewer than 8 selected qubits; a pattern-row cross-shot carryover above the reader bound at the Bonferroni z
+(`pattern_crosscheck`); a carryover or plateau-retained arm's
 conditional or unconditional zero-fire bound at or above 0.01; a minority arm with fewer than 299 exposed verdicts or
 an exposed or unconditional bound at or above 0.01; a q-tolerance or settle-common arm whose common veto fires in
 under 90 % of replicates; a gamma arm's informative-device rate below 80 %; a plateau-low arm whose departure verdict
@@ -307,6 +323,16 @@ family's 95 % reaches 0.01.
 
 ## Superseded designs
 
+- v3.9 ran each carryover reader as its own PUB directly after its predecessor, so a reader read D only under
+  column-wise execution, which the executor does not guarantee
+  ([repetition-rate-execution.md](../notes/ibm_quantum/repetition-rate-execution.md)); a reordered reader reads
+  D = 0, the value the screen passes. Its preregistered fail-closed order rule (one chunk, sentinels in each third)
+  tested delay-arm sentinel pairs rather than the reader transitions. v4.0 moves each reader into its predecessor's
+  circuit, where shot j's reader follows shot j's predecessor by construction, and reports the order rule as a
+  diagnostic, a change to a preregistered rule that the case states. v3.9 also divided the reader difference by
+  c^2, which under discrimination overlap reads D s / c with s / c below 1 away from P1 0.5 (0.94 at e01 0.019,
+  e10 0.005 and latent excitation 0.18), and added the shape bound to the departure's systematic term without
+  recomputing the per-qubit decisions the count rule reads.
 - v3.8 scored the sparse arm's departure false-fire bound over all 300 replicates of each width. A missed tail
   moves the departure only in the verdicts that select a planted qubit, of which the confirmation null held 13, 42
   and 38 at 8, 9 and 24 qubits (exposed bounds 0.206, 0.069 and 0.076); the unconditional bound passed because the

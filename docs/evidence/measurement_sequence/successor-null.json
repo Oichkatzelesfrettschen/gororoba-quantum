@@ -20,7 +20,7 @@
      "fires": 0,
      "informative_device_rate": 0.0,
      "issued": 0,
-     "mean_selected": 0.09666666666666666,
+     "mean_selected": 0.06333333333333334,
      "per_qubit_veto_power_upper_95": null,
      "per_qubit_veto_power_upper_family": null,
      "planted_equilibrium_withheld_rate": null,
@@ -31,7 +31,7 @@
      "power_target_upper_family": null,
      "power_target_withheld": 0,
      "replicates": 300,
-     "selection_failure_rate": 0.9959610027855154,
+     "selection_failure_rate": 0.9973556019485038,
      "sparse_gap_both_withheld_rate": null,
      "sparse_gap_withheld_rate": null,
      "targets": {}
@@ -52,7 +52,7 @@
      "fires": 0,
      "informative_device_rate": 0.0,
      "issued": 0,
-     "mean_selected": 0.9633333333333334,
+     "mean_selected": 0.6433333333333333,
      "per_qubit_veto_power_upper_95": null,
      "per_qubit_veto_power_upper_family": null,
      "planted_equilibrium_withheld_rate": null,
@@ -63,7 +63,7 @@
      "power_target_upper_family": null,
      "power_target_withheld": 0,
      "replicates": 300,
-     "selection_failure_rate": 0.9593201448871552,
+     "selection_failure_rate": 0.9731459579796855,
      "sparse_gap_both_withheld_rate": null,
      "sparse_gap_withheld_rate": null,
      "targets": {}
@@ -77,14 +77,14 @@
      "false_fire_rate_given_issued": 0.0,
      "false_fire_upper_95": 0.009936081944457708,
      "false_fire_upper_95_given_exposed": 1.0,
-     "false_fire_upper_95_given_issued": 0.2384041903808526,
+     "false_fire_upper_95_given_issued": 0.6315968501359612,
      "false_fire_upper_family": 0.013555106015980924,
      "false_fire_upper_family_given_exposed": 1.0,
      "fired_verdicts": {},
      "fires": 0,
-     "informative_device_rate": 0.03666666666666667,
-     "issued": 11,
-     "mean_selected": 3.9133333333333336,
+     "informative_device_rate": 0.01,
+     "issued": 3,
+     "mean_selected": 3.3533333333333335,
      "per_qubit_veto_power_upper_95": null,
      "per_qubit_veto_power_upper_family": null,
      "planted_equilibrium_withheld_rate": null,
@@ -95,7 +95,7 @@
      "power_target_upper_family": null,
      "power_target_withheld": 0,
      "replicates": 300,
-     "selection_failure_rate": 0.8348892294830709,
+     "selection_failure_rate": 0.8591510090466249,
      "sparse_gap_both_withheld_rate": null,
      "sparse_gap_withheld_rate": null,
      "targets": {}
@@ -104,8 +104,8 @@
    "layout_width": 24,
    "minimum_verdicts": 0,
    "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
-   "record": "2026-10-28T001935.805967Z",
-   "record_sha256": "c1e4183f1daaea2f1286d7559f58410001fa078b62fa6e5e817f50fee0c9c897",
+   "record": "2026-10-28T163139.827337Z",
+   "record_sha256": "ee2d46933b118ccf8f4ce5f70bf91592e0b8c1a66b4be60b4948d49d97ca5c13",
    "replicates": {
     "0-se-inside": 300,
     "1-se-inside": 300,
@@ -121,35 +121,35 @@
      "default"
     ]
    },
-   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "snapshot_sha256": "e185caeaeb6846125301d6a6f7a763fbbb9e796c9dcd83eda462c0d7fb284293",
    "sparse_scale": {
-    "24": 1.069749373433584,
+    "24": 1.0394440798229936,
     "8": 1.25,
-    "9": 1.1651380005405836
+    "9": 1.1797944875729676
    },
-   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+   "sparse_scale_sha256": "c59860e836f9adbb33e92e50dc74e26cacb9349a4c054bbe27579ce716182193"
   },
   {
    "arm": "carryover-negative",
    "cap": 1500,
    "cases": {
     "all": {
-     "common_veto_rate": 0.2754880694143167,
+     "common_veto_rate": 0.22115384615384615,
      "equilibrium_failure_rate": 0.0,
      "exposed": 0,
      "exposed_fires": 0,
      "false_fire_rate": 0.0,
      "false_fire_rate_given_issued": 0.0,
-     "false_fire_upper_95": 0.00647726613463827,
+     "false_fire_upper_95": 0.007175412419767899,
      "false_fire_upper_95_given_exposed": 1.0,
      "false_fire_upper_95_given_issued": 0.009969146792899269,
-     "false_fire_upper_family": 0.008842118067057148,
+     "false_fire_upper_family": 0.009793898738745983,
      "false_fire_upper_family_given_exposed": 1.0,
      "fired_verdicts": {},
      "fires": 0,
-     "informative_device_rate": 0.648590021691974,
+     "informative_device_rate": 0.71875,
      "issued": 299,
-     "mean_selected": 10.92407809110629,
+     "mean_selected": 11.060096153846153,
      "per_qubit_veto_power_upper_95": null,
      "per_qubit_veto_power_upper_family": null,
      "planted_equilibrium_withheld_rate": null,
@@ -159,8 +159,8 @@
      "power_target_planted": 0,
      "power_target_upper_family": null,
      "power_target_withheld": 0,
-     "replicates": 461,
-     "selection_failure_rate": 0.5412287060529177,
+     "replicates": 416,
+     "selection_failure_rate": 0.5367174959871589,
      "sparse_gap_both_withheld_rate": null,
      "sparse_gap_withheld_rate": null,
      "targets": {
@@ -173,10 +173,10 @@
    "layout_width": 24,
    "minimum_verdicts": 299,
    "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
-   "record": "2026-10-28T001935.805967Z",
-   "record_sha256": "391241e92ce549d00444479bda3798f28016f566d757dcc65471765af6f80390",
+   "record": "2026-10-28T163139.827337Z",
+   "record_sha256": "0eae1f9c6b7c22b6d86af85fab04feb142b24c40f883c97eb04b82b9eb559be2",
    "replicates": {
-    "all": 461
+    "all": 416
    },
    "schema": "msq-successor-null-v1",
    "seed": 35417,
@@ -188,35 +188,35 @@
      "default"
     ]
    },
-   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "snapshot_sha256": "e185caeaeb6846125301d6a6f7a763fbbb9e796c9dcd83eda462c0d7fb284293",
    "sparse_scale": {
-    "24": 1.069749373433584,
+    "24": 1.0394440798229936,
     "8": 1.25,
-    "9": 1.1651380005405836
+    "9": 1.1797944875729676
    },
-   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+   "sparse_scale_sha256": "c59860e836f9adbb33e92e50dc74e26cacb9349a4c054bbe27579ce716182193"
   },
   {
    "arm": "carryover-positive",
    "cap": 1500,
    "cases": {
     "all": {
-     "common_veto_rate": 0.002890173410404624,
+     "common_veto_rate": 0.0,
      "equilibrium_failure_rate": 0.0,
      "exposed": 0,
      "exposed_fires": 0,
      "false_fire_rate": 0.0,
      "false_fire_rate_given_issued": 0.0,
-     "false_fire_upper_95": 0.008620811613261874,
+     "false_fire_upper_95": 0.008085649499918484,
      "false_fire_upper_95_given_exposed": 1.0,
      "false_fire_upper_95_given_issued": 0.009969146792899269,
-     "false_fire_upper_family": 0.011763626866944618,
+     "false_fire_upper_family": 0.011034453550922778,
      "false_fire_upper_family_given_exposed": 1.0,
      "fired_verdicts": {},
      "fires": 0,
-     "informative_device_rate": 0.8641618497109826,
+     "informative_device_rate": 0.8102981029810298,
      "issued": 299,
-     "mean_selected": 10.234104046242775,
+     "mean_selected": 9.531165311653117,
      "per_qubit_veto_power_upper_95": null,
      "per_qubit_veto_power_upper_family": null,
      "planted_equilibrium_withheld_rate": null,
@@ -226,8 +226,8 @@
      "power_target_planted": 0,
      "power_target_upper_family": null,
      "power_target_withheld": 0,
-     "replicates": 346,
-     "selection_failure_rate": 0.5695652173913044,
+     "replicates": 369,
+     "selection_failure_rate": 0.5990267089180624,
      "sparse_gap_both_withheld_rate": null,
      "sparse_gap_withheld_rate": null,
      "targets": {
@@ -240,10 +240,10 @@
    "layout_width": 24,
    "minimum_verdicts": 299,
    "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
-   "record": "2026-10-28T001935.805967Z",
-   "record_sha256": "c4a4809f1c83968dc995a8fe4d8a792baa09350992ae525a42782c5b3f5ccbdb",
+   "record": "2026-10-28T163139.827337Z",
+   "record_sha256": "7200556f85772b5ad2ff934b39581c1a35e09b69bda62f9b10e34fadad3d3048",
    "replicates": {
-    "all": 346
+    "all": 369
    },
    "schema": "msq-successor-null-v1",
    "seed": 35417,
@@ -255,20 +255,20 @@
      "default"
     ]
    },
-   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "snapshot_sha256": "e185caeaeb6846125301d6a6f7a763fbbb9e796c9dcd83eda462c0d7fb284293",
    "sparse_scale": {
-    "24": 1.069749373433584,
+    "24": 1.0394440798229936,
     "8": 1.25,
-    "9": 1.1651380005405836
+    "9": 1.1797944875729676
    },
-   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+   "sparse_scale_sha256": "c59860e836f9adbb33e92e50dc74e26cacb9349a4c054bbe27579ce716182193"
   },
   {
    "arm": "gamma",
    "cap": 400,
    "cases": {
     "all": {
-     "common_veto_rate": 0.005,
+     "common_veto_rate": 0.01,
      "equilibrium_failure_rate": 0.0,
      "exposed": 0,
      "exposed_fires": 0,
@@ -276,14 +276,14 @@
      "false_fire_rate_given_issued": 0.0,
      "false_fire_upper_95": 0.007461355528799602,
      "false_fire_upper_95_given_exposed": 1.0,
-     "false_fire_upper_95_given_issued": 0.007498708846630895,
+     "false_fire_upper_95_given_issued": 0.0075364380435727725,
      "false_fire_upper_family": 0.010183653259820284,
      "false_fire_upper_family_given_exposed": 1.0,
      "fired_verdicts": {},
      "fires": 0,
-     "informative_device_rate": 0.995,
-     "issued": 398,
-     "mean_selected": 23.7875,
+     "informative_device_rate": 0.99,
+     "issued": 396,
+     "mean_selected": 23.8375,
      "per_qubit_veto_power_upper_95": null,
      "per_qubit_veto_power_upper_family": null,
      "planted_equilibrium_withheld_rate": null,
@@ -305,8 +305,8 @@
    "layout_width": 24,
    "minimum_verdicts": 0,
    "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
-   "record": "2026-10-28T001935.805967Z",
-   "record_sha256": "641276d7a3c539bb62421589edc2f7d8c467f54ecab50e26e078f5920d350e7c",
+   "record": "2026-10-28T163139.827337Z",
+   "record_sha256": "ced70ff4c407177b22cbd8866596b464c4c27684ac67427590dff786c28e63ff",
    "replicates": {
     "all": 400
    },
@@ -320,13 +320,13 @@
      "default"
     ]
    },
-   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "snapshot_sha256": "e185caeaeb6846125301d6a6f7a763fbbb9e796c9dcd83eda462c0d7fb284293",
    "sparse_scale": {
-    "24": 1.069749373433584,
+    "24": 1.0394440798229936,
     "8": 1.25,
-    "9": 1.1651380005405836
+    "9": 1.1797944875729676
    },
-   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+   "sparse_scale_sha256": "c59860e836f9adbb33e92e50dc74e26cacb9349a4c054bbe27579ce716182193"
   },
   {
    "arm": "plateau-low",
@@ -370,8 +370,8 @@
    "layout_width": 24,
    "minimum_verdicts": 0,
    "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
-   "record": "2026-10-28T001935.805967Z",
-   "record_sha256": "c975adec7cde8dd7c903393337e4ddb8aa0eb1ce0d15a93be5ba3477e40ef5a6",
+   "record": "2026-10-28T163139.827337Z",
+   "record_sha256": "817d05b4208db494c2ef3772c05816510eb445355b4e2e592896ec3fcac316a4",
    "replicates": {
     "all": 300
    },
@@ -385,48 +385,48 @@
      "default"
     ]
    },
-   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "snapshot_sha256": "e185caeaeb6846125301d6a6f7a763fbbb9e796c9dcd83eda462c0d7fb284293",
    "sparse_scale": {
-    "24": 1.069749373433584,
+    "24": 1.0394440798229936,
     "8": 1.25,
-    "9": 1.1651380005405836
+    "9": 1.1797944875729676
    },
-   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+   "sparse_scale_sha256": "c59860e836f9adbb33e92e50dc74e26cacb9349a4c054bbe27579ce716182193"
   },
   {
    "arm": "plateau-minority",
    "cap": 3000,
    "cases": {
     "all": {
-     "common_veto_rate": 0.003784295175023652,
-     "equilibrium_failure_rate": 0.06984829329962074,
+     "common_veto_rate": 0.006730769230769231,
+     "equilibrium_failure_rate": 0.0699831365935919,
      "exposed": 299,
      "exposed_fires": 0,
      "false_fire_rate": 0.0,
      "false_fire_rate_given_issued": 0.0,
-     "false_fire_upper_95": 0.0028301712898431597,
+     "false_fire_upper_95": 0.0028763671079429366,
      "false_fire_upper_95_given_exposed": 0.009969146792899269,
-     "false_fire_upper_95_given_issued": 0.0028409068923432278,
-     "false_fire_upper_family": 0.003866059567368396,
+     "false_fire_upper_95_given_issued": 0.0028958302139652494,
+     "false_fire_upper_family": 0.003929130459121627,
      "false_fire_upper_family_given_exposed": 0.013600131134294634,
      "fired_verdicts": {},
      "fires": 0,
-     "informative_device_rate": 0.9962157048249763,
-     "issued": 1053,
-     "mean_selected": 22.09271523178808,
-     "per_qubit_veto_power_upper_95": 0.038888466394326075,
-     "per_qubit_veto_power_upper_family": 0.044627827445337505,
-     "planted_equilibrium_withheld_rate": 0.836329233680227,
-     "planted_in_pool": 335,
-     "planted_selected_rate": 0.15515610217596973,
-     "planted_withheld": 7,
+     "informative_device_rate": 0.9932692307692308,
+     "issued": 1033,
+     "mean_selected": 22.158653846153847,
+     "per_qubit_veto_power_upper_95": 0.03149751711791952,
+     "per_qubit_veto_power_upper_family": 0.03679875517833824,
+     "planted_equilibrium_withheld_rate": 0.8379807692307693,
+     "planted_in_pool": 331,
+     "planted_selected_rate": 0.15673076923076923,
+     "planted_withheld": 5,
      "power_target_planted": 0,
      "power_target_upper_family": null,
      "power_target_withheld": 0,
-     "replicates": 1057,
+     "replicates": 1040,
      "selection_failure_rate": 0.0,
      "sparse_gap_both_withheld_rate": 0.0,
-     "sparse_gap_withheld_rate": 0.020895522388059702,
+     "sparse_gap_withheld_rate": 0.015105740181268883,
      "targets": {
       "exposed_verdicts_at_least_299": true,
       "false_fire_bound_below_ceiling": true,
@@ -437,10 +437,10 @@
    "layout_width": 24,
    "minimum_verdicts": 299,
    "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
-   "record": "2026-10-28T001935.805967Z",
-   "record_sha256": "ac4021543459b40b7a37c5781f78b024b9f6f42b6f911dbecc852b21ee1eea93",
+   "record": "2026-10-28T163139.827337Z",
+   "record_sha256": "b9a235fca0b28363ada8b00af926c922336c81b81eedefa4e8417851c9786c1b",
    "replicates": {
-    "all": 1057
+    "all": 1040
    },
    "schema": "msq-successor-null-v1",
    "seed": 35417,
@@ -452,35 +452,35 @@
      "default"
     ]
    },
-   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "snapshot_sha256": "e185caeaeb6846125301d6a6f7a763fbbb9e796c9dcd83eda462c0d7fb284293",
    "sparse_scale": {
-    "24": 1.069749373433584,
+    "24": 1.0394440798229936,
     "8": 1.25,
-    "9": 1.1651380005405836
+    "9": 1.1797944875729676
    },
-   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+   "sparse_scale_sha256": "c59860e836f9adbb33e92e50dc74e26cacb9349a4c054bbe27579ce716182193"
   },
   {
    "arm": "plateau-retained",
    "cap": 20000,
    "cases": {
     "all": {
-     "common_veto_rate": 0.16623168038546476,
-     "equilibrium_failure_rate": 0.836779797878196,
+     "common_veto_rate": 0.16346276257161044,
+     "equilibrium_failure_rate": 0.8371350571122494,
      "exposed": 0,
      "exposed_fires": 0,
      "false_fire_rate": 0.0,
      "false_fire_rate_given_issued": 0.0,
-     "false_fire_upper_95": 0.00020045720440762545,
+     "false_fire_upper_95": 0.00019067133445843572,
      "false_fire_upper_95_given_exposed": 1.0,
      "false_fire_upper_95_given_issued": 0.009969146792899269,
-     "false_fire_upper_family": 0.0002739599607423359,
+     "false_fire_upper_family": 0.00026058631915727004,
      "false_fire_upper_family_given_exposed": 1.0,
      "fired_verdicts": {},
      "fires": 0,
-     "informative_device_rate": 0.020009368935287427,
+     "informative_device_rate": 0.01903246339910885,
      "issued": 299,
-     "mean_selected": 3.846884829016931,
+     "mean_selected": 3.845894334818587,
      "per_qubit_veto_power_upper_95": null,
      "per_qubit_veto_power_upper_family": null,
      "planted_equilibrium_withheld_rate": null,
@@ -490,7 +490,7 @@
      "power_target_planted": 0,
      "power_target_upper_family": null,
      "power_target_withheld": 0,
-     "replicates": 14943,
+     "replicates": 15710,
      "selection_failure_rate": 0.0,
      "sparse_gap_both_withheld_rate": null,
      "sparse_gap_withheld_rate": null,
@@ -504,10 +504,10 @@
    "layout_width": 24,
    "minimum_verdicts": 299,
    "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
-   "record": "2026-10-28T001935.805967Z",
-   "record_sha256": "b3c2ac2777005770eeec768785a97277390cc0fe8b139aea5d37f292f6ef3462",
+   "record": "2026-10-28T163139.827337Z",
+   "record_sha256": "6ca21eaf9038e260f3840ed657f5d88757fb6f40dddff336c46066956e70a1d3",
    "replicates": {
-    "all": 14943
+    "all": 15710
    },
    "schema": "msq-successor-null-v1",
    "seed": 35417,
@@ -519,48 +519,48 @@
      "default"
     ]
    },
-   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "snapshot_sha256": "e185caeaeb6846125301d6a6f7a763fbbb9e796c9dcd83eda462c0d7fb284293",
    "sparse_scale": {
-    "24": 1.069749373433584,
+    "24": 1.0394440798229936,
     "8": 1.25,
-    "9": 1.1651380005405836
+    "9": 1.1797944875729676
    },
-   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+   "sparse_scale_sha256": "c59860e836f9adbb33e92e50dc74e26cacb9349a4c054bbe27579ce716182193"
   },
   {
    "arm": "q-minority",
    "cap": 1500,
    "cases": {
     "all": {
-     "common_veto_rate": 0.00684931506849315,
-     "equilibrium_failure_rate": 0.04286939125464419,
+     "common_veto_rate": 0.017897091722595078,
+     "equilibrium_failure_rate": 0.045174537987679675,
      "exposed": 299,
      "exposed_fires": 0,
      "false_fire_rate": 0.0,
      "false_fire_rate_given_issued": 0.0,
-     "false_fire_upper_95": 0.006816234766836907,
+     "false_fire_upper_95": 0.006679454518014646,
      "false_fire_upper_95_given_exposed": 0.009969146792899269,
-     "false_fire_upper_95_given_issued": 0.006863081601795803,
-     "false_fire_upper_family": 0.009304263599105153,
+     "false_fire_upper_95_given_issued": 0.006800760953184459,
+     "false_fire_upper_family": 0.009117786103438387,
      "false_fire_upper_family_given_exposed": 0.013600131134294634,
      "fired_verdicts": {},
      "fires": 0,
-     "informative_device_rate": 0.9931506849315068,
-     "issued": 435,
-     "mean_selected": 22.71232876712329,
-     "per_qubit_veto_power_upper_95": 0.08426484552640055,
-     "per_qubit_veto_power_upper_family": 0.09122461425694366,
-     "planted_equilibrium_withheld_rate": 0.5136986301369864,
-     "planted_in_pool": 423,
-     "planted_selected_rate": 0.4531963470319635,
-     "planted_withheld": 26,
+     "informative_device_rate": 0.9821029082774049,
+     "issued": 439,
+     "mean_selected": 22.7337807606264,
+     "per_qubit_veto_power_upper_95": 0.07060723842288252,
+     "per_qubit_veto_power_upper_family": 0.07721202420950649,
+     "planted_equilibrium_withheld_rate": 0.5413870246085011,
+     "planted_in_pool": 407,
+     "planted_selected_rate": 0.43288590604026844,
+     "planted_withheld": 20,
      "power_target_planted": 0,
      "power_target_upper_family": null,
      "power_target_withheld": 0,
-     "replicates": 438,
+     "replicates": 447,
      "selection_failure_rate": 0.0,
-     "sparse_gap_both_withheld_rate": 0.009615384615384616,
-     "sparse_gap_withheld_rate": 0.061465721040189124,
+     "sparse_gap_both_withheld_rate": 0.0,
+     "sparse_gap_withheld_rate": 0.04914004914004914,
      "targets": {
       "exposed_verdicts_at_least_299": true,
       "false_fire_bound_below_ceiling": true,
@@ -571,10 +571,10 @@
    "layout_width": 24,
    "minimum_verdicts": 299,
    "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
-   "record": "2026-10-28T001935.805967Z",
-   "record_sha256": "e3daec40c5c0854e24336385d6f60a4e553c10d4765f3310d957ebd66ba86133",
+   "record": "2026-10-28T163139.827337Z",
+   "record_sha256": "8192d6a862d4e2924876c41fa515216d1d0901998680c90fd6892c827c5fc84c",
    "replicates": {
-    "all": 438
+    "all": 447
    },
    "schema": "msq-successor-null-v1",
    "seed": 35417,
@@ -586,21 +586,21 @@
      "default"
     ]
    },
-   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "snapshot_sha256": "e185caeaeb6846125301d6a6f7a763fbbb9e796c9dcd83eda462c0d7fb284293",
    "sparse_scale": {
-    "24": 1.069749373433584,
+    "24": 1.0394440798229936,
     "8": 1.25,
-    "9": 1.1651380005405836
+    "9": 1.1797944875729676
    },
-   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+   "sparse_scale_sha256": "c59860e836f9adbb33e92e50dc74e26cacb9349a4c054bbe27579ce716182193"
   },
   {
    "arm": "q-tolerance",
    "cap": 300,
    "cases": {
     "all": {
-     "common_veto_rate": 1.0,
-     "equilibrium_failure_rate": 0.5197551474680022,
+     "common_veto_rate": 0.9966666666666667,
+     "equilibrium_failure_rate": 0.5319593371396741,
      "exposed": 0,
      "exposed_fires": 0,
      "false_fire_rate": 0.0,
@@ -614,7 +614,7 @@
      "fires": 0,
      "informative_device_rate": 0.0,
      "issued": 0,
-     "mean_selected": 11.42,
+     "mean_selected": 11.136666666666667,
      "per_qubit_veto_power_upper_95": null,
      "per_qubit_veto_power_upper_family": null,
      "planted_equilibrium_withheld_rate": null,
@@ -637,8 +637,8 @@
    "layout_width": 24,
    "minimum_verdicts": 0,
    "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
-   "record": "2026-10-28T001935.805967Z",
-   "record_sha256": "3e31919a143b478e995cc9479e3cfcb823afc1ff859ba8176e842322608415ed",
+   "record": "2026-10-28T163139.827337Z",
+   "record_sha256": "0429187f985dbc8482f3dd91a6b78abd7a4358db37ee03f5e3fc528a66d3c511",
    "replicates": {
     "all": 300
    },
@@ -652,13 +652,13 @@
      "default"
     ]
    },
-   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "snapshot_sha256": "e185caeaeb6846125301d6a6f7a763fbbb9e796c9dcd83eda462c0d7fb284293",
    "sparse_scale": {
-    "24": 1.069749373433584,
+    "24": 1.0394440798229936,
     "8": 1.25,
-    "9": 1.1651380005405836
+    "9": 1.1797944875729676
    },
-   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+   "sparse_scale_sha256": "c59860e836f9adbb33e92e50dc74e26cacb9349a4c054bbe27579ce716182193"
   },
   {
    "arm": "settle-common",
@@ -680,7 +680,7 @@
      "fires": 0,
      "informative_device_rate": 0.0,
      "issued": 0,
-     "mean_selected": 23.783333333333335,
+     "mean_selected": 23.826666666666668,
      "per_qubit_veto_power_upper_95": null,
      "per_qubit_veto_power_upper_family": null,
      "planted_equilibrium_withheld_rate": null,
@@ -699,7 +699,7 @@
      }
     },
     "8-qubits": {
-     "common_veto_rate": 1.0,
+     "common_veto_rate": 0.9966666666666667,
      "equilibrium_failure_rate": 0.0,
      "exposed": 0,
      "exposed_fires": 0,
@@ -714,7 +714,7 @@
      "fires": 0,
      "informative_device_rate": 0.0,
      "issued": 0,
-     "mean_selected": 7.956666666666667,
+     "mean_selected": 7.9366666666666665,
      "per_qubit_veto_power_upper_95": null,
      "per_qubit_veto_power_upper_family": null,
      "planted_equilibrium_withheld_rate": null,
@@ -748,7 +748,7 @@
      "fires": 0,
      "informative_device_rate": 0.0,
      "issued": 0,
-     "mean_selected": 8.94,
+     "mean_selected": 8.926666666666666,
      "per_qubit_veto_power_upper_95": null,
      "per_qubit_veto_power_upper_family": null,
      "planted_equilibrium_withheld_rate": null,
@@ -770,8 +770,8 @@
    "layout_width": 24,
    "minimum_verdicts": 0,
    "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
-   "record": "2026-10-28T001935.805967Z",
-   "record_sha256": "fe574ba375de330569307d85427db61627863d2851ef2056221b89669d79bc63",
+   "record": "2026-10-28T163139.827337Z",
+   "record_sha256": "de49ae8101c58e58ed2600fb3994240b50311144c3a1551316a5c1f4931c22de",
    "replicates": {
     "24-qubits": 300,
     "8-qubits": 300,
@@ -787,13 +787,13 @@
      "default"
     ]
    },
-   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "snapshot_sha256": "e185caeaeb6846125301d6a6f7a763fbbb9e796c9dcd83eda462c0d7fb284293",
    "sparse_scale": {
-    "24": 1.069749373433584,
+    "24": 1.0394440798229936,
     "8": 1.25,
-    "9": 1.1651380005405836
+    "9": 1.1797944875729676
    },
-   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+   "sparse_scale_sha256": "c59860e836f9adbb33e92e50dc74e26cacb9349a4c054bbe27579ce716182193"
   },
   {
    "arm": "settle-sparse",
@@ -806,29 +806,29 @@
      "exposed_fires": 0,
      "false_fire_rate": 0.0,
      "false_fire_rate_given_issued": 0.0,
-     "false_fire_upper_95": 0.0010553934287140015,
+     "false_fire_upper_95": 0.0014221385250147303,
      "false_fire_upper_95_given_exposed": 0.007315590902302243,
-     "false_fire_upper_95_given_issued": 0.0010553934287140015,
-     "false_fire_upper_family": 0.0014421542171132982,
+     "false_fire_upper_95_given_issued": 0.0014221385250147303,
+     "false_fire_upper_family": 0.0019431664020213232,
      "false_fire_upper_family_given_exposed": 0.009984974049337863,
      "fired_verdicts": {},
      "fires": 0,
      "informative_device_rate": 1.0,
-     "issued": 2837,
-     "mean_selected": 21.95135706732464,
-     "per_qubit_veto_power_upper_95": 0.9292324775003367,
-     "per_qubit_veto_power_upper_family": 0.9308538056213147,
+     "issued": 2105,
+     "mean_selected": 22.043230403800475,
+     "per_qubit_veto_power_upper_95": 0.9023880147625419,
+     "per_qubit_veto_power_upper_family": 0.9045669179308999,
      "planted_equilibrium_withheld_rate": 0.0,
-     "planted_in_pool": 5619,
-     "planted_selected_rate": 0.07578427916813535,
-     "planted_withheld": 5189,
-     "power_target_planted": 598,
-     "power_target_upper_family": 0.9545772834439451,
-     "power_target_withheld": 559,
-     "replicates": 2837,
+     "planted_in_pool": 4177,
+     "planted_selected_rate": 0.10451306413301663,
+     "planted_withheld": 3737,
+     "power_target_planted": 594,
+     "power_target_upper_family": 0.9223126593156812,
+     "power_target_withheld": 533,
+     "replicates": 2105,
      "selection_failure_rate": 0.0,
-     "sparse_gap_both_withheld_rate": 0.8558590941768511,
-     "sparse_gap_withheld_rate": 0.9234739277451504,
+     "sparse_gap_both_withheld_rate": 0.8040540540540541,
+     "sparse_gap_withheld_rate": 0.8946612401244912,
      "targets": {
       "exposed_verdicts_at_least_408": true,
       "false_fire_bound_below_ceiling_family": true,
@@ -837,35 +837,35 @@
      }
     },
     "8-qubits": {
-     "common_veto_rate": 0.00010800302408467438,
+     "common_veto_rate": 0.00011242270938729624,
      "equilibrium_failure_rate": 0.0,
      "exposed": 408,
      "exposed_fires": 0,
      "false_fire_rate": 0.0,
      "false_fire_rate_given_issued": 0.0,
-     "false_fire_upper_95": 0.0003234958088354199,
+     "false_fire_upper_95": 0.00033673163196557595,
      "false_fire_upper_95_given_exposed": 0.007315590902302243,
      "false_fire_upper_95_given_issued": 0.007315590902302243,
-     "false_fire_upper_family": 0.0004421038376495222,
+     "false_fire_upper_family": 0.00046019138829615623,
      "false_fire_upper_family_given_exposed": 0.009984974049337863,
      "fired_verdicts": {},
      "fires": 0,
-     "informative_device_rate": 0.044065233826547145,
+     "informative_device_rate": 0.045868465430016866,
      "issued": 408,
-     "mean_selected": 6.121935414191597,
-     "per_qubit_veto_power_upper_95": 0.9126835064828889,
-     "per_qubit_veto_power_upper_family": 0.9136813366149539,
+     "mean_selected": 6.134682405845981,
+     "per_qubit_veto_power_upper_95": 0.9121779275477255,
+     "per_qubit_veto_power_upper_family": 0.9131974710179296,
      "planted_equilibrium_withheld_rate": 0.0,
-     "planted_in_pool": 18340,
-     "planted_selected_rate": 0.08991251755049141,
-     "planted_withheld": 16675,
-     "power_target_planted": 597,
-     "power_target_upper_family": 0.9271208582026913,
-     "power_target_withheld": 539,
-     "replicates": 9259,
+     "planted_in_pool": 17654,
+     "planted_selected_rate": 0.09066891512085441,
+     "planted_withheld": 16041,
+     "power_target_planted": 594,
+     "power_target_upper_family": 0.9355537967771351,
+     "power_target_withheld": 542,
+     "replicates": 8895,
      "selection_failure_rate": 0.0,
-     "sparse_gap_both_withheld_rate": 0.8654629527689089,
-     "sparse_gap_withheld_rate": 0.9092148309705561,
+     "sparse_gap_both_withheld_rate": 0.8655097613882863,
+     "sparse_gap_withheld_rate": 0.9086326045088932,
      "targets": {
       "exposed_verdicts_at_least_408": true,
       "false_fire_bound_below_ceiling_family": true,
@@ -874,35 +874,35 @@
      }
     },
     "9-qubits": {
-     "common_veto_rate": 0.0,
+     "common_veto_rate": 0.0006236357966947302,
      "equilibrium_failure_rate": 0.0,
      "exposed": 408,
      "exposed_fires": 0,
      "false_fire_rate": 0.0,
      "false_fire_rate_given_issued": 0.0,
-     "false_fire_upper_95": 0.0010487429500121274,
+     "false_fire_upper_95": 0.000933686784534676,
      "false_fire_upper_95_given_exposed": 0.007315590902302243,
      "false_fire_upper_95_given_issued": 0.007315590902302243,
-     "false_fire_upper_family": 0.0014330683443853603,
+     "false_fire_upper_family": 0.00127587529464066,
      "false_fire_upper_family_given_exposed": 0.009984974049337863,
      "fired_verdicts": {},
      "fires": 0,
-     "informative_device_rate": 0.14290718038528896,
+     "informative_device_rate": 0.12722170252572498,
      "issued": 408,
-     "mean_selected": 7.127145359019265,
-     "per_qubit_veto_power_upper_95": 0.9115406068508736,
-     "per_qubit_veto_power_upper_family": 0.9133351118067725,
+     "mean_selected": 7.112254443405051,
+     "per_qubit_veto_power_upper_95": 0.9215173059798573,
+     "per_qubit_veto_power_upper_family": 0.9231194412053719,
      "planted_equilibrium_withheld_rate": 0.0,
-     "planted_in_pool": 5654,
-     "planted_selected_rate": 0.09387040280210157,
-     "planted_withheld": 5118,
-     "power_target_planted": 598,
-     "power_target_upper_family": 0.9301694509633222,
-     "power_target_withheld": 542,
-     "replicates": 2855,
+     "planted_in_pool": 6358,
+     "planted_selected_rate": 0.08341128780792018,
+     "planted_withheld": 5823,
+     "power_target_planted": 594,
+     "power_target_upper_family": 0.9457007241155921,
+     "power_target_withheld": 549,
+     "replicates": 3207,
      "selection_failure_rate": 0.0,
-     "sparse_gap_both_withheld_rate": 0.8460164344408717,
-     "sparse_gap_withheld_rate": 0.9051998585072515,
+     "sparse_gap_both_withheld_rate": 0.8616312281815297,
+     "sparse_gap_withheld_rate": 0.91585404215162,
      "targets": {
       "exposed_verdicts_at_least_408": true,
       "false_fire_bound_below_ceiling_family": true,
@@ -914,12 +914,12 @@
    "layout_width": 24,
    "minimum_verdicts": 408,
    "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
-   "record": "2026-10-28T001935.805967Z",
-   "record_sha256": "c1c13de680438f2b2427213446366e9157e3f836943eda8d785646048d392586",
+   "record": "2026-10-28T163139.827337Z",
+   "record_sha256": "79e2406b6f680692d3f304a842fb89d01cec63f2854a142111d3c33f698d1167",
    "replicates": {
-    "24-qubits": 2837,
-    "8-qubits": 9259,
-    "9-qubits": 2855
+    "24-qubits": 2105,
+    "8-qubits": 8895,
+    "9-qubits": 3207
    },
    "schema": "msq-successor-null-v1",
    "seed": 15296,
@@ -931,157 +931,13 @@
      "qrng:docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json#3"
     ]
    },
-   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
+   "snapshot_sha256": "e185caeaeb6846125301d6a6f7a763fbbb9e796c9dcd83eda462c0d7fb284293",
    "sparse_scale": {
-    "24": 1.069749373433584,
+    "24": 1.0394440798229936,
     "8": 1.25,
-    "9": 1.1651380005405836
+    "9": 1.1797944875729676
    },
-   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
-  },
-  {
-   "arm": "settle-sparse",
-   "cap": 300,
-   "cases": {
-    "24-qubits": {
-     "common_veto_rate": 0.0,
-     "equilibrium_failure_rate": 0.0,
-     "exposed": 48,
-     "exposed_fires": 0,
-     "false_fire_rate": 0.0,
-     "false_fire_rate_given_issued": 0.0,
-     "false_fire_upper_95": 0.009936081944457708,
-     "false_fire_upper_95_given_exposed": 0.0605034093488943,
-     "false_fire_upper_95_given_issued": 0.009936081944457708,
-     "false_fire_upper_family": 0.013555106015980924,
-     "false_fire_upper_family_given_exposed": 0.08176216743336773,
-     "fired_verdicts": {},
-     "fires": 0,
-     "informative_device_rate": 1.0,
-     "issued": 300,
-     "mean_selected": 21.97,
-     "per_qubit_veto_power_upper_95": 0.9343898650956478,
-     "per_qubit_veto_power_upper_family": 0.938987202143751,
-     "planted_equilibrium_withheld_rate": 0.0,
-     "planted_in_pool": 599,
-     "planted_selected_rate": 0.08333333333333333,
-     "planted_withheld": 549,
-     "power_target_planted": 599,
-     "power_target_upper_family": 0.938987202143751,
-     "power_target_withheld": 549,
-     "replicates": 300,
-     "selection_failure_rate": 0.0,
-     "sparse_gap_both_withheld_rate": 0.8394648829431438,
-     "sparse_gap_withheld_rate": 0.9165275459098498,
-     "targets": {
-      "exposed_verdicts_at_least_408": false,
-      "false_fire_bound_below_ceiling_family": false,
-      "false_fire_bound_given_exposed_below_ceiling_family": false,
-      "per_qubit_veto_power_not_below_90_percent_family": true
-     }
-    },
-    "8-qubits": {
-     "common_veto_rate": 0.0,
-     "equilibrium_failure_rate": 0.0,
-     "exposed": 18,
-     "exposed_fires": 0,
-     "false_fire_rate": 0.0,
-     "false_fire_rate_given_issued": 0.0,
-     "false_fire_upper_95": 0.009936081944457708,
-     "false_fire_upper_95_given_exposed": 0.1533175539572782,
-     "false_fire_upper_95_given_issued": 0.1533175539572782,
-     "false_fire_upper_family": 0.013555106015980924,
-     "false_fire_upper_family_given_exposed": 0.20344857403632757,
-     "fired_verdicts": {},
-     "fires": 0,
-     "informative_device_rate": 0.06,
-     "issued": 18,
-     "mean_selected": 6.166666666666667,
-     "per_qubit_veto_power_upper_95": 0.9179678029767703,
-     "per_qubit_veto_power_upper_family": 0.9230994449046083,
-     "planted_equilibrium_withheld_rate": 0.0,
-     "planted_in_pool": 600,
-     "planted_selected_rate": 0.10166666666666667,
-     "planted_withheld": 539,
-     "power_target_planted": 600,
-     "power_target_upper_family": 0.9230994449046083,
-     "power_target_withheld": 539,
-     "replicates": 300,
-     "selection_failure_rate": 0.0,
-     "sparse_gap_both_withheld_rate": 0.8566666666666667,
-     "sparse_gap_withheld_rate": 0.8983333333333333,
-     "targets": {
-      "exposed_verdicts_at_least_408": false,
-      "false_fire_bound_below_ceiling_family": false,
-      "false_fire_bound_given_exposed_below_ceiling_family": false,
-      "per_qubit_veto_power_not_below_90_percent_family": true
-     }
-    },
-    "9-qubits": {
-     "common_veto_rate": 0.0,
-     "equilibrium_failure_rate": 0.0,
-     "exposed": 51,
-     "exposed_fires": 0,
-     "false_fire_rate": 0.0,
-     "false_fire_rate_given_issued": 0.0,
-     "false_fire_upper_95": 0.009936081944457708,
-     "false_fire_upper_95_given_exposed": 0.05704795236044276,
-     "false_fire_upper_95_given_issued": 0.05704795236044276,
-     "false_fire_upper_family": 0.013555106015980924,
-     "false_fire_upper_family_given_exposed": 0.07714325827658132,
-     "fired_verdicts": {},
-     "fires": 0,
-     "informative_device_rate": 0.17,
-     "issued": 51,
-     "mean_selected": 7.193333333333333,
-     "per_qubit_veto_power_upper_95": 0.896458656696576,
-     "per_qubit_veto_power_upper_family": 0.9022041788161874,
-     "planted_equilibrium_withheld_rate": 0.0,
-     "planted_in_pool": 599,
-     "planted_selected_rate": 0.125,
-     "planted_withheld": 524,
-     "power_target_planted": 599,
-     "power_target_upper_family": 0.9022041788161874,
-     "power_target_withheld": 524,
-     "replicates": 300,
-     "selection_failure_rate": 0.0,
-     "sparse_gap_both_withheld_rate": 0.8127090301003345,
-     "sparse_gap_withheld_rate": 0.8747913188647746,
-     "targets": {
-      "exposed_verdicts_at_least_408": false,
-      "false_fire_bound_below_ceiling_family": false,
-      "false_fire_bound_given_exposed_below_ceiling_family": false,
-      "per_qubit_veto_power_not_below_90_percent_family": true
-     }
-    }
-   },
-   "layout_width": 24,
-   "minimum_verdicts": 0,
-   "plateau_sha256": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
-   "record": "2026-10-28T001935.805967Z",
-   "record_sha256": "236913eb5de1857dc96812793411f04186473dca36e41cb82ea611968c7efdba",
-   "replicates": {
-    "24-qubits": 300,
-    "8-qubits": 300,
-    "9-qubits": 300
-   },
-   "schema": "msq-successor-null-v1",
-   "seed": 35417,
-   "seed_source": {
-    "experiment": "settle-sparse",
-    "flag": "--seed",
-    "script": "scripts/msq_successor_null.py",
-    "sources": [
-     "default"
-    ]
-   },
-   "snapshot_sha256": "150b02efa66aabc5253a3644387d3fad793dec864c08bd65fdedc969bf022fbb",
-   "sparse_scale": {
-    "24": 1.069749373433584,
-    "8": 1.25,
-    "9": 1.1651380005405836
-   },
-   "sparse_scale_sha256": "1c25c013461e1d0cf6032ef43cb47a91a38ab40784b92156e92f7d8b3ad81a5c"
+   "sparse_scale_sha256": "c59860e836f9adbb33e92e50dc74e26cacb9349a4c054bbe27579ce716182193"
   }
  ],
  "schema": "msq-successor-null-summary-v1"
