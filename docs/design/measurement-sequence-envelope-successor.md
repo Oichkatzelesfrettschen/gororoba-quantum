@@ -1,9 +1,10 @@
 # Measurement-sequence envelope successor: relaxation to the ground state, crosstalk-free carryover readers
 
-Status: design v3.7, the frozen v3.3 with the corrections its implementation forced: a per-qubit shape bound at
+Status: design v3.8, the frozen v3.3 with the corrections its implementation forced: a per-qubit shape bound at
 the fitted T and a per-qubit settle test against the other qubits' median and MAD (v3.4), a reader statistic
 stratified by reader and divided by the squared readout contrast (v3.5), null arms that can each fail (v3.6), and
-minority q arms with a measured sparse detectable gap (v3.7). It builds on the deduplicated
+minority q arms with a measured sparse detectable gap (v3.7), and a sparse power target bounded over its three
+widths as one family (v3.8). It builds on the deduplicated
 `collect.json` (each PUB's placed calibration stored once), which main carries. The
 width-32 envelope run of 2026-10-27 (`results/live/2026-10-27T014422.881898Z`) executed as planned, billed 38 s, and
 returned no device verdict because its reset screen withheld all 32 qubits
@@ -197,15 +198,17 @@ over the admitted grid, so the null covers the qubits the case selects.
   common-mean veto must catch with power at least 0.9; and a sparse defect on two qubits at the same widths, planted
   as a per-pinch loss in the measure arm alone (the post-measurement tail the settle idles let decay, the
   `eps_settle = 0` device of `msa.device_model`), sized so its noise-free settle gap equals the measured two-outlier
-  detectable gap above. Scored per planted qubit, the arm fails when the one-sided 95 % Clopper-Pearson upper bound
-  on the veto's power falls below 0.9, which detects a calibration that overstates the power; and the departure
+  detectable gap above. Scored per planted qubit, the arm fails when the one-sided Clopper-Pearson upper bound on the
+  veto's power falls below 0.9 at any width, each width's bound at 1 - 0.05/3 (Bonferroni over the three widths, a
+  family-wise 95 %), which detects a calibration that overstates the power; and the departure
   false-fire bound over all replicates must stay below 0.01, which measures the departure bias a missed tail leaves.
   A tail below that size is the veto's stated blind spot.
 - Plateau arms: plateau-low draws only the retained (T1, q) pairs with q below every tolerance bound, and the
   equilibrium bound and the settle veto must withhold its departure verdict; plateau-retained draws all 30 retained
   pairs (q from 0.28 to 1.02, the retained device itself) and runs until 299 verdicts are issued with the conditional
   and unconditional false-fire bounds below 0.01. The equilibrium screen, not the common veto, withholds most of its
-  qubits (about 82 %, common veto in about 22 % of replicates at width 24), so it issues about one verdict in eight.
+  qubits (equilibrium screen about 84 %, common veto in about 16 % of replicates at width 24), so it issues about
+  one verdict in 50 and needs about 15,000 replicates.
   plateau-minority plants retained pairs on two qubits among healthy ones, with q-minority's exposed-verdict
   targets.
 - Each arm reports the unconditional false-fire rate, the false-fire rate conditional on a verdict being issued, and
@@ -265,11 +268,17 @@ beyond 3; fewer than 8 selected qubits; either order condition failing; a carryo
 conditional or unconditional zero-fire bound at or above 0.01; a minority arm with fewer than 299 exposed verdicts or
 an exposed or unconditional bound at or above 0.01; a q-tolerance or settle-common arm whose common veto fires in
 under 90 % of replicates; a gamma arm's informative-device rate below 80 %; a plateau-low arm whose departure verdict
-is not withheld; a sparse settle arm whose per-qubit power upper bound falls below 0.9 or whose departure false-fire
-bound reaches 0.01.
+is not withheld; a sparse settle arm whose per-qubit power upper bound at the family's 95 % falls below 0.9 at any
+width or whose departure false-fire bound reaches 0.01.
 
 ## Superseded designs
 
+- v3.7 bounded each width's sparse power at 95 % on its own. With power exactly 0.9 at every width the arm then
+  fails at one width or more in up to 14 % of nulls, and more often within the calibration's one-standard-error
+  stopping tolerance. Its null at the preregistered seed failed at 9 qubits: 524 of 599 planted gaps withheld,
+  bound 0.8965 (8 and 24 qubits: 539/600 and 549/599). The family bound on the same counts is 0.9022, a verdict
+  read after the counts were known, so the v3.8 verdict comes from a settle-sparse null on a fresh seed, ANU QRNG
+  `docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json` index 3. The calibration is unchanged.
 - v3.6's q arm planted its deficit on every qubit and required 299 issued verdicts; the deficit moves every settle
   gap, the common settle veto withheld 99.7 % of 3000 replicates, and the arm issued none. Its sparse arm planted the
   single-outlier detectable gap, at which two outliers reach per-qubit power 0.72, 0.74 and 0.86 at 8, 9 and 24

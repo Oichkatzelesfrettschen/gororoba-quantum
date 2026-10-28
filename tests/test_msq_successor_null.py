@@ -351,6 +351,38 @@ def test_the_sparse_calibration_steps_to_the_target_power(setup: nl.Setup, monke
         nl.calibrate_sparse_scale(setup, 8, nl.SPARSE_CALIBRATION_SEED, 10)
 
 
+def test_the_sparse_power_target_takes_a_bonferroni_share_per_pool() -> None:
+    check(abs(nl.SPARSE_FAMILY_CONFIDENCE - (1 - 0.05 / len(nl.SETTLE_POOLS))) < 1e-15, "family confidence")
+    # 524 of 599 planted gaps withheld: shown below 0.9 at 95 % for one pool, not at the three-pool family's 95 %.
+    withheld = [2] * 262 + [0] * 37 + [0]
+    rows: list[dict[str, Any]] = [
+        {
+            "issued": True,
+            "fired": [],
+            "work": 1,
+            "planted_in_pool": 1 if i == 299 else 2,
+            "planted_withheld": w,
+            "selected": 1,
+            "carryover_failed": 0,
+            "equilibrium_failed": 0,
+            "common_veto": False,
+            "planted_equilibrium_failed": 0,
+            "planted_selected": 0,
+            "counted": True,
+        }
+        for i, w in enumerate(withheld)
+    ]
+    stats = nl.case_statistics("settle-sparse", rows)
+    check(stats["planted_in_pool"] == 599 and stats["planted_withheld"] == 524, f"{stats['planted_withheld']}")
+    check(stats["per_qubit_veto_power_upper_95"] < nl.SPARSE_TARGET_POWER, f"{stats['per_qubit_veto_power_upper_95']}")
+    check(stats["targets"]["per_qubit_veto_power_not_below_90_percent_family"], f"{stats}")
+    rows[0]["planted_withheld"] = 0
+    rows[1]["planted_withheld"] = 0
+    check(
+        not nl.case_statistics("settle-sparse", rows)["targets"]["per_qubit_veto_power_not_below_90_percent_family"], ""
+    )
+
+
 def test_minority_arms_plant_two_slots_and_count_verdicts_that_select_one(setup: nl.Setup) -> None:
     drawn, truths = planted_slots(setup, small("q-minority"))
     expected = [setup.q_planted[j] for j in drawn.calibration[: nl.PLANTED_QUBITS]]

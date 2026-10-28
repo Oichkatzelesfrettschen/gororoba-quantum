@@ -478,6 +478,9 @@ BOUNDARY_OFFSETS = (0, 1, 2)
 CARRIED_OFFSETS = (0.0, 1.0, 2.0, 3.0)
 CARRIED_ITERATIONS = 8
 SETTLE_POOLS = (8, 9, None)
+# The settle-sparse power target holds for every pool of SETTLE_POOLS at once, so each pool's one-sided bound takes a
+# Bonferroni share of 1 - CONFIDENCE.
+SPARSE_FAMILY_CONFIDENCE = 1 - (1 - CONFIDENCE) / len(SETTLE_POOLS)
 READERS = len(de.MSQR_READER_STEPS) * len(de.MSQ_SIGNED)
 PLATEAU_EVIDENCE = "docs/evidence/measurement_sequence/envelope-run-exploratory.json"
 ARMS = (
@@ -1436,11 +1439,11 @@ def ensure_many(batches: Sequence[Batch], memo: FitMemo) -> None:
 ROUND = 4 * NULL_BLOCK
 
 
-def upper_bound(fires: int, replicates: int) -> float:
+def upper_bound(fires: int, replicates: int, confidence: float = CONFIDENCE) -> float:
     """The one-sided Clopper-Pearson upper confidence bound on a binomial rate."""
     if fires >= replicates:
         return 1.0
-    return float(beta.ppf(CONFIDENCE, fires + 1, replicates - fires))
+    return float(beta.ppf(confidence, fires + 1, replicates - fires))
 
 
 def run_arm(
@@ -1546,6 +1549,9 @@ def case_statistics(arm: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
         "planted_in_pool": planted,
         "planted_withheld": sparse,
         "per_qubit_veto_power_upper_95": upper_bound(sparse, planted) if planted else None,
+        "per_qubit_veto_power_upper_family": upper_bound(sparse, planted, SPARSE_FAMILY_CONFIDENCE)
+        if planted
+        else None,
         "planted_equilibrium_withheld_rate": (
             sum(row["planted_equilibrium_failed"] for row in rows) / planted_total if planted_total else None
         ),
@@ -1575,10 +1581,11 @@ def case_statistics(arm: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
         if arm == "q-tolerance":
             targets["false_fire_bound_below_ceiling"] = unconditional < FALSE_FIRE_CEILING
     elif arm == "settle-sparse":
-        # One-sided: the arm fails when the per-qubit power is shown below SPARSE_TARGET_POWER at 95 %.
+        # One-sided: the arm fails when any pool's per-qubit power is shown below SPARSE_TARGET_POWER at the family's
+        # 95 %.
         targets = {
-            "per_qubit_veto_power_not_below_90_percent": planted > 0
-            and upper_bound(sparse, planted) >= SPARSE_TARGET_POWER,
+            "per_qubit_veto_power_not_below_90_percent_family": planted > 0
+            and stats["per_qubit_veto_power_upper_family"] >= SPARSE_TARGET_POWER,
             "false_fire_bound_below_ceiling": unconditional < FALSE_FIRE_CEILING,
         }
     elif arm == "plateau-low":
