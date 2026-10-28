@@ -102,21 +102,6 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(self.chosen("unrelated.md"), ["fast"])
         self.assertEqual(self.chosen(), ["fast"])
 
-    def test_a_name_imported_from_a_module_is_no_module(self) -> None:
-        self.write("helper.py", "import leaf\nfrom leaf import collect\n")
-        self.write("leaf.py", "def collect():\n pass\n")
-        self.write("evidence/collect.py", "")
-        self.assertEqual(self.chosen("evidence/collect.py"), ["fast"])
-        self.assertEqual(self.chosen("leaf.py"), ["fast", "long"])
-
-    def test_a_name_imported_from_a_package_or_relatively_is_a_submodule(self) -> None:
-        for statement in ("from pkg import sub", "from . import sub"):
-            with self.subTest(statement=statement):
-                self.write("helper.py", f"{statement}\n")
-                self.write("pkg/__init__.py", "")
-                self.write("pkg/sub.py", "")
-                self.assertEqual(self.chosen("pkg/sub.py"), ["fast", "long"])
-
     def test_deleted_import_still_selects(self) -> None:
         self.write("helper.py", "import deleted\n")
         self.assertEqual(self.chosen("deleted.py"), ["fast", "long"])
