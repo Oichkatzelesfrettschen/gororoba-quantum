@@ -4632,8 +4632,36 @@
       "boundary": "Empirical cost evidence on completed workloads; a future ceiling inherits no billing guarantee.",
       "evidence": [
         {
-          "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "02881eea33f4d39b0b4857e622dd081c600be8ec7a78d478a6a284289375cb2a"
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db67fqsvf2bc73d0pk4g",
+          "sha256": "6f3ceaaaa2ebfed5715d6e00e95844ceaea506b7167f4c51fed011dae7a00b9e"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db67frimb58s738bci4g",
+          "sha256": "6cf64a00840d9d69a5366daec91d3b5118d769c6523a4a45d5754a63f76550b5"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6p55clf4us73c5nd9g",
+          "sha256": "402b294bd9155f0b18ce02119a59503331658819e6370867c5beb82b988f0700"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6pepklf4us73c5nqcg",
+          "sha256": "1e5b7f16181311daa42cdc67dc1ec28c3ada18047d4210c8610e7ee4b441e140"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q2p2mb58s738c75gg",
+          "sha256": "e8f686952cb8257f1f26b756a619b0fd03b8f45ec11f2c8b08e3f644e0fdfee1"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q2rklf4us73c5oq90",
+          "sha256": "e213f7d1b1b0ce26fda29718d650b78aa2048e67751872aa41f56aa17d6530ce"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q9qo4qg6s73c57020",
+          "sha256": "d3b2836d7b3d741d921f6e83eca882711c385daba437a375e1baf127cffda693"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q9rsvf2bc73d1kpug",
+          "sha256": "45b7ca96dd4c7a10107c0eeb1424d3d13b8b8021d3b2f341f22ce6efe939405d"
         }
       ],
       "documents": [
@@ -5826,8 +5854,144 @@
           "sha256": "e91742aafef2659491267a9967a837748777e1903e600b776ab7376da8db5869"
         },
         {
-          "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "02881eea33f4d39b0b4857e622dd081c600be8ec7a78d478a6a284289375cb2a"
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db5qmqclf4us73c4e1ug",
+          "sha256": "f5019aadc1ffcbfef9237b0244045057f7e02f2c0015a5ce43d789b554c5f45c"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db67fqsvf2bc73d0pk4g",
+          "sha256": "6f3ceaaaa2ebfed5715d6e00e95844ceaea506b7167f4c51fed011dae7a00b9e"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db67frimb58s738bci4g",
+          "sha256": "6cf64a00840d9d69a5366daec91d3b5118d769c6523a4a45d5754a63f76550b5"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6p55clf4us73c5nd9g",
+          "sha256": "402b294bd9155f0b18ce02119a59503331658819e6370867c5beb82b988f0700"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6pepklf4us73c5nqcg",
+          "sha256": "1e5b7f16181311daa42cdc67dc1ec28c3ada18047d4210c8610e7ee4b441e140"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q2p2mb58s738c75gg",
+          "sha256": "e8f686952cb8257f1f26b756a619b0fd03b8f45ec11f2c8b08e3f644e0fdfee1"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q2rklf4us73c5oq90",
+          "sha256": "e213f7d1b1b0ce26fda29718d650b78aa2048e67751872aa41f56aa17d6530ce"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q9qo4qg6s73c57020",
+          "sha256": "d3b2836d7b3d741d921f6e83eca882711c385daba437a375e1baf127cffda693"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q9rsvf2bc73d1kpug",
+          "sha256": "45b7ca96dd4c7a10107c0eeb1424d3d13b8b8021d3b2f341f22ce6efe939405d"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6ub8svf2bc73d1rc50",
+          "sha256": "713ac849c8344890abac6bd6caa92df43ba4e06c068815a8f3959e05c22e566c"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6uqdkvf2bc73d1sc80",
+          "sha256": "04623c1f43e61f00c4b489386b982d21c227c8d4b3afe6de885b2d29e1045a6f"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db794cmil99s73fnjlk0",
+          "sha256": "28fb1ac303273817f38748c06e21f9b30781ba8a4392b72ab82d0c3b423a8dc0"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db794dor1c5c738k1a50",
+          "sha256": "d9f33fa6fe55453804050e25f4b678af266554c93381132d07d9146e48540aa1"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db794hmr6oqs73871tbg",
+          "sha256": "329d7b0930501fb4fdc6abaebec7efe9e5176fd662510913f04a55cf24880006"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db847nur6oqs7388nen0",
+          "sha256": "a4115b18adc0a51f2f8c143d6b6f5b71e3127f6ed73fa58a414dc9f87f099124"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db847oiraffc73fbmfk0",
+          "sha256": "d7f75b173e1a9515c5ffe26f107caa9108be95b50a5d3017934ab44cd61bdc36"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db848h6r6oqs7388nfm0",
+          "sha256": "7c3bac86db04d7bec0096d7affbc2bc71d1b2221a1d1a94ab51e94abd033fc8a"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db848hmil99s73fp99tg",
+          "sha256": "38b9832746d5d37b2a658a57afb61aaff92c70e07bcfb7cfe825f7049f9c7487"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db84dt6il99s73fp9gjg",
+          "sha256": "9de8b8bd149576396952840545fd519be784bf54f5beb922e4a8ad4ed7110d9e"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db84dv2raffc73fbmnag",
+          "sha256": "34425a99f7d174ff3f07e18b05412b53fc9e720e9a4d27f195c91d50dd30b47e"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db87o48r1c5c738lu8jg",
+          "sha256": "3806cfb4cc2d77d127dc9fd0684d88834dfb3cfc26099729a2fc7f07d77c8da7"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db87o8or1c5c738lu910",
+          "sha256": "bd8dcd4ead45bb9a84a738d6e3d477371b746030e12c3578285aaf4ffeafaf5d"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dba8hnk24mrc73851u30",
+          "sha256": "13919d41bbff231753113ff2f47ef1377a5c65b8d4300109f9fb0ef4491d4f1f"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dba8hr424mrc73851u8g",
+          "sha256": "ae50447e6b1aba5d90fb0ea5be583239f362a53acb59aa350c3166975fff7b96"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dba8hsk24mrc73851uag",
+          "sha256": "a8b6b9ac35c0f0bb2aa36a2813784f741a4ad02bdb4a08435231f75660debf5d"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dba8huoc77vs7382f8mg",
+          "sha256": "c9f5325d74b6174c9b27df541c5c657b4d443ff0cf0bd0f2730215a47e424ec1"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dba8r7k24mrc738527d0",
+          "sha256": "194b86d5c5254d66e45f8732f9e72991a48699dbcb7fc8f210424fadbb69dda4"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbajs3gc77vs7382ulhg",
+          "sha256": "6331907f789d1cfda2508b1d08914e2cfccd520275e675cc1f01f5fe713b785c"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbak4pni0auc73925oc0",
+          "sha256": "43f481b8d851886067b7d3680e78b7b5626dbca30f61839fd20c7d55c41687ec"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbb3auvi0auc7392sfs0",
+          "sha256": "35ac9ab2ca40cd530f6eebf3ab06ee06232e04d6411f060321870a2656f1cba5"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbb4se1gv2cc73e7pf40",
+          "sha256": "d513283e1edd27f2f2396de069f35f76c4bf2ad36f2314fc5d9bcb07cc3b1e82"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbba739gv2cc73e81dg0",
+          "sha256": "1ac36d7bd7e1d1d39f8a4cc4a36efa8fe37c6dee0144d5dbc38a0790b2428c32"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbbdog8c77vs73846ceg",
+          "sha256": "dbb79967106d29232e0d3fa664caef1abe914622d3c654bb2b8811dfa7e4f7d6"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbc40u8c77vs7385ee0g",
+          "sha256": "a2ebe76eca41b494d0a33c301fd9ddb6d680b06a15285751398aded1cdb49864"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbc5u19gv2cc73e9l340",
+          "sha256": "675a8b9942689f6842aaea7da83bcff04679bf647d57bde0ac09a52d759271b1"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -10914,8 +11078,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-11/result.json",
-          "sha256": "cb6c5119ea64c64af115556321936dd098f5931d2a8ef1faad20d8e0ec09e904"
+          "path": "docs/evidence/algebra-device-conjectures-12/result.json",
+          "sha256": "a95bcc841475c3d2aa129c68560ab06f34386a57eece29e679e8ef1a70a2d943"
         }
       ],
       "gates": {

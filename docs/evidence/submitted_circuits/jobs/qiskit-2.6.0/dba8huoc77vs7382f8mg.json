@@ -1,0 +1,34 @@
+{
+ "schema": "submitted-circuit-row-v1",
+ "row": {
+  "job_id": "dba8huoc77vs7382f8mg",
+  "run": "results/live/2026-10-18T083402.386701Z",
+  "retained_file": "results/live/2026-10-18T083402.386701Z/isa.qpy",
+  "retained_sha256": "c480984606358123526601e7371acdcdc2def07d44e014d0c17c2d8a52dca25e",
+  "order_source": "record.json submission.jobs[].pubs",
+  "expected_pubs": [
+   "ibm_kingston_static_pub_01"
+  ],
+  "items": 1,
+  "item_kinds": [
+   "CircuitItem"
+  ],
+  "positional_matches": 1,
+  "submitted_qpy_sha256": [
+   "97743c8551f449e46884fa7148e7853645be5cab4df15089dee5b98c69a84a5f"
+  ]
+ },
+ "provenance": {
+  "origin": {
+   "file": "docs/evidence/submitted_circuits/comparison-qpy18-full-retrieval.json",
+   "sha256": "1e7072ce8d059b90298559dac822c2ac1b47eda45081f5d96346ce08f2d52c58"
+  },
+  "retrieved_utc": "2026-10-28T00:35:31.259774+00:00",
+  "operation": "read existing job inputs; submissions and uploads excluded",
+  "runtime_versions": {
+   "qiskit": "2.6.0",
+   "qiskit-ibm-runtime": "0.50.0"
+  },
+  "collector_sha256": "77eaddfaac4f54e8a6986bf92547bbb92a721404507fbd9d529fd3c2596093c9"
+ }
+}
