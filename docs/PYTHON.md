@@ -31,10 +31,11 @@ platform boundaries:
    - Python 3.14 (system interpreter).
    - Package management: Arch system packages (`pacman`, `paru`) and custom PKGBUILDs
      in `~/Github/PKGBUILDs`, all linking the system OpenBLAS (`blas-openblas`) as BLAS and LAPACK.
-   - Hardware acceleration: NVIDIA RTX 4070 Ti (SM 89), CUDA 13.4, cuQuantum 26.09.0.8
+   - Hardware acceleration: NVIDIA RTX 4070 Ti (SM 89), CUDA 13.4.3, cuQuantum 26.09.0.8
      (libcustatevec.so.1 and libcutensornet.so.2), and cutensor 2.8.1.0.
-   - Locally compiled packages: `python-qiskit-aer-cuda` (0.17.2-2 with cuStateVec support),
-     `python-samplomatic` (0.21.0), and `python-qiskit-ibm-runtime` (0.50.0).
+   - Locally compiled packages: `python-qiskit` (2.6.1), `python-qiskit-aer-cuda` (0.18.2-1 with cuStateVec support),
+     `python-samplomatic` (0.21.0), and `python-qiskit-ibm-runtime` (0.51.0); the library wiring
+     is in [python-stack.md](notes/build_host/python-stack.md).
    - Computer algebra: System `sagemath` (10.10) for exact algebraic geometry and
      rotation-composite audits.
    - Local hypercomplex verification stack: 17 packages extracted and validated against

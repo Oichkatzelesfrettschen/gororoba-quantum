@@ -84,7 +84,8 @@ one exact local result where a package computes offline, and with
 (`"$PYTHON" docs/notes/qiskit-packages/probe_packages.py --stacks`). It
 constructs no service and reads no credential. It reads qiskit-connector
 from metadata only, because importing that package loads `.env` files. The
-run that preceded the core upgrade imported all seventeen system packages
+run on Python 3.14.8 with qiskit 2.6.1, qiskit-ibm-runtime 0.51.0 and
+qiskit-aer 0.18.2 (2026-10-29 UTC) imported all seventeen system packages
 and recorded these results:
 
 | Probe | Result |
@@ -92,7 +93,7 @@ and recorded these results:
 | pauli-prop, Heisenberg propagation of Z through H | X, discarded weight 0.0 |
 | qiskit-waveform-sim, ALAP-scheduled X on FakeFez qubit 0 | 6 samples at dt 4 ns, equal to the Target's 24 ns X; envelope DRAG with placeholder amplitude 0.9 |
 | perceval-interop, Qiskit H-CX circuit | 4-mode Perceval processor |
-| qiskit-aer, `AerSimulator().available_devices()` | `('CPU', 'GPU')` |
+| qiskit-aer, `AerSimulator().available_devices()` | `('CPU', 'GPU')`; a Bell circuit gives only `00` and `11` on CPU, GPU and GPU with cuStateVec |
 | `qi-stack-python` | qiskit 2.3.0, qiskit-quantuminspire 0.18.6, pennylane-quantuminspire 0.15.6, quantuminspire 4.2.0 |
 | `qiskit-debugger-python` | qiskit 0.43.2, qiskit-terra 0.24.1, qiskit-aer 0.12.1, qiskit-debugger 0.1.2 |
 | `quantum-pipeline-python` | qiskit 2.6.1, qiskit-aer 0.17.2, qiskit-ibm-runtime 0.51.0, quantum-pipeline 2.5.1 |
@@ -112,18 +113,18 @@ Packaging fixes that the probes forced:
 ## Open items
 
 The plan record [qiskit-package-graph](../../state/plans/qiskit-package-graph.json)
-tracks each open item as a step with its acceptance condition:
+tracks each open item as a step with its acceptance condition. The perceval-interop
+converter, whose upstream extra pins `qiskit~=2.1.2`, passes on qiskit 2.6.1
+(step `interop-qiskit-261`, done).
 
 1. `catalog-call-runtime-051`: one `QiskitFunctionsCatalog.list()` call
    under the relaxed qiskit-serverless pins and runtime 0.51.0, inside an
    approved case. A serverless release that admits runtime 0.51 retires
    the relaxation.
-2. `interop-qiskit-261`: rerun the perceval-interop converter probe on
-   qiskit 2.6.1. The upstream extra pins `qiskit~=2.1.2`.
-3. `debugger-stack-retire`: the qiskit-debugger stack retires when an
+2. `debugger-stack-retire`: the qiskit-debugger stack retires when an
    upstream release supports Qiskit 2.x or the package is dropped.
-4. `qi-qiskit-ceiling`: the Quantum Inspire stack's qiskit 2.3.0 ceiling
+3. `qi-qiskit-ceiling`: the Quantum Inspire stack's qiskit 2.3.0 ceiling
    lifts when pennylane-qiskit and qiskit-quantuminspire admit a newer
    qiskit.
-5. `pipeline-aer-018`: quantum-pipeline moves to Aer 0.18 when a release
+4. `pipeline-aer-018`: quantum-pipeline moves to Aer 0.18 when a release
    lifts its `qiskit-aer<0.18` cap. It depends on the archived qiskit-nature.
