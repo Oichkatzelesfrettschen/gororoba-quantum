@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+	<responseDate>2026-10-29T14:13:41Z</responseDate>
+	<request verb="Identify">https://oai.zbmath.org/v1/</request>
+	<Identify>
+		<repositoryName>zbMATH Open</repositoryName>
+		<baseURL>https://oai.zbmath.org/v1/</baseURL>
+		<protocolVersion>2.0</protocolVersion>
+		<adminEmail>repo.admin@zbmath.org</adminEmail>
+		<earliestDatestamp>1755</earliestDatestamp>
+		<deletedRecord>no</deletedRecord>
+		<granularity>YYYY-MM-DDThh:mm:ssZ</granularity>
+	</Identify>
+</OAI-PMH>

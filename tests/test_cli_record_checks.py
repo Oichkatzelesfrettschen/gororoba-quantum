@@ -91,6 +91,7 @@ RECORD_CHECKS = (
     ("scripts/capture_oq_docs.py", ".", "--check", 5),
     ("scripts/capture_qbraid_docs.py", ".", "--check", 5),
     ("scripts/capture_kaggle_docs.py", ".", "--check", 5),
+    ("scripts/zbmath.py", ".", "check docs/evidence/zbmath-api-audit", 6),
 )
 
 

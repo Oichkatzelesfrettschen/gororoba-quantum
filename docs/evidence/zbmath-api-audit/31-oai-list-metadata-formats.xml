@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+	<responseDate>2026-10-29T14:13:42Z</responseDate>
+	<request verb="ListMetadataFormats">https://oai.zbmath.org/v1/</request>
+	<ListMetadataFormats>
+		<metadataFormat>
+			<metadataPrefix>oai_dc</metadataPrefix>
+			<schema>http://www.openarchives.org/OAI/2.0/oai_dc.xsd</schema>
+			<metadataNamespace>http://www.openarchives.org/OAI/2.0/oai_dc/</metadataNamespace>
+		</metadataFormat>
+		<metadataFormat>
+			<metadataPrefix>oai_zb_preview</metadataPrefix>
+			<schema>static/oai_zb_preview.xsd</schema>
+			<metadataNamespace>https://zbmath.org/OAI/2.0/oai_zb_preview/</metadataNamespace>
+		</metadataFormat>
+	</ListMetadataFormats>
+</OAI-PMH>

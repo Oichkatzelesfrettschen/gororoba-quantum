@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+	<responseDate>2026-10-29T14:13:44Z</responseDate>
+	<request verb="ListSets">https://oai.zbmath.org/v1/</request>
+	<ListSets>
+		<set>
+			<setSpec>00</setSpec>
+			<setName>00-XX:General and overarching topics; collections</setName>
+		</set>
+		<set>
+			<setSpec>01</setSpec>
+			<setName>01-XX:History and biography</setName>
+		</set>
+		<set>
+			<setSpec>03</setSpec>
+			<setName>03-XX:Mathematical logic and foundations</setName>
+		</set>
+		<set>
+			<setSpec>05</setSpec>
+			<setName>05-XX:Combinatorics</setName>
+		</set>
+		<set>
+			<setSpec>06</setSpec>
+			<setName>06-XX:Order, lattices, ordered algebraic structures</setName>
+		</set>
+		<set>
+			<setSpec>08</setSpec>
+			<setName>08-XX:General algebraic systems</setName>
+		</set>
+		<set>
+			<setSpec>11</setSpec>
+			<setName>11-XX:Number theory</setName>
+		</set>
+		<set>
+			<setSpec>12</setSpec>
+			<setName>12-XX:Field theory and polynomials</setName>
+		</set>
+		<set>
+			<setSpec>13</setSpec>
+			<setName>13-XX:Commutative algebra</setName>
+		</set>
+		<set>
+			<setSpec>14</setSpec>
+			<setName>14-XX:Algebraic geometry</setName>
+		</set>
+		<set>
+			<setSpec>15</setSpec>
+			<setName>15-XX:Linear and multilinear algebra; matrix theory</setName>
+		</set>
+		<set>
+			<setSpec>16</setSpec>
+			<setName>16-XX:Associative rings and algebras</setName>
+		</set>
+		<set>
+			<setSpec>17</setSpec>
+			<setName>17-XX:Nonassociative rings and algebras</setName>
+		</set>
+		<set>
+			<setSpec>18</setSpec>
+			<setName>18-XX:Category theory; homological algebra</setName>
+		</set>
+		<set>
+			<setSpec>19</setSpec>
+			<setName>19-XX:\(K\)-theory</setName>
+		</set>
+		<set>
+			<setSpec>20</setSpec>
+			<setName>20-XX:Group theory and generalizations</setName>
+		</set>
+		<set>
+			<setSpec>22</setSpec>
+			<setName>22-XX:Topological groups, Lie groups</setName>
+		</set>
+		<set>
+			<setSpec>26</setSpec>
+			<setName>26-XX:Real functions</setName>
+		</set>
+		<set>
+			<setSpec>28</setSpec>
+			<setName>28-XX:Measure and integration</setName>
+		</set>
+		<set>
+			<setSpec>30</setSpec>
+			<setName>30-XX:Functions of a complex variable</setName>
+		</set>
+		<set>
+			<setSpec>31</setSpec>
+			<setName>31-XX:Potential theory</setName>
+		</set>
+		<set>
+			<setSpec>32</setSpec>
+			<setName>32-XX:Several complex variables and analytic spaces</setName>
+		</set>
+		<set>
+			<setSpec>33</setSpec>
+			<setName>33-XX:Special functions</setName>
+		</set>
+		<set>
+			<setSpec>34</setSpec>
+			<setName>34-XX:Ordinary differential equations</setName>
+		</set>
+		<set>
+			<setSpec>35</setSpec>
+			<setName>35-XX:Partial differential equations</setName>
+		</set>
+		<set>
+			<setSpec>37</setSpec>
+			<setName>37-XX:Dynamical systems and ergodic theory</setName>
+		</set>
+		<set>
+			<setSpec>39</setSpec>
+			<setName>39-XX:Difference and functional equations</setName>
+		</set>
+		<set>
+			<setSpec>40</setSpec>
+			<setName>40-XX:Sequences, series, summability</setName>
+		</set>
+		<set>
+			<setSpec>41</setSpec>
+			<setName>41-XX:Approximations and expansions</setName>
+		</set>
+		<set>
+			<setSpec>42</setSpec>
+			<setName>42-XX:Harmonic analysis on Euclidean spaces</setName>
+		</set>
+		<set>
+			<setSpec>43</setSpec>
+			<setName>43-XX:Abstract harmonic analysis</setName>
+		</set>
+		<set>
+			<setSpec>44</setSpec>
+			<setName>44-XX:Integral transforms, operational calculus</setName>
+		</set>
+		<set>
+			<setSpec>45</setSpec>
+			<setName>45-XX:Integral equations</setName>
+		</set>
+		<set>
+			<setSpec>46</setSpec>
+			<setName>46-XX:Functional analysis</setName>
+		</set>
+		<set>
+			<setSpec>47</setSpec>
+			<setName>47-XX:Operator theory</setName>
+		</set>
+		<set>
+			<setSpec>49</setSpec>
+			<setName>49-XX:Calculus of variations and optimal control; optimization</setName>
+		</set>
+		<set>
+			<setSpec>51</setSpec>
+			<setName>51-XX:Geometry</setName>
+		</set>
+		<set>
+			<setSpec>52</setSpec>
+			<setName>52-XX:Convex and discrete geometry</setName>
+		</set>
+		<set>
+			<setSpec>53</setSpec>
+			<setName>53-XX:Differential geometry</setName>
+		</set>
+		<set>
+			<setSpec>54</setSpec>
+			<setName>54-XX:General topology</setName>
+		</set>
+		<set>
+			<setSpec>55</setSpec>
+			<setName>55-XX:Algebraic topology</setName>
+		</set>
+		<set>
+			<setSpec>57</setSpec>
+			<setName>57-XX:Manifolds and cell complexes</setName>
+		</set>
+		<set>
+			<setSpec>58</setSpec>
+			<setName>58-XX:Global analysis, analysis on manifolds</setName>
+		</set>
+		<set>
+			<setSpec>60</setSpec>
+			<setName>60-XX:Probability theory and stochastic processes</setName>
+		</set>
+		<set>
+			<setSpec>62</setSpec>
+			<setName>62-XX:Statistics</setName>
+		</set>
+		<set>
+			<setSpec>65</setSpec>
+			<setName>65-XX:Numerical analysis</setName>
+		</set>
+		<set>
+			<setSpec>68</setSpec>
+			<setName>68-XX:Computer science</setName>
+		</set>
+		<set>
+			<setSpec>70</setSpec>
+			<setName>70-XX:Mechanics of particles and systems</setName>
+		</set>
+		<set>
+			<setSpec>74</setSpec>
+			<setName>74-XX:Mechanics of deformable solids</setName>
+		</set>
+		<set>
+			<setSpec>76</setSpec>
+			<setName>76-XX:Fluid mechanics</setName>
+		</set>
+		<set>
+			<setSpec>78</setSpec>
+			<setName>78-XX:Optics, electromagnetic theory</setName>
+		</set>
+		<set>
+			<setSpec>80</setSpec>
+			<setName>80-XX:Classical thermodynamics, heat transfer</setName>
+		</set>
+		<set>
+			<setSpec>81</setSpec>
+			<setName>81-XX:Quantum theory</setName>
+		</set>
+		<set>
+			<setSpec>82</setSpec>
+			<setName>82-XX:Statistical mechanics, structure of matter</setName>
+		</set>
+		<set>
+			<setSpec>83</setSpec>
+			<setName>83-XX:Relativity and gravitational theory</setName>
+		</set>
+		<set>
+			<setSpec>85</setSpec>
+			<setName>85-XX:Astronomy and astrophysics</setName>
+		</set>
+		<set>
+			<setSpec>86</setSpec>
+			<setName>86-XX:Geophysics</setName>
+		</set>
+		<set>
+			<setSpec>90</setSpec>
+			<setName>90-XX:Operations research, mathematical programming</setName>
+		</set>
+		<set>
+			<setSpec>91</setSpec>
+			<setName>91-XX:Game theory, economics, finance, and other social and behavioral sciences</setName>
+		</set>
+		<set>
+			<setSpec>92</setSpec>
+			<setName>92-XX:Biology and other natural sciences</setName>
+		</set>
+		<set>
+			<setSpec>93</setSpec>
+			<setName>93-XX:Systems theory; control</setName>
+		</set>
+		<set>
+			<setSpec>94</setSpec>
+			<setName>94-XX:Information and communication theory, circuits</setName>
+		</set>
+		<set>
+			<setSpec>97</setSpec>
+			<setName>97-XX:Mathematics education</setName>
+		</set>
+		<set>
+			<setSpec>JFM</setSpec>
+			<setName>JFM:Jahrbuch für Mathematik</setName>
+		</set>
+		<set>
+			<setSpec>openaire</setSpec>
+			<setName>openaire:Required set for OpenAIRE, cf. https://guidelines.openaire.eu/en/latest/literature/use_of_oai_pmh.html</setName>
+		</set>
+	</ListSets>
+</OAI-PMH>
