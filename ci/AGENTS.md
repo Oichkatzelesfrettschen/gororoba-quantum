@@ -173,11 +173,18 @@ The runner expands `runtime_contracts.CONTRACT_CASES` into independently sharded
 cases. CPU slots cover outer gates and inner process pools together: ordinary
 gates reserve one slot, while manifest `"workers": "all"` gates reserve the
 detected allocation. Native BLAS, OpenMP, Rayon and Qiskit subprocess defaults
-stay at one inside each slot. `OPENBLAS_CORETYPE` defaults to Haswell and
-`NPY_DISABLE_CPU_FEATURES` caps numpy's dispatch at x86-64-v3, the kernel sets
-every runner and build host executes, so a fitted value rounds one way on all
-of them given one libm and Python build. A record a gate byte-replays is
-written in the runner's userland, which supplies both, through
+stay at one inside each slot. A producer computes on its platform's native
+path, AVX-512 included, and records that path (CPU model, numpy dispatch
+targets, OpenBLAS cores, any cap set); a result computed on an Intel chip
+replays on the build host under Intel SDE emulating that chip
+([docs/PYTHON.md](../docs/PYTHON.md#emulating-another-cpu-with-intel-sde)), and
+one computed on an AMD Zen 4 or Zen 5 runner replays on such a CPU. The
+byte-replayed records of the runner-image ledger keep the caps until each is
+re-bound with its platform: for their gates `ci/run_gates.py` defaults
+`OPENBLAS_CORETYPE` to Haswell and caps numpy's dispatch at x86-64-v3 with
+`NPY_DISABLE_CPU_FEATURES`, the kernel set every runner and build host
+executes. Such a record is written in the runner's userland, which supplies
+both caps, through
 `"$PYTHON" ci/runner_image_records.py write sh -c '"$PYTHON" PRODUCER ...'`:
 it runs `ci/runner_image.sh` (podman) over a snapshot of the tree, which no
 host process writes, then copies back and receipts each file the command
