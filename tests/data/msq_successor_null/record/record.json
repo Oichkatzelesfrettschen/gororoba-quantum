@@ -922,6 +922,7 @@
    "backend": "ibm_kingston"
   }
  ],
+ "shots": 8192,
  "source": {
   "planning_snapshot_sha256": "e185caeaeb6846125301d6a6f7a763fbbb9e796c9dcd83eda462c0d7fb284293",
   "record": "2026-10-28T163139.827337Z"

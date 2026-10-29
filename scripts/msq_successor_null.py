@@ -1,20 +1,24 @@
 """Stochastic null of the measurement-sequence envelope successor.
 
 ``RECORD_DIR --arm ARM --replicates N --out FILE`` runs the arm's replicates on the calibrations of the dry-run
-record's snapshot (docs/design/measurement-sequence-envelope-successor.md, "Null calibration") and writes a record
-of schema msq-successor-null-v1. ``RECORD_DIR --arms ARM... --out-dir DIR`` (``--arms all`` for every arm) runs
-the arms of msq_successor_null_batch.NULL_PLAN at its caps and seeds from one setup through one process pool and
-writes DIR/ARM.json, the bytes each single-arm run writes; ``--cap ARM=N`` replaces an arm's cap, and ``--limit
-ARM=N`` or ``ARM/CASE=N`` stops a case below replicate N without entering the record.
+record's snapshot at the record's shot count (docs/design/measurement-sequence-envelope-successor.md, "Null
+calibration") and writes a record of schema msq-successor-null-v2. ``RECORD_DIR... --arms ARM... --out-dir DIR``
+(``--arms all`` for every arm) runs the arms of msq_successor_null_batch.NULL_PLAN at its caps and seeds from each
+record's setup through one process pool and writes DIR/ARM.json, the bytes each single-arm run writes; with several
+record directories it writes DIR/<record directory name>/ARM.json, each record the bytes of its own single-record
+run. ``--cap [RECORD:]ARM=N`` replaces an arm's cap, and ``--limit [RECORD:]ARM=N`` or ``[RECORD:]ARM/CASE=N``
+stops a case below replicate N without entering the record; a RECORD prefix (a record directory name) targets one
+record and no prefix applies to every record.
 ``--shard INDEX --shards COUNT`` runs the replicates congruent to INDEX modulo COUNT and writes a shard record
 (DIR/ARM-shardINDEX.json under ``--arms``), which runs every case to its limit; ``--merge FILE...`` combines shard
 records into the arm's record, byte for byte the record of one unsharded run, and refuses a case its limit cut
-short of its verdict count. ``RECORD_DIR --calibrate-sparse
---out FILE`` measures the sparse settle arm's detectable-gap scale of every pool size on its own seed
-(``--calibration-seed``) and writes the record that msq_successor_null_batch.SPARSE_SCALE_EVIDENCE names.
-``--summarize FILE...`` writes the row-free summary of finished arm records that
-docs/evidence/measurement_sequence/successor-null.json retains. The seed is a QRNG value
-(``--seed qrng:<draw>#<index>``) or the default. docs/runbooks/null-shards.md routes long runs.
+short of its verdict count and records whose shots differ. ``RECORD_DIR... --calibrate-sparse`` measures the sparse
+settle arm's detectable-gap scale of every pool size of every record on its own seed (``--calibration-seed``), the
+secant steps of all records sharing the pool's rounds, and writes each record the path
+msq_successor_null_batch.sparse_evidence_path names (``--out FILE`` for a single record). With ``--arms`` it then
+runs the null on the fresh scales in the same process. ``--summarize FILE...`` writes the row-free summary of
+finished arm records, v1 records included, that docs/evidence/measurement_sequence/successor-null.json retains. The
+seed is a QRNG value (``--seed qrng:<draw>#<index>``) or the default. docs/runbooks/null-shards.md routes long runs.
 GOROROBA_WORKERS caps the worker count.
 """
 
@@ -33,12 +37,16 @@ import qrng_seeds  # noqa: E402
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
-    parser.add_argument("record_dir", nargs="?", type=Path, help="a dry-run record directory")
+    parser.add_argument("record_dirs", nargs="*", type=Path, metavar="RECORD_DIR", help="dry-run record directories")
     parser.add_argument("--arm", choices=nl.ARMS)
     parser.add_argument("--arms", nargs="+", choices=[*nl.ARMS, "all"], help="NULL_PLAN arms through one pool")
-    parser.add_argument("--cap", action="append", default=[], metavar="ARM=N", help="an --arms cap override")
+    parser.add_argument("--cap", action="append", default=[], metavar="[RECORD:]ARM=N", help="an --arms cap override")
     parser.add_argument(
-        "--limit", action="append", default=[], metavar="ARM[/CASE]=N", help="an --arms per-case stop limit"
+        "--limit",
+        action="append",
+        default=[],
+        metavar="[RECORD:]ARM[/CASE]=N",
+        help="an --arms per-case stop limit",
     )
     parser.add_argument("--out-dir", type=Path, help="the record directory of --arms")
     parser.add_argument(
@@ -55,43 +63,36 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--out", type=Path)
     args = parser.parse_args(argv)
+    dirs: list[Path] = args.record_dirs
     if args.merge:
         record = nl.merge_records([json.loads(path.read_text()) for path in args.merge])
     elif args.summarize:
         record = nl.null_summary([path.read_text() for path in args.summarize])
-    elif args.calibrate_sparse:
-        if args.record_dir is None:
-            parser.error("RECORD_DIR is required with --calibrate-sparse")
-        record = nl.sparse_calibration_record(
-            nl.build_setup(args.record_dir),
-            args.calibration_seed,
-            qrng_seeds.seed_record(
-                "scripts/msq_successor_null.py", "--calibration-seed", "settle-sparse", args.calibration_seed_source
-            ),
-            args.record_dir.name,
-        )
-    elif args.arms:
-        if args.record_dir is None or args.out_dir is None or args.arm is not None:
-            parser.error("--arms needs RECORD_DIR and --out-dir and replaces --arm")
+    elif args.calibrate_sparse or args.arms:
+        if args.arm is not None or not dirs:
+            parser.error("--calibrate-sparse and --arms need RECORD_DIR and replace --arm")
+        if args.arms and args.out_dir is None:
+            parser.error("--arms needs --out-dir")
+        names = [path.name for path in dirs]
+        if len(set(names)) != len(names):
+            parser.error(f"record directory names repeat: {names}")
+        if args.out is not None and (len(dirs) > 1 or not args.calibrate_sparse):
+            parser.error("--out names the one calibration record of a single RECORD_DIR with --calibrate-sparse")
         try:
-            runs = plan_runs(args.arms, args.cap, args.record_dir.name, args.limit)
+            setups = [nl.build_setup(path, () if args.calibrate_sparse else None) for path in dirs]
+            if args.calibrate_sparse:
+                setups = calibrate_and_write(setups, names, args)
+            if args.arms:
+                run_and_write(setups, names, args)
         except ValueError as error:
             parser.error(str(error))
-        setup = nl.build_setup(args.record_dir)
-        labels = {run.arm: {case.label for case in nl.arm_cases(run.arm, setup.width)} for run in runs}
-        try:
-            runs = [run._replace(limits=expand_limits(run, labels[run.arm])) for run in runs]
-        except ValueError as error:
-            parser.error(str(error))
-        records = nl.run_arms(setup, runs, args.shard, 1 if args.shards is None else args.shards)
-        write_arm_records(args.out_dir, records, args.shard if args.shards is not None else None)
         return 0
     else:
-        if args.record_dir is None or args.arm is None:
-            parser.error("RECORD_DIR and --arm are required unless --merge or --summarize is given")
+        if len(dirs) != 1 or args.arm is None:
+            parser.error("one RECORD_DIR and --arm are required unless --merge or --summarize is given")
         if args.arm == "settle-sparse" and args.seed == nl.SPARSE_CALIBRATION_SEED:
             parser.error("the sparse settle null draws from the calibration's own seed")
-        setup = nl.build_setup(args.record_dir)
+        setup = nl.build_setup(dirs[0])
         shard = nl.run_arm(
             setup,
             args.arm,
@@ -100,7 +101,7 @@ def main(argv: list[str] | None = None) -> int:
             args.shard,
             1 if args.shards is None else args.shards,
             qrng_seeds.seed_record("scripts/msq_successor_null.py", "--seed", args.arm, args.seed_source),
-            args.record_dir.name,
+            dirs[0].name,
         )
         record = shard if args.shards is not None else nl.merge_records([shard])
     text = nl.dumps(record)
@@ -109,6 +110,57 @@ def main(argv: list[str] | None = None) -> int:
     else:
         print(text, end="")
     return 0
+
+
+def calibrate_and_write(setups: list[nl.Setup], names: list[str], args: argparse.Namespace) -> list[nl.Setup]:
+    """Calibrate the sparse scales of every setup through one pool, write each calibration record to `--out` or the
+    path sparse_evidence_path names, and return the setups carrying the fresh scales."""
+    records = nl.sparse_calibration_records(
+        setups,
+        args.calibration_seed,
+        qrng_seeds.seed_record(
+            "scripts/msq_successor_null.py", "--calibration-seed", "settle-sparse", args.calibration_seed_source
+        ),
+        names,
+    )
+    for setup, record in zip(setups, records, strict=True):
+        path = args.out or nl.sparse_evidence_path(setup.digests["snapshot_sha256"], setup.width, setup.shots)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(nl.dumps(record))
+    return nl.with_calibrated_scales(setups, records)
+
+
+def run_and_write(setups: list[nl.Setup], names: list[str], args: argparse.Namespace) -> None:
+    """Run the --arms plan of every record's setup through one `run_arms` call and write each record's arm records
+    to --out-dir, under the record's name when several records run."""
+    runs: list[nl.ArmRun] = []
+    for setup, name in zip(setups, names, strict=True):
+        found = plan_runs(args.arms, for_record(args.cap, name, names), name, for_record(args.limit, name, names))
+        labels = {run.arm: {case.label for case in nl.arm_cases(run.arm, setup.width)} for run in found}
+        runs.extend(run._replace(limits=expand_limits(run, labels[run.arm]), setup=setup) for run in found)
+    records = nl.run_arms(setups[0], runs, args.shard, 1 if args.shards is None else args.shards)
+    shard = args.shard if args.shards is not None else None
+    for name in names:
+        mine = [record for record in records if record["record"] == name]
+        write_arm_records(args.out_dir if len(names) == 1 else args.out_dir / name, mine, shard)
+
+
+def for_record(entries: list[str], record_name: str, record_names: list[str]) -> list[str]:
+    """The --cap or --limit entries that apply to one record, without their `RECORD:` prefix: an unprefixed entry
+    applies to every record, a prefixed entry to the record it names, and a prefix that names none of `record_names`
+    is refused."""
+    kept = []
+    for entry in entries:
+        spec, equals, value = entry.partition("=")
+        prefix, colon, rest = spec.partition(":")
+        if not colon:
+            kept.append(entry)
+            continue
+        if prefix not in record_names:
+            raise ValueError(f"{entry}: {prefix!r} names none of the records {record_names}")
+        if prefix == record_name:
+            kept.append(f"{rest}{equals}{value}")
+    return kept
 
 
 def plan_runs(arms: list[str], caps: list[str], record_name: str, limits: list[str] | None = None) -> list[nl.ArmRun]:
