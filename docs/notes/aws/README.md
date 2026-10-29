@@ -64,8 +64,13 @@ The account id stays out of every commit and record.
 `aws configure agent-toolkit --yes --region us-east-1 --profile gororoba`
 installed 24 AWS skills (into `~/.claude/skills` and `~/.agents/skills/`)
 and registered an `aws-mcp` server in Claude Code, Codex, Gemini CLI,
-OpenCode and Windsurf. Each registration runs the proxy at an exact release
-and names the profile:
+OpenCode and Windsurf. The same command on 2026-10-28 refreshed those skills.
+It rewrote the Codex entry to `mcp-proxy-for-aws@latest` and dropped the
+profile variable; that entry was restored to the pin below. Grok
+(`~/.grok/config.toml`) and Agy (`~/.gemini/config/mcp_config.json`, the file
+`agy mcp` writes) are outside the installer's agent list, so the same pin and
+profile variable were added with each tool's own MCP command. Each
+registration runs the proxy at an exact release and names the profile:
 
 ```json
 "aws-mcp": {
@@ -88,4 +93,13 @@ variable. `aws agent-toolkit list-available-skills --region us-east-1
 
 The starter rules govern AWS work in this account; where they conflict with
 this repository's AGENTS.md, the repository wins, as the rules themselves
-state.
+state. The current new-experience rules live, under the same begin and end
+markers, in the user-level rule files for Grok, Claude, Codex, and Agy, which
+every session in this repository loads; this repository's AGENTS.md carries no
+copy, so a session reads them once.
+
+The operator names Future Startup as the default group for this new-experience
+organization. The project role can list one Identity Center group, the managed
+AdministratorAccess group, and denies `identitystore:CreateGroup`, so the
+Future Startup group does not exist yet; creating it needs a role that holds
+that action.

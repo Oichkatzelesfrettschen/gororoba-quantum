@@ -2337,6 +2337,29 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/msq_envelope_raw_diagnostics.py results/live/2026-10-27T014422.881898Z --check docs/evidence/measurement_sequence/envelope-run-raw-diagnostics.json",
+   "name": "core-msq-envelope-raw-diagnostics-replay",
+   "seconds": 6.3,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/measurement_sequence/envelope-run-raw-diagnostics.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/msq_successor_replay.py results/live/2026-10-27T014422.881898Z --check docs/evidence/measurement_sequence/successor-replay.json",
+   "name": "core-msq-successor-replay",
+   "seconds": 6.3,
+   "tier": "pr",
+   "workers": "all",
+   "replays": [
+    "docs/evidence/measurement_sequence/successor-replay.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs results/live/2026-10-13T080216.451663Z,merged,pairs && \"$PYTHON\" -B -W error scripts/ghost_run.py --report docs/evidence/ghost_runs/result.json | cmp - docs/evidence/ghost_runs/report.json",
    "name": "core-287",
    "seconds": 112.6,

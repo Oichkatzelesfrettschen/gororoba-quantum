@@ -1,0 +1,27 @@
+{
+ "schema": "kaggle-aer-collect-v2",
+ "kernel": "probablyeric/gororoba-msq-successor-v4-plateau-retained-s1/1",
+ "capture": "2026-10-28T175544.330761Z",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-28T175548Z",
+ "submission_sha256": "be3147ab521b4ee72a7fc5f8de67701805a2e65c7a72d783086912541f5e2bdc",
+ "predecessor_sha256": null,
+ "files": {
+  "gororoba-msq-successor-v4-plateau-retained-s1.log": "56644cc4c0d2f8889aa31027090dcbcfcd02f42cb49b1aed5c2de6c1e0fe06f3",
+  "output/ci-freeze.txt": "c2845df48165bce5cce2761f3fe19aa0566ee39c81a88cfceed71203a6a0de6f",
+  "output/datasets.json": "5037fec980510b0268a13524f7c3c92c15c5fd0e9eeb6cd3de99e3555dc0103a",
+  "output/environment.json": "2f522b38a4e22faf653896536ffcb2368740d8108831f530821015230afc45c7",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "29569d834fd74ad129e918c46b172990daeff9832a8868f8eff4b029410ad0a4",
+  "output/install-pins.txt": "fe0afc5bb1aba38d8d4e79311e2ee6b8228e960e6e6a6813e6d1ff1dedb93a56",
+  "output/pip.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/python-install.txt": "1534574622f144e630a3b69d6dfb5fcec272bf574dd6027fb1edd873e9d2d510",
+  "output/repo/plateau-retained-shard1.json": "70fc8fc5d50264a72f03c8ef898c9aa909b589c7005355ffa3b181cc6e357cb9",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/uv-install.txt": "0e29aea00cf5ce05a687c37898da5af4ff00d4cc1e84348f50885e37e1ff370b",
+  "output/venv.txt": "c48758d995a48623a551e0e9f985c932e5fed775b217d7ed00f929890de3f00b"
+ },
+ "reported_status": "probablyeric/gororoba-msq-successor-v4-plateau-retained-s1/1 has status \"KernelWorkerStatus.COMPLETE\"",
+ "discarded": {}
+}

@@ -19,7 +19,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Open Quantum | brokered IonQ, Rigetti, IQM and AQT backends | [open_quantum/README.md](notes/open_quantum/README.md) |
 | Quandela | Belenos and Ascella photonic campaign | [quandela/README.md](notes/quandela/README.md) |
 | IQM Resonance | Emerald, Garnet and Sirius | [iqm/README.md](notes/iqm/README.md) |
-| qBraid | broker and free CPU/GPU simulators; captured docs, REST OpenAPI and pins | [qbraid/README.md](notes/qbraid/README.md) |
+| qBraid | broker, Lab compute profiles, and free CPU/GPU simulators; captured docs, REST OpenAPI and pins | [qbraid/README.md](notes/qbraid/README.md) |
 | IonQ | cloud simulator with IonQ noise models; Forte QPUs without credit | [ionq/README.md](notes/ionq/README.md) |
 | BlueQubit | free CPU statevector, MPS and Pauli-path simulators; credit-only GPU and QPU | [bluequbit/README.md](notes/bluequbit/README.md) |
 | Quafu | BAQIS ScQ superconducting QPUs and a 10-qubit simulator | [quafu/README.md](notes/quafu/README.md) |
@@ -284,6 +284,7 @@ differs from it only in the `cd_core.py` digest.
 | [design/et-rows.md](design/et-rows.md) | ET-row device experiment |
 | [design/measurement-sequence-pinching.md](design/measurement-sequence-pinching.md) | `measurement-sequence` and `measurement-sequence-diagnostic` families: N rotations each followed by a mid-circuit measurement against an elapsed-time-matched delay, ideal pinching law, endpoints, the preregistered decision rule with its model and Aer validation tables, the diagnostic that measures the gate-model scatter floor (qubit rule, floor rule, Aer validation), and Tuna-17 port |
 | [design/measurement-sequence-adaptive-envelope.md](design/measurement-sequence-adaptive-envelope.md) | calibration-adaptive approval envelope for the measurement-sequence family: layout rule re-applied at submit, 20 us repetition delay with a 50 us fallback, herald postselection, in-job gate-model floor, scaling to about 50 qubits |
+| [design/measurement-sequence-envelope-successor.md](design/measurement-sequence-envelope-successor.md) | successor of the measurement-sequence envelope run: a carryover screen sized from the endpoint sensitivity and measured by single-circuit history jobs, descriptive settle gap, per-qubit report below 8 kept qubits |
 | [design/hybrid-shor.md](design/hybrid-shor.md) | hybrid Shor architecture for IBM Heron r2 |
 | [design/retention-bookkeeping-per-record.md](design/retention-bookkeeping-per-record.md) | retained-run bookkeeping bound per job record instead of per aggregate file: measured cost of a retention, the invariants each binding proves, and the levers with predicted effects and falsifiers |
 | [design/n21-orbit-window-dose-envelope.md](design/n21-orbit-window-dose-envelope.md) | calibration-adaptive approval envelope, bounds and decisions D1-D3 of the N=21 orbit window-dose sweep |
@@ -359,6 +360,7 @@ differs from it only in the `cd_core.py` digest.
 |---|---|
 | [ci-runtime.md](runbooks/ci-runtime.md) | timing denominators, bottlenecks and replay selection |
 | [vectorized-fits.md](runbooks/vectorized-fits.md) | batched classical fits across replicates |
+| [null-shards.md](runbooks/null-shards.md) | the successor null through one pool, Kaggle kernels and hosted-runner shards |
 
 ### State and records
 
