@@ -13,6 +13,7 @@ requirements.txt pins of qiskit 2.6.0 and runtime 0.50.0 until the pin bump land
 | python-qiskit-aer-cuda (provides python-qiskit-aer) | qiskit-aer 0.18.2, pkgrel 1: CUDA Thrust backend for sm_89 with cuQuantum, so `AerSimulator(device="GPU", cuStateVec_enable=True)` runs |
 | cuquantum | cuquantum 26.09.0.8 for CUDA 13, repackaged from the vendor archive: libcustatevec.so.1 1.15.0 and libcutensornet.so.2 2.14.0, the two libraries python-qiskit-aer-cuda 0.18.2-1 links |
 | cutensor | cutensor 2.8.1.0, the tensor library libcutensornet.so.2 loads |
+| python-cuquantum | cuquantum-python-cu13 26.9.0: `cuquantum.bindings` (custatevec, cutensornet, cudensitymat, cupauliprop, custabilizer) and `cuquantum.tensornet` over the cuquantum package |
 | cuda | cuda 13.4.3 (nvcc 13.4.92): the toolkit both packages build against and the libcublas and libcusolver the module loads from /opt/cuda/lib64 |
 | python-samplomatic | samplomatic 0.21.0, the runtime 0.50 floor |
 | python-ibm-quantum-schemas | ibm-quantum-schemas 0.13.20261016, the runtime 0.51 floor |
@@ -58,8 +59,16 @@ NumPy links libcblas.so.3, and SciPy links libblas.so.3 and liblapack.so.3;
 all three resolve to libopenblas.so.0.3. The user venvs and `/opt` stacks take PyPI
 wheels instead, with their own bundled OpenBLAS (`numpy.libs`,
 `qiskit_aer.libs`, `scipy_openblas32`) and a CPU-only Aer, so GPU simulation
-runs on the system interpreter alone. The cuQuantum Python bindings
-(`cuquantum-python`) are not installed, and no repository code imports them.
+runs on the system interpreter alone. python-cuquantum 26.09.0 builds the
+cuQuantum Python bindings (`cuquantum-python-cu13`) from the upstream source tag
+against the cuquantum and cuda packages. Its prepare() drops the five pip library
+requirements (`custatevec-cu13` and siblings) and names the system `cupy`
+distribution, so cuda-pathfinder resolves libcustatevec.so.1 and its siblings
+from /usr/lib. A cuTensorNet contraction of the Bell circuit through
+`CircuitToEinsum` gives the amplitude 0.7071 for `11`. The PyPI
+`nvidia-cublas` and `nvidia-cusolver` wheels carry the same libraries the
+cuda package installs, and no installed distribution requires them, so they
+stay uninstalled.
 `docs/notes/build_host/custatevec.md` holds the requirement list, the build
 and install commands and the probe results. A Kaggle kernel installs qiskit 2.6.0,
 qiskit-ibm-runtime 0.50.0 (its fake backends, such as FakeFez, need no
