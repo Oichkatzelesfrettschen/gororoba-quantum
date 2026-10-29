@@ -92,6 +92,7 @@ RECORD_CHECKS = (
     ("scripts/capture_qbraid_docs.py", ".", "--check", 5),
     ("scripts/capture_kaggle_docs.py", ".", "--check", 5),
     ("scripts/zbmath.py", ".", "check docs/evidence/zbmath-api-audit", 6),
+    ("scripts/zbmath.py", ".", "check-fields docs/evidence/zbmath-search-fields/fields.json", 6),
 )
 
 

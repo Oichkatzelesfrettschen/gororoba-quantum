@@ -21,9 +21,10 @@ retries 500, 502, 503 and 504 answers RETRIES times with doubling back-off.
   the <error> element whatever the HTTP code.
 - Citation matching, https://zbmath.org/citationmatching/ (Script API PDF
   v1.6.26): match (GET, or POST with up to 100 queries), bibtex/match and
-  bibtex/convert_file.
+  bibtex/convert_file. The service does not apply its documented default
+  minimum score, so match and bibtex always send m.
 
-Subcommands (all but check and --self-test reach the network):
+Subcommands (all but check, check-fields and --self-test reach the network):
 
 - get ENTITY ID; search ENTITY QUERY; structured ENTITY FIELD=VALUE...
   print the REST result list as JSON; --page and --per-page select a page,
@@ -32,6 +33,10 @@ Subcommands (all but check and --self-test reach the network):
   follows resumptionTokens and writes page-NNNN.xml files into DIR.
 - match QUERY [-n N] [-m SCORE], match --bulk FILE.json, bibtex FILE and
   bibtex FILE --convert call the citation matcher.
+- fields --out FILE runs FIELD_PROBES, a positive and a negative query per
+  one-line search field against an anchor record, and check-fields FILE
+  (offline) requires every positive to find the anchor alone and every
+  negative to find nothing.
 - capture --out DIR runs the fixed request inventory CAPTURES, writes each
   response's raw bytes and MANIFEST.json (URL, method, HTTP status, content
   type, sha256), then runs check. A directory holding a MANIFEST.json is
@@ -41,10 +46,13 @@ Subcommands (all but check and --self-test reach the network):
   finding in FINDINGS to hold on the retained bytes, so a re-capture that
   fails check names the behavior the service changed.
 - --self-test requires check to reject an altered byte, a removed file, an
-  unlisted file, a changed URL and a flipped HTTP status, and the pure
-  helpers to classify synthetic envelopes and OAI errors.
+  unlisted file, a changed URL, a flipped HTTP status, an added ETag and an
+  altered observation, check-fields to reject a negative control that found
+  documents, and the pure helpers to classify synthetic envelopes and OAI
+  errors.
 
-Usage: "$PYTHON" scripts/zbmath.py (get|search|structured|oai|match|bibtex|capture|check) ... | --self-test
+Usage: "$PYTHON" scripts/zbmath.py COMMAND ... | --self-test, COMMAND one of get, search, structured,
+oai, match, bibtex, capture, check, fields, check-fields
 """
 
 from __future__ import annotations
@@ -53,6 +61,7 @@ import argparse
 import gzip
 import hashlib
 import json
+import re
 import shutil
 import sys
 import tempfile
@@ -417,6 +426,8 @@ CAPTURES = (
         FORM,
         f"multipart/form-data; boundary={FORM_BOUNDARY}",
     ),
+    Probe("rest-docs-path", "https://api.zbmath.org/docs"),
+    Probe("rest-terms-agreed-page", "https://api.zbmath.org/?tnc_agreed=1"),
 )
 
 
@@ -476,7 +487,11 @@ FINDINGS: tuple[Finding, ...] = (
     (
         "rest-openapi",
         "the OpenAPI document declares no security scheme: the API is keyless",
-        lambda s, b: "securitySchemes" not in _json(b).get("components", {}),
+        lambda s, b: (
+            "openapi" in _json(b)
+            and "schemas" in _json(b)["components"]
+            and "securitySchemes" not in _json(b)["components"]
+        ),
     ),
     (
         "rest-document-intro",
@@ -541,7 +556,12 @@ FINDINGS: tuple[Finding, ...] = (
     (
         "rest-document-search-arxiv",
         "the arxiv: search field finds an old-style arXiv identifier",
-        lambda s, b: s == 200 and _status(b)["nr_total_results"] == 1,
+        lambda s, b: (
+            s == 200
+            and _status(b)["nr_total_results"] == 1
+            and {"identifier": "math/0511691", "type": "arxiv", "url": "https://arxiv.org/abs/math/0511691"}
+            in _json(b)["result"][0]["links"]
+        ),
     ),
     (
         "rest-document-search-no-hits",
@@ -627,7 +647,15 @@ FINDINGS: tuple[Finding, ...] = (
         "a serial resolves with its lineage and ISSN list",
         lambda s, b: s == 200 and "lineage" in _json(b)["result"] and "issn" in _json(b)["result"],
     ),
-    ("rest-serial-search-issn", "an ISSN search answers HTTP 200", lambda s, b: s == 200),
+    (
+        "rest-serial-search-issn",
+        "an ISSN search returns every serial carrying that print ISSN",
+        lambda s, b: (
+            s == 200
+            and len(_json(b)["result"]) == _status(b)["nr_total_results"] > 0
+            and all({"number": "0003-486X", "type": "print"} in r["issn"] for r in _json(b)["result"])
+        ),
+    ),
     (
         "rest-software-structured",
         "a software record carries related software and the placeholder description",
@@ -766,8 +794,8 @@ FINDINGS: tuple[Finding, ...] = (
     ),
     (
         "oai-zb-preview-schema-relative",
-        "the schema URL resolved against the base URL /v1/ answers HTTP 404",
-        lambda s, b: s == 404,
+        "the schema URL resolved against the base URL /v1/ answers an HTML HTTP 404",
+        lambda s, b: s == 404 and b"<title>404 Not Found</title>" in b,
     ),
     (
         "oai-zb-preview-imported-schema",
@@ -811,6 +839,16 @@ FINDINGS: tuple[Finding, ...] = (
         "cite-bibtex-convert",
         "convert_file returns the BibTeX with a zbl field",
         lambda s, b: s == 200 and b"zbl = {1006.17005}" in b,
+    ),
+    (
+        "rest-docs-path",
+        "the documentation path /docs redirects to /v1/docs, which answers the JSON 404 envelope",
+        lambda s, b: s == 404 and _status(b)["internal_code"] == "Not Found",
+    ),
+    (
+        "rest-terms-agreed-page",
+        "the page behind the terms form is Swagger UI 3.52.5 loading /v1/openapi.json",
+        lambda s, b: s == 200 and b"swagger-ui/v3.52.5/swagger-ui-bundle.js" in b and b"url: '/v1/openapi.json'" in b,
     ),
 )
 
@@ -859,6 +897,11 @@ HEADER_FINDINGS: tuple[tuple[str, str, Callable[[dict[str, str]], bool]], ...] =
         lambda h: not _rate_limited(h) and not any(key in h for key in CACHE_HEADERS),
     ),
     (
+        "rest-terms-agreed-page",
+        "the agreed-terms page sets a 30-day tsnc cookie; no API endpoint in this capture sends or needs it",
+        lambda h: h.get("set-cookie", "").startswith("tsnc=<redacted>") and "Max-Age=2595600" in h["set-cookie"],
+    ),
+    (
         "cite-match",
         "the citation matcher answers through Cloudflare with no rate-limit header",
         lambda h: h.get("server") == "cloudflare" and not _rate_limited(h),
@@ -872,6 +915,14 @@ HEADER_FINDINGS: tuple[tuple[str, str, Callable[[dict[str, str]], bool]], ...] =
 OBSERVATIONS = {
     "oai-get-record-zb-preview-summary-served.xml": "a6c3ad7fa6ff09d5060a552a1a6562ffb34d6de43db689033ece5529117e9f15",
 }
+
+
+def redact(headers: dict[str, str]) -> dict[str, str]:
+    """Replace each cookie value a server sets, which a capture retains in public, with <redacted>."""
+    out = dict(headers)
+    if "set-cookie" in out:
+        out["set-cookie"] = re.sub(r"^([^=;]+)=[^;]*", r"\1=<redacted>", out["set-cookie"])
+    return out
 
 
 def capture_name(index: int, probe: Probe, content_type: str) -> str:
@@ -898,7 +949,7 @@ def capture(out: Path, transport: Transport) -> int:
                 "request_body": probe.body,
                 "request_headers": [list(pair) for pair in probe.headers],
                 "status": reply.status,
-                "response_headers": reply.headers,
+                "response_headers": redact(reply.headers),
                 "content_type": reply.content_type,
                 "bytes": len(reply.body),
                 "sha256": hashlib.sha256(reply.body).hexdigest(),
@@ -950,6 +1001,8 @@ def check_problems(directory: Path) -> list[str]:
             problems.append(f"{entry['name']}: request differs from the inventory")
         if isinstance(entry.get("response_headers"), dict):
             headers[str(entry.get("name"))] = entry["response_headers"]
+            if entry["response_headers"] != redact(entry["response_headers"]):
+                problems.append(f"{entry.get('name')}: a Set-Cookie value is retained unredacted")
         path = directory / str(entry.get("file"))
         if not path.is_file():
             problems.append(f"{entry.get('file')} is missing")
@@ -1020,6 +1073,8 @@ def self_test() -> int:
     last = token.replace(b"<resumptionToken>t1</resumptionToken>", b"<resumptionToken/>")
     if oai_parse(error)[1] != "idDoesNotExist" or oai_parse(token)[2] != "t1" or oai_parse(last)[2] is not None:
         failures.append("oai_parse misread an error code or a resumptionToken")
+    if redact({"set-cookie": "k=secret; Path=/"}) != {"set-cookie": "k=<redacted>; Path=/"}:
+        failures.append("redact kept a cookie value")
     if EVIDENCE.joinpath("MANIFEST.json").is_file():
         if check_problems(EVIDENCE):
             failures.append("the retained capture fails check")
@@ -1044,6 +1099,15 @@ def self_test() -> int:
                     failures.append(f"check accepted a capture with a {label}")
     else:
         failures.append(f"{EVIDENCE} holds no MANIFEST.json")
+    if FIELDS.is_file():
+        record = json.loads(FIELDS.read_text(encoding="utf-8"))
+        if field_problems(record):
+            failures.append("the retained field audit fails check-fields")
+        record["rows"][0]["negative_total"] = 3
+        if not field_problems(record):
+            failures.append("check-fields accepted a negative control that found documents")
+    else:
+        failures.append(f"{FIELDS} is missing")
     for failure in failures:
         print(f"zbmath self-test: {failure}", file=sys.stderr)
     if not failures:
@@ -1060,6 +1124,168 @@ def _flip(path: Path) -> None:
 def _edit(directory: Path, manifest: dict[str, Any], index: int, key: str, value: object) -> None:
     manifest["entries"][index][key] = value
     (directory / "MANIFEST.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")
+
+
+# ---- one-line search field audit
+
+FIELDS = ROOT / "docs/evidence/zbmath-search-fields/fields.json"
+FIELDS_SCHEMA = "zbmath-search-fields-v1"
+
+
+@dataclass(frozen=True)
+class FieldProbe:
+    """`anchor & field:positive` must find exactly the anchor; `anchor & field:negative` must find nothing."""
+
+    entity: str
+    anchor: str
+    field: str
+    positive: str
+    negative: str | None
+    documented: bool = True
+
+
+_A, _B, _C = "an:1257.82097", "an:1137.17007", "an:1518.14003"
+FIELD_PROBES = (
+    *(
+        FieldProbe("document", _A, f, p, n)
+        for f, p, n in (
+            ("any", "sedenions", "zzqqxx"),
+            ("au", "Lawrynowicz", "Zzqqxx"),
+            ("ti", "ternary", "zzqq"),
+            ("ut", "sedenions", "zzqq"),
+            ("cc", "82C44", "05C99"),
+            ("cc", "*82C44", "*15A66"),
+            ("py", "2012", "1999"),
+            ("py", "2010-2013", "1990-1995"),
+            ("so", "Clifford", "Topology"),
+            ("doi", "10.1007/s00006-012-0360-6", "10.1000/zzqq"),
+            ("en", "10.1007/s00006-012-0360-6", "10.1000/zzqq"),
+            ("se", "2038", "57"),
+            ("la", "English", "French"),
+            ("la", "EN", "FR"),
+            ("pu", "Springer", "Elsevier"),
+            ("dt", "j", "b"),
+            ("db", "Zbl", "JFM"),
+            ("st", "c", None),
+            ("st", "r", None),
+            ("st", "o", None),
+            ("na", "3", "1"),
+            ("na", "2-4", "5-9"),
+            ("rft", "Ising", "zzqqxx"),
+            ("ab", "Onsager", "zzqqxx"),
+        )
+    ),
+    FieldProbe("document", "an:1263.01009", "st", "s", None, documented=False),
+    FieldProbe("document", _A, "ai", "lawrynowicz.julian", "smith.ivan", documented=False),
+    FieldProbe("document", "an:1412.82015", "rf", "6123912", "1257.82097", documented=False),
+    FieldProbe("document", "an:1566.14003", "ci", "3336606", "6123912"),
+    FieldProbe("document", "an:1566.14003", "ci", "0212.26101", "1257.82097"),
+    FieldProbe("document", _B, "arxiv", "math/0511691", "math/0000001"),
+    FieldProbe("document", _B, "rv", "Elduque", "Zzqqxx"),
+    FieldProbe("document", _B, "rn", "5518", "1"),
+    FieldProbe("document", _B, "pt", "r", "t"),
+    FieldProbe("document", _C, "sw", "Macaulay2", "Zzqqxx"),
+    FieldProbe("document", _C, "si", "537", "1"),
+    FieldProbe("document", "an:1263.01009", "br", "Hilbert", "Zzqqxx"),
+    FieldProbe("document", "an:1391.81004", "ed", "Wheeler", "Zzqqxx"),
+    FieldProbe("document", "an:1474.30019", "li", "*", None),
+    *(
+        FieldProbe("author", "ai:lawrynowicz.julian", f, p, n)
+        for f, p, n in (
+            ("any", "Lawrynowicz", "Zzqqxx"),
+            ("au", "Lawrynowicz", "Zzqqxx"),
+            ("ln", "Ławrynowicz", "Zzqqxx"),
+            ("fn", "Julian", "Zzqqxx"),
+            ("cc", "30", "05"),
+            ("py", "2012", "1900"),
+        )
+    ),
+    FieldProbe("author", "ai:bourbaki.nicolas", "en", "Q190529", "Q1"),
+    FieldProbe("author", "ai:bourbaki.nicolas", "st", "o", None),
+    FieldProbe("author", "ai:elduque.alberto", "rv", "5518", "1"),
+    FieldProbe("author", "ai:elduque.alberto", "st", "z", None),
+    FieldProbe("author", "ai:serre.jean-pierre", "aw", "Fields", "Zzqqxx"),
+    FieldProbe("author", "ai:serre.jean-pierre", "co", "bourbaki.nicolas", "zz.qq"),
+    *(
+        FieldProbe("serial", "se:2038", f, p, n)
+        for f, p, n in (
+            ("any", "Clifford", "zzqqxx"),
+            ("jt", "Clifford", "Topology"),
+            ("sn", "0188-7009", "0003-486X"),
+            ("cy", "CH", "FR"),
+            ("la", "EN", "ZH"),
+            ("cc", "15", "05"),
+            ("pu", "Springer", "Elsevier"),
+            ("tp", "j", "b"),
+            ("st", "c", None),
+            ("py", "2000", "1800"),
+            ("li", "*", None),
+        )
+    ),
+    *(
+        FieldProbe("software", "si:537", f, p, n)
+        for f, p, n in (
+            ("any", "Macaulay2", "zzqqxx"),
+            ("sw", "Macaulay2", "Zzqqxx"),
+            ("au", "Grayson", "Zzqqxx"),
+            ("ut", "CAS", "zzqqxx"),
+            ("cc", "13", "03"),
+            ("ab", "algebraic", "zzqqxx"),
+        )
+    ),
+    FieldProbe("software", "si:630", "pl", "C", "Fortran"),
+    *(
+        FieldProbe("classification", "cc:17A35", f, p, n)
+        for f, p, n in (("any", "division", "zzqq"), ("ct", "division", "zzqq"), ("lv", "2", "0"))
+    ),
+)
+
+
+def _total(transport: Transport, entity: str, query: str) -> int:
+    _, block = rest(transport, f"{entity}/_search", {"search_string": query, "results_per_page": 1})
+    return int(block.get("nr_total_results") or 0)
+
+
+def field_audit(out: Path, transport: Transport) -> int:
+    if out.exists():
+        raise ZbmathError(f"{out} exists; retained field audits are immutable, choose a new path")
+    rows = []
+    for probe in FIELD_PROBES:
+        positive = _total(transport, probe.entity, f"{probe.anchor} & {probe.field}:{probe.positive}")
+        negative = None
+        if probe.negative is not None:
+            negative = _total(transport, probe.entity, f"{probe.anchor} & {probe.field}:{probe.negative}")
+        rows.append({**probe.__dict__, "positive_total": positive, "negative_total": negative})
+        print(f"{probe.entity} {probe.field}:{probe.positive} -> {positive}, {negative}", file=sys.stderr)
+    record = {"schema": FIELDS_SCHEMA, "captured_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"), "rows": rows}
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(record, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    return check_fields(out)
+
+
+def field_problems(record: dict[str, Any]) -> list[str]:
+    problems = []
+    if record.get("schema") != FIELDS_SCHEMA:
+        problems.append(f"schema {record.get('schema')!r} is not {FIELDS_SCHEMA}")
+    rows = record.get("rows", [])
+    if [{k: r.get(k) for k in FieldProbe.__dataclass_fields__} for r in rows] != [p.__dict__ for p in FIELD_PROBES]:
+        problems.append("rows differ from the FIELD_PROBES inventory")
+    for row in rows:
+        label = f"{row.get('entity')} {row.get('anchor')} & {row.get('field')}"
+        if row.get("positive_total") != 1:
+            problems.append(f"{label}:{row.get('positive')} found {row.get('positive_total')}, not the anchor alone")
+        if row.get("negative") is not None and row.get("negative_total") != 0:
+            problems.append(f"{label}:{row.get('negative')} found {row.get('negative_total')}, not 0")
+    return problems
+
+
+def check_fields(path: Path) -> int:
+    problems = field_problems(json.loads(path.read_text(encoding="utf-8")))
+    for problem in problems:
+        print(f"zbmath check-fields: {problem}", file=sys.stderr)
+    if not problems:
+        print(f"zbmath check-fields: {len(FIELD_PROBES)} field probes hold")
+    return 1 if problems else 0
 
 
 # ---- command line
@@ -1191,6 +1417,10 @@ def parser() -> argparse.ArgumentParser:
     cap.add_argument("--out", type=Path, required=True)
     chk = sub.add_parser("check")
     chk.add_argument("directory", type=Path)
+    fields = sub.add_parser("fields")
+    fields.add_argument("--out", type=Path, required=True)
+    check_field = sub.add_parser("check-fields")
+    check_field.add_argument("path", type=Path)
     return top
 
 
@@ -1200,6 +1430,8 @@ def main(argv: list[str] | None = None) -> int:
         return self_test()
     if args.command == "check":
         return check(args.directory)
+    if args.command == "check-fields":
+        return check_fields(args.path)
     if args.command is None:
         parser().print_usage(sys.stderr)
         return 2
@@ -1215,6 +1447,8 @@ def main(argv: list[str] | None = None) -> int:
             return run_match(args, transport)
         if args.command == "bibtex":
             return run_bibtex(args, transport)
+        if args.command == "fields":
+            return field_audit(args.out, transport)
         return capture(args.out, transport)
     except ZbmathError as error:
         print(f"zbmath: {error}", file=sys.stderr)
