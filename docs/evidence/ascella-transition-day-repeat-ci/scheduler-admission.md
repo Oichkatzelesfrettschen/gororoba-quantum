@@ -41,3 +41,5 @@ served meshes.
 **Authority.** The user's instruction of 2026-10-29, quoted in the schedule's
 `approval`: run the repeat with the latest calibration regardless of the
 self-imposed timeframes, and collect when it is collecting.
+
+The admitted run's [findings](findings.md) report the five comparisons.

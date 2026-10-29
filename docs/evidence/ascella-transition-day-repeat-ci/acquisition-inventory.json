@@ -1,0 +1,14 @@
+{
+ "accepted_samples": 327680,
+ "analysis_sha256": "b41b3ffc7eb067d128d3307176edac36aaf64192710beb2aa5d1d4867dad693d",
+ "duration_seconds": 16,
+ "elapsed_hours": 33.378884,
+ "job_id": "078ecca0-fb08-4cf1-960f-6c12301a19da",
+ "matched_meshes": 5,
+ "raw_result_sha256": "4bb2408b3fcba07886d8a7a9128d64d7eacd839737326f426d1d39eafefdeab4",
+ "recorded_credit_charge": 1.131072,
+ "result_sha256": "bebeb3ca7d92df23422b883e4bb8908c4963110ae34ccefae06a3fd322e6b844",
+ "run": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat",
+ "schema": "ascella-transition-day-repeat-inventory-v1",
+ "status": "completed"
+}
