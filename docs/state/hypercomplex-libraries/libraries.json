@@ -2780,6 +2780,7 @@
     "gororoba_quantum/measurement_sequence_analysis.py",
     "gororoba_quantum/measurement_sequence_scatter.py",
     "gororoba_quantum/modular_arithmetic.py",
+    "gororoba_quantum/msq_envelope.py",
     "gororoba_quantum/msq_envelope_analysis.py",
     "gororoba_quantum/msq_envelope_null.py",
     "gororoba_quantum/msq_successor_analysis.py",
@@ -6304,6 +6305,7 @@
     "gororoba_quantum/hypercomplex_dynamics.py",
     "gororoba_quantum/measurement_sequence_analysis.py",
     "gororoba_quantum/measurement_sequence_scatter.py",
+    "gororoba_quantum/msq_envelope.py",
     "gororoba_quantum/msq_envelope_analysis.py",
     "gororoba_quantum/msq_envelope_null.py",
     "gororoba_quantum/msq_successor_analysis.py",
@@ -12495,6 +12497,15 @@
    "scipy",
    "sys",
    "typing"
+  ],
+  "scripts/msq_successor_coverage.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "msq_successor_null_batch",
+   "pathlib",
+   "statistics",
+   "sys"
   ],
   "scripts/msq_successor_null.py": [
    "__future__",
