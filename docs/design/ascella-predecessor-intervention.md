@@ -1,8 +1,16 @@
 # Ascella predecessor intervention
 
-Status: the corrected offline request and analyzer are built. The case remains
-unapproved; the sampling contract, independent review and Perceval body digest
-remain outstanding. The case authorizes zero provider submissions.
+Status: the owner selects the existing eight-iteration target-slot diagnostic
+with causal attribution unavailable. Independent acquisition review identifies
+reviewed-body/source binding and case-wide attempt-consumption gaps in the
+documented submission route. The case remains unapproved while those gates
+remain open. Conditional uncertainty additionally requires its reviewed
+sampling contract. The case authorizes zero provider submissions.
+
+The [bounded acquisition packet](../evidence/ascella-predecessor-admission/acquisition-review.md)
+records source/analyzer identities, independent findings, fresh read-only
+provider admission and digest custody. A separate causal successor carries
+the predecessor-causality objective.
 
 The builder is [`scripts/ascella_predecessor_case.py`](../../scripts/ascella_predecessor_case.py).
 The retained request is
@@ -308,6 +316,45 @@ bundle and a fresh plan. The case continues to admit `running` as a queueable
 platform status while enforcing calibration, maintenance and token-occupancy
 checks. The case has zero automatic retries.
 
+## Causal successor preparation contract
+
+The owner also requests a separate predecessor-causality design. The successor
+keeps the exact target mesh, physical input and complete twelve-mode output
+law and treats predecessor assignment as a randomized intervention. The
+successor estimates the effect of assigned predecessor A versus B on each
+target output probability, and reports absolute target error movement
+separately from changes in relationships. The target-slot diagnostic supplies
+neither a causal result nor continuation authority for that design.
+
+The candidate execution unit is a complete provider invocation containing one
+assigned predecessor followed by the fixed target. A randomized block contains
+matched A-target and B-target invocations plus a target-sensitive reference.
+The provider must expose evidence that the target physically follows the
+assigned predecessor. Returned list position alone fails that gate. If only
+invocation-level assignment is supported, the estimand remains the effect of
+the assigned invocation; the design withholds an immediately preceding
+physical-history interpretation until execution evidence supports it.
+
+Before generating any request, the successor binds these obligations:
+
+| Obligation | Required design artifact | Stop condition |
+|---|---|---|
+| Supported chronology | Provider execution evidence naming invocation membership, ordering and available timestamps | Physical predecessor attribution stays unavailable when evidence cannot identify chronology |
+| Randomization | Supported assignment unit, balanced allocation rule, probabilities and registered QRNG draw/index provenance | No causal claim from deterministic alternation or unsupported circuit order |
+| Carryover | Explicit admissible history length, initial-state model, target-sensitive references and any supported washout/reset behavior | Unidentified long carryover withholds the intended immediate-predecessor claim |
+| Stable target | Frozen target/input identity and returned compilation checks for every occurrence | A changed target compilation invalidates the comparison |
+| Reference interpretation | Target-sensitive settings spanning the response directions of interest, with reference-only payload effects declared | One stable unrelated reference cannot qualify all target responses |
+| Sampling and power | Fixed completion, eligibility, dependent sampling unit, practical margin, multiplicity and power under the joint observations | A precision radius or nonsignificant drift test cannot establish adequate power or stationarity |
+| Complete charge | Number of randomized blocks and invocations, reference exposures, current tariff, total ceiling and one-attempt rule | The eight-iteration tariff observation cannot price an unspecified successor |
+
+The initial design comparison uses paired invocation blocks because the current
+interface can name separate jobs while its iteration chronology remains
+unqualified. A within-job randomized design remains an alternative only when
+provider evidence establishes the actual controllable assignment and ordering
+unit. The successor freezes block count and cost after those capabilities and
+the joint power model qualify; its acquisition allocation remains zero until
+then. A new compilation or schedule requires a new exact case and approval.
+
 ## Seconds and credits
 
 The retained billing rule is one per-job price plus 1e-6 credits times the
@@ -389,7 +436,13 @@ or queued jobs. The estimate is 262,144 shots and 1.032768 credits. The
 observation binds the recorded case and source digests; a later submission
 refreshes all admission checks and requires exact owner approval.
 
-## Procedure after approval
+## Provider mechanics after binding repair and approval
+
+The acquisition review withholds the generic submit command below as an
+approved execution route. A verified case-specific route must bind the reviewed
+body, case, source/analyzer identities and case-wide attempt consumption before
+owner approval. The commands describe provider mechanics; their presence grants
+zero submission authority.
 
 Run the check, copy the request into a new run directory, and plan against
 the copy so the canonical case directory stays the request. The plan sends

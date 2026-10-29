@@ -240,6 +240,66 @@
             }
           ],
           "scope_sha256": "7451ba6e3ff68b85749407df8818c43d5e3f334bb3ee38003371a0dbc230c9ed"
+        },
+        {
+          "result": "Bounded acquisition review and revalidation: 30 focused case, analyzer and parser tests and byte-exact case replay pass. The owner selects the eight-iteration noncausal diagnostic and a separate causal successor; the design records chronology, randomization, carryover and complete-cost obligations. Independent inspection identifies reviewed-body/source and case-wide-attempt gaps. Fresh read-only admission passes with running Explorer, available processor, 262144 estimated shots and1.032768 estimated credits. External write-once custody entries bind the packet. The packet withholds approval; production constructor, analyzer and case bytes remain unchanged.",
+          "observed_at": "2026-10-29T00:56:57.033544+00:00",
+          "revision": "68ecb43aaa372bea4cafc91cb3a60e8e117bf1b9",
+          "evidence": [
+            {
+              "ref": "scripts/ascella_predecessor_case.py",
+              "sha256": "91ed74f831d0bc14b0c3248c9e8dc1299c1bcd4af2b11bec63327145506a911b"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_analysis.py",
+              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_case.py",
+              "sha256": "adcc47f7404324f1284c25cc752bd94f3a84fc53702f37ffe06fc938c1ffb4e3"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_analysis.py",
+              "sha256": "a19dc7284d22f301af635465b85dc47b1dd8f01622a5dda317808c80e0d72c24"
+            },
+            {
+              "ref": "docs/design/ascella-predecessor-intervention.md",
+              "sha256": "8544c615782bc0e4779f2d7f4a6aea4bce5becf4d3fea5766955badff377595e"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
+              "sha256": "9778e3a35512bcbf80b79d2c36d2530d13057b313926333921a61bb9c940a2b9"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "b5bdf1aa76139f17ab178e3a20f4a120cc1543c414fb800273adbeb080e7d8fb"
+            },
+            {
+              "ref": "tests/scripts/test_quandela_failed_results.py",
+              "sha256": "562f5fa711af7b2b32db5be122800efd6272347573af193b97815097bc19ee28"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/plan-status.json",
+              "sha256": "f3e202c72ea89dd9a5866997bf59207221025f48ec368d37e63438c5446eb389"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/running-plan.json",
+              "sha256": "89b521b75811d385895ee3c68aca93f4966b6dfe4f3ebce0c5d611b6945a0f6e"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review.md",
+              "sha256": "65c484bb41cdfad9dbb244642a5a10d87c732673efcae0c871b951b5563061e6"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review-packet.json",
+              "sha256": "c1b831743a6d88dfc8d375a8e328bac2d8a6fa4a0053285c685d10b8dda5a08d"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review-admission.json",
+              "sha256": "2d05e6831e5faf7fa3f26ae3505e1f10e1d39dc1c0cac37aee2d32b9646eaba8"
+            }
+          ],
+          "scope_sha256": "7451ba6e3ff68b85749407df8818c43d5e3f334bb3ee38003371a0dbc230c9ed"
         }
       ]
     },
@@ -299,13 +359,99 @@
             }
           ],
           "scope_sha256": "430bdf52631940f903d44737350f4e777353fe6b0990c4a9b320b48b4f25e4e6"
+        },
+        {
+          "result": "Bounded acquisition review and revalidation: 30 focused case, analyzer and parser tests and byte-exact case replay pass. The owner selects the eight-iteration noncausal diagnostic and a separate causal successor; the design records chronology, randomization, carryover and complete-cost obligations. Independent inspection identifies reviewed-body/source and case-wide-attempt gaps. Fresh read-only admission passes with running Explorer, available processor, 262144 estimated shots and1.032768 estimated credits. External write-once custody entries bind the packet. The packet withholds approval; production constructor, analyzer and case bytes remain unchanged.",
+          "observed_at": "2026-10-29T00:56:57.035179+00:00",
+          "revision": "68ecb43aaa372bea4cafc91cb3a60e8e117bf1b9",
+          "evidence": [
+            {
+              "ref": "docs/design/ascella-predecessor-intervention.md",
+              "sha256": "8544c615782bc0e4779f2d7f4a6aea4bce5becf4d3fea5766955badff377595e"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_case.py",
+              "sha256": "adcc47f7404324f1284c25cc752bd94f3a84fc53702f37ffe06fc938c1ffb4e3"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
+              "sha256": "9778e3a35512bcbf80b79d2c36d2530d13057b313926333921a61bb9c940a2b9"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_analysis.py",
+              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review.md",
+              "sha256": "65c484bb41cdfad9dbb244642a5a10d87c732673efcae0c871b951b5563061e6"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review-packet.json",
+              "sha256": "c1b831743a6d88dfc8d375a8e328bac2d8a6fa4a0053285c685d10b8dda5a08d"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review-admission.json",
+              "sha256": "2d05e6831e5faf7fa3f26ae3505e1f10e1d39dc1c0cac37aee2d32b9646eaba8"
+            }
+          ],
+          "scope_sha256": "430bdf52631940f903d44737350f4e777353fe6b0990c4a9b320b48b4f25e4e6"
         }
       ]
+    },
+    {
+      "id": "acquisition-scope-review",
+      "state": "done",
+      "action": "Review the unchanged eight-iteration diagnostic and resolve causal scope",
+      "acceptance": "The owner chooses diagnostic scope with causal attribution unavailable, or a separately designed causal successor; independent acquisition review and custody/approval gates bind the chosen scope before spending.",
+      "receipts": [
+        {
+          "result": "Bounded acquisition review and revalidation: 30 focused case, analyzer and parser tests and byte-exact case replay pass. The owner selects the eight-iteration noncausal diagnostic and a separate causal successor; the design records chronology, randomization, carryover and complete-cost obligations. Independent inspection identifies reviewed-body/source and case-wide-attempt gaps. Fresh read-only admission passes with running Explorer, available processor, 262144 estimated shots and1.032768 estimated credits. External write-once custody entries bind the packet. The packet withholds approval; production constructor, analyzer and case bytes remain unchanged.",
+          "observed_at": "2026-10-29T00:56:57.036267+00:00",
+          "revision": "68ecb43aaa372bea4cafc91cb3a60e8e117bf1b9",
+          "evidence": [
+            {
+              "ref": "docs/design/ascella-predecessor-intervention.md",
+              "sha256": "8544c615782bc0e4779f2d7f4a6aea4bce5becf4d3fea5766955badff377595e"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review.md",
+              "sha256": "65c484bb41cdfad9dbb244642a5a10d87c732673efcae0c871b951b5563061e6"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review-packet.json",
+              "sha256": "c1b831743a6d88dfc8d375a8e328bac2d8a6fa4a0053285c685d10b8dda5a08d"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review-admission.json",
+              "sha256": "2d05e6831e5faf7fa3f26ae3505e1f10e1d39dc1c0cac37aee2d32b9646eaba8"
+            }
+          ],
+          "scope_sha256": "18210f7a2437a89fc525804bac2a85fe766828c508ebd8787aadcc087b2c5ef6"
+        }
+      ]
+    },
+    {
+      "id": "causal-successor",
+      "state": "todo",
+      "action": "Prepare a separately reviewed predecessor-causality design",
+      "acceptance": "A successor binds a supported physical chronology, actual randomized assignment unit and probabilities, target-sensitive references, explicit carryover model, and complete power and charge bounds; the eight-iteration diagnostic grants zero causal authority."
+    },
+    {
+      "id": "reviewed-submit-binding",
+      "state": "todo",
+      "action": "Bind the actually posted diagnostic to the externally reviewed request and sources",
+      "acceptance": "The submit-lock verification checks case, actual body, constructor/analyzer and provider-wrapper identities against reviewed anchors before POST and rejects mutations; the bound case passes a fresh read-only admission."
+    },
+    {
+      "id": "case-wide-attempt-consumption",
+      "state": "todo",
+      "action": "Enforce one reviewed attempt across copied run directories",
+      "acceptance": "A case-wide atomic consumed marker supplements the run-directory checkpoint and token lock; copied-directory and interrupted-submit regressions reject a duplicate attempt without erasing prior evidence."
     }
   ],
   "scope": "One unapproved qpu:ascella sample_count case, ascella_predecessor/job-00, eight iterations at 32768 samples and shots, historical ceiling 1.032768 credits and expected 40 s. Retained signed-coherence settings supply two distinct predecessors and a fixed target in odd slots. Analysis separates signed common and reversal contrasts with a 0.1 response-equivalence margin; it cannot identify predecessor causality from result-list order. Live admission and exact-case approval remain required.",
   "owner": "ascella predecessor case",
-  "next_action": "Review the unchanged eight-iteration request with the explicit conditional-power regions and evidence-custody checklist; freeze the justified sampling contract and obtain exact-case approval before a fresh admitted submission.",
+  "next_action": "Retain the eight-iteration target-slot diagnostic with causal attribution unavailable. Close reviewed-body/source and cross-directory one-attempt binding before approval. Prepare a separate causal successor with supported chronology, randomized assignment and an explicit carryover model.",
   "related": [
     "ascella-signed-coherence-conformance",
     "ascella-perturbed-compilation-case",
