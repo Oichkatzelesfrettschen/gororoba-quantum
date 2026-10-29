@@ -20,9 +20,27 @@
     },
     {
       "id": "interop-qiskit-261",
-      "state": "todo",
+      "state": "done",
       "action": "Rerun probe_packages.py perceval-interop converter on the system qiskit 2.6.1.",
-      "acceptance": "The H-CX circuit converts to a 4-mode processor on qiskit 2.6.1."
+      "acceptance": "The H-CX circuit converts to a 4-mode processor on qiskit 2.6.1.",
+      "receipts": [
+        {
+          "result": "probe_packages.py on qiskit 2.6.1, Aer 0.18.2, runtime 0.51.0 converts the H-CX circuit to a 4-mode Perceval processor; README Verification records the run.",
+          "observed_at": "2026-10-29T04:27:01Z",
+          "revision": "f6b0deeab17273994eb97a9afc3f0e2b65611d21",
+          "evidence": [
+            {
+              "ref": "docs/notes/qiskit-packages/probe_packages.py",
+              "sha256": "e17d3cfd4284189d5b6372c201bb084dba4a42b6e1aa8110772ed1bfcc71cf34"
+            },
+            {
+              "ref": "docs/notes/qiskit-packages/README.md",
+              "sha256": "27d6a44c235413789bd30db41359136c3832f76f5a709cabea199fb303e3ba95"
+            }
+          ],
+          "scope_sha256": "b98a31bc6323c38ca53dfc1474c3c2545cb385e6e4c782378514812afb033281"
+        }
+      ]
     },
     {
       "id": "debugger-stack-retire",
@@ -52,5 +70,5 @@
   ],
   "scope": "Qiskit-adjacent distributions installed from ~/Github/PKGBUILDs beyond requirements.txt, their isolated stacks and notes.",
   "owner": "operator",
-  "next_action": "Install qiskit 2.6.1, runtime 0.51.0 and Aer 0.18.2, rerun probe_packages.py --stacks, and close interop-qiskit-261."
+  "next_action": "Open the package-graph PR; then the requirements.txt pin bump to qiskit 2.6.1, runtime 0.51.0 and Aer 0.18.2 with the CI venv rebuild."
 }
