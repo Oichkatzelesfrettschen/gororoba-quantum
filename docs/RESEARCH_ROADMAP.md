@@ -64,15 +64,15 @@ proposed work, in dependency order:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 25 |
-| exploratory reanalysis | exploratory | 88 |
+| exploratory reanalysis | exploratory | 90 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 30 |
 | mathematical claim | open | 2 |
 | numerical or stochastic simulation | established | 11 |
 | numerical or stochastic simulation | superseded | 1 |
-| preregistered emulator control | established | 12 |
-| preregistered hardware inference | established | 80 |
+| preregistered emulator control | established | 13 |
+| preregistered hardware inference | established | 83 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |

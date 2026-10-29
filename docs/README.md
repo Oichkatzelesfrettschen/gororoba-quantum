@@ -50,6 +50,42 @@ Selected zero-divisor hardware witnesses have retained acquisitions on
 [Tuna-17](notes/quantum_inspire/experiments.md). The
 [hardware-witness review](notes/topics/sedenion_hardware_witness_review.md) has an explicit historical cutoff.
 The [matched-response case](design/tuna17-zero-divisor-matched-response.md) is prospective and unsubmitted.
+The [sequential-projector geometry case](design/tuna-projector-geometry.md) derives its observables and
+links the [calibration datasource diagnosis](evidence/tuna-projector-geometry/README.md).
+The approved [QX conformance batch](evidence/tuna-projector-geometry/qx-conformance.md) passes all 18 frozen checks;
+The user-authorized [Tuna qualification](design/tuna-projector-qualification-admission.md)
+[completed with qualification refusal](evidence/tuna-projector-geometry/tuna-qualification.md):
+all shots were retained, while contrast and repeated-readout consistency screens failed.
+The [ordered readout-response successor](design/tuna-readout-ordered-response-admission.md)
+qualifies a bounded descriptive comparison with serial single-job dispatch and explicit drift limits;
+its [upstream report](notes/quantum_inspire/upstream-readout-report.md) remains unsent.
+The [receipt-chain repair admission](evidence/tuna-projector-geometry/readout-ordered-response-reviewed-admission.json)
+binds the repaired campaign; the earlier `readout-ordered-response-admission.json` is a historical pre-review observation.
+The [verification receipt](evidence/tuna-projector-geometry/readout-ordered-response-verification.json)
+records 116 passing focused tests, static checks, compiler replay and the 59-file historical-byte comparison.
+The [requested high-effort peer review](archive/reviews/tuna-ordered-response-admission-review.md)
+accepts the exact descriptive case for owner approval while retaining its causal limits.
+The [approval-time observation](evidence/tuna-projector-geometry/readout-ordered-response-approval-admission.json)
+refreshes availability for the same case; every dispatch still requires fresh admission.
+The [source-scope revalidation](evidence/tuna-projector-geometry/source-scope-revalidation.md)
+corrects historical prospective/unmeasured wording through an addendum while preserving retained source bytes.
+The approved [ordered-response acquisition](evidence/tuna-projector-geometry/ordered-response-acquisition.md)
+ended at its request deadline after three nominal-zero jobs. All 12,288 submitted shots were retained;
+the whole-case endpoint is unavailable and the descriptive prefix leaves causal attribution unresolved.
+The separately approved [nominal-one destination case](design/tuna-readout-destination-one-admission.md)
+uses three serial jobs, a measured-wait allowance and its own
+[12-cell uncertainty contract](evidence/tuna-projector-geometry/destination-one-response-uncertainty.md).
+The [final admission verification](evidence/tuna-projector-geometry/destination-one-admission-verification.json)
+retains the exact packet, 279 focused tests, historical-file comparison and requested high-effort
+[peer-review acceptance](archive/reviews/tuna-destination-one-admission-review.md).
+The [completed nominal-one acquisition](evidence/tuna-projector-geometry/nominal-one-destination-response.md)
+retains 12,288 shots and bounded response equivalence, while the repeated-readout anomaly persists.
+The [upstream evidence request](notes/quantum_inspire/destination-response-upstream-request.md) records
+the verified API/datasource limits and the unsent acquisition-map, settings and IQ request.
+The [lossless final-result projection replay](evidence/tuna-projector-geometry/destination-final-result-projection-replay.md)
+makes the six endpoint-equivalence observations independently checkable from retained acquisition data.
+The [retention verification](evidence/tuna-projector-geometry/destination-one-retention-verification.json)
+binds the acquired evidence, final reviews, focused checks and measured preservation comparisons.
 The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
 native execution limits, billing units and MCP observations. The
 [provider-counter audit](evidence/provider-counter-audit/README.md) names the population every retained shot,

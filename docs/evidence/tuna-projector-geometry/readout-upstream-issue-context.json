@@ -1,0 +1,126 @@
+{
+  "issues": [
+    {
+      "comments": [
+        {
+          "body_excerpt": "This is indeed not the case anymore. In cQASM 3.0, bits and qubits are treated independently.",
+          "created_at": "2024-06-05T11:13:03Z",
+          "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/63#issuecomment-2149558737"
+        }
+      ],
+      "issue": {
+        "body_excerpt": "In QX sim the number of control bits equals the number of qubits.",
+        "closed_at": "2024-06-05T11:13:03Z",
+        "created_at": "2019-04-02T11:17:57Z",
+        "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/63",
+        "number": 63,
+        "state": "closed",
+        "state_reason": "completed",
+        "title": "Number of classical bits and measurements should be independent of the number of qubits"
+      },
+      "retrieved_utc": "2026-10-27T19:06:41.792142+00:00",
+      "sha256": "5aab65e4517a5ec109e38dedd5d1fca60e017cc904b5e3f96754991cbddfb0b1",
+      "status": 200,
+      "url": "https://api.github.com/repos/QuTech-Delft/qx-simulator/issues/63"
+    },
+    {
+      "comments": [
+        {
+          "body_excerpt": "I have a PR ready https://github.com/QuTech-Delft/qx-simulator/pull/120\r\nBut still one question\r\nTo me it makes more sense to then have \"results\" json section always contain measurement register averaging (even in the case of a single run) and \"state\" also contain norms, that is \r\n```\r\n    \"state\": {\r\n        \"00\": {\r\n            \"real\": 0.707107,\r\n            \"imag\": 0,\r\n            \"norm\": 0.500",
+          "created_at": "2023-01-12T15:14:55Z",
+          "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/118#issuecomment-1380544833"
+        }
+      ],
+      "issue": {
+        "body_excerpt": "The return object should be updated to also contain the complex amplitudes.",
+        "closed_at": "2023-01-12T16:02:47Z",
+        "created_at": "2023-01-11T12:54:32Z",
+        "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/118",
+        "number": 118,
+        "state": "closed",
+        "state_reason": "completed",
+        "title": "Update json/dict response for execute"
+      },
+      "retrieved_utc": "2026-10-27T19:06:42.557699+00:00",
+      "sha256": "bd115076fd61901e49127191c9b906353e1983e8fe7cdc6a219071d811019390",
+      "status": 200,
+      "url": "https://api.github.com/repos/QuTech-Delft/qx-simulator/issues/118"
+    },
+    {
+      "comments": [],
+      "issue": {
+        "body_excerpt": "As of libqasm's [PR #223](https://github.com/QuTech-Delft/libqasm/pull/223), multiple qubit/bit (register) definitions and mid-circuit measurements are allowed.\n\nWe now have to make QX simulator aware of these changes.",
+        "closed_at": "2024-05-17T13:54:59Z",
+        "created_at": "2024-05-15T09:15:52Z",
+        "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/149",
+        "number": 149,
+        "state": "closed",
+        "state_reason": "completed",
+        "title": "[Code] Allow multiple qubit/bit (register) definitions and mid-circuit measurements"
+      },
+      "retrieved_utc": "2026-10-27T19:06:43.390848+00:00",
+      "sha256": "d22c920d40e2ed7dcbe4cf4e0242f28ffa53fe72a027ba6b249ec81c6b975859",
+      "status": 200,
+      "url": "https://api.github.com/repos/QuTech-Delft/qx-simulator/issues/149"
+    },
+    {
+      "comments": [],
+      "issue": {
+        "body_excerpt": "Both in the AST and in the `measure` instructions.\r\n\r\nThis requires updating the `RegisterManager` to deal with a `bit` register.",
+        "closed_at": "2024-08-13T08:52:49Z",
+        "created_at": "2024-06-05T11:23:32Z",
+        "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/154",
+        "number": 154,
+        "state": "closed",
+        "state_reason": "completed",
+        "title": "[Code] Manage bit (register) variables"
+      },
+      "retrieved_utc": "2026-10-27T19:06:44.110220+00:00",
+      "sha256": "2fe4603ed148daace758fc35550f455703b10d3b091042da0cddde3f6b6d58a2",
+      "status": 200,
+      "url": "https://api.github.com/repos/QuTech-Delft/qx-simulator/issues/154"
+    },
+    {
+      "comments": [],
+      "issue": {
+        "body_excerpt": "For each qubit, the acquisition index of the first measure operation should be 0 and then increment with each measurement.",
+        "closed_at": "2024-10-02T08:11:52Z",
+        "created_at": "2024-07-26T15:03:19Z",
+        "html_url": "https://github.com/QuTech-Delft/OpenSquirrel/issues/270",
+        "number": 270,
+        "state": "closed",
+        "state_reason": "completed",
+        "title": "Quantify Schedule Index"
+      },
+      "retrieved_utc": "2026-10-27T19:06:44.766610+00:00",
+      "sha256": "e758683b9a569e4a6bf37128996984c3a0317caee45fcc041ca02c09f47ffe80",
+      "status": 200,
+      "url": "https://api.github.com/repos/QuTech-Delft/OpenSquirrel/issues/270"
+    },
+    {
+      "comments": [
+        {
+          "body_excerpt": "Resolved in version 0.8.0",
+          "created_at": "2025-11-03T12:53:37Z",
+          "html_url": "https://github.com/QuTech-Delft/OpenSquirrel/issues/506#issuecomment-3480381293"
+        }
+      ],
+      "issue": {
+        "body_excerpt": "",
+        "closed_at": "2025-11-03T12:53:27Z",
+        "created_at": "2025-04-14T14:00:46Z",
+        "html_url": "https://github.com/QuTech-Delft/OpenSquirrel/issues/506",
+        "number": 506,
+        "state": "closed",
+        "state_reason": "completed",
+        "title": "Quantify Scheduler Exporter: ALAP scheduling raises timing-constraint error upon compilation"
+      },
+      "retrieved_utc": "2026-10-27T19:06:45.405385+00:00",
+      "sha256": "da37f08a3a8d5aeedb8c222dc97ced3a40e97edc4b939cc097ed52baa8abc328",
+      "status": 200,
+      "url": "https://api.github.com/repos/QuTech-Delft/OpenSquirrel/issues/506"
+    }
+  ],
+  "schema": "qi-upstream-readout-issue-context-v1",
+  "scope": "Read-only historical issue context; closed status does not establish deployed Tuna or QX behavior; bounded quotations only, account identities and local paths excluded"
+}

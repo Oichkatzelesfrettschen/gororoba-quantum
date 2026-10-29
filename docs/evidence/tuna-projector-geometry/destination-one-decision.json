@@ -1,0 +1,62 @@
+{
+  "alternatives": [
+    "All selected realized predictable response contrasts are within 0.10 with the baseline endpoint screen satisfied.",
+    "At least one selected realized predictable response contrast exceeds 0.10 with the baseline endpoint screen satisfied.",
+    "Baseline changes or interval overlap leave the bounded comparison inconclusive."
+  ],
+  "analysis_contract_sha256": "0f220273c04980ea7ada3981c81b6653a732cddb44e9c12643e5dc8f0f053115",
+  "backend": "tuna_17",
+  "campaign_sha256": "b0bb0ef6497a2a57b9478a9174d786e5b0945dbc3ce4a66042ce4123d3eafd25",
+  "case_id": "tuna-readout-destination-one",
+  "credits_ceiling": 0,
+  "dependence_model": "Arbitrary adapted shot dependence and history-dependent conditional means. Fixed weights and sample sizes support conditional Hoeffding martingale concentration. Neither stationary repeated-run means nor counterfactual response during rotation is inferred.",
+  "discriminating_observable": "12 inverse-decoded early/final binary joint cells across nominal-one preparation and physical qubits4,11,6, with12 before/after baseline contrasts.",
+  "end_without_retry": "End after three complete jobs or first operational invalidity or7200second request horizon. Preserve dispatched identities and collect them through read-only recovery. Further hardware requires a separately approved written case accounting for measured waits.",
+  "execution_authorized": false,
+  "expected_credits": 0,
+  "expected_execution_seconds_decimal": "14.688660",
+  "layout_timing_identity": "17qubits,20classicalbits,early measured physical qubits4,11,6,terminal all17,zero explicit gap. Only early destinations cycle17,18,19 to19,17,18. Local physical instruction equality is compiled and checked. Served analog schedule equality remains unavailable.",
+  "objective": "Bound selected realized predictable early/final response contrasts between destination-rotated and bracketing baseline jobs; causal destination attribution remains unresolved.",
+  "observation_chain": "Frozen cQASM, manifests and local compiler replay -> serial digest-guarded submission -> provider identities and creation/completion order -> retained full raw shots and histogram replay -> frozen inverse decoder and analyzer.",
+  "power_model": {
+    "evidence": "docs/evidence/tuna-projector-geometry/destination-one-response-uncertainty.md;12response+12endpoint contrasts with log(48/.01), upward-rounded radii and uniform separation bounds frozen by campaign.",
+    "scope": "Uniform finite-sample precision and separation for realized predictable contrasts; causal and repeated-run population power remain unqualified.",
+    "status": "qualified"
+  },
+  "processing_policy": "Preserve complete raw strings, failures and identities; inverse-decode declared bits; validate three fixed ordered single-job batches before classification; retain all12cells and all12baseline contrasts; no postselection or label repair.",
+  "provider": "quantum_inspire",
+  "queue_wait_policy": {
+    "boundary": "Measured created_on-to-queued_at intervals and global queue statistics motivate an allowance; future queue service remains unbounded.",
+    "budget_seconds": {
+      "overhead_allowance": 1200,
+      "provider_execution_ceiling": 900,
+      "three_queue_waits": 5040,
+      "two_pauses": 60
+    },
+    "observed_maximum_seconds": 1680,
+    "request_initiation_timeout_seconds": 7200
+  },
+  "reserve_seconds": 0,
+  "retry_authorized": false,
+  "schema": "acquisition-decision-v1",
+  "seconds_ceiling": 900,
+  "shot_ceiling": 12288,
+  "simulation_justification": "The question concerns returned physical acquisition response and provider reconstruction. Terminal QX conformance and local compiler replay cannot establish the served Tuna early-history response.",
+  "sources": {
+    "campaign": "results/quantum_inspire/proposals/tuna-readout-destination-one/campaign.json",
+    "mathematical_qualification": "docs/evidence/tuna-projector-geometry/destination-one-response-uncertainty.md",
+    "queue_observation": "docs/evidence/tuna-projector-geometry/destination-one-queue-observation.json",
+    "upstream_report": "docs/notes/quantum_inspire/upstream-readout-report.md",
+    "written_case": "docs/design/tuna-readout-destination-one-admission.md"
+  },
+  "status": "admitted-for-owner-approval",
+  "stopping_outcomes": {
+    "implementation route unavailable": "Required acquisition artifact files are unavailable; preserve the partial record and refuse statistical inference.",
+    "inconclusive within budget": "The complete valid case fails to certify baseline tolerance or response intervals overlap the decision boundary. End without extending the sample.",
+    "objective established within scope": "All12 simultaneous response intervals lie inside[-0.10,0.10], with all12 baseline intervals inside that tolerance. Conclude bounded nominal-one realized-response equivalence only.",
+    "protocol inadmissible": "Changed bindings, structural drift, nonzero charge, failed job, invalid identity, malformed/partial shots, or failed order/pause invalidate the case.",
+    "specified alternative supported": "At least one simultaneous response interval lies strictly beyond[-0.10,0.10], with every baseline interval inside tolerance. Conclude selected realized-response departure only."
+  },
+  "trial_definition": "A shot supplies a bounded cell indicator. A job is one intervention unit. The target averages conditional next-shot probabilities along the observed complete three-job nominal-one history.",
+  "written_case_sha256": "7cb1a4d533eedb07a7a1bcad375f88f59aa828e5e81039c2d7cf5d62228aa059"
+}

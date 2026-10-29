@@ -1,0 +1,449 @@
+{
+  "id": 1,
+  "name": "QX emulator",
+  "infrastructure": "Cloud",
+  "description": "Quantum Inspire offers a powerful quantum computer simulator backend. The QX Simulator can simulate up to 34 qubits (on the Lisa supercomputer) on a classical computer setup. It can execute quantum circuits and allows inspection of the simulated quantum state.",
+  "image_id": "img-3",
+  "is_hardware": false,
+  "supports_raw_data": true,
+  "features": [],
+  "default_compiler_config": {
+    "mapping": [],
+    "routing": [],
+    "optimization": [],
+    "decomposition": []
+  },
+  "gateset": [
+    "H",
+    "I",
+    "S",
+    "Sdag",
+    "T",
+    "Tdag",
+    "X",
+    "X90",
+    "Y",
+    "Y90",
+    "Z",
+    "Z90",
+    "mX90",
+    "mY90",
+    "mZ90",
+    "Rx",
+    "Ry",
+    "Rz",
+    "U",
+    "Rn",
+    "CNOT",
+    "CR",
+    "CRk",
+    "CZ",
+    "SWAP",
+    "Hadamard",
+    "Identity",
+    "init",
+    "measure",
+    "reset",
+    "barrier",
+    "wait"
+  ],
+  "topology": [
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      0,
+      3
+    ],
+    [
+      0,
+      4
+    ],
+    [
+      0,
+      5
+    ],
+    [
+      0,
+      6
+    ],
+    [
+      0,
+      7
+    ],
+    [
+      0,
+      8
+    ],
+    [
+      0,
+      9
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      1,
+      3
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      1,
+      5
+    ],
+    [
+      1,
+      6
+    ],
+    [
+      1,
+      7
+    ],
+    [
+      1,
+      8
+    ],
+    [
+      1,
+      9
+    ],
+    [
+      2,
+      0
+    ],
+    [
+      2,
+      1
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      2,
+      5
+    ],
+    [
+      2,
+      6
+    ],
+    [
+      2,
+      7
+    ],
+    [
+      2,
+      8
+    ],
+    [
+      2,
+      9
+    ],
+    [
+      3,
+      0
+    ],
+    [
+      3,
+      1
+    ],
+    [
+      3,
+      2
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      3,
+      5
+    ],
+    [
+      3,
+      6
+    ],
+    [
+      3,
+      7
+    ],
+    [
+      3,
+      8
+    ],
+    [
+      3,
+      9
+    ],
+    [
+      4,
+      0
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      4,
+      2
+    ],
+    [
+      4,
+      3
+    ],
+    [
+      4,
+      5
+    ],
+    [
+      4,
+      6
+    ],
+    [
+      4,
+      7
+    ],
+    [
+      4,
+      8
+    ],
+    [
+      4,
+      9
+    ],
+    [
+      5,
+      0
+    ],
+    [
+      5,
+      1
+    ],
+    [
+      5,
+      2
+    ],
+    [
+      5,
+      3
+    ],
+    [
+      5,
+      4
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      5,
+      7
+    ],
+    [
+      5,
+      8
+    ],
+    [
+      5,
+      9
+    ],
+    [
+      6,
+      0
+    ],
+    [
+      6,
+      1
+    ],
+    [
+      6,
+      2
+    ],
+    [
+      6,
+      3
+    ],
+    [
+      6,
+      4
+    ],
+    [
+      6,
+      5
+    ],
+    [
+      6,
+      7
+    ],
+    [
+      6,
+      8
+    ],
+    [
+      6,
+      9
+    ],
+    [
+      7,
+      0
+    ],
+    [
+      7,
+      1
+    ],
+    [
+      7,
+      2
+    ],
+    [
+      7,
+      3
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      7,
+      5
+    ],
+    [
+      7,
+      6
+    ],
+    [
+      7,
+      8
+    ],
+    [
+      7,
+      9
+    ],
+    [
+      8,
+      0
+    ],
+    [
+      8,
+      1
+    ],
+    [
+      8,
+      2
+    ],
+    [
+      8,
+      3
+    ],
+    [
+      8,
+      4
+    ],
+    [
+      8,
+      5
+    ],
+    [
+      8,
+      6
+    ],
+    [
+      8,
+      7
+    ],
+    [
+      8,
+      9
+    ],
+    [
+      9,
+      0
+    ],
+    [
+      9,
+      1
+    ],
+    [
+      9,
+      2
+    ],
+    [
+      9,
+      3
+    ],
+    [
+      9,
+      4
+    ],
+    [
+      9,
+      5
+    ],
+    [
+      9,
+      6
+    ],
+    [
+      9,
+      7
+    ],
+    [
+      9,
+      8
+    ]
+  ],
+  "nqubits": 10,
+  "status": "idle",
+  "messages": {
+    "QX emulator": {
+      "content": ""
+    }
+  },
+  "default_number_of_shots": 1024,
+  "max_number_of_shots": 2048,
+  "enabled": true,
+  "identifier": "QXsinglenodesimulator",
+  "protocol_version": null,
+  "job_execution_time_limit": 3600,
+  "max_jobs_per_batch_job": 5,
+  "batchjobs_per_queue_limit": 5,
+  "queue": {
+    "number_of_jobs_in_queue": 0,
+    "min_wait_time_in_queue_secs": 0,
+    "avg_wait_time_in_queue_secs": 0,
+    "max_wait_time_in_queue_secs": 0
+  },
+  "backend_instances": [
+    {
+      "id": 1,
+      "name": "QX emulator",
+      "location": "Cloud",
+      "backend_type_id": 1,
+      "status": "idle",
+      "message": {
+        "content": ""
+      },
+      "last_heartbeat": "2026-10-27T16:20:33.105526Z"
+    }
+  ],
+  "queue_user_only": true,
+  "request_started_utc": "2026-10-27T16:20:36.490208+00:00",
+  "retrieved_utc": "2026-10-27T16:20:37.803403+00:00"
+}

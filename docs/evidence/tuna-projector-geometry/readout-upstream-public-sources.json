@@ -1,0 +1,486 @@
+{
+  "github_searches": [
+    {
+      "items": [
+        {
+          "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/125",
+          "number": 125,
+          "state": "open",
+          "title": "Output whether the final quantum state is deterministic"
+        },
+        {
+          "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/217",
+          "number": 217,
+          "state": "closed",
+          "title": "reset on a qubit with weight on |1> discards the relative phase of the rest of the register"
+        },
+        {
+          "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/154",
+          "number": 154,
+          "state": "closed",
+          "title": "[Code] Manage bit (register) variables"
+        },
+        {
+          "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/149",
+          "number": 149,
+          "state": "closed",
+          "title": "[Code] Allow multiple qubit/bit (register) definitions and mid-circuit measurements"
+        },
+        {
+          "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/63",
+          "number": 63,
+          "state": "closed",
+          "title": "Number of classical bits and measurements should be independent of the number of qubits"
+        },
+        {
+          "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/118",
+          "number": 118,
+          "state": "closed",
+          "title": "Update json/dict response for execute"
+        },
+        {
+          "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/64",
+          "number": 64,
+          "state": "closed",
+          "title": "not statement with SGMQ only acts on a single bit"
+        },
+        {
+          "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/18",
+          "number": 18,
+          "state": "closed",
+          "title": "Integer overflows in qubit register initialization and usage"
+        },
+        {
+          "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/24",
+          "number": 24,
+          "state": "closed",
+          "title": "Single Gate Multiple Gate (SGMQ) Support in Libqasm Interface"
+        },
+        {
+          "html_url": "https://github.com/QuTech-Delft/qx-simulator/issues/32",
+          "number": 32,
+          "state": "closed",
+          "title": "Unexpected (incorrect) measurement"
+        }
+      ],
+      "retrieved_utc": "2026-10-27T19:06:06.529185+00:00",
+      "sha256": "25f29cc842bd4d44c78cc12416242a4197eac7137ce123ce385d4f940f438a21",
+      "status": 200,
+      "total_count": 10,
+      "url": "https://api.github.com/search/issues?q=repo%3AQuTech-Delft%2Fqx-simulator+is%3Aissue+bit+register&per_page=20"
+    },
+    {
+      "items": [
+        {
+          "html_url": "https://github.com/QuTech-Delft/OpenSquirrel/issues/506",
+          "number": 506,
+          "state": "closed",
+          "title": "Quantify Scheduler Exporter: ALAP scheduling raises timing-constraint error upon compilation"
+        },
+        {
+          "html_url": "https://github.com/QuTech-Delft/OpenSquirrel/issues/270",
+          "number": 270,
+          "state": "closed",
+          "title": "Quantify Schedule Index"
+        }
+      ],
+      "retrieved_utc": "2026-10-27T19:06:06.868862+00:00",
+      "sha256": "7341524d7e2dfb946499bf53eb94de45c441a6992032ae243d3f56b0b4b52cd7",
+      "status": 200,
+      "total_count": 2,
+      "url": "https://api.github.com/search/issues?q=repo%3AQuTech-Delft%2FOpenSquirrel+is%3Aissue+acquisition&per_page=20"
+    },
+    {
+      "items": [
+        {
+          "html_url": "https://github.com/QuTech-Delft/quantuminspire/issues/155",
+          "number": 155,
+          "state": "closed",
+          "title": "Execution of quantum circuits fails with 1 shot"
+        },
+        {
+          "html_url": "https://github.com/QuTech-Delft/quantuminspire/issues/134",
+          "number": 134,
+          "state": "closed",
+          "title": "Unexpected answers when using multiple classical registers. "
+        }
+      ],
+      "retrieved_utc": "2026-10-27T19:06:07.183360+00:00",
+      "sha256": "7175a7ab6409c19e3d6c5dce413380bb7c9207eeb8190ed6a8bf101d9f9cd8b8",
+      "status": 200,
+      "total_count": 2,
+      "url": "https://api.github.com/search/issues?q=repo%3AQuTech-Delft%2Fquantuminspire+is%3Aissue+measurement+register&per_page=20"
+    }
+  ],
+  "pages": [
+    {
+      "excerpts": [
+        {
+          "term": "support@quantum-inspire.com",
+          "text": "is not listed below or I want to provide some feedback on QI. Who do I contact? Your feedback, questions, bugs and comments can be sent to: support@quantum-inspire.com Please include where possible: a detailed description of the error/bug, with step by step instructions how to reproduce the error what exactly happened what you were expecting to happen a copy of your code that returns an error a screenshot of your observations Login and accounts I forgot my password or want to change it You can reset your password by clicking the 'Forg"
+        },
+        {
+          "term": "more than 3 jobs",
+          "text": " many users submit jobs, your job will be put in the queue and executed when it reaches the front of the queue. You are not allowed to have more than 3 jobs in the queue for a hardware backend, in order to provide equal access opportunities for everybody. (Attempts of) abuse will lead to removal of your account. The status of the execution is automatically refreshed in your web browser every 30 seconds. On most browsers clicking F5 will actively refresh your browser and results status. Including overhead a typical quantum-only job on "
+        }
+      ],
+      "final_url": "https://www.quantum-inspire.com/faq/",
+      "retrieved_utc": "2026-10-27T19:05:31.561443+00:00",
+      "selected_links": [
+        {
+          "href": "mailto:support@quantum-inspire.com",
+          "text": "support@quantum-inspire.com"
+        },
+        {
+          "href": "mailto:support@quantum-inspire.com",
+          "text": "contact our support team at support@quantum-inspire.com"
+        },
+        {
+          "href": "mailto:support@quantum-inspire.com",
+          "text": "contact our support team at support@quantum-inspire.com"
+        },
+        {
+          "href": "mailto:support@quantum-inspire.com",
+          "text": "contact our support team at support@quantum-inspire.com"
+        },
+        {
+          "href": "mailto:support@quantum-inspire.com",
+          "text": "support@quantum-inspire.com"
+        },
+        {
+          "href": "mailto:support@quantum-inspire.com",
+          "text": "contact our support team at support@quantum-inspire.com"
+        }
+      ],
+      "sha256": "ae012d556532431925719b16e31b4197ab2c0f4fd3f5d0c3543aa6e47f5e3808",
+      "started_utc": "2026-10-27T19:05:30.936778+00:00",
+      "status": 200,
+      "url": "https://www.quantum-inspire.com/faq/"
+    },
+    {
+      "excerpts": [
+        {
+          "term": "free",
+          "text": "r account Account types Unlike Quantum Inspire 1.0, which offered three different types of account, we now only have one account. With this free account you can access our hardware backends, emulator backends and have storage for your jobs and results! Creating an account Creating an account can be done by clicking on the MyQI button which brings you to our quantum compute domain where you can sign up for an account using your email address or using one of the selected authentication providers. Log in to your account Simply click on M"
+        }
+      ],
+      "final_url": "https://www.quantum-inspire.com/kbase/managing-your-account/",
+      "retrieved_utc": "2026-10-27T19:05:31.877116+00:00",
+      "selected_links": [],
+      "sha256": "45d8a62d7749b1bca8998327198ae33f3781a85a312bfbe7e2f7b83d7afe9d92",
+      "started_utc": "2026-10-27T19:05:31.561505+00:00",
+      "status": 200,
+      "url": "https://www.quantum-inspire.com/kbase/managing-your-account/"
+    },
+    {
+      "excerpts": [
+        {
+          "term": "support@quantum-inspire.com",
+          "text": " charged to the user(s) concerned.\nPlease note that QI is solely intended for non-commercial use. Commercial users are requested to contact support@quantum-inspire.com to inquire for specific commercial conditions. Technical Constraints The computing resources (quantum computers and quantum computer simulators) are shared by all users. Requests for execution may not be executed immediately but will be placed on a queue. Each backend imposes a limit on the number of qubits that can be executed upon or simulated. The number of shots for"
+        },
+        {
+          "term": "free",
+          "text": "rch. If you are a commercial user or have the intent to use the output of the system for later commercial purposes, you are NOT entitled to free use of this QI service. Please contact the support@quantum-inspire.com . Commercial use is: any use by organizations outside of QuTech (TU Delft) and TNO for own commercial purposes, contract research for third parties etc. It shall be solely up to QuTech (TU Delft) to decide what qualifies as commercial use. Commercial use must be notified to QI and requires prior written permission. Part of"
+        }
+      ],
+      "final_url": "https://www.quantum-inspire.com/terms-and-conditions/",
+      "retrieved_utc": "2026-10-27T19:05:32.228396+00:00",
+      "selected_links": [
+        {
+          "href": "mailto:support@quantum-inspire.com",
+          "text": "support@quantum-inspire.com"
+        },
+        {
+          "href": "mailto:support@quantum-inspire.com",
+          "text": "support@quantum-inspire.com"
+        }
+      ],
+      "sha256": "e9d184fc6b625875e251615ff71429694e83afd973f5fe4701a4cf7a5bef0983",
+      "started_utc": "2026-10-27T19:05:31.877186+00:00",
+      "status": 200,
+      "url": "https://www.quantum-inspire.com/terms-and-conditions/"
+    },
+    {
+      "excerpts": [],
+      "final_url": "https://www.quantum-inspire.com/release-notes/",
+      "retrieved_utc": "2026-10-27T19:05:32.602818+00:00",
+      "selected_links": [
+        {
+          "href": "https://github.com/QuTech-Delft/quantuminspire/releases",
+          "text": "Quantum Inspire SDK Releases page"
+        },
+        {
+          "href": "https://github.com/QuTech-Delft/cQASM-spec/releases",
+          "text": "cQASM specification Releases page"
+        },
+        {
+          "href": "https://github.com/QuTech-Delft/libqasm/releases",
+          "text": "libQASM Releases page"
+        },
+        {
+          "href": "https://github.com/QuTech-Delft/OpenSquirrel/releases",
+          "text": "OpenSquirrel Releases page"
+        },
+        {
+          "href": "https://github.com/QuTech-Delft/OpenQL/releases",
+          "text": "OpenQL Releases page"
+        },
+        {
+          "href": "https://github.com/QuTech-Delft/qx-simulator/releases",
+          "text": "QX simulator Releases page"
+        },
+        {
+          "href": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases",
+          "text": "Qiskit provider for Quantum Inspire"
+        },
+        {
+          "href": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases",
+          "text": "PennyLane plugin for Quantum Inspire"
+        }
+      ],
+      "sha256": "f387a356626b761f1fbbd40c7640e78b8fb24b38fd09c6a784a3a05ff76a3965",
+      "started_utc": "2026-10-27T19:05:32.228473+00:00",
+      "status": 200,
+      "url": "https://www.quantum-inspire.com/release-notes/"
+    },
+    {
+      "excerpts": [
+        {
+          "term": "free",
+          "text": "s compute time. Open source QX is an open source project developed at the Quantum Engineering lab at TU Delft under Apache2.0 license. Feel free to contribute! \u201cIn this age of quantum chips with low numbers of noisy qubits, powerful emulators  are essential to test use cases but also to set requirements for system developments.\u201d System overview At the heart of our QX simulator are three powerful supercomputer instances supporting the simulations of up to 26 qubits. We provide a rich gate set that you can use to write efficient code to"
+        },
+        {
+          "term": "QCE",
+          "text": "ion methods will be developed. Future developments Contributing to QX QX has been developed at the Quantum Engineering Lab at TU Delft. The QCE github repository holds the source code of the QX simulator and other usefull software such as libQASM: A library to parse cQASM files QX-simulator: The QX Simulator itself OpenQL : A Portable Quantum Programming Framework for Quantum cQASM-Spec: Repository for collaborating on the cQASM (2.0) spec Emulator back-end types Select your best fit Quantum Inspire now offers just one instance of the"
+        }
+      ],
+      "final_url": "https://www.quantum-inspire.com/backends/qx-simulator/",
+      "retrieved_utc": "2026-10-27T19:05:32.903698+00:00",
+      "selected_links": [
+        {
+          "href": "https://github.com/QE-Lab",
+          "text": "QCE github repository"
+        },
+        {
+          "href": "https://github.com/QE-Lab/libqasm",
+          "text": "libQASM: A library to parse cQASM files"
+        },
+        {
+          "href": "https://github.com/QE-Lab/qx-simulator",
+          "text": "QX-simulator: The QX Simulator itself"
+        },
+        {
+          "href": "https://github.com/QE-Lab/OpenQL",
+          "text": "OpenQL : A Portable Quantum Programming Framework for Quantum"
+        },
+        {
+          "href": "https://github.com/QE-Lab/cQASM-spec",
+          "text": "cQASM-Spec: Repository for collaborating on the cQASM (2.0) spec"
+        }
+      ],
+      "sha256": "ab70ee6042a2453ff7e3f50dd79c5fc1712e506e016acee84723ccef6da93b76",
+      "started_utc": "2026-10-27T19:05:32.602868+00:00",
+      "status": 200,
+      "url": "https://www.quantum-inspire.com/backends/qx-simulator/"
+    },
+    {
+      "excerpts": [
+        {
+          "term": "bit register",
+          "text": "it requested by the user, and the second dimension encodes the qubit measurement outcomes with the same order as specified in the classical bit register. The user has full control on the mapping of qubits measurements to classical bits in the register. Measurements performed on multiple-qubit targets (q[0:4], for example) are still subject to scheduling. Therefore, the barrier instructions should be used when trying to ensure that measurements are performed in parallel."
+        }
+      ],
+      "final_url": "https://www.quantum-inspire.com/kbase/tuna-operational-specifics/",
+      "retrieved_utc": "2026-10-27T19:05:33.332788+00:00",
+      "selected_links": [],
+      "sha256": "20bf4375678223c76e265766af00c3a601f970d4badd7159a2372339eb705989",
+      "started_utc": "2026-10-27T19:05:32.903752+00:00",
+      "status": 200,
+      "url": "https://www.quantum-inspire.com/kbase/tuna-operational-specifics/"
+    },
+    {
+      "excerpts": [
+        {
+          "term": "bit register",
+          "text": "se can understand what you were trying to do (note that that someone else could also be your future self). Line 4 defines the size of the qubit register. In this simple example, two qubits are used. Each qubit in the register is identified by its index. The first qubit has index 0 0 0 and the second qubit has index 1 1 1 . Make sure your qubit register does not define more qubits than used by your algorithm. The memory allocated for your algorithm is determined by this number and execution time is optimal when these numbers match. Lin"
+        },
+        {
+          "term": "binary register",
+          "text": "it measurements are stored in the bit register. What the histogram shows is not the final state of the qubits, but what the contents of the binary register is when the qubits are measured. The chart shows a histogram over all shots of the state of the bit register at the end of the algorithm . In the example histogram above, the bit register was 00 00 00 for 44% of the shots, and 11 11 11 for 56% of the shots. The rightmost bit is the measurement value of the measured qubit with the lowest index (in this case q[0]). The leftmost bit i"
+        }
+      ],
+      "final_url": "https://www.quantum-inspire.com/kbase/hello-quantum-world/",
+      "retrieved_utc": "2026-10-27T19:05:33.734654+00:00",
+      "selected_links": [],
+      "sha256": "cbe8e4136eeb2e710f4a9b9ba3ecaf785e1f761d988b8109ed4bb21a6ee4e1c3",
+      "started_utc": "2026-10-27T19:05:33.332862+00:00",
+      "status": 200,
+      "url": "https://www.quantum-inspire.com/kbase/hello-quantum-world/"
+    },
+    {
+      "excerpts": [],
+      "final_url": "https://quantify-os.org/",
+      "retrieved_utc": "2026-10-27T19:10:06.793655+00:00",
+      "selected_links": [
+        {
+          "href": "https://gitlab.com/quantify-os/quantify",
+          "text": "quantify"
+        }
+      ],
+      "sha256": "9b2b5e6880aed462a92defdfcffedcd210db9d06c373a7997ee322ae8742b54c",
+      "started_utc": "2026-10-27T19:10:05.877988+00:00",
+      "status": 200,
+      "url": "https://quantify-os.org/"
+    },
+    {
+      "excerpts": [],
+      "final_url": "https://gitlab.com/quantify-os/quantify-scheduler/-/issues/488",
+      "retrieved_utc": "2026-10-27T19:10:07.840017+00:00",
+      "selected_links": [],
+      "sha256": "46b3755b61ed80b71ecd6c68506265496815e5c980764c3bb39f3c608c5b2d4f",
+      "started_utc": "2026-10-27T19:10:06.793710+00:00",
+      "status": 200,
+      "url": "https://gitlab.com/quantify-os/quantify-scheduler/-/issues/488"
+    },
+    {
+      "excerpts": [],
+      "final_url": "https://quantify-os.org/docs/quantify-scheduler/dev/",
+      "retrieved_utc": "2026-10-27T19:10:08.406822+00:00",
+      "selected_links": [],
+      "sha256": "513add1d1969f69af5889ae1a3dc96f0c2d7377e0e30c46a23b58d5ef701350c",
+      "started_utc": "2026-10-27T19:10:07.840101+00:00",
+      "status": 200,
+      "url": "https://quantify-os.org/docs/quantify-scheduler/dev/"
+    }
+  ],
+  "repositories": [
+    {
+      "metadata": {
+        "archived": false,
+        "default_branch": "master",
+        "description": "Quantum Inspire SDK",
+        "full_name": "QuTech-Delft/quantuminspire",
+        "has_discussions": false,
+        "has_issues": true,
+        "html_url": "https://github.com/QuTech-Delft/quantuminspire",
+        "pushed_at": "2026-10-26T15:07:33Z"
+      },
+      "requested_repository": "QuTech-Delft/quantuminspire",
+      "retrieved_utc": "2026-10-27T19:05:33.995544+00:00",
+      "sha256": "feb2eb3bde45f314cd53a3c23a20e987c38e4b5dbd9e02c8b23b9c570194c07d",
+      "started_utc": "2026-10-27T19:05:33.734749+00:00",
+      "status": 200,
+      "url": "https://api.github.com/repos/QuTech-Delft/quantuminspire"
+    },
+    {
+      "metadata": {
+        "archived": false,
+        "default_branch": "develop",
+        "description": "QX Simulator",
+        "full_name": "QuTech-Delft/qx-simulator",
+        "has_discussions": false,
+        "has_issues": true,
+        "html_url": "https://github.com/QuTech-Delft/qx-simulator",
+        "pushed_at": "2026-10-23T14:53:47Z"
+      },
+      "requested_repository": "QuTech-Delft/qx-simulator",
+      "retrieved_utc": "2026-10-27T19:05:34.229200+00:00",
+      "sha256": "cdb900669e158b81a2f921500b874b2d0f5fe4c1958da159eefcfe488aecc0a8",
+      "started_utc": "2026-10-27T19:05:33.995568+00:00",
+      "status": 200,
+      "url": "https://api.github.com/repos/QuTech-Delft/qx-simulator"
+    },
+    {
+      "metadata": {
+        "archived": null,
+        "default_branch": null,
+        "description": null,
+        "full_name": null,
+        "has_discussions": null,
+        "has_issues": null,
+        "html_url": null,
+        "pushed_at": null
+      },
+      "requested_repository": "QuTech-Delft/qxelarator",
+      "retrieved_utc": "2026-10-27T19:05:34.402813+00:00",
+      "sha256": "4f50e254a719a6b1b06b529bdaa08980e4acf0878aad0090cba7771f6ebdf0b9",
+      "started_utc": "2026-10-27T19:05:34.229223+00:00",
+      "status": 404,
+      "url": "https://api.github.com/repos/QuTech-Delft/qxelarator"
+    },
+    {
+      "metadata": {
+        "archived": false,
+        "default_branch": "develop",
+        "description": "A flexible (Python-based) quantum program compiler",
+        "full_name": "QuTech-Delft/OpenSquirrel",
+        "has_discussions": true,
+        "has_issues": true,
+        "html_url": "https://github.com/QuTech-Delft/OpenSquirrel",
+        "pushed_at": "2026-10-26T16:43:39Z"
+      },
+      "requested_repository": "QuTech-Delft/OpenSquirrel",
+      "retrieved_utc": "2026-10-27T19:05:34.669570+00:00",
+      "sha256": "51b9d7971b5658c9eacc5ed4081e1d7f8d2c0770397abb1e3b4004301d50bd63",
+      "started_utc": "2026-10-27T19:05:34.402831+00:00",
+      "status": 200,
+      "url": "https://api.github.com/repos/QuTech-Delft/OpenSquirrel"
+    },
+    {
+      "metadata": {
+        "archived": false,
+        "default_branch": "master",
+        "description": "cQASM language specification",
+        "full_name": "QuTech-Delft/cQASM-spec",
+        "has_discussions": false,
+        "has_issues": true,
+        "html_url": "https://github.com/QuTech-Delft/cQASM-spec",
+        "pushed_at": "2026-10-23T14:43:10Z"
+      },
+      "requested_repository": "QuTech-Delft/cQASM-spec",
+      "retrieved_utc": "2026-10-27T19:05:34.908084+00:00",
+      "sha256": "8c3bb49485be369f96724a741d640997d11a465488a52f87ca9348612be9e3d8",
+      "started_utc": "2026-10-27T19:05:34.669593+00:00",
+      "status": 200,
+      "url": "https://api.github.com/repos/QuTech-Delft/cQASM-spec"
+    },
+    {
+      "metadata": {
+        "archived": false,
+        "default_branch": "master",
+        "description": "Qiskit provider for Quantum Inspire backends ",
+        "full_name": "QuTech-Delft/qiskit-quantuminspire",
+        "has_discussions": false,
+        "has_issues": true,
+        "html_url": "https://github.com/QuTech-Delft/qiskit-quantuminspire",
+        "pushed_at": "2026-10-26T05:50:46Z"
+      },
+      "requested_repository": "QuTech-Delft/qiskit-quantuminspire",
+      "retrieved_utc": "2026-10-27T19:05:35.151672+00:00",
+      "sha256": "7b443c352c8d66e46ee72681fd49e405cd241fe81d48aae45a9f57b3324e1314",
+      "started_utc": "2026-10-27T19:05:34.908107+00:00",
+      "status": 200,
+      "url": "https://api.github.com/repos/QuTech-Delft/qiskit-quantuminspire"
+    },
+    {
+      "metadata": {
+        "archived": false,
+        "default_branch": "main",
+        "description": "Utility functions that supplement the Quantum Inspire 2.0 Python SDK, tailored for the superconducting backends of the platform, hosted in the DiCarlo lab in QuTech.",
+        "full_name": "DiCarloLab-Delft/QuantumInspireUtilities",
+        "has_discussions": false,
+        "has_issues": true,
+        "html_url": "https://github.com/DiCarloLab-Delft/QuantumInspireUtilities",
+        "pushed_at": "2026-08-31T15:38:04Z"
+      },
+      "requested_repository": "DiCarloLab-Delft/QuantumInspireUtilities",
+      "retrieved_utc": "2026-10-27T19:05:35.398227+00:00",
+      "sha256": "0fde194736a7207800e64016f399332ff1151abab1a8b0a094818b9f568d967a",
+      "started_utc": "2026-10-27T19:05:35.151698+00:00",
+      "status": 200,
+      "url": "https://api.github.com/repos/DiCarloLab-Delft/QuantumInspireUtilities"
+    }
+  ],
+  "schema": "qi-readout-upstream-public-sources-v1",
+  "scope": "Public read-only source and route verification; messages and issues remain unsent"
+}

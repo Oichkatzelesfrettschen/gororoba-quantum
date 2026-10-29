@@ -40,3 +40,45 @@ repository-relative; a branch name stands for its worktree.
 | [2026-10-27-ascella-replication-review-grok.md](2026-10-27-ascella-replication-review-grok.md) | Grok (grok-4.7, high) referee report on the replication |
 | [2026-10-27-ascella-replication-review-agy.md](2026-10-27-ascella-replication-review-agy.md) | agy (Gemini 3.8 Flash, high) referee report on the replication |
 | [2026-10-27-ascella-replication-review-orchestrator.md](2026-10-27-ascella-replication-review-orchestrator.md) | orchestrator's referee report on the replication, corrected by the audit |
+
+The [Tuna projector campaign review](tuna-projector-campaign-review.md) and its
+[model provenance](tuna-projector-campaign-review.json) separate QX conformance, bounded hardware qualification and causal successors.
+
+The [Tuna admission follow-up](tuna-projector-admission-review.md) verifies the compiler,
+qualification analyzer, structural checks and digest-bound submission path.
+
+The [ordered-response evidence-boundary review](tuna-ordered-response-evidence-boundary-review.md)
+accepts the martingale derivation and serial dispatch design while requiring stricter
+operational receipt and numeric validation before successor approval.
+The [repair review](tuna-ordered-response-admission-review.md) accepts the exact
+hash-bound descriptive case after those repairs; causal inference remains unadmitted.
+The [model provenance](tuna-ordered-response-review-provenance.json) binds both reports.
+The correct frozen policy receipt passes the exact case; explicit terms-schema
+validation before future packet reuse remains a nonblocking follow-up in the work plan.
+
+The [acquired destination-data review](tuna-destination-acquired-data-review.md)
+independently verifies the three nominal-zero jobs, deadline stop, raw counts and
+causal limits, and requests stronger automated recovery/source-receipt validation.
+The [recovery-validation review](tuna-destination-recovery-validation-review.md)
+identifies the remaining chronology edge; the
+[focused correction review](tuna-destination-recovery-order-review.md) confirms
+that correction and numerical invariance. The
+[review provenance](tuna-destination-acquired-review-provenance.json) binds all three reports.
+
+The [nominal-one deadline review](tuna-destination-one-deadline-review.md) accepts the separate
+three-job statistical contract and holds execution because later resource writes omit the
+admission deadline. Its [provenance](tuna-destination-one-deadline-review.json) binds the reviewed packet.
+The [locked-admission consumer review](tuna-destination-one-locked-admission-review.md) confirms
+the timing repair and requires the under-lock receipt in completion and analysis;
+its [provenance](tuna-destination-one-locked-admission-review.json) identifies the second packet.
+The [final nominal-one admission review](tuna-destination-one-admission-review.md) closes both
+findings and passes the exact three-job case; its
+[provenance](tuna-destination-one-admission-review.json) binds the final packet and requested model.
+The [acquired-data review](tuna-destination-one-acquired-review.md) passes the primary result and
+encoding reconciliation while identifying an ancillary API-provenance gap; its
+[provenance](tuna-destination-one-acquired-review.json) records the requested model.
+The [lossless projection replay](../../evidence/tuna-projector-geometry/destination-final-result-projection-replay.md)
+adds retained response metadata and checked reconstruction against the original API hashes.
+The [projection closure review](tuna-destination-final-result-projection-review.md) independently
+reconstructs all six responses and closes the provenance finding within the API-capture trust boundary;
+its [provenance](tuna-destination-final-result-projection-review.json) records the requested model and effort.

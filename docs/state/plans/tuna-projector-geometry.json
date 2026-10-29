@@ -1,0 +1,1598 @@
+{
+  "schema": "work-plan-v1",
+  "id": "tuna-projector-geometry",
+  "kind": "investigation",
+  "summary": "Qualify sequential-projector moment readout on Tuna-17 with exact controls, compiler receipts, calibration limitations and separately approved QX and hardware acquisitions.",
+  "sources": [
+    "docs/design/tuna-projector-geometry.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Reviewed QX conformance and Tuna acquisition are retained. The hardware qualification failed four required contrasts and all nine repeated-readout checks. Local mapping is preserved; served timing, calibration and acquisition reconstruction remain unresolved."
+  },
+  "scope": "Derive and validate illustrative projector moments, retain datasource diagnostics, generate compiler-checked qualification cases, and acquire only after approval of each provider case. Algebra-specific certification and causal backaction claims require successor controls.",
+  "owner": "codex-tuna-projector-geometry",
+  "next_action": "Await authorization to send the prepared QI support request for per-job acquisition mapping, thresholds, served schedules and retained IQ. The three additional jobs are complete. Develop the remaining readout-discrimination controls after upstream evidence arrives; further hardware requires a new approved case accounting for the measured 1936.258985-second creation-to-queue wait and observed benchmarking context.",
+  "steps": [
+    {
+      "id": "source-and-instrument-audit",
+      "action": "Consolidate primary-source derivation and datasource connectivity observations",
+      "acceptance": "Design cites inspected source scope and diagnostic evidence separates provider connectivity from local dependencies",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Primary-source design and public datasource connectivity observations retained; remote calibration data remains unavailable.",
+          "observed_at": "2026-10-27T15:56:43.805269+00:00",
+          "revision": "0da3fc555a453f6eeff0392f39d39186c906a536",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-projector-geometry.md",
+              "sha256": "9c9eacec3b37331676f2f4aed7d060e9bbf1bff3cc61a6d2c59a2f1ddf5374e0"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/README.md",
+              "sha256": "b9c322de34e8ea2380cbccf81417306f7ef0419e1cf3488d6d323ec63301a016"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/datasource-connectivity.json",
+              "sha256": "19f695aac7392c69881481b23c1b326ae0e3ada0124f909da3ca07a50be44f09"
+            }
+          ],
+          "scope_sha256": "17239e90eee1a497c0873137f33ce64e79335ff18de80283383a8cbbaa7918d1"
+        },
+        {
+          "result": "Source-bound offline verification passed within the evidence files; provider execution remains pending approval.",
+          "observed_at": "2026-10-27T16:03:17.456099+00:00",
+          "revision": "0da3fc555a453f6eeff0392f39d39186c906a536",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-projector-geometry.md",
+              "sha256": "6b979dc2dc986a3ad6c73e92a7b000b49b18e77caab0017a84f02301c10d8143"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/README.md",
+              "sha256": "a75c9951745c6c889ce4457bb47185decb99a9670796c955b649212d4f23fa5a"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/datasource-connectivity.json",
+              "sha256": "19f695aac7392c69881481b23c1b326ae0e3ada0124f909da3ca07a50be44f09"
+            }
+          ],
+          "scope_sha256": "17239e90eee1a497c0873137f33ce64e79335ff18de80283383a8cbbaa7918d1"
+        },
+        {
+          "result": "Source derivation, fixed QX discrepancy screen, calibration connection diagnosis and account ledger observation retained.",
+          "observed_at": "2026-10-27T16:12:16.923390+00:00",
+          "revision": "0da3fc555a453f6eeff0392f39d39186c906a536",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-projector-geometry.md",
+              "sha256": "d13acc9a43da288c439c6cff1cdffc809ca4945a7127cc4e67d96ef913515b9c"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/README.md",
+              "sha256": "a75c9951745c6c889ce4457bb47185decb99a9670796c955b649212d4f23fa5a"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/datasource-connectivity.json",
+              "sha256": "19f695aac7392c69881481b23c1b326ae0e3ada0124f909da3ca07a50be44f09"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/usage-observation.json",
+              "sha256": "bb32387fb3fd779f565c421b70ad557fecb0b3c26755d8c65b7a2327c700626c"
+            }
+          ],
+          "scope_sha256": "17239e90eee1a497c0873137f33ce64e79335ff18de80283383a8cbbaa7918d1"
+        },
+        {
+          "result": "Reassessed actual changes against matching receipt bytes in f6e4ef6: added links preserve source/measurement boundaries. A separate source-scope addendum corrects historical status wording while old bytes remain intact. Datasource and usage evidence hashes match.",
+          "observed_at": "2026-10-27T19:43:49.392161+00:00",
+          "revision": "e17cd829bd65dde0fda0fdbc564eb44701297021",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-projector-geometry.md",
+              "sha256": "96eeb473ad50cb1e6f7eaa51407d16d532e06bbbdc72f699760120b5010be948"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/README.md",
+              "sha256": "432fa77e89441faa871e9267966669e1177d33d482648e48075362f50b82e954"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/datasource-connectivity.json",
+              "sha256": "19f695aac7392c69881481b23c1b326ae0e3ada0124f909da3ca07a50be44f09"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/usage-observation.json",
+              "sha256": "bb32387fb3fd779f565c421b70ad557fecb0b3c26755d8c65b7a2327c700626c"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/source-scope-revalidation.md",
+              "sha256": "f0a1a19424b9edb4e25ac8e04e035970265aa383187e72fe1b20edf92f74ca03"
+            }
+          ],
+          "scope_sha256": "17239e90eee1a497c0873137f33ce64e79335ff18de80283383a8cbbaa7918d1"
+        }
+      ]
+    },
+    {
+      "id": "compiler-and-analysis-conformance",
+      "action": "Verify physical edges, local compilation, bit mapping and exact moment tests",
+      "acceptance": "Retained compiler receipt and focused tests pass for the generated qualification manifest",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Source-bound offline verification passed within the evidence files; provider execution remains pending approval.",
+          "observed_at": "2026-10-27T16:03:17.457042+00:00",
+          "revision": "0da3fc555a453f6eeff0392f39d39186c906a536",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/local-verification.json",
+              "sha256": "e929c3fb4a87983a73a1ccff9082034ee5f5b3c469d2e7d0c2278ce6a1928ad3"
+            },
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-projector-geometry/local-compiler-receipt.json",
+              "sha256": "82dc69a238ddb381161b6d31524ad1d3eae05b692e8b2d74607925cb94343361"
+            },
+            {
+              "ref": "scripts/qi_projector_geometry.py",
+              "sha256": "8f8a1daa28dc1f22e5ff86bc67a61e4e5c03a8a926a35268ccf2aeddffa9f56c"
+            },
+            {
+              "ref": "tests/scripts/test_qi_projector_geometry.py",
+              "sha256": "79d10554304724857e51b18628616e4681690caae7ad9b664677ea943b11c3f4"
+            }
+          ],
+          "scope_sha256": "075e68a8b532200ce2935dcfaaf2029f569a9cf0cb019bf86c8be73e5173c1ff"
+        }
+      ]
+    },
+    {
+      "id": "qx-conformance-case",
+      "action": "Present the concrete QX case and collect conformance results after explicit approval",
+      "acceptance": "Approved three-circuit 2048-shot batch has bound raw results and descriptive analysis",
+      "state": "done",
+      "depends_on": [
+        "compiler-and-analysis-conformance"
+      ],
+      "receipts": [
+        {
+          "result": "Approved QX batch completed all 6144 shots in 1.254351 provider execution seconds with zero recorded charges; all 18 frozen checks pass and the integer-count replay matches. Research registry, library inventory, 13 focused tests, Markdown links and diff checks pass.",
+          "observed_at": "2026-10-27T16:29:43.488941+00:00",
+          "revision": "0da3fc555a453f6eeff0392f39d39186c906a536",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json",
+              "sha256": "ceb6efcf570c43a6e772254716119fa8f555d20279832acd5a9d5968ffbc9c62"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/results.json",
+              "sha256": "a0929b26fa2899f2386ee99eccf1226db30c8cd4731dca4de752e1fabf62d3c4"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/submission.json",
+              "sha256": "cd28627c7c58f068171a8469be80c53a8e6c708d24573a77e720de3106455642"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/qx-conformance.md",
+              "sha256": "7e27da595a9b748f43bdd00e95d14f96d92b75e20e33083bb9a78f9dddb02570"
+            },
+            {
+              "ref": "scripts/qi_projector_conformance.py",
+              "sha256": "91673afc2ab504a13413d78ec2b512bcd99370fb56b135e35eb7f0ad20b8aff9"
+            }
+          ],
+          "scope_sha256": "a743d65d920e8a4a15665f3818526aabfbd5d834f198c0c655137b50bd207c5a"
+        },
+        {
+          "result": "Reassessed QX report changes against matching receipt bytes in f6e4ef6. Frozen conformance and supplemental full-law replays match; 18 historical qualification/QX tests pass. Addendum scopes QX results separately from the completed failed Tuna qualification.",
+          "observed_at": "2026-10-27T19:43:49.393277+00:00",
+          "revision": "e17cd829bd65dde0fda0fdbc564eb44701297021",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json",
+              "sha256": "ceb6efcf570c43a6e772254716119fa8f555d20279832acd5a9d5968ffbc9c62"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/results.json",
+              "sha256": "a0929b26fa2899f2386ee99eccf1226db30c8cd4731dca4de752e1fabf62d3c4"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/submission.json",
+              "sha256": "cd28627c7c58f068171a8469be80c53a8e6c708d24573a77e720de3106455642"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/qx-conformance.md",
+              "sha256": "881195d241e6f188efdafb1c59fed1226ff0c3f4bcd6b07c80b78f95e2048b96"
+            },
+            {
+              "ref": "scripts/qi_projector_conformance.py",
+              "sha256": "91673afc2ab504a13413d78ec2b512bcd99370fb56b135e35eb7f0ad20b8aff9"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/source-scope-revalidation.md",
+              "sha256": "f0a1a19424b9edb4e25ac8e04e035970265aa383187e72fe1b20edf92f74ca03"
+            }
+          ],
+          "scope_sha256": "a743d65d920e8a4a15665f3818526aabfbd5d834f198c0c655137b50bd207c5a"
+        }
+      ]
+    },
+    {
+      "id": "tuna-qualification-case",
+      "action": "Execute the authorized unchanged Tuna qualification after reviewed compiler and live admission",
+      "acceptance": "Separate approval binds the three-circuit 4096-shot batch before submission and retained raw collection",
+      "state": "done",
+      "depends_on": [
+        "qx-conformance-case"
+      ],
+      "receipts": [
+        {
+          "result": "All 12,288 hardware shots collected in 14.989993 seconds with zero recorded charges. Frozen qualification refused four required contrasts and all nine disagreement screens; raw reconstruction and retained replay confirm failure. Protocol inadmissible for hardware geometry inference; cause unresolved and further acquisition stopped.",
+          "observed_at": "2026-10-27T17:27:14.698250+00:00",
+          "revision": "b69ab17d75eefee4424280d9035095b4d2d673a9",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+              "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+              "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/tuna-qualification.md",
+              "sha256": "abc1b5a8875f2ecc2111e89eca41fb29448ca48209976b9eb207598deb67a4c2"
+            },
+            {
+              "ref": "docs/evidence/quantum_inspire/usage.json",
+              "sha256": "64d4432ba59eec56c98953ba398e3511941f2764d24694bf7eb017208bfb16ca"
+            }
+          ],
+          "scope_sha256": "9553e1137da84da7a4eb5341b592f2039292a9a2830e76a23db3c0d8c063cf5b"
+        },
+        {
+          "result": "Revalidated the unchanged qualification jobs and retained refusal against the refreshed account ledger. All 426 previous ledger rows are unchanged; the three new rows belong to the separately approved destination case. Scope-bound evidence now cites the immutable ledger-row comparison rather than the unrelated future account total.",
+          "observed_at": "2026-10-27T21:09:59.563706+00:00",
+          "revision": "efb5f6b6e5e0cb5fee4fbef0de314b1f7a42a13f",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+              "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+              "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/tuna-qualification.md",
+              "sha256": "abc1b5a8875f2ecc2111e89eca41fb29448ca48209976b9eb207598deb67a4c2"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/qualification-ledger-revalidation.json",
+              "sha256": "f9d4ff3aa92d5f270da6d34cb0cd62876e59184b151ef270cfe809765720843f"
+            }
+          ],
+          "scope_sha256": "9553e1137da84da7a4eb5341b592f2039292a9a2830e76a23db3c0d8c063cf5b"
+        }
+      ]
+    },
+    {
+      "id": "qualification-interpretation",
+      "action": "Analyze counts and qualification controls within recorded calibration limits",
+      "acceptance": "Report distinguishes illustrative geometry, instrument acceptance, placement confounding and unresolved causal mechanisms",
+      "state": "done",
+      "depends_on": [
+        "tuna-qualification-case"
+      ],
+      "receipts": [
+        {
+          "result": "All 12,288 hardware shots collected in 14.989993 seconds with zero recorded charges. Frozen qualification refused four required contrasts and all nine disagreement screens; raw reconstruction and retained replay confirm failure. Protocol inadmissible for hardware geometry inference; cause unresolved and further acquisition stopped.",
+          "observed_at": "2026-10-27T17:27:14.698250+00:00",
+          "revision": "b69ab17d75eefee4424280d9035095b4d2d673a9",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+              "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+              "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/tuna-qualification.md",
+              "sha256": "abc1b5a8875f2ecc2111e89eca41fb29448ca48209976b9eb207598deb67a4c2"
+            },
+            {
+              "ref": "docs/evidence/quantum_inspire/usage.json",
+              "sha256": "64d4432ba59eec56c98953ba398e3511941f2764d24694bf7eb017208bfb16ca"
+            }
+          ],
+          "scope_sha256": "aa5fabc2a68cc35929d0115bf086778b8dabb34a531f117486cf4a21eef11bdf"
+        },
+        {
+          "result": "Revalidated the unchanged qualification jobs and retained refusal against the refreshed account ledger. All 426 previous ledger rows are unchanged; the three new rows belong to the separately approved destination case. Scope-bound evidence now cites the immutable ledger-row comparison rather than the unrelated future account total.",
+          "observed_at": "2026-10-27T21:09:59.563706+00:00",
+          "revision": "efb5f6b6e5e0cb5fee4fbef0de314b1f7a42a13f",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+              "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+              "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/tuna-qualification.md",
+              "sha256": "abc1b5a8875f2ecc2111e89eca41fb29448ca48209976b9eb207598deb67a4c2"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/qualification-ledger-revalidation.json",
+              "sha256": "f9d4ff3aa92d5f270da6d34cb0cd62876e59184b151ef270cfe809765720843f"
+            }
+          ],
+          "scope_sha256": "aa5fabc2a68cc35929d0115bf086778b8dabb34a531f117486cf4a21eef11bdf"
+        }
+      ]
+    },
+    {
+      "id": "full-campaign-peer-review",
+      "state": "done",
+      "action": "Review QX results and the full Tuna campaign with the requested Codex model in tmux",
+      "acceptance": "Retain a model-and-effort-verified review, resolve blocking findings, and distinguish bounded qualification from full causal campaign readiness",
+      "receipts": [
+        {
+          "result": "Requested model high-effort review accepts bounded qualification after digest-bound API submission and fresh admission; 37 live-admission and guard tests pass. Full causal successor remains prospective.",
+          "observed_at": "2026-10-27T17:04:50.282090+00:00",
+          "revision": "f6e4ef6c570f68dabf68b7b7c0a234d89b25ba74",
+          "evidence": [
+            {
+              "ref": "docs/archive/reviews/tuna-projector-admission-review.md",
+              "sha256": "21a100fba064d87ae17201eceedc17311729e05f1c06d4065dc0b64772d513f0"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-projector-campaign-review.json",
+              "sha256": "3f034dbbbcb4661a7f0c6e16a3725ef6770edf40f77cd4c1531e8f13ffbad7fd"
+            },
+            {
+              "ref": "tests/scripts/test_qi_projector_live_admission.py",
+              "sha256": "ab2ebdc2f034995dd21fda801349fb8749f361a7216fafd86e49e2b3ec9ef8cb"
+            }
+          ],
+          "scope_sha256": "73c25dff5a07445e68bc367f8529173dfe4d6c0cefc2d4c18cfb737812fa0179"
+        }
+      ]
+    },
+    {
+      "id": "compiler-replay-admission",
+      "state": "done",
+      "action": "Replay complete proposal instructions against the frozen compiler configuration",
+      "acceptance": "Six compiled programs replay with source and compiler digests",
+      "receipts": [
+        {
+          "result": "Focused checks passed; compiler replay and frozen qualification checks recorded before hardware execution.",
+          "observed_at": "2026-10-27T17:02:14.479089+00:00",
+          "revision": "f6e4ef6c570f68dabf68b7b7c0a234d89b25ba74",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-projector-geometry/compiler-admission.json",
+              "sha256": "38664edb8cba002b15ca4d40bbbcacbf6b7b76302717e2b6b022eaec50a91661"
+            }
+          ],
+          "scope_sha256": "58e43863bf9b8b4aa1c4f637ea8d8b56b6945dbeb827b9bf5e7ddc1f4f3e48f2"
+        }
+      ]
+    },
+    {
+      "id": "qualification-decision-check",
+      "state": "done",
+      "action": "Freeze and test the qualification decision before hardware acquisition",
+      "acceptance": "Malformed records fail; contrast and disagreement boundaries have tests",
+      "receipts": [
+        {
+          "result": "Focused checks passed; compiler replay and frozen qualification checks recorded before hardware execution.",
+          "observed_at": "2026-10-27T17:02:14.480616+00:00",
+          "revision": "f6e4ef6c570f68dabf68b7b7c0a234d89b25ba74",
+          "evidence": [
+            {
+              "ref": "scripts/qi_tuna_qualification.py",
+              "sha256": "ec1ee8e8cfa09c0beec0e8730b18a935a378a1360c2d1bdfb508cfcbd6dd9b3e"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_qualification.py",
+              "sha256": "a23f23862c2d7112863c52de6fd085ecd4481028f16e749518d00226691a4376"
+            },
+            {
+              "ref": "docs/design/tuna-projector-qualification-admission.md",
+              "sha256": "e504d9e4962338df58dcdf16b8564cd2ef2677d996bd90bed2a2588cc7da51c4"
+            }
+          ],
+          "scope_sha256": "d48bb06ae9b0eb89764181eac3b9c08cd9b8180ddef98cb8a0d13458acff2ff5"
+        },
+        {
+          "result": "Reassessed the full qualification test file: threshold, malformed collection, bit mapping, ordered-raw binding and retained refusal replay tests pass in the 18-test qualification/QX suite. Historical hardware refusal remains unchanged.",
+          "observed_at": "2026-10-27T19:39:49.941051+00:00",
+          "revision": "e17cd829bd65dde0fda0fdbc564eb44701297021",
+          "evidence": [
+            {
+              "ref": "scripts/qi_tuna_qualification.py",
+              "sha256": "ec1ee8e8cfa09c0beec0e8730b18a935a378a1360c2d1bdfb508cfcbd6dd9b3e"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_qualification.py",
+              "sha256": "943f05cc313788f1dbc7eaea82331c385c61f2c9dcc3c9a8c540259f449b3b6c"
+            },
+            {
+              "ref": "docs/design/tuna-projector-qualification-admission.md",
+              "sha256": "e504d9e4962338df58dcdf16b8564cd2ef2677d996bd90bed2a2588cc7da51c4"
+            }
+          ],
+          "scope_sha256": "d48bb06ae9b0eb89764181eac3b9c08cd9b8180ddef98cb8a0d13458acff2ff5"
+        }
+      ]
+    },
+    {
+      "id": "live-structural-admission",
+      "state": "done",
+      "action": "Check current topology, compiler, terms, queue and account pause",
+      "acceptance": "Timestamped admission passes for the unchanged approved case",
+      "receipts": [
+        {
+          "result": "Fresh authenticated structural admission passes; topology, compiler, gates, limits, queue, hardware pause and zero transaction checks admitted unchanged qualification.",
+          "observed_at": "2026-10-27T17:06:34.515536+00:00",
+          "revision": "b69ab17d75eefee4424280d9035095b4d2d673a9",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/live-admission.json",
+              "sha256": "c6db70139af4d05b9a18d134372d437f320c9d177d8f29134197d74dc67b9d66"
+            }
+          ],
+          "scope_sha256": "88c068349757111789ade8b06ef66bdcf6ee6b959db12ae4f33f298c49f35871"
+        }
+      ]
+    },
+    {
+      "id": "review-fix-verification",
+      "state": "done",
+      "action": "Obtain requested Codex review of admission fixes",
+      "acceptance": "Requested model and high effort recorded; bounded qualification blockers resolved",
+      "receipts": [
+        {
+          "result": "Requested model high-effort review accepts bounded qualification after digest-bound API submission and fresh admission; 37 live-admission and guard tests pass. Full causal successor remains prospective.",
+          "observed_at": "2026-10-27T17:04:50.282090+00:00",
+          "revision": "f6e4ef6c570f68dabf68b7b7c0a234d89b25ba74",
+          "evidence": [
+            {
+              "ref": "docs/archive/reviews/tuna-projector-admission-review.md",
+              "sha256": "21a100fba064d87ae17201eceedc17311729e05f1c06d4065dc0b64772d513f0"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-projector-campaign-review.json",
+              "sha256": "3f034dbbbcb4661a7f0c6e16a3725ef6770edf40f77cd4c1531e8f13ffbad7fd"
+            },
+            {
+              "ref": "tests/scripts/test_qi_projector_live_admission.py",
+              "sha256": "ab2ebdc2f034995dd21fda801349fb8749f361a7216fafd86e49e2b3ec9ef8cb"
+            }
+          ],
+          "scope_sha256": "4f6f7770dc2ecab3df53cc085febe00c7c4f1be9e6405b291bf76f7924189ebe"
+        }
+      ]
+    },
+    {
+      "id": "retained-result-integration",
+      "state": "done",
+      "action": "Register hardware raw results, analysis and usage",
+      "acceptance": "Registry, retained replay and focused checks pass",
+      "receipts": [
+        {
+          "result": "All 12,288 hardware shots collected in 14.989993 seconds with zero recorded charges. Frozen qualification refused four required contrasts and all nine disagreement screens; raw reconstruction and retained replay confirm failure. Protocol inadmissible for hardware geometry inference; cause unresolved and further acquisition stopped.",
+          "observed_at": "2026-10-27T17:27:14.698250+00:00",
+          "revision": "b69ab17d75eefee4424280d9035095b4d2d673a9",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+              "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+              "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/tuna-qualification.md",
+              "sha256": "abc1b5a8875f2ecc2111e89eca41fb29448ca48209976b9eb207598deb67a4c2"
+            },
+            {
+              "ref": "docs/evidence/quantum_inspire/usage.json",
+              "sha256": "64d4432ba59eec56c98953ba398e3511941f2764d24694bf7eb017208bfb16ca"
+            }
+          ],
+          "scope_sha256": "acc5a78580d0ad541639fcd1057bd0ec667ad3fac4e39a506adb5eb44b428bd5"
+        },
+        {
+          "result": "Revalidated the unchanged qualification jobs and retained refusal against the refreshed account ledger. All 426 previous ledger rows are unchanged; the three new rows belong to the separately approved destination case. Scope-bound evidence now cites the immutable ledger-row comparison rather than the unrelated future account total.",
+          "observed_at": "2026-10-27T21:09:59.563706+00:00",
+          "revision": "efb5f6b6e5e0cb5fee4fbef0de314b1f7a42a13f",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+              "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+              "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/tuna-qualification.md",
+              "sha256": "abc1b5a8875f2ecc2111e89eca41fb29448ca48209976b9eb207598deb67a4c2"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/qualification-ledger-revalidation.json",
+              "sha256": "f9d4ff3aa92d5f270da6d34cb0cd62876e59184b151ef270cfe809765720843f"
+            }
+          ],
+          "scope_sha256": "acc5a78580d0ad541639fcd1057bd0ec667ad3fac4e39a506adb5eb44b428bd5"
+        }
+      ]
+    },
+    {
+      "id": "repeated-readout-discrimination-design",
+      "state": "todo",
+      "action": "Separate readout context, settling and classical reconstruction alternatives in a successor design",
+      "acceptance": "A source-grounded case distinguishes alternatives, freezes matched controls and stopping rules, and obtains separate acquisition admission before any further provider job"
+    },
+    {
+      "id": "readout-raw-diagnostics",
+      "action": "Reconstruct joint outcomes, channel contrasts and time-block diagnostics",
+      "acceptance": "Raw-bound deterministic diagnostics establish observations and bit-map falsifiers",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Bounded readout-cause investigation completed: exact diagnostics, primary-source boundaries and an unapproved destination-invariance candidate are retained; physical cause and statistical acquisition admission remain unresolved.",
+          "observed_at": "2026-10-27T17:49:31.928050+00:00",
+          "revision": "0ca88a3747ddb8abd3641b0e741b1e7b57fc0dbc",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-diagnostics.json",
+              "sha256": "25f1090b25a06ef4ce56537d52a3bf9b569da4981474c84568f19f886f60bd77"
+            }
+          ],
+          "scope_sha256": "e9782880fb667c47fc455ac251268ba985671134c3c2094e520d0c8161186fc2"
+        }
+      ]
+    },
+    {
+      "id": "readout-server-path-audit",
+      "action": "Trace stored source, compiler mapping and acquisition reconstruction",
+      "acceptance": "Read-only server identity observations and primary source contracts bound the first unobserved layer",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Bounded readout-cause investigation completed: exact diagnostics, primary-source boundaries and an unapproved destination-invariance candidate are retained; physical cause and statistical acquisition admission remain unresolved.",
+          "observed_at": "2026-10-27T17:49:31.930194+00:00",
+          "revision": "0ca88a3747ddb8abd3641b0e741b1e7b57fc0dbc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-server-source-observation.json",
+              "sha256": "45ccaee73356cdb1ca532f91757b1cbd87fab7ad3088143943eae36225b2d79f"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-job-log-availability.json",
+              "sha256": "51055c08b855144cd34204f2e079b9520dd8e17d47fa88ea13afb0cbf0d2b1d2"
+            }
+          ],
+          "scope_sha256": "57a49c89db41756ab5a7920dd2bc103877e804f7f14eeaa8a8564a01e4265d60"
+        }
+      ]
+    },
+    {
+      "id": "readout-physical-hypotheses",
+      "action": "Research physical and measurement-chain explanations",
+      "acceptance": "Each hypothesis carries primary sources, discriminating predictions and limits",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Bounded readout-cause investigation completed: exact diagnostics, primary-source boundaries and an unapproved destination-invariance candidate are retained; physical cause and statistical acquisition admission remain unresolved.",
+          "observed_at": "2026-10-27T17:49:31.931404+00:00",
+          "revision": "0ca88a3747ddb8abd3641b0e741b1e7b57fc0dbc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-cause-diagnosis.md",
+              "sha256": "a4dd7276bf4c855c2cf34f252d0374317c0718819c54dac5496e07afefb707ec"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-diagnosis-monitoring.json",
+              "sha256": "d88162eb3ed6af565cf6a342f41667aacd4aee93dd0eec716cc3d25eaaa56f46"
+            }
+          ],
+          "scope_sha256": "7b332ed09e0d1ad94f2adf8194dc02ec1ee6022bd8b3a82ce2cb1170eef0525f"
+        }
+      ]
+    },
+    {
+      "id": "readout-identifiability-model",
+      "action": "Derive what binary repeated-readout data identify",
+      "acceptance": "Measurement-instrument model separates population, assignment, transition and context effects",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Bounded readout-cause investigation completed: exact diagnostics, primary-source boundaries and an unapproved destination-invariance candidate are retained; physical cause and statistical acquisition admission remain unresolved.",
+          "observed_at": "2026-10-27T17:49:31.932735+00:00",
+          "revision": "0ca88a3747ddb8abd3641b0e741b1e7b57fc0dbc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-cause-diagnosis.md",
+              "sha256": "a4dd7276bf4c855c2cf34f252d0374317c0718819c54dac5496e07afefb707ec"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-response-mixture.json",
+              "sha256": "8507279a292c0e3d7682ffb00abde6d159ebef71783713eaf54fe2a41d250258"
+            }
+          ],
+          "scope_sha256": "5853d237f2be3068140f159189e2d3444680fef9e33b4c856c669a0d42394289"
+        }
+      ]
+    },
+    {
+      "id": "readout-successor-case",
+      "action": "Specify the minimal discriminating hardware case and admission gaps",
+      "acceptance": "Source-validated circuits, ceilings, comparisons and unresolved power/timing requirements are explicit",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Bounded readout-cause investigation completed: exact diagnostics, primary-source boundaries and an unapproved destination-invariance candidate are retained; physical cause and statistical acquisition admission remain unresolved.",
+          "observed_at": "2026-10-27T17:49:31.933885+00:00",
+          "revision": "0ca88a3747ddb8abd3641b0e741b1e7b57fc0dbc",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-readout-destination-invariance.md",
+              "sha256": "bb95cfaad599a40eaaef00597403d3bc935bf0895aaf04f96c8b1af959407cfa"
+            },
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/proposal.json",
+              "sha256": "65b4fcff889e27bf2fcac97769d726b32d1acf7ea163d666f38503f5cb6f34cb"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-destination-decision-draft.json",
+              "sha256": "5adc66de68d8de10e65c452649c0bcb9b7e47e0590b061a861d386c17908ff3f"
+            }
+          ],
+          "scope_sha256": "4139bdcefdac4c8b29db49e86ac899fb216b9159e395d4c5578b1b0e13bc9f9e"
+        }
+      ]
+    },
+    {
+      "id": "readout-diagnostic-verification",
+      "action": "Verify retained diagnostics, documents and plan consistency",
+      "acceptance": "Focused tests, replay, lint, types, links, inventory and plan checks pass",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "29 focused tests, pinned Ruff/mypy, exact diagnostic replays, local compiler replay, Markdown links, library inventory, plan tracker and research registry checks pass. The unapproved decision draft intentionally refuses statistical admission. All 19 original acquired files match the base revision.",
+          "observed_at": "2026-10-27T17:51:44.053828+00:00",
+          "revision": "0ca88a3747ddb8abd3641b0e741b1e7b57fc0dbc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-diagnosis-verification.json",
+              "sha256": "9df289b6c84b774e862e5c1f788b39ae1e56e786f11955627613ce78fd0b4c7c"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_readout_diagnostics.py",
+              "sha256": "24f4787ebf2e276c3136f825b2731f1540b98c093bd1c1ba038489670e028566"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_readout_mapping_cases.py",
+              "sha256": "003b0593c4ebb531e7edf84c753ea4c10b299bf605ce85451d6d32eed99ec590"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_readout_response_mixture.py",
+              "sha256": "ff8bfd0a6069be29fa38a9a4a41517046ccd6dd0ad77f548dec4afadcca26d65"
+            }
+          ],
+          "scope_sha256": "5c175bb5d1d0a6353b013ff1ed00def7d6d529e5ebcc7c25638bb1334a98220c"
+        }
+      ]
+    },
+    {
+      "id": "destination-uncertainty-contract",
+      "state": "done",
+      "action": "Qualify conditional-response uncertainty and explicit temporal-drift sensitivity",
+      "acceptance": "A proved finite-sample bound states its estimand, assumptions, drift limits and inconclusive outcomes",
+      "receipts": [
+        {
+          "result": "Conditional Hoeffding derivation independently inspected; 17 focused tests pass. The qualified estimand is realized predictable response; causal attribution and stationary population power remain unresolved.",
+          "observed_at": "2026-10-27T19:12:04.645506+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "scripts/qi_tuna_readout_destination_analysis.py",
+              "sha256": "77a49337ddbbc238da3d164b4349bcd945f504f8e9f3bc4ccf50053088bae06f"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_readout_destination_analysis.py",
+              "sha256": "d8679bdb634ca0d4b7b14b726d9d2373e0d04034cd17d0f7ca53d0adf2922d17"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-response-uncertainty.md",
+              "sha256": "5a7724d48cab159f23b40cd81395807254bb6fbe20a755bced22a4ca0526dc05"
+            }
+          ],
+          "scope_sha256": "b7cb6655cc31de991c3d9be137de1f811084a42edfd46f83ba440d77131c9938"
+        },
+        {
+          "result": "The accepted conditional Hoeffding derivation is unchanged. The repaired analyzer enforces the operational evidence chain and strict numeric contracts; 54 analyzer tests pass within 116 combined focused tests. Attribution remains unresolved.",
+          "observed_at": "2026-10-27T19:36:17.751936+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "scripts/qi_tuna_readout_destination_analysis.py",
+              "sha256": "d0ee875b448366a1a8a53d09d387abb7de32066f6214694e205b7e43505781c7"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_readout_destination_analysis.py",
+              "sha256": "021c01eedaa3f752aced1c2fa8043c8e159d8871def82fc85430e47313b2b73f"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-response-uncertainty.md",
+              "sha256": "5a7724d48cab159f23b40cd81395807254bb6fbe20a755bced22a4ca0526dc05"
+            }
+          ],
+          "scope_sha256": "b7cb6655cc31de991c3d9be137de1f811084a42edfd46f83ba440d77131c9938"
+        }
+      ]
+    },
+    {
+      "id": "destination-analyzer-freeze",
+      "state": "done",
+      "action": "Freeze and test the exact-case comparison analyzer",
+      "acceptance": "Digest-bound analyzer rejects malformed, partial, changed and unordered evidence and reproduces all terminal outcomes",
+      "receipts": [
+        {
+          "result": "Conditional Hoeffding derivation independently inspected; 17 focused tests pass. The qualified estimand is realized predictable response; causal attribution and stationary population power remain unresolved.",
+          "observed_at": "2026-10-27T19:12:04.645506+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "scripts/qi_tuna_readout_destination_analysis.py",
+              "sha256": "77a49337ddbbc238da3d164b4349bcd945f504f8e9f3bc4ccf50053088bae06f"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_readout_destination_analysis.py",
+              "sha256": "d8679bdb634ca0d4b7b14b726d9d2373e0d04034cd17d0f7ca53d0adf2922d17"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-response-uncertainty.md",
+              "sha256": "5a7724d48cab159f23b40cd81395807254bb6fbe20a755bced22a4ca0526dc05"
+            }
+          ],
+          "scope_sha256": "5f19d3e19f8426b02e5061b74490c60b4d47b1fdf2b81a6e541a680b608a5c24"
+        },
+        {
+          "result": "The accepted conditional Hoeffding derivation is unchanged. The repaired analyzer enforces the operational evidence chain and strict numeric contracts; 54 analyzer tests pass within 116 combined focused tests. Attribution remains unresolved.",
+          "observed_at": "2026-10-27T19:36:17.751936+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "scripts/qi_tuna_readout_destination_analysis.py",
+              "sha256": "d0ee875b448366a1a8a53d09d387abb7de32066f6214694e205b7e43505781c7"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_readout_destination_analysis.py",
+              "sha256": "021c01eedaa3f752aced1c2fa8043c8e159d8871def82fc85430e47313b2b73f"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-response-uncertainty.md",
+              "sha256": "5a7724d48cab159f23b40cd81395807254bb6fbe20a755bced22a4ca0526dc05"
+            }
+          ],
+          "scope_sha256": "5f19d3e19f8426b02e5061b74490c60b4d47b1fdf2b81a6e541a680b608a5c24"
+        }
+      ]
+    },
+    {
+      "id": "destination-order-admission",
+      "state": "done",
+      "action": "Verify serial acquisition ordering and fresh structural admission",
+      "acceptance": "Single-job manifests and guarded submission bind exact hashes, pause, queue, backend and credit checks",
+      "receipts": [
+        {
+          "result": "Compiler replay, exact binding check and 69 focused tests pass. Fresh hash-bound read-only admission passes; future timestamp ordering remains an acquisition check.",
+          "observed_at": "2026-10-27T19:18:45.597996+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-readout-destination-sequential/campaign.json",
+              "sha256": "29b55c2309b1982cd48a69457d0b450f801fbcc00de159bc84ab0292c0e78691"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-ordered-response-admission.json",
+              "sha256": "e06024b92cf5b150f3e3c38d9a1a8992afcfaeecc5807f820d9997415a4e6efb"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_sequential_run.py",
+              "sha256": "3b444c5f0d3e7c04349121afe24e0029726fc9d862114e50c0d98cca9be3b78b"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_sequential.py",
+              "sha256": "e934b3721f74cd2afc5e54b87af872e09a12ed651f74ef15d8771047d143ba36"
+            }
+          ],
+          "scope_sha256": "92b20d692e0ceabd6f1d78a55fffa8c9455f7687edfbbfb04143bcb96a5b2e2f"
+        },
+        {
+          "result": "Full compiler replay, exact bindings and 116 focused tests pass. Hash-bound read-only admission for the repaired campaign passes; future job timestamp ordering remains an acquisition check.",
+          "observed_at": "2026-10-27T19:36:17.752934+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-readout-destination-sequential/campaign.json",
+              "sha256": "53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-ordered-response-reviewed-admission.json",
+              "sha256": "db3c7ff692b9cbd7090e025ec53c6e9dc5269a920be28a9f8374cb3b63d4f8ef"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_sequential_run.py",
+              "sha256": "9edff4223e583b45d3c66bc3e6c7349a73b6e36925fec8774990b5a33a6490a5"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_sequential.py",
+              "sha256": "0944e22b0dc9a2d411400eaf9832bd92eb9f4c9ec69d26f27b46a0e7eea36f50"
+            }
+          ],
+          "scope_sha256": "92b20d692e0ceabd6f1d78a55fffa8c9455f7687edfbbfb04143bcb96a5b2e2f"
+        }
+      ]
+    },
+    {
+      "id": "destination-upstream-report",
+      "state": "done",
+      "action": "Verify upstream contact routes and prepare an unsent discrepancy report",
+      "acceptance": "Primary-source routes and sanitized backend-specific reproduction separate semantics from hardware response",
+      "receipts": [
+        {
+          "result": "Primary-source support, GitHub and GitLab routes verified. Backend-specific reports prepared and unsent; historical issues are contextual rather than deployed-cause evidence.",
+          "observed_at": "2026-10-27T19:18:45.598265+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "docs/notes/quantum_inspire/upstream-readout-report.md",
+              "sha256": "1e22ffdb4d9d646cf5eb63cb61359bde14ec04d74ad747f884e968f5ee026bfd"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-upstream-public-sources.json",
+              "sha256": "0d41ce21f5a26f8fe1b2e8373598090231de0901ebdf906e6aed9d29770021f7"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-upstream-issue-context.json",
+              "sha256": "9a41ed686dc91c5c75a3ed280bff76ba430a1cd75a1f3abeca4d98561843c7d6"
+            }
+          ],
+          "scope_sha256": "eb858765538d25543fbf1ebe513918125a32d40df79023b4868c2383ea04456b"
+        }
+      ]
+    },
+    {
+      "id": "destination-integrated-verification",
+      "state": "done",
+      "action": "Review and verify the frozen next-run case",
+      "acceptance": "Focused tests, static checks, compiler replay and plan checks pass before exact-case approval is requested",
+      "receipts": [
+        {
+          "result": "116 focused tests, pinned Ruff/mypy, compiler replay, exact bindings, links, inventory, plan and research registry checks pass. Requested high-effort Daybreak follow-up accepts the exact descriptive case; future terms-schema reuse remains bounded. Owner hardware approval is pending.",
+          "observed_at": "2026-10-27T19:38:11.004233+00:00",
+          "revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-ordered-response-verification.json",
+              "sha256": "41f8834b9f36e66aa0c83aaccb45494af7fc56a83bebaceb5a2feebd07d5019d"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-ordered-response-admission-review.md",
+              "sha256": "15c0874720bdb6f91eab0aed58bebf9dee37a8e46b0119431af3cc34bae717be"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-ordered-response-review-provenance.json",
+              "sha256": "0e48f089a1d32f87fca8e4dd9075d52cb4aff68f27f326900647d92fb5075886"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-ordered-response-reviewed-admission.json",
+              "sha256": "db3c7ff692b9cbd7090e025ec53c6e9dc5269a920be28a9f8374cb3b63d4f8ef"
+            }
+          ],
+          "scope_sha256": "87a63512d0a6ee25faae499dcdce3bc12debb2a4e1db5700708851de1f31aa49"
+        }
+      ]
+    },
+    {
+      "id": "destination-owner-approval",
+      "state": "done",
+      "action": "Obtain owner approval of the frozen six-job descriptive response case",
+      "acceptance": "Explicit owner approval names the reviewed campaign, written case, zero-credit budget and remaining causal limits before provider dispatch",
+      "receipts": [
+        {
+          "result": "Owner approved the exact frozen six-job descriptive case with the stated zero-credit condition and remaining causal limits.",
+          "observed_at": "2026-10-27T19:47:42.405731+00:00",
+          "revision": "efb5f6b6e5e0cb5fee4fbef0de314b1f7a42a13f",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/ordered-response-owner-approval.json",
+              "sha256": "82b4c46593c073fdced8ce9d06d79b0ad5f690ce54dd435bdcdb1f8ddbdb4ea5"
+            }
+          ],
+          "scope_sha256": "815a5748d99fe67a4b3ebcb08a06f8be0b1552004c39b4db26b2a034f4e8a903"
+        }
+      ]
+    },
+    {
+      "id": "destination-terms-schema-reuse",
+      "state": "done",
+      "action": "Validate the policy receipt schema explicitly before reusing the validators for another packet",
+      "acceptance": "Shared schema admission and a prebinding malformed-schema test pass; the new packet receives its own frozen identities and approval",
+      "receipts": [
+        {
+          "result": "Frozen separate three-job nominal-one case preserves predecessor manifests and sources.197combined focused tests pass,pinned Ruff format/check and mypy5files pass,local compiler replay and exact decision/policy/binding preflight pass. Provider execution remains pending requested peer review and fresh admission.",
+          "observed_at": "2026-10-27T22:56:37.513083+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-readout-destination-one-admission.md",
+              "sha256": "b1977fde732b31f7baff82dcecd03d482d0aeb10119ea7537f42167669803d88"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-response-uncertainty.md",
+              "sha256": "18837e2339bbb993f13bf27eebff364a08a056d83b1cca4ba05fdd83720c2c23"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-decision.json",
+              "sha256": "1048f0173c44ef5df668fa1dffe18fe72266b453857981511b8e0062099e4c08"
+            },
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-readout-destination-one/campaign.json",
+              "sha256": "73d79905735724ed936f06d299cb91112109e8fd778b0ce6b0cd2c73e5fce02e"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_analysis.py",
+              "sha256": "d87250e0f07cf4a9a3a7df7c3871722423506d1635cd7a59a50c5bdf117d3c67"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_cases.py",
+              "sha256": "e166bf711926504418dd40024052f32b9022f7c2e9797edacaf2648e644440a4"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_run.py",
+              "sha256": "b2dcdfff9fae2496334bfed2d3fbadbadc6a4804b6d52773df11c824afc23c9f"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_one_analysis.py",
+              "sha256": "937705fd6a3e4864071caafcd618dccb821171a9149431e80d7558d28a64f85a"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_one_run.py",
+              "sha256": "7c971d0694943821165fa9628b61d38aaa7b04cfd25175f692f9f066e68b9d1e"
+            }
+          ],
+          "scope_sha256": "ec6e05fe90fa20155b2840ceb21e15388927c5b3803886aae15e68b53604c16b"
+        },
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:13:19.422499+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "2fd90c24b98eb64e350c1dc4bf6267113f77d71a3a96554a21dde89a3a4891f9"
+            }
+          ],
+          "scope_sha256": "ec6e05fe90fa20155b2840ceb21e15388927c5b3803886aae15e68b53604c16b"
+        },
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:14:57.666814+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "f7b5613e24f7b2b734db7549d2005716ea77144669317142699a16be8453df51"
+            }
+          ],
+          "scope_sha256": "ec6e05fe90fa20155b2840ceb21e15388927c5b3803886aae15e68b53604c16b"
+        },
+        {
+          "result": "The exact repaired three-job packet passes279focused tests,pinned checks,compiler replay,normal/optimized byte replay and requestedmodelhighpeerreview. Deadline,mandatory locked-receipt consumption and fractional-second chronology are repaired;147historical file hashes match. Existing owner approval binds the exact current packet; execution still awaits fresh admission.",
+          "observed_at": "2026-10-27T23:28:06.508423+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-admission-verification.json",
+              "sha256": "543ebc07066e107a3073140ccea6395a88c8670ddf5d3418f3d3e2d82d4ee0eb"
+            }
+          ],
+          "scope_sha256": "ec6e05fe90fa20155b2840ceb21e15388927c5b3803886aae15e68b53604c16b"
+        }
+      ]
+    },
+    {
+      "id": "destination-approved-acquisition",
+      "state": "done",
+      "action": "Execute and collect the approved six-job serial destination comparison",
+      "acceptance": "Each dispatch binds approved hashes and fresh admission; complete raw results or preserved failure identities remain within six jobs and stated ceilings",
+      "receipts": [
+        {
+          "result": "The approved request window stopped after three nominal-zero submissions. Read-only recovery collected the third existing job; all 12,288 submitted shots and 14.356782 reported seconds are retained with zero transaction charges. The nominal-one jobs remained undispatched and the frozen whole-case endpoint is unavailable.",
+          "observed_at": "2026-10-27T21:05:27.112509+00:00",
+          "revision": "efb5f6b6e5e0cb5fee4fbef0de314b1f7a42a13f",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/sequence-plan.json",
+              "sha256": "53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/execution-state.json",
+              "sha256": "8956ff400539f04972751c53d5f762e4e40a64b3702f8b015ad038a5c078224b"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/read-only-recovery-receipt.json",
+              "sha256": "7ed20c380814d7a1df6f5c66c3aa5783e6274418b2297e8cf400c73f1a6fc660"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/analysis.json",
+              "sha256": "ab4f4b9f9a5669eebce38be49da4f3fc440ec440ec536719d2a6431de960f38e"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-descriptive.json",
+              "sha256": "c4cae4aff5e27d56b2513fae4af31b9db60f0b4b3cf1329bce82ad4b4b450782"
+            }
+          ],
+          "scope_sha256": "dd8f7fb8bce39744309d60c09c98f970a6289d807b21e5010a53a815d7999d65"
+        }
+      ]
+    },
+    {
+      "id": "destination-acquired-analysis",
+      "state": "done",
+      "action": "Verify and interpret the frozen destination-response analysis",
+      "acceptance": "Ordering, raw identity, statistical endpoint and causal limits are verified from acquired evidence",
+      "receipts": [
+        {
+          "result": "Frozen incomplete-case refusal and posthoc prefix retained. Semantic recovery/source checks, chronology regression, 98 focused tests, pinned tools, byte replays and final peer review pass. All three acquisitions match the refreshed zero-change ledger and registry; causal attribution remains unresolved.",
+          "observed_at": "2026-10-27T21:27:38.157502+00:00",
+          "revision": "41c7edb7e346d307fb5655ac262bbbf9b81e73b8",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/ordered-response-retention-verification.json",
+              "sha256": "d7e0ff771d76e7a6626fe718a6f0ca6435f314f280b074b106336dcb1fdab429"
+            }
+          ],
+          "scope_sha256": "1da0e9ac8d934f77013d8b5c9214fd17d11d9fdb1b0707a9ae80926c73634152"
+        }
+      ]
+    },
+    {
+      "id": "destination-acquisition-registration",
+      "state": "done",
+      "action": "Register acquired jobs, refresh usage and verify evidence consistency",
+      "acceptance": "Usage, research registry, retained replay, links and plan receipts account for every dispatched job",
+      "receipts": [
+        {
+          "result": "Frozen incomplete-case refusal and posthoc prefix retained. Semantic recovery/source checks, chronology regression, 98 focused tests, pinned tools, byte replays and final peer review pass. All three acquisitions match the refreshed zero-change ledger and registry; causal attribution remains unresolved.",
+          "observed_at": "2026-10-27T21:27:38.157502+00:00",
+          "revision": "41c7edb7e346d307fb5655ac262bbbf9b81e73b8",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/ordered-response-retention-verification.json",
+              "sha256": "d7e0ff771d76e7a6626fe718a6f0ca6435f314f280b074b106336dcb1fdab429"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=qi-tuna-destination-case-deadline",
+              "sha256": "29db145cd5330a80d5829245f3de1f09ca5d2a02e97e0b89105e7e70f2c2c314"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=qi-tuna-destination-zero-prefix-response",
+              "sha256": "3d796a38d6cc0024120a6960504450a47bbd9140e7c36c749f43342acb5de113"
+            },
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=qi-tuna-destination-zero-baseline-before",
+              "sha256": "10dda7dd754424c7addf67723398c6860ce06cd1cb0b883a2719c3e1e028b872"
+            },
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=qi-tuna-destination-zero-rotated",
+              "sha256": "cc4ddc80f23d1ef26a63bbe8559179e45c3cda1ed155bd7a6f41d856f76908e0"
+            },
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=qi-tuna-destination-zero-baseline-after",
+              "sha256": "4a63a071ff6cb90500675a2179ee2440aa1e17ed39f574ef1215e709ed35270e"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-qi-tuna-destination-prefix",
+              "sha256": "5359bf189586b3b1bfad8515f380fc09e0f503980588b032eb84fd083b3062d3"
+            }
+          ],
+          "scope_sha256": "d547ffe16d9472294fd2f13b9bc19fffc4afaaa5915db6685bd7e7a03bda2d08"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-case-freeze",
+      "state": "done",
+      "action": "Freeze the approved three-job nominal-one case with measured queue waits and a separate primary endpoint",
+      "acceptance": "Retain a queue-aware written case, 12-cell uncertainty derivation and scope-bound decision; preserve the unavailable six-job endpoint.",
+      "receipts": [
+        {
+          "result": "Frozen separate three-job nominal-one case preserves predecessor manifests and sources.197combined focused tests pass,pinned Ruff format/check and mypy5files pass,local compiler replay and exact decision/policy/binding preflight pass. Provider execution remains pending requested peer review and fresh admission.",
+          "observed_at": "2026-10-27T22:56:37.513083+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-readout-destination-one-admission.md",
+              "sha256": "b1977fde732b31f7baff82dcecd03d482d0aeb10119ea7537f42167669803d88"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-response-uncertainty.md",
+              "sha256": "18837e2339bbb993f13bf27eebff364a08a056d83b1cca4ba05fdd83720c2c23"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-decision.json",
+              "sha256": "1048f0173c44ef5df668fa1dffe18fe72266b453857981511b8e0062099e4c08"
+            },
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-readout-destination-one/campaign.json",
+              "sha256": "73d79905735724ed936f06d299cb91112109e8fd778b0ce6b0cd2c73e5fce02e"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_analysis.py",
+              "sha256": "d87250e0f07cf4a9a3a7df7c3871722423506d1635cd7a59a50c5bdf117d3c67"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_cases.py",
+              "sha256": "e166bf711926504418dd40024052f32b9022f7c2e9797edacaf2648e644440a4"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_run.py",
+              "sha256": "b2dcdfff9fae2496334bfed2d3fbadbadc6a4804b6d52773df11c824afc23c9f"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_one_analysis.py",
+              "sha256": "937705fd6a3e4864071caafcd618dccb821171a9149431e80d7558d28a64f85a"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_one_run.py",
+              "sha256": "7c971d0694943821165fa9628b61d38aaa7b04cfd25175f692f9f066e68b9d1e"
+            }
+          ],
+          "scope_sha256": "ce28a03ff9ab7f9e20c836bd3498c519e88c473af2948fa564be54d32811f725"
+        },
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:13:19.422499+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "2fd90c24b98eb64e350c1dc4bf6267113f77d71a3a96554a21dde89a3a4891f9"
+            }
+          ],
+          "scope_sha256": "ce28a03ff9ab7f9e20c836bd3498c519e88c473af2948fa564be54d32811f725"
+        },
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:14:57.666814+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "f7b5613e24f7b2b734db7549d2005716ea77144669317142699a16be8453df51"
+            }
+          ],
+          "scope_sha256": "ce28a03ff9ab7f9e20c836bd3498c519e88c473af2948fa564be54d32811f725"
+        },
+        {
+          "result": "The exact repaired three-job packet passes279focused tests,pinned checks,compiler replay,normal/optimized byte replay and requestedmodelhighpeerreview. Deadline,mandatory locked-receipt consumption and fractional-second chronology are repaired;147historical file hashes match. Existing owner approval binds the exact current packet; execution still awaits fresh admission.",
+          "observed_at": "2026-10-27T23:28:06.508423+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-admission-verification.json",
+              "sha256": "543ebc07066e107a3073140ccea6395a88c8670ddf5d3418f3d3e2d82d4ee0eb"
+            }
+          ],
+          "scope_sha256": "ce28a03ff9ab7f9e20c836bd3498c519e88c473af2948fa564be54d32811f725"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-runner-analysis",
+      "state": "done",
+      "action": "Verify the nominal-one compiler, guarded runner and frozen analyzer",
+      "acceptance": "Pass targeted failure-path, ordering, binding, uncertainty, static and compiler checks on the exact successor packet.",
+      "receipts": [
+        {
+          "result": "Frozen separate three-job nominal-one case preserves predecessor manifests and sources.197combined focused tests pass,pinned Ruff format/check and mypy5files pass,local compiler replay and exact decision/policy/binding preflight pass. Provider execution remains pending requested peer review and fresh admission.",
+          "observed_at": "2026-10-27T22:56:37.513083+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-readout-destination-one-admission.md",
+              "sha256": "b1977fde732b31f7baff82dcecd03d482d0aeb10119ea7537f42167669803d88"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-response-uncertainty.md",
+              "sha256": "18837e2339bbb993f13bf27eebff364a08a056d83b1cca4ba05fdd83720c2c23"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-decision.json",
+              "sha256": "1048f0173c44ef5df668fa1dffe18fe72266b453857981511b8e0062099e4c08"
+            },
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-readout-destination-one/campaign.json",
+              "sha256": "73d79905735724ed936f06d299cb91112109e8fd778b0ce6b0cd2c73e5fce02e"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_analysis.py",
+              "sha256": "d87250e0f07cf4a9a3a7df7c3871722423506d1635cd7a59a50c5bdf117d3c67"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_cases.py",
+              "sha256": "e166bf711926504418dd40024052f32b9022f7c2e9797edacaf2648e644440a4"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_run.py",
+              "sha256": "b2dcdfff9fae2496334bfed2d3fbadbadc6a4804b6d52773df11c824afc23c9f"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_one_analysis.py",
+              "sha256": "937705fd6a3e4864071caafcd618dccb821171a9149431e80d7558d28a64f85a"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_one_run.py",
+              "sha256": "7c971d0694943821165fa9628b61d38aaa7b04cfd25175f692f9f066e68b9d1e"
+            }
+          ],
+          "scope_sha256": "a8e4c2569b81bec2424276b0a84dd1575fafaba45b3bc7fd810f8667e614dea8"
+        },
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:13:19.422499+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "2fd90c24b98eb64e350c1dc4bf6267113f77d71a3a96554a21dde89a3a4891f9"
+            }
+          ],
+          "scope_sha256": "a8e4c2569b81bec2424276b0a84dd1575fafaba45b3bc7fd810f8667e614dea8"
+        },
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:14:57.666814+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "f7b5613e24f7b2b734db7549d2005716ea77144669317142699a16be8453df51"
+            }
+          ],
+          "scope_sha256": "a8e4c2569b81bec2424276b0a84dd1575fafaba45b3bc7fd810f8667e614dea8"
+        },
+        {
+          "result": "The exact repaired three-job packet passes279focused tests,pinned checks,compiler replay,normal/optimized byte replay and requestedmodelhighpeerreview. Deadline,mandatory locked-receipt consumption and fractional-second chronology are repaired;147historical file hashes match. Existing owner approval binds the exact current packet; execution still awaits fresh admission.",
+          "observed_at": "2026-10-27T23:28:06.508423+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-admission-verification.json",
+              "sha256": "543ebc07066e107a3073140ccea6395a88c8670ddf5d3418f3d3e2d82d4ee0eb"
+            }
+          ],
+          "scope_sha256": "a8e4c2569b81bec2424276b0a84dd1575fafaba45b3bc7fd810f8667e614dea8"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-submission-deadlines",
+      "state": "done",
+      "action": "Propagate admission and campaign deadlines through every successor submission request",
+      "acceptance": "Preserve historical qi_platform.py bytes; enforce deadlines on every compute resource write, enqueue and submission read; deterministic clock-crossing regressions preserve partial identities and block subsequent requests.",
+      "receipts": [
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:13:19.422499+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "2fd90c24b98eb64e350c1dc4bf6267113f77d71a3a96554a21dde89a3a4891f9"
+            }
+          ],
+          "scope_sha256": "09db30ea0e20abd2d4112d030e8d6fb481063adf6e1dfff3507e70fe3f7755eb"
+        },
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:14:57.666814+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "f7b5613e24f7b2b734db7549d2005716ea77144669317142699a16be8453df51"
+            }
+          ],
+          "scope_sha256": "09db30ea0e20abd2d4112d030e8d6fb481063adf6e1dfff3507e70fe3f7755eb"
+        },
+        {
+          "result": "The exact repaired three-job packet passes279focused tests,pinned checks,compiler replay,normal/optimized byte replay and requestedmodelhighpeerreview. Deadline,mandatory locked-receipt consumption and fractional-second chronology are repaired;147historical file hashes match. Existing owner approval binds the exact current packet; execution still awaits fresh admission.",
+          "observed_at": "2026-10-27T23:28:06.508423+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-admission-verification.json",
+              "sha256": "543ebc07066e107a3073140ccea6395a88c8670ddf5d3418f3d3e2d82d4ee0eb"
+            }
+          ],
+          "scope_sha256": "09db30ea0e20abd2d4112d030e8d6fb481063adf6e1dfff3507e70fe3f7755eb"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-locked-admission-consumption",
+      "state": "done",
+      "action": "Bind precise locked-admission and collection evidence into completion and final analysis",
+      "acceptance": "Require exact successful locked-admission structure, hashes, limits, heartbeat and chronology; retain its digest in completion and analysis; reject absent and semantically mutated receipts even with refreshed hashes; preserve fractional-second admission/collection chronology and immutable recollection.",
+      "receipts": [
+        {
+          "result": "The exact repaired three-job packet passes279focused tests,pinned checks,compiler replay,normal/optimized byte replay and requestedmodelhighpeerreview. Deadline,mandatory locked-receipt consumption and fractional-second chronology are repaired;147historical file hashes match. Existing owner approval binds the exact current packet; execution still awaits fresh admission.",
+          "observed_at": "2026-10-27T23:28:06.508423+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-admission-verification.json",
+              "sha256": "543ebc07066e107a3073140ccea6395a88c8670ddf5d3418f3d3e2d82d4ee0eb"
+            }
+          ],
+          "scope_sha256": "fc5707e136828b89265907b07276146be4c6b3f80698fddcf9a971d8c5368762"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-peer-review",
+      "state": "done",
+      "action": "Obtain the requested high-effort Codex review of the three-job case",
+      "acceptance": "Retain the requested model and effort provenance, resolve reachable findings and freeze packet digests.",
+      "receipts": [
+        {
+          "result": "The exact repaired three-job packet passes279focused tests,pinned checks,compiler replay,normal/optimized byte replay and requestedmodelhighpeerreview. Deadline,mandatory locked-receipt consumption and fractional-second chronology are repaired;147historical file hashes match. Existing owner approval binds the exact current packet; execution still awaits fresh admission.",
+          "observed_at": "2026-10-27T23:28:06.508423+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-admission-verification.json",
+              "sha256": "543ebc07066e107a3073140ccea6395a88c8670ddf5d3418f3d3e2d82d4ee0eb"
+            }
+          ],
+          "scope_sha256": "adce7c4938599fb1471d920ef8233a3c8ea832db932096e82fc36f72a3ce2b9e"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-acquisition",
+      "state": "done",
+      "action": "Execute the three approved nominal-one jobs after fresh admission",
+      "acceptance": "Submit at most three serial 4096-shot jobs within the frozen horizon and zero-credit policy; preserve every dispatched identity and recover only through read-only collection.",
+      "receipts": [
+        {
+          "result": "All three approved nominal-one jobs completed and retained12288orderedshots,16.783859reportedseconds andzeroledgercharges. Providercreation followedprecedingfinish by46.329855/45.412798seconds andprecedingrawcollection. The longestcreation-to-queuedintervalwas1936.258985seconds;benchmarkingcontextretained.",
+          "observed_at": "2026-10-28T00:42:13.287047+00:00",
+          "revision": "f7e85775b96cfbffd8b8982b0fb3e3317c54edc2",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/execution-state.json",
+              "sha256": "d6c48bc8f5a03cbe56ebcb01f38658df81db3d760a3986139e24cd1c44490c81"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis.json",
+              "sha256": "646ebac7281991ce466c5381b5a56e511755cb33d9019adc7b14bb1e0ed693f1"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-ledger-revalidation.json",
+              "sha256": "b93855409cd37f9abd5ec6d559f110d906b82b0efc3d5df9007ae2749562d761"
+            }
+          ],
+          "scope_sha256": "bc40d1bba09a6485dfab149bd5aef430bc5439339b354f6d6ca3ca056530a3b5"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-analysis-encoding-receipt",
+      "state": "done",
+      "action": "Reconcile runtime and canonical analysis byte contracts without changing acquired evidence",
+      "acceptance": "Preserve emitted runtime bytes, replay a separate canonical copy through the frozen analyzer and validate both exact encodings, identical numbers/decision, completed state and all frozen source identities; pass mutation/preservation regressions.",
+      "receipts": [
+        {
+          "result": "Both exactJSONbytecontracts replayidenticalfrozenanalysisobjects,numbersanddecision. The originalruntimebytesremainpreserved;canonicalCLI andencodingreceipt normal/-O checks pass.21newregressions and300combinedfocusedtests,pinnedRuff/mypypass.",
+          "observed_at": "2026-10-28T00:42:13.287047+00:00",
+          "revision": "f7e85775b96cfbffd8b8982b0fb3e3317c54edc2",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-canonical.json",
+              "sha256": "ba74fbfb5f26ec5463059b26d66138b571be8792a2dbbd32dc58bd5a5bf9ab1a"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json",
+              "sha256": "b89b115df823113dc8430c7eebddee1898a3906ac7109ea0624edd6803be0027"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_analysis_receipt.py",
+              "sha256": "89cd6f8fc0e77298740f61e59dc3141e572ad66edff461db4dadd559cc786915"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_analysis_receipt.py",
+              "sha256": "9df0b11ad0e9e9de144ab38435d36b5a20a5ee7545c555083c8209f7411bb616"
+            }
+          ],
+          "scope_sha256": "ae9a5cfe0e5948e4fb9b42daa5a27b545bf8a1bfa004de239cdb7494b3c00e5b"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-retained-analysis",
+      "state": "done",
+      "action": "Analyze and register the three-job case with immutable receipts",
+      "acceptance": "Replay the frozen independent primary endpoint, retain raw shots, register acquisitions and refresh scoped usage evidence.",
+      "receipts": [
+        {
+          "result": "The frozen nominal-one endpoint establishes bounded selected-cell response equivalence. All raw tables match independent vectorized counts; canonical and runtime encodings retain identical values. Three acquisitions and one independent primaryclaim are registered;285claims319acquisitions,432zero-changeledgerjobs,prior429rowsunchanged. Both newreceipt and historicalprefix replaygates pass.",
+          "observed_at": "2026-10-28T00:47:09.996842+00:00",
+          "revision": "f7e85775b96cfbffd8b8982b0fb3e3317c54edc2",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-canonical.json",
+              "sha256": "ba74fbfb5f26ec5463059b26d66138b571be8792a2dbbd32dc58bd5a5bf9ab1a"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json",
+              "sha256": "b89b115df823113dc8430c7eebddee1898a3906ac7109ea0624edd6803be0027"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/nominal-one-destination-response.md",
+              "sha256": "2e29558c8860556fb75d965f2342f2db444bb6392863bcdb4a2b158b277c2d7a"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-ledger-revalidation.json",
+              "sha256": "b93855409cd37f9abd5ec6d559f110d906b82b0efc3d5df9007ae2749562d761"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=qi-tuna-destination-one-response",
+              "sha256": "df6e2814f0d29479a2ae1f897628456f046ed8ef41e9d7067d5870374269e12e"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-qi-tuna-destination-one-response",
+              "sha256": "2f56f641e9ca2e060ee38bca097bc2e7f15b6ea5e35dfbbd844b1f8e1be6b507"
+            },
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=qi-tuna-destination-one-baseline-before",
+              "sha256": "179513ee254a875b66791410cf48473aca0ac8e4cfdbd6769765b11f93313d61"
+            },
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=qi-tuna-destination-one-rotated",
+              "sha256": "f377b0cec2644d13e26197e7cb8173e93647b49531e9c9217212b0ff6f3ec508"
+            },
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=qi-tuna-destination-one-baseline-after",
+              "sha256": "d697cd91321e5e8c7b6378e5260d6cf52f001dc7dd897ef9fa906f4676a729ff"
+            }
+          ],
+          "scope_sha256": "e9da2880d51e77c31325f7eb4a715f7b54446917d130d06332b09eb70d6207fc"
+        }
+      ]
+    },
+    {
+      "id": "destination-job-artifact-research",
+      "state": "done",
+      "action": "Inspect QI per-job acquisition mapping, thresholds, served schedules and retained IQ",
+      "acceptance": "Document verified read-only routes, returned fields and measured availability for all six retained destination jobs; prepare a job-specific unsent request for missing upstream evidence.",
+      "receipts": [
+        {
+          "result": "Read-only6job audit verifiesstoredsources,zero generatedsiblings andbinaryfinal-result equivalence. Metadata404 isconsistentwithzero metadata routes inlive53pathAPI;boundedlogs time out;Grafana anddirectPrometheus TCP probesfail. The report separates unavailable account surfaces from unknowninternalretention and prepares anunsenttieredproviderrequest foracquisitionmaps,pre-packinglabels,IQ,thresholdsandschedules.",
+          "observed_at": "2026-10-28T00:47:09.996842+00:00",
+          "revision": "f7e85775b96cfbffd8b8982b0fb3e3317c54edc2",
+          "evidence": [
+            {
+              "ref": "docs/notes/quantum_inspire/destination-response-upstream-request.md",
+              "sha256": "8aa625640ee46002eac2ba3e3e2a3c63780d2757f8e3566355111bf3851ae0b0"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-job-artifact-observations.json",
+              "sha256": "2dba65de58d86cb1a456a4bbcf61961bb543d51bfdce4eaea499b10db403109f"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-final-result-equivalence.json",
+              "sha256": "3946f6ef9a543ee30cf5433309fffe00680271e5d2a17b45a275c685ec2a0ce7"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-job-log-observation.json",
+              "sha256": "6d51375448902d493a636c306d032528cf86469586651901224702c35df486d2"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-served-api-observation.json",
+              "sha256": "d0fd91d54574518cda5a0b24ce052913834bfbc93b060fc4197872c36bcd89b9"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-calibration-connectivity.json",
+              "sha256": "5864b9fc7d872a9e1f978d0c49f7cd82654df7e359541520965bd0d356368903"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-prometheus-version-scope.json",
+              "sha256": "7b836275f858296a2c77cf2c9d4683e43c636628187c8ce297299fd4da3bc32d"
+            }
+          ],
+          "scope_sha256": "5b449d856460018e12fd1fb42be467e75c0c8953eee6033175c85a055f0ca0b0"
+        }
+      ]
+    },
+    {
+      "id": "destination-final-result-projection-replay",
+      "state": "done",
+      "action": "Retain lossless final-result projections and independently replay endpoint equality",
+      "acceptance": "Reconstruct every observed provider response from metadata and retained raw/results, match initial API hashes, derive equality checks independently, pass mutation tests and obtain focused peer-review closure.",
+      "receipts": [
+        {
+          "result": "Six lossless API-response reconstructions match original observed hashes. Normal and optimized checks, 45 mutation regressions, 345 combined focused tests, pinned Ruff/mypy and three replay gates pass. Requested high-effort Codex review closes the ancillary provenance finding with bounded PASS. API capture trust and physical-causality limits remain explicit.",
+          "observed_at": "2026-10-28T01:02:33.467693+00:00",
+          "revision": "f7e85775b96cfbffd8b8982b0fb3e3317c54edc2",
+          "evidence": [
+            {
+              "ref": "docs/archive/reviews/tuna-destination-final-result-projection-review.md",
+              "sha256": "dea97954103a7635bb527d758bf91c24e12594d42e0dac3a7b96bf190dfb7d1f"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-destination-final-result-projection-review.json",
+              "sha256": "7e30e65d61076f85e41fdc614d663711c46e9e9a11e3cde659ece678cf30a042"
+            },
+            {
+              "ref": "scripts/qi_tuna_final_result_receipt.py",
+              "sha256": "3547faacb440146963ecf72092f7883537b5a183133ebf4c84631a578d71f4ed"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_final_result_receipt.py",
+              "sha256": "7e4374b2f4c27ad1b4c3ea9a476675b0f986052219161c6e782209a64413c6d5"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-final-result-projections.json",
+              "sha256": "2b42398c3c63ccdea406e221b71b95a43457c3f1cde493a9d460935f5ece1666"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-final-result-checked-receipt.json",
+              "sha256": "8ba414576cf0c20c127da2c81ff976fd62d4976450be830615d30de2abc6d2b6"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-final-result-projection-replay.md",
+              "sha256": "4f0ba6f846f98183fd43e8a14709268f8fbf1cc3f5234dc0ed5eb4f0b20b32af"
+            }
+          ],
+          "scope_sha256": "800723ab9e9c277dc7581af11bcd0eec9132d25d639bbeca58c0bb1a62ad9274"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-integration-verification",
+      "state": "done",
+      "action": "Verify the retained nominal-one and upstream-investigation artifacts",
+      "acceptance": "Run focused tests, byte replays, registry, inventory, link and plan checks; retain a bounded verification receipt.",
+      "receipts": [
+        {
+          "result": "Retained acquisition, API projections and both requested peer reviews pass scoped integration checks: 345 tests, three replay gates, normal/optimized exact replays, pinned style/types, registry, provider ledger, 362-distribution inventory, Markdown links and plan validation. Rechecked 147 historical files, 23 acquired source files, 284 prior claims, 316 prior acquisitions and 429 ledger rows. Further hardware and upstream sending remain separately gated.",
+          "observed_at": "2026-10-28T01:03:55.579087+00:00",
+          "revision": "f7e85775b96cfbffd8b8982b0fb3e3317c54edc2",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-retention-verification.json",
+              "sha256": "0da0a728d34689a4391843b5204d4f33a5ea884b05732a072ecd9e83e255a017"
+            }
+          ],
+          "scope_sha256": "8890614e5ae5767f63fa41a004fc23a38d59f6ed85a7f9f481c4420b68546ca7"
+        }
+      ]
+    }
+  ]
+}

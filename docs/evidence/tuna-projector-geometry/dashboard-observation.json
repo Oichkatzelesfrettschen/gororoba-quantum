@@ -1,0 +1,266 @@
+{
+  "dashboard": "tuna-17",
+  "title": "Tuna-17",
+  "token": "98cba4a674c549a2942a0108b2254e9f",
+  "version": 28,
+  "updated": "2026-10-26T11:54:58Z",
+  "panels": [
+    {
+      "id": 2,
+      "title": "Relaxation time T1 (µs)",
+      "type": "timeseries",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit}}",
+          "instant": false
+        },
+        {
+          "ref": "B",
+          "legend": "Average",
+          "instant": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Latest T1 (µs)",
+      "type": "barchart",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit}}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Ramsey decoherence time T2R (µs)",
+      "type": "timeseries",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit}}",
+          "instant": false
+        },
+        {
+          "ref": "B",
+          "legend": "Average",
+          "instant": false
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Latest T2R (µs)",
+      "type": "barchart",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit}}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Echo decoherence time T2E (µs)",
+      "type": "timeseries",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit}}",
+          "instant": false
+        },
+        {
+          "ref": "B",
+          "legend": "Average",
+          "instant": false
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Latest T2E (µs)",
+      "type": "barchart",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit}}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Initialization error (%)",
+      "type": "timeseries",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit}}",
+          "instant": false
+        },
+        {
+          "ref": "B",
+          "legend": "Average",
+          "instant": false
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Latest Initialization Error (%)",
+      "type": "barchart",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit}}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Readout error (%)",
+      "type": "timeseries",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit}}",
+          "instant": false
+        },
+        {
+          "ref": "B",
+          "legend": "Average",
+          "instant": false
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Latest Readout Error (%)",
+      "type": "barchart",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit}}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Individual readout QNDness error (%)",
+      "type": "timeseries",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit}}",
+          "instant": false
+        },
+        {
+          "ref": "B",
+          "legend": "Average",
+          "instant": false
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "Latest Individual Readout QNDness Error (%)",
+      "type": "barchart",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit}}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "title": "Single-qubit gate error (%)",
+      "type": "timeseries",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit}}",
+          "instant": false
+        },
+        {
+          "ref": "B",
+          "legend": "Average",
+          "instant": false
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "title": "Latest Single-Qubit Gate Error (%)",
+      "type": "barchart",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit}}",
+          "instant": true
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "title": "Bell-state error (%)",
+      "type": "timeseries",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit1}}{{qubit2}}",
+          "instant": false
+        },
+        {
+          "ref": "B",
+          "legend": "Average",
+          "instant": false
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "title": "Latest Bell-State Error (%)",
+      "type": "barchart",
+      "value_text": {},
+      "queries": [
+        {
+          "ref": "A",
+          "legend": "{{qubit1}}{{qubit2}}",
+          "instant": true
+        }
+      ]
+    }
+  ],
+  "updates": [
+    "[2026-10-22] We are unable to show the latest performance data due to concerns related to the security leaks in PHP.",
+    "[2026-07-07] A mistake was made in calculating the init error, from the afternoon of 06-07-2026 till the morning of 07-07-2026 the init fidelity was reported.",
+    "[2026-05-23 19:15] The readout duration for all qubits of Tuna-17 has decreased from 600ns to 300ns.",
+    "[2026-05-01 18:15] The readout duration for all qubits of Tuna-17 has decreased from 800ns to 600ns.",
+    "[2026-04-10 15:20] The Tuna-17 backend is currently under beta testing. Please do not hesitate to contact us through Slack if you have feedback during this beta testing phase. Thank you!"
+  ],
+  "request_started_utc": "2026-10-27T15:35:44.860224+00:00",
+  "retrieved_utc": "2026-10-27T15:35:46.529628+00:00"
+}
