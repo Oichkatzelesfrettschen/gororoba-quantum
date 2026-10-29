@@ -1383,7 +1383,8 @@ def measurement_sequence_candidates(
                 if snapshot.name != msq_envelope.ENVELOPE_BACKEND:
                     raise runtime.LiveRunError(f"the envelope runs on {msq_envelope.ENVELOPE_BACKEND} only")
                 envelope_calibration = msq_envelope.calibration_from_snapshot(snapshot)
-                qubits = msq_envelope.layout_rule(
+                qubits = msq_envelope.place_layout(
+                    getattr(args, "envelope_schema", msq_envelope.ENVELOPE_SCHEMA),
                     envelope_calibration["qubits"],
                     envelope_calibration["excluded"],
                     [tuple(edge) for edge in envelope_calibration["edges"]],
@@ -2045,6 +2046,28 @@ def check_compiled_ideals(runtime: Any, choices: list[Any]) -> None:
             raise runtime.LiveRunError(f"{name}: compiled labeled ideal differs from its exact oracle")
 
 
+def candidate_ceiling(args: Any, usage: dict[str, Any]) -> float:
+    """The per-job execution ceiling the optimizer screens each candidate job against.
+
+    Every family but a v2 envelope screens against --max-execution-seconds. A v2 envelope derives its ceiling from the
+    selected plan's charge afterwards (live_run.apply_envelope_ceiling), so its screen is the tightest bound every
+    admissible attempt meets: the approved cap, the optional ceiling bound and the remaining quota above the reserve. A
+    v2 ceiling is CEILING_FACTOR times the charge or more, so the screen rejects no candidate the envelope admits; a
+    quota at or below the reserve leaves the other bounds, and the optimizer's reserve check rejects the plan with its
+    reason.
+    """
+    ceiling = getattr(args, "max_execution_seconds", None)
+    if getattr(args, "envelope_schema", None) != msq_envelope.ENVELOPE_SCHEMA:
+        if ceiling is None:
+            raise ValueError("--max-execution-seconds is required outside a v2 envelope")
+        return ceiling
+    bounds = [float(args.max_total_execution_seconds)] + ([float(ceiling)] if ceiling is not None else [])
+    remaining = usage.get("usage_remaining_seconds")
+    if remaining is not None and float(remaining) - float(args.reserve_seconds) > 0:
+        bounds.append(float(remaining) - float(args.reserve_seconds))
+    return min(bounds)
+
+
 def prepare(
     runtime: Any, snapshots: list[Any], args: Any, usage: dict[str, Any], trace: dict[str, Any]
 ) -> tuple[list[Any], dict[str, Any]]:
@@ -2057,6 +2080,7 @@ def prepare(
     if excitation is not None and args.family not in N21_FAMILIES:
         raise runtime.LiveRunError("--prep-excitation applies to the N21 families")
     candidates = admitted_family_candidates(runtime, family_candidates(runtime, snapshots, args, trace), trace)
+    job_ceiling = candidate_ceiling(args, usage)
     if not candidates:
         diagnostic = runtime._scrub_instances(runtime._jsonable(trace))
         raise runtime.LiveRunError(
@@ -2224,7 +2248,7 @@ def prepare(
                                 pubs=tuple(pubs),
                                 shots=shots,
                                 overhead_seconds=args.job_overhead_seconds,
-                                max_execution_seconds=args.max_execution_seconds,
+                                max_execution_seconds=job_ceiling,
                                 overhead_assumption=(
                                     "declared overhead; 2.3 s default is the retained dynamic job's non-circuit "
                                     "charge, not a backend guarantee"

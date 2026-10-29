@@ -4065,8 +4065,11 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
     if preflight is not None:
         record["approval_preflight"] = preflight
         record["prediction_reuse"] = reuse_log
-    record["budget_plan"] = qpu_planning.budget_plan(sys.modules[__name__], choices, args, service.usage())
+    usage = service.usage()
+    record["budget_plan"] = qpu_planning.budget_plan(sys.modules[__name__], choices, args, usage)
     record["execution_contract"] = qpu_planning.execution_contract(choices, record)
+    if is_envelope_family(getattr(args, "family", None)):
+        apply_envelope_ceiling(record, choices, args, usage)
     if design.get("optimization", {}).get("selected") is None and design:
         record["state"] = "design_infeasible"
     if not record["budget_plan"]["admitted"]:
@@ -4463,12 +4466,52 @@ def planner_charge(execution: Mapping[str, Any], rep_delay: float) -> float:
     return total
 
 
+def envelope_ladder(execution: Mapping[str, Any]) -> tuple[dict[str, float], int]:
+    """Planner charge at each v2 ladder delay (keyed by msq_envelope.delay_key) and the job's total shots."""
+    charges = {
+        msq_envelope.delay_key(delay): planner_charge(execution, delay) for delay in msq_envelope.REP_DELAY_LADDER_S
+    }
+    shots = sum(int(pub["shots"]) for job in execution.get("selected_job_costs", []) for pub in job.get("pubs", []))
+    return charges, shots
+
+
 def envelope_contract(record: Mapping[str, Any], args: argparse.Namespace) -> dict[str, Any]:
     """The approval-bound envelope: delays, ceilings, the aggregate cap and the replan bound."""
+    fallback_rule = {
+        "delay_codes": list(msq_envelope.FALLBACK_DELAY_CODES),
+        "timeout_code": msq_envelope.FALLBACK_TIMEOUT_CODE,
+        "timeout_max_billed_seconds": msq_envelope.FALLBACK_MAX_BILLED_S,
+    }
+    if getattr(args, "envelope_schema", msq_envelope.ENVELOPE_SCHEMA) == msq_envelope.ENVELOPE_SCHEMA:
+        charges, shots = envelope_ladder(record.get("execution_contract", {}))
+        ceilings = msq_envelope.ladder_ceilings(charges, shots)
+        cap = getattr(args, "max_total_execution_seconds", None)
+        bound = getattr(args, "envelope_ceiling_bound", None)
+        refusals = msq_envelope.contract_refusals(cap, ceilings, bound)
+        if refusals:
+            raise LiveRunError("; ".join(refusals))
+        return {
+            "schema": msq_envelope.ENVELOPE_SCHEMA,
+            "backend": msq_envelope.ENVELOPE_BACKEND,
+            "layout_width": record.get("family_configuration", {}).get("layout_width"),
+            "rep_delay_seconds": getattr(args, "rep_delay", None),
+            "rep_delay_ladder_seconds": list(msq_envelope.REP_DELAY_LADDER_S),
+            "ceiling_rule": {
+                "factor": msq_envelope.CEILING_FACTOR,
+                "per_shot_residual_seconds": msq_envelope.PER_SHOT_RESIDUAL_S,
+            },
+            "ladder_ceiling_seconds": ceilings,
+            "ceiling_seconds": {"attempt_1": ceilings[msq_envelope.delay_key(msq_envelope.REP_DELAY_LADDER_S[0])]},
+            "ceiling_bound_seconds": bound,
+            "envelope_cap_seconds": cap,
+            "reserve_seconds": getattr(args, "reserve_seconds", None),
+            "max_replans": msq_envelope.MAX_REPLANS,
+            "fallback_rule": fallback_rule,
+        }
     ceiling_1 = getattr(args, "max_execution_seconds", None)
     ceiling_2 = getattr(args, "fallback_max_execution_seconds", None)
     return {
-        "schema": msq_envelope.ENVELOPE_SCHEMA,
+        "schema": msq_envelope.ENVELOPE_SCHEMA_V1,
         "backend": msq_envelope.ENVELOPE_BACKEND,
         "layout_width": record.get("family_configuration", {}).get("layout_width"),
         "rep_delay_seconds": getattr(args, "rep_delay", None),
@@ -4477,12 +4520,69 @@ def envelope_contract(record: Mapping[str, Any], args: argparse.Namespace) -> di
         "envelope_cap_seconds": None if ceiling_1 is None or ceiling_2 is None else ceiling_1 + ceiling_2,
         "reserve_seconds": getattr(args, "reserve_seconds", None),
         "max_replans": msq_envelope.MAX_REPLANS,
-        "fallback_rule": {
-            "delay_codes": list(msq_envelope.FALLBACK_DELAY_CODES),
-            "timeout_code": msq_envelope.FALLBACK_TIMEOUT_CODE,
-            "timeout_max_billed_seconds": msq_envelope.FALLBACK_MAX_BILLED_S,
-        },
+        "fallback_rule": fallback_rule,
     }
+
+
+def approved_envelope_schema(approved_dir: Path | None) -> str | None:
+    """The contract schema of the approved envelope dry run in approved_dir, or None when it cannot be read."""
+    if approved_dir is None:
+        return None
+    try:
+        approved = json.loads((Path(approved_dir) / "record.json").read_text())
+        return str(approved["envelope"]["contract"]["schema"])
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def fallback_approved_dir(first_dir: Path, first: Mapping[str, Any]) -> Path:
+    """The approved dry run that the attempt-1 record in first_dir ran under, beside attempt 1."""
+    meta = first.get("approved_record", {})
+    return first_dir.parent / str(meta.get("relative_path", meta["run"]))
+
+
+def envelope_flag_schema(args: argparse.Namespace) -> str:
+    """The envelope schema this invocation follows: the approved record's, else v2 for a new dry run."""
+    approved = getattr(args, "approved_record", None)
+    if approved is None and getattr(args, "envelope_fallback", None):
+        first_dir = Path(args.envelope_fallback)
+        try:
+            approved = fallback_approved_dir(first_dir, json.loads((first_dir / "record.json").read_text()))
+        except (OSError, ValueError, KeyError):
+            approved = None
+    return approved_envelope_schema(approved) or msq_envelope.ENVELOPE_SCHEMA
+
+
+def apply_envelope_ceiling(
+    record: dict[str, Any], choices: list[Choice], args: argparse.Namespace, usage: dict[str, Any]
+) -> None:
+    """Bind an envelope plan to its attempt-1 ceiling and apply the send admission to the budget plan.
+
+    A v2 family takes its attempt-1 ceiling from the ladder (msq_envelope.contract_refusals refuses an unusable cap
+    or bound), so args.max_execution_seconds, the policy and the budget plan carry it; the flag becomes the ceiling
+    bound. Attempt 1 then meets envelope_send_refusals on the live quota, the rule the send applies, and a refusal
+    marks the budget plan inadmissible.
+    """
+    if getattr(args, "envelope_fallback", None):
+        return
+    if getattr(args, "envelope_schema", msq_envelope.ENVELOPE_SCHEMA) == msq_envelope.ENVELOPE_SCHEMA:
+        if not hasattr(args, "envelope_ceiling_bound"):
+            args.envelope_ceiling_bound = args.max_execution_seconds
+        contract = envelope_contract(record, args)
+        args.max_execution_seconds = float(contract["ceiling_seconds"]["attempt_1"])
+        record["policy"]["max_execution_seconds"] = args.max_execution_seconds
+        record["budget_plan"] = qpu_planning.budget_plan(sys.modules[__name__], choices, args, usage)
+    else:
+        contract = envelope_contract(record, args)
+    remaining = usage.get("usage_remaining_seconds")
+    if remaining is None or contract["envelope_cap_seconds"] is None:
+        return
+    refused = envelope_send_refusals({"envelope": {"contract": contract}}, remaining)
+    if refused:
+        budget = record["budget_plan"]
+        budget["admitted"] = False
+        budget["reasons"].extend(refused)
+        print(f"envelope attempt 1 admission refuses the plan: {'; '.join(refused)}")
 
 
 def envelope_plan(
@@ -4507,6 +4607,12 @@ def envelope_plan(
 ENVELOPE_VALUE_REASON = "calibration values changed on compiled instructions"
 
 
+def record_envelope_schema(record: Mapping[str, Any], args: argparse.Namespace | None = None) -> str:
+    """The envelope schema a record's layout and admission follow: its contract's, else the invocation's."""
+    schema = record.get("envelope", {}).get("contract", {}).get("schema")
+    return str(schema or getattr(args, "envelope_schema", msq_envelope.ENVELOPE_SCHEMA_V1))
+
+
 def envelope_drift(
     record: Mapping[str, Any], choices: list[Choice], fresh: Snapshot, args: argparse.Namespace | None = None
 ) -> list[str]:
@@ -4521,7 +4627,8 @@ def envelope_drift(
     reasons: list[str] = []
     calibration = msq_envelope.calibration_from_snapshot(fresh)
     try:
-        layout = msq_envelope.layout_rule(
+        layout = msq_envelope.place_layout(
+            record_envelope_schema(record, args),
             calibration["qubits"],
             calibration["excluded"],
             [tuple(edge) for edge in calibration["edges"]],
@@ -4614,17 +4721,27 @@ def envelope_send_refusals(record: Mapping[str, Any], remaining: Any) -> list[st
     """Reasons the envelope's aggregate cap refuses this attempt at its send, read from the record and live quota.
 
     Attempt 2 carries attempt 1's billed charge, or attempt 1's ceiling while the fallback setup found it unbilled;
-    that ceiling then stays reserved against the quota, as envelope_fallback_setup reserved it.
+    that ceiling then stays reserved against the quota, as envelope_fallback_setup reserved it. A v1 contract
+    reserves the whole cap at attempt 1; a v2 contract (msq_envelope.attempt_admission_v2) reserves only the attempt's
+    own ceiling, and attempt 2's ceiling is the step the fallback setup chose.
     """
     contract = record["envelope"]["contract"]
     attempt_index = int(record["envelope"].get("attempt", 1))
-    earlier = record["envelope"].get("fallback_evidence", {}).get("billed_seconds") if attempt_index == 2 else 0.0
-    return msq_envelope.attempt_admission(
+    evidence = record["envelope"].get("fallback_evidence", {})
+    earlier = evidence.get("billed_seconds") if attempt_index == 2 else 0.0
+    v2 = contract.get("schema") == msq_envelope.ENVELOPE_SCHEMA
+    ceiling = (
+        evidence["chosen"]["ceiling_seconds"]
+        if v2 and attempt_index == 2
+        else contract["ceiling_seconds"][f"attempt_{attempt_index}"]
+    )
+    admission = msq_envelope.attempt_admission_v2 if v2 else msq_envelope.attempt_admission
+    return admission(
         attempt_index,
         float(remaining) if remaining is not None else math.nan,
         float(contract["reserve_seconds"] or 0.0),
         float(contract["envelope_cap_seconds"]),
-        float(contract["ceiling_seconds"][f"attempt_{attempt_index}"]),
+        float(ceiling),
         float(earlier if earlier is not None else contract["ceiling_seconds"]["attempt_1"]),
         earlier_unsettled=attempt_index == 2 and earlier is None,
     )
@@ -4648,7 +4765,7 @@ def envelope_fallback_setup(service: QiskitRuntimeService, args: argparse.Namesp
     approved_meta = first.get("approved_record", {})
     if not approved_meta.get("envelope"):
         raise LiveRunError(f"{first_dir.name} is not an envelope attempt")
-    approved_dir = first_dir.parent / str(approved_meta.get("relative_path", approved_meta["run"]))
+    approved_dir = fallback_approved_dir(first_dir, first)
     approved_sha = str(approved_meta["record_sha256"])
     if not (approved_dir / "record.json").is_file():
         raise LiveRunError(f"the approved envelope record {approved_dir} is not retained beside attempt 1")
@@ -4677,6 +4794,8 @@ def envelope_fallback_setup(service: QiskitRuntimeService, args: argparse.Namesp
         raise LiveRunError(f"attempt 1 does not authorize the 50 us fallback: {evidence}")
     contract = json.loads((approved_dir / "record.json").read_text())["envelope"]["contract"]
     remaining = service.usage().get("usage_remaining_seconds")
+    if contract.get("schema") == msq_envelope.ENVELOPE_SCHEMA:
+        return envelope_fallback_step(args, contract, evidence, remaining, approved_dir, approved_sha, billed_seconds)
     refused = msq_envelope.attempt_admission(
         2,
         float(remaining) if remaining is not None else math.nan,
@@ -4698,6 +4817,80 @@ def envelope_fallback_setup(service: QiskitRuntimeService, args: argparse.Namesp
     return evidence
 
 
+def envelope_fallback_step(
+    args: argparse.Namespace,
+    contract: Mapping[str, Any],
+    evidence: dict[str, Any],
+    remaining: Any,
+    approved_dir: Path,
+    approved_sha: str,
+    billed_seconds: float | None,
+) -> dict[str, Any]:
+    """Choose a v2 envelope's attempt 2 from the live quota (msq_envelope.select_fallback_step) and set args."""
+    first_ceiling = float(contract["ceiling_seconds"]["attempt_1"])
+    step, rejected = msq_envelope.select_fallback_step(
+        float(contract["rep_delay_seconds"]),
+        contract["ladder_ceiling_seconds"],
+        float(remaining) if remaining is not None else math.nan,
+        float(contract["reserve_seconds"] or 0.0),
+        float(contract["envelope_cap_seconds"]),
+        billed_seconds if billed_seconds is not None else first_ceiling,
+        billed_seconds is None,
+        contract.get("ceiling_bound_seconds"),
+    )
+    evidence["rejected_steps"] = rejected
+    if step is None:
+        raise LiveRunError(f"attempt 2 fits no ladder step of the envelope: {rejected}")
+    delay, ceiling = step
+    evidence["chosen"] = {"rep_delay_seconds": delay, "ceiling_seconds": ceiling}
+    args.submit = True
+    args.approved_record = approved_dir
+    args.approved_record_sha256 = approved_sha
+    args.envelope_schema = msq_envelope.ENVELOPE_SCHEMA
+    args.rep_delay = delay
+    args.max_execution_seconds = ceiling
+    args.envelope_attempt = {"rep_delay": delay, "attempt_index": 2, "envelope_sha256": approved_sha}
+    args.envelope_fallback_evidence = evidence
+    return evidence
+
+
+def envelope_ceiling_excess(approved: Mapping[str, Any], fresh: Mapping[str, Any]) -> list[str]:
+    """Each v2 ladder step whose fresh ceiling exceeds the approved one, or that the fresh contract lacks."""
+    held = approved.get("ladder_ceiling_seconds", {})
+    now = fresh.get("ladder_ceiling_seconds", {})
+    return [
+        f"ladder step {key} ceiling {now.get(key)!r} s exceeds the approved {limit!r} s"
+        for key, limit in held.items()
+        if not isinstance(now.get(key), (int, float)) or now[key] > limit
+    ]
+
+
+def refresh_envelope_ceilings(record: dict[str, Any], args: argparse.Namespace) -> list[str]:
+    """Rebind a v2 attempt 1 to the ladder of its refreshed execution contract; return the ceiling rule's refusals.
+
+    The pre-submit refresh rebuilds the execution contract, so attempt 1's contract, sent ceiling
+    (args.max_execution_seconds), policy and planner charges follow it. Attempt 2 keeps the approved contract and sends
+    the chosen step's approved ceiling, which approved_envelope_mismatches bounds against the fresh ladder.
+    """
+    section = record.get("envelope", {})
+    if section.get("contract", {}).get("schema") != msq_envelope.ENVELOPE_SCHEMA or section.get("attempt", 1) != 1:
+        return []
+    try:
+        contract = envelope_contract(record, args)
+    except LiveRunError as error:
+        return [f"the refreshed plan leaves the ceiling rule: {error}"]
+    section["contract"] = contract
+    args.max_execution_seconds = float(contract["ceiling_seconds"]["attempt_1"])
+    record["policy"]["max_execution_seconds"] = args.max_execution_seconds
+    if "planner_charge_seconds" in section:
+        execution = record.get("execution_contract", {})
+        section["planner_charge_seconds"] = {
+            "attempt_1": planner_charge(execution, contract["rep_delay_seconds"]),
+            "ladder": envelope_ladder(execution)[0],
+        }
+    return []
+
+
 def approved_envelope_mismatches(
     approved_dir: Path, record: dict[str, Any], expected_record_sha256: str | None
 ) -> list[str]:
@@ -4712,15 +4905,49 @@ def approved_envelope_mismatches(
     if record.get("envelope", {}).get("attempt") == 2:
         # Attempt 2 runs the approved fallback delay under the approved second ceiling.
         contract = approved.get("envelope", {}).get("contract", {})
+        delay: Any = contract.get("fallback_rep_delay_seconds")
+        ceiling: Any = contract.get("ceiling_seconds", {}).get("attempt_2")
+        chosen_mismatches: list[str] = []
+        if contract.get("schema") == msq_envelope.ENVELOPE_SCHEMA:
+            # A v2 attempt 2 runs the step the fallback setup chose, which must be an approved ladder step at its
+            # approved ceiling.
+            chosen = record.get("envelope", {}).get("fallback_evidence", {}).get("chosen", {})
+            delay, ceiling = chosen.get("rep_delay_seconds"), chosen.get("ceiling_seconds")
+            held = contract.get("ladder_ceiling_seconds", {})
+            if (
+                delay not in contract.get("rep_delay_ladder_seconds", [])
+                or delay == contract.get("rep_delay_seconds")
+                or held.get(msq_envelope.delay_key(delay) if delay is not None else "") != ceiling
+            ):
+                chosen_mismatches.append(f"attempt 2 step {delay!r} at {ceiling!r} s is not an approved ladder step")
         approved = {
             **approved,
-            "policy": {
-                **approved.get("policy", {}),
-                "rep_delay_seconds": contract.get("fallback_rep_delay_seconds"),
-                "max_execution_seconds": contract.get("ceiling_seconds", {}).get("attempt_2"),
-            },
+            "policy": {**approved.get("policy", {}), "rep_delay_seconds": delay, "max_execution_seconds": ceiling},
         }
-    mismatches: list[str] = []
+    mismatches: list[str] = chosen_mismatches if record.get("envelope", {}).get("attempt") == 2 else []
+    old_contract = approved.get("envelope", {}).get("contract", {})
+    new_contract = record.get("envelope", {}).get("contract", {})
+    if old_contract.get("schema") == msq_envelope.ENVELOPE_SCHEMA:
+        # A v2 approval binds the ceiling rule and bounds each ceiling: a fresh layout whose planner charge moves keeps
+        # the approval while every fresh ladder ceiling stays at or below the approved one.
+        # The fresh ladder comes from the refreshed execution contract, since an attempt-2 record carries the approved
+        # contract unchanged.
+        execution = record.get("execution_contract", {})
+        if not execution.get("selected_job_costs"):
+            mismatches.append("the fresh plan carries no selected job costs to bound its ladder ceilings")
+        fresh_ladder = msq_envelope.ladder_ceilings(*envelope_ladder(execution))
+        mismatches.extend(envelope_ceiling_excess(old_contract, {"ladder_ceiling_seconds": fresh_ladder}))
+        derived = ("ladder_ceiling_seconds", "ceiling_seconds")
+        old_contract = {k: v for k, v in old_contract.items() if k not in derived}
+        new_contract = {k: v for k, v in new_contract.items() if k not in derived}
+        approved = {
+            **approved,
+            "policy": {k: v for k, v in approved.get("policy", {}).items() if k != "max_execution_seconds"},
+        }
+        record = {
+            **record,
+            "policy": {k: v for k, v in record.get("policy", {}).items() if k != "max_execution_seconds"},
+        }
     for name in ENVELOPE_RECORD_FIELDS:
         if approved.get(name) != record.get(name):
             mismatches.append(f"{name} differs")
@@ -4732,7 +4959,7 @@ def approved_envelope_mismatches(
         mismatches.append("the fresh plan is not an envelope family")
     if len(new_family.get("qubits", [])) != new_family.get("layout_width"):
         mismatches.append(f"the fresh layout holds {len(new_family.get('qubits', []))} qubits")
-    if approved.get("envelope", {}).get("contract") != record.get("envelope", {}).get("contract"):
+    if old_contract != new_contract:
         mismatches.append("the envelope contract differs")
     old_groups = sorted((g.get("backend"), g.get("seed_transpiler")) for g in approved.get("groups", []))
     new_groups = sorted((g.get("backend"), g.get("seed_transpiler")) for g in record.get("groups", []))
@@ -5459,7 +5686,7 @@ def submit(
     qpy_archive_sha256 = archive()
     if envelope and approved_dir is not None:
         record["execution_pubs"] = [pub.manifest() for pub in fresh_execution_pubs]
-        mismatches = approved_envelope_mismatches(
+        mismatches = refresh_envelope_ceilings(record, args) + approved_envelope_mismatches(
             Path(approved_dir), record, getattr(args, "approved_record_sha256", None)
         )
         run_dir = getattr(args, "envelope_snapshot_dir", None)
@@ -7047,8 +7274,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--fallback-max-execution-seconds",
         type=float,
-        help="measurement-sequence-envelope and -relaxation: the 50 us attempt's execution ceiling, "
-        "bound into the envelope cap",
+        help="msq-envelope-v1 approvals only: the 50 us attempt's execution ceiling, bound into the envelope cap",
     )
     parser.add_argument(
         "--layout-width",
@@ -7352,7 +7578,9 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--approved-record applies only with --submit")
     if args.submit and not args.approved_record_sha256:
         parser.error("--submit needs --approved-record-sha256, the record.json digest the written case names")
-    if args.submit and args.max_execution_seconds is None:
+    args.envelope_schema = envelope_flag_schema(args) if is_envelope_family(args.family) else None
+    v2_envelope = args.envelope_schema == msq_envelope.ENVELOPE_SCHEMA
+    if args.submit and args.max_execution_seconds is None and not v2_envelope:
         parser.error("--submit needs --max-execution-seconds, the execution ceiling the written case names")
     if args.approved_record_sha256 and not args.submit:
         parser.error("--approved-record-sha256 applies only with --submit")
@@ -7376,7 +7604,9 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("precision_at_budget requires the folded-qpe precision-only family")
     if len({scenario["name"] for scenario in args.cost_scenarios}) != len(args.cost_scenarios):
         parser.error("--cost-scenario names must be distinct")
-    if args.family and (args.max_execution_seconds is None or args.max_total_execution_seconds is None):
+    if args.family and (
+        (args.max_execution_seconds is None and not v2_envelope) or args.max_total_execution_seconds is None
+    ):
         parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
     if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
         parser.error("the folded family uses one fixed physical placement per candidate; --max-replicas must be 1")
@@ -7409,7 +7639,21 @@ def main(argv: list[str] | None = None) -> int:
             "--envelope-fallback takes attempt 1's planning flags and --out; it derives --submit and the approval "
             "from attempt 1's record"
         )
-    if is_envelope_family(args.family) and (
+    if is_envelope_family(args.family) and v2_envelope:
+        if args.fallback_max_execution_seconds is not None:
+            parser.error("--fallback-max-execution-seconds applies to msq-envelope-v1 approvals only")
+        if args.rep_delay != msq_envelope.REP_DELAY_LADDER_S[0]:
+            parser.error(
+                f"{args.family} binds --rep-delay to the ladder's first value {msq_envelope.REP_DELAY_LADDER_S[0]!r}"
+            )
+        if args.max_total_execution_seconds is None or not (
+            msq_envelope.CAP_MIN_S <= args.max_total_execution_seconds <= msq_envelope.CAP_MAX_S
+        ):
+            parser.error(
+                f"--max-total-execution-seconds is the envelope's total cap, within "
+                f"[{msq_envelope.CAP_MIN_S:g}, {msq_envelope.CAP_MAX_S:g}] s"
+            )
+    elif is_envelope_family(args.family) and (
         args.rep_delay is None or args.max_execution_seconds is None or args.fallback_max_execution_seconds is None
     ):
         parser.error(
@@ -7640,12 +7884,19 @@ def main(argv: list[str] | None = None) -> int:
                 write_envelope_snapshot(run_dir, envelope_snapshot)
                 plan_view = envelope_plan(record, qpy_sha256)
                 record["envelope"]["planning_plan_sha256"] = msq_envelope.plan_digest(plan_view)
-                record["envelope"]["planner_charge_seconds"] = {
-                    "attempt_1": plan_view["planner_seconds"],
-                    "attempt_2": planner_charge(
-                        record.get("execution_contract", {}), msq_envelope.FALLBACK_REP_DELAY_S
-                    ),
-                }
+                if record["envelope"]["contract"].get("schema") == msq_envelope.ENVELOPE_SCHEMA:
+                    ladder_charges, _ = envelope_ladder(record.get("execution_contract", {}))
+                    record["envelope"]["planner_charge_seconds"] = {
+                        "attempt_1": plan_view["planner_seconds"],
+                        "ladder": ladder_charges,
+                    }
+                else:
+                    record["envelope"]["planner_charge_seconds"] = {
+                        "attempt_1": plan_view["planner_seconds"],
+                        "attempt_2": planner_charge(
+                            record.get("execution_contract", {}), msq_envelope.FALLBACK_REP_DELAY_S
+                        ),
+                    }
             write_json(run_dir, record)
             if args.native_dry_run:
                 from native_preflight import qualify
@@ -7942,8 +8193,12 @@ def envelope_layout_violations(run_dir: Path) -> list[str]:
         # --exclude-qubits withholds qubits from every snapshot the run takes, so the replay withholds them too.
         excluded = sorted(set(rows["excluded"]) | operator_excluded)
         try:
-            replayed = msq_envelope.layout_rule(
-                rows["qubits"], excluded, [tuple(edge) for edge in rows["edges"]], width
+            replayed = msq_envelope.place_layout(
+                envelope.get("contract", {}).get("schema", msq_envelope.ENVELOPE_SCHEMA_V1),
+                rows["qubits"],
+                excluded,
+                [tuple(edge) for edge in rows["edges"]],
+                width,
             )
         except msq_envelope.EnvelopeError as error:
             violations.append(f"{label}: the rule refuses this snapshot ({error})")
