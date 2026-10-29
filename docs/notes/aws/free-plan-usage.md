@@ -247,8 +247,11 @@ spend limit is nearly reached. This free plan has no spend limit, and that
 policy is not the standing one. A dry run of `RunInstances` in `us-east-2` was
 not repeated after the login session expired.
 
-The region floor is a separate deny. Creating a regional resource outside
-`us-east-2` fails even when the service is on the free-plan list.
+The region floor is a separate deny. Ordinary regional resources outside
+`us-east-2` fail even when the service is on the free-plan list. The starter
+rules document a narrow exception: AWS WAF and CloudWatch Logs resources may be
+created in `us-east-1` when a global resource requires dependencies there; they
+should not be used there for other reasons.
 
 ## Reads that refresh this note
 
