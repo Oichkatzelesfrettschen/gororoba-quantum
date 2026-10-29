@@ -10,7 +10,7 @@ from pathlib import Path
 import ascella_associator_predecessor as case
 import numpy as np
 import pytest
-from qd_platform import PlatformError, template_experiment
+from qd_platform import template_experiment
 
 
 def test_check_passes() -> None:
@@ -460,27 +460,26 @@ def test_adversarial_malformed_fock_states(tmp_path: Path) -> None:
 
 
 def test_adversarial_template_nan_and_shape_rejection() -> None:
-    """Adversarial test: template_experiment strictly rejects NaN parameters, Inf columns, and wrong shapes."""
+    """Adversarial test: validate_manifest strictly rejects NaN parameters, Inf columns, and wrong shapes."""
     docs = case.build_documents()
     manifest = json.loads(docs["cases.json"].decode())
-    circuit = json.loads(docs["circuit.json"].decode())
 
     # 1. NaN in circuit parameters
     bad_manifest = copy.deepcopy(manifest)
     first_setting = bad_manifest["settings"][0]
     param_name = next(iter(first_setting["circuit_params"]))
     first_setting["circuit_params"][param_name] = float("nan")
-    with pytest.raises(PlatformError, match="must be finite numbers"):
-        template_experiment(bad_manifest, circuit)
+    with pytest.raises(RuntimeError, match="must be finite numbers"):
+        case.validate_manifest(bad_manifest)
 
     # 2. Inf in column
     bad_manifest2 = copy.deepcopy(manifest)
     bad_manifest2["settings"][0]["column"][0] = [float("inf"), 0.0]
-    with pytest.raises(PlatformError, match="column must be finite"):
-        template_experiment(bad_manifest2, circuit)
+    with pytest.raises(RuntimeError, match="column must be finite"):
+        case.validate_manifest(bad_manifest2)
 
     # 3. Wrong column length (e.g. 10 instead of 12)
     bad_manifest3 = copy.deepcopy(manifest)
     bad_manifest3["settings"][0]["column"] = bad_manifest3["settings"][0]["column"][:10]
-    with pytest.raises(PlatformError, match="column must be a list of length 12"):
-        template_experiment(bad_manifest3, circuit)
+    with pytest.raises(RuntimeError, match="column must be a list of length 12"):
+        case.validate_manifest(bad_manifest3)

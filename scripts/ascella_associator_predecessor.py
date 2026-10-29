@@ -397,10 +397,41 @@ def slos_simulation(unitary: np.ndarray, input_state: list[int]) -> dict[str, fl
     return law
 
 
+def validate_manifest(manifest: dict[str, Any]) -> None:
+    """Validate manifest settings have finite parameters, correct column shapes, and finite elements."""
+    require(isinstance(manifest, dict), "manifest must be a dictionary")
+    settings = manifest.get("settings")
+    if not isinstance(settings, list):
+        raise RuntimeError("manifest settings must be a list")
+    for s in settings:
+        if not isinstance(s, dict):
+            raise RuntimeError("manifest setting must be a dictionary")
+        name = s.get("name", "unknown")
+        params = s.get("circuit_params", {})
+        if not isinstance(params, dict):
+            raise RuntimeError(f"{name}: circuit_params must be a dictionary")
+        for val in params.values():
+            require(
+                isinstance(val, (int, float)) and math.isfinite(val),
+                f"{name}: circuit_params values must be finite numbers",
+            )
+        col = s.get("column")
+        require(isinstance(col, list) and len(col) == MODES, f"{name}: column must be a list of length {MODES}")
+        if not isinstance(col, list):
+            raise RuntimeError(f"{name}: column must be a list")
+        for elem in col:
+            require(isinstance(elem, list) and len(elem) == 2, f"{name}: column elements must be [re, im] pairs")
+            require(
+                all(isinstance(v, (int, float)) and math.isfinite(v) for v in elem),
+                f"{name}: column must be finite",
+            )
+
+
 def check() -> int:
     """Verify all mathematical identities, template experiment binding, SLOS simulation, and ideal endpoints."""
     documents = build_documents()
     manifest = json.loads(documents["cases.json"].decode())
+    validate_manifest(manifest)
     circuit = json.loads(documents["circuit.json"].decode())
     experiment, settings = template_experiment(manifest, circuit)
     require(
