@@ -16,17 +16,23 @@ laws carry no shot noise, so the script draws no seed.
 Usage:
     "$PYTHON" scripts/local_idle_falsifier.py --runs all --out docs/evidence/local_idle_padding/result.json
     "$PYTHON" scripts/local_idle_falsifier.py --runs results/live/2026-10-18T090603.530638Z --out OUT
+    "$PYTHON" scripts/local_idle_falsifier.py --runs all --out OUT --parts DIR
     "$PYTHON" scripts/local_idle_falsifier.py --plan
     "$PYTHON" scripts/local_idle_falsifier.py --check docs/evidence/local_idle_padding/result.json --runs RUN[,RUN]
 
 ``--check FILE`` requires FILE to list every audited run exactly once, recomputes its decision from its runs, and
 reruns each run named by ``--runs`` (``all`` reruns every one), requiring the fresh summary to equal the retained one
 exactly.
+
+``--parts DIR`` writes each run's full summary to DIR as soon as the run finishes and reuses a part whose
+package versions and source digests (this script and the repository modules it evaluates with) match the
+current ones, so a sweep that dies part way resumes at the first unfinished run.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import io
 import json
 import math
@@ -52,6 +58,17 @@ import snapshot_laws  # noqa: E402
 SCHEMA = "local-idle-padding-falsifier-v1"
 
 Item = tuple[bytes, dict[str, Any], list[float]]
+
+# The modules whose code decides a run's summary; a part is reused only when every one is byte-identical.
+PART_SOURCES = (
+    "scripts/local_idle_falsifier.py",
+    "scripts/ghost_run.py",
+    "scripts/scheduled_idle_replay.py",
+    "gororoba_quantum/calibration_snapshot.py",
+    "gororoba_quantum/dynamic_density.py",
+    "gororoba_quantum/idle_padding.py",
+    "gororoba_quantum/snapshot_laws.py",
+)
 
 
 def _serialized(circuit: QuantumCircuit) -> bytes:
@@ -207,11 +224,32 @@ def versions() -> dict[str, str]:
     return {"qiskit": qiskit.__version__, "qiskit_aer": qiskit_aer.__version__, "numpy": np.__version__}
 
 
+def part_identity() -> dict[str, Any]:
+    sources = {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in PART_SOURCES}
+    return {"versions": versions(), "sources": sources}
+
+
+def evaluate_with_parts(name: str, index: dict[str, Any], parts: Path, identity: dict[str, Any]) -> dict[str, Any]:
+    """The run's summary from a matching part in PARTS, or a fresh evaluation written there before returning."""
+    part = parts / (Path(name).name + ".json")
+    if part.exists():
+        stored = json.loads(part.read_text(encoding="utf-8"))
+        if stored.get("identity") == identity and stored.get("summary", {}).get("run") == name:
+            return stored["summary"]
+    summary = evaluate(name, index)
+    parts.mkdir(parents=True, exist_ok=True)
+    staging = part.with_suffix(".tmp")
+    staging.write_text(json.dumps({"identity": identity, "summary": summary}, sort_keys=True) + "\n", encoding="utf-8")
+    staging.replace(part)
+    return summary
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--runs", default="all", help="all, or comma-separated run directories")
     parser.add_argument("--out", type=Path)
     parser.add_argument("--plan", action="store_true", help="print each run's eligibility, widths and replica count")
+    parser.add_argument("--parts", type=Path, help="directory of per-run summaries to write and resume from")
     parser.add_argument("--check", type=Path, help="rerun the --runs runs of a retained result and compare")
     args = parser.parse_args()
     index = json.loads(ghost_run.INDEX.read_text(encoding="utf-8"))
@@ -219,9 +257,15 @@ def main() -> int:
         check(args.check, args.runs, index)
         return 0
     names = ghost_run.audited_runs() if args.runs == "all" else args.runs.split(",")
+    if args.parts and args.plan:
+        parser.error("--parts applies to an evaluation, not to --plan")
+    identity = part_identity() if args.parts else None
     runs: list[dict[str, Any]] = []
     for name in names:
-        summary = evaluate(name, index, args.plan)
+        if args.parts and identity is not None:
+            summary = evaluate_with_parts(name, index, args.parts, identity)
+        else:
+            summary = evaluate(name, index, args.plan)
         runs.append(summary)
         print(json.dumps({k: v for k, v in summary.items() if k != "per_replica"}), flush=True)
     if args.plan:
