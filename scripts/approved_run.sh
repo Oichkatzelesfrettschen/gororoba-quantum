@@ -5,8 +5,9 @@
 # --submit compares the fresh plan with the approved record by calibration value
 # (docs/notes/ibm_quantum/qpu-submission.md): a changed value touching the packed circuits writes an
 # approval_required record and sends nothing, so every second between the plan and the submit is exposure to a
-# recalibration. A refusal leaves the approval unconsumed (approval-consumed.json absent), and the runner plans
-# again, up to ATTEMPTS times. A consumed approval ends the run: it succeeds only when the submit exits zero and
+# recalibration. A refusal leaves the approval unconsumed, and the runner plans again, up to ATTEMPTS times. The
+# submit consumes it by writing approval-consumed.json, or approval-consumed-attempt-N.json for an envelope family
+# (live_run.envelope_marker), into the dry run's directory; either marker means the job was sent. A consumed approval ends the run: it succeeds only when the submit exits zero and
 # its record reads `submission.complete`, and a failed or partial submission exits 4 without a retry, because the
 # approval is spent.
 #
@@ -70,7 +71,11 @@ while [ "$attempt" -le "$attempts" ]; do
 	status=0
 	"$PYTHON" live_run.py "$@" --submit --approved-record "$run" --approved-record-sha256 "$sha" \
 		> "$log/submit-$attempt.log" 2>&1 || status=$?
-	if [ -f "$run/approval-consumed.json" ]; then
+	consumed=
+	for marker in "$run"/approval-consumed.json "$run"/approval-consumed-attempt-*.json; do
+		[ -f "$marker" ] && consumed=$marker
+	done
+	if [ -n "$consumed" ]; then
 		submitted=$(sed -n 's/^audit record: //p' "$log/submit-$attempt.log" | tail -n 1)
 		if [ "$status" -eq 0 ] && [ -n "$submitted" ] && "$PYTHON" -c \
 			'import json, sys; sys.exit(json.load(open(sys.argv[1])).get("submission", {}).get("complete") is not True)' \

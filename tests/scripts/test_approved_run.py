@@ -13,7 +13,8 @@ ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts/approved_run.sh"
 
 # Stands in for "$PYTHON live_run.py ARGS": a plan writes a run directory and prints its audit record; a submit
-# consumes the approval unless REFUSALS names more refusals than the calls file holds, and then records
+# consumes the approval (writing MARKER, an envelope family's per-attempt name or the plain one) unless REFUSALS
+# names more refusals than the calls file holds, and then records
 # `submission.complete` as COMPLETE and exits SUBMIT_EXIT. "$PYTHON -c CODE RECORD" reads that completion state.
 FAKE = """#!/bin/sh
 if [ "$1" = -c ]; then grep -q '"complete": true' "$3"; exit $?; fi
@@ -28,7 +29,7 @@ case " $* " in
   approved=$(echo "$*" | sed -n 's/.*--approved-record \\([^ ]*\\).*/\\1/p')
   submits=$(grep -c -- '--submit' "$CALLS")
   if [ "$submits" -gt "${REFUSALS:-0}" ]; then
-    : > "$approved/approval-consumed.json"
+    : > "$approved/${MARKER:-approval-consumed.json}"
     echo "{\\"submission\\": {\\"complete\\": ${COMPLETE:-true}}}" > "$run/record.json"
     echo "audit record: $run"
     exit "${SUBMIT_EXIT:-0}"
@@ -46,7 +47,13 @@ def _expect(condition: bool, message: str) -> None:
 
 
 def _run(
-    tmp_path: Path, *args: str, refusals: int = 0, complete: str = "true", submit_exit: int = 0, log: str | None = None
+    tmp_path: Path,
+    *args: str,
+    refusals: int = 0,
+    complete: str = "true",
+    submit_exit: int = 0,
+    log: str | None = None,
+    marker: str = "approval-consumed.json",
 ) -> tuple[subprocess.CompletedProcess[str], list[str]]:
     (tmp_path / "gororoba_quantum").mkdir(exist_ok=True)
     fake = tmp_path / "fake_python"
@@ -59,6 +66,7 @@ def _run(
         "REFUSALS": str(refusals),
         "COMPLETE": complete,
         "SUBMIT_EXIT": str(submit_exit),
+        "MARKER": marker,
     }
     done = subprocess.run(
         ["sh", str(SCRIPT), "--log", log or str(tmp_path / "log"), *args],
@@ -113,3 +121,12 @@ def test_a_consumed_approval_with_a_failed_submission_exits_4(tmp_path: Path, co
 def test_a_relative_log_directory_resolves_from_the_repository_root(tmp_path: Path) -> None:
     done, _ = _run(tmp_path, "--", "--groups", "g", log="logs")
     _expect(done.returncode == 0 and (tmp_path / "logs" / "dry-1.log").is_file(), done.stdout + done.stderr)
+
+
+@pytest.mark.parametrize(("complete", "returncode"), [("true", 0), ("false", 4)])
+def test_an_envelope_attempt_marker_ends_the_run_after_one_submit(
+    tmp_path: Path, complete: str, returncode: int
+) -> None:
+    done, calls = _run(tmp_path, "--", "--groups", "g", complete=complete, marker="approval-consumed-attempt-1.json")
+    _expect(done.returncode == returncode and len(calls) == 2, f"{done.returncode} {calls} {done.stdout}")
+    _expect(sum("--submit" in call for call in calls) == 1, f"{calls}")
