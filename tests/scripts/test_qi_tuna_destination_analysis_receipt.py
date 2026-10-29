@@ -1,5 +1,6 @@
 """Encoding reconciliation preserves both frozen analysis files and rejects semantic or byte drift."""
 
+import importlib
 import json
 import sys
 from pathlib import Path
@@ -8,7 +9,10 @@ from typing import Any
 import pytest
 import qi_tuna_destination_analysis_receipt as reconciliation
 from qi_tuna_destination_one_analysis import BATCHES, ROOT, analyze, digest, json_bytes
-from tests.scripts.test_qi_tuna_destination_one_analysis import acquisition as acquisition
+
+# pytest's importlib mode reaches the sibling module only as tests.scripts.*, while mypy maps every file under tests/
+# to a top-level module; a runtime import keeps the shared fixture without mypy resolving the file twice.
+acquisition = importlib.import_module("tests.scripts.test_qi_tuna_destination_one_analysis").acquisition
 
 
 def save(path: Path, value: Any) -> None:

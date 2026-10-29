@@ -1431,6 +1431,30 @@
             }
           ],
           "scope_sha256": "ae9a5cfe0e5948e4fb9b42daa5a27b545bf8a1bfa004de239cdb7494b3c00e5b"
+        },
+        {
+          "result": "Revalidated after the encoding-receipt test resolves the shared destination-one fixture through importlib instead of a static tests.scripts import: gate core-qi-tuna-destination-one-response replays both exact encodings with an identical decision, and the 127 focused tests (receipt, destination-one analysis, joint package runtime) and pinned Ruff and mypy pass.",
+          "observed_at": "2026-10-29T20:18:57+00:00",
+          "revision": "b4d98ac43afc9127489b548d5116bad0070dea95",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-canonical.json",
+              "sha256": "ba74fbfb5f26ec5463059b26d66138b571be8792a2dbbd32dc58bd5a5bf9ab1a"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json",
+              "sha256": "b89b115df823113dc8430c7eebddee1898a3906ac7109ea0624edd6803be0027"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_analysis_receipt.py",
+              "sha256": "89cd6f8fc0e77298740f61e59dc3141e572ad66edff461db4dadd559cc786915"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_analysis_receipt.py",
+              "sha256": "8c737cf45939a6c5666aabe38fad8dc028ac482bb5a2aeaa166171b611c2b4ad"
+            }
+          ],
+          "scope_sha256": "ae9a5cfe0e5948e4fb9b42daa5a27b545bf8a1bfa004de239cdb7494b3c00e5b"
         }
       ]
     },
