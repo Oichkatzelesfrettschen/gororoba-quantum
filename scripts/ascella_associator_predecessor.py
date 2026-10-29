@@ -50,6 +50,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import scipy.stats as stats
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
@@ -116,6 +117,8 @@ BODY_TOLERANCE = 1e-9
 MUTATION_TOLERANCE = 0.05
 CLOSURE_TOLERANCE = 0.05
 TVD_EQUIVALENCE_MARGIN = 0.02
+MIN_FOCAL_SAMPLES_PER_ITERATION = 100
+OUTLIER_SIGMA_THRESHOLD = 3.5
 
 
 def require(condition: bool, message: str) -> None:
@@ -296,6 +299,11 @@ def build_documents(
     samples_per_iteration: int = DEFAULT_SAMPLES_PER_ITERATION,
     shots_factor: int = DEFAULT_SHOTS_FACTOR,
 ) -> dict[str, bytes]:
+    if samples_per_iteration <= 0:
+        raise ValueError(f"samples_per_iteration must be positive integer, got {samples_per_iteration}")
+    if shots_factor <= 0:
+        raise ValueError(f"shots_factor must be positive integer, got {shots_factor}")
+
     circuit = build_template_circuit()
     circuit_bytes = (json.dumps(circuit, indent=1) + "\n").encode()
 
@@ -324,6 +332,19 @@ def build_documents(
         "max_shots": shots_per_iteration * len(flat_settings),
         "max_duration": MAX_DURATION,
         "credit_ceiling": round(credit_ceiling, 6),
+        "timing_model": {
+            "overhead_seconds": 30.0,
+            "seconds_per_iteration": 3.0,
+            "estimated_duration_seconds": 126.0,
+            "duration_bounds_seconds": [93.0, 186.0],
+            "max_duration": MAX_DURATION,
+        },
+        "tariff": {
+            "statement": "credit ceiling under matching preflight tariff (1.0 + 1e-6 * max_shots)",
+            "rate_per_shot": 1e-6,
+            "fixed_invocation_credits": 1.0,
+            "credit_ceiling": round(credit_ceiling, 6),
+        },
         "mitigations": [],
         "output_modes": MODES,
         "logical_modes": list(range(LOGICAL)),
@@ -341,15 +362,21 @@ def build_documents(
             "primary_associator_endpoint": "Delta_oct = D(LaLb) - D(Lab) on the associator block",
             "mutation_control_endpoint": "Delta_quat = D(LaLb) - D(Lab) on the quaternion control block",
             "closure_endpoint": "C = Delta_oct + 2 * mean(D_control) == 0 for all visibilities",
-            "predecessor_shift_hot": "Delta_oct(hot) - Delta_oct(cold)",
-            "predecessor_shift_wrapped": "Delta_oct(wrapped) - Delta_oct(cold)",
-            "drift_cancellation": "Quadratic polynomial drift sum(w_i * t_i^2) == 0 cancelled to zero",
+            "predecessor_shift_hot": "gamma_hot from joint WLS model with full covariance",
+            "predecessor_shift_wrapped": "gamma_wrapped from joint WLS model with full covariance",
+            "joint_model": (
+                "WLS model identifying Delta_assoc, Delta_ctrl, gamma_hot, gamma_wrapped, "
+                "and polynomial drift simultaneously"
+            ),
+            "equivalence_test": "Two One-Sided Tests (TOST) requiring 95% CI to fall strictly inside [-0.02, +0.02]",
+            "quarantine_rule": "Studentized residual > 3.5 flags abrupt step change / outlier and quarantines the run",
             "sentinel_leakage_endpoint": (
-                "fraction of events with clicks in sentinel modes 4..11 under each predecessor"
+                "fraction of events with clicks in sentinel modes 4..11 separated by predecessor and target roles"
             ),
             "tvd_equivalence_margin": TVD_EQUIVALENCE_MARGIN,
             "mutation_tolerance": MUTATION_TOLERANCE,
             "closure_tolerance": CLOSURE_TOLERANCE,
+            "min_focal_samples_per_iteration": MIN_FOCAL_SAMPLES_PER_ITERATION,
         },
     }
     return {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": circuit_bytes}
@@ -440,6 +467,18 @@ def check() -> int:
     closure = delta_oct + 2 * d_quat_mean
     require(abs(closure) < BODY_TOLERANCE, f"ideal in-situ closure {closure} != 0.0")
 
+    # Verify build parameter positivity enforcement
+    try:
+        build_documents(samples_per_iteration=0)
+        raise AssertionError("build_documents accepted 0 samples")
+    except ValueError:
+        pass
+    try:
+        build_documents(shots_factor=0)
+        raise AssertionError("build_documents accepted 0 shots factor")
+    except ValueError:
+        pass
+
     print("ascella_associator_predecessor: 32 iterations (16 paired trials) bound successfully")
     print(f"ideal Delta_oct: {delta_oct:.6f}, Delta_quat: {delta_quat:.6f}, closure C: {closure:.6f}")
     print("exact quadratic drift cancellation verified: sum(w*t) = 0, sum(w*t^2) = 0 on both blocks")
@@ -492,7 +531,7 @@ def dry_run(
         f"Running local simulation of 32 iterations (16 paired trials) at {samples} samples/iteration "
         f"({samples * shots_factor} shots/iteration)..."
     )
-    for setting in settings:
+    for idx, setting in enumerate(settings):
         for name, parameter in parameters.items():
             parameter.set_value(setting["circuit_params"][name])
         unitary = np.asarray(chip.compute_unitary())
@@ -511,7 +550,14 @@ def dry_run(
                     state_str = f"|{','.join(str(v) for v in state_vec)}>"
                     counts[state_str] = count
 
-        simulated_iterations.append({"setting": setting["name"], "counts": counts})
+        simulated_iterations.append(
+            {
+                "setting": setting["name"],
+                "counts": counts,
+                "elapsed_seconds": round(idx * 3.2, 2),
+                "duration": 3.2,
+            }
+        )
 
     mock_run_dir = CASE_DIR / "dry_run_simulation"
     mock_run_dir.mkdir(parents=True, exist_ok=True)
@@ -524,47 +570,305 @@ def dry_run(
     return 0
 
 
-def analyze(run_dir: Path, drift_degree: int = 2) -> dict[str, Any]:
-    """Analyze a collected or simulated run directory.
+def validate_count_payload(counts: Any, setting_name: str, min_photons: int = 2) -> dict[str, int]:
+    """Validate Fock state string syntax, mode count, photon count, and non-negative integer values."""
+    if not isinstance(counts, dict) or len(counts) == 0:
+        raise ValueError(f"{setting_name}: counts payload must be a non-empty dictionary")
+    validated: dict[str, int] = {}
+    for state_str, count in counts.items():
+        if not isinstance(count, int) or count < 0:
+            raise ValueError(
+                f"{setting_name}: count for state {state_str!r} must be non-negative integer, got {count!r}"
+            )
+        if count == 0:
+            continue
+        if not (isinstance(state_str, str) and state_str.startswith("|") and state_str.endswith(">")):
+            raise ValueError(f"{setting_name}: malformed Fock state syntax {state_str!r}")
+        inner = state_str[1:-1]
+        try:
+            occupations = [int(x.strip()) for x in inner.split(",")]
+        except ValueError as err:
+            raise ValueError(f"{setting_name}: invalid occupation integers in {state_str!r}") from err
+        if len(occupations) != MODES:
+            raise ValueError(f"{setting_name}: state {state_str!r} has {len(occupations)} modes, expected {MODES}")
+        if any(n < 0 for n in occupations):
+            raise ValueError(f"{setting_name}: negative occupation in {state_str!r}")
+        if sum(occupations) < min_photons:
+            raise ValueError(
+                f"{setting_name}: state {state_str!r} has {sum(occupations)} photons, below filter {min_photons}"
+            )
+        validated[state_str] = count
+    if not validated:
+        raise ValueError(f"{setting_name}: no valid counts after filtering zero counts")
+    return validated
 
-    Accounts for quadratic drift cancellation and anchor curve reconstruction.
+
+def fit_joint_model(
+    target_records: list[dict[str, Any]],
+    drift_degree: int = 2,
+    alpha: float = 0.05,
+) -> dict[str, Any]:
+    """Preregistered Weighted Least Squares joint model.
+
+    Jointly identifies:
+    - intercept (cold associator Lab baseline)
+    - delta_assoc (associator route contrast LaLb - Lab)
+    - block_ctrl (quaternion control block offset)
+    - delta_ctrl (quaternion control route contrast LaLb - Lab)
+    - gamma_hot (hot predecessor carryover shift)
+    - gamma_wrapped (wrapped predecessor carryover shift)
+    - polynomial drift terms tau_1 .. tau_d
+
+    Returns parameters, covariance, standard errors, confidence intervals,
+    TOST equivalence verdicts, and diagnostic residual tests.
     """
-    manifest = json.loads((run_dir / "cases.json").read_text())
-    results = json.loads((run_dir / "results.json").read_text())
-    entries = results.get("iterations") or []
+    n_obs = len(target_records)
+    if n_obs != 16:
+        raise ValueError(f"expected 16 target records, got {n_obs}")
 
-    # Target tallies: block -> pred -> route -> [plus, minus, other_focal]
-    target_tallies: dict[str, dict[str, dict[str, list[int]]]] = {
-        block: {pred: {route: [0, 0, 0] for route in ("LaLb", "Lab")} for pred in ("hot", "cold", "wrapped")}
-        for block in ("associator", "control")
+    p_drift = max(0, min(drift_degree, 3))
+    p_total = 6 + p_drift
+
+    rows: list[list[float]] = []
+    y: list[float] = []
+    w: list[float] = []
+
+    for rec in target_records:
+        t = rec["time"]
+        is_assoc = 1.0 if rec["block"] == "associator" else 0.0
+        is_ctrl = 1.0 if rec["block"] == "control" else 0.0
+        route_lalb = 1.0 if rec["route"] == "LaLb" else 0.0
+        pred_hot = 1.0 if rec["pred"] == "hot" else 0.0
+        pred_wrapped = 1.0 if rec["pred"] == "wrapped" else 0.0
+
+        row = [
+            1.0,
+            is_assoc * route_lalb,
+            is_ctrl,
+            is_ctrl * route_lalb,
+            pred_hot,
+            pred_wrapped,
+        ]
+        for d in range(1, p_drift + 1):
+            row.append(float(t**d))
+
+        rows.append(row)
+        d_val = float(rec["d_observable"])
+        n_focal = float(rec["focal_samples"])
+        y.append(d_val)
+        var_i = max(1.0 - d_val**2, 0.05) / n_focal
+        w.append(1.0 / var_i)
+
+    X = np.array(rows, dtype=float)
+    y_vec = np.array(y, dtype=float)
+    W = np.diag(w)
+
+    rank = int(np.linalg.matrix_rank(X))
+    if rank < p_total:
+        raise RuntimeError(f"design matrix is rank deficient: rank {rank} < {p_total}")
+
+    XtWX = X.T @ W @ X
+    theta_hat = np.linalg.solve(XtWX, X.T @ W @ y_vec)
+    residuals = y_vec - X @ theta_hat
+    rss = float(np.sum(w * residuals**2))
+
+    df_resid = n_obs - p_total
+    if df_resid <= 0:
+        raise RuntimeError(f"insufficient residual degrees of freedom: {df_resid}")
+
+    # Quasi-likelihood dispersion: enforce the fundamental quantum shot-noise floor
+    # dispersion >= 1.0 guarantees uncertainty never collapses below Poisson/multinomial counting limits
+    dispersion = max(1.0, rss / df_resid)
+    cov = dispersion * np.linalg.inv(XtWX)
+    se = np.sqrt(np.maximum(np.diag(cov), 1e-18))
+
+    t_crit = float(stats.t.ppf(1.0 - alpha / 2.0, df=df_resid))
+
+    param_names = [
+        "intercept",
+        "delta_assoc",
+        "block_ctrl",
+        "delta_ctrl",
+        "gamma_hot",
+        "gamma_wrapped",
+    ] + [f"drift_poly_{d}" for d in range(1, p_drift + 1)]
+
+    coefficients: dict[str, dict[str, Any]] = {}
+    for idx, name in enumerate(param_names):
+        val = float(theta_hat[idx])
+        s = float(se[idx])
+        t_stat = float(val / s) if s > 0 else 0.0
+        p_val = float(2.0 * (1.0 - stats.t.cdf(abs(t_stat), df=df_resid)))
+        ci_low = float(val - t_crit * s)
+        ci_high = float(val + t_crit * s)
+        coefficients[name] = {
+            "estimate": round(val, 6),
+            "std_error": round(s, 6),
+            "t_statistic": round(t_stat, 4),
+            "p_value": round(p_val, 6),
+            "ci95": [round(ci_low, 6), round(ci_high, 6)],
+        }
+
+    # Hat matrix and leverage
+    shot_sigma = 1.0 / np.sqrt(np.array(w))
+    shot_z_scores = np.abs(residuals) / shot_sigma
+    max_z = float(np.max(shot_z_scores))
+    max_z_idx = int(np.argmax(shot_z_scores))
+    abrupt_step = bool(max_z > OUTLIER_SIGMA_THRESHOLD)
+
+    # Drift significance F-test (compare with model without drift parameters)
+    if p_drift > 0:
+        X_nodrift = X[:, :6]
+        XtWX_nodrift = X_nodrift.T @ W @ X_nodrift
+        theta_nodrift = np.linalg.solve(XtWX_nodrift, X_nodrift.T @ W @ y_vec)
+        rss_nodrift = max(float(np.sum(w * (y_vec - X_nodrift @ theta_nodrift) ** 2)), rss)
+        f_num = max(0.0, (rss_nodrift - rss) / p_drift)
+        f_den = rss / df_resid
+        f_stat = float(f_num / f_den) if f_den > 1e-12 else 0.0
+        drift_p_val = float(1.0 - stats.f.cdf(f_stat, p_drift, df_resid)) if f_den > 1e-12 else 1.0
+    else:
+        f_stat = 0.0
+        drift_p_val = 1.0
+
+    # Closure linear combination: C = delta_assoc + 2 * (intercept + block_ctrl + 0.5 * delta_ctrl)
+    c_vec = np.zeros(p_total)
+    c_vec[0] = 2.0
+    c_vec[1] = 1.0
+    c_vec[2] = 2.0
+    c_vec[3] = 1.0
+    closure_est = float(c_vec @ theta_hat)
+    closure_var = float(c_vec @ cov @ c_vec)
+    closure_se = float(math.sqrt(max(closure_var, 0.0)))
+    closure_ci = [
+        round(closure_est - t_crit * closure_se, 6),
+        round(closure_est + t_crit * closure_se, 6),
+    ]
+
+    # Two One-Sided Tests (TOST) on carryover parameters against margin TVD_EQUIVALENCE_MARGIN
+    margin = TVD_EQUIVALENCE_MARGIN
+
+    def evaluate_tost(ci: list[float], est: float, p_val: float) -> str:
+        if ci[0] > -margin and ci[1] < margin:
+            return "EQUIVALENT"
+        elif (ci[0] > 0.0 and est > margin) or (ci[1] < 0.0 and est < -margin):
+            return "SIGNIFICANT_CARRYOVER"
+        else:
+            return "INCONCLUSIVE"
+
+    hot_tost = evaluate_tost(
+        coefficients["gamma_hot"]["ci95"],
+        coefficients["gamma_hot"]["estimate"],
+        coefficients["gamma_hot"]["p_value"],
+    )
+    wrapped_tost = evaluate_tost(
+        coefficients["gamma_wrapped"]["ci95"],
+        coefficients["gamma_wrapped"]["estimate"],
+        coefficients["gamma_wrapped"]["p_value"],
+    )
+
+    return {
+        "coefficients": coefficients,
+        "residual_degrees_of_freedom": df_resid,
+        "residual_sum_of_squares": round(rss, 6),
+        "f_test_drift": {
+            "f_statistic": round(f_stat, 4),
+            "p_value": round(drift_p_val, 6),
+            "drift_significant": bool(drift_p_val < 0.05),
+        },
+        "step_change_diagnostic": {
+            "max_standardized_residual": round(max_z, 4),
+            "max_residual_iteration": max_z_idx,
+            "abrupt_step_detected": abrupt_step,
+            "threshold": OUTLIER_SIGMA_THRESHOLD,
+        },
+        "closure": {
+            "estimate": round(closure_est, 6),
+            "std_error": round(closure_se, 6),
+            "ci95": closure_ci,
+            "closure_admitted": bool(
+                abs(closure_est) < CLOSURE_TOLERANCE
+                and abs(closure_ci[0]) < CLOSURE_TOLERANCE
+                and abs(closure_ci[1]) < CLOSURE_TOLERANCE
+            ),
+        },
+        "equivalence_testing": {
+            "margin": margin,
+            "alpha": alpha,
+            "verdict_hot": hot_tost,
+            "verdict_wrapped": wrapped_tost,
+        },
     }
 
-    # Per-pair target observable list for trajectory analysis
-    pair_d_observables: list[dict[str, Any]] = []
 
-    # Sentinel leakage (modes 4..11) by predecessor condition
-    sentinel_leakage: dict[str, int] = {"hot": 0, "cold": 0, "wrapped": 0}
-    focal_total: dict[str, int] = {"hot": 0, "cold": 0, "wrapped": 0}
-    pred_transmission: dict[str, int] = {"hot": 0, "cold": 0, "wrapped": 0}
+def analyze(
+    run_dir: Path,
+    drift_degree: int = 2,
+    min_focal_per_iter: int = MIN_FOCAL_SAMPLES_PER_ITERATION,
+    alpha: float = 0.05,
+) -> dict[str, Any]:
+    """Analyze a collected or simulated run directory with fail-closed statistical admission.
 
-    for setting, entry in zip(manifest["settings"], entries, strict=False):
-        counts = entry.get("counts") if isinstance(entry, dict) else None
-        if not counts:
-            continue
+    Validates:
+    - exact setting matching and count payload integrity
+    - separated predecessor and target sentinel leakage with uncertainties
+    - sample count thresholds and per-iteration focal yields
+    - preregistered Joint WLS Model identifying contrasts, carryover, and drift
+    - TOST equivalence test against +/- 0.020 with confidence intervals
+    - studentized step-change / abrupt transition quarantine
+    """
+    cases_path = run_dir / "cases.json"
+    results_path = run_dir / "results.json"
+    if not cases_path.exists():
+        raise FileNotFoundError(f"missing cases.json in {run_dir}")
+    if not results_path.exists():
+        raise FileNotFoundError(f"missing results.json in {run_dir}")
+
+    manifest = json.loads(cases_path.read_text())
+    results = json.loads(results_path.read_text())
+    entries = results.get("iterations")
+    if not isinstance(entries, list):
+        raise ValueError(f"results.json in {run_dir} does not contain an 'iterations' list")
+
+    expected_settings = manifest["settings"]
+    if len(entries) != len(expected_settings):
+        raise ValueError(
+            f"iteration count mismatch: manifest expects {len(expected_settings)} settings, "
+            f"results contain {len(entries)}"
+        )
+
+    # Sentinel leakage counters separated by role
+    sentinel_stats: dict[str, dict[str, dict[str, int]]] = {
+        "predecessor": {p: {"total_events": 0, "sentinel_events": 0} for p in ("hot", "cold", "wrapped")},
+        "target": {p: {"total_events": 0, "sentinel_events": 0} for p in ("hot", "cold", "wrapped")},
+    }
+
+    target_records: list[dict[str, Any]] = []
+
+    for setting, entry in zip(expected_settings, entries, strict=True):
+        if not isinstance(entry, dict):
+            raise ValueError(f"entry for {setting['name']} is not a dictionary")
+        if entry.get("setting") != setting["name"]:
+            raise ValueError(f"setting sequence mismatch: expected {setting['name']!r}, got {entry.get('setting')!r}")
+
+        counts = validate_count_payload(
+            entry.get("counts"),
+            setting["name"],
+            min_photons=manifest.get("min_detected_photons", 2),
+        )
+
         role = setting["role"]
         pred = setting["pred"]
 
         if role == "predecessor":
             for state_str, count in counts.items():
-                occupation = [int(c) for c in state_str.strip("|>").split(",")]
+                sentinel_stats["predecessor"][pred]["total_events"] += count
+                occupation = [int(c) for c in state_str[1:-1].split(",")]
                 occupied = [m for m, n in enumerate(occupation) if n > 0]
                 if any(m >= LOGICAL for m in occupied):
-                    sentinel_leakage[pred] += count
-                if occupied == [0, 2]:
-                    pred_transmission[pred] += count
+                    sentinel_stats["predecessor"][pred]["sentinel_events"] += count
             continue
 
-        # Target iterations:
+        # Target iterations
         block = setting["block"]
         route = setting["route"]
         pair_idx = setting["pair_index"]
@@ -574,28 +878,33 @@ def analyze(run_dir: Path, drift_degree: int = 2) -> dict[str, Any]:
         other_c = 0
 
         for state_str, count in counts.items():
-            occupation = [int(c) for c in state_str.strip("|>").split(",")]
+            sentinel_stats["target"][pred]["total_events"] += count
+            occupation = [int(c) for c in state_str[1:-1].split(",")]
             occupied = [m for m, n in enumerate(occupation) if n > 0]
-            if not occupied:
-                continue
             if any(m >= LOGICAL for m in occupied):
-                sentinel_leakage[pred] += count
+                sentinel_stats["target"][pred]["sentinel_events"] += count
             elif len(occupied) == 2:
                 pair = f"{occupied[0]}{occupied[1]}"
-                focal_total[pred] += count
                 if pair in PLUS_PAIRS:
-                    target_tallies[block][pred][route][0] += count
                     plus_c += count
                 elif pair in MINUS_PAIRS:
-                    target_tallies[block][pred][route][1] += count
                     minus_c += count
                 else:
-                    target_tallies[block][pred][route][2] += count
                     other_c += count
 
         focal_sum = plus_c + minus_c + other_c
-        obs_d = (plus_c - minus_c) / focal_sum if focal_sum > 0 else 0.0
-        pair_d_observables.append(
+        if focal_sum < min_focal_per_iter:
+            raise ValueError(
+                f"{setting['name']}: returned {focal_sum} focal samples, below minimum threshold {min_focal_per_iter}"
+            )
+
+        obs_d = (plus_c - minus_c) / focal_sum
+
+        # Temporal coordinate: use elapsed_seconds if available, else normalized pair index
+        elapsed_sec = entry.get("elapsed_seconds")
+        time_coord = float(elapsed_sec) if elapsed_sec is not None else float(pair_idx / 15.0)
+
+        target_records.append(
             {
                 "pair_index": pair_idx,
                 "block": block,
@@ -603,85 +912,62 @@ def analyze(run_dir: Path, drift_degree: int = 2) -> dict[str, Any]:
                 "route": route,
                 "d_observable": obs_d,
                 "focal_samples": focal_sum,
+                "time": time_coord,
             }
         )
 
-    # Compute uncorrected and drift-orthogonal Delta per block and condition
-    results_summary: dict[str, Any] = {}
-    for block in ("associator", "control"):
-        results_summary[block] = {}
-        for pred in ("hot", "cold", "wrapped"):
-            t_lalb = target_tallies[block][pred]["LaLb"]
-            t_lab = target_tallies[block][pred]["Lab"]
-            n_lalb = sum(t_lalb)
-            n_lab = sum(t_lab)
-            d_lalb = (t_lalb[0] - t_lalb[1]) / n_lalb if n_lalb > 0 else 0.0
-            d_lab = (t_lab[0] - t_lab[1]) / n_lab if n_lab > 0 else 0.0
-            delta = d_lalb - d_lab
-            results_summary[block][pred] = {
-                "d_lalb": round(d_lalb, 6),
-                "d_lab": round(d_lab, 6),
-                "delta": round(delta, 6),
-                "focal_samples": n_lalb + n_lab,
+    # Compute sentinel leakage fractions and CIs
+    sentinel_report: dict[str, dict[str, dict[str, Any]]] = {}
+    for role_name in ("predecessor", "target"):
+        sentinel_report[role_name] = {}
+        for p in ("hot", "cold", "wrapped"):
+            tot = sentinel_stats[role_name][p]["total_events"]
+            leak = sentinel_stats[role_name][p]["sentinel_events"]
+            frac = leak / tot if tot > 0 else 0.0
+            se = math.sqrt(frac * (1.0 - frac) / tot) if tot > 0 else 0.0
+            sentinel_report[role_name][p] = {
+                "total_events": tot,
+                "sentinel_events": leak,
+                "leakage_fraction": round(frac, 6),
+                "std_error": round(se, 6),
+                "ci95": [round(max(0.0, frac - 1.96 * se), 6), round(min(1.0, frac + 1.96 * se), 6)],
             }
 
-    # Reconstruct non-linear causal drift curve from the 8 Cold baseline anchors
-    cold_pairs = [p for p in pair_d_observables if p["pred"] == "cold"]
-    if len(cold_pairs) >= 4:
-        delta_oct_ref = results_summary["associator"]["cold"]["delta"]
-        f_vis = delta_oct_ref / 2.0
-        anchor_t = np.array([p["pair_index"] for p in cold_pairs], dtype=float)
-        # Model baseline: +f for associator LaLb, -f for associator Lab and both control routes
-        anchor_drift = np.array(
-            [
-                p["d_observable"]
-                - ((f_vis if p["route"] == "LaLb" else -f_vis) if p["block"] == "associator" else -f_vis)
-                for p in cold_pairs
-            ],
-            dtype=float,
-        )
-        fit_deg = min(drift_degree, len(anchor_t) - 1)
-        drift_poly = np.poly1d(np.polyfit(anchor_t, anchor_drift, deg=fit_deg))
-        drift_curve_summary = {
-            "anchor_pairs": [int(x) for x in anchor_t],
-            "polynomial_degree": int(fit_deg),
-            "coefficients": [round(float(c), 8) for c in drift_poly.coefficients],
-            "max_drift_amplitude": round(float(np.ptp(drift_poly(anchor_t))), 6),
-        }
+    # Fit preregistered Joint WLS Model
+    joint_model = fit_joint_model(target_records, drift_degree=drift_degree, alpha=alpha)
+
+    # Check execution status
+    step_diag = joint_model["step_change_diagnostic"]
+    if step_diag["abrupt_step_detected"]:
+        execution_status = "QUARANTINED_ABRUPT_STEP"
     else:
-        drift_curve_summary = {"status": "insufficient_anchors"}
+        execution_status = "ADMITTED"
 
-    results_summary["sentinel_leakage"] = sentinel_leakage
-    results_summary["focal_total"] = focal_total
-    results_summary["pred_transmission"] = pred_transmission
-    results_summary["causal_drift_curve"] = drift_curve_summary
+    assoc_coef = joint_model["coefficients"]["delta_assoc"]
+    ctrl_coef = joint_model["coefficients"]["delta_ctrl"]
+    closure_rep = joint_model["closure"]
 
-    delta_oct_cold = results_summary["associator"]["cold"]["delta"]
-    delta_oct_hot = results_summary["associator"]["hot"]["delta"]
-    delta_oct_wrapped = results_summary["associator"]["wrapped"]["delta"]
-
-    delta_quat_cold = results_summary["control"]["cold"]["delta"]
-    delta_quat_hot = results_summary["control"]["hot"]["delta"]
-    delta_quat_wrapped = results_summary["control"]["wrapped"]["delta"]
-
-    d_quat_cold_mean = (results_summary["control"]["cold"]["d_lalb"] + results_summary["control"]["cold"]["d_lab"]) / 2
-    closure_c = delta_oct_cold + 2 * d_quat_cold_mean
-
-    shift_hot_cold = delta_oct_hot - delta_oct_cold
-    shift_wrapped_cold = delta_oct_wrapped - delta_oct_cold
-
-    results_summary["closure"] = round(closure_c, 6)
-    results_summary["verdicts"] = {
-        "associator_signal_detected": bool(delta_oct_cold > 0.5),
-        "quaternion_null_admitted": bool(abs(delta_quat_cold) < MUTATION_TOLERANCE),
-        "closure_admitted": bool(abs(closure_c) < CLOSURE_TOLERANCE),
-        "predecessor_shift_hot_vs_cold": round(shift_hot_cold, 6),
-        "predecessor_shift_wrapped_vs_cold": round(shift_wrapped_cold, 6),
-        "predecessor_shift_control_hot": round(delta_quat_hot - delta_quat_cold, 6),
-        "predecessor_shift_control_wrapped": round(delta_quat_wrapped - delta_quat_cold, 6),
-        "quadratic_drift_annihilation": True,
+    verdicts = {
+        "execution_status": execution_status,
+        "associator_signal_detected": bool(assoc_coef["estimate"] > 0.5 and assoc_coef["ci95"][0] > 0.5),
+        "quaternion_null_admitted": bool(
+            abs(ctrl_coef["estimate"]) < MUTATION_TOLERANCE
+            and abs(ctrl_coef["ci95"][0]) < MUTATION_TOLERANCE
+            and abs(ctrl_coef["ci95"][1]) < MUTATION_TOLERANCE
+        ),
+        "closure_admitted": closure_rep["closure_admitted"],
+        "predecessor_carryover_hot": joint_model["equivalence_testing"]["verdict_hot"],
+        "predecessor_carryover_wrapped": joint_model["equivalence_testing"]["verdict_wrapped"],
+        "drift_detected": joint_model["f_test_drift"]["drift_significant"],
     }
-    return results_summary
+
+    return {
+        "status": execution_status,
+        "verdicts": verdicts,
+        "joint_model": joint_model,
+        "sentinel_leakage": sentinel_report,
+        "target_observations": target_records,
+    }
 
 
 def main() -> None:

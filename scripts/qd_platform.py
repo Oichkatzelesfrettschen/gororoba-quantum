@@ -808,21 +808,30 @@ def template_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tu
         values = setting["circuit_params"]
         if sorted(values) != sorted(parameters):
             raise PlatformError(f"{setting['name']}: circuit_params do not name the template's parameters")
+        if not all(isinstance(v, (int, float)) and math.isfinite(v) for v in values.values()):
+            raise PlatformError(f"{setting['name']}: circuit_params values must be finite numbers")
         for name, parameter in parameters.items():
             parameter.set_value(values[name])
-        column = numpy.array([complex(re, im) for re, im in setting["column"]])
-        deviation = float(numpy.max(numpy.abs(numpy.array(chip.compute_unitary())[:, source] - column)))
-        if deviation > 1e-9:
+        raw_column = setting["column"]
+        if not isinstance(raw_column, list) or len(raw_column) != modes:
+            raise PlatformError(f"{setting['name']}: column must be a list of length {modes}")
+        column = numpy.array([complex(re, im) for re, im in raw_column])
+        if column.shape != (modes,) or not numpy.isfinite(column).all():
+            raise PlatformError(f"{setting['name']}: column must be finite with shape ({modes},)")
+        actual_unitary = numpy.asarray(chip.compute_unitary())
+        if actual_unitary.shape != (modes, modes) or not numpy.isfinite(actual_unitary).all():
+            raise PlatformError(f"{setting['name']}: computed unitary must be finite with shape ({modes}, {modes})")
+        deviation = float(numpy.max(numpy.abs(actual_unitary[:, source] - column)))
+        if not math.isfinite(deviation) or deviation > 1e-9:
             raise PlatformError(f"{setting['name']}: the template misses its column by {deviation:.2e}")
         if manifest.get("schema") == "qd-hypercomplex-cases-v1":
             expected = setting["operator"]
             matrix = numpy.asarray(expected["real"]) + 1j * numpy.asarray(expected["imaginary"])
-            actual = numpy.asarray(chip.compute_unitary())
-            if matrix.shape != actual.shape or not numpy.isfinite(matrix).all():
+            if matrix.shape != actual_unitary.shape or not numpy.isfinite(matrix).all():
                 raise PlatformError(f"{setting['name']}: full operator needs matching finite dimensions")
-            deviation = float(numpy.max(numpy.abs(actual - matrix)))
-            if deviation > 1e-9:
-                raise PlatformError(f"{setting['name']}: the template misses its full operator by {deviation:.2e}")
+            op_deviation = float(numpy.max(numpy.abs(actual_unitary - matrix)))
+            if not math.isfinite(op_deviation) or op_deviation > 1e-9:
+                raise PlatformError(f"{setting['name']}: the template misses its full operator by {op_deviation:.2e}")
         if iteration_form(manifest) != "single":
             for parameter in parameters.values():
                 parameter.reset()

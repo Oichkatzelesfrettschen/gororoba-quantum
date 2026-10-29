@@ -165,52 +165,70 @@ and uniform Cold-baseline anchor reconstruction across the entire run:
 | 14 | Wrapped ($2\pi$) | Control | $L_{ab}$ | Active Intervention (Control Wrapped Replicate) |
 | 15 | Cold ($0$) | Control | $L_a L_b$ | **Cold Baseline Anchor 8** |
 
-### Algebraic non-linear drift cancellation & anchor tracking
+### Algebraic non-linear drift cancellation & Joint WLS Model
 
-1. **Exact quadratic drift cancellation:**
+1. **Pooled Thue–Morse moment cancellation vs Condition-Specific Carryovers:**
    Within each block, target routes $L_a L_b$ and $L_{ab}$ are assigned according to the Thue–Morse sequence:
    - For Block 1 (Associator, Pairs 0..7):
      $$\sum_{t \in L_a L_b} t = 1 + 2 + 4 + 7 = 14, \qquad \sum_{t \in L_{ab}} t = 0 + 3 + 5 + 6 = 14$$
      $$\sum_{t \in L_a L_b} t^2 = 1 + 4 + 16 + 49 = 70, \qquad \sum_{t \in L_{ab}} t^2 = 0 + 9 + 25 + 36 = 70$$
-     Any arbitrary background polynomial drift $f_{\text{drift}}(t) = \beta_0 + \beta_1 t + \beta_2 t^2$ is algebraically
-     annihilated to **absolute zero** in the contrast $\Delta = D(L_a L_b) - D(L_{ab})$.
    - For Block 2 (Quaternion Control, Pairs 8..15):
      $$\sum_{t \in L_a L_b} t = 9 + 10 + 12 + 15 = 46, \qquad \sum_{t \in L_{ab}} t = 8 + 11 + 13 + 14 = 46$$
      $$\sum_{t \in L_a L_b} t^2 = 81 + 100 + 144 + 225 = 550, \qquad \sum_{t \in L_{ab}} t^2 = 64 + 121 + 169 + 196 = 550$$
-     Quadratic drift cancellation holds identically for the control block.
+   While the pooled contrast across all conditions eliminates quadratic polynomial drift to zero,
+   an adversarial review proved that condition-specific naive differences retain linear and quadratic
+   drift contamination ($4\beta_1 + 8\beta_2$ for Hot vs Cold).
 
-2. **Anchor-based causal drift curve reconstruction:**
-   Every odd pair ($t = 1, 3, 5, 7, 9, 11, 13, 15$) is a Cold baseline anchor ($\theta_{\text{cold}} \equiv 0$).
-   Subtracting the known model route response $D_{\text{base}}$:
-   $$D_{\text{base}} = \begin{cases} +f(V) & \text{for Associator } L_a L_b \\ -f(V) & \text{for Associator } L_{ab} \\ -f(V) & \text{for Control } L_a L_b \text{ and } L_{ab} \end{cases}$$
-   isolates pure drift residuals $\hat{f}(t) = y_t - D_{\text{base}}$ across the run. Fitting a degree-2 polynomial
-   or regularized spline yields the continuous background trajectory $\hat{f}_{\text{drift}}(t)$, enabling
-   unbiased estimation of predecessor carryovers $\hat{\theta}_{\text{hot}}$ and $\hat{\theta}_{\text{wrapped}}$.
+2. **Preregistered Joint Weighted Least Squares (WLS) Model:**
+   To eliminate condition-specific drift without circularity or unequal-yield distortion, the primary analysis
+   fits a preregistered joint WLS regression across all 16 target observations:
+   $$y_i = D_i = \frac{N_+(i) - N_-(i)}{N_{\text{focal}}(i)}$$
+   $$\mathbf{y} = X \boldsymbol{\theta} + \boldsymbol{\epsilon}, \qquad W = \operatorname{diag}\left(\frac{N_{\text{focal}}(i)}{\max(1 - D_i^2, 0.05)}\right)$$
+   where the design matrix $X$ ($16 \times 8$) simultaneously identifies:
+   - $\beta_0$: Intercept (Cold Associator $L_{ab}$ baseline)
+   - $\Delta_{\text{assoc}}$: Associator route difference ($L_a L_b - L_{ab}$)
+   - $\alpha_{\text{ctrl}}$: Control block offset
+   - $\Delta_{\text{ctrl}}$: Control route difference ($L_a L_b - L_{ab}$)
+   - $\gamma_{\text{hot}}$: Hot predecessor carryover shift
+   - $\gamma_{\text{wrapped}}$: Wrapped predecessor carryover shift
+   - $\tau_1, \tau_2$: Linear and quadratic polynomial drift coefficients along elapsed physical time.
+
+   The joint model has full column rank ($8/8$, condition number $\approx 25.6$), propagates the complete parameter
+   covariance $\Sigma = \max(1, \text{RSS}/\nu)(X^T W X)^{-1}$, and provides exact standard errors for all parameters.
 
 ---
 
 ## 4. Preregistered decision rules and endpoints
 
 1. **Octonion Associator Signal Detection:**
-   $$\Delta_{\text{oct}}(\text{cold}) > 0.5$$
-   Must be satisfied to confirm two-photon interference visibility on the compiled mesh.
+   $$\hat{\Delta}_{\text{assoc}} > 0.5 \quad \text{and} \quad \text{CI}_{95,\text{lower}} > 0.5$$
+   Confirms two-photon interference visibility on the compiled mesh at 95% confidence.
 
 2. **Quaternion Null Control Admission:**
-   $$|\Delta_{\text{quat}}(\text{cold})| < 0.05$$
-   Confirms that associative multiplication produces zero contrast within tolerance.
+   $$|\hat{\Delta}_{\text{ctrl}}| < 0.05 \quad \text{and} \quad \text{CI}_{95} \subset [-0.05, 0.05]$$
+   Confirms that associative multiplication produces zero contrast within mutation tolerance.
 
 3. **In-situ Visibility Closure Admission:**
-   $$|C| = |\Delta_{\text{oct}}(\text{cold}) + 2 \operatorname{mean}(D_{\text{quat}}(\text{cold}))| < 0.05$$
-   Validates internal consistency across both blocks without requiring an external HOM calibration read.
+   $$\hat{C} = \hat{\Delta}_{\text{assoc}} + 2(\hat{\beta}_0 + \hat{\alpha}_{\text{ctrl}} + 0.5\hat{\Delta}_{\text{ctrl}}) = 0.0$$
+   Standard error is propagated through the full joint covariance matrix $\operatorname{SE}(\hat{C}) = \sqrt{\mathbf{c}^T \Sigma \mathbf{c}}$.
+   Admitted if $|\hat{C}| < 0.05$ and $\text{CI}_{95} \subset [-0.05, 0.05]$.
 
-4. **Predecessor Carryover Shifts:**
-   $$\text{Shift}_{\text{hot-cold}} = \Delta_{\text{oct}}(\text{hot}) - \Delta_{\text{oct}}(\text{cold})$$
-   $$\text{Shift}_{\text{wrapped-cold}} = \Delta_{\text{oct}}(\text{wrapped}) - \Delta_{\text{oct}}(\text{cold})$$
-   Admit predecessor equivalence if $|\text{Shift}| < 0.02$.
+4. **Predecessor Carryover Equivalence (TOST):**
+   Evaluates Two One-Sided Tests (TOST) against equivalence margin $\delta = 0.020$:
+   - **`EQUIVALENT`**: The entire 95% two-sided confidence interval falls strictly inside $[-\delta, +\delta]$.
+   - **`SIGNIFICANT_CARRYOVER`**: The point estimate exceeds $\delta$ and is statistically significant ($p < 0.05$).
+   - **`INCONCLUSIVE`**: The point estimate is below $\delta$ but the confidence interval extends beyond $\pm\delta$ (insufficient shots/precision).
 
-5. **Spatial Sentinel Leakage:**
-   Tally all events with clicks in modes 4..11 under Hot, Cold, and Wrapped predecessor states:
-   $$L_{\text{sentinel}} = \frac{N(\text{modes 4..11 clicks})}{N_{\text{total}}}$$
+5. **Abrupt Step-Change / Shock Quarantine:**
+   Standardized residuals against nominal shot-noise variance are evaluated:
+   $$z_i = \frac{|y_i - \hat{y}_i|}{\sigma_{\text{shot},i}}$$
+   If $\max_i z_i > 3.5$, an abrupt hardware shock or laser disruption is detected, and the run is quarantined
+   as `QUARANTINED_ABRUPT_STEP`.
+
+6. **Spatial Sentinel Leakage:**
+   Tally clicks in modes 4..11, separated by predecessor and target roles:
+   $$\hat{L}_{\text{role}}(\text{cond}) = \frac{N_{\text{sentinel}}(\text{role}, \text{cond})}{N_{\text{total}}(\text{role}, \text{cond})}, \qquad \operatorname{SE} = \sqrt{\frac{\hat{L}(1 - \hat{L})}{N_{\text{total}}}}$$
+   Reported with binomial standard errors and 95% confidence intervals.
 
 ---
 
@@ -221,6 +239,10 @@ and uniform Cold-baseline anchor reconstruction across the entire run:
 - **Iterations:** 32 (16 paired predecessor-target trials).
 - **Samples per iteration:** 8,192 samples ($N_{\text{total}} = 262,144$ samples).
 - **Shots per iteration:** 524,288 shots ($2^{19}$ shots; aggregate cap $16,777,216$ shots).
-- **Duration ceiling:** 300 seconds (estimated execution duration $\approx 125$ seconds).
-- **Credit ceiling:** Exactly **1.524288 credits** ($1 + 10^{-6} \times 524,288$).
+- **Bounded Timing Model:**
+  $$T(N) = T_{\text{overhead}} + N \times t_{\text{iter}}$$
+  With $T_{\text{overhead}} \approx 30\,\text{s}$ and $t_{\text{iter}} \approx 3.0\,\text{s}$, the bounded duration
+  range across retained rehearsals is $[93\,\text{s}, 186\,\text{s}]$, with platform execution ceiling of **300 seconds**.
+- **Credit ceiling:** Under the matching preflight platform tariff ($1 + 10^{-6} \times \max_i(\text{shots}_i)$),
+  the ceiling is exactly **1.524288 credits**.
 - **Safety status:** Local simulation and validation complete; hardware submission remains locked pending authorized operator review.

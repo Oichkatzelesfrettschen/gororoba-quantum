@@ -4,7 +4,9 @@
       "setting": "pair00-pred_hot",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 0.0,
+      "duration": 3.2
     },
     {
       "setting": "pair00-target_associator_Lab-post_hot",
@@ -15,13 +17,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 128,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 1920
-      }
+      },
+      "elapsed_seconds": 3.2,
+      "duration": 3.2
     },
     {
       "setting": "pair01-pred_cold",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 6.4,
+      "duration": 3.2
     },
     {
       "setting": "pair01-target_associator_LaLb-post_cold",
@@ -32,13 +38,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 1920,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 128
-      }
+      },
+      "elapsed_seconds": 9.6,
+      "duration": 3.2
     },
     {
       "setting": "pair02-pred_wrapped",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 12.8,
+      "duration": 3.2
     },
     {
       "setting": "pair02-target_associator_LaLb-post_wrapped",
@@ -49,13 +59,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 1920,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 128
-      }
+      },
+      "elapsed_seconds": 16.0,
+      "duration": 3.2
     },
     {
       "setting": "pair03-pred_cold",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 19.2,
+      "duration": 3.2
     },
     {
       "setting": "pair03-target_associator_Lab-post_cold",
@@ -66,13 +80,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 128,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 1920
-      }
+      },
+      "elapsed_seconds": 22.4,
+      "duration": 3.2
     },
     {
       "setting": "pair04-pred_hot",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 25.6,
+      "duration": 3.2
     },
     {
       "setting": "pair04-target_associator_LaLb-post_hot",
@@ -83,13 +101,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 1920,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 128
-      }
+      },
+      "elapsed_seconds": 28.8,
+      "duration": 3.2
     },
     {
       "setting": "pair05-pred_cold",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 32.0,
+      "duration": 3.2
     },
     {
       "setting": "pair05-target_associator_Lab-post_cold",
@@ -100,13 +122,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 128,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 1920
-      }
+      },
+      "elapsed_seconds": 35.2,
+      "duration": 3.2
     },
     {
       "setting": "pair06-pred_wrapped",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 38.4,
+      "duration": 3.2
     },
     {
       "setting": "pair06-target_associator_Lab-post_wrapped",
@@ -117,13 +143,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 128,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 1920
-      }
+      },
+      "elapsed_seconds": 41.6,
+      "duration": 3.2
     },
     {
       "setting": "pair07-pred_cold",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 44.8,
+      "duration": 3.2
     },
     {
       "setting": "pair07-target_associator_LaLb-post_cold",
@@ -134,13 +164,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 1920,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 128
-      }
+      },
+      "elapsed_seconds": 48.0,
+      "duration": 3.2
     },
     {
       "setting": "pair08-pred_hot",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 51.2,
+      "duration": 3.2
     },
     {
       "setting": "pair08-target_control_Lab-post_hot",
@@ -151,13 +185,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 128,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 1920
-      }
+      },
+      "elapsed_seconds": 54.4,
+      "duration": 3.2
     },
     {
       "setting": "pair09-pred_cold",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 57.6,
+      "duration": 3.2
     },
     {
       "setting": "pair09-target_control_LaLb-post_cold",
@@ -168,13 +206,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 128,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 1920
-      }
+      },
+      "elapsed_seconds": 60.8,
+      "duration": 3.2
     },
     {
       "setting": "pair10-pred_wrapped",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 64.0,
+      "duration": 3.2
     },
     {
       "setting": "pair10-target_control_LaLb-post_wrapped",
@@ -185,13 +227,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 128,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 1920
-      }
+      },
+      "elapsed_seconds": 67.2,
+      "duration": 3.2
     },
     {
       "setting": "pair11-pred_cold",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 70.4,
+      "duration": 3.2
     },
     {
       "setting": "pair11-target_control_Lab-post_cold",
@@ -202,13 +248,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 128,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 1920
-      }
+      },
+      "elapsed_seconds": 73.6,
+      "duration": 3.2
     },
     {
       "setting": "pair12-pred_hot",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 76.8,
+      "duration": 3.2
     },
     {
       "setting": "pair12-target_control_LaLb-post_hot",
@@ -219,13 +269,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 128,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 1920
-      }
+      },
+      "elapsed_seconds": 80.0,
+      "duration": 3.2
     },
     {
       "setting": "pair13-pred_cold",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 83.2,
+      "duration": 3.2
     },
     {
       "setting": "pair13-target_control_Lab-post_cold",
@@ -236,13 +290,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 128,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 1920
-      }
+      },
+      "elapsed_seconds": 86.4,
+      "duration": 3.2
     },
     {
       "setting": "pair14-pred_wrapped",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 89.6,
+      "duration": 3.2
     },
     {
       "setting": "pair14-target_control_Lab-post_wrapped",
@@ -253,13 +311,17 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 128,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 1920
-      }
+      },
+      "elapsed_seconds": 92.8,
+      "duration": 3.2
     },
     {
       "setting": "pair15-pred_cold",
       "counts": {
         "|1,0,1,0,0,0,0,0,0,0,0,0>": 8192
-      }
+      },
+      "elapsed_seconds": 96.0,
+      "duration": 3.2
     },
     {
       "setting": "pair15-target_control_LaLb-post_cold",
@@ -270,7 +332,9 @@
         "|0,1,1,0,0,0,0,0,0,0,0,0>": 128,
         "|0,1,0,1,0,0,0,0,0,0,0,0>": 128,
         "|0,0,1,1,0,0,0,0,0,0,0,0>": 1920
-      }
+      },
+      "elapsed_seconds": 99.2,
+      "duration": 3.2
     }
   ]
 }

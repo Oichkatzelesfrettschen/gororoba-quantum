@@ -17,6 +17,22 @@
  "max_shots": 16777216,
  "max_duration": 300,
  "credit_ceiling": 1.524288,
+ "timing_model": {
+  "overhead_seconds": 30.0,
+  "seconds_per_iteration": 3.0,
+  "estimated_duration_seconds": 126.0,
+  "duration_bounds_seconds": [
+   93.0,
+   186.0
+  ],
+  "max_duration": 300
+ },
+ "tariff": {
+  "statement": "credit ceiling under matching preflight tariff (1.0 + 1e-6 * max_shots)",
+  "rate_per_shot": 1e-06,
+  "fixed_invocation_credits": 1.0,
+  "credit_ceiling": 1.524288
+ },
  "mitigations": [],
  "output_modes": 12,
  "logical_modes": [
@@ -14285,12 +14301,15 @@
   "primary_associator_endpoint": "Delta_oct = D(LaLb) - D(Lab) on the associator block",
   "mutation_control_endpoint": "Delta_quat = D(LaLb) - D(Lab) on the quaternion control block",
   "closure_endpoint": "C = Delta_oct + 2 * mean(D_control) == 0 for all visibilities",
-  "predecessor_shift_hot": "Delta_oct(hot) - Delta_oct(cold)",
-  "predecessor_shift_wrapped": "Delta_oct(wrapped) - Delta_oct(cold)",
-  "drift_cancellation": "Quadratic polynomial drift sum(w_i * t_i^2) == 0 cancelled to zero",
-  "sentinel_leakage_endpoint": "fraction of events with clicks in sentinel modes 4..11 under each predecessor",
+  "predecessor_shift_hot": "gamma_hot from joint WLS model with full covariance",
+  "predecessor_shift_wrapped": "gamma_wrapped from joint WLS model with full covariance",
+  "joint_model": "WLS model identifying Delta_assoc, Delta_ctrl, gamma_hot, gamma_wrapped, and polynomial drift simultaneously",
+  "equivalence_test": "Two One-Sided Tests (TOST) requiring 95% CI to fall strictly inside [-0.02, +0.02]",
+  "quarantine_rule": "Studentized residual > 3.5 flags abrupt step change / outlier and quarantines the run",
+  "sentinel_leakage_endpoint": "fraction of events with clicks in sentinel modes 4..11 separated by predecessor and target roles",
   "tvd_equivalence_margin": 0.02,
   "mutation_tolerance": 0.05,
-  "closure_tolerance": 0.05
+  "closure_tolerance": 0.05,
+  "min_focal_samples_per_iteration": 100
  }
 }
