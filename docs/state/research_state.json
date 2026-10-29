@@ -2478,9 +2478,45 @@
       "run": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat",
       "family": "day-separated dimension-six matched meshes",
       "question": "How do five retained transition distributions compare at least 24 hours later under matching returned mesh identities?"
+    },
+    {
+      "id": "ibm-fez-actor-delay-pilot",
+      "provider": "ibm",
+      "run": "results/live/2026-10-29T191606.826758Z",
+      "family": "readout-actor",
+      "question": "Describe full-register reporter errors under actor activity and repetition-delay conditions."
     }
   ],
   "claims": [
+    {
+      "id": "ibm-fez-actor-pilot-descriptive-errors",
+      "statement": "Across 24 retained Fez pilot conditions, the empirical paired parity margin is negative for the selected reporter pair; one of 279072 exploratory spectator-pair tables has a positive margin based on one shared error.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The acquisition supplies descriptive full-register records without an admitted dependence model or confirmatory selection procedure. Activity and repetition-delay contrasts do not establish causation, physical shot alignment, or cross-PUB order.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-29T191606.826758Z/actor-collection-979b07a5ab676cca4918dc9c2b690ab4c145e93b017a4d5cc45537ed6138b186.json",
+          "sha256": "979b07a5ab676cca4918dc9c2b690ab4c145e93b017a4d5cc45537ed6138b186"
+        },
+        {
+          "path": "docs/evidence/ibm-fez-actor-pilot/analysis.json",
+          "sha256": "e1c79886827420c8491f906c5b5b3e68570a9c2461f42b0e2b721910cf06c4b7"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ibm-fez-actor-pilot/findings.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "ibm-fez-actor-delay-pilot"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
     {
       "id": "ascella-signed-coherence-permuted-repeat",
       "statement": "The approved permuted repeat on qpu:ascella (job 6ef8e8db) ran job-00's 64 circuits, all 64 compiled circuits equal to job-00's, in ANU QRNG order at 16384 samples per iteration: 1048576 samples in 186 s, job-00's duration, for 1.032768 free credits, and all 27 endpoints qualify again. Under the preregistered comparison the outside-block clicks follow the execution sequence, not the setting: per-setting Spearman against job-00 -0.075 (p 0.56), lag-1 autocorrelation -0.653 in the new order (p below 1e-4), compiled-phase change Spearman 0.12 (p 0.35), and the median count grows with the budget (log2 ratio 0.83). The per-setting analyzer residuals reproduce, Pearson 0.974 on X and 0.802 on Y (p below 1e-4), at contrast 0.9719 against 0.9699 on X and 0.9669 against 0.9702 on Y.",

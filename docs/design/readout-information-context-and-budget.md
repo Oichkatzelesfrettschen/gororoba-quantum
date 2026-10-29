@@ -1,5 +1,8 @@
 # Paired readout errors under controlled actor preparation
 
+The [Fez full-register pilot findings](../evidence/ibm-fez-actor-pilot/findings.md)
+report descriptive error tables and retain the acquisition's inferential limits.
+
 This unapproved IBM design asks whether changing preparation on disjoint actor
 qubits changes fixed reporters' error response, and whether a pair's
 computational-basis parity error beats its cleaner individual bit by a frozen
