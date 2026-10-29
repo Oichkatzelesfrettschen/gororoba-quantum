@@ -468,7 +468,9 @@ def plan(runtime: Any, service: Any, case: dict[str, Any]) -> tuple[dict[str, An
     return record, archive, snapshot
 
 
-def verify_archive(record: dict[str, Any], archive: bytes) -> dict[str, QuantumCircuit]:
+def verify_archive(
+    record: dict[str, Any], archive: bytes, *, require_current_sources: bool = True
+) -> dict[str, QuantumCircuit]:
     family = record.get("family_configuration", {})
     if record.get("schema_version") != SCHEMA or family.get("name") != FAMILY:
         raise ValueError("unsupported full-PUB actor record")
@@ -476,7 +478,20 @@ def verify_archive(record: dict[str, Any], archive: bytes) -> dict[str, QuantumC
     validate_case(case)
     if record.get("inference") != DESCRIPTIVE_INFERENCE:
         raise ValueError("actor inference must remain descriptive and unverified")
-    if family.get("source_sha256") != sources() or record.get("experiment_digest") != digest(encode(sources())):
+    recorded_sources = family.get("source_sha256")
+    if (
+        not isinstance(recorded_sources, dict)
+        or not recorded_sources
+        or any(
+            type(name) is not str
+            or type(value) is not str
+            or len(value) != 64
+            or any(character not in "0123456789abcdef" for character in value)
+            for name, value in recorded_sources.items()
+        )
+        or record.get("experiment_digest") != digest(encode(recorded_sources))
+        or (require_current_sources and recorded_sources != sources())
+    ):
         raise ValueError("actor source closure differs from the retained record")
     if digest(archive) != record.get("qpy_sha256"):
         raise ValueError("actor QPY differs from its retained digest")
@@ -731,13 +746,21 @@ def collect_pub(task: tuple[Any, ...]) -> tuple[dict[str, Any], bytes, bytes]:
     return row, manifest_bytes, receipt_bytes
 
 
+def collect_pub_outcome(task: tuple[Any, ...]) -> tuple[tuple[dict[str, Any], bytes, bytes] | None, str | None]:
+    """Keep valid PUB results when a different PUB fails validation."""
+    try:
+        return collect_pub(task), None
+    except Exception as error:  # noqa: BLE001 - a malformed PUB remains a recorded partial acquisition
+        return None, type(error).__name__
+
+
 def collect(runtime: Any, service: Any, run_dir: Path, record_sha256: str | None) -> dict[str, Any]:
     """Retain full raw PUBs and immutable index snapshots before sparse projection."""
     record_bytes = _read_anchored(run_dir / "record.json", record_sha256)
     record = json.loads(record_bytes)
     runtime._require_record_instance(service, record, "actor collection")
     archive = (run_dir / "isa.qpy").read_bytes()
-    verify_archive(record, archive)
+    verify_archive(record, archive, require_current_sources=False)
     submission = record.get("submission")
     if not isinstance(submission, dict):
         raise ValueError("actor collection requires a submitted ledger")
@@ -754,6 +777,7 @@ def collect(runtime: Any, service: Any, run_dir: Path, record_sha256: str | None
     missing, missing_backends, missing_members = runtime.submission_gaps(submission)
     case = record["family_configuration"]["case"]
     allocations = {row["name"]: row for row in case["allocations"]}
+    collection_sources = sources()
     output: dict[str, Any] = {
         "schema": "readout-actor-collection-v1",
         "record_sha256": record_sha256,
@@ -761,6 +785,8 @@ def collect(runtime: Any, service: Any, run_dir: Path, record_sha256: str | None
         "qpy_sha256": digest(archive),
         "jobs": {},
         "inference": record["inference"],
+        "collection_source_sha256": collection_sources,
+        "collection_digest": digest(encode(collection_sources)),
         "submission_complete": bool(submission.get("complete", False)) and not missing,
         "jobs_without_recorded_id": missing,
         "backends_without_recorded_job_id": missing_backends,
@@ -813,7 +839,11 @@ def collect(runtime: Any, service: Any, run_dir: Path, record_sha256: str | None
                 (directory, job_id, pub_index, name, case, allocations[name], index_bytes, index_name, archive)
                 for pub_index, name in enumerate(names)
             ]
-            for row, manifest_bytes, receipt_bytes in parallel.ordered_map(collect_pub, tasks, min_items=1):
+            for outcome, error_type in parallel.ordered_map(collect_pub_outcome, tasks, min_items=1):
+                if outcome is None:
+                    output["jobs"][job_id]["collection_error_type"] = error_type
+                    continue
+                row, manifest_bytes, receipt_bytes = outcome
                 runtime._write_once_atomically(directory / row["receipt_file"], receipt_bytes.decode())
                 runtime._write_once_atomically(directory / row["manifest_file"], manifest_bytes.decode())
                 output["jobs"][job_id]["pubs"].append(row)
@@ -871,8 +901,9 @@ def adjudicate(runtime: Any, run_dir: Path, collection_sha256: str | None) -> di
     if collection.get("reviewed_record_sha256") != record.get("reviewed_record_sha256"):
         raise ValueError("actor collection reviewed-record binding differs from the submitted record")
     archive = (run_dir / "isa.qpy").read_bytes()
-    verify_archive(record, archive)
+    verify_archive(record, archive, require_current_sources=False)
     validate_submission(record, archive)
+    analysis_sources = sources()
     output = {
         "schema": "readout-actor-adjudication-v1",
         "collection_sha256": collection_sha256,
@@ -882,6 +913,8 @@ def adjudicate(runtime: Any, run_dir: Path, collection_sha256: str | None) -> di
         "allocations_without_results": collection["allocations_without_results"],
         "jobs": {},
         "inference": record["inference"],
+        "analysis_source_sha256": analysis_sources,
+        "analysis_digest": digest(encode(analysis_sources)),
     }
     jobs_by_id = {entry["job_id"]: entry for entry in record["submission"]["jobs"]}
     for job_id, job in collection["jobs"].items():

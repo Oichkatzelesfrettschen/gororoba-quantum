@@ -215,6 +215,33 @@ def test_actor_dry_run_has_unapproved_written_case(environment: Any, tmp_path: P
     reviewed_path = arguments[arguments.index("--actor-reviewed-record") + 1]
     if (Path(qpu_cases.__file__).parent / reviewed_path).resolve() != run.resolve():
         raise AssertionError("the generated command must reach the actual reviewed run outside the checkout")
+    if qpu_cases.main(
+        [
+            "--validate-actor",
+            str(run),
+            "--reviewed-record",
+            str(run),
+            "--reviewed-sha256",
+            family.digest((run / "record.json").read_bytes()),
+        ]
+    ):
+        raise AssertionError("the case validator must admit the recorded reviewed case")
+    (run / "isa.qpy").write_bytes(archive + b"changed")
+    with pytest.raises(ValueError, match="QPY"):
+        qpu_cases.write_case(run, record)
+
+
+@pytest.mark.audit
+def test_actor_written_case_shell_check(environment: Any, tmp_path: Path) -> None:
+    specification = case()
+    specification["allocations"] = specification["allocations"][:1]
+    run = tmp_path / "run"
+    record, _ = save_plan(run, environment, specification)
+    destination = qpu_cases.write_case(run, record)
+    if destination is None:
+        raise AssertionError("the actor plan must produce a written case")
+    command = destination.read_text().split("```sh\n", 1)[1].split("\n```", 1)[0]
+    arguments = shlex.split(command)
     check = arguments[arguments.index("--check") + 1]
     executed = subprocess.run(
         ["sh", "-c", check],
@@ -225,10 +252,7 @@ def test_actor_dry_run_has_unapproved_written_case(environment: Any, tmp_path: P
         check=False,
     )
     if executed.returncode:
-        raise AssertionError(f"the generated offline check must reach the reviewed case: {executed.stderr}")
-    (run / "isa.qpy").write_bytes(archive + b"changed")
-    with pytest.raises(ValueError, match="QPY"):
-        qpu_cases.write_case(run, record)
+        raise AssertionError(f"the generated shell check must reach the reviewed case: {executed.stderr}")
 
 
 def test_actor_collection_retains_execution_identity_and_final_metrics(
@@ -285,6 +309,53 @@ def test_actor_collection_retains_execution_identity_and_final_metrics(
     latest = json.loads((directory / index["metrics_latest"]).read_bytes())
     if latest["usage"]["status"] != "complete" or len(index["metrics"]) != 2:
         raise AssertionError("actor raw index must point to the final metrics snapshot")
+    collection_sha = family.digest(Path(collected["path"]).read_bytes())
+    newer_sources = {"new-analysis.py": "a" * 64}
+    monkeypatch.setattr(family, "sources", lambda: newer_sources)
+    replay = family.adjudicate(live_run, run, collection_sha)
+    if replay["analysis_source_sha256"] != newer_sources or replay["analysis_digest"] != family.digest(
+        family.encode(newer_sources)
+    ):
+        raise AssertionError("historical adjudication must bind the newer analysis sources")
+    recollected = family.collect(live_run, service, run, family.digest((run / "record.json").read_bytes()))
+    if recollected["collection_source_sha256"] != newer_sources or recollected["collection_digest"] != family.digest(
+        family.encode(newer_sources)
+    ):
+        raise AssertionError("historical collection must bind its newer collector sources")
+    with pytest.raises(ValueError, match="source closure"):
+        family.verify_archive(record, archive)
+
+
+def test_actor_collection_preserves_valid_pubs_when_one_pub_fails(
+    environment: Any, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import json
+
+    monkeypatch.setenv("GOROROBA_WORKERS", "1")
+    specification = case()
+    specification["allocations"] = specification["allocations"][:2]
+    approved = tmp_path / "approved"
+    record, archive = save_plan(approved, environment, specification)
+    run = tmp_path / "run"
+    run.mkdir()
+    (run / "isa.qpy").write_bytes(archive)
+    submit_reviewed(
+        live_run, environment, record, archive, run, approved, family.digest((approved / "record.json").read_bytes())
+    )
+    verify = family.verify_and_project
+
+    def verify_one_bad(raw: bytes, index: bytes, qpy_bytes: bytes, manifest: bytes, receipt: bytes, sha: str) -> Any:
+        if json.loads(receipt)["pub_index"] == 1:
+            raise ValueError("synthetic corrupt PUB")
+        return verify(raw, index, qpy_bytes, manifest, receipt, sha)
+
+    monkeypatch.setattr(family, "verify_and_project", verify_one_bad)
+    output = family.collect(live_run, environment, run, family.digest((run / "record.json").read_bytes()))
+    job = output["jobs"]["fixture-job"]
+    if len(job["pubs"]) != 1 or job["pubs"][0]["pub_index"] != 0 or job["collection_error_type"] != "ValueError":
+        raise AssertionError("the valid PUB must survive the other PUB's failure")
+    if output["all_allocations_retained"] or len(output["allocations_without_results"]) != 1:
+        raise AssertionError("a failed PUB must keep the overall acquisition incomplete")
 
 
 @pytest.mark.parametrize("mutation", ["physical", "register", "backend", "shots"])
