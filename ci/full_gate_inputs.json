@@ -767,6 +767,13 @@
       "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain.json",
       "docs/evidence/quantum_inspire/catalogue.json",
       "docs/notes/quantum_inspire/requirements-qi.txt"
+    ],
+    "core-local-idle-falsifier-full": [
+      "docs/evidence/local_idle_padding/**",
+      "docs/evidence/calibration/history/**",
+      "results/live/2026-10-12T055624.091217Z/**",
+      "results/live/2026-10-13T020454.599853Z/**",
+      "results/live/2026-10-18T090603.530638Z/**"
     ]
   }
 }

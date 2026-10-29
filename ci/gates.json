@@ -5134,6 +5134,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_idle_falsifier.py --check docs/evidence/local_idle_padding/result.json.gz --runs results/live/2026-10-13T080216.451663Z",
+   "name": "core-local-idle-falsifier",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_idle_falsifier.py --check docs/evidence/local_idle_padding/result.json.gz --runs results/live/2026-10-12T055624.091217Z,results/live/2026-10-13T020454.599853Z,results/live/2026-10-18T090603.530638Z",
+   "name": "core-local-idle-falsifier-full",
+   "seconds": 300.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" scripts/qi_projector_conformance.py --check results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json && \"$PYTHON\" scripts/qi_projector_distribution_audit.py --check results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/joint-law-audit.json",
    "name": "core-qi-projector-conformance",
    "seconds": 0.7,

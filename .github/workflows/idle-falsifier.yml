@@ -2,7 +2,7 @@ name: idle-falsifier
 
 # One matrix job per audited run of scripts/local_idle_falsifier.py, each writing that run's part (--parts) on the
 # runner's native numeric path, which the part records, and uploading it with the runner's CPU and timing;
-# docs/runbooks/idle-falsifier.md assembles the parts into docs/evidence/local_idle_padding/result.json on the
+# docs/runbooks/idle-falsifier.md assembles the parts into docs/evidence/local_idle_padding/result.json.gz on the
 # build host. A push to a
 # compute/idle-falsifier/ branch runs the workflow file of the pushed commit, so the sweep needs no merge to main.
 # The repository is public, so the logs and artifacts are public too; the sweep reads only files the ref holds.

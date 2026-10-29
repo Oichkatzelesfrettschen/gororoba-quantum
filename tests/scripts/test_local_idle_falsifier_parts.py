@@ -65,3 +65,35 @@ def test_parts_only_refuses_to_evaluate(tmp_path: Path, monkeypatch: pytest.Monk
         raise AssertionError("a missing part was evaluated under parts_only")
     if calls:
         raise AssertionError(f"evaluations {calls}")
+
+
+def test_largest_deviation_reads_floats_and_rejects_structure() -> None:
+    retained = {"run": "r", "replicas": 2, "mean_difference": -0.5, "per_replica": {"m": [{"law": [0.25, 0.75]}]}}
+    shifted = {
+        "run": "r",
+        "replicas": 2,
+        "mean_difference": -0.5,
+        "per_replica": {"m": [{"law": [0.25, 0.75 + 4e-10]}]},
+    }
+    if not 3e-10 < falsifier.largest_deviation(shifted, retained) <= falsifier.TOLERANCE:
+        raise AssertionError("a last-digit shift is not read as a small deviation")
+    if falsifier.largest_deviation({**retained, "replicas": 3}, retained) != float("inf"):
+        raise AssertionError("an integer change is not a structural mismatch")
+    if falsifier.largest_deviation({**retained, "run": "s"}, retained) != float("inf"):
+        raise AssertionError("a string change is not a structural mismatch")
+
+
+def test_inserted_estimate_keeps_only_acting_replicas() -> None:
+    rows = [
+        {"difference": -0.2, "inserted_dt": {"0": 8}, "padded_law": [0.5, 0.5], "unpadded_law": [0.6, 0.4]},
+        {"difference": 0.0, "inserted_dt": {"0": 8}, "padded_law": [1.0, 0.0], "unpadded_law": [1.0, 0.0]},
+        {"difference": 0.0, "inserted_dt": {}, "padded_law": [1.0, 0.0], "unpadded_law": [1.0, 0.0]},
+    ]
+    estimate = falsifier.inserted_estimate({"runs": [{"run": "r", "per_replica": {"m": rows}}, {"run": "out"}]})
+    (run,) = estimate["runs"]
+    if (run["replicas"], run["inserted_replicas"], run["acting_replicas"]) != (3, 2, 1):
+        raise AssertionError(f"counts {run}")
+    if run["mean_difference"] != -0.2 or run["standard_error"] is not None:
+        raise AssertionError(f"estimate {run}")
+    if (estimate["runs_with_acting_replicas"], estimate["runs_lower"]) != (1, 1):
+        raise AssertionError(f"totals {estimate}")

@@ -16,7 +16,7 @@ AVX-512 runner replays on the AVX2 build host under Intel SDE emulating that chi
 
 ```sh
 /opt/intel-sde/sde64 -icx -- "$PYTHON" -B scripts/local_idle_falsifier.py \
-  --check docs/evidence/local_idle_padding/result.json --runs RUN
+  --check docs/evidence/local_idle_padding/result.json.gz --runs RUN
 ```
 
 SDE emulates Intel chips only. A run computed on an AMD Zen 4 or Zen 5 runner replays on such a CPU, since
@@ -47,7 +47,7 @@ git push origin HEAD:compute/idle-falsifier/SLUG
 gh run download RUN_ID --dir DOWNLOADS
 mkdir -p PARTS && cp DOWNLOADS/idle-part-*/*.json PARTS/
 "$PYTHON" -B scripts/local_idle_falsifier.py --runs all --parts PARTS --parts-only \
-  --out docs/evidence/local_idle_padding/result.json
+  --out docs/evidence/local_idle_padding/result.json.gz
 ```
 
 `--parts-only` refuses to evaluate: a missing part, or one whose versions or sources differ from the checkout,

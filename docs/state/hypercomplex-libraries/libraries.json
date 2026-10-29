@@ -12414,6 +12414,7 @@
    "calibration_snapshot",
    "dynamic_density",
    "ghost_run",
+   "gzip",
    "hashlib",
    "idle_padding",
    "io",
