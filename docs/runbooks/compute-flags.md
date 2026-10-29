@@ -170,6 +170,7 @@ kept, so the table records every combination tried and why it lost.
 | same | same | same | `OPENBLAS_NUM_THREADS=1` | matmul 0.883 s, LU 0.358 s, eigh 3.17 s | | eigh is faster single-threaded at this size |
 | AOCL-BLAS 5.3.0 (BLIS), numpy 2.5.4 | same | same | `BLIS_NUM_THREADS=6` | matmul 0.215 s, LU 0.715 s, eigh 7.60 s; checksum equal to OpenBLAS to ten digits | | superseded: removed from the host; LAPACK slower when threaded |
 | same | same | same | `BLIS_NUM_THREADS=1` | matmul 0.856 s, LU 0.330 s, eigh 3.03 s | | superseded |
+| qiskit 2.5.2 `transpile` | build host, offline Heron r2 Targets (ibm_fez, ibm_kingston, ibm_marrakesh) | 7 families of `experiments.experiment_groups()` at 3-5 qubits, two dynamic; 8 ANU QRNG seeds per setting | `optimization_level=3`, default layout and routing (the `live_run.OPT_LEVEL` setting) | median routed cz equal to level 2 in every family (for example 98 against 291, 163, 98 at levels 0, 1, 2 on `design_c_32_1_16`); level 2 within 1-3 depth; `layout_method="dense"` worse by 1-53 cz; `routing_method="sabre"` identical to the default; seed spread up to 27 cz exceeds every level-2-versus-3 difference | a level, layout or routing setting with a lower median cz on these families, or a family above 5 qubits where level 3 and level 2 differ | current best; seed selection is the remaining lever |
 
 A row records the tool version, the host, the workload, the full launch line
 with environment, wall time, peak resident set, the furthest stage reached,
