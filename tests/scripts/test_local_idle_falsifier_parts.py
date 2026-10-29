@@ -51,3 +51,15 @@ def test_identity_covers_every_part_source() -> None:
         raise AssertionError("identity sources differ from PART_SOURCES")
     if not all(len(digest) == 64 for digest in identity["sources"].values()):
         raise AssertionError("a source digest is not a sha256")
+
+
+def test_parts_only_refuses_to_evaluate(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    calls = counting(monkeypatch)
+    try:
+        falsifier.evaluate_with_parts(RUN, {}, tmp_path, falsifier.part_identity(), parts_only=True)
+    except RuntimeError:
+        pass
+    else:
+        raise AssertionError("a missing part was evaluated under parts_only")
+    if calls:
+        raise AssertionError(f"evaluations {calls}")

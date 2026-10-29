@@ -426,6 +426,7 @@ differs from it only in the `cd_core.py` digest.
 | [cache-locations.md](runbooks/cache-locations.md) | cache, venv, build-tree and run-output locations outside the checkout; cleanup classes and the future `make clean` and `make distclean` targets |
 | [vectorized-fits.md](runbooks/vectorized-fits.md) | batched classical fits across replicates |
 | [null-shards.md](runbooks/null-shards.md) | the successor null through one pool, Kaggle kernels and hosted-runner shards |
+| [idle-falsifier.md](runbooks/idle-falsifier.md) | the local idle falsifier through resumable per-run parts and hosted-runner jobs |
 
 ### State and records
 

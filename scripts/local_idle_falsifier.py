@@ -26,7 +26,8 @@ exactly.
 
 ``--parts DIR`` writes each run's full summary to DIR as soon as the run finishes and reuses a part whose
 package versions and source digests (this script and the repository modules it evaluates with) match the
-current ones, so a sweep that dies part way resumes at the first unfinished run.
+current ones, so a sweep that dies part way resumes at the first unfinished run. ``--parts-only`` assembles the
+result from parts written elsewhere (the idle-falsifier workflow) and fails on a missing or mismatched part.
 """
 
 from __future__ import annotations
@@ -229,13 +230,17 @@ def part_identity() -> dict[str, Any]:
     return {"versions": versions(), "sources": sources}
 
 
-def evaluate_with_parts(name: str, index: dict[str, Any], parts: Path, identity: dict[str, Any]) -> dict[str, Any]:
+def evaluate_with_parts(
+    name: str, index: dict[str, Any], parts: Path, identity: dict[str, Any], parts_only: bool = False
+) -> dict[str, Any]:
     """The run's summary from a matching part in PARTS, or a fresh evaluation written there before returning."""
     part = parts / (Path(name).name + ".json")
     if part.exists():
         stored = json.loads(part.read_text(encoding="utf-8"))
         if stored.get("identity") == identity and stored.get("summary", {}).get("run") == name:
             return stored["summary"]
+    if parts_only:
+        raise RuntimeError(f"{part}: no part matching the current versions and sources")
     summary = evaluate(name, index)
     parts.mkdir(parents=True, exist_ok=True)
     staging = part.with_suffix(".tmp")
@@ -250,6 +255,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path)
     parser.add_argument("--plan", action="store_true", help="print each run's eligibility, widths and replica count")
     parser.add_argument("--parts", type=Path, help="directory of per-run summaries to write and resume from")
+    parser.add_argument("--parts-only", action="store_true", help="assemble from --parts and refuse to evaluate")
     parser.add_argument("--check", type=Path, help="rerun the --runs runs of a retained result and compare")
     args = parser.parse_args()
     index = json.loads(ghost_run.INDEX.read_text(encoding="utf-8"))
@@ -259,11 +265,13 @@ def main() -> int:
     names = ghost_run.audited_runs() if args.runs == "all" else args.runs.split(",")
     if args.parts and args.plan:
         parser.error("--parts applies to an evaluation, not to --plan")
+    if args.parts_only and not args.parts:
+        parser.error("--parts-only needs --parts")
     identity = part_identity() if args.parts else None
     runs: list[dict[str, Any]] = []
     for name in names:
         if args.parts and identity is not None:
-            summary = evaluate_with_parts(name, index, args.parts, identity)
+            summary = evaluate_with_parts(name, index, args.parts, identity, args.parts_only)
         else:
             summary = evaluate(name, index, args.plan)
         runs.append(summary)
