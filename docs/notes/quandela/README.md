@@ -263,17 +263,19 @@ took. Until the account's offer page shows the notebook price as free, a
 notebook session is spent compute: it waits for the same written case and
 approval as a job, and it is stopped as soon as its work ends.
 
-### Simulator billing reality
+### Simulator billing reality and observed usage
 
-While the public catalogue and platform specifications list 0 base credits to
-initiate ("proc") a job on simulators such as `sim:ascella`, execution is not
-completely free of credit consumption. The token usage report
-(`/api/tokens/usage/report`) records that simulator jobs draw against token
-credit allocations at the fractional per-shot rate
-(1e-06 credits/shot = 0.xxxxxx credits). In contrast, physical QPU jobs
-(`qpu:ascella`, `qpu:belenos`) bill 1.0 base credit per job plus the shot
-tariff. Cases targeting `sim:ascella` must account for fractional credit
-consumption on high-shot allocations.
+The public catalogue (`catalogue.json`) and platform specifications list 0 base credits
+and 0 credits per shot for cloud simulators such as `sim:ascella`. In practice, execution
+is not completely unmetered. The token usage report (`/api/tokens/usage/report`) records
+that retained `sim:ascella` runs incremented account `free_credits` by exactly 1.0 credit
+per completed job (e.g. 2.0 to 3.0 credits across job 00 despite 160,002 requested shots),
+rather than drawing fractional credits at the physical shot rate (1e-06 credits/shot) or
+billing zero credits. In contrast, physical QPU jobs (`qpu:ascella`, `qpu:belenos`) meter
+1.0 base credit per job plus the fractional shot tariff (observed e.g. as 36.6056 credits
+across 38 jobs on `qpu:ascella`). The precise contractual simulator tariff remains
+unresolved pending provider clarification; cases targeting `sim:ascella` must budget at
+least 1.0 credit per job to avoid under-budgeting.
 
 ## Platforms
 
