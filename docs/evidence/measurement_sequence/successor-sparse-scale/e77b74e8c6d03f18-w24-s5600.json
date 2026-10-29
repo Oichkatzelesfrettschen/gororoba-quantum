@@ -1,0 +1,112 @@
+{
+ "layout_width": 24,
+ "pools": {
+  "24": {
+   "formula_gap": 0.015217755233439717,
+   "gap": 0.01693601732074583,
+   "points": [
+    {
+     "planted": 986,
+     "power": 0.8296146044624746,
+     "scale": 1.0,
+     "se": 0.011973356685131272,
+     "withheld": 818
+    },
+    {
+     "planted": 986,
+     "power": 0.9553752535496958,
+     "scale": 1.25,
+     "se": 0.006575615601762337,
+     "withheld": 942
+    },
+    {
+     "planted": 986,
+     "power": 0.9168356997971603,
+     "scale": 1.1399193548387097,
+     "se": 0.008793783495684743,
+     "withheld": 904
+    },
+    {
+     "planted": 986,
+     "power": 0.9066937119675457,
+     "scale": 1.112911665416354,
+     "se": 0.009262906934342976,
+     "withheld": 894
+    }
+   ],
+   "scale": 1.112911665416354
+  },
+  "8": {
+   "formula_gap": 0.016291702238319924,
+   "gap": 0.020761686872552424,
+   "points": [
+    {
+     "planted": 986,
+     "power": 0.678498985801217,
+     "scale": 1.0,
+     "se": 0.014873984260339,
+     "withheld": 669
+    },
+    {
+     "planted": 986,
+     "power": 0.8803245436105477,
+     "scale": 1.25,
+     "se": 0.01033678525162262,
+     "withheld": 868
+    },
+    {
+     "planted": 986,
+     "power": 0.8904665314401623,
+     "scale": 1.2743718592964823,
+     "se": 0.00994589255558648,
+     "withheld": 878
+    }
+   ],
+   "scale": 1.2743718592964823
+  },
+  "9": {
+   "formula_gap": 0.016104006610654992,
+   "gap": 0.01991447484150947,
+   "points": [
+    {
+     "planted": 986,
+     "power": 0.7099391480730223,
+     "scale": 1.0,
+     "se": 0.014451624350063507,
+     "withheld": 700
+    },
+    {
+     "planted": 986,
+     "power": 0.9107505070993914,
+     "scale": 1.25,
+     "se": 0.009079545973716775,
+     "withheld": 898
+    },
+    {
+     "planted": 986,
+     "power": 0.896551724137931,
+     "scale": 1.2366161616161617,
+     "se": 0.009698640150767077,
+     "withheld": 884
+    }
+   ],
+   "scale": 1.2366161616161617
+  }
+ },
+ "record": "2026-10-29T013110.359249Z",
+ "replicates": 500,
+ "schema": "msq-successor-sparse-scale-v2",
+ "seed": 26209,
+ "seed_source": {
+  "experiment": "settle-sparse",
+  "flag": "--calibration-seed",
+  "script": "scripts/msq_successor_null.py",
+  "sources": [
+   "default"
+  ]
+ },
+ "settle_se": 0.002867707502378623,
+ "shots": 5600,
+ "snapshot_sha256": "e77b74e8c6d03f18aa022ab311e666fd6ee3c5e0c27e3c91877eabf4b0f41687",
+ "target_power": 0.9
+}

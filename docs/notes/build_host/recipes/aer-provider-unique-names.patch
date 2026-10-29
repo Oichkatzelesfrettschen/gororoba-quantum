@@ -1,0 +1,71 @@
+--- a/qiskit_aer/aerprovider.py
++++ b/qiskit_aer/aerprovider.py
+@@ -39,7 +39,11 @@
+                 for device in devices:
+                     name = "aer_simulator"
+                     if method in [None, "automatic"]:
+-                        backends.append((name, AerSimulator, method, device))
++                        # Each provider name maps to one backend; a non-CPU device
++                        # takes the device suffix the method-specific names use.
++                        if device != "CPU":
++                            name += f"_{device}".lower()
++                        backends.append((name, AerSimulator, method, device))
+                     else:
+                         name += f"_{method}"
+                         if method == "tensor_network":
+--- a/qiskit_aer/backends/aer_simulator.py	2026-10-28 21:54:14.222418955 -0700
++++ b/qiskit_aer/backends/aer_simulator.py	2026-10-28 21:54:14.222972606 -0700
+@@ -928,20 +928,15 @@
+         # update backend name
+         if key in ["method", "device"]:
+             if "from" not in self.name:
+-                if key == "method":
+-                    self.name = "aer_simulator"
+-                    if value != "automatic":
+-                        self.name += f"_{value}"
+-                        device = getattr(self.options, "device", "CPU")
+-                        if device != "CPU":
+-                            self.name += f"_{device}".lower()
+-                if key == "device":
+-                    method = getattr(self.options, "method", "auto")
+-                    self.name = "aer_simulator"
+-                    if method != "automatic":
+-                        self.name += f"_{method}"
+-                        if value != "CPU":
+-                            self.name += f"_{value}".lower()
++                # The name follows the constructor's rule: a method suffix
++                # unless automatic, then a device suffix unless CPU.
++                method = value if key == "method" else getattr(self.options, "method", "automatic")
++                device = value if key == "device" else getattr(self.options, "device", "CPU")
++                self.name = "aer_simulator"
++                if method not in [None, "automatic"]:
++                    self.name += f"_{method}"
++                if device not in [None, "CPU"]:
++                    self.name += f"_{device}".lower()
+ 
+     def _basis_gates(self):
+         """Return simulator basis gates.
+--- a/test/terra/backends/test_aer_provider.py	2026-10-28 22:44:46.926236131 -0700
++++ b/test/terra/backends/test_aer_provider.py	2026-10-28 22:44:46.926752654 -0700
+@@ -30,14 +30,14 @@
+             if "aer_simulator" in backend.name:
+                 method = getattr(backend.options, "method", "automatic")
+                 device = getattr(backend.options, "device", "CPU")
+-                if method == "automatic":
+-                    self.assertEqual(backend.name, "aer_simulator")
+-                else:
+-                    name = "aer_simulator"
++                name = "aer_simulator"
++                if method != "automatic":
+                     name += f"_{method}"
+-                    if device != "CPU":
+-                        name += f"_{device}".lower()
+-                    self.assertEqual(backend.name, name)
++                if device != "CPU":
++                    name += f"_{device}".lower()
++                self.assertEqual(backend.name, name)
++        names = [backend.name for backend in provider.backends()]
++        self.assertEqual(len(names), len(set(names)))
+ 
+     def test_get_backend(self):
+         """Test running backend from AerProvider."""

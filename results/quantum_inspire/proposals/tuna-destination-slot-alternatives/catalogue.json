@@ -1,0 +1,302 @@
+{
+  "alternatives": [
+    {
+      "arm": "baseline",
+      "cases_sha256": "0d901a83929a46aea8eb96bb67fefea11bb7c3c10d1b6ccc4ca3a9520d621946",
+      "directory": "slot-01/baseline",
+      "slot": 1
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "5e8760f29b7b9b2a97d44f83c00b2339e3bf505e9954927feef2c63b9817688d",
+      "directory": "slot-01/rotated",
+      "slot": 1
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "457afa091466e7cc97381e601e25b6d26fa2257c12685bccc2209358aba77599",
+      "directory": "slot-02/baseline",
+      "slot": 2
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "6c34f4c6c3f38da2ff424ccdb86ed20515e86f4c2ff239256946484b26f7f341",
+      "directory": "slot-02/rotated",
+      "slot": 2
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "78d3617d3268b13784882f08bdf8c5d952735b07394ec8e651a7834225208c79",
+      "directory": "slot-03/baseline",
+      "slot": 3
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "286224316374e9d01252a1f19518f592c61233fbb407e281fdef1e6bb7c9a59c",
+      "directory": "slot-03/rotated",
+      "slot": 3
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "29b93caef86e843c12ee7d2f7ae53c346addfb4a514396a33d23ea03d5770bfc",
+      "directory": "slot-04/baseline",
+      "slot": 4
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "d6e264c5f27866a9b39634fbd730cc9e2da3bf1541d877e534d3aa5394782792",
+      "directory": "slot-04/rotated",
+      "slot": 4
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "9cc78df74e0475abadb5aef7dc7767d098845d95d335dd24af687a00c1a3702e",
+      "directory": "slot-05/baseline",
+      "slot": 5
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "5865317e262a62e1696e67d1f9a26b363111e6081a18f6be7e0117036f685cb5",
+      "directory": "slot-05/rotated",
+      "slot": 5
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "57b1feea398f1ddc818fdef4edfada0400ead1c4f902d5ddf078ef8073d34dfd",
+      "directory": "slot-06/baseline",
+      "slot": 6
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "6fd0ae8d6b720804513e3a13aeec1ad494cf7a24f7c1d05de621b57a02c75917",
+      "directory": "slot-06/rotated",
+      "slot": 6
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "72b860279a4c2caadeeaa4ceffe45d2a57bf3487fcbbb5beb56e8c882a1d1572",
+      "directory": "slot-07/baseline",
+      "slot": 7
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "9d4c3604c982360001806652bbe0aa8c211198d48d2c6ed7056087db73b7b31d",
+      "directory": "slot-07/rotated",
+      "slot": 7
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "b8fa77a4ac6a99b93351e9c018bb2e175a00fbf4fac9dddb39ee510b363f2915",
+      "directory": "slot-08/baseline",
+      "slot": 8
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "3a30a2bca8aec72cb1290774f8b359bd5f90dcf3a4e92246334a6d2a084018d3",
+      "directory": "slot-08/rotated",
+      "slot": 8
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "ef5969a7c10311f7038280e19ee624766a8f7cc60432eca2025bd381cd1ea7e6",
+      "directory": "slot-09/baseline",
+      "slot": 9
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "1d4ddd756ae63a7ffd369ab14b9b2a07e65b30569b5f94db204c528db84fae93",
+      "directory": "slot-09/rotated",
+      "slot": 9
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "5851db8c9369c057c040031892a866c27eb349b491194de3ba6fd410f6e22721",
+      "directory": "slot-10/baseline",
+      "slot": 10
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "d3ad9d7e460f51226e7c2fe60a57bf195c11944c2ff2481e604dadf4ee7e591b",
+      "directory": "slot-10/rotated",
+      "slot": 10
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "4085ed66577602005abd07b7364342a19c5904b1eb8eb378b72bf33c5658f6cc",
+      "directory": "slot-11/baseline",
+      "slot": 11
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "77c63b359345d2d81f895cb274aa29a6102058e0982bfa9b072387906a7d4eac",
+      "directory": "slot-11/rotated",
+      "slot": 11
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "34d727f7341966243717b570357737d0f986544f577297fb001fb13301337e1d",
+      "directory": "slot-12/baseline",
+      "slot": 12
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "83bc0221c4b4621c98c78c96d18e6eece2e729103af13e00f66052793c2d59b1",
+      "directory": "slot-12/rotated",
+      "slot": 12
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "ec54bfc7fee9c1ee6a3e79e2483e563493cbb6d12461100947a1c5c885a052c1",
+      "directory": "slot-13/baseline",
+      "slot": 13
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "2901965b26fdc2941350cb49d42378e8ee4304d156c6ebcfedf84ca6a3228905",
+      "directory": "slot-13/rotated",
+      "slot": 13
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "048c4b77166f632e92a1e05f027547227b0166f728b0af1aa36102c7ea428dfd",
+      "directory": "slot-14/baseline",
+      "slot": 14
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "d27a4f260059f12355a23e6e96b57a2753e49b202cc80d74cce5305a4c3a75d1",
+      "directory": "slot-14/rotated",
+      "slot": 14
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "2176366116b58104105fabceef0cd1c2f018690dfde243632ce4584264767689",
+      "directory": "slot-15/baseline",
+      "slot": 15
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "c565e860d0a909cdb0f8479aa3206e2fa9f674971c760e1152f333a9f263ac73",
+      "directory": "slot-15/rotated",
+      "slot": 15
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "10f891dbca084d8240c81e92afe9022b47af7f8821ed24f963354a1842559103",
+      "directory": "slot-16/baseline",
+      "slot": 16
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "5ef02c9f9d0de013f4b5932e50fcae288b8d685f2d26b61d35a91d2b3ac26f1a",
+      "directory": "slot-16/rotated",
+      "slot": 16
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "c7c133b9e76cac6d9f2c9a128c5651a46bf403129c50ad1a72cd088661b71110",
+      "directory": "slot-17/baseline",
+      "slot": 17
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "3644c3b602cc32e2ab3e57845a2dd8cf586c35a56cbd4713ea184e1780f76682",
+      "directory": "slot-17/rotated",
+      "slot": 17
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "fce19458ca6692f982c1d7c9636f0b84e8865516f929ebe70c5aff95f7acef85",
+      "directory": "slot-18/baseline",
+      "slot": 18
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "441d441f863164717733bbec909d0a261fda8d6f1a4a810ede342290d7702f1c",
+      "directory": "slot-18/rotated",
+      "slot": 18
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "73729871c09416c6f61809fcc79be29938be9566a03a68d1d5eb76c0339804a5",
+      "directory": "slot-19/baseline",
+      "slot": 19
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "a3f8d749aa1e1cb7b0d62aae975f5526c78662030b0f52bf0fe41036f02f99c9",
+      "directory": "slot-19/rotated",
+      "slot": 19
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "2e580ae1f223bb57dbcaa3156c5ee55e8c042e41bc77c4224f0f06cf45c6db75",
+      "directory": "slot-20/baseline",
+      "slot": 20
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "0ae2f5f299eabc8d7544c7448e93fab1c9a1527b06902537afb93980aa7c4505",
+      "directory": "slot-20/rotated",
+      "slot": 20
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "13faa2802d74785223babac314a47129658d5e924a1430b38e855c155293ec3f",
+      "directory": "slot-21/baseline",
+      "slot": 21
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "08536b5cd8bf03f54af87d0ffcd9dea4f2b183cead4c3c691583d1de0d50c462",
+      "directory": "slot-21/rotated",
+      "slot": 21
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "6cbc60eafb03afe70b223c44ca05bdc1f5b297c8a47b8ebe66e69406cd33a593",
+      "directory": "slot-22/baseline",
+      "slot": 22
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "7796960fdd821260e90e590c5d4260047dbbdd0259a0bf6f4fa2cb0f6e6e4780",
+      "directory": "slot-22/rotated",
+      "slot": 22
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "f2958b7b4e4a2f5b9fc6bb2c1c5b453667cf423c9ce0d1e14c4b7d62f46f4e08",
+      "directory": "slot-23/baseline",
+      "slot": 23
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "d9c27a3e69a37ad2c38530787fc553cfd54aa1e9854e55c424a7c219c04757f8",
+      "directory": "slot-23/rotated",
+      "slot": 23
+    },
+    {
+      "arm": "baseline",
+      "cases_sha256": "7f059c51790b06b3c8326abdb498488b3e92687946dc8fcf44c504337b74b343",
+      "directory": "slot-24/baseline",
+      "slot": 24
+    },
+    {
+      "arm": "rotated",
+      "cases_sha256": "c80113216ef8e8f16e460b29fcae2b9df52d64592e1fbb5fd22891337863d83b",
+      "directory": "slot-24/rotated",
+      "slot": 24
+    }
+  ],
+  "boundary": "Both alternatives are listed for every slot; no assignments, provider execution or served schedule are established.",
+  "compiler_receipt": {
+    "file": "results/quantum_inspire/proposals/tuna-readout-destination-sequential/compiler-admission.json",
+    "sha256": "c61eb8717a017243361e11b4f3179fcf6b3f9beb5b639aa1962b5dc05380ce8d"
+  },
+  "producer_sha256": "c5e82b34dd8d7e35495013219d8279bc3b8794aa67d92bc7257546d217407513",
+  "provider_execution_authorized": false,
+  "schema": "qi-tuna-destination-slot-alternatives-v1",
+  "slots": 24,
+  "status": "working-unapproved"
+}

@@ -14,8 +14,8 @@
 #   AER_BUILD_JOBS  parallel compile jobs (default half the CPUs)
 _pkgname=qiskit-aer
 pkgname=python-$_pkgname-cuda
-pkgver=0.17.2
-pkgrel=2
+pkgver=0.18.2
+pkgrel=3
 _nlohmann_json_ver=3.10.2
 pkgdesc="Qiskit Aer with the CUDA GPU backend and cuStateVec/cuTensorNet (cuQuantum) for NVIDIA Ada GPUs"
 arch=(x86_64)
@@ -59,10 +59,12 @@ source=(
     $_pkgname-$pkgver.tar.gz::https://github.com/Qiskit/$_pkgname/archive/$pkgver.tar.gz
     nlohmann-json-$_nlohmann_json_ver.tar.gz::https://github.com/nlohmann/json/archive/refs/tags/v$_nlohmann_json_ver.tar.gz
     aer-cccl3-unary-function.patch
+    aer-provider-unique-names.patch
 )
-b2sums=('49dafc4cba948b7e3d474b0b8c73075cc5135a7c8559eebc2c0d5578c19868b4dc0a1dd4e6ab199f67a3996eb35ea11c9e0d8da9d49835bd2d7119774f64d954'
+b2sums=('90d7932c96ab379557c72e2cef3cb964f5baacaf104189c16891ad75ed7645a089ccc03d04361a54148906529092bedbdc2c372b567748944c82db0677a904b7'
         'e7da213fb75d528b1f5425822f5b598e882f232a67670aaae2d8f89c76e72ee23fa3344d1acfef2b0338a6a423d17b231b7e047ff064c984c2ec7783b721a22c'
-        'cf3f6507317591e12fa4fed5601c76ff469900cf3d5ec3eadd682319dbc48b279acddbbd893090c8f6489fddaa1e7b5b997395c20d08aa5ee5cbdf2d0b6e1788')
+        'cf3f6507317591e12fa4fed5601c76ff469900cf3d5ec3eadd682319dbc48b279acddbbd893090c8f6489fddaa1e7b5b997395c20d08aa5ee5cbdf2d0b6e1788'
+        '8d423b89d8d482fbc215c7fa89de8e8f33d8b0ff07e9aa525c76940023872e50e0d8881e6463c884ca68d9b4bb205e136015e62acaf7e40cd6a89b52eaea4f46')
 
 prepare() {
     cd $_pkgname-$pkgver
@@ -78,7 +80,7 @@ prepare() {
     # Aer's CMake prefers OpenBLAS whenever libopenblas is installed, which
     # leaves libopenblas.so.0 in the module's NEEDED list outside the blas and
     # lapack virtuals. Skipping that probe sends it to the generic BLAS and
-    # LAPACK search (libblas.so, liblapack.so), the AOCL providers on this host.
+    # LAPACK search (libblas.so, liblapack.so), the blas-openblas provider on this host.
     sed -i -e 's/^\t\tfind_package(BLAS QUIET)$/\t\tset(BLAS_FOUND FALSE)/' \
            -e 's/^\t\tunset(BLA_VENDOR)$/\t\tset(BLA_VENDOR "Generic")/' CMakeLists.txt
     grep -q 'set(BLAS_FOUND FALSE)' CMakeLists.txt
@@ -87,6 +89,11 @@ prepare() {
     # CCCL 3 removed thrust::unary_function; the three Aer functors that derive
     # from it take an equivalent AER::unary_function.
     patch -Np1 -i "$srcdir"/aer-cccl3-unary-function.patch
+    # One provider name maps to one backend: the automatic-method GPU entry
+    # takes the _gpu suffix, and AerSimulator.set_option derives the name with
+    # the constructor's rule, so get_backend("aer_simulator") resolves to the
+    # CPU backend alone and every backend reports its provider name.
+    patch -Np1 -i "$srcdir"/aer-provider-unique-names.patch
 }
 
 build() {

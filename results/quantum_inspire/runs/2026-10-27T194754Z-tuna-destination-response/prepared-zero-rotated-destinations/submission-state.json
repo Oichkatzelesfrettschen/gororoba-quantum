@@ -1,0 +1,49 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-27T20:06:08+00:00",
+ "approval": "Owner said approved! for campaign 53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76: six serial Tuna-17 jobs,4096shots each,24576total,1800seconds aggregate provider ceiling,zero expected credits,no retries,descriptive response only.",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "2396adc9c5eef41452655d41bbc4df7cfb26a76f78e3e6b9a8d2d9e3327a9eb5",
+ "shots": 4096,
+ "jobs": [
+  {
+   "file": "rotated-destinations.cq",
+   "job": 1618345,
+   "sha256": "3084eef16a0d32a23d7b3fa41c92f27fa3ce4f3d84791d128a10246728ad6d5d"
+  }
+ ],
+ "project": 795510,
+ "batch_job": 895833,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-27T20:06:10+00:00",
+  "approval": "Owner said approved! for campaign 53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76: six serial Tuna-17 jobs,4096shots each,24576total,1800seconds aggregate provider ceiling,zero expected credits,no retries,descriptive response only.",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "2396adc9c5eef41452655d41bbc4df7cfb26a76f78e3e6b9a8d2d9e3327a9eb5",
+  "backend_status_at_submit": "executing",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 895833,
+  "project": 795510,
+  "shots": 4096,
+  "jobs": [
+   {
+    "file": "rotated-destinations.cq",
+    "job": 1618345,
+    "sha256": "3084eef16a0d32a23d7b3fa41c92f27fa3ce4f3d84791d128a10246728ad6d5d"
+   }
+  ],
+  "submitted_utc": "2026-10-27T20:06:10+00:00"
+ },
+ "confirmed_utc": "2026-10-27T20:06:10+00:00"
+}

@@ -1,0 +1,32 @@
+{
+  "followup_reviewed_sha256": {
+    "docs/design/tuna-destination-sequential-evidence-case.md": "749cd8633bf7db9c8ed96b8d425c97821294d2250bb0dfea48537a57ca6e72f5",
+    "docs/design/tuna-sequential-destination-uncertainty.md": "a94cbad3c6d0a007296ec5d5b36d52b73e5e31e710d4276c26c76d4c008e75b3",
+    "scripts/qi_tuna_sequential_score.py": "d344f69db36dcc79a6ce605686aa1dfcc488fa034ad09fdfab5c7d7f9d16611b",
+    "tests/scripts/test_qi_tuna_sequential_score.py": "df4f6edfc4c627927176c16b017c68c23e38384da37e929afb93d03d4d8840bc"
+  },
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "reasoning_effort": "high",
+  "reports": [
+    {
+      "raw_sha256": "fbcd5c07bed109191df16315065dbd2fd566a29effa0ab904543a6bbbd841585",
+      "report": "docs/archive/reviews/tuna-sequential-score-review.md",
+      "retained_sha256": "ec1c5225eb0dc4358e7f399ffb3667b3d75f58f77ee55ca3823d3cc5ae4160e3",
+      "sanitization": "Local absolute paths removed, repository links made relative, trailing whitespace removed."
+    },
+    {
+      "raw_sha256": "35b31945e2464280343b4e4b8e470c4e8bdbac00f061c48dba84f508bc3d1b07",
+      "report": "docs/archive/reviews/tuna-sequential-score-followup-review.md",
+      "retained_sha256": "346c8bd90d24231d2740b20d5a88416b00f430331314af4fca1edc0a4560ef35",
+      "sanitization": "Local absolute paths removed, repository links made relative, trailing whitespace removed."
+    }
+  ],
+  "reviewed_sha256": {
+    "docs/design/tuna-destination-sequential-evidence-case.md": "749cd8633bf7db9c8ed96b8d425c97821294d2250bb0dfea48537a57ca6e72f5",
+    "docs/design/tuna-sequential-destination-uncertainty.md": "a94cbad3c6d0a007296ec5d5b36d52b73e5e31e710d4276c26c76d4c008e75b3",
+    "scripts/qi_tuna_sequential_score.py": "d344f69db36dcc79a6ce605686aa1dfcc488fa034ad09fdfab5c7d7f9d16611b",
+    "tests/scripts/test_qi_tuna_sequential_score.py": "24daee3a5972665e84bff0fd180c840e940a09e63cf3a727bbca41c257dadd10"
+  },
+  "service_tier": "default"
+}

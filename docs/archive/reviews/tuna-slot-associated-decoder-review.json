@@ -1,0 +1,17 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "d4b075c4521a3fa08f8284994b16297ea6aa95df25627fecba43fdc40c36e0f3",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-slot-associated-decoder-review.md",
+  "retained_sha256": "9e93af91dd02247a3b4f980ac0840824afd5b4a6be045cdff8837229c15bdcff",
+  "reviewed_sha256": {
+    "docs/design/tuna-destination-sequential-evidence-case.md": "ad235494bc752f215a00a879755b4af64c79a834884d245f65fc22ab75c3737e",
+    "results/quantum_inspire/proposals/tuna-destination-slot-alternatives/catalogue.json": "353c28a3342835478f1713f61fe590ceb8a0bd0f5f7cdea59a03a6c7a126cde4",
+    "scripts/qi_tuna_sequential_score.py": "d344f69db36dcc79a6ce605686aa1dfcc488fa034ad09fdfab5c7d7f9d16611b",
+    "scripts/qi_tuna_source_association.py": "fa8198bab55fd1882d600cd40faafdbc4ebdb74213929893631999560f2818be",
+    "tests/scripts/test_qi_tuna_source_association.py": "1f9efb4cd2c11445a3a80b0859669b0a69e9dcb8577a633a4f266eebab6bb893"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

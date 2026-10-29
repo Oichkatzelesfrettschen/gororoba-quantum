@@ -29,6 +29,8 @@ it records each credit activity's $20 as a reward rather than a price.
 | Always-free usage rows | none on 2026-10-28 | `aws freetier get-free-tier-usage` |
 | Region | us-east-2 | `ec2:DescribeInstances` succeeded there on 2026-10-28 and the same call was denied in us-east-1, eu-north-1, and ap-southeast-2 |
 | Profile | `gororoba` is us-east-2; `default` is us-east-1 and fails regional calls | `~/.aws/config` |
+| Denied by the project's policy | `braket:*` reads and tasks; spot instance requests; EC2, Lambda, CodeBuild, SageMaker, Batch and ECS outside us-east-2 | `aws iam simulate-principal-policy`, observed errors |
+| EC2 in us-east-2 | free-tier-eligible types only, the largest `m7i-flex.large` (2 vCPU, 8 GiB); a launch of another type fails with `InvalidParameterCombination` although `--dry-run` accepts it (read 2026-10-28); on-demand standard quota 16 vCPU | `ec2 describe-instance-types --filters Name=free-tier-eligible,Values=true`, `ec2 run-instances` |
 
 The 2026-10-29 re-read stopped because the `aws login` session had expired.
 The 0.09 USD drop is credit-metered usage: an always-free band does not reduce

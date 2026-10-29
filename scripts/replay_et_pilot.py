@@ -1,4 +1,4 @@
-"""Verify original pilot member bytes and replay all QPY operators under Qiskit 2.6."""
+"""Verify original pilot member bytes and replay all QPY operators under the current Qiskit pin."""
 
 from __future__ import annotations
 
@@ -22,8 +22,11 @@ from qiskit import qpy
 from qiskit.quantum_info import Operator
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "ci"))
 
-import parallel
+from pins import current_pins  # noqa: E402
+
+import parallel  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "docs/evidence/et_rows"
@@ -123,8 +126,9 @@ def main() -> None:
     if args.self_test:
         verify_receipt_guard()
         return
-    if version("qiskit") != "2.6.0":
-        raise ValueError("ET pilot QPY replay requires current Qiskit 2.6.0, separate from historical replay")
+    pinned = current_pins()["qiskit"]
+    if version("qiskit") != pinned:
+        raise ValueError(f"ET pilot QPY replay requires current Qiskit {pinned}, separate from historical replay")
     with zipfile.ZipFile(BUNDLE / "pilot.zip") as archive:
         manifest = json.loads(archive.read("et_quantum_pilot/manifest.json"))
         for item in manifest["files"]:

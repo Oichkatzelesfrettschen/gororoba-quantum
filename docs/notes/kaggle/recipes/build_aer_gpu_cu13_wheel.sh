@@ -1,5 +1,5 @@
 #!/bin/sh
-# Builds qiskit-aer 0.17.2 as a cp313 CUDA 13 wheel (qiskit-aer-gpu-cu13)
+# Builds qiskit-aer 0.18.2 as a cp313 CUDA 13 wheel (qiskit-aer-gpu-cu13)
 # for the Kaggle T4 image and checks it in a CUDA-free Ubuntu 24.04 container.
 #
 # The module carries SASS for sm_75 (Tesla T4) and sm_89 (Ada), links
@@ -36,12 +36,12 @@ PODMAN=${PODMAN:-podman}
 
 BUILD_BASE=docker.io/nvidia/cuda:13.0.3-devel-ubuntu24.04@sha256:7d56ebe2b7cd864a60dca3c8b2d0a39f8fc110417e8253e32505c3387f59119c
 TEST_BASE=docker.io/library/ubuntu:noble-20260917@sha256:f610ab94648195aa356059f5b41d6085c9d4d903c072430cdd1af7bdb646106b
-BUILD_TAG=localhost/aer-gpu-cu13-build:0.17.2
-TEST_TAG=localhost/aer-gpu-cu13-test:0.17.2
+BUILD_TAG=localhost/aer-gpu-cu13-build:0.18.2
+TEST_TAG=localhost/aer-gpu-cu13-test:0.18.2
 
-AER_VERSION=0.17.2
+AER_VERSION=0.18.2
 AER_URL=https://github.com/Qiskit/qiskit-aer/archive/$AER_VERSION.tar.gz
-AER_SHA256=0231c74ae23d7dcaef664c39e57f800ee5174f73821a60f328ca3fe542266950
+AER_SHA256=ab4fa46a70836bff24e95078b10dc316e2c36d85a029de2f5817de41ed746810
 JSON_VERSION=3.10.2
 JSON_URL=https://github.com/nlohmann/json/archive/refs/tags/v$JSON_VERSION.tar.gz
 JSON_SHA256=081ed0f9f89805c2d96335c3acfa993b39a0a5b4b4cef7edb68dd2210a13458c
@@ -59,7 +59,7 @@ recipe_digest() {
 	{
 		(cd "$RECIPE_DIR" && sha256sum build_aer_gpu_cu13_wheel.sh aer-gpu-cu13.Containerfile \
 			aer-cu13-pip-layout.patch aer-gpu-cu13-build-pins.txt aer-gpu-cu13-runtime-pins.txt)
-		(cd "$REPO_ROOT" && sha256sum requirements.txt docs/notes/build_host/recipes/*)
+		(cd "$REPO_ROOT" && sha256sum requirements.txt docs/notes/build_host/recipes/aer-cccl3-unary-function.patch)
 	} | sha256sum | cut -d' ' -f1
 }
 

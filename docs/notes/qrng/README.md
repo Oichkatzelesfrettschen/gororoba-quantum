@@ -9,6 +9,14 @@ registers each evidence directory with its adapter's `admit` (SOURCES), so a
 seed allocation in `docs/evidence/qrng_seeds/allocations.json` may name a draw
 of any registered source.
 
+The historical ANU adapter has a type-validation defect: its raw and parsed
+arrays can compare equal when raw JSON contains booleans and the parsed record
+contains integers 0 or 1. The adapter can also raise `AttributeError` for a
+non-object raw response. The prospective [Tuna assignment validator](../../design/tuna-destination-private-assignment.md)
+rejects both cases at its own boundary. That protection does not repair other
+adapter consumers; the [readout-mapping plan](../../state/plans/tuna-readout-mapping-identifiability.json)
+tracks the broader repair and the preservation of producer-bound evidence.
+
 ## Sources and fallback order
 
 A case takes its values from the first source in this order that still has

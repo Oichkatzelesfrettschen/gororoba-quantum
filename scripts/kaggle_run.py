@@ -81,11 +81,11 @@ MODULE_DIRS = ("gororoba_quantum", "scripts")
 # Pinning both holds every library Aer's cuStateVec_enable path loads at one
 # version.
 KERNEL_PINS = (
-    "qiskit==2.6.0",
-    "qiskit-aer-gpu-cu11==0.17.2",
+    "qiskit==2.6.1",
+    "qiskit-aer-gpu-cu11==0.18.2",
     "cuquantum-cu11==24.8.0",
     "cutensor-cu11==2.2.0",
-    "qiskit-ibm-runtime==0.50.0",
+    "qiskit-ibm-runtime==0.51.0",
 )
 # --gpu-env installs these in requirements.txt's qiskit-aer place inside a
 # venv on the image's Python 3.13, the newest Python the cu11 wheel ships for.
@@ -110,7 +110,7 @@ CU13_RUNTIME_PINS = (
 # sm_75 and sm_89 SASS, cuStateVec), which no index serves.
 GPU_AER_PINS: dict[str, tuple[str, ...]] = {
     "cu11": GPU_ENV_AER_PINS,
-    "cu13": ("qiskit-aer-gpu-cu13==0.17.2", *CU13_RUNTIME_PINS),
+    "cu13": ("qiskit-aer-gpu-cu13==0.18.2", *CU13_RUNTIME_PINS),
 }
 # A build no index serves: the private dataset slug that holds its wheel as an
 # artifact (``kaggle_run.py artifact``), the wheel's file name and its sha256.
@@ -119,8 +119,8 @@ GPU_AER_PINS: dict[str, tuple[str, ...]] = {
 AER_GPU_WHEELS: dict[str, tuple[str, str, str]] = {
     "cu13": (
         "gororoba-aer-gpu-cu13-wheel",
-        "qiskit_aer_gpu_cu13-0.17.2-cp313-cp313-manylinux_2_39_x86_64.whl",
-        "3d40fc33cd6674644807c15364b3e3ac1d417885e08ad255797ae93e886253d5",
+        "qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-manylinux_2_39_x86_64.whl",
+        "29f796542284c71991f241fae615f79931a0bed73a78313cdf283e9f0f14c875",
     ),
 }
 # Opt-in pins a --gpu-env venv adds (``push --gpu-env-with GROUP``), each at
@@ -135,7 +135,7 @@ GPU_ENV_GROUPS: dict[str, tuple[str, ...]] = {"torch": ("torch==2.14.1",)}
 MACHINE_GPUS = {"NvidiaTeslaT4": 2}
 # A CPU or TPU host has no NVIDIA GPU, and the cu11 wheel ships cp313 only,
 # so those kernels take the CPU build of the same Aer release.
-CPU_KERNEL_PINS = ("qiskit==2.6.0", "qiskit-aer==0.17.2", "qiskit-ibm-runtime==0.50.0")
+CPU_KERNEL_PINS = ("qiskit==2.6.1", "qiskit-aer==0.18.2", "qiskit-ibm-runtime==0.51.0")
 # Usage guides every bundle carries, so an agent or author inside a kernel
 # reads the same package manuals, workflow and substrate notes as the host:
 # every tracked file under each directory except the captured upstream
@@ -160,7 +160,7 @@ PIN_GROUPS: dict[str, tuple[str, ...]] = {
         "stim==1.16.0",
         "mthree==3.0.0",
         "runningman==2.3.0",
-        "qiskit-ibm-runtime==0.50.0",
+        "qiskit-ibm-runtime==0.51.0",
         # Runtime dependencies match the active CI qualification environment.
         "samplomatic==0.21.0",
         "ibm-quantum-schemas==0.13.20261016",
@@ -865,7 +865,7 @@ def _gpu_env_self_test(data: str) -> None:
     require(all(name in submission["bundle"] for name in CI_ENV_FILES), "a --gpu-env bundle lacks the pin files")
     pins = kernel_main.pinned(ROOT, spec["aer_pins"])
     require(
-        "qiskit-aer" not in pins and pins["qiskit-aer-gpu-cu11"] == "0.17.2" and pins["numpy"] == "2.5.4",
+        "qiskit-aer" not in pins and pins["qiskit-aer-gpu-cu11"] == "0.18.2" and pins["numpy"] == "2.5.4",
         f"GPU environment pins {pins}",
     )
     run = {"success": True, "device": "GPU", "cuStateVec_enable": False}
@@ -949,7 +949,7 @@ def _gpu_aer_self_test(data: str) -> None:
         if line.strip() and not line.lstrip().startswith("#")
     ]
     require(tuple(listed) == CU13_RUNTIME_PINS, f"CU13_RUNTIME_PINS differs from {CU13_RUNTIME_PINS_FILE}: {listed}")
-    cu11 = ("qiskit-aer-gpu-cu11==0.17.2", "cuquantum-cu11==24.8.0", "cutensor-cu11==2.2.0")
+    cu11 = ("qiskit-aer-gpu-cu11==0.18.2", "cuquantum-cu11==24.8.0", "cutensor-cu11==2.2.0")
     require(GPU_AER_PINS["cu11"] == GPU_ENV_AER_PINS == cu11, f"cu11 GPU Aer pins {GPU_AER_PINS['cu11']}")
     base = argparse.Namespace(
         entry="scripts/aer_gpu_probe.py",
@@ -998,7 +998,7 @@ def _gpu_aer_self_test(data: str) -> None:
         record_path.write_text(json.dumps(valid), encoding="utf-8")
         submission, job, metadata = built(gpu_aer="cu13")
         attached, attached_job, _ = built(gpu_aer="cu13", dataset=[slug])
-    cu13_pins = ["qiskit-aer-gpu-cu13==0.17.2", *CU13_RUNTIME_PINS]
+    cu13_pins = ["qiskit-aer-gpu-cu13==0.18.2", *CU13_RUNTIME_PINS]
     cu13_spec: dict[str, Any] = {
         "uv": UV_PIN,
         "aer_pins": cu13_pins,
@@ -1018,7 +1018,7 @@ def _gpu_aer_self_test(data: str) -> None:
     )
     pins = kernel_main.pinned(ROOT, cu13_pins)
     require(
-        "qiskit-aer" not in pins and "qiskit-aer-gpu-cu11" not in pins and pins["qiskit-aer-gpu-cu13"] == "0.17.2",
+        "qiskit-aer" not in pins and "qiskit-aer-gpu-cu11" not in pins and pins["qiskit-aer-gpu-cu13"] == "0.18.2",
         f"cu13 GPU environment pins {pins}",
     )
     run = {"success": True, "device": "GPU", "cuStateVec_enable": False}

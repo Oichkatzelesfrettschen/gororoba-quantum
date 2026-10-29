@@ -1,0 +1,10 @@
+{
+  "approval": "did you fully analyze and debug the results, have a peer review of the full tuna campaign in `tmux` via `codex` gpt-daybreak-blue-latest on high and then execute.",
+  "scope": "Unchanged three-circuit Tuna qualification; full causal successor campaign excluded",
+  "cases_sha256": "d9a41a677a2a4bff4e2d3f4e10c4db2017d41ba1ee910da67960333d151dcfb2",
+  "shots_per_circuit": 4096,
+  "expected_execution_seconds": "14.31264",
+  "expected_credits": 0,
+  "analyzer_sha256": "ec1ee8e8cfa09c0beec0e8730b18a935a378a1360c2d1bdfb508cfcbd6dd9b3e",
+  "review_sha256": "4fe73ba3f144112816d146c68e46b99225bed0a634f311cb67fa640a65fbd0c0"
+}

@@ -1,9 +1,9 @@
-# Tested versions. qiskit-ibm-runtime 0.50.0 is the first release with the
+# Tested versions. qiskit-ibm-runtime 0.50.0 was the first release with the
 # client-side executor_sampler that submission uses.
 numpy==2.5.4
-qiskit==2.6.0
-qiskit-aer==0.17.2
-qiskit-ibm-runtime==0.50.0
+qiskit==2.6.1
+qiskit-aer==0.18.2
+qiskit-ibm-runtime==0.51.0
 # Runtime's lower-bounded dependencies whose option models and prepare() paths
 # scripts/ibm_runtime_options_inventory.py records and byte-compares.
 pydantic==2.14.1

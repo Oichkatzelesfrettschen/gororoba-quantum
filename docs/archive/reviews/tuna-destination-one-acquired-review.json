@@ -1,0 +1,15 @@
+{
+  "ancillary_api_finding": "lossless provider-response projection and checked offline equality needed",
+  "model": "gpt-daybreak-blue-latest",
+  "observed_utc": "2026-10-28T00:52:20.126651+00:00",
+  "primary_result_verdict": "bounded-pass",
+  "provider_access": "unrun by reviewer",
+  "raw_report_sha256": "553602e8be9b80f14934382b4cc21e11f6633c98b02f894050525286db67737d",
+  "reasoning_effort": "high",
+  "retained_report": "docs/archive/reviews/tuna-destination-one-acquired-review.md",
+  "retained_report_sha256": "553602e8be9b80f14934382b4cc21e11f6633c98b02f894050525286db67737d",
+  "revision": "f7e85775b96cfbffd8b8982b0fb3e3317c54edc2",
+  "schema": "qi-destination-one-acquired-review-v1",
+  "service_tier": "default",
+  "session": "01a17e38-6428-7eb3-b233-d8fbf9cc47b8"
+}

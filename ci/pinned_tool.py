@@ -13,7 +13,7 @@ the project environment, and mypy through ``uv run --no-project --python
 "$PYTHON" --with mypy==PIN``, which layers the pinned mypy over the calling
 interpreter's site-packages so imports resolve against the packages that
 interpreter holds. A host interpreter can hold other package versions than
-CI's (qiskit 2.5.2 against 2.6.0), so a host mypy run checks the same
+CI's pins, so a host mypy run checks the same
 mypy release against that host's stubs; the two can still differ where those
 stubs differ. One line on stderr names the substitution.
 """

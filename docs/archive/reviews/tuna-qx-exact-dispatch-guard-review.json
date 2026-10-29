@@ -1,0 +1,36 @@
+{
+  "followup_reviewed_sha256": {
+    "docs/design/tuna-destination-qx-conformance.md": "4cea719b51e70a6385644b2e3e6149bd582862b24b186260a0de59da3732ff08",
+    "docs/design/tuna-qx-exact-dispatch-guard.md": "c1d4f12b8d46db530813d0ba9897bf4d9389d050990c202a1bef4c158822e84b",
+    "results/quantum_inspire/proposals/tuna-destination-qx-conformance/cases.json": "4db8ba816f97bd0fe7f2fa3ffa10cff8d7a7126740153b84577f691dc871ac0d",
+    "scripts/qi_platform.py": "d53b201e9a1268a5c7a4ab5af36807e90573e38c6842eae85dff9b6fb010669b",
+    "scripts/qi_platform_submission_deadline.py": "a6ddc8bd3c3287c5319649cda47c754ece0b64c9dae51e297516a721b24a889a",
+    "scripts/qi_tuna_qx_destination.py": "08a401e00ef079700bba779f0b1ae3d77a5be2e602317ed23350f98d0451a786"
+  },
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "reasoning_effort": "high",
+  "reports": [
+    {
+      "raw_sha256": "6b8b2f88d583b0b18e768c4f9c68d614e698b4b6da446e50f4265de36df6948d",
+      "report": "docs/archive/reviews/tuna-qx-exact-dispatch-guard-review.md",
+      "retained_sha256": "c6ad68256b54d271e768434ea62f5f7a482ba64073e3cd1e6e020734ee07841f",
+      "sanitization": "Local absolute paths removed, repository links made relative, trailing whitespace removed."
+    },
+    {
+      "raw_sha256": "33d4dd44ca766606a2292d3d6002a12bc852739ee2ee38b40868ac0a9279a2c7",
+      "report": "docs/archive/reviews/tuna-qx-exact-dispatch-guard-followup-review.md",
+      "retained_sha256": "4c49c0a054b0bebde27301fba1076507901c0a3832c6803ea9082043d595ff4c",
+      "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets; local binding-list path replaced by a description; trailing whitespace removed."
+    }
+  ],
+  "reviewed_sha256": {
+    "docs/design/tuna-destination-qx-conformance.md": "4cea719b51e70a6385644b2e3e6149bd582862b24b186260a0de59da3732ff08",
+    "docs/design/tuna-qx-exact-dispatch-guard.md": "1e7388364c048c51a1f4529fbfe6f15ffa04d17449ddcac28e2b60531ef808db",
+    "results/quantum_inspire/proposals/tuna-destination-qx-conformance/cases.json": "4db8ba816f97bd0fe7f2fa3ffa10cff8d7a7126740153b84577f691dc871ac0d",
+    "scripts/qi_platform.py": "d53b201e9a1268a5c7a4ab5af36807e90573e38c6842eae85dff9b6fb010669b",
+    "scripts/qi_platform_submission_deadline.py": "a6ddc8bd3c3287c5319649cda47c754ece0b64c9dae51e297516a721b24a889a",
+    "scripts/qi_tuna_qx_destination.py": "08a401e00ef079700bba779f0b1ae3d77a5be2e602317ed23350f98d0451a786"
+  },
+  "service_tier": "default"
+}

@@ -5,18 +5,22 @@
 # --submit compares the fresh plan with the approved record by calibration value
 # (docs/notes/ibm_quantum/qpu-submission.md): a changed value touching the packed circuits writes an
 # approval_required record and sends nothing, so every second between the plan and the submit is exposure to a
-# recalibration. A refusal leaves the approval unconsumed (approval-consumed.json absent), and the runner plans
-# again, up to ATTEMPTS times. A consumed approval ends the run: it succeeds only when the submit exits zero and
+# recalibration. A refusal leaves the approval unconsumed, and the runner plans again, up to ATTEMPTS times. The
+# submit consumes it by writing approval-consumed.json, or approval-consumed-attempt-N.json for an envelope family
+# (live_run.envelope_marker), into the dry run's directory; either marker means the job was sent. A consumed approval ends the run: it succeeds only when the submit exits zero and
 # its record reads `submission.complete`, and a failed or partial submission exits 4 without a retry, because the
 # approval is spent.
 #
 # CHECK runs from gororoba_quantum/ with RUN set to the dry run's directory; a nonzero exit stops the run before
-# the submit. LIVE_RUN_ARGS are the case's live_run.py flags without --submit; GOROROBA_IBM_ACCOUNT selects the
+# the submit. The submit plans afresh and an envelope family admits calibration changes, so after a send CHECK runs
+# again on the submitted record, and a failure there (the calibration moved between the plan and the send) exits 5:
+# the job ran, and its record lies outside what CHECK admits. LIVE_RUN_ARGS are the case's live_run.py flags without --submit; GOROROBA_IBM_ACCOUNT selects the
 # account as for live_run.py.
 #
 # Usage: sh scripts/approved_run.sh [--attempts N] [--check CMD] [--log DIR] -- LIVE_RUN_ARGS...
 #        (from the repository root). Exit 0 submitted, 1 dry run or check failed, 2 usage, 3 every attempt
-#        refused, 4 approval consumed with a failed or incomplete submission.
+#        refused, 4 approval consumed with a failed or incomplete submission, 5 submitted while the submitted
+#        record fails CHECK.
 set -eu
 
 PYTHON=${PYTHON:-python3}
@@ -70,12 +74,21 @@ while [ "$attempt" -le "$attempts" ]; do
 	status=0
 	"$PYTHON" live_run.py "$@" --submit --approved-record "$run" --approved-record-sha256 "$sha" \
 		> "$log/submit-$attempt.log" 2>&1 || status=$?
-	if [ -f "$run/approval-consumed.json" ]; then
+	consumed=
+	for marker in "$run"/approval-consumed.json "$run"/approval-consumed-attempt-*.json; do
+		[ -f "$marker" ] && consumed=$marker
+	done
+	if [ -n "$consumed" ]; then
 		submitted=$(sed -n 's/^audit record: //p' "$log/submit-$attempt.log" | tail -n 1)
 		if [ "$status" -eq 0 ] && [ -n "$submitted" ] && "$PYTHON" -c \
 			'import json, sys; sys.exit(json.load(open(sys.argv[1])).get("submission", {}).get("complete") is not True)' \
 			"$submitted/record.json" 2>/dev/null; then
 			echo "approved_run: submitted dry_run=$run sha256=$sha run=$submitted"
+			if [ -n "$check" ] && ! RUN=$submitted sh -c "$check" > "$log/check-submitted.log" 2>&1; then
+				tail -n 3 "$log/check-submitted.log"
+				echo "approved_run: the submitted record $submitted fails the check after the send"
+				exit 5
+			fi
 			exit 0
 		fi
 		tail -n 3 "$log/submit-$attempt.log"

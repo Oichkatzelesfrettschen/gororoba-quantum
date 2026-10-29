@@ -1,0 +1,35 @@
+{
+  "scope": "Read-only completed-job/log availability; first normal client log request previously timed out at 60 seconds",
+  "observations": [
+    {
+      "path": "/jobs/1616329",
+      "observed_utc": "2026-10-27T17:46:19+00:00",
+      "http_status": 200,
+      "response_sha256": "b1f90217b8cb7444737df50042168f00a267a9390aabd55981b014c5e6288a5f",
+      "response_bytes": 369,
+      "response_type": "dict",
+      "field_names": [
+        "algorithm_type",
+        "batch_job_id",
+        "created_on",
+        "file_id",
+        "finished_at",
+        "id",
+        "message",
+        "number_of_shots",
+        "queued_at",
+        "raw_data_enabled",
+        "session_id",
+        "source",
+        "status",
+        "trace_id"
+      ]
+    },
+    {
+      "path": "/jobs/1616329/logs",
+      "observed_utc": "2026-10-27T17:46:34+00:00",
+      "error_type": "ReadTimeout",
+      "timeout_seconds": 15
+    }
+  ]
+}

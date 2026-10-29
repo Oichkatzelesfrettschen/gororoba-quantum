@@ -1,0 +1,127 @@
+{
+  "boundary": "All six final_result payloads reproduce the retained binary shot lists, histograms, counts and execution seconds; the field set supplies no analog IQ or acquisition configuration.",
+  "jobs": [
+    {
+      "checks": {
+        "execution_seconds_match": true,
+        "field_set": true,
+        "histogram_matches": true,
+        "job_identity": true,
+        "ordered_raw_matches": true,
+        "shot_counts_match": true
+      },
+      "final_result_fields": [
+        "execution_time_in_seconds",
+        "raw_data",
+        "results",
+        "shots_done",
+        "shots_requested"
+      ],
+      "job": 1618109,
+      "raw_file": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/raw/baseline-before.cq.json",
+      "raw_file_sha256": "98f99ea38c68851a310a01623c1ba038976e644d647bdfa94bb7a34b689e607c"
+    },
+    {
+      "checks": {
+        "execution_seconds_match": true,
+        "field_set": true,
+        "histogram_matches": true,
+        "job_identity": true,
+        "ordered_raw_matches": true,
+        "shot_counts_match": true
+      },
+      "final_result_fields": [
+        "execution_time_in_seconds",
+        "raw_data",
+        "results",
+        "shots_done",
+        "shots_requested"
+      ],
+      "job": 1618345,
+      "raw_file": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/raw/rotated-destinations.cq.json",
+      "raw_file_sha256": "1ad6fef1d35da152e7c52963673ebbaa545e8e2963f04c219e43f9f03fe08417"
+    },
+    {
+      "checks": {
+        "execution_seconds_match": true,
+        "field_set": true,
+        "histogram_matches": true,
+        "job_identity": true,
+        "ordered_raw_matches": true,
+        "shot_counts_match": true
+      },
+      "final_result_fields": [
+        "execution_time_in_seconds",
+        "raw_data",
+        "results",
+        "shots_done",
+        "shots_requested"
+      ],
+      "job": 1618590,
+      "raw_file": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/raw/baseline-after.cq.json",
+      "raw_file_sha256": "d2bbdbf242b3089cc2684da542f358b13add1d33d64fd45dd5d4368cf8dbfca2"
+    },
+    {
+      "checks": {
+        "execution_seconds_match": true,
+        "field_set": true,
+        "histogram_matches": true,
+        "job_identity": true,
+        "ordered_raw_matches": true,
+        "shot_counts_match": true
+      },
+      "final_result_fields": [
+        "execution_time_in_seconds",
+        "raw_data",
+        "results",
+        "shots_done",
+        "shots_requested"
+      ],
+      "job": 1620359,
+      "raw_file": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before/raw/baseline-before.cq.json",
+      "raw_file_sha256": "35b81dd5813736ea17e6d0e85fc6b1d54cf5a47a80729948b6e3d653deee426e"
+    },
+    {
+      "checks": {
+        "execution_seconds_match": true,
+        "field_set": true,
+        "histogram_matches": true,
+        "job_identity": true,
+        "ordered_raw_matches": true,
+        "shot_counts_match": true
+      },
+      "final_result_fields": [
+        "execution_time_in_seconds",
+        "raw_data",
+        "results",
+        "shots_done",
+        "shots_requested"
+      ],
+      "job": 1620485,
+      "raw_file": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations/raw/rotated-destinations.cq.json",
+      "raw_file_sha256": "a967128edfecb0b7428410eb689edc0192a5f8c035014db600088827b42fcda9"
+    },
+    {
+      "checks": {
+        "execution_seconds_match": true,
+        "field_set": true,
+        "histogram_matches": true,
+        "job_identity": true,
+        "ordered_raw_matches": true,
+        "shot_counts_match": true
+      },
+      "final_result_fields": [
+        "execution_time_in_seconds",
+        "raw_data",
+        "results",
+        "shots_done",
+        "shots_requested"
+      ],
+      "job": 1620614,
+      "raw_file": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after/raw/baseline-after.cq.json",
+      "raw_file_sha256": "deaab97e762f52484bc43665a9acbcc19236b75ccfcd80c1f56d77fe28524a6e"
+    }
+  ],
+  "observed_utc": "2026-10-28T00:24:20.608796+00:00",
+  "schema": "qi-final-result-retention-equivalence-v1"
+}

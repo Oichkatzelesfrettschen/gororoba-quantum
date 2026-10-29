@@ -1,0 +1,49 @@
+{
+  "final_reviewed_sha256": {
+    "docs/design/tuna-destination-private-assignment.md": "216fda791d62c90554abac04883bc7536ffa5901d8c428c659f9dd0bafdc4590",
+    "docs/notes/qrng/README.md": "b8f5d894b357d596edb6c9b0b05f71c63b0837b3a9624ebe38da52f83d20f262",
+    "results/quantum_inspire/proposals/tuna-destination-slot-alternatives/catalogue.json": "353c28a3342835478f1713f61fe590ceb8a0bd0f5f7cdea59a03a6c7a126cde4",
+    "scripts/anu_qrng.py": "6dfb9876bd02df4656114a6c660956d584974ecbb1d7250e1bf40885aafcfaae",
+    "scripts/qi_tuna_assignment_commitment.py": "aee57318f778b1da78a29994177c7f8254458c1052cb134068692b556e48cb1b",
+    "tests/scripts/test_qi_tuna_assignment_commitment.py": "2fd40ded58db1e20b1187bc117d38ecaea64087fb53616ba7ea2d9fecfc27f9c"
+  },
+  "followup_reviewed_sha256": {
+    "docs/design/tuna-destination-private-assignment.md": "216fda791d62c90554abac04883bc7536ffa5901d8c428c659f9dd0bafdc4590",
+    "docs/notes/qrng/README.md": "b8f5d894b357d596edb6c9b0b05f71c63b0837b3a9624ebe38da52f83d20f262",
+    "results/quantum_inspire/proposals/tuna-destination-slot-alternatives/catalogue.json": "353c28a3342835478f1713f61fe590ceb8a0bd0f5f7cdea59a03a6c7a126cde4",
+    "scripts/anu_qrng.py": "6dfb9876bd02df4656114a6c660956d584974ecbb1d7250e1bf40885aafcfaae",
+    "scripts/qi_tuna_assignment_commitment.py": "aee57318f778b1da78a29994177c7f8254458c1052cb134068692b556e48cb1b",
+    "tests/scripts/test_qi_tuna_assignment_commitment.py": "0cc08d1cd69d3b7102b70ecd471f7dee102e91a426c8b6b03525aa9e6bbb7195"
+  },
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "reasoning_effort": "high",
+  "reports": [
+    {
+      "raw_sha256": "e3856fc8532058ae5bae9998e494e725778dee68214e279519d41eded365ffa2",
+      "report": "docs/archive/reviews/tuna-assignment-commitment-review.md",
+      "retained_sha256": "ccce564e36faef41702bd024694b9a399588d444e1d87cf0853b324b9c11ac47",
+      "sanitization": "Local absolute paths removed, repository links made relative, trailing whitespace removed."
+    },
+    {
+      "raw_sha256": "d5334290e7991fa4517577d5c112ebd4c6671751934059021b1b168b4ddb9cec",
+      "report": "docs/archive/reviews/tuna-assignment-commitment-followup-review.md",
+      "retained_sha256": "d7cbd6d3e940c6b40720b7f73a61069cf09c4a774bf76b459ea68675457cd29d",
+      "sanitization": "Local absolute paths removed, repository links made relative, trailing whitespace removed."
+    },
+    {
+      "raw_sha256": "3b55def679f4d3020e4ddca355552ae9c51976ed6fcca1d2e81da3a0bfe5fdac",
+      "report": "docs/archive/reviews/tuna-assignment-commitment-final-review.md",
+      "retained_sha256": "00b291609325ef93f535ef3c704a4c71ecbf4115d9380cf3bb4cda73072f73f7",
+      "sanitization": "Local absolute paths removed, repository links made relative, trailing whitespace removed."
+    }
+  ],
+  "reviewed_sha256": {
+    "docs/design/tuna-destination-private-assignment.md": "1f048c7180b688846d6bf1db7268996b7e436d231747a7d9270e5a80df2f2fda",
+    "results/quantum_inspire/proposals/tuna-destination-slot-alternatives/catalogue.json": "353c28a3342835478f1713f61fe590ceb8a0bd0f5f7cdea59a03a6c7a126cde4",
+    "scripts/anu_qrng.py": "6dfb9876bd02df4656114a6c660956d584974ecbb1d7250e1bf40885aafcfaae",
+    "scripts/qi_tuna_assignment_commitment.py": "2a7dd6a2561eeb9c578846cf7b2b8d7e9509a108a408075cef1a540e7ec1c342",
+    "tests/scripts/test_qi_tuna_assignment_commitment.py": "bb619bce9a6f868491865dcfc4e9b53e9c13d7408514ceb56603c6e001458b5f"
+  },
+  "service_tier": "default"
+}

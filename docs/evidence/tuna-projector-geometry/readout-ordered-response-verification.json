@@ -1,0 +1,287 @@
+{
+  "base_revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+  "checks": {
+    "compiler_replay": {
+      "command": "\"$PYTHON\" scripts/qi_tuna_destination_sequential_cases.py --check",
+      "passed": true
+    },
+    "exact_case_binding_check": "passed through qi_tuna_destination_sequential_run.py --check-bindings",
+    "focused_tests": {
+      "command": "sh ci/pr_checks.sh tests tests/scripts/test_qi_tuna_destination_sequential.py tests/scripts/test_qi_tuna_readout_destination_analysis.py tests/scripts/test_qi_projector_live_admission.py",
+      "passed": 116
+    },
+    "library_inventory": "passed: 362 distributions",
+    "markdown_links": "passed",
+    "pinned_mypy": "passed: five new Python files",
+    "pinned_ruff_check": "passed: five new Python files",
+    "pinned_ruff_format_check": "passed: five new Python files",
+    "plan_tracker": "passed: 110 records",
+    "research_registry": "passed: 282 claims and 313 acquisitions",
+    "synthetic_replay": {
+      "identical": true,
+      "normal_one_worker_sha256": "ece52551a0dc1f1a73e9a974ee52dac4eb846ef2f4191f4ecf1e26ca315305c1",
+      "optimized_two_worker_sha256": "ece52551a0dc1f1a73e9a974ee52dac4eb846ef2f4191f4ecf1e26ca315305c1",
+      "pool_boundary": "Worker settings differ; the library may choose serial execution below its task-count threshold.",
+      "scope": "test fixture only, excluded from scientific observations"
+    }
+  },
+  "historical_preservation": {
+    "base_revision": "1dcdc7b9fe2bce47a7e3a694aba8a46549c87c2d",
+    "files": [
+      {
+        "file": "docs/design/tuna-readout-destination-invariance.md",
+        "sha256": "bb95cfaad599a40eaaef00597403d3bc935bf0895aaf04f96c8b1af959407cfa"
+      },
+      {
+        "file": "docs/evidence/tuna-projector-geometry/readout-destination-decision-draft.json",
+        "sha256": "5adc66de68d8de10e65c452649c0bcb9b7e47e0590b061a861d386c17908ff3f"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/local-compiled/prepared-one/baseline-after.cq",
+        "sha256": "f06b82c7d0b1aa0aa7a04a90e0382588ed9e74e7a355a166fb3945e84b7ad4f4"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/local-compiled/prepared-one/baseline-before.cq",
+        "sha256": "f06b82c7d0b1aa0aa7a04a90e0382588ed9e74e7a355a166fb3945e84b7ad4f4"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/local-compiled/prepared-one/rotated-destinations.cq",
+        "sha256": "39a5a49b415c10434132674b757ebcf51b81114617d173bf36d58036f1005ee1"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/local-compiled/prepared-zero/baseline-after.cq",
+        "sha256": "47a608c99afe8212b1ac5c207485ab62e92188c4085ae24ae94d86008a43c201"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/local-compiled/prepared-zero/baseline-before.cq",
+        "sha256": "47a608c99afe8212b1ac5c207485ab62e92188c4085ae24ae94d86008a43c201"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/local-compiled/prepared-zero/rotated-destinations.cq",
+        "sha256": "a050c46f810e23dbded00aa3db7732435c4d33e78cb9361ea20ddc14b3c876ed"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/local-compiler-receipt.json",
+        "sha256": "d6d61a23e9a0881d953a507ea79ffbb22a5fe26ff075b69634f6cd356964e4d0"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/prepared-one/backend.json",
+        "sha256": "e92dab9819a2c20da16d057373e5025e89f6e22abc34253178cb801ac32e1223"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/prepared-one/baseline-after.cq",
+        "sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/prepared-one/baseline-before.cq",
+        "sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/prepared-one/cases.json",
+        "sha256": "55d66b9af385931f7418611bae14f31a9f29eb4a9e7bf87abe5571d552e5b76e"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/prepared-one/rotated-destinations.cq",
+        "sha256": "8accfebdeb2083a4e861754abf29004b1a3a646633dcfc57eed3d9fdc35c4b81"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/prepared-zero/backend.json",
+        "sha256": "e92dab9819a2c20da16d057373e5025e89f6e22abc34253178cb801ac32e1223"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/prepared-zero/baseline-after.cq",
+        "sha256": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/prepared-zero/baseline-before.cq",
+        "sha256": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/prepared-zero/cases.json",
+        "sha256": "5ac1585e5b4218077cc6de6845f6a996593087fbea5df395146c844260c7b0fb"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/prepared-zero/rotated-destinations.cq",
+        "sha256": "3084eef16a0d32a23d7b3fa41c92f27fa3ce4f3d84791d128a10246728ad6d5d"
+      },
+      {
+        "file": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/proposal.json",
+        "sha256": "65b4fcff889e27bf2fcac97769d726b32d1acf7ea163d666f38503f5cb6f34cb"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/analysis/geometry-x.cq.analysis.json",
+        "sha256": "3f012dba3b7f6f52910bd3d117becf6c50124f2ddcad2cd63840572670e73001"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/analysis/geometry-z.cq.analysis.json",
+        "sha256": "c509099e6abaf63cf11762ed2b961f823046dcc3e6b7f87abe87b2310d759070"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/analysis/mutation-z.cq.analysis.json",
+        "sha256": "355e90fb491c07d351f9dd9d8f450416e009013c339652a57b33ac2f46e456ed"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/approval.json",
+        "sha256": "cbf4d5d0ede3c4ae1fe9d751d97af9f10da38f6efada3edade781830b58812b8"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/backend.json",
+        "sha256": "8cd1a963b17e7d9ea02610d4df474ff80217818a5c1de2d02df1df8b28b8ef82"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/cases.json",
+        "sha256": "bb52460648caed1a8fe2be39131f88efaaa7022f53614f386b48034027290554"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json",
+        "sha256": "ceb6efcf570c43a6e772254716119fa8f555d20279832acd5a9d5968ffbc9c62"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/design-at-approval.md",
+        "sha256": "d13acc9a43da288c439c6cff1cdffc809ca4945a7127cc4e67d96ef913515b9c"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/geometry-x.cq",
+        "sha256": "a99fbf866f4a1f1dd398a51f0a6a5b4a4bb01817a1e41fec7bbe7f443f721af2"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/geometry-z.cq",
+        "sha256": "46cbbcaf4ceab3f17f2a538cb78d71883951cac180e7b01243175cd501f2f8e1"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/joint-law-audit.json",
+        "sha256": "791278eff83c7f264e59d97de20786a4d4fae2f3eda50d7d5159a4c10e61c472"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/mutation-z.cq",
+        "sha256": "b48d8602072dae41d30635f3e7185883c966575a09e6324beefb9cb24121c6e5"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/raw/geometry-x.cq.json",
+        "sha256": "cb04efd1a68301106a2321a5a7e039feb5a69f4597d011425d50c9f498424258"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/raw/geometry-z.cq.json",
+        "sha256": "50d4603a7b31ba0f22149b26228464b79330bdc67bc4fcceb9a1ceaeee44d2e3"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/raw/mutation-z.cq.json",
+        "sha256": "43459bf6d6e4bc00a041b376aa64c42bedca7882123ff4b9a775ace5a7cfb301"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/results.json",
+        "sha256": "a0929b26fa2899f2386ee99eccf1226db30c8cd4731dca4de752e1fabf62d3c4"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/submission-state.json",
+        "sha256": "3f7a29e9610040becbe9254d56a406b546c13881b1c888b98960946563aadb8f"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/submission.json",
+        "sha256": "cd28627c7c58f068171a8469be80c53a8e6c708d24573a77e720de3106455642"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/analysis/geometry.cq.analysis.json",
+        "sha256": "0f0337ddff9b07c458246b34d6981571eea0b2b276c3bc599949b423d9650088"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/analysis/readout-one.cq.analysis.json",
+        "sha256": "b8ed8313dfb0656ad23c8ee31f438059f6ab2f86885b9a415ffb208f53fef406"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/analysis/readout-zero.cq.analysis.json",
+        "sha256": "bf62db1e61c55584d9e9ea4d1fdcad422cb14dcd1643212f68a79bb80ab4617e"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/approval.json",
+        "sha256": "2579fd818c81a3ee048c4f7a3e43fc06af731fa16af6c4a86a9bbbe25047d22e"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/backend.json",
+        "sha256": "8cd1a963b17e7d9ea02610d4df474ff80217818a5c1de2d02df1df8b28b8ef82"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/cases.json",
+        "sha256": "d9a41a677a2a4bff4e2d3f4e10c4db2017d41ba1ee910da67960333d151dcfb2"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/execution-method.json",
+        "sha256": "e9d86fb2066abe0cc3f56e0109a6381c614deb4ac623477969b568434f7e8cc6"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/geometry.cq",
+        "sha256": "069fc4696b40610d4eb963b1898aec24603fe0839d6ea17b868196fc7e5dfe8f"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/live-admission.json",
+        "sha256": "c6db70139af4d05b9a18d134372d437f320c9d177d8f29134197d74dc67b9d66"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification-at-approval.md",
+        "sha256": "e504d9e4962338df58dcdf16b8564cd2ef2677d996bd90bed2a2588cc7da51c4"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+        "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/raw/geometry.cq.json",
+        "sha256": "a1cfeccfd9ed11e6d6815aa60ecd5b7a8a728321ab76e3b9ae2719f12c5ac76d"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/raw/readout-one.cq.json",
+        "sha256": "c29371f841252c112f915e9ae2a8648159cb01fcafe84480862c19f47b9940b8"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/raw/readout-zero.cq.json",
+        "sha256": "9723bba44c56cceb925ccf09e8c8ed93d1abe91cba1bc5b9ab1f1ebae5066922"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-diagnostics.json",
+        "sha256": "25f1090b25a06ef4ce56537d52a3bf9b569da4981474c84568f19f886f60bd77"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-one.cq",
+        "sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-response-mixture.json",
+        "sha256": "8507279a292c0e3d7682ffb00abde6d159ebef71783713eaf54fe2a41d250258"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-zero.cq",
+        "sha256": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+        "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/submission-state.json",
+        "sha256": "6623b7e3558278e24dd07e5c404ac452caac6be9ba09008aa5e490549d7fd8f7"
+      },
+      {
+        "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/submission.json",
+        "sha256": "15dcea7dc8f89b2bc1874fbc73ea4e3b55dcd89cf4232fee6a66a5d3e5f08f46"
+      }
+    ]
+  },
+  "inputs": {
+    "docs/design/tuna-readout-ordered-response-admission.md": "a78a7fb77589f945bec1b91636998859bfbc32960f95747fb71dc4bcadfd4057",
+    "docs/evidence/tuna-projector-geometry/destination-response-uncertainty.md": "5a7724d48cab159f23b40cd81395807254bb6fbe20a755bced22a4ca0526dc05",
+    "docs/evidence/tuna-projector-geometry/readout-ordered-response-decision.json": "6c0beac3dfa4148ba6330a8eddc45faebfa15693de8e5127f8f9b94138a71367",
+    "docs/evidence/tuna-projector-geometry/readout-ordered-response-reviewed-admission.json": "db3c7ff692b9cbd7090e025ec53c6e9dc5269a920be28a9f8374cb3b63d4f8ef",
+    "results/quantum_inspire/proposals/tuna-readout-destination-sequential/campaign.json": "53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76",
+    "results/quantum_inspire/proposals/tuna-readout-destination-sequential/compiler-admission.json": "c61eb8717a017243361e11b4f3179fcf6b3f9beb5b639aa1962b5dc05380ce8d",
+    "scripts/qi_tuna_destination_sequential_cases.py": "ea9d31db678a031312872442124e46676f1fab575244887a757504b0561f6805",
+    "scripts/qi_tuna_destination_sequential_run.py": "9edff4223e583b45d3c66bc3e6c7349a73b6e36925fec8774990b5a33a6490a5",
+    "scripts/qi_tuna_readout_destination_analysis.py": "d0ee875b448366a1a8a53d09d387abb7de32066f6214694e205b7e43505781c7",
+    "tests/scripts/test_qi_tuna_destination_sequential.py": "0944e22b0dc9a2d411400eaf9832bd92eb9f4c9ec69d26f27b46a0e7eea36f50",
+    "tests/scripts/test_qi_tuna_readout_destination_analysis.py": "021c01eedaa3f752aced1c2fa8043c8e159d8871def82fc85430e47313b2b73f"
+  },
+  "observed_utc": "2026-10-27T19:35:48.920077+00:00",
+  "provider_writes_authorized": false,
+  "remaining_boundary": "Owner exact-case approval and per-dispatch fresh admission precede execution. Causal destination attribution and stationary repeated-run population inference remain unresolved.",
+  "schema": "tuna-ordered-response-verification-v1",
+  "upstream_reports_sent": false
+}

@@ -1,10 +1,16 @@
 {
  "schema": "kaggle-artifact-v1",
  "ref": "probablyeric/gororoba-aer-gpu-cu13-wheel",
- "file": "qiskit_aer_gpu_cu13-0.17.2-cp313-cp313-manylinux_2_39_x86_64.whl",
- "sha256": "3d40fc33cd6674644807c15364b3e3ac1d417885e08ad255797ae93e886253d5",
- "size": 16414722,
- "git_commit": "e7f30b94c91de6c5a5ec118627862aa15f957594-dirty",
- "reply": "or file qiskit_aer_gpu_cu13-0.17.2-cp313-cp313-manylinux_2_39_x86_64.whl\nUpload successful: qiskit_aer_gpu_cu13-0.17.2-cp313-cp313-manylinux_2_39_x86_64.whl (16MB)\nYour private Dataset is being created. Please check progress at https://www.kaggle.com/datasets/probablyeric/gororoba-aer-gpu-cu13-wheel",
- "history": []
+ "file": "qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-manylinux_2_39_x86_64.whl",
+ "sha256": "29f796542284c71991f241fae615f79931a0bed73a78313cdf283e9f0f14c875",
+ "size": 16386592,
+ "git_commit": "7e616d4f661bad4c26814cf8ddff94ea3bab5960-dirty",
+ "reply": "oad for file qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-manylinux_2_39_x86_64.whl\nUpload successful: qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-manylinux_2_39_x86_64.whl (16MB)\nDataset version is being created. Please check progress at https://www.kaggle.com/datasets/probablyeric/gororoba-aer-gpu-cu13-wheel",
+ "history": [
+  {
+   "sha256": "3d40fc33cd6674644807c15364b3e3ac1d417885e08ad255797ae93e886253d5",
+   "size": 16414722,
+   "git_commit": "e7f30b94c91de6c5a5ec118627862aa15f957594-dirty"
+  }
+ ]
 }
