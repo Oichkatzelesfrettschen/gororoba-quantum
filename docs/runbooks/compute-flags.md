@@ -60,6 +60,21 @@ time limit per run from what the substrate supports and records why.
 | `timeout -k 10 SECONDS CMD` | wall time | every run, beside one memory limit | |
 | `systemd-run -p RuntimeMaxSec=` | wall time of the scope or service | runs already under `systemd-run` | |
 
+systemd-oomd on the build host acts on whole user-session cgroups: when
+memory plus swap pressure passes about 90 %, it kills the entire session
+slice, including the terminal that drives the agent and every job it
+started. A job inside its own scope with `MemoryMax` and
+`MemorySwapMax=0` dies alone at its limit before host pressure reaches the
+oomd threshold, so every heavy job runs in such a scope, one heavy job at
+a time, with the sum of the running scopes' `MemoryMax` below physical
+memory.
+
+A child process inherits `RLIMIT_AS` from its parent. A Python helper that
+calls `resource.setrlimit(RLIMIT_AS, ...)` before spawning a solver caps the
+solver's address space as well, and Singular then exits with "no more
+memory" far below its cgroup limit; a driver that launches a solver sets no
+address-space limit in its own process.
+
 Set `MALLOC_ARENA_MAX=2` in the environment of every multithreaded C program
 so glibc keeps two arenas instead of one per thread; this shrinks address-space
 growth and fragmentation at no measured cost to these workloads.
