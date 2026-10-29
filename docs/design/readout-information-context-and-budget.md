@@ -427,6 +427,21 @@ A target radius alone supplies neither power nor a fixed stopping rule.
 
 ### Submit-free preparation and evidence binding
 
+The [Fez alternative](readout-actor-fez-delay-qualification.json) is an
+unapproved descriptive candidate. A 29 October 2026 live Target compilation
+finds matched measurement starts across its 24 conditions and flags none of
+reporters 0 and 1, actor 2, or exploratory qubit 154. The same review flags
+Fez qubit 155 for low T2 and Marrakesh reporter 1 for 0.157 readout error;
+the original 155 projection therefore changes to 154 on Fez. All 156
+qubits remain measured. These calibration observations and queue depths are
+time-dependent, and a fresh Target and admission check decide any later run.
+The local timing check does not establish physical initialization or
+carryover. The three approved Kingston jobs remain a separate outstanding
+liability: a Fez submission requires an independently reviewed case, fresh
+quota evidence, and a mechanical budget bound covering both programs' unsettled
+ceilings and the reserve. The existing per-case admission alone does not
+establish that combined bound.
+
 The operational JSON is an unapproved review candidate. The following command
 builds a fresh plan and QPY archive, reads current backend and quota information,
 and submits zero jobs:
