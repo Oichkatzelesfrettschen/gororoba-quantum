@@ -31,10 +31,10 @@ from qd_platform import JOB_NAME_LIMIT, iteration_form, sha256_bytes, template_e
 MODES = 12
 LOGICAL = 4
 SOURCE_CASES = ROOT / "results/quandela/cases/ascella_signed_coherence"
-CASE = ROOT / "results/quandela/cases/ascella_predecessor/job-00"
+CASE = ROOT / "results/quandela/cases/ascella_predecessor/reviewed-submission"
 DESIGN = "docs/design/ascella-predecessor-intervention.md"
 FAMILY = "ascella_predecessor"
-JOB = "job-00"
+JOB = "reviewed-submission"
 PLATFORM = "qpu:ascella"
 COMMAND = "sample_count"
 MAX_DURATION = 300
@@ -358,6 +358,7 @@ def documents() -> dict[str, bytes]:
         "settings": settings,
         "circuit": {"file": "circuit.json", "sha256": sha256_bytes(circuit_bytes)},
         "preregistered": {
+            "approval_binding": "qd-reviewed-acquisition-v1; verified body/sources; case-wide consumed marker",
             "admitted_platform_statuses": ["available", "running"],
             "question": "whether the signed contrast of four attributed target distributions exceeds 0.1 TVD",
             "predecessors": list(PREDECESSORS),

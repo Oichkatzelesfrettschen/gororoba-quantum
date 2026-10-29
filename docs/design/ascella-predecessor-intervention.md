@@ -1,21 +1,21 @@
 # Ascella predecessor intervention
 
 Status: the owner selects the existing eight-iteration target-slot diagnostic
-with causal attribution unavailable. Independent acquisition review identifies
-reviewed-body/source binding and case-wide attempt-consumption gaps in the
-documented submission route. The case remains unapproved while those gates
-remain open. Conditional uncertainty additionally requires its reviewed
-sampling contract. The case authorizes zero provider submissions.
+with causal attribution unavailable. Reviewed-body/source binding and
+case-wide attempt consumption pass regression and read-only cross-process
+validation. The exact owner approval remains pending. Conditional uncertainty
+additionally requires its reviewed sampling contract. The case authorizes zero
+provider submissions.
 
-The [bounded acquisition packet](../evidence/ascella-predecessor-admission/acquisition-review.md)
-records source/analyzer identities, independent findings, fresh read-only
+The [gate-closure packet](../evidence/ascella-predecessor-admission/gate-closure.md)
+records source/analyzer identities, resolved independent findings, fresh read-only
 provider admission and digest custody. A separate causal successor carries
 the predecessor-causality objective.
 
 The builder is [`scripts/ascella_predecessor_case.py`](../../scripts/ascella_predecessor_case.py).
 The retained request is
-[`results/quandela/cases/ascella_predecessor/job-00/`](../../results/quandela/cases/ascella_predecessor/job-00/cases.json).
-`cases.json` sha256 `9778e3a35512bcbf80b79d2c36d2530d13057b313926333921a61bb9c940a2b9`.
+[`results/quandela/cases/ascella_predecessor/reviewed-submission/`](../../results/quandela/cases/ascella_predecessor/reviewed-submission/cases.json).
+`cases.json` sha256 `0e58c0b22c4f8650ae893c5a7dcae5daeb1e25e87012c1aa3be8318085c17c13`.
 `circuit.json` is the job-00 template, byte for byte, sha256
 `1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f`.
 
@@ -40,7 +40,7 @@ and physical timing remain separate evidence requirements.
 
 ## Request
 
-One job, family `ascella_predecessor`, name `ascella_predecessor/job-00`.
+One job, family `ascella_predecessor`, name `ascella_predecessor/reviewed-submission`.
 Platform `qpu:ascella` only. Command `sample_count`. Gate form `template`.
 Twelve modes, one photon in mode 0, `min_detected_photons` 1, empty
 mitigations, `max_duration` 300, output width 12. Eligible events are an
@@ -436,13 +436,16 @@ or queued jobs. The estimate is 262,144 shots and 1.032768 credits. The
 observation binds the recorded case and source digests; a later submission
 refreshes all admission checks and requires exact owner approval.
 
-## Provider mechanics after binding repair and approval
+## Procedure after exact owner approval
 
-The acquisition review withholds the generic submit command below as an
-approved execution route. A verified case-specific route must bind the reviewed
-body, case, source/analyzer identities and case-wide attempt consumption before
-owner approval. The commands describe provider mechanics; their presence grants
-zero submission authority.
+The generic submit command enforces the reviewed packet for this registered
+diagnostic. The token lock, externally anchored packet and atomic token-store
+attempt marker bind the posted body, current source closure and one attempt.
+The reviewed checkout remains quiescent during the invocation: the final source
+recheck follows provider reads but does not lock external filesystem writers.
+The commands grant zero submission authority until the owner approves the exact
+packet. The approval text enters the submission receipt; the frozen packet
+retains its original bytes.
 
 Run the check, copy the request into a new run directory, and plan against
 the copy so the canonical case directory stays the request. The plan sends
@@ -454,10 +457,10 @@ export PYTHON="${PYTHON:-python3}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 export QUANDELA_TOKEN_FILE="$HOME/.config/quandela/cloud-token"
 "$PYTHON" scripts/ascella_predecessor_case.py --check
-RUN=results/quandela/runs/$(date -u +%Y-%m-%dT%H%M%SZ)-qpu_ascella-ascella_predecessor-job-00
+RUN=results/quandela/runs/$(date -u +%Y-%m-%dT%H%M%SZ)-qpu_ascella-ascella_predecessor-reviewed-submission
 mkdir -p "$RUN"
-cp results/quandela/cases/ascella_predecessor/job-00/cases.json \
-   results/quandela/cases/ascella_predecessor/job-00/circuit.json "$RUN"/
+cp results/quandela/cases/ascella_predecessor/reviewed-submission/cases.json \
+   results/quandela/cases/ascella_predecessor/reviewed-submission/circuit.json "$RUN"/
 "$PYTHON" scripts/qd_platform.py plan "$RUN" \
   --platform qpu:ascella --admit-status running \
   --max-credits 1.032768 \
@@ -473,7 +476,9 @@ After that plan is retained and the approval text is the owner's:
   --max-credits 1.032768 \
   --expected-seconds 40 \
   --per-job-credits 1 \
-  --approval "APPROVAL TEXT"
+  --reviewed-packet docs/evidence/ascella-predecessor-admission/reviewed-submission-approval.json \
+  --reviewed-sha256 991f4a863293746f8d2f840950b94c7e5b068fbed85aafaad9458d9b0a6d71be \
+  --approval "${APPROVAL:?Set the exact owner approval text}"
 "$PYTHON" scripts/qd_platform.py collect "$RUN" --timeout 3600
 ```
 

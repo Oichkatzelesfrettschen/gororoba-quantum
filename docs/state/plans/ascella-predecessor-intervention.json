@@ -16,7 +16,7 @@
   "state": "active",
   "reconciliation": {
     "status": "unresolved",
-    "note": "The signed common/reversal analyzer and drift counterexamples pass independent review and focused checks. Conditional inference still requires a pre-acquisition evidence-bound sampling contract; physical chronology and predecessor causality remain unavailable. Live admission and owner approval remain separate."
+    "note": "The source-compatible reviewed-submission request replaces the prospective job-00 interface. Historical obligation receipts remain in Git history at a16849a; the current scope receives fresh revalidation receipts. Owner execution approval and causal-successor qualification remain separate."
   },
   "steps": [
     {
@@ -26,89 +26,17 @@
       "acceptance": "Drift counterexamples, compilation and input mutations, missing evidence, conditional uncertainty and explicit equivalence margins pass focused tests; the corrected manifest rebuilds exactly.",
       "receipts": [
         {
-          "result": "Signed common and reversal contrasts replace separate unsigned target distances. Independent review accepts conditional slot-response scope; 19 case/analyzer tests and 61 inventory tests pass, with pinned Ruff and four-file mypy checks. Physical predecessor attribution remains unavailable.",
-          "observed_at": "2026-10-28T22:12:43.593455+00:00",
-          "revision": "44f06067b4a2fdd50d2349e9a2d51c4e40fd7fa0",
+          "result": "Current-scope revalidation closes reviewed POST/source binding and exact-case token-store attempt consumption: 427 provider tests including audit pass, Ruff over six touched files passes, full mypy over653 files passes and the provider self-test reports24 catalogue/46 runner rejections. Independent inspection finds no further concrete defect under the quiescent-checkout assumption. Read-only cross-process validation passes with a different SDK UUID, identical pinned wire bytes and source closure, running Explorer, available processor,262144 estimated shots and1.032768 estimated credits. External write-once custody retains the packet; the attempt remains unconsumed and owner approval remains pending.",
+          "observed_at": "2026-10-29T01:38:46.726677+00:00",
+          "revision": "a16849a7bbc0e4ca775b1eb562e404adabac7396",
           "evidence": [
-            {
-              "ref": "scripts/ascella_predecessor_case.py",
-              "sha256": "b9a905ea710346056f0551ed2fa50ec35c84f0ea36d4c63f0e1fd9f1709bf076"
-            },
-            {
-              "ref": "scripts/ascella_predecessor_analysis.py",
-              "sha256": "bcd1ad1461cfe453800582040e6f5a28da14026875f54433574578e339b5e4a7"
-            },
-            {
-              "ref": "tests/scripts/test_ascella_predecessor_case.py",
-              "sha256": "1bc7d3c7a445f60f04da2f8db5ceb796385da7f3ff54e9423bcdfecf4c51bdf0"
-            },
-            {
-              "ref": "tests/scripts/test_ascella_predecessor_analysis.py",
-              "sha256": "bcda2754716de9f99dd64dd9647ddcdd957b9b366711164ecba63c245393b06b"
-            },
-            {
-              "ref": "docs/design/ascella-predecessor-intervention.md",
-              "sha256": "64e064b0f50cc77a5492272c83c63bdff4ec0fa2b81726354273192186af884d"
-            },
-            {
-              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
-              "sha256": "33ce1d4a89b1585ec1bc0db4662206434f0c06e5b53661a488cc2e8df47b26b4"
-            }
-          ],
-          "scope_sha256": "7451ba6e3ff68b85749407df8818c43d5e3f334bb3ee38003371a0dbc230c9ed"
-        },
-        {
-          "result": "Signed common/reversal analysis and exact case replay pass; 24 focused builder, analyzer and provider-result parser tests pass. Pinned Ruff, Python 3.13 format and six-file mypy pass. Physical predecessor attribution remains unavailable; the retained live admission refusal names an earlier case digest.",
-          "observed_at": "2026-10-28T22:18:01.835178+00:00",
-          "revision": "44f06067b4a2fdd50d2349e9a2d51c4e40fd7fa0",
-          "evidence": [
-            {
-              "ref": "scripts/ascella_predecessor_case.py",
-              "sha256": "b9a905ea710346056f0551ed2fa50ec35c84f0ea36d4c63f0e1fd9f1709bf076"
-            },
-            {
-              "ref": "scripts/ascella_predecessor_analysis.py",
-              "sha256": "92fa3230b0a9040fd2ebdcd3d76ef6340781ab6e122f5444bcab03c3246f3ba4"
-            },
-            {
-              "ref": "tests/scripts/test_ascella_predecessor_case.py",
-              "sha256": "1bc7d3c7a445f60f04da2f8db5ceb796385da7f3ff54e9423bcdfecf4c51bdf0"
-            },
-            {
-              "ref": "tests/scripts/test_ascella_predecessor_analysis.py",
-              "sha256": "284a828c80873bf4b644ac6bb29200edd1bd91db699dea41c2c9c9eb6cc0082d"
-            },
-            {
-              "ref": "docs/design/ascella-predecessor-intervention.md",
-              "sha256": "ccc7ff94afe780ef86214553994ffc97980a28cabbf7c308555759bfe6f3cd2f"
-            },
-            {
-              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
-              "sha256": "5e27411732629ffbbac1fdc5778149f76ca2faa416941f22256406b109818416"
-            },
             {
               "ref": "scripts/qd_platform.py",
-              "sha256": "b5bdf1aa76139f17ab178e3a20f4a120cc1543c414fb800273adbeb080e7d8fb"
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
             },
-            {
-              "ref": "tests/scripts/test_quandela_failed_results.py",
-              "sha256": "562f5fa711af7b2b32db5be122800efd6272347573af193b97815097bc19ee28"
-            },
-            {
-              "ref": "docs/evidence/ascella-predecessor-admission/plan-status.json",
-              "sha256": "f3e202c72ea89dd9a5866997bf59207221025f48ec368d37e63438c5446eb389"
-            }
-          ],
-          "scope_sha256": "7451ba6e3ff68b85749407df8818c43d5e3f334bb3ee38003371a0dbc230c9ed"
-        },
-        {
-          "result": "Signed common/reversal analysis and exact case replay pass; 24 focused builder, analyzer and provider-result parser tests pass. Pinned Ruff, Python 3.13 format and six-file mypy pass. Physical predecessor attribution remains unavailable; the retained live admission refusal names an earlier case digest.",
-          "observed_at": "2026-10-28T22:19:05.273319+00:00",
-          "revision": "44f06067b4a2fdd50d2349e9a2d51c4e40fd7fa0",
-          "evidence": [
             {
               "ref": "scripts/ascella_predecessor_case.py",
-              "sha256": "b9a905ea710346056f0551ed2fa50ec35c84f0ea36d4c63f0e1fd9f1709bf076"
+              "sha256": "53eaf137d94fc5fe29f3b5966bf5d3068d2dfbfa5ef4549fad7a4b4ca740ca24"
             },
             {
               "ref": "scripts/ascella_predecessor_analysis.py",
@@ -116,210 +44,166 @@
             },
             {
               "ref": "tests/scripts/test_ascella_predecessor_case.py",
-              "sha256": "1bc7d3c7a445f60f04da2f8db5ceb796385da7f3ff54e9423bcdfecf4c51bdf0"
-            },
-            {
-              "ref": "tests/scripts/test_ascella_predecessor_analysis.py",
-              "sha256": "a19dc7284d22f301af635465b85dc47b1dd8f01622a5dda317808c80e0d72c24"
+              "sha256": "3175c5e09ee1fdeaac43a7c2e70b3c29e3ecbdaadc3fa6e19f13eaec8d136c4b"
             },
             {
               "ref": "docs/design/ascella-predecessor-intervention.md",
-              "sha256": "0220b344037853e6b970824624c9af94832e42e2b6bf5a54908b7ea7755b652d"
+              "sha256": "c52d8b9f6bb9f1dc90f22ac59e991e16391c7c5d30a868a7ffeceed6fb076c4b"
             },
             {
-              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
-              "sha256": "0ef0b0b2ff74655f58f47142020b6b32679f9b9bb2fc776dba07b8a57cdb21d0"
+              "ref": "docs/evidence/ascella-predecessor-admission/gate-closure.md",
+              "sha256": "fbfb75f7bb71212768478d72b9cd77c21557f7a4b20960ab3f3cc26350ae2f79"
             },
             {
-              "ref": "scripts/qd_platform.py",
-              "sha256": "b5bdf1aa76139f17ab178e3a20f4a120cc1543c414fb800273adbeb080e7d8fb"
+              "ref": "docs/evidence/ascella-predecessor-admission/reviewed-submission-approval.json",
+              "sha256": "991f4a863293746f8d2f840950b94c7e5b068fbed85aafaad9458d9b0a6d71be"
             },
             {
-              "ref": "tests/scripts/test_quandela_failed_results.py",
-              "sha256": "562f5fa711af7b2b32db5be122800efd6272347573af193b97815097bc19ee28"
+              "ref": "docs/evidence/ascella-predecessor-admission/reviewed-submission-validation.json",
+              "sha256": "5bf99d0ad1d6563246546b8fa8300bb7ee6879107eeb516b2a7bf411cfa33d06"
             },
             {
-              "ref": "docs/evidence/ascella-predecessor-admission/plan-status.json",
-              "sha256": "f3e202c72ea89dd9a5866997bf59207221025f48ec368d37e63438c5446eb389"
+              "ref": "docs/evidence/ascella-predecessor-admission/transport-process-identity.json",
+              "sha256": "92634a6e6f9f724bd1dbd765800ace82ebcf91cfdab19a74f9974a090f716d73"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/reviewed-submission/cases.json",
+              "sha256": "0e58c0b22c4f8650ae893c5a7dcae5daeb1e25e87012c1aa3be8318085c17c13"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/reviewed-submission/circuit.json",
+              "sha256": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f"
             }
           ],
-          "scope_sha256": "7451ba6e3ff68b85749407df8818c43d5e3f334bb3ee38003371a0dbc230c9ed"
-        },
-        {
-          "result": "Anchored snapshot and compressed-count checks pass review. The 27 focused case, analyzer and parser tests pass. Queue admission accepts running while calibration, maintenance and token occupancy remain rejected. The read-only live plan passes at 262144 estimated shots and 1.032768 credits; sampling-contract review and execution approval remain required.",
-          "observed_at": "2026-10-29T00:07:51.131501+00:00",
-          "revision": "44f06067b4a2fdd50d2349e9a2d51c4e40fd7fa0",
-          "evidence": [
-            {
-              "ref": "scripts/ascella_predecessor_case.py",
-              "sha256": "91ed74f831d0bc14b0c3248c9e8dc1299c1bcd4af2b11bec63327145506a911b"
-            },
-            {
-              "ref": "scripts/ascella_predecessor_analysis.py",
-              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
-            },
-            {
-              "ref": "tests/scripts/test_ascella_predecessor_case.py",
-              "sha256": "df022a2d1fe6f62feed77f952c82235c0bc8d1443cfc38800a66173e42f6e4eb"
-            },
-            {
-              "ref": "tests/scripts/test_ascella_predecessor_analysis.py",
-              "sha256": "a19dc7284d22f301af635465b85dc47b1dd8f01622a5dda317808c80e0d72c24"
-            },
-            {
-              "ref": "docs/design/ascella-predecessor-intervention.md",
-              "sha256": "b7873032c7d0fab6f0505fb01e306680be780b158ac8c97e81b7b480d2d4d4d6"
-            },
-            {
-              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
-              "sha256": "9778e3a35512bcbf80b79d2c36d2530d13057b313926333921a61bb9c940a2b9"
-            },
-            {
-              "ref": "scripts/qd_platform.py",
-              "sha256": "b5bdf1aa76139f17ab178e3a20f4a120cc1543c414fb800273adbeb080e7d8fb"
-            },
-            {
-              "ref": "tests/scripts/test_quandela_failed_results.py",
-              "sha256": "562f5fa711af7b2b32db5be122800efd6272347573af193b97815097bc19ee28"
-            },
-            {
-              "ref": "docs/evidence/ascella-predecessor-admission/plan-status.json",
-              "sha256": "f3e202c72ea89dd9a5866997bf59207221025f48ec368d37e63438c5446eb389"
-            },
-            {
-              "ref": "docs/evidence/ascella-predecessor-admission/running-plan.json",
-              "sha256": "89b521b75811d385895ee3c68aca93f4966b6dfe4f3ebce0c5d611b6945a0f6e"
-            }
-          ],
-          "scope_sha256": "7451ba6e3ff68b85749407df8818c43d5e3f334bb3ee38003371a0dbc230c9ed"
-        },
-        {
-          "result": "Current-head revalidation: 27 case/analyzer tests and three failed-result parser tests pass. Exact request replay preserves the frozen body inputs and case digest. Signed coefficient, power and drift regressions pass; production constructor and analyzer bytes remain unchanged. The admission observation remains historical for its recorded request; sampling review and exact-case approval remain pending.",
-          "observed_at": "2026-10-29T00:33:48.690372+00:00",
-          "revision": "974510d91db3f23dd1848a304c413bfd3f88cc1d",
-          "evidence": [
-            {
-              "ref": "scripts/ascella_predecessor_case.py",
-              "sha256": "91ed74f831d0bc14b0c3248c9e8dc1299c1bcd4af2b11bec63327145506a911b"
-            },
-            {
-              "ref": "scripts/ascella_predecessor_analysis.py",
-              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
-            },
-            {
-              "ref": "tests/scripts/test_ascella_predecessor_case.py",
-              "sha256": "adcc47f7404324f1284c25cc752bd94f3a84fc53702f37ffe06fc938c1ffb4e3"
-            },
-            {
-              "ref": "tests/scripts/test_ascella_predecessor_analysis.py",
-              "sha256": "a19dc7284d22f301af635465b85dc47b1dd8f01622a5dda317808c80e0d72c24"
-            },
-            {
-              "ref": "docs/design/ascella-predecessor-intervention.md",
-              "sha256": "8bf17d1194731b412928902022735952ae41c299c15f88ea2671939b933f9513"
-            },
-            {
-              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
-              "sha256": "9778e3a35512bcbf80b79d2c36d2530d13057b313926333921a61bb9c940a2b9"
-            },
-            {
-              "ref": "scripts/qd_platform.py",
-              "sha256": "b5bdf1aa76139f17ab178e3a20f4a120cc1543c414fb800273adbeb080e7d8fb"
-            },
-            {
-              "ref": "tests/scripts/test_quandela_failed_results.py",
-              "sha256": "562f5fa711af7b2b32db5be122800efd6272347573af193b97815097bc19ee28"
-            },
-            {
-              "ref": "docs/evidence/ascella-predecessor-admission/plan-status.json",
-              "sha256": "f3e202c72ea89dd9a5866997bf59207221025f48ec368d37e63438c5446eb389"
-            },
-            {
-              "ref": "docs/evidence/ascella-predecessor-admission/running-plan.json",
-              "sha256": "89b521b75811d385895ee3c68aca93f4966b6dfe4f3ebce0c5d611b6945a0f6e"
-            }
-          ],
-          "scope_sha256": "7451ba6e3ff68b85749407df8818c43d5e3f334bb3ee38003371a0dbc230c9ed"
-        },
-        {
-          "result": "Bounded acquisition review and revalidation: 30 focused case, analyzer and parser tests and byte-exact case replay pass. The owner selects the eight-iteration noncausal diagnostic and a separate causal successor; the design records chronology, randomization, carryover and complete-cost obligations. Independent inspection identifies reviewed-body/source and case-wide-attempt gaps. Fresh read-only admission passes with running Explorer, available processor, 262144 estimated shots and1.032768 estimated credits. External write-once custody entries bind the packet. The packet withholds approval; production constructor, analyzer and case bytes remain unchanged.",
-          "observed_at": "2026-10-29T00:56:57.033544+00:00",
-          "revision": "68ecb43aaa372bea4cafc91cb3a60e8e117bf1b9",
-          "evidence": [
-            {
-              "ref": "scripts/ascella_predecessor_case.py",
-              "sha256": "91ed74f831d0bc14b0c3248c9e8dc1299c1bcd4af2b11bec63327145506a911b"
-            },
-            {
-              "ref": "scripts/ascella_predecessor_analysis.py",
-              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
-            },
-            {
-              "ref": "tests/scripts/test_ascella_predecessor_case.py",
-              "sha256": "adcc47f7404324f1284c25cc752bd94f3a84fc53702f37ffe06fc938c1ffb4e3"
-            },
-            {
-              "ref": "tests/scripts/test_ascella_predecessor_analysis.py",
-              "sha256": "a19dc7284d22f301af635465b85dc47b1dd8f01622a5dda317808c80e0d72c24"
-            },
-            {
-              "ref": "docs/design/ascella-predecessor-intervention.md",
-              "sha256": "8544c615782bc0e4779f2d7f4a6aea4bce5becf4d3fea5766955badff377595e"
-            },
-            {
-              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
-              "sha256": "9778e3a35512bcbf80b79d2c36d2530d13057b313926333921a61bb9c940a2b9"
-            },
-            {
-              "ref": "scripts/qd_platform.py",
-              "sha256": "b5bdf1aa76139f17ab178e3a20f4a120cc1543c414fb800273adbeb080e7d8fb"
-            },
-            {
-              "ref": "tests/scripts/test_quandela_failed_results.py",
-              "sha256": "562f5fa711af7b2b32db5be122800efd6272347573af193b97815097bc19ee28"
-            },
-            {
-              "ref": "docs/evidence/ascella-predecessor-admission/plan-status.json",
-              "sha256": "f3e202c72ea89dd9a5866997bf59207221025f48ec368d37e63438c5446eb389"
-            },
-            {
-              "ref": "docs/evidence/ascella-predecessor-admission/running-plan.json",
-              "sha256": "89b521b75811d385895ee3c68aca93f4966b6dfe4f3ebce0c5d611b6945a0f6e"
-            },
-            {
-              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review.md",
-              "sha256": "65c484bb41cdfad9dbb244642a5a10d87c732673efcae0c871b951b5563061e6"
-            },
-            {
-              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review-packet.json",
-              "sha256": "c1b831743a6d88dfc8d375a8e328bac2d8a6fa4a0053285c685d10b8dda5a08d"
-            },
-            {
-              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review-admission.json",
-              "sha256": "2d05e6831e5faf7fa3f26ae3505e1f10e1d39dc1c0cac37aee2d32b9646eaba8"
-            }
-          ],
-          "scope_sha256": "7451ba6e3ff68b85749407df8818c43d5e3f334bb3ee38003371a0dbc230c9ed"
+          "scope_sha256": "89643cfffb7d23ab3f8f9265235df06d0f80853f98f6ede5baaf01a330c2eca8"
         }
       ]
     },
     {
       "id": "written-case",
-      "state": "todo",
+      "state": "done",
       "depends_on": [
         "signed-analysis"
       ],
       "action": "Keep the design and manifest aligned: eight iterations, signed common and reversal contrasts, explicit conditional-response scope, simultaneous uncertainty, and retained compilation and input identities.",
-      "acceptance": "Independent review accepts the corrected contract and --check reproduces cases.json and circuit.json; physical chronology and causal attribution remain separately bounded."
+      "acceptance": "Independent review accepts the corrected contract and --check reproduces cases.json and circuit.json; physical chronology and causal attribution remain separately bounded.",
+      "receipts": [
+        {
+          "result": "Current-scope revalidation closes reviewed POST/source binding and exact-case token-store attempt consumption: 427 provider tests including audit pass, Ruff over six touched files passes, full mypy over653 files passes and the provider self-test reports24 catalogue/46 runner rejections. Independent inspection finds no further concrete defect under the quiescent-checkout assumption. Read-only cross-process validation passes with a different SDK UUID, identical pinned wire bytes and source closure, running Explorer, available processor,262144 estimated shots and1.032768 estimated credits. External write-once custody retains the packet; the attempt remains unconsumed and owner approval remains pending.",
+          "observed_at": "2026-10-29T01:38:46.726677+00:00",
+          "revision": "a16849a7bbc0e4ca775b1eb562e404adabac7396",
+          "evidence": [
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_case.py",
+              "sha256": "53eaf137d94fc5fe29f3b5966bf5d3068d2dfbfa5ef4549fad7a4b4ca740ca24"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_analysis.py",
+              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_case.py",
+              "sha256": "3175c5e09ee1fdeaac43a7c2e70b3c29e3ecbdaadc3fa6e19f13eaec8d136c4b"
+            },
+            {
+              "ref": "docs/design/ascella-predecessor-intervention.md",
+              "sha256": "c52d8b9f6bb9f1dc90f22ac59e991e16391c7c5d30a868a7ffeceed6fb076c4b"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/gate-closure.md",
+              "sha256": "fbfb75f7bb71212768478d72b9cd77c21557f7a4b20960ab3f3cc26350ae2f79"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/reviewed-submission-approval.json",
+              "sha256": "991f4a863293746f8d2f840950b94c7e5b068fbed85aafaad9458d9b0a6d71be"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/reviewed-submission-validation.json",
+              "sha256": "5bf99d0ad1d6563246546b8fa8300bb7ee6879107eeb516b2a7bf411cfa33d06"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/transport-process-identity.json",
+              "sha256": "92634a6e6f9f724bd1dbd765800ace82ebcf91cfdab19a74f9974a090f716d73"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/reviewed-submission/cases.json",
+              "sha256": "0e58c0b22c4f8650ae893c5a7dcae5daeb1e25e87012c1aa3be8318085c17c13"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/reviewed-submission/circuit.json",
+              "sha256": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f"
+            }
+          ],
+          "scope_sha256": "3281b82293e0b933d95a91d9a9419cae4e3a03ae88a167f4fb9f1e0f1f2ad947"
+        }
+      ]
     },
     {
       "id": "live-admission",
-      "state": "todo",
+      "state": "done",
       "depends_on": [
         "written-case"
       ],
       "action": "Run qd_platform.py plan on a copy of the request. Retain the plan record, including the body digest, the live price, queue and processor performance. Send nothing.",
-      "acceptance": "A retained plan whose cases digest matches the manifest and whose credit estimate is within 1.032768, or a recorded refusal from that plan."
+      "acceptance": "A retained plan whose cases digest matches the manifest and whose credit estimate is within 1.032768, or a recorded refusal from that plan.",
+      "receipts": [
+        {
+          "result": "Current-scope revalidation closes reviewed POST/source binding and exact-case token-store attempt consumption: 427 provider tests including audit pass, Ruff over six touched files passes, full mypy over653 files passes and the provider self-test reports24 catalogue/46 runner rejections. Independent inspection finds no further concrete defect under the quiescent-checkout assumption. Read-only cross-process validation passes with a different SDK UUID, identical pinned wire bytes and source closure, running Explorer, available processor,262144 estimated shots and1.032768 estimated credits. External write-once custody retains the packet; the attempt remains unconsumed and owner approval remains pending.",
+          "observed_at": "2026-10-29T01:38:46.726677+00:00",
+          "revision": "a16849a7bbc0e4ca775b1eb562e404adabac7396",
+          "evidence": [
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_case.py",
+              "sha256": "53eaf137d94fc5fe29f3b5966bf5d3068d2dfbfa5ef4549fad7a4b4ca740ca24"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_analysis.py",
+              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_case.py",
+              "sha256": "3175c5e09ee1fdeaac43a7c2e70b3c29e3ecbdaadc3fa6e19f13eaec8d136c4b"
+            },
+            {
+              "ref": "docs/design/ascella-predecessor-intervention.md",
+              "sha256": "c52d8b9f6bb9f1dc90f22ac59e991e16391c7c5d30a868a7ffeceed6fb076c4b"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/gate-closure.md",
+              "sha256": "fbfb75f7bb71212768478d72b9cd77c21557f7a4b20960ab3f3cc26350ae2f79"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/reviewed-submission-approval.json",
+              "sha256": "991f4a863293746f8d2f840950b94c7e5b068fbed85aafaad9458d9b0a6d71be"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/reviewed-submission-validation.json",
+              "sha256": "5bf99d0ad1d6563246546b8fa8300bb7ee6879107eeb516b2a7bf411cfa33d06"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/transport-process-identity.json",
+              "sha256": "92634a6e6f9f724bd1dbd765800ace82ebcf91cfdab19a74f9974a090f716d73"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/reviewed-submission/cases.json",
+              "sha256": "0e58c0b22c4f8650ae893c5a7dcae5daeb1e25e87012c1aa3be8318085c17c13"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/reviewed-submission/circuit.json",
+              "sha256": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f"
+            }
+          ],
+          "scope_sha256": "e7e8551e4d594f8dd4a8b78def4ae3f66ba6ed1a48418db27ba8e3244600482a"
+        }
+      ]
     },
     {
       "id": "acquisition",
@@ -337,64 +221,56 @@
       "acceptance": "Exact coefficient and drift counterexamples and fixed-allocation sufficient power calculations pass regression; case request and analyzer bytes remain unchanged and the written review gates bind the conditional scope.",
       "receipts": [
         {
-          "result": "The 27 focused case and analyzer tests pass; pinned Ruff and touched-file mypy pass. Exact case replay retains eight iterations, 262144 shots and the existing case digest. Added regressions verify drift coefficient moments, sufficient conditional-power sizing and the cubic-drift falsifier. Provider execution and conditional-sampling approval remain outside this receipt.",
-          "observed_at": "2026-10-29T00:32:19.883439+00:00",
-          "revision": "974510d91db3f23dd1848a304c413bfd3f88cc1d",
+          "result": "Current-scope revalidation closes reviewed POST/source binding and exact-case token-store attempt consumption: 427 provider tests including audit pass, Ruff over six touched files passes, full mypy over653 files passes and the provider self-test reports24 catalogue/46 runner rejections. Independent inspection finds no further concrete defect under the quiescent-checkout assumption. Read-only cross-process validation passes with a different SDK UUID, identical pinned wire bytes and source closure, running Explorer, available processor,262144 estimated shots and1.032768 estimated credits. External write-once custody retains the packet; the attempt remains unconsumed and owner approval remains pending.",
+          "observed_at": "2026-10-29T01:38:46.726677+00:00",
+          "revision": "a16849a7bbc0e4ca775b1eb562e404adabac7396",
           "evidence": [
             {
-              "ref": "docs/design/ascella-predecessor-intervention.md",
-              "sha256": "8bf17d1194731b412928902022735952ae41c299c15f88ea2671939b933f9513"
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
             },
             {
-              "ref": "tests/scripts/test_ascella_predecessor_case.py",
-              "sha256": "adcc47f7404324f1284c25cc752bd94f3a84fc53702f37ffe06fc938c1ffb4e3"
-            },
-            {
-              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
-              "sha256": "9778e3a35512bcbf80b79d2c36d2530d13057b313926333921a61bb9c940a2b9"
-            },
-            {
-              "ref": "scripts/ascella_predecessor_analysis.py",
-              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
-            }
-          ],
-          "scope_sha256": "430bdf52631940f903d44737350f4e777353fe6b0990c4a9b320b48b4f25e4e6"
-        },
-        {
-          "result": "Bounded acquisition review and revalidation: 30 focused case, analyzer and parser tests and byte-exact case replay pass. The owner selects the eight-iteration noncausal diagnostic and a separate causal successor; the design records chronology, randomization, carryover and complete-cost obligations. Independent inspection identifies reviewed-body/source and case-wide-attempt gaps. Fresh read-only admission passes with running Explorer, available processor, 262144 estimated shots and1.032768 estimated credits. External write-once custody entries bind the packet. The packet withholds approval; production constructor, analyzer and case bytes remain unchanged.",
-          "observed_at": "2026-10-29T00:56:57.035179+00:00",
-          "revision": "68ecb43aaa372bea4cafc91cb3a60e8e117bf1b9",
-          "evidence": [
-            {
-              "ref": "docs/design/ascella-predecessor-intervention.md",
-              "sha256": "8544c615782bc0e4779f2d7f4a6aea4bce5becf4d3fea5766955badff377595e"
-            },
-            {
-              "ref": "tests/scripts/test_ascella_predecessor_case.py",
-              "sha256": "adcc47f7404324f1284c25cc752bd94f3a84fc53702f37ffe06fc938c1ffb4e3"
-            },
-            {
-              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
-              "sha256": "9778e3a35512bcbf80b79d2c36d2530d13057b313926333921a61bb9c940a2b9"
+              "ref": "scripts/ascella_predecessor_case.py",
+              "sha256": "53eaf137d94fc5fe29f3b5966bf5d3068d2dfbfa5ef4549fad7a4b4ca740ca24"
             },
             {
               "ref": "scripts/ascella_predecessor_analysis.py",
               "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
             },
             {
-              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review.md",
-              "sha256": "65c484bb41cdfad9dbb244642a5a10d87c732673efcae0c871b951b5563061e6"
+              "ref": "tests/scripts/test_ascella_predecessor_case.py",
+              "sha256": "3175c5e09ee1fdeaac43a7c2e70b3c29e3ecbdaadc3fa6e19f13eaec8d136c4b"
             },
             {
-              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review-packet.json",
-              "sha256": "c1b831743a6d88dfc8d375a8e328bac2d8a6fa4a0053285c685d10b8dda5a08d"
+              "ref": "docs/design/ascella-predecessor-intervention.md",
+              "sha256": "c52d8b9f6bb9f1dc90f22ac59e991e16391c7c5d30a868a7ffeceed6fb076c4b"
             },
             {
-              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review-admission.json",
-              "sha256": "2d05e6831e5faf7fa3f26ae3505e1f10e1d39dc1c0cac37aee2d32b9646eaba8"
+              "ref": "docs/evidence/ascella-predecessor-admission/gate-closure.md",
+              "sha256": "fbfb75f7bb71212768478d72b9cd77c21557f7a4b20960ab3f3cc26350ae2f79"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/reviewed-submission-approval.json",
+              "sha256": "991f4a863293746f8d2f840950b94c7e5b068fbed85aafaad9458d9b0a6d71be"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/reviewed-submission-validation.json",
+              "sha256": "5bf99d0ad1d6563246546b8fa8300bb7ee6879107eeb516b2a7bf411cfa33d06"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/transport-process-identity.json",
+              "sha256": "92634a6e6f9f724bd1dbd765800ace82ebcf91cfdab19a74f9974a090f716d73"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/reviewed-submission/cases.json",
+              "sha256": "0e58c0b22c4f8650ae893c5a7dcae5daeb1e25e87012c1aa3be8318085c17c13"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/reviewed-submission/circuit.json",
+              "sha256": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f"
             }
           ],
-          "scope_sha256": "430bdf52631940f903d44737350f4e777353fe6b0990c4a9b320b48b4f25e4e6"
+          "scope_sha256": "a9761a24e0f17bbb9eda68e2ebf0e32aee15fb70d04184bd76a95c12277b9855"
         }
       ]
     },
@@ -405,28 +281,56 @@
       "acceptance": "The owner chooses diagnostic scope with causal attribution unavailable, or a separately designed causal successor; independent acquisition review and custody/approval gates bind the chosen scope before spending.",
       "receipts": [
         {
-          "result": "Bounded acquisition review and revalidation: 30 focused case, analyzer and parser tests and byte-exact case replay pass. The owner selects the eight-iteration noncausal diagnostic and a separate causal successor; the design records chronology, randomization, carryover and complete-cost obligations. Independent inspection identifies reviewed-body/source and case-wide-attempt gaps. Fresh read-only admission passes with running Explorer, available processor, 262144 estimated shots and1.032768 estimated credits. External write-once custody entries bind the packet. The packet withholds approval; production constructor, analyzer and case bytes remain unchanged.",
-          "observed_at": "2026-10-29T00:56:57.036267+00:00",
-          "revision": "68ecb43aaa372bea4cafc91cb3a60e8e117bf1b9",
+          "result": "Current-scope revalidation closes reviewed POST/source binding and exact-case token-store attempt consumption: 427 provider tests including audit pass, Ruff over six touched files passes, full mypy over653 files passes and the provider self-test reports24 catalogue/46 runner rejections. Independent inspection finds no further concrete defect under the quiescent-checkout assumption. Read-only cross-process validation passes with a different SDK UUID, identical pinned wire bytes and source closure, running Explorer, available processor,262144 estimated shots and1.032768 estimated credits. External write-once custody retains the packet; the attempt remains unconsumed and owner approval remains pending.",
+          "observed_at": "2026-10-29T01:38:46.726677+00:00",
+          "revision": "a16849a7bbc0e4ca775b1eb562e404adabac7396",
           "evidence": [
             {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_case.py",
+              "sha256": "53eaf137d94fc5fe29f3b5966bf5d3068d2dfbfa5ef4549fad7a4b4ca740ca24"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_analysis.py",
+              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_case.py",
+              "sha256": "3175c5e09ee1fdeaac43a7c2e70b3c29e3ecbdaadc3fa6e19f13eaec8d136c4b"
+            },
+            {
               "ref": "docs/design/ascella-predecessor-intervention.md",
-              "sha256": "8544c615782bc0e4779f2d7f4a6aea4bce5becf4d3fea5766955badff377595e"
+              "sha256": "c52d8b9f6bb9f1dc90f22ac59e991e16391c7c5d30a868a7ffeceed6fb076c4b"
             },
             {
-              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review.md",
-              "sha256": "65c484bb41cdfad9dbb244642a5a10d87c732673efcae0c871b951b5563061e6"
+              "ref": "docs/evidence/ascella-predecessor-admission/gate-closure.md",
+              "sha256": "fbfb75f7bb71212768478d72b9cd77c21557f7a4b20960ab3f3cc26350ae2f79"
             },
             {
-              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review-packet.json",
-              "sha256": "c1b831743a6d88dfc8d375a8e328bac2d8a6fa4a0053285c685d10b8dda5a08d"
+              "ref": "docs/evidence/ascella-predecessor-admission/reviewed-submission-approval.json",
+              "sha256": "991f4a863293746f8d2f840950b94c7e5b068fbed85aafaad9458d9b0a6d71be"
             },
             {
-              "ref": "docs/evidence/ascella-predecessor-admission/acquisition-review-admission.json",
-              "sha256": "2d05e6831e5faf7fa3f26ae3505e1f10e1d39dc1c0cac37aee2d32b9646eaba8"
+              "ref": "docs/evidence/ascella-predecessor-admission/reviewed-submission-validation.json",
+              "sha256": "5bf99d0ad1d6563246546b8fa8300bb7ee6879107eeb516b2a7bf411cfa33d06"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/transport-process-identity.json",
+              "sha256": "92634a6e6f9f724bd1dbd765800ace82ebcf91cfdab19a74f9974a090f716d73"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/reviewed-submission/cases.json",
+              "sha256": "0e58c0b22c4f8650ae893c5a7dcae5daeb1e25e87012c1aa3be8318085c17c13"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/reviewed-submission/circuit.json",
+              "sha256": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f"
             }
           ],
-          "scope_sha256": "18210f7a2437a89fc525804bac2a85fe766828c508ebd8787aadcc087b2c5ef6"
+          "scope_sha256": "049f41f250ebe4d1fee20b278882b329c0b47a4e3e7d17ba4f45022dd72d96d4"
         }
       ]
     },
@@ -438,20 +342,128 @@
     },
     {
       "id": "reviewed-submit-binding",
-      "state": "todo",
+      "state": "done",
       "action": "Bind the actually posted diagnostic to the externally reviewed request and sources",
-      "acceptance": "The submit-lock verification checks case, actual body, constructor/analyzer and provider-wrapper identities against reviewed anchors before POST and rejects mutations; the bound case passes a fresh read-only admission."
+      "acceptance": "The submit-lock verification checks case, actual body, constructor/analyzer and provider-wrapper identities against reviewed anchors before POST and rejects mutations; the bound case passes a fresh read-only admission.",
+      "receipts": [
+        {
+          "result": "Current-scope revalidation closes reviewed POST/source binding and exact-case token-store attempt consumption: 427 provider tests including audit pass, Ruff over six touched files passes, full mypy over653 files passes and the provider self-test reports24 catalogue/46 runner rejections. Independent inspection finds no further concrete defect under the quiescent-checkout assumption. Read-only cross-process validation passes with a different SDK UUID, identical pinned wire bytes and source closure, running Explorer, available processor,262144 estimated shots and1.032768 estimated credits. External write-once custody retains the packet; the attempt remains unconsumed and owner approval remains pending.",
+          "observed_at": "2026-10-29T01:38:46.726677+00:00",
+          "revision": "a16849a7bbc0e4ca775b1eb562e404adabac7396",
+          "evidence": [
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_case.py",
+              "sha256": "53eaf137d94fc5fe29f3b5966bf5d3068d2dfbfa5ef4549fad7a4b4ca740ca24"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_analysis.py",
+              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_case.py",
+              "sha256": "3175c5e09ee1fdeaac43a7c2e70b3c29e3ecbdaadc3fa6e19f13eaec8d136c4b"
+            },
+            {
+              "ref": "docs/design/ascella-predecessor-intervention.md",
+              "sha256": "c52d8b9f6bb9f1dc90f22ac59e991e16391c7c5d30a868a7ffeceed6fb076c4b"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/gate-closure.md",
+              "sha256": "fbfb75f7bb71212768478d72b9cd77c21557f7a4b20960ab3f3cc26350ae2f79"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/reviewed-submission-approval.json",
+              "sha256": "991f4a863293746f8d2f840950b94c7e5b068fbed85aafaad9458d9b0a6d71be"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/reviewed-submission-validation.json",
+              "sha256": "5bf99d0ad1d6563246546b8fa8300bb7ee6879107eeb516b2a7bf411cfa33d06"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/transport-process-identity.json",
+              "sha256": "92634a6e6f9f724bd1dbd765800ace82ebcf91cfdab19a74f9974a090f716d73"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/reviewed-submission/cases.json",
+              "sha256": "0e58c0b22c4f8650ae893c5a7dcae5daeb1e25e87012c1aa3be8318085c17c13"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/reviewed-submission/circuit.json",
+              "sha256": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f"
+            }
+          ],
+          "scope_sha256": "27654c44d2ee845c7bcc22059b54373ac9b02010bc94b1d563004d494b3d059b"
+        }
+      ]
     },
     {
       "id": "case-wide-attempt-consumption",
-      "state": "todo",
+      "state": "done",
       "action": "Enforce one reviewed attempt across copied run directories",
-      "acceptance": "A case-wide atomic consumed marker supplements the run-directory checkpoint and token lock; copied-directory and interrupted-submit regressions reject a duplicate attempt without erasing prior evidence."
+      "acceptance": "A case-wide atomic consumed marker supplements the run-directory checkpoint and token lock; copied-directory and interrupted-submit regressions reject a duplicate attempt without erasing prior evidence.",
+      "receipts": [
+        {
+          "result": "Current-scope revalidation closes reviewed POST/source binding and exact-case token-store attempt consumption: 427 provider tests including audit pass, Ruff over six touched files passes, full mypy over653 files passes and the provider self-test reports24 catalogue/46 runner rejections. Independent inspection finds no further concrete defect under the quiescent-checkout assumption. Read-only cross-process validation passes with a different SDK UUID, identical pinned wire bytes and source closure, running Explorer, available processor,262144 estimated shots and1.032768 estimated credits. External write-once custody retains the packet; the attempt remains unconsumed and owner approval remains pending.",
+          "observed_at": "2026-10-29T01:38:46.726677+00:00",
+          "revision": "a16849a7bbc0e4ca775b1eb562e404adabac7396",
+          "evidence": [
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_case.py",
+              "sha256": "53eaf137d94fc5fe29f3b5966bf5d3068d2dfbfa5ef4549fad7a4b4ca740ca24"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_analysis.py",
+              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_case.py",
+              "sha256": "3175c5e09ee1fdeaac43a7c2e70b3c29e3ecbdaadc3fa6e19f13eaec8d136c4b"
+            },
+            {
+              "ref": "docs/design/ascella-predecessor-intervention.md",
+              "sha256": "c52d8b9f6bb9f1dc90f22ac59e991e16391c7c5d30a868a7ffeceed6fb076c4b"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/gate-closure.md",
+              "sha256": "fbfb75f7bb71212768478d72b9cd77c21557f7a4b20960ab3f3cc26350ae2f79"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/reviewed-submission-approval.json",
+              "sha256": "991f4a863293746f8d2f840950b94c7e5b068fbed85aafaad9458d9b0a6d71be"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/reviewed-submission-validation.json",
+              "sha256": "5bf99d0ad1d6563246546b8fa8300bb7ee6879107eeb516b2a7bf411cfa33d06"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/transport-process-identity.json",
+              "sha256": "92634a6e6f9f724bd1dbd765800ace82ebcf91cfdab19a74f9974a090f716d73"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/reviewed-submission/cases.json",
+              "sha256": "0e58c0b22c4f8650ae893c5a7dcae5daeb1e25e87012c1aa3be8318085c17c13"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/reviewed-submission/circuit.json",
+              "sha256": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f"
+            }
+          ],
+          "scope_sha256": "c74942e4674d62f3269b1f438836e4b82bb3c5a8013449e82cc83ee6c540891d"
+        }
+      ]
     }
   ],
-  "scope": "One unapproved qpu:ascella sample_count case, ascella_predecessor/job-00, eight iterations at 32768 samples and shots, historical ceiling 1.032768 credits and expected 40 s. Retained signed-coherence settings supply two distinct predecessors and a fixed target in odd slots. Analysis separates signed common and reversal contrasts with a 0.1 response-equivalence margin; it cannot identify predecessor causality from result-list order. Live admission and exact-case approval remain required.",
+  "scope": "One unapproved eight-iteration qpu:ascella sample_count diagnostic, ascella_predecessor/reviewed-submission, at 32768 samples/shots per iteration, max 1.032768 credits and expected 40 s. Exact reviewed-body/source binding and token-store-wide attempt consumption gate submission. Physical predecessor attribution remains unavailable; conditional uncertainty requires its separate reviewed sampling contract. A causal successor remains a separate unallocated design.",
   "owner": "ascella predecessor case",
-  "next_action": "Retain the eight-iteration target-slot diagnostic with causal attribution unavailable. Close reviewed-body/source and cross-directory one-attempt binding before approval. Prepare a separate causal successor with supported chronology, randomized assignment and an explicit carryover model.",
+  "next_action": "Request exact owner approval of the reviewed-submission diagnostic packet after IBM. Preserve the quiescent source checkout and external custody, refresh provider admission at submit, and prepare the causal successor separately without allocated exposure.",
   "related": [
     "ascella-signed-coherence-conformance",
     "ascella-perturbed-compilation-case",

@@ -13,7 +13,7 @@ import pytest
 import qd_platform as qd
 
 ROOT = Path(__file__).resolve().parents[2]
-CASE = ROOT / "results/quandela/cases/ascella_predecessor/job-00"
+CASE = case.CASE
 SOURCE = ROOT / "results/quandela/cases/ascella_signed_coherence/job-00"
 JOB00_RUN = ROOT / "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00"
 JOB02_RUN = ROOT / "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02"
@@ -204,3 +204,317 @@ def test_running_platform_admission_preserves_queue_and_status_gates(
     row["status"] = "maintenance"
     with pytest.raises(qd.PlatformError, match="is maintenance"):
         planned()
+
+
+@pytest.fixture
+def reviewed_submission(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
+    """A real checkpoint and submit path use recorded transport and fresh-plan doubles."""
+    import copy
+
+    monkeypatch.setattr(qd, "ROOT", tmp_path)
+    source_names = (
+        "scripts/qd_platform.py",
+        "scripts/ascella_predecessor_case.py",
+        "scripts/ascella_predecessor_analysis.py",
+        "scripts/ascella_experiment_analysis.py",
+        "scripts/experiment_analysis.py",
+        "gororoba_quantum/parallel.py",
+    )
+    for name in source_names:
+        target = tmp_path / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text("frozen source")
+    sources = {name: qd.sha256_bytes((tmp_path / name).read_bytes()) for name in source_names}
+    directory = tmp_path / "run"
+    directory.mkdir()
+    circuit = b"{}\n"
+    (directory / "circuit.json").write_bytes(circuit)
+    request = {
+        "family": "ascella_predecessor",
+        "analysis_sources": sources,
+        "circuit": {"file": "circuit.json", "sha256": qd.sha256_bytes(circuit)},
+    }
+    (directory / "cases.json").write_text(json.dumps(request))
+
+    def load(path: Path) -> tuple[dict[str, Any], dict[str, Any], str]:
+        raw = (path / "cases.json").read_bytes()
+        return json.loads(raw), {}, qd.sha256_bytes(raw)
+
+    monkeypatch.setattr(qd, "load_case", load)
+    body = {"process_id": "00000000-0000-4000-8000-000000000001", "payload": {"command": "sample_count"}}
+    checked = {
+        "platform": "qpu:ascella",
+        "cases_sha256": load(directory)[2],
+        "body": body,
+        "body_sha256": qd.sha256_bytes(json.dumps(body, sort_keys=True).encode()),
+        "versions": {"perceval-quandela": "1.3.1"},
+        "payload_version_basis": "declared",
+        "estimated_shots": 262144,
+        "admitted_statuses": ["available", "running"],
+    }
+    monkeypatch.setattr(qd, "plan", lambda *args: copy.deepcopy(checked))
+    monkeypatch.setenv(qd.TOKEN_ENV, str(tmp_path / "token"))
+    monkeypatch.setattr(qd, "get", lambda route: [])
+    sent: list[dict[str, Any]] = []
+
+    def post(method: str, route: str, body: dict[str, Any]) -> dict[str, str]:
+        sent.append(copy.deepcopy(body))
+        return {"job_id": "recorded-job"}
+
+    monkeypatch.setattr(qd, "request", post)
+    return {"directory": directory, "checked": checked, "sent": sent, "root": tmp_path}
+
+
+def prepare_review(fixture: dict[str, Any]) -> tuple[Path, str]:
+    path = fixture["root"] / "review.json"
+    qd.prepare_acquisition_review(fixture["directory"], "qpu:ascella", 1.032768, 40, 1, ("running",), path)
+    return path, qd.sha256_bytes(path.read_bytes())
+
+
+def submit_bound(fixture: dict[str, Any], path: Path, expected: str) -> dict[str, Any]:
+    return qd.submit(
+        fixture["directory"],
+        "qpu:ascella",
+        "case-specific approval",
+        1.032768,
+        40,
+        1,
+        ("running",),
+        reviewed_packet=path,
+        reviewed_sha256=expected,
+    )
+
+
+def test_reviewed_submit_pins_only_transport_uuid_and_posts_exact_reviewed_body(
+    reviewed_submission: dict[str, Any],
+) -> None:
+    path, expected = prepare_review(reviewed_submission)
+    approved = json.loads(path.read_text())["binding"]["body"]
+    reviewed_submission["checked"]["body"]["process_id"] = "00000000-0000-4000-8000-000000000002"
+    result = submit_bound(reviewed_submission, path, expected)
+    if reviewed_submission["sent"] != [approved] or result["reviewed_packet_sha256"] != expected:
+        raise AssertionError("the actual POST must equal the complete reviewed body")
+
+
+@pytest.mark.parametrize("mutation", ["source", "body", "versions", "packet", "policy", "circuit", "case"])
+def test_reviewed_submit_refuses_binding_mutations_before_post(
+    reviewed_submission: dict[str, Any], mutation: str
+) -> None:
+    path, expected = prepare_review(reviewed_submission)
+    root = reviewed_submission["root"]
+    checked = reviewed_submission["checked"]
+    if mutation == "source":
+        (root / "scripts/ascella_predecessor_analysis.py").write_text("changed source")
+    elif mutation == "body":
+        checked["body"]["payload"]["command"] = "changed"
+    elif mutation == "versions":
+        checked["versions"]["perceval-quandela"] = "changed"
+    elif mutation == "packet":
+        path.write_text(path.read_text() + " ")
+    elif mutation == "circuit":
+        (reviewed_submission["directory"] / "circuit.json").write_text("changed circuit")
+    elif mutation == "case":
+        checked["cases_sha256"] = "0" * 64
+    if mutation == "policy":
+        with pytest.raises(qd.PlatformError):
+            qd.submit(
+                reviewed_submission["directory"],
+                "qpu:ascella",
+                "approval",
+                1.0,
+                40,
+                1,
+                ("running",),
+                reviewed_packet=path,
+                reviewed_sha256=expected,
+            )
+    else:
+        with pytest.raises(qd.PlatformError):
+            submit_bound(reviewed_submission, path, expected)
+    if reviewed_submission["sent"]:
+        raise AssertionError("a failed binding must never call POST")
+
+
+def test_plain_ascella_submit_requires_review_anchor(reviewed_submission: dict[str, Any]) -> None:
+    with pytest.raises(qd.PlatformError, match="review"):
+        qd.submit(reviewed_submission["directory"], "qpu:ascella", "approval", 1.032768, 40, 1, ("running",))
+    if reviewed_submission["sent"]:
+        raise AssertionError("the generic CLI route must enforce the reviewed binding")
+
+
+def test_consumed_review_refuses_a_copied_case_directory(reviewed_submission: dict[str, Any]) -> None:
+    import shutil
+
+    path, expected = prepare_review(reviewed_submission)
+    original = reviewed_submission["directory"]
+    copy = reviewed_submission["root"] / "copied-run"
+    shutil.copytree(original, copy)
+    submit_bound(reviewed_submission, path, expected)
+    reviewed_submission["directory"] = copy
+    with pytest.raises(qd.PlatformError, match="consumed"):
+        submit_bound(reviewed_submission, path, expected)
+    if len(reviewed_submission["sent"]) != 1:
+        raise AssertionError("copying a run directory must not renew an attempt")
+
+
+def test_uncertain_post_consumes_case_wide_attempt(
+    reviewed_submission: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import shutil
+
+    path, expected = prepare_review(reviewed_submission)
+    copy = reviewed_submission["root"] / "copy-before-post"
+    shutil.copytree(reviewed_submission["directory"], copy)
+
+    def lost(*args: Any, **kwargs: Any) -> None:
+        raise qd.UnansweredError("answer lost")
+
+    monkeypatch.setattr(qd, "request", lost)
+    with pytest.raises(qd.UnansweredError):
+        submit_bound(reviewed_submission, path, expected)
+    reviewed_submission["directory"] = copy
+    with pytest.raises(qd.PlatformError, match="consumed"):
+        submit_bound(reviewed_submission, path, expected)
+
+
+def test_submit_cli_enforces_and_accepts_review_binding(
+    reviewed_submission: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import sys
+
+    arguments = [
+        "qd_platform.py",
+        "submit",
+        str(reviewed_submission["directory"]),
+        "--platform",
+        "qpu:ascella",
+        "--max-credits",
+        "1.032768",
+        "--expected-seconds",
+        "40",
+        "--per-job-credits",
+        "1",
+        "--admit-status",
+        "running",
+        "--approval",
+        "case-specific approval",
+    ]
+    monkeypatch.setattr(sys, "argv", arguments)
+    with pytest.raises(SystemExit, match="review"):
+        qd.main()
+    path, checksum = prepare_review(reviewed_submission)
+    monkeypatch.setattr(sys, "argv", arguments + ["--reviewed-packet", str(path), "--reviewed-sha256", checksum])
+    if qd.main() != 0 or len(reviewed_submission["sent"]) != 1:
+        raise AssertionError("the documented CLI must enforce and execute the bound submit path")
+
+
+def test_case_wide_guard_serializes_competing_directories(reviewed_submission: dict[str, Any]) -> None:
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+
+    path, checksum = prepare_review(reviewed_submission)
+    first = reviewed_submission["directory"]
+    second = reviewed_submission["root"] / "concurrent-copy"
+    shutil.copytree(first, second)
+
+    def attempt(directory: Path) -> str:
+        try:
+            qd.submit(
+                directory,
+                "qpu:ascella",
+                "approval",
+                1.032768,
+                40,
+                1,
+                ("running",),
+                reviewed_packet=path,
+                reviewed_sha256=checksum,
+            )
+        except qd.PlatformError:
+            return "refused"
+        return "submitted"
+
+    with ThreadPoolExecutor(max_workers=2) as workers:
+        outcomes = list(workers.map(attempt, (first, second)))
+    if sorted(outcomes) != ["refused", "submitted"] or len(reviewed_submission["sent"]) != 1:
+        raise AssertionError("competing copies must consume exactly one case-wide attempt")
+
+
+def test_review_refuses_an_omitted_analyzer_dependency(reviewed_submission: dict[str, Any]) -> None:
+    path = reviewed_submission["directory"] / "cases.json"
+    request = json.loads(path.read_text())
+    request["analysis_sources"].pop("gororoba_quantum/parallel.py")
+    path.write_text(json.dumps(request))
+    with pytest.raises(qd.PlatformError, match="source"):
+        prepare_review(reviewed_submission)
+
+
+def test_case_swap_during_plan_cannot_bypass_required_review(
+    reviewed_submission: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import copy
+
+    path = reviewed_submission["directory"] / "cases.json"
+    request = json.loads(path.read_text())
+    request["family"] = "other"
+    diagnostic_sources = request.pop("analysis_sources")
+    path.write_text(json.dumps(request))
+
+    def replace_case(*args: Any) -> dict[str, Any]:
+        request["family"] = "ascella_predecessor"
+        request["analysis_sources"] = diagnostic_sources
+        path.write_text(json.dumps(request))
+        checked = copy.deepcopy(reviewed_submission["checked"])
+        checked["cases_sha256"] = qd.sha256_bytes(path.read_bytes())
+        return checked
+
+    monkeypatch.setattr(qd, "plan", replace_case)
+    with pytest.raises(qd.PlatformError, match="case changed"):
+        qd.submit(reviewed_submission["directory"], "qpu:ascella", "approval", 1.032768, 40, 1, ("running",))
+    if reviewed_submission["sent"]:
+        raise AssertionError("the fresh case must remain identical to the admission gate snapshot")
+
+
+def test_source_change_during_usage_read_refuses_before_consumption(
+    reviewed_submission: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path, expected = prepare_review(reviewed_submission)
+
+    def mutate(route: str) -> list[Any]:
+        (reviewed_submission["root"] / "scripts/ascella_predecessor_analysis.py").write_text("changed")
+        return []
+
+    monkeypatch.setattr(qd, "get", mutate)
+    with pytest.raises(qd.PlatformError, match="source changed"):
+        submit_bound(reviewed_submission, path, expected)
+    if reviewed_submission["sent"] or (reviewed_submission["root"] / "reviewed-acquisition-attempts").exists():
+        raise AssertionError("post-read verification must reject source drift before consuming the attempt")
+
+
+def test_request_wire_bytes_use_the_reviewed_canonical_json(monkeypatch: pytest.MonkeyPatch) -> None:
+    import contextlib
+    import io
+    from types import SimpleNamespace
+
+    body = {"z": "last", "a": {"y": 2, "b": 1}}
+    sent: list[bytes] = []
+
+    def opened(call: Any, timeout: int) -> Any:
+        sent.append(call.data)
+        return contextlib.nullcontext(io.BytesIO(b'{"ok": true}'))
+
+    monkeypatch.setattr(qd, "OPENER", SimpleNamespace(open=opened))
+    qd.request("POST", "/api/jobs", auth=False, body=body)
+    if sent != [json.dumps(body, sort_keys=True).encode("utf-8")]:
+        raise AssertionError("the actual HTTP bytes must equal the reviewed canonical encoding")
+
+
+def test_renaming_diagnostic_family_preserves_required_review(reviewed_submission: dict[str, Any]) -> None:
+    path = reviewed_submission["directory"] / "cases.json"
+    request = json.loads(path.read_text())
+    request["family"] = "renamed-diagnostic"
+    path.write_text(json.dumps(request))
+    with pytest.raises(qd.PlatformError, match="review"):
+        qd.submit(reviewed_submission["directory"], "qpu:ascella", "approval", 1.032768, 40, 1, ("running",))
+    if reviewed_submission["sent"]:
+        raise AssertionError("diagnostic analyzer identity must retain the reviewed-acquisition gate")
