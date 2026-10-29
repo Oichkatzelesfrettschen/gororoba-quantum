@@ -65,10 +65,14 @@ With one baseline and one repeat, the record shows two endpoints and no path bet
 - Matched digital meshes produce output distributions that differ between jobs 33 hours apart.
 - The change concentrates in excess leakage of a few percent, which appears in a different subset
   of settings in each job.
-- Earlier jobs on the same meshes, hours apart within one day, show changes of the same size:
-  - identity input 5 moved from 0.14 % to 6.35 % between the singleton and reverse contexts;
-  - matched identity-input-0 anchors differed from their singleton reference by total variation
-    0.012 to 0.046.
+- Earlier jobs on the same meshes, minutes apart in different contexts, show changes of the same
+  size:
+  - identity input 5 moved from 0.14 % in its singleton job (2026-10-28T00:35:25Z) to 6.35 % in the
+    reverse-packed job (00:38:57Z), 3.5 minutes later;
+  - matched identity-input-0 anchors in the mesh-port jobs (00:51Z to 01:01Z) differed from their
+    singleton reference (00:36:25Z), 15 to 25 minutes earlier, by total variation 0.012 to 0.046.
+  The seven context jobs all started between 00:34:55Z and 00:38:57Z, and the six mesh-port jobs
+  between 00:51:20Z and 01:01:09Z.
 
 **Hypotheses.** The record is consistent with two explanations, and its design cannot separate them.
 
@@ -79,7 +83,9 @@ With one baseline and one repeat, the record shows two endpoints and no path bet
   response drift over hours to days, and recalibrations and job context move each setting
   differently.
 
-Opposite leakage shifts across settings and comparable same-day changes fit both. A fixed-context
+Opposite leakage shifts across settings fit both. The minute-scale changes come from jobs whose
+context differed (singleton against packed, or anchors packed among other meshes), so they also fit
+both. A fixed-context
 replicate of several jobs minutes apart tests the first. Large changes between those replicates
 favor intermittency, and their absence leaves drift as the remaining account. A time series of
 repeats at several separations tests the second through a dependence on elapsed time. Drift
@@ -88,8 +94,8 @@ controls, source or detector response, or calibration events. Returned serializa
 digital request only.
 
 **What it does not establish.**
-- A drift rate: one separation gives no slope, and the job-to-job variance at short separation is
-  unmeasured.
+- A drift rate: one separation gives no slope, and the variance between identical jobs minutes
+  apart is unmeasured, since every minute-scale comparison so far also changed the job context.
 - Qualification of the 54-setting campaign, which still needs a fresh, prospectively specified
   cohort.
 - Any statement about incident-pulse loss, physical iteration order inside the packed job, or a
@@ -98,7 +104,8 @@ digital request only.
 ## Follow-up acquisition
 
 The day-separated comparison is complete, and no further scheduled run is needed to finish it. The
-open question is whether 33-hour differences exceed same-day job-to-job variation. That needs its own
+open question is whether 33-hour differences exceed the variation between identical jobs run
+minutes apart in a fixed context. That needs its own
 written case and the user's approval before any schedule is armed. A proposed form:
 - three back-to-back forward-packed jobs, minutes apart, on the same five matched meshes;
 - each job at the same 1.131072-credit ceiling, 3.39 credits in total;

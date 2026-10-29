@@ -12738,7 +12738,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "Five selected settings, a fixed 140-endpoint family and IID accepted-event intervals. A matched returned mesh does not establish identical applied analog controls; elapsed time, calibration and source or detector response can confound the comparison, and same-day job-to-job variation of comparable size is already recorded, so the 33-hour difference is not attributed to drift.",
+      "boundary": "Five selected settings, a fixed 140-endpoint family and IID accepted-event intervals. A matched returned mesh does not establish identical applied analog controls; elapsed time, calibration and source or detector response can confound the comparison, and changes of comparable size are already recorded between jobs minutes apart in different contexts, so the 33-hour difference is not attributed to drift.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat/day-repeat-analysis.json",
