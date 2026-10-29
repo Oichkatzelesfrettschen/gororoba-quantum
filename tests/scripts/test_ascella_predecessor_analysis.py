@@ -23,6 +23,11 @@ def rows(target_counts: list[int], total: int = 32768) -> list[list[int]]:
     return result
 
 
+def frozen_manifest() -> dict[str, Any]:
+    """Use retained fixture values without rebuilding their historical source closure."""
+    return json.loads((case.CASE / "cases.json").read_text())
+
+
 def test_linear_drift_cancels_before_the_norm() -> None:
     report = analysis.describe(rows([3277, 8192, 13107, 18022]))
     if Fraction(report["common_norm_exact"]) != 0 or Fraction(report["reversal_norm_exact"]) != Fraction(4915, 32768):
@@ -81,7 +86,7 @@ def test_unbound_envelopes_cannot_issue_a_decision() -> None:
 
 
 def contract(path: Path) -> dict[str, Any]:
-    manifest = case.check()
+    manifest = frozen_manifest()
     evidence = []
     for claim in sorted(analysis.EVIDENCE_CLAIMS):
         artifact = path.parent / f"{claim}.txt"
@@ -109,7 +114,7 @@ def test_contract_requires_external_anchor_preacquisition_freeze_and_bound_evide
     path = tmp_path / "contract.json"
     record = contract(path)
     expected = analysis.digest(path)
-    manifest = case.check()
+    manifest = frozen_manifest()
     analysis.validate_contract(path, expected, manifest, "2026-10-28T00:00:00Z")
     with pytest.raises(ValueError, match="anchor"):
         analysis.validate_contract(path, "0" * 64, manifest, "2026-10-28T00:00:00Z")
@@ -130,7 +135,7 @@ def test_contract_parses_the_bytes_bound_by_the_external_digest(
     path.write_text(json.dumps(late))
     late_bytes = path.read_bytes()
     expected = analysis.digest(path)
-    manifest = case.check()
+    manifest = frozen_manifest()
     actual_read_bytes = Path.read_bytes
     reads = 0
 
@@ -152,7 +157,7 @@ def test_contract_uses_verified_manifest_without_rereading_case(
     path = tmp_path / "contract.json"
     contract(path)
     expected = analysis.digest(path)
-    manifest = case.check()
+    manifest = frozen_manifest()
     original_digest = analysis.digest
 
     def forbid_case_reread(candidate: Path) -> str:
@@ -179,11 +184,11 @@ def test_nonstring_evidence_digest_fails_with_a_contract_error(tmp_path: Path) -
     record["evidence"][0]["sha256"] = 123
     path.write_text(json.dumps(record))
     with pytest.raises(ValueError, match="external expected sha256"):
-        analysis.validate_contract(path, analysis.digest(path), case.check(), "2026-10-28T00:00:00Z")
+        analysis.validate_contract(path, analysis.digest(path), frozen_manifest(), "2026-10-28T00:00:00Z")
 
 
 def entry(index: int) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
-    manifest = case.check()
+    manifest = frozen_manifest()
     setting = manifest["settings"][index]
     source = case.ROOT / case.MESH_RUNS["job-00"]
     previous = json.loads((source / "results.json").read_bytes())["iterations"][setting["source_observation_index"]]
@@ -229,6 +234,7 @@ def test_entry_preserves_invalid_event_denominator() -> None:
         raise AssertionError("ineligible events remain accounted for")
 
 
+@pytest.mark.audit
 def test_real_serializer_to_offline_analyzer(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     import perceval as pcvl
     from perceval.serialization import OutputArchive, Serialization, deserialize, serialize
