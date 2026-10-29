@@ -273,6 +273,7 @@ differs from it only in the `cd_core.py` digest.
 | File | Contents |
 |---|---|
 | [design/ascella-two-photon-associator-case.md](design/ascella-two-photon-associator-case.md) | written case for one qpu:ascella job: two photons through L_a L_b against L_(ab) (a = (e6+e7)/sqrt2, b = (e5+e7)/sqrt2) with a quaternion control; the associator appears only in two-photon interference; preregistered Delta endpoints, HOM-visibility model, credits, seconds and the HOM-floor decision |
+| [design/ascella-associator-thermal-seismograph.md](design/ascella-associator-thermal-seismograph.md) | written prospective case for one 32-iteration qpu:ascella job: two photons through octonion associator and quaternion control under counterbalanced Hot (pi), Cold (0), and Wrapped (2*pi) predecessor phase conditioning with 12-mode spatial sentinel monitoring |
 | [design/tuna-order-pilot-adversarial-admission.md](design/tuna-order-pilot-adversarial-admission.md) | descriptive pilot preregistration, adversarial findings and execution admission |
 | [design/hypercomplex-operator-evidence.md](design/hypercomplex-operator-evidence.md) | algebra falsifiers, operator encodings, library roles and device evidence |
 | [design/heron-idle-readout-attribution.md](design/heron-idle-readout-attribution.md) | own-partner, near-field and far-field split of the Kingston idle readout phase rate, by complementary reader classes |

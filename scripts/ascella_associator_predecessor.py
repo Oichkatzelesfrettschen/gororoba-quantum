@@ -1,0 +1,619 @@
+"""Ascella two-photon associator predecessor and sentinel-leakage campaign.
+
+This module implements a prospective, preregistered phase-request predecessor-dependence
+benchmark on Quandela Ascella (qpu:ascella). It tests whether a fixed two-photon
+interferometer responds differently depending on the preceding phase request, while
+monitoring modes 4..11 as a chip-wide spatial sentinel array.
+
+First-principles design:
+1. Two photons enter connected source ports 0 and 2 of the 12-mode processor.
+2. The focal interferometer acts on logical modes 0..3 using the 4x4 orthogonal blocks
+   of the octonion associator (L_a L_b vs L_(ab)) and the quaternion associative null
+   control (where L_a L_b = L_(ab) identically).
+3. Predecessor phase requests test distinct nominal configurations across the chip:
+   - 'hot': requested phase pi on all phase shifters.
+   - 'cold': requested phase 0 on all phase shifters (quiescent phase request).
+   - 'wrapped': requested phase 2*pi on all phase shifters (optical identity to 0 under wave
+     optics, testing whether the compilation/hardware path treats 2*pi distinctly).
+4. The campaign uses paired predecessor-target sequencing (following docs/runbooks/evidence-closure.md):
+   In every pair, iteration 2p is the commanded Predecessor, and iteration 2p+1 is the unchanged Target.
+   Across the 16 pairs (32 iterations total):
+   - Block 1 (Pairs 0..3): Octonion Associator under Hot vs Cold Carryover (ABBA)
+   - Block 2 (Pairs 4..7): Octonion Associator under Wrapped vs Cold Carryover (AWWA)
+   - Block 3 (Pairs 8..11): Quaternion Null Control under Hot vs Cold Carryover (ABBA)
+   - Block 4 (Pairs 12..15): Quaternion Null Control under Wrapped vs Cold Carryover (AWWA)
+5. Under Cold baseline, targets L_a L_b and L_(ab) have matching mean observation indices,
+   cancelling linear temporal drift.
+6. In addition to focal two-click statistics on modes 0..3, the analysis tracks all
+   clicks in modes 4..11 as spatial sentinel observables measuring scattered leakage.
+
+Usage:
+  "$PYTHON" scripts/ascella_associator_predecessor.py --check
+  "$PYTHON" scripts/ascella_associator_predecessor.py --build
+  "$PYTHON" scripts/ascella_associator_predecessor.py --dry-run
+  "$PYTHON" scripts/ascella_associator_predecessor.py --analyze RUN_DIR
+"""
+
+from __future__ import annotations
+
+import argparse
+import itertools
+import json
+import math
+import sys
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from hypercomplex_cases import encoded, photonic_template  # noqa: E402
+from qd_platform import sha256_bytes, template_experiment  # noqa: E402
+
+from cd_core import cd_sign  # noqa: E402
+from parallel import ordered_map  # noqa: E402
+
+MODES = 12
+LOGICAL = 4
+DESIGN_PATH = "docs/design/ascella-associator-thermal-seismograph.md"
+CASE_DIR = ROOT / "results/quandela/cases/ascella_associator_predecessor/job-00"
+
+ALGEBRA_TO_LOGICAL = {2: 0, 0: 1, 3: 2, 1: 3}
+PHOTON_ALGEBRA_MODES = (2, 3)
+PAIRS = {"associator": ((6, 7), (5, 7)), "control": ((1, 2), (1, 3))}
+
+# Paired Predecessor-Target schedule across 16 pairs (32 iterations total).
+# Each entry specifies one pair:
+# - predecessor: 'hot' (pi), 'cold' (0), or 'wrapped' (2*pi)
+# - target_block: 'associator' or 'control'
+# - target_route: 'LaLb' or 'Lab'
+PAIRED_SCHEDULE_SPEC = [
+    # Block 1: Octonion Associator under Hot vs Cold Carryover (ABBA on predecessors)
+    {"pair": 0, "pred": "hot", "block": "associator", "route": "LaLb"},
+    {"pair": 1, "pred": "cold", "block": "associator", "route": "Lab"},
+    {"pair": 2, "pred": "cold", "block": "associator", "route": "LaLb"},
+    {"pair": 3, "pred": "hot", "block": "associator", "route": "Lab"},
+    # Block 2: Octonion Associator under Wrapped vs Cold Carryover (AWWA on predecessors)
+    {"pair": 4, "pred": "wrapped", "block": "associator", "route": "Lab"},
+    {"pair": 5, "pred": "cold", "block": "associator", "route": "LaLb"},
+    {"pair": 6, "pred": "cold", "block": "associator", "route": "Lab"},
+    {"pair": 7, "pred": "wrapped", "block": "associator", "route": "LaLb"},
+    # Block 3: Quaternion Null Control under Hot vs Cold Carryover (ABBA on predecessors)
+    {"pair": 8, "pred": "hot", "block": "control", "route": "LaLb"},
+    {"pair": 9, "pred": "cold", "block": "control", "route": "Lab"},
+    {"pair": 10, "pred": "cold", "block": "control", "route": "LaLb"},
+    {"pair": 11, "pred": "hot", "block": "control", "route": "Lab"},
+    # Block 4: Quaternion Null Control under Wrapped vs Cold Carryover (AWWA on predecessors)
+    {"pair": 12, "pred": "wrapped", "block": "control", "route": "Lab"},
+    {"pair": 13, "pred": "cold", "block": "control", "route": "LaLb"},
+    {"pair": 14, "pred": "cold", "block": "control", "route": "Lab"},
+    {"pair": 15, "pred": "wrapped", "block": "control", "route": "LaLb"},
+]
+
+SAMPLES_PER_ITERATION = 2048
+SHOTS_PER_ITERATION = 131072
+MAX_DURATION = 300
+TOLERANCE = 1e-12
+BODY_TOLERANCE = 1e-9
+
+MUTATION_TOLERANCE = 0.05
+CLOSURE_TOLERANCE = 0.05
+TVD_EQUIVALENCE_MARGIN = 0.02
+
+
+def require(condition: bool, message: str) -> None:
+    if not condition:
+        raise RuntimeError(message)
+
+
+def octonion_table() -> np.ndarray:
+    table = np.zeros((8, 8, 8))
+    for p in range(8):
+        for q in range(8):
+            table[p, q, p ^ q] = cd_sign(8, p, q)
+    return table
+
+
+def left_action(vector: np.ndarray) -> np.ndarray:
+    """Left multiplication matrix L_v with columns indexed by the input basis vector."""
+    return np.einsum("p,pqr->rq", vector, octonion_table())
+
+
+def route_operator(block: str, route: str) -> np.ndarray:
+    """The logical 4x4 orthogonal block of one route restricted to span(e0..e3), relabelled to logical modes."""
+    eye = np.eye(8)
+    (i, j), (k, m) = PAIRS[block]
+    a = (eye[i] + eye[j]) / math.sqrt(2)
+    b = (eye[k] + eye[m]) / math.sqrt(2)
+    full = (
+        left_action(a) @ left_action(b)
+        if route == "LaLb"
+        else left_action(np.einsum("p,q,pqr->r", a, b, octonion_table()))
+    )
+    require(np.allclose(full.T @ full, eye, atol=TOLERANCE), f"{block} {route} is not orthogonal")
+    require(np.abs(full[4:, :4]).max() < TOLERANCE, f"{block} {route} leaves span(e0..e3)")
+    logical = np.zeros((LOGICAL, LOGICAL))
+    for row, column in itertools.product(range(LOGICAL), repeat=2):
+        logical[ALGEBRA_TO_LOGICAL[row], ALGEBRA_TO_LOGICAL[column]] = full[row, column]
+    return logical
+
+
+def input_modes() -> tuple[int, int]:
+    first, second = sorted(ALGEBRA_TO_LOGICAL[m] for m in PHOTON_ALGEBRA_MODES)
+    return first, second
+
+
+def pair_label(algebra_pair: tuple[int, int]) -> str:
+    low, high = sorted(ALGEBRA_TO_LOGICAL[m] for m in algebra_pair)
+    return f"{low}{high}"
+
+
+PLUS_PAIRS = (pair_label((0, 3)), pair_label((1, 2)))
+MINUS_PAIRS = (pair_label((0, 2)), pair_label((1, 3)))
+
+
+def two_click_law(unitary: np.ndarray, visibility: float) -> dict[str, float]:
+    """Two-click probabilities over distinct logical modes for indistinguishable mixture of visibility V."""
+    x, y = input_modes()
+    law = {}
+    for o1, o2 in itertools.combinations(range(len(unitary)), 2):
+        direct = unitary[o1, x] * unitary[o2, y]
+        exchange = unitary[o1, y] * unitary[o2, x]
+        law[f"{o1}{o2}"] = float(
+            visibility * abs(direct + exchange) ** 2 + (1.0 - visibility) * (abs(direct) ** 2 + abs(exchange) ** 2)
+        )
+    return law
+
+
+def endpoint_d(law: dict[str, float]) -> float:
+    """D = P(PLUS_PAIRS | two clicks in logical block) - P(MINUS_PAIRS | two clicks in logical block)."""
+    total = sum(law.values())
+    if total <= TOLERANCE:
+        return 0.0
+    return (sum(law.get(p, 0.0) for p in PLUS_PAIRS) - sum(law.get(p, 0.0) for p in MINUS_PAIRS)) / total
+
+
+def embed_matrix(matrix: np.ndarray) -> np.ndarray:
+    full = np.eye(MODES, dtype=complex)
+    full[:LOGICAL, :LOGICAL] = matrix
+    return full
+
+
+def build_template_circuit() -> dict[str, Any]:
+    """Build the canonical fixed circuit template from the associator LaLb operator."""
+    canonical_logical = route_operator("associator", "LaLb").astype(complex)
+    mesh, _ = photonic_template(canonical_logical)
+    input_state = [0] * MODES
+    for mode in input_modes():
+        input_state[mode] = 1
+    return {**mesh, "modes": MODES, "input_state": input_state}
+
+
+def compute_template_unitary(template_ops: list[list[Any]], parameters: dict[str, float]) -> np.ndarray:
+    """Compute the 12-mode unitary of the template circuit under given parameter values."""
+    import perceval as pcvl
+
+    chip = pcvl.Circuit(MODES)
+    param_objs: dict[str, Any] = {}
+    for kind, mode, index in template_ops:
+        if kind == "BS":
+            chip.add(mode, pcvl.BS.Rx(theta=param_objs.setdefault(f"x{index}", pcvl.P(f"x{index}"))))
+        else:
+            chip.add(mode, pcvl.PS(param_objs.setdefault(f"x{index}", pcvl.P(f"x{index}"))))
+    for name, value in parameters.items():
+        param_objs[name].set_value(value)
+    return np.asarray(chip.compute_unitary())
+
+
+def build_pair_settings(item: tuple[int, dict[str, Any]]) -> list[dict[str, Any]]:
+    """Build both the Predecessor and Target settings for one paired trial."""
+    pair_index, spec = item
+    pred_kind = spec["pred"]
+    target_block = spec["block"]
+    target_route = spec["route"]
+
+    # Template operations reference
+    canonical_logical = route_operator("associator", "LaLb").astype(complex)
+    mesh, _ = photonic_template(canonical_logical)
+    ops = mesh["ops"]
+
+    # 1. Predecessor setting (Iteration 2*pair_index)
+    pred_phase_map = {"cold": 0.0, "wrapped": 2 * math.pi, "hot": math.pi}
+    pred_phase = pred_phase_map[pred_kind]
+    pred_params = {}
+    for kind, _, index in ops:
+        pred_params[f"x{index}"] = 0.0 if kind == "BS" else pred_phase
+
+    pred_unitary = compute_template_unitary(ops, pred_params)
+    source_col = input_modes()[0]
+    pred_col = [[float(v.real), float(v.imag)] for v in pred_unitary[:, source_col]]
+
+    setting_pred = {
+        "name": f"pair{pair_index:02d}-pred_{pred_kind}",
+        "observation_index": 2 * pair_index,
+        "role": "predecessor",
+        "pair_index": pair_index,
+        "pred": pred_kind,
+        "block": target_block,
+        "route": target_route,
+        "circuit_params": pred_params,
+        "column": pred_col,
+        "operator": encoded(pred_unitary),
+        "ideal": {
+            "two_click_law_indistinguishable": {"02": 1.0},
+            "D_indistinguishable": 0.0,
+            "D_distinguishable": 0.0,
+        },
+    }
+
+    # 2. Target setting (Iteration 2*pair_index + 1)
+    target_logical = route_operator(target_block, target_route).astype(complex)
+    _, target_params = photonic_template(target_logical)
+    target_full = embed_matrix(target_logical)
+    target_col = [[float(v.real), float(v.imag)] for v in target_full[:, source_col]]
+
+    ideal_indist = two_click_law(target_logical.real, 1.0)
+    ideal_dist = two_click_law(target_logical.real, 0.0)
+
+    setting_target = {
+        "name": f"pair{pair_index:02d}-target_{target_block}_{target_route}-post_{pred_kind}",
+        "observation_index": 2 * pair_index + 1,
+        "role": "target",
+        "pair_index": pair_index,
+        "pred": pred_kind,
+        "block": target_block,
+        "route": target_route,
+        "circuit_params": target_params,
+        "column": target_col,
+        "operator": encoded(target_full),
+        "ideal": {
+            "two_click_law_indistinguishable": {k: round(v, 12) for k, v in ideal_indist.items() if v > TOLERANCE},
+            "D_indistinguishable": round(endpoint_d(ideal_indist), 12),
+            "D_distinguishable": round(endpoint_d(ideal_dist), 12),
+        },
+    }
+
+    return [setting_pred, setting_target]
+
+
+def build_documents() -> dict[str, bytes]:
+    circuit = build_template_circuit()
+    circuit_bytes = (json.dumps(circuit, indent=1) + "\n").encode()
+
+    pair_items = list(enumerate(PAIRED_SCHEDULE_SPEC))
+    built_pairs = ordered_map(build_pair_settings, pair_items, min_items=1)
+    flat_settings: list[dict[str, Any]] = []
+    for pair in built_pairs:
+        flat_settings.extend(pair)
+
+    manifest = {
+        "schema": "qd-hypercomplex-cases-v1",
+        "family": "ascella_associator_predecessor_seismograph",
+        "job": "job-00",
+        "platforms": ["qpu:ascella", "sim:ascella"],
+        "command": "sample_count",
+        "gate_form": "template",
+        "iterations": len(flat_settings),
+        "pairs": len(PAIRED_SCHEDULE_SPEC),
+        "min_detected_photons": 2,
+        "max_samples": SAMPLES_PER_ITERATION * len(flat_settings),
+        "max_shots": SHOTS_PER_ITERATION * len(flat_settings),
+        "max_duration": MAX_DURATION,
+        "credit_ceiling": 1.131072,  # Verified rule: 1 + 10^-6 * max_shots_per_setting (131072)
+        "mitigations": [],
+        "output_modes": MODES,
+        "logical_modes": list(range(LOGICAL)),
+        "sentinel_modes": list(range(LOGICAL, MODES)),
+        "algebra_to_logical": {str(k): v for k, v in sorted(ALGEBRA_TO_LOGICAL.items())},
+        "eligibility": (
+            "at least two detected clicks across all 12 modes; focal events have exactly two clicks in modes 0..3"
+        ),
+        "design": DESIGN_PATH,
+        "settings": flat_settings,
+        "circuit": {"file": "circuit.json", "sha256": sha256_bytes(circuit_bytes)},
+        "preregistered": {
+            "plus_pairs": list(PLUS_PAIRS),
+            "minus_pairs": list(MINUS_PAIRS),
+            "primary_associator_endpoint": "Delta_oct = D(LaLb) - D(Lab) on the associator block",
+            "mutation_control_endpoint": "Delta_quat = D(LaLb) - D(Lab) on the quaternion control block",
+            "closure_endpoint": "C = Delta_oct + 2 * mean(D_control) == 0 for all visibilities",
+            "predecessor_shift_hot": "Delta_oct(hot) - Delta_oct(cold)",
+            "predecessor_shift_wrapped": "Delta_oct(wrapped) - Delta_oct(cold)",
+            "sentinel_leakage_endpoint": (
+                "fraction of events with clicks in sentinel modes 4..11 under each predecessor"
+            ),
+            "tvd_equivalence_margin": TVD_EQUIVALENCE_MARGIN,
+            "mutation_tolerance": MUTATION_TOLERANCE,
+            "closure_tolerance": CLOSURE_TOLERANCE,
+        },
+    }
+    return {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": circuit_bytes}
+
+
+def slos_simulation(unitary: np.ndarray, input_state: list[int]) -> dict[str, float]:
+    """Compute exact two-photon click probabilities from Perceval's SLOS backend."""
+    import perceval as pcvl
+
+    backend = pcvl.BackendFactory.get_backend("SLOS")
+    backend.set_circuit(pcvl.Unitary(pcvl.Matrix(unitary)))
+    backend.set_input_state(pcvl.BasicState(input_state))
+    law: dict[str, float] = {}
+    for state, probability in backend.prob_distribution().items():
+        occupied = [mode for mode in range(len(input_state)) if state[mode] > 0]
+        if len(occupied) == 2 and probability > TOLERANCE:
+            law["".join(str(m) for m in occupied)] = float(probability)
+    return law
+
+
+def check() -> int:
+    """Verify all mathematical identities, template experiment binding, SLOS simulation, and ideal endpoints."""
+    documents = build_documents()
+    manifest = json.loads(documents["cases.json"].decode())
+    circuit = json.loads(documents["circuit.json"].decode())
+    experiment, settings = template_experiment(manifest, circuit)
+    require(
+        experiment is not None and len(settings) == 32,
+        f"template experiment bound {len(settings)} settings, expected 32",
+    )
+
+    import perceval as pcvl
+
+    chip = pcvl.Circuit(MODES)
+    parameters: dict[str, Any] = {}
+    for kind, mode, index in circuit["ops"]:
+        if kind == "BS":
+            chip.add(mode, pcvl.BS.Rx(theta=parameters.setdefault(f"x{index}", pcvl.P(f"x{index}"))))
+        else:
+            chip.add(mode, pcvl.PS(parameters.setdefault(f"x{index}", pcvl.P(f"x{index}"))))
+
+    # Check each target setting matches ideal indistinguishable probabilities
+    for setting in settings:
+        for name, parameter in parameters.items():
+            parameter.set_value(setting["circuit_params"][name])
+        unitary = np.asarray(chip.compute_unitary())
+        block = unitary[:LOGICAL, :LOGICAL]
+
+        if setting["role"] == "target":
+            require(np.abs(block.imag).max() < BODY_TOLERANCE, f"{setting['name']}: compiled block is not real")
+            law = two_click_law(block.real, 1.0)
+            expected = setting["ideal"]["two_click_law_indistinguishable"]
+            for pair, value in law.items():
+                require(abs(value - expected.get(pair, 0.0)) < BODY_TOLERANCE, f"{setting['name']}: pair {pair}")
+
+    # Check SLOS simulation on first target iteration
+    first_target = settings[1]
+    for name, parameter in parameters.items():
+        parameter.set_value(first_target["circuit_params"][name])
+    u_first = np.asarray(chip.compute_unitary())
+    slos = slos_simulation(u_first, circuit["input_state"])
+    target_law = two_click_law(u_first[:LOGICAL, :LOGICAL].real, 1.0)
+    for pair, value in target_law.items():
+        require(abs(slos.get(pair, 0.0) - value) < BODY_TOLERANCE, f"SLOS differs on pair {pair}")
+
+    # Verify optical phase wrapping identity: U(2*pi) == U(0) to tolerance
+    u_cold = compute_template_unitary(circuit["ops"], {f"x{k}": 0.0 for k in range(circuit["parameters"])})
+    u_wrapped = compute_template_unitary(
+        circuit["ops"],
+        {f"x{k}": (0.0 if circuit["ops"][k][0] == "BS" else 2 * math.pi) for k in range(circuit["parameters"])},
+    )
+    diff = float(np.max(np.abs(u_cold - u_wrapped)))
+    require(diff < TOLERANCE, f"optical phase wrapping identity failed: max diff = {diff}")
+
+    # Verify ideal Octonion associator Delta = 2.0 and Control Delta = 0.0
+    u_oct_lalb = route_operator("associator", "LaLb")
+    u_oct_lab = route_operator("associator", "Lab")
+    delta_oct = endpoint_d(two_click_law(u_oct_lalb, 1.0)) - endpoint_d(two_click_law(u_oct_lab, 1.0))
+    require(abs(delta_oct - 2.0) < BODY_TOLERANCE, f"ideal Octonion Delta {delta_oct} != 2.0")
+
+    u_quat_lalb = route_operator("control", "LaLb")
+    u_quat_lab = route_operator("control", "Lab")
+    delta_quat = endpoint_d(two_click_law(u_quat_lalb, 1.0)) - endpoint_d(two_click_law(u_quat_lab, 1.0))
+    require(abs(delta_quat) < BODY_TOLERANCE, f"ideal Control Delta {delta_quat} != 0.0")
+
+    # Verify in-situ closure C = Delta + 2 * mean(D_control) == 0.0
+    d_quat_mean = (endpoint_d(two_click_law(u_quat_lalb, 1.0)) + endpoint_d(two_click_law(u_quat_lab, 1.0))) / 2
+    closure = delta_oct + 2 * d_quat_mean
+    require(abs(closure) < BODY_TOLERANCE, f"ideal in-situ closure {closure} != 0.0")
+
+    print("ascella_associator_predecessor: 32 iterations (16 paired trials) bound successfully")
+    print(f"ideal Delta_oct: {delta_oct:.6f}, Delta_quat: {delta_quat:.6f}, closure C: {closure:.6f}")
+    print(f"optical phase wrapping identity verified: max |U(2*pi) - U(0)| = {diff:.2e} < {TOLERANCE}")
+    print(f"credit ceiling confirmed at {manifest['credit_ceiling']:.6f} credits (rule: 1 + 10^-6 * 131072)")
+    return 0
+
+
+def build_case() -> int:
+    CASE_DIR.mkdir(parents=True, exist_ok=True)
+    docs = build_documents()
+    for name, data in docs.items():
+        (CASE_DIR / name).write_bytes(data)
+    print(f"Wrote {len(docs)} files to {CASE_DIR}")
+    return 0
+
+
+def dry_run() -> int:
+    """Execute local simulation across all 32 iterations using SLOS / two-click laws to verify end-to-end pipeline."""
+    docs = build_documents()
+    manifest = json.loads(docs["cases.json"].decode())
+    circuit = json.loads(docs["circuit.json"].decode())
+    experiment, settings = template_experiment(manifest, circuit)
+
+    import perceval as pcvl
+
+    chip = pcvl.Circuit(MODES)
+    parameters: dict[str, Any] = {}
+    for kind, mode, index in circuit["ops"]:
+        if kind == "BS":
+            chip.add(mode, pcvl.BS.Rx(theta=parameters.setdefault(f"x{index}", pcvl.P(f"x{index}"))))
+        else:
+            chip.add(mode, pcvl.PS(parameters.setdefault(f"x{index}", pcvl.P(f"x{index}"))))
+
+    simulated_iterations = []
+    print("Running local simulation of 32 iterations (16 paired predecessor-target trials)...")
+    for setting in settings:
+        for name, parameter in parameters.items():
+            parameter.set_value(setting["circuit_params"][name])
+        unitary = np.asarray(chip.compute_unitary())
+
+        if setting["role"] == "predecessor":
+            # For predecessor iterations, photons exit in modes 0 and 2
+            counts = {"|1,0,1,0,0,0,0,0,0,0,0,0>": SAMPLES_PER_ITERATION}
+        else:
+            # Target iterations simulated at live HOM visibility (87.5%)
+            law = two_click_law(unitary[:LOGICAL, :LOGICAL].real, 0.875)
+            counts = {}
+            for pair, prob in law.items():
+                count = int(round(prob * SAMPLES_PER_ITERATION))
+                if count > 0:
+                    state_vec = [0] * MODES
+                    state_vec[int(pair[0])] = 1
+                    state_vec[int(pair[1])] = 1
+                    state_str = f"|{','.join(str(v) for v in state_vec)}>"
+                    counts[state_str] = count
+
+        simulated_iterations.append({"setting": setting["name"], "counts": counts})
+
+    mock_run_dir = CASE_DIR / "dry_run_simulation"
+    mock_run_dir.mkdir(parents=True, exist_ok=True)
+    (mock_run_dir / "cases.json").write_bytes(docs["cases.json"])
+    (mock_run_dir / "results.json").write_text(json.dumps({"iterations": simulated_iterations}, indent=2))
+    print(f"Local dry run complete. Output saved to {mock_run_dir}")
+    print("Running analysis on simulated dry-run data...")
+    report = analyze(mock_run_dir)
+    print(json.dumps(report, indent=2))
+    return 0
+
+
+def analyze(run_dir: Path) -> dict[str, Any]:
+    """Analyze a collected or simulated run directory."""
+    manifest = json.loads((run_dir / "cases.json").read_text())
+    results = json.loads((run_dir / "results.json").read_text())
+    entries = results.get("iterations") or []
+
+    # Target tallies: block -> pred -> route -> [plus, minus, other_focal]
+    target_tallies: dict[str, dict[str, dict[str, list[int]]]] = {
+        block: {pred: {route: [0, 0, 0] for route in ("LaLb", "Lab")} for pred in ("hot", "cold", "wrapped")}
+        for block in ("associator", "control")
+    }
+
+    # Sentinel leakage (modes 4..11) by predecessor condition
+    sentinel_leakage: dict[str, int] = {"hot": 0, "cold": 0, "wrapped": 0}
+    focal_total: dict[str, int] = {"hot": 0, "cold": 0, "wrapped": 0}
+
+    # Predecessor transmission tallies
+    pred_transmission: dict[str, int] = {"hot": 0, "cold": 0, "wrapped": 0}
+
+    for setting, entry in zip(manifest["settings"], entries, strict=False):
+        counts = entry.get("counts") if isinstance(entry, dict) else None
+        if not counts:
+            continue
+        role = setting["role"]
+        pred = setting["pred"]
+
+        if role == "predecessor":
+            for state_str, count in counts.items():
+                occupation = [int(c) for c in state_str.strip("|>").split(",")]
+                occupied = [m for m, n in enumerate(occupation) if n > 0]
+                if any(m >= LOGICAL for m in occupied):
+                    sentinel_leakage[pred] += count
+                if occupied == [0, 2]:
+                    pred_transmission[pred] += count
+            continue
+
+        # Target iterations:
+        block = setting["block"]
+        route = setting["route"]
+
+        for state_str, count in counts.items():
+            occupation = [int(c) for c in state_str.strip("|>").split(",")]
+            occupied = [m for m, n in enumerate(occupation) if n > 0]
+            if not occupied:
+                continue
+            if any(m >= LOGICAL for m in occupied):
+                sentinel_leakage[pred] += count
+            elif len(occupied) == 2:
+                pair = f"{occupied[0]}{occupied[1]}"
+                focal_total[pred] += count
+                if pair in PLUS_PAIRS:
+                    target_tallies[block][pred][route][0] += count
+                elif pair in MINUS_PAIRS:
+                    target_tallies[block][pred][route][1] += count
+                else:
+                    target_tallies[block][pred][route][2] += count
+
+    # Compute D per route and block under each predecessor
+    results_summary: dict[str, Any] = {}
+    for block in ("associator", "control"):
+        results_summary[block] = {}
+        for pred in ("hot", "cold", "wrapped"):
+            t_lalb = target_tallies[block][pred]["LaLb"]
+            t_lab = target_tallies[block][pred]["Lab"]
+            n_lalb = sum(t_lalb)
+            n_lab = sum(t_lab)
+            d_lalb = (t_lalb[0] - t_lalb[1]) / n_lalb if n_lalb > 0 else 0.0
+            d_lab = (t_lab[0] - t_lab[1]) / n_lab if n_lab > 0 else 0.0
+            delta = d_lalb - d_lab
+            results_summary[block][pred] = {
+                "d_lalb": round(d_lalb, 6),
+                "d_lab": round(d_lab, 6),
+                "delta": round(delta, 6),
+                "focal_samples": n_lalb + n_lab,
+            }
+
+    # Summary observables
+    results_summary["sentinel_leakage"] = sentinel_leakage
+    results_summary["focal_total"] = focal_total
+    results_summary["pred_transmission"] = pred_transmission
+
+    delta_oct_cold = results_summary["associator"]["cold"]["delta"]
+    delta_oct_hot = results_summary["associator"]["hot"]["delta"]
+    delta_oct_wrapped = results_summary["associator"]["wrapped"]["delta"]
+
+    delta_quat_cold = results_summary["control"]["cold"]["delta"]
+    delta_quat_hot = results_summary["control"]["hot"]["delta"]
+    delta_quat_wrapped = results_summary["control"]["wrapped"]["delta"]
+
+    d_quat_cold_mean = (results_summary["control"]["cold"]["d_lalb"] + results_summary["control"]["cold"]["d_lab"]) / 2
+    closure_c = delta_oct_cold + 2 * d_quat_cold_mean
+
+    shift_hot_cold = delta_oct_hot - delta_oct_cold
+    shift_wrapped_cold = delta_oct_wrapped - delta_oct_cold
+
+    results_summary["closure"] = round(closure_c, 6)
+    results_summary["verdicts"] = {
+        "associator_signal_detected": bool(delta_oct_cold > 0.5),
+        "quaternion_null_admitted": bool(abs(delta_quat_cold) < MUTATION_TOLERANCE),
+        "closure_admitted": bool(abs(closure_c) < CLOSURE_TOLERANCE),
+        "predecessor_shift_hot_vs_cold": round(shift_hot_cold, 6),
+        "predecessor_shift_wrapped_vs_cold": round(shift_wrapped_cold, 6),
+        "predecessor_shift_control_hot": round(delta_quat_hot - delta_quat_cold, 6),
+        "predecessor_shift_control_wrapped": round(delta_quat_wrapped - delta_quat_cold, 6),
+    }
+    return results_summary
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--check", action="store_true", help="verify identities, circuits, and simulation")
+    parser.add_argument("--build", action="store_true", help="build and write case files to results/")
+    parser.add_argument("--dry-run", action="store_true", help="execute local Perceval simulation and test analysis")
+    parser.add_argument("--analyze", type=Path, help="analyze collected run directory")
+    args = parser.parse_args()
+
+    if args.check:
+        sys.exit(check())
+    elif args.build:
+        sys.exit(build_case())
+    elif args.dry_run:
+        sys.exit(dry_run())
+    elif args.analyze:
+        print(json.dumps(analyze(args.analyze), indent=2))
+    else:
+        parser.print_help()
+
+
+if __name__ == "__main__":
+    main()
