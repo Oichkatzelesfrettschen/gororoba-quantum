@@ -13,6 +13,29 @@ import ascella_transition_day_repeat as repeat
 
 repeat.BUNDLE = Path("docs/evidence/ascella-transition-day-repeat-ci")
 
+# Ascella's Explorer row reads running while it serves other users' jobs, so the
+# scheduler admits that status beside available (scheduler-admission.md).
+ADMITTED_STATUSES = ["available", "running"]
+
+
+def elapsed_allowed(now: float, baseline: float) -> bool:
+    """Admit a provider start at least 24 hours after the baseline, the case's preregistered separation."""
+    return math.isfinite(now) and math.isfinite(baseline) and now >= baseline + 86_400
+
+
+def validate_registration(result: dict[str, Any], collected: dict[str, Any], campaign: str, producer: str) -> None:
+    """Run the runner's registration rules with the 24-hour separation in place of its next-day window.
+
+    validate_registration reads time_allowed as a module global of the runner, whose source digest the
+    analysis records, so the scheduled repeat swaps the rule for this call and restores it after.
+    """
+    original = repeat.time_allowed
+    repeat.time_allowed = elapsed_allowed
+    try:
+        repeat.validate_registration(result, collected, campaign, producer)
+    finally:
+        repeat.time_allowed = original
+
 
 def check_plan(plan: dict[str, Any]) -> None:
     """Reject a scheduler plan that differs from the source-bound case."""
@@ -26,7 +49,7 @@ def check_plan(plan: dict[str, Any]) -> None:
         or not isinstance(ceiling, int | float)
         or not math.isfinite(ceiling)
         or not 0 <= ceiling <= context.CREDIT_CEILING
-        or plan.get("admitted_statuses") != ["available"]
+        or plan.get("admitted_statuses") != ADMITTED_STATUSES
     ):
         raise ValueError("the scheduled plan differs from the frozen case or its bounds")
 
@@ -48,9 +71,9 @@ def check_result(directory: Path) -> dict[str, Any]:
     if (
         isinstance(start, bool)
         or not isinstance(start, int | float)
-        or not repeat.time_allowed(start, campaign["baseline_start_unix"])
+        or not elapsed_allowed(start, campaign["baseline_start_unix"])
     ):
-        raise ValueError("the provider start lies outside the registered next-day window")
+        raise ValueError("the provider start lies less than 24 hours after the baseline")
     if [row["name"] for row in earlier] != [row["name"] for row in later]:
         raise ValueError("the returned settings differ from the matched baseline")
     comparisons = context.ordered_map(repeat._comparison_job, list(zip(earlier, later, strict=True)), min_items=1)
@@ -65,13 +88,14 @@ def check_result(directory: Path) -> dict[str, Any]:
         "repeat": measured,
         "comparisons": comparisons,
         "matched_meshes": sum(row["matched_mesh"] for row in comparisons),
+        "elapsed_hours": round((start - campaign["baseline_start_unix"]) / 3_600, 6),
         "boundary": (
             "Same recorded mesh does not establish unchanged analog calibration; "
             "elapsed time and context can confound drift."
         ),
     }
     collected = context._read(absolute / "results.json")
-    repeat.validate_registration(
+    validate_registration(
         result,
         collected,
         context._sha((repeat.ROOT / repeat.BUNDLE / "campaign.json").read_bytes()),

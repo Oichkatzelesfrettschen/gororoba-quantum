@@ -1,10 +1,12 @@
 {
- "approval": "User: Afterward: test independent compiled meshes and output-port permutations, then repeat selected matched meshes tomorrow to measure drift. User requested execution through CI.",
+ "approval": "User: Afterward: test independent compiled meshes and output-port permutations, then repeat selected matched meshes tomorrow to measure drift. User requested execution through CI. User, 2026-10-29: ensure the Ascella run uses the latest calibration and still runs regardless of self-imposed timeframes; if it is collecting data, collect.",
  "case": "docs/evidence/ascella-transition-day-repeat-ci/README.md",
  "enabled": true,
  "jobs": [
   {
-   "admit_statuses": [],
+   "admit_statuses": [
+    "running"
+   ],
    "after": null,
    "body_sha256": "b349e2d056618b7f36b81c0d3d3d52fcae4212a931c359499bc9ad615445fbd0",
    "case_dir": "results/quandela/cases/ascella_transition_day_repeat/matched",
@@ -13,8 +15,7 @@
     "cases.json": "1ba22828ba3c8e827be94c5eb987f401434570059a31ee584a55df927ea74be9",
     "circuit.json": "736cf0c7b417911d07676cbce3cea4ab7fb08f9a89269b700c3d51679b9c83a2"
    },
-   "key": "matched-repeat",
-   "latest_start": "2026-10-29T06:59:00Z",
+   "key": "matched-repeat-admitted",
    "matched_check": [
     "scripts/ascella_transition_ci_check.py",
     "--matched-check",

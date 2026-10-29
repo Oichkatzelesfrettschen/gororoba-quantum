@@ -1,0 +1,336 @@
+{
+  "status": "ADMITTED",
+  "verdicts": {
+    "execution_status": "ADMITTED",
+    "associator_signal_detected": true,
+    "quaternion_null_admitted": true,
+    "closure_admitted": true,
+    "predecessor_carryover_hot": "INCONCLUSIVE",
+    "predecessor_carryover_wrapped": "INCONCLUSIVE",
+    "drift_detected": false
+  },
+  "joint_model": {
+    "coefficients": {
+      "intercept": {
+        "estimate": -0.804207,
+        "std_error": 0.009733,
+        "t_statistic": -82.6246,
+        "p_value": 0.0,
+        "ci95": [
+          -0.826652,
+          -0.781762
+        ]
+      },
+      "delta_assoc": {
+        "estimate": 1.612742,
+        "std_error": 0.007874,
+        "t_statistic": 204.8242,
+        "p_value": 0.0,
+        "ci95": [
+          1.594585,
+          1.630899
+        ]
+      },
+      "block_ctrl": {
+        "estimate": -0.024584,
+        "std_error": 0.013019,
+        "t_statistic": -1.8884,
+        "p_value": 0.095662,
+        "ci95": [
+          -0.054605,
+          0.005437
+        ]
+      },
+      "delta_ctrl": {
+        "estimate": 0.000136,
+        "std_error": 0.007787,
+        "t_statistic": 0.0174,
+        "p_value": 0.986534,
+        "ci95": [
+          -0.017821,
+          0.018092
+        ]
+      },
+      "gamma_hot": {
+        "estimate": 0.00703,
+        "std_error": 0.007325,
+        "t_statistic": 0.9597,
+        "p_value": 0.365305,
+        "ci95": [
+          -0.009861,
+          0.023921
+        ]
+      },
+      "gamma_wrapped": {
+        "estimate": -0.004647,
+        "std_error": 0.006778,
+        "t_statistic": -0.6856,
+        "p_value": 0.51234,
+        "ci95": [
+          -0.020277,
+          0.010983
+        ]
+      },
+      "drift_poly_1": {
+        "estimate": 0.002523,
+        "std_error": 0.038779,
+        "t_statistic": 0.0651,
+        "p_value": 0.949723,
+        "ci95": [
+          -0.086901,
+          0.091946
+        ]
+      },
+      "drift_poly_2": {
+        "estimate": 0.024278,
+        "std_error": 0.033188,
+        "t_statistic": 0.7315,
+        "p_value": 0.485325,
+        "ci95": [
+          -0.052253,
+          0.100809
+        ]
+      }
+    },
+    "residual_degrees_of_freedom": 8,
+    "residual_sum_of_squares": 23.172395,
+    "f_test_drift": {
+      "f_statistic": 1.2287,
+      "p_value": 0.342491,
+      "drift_significant": false
+    },
+    "step_change_diagnostic": {
+      "max_standardized_residual": 2.2614,
+      "max_residual_iteration": 13,
+      "abrupt_step_detected": false,
+      "threshold": 3.5
+    },
+    "closure": {
+      "estimate": -0.044706,
+      "std_error": 0.035265,
+      "ci95": [
+        -0.126028,
+        0.036617
+      ],
+      "closure_admitted": true
+    },
+    "equivalence_testing": {
+      "margin": 0.02,
+      "alpha": 0.05,
+      "verdict_hot": "INCONCLUSIVE",
+      "verdict_wrapped": "INCONCLUSIVE"
+    }
+  },
+  "sentinel_leakage": {
+    "predecessor": {
+      "hot": {
+        "total_events": 32768,
+        "sentinel_events": 113,
+        "leakage_fraction": 0.003448,
+        "std_error": 0.000324,
+        "ci95": [
+          0.002814,
+          0.004083
+        ]
+      },
+      "cold": {
+        "total_events": 65536,
+        "sentinel_events": 242,
+        "leakage_fraction": 0.003693,
+        "std_error": 0.000237,
+        "ci95": [
+          0.003228,
+          0.004157
+        ]
+      },
+      "wrapped": {
+        "total_events": 32768,
+        "sentinel_events": 74,
+        "leakage_fraction": 0.002258,
+        "std_error": 0.000262,
+        "ci95": [
+          0.001744,
+          0.002772
+        ]
+      }
+    },
+    "target": {
+      "hot": {
+        "total_events": 32768,
+        "sentinel_events": 164,
+        "leakage_fraction": 0.005005,
+        "std_error": 0.00039,
+        "ci95": [
+          0.004241,
+          0.005769
+        ]
+      },
+      "cold": {
+        "total_events": 65536,
+        "sentinel_events": 183,
+        "leakage_fraction": 0.002792,
+        "std_error": 0.000206,
+        "ci95": [
+          0.002388,
+          0.003196
+        ]
+      },
+      "wrapped": {
+        "total_events": 32768,
+        "sentinel_events": 44,
+        "leakage_fraction": 0.001343,
+        "std_error": 0.000202,
+        "ci95": [
+          0.000946,
+          0.001739
+        ]
+      }
+    }
+  },
+  "target_observations": [
+    {
+      "pair_index": 0,
+      "block": "associator",
+      "pred": "hot",
+      "route": "Lab",
+      "d_observable": -0.7885791146979702,
+      "focal_samples": 8178,
+      "time": 0.0
+    },
+    {
+      "pair_index": 1,
+      "block": "associator",
+      "pred": "cold",
+      "route": "LaLb",
+      "d_observable": 0.813395371617485,
+      "focal_samples": 8167,
+      "time": 0.06666666666666667
+    },
+    {
+      "pair_index": 2,
+      "block": "associator",
+      "pred": "wrapped",
+      "route": "LaLb",
+      "d_observable": 0.7981168989973099,
+      "focal_samples": 8178,
+      "time": 0.13333333333333333
+    },
+    {
+      "pair_index": 3,
+      "block": "associator",
+      "pred": "cold",
+      "route": "Lab",
+      "d_observable": -0.8097866077998528,
+      "focal_samples": 8154,
+      "time": 0.2
+    },
+    {
+      "pair_index": 4,
+      "block": "associator",
+      "pred": "hot",
+      "route": "LaLb",
+      "d_observable": 0.8045186640471512,
+      "focal_samples": 8144,
+      "time": 0.26666666666666666
+    },
+    {
+      "pair_index": 5,
+      "block": "associator",
+      "pred": "cold",
+      "route": "Lab",
+      "d_observable": -0.8034575772437469,
+      "focal_samples": 8156,
+      "time": 0.3333333333333333
+    },
+    {
+      "pair_index": 6,
+      "block": "associator",
+      "pred": "wrapped",
+      "route": "Lab",
+      "d_observable": -0.8019814090019569,
+      "focal_samples": 8176,
+      "time": 0.4
+    },
+    {
+      "pair_index": 7,
+      "block": "associator",
+      "pred": "cold",
+      "route": "LaLb",
+      "d_observable": 0.8283198826118855,
+      "focal_samples": 8178,
+      "time": 0.4666666666666667
+    },
+    {
+      "pair_index": 8,
+      "block": "control",
+      "pred": "hot",
+      "route": "Lab",
+      "d_observable": -0.8124692572552877,
+      "focal_samples": 8132,
+      "time": 0.5333333333333333
+    },
+    {
+      "pair_index": 9,
+      "block": "control",
+      "pred": "cold",
+      "route": "LaLb",
+      "d_observable": -0.813669152708155,
+      "focal_samples": 8179,
+      "time": 0.6
+    },
+    {
+      "pair_index": 10,
+      "block": "control",
+      "pred": "wrapped",
+      "route": "LaLb",
+      "d_observable": -0.8257890873501346,
+      "focal_samples": 8174,
+      "time": 0.6666666666666666
+    },
+    {
+      "pair_index": 11,
+      "block": "control",
+      "pred": "cold",
+      "route": "Lab",
+      "d_observable": -0.8094478527607362,
+      "focal_samples": 8150,
+      "time": 0.7333333333333333
+    },
+    {
+      "pair_index": 12,
+      "block": "control",
+      "pred": "hot",
+      "route": "LaLb",
+      "d_observable": -0.7996556389128029,
+      "focal_samples": 8131,
+      "time": 0.8
+    },
+    {
+      "pair_index": 13,
+      "block": "control",
+      "pred": "cold",
+      "route": "Lab",
+      "d_observable": -0.8226063503739119,
+      "focal_samples": 8157,
+      "time": 0.8666666666666667
+    },
+    {
+      "pair_index": 14,
+      "block": "control",
+      "pred": "wrapped",
+      "route": "Lab",
+      "d_observable": -0.7998288089997554,
+      "focal_samples": 8178,
+      "time": 0.9333333333333333
+    },
+    {
+      "pair_index": 15,
+      "block": "control",
+      "pred": "cold",
+      "route": "LaLb",
+      "d_observable": -0.8055725284125627,
+      "focal_samples": 8183,
+      "time": 1.0
+    }
+  ]
+}
