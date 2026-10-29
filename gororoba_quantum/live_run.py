@@ -4865,6 +4865,32 @@ def envelope_ceiling_excess(approved: Mapping[str, Any], fresh: Mapping[str, Any
     ]
 
 
+def refresh_envelope_ceilings(record: dict[str, Any], args: argparse.Namespace) -> list[str]:
+    """Rebind a v2 attempt 1 to the ladder of its refreshed execution contract; return the ceiling rule's refusals.
+
+    The pre-submit refresh rebuilds the execution contract, so attempt 1's contract, sent ceiling
+    (args.max_execution_seconds), policy and planner charges follow it. Attempt 2 keeps the approved contract and sends
+    the chosen step's approved ceiling, which approved_envelope_mismatches bounds against the fresh ladder.
+    """
+    section = record.get("envelope", {})
+    if section.get("contract", {}).get("schema") != msq_envelope.ENVELOPE_SCHEMA or section.get("attempt", 1) != 1:
+        return []
+    try:
+        contract = envelope_contract(record, args)
+    except LiveRunError as error:
+        return [f"the refreshed plan leaves the ceiling rule: {error}"]
+    section["contract"] = contract
+    args.max_execution_seconds = float(contract["ceiling_seconds"]["attempt_1"])
+    record["policy"]["max_execution_seconds"] = args.max_execution_seconds
+    if "planner_charge_seconds" in section:
+        execution = record.get("execution_contract", {})
+        section["planner_charge_seconds"] = {
+            "attempt_1": planner_charge(execution, contract["rep_delay_seconds"]),
+            "ladder": envelope_ladder(execution)[0],
+        }
+    return []
+
+
 def approved_envelope_mismatches(
     approved_dir: Path, record: dict[str, Any], expected_record_sha256: str | None
 ) -> list[str]:
@@ -4904,7 +4930,13 @@ def approved_envelope_mismatches(
     if old_contract.get("schema") == msq_envelope.ENVELOPE_SCHEMA:
         # A v2 approval binds the ceiling rule and bounds each ceiling: a fresh layout whose planner charge moves keeps
         # the approval while every fresh ladder ceiling stays at or below the approved one.
-        mismatches.extend(envelope_ceiling_excess(old_contract, new_contract))
+        # The fresh ladder comes from the refreshed execution contract, since an attempt-2 record carries the approved
+        # contract unchanged.
+        execution = record.get("execution_contract", {})
+        if not execution.get("selected_job_costs"):
+            mismatches.append("the fresh plan carries no selected job costs to bound its ladder ceilings")
+        fresh_ladder = msq_envelope.ladder_ceilings(*envelope_ladder(execution))
+        mismatches.extend(envelope_ceiling_excess(old_contract, {"ladder_ceiling_seconds": fresh_ladder}))
         derived = ("ladder_ceiling_seconds", "ceiling_seconds")
         old_contract = {k: v for k, v in old_contract.items() if k not in derived}
         new_contract = {k: v for k, v in new_contract.items() if k not in derived}
@@ -5654,7 +5686,7 @@ def submit(
     qpy_archive_sha256 = archive()
     if envelope and approved_dir is not None:
         record["execution_pubs"] = [pub.manifest() for pub in fresh_execution_pubs]
-        mismatches = approved_envelope_mismatches(
+        mismatches = refresh_envelope_ceilings(record, args) + approved_envelope_mismatches(
             Path(approved_dir), record, getattr(args, "approved_record_sha256", None)
         )
         run_dir = getattr(args, "envelope_snapshot_dir", None)
