@@ -4538,6 +4538,20 @@ def envelope_ladder(execution: Mapping[str, Any]) -> tuple[dict[str, float], int
     return charges, shots
 
 
+def envelope_backend(record: Mapping[str, Any]) -> str:
+    """The one backend an envelope plan's groups chose, or the recorded contract's when the record has no groups."""
+    names = {group.get("backend") for group in record.get("groups", [])}
+    if not names:
+        return str(
+            (record.get("envelope") or {}).get("contract", {}).get("backend", msq_envelope.LEGACY_ENVELOPE_BACKEND)
+        )
+    if len(names) != 1 or not names <= set(msq_envelope.ENVELOPE_BACKENDS):
+        raise LiveRunError(
+            f"an envelope plan names one of {msq_envelope.ENVELOPE_BACKENDS}, got {sorted(map(str, names))}"
+        )
+    return str(names.pop())
+
+
 def envelope_contract(record: Mapping[str, Any], args: argparse.Namespace) -> dict[str, Any]:
     """The approval-bound envelope: delays, ceilings, the aggregate cap and the replan bound."""
     fallback_rule = {
@@ -4555,7 +4569,7 @@ def envelope_contract(record: Mapping[str, Any], args: argparse.Namespace) -> di
             raise LiveRunError("; ".join(refusals))
         return {
             "schema": msq_envelope.ENVELOPE_SCHEMA,
-            "backend": msq_envelope.ENVELOPE_BACKEND,
+            "backend": envelope_backend(record),
             "layout_width": record.get("family_configuration", {}).get("layout_width"),
             "rep_delay_seconds": getattr(args, "rep_delay", None),
             "rep_delay_ladder_seconds": list(msq_envelope.REP_DELAY_LADDER_S),
@@ -4575,7 +4589,7 @@ def envelope_contract(record: Mapping[str, Any], args: argparse.Namespace) -> di
     ceiling_2 = getattr(args, "fallback_max_execution_seconds", None)
     return {
         "schema": msq_envelope.ENVELOPE_SCHEMA_V1,
-        "backend": msq_envelope.ENVELOPE_BACKEND,
+        "backend": envelope_backend(record),
         "layout_width": record.get("family_configuration", {}).get("layout_width"),
         "rep_delay_seconds": getattr(args, "rep_delay", None),
         "fallback_rep_delay_seconds": msq_envelope.FALLBACK_REP_DELAY_S,
@@ -8238,7 +8252,7 @@ def envelope_layout_violations(run_dir: Path) -> list[str]:
     checks += [
         (entry["snapshot_sha256"], entry["layout"], entry["batch"]) for entry in envelope.get("batch_snapshots", [])
     ]
-    backend = envelope.get("contract", {}).get("backend", msq_envelope.ENVELOPE_BACKEND)
+    backend = envelope.get("contract", {}).get("backend", msq_envelope.LEGACY_ENVELOPE_BACKEND)
     operator_excluded = {
         int(q) for q in (record.get("policy", {}).get("operator_excluded_qubits") or {}).get(backend, [])
     }

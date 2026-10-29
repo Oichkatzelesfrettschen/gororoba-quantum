@@ -997,6 +997,28 @@ def test_contract_carries_per_step_ceilings() -> None:
     check(contract["envelope_cap_seconds"] == 140.0, "the cap is the approved total")
 
 
+def test_contract_binds_the_backend_the_plan_chose() -> None:
+    import live_run
+
+    record = {
+        "execution_contract": execution_fixture(),
+        "family_configuration": {"layout_width": 32},
+        "groups": [{"backend": "ibm_fez"}, {"backend": "ibm_fez"}],
+    }
+    check(live_run.envelope_contract(record, v2_args())["backend"] == "ibm_fez", "the plan's backend is recorded")
+    check(live_run.envelope_backend({}) == env.LEGACY_ENVELOPE_BACKEND, "a record without groups is legacy")
+    legacy = {"envelope": {"contract": {"backend": "ibm_marrakesh"}}}
+    check(live_run.envelope_backend(legacy) == "ibm_marrakesh", "a retained contract keeps its backend")
+    refused: list[list[dict[str, str]]] = [
+        [{"backend": "ibm_fez"}, {"backend": "ibm_kingston"}],
+        [{"backend": "ibm_torino"}],
+        [{}],
+    ]
+    for groups in refused:
+        with pytest.raises(live_run.LiveRunError):
+            live_run.envelope_backend({"groups": groups})
+
+
 @pytest.mark.parametrize("cap", [4.0, 241.0, None, math.nan, 30.0])
 def test_contract_refuses_a_cap_outside_the_range_or_below_the_first_ceiling(cap: float | None) -> None:
     import live_run
