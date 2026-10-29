@@ -13556,6 +13556,7 @@
    "typing",
    "unittest",
    "urllib",
+   "uuid",
    "zlib"
   ],
   "scripts/qd_record_watch.py": [
