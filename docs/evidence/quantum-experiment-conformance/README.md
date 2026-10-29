@@ -106,7 +106,7 @@ and supply neither an independence certificate nor a correction for unobserved d
 The [supplemental validation](validation-toolchain.json) records 102 passing focused tests, full lint
 and types, source identities and the required-QI live replay.
 
-[scalar-operator-toolchain.json](scalar-operator-toolchain.json) binds all 384 cQASM payloads in the 128 QI cases, their
+[scalar-operator-toolchain-qiskit-2-6-1.json](scalar-operator-toolchain-qiskit-2-6-1.json) binds all 384 cQASM payloads in the 128 QI cases, their
 manifest and campaign digests, retained compiler configurations, producing sources and pinned stack.
 Local libqasm analysis and OpenSquirrel decomposition admit every payload and preserve every barrier
 and measurement destination. OpenSquirrel normalizes rotation angles when serializing 122 payloads;
@@ -118,12 +118,15 @@ Platform scheduling and physical execution remain unobserved.
 export QI_PYTHON=/path/to/quantum-inspire/environment/bin/python
 "$PYTHON" -B -W error scripts/experiment_toolchain.py \
   --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators/campaign.json \
-  --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain.json --check
+  --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-1.json --check
 ```
 
 A pinned QI stack repeats all compilation and requires byte-identical receipts. A host without that stack
 checks the retained digest chain and reports that compilation was skipped. The required-QI gate refuses
 a missing stack. The original global QI toolchain record and its producing source keep their bytes.
+The [original receipt](scalar-operator-toolchain.json) binds the campaign written under Qiskit 2.6.0 and keeps its bytes; the
+successor above binds the campaign rewritten under Qiskit 2.6.1 and differs from it only in the campaign digest and the
+128 manifest digests that follow from it. Its 384 compiled circuits, sources and toolchain versions equal the original's.
 
 ## Prospective acquisition cases
 
