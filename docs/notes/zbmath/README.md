@@ -120,8 +120,9 @@ description text, `lv` level (0 two digits, 1 three characters, 2 five character
 
 Structured search (`/_structured_search`) takes the field descriptions as parameter names (`Author name`,
 `Reference text`, `arXiv ID`, `MSC`) and combines them with and. The OpenAPI examples use names the
-endpoints do not accept (`reference_zbmath_id`, `zbmath_id`, `contributor_name`): a request that carries only
-those answers HTTP 400 "no parameters given". Use `_search` with `rf:`, `an:` and `au:` instead.
+endpoints do not accept (`reference_zbmath_id`, `zbmath_id`, `contributor_name` for documents; `author_code`,
+`collective`, `in_collective` for authors): a request that carries only those answers HTTP 400 "no parameters
+given". Use `_search` with `rf:`, `an:`, `au:`, `ai:` and `co:` instead.
 
 ## Combinations
 
@@ -203,7 +204,8 @@ Each deviation below was tested against the alternative that the client, the ope
 caused it. Every row up to the citation matcher was reproduced a second time outside `scripts/zbmath.py`,
 by a curl 8.23.0 run at 2026-10-29T14:59Z that recorded each HTTP status and the deciding field; that
 transcript accompanies the pull request that added this guide. A deviation enters a report to FIZ
-Karlsruhe only with the verdict "service" and its capture name.
+Karlsruhe only with the verdict "service" and its capture name. The unsent draft of that report, with a
+falsifier for every item, is [upstream-report.md](upstream-report.md).
 
 | Deviation | Alternative tested | Test | Verdict |
 |---|---|---|---|
@@ -216,7 +218,7 @@ Karlsruhe only with the verdict "service" and its capture name.
 | DOI in path answers 404 | slash not encoded | `%2F`-encoded DOI also 404 | service; route takes no slash |
 | no gzip on REST | client did not offer gzip | `curl --compressed` returns the uncompressed 10,424 bytes | service |
 | no validator headers despite "cacheable" | wording means client-side caching | none possible | interpretive; report as a question |
-| error `time_stamp` without zone, about 1 h ahead | clock skew | `time_stamp` led the `Date` header of the same answer by 1 h 0 s and by 1 h 8 s in two runs | service; the zone is inferred as CET (UTC+1 after 2026-10-25), the seconds offset is unexplained |
+| error `time_stamp` without zone, 1 h ahead of UTC | clock skew | the error stamp `16:28:33.197` reads one hour later than the UTC success stamp `15:28:34Z` of the request one second after it; the HTTP `Date` header reads `15:28:27` on both answers, about 6 s behind the service clock, which explained the earlier 8 s spread | service; the zone is inferred as CET (UTC+1 after 2026-10-25) |
 | first resumptionToken `cursor="100"` | cursor counts the current page | section 3.5: "a count of the number of elements of the complete list thus far returned (i.e. cursor starts at 0)" | service |
 | `earliestDatestamp` 1755 | year allowed | schema type `UTCdatetimeType` is `date` or `dateTime` with Z, and section 4.2 requires the finest granularity | service |
 | month `from` and mixed `from`/`until` granularity accepted | lenient parsing is harmless | section 3.3.1 names two legitimate formats and requires both arguments at one granularity | service; low impact |
