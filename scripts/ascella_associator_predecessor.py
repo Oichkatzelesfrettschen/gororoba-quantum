@@ -27,8 +27,8 @@ First-principles design:
      linear, and quadratic background drift to absolute zero.
    - Every odd pair (1, 3, 5, 7, 9, 11, 13, 15) is an interleaved Cold baseline anchor, providing
      a uniform grid across the run to reconstruct the continuous non-linear drift trajectory f_drift(t).
-6. Scaled for 8,192 samples per iteration (524,288 shots/iteration), achieving a 95% CI radius
-   of +/-0.0245 on predecessor carryover shifts, with credit ceiling 1.524288 credits.
+6. Scaled for 8,192 samples per iteration (655,360 shots/iteration), achieving a 95% CI radius
+   of +/-0.0245 on predecessor carryover shifts, with credit ceiling 1.655360 credits.
 7. In addition to focal two-click statistics on modes 0..3, the analysis tracks all
    clicks in modes 4..11 as spatial sentinel observables measuring scattered leakage.
 
@@ -109,7 +109,7 @@ PAIRED_SCHEDULE_SPEC = [
 ]
 
 DEFAULT_SAMPLES_PER_ITERATION = 8192
-DEFAULT_SHOTS_FACTOR = 64
+DEFAULT_SHOTS_FACTOR = 80
 MAX_DURATION = 300
 TOLERANCE = 1e-12
 BODY_TOLERANCE = 1e-9

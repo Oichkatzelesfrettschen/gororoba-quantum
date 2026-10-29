@@ -186,14 +186,25 @@ def test_template_experiment_binding() -> None:
 
 def test_credit_ceiling_rule() -> None:
     """Verify credit billing rule: 1 + 10^-6 * max_shots_per_setting."""
-    docs = case.build_documents(samples_per_iteration=8192, shots_factor=64)
-    manifest = json.loads(docs["cases.json"].decode())
-    shots_per_setting = 8192 * 64  # 524,288
-    expected_credits = round(1.0 + 1e-6 * shots_per_setting, 6)
-    if abs(manifest["credit_ceiling"] - expected_credits) > 1e-12:
-        raise AssertionError(f"credit ceiling {manifest['credit_ceiling']} != {expected_credits}")
-    if manifest["credit_ceiling"] != 1.524288:
-        raise AssertionError(f"expected 1.524288 credits, got {manifest['credit_ceiling']}")
+    # Test explicit shots_factor=64
+    docs64 = case.build_documents(samples_per_iteration=8192, shots_factor=64)
+    manifest64 = json.loads(docs64["cases.json"].decode())
+    shots_per_setting_64 = 8192 * 64  # 524,288
+    expected_credits_64 = round(1.0 + 1e-6 * shots_per_setting_64, 6)
+    if abs(manifest64["credit_ceiling"] - expected_credits_64) > 1e-12:
+        raise AssertionError(f"credit ceiling {manifest64['credit_ceiling']} != {expected_credits_64}")
+    if manifest64["credit_ceiling"] != 1.524288:
+        raise AssertionError(f"expected 1.524288 credits, got {manifest64['credit_ceiling']}")
+
+    # Test default shots_factor=80 (satisfies Perceval physical threshold on 5.37% transmittance)
+    docs80 = case.build_documents(samples_per_iteration=8192)
+    manifest80 = json.loads(docs80["cases.json"].decode())
+    shots_per_setting_80 = 8192 * 80  # 655,360
+    expected_credits_80 = round(1.0 + 1e-6 * shots_per_setting_80, 6)
+    if abs(manifest80["credit_ceiling"] - expected_credits_80) > 1e-12:
+        raise AssertionError(f"credit ceiling {manifest80['credit_ceiling']} != {expected_credits_80}")
+    if manifest80["credit_ceiling"] != 1.65536:
+        raise AssertionError(f"expected 1.65536 credits, got {manifest80['credit_ceiling']}")
 
 
 def test_end_to_end_simulation_and_analysis(tmp_path: Path) -> None:
