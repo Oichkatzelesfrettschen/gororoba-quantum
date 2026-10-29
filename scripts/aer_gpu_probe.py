@@ -148,13 +148,14 @@ METADATA_KEYS = (
 )
 BRANCHING = {"shot_branching_enable": True, "shot_branching_sampling_enable": True}
 NO_GPU = "no GPU on this machine"
-# Aer 0.17.2 takes target_gpus only as a run option (aer_compiler's run
-# options); the constructor and set_options raise "Invalid option target_gpus".
+# Aer 0.17.2 and 0.18.2 take target_gpus only as a run option (aer_compiler's
+# run options); the constructor and set_options raise "Invalid option target_gpus".
 RUN_OPTIONS = frozenset({"target_gpus"})
 # Aer 0.17.2's batched_shots_gpu executor aborts on control flow (if_else
-# lowers to jump), measured on the qiskit-aer-gpu-cu11 build; a cu13 build
-# compiles the same executor source, so the row keeps its exemption and its
-# exit code is recorded on either build.
+# lowers to jump), measured on the qiskit-aer-gpu-cu11 build; Aer 0.18.2 runs
+# the same circuit on the unbatched executor and reports
+# batched_shots_optimization False. The row keeps its exemption, so either
+# release records its outcome.
 KNOWN_GPU_ABORTS = frozenset({"gpu_statevector_batched_jump"})
 # label: (device, method, Aer options, lower if_else, needs two or more GPUs)
 CONFIGURATIONS: dict[str, tuple[str, str, dict[str, Any], bool, bool]] = {

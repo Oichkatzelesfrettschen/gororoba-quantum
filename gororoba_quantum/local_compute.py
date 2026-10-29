@@ -422,7 +422,8 @@ def route(policy: dict[str, Any], circuits: list[Any]) -> tuple[str, dict[str, A
     try:
         admission = aer_resources.admit_gpu(circuits, policy["memory_mb"], aer_resources.gpu_snapshot())
         admission["runtime"] = aer_identity.gpu_runtime_identity()
-        # Aer 0.17.2 exposes no device selector, so admission of device zero
+        # Aer selects a device only through the run option target_gpus,
+        # which this executor does not set, so admission of device zero
         # covers execution only on a host with exactly one GPU.
         if admission["runtime"].get("device_count") != 1:
             raise ValueError("GPU admission requires a single-GPU host")

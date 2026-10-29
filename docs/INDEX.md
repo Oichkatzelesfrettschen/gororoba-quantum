@@ -470,7 +470,7 @@ nine arXiv HTML renderings (2604.25863v3, 2604.03360v2, 2606.00433v2, 2412.04053
 [backend configuration snapshot](evidence/heron_platform/backend_configuration.json) holds the sorted configuration
 key names of the three account backends.
 The [hardware controls audit](notes/ibm_quantum/hardware-controls.md) inventories every option field, REST endpoint
-and client-side restriction of the installed qiskit-ibm-runtime 0.50.0 in
+and client-side restriction of the installed qiskit-ibm-runtime 0.51.0 in
 [inventory.json](evidence/ibm_runtime_options/inventory.json) (gate core-533), records read-only backend limits
 (max_shots, rep_delay range, measure_2, fractional angle bounds) in
 [backends.json](evidence/ibm_runtime_options/backends.json), and states the configuration per workload type with the

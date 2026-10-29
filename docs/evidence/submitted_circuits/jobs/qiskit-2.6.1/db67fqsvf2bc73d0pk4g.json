@@ -1,0 +1,53 @@
+{
+ "schema": "submitted-circuit-row-v1",
+ "row": {
+  "job_id": "db67fqsvf2bc73d0pk4g",
+  "run": "results/live/2026-10-12T055624.091217Z",
+  "retained_file": "results/live/2026-10-12T055624.091217Z/isa.qpy",
+  "retained_sha256": "84b5c3c7703db74fdbd6eb477d131f5353a14d63befb7d3f5375c63a85acf6a1",
+  "order_source": "record.json submission.jobs[].pubs",
+  "expected_pubs": [
+   "ibm_kingston_dynamic_pub_01",
+   "ibm_kingston_dynamic_pub_02",
+   "ibm_kingston_dynamic_pub_03",
+   "ibm_kingston_dynamic_pub_04",
+   "ibm_kingston_dynamic_pub_05",
+   "ibm_kingston_dynamic_pub_06",
+   "ibm_kingston_dynamic_pub_07",
+   "ibm_kingston_dynamic_pub_08",
+   "ibm_kingston_dynamic_pub_09",
+   "ibm_kingston_dynamic_pub_10",
+   "ibm_kingston_dynamic_pub_11",
+   "ibm_kingston_dynamic_pub_12"
+  ],
+  "items": 12,
+  "item_kinds": [
+   "CircuitItem"
+  ],
+  "positional_matches": 12,
+  "submitted_qpy_sha256": [
+   "9807dd1165f963049bd53af312613c92c6e58ad11ceec60eec7f32bd984764db",
+   "ee72191a905265f807a73138b152dc5f3aeb887d37a786deb0cd39cb7735a0ad",
+   "ad9087d6183d54d1a6676edff363ef3e82f53f5b9b42523abd9480ffa9a322ef",
+   "5cefb81db8e26c3ae49f43aa49eff3d1533b5a09f071a2ca2b6b570cb080e108",
+   "b3a56d4b134dd8c40951473e64652bd2cadee10b7bc76302fac41de81bef26f4",
+   "8fd86482e0c7b15d26f2be9af2285a54690cb44715da797c4e1124e35d902c4e",
+   "3b88f50fae24f6875944ec50cbb268c4ecf087a04ef751582dd2eb4b34d611f5",
+   "2d1b3102948fff4fb1f122caa769aedbede920a5fc6d640cdf2cd22a12955799",
+   "b5dd909f9ea6ff7c12732c042cf8029a599868432066b9330ea335e730e06498",
+   "a91dd8b613be4cee6a5ffbc7cf5bf4a382093e81f7cfcdf17d5d7d431d8271eb",
+   "a3e36ef27659ada97c29c991f51cc47246ed72d1bec87230a2e6405b552c16fd",
+   "f7d8aced9adcd77e64d4de664acc788d172232b10bcab701615b3e4a20302564"
+  ]
+ },
+ "provenance": {
+  "origin": "service",
+  "retrieved_utc": "2026-10-29T11:43:13.353159+00:00",
+  "operation": "read existing job inputs; submissions and uploads excluded",
+  "runtime_versions": {
+   "qiskit": "2.6.1",
+   "qiskit-ibm-runtime": "0.51.0"
+  },
+  "collector_sha256": "f4a09c11354074974f2268af2e48ec636f832260f9de8f2a1a4db61eb85ce888"
+ }
+}
