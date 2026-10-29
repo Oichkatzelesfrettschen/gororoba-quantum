@@ -332,7 +332,10 @@ later refusal. A conservative 78-second start covers the repeated checks after
 two earlier six-second ceilings, conditional on provider accounting and outside
 usage. The [acquisition review](../evidence/readout-actor-acquisition-review/README.md)
 records that operational limitation separately from the protected 48-second
-reserve. Historical balances establish neither available time nor an allocation.
+reserve. The [budget admission closure](../evidence/readout-actor-acquisition-review/budget-admission-closure.md)
+binds the documented backup instance with an observed 160 seconds and a fresh
+compiled case; the default primary remains below the conservative start rule.
+Quotas remain separate. Historical balances establish neither available time nor an allocation.
 The runner refuses an estimated batch above six seconds,
 aggregate ceilings above 20 seconds, or insufficient quota after reserve.
 The two-second envelope remainder authorizes zero additional jobs or retries.
@@ -431,6 +434,7 @@ and submits zero jobs:
 ```sh
 export PYTHON="${PYTHON:-python3}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+export GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform
 "$PYTHON" gororoba_quantum/live_run.py --family readout-actor \
   --actor-case docs/design/readout-actor-delay-qualification.json \
   --out results/live --max-execution-seconds 6 --max-total-execution-seconds 20
