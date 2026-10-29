@@ -19,8 +19,8 @@ and the Kaggle noise-snapshot rule.
 - Simulations of 14 qubits or fewer run on Kaggle kernels through
   `scripts/kaggle_run.py` (`push`, `status`, `collect`), which bundles the
   entry's repository imports with `kaggle_kernel/` (the kernel program and
-  its AGENTS.md), installs qiskit 2.6.0 and qiskit-ibm-runtime 0.50.0 with
-  qiskit-aer 0.17.2 (or qiskit-aer-gpu-cu11 0.17.2 on a GPU), proves the
+  its AGENTS.md), installs qiskit 2.6.1 and qiskit-ibm-runtime 0.51.0 with
+  qiskit-aer 0.18.2 (or qiskit-aer-gpu-cu11 0.18.2 on a GPU), proves the
   hypercomplex package stack before the entry runs, and retains the output
   under results/kaggle/.
   A kernel runs on a CPU machine by default and on a GPU only when its

@@ -1,10 +1,8 @@
 # Python stack on the build host
 
 requirements.txt and
-ci/requirements-ci.txt pin what CI runs. The build host runs Arch packages
-at those versions, except for the linters and for the Qiskit core: the host carries
-qiskit 2.6.1, qiskit-ibm-runtime 0.51.0 and qiskit-aer 0.18.2 ahead of the
-requirements.txt pins of qiskit 2.6.0 and runtime 0.50.0 until the pin bump lands.
+ci/requirements-ci.txt pin what CI runs; the build host runs Arch packages
+at those versions, except the linters.
 
 | Arch package | Pin it carries |
 |---|---|
@@ -70,10 +68,9 @@ from /usr/lib. A cuTensorNet contraction of the Bell circuit through
 cuda package installs, and no installed distribution requires them, so they
 stay uninstalled.
 `docs/notes/build_host/custatevec.md` holds the requirement list, the build
-and install commands and the probe results. A Kaggle kernel installs qiskit 2.6.0,
-qiskit-ibm-runtime 0.50.0 (its fake backends, such as FakeFez, need no
-account) and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel
-stops at 0.15.1) over the Kaggle image's numpy and scipy, records every
+and install commands and the probe results. A Kaggle kernel installs qiskit 2.6.1,
+qiskit-ibm-runtime 0.51.0 (its fake backends, such as FakeFez, need no
+account) and qiskit-aer-gpu-cu11 0.18.2 over the Kaggle image's numpy and scipy, records every
 version in `environment.json`, and holds no IBM credential
 (`kaggle_kernel/AGENTS.md`).
 

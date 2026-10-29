@@ -161,7 +161,7 @@ many also run under `-O`, so a check raises explicitly instead of using
 
 | Manifest / Register | Scope and purpose | Verification gate |
 | --- | --- | --- |
-| [requirements.txt](../requirements.txt) | Primary runtime dependencies (Qiskit 2.6.0, runtime 0.50.0, FLINT, SymPy, SciPy, NumPy) | `sh ci/pr_checks.sh tests` |
+| [requirements.txt](../requirements.txt) | Primary runtime dependencies (Qiskit 2.6.1, Aer 0.18.2, runtime 0.51.0, FLINT, SymPy, SciPy, NumPy) | `sh ci/pr_checks.sh tests` |
 | [ci/requirements-ci.txt](../ci/requirements-ci.txt) | CI gate tools, testing plugins, Quandela adapters, CVXPY/Clarabel solvers, MCP | `sh ci/pr_checks.sh lint\|types\|tests` |
 | [ci/requirements-browser.txt](../ci/requirements-browser.txt) | Headless Playwright browser automation for measured explorer verification | `scripts/validate_measured_explorer.py` |
 | [ci/requirements-replay.txt](../ci/requirements-replay.txt) | Pinned Qiskit 2.5.2 compiler stack for bit-for-bit historical replay | `ci/run_gates.py --replay-python` |

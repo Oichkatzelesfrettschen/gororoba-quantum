@@ -1,6 +1,6 @@
 # IBM account access and the job inventory
 
-The repository reaches IBM Quantum through qiskit-ibm-runtime 0.50.0 only.
+The repository reaches IBM Quantum through qiskit-ibm-runtime 0.51.0 only.
 No IBM MCP server is registered: `claude mcp list` shows the quantum-inspire,
 openquantum, quandela and kaggle servers connected, and on 2026-10-19
 qi_backends, qi_jobs, get_credits, qd_availability and get_accelerator_quota

@@ -156,8 +156,8 @@ those gates' commands. They run ruff and mypy through
 `ci/pinned_tool.py TOOL ARGS`, which uses the installed tool when it reports
 the ci/requirements-ci.txt pin and otherwise runs the pinned release through
 uv: ruff through `uv tool run`, mypy layered over `"$PYTHON"`'s
-site-packages, so a host mypy run type-checks against that host's packages
-(qiskit 2.5.2 on the build host against CI's 2.6.0).
+site-packages, so a host mypy run type-checks against that host's packages,
+which can hold other releases than CI's pins.
 
 Gate commands invoke `"$PYTHON"`. ci/run_gates.py sets it to its own
 interpreter when the environment leaves it unset, and assigns
@@ -213,7 +213,7 @@ receive one slot through a child-only initializer, so nested maps and simulator
 defaults stay within the outer allocation. Timings retain wall time, user/system CPU time,
 peak RSS and allocated workers. Ruff formats shared code for Python 3.13.
 
-Current contracts use Qiskit 2.6.0. Gates marked `"runtime": "qiskit-2.5"`
+Current contracts use Qiskit 2.6.1. Gates marked `"runtime": "qiskit-2.5"`
 recompile retained historical evidence under an interpreter holding every pin
 of `ci/requirements-replay.txt`: `ci/run_gates.py --replay-python PATH` (also
 accepted by `ci/premerge_gates.py`), else `REPLAY_PYTHON`, verified against

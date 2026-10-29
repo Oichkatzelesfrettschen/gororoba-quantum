@@ -1,7 +1,7 @@
 # IBM Quantum hardware controls: audit and configuration per workload
 
 This note audits every control the repository reaches on IBM Quantum hardware
-through qiskit-ibm-runtime 0.50.0 and IBM's REST API, and states the
+through qiskit-ibm-runtime 0.51.0 and IBM's REST API, and states the
 configuration each workload type should use. Every row names its authority.
 
 Tags: [P] an IBM documentation statement (a transcribed guide in this
@@ -14,10 +14,9 @@ source supports reads **unverified**.
 
 | Read | Time (UTC) | Calls | Retained in |
 | --- | --- | --- | --- |
-| Live read A, exploratory | 2026-10-17T21:33:40Z to 21:33:45Z | `QiskitRuntimeService()`, `service.backends()`, `ibm_kingston` `configuration()` and `status()`, `service.usage()` | superseded by read B; values agree |
-| Live read B | 2026-10-17T21:46:09Z to 21:46:19Z | `service.backends()` (plain, `dynamic_circuits=True`, `use_fractional_gates=True`), `service.usage()`, and per backend `configuration()`, `status()`, `properties()`, `target`, fractional `target`; each call stamped | [backends.json](../../evidence/ibm_runtime_options/backends.json) |
-| Calibration at read B | ibm_fez 2026-10-17T14:32:07-07:00, ibm_kingston 13:50:45-07:00, ibm_marrakesh 14:18:18-07:00 | `properties().last_update_date` | backends.json |
-| Installed source and offline probes | 2026-10-17 | qiskit-ibm-runtime 0.50.0, qiskit 2.6.0, samplomatic 0.21.0, qiskit-mitigation 0.1.1, pydantic 2.14.1, ibm-quantum-schemas 0.13.20261016, Python 3.14.7 | [inventory.json](../../evidence/ibm_runtime_options/inventory.json) |
+| Live read B | 2026-10-29T09:09:24Z to 09:09:31Z | `service.backends()` (plain, `dynamic_circuits=True`, `use_fractional_gates=True`), `service.usage()`, and per backend `configuration()`, `status()`, `properties()`, `target`, fractional `target`; each call stamped | [backends.json](../../evidence/ibm_runtime_options/backends.json) |
+| Calibration at read B | ibm_fez 2026-10-29T01:45:35-07:00, ibm_kingston 01:12:30-07:00, ibm_marrakesh 01:46:43-07:00 | `properties().last_update_date` | backends.json |
+| Installed source and offline probes | 2026-10-29 | qiskit-ibm-runtime 0.51.0, qiskit 2.6.1, samplomatic 0.21.0, qiskit-mitigation 0.1.1, pydantic 2.14.1, ibm-quantum-schemas 0.13.20261016, Python 3.14.7 | [inventory.json](../../evidence/ibm_runtime_options/inventory.json) |
 | Target snapshot | 2026-10-14T21:00:38Z | `scripts/heron_target_snapshot.py --out` | [targets.json](../../evidence/heron_platform/targets.json) |
 
 `scripts/ibm_runtime_options_inventory.py` writes both evidence files: `--out`
@@ -26,7 +25,7 @@ introspects the installed package offline, `--backends` makes read B, and
 blocks below to `--render`, and validates the schema of backends.json. The
 inventory binds the installed probe dependencies exactly. Read B retains its
 original producer versions; its schema accepts stable Qiskit releases in Runtime
-0.50's declared range `>=2.3.0,<3` and requires Runtime 0.50.0. Read B
+0.51's declared range `>=2.3.0,<3` and requires Runtime 0.51.0. Read B
 submitted nothing and records the instance only as the 12-hex sha256 of its
 CRN; `instance_id` and `plan_id` of `usage()` are dropped.
 
@@ -49,14 +48,14 @@ section 10.
 
 ### 2.1 Python client
 
-| Surface | Installed object | Status in 0.50.0 | Source |
+| Surface | Installed object | Status in 0.51.0 | Source |
 | --- | --- | --- | --- |
 | Service | `QiskitRuntimeService` | saved account in the qiskit account store; `backends()`, `backend()`, `usage()`, `least_busy()` read only | [S] signatures in 2.3 |
 | Client-side Sampler | `qiskit_ibm_runtime.executor_sampler.Sampler` | builds a `QuantumProgram` locally (`prepare`), boxes and twirls through samplomatic, applies DD locally with `PadDynamicalDecoupling` on the backend Target, and submits through `Executor` | [S] `executor_sampler/prepare.py`, `executor/dynamical_decoupling.py` |
 | Client-side Estimator | `qiskit_ibm_runtime.executor_estimator.Estimator` | resilience through qiskit-mitigation tasks (TREX, gate folding, PEA, PEC) on the client | [S] `executor_estimator/prepare.py` |
 | Server-side primitives | `SamplerV2`, `EstimatorV2` | deprecated in 0.50.0 | [S] deprecation sites in 3.2 |
 | Executor | `qiskit_ibm_runtime.Executor` | runs a `QuantumProgram`; the client-side primitives map their options onto `ExecutorOptions` (`sampler_option_to_executor_options` drops `meas_type`, which travels as the program's `meas_level`) | [S] `options_models/converters.py` |
-| Noise learning | `NoiseLearnerV3` | produces the `layer_noise_model` that client-side PEC and PEA require | [S] probe "PEC without layer_noise_model" |
+| Noise learning | `NoiseLearnerV3` | produces the `layer_noise_model` that client-side PEC and PEA require; 0.51.0 removes its `post_selection` options (deprecated in 0.49.0) and adds `simulator` options for local mode; the older `NoiseLearner` is deprecated in 0.51.0 | [S] probe "PEC without layer_noise_model"; options block in 3.1 |
 | Execution modes | `Session(backend, max_time, create_new)`, `Batch(...)`; a primitive given a backend runs in job mode | REST `POST /sessions` with `mode` and `max_ttl` | [S] |
 | Dry run | `Sampler.run(..., dry_run=True)` | the service validates the job and returns randomized mock data; it is a service request, so this audit ran none | [S] `executor_sampler/sampler.py` docstring |
 
@@ -119,7 +118,7 @@ Generated by `scripts/ibm_runtime_options_inventory.py --render` from the instal
 | `Session` | `(self, backend: 'BackendV2', max_time: 'int \| str \| None' = None, *, create_new: 'bool \| None' = True)` |
 | `Batch` | `(self, backend: 'BackendV2', max_time: 'int \| str \| None' = None, *, create_new: 'bool \| None' = True)` |
 | `QiskitRuntimeService` | `(self, channel: 'ChannelType \| None' = None, token: 'str \| None' = None, url: 'str \| None' = None, filename: 'str \| None' = None, name: 'str \| None' = None, instance: 'str \| None' = None, proxies: 'dict \| None' = None, verify: 'bool \| None' = None, private_endpoint: 'bool \| None' = None, url_resolver: 'Callable[[str, str, bool \| None, str], str] \| None' = None, region: 'str \| None' = None, plans_preference: 'list[str] \| None' = None, tags: 'list[str] \| None' = None) -> 'None'` |
-| `QiskitRuntimeService.backends` | `(self, name: 'str \| None' = None, min_num_qubits: 'int \| None' = None, instance: 'str \| None' = None, dynamic_circuits: 'bool \| None' = None, filters: 'Callable[[IBMBackend], bool] \| None' = None, *, use_fractional_gates: 'bool \| None' = False, calibration_id: 'str \| None' = None, **kwargs: 'Any') -> 'list[IBMBackend]'` |
+| `QiskitRuntimeService.backends` | `(self, name: 'str \| None' = None, min_num_qubits: 'int \| None' = None, instance: 'str \| None' = None, dynamic_circuits: 'bool \| None' = None, filters: 'Callable[[IBMBackend], bool] \| None' = None, *, use_fractional_gates: 'bool \| None' = False, calibration_id: 'str \| None' = None, include_mocks: 'bool' = False, **kwargs: 'Any') -> 'list[IBMBackend]'` |
 | `QiskitRuntimeService.backend` | `(self, name: 'str', instance: 'str \| None' = None, use_fractional_gates: 'bool \| None' = False, calibration_id: 'str \| None' = None) -> 'Backend'` |
 | `QiskitRuntimeService.usage` | `(self) -> 'dict[str, Any]'` |
 | `QiskitRuntimeService.least_busy` | `(self, min_num_qubits: 'int \| None' = None, instance: 'str \| None' = None, filters: 'Callable[[IBMBackend], bool] \| None' = None, use_fractional_gates: 'bool \| None' = False, **kwargs: 'Any') -> 'IBMBackend'` |
@@ -140,7 +139,7 @@ Python client and its REST layer.
 
 ### 3.1 Option inventory
 
-Two option families exist in 0.50.0. `qiskit_ibm_runtime.options_models`
+Two option families exist in 0.51.0. `qiskit_ibm_runtime.options_models`
 (pydantic models, concrete defaults) serves the client-side primitives that
 live_run.py uses. `qiskit_ibm_runtime.options` (primitive dataclasses whose
 defaults are `Unset` and whose effective defaults live in the docstrings)
@@ -149,7 +148,7 @@ exists only in the server family; the client family takes a
 `layer_noise_model` instead.
 
 <!-- ibm-runtime-options:options:begin -->
-Generated by `scripts/ibm_runtime_options_inventory.py --render` from the installed qiskit-ibm-runtime 0.50.0; `--check` (gate core-533) holds this block to the package.
+Generated by `scripts/ibm_runtime_options_inventory.py --render` from the installed qiskit-ibm-runtime 0.51.0; `--check` (gate core-533) holds this block to the package.
 
 **Option roots.** Leaf fields count every nested path.
 
@@ -158,7 +157,7 @@ Generated by `scripts/ibm_runtime_options_inventory.py --render` from the instal
 | client Sampler | `options_models.sampler.SamplerOptions` | `executor_sampler.Sampler` | 28 |
 | client Estimator | `options_models.estimator.EstimatorOptions` | `executor_estimator.Estimator` | 40 |
 | Executor | `options_models.executor.ExecutorOptions` | `Executor` | 15 |
-| NoiseLearnerV3 | `options_models.noise_learner_v3.NoiseLearnerV3Options` | `NoiseLearnerV3` | 23 |
+| NoiseLearnerV3 | `options_models.noise_learner_v3.NoiseLearnerV3Options` | `NoiseLearnerV3` | 24 |
 | Calibrator | `options_models.calibrator.CalibratorOptions` | `calibrator.Calibrator` | 6 |
 | server SamplerV2 | `options.sampler_options.SamplerOptions` | `SamplerV2` | 23 |
 | server EstimatorV2 | `options.estimator_options.EstimatorOptions` | `EstimatorV2` | 41 |
@@ -194,9 +193,6 @@ Generated by `scripts/ibm_runtime_options_inventory.py --render` from the instal
 | `layer_pair_depths` |  |  |  | x |  |  |  |
 | `max_execution_time` | x | x | x | x |  | x | x |
 | `num_randomizations` |  |  |  | x |  |  |  |
-| `post_selection.enable` |  |  |  | x |  |  |  |
-| `post_selection.strategy` |  |  |  | x |  |  |  |
-| `post_selection.x_pulse_type` |  |  |  | x |  |  |  |
 | `resilience.layer_noise_learning.layer_pair_depths` |  |  |  |  |  |  | x |
 | `resilience.layer_noise_learning.max_layers_to_learn` |  |  |  |  |  |  | x |
 | `resilience.layer_noise_learning.num_randomizations` |  |  |  |  |  |  | x |
@@ -216,13 +212,13 @@ Generated by `scripts/ibm_runtime_options_inventory.py --render` from the instal
 | `resilience_level` |  | x |  |  |  |  | x |
 | `seed_estimator` |  |  |  |  |  |  | x |
 | `shots_per_randomization` |  |  |  | x |  |  |  |
-| `simulator.angle_decimals` | x | x | x |  |  |  |  |
+| `simulator.angle_decimals` | x | x | x | x |  |  |  |
 | `simulator.basis_gates` |  |  |  |  |  | x | x |
 | `simulator.coupling_map` |  |  |  |  |  | x | x |
-| `simulator.layer_noise_model` | x | x | x |  |  |  |  |
+| `simulator.layer_noise_model` | x | x | x | x |  |  |  |
 | `simulator.noise_model` |  |  |  |  |  | x | x |
-| `simulator.seed_simulator` | x | x | x |  |  | x | x |
-| `simulator.warn_absent` | x | x | x |  |  |  |  |
+| `simulator.seed_simulator` | x | x | x | x |  | x | x |
+| `simulator.warn_absent` | x | x | x | x |  |  |  |
 | `twirling.enable_gates` | x | x |  |  |  | x | x |
 | `twirling.enable_measure` | x | x |  |  |  | x | x |
 | `twirling.group` | x | x |  |  |  |  |  |
@@ -339,7 +335,7 @@ Generated by `scripts/ibm_runtime_options_inventory.py --render` from the instal
 | `num_randomizations` | `Annotated[int, Field(ge=1)]` | `32` |  | ge 1 |  | The number of random circuits to use per learning circuit configuration. |
 | `layer_pair_depths` | `list[Annotated[int, Field(ge=0)]]` | `[0, 1, 2, 4, 16, 32]` |  | ge 0 |  | The circuit depths (measured in number of pairs) to use in Pauli Lindblad experiments. |
 | `bit_flip_checks` | `BitFlipChecksOptions` | `BitFlipChecksOptions()` |  | nested options_models.bit_flip_checks.BitFlipChecksOptions |  | Options to apply bit-flip checks to the results of noise learning circuits. |
-| `post_selection` | `PostSelectionOptions` | `PostSelectionOptions()` |  | nested options_models.post_selection.PostSelectionOptions |  | Options for post selecting the results of noise learning circuits. |
+| `simulator` | `SimulatorOptions` | `SimulatorOptions()` |  | nested options_models.simulator.SimulatorOptions |  | Options related to local mode simulations. |
 | `experimental` | `dict` | `{}` |  |  |  | Experimental options. |
 | `execution` | `ExecutionOptions` | `ExecutionOptions()` |  | nested options_models.execution.ExecutionOptions |  | Low-level execution options. |
 | `environment` | `EnvironmentOptions` | `EnvironmentOptions()` |  | nested options_models.environment.EnvironmentOptions |  | Options related to the execution environment. |
@@ -351,14 +347,6 @@ Generated by `scripts/ibm_runtime_options_inventory.py --render` from the instal
 | --- | --- | --- | --- | --- | --- | --- |
 | `max_overhead` | `Annotated[float, Field(gt=0)] \| None` | `100` |  | gt 0 |  | The maximum circuit sampling overhead allowed, or `None` for no maximum. |
 | `noise_gain` | `Annotated[float, Field(ge=0)] \| Literal['auto']` | `'auto'` |  | "auto"; ge 0 |  | The amount by which to scale the noise. |
-
-**client `options_models.post_selection.PostSelectionOptions`**: Options for post selecting results.
-
-| Field | Type (source) | Default (source) | Documented default | Allowed values or bounds | Deprecated | Summary |
-| --- | --- | --- | --- | --- | --- | --- |
-| `enable` | `Annotated[bool, AfterValidator(warn_post_selection)]` | `False` |  |  | 0.49.0: The 'post_selection' field of NoiseLearnerV3 is deprecated | Whether to enable Post Selection when performing learning experiments. |
-| `x_pulse_type` | `Literal['xslow', 'rx']` | `'xslow'` |  | "xslow", "rx" |  | The type of the X-pulse used for the post selection measurements. |
-| `strategy` | `Literal['node', 'edge']` | `'node'` |  | "node", "edge" |  | The strategy used to decide if a shot should be kept or discarded. |
 
 **client `options_models.resilience.ResilienceOptions`**: Resilience options for V2 Estimator.
 
@@ -582,7 +570,6 @@ Generated by `scripts/ibm_runtime_options_inventory.py --render`; probes call `p
 | `estimator` | `EstimatorV2.run` | 0.48.0 | Specifying different 'precision' across pubs is deprecated |
 | `options.measure_noise_learning_options` | `MeasureNoiseLearningOptions._warn_shots_per_randomization_int` | 0.48.0 | Specifying 'measure_noise_learning.shots_per_randomization' as an integer is deprecated |
 | `options_models.environment` | `warn_max_execution_time` | 0.50.0 | Setting `max_execution_time` via `EnvironmentOptions` is deprecated |
-| `options_models.post_selection` | `warn_post_selection` | 0.49.0 | The 'post_selection' field of NoiseLearnerV3 is deprecated |
 | `sampler` | `SamplerV2.__init__` | 0.50.0 | The SamplerV2 class is deprecated |
 | `sampler` | `SamplerV2.run` | 0.48.0 | Specifying different 'shots' across pubs is deprecated |
 
@@ -618,7 +605,7 @@ Generated by `scripts/ibm_runtime_options_inventory.py --render`; probes call `p
 | client Estimator | DD | `{"dynamical_decoupling": {"enable": true}}` | yes |  |  |
 <!-- ibm-runtime-options:behavior:end -->
 
-### 3.3 Runtime 0.48 to 0.50 release facts
+### 3.3 Runtime 0.48 to 0.51 release facts
 
 | Release | Change | Effect on this repository | Source |
 | --- | --- | --- | --- |
@@ -626,13 +613,14 @@ Generated by `scripts/ibm_runtime_options_inventory.py --render`; probes call `p
 | 0.48 | `least_busy(fractional_gates=True)` | none used | [P] fractional-gates.md |
 | 0.49 | `MidCircuitReset`, `ConvertToMidCircuitResetAndMeasure`; `post_selection` of NoiseLearnerV3 deprecated; `dataclasses.asdict()` on option models deprecated (`options_models/base.py`) | live_run.py serializes options with `model_dump` | [P] docs/notes/ibm_heron_platform.md "Execution facts"; [S] |
 | 0.50 | client-side `executor_sampler.Sampler` and `executor_estimator.Estimator`; `SamplerV2` and `EstimatorV2` deprecated; `max_execution_time` at the options top level (`environment.max_execution_time` deprecated); `XSlowGate`; samplomatic and ibm-quantum-schemas floors | live_run.py uses the client-side Sampler and the top-level ceiling | [P] release notes row; [S] 3.2 |
+| 0.51 | `NoiseLearner` deprecated; `post_selection` options of NoiseLearnerV3 removed (module `options_models.post_selection` gone, `simulator` options added); elements of the `transpiler` module deprecated since 0.43 removed; `Executor.run()` converts samplomatic's `QuantumProgram`; `FoldRzz` respects the Target; local-mode `job.metrics()` matches service jobs | none of the removed surfaces is imported; the inventory drops `options_models.post_selection` from its deprecation probes | [P] qiskit-ibm-runtime 0.51.0 release notes; [S] 3.1 |
 
 ## 4. Backend controls and limits
 
 All values are read B unless the source column names another.
 
 <!-- ibm-runtime-options:backends:begin -->
-Generated by `scripts/ibm_runtime_options_inventory.py --render` from `docs/evidence/ibm_runtime_options/backends.json`, read 2026-10-17T21:46:09+00:00 under qiskit 2.5.2 and qiskit-ibm-runtime 0.50.0.
+Generated by `scripts/ibm_runtime_options_inventory.py --render` from `docs/evidence/ibm_runtime_options/backends.json`, read 2026-10-29T09:09:24+00:00 under qiskit 2.6.1 and qiskit-ibm-runtime 0.51.0.
 
 | Control | ibm_fez | ibm_kingston | ibm_marrakesh | Source |
 | --- | --- | --- | --- | --- |
@@ -642,14 +630,14 @@ Generated by `scripts/ibm_runtime_options_inventory.py --render` from `docs/evid
 | supported_instructions | cz, id, delay, measure, measure_reset, measure_2, measure_reset_2, reset, reset_2, rz, sx, x, if_else, store, xslow | cz, id, delay, measure, measure_reset, measure_2, measure_reset_2, reset, reset_2, rz, sx, x, if_else, store, xslow | cz, id, delay, measure, measure_reset, measure_2, measure_reset_2, reset, reset_2, rz, sx, x, if_else, store, xslow | [M] |
 | supported_features | qobj, qasm3, dynamic_circuits, parameters | qobj, qasm3, dynamic_circuits, parameters | qobj, qasm3, dynamic_circuits, parameters | [M] |
 | `conditional` (legacy flag) | false | false | false | [M]; `if_else` support comes from `supported_instructions` and `dynamic_circuits`, and every backend listed in `dynamic_circuit_backends` accepts it |
-| measure duration / median error | 1660 ns / 0.01239 | 2180 ns / 0.00970 | 2684 ns / 0.01678 | [M] Target |
-| measure_2 duration / median error | 1340 ns / 0.01404 | 1380 ns / 0.00940 | 1884 ns / 0.02075 | [M] Target |
+| measure duration / median error | 1660 ns / 0.01025 | 2180 ns / 0.01074 | 2684 ns / 0.01978 | [M] Target |
+| measure_2 duration / median error | 1340 ns / 0.01343 | 1380 ns / 0.00842 | 1884 ns / 0.01904 | [M] Target |
 | reset duration | 1684 ns | 2212 ns | 2720 ns | [M] Target |
 | measure_reset duration | 1684 ns | 2212 ns | 2720 ns | [M] Target |
 | reset_2 duration | 1364 ns | 1412 ns | 1920 ns | [M] Target |
 | measure_reset_2 duration | 1364 ns | 1412 ns | 1920 ns | [M] Target |
 | x, sx, id, xslow duration | x 24 ns, sx 24 ns, id 24 ns, xslow 1000 ns | x 32 ns, sx 32 ns, id 32 ns, xslow 1000 ns | x 36 ns, sx 36 ns, id 36 ns, xslow 1000 ns | [M] Target |
-| cz duration median (max) / median error | 68 (88) ns / 0.00256 | 68 (108) ns / 0.00199 | 68 (96) ns / 0.00287 | [M] Target |
+| cz duration median (max) / median error | 68 (88) ns / 0.00247 | 68 (108) ns / 0.00176 | 68 (96) ns / 0.00287 | [M] Target |
 | dt, dtm (s) | 4e-09, 4e-09 | 4e-09, 4e-09 | 4e-09, 4e-09 | [M] |
 | timing_constraints | acquire_alignment 1, granularity 1, min_length 2, pulse_alignment 1 | acquire_alignment 1, granularity 1, min_length 2, pulse_alignment 1 | acquire_alignment 1, granularity 1, min_length 2, pulse_alignment 1 | [M] |
 | rep_delay_range, default_rep_delay (SDK seconds) | [0, 0.002], 0.00025 (wire 0 to 2000, 250) | [0, 0.002], 0.00025 (wire 0 to 2000, 250) | [0, 0.002], 0.00025 (wire 0 to 2000, 250) | [M]; `to_dict()` reports microseconds |
@@ -660,11 +648,11 @@ Generated by `scripts/ibm_runtime_options_inventory.py --render` from `docs/evid
 | meas_levels, meas_kernels, discriminators | null, null, null | null, null, null | null, null, null | [M] |
 | multi_meas_enabled, measure_esp_enabled | true, false | true, false | true, false | [M] |
 | mcps, clops_h | 3864, 320000 | 3829, 340000 | 3732, 300000 | [M] |
-| fractional `rzz` duration / median error | 68 ns / 0.00282 | 68 ns / 0.00199 | 68 ns / 0.00418 | [M] fractional Target |
-| fractional `rx` median error | 24 ns / 0.00029 | 32 ns / 0.00030 | 36 ns / 0.00040 | [M]; [P] qpu-information.md "RX error" |
+| fractional `rzz` duration / median error | 68 ns / 0.00262 | 68 ns / 0.00196 | 68 ns / 0.00289 | [M] fractional Target |
+| fractional `rx` median error | 24 ns / 0.00029 | 32 ns / 0.00023 | 36 ns / 0.00044 | [M]; [P] qpu-information.md "RX error" |
 | `rzz` angle bounds in the Target | admitted 0.3, 1.571; refused -0.3, 2 | admitted 0.3, 1.571; refused -0.3, 2 | admitted 0.3, 1.571; refused -0.3, 2 | [M] `supported_angle_bound` |
 | `rx` angle bounds | none | none | none | [M] `gate_has_angle_bounds`; [P] "any theta" |
-| status at read | active, 1 pending | active, 1 pending | active, 0 pending | [M] `status()` |
+| status at read | active, 8 pending | active, 130 pending | active, 5 pending | [M] `status()` |
 <!-- ibm-runtime-options:backends:end -->
 
 Dynamic-circuit limits per job: one level of `if` and no nesting; operands of
@@ -686,7 +674,7 @@ on ibm_kingston (14 jobs, for example `results/live/2026-10-11T152922.787095Z`)
 
 ## 5. Transpiler controls
 
-| Control | Values in qiskit 2.5.2 with qiskit-ibm-runtime 0.50.0 | Rule | Source |
+| Control | Values in qiskit 2.6.1 with qiskit-ibm-runtime 0.51.0 | Rule | Source |
 | --- | --- | --- | --- |
 | `optimization_level` | 0 to 3 | level 3 consolidates 2-qubit blocks and resynthesizes them | [P] transpiler-stages.md "Optimization stage" |
 | layout plugins | default, dense, sabre, trivial | VF2Layout first, then Sabre; `initial_layout` fixes placement | [S] `list_stage_plugins("layout")`; [P] transpiler-stages.md |
@@ -706,8 +694,8 @@ Generated by `scripts/ibm_runtime_options_inventory.py --render` from the `usage
 
 | Item | Value | Source |
 | --- | --- | --- |
-| Plan window | 600 s on a rolling 28-day window; `usage()` returned a period ending at the call (2026-09-19T21:46:10Z to 2026-10-17T21:46:10Z), 334 s consumed, 266 s remaining, `usage_limit_reached` false | [M] read B; AGENTS.md "QPU time and calibration" |
-| Resource units | `usage()` also reports `usage_limit_ru` 10 and `usage_consumed_ru` 5.376124; job metrics carry `resource_units` | [M]; their conversion to seconds is **unverified** |
+| Plan window | 600 s on a rolling 28-day window; `usage()` returned a period ending at the call (2026-10-01T09:09:25Z to 2026-10-29T09:09:25Z), 532 s consumed, 68 s remaining, `usage_limit_reached` false | [M] read B; AGENTS.md "QPU time and calibration" |
+| Resource units | `usage()` also reports `usage_limit_ru` 10 and `usage_consumed_ru` 8.553764; job metrics carry `resource_units` | [M]; their conversion to seconds is **unverified** |
 <!-- ibm-runtime-options:usage:end -->
 
 | Item | Value | Source |

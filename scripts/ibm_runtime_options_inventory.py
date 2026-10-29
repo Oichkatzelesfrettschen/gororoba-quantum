@@ -81,7 +81,7 @@ NOTE = ROOT / "docs/notes/ibm_quantum/hardware-controls.md"
 BACKENDS = ROOT / "docs/evidence/ibm_runtime_options/backends.json"
 SCHEMA = "ibm-runtime-options-inventory-v1"
 BACKENDS_SCHEMA = "ibm-runtime-backend-controls-v1"
-RUNTIME_VERSION = "0.50.0"
+RUNTIME_VERSION = "0.51.0"
 REQUIREMENTS = ROOT / "requirements.txt"
 PACKAGE = "qiskit_ibm_runtime"
 # Distributions whose versions shape the probe outcomes; None records an absent one.
@@ -101,7 +101,6 @@ DEPRECATION_MODULES = (
     "sampler",
     "estimator",
     "options_models.environment",
-    "options_models.post_selection",
     "options_models.base",
     "options.measure_noise_learning_options",
 )
