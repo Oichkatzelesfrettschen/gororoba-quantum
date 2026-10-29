@@ -475,7 +475,8 @@ def declared_libraries() -> dict[str, Any]:
                 if ranked:
                     documentary_roles[name] = f"Documented algebra candidate: {cells[2]}. Decision: {cells[-1]}"
                 elif len(cells) == 9:
-                    documentary_roles[name] = f"Documented ecosystem candidate: {cells[-1]}"
+                    role_text = re.sub(r"\]\(qiskit-packages/", r"](../../notes/qiskit-packages/", cells[-1])
+                    documentary_roles[name] = f"Documented ecosystem candidate: {role_text}"
     for path in requirement_manifests(ROOT):
         relative = path.relative_to(ROOT).as_posix()
         if path.is_file() and not any(part.startswith(".") for part in path.relative_to(ROOT).parts):

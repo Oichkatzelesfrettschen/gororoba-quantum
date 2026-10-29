@@ -2575,6 +2575,7 @@
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
     "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_analysis.py",
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_coherence_request.py",
@@ -2822,6 +2823,7 @@
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
     "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_analysis.py",
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_coherence_request.py",
@@ -3716,6 +3718,7 @@
    "hardware_execution": true,
    "imported_by": [
     "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_request.py",
     "scripts/ascella_experiment_analysis.py",
     "scripts/ascella_experiment_request.py",
@@ -3734,6 +3737,7 @@
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_request.py",
     "scripts/ascella_experiment_analysis.py",
     "scripts/ascella_experiment_request.py",
@@ -5425,7 +5429,7 @@
    "distribution": "qiskit-ibm-catalog",
    "declared_versions": {},
    "observed_host_version": null,
-   "role": "Documented ecosystem candidate: host only, installed: Qiskit Functions client, cloud only; never on Kaggle ([qiskit-functions.md](qiskit-packages/qiskit-functions.md))",
+   "role": "Documented ecosystem candidate: host only, installed: Qiskit Functions client, cloud only; never on Kaggle ([qiskit-functions.md](../../notes/qiskit-packages/qiskit-functions.md))",
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:143",
     "docs/notes/qiskit-ecosystem.md:225"
@@ -5795,7 +5799,7 @@
    "distribution": "qiskit-serverless",
    "declared_versions": {},
    "observed_host_version": null,
-   "role": "Documented ecosystem candidate: host only, installed with the runtime cap and image pins relaxed; exceeds Kaggle numpy ([qiskit-functions.md](qiskit-packages/qiskit-functions.md))",
+   "role": "Documented ecosystem candidate: host only, installed with the runtime cap and image pins relaxed; exceeds Kaggle numpy ([qiskit-functions.md](../../notes/qiskit-packages/qiskit-functions.md))",
    "documentation_mentions": [
     "docs/notes/qiskit-ecosystem.md:144",
     "docs/notes/qiskit-ecosystem.md:226"
@@ -6229,6 +6233,7 @@
     "gororoba_quantum/primorial_cover.py",
     "gororoba_quantum/variance.py",
     "scripts/a5_zero_divisor_strata.py",
+    "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_compilation_design.py",
     "scripts/ascella_compilation_reading.py",
@@ -6314,6 +6319,7 @@
     "gororoba_quantum/primorial_cover.py",
     "gororoba_quantum/variance.py",
     "scripts/a5_zero_divisor_strata.py",
+    "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_compilation_design.py",
     "scripts/ascella_compilation_reading.py",
@@ -7400,7 +7406,7 @@
   "scripts/kaggle_run.py": "9551cfd370c1f9c40abdcbe150c2d4c159952479df12785d182056a85fed8b46",
   "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "b0b9e3b345886f2acee26395802129d8ad1c5dc5618533c77653a88d939bd6ba",
   "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",
-  "scripts/hypercomplex_libraries.py": "de1125f46866b0df683500c9a992bd08f38e0d25b6559c14e98114f0151a31f1",
+  "scripts/hypercomplex_libraries.py": "0f4cb3cffa3d88479952e557e0f706cc03a42f28deb1abd60091db026659116e",
   "docs/notes/quandela/python-stack.md": "e9ccf726ac8f136c9be0fb570fc4442846d50809620eb91726543d2ea43d4571",
   "docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh": "8a7d8de6918424b5d187b85671827cdcbfe0d33421eae5b30ed6c837ff952c67",
   "docs/notes/iqm/python-stack-versions.json": "295941539dd0065d5ece5eb164df8131d38157e2e1ba8d9f5d95a7db5ef74062"
@@ -9983,6 +9989,23 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_associator_predecessor.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "hypercomplex_cases",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_platform",
+   "scipy",
    "sys",
    "typing"
   ],
