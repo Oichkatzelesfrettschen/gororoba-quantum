@@ -9,7 +9,7 @@ prose:
 - [ci/requirements-browser.txt](../ci/requirements-browser.txt) (browser validation of the measured explorer);
 - [ci/requirements-replay.txt](../ci/requirements-replay.txt) (historical Qiskit 2.5.2 replays);
 - [packaging/qiskit-aer-cuda/build-requirements.txt](../packaging/qiskit-aer-cuda/build-requirements.txt) (qiskit-aer CUDA wheel packaging);
-- the build host's Arch packages in [python-stack.md](notes/build_host/python-stack.md);
+- the build host's Arch packages in [python-stack.md](notes/build_host/python-stack.md), and the Qiskit-adjacent packages and `/opt` stacks beyond the core in [qiskit-packages/README.md](notes/qiskit-packages/README.md);
 - the isolated provider environments: [Quantum Inspire](notes/quantum_inspire/README.md), [Open Quantum](notes/open_quantum/README.md), [Quandela](notes/quandela/README.md) ([quandela/python-stack.md](notes/quandela/python-stack.md)), [IQM](notes/iqm/README.md) ([iqm/python-stack-versions.json](notes/iqm/python-stack-versions.json)), and [Kaggle](notes/kaggle/README.md) ([kaggle_kernel/AGENTS.md](../kaggle_kernel/AGENTS.md)).
 
 The central [library register](state/hypercomplex-libraries/libraries.md) lists every
@@ -30,11 +30,12 @@ platform boundaries:
 1. **Build Host (Arch Linux / CachyOS System Environment, `$PYTHON`)**
    - Python 3.14 (system interpreter).
    - Package management: Arch system packages (`pacman`, `paru`) and custom PKGBUILDs
-     in `~/Github/PKGBUILDs` replacing `blas-openblas` with AMD AOCL BLAS/LAPACK providers.
-   - Hardware acceleration: NVIDIA RTX 4070 Ti (SM 89), CUDA 13.4, cuQuantum 26.09.0.8
+     in `~/Github/PKGBUILDs`, all linking the system OpenBLAS (`blas-openblas`) as BLAS and LAPACK.
+   - Hardware acceleration: NVIDIA RTX 4070 Ti (SM 89), CUDA 13.4.3, cuQuantum 26.09.0.8
      (libcustatevec.so.1 and libcutensornet.so.2), and cutensor 2.8.1.0.
-   - Locally compiled packages: `python-qiskit-aer-cuda` (0.17.2-2 with cuStateVec support),
-     `python-samplomatic` (0.21.0), and `python-qiskit-ibm-runtime` (0.50.0).
+   - Locally compiled packages: `python-qiskit` (2.6.1), `python-qiskit-aer-cuda` (0.18.2-3 with cuStateVec support and unique provider names),
+     `python-samplomatic` (0.21.0), and `python-qiskit-ibm-runtime` (0.51.0); the library wiring
+     is in [python-stack.md](notes/build_host/python-stack.md).
    - Computer algebra: System `sagemath` (10.10) for exact algebraic geometry and
      rotation-composite audits.
    - Local hypercomplex verification stack: 17 packages extracted and validated against
@@ -98,7 +99,7 @@ The repository audit recognizes four operational statuses across all Python dist
 
 2. **Locally Installed for Hardware Acceleration, Probes and Negative Controls**
    - *Host CUDA/BLAS support*: `cuquantum` (libcustatevec, libcutensornet), `cutensor`,
-     `cuda`, AOCL 5 BLAS/LAPACK providers.
+     `cuda`, OpenBLAS (`blas-openblas`) as the BLAS and LAPACK provider.
    - *Algebra reference packages*: Installed as Arch packages and bound by SHA256 digests in
      `docs/evidence/algebra_packages/tables.json` to verify `cd_core`:
      `hypercomplex`, `hypercomplex-engine`, `hypercomplex-algebra`, `cayley-calculator`,
@@ -142,6 +143,9 @@ The repository audit recognizes four operational statuses across all Python dist
 | `OQ_PYTHON` | Open Quantum SDK | [open_quantum/README.md](notes/open_quantum/README.md) |
 | `QD_PYTHON` | the Quandela MCP server; Perceval itself runs on `$PYTHON` | [quandela/README.md](notes/quandela/README.md) |
 | `iqm-python` | IQM Resonance client stack | [iqm/README.md](notes/iqm/README.md) |
+| `qi-stack-python`, `qi-stack` (Python 3.13) | the hash-locked Quantum Inspire stack: SDK, Qiskit provider and PennyLane plugin on qiskit 2.3.0 | [quantum-inspire-family.md](notes/qiskit-packages/quantum-inspire-family.md) |
+| `qiskit-debugger-python` (Python 3.11) | qiskit-debugger on its pinned Qiskit 0.43.2 | [qiskit-debugger.md](notes/qiskit-packages/qiskit-debugger.md) |
+| `quantum-pipeline-python`, `quantum-pipeline` (Python 3.13) | quantum-pipeline VQE runs on Aer 0.17.2 | [quantum-pipeline.md](notes/qiskit-packages/quantum-pipeline.md) |
 | `QB_PYTHON` (Python 3.13) | qBraid SDK (`qbraid`, `qbraid-core`). The guide's venv is the portable default; the build host sets `QB_PYTHON` to `qbraid-python` from the `qbraid-stack` package | [qbraid/README.md](notes/qbraid/README.md) |
 | Kaggle kernel | simulations of 14 qubits or fewer | [kaggle/README.md](notes/kaggle/README.md) |
 
@@ -200,6 +204,47 @@ many also run under `-O`, so a check raises explicitly instead of using
 A gate that needs a library outside the pin files retains its output with
 `--out` and checks that output with the pinned stack, as core-489 does for
 pyadic.
+
+
+## Qiskit-adjacent packages and stacks
+
+The build host carries these distributions beyond the pinned core of
+requirements.txt, each built from a PKGBUILD in `~/Github/PKGBUILDs`. This
+table registers them. Each linked note in
+[notes/qiskit-packages/](notes/qiskit-packages/README.md) gives the package's
+usage, commands, flags, hazards and connections, and that directory's README
+maps how the packages connect. `"$PYTHON"
+docs/notes/qiskit-packages/probe_packages.py --stacks` reruns the offline
+probes after any upgrade.
+
+| Surface | Interpreter | Core it carries | Packages |
+|---|---|---|---|
+| system, `$PYTHON` | Python 3.14 | qiskit 2.6.1, runtime 0.51.0, Aer 0.18.2 (CUDA build) | [qiskit-aer](notes/qiskit-packages/qiskit-aer.md), [ibm-quantum-schemas](notes/qiskit-packages/ibm-quantum-schemas.md), [qiskit-noise-learning](notes/qiskit-packages/qiskit-noise-learning.md), [pauli-prop and qiskit-addon-slc](notes/qiskit-packages/qiskit-addon-slc.md), [qiskit-serverless and qiskit-ibm-catalog](notes/qiskit-packages/qiskit-functions.md), [qiskit-connector](notes/qiskit-packages/qiskit-connector.md), [qiskit-resume](notes/qiskit-packages/qiskit-resume.md), [qiskit-waveform-sim](notes/qiskit-packages/qiskit-waveform-sim.md), [qcog](notes/qiskit-packages/qcog.md), [qubasic](notes/qiskit-packages/qubasic.md), [eigenkit](notes/qiskit-packages/eigenkit.md), [quantum-al](notes/qiskit-packages/quantum-al.md), [perceval-quandela and perceval-interop](notes/qiskit-packages/perceval-interop.md) |
+| `quantuminspire-qiskit-stack` | `qi-stack-python`, Python 3.13 | qiskit 2.3.0, Aer 0.17.2 | [quantuminspire, qiskit-quantuminspire, pennylane-quantuminspire](notes/qiskit-packages/quantum-inspire-family.md) |
+| `qiskit-debugger-stack` | `qiskit-debugger-python`, Python 3.11 | qiskit 0.43.2 (terra 0.24.1), Aer 0.12.1 | [qiskit-debugger](notes/qiskit-packages/qiskit-debugger.md) |
+| `quantum-pipeline-stack` | `quantum-pipeline-python`, Python 3.13 | qiskit 2.6.1, runtime 0.51.0, Aer 0.17.2 | [quantum-pipeline](notes/qiskit-packages/quantum-pipeline.md) |
+
+Each package's placement follows from one requirement:
+
+- The Quantum Inspire family requires Python below 3.14, and pennylane-qiskit
+  caps qiskit at 2.3.0.
+- qiskit-debugger pins `qiskit==0.43.2` and imports `qiskit.Aer` and
+  `qiskit.execute`, both of which Qiskit 1.0 removed.
+- quantum-pipeline caps qiskit-aer below 0.18.
+- qiskit-serverless caps qiskit-ibm-runtime below 0.51, and its system
+  package relaxes that cap.
+
+Four packages carry host hazards that their notes spell out:
+- qiskit-connector loads `.env` files on import and overwrites the default
+  IBM account.
+- qiskit-resume unpickles checkpoint files.
+- qubasic's `SHELL` statement runs shell commands.
+- qiskit-waveform-sim takes only timing from the Target; its pulse shapes
+  and amplitudes are placeholders.
+
+The environments, caches and build trees that these surfaces leave on the
+host, and the rules for cleaning them, are in
+[runbooks/cache-locations.md](runbooks/cache-locations.md).
 
 
 ## Optimization ladder

@@ -326,6 +326,7 @@ differs from it only in the `cd_core.py` digest.
 | [learning-quantum-teleportation.md](notes/ibm_quantum/learning-quantum-teleportation.md) | IBM Quantum Learning teleportation lesson: outcome-to-correction table |
 | [qiskit-ecosystem.md](notes/qiskit-ecosystem.md) | Qiskit ecosystem audit |
 | [qiskit-ecosystem-install-plan.md](notes/qiskit-ecosystem-install-plan.md) | Qiskit ecosystem install plan |
+| [qiskit-packages/README.md](notes/qiskit-packages/README.md) | installed Qiskit-adjacent packages: install surfaces, per-package notes, interconnections, open items |
 
 ### Providers
 
@@ -345,6 +346,8 @@ differs from it only in the `cd_core.py` digest.
 | [build_host/python-stack.md](notes/build_host/python-stack.md) | build-host Python stack |
 | [jax-bridge-structure-report.md](notes/kaggle/jax-bridge-structure-report.md) | JAX bridge sweep, export once per structure |
 | [simulation-cost-levers.md](runbooks/simulation-cost-levers.md) | planner, ghost replay and package costs |
+| [compute-flags.md](runbooks/compute-flags.md) | pre-run flag review: memory caps, threads and solver options for Singular and msolve |
+| [library-flags.md](runbooks/library-flags.md) | per-library flags: BLAS threads, Aer, JAX, torch, sympy, FLINT, cvxpy and executable options, verified against the installed packages |
 
 ### Packages and tools
 
@@ -359,6 +362,7 @@ differs from it only in the `cd_core.py` digest.
 | File | Contents |
 |---|---|
 | [ci-runtime.md](runbooks/ci-runtime.md) | timing denominators, bottlenecks and replay selection |
+| [cache-locations.md](runbooks/cache-locations.md) | cache, venv, build-tree and run-output locations outside the checkout; cleanup classes and the future `make clean` and `make distclean` targets |
 | [vectorized-fits.md](runbooks/vectorized-fits.md) | batched classical fits across replicates |
 | [null-shards.md](runbooks/null-shards.md) | the successor null through one pool, Kaggle kernels and hosted-runner shards |
 

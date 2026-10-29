@@ -279,7 +279,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | qiskit-gym | separate/unobserved | Documented ecosystem candidate: skip: reinforcement-learning synthesis |
 | qiskit-gym-mcp-server | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
 | qiskit-ibm-ai-local-transpiler | separate/unobserved | Documented ecosystem candidate: skip: no consumer in the repository; pins an old networkx |
-| qiskit-ibm-catalog | separate/unobserved | Documented ecosystem candidate: skip: Qiskit Functions client, cloud only |
+| qiskit-ibm-catalog | separate/unobserved | Documented ecosystem candidate: host only, installed: Qiskit Functions client, cloud only; never on Kaggle ([qiskit-functions.md](qiskit-packages/qiskit-functions.md)) |
 | qiskit-ibm-experiment | separate/unobserved | Documented ecosystem candidate: skip: archived |
 | qiskit-ibm-provider | separate/unobserved | Documented ecosystem candidate: skip: replaced by runtime |
 | qiskit-ibm-runtime | 0.50.0 | IBM execution and result collection through the approved-record runner. |
@@ -296,7 +296,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | qiskit-paulice | separate/unobserved | Documented ecosystem candidate: skip: spacetime Pauli checks target error detection at scale |
 | qiskit-qasm3-import | 0.6.0 | Validated OpenQASM interchange between isolated SDK environments. |
 | qiskit-quantuminspire | separate/unobserved | Circuit conversion in the isolated Quantum Inspire environment. |
-| qiskit-serverless | separate/unobserved | Documented ecosystem candidate: skip: cloud job client, exceeds Kaggle numpy |
+| qiskit-serverless | separate/unobserved | Documented ecosystem candidate: host only, installed with the runtime cap and image pins relaxed; exceeds Kaggle numpy ([qiskit-functions.md](qiskit-packages/qiskit-functions.md)) |
 | qrisp | separate/unobserved | IQM high-level circuit/QEC interface in its isolated stack. |
 | quantuminspire | separate/unobserved | Account and case lifecycle through the existing guarded Quantum Inspire runner. |
 | quaternion-algebra | separate/unobserved | Documented algebra candidate: hyper-dual numbers; quaternions. Decision: **skip**: abandoned |
