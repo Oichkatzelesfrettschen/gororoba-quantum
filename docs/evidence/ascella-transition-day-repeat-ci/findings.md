@@ -56,8 +56,8 @@ The largest excess-leakage setting changed from job to job:
 - In the baseline, Fourier-to-chirped input 0 (3.21 %) and identity input 5 (1.94 %) were high.
 - In the repeat, both fell below 0.7 %, and Fourier-to-chirped input 4 rose to 6.41 %.
 
-Fourier-to-chirped input 4 leaked 6.17 % in the original pilot. Across the 33 hours it returned to
-the leakage of that earlier episode rather than drifting gradually away from the baseline.
+Fourier-to-chirped input 4 leaked 6.17 % in the original pilot, a value close to its 6.41 % here.
+With one baseline and one repeat, the record shows two endpoints and no path between them.
 
 ## Interpretation
 
@@ -70,16 +70,22 @@ the leakage of that earlier episode rather than drifting gradually away from the
   - matched identity-input-0 anchors differed from their singleton reference by total variation
     0.012 to 0.046.
 
-**Inferred** (moderate confidence). Ascella has an intermittent per-setting excess-leakage state that
-varies from job to job. A slow drift over the day does not explain the pattern:
-- identical meshes enter and leave the state in either direction;
-- the magnitude repeats across episodes (about 6 % for Fourier-to-chirped input 4 in two jobs);
-- comparable changes already occur within a day.
+**Hypotheses.** The record is consistent with two explanations, and its design cannot separate them.
 
-A sign that tracks elapsed time across several separations would raise this to high confidence. A
-same-day replicate showing no job-to-job variation would refute it. The acquisition cannot identify
-the mechanism: applied analog controls, source or detector response, or calibration
-events. Returned serialization records the digital request only.
+- *Intermittent per-setting state.* A few-percent excess-leakage state switches on and off between
+  jobs. Identical meshes enter and leave it in both directions, and Fourier-to-chirped input 4
+  reaches about 6 % in two separate jobs.
+- *Slow drift with calibration and context.* The applied controls or the source and detector
+  response drift over hours to days, and recalibrations and job context move each setting
+  differently.
+
+Opposite leakage shifts across settings and comparable same-day changes fit both. A fixed-context
+replicate of several jobs minutes apart tests the first. Large changes between those replicates
+favor intermittency, and their absence leaves drift as the remaining account. A time series of
+repeats at several separations tests the second through a dependence on elapsed time. Drift
+therefore stays unresolved. The acquisition cannot identify the mechanism either way: applied analog
+controls, source or detector response, or calibration events. Returned serialization records the
+digital request only.
 
 **What it does not establish.**
 - A drift rate: one separation gives no slope, and the job-to-job variance at short separation is
