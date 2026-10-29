@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
-	<responseDate>2026-10-29T14:13:53Z</responseDate>
+	<responseDate>2026-10-29T14:54:55Z</responseDate>
 	<request from="2026-10-01T00:00:00Z" metadataPrefix="oai_dc" set="classification:17" verb="ListIdentifiers">https://oai.zbmath.org/v1/</request>
 	<ListIdentifiers>
 		<header>
@@ -597,6 +597,6 @@
 			<setSpec>20</setSpec>
 			<setSpec>22</setSpec>
 		</header>
-		<resumptionToken expirationDate="2026-10-30T14:14:06Z" completeListSize="135" cursor="100">37425c7e-b02d-4670-b429-cb566e50b2ad</resumptionToken>
+		<resumptionToken expirationDate="2026-10-30T14:55:08Z" completeListSize="135" cursor="100">51026d5f-cb14-45cc-b711-063f199c09dc</resumptionToken>
 	</ListIdentifiers>
 </OAI-PMH>

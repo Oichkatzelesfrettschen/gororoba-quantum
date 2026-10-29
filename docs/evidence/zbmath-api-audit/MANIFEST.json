@@ -1,6 +1,6 @@
 {
  "schema": "zbmath-api-capture-v1",
- "captured_utc": "2026-10-29T14:14:57Z",
+ "captured_utc": "2026-10-29T14:56:28Z",
  "user_agent": "gororoba-quantum-zbmath (+https://github.com/Oichkatzelesfrettschen/gororoba-quantum)",
  "entries": [
   {
@@ -12,7 +12,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:09 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:23 GMT",
     "server": "uvicorn",
     "content-length": "118038",
     "content-type": "application/json",
@@ -22,7 +22,7 @@
    "content_type": "application/json",
    "bytes": 118038,
    "sha256": "2a655805b4f150b179845ae0f9124e767000bae39e0c1c2238410919570bcef5",
-   "elapsed_seconds": 1.321
+   "elapsed_seconds": 1.192
   },
   {
    "name": "rest-document-intro",
@@ -33,7 +33,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:14 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:25 GMT",
     "server": "uvicorn",
     "content-length": "1033",
     "content-type": "application/json",
@@ -43,7 +43,7 @@
    "content_type": "application/json",
    "bytes": 1033,
    "sha256": "7eb1d20b0b9c1858939d55373c99132e7c1a61531462041930221677a7e5b304",
-   "elapsed_seconds": 0.543
+   "elapsed_seconds": 0.552
   },
   {
    "name": "rest-document-by-internal-id",
@@ -54,7 +54,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:11:56 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:26 GMT",
     "server": "uvicorn",
     "content-length": "10424",
     "content-type": "application/json",
@@ -63,8 +63,8 @@
    },
    "content_type": "application/json",
    "bytes": 10424,
-   "sha256": "4d8a4200345e3d8a93462aa4b2acab963b85586537bd2712dcde7efd3322dc4e",
-   "elapsed_seconds": 0.731
+   "sha256": "578e51f890fef6db642565e5dc0f464cea4850c8dcf3d26cdc6be69cf71ca362",
+   "elapsed_seconds": 0.708
   },
   {
    "name": "rest-document-by-zbl-id",
@@ -75,7 +75,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:16 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:26 GMT",
     "server": "uvicorn",
     "content-length": "10424",
     "content-type": "application/json",
@@ -84,8 +84,8 @@
    },
    "content_type": "application/json",
    "bytes": 10424,
-   "sha256": "57f403737d71b99871c7a275f4532bd8a2eca8105177a1b672f466e68b006737",
-   "elapsed_seconds": 0.736
+   "sha256": "da848d4815a820fd9ca8b95c046d2b72cbe443b7008eeb3a1b258004f6aff416",
+   "elapsed_seconds": 0.752
   },
   {
    "name": "rest-document-by-doi-path",
@@ -96,7 +96,7 @@
    "request_headers": [],
    "status": 404,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:19 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:23 GMT",
     "server": "uvicorn",
     "content-length": "292",
     "content-type": "application/json",
@@ -105,8 +105,8 @@
    },
    "content_type": "application/json",
    "bytes": 292,
-   "sha256": "85189101690435292a1e677fbdeef0487f42104fe005df1d105cb4cee1a9ad49",
-   "elapsed_seconds": 0.539
+   "sha256": "b76e731d4fed3c312107f75752146c2a8e4f6f3a8ea63824adc1b6da3eedae04",
+   "elapsed_seconds": 0.51
   },
   {
    "name": "rest-document-unknown-id",
@@ -117,7 +117,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:23 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:23 GMT",
     "server": "uvicorn",
     "content-length": "334",
     "content-type": "application/json",
@@ -126,8 +126,8 @@
    },
    "content_type": "application/json",
    "bytes": 334,
-   "sha256": "29f1d365d6f2c56020235965a22af7ba5cd4a28291f069936f33bd7bc4e01cf4",
-   "elapsed_seconds": 0.713
+   "sha256": "36213c4ec84f74967a15c7c2c89c9dbc76241c13e94c3b5e0c43be6362777a06",
+   "elapsed_seconds": 3.377
   },
   {
    "name": "rest-document-search",
@@ -138,7 +138,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:43 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:36 GMT",
     "server": "uvicorn",
     "content-length": "240516",
     "content-type": "application/json",
@@ -147,8 +147,8 @@
    },
    "content_type": "application/json",
    "bytes": 240516,
-   "sha256": "c473f001d279f6862d0c329f88db7dafb712e12742b0e1b22413b6ad4077ac47",
-   "elapsed_seconds": 2.86
+   "sha256": "277492e0186af8e6939518c676199b4c63e93537382e92580de044c94385f1ca",
+   "elapsed_seconds": 2.815
   },
   {
    "name": "rest-document-search-doi",
@@ -159,7 +159,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:46 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:36 GMT",
     "server": "uvicorn",
     "content-length": "10426",
     "content-type": "application/json",
@@ -168,8 +168,8 @@
    },
    "content_type": "application/json",
    "bytes": 10426,
-   "sha256": "d41892580547c5a558c675d946eadc482784843342c9545a927192ce0a73e000",
-   "elapsed_seconds": 0.757
+   "sha256": "bbac8d551b3a69657461ea0cb33d1da990690b4e269bb024370b1a7e62b9c48a",
+   "elapsed_seconds": 0.877
   },
   {
    "name": "rest-document-search-arxiv",
@@ -180,7 +180,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:31 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:35 GMT",
     "server": "uvicorn",
     "content-length": "7968",
     "content-type": "application/json",
@@ -189,8 +189,8 @@
    },
    "content_type": "application/json",
    "bytes": 7968,
-   "sha256": "532b8a6cce670da47f50722907f2a45f380823874cc84885569d58474dd189f4",
-   "elapsed_seconds": 0.736
+   "sha256": "6c13fcd8f6e7df179b1aea6a071a818c903e3df753d8187188c7171c9a5a32d7",
+   "elapsed_seconds": 0.753
   },
   {
    "name": "rest-document-search-no-hits",
@@ -201,17 +201,17 @@
    "request_headers": [],
    "status": 404,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:50 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:41 GMT",
     "server": "uvicorn",
-    "content-length": "317",
+    "content-length": "320",
     "content-type": "application/json",
     "connection": "close",
     "strict-transport-security": "max-age=16070400; includeSubDomains"
    },
    "content_type": "application/json",
-   "bytes": 317,
-   "sha256": "2de0609a29ab7472270b1676cfaa99e36543cd21c8f83a403fc692e70ccee919",
-   "elapsed_seconds": 0.691
+   "bytes": 320,
+   "sha256": "f116d91209b98ea5b6b3775c6141f99da28a91416201b1b10f2baaf57d901771",
+   "elapsed_seconds": 18.842
   },
   {
    "name": "rest-document-search-missing-query",
@@ -222,7 +222,7 @@
    "request_headers": [],
    "status": 422,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:50 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:03 GMT",
     "server": "uvicorn",
     "content-length": "98",
     "content-type": "application/json",
@@ -232,7 +232,7 @@
    "content_type": "application/json",
    "bytes": 98,
    "sha256": "4f31520f68caeb9f9bcb8cdb406e588b8d26845c3498466cf533822e07dc2ab6",
-   "elapsed_seconds": 0.522
+   "elapsed_seconds": 0.56
   },
   {
    "name": "rest-document-search-page-not-integer",
@@ -243,7 +243,7 @@
    "request_headers": [],
    "status": 422,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:54 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:45 GMT",
     "server": "uvicorn",
     "content-length": "102",
     "content-type": "application/json",
@@ -253,7 +253,7 @@
    "content_type": "application/json",
    "bytes": 102,
    "sha256": "094e5b591cc42a342b1bee3fb119e459cb385e6fd51df0012f8cc43738b0a63d",
-   "elapsed_seconds": 0.542
+   "elapsed_seconds": 0.52
   },
   {
    "name": "rest-document-search-page-negative",
@@ -264,17 +264,17 @@
    "request_headers": [],
    "status": 400,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:54 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:44 GMT",
     "server": "uvicorn",
-    "content-length": "351",
+    "content-length": "348",
     "content-type": "application/json",
     "connection": "close",
     "strict-transport-security": "max-age=16070400; includeSubDomains"
    },
    "content_type": "application/json",
-   "bytes": 351,
-   "sha256": "0cebf4d01d985d649b6d8dbc7be31223de1cbe53d3634c69b6afeaaddaab60f8",
-   "elapsed_seconds": 0.697
+   "bytes": 348,
+   "sha256": "588c48fce63a41caa7fc160810709eba5966a9b7dd980d38499f511c9eeb2358",
+   "elapsed_seconds": 0.831
   },
   {
    "name": "rest-document-search-per-page-zero",
@@ -285,17 +285,17 @@
    "request_headers": [],
    "status": 400,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:55 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:03 GMT",
     "server": "uvicorn",
-    "content-length": "367",
+    "content-length": "366",
     "content-type": "application/json",
     "connection": "close",
     "strict-transport-security": "max-age=16070400; includeSubDomains"
    },
    "content_type": "application/json",
-   "bytes": 367,
-   "sha256": "7d636f58e37b8efc7682c535310c6603567d2893409a3e58af84c7efd6d2da7e",
-   "elapsed_seconds": 0.687
+   "bytes": 366,
+   "sha256": "e04eee607209c7bde7bdad3e7d8e2c38fe837b321a4e5993db717acb5b7ede89",
+   "elapsed_seconds": 0.696
   },
   {
    "name": "rest-document-search-per-page-501",
@@ -306,17 +306,17 @@
    "request_headers": [],
    "status": 400,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:55 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:40 GMT",
     "server": "uvicorn",
-    "content-length": "367",
+    "content-length": "366",
     "content-type": "application/json",
     "connection": "close",
     "strict-transport-security": "max-age=16070400; includeSubDomains"
    },
    "content_type": "application/json",
-   "bytes": 367,
-   "sha256": "0cbf2e8aeda5edaef11294387536bb785dfdf5245db85afbfc960d28ff286ec6",
-   "elapsed_seconds": 3.461
+   "bytes": 366,
+   "sha256": "11df2e24f931c8c353a4e6d695d0c8b3069ce15694ba7dc6f8c49543ee8b2370",
+   "elapsed_seconds": 0.704
   },
   {
    "name": "rest-document-search-window-last",
@@ -327,7 +327,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:58 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:11 GMT",
     "server": "uvicorn",
     "content-length": "5966",
     "content-type": "application/json",
@@ -336,8 +336,8 @@
    },
    "content_type": "application/json",
    "bytes": 5966,
-   "sha256": "9d4a6ec60c2900ef3192634ea4429f361cbac35ff1d35e93f7fcfdae111411cb",
-   "elapsed_seconds": 3.641
+   "sha256": "afc908d1caff478f7d31a1dacd56b56763ec408d0ff72ffa79f6b7a3137f8ad1",
+   "elapsed_seconds": 0.809
   },
   {
    "name": "rest-document-search-window-past",
@@ -348,17 +348,17 @@
    "request_headers": [],
    "status": 400,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:12:58 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:45 GMT",
     "server": "uvicorn",
-    "content-length": "381",
+    "content-length": "378",
     "content-type": "application/json",
     "connection": "close",
     "strict-transport-security": "max-age=16070400; includeSubDomains"
    },
    "content_type": "application/json",
-   "bytes": 381,
-   "sha256": "73292610faa5385d1fddb726fc305235b50f042d05b126556c3cf6bb9c08e773",
-   "elapsed_seconds": 3.817
+   "bytes": 378,
+   "sha256": "bbce16eabec2c1d443c2b83cb12c600fdc53c7ef326d7ace19f6c7416235cce4",
+   "elapsed_seconds": 0.689
   },
   {
    "name": "rest-document-structured-doi",
@@ -369,7 +369,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:11 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:15 GMT",
     "server": "uvicorn",
     "content-length": "10426",
     "content-type": "application/json",
@@ -378,8 +378,8 @@
    },
    "content_type": "application/json",
    "bytes": 10426,
-   "sha256": "a19e031b0f1448a044d8f681ffe106f87f2bc53e97649befbded4fa8a41968c5",
-   "elapsed_seconds": 3.599
+   "sha256": "062276f4e0bafc3acf28c71f30a8b677963d739d0a4d2b21f5fc037c7e0e8a55",
+   "elapsed_seconds": 1.003
   },
   {
    "name": "rest-document-structured-title-year",
@@ -390,7 +390,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:16 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:15 GMT",
     "server": "uvicorn",
     "content-length": "7357",
     "content-type": "application/json",
@@ -399,8 +399,8 @@
    },
    "content_type": "application/json",
    "bytes": 7357,
-   "sha256": "503c3dd1c4da955423c5ec1123ea628241c61e4a65dee3141102cdcb1b0a990e",
-   "elapsed_seconds": 0.804
+   "sha256": "bc6ba05ca43c2562ef84ac1e9285979717b7d0252b1e275fa2a166e4e68ade18",
+   "elapsed_seconds": 1.042
   },
   {
    "name": "rest-document-structured-empty",
@@ -411,7 +411,7 @@
    "request_headers": [],
    "status": 400,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:19 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:15 GMT",
     "server": "uvicorn",
     "content-length": "319",
     "content-type": "application/json",
@@ -420,8 +420,8 @@
    },
    "content_type": "application/json",
    "bytes": 319,
-   "sha256": "483c038e08690458098d96eb6366257b52e8a4fdc027167643e2a05f87c6ae69",
-   "elapsed_seconds": 0.545
+   "sha256": "034a397b5de97fda8a52e64c8dd1f29be51ff5c2fd12ef9f5b6271a6f4a6b739",
+   "elapsed_seconds": 0.804
   },
   {
    "name": "rest-author-by-code",
@@ -432,7 +432,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:19 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:44 GMT",
     "server": "uvicorn",
     "content-length": "3167",
     "content-type": "application/json",
@@ -441,8 +441,8 @@
    },
    "content_type": "application/json",
    "bytes": 3167,
-   "sha256": "658182bdb8bb6052c72b854d531767d2c35d11aaaf8283f7c8c75b8a9cbb263b",
-   "elapsed_seconds": 0.711
+   "sha256": "ddc98c24b9e8273eef70449b5ed3a602f9d15bf41ef07e1dbeb6194c380c5c62",
+   "elapsed_seconds": 0.705
   },
   {
    "name": "rest-author-structured",
@@ -453,7 +453,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:23 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:23 GMT",
     "server": "uvicorn",
     "content-length": "758",
     "content-type": "application/json",
@@ -462,8 +462,8 @@
    },
    "content_type": "application/json",
    "bytes": 758,
-   "sha256": "6a9a8a1aaa0faff54ca1505382e4e7a4021e4f184f975f747b8f5fa6395bb2eb",
-   "elapsed_seconds": 0.764
+   "sha256": "ba4710b1c6f2967c27e2ff7acad8bf5458c75dc2bf008c142944445b3ef17511",
+   "elapsed_seconds": 0.775
   },
   {
    "name": "rest-classification-by-code",
@@ -474,17 +474,17 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:24 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:44 GMT",
     "server": "uvicorn",
-    "content-length": "466",
+    "content-length": "467",
     "content-type": "application/json",
     "connection": "close",
     "strict-transport-security": "max-age=16070400; includeSubDomains"
    },
    "content_type": "application/json",
-   "bytes": 466,
-   "sha256": "b8f0731b83e924d9a17020e3956ae40c86d4cfe5fd1304022d16bc37d63080f2",
-   "elapsed_seconds": 0.72
+   "bytes": 467,
+   "sha256": "e4fd2d76ea13a7abaf0d81bb45a4a6e529f307aea1ba4fb1396a5ff575198da2",
+   "elapsed_seconds": 0.711
   },
   {
    "name": "rest-classification-level-0",
@@ -495,17 +495,17 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:26 GMT",
+    "date": "Thu, 29 Oct 2026 14:53:44 GMT",
     "server": "uvicorn",
-    "content-length": "14892",
+    "content-length": "14893",
     "content-type": "application/json",
     "connection": "close",
     "strict-transport-security": "max-age=16070400; includeSubDomains"
    },
    "content_type": "application/json",
-   "bytes": 14892,
-   "sha256": "9acdcacd6f041bd72dd6a0f59a9080ef5dbc9ee3b11d6188e97d6243bf775dfb",
-   "elapsed_seconds": 1.911
+   "bytes": 14893,
+   "sha256": "fa4e04787976ee9e159ced000b32c4cc4d188ea55d01719cada057305841ef6e",
+   "elapsed_seconds": 4.49
   },
   {
    "name": "rest-serial-by-id",
@@ -516,17 +516,17 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:26 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:31 GMT",
     "server": "uvicorn",
-    "content-length": "2275",
+    "content-length": "2274",
     "content-type": "application/json",
     "connection": "close",
     "strict-transport-security": "max-age=16070400; includeSubDomains"
    },
    "content_type": "application/json",
-   "bytes": 2275,
-   "sha256": "7839921b037a72b4e023fbc870331d53114a2524d12c345bd1eb1df8bf624c56",
-   "elapsed_seconds": 0.715
+   "bytes": 2274,
+   "sha256": "5ab69b9e509331b35f63085211dd557e40b836c3c08edee634283a738c99375e",
+   "elapsed_seconds": 0.73
   },
   {
    "name": "rest-serial-search-issn",
@@ -537,7 +537,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:31 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:30 GMT",
     "server": "uvicorn",
     "content-length": "5069",
     "content-type": "application/json",
@@ -546,8 +546,8 @@
    },
    "content_type": "application/json",
    "bytes": 5069,
-   "sha256": "aca597ca981a1cfc929629d028b4c0d4e751207eb396bf3e5bce2f8c9f55ef43",
-   "elapsed_seconds": 0.726
+   "sha256": "e5452b371b52b2b8e245023a3390f2bbb60b2c08de0d8cb2c37a9a81cb8bb642",
+   "elapsed_seconds": 0.778
   },
   {
    "name": "rest-software-structured",
@@ -558,17 +558,17 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:31 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:34 GMT",
     "server": "uvicorn",
-    "content-length": "2202",
+    "content-length": "2201",
     "content-type": "application/json",
     "connection": "close",
     "strict-transport-security": "max-age=16070400; includeSubDomains"
    },
    "content_type": "application/json",
-   "bytes": 2202,
-   "sha256": "5bc14848e92f8c9c34f0def5932ce550c860c19c206b161eea5ae83ca4bf754f",
-   "elapsed_seconds": 0.851
+   "bytes": 2201,
+   "sha256": "b66413f6ab1848e0681db2d954d9014e1dd8255a7ff7e6733c13cdcdac2f12bd",
+   "elapsed_seconds": 1.575
   },
   {
    "name": "rest-head-method",
@@ -579,7 +579,7 @@
    "request_headers": [],
    "status": 405,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:31 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:34 GMT",
     "server": "uvicorn",
     "content-length": "31",
     "content-type": "application/json",
@@ -589,7 +589,7 @@
    "content_type": "application/json",
    "bytes": 0,
    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-   "elapsed_seconds": 0.536
+   "elapsed_seconds": 0.523
   },
   {
    "name": "rest-conditional-cross-origin",
@@ -613,7 +613,7 @@
    ],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:12 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:34 GMT",
     "server": "uvicorn",
     "content-length": "10424",
     "content-type": "application/json",
@@ -622,8 +622,8 @@
    },
    "content_type": "application/json",
    "bytes": 10424,
-   "sha256": "04fb5da21d4c8b98ecac63362cfd64e7130be2dd8e0467d74e27be62ac4846a8",
-   "elapsed_seconds": 1.802
+   "sha256": "46fa793e867bd8b3aea8393d94f3ef083e604d1b952d126c5b0a6e2c1dff567f",
+   "elapsed_seconds": 0.736
   },
   {
    "name": "rest-cors-preflight",
@@ -643,7 +643,7 @@
    ],
    "status": 405,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:35 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:19 GMT",
     "server": "uvicorn",
     "content-length": "31",
     "content-type": "application/json",
@@ -664,7 +664,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:40 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:43 GMT",
     "server": "Apache",
     "vary": "Accept-Encoding",
     "content-encoding": "gzip",
@@ -675,8 +675,8 @@
    },
    "content_type": "text/xml",
    "bytes": 684,
-   "sha256": "5d72697afd7086290f582e1ac7397d2ce024eb6aedd4cca723262d2576e1b6a5",
-   "elapsed_seconds": 0.897
+   "sha256": "af74ae9f6ffa30c969ec5001b17f3c65d6d9f7013893eafd0d482387883c5b41",
+   "elapsed_seconds": 1.117
   },
   {
    "name": "oai-list-metadata-formats",
@@ -687,7 +687,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:42 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:45 GMT",
     "server": "Apache",
     "vary": "Accept-Encoding",
     "content-encoding": "gzip",
@@ -698,8 +698,8 @@
    },
    "content_type": "text/xml",
    "bytes": 856,
-   "sha256": "f2b528429defe1e9ddc7094cb7772b7407e089af8e71afa4159a7413bfe433b6",
-   "elapsed_seconds": 0.541
+   "sha256": "4564591de52ab72dd86839b8ca15fc8decb05eaad56239ef19a74a3388173c09",
+   "elapsed_seconds": 0.526
   },
   {
    "name": "oai-list-sets",
@@ -710,7 +710,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:44 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:47 GMT",
     "server": "Apache",
     "vary": "Accept-Encoding",
     "content-encoding": "gzip",
@@ -721,8 +721,8 @@
    },
    "content_type": "text/xml",
    "bytes": 6903,
-   "sha256": "6b72c72d597abc65a80537fb7cc4f8dc558faeef1af2c2bfcd64c1ad1b780a02",
-   "elapsed_seconds": 1.119
+   "sha256": "83897cb461e98c69e62c1266105b3eace888d92301cfb48d1697f1ec0f26a0c9",
+   "elapsed_seconds": 0.603
   },
   {
    "name": "oai-get-record-dc",
@@ -733,7 +733,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:46 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:48 GMT",
     "server": "Apache",
     "vary": "Accept-Encoding",
     "content-encoding": "gzip",
@@ -744,8 +744,8 @@
    },
    "content_type": "text/xml",
    "bytes": 2284,
-   "sha256": "4d88dc2a1d2e7d3fbced24166de8c02d78e546839ca7130eceaa03abb576cd50",
-   "elapsed_seconds": 1.367
+   "sha256": "3c1c1adf7e68672821d5a1c62ab8f24a0506413b8e2f55b5b40d98146ecf8bcf",
+   "elapsed_seconds": 0.649
   },
   {
    "name": "oai-get-record-zb-preview",
@@ -756,7 +756,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:48 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:50 GMT",
     "server": "Apache",
     "vary": "Accept-Encoding",
     "content-encoding": "gzip",
@@ -767,8 +767,8 @@
    },
    "content_type": "text/xml",
    "bytes": 13647,
-   "sha256": "6c0665c489f338668b5febf09cc6a67dba52d3d0e36513be9c9d62fd37762a01",
-   "elapsed_seconds": 0.783
+   "sha256": "f24624ae98f75afe50bf54b5c32eb04f11cc3ee38f22da296a53f4d1287749e5",
+   "elapsed_seconds": 0.755
   },
   {
    "name": "oai-list-identifiers-set-window",
@@ -779,7 +779,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:50 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:52 GMT",
     "server": "Apache",
     "vary": "Accept-Encoding",
     "content-encoding": "gzip",
@@ -790,8 +790,8 @@
    },
    "content_type": "text/xml",
    "bytes": 2862,
-   "sha256": "f3e317b44848c60c6e38402a3262ad45e6bd4d2010fd64388423130f47f5fb55",
-   "elapsed_seconds": 2.278
+   "sha256": "09d1889b3b621a5893db669da6c6252a58ee92081e40eb5ff184041f24410001",
+   "elapsed_seconds": 2.232
   },
   {
    "name": "oai-list-identifiers-paged",
@@ -802,7 +802,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:13:53 GMT",
+    "date": "Thu, 29 Oct 2026 14:54:55 GMT",
     "server": "Apache",
     "vary": "Accept-Encoding",
     "content-encoding": "gzip",
@@ -813,8 +813,8 @@
    },
    "content_type": "text/xml",
    "bytes": 17562,
-   "sha256": "f6d55c0f0d8273d983e1d1b244b97fd7c37d8b148d87db93a62e90b4538cd3c6",
-   "elapsed_seconds": 13.57
+   "sha256": "e6e4a8c2425f026f808d851ad2939c782e1e95120ba837c85931d811851e9f6f",
+   "elapsed_seconds": 13.451
   },
   {
    "name": "oai-error-bad-verb",
@@ -825,7 +825,7 @@
    "request_headers": [],
    "status": 404,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:08 GMT",
+    "date": "Thu, 29 Oct 2026 14:55:09 GMT",
     "server": "Apache",
     "content-length": "361",
     "connection": "close",
@@ -834,8 +834,8 @@
    },
    "content_type": "text/xml",
    "bytes": 361,
-   "sha256": "c4dc20cf2b3d75be52f376ecb52d9921987c59ab2f9b4e271091de02867f6f50",
-   "elapsed_seconds": 0.578
+   "sha256": "93c2470c63ca7868375290b06293b87b2a20166addb746ba2ccca4cbd1c71be0",
+   "elapsed_seconds": 0.531
   },
   {
    "name": "oai-error-bad-format",
@@ -846,7 +846,7 @@
    "request_headers": [],
    "status": 400,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:09 GMT",
+    "date": "Thu, 29 Oct 2026 14:55:11 GMT",
     "server": "Apache",
     "content-length": "377",
     "connection": "close",
@@ -855,8 +855,8 @@
    },
    "content_type": "text/xml",
    "bytes": 377,
-   "sha256": "0f94505550fce30f8ebd77960050f9f10ad8a5befe11f50876319f4107751815",
-   "elapsed_seconds": 0.546
+   "sha256": "05b927ea8573a07c777a7976a31370847d3be66efb4044e6e90bac5f0e7d5b82",
+   "elapsed_seconds": 0.53
   },
   {
    "name": "oai-error-unknown-id",
@@ -867,7 +867,7 @@
    "request_headers": [],
    "status": 400,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:11 GMT",
+    "date": "Thu, 29 Oct 2026 14:55:12 GMT",
     "server": "Apache",
     "content-length": "368",
     "connection": "close",
@@ -876,8 +876,8 @@
    },
    "content_type": "text/xml",
    "bytes": 368,
-   "sha256": "7a1e8ca350e66a452c7fadaa2409af54b33338123b213a2d65ca8c50bd512b41",
-   "elapsed_seconds": 1.442
+   "sha256": "b2f0a413bef6ae6be296a390acf35b35599bdf6c21d8f59fa4800182421e98dc",
+   "elapsed_seconds": 0.59
   },
   {
    "name": "oai-error-no-match",
@@ -888,7 +888,7 @@
    "request_headers": [],
    "status": 400,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:13 GMT",
+    "date": "Thu, 29 Oct 2026 14:55:14 GMT",
     "server": "Apache",
     "content-length": "368",
     "connection": "close",
@@ -897,8 +897,8 @@
    },
    "content_type": "text/xml",
    "bytes": 368,
-   "sha256": "eed849d0bad008668dfb9f869b2536046d7c2a1ac9e8b20db9a6f2233456f8bd",
-   "elapsed_seconds": 0.604
+   "sha256": "f936bd9df20edb2913e6a2627ad0b43fdf0d6ad9d0e8c8339f837b1ab8bcbc0b",
+   "elapsed_seconds": 1.041
   },
   {
    "name": "oai-error-bad-date",
@@ -909,7 +909,7 @@
    "request_headers": [],
    "status": 400,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:15 GMT",
+    "date": "Thu, 29 Oct 2026 14:55:16 GMT",
     "server": "Apache",
     "content-length": "451",
     "connection": "close",
@@ -918,8 +918,8 @@
    },
    "content_type": "text/xml",
    "bytes": 451,
-   "sha256": "929964dd12199126079dd1b2311a760d66d5be74db2d02df3c3262ec6ee98d93",
-   "elapsed_seconds": 1.389
+   "sha256": "fe4acc19856db058ed3c017442939cd3ae80ed10a775ae909521a185a245abab",
+   "elapsed_seconds": 19.8
   },
   {
    "name": "oai-month-date-accepted",
@@ -930,7 +930,7 @@
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:17 GMT",
+    "date": "Thu, 29 Oct 2026 14:55:37 GMT",
     "server": "Apache",
     "vary": "Accept-Encoding",
     "content-encoding": "gzip",
@@ -941,8 +941,8 @@
    },
    "content_type": "text/xml",
    "bytes": 17549,
-   "sha256": "1db180c7adfbb3cf2f9c6c4935c1fc59b440a084356d0650c8871714a65264ed",
-   "elapsed_seconds": 20.972
+   "sha256": "10cab2fed61de9395cb08301cdcc128d33badf19ff5f6dbada7f645bfa667787",
+   "elapsed_seconds": 13.525
   },
   {
    "name": "oai-error-missing-prefix",
@@ -953,7 +953,7 @@
    "request_headers": [],
    "status": 404,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:39 GMT",
+    "date": "Thu, 29 Oct 2026 14:55:51 GMT",
     "server": "Apache",
     "content-length": "365",
     "connection": "close",
@@ -962,8 +962,8 @@
    },
    "content_type": "text/xml",
    "bytes": 365,
-   "sha256": "9ffbce3b4f51ae78fa606539034c5d9afaab83d934886267318d46aac46f8b2c",
-   "elapsed_seconds": 0.58
+   "sha256": "61f68176897f317e779a2b922fb2a5182201f9063d73c0aee7b9d6d019921181",
+   "elapsed_seconds": 0.547
   },
   {
    "name": "oai-error-bad-set",
@@ -974,7 +974,7 @@
    "request_headers": [],
    "status": 400,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:41 GMT",
+    "date": "Thu, 29 Oct 2026 14:55:53 GMT",
     "server": "Apache",
     "content-length": "365",
     "connection": "close",
@@ -983,19 +983,42 @@
    },
    "content_type": "text/xml",
    "bytes": 365,
-   "sha256": "34bb22b4264dbf9cde657b5673719a39a1d08dbf39bfdeb6f4b3a4722c4935d1",
-   "elapsed_seconds": 0.537
+   "sha256": "e1282d1ae0a226708a265c3bc3bd870a35da1ac5360676e742ef9235ed40a2cb",
+   "elapsed_seconds": 0.53
+  },
+  {
+   "name": "oai-mixed-granularity-accepted",
+   "file": "45-oai-mixed-granularity-accepted.xml",
+   "method": "GET",
+   "url": "https://oai.zbmath.org/v1/?verb=ListIdentifiers&metadataPrefix=oai_dc&set=17&from=2026-10-27&until=2026-10-27T23%3A59%3A59Z",
+   "request_body": null,
+   "request_headers": [],
+   "status": 200,
+   "response_headers": {
+    "date": "Thu, 29 Oct 2026 14:55:54 GMT",
+    "server": "Apache",
+    "vary": "Accept-Encoding",
+    "content-encoding": "gzip",
+    "connection": "close",
+    "transfer-encoding": "chunked",
+    "content-type": "text/xml; charset=utf-8",
+    "strict-transport-security": "max-age=16070400; includeSubDomains"
+   },
+   "content_type": "text/xml",
+   "bytes": 2852,
+   "sha256": "c24adfd768cf8cab9c99cea6626ca82a34927f09f25e5ba87ad3fe8189af6314",
+   "elapsed_seconds": 14.371
   },
   {
    "name": "oai-error-bad-token",
-   "file": "45-oai-error-bad-token.html",
+   "file": "46-oai-error-bad-token.html",
    "method": "GET",
    "url": "https://oai.zbmath.org/v1/?verb=ListIdentifiers&resumptionToken=deadbeef",
    "request_body": null,
    "request_headers": [],
    "status": 500,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:42 GMT",
+    "date": "Thu, 29 Oct 2026 14:56:10 GMT",
     "server": "Apache",
     "content-length": "290",
     "connection": "close",
@@ -1005,23 +1028,44 @@
    "content_type": "text/html",
    "bytes": 290,
    "sha256": "304fc5a46842da461e6ef83c9910ddb84558f5303f2006c2c8b0485b37faf5b4",
-   "elapsed_seconds": 1.439
+   "elapsed_seconds": 2.234
+  },
+  {
+   "name": "oai-error-unknown-uuid-token",
+   "file": "47-oai-error-unknown-uuid-token.xml",
+   "method": "GET",
+   "url": "https://oai.zbmath.org/v1/?verb=ListIdentifiers&resumptionToken=00000000-0000-0000-0000-000000000000",
+   "request_body": null,
+   "request_headers": [],
+   "status": 404,
+   "response_headers": {
+    "date": "Thu, 29 Oct 2026 14:56:13 GMT",
+    "server": "Apache",
+    "content-length": "372",
+    "connection": "close",
+    "content-type": "text/xml; charset=utf-8",
+    "strict-transport-security": "max-age=16070400; includeSubDomains"
+   },
+   "content_type": "text/xml",
+   "bytes": 372,
+   "sha256": "9db79b83a173c427e9b760bc9e542f55189a0f36797977145a4b60086094d449",
+   "elapsed_seconds": 0.563
   },
   {
    "name": "oai-zb-preview-schema",
-   "file": "46-oai-zb-preview-schema.xsd",
+   "file": "48-oai-zb-preview-schema.xsd",
    "method": "GET",
    "url": "https://oai.zbmath.org/static/oai_zb_preview.xsd",
    "request_body": null,
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:45 GMT",
+    "date": "Thu, 29 Oct 2026 14:56:14 GMT",
     "server": "Apache",
     "content-length": "1770",
     "last-modified": "Thu, 13 Feb 2025 09:15:42 GMT",
     "cache-control": "public, max-age=43200",
-    "expires": "Fri, 30 Oct 2026 02:14:45 GMT",
+    "expires": "Fri, 30 Oct 2026 02:56:15 GMT",
     "etag": "\"1739438142.0-1770-3704888208\"",
     "connection": "close",
     "content-type": "application/octet-stream",
@@ -1030,18 +1074,18 @@
    "content_type": "application/octet-stream",
    "bytes": 1770,
    "sha256": "3a04331ff58b68729c3cda4b536e813b7260c344c623c74429bcbaa6afb03d44",
-   "elapsed_seconds": 0.541
+   "elapsed_seconds": 0.532
   },
   {
    "name": "oai-zb-preview-schema-relative",
-   "file": "47-oai-zb-preview-schema-relative.html",
+   "file": "49-oai-zb-preview-schema-relative.html",
    "method": "GET",
    "url": "https://oai.zbmath.org/v1/static/oai_zb_preview.xsd",
    "request_body": null,
    "request_headers": [],
    "status": 404,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:46 GMT",
+    "date": "Thu, 29 Oct 2026 14:56:16 GMT",
     "server": "Apache",
     "content-length": "232",
     "connection": "close",
@@ -1051,23 +1095,23 @@
    "content_type": "text/html",
    "bytes": 232,
    "sha256": "9177a352dcbf8875ebb2e22e682760d47faa4d77398add153dd7084e7568c5bc",
-   "elapsed_seconds": 0.531
+   "elapsed_seconds": 0.534
   },
   {
    "name": "oai-zb-preview-imported-schema",
-   "file": "48-oai-zb-preview-imported-schema.xsd",
+   "file": "50-oai-zb-preview-imported-schema.xsd",
    "method": "GET",
    "url": "https://oai.zbmath.org/static/simplezbmath20200901.xsd",
    "request_body": null,
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:48 GMT",
+    "date": "Thu, 29 Oct 2026 14:56:18 GMT",
     "server": "Apache",
     "content-length": "4300",
     "last-modified": "Thu, 13 Feb 2025 09:15:42 GMT",
     "cache-control": "public, max-age=43200",
-    "expires": "Fri, 30 Oct 2026 02:14:48 GMT",
+    "expires": "Fri, 30 Oct 2026 02:56:18 GMT",
     "etag": "\"1739438142.0-4300-2128944217\"",
     "connection": "close",
     "content-type": "application/octet-stream",
@@ -1076,18 +1120,18 @@
    "content_type": "application/octet-stream",
    "bytes": 4300,
    "sha256": "e2d86677f0b4c79f0f3617c8c25618ab5ecb2ccbc25864e90c3664cc35d61bfb",
-   "elapsed_seconds": 0.542
+   "elapsed_seconds": 0.533
   },
   {
    "name": "oai-error-openaire-set",
-   "file": "49-oai-error-openaire-set.xml",
+   "file": "51-oai-error-openaire-set.xml",
    "method": "GET",
    "url": "https://oai.zbmath.org/v1/?verb=ListIdentifiers&metadataPrefix=oai_dc&set=openaire&from=2026-10-01T00%3A00%3A00Z",
    "request_body": null,
    "request_headers": [],
    "status": 400,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:49 GMT",
+    "date": "Thu, 29 Oct 2026 14:56:19 GMT",
     "server": "Apache",
     "content-length": "365",
     "connection": "close",
@@ -1096,19 +1140,19 @@
    },
    "content_type": "text/xml",
    "bytes": 365,
-   "sha256": "4724b3bd3fc1ab92b5488f01c344d66aece5b61fc61333d0294eb98fd36959cc",
-   "elapsed_seconds": 0.532
+   "sha256": "563a2d40857c80d08ff309c4d293f13260c05f77bd7dc255f915afbf1f487c14",
+   "elapsed_seconds": 0.533
   },
   {
    "name": "cite-match",
-   "file": "50-cite-match.json",
+   "file": "52-cite-match.json",
    "method": "GET",
    "url": "https://zbmath.org/citationmatching/match?q=J.+Lawrynowicz%2C+O.+Suzuki%2C+A.+Niemczynowicz%2C+On+the+ternary+approach+to+Clifford+structures+and+Ising+lattices%2C+Adv.+Appl.+Clifford+Algebr.+22+%282012%29+757-769&n=3",
    "request_body": null,
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:51 GMT",
+    "date": "Thu, 29 Oct 2026 14:56:21 GMT",
     "content-type": "application/json",
     "transfer-encoding": "chunked",
     "connection": "close",
@@ -1118,23 +1162,49 @@
     "strict-transport-security": "max-age=16070400; includeSubDomains",
     "cf-cache-status": "DYNAMIC",
     "content-encoding": "gzip",
-    "cf-ray": "a522c9f998b908cd-LAX"
+    "cf-ray": "a52306c1bb85e6d4-LAX"
    },
    "content_type": "application/json",
    "bytes": 1149,
    "sha256": "8f400a99c3bd96234f90dbd0785d745a07973b885bd473079373822de246686c",
-   "elapsed_seconds": 0.809
+   "elapsed_seconds": 0.811
+  },
+  {
+   "name": "cite-match-explicit-minimum",
+   "file": "53-cite-match-explicit-minimum.json",
+   "method": "GET",
+   "url": "https://zbmath.org/citationmatching/match?q=J.+Lawrynowicz%2C+O.+Suzuki%2C+A.+Niemczynowicz%2C+On+the+ternary+approach+to+Clifford+structures+and+Ising+lattices%2C+Adv.+Appl.+Clifford+Algebr.+22+%282012%29+757-769&n=3&m=5",
+   "request_body": null,
+   "request_headers": [],
+   "status": 200,
+   "response_headers": {
+    "date": "Thu, 29 Oct 2026 14:56:23 GMT",
+    "content-type": "application/json",
+    "transfer-encoding": "chunked",
+    "connection": "close",
+    "server": "cloudflare",
+    "x-clacks-overhead": "GNU Terry Pratchett",
+    "x-ua-compatible": "IE=edge",
+    "strict-transport-security": "max-age=16070400; includeSubDomains",
+    "cf-cache-status": "DYNAMIC",
+    "content-encoding": "gzip",
+    "cf-ray": "a52306cceb008a80-LAX"
+   },
+   "content_type": "application/json",
+   "bytes": 336,
+   "sha256": "859695ac6f167d3e2dba2abb3a8c085233cd6e0ce172899205545814cbfaa978",
+   "elapsed_seconds": 0.663
   },
   {
    "name": "cite-match-bulk",
-   "file": "51-cite-match-bulk.json",
+   "file": "54-cite-match-bulk.json",
    "method": "POST",
    "url": "https://zbmath.org/citationmatching/match?n=1",
    "request_body": "{\"queries\": [{\"q\": \"Moreno, The zero divisors of the Cayley-Dickson algebras over the real numbers, 1998\"}, {\"t\": \"zzqq nonexistent title\", \"a\": [\"Nobody\"]}]}",
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:54 GMT",
+    "date": "Thu, 29 Oct 2026 14:56:24 GMT",
     "content-type": "application/json",
     "transfer-encoding": "chunked",
     "connection": "close",
@@ -1144,23 +1214,23 @@
     "strict-transport-security": "max-age=16070400; includeSubDomains",
     "cf-cache-status": "DYNAMIC",
     "content-encoding": "gzip",
-    "cf-ray": "a522ca04a88d23de-LAX"
+    "cf-ray": "a52306d75bbe1e08-LAX"
    },
    "content_type": "application/json",
    "bytes": 568,
    "sha256": "a8e6c6732b21f1511ef0574847f07b70bed3d8e5ea3d42e78e7868880a8ad14b",
-   "elapsed_seconds": 1.611
+   "elapsed_seconds": 0.409
   },
   {
    "name": "cite-bibtex-match",
-   "file": "52-cite-bibtex-match.json",
+   "file": "55-cite-bibtex-match.json",
    "method": "GET",
    "url": "https://zbmath.org/citationmatching/bibtex/match?bibtex=%40article%7Bmoreno1998%2C+title%3D%7BThe+zero+divisors+of+the+%7BC%7Dayley-%7BD%7Dickson+algebras+over+the+real+numbers%7D%2C+author%3D%7BMoreno%2C+Guillermo%7D%2C+journal%3D%7BBol.+Soc.+Mat.+Mex.%7D%2C+year%3D%7B1998%7D%7D%0A",
    "request_body": null,
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:56 GMT",
+    "date": "Thu, 29 Oct 2026 14:56:26 GMT",
     "content-type": "application/json",
     "transfer-encoding": "chunked",
     "connection": "close",
@@ -1170,23 +1240,23 @@
     "strict-transport-security": "max-age=16070400; includeSubDomains",
     "cf-cache-status": "DYNAMIC",
     "content-encoding": "gzip",
-    "cf-ray": "a522ca150a99a86a-LAX"
+    "cf-ray": "a52306e01d312ab5-LAX"
    },
    "content_type": "application/json",
    "bytes": 958,
    "sha256": "af74d31a039dd50356fc0742fdcee72fc0c60d9a6871c9d1cbb65be7ddea0d2d",
-   "elapsed_seconds": 0.754
+   "elapsed_seconds": 0.696
   },
   {
    "name": "cite-bibtex-convert",
-   "file": "53-cite-bibtex-convert.bib",
+   "file": "56-cite-bibtex-convert.bib",
    "method": "POST",
    "url": "https://zbmath.org/citationmatching/bibtex/convert_file",
    "request_body": "--zbmath-capture-boundary\r\nContent-Disposition: form-data; name=\"bibtex_file\"; filename=\"moreno.bib\"\r\nContent-Type: application/x-bibtex\r\n\r\n@article{moreno1998, title={The zero divisors of the {C}ayley-{D}ickson algebras over the real numbers}, author={Moreno, Guillermo}, journal={Bol. Soc. Mat. Mex.}, year={1998}}\n\r\n--zbmath-capture-boundary--\r\n",
    "request_headers": [],
    "status": 200,
    "response_headers": {
-    "date": "Thu, 29 Oct 2026 14:14:57 GMT",
+    "date": "Thu, 29 Oct 2026 14:56:28 GMT",
     "content-type": "text/x-bibtex; charset=utf-8",
     "content-length": "212",
     "connection": "close",
@@ -1196,12 +1266,12 @@
     "x-ua-compatible": "IE=edge",
     "strict-transport-security": "max-age=16070400; includeSubDomains",
     "cf-cache-status": "DYNAMIC",
-    "cf-ray": "a522ca1ffd9a2606-LAX"
+    "cf-ray": "a52306eabdeb2b94-LAX"
    },
    "content_type": "text/x-bibtex",
    "bytes": 212,
    "sha256": "72350b2c2af6b239b5453a247f79aad979f9e895155a62538db977789231973c",
-   "elapsed_seconds": 0.733
+   "elapsed_seconds": 0.823
   }
  ]
 }

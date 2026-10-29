@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
-	<responseDate>2026-10-29T14:13:46Z</responseDate>
+	<responseDate>2026-10-29T14:54:48Z</responseDate>
 	<request identifier="oai:zbmath.org:6123912" metadataPrefix="oai_dc" verb="GetRecord">https://oai.zbmath.org/v1/</request>
 	<GetRecord>
 		<record>

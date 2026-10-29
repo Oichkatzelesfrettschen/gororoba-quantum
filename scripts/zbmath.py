@@ -16,9 +16,9 @@ retries 500, 502, 503 and 504 answers RETRIES times with doubling back-off.
   200 with the flag false, and a search without hits answers HTTP 404.
 - OAI-PMH 2.0, https://oai.zbmath.org/v1/: oai_dc and oai_zb_preview records
   in sets named by two-digit MSC classes, 100 headers per page under a
-  resumptionToken. Protocol errors arrive as HTTP 400, 404 or 500 rather
-  than the HTTP 200 that OAI-PMH section 3.6 prescribes; the client reads the
-  <error> element whatever the HTTP code.
+  resumptionToken. Protocol errors arrive with HTTP 400 or 404, which OAI-PMH
+  2.0 section 3.1.2.2 reserves for the transport layer, so the client reads
+  the <error> element whatever the HTTP code.
 - Citation matching, https://zbmath.org/citationmatching/ (Script API PDF
   v1.6.26): match (GET, or POST with up to 100 queries), bibtex/match and
   bibtex/convert_file.
@@ -385,7 +385,20 @@ CAPTURES = (
     ),
     Probe("oai-error-missing-prefix", _oai(verb="ListIdentifiers", set="17")),
     Probe("oai-error-bad-set", _oai(verb="ListIdentifiers", metadataPrefix="oai_dc", set="zz")),
+    Probe(
+        "oai-mixed-granularity-accepted",
+        _oai(
+            verb="ListIdentifiers",
+            metadataPrefix="oai_dc",
+            set="17",
+            **{"from": "2026-10-27", "until": "2026-10-27T23:59:59Z"},
+        ),
+    ),
     Probe("oai-error-bad-token", _oai(verb="ListIdentifiers", resumptionToken="deadbeef"), expect=500),
+    Probe(
+        "oai-error-unknown-uuid-token",
+        _oai(verb="ListIdentifiers", resumptionToken="00000000-0000-0000-0000-000000000000"),
+    ),
     Probe("oai-zb-preview-schema", "https://oai.zbmath.org/static/oai_zb_preview.xsd"),
     Probe("oai-zb-preview-schema-relative", "https://oai.zbmath.org/v1/static/oai_zb_preview.xsd"),
     Probe("oai-zb-preview-imported-schema", "https://oai.zbmath.org/static/simplezbmath20200901.xsd"),
@@ -394,6 +407,7 @@ CAPTURES = (
         _oai(verb="ListIdentifiers", metadataPrefix="oai_dc", set="openaire", **{"from": "2026-10-01T00:00:00Z"}),
     ),
     Probe("cite-match", _cite("match", q=CITE, n="3")),
+    Probe("cite-match-explicit-minimum", _cite("match", q=CITE, n="3", m="5")),
     Probe("cite-match-bulk", _cite("match", n="1"), "POST", BULK, "application/json"),
     Probe("cite-bibtex-match", _cite("bibtex/match", bibtex=BIBTEX)),
     Probe(
@@ -717,7 +731,12 @@ FINDINGS: tuple[Finding, ...] = (
     ),
     (
         "oai-month-date-accepted",
-        "a month-granularity from outside both legal granularities is accepted",
+        "a month-granularity from, outside the two formats section 3.3.1 permits, is accepted",
+        lambda s, b: s == 200 and _oai_code(b) is None and len(_headers(b)) > 0,
+    ),
+    (
+        "oai-mixed-granularity-accepted",
+        "a day-granularity from with a second-granularity until is accepted; section 3.3.1 requires one granularity",
         lambda s, b: s == 200 and _oai_code(b) is None and len(_headers(b)) > 0,
     ),
     (
@@ -732,8 +751,13 @@ FINDINGS: tuple[Finding, ...] = (
     ),
     (
         "oai-error-bad-token",
-        "an unknown resumptionToken answers an HTML HTTP 500 instead of badResumptionToken",
+        "a resumptionToken not shaped as a UUID answers an HTML HTTP 500 instead of badResumptionToken",
         lambda s, b: s == 500 and b.lstrip().startswith(b"<!DOCTYPE HTML"),
+    ),
+    (
+        "oai-error-unknown-uuid-token",
+        "an unknown UUID-shaped resumptionToken answers badResumptionToken with HTTP 404",
+        lambda s, b: s == 404 and _oai_code(b) == "badResumptionToken",
     ),
     (
         "oai-zb-preview-schema",
@@ -762,8 +786,13 @@ FINDINGS: tuple[Finding, ...] = (
     ),
     (
         "cite-match",
-        "match returns hits scored 0.0 below the documented default minimum score 5.0",
+        "without m, match returns hits scored 0.0: the documented default minimum score 5.0 is not applied",
         lambda s, b: any(r["score"] < 5.0 for r in _json(b)["results"]),
+    ),
+    (
+        "cite-match-explicit-minimum",
+        "an explicit m=5 removes the hits scored below 5.0",
+        lambda s, b: bool(_json(b)["results"]) and all(r["score"] >= 5.0 for r in _json(b)["results"]),
     ),
     (
         "cite-match-bulk",
