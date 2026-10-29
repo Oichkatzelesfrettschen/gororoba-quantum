@@ -1,0 +1,12 @@
+{
+ "key": "matched-repeat-admitted",
+ "matched_check_code": 0,
+ "matched_check_output": "retained five comparisons; matched meshes: 5/5\n",
+ "outcome": "passed",
+ "received_utc": "2026-10-29T10:01:24+00:00",
+ "run": "2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat",
+ "run_id": "40851184729.1",
+ "schedule": "ascella-transition-day-repeat",
+ "schema": "qd-schedule-receipt-v1",
+ "snapshot": null
+}

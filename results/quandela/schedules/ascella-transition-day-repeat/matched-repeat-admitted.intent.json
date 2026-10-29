@@ -1,0 +1,8 @@
+{
+ "key": "matched-repeat-admitted",
+ "prepared_utc": "2026-10-29T09:40:01+00:00",
+ "run": "2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat",
+ "run_id": "40851184729.1",
+ "schedule": "ascella-transition-day-repeat",
+ "schema": "qd-schedule-intent-v1"
+}

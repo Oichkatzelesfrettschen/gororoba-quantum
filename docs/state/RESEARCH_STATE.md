@@ -32,7 +32,7 @@ The IBM service inventory observed at 2026-10-28T00:23:56.659482+00:00 holds 25 
 
 The Quantum Inspire ledger retrieved at 2026-10-28T00:24:11+00:00 lists 432 jobs with 7813120 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 100 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 101 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 49 IQM run directories are retained. That is an observation, not an authorization.
 
@@ -402,6 +402,7 @@ circuit and charges the account ledger's change.
 | [ascella-transition-mesh-port-4](../../results/quandela/runs/ascella-transition-mesh-port-4) | Quandela Cloud | dimension-six compilation and output-port diagnostics | qpu:ascella | 1 | 22 | completed | 1.131072 credits | ascella-transition-mesh-port-variation |
 | [ascella-transition-mesh-port-5](../../results/quandela/runs/ascella-transition-mesh-port-5) | Quandela Cloud | dimension-six compilation and output-port diagnostics | qpu:ascella | 1 | 22 | completed | 1.131072 credits | ascella-transition-mesh-port-variation |
 | [ascella-transition-mesh-port-6](../../results/quandela/runs/ascella-transition-mesh-port-6) | Quandela Cloud | dimension-six compilation and output-port diagnostics | qpu:ascella | 1 | 22 | completed | 1.131072 credits | ascella-transition-mesh-port-variation |
+| [2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat](../../results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat) | Quandela Cloud | day-separated dimension-six matched meshes | qpu:ascella | 1 | 5 | completed | 1.131072 credits | ascella-transition-day-separated-matched-mesh |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -764,6 +765,7 @@ circuit and charges the account ledger's change.
 - **qd-ascella-transition-mesh-port-4** (ascella-transition-mesh-port-4, job bdbee629-1ec5-4af5-aeef-fd1f8335c3e0, 1441792 samples, 1441792 shots): How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?
 - **qd-ascella-transition-mesh-port-5** (ascella-transition-mesh-port-5, job 7e24f82f-049d-46e1-b03d-f4592e67d53a, 1441792 samples, 1441792 shots): How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?
 - **qd-ascella-transition-mesh-port-6** (ascella-transition-mesh-port-6, job 04964a3b-00f3-4cc4-ac65-cde85c3ead34, 1441792 samples, 1441792 shots): How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?
+- **qd-ascella-transition-matched-mesh-day-repeat** (2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat, job 078ecca0-fb08-4cf1-960f-6c12301a19da, 327680 samples, 327680 shots): How do five retained transition distributions compare at least 24 hours later under matching returned mesh identities?
 
 ## Established claims
 
@@ -1740,6 +1742,12 @@ circuit and charges the account ledger's change.
   Gates: replayed by core-qi-tuna-projector-qualification.
   Acquisitions: qi-tuna-projector-register-qualification.
   Related claims: qi-qx-projector-geometry-conformance.
+- **ascella-transition-day-separated-matched-mesh** (preregistered hardware inference, hardware). The five-setting Ascella repeat started 33.38 hours after its forward-packed baseline and retained 327,680 accepted events. Returned circuit and input serializations match the baseline for all five settings. Four of five total-variation intervals exclude zero: identity input 5 leakage fell from 1.941% to 0.208% and Fourier-to-chirped input 0 from 3.214% to 0.655%, while Fourier-to-chirped input 4 rose from 0.198% to 6.410% (leakage-difference interval [5.81%, 6.62%]); identity input 0 is consistent with no change.
+  Boundary: Five selected settings, a fixed 140-endpoint family and IID accepted-event intervals. A matched returned mesh does not establish identical applied analog controls; elapsed time, calibration and source or detector response can confound the comparison, and changes of comparable size are already recorded between jobs minutes apart in different contexts, so the 33-hour difference is not attributed to drift.
+  Assumptions: Simultaneous binomial coverage is conditional on IID accepted events within each setting..
+  Evidence: [day-repeat-analysis.json](../../results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat/day-repeat-analysis.json), [acquisition-inventory.json](../evidence/ascella-transition-day-repeat-ci/acquisition-inventory.json), [campaign.json](../evidence/ascella-transition-day-repeat-ci/campaign.json), [README.md](../evidence/ascella-transition-day-repeat-ci/README.md), [scheduler-admission.md](../evidence/ascella-transition-day-repeat-ci/scheduler-admission.md), [findings.md](../evidence/ascella-transition-day-repeat-ci/findings.md).
+  Acquisitions: qd-ascella-transition-matched-mesh-day-repeat.
+  Depends on: ascella-transition-context-matched-mesh, ascella-transition-mesh-port-variation.
 
 ## Exploratory claims
 
