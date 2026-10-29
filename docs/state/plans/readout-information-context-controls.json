@@ -363,6 +363,50 @@
             }
           ],
           "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Revalidated actor integration after collector provenance checks: 97 focused tests pass, malformed source identities are rejected, legacy collection records replay, and a fresh submit-free Fez Target compilation binds 24 conditions. Historical Fez adjudication reproduces its original projections; execution and sampling inference remain bounded.",
+          "observed_at": "2026-10-29T19:52:24.598578+00:00",
+          "revision": "9fad1a1482008bbf5922a8ca153bf11e729fa7bd",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "2c37d60c858b65ca83b42a7dbe11a5a23ba234bfb483bcb9388b1f647c21b532"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "16d98b9298732ad91de92db5368f65165fd01a647f12c1a1904b2f5c2fd219fc"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "2d4d7ee5483b022a481bfea733a0ccb4d36f6be4c1af670453ada7c17c38932f"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "7574be4a9fb34c68b50ec556813ab15ab8687f59b544c1d54d429a24e0e3b6d2"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            },
+            {
+              "ref": "results/live/2026-10-29T195142.288785Z/record.json",
+              "sha256": "95ae00bb2f326e0cf51fae65302f689137a2d8b04ffa5d0b19d4c78f304abaeb"
+            },
+            {
+              "ref": "results/live/2026-10-29T195142.288785Z/isa.qpy",
+              "sha256": "4b3534a56ed96c3013958311aff490a3ac4b8a0b4ded093ace0494dd238fa581"
+            },
+            {
+              "ref": "results/live/2026-10-29T195142.288785Z/UNAPPROVED_CASE.md",
+              "sha256": "3a335255c004098eb7e440b17896f7c6ff5a024beebc4a1136bd52f6bac9d9c1"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
         }
       ]
     },
