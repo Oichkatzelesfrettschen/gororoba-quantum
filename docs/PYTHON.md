@@ -284,6 +284,72 @@ Climb in this order and stop at the first rung that meets the budget.
    ([null-shards.md](runbooks/null-shards.md)).
 
 
+## Emulating another CPU with Intel SDE
+
+numpy's dispatched loops, OpenBLAS's `DYNAMIC_ARCH` kernel choice and glibc's
+libm ifuncs all pick their code path from CPUID, so one float64 computation can
+round differently on an AVX-512 runner than on the build host, an AMD Ryzen 5
+5600X3D (Zen 3, AVX2, no AVX-512). The Intel Software Development Emulator
+runs an unmodified process under a chosen Intel CPU's CPUID and instruction
+set, AVX-512 included, so the host reproduces an AVX-512 machine's natural code
+path without capping the dispatch (`OPENBLAS_CORETYPE`,
+`NPY_DISABLE_CPU_FEATURES`; [ci/AGENTS.md](../ci/AGENTS.md)).
+
+The host carries `intel-sde` 10.13.1 (chaotic-aur), installed at
+`/opt/intel-sde/sde64`. A run names the chip and passes the command after `--`:
+
+```sh
+/opt/intel-sde/sde64 -icx -- "$PYTHON" -B scripts/n21_dose_decisions.py RUN_DIR --out OUT.json
+```
+
+- `-icx` is an Ice Lake server and `-skx` a Skylake server; `-clx`, `-cpx`,
+  `-spr` and `-gnr` name other AVX-512 server chips, `-hsw` an AVX2-only
+  Haswell, and `/opt/intel-sde/sde64 -help` lists every chip. Emulate the
+  model the runner reports: `ci/run_gates.py` prints a `numeric stack:` line
+  with the CPU model, numpy's enabled dispatch targets and each loaded
+  OpenBLAS core before the first gate. SDE emulates Intel chips only, so an
+  AMD runner has no emulated counterpart.
+- The process sees the emulated CPUID, so numpy reports `AVX512F` and
+  `X86_V4` and dispatches its AVX-512 loops, and OpenBLAS selects its kernel
+  for that chip. Exported caps still apply, so one emulated run can take the
+  capped path and another the uncapped one.
+- The emulator executes each instruction with the hardware's IEEE semantics,
+  so the bits match a real chip of that generation wherever the result
+  depends only on the instruction path. Cache sizes, core counts and timing
+  are the host's, so a library that sizes its blocking from the cache or
+  threads by core count can still diverge from real hardware. Pin
+  `OPENBLAS_NUM_THREADS=1` and compare against a real run before treating an
+  emulated replay as that chip's result.
+- Cost: importing numpy and threadpoolctl took 12.8 s, and the n21 dose
+  decisions run (about 5 s native) took 147 s, about 30 times native.
+
+Measured on the n21 dose-decisions record
+`results/live/2026-10-27T014354.701394Z/dose-decisions.json` (written in the
+runner image, `scripts/n21_dose_decisions.py`, whose replica covariance is
+`psi.T @ psi`, an OpenBLAS product):
+
+| Emulated chip | `OPENBLAS_CORETYPE=Haswell` | numpy cap | Fields that differ from the record |
+|---|---|---|---|
+| `-icx` | set | set | 0 |
+| `-icx` | set | unset | 0 |
+| `-icx` | unset | set | 85 |
+| `-icx` | unset | unset | 85 |
+| `-skx` | unset | unset | 85 |
+
+OpenBLAS's AVX-512 kernel alone moves the record under emulation, and
+numpy's dispatch leaves it unchanged. On the hosted runners of audit run
+40824932629, every shard reports numpy dispatching `X86_V3` and both
+OpenBLAS copies on the `Haswell` core, so both pins apply. The Intel Xeon
+Platinum 8573C shard (AVX-512) replays the record exactly. The AMD EPYC 9V74
+and 9V45 shards (Zen 4 and Zen 5, AVX-512) differ in 95 fields. Their
+`.arms.n21_orbit_window_dose_d7000_feedback_contrast.sigma` equals the
+emulated value of the unpinned Intel AVX-512 kernel, and their d10500 arm's
+sigma moves in no emulated run. So on those AMD CPUs a CPU-dependent path
+outside the reported numpy dispatch and OpenBLAS core still changes the
+rounding, and SDE cannot reproduce it. A record that depends on BLAS rounding
+replays on the host under emulation only after a real-hardware comparison
+has shown the two agree.
+
 ## Correctness rules
 
 - Seed every generator and record the seed. Byte replay also needs the
