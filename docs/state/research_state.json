@@ -2564,7 +2564,9 @@
       "documents": [
         "docs/evidence/ibm-fez-actor-pilot/findings.md"
       ],
-      "gates": {},
+      "gates": {
+        "core-ibm-fez-actor-pilot-replay": "replay"
+      },
       "acquisitions": [
         "ibm-fez-actor-delay-pilot"
       ],

@@ -455,6 +455,54 @@
             }
           ],
           "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "The merged Qiskit 2.6.1 branch passes 104 focused integration tests and seven cost-model tests. A fresh submit-free Fez compilation verifies 24 full-register circuits and their source closure; a generic submit-free live run also completes. The pilot remains descriptive.",
+          "observed_at": "2026-10-29T23:46:21.036099+00:00",
+          "revision": "12f9161b06312bdda51a4cd45e18eb6eed4459ae",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "59f7aca990c9e002ebb0a2cfff623a5808897680d533f754cb8027825147b484"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/record.json",
+              "sha256": "99f4ff7b0c2c6e077921ab64e68a732a4310d09783b15ecbe364a26da16d27e9"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/UNAPPROVED_CASE.md",
+              "sha256": "038b3b88151573ec54c9135a7ca671347472b7014b0e655fcb114d8f656843fe"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "6c67498bc01c0ca4e1cf78eb196ed3dececbf507c596c1262f4c288b3330375e"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "2d4d7ee5483b022a481bfea733a0ccb4d36f6be4c1af670453ada7c17c38932f"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "cde343f64216b7c491ba0215897591ac715e1481e8b2f971d2636a95fe8f0496"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
         }
       ]
     },
@@ -644,6 +692,42 @@
             {
               "ref": "results/live/2026-10-29T193911.165282Z/UNAPPROVED_CASE.md",
               "sha256": "248d5adb0756b9a44a300041d8b45e823e71e167a853e80f937fd006b70ee99e"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "docs/design/readout-actor-fez-delay-qualification.json",
+              "sha256": "f4f0c8e5d830f30285896e58b438a409ce9a3c9804dcf3571b1762cbe9acccca"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        },
+        {
+          "result": "The merged Qiskit 2.6.1 branch passes 104 focused integration tests and seven cost-model tests. A fresh submit-free Fez compilation verifies 24 full-register circuits and their source closure; a generic submit-free live run also completes. The pilot remains descriptive.",
+          "observed_at": "2026-10-29T23:46:21.037273+00:00",
+          "revision": "12f9161b06312bdda51a4cd45e18eb6eed4459ae",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "59f7aca990c9e002ebb0a2cfff623a5808897680d533f754cb8027825147b484"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/record.json",
+              "sha256": "99f4ff7b0c2c6e077921ab64e68a732a4310d09783b15ecbe364a26da16d27e9"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/UNAPPROVED_CASE.md",
+              "sha256": "038b3b88151573ec54c9135a7ca671347472b7014b0e655fcb114d8f656843fe"
             },
             {
               "ref": "docs/design/readout-actor-delay-qualification.json",
