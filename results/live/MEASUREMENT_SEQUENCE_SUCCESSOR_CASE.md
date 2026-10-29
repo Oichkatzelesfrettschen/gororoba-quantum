@@ -69,16 +69,42 @@ unless the measurement-induced loss exceeds about 0.0044 per step; a run that re
 
 ## What the null establishes, and the two readings it leaves
 
-PENDING: the null over both 5600-shot rehearsals, one invocation
-(`scripts/msq_successor_null.py REC32 REC24 --calibrate-sparse --arms all`), with per-calibration sparse scales.
+The null ran on both 5600-shot rehearsals, each arm on its own rehearsal's calibrations and sparse-gap scale
+([successor-sparse-scale/277a1f8b04db2b3a-w32-s5600.json](../../docs/evidence/measurement_sequence/successor-sparse-scale/277a1f8b04db2b3a-w32-s5600.json),
+[e77b74e8c6d03f18-w24-s5600.json](../../docs/evidence/measurement_sequence/successor-sparse-scale/e77b74e8c6d03f18-w24-s5600.json)).
+[successor-null-s5600.json](../../docs/evidence/measurement_sequence/successor-null-s5600.json) retains the 22 arm
+records' statistics with each full record's sha256. Every arm at both widths has 0 false fires and meets every target.
+The width-24 plateau-retained arm issues a verdict in 1.4 % of replicates and needed 21,399 to reach 299, so it runs
+at a cap of 30,000; its first 20,000 rows equal those of a cap-20,000 run, which the cap only stops. One invocation
+writes all 22 records:
+`"$PYTHON" scripts/msq_successor_null.py results/live/2026-10-29T012554.415581Z results/live/2026-10-29T013110.359249Z
+--arms all --cap 2026-10-29T013110.359249Z:plateau-retained=30000 --out-dir DIR`.
 
-The v4.1 null at width 24 and 8192 shots
-([successor-null.json](../../docs/evidence/measurement_sequence/successor-null.json)) gave 0 false fires on every arm
-and described two devices this run may meet:
+| Arm | Width 32 (the run's width) | Width 24 |
+|---|---|---|
+| carryover-positive | 299 issued in 305; bounds 0.00997 issued, 0.0098 overall | 299 in 335; 0.00997, 0.0089 |
+| carryover-negative | 299 issued in 349 (common veto 14 %); 0.00997, 0.0085 | 299 in 349 (10 %); 0.00997, 0.0085 |
+| carryover-boundary | issued 0, 0 and 23 of 300 at 0, 1 and 2 SE inside (descriptive) | 0, 0 and 4 of 300 |
+| q-tolerance | common veto 100 %; overall bound 0.0099 | 98.7 %; 0.0099 |
+| q-minority | 299 exposed in 450; bounds 0.00997 exposed, 0.0066 overall | 299 in 430; 0.00997, 0.0069 |
+| settle-common | common veto 99.7 %, 100 %, 100 % at 8, 9, 32 qubits | 99.3 %, 100 %, 100 % at 8, 9, 24 |
+| settle-sparse | 408 exposed per width, family exposed bound 0.00998; power over the first 300 replicates 0.882, 0.914, 0.901 at 8, 9, 32 (family upper bounds 0.909, 0.937, 0.925) | 408 exposed per width; 0.899, 0.897, 0.904 at 8, 9, 24 (0.924, 0.922, 0.928) |
+| plateau-low | every departure verdict withheld | the same |
+| plateau-retained | 299 issued in 5,069 (5.9 %); 0.00997 issued, 0.0006 overall | 299 in 21,399 (1.4 %); 0.00997, 0.0001 |
+| plateau-minority | 299 exposed in 1,145; 0.00997 exposed, 0.0026 overall | 299 in 1,172; 0.00997, 0.0026 |
+| gamma | 399 of 400 informative (99.8 %); bound 0.0075 | 398 of 400 (99.5 %); 0.0075 |
 
-- gamma (healthy relaxation, q = 1, gamma-distributed rates): 396 of 400 replicates issue a device verdict (99 %).
+The settle-sparse arm passes when the family upper bound on the veto's power stays at or above 0.9. At 8 qubits on
+the width-32 calibrations the point estimate is 0.882 and the bound 0.909, so the veto's power on a two-qubit
+defect at the detectable gap may sit slightly below 0.9 there; over every replicate it is 0.895. A tail below that
+gap stays the veto's stated blind spot.
+
+The two devices this run may meet, at width 32:
+
+- gamma (healthy relaxation, q = 1, gamma-distributed rates): 399 of 400 replicates issue a device verdict.
 - plateau-retained (each qubit draws a (T1, q) pair of the retained width-32 run, q from 0.28 to 1.02): 299 of
-  15,710 replicates issue a verdict (1.9 %); the equilibrium screen withholds 84 % and the common settle veto 16 %.
+  5,069 replicates issue a verdict (5.9 %); the equilibrium screen withholds 86 % of qubits and the common settle
+  veto fires in 12 % of replicates.
 
 If the device is the gamma device, the run issues a departure verdict. If it is the device the retained (T1, q) fit
 described, the equilibrium row and the settle veto withhold it, and the run reports per-qubit q_hat, the settle gaps
@@ -161,7 +187,7 @@ Requested for approval: the rule and bounds of the run above (width 32, 5600 sho
 
 ## Commands
 
-From the repository root, after the null lands:
+From the repository root:
 
 ```sh
 export PYTHON=$HOME/.cache/gororoba-quantum/ci-py3.14.7/bin/python3

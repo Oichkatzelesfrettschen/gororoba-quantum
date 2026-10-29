@@ -285,6 +285,13 @@ shards of `--shard K --shards 5` (`--merge`), which cuts it at the same replicat
 | plateau-minority | 3000 | 1040 | 299 exposed verdicts; bounds 0.00997, 0.0029 |
 | gamma | 400 | 400 | 396 informative (99 %); bound 0.0075 |
 
+The same arms at 5600 shots on the width-32 and width-24 rehearsals `results/live/2026-10-29T012554.415581Z` and
+`2026-10-29T013110.359249Z`, each on its own sparse-gap scale, give 0 false fires on every arm and meet every target
+([successor-null-s5600.json](../evidence/measurement_sequence/successor-null-s5600.json)); the
+[successor case](../../results/live/MEASUREMENT_SEQUENCE_SUCCESSOR_CASE.md#what-the-null-establishes-and-the-two-readings-it-leaves)
+holds their table and the one invocation that writes them. The width-24 plateau-retained arm issues in 1.4 % of
+replicates and runs at a cap of 30,000.
+
 ## What the run can detect
 
 The departure test's sensitivity is set by the per-qubit gate-model systematic (about 0.016 to 0.019), which
