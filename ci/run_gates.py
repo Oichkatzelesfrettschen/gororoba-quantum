@@ -76,6 +76,31 @@ OPENBLAS_CORETYPE = "Haswell"
 # supports x86-64-v3, so capping dispatch there gives all of them one path.
 NUMPY_DISABLED_FEATURES = "X86_V4 AVX512_ICL AVX512_SPR"
 REPLAY_INTERPRETERS = {runtime: variable for runtime, (variable, _pins) in pins.REPLAY_RUNTIMES.items()}
+# The numeric stack a gate's interpreter loads under the gate environment: the CPU model, numpy's enabled dispatch
+# targets, and each OpenBLAS that numpy and scipy.linalg load with the core it selected, which shows whether
+# OPENBLAS_CORETYPE and NPY_DISABLE_CPU_FEATURES took effect on the runner.
+NUMERIC_STACK_PROBE = """
+import json, os, numpy, scipy.linalg, threadpoolctl
+from numpy._core._multiarray_umath import __cpu_dispatch__, __cpu_features__
+try:
+    with open("/proc/cpuinfo") as handle:
+        info = handle.read().splitlines()
+except OSError:
+    info = []
+model = next((line.split(":", 1)[1].strip() for line in info if line.startswith("model name")), "unknown")
+flags = next((line.split(":", 1)[1].split() for line in info if line.startswith("flags")), [])
+blas = [
+    {"library": os.path.basename(item["filepath"]), "version": item.get("version"), "core": item.get("architecture")}
+    for item in threadpoolctl.threadpool_info()
+    if item.get("internal_api") == "openblas"
+]
+print(json.dumps({
+    "cpu": model,
+    "avx512f": "avx512f" in flags,
+    "numpy_dispatch": [name for name in __cpu_dispatch__ if __cpu_features__.get(name)],
+    "openblas": blas,
+}, sort_keys=True))
+"""
 # Each collector owns exactly one shell tree, so parallel gates cannot mix
 # their RUSAGE_CHILDREN counters. POSIX Python supplies the platform binding.
 RESOURCE_COLLECTOR = """
@@ -278,6 +303,25 @@ def environment_for(device: str | None, requires: str | None = None) -> dict[str
     environment.setdefault("OPENBLAS_CORETYPE", OPENBLAS_CORETYPE)
     environment.setdefault("NPY_DISABLE_CPU_FEATURES", NUMPY_DISABLED_FEATURES)
     return environment
+
+
+def numeric_stack(interpreter: str, environment: dict[str, str]) -> str:
+    """One JSON line describing the CPU and the numpy and OpenBLAS paths the interpreter loads under environment."""
+    try:
+        done = subprocess.run(
+            [interpreter, "-B", "-c", NUMERIC_STACK_PROBE],
+            env=environment,
+            capture_output=True,
+            text=True,
+            timeout=120,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return f"unavailable ({exc})"
+    if done.returncode != 0:
+        tail = (done.stderr.strip().splitlines() or ["no output"])[-1]
+        return f"unavailable (exit {done.returncode}: {tail})"
+    return done.stdout.strip()
 
 
 def run_all(
@@ -529,6 +573,7 @@ def main(argv: list[str] | None = None) -> int:
         primary = resolved
     environment = environment_for(arguments.device, arguments.requires)
     environment["PYTHON"] = primary
+    print(f"numeric stack: {numeric_stack(primary, environment)}", flush=True)
     unresolved = []
     for runtime in sorted({gate["runtime"] for gate in selected if gate.get("runtime")}):
         interpreter, reason = pins.resolve_replay(runtime, arguments.replay_python, environment, primary)

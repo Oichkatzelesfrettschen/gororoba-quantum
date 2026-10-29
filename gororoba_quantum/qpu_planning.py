@@ -15,7 +15,7 @@ import math
 import threading
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 from typing import Any
 
@@ -30,6 +30,7 @@ import measurement_sequence_analysis
 import measurement_sequence_scatter
 import msq_envelope
 import msq_envelope_analysis
+import msq_successor_analysis
 import n21_exact_planning
 import parallel
 from diagnostic_experiments import (
@@ -45,6 +46,10 @@ from diagnostic_experiments import (
     MSQD_FAMILY,
     MSQE_FAMILY,
     MSQE_RESET_CONTROLS,
+    MSQR_EQUILIBRIUM_SECONDS,
+    MSQR_FAMILY,
+    MSQR_READER_IDLE_SECONDS,
+    MSQR_SENTINEL_ROWS,
     N21_FAMILIES,
     N21_OVERLAP_ARM,
     PATCH_FAMILIES,
@@ -59,6 +64,9 @@ from diagnostic_experiments import (
     msq_diagnostic_groups,
     msqe_groups,
     msqe_pattern_bits,
+    msqr_groups,
+    msqr_reader_stem,
+    msqr_row_count,
     n21_group,
     n21_orbit_rca_group,
     state_prep_arms,
@@ -152,11 +160,29 @@ def ramsey_analyzer_closure() -> dict[str, Any]:
 
 
 def observable_contract_records(contracts: Any) -> list[dict[str, Any]]:
-    """The observable contracts as record.json stores them, each term's score values through law_encoding."""
-    records = json.loads(json.dumps([asdict(contract) for contract in contracts]))
-    for record in records:
-        for term in record["terms"]:
-            term["values"] = law_encoding.encode(term["values"])
+    """The observable contracts as record.json stores them, each term's score values through law_encoding.
+
+    A term whose values are a tuple of builtin floats skips the JSON text round trip, which returns those
+    floats unchanged (repr round-trips; -0.0, NaN and the infinities included), so only its other fields are
+    copied through it; any other term keeps the round trip, which turns its entries into JSON-native values.
+    """
+    plain: list[dict[int, tuple[Any, ...]]] = []
+    stripped = []
+    for contract in contracts:
+        floats = {
+            index: term.values
+            for index, term in enumerate(contract.terms)
+            if type(term.values) is tuple and set(map(type, term.values)) <= {float}
+        }
+        plain.append(floats)
+        terms = tuple(
+            replace(term, values=()) if index in floats else term for index, term in enumerate(contract.terms)
+        )
+        stripped.append(replace(contract, terms=terms))
+    records = json.loads(json.dumps([asdict(contract) for contract in stripped]))
+    for record, floats in zip(records, plain, strict=True):
+        for index, term in enumerate(record["terms"]):
+            term["values"] = law_encoding.encode(floats[index] if index in floats else term["values"])
     return records
 
 
@@ -188,7 +214,7 @@ def contract_configuration(family: str, configuration: dict[str, Any]) -> dict[s
     """
     return (
         {"configuration": configuration}
-        if family in (STATE_PREP_FAMILY, MSQ_FAMILY, MSQD_FAMILY, MSQE_FAMILY, "n21-orbit-rca")
+        if family in (STATE_PREP_FAMILY, MSQ_FAMILY, MSQD_FAMILY, MSQE_FAMILY, MSQR_FAMILY, "n21-orbit-rca")
         else {}
     )
 
@@ -1274,6 +1300,15 @@ def rounded_delay(runtime: Any, snapshot: Any, seconds: float) -> int:
     return granularity * math.ceil(seconds / float(target.dt) / granularity)
 
 
+def floored_delay(runtime: Any, snapshot: Any, seconds: float) -> int:
+    """seconds in dt, rounded down to the Target's timing granularity: an idle that must not exceed `seconds`."""
+    target = snapshot.backend.target
+    if target.dt is None or target.dt <= 0:
+        raise runtime.LiveRunError("the measurement-sequence idles need a positive Target dt")
+    granularity = max(1, int(target.granularity))
+    return granularity * math.floor(seconds / float(target.dt) / granularity)
+
+
 def settle_delay(runtime: Any, snapshot: Any) -> int:
     """MSQ_SETTLE_SECONDS in dt, rounded up to the Target's timing granularity."""
     return rounded_delay(runtime, snapshot, MSQ_SETTLE_SECONDS)
@@ -1328,7 +1363,8 @@ def measurement_sequence_candidates(
     excludes a named qubit refuses the snapshot.
     """
     diagnostic = args.family == MSQD_FAMILY
-    envelope = args.family == MSQE_FAMILY
+    relaxation = args.family == MSQR_FAMILY
+    envelope = args.family in (MSQE_FAMILY, MSQR_FAMILY)
     declared = getattr(args, "layout", None)
     if declared is None and not envelope:
         raise runtime.LiveRunError(f"{args.family} needs --layout: it has no retained default qubits")
@@ -1336,9 +1372,11 @@ def measurement_sequence_candidates(
     if envelope:
         width = int(args.layout_width)
         # Every member holds a terminal reset, so every PUB is dynamic: the main family's rows, two reset controls
-        # and the width tier's patterns.
+        # and the width tier's patterns, and for the relaxation family its readers, equilibrium row and sentinels.
         expected_kinds = ["dynamic"] * (
-            4 * len(MSQ_STEPS)
+            msqr_row_count(width)
+            if relaxation
+            else 4 * len(MSQ_STEPS)
             + 4
             + 1
             + len(MSQ_T1_MICROSECONDS)
@@ -1356,13 +1394,15 @@ def measurement_sequence_candidates(
             + ["dynamic"] * (4 * len(MSQ_DYNAMIC_STEPS) + 4)
         )
     candidates = []
+    equilibrium_dt = 0
     for snapshot in snapshots:
         try:
             if envelope:
                 if snapshot.name != msq_envelope.ENVELOPE_BACKEND:
                     raise runtime.LiveRunError(f"the envelope runs on {msq_envelope.ENVELOPE_BACKEND} only")
                 envelope_calibration = msq_envelope.calibration_from_snapshot(snapshot)
-                qubits = msq_envelope.layout_rule(
+                qubits = msq_envelope.place_layout(
+                    getattr(args, "envelope_schema", msq_envelope.ENVELOPE_SCHEMA),
                     envelope_calibration["qubits"],
                     envelope_calibration["excluded"],
                     [tuple(edge) for edge in envelope_calibration["edges"]],
@@ -1388,8 +1428,15 @@ def measurement_sequence_candidates(
                 t1_delays = [
                     rounded_delay(runtime, snapshot, microseconds * 1e-6) for microseconds in MSQ_T1_MICROSECONDS
                 ]
-                build = msqe_groups if envelope else measurement_sequence_groups
-                groups = build(qubits, delays, settles, prereadouts, t1_delays)
+                if relaxation:
+                    equilibrium_dt = rounded_delay(runtime, snapshot, MSQR_EQUILIBRIUM_SECONDS)
+                    reader_idle_dt = floored_delay(runtime, snapshot, MSQR_READER_IDLE_SECONDS)
+                    groups = msqr_groups(
+                        qubits, delays, settles, prereadouts, t1_delays, equilibrium_dt, reader_idle_dt
+                    )
+                else:
+                    build = msqe_groups if envelope else measurement_sequence_groups
+                    groups = build(qubits, delays, settles, prereadouts, t1_delays)
             if snapshot.admission_target is None:
                 snapshot.admission_target = runtime.build_admission_target(snapshot)
             get_plugin = getattr(snapshot.backend, "get_translation_stage_plugin", None)
@@ -1413,18 +1460,30 @@ def measurement_sequence_candidates(
                         raise runtime.LiveRunError(f"{group.name}: {violations}")
                     operations = isa.count_ops()
                     arm = member.name.split("_")[1]
-                    # The envelope's terminal resets and the reset controls' mid-circuit reset survive compilation.
-                    resets_expected = (2 if arm in MSQE_RESET_CONTROLS else 1) if envelope else 0
+                    # The envelope's terminal resets, the reset controls' mid-circuit reset and a reader's reset before
+                    # its idle survive compilation.
+                    reader = relaxation and arm.startswith("reader")
+                    two_resets = arm in MSQE_RESET_CONTROLS or reader
+                    resets_expected = (2 if two_resets else 1) if envelope else 0
                     if operations.get("reset", 0) != resets_expected:
                         raise runtime.LiveRunError(
                             f"{member.name}: compiled {operations.get('reset', 0)} resets, not {resets_expected}"
                         )
                     if arm in MSQE_RESET_CONTROLS:
                         measures, delays_expected, steps = 2, 1, 0
-                    elif arm.startswith("pat"):
+                    elif reader:
+                        # The repeated measure member (N mid-circuit and one final measurement, one pre-readout
+                        # idle), then the reader idle and the reader measurement.
+                        steps = msqr_reader_stem(int(arm.removeprefix("reader")))[0]
+                        measures, delays_expected = steps + 2, 2
+                    elif arm.startswith("pat") or arm == "ro0":
                         measures, delays_expected, steps = 1, 1, 0
-                    elif arm == "ro0":
-                        measures, delays_expected, steps = 1, 1, 0
+                    elif relaxation and arm == "eq":
+                        measures, delays_expected, steps = 1, 2, 0
+                    elif relaxation and arm.startswith("sent"):
+                        # A sentinel is a delay-arm row: one idle per step and the pre-readout idle.
+                        steps = MSQR_SENTINEL_ROWS[int(arm.removeprefix("sent")[1:])][0]
+                        measures, delays_expected = 1, 1 + steps
                     elif arm == "t1":
                         index = int(member.name.split("_d")[1].split("_")[0])
                         measures, delays_expected = 1, 1 + int(t1_delays[index] > 0)
@@ -1503,7 +1562,7 @@ def measurement_sequence_candidates(
                 (
                     choices,
                     {
-                        "name": MSQE_FAMILY,
+                        "name": args.family,
                         "qubits": qubits,
                         "layout_source": "msq_envelope.layout_rule",
                         "layout_width": width,
@@ -1516,6 +1575,11 @@ def measurement_sequence_candidates(
                         "prereadout_delay_dt": {str(qubit): dt for qubit, dt in prereadouts.items()},
                         "t1_delays_dt": t1_delays,
                         "pattern_bits": [list(row) for row in msqe_pattern_bits(width)],
+                        **(
+                            {"equilibrium_delay_dt": equilibrium_dt, "reader_idle_delay_dt": reader_idle_dt}
+                            if relaxation
+                            else {}
+                        ),
                         "placement_contract": (
                             "one single-qubit placement per qubit the layout rule keeps; every qubit runs each member "
                             "in the same shots; every member ends in a reset, so every PUB is dynamic"
@@ -1713,7 +1777,7 @@ def family_candidates(
         return patch_candidates(runtime, snapshots, args, trace)
     if args.family == STATE_PREP_FAMILY:
         return state_prep_candidates(runtime, snapshots, args, trace)
-    if args.family in (MSQ_FAMILY, MSQD_FAMILY, MSQE_FAMILY):
+    if args.family in (MSQ_FAMILY, MSQD_FAMILY, MSQE_FAMILY, MSQR_FAMILY):
         return measurement_sequence_candidates(runtime, snapshots, args, trace)
     if args.family == LATENCY_RECOVERY_FAMILY:
         return latency_recovery_candidates(runtime, snapshots, args, trace)
@@ -2000,6 +2064,28 @@ def check_compiled_ideals(runtime: Any, choices: list[Any]) -> None:
             raise runtime.LiveRunError(f"{name}: compiled labeled ideal differs from its exact oracle")
 
 
+def candidate_ceiling(args: Any, usage: dict[str, Any]) -> float:
+    """The per-job execution ceiling the optimizer screens each candidate job against.
+
+    Every family but a v2 envelope screens against --max-execution-seconds. A v2 envelope derives its ceiling from the
+    selected plan's charge afterwards (live_run.apply_envelope_ceiling), so its screen is the tightest bound every
+    admissible attempt meets: the approved cap, the optional ceiling bound and the remaining quota above the reserve. A
+    v2 ceiling is CEILING_FACTOR times the charge or more, so the screen rejects no candidate the envelope admits; a
+    quota at or below the reserve leaves the other bounds, and the optimizer's reserve check rejects the plan with its
+    reason.
+    """
+    ceiling = getattr(args, "max_execution_seconds", None)
+    if getattr(args, "envelope_schema", None) != msq_envelope.ENVELOPE_SCHEMA:
+        if ceiling is None:
+            raise ValueError("--max-execution-seconds is required outside a v2 envelope")
+        return ceiling
+    bounds = [float(args.max_total_execution_seconds)] + ([float(ceiling)] if ceiling is not None else [])
+    remaining = usage.get("usage_remaining_seconds")
+    if remaining is not None and float(remaining) - float(args.reserve_seconds) > 0:
+        bounds.append(float(remaining) - float(args.reserve_seconds))
+    return min(bounds)
+
+
 def prepare(
     runtime: Any, snapshots: list[Any], args: Any, usage: dict[str, Any], trace: dict[str, Any]
 ) -> tuple[list[Any], dict[str, Any]]:
@@ -2012,6 +2098,7 @@ def prepare(
     if excitation is not None and args.family not in N21_FAMILIES:
         raise runtime.LiveRunError("--prep-excitation applies to the N21 families")
     candidates = admitted_family_candidates(runtime, family_candidates(runtime, snapshots, args, trace), trace)
+    job_ceiling = candidate_ceiling(args, usage)
     if not candidates:
         diagnostic = runtime._scrub_instances(runtime._jsonable(trace))
         raise runtime.LiveRunError(
@@ -2071,15 +2158,14 @@ def prepare(
                     choice.snap.name, choice.snap.backend.target, choice.snap.properties, local_compute.settings(args)
                 )
 
-    # Aer releases the GIL while it simulates, so independent choices run on
-    # threads. Each simulator already uses the policy's thread count, so the
-    # pool runs only as many simulators as fit in the available CPUs. Each
-    # pool thread reuses one simulator per snapshot, built from the
-    # snapshot's cached noise model, for every choice it runs: local_compute.run
-    # sets the device and method of each batch, and AerSimulator.from_backend
-    # converts the whole-device Target to BackendProperties on every build. A
-    # task returns the batch evidence its run appended, which joins the
-    # snapshot simulator in serial order.
+    # AerSimulator.run holds the GIL for the whole call, so threads never overlap
+    # two simulations: parallelism comes from the OpenMP shot threads of one
+    # call (max_parallel_shots), and the choice threads only keep one simulator
+    # per snapshot and thread, built from the snapshot's cached noise model.
+    # AerSimulator.from_backend converts the whole-device Target to
+    # BackendProperties on every build, and local_compute.run sets the device
+    # and method of each batch. A task returns the batch evidence its run
+    # appended, which joins the snapshot simulator in serial order.
     # A declared initial excitation enters the sampled model and the exact
     # law alike, so the sampled falsifier tests the law the plan prices.
     excited = {"prep_excitation": excitation} if excitation else {}
@@ -2179,7 +2265,7 @@ def prepare(
                                 pubs=tuple(pubs),
                                 shots=shots,
                                 overhead_seconds=args.job_overhead_seconds,
-                                max_execution_seconds=args.max_execution_seconds,
+                                max_execution_seconds=job_ceiling,
                                 overhead_assumption=(
                                     "declared overhead; 2.3 s default is the retained dynamic job's non-circuit "
                                     "charge, not a backend guarantee"
@@ -2400,9 +2486,15 @@ def measured_family(
     *,
     correction_evidence: list[dict[str, Any]] | None = None,
     replica_registers: dict[str, dict[str, list[str]]] | None = None,
+    shot_order: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """The family analysis of a collected record: the precision endpoints and, for measurement-sequence, the
     preregistered pinching decisions beside them.
+
+    shot_order serves the measurement-sequence-relaxation family: "registers" holds the shot-ordered registers of
+    the PUBs msq_successor_analysis.required_pubs names, "chunks" the executor's chunk_timing as lists of PUB
+    indices or None with "chunk_reason" when it could not be read, and "reason" why the registers could not be read;
+    a reason or an absent entry withholds every qubit.
 
     The pinching analysis (measurement_sequence_analysis.collected) reads every member of both jobs through one
     readout correction, so it runs only when the members executed under one calibration
@@ -2429,6 +2521,28 @@ def measured_family(
         if reason:
             return {**analysis, "envelope": {"schema": msq_envelope_analysis.SCHEMA, "withheld": reason}}
         return {**analysis, "envelope": msq_envelope_analysis.collected(record, distributions, executed)}
+    if name == MSQR_FAMILY:
+        members = sorted(name for name in distributions if name.startswith("msq"))
+        reason = runtime._comparisons_withheld(members, executed) if members else "no measured members"
+        if reason:
+            return {**analysis, "relaxation": {"schema": msq_successor_analysis.SCHEMA, "withheld": reason}}
+        evidence = shot_order or {}
+        if evidence.get("reason"):
+            return {
+                **analysis,
+                "relaxation": {"schema": msq_successor_analysis.SCHEMA, "withheld": str(evidence["reason"])},
+            }
+        return {
+            **analysis,
+            "relaxation": msq_successor_analysis.collected(
+                record,
+                distributions,
+                executed,
+                evidence.get("registers"),
+                evidence.get("chunks"),
+                chunk_reason=evidence.get("chunk_reason"),
+            ),
+        }
     if name != MSQ_FAMILY:
         return analysis
     members = sorted(name for name in distributions if name.startswith("msq_"))

@@ -1,0 +1,90 @@
+name: null-shards
+
+# Shards of the measurement-sequence successor's classical null on hosted runners. Each matrix job runs
+# scripts/msq_successor_null.py --arms ... --shard K --shards N on a dry-run record of the dispatched ref and
+# uploads its shard records with the runner's CPU and timing; docs/runbooks/null-shards.md merges them. A shard
+# runs every case to its limit, so a limit near the case's verdict count (--limit) bounds the work. The repository is
+# public, so the logs and artifacts are public too; the null reads only files the dispatched ref already holds.
+on:
+  workflow_dispatch:
+    inputs:
+      record_dir:
+        description: dry-run record directory under results/live
+        required: true
+        type: string
+      arms:
+        description: space-separated arms of NULL_PLAN, or all
+        required: true
+        type: string
+        default: all
+      limits:
+        description: space-separated ARM=N or ARM/CASE=N stop limits
+        required: false
+        type: string
+        default: ""
+      shards:
+        description: shard count, 1 to 20
+        required: true
+        type: number
+        default: 20
+
+permissions:
+  contents: read
+
+env:
+  GLIBC_TUNABLES: glibc.rtld.optional_static_tls=4096
+  # The numeric environment of ci/run_gates.py, under which the null's rows replay byte for byte on the build host.
+  OPENBLAS_CORETYPE: Haswell
+  NPY_DISABLE_CPU_FEATURES: X86_V4 AVX512_ICL AVX512_SPR
+
+jobs:
+  plan:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    outputs:
+      indices: ${{ steps.indices.outputs.indices }}
+    steps:
+      - id: indices
+        env:
+          SHARDS: ${{ inputs.shards }}
+        run: >-
+          python3 -c 'import json, os; n = int(os.environ["SHARDS"]);
+          (1 <= n <= 20) or exit(f"shards {n} lies outside 1 to 20");
+          print("indices=" + json.dumps(list(range(n))))' >> "$GITHUB_OUTPUT"
+
+  shard:
+    needs: plan
+    runs-on: ubuntu-26.04
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: ${{ fromJSON(needs.plan.outputs.indices) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - uses: ./.github/actions/pins-venv
+      - name: Null shard
+        shell: sh
+        env:
+          RECORD_DIR: ${{ inputs.record_dir }}
+          ARMS: ${{ inputs.arms }}
+          LIMITS: ${{ inputs.limits }}
+          SHARD: ${{ matrix.shard }}
+          SHARDS: ${{ inputs.shards }}
+        run: |
+          set -eu
+          out="$RUNNER_TEMP/null"
+          mkdir -p "$out"
+          set --
+          for limit in $LIMITS; do set -- "$@" --limit "$limit"; done
+          lscpu > "$out/cpu-shard$SHARD.txt"
+          # ARMS splits into the arm names, which argparse checks against NULL_PLAN.
+          # shellcheck disable=SC2086
+          /usr/bin/time -v -o "$out/time-shard$SHARD.txt" "$PYTHON" -B scripts/msq_successor_null.py \
+            "results/live/$RECORD_DIR" --arms $ARMS "$@" --shard "$SHARD" --shards "$SHARDS" --out-dir "$out"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        with:
+          name: null-shard-${{ matrix.shard }}
+          path: ${{ runner.temp }}/null
+          if-no-files-found: error

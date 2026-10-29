@@ -1,0 +1,14 @@
+{
+  "schema": "work-plan-v1",
+  "id": "tuna17-qet-passivity-replication",
+  "kind": "investigation",
+  "summary": "Replicate the QET passivity ladder (fixed-sign arms binned by the recorded bit, product-state mutation, channel-floor and information-excess endpoints) on Tuna-17 with QX ideal laws; device question: state-dependent readout assignment.",
+  "sources": [
+    "docs/notes/topics/persona-corpus-verified-results.md"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  }
+}

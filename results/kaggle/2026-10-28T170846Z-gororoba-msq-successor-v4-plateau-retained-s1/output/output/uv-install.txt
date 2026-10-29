@@ -1,0 +1,1 @@
+$ /usr/bin/python3 -m pip install -q uv==0.13.0

@@ -1388,7 +1388,7 @@ def scan_secrets(value: Any, path: str = "") -> None:
 def is_time(value: Any) -> bool:
     try:
         datetime.datetime.fromisoformat(value)
-    except TypeError, ValueError:
+    except (TypeError, ValueError):
         return False
     return True
 

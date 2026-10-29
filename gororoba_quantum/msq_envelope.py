@@ -17,9 +17,13 @@ from collections.abc import Iterable, Mapping
 from datetime import date, datetime
 from typing import Any
 
+import numpy as np
+from scipy.optimize import Bounds, LinearConstraint, milp
+
 import measurement_sequence_scatter as scatter
 
-ENVELOPE_SCHEMA = "msq-envelope-v1"
+ENVELOPE_SCHEMA = "msq-envelope-v2"
+ENVELOPE_SCHEMA_V1 = "msq-envelope-v1"
 SNAPSHOT_SCHEMA = "ibm-canonical-snapshot-v1"
 ENVELOPE_FILE = "envelope.json"
 ENVELOPE_BACKEND = "ibm_kingston"
@@ -31,6 +35,9 @@ RULE_MAX_PROB_MEAS1_PREP0 = 0.02
 # Kept qubits are at least this many edges apart in the CZ coupling graph: neither adjacent nor sharing a neighbor.
 RULE_MIN_GRAPH_DISTANCE = 3
 WIDTH_TIERS = (32, 24, 16)
+# layout_rule_v2 treats summed readout errors within this many units as equal; a readout error is a probability
+# reported to about 1e-5, so no calibration difference below it separates two layouts.
+TIE_TOLERANCE = 1e-9
 
 # A plan whose digest changes this many times between consecutive snapshots refuses on the next change.
 MAX_REPLANS = 3
@@ -41,6 +48,24 @@ FALLBACK_REP_DELAY_S = 50e-6
 FALLBACK_TIMEOUT_CODE = 1305
 FALLBACK_DELAY_CODES = (1602, 8030)
 FALLBACK_MAX_BILLED_S = 3.0
+
+# Schema v2 replaces the fixed 20 us and 50 us delays with a ladder the plan climbs and derives each attempt's
+# execution ceiling from the planner charge. The 20 us floor is IBM's changelog floor for Heron r2;
+# configuration().rep_delay_range reads [0, 2 ms] on ibm_kingston and bounds nothing here.
+REP_DELAY_MIN_S = 20e-6
+REP_DELAY_MAX_S = 60e-6
+REP_DELAY_STEP_S = 10e-6
+REP_DELAY_LADDER_S = tuple(
+    round(REP_DELAY_MIN_S + k * REP_DELAY_STEP_S, 12)
+    for k in range(round((REP_DELAY_MAX_S - REP_DELAY_MIN_S) / REP_DELAY_STEP_S) + 1)
+)
+# The ceiling at a delay is CEILING_FACTOR times the planner charge plus PER_SHOT_RESIDUAL_S per shot, the gap
+# between billed charge and planner charge measured on the retained width-32 run.
+CEILING_FACTOR = 1.5
+PER_SHOT_RESIDUAL_S = 9e-6
+# The approved total QPU charge C of an envelope, owner-approved per case.
+CAP_MIN_S = 5.0
+CAP_MAX_S = 240.0
 
 
 class EnvelopeError(ValueError):
@@ -200,6 +225,104 @@ def layout_rule(
     raise EnvelopeError(f"only {len(kept)} qubits satisfy the layout rule; width {width} needs {width}")
 
 
+def _packing(
+    eligible: list[int], conflicts: list[tuple[int, int]], cost: np.ndarray, width: int | None, fixed: dict[int, int]
+) -> Any:
+    """milp over binary x_q: minimize cost.x with no conflict pair both kept; width None maximizes the count."""
+    n = len(eligible)
+    position = {q: i for i, q in enumerate(eligible)}
+    rows = []
+    for a, b in conflicts:
+        row = np.zeros(n)
+        row[position[a]] = row[position[b]] = 1.0
+        rows.append(row)
+    constraints = [LinearConstraint(np.array(rows), -np.inf, 1.0)] if rows else []
+    if width is not None:
+        constraints.append(LinearConstraint(np.ones((1, n)), width, width))
+    lower, upper = np.zeros(n), np.ones(n)
+    for q, value in fixed.items():
+        lower[position[q]] = upper[position[q]] = value
+    return milp(
+        cost if width is not None else -np.ones(n),
+        constraints=constraints,
+        integrality=np.ones(n),
+        bounds=Bounds(lower, upper),
+    )
+
+
+def layout_rule_v2(
+    qubits: Mapping[int, Mapping[str, float | None]],
+    excluded: Iterable[int],
+    edges: Iterable[tuple[int, int]],
+    width: int,
+) -> list[int]:
+    """The width-qubit layout of schema v2, in ascending qubit index: the packing of lowest summed readout error.
+
+    The candidates are the qubits layout_rule screens (qubit_eligibility, exclusions). A subset is admissible when
+    every pair sits at CZ-graph distance >= RULE_MIN_GRAPH_DISTANCE; among the admissible width-subsets the rule
+    minimizes the summed readout_error, and sums that differ by at most TIE_TOLERANCE tie. A tie resolves to the
+    lexicographically smallest sorted index tuple: ascending qubit by qubit, a qubit joins the layout when some
+    optimal subset extends the kept prefix with it. No admissible width-subset raises EnvelopeError naming the
+    maximum packing size.
+    """
+    if width not in WIDTH_TIERS:
+        raise EnvelopeError(f"width {width} is not an envelope tier {WIDTH_TIERS}")
+    return packed_layout(qubits, excluded, edges, width)
+
+
+def packed_layout(
+    qubits: Mapping[int, Mapping[str, float | None]],
+    excluded: Iterable[int],
+    edges: Iterable[tuple[int, int]],
+    width: int,
+) -> list[int]:
+    """layout_rule_v2's packing for any positive width; the tier check belongs to the rule, not the packing."""
+    edge_list = sorted({(min(a, b), max(a, b)) for a, b in edges})
+    blocked = set(excluded)
+    eligible = sorted(q for q, values in qubits.items() if q not in blocked and qubit_eligibility(values) is None)
+    eligible_set = set(eligible)
+    conflicts = sorted(
+        {
+            (min(q, other), max(q, other))
+            for q in eligible
+            for other in coupling_distances(edge_list, q, RULE_MIN_GRAPH_DISTANCE - 1)
+            if other != q and other in eligible_set
+        }
+    )
+    cost = np.array([float(qubits[q]["readout_error"] or 0.0) for q in eligible])
+    best = _packing(eligible, conflicts, cost, width, {}) if len(eligible) >= width else None
+    if best is None or best.x is None:
+        packing = _packing(eligible, conflicts, cost, None, {}) if eligible else None
+        size = 0 if packing is None or packing.x is None else int(round(float(packing.x.sum())))
+        raise EnvelopeError(f"only {size} qubits satisfy the layout rule; width {width} needs {width}")
+    limit = float(best.fun) + TIE_TOLERANCE
+    kept: dict[int, int] = {}
+    for q in eligible:
+        if sum(kept.values()) == width:
+            break
+        trial = _packing(eligible, conflicts, cost, width, {**kept, q: 1})
+        if trial.x is not None and float(trial.fun) <= limit:
+            kept[q] = 1
+        else:
+            kept[q] = 0
+    return sorted(q for q, value in kept.items() if value)
+
+
+def place_layout(
+    schema: str,
+    qubits: Mapping[int, Mapping[str, float | None]],
+    excluded: Iterable[int],
+    edges: Iterable[tuple[int, int]],
+    width: int,
+) -> list[int]:
+    """The layout rule the envelope schema names: layout_rule for v1 records, layout_rule_v2 for v2."""
+    if schema == ENVELOPE_SCHEMA_V1:
+        return layout_rule(qubits, excluded, edges, width)
+    if schema == ENVELOPE_SCHEMA:
+        return layout_rule_v2(qubits, excluded, edges, width)
+    raise EnvelopeError(f"unknown envelope schema {schema!r}")
+
+
 def plan_digest(plan: Mapping[str, Any]) -> str:
     """sha256 of the full submission plan: layout, QPY digest, PUB and register manifest, options, delay, price."""
     required = {"layout", "qpy_sha256", "execution_pubs", "sampler_options", "rep_delay", "shots", "planner_seconds"}
@@ -271,3 +394,104 @@ def attempt_admission(
             f"remaining {remaining_seconds:g} s minus reserve {reserve_seconds:g} s is below the {needed:g} s needed"
         )
     return reasons
+
+
+def delay_key(delay: float) -> str:
+    """The contract's spelling of a ladder delay: repr of the float seconds, such as "2e-05" for 20 us."""
+    return repr(float(delay))
+
+
+def attempt_ceiling(planner_seconds: float, total_shots: int) -> int:
+    """The execution ceiling of one attempt: ceil(CEILING_FACTOR * (planner charge + PER_SHOT_RESIDUAL_S per shot))."""
+    if not math.isfinite(planner_seconds) or planner_seconds < 0 or type(total_shots) is not int or total_shots < 0:
+        raise EnvelopeError(f"ceiling inputs must be a finite nonnegative charge and shot count: {planner_seconds!r}")
+    return math.ceil(CEILING_FACTOR * (planner_seconds + PER_SHOT_RESIDUAL_S * total_shots))
+
+
+def ladder_ceilings(planner_seconds: Mapping[str, float], total_shots: int) -> dict[str, int]:
+    """Each ladder step's ceiling from its planner charge, keyed by delay_key in ladder order."""
+    expected = [delay_key(d) for d in REP_DELAY_LADDER_S]
+    if list(planner_seconds) != expected:
+        raise EnvelopeError(f"planner charges must cover the ladder {expected}, got {list(planner_seconds)}")
+    return {key: attempt_ceiling(planner_seconds[key], total_shots) for key in expected}
+
+
+def contract_refusals(cap: float | None, ceilings: Mapping[str, int], bound: float | None) -> list[str]:
+    """Reasons a v2 contract is refused at the dry run: the total cap C, its first ceiling and the ceiling bound."""
+    reasons = []
+    first = ceilings[delay_key(REP_DELAY_LADDER_S[0])]
+    if cap is None or not math.isfinite(cap) or not CAP_MIN_S <= cap <= CAP_MAX_S:
+        reasons.append(f"the total cap {cap!r} s is outside [{CAP_MIN_S:g}, {CAP_MAX_S:g}] s")
+    elif first > cap:
+        reasons.append(f"the first ceiling {first} s exceeds the total cap {cap:g} s")
+    if bound is not None and first > bound:
+        reasons.append(f"the first ceiling {first} s exceeds the ceiling bound {bound:g} s")
+    return reasons
+
+
+def attempt_admission_v2(
+    attempt: int,
+    remaining_seconds: float,
+    reserve_seconds: float,
+    envelope_cap: float,
+    ceiling: float,
+    earlier_attempt_seconds: float = 0.0,
+    earlier_unsettled: bool = False,
+) -> list[str]:
+    """Reasons a v2 attempt is refused at its send; empty admits it.
+
+    Attempt 1 needs its ceiling within the cap and within the remaining quota minus the reserve; it reserves nothing
+    for attempt 2, which reads the live quota at its own send. Attempt 2 needs attempt 1's attributed charge (its
+    ceiling while unattributed, earlier_attempt_seconds) plus its ceiling within the cap, and its ceiling, plus
+    attempt 1's seconds while that charge is unsettled, within the remaining quota minus the reserve.
+    """
+    if attempt not in (1, 2):
+        return [f"the envelope has attempts 1 and 2, not {attempt!r}"]
+    values = (remaining_seconds, reserve_seconds, envelope_cap, ceiling, earlier_attempt_seconds)
+    if any(not math.isfinite(v) or v < 0 for v in values):
+        return [f"admission inputs must be finite and nonnegative: {values}"]
+    if attempt == 1 and earlier_attempt_seconds != 0.0:
+        return ["attempt 1 has no earlier attempt"]
+    reasons = []
+    if earlier_attempt_seconds + ceiling > envelope_cap:
+        reasons.append(
+            f"earlier {earlier_attempt_seconds:g} s plus ceiling {ceiling:g} s exceeds envelope_cap {envelope_cap:g} s"
+        )
+    needed = ceiling + (earlier_attempt_seconds if attempt == 2 and earlier_unsettled else 0.0)
+    if remaining_seconds - reserve_seconds < needed:
+        reasons.append(
+            f"remaining {remaining_seconds:g} s minus reserve {reserve_seconds:g} s is below the {needed:g} s needed"
+        )
+    return reasons
+
+
+def select_fallback_step(
+    first_delay: float,
+    ladder_ceiling_seconds: Mapping[str, float],
+    remaining_seconds: float,
+    reserve_seconds: float,
+    envelope_cap: float,
+    earlier_attempt_seconds: float,
+    earlier_unsettled: bool,
+    ceiling_bound: float | None = None,
+) -> tuple[tuple[float, float] | None, dict[str, list[str]]]:
+    """Attempt 2's step: the smallest ladder delay above first_delay that attempt_admission_v2 admits.
+
+    Returns ((delay, ceiling), rejected) for the chosen step, or (None, rejected) when none qualifies; rejected maps
+    each skipped delay_key to its reasons. A step whose ceiling exceeds ceiling_bound is no candidate.
+    """
+    rejected: dict[str, list[str]] = {}
+    for delay in REP_DELAY_LADDER_S:
+        if delay <= first_delay:
+            continue
+        key = delay_key(delay)
+        ceiling = float(ladder_ceiling_seconds[key])
+        reasons = attempt_admission_v2(
+            2, remaining_seconds, reserve_seconds, envelope_cap, ceiling, earlier_attempt_seconds, earlier_unsettled
+        )
+        if ceiling_bound is not None and ceiling > ceiling_bound:
+            reasons.append(f"ceiling {ceiling:g} s exceeds the ceiling bound {ceiling_bound:g} s")
+        if not reasons:
+            return (delay, ceiling), rejected
+        rejected[key] = reasons
+    return None, rejected

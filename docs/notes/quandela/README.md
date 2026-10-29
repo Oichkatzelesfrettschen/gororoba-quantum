@@ -25,6 +25,7 @@ change; the captures below record what they said when read.
 | [roadmap-2026-03.md](roadmap-2026-03.md) | the March 2026 Quandela roadmap and the Quandela-Welinq interconnect announcement: every networking, interconnect and modular-system statement with its page and target year |
 | `calibration.md` | each QPU's calibration state, the Belenos history from the QPU run records, the gating rules and their enforcement, open items |
 | `setup-verification.md` | installed versions, token and MCP configuration, the approval policy, the verification record and what was not run |
+| `../../evidence/ascella-associator-predecessor/README.md` | Ascella two-photon octonion associator predecessor-conditioning benchmark (job e13e5ed0): massive non-associative contrast (+1.6127, > 204 sigma), strict physical null control (+0.000136), in situ closure, and fail-closed TOST |
 
 ## Installation
 
