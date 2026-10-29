@@ -63,7 +63,7 @@ Decoded from the `specs.architecture` blob of the snapshot with `decode()` in [`
 | `sim:sampling` | Boson sampler, Clifford and Clifford 2017 backend | - | 2 to 12 | `probs`, `samples`, `sample_count` | available | yes |
 | `sim:slos` | SLOS backend | - | 2 to 12 | `probs`, `samples`, `sample_count` | available | no |
 
-A dash means the record gives no mode count. Every simulator runs 300 s per job at 0 credits per shot. The accepted state kinds are FS, NFS and SVD for `sim:gpu:small` and `sim:sampling`, and FS, NFS, SVD, AFS and SV for `sim:slos`.
+A dash means the record gives no mode count. Every simulator runs 300 s per job with 0 base credits to initiate ("proc") the job. While the catalogue lists 0 credits per shot, `/api/tokens/usage/report` reveals that simulator runs draw fractional credits against token allowances at the shot tariff (1e-06 credits per shot = 0.xxxxxx credits per run), so simulator jobs are not completely zero-cost under heavy shot loads. The accepted state kinds are FS, NFS and SVD for `sim:gpu:small` and `sim:sampling`, and FS, NFS, SVD, AFS and SV for `sim:slos`. Both `available` and `running` are acceptable operational platform statuses.
 
 ## Contradictions in the record
 

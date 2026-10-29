@@ -288,8 +288,28 @@ def check() -> int:
     require(abs(p_omega - 1.0) < BODY_TOLERANCE, f"SLOS P(omega) {p_omega} != 1.0")
     require(abs(p_0) < BODY_TOLERANCE, f"SLOS P(0) {p_0} != 0.0")
 
+    # 4. Exact rational arithmetic verification via python-flint
+    try:
+        import flint
+
+        w8 = flint.fmpz_mat(8, 8, [(-1) ** (bin(i & j).count("1")) for i in range(8) for j in range(8)])
+        for a, b in combinations(range(1, 8), 2):
+            om = character_frequency(a, b)
+            d_mat = flint.fmpz_mat(
+                8, 8, [associator_sign(a, b, i) if i == j else 0 for i in range(8) for j in range(8)]
+            )
+            prod = w8 * d_mat * w8
+            for r in range(8):
+                expected = 8 if r == om else 0
+                require(int(prod[r, 0]) == expected, f"Flint exact character check failed for ({a},{b}) at row {r}")
+        flint_verified = True
+    except ImportError:
+        flint_verified = False
+
     print("ascella_associator_character: check passed!")
     print("21-pair octonion character kernel theorem verified: ker s = {0, a, b, a^b} for all pairs")
+    if flint_verified:
+        print("Flint exact rational arithmetic verified: W_8 D(a,b) W_8 = 8 P_omega across all 21 pairs (0 drift)")
     print("16 settings across 4 primary triads bound to 8-mode Clements mesh")
     print(f"SLOS single-photon transfer confirmed: P_omega = {p_omega:.6f}, P_0 = {p_0:.6f}")
     print(f"credit ceiling confirmed at {manifest['credit_ceiling']:.6f} credits")
@@ -473,6 +493,18 @@ def analyze(run_dir: Path) -> dict[str, Any]:
             "wilson_se": round(wilson_se, 6),
             "ci95": [round(d_lower, 6), round(d_upper, 6)],
         }
+
+        try:
+            import scipy.stats as stats
+
+            cp_low = stats.beta.ppf(0.025, c_omega, denom - c_omega + 1) if c_omega > 0 else 0.0
+            cp_high = stats.beta.ppf(0.975, c_omega + 1, denom - c_omega) if c_omega < denom else 1.0
+            d_cp_low = max(-1.0, 2.0 * cp_low - 1.0)
+            d_cp_high = min(1.0, 2.0 * cp_high - 1.0)
+            record["clopper_pearson_ci95"] = [round(float(d_cp_low), 6), round(float(d_cp_high), 6)]
+        except ImportError:
+            pass
+
         per_setting_reports.append(record)
 
         if pair_key not in pair_contrasts:

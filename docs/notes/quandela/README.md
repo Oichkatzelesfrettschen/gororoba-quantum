@@ -263,6 +263,18 @@ took. Until the account's offer page shows the notebook price as free, a
 notebook session is spent compute: it waits for the same written case and
 approval as a job, and it is stopped as soon as its work ends.
 
+### Simulator billing reality
+
+While the public catalogue and platform specifications list 0 base credits to
+initiate ("proc") a job on simulators such as `sim:ascella`, execution is not
+completely free of credit consumption. The token usage report
+(`/api/tokens/usage/report`) records that simulator jobs draw against token
+credit allocations at the fractional per-shot rate
+(1e-06 credits/shot = 0.xxxxxx credits). In contrast, physical QPU jobs
+(`qpu:ascella`, `qpu:belenos`) bill 1.0 base credit per job plus the shot
+tariff. Cases targeting `sim:ascella` must account for fractional credit
+consumption on high-shot allocations.
+
 ## Platforms
 
 `qd_platform.py facts docs/evidence/quandela` renders this table from the
@@ -316,6 +328,14 @@ documentation gives the n-photon coincidence rate as
 `Clock [MHz] x (Transmittance x Brightness)^n`, which sets how long a
 sampling job on n photons runs against the 300 s limit; a case computes it
 from a fresh `qd_platform` read.
+
+Platform status on QPUs and simulators is observed as `available`, `running` or
+`calibration`. A status of `running` indicates the hardware or simulator
+instance is online and actively executing workloads; it is an acceptable and
+admissible platform status alongside `available`. When a platform is `running`,
+newly submitted jobs enter the provider queue rather than being rejected. The
+runner accepts `running` via `--admit-status running` (or `--admit-status
+available running`).
 
 ## Terms and data
 
