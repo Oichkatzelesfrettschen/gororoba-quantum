@@ -85,32 +85,82 @@ def test_in_situ_closure_identity() -> None:
             raise AssertionError(f"in-situ closure failed at V = {v}: C = {closure}")
 
 
-def test_schedule_balance_and_drift_cancellation() -> None:
-    """Verify counterbalanced schedule structure and linear drift cancellation."""
+def test_schedule_quadratic_drift_cancellation() -> None:
+    """Verify exact algebraic cancellation of constant, linear, and quadratic drift."""
     spec = case.PAIRED_SCHEDULE_SPEC
     if len(spec) != 16:
         raise AssertionError(f"expected 16 pairs, got {len(spec)}")
 
-    # Check Block 1 (Associator, Hot vs Cold): ABBA on predecessors
-    block1_hot_indices = [int(str(row["pair"])) for row in spec[:4] if row["pred"] == "hot"]
-    block1_cold_indices = [int(str(row["pair"])) for row in spec[:4] if row["pred"] == "cold"]
-    if sum(block1_hot_indices) / len(block1_hot_indices) != sum(block1_cold_indices) / len(block1_cold_indices):
-        raise AssertionError("Block 1 predecessor mean indices do not balance")
+    # Check Block 1 (Associator, Pairs 0..7)
+    b1 = spec[:8]
+    b1_lalb = [int(str(row["pair"])) for row in b1 if row["route"] == "LaLb"]
+    b1_lab = [int(str(row["pair"])) for row in b1 if row["route"] == "Lab"]
+    if sum(b1_lalb) != sum(b1_lab):
+        raise AssertionError("Block 1 linear drift on routes not cancelled")
+    if sum(t**2 for t in b1_lalb) != sum(t**2 for t in b1_lab):
+        raise AssertionError("Block 1 quadratic drift on routes not cancelled")
 
-    # Check Block 2 (Associator, Wrapped vs Cold): AWWA on predecessors
-    block2_wrapped = [int(str(row["pair"])) for row in spec[4:8] if row["pred"] == "wrapped"]
-    block2_cold = [int(str(row["pair"])) for row in spec[4:8] if row["pred"] == "cold"]
-    if sum(block2_wrapped) / len(block2_wrapped) != sum(block2_cold) / len(block2_cold):
-        raise AssertionError("Block 2 predecessor mean indices do not balance")
+    # Check Block 2 (Control, Pairs 8..15)
+    b2 = spec[8:]
+    b2_lalb = [int(str(row["pair"])) for row in b2 if row["route"] == "LaLb"]
+    b2_lab = [int(str(row["pair"])) for row in b2 if row["route"] == "Lab"]
+    if sum(b2_lalb) != sum(b2_lab):
+        raise AssertionError("Block 2 linear drift on routes not cancelled")
+    if sum(t**2 for t in b2_lalb) != sum(t**2 for t in b2_lab):
+        raise AssertionError("Block 2 quadratic drift on routes not cancelled")
 
-    # Check that under the Cold baseline across Blocks 1 & 2, LaLb and Lab have matching mean pair indices
-    cold_associator = [row for row in spec[:8] if row["pred"] == "cold"]
-    lalb_pairs = [int(str(row["pair"])) for row in cold_associator if row["route"] == "LaLb"]
-    lab_pairs = [int(str(row["pair"])) for row in cold_associator if row["route"] == "Lab"]
-    mean_lalb = sum(lalb_pairs) / len(lalb_pairs)
-    mean_lab = sum(lab_pairs) / len(lab_pairs)
-    if abs(mean_lalb - mean_lab) > 1e-12:
-        raise AssertionError(f"Cold baseline associator targets not balanced: LaLb {mean_lalb} != Lab {mean_lab}")
+    # Check that Cold baseline anchors occur at all odd indices
+    cold_pairs = [int(str(row["pair"])) for row in spec if row["pred"] == "cold"]
+    expected_anchors = [1, 3, 5, 7, 9, 11, 13, 15]
+    if cold_pairs != expected_anchors:
+        raise AssertionError(f"Cold anchors {cold_pairs} != {expected_anchors}")
+
+
+def test_synthetic_nonlinear_drift_recovery() -> None:
+    """Test that quadratic drift is annihilated from Delta and recovered from Cold anchors."""
+    spec = case.PAIRED_SCHEDULE_SPEC
+
+    # True parameters: Delta_oct = 1.647058 (LaLb = +0.823529, Lab = -0.823529)
+    # Drift: f(t) = 0.05 + 0.01*t + 0.002*t^2
+    def true_drift(t: float) -> float:
+        return 0.05 + 0.01 * t + 0.002 * (t**2)
+
+    d_obs: list[float] = []
+    for row in spec:
+        t = float(int(str(row["pair"])))
+        route = str(row["route"])
+        block = str(row["block"])
+        sign = 1.0 if route == "LaLb" else -1.0
+        signal = sign * 0.823529 if block == "associator" else -0.823529
+        d_obs.append(signal + true_drift(t))
+
+    # Evaluate raw difference between LaLb and Lab on Block 1
+    b1_obs_lalb = [d_obs[int(str(r["pair"]))] for r in spec[:8] if r["route"] == "LaLb"]
+    b1_obs_lab = [d_obs[int(str(r["pair"]))] for r in spec[:8] if r["route"] == "Lab"]
+    measured_delta = np.mean(b1_obs_lalb) - np.mean(b1_obs_lab)
+
+    # Must equal true Delta without any quadratic drift corruption
+    if abs(measured_delta - (2 * 0.823529)) > 1e-12:
+        raise AssertionError(f"quadratic drift corrupted raw Delta: {measured_delta} != {2 * 0.823529}")
+
+    # Reconstruct drift polynomial from Cold anchors
+    cold_anchors_t = np.array([int(str(r["pair"])) for r in spec if r["pred"] == "cold"], dtype=float)
+    cold_y = np.array([d_obs[int(t)] for t in cold_anchors_t], dtype=float)
+    anchor_residuals = np.array(
+        [
+            cold_y[i]
+            - (
+                (0.823529 if spec[int(t)]["route"] == "LaLb" else -0.823529)
+                if spec[int(t)]["block"] == "associator"
+                else -0.823529
+            )
+            for i, t in enumerate(cold_anchors_t)
+        ]
+    )
+    poly = np.poly1d(np.polyfit(cold_anchors_t, anchor_residuals, deg=2))
+    # Fitted coefficients must match [0.002, 0.01, 0.05]
+    if abs(poly.coefficients[0] - 0.002) > 1e-6 or abs(poly.coefficients[1] - 0.01) > 1e-6:
+        raise AssertionError(f"fitted drift polynomial incorrect: {poly.coefficients}")
 
 
 def test_template_experiment_binding() -> None:
@@ -125,17 +175,19 @@ def test_template_experiment_binding() -> None:
 
 def test_credit_ceiling_rule() -> None:
     """Verify credit billing rule: 1 + 10^-6 * max_shots_per_setting."""
-    docs = case.build_documents()
+    docs = case.build_documents(samples_per_iteration=8192, shots_factor=64)
     manifest = json.loads(docs["cases.json"].decode())
-    shots_per_setting = case.SHOTS_PER_ITERATION
-    expected_credits = 1.0 + 1e-6 * shots_per_setting
+    shots_per_setting = 8192 * 64  # 524,288
+    expected_credits = round(1.0 + 1e-6 * shots_per_setting, 6)
     if abs(manifest["credit_ceiling"] - expected_credits) > 1e-12:
         raise AssertionError(f"credit ceiling {manifest['credit_ceiling']} != {expected_credits}")
+    if manifest["credit_ceiling"] != 1.524288:
+        raise AssertionError(f"expected 1.524288 credits, got {manifest['credit_ceiling']}")
 
 
 def test_end_to_end_simulation_and_analysis(tmp_path: Path) -> None:
     """Verify simulation and analysis produce correct verdicts and endpoints."""
-    docs = case.build_documents()
+    docs = case.build_documents(samples_per_iteration=8192, shots_factor=64)
     manifest = json.loads(docs["cases.json"].decode())
     circuit = json.loads(docs["circuit.json"].decode())
     _, settings = template_experiment(manifest, circuit)
@@ -143,7 +195,7 @@ def test_end_to_end_simulation_and_analysis(tmp_path: Path) -> None:
     simulated_iterations = []
     for setting in settings:
         if setting["role"] == "predecessor":
-            counts = {"|1,0,1,0,0,0,0,0,0,0,0,0>": case.SAMPLES_PER_ITERATION}
+            counts = {"|1,0,1,0,0,0,0,0,0,0,0,0>": 8192}
         else:
             law = setting["ideal"]["two_click_law_indistinguishable"]
             counts = {}
@@ -151,7 +203,7 @@ def test_end_to_end_simulation_and_analysis(tmp_path: Path) -> None:
                 state_vec = [0] * case.MODES
                 state_vec[int(pair[0])] = 1
                 state_vec[int(pair[1])] = 1
-                counts[f"|{','.join(str(v) for v in state_vec)}>"] = int(round(prob * case.SAMPLES_PER_ITERATION))
+                counts[f"|{','.join(str(v) for v in state_vec)}>"] = int(round(prob * 8192))
         simulated_iterations.append({"setting": setting["name"], "counts": counts})
 
     (tmp_path / "cases.json").write_bytes(docs["cases.json"])
@@ -170,3 +222,5 @@ def test_end_to_end_simulation_and_analysis(tmp_path: Path) -> None:
         raise AssertionError(f"ideal predecessor shift hot != 0: {verdicts}")
     if abs(verdicts["predecessor_shift_wrapped_vs_cold"]) > 1e-9:
         raise AssertionError(f"ideal predecessor shift wrapped != 0: {verdicts}")
+    if verdicts["quadratic_drift_annihilation"] is not True:
+        raise AssertionError(f"quadratic drift annihilation flag not true: {verdicts}")

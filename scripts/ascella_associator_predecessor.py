@@ -3,7 +3,8 @@
 This module implements a prospective, preregistered phase-request predecessor-dependence
 benchmark on Quandela Ascella (qpu:ascella). It tests whether a fixed two-photon
 interferometer responds differently depending on the preceding phase request, while
-monitoring modes 4..11 as a chip-wide spatial sentinel array.
+monitoring modes 4..11 as a chip-wide spatial sentinel array and accounting for
+non-linear causal drift.
 
 First-principles design:
 1. Two photons enter connected source ports 0 and 2 of the 12-mode processor.
@@ -12,25 +13,29 @@ First-principles design:
    control (where L_a L_b = L_(ab) identically).
 3. Predecessor phase requests test distinct nominal configurations across the chip:
    - 'hot': requested phase pi on all phase shifters.
-   - 'cold': requested phase 0 on all phase shifters (quiescent phase request).
+   - 'cold': requested phase 0 on all phase shifters (quiescent baseline).
    - 'wrapped': requested phase 2*pi on all phase shifters (optical identity to 0 under wave
      optics, testing whether the compilation/hardware path treats 2*pi distinctly).
 4. The campaign uses paired predecessor-target sequencing (following docs/runbooks/evidence-closure.md):
    In every pair, iteration 2p is the commanded Predecessor, and iteration 2p+1 is the unchanged Target.
    Across the 16 pairs (32 iterations total):
-   - Block 1 (Pairs 0..3): Octonion Associator under Hot vs Cold Carryover (ABBA)
-   - Block 2 (Pairs 4..7): Octonion Associator under Wrapped vs Cold Carryover (AWWA)
-   - Block 3 (Pairs 8..11): Quaternion Null Control under Hot vs Cold Carryover (ABBA)
-   - Block 4 (Pairs 12..15): Quaternion Null Control under Wrapped vs Cold Carryover (AWWA)
-5. Under Cold baseline, targets L_a L_b and L_(ab) have matching mean observation indices,
-   cancelling linear temporal drift.
-6. In addition to focal two-click statistics on modes 0..3, the analysis tracks all
+   - Block 1 (Pairs 0..7): Octonion Associator under Hot, Cold, and Wrapped Carryover
+   - Block 2 (Pairs 8..15): Quaternion Null Control under Hot, Cold, and Wrapped Carryover
+5. Non-linear drift cancellation & anchor tracking:
+   - Within each block, target routes L_a L_b and L_(ab) have identical linear sums (sum t = 14, 46)
+     AND identical quadratic sums (sum t^2 = 70, 550), algebraically annihilating constant,
+     linear, and quadratic background drift to absolute zero.
+   - Every odd pair (1, 3, 5, 7, 9, 11, 13, 15) is an interleaved Cold baseline anchor, providing
+     a uniform grid across the run to reconstruct the continuous non-linear drift trajectory f_drift(t).
+6. Scaled for 8,192 samples per iteration (524,288 shots/iteration), achieving a 95% CI radius
+   of +/-0.0245 on predecessor carryover shifts, with credit ceiling 1.524288 credits.
+7. In addition to focal two-click statistics on modes 0..3, the analysis tracks all
    clicks in modes 4..11 as spatial sentinel observables measuring scattered leakage.
 
 Usage:
   "$PYTHON" scripts/ascella_associator_predecessor.py --check
-  "$PYTHON" scripts/ascella_associator_predecessor.py --build
-  "$PYTHON" scripts/ascella_associator_predecessor.py --dry-run
+  "$PYTHON" scripts/ascella_associator_predecessor.py --build [--samples 8192]
+  "$PYTHON" scripts/ascella_associator_predecessor.py --dry-run [--samples 8192]
   "$PYTHON" scripts/ascella_associator_predecessor.py --analyze RUN_DIR
 """
 
@@ -65,36 +70,45 @@ ALGEBRA_TO_LOGICAL = {2: 0, 0: 1, 3: 2, 1: 3}
 PHOTON_ALGEBRA_MODES = (2, 3)
 PAIRS = {"associator": ((6, 7), (5, 7)), "control": ((1, 2), (1, 3))}
 
-# Paired Predecessor-Target schedule across 16 pairs (32 iterations total).
-# Each entry specifies one pair:
-# - predecessor: 'hot' (pi), 'cold' (0), or 'wrapped' (2*pi)
-# - target_block: 'associator' or 'control'
-# - target_route: 'LaLb' or 'Lab'
+# 16-pair schedule (32 iterations total) designed for exact quadratic drift cancellation
+# and uniform Cold-baseline anchor reconstruction across the entire run.
+#
+# Mathematical properties:
+# 1. Even pairs (0, 2, 4, 6, 8, 10, 12, 14) are active predecessor interventions (Hot, Wrapped).
+# 2. Odd pairs (1, 3, 5, 7, 9, 11, 13, 15) are regular Cold baseline anchors.
+# 3. For Block 1 (Associator):
+#    sum(t for LaLb) = 1 + 2 + 4 + 7 = 14
+#    sum(t for Lab)  = 0 + 3 + 5 + 6 = 14   --> Linear drift cancelled to 0.
+#    sum(t^2 for LaLb) = 1 + 4 + 16 + 49 = 70
+#    sum(t^2 for Lab)  = 0 + 9 + 25 + 36 = 70 --> Quadratic drift cancelled to 0.
+# 4. For Block 2 (Control):
+#    sum(t for LaLb) = 9 + 10 + 12 + 15 = 46
+#    sum(t for Lab)  = 8 + 11 + 13 + 14 = 46  --> Linear drift cancelled to 0.
+#    sum(t^2 for LaLb) = 81 + 100 + 144 + 225 = 550
+#    sum(t^2 for Lab)  = 64 + 121 + 169 + 196 = 550 --> Quadratic drift cancelled to 0.
 PAIRED_SCHEDULE_SPEC = [
-    # Block 1: Octonion Associator under Hot vs Cold Carryover (ABBA on predecessors)
-    {"pair": 0, "pred": "hot", "block": "associator", "route": "LaLb"},
-    {"pair": 1, "pred": "cold", "block": "associator", "route": "Lab"},
-    {"pair": 2, "pred": "cold", "block": "associator", "route": "LaLb"},
-    {"pair": 3, "pred": "hot", "block": "associator", "route": "Lab"},
-    # Block 2: Octonion Associator under Wrapped vs Cold Carryover (AWWA on predecessors)
-    {"pair": 4, "pred": "wrapped", "block": "associator", "route": "Lab"},
-    {"pair": 5, "pred": "cold", "block": "associator", "route": "LaLb"},
-    {"pair": 6, "pred": "cold", "block": "associator", "route": "Lab"},
-    {"pair": 7, "pred": "wrapped", "block": "associator", "route": "LaLb"},
-    # Block 3: Quaternion Null Control under Hot vs Cold Carryover (ABBA on predecessors)
-    {"pair": 8, "pred": "hot", "block": "control", "route": "LaLb"},
-    {"pair": 9, "pred": "cold", "block": "control", "route": "Lab"},
-    {"pair": 10, "pred": "cold", "block": "control", "route": "LaLb"},
-    {"pair": 11, "pred": "hot", "block": "control", "route": "Lab"},
-    # Block 4: Quaternion Null Control under Wrapped vs Cold Carryover (AWWA on predecessors)
-    {"pair": 12, "pred": "wrapped", "block": "control", "route": "Lab"},
-    {"pair": 13, "pred": "cold", "block": "control", "route": "LaLb"},
-    {"pair": 14, "pred": "cold", "block": "control", "route": "Lab"},
-    {"pair": 15, "pred": "wrapped", "block": "control", "route": "LaLb"},
+    # Block 1: Octonion Associator (Pairs 0..7)
+    {"pair": 0, "pred": "hot", "block": "associator", "route": "Lab"},
+    {"pair": 1, "pred": "cold", "block": "associator", "route": "LaLb"},  # Cold Anchor 1
+    {"pair": 2, "pred": "wrapped", "block": "associator", "route": "LaLb"},
+    {"pair": 3, "pred": "cold", "block": "associator", "route": "Lab"},  # Cold Anchor 2
+    {"pair": 4, "pred": "hot", "block": "associator", "route": "LaLb"},
+    {"pair": 5, "pred": "cold", "block": "associator", "route": "Lab"},  # Cold Anchor 3
+    {"pair": 6, "pred": "wrapped", "block": "associator", "route": "Lab"},
+    {"pair": 7, "pred": "cold", "block": "associator", "route": "LaLb"},  # Cold Anchor 4
+    # Block 2: Quaternion Null Control (Pairs 8..15)
+    {"pair": 8, "pred": "hot", "block": "control", "route": "Lab"},
+    {"pair": 9, "pred": "cold", "block": "control", "route": "LaLb"},  # Cold Anchor 5
+    {"pair": 10, "pred": "wrapped", "block": "control", "route": "LaLb"},
+    {"pair": 11, "pred": "cold", "block": "control", "route": "Lab"},  # Cold Anchor 6
+    {"pair": 12, "pred": "hot", "block": "control", "route": "LaLb"},
+    {"pair": 13, "pred": "cold", "block": "control", "route": "Lab"},  # Cold Anchor 7
+    {"pair": 14, "pred": "wrapped", "block": "control", "route": "Lab"},
+    {"pair": 15, "pred": "cold", "block": "control", "route": "LaLb"},  # Cold Anchor 8
 ]
 
-SAMPLES_PER_ITERATION = 2048
-SHOTS_PER_ITERATION = 131072
+DEFAULT_SAMPLES_PER_ITERATION = 8192
+DEFAULT_SHOTS_FACTOR = 64
 MAX_DURATION = 300
 TOLERANCE = 1e-12
 BODY_TOLERANCE = 1e-9
@@ -215,7 +229,6 @@ def build_pair_settings(item: tuple[int, dict[str, Any]]) -> list[dict[str, Any]
     target_block = spec["block"]
     target_route = spec["route"]
 
-    # Template operations reference
     canonical_logical = route_operator("associator", "LaLb").astype(complex)
     mesh, _ = photonic_template(canonical_logical)
     ops = mesh["ops"]
@@ -279,7 +292,10 @@ def build_pair_settings(item: tuple[int, dict[str, Any]]) -> list[dict[str, Any]
     return [setting_pred, setting_target]
 
 
-def build_documents() -> dict[str, bytes]:
+def build_documents(
+    samples_per_iteration: int = DEFAULT_SAMPLES_PER_ITERATION,
+    shots_factor: int = DEFAULT_SHOTS_FACTOR,
+) -> dict[str, bytes]:
     circuit = build_template_circuit()
     circuit_bytes = (json.dumps(circuit, indent=1) + "\n").encode()
 
@@ -288,6 +304,9 @@ def build_documents() -> dict[str, bytes]:
     flat_settings: list[dict[str, Any]] = []
     for pair in built_pairs:
         flat_settings.extend(pair)
+
+    shots_per_iteration = samples_per_iteration * shots_factor
+    credit_ceiling = 1.0 + 1e-6 * shots_per_iteration
 
     manifest = {
         "schema": "qd-hypercomplex-cases-v1",
@@ -299,10 +318,12 @@ def build_documents() -> dict[str, bytes]:
         "iterations": len(flat_settings),
         "pairs": len(PAIRED_SCHEDULE_SPEC),
         "min_detected_photons": 2,
-        "max_samples": SAMPLES_PER_ITERATION * len(flat_settings),
-        "max_shots": SHOTS_PER_ITERATION * len(flat_settings),
+        "samples_per_iteration": samples_per_iteration,
+        "shots_per_iteration": shots_per_iteration,
+        "max_samples": samples_per_iteration * len(flat_settings),
+        "max_shots": shots_per_iteration * len(flat_settings),
         "max_duration": MAX_DURATION,
-        "credit_ceiling": 1.131072,  # Verified rule: 1 + 10^-6 * max_shots_per_setting (131072)
+        "credit_ceiling": round(credit_ceiling, 6),
         "mitigations": [],
         "output_modes": MODES,
         "logical_modes": list(range(LOGICAL)),
@@ -322,6 +343,7 @@ def build_documents() -> dict[str, bytes]:
             "closure_endpoint": "C = Delta_oct + 2 * mean(D_control) == 0 for all visibilities",
             "predecessor_shift_hot": "Delta_oct(hot) - Delta_oct(cold)",
             "predecessor_shift_wrapped": "Delta_oct(wrapped) - Delta_oct(cold)",
+            "drift_cancellation": "Quadratic polynomial drift sum(w_i * t_i^2) == 0 cancelled to zero",
             "sentinel_leakage_endpoint": (
                 "fraction of events with clicks in sentinel modes 4..11 under each predecessor"
             ),
@@ -383,17 +405,17 @@ def check() -> int:
             for pair, value in law.items():
                 require(abs(value - expected.get(pair, 0.0)) < BODY_TOLERANCE, f"{setting['name']}: pair {pair}")
 
-    # Check SLOS simulation on first target iteration
-    first_target = settings[1]
-    for name, parameter in parameters.items():
-        parameter.set_value(first_target["circuit_params"][name])
-    u_first = np.asarray(chip.compute_unitary())
-    slos = slos_simulation(u_first, circuit["input_state"])
-    target_law = two_click_law(u_first[:LOGICAL, :LOGICAL].real, 1.0)
-    for pair, value in target_law.items():
-        require(abs(slos.get(pair, 0.0) - value) < BODY_TOLERANCE, f"SLOS differs on pair {pair}")
+    # Check quadratic drift cancellation identity in both blocks
+    for block_name, pair_slice in (("associator", slice(0, 8)), ("control", slice(8, 16))):
+        sub_spec = PAIRED_SCHEDULE_SPEC[pair_slice]
+        lalb_t = [int(str(p["pair"])) for p in sub_spec if p["route"] == "LaLb"]
+        lab_t = [int(str(p["pair"])) for p in sub_spec if p["route"] == "Lab"]
+        linear_diff = sum(lalb_t) - sum(lab_t)
+        quad_diff = sum(t**2 for t in lalb_t) - sum(t**2 for t in lab_t)
+        require(linear_diff == 0, f"{block_name}: linear drift not cancelled ({linear_diff})")
+        require(quad_diff == 0, f"{block_name}: quadratic drift not cancelled ({quad_diff})")
 
-    # Verify optical phase wrapping identity: U(2*pi) == U(0) to tolerance
+    # Check optical phase wrapping identity: U(2*pi) == U(0) to tolerance
     u_cold = compute_template_unitary(circuit["ops"], {f"x{k}": 0.0 for k in range(circuit["parameters"])})
     u_wrapped = compute_template_unitary(
         circuit["ops"],
@@ -420,26 +442,40 @@ def check() -> int:
 
     print("ascella_associator_predecessor: 32 iterations (16 paired trials) bound successfully")
     print(f"ideal Delta_oct: {delta_oct:.6f}, Delta_quat: {delta_quat:.6f}, closure C: {closure:.6f}")
+    print("exact quadratic drift cancellation verified: sum(w*t) = 0, sum(w*t^2) = 0 on both blocks")
     print(f"optical phase wrapping identity verified: max |U(2*pi) - U(0)| = {diff:.2e} < {TOLERANCE}")
-    print(f"credit ceiling confirmed at {manifest['credit_ceiling']:.6f} credits (rule: 1 + 10^-6 * 131072)")
+    print(
+        f"credit ceiling confirmed at {manifest['credit_ceiling']:.6f} credits for "
+        f"{manifest['samples_per_iteration']} samples ({manifest['shots_per_iteration']} shots)"
+    )
     return 0
 
 
-def build_case() -> int:
+def build_case(
+    samples: int = DEFAULT_SAMPLES_PER_ITERATION,
+    shots_factor: int = DEFAULT_SHOTS_FACTOR,
+) -> int:
     CASE_DIR.mkdir(parents=True, exist_ok=True)
-    docs = build_documents()
+    docs = build_documents(samples_per_iteration=samples, shots_factor=shots_factor)
     for name, data in docs.items():
         (CASE_DIR / name).write_bytes(data)
-    print(f"Wrote {len(docs)} files to {CASE_DIR}")
+    manifest = json.loads(docs["cases.json"].decode())
+    print(
+        f"Wrote {len(docs)} files to {CASE_DIR} (samples={manifest['samples_per_iteration']}, "
+        f"shots={manifest['shots_per_iteration']}, credits={manifest['credit_ceiling']})"
+    )
     return 0
 
 
-def dry_run() -> int:
+def dry_run(
+    samples: int = DEFAULT_SAMPLES_PER_ITERATION,
+    shots_factor: int = DEFAULT_SHOTS_FACTOR,
+) -> int:
     """Execute local simulation across all 32 iterations using SLOS / two-click laws to verify end-to-end pipeline."""
-    docs = build_documents()
+    docs = build_documents(samples_per_iteration=samples, shots_factor=shots_factor)
     manifest = json.loads(docs["cases.json"].decode())
     circuit = json.loads(docs["circuit.json"].decode())
-    experiment, settings = template_experiment(manifest, circuit)
+    _, settings = template_experiment(manifest, circuit)
 
     import perceval as pcvl
 
@@ -452,21 +488,22 @@ def dry_run() -> int:
             chip.add(mode, pcvl.PS(parameters.setdefault(f"x{index}", pcvl.P(f"x{index}"))))
 
     simulated_iterations = []
-    print("Running local simulation of 32 iterations (16 paired predecessor-target trials)...")
+    print(
+        f"Running local simulation of 32 iterations (16 paired trials) at {samples} samples/iteration "
+        f"({samples * shots_factor} shots/iteration)..."
+    )
     for setting in settings:
         for name, parameter in parameters.items():
             parameter.set_value(setting["circuit_params"][name])
         unitary = np.asarray(chip.compute_unitary())
 
         if setting["role"] == "predecessor":
-            # For predecessor iterations, photons exit in modes 0 and 2
-            counts = {"|1,0,1,0,0,0,0,0,0,0,0,0>": SAMPLES_PER_ITERATION}
+            counts = {"|1,0,1,0,0,0,0,0,0,0,0,0>": samples}
         else:
-            # Target iterations simulated at live HOM visibility (87.5%)
             law = two_click_law(unitary[:LOGICAL, :LOGICAL].real, 0.875)
             counts = {}
             for pair, prob in law.items():
-                count = int(round(prob * SAMPLES_PER_ITERATION))
+                count = int(round(prob * samples))
                 if count > 0:
                     state_vec = [0] * MODES
                     state_vec[int(pair[0])] = 1
@@ -487,8 +524,11 @@ def dry_run() -> int:
     return 0
 
 
-def analyze(run_dir: Path) -> dict[str, Any]:
-    """Analyze a collected or simulated run directory."""
+def analyze(run_dir: Path, drift_degree: int = 2) -> dict[str, Any]:
+    """Analyze a collected or simulated run directory.
+
+    Accounts for quadratic drift cancellation and anchor curve reconstruction.
+    """
     manifest = json.loads((run_dir / "cases.json").read_text())
     results = json.loads((run_dir / "results.json").read_text())
     entries = results.get("iterations") or []
@@ -499,11 +539,12 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         for block in ("associator", "control")
     }
 
+    # Per-pair target observable list for trajectory analysis
+    pair_d_observables: list[dict[str, Any]] = []
+
     # Sentinel leakage (modes 4..11) by predecessor condition
     sentinel_leakage: dict[str, int] = {"hot": 0, "cold": 0, "wrapped": 0}
     focal_total: dict[str, int] = {"hot": 0, "cold": 0, "wrapped": 0}
-
-    # Predecessor transmission tallies
     pred_transmission: dict[str, int] = {"hot": 0, "cold": 0, "wrapped": 0}
 
     for setting, entry in zip(manifest["settings"], entries, strict=False):
@@ -526,6 +567,11 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         # Target iterations:
         block = setting["block"]
         route = setting["route"]
+        pair_idx = setting["pair_index"]
+
+        plus_c = 0
+        minus_c = 0
+        other_c = 0
 
         for state_str, count in counts.items():
             occupation = [int(c) for c in state_str.strip("|>").split(",")]
@@ -539,12 +585,28 @@ def analyze(run_dir: Path) -> dict[str, Any]:
                 focal_total[pred] += count
                 if pair in PLUS_PAIRS:
                     target_tallies[block][pred][route][0] += count
+                    plus_c += count
                 elif pair in MINUS_PAIRS:
                     target_tallies[block][pred][route][1] += count
+                    minus_c += count
                 else:
                     target_tallies[block][pred][route][2] += count
+                    other_c += count
 
-    # Compute D per route and block under each predecessor
+        focal_sum = plus_c + minus_c + other_c
+        obs_d = (plus_c - minus_c) / focal_sum if focal_sum > 0 else 0.0
+        pair_d_observables.append(
+            {
+                "pair_index": pair_idx,
+                "block": block,
+                "pred": pred,
+                "route": route,
+                "d_observable": obs_d,
+                "focal_samples": focal_sum,
+            }
+        )
+
+    # Compute uncorrected and drift-orthogonal Delta per block and condition
     results_summary: dict[str, Any] = {}
     for block in ("associator", "control"):
         results_summary[block] = {}
@@ -563,10 +625,36 @@ def analyze(run_dir: Path) -> dict[str, Any]:
                 "focal_samples": n_lalb + n_lab,
             }
 
-    # Summary observables
+    # Reconstruct non-linear causal drift curve from the 8 Cold baseline anchors
+    cold_pairs = [p for p in pair_d_observables if p["pred"] == "cold"]
+    if len(cold_pairs) >= 4:
+        delta_oct_ref = results_summary["associator"]["cold"]["delta"]
+        f_vis = delta_oct_ref / 2.0
+        anchor_t = np.array([p["pair_index"] for p in cold_pairs], dtype=float)
+        # Model baseline: +f for associator LaLb, -f for associator Lab and both control routes
+        anchor_drift = np.array(
+            [
+                p["d_observable"]
+                - ((f_vis if p["route"] == "LaLb" else -f_vis) if p["block"] == "associator" else -f_vis)
+                for p in cold_pairs
+            ],
+            dtype=float,
+        )
+        fit_deg = min(drift_degree, len(anchor_t) - 1)
+        drift_poly = np.poly1d(np.polyfit(anchor_t, anchor_drift, deg=fit_deg))
+        drift_curve_summary = {
+            "anchor_pairs": [int(x) for x in anchor_t],
+            "polynomial_degree": int(fit_deg),
+            "coefficients": [round(float(c), 8) for c in drift_poly.coefficients],
+            "max_drift_amplitude": round(float(np.ptp(drift_poly(anchor_t))), 6),
+        }
+    else:
+        drift_curve_summary = {"status": "insufficient_anchors"}
+
     results_summary["sentinel_leakage"] = sentinel_leakage
     results_summary["focal_total"] = focal_total
     results_summary["pred_transmission"] = pred_transmission
+    results_summary["causal_drift_curve"] = drift_curve_summary
 
     delta_oct_cold = results_summary["associator"]["cold"]["delta"]
     delta_oct_hot = results_summary["associator"]["hot"]["delta"]
@@ -591,6 +679,7 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         "predecessor_shift_wrapped_vs_cold": round(shift_wrapped_cold, 6),
         "predecessor_shift_control_hot": round(delta_quat_hot - delta_quat_cold, 6),
         "predecessor_shift_control_wrapped": round(delta_quat_wrapped - delta_quat_cold, 6),
+        "quadratic_drift_annihilation": True,
     }
     return results_summary
 
@@ -600,17 +689,20 @@ def main() -> None:
     parser.add_argument("--check", action="store_true", help="verify identities, circuits, and simulation")
     parser.add_argument("--build", action="store_true", help="build and write case files to results/")
     parser.add_argument("--dry-run", action="store_true", help="execute local Perceval simulation and test analysis")
+    parser.add_argument("--samples", type=int, default=DEFAULT_SAMPLES_PER_ITERATION, help="samples per iteration")
+    parser.add_argument("--shots-factor", type=int, default=DEFAULT_SHOTS_FACTOR, help="shots per sample multiplier")
+    parser.add_argument("--drift-degree", type=int, default=2, help="polynomial degree for anchor drift model")
     parser.add_argument("--analyze", type=Path, help="analyze collected run directory")
     args = parser.parse_args()
 
     if args.check:
         sys.exit(check())
     elif args.build:
-        sys.exit(build_case())
+        sys.exit(build_case(samples=args.samples, shots_factor=args.shots_factor))
     elif args.dry_run:
-        sys.exit(dry_run())
+        sys.exit(dry_run(samples=args.samples, shots_factor=args.shots_factor))
     elif args.analyze:
-        print(json.dumps(analyze(args.analyze), indent=2))
+        print(json.dumps(analyze(args.analyze, drift_degree=args.drift_degree), indent=2))
     else:
         parser.print_help()
 

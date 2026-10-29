@@ -141,41 +141,51 @@ with all 6 beam splitters set to $\theta = 0$ (direct transmission):
 Following the protocol in `docs/runbooks/evidence-closure.md`:
 > *"In every paired invocation the unchanged target is the second iteration."*
 
-The job executes 16 pairs (32 iterations total):
-- Iteration $2p$: Predecessor setting (runs for 131,072 shots, applying commanded phase request).
-- Iteration $2p + 1$: Fixed Target setting (runs for 131,072 shots immediately following predecessor).
+The job executes 16 pairs (32 iterations total), structured for exact algebraic quadratic drift cancellation
+and uniform Cold-baseline anchor reconstruction across the entire run:
+- Iteration $2p$: Predecessor setting (runs for 524,288 shots, applying commanded phase request).
+- Iteration $2p + 1$: Fixed Target setting (runs for 524,288 shots immediately following predecessor).
 
-| Pair | Predecessor | Target Block | Target Route | Block Description |
+| Pair | Predecessor | Target Block | Target Route | Block Role |
 |:---:|:---:|:---:|:---:|:---|
-| 0 | Hot ($\pi$) | Associator | $L_a L_b$ | Block 1: Associator Hot vs Cold (ABBA) |
-| 1 | Cold ($0$) | Associator | $L_{ab}$ | Block 1: Associator Hot vs Cold (ABBA) |
-| 2 | Cold ($0$) | Associator | $L_a L_b$ | Block 1: Associator Hot vs Cold (ABBA) |
-| 3 | Hot ($\pi$) | Associator | $L_{ab}$ | Block 1: Associator Hot vs Cold (ABBA) |
-| 4 | Wrapped ($2\pi$) | Associator | $L_{ab}$ | Block 2: Associator Wrapped vs Cold (AWWA) |
-| 5 | Cold ($0$) | Associator | $L_a L_b$ | Block 2: Associator Wrapped vs Cold (AWWA) |
-| 6 | Cold ($0$) | Associator | $L_{ab}$ | Block 2: Associator Wrapped vs Cold (AWWA) |
-| 7 | Wrapped ($2\pi$) | Associator | $L_a L_b$ | Block 2: Associator Wrapped vs Cold (AWWA) |
-| 8 | Hot ($\pi$) | Control | $L_a L_b$ | Block 3: Control Hot vs Cold (ABBA) |
-| 9 | Cold ($0$) | Control | $L_{ab}$ | Block 3: Control Hot vs Cold (ABBA) |
-| 10 | Cold ($0$) | Control | $L_a L_b$ | Block 3: Control Hot vs Cold (ABBA) |
-| 11 | Hot ($\pi$) | Control | $L_{ab}$ | Block 3: Control Hot vs Cold (ABBA) |
-| 12 | Wrapped ($2\pi$) | Control | $L_{ab}$ | Block 4: Control Wrapped vs Cold (AWWA) |
-| 13 | Cold ($0$) | Control | $L_a L_b$ | Block 4: Control Wrapped vs Cold (AWWA) |
-| 14 | Cold ($0$) | Control | $L_{ab}$ | Block 4: Control Wrapped vs Cold (AWWA) |
-| 15 | Wrapped ($2\pi$) | Control | $L_a L_b$ | Block 4: Control Wrapped vs Cold (AWWA) |
+| 0 | Hot ($\pi$) | Associator | $L_{ab}$ | Active Intervention (Hot Carryover) |
+| 1 | Cold ($0$) | Associator | $L_a L_b$ | **Cold Baseline Anchor 1** |
+| 2 | Wrapped ($2\pi$) | Associator | $L_a L_b$ | Active Intervention (Wrapped Optical Twin) |
+| 3 | Cold ($0$) | Associator | $L_{ab}$ | **Cold Baseline Anchor 2** |
+| 4 | Hot ($\pi$) | Associator | $L_a L_b$ | Active Intervention (Hot Carryover Replicate) |
+| 5 | Cold ($0$) | Associator | $L_{ab}$ | **Cold Baseline Anchor 3** |
+| 6 | Wrapped ($2\pi$) | Associator | $L_{ab}$ | Active Intervention (Wrapped Replicate) |
+| 7 | Cold ($0$) | Associator | $L_a L_b$ | **Cold Baseline Anchor 4** |
+| 8 | Hot ($\pi$) | Control | $L_{ab}$ | Active Intervention (Control Hot) |
+| 9 | Cold ($0$) | Control | $L_a L_b$ | **Cold Baseline Anchor 5** |
+| 10 | Wrapped ($2\pi$) | Control | $L_a L_b$ | Active Intervention (Control Wrapped) |
+| 11 | Cold ($0$) | Control | $L_{ab}$ | **Cold Baseline Anchor 6** |
+| 12 | Hot ($\pi$) | Control | $L_a L_b$ | Active Intervention (Control Hot Replicate) |
+| 13 | Cold ($0$) | Control | $L_{ab}$ | **Cold Baseline Anchor 7** |
+| 14 | Wrapped ($2\pi$) | Control | $L_{ab}$ | Active Intervention (Control Wrapped Replicate) |
+| 15 | Cold ($0$) | Control | $L_a L_b$ | **Cold Baseline Anchor 8** |
 
-### Drift cancellation properties
+### Algebraic non-linear drift cancellation & anchor tracking
 
-1. **Predecessor balance within blocks:**
-   - In Block 1: Hot has pairs $\{0, 3\}$ (mean 1.5); Cold has pairs $\{1, 2\}$ (mean 1.5).
-   - In Block 2: Wrapped has pairs $\{4, 7\}$ (mean 5.5); Cold has pairs $\{5, 6\}$ (mean 5.5).
-   Linear drift between Predecessors cancels to zero within each block.
+1. **Exact quadratic drift cancellation:**
+   Within each block, target routes $L_a L_b$ and $L_{ab}$ are assigned according to the Thue–Morse sequence:
+   - For Block 1 (Associator, Pairs 0..7):
+     $$\sum_{t \in L_a L_b} t = 1 + 2 + 4 + 7 = 14, \qquad \sum_{t \in L_{ab}} t = 0 + 3 + 5 + 6 = 14$$
+     $$\sum_{t \in L_a L_b} t^2 = 1 + 4 + 16 + 49 = 70, \qquad \sum_{t \in L_{ab}} t^2 = 0 + 9 + 25 + 36 = 70$$
+     Any arbitrary background polynomial drift $f_{\text{drift}}(t) = \beta_0 + \beta_1 t + \beta_2 t^2$ is algebraically
+     annihilated to **absolute zero** in the contrast $\Delta = D(L_a L_b) - D(L_{ab})$.
+   - For Block 2 (Quaternion Control, Pairs 8..15):
+     $$\sum_{t \in L_a L_b} t = 9 + 10 + 12 + 15 = 46, \qquad \sum_{t \in L_{ab}} t = 8 + 11 + 13 + 14 = 46$$
+     $$\sum_{t \in L_a L_b} t^2 = 81 + 100 + 144 + 225 = 550, \qquad \sum_{t \in L_{ab}} t^2 = 64 + 121 + 169 + 196 = 550$$
+     Quadratic drift cancellation holds identically for the control block.
 
-2. **Target balance across baseline:**
-   Across Blocks 1 & 2 under the shared Cold baseline:
-   - Target $L_a L_b$ is evaluated at pairs 2 and 5 (mean pair index = 3.5).
-   - Target $L_{ab}$ is evaluated at pairs 1 and 6 (mean pair index = 3.5).
-   Linear temporal drift between routes cancels exactly to zero under the baseline condition.
+2. **Anchor-based causal drift curve reconstruction:**
+   Every odd pair ($t = 1, 3, 5, 7, 9, 11, 13, 15$) is a Cold baseline anchor ($\theta_{\text{cold}} \equiv 0$).
+   Subtracting the known model route response $D_{\text{base}}$:
+   $$D_{\text{base}} = \begin{cases} +f(V) & \text{for Associator } L_a L_b \\ -f(V) & \text{for Associator } L_{ab} \\ -f(V) & \text{for Control } L_a L_b \text{ and } L_{ab} \end{cases}$$
+   isolates pure drift residuals $\hat{f}(t) = y_t - D_{\text{base}}$ across the run. Fitting a degree-2 polynomial
+   or regularized spline yields the continuous background trajectory $\hat{f}_{\text{drift}}(t)$, enabling
+   unbiased estimation of predecessor carryovers $\hat{\theta}_{\text{hot}}$ and $\hat{\theta}_{\text{wrapped}}$.
 
 ---
 
@@ -209,8 +219,8 @@ The job executes 16 pairs (32 iterations total):
 - **Processor:** `qpu:ascella` (12 modes, 132 Rx couplers, 126 phase shifters, 12 threshold detectors).
 - **Template circuit:** Fixed 34-parameter triangular mesh on modes 0..3; identity on modes 4..11.
 - **Iterations:** 32 (16 paired predecessor-target trials).
-- **Samples per iteration:** 2,048 samples ($N_{\text{total}} = 65,536$ samples).
-- **Shots per iteration:** 131,072 shots ($N_{\text{shots}} = 4,194,304$ shots max).
-- **Duration ceiling:** 300 seconds (estimated execution duration $\approx 93$ seconds).
-- **Credit ceiling:** Exactly **1.131072 credits** ($1 + 10^{-6} \times 131,072$).
+- **Samples per iteration:** 8,192 samples ($N_{\text{total}} = 262,144$ samples).
+- **Shots per iteration:** 524,288 shots ($2^{19}$ shots; aggregate cap $16,777,216$ shots).
+- **Duration ceiling:** 300 seconds (estimated execution duration $\approx 125$ seconds).
+- **Credit ceiling:** Exactly **1.524288 credits** ($1 + 10^{-6} \times 524,288$).
 - **Safety status:** Local simulation and validation complete; hardware submission remains locked pending authorized operator review.
