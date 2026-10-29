@@ -25,7 +25,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Quafu | BAQIS ScQ superconducting QPUs and a 10-qubit simulator | [quafu/README.md](notes/quafu/README.md) |
 | Origin Quantum | Wukong 180 QPU and four simulators; 60 s registration grant | [originquantum/README.md](notes/originquantum/README.md) |
 | Planck Technologies | account closed; audited SDK, key rejected and simulator returns random bits | [planck/README.md](notes/planck/README.md) |
-| AWS | free-plan project account; Braket unavailable; CLI, Agent Toolkit and pinned AWS MCP server | [aws/README.md](notes/aws/README.md) |
+| AWS | free-plan project; always-free bands, credit-metered usage, and the five $20 activity rewards; Braket unavailable | [aws/README.md](notes/aws/README.md) |
 | Azure | free-trial subscription; Quantum workspace with free Quantinuum, Pasqal and Rigetti emulator plans; 4-vCPU trial compute | [azure/README.md](notes/azure/README.md) |
 | QRNG seed sources | ANU, Outshift and Quandela draws for every new seed | [qrng/README.md](notes/qrng/README.md) |
 | Simulation | Kaggle CPU and GPU kernels, host Aer build | [kaggle/README.md](notes/kaggle/README.md) |
@@ -329,6 +329,7 @@ differs from it only in the `cd_core.py` digest.
 | File | Contents |
 |---|---|
 | [design/ascella-two-photon-associator-case.md](design/ascella-two-photon-associator-case.md) | written case for one qpu:ascella job: two photons through L_a L_b against L_(ab) (a = (e6+e7)/sqrt2, b = (e5+e7)/sqrt2) with a quaternion control; the associator appears only in two-photon interference; preregistered Delta endpoints, HOM-visibility model, credits, seconds and the HOM-floor decision |
+| [design/ascella-associator-thermal-seismograph.md](design/ascella-associator-thermal-seismograph.md) | written prospective case for one 32-iteration qpu:ascella job: two photons through octonion associator and quaternion control under counterbalanced Hot (pi), Cold (0), and Wrapped (2*pi) predecessor phase conditioning with 12-mode spatial sentinel monitoring |
 | [design/tuna-order-pilot-adversarial-admission.md](design/tuna-order-pilot-adversarial-admission.md) | descriptive pilot preregistration, adversarial findings and execution admission |
 | [design/hypercomplex-operator-evidence.md](design/hypercomplex-operator-evidence.md) | algebra falsifiers, operator encodings, library roles and device evidence |
 | [design/heron-idle-readout-attribution.md](design/heron-idle-readout-attribution.md) | own-partner, near-field and far-field split of the Kingston idle readout phase rate, by complementary reader classes |
@@ -337,6 +338,7 @@ differs from it only in the `cd_core.py` digest.
 | [evidence/submitted_circuits/README.md](evidence/submitted_circuits/README.md) | complete retained IBM job-input comparison and immutable replay successor |
 | [evidence/sedenion-clifford-envelope/README.md](evidence/sedenion-clifford-envelope/README.md) | exact eight-generator Cl(0,8) envelope spanning M16(R) |
 | [evidence/hypercomplex-operators/README.md](evidence/hypercomplex-operators/README.md) | exact replay, probability explorer and distribution inventory |
+| [evidence/ascella-associator-predecessor/README.md](evidence/ascella-associator-predecessor/README.md) | Ascella two-photon octonion associator predecessor-conditioning benchmark on qpu:ascella (job e13e5ed0): massive non-associative contrast (1.6127, > 204 sigma), strict physical null control (0.000136), in situ closure (-0.0447), fail-closed TOST thermal carryover, zero background drift, and spatial sentinel monitoring across modes 4..11 |
 | [design/et-rows.md](design/et-rows.md) | ET-row device experiment |
 | [design/measurement-sequence-pinching.md](design/measurement-sequence-pinching.md) | `measurement-sequence` and `measurement-sequence-diagnostic` families: N rotations each followed by a mid-circuit measurement against an elapsed-time-matched delay, ideal pinching law, endpoints, the preregistered decision rule with its model and Aer validation tables, the diagnostic that measures the gate-model scatter floor (qubit rule, floor rule, Aer validation), and Tuna-17 port |
 | [design/measurement-sequence-adaptive-envelope.md](design/measurement-sequence-adaptive-envelope.md) | calibration-adaptive approval envelope for the measurement-sequence family: layout rule re-applied at submit, 20 us repetition delay with a 50 us fallback, herald postselection, in-job gate-model floor, scaling to about 50 qubits |
