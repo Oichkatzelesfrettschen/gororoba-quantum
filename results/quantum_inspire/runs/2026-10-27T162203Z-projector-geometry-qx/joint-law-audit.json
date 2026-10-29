@@ -1,0 +1,179 @@
+{
+  "arithmetic": "deterministic Decimal at precision 50; 12-place diagnostic strings",
+  "circuits": [
+    {
+      "adjacent_equal_count": 38,
+      "adjacent_pairs": 2047,
+      "block_herald_counts": [
+        [
+          131,
+          129,
+          144
+        ],
+        [
+          135,
+          127,
+          128
+        ],
+        [
+          128,
+          140,
+          123
+        ],
+        [
+          123,
+          118,
+          136
+        ],
+        [
+          120,
+          125,
+          134
+        ],
+        [
+          113,
+          126,
+          132
+        ],
+        [
+          132,
+          132,
+          124
+        ],
+        [
+          127,
+          108,
+          115
+        ]
+      ],
+      "file": "geometry-z.cq",
+      "ideal_support_size": 128,
+      "iid_adjacent_equal_probability_decimal": "0.017578125000",
+      "impossible_outcomes": {},
+      "max_cell_absolute_deviation_decimal": "0.007994425294",
+      "normalization_decimal": "1.000000000000",
+      "observed_support_size": 119,
+      "raw_sha256": "50d4603a7b31ba0f22149b26228464b79330bdc67bc4fcceb9a1ceaeee44d2e3",
+      "shots": 2048,
+      "shots_lexicographically_sorted": false,
+      "total_variation_decimal": "0.081351602058"
+    },
+    {
+      "adjacent_equal_count": 263,
+      "adjacent_pairs": 2047,
+      "block_herald_counts": [
+        [
+          141,
+          116,
+          143
+        ],
+        [
+          125,
+          129,
+          128
+        ],
+        [
+          133,
+          130,
+          119
+        ],
+        [
+          129,
+          127,
+          138
+        ],
+        [
+          139,
+          122,
+          121
+        ],
+        [
+          124,
+          126,
+          131
+        ],
+        [
+          126,
+          139,
+          124
+        ],
+        [
+          122,
+          120,
+          120
+        ]
+      ],
+      "file": "mutation-z.cq",
+      "ideal_support_size": 8,
+      "iid_adjacent_equal_probability_decimal": "0.125000000000",
+      "impossible_outcomes": {},
+      "max_cell_absolute_deviation_decimal": "0.006835937500",
+      "normalization_decimal": "1.000000000000",
+      "observed_support_size": 8,
+      "raw_sha256": "43459bf6d6e4bc00a041b376aa64c42bedca7882123ff4b9a775ace5a7cfb301",
+      "shots": 2048,
+      "shots_lexicographically_sorted": false,
+      "total_variation_decimal": "0.016601562500"
+    },
+    {
+      "adjacent_equal_count": 36,
+      "adjacent_pairs": 2047,
+      "block_herald_counts": [
+        [
+          135,
+          146,
+          128
+        ],
+        [
+          109,
+          117,
+          144
+        ],
+        [
+          133,
+          140,
+          125
+        ],
+        [
+          127,
+          134,
+          116
+        ],
+        [
+          126,
+          119,
+          135
+        ],
+        [
+          117,
+          130,
+          140
+        ],
+        [
+          126,
+          142,
+          132
+        ],
+        [
+          130,
+          131,
+          136
+        ]
+      ],
+      "file": "geometry-x.cq",
+      "ideal_support_size": 128,
+      "iid_adjacent_equal_probability_decimal": "0.017578125000",
+      "impossible_outcomes": {},
+      "max_cell_absolute_deviation_decimal": "0.011412394044",
+      "normalization_decimal": "1.000000000000",
+      "observed_support_size": 118,
+      "raw_sha256": "cb04efd1a68301106a2321a5a7e039feb5a69f4597d011425d50c9f498424258",
+      "shots": 2048,
+      "shots_lexicographically_sorted": false,
+      "total_variation_decimal": "0.098872232426"
+    }
+  ],
+  "interpretation": "Supplemental full-law and shot-order diagnostics, not preregistered significance tests or proof of IID shots.",
+  "producer_sha256": "6fe7de482c6bac52aa2b32feb5232cdae5aff9576a5bb89ad86cb20aef0fe355",
+  "schema": "qi-projector-joint-law-audit-v1"
+}

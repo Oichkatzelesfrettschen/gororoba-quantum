@@ -1,0 +1,35 @@
+{
+  "final_reviewed_files": {
+    "docs/evidence/tuna-projector-geometry/early-label-map-analysis.json": "5093dcda0011f164a3a22427ec7c287d0b7b6bc2f5d15c20782f311020d21008",
+    "docs/evidence/tuna-projector-geometry/early-label-map-analysis.md": "c70f8fec3e0d35b7d798df4546afa5f4022b49f4a22d99d118b03dd11bfd8583",
+    "scripts/qi_tuna_early_label_maps.py": "271486a916177ad96d5f5203c2c5c4233e14312542b8954abd7abd3050f789af",
+    "tests/scripts/test_qi_tuna_early_label_maps.py": "4459b45f4bd859c2a73460c272c9d934da09169b13ae06a608f3679ab258667b"
+  },
+  "finding": "Initial regression-family exhaustiveness finding closed in focused follow-up.",
+  "initial_reviewed_test_sha256": "b7123903e8d68666ee1ed2132df38c674121476a1e8ce7ded99a4aa9526defe5",
+  "model": "gpt-daybreak-blue-latest",
+  "observed_utc": "2026-10-28T02:31:53.693630+00:00",
+  "provider_access": "unrun by reviewer",
+  "reasoning_effort": "high",
+  "reports": [
+    {
+      "kind": "initial",
+      "raw_sha256": "cd6568b300f263ffb34ba526d5a11be104ba0072b0b9f4ed75705fc6a223f11d",
+      "report": "docs/archive/reviews/tuna-early-label-map-review.md",
+      "retained_sha256": "cd6568b300f263ffb34ba526d5a11be104ba0072b0b9f4ed75705fc6a223f11d"
+    },
+    {
+      "kind": "followup",
+      "raw_sha256": "780f686e9f34b116512d6a7836e1758d757a9d2816244105ce17d4fcd5da3a26",
+      "report": "docs/archive/reviews/tuna-early-label-map-followup-review.md",
+      "retained_sha256": "780f686e9f34b116512d6a7836e1758d757a9d2816244105ce17d4fcd5da3a26"
+    }
+  ],
+  "reviewed_revision": "55b6dcb8861be4fe8ec8f8f38a3fa1844755d346",
+  "reviewer_pytest": "unrun: read-only sandbox lacked writable temporary storage",
+  "sanitization": "Reports contained repository-relative paths and required no modification.",
+  "schema": "qi-tuna-early-label-review-v1",
+  "service_tier": "default",
+  "session": "01a17e38-6428-7eb3-b233-d8fbf9cc47b8",
+  "verdict": "bounded-pass"
+}

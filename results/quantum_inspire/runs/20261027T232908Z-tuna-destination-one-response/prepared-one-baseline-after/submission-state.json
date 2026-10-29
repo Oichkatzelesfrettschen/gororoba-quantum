@@ -1,0 +1,58 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-27T23:47:45.888368+00:00",
+ "approval": "3 more jobs are approved and then you can do the QI\u2019s per-job acquisition mapping, thresholds, schedules and retained IQ. Further hardware requires a new case that accounts for the measured queue waits. Exact separate nominal-one packet:b0bb0ef6497a2a57b9478a9174d786e5b0945dbc3ce4a66042ce4123d3eafd25. Three jobs only; no retries.",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "fc88c1fd2d3cdef71d96f00c1f5a873541070cef36cbcaccbffe4af1ab5efcf5",
+ "shots": 4096,
+ "jobs": [
+  {
+   "file": "baseline-after.cq",
+   "job": 1620614,
+   "sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f"
+  }
+ ],
+ "created_resources": [
+  {
+   "circuit_file": "baseline-after.cq",
+   "algorithm": 1645509,
+   "commit": 1639623,
+   "file": 1631231,
+   "job": 1620614
+  }
+ ],
+ "project": 796025,
+ "batch_job": 896316,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-27T23:47:47.454936+00:00",
+  "approval": "3 more jobs are approved and then you can do the QI\u2019s per-job acquisition mapping, thresholds, schedules and retained IQ. Further hardware requires a new case that accounts for the measured queue waits. Exact separate nominal-one packet:b0bb0ef6497a2a57b9478a9174d786e5b0945dbc3ce4a66042ce4123d3eafd25. Three jobs only; no retries.",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "fc88c1fd2d3cdef71d96f00c1f5a873541070cef36cbcaccbffe4af1ab5efcf5",
+  "backend_status_at_submit": "executing",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 896316,
+  "project": 796025,
+  "shots": 4096,
+  "jobs": [
+   {
+    "file": "baseline-after.cq",
+    "job": 1620614,
+    "sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f"
+   }
+  ],
+  "submitted_utc": "2026-10-27T23:47:47.658321+00:00"
+ },
+ "confirmed_utc": "2026-10-27T23:47:47.658321+00:00"
+}

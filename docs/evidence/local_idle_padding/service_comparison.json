@@ -1,0 +1,138 @@
+{
+ "backend": "ibm_kingston",
+ "dynamic_members": [
+  "n21_encoded_feedback",
+  "n21_encoded_no_feedback"
+ ],
+ "idle_replay": {
+  "path": "results/live/2026-10-18T090603.530638Z/idle-replay.json",
+  "sha256": "218790a98f99de9835fe219061e11a004908ea0809df3c88bea1b4688ac7bd6c"
+ },
+ "members": 2,
+ "members_refused": {},
+ "prep_excitation": 0.014393,
+ "replicas": [
+  {
+   "alap_inserted_dt": {
+    "0": 14206,
+    "1": 6516,
+    "2": 14352,
+    "3": 7401,
+    "4": 14641,
+    "5": 7389,
+    "6": 15235
+   },
+   "alap_padded_law": [
+    0.272080777261,
+    0.254132857166,
+    0.224224152037,
+    0.249562213535
+   ],
+   "alap_padded_tvd": 0.012885848,
+   "alap_to_service_tvd": 4.7748e-05,
+   "inserted_dt": {
+    "0": 14587,
+    "1": 6557,
+    "2": 13771,
+    "3": 6897,
+    "4": 14779,
+    "5": 6885,
+    "6": 15233
+   },
+   "local_padded_law": [
+    0.275373372395,
+    0.254336378091,
+    0.221545117298,
+    0.248745132216
+   ],
+   "local_padded_tvd": 0.01576975,
+   "local_to_service_tvd": 0.003448368,
+   "member": "n21_encoded_feedback",
+   "replica": 0,
+   "service_inserted_dt": {
+    "104": 14323,
+    "105": 6651,
+    "106": 14486,
+    "117": 7535,
+    "124": 14757,
+    "125": 7769,
+    "126": 15351
+   },
+   "service_padded_tvd": 0.012925277,
+   "unpadded_law": [
+    0.278878425072,
+    0.255289109152,
+    0.215530528076,
+    0.2503019377
+   ],
+   "unpadded_to_service_unpadded_tvd": 0.0,
+   "unpadded_tvd": 0.021579472
+  },
+  {
+   "alap_inserted_dt": {
+    "0": 14563,
+    "1": 6974,
+    "2": 14734,
+    "3": 7630,
+    "4": 15094,
+    "5": 7520,
+    "6": 15476
+   },
+   "alap_padded_law": [
+    0.2719168177,
+    0.254460697521,
+    0.224386149634,
+    0.249236335145
+   ],
+   "alap_padded_tvd": 0.015757515,
+   "alap_to_service_tvd": 1.0838e-05,
+   "inserted_dt": {
+    "0": 14944,
+    "1": 7015,
+    "2": 14153,
+    "3": 7126,
+    "4": 15232,
+    "5": 7016,
+    "6": 15474
+   },
+   "local_padded_law": [
+    0.275552256245,
+    0.256976324357,
+    0.221359795664,
+    0.246111623734
+   ],
+   "local_padded_tvd": 0.021908581,
+   "local_to_service_tvd": 0.006144324,
+   "member": "n21_encoded_no_feedback",
+   "replica": 0,
+   "service_inserted_dt": {
+    "104": 14569,
+    "105": 6980,
+    "106": 14739,
+    "117": 7635,
+    "124": 15099,
+    "125": 7771,
+    "126": 15481
+   },
+   "service_padded_tvd": 0.015764257,
+   "unpadded_law": [
+    0.279046727866,
+    0.23977012851,
+    0.215360923986,
+    0.265822219638
+   ],
+   "unpadded_to_service_unpadded_tvd": 0.0,
+   "unpadded_tvd": 0.027348948
+  }
+ ],
+ "run": "results/live/2026-10-18T090603.530638Z",
+ "schema": "local-idle-padding-service-comparison-v1",
+ "versions": {
+  "numpy": "2.5.4",
+  "qiskit": "2.6.0",
+  "qiskit_aer": "0.17.2"
+ },
+ "widths": [
+  7
+ ]
+}

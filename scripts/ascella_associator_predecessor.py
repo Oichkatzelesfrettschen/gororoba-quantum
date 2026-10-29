@@ -298,6 +298,7 @@ def build_pair_settings(item: tuple[int, dict[str, Any]]) -> list[dict[str, Any]
 def build_documents(
     samples_per_iteration: int = DEFAULT_SAMPLES_PER_ITERATION,
     shots_factor: int = DEFAULT_SHOTS_FACTOR,
+    job_name: str = "job-00",
 ) -> dict[str, bytes]:
     if samples_per_iteration <= 0:
         raise ValueError(f"samples_per_iteration must be positive integer, got {samples_per_iteration}")
@@ -316,10 +317,23 @@ def build_documents(
     shots_per_iteration = samples_per_iteration * shots_factor
     credit_ceiling = 1.0 + 1e-6 * shots_per_iteration
 
+    if samples_per_iteration == DEFAULT_SAMPLES_PER_ITERATION and len(flat_settings) == 32:
+        est_seconds = 126.0
+        duration_bounds = [93.0, 186.0]
+        sec_per_iter = 3.0
+    else:
+        sample_scale = samples_per_iteration / float(DEFAULT_SAMPLES_PER_ITERATION)
+        sec_per_iter = round(3.0 * sample_scale, 2)
+        est_seconds = round(30.0 + len(flat_settings) * sec_per_iter, 1)
+        duration_bounds = [
+            round(est_seconds * 0.8, 1),
+            round(min(float(MAX_DURATION), est_seconds * 1.25), 1),
+        ]
+
     manifest = {
         "schema": "qd-hypercomplex-cases-v1",
         "family": "ascella_associator_predecessor_seismograph",
-        "job": "job-00",
+        "job": job_name,
         "platforms": ["qpu:ascella", "sim:ascella"],
         "command": "sample_count",
         "gate_form": "template",
@@ -334,9 +348,9 @@ def build_documents(
         "credit_ceiling": round(credit_ceiling, 6),
         "timing_model": {
             "overhead_seconds": 30.0,
-            "seconds_per_iteration": 3.0,
-            "estimated_duration_seconds": 126.0,
-            "duration_bounds_seconds": [93.0, 186.0],
+            "seconds_per_iteration": sec_per_iter,
+            "estimated_duration_seconds": est_seconds,
+            "duration_bounds_seconds": duration_bounds,
             "max_duration": MAX_DURATION,
         },
         "tariff": {
@@ -524,14 +538,17 @@ def check() -> int:
 def build_case(
     samples: int = DEFAULT_SAMPLES_PER_ITERATION,
     shots_factor: int = DEFAULT_SHOTS_FACTOR,
+    job_name: str = "job-00",
+    case_dir: Path | None = None,
 ) -> int:
-    CASE_DIR.mkdir(parents=True, exist_ok=True)
-    docs = build_documents(samples_per_iteration=samples, shots_factor=shots_factor)
+    target_dir = case_dir or (ROOT / f"results/quandela/cases/ascella_associator_predecessor/{job_name}")
+    target_dir.mkdir(parents=True, exist_ok=True)
+    docs = build_documents(samples_per_iteration=samples, shots_factor=shots_factor, job_name=job_name)
     for name, data in docs.items():
-        (CASE_DIR / name).write_bytes(data)
+        (target_dir / name).write_bytes(data)
     manifest = json.loads(docs["cases.json"].decode())
     print(
-        f"Wrote {len(docs)} files to {CASE_DIR} (samples={manifest['samples_per_iteration']}, "
+        f"Wrote {len(docs)} files to {target_dir} (job={job_name}, samples={manifest['samples_per_iteration']}, "
         f"shots={manifest['shots_per_iteration']}, credits={manifest['credit_ceiling']})"
     )
     return 0
@@ -540,9 +557,12 @@ def build_case(
 def dry_run(
     samples: int = DEFAULT_SAMPLES_PER_ITERATION,
     shots_factor: int = DEFAULT_SHOTS_FACTOR,
+    job_name: str = "job-00",
+    case_dir: Path | None = None,
 ) -> int:
     """Execute local simulation across all 32 iterations using SLOS / two-click laws to verify end-to-end pipeline."""
-    docs = build_documents(samples_per_iteration=samples, shots_factor=shots_factor)
+    target_dir = case_dir or (ROOT / f"results/quandela/cases/ascella_associator_predecessor/{job_name}")
+    docs = build_documents(samples_per_iteration=samples, shots_factor=shots_factor, job_name=job_name)
     manifest = json.loads(docs["cases.json"].decode())
     circuit = json.loads(docs["circuit.json"].decode())
     _, settings = template_experiment(manifest, circuit)
@@ -590,7 +610,7 @@ def dry_run(
             }
         )
 
-    mock_run_dir = CASE_DIR / "dry_run_simulation"
+    mock_run_dir = target_dir / "dry_run_simulation"
     mock_run_dir.mkdir(parents=True, exist_ok=True)
     (mock_run_dir / "cases.json").write_bytes(docs["cases.json"])
     (mock_run_dir / "results.json").write_text(json.dumps({"iterations": simulated_iterations}, indent=2))
@@ -1005,6 +1025,8 @@ def main() -> None:
     parser.add_argument("--check", action="store_true", help="verify identities, circuits, and simulation")
     parser.add_argument("--build", action="store_true", help="build and write case files to results/")
     parser.add_argument("--dry-run", action="store_true", help="execute local Perceval simulation and test analysis")
+    parser.add_argument("--job", default="job-00", help="job identifier (e.g. job-00, job-01)")
+    parser.add_argument("--case-dir", type=Path, default=None, help="case directory override")
     parser.add_argument("--samples", type=int, default=DEFAULT_SAMPLES_PER_ITERATION, help="samples per iteration")
     parser.add_argument("--shots-factor", type=int, default=DEFAULT_SHOTS_FACTOR, help="shots per sample multiplier")
     parser.add_argument("--drift-degree", type=int, default=2, help="polynomial degree for anchor drift model")
@@ -1014,9 +1036,23 @@ def main() -> None:
     if args.check:
         sys.exit(check())
     elif args.build:
-        sys.exit(build_case(samples=args.samples, shots_factor=args.shots_factor))
+        sys.exit(
+            build_case(
+                samples=args.samples,
+                shots_factor=args.shots_factor,
+                job_name=args.job,
+                case_dir=args.case_dir,
+            )
+        )
     elif args.dry_run:
-        sys.exit(dry_run(samples=args.samples, shots_factor=args.shots_factor))
+        sys.exit(
+            dry_run(
+                samples=args.samples,
+                shots_factor=args.shots_factor,
+                job_name=args.job,
+                case_dir=args.case_dir,
+            )
+        )
     elif args.analyze:
         print(json.dumps(analyze(args.analyze, drift_degree=args.drift_degree), indent=2))
     else:

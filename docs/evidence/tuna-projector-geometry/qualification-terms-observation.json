@@ -1,0 +1,21 @@
+{
+  "observed_utc": "2026-10-27T16:54:35.588418+00:00",
+  "scope": "Public terms only; noncommercial scientific qualification within the existing approved case",
+  "pages": [
+    {
+      "url": "https://www.quantum-inspire.com/faq/",
+      "html_sha256": "142d0cb81d14b9f15eea4d9b8677794f1e6052b1edf8e0d21e760821d705426c",
+      "excerpt": "You are not allowed to have more than 3 jobs in the queue for a hardware backend, in order to provide equal access opportunities for everybody. (Attempts of) abuse will lead to removal of your account. The status of the execution is automatically refreshed in your web browser every 30 seconds. On most browsers clicking F5 will actively refresh your browser and results status. Including overhead a typical quantum-only job on a hardware backend takes 30 to 90 seconds. There may be other jobs before you in the queue which will add to the waiting time. A hybrid job, including both classical and quantum parts may take up to 15 minutes or longer to"
+    },
+    {
+      "url": "https://www.quantum-inspire.com/kbase/managing-your-account/",
+      "html_sha256": "b1bf5c0db808902b3e8404a1d706a9e12fef3f09c149d2239134d9c66202df92",
+      "excerpt": "With this free account you can access our hardware backends, emulator backends and have storage for your jobs and results! Creating an account Creating an account can be done by clicking on the MyQI button which brings you to our quantum compute domain where you can sign up for an account using your email address or using one of the selected authentication providers. Log in to your account Simply click on My QI to log in to your account. The login screen also provides a link to reset your password if you have lost it. When using the QI tool , you can login through the Command Line Interface (CLI). Managing newsletters As a Quantum Inspire reg"
+    },
+    {
+      "url": "https://www.quantum-inspire.com/terms-and-conditions/",
+      "html_sha256": "098e2ef0d6fc563ed3481beaba3894f23544735dda90ddf37c6fa753767753c2",
+      "excerpt": "If you are a commercial user or have the intent to use the output of the system for later commercial purposes, you are NOT entitled to free use of this QI service. Please contact the support@quantum-inspire.com . Commercial use is: any use by organizations outside of QuTech (TU Delft) and TNO for own commercial purposes, contract research for third parties etc. It shall be solely up to QuTech (TU Delft) to decide what qualifies as commercial use. Commercial use must be notified to QI and requires prior written permission. Part of the written permission will be a written agreement indemnifying QuTech (TU Delft) and its partner organizations fr"
+    }
+  ]
+}

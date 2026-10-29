@@ -1,0 +1,10 @@
+{
+  "campaign_sha256": "53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76",
+  "decision_sha256": "6c0beac3dfa4148ba6330a8eddc45faebfa15693de8e5127f8f9b94138a71367",
+  "observed_utc": "2026-10-27T19:47:42.405731+00:00",
+  "schema": "qi-owner-case-approval-v1",
+  "scope": "Six serial Tuna-17 destination-response jobs,4096shots each,24576total,1800executionseconds aggregate ceiling,zero expected credits,descriptive response objective only. No retries.",
+  "terms_sha256": "e3702947c77cd23a6d1de2cd20d3da59ea7ae01a656ddaac692f3fdba3345931",
+  "user_text": "approved!",
+  "written_case_sha256": "a78a7fb77589f945bec1b91636998859bfbc32960f95747fb71dc4bcadfd4057"
+}

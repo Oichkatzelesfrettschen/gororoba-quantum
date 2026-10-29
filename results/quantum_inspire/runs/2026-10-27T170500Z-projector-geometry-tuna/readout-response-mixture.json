@@ -1,0 +1,922 @@
+{
+  "analysis_class": "POSTHOC sensitivity analysis; empirical control-response segment fit",
+  "arithmetic": "Exact Fraction arithmetic; twelve-place Decimal strings are display values only",
+  "cell_bit_order": "early outcome first, terminal outcome second",
+  "cell_order": [
+    "00",
+    "01",
+    "10",
+    "11"
+  ],
+  "fit_rule": "L2 projection onto zero-to-one empirical response line, clipped to the closed interval [0,1]",
+  "frozen_qualification_passed": false,
+  "inputs": {
+    "approval.json": "2579fd818c81a3ee048c4f7a3e43fc06af731fa16af6c4a86a9bbbe25047d22e",
+    "backend.json": "8cd1a963b17e7d9ea02610d4df474ff80217818a5c1de2d02df1df8b28b8ef82",
+    "cases.json": "d9a41a677a2a4bff4e2d3f4e10c4db2017d41ba1ee910da67960333d151dcfb2",
+    "geometry.cq": "069fc4696b40610d4eb963b1898aec24603fe0839d6ea17b868196fc7e5dfe8f",
+    "live-admission.json": "c6db70139af4d05b9a18d134372d437f320c9d177d8f29134197d74dc67b9d66",
+    "qualification.json": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399",
+    "raw/geometry.cq.json": "a1cfeccfd9ed11e6d6815aa60ecd5b7a8a728321ab76e3b9ae2719f12c5ac76d",
+    "raw/readout-one.cq.json": "c29371f841252c112f915e9ae2a8648159cb01fcafe84480862c19f47b9940b8",
+    "raw/readout-zero.cq.json": "9723bba44c56cceb925ccf09e8c8ed93d1abe91cba1bc5b9ab1f1ebae5066922",
+    "readout-one.cq": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f",
+    "readout-zero.cq": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267",
+    "results.json": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615",
+    "submission.json": "15dcea7dc8f89b2bc1874fbc73ea4e3b55dcd89cf4232fee6a66a5d3e5f08f46"
+  },
+  "interpretation": "The fitted parameter is a segment coordinate, not an identified population. Small descriptive residuals do not establish context transfer, shot independence, a physical mechanism, or qualification. Prepared-zero and prepared-one controls differ on all spectators; geometry includes gates and B-plus preparation. Interpreting the coordinate as population requires additional unverified response-transfer assumptions. This analysis cannot repair or replace the frozen qualification verdict.",
+  "producer_sha256": "08594b9cd02b120b523774d719cdb6cc081ad5a440a39d237c72d2e853b77564",
+  "qualification_validator_sha256": "ec1ee8e8cfa09c0beec0e8730b18a935a378a1360c2d1bdfb508cfcbd6dd9b3e",
+  "qubits": [
+    {
+      "clipped_to_segment": false,
+      "counts": {
+        "geometry": [
+          1277,
+          384,
+          986,
+          1449
+        ],
+        "prepared_one": [
+          103,
+          747,
+          172,
+          3074
+        ],
+        "prepared_zero": [
+          2370,
+          32,
+          1667,
+          27
+        ]
+      },
+      "early_classical_bit": 17,
+      "fit_status": "unique_segment_projection",
+      "fitted_joint_probabilities": [
+        {
+          "decimal": "0.318140311924",
+          "denominator": 1098863872,
+          "numerator": 349592895
+        },
+        {
+          "decimal": "0.089964318733",
+          "denominator": 8790910976,
+          "numerator": 790868317
+        },
+        {
+          "decimal": "0.235210437251",
+          "denominator": 17581821952,
+          "numerator": 4135428029
+        },
+        {
+          "decimal": "0.356684932092",
+          "denominator": 17581821952,
+          "numerator": 6271170969
+        }
+      ],
+      "fitted_residual": {
+        "max_cell_absolute_residual": {
+          "decimal": "0.006372733799",
+          "denominator": 17581821952,
+          "numerator": 112044271
+        },
+        "signed_cell_residuals": [
+          {
+            "decimal": "-0.006372733799",
+            "denominator": 17581821952,
+            "numerator": -112044271
+          },
+          {
+            "decimal": "0.003785681267",
+            "denominator": 8790910976,
+            "numerator": 33279587
+          },
+          {
+            "decimal": "0.005512218999",
+            "denominator": 17581821952,
+            "numerator": 96914853
+          },
+          {
+            "decimal": "-0.002925166467",
+            "denominator": 4395455488,
+            "numerator": -12857439
+          }
+        ],
+        "squared_l2_residual": {
+          "decimal": "0.000093884276",
+          "denominator": 36007571357696,
+          "numerator": 3380544763
+        },
+        "total_variation": {
+          "decimal": "0.009297900266",
+          "denominator": 17581821952,
+          "numerator": 163474027
+        }
+      },
+      "fitted_segment_coordinate": {
+        "decimal": "0.470620768575",
+        "denominator": 4292437,
+        "numerator": 2020110
+      },
+      "half_mixture_joint_probabilities": [
+        {
+          "decimal": "0.301879882812",
+          "denominator": 8192,
+          "numerator": 2473
+        },
+        {
+          "decimal": "0.095092773438",
+          "denominator": 8192,
+          "numerator": 779
+        },
+        {
+          "decimal": "0.224487304688",
+          "denominator": 8192,
+          "numerator": 1839
+        },
+        {
+          "decimal": "0.378540039062",
+          "denominator": 8192,
+          "numerator": 3101
+        }
+      ],
+      "half_mixture_residual": {
+        "max_cell_absolute_residual": {
+          "decimal": "0.024780273438",
+          "denominator": 8192,
+          "numerator": 203
+        },
+        "signed_cell_residuals": [
+          {
+            "decimal": "0.009887695312",
+            "denominator": 8192,
+            "numerator": 81
+          },
+          {
+            "decimal": "-0.001342773438",
+            "denominator": 8192,
+            "numerator": -11
+          },
+          {
+            "decimal": "0.016235351562",
+            "denominator": 8192,
+            "numerator": 133
+          },
+          {
+            "decimal": "-0.024780273438",
+            "denominator": 8192,
+            "numerator": -203
+          }
+        ],
+        "squared_l2_residual": {
+          "decimal": "0.000977218151",
+          "denominator": 16777216,
+          "numerator": 16395
+        },
+        "total_variation": {
+          "decimal": "0.026123046875",
+          "denominator": 4096,
+          "numerator": 107
+        }
+      },
+      "marginal_affine_weights": {
+        "early": {
+          "affine_weight_unclipped": {
+            "decimal": "0.477448453608",
+            "denominator": 1552,
+            "numerator": 741
+          },
+          "control_contrast": {
+            "decimal": "0.378906250000",
+            "denominator": 256,
+            "numerator": 97
+          },
+          "geometry_one_rate": {
+            "decimal": "0.594482421875",
+            "denominator": 4096,
+            "numerator": 2435
+          },
+          "one_control_one_rate": {
+            "decimal": "0.792480468750",
+            "denominator": 2048,
+            "numerator": 1623
+          },
+          "status": "defined",
+          "zero_control_one_rate": {
+            "decimal": "0.413574218750",
+            "denominator": 2048,
+            "numerator": 847
+          }
+        },
+        "terminal": {
+          "affine_weight_unclipped": {
+            "decimal": "0.471557682084",
+            "denominator": 1881,
+            "numerator": 887
+          },
+          "control_contrast": {
+            "decimal": "0.918457031250",
+            "denominator": 2048,
+            "numerator": 1881
+          },
+          "geometry_one_rate": {
+            "decimal": "0.447509765625",
+            "denominator": 4096,
+            "numerator": 1833
+          },
+          "one_control_one_rate": {
+            "decimal": "0.932861328125",
+            "denominator": 4096,
+            "numerator": 3821
+          },
+          "status": "defined",
+          "zero_control_one_rate": {
+            "decimal": "0.014404296875",
+            "denominator": 4096,
+            "numerator": 59
+          }
+        }
+      },
+      "physical_qubit": 4,
+      "probabilities": {
+        "geometry": [
+          {
+            "decimal": "0.311767578125",
+            "denominator": 4096,
+            "numerator": 1277
+          },
+          {
+            "decimal": "0.093750000000",
+            "denominator": 32,
+            "numerator": 3
+          },
+          {
+            "decimal": "0.240722656250",
+            "denominator": 2048,
+            "numerator": 493
+          },
+          {
+            "decimal": "0.353759765625",
+            "denominator": 4096,
+            "numerator": 1449
+          }
+        ],
+        "prepared_one": [
+          {
+            "decimal": "0.025146484375",
+            "denominator": 4096,
+            "numerator": 103
+          },
+          {
+            "decimal": "0.182373046875",
+            "denominator": 4096,
+            "numerator": 747
+          },
+          {
+            "decimal": "0.041992187500",
+            "denominator": 1024,
+            "numerator": 43
+          },
+          {
+            "decimal": "0.750488281250",
+            "denominator": 2048,
+            "numerator": 1537
+          }
+        ],
+        "prepared_zero": [
+          {
+            "decimal": "0.578613281250",
+            "denominator": 2048,
+            "numerator": 1185
+          },
+          {
+            "decimal": "0.007812500000",
+            "denominator": 128,
+            "numerator": 1
+          },
+          {
+            "decimal": "0.406982421875",
+            "denominator": 4096,
+            "numerator": 1667
+          },
+          {
+            "decimal": "0.006591796875",
+            "denominator": 4096,
+            "numerator": 27
+          }
+        ]
+      },
+      "projection_denominator": {
+        "decimal": "1.023396730423",
+        "denominator": 4194304,
+        "numerator": 4292437
+      },
+      "projection_numerator": {
+        "decimal": "0.481631755829",
+        "denominator": 2097152,
+        "numerator": 1010055
+      },
+      "terminal_classical_bit": 4,
+      "unconstrained_segment_coordinate": {
+        "decimal": "0.470620768575",
+        "denominator": 4292437,
+        "numerator": 2020110
+      }
+    },
+    {
+      "clipped_to_segment": false,
+      "counts": {
+        "geometry": [
+          102,
+          1202,
+          2105,
+          687
+        ],
+        "prepared_one": [
+          124,
+          2462,
+          177,
+          1333
+        ],
+        "prepared_zero": [
+          46,
+          11,
+          3937,
+          102
+        ]
+      },
+      "early_classical_bit": 18,
+      "fit_status": "unique_segment_projection",
+      "fitted_joint_probabilities": [
+        {
+          "decimal": "0.020487172010",
+          "denominator": 22186440704,
+          "numerator": 454537427
+        },
+        {
+          "decimal": "0.293559645479",
+          "denominator": 44372881408,
+          "numerator": 13026087335
+        },
+        {
+          "decimal": "0.514961073204",
+          "denominator": 44372881408,
+          "numerator": 22850306631
+        },
+        {
+          "decimal": "0.170992109307",
+          "denominator": 11093220352,
+          "numerator": 1896853147
+        }
+      ],
+      "fitted_residual": {
+        "max_cell_absolute_residual": {
+          "decimal": "0.004415171740",
+          "denominator": 11093220352,
+          "numerator": 48978473
+        },
+        "signed_cell_residuals": [
+          {
+            "decimal": "0.004415171740",
+            "denominator": 11093220352,
+            "numerator": 48978473
+          },
+          {
+            "decimal": "-0.000102614229",
+            "denominator": 44372881408,
+            "numerator": -4553289
+          },
+          {
+            "decimal": "-0.001045057579",
+            "denominator": 5546610176,
+            "numerator": -5796527
+          },
+          {
+            "decimal": "-0.003267499932",
+            "denominator": 44372881408,
+            "numerator": -144988387
+          }
+        ],
+        "squared_l2_residual": {
+          "decimal": "0.000031272972",
+          "denominator": 90875661123584,
+          "numerator": 2841952035
+        },
+        "total_variation": {
+          "decimal": "0.004415171740",
+          "denominator": 11093220352,
+          "numerator": 48978473
+        }
+      },
+      "fitted_segment_coordinate": {
+        "decimal": "0.486095596851",
+        "denominator": 10833223,
+        "numerator": 5265982
+      },
+      "half_mixture_joint_probabilities": [
+        {
+          "decimal": "0.020751953125",
+          "denominator": 4096,
+          "numerator": 85
+        },
+        {
+          "decimal": "0.301879882812",
+          "denominator": 8192,
+          "numerator": 2473
+        },
+        {
+          "decimal": "0.502197265625",
+          "denominator": 4096,
+          "numerator": 2057
+        },
+        {
+          "decimal": "0.175170898438",
+          "denominator": 8192,
+          "numerator": 1435
+        }
+      ],
+      "half_mixture_residual": {
+        "max_cell_absolute_residual": {
+          "decimal": "0.011718750000",
+          "denominator": 256,
+          "numerator": 3
+        },
+        "signed_cell_residuals": [
+          {
+            "decimal": "0.004150390625",
+            "denominator": 4096,
+            "numerator": 17
+          },
+          {
+            "decimal": "-0.008422851562",
+            "denominator": 8192,
+            "numerator": -69
+          },
+          {
+            "decimal": "0.011718750000",
+            "denominator": 256,
+            "numerator": 3
+          },
+          {
+            "decimal": "-0.007446289062",
+            "denominator": 8192,
+            "numerator": -61
+          }
+        ],
+        "squared_l2_residual": {
+          "decimal": "0.000280946493",
+          "denominator": 33554432,
+          "numerator": 9427
+        },
+        "total_variation": {
+          "decimal": "0.015869140625",
+          "denominator": 4096,
+          "numerator": 65
+        }
+      },
+      "marginal_affine_weights": {
+        "early": {
+          "affine_weight_unclipped": {
+            "decimal": "0.493080268881",
+            "denominator": 2529,
+            "numerator": 1247
+          },
+          "control_contrast": {
+            "decimal": "-0.617431640625",
+            "denominator": 4096,
+            "numerator": -2529
+          },
+          "geometry_one_rate": {
+            "decimal": "0.681640625000",
+            "denominator": 512,
+            "numerator": 349
+          },
+          "one_control_one_rate": {
+            "decimal": "0.368652343750",
+            "denominator": 2048,
+            "numerator": 755
+          },
+          "status": "defined",
+          "zero_control_one_rate": {
+            "decimal": "0.986083984375",
+            "denominator": 4096,
+            "numerator": 4039
+          }
+        },
+        "terminal": {
+          "affine_weight_unclipped": {
+            "decimal": "0.482346550788",
+            "denominator": 1841,
+            "numerator": 888
+          },
+          "control_contrast": {
+            "decimal": "0.898925781250",
+            "denominator": 2048,
+            "numerator": 1841
+          },
+          "geometry_one_rate": {
+            "decimal": "0.461181640625",
+            "denominator": 4096,
+            "numerator": 1889
+          },
+          "one_control_one_rate": {
+            "decimal": "0.926513671875",
+            "denominator": 4096,
+            "numerator": 3795
+          },
+          "status": "defined",
+          "zero_control_one_rate": {
+            "decimal": "0.027587890625",
+            "denominator": 4096,
+            "numerator": 113
+          }
+        }
+      },
+      "physical_qubit": 11,
+      "probabilities": {
+        "geometry": [
+          {
+            "decimal": "0.024902343750",
+            "denominator": 2048,
+            "numerator": 51
+          },
+          {
+            "decimal": "0.293457031250",
+            "denominator": 2048,
+            "numerator": 601
+          },
+          {
+            "decimal": "0.513916015625",
+            "denominator": 4096,
+            "numerator": 2105
+          },
+          {
+            "decimal": "0.167724609375",
+            "denominator": 4096,
+            "numerator": 687
+          }
+        ],
+        "prepared_one": [
+          {
+            "decimal": "0.030273437500",
+            "denominator": 1024,
+            "numerator": 31
+          },
+          {
+            "decimal": "0.601074218750",
+            "denominator": 2048,
+            "numerator": 1231
+          },
+          {
+            "decimal": "0.043212890625",
+            "denominator": 4096,
+            "numerator": 177
+          },
+          {
+            "decimal": "0.325439453125",
+            "denominator": 4096,
+            "numerator": 1333
+          }
+        ],
+        "prepared_zero": [
+          {
+            "decimal": "0.011230468750",
+            "denominator": 2048,
+            "numerator": 23
+          },
+          {
+            "decimal": "0.002685546875",
+            "denominator": 4096,
+            "numerator": 11
+          },
+          {
+            "decimal": "0.961181640625",
+            "denominator": 4096,
+            "numerator": 3937
+          },
+          {
+            "decimal": "0.024902343750",
+            "denominator": 2048,
+            "numerator": 51
+          }
+        ]
+      },
+      "projection_denominator": {
+        "decimal": "1.291420817375",
+        "denominator": 8388608,
+        "numerator": 10833223
+      },
+      "projection_numerator": {
+        "decimal": "0.627753973007",
+        "denominator": 4194304,
+        "numerator": 2632991
+      },
+      "terminal_classical_bit": 11,
+      "unconstrained_segment_coordinate": {
+        "decimal": "0.486095596851",
+        "denominator": 10833223,
+        "numerator": 5265982
+      }
+    },
+    {
+      "clipped_to_segment": false,
+      "counts": {
+        "geometry": [
+          154,
+          870,
+          695,
+          2377
+        ],
+        "prepared_one": [
+          56,
+          1195,
+          182,
+          2663
+        ],
+        "prepared_zero": [
+          298,
+          445,
+          1328,
+          2025
+        ]
+      },
+      "early_classical_bit": 19,
+      "fit_status": "unique_segment_projection",
+      "fitted_joint_probabilities": [
+        {
+          "decimal": "0.039859879674",
+          "denominator": 599404544,
+          "numerator": 23892193
+        },
+        {
+          "decimal": "0.210586875364",
+          "denominator": 299702272,
+          "numerator": 63113365
+        },
+        {
+          "decimal": "0.168447863819",
+          "denominator": 599404544,
+          "numerator": 100968415
+        },
+        {
+          "decimal": "0.581105381143",
+          "denominator": 299702272,
+          "numerator": 174158603
+        }
+      ],
+      "fitted_residual": {
+        "max_cell_absolute_residual": {
+          "decimal": "0.002262223424",
+          "denominator": 599404544,
+          "numerator": 1355987
+        },
+        "signed_cell_residuals": [
+          {
+            "decimal": "-0.002262223424",
+            "denominator": 599404544,
+            "numerator": -1355987
+          },
+          {
+            "decimal": "0.001815468386",
+            "denominator": 74925568,
+            "numerator": 136025
+          },
+          {
+            "decimal": "0.001229870556",
+            "denominator": 299702272,
+            "numerator": 368595
+          },
+          {
+            "decimal": "-0.000783115518",
+            "denominator": 599404544,
+            "numerator": -469403
+          }
+        ],
+        "squared_l2_residual": {
+          "decimal": "0.000010539432",
+          "denominator": 1227580506112,
+          "numerator": 12938001
+        },
+        "total_variation": {
+          "decimal": "0.003045338942",
+          "denominator": 299702272,
+          "numerator": 912695
+        }
+      },
+      "fitted_segment_coordinate": {
+        "decimal": "0.556751788655",
+        "denominator": 292678,
+        "numerator": 162949
+      },
+      "half_mixture_joint_probabilities": [
+        {
+          "decimal": "0.043212890625",
+          "denominator": 4096,
+          "numerator": 177
+        },
+        {
+          "decimal": "0.200195312500",
+          "denominator": 1024,
+          "numerator": 205
+        },
+        {
+          "decimal": "0.184326171875",
+          "denominator": 4096,
+          "numerator": 755
+        },
+        {
+          "decimal": "0.572265625000",
+          "denominator": 512,
+          "numerator": 293
+        }
+      ],
+      "half_mixture_residual": {
+        "max_cell_absolute_residual": {
+          "decimal": "0.014648437500",
+          "denominator": 1024,
+          "numerator": 15
+        },
+        "signed_cell_residuals": [
+          {
+            "decimal": "-0.005615234375",
+            "denominator": 4096,
+            "numerator": -23
+          },
+          {
+            "decimal": "0.012207031250",
+            "denominator": 2048,
+            "numerator": 25
+          },
+          {
+            "decimal": "-0.014648437500",
+            "denominator": 1024,
+            "numerator": -15
+          },
+          {
+            "decimal": "0.008056640625",
+            "denominator": 4096,
+            "numerator": 33
+          }
+        ],
+        "squared_l2_residual": {
+          "decimal": "0.000460028648",
+          "denominator": 8388608,
+          "numerator": 3859
+        },
+        "total_variation": {
+          "decimal": "0.020263671875",
+          "denominator": 4096,
+          "numerator": 83
+        }
+      },
+      "marginal_affine_weights": {
+        "early": {
+          "affine_weight_unclipped": {
+            "decimal": "0.553149606299",
+            "denominator": 508,
+            "numerator": 281
+          },
+          "control_contrast": {
+            "decimal": "-0.124023437500",
+            "denominator": 1024,
+            "numerator": -127
+          },
+          "geometry_one_rate": {
+            "decimal": "0.750000000000",
+            "denominator": 4,
+            "numerator": 3
+          },
+          "one_control_one_rate": {
+            "decimal": "0.694580078125",
+            "denominator": 4096,
+            "numerator": 2845
+          },
+          "status": "defined",
+          "zero_control_one_rate": {
+            "decimal": "0.818603515625",
+            "denominator": 4096,
+            "numerator": 3353
+          }
+        },
+        "terminal": {
+          "affine_weight_unclipped": {
+            "decimal": "0.559798270893",
+            "denominator": 1388,
+            "numerator": 777
+          },
+          "control_contrast": {
+            "decimal": "0.338867187500",
+            "denominator": 1024,
+            "numerator": 347
+          },
+          "geometry_one_rate": {
+            "decimal": "0.792724609375",
+            "denominator": 4096,
+            "numerator": 3247
+          },
+          "one_control_one_rate": {
+            "decimal": "0.941894531250",
+            "denominator": 2048,
+            "numerator": 1929
+          },
+          "status": "defined",
+          "zero_control_one_rate": {
+            "decimal": "0.603027343750",
+            "denominator": 2048,
+            "numerator": 1235
+          }
+        }
+      },
+      "physical_qubit": 6,
+      "probabilities": {
+        "geometry": [
+          {
+            "decimal": "0.037597656250",
+            "denominator": 2048,
+            "numerator": 77
+          },
+          {
+            "decimal": "0.212402343750",
+            "denominator": 2048,
+            "numerator": 435
+          },
+          {
+            "decimal": "0.169677734375",
+            "denominator": 4096,
+            "numerator": 695
+          },
+          {
+            "decimal": "0.580322265625",
+            "denominator": 4096,
+            "numerator": 2377
+          }
+        ],
+        "prepared_one": [
+          {
+            "decimal": "0.013671875000",
+            "denominator": 512,
+            "numerator": 7
+          },
+          {
+            "decimal": "0.291748046875",
+            "denominator": 4096,
+            "numerator": 1195
+          },
+          {
+            "decimal": "0.044433593750",
+            "denominator": 2048,
+            "numerator": 91
+          },
+          {
+            "decimal": "0.650146484375",
+            "denominator": 4096,
+            "numerator": 2663
+          }
+        ],
+        "prepared_zero": [
+          {
+            "decimal": "0.072753906250",
+            "denominator": 2048,
+            "numerator": 149
+          },
+          {
+            "decimal": "0.108642578125",
+            "denominator": 4096,
+            "numerator": 445
+          },
+          {
+            "decimal": "0.324218750000",
+            "denominator": 256,
+            "numerator": 83
+          },
+          {
+            "decimal": "0.494384765625",
+            "denominator": 4096,
+            "numerator": 2025
+          }
+        ]
+      },
+      "projection_denominator": {
+        "decimal": "0.139559745789",
+        "denominator": 1048576,
+        "numerator": 146339
+      },
+      "projection_numerator": {
+        "decimal": "0.077700138092",
+        "denominator": 2097152,
+        "numerator": 162949
+      },
+      "terminal_classical_bit": 6,
+      "unconstrained_segment_coordinate": {
+        "decimal": "0.556751788655",
+        "denominator": 292678,
+        "numerator": 162949
+      }
+    }
+  ],
+  "residual_rule": "TV is one half the sum of absolute differences of normalized four-cell tables",
+  "schema": "qi-tuna-readout-response-mixture-v1",
+  "shots_per_arm": 4096,
+  "statistical_boundary": "Descriptive fitted residuals only; no uncertainty intervals, IID claim, or test verdict"
+}

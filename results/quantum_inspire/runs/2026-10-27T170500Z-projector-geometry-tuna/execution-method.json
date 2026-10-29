@@ -1,0 +1,16 @@
+{
+  "entrypoint": "qi_platform.submit",
+  "backend_type_id": 7,
+  "expected_cases_sha256": "d9a41a677a2a4bff4e2d3f4e10c4db2017d41ba1ee910da67960333d151dcfb2",
+  "precondition": "Fresh qi_projector_live_admission.observe returned admitted=true and empty failures",
+  "heartbeat_max_age_seconds": 120,
+  "account_lock": "qi_platform.submit holds SUBMIT_LOCK and rechecks account hardware pause and current-user queue",
+  "collection": {
+    "entrypoint": "qi_platform.collect",
+    "poll_seconds": 15,
+    "timeout_seconds": 3600
+  },
+  "compiler_replay_receipt_sha256": "38664edb8cba002b15ca4d40bbbcacbf6b7b76302717e2b6b022eaec50a91661",
+  "platform_source_sha256": "d53b201e9a1268a5c7a4ab5af36807e90573e38c6842eae85dff9b6fb010669b",
+  "preparation_revision": "b69ab17"
+}

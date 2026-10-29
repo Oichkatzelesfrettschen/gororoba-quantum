@@ -1,0 +1,305 @@
+{
+ "schema": "qi-tuna-destination-one-locked-admission-v1",
+ "observed_utc": "2026-10-27T23:47:45.693319+00:00",
+ "cases_sha256": "fc88c1fd2d3cdef71d96f00c1f5a873541070cef36cbcaccbffe4af1ab5efcf5",
+ "runner_sha256": "e5b105b5690b378330cc7899c44757d389af75b3b3afc56953cf7d0d5a03afce",
+ "submission_helper_sha256": "a6ddc8bd3c3287c5319649cda47c754ece0b64c9dae51e297516a721b24a889a",
+ "boundary": "Observations under the account submit lock; provider state can change afterward.",
+ "admitted": true,
+ "failures": [],
+ "backend": {
+  "id": 7,
+  "identifier": "tuna_17",
+  "nqubits": 17,
+  "is_hardware": true,
+  "supports_raw_data": true,
+  "protocol_version": 2,
+  "job_execution_time_limit": 300.0,
+  "max_jobs_per_batch_job": 5,
+  "max_number_of_shots": 131072,
+  "batchjobs_per_queue_limit": 5,
+  "default_compiler_config": {
+   "mapping": [],
+   "routing": [],
+   "optimization": [],
+   "decomposition": [
+    {
+     "path": "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+     "method": "decompose",
+     "arguments": {}
+    },
+    {
+     "path": "opensquirrel.passes.decomposer.CZDecomposer",
+     "method": "decompose",
+     "arguments": {}
+    }
+   ]
+  }
+ },
+ "enabled": true,
+ "status": "executing",
+ "topology": [
+  [
+   0,
+   1
+  ],
+  [
+   1,
+   0
+  ],
+  [
+   0,
+   2
+  ],
+  [
+   2,
+   0
+  ],
+  [
+   4,
+   1
+  ],
+  [
+   1,
+   4
+  ],
+  [
+   4,
+   2
+  ],
+  [
+   2,
+   4
+  ],
+  [
+   4,
+   7
+  ],
+  [
+   7,
+   4
+  ],
+  [
+   4,
+   8
+  ],
+  [
+   8,
+   4
+  ],
+  [
+   5,
+   2
+  ],
+  [
+   2,
+   5
+  ],
+  [
+   5,
+   3
+  ],
+  [
+   3,
+   5
+  ],
+  [
+   5,
+   8
+  ],
+  [
+   8,
+   5
+  ],
+  [
+   5,
+   9
+  ],
+  [
+   9,
+   5
+  ],
+  [
+   6,
+   3
+  ],
+  [
+   3,
+   6
+  ],
+  [
+   6,
+   9
+  ],
+  [
+   9,
+   6
+  ],
+  [
+   10,
+   7
+  ],
+  [
+   7,
+   10
+  ],
+  [
+   10,
+   13
+  ],
+  [
+   13,
+   10
+  ],
+  [
+   11,
+   7
+  ],
+  [
+   7,
+   11
+  ],
+  [
+   11,
+   8
+  ],
+  [
+   8,
+   11
+  ],
+  [
+   11,
+   13
+  ],
+  [
+   13,
+   11
+  ],
+  [
+   11,
+   14
+  ],
+  [
+   14,
+   11
+  ],
+  [
+   12,
+   8
+  ],
+  [
+   8,
+   12
+  ],
+  [
+   12,
+   9
+  ],
+  [
+   9,
+   12
+  ],
+  [
+   12,
+   14
+  ],
+  [
+   14,
+   12
+  ],
+  [
+   12,
+   15
+  ],
+  [
+   15,
+   12
+  ],
+  [
+   16,
+   14
+  ],
+  [
+   14,
+   16
+  ],
+  [
+   16,
+   15
+  ],
+  [
+   15,
+   16
+  ]
+ ],
+ "gateset": [
+  "I",
+  "Rx",
+  "X",
+  "X90",
+  "mX90",
+  "Ry",
+  "Y",
+  "Y90",
+  "mY90",
+  "Rz",
+  "Z",
+  "S",
+  "T",
+  "Sdag",
+  "Tdag",
+  "H",
+  "CZ",
+  "init",
+  "measure",
+  "reset",
+  "barrier",
+  "wait"
+ ],
+ "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+ "required_edges": [
+  [
+   1,
+   4
+  ],
+  [
+   4,
+   8
+  ],
+  [
+   13,
+   11
+  ],
+  [
+   11,
+   14
+  ],
+  [
+   3,
+   6
+  ],
+  [
+   6,
+   9
+  ]
+ ],
+ "instances": [
+  {
+   "status": "executing",
+   "last_heartbeat": "2026-10-27T23:47:38.527698Z",
+   "age_seconds": 7.165621
+  }
+ ],
+ "heartbeat_max_age_seconds": 120,
+ "queue_user_only": true,
+ "queued_batches": 0,
+ "hardware_pause_left_seconds": 0,
+ "account_transaction_rows": 0,
+ "all_transaction_changes_zero": true,
+ "limits": {
+  "batch_circuits": 1,
+  "shots_per_circuit": 4096,
+  "account_hardware_queued_batches": 1,
+  "hardware_pause_seconds": 30
+ }
+}

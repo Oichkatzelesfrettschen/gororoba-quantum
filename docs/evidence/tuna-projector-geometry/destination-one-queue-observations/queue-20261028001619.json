@@ -1,0 +1,26 @@
+{
+  "request_started_utc": "2026-10-28T00:16:18.238920+00:00",
+  "retrieved_utc": "2026-10-28T00:16:19.367375+00:00",
+  "enabled": true,
+  "status": "executing",
+  "queue_user_only": false,
+  "queue": {
+    "number_of_jobs_in_queue": 26,
+    "min_wait_time_in_queue_secs": 21,
+    "avg_wait_time_in_queue_secs": 1103,
+    "max_wait_time_in_queue_secs": 1904
+  },
+  "backend_instances": [
+    {
+      "id": 7,
+      "name": "Tuna-17",
+      "location": "TU Delft",
+      "backend_type_id": 7,
+      "status": "executing",
+      "message": {
+        "content": ""
+      },
+      "last_heartbeat": "2026-10-28T00:16:17.993635Z"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "codex-campaign-review-v1",
+  "reviewed_head": "f6e4ef6c570f68dabf68b7b7c0a234d89b25ba74",
+  "model": "gpt-daybreak-blue-latest",
+  "reasoning_effort": "high",
+  "cli_version": "0.164.0",
+  "session": "01a17e38-6428-7eb3-b233-d8fbf9cc47b8",
+  "exit_code": 0,
+  "original_review_sha256": "b36d83d095c51605c9ba2af54a25542eb9bb20bc236819124e108999fdfe17c5",
+  "original_correction_sha256": "6305069bb3578e69d2d31b861459ec0273a56aa521cd4975c5c91ba296b84cc5",
+  "retained_review_sha256": "442b4bff87a85764764b072dac1258ed4a9e004ef2e18132ae8c58c064d0c244",
+  "transformation": "Absolute workspace links converted to relative repository links; correction and disposition prepended. Trailing whitespace removed.",
+  "admission_review_original_sha256": "4fe73ba3f144112816d146c68e46b99225bed0a634f311cb67fa640a65fbd0c0",
+  "admission_review_exit_code": 0
+}
