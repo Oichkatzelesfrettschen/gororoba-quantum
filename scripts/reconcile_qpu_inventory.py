@@ -226,6 +226,28 @@ def actor_anchor_path(run: Path) -> Path:
     )
 
 
+def retention_family(run: Path, *, allow_recovered: bool = False) -> str:
+    """Select only known acquisition schemas or the uncollected retrospective archive."""
+    record_path = run / "record.json"
+    if not record_path.is_file():
+        require(
+            allow_recovered and not (run / "collect.json").exists() and not (run / "actor-case.json").exists(),
+            "run record is missing",
+        )
+        return "recovered"
+    record = read(record_path)
+    require(isinstance(record, dict), "run record must be an object")
+    schema = record.get("schema_version")
+    configuration = record.get("family_configuration")
+    family_name = configuration.get("name") if isinstance(configuration, dict) else None
+    actor_marker = (run / "actor-case.json").exists() or "reviewed_record_sha256" in record
+    if schema == "readout-actor-run-v1" and family_name == "readout-actor":
+        return "actor"
+    if type(schema) is int and schema in (6, 7) and family_name != "readout-actor" and not actor_marker:
+        return "legacy"
+    raise ValueError("unsupported or inconsistent retention record schema")
+
+
 def actor_collection(run: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, str]]:
     """Read immutable actor anchors outside the analyzed run, independently retained by its operator."""
     record_path = run / "record.json"
@@ -324,12 +346,75 @@ def actor_collection(run: Path) -> tuple[dict[str, Any], dict[str, Any], dict[st
     return record, collection, sources
 
 
+def actor_pub_evidence(task: tuple[Any, ...]) -> tuple[dict[str, str], set[str]]:
+    """Verify one independent PUB against its frozen manifest and indexed evidence."""
+    from readout_sparse_receipt import verify_and_project
+
+    position, pub, expected, directory, case, immutable_bytes, archive, shots, root = task
+    sources: dict[str, str] = {}
+    supplemental: set[str] = set()
+    require(
+        pub["name"] == expected["name"] and pub["pub_index"] == position,
+        "actor retained PUB attribution differs",
+    )
+    inputs = {}
+    for field, prefix, maximum in (
+        ("receipt_file", "receipt", 1024 * 1024),
+        ("manifest_file", "projection", 4 * 1024 * 1024),
+        ("index_file", "index", 4 * 1024 * 1024),
+    ):
+        name = pub[field]
+        require(
+            isinstance(name, str) and bool(re.fullmatch(prefix + r"-[0-9a-f]{64}\.json", name)),
+            "actor supplemental filename differs",
+        )
+        path = directory / name
+        inputs[field] = actor_bytes(path, maximum)
+        checksum = hashlib.sha256(inputs[field]).hexdigest()
+        require(checksum == name[len(prefix) + 1 : -5], "actor supplemental digest differs")
+        sources[str(path.relative_to(root))] = checksum
+        supplemental.add(name)
+    index_bytes = inputs["index_file"]
+    require(
+        index_bytes == immutable_bytes,
+        "actor immutable acquisition snapshot differs",
+    )
+    expected_manifest = {
+        "schema": "readout-sparse-projection-v1",
+        "condition": expected["name"],
+        "pub_name": expected["name"],
+        "pub_index": position,
+        "registers": {"c": case["width"]},
+        "bits": [
+            {"register": "c", "index": bit, "logical": bit, "physical": bit, "prepared": value}
+            for bit, value in enumerate(expected["prepared_bits"])
+        ],
+        "pairs": case["pairs"],
+        "groups": case["groups"],
+    }
+    require(
+        json.loads(inputs["manifest_file"]) == expected_manifest,
+        "actor projection differs from the frozen preparation or mapping",
+    )
+    projected = verify_and_project(
+        actor_bytes(directory / f"pub_{position:02d}.json", 256 * 1024 * 1024),
+        index_bytes,
+        archive,
+        inputs["manifest_file"],
+        inputs["receipt_file"],
+        pub["receipt_sha256"],
+    )
+    require(
+        projected == pub["result"] and projected["projection"]["num_shots"] == shots,
+        "actor sparse projection or shot denominator differs",
+    )
+    return sources, supplemental
+
+
 def actor_job_evidence(
     job: dict[str, Any], run: Path, charge: Decimal
 ) -> tuple[dict[str, Any], dict[str, str], set[str]]:
     """Verify a recorded actor receipt graph without requiring historical source bytes to match today's tree."""
-    from readout_sparse_receipt import verify_and_project
-
     record, collection, sources = actor_collection(run)
     identity = job["job_id"]
     require(
@@ -379,62 +464,13 @@ def actor_job_evidence(
                 and digest(directory / name) == checksum,
                 "actor indexed raw artifact differs",
             )
-        for position, (pub, expected) in enumerate(zip(entry["pubs"], submitted["pubs"], strict=True)):
-            require(
-                pub["name"] == expected["name"] and pub["pub_index"] == position,
-                "actor retained PUB attribution differs",
-            )
-            inputs = {}
-            for field, prefix, maximum in (
-                ("receipt_file", "receipt", 1024 * 1024),
-                ("manifest_file", "projection", 4 * 1024 * 1024),
-                ("index_file", "index", 4 * 1024 * 1024),
-            ):
-                name = pub[field]
-                require(
-                    isinstance(name, str) and bool(re.fullmatch(prefix + r"-[0-9a-f]{64}\.json", name)),
-                    "actor supplemental filename differs",
-                )
-                path = directory / name
-                inputs[field] = actor_bytes(path, maximum)
-                checksum = hashlib.sha256(inputs[field]).hexdigest()
-                require(checksum == name[len(prefix) + 1 : -5], "actor supplemental digest differs")
-                sources[str(path.relative_to(ROOT))] = checksum
-                supplemental.add(name)
-            index_bytes = inputs["index_file"]
-            require(
-                index_bytes == immutable_bytes,
-                "actor immutable acquisition snapshot differs",
-            )
-            expected_manifest = {
-                "schema": "readout-sparse-projection-v1",
-                "condition": expected["name"],
-                "pub_name": expected["name"],
-                "pub_index": position,
-                "registers": {"c": case["width"]},
-                "bits": [
-                    {"register": "c", "index": bit, "logical": bit, "physical": bit, "prepared": value}
-                    for bit, value in enumerate(expected["prepared_bits"])
-                ],
-                "pairs": case["pairs"],
-                "groups": case["groups"],
-            }
-            require(
-                json.loads(inputs["manifest_file"]) == expected_manifest,
-                "actor projection differs from the frozen preparation or mapping",
-            )
-            projected = verify_and_project(
-                actor_bytes(directory / f"pub_{position:02d}.json", 256 * 1024 * 1024),
-                index_bytes,
-                archive,
-                inputs["manifest_file"],
-                inputs["receipt_file"],
-                pub["receipt_sha256"],
-            )
-            require(
-                projected == pub["result"] and projected["projection"]["num_shots"] == job["shots_per_pub"],
-                "actor sparse projection or shot denominator differs",
-            )
+        tasks = [
+            (position, pub, expected, directory, case, immutable_bytes, archive, job["shots_per_pub"], ROOT)
+            for position, (pub, expected) in enumerate(zip(entry["pubs"], submitted["pubs"], strict=True))
+        ]
+        for pub_sources, pub_supplemental in ordered_map(actor_pub_evidence, tasks, min_items=1):
+            sources.update(pub_sources)
+            supplemental.update(pub_supplemental)
     else:
         require(job["status"] in FAILED_STATUSES and not entry["pubs"], "failed actor job carries invented PUBs")
     return collection, sources, supplemental
@@ -445,7 +481,7 @@ def failed_row(job: dict[str, Any], run: Path | None, charge: Decimal) -> dict[s
     identity = job["job_id"]
     if run is None:
         raise ValueError(f"failed job {identity} has no collection naming it")
-    if read(run / "record.json").get("schema_version") == "readout-actor-run-v1":
+    if retention_family(run) == "actor":
         collection, sources, _ = actor_job_evidence(job, run, charge)
         return {
             **job,
@@ -506,9 +542,7 @@ def archived_row(task: tuple[dict[str, Any], Path, Decimal]) -> dict[str, Any]:
     run = directory.parent.parent
     index = read(index_path)
     sources = {str(index_path.relative_to(ROOT)): digest(index_path)}
-    actor = (run / "record.json").is_file() and read(run / "record.json").get(
-        "schema_version"
-    ) == "readout-actor-run-v1"
+    actor = retention_family(run, allow_recovered=True) == "actor"
     supplemental: set[str] = set()
     actor_data = None
     if actor:
@@ -793,9 +827,7 @@ def main() -> int:
                 "retention preflight is a separate offline verification mode",
             )
             run = arguments.retention_preflight.resolve()
-            record_path = run / "record.json"
-            record = read(record_path) if record_path.is_file() else {}
-            if record.get("schema_version") == "readout-actor-run-v1":
+            if retention_family(run) == "actor":
                 arguments.actor_run = run
             else:
                 require((run / "collect.json").is_file(), "run has no collected evidence")

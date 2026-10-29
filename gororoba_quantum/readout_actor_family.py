@@ -419,6 +419,8 @@ def plan(runtime: Any, service: Any, case: dict[str, Any]) -> tuple[dict[str, An
     ]
     calibration = runtime.calibration_values(circuits, snapshot.backend.target, snapshot.properties)
     source_hashes = sources()
+    identity = runtime.reported_identity(snapshot.backend)
+    summary = snapshot.summary() | identity
     record = {
         "schema_version": SCHEMA,
         "schema_contract": "full-PUB prepared-bit ideals and descriptive sparse projection",
@@ -454,11 +456,13 @@ def plan(runtime: Any, service: Any, case: dict[str, Any]) -> tuple[dict[str, An
                 "calibration": snapshot.calibration,
                 "calibration_fingerprint": calibration,
                 "replicas": [{"physical_qubits": list(range(case["width"]))}],
+                **identity,
             }
         ],
         "execution_pubs": [pub_manifest(case, row) for row in case["allocations"]],
         "qpy_sha256": digest(archive),
-        "backends": {case["backend"]: snapshot.summary()},
+        "backends": {case["backend"]: summary},
+        "system_inventory": {case["backend"]: {"eligibility": "eligible", **summary}},
         "inference": dict(DESCRIPTIVE_INFERENCE),
     }
     return record, archive, snapshot
@@ -690,6 +694,43 @@ def _verify_indexed_files(directory: Path, index_bytes: bytes, job_id: str, pub_
             raise ValueError(f"indexed acquisition file {name} differs from its retained digest")
 
 
+def collect_pub(task: tuple[Any, ...]) -> tuple[dict[str, Any], bytes, bytes]:
+    """Build one sparse receipt and projection without mutating shared evidence."""
+    directory, job_id, pub_index, name, case, allocation, index_bytes, index_name, archive = task
+    manifest_bytes = encode(projection_manifest(case, allocation, pub_index))
+    raw_name = f"pub_{pub_index:02d}.json"
+    raw_bytes = (directory / raw_name).read_bytes()
+    receipt = {
+        "schema": "readout-sparse-receipt-v1",
+        "family": "actor-reporter",
+        "job_id": job_id,
+        "pub_index": pub_index,
+        "pub_name": name,
+        "circuit_name": name,
+        "raw_pub_filename": raw_name,
+        "raw_pub_sha256": digest(raw_bytes),
+        "raw_index_sha256": digest(index_bytes),
+        "qpy_sha256": digest(archive),
+        "manifest_sha256": digest(manifest_bytes),
+    }
+    receipt_bytes = encode(receipt)
+    projection = verify_and_project(
+        raw_bytes, index_bytes, archive, manifest_bytes, receipt_bytes, digest(receipt_bytes)
+    )
+    if projection["projection"]["num_shots"] != allocation["shots"]:
+        raise ValueError("provider shots differ from the approved allocation")
+    row = {
+        "name": name,
+        "pub_index": pub_index,
+        "index_file": index_name,
+        "receipt_file": f"receipt-{digest(receipt_bytes)}.json",
+        "receipt_sha256": digest(receipt_bytes),
+        "manifest_file": f"projection-{digest(manifest_bytes)}.json",
+        "result": projection,
+    }
+    return row, manifest_bytes, receipt_bytes
+
+
 def collect(runtime: Any, service: Any, run_dir: Path, record_sha256: str | None) -> dict[str, Any]:
     """Retain full raw PUBs and immutable index snapshots before sparse projection."""
     record_bytes = _read_anchored(run_dir / "record.json", record_sha256)
@@ -740,6 +781,11 @@ def collect(runtime: Any, service: Any, run_dir: Path, record_sha256: str | None
             runtime._write_text_atomically(run_dir / "actor-collect.partial.json", encode(output).decode())
             if job.job_id() != job_id or job.backend().name != entry["backend"]:
                 raise ValueError("provider job or backend identity differs from the actor ledger")
+            try:
+                backend = service.backend(entry["backend"])
+            except Exception:  # noqa: BLE001 - backend discovery failures leave identity unknown
+                backend = None
+            output["jobs"][job_id]["backend_identity"] = runtime.execution_identity(backend, {})
             output["jobs"][job_id]["status"] = str(job.status())
             if output["jobs"][job_id]["status"] != "DONE":
                 runtime._write_text_atomically(run_dir / "actor-collect.partial.json", encode(output).decode())
@@ -747,51 +793,32 @@ def collect(runtime: Any, service: Any, run_dir: Path, record_sha256: str | None
             result = job.result()
             if len(result) != len(entry["pubs"]):
                 raise ValueError("provider PUB count differs from the actor ledger")
+            windows = runtime.pub_windows(result, len(entry["pubs"]))
+            properties_at = {}
+            for window in windows.windows:
+                if window is None or window[0] in properties_at:
+                    continue
+                try:
+                    properties_at[window[0]] = backend.properties(datetime=window[0])
+                except Exception:  # noqa: BLE001 - unavailable historical properties remain explicit nulls
+                    properties_at[window[0]] = None
+            output["jobs"][job_id]["backend_identity"] = runtime.execution_identity(backend, properties_at)
             names = [row["name"] for row in entry["pubs"]]
             runtime.write_raw_result(run_dir, job_id, job, result, names)
             directory = run_dir / "raw" / job_id
             index_bytes = (directory / "acquisition-index.json").read_bytes()
             index_name = f"index-{digest(index_bytes)}.json"
             runtime._write_once_atomically(directory / index_name, index_bytes.decode())
-            for pub_index, name in enumerate(names):
-                manifest_bytes = encode(projection_manifest(case, allocations[name], pub_index))
-                raw_name = f"pub_{pub_index:02d}.json"
-                raw_bytes = (directory / raw_name).read_bytes()
-                receipt = {
-                    "schema": "readout-sparse-receipt-v1",
-                    "family": "actor-reporter",
-                    "job_id": job_id,
-                    "pub_index": pub_index,
-                    "pub_name": name,
-                    "circuit_name": name,
-                    "raw_pub_filename": raw_name,
-                    "raw_pub_sha256": digest(raw_bytes),
-                    "raw_index_sha256": digest(index_bytes),
-                    "qpy_sha256": digest(archive),
-                    "manifest_sha256": digest(manifest_bytes),
-                }
-                receipt_bytes = encode(receipt)
-                projection = verify_and_project(
-                    raw_bytes, index_bytes, archive, manifest_bytes, receipt_bytes, digest(receipt_bytes)
-                )
-                if projection["projection"]["num_shots"] != allocations[name]["shots"]:
-                    raise ValueError("provider shots differ from the approved allocation")
-                receipt_name = f"receipt-{digest(receipt_bytes)}.json"
-                manifest_name = f"projection-{digest(manifest_bytes)}.json"
-                runtime._write_once_atomically(directory / receipt_name, receipt_bytes.decode())
-                runtime._write_once_atomically(directory / manifest_name, manifest_bytes.decode())
-                output["jobs"][job_id]["pubs"].append(
-                    {
-                        "name": name,
-                        "pub_index": pub_index,
-                        "index_file": index_name,
-                        "receipt_file": receipt_name,
-                        "receipt_sha256": digest(receipt_bytes),
-                        "manifest_file": manifest_name,
-                        "result": projection,
-                    }
-                )
+            tasks = [
+                (directory, job_id, pub_index, name, case, allocations[name], index_bytes, index_name, archive)
+                for pub_index, name in enumerate(names)
+            ]
+            for row, manifest_bytes, receipt_bytes in parallel.ordered_map(collect_pub, tasks, min_items=1):
+                runtime._write_once_atomically(directory / row["receipt_file"], receipt_bytes.decode())
+                runtime._write_once_atomically(directory / row["manifest_file"], manifest_bytes.decode())
+                output["jobs"][job_id]["pubs"].append(row)
             output["jobs"][job_id]["usage"] = runtime.job_usage_record(job, len(entry["pubs"]), entry["shots"])
+            runtime.snapshot_metrics(run_dir, job_id, job)
         except Exception as error:
             output["jobs"][job_id]["collection_error_type"] = type(error).__name__
             runtime._write_text_atomically(run_dir / "actor-collect.partial.json", encode(output).decode())
@@ -808,6 +835,26 @@ def collect(runtime: Any, service: Any, run_dir: Path, record_sha256: str | None
     runtime._write_once_atomically(path, data.decode())
     print(f"actor collection: {path} sha256={digest(data)}")
     return output | {"path": str(path)}
+
+
+def adjudicate_pub(task: tuple[Path, dict[str, Any], bytes]) -> tuple[dict[str, Any], bytes]:
+    """Replay one indexed PUB without mutating the retained acquisition."""
+    directory, pub, archive = task
+    for field in ("receipt_file", "manifest_file", "index_file"):
+        if Path(pub[field]).name != pub[field] or pub[field] in (".", ".."):
+            raise ValueError("collection artifact must name one local file")
+    index_bytes = (directory / pub["index_file"]).read_bytes()
+    result = verify_and_project(
+        (directory / f"pub_{pub['pub_index']:02d}.json").read_bytes(),
+        index_bytes,
+        archive,
+        (directory / pub["manifest_file"]).read_bytes(),
+        (directory / pub["receipt_file"]).read_bytes(),
+        pub["receipt_sha256"],
+    )
+    if result != pub["result"]:
+        raise ValueError("replayed projection differs from the anchored collection")
+    return result, index_bytes
 
 
 def adjudicate(runtime: Any, run_dir: Path, collection_sha256: str | None) -> dict[str, Any]:
@@ -843,19 +890,8 @@ def adjudicate(runtime: Any, run_dir: Path, collection_sha256: str | None) -> di
         directory = run_dir / "raw" / job_id
         rows = []
         checked_index: str | None = None
-        for pub in job["pubs"]:
-            for field in ("receipt_file", "manifest_file", "index_file"):
-                if Path(pub[field]).name != pub[field] or pub[field] in (".", ".."):
-                    raise ValueError("collection artifact must name one local file")
-            index_bytes = (directory / pub["index_file"]).read_bytes()
-            result = verify_and_project(
-                (directory / f"pub_{pub['pub_index']:02d}.json").read_bytes(),
-                index_bytes,
-                archive,
-                (directory / pub["manifest_file"]).read_bytes(),
-                (directory / pub["receipt_file"]).read_bytes(),
-                pub["receipt_sha256"],
-            )
+        tasks = [(directory, pub, archive) for pub in job["pubs"]]
+        for result, index_bytes in parallel.ordered_map(adjudicate_pub, tasks, min_items=1):
             index_digest = digest(index_bytes)
             if checked_index is None:
                 if job_id not in jobs_by_id:
@@ -864,8 +900,6 @@ def adjudicate(runtime: Any, run_dir: Path, collection_sha256: str | None) -> di
                 checked_index = index_digest
             elif checked_index != index_digest:
                 raise ValueError("one job cannot mix indexed acquisition snapshots")
-            if result != pub["result"]:
-                raise ValueError("replayed projection differs from the anchored collection")
             rows.append(result)
         output["jobs"][job_id] = {"pubs": rows}
     data = encode(output)

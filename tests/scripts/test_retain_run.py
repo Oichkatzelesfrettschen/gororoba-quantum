@@ -130,6 +130,27 @@ def test_actor_preflight_cannot_be_bypassed_with_legacy_collection(
         raise AssertionError("actor preflight must require its external anchor")
 
 
+@pytest.mark.parametrize(
+    "record",
+    [
+        {"schema_version": "readout-actor-run-v2", "family_configuration": {"name": "readout-actor"}},
+        {"schema_version": 7, "family_configuration": {"name": "readout-actor"}},
+        {"schema_version": "readout-actor-run-v1", "family_configuration": {"name": "other"}},
+        {"schema_version": 7, "reviewed_record_sha256": "actor-identity"},
+        {"schema_version": "unknown"},
+    ],
+)
+def test_unknown_or_inconsistent_record_refuses_legacy_fallback(tmp_path: Path, record: dict[str, object]) -> None:
+    import json
+
+    import reconcile_qpu_inventory as audit
+
+    (tmp_path / "record.json").write_text(json.dumps(record))
+    (tmp_path / "collect.json").write_text("[]")
+    with pytest.raises(ValueError, match="unsupported or inconsistent"):
+        audit.retention_family(tmp_path, allow_recovered=True)
+
+
 def test_uncollected_actor_run_does_not_block_historical_failure_discovery(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

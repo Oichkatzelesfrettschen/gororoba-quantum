@@ -158,12 +158,15 @@ def environment(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Any:
     return env
 
 
-def save_plan(directory: Path, environment: Any) -> tuple[dict[str, Any], bytes]:
-    record, archive, _ = family.plan(live_run, environment, case())
+def save_plan(
+    directory: Path, environment: Any, specification: dict[str, Any] | None = None
+) -> tuple[dict[str, Any], bytes]:
+    specification = case() if specification is None else specification
+    record, archive, _ = family.plan(live_run, environment, specification)
     directory.mkdir()
     (directory / "isa.qpy").write_bytes(archive)
     live_run.write_json(directory, record)
-    live_run._write_once_atomically(directory / "actor-case.json", family.encode(case()).decode())
+    live_run._write_once_atomically(directory / "actor-case.json", family.encode(specification).decode())
     return record, archive
 
 
@@ -192,7 +195,9 @@ def test_adjudicator_reports_missing_anchored_collection(tmp_path: Path) -> None
 
 def test_actor_dry_run_has_unapproved_written_case(environment: Any, tmp_path: Path) -> None:
     run = tmp_path / "run"
-    record, archive = save_plan(run, environment)
+    specification = case()
+    specification["allocations"] = specification["allocations"][:2]
+    record, archive = save_plan(run, environment, specification)
     destination = qpu_cases.write_case(run, record)
     if destination is None:
         raise AssertionError("the full-PUB plan must have a reviewable unapproved case")
@@ -224,6 +229,62 @@ def test_actor_dry_run_has_unapproved_written_case(environment: Any, tmp_path: P
     (run / "isa.qpy").write_bytes(archive + b"changed")
     with pytest.raises(ValueError, match="QPY"):
         qpu_cases.write_case(run, record)
+
+
+def test_actor_collection_retains_execution_identity_and_final_metrics(
+    environment: Any, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import json
+    from datetime import UTC, datetime, timedelta
+
+    specification = case()
+    specification["allocations"] = specification["allocations"][:1]
+    environment.backend.configuration().backend_version = "planning-version"
+    start = datetime(2026, 10, 29, tzinfo=UTC)
+    environment.backend.properties = lambda **_: SimpleNamespace(backend_version="execution-version")
+    original_result = Job.result
+
+    def result_with_window(job: Job) -> Any:
+        result = original_result(job)
+        result.metadata["execution"] = {
+            "execution_spans": [SimpleNamespace(start=start, stop=start + timedelta(seconds=1), pub_idxs=[0])]
+        }
+        return result
+
+    metric_calls = 0
+
+    def metrics(_job: Job) -> dict[str, Any]:
+        nonlocal metric_calls
+        metric_calls += 1
+        return {"usage": {"status": "pending" if metric_calls <= 2 else "complete", "qpu_charge_time_seconds": 0.5}}
+
+    monkeypatch.setattr(Job, "result", result_with_window)
+    monkeypatch.setattr(Job, "metrics", metrics)
+    approved = tmp_path / "approved"
+    record, archive = save_plan(approved, environment, specification)
+    if record["groups"][0]["backend_version"] != "planning-version":
+        raise AssertionError("actor group must retain planning backend identity")
+    if record["system_inventory"]["fixture-backend"]["processor_type"] != {"family": "heron"}:
+        raise AssertionError("actor system inventory must retain processor identity")
+    run = tmp_path / "run"
+    run.mkdir()
+    (run / "isa.qpy").write_bytes(archive)
+    submit_reviewed(
+        live_run, environment, record, archive, run, approved, family.digest((approved / "record.json").read_bytes())
+    )
+    service = SimpleNamespace(**vars(environment))
+    service.backend = lambda _name: environment.backend
+    collected = family.collect(live_run, service, run, family.digest((run / "record.json").read_bytes()))
+    entry = collected["jobs"]["fixture-job"]
+    if entry["backend_identity"]["backend_version_at_execution"] != {start.isoformat(): "execution-version"}:
+        raise AssertionError("actor collection must retain execution-time properties identity")
+    if entry["usage"]["usage_status"] != "final":
+        raise AssertionError("actor collection must refresh final usage")
+    directory = run / "raw/fixture-job"
+    index = json.loads((directory / "index.json").read_bytes())
+    latest = json.loads((directory / index["metrics_latest"]).read_bytes())
+    if latest["usage"]["status"] != "complete" or len(index["metrics"]) != 2:
+        raise AssertionError("actor raw index must point to the final metrics snapshot")
 
 
 @pytest.mark.parametrize("mutation", ["physical", "register", "backend", "shots"])
