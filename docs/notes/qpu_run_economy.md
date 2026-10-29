@@ -3,9 +3,10 @@
 IBM bills QPU lock time, about 2 s per sub-job plus (rep_delay + circuit)
 x executions (docs/notes/ibm_quantum/estimate-job-run-time.md), against a
 600 s rolling 28-day window. This note collects the planning rules that the
-n21-feedback-encoded program measured. Each rule names the record, gate or
-document that carries its evidence. Rules 1, 4, 7, 11, 12 and 13
-apply to any family live_run.py plans. Rules 2, 3 and 5 to 10 rest on
+n21-feedback-encoded program and the measurement-sequence envelope measured.
+Each rule names the record, gate or document that carries its evidence.
+Rules 1, 4, 7, 11, 12 and 13 apply to any family live_run.py plans, and
+rules 14 to 16 to the measurement-sequence envelope. Rules 2, 3 and 5 to 10 rest on
 `--model-method exact`, `--empirical-bernstein` and `--prep-excitation`,
 which live_run.py accepts for the N21 families only, and on the
 `state-prep-control` family that measures the excitation.
@@ -150,6 +151,63 @@ the bound each contribute; none of them changes the circuit.
     wall time. A submit therefore lands inside the calibration window its
     approval was written against
     ([simulation-cost-levers.md](../runbooks/simulation-cost-levers.md)).
+
+14. **An envelope adapts its knobs within approved ranges, and each knob
+    has one owner.** The measurement-sequence envelope
+    ([design](../design/measurement-sequence-adaptive-envelope.md)) bills
+    about 2.3 s per job plus shots x (circuit + repetition delay + 9 us)
+    summed over its PUBs. The 9 us is the measured gap between billed and
+    planned charge per static shot on Kingston
+    ([hardware-controls.md](ibm_quantum/hardware-controls.md), G3), and the
+    width-32 run billed 38 s against 31.2 s planned plus 9 us per shot
+    ([findings](../../results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md)).
+    The successor's 101 PUBs at 8192 shots (827,392 executions) average
+    27.5 us of circuit, so one microsecond of delay costs 0.83 s.
+
+    | Knob | Range | Cost | Coupled to | Set by |
+    |---|---|---|---|---|
+    | Width (qubits per fused PUB) | tiers 16, 24, 32 | none (rule 11) | the null and the sparse detectable gap, both per width; the 45 MB record limit; the layout rule's packing (rule 16) | the case |
+    | Shots per PUB | 8192, the null's tier; 4096 halves the charge at a wider settle gap (rule 15) | 47.5 us per PUB execution at 20 us (27.5 us circuit), plus the 9 us residual | the null's binomial counts (`msq_successor_null_batch.SHOTS`), so another tier needs its own null; the settle veto's detectable gap (rule 15) | the design |
+    | Repetition delay | 20 to 60 us in 10 us steps, 20 us first | 0.83 s per us | nothing in the analysis: no verdict reads it, and the readers' in-circuit 20 us idle is a prefix of any longer delay; state preparation (rule 1) | the plan; a qualifying failure moves attempt 2 to the cheapest higher step that fits |
+    | Ceiling per attempt | ceil(1.5 x expected) | the most an attempt can bill | the expected charge at its delay | derived |
+    | Cap | 5 to 240 s, approved per case | the most the envelope can bill | attempt 2 runs only after an attempt 1 that billed at most 3 s, so the reachable spend is max(c1, 3 s + c2) | the owner |
+    | Reserve | per case | quota left untouched | the account's other work | the owner |
+
+    At width 24 or 32 the ladder's expected charges are 49.0, 57.3, 65.6,
+    73.8 and 82.1 s at 20 to 60 us, and their ceilings 74, 86, 99, 111 and
+    124 s. A run that can issue a verdict therefore needs at least 74 s
+    spendable; a smaller budget buys no verdict for this family, and the
+    plan refuses rather than cut shots.
+
+15. **The settle veto sets the shots; the departure test does not.** The
+    departure test's systematic is shared across qubits, so the minimum
+    detectable N = 16 departure barely moves with shots: -0.0516, -0.0512,
+    -0.0510, -0.0509 and -0.0508 at 1024, 2048, 4096, 8192 and 16384 shots
+    on the rehearsal's 24 contexts (`measurement_sequence_analysis.minimum_detectable`,
+    the planning row at the 0.018784 floor). The carryover readers need
+    fewer than 900 shots on every one of those qubits (reader standard
+    error 0.00014 to 0.00057 at 8192 shots, allocation coefficient near
+    0.88, screen margin 0.0047 at z 2.955 for width 32). What shots buy is
+    the settle veto's reach: its single-outlier detectable gap,
+    (3 + 1.28) sqrt(s^2 + tau^2 + se^2) with the median settle standard
+    error s at 0.0024 for 8192 shots and tau floored at 0.0019, is 0.0113,
+    0.0135, 0.0172, 0.0228 and 0.0312 at 16384, 8192, 4096, 2048 and 1024
+    shots for 24 qubits. 4096 shots keep it below the 0.0188 bound floor at
+    half the charge; 2048 do not. A tier other than the null's 8192 needs
+    its own null and sparse calibration.
+
+16. **Pack the layout exactly.** The envelope's first layout rule scans
+    eligible qubits by readout error and keeps each one at CZ distance 3
+    or more from those kept, a greedy packing. On Kingston it kept 32 or
+    more on all six retained 2026-10-27 snapshots and 28 and 30 on the two
+    retained 2026-10-28 snapshots (`results/live/2026-10-28T163139.827337Z`,
+    `2026-10-28T224031.317960Z`), and refused width 32 at 31 on the
+    17:16 PDT calibration, while the exact maximum packing of the same
+    eligible qubits is 35, 34 and 35 on `2026-10-27T205759.964796Z` and
+    the two 2026-10-28 snapshots (`scipy.optimize.milp`). Since width costs nothing (rule
+    11), the qubit count per billed second is the packing's size: a
+    maximum packing chosen at the lowest summed readout error keeps width
+    32 available where greedy loses it.
 
 ## The run as executed on ibm_kingston, 2026-10-18
 

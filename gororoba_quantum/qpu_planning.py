@@ -1383,7 +1383,8 @@ def measurement_sequence_candidates(
                 if snapshot.name != msq_envelope.ENVELOPE_BACKEND:
                     raise runtime.LiveRunError(f"the envelope runs on {msq_envelope.ENVELOPE_BACKEND} only")
                 envelope_calibration = msq_envelope.calibration_from_snapshot(snapshot)
-                qubits = msq_envelope.layout_rule(
+                qubits = msq_envelope.place_layout(
+                    getattr(args, "envelope_schema", msq_envelope.ENVELOPE_SCHEMA),
                     envelope_calibration["qubits"],
                     envelope_calibration["excluded"],
                     [tuple(edge) for edge in envelope_calibration["edges"]],

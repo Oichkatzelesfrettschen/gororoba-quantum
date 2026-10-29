@@ -272,7 +272,7 @@ and the repository Python documentation hub and multi-environment inventory in
   must match the record or the run writes an `approval_required` record and
   sends nothing, and the runner plans again; the first batch consumes the
   approval by writing `approval-consumed.json`. An envelope record
-  (`msq-envelope-v1`, the measurement-sequence-envelope family) binds its
+  (`msq-envelope-v1` or `-v2`, the measurement-sequence-envelope family) binds its
   layout rule, bounds, ceilings and constructor instead of the dry run's
   calibration values, and writes one consumed marker per attempt
   ([qpu-submission.md](docs/notes/ibm_quantum/qpu-submission.md)).
