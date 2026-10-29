@@ -17,7 +17,7 @@
   },
   "scope": "A local ASAP padding function in gororoba_quantum/, its single-run calibration against the service-padded N=21 replay, and a paired padded-versus-unpadded exact-law TVD comparison over the eligible ghost-run members under each member's execution snapshot. Planner wiring follows only if the falsifier passes.",
   "owner": "repository maintainer",
-  "next_action": "Implement the local padding function and calibrate it on the encoded N=21 run.",
+  "next_action": "Assemble result.json from the idle-falsifier workflow's per-run parts with --parts-only, fill the README falsifier tail and gate names, then compute the inserted-replica estimate.",
   "steps": [
     {
       "id": "padding-function",
@@ -42,6 +42,13 @@
       "state": "todo",
       "action": "If the sweep passes, record padded and unpadded predictions side by side in live_run's plan and run the live_run.py dry run.",
       "acceptance": "The dry run's record carries both predictions and the approved-record comparison is unchanged for an unpadded record."
+    },
+    {
+      "id": "inserted-replica-estimate",
+      "state": "todo",
+      "action": "Beside the preregistered decision, report per run the mean d over only the replicas into which idle_padding.pad inserts idle, with its standard error and count, and list the runs and replicas with no inserted idle (d exactly 0 by construction), labeled as a secondary analysis that leaves issue 526's verdict unchanged.",
+      "acceptance": "result.json or a sibling file carries the conditional means for every scored run; the README states that runs 2026-10-21T043156 and 2026-10-21T064222 and the three one-qubit controls insert no idle, and gives the inserted-idle replica counts of 2026-10-26T202817 (372 of 1364), 2026-10-27T160530 (390 of 1320) and 2026-10-27T173602 (988 of 1064) from the replicas' inserted_dt.",
+      "reason": "Zero-insertion runs and replicas enter the preregistered rule as d = 0 and count as not lower, so the rule measures dilution beside padding."
     }
   ]
 }

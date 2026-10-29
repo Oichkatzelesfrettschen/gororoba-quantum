@@ -55,10 +55,17 @@ listed.
 | 2026-10-19T170620 | fez | 12 | 0.1471 | 0.1389 | -0.0082 | 0.0025 |
 | 2026-10-19T231043 | fez | 6 | 0.0849 | 0.0800 | -0.0049 | 0.0031 |
 | 2026-10-20T031212 | fez | 14 | 0.3224 | 0.3015 | -0.0209 | 0.0079 |
+| 2026-10-21T043156 | marrakesh | 48 | 0.5047 | 0.5047 | 0 | 0 |
 FALSIFIER_TAIL
 
 The three one-qubit state-preparation controls carry no wait, so padding inserts nothing and d is exactly 0; they
-count as not lower. 2026-10-13T020454 and 2026-10-13T022433 execute the same circuits under the same snapshot, and
+count as not lower. The four-qubit segmented spectator runs 2026-10-21T043156 and 2026-10-21T064222 are the same
+case: each qubit plays its own measure, reset and single-qubit segments with no CZ, so `idle_padding.pad` inserts no
+idle into any of their 48 replicas and both laws coincide. Their distance of about 0.5 reflects 1536 shots spread over 15
+classical bits (32768 outcomes), a sampling floor that padding cannot move. On the 2026-10-26 and 2026-10-27 idle-penalty
+runs padding inserts idle into 372 of 1364 and 390 of 1320 replicas, and on the 2026-10-27T173602 orbit-window
+dose run into 988 of 1064; every other replica enters the rule at d = 0. Twelve of the first sixteen scored runs are
+lower, so the strict majority holds whatever the last four show. 2026-10-13T020454 and 2026-10-13T022433 execute the same circuits under the same snapshot, and
 the hardware law lies on the same side of both model laws in every outcome, so their d agree while their distances
 differ. The other runs record why they are out (no dynamic member, no job returned shots, no member with an exact
 law).
