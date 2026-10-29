@@ -5100,12 +5100,12 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-scalar-operators --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
+   "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1 --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
    "name": "core-quantum-experiment-cases",
    "seconds": 15.0,
    "tier": "full",
    "replays": [
-    "docs/evidence/quantum-experiment-conformance/runner-scalar-operators"
+    "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1"
    ],
    "workers": "all"
   },
@@ -5120,7 +5120,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/experiment_toolchain.py --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators/campaign.json --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-1.json --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/experiment_toolchain.py --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/campaign.json --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-1.json --check",
    "name": "core-quantum-experiment-toolchain",
    "seconds": 30.0,
    "tier": "full",

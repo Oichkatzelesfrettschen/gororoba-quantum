@@ -117,16 +117,19 @@ Platform scheduling and physical execution remain unobserved.
 ```sh
 export QI_PYTHON=/path/to/quantum-inspire/environment/bin/python
 "$PYTHON" -B -W error scripts/experiment_toolchain.py \
-  --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators/campaign.json \
+  --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/campaign.json \
   --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-1.json --check
 ```
 
 A pinned QI stack repeats all compilation and requires byte-identical receipts. A host without that stack
 checks the retained digest chain and reports that compilation was skipped. The required-QI gate refuses
 a missing stack. The original global QI toolchain record and its producing source keep their bytes.
-The [original receipt](scalar-operator-toolchain.json) binds the campaign written under Qiskit 2.6.0 and keeps its bytes; the
-successor above binds the campaign rewritten under Qiskit 2.6.1 and differs from it only in the campaign digest and the
-128 manifest digests that follow from it. Its 384 compiled circuits, sources and toolchain versions equal the original's.
+The [original receipt](scalar-operator-toolchain.json) binds the campaign written under Qiskit 2.6.0 in
+[runner-scalar-operators](runner-scalar-operators/campaign.json), and both keep their bytes. The successor above binds
+the campaign written under Qiskit 2.6.1 in [runner-scalar-operators-qiskit-2-6-1](runner-scalar-operators-qiskit-2-6-1/campaign.json),
+which `core-quantum-experiment-cases` regenerates and the runner-image ledger binds. The two campaigns differ only in
+the recorded Qiskit version and the campaign and 128 manifest digests that follow from it; the successor receipt's
+384 compiled circuits, sources and toolchain versions equal the original's.
 
 ## Prospective acquisition cases
 

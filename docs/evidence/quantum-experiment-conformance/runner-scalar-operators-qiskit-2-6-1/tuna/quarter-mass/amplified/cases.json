@@ -1,0 +1,462 @@
+{
+ "schema": "qi-hypercomplex-cases-v1",
+ "family": "quarter-mass",
+ "setting": "amplified",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 14,
+ "logical_qubits": 2,
+ "shots": 1575,
+ "job_execution_time_limit": 300.0,
+ "hardware_pause_seconds": 120,
+ "circuits": [
+  {
+   "file": "amplified.cq",
+   "kind": "science",
+   "nqubits": 14,
+   "operator_error": 0.0,
+   "requested_probabilities": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ],
+   "native_probabilities": [
+    2.4651903288156613e-32,
+    8.304840168620503e-32,
+    5.839649839804843e-32,
+    1.0
+   ],
+   "native_operator": {
+    "real": [
+     [
+      -1.570092458683775e-16,
+      3.925231146709438e-17,
+      2.2642405841048335e-48,
+      -1.0
+     ],
+     [
+      -2.220446049250313e-16,
+      0.9999999999999999,
+      -2.3574150014042242e-32,
+      3.92523114670944e-17
+     ],
+     [
+      -1.5700924586837752e-16,
+      3.925231146709438e-17,
+      1.0,
+      1.1102230246251565e-16
+     ],
+     [
+      1.0,
+      1.1102230246251565e-16,
+      1.570092458683775e-16,
+      -1.962615573354719e-16
+     ]
+    ],
+    "imaginary": [
+     [
+      -7.124380173985397e-32,
+      -6.12323399573677e-17,
+      -6.123233995736764e-17,
+      -3.017969956500047e-32
+     ],
+     [
+      1.8369701987210297e-16,
+      -4.250565120907878e-32,
+      9.614043519462414e-33,
+      6.123233995736761e-17
+     ],
+     [
+      1.8369701987210302e-16,
+      -1.608541658625186e-32,
+      -3.697785493223493e-32,
+      6.123233995736761e-17
+     ],
+     [
+      -6.290011731078215e-32,
+      1.83697019872103e-16,
+      1.8369701987210297e-16,
+      1.0101112403249207e-31
+     ]
+    ]
+   },
+   "measurement_mapping": [
+    11,
+    13
+   ],
+   "observable_partition": [
+    [
+     0,
+     1
+    ],
+    [
+     2,
+     3
+    ]
+   ],
+   "logical_qubits": 2,
+   "placement": [
+    11,
+    13
+   ],
+   "requested_operator": {
+    "real": [
+     [
+      0.0,
+      0.0,
+      0.0,
+      -1.0
+     ],
+     [
+      0.0,
+      1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "imaginary": [
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "compiled_operator": {
+    "real": [
+     [
+      -1.570092458683775e-16,
+      3.925231146709438e-17,
+      2.2642405841048335e-48,
+      -1.0
+     ],
+     [
+      -2.220446049250313e-16,
+      0.9999999999999999,
+      -2.3574150014042242e-32,
+      3.92523114670944e-17
+     ],
+     [
+      -1.5700924586837752e-16,
+      3.925231146709438e-17,
+      1.0,
+      1.1102230246251565e-16
+     ],
+     [
+      1.0,
+      1.1102230246251565e-16,
+      1.570092458683775e-16,
+      -1.962615573354719e-16
+     ]
+    ],
+    "imaginary": [
+     [
+      -7.124380173985397e-32,
+      -6.12323399573677e-17,
+      -6.123233995736764e-17,
+      -3.017969956500047e-32
+     ],
+     [
+      1.8369701987210297e-16,
+      -4.250565120907878e-32,
+      9.614043519462414e-33,
+      6.123233995736761e-17
+     ],
+     [
+      1.8369701987210302e-16,
+      -1.608541658625186e-32,
+      -3.697785493223493e-32,
+      6.123233995736761e-17
+     ],
+     [
+      -6.290011731078215e-32,
+      1.83697019872103e-16,
+      1.8369701987210297e-16,
+      1.0101112403249207e-31
+     ]
+    ]
+   },
+   "compiler_policy": "trivial-layout-basic-routing-optimization-zero",
+   "seed_source": "deterministic-no-randomized-passes",
+   "cz_count": 2,
+   "unrounded_operator_error": 5.944360187551541e-16,
+   "operator_error_metric": "phase-aligned-frobenius-residual",
+   "operator_arithmetic": "scalar-binary64-with-50-decimal-trigonometry",
+   "independent_operator_check": "complete Qiskit operators agree within absolute tolerance 1e-12",
+   "source_circuit_policy": "declared-primitive-circuit",
+   "unrounded_global_phase": 0.0,
+   "unrounded_gate_sequence": [
+    {
+     "name": "ry",
+     "qubits": [
+      0
+     ],
+     "parameters": [
+      1.5707963267948966
+     ]
+    },
+    {
+     "name": "rx",
+     "qubits": [
+      0
+     ],
+     "parameters": [
+      3.141592653589793
+     ]
+    },
+    {
+     "name": "ry",
+     "qubits": [
+      1
+     ],
+     "parameters": [
+      1.5707963267948966
+     ]
+    },
+    {
+     "name": "rx",
+     "qubits": [
+      1
+     ],
+     "parameters": [
+      3.141592653589793
+     ]
+    },
+    {
+     "name": "barrier",
+     "qubits": [
+      0,
+      1
+     ],
+     "parameters": []
+    },
+    {
+     "name": "cz",
+     "qubits": [
+      0,
+      1
+     ],
+     "parameters": []
+    },
+    {
+     "name": "barrier",
+     "qubits": [
+      0,
+      1
+     ],
+     "parameters": []
+    },
+    {
+     "name": "ry",
+     "qubits": [
+      0
+     ],
+     "parameters": [
+      1.5707963267948966
+     ]
+    },
+    {
+     "name": "rx",
+     "qubits": [
+      0
+     ],
+     "parameters": [
+      3.141592653589793
+     ]
+    },
+    {
+     "name": "rx",
+     "qubits": [
+      0
+     ],
+     "parameters": [
+      3.141592653589793
+     ]
+    },
+    {
+     "name": "ry",
+     "qubits": [
+      1
+     ],
+     "parameters": [
+      1.5707963267948966
+     ]
+    },
+    {
+     "name": "rx",
+     "qubits": [
+      1
+     ],
+     "parameters": [
+      3.141592653589793
+     ]
+    },
+    {
+     "name": "rx",
+     "qubits": [
+      1
+     ],
+     "parameters": [
+      3.141592653589793
+     ]
+    },
+    {
+     "name": "cz",
+     "qubits": [
+      0,
+      1
+     ],
+     "parameters": []
+    },
+    {
+     "name": "rx",
+     "qubits": [
+      0
+     ],
+     "parameters": [
+      3.141592653589793
+     ]
+    },
+    {
+     "name": "ry",
+     "qubits": [
+      0
+     ],
+     "parameters": [
+      1.5707963267948966
+     ]
+    },
+    {
+     "name": "rx",
+     "qubits": [
+      0
+     ],
+     "parameters": [
+      3.141592653589793
+     ]
+    },
+    {
+     "name": "rx",
+     "qubits": [
+      1
+     ],
+     "parameters": [
+      3.141592653589793
+     ]
+    },
+    {
+     "name": "ry",
+     "qubits": [
+      1
+     ],
+     "parameters": [
+      1.5707963267948966
+     ]
+    },
+    {
+     "name": "rx",
+     "qubits": [
+      1
+     ],
+     "parameters": [
+      3.141592653589793
+     ]
+    }
+   ],
+   "name": "amplified",
+   "family": "quarter-mass",
+   "active_outputs": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "success_outputs": [
+    3
+   ],
+   "register_kind": "classical",
+   "register_width": 2,
+   "logical_output_labels": [
+    "00",
+    "01",
+    "10",
+    "11"
+   ],
+   "leakage_outputs": [],
+   "sha256": "265b287abe3dcd2c6a6c23a7fe867277316cfb0d3b5b08770409fc39a0edce00"
+  },
+  {
+   "file": "readout-0.cq",
+   "kind": "readout-reference",
+   "prepared": 0,
+   "sha256": "5337b908082319a182540f267364ad5bb93e37c403e7319dae45bc734f31b134",
+   "measurement_mapping": [
+    11,
+    13
+   ],
+   "register_kind": "classical",
+   "logical_qubits": 2,
+   "register_width": 2
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout-reference",
+   "prepared": 1,
+   "sha256": "35b3de327b64cce283f60a0ec860e74b7bfc47735b8ccb1f538c86cdb278a935",
+   "measurement_mapping": [
+    11,
+    13
+   ],
+   "register_kind": "classical",
+   "logical_qubits": 2,
+   "register_width": 2
+  }
+ ],
+ "compiler": {
+  "policy": "trivial-layout-basic-routing-optimization-zero",
+  "seed_source": "deterministic-no-randomized-passes",
+  "qiskit": "2.6.1",
+  "catalogue_sha256": "1b978cf3518149cd72886865bffb971ab0c359ae5a7a993cb5f51b230159cd78",
+  "angle_step_radians": 0.08726646259971647
+ },
+ "preregistered": {
+  "primary": "unconditional logical output probabilities",
+  "readout_correction": "sensitivity only",
+  "minimum_output_readout_contrast": 0.2,
+  "confidence": 0.95,
+  "claim": "compiled operator conformance; physical mechanism remains device-specific"
+ },
+ "budget_status": "operator-supplied ceilings; live forecast and written-case approval required"
+}
