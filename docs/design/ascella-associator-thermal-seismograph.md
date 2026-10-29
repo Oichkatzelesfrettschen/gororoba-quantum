@@ -238,11 +238,11 @@ and uniform Cold-baseline anchor reconstruction across the entire run:
 - **Template circuit:** Fixed 34-parameter triangular mesh on modes 0..3; identity on modes 4..11.
 - **Iterations:** 32 (16 paired predecessor-target trials).
 - **Samples per iteration:** 8,192 samples ($N_{\text{total}} = 262,144$ samples).
-- **Shots per iteration:** 524,288 shots ($2^{19}$ shots; aggregate cap $16,777,216$ shots).
+- **Shots per iteration:** 655,360 shots ($80 \times 8,192$ shots; aggregate cap $20,971,520$ shots).
 - **Bounded Timing Model:**
   $$T(N) = T_{\text{overhead}} + N \times t_{\text{iter}}$$
   With $T_{\text{overhead}} \approx 30\,\text{s}$ and $t_{\text{iter}} \approx 3.0\,\text{s}$, the bounded duration
   range across retained rehearsals is $[93\,\text{s}, 186\,\text{s}]$, with platform execution ceiling of **300 seconds**.
 - **Credit ceiling:** Under the matching preflight platform tariff ($1 + 10^{-6} \times \max_i(\text{shots}_i)$),
-  the ceiling is exactly **1.524288 credits**.
+  the ceiling is exactly **1.655360 credits**.
 - **Safety status:** Local simulation and validation complete; hardware submission remains locked pending authorized operator review.

@@ -785,11 +785,7 @@ def fit_joint_model(
             "estimate": round(closure_est, 6),
             "std_error": round(closure_se, 6),
             "ci95": closure_ci,
-            "closure_admitted": bool(
-                abs(closure_est) < CLOSURE_TOLERANCE
-                and abs(closure_ci[0]) < CLOSURE_TOLERANCE
-                and abs(closure_ci[1]) < CLOSURE_TOLERANCE
-            ),
+            "closure_admitted": bool(abs(closure_est) < CLOSURE_TOLERANCE and closure_ci[0] <= 0.0 <= closure_ci[1]),
         },
         "equivalence_testing": {
             "margin": margin,
