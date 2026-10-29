@@ -326,6 +326,7 @@ differs from it only in the `cd_core.py` digest.
 | [learning-quantum-teleportation.md](notes/ibm_quantum/learning-quantum-teleportation.md) | IBM Quantum Learning teleportation lesson: outcome-to-correction table |
 | [qiskit-ecosystem.md](notes/qiskit-ecosystem.md) | Qiskit ecosystem audit |
 | [qiskit-ecosystem-install-plan.md](notes/qiskit-ecosystem-install-plan.md) | Qiskit ecosystem install plan |
+| [qiskit-packages/README.md](notes/qiskit-packages/README.md) | installed Qiskit-adjacent packages: install surfaces, per-package notes, interconnections, open items |
 
 ### Providers
 
@@ -361,6 +362,7 @@ differs from it only in the `cd_core.py` digest.
 | File | Contents |
 |---|---|
 | [ci-runtime.md](runbooks/ci-runtime.md) | timing denominators, bottlenecks and replay selection |
+| [cache-locations.md](runbooks/cache-locations.md) | cache, venv, build-tree and run-output locations outside the checkout; cleanup classes and the future `make clean` and `make distclean` targets |
 | [vectorized-fits.md](runbooks/vectorized-fits.md) | batched classical fits across replicates |
 | [null-shards.md](runbooks/null-shards.md) | the successor null through one pool, Kaggle kernels and hosted-runner shards |
 

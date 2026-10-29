@@ -15,7 +15,7 @@ import math
 import threading
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 from typing import Any
 
@@ -160,11 +160,29 @@ def ramsey_analyzer_closure() -> dict[str, Any]:
 
 
 def observable_contract_records(contracts: Any) -> list[dict[str, Any]]:
-    """The observable contracts as record.json stores them, each term's score values through law_encoding."""
-    records = json.loads(json.dumps([asdict(contract) for contract in contracts]))
-    for record in records:
-        for term in record["terms"]:
-            term["values"] = law_encoding.encode(term["values"])
+    """The observable contracts as record.json stores them, each term's score values through law_encoding.
+
+    A term whose values are a tuple of builtin floats skips the JSON text round trip, which returns those
+    floats unchanged (repr round-trips; -0.0, NaN and the infinities included), so only its other fields are
+    copied through it; any other term keeps the round trip, which turns its entries into JSON-native values.
+    """
+    plain: list[dict[int, tuple[Any, ...]]] = []
+    stripped = []
+    for contract in contracts:
+        floats = {
+            index: term.values
+            for index, term in enumerate(contract.terms)
+            if type(term.values) is tuple and set(map(type, term.values)) <= {float}
+        }
+        plain.append(floats)
+        terms = tuple(
+            replace(term, values=()) if index in floats else term for index, term in enumerate(contract.terms)
+        )
+        stripped.append(replace(contract, terms=terms))
+    records = json.loads(json.dumps([asdict(contract) for contract in stripped]))
+    for record, floats in zip(records, plain, strict=True):
+        for index, term in enumerate(record["terms"]):
+            term["values"] = law_encoding.encode(floats[index] if index in floats else term["values"])
     return records
 
 
@@ -2175,15 +2193,14 @@ def prepare(
                     choice.snap.name, choice.snap.backend.target, choice.snap.properties, local_compute.settings(args)
                 )
 
-    # Aer releases the GIL while it simulates, so independent choices run on
-    # threads. Each simulator already uses the policy's thread count, so the
-    # pool runs only as many simulators as fit in the available CPUs. Each
-    # pool thread reuses one simulator per snapshot, built from the
-    # snapshot's cached noise model, for every choice it runs: local_compute.run
-    # sets the device and method of each batch, and AerSimulator.from_backend
-    # converts the whole-device Target to BackendProperties on every build. A
-    # task returns the batch evidence its run appended, which joins the
-    # snapshot simulator in serial order.
+    # AerSimulator.run holds the GIL for the whole call, so threads never overlap
+    # two simulations: parallelism comes from the OpenMP shot threads of one
+    # call (max_parallel_shots), and the choice threads only keep one simulator
+    # per snapshot and thread, built from the snapshot's cached noise model.
+    # AerSimulator.from_backend converts the whole-device Target to
+    # BackendProperties on every build, and local_compute.run sets the device
+    # and method of each batch. A task returns the batch evidence its run
+    # appended, which joins the snapshot simulator in serial order.
     # A declared initial excitation enters the sampled model and the exact
     # law alike, so the sampled falsifier tests the law the plan prices.
     excited = {"prep_excitation": excitation} if excitation else {}

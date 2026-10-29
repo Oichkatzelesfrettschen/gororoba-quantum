@@ -1,7 +1,12 @@
 # Qiskit ecosystem install plan
 
 Companion to [qiskit-ecosystem.md](qiskit-ecosystem.md), which holds the
-evidence. Nothing here has been executed. Every step keeps qiskit 2.5.2,
+evidence. The host steps below are superseded: the build host now carries
+qiskit 2.6.1, qiskit-ibm-runtime 0.51.0 and qiskit-aer 0.18.2, and the
+installed Qiskit-adjacent packages, qiskit-noise-learning 0.1.0 from its
+PyPI sdist among them, are documented in
+[qiskit-packages/README.md](qiskit-packages/README.md). The Kaggle steps
+still hold. Nothing in the original plan was executed as written. Every step keeps qiskit 2.5.2,
 qiskit-ibm-runtime 0.50.0, qiskit-aer 0.17.2, samplomatic 0.21.0 and
 ibm-quantum-schemas 0.12.20260921 in place.
 

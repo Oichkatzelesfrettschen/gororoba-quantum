@@ -255,8 +255,8 @@
    "observed_host_version": "0.11.0",
    "role": "Array dispatch for qualified tensor-network backends.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:106",
-    "docs/notes/qiskit-ecosystem.md:189"
+    "docs/notes/qiskit-ecosystem.md:110",
+    "docs/notes/qiskit-ecosystem.md:193"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -589,8 +589,8 @@
    "observed_host_version": "0.8.2",
    "role": "Contraction planning for tensor-network references.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:105",
-    "docs/notes/qiskit-ecosystem.md:188"
+    "docs/notes/qiskit-ecosystem.md:109",
+    "docs/notes/qiskit-ecosystem.md:192"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -1034,8 +1034,8 @@
    "observed_host_version": "0.4.11",
    "role": "Finite-field Fano incidence and binary algebra certificates.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:108",
-    "docs/notes/qiskit-ecosystem.md:191"
+    "docs/notes/qiskit-ecosystem.md:112",
+    "docs/notes/qiskit-ecosystem.md:195"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -1394,8 +1394,8 @@
    "observed_host_version": "0.12.20260921",
    "role": "Runtime task and option schema conformance.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:176",
-    "docs/notes/qiskit-ecosystem.md:88"
+    "docs/notes/qiskit-ecosystem.md:180",
+    "docs/notes/qiskit-ecosystem.md:92"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -2001,8 +2001,8 @@
    "observed_host_version": "1.3.4",
    "role": "Identifiable device/noise parameter fitting with retained residuals.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:109",
-    "docs/notes/qiskit-ecosystem.md:192"
+    "docs/notes/qiskit-ecosystem.md:113",
+    "docs/notes/qiskit-ecosystem.md:196"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -2259,8 +2259,8 @@
    "role": "Readout sensitivity analysis with explicit calibration and factorization assumptions.",
    "documentation_mentions": [
     "docs/notes/iqm/pypi/mthree.json",
-    "docs/notes/qiskit-ecosystem.md:182",
-    "docs/notes/qiskit-ecosystem.md:99"
+    "docs/notes/qiskit-ecosystem.md:103",
+    "docs/notes/qiskit-ecosystem.md:186"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -2437,8 +2437,8 @@
    "observed_host_version": "0.68.0",
    "role": "Compiled numeric kernels; compilation speed does not change the arithmetic contract.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:110",
-    "docs/notes/qiskit-ecosystem.md:193"
+    "docs/notes/qiskit-ecosystem.md:114",
+    "docs/notes/qiskit-ecosystem.md:197"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -3182,8 +3182,8 @@
    "observed_host_version": "1.0.1",
    "role": "OpenQASM syntax and AST support.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:179",
-    "docs/notes/qiskit-ecosystem.md:91"
+    "docs/notes/qiskit-ecosystem.md:183",
+    "docs/notes/qiskit-ecosystem.md:95"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -3650,8 +3650,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: Pauli propagation for large observables",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:125",
-    "docs/notes/qiskit-ecosystem.md:208"
+    "docs/notes/qiskit-ecosystem.md:129",
+    "docs/notes/qiskit-ecosystem.md:212"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4163,8 +4163,8 @@
    "observed_host_version": null,
    "role": "Error-model decoding when a detector-code experiment requires it.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:102",
-    "docs/notes/qiskit-ecosystem.md:185"
+    "docs/notes/qiskit-ecosystem.md:106",
+    "docs/notes/qiskit-ecosystem.md:189"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4483,8 +4483,8 @@
    "observed_host_version": "0.10.7",
    "role": "ZX circuit simplification followed by exact operator-equivalence checks.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:107",
-    "docs/notes/qiskit-ecosystem.md:190"
+    "docs/notes/qiskit-ecosystem.md:111",
+    "docs/notes/qiskit-ecosystem.md:194"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4573,8 +4573,8 @@
    "role": "Circuits, native synthesis, topology placement and operator verification.",
    "documentation_mentions": [
     "docs/notes/iqm/pypi/qiskit.json",
-    "docs/notes/qiskit-ecosystem.md:171",
-    "docs/notes/qiskit-ecosystem.md:82"
+    "docs/notes/qiskit-ecosystem.md:175",
+    "docs/notes/qiskit-ecosystem.md:86"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4888,8 +4888,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: approximate quantum compilation with tensor networks; quimb and cotengra already cover contraction",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:119",
-    "docs/notes/qiskit-ecosystem.md:202"
+    "docs/notes/qiskit-ecosystem.md:123",
+    "docs/notes/qiskit-ecosystem.md:206"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4904,8 +4904,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: circuits stay within 14 qubits, so wire cutting has no use",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:120",
-    "docs/notes/qiskit-ecosystem.md:203"
+    "docs/notes/qiskit-ecosystem.md:124",
+    "docs/notes/qiskit-ecosystem.md:207"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4920,8 +4920,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: chemistry HPC solvers",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:131",
-    "docs/notes/qiskit-ecosystem.md:213"
+    "docs/notes/qiskit-ecosystem.md:135",
+    "docs/notes/qiskit-ecosystem.md:217"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4936,8 +4936,8 @@
    "observed_host_version": null,
    "role": "Optional multiproduct-formula Trotter-error reduction using CVXPY. The 2026-10-16 ecosystem audit declined the workflow; host CVXPY availability does not establish its admission. Qualify circuit approximations, solver residuals and error budgets before use.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:118",
-    "docs/notes/qiskit-ecosystem.md:201"
+    "docs/notes/qiskit-ecosystem.md:122",
+    "docs/notes/qiskit-ecosystem.md:205"
    ],
    "role_sources": [
     "docs/notes/qiskit-ecosystem.md:201",
@@ -4955,8 +4955,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: operator backpropagation targets observable estimation of Trotter circuits",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:117",
-    "docs/notes/qiskit-ecosystem.md:200"
+    "docs/notes/qiskit-ecosystem.md:121",
+    "docs/notes/qiskit-ecosystem.md:204"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4971,8 +4971,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: optimization modeling",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:124",
-    "docs/notes/qiskit-ecosystem.md:207"
+    "docs/notes/qiskit-ecosystem.md:128",
+    "docs/notes/qiskit-ecosystem.md:211"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4987,8 +4987,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: global-noise-channel mitigation of observables",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:123",
-    "docs/notes/qiskit-ecosystem.md:206"
+    "docs/notes/qiskit-ecosystem.md:127",
+    "docs/notes/qiskit-ecosystem.md:210"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5003,8 +5003,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: PEC overhead reduction; pins pauli-prop below 0.2",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:122",
-    "docs/notes/qiskit-ecosystem.md:205"
+    "docs/notes/qiskit-ecosystem.md:126",
+    "docs/notes/qiskit-ecosystem.md:209"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5019,8 +5019,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: chemistry configuration recovery, pulls pyscf (not installed)",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:121",
-    "docs/notes/qiskit-ecosystem.md:204"
+    "docs/notes/qiskit-ecosystem.md:125",
+    "docs/notes/qiskit-ecosystem.md:208"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5035,8 +5035,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: chemistry HPC solvers",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:130",
-    "docs/notes/qiskit-ecosystem.md:213"
+    "docs/notes/qiskit-ecosystem.md:134",
+    "docs/notes/qiskit-ecosystem.md:217"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5053,8 +5053,8 @@
    "observed_host_version": "0.4.0",
    "role": "Supported circuit interchange and utility operations.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:116",
-    "docs/notes/qiskit-ecosystem.md:199"
+    "docs/notes/qiskit-ecosystem.md:120",
+    "docs/notes/qiskit-ecosystem.md:203"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5075,8 +5075,8 @@
    "role": "Ideal/noise circuit simulation; provider/routing approval rules apply to submitted jobs.",
    "documentation_mentions": [
     "docs/notes/iqm/pypi/qiskit-aer.json",
-    "docs/notes/qiskit-ecosystem.md:172",
-    "docs/notes/qiskit-ecosystem.md:83"
+    "docs/notes/qiskit-ecosystem.md:176",
+    "docs/notes/qiskit-ecosystem.md:87"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5201,7 +5201,7 @@
    "observed_host_version": null,
    "role": "CUDA 12 Aer alternative remains unused: retained ecosystem audit records release 0.15.1 without a Python 3.13 wheel; do not coinstall qiskit_aer owners.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:85"
+    "docs/notes/qiskit-ecosystem.md:89"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5218,8 +5218,8 @@
    "observed_host_version": null,
    "role": "CUDA 11 Aer wheel for the isolated Kaggle GPU path; exclusively owns qiskit_aer and shares the CPU/CUDA 13 Aer engine.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:173",
-    "docs/notes/qiskit-ecosystem.md:84"
+    "docs/notes/qiskit-ecosystem.md:177",
+    "docs/notes/qiskit-ecosystem.md:88"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5252,8 +5252,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: host only, optional: phase and amplitude estimation references for algebra-circuit cross-checks; no current consumer",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:150",
-    "docs/notes/qiskit-ecosystem.md:227"
+    "docs/notes/qiskit-ecosystem.md:154",
+    "docs/notes/qiskit-ecosystem.md:231"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5268,7 +5268,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:144"
+    "docs/notes/qiskit-ecosystem.md:148"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5283,8 +5283,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: host only: benchmarks that submit to IBM backends; needs an IBM credential",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:129",
-    "docs/notes/qiskit-ecosystem.md:212"
+    "docs/notes/qiskit-ecosystem.md:133",
+    "docs/notes/qiskit-ecosystem.md:216"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5299,7 +5299,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:144"
+    "docs/notes/qiskit-ecosystem.md:148"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5314,8 +5314,8 @@
    "observed_host_version": null,
    "role": "Continuous-system simulation alternative; the retained note records its archive status.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:155",
-    "docs/notes/qiskit-ecosystem.md:232"
+    "docs/notes/qiskit-ecosystem.md:159",
+    "docs/notes/qiskit-ecosystem.md:236"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5332,8 +5332,8 @@
    "observed_host_version": "0.14.2",
    "role": "Device-characterization circuits and analyses; calibration jobs require approval.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:181",
-    "docs/notes/qiskit-ecosystem.md:98"
+    "docs/notes/qiskit-ecosystem.md:102",
+    "docs/notes/qiskit-ecosystem.md:185"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5348,8 +5348,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: fermionic systems",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:127",
-    "docs/notes/qiskit-ecosystem.md:210"
+    "docs/notes/qiskit-ecosystem.md:131",
+    "docs/notes/qiskit-ecosystem.md:214"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5364,8 +5364,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: finance",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:154",
-    "docs/notes/qiskit-ecosystem.md:231"
+    "docs/notes/qiskit-ecosystem.md:158",
+    "docs/notes/qiskit-ecosystem.md:235"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5380,8 +5380,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: reinforcement-learning synthesis",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:143",
-    "docs/notes/qiskit-ecosystem.md:225"
+    "docs/notes/qiskit-ecosystem.md:147",
+    "docs/notes/qiskit-ecosystem.md:229"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5396,7 +5396,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:144"
+    "docs/notes/qiskit-ecosystem.md:148"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5411,8 +5411,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: no consumer in the repository; pins an old networkx",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:138",
-    "docs/notes/qiskit-ecosystem.md:220"
+    "docs/notes/qiskit-ecosystem.md:142",
+    "docs/notes/qiskit-ecosystem.md:224"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5425,10 +5425,10 @@
    "distribution": "qiskit-ibm-catalog",
    "declared_versions": {},
    "observed_host_version": null,
-   "role": "Documented ecosystem candidate: skip: Qiskit Functions client, cloud only",
+   "role": "Documented ecosystem candidate: host only, installed: Qiskit Functions client, cloud only; never on Kaggle ([qiskit-functions.md](qiskit-packages/qiskit-functions.md))",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:139",
-    "docs/notes/qiskit-ecosystem.md:221"
+    "docs/notes/qiskit-ecosystem.md:143",
+    "docs/notes/qiskit-ecosystem.md:225"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5443,8 +5443,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: archived",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:141",
-    "docs/notes/qiskit-ecosystem.md:223"
+    "docs/notes/qiskit-ecosystem.md:145",
+    "docs/notes/qiskit-ecosystem.md:227"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5459,8 +5459,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: replaced by runtime",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:142",
-    "docs/notes/qiskit-ecosystem.md:224"
+    "docs/notes/qiskit-ecosystem.md:146",
+    "docs/notes/qiskit-ecosystem.md:228"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5482,8 +5482,8 @@
    "observed_host_version": "0.50.0",
    "role": "IBM execution and result collection through the approved-record runner.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:174",
-    "docs/notes/qiskit-ecosystem.md:86"
+    "docs/notes/qiskit-ecosystem.md:178",
+    "docs/notes/qiskit-ecosystem.md:90"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5588,7 +5588,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:144"
+    "docs/notes/qiskit-ecosystem.md:148"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5603,8 +5603,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: cloud AI passes (credential) and a hard conflict with the pin",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:137",
-    "docs/notes/qiskit-ecosystem.md:219"
+    "docs/notes/qiskit-ecosystem.md:141",
+    "docs/notes/qiskit-ecosystem.md:223"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5619,7 +5619,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:144"
+    "docs/notes/qiskit-ecosystem.md:148"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5649,8 +5649,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:151",
-    "docs/notes/qiskit-ecosystem.md:228"
+    "docs/notes/qiskit-ecosystem.md:155",
+    "docs/notes/qiskit-ecosystem.md:232"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5665,7 +5665,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:144"
+    "docs/notes/qiskit-ecosystem.md:148"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5684,8 +5684,8 @@
    "observed_host_version": "0.1.1",
    "role": "Hardware mitigation tasks; invocation can submit and needs the written case.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:177",
-    "docs/notes/qiskit-ecosystem.md:89"
+    "docs/notes/qiskit-ecosystem.md:181",
+    "docs/notes/qiskit-ecosystem.md:93"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5700,8 +5700,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: chemistry",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:153",
-    "docs/notes/qiskit-ecosystem.md:230"
+    "docs/notes/qiskit-ecosystem.md:157",
+    "docs/notes/qiskit-ecosystem.md:234"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5716,8 +5716,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: host plus Kaggle candidate via commit-pinned source: randomization-based Pauli noise characterization against the Aer replay; needs samplomatic>=0.21, numpy>=2",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:128",
-    "docs/notes/qiskit-ecosystem.md:211"
+    "docs/notes/qiskit-ecosystem.md:132",
+    "docs/notes/qiskit-ecosystem.md:215"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5732,8 +5732,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: archived",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:152",
-    "docs/notes/qiskit-ecosystem.md:229"
+    "docs/notes/qiskit-ecosystem.md:156",
+    "docs/notes/qiskit-ecosystem.md:233"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5748,8 +5748,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: spacetime Pauli checks target error detection at scale",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:126",
-    "docs/notes/qiskit-ecosystem.md:209"
+    "docs/notes/qiskit-ecosystem.md:130",
+    "docs/notes/qiskit-ecosystem.md:213"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5766,8 +5766,8 @@
    "observed_host_version": "0.6.0",
    "role": "Validated OpenQASM interchange between isolated SDK environments.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:178",
-    "docs/notes/qiskit-ecosystem.md:90"
+    "docs/notes/qiskit-ecosystem.md:182",
+    "docs/notes/qiskit-ecosystem.md:94"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5795,10 +5795,10 @@
    "distribution": "qiskit-serverless",
    "declared_versions": {},
    "observed_host_version": null,
-   "role": "Documented ecosystem candidate: skip: cloud job client, exceeds Kaggle numpy",
+   "role": "Documented ecosystem candidate: host only, installed with the runtime cap and image pins relaxed; exceeds Kaggle numpy ([qiskit-functions.md](qiskit-packages/qiskit-functions.md))",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:140",
-    "docs/notes/qiskit-ecosystem.md:222"
+    "docs/notes/qiskit-ecosystem.md:144",
+    "docs/notes/qiskit-ecosystem.md:226"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5884,8 +5884,8 @@
    "observed_host_version": "1.15.0",
    "role": "Tensor-network classical references and marginal/expectation calculations.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:104",
-    "docs/notes/qiskit-ecosystem.md:187"
+    "docs/notes/qiskit-ecosystem.md:108",
+    "docs/notes/qiskit-ecosystem.md:191"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6082,8 +6082,8 @@
    "observed_host_version": "2.3.0",
    "role": "Execution support used by measurement mitigation; provider submission stays guarded.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:100",
-    "docs/notes/qiskit-ecosystem.md:183"
+    "docs/notes/qiskit-ecosystem.md:104",
+    "docs/notes/qiskit-ecosystem.md:187"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6106,8 +6106,8 @@
    "observed_host_version": "0.18.1",
    "role": "Coupling graphs, placement and disjoint-support candidates.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:180",
-    "docs/notes/qiskit-ecosystem.md:92"
+    "docs/notes/qiskit-ecosystem.md:184",
+    "docs/notes/qiskit-ecosystem.md:96"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6161,8 +6161,8 @@
    "observed_host_version": "0.21.0",
    "role": "Runtime circuit preparation; dynamic-circuit restrictions remain binding.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:175",
-    "docs/notes/qiskit-ecosystem.md:87"
+    "docs/notes/qiskit-ecosystem.md:179",
+    "docs/notes/qiskit-ecosystem.md:91"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6496,8 +6496,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip, same reason as pymatching",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:103",
-    "docs/notes/qiskit-ecosystem.md:186"
+    "docs/notes/qiskit-ecosystem.md:107",
+    "docs/notes/qiskit-ecosystem.md:190"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6784,8 +6784,8 @@
    "observed_host_version": "1.16.0",
    "role": "Stabilizer controls and Clifford subcircuits; not general quaternion wave evolution.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:101",
-    "docs/notes/qiskit-ecosystem.md:184"
+    "docs/notes/qiskit-ecosystem.md:105",
+    "docs/notes/qiskit-ecosystem.md:188"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -7382,7 +7382,7 @@
   "docs/notes/quandela/pypi/perceval-interop.json": "ed2babca56a9e95c47e4971053da3181e464d393b8eeac8d0104d3a4f9a67bdb",
   "docs/notes/quandela/pypi/perceval-quandela.json": "c8ed2fcbdd475a830b066ec7121fdff96e35850f98ecc4b3be945346aa2d49ea",
   "docs/notes/quandela/pypi/scmver.json": "a35d1d7f9d344b5c1270e3a5fad284f79474e6d67c50fa03f14f28be4ba2c01d",
-  "docs/notes/qiskit-ecosystem.md": "cef7080dc6240810c48915ad4355914ec924040d19c7620cbc4f427610d9b962",
+  "docs/notes/qiskit-ecosystem.md": "ccdcb14e5702cdcd248ae4510d3c950eecf734cba851e7509b3e07bc20ca6608",
   "docs/notes/packages/candidates.md": "9686e4e3cabe939651db5bf5b64b46fcd5a361e8f5d23fa430de6627dcd9d11b",
   "ci/requirements-browser.txt": "6f9875723235ece07415e7d19103f2ec61ec35e1392d23fbd1c1290e043eaeb8",
   "ci/requirements-ci.txt": "a83d9288a87525f62db022ca032a876a2f0d5f5a93f21bf4fce19fd35d72f7d3",
