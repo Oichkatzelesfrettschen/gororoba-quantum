@@ -4411,6 +4411,7 @@
    "historical_imported_by": [
     "scripts/a5_stiefel_pfaffian_germs.py",
     "scripts/a5_zero_divisor_strata.py",
+    "scripts/ascella_associator_character.py",
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
     "scripts/persona_corpus_checks.py",
@@ -4727,6 +4728,7 @@
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_zero_divisor_cases.py",
+    "scripts/qubit_baseline_twin.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_folded_jobs.py",
     "scripts/review_wide_control_job.py",
@@ -5141,6 +5143,7 @@
     "scripts/primorial_cover_noise.py",
     "scripts/primorial_probe_case.py",
     "scripts/qi_ibm_noise_replay.py",
+    "scripts/qubit_baseline_twin.py",
     "scripts/signed_kernel_noise.py",
     "scripts/singular_sector_dynamics.py",
     "scripts/substrate_crossover.py",
@@ -6325,6 +6328,7 @@
     "gororoba_quantum/primorial_cover.py",
     "gororoba_quantum/variance.py",
     "scripts/a5_zero_divisor_strata.py",
+    "scripts/ascella_associator_character.py",
     "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_compilation_design.py",
@@ -13954,6 +13958,17 @@
    "subprocess",
    "sys",
    "tarfile",
+   "typing"
+  ],
+  "scripts/qubit_baseline_twin.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "json",
+   "pathlib",
+   "qiskit",
+   "qiskit_aer",
+   "sys",
    "typing"
   ],
   "scripts/qx_local_series.py": [
