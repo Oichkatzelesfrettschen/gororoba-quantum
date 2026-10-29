@@ -146,19 +146,18 @@ class Transport:
             start = time.monotonic()
             request = urllib.request.Request(url, data=body, method=method, headers=headers)
             try:
-                with urllib.request.urlopen(request, timeout=120) as response:
-                    status, received, payload = response.status, response.headers, response.read()
-                fields = {key.lower(): value for key, value in received.items()}
-                if fields.get("content-encoding", "").lower() == "gzip":
-                    payload = gzip.decompress(payload)
-            except urllib.error.HTTPError as error:
-                with error:
-                    status, received, payload = error.code, error.headers, error.read()
+                try:
+                    with urllib.request.urlopen(request, timeout=120) as response:
+                        status, received, payload = response.status, response.headers, response.read()
+                except urllib.error.HTTPError as error:
+                    with error:
+                        status, received, payload = error.code, error.headers, error.read()
                 fields = {key.lower(): value for key, value in received.items()}
                 if fields.get("content-encoding", "").lower() == "gzip":
                     payload = gzip.decompress(payload)
             except (http.client.HTTPException, OSError, EOFError) as failure:
-                # A truncated body, a reset connection or a timeout carries no answer; retry it like a 5xx.
+                # A truncated or undecodable body, a reset connection or a timeout carries no answer; retry it
+                # like a 5xx.
                 self._last = time.monotonic()
                 if attempt == self.retries:
                     raise ZbmathError(f"{method} {url}: {type(failure).__name__}: {failure}") from failure
@@ -1386,9 +1385,10 @@ def run_oai(args: argparse.Namespace, transport: Transport) -> int:
 def run_match(args: argparse.Namespace, transport: Transport) -> int:
     if args.bulk is not None:
         body = args.bulk.read_bytes()
-        queries = json.loads(body).get("queries", [])
-        if not 1 <= len(queries) <= 100:
-            raise ZbmathError(f"a bulk request holds 1 to 100 queries, not {len(queries)}")
+        request = json.loads(body)
+        queries = request.get("queries") if isinstance(request, dict) else None
+        if not isinstance(queries, list) or not 1 <= len(queries) <= 100:
+            raise ZbmathError('a bulk request is {"queries": [...]} with 1 to 100 queries')
         reply = transport.send(_cite("match", n=str(args.n), m=str(args.m)), "POST", body, "application/json")
     else:
         if args.query is None:

@@ -50,7 +50,9 @@ the Tools & Resources page (https://zbmath.org/tools-and-resources/, sha256
 ```
 
 `match` and `bibtex` send `m=5.0` explicitly, because the service does not apply its documented default.
-A successor audit runs `capture --out NEWDIR` and `fields --out NEWFILE`; both refuse an existing record.
+A successor audit runs `capture --out NEWDIR` and `fields --out NEWFILE`; both refuse an existing record, and
+`oai --out DIR` refuses a directory that already holds harvest pages. `search --all` walks the whole
+10,000-result window for any `--per-page`, sizing each request to start where the previous one ended.
 
 ## Search syntax
 
