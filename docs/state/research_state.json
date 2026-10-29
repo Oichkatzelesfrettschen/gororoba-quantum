@@ -2534,6 +2534,34 @@
       "run": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat",
       "family": "day-separated dimension-six matched meshes",
       "question": "How do five retained transition distributions compare at least 24 hours later under matching returned mesh identities?"
+    },
+    {
+      "id": "qd-sim-ascella-two-photon-associator",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00",
+      "family": "photonic two-photon octonion associator qualification",
+      "question": "Does simulated two-photon Hong-Ou-Mandel interference across the 12-mode Ascella mesh reproduce the non-associative sign witness with positive contrast and bounded null control?"
+    },
+    {
+      "id": "qd-sim-ascella-associator-character",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00",
+      "family": "photonic 16-setting octonion associator character qualification",
+      "question": "Does simulated 8-mode character projection concentrate constructively into the exact predicted harmonic mode for all 16 octonion association settings?"
+    },
+    {
+      "id": "qd-ascella-two-photon-associator",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00",
+      "family": "photonic two-photon octonion associator hardware execution",
+      "question": "Does physical two-photon Hong-Ou-Mandel interference on qpu:ascella preserve non-associative sign witness contrast above 170 standard errors while confirming zero null-arm offset?"
+    },
+    {
+      "id": "qd-ascella-associator-character",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00",
+      "family": "photonic 16-setting octonion associator character hardware execution",
+      "question": "Does physical 8-mode character projection on qpu:ascella achieve >98% raw output mode fidelity and >1.99 conditional character contrast across all 16 octonion multiplication settings?"
     }
   ],
   "claims": [
@@ -3303,14 +3331,36 @@
       "status": "exploratory",
       "boundary": "Conditional frequencies given reported total occupation one, and decoded numerical metadata from these five jobs. The historical JSON's one-click label denotes that occupation-sum selection; the mixed threshold/quasi-PNR documentation does not establish a uniform physical-click model. The records establish a compilation-metadata/measurement mismatch, rather than which applied-control or result-association mechanism caused it. Fixed request ordering confounds a setting-specific response with a preceding-setting effect. The analysis supplies neither calibrated uncertainty coverage, absolute transmission, process tomography nor fundamental quaternionic-physics evidence. A newly ordered intervention requires its own approved case.",
       "evidence": [
-        {"path": "results/hypercomplex/belenos-repeat-readout.json", "sha256": "bdb822bf69bfba2ce0114c65ae070f409c909697ae49b6f7e584c32d7952346b"},
-        {"path": "results/hypercomplex/belenos-compilation-measurement-audit.json", "sha256": "ec923d72db2cfa4d5a5e9ee6eba5b6f5fdd413b56d1cb09b18b61e1c46bbdf5a"},
-        {"path": "results/hypercomplex/belenos-repeat-readout-pooled.json", "sha256": "3f5ff8f59afe020a9f84112a6a124876b6227069f08088ea08f3236b6e0f5c27"},
-        {"path": "results/hypercomplex/belenos-compilation-measurement-audit-pooled.json", "sha256": "bdc25d02692cc080a2f90a9adc1cb5062916510c13912d0123f977ffeeede3d7"}
+        {
+          "path": "results/hypercomplex/belenos-repeat-readout.json",
+          "sha256": "bdb822bf69bfba2ce0114c65ae070f409c909697ae49b6f7e584c32d7952346b"
+        },
+        {
+          "path": "results/hypercomplex/belenos-compilation-measurement-audit.json",
+          "sha256": "ec923d72db2cfa4d5a5e9ee6eba5b6f5fdd413b56d1cb09b18b61e1c46bbdf5a"
+        },
+        {
+          "path": "results/hypercomplex/belenos-repeat-readout-pooled.json",
+          "sha256": "3f5ff8f59afe020a9f84112a6a124876b6227069f08088ea08f3236b6e0f5c27"
+        },
+        {
+          "path": "results/hypercomplex/belenos-compilation-measurement-audit-pooled.json",
+          "sha256": "bdc25d02692cc080a2f90a9adc1cb5062916510c13912d0123f977ffeeede3d7"
+        }
       ],
-      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
-      "gates": {"core-651": "replay"},
-      "acquisitions": ["qd-belenos-order-repeat", "qd-belenos-wave-repeat-0", "qd-belenos-wave-repeat-1", "qd-belenos-wave-repeat-2", "qd-belenos-transform-repeat"],
+      "documents": [
+        "docs/design/ascella-instrument-readiness-and-packed-tests.md"
+      ],
+      "gates": {
+        "core-651": "replay"
+      },
+      "acquisitions": [
+        "qd-belenos-order-repeat",
+        "qd-belenos-wave-repeat-0",
+        "qd-belenos-wave-repeat-1",
+        "qd-belenos-wave-repeat-2",
+        "qd-belenos-transform-repeat"
+      ],
       "assumptions": [],
       "depends_on": [],
       "supersedes": [],
@@ -3323,10 +3373,19 @@
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
       "boundary": "One descriptive recheck submitted after the static readiness stopping rule had fired, without a recorded explicit override. The stopping-rule adjudication classifies this submission as a protocol deviation, rather than preregistered adherence. The observed public status transition was insufficient to restore this sampling path. The instrument's private configuration and internal worker control flow remain unobserved.",
-      "evidence": [{"path": "results/quandela/runs/ascella-native-input-map-recheck/results.json", "sha256": "5aca406d3137d65ab3b65f430412b6bfee497be9427ae5d615fd82ea24ace55f"}],
-      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "evidence": [
+        {
+          "path": "results/quandela/runs/ascella-native-input-map-recheck/results.json",
+          "sha256": "5aca406d3137d65ab3b65f430412b6bfee497be9427ae5d615fd82ea24ace55f"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-instrument-readiness-and-packed-tests.md"
+      ],
       "gates": {},
-      "acquisitions": ["qd-ascella-native-input-map-recheck"],
+      "acquisitions": [
+        "qd-ascella-native-input-map-recheck"
+      ],
       "assumptions": [],
       "depends_on": [],
       "supersedes": [],
@@ -3340,13 +3399,28 @@
       "status": "exploratory",
       "boundary": "Three sampling requests under their recorded platform snapshots. The native-mesh request followed the static readiness stopping rule without a recorded explicit override; the stopping-rule adjudication classifies it as a protocol deviation. Its result is descriptive rather than evidence of preregistered adherence. The observations reject static payload class and native-architecture compatibility as sufficient remedies on the tested paths. They provide neither measured operator probabilities nor an exhaustive statement about every command or future configuration. The deployment's instrument map and private worker implementation remain unobserved.",
       "evidence": [
-        {"path": "results/quandela/runs/ascella-hypercomplex-order-pilot/results.json", "sha256": "ee7b4034fa7d6ec33b28c787d2f63491f44805021c24ebe26a9b46920c911711"},
-        {"path": "results/quandela/runs/ascella-static-input-readiness/results.json", "sha256": "b958067cdc273f7e372b8a9f7d214f3d01f1db359187e6b0cde4b206c300c019"},
-        {"path": "results/quandela/runs/ascella-calibrated-mesh-input-readiness/results.json", "sha256": "9533f4effa537caf97a80911434083d95c374ed7d2760e98440fd1416dbb461d"}
+        {
+          "path": "results/quandela/runs/ascella-hypercomplex-order-pilot/results.json",
+          "sha256": "ee7b4034fa7d6ec33b28c787d2f63491f44805021c24ebe26a9b46920c911711"
+        },
+        {
+          "path": "results/quandela/runs/ascella-static-input-readiness/results.json",
+          "sha256": "b958067cdc273f7e372b8a9f7d214f3d01f1db359187e6b0cde4b206c300c019"
+        },
+        {
+          "path": "results/quandela/runs/ascella-calibrated-mesh-input-readiness/results.json",
+          "sha256": "9533f4effa537caf97a80911434083d95c374ed7d2760e98440fd1416dbb461d"
+        }
       ],
-      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "documents": [
+        "docs/design/ascella-instrument-readiness-and-packed-tests.md"
+      ],
       "gates": {},
-      "acquisitions": ["qd-ascella-order-input-readiness", "qd-ascella-static-input-readiness", "qd-ascella-calibrated-mesh-input-readiness"],
+      "acquisitions": [
+        "qd-ascella-order-input-readiness",
+        "qd-ascella-static-input-readiness",
+        "qd-ascella-calibrated-mesh-input-readiness"
+      ],
       "assumptions": [],
       "depends_on": [],
       "supersedes": [],
@@ -3360,8 +3434,13 @@
       "status": "proposed",
       "boundary": "Local exact and compiler checks establish software conformance. Physical scheduling, refreshed budget, frozen covariance analysis and user approval precede provider execution; the contrast cannot identify a unique noise mechanism.",
       "evidence": [],
-      "documents": ["docs/design/tuna17-zero-divisor-matched-response.md"],
-      "gates": {"core-632": "replay", "core-633": "replay"},
+      "documents": [
+        "docs/design/tuna17-zero-divisor-matched-response.md"
+      ],
+      "gates": {
+        "core-632": "replay",
+        "core-633": "replay"
+      },
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -11197,7 +11276,9 @@
       "documents": [
         "docs/design/iqm-garnet-idle-schedule-train-readout.md"
       ],
-      "gates": {"core-684": "replay"},
+      "gates": {
+        "core-684": "replay"
+      },
       "acquisitions": [
         "iqm-garnet-idle-schedule"
       ],
@@ -11857,8 +11938,7 @@
       "supersedes": [],
       "superseded_by": null,
       "proof_origin": "unproved-open"
-    }
-,
+    },
     {
       "id": "kingston-latency-recovery-window-cost",
       "statement": "On ibm_kingston (calibration 2026-10-25T12:18:10-07:00, executed on physical qubits 106, 105, 104, 117, 107, 125 for r, d0, d1, d2, a0, a1; one job of 34 dynamic PUBs at 16384 shots) a single conditional X recovers an injected X error on a bit-flip-coded Bell pair: F(ff_0) - null is 0.745 [0.699, 0.790] and F(ff_0) - F(unencoded) is 0.553 [0.507, 0.598]. The controller latency and the conditional cost no resolved fidelity beyond their idle: frame_0 - ff_0 reads 0.010 [-0.035, 0.055] and frame_l - ff_0 reads -0.004 [-0.049, 0.041]. A requested 10 us idle, executed as 9.748 us on the feed-forward path (the broadcast overlaps the delay) and 10.000 us on the frame path per the returned scheduler_timing, costs 0.217 [0.172, 0.262] and 0.223 [0.178, 0.268], against 0.082 and 0.079 predicted from the calibrated T1 and T2: a finite-window slope of 0.022 per us on both paths, and -ln(F(W)/F(0)) of 0.033 to 0.034 per us. Descriptively, about 0.12 of that loss is a -0.81 rad rotation of the four-qubit block (near -13 kHz) and the rest a coherence decay with time constant 38 to 40 us against 65 to 67 us predicted.",
@@ -13091,6 +13171,82 @@
         "ascella-transition-context-matched-mesh",
         "ascella-transition-mesh-port-variation"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-two-photon-associator-qualification",
+      "statement": "Physical execution on qpu:ascella and twin simulation on sim:ascella confirm the two-photon octonion associator witness with positive contrast Delta = 1.7237 +- 0.0101 (>170 sigma on hardware, 1.7576 on simulator) against null control Delta_ctrl = -0.0064 +- 0.0107 (<0.6 sigma on hardware, -0.0090 on simulator), with in-situ visibility V = 0.8917 tracking the platform HOM calibration dip (0.8896).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Admitted under approved execution on qpu:ascella and sim:ascella with frozen worker schema. Contrast is bounded by platform partial indistinguishability (HOM dip 88.96%).",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00/results.json",
+          "sha256": "3743d753e0b1e66ece7dc7ecbe422f1af75b2dca60ba78dbb4185710824c511e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00/analysis.json",
+          "sha256": "d36ea935af66951cf4bcf997e3210caf805e6663a690c9600b42c513da5cf82c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00/results.json",
+          "sha256": "239ab4ea7085c04f5eac4803cb3aaf6a23458d5cac2fd86890d7de233acaf315"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00/analysis.json",
+          "sha256": "3ba8a5092548b65e92983dec294b82f620bcf0cc9c429d50b2bfc060a0a27c35"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-sim-twin-falsification/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-two-photon-associator",
+        "qd-ascella-two-photon-associator"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-octonion-character-qualification",
+      "statement": "Physical 16-setting octonion associator character execution on qpu:ascella and twin simulation on sim:ascella confirm that octonionic character projection routes constructively into the predicted harmonic mode with 98.10% to 99.60% raw unconditional output mode fidelity across all 12 detected modes (mean 98.75%), conditional character contrast Delta_char = 1.997074 on the active subspace, and sentinel mode leakage bounded to 0.4888% across modes 8..11.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Sixteen discrete (a, b) octonion settings executed on qpu:ascella (160,000 samples) and sim:ascella (160,000 samples). Raw mode fidelity accounts for all 12 detected physical output modes including 0.49% sentinel leakage and 0.76% cross-talk, whereas conditional contrast is evaluated strictly on the {0, omega} logical subspace.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00/results.json",
+          "sha256": "c5b7d133f40c34f7426d774aafaf51a63399a88f4048873e009c19304cf02d7b"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00/analysis.json",
+          "sha256": "1da83513cc510f503910714eabc1a8cd7f5e11ff7cf9e77153a78b6fa239b6da"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00/results.json",
+          "sha256": "63f1d68dbe1aceceeb6452196ebf45bd8b8ae4960fdefe7787bae11c64a4281d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00/analysis.json",
+          "sha256": "08e1a185375174d89a986f78eecb3cfd26f353edc5a5ba098b8403bb263f6c2c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-sim-twin-falsification/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-associator-character",
+        "qd-ascella-associator-character"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     }

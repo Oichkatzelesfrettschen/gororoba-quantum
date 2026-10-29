@@ -101,13 +101,14 @@ Both planned campaigns were executed on physical quantum processor hardware (`qp
 - **Remote Job ID:** `1277fa1d-852e-46d8-939b-ac56fd67e492`
 - **Execution Profile:** 16 settings, 160,000 total samples, 48 seconds quantum processor time.
 - **Physical Observables:**
-  - Mean Character Contrast: $\Delta_{\text{char}} = 1.997074$ (Ideal: 2.000000).
-  - Pair (1, 2) [target mode 4]: $D_{\text{oct}} = +0.998167$, $D_{\text{ctrl}} = -1.000000$, $\Delta_{\text{char}} = 1.998167$.
-  - Pair (1, 4) [target mode 2]: $D_{\text{oct}} = +0.997393$, $D_{\text{ctrl}} = -0.999194$, $\Delta_{\text{char}} = 1.996587$.
-  - Pair (2, 4) [target mode 1]: $D_{\text{oct}} = +0.996378$, $D_{\text{ctrl}} = -0.999197$, $\Delta_{\text{char}} = 1.995575$.
-  - Pair (3, 5) [target mode 7]: $D_{\text{oct}} = +0.998166$, $D_{\text{ctrl}} = -0.999799$, $\Delta_{\text{char}} = 1.997966$.
-  - Sentinel Leakage Rate: $0.004888$ across physical modes 8..11 ($< 0.49\%$ total leakage across the chip).
-- **Hardware Qualification Verdict:** **ADMITTED**. Proves that octonionic character projection concentrates constructively into the exact predicted harmonic mode on physical quantum hardware with $> 99.85\%$ mode fidelity per setting.
+  - Conditional Character Contrast: Mean $\Delta_{\text{char}} = 1.997074$ on the $\{0, \omega\}$ subspace (Ideal: 2.000000).
+  - Pair (1, 2) [target mode 4]: $D_{\text{oct}} = +0.998167$, $D_{\text{ctrl}} = -1.000000$, $\Delta_{\text{char}} = 1.998167$; Unconditional mode fidelity: $98.10\%$ (oct), $99.78\%$ (ctrl).
+  - Pair (1, 4) [target mode 2]: $D_{\text{oct}} = +0.997393$, $D_{\text{ctrl}} = -0.999194$, $\Delta_{\text{char}} = 1.996587$; Unconditional mode fidelity: $99.60\%$ (oct), $99.18\%$ (ctrl).
+  - Pair (2, 4) [target mode 1]: $D_{\text{oct}} = +0.996378$, $D_{\text{ctrl}} = -0.999197$, $\Delta_{\text{char}} = 1.995575$; Unconditional mode fidelity: $99.22\%$ (oct), $99.59\%$ (ctrl).
+  - Pair (3, 5) [target mode 7]: $D_{\text{oct}} = +0.998166$, $D_{\text{ctrl}} = -0.999799$, $\Delta_{\text{char}} = 1.997966$; Unconditional mode fidelity: $98.08\%$ (oct), $99.72\%$ (ctrl).
+  - Unconditional Mode Fidelity: Evaluated across all 12 detected output modes, raw target-mode fidelity spans $98.03\%$ to $99.78\%$ (mean $99.22\%$ across all 16 settings; mean $98.99\%$ across the 8 octonion settings).
+  - Routing Noise & Leakage: Sentinel leakage across uncoupled chip modes 8..11 is $0.004888$ ($< 0.49\%$), while cross-talk into non-target logical modes 0..7 accounts for $\approx 0.76\%$, explaining the raw fidelity difference from the normalized $\{0, \omega\}$ conditional subspace.
+- **Hardware Qualification Verdict:** **ADMITTED**. Confirms that octonionic character projection routes constructively into the predicted harmonic mode on physical quantum hardware with $98.10\%$ to $99.60\%$ raw unconditional mode fidelity on canonical octonion settings and $> 1.995$ conditional contrast on $\{0, \omega\}$.
 
 ---
 
@@ -119,5 +120,6 @@ Both planned campaigns were executed on physical quantum processor hardware (`qp
 | **Control Contrast $\Delta_{\text{ctrl}}$** | 0.0000 | $-0.0090 \pm 0.0096$ | $-0.0064 \pm 0.0107$ | Both strictly null within $1\sigma$ |
 | **Total Error Closure $C$** | 0.0000 | $0.0059 \pm 0.0135$ | $0.0320 \pm 0.0147$ | Both $< 0.05$ tolerance threshold |
 | **Compensated Contrast** | 1.0000 | $0.9949 \pm 0.0108$ | $1.0189 \pm 0.0150$ | Invariant across optical visibility degradation |
-| **Character Contrast $\Delta_{\text{char}}$** | 2.0000 | 2.000000 | 1.997074 | Physical fidelity $> 99.85\%$ |
+| **Conditional Contrast $\Delta_{\text{char}}$** | 2.0000 | 2.000000 | 1.997074 | Active $\{0, \omega\}$ subspace conditional contrast |
+| **Unconditional Mode Fidelity** | 100.0% | 100.0% | 98.03% - 99.78% (mean 99.22%) | All 12 output modes (0.49% sentinel leakage, 0.76% cross-talk) |
 | **Sentinel Mode Leakage** | 0.0000 | 0.000000 | 0.004888 | Chip leakage bounded $< 0.49\%$ |

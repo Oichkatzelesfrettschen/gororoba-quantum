@@ -647,7 +647,7 @@
   "gororoba_quantum/operator_arithmetic.py": "1e0d010226bbf4e822f07bb2508338155efe2f91287694b5c81363dcabb72700",
   "scripts/experiment_cases.py": "303ff953446f8ce209cd3f21dd28a39c919b7d382f096a92f9fb6b2d5d0b11bd",
   "scripts/hypercomplex_cases.py": "ccda90e4da975ff6d9808f0210bdf05040ad1206809ca071ff45a04c87649120",
-  "scripts/qd_platform.py": "08941de901160d6f419b51905693d9921e3af34add328a82a5030ac4f55d9178",
+  "scripts/qd_platform.py": "b7393247093b46d3563c79f67d5840dcd10c6757ec23a947fc819ed07ae51638",
   "scripts/qi_zero_divisor_cases.py": "6c0a7c15e3f04ec0036ad42e8712629b7dd764ddbc51d4ba1ee2526156515174"
  },
  "versions": {
