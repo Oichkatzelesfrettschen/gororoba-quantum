@@ -1,0 +1,145 @@
+{
+ "analysis_source_sha256": "7ba0712356c50de2e08dd51509f4481e3ea5e3055869701af74a8d81faad6e41",
+ "baseline": {
+  "duration_seconds": 16,
+  "sources": [
+   {
+    "file": "results/quandela/runs/ascella-context-packed-forward/cases.json",
+    "sha256": "8b7e58ef72a27d552308fbab26e54b0605080ece6f80bfda39703079d422d42b"
+   },
+   {
+    "file": "results/quandela/runs/ascella-context-packed-forward/submission.json",
+    "sha256": "174c8c33506e3597b908101c2beb1d409f91d7a90234ac3d619e22acfa8b0383"
+   },
+   {
+    "file": "results/quandela/runs/ascella-context-packed-forward/job-body.json",
+    "sha256": "44cfc9c07696bd52edfa54daefe0d7656722e83b2e387742ae2c53e4a9841044"
+   },
+   {
+    "file": "results/quandela/runs/ascella-context-packed-forward/results.json",
+    "sha256": "66d869d6f388ac291d4cf9cece7b92cab3820d3371ebd3b0f62a755fb43ccf13"
+   },
+   {
+    "file": "results/quandela/runs/ascella-context-packed-forward/raw/result.json",
+    "sha256": "6c9691a89f91b174d1aaac54ca25be99412f5ab04cce78f3985889bc8ebecf9f"
+   }
+  ],
+  "start_time": 1793147885.339165
+ },
+ "boundary": "Same recorded mesh does not establish unchanged analog calibration; elapsed time and context can confound drift.",
+ "campaign_sha256": "51e909b0287da357ec3f09fc93be3b2d6fb08b8356ad471583d6e18fb89dea1f",
+ "comparisons": [
+  {
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    0.0013501226530389238,
+    0.00475188330935398
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.005096435546875,
+   "second_events": 65536,
+   "setting": "computational-to-computational-input-2",
+   "simultaneous_total_variation_bounds": [
+    0.0012116953180533287,
+    0.010913775179564008
+   ]
+  },
+  {
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.019906928858019902,
+    -0.014754927758708238
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0186004638671875,
+   "second_events": 65536,
+   "setting": "computational-to-computational-input-5",
+   "simultaneous_total_variation_bounds": [
+    0.01373365961563415,
+    0.025068260584727834
+   ]
+  },
+  {
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    0.058055943012854876,
+    0.06616254227313564
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0621185302734375,
+   "second_events": 65536,
+   "setting": "product_fourier-to-product_chirped-input-4",
+   "simultaneous_total_variation_bounds": [
+    0.028726025794355056,
+    0.09764450853576051
+   ]
+  },
+  {
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.002069949280638383,
+    0.0003921768075201978
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0009307861328125,
+   "second_events": 65536,
+   "setting": "computational-to-computational-input-0",
+   "simultaneous_total_variation_bounds": [
+    0.0,
+    0.0043369835527825445
+   ]
+  },
+  {
+   "first_events": 65536,
+   "leakage_difference_second_minus_first": [
+    -0.029185585168259594,
+    -0.02198480159238341
+   ],
+   "matched_mesh": true,
+   "matched_mesh_interpretation": "descriptive",
+   "observed_total_variation": 0.0266571044921875,
+   "second_events": 65536,
+   "setting": "product_fourier-to-product_chirped-input-0",
+   "simultaneous_total_variation_bounds": [
+    0.009060696628064049,
+    0.06189730614001622
+   ]
+  }
+ ],
+ "confidence": 0.95,
+ "elapsed_hours": 33.378884,
+ "endpoints": 140,
+ "matched_meshes": 5,
+ "repeat": {
+  "duration_seconds": 16,
+  "sources": [
+   {
+    "file": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat/cases.json",
+    "sha256": "1ba22828ba3c8e827be94c5eb987f401434570059a31ee584a55df927ea74be9"
+   },
+   {
+    "file": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat/submission.json",
+    "sha256": "777b4d5eed25906535a2396ff8de4d220874728abc03f9b1858cb53d673ad659"
+   },
+   {
+    "file": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat/job-body.json",
+    "sha256": "e3f62ff949117345891da9cd6d7a159ed30e5d8326de37ad03fc28592f678ef2"
+   },
+   {
+    "file": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat/results.json",
+    "sha256": "bebeb3ca7d92df23422b883e4bb8908c4963110ae34ccefae06a3fd322e6b844"
+   },
+   {
+    "file": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat/raw/result.json",
+    "sha256": "4bb2408b3fcba07886d8a7a9128d64d7eacd839737326f426d1d39eafefdeab4"
+   }
+  ],
+  "start_time": 1793268049.323241
+ },
+ "scheduled_analysis_source_sha256": "b3301a928dd611b988a7bd2be2a75a4e0dabbbc4416a7a112e5a0906c80f5a81",
+ "schema": "ascella-transition-day-repeat-analysis-v1"
+}

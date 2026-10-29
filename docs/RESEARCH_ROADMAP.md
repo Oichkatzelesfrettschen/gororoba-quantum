@@ -72,7 +72,7 @@ proposed work, in dependency order:
 | numerical or stochastic simulation | established | 11 |
 | numerical or stochastic simulation | superseded | 1 |
 | preregistered emulator control | established | 12 |
-| preregistered hardware inference | established | 80 |
+| preregistered hardware inference | established | 81 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |

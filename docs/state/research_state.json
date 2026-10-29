@@ -2471,6 +2471,13 @@
       "run": "results/quandela/runs/ascella-transition-mesh-port-6",
       "family": "dimension-six compilation and output-port diagnostics",
       "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
+    },
+    {
+      "id": "qd-ascella-transition-matched-mesh-day-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat",
+      "family": "day-separated dimension-six matched meshes",
+      "question": "How do five retained transition distributions compare at least 24 hours later under matching returned mesh identities?"
     }
   ],
   "claims": [
@@ -12721,6 +12728,46 @@
       ],
       "depends_on": [
         "ascella-transition-context-matched-mesh"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-transition-day-separated-matched-mesh",
+      "statement": "The five-setting Ascella repeat started 33.38 hours after its forward-packed baseline and retained 327,680 accepted events. Returned circuit and input serializations match the baseline for all five settings. Four of five total-variation intervals exclude zero: identity input 5 leakage fell from 1.941% to 0.208% and Fourier-to-chirped input 0 from 3.214% to 0.655%, while Fourier-to-chirped input 4 rose from 0.198% to 6.410% (leakage-difference interval [5.81%, 6.62%]); identity input 0 is consistent with no change.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Five selected settings, a fixed 140-endpoint family and IID accepted-event intervals. A matched returned mesh does not establish identical applied analog controls; elapsed time, calibration and source or detector response can confound the comparison, and changes of comparable size are already recorded between jobs minutes apart in different contexts, so the 33-hour difference is not attributed to drift.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat/day-repeat-analysis.json",
+          "sha256": "b41b3ffc7eb067d128d3307176edac36aaf64192710beb2aa5d1d4867dad693d"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-day-repeat-ci/acquisition-inventory.json",
+          "sha256": "32bca62f65802a6d04f09a657679f5aa770cf4b3ef981679a5bc40aea34774ff"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-day-repeat-ci/campaign.json",
+          "sha256": "51e909b0287da357ec3f09fc93be3b2d6fb08b8356ad471583d6e18fb89dea1f"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-transition-day-repeat-ci/README.md",
+        "docs/evidence/ascella-transition-day-repeat-ci/scheduler-admission.md",
+        "docs/evidence/ascella-transition-day-repeat-ci/findings.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-transition-matched-mesh-day-repeat"
+      ],
+      "assumptions": [
+        "Simultaneous binomial coverage is conditional on IID accepted events within each setting."
+      ],
+      "depends_on": [
+        "ascella-transition-context-matched-mesh",
+        "ascella-transition-mesh-port-variation"
       ],
       "supersedes": [],
       "superseded_by": null
