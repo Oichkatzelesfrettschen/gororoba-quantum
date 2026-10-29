@@ -137,7 +137,11 @@ def build_setting_item(item: tuple[int, dict[str, Any]]) -> dict[str, Any]:
     col = [[float(v.real), float(v.imag)] for v in u12[:, 0]]
 
     ideal_probs = {f"{m}": round(float(abs(u8[m, 0]) ** 2), 6) for m in range(8) if abs(u8[m, 0]) ** 2 > TOLERANCE}
-    ideal_d = 1.0 if arm == "octonion" else -1.0
+    p_omega = float(abs(u8[omega, 0]) ** 2)
+    p_0 = float(abs(u8[0, 0]) ** 2)
+    p_sum = p_omega + p_0
+    ideal_d = (p_omega - p_0) / p_sum if p_sum > TOLERANCE else 0.0
+    target_mode = omega if p_omega > p_0 else 0
 
     return {
         "name": f"iter{idx:02d}-{spec['name']}",
@@ -150,8 +154,8 @@ def build_setting_item(item: tuple[int, dict[str, Any]]) -> dict[str, Any]:
         "operator": encoded(u12),
         "ideal": {
             "probabilities": ideal_probs,
-            "d_observable": ideal_d,
-            "target_mode": omega if arm == "octonion" else 0,
+            "d_observable": round(ideal_d, 6),
+            "target_mode": target_mode,
         },
     }
 
@@ -389,6 +393,9 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     settings = manifest["settings"]
     require(len(entries) == len(settings), f"mismatch: {len(entries)} != {len(settings)}")
 
+    min_photons = int(manifest.get("min_detected_photons", 1))
+    admission_errors: list[str] = []
+
     per_setting_reports = []
     pair_contrasts: dict[str, dict[str, float]] = {}
 
@@ -402,7 +409,11 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         arm = s["arm"]
         omega = s["omega_target"]
 
-        counts = entry["counts"]
+        counts = entry.get("counts")
+        if not isinstance(counts, dict) or not counts:
+            admission_errors.append(f"{name}: empty or missing counts payload")
+            counts = {}
+
         c_omega = 0
         c_0 = 0
         c_sentinel = 0
@@ -426,6 +437,11 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         total_focal += focal
         total_sentinel += c_sentinel
 
+        if (c_omega + c_0) < min_photons:
+            admission_errors.append(
+                f"{name}: focal counts (c_omega + c_0 = {c_omega + c_0}) below min_detected_photons ({min_photons})"
+            )
+
         denom = max(1, c_omega + c_0)
         d_obs = (c_omega - c_0) / denom
         se = math.sqrt(max(0.0, 1.0 - d_obs**2) / denom)
@@ -446,6 +462,21 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         if pair_key not in pair_contrasts:
             pair_contrasts[pair_key] = {}
         pair_contrasts[pair_key][arm] = d_obs
+
+    # If any iteration violated the count admission threshold, fail closed
+    if admission_errors:
+        return {
+            "status": "REFUSED",
+            "verdicts": {
+                "execution_status": "REFUSED",
+                "admission_errors": admission_errors,
+                "character_signal_detected": False,
+                "mean_character_contrast": 0.0,
+                "sentinel_leakage_rate": 0.0,
+            },
+            "contrasts_by_pair": {},
+            "iterations": per_setting_reports,
+        }
 
     # Compute contrast Delta_char = D_oct - D_ctrl for each pair
     contrasts_summary = {}

@@ -1,5 +1,6 @@
 """Unit tests for the Ascella 8-mode octonion associator-character interferometer."""
 
+import json
 import sys
 from itertools import combinations
 from pathlib import Path
@@ -16,8 +17,10 @@ from ascella_associator_character import (  # noqa: E402
     MODES,
     PRIMARY_PAIRS,
     TOLERANCE,
+    analyze,
     associator_sign,
     build_character_unitary,
+    build_documents,
     character_frequency,
     check,
     dry_run,
@@ -99,3 +102,35 @@ def test_end_to_end_simulation_dry_run(tmp_path):
         raise AssertionError("cases.json does not exist")
     if not (tmp_path / "dry_run_simulation" / "results.json").exists():
         raise AssertionError("results.json does not exist")
+
+
+def test_reversed_arm_ideal_metadata():
+    """Verify that reversed arm ideal metadata matches physical unitary transfer to omega."""
+    docs = build_documents()
+    manifest = json.loads(docs["cases.json"].decode())
+    for s in manifest["settings"]:
+        if s["arm"] == "reversed":
+            omega = s["omega_target"]
+            if s["ideal"]["target_mode"] != omega:
+                raise AssertionError(f"reversed arm target_mode {s['ideal']['target_mode']} != {omega}")
+            if s["ideal"]["d_observable"] != 1.0:
+                raise AssertionError(f"reversed arm d_observable {s['ideal']['d_observable']} != 1.0")
+
+
+def test_empty_counts_refused(tmp_path):
+    """Verify that empty counts fail closed with REFUSED rather than swallowing zero counts."""
+    docs = build_documents()
+    cases_file = tmp_path / "cases.json"
+    cases_file.write_bytes(docs["cases.json"])
+    manifest = json.loads(docs["cases.json"].decode())
+
+    # Build empty count entries
+    empty_iterations = [{"name": s["name"], "counts": {}} for s in manifest["settings"]]
+    results_file = tmp_path / "results.json"
+    results_file.write_text(json.dumps({"iterations": empty_iterations}))
+
+    report = analyze(tmp_path)
+    if report["status"] != "REFUSED":
+        raise AssertionError(f"expected REFUSED on empty counts, got {report['status']}")
+    if report["verdicts"]["execution_status"] != "REFUSED":
+        raise AssertionError(f"expected execution_status REFUSED, got {report['verdicts']['execution_status']}")
