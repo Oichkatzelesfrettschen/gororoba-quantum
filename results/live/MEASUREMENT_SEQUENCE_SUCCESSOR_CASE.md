@@ -75,10 +75,11 @@ The null ran on both 5600-shot rehearsals, each arm on its own rehearsal's calib
 [successor-null-s5600.json](../../docs/evidence/measurement_sequence/successor-null-s5600.json) retains the 22 arm
 records' statistics with each full record's sha256. Every arm at both widths has 0 false fires and meets every target.
 The width-24 plateau-retained arm issues a verdict in 1.4 % of replicates and needed 21,399 to reach 299, so it runs
-at a cap of 30,000; its first 20,000 rows equal those of a cap-20,000 run, which the cap only stops. One invocation
-writes all 22 records:
-`"$PYTHON" scripts/msq_successor_null.py results/live/2026-10-29T012554.415581Z results/live/2026-10-29T013110.359249Z
---arms all --cap 2026-10-29T013110.359249Z:plateau-retained=30000 --out-dir DIR`.
+at a cap of 30,000; its first 20,000 rows equal those of the cap-20,000 run, which the cap only stops. Two commands
+wrote the records: `"$PYTHON" scripts/msq_successor_null.py results/live/2026-10-29T012554.415581Z
+results/live/2026-10-29T013110.359249Z --calibrate-sparse --arms all --out-dir DIR` (the sparse scales and 22 arm
+records) and `"$PYTHON" scripts/msq_successor_null.py results/live/2026-10-29T013110.359249Z --arms plateau-retained
+--cap plateau-retained=30000 --out-dir DIR2` (the width-24 plateau-retained record the summary retains).
 
 | Arm | Width 32 (the run's width) | Width 24 |
 |---|---|---|
