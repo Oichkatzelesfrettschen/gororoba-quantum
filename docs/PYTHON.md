@@ -33,7 +33,7 @@ platform boundaries:
      in `~/Github/PKGBUILDs`, all linking the system OpenBLAS (`blas-openblas`) as BLAS and LAPACK.
    - Hardware acceleration: NVIDIA RTX 4070 Ti (SM 89), CUDA 13.4.3, cuQuantum 26.09.0.8
      (libcustatevec.so.1 and libcutensornet.so.2), and cutensor 2.8.1.0.
-   - Locally compiled packages: `python-qiskit` (2.6.1), `python-qiskit-aer-cuda` (0.18.2-1 with cuStateVec support),
+   - Locally compiled packages: `python-qiskit` (2.6.1), `python-qiskit-aer-cuda` (0.18.2-3 with cuStateVec support and unique provider names),
      `python-samplomatic` (0.21.0), and `python-qiskit-ibm-runtime` (0.51.0); the library wiring
      is in [python-stack.md](notes/build_host/python-stack.md).
    - Computer algebra: System `sagemath` (10.10) for exact algebraic geometry and

@@ -17,15 +17,35 @@ in `~/Github/PKGBUILDs` for hosts without a GPU.
 
 ## Provider name collision on GPU builds
 
-`AerProvider._get_backends` (qiskit_aer/aerprovider.py, unchanged through
-0.18.2) registers the automatic method under the bare name `aer_simulator`
-once per available device. On a GPU-capable module that name matches a CPU
-and a GPU entry, and `Aer.get_backend("aer_simulator")` raises
-`QiskitBackendNotFoundError: More than one backend matches the criteria`.
-`CUDA_VISIBLE_DEVICES=` does not hide the GPU entry. Construct
-`AerSimulator(device="CPU")` or `AerSimulator(device="GPU")` directly;
-a `device=` keyword to `get_backend` still matches both entries. The same collision fails qiskit's own test
-`test_sabre_swap.TestSabreSwap.test_no_infinite_loop` on this host.
+Upstream Aer, through 0.18.2 and its main branch, has two defects in how it names backends:
+
+- `AerProvider._get_backends` (qiskit_aer/aerprovider.py) registers the
+  automatic method under the bare name `aer_simulator` once per available
+  device. On a GPU-capable module that name matches a CPU and a GPU entry, and
+  `Aer.get_backend("aer_simulator")` raises `QiskitBackendNotFoundError: More
+  than one backend matches the criteria`. A `device=` keyword does not
+  disambiguate, because `AerProvider.backends` ignores its keyword arguments.
+  `CUDA_VISIBLE_DEVICES=` does not hide the GPU entry either, because
+  `available_devices()` reports the compiled devices.
+- `AerSimulator.set_option`, which the provider calls with `device`, rebuilds
+  the name without the device suffix whenever the method is automatic. The
+  constructor applies the suffix, so the two paths disagree, and the GPU
+  backend reports the name `aer_simulator`.
+
+python-qiskit-aer-cuda 0.18.2-3 carries `aer-provider-unique-names.patch`, which fixes
+both defects:
+
+- The GPU entry of the automatic method registers as `aer_simulator_gpu`,
+  matching the existing `aer_simulator_statevector_gpu` naming.
+- `set_option` derives the name with the constructor's rule: a method suffix
+  unless the method is automatic, then a device suffix unless the device is the CPU.
+
+After the patch, every provider key equals its backend's `name`, and the 16
+names are unique. `get_backend("aer_simulator")` returns the CPU backend and
+`get_backend("aer_simulator_gpu")` the GPU backend. qiskit 2.6.1's suite,
+including `TestSabreSwap.test_no_infinite_loop`, passes. A wheel install of
+upstream Aer on a GPU host still has both defects, and
+`AerSimulator(device=...)` works on both builds.
 
 ## Connections
 

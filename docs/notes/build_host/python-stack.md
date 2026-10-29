@@ -8,10 +8,10 @@ requirements.txt pins of qiskit 2.6.0 and runtime 0.50.0 until the pin bump land
 
 | Arch package | Pin it carries |
 |---|---|
-| python-qiskit | qiskit 2.6.1, packaged without `check()`, whose test base turns every DeprecationWarning into an error and so fails the circuit-library tests on an mpmath DeprecationWarning. The suite (`stestr run -E test_equivalence_draw`, as in `check()`) run against the installed package with that base class reporting DeprecationWarning and QiskitWarning as warnings gives 63422 passed, 31 skipped and 1 failed. The failure, `TestSabreSwap.test_no_infinite_loop`, calls `Aer.get_backend("aer_simulator")`, which the GPU build's duplicate provider registration rejects ([qiskit-aer.md](../qiskit-packages/qiskit-aer.md)) |
+| python-qiskit | qiskit 2.6.1, packaged without `check()`, whose test base turns every DeprecationWarning into an error and so fails the circuit-library tests on an mpmath DeprecationWarning. The suite (`stestr run -E test_equivalence_draw`, as in `check()`) run against the installed package with that base class reporting DeprecationWarning and QiskitWarning as warnings gives 63429 passed, 31 skipped and 0 failed on python-qiskit-aer-cuda 0.18.2-3, whose provider patch removes the duplicate `aer_simulator` registration ([qiskit-aer.md](../qiskit-packages/qiskit-aer.md)) |
 | python-qiskit-ibm-runtime | qiskit-ibm-runtime 0.51.0; `check()` passes against qiskit 2.6.1 (2049 passed, 7 skipped) |
-| python-qiskit-aer-cuda (provides python-qiskit-aer) | qiskit-aer 0.18.2, pkgrel 1: CUDA Thrust backend for sm_89 with cuQuantum, so `AerSimulator(device="GPU", cuStateVec_enable=True)` runs |
-| cuquantum | cuquantum 26.09.0.8 for CUDA 13, repackaged from the vendor archive: libcustatevec.so.1 1.15.0 and libcutensornet.so.2 2.14.0, the two libraries python-qiskit-aer-cuda 0.18.2-1 links |
+| python-qiskit-aer-cuda (provides python-qiskit-aer) | qiskit-aer 0.18.2, pkgrel 3 (unique provider names, [qiskit-aer.md](../qiskit-packages/qiskit-aer.md)): CUDA Thrust backend for sm_89 with cuQuantum, so `AerSimulator(device="GPU", cuStateVec_enable=True)` runs |
+| cuquantum | cuquantum 26.09.0.8 for CUDA 13, repackaged from the vendor archive: libcustatevec.so.1 1.15.0 and libcutensornet.so.2 2.14.0, the two libraries python-qiskit-aer-cuda 0.18.2-3 links |
 | cutensor | cutensor 2.8.1.0, the tensor library libcutensornet.so.2 loads |
 | python-cuquantum | cuquantum-python-cu13 26.9.0: `cuquantum.bindings` (custatevec, cutensornet, cudensitymat, cupauliprop, custabilizer) and `cuquantum.tensornet` over the cuquantum package |
 | cuda | cuda 13.4.3 (nvcc 13.4.92): the toolkit both packages build against and the libcublas and libcusolver the module loads from /opt/cuda/lib64 |
