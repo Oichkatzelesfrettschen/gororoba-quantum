@@ -21,8 +21,9 @@ report() {
     fi
     return 0
 }
+model=$(sed -n 's/^model name[[:space:]]*: //p' /proc/cpuinfo 2>/dev/null | head -n 1)
 if ! grep -qw avx512f /proc/cpuinfo 2>/dev/null; then
-    report "not run; the CPU flags lack avx512f ($(sed -n 's/^model name[[:space:]]*: //p' /proc/cpuinfo 2>/dev/null | head -n 1))"
+    report "not run; the CPU flags lack avx512f ($model)"
     exit 0
 fi
 gates=$("$PYTHON" -B -c '
@@ -35,9 +36,9 @@ if [ -z "$gates" ]; then
     exit 1
 fi
 if "$PYTHON" ci/run_gates.py --gates "$gates" "$@"; then
-    report "ran $gates on an avx512f CPU; every record replayed bit for bit"
+    report "ran $gates on an avx512f CPU ($model); every record replayed bit for bit"
 else
     status=$?
-    report "ran $gates on an avx512f CPU; a replay gate failed (run_gates exit $status)"
+    report "ran $gates on an avx512f CPU ($model); a replay gate failed (run_gates exit $status)"
     exit "$status"
 fi
