@@ -1,0 +1,33 @@
+{
+ "schema": "submitted-circuit-row-v1",
+ "row": {
+  "job_id": "db6qe7klf4us73c5pdc0",
+  "run": "results/live/kingston-wide-control-result",
+  "retained_file": "results/live/kingston-wide-control-result/submitted-circuits.qpy",
+  "retained_sha256": "814308c4c5b7c1f54487dcf1703ff2d115dc9097610bc3631e07f2883a1887c9",
+  "order_source": "retained submission order",
+  "expected_pubs": [
+   "exp1_ramsey_156q",
+   "exp2_shor_carpet_150q"
+  ],
+  "items": 2,
+  "item_kinds": [
+   "CircuitItem"
+  ],
+  "positional_matches": 2,
+  "submitted_qpy_sha256": [
+   "7d9bedd3cf080fc58e3a3a51498a4d03e3572deab969cb8a24fc9f641a00b958",
+   "c67451a0b656540eb8fa07815a1cd75d18749bc261403fb5d498a2a8eeb8ca92"
+  ]
+ },
+ "provenance": {
+  "origin": "service",
+  "retrieved_utc": "2026-10-29T11:43:19.794173+00:00",
+  "operation": "read existing job inputs; submissions and uploads excluded",
+  "runtime_versions": {
+   "qiskit": "2.6.1",
+   "qiskit-ibm-runtime": "0.51.0"
+  },
+  "collector_sha256": "f4a09c11354074974f2268af2e48ec636f832260f9de8f2a1a4db61eb85ce888"
+ }
+}

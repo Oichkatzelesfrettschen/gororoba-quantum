@@ -130,6 +130,11 @@ QPY bytes follow the Qiskit release (35 of 684 circuits serialize differently un
 format 17 with the generator version masked), so a Qiskit pin change fills a new `jobs/qiskit-<release>/` by
 `--append` and leaves the earlier ledger as its record.
 
+The `jobs/qiskit-2.6.1/` ledger came from an `--append` run under Qiskit 2.6.1 and qiskit-ibm-runtime 0.51.0 that
+retrieved the submitted inputs of all 43 audited jobs through the read-only job interface: 786 items, each equal to
+its retained circuit in order. Against the `jobs/qiskit-2.6.0/` rows, which stay as that release's record, only the `submitted_qpy_sha256`
+lists differ, in all 786 items.
+
 Replay the row ledger from the repository root with the current pinned interpreter, and append rows for newly
 audited jobs:
 

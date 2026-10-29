@@ -4616,9 +4616,9 @@
     "docs/notes/ionq/requirements-ionq.txt": "2.6.1",
     "docs/notes/open_quantum/requirements-oq.txt": "2.5.2",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.3.1",
-    "requirements.txt": "2.6.0",
-    "scripts/kaggle_run.py:84:KERNEL_PINS": "2.6.0",
-    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "2.6.0",
+    "requirements.txt": "2.6.1",
+    "scripts/kaggle_run.py:84:KERNEL_PINS": "2.6.1",
+    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "2.6.1",
     "IQM retained environment": "2.1.2"
    },
    "observed_host_version": "2.5.2",
@@ -5126,8 +5126,8 @@
    "distribution": "qiskit-aer",
    "declared_versions": {
     "ci/requirements-replay.txt": "0.17.2",
-    "requirements.txt": "0.17.2",
-    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.17.2",
+    "requirements.txt": "0.18.2",
+    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.18.2",
     "IQM retained environment": "0.17.2"
    },
    "observed_host_version": "0.17.2",
@@ -5277,7 +5277,7 @@
   {
    "distribution": "qiskit-aer-gpu-cu11",
    "declared_versions": {
-    "scripts/kaggle_run.py:85:KERNEL_PINS": "0.17.2"
+    "scripts/kaggle_run.py:85:KERNEL_PINS": "0.18.2"
    },
    "observed_host_version": null,
    "role": "CUDA 11 Aer wheel for the isolated Kaggle GPU path; exclusively owns qiskit_aer and shares the CPU/CUDA 13 Aer engine.",
@@ -5295,7 +5295,7 @@
   {
    "distribution": "qiskit-aer-gpu-cu13",
    "declared_versions": {
-    "scripts/kaggle_run.py:113:GPU_AER_PINS": "0.17.2"
+    "scripts/kaggle_run.py:113:GPU_AER_PINS": "0.18.2"
    },
    "observed_host_version": null,
    "role": "Repository-built CUDA 13 Aer wheel for qualified Kaggle GPU simulation; exclusively owns qiskit_aer in that environment and shares the Aer engine, not an independent witness.",
@@ -5537,10 +5537,10 @@
    "distribution": "qiskit-ibm-runtime",
    "declared_versions": {
     "ci/requirements-replay.txt": "0.50.0",
-    "requirements.txt": "0.50.0",
-    "scripts/kaggle_run.py:88:KERNEL_PINS": "0.50.0",
-    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.50.0",
-    "scripts/kaggle_run.py:163:PIN_GROUPS": "0.50.0",
+    "requirements.txt": "0.51.0",
+    "scripts/kaggle_run.py:88:KERNEL_PINS": "0.51.0",
+    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.51.0",
+    "scripts/kaggle_run.py:163:PIN_GROUPS": "0.51.0",
     "IQM retained environment": "0.43.1"
    },
    "observed_host_version": "0.50.0",
@@ -7474,13 +7474,13 @@
   "docs/notes/quafu/requirements-quafu.txt": "0792aae81e6f09210b366b8a4db405e74c35435207f1e67ddc3b61707db9e61f",
   "docs/notes/quantum_inspire/requirements-qi.txt": "95deb5311e97df0c191622f407f6f4ab747459c1e97e5d2cbf4d36b959654d88",
   "packaging/qiskit-aer-cuda/build-requirements.txt": "10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352",
-  "requirements.txt": "c83769287c82d8b2616f254226db544ed0c323756f648a813290d36aa1f59816",
-  "scripts/kaggle_run.py": "9551cfd370c1f9c40abdcbe150c2d4c159952479df12785d182056a85fed8b46",
-  "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "b0b9e3b345886f2acee26395802129d8ad1c5dc5618533c77653a88d939bd6ba",
+  "requirements.txt": "49a450b4495470d5a42522602b6c59bc0b6ac81822a530109ce9a774c286527b",
+  "scripts/kaggle_run.py": "056a4da780305f35588487102dad7e2d9b460291505643ccbf9d57f3e5c4d2a9",
+  "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "91341759b26f68f39d0764b256139b147f538e39824de48eb3acc0ea828da1d2",
   "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",
   "scripts/hypercomplex_libraries.py": "0f4cb3cffa3d88479952e557e0f706cc03a42f28deb1abd60091db026659116e",
   "docs/notes/quandela/python-stack.md": "e9ccf726ac8f136c9be0fb570fc4442846d50809620eb91726543d2ea43d4571",
-  "docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh": "8a7d8de6918424b5d187b85671827cdcbfe0d33421eae5b30ed6c837ff952c67",
+  "docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh": "3253fac412585aa0321ab568e78140b6139289c4be9f8bd16f27f62d7da2151e",
   "docs/notes/iqm/python-stack-versions.json": "295941539dd0065d5ece5eb164df8131d38157e2e1ba8d9f5d95a7db5ef74062"
  },
  "tracked_import_roots": {
@@ -14838,6 +14838,7 @@
    "numpy",
    "parallel",
    "pathlib",
+   "pins",
    "qiskit",
    "re",
    "sys",

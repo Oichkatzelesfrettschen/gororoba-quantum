@@ -1,0 +1,53 @@
+{
+ "schema": "submitted-circuit-row-v1",
+ "row": {
+  "job_id": "dbb4se1gv2cc73e7pf40",
+  "run": "results/live/2026-10-19T170620.832658Z",
+  "retained_file": "results/live/2026-10-19T170620.832658Z/isa.qpy",
+  "retained_sha256": "3dab923b6306cf8bc50eff8e8be549e9427a050abcbbae25a6d24edc21da8e10",
+  "order_source": "record.json submission.jobs[].pubs",
+  "expected_pubs": [
+   "ibm_fez_dynamic_pub_01",
+   "ibm_fez_dynamic_pub_02",
+   "ibm_fez_dynamic_pub_03",
+   "ibm_fez_dynamic_pub_04",
+   "ibm_fez_dynamic_pub_05",
+   "ibm_fez_dynamic_pub_06",
+   "ibm_fez_dynamic_pub_07",
+   "ibm_fez_dynamic_pub_08",
+   "ibm_fez_dynamic_pub_09",
+   "ibm_fez_dynamic_pub_10",
+   "ibm_fez_dynamic_pub_11",
+   "ibm_fez_dynamic_pub_12"
+  ],
+  "items": 12,
+  "item_kinds": [
+   "CircuitItem"
+  ],
+  "positional_matches": 12,
+  "submitted_qpy_sha256": [
+   "1c6fc5cdbd90c96fa2450816caa611914804174a024b3d9cf83f71895dd58e11",
+   "fc83aee96d2ce552c3305ae65e95b689f4a29e888e8627fa987b01719f726ff4",
+   "0511496813cace9e1007a28bfed2acbc4f58c5c6ae43f82803e38a5ce496bfbe",
+   "61e99eb9c6c281058e31416c6ea364c97b952fe0e746a15c1a2d264f6d2cdd65",
+   "d6b20beafd7d52c4097e593fb6d6489c8bdc8bffb95e2179eecb7ef9879343ee",
+   "82bfb07b991b44c7195b75e4de569b9765427f4720ce5e012611d6323fe2384b",
+   "d2e079705bbf73b0c21f5e6414f4fab3042cfe7c37866c6a0ee62558509f680e",
+   "b149b4a8b9f0c24ba57538889fb5b52722873c708761736a563035198ff7026c",
+   "29bd856595a7f31e4746de45e5ea8cc0dc6f01e9cf329232292bb7eead44da28",
+   "85a722d6dc3c81ba5e1f29ddb804d661074d780ca64ff4725f9d526a3ccda720",
+   "b01a4af619546dc5b15d6fb52c178b62369d5ba7a525738711b586a6629e237e",
+   "12bdeb2ecea8672de58ff4155653e7b5edffacad8e63495c6bafde518fb2b74a"
+  ]
+ },
+ "provenance": {
+  "origin": "service",
+  "retrieved_utc": "2026-10-29T11:43:31.988409+00:00",
+  "operation": "read existing job inputs; submissions and uploads excluded",
+  "runtime_versions": {
+   "qiskit": "2.6.1",
+   "qiskit-ibm-runtime": "0.51.0"
+  },
+  "collector_sha256": "f4a09c11354074974f2268af2e48ec636f832260f9de8f2a1a4db61eb85ce888"
+ }
+}
