@@ -271,102 +271,182 @@ These local observations have no retained replay producer or digest and do not
 establish a provider-served schedule, physical pulses, initialization or
 carryover. A new case must bind its own full Target and compilation evidence.
 
-## Two-reporter qualification case
+## Full-register delay-and-activity pilot
 
-The first candidate qualifies the three-qubit reporter/actor source and its
-sampling and cost contract for a later array. An activity contrast on reporters
-0 and 1 is a device-specific secondary observation; this candidate neither
-qualifies the remaining qubits nor establishes an array-wide effect. A successful
-qualification permits writing a separately approved confirmation case; it does
-not authorize that case, establish IID shots, or establish a physical mechanism.
+The [operational case](readout-actor-delay-qualification.json) fixes a
+156-qubit measured register, reporters 0 and 1, and actor 2 on `ibm_kingston`.
+All remaining qubits receive ground preparation and terminal measurement.
+Every shot retains the complete register. Declared pair and sign-parity
+projections use those same shots; separate component acquisitions cannot
+replace them. Qubit 155 supplies a distant descriptive projection, rather
+than a qualified spatial control. Fresh connectivity and scheduling evidence
+bound every claim about physical separation.
 
-The proposed 20-second ceiling covers the complete qualification program,
-including a delay-selection pilot, discovery, reference circuits and any
-confirmation jobs. A delay is frozen before confirmation. A hardware pilot that
-chooses a delay needs its own written case and approval, and its charge consumes
-the same total ceiling. If all stages cannot fit, the qualification stops
-instead of removing controls after acquisition.
+The pilot measures preparation-associated activity response and compares
+three repetition-delay conditions. The pilot qualifies the acquisition and
+decoding software on this layout. The pilot neither confirms parity protection
+nor establishes initialization adequacy, causal directed influence or
+chip-wide protection. A local noise simulation cannot determine the device's
+unmodeled joint error process or its delay response.
 
-| Allocation per input and actor arm | Shots | Executions over eight conditions | Status |
-|---|---:|---:|---|
-| Delay-selection pilot | Unspecified | Unspecified | Required only when choosing the delay from hardware data; separately approved and charged |
-| Discovery | 10,000 | 80,000 | Proposed, not frozen |
-| Confirmation | 30,000 | 240,000 | Proposed, not frozen; per-condition precision uses 30,000 shots |
-| Initialization and carryover references | Unspecified | Unspecified | Their design, sampling and charges remain open |
-| Combined science allocation | 40,000 | 320,000 | Discovery plus confirmation only; excludes pilot and references |
+### Frozen allocation and complete cost scenario
 
-The initialization model distinguishes three operations. `rep_delay` is the
-runtime wait between executions. Runtime `init_qubits` requests implicit
-initialization; IBM's local estimator models that request by adding one Target
-reset duration per execution. An explicit reset instruction in a submitted
-circuit is a separate operation and enters the scheduled circuit duration.
-The present source catalogue contains no explicit reset. A Target reset's
-duration is an estimation input, not evidence that the service implements
-initialization as that exact physical reset or that initialization is adequate.
-The exact submitted options, compilation and returned timing must establish
-which operations can be observed; unsupported physical details remain unknown.
+| Stage | Repetition delay | Shots per preparation and actor arm | Conditions | Full-register shots | Modeled seconds including one job overhead |
+|---|---:|---:|---:|---:|---:|
+| Pilot | 30 microseconds | 4,096 | 8 | 32,768 | 3.128005632 |
+| Pilot | 50 microseconds | 4,096 | 8 | 32,768 | 3.783365632 |
+| Longer-delay reference | 250 microseconds | 1,024 | 8 | 8,192 | 4.084241408 |
+| Discovery | Unallocated | 0 | 0 | 0 | 0 |
+| Confirmation | Unallocated | 0 | 0 | 0 | 0 |
+| Total | Three jobs, 24 PUBs | | | 73,728 | 10.995612672 |
 
-Qualification decisions bind a frozen constructor, analyzer, calibration,
-assignment, validity and sampling contract:
+Each delay tier contains reporter preparations 00, 01, 10 and 11 under both
+idle and excited actor preparation. The operational input integer places its
+least significant bit on reporter 0. Actor activity means one X preparation
+on qubit 2, rather than a repeated gate drive. Idle actors still receive
+terminal readout. The compiler pads idle wires from the fresh Target and
+requires matched terminal measurement start ticks across all conditions.
+Compilation establishes local instruction timing; physical pulse equivalence
+requires additional provider evidence.
 
-- **Pass:** all mandatory compilation, mapping, timing, accounting and raw-data
-  checks pass; every declared initialization and carryover equivalence interval
-  lies within its own preregistered tolerance; and the full program remains
-  within its approved ceiling. The separately justified inference assumptions
-  still bound the conclusion.
-- **Fail:** an observed mandatory timing or mapping mismatch, or a valid
-  uncertainty interval entirely outside a declared equivalence region, rejects
-  the corresponding qualification. A failed control does not identify the
-  physical cause.
-- **Inconclusive:** missing ordering, data, calibration identity or a valid
-  uncertainty interval crossing a threshold withholds the decision. A
-  nonsignificant difference alone never qualifies equivalence.
+The scenario uses a 2.212 microsecond compiled body, a 2.212 microsecond
+initialization proxy, and two seconds overhead per job. The retained
+[platform snapshot](../evidence/heron_platform/targets.json) records the
+250-microsecond default delay. The
+[cost regression](../../tests/scripts/test_readout_actor_cost_model.py)
+loads the actual operational JSON, checks the runner's three batches and all
+24 condition allocations, and reproduces the total using exact nanosecond
+arithmetic. These historical duration inputs support sizing; fresh full-Target
+compilation governs admission. The
+[execution-time reference](../notes/ibm_quantum/estimate-job-run-time.md)
+documents the initialization proxy and approximate overhead. Provider splitting
+can add overhead within a submitted job.
 
-No numerical carryover tolerance, minimum detectable improvement, statistical
-family, actual randomization unit or reference allocation is currently frozen.
-A production analyzer must validate the versioned contract, exact candidate
-and analysis digests, assignment and raw-acquisition evidence before issuing
-any verdict. A Boolean assertion of independence is not evidence of independence;
-unverifiable dependencies withhold the confirmatory verdict. The current code
-returns descriptive error tables only. The candidate cannot yet be frozen or
-submitted.
+Each job requests a six-second execution ceiling. Three ceilings sum to
+18 seconds inside the complete 20-second program envelope. The 48-second
+reserve requires at least 66 freshly reported seconds on the selected IBM
+instance. A conservative operator can retain the full 20-second envelope and
+require 68 seconds. Historical balances establish neither available time nor
+an allocation. The runner refuses an estimated batch above six seconds,
+aggregate ceilings above 20 seconds, or insufficient quota after reserve.
+The two-second envelope remainder authorizes zero additional jobs or retries.
+Provider enforcement and returned billing remain separate checks.
 
-For eight conditions at 40,000 total shots each, a provisional cost model adds
-the observed 2.212 microsecond compiled circuit and one 2.212 microsecond reset
-per execution to the requested repetition delay. Using IBM's approximate two
-seconds per sub-job gives the following scenarios:
+Runtime `init_qubits` requests implicit initialization. An explicit circuit
+reset is a separate operation; this constructor contains preparation, delay,
+barrier and measurement instructions. The estimator's Target-reset proxy
+establishes a cost input, rather than physical reset behavior or successful
+state preparation. Repetition delay forms part of each condition's definition.
 
-| Repetition delay | Execution terms | One sub-job | Two sub-jobs |
-|---|---:|---:|---:|
-| 30 microseconds | 11.016 s | 13.016 s | 15.016 s |
-| 50 microseconds | 17.416 s | 19.416 s | 21.416 s |
+### Sampling, controls and decision boundaries
 
-The scenarios assume the locally scheduled duration, simultaneous reset cost,
-320,000 executions and no additional reference or pilot executions. They are
-estimates rather than upper bounds. The provider controls sub-job splitting,
-and initialization, mitigation, reference programs, pilot, scheduler and
-other overhead may add cost. Neither scenario is admitted under a 20-second
-ceiling without a complete fresh dry run and defensible margin. Under the
-two-sub-job scenario, 30 microseconds leaves approximately 4.984 seconds for
-all omitted qualification costs and uncertainty, while 50 microseconds
-already exceeds 20 seconds by approximately 1.416 seconds. These differences
-are arithmetic against the model, not available budget guarantees.
-The [exact scenario calculator](../../scripts/readout_actor_cost_model.py)
-requires explicit execution counts for pilot, discovery, references and
-confirmation, and adds the declared sub-job overhead. Zero means a stage has
-no executions in that scenario; it is not evidence that an unallocated stage
-is unnecessary. The calculator uses exact nanosecond arithmetic and makes no
-provider charge or admission decision. Its single per-execution duration is
-valid only for a scenario where every declared execution uses that duration;
-different reference circuits require separately accounted scenarios.
-Its `estimate_mixed_cost` accepts separate execution counts and repetition,
-circuit and initialization durations per batch within every stage, so a delay
-pilot and longer reference circuits can enter one scenario. The caller still
-declares sub-job count and overhead; the result is not a provider guarantee.
-Distinct repetition delays require at least one sub-job each. Shot tiers,
-stage boundaries and provider splitting can require additional sub-jobs; the
-calculator does not infer a job manifest. A retained case must bind the exact
-input allocations, durations and their provenance alongside the estimate.
+The pair and projections are fixed before acquisition. The pilot uses fixed
+counts and reports every condition. Outcome-dependent stopping, pair selection,
+post-acquisition exclusions and pooling across preparations are prohibited.
+The program has three contiguous shot/delay tiers. Submitted PUB order lacks
+a physical execution-order guarantee, and the pilot has no randomized causal
+assignment. Delay and acquisition period remain associated. Activity contrasts
+therefore remain preparation-associated contrasts, rather than identified
+causal effects. A future causal case randomizes at a provider-supported unit,
+retains assignment probabilities, and freezes carryover assumptions.
+
+The 250-microsecond tier supplies pattern- and actor-matched preparation
+references. Similar marginals cannot establish similar temporal dependence.
+Within-PUB shot order supports recorded-lag diagnostics only to the extent the
+provider's ordering evidence permits. An immediate physical predecessor,
+wall-clock lag and cross-PUB chronology remain unknown when the execution
+records omit them. A fitted decorrelation lag or a purge window cannot certify
+independence against arbitrary slow drift.
+
+The analysis derives exact error cells, both paired-score moments and their
+covariance, parity error `r`, marginal errors, shared errors `s`, imbalance
+`d`, and `G = s-r/2-|d|/2`. Every actor comparison reports `Delta G`,
+`Delta r`, `Delta p_0` and `Delta p_1` together. Declared triplet sign moments
+support descriptive common/private-flip model checks. A positive change in
+`G` can accompany unchanged parity error and worse constituent bits.
+The model checks identify compatibility, rather than a physical mechanism.
+Raw full-register records support later analyses under separate declarations.
+The sparse collector and adjudicator emit the four cells and group parity
+counts; derived quantities use those counts directly. For counts
+`(n00,n01,n10,n11)` and total `n`, the worksheet uses
+`s=n11/n`, `r=(n01+n10)/n`, `d=(n01-n10)/n`,
+`p_0=(n10+n11)/n`, and `p_1=(n01+n11)/n`.
+`paired_component_moments` in the
+[exact controls](../../scripts/readout_information_controls.py) supplies
+separate sample variances and covariance. These derived values remain
+descriptive and cannot promote the collector's inference status.
+
+Operational outcomes have the following boundaries:
+
+- Valid descriptive acquisition: exact-case, compiled timing, measurement map,
+  raw receipt, completeness and accounting checks pass. Every scientific
+  qualification remains separate.
+- Invalid acquisition: an observed binding, mapping, compilation or raw-evidence
+  mismatch rejects the corresponding acquisition. Partial completed PUBs
+  remain retained and descriptive, with missing conditions explicitly listed.
+- Incomplete qualification: absent records, unresolved scheduling or a failed
+  accounting check withhold the affected operational conclusion.
+
+The analyzer emits `hardware_verdict: null`. The pilot assigns zero inferential
+alpha and issues neither superiority nor equivalence decisions. Initialization
+and carryover qualification remain unresolved even after a valid descriptive
+acquisition. A later case supplies numerical tolerances, supported sampling
+assumptions, references, power and complete costs; the pilot supplies planning
+information and grants zero automatic continuation authority.
+
+### Pattern-specific feasibility and confirmation successor
+
+The retained compilation fingerprint for reporters 0 and 1 records directional
+assignment metrics `(0.002197265625, 0.0029296875)` after commanded zero and
+`(0.0048828125, 0.010498046875)` after commanded one. The naming follows
+`live_run.py`'s `prob_meas1_prep0` and `prob_meas0_prep1` fields. Substitution
+into `2 p_min-p_max` gives 0.00146484375 for ground preparation and
+-0.000732421875 for excited preparation. Calibration assignment metrics are
+not experimental error marginals. Their asymmetry nevertheless demonstrates
+why averaged calibration screening cannot qualify every preparation pattern.
+The pilot retains all four patterns instead of discarding a difficult pattern.
+
+A successor freezes selected pairs, each tested preparation, practical margin,
+family allocation and confirmation shots before opening confirmation data.
+The per-pair intersection-union test uses the full per-pair alpha for each
+component and requires both to pass; multiplicity across pairs and conditions
+is separate. The two scores share their exact four-cell law. Power uses that
+joint law, rather than independently generated component fluctuations.
+A sample-variance scenario narrows a Bernstein planning radius; a valid
+sampling contract determines whether that expression applies to hardware.
+A target radius alone supplies neither power nor a fixed stopping rule.
+
+### Submit-free preparation and evidence binding
+
+The operational JSON is an unapproved review candidate. The following command
+builds a fresh plan and QPY archive, reads current backend and quota information,
+and submits zero jobs:
+
+```sh
+export PYTHON="${PYTHON:-python3}"
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+"$PYTHON" gororoba_quantum/live_run.py --family readout-actor \
+  --actor-case docs/design/readout-actor-delay-qualification.json \
+  --out results/live --max-execution-seconds 6 --max-total-execution-seconds 20
+```
+
+The fresh plan checks backend discovery, permitted delays, full measured width,
+Target duration proxies, matched compiled exposure, all allocations and quota.
+The [retained submit-free plan](../../results/live/2026-10-29T002839.028671Z/UNAPPROVED_CASE.md)
+and its [record](../../results/live/2026-10-29T002839.028671Z/record.json)
+bind all 24 compiled conditions. Every terminal measurement starts at tick 8;
+the three modeled job costs match the allocation table. The record has state
+`planned`, carries descriptive-only inference, and contains zero submission
+records. The local compile establishes scheduled timing within Qiskit;
+provider-served timing and physical initialization remain unmeasured.
+The case writer binds the plan, operational JSON and QPY archive into a
+reviewable written case. Exact-case approval precedes the binding dry-run and
+submit invocation. A changed source closure, layout, timing, shot allocation,
+account or delay requires the existing approved-record comparison and renewed
+review when that comparison refuses the change.
+Independently retained submission and collection digest anchors bind analysis;
+recomputing an anchor from the analyzed directory supplies consistency only.
+IQM's provider-enforced 2.50-credit gate remains a separate execution block.
 
 ### Runner and sampling integration gates
 

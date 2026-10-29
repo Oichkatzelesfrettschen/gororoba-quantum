@@ -38,7 +38,7 @@
     },
     {
       "id": "sparse-retention",
-      "state": "doing",
+      "state": "todo",
       "action": "Design and verify scalable full-register retention",
       "acceptance": "Preserve full shared-PUB shots and project only declared outcomes before any dense or int64 conversion; bind raw receipt, physical maps, preparations and compiled identities, check cross-register alignment and missing data, and measure wide-record memory while preserving provider ordering limits."
     },
@@ -103,11 +103,95 @@
             }
           ],
           "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Current-head revalidation: 113 focused cost, paired-control, projection, receipt and actor-family tests pass, including partial retention and recovery. The fresh submit-free pilot compiles all 24 full-register PUBs at a common measurement tick; offline verify_archive checks the current source closure, operational case, QPY and absence of a submission record. Statistical qualifications remain outside software conformance.",
+          "observed_at": "2026-10-29T00:33:47.329677+00:00",
+          "revision": "6841c2408d41b5bdc1bce9e07807e1ed0ec909b6",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "3cabfc500c045a0e78e08330552551377d2209fd62c34a38cd964fdca6f11442"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "4c4659cf54f48a0939236b6c3ad5128c46dd01ca89fd92796d82bbfdc96aa6ee"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "0537912bb6aaa0578df742df2f40d2f4bd31bc5afebd1f0b439c51d3d015099b"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "1533f63507061b65bc7baa362172c394fc8b09bb9761f7abd78dc839d589b213"
+            },
+            {
+              "ref": "scripts/readout_information_controls.py",
+              "sha256": "de6cd96e58568416a74a35f7a8f3d2437747646b9b4f41d9e2f9aa266decfd89"
+            },
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "11727927dff10a64f4402219c4a5734d074a0b3b5a86a71163cc3971197a7f69"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/record.json",
+              "sha256": "3b11c9b3ecd8af388a65866f82b446d26e8d544e8de9cfed83a3286ef26e2b95"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/isa.qpy",
+              "sha256": "f6baf70a13b0be2ba060d9540c3a3eb9d6470db95dc0af5870a647407eebc6af"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        }
+      ]
+    },
+    {
+      "id": "delay-pilot-case",
+      "state": "done",
+      "action": "Bind the descriptive full-register delay pilot and its complete allocation",
+      "acceptance": "The operational JSON validates; exact cost arithmetic accounts for all 24 PUBs; a submit-free Target compile binds measurement timing, sources and QPY; inference stays descriptive and exact-case approval remains pending.",
+      "receipts": [
+        {
+          "result": "The 113 focused actor-family, sparse receipt/projection, paired-control and cost tests pass; pinned Ruff and touched-file mypy pass. A submit-free live Kingston plan and offline archive verification bind 24 full-register PUBs, 73728 shots, matched measurement tick 8, three modeled batch costs totaling 10.995612672 s and summed ceilings of 18 s inside a 20 s envelope. The record remains planned and descriptive; execution and sampling qualifications remain gated.",
+          "observed_at": "2026-10-29T00:32:52.810621+00:00",
+          "revision": "6841c2408d41b5bdc1bce9e07807e1ed0ec909b6",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "11727927dff10a64f4402219c4a5734d074a0b3b5a86a71163cc3971197a7f69"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/record.json",
+              "sha256": "3b11c9b3ecd8af388a65866f82b446d26e8d544e8de9cfed83a3286ef26e2b95"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/isa.qpy",
+              "sha256": "f6baf70a13b0be2ba060d9540c3a3eb9d6470db95dc0af5870a647407eebc6af"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/UNAPPROVED_CASE.md",
+              "sha256": "7a0c2489ac6a37ea19e2c3668ce234c1e90d95df3e33c7a5c861ade94ea8b7d7"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/actor-case.json",
+              "sha256": "749400ca2914ac09c3f9062be63d31b84ad361806ba118e38dcc311916f31a3d"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
         }
       ]
     }
   ],
   "scope": "Design an IBM actor-reporter and paired-error case, with separately admitted IQM, QX and Ascella cases; exact case approval precedes provider actions.",
   "owner": "readout-information experiment",
-  "next_action": "Freeze the IBM sampling, selection, reference, carryover and complete cost contract; independently review the exact case before fresh admission and explicit approval."
+  "next_action": "Review the source-bound 73728-shot full-register delay pilot and retained submit-free case. Obtain exact-case approval before acquisition; use the pilot only to design a separately costed, sampling-qualified confirmation case. IQM execution remains blocked on a provider-enforced credit bound."
 }

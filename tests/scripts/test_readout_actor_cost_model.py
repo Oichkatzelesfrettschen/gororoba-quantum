@@ -1,10 +1,59 @@
 """Check complete stage accounting for the actor-reporter cost scenario."""
 
+import json
 from fractions import Fraction
+from pathlib import Path
 
 import pytest
 import readout_actor_cost_model as cost_model
 from readout_actor_cost_model import estimate_cost
+
+import readout_actor_family as actor_family
+
+
+def test_complete_delay_qualification_allocation_and_ceiling() -> None:
+    """The fixed pilot accounts for every PUB, stage and submission tier."""
+    path = Path(__file__).resolve().parents[2] / "docs/design/readout-actor-delay-qualification.json"
+    case = json.loads(path.read_text(encoding="utf-8"))
+    actor_family.validate_case(case)
+    if (case["width"], case["reporters"], case["actors"], case["pairs"]) != (156, [0, 1], [2], [[0, 1]]):
+        raise AssertionError("the pilot must retain the frozen full-register intervention and reporter pair")
+    if (
+        Fraction(str(case["initialization_seconds"])) != Fraction(2212, 10**9)
+        or case["job_overhead_seconds"] != 2
+        or case["reserve_seconds"] != 48
+    ):
+        raise AssertionError("the cost scenario must bind its initialization proxy, job overhead and reserve")
+    batches = actor_family._batches(case)
+    if len(batches) != 3 or [len(batch) for batch in batches] != [8, 8, 8]:
+        raise AssertionError("the pilot must account for three complete delay tiers")
+    expected = [(30_000, 4096, "pilot"), (50_000, 4096, "pilot"), (250_000, 1024, "references")]
+    allocation: dict[str, list[tuple[int, int, int, int]]] = {stage: [] for stage in cost_model.STAGES}
+    batch_seconds = []
+    for batch, (delay_ns, shots, stage) in zip(batches, expected, strict=True):
+        conditions = {(row["arm"], row["input"]) for row in batch}
+        if conditions != {(arm, bits) for arm in ("idle", "active") for bits in range(4)}:
+            raise AssertionError("a delay tier loses a preparation or actor arm")
+        if any(
+            row["shots"] != shots
+            or row["stage"] != stage
+            or Fraction(str(row["rep_delay_seconds"])) != Fraction(delay_ns, 10**9)
+            for row in batch
+        ):
+            raise AssertionError("the operational case differs from the frozen allocation")
+        allocation[stage].append((8 * shots, delay_ns, 2212, 2212))
+        batch_seconds.append(Fraction(8 * shots * (delay_ns + 4424), 10**9) + 2)
+    result = cost_model.estimate_mixed_cost(allocation, subjobs=len(batches), overhead_ns=2_000_000_000)
+    if result["total_seconds"] != Fraction(10_995_612_672, 10**9):
+        raise AssertionError("the complete pilot cost differs from exact nanosecond arithmetic")
+    if sum(row["shots"] for row in case["allocations"]) != 73728:
+        raise AssertionError("the pilot must retain all 73728 full-register shots")
+    if any(seconds > case["max_execution_seconds"] for seconds in batch_seconds):
+        raise AssertionError("a modeled job exceeds the pilot ceiling")
+    if len(batches) * case["max_execution_seconds"] != 18 or case["max_total_execution_seconds"] != 20:
+        raise AssertionError("the pilot must fit the complete 20-second program envelope")
+    if case["inference"] != "descriptive" or allocation["confirmation"] or allocation["discovery"]:
+        raise AssertionError("the pilot cannot silently acquire confirmatory or discovery data")
 
 
 def test_each_stage_and_subjob_contributes_to_the_total() -> None:
