@@ -1,0 +1,18 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "18d2ee221387f95622a36554991806fa04036abbd134d39a5e961d7b0c17892b",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-identity-continuity-review.md",
+  "retained_sha256": "ae7cbf7370d138c0146cc4af2f7b7737db3f9a436462d8ea539545ce786248a5",
+  "reviewed_sha256": {
+    "scripts/qi_tuna_account_binding.py": "0ff51eb43ef9f71266bbd17abe8879e833833d3b2f155e2ae464c448714bb967",
+    "scripts/qi_tuna_identity_guard.py": "543a25b4394bf8407214ce3e6370b0d309a26f62624b7f9541947d6574f4cf5f",
+    "scripts/qi_tuna_source_association.py": "4abd49b146891fcb3ab374e20bd2dc978025046f7381b191923e315e35ab75be",
+    "scripts/qi_tuna_subject_binding.py": "243a2fcfa56783c57f8db79bdae38568b6400e5fb5b1c2138aa98ffed394b203",
+    "tests/scripts/test_qi_tuna_identity_guard.py": "f048d860a52e993a42f0a48af78657bebd76e1d5da03a7559cb5f1d6661e0e21",
+    "tests/scripts/test_qi_tuna_subject_binding.py": "bdf61e319ae830903202e551136663756247d5c6dbf2133a0380be1debc2522b"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

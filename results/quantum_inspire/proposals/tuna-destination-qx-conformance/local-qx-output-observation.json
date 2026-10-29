@@ -1,0 +1,34 @@
+{
+  "boundary": "Local one-shot output-shape observation only; no provider job or upload; no statistical inference or hardware result.",
+  "finished_utc": "2026-10-28T02:49:41.383336+00:00",
+  "python_version": "3.13.15",
+  "qxelarator_version": "0.10.0",
+  "schema": "qi-qx-reduced-destination-local-output-v1",
+  "sources": [
+    {
+      "counts": {
+        "000": 1
+      },
+      "sha256": "004667f94872f372eab01eb75dfbc6e5fb25e0b16534d3c20da6b1c7f5dc91af",
+      "shots": 1,
+      "source": "results/quantum_inspire/proposals/tuna-destination-qx-conformance/baseline.cq"
+    },
+    {
+      "counts": {
+        "000": 1
+      },
+      "sha256": "39454ac0e32f0bebfd687d5def41666ee7e35b3af5d61430c2f0b084d355e584",
+      "shots": 1,
+      "source": "results/quantum_inspire/proposals/tuna-destination-qx-conformance/rotated.cq"
+    },
+    {
+      "counts": {
+        "001": 1
+      },
+      "sha256": "dc9de0253a6d544bf76ba215a3fca2cf253dda549364f899064f927c1d7f0ecd",
+      "shots": 1,
+      "source": "results/quantum_inspire/proposals/tuna-destination-qx-conformance/asymmetric.cq"
+    }
+  ],
+  "started_utc": "2026-10-28T02:49:41.328144+00:00"
+}

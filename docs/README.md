@@ -50,6 +50,22 @@ Selected zero-divisor hardware witnesses have retained acquisitions on
 [Tuna-17](notes/quantum_inspire/experiments.md). The
 [hardware-witness review](notes/topics/sedenion_hardware_witness_review.md) has an explicit historical cutoff.
 The [matched-response case](design/tuna17-zero-divisor-matched-response.md) is prospective and unsubmitted.
+Its [historical catalogue](evidence/quantum_inspire/matched-zero-divisor-catalogue.json) retains the
+exact bytes bound by the archived compiler receipt; a newer live catalogue still requires case review.
+The [reduced QX destination case](design/tuna-destination-qx-conformance.md) defines
+a separate simulator conformance proposal, pending review and approval.
+The [exact QX dispatch-guard design](design/tuna-qx-exact-dispatch-guard.md) specifies
+the approval, live-admission, single-use and recovery boundaries still required.
+The [sequential destination evidence case](design/tuna-destination-sequential-evidence-case.md)
+sets a working two-response acquisition and optional-stopping envelope, pending admission.
+The [sequential destination uncertainty design](design/tuna-sequential-destination-uncertainty.md)
+quantifies job-level precision without a finite-memory assumption.
+The [randomized destination-block draft](design/tuna-destination-randomized-blocks.md) proposes
+a job-level falsification test with explicit dependence and queue limitations.
+The [Tuna early-label map replay](evidence/tuna-projector-geometry/early-label-map-analysis.md)
+bounds fixed relabeling by the retained terminal-label differences.
+The [Tuna readout identifiability design](design/tuna-readout-mapping-identifiability.md) constructs
+observationally equivalent stage models and identifies the independent traces that can separate them.
 The [sequential-projector geometry case](design/tuna-projector-geometry.md) derives its observables and
 links the [calibration datasource diagnosis](evidence/tuna-projector-geometry/README.md).
 The approved [QX conformance batch](evidence/tuna-projector-geometry/qx-conformance.md) passes all 18 frozen checks;
@@ -86,6 +102,10 @@ The [lossless final-result projection replay](evidence/tuna-projector-geometry/d
 makes the six endpoint-equivalence observations independently checkable from retained acquisition data.
 The [retention verification](evidence/tuna-projector-geometry/destination-one-retention-verification.json)
 binds the acquired evidence, final reviews, focused checks and measured preservation comparisons.
+The [joint-response reanalysis](evidence/tuna-projector-geometry/joint-response-analysis.md) replays
+six-bit outcome distributions and post-acquisition parity bounds without changing either frozen decision.
+The [package-checked joint algebra analysis](evidence/tuna-projector-geometry/joint-algebra-package-analysis.md)
+compares exact data-derived associators, retained package tables and an installed split-algebra control.
 The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
 native execution limits, billing units and MCP observations. The
 [current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized

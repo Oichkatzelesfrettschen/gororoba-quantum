@@ -7,6 +7,53 @@ repository-relative; a branch name stands for its worktree.
 
 | Report | Subject |
 |---|---|
+| [tuna-sequential-sensitivity-review.md](tuna-sequential-sensitivity-review.md) | Exact constant-response sensitivity and its model-specific interpretation |
+| [tuna-capture-prefix-retention-review.md](tuna-capture-prefix-retention-review.md) | Retention-order review, historical receipt interpretation and unresolved quarantine |
+| [tuna-capture-prefix-budget-review.md](tuna-capture-prefix-budget-review.md) | Prefix validation order, fixed-overhead bound and recovery limitations |
+| [tuna-journaled-collection-followup-review.md](tuna-journaled-collection-followup-review.md) | Identifier repair, response metadata mismatch and remaining fault coverage |
+| [tuna-journaled-collection-review.md](tuna-journaled-collection-review.md) | Collector and commitment composition, locator bounds and failure-coverage review |
+| [tuna-identity-continuity-followup-review.md](tuna-identity-continuity-followup-review.md) | Identity comparison repairs and remaining authenticated, concurrent and restart boundaries |
+| [tuna-capture-bounds-review.md](tuna-capture-bounds-review.md) | Capture metadata bounds review and subsequent repair targets |
+| [tuna-qx-destination-initial-review.md](tuna-qx-destination-initial-review.md) | Initial independent review of the reduced QX destination verifier and case |
+| [tuna-qx-destination-followup-review.md](tuna-qx-destination-followup-review.md) | Follow-up review of QX destination verifier repairs and remaining pagination and provenance findings |
+| [tuna-qx-destination-repair-review.md](tuna-qx-destination-repair-review.md) | Review of pagination and provenance repairs, with remaining backend-capability findings |
+| [tuna-qx-destination-capacity-review.md](tuna-qx-destination-capacity-review.md) | Review of backend-capability checks and residual regression coverage |
+| [tuna-qx-destination-mutation-review.md](tuna-qx-destination-mutation-review.md) | Focused review of backend-capability type and gate mutation coverage |
+| [tuna-sequential-score-review.md](tuna-sequential-score-review.md) | Independent review of the prospective Tuna sequential score and its regression gaps |
+| [tuna-sequential-score-followup-review.md](tuna-sequential-score-followup-review.md) | Follow-up review of scoring mutation tests and statistical-design bindings |
+| [tuna-destination-slot-alternatives-review.md](tuna-destination-slot-alternatives-review.md) | Independent review of Tuna slot alternatives, allocation custody and submission boundaries |
+| [tuna-destination-slot-alternatives-followup-review.md](tuna-destination-slot-alternatives-followup-review.md) | Review of slot tree hard-link checks and assignment custody requirements |
+| [tuna-assignment-commitment-review.md](tuna-assignment-commitment-review.md) | Independent review of the prospective assignment commitment and raw ANU validation |
+| [tuna-assignment-commitment-followup-review.md](tuna-assignment-commitment-followup-review.md) | Follow-up review of raw ANU validation and remaining mutation coverage |
+| [tuna-assignment-commitment-final-review.md](tuna-assignment-commitment-final-review.md) | Focused review of commitment parser regression-mutation repairs |
+| [tuna-qx-exact-dispatch-guard-review.md](tuna-qx-exact-dispatch-guard-review.md) | Independent review of the prospective QX dispatch transaction and its unresolved requirements |
+| [tuna-qx-exact-dispatch-guard-followup-review.md](tuna-qx-exact-dispatch-guard-followup-review.md) | Follow-up review of dispatch authority, billing, lock, clock and provider observation requirements |
+| [tuna-dispatch-clock-review.md](tuna-dispatch-clock-review.md) | Independent review of the offline dispatch clock and its integration boundaries |
+| [tuna-dispatch-clock-followup-review.md](tuna-dispatch-clock-followup-review.md) | Follow-up review of clock input validation, state protection and integration limits |
+| [tuna-dispatch-clock-final-review.md](tuna-dispatch-clock-final-review.md) | Byte-bound review of clock fixes and remaining adapter requirements |
+| [tuna-source-association-review.md](tuna-source-association-review.md) | Independent review of source, job, batch and result association checks |
+| [tuna-source-association-followup-review.md](tuna-source-association-followup-review.md) | Follow-up review of result-page and provider-association predicates |
+| [tuna-slot-associated-decoder-review.md](tuna-slot-associated-decoder-review.md) | Review of slot-bound source association and complete-result decoding |
+| [tuna-receipt-aware-collection-review.md](tuna-receipt-aware-collection-review.md) | Review of receipt collection and remaining authenticated adjudication boundaries |
+| [tuna-private-readbacks-review.md](tuna-private-readbacks-review.md) | Review of private capture durability, replay and admission boundaries |
+| [tuna-readback-expiry-review.md](tuna-readback-expiry-review.md) | Review of receipt retention across the post-response expiry boundary |
+| [tuna-capture-commitment-review.md](tuna-capture-commitment-review.md) | Review of capture commitment encoding, substitution and admission boundaries |
+| [tuna-capture-commitment-followup-review.md](tuna-capture-commitment-followup-review.md) | Follow-up on coherent capture substitutions and scoring separation |
+| [tuna-attempt-transport-review.md](tuna-attempt-transport-review.md) | Review of attempt retention, failure paths and admission boundaries |
+| [tuna-private-attempt-journal-review.md](tuna-private-attempt-journal-review.md) | Review of attempt journal replay, lifecycle and persistence boundaries |
+| [tuna-attempt-retention-followup-review.md](tuna-attempt-retention-followup-review.md) | Follow-up on attempt transport and journal repairs |
+| [tuna-subject-binding-review.md](tuna-subject-binding-review.md) | Review of subject, user, member and team binding boundaries |
+| [tuna-subject-binding-followup-review.md](tuna-subject-binding-followup-review.md) | Follow-up on coherent identity transitions and subject encoding |
+| [tuna-identity-continuity-review.md](tuna-identity-continuity-review.md) | Review of process-local identity comparison and refusal latch |
+| [tuna-lock-decoder-repair-review.md](tuna-lock-decoder-repair-review.md) | Review of local lock timing and source-associated decoder repairs |
+| [tuna-consumption-marker-review.md](tuna-consumption-marker-review.md) | Review of local approval-consumption identity, durability and descriptor ownership |
+| [tuna-consumption-marker-followup-review.md](tuna-consumption-marker-followup-review.md) | Follow-up review of marker descriptor ownership and remaining adapter limits |
+| [tuna-byte-snapshot-decoder-review.md](tuna-byte-snapshot-decoder-review.md) | Review of byte-preserving source and result validation |
+| [tuna-byte-snapshot-followup-review.md](tuna-byte-snapshot-followup-review.md) | Follow-up review of byte parsing and destination metadata |
+| [tuna-account-binding-review.md](tuna-account-binding-review.md) | Review of team namespace derivation and authorization boundaries |
+| [tuna-account-binding-followup-review.md](tuna-account-binding-followup-review.md) | Follow-up review of member schema and team-namespace boundaries |
+| [tuna-readback-transport-review.md](tuna-readback-transport-review.md) | Review of byte-preserving readback and source-result association |
+| [seed-provenance-owned-draw-scan-profile.md](seed-provenance-owned-draw-scan-profile.md) | Profile of the repeated seed-ownership claim scan and timing-budget failure |
 | [pr-147-ghost-error-scale.md](pr-147-ghost-error-scale.md) | PR #147, ghost-error-scale Kaggle shards and gates |
 | [pr-148-substrate-routing-libraries.md](pr-148-substrate-routing-libraries.md) | PR #148, Kaggle substrate routing and library captures |
 | [pr-149-jax-bridge-and-atlas-fringe.md](pr-149-jax-bridge-and-atlas-fringe.md) | PR #149 jax bridge sweep, and the atlas fringe amplitudes branch (PR #158) |
@@ -81,3 +128,23 @@ adds retained response metadata and checked reconstruction against the original 
 The [projection closure review](tuna-destination-final-result-projection-review.md) independently
 reconstructs all six responses and closes the provenance finding within the API-capture trust boundary;
 its [provenance](tuna-destination-final-result-projection-review.json) records the requested model and effort.
+The [joint-response review](tuna-joint-response-analysis-review.md) independently reconstructs the
+six acquired distributions and identifies a regression-coverage finding; its
+[provenance](tuna-joint-response-analysis-review.json) binds the reviewed candidate and model.
+The [coverage review](tuna-joint-response-coverage-review.md) closes that finding after the
+independent parity, uncertainty and exact-byte checks; its
+[provenance](tuna-joint-response-coverage-review.json) records the reviewed inputs and test limit.
+
+The [Tuna joint-algebra package review](tuna-joint-algebra-package-review.md) and its
+[model provenance](tuna-joint-algebra-package-review.json) verify retained-data arithmetic,
+package bindings, descriptive distances and their physical interpretation limits.
+
+The [Quantum Inspire metadata-route issue draft](quantum-inspire-metadata-route-issue-draft.md)
+separates the public SDK/deployment question from the unsent private acquisition-trace request.
+
+The [Tuna randomized-block feasibility review](tuna-randomized-block-feasibility-review.md)
+records early builder feedback, disposition and the separate final-review requirement.
+
+The [Tuna early-label map review](tuna-early-label-map-review.md), its
+[coverage follow-up](tuna-early-label-map-followup-review.md) and
+[model provenance](tuna-early-label-map-review.json) bind the exhaustive-map check.

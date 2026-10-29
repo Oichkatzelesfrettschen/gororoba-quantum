@@ -1,7 +1,7 @@
 {
  "schema": "hypercomplex-library-inventory-v1",
  "coverage_counts": {
-  "distributions": 362,
+  "distributions": 359,
   "execution_pin_distributions": 39,
   "execution_pin_declarations": 51,
   "execution_source_files": 2
@@ -13,7 +13,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.7.1"
    },
    "observed_host_version": "2.7.1",
-   "role": "SDK/environment infrastructure: Happy Eyeballs for asyncio",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -28,7 +28,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "3.14.3"
    },
    "observed_host_version": "3.14.3",
-   "role": "SDK/environment infrastructure: Async http client/server framework (asyncio)",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -58,7 +58,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "1.4.0"
    },
    "observed_host_version": "1.4.0",
-   "role": "SDK/environment infrastructure: aiosignal: a list of registered asynchronous callbacks",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -103,7 +103,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "0.0.5"
    },
    "observed_host_version": "0.0.5",
-   "role": "SDK/environment infrastructure: Document parameters, class attributes, return types, and variables inline, with Annotated.",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -314,7 +314,7 @@
     "packaging/qiskit-aer-cuda/build-requirements.txt": "1.6.0"
    },
    "observed_host_version": "1.6.1",
-   "role": "SDK/environment infrastructure: A simple, correct Python build frontend",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -332,10 +332,7 @@
    "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py",
-    "scripts/box_kite_packages.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py",
@@ -351,10 +348,7 @@
    "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py",
-    "scripts/box_kite_packages.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py",
@@ -482,9 +476,7 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py"
@@ -524,7 +516,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "0.4.6"
    },
    "observed_host_version": "0.4.6",
-   "role": "SDK/environment infrastructure: Cross-platform colored terminal text.",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -808,7 +800,7 @@
     "docs/notes/ionq/requirements-ionq.txt": "5.3.1"
    },
    "observed_host_version": "5.3.1",
-   "role": "SDK/environment infrastructure: Decorators for Humans",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -856,7 +848,7 @@
     "packaging/qiskit-aer-cuda/build-requirements.txt": "1.9.0"
    },
    "observed_host_version": "1.9.0",
-   "role": "SDK/environment infrastructure: Distro - an OS platform information API",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -1000,7 +992,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "1.8.0"
    },
    "observed_host_version": "1.8.0",
-   "role": "SDK/environment infrastructure: A list-like structure which implements collections.abc.MutableSequence",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -1018,9 +1010,7 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py"
@@ -1096,7 +1086,7 @@
     "docs/notes/quafu/requirements-quafu.txt": "0.21"
    },
    "observed_host_version": "0.21",
-   "role": "SDK/environment infrastructure: Simple Python interface for Graphviz",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -1172,7 +1162,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.13.1"
    },
    "observed_host_version": "2.13.1",
-   "role": "SDK/environment infrastructure: A minimal low-level HTTP client.",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -1217,7 +1207,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.13.1"
    },
    "observed_host_version": "2.13.1",
-   "role": "SDK/environment infrastructure: The next generation HTTP client.",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -1237,21 +1227,14 @@
    "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py",
-    "scripts/bdsc_packages.py",
-    "scripts/box_kite_packages.py",
-    "scripts/echo_dilation_noise.py",
-    "scripts/rank_locus_rotation_composite.py",
-    "scripts/stiefel_witness_certificate.py",
-    "scripts/walk_scaffold_channels.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
     "scripts/box_kite_packages.py",
     "scripts/echo_dilation_noise.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_rotation_composite.py",
     "scripts/stiefel_witness_certificate.py",
     "scripts/walk_scaffold_channels.py"
@@ -1266,10 +1249,7 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py",
-    "scripts/box_kite_census.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py",
@@ -1285,19 +1265,14 @@
    "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py",
-    "scripts/box_kite_packages.py",
-    "scripts/cd_two_blade_blocks.py",
-    "scripts/echo_dilation_noise.py",
-    "scripts/walk_scaffold_channels.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py",
     "scripts/box_kite_packages.py",
     "scripts/cd_two_blade_blocks.py",
     "scripts/echo_dilation_noise.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/walk_scaffold_channels.py"
    ]
   },
@@ -1340,17 +1315,13 @@
    "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py",
-    "scripts/bdsc_packages.py",
-    "scripts/box_kite_packages.py",
-    "scripts/rank_locus_rotation_composite.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
     "scripts/box_kite_packages.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_rotation_composite.py"
    ]
   },
@@ -1699,12 +1670,7 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [
-    "gororoba_quantum/jax_bridge.py",
-    "kaggle_kernel/kernel_main.py",
-    "scripts/jax_bridge_sweep.py",
-    "scripts/tpu_probe.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "gororoba_quantum/jax_bridge.py",
@@ -1869,40 +1835,6 @@
    "historical_imported_by": []
   },
   {
-   "distribution": "kaggle",
-   "declared_versions": {},
-   "observed_host_version": "2.2.4",
-   "role": "SDK/environment infrastructure: Access Kaggle resources anywhere",
-   "documentation_mentions": [],
-   "role_sources": [],
-   "independent_algebra_witness": false,
-   "hardware_execution": false,
-   "imported_by": [
-    "scripts/kaggle_run.py"
-   ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": [
-    "scripts/kaggle_run.py"
-   ]
-  },
-  {
-   "distribution": "kagglesdk",
-   "declared_versions": {},
-   "observed_host_version": "0.1.37",
-   "role": "SDK/environment infrastructure: Bindings to access kaggle's external-facing APIs",
-   "documentation_mentions": [],
-   "role_sources": [],
-   "independent_algebra_witness": false,
-   "hardware_execution": false,
-   "imported_by": [
-    "scripts/kaggle_run.py"
-   ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": [
-    "scripts/kaggle_run.py"
-   ]
-  },
-  {
    "distribution": "kingdon",
    "declared_versions": {},
    "observed_host_version": "3.0.0",
@@ -1911,9 +1843,7 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py"
@@ -1950,13 +1880,15 @@
    "imported_by": [
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qi_matched_zero_divisor.py",
-    "scripts/qi_toolchain_check.py"
+    "scripts/qi_toolchain_check.py",
+    "scripts/qi_tuna_qx_local_replay.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qi_matched_zero_divisor.py",
-    "scripts/qi_toolchain_check.py"
+    "scripts/qi_toolchain_check.py",
+    "scripts/qi_tuna_qx_local_replay.py"
    ]
   },
   {
@@ -2238,10 +2170,12 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_nullity12_refinement.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_nullity12_refinement.py"
    ]
   },
@@ -2286,7 +2220,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "6.9.1"
    },
    "observed_host_version": "7.0.0",
-   "role": "SDK/environment infrastructure: multidict implementation",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -2679,6 +2613,9 @@
     "scripts/qi_shot_record_line.py",
     "scripts/qi_tuna17_device_context.py",
     "scripts/qi_tuna_destination_one_analysis.py",
+    "scripts/qi_tuna_early_label_maps.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
+    "scripts/qi_tuna_joint_response.py",
     "scripts/qi_tuna_qualification.py",
     "scripts/qi_tuna_readout_destination_analysis.py",
     "scripts/qi_tuna_readout_diagnostics.py",
@@ -2906,6 +2843,9 @@
     "scripts/qi_shot_record_line.py",
     "scripts/qi_tuna17_device_context.py",
     "scripts/qi_tuna_destination_one_analysis.py",
+    "scripts/qi_tuna_early_label_maps.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
+    "scripts/qi_tuna_joint_response.py",
     "scripts/qi_tuna_qualification.py",
     "scripts/qi_tuna_readout_destination_analysis.py",
     "scripts/qi_tuna_readout_diagnostics.py",
@@ -2939,9 +2879,7 @@
    "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py"
@@ -3082,7 +3020,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "4.0.0"
    },
    "observed_host_version": "3.3.1",
-   "role": "SDK/environment infrastructure: A generic, spec-compliant, thorough implementation of the OAuth request-signing logic",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -3100,10 +3038,7 @@
    "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py",
-    "scripts/box_kite_packages.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py",
@@ -3571,7 +3506,9 @@
    "hardware_execution": false,
    "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "scripts/qi_tuna_joint_package_runtime.py"
+   ]
   },
   {
    "distribution": "parso",
@@ -3769,14 +3706,12 @@
     "ci/requirements-browser.txt": "1.64.0"
    },
    "observed_host_version": "1.64.0",
-   "role": "SDK/environment infrastructure: A high-level API to automate web browsers",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/validate_measured_explorer.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/validate_measured_explorer.py"
@@ -3835,7 +3770,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "0.5.4"
    },
    "observed_host_version": "0.5.4",
-   "role": "SDK/environment infrastructure: Accelerated property cache",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -3921,11 +3856,7 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/lsq_conditioning_study.py",
-    "scripts/rank_locus_padic_lift.py",
-    "scripts/wheel_zero_divisors.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/lsq_conditioning_study.py",
@@ -3940,7 +3871,7 @@
     "packaging/qiskit-aer-cuda/build-requirements.txt": "3.1.0"
    },
    "observed_host_version": "3.1.0",
-   "role": "SDK/environment infrastructure: Seamless operability between C++11 and Python",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4132,10 +4063,7 @@
    "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py",
-    "scripts/box_kite_packages.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py",
@@ -4165,7 +4093,7 @@
     "packaging/qiskit-aer-cuda/build-requirements.txt": "1.3.3"
    },
    "observed_host_version": "1.3.3",
-   "role": "SDK/environment infrastructure: Wrappers to call pyproject.toml-based build backend hooks.",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4228,9 +4156,7 @@
    "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py"
@@ -4339,6 +4265,7 @@
     "scripts/a5_zero_divisor_strata.py",
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_gap_directions.py",
     "scripts/rank_locus_padic_lift.py",
     "scripts/rank_locus_quadric_germ.py",
@@ -4353,6 +4280,7 @@
     "scripts/a5_zero_divisor_strata.py",
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_gap_directions.py",
     "scripts/rank_locus_padic_lift.py",
     "scripts/rank_locus_quadric_germ.py",
@@ -5793,9 +5721,7 @@
    "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py"
@@ -5851,6 +5777,7 @@
     "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
     "scripts/qi_mcp_server.py",
+    "scripts/qi_tuna_qx_local_replay.py",
     "scripts/qx_local_series.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
@@ -5860,6 +5787,7 @@
     "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
     "scripts/qi_mcp_server.py",
+    "scripts/qi_tuna_qx_local_replay.py",
     "scripts/qx_local_series.py"
    ]
   },
@@ -5928,7 +5856,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "15.0.0"
    },
    "observed_host_version": "15.0.0",
-   "role": "SDK/environment infrastructure: Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6065,11 +5993,7 @@
    "role_sources": [],
    "independent_algebra_witness": true,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/box_kite_census.py",
-    "scripts/box_kite_packages.py",
-    "scripts/rank_locus_rotation_composite.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/box_kite_census.py",
@@ -6107,7 +6031,7 @@
     "packaging/qiskit-aer-cuda/build-requirements.txt": "0.19.1"
    },
    "observed_host_version": "0.19.1",
-   "role": "SDK/environment infrastructure: Improved build system generator for Python C/C++/Fortran/Cython extensions",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6195,6 +6119,7 @@
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_shot_record_line.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/qi_zz_map_analysis.py",
     "scripts/rank_sector_endpoint_decomposition.py",
     "scripts/state_prep_control_parameters.py",
@@ -6263,6 +6188,7 @@
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_shot_record_line.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/qi_zz_map_analysis.py",
     "scripts/rank_sector_endpoint_decomposition.py",
     "scripts/state_prep_control_parameters.py",
@@ -6334,23 +6260,6 @@
    "historical_imported_by": []
   },
   {
-   "distribution": "selenium",
-   "declared_versions": {},
-   "observed_host_version": "4.44.0",
-   "role": "SDK/environment infrastructure: Official Python bindings for Selenium WebDriver.",
-   "documentation_mentions": [],
-   "role_sources": [],
-   "independent_algebra_witness": false,
-   "hardware_execution": false,
-   "imported_by": [
-    "scripts/kaggle_sessions.py"
-   ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": [
-    "scripts/kaggle_sessions.py"
-   ]
-  },
-  {
    "distribution": "setuptools",
    "declared_versions": {
     "docs/notes/originquantum/requirements-originquantum.txt": "84.2.1",
@@ -6373,7 +6282,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "1.5.4"
    },
    "observed_host_version": "1.5.4",
-   "role": "SDK/environment infrastructure: Tool to Detect Surrounding Shell",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6438,7 +6347,7 @@
     "docs/notes/quafu/requirements-quafu.txt": "0.19.2"
    },
    "observed_host_version": "0.17.0",
-   "role": "SDK/environment infrastructure: Sparse n-dimensional arrays for the PyData ecosystem",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6576,14 +6485,12 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/algebra_package_tables.py",
-    "scripts/box_kite_packages.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py",
-    "scripts/box_kite_packages.py"
+    "scripts/box_kite_packages.py",
+    "scripts/qi_tuna_joint_package_runtime.py"
    ]
   },
   {
@@ -6748,6 +6655,7 @@
     "scripts/algebra_device_conjectures.py",
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_second_order.py"
    ],
@@ -6784,6 +6692,7 @@
     "scripts/algebra_device_conjectures.py",
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_second_order.py"
    ]
@@ -6864,9 +6773,7 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [
-    "scripts/box_kite_packages.py"
-   ],
+   "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/box_kite_packages.py"
@@ -6940,7 +6847,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "0.10.5"
    },
    "observed_host_version": "0.10.4",
-   "role": "SDK/environment infrastructure: Verify certificates using native system trust stores",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6955,7 +6862,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "0.27.3"
    },
    "observed_host_version": "0.27.3",
-   "role": "SDK/environment infrastructure: Typer, build great CLIs. Easy to code. Based on Python type hints.",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -7084,7 +6991,7 @@
     "docs/notes/quafu/requirements-quafu.txt": "2026.5"
    },
    "observed_host_version": "2026.5",
-   "role": "SDK/environment infrastructure: Provider of IANA time zone data",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -7182,7 +7089,7 @@
     "packaging/qiskit-aer-cuda/build-requirements.txt": "0.48.0"
    },
    "observed_host_version": "0.48.0",
-   "role": "SDK/environment infrastructure: Command line tool for manipulating wheel files",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -7212,7 +7119,7 @@
     "docs/notes/quantum_inspire/requirements-qi.txt": "1.25.1"
    },
    "observed_host_version": "1.25.1",
-   "role": "SDK/environment infrastructure: Yet another URL library",
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -13072,6 +12979,63 @@
    "sys",
    "typing"
   ],
+  "scripts/qi_tuna_account_binding.py": [
+   "collections",
+   "hmac"
+  ],
+  "scripts/qi_tuna_assignment_commitment.py": [
+   "__future__",
+   "anu_qrng",
+   "datetime",
+   "hashlib",
+   "hmac",
+   "json",
+   "re",
+   "typing"
+  ],
+  "scripts/qi_tuna_attempt_journal.py": [
+   "dataclasses",
+   "hashlib",
+   "json",
+   "os",
+   "qi_tuna_attempt_transport",
+   "qi_tuna_private_readbacks",
+   "qi_tuna_readback_transport",
+   "qi_tuna_source_association",
+   "types",
+   "typing"
+  ],
+  "scripts/qi_tuna_attempt_transport.py": [
+   "collections",
+   "dataclasses",
+   "hashlib",
+   "math",
+   "qi_tuna_readback_transport",
+   "typing"
+  ],
+  "scripts/qi_tuna_bounded_lock.py": [
+   "collections",
+   "contextlib",
+   "fcntl",
+   "math",
+   "os",
+   "stat",
+   "time"
+  ],
+  "scripts/qi_tuna_capture_commitment.py": [
+   "hashlib",
+   "hmac",
+   "json",
+   "qi_tuna_readback_collection",
+   "qi_tuna_readback_transport",
+   "re"
+  ],
+  "scripts/qi_tuna_consumption_marker.py": [
+   "hashlib",
+   "json",
+   "os",
+   "stat"
+  ],
   "scripts/qi_tuna_destination_analysis_receipt.py": [
    "__future__",
    "argparse",
@@ -13165,6 +13129,29 @@
    "typing",
    "urllib"
   ],
+  "scripts/qi_tuna_destination_slot_cases.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "qi_projector_compiler_admission",
+   "qi_tuna_readout_mapping_cases",
+   "typing"
+  ],
+  "scripts/qi_tuna_dispatch_clock.py": [
+   "dataclasses",
+   "math"
+  ],
+  "scripts/qi_tuna_early_label_maps.py": [
+   "__future__",
+   "argparse",
+   "itertools",
+   "numpy",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "qi_tuna_joint_response",
+   "typing"
+  ],
   "scripts/qi_tuna_final_result_receipt.py": [
    "__future__",
    "argparse",
@@ -13177,6 +13164,81 @@
    "re",
    "typing"
   ],
+  "scripts/qi_tuna_identity_guard.py": [
+   "hmac",
+   "qi_tuna_subject_binding"
+  ],
+  "scripts/qi_tuna_joint_algebra.py": [
+   "__future__",
+   "algebra_package_tables",
+   "argparse",
+   "fractions",
+   "json",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "qi_tuna_joint_response",
+   "typing"
+  ],
+  "scripts/qi_tuna_joint_package_runtime.py": [
+   "SplitOct",
+   "__future__",
+   "algebra_package_tables",
+   "argparse",
+   "cd_core",
+   "flint",
+   "fractions",
+   "hypercomplex",
+   "hypercomplex_engine",
+   "hyprat",
+   "importlib",
+   "json",
+   "math",
+   "mpmath",
+   "numpy",
+   "pandas",
+   "parallel",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "qi_tuna_joint_algebra",
+   "qi_tuna_joint_response",
+   "scipy",
+   "sympy",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_joint_response.py": [
+   "__future__",
+   "argparse",
+   "decimal",
+   "json",
+   "numpy",
+   "pathlib",
+   "qi_tuna_destination_analysis_receipt",
+   "qi_tuna_destination_one_analysis",
+   "qi_tuna_destination_prefix",
+   "typing"
+  ],
+  "scripts/qi_tuna_journaled_collection.py": [
+   "collections",
+   "dataclasses",
+   "math",
+   "qi_tuna_attempt_transport",
+   "qi_tuna_capture_commitment",
+   "qi_tuna_readback_collection",
+   "qi_tuna_readback_transport",
+   "qi_tuna_source_association",
+   "typing"
+  ],
+  "scripts/qi_tuna_private_readbacks.py": [
+   "hashlib",
+   "json",
+   "os",
+   "qi_tuna_readback_collection",
+   "qi_tuna_readback_transport",
+   "qi_tuna_source_association",
+   "stat",
+   "types"
+  ],
   "scripts/qi_tuna_qualification.py": [
    "__future__",
    "argparse",
@@ -13188,6 +13250,54 @@
    "parallel",
    "pathlib",
    "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_qx_destination.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "datetime",
+   "decimal",
+   "hashlib",
+   "json",
+   "os",
+   "pathlib",
+   "qi_platform",
+   "qi_stack",
+   "qi_tuna_readout_mapping_cases",
+   "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_qx_local_replay.py": [
+   "__future__",
+   "argparse",
+   "cqasm",
+   "datetime",
+   "importlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "qi_tuna_qx_destination",
+   "qxelarator",
+   "sys",
+   "typing",
+   "warnings"
+  ],
+  "scripts/qi_tuna_readback_collection.py": [
+   "collections",
+   "dataclasses",
+   "hashlib",
+   "qi_tuna_readback_transport",
+   "qi_tuna_source_association",
+   "typing"
+  ],
+  "scripts/qi_tuna_readback_transport.py": [
+   "collections",
+   "dataclasses",
+   "hashlib",
+   "math",
+   "re",
    "typing"
   ],
   "scripts/qi_tuna_readout_destination_analysis.py": [
@@ -13247,6 +13357,25 @@
    "qi_tuna_qualification",
    "sys",
    "typing"
+  ],
+  "scripts/qi_tuna_sequential_score.py": [
+   "__future__",
+   "fractions",
+   "typing"
+  ],
+  "scripts/qi_tuna_source_association.py": [
+   "collections",
+   "hashlib",
+   "json",
+   "math",
+   "qi_tuna_sequential_score",
+   "typing"
+  ],
+  "scripts/qi_tuna_subject_binding.py": [
+   "dataclasses",
+   "hmac",
+   "qi_tuna_account_binding",
+   "qi_tuna_source_association"
   ],
   "scripts/qi_walsh_exemplar_analysis.py": [
    "__future__",
@@ -14098,21 +14227,13 @@
   ]
  },
  "import_root_distributions": {
-  "Cayley_Calculator": [
-   "cayley-calculator"
-  ],
-  "SplitOct": [
-   "splitoct"
-  ],
+  "Cayley_Calculator": [],
+  "SplitOct": [],
   "anyio": [
    "anyio"
   ],
-  "cayley_dickson": [
-   "cayley-dickson"
-  ],
-  "clifford": [
-   "clifford"
-  ],
+  "cayley_dickson": [],
+  "clifford": [],
   "cqasm": [
    "libqasm"
   ],
@@ -14125,33 +14246,15 @@
   "flint": [
    "python-flint"
   ],
-  "galgebra": [
-   "galgebra"
-  ],
-  "hypercomplex": [
-   "hypercomplex"
-  ],
-  "hypercomplex_algebra": [
-   "hypercomplex-algebra"
-  ],
-  "hypercomplex_engine": [
-   "hypercomplex-engine"
-  ],
-  "hyprat": [
-   "hyprat"
-  ],
-  "jax": [
-   "jax"
-  ],
-  "kaggle": [
-   "kaggle"
-  ],
-  "kagglesdk": [
-   "kagglesdk"
-  ],
-  "kingdon": [
-   "kingdon"
-  ],
+  "galgebra": [],
+  "hypercomplex": [],
+  "hypercomplex_algebra": [],
+  "hypercomplex_engine": [],
+  "hyprat": [],
+  "jax": [],
+  "kaggle": [],
+  "kagglesdk": [],
+  "kingdon": [],
   "matplotlib": [
    "matplotlib"
   ],
@@ -14167,9 +14270,7 @@
   "numpy": [
    "numpy"
   ],
-  "octonion": [
-   "octonion"
-  ],
+  "octonion": [],
   "openquantum_mcp": [
    "openquantum-mcp"
   ],
@@ -14179,24 +14280,17 @@
   "opensquirrel": [
    "opensquirrel"
   ],
+  "pandas": [],
   "perceval": [
    "perceval-quandela"
   ],
-  "playwright": [
-   "playwright"
-  ],
-  "pyadic": [
-   "pyadic"
-  ],
+  "playwright": [],
+  "pyadic": [],
   "pydantic": [
    "pydantic"
   ],
-  "pyoctonion": [
-   "pyoctonion"
-  ],
-  "pyquaternion": [
-   "pyquaternion"
-  ],
+  "pyoctonion": [],
+  "pyquaternion": [],
   "qiskit": [
    "qiskit"
   ],
@@ -14209,12 +14303,8 @@
   "quantuminspire": [
    "quantuminspire"
   ],
-  "quaternion": [
-   "numpy-quaternion"
-  ],
-  "quaternionic": [
-   "quaternionic"
-  ],
+  "quaternion": [],
+  "quaternionic": [],
   "qxelarator": [
    "qxelarator"
   ],
@@ -14224,9 +14314,7 @@
   "rustworkx": [
    "rustworkx"
   ],
-  "sage": [
-   "sagemath"
-  ],
+  "sage": [],
   "samplomatic": [
    "samplomatic"
   ],
@@ -14236,21 +14324,42 @@
   "sedenion": [
    "octonion-sedenion"
   ],
-  "selenium": [
-   "selenium"
-  ],
+  "selenium": [],
   "sympy": [
    "sympy"
   ],
   "threadpoolctl": [
    "threadpoolctl"
   ],
-  "torch": [
-   "torch"
-  ]
+  "torch": []
  },
  "import_mapping_origin": "normalized importlib.metadata.packages_distributions observation with ISOLATED_IMPORTS fallback; checks project fresh tracked AST through this retained map instead of reinterpreting another host",
- "unresolved_import_roots": [],
+ "unresolved_import_roots": [
+  "Cayley_Calculator",
+  "SplitOct",
+  "cayley_dickson",
+  "clifford",
+  "galgebra",
+  "hypercomplex",
+  "hypercomplex_algebra",
+  "hypercomplex_engine",
+  "hyprat",
+  "jax",
+  "kaggle",
+  "kagglesdk",
+  "kingdon",
+  "octonion",
+  "pandas",
+  "playwright",
+  "pyadic",
+  "pyoctonion",
+  "pyquaternion",
+  "quaternion",
+  "quaternionic",
+  "sage",
+  "selenium",
+  "torch"
+ ],
  "execution_flag_scope": "recognized provider dispatch surfaces; false does not prove absence of remote effects",
  "coverage": "all requirements locks, top-level literal pins and referenced runtime pin files in scripts/kaggle_run.py (without executing dispatch), retained IQM distributions, maintained scientific roles and tracked runtime imports; every named package-table entry in the maintained ecosystem and algebra-candidate notes, plus retained provider PyPI records",
  "host_observation_policy": "host versions retained; historical import locations archived separately; current imported_by follows fresh AST"

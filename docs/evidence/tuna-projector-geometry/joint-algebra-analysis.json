@@ -1,0 +1,108 @@
+{
+  "boundary": "Exact algebraic summaries of a chosen classical encoding of binary labels. The retained package tables represent their original source-bound extraction; replay does not inspect current installed packages. Agreement does not identify a physical non-associative process or causal readout effect.",
+  "cases": {
+    "nominal_one": [
+      {
+        "associator_norm_squared": "764037/1048576",
+        "associator_sign_mean": "-97/512",
+        "batch": "prepared-one-baseline-before",
+        "job": 1620359,
+        "raw_sha256": "35b81dd5813736ea17e6d0e85fc6b1d54cf5a47a80729948b6e3d653deee426e"
+      },
+      {
+        "associator_norm_squared": "1434981/2097152",
+        "associator_sign_mean": "-77/512",
+        "batch": "prepared-one-rotated-destinations",
+        "job": 1620485,
+        "raw_sha256": "a967128edfecb0b7428410eb689edc0192a5f8c035014db600088827b42fcda9"
+      },
+      {
+        "associator_norm_squared": "3101879/4194304",
+        "associator_sign_mean": "-411/2048",
+        "batch": "prepared-one-baseline-after",
+        "job": 1620614,
+        "raw_sha256": "deaab97e762f52484bc43665a9acbcc19236b75ccfcd80c1f56d77fe28524a6e"
+      }
+    ],
+    "nominal_zero_prefix": [
+      {
+        "associator_norm_squared": "1316907/2097152",
+        "associator_sign_mean": "-65/512",
+        "batch": "prepared-zero-baseline-before",
+        "job": 1618109,
+        "raw_sha256": "98f99ea38c68851a310a01623c1ba038976e644d647bdfa94bb7a34b689e607c"
+      },
+      {
+        "associator_norm_squared": "2586339/4194304",
+        "associator_sign_mean": "-245/2048",
+        "batch": "prepared-zero-rotated-destinations",
+        "job": 1618345,
+        "raw_sha256": "1ad6fef1d35da152e7c52963673ebbaa545e8e2963f04c219e43f9f03fe08417"
+      },
+      {
+        "associator_norm_squared": "1391655/2097152",
+        "associator_sign_mean": "-21/128",
+        "batch": "prepared-zero-baseline-after",
+        "job": 1618590,
+        "raw_sha256": "d2bbdbf242b3089cc2684da542f358b13add1d33d64fd45dd5d4368cf8dbfca2"
+      }
+    ]
+  },
+  "inputs": {
+    "docs/evidence/algebra_packages/tables.json": "ba876004e44afd9b134977b1106dd4a864befb2379728b6b4447da73f6f2f784",
+    "docs/evidence/tuna-projector-geometry/joint-response-analysis.json": "8e81167d7fc6c6dcde0d859bcdbb99c2da8869488b42ac13dfc1919cbaaa8ab2",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+    "scripts/algebra_package_tables.py": "fddf339b7d9b43f2708c8a37babfdde8a1e0b00115aedd9d0b1dacf1ccb6a2de",
+    "scripts/qi_tuna_joint_response.py": "9e022041e15e99dc10b348e40dd2ec7fbb7af980c9b44f65bd4547d19b90d492"
+  },
+  "package_table_checks": 33,
+  "producer_sha256": "d519194f0c3261b4c1c3390ea1ee261a477edaa1737570d9c4417ca3135e7bfa",
+  "recorded_release_pins": {
+    "hypercomplex": {
+      "installed_at_original_extraction": {
+        "byte_identical_to_release": 4,
+        "distribution_version": "0.3.4",
+        "module_files": 4,
+        "packaging_shims": {}
+      },
+      "release_sha256": "04241e5d01b3f10e813c70882a2caa9b7dc168f8b921d47156c3d964363f9352",
+      "version": "0.3.4"
+    },
+    "hypercomplex-engine": {
+      "installed_at_original_extraction": {
+        "byte_identical_to_release": 23,
+        "distribution_version": "0.5.0",
+        "module_files": 23,
+        "packaging_shims": {}
+      },
+      "release_sha256": "05634d7421e1b6bc427bbc9cb8b0b91599c46cf1b1321e1d0f3e2f259dc08cb7",
+      "version": "0.5.0"
+    },
+    "hyprat": {
+      "installed_at_original_extraction": {
+        "byte_identical_to_release": 4,
+        "distribution_version": "0.2.0",
+        "module_files": 4,
+        "packaging_shims": {}
+      },
+      "release_sha256": "17ae936c3fc540172c7d4b6c918620e0a96808c2bccc6e5bf8953dcec24c715f",
+      "version": "0.2.0"
+    },
+    "splitoct": {
+      "installed_at_original_extraction": {
+        "byte_identical_to_release": 1,
+        "distribution_version": "0.16",
+        "module_files": 1,
+        "packaging_shims": {}
+      },
+      "release_sha256": "a192a1d5d9734b31670092be16c19a40b12a79db51ea2cfdfcb1e8a90a6505d6",
+      "version": "commit e29e72f805c2"
+    }
+  },
+  "schema": "qi-tuna-joint-algebra-table-replay-v1",
+  "split_control": {
+    "associator_triples_checked": 512,
+    "ordinary_e4_square": -1,
+    "split_e4_square": 1
+  }
+}

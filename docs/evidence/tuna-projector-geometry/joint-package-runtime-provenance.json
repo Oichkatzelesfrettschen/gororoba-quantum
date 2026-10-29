@@ -1,0 +1,18 @@
+{
+  "arch_package_integrity_lines": [
+    "python-hypercomplex: 29 total files, 0 altered files",
+    "python-hypercomplex-engine: 98 total files, 0 altered files",
+    "python-hyprat: 29 total files, 0 altered files",
+    "python-splitoct: 19 total files, 0 altered files"
+  ],
+  "boundary": "The package-manager check measures installed files against its local database. The probe separately compares installed Python module bytes to the registered release archives; neither establishes hardware behavior.",
+  "capture_finished_utc": "2026-10-28T01:55:08.770169+00:00",
+  "capture_started_utc": "2026-10-28T01:54:58.232668+00:00",
+  "interpreter_version": "3.14.8",
+  "normal_and_optimized_capture": "both byte-identical to retained observation",
+  "observation": "docs/evidence/tuna-projector-geometry/joint-package-runtime-observation.json",
+  "observation_sha256": "caba2333007c0060e5bb9a658ab0009e47387244683241683b02be1e2210595a",
+  "producer": "scripts/qi_tuna_joint_package_runtime.py",
+  "producer_sha256": "28412984e3384457317779af82d61295feb64fbbc44ea5056010267fd28553f6",
+  "schema": "qi-tuna-package-runtime-provenance-v1"
+}
