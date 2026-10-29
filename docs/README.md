@@ -345,6 +345,8 @@ differs from it only in the `cd_core.py` digest.
 | [build_host/python-stack.md](notes/build_host/python-stack.md) | build-host Python stack |
 | [jax-bridge-structure-report.md](notes/kaggle/jax-bridge-structure-report.md) | JAX bridge sweep, export once per structure |
 | [simulation-cost-levers.md](runbooks/simulation-cost-levers.md) | planner, ghost replay and package costs |
+| [compute-flags.md](runbooks/compute-flags.md) | pre-run flag review: memory caps, threads and solver options for Singular and msolve |
+| [library-flags.md](runbooks/library-flags.md) | per-library flags: BLAS threads, Aer, JAX, torch, sympy, FLINT, cvxpy and executable options, verified against the installed packages |
 
 ### Packages and tools
 

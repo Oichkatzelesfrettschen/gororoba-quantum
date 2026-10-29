@@ -131,7 +131,7 @@ replaced by better ones:
 - Hard boundaries: never `git push`, never open a pull request, never `git stash`, never `rm -rf` (use `trash-put`),
   never edit `gororoba_quantum/cd_core.py` or any retained evidence file of another record, never touch other
   worktrees or `~/.codex` or `/tmp` worktrees of other sessions. The host is shared (62 GiB): run every Singular
-  process under `prlimit --as=8589934592` (8 GiB), set `GOROROBA_WORKERS=4` for pooled runs, and stop any computation
+  process under an 8 GiB memory cap chosen by the flag review of [compute-flags.md](../runbooks/compute-flags.md), set `GOROROBA_WORKERS=4` for pooled runs, and stop any computation
   that passes 15 minutes. Then record it and find a cheaper formulation (smaller slice, better coordinates, global
   ordering, a symmetry reduction).
 - Turn length: end each turn at a sub-step boundary (a deliverable piece proved or refuted, a question run), about an
