@@ -324,10 +324,16 @@ can add overhead within a submitted job.
 
 Each job requests a six-second execution ceiling. Three ceilings sum to
 18 seconds inside the complete 20-second program envelope. The 48-second
-reserve requires at least 66 freshly reported seconds on the selected IBM
-instance. A conservative operator can retain the full 20-second envelope and
-require 68 seconds. Historical balances establish neither available time nor
-an allocation. The runner refuses an estimated batch above six seconds,
+reserve gives an immediate per-check threshold of 66 freshly reported seconds
+on the selected IBM instance. The submitter repeats that full threshold before
+each job, including after earlier charges post. A 68-second start can therefore
+produce a partial acquisition: a posted charge above two seconds triggers a
+later refusal. A conservative 78-second start covers the repeated checks after
+two earlier six-second ceilings, conditional on provider accounting and outside
+usage. The [acquisition review](../evidence/readout-actor-acquisition-review/README.md)
+records that operational limitation separately from the protected 48-second
+reserve. Historical balances establish neither available time nor an allocation.
+The runner refuses an estimated batch above six seconds,
 aggregate ceilings above 20 seconds, or insufficient quota after reserve.
 The two-second envelope remainder authorizes zero additional jobs or retries.
 Provider enforcement and returned billing remain separate checks.
@@ -431,7 +437,10 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 ```
 
 The fresh plan checks backend discovery, permitted delays, full measured width,
-Target duration proxies, matched compiled exposure, all allocations and quota.
+Target duration proxies, matched compiled exposure and all allocations.
+The planning function performs zero quota reads. A separate read-only usage
+observation supplies the review's admission evidence; submission refreshes
+quota before every batch.
 The [retained submit-free plan](../../results/live/2026-10-29T002839.028671Z/UNAPPROVED_CASE.md)
 and its [record](../../results/live/2026-10-29T002839.028671Z/record.json)
 bind all 24 compiled conditions. Every terminal measurement starts at tick 8;
