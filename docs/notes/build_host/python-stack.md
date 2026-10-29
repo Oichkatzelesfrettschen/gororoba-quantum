@@ -26,9 +26,9 @@ at those versions, except the linters.
 A broken or missing package is rebuilt and reinstalled from its PKGBUILD in
 `~/Github/PKGBUILDs` with `makepkg -si --nocheck` in the package
 directory: python-qiskit-aer and python-samplomatic before
-python-qiskit-ibm-runtime. Those PKGBUILDs replace `blas-openblas` with the
-`blas` and `lapack` virtuals that the installed AMD AOCL libraries provide,
-which leaves AOCL in place; a package without a local PKGBUILD comes from
+python-qiskit-ibm-runtime. Those PKGBUILDs link the system OpenBLAS
+(`blas-openblas` 0.3.34), which provides the `blas` and `lapack` virtuals;
+a package without a local PKGBUILD comes from
 the distribution repositories through pacman or paru. python-qiskit-experiments
 has a local PKGBUILD over the PyPI sdist: the AUR builds the GitHub tag
 archive, which lacks the randomized-benchmarking `.npz` tables, so
@@ -36,8 +36,8 @@ archive, which lacks the randomized-benchmarking `.npz` tables, so
 `"$PYTHON" -c "import qiskit, qiskit_ibm_runtime, qiskit_aer"` and a
 submit-free dry run confirm the stack. python-qiskit-aer-cuda builds against
 the cuquantum package of the same directory tree and installs in one
-`pacman -U` with it; its PKGBUILD links Aer's BLAS and LAPACK calls to the
-AOCL providers and builds the module as C++20, which CUDA 13's CCCL 3
+`pacman -U` with it; its PKGBUILD links Aer's BLAS and LAPACK calls to
+libopenblas.so.0 and builds the module as C++20, which CUDA 13's CCCL 3
 headers and fmt 12 require. `readelf -d` on
 `qiskit_aer/backends/controller_wrappers.cpython-314-x86_64-linux-gnu.so`
 lists libcustatevec.so.1 and libcutensornet.so.2 among its NEEDED entries;

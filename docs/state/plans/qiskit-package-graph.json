@@ -44,12 +44,13 @@
     },
     {
       "id": "missing-package-block",
-      "state": "todo",
+      "state": "cancelled",
       "action": "Obtain the package block the request named that did not reach the session, then install and document it.",
-      "acceptance": "Every named package has a PKGBUILD or stack entry, an installed version in probe_packages.py output, and a note in docs/notes/qiskit-packages/."
+      "acceptance": "Every named package has a PKGBUILD or stack entry, an installed version in probe_packages.py output, and a note in docs/notes/qiskit-packages/.",
+      "reason": "The owner identified the unreceived paste as a copy of the earlier open-item list, so no further package block exists."
     }
   ],
   "scope": "Qiskit-adjacent distributions installed from ~/Github/PKGBUILDs beyond requirements.txt, their isolated stacks and notes.",
   "owner": "operator",
-  "next_action": "Obtain the missing package block from the owner; rerun the interop probe after qiskit 2.6.1 installs."
+  "next_action": "Install qiskit 2.6.1, runtime 0.51.0 and Aer 0.18.2, rerun probe_packages.py --stacks, and close interop-qiskit-261."
 }

@@ -14,28 +14,11 @@ packages follows the approval rules of [AGENTS.md](../../../AGENTS.md).
 
 ## Install surfaces
 
-Python 3.14 and the core qiskit 2.6.1, qiskit-ibm-runtime 0.51.0 and
-qiskit-aer 0.18.2 live on the system interpreter. A package whose
-requirements cannot coexist with that core lives in a hash-locked
-environment under `/opt`, reached through its launcher.
-
-| Surface | Interpreter | Core it carries | Packages |
-|---|---|---|---|
-| system, `$PYTHON` | Python 3.14 | qiskit 2.6.1, runtime 0.51.0, Aer 0.18.2 (CUDA build) | [qiskit-aer](qiskit-aer.md), [ibm-quantum-schemas](ibm-quantum-schemas.md), [qiskit-noise-learning](qiskit-noise-learning.md), [pauli-prop and qiskit-addon-slc](qiskit-addon-slc.md), [qiskit-serverless and qiskit-ibm-catalog](qiskit-functions.md), [qiskit-connector](qiskit-connector.md), [qiskit-resume](qiskit-resume.md), [qiskit-waveform-sim](qiskit-waveform-sim.md), [qcog](qcog.md), [qubasic](qubasic.md), [eigenkit](eigenkit.md), [quantum-al](quantum-al.md), [perceval-quandela and perceval-interop](perceval-interop.md) |
-| `quantuminspire-qiskit-stack`, `qi-stack-python` | Python 3.13 | qiskit 2.3.0, Aer 0.17.2 | [quantuminspire, qiskit-quantuminspire, pennylane-quantuminspire](quantum-inspire-family.md) |
-| `qiskit-debugger-stack`, `qiskit-debugger-python` | Python 3.11 | qiskit 0.43.2 (terra 0.24.1), Aer 0.12.1 | [qiskit-debugger](qiskit-debugger.md) |
-| `quantum-pipeline-stack`, `quantum-pipeline-python` | Python 3.13 | qiskit 2.6.1, runtime 0.51.0, Aer 0.17.2 | [quantum-pipeline](quantum-pipeline.md) |
-
-Each package's placement follows from one requirement:
-
-- The Quantum Inspire family requires Python below 3.14. pennylane-qiskit,
-  which pennylane-quantuminspire requires, caps qiskit at 2.3.0.
-- qiskit-debugger pins `qiskit==0.43.2`. It imports `qiskit.Aer` and
-  `qiskit.execute`, both of which Qiskit 1.0 removed.
-- quantum-pipeline caps qiskit-aer below 0.18.
-- qiskit-serverless 0.37.0 caps qiskit-ibm-runtime below 0.51 and pins
-  cloudpickle, zipp, certifi and ipython to its Ray image. Its system
-  package relaxes those pins (Open item 1).
+[PYTHON.md](../../PYTHON.md#qiskit-adjacent-packages-and-stacks) registers
+every package with its surface (system Python 3.14 or one of three
+hash-locked `/opt` stacks), the core each surface carries, and the
+requirement that placed it there. The notes in this directory carry the
+granular usage, commands, flags, hazards and connections.
 
 ## How the packages connect
 
@@ -144,6 +127,3 @@ tracks each open item as a step with its acceptance condition:
    qiskit.
 5. `pipeline-aer-018`: quantum-pipeline moves to Aer 0.18 when a release
    lifts its `qiskit-aer<0.18` cap. It depends on the archived qiskit-nature.
-6. `missing-package-block`: the request that produced this directory named
-   a further block of packages that did not reach the session. This step
-   closes when that block is installed and documented here.

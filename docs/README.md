@@ -362,6 +362,7 @@ differs from it only in the `cd_core.py` digest.
 | File | Contents |
 |---|---|
 | [ci-runtime.md](runbooks/ci-runtime.md) | timing denominators, bottlenecks and replay selection |
+| [cache-locations.md](runbooks/cache-locations.md) | cache, venv, build-tree and run-output locations outside the checkout; cleanup classes and the future `make clean` and `make distclean` targets |
 | [vectorized-fits.md](runbooks/vectorized-fits.md) | batched classical fits across replicates |
 | [null-shards.md](runbooks/null-shards.md) | the successor null through one pool, Kaggle kernels and hosted-runner shards |
 
