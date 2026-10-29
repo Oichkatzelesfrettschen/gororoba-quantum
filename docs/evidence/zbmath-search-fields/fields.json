@@ -1,0 +1,716 @@
+{
+ "schema": "zbmath-search-fields-v1",
+ "captured_utc": "2026-10-29T15:22:02Z",
+ "rows": [
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "any",
+   "positive": "sedenions",
+   "negative": "zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "au",
+   "positive": "Lawrynowicz",
+   "negative": "Zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "ti",
+   "positive": "ternary",
+   "negative": "zzqq",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "ut",
+   "positive": "sedenions",
+   "negative": "zzqq",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "cc",
+   "positive": "82C44",
+   "negative": "05C99",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "cc",
+   "positive": "*82C44",
+   "negative": "*15A66",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "py",
+   "positive": "2012",
+   "negative": "1999",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "py",
+   "positive": "2010-2013",
+   "negative": "1990-1995",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "so",
+   "positive": "Clifford",
+   "negative": "Topology",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "doi",
+   "positive": "10.1007/s00006-012-0360-6",
+   "negative": "10.1000/zzqq",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "en",
+   "positive": "10.1007/s00006-012-0360-6",
+   "negative": "10.1000/zzqq",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "se",
+   "positive": "2038",
+   "negative": "57",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "la",
+   "positive": "English",
+   "negative": "French",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "la",
+   "positive": "EN",
+   "negative": "FR",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "pu",
+   "positive": "Springer",
+   "negative": "Elsevier",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "dt",
+   "positive": "j",
+   "negative": "b",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "db",
+   "positive": "Zbl",
+   "negative": "JFM",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "st",
+   "positive": "c",
+   "negative": null,
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": null
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "st",
+   "positive": "r",
+   "negative": null,
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": null
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "st",
+   "positive": "o",
+   "negative": null,
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": null
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "na",
+   "positive": "3",
+   "negative": "1",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "na",
+   "positive": "2-4",
+   "negative": "5-9",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "rft",
+   "positive": "Ising",
+   "negative": "zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "ab",
+   "positive": "Onsager",
+   "negative": "zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1263.01009",
+   "field": "st",
+   "positive": "s",
+   "negative": null,
+   "documented": false,
+   "positive_total": 1,
+   "negative_total": null
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1257.82097",
+   "field": "ai",
+   "positive": "lawrynowicz.julian",
+   "negative": "smith.ivan",
+   "documented": false,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1412.82015",
+   "field": "rf",
+   "positive": "6123912",
+   "negative": "1257.82097",
+   "documented": false,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1566.14003",
+   "field": "ci",
+   "positive": "3336606",
+   "negative": "6123912",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1566.14003",
+   "field": "ci",
+   "positive": "0212.26101",
+   "negative": "1257.82097",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1137.17007",
+   "field": "arxiv",
+   "positive": "math/0511691",
+   "negative": "math/0000001",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1137.17007",
+   "field": "rv",
+   "positive": "Elduque",
+   "negative": "Zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1137.17007",
+   "field": "rn",
+   "positive": "5518",
+   "negative": "1",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1137.17007",
+   "field": "pt",
+   "positive": "r",
+   "negative": "t",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1518.14003",
+   "field": "sw",
+   "positive": "Macaulay2",
+   "negative": "Zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1518.14003",
+   "field": "si",
+   "positive": "537",
+   "negative": "1",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1263.01009",
+   "field": "br",
+   "positive": "Hilbert",
+   "negative": "Zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1391.81004",
+   "field": "ed",
+   "positive": "Wheeler",
+   "negative": "Zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "document",
+   "anchor": "an:1474.30019",
+   "field": "li",
+   "positive": "*",
+   "negative": null,
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": null
+  },
+  {
+   "entity": "author",
+   "anchor": "ai:lawrynowicz.julian",
+   "field": "any",
+   "positive": "Lawrynowicz",
+   "negative": "Zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "author",
+   "anchor": "ai:lawrynowicz.julian",
+   "field": "au",
+   "positive": "Lawrynowicz",
+   "negative": "Zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "author",
+   "anchor": "ai:lawrynowicz.julian",
+   "field": "ln",
+   "positive": "Ławrynowicz",
+   "negative": "Zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "author",
+   "anchor": "ai:lawrynowicz.julian",
+   "field": "fn",
+   "positive": "Julian",
+   "negative": "Zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "author",
+   "anchor": "ai:lawrynowicz.julian",
+   "field": "cc",
+   "positive": "30",
+   "negative": "05",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "author",
+   "anchor": "ai:lawrynowicz.julian",
+   "field": "py",
+   "positive": "2012",
+   "negative": "1900",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "author",
+   "anchor": "ai:bourbaki.nicolas",
+   "field": "en",
+   "positive": "Q190529",
+   "negative": "Q1",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "author",
+   "anchor": "ai:bourbaki.nicolas",
+   "field": "st",
+   "positive": "o",
+   "negative": null,
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": null
+  },
+  {
+   "entity": "author",
+   "anchor": "ai:elduque.alberto",
+   "field": "rv",
+   "positive": "5518",
+   "negative": "1",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "author",
+   "anchor": "ai:elduque.alberto",
+   "field": "st",
+   "positive": "z",
+   "negative": null,
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": null
+  },
+  {
+   "entity": "author",
+   "anchor": "ai:serre.jean-pierre",
+   "field": "aw",
+   "positive": "Fields",
+   "negative": "Zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "author",
+   "anchor": "ai:serre.jean-pierre",
+   "field": "co",
+   "positive": "bourbaki.nicolas",
+   "negative": "zz.qq",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "serial",
+   "anchor": "se:2038",
+   "field": "any",
+   "positive": "Clifford",
+   "negative": "zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "serial",
+   "anchor": "se:2038",
+   "field": "jt",
+   "positive": "Clifford",
+   "negative": "Topology",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "serial",
+   "anchor": "se:2038",
+   "field": "sn",
+   "positive": "0188-7009",
+   "negative": "0003-486X",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "serial",
+   "anchor": "se:2038",
+   "field": "cy",
+   "positive": "CH",
+   "negative": "FR",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "serial",
+   "anchor": "se:2038",
+   "field": "la",
+   "positive": "EN",
+   "negative": "ZH",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "serial",
+   "anchor": "se:2038",
+   "field": "cc",
+   "positive": "15",
+   "negative": "05",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "serial",
+   "anchor": "se:2038",
+   "field": "pu",
+   "positive": "Springer",
+   "negative": "Elsevier",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "serial",
+   "anchor": "se:2038",
+   "field": "tp",
+   "positive": "j",
+   "negative": "b",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "serial",
+   "anchor": "se:2038",
+   "field": "st",
+   "positive": "c",
+   "negative": null,
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": null
+  },
+  {
+   "entity": "serial",
+   "anchor": "se:2038",
+   "field": "py",
+   "positive": "2000",
+   "negative": "1800",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "serial",
+   "anchor": "se:2038",
+   "field": "li",
+   "positive": "*",
+   "negative": null,
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": null
+  },
+  {
+   "entity": "software",
+   "anchor": "si:537",
+   "field": "any",
+   "positive": "Macaulay2",
+   "negative": "zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "software",
+   "anchor": "si:537",
+   "field": "sw",
+   "positive": "Macaulay2",
+   "negative": "Zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "software",
+   "anchor": "si:537",
+   "field": "au",
+   "positive": "Grayson",
+   "negative": "Zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "software",
+   "anchor": "si:537",
+   "field": "ut",
+   "positive": "CAS",
+   "negative": "zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "software",
+   "anchor": "si:537",
+   "field": "cc",
+   "positive": "13",
+   "negative": "03",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "software",
+   "anchor": "si:537",
+   "field": "ab",
+   "positive": "algebraic",
+   "negative": "zzqqxx",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "software",
+   "anchor": "si:630",
+   "field": "pl",
+   "positive": "C",
+   "negative": "Fortran",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "classification",
+   "anchor": "cc:17A35",
+   "field": "any",
+   "positive": "division",
+   "negative": "zzqq",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "classification",
+   "anchor": "cc:17A35",
+   "field": "ct",
+   "positive": "division",
+   "negative": "zzqq",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  },
+  {
+   "entity": "classification",
+   "anchor": "cc:17A35",
+   "field": "lv",
+   "positive": "2",
+   "negative": "0",
+   "documented": true,
+   "positive_total": 1,
+   "negative_total": 0
+  }
+ ]
+}

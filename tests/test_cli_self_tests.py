@@ -80,6 +80,7 @@ SELF_TESTS = (
     ("scripts/heron_feedforward_latency.py", ".", 9),
     ("scripts/latency_recovery_exposure.py", ".", 9),
     ("scripts/check_markdown_links.py", ".", 3),
+    ("scripts/zbmath.py", ".", 9),
 )
 
 
