@@ -1,0 +1,125 @@
+{
+ "admitted_statuses": [
+  "available",
+  "running"
+ ],
+ "approval": "User: Afterward: test independent compiled meshes and output-port permutations, then repeat selected matched meshes tomorrow to measure drift. User requested execution through CI. User, 2026-10-29: ensure the Ascella run uses the latest calibration and still runs regardless of self-imposed timeframes; if it is collecting data, collect.",
+ "availability_at_plan": {
+  "max_concurrent_jobs": 1,
+  "max_jobs_in_queue": 1,
+  "max_running_qt_jobs": 10,
+  "num_concurrent_jobs": 0,
+  "num_jobs_in_queue": 0,
+  "num_running_qt_jobs": 0
+ },
+ "body_sha256": "5524b833519bc294d63cce5d74f0a2dd31f37228fae908e73e02806bd40b5da3",
+ "case": "2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat",
+ "cases_sha256": "1ba22828ba3c8e827be94c5eb987f401434570059a31ee584a55df927ea74be9",
+ "credit_ceiling": 1.131072,
+ "estimated_credits": 1.131072,
+ "estimated_shots": 327680,
+ "expected_seconds": 300,
+ "job_id": "078ecca0-fb08-4cf1-960f-6c12301a19da",
+ "max_credits": 1.131072,
+ "max_samples": 327680,
+ "max_shots": 655360,
+ "payload_version_basis": "declared",
+ "per_job_credits": 1,
+ "perfs_at_plan": {
+  "Clock (MHz)": 13.33,
+  "Dark counts (detection/s)": [
+   328.0,
+   357.0,
+   286.0,
+   108.0,
+   140.0,
+   453.0,
+   220.0,
+   639.0,
+   3122.0,
+   3743.0,
+   5157.0,
+   749.0
+  ],
+  "HOM (%)": 87.28,
+  "Transmittance (%)": 5.17,
+  "g2 (%)": 1.9
+ },
+ "platform": "qpu:ascella",
+ "platform_at_plan": {
+  "bookable": true,
+  "description": "Ascella QPU",
+  "is_locked": false,
+  "is_offer_platform": true,
+  "maintenance": null,
+  "max_duration": 300,
+  "name": "qpu:ascella",
+  "price_per_shot": 1e-06,
+  "statistic": {
+   "2026-10-22": {
+    "availability": 89.83
+   },
+   "2026-10-23": {
+    "availability": 90.81
+   },
+   "2026-10-24": {
+    "availability": 92.25
+   },
+   "2026-10-25": {
+    "availability": 92.22000000000001
+   },
+   "2026-10-26": {
+    "availability": 92.10000000000001
+   },
+   "2026-10-27": {
+    "availability": 92.23
+   },
+   "2026-10-28": {
+    "availability": 90.09
+   },
+   "2026-10-29": {
+    "availability": 93.42
+   }
+  },
+  "status": "available",
+  "type": "qpu"
+ },
+ "schema": "qd-submission-v1",
+ "status_at_plan": {
+  "explorer": "available",
+  "processor": "available"
+ },
+ "submitted_utc": "2026-10-29T09:40:20+00:00",
+ "usage_before": [
+  {
+   "total_jobs": 101,
+   "usage": [
+    {
+     "credits": 0.0,
+     "duration_seconds": 2478,
+     "free_credits": 31.736128000000008,
+     "nb_jobs": 35,
+     "platform_name": "qpu:ascella"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 1128,
+     "free_credits": 16.0,
+     "nb_jobs": 17,
+     "platform_name": "sim:belenos"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 5570,
+     "free_credits": 50.26742,
+     "nb_jobs": 49,
+     "platform_name": "qpu:belenos"
+    }
+   ]
+  }
+ ],
+ "versions": {
+  "exqalibur": "1.4.2",
+  "perceval-quandela": "1.3.1"
+ }
+}
