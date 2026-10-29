@@ -117,12 +117,22 @@ The download wrote `Iris.csv`, 5107 bytes, sha256 prefix
 polars or Hugging Face adapters), `dataset_upload`, `model_upload`,
 `package_import` and `utility_script_install`.
 
+## Installed as isolated stacks
+
+Two official Kaggle distributions install as hash-locked `/opt` stacks from
+PKGBUILDs in `~/Github/PKGBUILDs`, each with its own interpreter, so their
+dependency trees and pins never reach the system site-packages, where
+kagglesdk runs on protobuf 7.36.1. No repository code imports either one.
+
+| Package | Version | Interpreter | What it is | Why it is isolated |
+| --- | --- | --- | --- | --- |
+| kaggle-environments-stack | kaggle-environments 1.33.3 | `kaggle-environments-python` (Python 3.13) | Kaggle's simulation-competition environments (61 registered) and agent runners | it pulls jax, gymnasium, gymnax, open_spiel, pettingzoo, pygame, Flask, transformers and litellm |
+| kaggle-benchmarks-stack | kaggle-benchmarks 0.6.2 | `kaggle-benchmarks-python` (Python 3.14) | authoring and running LLM benchmark tasks | it needs docker, google-genai, openai, playwright, panel and jupyter, and pins `protobuf<6.0`; the CLI's `benchmarks` group reaches the service from the system Python |
+
 ## Not installed
 
 | PyPI distribution | Latest | What it is | Why it stays out |
 | --- | --- | --- | --- |
-| kaggle-environments | 1.33.0 (2026-10-02) | Kaggle's simulation-competition environments and agent runners | game simulation is no job here, and it pulls jax, gymnasium 1.2.0, gymnax, open_spiel 2.0.1, pettingzoo, pygame, Flask, transformers and litellm |
-| kaggle-benchmarks | 0.6.1 (2026-06-17) | authoring and running LLM benchmark tasks | LLM benchmarks are no job here; it needs docker, google-genai, openai, playwright, panel and jupyter, and its `protobuf<6.0` pin conflicts with the protobuf 7.36.1 kagglesdk runs on; the CLI's `benchmarks` group already reaches the service |
 | kaggle-mcp | 0.1.0 (2025-03-20) | a third-party stdio MCP server wrapping `kaggle>=1.7.4.2` | Kaggle's official server at `https://www.kaggle.com/mcp` supersedes it with 76 tools and token authentication |
 
 ## Inside a Kaggle kernel
