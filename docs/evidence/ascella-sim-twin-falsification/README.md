@@ -92,7 +92,7 @@ Both planned campaigns were executed on physical quantum processor hardware (`qp
   - Non-associative Contrast: $\Delta = 1.723699 \pm 0.010100$ ($> 170\sigma$ detection of non-associative phase holonomy).
   - Associative Control: $\Delta_{\text{ctrl}} = -0.006394 \pm 0.010693$ ($< 0.6\sigma$, strictly null).
   - Total Error Closure: $C = 0.031962 \pm 0.014709$ ($< 0.05$ threshold, `visibility_closure: true`).
-  - Compensated Contrast: $\Delta / (-2 \operatorname{mean} D_{\text{ctrl}}) = 1.018893 \pm 0.0150$ (ideal: 1.0000).
+  - Compensated Contrast: $\Delta / (-2 \operatorname{mean} D_{\text{ctrl}}) = 1.018893 \pm 0.0088$ (ideal: 1.0000).
   - In-situ Visibility: $V_{\text{in-situ}} = 0.891681$ (matches live HOM calibration dip $0.889600$ within $0.2\%$, `within_tolerance: true`).
 - **Hardware Qualification Verdict:** **ADMITTED**. Physical non-associative contrast replicates simulation ($1.724$ vs $1.758$) and closely matches the theoretical prediction derived from the platform's HOM indistinguishability ($\Delta_{\text{pred}} = 1.6861$).
 
@@ -119,7 +119,7 @@ Both planned campaigns were executed on physical quantum processor hardware (`qp
 | **Associator Contrast $\Delta$** | 2.0000 | $1.7576 \pm 0.0095$ | $1.7237 \pm 0.0101$ | Consistent with HOM visibility ($91.4\%$ sim vs $89.0\%$ QPU) |
 | **Control Contrast $\Delta_{\text{ctrl}}$** | 0.0000 | $-0.0090 \pm 0.0096$ | $-0.0064 \pm 0.0107$ | Both strictly null within $1\sigma$ |
 | **Total Error Closure $C$** | 0.0000 | $0.0059 \pm 0.0135$ | $0.0320 \pm 0.0147$ | Both $< 0.05$ tolerance threshold |
-| **Compensated Contrast** | 1.0000 | $0.9949 \pm 0.0108$ | $1.0189 \pm 0.0150$ | Invariant across optical visibility degradation |
+| **Compensated Contrast** | 1.0000 | $1.0034 \pm 0.0077$ | $1.0189 \pm 0.0088$ | Invariant across optical visibility degradation |
 | **Conditional Contrast $\Delta_{\text{char}}$** | 2.0000 | 2.000000 | 1.997074 | Active $\{0, \omega\}$ subspace conditional contrast |
 | **Unconditional Mode Fidelity** | 100.0% | 100.0% | 98.03% - 99.78% (mean 99.22%) | All 12 output modes (0.49% sentinel leakage, 0.76% cross-talk) |
 | **Sentinel Mode Leakage** | 0.0000 | 0.000000 | 0.004888 | Chip leakage bounded $< 0.49\%$ |

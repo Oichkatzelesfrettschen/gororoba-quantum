@@ -254,6 +254,22 @@ def build_documents(
     return {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": circuit_bytes}
 
 
+def _verify_flint_pair(pair: tuple[int, int]) -> bool:
+    """Exact rational character projection verification for an octonion basis pair using python-flint."""
+    import flint  # type: ignore[import-not-found]
+
+    a, b = pair
+    w8 = flint.fmpz_mat(8, 8, [(-1) ** (bin(i & j).count("1")) for i in range(8) for j in range(8)])
+    om = character_frequency(a, b)
+    d_mat = flint.fmpz_mat(8, 8, [associator_sign(a, b, i) if i == j else 0 for i in range(8) for j in range(8)])
+    prod = w8 * d_mat * w8
+    for r in range(8):
+        expected = 8 if r == om else 0
+        if int(prod[r, 0]) != expected:
+            raise ValueError(f"Flint exact character check failed for ({a},{b}) at row {r}")
+    return True
+
+
 def check() -> int:
     """Verify 21-pair character kernel theorem, template binding, and ideal contrast endpoints."""
     # 1. Mathematical theorem verification across all 21 pairs
@@ -288,20 +304,12 @@ def check() -> int:
     require(abs(p_omega - 1.0) < BODY_TOLERANCE, f"SLOS P(omega) {p_omega} != 1.0")
     require(abs(p_0) < BODY_TOLERANCE, f"SLOS P(0) {p_0} != 0.0")
 
-    # 4. Exact rational arithmetic verification via python-flint
+    # 4. Exact rational arithmetic verification via python-flint pooled through parallel.py
     try:
-        import flint
+        import flint  # noqa: F401
 
-        w8 = flint.fmpz_mat(8, 8, [(-1) ** (bin(i & j).count("1")) for i in range(8) for j in range(8)])
-        for a, b in combinations(range(1, 8), 2):
-            om = character_frequency(a, b)
-            d_mat = flint.fmpz_mat(
-                8, 8, [associator_sign(a, b, i) if i == j else 0 for i in range(8) for j in range(8)]
-            )
-            prod = w8 * d_mat * w8
-            for r in range(8):
-                expected = 8 if r == om else 0
-                require(int(prod[r, 0]) == expected, f"Flint exact character check failed for ({a},{b}) at row {r}")
+        pairs = list(combinations(range(1, 8), 2))
+        list(ordered_map(_verify_flint_pair, pairs))
         flint_verified = True
     except ImportError:
         flint_verified = False
