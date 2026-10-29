@@ -50,3 +50,42 @@ account) and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel
 stops at 0.15.1) over the Kaggle image's numpy and scipy, records every
 version in `environment.json`, and holds no IBM credential
 (`kaggle_kernel/AGENTS.md`).
+
+## Simulation threading and solver settings
+
+Measured on the build host with the pinned interpreter (Python 3.14.7, GIL
+enabled: `sys._is_gil_enabled()` returns True), qiskit-aer 0.17.2, scipy
+1.18.1, at most four threads, on a host whose load average stood near 17. Each
+row names its probe and inputs; the probe scripts are untracked session scratch, so
+the inputs stated here are what a rerun needs.
+
+- `AerSimulator.run` holds the GIL for the whole call. A thread that sleeps 1 ms
+  in a loop ticked 4 times during a 3.29 s single-thread run (`probe_gil2.py`;
+  about 450 ticks per 0.5 s when the GIL is free). Two and three threads each
+  running their own simulator took 6.03 s and 7.08 s against 3.05 s for one,
+  with process CPU time over wall time of 0.93 and 0.97 (`probe_gil.py`). The
+  choice threads of `qpu_planning.prepare` and `live_run.evaluate` therefore
+  overlap no simulation; parallelism comes from the OpenMP shot threads inside
+  one `run` (`max_parallel_shots`, set from `--simulation-threads`).
+- The shot-thread count leaves counts unchanged: 40 one-qubit dynamic circuits
+  with 1 to 20 mid-circuit measures, depolarizing and readout noise, 8192
+  shots, `seed_simulator` 20261011, statevector method give the counts hash
+  `19a7dc06eeb9163e` at 1, 2 and 4 shot threads, in 59.8 s, 46.9 s and 24.9 s
+  (`probe_threads.py`). The probe uses synthetic circuits, so production
+  invariance rests on the dry-run record comparison.
+- `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096` is required before
+  `import qiskit_aer`; `ci/pr_checks.sh` and the CI workflows set it.
+- `qiskit.utils.should_run_in_parallel(4)` returns False with `QISKIT_PARALLEL`
+  unset and set to `FALSE`, before and after a default
+  `concurrent.futures.ProcessPoolExecutor` call in the same process. A
+  difference the variable would make is not reproduced here.
+- `scipy.optimize.milp` in `msq_envelope.layout_rule_v2` runs HiGHS at its
+  defaults, `mip_rel_gap` 1e-4 and `mip_abs_gap` 1e-6 (`highspy.Highs`
+  `getOptionValue`), against the rule's `TIE_TOLERANCE` of 1e-9. scipy accepts
+  `mip_rel_gap` and passes `mip_abs_gap` to HiGHS verbatim with a
+  RuntimeWarning. With both gaps set to 0 the layouts at widths 16, 24 and 32
+  equal the default layouts on eight distinct Kingston envelope snapshots: the
+  six under `results/live/*/envelope-snapshots/` of 2026-10-27 and 2026-10-28
+  (f4c8ef62, 10e70a1c, 6e847e38, bd0df4c7, 91e0c085, e185caea) and the two of
+  the 2026-10-29 width-32 and width-24 successor rehearsals (277a1f8b,
+  e77b74e8), at 0.30 to 0.51 s per solve either way (`milp_gap_all.py`).

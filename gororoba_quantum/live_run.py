@@ -4104,9 +4104,10 @@ def check_choice_targets(choices: list[Choice]) -> None:
 def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
     """Noise-simulate each choice under its backend's live properties, after proving they match the Target.
 
-    Aer releases the GIL while it simulates, so the choices run on threads, as qpu_planning.prepare runs them: each
-    thread keeps one simulator per snapshot, and each choice's batch is seeded by its own call (simulate_entries), so
-    the predictions equal the serial loop's. The batch evidence joins per snapshot in choice order.
+    The choices run on threads, as qpu_planning.prepare runs them. AerSimulator.run holds the GIL, so the threads
+    overlap no simulation (the OpenMP shot threads inside one call carry the parallelism); each thread keeps one
+    simulator per snapshot, and each choice's batch is seeded by its own call (simulate_entries), so the predictions
+    equal the serial loop's. The batch evidence joins per snapshot in choice order.
     """
     record["execution_requirements"] = {choice.group.name: execution_requirements(choice) for choice in choices}
     pubs = execution_pubs(choices)
