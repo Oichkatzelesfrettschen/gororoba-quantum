@@ -407,6 +407,54 @@
             }
           ],
           "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Revalidated actor dispatch after full-diff review: 100 focused tests pass; missing anchors refuse before provider access and damaged actor identities cannot reach the dense path. Generic and Fez submit-free dry runs pass, and Fez compilation binds the current source closure and QPY. Hardware inference remains descriptive.",
+          "observed_at": "2026-10-29T19:59:11.604858+00:00",
+          "revision": "0c1174fc2dab890ea0d1e7504fbce54edec36c62",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "2c37d60c858b65ca83b42a7dbe11a5a23ba234bfb483bcb9388b1f647c21b532"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "66531e7f8acdfaa1d777983852aaa25ae32ceb05a75b36e6aedbcdf28fdaafbf"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "2d4d7ee5483b022a481bfea733a0ccb4d36f6be4c1af670453ada7c17c38932f"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "cde343f64216b7c491ba0215897591ac715e1481e8b2f971d2636a95fe8f0496"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            },
+            {
+              "ref": "results/live/2026-10-29T195800.891065Z/record.json",
+              "sha256": "7f00be96f4ad38013fae2e240fe415ba7446607c7642a2db616bce36379e8ec7"
+            },
+            {
+              "ref": "results/live/2026-10-29T195800.891065Z/isa.qpy",
+              "sha256": "4b3534a56ed96c3013958311aff490a3ac4b8a0b4ded093ace0494dd238fa581"
+            },
+            {
+              "ref": "results/live/2026-10-29T195800.891065Z/UNAPPROVED_CASE.md",
+              "sha256": "18a49b4085c369575b3f57eb1b4fab7cbd64c4ddad24ec8389e065c5619cc187"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
         }
       ]
     },
