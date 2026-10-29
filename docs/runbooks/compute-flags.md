@@ -1,8 +1,11 @@
 # Compute flags: memory caps, threads and solver options
 
-This runbook is the flag review that precedes every long classical computation
-(Singular, msolve, Macaulay2, FLINT, numpy pools) on the build host, Azure VMs,
-Kaggle kernels or any other substrate. An agent or operator fills in the
+This runbook is the flag review that precedes every command whose cost or
+correctness depends on its options: computer algebra (Singular, msolve,
+Macaulay2), simulators (Aer, cuStateVec), Python pools, compilers, CI tools,
+cloud launchers and resource limiters, on the build host, Azure VMs, Kaggle
+kernels or any other substrate. The tool sections below cover the tools
+measured so far; a tool without a section gets one the first time it runs long. An agent or operator fills in the
 checklist at the end before the run starts and records the filled checklist
 beside the run's log. A run launched without it gets stopped and relaunched.
 
@@ -110,6 +113,25 @@ cgroup cap is the uniform rule.
 | Azure Standard_FX4mds_v2 | 2 cores, 4 threads | `systemd-run --user --scope -p MemoryMax`, lingering on | 84 GB; two jobs share 2 physical cores |
 | Kaggle CPU kernel | 4 vCPU (treated as 2 cores) | RSS watchdog in the kernel script | 32 GB, kernel death above about 31 GB |
 
+## Measured combinations
+
+Each row is a hypothesis: the best flag set found so far for one tool version,
+host and workload, with the measurement behind it and the result that would
+dethrone it. A new run that beats a row on the same workload replaces it in
+the same change, and the old row moves to `superseded` with its measurement
+kept, so the table records every combination tried and why it lost.
+
+| Tool and version | Host | Workload | Flags and environment | Measured | Falsifier | Status |
+|---|---|---|---|---|---|---|
+| msolve 0.10.1 (passagemath 10.8.13) | Azure FX4mds_v2, beside one Singular job | A_5 E8bar->N+ Rees elimination | `-t 4 -e 1 -g 2`, `prlimit --as` 80 GiB | exit 139 in degree 7, resident 33.6 GB | | superseded: address-space cap |
+| same | same | same | `-t 3 -m 200000 -s 24 -l 1 -e 1 -g 2`, `prlimit --as` 28 GiB | exit 139 in degree 6, resident 28.0 GB | | superseded: `-m` leaves the monomial table unchanged |
+| same | same | same | `-t 3 -s 24 -u 2 -e 1 -g 2`, `prlimit --as` 28 GiB | exit 139 in degree 6, resident 18.1 GB; `-u 2` lowered the resident set by 10 GB at the same point | | superseded: address-space cap |
+| same | same | same | `-t 3 -s 24 -u 2 -e 1 -g 2`, cgroup `MemoryMax` 30 GiB, address space 1 TiB | running | death at resident 30 GiB means real memory need; passing degree 7 confirms the address-space diagnosis | candidate |
+
+A row records the tool version, the host, the workload, the full launch line
+with environment, wall time, peak resident set, the furthest stage reached,
+and the log path in the evidence directory that holds the run.
+
 ## Pre-run checklist
 
 Record answers beside the run log:
@@ -126,3 +148,5 @@ Record answers beside the run log:
 7. Progress trace (verbosity, RSS sampling) and where the log lands.
 8. The falsifier: what the log shows if the run fails for the cap rather than
    the mathematics.
+9. The measured-combinations row this run starts from, or a note that none
+   exists; after the run, the row it adds, replaces or supersedes.
