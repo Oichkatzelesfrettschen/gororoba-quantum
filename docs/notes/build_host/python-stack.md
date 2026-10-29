@@ -1,19 +1,22 @@
 # Python stack on the build host
 
 requirements.txt and
-ci/requirements-ci.txt pin what CI runs; the build host runs Arch packages
-at those versions, except the linters.
+ci/requirements-ci.txt pin what CI runs. The build host runs Arch packages
+at those versions, except for the linters and for the Qiskit core: the host carries
+qiskit 2.6.1, qiskit-ibm-runtime 0.51.0 and qiskit-aer 0.18.2 ahead of the
+requirements.txt pins of qiskit 2.6.0 and runtime 0.50.0 until the pin bump lands.
 
 | Arch package | Pin it carries |
 |---|---|
-| python-qiskit | qiskit 2.5.2 |
-| python-qiskit-ibm-runtime | qiskit-ibm-runtime 0.50.0 |
-| python-qiskit-aer-cuda (provides python-qiskit-aer) | qiskit-aer 0.17.2, pkgrel 2: CUDA Thrust backend for sm_89 with cuQuantum, so `AerSimulator(device="GPU", cuStateVec_enable=True)` runs |
-| cuquantum | cuquantum 26.09.0.8 for CUDA 13, repackaged from the vendor archive: libcustatevec.so.1 1.15.0 and libcutensornet.so.2 2.14.0, the two libraries python-qiskit-aer-cuda 0.17.2-2 links |
+| python-qiskit | qiskit 2.6.1, packaged without `check()`, whose test base turns every DeprecationWarning into an error and so fails the circuit-library tests on an mpmath DeprecationWarning. The suite (`stestr run -E test_equivalence_draw`, as in `check()`) run against the installed package with that base class reporting DeprecationWarning and QiskitWarning as warnings gives 63429 passed, 31 skipped and 0 failed on python-qiskit-aer-cuda 0.18.2-3, whose provider patch removes the duplicate `aer_simulator` registration ([qiskit-aer.md](../qiskit-packages/qiskit-aer.md)) |
+| python-qiskit-ibm-runtime | qiskit-ibm-runtime 0.51.0; `check()` passes against qiskit 2.6.1 (2049 passed, 7 skipped) |
+| python-qiskit-aer-cuda (provides python-qiskit-aer) | qiskit-aer 0.18.2, pkgrel 3 (unique provider names, [qiskit-aer.md](../qiskit-packages/qiskit-aer.md)): CUDA Thrust backend for sm_89 with cuQuantum, so `AerSimulator(device="GPU", cuStateVec_enable=True)` runs |
+| cuquantum | cuquantum 26.09.0.8 for CUDA 13, repackaged from the vendor archive: libcustatevec.so.1 1.15.0 and libcutensornet.so.2 2.14.0, the two libraries python-qiskit-aer-cuda 0.18.2-3 links |
 | cutensor | cutensor 2.8.1.0, the tensor library libcutensornet.so.2 loads |
-| cuda | cuda 13.4.2 (nvcc 13.4.92): the toolkit both packages build against and the libcublas and libcusolver the module loads from /opt/cuda/lib64 |
+| python-cuquantum | cuquantum-python-cu13 26.9.0: `cuquantum.bindings` (custatevec, cutensornet, cudensitymat, cupauliprop, custabilizer) and `cuquantum.tensornet` over the cuquantum package |
+| cuda | cuda 13.4.3 (nvcc 13.4.92): the toolkit both packages build against and the libcublas and libcusolver the module loads from /opt/cuda/lib64 |
 | python-samplomatic | samplomatic 0.21.0, the runtime 0.50 floor |
-| python-ibm-quantum-schemas | ibm-quantum-schemas 0.12.20260921, the runtime 0.50 floor |
+| python-ibm-quantum-schemas | ibm-quantum-schemas 0.13.20261016, the runtime 0.51 floor |
 | python-numpy, python-scipy | numpy 2.5.4, scipy 1.18.1 |
 | python-rustworkx, python-sympy | rustworkx 0.18.1, sympy 1.14.0 |
 | python-matplotlib | matplotlib 3.11.2 |
@@ -26,9 +29,9 @@ at those versions, except the linters.
 A broken or missing package is rebuilt and reinstalled from its PKGBUILD in
 `~/Github/PKGBUILDs` with `makepkg -si --nocheck` in the package
 directory: python-qiskit-aer and python-samplomatic before
-python-qiskit-ibm-runtime. Those PKGBUILDs replace `blas-openblas` with the
-`blas` and `lapack` virtuals that the installed AMD AOCL libraries provide,
-which leaves AOCL in place; a package without a local PKGBUILD comes from
+python-qiskit-ibm-runtime. Those PKGBUILDs link the system OpenBLAS
+(`blas-openblas` 0.3.34), which provides the `blas` and `lapack` virtuals;
+a package without a local PKGBUILD comes from
 the distribution repositories through pacman or paru. python-qiskit-experiments
 has a local PKGBUILD over the PyPI sdist: the AUR builds the GitHub tag
 archive, which lacks the randomized-benchmarking `.npz` tables, so
@@ -36,13 +39,36 @@ archive, which lacks the randomized-benchmarking `.npz` tables, so
 `"$PYTHON" -c "import qiskit, qiskit_ibm_runtime, qiskit_aer"` and a
 submit-free dry run confirm the stack. python-qiskit-aer-cuda builds against
 the cuquantum package of the same directory tree and installs in one
-`pacman -U` with it; its PKGBUILD links Aer's BLAS and LAPACK calls to the
-AOCL providers and builds the module as C++20, which CUDA 13's CCCL 3
+`pacman -U` with it; its PKGBUILD links Aer's BLAS and LAPACK calls to
+libopenblas.so.0 and builds the module as C++20, which CUDA 13's CCCL 3
 headers and fmt 12 require. `readelf -d` on
 `qiskit_aer/backends/controller_wrappers.cpython-314-x86_64-linux-gnu.so`
-lists libcustatevec.so.1 and libcutensornet.so.2 among its NEEDED entries;
+lists libopenblas.so.0, libcustatevec.so.1, libcutensornet.so.2 and libgomp.so.1 among its NEEDED entries;
 a module without them raises `Simulation device "GPU" does not support
 cuStateVec on this system` on `cuStateVec_enable=True`.
+Aer's own GPU code runs Thrust kernels and calls no cuBLAS. It links the
+CUDA runtime statically, so no libcudart.so loads. cuBLAS, cuBLASLt and
+cuSOLVER load as dependencies of libcustatevec.so.1 (libcublas.so.13,
+libcublasLt.so.13) and libcutensornet.so.2 (libcublas.so.13,
+libcusolver.so.12, libcutensor.so.2). They resolve to the cuda and cutensor
+packages and do work only inside cuStateVec and cuTensorNet calls. The pip
+`nvidia/*/lib` rpaths that Aer's CMakeLists.txt writes match no directory on
+the host. No pip-installed CUDA or BLAS wheel sits in the system
+site-packages, and python-cupy 14.2.0 loads cuBLAS from the same cuda package.
+NumPy links libcblas.so.3, and SciPy links libblas.so.3 and liblapack.so.3;
+all three resolve to libopenblas.so.0.3. The user venvs and `/opt` stacks take PyPI
+wheels instead, with their own bundled OpenBLAS (`numpy.libs`,
+`qiskit_aer.libs`, `scipy_openblas32`) and a CPU-only Aer, so GPU simulation
+runs on the system interpreter alone. python-cuquantum 26.09.0 builds the
+cuQuantum Python bindings (`cuquantum-python-cu13`) from the upstream source tag
+against the cuquantum and cuda packages. Its prepare() drops the five pip library
+requirements (`custatevec-cu13` and siblings) and names the system `cupy`
+distribution, so cuda-pathfinder resolves libcustatevec.so.1 and its siblings
+from /usr/lib. A cuTensorNet contraction of the Bell circuit through
+`CircuitToEinsum` gives the amplitude 0.7071 for `11`. The PyPI
+`nvidia-cublas` and `nvidia-cusolver` wheels carry the same libraries the
+cuda package installs, and no installed distribution requires them, so they
+stay uninstalled.
 `docs/notes/build_host/custatevec.md` holds the requirement list, the build
 and install commands and the probe results. A Kaggle kernel installs qiskit 2.6.0,
 qiskit-ibm-runtime 0.50.0 (its fake backends, such as FakeFez, need no
