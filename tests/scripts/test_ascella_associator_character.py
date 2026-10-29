@@ -134,3 +134,42 @@ def test_empty_counts_refused(tmp_path):
         raise AssertionError(f"expected REFUSED on empty counts, got {report['status']}")
     if report["verdicts"]["execution_status"] != "REFUSED":
         raise AssertionError(f"expected execution_status REFUSED, got {report['verdicts']['execution_status']}")
+
+
+def test_single_count_refused(tmp_path):
+    """Verify that a single count (below statistical threshold) is refused."""
+    docs = build_documents()
+    cases_file = tmp_path / "cases.json"
+    cases_file.write_bytes(docs["cases.json"])
+    manifest = json.loads(docs["cases.json"].decode())
+
+    # Build iterations with only 1 count in mode 0
+    single_iterations = [{"name": s["name"], "counts": {"|1,0,0,0,0,0,0,0,0,0,0,0>": 1}} for s in manifest["settings"]]
+    results_file = tmp_path / "results.json"
+    results_file.write_text(json.dumps({"iterations": single_iterations}))
+
+    report = analyze(tmp_path)
+    if report["status"] != "REFUSED":
+        raise AssertionError(f"expected REFUSED on 1 count, got {report['status']}")
+
+
+def test_sentinel_only_leakage_rate_preserved_on_refusal(tmp_path):
+    """Verify that a run with sentinel counts only preserves the observed sentinel leakage rate."""
+    docs = build_documents()
+    cases_file = tmp_path / "cases.json"
+    cases_file.write_bytes(docs["cases.json"])
+    manifest = json.loads(docs["cases.json"].decode())
+
+    # Mode 8 is sentinel mode
+    sentinel_iterations = [
+        {"name": s["name"], "counts": {"|0,0,0,0,0,0,0,0,1,0,0,0>": 100}} for s in manifest["settings"]
+    ]
+    results_file = tmp_path / "results.json"
+    results_file.write_text(json.dumps({"iterations": sentinel_iterations}))
+
+    report = analyze(tmp_path)
+    if report["status"] != "REFUSED":
+        raise AssertionError(f"expected REFUSED on sentinel-only counts, got {report['status']}")
+    leakage = report["verdicts"]["sentinel_leakage_rate"]
+    if leakage != 1.0:
+        raise AssertionError(f"expected sentinel_leakage_rate 1.0, got {leakage}")

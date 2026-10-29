@@ -61,6 +61,7 @@ CASE_DIR = ROOT / "results/quandela/cases/ascella_associator_character/job-00"
 
 DEFAULT_SAMPLES_PER_ITERATION = 10000
 DEFAULT_SHOTS_FACTOR = 10
+MIN_FOCAL_SAMPLES_PER_SETTING = 50
 MAX_DURATION = 300
 TOLERANCE = 1e-12
 BODY_TOLERANCE = 1e-9
@@ -393,7 +394,8 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     settings = manifest["settings"]
     require(len(entries) == len(settings), f"mismatch: {len(entries)} != {len(settings)}")
 
-    min_photons = int(manifest.get("min_detected_photons", 1))
+    samples_per_iter = int(manifest.get("samples_per_iteration", DEFAULT_SAMPLES_PER_ITERATION))
+    min_focal = max(MIN_FOCAL_SAMPLES_PER_SETTING, int(0.01 * samples_per_iter))
     admission_errors: list[str] = []
 
     per_setting_reports = []
@@ -437,14 +439,16 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         total_focal += focal
         total_sentinel += c_sentinel
 
-        if (c_omega + c_0) < min_photons:
+        if (c_omega + c_0) < min_focal:
             admission_errors.append(
-                f"{name}: focal counts (c_omega + c_0 = {c_omega + c_0}) below min_detected_photons ({min_photons})"
+                f"{name}: focal counts (c_omega + c_0 = {c_omega + c_0}) below statistical threshold ({min_focal})"
             )
 
         denom = max(1, c_omega + c_0)
         d_obs = (c_omega - c_0) / denom
-        se = math.sqrt(max(0.0, 1.0 - d_obs**2) / denom)
+        # Wilson score continuity floor ensures strictly positive uncertainty for boundary observations (|d| ~ 1)
+        var = max(1.0 - d_obs**2, 1.0 / denom) / denom
+        se = math.sqrt(var)
 
         record = {
             "name": name,
@@ -463,6 +467,9 @@ def analyze(run_dir: Path) -> dict[str, Any]:
             pair_contrasts[pair_key] = {}
         pair_contrasts[pair_key][arm] = d_obs
 
+    total_events = total_focal + total_sentinel
+    observed_sentinel_rate = total_sentinel / total_events if total_events > 0 else 0.0
+
     # If any iteration violated the count admission threshold, fail closed
     if admission_errors:
         return {
@@ -472,7 +479,7 @@ def analyze(run_dir: Path) -> dict[str, Any]:
                 "admission_errors": admission_errors,
                 "character_signal_detected": False,
                 "mean_character_contrast": 0.0,
-                "sentinel_leakage_rate": 0.0,
+                "sentinel_leakage_rate": round(observed_sentinel_rate, 6) if total_events > 0 else None,
             },
             "contrasts_by_pair": {},
             "iterations": per_setting_reports,
@@ -493,7 +500,7 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         all_contrasts.append(delta)
 
     mean_delta = float(np.mean(all_contrasts))
-    sentinel_rate = total_sentinel / max(1, total_focal + total_sentinel)
+    sentinel_rate = observed_sentinel_rate
 
     return {
         "status": "ADMITTED",
