@@ -14635,6 +14635,27 @@
    "sys",
    "typing",
    "wheel_algebra"
+  ],
+  "scripts/zbmath.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "dataclasses",
+   "datetime",
+   "gzip",
+   "hashlib",
+   "http",
+   "json",
+   "pathlib",
+   "re",
+   "shutil",
+   "sys",
+   "tempfile",
+   "time",
+   "typing",
+   "urllib",
+   "uuid",
+   "xml"
   ]
  },
  "import_root_distributions": {
