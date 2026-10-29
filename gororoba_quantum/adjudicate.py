@@ -344,7 +344,7 @@ def adjudicate(
     import live_run
 
     record = json.loads((run_dir / "record.json").read_text())
-    if actor_collection_sha256 is not None or record.get("family_configuration", {}).get("name") == "readout-actor":
+    if actor_collection_sha256 is not None or live_run.actor_run_marker(record, run_dir):
         import readout_actor_family
 
         try:
@@ -891,6 +891,7 @@ def main() -> int:
     from qiskit_ibm_runtime import QiskitRuntimeService
 
     import ibm_account
+    import live_run
 
     try:
         seed_source = None
@@ -898,7 +899,9 @@ def main() -> int:
             seed_source = qrng_seeds.seed_record(
                 "gororoba_quantum/adjudicate.py", "--seed", qrng_seeds.repo_relative(args.run), args.seed_source
             )
-        service = None if args.actor_collection_sha256 else ibm_account.open_service(QiskitRuntimeService)
+        record = json.loads((args.run / "record.json").read_text())
+        actor = args.actor_collection_sha256 is not None or live_run.actor_run_marker(record, args.run)
+        service = None if actor else ibm_account.open_service(QiskitRuntimeService)
         out = adjudicate(
             service, args.run, args.seed, seed_source, actor_collection_sha256=args.actor_collection_sha256
         )

@@ -868,6 +868,40 @@ def test_actor_anchor_prevents_generic_dispatch_after_family_mutation(environmen
         adjudicate.adjudicate(None, run, actor_collection_sha256="invalid")
 
 
+@pytest.mark.parametrize("mutation", ["family", "schema_and_family"])
+def test_actor_marker_refuses_legacy_dispatch_without_anchor(
+    environment: Any, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, mutation: str
+) -> None:
+    run = tmp_path / "run"
+    specification = case()
+    specification["allocations"] = specification["allocations"][:1]
+    record, _ = save_plan(run, environment, specification)
+    record["family_configuration"]["name"] = "damaged"
+    if mutation == "schema_and_family":
+        record["schema_version"] = 7
+    live_run.write_json(run, record)
+    monkeypatch.setattr(live_run, "all_experiment_groups", lambda: pytest.fail("legacy dense dispatch reached"))
+    with pytest.raises(live_run.LiveRunError, match="anchor"):
+        live_run.collect(environment, run)
+    with pytest.raises(adjudicate.AdjudicationError, match="SHA-256"):
+        adjudicate.adjudicate(None, run)
+
+
+def test_actor_cli_rejects_missing_anchor_before_provider(
+    environment: Any, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import ibm_account
+
+    run = tmp_path / "run"
+    specification = case()
+    specification["allocations"] = specification["allocations"][:1]
+    save_plan(run, environment, specification)
+    monkeypatch.setattr(ibm_account, "open_service", lambda *_: pytest.fail("provider access reached"))
+    monkeypatch.setattr(sys, "argv", ["adjudicate.py", str(run)])
+    if adjudicate.main() != 1:
+        raise AssertionError("an actor CLI request without its collection anchor must fail")
+
+
 @pytest.mark.parametrize("status", ["DONE", "ERROR"])
 def test_sparse_actor_retention_uses_external_anchor_without_current_source_revalidation(
     environment: Any, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, status: str

@@ -6658,10 +6658,20 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
     return out
 
 
+def actor_run_marker(record: Mapping[str, Any], run_dir: Path) -> bool:
+    """Keep actor records on the sparse path even when one identity field is damaged."""
+    configuration = record.get("family_configuration")
+    return (
+        record.get("schema_version") == "readout-actor-run-v1"
+        or (isinstance(configuration, Mapping) and configuration.get("name") == "readout-actor")
+        or (run_dir / "actor-case.json").exists()
+    )
+
+
 def collect(service: QiskitRuntimeService, run_dir: Path, *, actor_record_sha256: str | None = None) -> None:
     """Measured replica distributions against the noise model of the calibration in force at execution."""
     record = json.loads((run_dir / "record.json").read_text())
-    if actor_record_sha256 is not None or record.get("family_configuration", {}).get("name") == "readout-actor":
+    if actor_record_sha256 is not None or actor_run_marker(record, run_dir):
         import readout_actor_family
 
         try:
