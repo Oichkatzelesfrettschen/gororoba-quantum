@@ -129,12 +129,10 @@ list) and set h = 0. The reduced germ at p is the intersection of the
 `tangentcone`) on the A_5 strata ran past an hour at tens of GiB on the shared
 host, while the global route takes seconds
 ([a5-strata-regularity](docs/evidence/a5-strata-regularity/README.md)). A
-long classical run (Singular, msolve, Macaulay2) starts only after the flag
-review of [compute-flags.md](docs/runbooks/compute-flags.md): a cgroup
-`MemoryMax` or RSS cap, threads matched to free physical cores, every solver
-flag checked against the binary's own help, and `GOROROBA_WORKERS` set. An
-address-space cap (`prlimit --as`) refuses msolve's reallocations far below
-physical memory and is never the cap of a multithreaded program.
+long run of any tool starts only after the flag review of
+[compute-flags.md](docs/runbooks/compute-flags.md), which chooses its memory
+and time limits, threads and solver options and records the measured best
+combination.
 
 ## Documents
 

@@ -42,12 +42,20 @@ flag of the launch line before blaming the algorithm.
 
 ## Memory caps
 
-| Mechanism | Limits | Use |
-|---|---|---|
-| cgroup v2 `MemoryMax` (`systemd-run --user --scope -p MemoryMax=NG -p MemorySwapMax=0 CMD`) | resident memory plus page cache charged to the job; the kernel OOM-kills the job alone at the cap | default on the build host and on Azure VMs; needs the `memory` controller delegated to the user manager (check `cat /sys/fs/cgroup/user.slice/user-$(id -u).slice/user@$(id -u).service/cgroup.controllers`) and lingering (`loginctl enable-linger USER`) so the scope survives logout |
-| RSS watchdog (sample `VmRSS` of the job and its children, kill above N) | resident memory, at sample granularity | Kaggle kernels and other containers without a delegated cgroup; the multi-job template already samples every 30 s |
-| `prlimit --as` / `RLIMIT_AS` | virtual address space | only for single-threaded programs with a measured, small virtual-to-resident ratio; never for msolve, any OpenMP program, or a JIT runtime |
-| `timeout -k 10 SECONDS` | wall time | every run, combined with one memory cap |
+Every mechanism below is available; the review picks one memory limit and one
+time limit per run from what the substrate supports and records why.
+
+| Mechanism | What it limits | When it fits | Caveat |
+|---|---|---|---|
+| cgroup v2 `MemoryMax` (`systemd-run --user --scope -p MemoryMax=NG -p MemorySwapMax=0 CMD`) | resident memory plus page cache charged to the job; the kernel OOM-kills the job alone at the limit | default on the build host and Azure VMs | needs the `memory` controller delegated to the user manager (`cat /sys/fs/cgroup/user.slice/user-$(id -u).slice/user@$(id -u).service/cgroup.controllers`) and lingering (`loginctl enable-linger USER`) so the scope survives logout |
+| cgroup v2 `MemoryHigh` (same command, `-p MemoryHigh=NG`) | soft limit: the kernel reclaims and throttles above it instead of killing | pairing with `MemoryMax` to slow a job before it dies | throttling can stretch wall time severalfold |
+| container limit (`docker run --memory`, Kaggle's own 32 GB) | the container's cgroup | runs that already sit in a container | the whole container dies, every job in it included |
+| RSS watchdog (sample `VmRSS` of the job and its children, kill above N) | resident memory, at sample granularity | Kaggle kernels and other containers without a delegated cgroup; the multi-job template already samples every 30 s | a fast spike between samples escapes it |
+| `prlimit --as=BYTES CMD`, `ulimit -v`, `resource.setrlimit(RLIMIT_AS, ...)` | virtual address space reserved by the process | single-threaded programs whose virtual-to-resident ratio was measured small | refuses allocations far below physical memory for msolve, OpenMP programs, JIT runtimes and anything that reserves before touching |
+| `prlimit --rss`, `RLIMIT_RSS` | nothing on Linux since 2.6 | never | accepted and ignored by the kernel |
+| `prlimit --data`, `RLIMIT_DATA` | heap and private anonymous mappings | rarely; counts reservations like `--as` | same caveat as `--as` |
+| `timeout -k 10 SECONDS CMD` | wall time | every run, beside one memory limit | |
+| `systemd-run -p RuntimeMaxSec=` | wall time of the scope or service | runs already under `systemd-run` | |
 
 Set `MALLOC_ARENA_MAX=2` in the environment of every multithreaded C program
 so glibc keeps two arenas instead of one per thread; this shrinks address-space
