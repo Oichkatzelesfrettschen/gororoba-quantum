@@ -383,7 +383,7 @@ differs from it only in the `cd_core.py` digest.
 |---|---|
 | [ibm_heron_platform.md](notes/ibm_heron_platform.md) | measured Targets and current documentation |
 | [hardware-controls.md](notes/ibm_quantum/hardware-controls.md) | every control reachable through qiskit-ibm-runtime |
-| [evidence/local_idle_padding/README.md](evidence/local_idle_padding/README.md) | list-schedule idle written into ISA circuits before submission: issue 526's falsifier over the retained dynamic runs, ALAP against the service schedule, and idle-scale, CZ-factor, event and placebo controls |
+| [evidence/local_idle_padding/README.md](evidence/local_idle_padding/README.md) | list-schedule idle written into ISA circuits before submission: ALAP against the service schedule, and idle-scale, CZ-factor, event and placebo controls |
 | [learning-quantum-teleportation.md](notes/ibm_quantum/learning-quantum-teleportation.md) | IBM Quantum Learning teleportation lesson: outcome-to-correction table |
 | [qiskit-ecosystem.md](notes/qiskit-ecosystem.md) | Qiskit ecosystem audit |
 | [qiskit-ecosystem-install-plan.md](notes/qiskit-ecosystem-install-plan.md) | Qiskit ecosystem install plan |
