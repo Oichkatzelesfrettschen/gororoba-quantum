@@ -1,0 +1,14 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "7c250623816f6d5cc25a03e25e1c59cdbda620fa012996bed2a4fbfee9ace9c5",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-source-association-followup-review.md",
+  "retained_sha256": "5d31142dc9d5aaaa280f0b2d7404cac55226d6a311afe699c833f4232d077f7b",
+  "reviewed_sha256": {
+    "scripts/qi_tuna_source_association.py": "2993c9962f9ca47a3a8f0c9f9f4d18b416c5ded5c6d02fe5ddb427fe4d9d27b9",
+    "tests/scripts/test_qi_tuna_source_association.py": "f3cba1a941b55d40e049864078f0f3a8935dffecbc1c98f711250da3767c4a2c"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

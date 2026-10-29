@@ -1,0 +1,228 @@
+{
+  "all_six_observed_response_hashes_match": true,
+  "boundary": "Offline reconstruction binds six observed response objects to retained binary shots and result fields. The comparison retains the API capture's trust boundary and leaves analog acquisition data and physical causality unresolved.",
+  "final_result_fields": [
+    "execution_time_in_seconds",
+    "raw_data",
+    "results",
+    "shots_done",
+    "shots_requested"
+  ],
+  "inputs": {
+    "docs/evidence/tuna-projector-geometry/destination-final-result-equivalence.json": "3946f6ef9a543ee30cf5433309fffe00680271e5d2a17b45a275c685ec2a0ce7",
+    "docs/evidence/tuna-projector-geometry/destination-final-result-projections.json": "2b42398c3c63ccdea406e221b71b95a43457c3f1cde493a9d460935f5ece1666",
+    "docs/evidence/tuna-projector-geometry/destination-job-artifact-observations.json": "2dba65de58d86cb1a456a4bbcf61961bb543d51bfdce4eaea499b10db403109f",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/baseline-after.cq": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/cases.json": "ba8bda4c2be667b64cd4db2dd30d02390a158098d50e8d9317aaa77a6847e2aa",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/raw/baseline-after.cq.json": "d2bbdbf242b3089cc2684da542f358b13add1d33d64fd45dd5d4368cf8dbfca2",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/results.json": "84b8028fa85c32ca99e0b4edb5898ae180af9633561de1bc6975127c5c9de896",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/submission.json": "889a391577b3928743304bbd114e15ac7b711bfbe198ceba176ee7f33ccd3f12",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/baseline-before.cq": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/cases.json": "b8ec020a157d48b414c10a544b8f692fd26fa721edd4745d2d91da4382f3eabe",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/raw/baseline-before.cq.json": "98f99ea38c68851a310a01623c1ba038976e644d647bdfa94bb7a34b689e607c",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/results.json": "c03601af55bfb2660e8a3e1cb22d530f0be9b6b07dd30524a7b210c50006f755",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/submission.json": "0b194c48b31125f07d7afa2b4e31b3e0a719bb83ea9e51393b83991e6ad888ec",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/cases.json": "2396adc9c5eef41452655d41bbc4df7cfb26a76f78e3e6b9a8d2d9e3327a9eb5",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/raw/rotated-destinations.cq.json": "1ad6fef1d35da152e7c52963673ebbaa545e8e2963f04c219e43f9f03fe08417",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/results.json": "dc55839b064b367f9c66fb6b9bfbe8858639e442b373eeacafc4dc4adb23db73",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/rotated-destinations.cq": "3084eef16a0d32a23d7b3fa41c92f27fa3ce4f3d84791d128a10246728ad6d5d",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/submission.json": "e611ba73026478fcae475e4dff96cc4731dd2acaead5b41a379ab02679bb4ab5",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after/baseline-after.cq": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after/cases.json": "fc88c1fd2d3cdef71d96f00c1f5a873541070cef36cbcaccbffe4af1ab5efcf5",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after/raw/baseline-after.cq.json": "deaab97e762f52484bc43665a9acbcc19236b75ccfcd80c1f56d77fe28524a6e",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after/results.json": "d99b5c8f4b22ca1f61a3d242dfb32ca76d77c005d06a7e4a9123de2091a74fc2",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after/submission.json": "178a9f21d4c97dcaaefc4f2131795f7a169642ae135a240f1ef60f736f509373",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before/baseline-before.cq": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before/cases.json": "1b64e00601d4a8eab1ddada93e13c7323790320e6ef6ec409deb5f8851929ae6",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before/raw/baseline-before.cq.json": "35b81dd5813736ea17e6d0e85fc6b1d54cf5a47a80729948b6e3d653deee426e",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before/results.json": "e2790461eec37ce61a9effa82ddb8b7ba27acd60a79016c67004f31901d93719",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before/submission.json": "4a1241cd2546b5bc72be653d76f212c3887320fbd27aa7c3a46afd4e4a6ddc59",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations/cases.json": "fc09d1b9c08c82d1b7f11c81233ccb65cb012bfead8a9af8ffddae5a83893950",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations/raw/rotated-destinations.cq.json": "a967128edfecb0b7428410eb689edc0192a5f8c035014db600088827b42fcda9",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations/results.json": "353ce7ee91a53556d40cf13ccceb65543d54b78feca181d896845c7b3c4a1623",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations/rotated-destinations.cq": "8accfebdeb2083a4e861754abf29004b1a3a646633dcfc57eed3d9fdc35c4b81",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations/submission.json": "ea11ab56d207290f103f4336cdc56163bb9d6ac55c9278911d6487a523edf916"
+  },
+  "jobs": [
+    {
+      "case": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before",
+      "checks": {
+        "execution_seconds_match": true,
+        "field_set": true,
+        "histogram_matches": true,
+        "job_identity": true,
+        "ordered_raw_matches": true,
+        "shot_counts_match": true
+      },
+      "execution_seconds_decimal": "5.17682",
+      "inputs": {
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/baseline-before.cq": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267",
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/cases.json": "b8ec020a157d48b414c10a544b8f692fd26fa721edd4745d2d91da4382f3eabe",
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/raw/baseline-before.cq.json": "98f99ea38c68851a310a01623c1ba038976e644d647bdfa94bb7a34b689e607c",
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/results.json": "c03601af55bfb2660e8a3e1cb22d530f0be9b6b07dd30524a7b210c50006f755",
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/submission.json": "0b194c48b31125f07d7afa2b4e31b3e0a719bb83ea9e51393b83991e6ad888ec"
+      },
+      "job": 1618109,
+      "original_observed_object_sha256": "0e5922531c187049c3dcfeb2b76a26982156e3ec5eaad326c48cd882cbc782c4",
+      "path": "/final_results/job/1618109",
+      "projection_object_sha256": "0e5922531c187049c3dcfeb2b76a26982156e3ec5eaad326c48cd882cbc782c4",
+      "reconstructed_object_sha256": "0e5922531c187049c3dcfeb2b76a26982156e3ec5eaad326c48cd882cbc782c4",
+      "response_created_on": "2026-10-27T20:05:21.250984Z",
+      "response_id": 1580162,
+      "shots": 4096,
+      "width": 20
+    },
+    {
+      "case": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations",
+      "checks": {
+        "execution_seconds_match": true,
+        "field_set": true,
+        "histogram_matches": true,
+        "job_identity": true,
+        "ordered_raw_matches": true,
+        "shot_counts_match": true
+      },
+      "execution_seconds_decimal": "4.710931",
+      "inputs": {
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/cases.json": "2396adc9c5eef41452655d41bbc4df7cfb26a76f78e3e6b9a8d2d9e3327a9eb5",
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/raw/rotated-destinations.cq.json": "1ad6fef1d35da152e7c52963673ebbaa545e8e2963f04c219e43f9f03fe08417",
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/results.json": "dc55839b064b367f9c66fb6b9bfbe8858639e442b373eeacafc4dc4adb23db73",
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/rotated-destinations.cq": "3084eef16a0d32a23d7b3fa41c92f27fa3ce4f3d84791d128a10246728ad6d5d",
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/submission.json": "e611ba73026478fcae475e4dff96cc4731dd2acaead5b41a379ab02679bb4ab5"
+      },
+      "job": 1618345,
+      "original_observed_object_sha256": "b3f48d40f5fd2ff28d9c4a9d03df3322d4dabddedd0206afaf85f0337e81441e",
+      "path": "/final_results/job/1618345",
+      "projection_object_sha256": "b3f48d40f5fd2ff28d9c4a9d03df3322d4dabddedd0206afaf85f0337e81441e",
+      "reconstructed_object_sha256": "b3f48d40f5fd2ff28d9c4a9d03df3322d4dabddedd0206afaf85f0337e81441e",
+      "response_created_on": "2026-10-27T20:22:41.865456Z",
+      "response_id": 1580398,
+      "shots": 4096,
+      "width": 20
+    },
+    {
+      "case": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after",
+      "checks": {
+        "execution_seconds_match": true,
+        "field_set": true,
+        "histogram_matches": true,
+        "job_identity": true,
+        "ordered_raw_matches": true,
+        "shot_counts_match": true
+      },
+      "execution_seconds_decimal": "4.469031",
+      "inputs": {
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/baseline-after.cq": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267",
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/cases.json": "ba8bda4c2be667b64cd4db2dd30d02390a158098d50e8d9317aaa77a6847e2aa",
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/raw/baseline-after.cq.json": "d2bbdbf242b3089cc2684da542f358b13add1d33d64fd45dd5d4368cf8dbfca2",
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/results.json": "84b8028fa85c32ca99e0b4edb5898ae180af9633561de1bc6975127c5c9de896",
+        "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/submission.json": "889a391577b3928743304bbd114e15ac7b711bfbe198ceba176ee7f33ccd3f12"
+      },
+      "job": 1618590,
+      "original_observed_object_sha256": "6e437f81f853990bca5274e727126ecf321732f4c99426a3690787cefe71359f",
+      "path": "/final_results/job/1618590",
+      "projection_object_sha256": "6e437f81f853990bca5274e727126ecf321732f4c99426a3690787cefe71359f",
+      "reconstructed_object_sha256": "6e437f81f853990bca5274e727126ecf321732f4c99426a3690787cefe71359f",
+      "response_created_on": "2026-10-27T20:51:29.642909Z",
+      "response_id": 1580638,
+      "shots": 4096,
+      "width": 20
+    },
+    {
+      "case": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before",
+      "checks": {
+        "execution_seconds_match": true,
+        "field_set": true,
+        "histogram_matches": true,
+        "job_identity": true,
+        "ordered_raw_matches": true,
+        "shot_counts_match": true
+      },
+      "execution_seconds_decimal": "5.672132",
+      "inputs": {
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before/baseline-before.cq": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f",
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before/cases.json": "1b64e00601d4a8eab1ddada93e13c7323790320e6ef6ec409deb5f8851929ae6",
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before/raw/baseline-before.cq.json": "35b81dd5813736ea17e6d0e85fc6b1d54cf5a47a80729948b6e3d653deee426e",
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before/results.json": "e2790461eec37ce61a9effa82ddb8b7ba27acd60a79016c67004f31901d93719",
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before/submission.json": "4a1241cd2546b5bc72be653d76f212c3887320fbd27aa7c3a46afd4e4a6ddc59"
+      },
+      "job": 1620359,
+      "original_observed_object_sha256": "5999981ab39b439cb4a5cf1e6ff7638b485c2d05585e0933fb7e390d92ea5f0e",
+      "path": "/final_results/job/1620359",
+      "projection_object_sha256": "5999981ab39b439cb4a5cf1e6ff7638b485c2d05585e0933fb7e390d92ea5f0e",
+      "reconstructed_object_sha256": "5999981ab39b439cb4a5cf1e6ff7638b485c2d05585e0933fb7e390d92ea5f0e",
+      "response_created_on": "2026-10-27T23:37:46.669362Z",
+      "response_id": 1582405,
+      "shots": 4096,
+      "width": 20
+    },
+    {
+      "case": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations",
+      "checks": {
+        "execution_seconds_match": true,
+        "field_set": true,
+        "histogram_matches": true,
+        "job_identity": true,
+        "ordered_raw_matches": true,
+        "shot_counts_match": true
+      },
+      "execution_seconds_decimal": "5.576922",
+      "inputs": {
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations/cases.json": "fc09d1b9c08c82d1b7f11c81233ccb65cb012bfead8a9af8ffddae5a83893950",
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations/raw/rotated-destinations.cq.json": "a967128edfecb0b7428410eb689edc0192a5f8c035014db600088827b42fcda9",
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations/results.json": "353ce7ee91a53556d40cf13ccceb65543d54b78feca181d896845c7b3c4a1623",
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations/rotated-destinations.cq": "8accfebdeb2083a4e861754abf29004b1a3a646633dcfc57eed3d9fdc35c4b81",
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations/submission.json": "ea11ab56d207290f103f4336cdc56163bb9d6ac55c9278911d6487a523edf916"
+      },
+      "job": 1620485,
+      "original_observed_object_sha256": "c7c4b1825bbeba47808d41cbd910ddeb7785c06a34fbe7b6051ab7856bc4e452",
+      "path": "/final_results/job/1620485",
+      "projection_object_sha256": "c7c4b1825bbeba47808d41cbd910ddeb7785c06a34fbe7b6051ab7856bc4e452",
+      "reconstructed_object_sha256": "c7c4b1825bbeba47808d41cbd910ddeb7785c06a34fbe7b6051ab7856bc4e452",
+      "response_created_on": "2026-10-27T23:47:01.882663Z",
+      "response_id": 1582531,
+      "shots": 4096,
+      "width": 20
+    },
+    {
+      "case": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after",
+      "checks": {
+        "execution_seconds_match": true,
+        "field_set": true,
+        "histogram_matches": true,
+        "job_identity": true,
+        "ordered_raw_matches": true,
+        "shot_counts_match": true
+      },
+      "execution_seconds_decimal": "5.534805",
+      "inputs": {
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after/baseline-after.cq": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f",
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after/cases.json": "fc88c1fd2d3cdef71d96f00c1f5a873541070cef36cbcaccbffe4af1ab5efcf5",
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after/raw/baseline-after.cq.json": "deaab97e762f52484bc43665a9acbcc19236b75ccfcd80c1f56d77fe28524a6e",
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after/results.json": "d99b5c8f4b22ca1f61a3d242dfb32ca76d77c005d06a7e4a9123de2091a74fc2",
+        "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after/submission.json": "178a9f21d4c97dcaaefc4f2131795f7a169642ae135a240f1ef60f736f509373"
+      },
+      "job": 1620614,
+      "original_observed_object_sha256": "565485cc7e4172e147766c7ed579300e0ad8cb228ca38fed790af52cc84a6665",
+      "path": "/final_results/job/1620614",
+      "projection_object_sha256": "565485cc7e4172e147766c7ed579300e0ad8cb228ca38fed790af52cc84a6665",
+      "reconstructed_object_sha256": "565485cc7e4172e147766c7ed579300e0ad8cb228ca38fed790af52cc84a6665",
+      "response_created_on": "2026-10-28T00:20:09.420695Z",
+      "response_id": 1582660,
+      "shots": 4096,
+      "width": 20
+    }
+  ],
+  "producer_sha256": "3547faacb440146963ecf72092f7883537b5a183133ebf4c84631a578d71f4ed",
+  "response_fields": [
+    "created_on",
+    "final_result",
+    "id",
+    "job_id"
+  ],
+  "schema": "qi-final-result-retention-checked-receipt-v1",
+  "validator_sources": {
+    "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+    "scripts/qi_tuna_destination_one_analysis.py": "974fd00a607672e7a567817b208e5b36d0efac9d602de5189986acc093e05802"
+  }
+}

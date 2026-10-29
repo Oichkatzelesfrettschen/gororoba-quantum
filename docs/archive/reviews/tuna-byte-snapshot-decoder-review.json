@@ -1,0 +1,14 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "c92bf5b7113a4452d74765e83c66cdfcef952ceecb106534692cc5ab169989da",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-byte-snapshot-decoder-review.md",
+  "retained_sha256": "e1db26961b559216f6cf08c9d7e80cdaad31bd53330c736e25e74afd6fd7a401",
+  "reviewed_sha256": {
+    "scripts/qi_tuna_source_association.py": "6f8e807ba7dc8c45cda763f670b883e5dd1f73f058f1b5e908afbd592a407a47",
+    "tests/scripts/test_qi_tuna_source_association.py": "717921d5318ca7179a55bb60b255bdec4d26605a43d8c8b1d9ad5b400126d3a8"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

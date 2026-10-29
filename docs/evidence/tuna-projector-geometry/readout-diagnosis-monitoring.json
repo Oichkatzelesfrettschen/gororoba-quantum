@@ -1,0 +1,315 @@
+{
+  "dashboard": {
+    "dashboard": "tuna-17",
+    "panels": [
+      {
+        "id": 2,
+        "queries": [
+          {
+            "instant": false,
+            "legend": "{{qubit}}",
+            "ref": "A"
+          },
+          {
+            "instant": false,
+            "legend": "Average",
+            "ref": "B"
+          }
+        ],
+        "title": "Relaxation time T1 (\u00b5s)",
+        "type": "timeseries",
+        "value_text": {}
+      },
+      {
+        "id": 3,
+        "queries": [
+          {
+            "instant": true,
+            "legend": "{{qubit}}",
+            "ref": "A"
+          }
+        ],
+        "title": "Latest T1 (\u00b5s)",
+        "type": "barchart",
+        "value_text": {}
+      },
+      {
+        "id": 4,
+        "queries": [
+          {
+            "instant": false,
+            "legend": "{{qubit}}",
+            "ref": "A"
+          },
+          {
+            "instant": false,
+            "legend": "Average",
+            "ref": "B"
+          }
+        ],
+        "title": "Ramsey decoherence time T2R (\u00b5s)",
+        "type": "timeseries",
+        "value_text": {}
+      },
+      {
+        "id": 5,
+        "queries": [
+          {
+            "instant": true,
+            "legend": "{{qubit}}",
+            "ref": "A"
+          }
+        ],
+        "title": "Latest T2R (\u00b5s)",
+        "type": "barchart",
+        "value_text": {}
+      },
+      {
+        "id": 6,
+        "queries": [
+          {
+            "instant": false,
+            "legend": "{{qubit}}",
+            "ref": "A"
+          },
+          {
+            "instant": false,
+            "legend": "Average",
+            "ref": "B"
+          }
+        ],
+        "title": "Echo decoherence time T2E (\u00b5s)",
+        "type": "timeseries",
+        "value_text": {}
+      },
+      {
+        "id": 7,
+        "queries": [
+          {
+            "instant": true,
+            "legend": "{{qubit}}",
+            "ref": "A"
+          }
+        ],
+        "title": "Latest T2E (\u00b5s)",
+        "type": "barchart",
+        "value_text": {}
+      },
+      {
+        "id": 8,
+        "queries": [
+          {
+            "instant": false,
+            "legend": "{{qubit}}",
+            "ref": "A"
+          },
+          {
+            "instant": false,
+            "legend": "Average",
+            "ref": "B"
+          }
+        ],
+        "title": "Initialization error (%)",
+        "type": "timeseries",
+        "value_text": {}
+      },
+      {
+        "id": 9,
+        "queries": [
+          {
+            "instant": true,
+            "legend": "{{qubit}}",
+            "ref": "A"
+          }
+        ],
+        "title": "Latest Initialization Error (%)",
+        "type": "barchart",
+        "value_text": {}
+      },
+      {
+        "id": 10,
+        "queries": [
+          {
+            "instant": false,
+            "legend": "{{qubit}}",
+            "ref": "A"
+          },
+          {
+            "instant": false,
+            "legend": "Average",
+            "ref": "B"
+          }
+        ],
+        "title": "Readout error (%)",
+        "type": "timeseries",
+        "value_text": {}
+      },
+      {
+        "id": 11,
+        "queries": [
+          {
+            "instant": true,
+            "legend": "{{qubit}}",
+            "ref": "A"
+          }
+        ],
+        "title": "Latest Readout Error (%)",
+        "type": "barchart",
+        "value_text": {}
+      },
+      {
+        "id": 12,
+        "queries": [
+          {
+            "instant": false,
+            "legend": "{{qubit}}",
+            "ref": "A"
+          },
+          {
+            "instant": false,
+            "legend": "Average",
+            "ref": "B"
+          }
+        ],
+        "title": "Individual readout QNDness error (%)",
+        "type": "timeseries",
+        "value_text": {}
+      },
+      {
+        "id": 13,
+        "queries": [
+          {
+            "instant": true,
+            "legend": "{{qubit}}",
+            "ref": "A"
+          }
+        ],
+        "title": "Latest Individual Readout QNDness Error (%)",
+        "type": "barchart",
+        "value_text": {}
+      },
+      {
+        "id": 18,
+        "queries": [
+          {
+            "instant": false,
+            "legend": "{{qubit}}",
+            "ref": "A"
+          },
+          {
+            "instant": false,
+            "legend": "Average",
+            "ref": "B"
+          }
+        ],
+        "title": "Single-qubit gate error (%)",
+        "type": "timeseries",
+        "value_text": {}
+      },
+      {
+        "id": 19,
+        "queries": [
+          {
+            "instant": true,
+            "legend": "{{qubit}}",
+            "ref": "A"
+          }
+        ],
+        "title": "Latest Single-Qubit Gate Error (%)",
+        "type": "barchart",
+        "value_text": {}
+      },
+      {
+        "id": 20,
+        "queries": [
+          {
+            "instant": false,
+            "legend": "{{qubit1}}{{qubit2}}",
+            "ref": "A"
+          },
+          {
+            "instant": false,
+            "legend": "Average",
+            "ref": "B"
+          }
+        ],
+        "title": "Bell-state error (%)",
+        "type": "timeseries",
+        "value_text": {}
+      },
+      {
+        "id": 21,
+        "queries": [
+          {
+            "instant": true,
+            "legend": "{{qubit1}}{{qubit2}}",
+            "ref": "A"
+          }
+        ],
+        "title": "Latest Bell-State Error (%)",
+        "type": "barchart",
+        "value_text": {}
+      }
+    ],
+    "request_started_utc": "2026-10-27T17:34:45.416932+00:00",
+    "retrieved_utc": "2026-10-27T17:34:46.742132+00:00",
+    "title": "Tuna-17",
+    "updated": "2026-10-26T11:54:58Z",
+    "updates": [
+      "[2026-10-22] We are unable to show the latest performance data due to concerns related to the security leaks in PHP.",
+      "[2026-07-07] A mistake was made in calculating the init error, from the afternoon of 06-07-2026 till the morning of 07-07-2026 the init fidelity was reported.",
+      "[2026-05-23 19:15] The readout duration for all qubits of Tuna-17 has decreased from 600ns to 300ns.",
+      "[2026-05-01 18:15] The readout duration for all qubits of Tuna-17 has decreased from 800ns to 600ns.",
+      "[2026-04-10 15:20] The Tuna-17 backend is currently under beta testing. Please do not hesitate to contact us through Slack if you have feedback during this beta testing phase. Thank you!"
+    ],
+    "version": 28
+  },
+  "http_observations": [
+    {
+      "http_status": 301,
+      "method": "GET",
+      "request_started_utc": "2026-10-27T17:34:45.416949+00:00",
+      "response_sha256": "65179c189c24f77b566196dd3bb0b5128fb066a83b22903b10daf4ea5c77d3b2",
+      "retrieved_utc": "2026-10-27T17:34:45.820711+00:00",
+      "url": "https://dashboard.quantum-inspire.com/tuna-17"
+    },
+    {
+      "http_status": 200,
+      "method": "GET",
+      "request_started_utc": "2026-10-27T17:34:45.820758+00:00",
+      "response_sha256": "57e917de6e6035d0c3301d5f9be3347e9017a6050b69282f1f42ff048c722edb",
+      "retrieved_utc": "2026-10-27T17:34:46.741275+00:00",
+      "url": "https://monitoring.qutech.support/api/public/dashboards/98cba4a674c549a2942a0108b2254e9f"
+    },
+    {
+      "http_status": 301,
+      "method": "GET",
+      "request_started_utc": "2026-10-27T17:34:46.742186+00:00",
+      "response_sha256": "65179c189c24f77b566196dd3bb0b5128fb066a83b22903b10daf4ea5c77d3b2",
+      "retrieved_utc": "2026-10-27T17:34:46.849167+00:00",
+      "url": "https://dashboard.quantum-inspire.com/tuna-17"
+    },
+    {
+      "http_status": 200,
+      "method": "GET",
+      "request_started_utc": "2026-10-27T17:34:46.849204+00:00",
+      "response_sha256": "57e917de6e6035d0c3301d5f9be3347e9017a6050b69282f1f42ff048c722edb",
+      "retrieved_utc": "2026-10-27T17:34:47.042177+00:00",
+      "url": "https://monitoring.qutech.support/api/public/dashboards/98cba4a674c549a2942a0108b2254e9f"
+    },
+    {
+      "http_status": 400,
+      "method": "POST",
+      "request_started_utc": "2026-10-27T17:34:47.042585+00:00",
+      "response_sha256": "295e52cc2f8d95f13dd8437b2d3e8ca4000d068f4783996c7534c7466e09c7ef",
+      "retrieved_utc": "2026-10-27T17:34:57.235907+00:00",
+      "url": "https://monitoring.qutech.support/api/public/dashboards/98cba4a674c549a2942a0108b2254e9f/panels/11/query"
+    }
+  ],
+  "interpretation": "Public dashboard notices and connectivity observations; calibration values remain unavailable. Public dashboard access identifiers in URLs are published routing handles, not account credentials.",
+  "readout_panel_11": {
+    "error": "panel 11 of tuna-17: every query failed: Post \"https://prometheus.qi2.qutech.support/api/v1/query\": dial tcp 131.180.205.138:443: i/o timeout"
+  },
+  "schema": "qi-readout-diagnosis-monitoring-v1",
+  "source": "https://dashboard.quantum-inspire.com/tuna-17"
+}

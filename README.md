@@ -32,15 +32,15 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 25 |
-| exploratory reanalysis | exploratory | 88 |
+| exploratory reanalysis | exploratory | 90 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 30 |
 | mathematical claim | open | 2 |
 | numerical or stochastic simulation | established | 11 |
 | numerical or stochastic simulation | superseded | 1 |
-| preregistered emulator control | established | 12 |
-| preregistered hardware inference | established | 81 |
+| preregistered emulator control | established | 13 |
+| preregistered hardware inference | established | 84 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |
@@ -384,9 +384,17 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-27T160530.294787Z](results/live/2026-10-27T160530.294787Z) | IBM Quantum | idle-penalty | ibm_kingston | 1 | 44 | DONE | 16 s |
 | [2026-10-27T160529.294491Z](results/live/2026-10-27T160529.294491Z) | IBM Quantum | idle-penalty | ibm_kingston | 1 | 44 | DONE | 16 s |
 | [2026-10-27T160738.258133Z](results/live/2026-10-27T160738.258133Z) | IBM Quantum | idle-penalty | ibm_kingston | 1 | 44 | DONE | 16 s |
+| [2026-10-27T162203Z-projector-geometry-qx](results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx) | Quantum Inspire | sequential projector geometry remote conformance | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-27T170500Z-projector-geometry-tuna](results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna) | Quantum Inspire | sequential projector physical register qualification | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-27T173602.753176Z](results/live/2026-10-27T173602.753176Z) | IBM Quantum | N=21 orbit detuning sign | ibm_kingston | 1 | 56 | DONE | 17 s |
 | [2026-10-27T191953.122214Z](results/live/2026-10-27T191953.122214Z) | IBM Quantum | idle-readout attribution | ibm_kingston | 1 | 55 | DONE | 16 s |
+| [prepared-zero-baseline-before](results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before) | Quantum Inspire | nominal-zero classical-destination response prefix | tuna_17 | 1 | 1 | completed | 0 ledger change |
+| [prepared-zero-rotated-destinations](results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations) | Quantum Inspire | nominal-zero classical-destination response prefix | tuna_17 | 1 | 1 | completed | 0 ledger change |
+| [prepared-zero-baseline-after](results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after) | Quantum Inspire | nominal-zero classical-destination response prefix | tuna_17 | 1 | 1 | completed | 0 ledger change |
 | [2026-10-27T204605.871056Z](results/live/2026-10-27T204605.871056Z) | IBM Quantum | state-prep-control (two-read arms, 20 us) | ibm_kingston | 1 | 3 | DONE | 5 s |
+| [prepared-one-baseline-before](results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before) | Quantum Inspire | nominal-one classical-destination response comparison | tuna_17 | 1 | 1 | completed | 0 ledger change |
+| [prepared-one-rotated-destinations](results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations) | Quantum Inspire | nominal-one classical-destination response comparison | tuna_17 | 1 | 1 | completed | 0 ledger change |
+| [prepared-one-baseline-after](results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after) | Quantum Inspire | nominal-one classical-destination response comparison | tuna_17 | 1 | 1 | completed | 0 ledger change |
 | [ascella-sedenion-cancellation-dark](results/quandela/runs/ascella-sedenion-cancellation-dark) | Quandela Cloud | sedenion cancellation screening | qpu:ascella | 1 | 1 | completed | 1.065536 credits |
 | [ascella-sedenion-cancellation-bright](results/quandela/runs/ascella-sedenion-cancellation-bright) | Quandela Cloud | sedenion cancellation screening | qpu:ascella | 1 | 1 | completed | 1.065536 credits |
 | [ascella-sedenion-cancellation-bright-repeat](results/quandela/runs/ascella-sedenion-cancellation-bright-repeat) | Quandela Cloud | sedenion cancellation screening | qpu:ascella | 1 | 1 | completed | 1.065536 credits |
@@ -413,7 +421,7 @@ The IBM service inventory observed at 2026-10-28T00:29:17.005404+00:00 holds 43 
 
 The IBM service inventory observed at 2026-10-28T00:23:56.659482+00:00 holds 25 physical jobs with 440 settled seconds; the account then reported 440 of 600 s consumed in the rolling window ending 2026-10-28T00:23:56.594Z. That is an observation, not a current balance or an authorization.
 
-The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+The Quantum Inspire ledger retrieved at 2026-10-28T00:24:11+00:00 lists 432 jobs with 7813120 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 101 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 

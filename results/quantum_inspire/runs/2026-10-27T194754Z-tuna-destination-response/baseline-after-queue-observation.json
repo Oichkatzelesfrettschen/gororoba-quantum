@@ -1,0 +1,20 @@
+{
+  "backend_status": "executing",
+  "boundary": "Operational provider metadata; calibration and physical readout cause remain unmeasured.",
+  "enabled": true,
+  "instances": [
+    {
+      "last_heartbeat": "2026-10-27T20:44:58.869767Z",
+      "status": "executing"
+    }
+  ],
+  "observed_utc": "2026-10-27T20:45:01+00:00",
+  "provider_queue": {
+    "avg_wait_time_in_queue_secs": 944.0,
+    "max_wait_time_in_queue_secs": 1680.0,
+    "min_wait_time_in_queue_secs": 22.0,
+    "number_of_jobs_in_queue": 53
+  },
+  "schema": "qi-provider-queue-observation-v1",
+  "source": "Authenticated GET backend type7, provider queue and hardware instances"
+}

@@ -1,0 +1,19 @@
+{
+ "schema": "qi-tuna-destination-one-completion-v1",
+ "batch": "prepared-one-rotated-destinations",
+ "job": 1620485,
+ "batch_job": 896287,
+ "created_on": "2026-10-27T23:38:33.053097Z",
+ "queued_at": "2026-10-27T23:46:56.126783Z",
+ "finished_at": "2026-10-27T23:47:01.938259Z",
+ "collected_utc": "2026-10-27T23:47:12.832833+00:00",
+ "execution_seconds_decimal": "5.576922",
+ "inputs": {
+  "cases.json": "fc09d1b9c08c82d1b7f11c81233ccb65cb012bfead8a9af8ffddae5a83893950",
+  "rotated-destinations.cq": "8accfebdeb2083a4e861754abf29004b1a3a646633dcfc57eed3d9fdc35c4b81",
+  "submission.json": "ea11ab56d207290f103f4336cdc56163bb9d6ac55c9278911d6487a523edf916",
+  "results.json": "353ce7ee91a53556d40cf13ccceb65543d54b78feca181d896845c7b3c4a1623",
+  "raw/rotated-destinations.cq.json": "a967128edfecb0b7428410eb689edc0192a5f8c035014db600088827b42fcda9",
+  "locked-admission.json": "63808f77ef39f20c02a2b75ce1099f825c383d860d091c791c2afd34d3bbb5a3"
+ }
+}

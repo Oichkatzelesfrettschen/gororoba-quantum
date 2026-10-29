@@ -1,0 +1,18 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "fec70cdfac74466808e90caaf48f58f325acdf637ea098f78ebc125a8f18e31f",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-account-binding-review.md",
+  "retained_sha256": "30f3a86bd937dd27b423166b39ea819c927eb89a7f3f55dc72c574c15b839988",
+  "reviewed_sha256": {
+    "docs/design/tuna-qx-exact-dispatch-guard.md": "8913cd47a8f769a3aef8b93122dd678c2b5b2614c01246f7bde0e42841414f7a",
+    "docs/notes/quantum_inspire/api/openapi.json": "714f66165611b38842dfe3497bb7f1ea818c9df756b3ed87ff128c838cac185f",
+    "scripts/qi_tuna_account_binding.py": "ef3a0fd9e475d1aa4300cd034237dd6620b5eeed651a6e41552c16945904570a",
+    "scripts/qi_tuna_consumption_marker.py": "dbaf93d5db016d483a22066ec0224e81ea6de9aff066f54655b747fc71534a61",
+    "tests/scripts/test_qi_tuna_account_binding.py": "855ab5e355c94a0af8cb07bd3ed5dbb1706b61291e80cb51c57a64f1a5128a38",
+    "tests/scripts/test_qi_tuna_consumption_marker.py": "cb8a431c7f89f3d2c062e50f7f2a3a777ca3d027d16c244286d654630ce5c6cc"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

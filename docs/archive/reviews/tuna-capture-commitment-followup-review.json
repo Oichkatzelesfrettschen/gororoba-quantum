@@ -1,0 +1,15 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "76a55b308473391f9c5ff3250e731b4f2a169595692b61dcf115a5521004ec55",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-capture-commitment-followup-review.md",
+  "retained_sha256": "1803b2912ca4c7785ffe8643449d0aa46f44b36b2619a4a11adc74d47d87a685",
+  "reviewed_sha256": {
+    "scripts/qi_tuna_capture_commitment.py": "7e5eac896f14dfa3757f27e7d4a35ead98e857f06ab5b13eb91a140fc146b97e",
+    "tests/scripts/test_qi_tuna_capture_commitment.py": "6c285e7ec517fdf8eebb3558f9caf41733e2acfea4951e02c30d17a51c7ccd56",
+    "tests/scripts/test_qi_tuna_readback_collection.py": "0c39d0b512cb4a8f5f8815d1e8b8441d780eba254517dd5175cb32f4f3e27fbe"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

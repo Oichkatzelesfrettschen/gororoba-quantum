@@ -1,0 +1,18 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "d0a4a9c76e76bda5fad06b3b6ed84ac5865dcef15855914193fa5d5b5d08b7f1",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-capture-commitment-review.md",
+  "retained_sha256": "a682bd9818a08c2d6b47d1baea6f20ce555d79a631b9df01743279f42b0793b7",
+  "reviewed_sha256": {
+    "scripts/qi_tuna_capture_commitment.py": "7e5eac896f14dfa3757f27e7d4a35ead98e857f06ab5b13eb91a140fc146b97e",
+    "tests/scripts/test_qi_tuna_capture_commitment.py": "cda6b4a0bee51d5db6a968730c23b4fef6f945e41f4859808df4731722a237cb",
+    "tests/scripts/test_qi_tuna_readback_collection.py": "1ede90ffe8fc1adc90020c2c01cd3e1a29ddf4c4786e2475a76fb293e061c0e8"
+  },
+  "reviewed_worktree_sha256": {
+    "docs/design/tuna-destination-sequential-evidence-case.md": "d2701c11645a8826be4fa1b8ba80e52f11a5090d519736c6f44a9bcb3326ae93"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

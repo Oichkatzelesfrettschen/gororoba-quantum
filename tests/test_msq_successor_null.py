@@ -6,6 +6,8 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import shutil
+from collections.abc import Callable
 from typing import Any
 
 import numpy as np
@@ -262,7 +264,7 @@ def test_carryover_arms_plant_the_boundary_less_three_standard_errors(setup: nl.
                 for i in range(nl.READERS)
             ]
             inside = setup.allocation[j] * truth.reader + 3 * setup.allocation[j] * nl.reader_standard_error(
-                ctx, ones, truth.reader
+                ctx, ones, truth.reader, setup.shots
             )
             check(abs(inside - margin) < 1e-9, f"{arm}: A D + 3 SE = {inside}, boundary {margin}")
     # The boundary arm's offsets order the carried excitation: 0, 1 and 2 standard errors inside.
@@ -279,7 +281,10 @@ def test_q_arm_plants_the_screen_bound_plus_its_confidence_margin(setup: nl.Setu
     # At the expected counts the screen's lower confidence bound sits on the tolerance bound.
     ctx = setup.contexts[0]
     counts = nl.expected_counts(
-        ctx, nl.Truth(ctx["t1_cal_s"], math.inf, setup.q_planted[0], 1.0, {}, 0.0, 0.0), setup.equilibrium_s, nl.SHOTS
+        ctx,
+        nl.Truth(ctx["t1_cal_s"], math.inf, setup.q_planted[0], 1.0, {}, 0.0, 0.0),
+        setup.equilibrium_s,
+        setup.shots,
     )
     keys = {"ro0": msa.ro0_name(0), "eq": de.msqr_equilibrium_member(0)}
     keys.update({f"t1-{k}": name for k, name in enumerate(msa.t1_names(0))})
@@ -344,12 +349,15 @@ def test_sparse_scale_evidence_covers_every_pool_of_the_layout(tmp_path: Path) -
     retained, _, digest = nl.load_snapshot(RETAINED_RECORD)
     width = int(retained["family_configuration"]["layout_width"])
     pools = {m or width for m in nl.SETTLE_POOLS}
-    scales = nl.sparse_scales(record["snapshot_sha256"], width)[0]
+    scales = nl.sparse_scales(record["snapshot_sha256"], width, nl.LEGACY_SHOTS)[0]
     check(set(scales) == pools and record["snapshot_sha256"] == digest, "")
     check(record["seed"] == nl.SPARSE_CALIBRATION_SEED != nl.SUCCESSOR_NULL_SEED, "the calibration seed")
     check(scales[8] == SPARSE_SCALE_8, f"{scales}")
-    check(nl.sparse_scales("0" * 64, width) == ({}, ""), "the scales serve another snapshot")
-    check(nl.sparse_scales(record["snapshot_sha256"], width + 8) == ({}, ""), "the scales serve another width")
+    check(nl.sparse_scales("0" * 64, width, nl.LEGACY_SHOTS) == ({}, ""), "the scales serve another snapshot")
+    check(
+        nl.sparse_scales(record["snapshot_sha256"], width + 8, nl.LEGACY_SHOTS) == ({}, ""),
+        "the scales serve another width",
+    )
     spec = importlib.util.spec_from_file_location("trim_record", RECORD.parent / "trim_record.py")
     if spec is None or spec.loader is None:
         raise AssertionError("trim_record.py is unreadable")
@@ -365,23 +373,28 @@ def test_sparse_scale_evidence_covers_every_pool_of_the_layout(tmp_path: Path) -
         check(abs(last["power"] - nl.SPARSE_TARGET_POWER) <= last["se"], f"pool {pool}: {last}")
 
 
+def linear_power(law: Callable[[float], float]) -> Callable[[Any, int, int], list[tuple[int, int]]]:
+    """A stand-in for nl.sparse_powers whose per-qubit power is `law` of each item's scale, out of 1000 planted gaps."""
+
+    def powers(items: Any, _seed: int, _replicates: int) -> list[tuple[int, int]]:
+        return [(round(1000 * law(scale)), 1000) for _, _, scale in items]
+
+    return powers
+
+
 def test_the_sparse_calibration_steps_to_the_target_power(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
     for seed in (nl.SUCCESSOR_NULL_SEED, nl.SPARSE_CONFIRMATION_SEED):
         with pytest.raises(ValueError, match="own seed"):
             nl.calibrate_sparse_scale(setup, 8, seed, 10)
     # A power linear in the scale, 0.70 at 1 and 0.95 at 2: the secant lands at 1.8.
-    monkeypatch.setattr(
-        nl, "sparse_power", lambda _s, _p, scale, _seed, _n: (round(1000 * (0.45 + 0.25 * scale)), 1000)
-    )
+    monkeypatch.setattr(nl, "sparse_powers", linear_power(lambda scale: 0.45 + 0.25 * scale))
     out = nl.calibrate_sparse_scale(setup, 8, nl.SPARSE_CALIBRATION_SEED, 10)
     check(abs(out["scale"] - 1.8) < 0.05 and len(out["points"]) == 3, f"{out}")
-    monkeypatch.setattr(nl, "sparse_power", lambda _s, _p, scale, _seed, _n: (round(1000 * (0.9 - 0.1 * scale)), 1000))
+    monkeypatch.setattr(nl, "sparse_powers", linear_power(lambda scale: 0.9 - 0.1 * scale))
     with pytest.raises(ValueError, match="does not rise"):
         nl.calibrate_sparse_scale(setup, 8, nl.SPARSE_CALIBRATION_SEED, 10)
     # Two shallow points above the target, 0.95 at 1 and 0.96 at 1.25, extrapolate to a negative scale.
-    monkeypatch.setattr(
-        nl, "sparse_power", lambda _s, _p, scale, _seed, _n: (round(1000 * (0.91 + 0.04 * scale)), 1000)
-    )
+    monkeypatch.setattr(nl, "sparse_powers", linear_power(lambda scale: 0.91 + 0.04 * scale))
     with pytest.raises(ValueError, match="non-positive"):
         nl.calibrate_sparse_scale(setup, 8, nl.SPARSE_CALIBRATION_SEED, 10)
 
@@ -480,7 +493,7 @@ def test_readers_carry_the_planted_excitation_and_read_zero_without_it(setup: nl
     for reader in (0.0, 0.05):
         truth = nl.Truth(ctx["t1_cal_s"], math.inf, 1.0, 1.0, {}, reader, 0.0)
         probabilities = nl.member_probabilities(ctx, 5, truth, setup.equilibrium_s)
-        predecessors, readers, ones = nl.draw_bits(generator, ctx, truth, probabilities, 5)
+        predecessors, readers, ones = nl.draw_bits(generator, ctx, truth, probabilities, 5, setup.shots)
         readout = {"scale": contrast, "offset": ctx["e10"] - ctx["e01"]}
         out = su.carryover_reader(predecessors, readers, readout, 1.0, 32)
         check(abs(out["d"] - reader) < 4 * out["se"], f"planted {reader}: {out['d']} +- {out['se']}")
@@ -743,3 +756,202 @@ def test_pooled_and_serial_runs_write_the_same_bytes(setup: nl.Setup, monkeypatc
     monkeypatch.setenv("GOROROBA_WORKERS", "2")
     pooled = nl.dumps(nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 2 * nl.NULL_BLOCK, cases=cases)]))
     check(serial == pooled, "pooled and serial runs differ")
+
+
+# --- shots from the record, several records through one pool, per-calibration sparse evidence ------------------
+
+
+def shots_record(target: Path, shots: int | None, width: int = 8) -> Path:
+    """A copy of the fixture record directory with `shots` in place (None removes the field), cut to its first
+    `width` layout qubits so a setup builds in about a second."""
+    shutil.copytree(RECORD, target)
+    path = target / "record.json"
+    record = json.loads(path.read_text())
+    configuration = record["family_configuration"]
+    if shots is None:
+        del record["shots"]
+    else:
+        record["shots"] = shots
+    configuration["qubits"] = configuration["qubits"][:width]
+    configuration["layout_width"] = width
+    configuration["pattern_bits"] = [row[:width] for row in configuration["pattern_bits"]]
+    path.write_text(json.dumps(record, sort_keys=True, indent=1) + "\n")
+    return target
+
+
+@pytest.fixture(scope="module")
+def minis(tmp_path_factory: pytest.TempPathFactory) -> dict[int, nl.Setup]:
+    """An 8-qubit setup built from a record with 4096 shots, and the same setup at 8192 shots, whose constants stay
+    those of the 4096-shot build: the tests that use it read only the draws and the record fields."""
+    built = nl.build_setup(shots_record(tmp_path_factory.mktemp("minis") / "s4096", 4096), ())
+    return {4096: built, 8192: built._replace(shots=8192)}
+
+
+def test_a_setup_draws_its_counts_out_of_the_records_shots(minis: dict[int, nl.Setup]) -> None:
+    for shots, mini in minis.items():
+        check(mini.shots == shots, f"{mini.shots}")
+        drawn = nl.draw_replicate(mini, small("gamma"), TEST_SEED, 0)
+        members = [count for counts in drawn.counts for count in counts["final"].values()]
+        check(bool(members) and all(0 <= ones <= total == shots for ones, total in members), f"shots {shots}")
+        check(all(total == shots and 0 <= ones <= shots for ones, total in drawn.equilibrium), "equilibrium")
+        check(all(total == shots for row in drawn.patterns for _, total in row), "patterns")
+        check(all(len(bits) == shots for row in drawn.readers + drawn.predecessors for bits in row), "reader bits")
+
+
+def test_a_record_without_shots_raises(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="shots"):
+        nl.build_setup(shots_record(tmp_path / "bare", None))
+
+
+def test_the_reader_standard_error_grows_with_the_root_of_the_shot_deficit(setup: nl.Setup) -> None:
+    ctx = setup.contexts[2]
+    errors = {}
+    for shots in (4096, 8192):
+        counts = msa.device_counts({0: msa.device_model(ctx, p_init=0.0)}, {0: ctx}, shots)[0]["final"]
+        ones = [counts[nl.predecessor_name(i, 0)][0] for i in range(nl.READERS)]
+        errors[shots] = nl.reader_standard_error(ctx, ones, 0.01, shots)
+    ratio = errors[4096] / errors[8192]
+    check(abs(ratio - math.sqrt(2)) < 0.03, f"standard error ratio {ratio} against sqrt(2)")
+
+
+def test_records_carry_their_shots_and_mixed_shots_do_not_merge(minis: dict[int, nl.Setup]) -> None:
+    runs = {shots: nl.run_arm(mini, "gamma", TEST_SEED, 1, 0, 2, record_name="r") for shots, mini in minis.items()}
+    other = nl.run_arm(minis[8192], "gamma", TEST_SEED, 1, 1, 2, record_name="r")
+    check(runs[4096]["schema"] == nl.SCHEMA == "msq-successor-null-v2", f"{runs[4096]['schema']}")
+    check([runs[4096]["shots"], runs[8192]["shots"]] == [4096, 8192], "the records name their shots")
+    nl.merge_records([runs[8192], other])
+    with pytest.raises(ValueError, match="shots"):
+        nl.merge_records([runs[4096], other])
+
+
+def test_the_summary_reads_a_v1_record_and_writes_v2(minis: dict[int, nl.Setup]) -> None:
+    record = nl.merge_records([nl.run_arm(minis[8192], "gamma", TEST_SEED, 1, record_name="r")])
+    legacy = {key: value for key, value in record.items() if key != "shots"} | {"schema": nl.LEGACY_SCHEMA}
+    text = nl.dumps(legacy)
+    (entry,) = nl.null_summary([text])["records"]
+    check(nl.null_summary([text])["schema"] == "msq-successor-null-summary-v2", "summary schema")
+    check(entry["schema"] == nl.LEGACY_SCHEMA and entry["shots"] == nl.LEGACY_SHOTS, f"{entry['shots']}")
+    check(entry["record_sha256"] == hashlib.sha256(text.encode()).hexdigest(), "digest")
+    (current,) = nl.null_summary([nl.dumps(record)])["records"]
+    check(current["schema"] == nl.SCHEMA and current["shots"] == 8192, "a v2 record keeps its shots")
+    with pytest.raises(ValueError, match="unknown record schema"):
+        nl.null_summary([nl.dumps({**legacy, "schema": "msq-successor-null-v0"})])
+
+
+def test_the_per_calibration_sparse_record_is_found_before_the_legacy_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(nl, "ROOT", tmp_path)
+    digest = "ab" * 32
+    check(nl.sparse_scales(digest, 24, 4096) == ({}, ""), "an empty tree holds a scale")
+    legacy = tmp_path / nl.SPARSE_SCALE_EVIDENCE
+    legacy.parent.mkdir(parents=True)
+    legacy.write_text(json.dumps({"snapshot_sha256": digest, "layout_width": 24, "pools": {"8": {"scale": 1.25}}}))
+    check(nl.sparse_scales(digest, 24, 8192)[0] == {8: 1.25}, "the legacy record is the 8192-shot calibration")
+    check(nl.sparse_scales(digest, 24, 4096) == ({}, ""), "the legacy record serves another shot count")
+    path = nl.sparse_evidence_path(digest, 24, 4096)
+    check(path.name == f"{digest[:16]}-w24-s4096.json" and path.parent.name == "successor-sparse-scale", f"{path}")
+    path.parent.mkdir(parents=True)
+    body = {"snapshot_sha256": digest, "layout_width": 24, "shots": 4096, "pools": {"8": {"scale": 1.5}}}
+    path.write_text(json.dumps(body))
+    scales, sha = nl.sparse_scales(digest, 24, 4096)
+    check(scales == {8: 1.5} and sha == hashlib.sha256(path.read_bytes()).hexdigest(), f"{scales}")
+    check(nl.sparse_scales(digest, 24, 8192)[0] == {8: 1.25}, "the per-calibration file shadows another shot count")
+    check(nl.sparse_scales(digest, 24, 2048) == ({}, ""), "a shot count with no calibration finds nothing")
+    check(nl.sparse_scales(digest, 32, 4096) == ({}, ""), "a layout width with no calibration finds nothing")
+    path.write_text(json.dumps({**body, "shots": 2048}))
+    with pytest.raises(ValueError, match="than its name"):
+        nl.sparse_scales(digest, 24, 4096)
+
+
+def pool_scaled_power(items: Any, _seed: int, _replicates: int) -> list[tuple[int, int]]:
+    """A stand-in for nl.sparse_powers whose power rises with the scale and falls with the pool size."""
+    return [(round(1000 * (0.3 + 0.2 * scale * 8 / pool)), 1000) for _, pool, scale in items]
+
+
+def test_calibrations_in_one_pool_equal_their_own_calibrations(
+    minis: dict[int, nl.Setup], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(nl, "sparse_powers", pool_scaled_power)
+    jobs = [(minis[4096], 8), (minis[8192], 9), (minis[4096], 9)]
+    together = nl.calibrate_sparse_many(jobs, nl.SPARSE_CALIBRATION_SEED, 10)
+    alone = [nl.calibrate_sparse_scale(setup, pool, nl.SPARSE_CALIBRATION_SEED, 10) for setup, pool in jobs]
+    check(together == alone and len({round(r["scale"], 6) for r in together}) > 1, f"{together}")
+    records = nl.sparse_calibration_records([minis[4096], minis[8192]], nl.SPARSE_CALIBRATION_SEED, "x", ["a", "b"], 10)
+    check([r["shots"] for r in records] == [4096, 8192] and all(set(r["pools"]) == {"8", "9"} for r in records), "")
+    check(records[0]["pools"]["8"]["scale"] == together[0]["scale"], "the record holds the job's scale")
+
+
+def test_a_calibration_record_sets_the_scales_and_digest_a_later_build_reads(minis: dict[int, nl.Setup]) -> None:
+    record = {"pools": {"8": {"scale": 1.25}}}
+    (applied,) = nl.with_calibrated_scales([minis[4096]], [record])
+    check(applied.sparse_scale == {8: 1.25}, f"{applied.sparse_scale}")
+    check(applied.digests["sparse_scale_sha256"] == hashlib.sha256(nl.dumps(record).encode()).hexdigest(), "digest")
+    check(all(set(losses) == {8} and losses[8] > 0 for losses in applied.sparse_loss), f"{applied.sparse_loss}")
+
+
+def test_one_call_runs_each_setup_to_the_bytes_of_its_own_run(
+    minis: dict[int, nl.Setup], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(nl, "ROUND", 1)
+    cases = [small("gamma", 8, 0.0)]
+    runs = [
+        nl.ArmRun("gamma", TEST_SEED, 2, "default", name, cases=cases, setup=minis[shots])
+        for name, shots in (("narrow", 4096), ("wide", 8192))
+    ]
+    joint = [nl.dumps(nl.merge_records([record])) for record in nl.run_arms(None, runs)]
+    alone = [nl.dumps(nl.merge_records(nl.run_arms(None, [run]))) for run in runs]
+    check(joint == alone, "a record depends on the setups it shares the pool with")
+    check([json.loads(text)["shots"] for text in joint] == [4096, 8192] and joint[0] != joint[1], "")
+    with pytest.raises(ValueError, match="twice"):
+        nl.run_arms(None, [runs[0], runs[0]._replace(record_name="again")])
+    with pytest.raises(ValueError, match="names no setup"):
+        nl.run_arms(None, [runs[0]._replace(setup=None)])
+
+
+def test_the_command_writes_one_record_per_directory_and_a_single_record_flat(
+    minis: dict[int, nl.Setup], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import msq_successor_null
+
+    by_name = {"a": minis[4096], "b": minis[8192]}
+    monkeypatch.setattr(nl, "build_setup", lambda path, _pools=None: by_name[path.name])
+    many, flat = tmp_path / "many", tmp_path / "flat"
+    argv = ["--arms", "gamma", "--cap", "gamma=1"]
+    msq_successor_null.main(["a", "b", *argv, "--cap", "b:gamma=2", "--out-dir", str(many)])
+    check(sorted(path.name for path in many.iterdir()) == ["a", "b"], "one directory per record")
+    narrow, wide = (json.loads((many / name / "gamma.json").read_text()) for name in ("a", "b"))
+    check(narrow["record"] == "a" and narrow["shots"] == 4096 and narrow["cap"] == 1, f"{narrow['cap']}")
+    check(wide["record"] == "b" and wide["shots"] == 8192 and wide["cap"] == 2, f"{wide['cap']}")
+    msq_successor_null.main(["a", *argv, "--out-dir", str(flat)])
+    check(sorted(path.name for path in flat.iterdir()) == ["gamma.json"], "a single record writes DIR/ARM.json")
+    check((flat / "gamma.json").read_bytes() == (many / "a" / "gamma.json").read_bytes(), "the bytes differ")
+    with pytest.raises(SystemExit):
+        msq_successor_null.main(["a", "b", "--arms", "gamma", "--cap", "c:gamma=1", "--out-dir", str(flat)])
+    check(
+        msq_successor_null.for_record(["gamma=3", "b:gamma=2", "a:q-tolerance=4"], "a", ["a", "b"])
+        == [
+            "gamma=3",
+            "q-tolerance=4",
+        ],
+        "the record prefix targets one record",
+    )
+
+
+def test_the_command_calibrates_each_record_to_its_own_sparse_path(
+    minis: dict[int, nl.Setup], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import msq_successor_null
+
+    by_name = {"a": minis[4096], "b": minis[8192]}
+    monkeypatch.setattr(nl, "build_setup", lambda path, _pools=None: by_name[path.name])
+    monkeypatch.setattr(nl, "sparse_powers", pool_scaled_power)
+    monkeypatch.setattr(nl, "ROOT", tmp_path)
+    monkeypatch.setattr(nl, "with_calibrated_scales", lambda setups, _records: list(setups))
+    msq_successor_null.main(["a", "b", "--calibrate-sparse"])
+    digest = minis[4096].digests["snapshot_sha256"]
+    for shots, name in ((4096, "a"), (8192, "b")):
+        written = json.loads(nl.sparse_evidence_path(digest, 8, shots).read_text())
+        check(written["shots"] == shots and written["record"] == name and set(written["pools"]) == {"8", "9"}, name)
+    with pytest.raises(SystemExit):
+        msq_successor_null.main(["a", "b", "--calibrate-sparse", "--out", str(tmp_path / "x.json")])

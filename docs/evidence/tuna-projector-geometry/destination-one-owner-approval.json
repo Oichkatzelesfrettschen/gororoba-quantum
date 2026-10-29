@@ -1,0 +1,15 @@
+{
+  "analysis_contract_sha256": "0f220273c04980ea7ada3981c81b6653a732cddb44e9c12643e5dc8f0f053115",
+  "campaign_sha256": "b0bb0ef6497a2a57b9478a9174d786e5b0945dbc3ce4a66042ce4123d3eafd25",
+  "case_id": "tuna-readout-destination-one",
+  "decision_sha256": "69aa7bbf3408853effa93f0930968cdac7caa7b0d61dd5cd4770c81da24e75f5",
+  "jobs": 3,
+  "observed_utc": "2026-10-27T23:28:06.508423+00:00",
+  "peer_review_sha256": "a288212859fd04d050718a0651ab725923247ef92dd96637e3dededca39c7665",
+  "schema": "qi-owner-case-approval-v1",
+  "scope": "Three additional nominal-one baseline/rotated/baseline Tuna-17 jobs as a separate primary case;4096shots each12288total;900aggregate reported-execution-second ceiling;zero credits;30second pause;7200second request horizon;no retry. Further hardware requires a new queue-aware written case and approval.",
+  "scope_basis": "The three remaining nominal-one controls from the deadline-limited six-job case form a separately frozen primary decision. The deadline and receipt repairs preserve the authorized circuits, counts, order, limits and scientific scope.",
+  "terms_sha256": "625a8a553b4379cc4d7130d1f452dd99b0e2f2d671429a1836a14c68fd36b206",
+  "user_text": "3 more jobs are approved and then you can do the QI\u2019s per-job acquisition mapping, thresholds, schedules and retained IQ. Further hardware requires a new case that accounts for the measured queue waits.",
+  "written_case_sha256": "7cb1a4d533eedb07a7a1bcad375f88f59aa828e5e81039c2d7cf5d62228aa059"
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "qi-post-acquisition-calibration-observation-v1",
+  "recorded_utc": "2026-10-28 00:32:49 UTC",
+  "mcp_request": {
+    "dashboard": "tuna-17",
+    "panel_id": 11,
+    "hours": 12
+  },
+  "mcp_is_error": true,
+  "mcp_text": [
+    "Error executing tool qi_performance_query: qi_performance_query: panel 11 of tuna-17: every query failed: Post \"https://prometheus.qi2.qutech.support/api/v1/query\": dial tcp 131.180.205.138:443: i/o timeout"
+  ],
+  "direct_dns": {
+    "queried_host": "prometheus.qi2.qutech.support",
+    "canonical_name": "qi.monitoring.qutech.tudelft.nl",
+    "ipv4": "131.180.205.138"
+  },
+  "direct_tcp_probe": {
+    "command": "curl --head --connect-timeout 5 --max-time 10 https://prometheus.qi2.qutech.support/",
+    "exit_code": 28,
+    "http_code": "000",
+    "time_connect_seconds": 0,
+    "time_total_seconds": 5.004992
+  },
+  "boundary": "Grafana's datasource request and a local read-only probe both failed to establish the Prometheus TCP connection. HTTP User-Agent headers cannot affect a connection that failed before HTTP; remote deployment/version and job calibration remain unmeasured."
+}

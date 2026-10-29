@@ -1,0 +1,83 @@
+{
+  "admission_age_origin": "request_started_utc; includes policy reads, API reads and submit-lock wait",
+  "admission_max_age_seconds": 60,
+  "analysis_contract": {
+    "file": "scripts/qi_tuna_destination_one_analysis.py",
+    "mathematical_note": {
+      "file": "docs/evidence/tuna-projector-geometry/destination-one-response-uncertainty.md",
+      "sha256": "18837e2339bbb993f13bf27eebff364a08a056d83b1cca4ba05fdd83720c2c23"
+    },
+    "sha256": "974fd00a607672e7a567817b208e5b36d0efac9d602de5189986acc093e05802"
+  },
+  "batches": [
+    {
+      "cases_sha256": "1b64e00601d4a8eab1ddada93e13c7323790320e6ef6ec409deb5f8851929ae6",
+      "comparison_arm": "baseline-before",
+      "name": "prepared-one-baseline-before",
+      "prepared_label": 1,
+      "source_file": "baseline-before.cq",
+      "source_sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f"
+    },
+    {
+      "cases_sha256": "fc09d1b9c08c82d1b7f11c81233ccb65cb012bfead8a9af8ffddae5a83893950",
+      "comparison_arm": "rotated-destinations",
+      "name": "prepared-one-rotated-destinations",
+      "prepared_label": 1,
+      "source_file": "rotated-destinations.cq",
+      "source_sha256": "8accfebdeb2083a4e861754abf29004b1a3a646633dcfc57eed3d9fdc35c4b81"
+    },
+    {
+      "cases_sha256": "fc88c1fd2d3cdef71d96f00c1f5a873541070cef36cbcaccbffe4af1ab5efcf5",
+      "comparison_arm": "baseline-after",
+      "name": "prepared-one-baseline-after",
+      "prepared_label": 1,
+      "source_file": "baseline-after.cq",
+      "source_sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f"
+    }
+  ],
+  "campaign_request_initiation_timeout_seconds": 7200,
+  "circuits_total": 3,
+  "compiler_receipt_sha256": "3e851ceb8d95e63f781fec2672b2c044a54adfa7e2b3899339d886484d75a0c7",
+  "expected_credits": 0,
+  "expected_execution_seconds_decimal": "14.688660",
+  "heartbeat_max_age_seconds": 120,
+  "minimum_interjob_pause_seconds": 30,
+  "minimum_internal_pauses": 2,
+  "ordering": "Three single-job batches; collect and validate each job before creating its successor.",
+  "predecessor_campaign": {
+    "boundary": "Separate execution and primary decision; predecessor missing jobs stay unsubmitted.",
+    "file": "results/quantum_inspire/proposals/tuna-readout-destination-sequential/campaign.json",
+    "sha256": "53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76"
+  },
+  "producer_inputs": {
+    "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+    "gororoba_quantum/qi_stack.py": "47c84368b91125942a04c8515edd7023e081ce19ad9d09e223060af5eb60e1df",
+    "scripts/acquisition_decisions.py": "62a989bbd65d70d268d8db0064547c9e3789fc54cc080a9e4c428e85ca569c36",
+    "scripts/qi_platform.py": "d53b201e9a1268a5c7a4ab5af36807e90573e38c6842eae85dff9b6fb010669b",
+    "scripts/qi_platform_submission_deadline.py": "a6ddc8bd3c3287c5319649cda47c754ece0b64c9dae51e297516a721b24a889a",
+    "scripts/qi_projector_compiler_admission.py": "c9dd1b66dc27987460e59cf8bc8ba9bd123c36cf2e054e3a387c2f58c59c3377",
+    "scripts/qi_projector_live_admission.py": "a5fd27d2c3e18cf24eacf2c115b7e027d7af0a257598b01c6e46c9cc4977ddd1",
+    "scripts/qi_toolchain_check.py": "fa9d1ee6aa61b75906e2fe85adb39a5be46360ec8b3a947f5844f2c6c0c51d0c",
+    "scripts/qi_tuna_destination_one_cases.py": "b2987d0b285a3647348b4fc1e46fe2da6291f5ed8046e6cb9c8911108c4bb6e7",
+    "scripts/qi_tuna_destination_one_run.py": "e5b105b5690b378330cc7899c44757d389af75b3b3afc56953cf7d0d5a03afce",
+    "scripts/qi_tuna_destination_sequential_cases.py": "ea9d31db678a031312872442124e46676f1fab575244887a757504b0561f6805",
+    "scripts/qi_tuna_destination_sequential_run.py": "9edff4223e583b45d3c66bc3e6c7349a73b6e36925fec8774990b5a33a6490a5",
+    "scripts/qi_tuna_readout_destination_analysis.py": "d0ee875b448366a1a8a53d09d387abb7de32066f6214694e205b7e43505781c7",
+    "scripts/qi_tuna_readout_mapping_cases.py": "ed385faf0876b1cf126aa306179290da25a053735c589954f241030bf3d28ef6"
+  },
+  "provider_execution_authorized": false,
+  "provider_execution_ceiling_seconds": 900,
+  "queue_horizon_basis": {
+    "additional_admission_collection_allowance_seconds": 1200,
+    "boundary": "Observed waits motivate an operator allowance; future queue waits remain unbounded.",
+    "observed_queue_maximum_seconds": 1680,
+    "three_waits_plus_execution_ceiling_and_pauses_seconds": 6000
+  },
+  "schema": "qi-tuna-destination-one-campaign-v1",
+  "scope": "Separate nominal-one predictable-response comparison; causal attribution remains unresolved.",
+  "shots_per_circuit": 4096,
+  "shots_total": 12288,
+  "status": "frozen-for-review",
+  "stopping": "Stop operational invalidity, ambiguity, structural drift or charges; no statistical early stop.",
+  "timing_boundary": "Execution estimate excludes queue, compilation, collection, and account pauses."
+}

@@ -30,3 +30,6 @@ docs/evidence/quantum-experiment-conformance/runner-identity-controls/** linguis
 docs/evidence/quantum-experiment-conformance/identity-control-toolchain.json linguist-generated=true
 docs/evidence/quantum-experiment-conformance/runner-scalar-operators/** linguist-generated=true
 docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain.json linguist-generated=true
+
+# Retained compressed records stay byte-exact and out of text diffs.
+docs/evidence/local_idle_padding/*.gz binary

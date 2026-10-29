@@ -1,0 +1,123 @@
+{
+  "allowed_credit_change": 0,
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "boundary": "Reduced QX terminal-output conformance only; the 17-qubit Tuna source and intermediate classical-bit history cannot be validated by QX. Fresh admission and exact approval are required.",
+  "circuits": [
+    {
+      "expected_output": "000",
+      "file": "baseline.cq",
+      "measurement_to_bit_map": [
+        {
+          "classical_bit": 3,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 4,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 5,
+          "qubit": 2
+        },
+        {
+          "classical_bit": 0,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 1,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 2,
+          "qubit": 2
+        }
+      ],
+      "name": "baseline",
+      "sha256": "004667f94872f372eab01eb75dfbc6e5fb25e0b16534d3c20da6b1c7f5dc91af"
+    },
+    {
+      "expected_output": "000",
+      "file": "rotated.cq",
+      "measurement_to_bit_map": [
+        {
+          "classical_bit": 5,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 3,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 4,
+          "qubit": 2
+        },
+        {
+          "classical_bit": 0,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 1,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 2,
+          "qubit": 2
+        }
+      ],
+      "name": "rotated",
+      "sha256": "39454ac0e32f0bebfd687d5def41666ee7e35b3af5d61430c2f0b084d355e584"
+    },
+    {
+      "expected_output": "001",
+      "file": "asymmetric.cq",
+      "measurement_to_bit_map": [
+        {
+          "classical_bit": 3,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 4,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 5,
+          "qubit": 2
+        },
+        {
+          "classical_bit": 0,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 1,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 2,
+          "qubit": 2
+        }
+      ],
+      "name": "asymmetric",
+      "sha256": "dc9de0253a6d544bf76ba215a3fca2cf253dda549364f899064f927c1d7f0ecd"
+    }
+  ],
+  "evidence": {
+    "docs/design/tuna-destination-qx-conformance.md": "4cea719b51e70a6385644b2e3e6149bd582862b24b186260a0de59da3732ff08",
+    "docs/evidence/tuna-projector-geometry/approved-qx-backend.json": "dffc94be60ba5d8f70c8bcdfeea67eb63bc30940b6ba993a323a7025a8fd80e9",
+    "results/quantum_inspire/proposals/tuna-destination-qx-conformance/local-parse-observation.json": "0f757b42f3c7b7ff671a8dabd1664cbe3582d17d9dcd90935e730db7dd484da8",
+    "results/quantum_inspire/proposals/tuna-destination-qx-conformance/local-qx-output-observation.json": "93e7897bbb4f07c7ee944c2a97944699dd5eafbb710b1fa15f33dce078b1d0aa",
+    "results/quantum_inspire/proposals/tuna-destination-qx-conformance/local-replay.json": "715764051d3a474ca4c66368df3147f513197c99179841449cc0d292f83b0f8c",
+    "scripts/qi_platform.py": "d53b201e9a1268a5c7a4ab5af36807e90573e38c6842eae85dff9b6fb010669b",
+    "scripts/qi_projector_compiler_admission.py": "c9dd1b66dc27987460e59cf8bc8ba9bd123c36cf2e054e3a387c2f58c59c3377",
+    "scripts/qi_tuna_qx_destination.py": "08a401e00ef079700bba779f0b1ae3d77a5be2e602317ed23350f98d0451a786",
+    "scripts/qi_tuna_qx_local_replay.py": "bf9bbff78ca2c6574a9cb640af260b356635474f5e8bf05a1d27d6ffc5f01253",
+    "scripts/qi_tuna_readout_mapping_cases.py": "ed385faf0876b1cf126aa306179290da25a053735c589954f241030bf3d28ef6"
+  },
+  "job_execution_ceiling_seconds": 3600,
+  "nqubits": 3,
+  "provider_execution_authorized": false,
+  "schema": "qi-qx-destination-conformance-case-v1",
+  "shots": 2048,
+  "status": "working-unapproved",
+  "total_execution_ceiling_seconds": 10800
+}

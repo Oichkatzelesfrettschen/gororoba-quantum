@@ -36,6 +36,7 @@ request suite.
 |---|---|---|
 | IBM Quantum (primary, backup) | `QiskitRuntimeService.usage()` for each saved account (`GOROROBA_IBM_ACCOUNT` unset, then `backup-ibm-quantum-platform`) | 600 s on a rolling 28-day window. No reset date exists; the instant column shows the next return of seconds, computed as the earliest future finish time of a charged job plus 28 days. |
 | Kaggle GPU, TPU | `scripts/kaggle_sessions.py quota` | weekly hours, reset at the refresh time |
+| Kaggle AI models, daily and monthly | `kaggle benchmarks quota --format json` | Model Proxy inference spend in USD against 10 USD a day and 100 USD a month; refill time when the CLI reports one |
 | IQM Resonance | GraphQL `credit(accountId)` | balance and expiry; the allotment is the documented monthly grant, used is not reported |
 | Open Quantum Spark, Full | `get_credit_balance` | credit balances; the API reports no expiry, and the Spark allotment is one 90-day grant |
 | Quandela Cloud | `/api/tokens/usage/report` | cumulative free credits used by the token; the remaining balance is not readable by token, so the row states usage only. The 200 free credits a month reset on the first of the month (UTC). |

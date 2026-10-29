@@ -27,6 +27,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Planck Technologies | account closed; audited SDK, key rejected and simulator returns random bits | [planck/README.md](notes/planck/README.md) |
 | AWS | free-plan project; always-free bands, credit-metered usage, the five $20 activity rewards, and the host Python packages; Braket unavailable | [aws/README.md](notes/aws/README.md) |
 | Azure | free-trial subscription; Quantum workspace with free Quantinuum, Pasqal and Rigetti emulator plans; 4-vCPU trial compute | [azure/README.md](notes/azure/README.md) |
+| zbMATH Open | REST, OAI-PMH and citation-matching client; API audit with replayable findings | [zbmath/README.md](notes/zbmath/README.md) |
 | QRNG seed sources | ANU, Outshift and Quandela draws for every new seed | [qrng/README.md](notes/qrng/README.md) |
 | Simulation | Kaggle CPU and GPU kernels, host Aer build | [kaggle/README.md](notes/kaggle/README.md) |
 | Local simulator cross-check | full-output photonic probabilities and precision-preserving cQASM export | [simulation evidence](../results/local-simulation/README.md), [complete optical outputs](../results/local-simulation/optical-operator-replay.json), [serialized Ascella request](../results/local-simulation/ascella-serialized-order-replay/README.md), [compiler replay provenance](../results/local-simulation/compiler-replay-provenance.md) |
@@ -50,6 +51,62 @@ Selected zero-divisor hardware witnesses have retained acquisitions on
 [Tuna-17](notes/quantum_inspire/experiments.md). The
 [hardware-witness review](notes/topics/sedenion_hardware_witness_review.md) has an explicit historical cutoff.
 The [matched-response case](design/tuna17-zero-divisor-matched-response.md) is prospective and unsubmitted.
+Its [historical catalogue](evidence/quantum_inspire/matched-zero-divisor-catalogue.json) retains the
+exact bytes bound by the archived compiler receipt; a newer live catalogue still requires case review.
+The [reduced QX destination case](design/tuna-destination-qx-conformance.md) defines
+a separate simulator conformance proposal, pending review and approval.
+The [exact QX dispatch-guard design](design/tuna-qx-exact-dispatch-guard.md) specifies
+the approval, live-admission, single-use and recovery boundaries still required.
+The [sequential destination evidence case](design/tuna-destination-sequential-evidence-case.md)
+sets a working two-response acquisition and optional-stopping envelope, pending admission.
+The [sequential destination uncertainty design](design/tuna-sequential-destination-uncertainty.md)
+quantifies job-level precision without a finite-memory assumption.
+The [randomized destination-block draft](design/tuna-destination-randomized-blocks.md) proposes
+a job-level falsification test with explicit dependence and queue limitations.
+The [Tuna early-label map replay](evidence/tuna-projector-geometry/early-label-map-analysis.md)
+bounds fixed relabeling by the retained terminal-label differences.
+The [Tuna readout identifiability design](design/tuna-readout-mapping-identifiability.md) constructs
+observationally equivalent stage models and identifies the independent traces that can separate them.
+The [sequential-projector geometry case](design/tuna-projector-geometry.md) derives its observables and
+links the [calibration datasource diagnosis](evidence/tuna-projector-geometry/README.md).
+The approved [QX conformance batch](evidence/tuna-projector-geometry/qx-conformance.md) passes all 18 frozen checks;
+The user-authorized [Tuna qualification](design/tuna-projector-qualification-admission.md)
+[completed with qualification refusal](evidence/tuna-projector-geometry/tuna-qualification.md):
+all shots were retained, while contrast and repeated-readout consistency screens failed.
+The [ordered readout-response successor](design/tuna-readout-ordered-response-admission.md)
+qualifies a bounded descriptive comparison with serial single-job dispatch and explicit drift limits;
+its [upstream report](notes/quantum_inspire/upstream-readout-report.md) remains unsent.
+The [receipt-chain repair admission](evidence/tuna-projector-geometry/readout-ordered-response-reviewed-admission.json)
+binds the repaired campaign; the earlier `readout-ordered-response-admission.json` is a historical pre-review observation.
+The [verification receipt](evidence/tuna-projector-geometry/readout-ordered-response-verification.json)
+records 116 passing focused tests, static checks, compiler replay and the 59-file historical-byte comparison.
+The [requested high-effort peer review](archive/reviews/tuna-ordered-response-admission-review.md)
+accepts the exact descriptive case for owner approval while retaining its causal limits.
+The [approval-time observation](evidence/tuna-projector-geometry/readout-ordered-response-approval-admission.json)
+refreshes availability for the same case; every dispatch still requires fresh admission.
+The [source-scope revalidation](evidence/tuna-projector-geometry/source-scope-revalidation.md)
+corrects historical prospective/unmeasured wording through an addendum while preserving retained source bytes.
+The approved [ordered-response acquisition](evidence/tuna-projector-geometry/ordered-response-acquisition.md)
+ended at its request deadline after three nominal-zero jobs. All 12,288 submitted shots were retained;
+the whole-case endpoint is unavailable and the descriptive prefix leaves causal attribution unresolved.
+The separately approved [nominal-one destination case](design/tuna-readout-destination-one-admission.md)
+uses three serial jobs, a measured-wait allowance and its own
+[12-cell uncertainty contract](evidence/tuna-projector-geometry/destination-one-response-uncertainty.md).
+The [final admission verification](evidence/tuna-projector-geometry/destination-one-admission-verification.json)
+retains the exact packet, 279 focused tests, historical-file comparison and requested high-effort
+[peer-review acceptance](archive/reviews/tuna-destination-one-admission-review.md).
+The [completed nominal-one acquisition](evidence/tuna-projector-geometry/nominal-one-destination-response.md)
+retains 12,288 shots and bounded response equivalence, while the repeated-readout anomaly persists.
+The [upstream evidence request](notes/quantum_inspire/destination-response-upstream-request.md) records
+the verified API/datasource limits and the unsent acquisition-map, settings and IQ request.
+The [lossless final-result projection replay](evidence/tuna-projector-geometry/destination-final-result-projection-replay.md)
+makes the six endpoint-equivalence observations independently checkable from retained acquisition data.
+The [retention verification](evidence/tuna-projector-geometry/destination-one-retention-verification.json)
+binds the acquired evidence, final reviews, focused checks and measured preservation comparisons.
+The [joint-response reanalysis](evidence/tuna-projector-geometry/joint-response-analysis.md) replays
+six-bit outcome distributions and post-acquisition parity bounds without changing either frozen decision.
+The [package-checked joint algebra analysis](evidence/tuna-projector-geometry/joint-algebra-package-analysis.md)
+compares exact data-derived associators, retained package tables and an installed split-algebra control.
 The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
 native execution limits, billing units and MCP observations. The
 [provider-counter audit](evidence/provider-counter-audit/README.md) names the population every retained shot,
@@ -296,6 +353,7 @@ differs from it only in the `cd_core.py` digest.
 | [design/n21-orbit-detuning-sign-envelope.md](design/n21-orbit-detuning-sign-envelope.md) | calibration-adaptive approval envelope, bounds and decisions D1-D3 of the N=21 orbit detuning-sign test (orbit phase rate against work-bit Ramsey offsets) |
 | [design/provider-access-requests.md](design/provider-access-requests.md) | access-request drafts for Quantinuum, D-Wave, Classiq, OQC, Rigetti, SuperQ and Kipu, with the review checklist |
 | [design/factoring-notes.md](design/factoring-notes.md) | factoring and the Cayley-Dickson ladder |
+| [design/gpu-exact-modular-linear-algebra.md](design/gpu-exact-modular-linear-algebra.md) | exact F_p linear algebra on the build host's tensor cores: INT8 and FP8 digit products, an HMM and pinned-staging memory hierarchy, recursive PLUQ, Freivalds verification, measured throughput |
 | [design/numpy-validation.md](design/numpy-validation.md) | numerical environment validation |
 | [design/bdsc-tuna17-pauli-pilot.md](design/bdsc-tuna17-pauli-pilot.md) | Tuna-17 pilot of the BDSC target as a four-qubit local Pauli readout: bank, placement, analysis |
 | [design/iqm-garnet-timing-pilot.md](design/iqm-garnet-timing-pilot.md) | IQM Garnet billing pilot: per-job, per-shot, per-circuit and active-reset cost |
@@ -316,6 +374,7 @@ differs from it only in the `cd_core.py` digest.
 | [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela billing rule measured per job, packing limits and cost planning |
 | [runbooks/quandela-scheduled-runs.md](runbooks/quandela-scheduled-runs.md) | unattended submission of approved, spaced Quandela jobs from a committed schedule through GitHub Actions |
 | [runbooks/provider-credits.md](runbooks/provider-credits.md) | read-only daily snapshot of every provider's free allotment, alert thresholds and the systemd user timer |
+| [runbooks/classical-compute-pool.md](runbooks/classical-compute-pool.md) | free classical capacity per substrate (build host, Kaggle, GitHub Actions, Azure trial), what pooling across machines buys, tool installs per substrate, measured memory of the A_5 Rees eliminations |
 | [runbooks/critical-peer-review.md](runbooks/critical-peer-review.md) | reviewer checklist for quantum-hardware results: preregistration, multiplicity, effect size, dependent correlations, drift, provenance, simulation boundary and claim wording |
 | [QUANTUM_DISPATCH.md](../plans/QUANTUM_DISPATCH.md) | quantum dispatch plan |
 | [coherence-case-science-review.md](../plans/reviews/coherence-case-science-review.md) | coherence-window case, science review |
@@ -328,6 +387,7 @@ differs from it only in the `cd_core.py` digest.
 |---|---|
 | [ibm_heron_platform.md](notes/ibm_heron_platform.md) | measured Targets and current documentation |
 | [hardware-controls.md](notes/ibm_quantum/hardware-controls.md) | every control reachable through qiskit-ibm-runtime |
+| [evidence/local_idle_padding/README.md](evidence/local_idle_padding/README.md) | list-schedule idle written into ISA circuits before submission: issue 526's falsifier over the retained dynamic runs, ALAP against the service schedule, and idle-scale, CZ-factor, event and placebo controls |
 | [learning-quantum-teleportation.md](notes/ibm_quantum/learning-quantum-teleportation.md) | IBM Quantum Learning teleportation lesson: outcome-to-correction table |
 | [qiskit-ecosystem.md](notes/qiskit-ecosystem.md) | Qiskit ecosystem audit |
 | [qiskit-ecosystem-install-plan.md](notes/qiskit-ecosystem-install-plan.md) | Qiskit ecosystem install plan |
@@ -370,6 +430,7 @@ differs from it only in the `cd_core.py` digest.
 | [cache-locations.md](runbooks/cache-locations.md) | cache, venv, build-tree and run-output locations outside the checkout; cleanup classes and the future `make clean` and `make distclean` targets |
 | [vectorized-fits.md](runbooks/vectorized-fits.md) | batched classical fits across replicates |
 | [null-shards.md](runbooks/null-shards.md) | the successor null through one pool, Kaggle kernels and hosted-runner shards |
+| [idle-falsifier.md](runbooks/idle-falsifier.md) | the local idle falsifier through resumable per-run parts and hosted-runner jobs |
 
 ### State and records
 

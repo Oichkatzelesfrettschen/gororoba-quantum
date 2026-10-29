@@ -14,6 +14,13 @@ conditions. The batched paths keep the bits of the scalar functions of msq_succe
 
 Per-replicate generators spawn from one QRNG seed by replicate index, so serial, pooled, blocked and sharded runs
 write the same bytes.
+
+The shots per member come from the dry-run record's `shots` (`Setup.shots`), which sets every binomial draw, the
+bits of the carryover readers and the constants derived from the snapshot. One `run_arms` call runs arms on several
+setups (`ArmRun.setup`) through one pool, and each record it returns equals the record of a call that runs that arm
+on that setup alone; `calibrate_sparse_many` shares the pool the same way across the sparse calibrations of several
+setups. Records of schema msq-successor-null-v1 carry no `shots` and count as LEGACY_SHOTS; `merge_records` and
+`null_summary` still read them, and `merge_records` refuses records whose shots differ.
 """
 
 from __future__ import annotations
@@ -440,11 +447,13 @@ def shape_bound_rows(ctx: dict[str, Any], t_s: Floats, shapes: Sequence[float] =
 
 # --- snapshot, layout and per-calibration constants ----------------------------------------------------------
 
-SCHEMA = "msq-successor-null-v1"
-SUMMARY_SCHEMA = "msq-successor-null-summary-v1"
+SCHEMA = "msq-successor-null-v2"
+SUMMARY_SCHEMA = "msq-successor-null-summary-v2"
+# Records of schema v1 predate the `shots` field; the module that wrote them drew 8192 shots per member.
+LEGACY_SCHEMA = "msq-successor-null-v1"
+LEGACY_SHOTS = 8192
 # ANU QRNG docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json, index 0.
 SUCCESSOR_NULL_SEED = 35417
-SHOTS = 8192
 # Replicates per mapped block; a block shares one batched evaluation per calibration.
 NULL_BLOCK = 25
 CONFIDENCE = 0.95
@@ -460,7 +469,10 @@ COMMON_GAP_FACTOR = 4.0
 PLANTED_QUBITS = 2
 MINORITY_ARMS = ("q-minority", "plateau-minority")
 # The measured detectable gap of each pool size, as a multiple of `sparse_gap`: the scale at which the per-qubit
-# settle veto withholds SPARSE_TARGET_POWER of PLANTED_QUBITS planted gaps (`calibrate_sparse_scale`).
+# settle veto withholds SPARSE_TARGET_POWER of PLANTED_QUBITS planted gaps (`calibrate_sparse_scale`). One record per
+# calibration, named by snapshot, layout width and shots (`sparse_evidence_path`), lives under SPARSE_SCALE_DIR;
+# SPARSE_SCALE_EVIDENCE is the single record measured at LEGACY_SHOTS before that layout.
+SPARSE_SCALE_DIR = "docs/evidence/measurement_sequence/successor-sparse-scale"
 SPARSE_SCALE_EVIDENCE = "docs/evidence/measurement_sequence/successor-sparse-scale.json"
 # ANU QRNG docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json, index 2: the calibration draws apart from the null's.
 SPARSE_CALIBRATION_SEED = 26209
@@ -528,9 +540,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class ArmRun(NamedTuple):
     """One arm of a `run_arms` call: its seed, cap and record fields, the test overrides of its cases and verdict
-    requirement (None takes the arm's own), and per-case stop limits. A case runs only the replicates below its limit
-    (the cap by default); a limit enters no record, and `merge_records` refuses a case it stops short of both its cap
-    and its verdict count, so every merged record is the record of the run without limits."""
+    requirement (None takes the arm's own), per-case stop limits and the setup it runs on (None takes the call's). A
+    case runs only the replicates below its limit (the cap by default); a limit enters no record, and `merge_records`
+    refuses a case it stops short of both its cap and its verdict count, so every merged record is the record of the
+    run without limits."""
 
     arm: str
     seed: int
@@ -540,6 +553,7 @@ class ArmRun(NamedTuple):
     cases: Sequence[Case] | None = None
     needed: int | None = None
     limits: Mapping[str, int] | None = None
+    setup: Setup | None = None
 
 
 class Setup(NamedTuple):
@@ -547,6 +561,7 @@ class Setup(NamedTuple):
 
     qubits: tuple[int, ...]
     width: int
+    shots: int
     contexts: tuple[dict[str, Any], ...]
     floor: float
     equilibrium_s: float
@@ -607,13 +622,13 @@ def load_snapshot(record_dir: Path) -> tuple[dict[str, Any], dict[str, Any], str
     return record, json.loads(data)["properties"], digest
 
 
-def residual_slope(ctx: dict[str, Any]) -> float:
+def residual_slope(ctx: dict[str, Any], shots: int) -> float:
     """d(unitary N = 16 residual) / d(sx error factor) at one planned context, from the noise-free model at factors
-    1 and 3 through the successor's rows."""
+    1 and 3 through the successor's rows, with member counts at `shots`."""
     residuals = []
     for factor in (1.0, 3.0):
         model = msa.device_model(ctx, p_init=0.0, sx_error=factor * ctx["sx_error"])
-        counts = msa.device_counts({0: model}, {0: ctx}, SHOTS)[0]
+        counts = msa.device_counts({0: model}, {0: ctx}, shots)[0]
         row = su._evaluate((0, counts, ctx), False)
         residuals.append(float(row["gate_systematic_n16"]["unitary_residual"]))
     return (residuals[1] - residuals[0]) / 2.0
@@ -630,18 +645,18 @@ def predecessor_name(index: int, qubit: int) -> str:
     return msa.member_names("measure", steps, qubit)[s]
 
 
-def reader_standard_error(ctx: dict[str, Any], predecessor_ones: Sequence[int], excitation: float) -> float:
+def reader_standard_error(ctx: dict[str, Any], predecessor_ones: Sequence[int], excitation: float, shots: int) -> float:
     """The standard error of the reader statistic's estimate of D for a carried excitation, as `su.carryover_reader`
     propagates it: each reader's conditional difference, divided by its divisor (the contrast times the predecessor
     bit's separation of its latent end states), has the binomial variance of its two conditioning classes, and the
-    twelve combine with weights set at the P1 pooled over every reader and both classes. The
-    in-circuit reader reads the excitation the next shot starts with, so no decay enters."""
+    twelve combine with weights set at the P1 pooled over every reader and both classes, each reader drawing `shots`
+    shots. The in-circuit reader reads the excitation the next shot starts with, so no decay enters."""
     e01, e10 = ctx["e01"], ctx["e10"]
     contrast = 1 - e01 - e10
     classes = []
     for ones in predecessor_ones:
-        n1, n0 = ones, SHOTS - ones
-        latent = min(max((ones / SHOTS - e01) / contrast, 0.0), 1.0)
+        n1, n0 = ones, shots - ones
+        latent = min(max((ones / shots - e01) / contrast, 0.0), 1.0)
         after_one = latent * (1 - e10) / (latent * (1 - e10) + (1 - latent) * e01)
         after_zero = latent * e10 / (latent * e10 + (1 - latent) * (1 - e01))
         classes.append(
@@ -653,9 +668,9 @@ def reader_standard_error(ctx: dict[str, Any], predecessor_ones: Sequence[int], 
                 contrast * (after_one - after_zero),
             )
         )
-    shots = sum(n1 + n0 for n1, n0, _, _, _ in classes)
-    pooled = sum(n1 * p1 + n0 * p0 for n1, n0, p1, p0, _ in classes) / shots
-    spread = max(pooled * (1 - pooled), 1.0 / shots)
+    total = sum(n1 + n0 for n1, n0, _, _, _ in classes)
+    pooled = sum(n1 * p1 + n0 * p0 for n1, n0, p1, p0, _ in classes) / total
+    spread = max(pooled * (1 - pooled), 1.0 / total)
     weights = [g**2 / (spread * (1 / n1 + 1 / n0)) for n1, n0, _, _, g in classes]
     variance = 0.0
     for w, (n1, n0, p1, p0, g) in zip(weights, classes, strict=True):
@@ -663,12 +678,14 @@ def reader_standard_error(ctx: dict[str, Any], predecessor_ones: Sequence[int], 
     return math.sqrt(variance) / sum(weights)
 
 
-def calibration_constants(ctx: dict[str, Any]) -> dict[str, Any]:
-    """The noise-free constants of one planned context: the residual slope, the carryover allocation and its vertex
-    classes, the standard error of the reader statistic, the q tolerance bound and the settle gap's standard error."""
+def calibration_constants(item: tuple[dict[str, Any], int]) -> dict[str, Any]:
+    """The noise-free constants of one planned context at `shots` shots per member: the residual slope, the carryover
+    allocation and its vertex classes, the standard error of the reader statistic, the q tolerance bound and the
+    settle gap's standard error. item = (context, shots)."""
+    ctx, shots = item
     qubit = 0
     model = msa.device_model(ctx, p_init=0.0)
-    counts = msa.device_counts({qubit: model}, {qubit: ctx}, SHOTS)[qubit]
+    counts = msa.device_counts({qubit: model}, {qubit: ctx}, shots)[qubit]
     row = su._evaluate((qubit, counts, ctx), False)
     allocation = su.carryover_allocation((qubit, counts, ctx, 1e-3))
     predecessor_ones = [counts["final"][predecessor_name(index, qubit)][0] for index in range(READERS)]
@@ -678,13 +695,14 @@ def calibration_constants(ctx: dict[str, Any]) -> dict[str, Any]:
         excitation = margin / allocation["allocation"]
         for _ in range(CARRIED_ITERATIONS):
             excitation = max(
-                margin / allocation["allocation"] - offset * reader_standard_error(ctx, predecessor_ones, excitation),
+                margin / allocation["allocation"]
+                - offset * reader_standard_error(ctx, predecessor_ones, excitation, shots),
                 0.0,
             )
         carried_by_offset[offset] = excitation
     sensitivity = su.q_sensitivity(ctx, ctx["t1_cal_s"])
     return {
-        "slope": residual_slope(ctx),
+        "slope": residual_slope(ctx, shots),
         "allocation": float(allocation["allocation"]),
         "positive": tuple(allocation["positive_classes"]),
         "negative": tuple(allocation["negative_classes"]),
@@ -714,34 +732,68 @@ def plateau_pairs() -> tuple[tuple[tuple[float, float], ...], str]:
     return pairs, hashlib.sha256(data).hexdigest()
 
 
-def sparse_scales(snapshot_sha256: str, width: int) -> tuple[dict[int, float], str]:
-    """The measured detectable-gap scale of each calibrated pool size from SPARSE_SCALE_EVIDENCE, and the file's
-    sha256; empty before the first calibration and for a snapshot or layout width the calibration did not run on."""
-    path = ROOT / SPARSE_SCALE_EVIDENCE
-    if not path.exists():
-        return {}, ""
-    data = path.read_bytes()
-    record = json.loads(data)
-    if record["snapshot_sha256"] != snapshot_sha256 or int(record["layout_width"]) != width:
+def sparse_evidence_path(snapshot_sha256: str, width: int, shots: int) -> Path:
+    """The record of the sparse calibration on one snapshot, layout width and shot count."""
+    return ROOT / SPARSE_SCALE_DIR / f"{snapshot_sha256[:16]}-w{width}-s{shots}.json"
+
+
+def sparse_scales(snapshot_sha256: str, width: int, shots: int) -> tuple[dict[int, float], str]:
+    """The measured detectable-gap scale of each calibrated pool size and the sha256 of the record that holds them:
+    the record `sparse_evidence_path` names, else SPARSE_SCALE_EVIDENCE when it was measured on this snapshot, width
+    and shot count. Empty before the first calibration and for a snapshot, layout width or shot count that no
+    calibration ran on."""
+    path = sparse_evidence_path(snapshot_sha256, width, shots)
+    legacy = ROOT / SPARSE_SCALE_EVIDENCE
+    if path.exists():
+        data = path.read_bytes()
+        record = json.loads(data)
+        if (record["snapshot_sha256"], int(record["layout_width"]), int(record["shots"])) != (
+            snapshot_sha256,
+            width,
+            shots,
+        ):
+            raise ValueError(f"{path.name} records a different snapshot, layout width or shot count than its name")
+    elif legacy.exists():
+        data = legacy.read_bytes()
+        record = json.loads(data)
+        measured = (record["snapshot_sha256"], int(record["layout_width"]), int(record.get("shots", LEGACY_SHOTS)))
+        if measured != (snapshot_sha256, width, shots):
+            return {}, ""
+    else:
         return {}, ""
     return {int(pool): float(entry["scale"]) for pool, entry in record["pools"].items()}, hashlib.sha256(
         data
     ).hexdigest()
 
 
-def with_sparse_scale(setup: Setup, scale: dict[int, float]) -> Setup:
-    """`setup` with the sparse arm's planted losses solved at `scale` times `sparse_gap` for each pool size."""
-    items = [
+def with_sparse_scales(items: Sequence[tuple[Setup, dict[int, float]]]) -> list[Setup]:
+    """Each setup with the sparse arm's planted losses solved at its `scale` times `sparse_gap` for each pool size;
+    the losses of all setups and calibrations come from one pool map."""
+    work = [
         (ctx, setup.equilibrium_s, {pool: factor * sparse_gap(setup.settle_se, pool) for pool, factor in scale.items()})
+        for setup, scale in items
         for ctx in setup.contexts
     ]
-    return setup._replace(sparse_scale=dict(scale), sparse_loss=tuple(ordered_map(sparse_losses, items, min_items=2)))
+    solved = iter(ordered_map(sparse_losses, work, min_items=2))
+    return [
+        setup._replace(sparse_scale=dict(scale), sparse_loss=tuple(next(solved) for _ in setup.contexts))
+        for setup, scale in items
+    ]
+
+
+def with_sparse_scale(setup: Setup, scale: dict[int, float]) -> Setup:
+    """`setup` with the sparse arm's planted losses solved at `scale` times `sparse_gap` for each pool size."""
+    return with_sparse_scales([(setup, scale)])[0]
 
 
 def build_setup(record_dir: Path, sparse_pools: Sequence[int] | None = None) -> Setup:
     """The null's fixed inputs from a dry-run record directory, with the sparse arm's planted losses solved for
-    `sparse_pools` (every measured pool size when None)."""
+    `sparse_pools` (every measured pool size when None). The record's `shots` sets the member counts of every draw
+    and of the constants derived from the snapshot."""
     record, properties, digest = load_snapshot(record_dir)
+    if not isinstance(record.get("shots"), int) or record["shots"] < 1:
+        raise ValueError(f"{record_dir / 'record.json'} names no positive integer `shots`")
+    shots = int(record["shots"])
     configuration = record["family_configuration"]
     floor, reason = msa.bound_floor(msa.record_backends(record))
     if floor is None:
@@ -750,18 +802,19 @@ def build_setup(record_dir: Path, sparse_pools: Sequence[int] | None = None) -> 
     qubits = tuple(int(q) for q in configuration["qubits"])
     planned = su.with_planning(contexts, floor)
     pool = tuple(planned[q] for q in qubits)
-    constants = list(ordered_map(calibration_constants, list(pool), min_items=2))
+    constants = list(ordered_map(calibration_constants, [(ctx, shots) for ctx in pool], min_items=2))
     plateau, plateau_digest = plateau_pairs()
     dt = float(configuration["dt_seconds"])
     width = int(configuration["layout_width"])
     equilibrium_s = int(configuration["equilibrium_delay_dt"]) * dt
     tolerance = tuple(c["tolerance"] for c in constants)
     settle_se = float(np.median([c["settle_se"] for c in constants]))
-    scale, scale_digest = sparse_scales(digest, width)
-    q_items = [(ctx, bound, equilibrium_s, width) for ctx, bound in zip(pool, tolerance, strict=True)]
+    scale, scale_digest = sparse_scales(digest, width, shots)
+    q_items = [(ctx, bound, equilibrium_s, width, shots) for ctx, bound in zip(pool, tolerance, strict=True)]
     setup = Setup(
         qubits=qubits,
         width=width,
+        shots=shots,
         contexts=pool,
         floor=floor,
         equilibrium_s=equilibrium_s,
@@ -860,18 +913,18 @@ def expected_counts(ctx: dict[str, Any], truth: Truth, equilibrium_s: float, sho
     return {name: (round(p * shots), shots) for name, p in probabilities.items()}
 
 
-def planted_q(item: tuple[dict[str, Any], float, float, int]) -> float:
+def planted_q(item: tuple[dict[str, Any], float, float, int, int]) -> float:
     """The q arm's planted relaxation target at one calibration: the q at which the screen (`su.q_screen`, Bonferroni
-    over the width, tolerance at the fitted T) puts the lower confidence bound of the expected counts at SHOTS on its
+    over the width, tolerance at the fitted T) puts the lower confidence bound of the expected counts at `shots` on its
     tolerance, so about half the draws pass it. Each fixed-point step moves q by the tolerance less the lower
     confidence bound, which also absorbs q_hat's offset from the planted q. item = (context, the tolerance at the
-    calibrated T1 as the start, equilibrium idle, width)."""
-    ctx, bound, equilibrium_s, width = item
+    calibrated T1 as the start, equilibrium idle, width, shots)."""
+    ctx, bound, equilibrium_s, width, shots = item
     keys = {"ro0": msa.ro0_name(0), "eq": de.msqr_equilibrium_member(0)}
     keys.update({f"t1-{k}": name for k, name in enumerate(msa.t1_names(0))})
     q = bound
     for _ in range(Q_ITERATIONS):
-        counts = expected_counts(ctx, Truth(ctx["t1_cal_s"], math.inf, q, 1.0, {}, 0.0, 0.0), equilibrium_s, SHOTS)
+        counts = expected_counts(ctx, Truth(ctx["t1_cal_s"], math.inf, q, 1.0, {}, 0.0, 0.0), equilibrium_s, shots)
         estimate = su.equilibrium_estimate({key: counts[name] for key, name in keys.items()}, ctx, equilibrium_s)
         screen = su.q_screen(estimate, su.q_sensitivity(ctx, estimate["t1_s"]), width)
         q += screen["tolerance"] - screen["lower_bound"]
@@ -1017,18 +1070,24 @@ def replicate_generator(seed: int, index: int) -> np.random.Generator:
 
 
 def draw_bits(
-    generator: np.random.Generator, ctx: dict[str, Any], truth: Truth, probabilities: dict[str, float], qubit: int
+    generator: np.random.Generator,
+    ctx: dict[str, Any],
+    truth: Truth,
+    probabilities: dict[str, float],
+    qubit: int,
+    shots: int,
 ) -> tuple[list[np.ndarray], list[np.ndarray], list[int]]:
     """Shot-ordered predecessor and reader bits of one qubit. A predecessor's latent end state is excited with the
     member's excited probability and is read through the assignment errors; the in-circuit reader holds the carried
     excitation times the latent end state, the excitation the next shot starts with, and is read through the
-    assignment errors. Returns the predecessors' bits, the readers' bits and the predecessors' ones."""
+    assignment errors. Each reader draws `shots` bits. Returns the predecessors' bits, the readers' bits and the
+    predecessors' ones."""
     e01, e10 = ctx["e01"], ctx["e10"]
     contrast = 1 - e01 - e10
     names = [predecessor_name(i, qubit) for i in range(READERS)]
     p1 = np.array([probabilities[name] for name in names])
     p_latent = np.clip((p1 - e01) / contrast, 0.0, 1.0)
-    uniform = generator.random((3, READERS, SHOTS))
+    uniform = generator.random((3, READERS, shots))
     latent = uniform[0] < p_latent[:, None]
     predecessor = (uniform[1] < np.where(latent, 1 - e10, e01)).astype(np.int8)
     reader = (uniform[2] < e01 + contrast * truth.reader * latent).astype(np.int8)
@@ -1040,8 +1099,9 @@ def draw_replicate(setup: Setup, case: Case, seed: int, index: int) -> Drawn:
     arms of a seed share their noise. Per qubit: a calibration resampled from the layout's, a rate shape log-uniform
     over the admitted shapes, the sx-error residual (common +0.011 and independent SD 0.0105), a uniform draw that
     picks the plateau arms' retained (T1, q) pair; then binomial member, equilibrium and pattern counts and the
-    shot-ordered bits."""
+    shot-ordered bits, all at the setup's shot count."""
     generator = replicate_generator(seed, index)
+    shots = setup.shots
     width = len(setup.qubits)
     calibration = generator.integers(0, width, size=width)
     low, high = math.log(su.SHAPE_DOMAIN_SHAPES[0]), math.log(su.SHAPE_DOMAIN_SHAPES[-1])
@@ -1055,18 +1115,18 @@ def draw_replicate(setup: Setup, case: Case, seed: int, index: int) -> Drawn:
         truth = slot_truth(setup, case, j, slot, float(shapes[slot]), float(residuals[slot]), float(pairs[slot]))
         probabilities = member_probabilities(ctx, qubit, truth, setup.equilibrium_s)
         names = sorted(name for name in probabilities if name != de.msqr_equilibrium_member(qubit))
-        ones = generator.binomial(SHOTS, [probabilities[name] for name in names])
-        eq = int(generator.binomial(SHOTS, probabilities[de.msqr_equilibrium_member(qubit)]))
+        ones = generator.binomial(shots, [probabilities[name] for name in names])
+        eq = int(generator.binomial(shots, probabilities[de.msqr_equilibrium_member(qubit)]))
         patterns = generator.binomial(
-            SHOTS, [1 - ctx["e10"] if row[slot] else ctx["e01"] for row in setup.pattern_bits]
+            shots, [1 - ctx["e10"] if row[slot] else ctx["e01"] for row in setup.pattern_bits]
         )
-        predecessors, readers, _ = draw_bits(generator, ctx, truth, probabilities, qubit)
-        counts = {name: (int(k), SHOTS) for name, k in zip(names, ones, strict=True)}
+        predecessors, readers, _ = draw_bits(generator, ctx, truth, probabilities, qubit, shots)
+        counts = {name: (int(k), shots) for name, k in zip(names, ones, strict=True)}
         out.calibration.append(j)
         out.truths.append(truth)
         out.counts.append({"final": counts})
-        out.equilibrium.append((eq, SHOTS))
-        out.patterns.append([(int(k), SHOTS) for k in patterns])
+        out.equilibrium.append((eq, shots))
+        out.patterns.append([(int(k), shots) for k in patterns])
         out.predecessors.append(predecessors)
         out.readers.append(readers)
     return out
@@ -1526,30 +1586,37 @@ def run_arm(
     return run_arms(setup, [ArmRun(arm, seed, cap, seed_source, record_name, cases, needed)], shard, shards)[0]
 
 
-def run_arms(setup: Setup, runs: Sequence[ArmRun], shard: int = 0, shards: int = 1) -> list[dict[str, Any]]:
+def run_arms(setup: Setup | None, runs: Sequence[ArmRun], shard: int = 0, shards: int = 1) -> list[dict[str, Any]]:
     """The shard record of each run: the rows of the replicates below each case's limit (0 to cap - 1 without one)
-    whose index is congruent to `shard` modulo `shards`, for every case of the arm. Every round draws the blocks of
-    every arm's running cases into one pool map, sized by `round_size` over all of them. An unsharded run of an arm
-    with a verdict requirement stops each case after the round that reaches it in that case's counted verdicts;
-    `merge_records` applies the same cut to every case of every record, so the bytes depend neither on the sharding
-    nor on the other arms of the call."""
+    whose index is congruent to `shard` modulo `shards`, for every case of the arm, on the run's own setup (`setup`
+    when it names none). Every round draws the blocks of every run's running cases into one pool map, sized by
+    `round_size` over all of them. An unsharded run of an arm with a verdict requirement stops each case after the
+    round that reaches it in that case's counted verdicts; `merge_records` applies the same cut to every case of every
+    record, so the bytes depend neither on the sharding nor on the other runs of the call. A setup runs an arm once
+    per call."""
     if not 0 <= shard < shards or any(run.cap < 1 for run in runs):
         raise ValueError(f"shard {shard} of {shards} with caps {[run.cap for run in runs]}")
-    if len({run.arm for run in runs}) != len(runs):
-        raise ValueError("an arm appears twice in one call")
-    # Per run: its cases, verdict requirement, shard indices, rows by case and the next index position.
-    states: list[tuple[ArmRun, list[Case], int, list[int], dict[str, list[dict[str, Any]]], list[int]]] = []
+    resolved: list[Setup] = []
     for run in runs:
-        cases = list(arm_cases(run.arm, setup.width) if run.cases is None else run.cases)
+        owner = setup if run.setup is None else run.setup
+        if owner is None:
+            raise ValueError(f"{run.arm} names no setup and the call names none")
+        resolved.append(owner)
+    if len({(id(owner), run.arm) for owner, run in zip(resolved, runs, strict=True)}) != len(runs):
+        raise ValueError("an arm appears twice for one setup in one call")
+    # Per run: its setup, cases, verdict requirement, shard indices, rows by case and the next index position.
+    states: list[tuple[ArmRun, Setup, list[Case], int, list[int], dict[str, list[dict[str, Any]]], list[int]]] = []
+    for run, owner in zip(runs, resolved, strict=True):
+        cases = list(arm_cases(run.arm, owner.width) if run.cases is None else run.cases)
         needed = minimum_verdicts(run.arm) if run.needed is None else run.needed
         unknown = set(run.limits or {}) - {case.label for case in cases}
         if unknown:
             raise ValueError(f"{run.arm} has no case {sorted(unknown)}")
         indices = [i for i in range(run.cap) if i % shards == shard]
-        states.append((run, cases, needed, indices, {case.label: [] for case in cases}, [0]))
+        states.append((run, owner, cases, needed, indices, {case.label: [] for case in cases}, [0]))
     while True:
         work = []
-        for run, cases, needed, indices, rows, position in states:
+        for run, owner, cases, needed, indices, rows, position in states:
             if position[0] >= len(indices):
                 continue
             running = [
@@ -1559,7 +1626,7 @@ def run_arms(setup: Setup, runs: Sequence[ArmRun], shard: int = 0, shards: int =
                 and indices[position[0]] < (run.limits or {}).get(case.label, run.cap)
             ]
             if running:
-                work.append((run, needed, indices, rows, position, running))
+                work.append((run, owner, needed, indices, rows, position, running))
             else:
                 position[0] = len(indices)
         if not work:
@@ -1567,7 +1634,7 @@ def run_arms(setup: Setup, runs: Sequence[ArmRun], shard: int = 0, shards: int =
         size = round_size(sum(len(running) for *_, running in work))
         items: list[tuple[Setup, Case, int, list[int]]] = []
         owners: list[dict[str, list[dict[str, Any]]]] = []
-        for run, needed, indices, rows, position, running in work:
+        for run, owner, needed, indices, rows, position, running in work:
             step = len(indices) if shards > 1 or not needed else size
             chunk = indices[position[0] : position[0] + step]
             position[0] += step
@@ -1575,7 +1642,7 @@ def run_arms(setup: Setup, runs: Sequence[ArmRun], shard: int = 0, shards: int =
                 limit = (run.limits or {}).get(case.label, run.cap)
                 mine = [i for i in chunk if i < limit]
                 for k in range(0, len(mine), NULL_BLOCK):
-                    items.append((setup, case, run.seed, mine[k : k + NULL_BLOCK]))
+                    items.append((owner, case, run.seed, mine[k : k + NULL_BLOCK]))
                     owners.append(rows)
         for (_, case, _, _), rows, block in zip(
             items, owners, ordered_map(analyse_block, items, min_items=2), strict=True
@@ -1588,17 +1655,18 @@ def run_arms(setup: Setup, runs: Sequence[ArmRun], shard: int = 0, shards: int =
             "seed": run.seed,
             "seed_source": run.seed_source,
             "record": run.record_name,
-            "layout_width": setup.width,
-            "snapshot_sha256": setup.digests["snapshot_sha256"],
-            "plateau_sha256": setup.digests["plateau_sha256"],
-            "sparse_scale": {str(pool): factor for pool, factor in sorted(setup.sparse_scale.items())},
-            "sparse_scale_sha256": setup.digests["sparse_scale_sha256"],
+            "layout_width": owner.width,
+            "shots": owner.shots,
+            "snapshot_sha256": owner.digests["snapshot_sha256"],
+            "plateau_sha256": owner.digests["plateau_sha256"],
+            "sparse_scale": {str(pool): factor for pool, factor in sorted(owner.sparse_scale.items())},
+            "sparse_scale_sha256": owner.digests["sparse_scale_sha256"],
             "cap": run.cap,
             "minimum_verdicts": needed,
             "shard": {"index": shard, "count": shards},
             "cases": {label: {"rows": sorted(found, key=lambda row: row["i"])} for label, found in rows.items()},
         }
-        for run, _, needed, _, rows, _ in states
+        for run, owner, _, needed, _, rows, _ in states
     ]
 
 
@@ -1609,6 +1677,7 @@ IDENTITY = (
     "seed_source",
     "record",
     "layout_width",
+    "shots",
     "snapshot_sha256",
     "plateau_sha256",
     "sparse_scale",
@@ -1616,6 +1685,20 @@ IDENTITY = (
     "cap",
     "minimum_verdicts",
 )
+
+
+def identity_keys(record: Mapping[str, Any]) -> tuple[str, ...]:
+    """The identity fields of a record by its schema: v1 records predate `shots`."""
+    if record["schema"] == SCHEMA:
+        return IDENTITY
+    if record["schema"] == LEGACY_SCHEMA:
+        return tuple(key for key in IDENTITY if key != "shots")
+    raise ValueError(f"unknown record schema {record['schema']!r}")
+
+
+def record_shots(record: Mapping[str, Any]) -> int:
+    """The shots per member a record drew: its field, LEGACY_SHOTS for a v1 record."""
+    return int(record["shots"]) if record["schema"] == SCHEMA else LEGACY_SHOTS
 
 
 def case_statistics(arm: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -1726,9 +1809,10 @@ def merge_records(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
     if not records:
         raise ValueError("no records to merge")
     first = records[0]
+    keys = identity_keys(first)
     for record in records:
-        if any(record[key] != first[key] for key in IDENTITY):
-            raise ValueError("shard records disagree on the arm, seed, snapshot or replicate cap")
+        if record["schema"] != first["schema"] or any(record[key] != first[key] for key in keys):
+            raise ValueError("shard records disagree on the arm, seed, snapshot, shots or replicate cap")
     count = first["shard"]["count"]
     found = sorted(record["shard"]["index"] for record in records)
     if any(record["shard"]["count"] != count for record in records) or found != list(range(count)):
@@ -1752,44 +1836,61 @@ def merge_records(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
                     "verdicts: rerun it with a larger --limit"
                 )
         cases[label] = {"rows": rows, **case_statistics(arm, rows)}
-    out = {key: first[key] for key in IDENTITY}
+    out = {key: first[key] for key in keys}
     out["cases"] = cases
     out["replicates"] = {label: len(case["rows"]) for label, case in cases.items()}
     return out
 
 
-def sparse_power(setup: Setup, pool: int, scale: float, seed: int, replicates: int) -> tuple[int, int]:
-    """(planted gaps the per-qubit veto withheld, planted gaps in the pool) of the sparse arm at `pool` qubits with
-    the planted gap at `scale` times `sparse_gap`."""
-    trial = with_sparse_scale(setup, {pool: scale})
-    case = Case("settle-sparse", f"{pool}-qubits", pool, 0.0)
-    stats = merge_records([run_arm(trial, "settle-sparse", seed, replicates, cases=[case])])["cases"][case.label]
-    return int(stats["planted_withheld"]), int(stats["planted_in_pool"])
+def sparse_powers(items: Sequence[tuple[Setup, int, float]], seed: int, replicates: int) -> list[tuple[int, int]]:
+    """(planted gaps the per-qubit veto withheld, planted gaps in the pool) of the sparse arm for each item (setup,
+    pool size, scale): the planted gap at `scale` times `sparse_gap`. The planted losses of all items solve in one
+    pool map and the replicates of all items run in one `run_arms` call."""
+    trials = with_sparse_scales([(setup, {pool: scale}) for setup, pool, scale in items])
+    cases = [Case("settle-sparse", f"{pool}-qubits", pool, 0.0) for _, pool, _ in items]
+    runs = [
+        ArmRun("settle-sparse", seed, replicates, cases=[case], setup=trial)
+        for case, trial in zip(cases, trials, strict=True)
+    ]
+    out = []
+    for case, record in zip(cases, run_arms(trials[0], runs), strict=True):
+        stats = merge_records([record])["cases"][case.label]
+        out.append((int(stats["planted_withheld"]), int(stats["planted_in_pool"])))
+    return out
 
 
-def calibrate_sparse_scale(setup: Setup, pool: int, seed: int, replicates: int) -> dict[str, Any]:
-    """The scale of `sparse_gap` at which the per-qubit settle veto withholds SPARSE_TARGET_POWER of the planted gaps
-    at `pool` qubits, measured on `seed`, which differs from the null's. The scale starts at 1 and
-    SPARSE_CALIBRATION_STEP, then steps along the secant through the two points that bracket the target (the two
-    latest before a bracket exists), and ends at the first point within one binomial standard error of the target.
-    A planted loss changes how many uniforms the binomial draws take, so the power is a noisy step function of the
-    scale and each point runs `replicates` replicates."""
-    if seed in (SUCCESSOR_NULL_SEED, SPARSE_CONFIRMATION_SEED):
-        raise ValueError("the sparse calibration draws from a null's own seed")
-    points: list[dict[str, float]] = []
-    scale = 1.0
-    for step in range(SPARSE_CALIBRATION_STEPS):
-        withheld, planted = sparse_power(setup, pool, scale, seed, replicates)
+class SparseSearch:
+    """The secant search of `calibrate_sparse_scale` for one pool size, advanced one measured point at a time: the
+    scale starts at 1 and SPARSE_CALIBRATION_STEP, then steps along the secant through the two points that bracket
+    the target (the two latest before a bracket exists), and ends at the first point within one binomial standard
+    error of the target."""
+
+    def __init__(self, setup: Setup, pool: int) -> None:
+        self.setup = setup
+        self.pool = pool
+        self.scale = 1.0
+        self.points: list[dict[str, float]] = []
+        self.result: dict[str, Any] | None = None
+
+    def observe(self, withheld: int, planted: int) -> None:
+        """Record the power measured at `scale` and set the next scale, or the result."""
+        pool = self.pool
         if planted == 0:
-            raise ValueError(f"pool {pool}: no planted gap reached the pool at scale {scale}")
+            raise ValueError(f"pool {pool}: no planted gap reached the pool at scale {self.scale}")
         power = withheld / planted
         se = math.sqrt(max(power * (1 - power), 1.0 / planted) / planted)
-        points.append({"scale": scale, "withheld": withheld, "planted": planted, "power": power, "se": se})
+        points = self.points
+        points.append({"scale": self.scale, "withheld": withheld, "planted": planted, "power": power, "se": se})
         if abs(power - SPARSE_TARGET_POWER) <= se:
-            return {"scale": scale, "gap": scale * sparse_gap(setup.settle_se, pool), "points": points}
-        if step == 0:
-            scale = SPARSE_CALIBRATION_STEP
-            continue
+            self.result = {
+                "scale": self.scale,
+                "gap": self.scale * sparse_gap(self.setup.settle_se, pool),
+                "points": points,
+            }
+            return
+        if len(points) == 1:
+            self.scale = SPARSE_CALIBRATION_STEP
+            return
         below = [p for p in points if p["power"] < SPARSE_TARGET_POWER]
         above = [p for p in points if p["power"] > SPARSE_TARGET_POWER]
         if below and above:
@@ -1799,34 +1900,91 @@ def calibrate_sparse_scale(setup: Setup, pool: int, seed: int, replicates: int) 
             a, b = points[-2], points[-1]
         if (b["power"] - a["power"]) * (b["scale"] - a["scale"]) <= 0:
             raise ValueError(f"pool {pool}: the measured power does not rise with the scale: {points}")
-        scale = a["scale"] + (SPARSE_TARGET_POWER - a["power"]) * (b["scale"] - a["scale"]) / (b["power"] - a["power"])
-        if scale <= 0:
-            raise ValueError(f"pool {pool}: the secant steps to the non-positive scale {scale}: {points}")
-    raise ValueError(f"pool {pool}: no scale within one standard error after {SPARSE_CALIBRATION_STEPS} points")
+        self.scale = a["scale"] + (SPARSE_TARGET_POWER - a["power"]) * (b["scale"] - a["scale"]) / (
+            b["power"] - a["power"]
+        )
+        if self.scale <= 0:
+            raise ValueError(f"pool {pool}: the secant steps to the non-positive scale {self.scale}: {points}")
+        if len(points) == SPARSE_CALIBRATION_STEPS:
+            raise ValueError(f"pool {pool}: no scale within one standard error after {SPARSE_CALIBRATION_STEPS} points")
+
+
+def calibrate_sparse_many(jobs: Sequence[tuple[Setup, int]], seed: int, replicates: int) -> list[dict[str, Any]]:
+    """`calibrate_sparse_scale` for every (setup, pool size) job, on `seed`, which differs from the null's. Each round
+    measures the next point of every unfinished job in one `sparse_powers` call, so the jobs share the pool's
+    rounds and each result equals the job's own calibration."""
+    if seed in (SUCCESSOR_NULL_SEED, SPARSE_CONFIRMATION_SEED):
+        raise ValueError("the sparse calibration draws from a null's own seed")
+    searches = [SparseSearch(setup, pool) for setup, pool in jobs]
+    while True:
+        active = [search for search in searches if search.result is None]
+        if not active:
+            return [search.result for search in searches if search.result is not None]
+        measured = sparse_powers([(search.setup, search.pool, search.scale) for search in active], seed, replicates)
+        for search, (withheld, planted) in zip(active, measured, strict=True):
+            search.observe(withheld, planted)
+
+
+def calibrate_sparse_scale(setup: Setup, pool: int, seed: int, replicates: int) -> dict[str, Any]:
+    """The scale of `sparse_gap` at which the per-qubit settle veto withholds SPARSE_TARGET_POWER of the planted gaps
+    at `pool` qubits, measured on `seed` (see `SparseSearch` for the steps). A planted loss changes how many uniforms
+    the binomial draws take, so the power is a noisy step function of the scale and each point runs `replicates`
+    replicates."""
+    return calibrate_sparse_many([(setup, pool)], seed, replicates)[0]
+
+
+def sparse_calibration_records(
+    setups: Sequence[Setup],
+    seed: int,
+    seed_source: Any,
+    record_names: Sequence[str],
+    replicates: int = SPARSE_CALIBRATION_REPLICATES,
+) -> list[dict[str, Any]]:
+    """The measured scale of every pool size the sparse arm runs at each setup's layout width, as the records
+    `sparse_evidence_path` names hold them; all (setup, pool size) searches share the pool's rounds."""
+    pools = [sorted({m or setup.width for m in SETTLE_POOLS}) for setup in setups]
+    jobs = [(setup, pool) for setup, sizes in zip(setups, pools, strict=True) for pool in sizes]
+    measured = iter(calibrate_sparse_many(jobs, seed, replicates))
+    return [
+        {
+            "schema": "msq-successor-sparse-scale-v2",
+            "record": name,
+            "snapshot_sha256": setup.digests["snapshot_sha256"],
+            "layout_width": setup.width,
+            "shots": setup.shots,
+            "seed": seed,
+            "seed_source": seed_source,
+            "replicates": replicates,
+            "target_power": SPARSE_TARGET_POWER,
+            "settle_se": setup.settle_se,
+            "pools": {str(pool): {"formula_gap": sparse_gap(setup.settle_se, pool)} | next(measured) for pool in sizes},
+        }
+        for setup, sizes, name in zip(setups, pools, record_names, strict=True)
+    ]
 
 
 def sparse_calibration_record(
     setup: Setup, seed: int, seed_source: Any, record_name: str, replicates: int = SPARSE_CALIBRATION_REPLICATES
 ) -> dict[str, Any]:
-    """The measured scale of every pool size the sparse arm runs at the setup's layout width, as the record
-    SPARSE_SCALE_EVIDENCE holds."""
-    pools = sorted({m or setup.width for m in SETTLE_POOLS})
-    return {
-        "schema": "msq-successor-sparse-scale-v1",
-        "record": record_name,
-        "snapshot_sha256": setup.digests["snapshot_sha256"],
-        "layout_width": setup.width,
-        "seed": seed,
-        "seed_source": seed_source,
-        "replicates": replicates,
-        "target_power": SPARSE_TARGET_POWER,
-        "settle_se": setup.settle_se,
-        "pools": {
-            str(pool): {"formula_gap": sparse_gap(setup.settle_se, pool)}
-            | calibrate_sparse_scale(setup, pool, seed, replicates)
-            for pool in pools
-        },
-    }
+    """`sparse_calibration_records` of one setup."""
+    return sparse_calibration_records([setup], seed, seed_source, [record_name], replicates)[0]
+
+
+def with_calibrated_scales(setups: Sequence[Setup], records: Sequence[dict[str, Any]]) -> list[Setup]:
+    """Each setup with the scales of its calibration record and the sha256 of the record's `dumps` bytes, as a
+    later `build_setup` reads them from the file `dumps(record)` was written to."""
+    solved = with_sparse_scales(
+        [
+            (setup, {int(pool): float(entry["scale"]) for pool, entry in record["pools"].items()})
+            for setup, record in zip(setups, records, strict=True)
+        ]
+    )
+    return [
+        setup._replace(
+            digests={**setup.digests, "sparse_scale_sha256": hashlib.sha256(dumps(record).encode()).hexdigest()}
+        )
+        for setup, record in zip(solved, records, strict=True)
+    ]
 
 
 def dumps(record: dict[str, Any]) -> str:
@@ -1846,8 +2004,9 @@ def null_summary(texts: Sequence[str]) -> dict[str, Any]:
         if dumps(merge_records([{**record, "shard": {"index": 0, "count": 1}}])) != text:
             raise ValueError(f"{label}: the statistics differ from this module's; merge the record again")
         entries.append(
-            {key: record[key] for key in IDENTITY}
+            {key: record[key] for key in identity_keys(record)}
             | {
+                "shots": record_shots(record),
                 "record_sha256": hashlib.sha256(text.encode()).hexdigest(),
                 "replicates": record["replicates"],
                 "cases": {
