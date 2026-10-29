@@ -9,6 +9,9 @@ measured so far; a tool without a section gets one the first time it runs long. 
 checklist at the end before the run starts and records the filled checklist
 beside the run's log. A run launched without it gets stopped and relaunched.
 
+[library-flags.md](library-flags.md) is the per-library companion: the environment
+variables, API options and build facts of every package the repository imports.
+
 ## Why the review exists
 
 Every msolve run on the A_5 Rees-fiber eliminations died with exit 139 under a
@@ -64,7 +67,9 @@ growth and fragmentation at no measured cost to these workloads.
 ## msolve 0.10.1
 
 Authority: `msolve -h` of the binary in use. The passagemath wheel 10.8.13
-ships msolve 0.10.1 linked to libgomp, FLINT and GMP.
+ships msolve 0.10.1 linked to libgomp, FLINT and GMP; the build host's
+system package is 0.11.0, so a measured row names its binary and holds only
+for that version.
 
 | Flag | Meaning | Setting for Rees eliminations |
 |---|---|---|
@@ -98,8 +103,11 @@ deterministic.
 ## Singular 4.4
 
 Singular's `std`, `slimgb`, `syz`, `eliminate` and `minAssGTZ` run on one
-thread and expose no thread or vector flags. Parallelism comes from separate
-processes through `parallel.py` or separate hosts.
+thread. `Singular --help` lists `--cpus`, `--threads` and `--flint-threads`;
+they bound the parallel libraries (`parallel.lib`, `tasks.lib`) and FLINT or NTL
+calls, not a single standard-basis computation. Parallelism for these
+eliminations comes from separate processes through `parallel.py` or separate
+hosts.
 
 | Setting | Meaning |
 |---|---|
