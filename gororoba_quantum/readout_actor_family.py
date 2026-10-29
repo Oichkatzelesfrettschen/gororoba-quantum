@@ -28,7 +28,7 @@ import qpu_planning
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from readout_information_circuits import padded_actor_alternatives  # noqa: E402
-from readout_sparse_receipt import verify_and_project  # noqa: E402
+from readout_sparse_receipt import validate_collection_sources, verify_and_project  # noqa: E402
 
 FAMILY = "readout-actor"
 SCHEMA = "readout-actor-run-v1"
@@ -897,6 +897,7 @@ def adjudicate(runtime: Any, run_dir: Path, collection_sha256: str | None) -> di
         raise ValueError("actor adjudication requires an independently retained collection SHA-256")
     collection_path = run_dir / f"actor-collection-{collection_sha256}.json"
     collection = json.loads(_read_anchored(collection_path, collection_sha256))
+    validate_collection_sources(collection)
     record = json.loads(_read_anchored(run_dir / "record.json", collection["record_sha256"]))
     if collection.get("reviewed_record_sha256") != record.get("reviewed_record_sha256"):
         raise ValueError("actor collection reviewed-record binding differs from the submitted record")

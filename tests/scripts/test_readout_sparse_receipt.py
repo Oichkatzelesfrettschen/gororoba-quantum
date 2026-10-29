@@ -25,6 +25,22 @@ def digest(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
 
+def test_collection_source_identity_accepts_legacy_and_rejects_mutations() -> None:
+    sources = {"collector.py": "a" * 64}
+    source_digest = digest((json.dumps(sources, sort_keys=True, indent=1) + "\n").encode())
+    verifier.validate_collection_sources({})
+    verifier.validate_collection_sources({"collection_source_sha256": sources, "collection_digest": source_digest})
+    for invalid in (
+        {"collection_source_sha256": sources},
+        {"collection_digest": source_digest},
+        {"collection_source_sha256": {}, "collection_digest": source_digest},
+        {"collection_source_sha256": {"collector.py": "invalid"}, "collection_digest": source_digest},
+        {"collection_source_sha256": sources, "collection_digest": "0" * 64},
+    ):
+        with pytest.raises(ValueError, match="collector source"):
+            verifier.validate_collection_sources(invalid)
+
+
 def fixture(width: int = 3, swapped: bool = False) -> tuple[dict[str, bytes], dict[str, object]]:
     quantum = QuantumRegister(width, "q")
     first = ClassicalRegister(width - 1, "a")

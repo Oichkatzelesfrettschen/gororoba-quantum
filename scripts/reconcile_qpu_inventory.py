@@ -250,6 +250,8 @@ def retention_family(run: Path, *, allow_recovered: bool = False) -> str:
 
 def actor_collection(run: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, str]]:
     """Read immutable actor anchors outside the analyzed run, independently retained by its operator."""
+    from readout_sparse_receipt import validate_collection_sources
+
     record_path = run / "record.json"
     record_sha = digest(record_path)
     anchor_path = actor_anchor_path(run)
@@ -270,6 +272,7 @@ def actor_collection(run: Path) -> tuple[dict[str, Any], dict[str, Any], dict[st
     require(collection_path.is_file(), "anchored actor collection is missing")
     require(digest(collection_path) == collection_sha, "actor collection differs from its external anchor")
     record, collection = read(record_path), read(collection_path)
+    validate_collection_sources(collection)
     require(record.get("schema_version") == "readout-actor-run-v1", "unsupported actor acquisition record")
     require(
         collection.get("schema") == "readout-actor-collection-v1"

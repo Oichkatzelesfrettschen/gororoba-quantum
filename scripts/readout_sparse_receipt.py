@@ -39,6 +39,29 @@ def _digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def validate_collection_sources(collection: dict[str, Any]) -> None:
+    """Validate newer collector identities while accepting v1 records without either field."""
+    has_sources = "collection_source_sha256" in collection
+    has_digest = "collection_digest" in collection
+    if not has_sources and not has_digest:
+        return
+    if not has_sources or not has_digest:
+        raise ValueError("collector source identity is incomplete")
+    sources = collection["collection_source_sha256"]
+    if (
+        type(sources) is not dict
+        or not sources
+        or any(
+            type(name) is not str or not name or type(value) is not str or not SHA256_PATTERN.fullmatch(value)
+            for name, value in sources.items()
+        )
+    ):
+        raise ValueError("collector source identity is malformed")
+    encoded = (json.dumps(sources, sort_keys=True, indent=1, allow_nan=False) + "\n").encode()
+    if collection["collection_digest"] != _digest(encoded):
+        raise ValueError("collector source digest differs")
+
+
 def _object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for key, value in pairs:
