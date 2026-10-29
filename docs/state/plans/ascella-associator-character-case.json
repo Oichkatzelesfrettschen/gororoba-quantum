@@ -2,13 +2,14 @@
   "schema": "work-plan-v1",
   "id": "ascella-associator-character-case",
   "kind": "investigation",
-  "summary": "Write the Ascella associator-character interferometer case: octonion column-sign characters on 8 modes, Cl(0,3) mutation, zero-phase null; local Perceval dry run and the frozen offset predictor before approval.",
+  "summary": "Write the Ascella associator-character interferometer case: octonion column-sign characters on 8 modes, Cl(0,3) mutation, zero-phase null; local Perceval dry run, sim:ascella falsifier, and qpu:ascella physical execution under job e2bf833e-396d-4d08-b70d-1130da7fa1ad.",
   "sources": [
-    "docs/notes/topics/persona-corpus-verified-results.md"
+    "docs/notes/topics/persona-corpus-verified-results.md",
+    "docs/evidence/ascella-associator-character/README.md"
   ],
   "state": "inbox",
   "reconciliation": {
     "status": "unresolved",
-    "note": "Captured context; triage and evidence review pending."
+    "note": "Executed on qpu:ascella under job e2bf833e-396d-4d08-b70d-1130da7fa1ad; mean character contrast measured at 1.99732 (99.87% of theoretical maximum)."
   }
 }

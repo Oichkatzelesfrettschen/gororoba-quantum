@@ -2575,6 +2575,7 @@
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
     "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_character.py",
     "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_analysis.py",
     "scripts/ascella_coherence_repeat.py",
@@ -3718,6 +3719,7 @@
    "hardware_execution": true,
    "imported_by": [
     "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_character.py",
     "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_request.py",
     "scripts/ascella_experiment_analysis.py",
@@ -9977,6 +9979,22 @@
    "urllib"
   ],
   "scripts/ascella_associator_case.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "hypercomplex_cases",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_platform",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_associator_character.py": [
    "__future__",
    "argparse",
    "cd_core",
