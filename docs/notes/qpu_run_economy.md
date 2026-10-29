@@ -186,16 +186,17 @@ the bound each contribute; none of them changes the circuit.
     not.** The planner admits a design only when every per-qubit planning
     endpoint reaches its half-width at once: 0.03 on P0 endpoints and 0.055
     on contrasts, 17 endpoints per qubit, Bonferroni over 544 endpoints at
-    width 32. Under the per-PUB Hoeffding union bound the eight-member Zeno
-    contrast needed about 7990 shots, which set the 8192 tier. The
-    relaxation family declares every PUB of its job one independent block
-    (`qpu_planning.pub_independence`): the executor runs every circuit once
-    per shot round, so shots of different PUBs are as independent as shots
-    of one PUB, and the in-circuit readers measure the adjacent-shot
-    dependence that assumption rests on. The pooled and contrast endpoints
-    then tighten, and the single-member T1 points near P1 = 0.48 bind at
-    5549 shots (width 32) and 5389 (width 24). No bound admits 4096: the
-    exact Clopper-Pearson half-width of that T1 point is 0.0307 there. The
+    width 32. Under the per-PUB Hoeffding union bound the pooled Zeno
+    contrast set the 8192 tier. The relaxation family declares every PUB of
+    its job one independent block (`qpu_planning.pub_independence`): shots
+    of different PUBs are independent samples. That assumption goes beyond
+    the within-PUB independence every Hoeffding radius makes, because IBM
+    guarantees no PUB order and adjacent shots of different PUBs carry the
+    cross-shot carryover, which the in-circuit readers bound. The pooled
+    and contrast endpoints then tighten, and the five single-member T1
+    points bind at 5549 shots (width 32) and 5389 (width 24). Clopper-Pearson
+    does not admit 4096 either: at the width-32 T1 point nearest P1 = 0.5
+    its half-width is 0.0307 there. The
     departure test's systematic is shared across qubits, so the minimum
     detectable N = 16 departure barely moves with shots: -0.0516, -0.0512,
     -0.0510, -0.0509 and -0.0508 at 1024, 2048, 4096, 8192 and 16384 shots

@@ -252,8 +252,8 @@ over the admitted grid, so the null covers the qubits the case selects.
   layout's range widened by the case's factor F or a readout error above its widened maximum, or when the live
   layout's median of a quantity lies beyond a factor F of the pool's (both ways for T1, T2 and sx error, whose
   reported value scales the gate-model systematic; upward for readout). The domain is the pool, not each qubit's own
-  earlier value: across one Kingston recalibration (2026-10-29, 31 min apart) T1, T2 and readout held while per-qubit
-  sx error moved by factors 0.46 to 2.7, which a per-qubit ratio at F = 1.5 refused on 11 of 32 qubits and the pool
+  earlier value: across one Kingston recalibration (2026-10-29, calibration stamps 40.5 min apart) that remeasured sx
+  alone, T1, T2 and readout held bit for bit while per-qubit sx error moved by factors 0.46 to 2.7, which a per-qubit ratio at F = 1.5 refused on 11 of 32 qubits and the pool
   rule passes. A joint (T1, T2, readout, sx) combination the pool never held stays uncovered. A refusal sends nothing.
 - Availability: the null rates hold whatever order the executor runs the PUBs in. The order sentinels read incidental
   phase noise and are reported; a run whose sub-millisecond frequency noise falls below their reach loses no verdict.
@@ -289,7 +289,7 @@ The same arms at 5600 shots on the width-32 and width-24 rehearsals `results/liv
 `2026-10-29T013110.359249Z`, each on its own sparse-gap scale, give 0 false fires on every arm and meet every target
 ([successor-null-s5600.json](../evidence/measurement_sequence/successor-null-s5600.json)); the
 [successor case](../../results/live/MEASUREMENT_SEQUENCE_SUCCESSOR_CASE.md#what-the-null-establishes-and-the-two-readings-it-leaves)
-holds their table and the one invocation that writes them. The width-24 plateau-retained arm issues in 1.4 % of
+holds their table and the two commands that wrote them. The width-24 plateau-retained arm issues in 1.4 % of
 replicates and runs at a cap of 30,000.
 
 ## What the run can detect

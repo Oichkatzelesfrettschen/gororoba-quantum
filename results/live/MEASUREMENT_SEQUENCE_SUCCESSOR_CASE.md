@@ -29,10 +29,11 @@ carryover with twelve in-circuit readers, and vetoes q inconsistency with the se
 
 One dynamic job of 109 PUBs on ibm_kingston, 32 layout qubits, 5600 shots per PUB, repetition delay 20 us, no
 twirling and no dynamical decoupling (the job carries mid-circuit measurement and reset). Every layout qubit runs in
-parallel in each circuit, and the executor runs shot j of every PUB before shot j + 1
-([repetition-rate-execution.md](../../docs/notes/ibm_quantum/repetition-rate-execution.md)), so the shot after a
-circuit belongs to the next circuit; the in-circuit readers and `pattern_crosscheck` measure what one shot leaves for
-the next. The layout rule (`layout_rule_v2`, maximum packing at the lowest summed readout error) solves each width
+parallel in each circuit. IBM documents column-wise execution over circuits and shots but guarantees neither the
+order of a job's PUBs nor that the job runs as one batch
+([repetition-rate-execution.md](../../docs/notes/ibm_quantum/repetition-rate-execution.md)), so the shot that follows
+a circuit may belong to any circuit; the in-circuit readers and `pattern_crosscheck` measure what one shot leaves for
+the next under whatever order ran. The layout rule (`layout_rule_v2`, maximum packing at the lowest summed readout error) solves each width
 separately; the width-24 alternative below is not a subset of the width-32 layout (qubits 21, 38 and 149 appear only
 at width 24).
 
@@ -43,18 +44,25 @@ The width-24 rehearsal (101 PUBs, attempt-1 ceiling 52 s) is the alternative at 
 
 The planner admits a design only when every per-qubit planning endpoint reaches its declared confidence half-width
 simultaneously: 0.03 on P0 endpoints and 0.055 on contrasts (`MSQ_PRECISION`, from the pinching design), 17 endpoints
-per qubit, Bonferroni over 544 endpoints at width 32 (408 at width 24). The binding endpoint is a single-member T1
-point near P1 = 0.48 (`msq_p1_t1_d4`): at 4096 shots its exact Clopper-Pearson half-width is 0.0307 at width 32
-(0.0302 at width 24), so no valid bound admits 4096 at 0.03, and both 4096 rehearsals of 2026-10-29 (not
-retained) ended `design_infeasible`. Under the planner's Hoeffding
-union bound the eight-member Zeno contrast endpoint needed about 7990 shots, which set the earlier 8192 floor.
+per qubit, Bonferroni over 544 endpoints at width 32 (408 at width 24). The binding endpoints are the five single-member T1
+points (`msq_p1_t1_d0` to `msq_p1_t1_d4`), which the planner's Hoeffding bound treats alike. Clopper-Pearson does
+not admit 4096 either: at the width-32 point nearest P1 = 0.5 its half-width at 4096 shots is 0.0307. Both 4096
+rehearsals of 2026-10-29 (`2026-10-29T005449.339992Z` at width 32, `2026-10-29T010313.262887Z` at width 24) ended
+`design_infeasible`. Without the declaration below, the pooled Zeno contrast endpoint bound and set the earlier
+8192 floor.
 
 The relaxation family declares every PUB of its job one independent block (`qpu_planning.pub_independence`, the
-optimizer's existing independent-block radius). The assumption: the executor runs every circuit once per shot round,
-so shots of different PUBs alternate exactly as shots of one PUB do, and the per-PUB Hoeffding radius already assumes
-independent shots; the in-circuit readers measure the adjacent-shot dependence. Under it the pooled and contrast
-endpoints tighten and the single-member T1 points bind at 5549 shots (width 32) and 5389 (width 24); a test runs the
-optimizer at 5548 (refused) and 5549 (admitted). The run uses 5600: the selected candidate's normalized precision
+optimizer's existing independent-block radius): shots of different PUBs are independent samples. That is an
+assumption beyond the within-PUB independence every Hoeffding radius already makes. IBM guarantees no PUB order, and
+under column-wise execution shot j of one PUB runs next to shot j of another, so the cross-PUB dependence is the
+carryover channel itself. The recorded justification string (`MSQR_SAMPLING_ASSUMPTION`, which reasons from an
+alternating order) overstates this; it stays unedited in this run because `qpu_planning.py` is in the experiment
+digest, and a reworded string would need a new rehearsal and null. The carryover the in-circuit readers measured
+on the retained run has a median of 2.0e-4
+([envelope-run-raw-diagnostics.json](../../docs/evidence/measurement_sequence/envelope-run-raw-diagnostics.json),
+`carryover.median_difference`), against the 0.03 half-width, and the binding T1 points are single-member endpoints
+the declaration does not touch. Under it the pooled and contrast endpoints tighten and the single-member T1 points
+bind at 5549 shots (width 32) and 5389 (width 24); a test runs the optimizer at 5548 (refused) and 5549 (admitted). The run uses 5600: the selected candidate's normalized precision
 radius is 0.995, every T1 point's half-width 0.0299, the Zeno contrast 0.0211.
 
 ## What the run can detect
@@ -96,9 +104,11 @@ records) and `"$PYTHON" scripts/msq_successor_null.py results/live/2026-10-29T01
 | gamma | 399 of 400 informative (99.8 %); bound 0.0075 | 398 of 400 (99.5 %); 0.0075 |
 
 The settle-sparse arm passes when the family upper bound on the veto's power stays at or above 0.9. At 8 qubits on
-the width-32 calibrations the point estimate is 0.882 and the bound 0.909, so the veto's power on a two-qubit
-defect at the detectable gap may sit slightly below 0.9 there; over every replicate it is 0.895. A tail below that
-gap stays the veto's stated blind spot.
+the width-32 calibrations the point estimate is 0.882 and the bound 0.909, so the target passes on its
+preregistered 300-replicate window. Over every replicate the 8-qubit power is 0.895 at width 32 (family upper bound
+0.9005) and 0.890 at width 24 (family upper bound 0.895), so the full sample does not support 0.9 at 8 qubits on the
+width-24 calibrations: the veto's power on a two-qubit defect at the detectable gap sits near 0.89 there. A tail
+below that gap stays the veto's stated blind spot.
 
 The two devices this run may meet, at width 32:
 
@@ -121,8 +131,9 @@ not; neither can fire a false departure at more than 0.01.
   cross-shot carryover under the submitted order and can only refute these.
 - One-sign carryover: the vertex allocation bounds every allocation whose carryover keeps one sign across predecessor
   classes; a sign that differs between classes can reach 1.6 to 1.8 times the bound.
-- PUB independence (above): the planner's precision guarantee holds for independent shots across PUBs; the qubits of
-  one fused PUB may depend within a shot.
+- PUB independence (above): the planner's precision guarantee holds for independent shots across PUBs, an assumption
+  beyond within-PUB independence because the PUB order is unguaranteed and adjacent shots carry the carryover the
+  readers bound; the qubits of one fused PUB may depend within a shot.
 - Coverage: the binding run executes inside the calibration domain the null sampled (below).
 
 ## Coverage of the null
@@ -138,14 +149,18 @@ Measured on Kingston record pairs at F = 1.5, the later record as the rehearsal:
 
 | Stand-in run | Rehearsal | Apart | Layout overlap | Per-qubit ratio rule | Pool rule (calibration) |
 |---|---|---|---|---|---|
-| 2026-10-29T005449.339992Z | 2026-10-29T012554.415581Z | 31 min, width 32 | 32/32 | 11 sx refusals | passes |
-| 2026-10-29T010313.262887Z | 2026-10-29T013110.359249Z | 28 min, width 24 | 24/24 | 9 sx refusals | passes |
-| 2026-10-28T224031.317960Z | 2026-10-29T013110.359249Z | 2.8 h, width 24 | 11/24 | 21 refusals | q122 sx error 9.9e-4 above the widened maximum 8.2e-4 |
-| 2026-10-28T163139.827337Z | 2026-10-29T013110.359249Z | 8.9 h, width 24 | 8/24 | 20 refusals | q122 sx error, as above |
+| 2026-10-29T005449.339992Z | 2026-10-29T012554.415581Z | 40.5 min, width 32 | 32/32 | 11 sx refusals | passes |
+| 2026-10-29T010313.262887Z | 2026-10-29T013110.359249Z | 40.5 min, width 24 | 24/24 | 9 sx refusals | passes |
+| 2026-10-28T224031.317960Z | 2026-10-29T013110.359249Z | 3.4 h, width 24 | 11/24 | 21 refusals | q122 sx error 9.9e-4 above the widened maximum 8.2e-4 |
+| 2026-10-28T163139.827337Z | 2026-10-29T013110.359249Z | 8.7 h, width 24 | 8/24 | 20 refusals | q122 sx error, as above |
 
-Across the 31-minute recalibration T1, T2 and both readout errors held on every qubit while per-qubit sx error moved
-by factors 0.46 to 2.7. The stand-ins run at 4096 or 8192 shots, so the script also refuses each on shots; the table
-reports the calibration rule alone. A joint (T1, T2, readout, sx) combination the pool never held stays uncovered.
+The Apart column is the gap between the two records' calibration stamps. Across the first two pairs T1, T2 and both
+readout errors are bit-identical on every qubit (that calibration remeasured sx only) while per-qubit sx error moved
+by factors 0.46 to 2.7. Only the last two pairs span a remeasurement of T1, T2 and readout, and both refuse on q122, a
+width-24 qubit outside the width-32 layout; no width-32 pair across such a remeasurement exists. The command below
+waits for exactly such a remeasurement, so its first plan may refuse; a refusal sends nothing. The stand-ins run at 4096 or
+8192 shots under an earlier experiment digest, so the script also refuses each on shots and digest; the table reports
+the calibration rule alone. A joint (T1, T2, readout, sx) combination the pool never held stays uncovered.
 
 ## Records
 
@@ -158,8 +173,7 @@ backup account (instance `f59f9992321c`):
 | 2026-10-29T013110.359249Z | 24 | 101 | `e77b74e8c6d03f18...` | `35ad8cc0d93d2b83...` | 29.15 s | 52 s |
 
 Width-32 layout: 0, 5, 11, 15, 17, 20, 23, 29, 33, 42, 45, 50, 55, 57, 61, 64, 71, 74, 82, 89, 93, 98, 105, 109, 123,
-126, 134, 140, 144, 148, 151, 154. Each dry run took 317 s (width 32) and 223 s (width 24) wall at
-`--simulation-threads 12` on the 6-core build host.
+126, 134, 140, 144, 148, 151, 154.
 
 ## Cost and account
 
@@ -169,8 +183,8 @@ ceilings at width 32: 20 us 54 s, 30 us 63 s, 40 us 73 s, 50 us 82 s, 60 us 91 s
 Attempt 1 runs at 20 us, the Heron r2 floor; a later attempt steps up the ladder only on the delay error codes 1602
 or 8030, or a timeout (1305) billed at most 3 s, and the envelope replans at most 3 times.
 
-The backup account `backup-ibm-quantum-platform` read 160 s remaining at the dry run; the primary holds 68 s, below a
-54 s ceiling plus its 60 s reserve. The case proposes the approved cap C = 100 s (the backup's 160 s less its 60 s
+A usage read on 2026-10-29 near 04:40 UTC gave the backup account `backup-ibm-quantum-platform` 160 s remaining
+and the primary 68 s, below a 54 s ceiling plus its 60 s reserve, so the backup serves. The case proposes the approved cap C = 100 s (the backup's 160 s less its 60 s
 reserve), inside the owner's 5 to 240 s range; attempt 1 reserves only its own 54 s ceiling.
 
 ## Owner decisions
@@ -198,7 +212,8 @@ REHEARSAL=results/live/2026-10-29T012554.415581Z
 sh scripts/wait_calibration.sh --deadline 86400 -- ibm_kingston --baseline docs/local/kingston-baseline.json \
     --qubits 0,5,11,15,17,20,23,29,33,42,45,50,55,57,61,64,71,74,82,89,93,98,105,109,123,126,134,140,144,148,151,154 \
   && sh scripts/approved_run.sh \
-    --check "\"\$PYTHON\" ../scripts/msq_successor_coverage.py ../$REHEARSAL \"\$RUN\" --factor 1.5" \
+    --check "\"\$PYTHON\" ../scripts/msq_successor_coverage.py ../$REHEARSAL \"\$RUN\" --factor 1.5 \
+        --null ../docs/evidence/measurement_sequence/successor-null-s5600.json" \
     -- --family measurement-sequence-relaxation --layout-width 32 --rep-delay 2e-05 --shot-allocation uniform \
     --objective minimum_charge --local-compute auto --local-compute-method density_matrix_dynamic_statevector \
     --simulation-threads 12 --simulation-memory-mb 2048 --optimize --backends ibm_kingston --shots 5600 --seeds 8 \
