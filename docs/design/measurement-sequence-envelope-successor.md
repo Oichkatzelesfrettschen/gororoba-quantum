@@ -245,10 +245,16 @@ over the admitted grid, so the null covers the qubits the case selects.
   are reported), so the null, a member-count simulator without shot order, covers the whole verdict path.
 - The null's bound is the error guarantee of the whole pipeline; the per-component levels (admission, carryover, q_hat,
   settle) are tuning choices it calibrates.
-- Coverage: the null runs on the rehearsal dry run's calibrations. The binding run's mechanical check
-  (`scripts/approved_run.sh --check`) refuses the submit when a selected qubit's live T1, T2, readout error or sx error
-  differs from the rehearsal snapshot by more than a factor the case states, so the binding run executes inside the
-  domain the null covered, and a refusal sends nothing.
+- Coverage: the null runs on the rehearsal dry run's calibrations, giving each slot of a replicate a calibration drawn
+  with replacement from the rehearsal layout's qubits, at the rehearsal's shot count. The binding run's mechanical
+  check (`scripts/msq_successor_coverage.py` under `scripts/approved_run.sh --check`) refuses the submit when the run's
+  shots differ from the rehearsal's, when a selected qubit's live T1, T2 or sx error lies outside the rehearsal
+  layout's range widened by the case's factor F or a readout error above its widened maximum, or when the live
+  layout's median of a quantity lies beyond a factor F of the pool's (both ways for T1, T2 and sx error, whose
+  reported value scales the gate-model systematic; upward for readout). The domain is the pool, not each qubit's own
+  earlier value: across one Kingston recalibration (2026-10-29, 31 min apart) T1, T2 and readout held while per-qubit
+  sx error moved by factors 0.46 to 2.7, which a per-qubit ratio at F = 1.5 refused on 11 of 32 qubits and the pool
+  rule passes. A joint (T1, T2, readout, sx) combination the pool never held stays uncovered. A refusal sends nothing.
 - Availability: the null rates hold whatever order the executor runs the PUBs in. The order sentinels read incidental
   phase noise and are reported; a run whose sub-millisecond frequency noise falls below their reach loses no verdict.
 
