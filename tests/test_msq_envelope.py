@@ -1241,9 +1241,17 @@ def test_refresh_rebinds_attempt_one_to_the_fresh_ladder() -> None:
 
 @pytest.mark.parametrize(
     ("bound", "remaining", "expected"),
-    [(None, 160.0, 100.0), (None, 140.0, 80.0), (None, 50.0, 100.0), (None, None, 100.0), (45.0, 160.0, 45.0)],
+    [
+        (None, 160.0, 100.0),
+        (None, 140.0, 80.0),
+        (None, 50.0, 100.0),
+        (None, None, 100.0),
+        (45.0, 160.0, 45.0),
+        (150.0, 160.0, 100.0),
+        (90.0, 140.0, 80.0),
+    ],
 )
-def test_candidate_ceiling_screens_without_a_flag(
+def test_candidate_ceiling_screens_v2_at_the_tightest_bound(
     bound: float | None, remaining: float | None, expected: float
 ) -> None:
     import qpu_planning
@@ -1251,6 +1259,17 @@ def test_candidate_ceiling_screens_without_a_flag(
     args = v2_args(max_execution_seconds=bound, max_total_execution_seconds=100.0)
     usage = {"usage_remaining_seconds": remaining}
     check(qpu_planning.candidate_ceiling(args, usage) == expected, f"{bound} {remaining}")
+
+
+def test_candidate_ceiling_keeps_the_flag_outside_v2() -> None:
+    import qpu_planning
+
+    usage = {"usage_remaining_seconds": 40.0}
+    for schema in (None, env.ENVELOPE_SCHEMA_V1):
+        args = v2_args(envelope_schema=schema, max_execution_seconds=150, max_total_execution_seconds=100.0)
+        check(qpu_planning.candidate_ceiling(args, usage) == 150, f"{schema} keeps the flag")
+    with pytest.raises(ValueError):
+        qpu_planning.candidate_ceiling(v2_args(envelope_schema=None), usage)
 
 
 def test_dry_run_applies_the_attempt_one_send_admission() -> None:

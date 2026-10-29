@@ -2049,16 +2049,19 @@ def check_compiled_ideals(runtime: Any, choices: list[Any]) -> None:
 def candidate_ceiling(args: Any, usage: dict[str, Any]) -> float:
     """The per-job execution ceiling the optimizer screens each candidate job against.
 
-    A family that takes --max-execution-seconds screens against it. A v2 envelope derives its ceiling from the selected
-    plan's charge afterwards (live_run.apply_envelope_ceiling), so its screen is the tightest bound every admissible
-    attempt meets: the approved cap, the optional ceiling bound and the remaining quota above the reserve. A v2 ceiling
-    is CEILING_FACTOR times the charge or more, so the screen rejects no candidate the envelope admits; a quota at or
-    below the reserve leaves the cap, and the optimizer's reserve check rejects the plan with its reason.
+    Every family but a v2 envelope screens against --max-execution-seconds. A v2 envelope derives its ceiling from the
+    selected plan's charge afterwards (live_run.apply_envelope_ceiling), so its screen is the tightest bound every
+    admissible attempt meets: the approved cap, the optional ceiling bound and the remaining quota above the reserve. A
+    v2 ceiling is CEILING_FACTOR times the charge or more, so the screen rejects no candidate the envelope admits; a
+    quota at or below the reserve leaves the other bounds, and the optimizer's reserve check rejects the plan with its
+    reason.
     """
     ceiling = getattr(args, "max_execution_seconds", None)
-    if ceiling is not None:
+    if getattr(args, "envelope_schema", None) != msq_envelope.ENVELOPE_SCHEMA:
+        if ceiling is None:
+            raise ValueError("--max-execution-seconds is required outside a v2 envelope")
         return ceiling
-    bounds = [float(args.max_total_execution_seconds)]
+    bounds = [float(args.max_total_execution_seconds)] + ([float(ceiling)] if ceiling is not None else [])
     remaining = usage.get("usage_remaining_seconds")
     if remaining is not None and float(remaining) - float(args.reserve_seconds) > 0:
         bounds.append(float(remaining) - float(args.reserve_seconds))
