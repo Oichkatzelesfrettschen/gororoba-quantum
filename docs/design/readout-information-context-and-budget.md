@@ -430,8 +430,8 @@ A target radius alone supplies neither power nor a fixed stopping rule.
 
 ### Submit-free preparation and evidence binding
 
-The [Fez alternative](readout-actor-fez-delay-qualification.json) is an
-unapproved descriptive candidate. A 29 October 2026 live Target compilation
+The [Fez alternative](readout-actor-fez-delay-qualification.json) was an
+unapproved descriptive candidate at the 29 October 2026 admission review. A live Target compilation
 finds matched measurement starts across its 24 conditions and flags none of
 reporters 0 and 1, actor 2, or exploratory qubit 154. The same review flags
 Fez qubit 155 for low T2 and Marrakesh reporter 1 for 0.157 readout error;
@@ -439,13 +439,13 @@ the original 155 projection therefore changes to 154 on Fez. All 156
 qubits remain measured. These calibration observations and queue depths are
 time-dependent, and a fresh Target and admission check decide any later run.
 The local timing check does not establish physical initialization or
-carryover. The three approved Kingston jobs remain a separate outstanding
-liability: a Fez submission requires an independently reviewed case, fresh
-quota evidence, and a mechanical budget bound covering both programs' unsettled
-ceilings and the reserve. The existing per-case admission alone does not
-establish that combined bound.
+carryover. The Fez pilot subsequently ran; its [descriptive findings](../evidence/ibm-fez-actor-pilot/findings.md)
+and [backup-instance audit](../../results/live/qpu-job-retention-audit.f59f9992321c.json)
+record the collected shots and the three unexecuted Kingston cancellations.
+The earlier combined-budget admission addressed their then-unsettled ceilings;
+future acquisitions require fresh quota and admission evidence.
 
-The operational JSON is an unapproved review candidate. The following command
+The operational JSON remains a descriptive case definition. The following command
 builds a fresh plan and QPY archive, reads current backend and quota information,
 and submits zero jobs:
 
