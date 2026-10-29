@@ -63,8 +63,8 @@ With one baseline and one repeat, the record shows two endpoints and no path bet
 
 **Observed.**
 - Matched digital meshes produce output distributions that differ between jobs 33 hours apart.
-- The change concentrates in a few-percent excess-leakage state, which appears in a different
-  subset of settings in each job.
+- The change concentrates in excess leakage of a few percent, which appears in a different subset
+  of settings in each job.
 - Earlier jobs on the same meshes, hours apart within one day, show changes of the same size:
   - identity input 5 moved from 0.14 % to 6.35 % between the singleton and reverse contexts;
   - matched identity-input-0 anchors differed from their singleton reference by total variation
