@@ -1,8 +1,9 @@
 name: idle-falsifier
 
-# One matrix job per audited run of scripts/local_idle_falsifier.py, each writing that run's part (--parts) under
-# the gates' numeric environment and uploading it with the runner's CPU and timing; docs/runbooks/idle-falsifier.md
-# assembles the parts into docs/evidence/local_idle_padding/result.json on the build host. A push to a
+# One matrix job per audited run of scripts/local_idle_falsifier.py, each writing that run's part (--parts) on the
+# runner's native numeric path, which the part records, and uploading it with the runner's CPU and timing;
+# docs/runbooks/idle-falsifier.md assembles the parts into docs/evidence/local_idle_padding/result.json on the
+# build host. A push to a
 # compute/idle-falsifier/ branch runs the workflow file of the pushed commit, so the sweep needs no merge to main.
 # The repository is public, so the logs and artifacts are public too; the sweep reads only files the ref holds.
 on:
@@ -22,10 +23,9 @@ permissions:
 
 env:
   GLIBC_TUNABLES: glibc.rtld.optional_static_tls=4096
-  # ci.yml's numeric environment, under which core-local-idle-falsifier reruns the retained summaries.
+  # The runner's own dispatch and OpenBLAS kernel run uncapped; one BLAS thread keeps a product's reduction order
+  # independent of the core count, so an Intel SDE replay of the recorded CPU reproduces it (docs/PYTHON.md).
   OPENBLAS_NUM_THREADS: "1"
-  OPENBLAS_CORETYPE: Haswell
-  NPY_DISABLE_CPU_FEATURES: X86_V4 AVX512_ICL AVX512_SPR
 
 jobs:
   plan:

@@ -27,6 +27,8 @@ def test_matching_part_is_reused(tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     identity = falsifier.part_identity()
     first = falsifier.evaluate_with_parts(RUN, {}, tmp_path, identity)
     second = falsifier.evaluate_with_parts(RUN, {}, tmp_path, identity)
+    if first[1].get("cpu") is None or "numpy_dispatch" not in first[1]:
+        raise AssertionError(f"part platform {first[1]}")
     if first != second:
         raise AssertionError("the reused part differs from the fresh summary")
     if calls != [RUN]:

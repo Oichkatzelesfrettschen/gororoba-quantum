@@ -26,8 +26,10 @@ exactly.
 
 ``--parts DIR`` writes each run's full summary to DIR as soon as the run finishes and reuses a part whose
 package versions and source digests (this script and the repository modules it evaluates with) match the
-current ones, so a sweep that dies part way resumes at the first unfinished run. ``--parts-only`` assembles the
-result from parts written elsewhere (the idle-falsifier workflow) and fails on a missing or mismatched part.
+current ones, so a sweep that dies part way resumes at the first unfinished run. Each part and the result's
+``platforms`` record the numeric path that computed the run (CPU model, numpy dispatch, OpenBLAS core, caps).
+``--parts-only`` assembles the result from parts written elsewhere (the idle-falsifier workflow) and fails on a
+missing or mismatched part.
 """
 
 from __future__ import annotations
@@ -37,6 +39,7 @@ import hashlib
 import io
 import json
 import math
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -225,6 +228,30 @@ def versions() -> dict[str, str]:
     return {"qiskit": qiskit.__version__, "qiskit_aer": qiskit_aer.__version__, "numpy": np.__version__}
 
 
+def platform() -> dict[str, Any]:
+    """The numeric path this process takes: CPU model, numpy's enabled dispatch targets, each OpenBLAS core, caps."""
+    import threadpoolctl
+    from numpy._core._multiarray_umath import __cpu_dispatch__, __cpu_features__
+
+    try:
+        info = Path("/proc/cpuinfo").read_text(encoding="utf-8").splitlines()
+    except OSError:
+        info = []
+    model = next((line.split(":", 1)[1].strip() for line in info if line.startswith("model name")), "unknown")
+    flags = next((line.split(":", 1)[1].split() for line in info if line.startswith("flags")), [])
+    return {
+        "cpu": model,
+        "avx512f": "avx512f" in flags,
+        "numpy_dispatch": [name for name in __cpu_dispatch__ if __cpu_features__.get(name)],
+        "openblas": sorted(
+            str(item.get("architecture"))
+            for item in threadpoolctl.threadpool_info()
+            if item.get("internal_api") == "openblas"
+        ),
+        "caps": {name: os.environ.get(name) for name in ("OPENBLAS_CORETYPE", "NPY_DISABLE_CPU_FEATURES")},
+    }
+
+
 def part_identity() -> dict[str, Any]:
     sources = {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in PART_SOURCES}
     return {"versions": versions(), "sources": sources}
@@ -232,21 +259,25 @@ def part_identity() -> dict[str, Any]:
 
 def evaluate_with_parts(
     name: str, index: dict[str, Any], parts: Path, identity: dict[str, Any], parts_only: bool = False
-) -> dict[str, Any]:
-    """The run's summary from a matching part in PARTS, or a fresh evaluation written there before returning."""
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """The run's summary and the platform that computed it, from a matching part in PARTS or a fresh evaluation
+    written there before returning."""
     part = parts / (Path(name).name + ".json")
     if part.exists():
         stored = json.loads(part.read_text(encoding="utf-8"))
         if stored.get("identity") == identity and stored.get("summary", {}).get("run") == name:
-            return stored["summary"]
+            return stored["summary"], stored["platform"]
     if parts_only:
         raise RuntimeError(f"{part}: no part matching the current versions and sources")
-    summary = evaluate(name, index)
+    summary, computed_on = evaluate(name, index), platform()
     parts.mkdir(parents=True, exist_ok=True)
     staging = part.with_suffix(".tmp")
-    staging.write_text(json.dumps({"identity": identity, "summary": summary}, sort_keys=True) + "\n", encoding="utf-8")
+    staging.write_text(
+        json.dumps({"identity": identity, "platform": computed_on, "summary": summary}, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
     staging.replace(part)
-    return summary
+    return summary, computed_on
 
 
 def main() -> int:
@@ -269,16 +300,24 @@ def main() -> int:
         parser.error("--parts-only needs --parts")
     identity = part_identity() if args.parts else None
     runs: list[dict[str, Any]] = []
+    platforms: dict[str, dict[str, Any]] = {}
     for name in names:
         if args.parts and identity is not None:
-            summary = evaluate_with_parts(name, index, args.parts, identity, args.parts_only)
+            summary, platforms[name] = evaluate_with_parts(name, index, args.parts, identity, args.parts_only)
         else:
             summary = evaluate(name, index, args.plan)
+            platforms[name] = platform()
         runs.append(summary)
         print(json.dumps({k: v for k, v in summary.items() if k != "per_replica"}), flush=True)
     if args.plan:
         return 0
-    result = {"schema": SCHEMA, "versions": versions(), "runs": runs, "decision": decision(runs)}
+    result = {
+        "schema": SCHEMA,
+        "versions": versions(),
+        "platforms": platforms,
+        "runs": runs,
+        "decision": decision(runs),
+    }
     print(json.dumps(result["decision"]))
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)

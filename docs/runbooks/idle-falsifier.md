@@ -7,14 +7,25 @@ that the build host assembles into `result.json`.
 
 ## Numeric environment
 
-`ci/run_gates.py` reruns retained summaries under `OPENBLAS_CORETYPE=Haswell` and
-`NPY_DISABLE_CPU_FEATURES="X86_V4 AVX512_ICL AVX512_SPR"`, so every route that writes a part sets the same two
-variables and `OPENBLAS_NUM_THREADS=1`, as `ci.yml` does.
+A run computes on its platform's native path: numpy's full dispatch and OpenBLAS's kernel for that CPU, AVX-512
+included, with no `OPENBLAS_CORETYPE` or `NPY_DISABLE_CPU_FEATURES` cap. Each part and the result's `platforms` map
+record that path (CPU model, AVX-512 flag, numpy dispatch targets, OpenBLAS cores, any cap set), and
+`OPENBLAS_NUM_THREADS=1` keeps a product's reduction order independent of the core count. A run computed on an Intel
+AVX-512 runner replays on the AVX2 build host under Intel SDE emulating that chip
+([docs/PYTHON.md](../PYTHON.md#emulating-another-cpu-with-intel-sde)):
+
+```sh
+/opt/intel-sde/sde64 -icx -- "$PYTHON" -B scripts/local_idle_falsifier.py \
+  --check docs/evidence/local_idle_padding/result.json --runs RUN
+```
+
+SDE emulates Intel chips only. A run computed on an AMD Zen 4 or Zen 5 runner replays on such a CPU, since
+docs/PYTHON.md records a rounding path on those chips that no emulated Intel chip reproduces.
 
 ## One host, resumable
 
 ```sh
-export OPENBLAS_NUM_THREADS=1 OPENBLAS_CORETYPE=Haswell NPY_DISABLE_CPU_FEATURES="X86_V4 AVX512_ICL AVX512_SPR"
+export OPENBLAS_NUM_THREADS=1
 GOROROBA_WORKERS=2 systemd-run --user --scope -q --unit=idle-falsifier -p MemoryMax=14G -p MemorySwapMax=2G \
   "$PYTHON" -B scripts/local_idle_falsifier.py --runs all --parts PARTS --out OUT
 ```
