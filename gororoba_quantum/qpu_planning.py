@@ -1540,8 +1540,12 @@ def measurement_sequence_candidates(
                         "name": MSQD_FAMILY,
                         "qubits": qubits,
                         "layout_source": "declared",
-                        "main_qubits": [q for q in qubits if q in measurement_sequence_scatter.MSQD_MAIN_QUBITS],
-                        "extra_qubits": [q for q in qubits if q not in measurement_sequence_scatter.MSQD_MAIN_QUBITS],
+                        "main_qubits": [
+                            q for q in qubits if q in measurement_sequence_scatter.diagnostic_main(snapshot.name)
+                        ],
+                        "extra_qubits": [
+                            q for q in qubits if q not in measurement_sequence_scatter.diagnostic_main(snapshot.name)
+                        ],
                         "arms": dict(MSQD_ARM_STEPS),
                         "total_rotation_rad": MSQ_THETA,
                         "steps": [16],
