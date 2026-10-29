@@ -48,7 +48,7 @@ Pooling decomposes into four levels, and only the first three work across these 
    prime, runs on separate machines; the results combine by comparison or by Chinese remaindering.
 3. **Block-level linear algebra.** Degree pieces of a fiber cone, or row blocks of a Macaulay matrix, are independent
    rank problems; each goes to its own GPU (the T4s, the 4070 Ti) through the exact INT8 product
-   (the GPU exact modular linear algebra design on branch `tools/gpu-modular-linalg`).
+   ([gpu-exact-modular-linear-algebra.md](../design/gpu-exact-modular-linear-algebra.md)).
 4. **One address space across machines.** It does not work here. An F4 or Buchberger run touches its matrix and pair
    set at random; network-backed memory (swap over NBD or iSCSI, distributed shared memory) serves pages at about
    0.1 to 1 GB/s against roughly 50 GB/s of local DRAM, a 50- to 500-fold slowdown, and Kaggle sessions accept no
