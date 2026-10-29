@@ -319,6 +319,50 @@
             }
           ],
           "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Revalidated full-PUB integration after historical source separation and partial-PUB recovery: 96 focused tests pass; historical Fez adjudication reproduces 24 original projections; a fresh submit-free Fez compilation binds current source, QPY and 24 prepared conditions. The plan remains descriptive and does not authorize another acquisition.",
+          "observed_at": "2026-10-29T19:48:47.036283+00:00",
+          "revision": "b96de4dcc303d14bb14109643efe67d93e09cd16",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "2c37d60c858b65ca83b42a7dbe11a5a23ba234bfb483bcb9388b1f647c21b532"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "16d98b9298732ad91de92db5368f65165fd01a647f12c1a1904b2f5c2fd219fc"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "1a336befe0779faf8967784707b98bd99d3a44079558837015ccb37a93ae03a1"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "7574be4a9fb34c68b50ec556813ab15ab8687f59b544c1d54d429a24e0e3b6d2"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "fdbcfd6f23abed9a5d3ef8a8788e3db352eefca0833bce3773e7397bfbbdaf88"
+            },
+            {
+              "ref": "results/live/2026-10-29T194752.938875Z/record.json",
+              "sha256": "b294c2e95928102afd4dec28e0eb494562008fac0ca9670c291718b79e559002"
+            },
+            {
+              "ref": "results/live/2026-10-29T194752.938875Z/isa.qpy",
+              "sha256": "4b3534a56ed96c3013958311aff490a3ac4b8a0b4ded093ace0494dd238fa581"
+            },
+            {
+              "ref": "results/live/2026-10-29T194752.938875Z/UNAPPROVED_CASE.md",
+              "sha256": "198de6bbeeb1704ade37568ccc4aa562c55e9999a52afff629b87825979aea94"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
         }
       ]
     },
