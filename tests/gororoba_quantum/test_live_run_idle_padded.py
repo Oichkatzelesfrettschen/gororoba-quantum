@@ -35,7 +35,7 @@ def _choice(replica: QuantumCircuit) -> live_run.Choice:
     return live_run.Choice(
         group=SimpleNamespace(name="group"),  # type: ignore[arg-type]
         snap=snap,  # type: ignore[arg-type]
-        seed=0,
+        seed=live_run.SEED_TRANSPILER,
         layout=[0, 1, 2],
         isas=[replica],
         member_scores=[0.0],

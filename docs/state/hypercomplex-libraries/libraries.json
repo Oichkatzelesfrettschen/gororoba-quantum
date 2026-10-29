@@ -2585,6 +2585,7 @@
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
     "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_character.py",
     "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_analysis.py",
     "scripts/ascella_coherence_repeat.py",
@@ -2844,6 +2845,7 @@
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
     "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_character.py",
     "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_analysis.py",
     "scripts/ascella_coherence_repeat.py",
@@ -3758,6 +3760,7 @@
    "hardware_execution": true,
    "imported_by": [
     "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_character.py",
     "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_request.py",
     "scripts/ascella_experiment_analysis.py",
@@ -3777,6 +3780,7 @@
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_character.py",
     "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_request.py",
     "scripts/ascella_experiment_analysis.py",
@@ -7012,11 +7016,13 @@
    "hardware_execution": false,
    "imported_by": [
     "ci/runner_specs.py",
+    "scripts/local_idle_falsifier.py",
     "scripts/numerics_fingerprint.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "ci/runner_specs.py",
+    "scripts/local_idle_falsifier.py",
     "scripts/numerics_fingerprint.py"
    ]
   },
@@ -8773,6 +8779,7 @@
    "hashlib",
    "heapq",
    "ibm_account",
+   "idle_padding",
    "importlib",
    "io",
    "json",
@@ -10043,6 +10050,22 @@
    "urllib"
   ],
   "scripts/ascella_associator_case.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "hypercomplex_cases",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_platform",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_associator_character.py": [
    "__future__",
    "argparse",
    "cd_core",
@@ -12391,11 +12414,14 @@
    "calibration_snapshot",
    "dynamic_density",
    "ghost_run",
+   "gzip",
+   "hashlib",
    "idle_padding",
    "io",
    "json",
    "math",
    "numpy",
+   "os",
    "parallel",
    "pathlib",
    "qiskit",
@@ -12403,6 +12429,7 @@
    "scheduled_idle_replay",
    "snapshot_laws",
    "sys",
+   "threadpoolctl",
    "typing"
   ],
   "scripts/local_member_cz_conformance.py": [
@@ -15203,6 +15230,27 @@
    "sys",
    "typing",
    "wheel_algebra"
+  ],
+  "scripts/zbmath.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "dataclasses",
+   "datetime",
+   "gzip",
+   "hashlib",
+   "http",
+   "json",
+   "pathlib",
+   "re",
+   "shutil",
+   "sys",
+   "tempfile",
+   "time",
+   "typing",
+   "urllib",
+   "uuid",
+   "xml"
   ]
  },
  "import_root_distributions": {

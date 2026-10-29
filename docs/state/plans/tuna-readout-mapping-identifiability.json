@@ -550,6 +550,22 @@
             }
           ],
           "scope_sha256": "a76a5d74cc7aceaaabcfaf51798ff48042607671e144a6215ab25ec0b4439928"
+        },
+        {
+          "result": "The full non-audit lane on this tree ran 2974 tests under host load average 11 to 15; after the seed-literal and inventory fixes the only failures are two seed-provenance tests over the 10 s budget (12.2 and 13.1 s), which main's checkout also exceeds on this host at the same load (16.3 s each) while main's hosted tests check passes, so the budget failures follow host load.",
+          "observed_at": "2026-10-29T20:01:08+00:00",
+          "revision": "55a2a13cfaea9c915b978e3c07f1014d881b22d6",
+          "evidence": [
+            {
+              "ref": "tests/ci/test_seed_provenance.py",
+              "sha256": "b8b23fd546c67bfbc0d395bc32963e6995e83fa22a88cfd2f6c033b2353ccc91"
+            },
+            {
+              "ref": "ci/pr_checks.sh",
+              "sha256": "fb4edcbc269d0827707e61572e85770d9174c230d8bf4dcc655f191154616dff"
+            }
+          ],
+          "scope_sha256": "a76a5d74cc7aceaaabcfaf51798ff48042607671e144a6215ab25ec0b4439928"
         }
       ]
     },

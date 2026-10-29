@@ -725,6 +725,22 @@
             }
           ],
           "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "PR #516 remains merged as bd6fb9e; revalidated over live_run.py as the successor fold leaves it, which records an ALAP idle-padded prediction beside the unpadded law outside the approval. The default live_run.py dry run of this tree passed (audit record results/live/2026-10-29T195407.901803Z) and the non-audit lane's live_run tests pass.",
+          "observed_at": "2026-10-29T20:01:08+00:00",
+          "revision": "55a2a13cfaea9c915b978e3c07f1014d881b22d6",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "dd748b4cd08625aeb9a149d1dd6b2eade12d31aa5f5618996d1e6db768570661"
+            },
+            {
+              "ref": "results/live/2026-10-29T195407.901803Z/record.json",
+              "sha256": "f46f8b03150a1fb3cb40f63617e1102eb5b2491096ebdfe48a816ebb3c5f3921"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
         }
       ]
     },
