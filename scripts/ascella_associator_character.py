@@ -256,7 +256,7 @@ def build_documents(
 
 def _verify_flint_pair(pair: tuple[int, int]) -> bool:
     """Exact rational character projection verification for an octonion basis pair using python-flint."""
-    import flint  # type: ignore[import-not-found]
+    import flint
 
     a, b = pair
     w8 = flint.fmpz_mat(8, 8, [(-1) ** (bin(i & j).count("1")) for i in range(8) for j in range(8)])
