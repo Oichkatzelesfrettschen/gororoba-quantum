@@ -439,7 +439,7 @@
  "compiler": {
   "policy": "trivial-layout-basic-routing-optimization-zero",
   "seed_source": "deterministic-no-randomized-passes",
-  "qiskit": "2.6.0",
+  "qiskit": "2.6.1",
   "catalogue_sha256": "1b978cf3518149cd72886865bffb971ab0c359ae5a7a993cb5f51b230159cd78",
   "angle_step_radians": 0.08726646259971647
  },
