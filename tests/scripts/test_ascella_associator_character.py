@@ -201,7 +201,9 @@ def test_wilson_confidence_interval_at_boundary(tmp_path):
         ci = record["ci95"]
         if ci[0] < -1.0 or ci[1] > 1.0:
             raise AssertionError(f"CI {ci} exceeds valid observable bounds [-1.0, 1.0]")
-        if ci[1] < ci[0]:
-            raise AssertionError(f"CI inverted: {ci}")
-        if record["std_error"] <= 0.0:
-            raise AssertionError(f"std_error {record['std_error']} must be positive")
+        if ci[1] <= ci[0]:
+            raise AssertionError(f"CI width must be positive: {ci}")
+        if record["wilson_se"] <= 0.0:
+            raise AssertionError(f"wilson_se {record['wilson_se']} must be positive")
+        if record["std_error"] != 0.0:
+            raise AssertionError(f"plug-in std_error at boundary must be 0.0, got {record['std_error']}")

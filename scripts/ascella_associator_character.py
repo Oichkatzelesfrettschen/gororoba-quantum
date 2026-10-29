@@ -447,7 +447,7 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         denom = max(1, c_omega + c_0)
         d_obs = (c_omega - c_0) / denom
 
-        # Exact Wilson score interval for binomial proportion p = c_omega / denom transformed to D = 2p - 1
+        # Nominal 95% Wilson score interval for binomial proportion p = c_omega / denom transformed to D = 2p - 1
         z = 1.96
         p_hat = c_omega / denom
         denom_wilson = 1.0 + (z**2) / denom
@@ -458,7 +458,8 @@ def analyze(run_dir: Path) -> dict[str, Any]:
 
         d_lower = max(-1.0, 2.0 * p_lower - 1.0)
         d_upper = min(1.0, 2.0 * p_upper - 1.0)
-        se = (d_upper - d_lower) / (2.0 * z)
+        se_plugin = 2.0 * math.sqrt(max(0.0, p_hat * (1.0 - p_hat)) / denom)
+        wilson_se = (d_upper - d_lower) / (2.0 * z)
 
         record = {
             "name": name,
@@ -468,7 +469,8 @@ def analyze(run_dir: Path) -> dict[str, Any]:
             "c_omega": c_omega,
             "c_0": c_0,
             "d_observable": round(d_obs, 6),
-            "std_error": round(se, 6),
+            "std_error": round(se_plugin, 6),
+            "wilson_se": round(wilson_se, 6),
             "ci95": [round(d_lower, 6), round(d_upper, 6)],
         }
         per_setting_reports.append(record)
