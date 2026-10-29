@@ -12,7 +12,7 @@
     "status": "verified",
     "note": "Owner approved the width-32 run and ratified the envelope doctrine; attempt 1 submitted."
   },
-  "next_action": "Land the successor branch with its retained v4.0 null (docs/evidence/measurement_sequence/successor-null.json), then write the successor case for approval from that null on the width-24 rehearsal record (results/live/2026-10-28T163139.827337Z), with the width decision (24 now, or 32 once its sparse detectable gap is calibrated).",
+  "next_action": "Owner decides on results/live/MEASUREMENT_SEQUENCE_SUCCESSOR_CASE.md (width 32, 5600 shots, 20-60 us ladder, cap 100 s on the backup account, F = 1.5 pool coverage); on approval run its approved_run.sh command at the next Kingston calibration. The case branch's merge waits on core-n21-dose-decisions-replay, which fails on AVX-512 runners on main as well.",
   "scope": "Heron r2 (ibm_kingston) pinching run under a calibration-adaptive envelope approval: layout rule at width tier 16/24/32, terminal resets, reset controls, Hadamard crosstalk patterns, 20 us repetition delay with a 50 us fallback attempt, preregistered screens and stochastic null.",
   "owner": "measurement-sequence-pinching branch",
   "steps": [
@@ -676,7 +676,29 @@
       "id": "successor-design",
       "action": "Design the successor case: size the reset/history screen from the endpoint sensitivity to carried-over excitation, fix or demote the settle prediction, report per-qubit results below 8 kept qubits; review by the adversarial skill, Codex gpt-daybreak-blue in tmux and the advisor.",
       "acceptance": "Design doc whose every screen is attainable and no verdict fires on known model error when replayed over the retained run (sizing, not confirmation).",
-      "state": "doing"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Design v4.0 merged on main in PR #629 (031fd5a) with its width-24 null; the one-pool null scheduler (#633) and envelope v2 (#635) followed; the 5600-shot null on the width-32 and width-24 rehearsals has 0 false fires and meets every target.",
+          "observed_at": "2026-10-29T04:49:30+00:00",
+          "revision": "91862b0ff8e5253d85ebd1d73e851fbd56004cde",
+          "evidence": [
+            {
+              "ref": "docs/design/measurement-sequence-envelope-successor.md",
+              "sha256": "4cb27506d9dbb45ce85a73f1c0a80bf1fe2cb10094ca9ee36c526166119298fa"
+            },
+            {
+              "ref": "docs/evidence/measurement_sequence/successor-null.json",
+              "sha256": "3c704f7db2fe4dd8a102c5f89dc6c5ce1e07195b974072cbdbfb1137370b3e77"
+            },
+            {
+              "ref": "docs/evidence/measurement_sequence/successor-null-s5600.json",
+              "sha256": "0537d6edd1b31870d2551abcafd2700d3ebbd9834a5e8c59a661057adfafd1fe"
+            }
+          ],
+          "scope_sha256": "2e651afc2a7552dafea3345c5cf3c4de636e61803f0f8cf39b2b19a903e3b1c5"
+        }
+      ]
     },
     {
       "id": "batched-null",
@@ -738,7 +760,8 @@
       "id": "successor-case",
       "action": "Dry run, written case and owner approval of the successor envelope run.",
       "acceptance": "Owner approval of the written case.",
-      "state": "todo"
+      "state": "doing",
+      "reason": "Case written at width 32 and 5600 shots against the 2026-10-29T012554.415581Z rehearsal; its 5600-shot null has 0 false fires and meets every target at widths 32 and 24; awaiting owner approval."
     }
   ]
 }
