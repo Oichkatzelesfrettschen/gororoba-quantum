@@ -326,6 +326,7 @@ differs from it only in the `cd_core.py` digest.
 | [learning-quantum-teleportation.md](notes/ibm_quantum/learning-quantum-teleportation.md) | IBM Quantum Learning teleportation lesson: outcome-to-correction table |
 | [qiskit-ecosystem.md](notes/qiskit-ecosystem.md) | Qiskit ecosystem audit |
 | [qiskit-ecosystem-install-plan.md](notes/qiskit-ecosystem-install-plan.md) | Qiskit ecosystem install plan |
+| [qiskit-packages/README.md](notes/qiskit-packages/README.md) | installed Qiskit-adjacent packages: install surfaces, per-package notes, interconnections, open items |
 
 ### Providers
 

@@ -1,0 +1,55 @@
+{
+  "schema": "work-plan-v1",
+  "id": "qiskit-package-graph",
+  "kind": "investigation",
+  "summary": "Installed Qiskit-adjacent packages: PKGBUILD installs, isolated stacks, per-package notes and their open compatibility items.",
+  "sources": [
+    "docs/notes/qiskit-packages/README.md"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "steps": [
+    {
+      "id": "catalog-call-runtime-051",
+      "state": "todo",
+      "action": "Run one QiskitFunctionsCatalog.list() under the relaxed qiskit-serverless pins and runtime 0.51.0, inside an approved case.",
+      "acceptance": "The call returns a function list with no import or serialization error; or a serverless release admitting runtime 0.51 replaces the relaxation."
+    },
+    {
+      "id": "interop-qiskit-261",
+      "state": "todo",
+      "action": "Rerun probe_packages.py perceval-interop converter on the system qiskit 2.6.1.",
+      "acceptance": "The H-CX circuit converts to a 4-mode processor on qiskit 2.6.1."
+    },
+    {
+      "id": "debugger-stack-retire",
+      "state": "todo",
+      "action": "Track qiskit-debugger upstream for Qiskit 2.x support.",
+      "acceptance": "An upstream release imports on qiskit 2.x, or the owner drops the package and qiskit-debugger-stack is removed."
+    },
+    {
+      "id": "qi-qiskit-ceiling",
+      "state": "todo",
+      "action": "Track pennylane-qiskit and qiskit-quantuminspire releases that admit qiskit above 2.3.0.",
+      "acceptance": "The QI stack lock resolves a qiskit above 2.3.0 with pennylane-quantuminspire included and its four tests pass."
+    },
+    {
+      "id": "pipeline-aer-018",
+      "state": "todo",
+      "action": "Track a quantum-pipeline release that lifts qiskit-aer<0.18.",
+      "acceptance": "quantum-pipeline-stack resolves Aer 0.18 and its check passes, or the package is dropped when qiskit-nature stops importing."
+    },
+    {
+      "id": "missing-package-block",
+      "state": "todo",
+      "action": "Obtain the package block the request named that did not reach the session, then install and document it.",
+      "acceptance": "Every named package has a PKGBUILD or stack entry, an installed version in probe_packages.py output, and a note in docs/notes/qiskit-packages/."
+    }
+  ],
+  "scope": "Qiskit-adjacent distributions installed from ~/Github/PKGBUILDs beyond requirements.txt, their isolated stacks and notes.",
+  "owner": "operator",
+  "next_action": "Obtain the missing package block from the owner; rerun the interop probe after qiskit 2.6.1 installs."
+}
