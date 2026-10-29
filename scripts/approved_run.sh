@@ -12,12 +12,15 @@
 # approval is spent.
 #
 # CHECK runs from gororoba_quantum/ with RUN set to the dry run's directory; a nonzero exit stops the run before
-# the submit. LIVE_RUN_ARGS are the case's live_run.py flags without --submit; GOROROBA_IBM_ACCOUNT selects the
+# the submit. The submit plans afresh and an envelope family admits calibration changes, so after a send CHECK runs
+# again on the submitted record, and a failure there (the calibration moved between the plan and the send) exits 5:
+# the job ran, and its record lies outside what CHECK admits. LIVE_RUN_ARGS are the case's live_run.py flags without --submit; GOROROBA_IBM_ACCOUNT selects the
 # account as for live_run.py.
 #
 # Usage: sh scripts/approved_run.sh [--attempts N] [--check CMD] [--log DIR] -- LIVE_RUN_ARGS...
 #        (from the repository root). Exit 0 submitted, 1 dry run or check failed, 2 usage, 3 every attempt
-#        refused, 4 approval consumed with a failed or incomplete submission.
+#        refused, 4 approval consumed with a failed or incomplete submission, 5 submitted while the submitted
+#        record fails CHECK.
 set -eu
 
 PYTHON=${PYTHON:-python3}
@@ -81,6 +84,11 @@ while [ "$attempt" -le "$attempts" ]; do
 			'import json, sys; sys.exit(json.load(open(sys.argv[1])).get("submission", {}).get("complete") is not True)' \
 			"$submitted/record.json" 2>/dev/null; then
 			echo "approved_run: submitted dry_run=$run sha256=$sha run=$submitted"
+			if [ -n "$check" ] && ! RUN=$submitted sh -c "$check" > "$log/check-submitted.log" 2>&1; then
+				tail -n 3 "$log/check-submitted.log"
+				echo "approved_run: the submitted record $submitted fails the check after the send"
+				exit 5
+			fi
 			exit 0
 		fi
 		tail -n 3 "$log/submit-$attempt.log"

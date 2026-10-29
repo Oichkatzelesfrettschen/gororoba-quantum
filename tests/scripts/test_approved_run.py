@@ -130,3 +130,13 @@ def test_an_envelope_attempt_marker_ends_the_run_after_one_submit(
     done, calls = _run(tmp_path, "--", "--groups", "g", complete=complete, marker="approval-consumed-attempt-1.json")
     _expect(done.returncode == returncode and len(calls) == 2, f"{done.returncode} {calls} {done.stdout}")
     _expect(sum("--submit" in call for call in calls) == 1, f"{calls}")
+
+
+def test_a_submitted_record_that_fails_the_check_exits_5(tmp_path: Path) -> None:
+    check_run = 'test -f "$RUN/record.json" && ! grep -q submission "$RUN/record.json"'
+    done, calls = _run(tmp_path, "--check", check_run, "--", "--groups", "g")
+    _expect(done.returncode == 5 and len(calls) == 2, f"{done.returncode} {calls} {done.stdout}")
+    _expect("fails the check after the send" in done.stdout, done.stdout)
+    (tmp_path / "pass").mkdir()
+    passing, _ = _run(tmp_path / "pass", "--check", 'test -f "$RUN/record.json"', "--", "--groups", "g")
+    _expect(passing.returncode == 0, passing.stdout + passing.stderr)
