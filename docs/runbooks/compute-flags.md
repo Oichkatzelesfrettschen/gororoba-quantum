@@ -64,7 +64,7 @@ Set `MALLOC_ARENA_MAX=2` in the environment of every multithreaded C program
 so glibc keeps two arenas instead of one per thread; this shrinks address-space
 growth and fragmentation at no measured cost to these workloads.
 
-## msolve 0.10.1
+## msolve
 
 Authority: `msolve -h` of the binary in use. The passagemath wheel 10.8.13
 ships msolve 0.10.1 linked to libgomp, FLINT and GMP; the build host's
@@ -99,6 +99,28 @@ expected speedup per step is unmeasured, and memory does not change.
 
 Accuracy: computations over a prime field with `-l 1` or `-l 2` are exact and
 deterministic.
+
+Version pin. The build host runs the distribution package and each Azure VM a
+native build of the same upstream release, so both sit on upstream's latest
+tag. Read the tag with
+`gh api repos/algebraic-solving/msolve/releases/latest -q .tag_name` and the
+host's version with `msolve -V`; when they differ, update the host package and
+rebuild on each VM:
+
+```sh
+sudo apt-get install -y build-essential autoconf automake libtool pkg-config libgmp-dev libmpfr-dev libflint-dev git
+git clone --depth 1 --branch "$TAG" https://github.com/algebraic-solving/msolve.git "msolve-src-$TAG"
+cd "msolve-src-$TAG" && ./autogen.sh
+CFLAGS="-O3 -march=native -mtune=native -fopenmp -funroll-loops" ./configure --prefix="$HOME/msolve-$TAG"
+nice -n 19 make -j2 && make install
+"$HOME/msolve-$TAG/bin/msolve" -V
+objdump -d "$HOME/msolve-$TAG/lib/libneogb.so" | grep -c zmm   # nonzero: AVX-512 kernels present
+```
+
+A launch line names the binary by its versioned prefix, never the wheel's
+`sage_wheels/bin/msolve`. The v0.11.0 native build on a Standard_FX4mds_v2
+carries 199 AVX-512 instructions in `libneogb`; the passagemath wheel carries
+none.
 
 ## Singular 4.4
 
@@ -142,7 +164,12 @@ kept, so the table records every combination tried and why it lost.
 | msolve 0.10.1 (passagemath 10.8.13) | Azure FX4mds_v2, beside one Singular job | A_5 E8bar->N+ Rees elimination | `-t 4 -e 1 -g 2`, `prlimit --as` 80 GiB | exit 139 in degree 7, resident 33.6 GB | | superseded: address-space cap |
 | same | same | same | `-t 3 -m 200000 -s 24 -l 1 -e 1 -g 2`, `prlimit --as` 28 GiB | exit 139 in degree 6, resident 28.0 GB | | superseded: `-m` leaves the monomial table unchanged |
 | same | same | same | `-t 3 -s 24 -u 2 -e 1 -g 2`, `prlimit --as` 28 GiB | exit 139 in degree 6, resident 18.1 GB; `-u 2` lowered the resident set by 10 GB at the same point | | superseded: address-space cap |
-| same | same | same | `-t 3 -s 24 -u 2 -e 1 -g 2`, cgroup `MemoryMax` 30 GiB, address space 1 TiB | running | death at resident 30 GiB means real memory need; passing degree 7 confirms the address-space diagnosis | candidate |
+| same | same | same | `-t 3 -s 24 -u 2 -e 1 -g 2`, cgroup `MemoryMax` 30 GiB, address space 1 TiB | passed every point where the address-space-capped runs died; memory-cgroup OOM kill entering degree 7 at 31.4 GB resident, 36.2 GB virtual | | superseded: the 30 GiB cap itself; confirms the address-space diagnosis |
+| msolve 0.11.0, native `-O3 -march=native` | same | same | `-t 2 -s 24 -u 2 -e 1 -g 2`, cgroup `MemoryMax` 38 GiB, `choom -n 1000`, `MALLOC_ARENA_MAX=2 OMP_PLACES=cores OMP_PROC_BIND=close` | memory-cgroup OOM kill entering degree 7 (first matrix 407116 x 432548), sampled peak 33.3 GB; reached degree 7 in 901 s against 841 s for the wheel at `-t 3`, both beside a Singular job | a run reaching degree 7 faster on the same thread count alone on the VM | superseded: degree 7 needs more than 38 GiB; the native build shows no measured speedup yet |
+| OpenBLAS 0.3.34 (`blas-openblas`), numpy 2.5.4 | build host, Ryzen 5 5600X3D | 3000 x 3000 float64: matmul, `scipy.linalg.lu_factor`, `numpy.linalg.eigh` | `OPENBLAS_NUM_THREADS=6` | matmul 0.234 s, LU 0.341 s, eigh 4.24 s | a thread count or library beating all three | current best |
+| same | same | same | `OPENBLAS_NUM_THREADS=1` | matmul 0.883 s, LU 0.358 s, eigh 3.17 s | | eigh is faster single-threaded at this size |
+| AOCL-BLAS 5.3.0 (BLIS), numpy 2.5.4 | same | same | `BLIS_NUM_THREADS=6` | matmul 0.215 s, LU 0.715 s, eigh 7.60 s; checksum equal to OpenBLAS to ten digits | | superseded: removed from the host; LAPACK slower when threaded |
+| same | same | same | `BLIS_NUM_THREADS=1` | matmul 0.856 s, LU 0.330 s, eigh 3.03 s | | superseded |
 
 A row records the tool version, the host, the workload, the full launch line
 with environment, wall time, peak resident set, the furthest stage reached,

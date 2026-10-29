@@ -21,24 +21,28 @@ measured recommendation cites its document.
 | Fact | Value | Verified by |
 |---|---|---|
 | CPU | AMD Ryzen 5 5600X3D, 6 cores, 12 threads | `lscpu` |
-| numpy 2.5.4 BLAS | `numpy.show_config()` reports `cblas`/`lapack` 3.12.0 (reference interface names); the loaded library is AOCL-BLAS 5.3.0 (BLIS, pthreads layer, architecture zen3) | `threadpoolctl.threadpool_info()` lists `libblis-pthreads.so.5.3.0`, `num_threads` 1, and `libgomp` with 12 threads |
+| System BLAS and LAPACK | `blas-openblas` 0.3.34 provides `blas`, `cblas`, `lapack` and `lapacke`; numpy, scipy, FLINT, Macaulay2, Sage and the Aer CUDA build link it | `pacman -Qo /usr/lib/libblas.so`; `threadpoolctl.threadpool_info()` lists `openblas` 0.3.34 |
 | numpy SIMD baseline | X86_V2, X86_V3 | `numpy.show_config()` |
 | scipy 1.18.1 BLAS | `blas`/`lapack` 3.12.0 through the same system provider | `scipy.show_config()` |
-| BLIS environment names | `BLIS_NUM_THREADS`, `BLIS_ARCH_TYPE`, `BLIS_JC_NT`, `BLIS_IC_NT`, `BLIS_JR_NT`, `BLIS_IR_NT`, `AOCL_ENABLE_INSTRUCTIONS` | `strings` on `libblis-pthreads.so.5.3.0` |
 | torch 2.14.1 | built against Intel MKL 2026.0, OpenMP 202111, CUDA runtime 13.4, CPU capability AVX2; `torch.get_num_threads()` returns 6 | `torch.__config__.show()` |
 | jax 0.9.0 | jaxlib is a self-built CPU wheel; `jax.default_backend()` returns `cpu` and logs that no CUDA-enabled jaxlib is installed | `import jax` |
 | qiskit-aer 0.17.2 | devices `CPU` and `GPU` (CUDA Thrust build, cuStateVec path) | `AerSimulator().available_devices()`; [custatevec.md](../notes/build_host/custatevec.md) |
 
-Three consequences follow. The default numpy BLAS call runs on one BLIS thread
-while libgomp advertises 12, so a numpy matrix product uses one core until
-`BLIS_NUM_THREADS` or `threadpoolctl` raises it. `OPENBLAS_CORETYPE` and
-`OPENBLAS_NUM_THREADS` configure OpenBLAS, which this build does not load; the
-repository sets `OPENBLAS_CORETYPE=Haswell` in `ci/run_gates.py` for the hosted
-runners, whose numpy does load OpenBLAS, and the variable has no effect on the
-host's BLIS path (inferred from the `threadpoolctl` listing; not run against a
-BLIS dgemm timing). A run that must reproduce a CI-written record on the build
-host sets `NPY_DISABLE_CPU_FEATURES` as `ci/run_gates.py` does, because numpy's
-dispatched loops round differently above x86-64-v3.
+OpenBLAS is the BLAS on every substrate the repository uses: the build host
+through `blas-openblas`, and Kaggle, Azure and the hosted CI runners through the
+OpenBLAS that numpy and scipy wheels bundle. `OPENBLAS_NUM_THREADS` and
+`OPENBLAS_CORETYPE` therefore mean the same thing everywhere. A run that must
+reproduce a CI-written record on the build host sets `OPENBLAS_CORETYPE=Haswell`
+and `NPY_DISABLE_CPU_FEATURES` as `ci/run_gates.py` does, because numpy's
+dispatched loops and OpenBLAS kernels round differently above x86-64-v3.
+
+The host carried AMD AOCL-BLAS 5.3 before; its single library-wide thread
+setting made LU and symmetric eigensolves slower at 6 threads than at 1 (rows
+below). Removing it broke two local builds that had linked `libblis-mt` and
+`libflame` directly through AOCL's `libblas.so` (the Aer CUDA package and the
+Macaulay2 AUR build); both were rebuilt against OpenBLAS. Before removing any
+library package, list `readelf -d` NEEDED entries across `/usr` and
+site-packages: pacman's "Required By" misses direct links.
 
 ## Process-wide variables
 
@@ -84,14 +88,14 @@ Uses: every module; `threadpoolctl` in `ci/runner_specs.py` and
 
 | Knob | Meaning | Verified by | Recommended | Falsifier | Status |
 |---|---|---|---|---|---|
-| `BLIS_NUM_THREADS` | BLAS threads on the BLIS build (see build facts) | `strings` on the library | 1 for per-item matrices; 6 for one large dgemm or SVD | dgemm time at 1, 6 and 12 threads for a 2048 x 2048 matrix | verified name, unmeasured |
+| `OPENBLAS_NUM_THREADS` | OpenBLAS threads, identical on the host, Kaggle, Azure and CI | `threadpoolctl` reports the value | 1 inside `parallel.py` workers; physical cores (6 on the host, 2 on a Standard_FX4mds_v2, 2 on Kaggle) for one large dense call | the BLAS rows of compute-flags.md Measured combinations | measured on the host |
 | `threadpoolctl.threadpool_limits(limits=, user_api=)` | runtime thread bound per API | `threadpoolctl` 3.7.0 module; used in `ci/runner_specs.py` | bound inside a function instead of mutating the environment | none | verified |
 | `NPY_DISABLE_CPU_FEATURES` | numpy dispatch mask; `ci/run_gates.py` sets it for CI-written records | `scripts/numerics_fingerprint.py`, `ci/run_gates.py` | set it exactly as `ci/run_gates.py` does when replaying a CI record | a replay bit mismatch without it | verified use |
 | `NPY_PROMOTION_STATE` | accepted only as `weak` in numpy 2.5 | `numpy/__init__.py` line 913 | leave unset | a numpy that accepts another value | verified |
 | `scipy.optimize.linprog(method=)` | `highs` is the default | `scipy/optimize/_linprog.py` | `highs` | n/a | verified |
 | `linprog(method='simplex')` | the installed 1.18.1 emits a DeprecationWarning that says removal in 1.11.0 and still runs | executed under `timeout` | never use | n/a | verified |
 | `scipy.optimize.minimize(method=)` | the repository uses `L-BFGS-B` 14 times, `Nelder-Mead` 5 and `bounded` 6 (scalar) | `grep` of `gororoba_quantum`, `scripts` | keep the method named in the call; pass `options={'maxiter'}` for long fits | iteration count against the bound | verified use |
-| `scipy.linalg.expm`, `eigh`, `svd` | BLIS-backed; no thread argument | `scipy.show_config()` | bound threads through `BLIS_NUM_THREADS` | none | verified |
+| `scipy.linalg.expm`, `eigh`, `svd` | OpenBLAS-backed; no thread argument | `scipy.show_config()` | bound threads through `OPENBLAS_NUM_THREADS` | none | verified |
 
 ## JAX 0.9.0 and torch 2.14.1
 
@@ -107,10 +111,27 @@ Uses: `gororoba_quantum/jax_bridge.py`, `branch_dm.py`, `kaggle_kernel/kernel_ma
 | `JAX_DISABLE_JIT`, `JAX_DEBUG_NANS`, `JAX_ENABLE_COMPILATION_CACHE`, `JAX_COMPILATION_CACHE_DIR`, `JAX_NUMPY_DTYPE_PROMOTION` | names present | `jax/_src/config.py` | cache dir under `~/.cache/gororoba-quantum` for repeated sweeps | compile time of a repeated sweep | name verified, unmeasured |
 | `XLA_FLAGS` | XLA options, for example host device count | not read in this install; no repository use | unverified | unverified | unverified |
 | `torch.set_num_threads` | intra-op threads; the default is 6 on this host | `torch.get_num_threads()` | match `GOROROBA_WORKERS` | none | verified |
-| `CUDA_VISIBLE_DEVICES` | GPU selection | torch reports CUDA available; variable read by the CUDA runtime, not by an installed source | unverified | unverified | unverified |
+| `CUDA_VISIBLE_DEVICES` | GPU selection, read by the CUDA runtime | an empty value gives `torch.cuda.device_count()` 0, unset gives 1 (RTX 4070 Ti) | unset on the host; `0` or `0,1` on a Kaggle T4 x2 | a run whose device count differs from the value | verified |
 
 JAX measurement: the restructured sweep cut CPU time from 1389 s to 22 s on 105
 replicas ([jax-bridge-structure-report.md](../notes/kaggle/jax-bridge-structure-report.md)).
+
+## CUDA across substrates
+
+| Substrate | GPU | CUDA | Aer GPU path |
+|---|---|---|---|
+| Build host | RTX 4070 Ti, 12 GiB, compute capability 8.9, driver 615.78 | runtime 13.4 | `python-qiskit-aer-cuda` 0.17.2-3: devices `CPU` and `GPU`, links cuStateVec and cuTensorNet |
+| Kaggle | T4 x2 (compute 7.5) or P100 (6.0) on a GPU kernel | the image's CUDA | the Kaggle Aer wheel; [kaggle notes](../notes/kaggle/README.md) record CPU beating T4 on small dynamic circuits |
+| Azure FX4mds_v2 | none | none | CPU only |
+
+| Knob | Meaning | Verified by | Recommended | Falsifier | Status |
+|---|---|---|---|---|---|
+| `AerSimulator(device="GPU")` | statevector or density matrix on CUDA | `available_devices()` lists `GPU`; a Bell circuit gives identical counts on CPU and GPU at one seed | GPU for 25 or more statevector qubits on the host; CPU below | the crossover in [custatevec.md](../notes/build_host/custatevec.md) | measured in that note |
+| `cuStateVec_enable` | cuStateVec kernels instead of Thrust (default False) | `AerSimulator().options` | True on the host build | cuStateVec slower than Thrust at the same width | verified, see custatevec.md |
+| `batched_shots_gpu`, `batched_shots_gpu_max_qubits` | batch shots of noisy runs on the GPU (defaults False, 16) | options | True for noisy sampling at 16 qubits or fewer | batched slower than unbatched at equal shots | verified, unmeasured |
+| `blocking_enable`, `blocking_qubits` | split a statevector across chunks or GPUs (defaults False, None) | options | off on one 12 GiB card below 29 qubits | a width that fits only with blocking | verified, unmeasured |
+| `precision` | `double` default, `single` halves memory | options | `double` for evidence; `single` only for a scan whose tolerance is stated | a single-precision result differing beyond the tolerance | verified |
+| `target_gpus` | not an option in Aer 0.17.2 | absent from `AerSimulator().options` | use `CUDA_VISIBLE_DEVICES` | | verified absent |
 
 ## sympy 1.14.0, python-flint 0.9.0, mpmath 1.4.1, numba 0.68.0
 
@@ -144,7 +165,7 @@ replicas ([jax-bridge-structure-report.md](../notes/kaggle/jax-bridge-structure-
 in `docs/` and `scripts/` as cross-checks of `cd_core.py`, the specification; a
 package result enters evidence only through a declared map checked on every
 basis pair. None carries a performance knob the repository sets. Their numeric
-paths call numpy, so `BLIS_NUM_THREADS` governs them. Per-package options:
+paths call numpy, so `OPENBLAS_NUM_THREADS` governs them. Per-package options:
 unverified. Recommended setting: one process per package under
 `GOROROBA_WORKERS`; falsifier: any pair where the package product differs from
 `cd_core`; status unmeasured.
