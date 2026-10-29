@@ -109,7 +109,12 @@ MODEL_SCATTER_DIAGNOSTIC_SHA256: str | None = "c39c5b7202fd6d2cd44629a86eed1402a
 MODEL_SCATTER_FLOOR_FILE = "docs/evidence/measurement_sequence/scatter-floor.json"
 # Floors measured on other backends, each a scatter-floor document bound by its digest: backend -> (path, sha256).
 # A run on a backend listed here reads that backend's floor; every other run reads the file above.
-MODEL_SCATTER_FLOORS: dict[str, tuple[str, str]] = {}
+MODEL_SCATTER_FLOORS: dict[str, tuple[str, str]] = {
+    "ibm_fez": (
+        "docs/evidence/measurement_sequence/scatter-floor-ibm_fez.json",
+        "b5bdb12c55a8b3aa9c1fd339727461b0bc3319079d25ece626a1b246e447180b",
+    ),
+}
 SCATTER_FLOOR_SCHEMA = "measurement-sequence-scatter-floor-v1"
 # An illustrative floor for the sweeps and the Aer validation, which exercise the mechanism. It is not a measurement
 # of any device.
