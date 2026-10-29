@@ -129,8 +129,12 @@ list) and set h = 0. The reduced germ at p is the intersection of the
 `tangentcone`) on the A_5 strata ran past an hour at tens of GiB on the shared
 host, while the global route takes seconds
 ([a5-strata-regularity](docs/evidence/a5-strata-regularity/README.md)). A
-Singular run that may exceed a few GiB runs under `prlimit --as` with
-`GOROROBA_WORKERS` set.
+long classical run (Singular, msolve, Macaulay2) starts only after the flag
+review of [compute-flags.md](docs/runbooks/compute-flags.md): a cgroup
+`MemoryMax` or RSS cap, threads matched to free physical cores, every solver
+flag checked against the binary's own help, and `GOROROBA_WORKERS` set. An
+address-space cap (`prlimit --as`) refuses msolve's reallocations far below
+physical memory and is never the cap of a multithreaded program.
 
 ## Documents
 
