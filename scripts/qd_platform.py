@@ -1518,6 +1518,8 @@ def parse_counts(results: str) -> dict[str, int]:
         raw = stream.decompress(base64.b64decode(text[len(":PCVL:zip:") :], validate=True), RESULT_LIMIT)
         if stream.unconsumed_tail:
             raise PlatformError(f"a zipped result exceeds {RESULT_LIMIT} bytes")
+        if not stream.eof or stream.unused_data:
+            raise PlatformError("a zipped result must contain exactly one complete compressed stream")
         text = raw.decode("ascii")
     prefix = ":PCVL:BSCount:"
     if not text.startswith(prefix) or not (text.endswith("}") and text[len(prefix)] == "{"):

@@ -10203,6 +10203,35 @@
    "sys",
    "typing"
   ],
+  "scripts/ascella_predecessor_analysis.py": [
+   "__future__",
+   "argparse",
+   "ascella_experiment_analysis",
+   "ascella_predecessor_case",
+   "datetime",
+   "decimal",
+   "experiment_analysis",
+   "fractions",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "tempfile",
+   "typing"
+  ],
+  "scripts/ascella_predecessor_case.py": [
+   "__future__",
+   "argparse",
+   "functools",
+   "json",
+   "math",
+   "pathlib",
+   "qd_platform",
+   "sys",
+   "typing"
+  ],
   "scripts/ascella_replication_offsets.py": [
    "__future__",
    "ascella_compilation_reading",

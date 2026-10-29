@@ -1,0 +1,234 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-predecessor-intervention",
+  "kind": "experiment",
+  "summary": "One unapproved qpu:ascella job from retained seed-0 settings: theta2-x-arm1 and theta0-x-arm0 precede theta2-x-arm0 in both orders across eight iterations.",
+  "sources": [
+    "docs/design/ascella-predecessor-intervention.md",
+    "scripts/ascella_predecessor_case.py",
+    "scripts/ascella_predecessor_analysis.py",
+    "docs/runbooks/evidence-closure.md",
+    "docs/runbooks/quandela-credit-optimization.md",
+    "docs/design/ascella-signed-coherence-conformance.md",
+    "results/quandela/cases/ascella_predecessor/job-00/cases.json",
+    "docs/evidence/ascella-predecessor-admission/running-plan.json"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The signed common/reversal analyzer and drift counterexamples pass independent review and focused checks. Conditional inference still requires a pre-acquisition evidence-bound sampling contract; physical chronology and predecessor causality remain unavailable. Live admission and owner approval remain separate."
+  },
+  "steps": [
+    {
+      "id": "signed-analysis",
+      "state": "done",
+      "action": "Replace the unsigned predecessor rule with signed common and reversal contrasts and an evidence-bound offline analyzer.",
+      "acceptance": "Drift counterexamples, compilation and input mutations, missing evidence, conditional uncertainty and explicit equivalence margins pass focused tests; the corrected manifest rebuilds exactly.",
+      "receipts": [
+        {
+          "result": "Signed common and reversal contrasts replace separate unsigned target distances. Independent review accepts conditional slot-response scope; 19 case/analyzer tests and 61 inventory tests pass, with pinned Ruff and four-file mypy checks. Physical predecessor attribution remains unavailable.",
+          "observed_at": "2026-10-28T22:12:43.593455+00:00",
+          "revision": "44f06067b4a2fdd50d2349e9a2d51c4e40fd7fa0",
+          "evidence": [
+            {
+              "ref": "scripts/ascella_predecessor_case.py",
+              "sha256": "b9a905ea710346056f0551ed2fa50ec35c84f0ea36d4c63f0e1fd9f1709bf076"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_analysis.py",
+              "sha256": "bcd1ad1461cfe453800582040e6f5a28da14026875f54433574578e339b5e4a7"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_case.py",
+              "sha256": "1bc7d3c7a445f60f04da2f8db5ceb796385da7f3ff54e9423bcdfecf4c51bdf0"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_analysis.py",
+              "sha256": "bcda2754716de9f99dd64dd9647ddcdd957b9b366711164ecba63c245393b06b"
+            },
+            {
+              "ref": "docs/design/ascella-predecessor-intervention.md",
+              "sha256": "64e064b0f50cc77a5492272c83c63bdff4ec0fa2b81726354273192186af884d"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
+              "sha256": "33ce1d4a89b1585ec1bc0db4662206434f0c06e5b53661a488cc2e8df47b26b4"
+            }
+          ],
+          "scope_sha256": "7451ba6e3ff68b85749407df8818c43d5e3f334bb3ee38003371a0dbc230c9ed"
+        },
+        {
+          "result": "Signed common/reversal analysis and exact case replay pass; 24 focused builder, analyzer and provider-result parser tests pass. Pinned Ruff, Python 3.13 format and six-file mypy pass. Physical predecessor attribution remains unavailable; the retained live admission refusal names an earlier case digest.",
+          "observed_at": "2026-10-28T22:18:01.835178+00:00",
+          "revision": "44f06067b4a2fdd50d2349e9a2d51c4e40fd7fa0",
+          "evidence": [
+            {
+              "ref": "scripts/ascella_predecessor_case.py",
+              "sha256": "b9a905ea710346056f0551ed2fa50ec35c84f0ea36d4c63f0e1fd9f1709bf076"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_analysis.py",
+              "sha256": "92fa3230b0a9040fd2ebdcd3d76ef6340781ab6e122f5444bcab03c3246f3ba4"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_case.py",
+              "sha256": "1bc7d3c7a445f60f04da2f8db5ceb796385da7f3ff54e9423bcdfecf4c51bdf0"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_analysis.py",
+              "sha256": "284a828c80873bf4b644ac6bb29200edd1bd91db699dea41c2c9c9eb6cc0082d"
+            },
+            {
+              "ref": "docs/design/ascella-predecessor-intervention.md",
+              "sha256": "ccc7ff94afe780ef86214553994ffc97980a28cabbf7c308555759bfe6f3cd2f"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
+              "sha256": "5e27411732629ffbbac1fdc5778149f76ca2faa416941f22256406b109818416"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "b5bdf1aa76139f17ab178e3a20f4a120cc1543c414fb800273adbeb080e7d8fb"
+            },
+            {
+              "ref": "tests/scripts/test_quandela_failed_results.py",
+              "sha256": "562f5fa711af7b2b32db5be122800efd6272347573af193b97815097bc19ee28"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/plan-status.json",
+              "sha256": "f3e202c72ea89dd9a5866997bf59207221025f48ec368d37e63438c5446eb389"
+            }
+          ],
+          "scope_sha256": "7451ba6e3ff68b85749407df8818c43d5e3f334bb3ee38003371a0dbc230c9ed"
+        },
+        {
+          "result": "Signed common/reversal analysis and exact case replay pass; 24 focused builder, analyzer and provider-result parser tests pass. Pinned Ruff, Python 3.13 format and six-file mypy pass. Physical predecessor attribution remains unavailable; the retained live admission refusal names an earlier case digest.",
+          "observed_at": "2026-10-28T22:19:05.273319+00:00",
+          "revision": "44f06067b4a2fdd50d2349e9a2d51c4e40fd7fa0",
+          "evidence": [
+            {
+              "ref": "scripts/ascella_predecessor_case.py",
+              "sha256": "b9a905ea710346056f0551ed2fa50ec35c84f0ea36d4c63f0e1fd9f1709bf076"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_analysis.py",
+              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_case.py",
+              "sha256": "1bc7d3c7a445f60f04da2f8db5ceb796385da7f3ff54e9423bcdfecf4c51bdf0"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_analysis.py",
+              "sha256": "a19dc7284d22f301af635465b85dc47b1dd8f01622a5dda317808c80e0d72c24"
+            },
+            {
+              "ref": "docs/design/ascella-predecessor-intervention.md",
+              "sha256": "0220b344037853e6b970824624c9af94832e42e2b6bf5a54908b7ea7755b652d"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
+              "sha256": "0ef0b0b2ff74655f58f47142020b6b32679f9b9bb2fc776dba07b8a57cdb21d0"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "b5bdf1aa76139f17ab178e3a20f4a120cc1543c414fb800273adbeb080e7d8fb"
+            },
+            {
+              "ref": "tests/scripts/test_quandela_failed_results.py",
+              "sha256": "562f5fa711af7b2b32db5be122800efd6272347573af193b97815097bc19ee28"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/plan-status.json",
+              "sha256": "f3e202c72ea89dd9a5866997bf59207221025f48ec368d37e63438c5446eb389"
+            }
+          ],
+          "scope_sha256": "7451ba6e3ff68b85749407df8818c43d5e3f334bb3ee38003371a0dbc230c9ed"
+        },
+        {
+          "result": "Anchored snapshot and compressed-count checks pass review. The 27 focused case, analyzer and parser tests pass. Queue admission accepts running while calibration, maintenance and token occupancy remain rejected. The read-only live plan passes at 262144 estimated shots and 1.032768 credits; sampling-contract review and execution approval remain required.",
+          "observed_at": "2026-10-29T00:07:51.131501+00:00",
+          "revision": "44f06067b4a2fdd50d2349e9a2d51c4e40fd7fa0",
+          "evidence": [
+            {
+              "ref": "scripts/ascella_predecessor_case.py",
+              "sha256": "91ed74f831d0bc14b0c3248c9e8dc1299c1bcd4af2b11bec63327145506a911b"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_analysis.py",
+              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_case.py",
+              "sha256": "df022a2d1fe6f62feed77f952c82235c0bc8d1443cfc38800a66173e42f6e4eb"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_analysis.py",
+              "sha256": "a19dc7284d22f301af635465b85dc47b1dd8f01622a5dda317808c80e0d72c24"
+            },
+            {
+              "ref": "docs/design/ascella-predecessor-intervention.md",
+              "sha256": "b7873032c7d0fab6f0505fb01e306680be780b158ac8c97e81b7b480d2d4d4d6"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
+              "sha256": "9778e3a35512bcbf80b79d2c36d2530d13057b313926333921a61bb9c940a2b9"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "b5bdf1aa76139f17ab178e3a20f4a120cc1543c414fb800273adbeb080e7d8fb"
+            },
+            {
+              "ref": "tests/scripts/test_quandela_failed_results.py",
+              "sha256": "562f5fa711af7b2b32db5be122800efd6272347573af193b97815097bc19ee28"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/plan-status.json",
+              "sha256": "f3e202c72ea89dd9a5866997bf59207221025f48ec368d37e63438c5446eb389"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/running-plan.json",
+              "sha256": "89b521b75811d385895ee3c68aca93f4966b6dfe4f3ebce0c5d611b6945a0f6e"
+            }
+          ],
+          "scope_sha256": "7451ba6e3ff68b85749407df8818c43d5e3f334bb3ee38003371a0dbc230c9ed"
+        }
+      ]
+    },
+    {
+      "id": "written-case",
+      "state": "doing",
+      "depends_on": [
+        "signed-analysis"
+      ],
+      "action": "Keep the design and manifest aligned: eight iterations, signed common and reversal contrasts, explicit conditional-response scope, simultaneous uncertainty, and retained compilation and input identities.",
+      "acceptance": "Independent review accepts the corrected contract and --check reproduces cases.json and circuit.json; physical chronology and causal attribution remain separately bounded."
+    },
+    {
+      "id": "live-admission",
+      "state": "todo",
+      "depends_on": [
+        "written-case"
+      ],
+      "action": "Run qd_platform.py plan on a copy of the request. Retain the plan record, including the body digest, the live price, queue and processor performance. Send nothing.",
+      "acceptance": "A retained plan whose cases digest matches the manifest and whose credit estimate is within 1.032768, or a recorded refusal from that plan."
+    },
+    {
+      "id": "acquisition",
+      "state": "todo",
+      "depends_on": [
+        "live-admission"
+      ],
+      "action": "Submit only after the owner approves and the retained plan matches. Collect that one job and run the signed-response analyzer under its evidence contract. Do not retry.",
+      "acceptance": "One retained run directory with results.json, or a recorded decision to decline submission."
+    }
+  ],
+  "scope": "One unapproved qpu:ascella sample_count case, ascella_predecessor/job-00, eight iterations at 32768 samples and shots, historical ceiling 1.032768 credits and expected 40 s. Retained signed-coherence settings supply two distinct predecessors and a fixed target in odd slots. Analysis separates signed common and reversal contrasts with a 0.1 response-equivalence margin; it cannot identify predecessor causality from result-list order. Live admission and exact-case approval remain required.",
+  "owner": "ascella predecessor case",
+  "next_action": "Review and freeze the conditional sampling contract and obtain exact-case approval; queue admission accepts available or running, subject to fresh token, processor, shot and price checks.",
+  "related": [
+    "ascella-signed-coherence-conformance",
+    "ascella-perturbed-compilation-case",
+    "ascella-seed-repeat-case"
+  ]
+}
