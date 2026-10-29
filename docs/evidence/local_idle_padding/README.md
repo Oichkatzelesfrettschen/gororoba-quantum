@@ -10,7 +10,8 @@ it as late as the ASAP makespan allows, honoring the same qubit and classical-bi
 first-instruction times within 1 dt on every qubit of the encoded N=21 run, and the comparison below confirms it on
 the law.
 
-This bundle sets ASAP and ALAP padding against the service schedule and against competing error sources. `idle_budget.json` of [ghost_error_scale](../ghost_error_scale/README.md) and `ghost_event_scale.py`'s
+This bundle answers issue 526's preregistered falsifier (ASAP padding) and sets the padding against competing
+error sources. `idle_budget.json` of [ghost_error_scale](../ghost_error_scale/README.md) and `ghost_event_scale.py`'s
 pad axis charge the idle the service schedule recorded after execution; this bundle's padding needs only the circuit
 and the Target, which is what a planner holds before submission.
 
@@ -18,6 +19,8 @@ and the Target, which is what a planner holds before submission.
 
 | File | Producer | Content |
 | --- | --- | --- |
+| [result.json.gz](result.json.gz) | `scripts/local_idle_falsifier.py --runs all --parts PARTS --parts-only` | per run and replica: unpadded and ASAP-padded exact laws, TV distances to hardware, inserted idle; the numeric platform of each run; the decision |
+| [inserted.json](inserted.json) | `scripts/local_idle_falsifier.py --inserted result.json.gz` | per run: mean d over only the replicas whose padded law differs from the unpadded one |
 | [controls.json](controls.json) | `scripts/local_idle_controls.py --runs ...` | mean TV distance per run under every control arm, per replica beneath |
 | [service_comparison.json](service_comparison.json) | `scripts/local_idle_controls.py --service-replay` | encoded N=21: unpadded, local ASAP, local ALAP and service-padded laws on matched baselines |
 
@@ -26,7 +29,64 @@ member's execution calibration snapshot (`docs/evidence/calibration/history/`), 
 `scheduled_idle_replay.relaxed` turns each top-level delay into relaxation channels. Exact laws carry no shot noise,
 and no script draws a seed. A member whose replicas a structural check refuses, or whose control-flow body holds a
 qubit the top-level circuit never touches (`restrict_circuit` refuses it), is listed under `members_refused` and
-left out. Every file records its qiskit, qiskit-aer and numpy versions.
+left out. Every file records its qiskit, qiskit-aer and numpy versions; the falsifier's laws are identical to 9
+digits under qiskit 2.5.2 and 2.6.0.
+
+## Preregistered falsifier
+
+Issue 526 (criterion posted before the sweep, issue comment 6406212933): per replica,
+d = TV(measured, ASAP-padded) - TV(measured, unpadded); a run passes when its mean d is negative, and the sweep
+passes when a strict majority of eligible runs does. Runs with a mean d more than two standard errors above zero are
+listed.
+
+| Run | Backend | Replicas | Unpadded TV | Padded TV | Mean d | SE |
+| --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-11T152922 | kingston | 29 | 0.1009 | 0.0782 | -0.0227 | 0.0049 |
+| 2026-10-12T055624 | kingston | 16 | 0.1374 | 0.0945 | -0.0429 | 0.0041 |
+| 2026-10-13T020454 | kingston | 4 | 0.1874 | 0.1201 | -0.0673 | 0.0012 |
+| 2026-10-13T022433 | kingston | 4 | 0.2118 | 0.1445 | -0.0673 | 0.0012 |
+| 2026-10-13T080216 | fez | 2 | 0.0698 | 0.0544 | -0.0154 | 0.0080 |
+| 2026-10-13T083417 | fez | 8 | 0.0695 | 0.0545 | -0.0150 | 0.0040 |
+| 2026-10-13T201757 | fez | 6 | 0.0343 | 0.0292 | -0.0051 | 0.0038 |
+| 2026-10-18T083403 | kingston | 149 | 0.0021 | 0.0021 | 0 | 0 |
+| 2026-10-18T083404.226285 | kingston | 149 | 0.0030 | 0.0030 | 0 | 0 |
+| 2026-10-18T090603 | kingston | 2 | 0.0256 | 0.0189 | -0.0067 | 0.0006 |
+| 2026-10-18T214519 | kingston | 148 | 0.0061 | 0.0061 | 0 | 0 |
+| 2026-10-19T151959 | fez | 14 | 0.1312 | 0.1222 | -0.0090 | 0.0023 |
+| 2026-10-19T170620 | fez | 12 | 0.1471 | 0.1389 | -0.0082 | 0.0025 |
+| 2026-10-19T231043 | fez | 6 | 0.0849 | 0.0800 | -0.0049 | 0.0031 |
+| 2026-10-20T031212 | fez | 14 | 0.3224 | 0.3015 | -0.0209 | 0.0079 |
+| 2026-10-21T043156 | marrakesh | 48 | 0.5047 | 0.5047 | 0 | 0 |
+| 2026-10-21T064222 | fez | 48 | 0.4479 | 0.4479 | 0 | 0 |
+| 2026-10-26T202817 | kingston | 1364 | 0.1705 | 0.1705 | 0 | 0 |
+| 2026-10-27T160530 | kingston | 1320 | 0.1610 | 0.1610 | 0 | 0 |
+| 2026-10-27T173602 | kingston | 1064 | 0.1811 | 0.1793 | -0.0018 | 0.0002 |
+
+The sweep passes: 13 of the 20 eligible runs have a negative mean d, and no run lies more than two standard errors
+above zero.
+
+The other seven runs have d exactly 0 because padding changes no law. The three one-qubit state-preparation
+controls carry no wait, so padding inserts nothing. The four-qubit segmented spectator runs 2026-10-21T043156 and
+2026-10-21T064222 have no CZ, and each qubit plays its own measure, reset and single-qubit segments, so padding
+inserts no idle into any of their 48 replicas; their distance of about 0.5 reflects 1536 shots spread over 15
+classical bits (32768 outcomes), a sampling floor that padding cannot move. On the idle-penalty runs 2026-10-26T202817
+and 2026-10-27T160530, padding inserts idle into 372 of 1364 and 390 of 1320 replicas, but always on a qubit reset to
+|0> that waits while its partner runs (in `idle_meas_after_x`, 10016 dt on qubit 0 before its repeated
+measurements), and relaxation without thermal population leaves |0> unchanged. All seven count as not lower under
+issue 526's rule.
+
+[inserted.json](inserted.json) restricts each run to the replicas whose padded law differs from the unpadded one, as
+a secondary analysis that leaves the preregistered verdict unchanged: all 13 runs with such replicas have a negative
+mean d over them. On the orbit-window dose run 2026-10-27T173602, 988 of 1064 replicas take inserted idle and 380
+change their law, and their mean d is -0.0052 (SE 0.0004) against -0.0018 over all replicas.
+
+2026-10-13T020454 and 2026-10-13T022433 execute the same circuits under the same snapshot, and
+the hardware law lies on the same side of both model laws in every outcome, so their d agree while their distances
+differ. The other runs record why they are out (no dynamic member, no job returned shots, no member with an exact
+law).
+
+The pass fixes a direction, not a mechanism: any decoherence added to an optimistic model moves it toward hardware.
+The controls below test the mechanism.
 
 ## Local placement against the service schedule
 
@@ -48,7 +108,7 @@ charge the idle the hardware will play before it submits.
 
 ## Controls
 
-[controls.json](controls.json) holds, for the twelve multi-qubit runs whose replicas take inserted idle, the mean TV distance under each arm:
+[controls.json](controls.json) holds, for the twelve multi-qubit runs above, the mean TV distance under each arm:
 inserted idle scaled by kappa under ASAP (`kappa`) and ALAP (`alap`); every reported CZ error times c, unpadded
 (`cz`, `ghost_error_scale.scaled`) and on the ASAP-padded replica (`cz_pad`); placement placebos that put each
 qubit's ASAP total in one delay after its first played instruction (`front`) or shift the totals one qubit along
@@ -107,7 +167,15 @@ neighbors, and the comparison is between one-parameter families rather than at a
 
 ## Replay
 
+`"$PYTHON" scripts/local_idle_falsifier.py --check docs/evidence/local_idle_padding/result.json.gz --runs RUN` reruns
+the named runs and requires each summary to equal the retained one exactly or, when the checking platform's numeric
+path differs, every stored float to agree within 1e-9; it prints the largest deviation and both platforms; `--runs
+all` reruns every run. Gate `core-local-idle-falsifier` reruns 2026-10-13T080216 on pull requests and
+`core-local-idle-falsifier-full` reruns 2026-10-12T055624, 2026-10-13T020454 and 2026-10-18T090603 in the full tier.
 `tests/gororoba_quantum/test_idle_padding.py` holds the schedule contracts.
 
-The controls ran on the build host's CPU (exact laws of one to seven qubits, seconds per law), as ghost_error_scale
-parts d, e and f did.
+Each run computed as one job of the idle-falsifier workflow on a hosted runner's native numeric path, recorded under
+`platforms` ([runbook](../../runbooks/idle-falsifier.md)): Intel Xeon Platinum 8573C and 8370C and AMD EPYC 9V45 and
+9V74 with AVX-512, and AMD EPYC 7763 and 9V74 without it. The 30 runs the build host (AMD Ryzen 5 5600X3D, AVX2)
+also computed agree with the runners' values in every stored digit. The segmented spectator runs took 3.6 and 2.8
+hours and the orbit-window dose run 9.6 minutes; every other run took under a minute.

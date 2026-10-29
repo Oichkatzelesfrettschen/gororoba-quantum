@@ -14,11 +14,11 @@ runs has a negative mean d and lists each run whose mean d lies more than two st
 laws carry no shot noise, so the script draws no seed.
 
 Usage:
-    "$PYTHON" scripts/local_idle_falsifier.py --runs all --out docs/evidence/local_idle_padding/result.json
+    "$PYTHON" scripts/local_idle_falsifier.py --runs all --out docs/evidence/local_idle_padding/result.json.gz
     "$PYTHON" scripts/local_idle_falsifier.py --runs results/live/2026-10-18T090603.530638Z --out OUT
     "$PYTHON" scripts/local_idle_falsifier.py --runs all --out OUT --parts DIR
     "$PYTHON" scripts/local_idle_falsifier.py --plan
-    "$PYTHON" scripts/local_idle_falsifier.py --check docs/evidence/local_idle_padding/result.json --runs RUN[,RUN]
+    "$PYTHON" scripts/local_idle_falsifier.py --check docs/evidence/local_idle_padding/result.json.gz --runs RUN[,RUN]
 
 ``--check FILE`` requires FILE to list every audited run exactly once, recomputes its decision from its runs, and
 reruns each run named by ``--runs`` (``all`` reruns every one), requiring the fresh summary to equal the retained one
@@ -37,6 +37,7 @@ missing or mismatched part.
 from __future__ import annotations
 
 import argparse
+import gzip
 import hashlib
 import io
 import json
@@ -212,7 +213,7 @@ def evaluate(name: str, index: dict[str, Any], plan: bool = False) -> dict[str, 
 
 
 def check(path: Path, runs: str, index: dict[str, Any]) -> None:
-    retained = json.loads(path.read_text(encoding="utf-8"))
+    retained = read_result(path)
     listed = [run["run"] for run in retained["runs"]]
     if sorted(listed) != sorted(ghost_run.audited_runs()) or len(set(listed)) != len(listed):
         raise RuntimeError(f"{path}: runs are not each audited run exactly once")
@@ -323,6 +324,17 @@ def platform() -> dict[str, Any]:
     }
 
 
+def read_result(path: Path) -> dict[str, Any]:
+    raw = path.read_bytes()
+    return json.loads(gzip.decompress(raw) if path.suffix == ".gz" else raw)
+
+
+def write_result(path: Path, text: str) -> None:
+    """Write TEXT to PATH, gzip-compressed with a zero timestamp when PATH ends in .gz; equal text, equal bytes."""
+    data = text.encode("utf-8")
+    path.write_bytes(gzip.compress(data, compresslevel=9, mtime=0) if path.suffix == ".gz" else data)
+
+
 def part_identity() -> dict[str, Any]:
     sources = {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in PART_SOURCES}
     return {"versions": versions(), "sources": sources}
@@ -366,7 +378,7 @@ def main() -> int:
         check(args.check, args.runs, index)
         return 0
     if args.inserted:
-        estimate = inserted_estimate(json.loads(args.inserted.read_text(encoding="utf-8")))
+        estimate = inserted_estimate(read_result(args.inserted))
         text = json.dumps(estimate, indent=1, sort_keys=True) + "\n"
         if args.out:
             args.out.write_text(text, encoding="utf-8")
@@ -400,7 +412,7 @@ def main() -> int:
     print(json.dumps(result["decision"]))
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)
-        args.out.write_text(json.dumps(result, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+        write_result(args.out, json.dumps(result, indent=1, sort_keys=True) + "\n")
     return 0
 
 
