@@ -200,6 +200,114 @@ The Belenos phases, control indices and 24-outcome radius stay in
 There is no automatic retry. A terminal error is reported. A second job
 needs its own case.
 
+## Precision, power and coefficient interpretation
+
+The fixed allocation addresses a coarse common-response margin. With 32,768
+eligible events in every iteration, the simultaneous radius is
+`R(0.05) = 0.028590910871208422`. An observed common norm must exceed
+0.128590910871208422 to clear the 0.1 margin; the predecessor controls must
+also clear their bounds. The radius alone does not establish decision power.
+
+Let `R(q) = 2 sqrt((12 ln 2 + ln(8/q))/(2 n))` for equal eligible count `n`.
+On the simultaneous event with failure probability beta, every norm differs
+from its population value by at most `R(beta)`. At beta 0.20 and n 32,768,
+`R(beta) = 0.027070786680588680`. Triangle inequality gives the following
+sufficient conditional power regions, with decision alpha 0.05:
+
+| Decision | Population common norm | Each population predecessor-control TVD | Guaranteed conditional power |
+|---|---:|---:|---:|
+| Above 0.1 | Greater than 0.155661698 | Greater than 0.155661698 | At least 80% |
+| Below 0.1 | Less than 0.044338302 | Greater than 0.155661698 | At least 80% |
+
+The inequalities use rounded conservative thresholds. The guarantee follows
+from one simultaneous event; cross-iteration independence is unnecessary.
+Within-iteration IID events, fixed completion, conditional eligibility and
+the anchored contract remain essential. Lost eligible events widen the actual
+bounds. The guarantee concerns the common contrast and the two control
+distances together; a control failure can withhold either decision.
+
+For a population common norm `t`, sufficient equal eligible count is the
+smallest integer strictly above
+`2 (sqrt(12 ln 2 + ln(8/0.05)) + sqrt(12 ln 2 + ln(8/0.20)))^2 / (t-0.1)^2`.
+The same requirement applies to each predecessor control's distance from 0.1.
+
+| Sensitivity scenario for common norm | Direction | Sufficient eligible events per iteration |
+|---|---|---:|
+| 0.1500 | Above 0.1 | 40,610 |
+| 0.1600 | Above 0.1 | 28,201 |
+| 0.0462 | Below 0.1 | 35,076 |
+| 0.0654 | Below 0.1 | 84,803 |
+
+The retained context distances motivate the last two sensitivity scenarios;
+they are different estimands and establish neither population value here.
+The current 32,768-shot cap remains unchanged. Increasing shots or repeating
+an inconclusive job requires a separately reviewed, costed and approved case.
+
+The coefficient decomposition exposes the temporal ambiguity directly.
+For centered requested positions `x=(-3,-1,1,3)`, the exact moments are:
+
+| Contrast | Constant | x | x squared | x cubed | x to the fourth |
+|---|---:|---:|---:|---:|---:|
+| Common C | 0 | 0 | 8 | 0 | 80 |
+| Reversal H | 0 | 2 | 0 | 26 | 0 |
+
+For each output's law `a+b*x+c*x^2+d*x^3+e*x^4+theta*I_A`,
+`C=theta+8*c+80*e` and `H=2*b+26*d`. The common contrast probes symmetric
+curvature together with the assigned condition; the reversal probes odd drift
+directions. A small reversal cannot bound curvature. Actual physical-time
+cancellation requires timing evidence beyond requested index.
+
+An eight-target successor with predecessor labels `A,B,B,A,B,A,A,B` and
+weights `(1,-1,-1,1,-1,1,1,-1)/4` cancels polynomial index trends through
+degree two and gives unit gain to an additive A-versus-B response. The
+construction is the classical Prouhet–Thue–Morse contrast. Its cubic
+coefficient at centered positions `(-7,-5,-3,-1,1,3,5,7)` is -96, so the
+successor moves the drift ambiguity rather than establishing causality.
+The two-output first-cell counts
+`(263,10509,15115,16337,16431,17653,22259,32505)` out of 32,768 equal
+`16384+47*x^3`. Pure cubic drift gives common norm `141/1024`; the
+sixteen-law radius of approximately 0.029321435 leaves a lower endpoint above
+0.10837, which clears 0.1 despite zero predecessor effect. The
+[design regression](../../tests/scripts/test_ascella_predecessor_case.py)
+checks the coefficient moments, sizing and drift counterexample.
+
+Sixteen iterations at 32,768 shots would request 524,288 shots and extrapolate
+to 48.6 seconds at the slowest retained relevant rate. The retained tariff
+would give 1.032768 credits because the largest per-iteration cap stays fixed.
+These are successor scenarios, rather than changes to the eight-iteration
+case or a provider guarantee. A randomized repeated design with a supported
+chronology and explicit carryover model remains the causal-design obligation.
+
+## Review and evidence custody checklist
+
+The frozen request remains eight iterations and one attempt. The preparation
+review distinguishes the following gates:
+
+| Gate | Required artifact | Result when missing or invalid |
+|---|---|---|
+| Digital identity | Byte-exact case replay, source closure, Perceval body and returned circuit/input identities | Refuse the affected comparison |
+| Resource admission | Fresh live price, shot estimate, processor and token checks within 1.032768 credits | Withhold submission |
+| Owner authority | Exact written-case approval covering the fresh planned body and single attempt | Withhold submission |
+| Raw provenance | Independently retained submission and result digests with documented custody, raw hash chain and complete iteration attribution | Refuse analysis |
+| Conditional inference | Pre-acquisition contract plus review artifacts for sampling, stopping and temporal limits, all externally digest-anchored | Emit descriptive output only |
+| Physical attribution | Physical chronology and a design distinguishing drift and longer carryover | Preserve `physical_predecessor_attribution=unavailable` for this case |
+
+The operator retains expected digests in a review record outside the analyzed
+run directory and records the source and custodian of each digest. A local
+recomputation from that directory checks consistency only. Review text states
+the supported sampling evidence and residual assumptions; a signed assertion
+cannot establish IID behavior. The existing analyzer contract enforces byte
+bindings, while scientific review establishes the scope of the assumptions.
+The preparation record distinguishes complete raw acquisition, descriptive
+analysis, conditional above/below-margin response, and inconclusive response.
+A below-margin common contrast permits opposite order-specific movements.
+
+The retained running-platform admission remains evidence for its recorded
+request and source bytes. Source or analyzer changes require a successor
+bundle and a fresh plan. The case continues to admit `running` as a queueable
+platform status while enforcing calibration, maintenance and token-occupancy
+checks. The case has zero automatic retries.
+
 ## Seconds and credits
 
 The retained billing rule is one per-job price plus 1e-6 credits times the

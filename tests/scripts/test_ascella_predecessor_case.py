@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import math
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +17,61 @@ CASE = ROOT / "results/quandela/cases/ascella_predecessor/job-00"
 SOURCE = ROOT / "results/quandela/cases/ascella_signed_coherence/job-00"
 JOB00_RUN = ROOT / "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00"
 JOB02_RUN = ROOT / "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02"
+
+
+def test_contrast_coefficients_expose_even_and_odd_drift_directions() -> None:
+    positions = (-3, -1, 1, 3)
+    common = tuple(Fraction(value, 2) for value in (1, -1, -1, 1))
+    reversal = tuple(Fraction(value, 2) for value in (-1, 1, -1, 1))
+    registered = manifest()["preregistered"]
+    if (
+        tuple(map(Fraction, registered["common_coefficients"])) != common
+        or tuple(map(Fraction, registered["reversal_coefficients"])) != reversal
+    ):
+        raise AssertionError("the coefficient analysis must match the frozen acquisition case")
+    for weights, expected in ((common, (0, 0, 8, 0, 80)), (reversal, (0, 2, 0, 26, 0))):
+        moments = tuple(
+            sum(weight * position**degree for weight, position in zip(weights, positions, strict=True))
+            for degree in range(5)
+        )
+        if moments != expected:
+            raise AssertionError("the contrast must expose its exact polynomial drift sensitivity")
+    if sum(weight for weight, assigned in zip(common, (True, False, False, True), strict=True) if assigned) != 1:
+        raise AssertionError("the common contrast must have unit additive-condition gain")
+
+
+def test_fixed_allocation_has_explicit_sufficient_power_regions() -> None:
+    """The union event bounds decision power as well as interval precision."""
+    decision_factor = 12 * math.log(2) + math.log(8 / 0.05)
+    power_factor = 12 * math.log(2) + math.log(8 / 0.20)
+    radius_sum = 2 * (math.sqrt(decision_factor) + math.sqrt(power_factor)) / math.sqrt(2 * 32768)
+    if not math.isclose(radius_sum, 0.0556616975517971, abs_tol=1e-15):
+        raise AssertionError("decision and power deviations both enter the sufficient region")
+    for population, expected in ((0.15, 40610), (0.16, 28201), (0.0462, 35076), (0.0654, 84803)):
+        required = 2 * (math.sqrt(decision_factor) + math.sqrt(power_factor)) ** 2 / (population - 0.1) ** 2
+        if math.floor(required) + 1 != expected:
+            raise AssertionError("the sensitivity table must size decision power rather than radius alone")
+    if not math.isclose(2 * case.subset_radius(8, 32768), 0.028590910871208422, abs_tol=1e-15):
+        raise AssertionError("the power calculation must use the frozen case's simultaneous radius")
+
+
+def test_eight_target_successor_still_accepts_a_cubic_drift_counterexample() -> None:
+    positions = (-7, -5, -3, -1, 1, 3, 5, 7)
+    weights = tuple(Fraction(value, 4) for value in (1, -1, -1, 1, -1, 1, 1, -1))
+    moments = tuple(
+        sum(weight * position**degree for weight, position in zip(weights, positions, strict=True))
+        for degree in range(4)
+    )
+    if moments != (0, 0, 0, -96):
+        raise AssertionError("the successor removes quadratic index drift while retaining cubic sensitivity")
+    counts = (263, 10509, 15115, 16337, 16431, 17653, 22259, 32505)
+    if counts != tuple(16384 + 47 * position**3 for position in positions):
+        raise AssertionError("the falsifier must contain pure cubic drift")
+    contrast = sum(weight * Fraction(count, 32768) for weight, count in zip(weights, counts, strict=True))
+    if abs(contrast) != Fraction(141, 1024) or float(abs(contrast)) - 2 * case.subset_radius(16, 32768) <= 0.1:
+        raise AssertionError("the signed successor can clear the margin without a predecessor effect")
+
+
 SCHEDULE = (
     ("A", "theta2-x-arm1", "predecessor", 0),
     ("A", "theta2-x-arm0", "target", 1),

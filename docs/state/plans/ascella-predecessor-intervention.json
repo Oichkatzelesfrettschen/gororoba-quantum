@@ -192,12 +192,60 @@
             }
           ],
           "scope_sha256": "7451ba6e3ff68b85749407df8818c43d5e3f334bb3ee38003371a0dbc230c9ed"
+        },
+        {
+          "result": "Current-head revalidation: 27 case/analyzer tests and three failed-result parser tests pass. Exact request replay preserves the frozen body inputs and case digest. Signed coefficient, power and drift regressions pass; production constructor and analyzer bytes remain unchanged. The admission observation remains historical for its recorded request; sampling review and exact-case approval remain pending.",
+          "observed_at": "2026-10-29T00:33:48.690372+00:00",
+          "revision": "974510d91db3f23dd1848a304c413bfd3f88cc1d",
+          "evidence": [
+            {
+              "ref": "scripts/ascella_predecessor_case.py",
+              "sha256": "91ed74f831d0bc14b0c3248c9e8dc1299c1bcd4af2b11bec63327145506a911b"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_analysis.py",
+              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_case.py",
+              "sha256": "adcc47f7404324f1284c25cc752bd94f3a84fc53702f37ffe06fc938c1ffb4e3"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_analysis.py",
+              "sha256": "a19dc7284d22f301af635465b85dc47b1dd8f01622a5dda317808c80e0d72c24"
+            },
+            {
+              "ref": "docs/design/ascella-predecessor-intervention.md",
+              "sha256": "8bf17d1194731b412928902022735952ae41c299c15f88ea2671939b933f9513"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
+              "sha256": "9778e3a35512bcbf80b79d2c36d2530d13057b313926333921a61bb9c940a2b9"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "b5bdf1aa76139f17ab178e3a20f4a120cc1543c414fb800273adbeb080e7d8fb"
+            },
+            {
+              "ref": "tests/scripts/test_quandela_failed_results.py",
+              "sha256": "562f5fa711af7b2b32db5be122800efd6272347573af193b97815097bc19ee28"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/plan-status.json",
+              "sha256": "f3e202c72ea89dd9a5866997bf59207221025f48ec368d37e63438c5446eb389"
+            },
+            {
+              "ref": "docs/evidence/ascella-predecessor-admission/running-plan.json",
+              "sha256": "89b521b75811d385895ee3c68aca93f4966b6dfe4f3ebce0c5d611b6945a0f6e"
+            }
+          ],
+          "scope_sha256": "7451ba6e3ff68b85749407df8818c43d5e3f334bb3ee38003371a0dbc230c9ed"
         }
       ]
     },
     {
       "id": "written-case",
-      "state": "doing",
+      "state": "todo",
       "depends_on": [
         "signed-analysis"
       ],
@@ -221,11 +269,43 @@
       ],
       "action": "Submit only after the owner approves and the retained plan matches. Collect that one job and run the signed-response analyzer under its evidence contract. Do not retry.",
       "acceptance": "One retained run directory with results.json, or a recorded decision to decline submission."
+    },
+    {
+      "id": "response-case-sizing",
+      "state": "done",
+      "action": "Verify conditional response power and polynomial drift sensitivity",
+      "acceptance": "Exact coefficient and drift counterexamples and fixed-allocation sufficient power calculations pass regression; case request and analyzer bytes remain unchanged and the written review gates bind the conditional scope.",
+      "receipts": [
+        {
+          "result": "The 27 focused case and analyzer tests pass; pinned Ruff and touched-file mypy pass. Exact case replay retains eight iterations, 262144 shots and the existing case digest. Added regressions verify drift coefficient moments, sufficient conditional-power sizing and the cubic-drift falsifier. Provider execution and conditional-sampling approval remain outside this receipt.",
+          "observed_at": "2026-10-29T00:32:19.883439+00:00",
+          "revision": "974510d91db3f23dd1848a304c413bfd3f88cc1d",
+          "evidence": [
+            {
+              "ref": "docs/design/ascella-predecessor-intervention.md",
+              "sha256": "8bf17d1194731b412928902022735952ae41c299c15f88ea2671939b933f9513"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_predecessor_case.py",
+              "sha256": "adcc47f7404324f1284c25cc752bd94f3a84fc53702f37ffe06fc938c1ffb4e3"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
+              "sha256": "9778e3a35512bcbf80b79d2c36d2530d13057b313926333921a61bb9c940a2b9"
+            },
+            {
+              "ref": "scripts/ascella_predecessor_analysis.py",
+              "sha256": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398"
+            }
+          ],
+          "scope_sha256": "430bdf52631940f903d44737350f4e777353fe6b0990c4a9b320b48b4f25e4e6"
+        }
+      ]
     }
   ],
   "scope": "One unapproved qpu:ascella sample_count case, ascella_predecessor/job-00, eight iterations at 32768 samples and shots, historical ceiling 1.032768 credits and expected 40 s. Retained signed-coherence settings supply two distinct predecessors and a fixed target in odd slots. Analysis separates signed common and reversal contrasts with a 0.1 response-equivalence margin; it cannot identify predecessor causality from result-list order. Live admission and exact-case approval remain required.",
   "owner": "ascella predecessor case",
-  "next_action": "Review and freeze the conditional sampling contract and obtain exact-case approval; queue admission accepts available or running, subject to fresh token, processor, shot and price checks.",
+  "next_action": "Review the unchanged eight-iteration request with the explicit conditional-power regions and evidence-custody checklist; freeze the justified sampling contract and obtain exact-case approval before a fresh admitted submission.",
   "related": [
     "ascella-signed-coherence-conformance",
     "ascella-perturbed-compilation-case",
