@@ -275,6 +275,50 @@
             }
           ],
           "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Revalidated actor planning and sparse collection after review fixes: 94 focused tests and sparse receipt checks pass; a fresh submit-free Fez Target compilation binds 24 conditions, prepared bits, QPY and source identities. The case remains descriptive and the compilation authorizes no job.",
+          "observed_at": "2026-10-29T19:40:22.220453+00:00",
+          "revision": "7c6aa740cbe6288923b57157a66b727fb5bccdd8",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "2c37d60c858b65ca83b42a7dbe11a5a23ba234bfb483bcb9388b1f647c21b532"
+            },
+            {
+              "ref": "results/live/2026-10-29T193911.165282Z/record.json",
+              "sha256": "aa229afb8a53546a6f0e754bd9ff5f7bc126853b10f54c47227163260755aeb5"
+            },
+            {
+              "ref": "results/live/2026-10-29T193911.165282Z/isa.qpy",
+              "sha256": "4b3534a56ed96c3013958311aff490a3ac4b8a0b4ded093ace0494dd238fa581"
+            },
+            {
+              "ref": "results/live/2026-10-29T193911.165282Z/UNAPPROVED_CASE.md",
+              "sha256": "248d5adb0756b9a44a300041d8b45e823e71e167a853e80f937fd006b70ee99e"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "16d98b9298732ad91de92db5368f65165fd01a647f12c1a1904b2f5c2fd219fc"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "60d4dac08c347754d37039914c632e4c64fff4ef9b21bf89e4736631ba513d32"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "14ff216630fc5e2e67ef9226c102aedec123f9d39c7b9ddc07a98a81e1ad08cd"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "fdbcfd6f23abed9a5d3ef8a8788e3db352eefca0833bce3773e7397bfbbdaf88"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
         }
       ]
     },
@@ -440,6 +484,42 @@
             {
               "ref": "results/live/2026-10-29T010517.821761Z/isa.qpy",
               "sha256": "f6baf70a13b0be2ba060d9540c3a3eb9d6470db95dc0af5870a647407eebc6af"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        },
+        {
+          "result": "Revalidated actor planning and sparse collection after review fixes: 94 focused tests and sparse receipt checks pass; a fresh submit-free Fez Target compilation binds 24 conditions, prepared bits, QPY and source identities. The case remains descriptive and the compilation authorizes no job.",
+          "observed_at": "2026-10-29T19:40:22.220453+00:00",
+          "revision": "7c6aa740cbe6288923b57157a66b727fb5bccdd8",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "2c37d60c858b65ca83b42a7dbe11a5a23ba234bfb483bcb9388b1f647c21b532"
+            },
+            {
+              "ref": "results/live/2026-10-29T193911.165282Z/record.json",
+              "sha256": "aa229afb8a53546a6f0e754bd9ff5f7bc126853b10f54c47227163260755aeb5"
+            },
+            {
+              "ref": "results/live/2026-10-29T193911.165282Z/isa.qpy",
+              "sha256": "4b3534a56ed96c3013958311aff490a3ac4b8a0b4ded093ace0494dd238fa581"
+            },
+            {
+              "ref": "results/live/2026-10-29T193911.165282Z/UNAPPROVED_CASE.md",
+              "sha256": "248d5adb0756b9a44a300041d8b45e823e71e167a853e80f937fd006b70ee99e"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "docs/design/readout-actor-fez-delay-qualification.json",
+              "sha256": "f4f0c8e5d830f30285896e58b438a409ce9a3c9804dcf3571b1762cbe9acccca"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
             }
           ],
           "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
