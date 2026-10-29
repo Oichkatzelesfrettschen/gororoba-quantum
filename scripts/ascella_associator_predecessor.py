@@ -582,9 +582,11 @@ def validate_count_payload(counts: Any, setting_name: str, min_photons: int = 2)
             )
         if count == 0:
             continue
-        if not (isinstance(state_str, str) and state_str.startswith("|") and state_str.endswith(">")):
-            raise ValueError(f"{setting_name}: malformed Fock state syntax {state_str!r}")
-        inner = state_str[1:-1]
+        cleaned = state_str.strip()
+        if cleaned.startswith("|") and cleaned.endswith(">"):
+            inner = cleaned[1:-1]
+        else:
+            inner = cleaned
         try:
             occupations = [int(x.strip()) for x in inner.split(",")]
         except ValueError as err:
@@ -843,8 +845,9 @@ def analyze(
     for setting, entry in zip(expected_settings, entries, strict=True):
         if not isinstance(entry, dict):
             raise ValueError(f"entry for {setting['name']} is not a dictionary")
-        if entry.get("setting") != setting["name"]:
-            raise ValueError(f"setting sequence mismatch: expected {setting['name']!r}, got {entry.get('setting')!r}")
+        entry_name = entry.get("setting") or entry.get("iteration", {}).get("name")
+        if entry_name is not None and entry_name != setting["name"]:
+            raise ValueError(f"setting sequence mismatch: expected {setting['name']!r}, got {entry_name!r}")
 
         counts = validate_count_payload(
             entry.get("counts"),
@@ -858,7 +861,7 @@ def analyze(
         if role == "predecessor":
             for state_str, count in counts.items():
                 sentinel_stats["predecessor"][pred]["total_events"] += count
-                occupation = [int(c) for c in state_str[1:-1].split(",")]
+                occupation = [int(c) for c in state_str.strip("|>").split(",")]
                 occupied = [m for m, n in enumerate(occupation) if n > 0]
                 if any(m >= LOGICAL for m in occupied):
                     sentinel_stats["predecessor"][pred]["sentinel_events"] += count
@@ -875,7 +878,7 @@ def analyze(
 
         for state_str, count in counts.items():
             sentinel_stats["target"][pred]["total_events"] += count
-            occupation = [int(c) for c in state_str[1:-1].split(",")]
+            occupation = [int(c) for c in state_str.strip("|>").split(",")]
             occupied = [m for m, n in enumerate(occupation) if n > 0]
             if any(m >= LOGICAL for m in occupied):
                 sentinel_stats["target"][pred]["sentinel_events"] += count
