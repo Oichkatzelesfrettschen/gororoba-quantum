@@ -1,0 +1,21 @@
+{
+  "user_approval": "Approved the zero credit QX runs provided it meets our repo/the FAQs requrements of jobs and queuing and time etc.",
+  "cases_sha256": "bb52460648caed1a8fe2be39131f88efaaa7022f53614f386b48034027290554",
+  "scope": "One QX batch, three circuits, 2048 shots each; Tuna execution excluded.",
+  "observed_utc": "2026-10-27T16:22:03.359260+00:00",
+  "preflight": "docs/evidence/tuna-projector-geometry/approved-qx-preflight.json",
+  "backend_snapshot": "docs/evidence/tuna-projector-geometry/approved-qx-backend.json",
+  "account_active_qx_batches": [],
+  "queue_at_copy": {
+    "number_of_jobs_in_queue": 0,
+    "min_wait_time_in_queue_secs": 0.0,
+    "avg_wait_time_in_queue_secs": 0.0,
+    "max_wait_time_in_queue_secs": 0.0
+  },
+  "execution_estimate_seconds": [
+    0.09,
+    31.2
+  ],
+  "provider_per_job_limit_seconds": 3600.0,
+  "expected_metered_credits": 0
+}

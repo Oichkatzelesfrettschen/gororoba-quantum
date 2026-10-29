@@ -1,0 +1,15 @@
+{
+  "campaign_sha256": "b0bb0ef6497a2a57b9478a9174d786e5b0945dbc3ce4a66042ce4123d3eafd25",
+  "execution_readiness": "pass",
+  "model": "gpt-daybreak-blue-latest",
+  "observed_utc": "2026-10-27T23:28:06.508423+00:00",
+  "provider_operations": "unrun by reviewer",
+  "raw_report_sha256": "a288212859fd04d050718a0651ab725923247ef92dd96637e3dededca39c7665",
+  "reasoning_effort": "high",
+  "retained_report": "docs/archive/reviews/tuna-destination-one-admission-review.md",
+  "retained_report_sha256": "a288212859fd04d050718a0651ab725923247ef92dd96637e3dededca39c7665",
+  "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+  "schema": "qi-destination-one-peer-review-v1",
+  "service_tier": "default",
+  "session": "01a17e38-6428-7eb3-b233-d8fbf9cc47b8"
+}

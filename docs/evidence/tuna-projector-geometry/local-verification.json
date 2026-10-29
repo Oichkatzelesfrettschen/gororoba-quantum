@@ -1,0 +1,23 @@
+{
+  "observed_utc": "2026-10-27T16:02:40.148768+00:00",
+  "checks": [
+    {
+      "command": [
+        "sh",
+        "ci/pr_checks.sh",
+        "tests",
+        "tests/scripts/test_qi_projector_geometry.py",
+        "tests/scripts/test_qi_monitoring.py"
+      ],
+      "returncode": 0,
+      "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.14.7, pytest-9.1.1, pluggy-1.7.0\nrootdir: .\nconfigfile: pyproject.toml\ncreated: 2/2 workers\n2 workers [30 items]\n\n..............................                                           [100%]\n============================= slowest 25 durations =============================\n0.06s call     tests/scripts/test_qi_projector_geometry.py::test_manifest_bit_order_and_provenance\n\n(24 durations < 0.005s hidden.  Use -vv to show these durations.)\n============================== 30 passed in 0.56s ==============================\n",
+      "stderr": ""
+    }
+  ],
+  "inputs": {
+    "scripts/qi_projector_geometry.py": "8f8a1daa28dc1f22e5ff86bc67a61e4e5c03a8a926a35268ccf2aeddffa9f56c",
+    "tests/scripts/test_qi_projector_geometry.py": "79d10554304724857e51b18628616e4681690caae7ad9b664677ea943b11c3f4",
+    "scripts/qi_monitoring.py": "2e77830be04a7a6a831b49f99e878c009ee6705bf05f7d946063fc53faab616f",
+    "tests/scripts/test_qi_monitoring.py": "fd936256b25f0e4b97fd96dfd9c13907f870b7afdd89cfc000e58c628649323f"
+  }
+}

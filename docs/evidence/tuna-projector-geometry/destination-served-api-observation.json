@@ -1,0 +1,36 @@
+{
+  "artifact_routes": {
+    "/files": [
+      "get",
+      "post"
+    ],
+    "/files/{id}": [
+      "get",
+      "delete"
+    ],
+    "/final_results/job/{job_id}": [
+      "get"
+    ],
+    "/jobs/{id}/logs": [
+      "get"
+    ],
+    "/results/job/{job_id}": [
+      "get",
+      "delete"
+    ]
+  },
+  "boundary": "Read-only currently served OpenAPI; advertised route existence and account access are separate properties.",
+  "info": {
+    "title": "Quantum Inspire 2",
+    "version": "0.1.0"
+  },
+  "metadata_detail": "Not Found",
+  "metadata_probe_http_status": 404,
+  "metadata_response_sha256": "37ec4665a8102d115ffd1ac20dae94c98b4dac64b0c1a68228aa2a531caeb35d",
+  "metadata_routes": {},
+  "observed_utc": "2026-10-28T00:03:03.397145+00:00",
+  "openapi_object_sha256": "31e2db63f1ce26d8041dcf7841d3f76d837fbc31a13d6ae0017a33427f39f6af",
+  "path_count": 53,
+  "request_started_utc": "2026-10-28T00:03:01.775348+00:00",
+  "schema": "qi-served-artifact-api-observation-v1"
+}

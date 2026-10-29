@@ -1,0 +1,430 @@
+{
+  "backend": "tuna_17",
+  "backend_snapshot": {
+    "file": "backend.json",
+    "sha256": "e92dab9819a2c20da16d057373e5025e89f6e22abc34253178cb801ac32e1223"
+  },
+  "backend_type_id": 7,
+  "baseline": {
+    "file": "results/quantum_inspire/proposals/tuna-projector-geometry/tuna-qualification/readout-one.cq",
+    "sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f"
+  },
+  "circuits": [
+    {
+      "analysis_metadata": {
+        "bit_order": "classical bit zero is the rightmost character",
+        "canonical_early_classical_bits": [
+          17,
+          18,
+          19
+        ],
+        "canonical_early_qubit_order": [
+          4,
+          11,
+          6
+        ],
+        "canonical_early_string_offsets": [
+          2,
+          1,
+          0
+        ],
+        "decoder_rule": "Read qubits through declared destinations; inverse-permute the rotated arm.",
+        "index_convention": "zero-based string offsets from the left",
+        "terminal_classical_bits": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "width": 20
+      },
+      "file": "baseline-before.cq",
+      "measurement_to_bit_map": [
+        {
+          "classical_bit": 17,
+          "qubit": 4
+        },
+        {
+          "classical_bit": 18,
+          "qubit": 11
+        },
+        {
+          "classical_bit": 19,
+          "qubit": 6
+        },
+        {
+          "classical_bit": 0,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 1,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 2,
+          "qubit": 2
+        },
+        {
+          "classical_bit": 3,
+          "qubit": 3
+        },
+        {
+          "classical_bit": 4,
+          "qubit": 4
+        },
+        {
+          "classical_bit": 5,
+          "qubit": 5
+        },
+        {
+          "classical_bit": 6,
+          "qubit": 6
+        },
+        {
+          "classical_bit": 7,
+          "qubit": 7
+        },
+        {
+          "classical_bit": 8,
+          "qubit": 8
+        },
+        {
+          "classical_bit": 9,
+          "qubit": 9
+        },
+        {
+          "classical_bit": 10,
+          "qubit": 10
+        },
+        {
+          "classical_bit": 11,
+          "qubit": 11
+        },
+        {
+          "classical_bit": 12,
+          "qubit": 12
+        },
+        {
+          "classical_bit": 13,
+          "qubit": 13
+        },
+        {
+          "classical_bit": 14,
+          "qubit": 14
+        },
+        {
+          "classical_bit": 15,
+          "qubit": 15
+        },
+        {
+          "classical_bit": 16,
+          "qubit": 16
+        }
+      ],
+      "name": "baseline-before",
+      "physical_instruction_stream_sha256": "cb32c48447960064a6d51fecd6fff49ff5be76579c7b697867dbd90fe534bfd2",
+      "prepared_label": 1,
+      "sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f"
+    },
+    {
+      "analysis_metadata": {
+        "bit_order": "classical bit zero is the rightmost character",
+        "canonical_early_classical_bits": [
+          19,
+          17,
+          18
+        ],
+        "canonical_early_qubit_order": [
+          4,
+          11,
+          6
+        ],
+        "canonical_early_string_offsets": [
+          0,
+          2,
+          1
+        ],
+        "decoder_rule": "Read qubits through declared destinations; inverse-permute the rotated arm.",
+        "index_convention": "zero-based string offsets from the left",
+        "terminal_classical_bits": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "width": 20
+      },
+      "file": "rotated-destinations.cq",
+      "measurement_to_bit_map": [
+        {
+          "classical_bit": 19,
+          "qubit": 4
+        },
+        {
+          "classical_bit": 17,
+          "qubit": 11
+        },
+        {
+          "classical_bit": 18,
+          "qubit": 6
+        },
+        {
+          "classical_bit": 0,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 1,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 2,
+          "qubit": 2
+        },
+        {
+          "classical_bit": 3,
+          "qubit": 3
+        },
+        {
+          "classical_bit": 4,
+          "qubit": 4
+        },
+        {
+          "classical_bit": 5,
+          "qubit": 5
+        },
+        {
+          "classical_bit": 6,
+          "qubit": 6
+        },
+        {
+          "classical_bit": 7,
+          "qubit": 7
+        },
+        {
+          "classical_bit": 8,
+          "qubit": 8
+        },
+        {
+          "classical_bit": 9,
+          "qubit": 9
+        },
+        {
+          "classical_bit": 10,
+          "qubit": 10
+        },
+        {
+          "classical_bit": 11,
+          "qubit": 11
+        },
+        {
+          "classical_bit": 12,
+          "qubit": 12
+        },
+        {
+          "classical_bit": 13,
+          "qubit": 13
+        },
+        {
+          "classical_bit": 14,
+          "qubit": 14
+        },
+        {
+          "classical_bit": 15,
+          "qubit": 15
+        },
+        {
+          "classical_bit": 16,
+          "qubit": 16
+        }
+      ],
+      "name": "rotated-destinations",
+      "physical_instruction_stream_sha256": "cb32c48447960064a6d51fecd6fff49ff5be76579c7b697867dbd90fe534bfd2",
+      "prepared_label": 1,
+      "sha256": "8accfebdeb2083a4e861754abf29004b1a3a646633dcfc57eed3d9fdc35c4b81"
+    },
+    {
+      "analysis_metadata": {
+        "bit_order": "classical bit zero is the rightmost character",
+        "canonical_early_classical_bits": [
+          17,
+          18,
+          19
+        ],
+        "canonical_early_qubit_order": [
+          4,
+          11,
+          6
+        ],
+        "canonical_early_string_offsets": [
+          2,
+          1,
+          0
+        ],
+        "decoder_rule": "Read qubits through declared destinations; inverse-permute the rotated arm.",
+        "index_convention": "zero-based string offsets from the left",
+        "terminal_classical_bits": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16
+        ],
+        "width": 20
+      },
+      "file": "baseline-after.cq",
+      "measurement_to_bit_map": [
+        {
+          "classical_bit": 17,
+          "qubit": 4
+        },
+        {
+          "classical_bit": 18,
+          "qubit": 11
+        },
+        {
+          "classical_bit": 19,
+          "qubit": 6
+        },
+        {
+          "classical_bit": 0,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 1,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 2,
+          "qubit": 2
+        },
+        {
+          "classical_bit": 3,
+          "qubit": 3
+        },
+        {
+          "classical_bit": 4,
+          "qubit": 4
+        },
+        {
+          "classical_bit": 5,
+          "qubit": 5
+        },
+        {
+          "classical_bit": 6,
+          "qubit": 6
+        },
+        {
+          "classical_bit": 7,
+          "qubit": 7
+        },
+        {
+          "classical_bit": 8,
+          "qubit": 8
+        },
+        {
+          "classical_bit": 9,
+          "qubit": 9
+        },
+        {
+          "classical_bit": 10,
+          "qubit": 10
+        },
+        {
+          "classical_bit": 11,
+          "qubit": 11
+        },
+        {
+          "classical_bit": 12,
+          "qubit": 12
+        },
+        {
+          "classical_bit": 13,
+          "qubit": 13
+        },
+        {
+          "classical_bit": 14,
+          "qubit": 14
+        },
+        {
+          "classical_bit": 15,
+          "qubit": 15
+        },
+        {
+          "classical_bit": 16,
+          "qubit": 16
+        }
+      ],
+      "name": "baseline-after",
+      "physical_instruction_stream_sha256": "cb32c48447960064a6d51fecd6fff49ff5be76579c7b697867dbd90fe534bfd2",
+      "prepared_label": 1,
+      "sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f"
+    }
+  ],
+  "execution_order_boundary": "Verify provider execution order before treating the batch as A-B-A.",
+  "expected_execution_seconds_decimal": "14.688660",
+  "limits": {
+    "account_queued_batches": 1,
+    "circuits_per_batch": 3,
+    "job_seconds": 300
+  },
+  "nqubits": 17,
+  "prepared_label": 1,
+  "producer": {
+    "file": "scripts/qi_tuna_readout_mapping_cases.py",
+    "sha256": "ed385faf0876b1cf126aa306179290da25a053735c589954f241030bf3d28ef6"
+  },
+  "provider_execution_authorized": false,
+  "provider_execution_ceiling_seconds": 900,
+  "requested_circuit_order": [
+    "baseline-before.cq",
+    "rotated-destinations.cq",
+    "baseline-after.cq"
+  ],
+  "required_before_submission": [
+    "Fresh backend/compiler admission, limits, pause, queue and zero-credit terms",
+    "Frozen qualified statistical comparison, dependence model, missingness and stopping rules",
+    "Explicit user approval of the exact written case and circuit manifest"
+  ],
+  "schema": "qi-tuna-readout-destination-case-v1",
+  "shots": 4096,
+  "statistical_model_status": "power-and-dependence-unqualified",
+  "status": "draft-unapproved"
+}

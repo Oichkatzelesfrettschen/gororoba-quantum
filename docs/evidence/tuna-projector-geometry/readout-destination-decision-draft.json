@@ -1,0 +1,42 @@
+{
+  "alternatives": [
+    "Returned response is invariant to destination naming within a qualified comparison margin.",
+    "Returned response depends on classical destination naming or an unobserved associated context.",
+    "Temporal change or unsupported execution order makes the comparison inconclusive."
+  ],
+  "backend": "tuna_17",
+  "case_id": "tuna-readout-destination-invariance",
+  "credits_ceiling": 0,
+  "dependence_model": "Unqualified: three jobs per preparation supply one intervention block; lag summaries do not establish IID or between-job exchangeability. Independent blocks or justified dependence bounds remain required.",
+  "discriminating_observable": "Twenty-four early/final joint-probability cells across three ancillas and two nominal preparations; rotated-minus-bracketing-baseline differences with baseline drift checks.",
+  "end_without_retry": "End after the admitted finite case or first invalidity; preserve failed/ambiguous jobs and require a new case before further acquisition.",
+  "expected_seconds_decimal": "29.533215",
+  "layout_timing_identity": "Frozen 17-qubit source; early q4/q11/q6, terminal all17, zero explicit wait; B changes only bits17,18,19 to19,17,18. Served schedule equality remains unverified.",
+  "objective": "Test whether inverse-decoded early/final binary response changes when only classical destinations change.",
+  "observation_chain": "Frozen cQASM and manifest -> local compile equality -> live guarded submission -> provider identities/timestamps -> raw ordered strings -> inverse decoder -> frozen comparison analyzer (required before admission).",
+  "power_model": {
+    "evidence": "docs/design/tuna-readout-destination-invariance.md gives an explicitly conditional IID precision calculation, not qualified power or covariance.",
+    "status": "unqualified"
+  },
+  "processing_policy": "Preserve raw shots and failures; inverse-permute exactly the declared destination map; no favorable postselection, label repair, or inherited qualification acceptance.",
+  "provider": "quantum_inspire",
+  "reserve_seconds": 0,
+  "retry_authorized": false,
+  "schema": "acquisition-decision-v1",
+  "seconds_ceiling": 1800,
+  "shot_ceiling": 24576,
+  "simulation_justification": "The question concerns served acquisition association and physical measurement context; local compiler or noiseless simulation cannot establish provider reconstruction.",
+  "sources": {
+    "diagnosis": "docs/evidence/tuna-projector-geometry/readout-cause-diagnosis.md",
+    "proposal": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/proposal.json"
+  },
+  "status": "draft-unapproved-statistically-unadmitted",
+  "stopping_outcomes": {
+    "implementation route unavailable": "Provider cannot return correct destination metadata, required timing/order, or complete raw records.",
+    "inconclusive within budget": "Intervals or drift controls cannot discriminate within the admitted finite case.",
+    "objective established within scope": "Qualified uncertainty places all selected cells within the frozen equivalence margin; claim only bounded destination invariance.",
+    "protocol inadmissible": "Source/configuration changes, unqualified statistics, unmatched scope, charges, failed jobs or required ordering failure invalidate the planned inference.",
+    "specified alternative supported": "Qualified comparison exceeds the frozen difference threshold with satisfied order/drift checks; claim destination dependence without assigning a subsystem."
+  },
+  "trial_definition": "One returned shot supplies joint binary labels; the intervention unit is a provider job within an executed-order-verified bracket. Shots do not supply independent treatment assignments."
+}

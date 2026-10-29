@@ -1,0 +1,18 @@
+{
+  "boundary": "Local installation status and latest public release do not identify or repair the provider Grafana-to-Prometheus deployment.",
+  "filtered_release_metadata_sha256": "f929a59589919085a20cee414f40364849df0441e0c0349b21162b417de6a3fb",
+  "local_binary_on_path": false,
+  "local_pacman_query": {
+    "package": "prometheus",
+    "package_not_found": true,
+    "returncode": 1
+  },
+  "observed_utc": "2026-10-28T00:32:50.496064+00:00",
+  "public_upstream_latest_release": {
+    "html_url": "https://github.com/prometheus/prometheus/releases/tag/v3.15.1",
+    "published_at": "2026-10-21T16:15:57Z",
+    "tag_name": "v3.15.1"
+  },
+  "remote_provider_prometheus_version": "unmeasured",
+  "schema": "qi-prometheus-version-scope-observation-v1"
+}

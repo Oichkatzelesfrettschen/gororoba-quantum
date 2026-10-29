@@ -2,6 +2,48 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qi-tuna-destination-one-baseline-before",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before",
+      "family": "nominal-one classical-destination response comparison",
+      "question": "What early/final binary response does the nominal-one control return in the baseline-before position of the separately approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-one-rotated",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations",
+      "family": "nominal-one classical-destination response comparison",
+      "question": "What early/final binary response does the nominal-one control return in the rotated-destinations position of the separately approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-one-baseline-after",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after",
+      "family": "nominal-one classical-destination response comparison",
+      "question": "What early/final binary response does the nominal-one control return in the baseline-after position of the separately approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-zero-baseline-before",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before",
+      "family": "nominal-zero classical-destination response prefix",
+      "question": "What early/final binary response does the nominal-zero control return in the baseline-before position of the approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-zero-rotated",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations",
+      "family": "nominal-zero classical-destination response prefix",
+      "question": "What early/final binary response does the nominal-zero control return in the rotated-destinations position of the approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-zero-baseline-after",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after",
+      "family": "nominal-zero classical-destination response prefix",
+      "question": "What early/final binary response does the nominal-zero control return in the baseline-after position of the approved destination comparison?"
+    },
+    {
       "id": "qd-ascella-signed-coherence-replication-job-06",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06",
@@ -2473,6 +2515,20 @@
       "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
     },
     {
+      "id": "qi-qx-projector-geometry-conformance",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx",
+      "family": "sequential projector geometry remote conformance",
+      "question": "Do the three approved QX terminal circuits reproduce the frozen herald, joint-acceptance and signed-moment tolerances before Tuna qualification?"
+    },
+    {
+      "id": "qi-tuna-projector-register-qualification",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna",
+      "family": "sequential projector physical register qualification",
+      "question": "Does the unchanged three-circuit Tuna case pass the frozen assignment-contrast and early/final register-consistency screens?"
+    },
+    {
       "id": "qd-ascella-transition-matched-mesh-day-repeat",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat",
@@ -2481,6 +2537,151 @@
     }
   ],
   "claims": [
+    {
+      "id": "qi-tuna-destination-one-response",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "statement": "The three complete 4096-shot nominal-one Tuna-17 jobs establish all 12 selected realized predictable destination-response cell contrasts within 0.10, with all 12 baseline endpoint intervals within 0.10, under the frozen simultaneous 99% martingale contract.",
+      "boundary": "The endpoint covers marginal early/final cells on declared qubits 4, 11 and 6 and one nominal preparation. It establishes neither physical populations, QND readout, causal destination dependence, full-register invariance nor projector geometry. The old six-job endpoint remains unavailable; the zero/one comparison is retrospective. Further hardware requires another approved case accounting for measured waits and benchmarking context.",
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/nominal-one-destination-response.md",
+        "docs/notes/quantum_inspire/destination-response-upstream-request.md"
+      ],
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-canonical.json",
+          "sha256": "ba74fbfb5f26ec5463059b26d66138b571be8792a2dbbd32dc58bd5a5bf9ab1a"
+        },
+        {
+          "path": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json",
+          "sha256": "b89b115df823113dc8430c7eebddee1898a3906ac7109ea0624edd6803be0027"
+        }
+      ],
+      "gates": {
+        "core-qi-tuna-destination-one-response": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-destination-one-baseline-before",
+        "qi-tuna-destination-one-rotated",
+        "qi-tuna-destination-one-baseline-after"
+      ],
+      "assumptions": [
+        "Trusted chronological binary shot records, coherent provider/local timestamps and the declared inverse decoder.",
+        "Conditional-response targets and finite-sample uncertainty follow the frozen three-job mathematical contract; transient bounds remain unverified."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qi-tuna-destination-case-deadline",
+        "qi-tuna-destination-zero-prefix-response"
+      ]
+    },
+    {
+      "domain": "hardware",
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/ordered-response-acquisition.md"
+      ],
+      "gates": {
+        "core-qi-tuna-destination-prefix": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-destination-zero-baseline-before",
+        "qi-tuna-destination-zero-rotated",
+        "qi-tuna-destination-zero-baseline-after"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "qi-tuna-destination-case-deadline",
+      "statement": "The approved six-job destination comparison stopped at its 3600-second request deadline after three nominal-zero submissions. All 12,288 submitted shots were retained in 14.356782 reported execution seconds with zero charges; the frozen whole-case decision is implementation route unavailable because the nominal-one acquisitions are absent.",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Operational incomplete-case outcome. Read-only recovery collected the third already submitted job after the executor stopped. The whole-case equivalence/departure endpoint remains unavailable; further submissions require a separately approved case.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/analysis.json",
+          "sha256": "ab4f4b9f9a5669eebce38be49da4f3fc440ec440ec536719d2a6431de960f38e"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/execution-state.json",
+          "sha256": "8956ff400539f04972751c53d5f762e4e40a64b3702f8b015ad038a5c078224b"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/read-only-recovery-receipt.json",
+          "sha256": "7ed20c380814d7a1df6f5c66c3aa5783e6274418b2297e8cf400c73f1a6fc660"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/completion-admission.json",
+          "sha256": "01635028b4276f2d5bc78b2df62362b6f26e3f73f0856921938ba678d9b41048"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/completion-admission.json",
+          "sha256": "97bc60ca2a29ebcc850da60aee80b001e969a6f3d1e5604fac74a4144f77bb55"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/completion-admission.json",
+          "sha256": "d888483de2a3dad1e61c321088c3c2979a5da7143f20b0548396e0daf829f14a"
+        }
+      ],
+      "assumptions": [
+        "Provider timestamp fields and result identities describe the recorded service operations.",
+        "The frozen complete-case decision requires both nominal preparations."
+      ],
+      "related_claims": [
+        "qi-tuna-destination-zero-prefix-response",
+        "qi-tuna-projector-register-qualification"
+      ]
+    },
+    {
+      "domain": "hardware",
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/ordered-response-acquisition.md"
+      ],
+      "gates": {
+        "core-qi-tuna-destination-prefix": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-destination-zero-baseline-before",
+        "qi-tuna-destination-zero-rotated",
+        "qi-tuna-destination-zero-baseline-after"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "qi-tuna-destination-zero-prefix-response",
+      "statement": "In the retained posthoc nominal-zero prefix, q6 terminal-one counts are 938, 2525 and 969 out of 4096 before, during and after rotation; the maximum empirical early/final joint-cell contrast is 0.43896484375. The q4 and q11 maximum contrasts are 0.0052490234375 and 0.001708984375.",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive frequencies from the incomplete case. A transformation restricted to stored early labels leaves each dataset terminal marginal unchanged; broader reconstruction/scheduling changes and a coincident transient remain alternatives. Neither statistical acceptance of the six-job case nor physical causation or populations is established.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-recovery-order.json",
+          "sha256": "0868bfaa271898d680db09ff245bdeb2e5cb2436cd5270c72cc7e058ded085fa"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/stored-source-observation.json",
+          "sha256": "3f919abc1ca2418aa1699ad26f451e837032d017f45c846b250534b614525955"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/stored-source-observation.json",
+          "sha256": "f417decd2d03dfedef2c145fae537439280bb78531cee6b5df2953912dece90e"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/stored-source-observation.json",
+          "sha256": "602e8d35d66f3d93174aeb13f13654a0e511be4589ab8c309aa6952c954d81ec"
+        }
+      ],
+      "assumptions": [
+        "The documented rightmost classical-bit-zero convention supplies the decoder.",
+        "Stored source identity establishes transport bytes, while served analog schedules remain unavailable."
+      ],
+      "related_claims": [
+        "qi-tuna-destination-case-deadline",
+        "qi-tuna-readout-response-mixture"
+      ]
+    },
     {
       "id": "ascella-signed-coherence-permuted-repeat",
       "statement": "The approved permuted repeat on qpu:ascella (job 6ef8e8db) ran job-00's 64 circuits, all 64 compiled circuits equal to job-00's, in ANU QRNG order at 16384 samples per iteration: 1048576 samples in 186 s, job-00's duration, for 1.032768 free credits, and all 27 endpoints qualify again. Under the preregistered comparison the outside-block clicks follow the execution sequence, not the setting: per-setting Spearman against job-00 -0.075 (p 0.56), lag-1 autocorrelation -0.653 in the new order (p below 1e-4), compiled-phase change Spearman 0.12 (p 0.35), and the median count grows with the budget (log2 ratio 0.83). The per-setting analyzer residuals reproduce, Pearson 0.974 on X and 0.802 on Y (p below 1e-4), at contrast 0.9719 against 0.9699 on X and 0.9669 against 0.9702 on Y.",
@@ -12731,6 +12932,127 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "qi-qx-projector-geometry-conformance",
+      "statement": "All 18 preregistered projector-geometry QX discrepancy checks pass across three 2048-shot terminal circuits; the jobs report 1.254351 seconds total execution and zero recorded transaction charges.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "Finite-shot conformance of the three named noiseless QX circuits. The result establishes neither Tuna behavior nor early classical-bit retention, calibration, causal measurement disturbance or a new algebra theorem. Zero charges describe the retained collection and account ledger.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json",
+          "sha256": "ceb6efcf570c43a6e772254716119fa8f555d20279832acd5a9d5968ffbc9c62"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/results.json",
+          "sha256": "a0929b26fa2899f2386ee99eccf1226db30c8cd4731dca4de752e1fabf62d3c4"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/design-at-approval.md",
+          "sha256": "d13acc9a43da288c439c6cff1cdffc809ca4945a7127cc4e67d96ef913515b9c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/qx-conformance.md"
+      ],
+      "gates": {
+        "core-qi-projector-conformance": "replay"
+      },
+      "acquisitions": [
+        "qi-qx-projector-geometry-conformance"
+      ],
+      "assumptions": [
+        "The retained raw shot strings follow the observed QX qubit-zero-rightmost convention.",
+        "The frozen finite-shot discrepancy screen is a conformance qualification, not a hardware significance test."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": []
+    },
+    {
+      "id": "qi-tuna-projector-register-qualification",
+      "statement": "The three 4096-shot Tuna qualification jobs completed with zero recorded transaction charges but failed four of twelve required assignment contrasts and all nine early/final consistency checks.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Failure of the specified zero-wait repeated-readout instrument screen. The data do not identify calibration, scheduling, readout context or acquisition reconstruction as the cause, and support no hardware projector-geometry or causal backaction claim.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+          "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+          "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification-at-approval.md",
+          "sha256": "e504d9e4962338df58dcdf16b8564cd2ef2677d996bd90bed2a2588cc7da51c4"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/live-admission.json",
+          "sha256": "c6db70139af4d05b9a18d134372d437f320c9d177d8f29134197d74dc67b9d66"
+        }
+      ],
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/tuna-qualification.md"
+      ],
+      "gates": {
+        "core-qi-tuna-projector-qualification": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-projector-register-qualification"
+      ],
+      "assumptions": [
+        "Classical bit zero is the rightmost character under the recorded Tuna convention.",
+        "The frozen pilot thresholds assess the specified instrument path rather than an isolated physical mechanism."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qi-qx-projector-geometry-conformance"
+      ]
+    },
+    {
+      "id": "qi-tuna-readout-response-mixture",
+      "statement": "A post-hoc convex combination of nominal-zero and nominal-one early/final control tables approximates each geometry ancilla table with empirical total variation residual below 0.0093; exhaustive fixed early-bit permutation/polarity choices cannot repair the frozen qualification.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive fits and exact finite relabeling checks on one retained three-job batch. Mixture coordinates are not populations; calibration-context transfer, independence, stationarity, QND behavior and a physical cause remain unestablished. The frozen qualification remains refused.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-diagnostics.json",
+          "sha256": "25f1090b25a06ef4ce56537d52a3bf9b569da4981474c84568f19f886f60bd77"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-response-mixture.json",
+          "sha256": "8507279a292c0e3d7682ffb00abde6d159ebef71783713eaf54fe2a41d250258"
+        }
+      ],
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/readout-cause-diagnosis.md"
+      ],
+      "gates": {
+        "core-qi-tuna-readout-diagnosis": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-projector-register-qualification"
+      ],
+      "assumptions": [
+        "The documented classical-bit order supplies the fixed decoder.",
+        "Control-to-geometry transfer is a post-hoc sensitivity assumption, not an admitted calibration."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qi-tuna-projector-register-qualification"
+      ]
     },
     {
       "id": "ascella-transition-day-separated-matched-mesh",

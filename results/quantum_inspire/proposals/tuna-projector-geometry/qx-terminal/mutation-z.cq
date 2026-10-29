@@ -1,0 +1,42 @@
+version 3.0
+
+qubit[9] q
+bit[9] b
+
+init q
+
+H q[2]
+Ry(0) q[0]
+barrier q
+Ry(0) q[0]
+barrier q
+H q[1]
+CZ q[0], q[1]
+H q[1]
+H q[1]
+CZ q[2], q[1]
+H q[1]
+H q[5]
+Ry(-0.78539816339744828) q[3]
+barrier q
+Ry(0.78539816339744828) q[3]
+barrier q
+H q[4]
+CZ q[3], q[4]
+H q[4]
+H q[4]
+CZ q[5], q[4]
+H q[4]
+H q[8]
+Ry(-1.5707963267948966) q[6]
+barrier q
+Ry(1.5707963267948966) q[6]
+barrier q
+H q[7]
+CZ q[6], q[7]
+H q[7]
+H q[7]
+CZ q[8], q[7]
+H q[7]
+barrier q
+b[0:8] = measure q

@@ -1,0 +1,521 @@
+{
+  "blocks": [
+    {
+      "herald_counts": [
+        43,
+        160,
+        66
+      ],
+      "joint_zero": [
+        0.03515625,
+        0.05078125,
+        0.00390625
+      ],
+      "joint_zero_counts": [
+        9,
+        13,
+        1
+      ],
+      "signed_joint_sums": [
+        -25,
+        -134,
+        -64
+      ],
+      "start": 0,
+      "stop": 256
+    },
+    {
+      "herald_counts": [
+        56,
+        168,
+        91
+      ],
+      "joint_zero": [
+        0.0234375,
+        0.06640625,
+        0.0234375
+      ],
+      "joint_zero_counts": [
+        6,
+        17,
+        6
+      ],
+      "signed_joint_sums": [
+        -44,
+        -134,
+        -79
+      ],
+      "start": 256,
+      "stop": 512
+    },
+    {
+      "herald_counts": [
+        54,
+        177,
+        78
+      ],
+      "joint_zero": [
+        0.05078125,
+        0.0859375,
+        0.0234375
+      ],
+      "joint_zero_counts": [
+        13,
+        22,
+        6
+      ],
+      "signed_joint_sums": [
+        -28,
+        -133,
+        -66
+      ],
+      "start": 512,
+      "stop": 768
+    },
+    {
+      "herald_counts": [
+        45,
+        177,
+        76
+      ],
+      "joint_zero": [
+        0.05078125,
+        0.0625,
+        0.03515625
+      ],
+      "joint_zero_counts": [
+        13,
+        16,
+        9
+      ],
+      "signed_joint_sums": [
+        -19,
+        -145,
+        -58
+      ],
+      "start": 768,
+      "stop": 1024
+    },
+    {
+      "herald_counts": [
+        64,
+        148,
+        77
+      ],
+      "joint_zero": [
+        0.06640625,
+        0.0390625,
+        0.015625
+      ],
+      "joint_zero_counts": [
+        17,
+        10,
+        4
+      ],
+      "signed_joint_sums": [
+        -30,
+        -128,
+        -69
+      ],
+      "start": 1024,
+      "stop": 1280
+    },
+    {
+      "herald_counts": [
+        49,
+        158,
+        68
+      ],
+      "joint_zero": [
+        0.03125,
+        0.0625,
+        0.015625
+      ],
+      "joint_zero_counts": [
+        8,
+        16,
+        4
+      ],
+      "signed_joint_sums": [
+        -33,
+        -126,
+        -60
+      ],
+      "start": 1280,
+      "stop": 1536
+    },
+    {
+      "herald_counts": [
+        52,
+        162,
+        79
+      ],
+      "joint_zero": [
+        0.0234375,
+        0.07421875,
+        0.01953125
+      ],
+      "joint_zero_counts": [
+        6,
+        19,
+        5
+      ],
+      "signed_joint_sums": [
+        -40,
+        -124,
+        -69
+      ],
+      "start": 1536,
+      "stop": 1792
+    },
+    {
+      "herald_counts": [
+        54,
+        158,
+        84
+      ],
+      "joint_zero": [
+        0.03515625,
+        0.0625,
+        0.0234375
+      ],
+      "joint_zero_counts": [
+        9,
+        16,
+        6
+      ],
+      "signed_joint_sums": [
+        -36,
+        -126,
+        -72
+      ],
+      "start": 1792,
+      "stop": 2048
+    },
+    {
+      "herald_counts": [
+        53,
+        174,
+        69
+      ],
+      "joint_zero": [
+        0.03125,
+        0.0703125,
+        0.015625
+      ],
+      "joint_zero_counts": [
+        8,
+        18,
+        4
+      ],
+      "signed_joint_sums": [
+        -37,
+        -138,
+        -61
+      ],
+      "start": 2048,
+      "stop": 2304
+    },
+    {
+      "herald_counts": [
+        50,
+        149,
+        81
+      ],
+      "joint_zero": [
+        0.0390625,
+        0.04296875,
+        0.0390625
+      ],
+      "joint_zero_counts": [
+        10,
+        11,
+        10
+      ],
+      "signed_joint_sums": [
+        -30,
+        -127,
+        -61
+      ],
+      "start": 2304,
+      "stop": 2560
+    },
+    {
+      "herald_counts": [
+        57,
+        169,
+        79
+      ],
+      "joint_zero": [
+        0.05078125,
+        0.0703125,
+        0.02734375
+      ],
+      "joint_zero_counts": [
+        13,
+        18,
+        7
+      ],
+      "signed_joint_sums": [
+        -31,
+        -133,
+        -65
+      ],
+      "start": 2560,
+      "stop": 2816
+    },
+    {
+      "herald_counts": [
+        53,
+        153,
+        84
+      ],
+      "joint_zero": [
+        0.03515625,
+        0.078125,
+        0.01953125
+      ],
+      "joint_zero_counts": [
+        9,
+        20,
+        5
+      ],
+      "signed_joint_sums": [
+        -35,
+        -113,
+        -74
+      ],
+      "start": 2816,
+      "stop": 3072
+    },
+    {
+      "herald_counts": [
+        55,
+        161,
+        79
+      ],
+      "joint_zero": [
+        0.0546875,
+        0.046875,
+        0.0234375
+      ],
+      "joint_zero_counts": [
+        14,
+        12,
+        6
+      ],
+      "signed_joint_sums": [
+        -27,
+        -137,
+        -67
+      ],
+      "start": 3072,
+      "stop": 3328
+    },
+    {
+      "herald_counts": [
+        51,
+        155,
+        76
+      ],
+      "joint_zero": [
+        0.05078125,
+        0.05078125,
+        0.02734375
+      ],
+      "joint_zero_counts": [
+        13,
+        13,
+        7
+      ],
+      "signed_joint_sums": [
+        -25,
+        -129,
+        -62
+      ],
+      "start": 3328,
+      "stop": 3584
+    },
+    {
+      "herald_counts": [
+        57,
+        159,
+        74
+      ],
+      "joint_zero": [
+        0.0703125,
+        0.046875,
+        0.01953125
+      ],
+      "joint_zero_counts": [
+        18,
+        12,
+        5
+      ],
+      "signed_joint_sums": [
+        -21,
+        -135,
+        -64
+      ],
+      "start": 3584,
+      "stop": 3840
+    },
+    {
+      "herald_counts": [
+        57,
+        158,
+        90
+      ],
+      "joint_zero": [
+        0.07421875,
+        0.0546875,
+        0.01953125
+      ],
+      "joint_zero_counts": [
+        19,
+        14,
+        5
+      ],
+      "signed_joint_sums": [
+        -19,
+        -130,
+        -80
+      ],
+      "start": 3840,
+      "stop": 4096
+    }
+  ],
+  "cross_replica_joint_counts": [
+    [
+      185,
+      10,
+      6
+    ],
+    [
+      10,
+      247,
+      7
+    ],
+    [
+      6,
+      7,
+      90
+    ]
+  ],
+  "cross_replica_joint_moments": [
+    [
+      0.045166015625,
+      0.00244140625,
+      0.00146484375
+    ],
+    [
+      0.00244140625,
+      0.060302734375,
+      0.001708984375
+    ],
+    [
+      0.00146484375,
+      0.001708984375,
+      0.02197265625
+    ]
+  ],
+  "interpretation": "descriptive; no IID p-values",
+  "provenance": {
+    "analysis_metadata": {
+      "bit_order": "classical bit zero is the rightmost character",
+      "index_convention": "zero-based string offsets from the left",
+      "replicas": [
+        {
+          "angle_degrees": 0,
+          "data": 18,
+          "endpoint": "z",
+          "final_herald": 15,
+          "herald": 2,
+          "physical_triple_a_c_b": [
+            1,
+            4,
+            8
+          ]
+        },
+        {
+          "angle_degrees": 45,
+          "data": 6,
+          "endpoint": "z",
+          "final_herald": 8,
+          "herald": 1,
+          "physical_triple_a_c_b": [
+            13,
+            11,
+            14
+          ]
+        },
+        {
+          "angle_degrees": 90,
+          "data": 16,
+          "endpoint": "z",
+          "final_herald": 13,
+          "herald": 0,
+          "physical_triple_a_c_b": [
+            3,
+            6,
+            9
+          ]
+        }
+      ],
+      "source": "docs/notes/quantum_inspire/cqasm.md#bit-and-qubit-order",
+      "width": 20
+    },
+    "analyzer_sha256": "8f8a1daa28dc1f22e5ff86bc67a61e4e5c03a8a926a35268ccf2aeddffa9f56c",
+    "cases_sha256": "d9a41a677a2a4bff4e2d3f4e10c4db2017d41ba1ee910da67960333d151dcfb2",
+    "circuit_sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f",
+    "raw_sha256": "c29371f841252c112f915e9ae2a8648159cb01fcafe84480862c19f47b9940b8"
+  },
+  "replicas": [
+    {
+      "conditional_signed": -0.5647058823529412,
+      "conditional_zero": 0.21764705882352942,
+      "data_zero": 0.199462890625,
+      "data_zero_count": 817,
+      "endpoint": "z",
+      "herald": 0.20751953125,
+      "herald_count": 850,
+      "herald_disagreement": 0.224365234375,
+      "herald_disagreement_count": 919,
+      "joint_zero": 0.045166015625,
+      "joint_zero_count": 185,
+      "signed_joint": -0.1171875,
+      "signed_joint_sum": -480
+    },
+    {
+      "conditional_signed": -0.8089713843774169,
+      "conditional_zero": 0.09551430781129157,
+      "data_zero": 0.093994140625,
+      "data_zero_count": 385,
+      "endpoint": "z",
+      "herald": 0.63134765625,
+      "herald_count": 2586,
+      "herald_disagreement": 0.644287109375,
+      "herald_disagreement_count": 2639,
+      "joint_zero": 0.060302734375,
+      "joint_zero_count": 247,
+      "signed_joint": -0.5107421875,
+      "signed_joint_sum": -2092
+    },
+    {
+      "conditional_signed": -0.8561151079136691,
+      "conditional_zero": 0.07194244604316546,
+      "data_zero": 0.07080078125,
+      "data_zero_count": 290,
+      "endpoint": "z",
+      "herald": 0.305419921875,
+      "herald_count": 1251,
+      "herald_disagreement": 0.336181640625,
+      "herald_disagreement_count": 1377,
+      "joint_zero": 0.02197265625,
+      "joint_zero_count": 90,
+      "signed_joint": -0.261474609375,
+      "signed_joint_sum": -1071
+    }
+  ],
+  "shots": 4096
+}

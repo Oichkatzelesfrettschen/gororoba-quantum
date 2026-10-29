@@ -1,0 +1,137 @@
+{
+  "archive_bindings": {
+    "hypercomplex": {
+      "byte_identical_to_release": 4,
+      "distribution_version": "0.3.4",
+      "module_files": 4,
+      "packaging_shims": {}
+    },
+    "hypercomplex-engine": {
+      "byte_identical_to_release": 23,
+      "distribution_version": "0.5.0",
+      "module_files": 23,
+      "packaging_shims": {}
+    },
+    "hyprat": {
+      "byte_identical_to_release": 4,
+      "distribution_version": "0.2.0",
+      "module_files": 4,
+      "packaging_shims": {}
+    },
+    "splitoct": {
+      "byte_identical_to_release": 1,
+      "distribution_version": "0.16",
+      "module_files": 1,
+      "packaging_shims": {}
+    }
+  },
+  "archive_sha256": {
+    "hypercomplex": "04241e5d01b3f10e813c70882a2caa9b7dc168f8b921d47156c3d964363f9352",
+    "hypercomplex-engine": "05634d7421e1b6bc427bbc9cb8b0b91599c46cf1b1321e1d0f3e2f259dc08cb7",
+    "hyprat": "17ae936c3fc540172c7d4b6c918620e0a96808c2bccc6e5bf8953dcec24c715f",
+    "splitoct": "a192a1d5d9734b31670092be16c19a40b12a79db51ea2cfdfcb1e8a90a6505d6"
+  },
+  "boundary": "This local observation binds imported package files to release archives and compares their exact arithmetic with retained binary data. Package encodings do not establish a physical algebra, state population, calibration or causal destination effect. Distances are descriptive float64 values.",
+  "descriptive_distances": {
+    "nominal_one": {
+      "hellinger_decimal_12_places": "0.055941976930",
+      "jensen_shannon_distance_sqrt_bits_decimal_12_places": "0.063710980845"
+    },
+    "nominal_zero_prefix": {
+      "hellinger_decimal_12_places": "0.453281338498",
+      "jensen_shannon_distance_sqrt_bits_decimal_12_places": "0.523562104011"
+    }
+  },
+  "dimension_tables": [
+    {
+      "basis_map": "identity",
+      "basis_pairs_per_implementation": 64,
+      "dimension": 8,
+      "implementations": [
+        "hypercomplex",
+        "hypercomplex-engine",
+        "hyprat"
+      ]
+    },
+    {
+      "basis_map": "identity",
+      "basis_pairs_per_implementation": 256,
+      "dimension": 16,
+      "implementations": [
+        "hypercomplex",
+        "hypercomplex-engine",
+        "hyprat"
+      ]
+    }
+  ],
+  "exact_nominal_one_response": "183/4096",
+  "inputs": {
+    "docs/evidence/tuna-projector-geometry/joint-algebra-analysis.json": "5db45cf522218b573044ca95fcdcc7530d420d55e5ca0b6b0faf320a1b887d3d",
+    "docs/evidence/tuna-projector-geometry/joint-response-analysis.json": "8e81167d7fc6c6dcde0d859bcdbb99c2da8869488b42ac13dfc1919cbaaa8ab2",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+    "scripts/algebra_package_tables.py": "fddf339b7d9b43f2708c8a37babfdde8a1e0b00115aedd9d0b1dacf1ccb6a2de"
+  },
+  "jobs": [
+    {
+      "associator_norm_squared": "764037/1048576",
+      "batch": "prepared-one-baseline-before",
+      "case": "nominal_one",
+      "job": 1620359,
+      "raw_sha256": "35b81dd5813736ea17e6d0e85fc6b1d54cf5a47a80729948b6e3d653deee426e"
+    },
+    {
+      "associator_norm_squared": "1434981/2097152",
+      "batch": "prepared-one-rotated-destinations",
+      "case": "nominal_one",
+      "job": 1620485,
+      "raw_sha256": "a967128edfecb0b7428410eb689edc0192a5f8c035014db600088827b42fcda9"
+    },
+    {
+      "associator_norm_squared": "3101879/4194304",
+      "batch": "prepared-one-baseline-after",
+      "case": "nominal_one",
+      "job": 1620614,
+      "raw_sha256": "deaab97e762f52484bc43665a9acbcc19236b75ccfcd80c1f56d77fe28524a6e"
+    },
+    {
+      "associator_norm_squared": "1316907/2097152",
+      "batch": "prepared-zero-baseline-before",
+      "case": "nominal_zero_prefix",
+      "job": 1618109,
+      "raw_sha256": "98f99ea38c68851a310a01623c1ba038976e644d647bdfa94bb7a34b689e607c"
+    },
+    {
+      "associator_norm_squared": "2586339/4194304",
+      "batch": "prepared-zero-rotated-destinations",
+      "case": "nominal_zero_prefix",
+      "job": 1618345,
+      "raw_sha256": "1ad6fef1d35da152e7c52963673ebbaa545e8e2963f04c219e43f9f03fe08417"
+    },
+    {
+      "associator_norm_squared": "1391655/2097152",
+      "batch": "prepared-zero-baseline-after",
+      "case": "nominal_zero_prefix",
+      "job": 1618590,
+      "raw_sha256": "d2bbdbf242b3089cc2684da542f358b13add1d33d64fd45dd5d4368cf8dbfca2"
+    }
+  ],
+  "producer_sha256": "28412984e3384457317779af82d61295feb64fbbc44ea5056010267fd28553f6",
+  "schema": "qi-tuna-joint-package-runtime-observation-v1",
+  "split_control": {
+    "associator_triples_checked": 512,
+    "ordinary_e4_square": -1,
+    "split_e4_square": 1
+  },
+  "versions": {
+    "hypercomplex": "0.3.4",
+    "hypercomplex-engine": "0.5.0",
+    "hyprat": "0.2.0",
+    "mpmath": "1.4.1",
+    "numpy": "2.5.4",
+    "pandas": "2.3.3",
+    "python-flint": "0.9.0",
+    "scipy": "1.18.1",
+    "splitoct": "0.16",
+    "sympy": "1.14.0"
+  }
+}

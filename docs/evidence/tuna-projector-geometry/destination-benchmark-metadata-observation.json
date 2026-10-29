@@ -1,0 +1,16 @@
+{
+  "boundary": "Read-only context while final approved job remains queued; backend metadata is not automatically the configuration served to any job.",
+  "error_sha256": "0e1bf9663788b77e0cf746b5c8d63202d17a69694182c9e16f1e613269774fec",
+  "error_type": "PlatformError",
+  "http_status": 404,
+  "observed_utc": "2026-10-28T00:01:41.581809+00:00",
+  "parameters": {
+    "latest": true,
+    "page": 1,
+    "size": 1
+  },
+  "path": "/metadata/backend/7",
+  "request_started_utc": "2026-10-28T00:01:37.978491+00:00",
+  "schema": "qi-benchmark-metadata-observation-v1",
+  "status": "error"
+}

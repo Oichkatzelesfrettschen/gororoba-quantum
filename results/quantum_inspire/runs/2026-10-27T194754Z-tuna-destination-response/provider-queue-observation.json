@@ -1,0 +1,13 @@
+{
+  "backend_status": "executing",
+  "boundary": "Provider queue aggregates are an observation, not an individual execution forecast.",
+  "observed_utc": "2026-10-27T19:55:23+00:00",
+  "provider_queue": {
+    "avg_wait_time_in_queue_secs": 505.0,
+    "max_wait_time_in_queue_secs": 956.0,
+    "min_wait_time_in_queue_secs": 18.0,
+    "number_of_jobs_in_queue": 48
+  },
+  "schema": "qi-provider-queue-observation-v1",
+  "source": "GET /backend_types/7/queue without user_only; GET /backend_types/7"
+}

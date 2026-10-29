@@ -1,0 +1,15 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "c9c67b8ddf2891fb58972cd108b8d74df92c69f4b18bfcd9ac21cf1e2c6a3315",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-account-binding-followup-review.md",
+  "retained_sha256": "bbf96c49b0ebe8b27fdd0a3cd1d505b30231c1990803af926833fbf691b91791",
+  "reviewed_sha256": {
+    "docs/notes/quantum_inspire/api/openapi.json": "714f66165611b38842dfe3497bb7f1ea818c9df756b3ed87ff128c838cac185f",
+    "scripts/qi_tuna_account_binding.py": "0ff51eb43ef9f71266bbd17abe8879e833833d3b2f155e2ae464c448714bb967",
+    "tests/scripts/test_qi_tuna_account_binding.py": "46976bfe9c7681777ba48056de9096bb60eb26e495221fbb1bd7c319bd51ca45"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

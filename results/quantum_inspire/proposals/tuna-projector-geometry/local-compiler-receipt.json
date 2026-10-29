@@ -1,0 +1,47 @@
+{
+  "observed_utc": "2026-10-27T15:55:57.637150+00:00",
+  "execution": "local compilation only",
+  "versions": {
+    "opensquirrel": "0.9.1",
+    "libqasm": "1.2.1",
+    "quantuminspire": "4.1.0"
+  },
+  "circuits": [
+    {
+      "source": "tuna-qualification/readout-zero.cq",
+      "source_sha256": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267",
+      "compiled_sha256": "47a608c99afe8212b1ac5c207485ab62e92188c4085ae24ae94d86008a43c201",
+      "control_differences": {}
+    },
+    {
+      "source": "tuna-qualification/readout-one.cq",
+      "source_sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f",
+      "compiled_sha256": "f06b82c7d0b1aa0aa7a04a90e0382588ed9e74e7a355a166fb3945e84b7ad4f4",
+      "control_differences": {}
+    },
+    {
+      "source": "tuna-qualification/geometry.cq",
+      "source_sha256": "069fc4696b40610d4eb963b1898aec24603fe0839d6ea17b868196fc7e5dfe8f",
+      "compiled_sha256": "a24a2c45869e63445ee72823bf0d49d32ba3c7e4e71c8c24249cf1b45cd7397e",
+      "control_differences": {}
+    },
+    {
+      "source": "qx-terminal/geometry-z.cq",
+      "source_sha256": "46cbbcaf4ceab3f17f2a538cb78d71883951cac180e7b01243175cd501f2f8e1",
+      "compiled_sha256": "8665fb40555d0ae9dea864b77bb0388f512137562144baa9034932f1d6369b43",
+      "control_differences": {}
+    },
+    {
+      "source": "qx-terminal/mutation-z.cq",
+      "source_sha256": "b48d8602072dae41d30635f3e7185883c966575a09e6324beefb9cb24121c6e5",
+      "compiled_sha256": "1b0d7c3ed4680f95fe287041bb547482c438a3ad8de8bcb9dedeec942bade7e4",
+      "control_differences": {}
+    },
+    {
+      "source": "qx-terminal/geometry-x.cq",
+      "source_sha256": "a99fbf866f4a1f1dd398a51f0a6a5b4a4bb01817a1e41fec7bbe7f443f721af2",
+      "compiled_sha256": "0864e58e645ac9a6a2fae1bbf9ecd90564eebb786f4b459e9e1a92c5fa3f7117",
+      "control_differences": {}
+    }
+  ]
+}

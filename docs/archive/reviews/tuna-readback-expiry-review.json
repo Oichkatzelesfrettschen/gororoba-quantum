@@ -1,0 +1,18 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "dfbb096af2bcd49e451bc33187895f348699471cfceb454c1221a0675c33258a",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-readback-expiry-review.md",
+  "retained_sha256": "f451300348edd2d2321edc930bc9caebe66c44b205847eaced6e5185447c7093",
+  "reviewed_sha256": {
+    "scripts/qi_tuna_readback_collection.py": "45a5b6e074f8fd314537b51ff7334dfcbc6432f9ca12ab58c83b09832b15f3af",
+    "tests/scripts/test_qi_tuna_readback_collection_boundaries.py": "05b2e481ee8bbc8b7de2780925d123674cf681d0118d598814b00a6d4d73e7f8"
+  },
+  "reviewed_worktree_sha256": {
+    "docs/archive/reviews/tuna-receipt-aware-collection-review.md": "8307a7908c12d3b2a88dd70fefccc0382fddad56990159c2c4c57c787f48e622",
+    "docs/design/tuna-destination-sequential-evidence-case.md": "1f907a5d68e3ffb352a1de5cad7a44a41524765d14ff3cdb791ac7f613e7e6fc"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}
