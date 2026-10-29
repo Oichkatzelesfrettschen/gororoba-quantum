@@ -1,0 +1,13 @@
+{
+ "schema": "qi-read-only-recovery-v1",
+ "started_utc": "2026-10-27T20:49:19+00:00",
+ "job": 1618590,
+ "case": "prepared-zero-baseline-after",
+ "reason": "Approved request-initiation deadline stopped automatic collection; the existing submitted job remains eligible for read-only retrieval.",
+ "provider_resource_creation_authorized": false,
+ "original_execution_state_sha256": "8956ff400539f04972751c53d5f762e4e40a64b3702f8b015ad038a5c078224b",
+ "completed_utc": "2026-10-27T20:51:40+00:00",
+ "completion_admission_sha256": "d888483de2a3dad1e61c321088c3c2979a5da7143f20b0548396e0daf829f14a",
+ "status": "collected",
+ "automatic_executor_resumed": false
+}

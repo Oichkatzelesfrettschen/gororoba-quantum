@@ -1,0 +1,15 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "c857ee93af32f178dfc88ee10c6b11772a775378dec67f4f45d92f13514e57fd",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-identity-continuity-followup-review.md",
+  "retained_sha256": "f005eca6609b6928f7ab334c292448146286a66c07405ec4dc0a7e612120bf96",
+  "reviewed_sha256": {
+    "scripts/qi_tuna_identity_guard.py": "7073ed96284fe2abb0b323866103518f9f999844e7612076117c1bf365cae798",
+    "tests/scripts/test_qi_tuna_identity_guard.py": "1e5e49d687d97b939ac932f794530fce739886e21109246eef1f95e5b262990a",
+    "tests/scripts/test_qi_tuna_subject_binding.py": "ed21d801759bf5c2b7749ead0dd6b2473edbc441c25590ce1fd08b6392beb262"
+  },
+  "sanitization": "Local repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

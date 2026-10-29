@@ -1,0 +1,90 @@
+{
+  "schema": "work-plan-v1",
+  "id": "heron-local-idle-padding",
+  "kind": "investigation",
+  "summary": "Test whether padding each ISA circuit with the idle of a local list schedule under the execution Target lowers the exact model's TV distance to hardware on the retained dynamic IBM runs, before live_run's planner adopts it (issue 526).",
+  "sources": [
+    "scripts/scheduled_idle_replay.py",
+    "scripts/ghost_run.py",
+    "docs/evidence/ghost_runs/README.md",
+    "results/live/2026-10-18T090603.530638Z/IDLE_REPLAY_FINDINGS.md",
+    "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/526"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Issue 526 states the proposal and falsifier; the encoded N=21 idle replay is the single-run precedent."
+  },
+  "scope": "A local ASAP padding function in gororoba_quantum/, its single-run calibration against the service-padded N=21 replay, and a paired padded-versus-unpadded exact-law TVD comparison over the eligible ghost-run members under each member's execution snapshot. Planner wiring follows only if the falsifier passes.",
+  "owner": "repository maintainer",
+  "next_action": "Assemble result.json from the idle-falsifier workflow's per-run parts with --parts-only, fill the README falsifier tail and gate names, then compute the inserted-replica estimate.",
+  "steps": [
+    {
+      "id": "padding-function",
+      "state": "doing",
+      "action": "Write a function that pads an ISA circuit with explicit delays from an as-soon-as-possible list schedule under Target durations, cursor starting at each qubit's first instruction.",
+      "acceptance": "Its per-qubit inserted idle equals scheduled_idle_replay.list_schedule_idle on every replica of the encoded N=21 run."
+    },
+    {
+      "id": "n21-calibration",
+      "state": "todo",
+      "action": "Compute the locally padded exact contrast of the encoded N=21 Kingston run (results/live/2026-10-18T090603.530638Z) under the execution Target.",
+      "acceptance": "The locally padded exact contrast and arm TVDs are recorded beside the service-padded values (-0.0007; 0.0129 and 0.0158). A contrast near the unpadded +0.0310 stops the sweep: local placement misplaces the idle."
+    },
+    {
+      "id": "falsifier-sweep",
+      "state": "done",
+      "action": "Over every non-skipped run in docs/evidence/ghost_runs/report.json that holds a dynamic member, compute per replica TVD(measured, padded exact) minus TVD(measured, unpadded exact) under the execution snapshot; report per run the mean difference, its standard error and the replica count.",
+      "acceptance": "Pass when a strict majority of eligible runs has a negative mean difference; every run whose mean difference exceeds two standard errors above zero is listed. A failure refuses the planner change, as issue 526 states.",
+      "receipts": [
+        {
+          "result": "Issue 526's rule passes over the 35 audited runs: 13 of 20 eligible runs have a negative mean d and none lies two standard errors above zero; --check reproduces the PR and full-tier gate runs with largest deviation 0.0 on the build host.",
+          "observed_at": "2026-10-29T19:58:10+00:00",
+          "revision": "868e9613f71d0b2e76ad4793c289ed268a8385ec",
+          "evidence": [
+            {
+              "ref": "docs/evidence/local_idle_padding/result.json.gz",
+              "sha256": "c6975353f9543308f7a9d672729706ae0fe7a32f5970e3850bc4ffca1a56b5db"
+            },
+            {
+              "ref": "docs/evidence/local_idle_padding/README.md",
+              "sha256": "0caf2722d13accf33eadabeb1b8bdf739f73a3a8cc159ba458d613615ab7c757"
+            }
+          ],
+          "scope_sha256": "9afb88c8b9aaf6a2a3fa0b0a1477cb2b867a57e77af4f258f719d92faf785f14"
+        }
+      ]
+    },
+    {
+      "id": "planner-wiring",
+      "state": "todo",
+      "action": "If the sweep passes, record padded and unpadded predictions side by side in live_run's plan and run the live_run.py dry run.",
+      "acceptance": "The dry run's record carries both predictions and the approved-record comparison is unchanged for an unpadded record."
+    },
+    {
+      "id": "inserted-replica-estimate",
+      "state": "done",
+      "action": "Beside the preregistered decision, report per run the mean d over only the replicas into which idle_padding.pad inserts idle, with its standard error and count, and list the runs and replicas with no inserted idle (d exactly 0 by construction), labeled as a secondary analysis that leaves issue 526's verdict unchanged.",
+      "acceptance": "result.json or a sibling file carries the conditional means for every scored run; the README states that runs 2026-10-21T043156 and 2026-10-21T064222 and the three one-qubit controls insert no idle, and gives the inserted-idle replica counts of 2026-10-26T202817 (372 of 1364), 2026-10-27T160530 (390 of 1320) and 2026-10-27T173602 (988 of 1064) from the replicas' inserted_dt.",
+      "reason": "Zero-insertion runs and replicas enter the preregistered rule as d = 0 and count as not lower, so the rule measures dilution beside padding.",
+      "receipts": [
+        {
+          "result": "inserted.json restricts each run to the replicas whose padded law differs: all 13 runs with such replicas are lower; seven runs change no law (no wait, or idle on a qubit reset to |0>), as the README states with the insertion counts.",
+          "observed_at": "2026-10-29T19:58:10+00:00",
+          "revision": "868e9613f71d0b2e76ad4793c289ed268a8385ec",
+          "evidence": [
+            {
+              "ref": "docs/evidence/local_idle_padding/inserted.json",
+              "sha256": "87d4df4bb38d9981f305e965eb546c1a3de666cec67d205ee432c6cdfd7d2619"
+            },
+            {
+              "ref": "docs/evidence/local_idle_padding/README.md",
+              "sha256": "0caf2722d13accf33eadabeb1b8bdf739f73a3a8cc159ba458d613615ab7c757"
+            }
+          ],
+          "scope_sha256": "a0c819cd8ea979fdc1a9c9205406187ef023e4d540c06d07149b54a52325781e"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "observed_utc": "2026-10-28T01:59:44.336230+00:00",
+  "provider_access": "unrun by reviewer",
+  "raw_report_sha256": "efc9efe0df5fbe40e07063206c3ed8a387bf2cb1c83f1f40934979a20d95903f",
+  "reasoning_effort": "high",
+  "retained_report": "docs/archive/reviews/tuna-joint-algebra-package-review.md",
+  "retained_report_sha256": "efc9efe0df5fbe40e07063206c3ed8a387bf2cb1c83f1f40934979a20d95903f",
+  "reviewed_files": {
+    "docs/evidence/tuna-projector-geometry/joint-algebra-analysis.json": "5db45cf522218b573044ca95fcdcc7530d420d55e5ca0b6b0faf320a1b887d3d",
+    "docs/evidence/tuna-projector-geometry/joint-algebra-package-analysis.md": "fac7bc8c4c62f98f8e8b13eefaaa5320fddfdf27179158900cbd4294eb868d79",
+    "docs/evidence/tuna-projector-geometry/joint-package-runtime-observation.json": "caba2333007c0060e5bb9a658ab0009e47387244683241683b02be1e2210595a",
+    "docs/evidence/tuna-projector-geometry/joint-package-runtime-provenance.json": "2fcae60af72ac65c73cd18d0febd11a0d5e1e2e5a266aa605d9f291df8a019b8",
+    "scripts/qi_tuna_joint_algebra.py": "d519194f0c3261b4c1c3390ea1ee261a477edaa1737570d9c4417ca3135e7bfa",
+    "scripts/qi_tuna_joint_package_runtime.py": "28412984e3384457317779af82d61295feb64fbbc44ea5056010267fd28553f6",
+    "tests/scripts/test_qi_tuna_joint_algebra.py": "85e05fa5ff4b9da8d940cd3a8209b7fbddf9cb73ef6f7778b08bcbbd5cb889b9",
+    "tests/scripts/test_qi_tuna_joint_package_runtime.py": "bbe108169fda13cd4b05c7b3295b1e522305342660b53ac9013ee177f5fc8e5c"
+  },
+  "reviewed_revision": "55b6dcb8861be4fe8ec8f8f38a3fa1844755d346",
+  "reviewer_pytest": "unrun: read-only sandbox had no writable temporary directory",
+  "sanitization": "The report contains repository-relative paths and required no modification.",
+  "schema": "qi-joint-algebra-package-review-v1",
+  "service_tier": "default",
+  "session": "01a17e38-6428-7eb3-b233-d8fbf9cc47b8",
+  "verdict": "bounded-pass"
+}

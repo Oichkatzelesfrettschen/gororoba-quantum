@@ -1,0 +1,199 @@
+{
+  "angles_degrees": [
+    0,
+    45,
+    90
+  ],
+  "backend": "QXsinglenodesimulator",
+  "backend_snapshot": {
+    "file": "backend.json",
+    "sha256": "8cd1a963b17e7d9ea02610d4df474ff80217818a5c1de2d02df1df8b28b8ef82"
+  },
+  "backend_type_id": 1,
+  "circuits": [
+    {
+      "analysis_metadata": {
+        "bit_order": "classical bit zero is the rightmost character",
+        "index_convention": "zero-based string offsets from the left",
+        "replicas": [
+          {
+            "angle_degrees": 0,
+            "data": 8,
+            "endpoint": "z",
+            "final_herald": 7,
+            "herald": 7,
+            "physical_triple_a_c_b": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "angle_degrees": 45,
+            "data": 5,
+            "endpoint": "z",
+            "final_herald": 4,
+            "herald": 4,
+            "physical_triple_a_c_b": [
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "angle_degrees": 90,
+            "data": 2,
+            "endpoint": "z",
+            "final_herald": 1,
+            "herald": 1,
+            "physical_triple_a_c_b": [
+              6,
+              7,
+              8
+            ]
+          }
+        ],
+        "source": "docs/notes/quantum_inspire/cqasm.md#bit-and-qubit-order",
+        "width": 9
+      },
+      "control": null,
+      "file": "geometry-z.cq",
+      "mutation": false,
+      "name": "geometry-z",
+      "sha256": "46cbbcaf4ceab3f17f2a538cb78d71883951cac180e7b01243175cd501f2f8e1"
+    },
+    {
+      "analysis_metadata": {
+        "bit_order": "classical bit zero is the rightmost character",
+        "index_convention": "zero-based string offsets from the left",
+        "replicas": [
+          {
+            "angle_degrees": 0,
+            "data": 8,
+            "endpoint": "z",
+            "final_herald": 7,
+            "herald": 7,
+            "physical_triple_a_c_b": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "angle_degrees": 45,
+            "data": 5,
+            "endpoint": "z",
+            "final_herald": 4,
+            "herald": 4,
+            "physical_triple_a_c_b": [
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "angle_degrees": 90,
+            "data": 2,
+            "endpoint": "z",
+            "final_herald": 1,
+            "herald": 1,
+            "physical_triple_a_c_b": [
+              6,
+              7,
+              8
+            ]
+          }
+        ],
+        "source": "docs/notes/quantum_inspire/cqasm.md#bit-and-qubit-order",
+        "width": 9
+      },
+      "control": null,
+      "file": "mutation-z.cq",
+      "mutation": true,
+      "name": "mutation-z",
+      "sha256": "b48d8602072dae41d30635f3e7185883c966575a09e6324beefb9cb24121c6e5"
+    },
+    {
+      "analysis_metadata": {
+        "bit_order": "classical bit zero is the rightmost character",
+        "index_convention": "zero-based string offsets from the left",
+        "replicas": [
+          {
+            "angle_degrees": 0,
+            "data": 8,
+            "endpoint": "x",
+            "final_herald": 7,
+            "herald": 7,
+            "physical_triple_a_c_b": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "angle_degrees": 45,
+            "data": 5,
+            "endpoint": "x",
+            "final_herald": 4,
+            "herald": 4,
+            "physical_triple_a_c_b": [
+              3,
+              4,
+              5
+            ]
+          },
+          {
+            "angle_degrees": 90,
+            "data": 2,
+            "endpoint": "x",
+            "final_herald": 1,
+            "herald": 1,
+            "physical_triple_a_c_b": [
+              6,
+              7,
+              8
+            ]
+          }
+        ],
+        "source": "docs/notes/quantum_inspire/cqasm.md#bit-and-qubit-order",
+        "width": 9
+      },
+      "control": null,
+      "file": "geometry-x.cq",
+      "mutation": false,
+      "name": "geometry-x",
+      "sha256": "a99fbf866f4a1f1dd398a51f0a6a5b4a4bb01817a1e41fec7bbe7f443f721af2"
+    }
+  ],
+  "limitations": [
+    "Physical timing equality is unestablished",
+    "Compiler may optimize cancelling mutation rotations",
+    "QX terminal twins cannot validate mid-circuit classical-bit retention"
+  ],
+  "nqubits": 9,
+  "physical_readout_duration": "unknown",
+  "physical_triples_a_c_b": [
+    [
+      0,
+      1,
+      2
+    ],
+    [
+      3,
+      4,
+      5
+    ],
+    [
+      6,
+      7,
+      8
+    ]
+  ],
+  "producer": {
+    "file": "scripts/qi_projector_geometry.py",
+    "sha256": "8f8a1daa28dc1f22e5ff86bc67a61e4e5c03a8a926a35268ccf2aeddffa9f56c"
+  },
+  "provider_execution_authorized": false,
+  "shots": 2048,
+  "wait_cycles": 0
+}

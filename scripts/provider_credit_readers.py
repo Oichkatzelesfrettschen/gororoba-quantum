@@ -183,7 +183,34 @@ def read_kaggle() -> list[Row]:
                 note=f"reserved {reserved:g} h by queued sessions" if reserved else "",
             )
         )
-    return rows
+    return rows + kaggle_model_spend()
+
+
+def kaggle_model_spend() -> list[Row]:
+    # `kaggle benchmarks quota` reports Model Proxy (AI inference) spend in USD, separate from accelerator hours.
+    done = subprocess.run(
+        ["kaggle", "benchmarks", "quota", "--format", "json"], capture_output=True, text=True, timeout=25, check=False
+    )
+    if done.returncode != 0:
+        first = (done.stderr.strip().splitlines() or ["kaggle benchmarks quota failed"])[-1]
+        raise RuntimeError(f"kaggle benchmarks quota: {first[:160]}")
+
+    def dollars(text: str) -> float:
+        return float(text.replace("$", "").replace(",", ""))
+
+    return [
+        row(
+            f"Kaggle AI models ({entry['period'].lower()})",
+            "kaggle benchmarks quota (Model Proxy spend)",
+            allotment=dollars(entry["total"]),
+            used=dollars(entry["used"]),
+            remaining=dollars(entry["remaining"]),
+            unit="USD",
+            instant=entry.get("refillAt") or None,
+            instant_kind="reset" if entry.get("refillAt") else None,
+        )
+        for entry in json.loads(done.stdout)
+    ]
 
 
 def read_iqm() -> list[Row]:

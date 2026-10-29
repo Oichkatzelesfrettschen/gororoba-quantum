@@ -1,0 +1,17 @@
+{
+ "schema": "qi-tuna-sequential-completion-v1",
+ "batch": "prepared-zero-rotated-destinations",
+ "job": 1618345,
+ "batch_job": 895833,
+ "created_on": "2026-10-27T20:06:09.920424Z",
+ "queued_at": "2026-10-27T20:22:36.995677Z",
+ "finished_at": "2026-10-27T20:22:41.917425Z",
+ "execution_seconds_decimal": "4.710931",
+ "inputs": {
+  "cases.json": "2396adc9c5eef41452655d41bbc4df7cfb26a76f78e3e6b9a8d2d9e3327a9eb5",
+  "rotated-destinations.cq": "3084eef16a0d32a23d7b3fa41c92f27fa3ce4f3d84791d128a10246728ad6d5d",
+  "submission.json": "e611ba73026478fcae475e4dff96cc4731dd2acaead5b41a379ab02679bb4ab5",
+  "results.json": "dc55839b064b367f9c66fb6b9bfbe8858639e442b373eeacafc4dc4adb23db73",
+  "raw/rotated-destinations.cq.json": "1ad6fef1d35da152e7c52963673ebbaa545e8e2963f04c219e43f9f03fe08417"
+ }
+}

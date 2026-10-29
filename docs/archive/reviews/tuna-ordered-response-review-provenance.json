@@ -1,0 +1,26 @@
+{
+  "campaign_sha256": "53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76",
+  "cli_version": "0.164.0",
+  "observed_model": "gpt-daybreak-blue-latest",
+  "observed_reasoning_effort": "high",
+  "observed_utc": "2026-10-27T19:37:47.848605+00:00",
+  "report_transformation": "Absolute worktree links replaced by repository-relative links; labels retain original line numbers.",
+  "reports": [
+    {
+      "file": "docs/archive/reviews/tuna-ordered-response-evidence-boundary-review.md",
+      "original_sha256": "86de434638181480fc582ae128256c19c0a554d8709dd6b03f670d13556f3615",
+      "sha256": "6992cc02c0de6f4b87312cd8a83abb4da2b735a3a9ec833df37b21df39ccd2a4"
+    },
+    {
+      "file": "docs/archive/reviews/tuna-ordered-response-admission-review.md",
+      "original_sha256": "b7b2ffa1351154a2c29f79a9e05412342142d3611c0979d235f62cf7ab7a344d",
+      "sha256": "15c0874720bdb6f91eab0aed58bebf9dee37a8e46b0119431af3cc34bae717be"
+    }
+  ],
+  "requested_model": "gpt-daybreak-blue-latest",
+  "requested_reasoning_effort": "high",
+  "schema": "codex-review-provenance-v1",
+  "session_id": "01a17e38-6428-7eb3-b233-d8fbf9cc47b8",
+  "transport": "codex exec resume in tmux, read-only",
+  "verdict": "Exact-case approval readiness accepted; causal attribution unadmitted; future terms-schema validation follow-up remains."
+}

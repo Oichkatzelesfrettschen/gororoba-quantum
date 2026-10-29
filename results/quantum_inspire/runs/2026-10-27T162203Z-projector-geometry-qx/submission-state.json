@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-27T16:22:15+00:00",
+ "approval": "Approved the zero credit QX runs provided it meets our repo/the FAQs requrements of jobs and queuing and time etc.",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "bb52460648caed1a8fe2be39131f88efaaa7022f53614f386b48034027290554",
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "geometry-z.cq",
+   "job": 1615796,
+   "sha256": "46cbbcaf4ceab3f17f2a538cb78d71883951cac180e7b01243175cd501f2f8e1"
+  },
+  {
+   "file": "mutation-z.cq",
+   "job": 1615797,
+   "sha256": "b48d8602072dae41d30635f3e7185883c966575a09e6324beefb9cb24121c6e5"
+  },
+  {
+   "file": "geometry-x.cq",
+   "job": 1615798,
+   "sha256": "a99fbf866f4a1f1dd398a51f0a6a5b4a4bb01817a1e41fec7bbe7f443f721af2"
+  }
+ ],
+ "project": 794823,
+ "batch_job": 895296,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-27T16:22:18+00:00",
+  "approval": "Approved the zero credit QX runs provided it meets our repo/the FAQs requrements of jobs and queuing and time etc.",
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "cases_sha256": "bb52460648caed1a8fe2be39131f88efaaa7022f53614f386b48034027290554",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 5,
+  "batch_job": 895296,
+  "project": 794823,
+  "shots": 2048,
+  "jobs": [
+   {
+    "file": "geometry-z.cq",
+    "job": 1615796,
+    "sha256": "46cbbcaf4ceab3f17f2a538cb78d71883951cac180e7b01243175cd501f2f8e1"
+   },
+   {
+    "file": "mutation-z.cq",
+    "job": 1615797,
+    "sha256": "b48d8602072dae41d30635f3e7185883c966575a09e6324beefb9cb24121c6e5"
+   },
+   {
+    "file": "geometry-x.cq",
+    "job": 1615798,
+    "sha256": "a99fbf866f4a1f1dd398a51f0a6a5b4a4bb01817a1e41fec7bbe7f443f721af2"
+   }
+  ],
+  "submitted_utc": "2026-10-27T16:22:18+00:00"
+ },
+ "confirmed_utc": "2026-10-27T16:22:18+00:00"
+}

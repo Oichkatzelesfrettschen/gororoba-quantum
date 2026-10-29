@@ -1,0 +1,167 @@
+{
+ "runs": [
+  {
+   "acting_replicas": 20,
+   "inserted_replicas": 23,
+   "mean_difference": -0.032932588,
+   "replicas": 29,
+   "run": "results/live/2026-10-11T152922.787095Z",
+   "standard_error": 0.005734895
+  },
+  {
+   "acting_replicas": 16,
+   "inserted_replicas": 16,
+   "mean_difference": -0.042881991,
+   "replicas": 16,
+   "run": "results/live/2026-10-12T055624.091217Z",
+   "standard_error": 0.004098305
+  },
+  {
+   "acting_replicas": 4,
+   "inserted_replicas": 4,
+   "mean_difference": -0.067314653,
+   "replicas": 4,
+   "run": "results/live/2026-10-13T020454.599853Z",
+   "standard_error": 0.001213369
+  },
+  {
+   "acting_replicas": 4,
+   "inserted_replicas": 4,
+   "mean_difference": -0.067314653,
+   "replicas": 4,
+   "run": "results/live/2026-10-13T022433.333775Z",
+   "standard_error": 0.001213369
+  },
+  {
+   "acting_replicas": 2,
+   "inserted_replicas": 2,
+   "mean_difference": -0.015431142,
+   "replicas": 2,
+   "run": "results/live/2026-10-13T080216.451663Z",
+   "standard_error": 0.008027734
+  },
+  {
+   "acting_replicas": 8,
+   "inserted_replicas": 8,
+   "mean_difference": -0.014963107,
+   "replicas": 8,
+   "run": "results/live/2026-10-13T083417.634585Z",
+   "standard_error": 0.004030654
+  },
+  {
+   "acting_replicas": 6,
+   "inserted_replicas": 6,
+   "mean_difference": -0.005145586,
+   "replicas": 6,
+   "run": "results/live/2026-10-13T201757.782152Z",
+   "standard_error": 0.003761595
+  },
+  {
+   "acting_replicas": 0,
+   "inserted_replicas": 0,
+   "mean_difference": null,
+   "replicas": 149,
+   "run": "results/live/2026-10-18T083403.945334Z",
+   "standard_error": null
+  },
+  {
+   "acting_replicas": 0,
+   "inserted_replicas": 0,
+   "mean_difference": null,
+   "replicas": 149,
+   "run": "results/live/2026-10-18T083404.226285Z",
+   "standard_error": null
+  },
+  {
+   "acting_replicas": 2,
+   "inserted_replicas": 2,
+   "mean_difference": -0.006713321,
+   "replicas": 2,
+   "run": "results/live/2026-10-18T090603.530638Z",
+   "standard_error": 0.000607647
+  },
+  {
+   "acting_replicas": 0,
+   "inserted_replicas": 0,
+   "mean_difference": null,
+   "replicas": 148,
+   "run": "results/live/2026-10-18T214519.655411Z",
+   "standard_error": null
+  },
+  {
+   "acting_replicas": 12,
+   "inserted_replicas": 14,
+   "mean_difference": -0.010455568,
+   "replicas": 14,
+   "run": "results/live/2026-10-19T151959.226467Z",
+   "standard_error": 0.002480372
+  },
+  {
+   "acting_replicas": 8,
+   "inserted_replicas": 12,
+   "mean_difference": -0.01230297,
+   "replicas": 12,
+   "run": "results/live/2026-10-19T170620.832658Z",
+   "standard_error": 0.002799819
+  },
+  {
+   "acting_replicas": 2,
+   "inserted_replicas": 6,
+   "mean_difference": -0.014639233,
+   "replicas": 6,
+   "run": "results/live/2026-10-19T231043.083602Z",
+   "standard_error": 2.8312e-05
+  },
+  {
+   "acting_replicas": 6,
+   "inserted_replicas": 14,
+   "mean_difference": -0.048858706,
+   "replicas": 14,
+   "run": "results/live/2026-10-20T031212.175942Z",
+   "standard_error": 0.010249437
+  },
+  {
+   "acting_replicas": 0,
+   "inserted_replicas": 0,
+   "mean_difference": null,
+   "replicas": 48,
+   "run": "results/live/2026-10-21T043156.858484Z",
+   "standard_error": null
+  },
+  {
+   "acting_replicas": 0,
+   "inserted_replicas": 0,
+   "mean_difference": null,
+   "replicas": 48,
+   "run": "results/live/2026-10-21T064222.721454Z",
+   "standard_error": null
+  },
+  {
+   "acting_replicas": 0,
+   "inserted_replicas": 372,
+   "mean_difference": null,
+   "replicas": 1364,
+   "run": "results/live/2026-10-26T202817.431767Z",
+   "standard_error": null
+  },
+  {
+   "acting_replicas": 0,
+   "inserted_replicas": 390,
+   "mean_difference": null,
+   "replicas": 1320,
+   "run": "results/live/2026-10-27T160530.294787Z",
+   "standard_error": null
+  },
+  {
+   "acting_replicas": 380,
+   "inserted_replicas": 988,
+   "mean_difference": -0.005173005,
+   "replicas": 1064,
+   "run": "results/live/2026-10-27T173602.753176Z",
+   "standard_error": 0.000372156
+  }
+ ],
+ "runs_lower": 13,
+ "runs_with_acting_replicas": 13,
+ "schema": "local-idle-padding-inserted-v1"
+}

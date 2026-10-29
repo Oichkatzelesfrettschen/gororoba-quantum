@@ -1,0 +1,787 @@
+{
+  "boundary": "GET observations only. Scalar values are withheld except scoped job/file identities and source hashes. The six final_result field sets and exact retention equivalence are checked in destination-final-result-equivalence.json. Backend metadata is unavailable through the inspected public route; provider-side retention remains unknown.",
+  "initial_probe_producer_sha256": "f6c4a7c4471b8f2a5a0ab6213e78e3f91364d8488efb763754fd02be559b6175",
+  "initial_shape_capture_sha256": "e0fb88efe92904061486e3d0546fd015c4174bcf992d4fb58968b0af2421265a",
+  "jobs": [
+    {
+      "case": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before",
+      "final_result_is_null": false,
+      "generated_siblings": {
+        "filter_matches": true,
+        "pages": 0,
+        "returned": 0,
+        "total": 0
+      },
+      "job": 1618109,
+      "job_fields": {
+        "batch_job_id": 895781,
+        "created_on": "2026-10-27T19:48:10.217552Z",
+        "file_id": 1628725,
+        "finished_at": "2026-10-27T20:05:21.294659Z",
+        "id": 1618109,
+        "number_of_shots": 4096,
+        "queued_at": "2026-10-27T20:05:15.896312Z",
+        "raw_data_enabled": true,
+        "status": "completed"
+      },
+      "stored_source": {
+        "compile_properties_shape": {
+          "field_count": 0,
+          "fields": {},
+          "fields_omitted": 0,
+          "redacted_fields": 0,
+          "type": "object"
+        },
+        "compile_stage": "none",
+        "content_sha256": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267",
+        "expected_sha256": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267",
+        "file_id": 1628725,
+        "generated": false,
+        "matches": true
+      }
+    },
+    {
+      "case": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations",
+      "final_result_is_null": false,
+      "generated_siblings": {
+        "filter_matches": true,
+        "pages": 0,
+        "returned": 0,
+        "total": 0
+      },
+      "job": 1618345,
+      "job_fields": {
+        "batch_job_id": 895833,
+        "created_on": "2026-10-27T20:06:09.920424Z",
+        "file_id": 1628961,
+        "finished_at": "2026-10-27T20:22:41.917425Z",
+        "id": 1618345,
+        "number_of_shots": 4096,
+        "queued_at": "2026-10-27T20:22:36.995677Z",
+        "raw_data_enabled": true,
+        "status": "completed"
+      },
+      "stored_source": {
+        "compile_properties_shape": {
+          "field_count": 0,
+          "fields": {},
+          "fields_omitted": 0,
+          "redacted_fields": 0,
+          "type": "object"
+        },
+        "compile_stage": "none",
+        "content_sha256": "3084eef16a0d32a23d7b3fa41c92f27fa3ce4f3d84791d128a10246728ad6d5d",
+        "expected_sha256": "3084eef16a0d32a23d7b3fa41c92f27fa3ce4f3d84791d128a10246728ad6d5d",
+        "file_id": 1628961,
+        "generated": false,
+        "matches": true
+      }
+    },
+    {
+      "case": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after",
+      "final_result_is_null": false,
+      "generated_siblings": {
+        "filter_matches": true,
+        "pages": 0,
+        "returned": 0,
+        "total": 0
+      },
+      "job": 1618590,
+      "job_fields": {
+        "batch_job_id": 895884,
+        "created_on": "2026-10-27T20:23:27.501228Z",
+        "file_id": 1629206,
+        "finished_at": "2026-10-27T20:51:29.770929Z",
+        "id": 1618590,
+        "number_of_shots": 4096,
+        "queued_at": "2026-10-27T20:51:25.002692Z",
+        "raw_data_enabled": true,
+        "status": "completed"
+      },
+      "stored_source": {
+        "compile_properties_shape": {
+          "field_count": 0,
+          "fields": {},
+          "fields_omitted": 0,
+          "redacted_fields": 0,
+          "type": "object"
+        },
+        "compile_stage": "none",
+        "content_sha256": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267",
+        "expected_sha256": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267",
+        "file_id": 1629206,
+        "generated": false,
+        "matches": true
+      }
+    },
+    {
+      "case": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before",
+      "final_result_is_null": false,
+      "generated_siblings": {
+        "filter_matches": true,
+        "pages": 0,
+        "returned": 0,
+        "total": 0
+      },
+      "job": 1620359,
+      "job_fields": {
+        "batch_job_id": 896259,
+        "created_on": "2026-10-27T23:29:24.090225Z",
+        "file_id": 1630976,
+        "finished_at": "2026-10-27T23:37:46.723242Z",
+        "id": 1620359,
+        "number_of_shots": 4096,
+        "queued_at": "2026-10-27T23:37:40.541621Z",
+        "raw_data_enabled": true,
+        "status": "completed"
+      },
+      "stored_source": {
+        "compile_properties_shape": {
+          "field_count": 0,
+          "fields": {},
+          "fields_omitted": 0,
+          "redacted_fields": 0,
+          "type": "object"
+        },
+        "compile_stage": "none",
+        "content_sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f",
+        "expected_sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f",
+        "file_id": 1630976,
+        "generated": false,
+        "matches": true
+      }
+    },
+    {
+      "case": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations",
+      "final_result_is_null": false,
+      "generated_siblings": {
+        "filter_matches": true,
+        "pages": 0,
+        "returned": 0,
+        "total": 0
+      },
+      "job": 1620485,
+      "job_fields": {
+        "batch_job_id": 896287,
+        "created_on": "2026-10-27T23:38:33.053097Z",
+        "file_id": 1631102,
+        "finished_at": "2026-10-27T23:47:01.938259Z",
+        "id": 1620485,
+        "number_of_shots": 4096,
+        "queued_at": "2026-10-27T23:46:56.126783Z",
+        "raw_data_enabled": true,
+        "status": "completed"
+      },
+      "stored_source": {
+        "compile_properties_shape": {
+          "field_count": 0,
+          "fields": {},
+          "fields_omitted": 0,
+          "redacted_fields": 0,
+          "type": "object"
+        },
+        "compile_stage": "none",
+        "content_sha256": "8accfebdeb2083a4e861754abf29004b1a3a646633dcfc57eed3d9fdc35c4b81",
+        "expected_sha256": "8accfebdeb2083a4e861754abf29004b1a3a646633dcfc57eed3d9fdc35c4b81",
+        "file_id": 1631102,
+        "generated": false,
+        "matches": true
+      }
+    },
+    {
+      "case": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after",
+      "final_result_is_null": false,
+      "generated_siblings": {
+        "filter_matches": true,
+        "pages": 0,
+        "returned": 0,
+        "total": 0
+      },
+      "job": 1620614,
+      "job_fields": {
+        "batch_job_id": 896316,
+        "created_on": "2026-10-27T23:47:47.351057Z",
+        "file_id": 1631231,
+        "finished_at": "2026-10-28T00:20:09.478877Z",
+        "id": 1620614,
+        "number_of_shots": 4096,
+        "queued_at": "2026-10-28T00:20:03.610042Z",
+        "raw_data_enabled": true,
+        "status": "completed"
+      },
+      "stored_source": {
+        "compile_properties_shape": {
+          "field_count": 0,
+          "fields": {},
+          "fields_omitted": 0,
+          "redacted_fields": 0,
+          "type": "object"
+        },
+        "compile_stage": "none",
+        "content_sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f",
+        "expected_sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f",
+        "file_id": 1631231,
+        "generated": false,
+        "matches": true
+      }
+    }
+  ],
+  "observed_utc": "2026-10-28T00:21:19.921470+00:00",
+  "requests": [
+    {
+      "object_sha256": "ac897cb0d6b47ffe8b5eba81e9633820d9d30592c00487d808f51b334a66f637",
+      "observed_utc": "2026-10-28T00:21:13.771337+00:00",
+      "parameters": {},
+      "path": "/jobs/1618109",
+      "redacted_fields": 2,
+      "returned_fields": [
+        "algorithm_type",
+        "batch_job_id",
+        "created_on",
+        "file_id",
+        "finished_at",
+        "id",
+        "message",
+        "number_of_shots",
+        "queued_at",
+        "raw_data_enabled",
+        "source",
+        "status"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:13.225098+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "c4a66052b81967fd339e10f30e7ce0b6dc1c69e1de12a70c105ab78696a8cd66",
+      "observed_utc": "2026-10-28T00:21:13.960220+00:00",
+      "parameters": {},
+      "path": "/files/1628725",
+      "redacted_fields": 0,
+      "returned_fields": [
+        "commit_id",
+        "compile_properties",
+        "compile_stage",
+        "content",
+        "generated",
+        "id",
+        "language_id",
+        "name"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:13.771515+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "5dddcc9cd610d4aff03a679180803e74d1d6531918e6246baac4dec2d5247e78",
+      "observed_utc": "2026-10-28T00:21:14.145182+00:00",
+      "parameters": {
+        "commit_id": 1637117,
+        "generated": true,
+        "page": 1,
+        "size": 100
+      },
+      "path": "/files",
+      "redacted_fields": 0,
+      "returned_fields": [
+        "items",
+        "page",
+        "pages",
+        "size",
+        "total"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:13.960302+00:00",
+      "status": "returned"
+    },
+    {
+      "final_result_fields": [
+        "execution_time_in_seconds",
+        "raw_data",
+        "results",
+        "shots_done",
+        "shots_requested"
+      ],
+      "object_sha256": "0e5922531c187049c3dcfeb2b76a26982156e3ec5eaad326c48cd882cbc782c4",
+      "observed_utc": "2026-10-28T00:21:14.859976+00:00",
+      "parameters": {},
+      "path": "/final_results/job/1618109",
+      "raw_shots_returned": 4096,
+      "redacted_fields": 0,
+      "returned_fields": [
+        "created_on",
+        "final_result",
+        "id",
+        "job_id"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:14.145243+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "fc509985fa9b027300caa65955a2ff1dd7ef94528eb04e60ed044625521c1acf",
+      "observed_utc": "2026-10-28T00:21:15.050321+00:00",
+      "parameters": {},
+      "path": "/jobs/1618345",
+      "redacted_fields": 2,
+      "returned_fields": [
+        "algorithm_type",
+        "batch_job_id",
+        "created_on",
+        "file_id",
+        "finished_at",
+        "id",
+        "message",
+        "number_of_shots",
+        "queued_at",
+        "raw_data_enabled",
+        "source",
+        "status"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:14.864092+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "052e2392c28a7db8fe0b749cf99e1041bf77c520afe0810a72331dc7efb6ae2f",
+      "observed_utc": "2026-10-28T00:21:15.235380+00:00",
+      "parameters": {},
+      "path": "/files/1628961",
+      "redacted_fields": 0,
+      "returned_fields": [
+        "commit_id",
+        "compile_properties",
+        "compile_stage",
+        "content",
+        "generated",
+        "id",
+        "language_id",
+        "name"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:15.050475+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "5dddcc9cd610d4aff03a679180803e74d1d6531918e6246baac4dec2d5247e78",
+      "observed_utc": "2026-10-28T00:21:15.427394+00:00",
+      "parameters": {
+        "commit_id": 1637353,
+        "generated": true,
+        "page": 1,
+        "size": 100
+      },
+      "path": "/files",
+      "redacted_fields": 0,
+      "returned_fields": [
+        "items",
+        "page",
+        "pages",
+        "size",
+        "total"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:15.235493+00:00",
+      "status": "returned"
+    },
+    {
+      "final_result_fields": [
+        "execution_time_in_seconds",
+        "raw_data",
+        "results",
+        "shots_done",
+        "shots_requested"
+      ],
+      "object_sha256": "b3f48d40f5fd2ff28d9c4a9d03df3322d4dabddedd0206afaf85f0337e81441e",
+      "observed_utc": "2026-10-28T00:21:15.807704+00:00",
+      "parameters": {},
+      "path": "/final_results/job/1618345",
+      "raw_shots_returned": 4096,
+      "redacted_fields": 0,
+      "returned_fields": [
+        "created_on",
+        "final_result",
+        "id",
+        "job_id"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:15.427451+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "a8659e6ccca94bfb075215a3175bb857959d829269382661c7512638763e5bb6",
+      "observed_utc": "2026-10-28T00:21:16.001302+00:00",
+      "parameters": {},
+      "path": "/jobs/1618590",
+      "redacted_fields": 2,
+      "returned_fields": [
+        "algorithm_type",
+        "batch_job_id",
+        "created_on",
+        "file_id",
+        "finished_at",
+        "id",
+        "message",
+        "number_of_shots",
+        "queued_at",
+        "raw_data_enabled",
+        "source",
+        "status"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:15.813257+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "427a53f4ff1f88c6f9435cf8b74199f2d39ed39195cb1bcb4fb7ef202995431b",
+      "observed_utc": "2026-10-28T00:21:16.189718+00:00",
+      "parameters": {},
+      "path": "/files/1629206",
+      "redacted_fields": 0,
+      "returned_fields": [
+        "commit_id",
+        "compile_properties",
+        "compile_stage",
+        "content",
+        "generated",
+        "id",
+        "language_id",
+        "name"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:16.001443+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "5dddcc9cd610d4aff03a679180803e74d1d6531918e6246baac4dec2d5247e78",
+      "observed_utc": "2026-10-28T00:21:16.459348+00:00",
+      "parameters": {
+        "commit_id": 1637598,
+        "generated": true,
+        "page": 1,
+        "size": 100
+      },
+      "path": "/files",
+      "redacted_fields": 0,
+      "returned_fields": [
+        "items",
+        "page",
+        "pages",
+        "size",
+        "total"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:16.189787+00:00",
+      "status": "returned"
+    },
+    {
+      "final_result_fields": [
+        "execution_time_in_seconds",
+        "raw_data",
+        "results",
+        "shots_done",
+        "shots_requested"
+      ],
+      "object_sha256": "6e437f81f853990bca5274e727126ecf321732f4c99426a3690787cefe71359f",
+      "observed_utc": "2026-10-28T00:21:17.336353+00:00",
+      "parameters": {},
+      "path": "/final_results/job/1618590",
+      "raw_shots_returned": 4096,
+      "redacted_fields": 0,
+      "returned_fields": [
+        "created_on",
+        "final_result",
+        "id",
+        "job_id"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:16.459410+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "a176f441857261b59a24e85e23571c1e5114eff261b0feedc7081254ba44a2ce",
+      "observed_utc": "2026-10-28T00:21:17.523638+00:00",
+      "parameters": {},
+      "path": "/jobs/1620359",
+      "redacted_fields": 2,
+      "returned_fields": [
+        "algorithm_type",
+        "batch_job_id",
+        "created_on",
+        "file_id",
+        "finished_at",
+        "id",
+        "message",
+        "number_of_shots",
+        "queued_at",
+        "raw_data_enabled",
+        "source",
+        "status"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:17.339616+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "14046dc80edea25792604d3e67d8581f534af7cae49e85f0c5fe68f2c0e51ced",
+      "observed_utc": "2026-10-28T00:21:17.715764+00:00",
+      "parameters": {},
+      "path": "/files/1630976",
+      "redacted_fields": 0,
+      "returned_fields": [
+        "commit_id",
+        "compile_properties",
+        "compile_stage",
+        "content",
+        "generated",
+        "id",
+        "language_id",
+        "name"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:17.523809+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "5dddcc9cd610d4aff03a679180803e74d1d6531918e6246baac4dec2d5247e78",
+      "observed_utc": "2026-10-28T00:21:17.905355+00:00",
+      "parameters": {
+        "commit_id": 1639368,
+        "generated": true,
+        "page": 1,
+        "size": 100
+      },
+      "path": "/files",
+      "redacted_fields": 0,
+      "returned_fields": [
+        "items",
+        "page",
+        "pages",
+        "size",
+        "total"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:17.715831+00:00",
+      "status": "returned"
+    },
+    {
+      "final_result_fields": [
+        "execution_time_in_seconds",
+        "raw_data",
+        "results",
+        "shots_done",
+        "shots_requested"
+      ],
+      "object_sha256": "5999981ab39b439cb4a5cf1e6ff7638b485c2d05585e0933fb7e390d92ea5f0e",
+      "observed_utc": "2026-10-28T00:21:18.102541+00:00",
+      "parameters": {},
+      "path": "/final_results/job/1620359",
+      "raw_shots_returned": 4096,
+      "redacted_fields": 0,
+      "returned_fields": [
+        "created_on",
+        "final_result",
+        "id",
+        "job_id"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:17.905415+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "5bd25ea812daaf228c4bcc16978e1a303dafcb3bea9b49d260d4bbedccd59b30",
+      "observed_utc": "2026-10-28T00:21:18.296339+00:00",
+      "parameters": {},
+      "path": "/jobs/1620485",
+      "redacted_fields": 2,
+      "returned_fields": [
+        "algorithm_type",
+        "batch_job_id",
+        "created_on",
+        "file_id",
+        "finished_at",
+        "id",
+        "message",
+        "number_of_shots",
+        "queued_at",
+        "raw_data_enabled",
+        "source",
+        "status"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:18.106722+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "94639c56c0f6a2ebbb009228f3ecc835752b7bfbbe4b4f7f79e95e56fe69b22d",
+      "observed_utc": "2026-10-28T00:21:18.591262+00:00",
+      "parameters": {},
+      "path": "/files/1631102",
+      "redacted_fields": 0,
+      "returned_fields": [
+        "commit_id",
+        "compile_properties",
+        "compile_stage",
+        "content",
+        "generated",
+        "id",
+        "language_id",
+        "name"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:18.296513+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "5dddcc9cd610d4aff03a679180803e74d1d6531918e6246baac4dec2d5247e78",
+      "observed_utc": "2026-10-28T00:21:18.777938+00:00",
+      "parameters": {
+        "commit_id": 1639494,
+        "generated": true,
+        "page": 1,
+        "size": 100
+      },
+      "path": "/files",
+      "redacted_fields": 0,
+      "returned_fields": [
+        "items",
+        "page",
+        "pages",
+        "size",
+        "total"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:18.591334+00:00",
+      "status": "returned"
+    },
+    {
+      "final_result_fields": [
+        "execution_time_in_seconds",
+        "raw_data",
+        "results",
+        "shots_done",
+        "shots_requested"
+      ],
+      "object_sha256": "c7c4b1825bbeba47808d41cbd910ddeb7785c06a34fbe7b6051ab7856bc4e452",
+      "observed_utc": "2026-10-28T00:21:18.972852+00:00",
+      "parameters": {},
+      "path": "/final_results/job/1620485",
+      "raw_shots_returned": 4096,
+      "redacted_fields": 0,
+      "returned_fields": [
+        "created_on",
+        "final_result",
+        "id",
+        "job_id"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:18.777991+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "47643d16dc7f628b3869318aaed8ab6f3091f11ad9d6a252a2717956d8de0558",
+      "observed_utc": "2026-10-28T00:21:19.164687+00:00",
+      "parameters": {},
+      "path": "/jobs/1620614",
+      "redacted_fields": 2,
+      "returned_fields": [
+        "algorithm_type",
+        "batch_job_id",
+        "created_on",
+        "file_id",
+        "finished_at",
+        "id",
+        "message",
+        "number_of_shots",
+        "queued_at",
+        "raw_data_enabled",
+        "source",
+        "status"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:18.977446+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "96641351ee7fb37fdb88674247c19b8b7d40ff1ab009dc59dc60db4b07d7b0be",
+      "observed_utc": "2026-10-28T00:21:19.354693+00:00",
+      "parameters": {},
+      "path": "/files/1631231",
+      "redacted_fields": 0,
+      "returned_fields": [
+        "commit_id",
+        "compile_properties",
+        "compile_stage",
+        "content",
+        "generated",
+        "id",
+        "language_id",
+        "name"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:19.164838+00:00",
+      "status": "returned"
+    },
+    {
+      "object_sha256": "5dddcc9cd610d4aff03a679180803e74d1d6531918e6246baac4dec2d5247e78",
+      "observed_utc": "2026-10-28T00:21:19.548358+00:00",
+      "parameters": {
+        "commit_id": 1639623,
+        "generated": true,
+        "page": 1,
+        "size": 100
+      },
+      "path": "/files",
+      "redacted_fields": 0,
+      "returned_fields": [
+        "items",
+        "page",
+        "pages",
+        "size",
+        "total"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:19.354771+00:00",
+      "status": "returned"
+    },
+    {
+      "final_result_fields": [
+        "execution_time_in_seconds",
+        "raw_data",
+        "results",
+        "shots_done",
+        "shots_requested"
+      ],
+      "object_sha256": "565485cc7e4172e147766c7ed579300e0ad8cb228ca38fed790af52cc84a6665",
+      "observed_utc": "2026-10-28T00:21:19.739818+00:00",
+      "parameters": {},
+      "path": "/final_results/job/1620614",
+      "raw_shots_returned": 4096,
+      "redacted_fields": 0,
+      "returned_fields": [
+        "created_on",
+        "final_result",
+        "id",
+        "job_id"
+      ],
+      "returned_type": "object",
+      "started_utc": "2026-10-28T00:21:19.548423+00:00",
+      "status": "returned"
+    },
+    {
+      "error_text_sha256": "0e1bf9663788b77e0cf746b5c8d63202d17a69694182c9e16f1e613269774fec",
+      "error_type": "PlatformError",
+      "http_status": 404,
+      "observed_utc": "2026-10-28T00:21:19.921434+00:00",
+      "parameters": {
+        "latest": true,
+        "page": 1,
+        "size": 1
+      },
+      "path": "/metadata/backend/7",
+      "started_utc": "2026-10-28T00:21:19.742576+00:00",
+      "status": "error"
+    }
+  ],
+  "schema": "qi-destination-job-artifact-readback-v1"
+}

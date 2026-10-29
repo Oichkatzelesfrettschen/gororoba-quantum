@@ -1242,6 +1242,7 @@
     "scripts/bdsc_packages.py",
     "scripts/box_kite_packages.py",
     "scripts/echo_dilation_noise.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_rotation_composite.py",
     "scripts/stiefel_witness_certificate.py",
     "scripts/walk_scaffold_channels.py"
@@ -1252,6 +1253,7 @@
     "scripts/bdsc_packages.py",
     "scripts/box_kite_packages.py",
     "scripts/echo_dilation_noise.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_rotation_composite.py",
     "scripts/stiefel_witness_certificate.py",
     "scripts/walk_scaffold_channels.py"
@@ -1290,6 +1292,7 @@
     "scripts/box_kite_packages.py",
     "scripts/cd_two_blade_blocks.py",
     "scripts/echo_dilation_noise.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/walk_scaffold_channels.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
@@ -1298,6 +1301,7 @@
     "scripts/box_kite_packages.py",
     "scripts/cd_two_blade_blocks.py",
     "scripts/echo_dilation_noise.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/walk_scaffold_channels.py"
    ]
   },
@@ -1344,6 +1348,7 @@
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
     "scripts/box_kite_packages.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_rotation_composite.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
@@ -1351,6 +1356,7 @@
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
     "scripts/box_kite_packages.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_rotation_composite.py"
    ]
   },
@@ -1951,14 +1957,16 @@
     "scripts/experiment_toolchain.py",
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qi_matched_zero_divisor.py",
-    "scripts/qi_toolchain_check.py"
+    "scripts/qi_toolchain_check.py",
+    "scripts/qi_tuna_qx_local_replay.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/experiment_toolchain.py",
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qi_matched_zero_divisor.py",
-    "scripts/qi_toolchain_check.py"
+    "scripts/qi_toolchain_check.py",
+    "scripts/qi_tuna_qx_local_replay.py"
    ]
   },
   {
@@ -2241,11 +2249,13 @@
    "hardware_execution": false,
    "imported_by": [
     "gororoba_quantum/operator_arithmetic.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_nullity12_refinement.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "gororoba_quantum/operator_arithmetic.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_nullity12_refinement.py"
    ]
   },
@@ -2655,6 +2665,8 @@
     "scripts/iqm_qet_ladder.py",
     "scripts/iqm_signed_resolve.py",
     "scripts/jax_bridge_sweep.py",
+    "scripts/local_idle_controls.py",
+    "scripts/local_idle_falsifier.py",
     "scripts/local_member_cz_conformance.py",
     "scripts/local_optical_operator_replay.py",
     "scripts/local_photonic_compiler_crosscheck.py",
@@ -2705,9 +2717,18 @@
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_ladder_line_bins.py",
     "scripts/qi_matched_zero_divisor.py",
+    "scripts/qi_projector_geometry.py",
     "scripts/qi_readout_ringdown_cases.py",
     "scripts/qi_shot_record_line.py",
     "scripts/qi_tuna17_device_context.py",
+    "scripts/qi_tuna_destination_one_analysis.py",
+    "scripts/qi_tuna_early_label_maps.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
+    "scripts/qi_tuna_joint_response.py",
+    "scripts/qi_tuna_qualification.py",
+    "scripts/qi_tuna_readout_destination_analysis.py",
+    "scripts/qi_tuna_readout_diagnostics.py",
+    "scripts/qi_tuna_readout_response_mixture.py",
     "scripts/qi_walsh_exemplar_analysis.py",
     "scripts/qi_walsh_exemplar_cases.py",
     "scripts/qi_zero_divisor_cases.py",
@@ -2824,6 +2845,7 @@
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
     "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_character.py",
     "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_analysis.py",
     "scripts/ascella_coherence_repeat.py",
@@ -2903,6 +2925,8 @@
     "scripts/iqm_qet_ladder.py",
     "scripts/iqm_signed_resolve.py",
     "scripts/jax_bridge_sweep.py",
+    "scripts/local_idle_controls.py",
+    "scripts/local_idle_falsifier.py",
     "scripts/local_member_cz_conformance.py",
     "scripts/local_optical_operator_replay.py",
     "scripts/local_photonic_compiler_crosscheck.py",
@@ -2953,9 +2977,18 @@
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_ladder_line_bins.py",
     "scripts/qi_matched_zero_divisor.py",
+    "scripts/qi_projector_geometry.py",
     "scripts/qi_readout_ringdown_cases.py",
     "scripts/qi_shot_record_line.py",
     "scripts/qi_tuna17_device_context.py",
+    "scripts/qi_tuna_destination_one_analysis.py",
+    "scripts/qi_tuna_early_label_maps.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
+    "scripts/qi_tuna_joint_response.py",
+    "scripts/qi_tuna_qualification.py",
+    "scripts/qi_tuna_readout_destination_analysis.py",
+    "scripts/qi_tuna_readout_diagnostics.py",
+    "scripts/qi_tuna_readout_response_mixture.py",
     "scripts/qi_walsh_exemplar_analysis.py",
     "scripts/qi_walsh_exemplar_cases.py",
     "scripts/qi_zero_divisor_cases.py",
@@ -3314,12 +3347,16 @@
    "hardware_execution": false,
    "imported_by": [
     "scripts/opensquirrel_fullprecision.py",
-    "scripts/qi_toolchain_check.py"
+    "scripts/qi_projector_compiler_admission.py",
+    "scripts/qi_toolchain_check.py",
+    "scripts/qi_tuna_readout_mapping_cases.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/opensquirrel_fullprecision.py",
-    "scripts/qi_toolchain_check.py"
+    "scripts/qi_projector_compiler_admission.py",
+    "scripts/qi_toolchain_check.py",
+    "scripts/qi_tuna_readout_mapping_cases.py"
    ]
   },
   {
@@ -3612,9 +3649,13 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [],
+   "imported_by": [
+    "scripts/qi_tuna_joint_package_runtime.py"
+   ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "scripts/qi_tuna_joint_package_runtime.py"
+   ]
   },
   {
    "distribution": "parso",
@@ -3739,6 +3780,7 @@
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_character.py",
     "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_request.py",
     "scripts/ascella_experiment_analysis.py",
@@ -4396,6 +4438,7 @@
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
     "scripts/persona_corpus_checks.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_gap_directions.py",
     "scripts/rank_locus_padic_lift.py",
     "scripts/rank_locus_quadric_germ.py",
@@ -4411,6 +4454,7 @@
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
     "scripts/persona_corpus_checks.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_gap_directions.py",
     "scripts/rank_locus_padic_lift.py",
     "scripts/rank_locus_quadric_germ.py",
@@ -4570,9 +4614,9 @@
     "docs/notes/ionq/requirements-ionq.txt": "2.6.1",
     "docs/notes/open_quantum/requirements-oq.txt": "2.5.2",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.3.1",
-    "requirements.txt": "2.6.0",
-    "scripts/kaggle_run.py:84:KERNEL_PINS": "2.6.0",
-    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "2.6.0",
+    "requirements.txt": "2.6.1",
+    "scripts/kaggle_run.py:84:KERNEL_PINS": "2.6.1",
+    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "2.6.1",
     "IQM retained environment": "2.1.2"
    },
    "observed_host_version": "2.5.2",
@@ -4625,6 +4669,7 @@
     "gororoba_quantum/experiments.py",
     "gororoba_quantum/heron_multiprogramming.py",
     "gororoba_quantum/hybrid_shor.py",
+    "gororoba_quantum/idle_padding.py",
     "gororoba_quantum/idle_penalty.py",
     "gororoba_quantum/idle_readout.py",
     "gororoba_quantum/jax_bridge.py",
@@ -4706,6 +4751,8 @@
     "scripts/iqm_signed_resolve.py",
     "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
+    "scripts/local_idle_controls.py",
+    "scripts/local_idle_falsifier.py",
     "scripts/local_member_cz_conformance.py",
     "scripts/measurement_sequence_validation.py",
     "scripts/mod15_signed_multiplier_census.py",
@@ -4776,6 +4823,7 @@
     "gororoba_quantum/experiments.py",
     "gororoba_quantum/heron_multiprogramming.py",
     "gororoba_quantum/hybrid_shor.py",
+    "gororoba_quantum/idle_padding.py",
     "gororoba_quantum/idle_penalty.py",
     "gororoba_quantum/idle_readout.py",
     "gororoba_quantum/jax_bridge.py",
@@ -4858,6 +4906,8 @@
     "scripts/iqm_signed_resolve.py",
     "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
+    "scripts/local_idle_controls.py",
+    "scripts/local_idle_falsifier.py",
     "scripts/local_member_cz_conformance.py",
     "scripts/measurement_sequence_validation.py",
     "scripts/mod15_signed_multiplier_census.py",
@@ -5073,8 +5123,8 @@
    "distribution": "qiskit-aer",
    "declared_versions": {
     "ci/requirements-replay.txt": "0.17.2",
-    "requirements.txt": "0.17.2",
-    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.17.2",
+    "requirements.txt": "0.18.2",
+    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.18.2",
     "IQM retained environment": "0.17.2"
    },
    "observed_host_version": "0.17.2",
@@ -5130,6 +5180,8 @@
     "scripts/iqm_signed_probe.py",
     "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
+    "scripts/local_idle_controls.py",
+    "scripts/local_idle_falsifier.py",
     "scripts/measurement_sequence_validation.py",
     "scripts/n21_conjugation_noise.py",
     "scripts/n21_exact_crosscheck.py",
@@ -5187,6 +5239,8 @@
     "scripts/iqm_signed_probe.py",
     "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
+    "scripts/local_idle_controls.py",
+    "scripts/local_idle_falsifier.py",
     "scripts/measurement_sequence_validation.py",
     "scripts/n21_conjugation_noise.py",
     "scripts/n21_exact_crosscheck.py",
@@ -5219,7 +5273,7 @@
   {
    "distribution": "qiskit-aer-gpu-cu11",
    "declared_versions": {
-    "scripts/kaggle_run.py:85:KERNEL_PINS": "0.17.2"
+    "scripts/kaggle_run.py:85:KERNEL_PINS": "0.18.2"
    },
    "observed_host_version": null,
    "role": "CUDA 11 Aer wheel for the isolated Kaggle GPU path; exclusively owns qiskit_aer and shares the CPU/CUDA 13 Aer engine.",
@@ -5237,7 +5291,7 @@
   {
    "distribution": "qiskit-aer-gpu-cu13",
    "declared_versions": {
-    "scripts/kaggle_run.py:113:GPU_AER_PINS": "0.17.2"
+    "scripts/kaggle_run.py:113:GPU_AER_PINS": "0.18.2"
    },
    "observed_host_version": null,
    "role": "Repository-built CUDA 13 Aer wheel for qualified Kaggle GPU simulation; exclusively owns qiskit_aer in that environment and shares the Aer engine, not an independent witness.",
@@ -5479,10 +5533,10 @@
    "distribution": "qiskit-ibm-runtime",
    "declared_versions": {
     "ci/requirements-replay.txt": "0.50.0",
-    "requirements.txt": "0.50.0",
-    "scripts/kaggle_run.py:88:KERNEL_PINS": "0.50.0",
-    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.50.0",
-    "scripts/kaggle_run.py:163:PIN_GROUPS": "0.50.0",
+    "requirements.txt": "0.51.0",
+    "scripts/kaggle_run.py:88:KERNEL_PINS": "0.51.0",
+    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.51.0",
+    "scripts/kaggle_run.py:163:PIN_GROUPS": "0.51.0",
     "IQM retained environment": "0.43.1"
    },
    "observed_host_version": "0.50.0",
@@ -5931,6 +5985,7 @@
     "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
     "scripts/qi_mcp_server.py",
+    "scripts/qi_tuna_qx_local_replay.py",
     "scripts/qx_local_series.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
@@ -5940,6 +5995,7 @@
     "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
     "scripts/qi_mcp_server.py",
+    "scripts/qi_tuna_qx_local_replay.py",
     "scripts/qx_local_series.py"
    ]
   },
@@ -6291,6 +6347,7 @@
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_shot_record_line.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/qi_zz_map_analysis.py",
     "scripts/rank_sector_endpoint_decomposition.py",
     "scripts/remeasure_history.py",
@@ -6377,6 +6434,7 @@
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_shot_record_line.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/qi_zz_map_analysis.py",
     "scripts/rank_sector_endpoint_decomposition.py",
     "scripts/remeasure_history.py",
@@ -6694,12 +6752,14 @@
    "hardware_execution": false,
    "imported_by": [
     "scripts/algebra_package_tables.py",
-    "scripts/box_kite_packages.py"
+    "scripts/box_kite_packages.py",
+    "scripts/qi_tuna_joint_package_runtime.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py",
-    "scripts/box_kite_packages.py"
+    "scripts/box_kite_packages.py",
+    "scripts/qi_tuna_joint_package_runtime.py"
    ]
   },
   {
@@ -6867,6 +6927,7 @@
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
     "scripts/persona_corpus_checks.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_second_order.py"
    ],
@@ -6906,6 +6967,7 @@
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
     "scripts/persona_corpus_checks.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_second_order.py"
    ]
@@ -6954,11 +7016,13 @@
    "hardware_execution": false,
    "imported_by": [
     "ci/runner_specs.py",
+    "scripts/local_idle_falsifier.py",
     "scripts/numerics_fingerprint.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "ci/runner_specs.py",
+    "scripts/local_idle_falsifier.py",
     "scripts/numerics_fingerprint.py"
    ]
   },
@@ -7404,13 +7468,13 @@
   "docs/notes/quafu/requirements-quafu.txt": "0792aae81e6f09210b366b8a4db405e74c35435207f1e67ddc3b61707db9e61f",
   "docs/notes/quantum_inspire/requirements-qi.txt": "95deb5311e97df0c191622f407f6f4ab747459c1e97e5d2cbf4d36b959654d88",
   "packaging/qiskit-aer-cuda/build-requirements.txt": "10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352",
-  "requirements.txt": "c83769287c82d8b2616f254226db544ed0c323756f648a813290d36aa1f59816",
-  "scripts/kaggle_run.py": "9551cfd370c1f9c40abdcbe150c2d4c159952479df12785d182056a85fed8b46",
-  "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "b0b9e3b345886f2acee26395802129d8ad1c5dc5618533c77653a88d939bd6ba",
+  "requirements.txt": "49a450b4495470d5a42522602b6c59bc0b6ac81822a530109ce9a774c286527b",
+  "scripts/kaggle_run.py": "056a4da780305f35588487102dad7e2d9b460291505643ccbf9d57f3e5c4d2a9",
+  "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "91341759b26f68f39d0764b256139b147f538e39824de48eb3acc0ea828da1d2",
   "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",
   "scripts/hypercomplex_libraries.py": "0f4cb3cffa3d88479952e557e0f706cc03a42f28deb1abd60091db026659116e",
   "docs/notes/quandela/python-stack.md": "e9ccf726ac8f136c9be0fb570fc4442846d50809620eb91726543d2ea43d4571",
-  "docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh": "8a7d8de6918424b5d187b85671827cdcbfe0d33421eae5b30ed6c837ff952c67",
+  "docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh": "3253fac412585aa0321ab568e78140b6139289c4be9f8bd16f27f62d7da2151e",
   "docs/notes/iqm/python-stack-versions.json": "295941539dd0065d5ece5eb164df8131d38157e2e1ba8d9f5d95a7db5ef74062"
  },
  "tracked_import_roots": {
@@ -8562,6 +8626,12 @@
    "types",
    "typing"
   ],
+  "gororoba_quantum/idle_padding.py": [
+   "__future__",
+   "collections",
+   "qiskit",
+   "typing"
+  ],
   "gororoba_quantum/idle_penalty.py": [
    "__future__",
    "experiments",
@@ -8709,6 +8779,7 @@
    "hashlib",
    "heapq",
    "ibm_account",
+   "idle_padding",
    "importlib",
    "io",
    "json",
@@ -12344,6 +12415,52 @@
    "time",
    "typing"
   ],
+  "scripts/local_idle_controls.py": [
+   "__future__",
+   "argparse",
+   "calibration_snapshot",
+   "dynamic_density",
+   "ghost_error_scale",
+   "ghost_event_scale",
+   "ghost_run",
+   "hashlib",
+   "idle_padding",
+   "io",
+   "json",
+   "local_idle_falsifier",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qiskit",
+   "qiskit_aer",
+   "scheduled_idle_replay",
+   "sys",
+   "typing"
+  ],
+  "scripts/local_idle_falsifier.py": [
+   "__future__",
+   "argparse",
+   "calibration_snapshot",
+   "dynamic_density",
+   "ghost_run",
+   "gzip",
+   "hashlib",
+   "idle_padding",
+   "io",
+   "json",
+   "math",
+   "numpy",
+   "os",
+   "parallel",
+   "pathlib",
+   "qiskit",
+   "qiskit_aer",
+   "scheduled_idle_replay",
+   "snapshot_laws",
+   "sys",
+   "threadpoolctl",
+   "typing"
+  ],
   "scripts/local_member_cz_conformance.py": [
    "__future__",
    "argparse",
@@ -12565,6 +12682,16 @@
    "parallel",
    "pathlib",
    "scipy",
+   "sys",
+   "typing"
+  ],
+  "scripts/msq_successor_coverage.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "msq_successor_null_batch",
+   "pathlib",
+   "statistics",
    "sys",
    "typing"
   ],
@@ -13697,6 +13824,76 @@
    "time",
    "typing"
   ],
+  "scripts/qi_platform_submission_deadline.py": [
+   "__future__",
+   "collections",
+   "hashlib",
+   "json",
+   "math",
+   "pathlib",
+   "qi_platform",
+   "time",
+   "typing"
+  ],
+  "scripts/qi_projector_compiler_admission.py": [
+   "__future__",
+   "argparse",
+   "importlib",
+   "json",
+   "math",
+   "opensquirrel",
+   "parallel",
+   "pathlib",
+   "qi_toolchain_check",
+   "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_projector_conformance.py": [
+   "__future__",
+   "argparse",
+   "decimal",
+   "hashlib",
+   "json",
+   "pathlib",
+   "qi_projector_geometry",
+   "typing"
+  ],
+  "scripts/qi_projector_distribution_audit.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "decimal",
+   "hashlib",
+   "itertools",
+   "json",
+   "parallel",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_projector_geometry.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "json",
+   "math",
+   "numpy",
+   "pathlib",
+   "typing"
+  ],
+  "scripts/qi_projector_live_admission.py": [
+   "__future__",
+   "argparse",
+   "datetime",
+   "hashlib",
+   "json",
+   "math",
+   "pathlib",
+   "qi_platform",
+   "qi_projector_compiler_admission",
+   "typing"
+  ],
   "scripts/qi_readout_ringdown_cases.py": [
    "__future__",
    "argparse",
@@ -13788,6 +13985,404 @@
    "qi_coupler_zz_map",
    "sys",
    "typing"
+  ],
+  "scripts/qi_tuna_account_binding.py": [
+   "collections",
+   "hmac"
+  ],
+  "scripts/qi_tuna_assignment_commitment.py": [
+   "__future__",
+   "anu_qrng",
+   "datetime",
+   "hashlib",
+   "hmac",
+   "json",
+   "re",
+   "typing"
+  ],
+  "scripts/qi_tuna_attempt_journal.py": [
+   "dataclasses",
+   "hashlib",
+   "json",
+   "os",
+   "qi_tuna_attempt_transport",
+   "qi_tuna_private_readbacks",
+   "qi_tuna_readback_transport",
+   "qi_tuna_source_association",
+   "types",
+   "typing"
+  ],
+  "scripts/qi_tuna_attempt_transport.py": [
+   "collections",
+   "dataclasses",
+   "hashlib",
+   "math",
+   "qi_tuna_readback_transport",
+   "typing"
+  ],
+  "scripts/qi_tuna_bounded_lock.py": [
+   "collections",
+   "contextlib",
+   "fcntl",
+   "math",
+   "os",
+   "stat",
+   "time"
+  ],
+  "scripts/qi_tuna_capture_commitment.py": [
+   "hashlib",
+   "hmac",
+   "json",
+   "qi_tuna_readback_collection",
+   "qi_tuna_readback_transport",
+   "re"
+  ],
+  "scripts/qi_tuna_consumption_marker.py": [
+   "hashlib",
+   "json",
+   "os",
+   "stat"
+  ],
+  "scripts/qi_tuna_destination_analysis_receipt.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "re",
+   "typing"
+  ],
+  "scripts/qi_tuna_destination_one_analysis.py": [
+   "__future__",
+   "acquisition_decisions",
+   "argparse",
+   "collections",
+   "datetime",
+   "decimal",
+   "hashlib",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_projector_compiler_admission",
+   "qi_projector_live_admission",
+   "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_destination_one_cases.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "qi_tuna_destination_sequential_cases",
+   "qi_tuna_readout_mapping_cases",
+   "typing"
+  ],
+  "scripts/qi_tuna_destination_one_run.py": [
+   "__future__",
+   "acquisition_decisions",
+   "argparse",
+   "collections",
+   "datetime",
+   "html",
+   "json",
+   "math",
+   "pathlib",
+   "qi_platform",
+   "qi_platform_submission_deadline",
+   "qi_projector_live_admission",
+   "qi_tuna_destination_one_analysis",
+   "qi_tuna_destination_one_cases",
+   "qi_tuna_readout_mapping_cases",
+   "time",
+   "typing",
+   "urllib"
+  ],
+  "scripts/qi_tuna_destination_prefix.py": [
+   "__future__",
+   "argparse",
+   "datetime",
+   "decimal",
+   "json",
+   "pathlib",
+   "qi_tuna_readout_destination_analysis",
+   "typing"
+  ],
+  "scripts/qi_tuna_destination_sequential_cases.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "qi_tuna_readout_mapping_cases",
+   "typing"
+  ],
+  "scripts/qi_tuna_destination_sequential_run.py": [
+   "__future__",
+   "acquisition_decisions",
+   "argparse",
+   "collections",
+   "datetime",
+   "html",
+   "json",
+   "math",
+   "pathlib",
+   "qi_platform",
+   "qi_projector_live_admission",
+   "qi_tuna_destination_sequential_cases",
+   "qi_tuna_readout_destination_analysis",
+   "qi_tuna_readout_mapping_cases",
+   "time",
+   "typing",
+   "urllib"
+  ],
+  "scripts/qi_tuna_destination_slot_cases.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "qi_projector_compiler_admission",
+   "qi_tuna_readout_mapping_cases",
+   "typing"
+  ],
+  "scripts/qi_tuna_dispatch_clock.py": [
+   "dataclasses",
+   "math"
+  ],
+  "scripts/qi_tuna_early_label_maps.py": [
+   "__future__",
+   "argparse",
+   "itertools",
+   "numpy",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "qi_tuna_joint_response",
+   "typing"
+  ],
+  "scripts/qi_tuna_final_result_receipt.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "hashlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "re",
+   "typing"
+  ],
+  "scripts/qi_tuna_identity_guard.py": [
+   "hmac",
+   "qi_tuna_subject_binding"
+  ],
+  "scripts/qi_tuna_joint_algebra.py": [
+   "__future__",
+   "algebra_package_tables",
+   "argparse",
+   "fractions",
+   "json",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "qi_tuna_joint_response",
+   "typing"
+  ],
+  "scripts/qi_tuna_joint_package_runtime.py": [
+   "SplitOct",
+   "__future__",
+   "algebra_package_tables",
+   "argparse",
+   "cd_core",
+   "flint",
+   "fractions",
+   "hypercomplex",
+   "hypercomplex_engine",
+   "hyprat",
+   "importlib",
+   "json",
+   "math",
+   "mpmath",
+   "numpy",
+   "pandas",
+   "parallel",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "qi_tuna_joint_algebra",
+   "qi_tuna_joint_response",
+   "scipy",
+   "sympy",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_joint_response.py": [
+   "__future__",
+   "argparse",
+   "decimal",
+   "json",
+   "numpy",
+   "pathlib",
+   "qi_tuna_destination_analysis_receipt",
+   "qi_tuna_destination_one_analysis",
+   "qi_tuna_destination_prefix",
+   "typing"
+  ],
+  "scripts/qi_tuna_journaled_collection.py": [
+   "collections",
+   "dataclasses",
+   "math",
+   "qi_tuna_attempt_transport",
+   "qi_tuna_capture_commitment",
+   "qi_tuna_readback_collection",
+   "qi_tuna_readback_transport",
+   "qi_tuna_source_association",
+   "typing"
+  ],
+  "scripts/qi_tuna_private_readbacks.py": [
+   "hashlib",
+   "json",
+   "os",
+   "qi_tuna_readback_collection",
+   "qi_tuna_readback_transport",
+   "qi_tuna_source_association",
+   "stat",
+   "types"
+  ],
+  "scripts/qi_tuna_qualification.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "decimal",
+   "hashlib",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_qx_destination.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "datetime",
+   "decimal",
+   "hashlib",
+   "json",
+   "os",
+   "pathlib",
+   "qi_platform",
+   "qi_stack",
+   "qi_tuna_readout_mapping_cases",
+   "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_qx_local_replay.py": [
+   "__future__",
+   "argparse",
+   "cqasm",
+   "datetime",
+   "importlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "qi_tuna_qx_destination",
+   "qxelarator",
+   "sys",
+   "typing",
+   "warnings"
+  ],
+  "scripts/qi_tuna_readback_collection.py": [
+   "collections",
+   "dataclasses",
+   "hashlib",
+   "qi_tuna_readback_transport",
+   "qi_tuna_source_association",
+   "typing"
+  ],
+  "scripts/qi_tuna_readback_transport.py": [
+   "collections",
+   "dataclasses",
+   "hashlib",
+   "math",
+   "re",
+   "typing"
+  ],
+  "scripts/qi_tuna_readout_destination_analysis.py": [
+   "__future__",
+   "acquisition_decisions",
+   "argparse",
+   "collections",
+   "datetime",
+   "decimal",
+   "hashlib",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_projector_compiler_admission",
+   "qi_projector_live_admission",
+   "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_readout_diagnostics.py": [
+   "__future__",
+   "argparse",
+   "itertools",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_tuna_qualification",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_readout_mapping_cases.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "importlib",
+   "json",
+   "opensquirrel",
+   "parallel",
+   "pathlib",
+   "qi_projector_compiler_admission",
+   "qi_toolchain_check",
+   "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_readout_response_mixture.py": [
+   "__future__",
+   "argparse",
+   "decimal",
+   "fractions",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_tuna_qualification",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_sequential_score.py": [
+   "__future__",
+   "fractions",
+   "typing"
+  ],
+  "scripts/qi_tuna_source_association.py": [
+   "collections",
+   "hashlib",
+   "json",
+   "math",
+   "qi_tuna_sequential_score",
+   "typing"
+  ],
+  "scripts/qi_tuna_subject_binding.py": [
+   "dataclasses",
+   "hmac",
+   "qi_tuna_account_binding",
+   "qi_tuna_source_association"
   ],
   "scripts/qi_walsh_exemplar_analysis.py": [
    "__future__",
@@ -14253,6 +14848,7 @@
    "numpy",
    "parallel",
    "pathlib",
+   "pins",
    "qiskit",
    "re",
    "sys",
@@ -14768,6 +15364,9 @@
   ],
   "opensquirrel": [
    "opensquirrel"
+  ],
+  "pandas": [
+   "pandas"
   ],
   "perceval": [
    "perceval-quandela"

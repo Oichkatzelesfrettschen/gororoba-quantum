@@ -1,0 +1,18 @@
+{
+  "observed_utc": "2026-10-27T17:01:26.547911+00:00",
+  "scope": "Pre-acquisition local verification; provider submission unrun",
+  "checks": [
+    "Six compiled circuits replay byte-identically with complete normalized instruction streams under qi-stack-python",
+    "66 initial new-module tests passed; 36 live admission tests including 13 additional numeric representation regressions passed",
+    "72 focused existing geometry/conformance/distribution/live-admission tests passed",
+    "Pinned Ruff and mypy pass across eight new Python files",
+    "QX conformance and supplemental joint-law audit replay match",
+    "Research registry, Markdown links and regenerated library inventory pass"
+  ],
+  "producer_sha256": {
+    "scripts/qi_projector_compiler_admission.py": "c9dd1b66dc27987460e59cf8bc8ba9bd123c36cf2e054e3a387c2f58c59c3377",
+    "scripts/qi_projector_distribution_audit.py": "6fe7de482c6bac52aa2b32feb5232cdae5aff9576a5bb89ad86cb20aef0fe355",
+    "scripts/qi_projector_live_admission.py": "a5fd27d2c3e18cf24eacf2c115b7e027d7af0a257598b01c6e46c9cc4977ddd1",
+    "scripts/qi_tuna_qualification.py": "ec1ee8e8cfa09c0beec0e8730b18a935a378a1360c2d1bdfb508cfcbd6dd9b3e"
+  }
+}

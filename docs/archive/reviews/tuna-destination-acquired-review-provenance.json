@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.164.0",
+  "model": "gpt-daybreak-blue-latest",
+  "observed_utc": "2026-10-27T21:24:57.309399+00:00",
+  "reasoning_effort": "high",
+  "report_transformation": "Absolute worktree links converted to repository-relative links; labels preserve original line numbers.",
+  "reports": [
+    {
+      "file": "docs/archive/reviews/tuna-destination-acquired-data-review.md",
+      "original_report_sha256": "de610a107042edefc1280333de271fe36aa1be89ff9f93831e47ce2286f51970",
+      "sha256": "94e0c07f779ea841be407d1d8757cf0e357103af7944e540a2910f9f244d77dd"
+    },
+    {
+      "file": "docs/archive/reviews/tuna-destination-recovery-validation-review.md",
+      "original_report_sha256": "ce18c2ffa0b38eea3d3a4c693b3695ba0559471bc8803d875682dd76b94d4776",
+      "sha256": "3fd73b7d27f745f96d5eef5a410b9f3af79a83a688014f4ab1825c36313df118"
+    },
+    {
+      "file": "docs/archive/reviews/tuna-destination-recovery-order-review.md",
+      "original_report_sha256": "499db98f68173ed1ca86914c1840984691385453313bd791f021ba700b50bab2",
+      "sha256": "fc31b2f2b9bbf33718fdfaa853aec97317fedcb57ab06a02c4f04d7c111bd221"
+    }
+  ],
+  "resolution": "Acquired counts and interpretation independently verified. Requested recovery/source validation and missing chronology edge repaired; final focused review reports no residual blocker.",
+  "schema": "codex-acquired-data-review-provenance-v1",
+  "scientific_boundary": "The six-job case remains incomplete; posthoc prefix admits no statistical acceptance or causal attribution.",
+  "session_id": "01a17e38-6428-7eb3-b233-d8fbf9cc47b8",
+  "transport": "Read-only Codex CLI in tmux"
+}

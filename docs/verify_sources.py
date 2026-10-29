@@ -7,12 +7,21 @@ import io
 import json
 import re
 import subprocess
+import sys
 import tarfile
 from datetime import datetime, timedelta
 from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from typing import Any
 from urllib.parse import unquote, urljoin, urlsplit
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+from check_markdown_links import strip_code  # noqa: E402
+
+
+def note_link_targets(text: str) -> list[str]:
+    """Inline link targets of a note outside fenced, indented and inline code, where `Y[t](+)` is notation."""
+    return re.findall(r"\[[^\]]*\]\(([^\s)]+)\)", "\n".join(strip_code(text.splitlines())))
 
 
 def require(condition: bool, message: str) -> None:
@@ -1234,7 +1243,7 @@ def verify() -> None:
     for note in library.rglob("*.md"):
         if any(capture in note.parents for capture in verbatim_captures):
             continue
-        for target in re.findall(r"\[[^\]]*\]\(([^\s)]+)\)", note.read_text()):
+        for target in note_link_targets(note.read_text()):
             if ":" in target or target.startswith("#"):
                 continue
             relative_target = target.split("#", 1)[0]

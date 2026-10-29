@@ -57,6 +57,16 @@ def license_documents_fixture() -> dict[str, Any]:
     }
 
 
+class NoteLinkChecks(unittest.TestCase):
+    def test_code_notation_is_not_a_link(self) -> None:
+        import verify_sources
+
+        text = (
+            "Define `Y[t](+)` and [draft](draft.md).\n\n    tau[t] = E[Y[t](+) - Y[t](-)]\n\n```\n[x](fenced.md)\n```\n"
+        )
+        self.assertEqual(verify_sources.note_link_targets(text), ["draft.md"])
+
+
 class WebSourceChecks(unittest.TestCase):
     def test_receipts_and_descriptive_entries(self) -> None:
         import verify_sources

@@ -1,10 +1,8 @@
 # Python stack on the build host
 
 requirements.txt and
-ci/requirements-ci.txt pin what CI runs. The build host runs Arch packages
-at those versions, except for the linters and for the Qiskit core: the host carries
-qiskit 2.6.1, qiskit-ibm-runtime 0.51.0 and qiskit-aer 0.18.2 ahead of the
-requirements.txt pins of qiskit 2.6.0 and runtime 0.50.0 until the pin bump lands.
+ci/requirements-ci.txt pin what CI runs; the build host runs Arch packages
+at those versions, except the linters.
 
 | Arch package | Pin it carries |
 |---|---|
@@ -21,6 +19,8 @@ requirements.txt pins of qiskit 2.6.0 and runtime 0.50.0 until the pin bump land
 | python-rustworkx, python-sympy | rustworkx 0.18.1, sympy 1.14.0 |
 | python-matplotlib | matplotlib 3.11.2 |
 | python-stim, python-mthree (with python-runningman), python-qiskit-experiments, python-quimb, python-cotengra, python-pyzx, python-galois | stim 1.16.0, mthree 3.0.0, qiskit-experiments 0.14.2, quimb 1.15.0, cotengra 0.8.2, pyzx 0.10.7, galois 0.4.11: the `quantum-tools` group a Kaggle kernel installs with `push --with quantum-tools` (`scripts/kaggle_run.py` PIN_GROUPS) |
+| nvidia_uvm module option | `options nvidia_uvm uvm_disable_sam_migration=0` in `/etc/modprobe.d/nvidia-uvm-sam.conf` enables HMM migration of system-allocated memory (the driver default disables it); reload with `modprobe -r nvidia_uvm && modprobe nvidia_uvm` once no process holds `/dev/nvidia-uvm`, and confirm `uvm_disable_sam_migration` reads `N`. See [the GPU design](../../design/gpu-exact-modular-linear-algebra.md) |
+| python-cuda, python-cuda-bindings, python-nvmath | cuda-python 13.4.4 (the CUDA 13 runtime API, including the `cudaMemLocation` prefetch and advise signatures) and nvmath-python 1.0.0 (cuBLASLt planning) |
 | python-flint | python-flint 0.9.0 (CI pin): exact rank modulo p (`nmod_mat`) and RREF null spaces (`fmpq_mat`) in `scripts/exact_rank.py`, and SymPy 1.14.0's ground types, which it selects when the version is on SymPy's tested list |
 | iqm-resonance-stack | IQM OS 4.7 client stack (iqm-client 36.0.0, qiskit 2.1.2, cirq-core 1.7.0, qrisp 0.9.10) as a separate Python 3.13 environment under /opt/iqm-resonance-stack, interpreter `iqm-python` (docs/notes/iqm/README.md) |
 | python-pytorch-opt-cuda, python-pandas | torch and pandas for python-octonion and python-cayley-dickson only |
@@ -70,10 +70,9 @@ from /usr/lib. A cuTensorNet contraction of the Bell circuit through
 cuda package installs, and no installed distribution requires them, so they
 stay uninstalled.
 `docs/notes/build_host/custatevec.md` holds the requirement list, the build
-and install commands and the probe results. A Kaggle kernel installs qiskit 2.6.0,
-qiskit-ibm-runtime 0.50.0 (its fake backends, such as FakeFez, need no
-account) and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel
-stops at 0.15.1) over the Kaggle image's numpy and scipy, records every
+and install commands and the probe results. A Kaggle kernel installs qiskit 2.6.1,
+qiskit-ibm-runtime 0.51.0 (its fake backends, such as FakeFez, need no
+account) and qiskit-aer-gpu-cu11 0.18.2 over the Kaggle image's numpy and scipy, records every
 version in `environment.json`, and holds no IBM credential
 (`kaggle_kernel/AGENTS.md`).
 

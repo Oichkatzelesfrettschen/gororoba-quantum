@@ -1,0 +1,331 @@
+{
+  "account_transaction_rows": 0,
+  "admitted": true,
+  "all_transaction_changes_zero": true,
+  "backend": {
+    "batchjobs_per_queue_limit": 5,
+    "default_compiler_config": {
+      "decomposition": [
+        {
+          "arguments": {},
+          "method": "decompose",
+          "path": "opensquirrel.passes.decomposer.SWAP2CZDecomposer"
+        },
+        {
+          "arguments": {},
+          "method": "decompose",
+          "path": "opensquirrel.passes.decomposer.CZDecomposer"
+        }
+      ],
+      "mapping": [],
+      "optimization": [],
+      "routing": []
+    },
+    "id": 7,
+    "identifier": "tuna_17",
+    "is_hardware": true,
+    "job_execution_time_limit": 300.0,
+    "max_jobs_per_batch_job": 5,
+    "max_number_of_shots": 131072,
+    "nqubits": 17,
+    "protocol_version": 2,
+    "supports_raw_data": true
+  },
+  "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+  "enabled": true,
+  "failures": [],
+  "gateset": [
+    "I",
+    "Rx",
+    "X",
+    "X90",
+    "mX90",
+    "Ry",
+    "Y",
+    "Y90",
+    "mY90",
+    "Rz",
+    "Z",
+    "S",
+    "T",
+    "Sdag",
+    "Tdag",
+    "H",
+    "CZ",
+    "init",
+    "measure",
+    "reset",
+    "barrier",
+    "wait"
+  ],
+  "hardware_pause_left_seconds": 0,
+  "heartbeat_max_age_seconds": 120,
+  "inputs": {
+    "backend_snapshot_sha256": "8cd1a963b17e7d9ea02610d4df474ff80217818a5c1de2d02df1df8b28b8ef82",
+    "circuit_producer_sha256": "8f8a1daa28dc1f22e5ff86bc67a61e4e5c03a8a926a35268ccf2aeddffa9f56c",
+    "circuits": [
+      {
+        "compiled_sha256": "47a608c99afe8212b1ac5c207485ab62e92188c4085ae24ae94d86008a43c201",
+        "file": "readout-zero.cq",
+        "source_sha256": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267"
+      },
+      {
+        "compiled_sha256": "f06b82c7d0b1aa0aa7a04a90e0382588ed9e74e7a355a166fb3945e84b7ad4f4",
+        "file": "readout-one.cq",
+        "source_sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f"
+      },
+      {
+        "compiled_sha256": "a24a2c45869e63445ee72823bf0d49d32ba3c7e4e71c8c24249cf1b45cd7397e",
+        "file": "geometry.cq",
+        "source_sha256": "069fc4696b40610d4eb963b1898aec24603fe0839d6ea17b868196fc7e5dfe8f"
+      }
+    ],
+    "compiler_replay_receipt_sha256": "38664edb8cba002b15ca4d40bbbcacbf6b7b76302717e2b6b022eaec50a91661",
+    "manifest_sha256": "d9a41a677a2a4bff4e2d3f4e10c4db2017d41ba1ee910da67960333d151dcfb2",
+    "public_terms_sha256": "8fc23dfe6d296c151536f83126ea4502f97bc949e6bd4c245ac81dd6590353a3",
+    "qualification_analyzer_sha256": "ec1ee8e8cfa09c0beec0e8730b18a935a378a1360c2d1bdfb508cfcbd6dd9b3e",
+    "written_case_sha256": "e504d9e4962338df58dcdf16b8564cd2ef2677d996bd90bed2a2588cc7da51c4"
+  },
+  "instances": [
+    {
+      "age_seconds": 5.503112,
+      "last_heartbeat": "2026-10-27T17:05:00.504017Z",
+      "status": "executing"
+    }
+  ],
+  "limits": {
+    "account_hardware_queued_batches": 1,
+    "batch_circuits": 3,
+    "hardware_pause_seconds": 30,
+    "shots_per_circuit": 4096
+  },
+  "observed_utc": "2026-10-27T17:05:06.007129+00:00",
+  "producer_sha256": "a5fd27d2c3e18cf24eacf2c115b7e027d7af0a257598b01c6e46c9cc4977ddd1",
+  "public_terms_review": "Required separately before guarded submission",
+  "queue_user_only": true,
+  "queued_batches": 0,
+  "request_started_utc": "2026-10-27T17:05:00+00:00",
+  "required_edges": [
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      8
+    ],
+    [
+      13,
+      11
+    ],
+    [
+      11,
+      14
+    ],
+    [
+      3,
+      6
+    ],
+    [
+      6,
+      9
+    ]
+  ],
+  "schema": "qi-projector-live-admission-v1",
+  "scope": "authenticated account reads; account identifiers omitted",
+  "status": "executing",
+  "topology": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      2,
+      0
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      2
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      4,
+      7
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      4,
+      8
+    ],
+    [
+      8,
+      4
+    ],
+    [
+      5,
+      2
+    ],
+    [
+      2,
+      5
+    ],
+    [
+      5,
+      3
+    ],
+    [
+      3,
+      5
+    ],
+    [
+      5,
+      8
+    ],
+    [
+      8,
+      5
+    ],
+    [
+      5,
+      9
+    ],
+    [
+      9,
+      5
+    ],
+    [
+      6,
+      3
+    ],
+    [
+      3,
+      6
+    ],
+    [
+      6,
+      9
+    ],
+    [
+      9,
+      6
+    ],
+    [
+      10,
+      7
+    ],
+    [
+      7,
+      10
+    ],
+    [
+      10,
+      13
+    ],
+    [
+      13,
+      10
+    ],
+    [
+      11,
+      7
+    ],
+    [
+      7,
+      11
+    ],
+    [
+      11,
+      8
+    ],
+    [
+      8,
+      11
+    ],
+    [
+      11,
+      13
+    ],
+    [
+      13,
+      11
+    ],
+    [
+      11,
+      14
+    ],
+    [
+      14,
+      11
+    ],
+    [
+      12,
+      8
+    ],
+    [
+      8,
+      12
+    ],
+    [
+      12,
+      9
+    ],
+    [
+      9,
+      12
+    ],
+    [
+      12,
+      14
+    ],
+    [
+      14,
+      12
+    ],
+    [
+      12,
+      15
+    ],
+    [
+      15,
+      12
+    ],
+    [
+      16,
+      14
+    ],
+    [
+      14,
+      16
+    ],
+    [
+      16,
+      15
+    ],
+    [
+      15,
+      16
+    ]
+  ]
+}

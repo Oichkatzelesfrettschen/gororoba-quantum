@@ -1,0 +1,17 @@
+{
+  "analyzer_sha256": "d0ee875b448366a1a8a53d09d387abb7de32066f6214694e205b7e43505781c7",
+  "attribution_status": "unresolved",
+  "inputs": {
+    "approval.json": "3720152e58258f0518cdc32210bf7addce11329c22c11733d461f9605df818a5",
+    "campaign.json": "10456c7e00920f0c461823234137d723b8a20fd73a390bec3a33d86f81511c70",
+    "decision-at-approval.json": "6c0beac3dfa4148ba6330a8eddc45faebfa15693de8e5127f8f9b94138a71367",
+    "sequence-plan.json": "53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76",
+    "terms-at-approval.json": "e3702947c77cd23a6d1de2cd20d3da59ea7ae01a656ddaac692f3fdba3345931",
+    "written-case-at-approval.md": "a78a7fb77589f945bec1b91636998859bfbc32960f95747fb71dc4bcadfd4057"
+  },
+  "outcome": "implementation route unavailable",
+  "physical_continuation_admitted": false,
+  "reason": "A required acquisition artifact is absent.",
+  "retry_authorized": false,
+  "schema": "qi-destination-predictable-response-analysis-v1"
+}
