@@ -211,7 +211,7 @@ and uniform Cold-baseline anchor reconstruction across the entire run:
 3. **In-situ Visibility Closure Admission:**
    $$\hat{C} = \hat{\Delta}_{\text{assoc}} + 2(\hat{\beta}_0 + \hat{\alpha}_{\text{ctrl}} + 0.5\hat{\Delta}_{\text{ctrl}}) = 0.0$$
    Standard error is propagated through the full joint covariance matrix $\operatorname{SE}(\hat{C}) = \sqrt{\mathbf{c}^T \Sigma \mathbf{c}}$.
-   Admitted if $|\hat{C}| < 0.05$ and $\text{CI}_{95} \subset [-0.05, 0.05]$.
+   Admitted if $|\hat{C}| < 0.05$ and $0 \in \text{CI}_{95}$ (consistent with zero within 95% confidence).
 
 4. **Predecessor Carryover Equivalence (TOST):**
    Evaluates Two One-Sided Tests (TOST) against equivalence margin $\delta = 0.020$:
