@@ -1566,6 +1566,7 @@ def measurement_sequence_candidates(
                             "one single-qubit placement per qubit the layout rule keeps; every qubit runs each member "
                             "in the same shots; every member ends in a reset, so every PUB is dynamic"
                         ),
+                        **({"sampling_assumption": MSQR_SAMPLING_ASSUMPTION} if relaxation else {}),
                         "dt_seconds": snapshot.backend.target.dt,
                     },
                 )
@@ -2046,6 +2047,40 @@ def check_compiled_ideals(runtime: Any, choices: list[Any]) -> None:
             raise runtime.LiveRunError(f"{name}: compiled labeled ideal differs from its exact oracle")
 
 
+# The relaxation family's per-qubit endpoints pool members of distinct PUBs, so its plan declares every PUB one
+# independent block (experiment_optimizer._plan_radius); qubits of one fused PUB stay dependent within a shot.
+MSQR_SAMPLING_ASSUMPTION = (
+    "independent shots across the job's PUBs: the executor runs every circuit once per shot round, so shots of "
+    "different PUBs alternate exactly as shots of one PUB do and the per-PUB Hoeffding radius already assumes "
+    "independent shots; the in-circuit carryover readers measure the adjacent-shot dependence; the qubits of one "
+    "fused PUB may depend within a shot"
+)
+
+
+def pub_independence(family: str, configuration: dict[str, Any], jobs: list[Any]) -> dict[str, Any]:
+    """The plan's independent PUB blocks and their sampling assumption: et-row's declared fixed-response blocks,
+    one block of every PUB for the relaxation family, and none for the other families."""
+    if family == "et-row":
+        return {
+            "independent_pub_blocks": tuple(
+                tuple(
+                    pub.name
+                    for job in jobs
+                    for pub in job.pubs
+                    if {configuration["members"][member]["block"] for member in pub.member_distributions} == {block}
+                )
+                for block in range(configuration["blocks"])
+            ),
+            "pub_independence_assumption": configuration["sampling_assumption"],
+        }
+    if family == MSQR_FAMILY:
+        return {
+            "independent_pub_blocks": (tuple(pub.name for job in jobs for pub in job.pubs),),
+            "pub_independence_assumption": configuration["sampling_assumption"],
+        }
+    return {}
+
+
 def candidate_ceiling(args: Any, usage: dict[str, Any]) -> float:
     """The per-job execution ceiling the optimizer screens each candidate job against.
 
@@ -2277,25 +2312,7 @@ def prepare(
                     jobs=tuple(jobs),
                     covariance_bounds=covariance,
                     empirical_bernstein=bernstein,
-                    **(
-                        {
-                            "independent_pub_blocks": tuple(
-                                tuple(
-                                    pub.name
-                                    for job in jobs
-                                    for pub in job.pubs
-                                    if {
-                                        configuration["members"][member]["block"] for member in pub.member_distributions
-                                    }
-                                    == {block}
-                                )
-                                for block in range(configuration["blocks"])
-                            ),
-                            "pub_independence_assumption": configuration["sampling_assumption"],
-                        }
-                        if args.family == "et-row"
-                        else {}
-                    ),
+                    **pub_independence(args.family, configuration, jobs),
                     proxy_metadata={
                         "backend": choices[0].snap.name,
                         "seed": choices[0].seed,

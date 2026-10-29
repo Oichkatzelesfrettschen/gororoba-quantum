@@ -221,3 +221,49 @@ def test_every_successor_member_has_a_summary_entry() -> None:
         if member.name.startswith("msqr_"):
             tag = member.name.split("_")[1]
             check(any(key.startswith("q7_msqr_") and key.endswith(tag) for key in summary), f"{member.name}: no entry")
+
+
+def test_relaxation_plan_declares_every_pub_one_independent_block() -> None:
+    from types import SimpleNamespace
+
+    import qpu_planning
+
+    jobs = [SimpleNamespace(pubs=[SimpleNamespace(name=f"p{k}") for k in range(3)]), SimpleNamespace(pubs=[])]
+    config = {"sampling_assumption": qpu_planning.MSQR_SAMPLING_ASSUMPTION}
+    found = qpu_planning.pub_independence(de.MSQR_FAMILY, config, jobs)
+    check(found["independent_pub_blocks"] == (("p0", "p1", "p2"),), f"one block of every PUB: {found}")
+    check(found["pub_independence_assumption"] == qpu_planning.MSQR_SAMPLING_ASSUMPTION, "the assumption travels")
+    check(qpu_planning.pub_independence(de.MSQE_FAMILY, config, jobs) == {}, "the envelope family declares none")
+
+
+@pytest.mark.parametrize(("shots", "feasible"), [(5548, False), (5549, True)])
+def test_one_block_meets_the_member_precision_from_5549_shots_at_width_32(shots: int, feasible: bool) -> None:
+    import experiment_optimizer as eo
+
+    alpha = 0.05 / (de.MSQ_ENDPOINTS_PER_QUBIT * 32)
+    pubs = tuple(
+        eo.PubPrediction(f"pub{k}", {f"m{k}": ((0.5, 0.5),)}, 1e-4, 2e-5, "full scheduled duration") for k in range(5)
+    )
+    pooled = eo.ObservableContract(
+        "pooled",
+        tuple(eo.ObservableTerm(f"m{k}", (0.25, 0.0)) for k in range(4)),
+        alpha=alpha,
+        precision_half_width=de.MSQ_PRECISION["p0"],
+    )
+    single = eo.ObservableContract(
+        "single", (eo.ObservableTerm("m4", (0.0, 1.0)),), alpha=alpha, precision_half_width=de.MSQ_PRECISION["p0"]
+    )
+    job = eo.JobCandidate("job", pubs, shots, 2.3, 100.0, "declared")
+    plan = eo.CandidatePlan(
+        "plan",
+        (job,),
+        independent_pub_blocks=(tuple(pub.name for pub in pubs),),
+        pub_independence_assumption="independent shots",
+    )
+    budget = eo.BudgetContract(1000.0, 0.0, 1000.0)
+    result = eo.evaluate_candidate(plan, (pooled, single), budget)
+    radii = {o.name: o.confidence_half_width for o in result.observables}
+    check(result.feasible is feasible, f"{shots} shots: {radii}")
+    check(radii["pooled"] < radii["single"] / 1.9, f"pooling four independent members halves the radius: {radii}")
+    union = eo.evaluate_candidate(eo.CandidatePlan("union", (job,)), (pooled, single), budget)
+    check(not union.feasible, "without the block the union bound refuses the pooled endpoint")
