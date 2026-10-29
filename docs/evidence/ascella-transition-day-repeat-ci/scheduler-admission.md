@@ -23,7 +23,9 @@ admits any provider start at least 24 hours after the forward baseline
 returned-mesh output distributions at least 24 hours apart"). The earlier
 requirement that the start fall on the following Pacific calendar date
 (2026-10-28 Pacific) is withdrawn; the analysis records `elapsed_hours`, so the
-comparison states the separation it measured. A longer separation widens the
+comparison states the separation it measured. The check runs the runner's
+registration rules with the same 24-hour rule in place of the next-day window,
+while `scripts/ascella_transition_day_repeat.py` keeps its bytes and its own rule. A longer separation widens the
 drift interval the comparison spans and leaves its test family unchanged.
 
 **Resubmission key.** The held job keeps its record `matched-repeat.hold.json`

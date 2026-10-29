@@ -18,9 +18,23 @@ repeat.BUNDLE = Path("docs/evidence/ascella-transition-day-repeat-ci")
 ADMITTED_STATUSES = ["available", "running"]
 
 
-def elapsed_allowed(start: float, baseline: float) -> bool:
+def elapsed_allowed(now: float, baseline: float) -> bool:
     """Admit a provider start at least 24 hours after the baseline, the case's preregistered separation."""
-    return math.isfinite(start) and math.isfinite(baseline) and start >= baseline + 86_400
+    return math.isfinite(now) and math.isfinite(baseline) and now >= baseline + 86_400
+
+
+def validate_registration(result: dict[str, Any], collected: dict[str, Any], campaign: str, producer: str) -> None:
+    """Run the runner's registration rules with the 24-hour separation in place of its next-day window.
+
+    validate_registration reads time_allowed as a module global of the runner, whose source digest the
+    analysis records, so the scheduled repeat swaps the rule for this call and restores it after.
+    """
+    original = repeat.time_allowed
+    repeat.time_allowed = elapsed_allowed
+    try:
+        repeat.validate_registration(result, collected, campaign, producer)
+    finally:
+        repeat.time_allowed = original
 
 
 def check_plan(plan: dict[str, Any]) -> None:
@@ -81,7 +95,7 @@ def check_result(directory: Path) -> dict[str, Any]:
         ),
     }
     collected = context._read(absolute / "results.json")
-    repeat.validate_registration(
+    validate_registration(
         result,
         collected,
         context._sha((repeat.ROOT / repeat.BUNDLE / "campaign.json").read_bytes()),

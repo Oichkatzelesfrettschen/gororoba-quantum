@@ -54,7 +54,7 @@ def test_timestamped_ci_run_keeps_the_frozen_campaign_run_identity(
     monkeypatch.setattr(checker.repeat.qd, "load_case", lambda _: ({}, None, None))
     monkeypatch.setattr(checker.context, "read_run", lambda _: ({"start_time": 86_400}, [{"name": "setting"}]))
     monkeypatch.setattr(checker.context, "ordered_map", lambda *args, **kwargs: [{"matched_mesh": True}] * 5)
-    monkeypatch.setattr(checker.repeat, "validate_registration", lambda *args: None)
+    monkeypatch.setattr(checker, "validate_registration", lambda *args: None)
     checker.check_result(run)
     if checker.repeat.RUN != original_run:
         raise AssertionError("the frozen run identity changed to the scheduler's result path")
@@ -70,3 +70,33 @@ def test_ci_window_admits_any_start_24_hours_after_the_baseline() -> None:
             raise AssertionError(f"a start {hours} hours after the baseline was refused")
     if checker.elapsed_allowed(float("nan"), baseline):
         raise AssertionError("a non-finite start qualified")
+
+
+def test_ci_registration_admits_a_start_33_hours_after_the_baseline() -> None:
+    checker = importlib.import_module("ascella_transition_ci_check")
+    baseline = 1_793_147_885.339165
+    comparisons = [
+        {"setting": name, "matched_mesh": True, "simultaneous_total_variation_bounds": [0.0, 0.1]}
+        for _, name in checker.context.SELECTION
+    ]
+    result = {
+        "schema": "ascella-transition-day-repeat-analysis-v1",
+        "campaign_sha256": "campaign",
+        "analysis_source_sha256": "producer",
+        "endpoints": 140,
+        "confidence": 0.95,
+        "baseline": {"start_time": baseline},
+        "repeat": {"start_time": baseline + 33 * 3_600},
+        "matched_meshes": 5,
+        "comparisons": comparisons,
+    }
+    collected = {"samples": 5 * checker.context.SAMPLES, "status": {"status": "completed", "duration": 20}}
+    original = checker.repeat.time_allowed
+    checker.validate_registration(result, collected, "campaign", "producer")
+    if checker.repeat.time_allowed is not original:
+        raise AssertionError("the runner's next-day rule was not restored")
+    with pytest.raises(ValueError, match="next-day window"):
+        checker.repeat.validate_registration(result, collected, "campaign", "producer")
+    early = {**result, "repeat": {"start_time": baseline + 23 * 3_600}}
+    with pytest.raises(ValueError, match="next-day window"):
+        checker.validate_registration(early, collected, "campaign", "producer")
