@@ -245,4 +245,7 @@ and uniform Cold-baseline anchor reconstruction across the entire run:
   range across retained rehearsals is $[93\,\text{s}, 186\,\text{s}]$, with platform execution ceiling of **300 seconds**.
 - **Credit ceiling:** Under the matching preflight platform tariff ($1 + 10^{-6} \times \max_i(\text{shots}_i)$),
   the ceiling is exactly **1.655360 credits**.
-- **Safety status:** Local simulation and validation complete; hardware submission remains locked pending authorized operator review.
+- **Execution status:** Completed on `qpu:ascella` (Job `e13e5ed0-ea33-4d13-85e0-52115e8268d8`).
+  Physical execution duration: 104 seconds; physical laser pulses: 16,127,893 shots;
+  samples collected: 262,144 two-click events; credits charged: exactly 1.655360 credits.
+  All receipts and raw records retained in `results/quandela/cases/ascella_associator_predecessor/job-00/`.
