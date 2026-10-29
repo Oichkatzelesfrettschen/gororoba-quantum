@@ -260,9 +260,10 @@ The host carries `intel-sde` 10.13.1 (chaotic-aur), installed at
 - `-icx` is an Ice Lake server and `-skx` a Skylake server; `-clx`, `-cpx`,
   `-spr` and `-gnr` name other AVX-512 server chips, `-hsw` an AVX2-only
   Haswell, and `/opt/intel-sde/sde64 -help` lists every chip. Emulate the
-  model the runner reports: `ci/avx512_replay.sh` names the CPU model only when
-  it skips a CPU without `avx512f`, so the hosted AVX-512 model is not yet
-  recorded.
+  model the runner reports: `ci/run_gates.py` prints a `numeric stack:` line
+  with the CPU model, numpy's enabled dispatch targets and each loaded
+  OpenBLAS core before the first gate. SDE emulates Intel chips only, so an
+  AMD runner has no emulated counterpart.
 - The process sees the emulated CPUID, so numpy reports `AVX512F` and
   `X86_V4` and dispatches its AVX-512 loops, and OpenBLAS selects its kernel
   for that chip. Exported caps still apply, so one emulated run can take the
@@ -290,16 +291,19 @@ runner image, `scripts/n21_dose_decisions.py`, whose replica covariance is
 | `-icx` | unset | unset | 85 |
 | `-skx` | unset | unset | 85 |
 
-OpenBLAS's AVX-512 kernel alone moves the record, and numpy's dispatch
-leaves it unchanged. The hosted AVX-512 shards of the 2026-10-28 nightly
-audit (run 40663983558) fail the same replay with 95 differing fields, while
-the AMD EPYC 7763 shards pass it. The hosted value of
+OpenBLAS's AVX-512 kernel alone moves the record under emulation, and
+numpy's dispatch leaves it unchanged. On the hosted runners of audit run
+40824932629, every shard reports numpy dispatching `X86_V3` and both
+OpenBLAS copies on the `Haswell` core, so both pins apply. The Intel Xeon
+Platinum 8573C shard (AVX-512) replays the record exactly. The AMD EPYC 9V74
+and 9V45 shards (Zen 4 and Zen 5, AVX-512) differ in 95 fields. Their
 `.arms.n21_orbit_window_dose_d7000_feedback_contrast.sigma` equals the
-uncapped emulated value, while the d10500 arm's sigma moves on the hosted CPU
-and in no emulated run. So the hosted runs behave as if the OpenBLAS pin did
-not take effect, plus a further difference emulation does not reproduce. A
-record that depends on BLAS rounding therefore replays on the host under
-emulation only after a real-hardware comparison has shown the two agree.
+emulated value of the unpinned Intel AVX-512 kernel, and their d10500 arm's
+sigma moves in no emulated run. So on those AMD CPUs a CPU-dependent path
+outside the reported numpy dispatch and OpenBLAS core still changes the
+rounding, and SDE cannot reproduce it. A record that depends on BLAS rounding
+replays on the host under emulation only after a real-hardware comparison
+has shown the two agree.
 
 ## Correctness rules
 
