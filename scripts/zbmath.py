@@ -60,6 +60,7 @@ from __future__ import annotations
 import argparse
 import gzip
 import hashlib
+import http.client
 import json
 import re
 import shutil
@@ -147,14 +148,24 @@ class Transport:
             try:
                 with urllib.request.urlopen(request, timeout=120) as response:
                     status, received, payload = response.status, response.headers, response.read()
+                fields = {key.lower(): value for key, value in received.items()}
+                if fields.get("content-encoding", "").lower() == "gzip":
+                    payload = gzip.decompress(payload)
             except urllib.error.HTTPError as error:
                 with error:
                     status, received, payload = error.code, error.headers, error.read()
+                fields = {key.lower(): value for key, value in received.items()}
+                if fields.get("content-encoding", "").lower() == "gzip":
+                    payload = gzip.decompress(payload)
+            except (http.client.HTTPException, OSError, EOFError) as failure:
+                # A truncated body, a reset connection or a timeout carries no answer; retry it like a 5xx.
+                self._last = time.monotonic()
+                if attempt == self.retries:
+                    raise ZbmathError(f"{method} {url}: {type(failure).__name__}: {failure}") from failure
+                time.sleep(2.0 ** (attempt + 1))
+                continue
             finally:
                 self._last = time.monotonic()
-            fields = {key.lower(): value for key, value in received.items()}
-            if fields.get("content-encoding", "").lower() == "gzip":
-                payload = gzip.decompress(payload)
             reply = Reply(url, method, status, fields, payload, self._last - start)
             if reply.status not in RETRY_STATUS or reply.status == expect or attempt == self.retries:
                 return reply
@@ -202,24 +213,33 @@ def rest(transport: Transport, path: str, params: dict[str, Any] | None = None) 
     return envelope(reply.status, reply.body)
 
 
+def next_page(offset: int, per_page: int) -> tuple[int, int]:
+    """Return (page, size) whose window starts at offset: the largest size up to per_page that divides offset and
+    keeps the page inside RESULT_WINDOW, so a page size that does not divide the window still reaches its end."""
+    room = min(per_page, RESULT_WINDOW - offset)
+    if room < 1:
+        raise ZbmathError(f"offset {offset} lies at or past the {RESULT_WINDOW}-result window")
+    size = room if offset == 0 else next(d for d in range(room, 0, -1) if offset % d == 0)
+    return offset // size, size
+
+
 def rest_pages(transport: Transport, path: str, params: dict[str, Any], per_page: int) -> Iterator[dict[str, Any]]:
-    """Yield every result inside the result window, page by page."""
-    page = 0
+    """Yield every result inside the result window; each request starts where the previous one ended."""
+    check_window(0, per_page)
     seen = 0
     while True:
-        check_window(page, per_page)
-        result, block = rest(transport, path, {**params, "page": page, "results_per_page": per_page})
+        page, size = next_page(seen, per_page)
+        result, block = rest(transport, path, {**params, "page": page, "results_per_page": size})
         yield from result
         seen += len(result)
         total = block.get("nr_total_results") or 0
         if not result or seen >= total:
             return
-        if (page + 2) * per_page > RESULT_WINDOW:
+        if seen >= RESULT_WINDOW:
             print(
                 f"zbmath: {total} results exceed the {RESULT_WINDOW}-result window; stopped at {seen}", file=sys.stderr
             )
             return
-        page += 1
 
 
 def oai_parse(body: bytes) -> tuple[ET.Element, str | None, str | None]:
@@ -1057,6 +1077,15 @@ def self_test() -> int:
     expect_raise("window end 10,001", lambda: check_window(10_000, 1))
     check_window(9_999, 1)
     check_window(19, 500)
+    for per_page in range(1, MAX_PER_PAGE + 1):
+        offset = 0
+        while offset < RESULT_WINDOW:
+            page, size = next_page(offset, per_page)
+            if page * size != offset or size > per_page:
+                failures.append(f"next_page({offset}, {per_page}) = ({page}, {size}) does not start at the offset")
+                break
+            check_window(page, size)
+            offset += size
     hit = json.dumps({"result": [1], "status": {"execution_bool": True}}).encode()
     miss = json.dumps({"result": None, "status": {"execution_bool": False, "internal_code": NO_RESULTS}}).encode()
     gone = json.dumps({"result": None, "status": {"execution_bool": False, "internal_code": "id does not exist"}})
@@ -1329,6 +1358,8 @@ def run_oai(args: argparse.Namespace, transport: Transport) -> int:
             raise ZbmathError(f"OAI argument {pair!r} is not NAME=VALUE")
         params[key] = value
     url = OAI + "?" + urllib.parse.urlencode(params)
+    if args.out is not None and args.out.is_dir() and any(args.out.glob("page-*.xml")):
+        raise ZbmathError(f"{args.out} already holds harvest pages; write each harvest to a new directory")
     page = 0
     while True:
         reply = transport.send(url)
