@@ -134,3 +134,72 @@ def test_an_unreadable_record_and_a_factor_of_one_exit_two(tmp_path: Path) -> No
     rehearsal = copy(tmp_path, "rehearsal")
     check(cov.main([str(rehearsal), str(tmp_path / "missing"), "--factor", "2"]) == 2)
     check(cov.main([str(rehearsal), str(rehearsal), "--factor", "1"]) == 2)
+
+
+def test_an_experiment_digest_other_than_the_rehearsal_refuses(tmp_path: Path) -> None:
+    rehearsal, run = copy(tmp_path, "rehearsal"), copy(tmp_path, "run")
+    for path, digest in ((rehearsal, "a" * 64), (run, "b" * 64)):
+        record = json.loads((path / "record.json").read_text())
+        record["experiment_digest"] = digest
+        (path / "record.json").write_text(json.dumps(record))
+    check(any(line.startswith("experiment digest ") for line in cov.violations(rehearsal, run, 2.0)))
+    check(cov.violations(rehearsal, rehearsal, 2.0) == [])
+
+
+def test_a_duration_outside_the_pool_range_refuses(tmp_path: Path) -> None:
+    rehearsal, qubit = copy(tmp_path, "rehearsal"), layout()[0]
+    pool = [cov.durations(properties(FIXTURE), q)["readout_length"] for q in layout()]
+    scale = 1.01 * max(pool) / cov.durations(properties(FIXTURE), qubit)["readout_length"]
+    found = cov.violations(rehearsal, drifted(tmp_path, qubit, "readout_length", scale), 2.0)
+    check(any(line.startswith(f"q{qubit} readout_length ") for line in found), f"{found}")
+
+
+def summary(snapshot: str, width: int, shots: int) -> dict[str, object]:
+    """A null summary holding one passing record of every arm on the given snapshot, width and shots."""
+    case = {"fires": 0, "exposed_fires": 0, "targets": {"target": True}}
+    return {
+        "records": [
+            {
+                "arm": arm,
+                "snapshot_sha256": snapshot,
+                "layout_width": width,
+                "shots": shots,
+                "cases": {"all": dict(case)},
+            }
+            for arm in cov.nl.ARMS
+        ]
+    }
+
+
+def test_the_null_summary_must_cover_the_rehearsal_without_a_fire_or_missed_target(tmp_path: Path) -> None:
+    rehearsal = copy(tmp_path, "rehearsal")
+    record = json.loads((rehearsal / "record.json").read_text())
+    snapshot, width, shots = (
+        record["envelope"]["planning_snapshot_sha256"],
+        int(record["family_configuration"]["layout_width"]),
+        int(record["shots"]),
+    )
+    check(cov.violations(rehearsal, rehearsal, 1.01, summary(snapshot, width, shots)) == [])
+    check(
+        any(
+            "has no record" in line
+            for line in cov.violations(rehearsal, rehearsal, 1.01, summary("0" * 64, width, shots))
+        )
+    )
+    check(
+        any(
+            "has no record" in line
+            for line in cov.violations(rehearsal, rehearsal, 1.01, summary(snapshot, width, shots + 1))
+        )
+    )
+    for key, value, words in (("fires", 1, "fired"), ("targets", {"target": False}, "missed target")):
+        bad = summary(snapshot, width, shots)
+        records = bad["records"]
+        if not isinstance(records, list):
+            raise TypeError("summary records")
+        records[0]["cases"]["all"][key] = value
+        found = cov.violations(rehearsal, rehearsal, 1.01, bad)
+        check(any(words in line for line in found), f"{key}: {found}")
+    path = tmp_path / "summary.json"
+    path.write_text(json.dumps(summary(snapshot, width, shots)))
+    check(cov.main([str(rehearsal), str(rehearsal), "--factor", "1.01", "--null", str(path)]) == 0)
