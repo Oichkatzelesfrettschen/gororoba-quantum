@@ -1,0 +1,20 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "observed_utc": "2026-10-28T01:42:01.982007+00:00",
+  "prior_finding": "SLOPPY regression-coverage finding closed",
+  "provider_access": "unrun by reviewer",
+  "raw_report_sha256": "33656327e1d455383884d5fba7d6aa8e8393d0ea7f3732ddc35df93a6e2d7841",
+  "reasoning_effort": "high",
+  "retained_report": "docs/archive/reviews/tuna-joint-response-coverage-review.md",
+  "retained_report_sha256": "b517959b0a4658a69a7dfa89bd85c9c0d7d7f328817b530d83c903da8438e0ab",
+  "reviewed_candidate_sha256": "8e81167d7fc6c6dcde0d859bcdbb99c2da8869488b42ac13dfc1919cbaaa8ab2",
+  "reviewed_producer_sha256": "9e022041e15e99dc10b348e40dd2ec7fbb7af980c9b44f65bd4547d19b90d492",
+  "reviewed_revision": "55b6dcb8861be4fe8ec8f8f38a3fa1844755d346",
+  "reviewed_test_sha256": "b792e4e978d524dd3295a376039d62ea74da88b5168b789314363283a46bcf4e",
+  "reviewer_pytest": "unrun: read-only sandbox had no writable temporary directory",
+  "sanitization": "Removed the local temporary-directory spelling; the candidate digest is unchanged.",
+  "schema": "qi-joint-response-coverage-review-v1",
+  "service_tier": "default",
+  "session": "01a17e38-6428-7eb3-b233-d8fbf9cc47b8",
+  "verdict": "bounded-pass"
+}

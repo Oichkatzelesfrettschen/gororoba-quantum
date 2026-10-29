@@ -1,0 +1,17 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "observed_utc": "2026-10-28T01:39:56.608203+00:00",
+  "provider_access": "unrun by reviewer",
+  "raw_report_sha256": "4c4a81b13022c809cd3710926d2c41189f40bace0354e5652308cfafe8fb852e",
+  "reasoning_effort": "high",
+  "retained_report": "docs/archive/reviews/tuna-joint-response-analysis-review.md",
+  "retained_report_sha256": "f8cfb15e4c362d885f533f85cb9094e651b2030d91bdb6802f2467b953460a8f",
+  "reviewed_candidate_sha256": "8e81167d7fc6c6dcde0d859bcdbb99c2da8869488b42ac13dfc1919cbaaa8ab2",
+  "reviewed_producer_sha256": "9e022041e15e99dc10b348e40dd2ec7fbb7af980c9b44f65bd4547d19b90d492",
+  "reviewed_revision": "55b6dcb8861be4fe8ec8f8f38a3fa1844755d346",
+  "sanitization": "Replaced temporary candidate path with its byte-identical retained path and normalized the interpreter spelling.",
+  "schema": "qi-joint-response-review-v1",
+  "service_tier": "default",
+  "session": "01a17e38-6428-7eb3-b233-d8fbf9cc47b8",
+  "verdict": "bounded-pass-with-coverage-finding"
+}

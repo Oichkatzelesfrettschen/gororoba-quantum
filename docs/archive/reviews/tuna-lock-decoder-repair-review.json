@@ -1,0 +1,16 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "a9ef0d5c4552bfaa460aa73839733701d15b5f019afe958b023879b4faa47913",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-lock-decoder-repair-review.md",
+  "retained_sha256": "9175c7fd7ce5cf16afc65154a2b1875ef1b3e30b0a33148562f5193d251165cc",
+  "reviewed_sha256": {
+    "scripts/qi_tuna_bounded_lock.py": "9eca83041bdce9c5681050310932be6f57bbd213b7c60a0e7e4f8324a7b297b1",
+    "scripts/qi_tuna_source_association.py": "f2aba9288bc949d0e8693afa600a19c4755be3bf27ed60b4a14fc549cdc5a526",
+    "tests/scripts/test_qi_tuna_bounded_lock.py": "f8261547e1b963ef6167c6667645333a7563e1beebcb5cee67012ce04f84942f",
+    "tests/scripts/test_qi_tuna_source_association.py": "3205858ce0ab4efedee54823f0f70b8603d40f519d6e2f342344b4995b83c655"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

@@ -1,0 +1,16 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "77eb2f831680c0c6c6961f26531d0c706a8ce7fb23fb33ca48c22264d4251f86",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-sequential-sensitivity-review.md",
+  "retained_sha256": "274026f6b426d75118b910efbe7ab0399703122ed8cf0a3e48ea8c350520d06f",
+  "reviewed_sha256": {
+    "docs/design/tuna-destination-sequential-evidence-case.md": "8017a82059a4480394cef765ac875aa65fd95d7f5df1e54c960c1b5dbc29fecc",
+    "docs/design/tuna-sequential-destination-uncertainty.md": "a94cbad3c6d0a007296ec5d5b36d52b73e5e31e710d4276c26c76d4c008e75b3",
+    "scripts/qi_tuna_sequential_score.py": "d344f69db36dcc79a6ce605686aa1dfcc488fa034ad09fdfab5c7d7f9d16611b",
+    "tests/scripts/test_qi_tuna_sequential_score.py": "c386f254058dee4a0e799dc92daba65549d18cf7e7048b36c3c128e935ab08b1"
+  },
+  "sanitization": "Local repository paths converted to relative links; line suffixes removed from link targets; trailing blank lines removed.",
+  "service_tier": "default"
+}

@@ -1,5 +1,6 @@
 """Matched response proposals retain routing and cancel batch offsets."""
 
+import hashlib
 import json
 from copy import deepcopy
 from pathlib import Path
@@ -9,13 +10,26 @@ import numpy as np
 import pytest
 
 
+@pytest.fixture
+def historical_matched_catalogue(monkeypatch: Any) -> Path:
+    """Bind the archived proposal to the snapshot named by its compiler receipt."""
+    import qi_matched_zero_divisor as matched
+
+    path = matched.ROOT / "docs/evidence/quantum_inspire/matched-zero-divisor-catalogue.json"
+    if hashlib.sha256(path.read_bytes()).hexdigest() != matched.CATALOGUE_SHA256:
+        raise AssertionError("the archived matched-case catalogue has different bytes")
+    monkeypatch.setattr(matched, "CATALOGUE", path)
+    return path
+
+
 @pytest.mark.parametrize(
     "mutation", ["source", "dependency", "admission", "angle", "operands", "duplicate", "compiled"]
 )
-def test_toolchain_receipt_rejects_mutations(mutation: str) -> None:
+def test_toolchain_receipt_rejects_mutations(mutation: str, historical_matched_catalogue: Path) -> None:
     from qi_matched_zero_divisor import PROPOSAL, TOOLCHAIN_RECORD, validate_toolchain_record
 
     record = deepcopy(json.loads(TOOLCHAIN_RECORD.read_text()))
+    validate_toolchain_record(PROPOSAL, record)
     if mutation == "source":
         record["source_sha256"] = "0" * 64
     elif mutation == "dependency":
@@ -36,7 +50,7 @@ def test_toolchain_receipt_rejects_mutations(mutation: str) -> None:
         validate_toolchain_record(PROPOSAL, record)
 
 
-def test_toolchain_gate_requires_the_stack_when_selected(monkeypatch: Any) -> None:
+def test_toolchain_gate_requires_the_stack_when_selected(monkeypatch: Any, historical_matched_catalogue: Path) -> None:
     from qi_matched_zero_divisor import PROPOSAL, main
 
     import qi_stack
@@ -108,7 +122,7 @@ def test_matched_response_cancels_batch_and_region_offsets() -> None:
         raise AssertionError("a fixture shift must survive the drift-cancelling contrast")
 
 
-def test_proposal_contains_nine_matched_unsubmitted_jobs() -> None:
+def test_proposal_contains_nine_matched_unsubmitted_jobs(historical_matched_catalogue: Path) -> None:
     from qi_matched_zero_divisor import build
 
     files = build()
@@ -124,3 +138,27 @@ def test_proposal_contains_nine_matched_unsubmitted_jobs() -> None:
             raise AssertionError("the fixed routing must preserve all three exact ideal endpoints")
         if region["case_shapes_equal"] is not True:
             raise AssertionError("every case must retain the same routed operation and timing shape")
+
+
+def test_matched_case_replays_against_its_historical_catalogue(historical_matched_catalogue: Path) -> None:
+    """The retained compiler receipt must validate against the exact catalogue it names."""
+    import qi_matched_zero_divisor as matched
+
+    record = json.loads(matched.TOOLCHAIN_RECORD.read_text())
+    matched.validate_toolchain_record(matched.PROPOSAL, record)
+
+
+def test_changed_catalogue_refuses_the_matched_case(
+    historical_matched_catalogue: Path, tmp_path: Path, monkeypatch: Any
+) -> None:
+    """A new catalogue never admits an archived case without review."""
+    import qi_matched_zero_divisor as matched
+
+    changed = tmp_path / "catalogue.json"
+    changed.write_bytes(historical_matched_catalogue.read_bytes() + b" ")
+    monkeypatch.setattr(matched, "CATALOGUE", changed)
+    record = json.loads(matched.TOOLCHAIN_RECORD.read_text())
+    with pytest.raises(ValueError, match="catalogue differs"):
+        matched.validate_toolchain_record(matched.PROPOSAL, record)
+    with pytest.raises(ValueError, match="changed retained catalogue"):
+        matched.build()

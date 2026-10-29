@@ -1,0 +1,14 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "cd501e9ab994e29cd5b6f22e7c067c162f64c024167beb32796f217249aa3782",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-capture-bounds-review.md",
+  "retained_sha256": "e95417d6b1b5da324449ad6cca401b596979054ccad37863dac80474cd704eb2",
+  "reviewed_sha256": {
+    "scripts/qi_tuna_capture_commitment.py": "47b734ebbef9929b8001f20e9174010a1fb4cc59c05fd1a70f3320ed0494d817",
+    "tests/scripts/test_qi_tuna_capture_commitment.py": "543bde2afc082c15d554c97c3d41f6184469040d5a26189b0c48c361d1cb6560"
+  },
+  "sanitization": "Local repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

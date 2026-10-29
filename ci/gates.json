@@ -5230,6 +5230,91 @@
     "docs/evidence/tuna-projector-geometry/destination-final-result-checked-receipt.json",
     "docs/evidence/tuna-projector-geometry/destination-final-result-equivalence.json"
    ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_joint_response.py --check docs/evidence/tuna-projector-geometry/joint-response-analysis.json",
+   "name": "core-qi-tuna-joint-response",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/tuna-projector-geometry/joint-response-analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_joint_algebra.py --check docs/evidence/tuna-projector-geometry/joint-algebra-analysis.json",
+   "name": "core-qi-tuna-joint-algebra",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/tuna-projector-geometry/joint-algebra-analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_early_label_maps.py --check docs/evidence/tuna-projector-geometry/early-label-map-analysis.json",
+   "name": "core-qi-tuna-early-label-maps",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/tuna-projector-geometry/early-label-map-analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -m pytest -q -p no:cacheprovider tests/scripts/test_qi_tuna_assignment_commitment.py",
+   "name": "core-qi-tuna-assignment-commitment",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B scripts/qi_tuna_destination_slot_cases.py --check",
+   "name": "core-qi-tuna-destination-slot-alternatives",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/proposals/tuna-destination-slot-alternatives/catalogue.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -m pytest -q -p no:cacheprovider tests/scripts/test_qi_tuna_sequential_score.py tests/scripts/test_qi_tuna_sequential_retained_decode.py",
+   "name": "core-qi-tuna-sequential-score",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_tuna_qx_destination.py --local-replay-check",
+   "name": "core-qi-tuna-qx-local-replay",
+   "seconds": 6.0,
+   "tier": "pr",
+   "requires": [
+    "qi"
+   ],
+   "replays": [
+    "results/quantum_inspire/proposals/tuna-destination-qx-conformance/local-replay.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_qx_destination.py --manifest-check results/quantum_inspire/proposals/tuna-destination-qx-conformance/cases.json",
+   "name": "core-qi-tuna-qx-destination",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/proposals/tuna-destination-qx-conformance/cases.json"
+   ]
   }
  ],
  "excluded": [

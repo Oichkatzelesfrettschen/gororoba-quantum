@@ -1,0 +1,14 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "0c5c2c4c912245a02a210461b84bff30ac5281f6b25bb5b40ef00d8105d75a54",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-consumption-marker-followup-review.md",
+  "retained_sha256": "5984646f2c7fb75030054c45be3027b71fb3997974053a3c3ddf06dd400724c9",
+  "reviewed_sha256": {
+    "scripts/qi_tuna_consumption_marker.py": "dbaf93d5db016d483a22066ec0224e81ea6de9aff066f54655b747fc71534a61",
+    "tests/scripts/test_qi_tuna_consumption_marker.py": "cb8a431c7f89f3d2c062e50f7f2a3a777ca3d027d16c244286d654630ce5c6cc"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

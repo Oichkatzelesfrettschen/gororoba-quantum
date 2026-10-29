@@ -1,0 +1,15 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "20fef124c8268241722ac9a7be55c4728bd466e115112b2076a8d96fbd30631a",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-dispatch-clock-final-review.md",
+  "retained_sha256": "3821f88e04a4b924233f133a4bbdd83c92e1e0f3f34713b5ea2cc09a381dae1d",
+  "reviewed_sha256": {
+    "docs/archive/reviews/tuna-dispatch-clock-followup-review.md": "786354cb3021f9153aefc29ed732adba70127eabbadb9d5139fca92acf953d98",
+    "scripts/qi_tuna_dispatch_clock.py": "7345578f3407dec019bfd4e76394188937c32926d0df5ccf2049fd2010b93c47",
+    "tests/scripts/test_qi_tuna_dispatch_clock.py": "8af6c5c4dc3aed7b74b00baeebb2fd789e14533fe8fb764253e03deb78c803cf"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

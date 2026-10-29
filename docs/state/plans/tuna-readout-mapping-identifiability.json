@@ -1,0 +1,714 @@
+{
+  "schema": "work-plan-v1",
+  "id": "tuna-readout-mapping-identifiability",
+  "kind": "experiment",
+  "summary": "Resolve Tuna-17 readout and result-mapping ambiguity with retained evidence, falsifiable controls and a queue-aware approved acquisition case before algebraic hardware claims.",
+  "sources": [
+    "docs/evidence/tuna-projector-geometry/nominal-one-destination-response.md",
+    "docs/evidence/tuna-projector-geometry/ordered-response-acquisition.md",
+    "docs/notes/quantum_inspire/destination-response-upstream-request.md",
+    "docs/notes/papers/2103.03008.md",
+    "docs/PYTHON.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The six retained jobs and frozen nominal-one case supply the starting evidence. The old six-job endpoint is unavailable; binary labels leave result association and physical readout causes unresolved."
+  },
+  "scope": "Resolve the Tuna-17 readout and result-association ambiguity before any Cayley-Dickson physics claim. Preserve retained raw and frozen cases; distinguish historical simulation, binary observations, calibration and physical mechanisms. Local deterministic work and read-only admission are in scope. Upstream messaging requires explicit authorization; every provider job and upload requires approval of a new exact queue-aware written case.",
+  "owner": "codex-tuna-readout-mapping",
+  "next_action": "Resolve the sensitivity follow-up review; integrate authenticated provider identity, durable quarantine, request-start timing and source-bound score adjudication before freezing the QX and Tuna cases.",
+  "related": [
+    "tuna-projector-geometry"
+  ],
+  "steps": [
+    {
+      "id": "audit-retained-acquisitions",
+      "action": "Audit the completed Tuna jobs and preserve their immutable inputs",
+      "acceptance": "Verify exact job identities, shot order, source hashes, decoders, calibration observations, queue waits and refusal boundaries against the retained receipts.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "All six retained 4096-shot width-20 records have valid raw shapes and hashes. The frozen nominal-one analysis and nominal-zero prefix replay in normal and optimized Python; the six final-result projections replay. The original six-job endpoint remains unavailable, the nominal-one comparison is bounded and the measured longest creation-to-queue wait was 1936.258985 seconds. Provider settings and physical cause remain unestablished.",
+          "observed_at": "2026-10-28T01:29:20.654222+00:00",
+          "revision": "55b6dcb8861be4fe8ec8f8f38a3fa1844755d346",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/nominal-one-destination-response.md",
+              "sha256": "2e29558c8860556fb75d965f2342f2db444bb6392863bcdb4a2b158b277c2d7a"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/ordered-response-acquisition.md",
+              "sha256": "f33da189d618f4eb46d48f0b8feb9fe848734bf9ff7422d351f88c50f925c117"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-retention-verification.json",
+              "sha256": "0da0a728d34689a4391843b5204d4f33a5ea884b05732a072ecd9e83e255a017"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-ledger-revalidation.json",
+              "sha256": "b93855409cd37f9abd5ec6d559f110d906b82b0efc3d5df9007ae2749562d761"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json",
+              "sha256": "b89b115df823113dc8430c7eebddee1898a3906ac7109ea0624edd6803be0027"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-recovery-order.json",
+              "sha256": "0868bfaa271898d680db09ff245bdeb2e5cb2436cd5270c72cc7e058ded085fa"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-final-result-checked-receipt.json",
+              "sha256": "8ba414576cf0c20c127da2c81ff976fd62d4976450be830615d30de2abc6d2b6"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/raw/baseline-after.cq.json",
+              "sha256": "d2bbdbf242b3089cc2684da542f358b13add1d33d64fd45dd5d4368cf8dbfca2"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/raw/baseline-before.cq.json",
+              "sha256": "98f99ea38c68851a310a01623c1ba038976e644d647bdfa94bb7a34b689e607c"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/raw/rotated-destinations.cq.json",
+              "sha256": "1ad6fef1d35da152e7c52963673ebbaa545e8e2963f04c219e43f9f03fe08417"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after/raw/baseline-after.cq.json",
+              "sha256": "deaab97e762f52484bc43665a9acbcc19236b75ccfcd80c1f56d77fe28524a6e"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before/raw/baseline-before.cq.json",
+              "sha256": "35b81dd5813736ea17e6d0e85fc6b1d54cf5a47a80729948b6e3d653deee426e"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations/raw/rotated-destinations.cq.json",
+              "sha256": "a967128edfecb0b7428410eb689edc0192a5f8c035014db600088827b42fcda9"
+            }
+          ],
+          "scope_sha256": "013206dba8af89ef1c63341088e38ae92831d147b65bd89d20f770a6b2d8605c"
+        }
+      ]
+    },
+    {
+      "id": "matched-catalogue-test-provenance",
+      "state": "done",
+      "action": "Preserve the historical matched-case catalogue and restore meaningful regression checks",
+      "acceptance": "Bind the exact archived catalogue to the existing matched-case receipt tests; verify every mutation against a passing unmodified receipt and prove changed live catalogues still refuse without altering frozen producers.",
+      "receipts": [
+        {
+          "result": "The unmodified historical compiler receipt validates against the exact archived catalogue from commit 28e8553. Seven mutation tests now first validate their unchanged baseline; modified catalogue bytes still make both proposal construction and receipt validation refuse. The frozen producer remains unchanged. Focused matched and joint tests pass; pinned Ruff and mypy pass.",
+          "observed_at": "2026-10-28T01:36:39.689110+00:00",
+          "revision": "55b6dcb8861be4fe8ec8f8f38a3fa1844755d346",
+          "evidence": [
+            {
+              "ref": "docs/evidence/quantum_inspire/matched-zero-divisor-catalogue.json",
+              "sha256": "1b978cf3518149cd72886865bffb971ab0c359ae5a7a993cb5f51b230159cd78"
+            },
+            {
+              "ref": "docs/evidence/quantum_inspire/matched-zero-divisor-toolchain-ordered-map-cancel.json",
+              "sha256": "a074e23c046ca04f958c72e9541c2d99efd01577ed6e0644ae398e55789ada07"
+            },
+            {
+              "ref": "scripts/qi_matched_zero_divisor.py",
+              "sha256": "93f5c645131f3e3d90121feea794fc04a5bcf8d00d8ca05be574a21f11616414"
+            },
+            {
+              "ref": "tests/scripts/test_qi_matched_zero_divisor.py",
+              "sha256": "ccecadba068feec5bbab3839180c6bfb8b5ab568cbf226f2b08eec5a1948bb2d"
+            }
+          ],
+          "scope_sha256": "c3d640becdcda098e539d13a9a76493146f3cbb2f0a259beee53f9ad37b9321c"
+        }
+      ]
+    },
+    {
+      "id": "replay-joint-response-analysis",
+      "action": "Reproduce and audit the six-bit joint and disagreement distributions",
+      "acceptance": "Independently replay counts, parity contrasts and encoding maps for both preparation cases; document post-acquisition scope and the old endpoint refusal.",
+      "state": "done",
+      "depends_on": [
+        "audit-retained-acquisitions"
+      ],
+      "receipts": [
+        {
+          "result": "Replayed all six retained 64-cell joint tables, eight disagreement patterns per job and 64 parity numerators with independent integer counts; decoded rotated destinations reproduce frozen per-qubit marginals. The nominal-zero endpoint remains unavailable and the nominal-one 126-contrast post-acquisition confidence family does not establish the 0.10 joint margin. Requested high-effort peer review passed after regression-coverage closure; four evidence gates pass, and the complete non-audit suite passes 1836 tests with two QI-environment skips. The skipped compiler module passes separately with QI_PYTHON set.",
+          "observed_at": "2026-10-28T01:45:48.960256+00:00",
+          "revision": "55b6dcb8861be4fe8ec8f8f38a3fa1844755d346",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/joint-response-analysis.json",
+              "sha256": "8e81167d7fc6c6dcde0d859bcdbb99c2da8869488b42ac13dfc1919cbaaa8ab2"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/joint-response-analysis.md",
+              "sha256": "f7b4b570edaa37a6e499b68ab21bca9d2fb64dfee3a79bb33ff1e354614564b0"
+            },
+            {
+              "ref": "scripts/qi_tuna_joint_response.py",
+              "sha256": "9e022041e15e99dc10b348e40dd2ec7fbb7af980c9b44f65bd4547d19b90d492"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_joint_response.py",
+              "sha256": "b3f02640105e0583a9b6f45596e5599ae8c5bac10b8392043ac158e178b84356"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-joint-response-analysis-review.md",
+              "sha256": "f8cfb15e4c362d885f533f85cb9094e651b2030d91bdb6802f2467b953460a8f"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-joint-response-analysis-review.json",
+              "sha256": "2d6e2cc1762c708c3ca7de8708b3a2cf73bab1139a54f824c7090684398308e8"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-joint-response-coverage-review.md",
+              "sha256": "b517959b0a4658a69a7dfa89bd85c9c0d7d7f328817b530d83c903da8438e0ab"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-joint-response-coverage-review.json",
+              "sha256": "db6a6c1864d27502187a93c31f1205fd44d729827b11dd0a14b5ba95c0bfd314"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-qi-tuna-joint-response",
+              "sha256": "41e1a11010dcf41208f5747a32fb0fec76ab9f6b3f8493433995222a4fb18bab"
+            }
+          ],
+          "scope_sha256": "ab5a199027f649cfd89e09c3f761a55bbef6a34251de710093f5f573ef63063e"
+        }
+      ]
+    },
+    {
+      "id": "audit-package-and-algebra-controls",
+      "action": "Check package provenance and exact Cayley-Dickson controls",
+      "acceptance": "Validate complete declared basis maps, ordinary and split negative controls, exact arithmetic, empirical transforms, package versions and any defects without treating an encoding as a physical algebra.",
+      "state": "done",
+      "depends_on": [
+        "audit-retained-acquisitions"
+      ],
+      "receipts": [
+        {
+          "result": "Four installed algebra distributions and 32 module files match pinned release bytes. Complete ordinary dimension-8 and dimension-16 basis maps and 512 split associator signs pass; exact and installed-package joint summaries agree. Requested high-effort independent review reports bounded pass. The current focused suite passes 35 tests, optional package audit previously passed 3 tests, and normal and optimized replay pass. The current full non-audit suite records 1835 passed, 2 skips and 4 ten-second timing failures; serial reruns pass three and leave one seed-provenance timing failure under high host load. Full-suite timing remains an open verification obligation.",
+          "observed_at": "2026-10-28T02:04:51.021009+00:00",
+          "revision": "55b6dcb8861be4fe8ec8f8f38a3fa1844755d346",
+          "evidence": [
+            {
+              "ref": "scripts/qi_tuna_joint_algebra.py",
+              "sha256": "d519194f0c3261b4c1c3390ea1ee261a477edaa1737570d9c4417ca3135e7bfa"
+            },
+            {
+              "ref": "scripts/qi_tuna_joint_package_runtime.py",
+              "sha256": "28412984e3384457317779af82d61295feb64fbbc44ea5056010267fd28553f6"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_joint_algebra.py",
+              "sha256": "85e05fa5ff4b9da8d940cd3a8209b7fbddf9cb73ef6f7778b08bcbbd5cb889b9"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_joint_package_runtime.py",
+              "sha256": "bbe108169fda13cd4b05c7b3295b1e522305342660b53ac9013ee177f5fc8e5c"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/joint-algebra-analysis.json",
+              "sha256": "5db45cf522218b573044ca95fcdcc7530d420d55e5ca0b6b0faf320a1b887d3d"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/joint-algebra-package-analysis.md",
+              "sha256": "fac7bc8c4c62f98f8e8b13eefaaa5320fddfdf27179158900cbd4294eb868d79"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/joint-package-runtime-observation.json",
+              "sha256": "caba2333007c0060e5bb9a658ab0009e47387244683241683b02be1e2210595a"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/joint-package-runtime-provenance.json",
+              "sha256": "2fcae60af72ac65c73cd18d0febd11a0d5e1e2e5a266aa605d9f291df8a019b8"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-joint-algebra-package-review.md",
+              "sha256": "efc9efe0df5fbe40e07063206c3ed8a387bf2cb1c83f1f40934979a20d95903f"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-joint-algebra-package-review.json",
+              "sha256": "061d9bad78fb810eefee46b9d00f8ae05f94e007624d1671f31e2b920c1c5d64"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-qi-tuna-joint-algebra",
+              "sha256": "36f633826b036a83d3599d574527da472024b2fb218704dd4310b8e91f59015a"
+            }
+          ],
+          "scope_sha256": "28fbde5de1d88f0d7eac62955ca2b28aba0e1941f62bcbb7c37ef8eab14921fb"
+        }
+      ]
+    },
+    {
+      "id": "audit-provider-and-simulator-contracts",
+      "action": "Compare documented QI, QX and Tuna result contracts and retained evidence",
+      "acceptance": "Identify supported read-only routes, simulator/hardware output schemas, missing job-specific maps, thresholds, schedules, IQ and current evidence limits without submitting a job.",
+      "state": "done",
+      "depends_on": [
+        "audit-retained-acquisitions"
+      ],
+      "receipts": [
+        {
+          "result": "Repository and provider captures distinguish QX per-qubit last-measurement output from Tuna classical-bit-order output. The six retained final-result responses reconstruct against original object hashes in normal and optimized Python, preserving ordered binary data but exposing no served acquisition map, thresholds, schedule or IQ. Stored-source readback, scoped generated-file queries and served API snapshot establish only their observed surfaces; deployment, provider-side retention and current availability remain unknown. Collector requests the result endpoint and checks shot metadata and histogram equality; local compilation and QX conformance do not establish Tuna served reconstruction. Existing private support and separate public SDK/QX drafts remain unsent.",
+          "observed_at": "2026-10-28T02:06:02.220982+00:00",
+          "revision": "55b6dcb8861be4fe8ec8f8f38a3fa1844755d346",
+          "evidence": [
+            {
+              "ref": "docs/notes/quantum_inspire/qx-runs.md",
+              "sha256": "4542a7b82d395d1facd1cfc077f5cff428fdb0141999624f799b1b2861c4a7cf"
+            },
+            {
+              "ref": "docs/notes/quantum_inspire/site/kbase_hello-quantum-world.md",
+              "sha256": "dad9e513b5fdd13afc23440f5fa910601b1448a64ebfbab7b70f4b605e66d0b2"
+            },
+            {
+              "ref": "docs/notes/quantum_inspire/site/kbase_tuna-operational-specifics.md",
+              "sha256": "f6f0e603b73b1693c7fce17d85f9388067d914485d85e957b633ed585ef2f8ca"
+            },
+            {
+              "ref": "docs/notes/quantum_inspire/destination-response-upstream-request.md",
+              "sha256": "8aa625640ee46002eac2ba3e3e2a3c63780d2757f8e3566355111bf3851ae0b0"
+            },
+            {
+              "ref": "docs/notes/quantum_inspire/upstream-readout-report.md",
+              "sha256": "1e22ffdb4d9d646cf5eb63cb61359bde14ec04d74ad747f884e968f5ee026bfd"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-job-artifact-observations.json",
+              "sha256": "2dba65de58d86cb1a456a4bbcf61961bb543d51bfdce4eaea499b10db403109f"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-served-api-observation.json",
+              "sha256": "d0fd91d54574518cda5a0b24ce052913834bfbc93b060fc4197872c36bcd89b9"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-final-result-projections.json",
+              "sha256": "2b42398c3c63ccdea406e221b71b95a43457c3f1cde493a9d460935f5ece1666"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-final-result-checked-receipt.json",
+              "sha256": "8ba414576cf0c20c127da2c81ff976fd62d4976450be830615d30de2abc6d2b6"
+            },
+            {
+              "ref": "scripts/qi_tuna_final_result_receipt.py",
+              "sha256": "3547faacb440146963ecf72092f7883537b5a183133ebf4c84631a578d71f4ed"
+            },
+            {
+              "ref": "scripts/qi_platform.py",
+              "sha256": "d53b201e9a1268a5c7a4ab5af36807e90573e38c6842eae85dff9b6fb010669b"
+            },
+            {
+              "ref": "scripts/qi_mcp_server.py",
+              "sha256": "c289af0d6c0269d0e1374634814ef1e962311fae0d22e7c5dac18e84d991b691"
+            }
+          ],
+          "scope_sha256": "56e9fae3a28f1665e7e306b10b95e9e3ce56b80b1dee97b1f2ff54563518315d"
+        }
+      ]
+    },
+    {
+      "id": "model-mechanism-identifiability",
+      "action": "Construct competing readout and reconstruction models",
+      "acceptance": "State observationally equivalent explanations, measurable distinguishing predictions, counterexamples and data that would disprove each mechanism.",
+      "state": "done",
+      "depends_on": [
+        "audit-retained-acquisitions"
+      ],
+      "receipts": [
+        {
+          "result": "Constructed incompatible classical-response and physical-transition models with exactly the same q11 two-readout table, and extended the factorization to all three early and three terminal labels with a joint transition or shared memory. An independent exact rational probe reconstructed all 384 retained six-bit cells and verified the stated q11 table. The design distinguishes trace, IQ, timing, destination-intervention and independently calibrated-instrument falsifiers, preserving the limitations of each. No physical cause follows from the constructions.",
+          "observed_at": "2026-10-28T02:07:46.347399+00:00",
+          "revision": "55b6dcb8861be4fe8ec8f8f38a3fa1844755d346",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-readout-mapping-identifiability.md",
+              "sha256": "ec84bc1e8a57705b891bf0fd2858c290608c9f89a6cd2ec90766fc4cc44e0ff8"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/joint-response-analysis.json",
+              "sha256": "8e81167d7fc6c6dcde0d859bcdbb99c2da8869488b42ac13dfc1919cbaaa8ab2"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/joint-response-analysis.md",
+              "sha256": "f7b4b570edaa37a6e499b68ab21bca9d2fb64dfee3a79bb33ff1e354614564b0"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-cause-diagnosis.md",
+              "sha256": "a4dd7276bf4c855c2cf34f252d0374317c0718819c54dac5496e07afefb707ec"
+            },
+            {
+              "ref": "docs/notes/quantum_inspire/destination-response-upstream-request.md",
+              "sha256": "8aa625640ee46002eac2ba3e3e2a3c63780d2757f8e3566355111bf3851ae0b0"
+            }
+          ],
+          "scope_sha256": "c6141a40e6db9f517f0724cdcca08198d7b402c4bb7f01425d5111c899def06e"
+        }
+      ]
+    },
+    {
+      "id": "prepare-upstream-evidence-request",
+      "action": "Prepare a bounded upstream request for job-specific provenance",
+      "acceptance": "Prepare private QI and public SDK routes with exact job identities, sanitized payloads and requested minimal association traces; do not send without explicit messaging authorization.",
+      "state": "done",
+      "depends_on": [
+        "audit-retained-acquisitions"
+      ],
+      "receipts": [
+        {
+          "result": "The unsent private provider request identifies the six completed jobs and asks for event association, pre-packing labels, integrated IQ, discriminator and served timing. The separate public SDK draft states the observed 404, served API inventory, local client versions, sanitized reproduction and supported-route question; the existing QX draft separates simulator output representation. Provider addresses and trackers are based on dated source observations and need refresh before sending. No upstream message was sent.",
+          "observed_at": "2026-10-28T02:08:25.887022+00:00",
+          "revision": "55b6dcb8861be4fe8ec8f8f38a3fa1844755d346",
+          "evidence": [
+            {
+              "ref": "docs/notes/quantum_inspire/destination-response-upstream-request.md",
+              "sha256": "8aa625640ee46002eac2ba3e3e2a3c63780d2757f8e3566355111bf3851ae0b0"
+            },
+            {
+              "ref": "docs/notes/quantum_inspire/upstream-readout-report.md",
+              "sha256": "1e22ffdb4d9d646cf5eb63cb61359bde14ec04d74ad747f884e968f5ee026bfd"
+            },
+            {
+              "ref": "docs/archive/reviews/quantum-inspire-metadata-route-issue-draft.md",
+              "sha256": "373f5495882c2d203fd35edcb2e76f7e45da66d06676bbca7fcf72238d80027d"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-upstream-public-sources.json",
+              "sha256": "0d41ce21f5a26f8fe1b2e8373598090231de0901ebdf906e6aed9d29770021f7"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-served-api-observation.json",
+              "sha256": "d0fd91d54574518cda5a0b24ce052913834bfbc93b060fc4197872c36bcd89b9"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-runtime.json",
+              "sha256": "0ace82979c84ba9785ac1bc42c5c033d1dba920d4d4b6278af02d13d29ee7e02"
+            },
+            {
+              "ref": "docs/design/tuna-readout-mapping-identifiability.md",
+              "sha256": "ec84bc1e8a57705b891bf0fd2858c290608c9f89a6cd2ec90766fc4cc44e0ff8"
+            }
+          ],
+          "scope_sha256": "9853d62e0bd45eb84d9708591d35c4d0f47a4d1b9180c4136413855dea3a21ae"
+        },
+        {
+          "result": "The unsent private provider request identifies the six completed jobs and asks for event association, pre-packing labels, integrated IQ, discriminator and served timing. The separate public SDK draft states the observed 404, served API inventory, local client versions, sanitized reproduction and supported-route question; the existing QX draft separates simulator output representation. Provider addresses and trackers are based on dated source observations and need refresh before sending. No upstream message was sent. Revalidated the unsent drafts after a whitespace-only formatting correction.",
+          "observed_at": "2026-10-28T03:08:38.546992+00:00",
+          "revision": "55b6dcb8861be4fe8ec8f8f38a3fa1844755d346",
+          "evidence": [
+            {
+              "ref": "docs/notes/quantum_inspire/destination-response-upstream-request.md",
+              "sha256": "8aa625640ee46002eac2ba3e3e2a3c63780d2757f8e3566355111bf3851ae0b0"
+            },
+            {
+              "ref": "docs/notes/quantum_inspire/upstream-readout-report.md",
+              "sha256": "1e22ffdb4d9d646cf5eb63cb61359bde14ec04d74ad747f884e968f5ee026bfd"
+            },
+            {
+              "ref": "docs/archive/reviews/quantum-inspire-metadata-route-issue-draft.md",
+              "sha256": "70a60eda2777b87c4f0161923c9893c22721cf9cb9a7925e9c343cf7a5aab9f6"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-upstream-public-sources.json",
+              "sha256": "0d41ce21f5a26f8fe1b2e8373598090231de0901ebdf906e6aed9d29770021f7"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-served-api-observation.json",
+              "sha256": "d0fd91d54574518cda5a0b24ce052913834bfbc93b060fc4197872c36bcd89b9"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-runtime.json",
+              "sha256": "0ace82979c84ba9785ac1bc42c5c033d1dba920d4d4b6278af02d13d29ee7e02"
+            },
+            {
+              "ref": "docs/design/tuna-readout-mapping-identifiability.md",
+              "sha256": "ec84bc1e8a57705b891bf0fd2858c290608c9f89a6cd2ec90766fc4cc44e0ff8"
+            }
+          ],
+          "scope_sha256": "9853d62e0bd45eb84d9708591d35c4d0f47a4d1b9180c4136413855dea3a21ae"
+        }
+      ]
+    },
+    {
+      "id": "design-matched-discrimination-controls",
+      "action": "Design matched interventions and output-association controls",
+      "acceptance": "Specify circuits, preparation and readout controls, destination permutations, timing, held-out outcome contrasts, mutation tests and exact question-to-evidence links.",
+      "state": "doing",
+      "depends_on": [
+        "replay-joint-response-analysis",
+        "audit-package-and-algebra-controls",
+        "audit-provider-and-simulator-contracts",
+        "model-mechanism-identifiability"
+      ]
+    },
+    {
+      "id": "qualify-order-drift-and-uncertainty",
+      "action": "Derive job-level ordering, drift and uncertainty rules",
+      "acceptance": "Freeze randomization provenance, assignment and carryover assumptions, multiplicity, intervals, effect sizes, stop rules and an inconclusive outcome; do not equate shots with intervention units.",
+      "state": "todo",
+      "depends_on": [
+        "design-matched-discrimination-controls"
+      ]
+    },
+    {
+      "id": "construct-queue-aware-exact-case",
+      "action": "Construct a queue-aware exact acquisition and budget case",
+      "acceptance": "Bind backend, source and compiler identities, admission and pause rules, measured waits, request horizon, shots, ceilings, credits, collection and no-retry rules.",
+      "state": "todo",
+      "depends_on": [
+        "qualify-order-drift-and-uncertainty"
+      ]
+    },
+    {
+      "id": "verify-offline-admission",
+      "action": "Verify the exact candidate and operational controls without a provider job",
+      "acceptance": "Reproduce source and compiler checks, deterministic predictions, mutation tests, dry-run admission and targeted regressions; retain evidence and identify missing live checks.",
+      "state": "todo",
+      "depends_on": [
+        "construct-queue-aware-exact-case",
+        "implement-sequential-e-guarded-runner",
+        "prepare-qx-destination-conformance-case"
+      ]
+    },
+    {
+      "id": "review-case-and-freeze",
+      "action": "Obtain independent review and freeze the candidate",
+      "acceptance": "Resolve reachable scientific, code and operational findings and bind the final source, analyzer, uncertainty and approval packet to exact digests.",
+      "state": "todo",
+      "depends_on": [
+        "verify-offline-admission"
+      ]
+    },
+    {
+      "id": "refresh-live-admission",
+      "action": "Refresh read-only backend, policy, queue and account admission",
+      "acceptance": "Record time-bound actual backend availability, limits, queue, pricing, source configuration and expected cost; recheck against frozen eligibility and stop on drift.",
+      "state": "todo",
+      "depends_on": [
+        "review-case-and-freeze",
+        "execute-qx-conformance"
+      ]
+    },
+    {
+      "id": "obtain-exact-case-approval",
+      "action": "Obtain explicit user approval of the exact written case",
+      "acceptance": "Present the concrete frozen case, limits, expected time, costs and measured-wait risk; require approval of this candidate before any provider job or upload.",
+      "state": "todo",
+      "depends_on": [
+        "refresh-live-admission"
+      ]
+    },
+    {
+      "id": "execute-approved-acquisition",
+      "action": "Execute only the exact approved case under its stopping rules",
+      "acceptance": "Submit at most the approved jobs only while live admission, pause, deadline and cost checks pass; preserve every dispatch identity and stop on uncertainty.",
+      "state": "todo",
+      "depends_on": [
+        "obtain-exact-case-approval"
+      ]
+    },
+    {
+      "id": "collect-and-analyze-outcomes",
+      "action": "Collect raw outcomes and analyze the preregistered mechanism contrasts",
+      "acceptance": "Retain raw results and provenance, run the frozen analyzer and uncertainty rules, reconcile billing and report identified and unresolved mechanisms without extrapolation.",
+      "state": "todo",
+      "depends_on": [
+        "execute-approved-acquisition"
+      ]
+    },
+    {
+      "id": "review-register-and-decide-algebra",
+      "action": "Review results, register evidence and decide algebraic readiness",
+      "acceptance": "Review acquired evidence and claims, update the authoritative registry and plan, and state whether the instrument admits a separately approved Cayley-Dickson physics case.",
+      "state": "todo",
+      "depends_on": [
+        "collect-and-analyze-outcomes"
+      ]
+    },
+    {
+      "id": "verify-non-audit-suite-timing",
+      "state": "done",
+      "action": "Recheck non-audit suite timing under available host capacity",
+      "acceptance": "Reproduce the full non-audit test lane and resolve or explicitly disposition any per-test time-budget failure; preserve the measured failure and avoid changing unrelated workloads.",
+      "receipts": [
+        {
+          "result": "The two-worker non-audit lane passed all 2040 tests in 58.62 seconds; the formerly slow seed-provenance shards zero and two took 4.84 and 2.61 seconds. Earlier timing failures remain recorded; their cause is unresolved.",
+          "observed_at": "2026-10-28T06:48:06.282930+00:00",
+          "revision": "55b6dcb8861be4fe8ec8f8f38a3fa1844755d346",
+          "evidence": [
+            {
+              "ref": "docs/archive/reviews/seed-provenance-owned-draw-scan-profile.md",
+              "sha256": "e56022543f6628f0a9ac6557cf6087439a43e29b04e5f3bd32ac041a76f3e13b"
+            },
+            {
+              "ref": "tests/ci/test_seed_provenance.py",
+              "sha256": "849ae758e7dc93a21b2fecba7ad45258ce7d38950efb93f21b50bc9cd2815030"
+            },
+            {
+              "ref": "ci/pr_checks.sh",
+              "sha256": "fb4edcbc269d0827707e61572e85770d9174c230d8bf4dcc655f191154616dff"
+            }
+          ],
+          "scope_sha256": "a76a5d74cc7aceaaabcfaf51798ff48042607671e144a6215ab25ec0b4439928"
+        }
+      ]
+    },
+    {
+      "id": "replay-early-label-map-family",
+      "state": "done",
+      "action": "Replay every fixed early-label map against retained joint responses",
+      "acceptance": "Check every permutation and polarity, terminal-marginal contraction, exact source bindings and case-specific causal limits; review the numerical result and regression coverage.",
+      "depends_on": [
+        "replay-joint-response-analysis"
+      ],
+      "receipts": [
+        {
+          "result": "All 48 fixed permutations and polarities of decoded early labels were checked against each of two retained 64-cell joint comparisons. Independent scalar reconstruction matched 96 scores; terminal marginal contraction supplies a map-invariant lower bound. The stopped nominal-zero case has minimum 6310/16384 and terminal lower bound 6286/16384; nominal-one minimum is 600/16384. These are post-acquisition empirical distances, not causal results. Requested high-effort Codex review verified the findings and a focused follow-up closed a distinct-map regression gap. Six focused tests, the dedicated gate, Ruff and mypy pass. The full serial non-audit suite recorded 1844 passes, two QI skips and one 11.67-second seed-provenance budget failure; that test passed earlier in isolation at 9.11 seconds, and the full-suite timing task remains open.",
+          "observed_at": "2026-10-28T02:36:35.912031+00:00",
+          "revision": "55b6dcb8861be4fe8ec8f8f38a3fa1844755d346",
+          "evidence": [
+            {
+              "ref": "scripts/qi_tuna_early_label_maps.py",
+              "sha256": "271486a916177ad96d5f5203c2c5c4233e14312542b8954abd7abd3050f789af"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_early_label_maps.py",
+              "sha256": "4459b45f4bd859c2a73460c272c9d934da09169b13ae06a608f3679ab258667b"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/early-label-map-analysis.json",
+              "sha256": "5093dcda0011f164a3a22427ec7c287d0b7b6bc2f5d15c20782f311020d21008"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/early-label-map-analysis.md",
+              "sha256": "c70f8fec3e0d35b7d798df4546afa5f4022b49f4a22d99d118b03dd11bfd8583"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/joint-response-analysis.json",
+              "sha256": "8e81167d7fc6c6dcde0d859bcdbb99c2da8869488b42ac13dfc1919cbaaa8ab2"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-early-label-map-review.md",
+              "sha256": "cd6568b300f263ffb34ba526d5a11be104ba0072b0b9f4ed75705fc6a223f11d"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-early-label-map-followup-review.md",
+              "sha256": "780f686e9f34b116512d6a7836e1758d757a9d2816244105ce17d4fcd5da3a26"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-early-label-map-review.json",
+              "sha256": "7e6723121129eee4104ed621a9acf092173e8386b3a98ea35652399e9f1ee907"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-qi-tuna-early-label-maps",
+              "sha256": "fc36701f325355cd96270427702b98429dc273633106a9e9566537201188225b"
+            }
+          ],
+          "scope_sha256": "37e406bf34a9127ecb17e475419a6ea113c5487f63d7438546ca0973c1347d5c"
+        }
+      ]
+    },
+    {
+      "id": "implement-sequential-e-analyzer",
+      "state": "todo",
+      "action": "Implement exact sequential evidence scoring and failure semantics",
+      "acceptance": "Compute the four rational mixture processes and running crossings; validate frozen assignments, raw decoding, neutral failures, optional stopping, zero factors and invalid records against independent reference tests.",
+      "depends_on": [
+        "construct-queue-aware-exact-case"
+      ]
+    },
+    {
+      "id": "generate-sequential-e-manifests",
+      "state": "todo",
+      "action": "Bind single-job source and compiler manifests for the sequential response case",
+      "acceptance": "Regenerate exact baseline and rotated source identities and slot manifests; validate physical-stream equality, measurement destinations, decoder and deliberate mutations with the pinned QI compiler.",
+      "depends_on": [
+        "construct-queue-aware-exact-case"
+      ]
+    },
+    {
+      "id": "implement-sequential-e-guarded-runner",
+      "state": "todo",
+      "action": "Implement guarded serial dispatch and late recovery for the sequential response case",
+      "acceptance": "Prove offline that source-bound assignments, single queued batch, pause, deadline, cost, fail-stop, retained identities and ambiguous submission recovery hold without provider jobs or uploads.",
+      "depends_on": [
+        "implement-sequential-e-analyzer",
+        "generate-sequential-e-manifests",
+        "retain-readback-attempts",
+        "bind-refreshed-provider-identity",
+        "bind-sequential-score-evidence",
+        "verify-request-start-boundary"
+      ]
+    },
+    {
+      "id": "prepare-qx-destination-conformance-case",
+      "state": "todo",
+      "action": "Prepare the reduced QX destination conformance case",
+      "acceptance": "Bind three reduced sources, deterministic terminal predictions, shots, QX limits, costs and local compiler checks; explicitly present the unresolved end-to-end QX policy gap for owner decision because QX cannot validate Tuna early-bit history or its 17-qubit stream.",
+      "depends_on": [
+        "construct-queue-aware-exact-case"
+      ]
+    },
+    {
+      "id": "refresh-qx-admission",
+      "state": "todo",
+      "action": "Refresh read-only QX admission for the exact reduced case",
+      "acceptance": "Record current QX status, queue, limits, terms and account pricing against the reviewed QX case without uploading or submitting.",
+      "depends_on": [
+        "review-case-and-freeze"
+      ]
+    },
+    {
+      "id": "obtain-qx-case-approval",
+      "state": "todo",
+      "action": "Obtain explicit approval for the exact reduced QX case",
+      "acceptance": "Present the reviewed source-bound QX case, predictions, limits and costs; require explicit approval before any QX job or upload.",
+      "depends_on": [
+        "refresh-qx-admission"
+      ]
+    },
+    {
+      "id": "execute-qx-conformance",
+      "state": "todo",
+      "action": "Execute and retain only the approved reduced QX conformance case",
+      "acceptance": "Run the approved reduced sources under fresh admission, retain and validate their results, and stop if the expected QX output or policy check fails.",
+      "depends_on": [
+        "obtain-qx-case-approval"
+      ]
+    },
+    {
+      "id": "repair-anu-raw-type-validation",
+      "state": "todo",
+      "action": "Repair generic ANU raw response type validation without breaking frozen producer evidence",
+      "acceptance": "Reject raw bool/integer aliases and non-object responses across the general adapter; preserve retained producer bytes or migrate evidence without rewriting historical records, replay all retained ANU draws and obtain independent review."
+    },
+    {
+      "id": "retain-readback-attempts",
+      "state": "todo",
+      "action": "Retain every readback attempt and failure before retry or scoring",
+      "acceptance": "Fault-test request, refresh, clock, streaming, response and retention failures; bind attempt sequence, effective request and available response bytes, and quarantine ambiguous or unsynced captures."
+    },
+    {
+      "id": "bind-refreshed-provider-identity",
+      "state": "todo",
+      "action": "Bind each credential reload to the approved provider subject and team",
+      "acceptance": "Verify the authenticated subject-to-member mapping and team namespace after each reload; bound discovery, exchange, member lookup and input; retain rotated credentials safely and reconcile interrupted exchange; fail closed on identity changes and test shared-account contention."
+    },
+    {
+      "id": "bind-sequential-score-evidence",
+      "state": "todo",
+      "action": "Bind each sequential decision to authenticated retained evidence",
+      "acceptance": "Recompute scores from source-bound captures and assignment openings; bind producer and evidence digests, observation boundaries, charge decisions and neutral failures; reject row substitution, late results and ambiguous recovery.",
+      "depends_on": [
+        "retain-readback-attempts",
+        "bind-refreshed-provider-identity"
+      ]
+    },
+    {
+      "id": "verify-request-start-boundary",
+      "state": "todo",
+      "action": "Resolve request initiation timing at the approved boundary",
+      "acceptance": "Use a reviewed mechanism that bounds or observes actual initiation despite preemption, or revise and independently review the case to incorporate the uncertainty before seeking approval; retain a falsifying preemption test."
+    }
+  ]
+}

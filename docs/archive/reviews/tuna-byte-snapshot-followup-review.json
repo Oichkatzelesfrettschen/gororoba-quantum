@@ -1,0 +1,16 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "a04ffd0c06667c0eac4bf548db41873815b4d06e62f03c6b641d6c03503f9ddb",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-byte-snapshot-followup-review.md",
+  "retained_sha256": "d8968e95524d9ab9b09d21db042e8cc996d2ac4725edff05868600dbfa1a2de5",
+  "reviewed_sha256": {
+    "docs/archive/reviews/tuna-byte-snapshot-decoder-review.md": "e1db26961b559216f6cf08c9d7e80cdaad31bd53330c736e25e74afd6fd7a401",
+    "docs/design/tuna-destination-sequential-evidence-case.md": "54d109064b397789f88bd800bcd9c353655a049f9dd7a74dd358a3e5bb544164",
+    "scripts/qi_tuna_source_association.py": "93b5b01b3ec646ec47f49b822567af1bc3d9018f70f110cdd5a2708ffff177a6",
+    "tests/scripts/test_qi_tuna_source_association.py": "02cf641a2a4ec885a7aab6fb12711a0607a52259a4ea4a8258846c32d00163a4"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

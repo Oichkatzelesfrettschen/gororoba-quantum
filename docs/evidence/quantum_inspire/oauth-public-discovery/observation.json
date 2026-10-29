@@ -1,0 +1,40 @@
+{
+  "audience": "compute-job-manager",
+  "id_token_signing_algorithms": [
+    "HS256",
+    "RS256",
+    "PS256"
+  ],
+  "issuer": "https://auth.quantum-inspire.com/",
+  "key_algorithms": [
+    "RS256"
+  ],
+  "key_count": 2,
+  "key_types": [
+    "RSA"
+  ],
+  "key_uses": [
+    "sig"
+  ],
+  "observed_at": "2026-10-28T07:34:49.593985+00:00",
+  "retrieval": "Unauthenticated HTTPS GET with default certificate validation and no redirect following.",
+  "schema": "qi-public-oidc-observation-v1",
+  "scope": "Public discovery metadata only; access-token claims, authenticated account identity, key freshness at execution and provider admission remain unverified.",
+  "sources": [
+    {
+      "file": "auth-config.json",
+      "sha256": "0bc72be067ee296448a2235a9deb8193faa9eefc1d605936d60ab34d07deb247",
+      "url": "https://api.quantum-inspire.com/auth_config"
+    },
+    {
+      "file": "openid-configuration.json",
+      "sha256": "49ebe1ada00c726948a1e29c082f4a9c8916f01174c366677f4ae1da166736c2",
+      "url": "https://auth.quantum-inspire.com/.well-known/openid-configuration"
+    },
+    {
+      "file": "jwks.json",
+      "sha256": "2248d6fc12d6c1da0a6d4edd8fd15ee5454b0ea8d333283e1f945641f9e2fb78",
+      "url": "https://auth.quantum-inspire.com/.well-known/jwks.json"
+    }
+  ]
+}
