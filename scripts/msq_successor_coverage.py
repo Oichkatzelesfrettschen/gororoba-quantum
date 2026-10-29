@@ -1,19 +1,20 @@
 """Calibration coverage of a measurement-sequence successor binding run against its null's rehearsal record.
 
 ``REHEARSAL_DIR RUN_DIR --factor F`` exits 0 when RUN_DIR plans the rehearsal's family at the rehearsal's layout width
-and every layout qubit of RUN_DIR lies inside the calibration domain the null sampled; it prints every violation and
-exits 1 otherwise, and 2 on a record it cannot read. A replicate of the null draws each qubit's calibration from the
-rehearsal layout's (msq_successor_null_batch.draw_replicate), so the domain is that layout's range of each quantity:
+and shot count and its layout's calibration lies inside the domain the null sampled; it prints every violation and
+exits 1 otherwise, and 2 on a record it cannot read. A replicate of the null gives each slot a calibration drawn with
+replacement from the rehearsal layout's qubits (msq_successor_null_batch.draw_replicate), so the domain is that pool,
+not any one qubit's own earlier value, and the shot count is the rehearsal's (every member count is binomial out of it):
 
-- T1, T2 and the sx error stay within a factor F of the same qubit's value in the rehearsal snapshot (a drifted qubit
-  leaves the domain) and within the rehearsal layout's range widened by F (a qubit the layout rule newly places
-  stays inside it).
-- Each readout assignment error (prob_meas1_prep0, prob_meas0_prep1) stays at or below F times the rehearsal
-  layout's largest. The backend re-estimates these at every calibration from a few thousand shots, in steps of
-  1/4096, and the layout rule ranks qubits by them, so a per-qubit ratio reads shot noise (0 to a step and back); a
-  smaller error lowers the binomial variance every screen reads in-job.
+- Each live T1, T2 and sx error lies within the rehearsal layout's range widened by F, and the live layout's median
+  of each lies within a factor F of the pool's, so a device-wide shift the pool never held refuses. The sx error
+  bounds both ways: the analysis's gate-model systematic scales with the reported value
+  (measurement_sequence_analysis.SX_SYSTEMATIC), so a lower report narrows the allowance the null calibrated.
+- Each readout assignment error (prob_meas1_prep0, prob_meas0_prep1), and the layout's median of each, stays at or
+  below F times the pool's. A smaller error lowers the binomial variance every screen reads in-job.
 
-The design states the rule (docs/design/measurement-sequence-envelope-successor.md, "Null calibration", Coverage).
+A per-quantity range leaves a joint (T1, T2, readout, sx) combination the pool never held uncovered. The design
+states the rule (docs/design/measurement-sequence-envelope-successor.md, "Null calibration", Coverage).
 ``scripts/approved_run.sh --check`` runs it from gororoba_quantum/ with RUN set to the binding dry run's directory, so
 a refusal sends nothing.
 """
@@ -22,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import statistics
 import sys
 from pathlib import Path
 
@@ -66,26 +68,24 @@ def violations(rehearsal_dir: Path, run_dir: Path, factor: float) -> list[str]:
     run_qubits = [int(q) for q in run["family_configuration"]["qubits"]]
     if len(run_qubits) != width or int(run["family_configuration"]["layout_width"]) != width:
         found.append(f"layout width {len(run_qubits)} differs from the rehearsal's {width}")
+    if int(run["shots"]) != int(rehearsal["shots"]):
+        found.append(f"shots {int(run['shots'])} differ from the rehearsal's {int(rehearsal['shots'])}")
     pool = [calibration(rehearsal_properties, int(q)) for q in rehearsal["family_configuration"]["qubits"]]
-    span = {name: (min(c[name] for c in pool) / factor, max(c[name] for c in pool) * factor) for name in QUANTITIES}
-    for qubit in run_qubits:
-        live, before = calibration(run_properties, qubit), calibration(rehearsal_properties, qubit)
-        for name in DRIFTING:
-            ratio = live[name] / before[name] if before[name] > 0 else float("inf")
-            if not 1.0 / factor <= ratio <= factor:
+    live = {qubit: calibration(run_properties, qubit) for qubit in run_qubits}
+    for name in QUANTITIES:
+        low, high = min(c[name] for c in pool) / factor, max(c[name] for c in pool) * factor
+        for qubit, values in live.items():
+            if name in DRIFTING and not low <= values[name] <= high:
                 found.append(
-                    f"q{qubit} {name} {live[name]:.6g} is {ratio:.3g} x its rehearsal value {before[name]:.6g}"
+                    f"q{qubit} {name} {values[name]:.6g} lies outside the widened rehearsal range"
+                    f" [{low:.6g}, {high:.6g}]"
                 )
-            low, high = span[name]
-            if not low <= live[name] <= high:
-                found.append(
-                    f"q{qubit} {name} {live[name]:.6g} lies outside the widened rehearsal range [{low:.6g}, {high:.6g}]"
-                )
-        for name in READOUT:
-            if live[name] > span[name][1]:
-                found.append(
-                    f"q{qubit} {name} {live[name]:.6g} exceeds the widened rehearsal maximum {span[name][1]:.6g}"
-                )
+            if name in READOUT and values[name] > high:
+                found.append(f"q{qubit} {name} {values[name]:.6g} exceeds the widened rehearsal maximum {high:.6g}")
+        center = statistics.median(c[name] for c in pool)
+        median = statistics.median(values[name] for values in live.values())
+        if median > factor * center or (name in DRIFTING and median * factor < center):
+            found.append(f"layout median {name} {median:.6g} lies beyond a factor {factor} of the pool's {center:.6g}")
     return found
 
 
