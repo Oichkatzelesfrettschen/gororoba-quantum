@@ -683,6 +683,7 @@ def test_partial_collection_retains_later_completed_job(
     environment: Any, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, first_status: str
 ) -> None:
     specification = case()
+    specification["allocations"] = specification["allocations"][:3]
     specification["allocations"][0]["shots"] = 5
     specification["max_total_execution_seconds"] = 10
     monkeypatch.setattr(Job, "job_id", lambda job: f"fixture-{job.shots}")
@@ -716,10 +717,10 @@ def test_partial_collection_retains_later_completed_job(
     output = family.collect(live_run, environment, run, family.digest((run / "record.json").read_bytes()))
     if output["all_allocations_retained"] or output["acquisition_status"] != "incomplete":
         raise AssertionError("partial acquisitions must withhold complete-case validity")
-    if len(output["jobs"]["fixture-4"]["pubs"]) != 7 or len(output["allocations_without_results"]) != 1:
+    if len(output["jobs"]["fixture-4"]["pubs"]) != 2 or len(output["allocations_without_results"]) != 1:
         raise AssertionError("later completed jobs must retain all available raw projections")
     replay = family.adjudicate(live_run, run, family.digest(Path(output["path"]).read_bytes()))
-    if replay["all_allocations_retained"] or len(replay["jobs"]["fixture-4"]["pubs"]) != 7:
+    if replay["all_allocations_retained"] or len(replay["jobs"]["fixture-4"]["pubs"]) != 2:
         raise AssertionError("adjudication must preserve partial acquisition status")
 
 
@@ -733,3 +734,73 @@ def test_actor_anchor_prevents_generic_dispatch_after_family_mutation(environmen
         live_run.collect(environment, run, actor_record_sha256=anchor)
     with pytest.raises(adjudicate.AdjudicationError, match="SHA-256"):
         adjudicate.adjudicate(None, run, actor_collection_sha256="invalid")
+
+
+@pytest.mark.parametrize("status", ["DONE", "ERROR"])
+def test_sparse_actor_retention_uses_external_anchor_without_current_source_revalidation(
+    environment: Any, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, status: str
+) -> None:
+    import json
+    from decimal import Decimal
+
+    import reconcile_qpu_inventory as audit
+
+    timestamps = {"running": "2026-10-29T00:00:00Z", "finished": "2026-10-29T00:00:01Z"}
+    monkeypatch.setattr(
+        Job,
+        "metrics",
+        lambda self: {"usage": {"status": "complete", "qpu_charge_time_seconds": 0.01}, "timestamps": timestamps},
+    )
+    monkeypatch.setattr(Job, "status", lambda self: status)
+    monkeypatch.setattr(Job, "usage", lambda self, partial=False: 0.01)
+    approved = tmp_path / "approved"
+    record, archive = save_plan(approved, environment)
+    run = tmp_path / "results/live/actor"
+    run.mkdir(parents=True)
+    (run / "isa.qpy").write_bytes(archive)
+    submit_reviewed(
+        live_run, environment, record, archive, run, approved, family.digest((approved / "record.json").read_bytes())
+    )
+    record_sha = family.digest((run / "record.json").read_bytes())
+    collected = family.collect(live_run, environment, run, record_sha)
+    anchor = tmp_path / "docs/evidence/readout-actor-acquisition-review/retention-anchors" / f"{record_sha}.json"
+    anchor.parent.mkdir(parents=True)
+    anchor.write_text(
+        json.dumps(
+            {
+                "schema": "readout-actor-retention-anchor-v1",
+                "run": "results/live/actor",
+                "record_sha256": record_sha,
+                "collection_sha256": family.digest(Path(collected["path"]).read_bytes()),
+                "reviewed_record_sha256": record["reviewed_record_sha256"],
+            }
+        )
+    )
+    monkeypatch.setattr(audit, "ROOT", tmp_path)
+    monkeypatch.setattr(family, "verify_archive", lambda *_: pytest.fail("historical audit rechecks current source"))
+    job = {
+        "job_id": "fixture-job",
+        "backend": "fixture-backend",
+        "status": status,
+        "pub_count": 8,
+        "shots_per_pub": 4,
+        "timestamps": timestamps,
+    }
+    if status == "DONE":
+        result = audit.archived_row((job, run / "raw/fixture-job/index.json", Decimal("0.01")))
+        if result["provenance"] != "registered_actor_collection" or result["submitted_pub_shots"] != 32:
+            raise AssertionError("actor retention must bind the genuine full-register collection")
+        metadata = run / "raw/fixture-job/result_metadata.json"
+        original_metadata = metadata.read_bytes()
+        metadata.write_text('{"changed": true}')
+        with pytest.raises(ValueError, match="indexed raw artifact"):
+            audit.actor_job_evidence(job, run, Decimal("0.01"))
+        metadata.write_bytes(original_metadata)
+        receipt = next((run / "raw/fixture-job").glob("receipt-*.json"))
+        receipt.write_text("{}")
+        with pytest.raises(ValueError):
+            audit.archived_row((job, run / "raw/fixture-job/index.json", Decimal("0.01")))
+    else:
+        result = audit.failed_row(job, run, Decimal("0.01"))
+        if result["provenance"] != "failed_actor_collection" or result["raw_data_files"] != 0:
+            raise AssertionError("failed actor retention must preserve status without synthesizing shots")

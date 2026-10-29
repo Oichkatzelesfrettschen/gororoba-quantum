@@ -25,10 +25,7 @@ run=${1%/}
 id=$2
 family=$3
 question=$4
-[ -f "$run/collect.json" ] || {
-	echo "retain_run: $run holds no collect.json; collect the run first" >&2
-	exit 1
-}
+"$PYTHON" scripts/reconcile_qpu_inventory.py --retention-preflight "$run"
 new=
 cleanup() { if [ -n "$new" ]; then rm -f "$new"; fi; }
 trap cleanup EXIT

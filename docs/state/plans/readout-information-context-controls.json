@@ -557,6 +557,12 @@
           "scope_sha256": "1c05832f8cbf846989cfe23c16b4e5dede4f06cb0f49f4576f159d29d277cc37"
         }
       ]
+    },
+    {
+      "id": "approved-pilot-acquisition",
+      "state": "doing",
+      "action": "Execute the explicitly approved backup-instance pilot once and retain descriptive evidence",
+      "acceptance": "The exact approved source/case and per-job/aggregate/reserve bounds gate one invocation; submission and collection anchors remain independently retained; completed results or a terminal refusal are preserved without another submission."
     }
   ],
   "scope": "Design an IBM actor-reporter and paired-error case, with separately admitted IQM, QX and Ascella cases; exact case approval precedes provider actions.",
