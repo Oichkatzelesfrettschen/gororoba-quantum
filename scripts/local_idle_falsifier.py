@@ -22,7 +22,9 @@ Usage:
 
 ``--check FILE`` requires FILE to list every audited run exactly once, recomputes its decision from its runs, and
 reruns each run named by ``--runs`` (``all`` reruns every one), requiring the fresh summary to equal the retained one
-exactly.
+exactly or, when the two ran on different numeric paths, every float to agree within TOLERANCE; it prints the largest
+deviation per run beside the retained and the checking platform. ``--inserted FILE`` writes, from a retained result,
+the secondary estimate over only the replicas whose padded law differs from the unpadded one.
 
 ``--parts DIR`` writes each run's full summary to DIR as soon as the run finishes and reuses a part whose
 package versions and source digests (this script and the repository modules it evaluates with) match the
@@ -60,6 +62,11 @@ import parallel  # noqa: E402
 import snapshot_laws  # noqa: E402
 
 SCHEMA = "local-idle-padding-falsifier-v1"
+INSERTED_SCHEMA = "local-idle-padding-inserted-v1"
+# Absolute agreement a fresh summary needs with the retained one when the two ran on different numeric paths: laws
+# are stored to 12 digits and distances to 9, so a platform's last-bit rounding moves a stored value by at most a
+# unit in its last place.
+TOLERANCE = 1e-9
 
 Item = tuple[bytes, dict[str, Any], list[float]]
 
@@ -213,12 +220,76 @@ def check(path: Path, runs: str, index: dict[str, Any]) -> None:
         raise RuntimeError(f"{path}: schema or decision differs from its runs")
     by_run = {run["run"]: run for run in retained["runs"]}
     names = listed if runs == "all" else runs.split(",")
+    deviations: dict[str, float] = {}
     for name in names:
         if name not in by_run:
             raise RuntimeError(f"{path}: {name} is not a retained run")
-        if evaluate(name, index) != by_run[name]:
-            raise RuntimeError(f"{path}: {name} does not reproduce")
-    print(json.dumps({"checked": names, "versions": versions()}))
+        fresh = evaluate(name, index)
+        deviation = 0.0 if fresh == by_run[name] else largest_deviation(fresh, by_run[name])
+        if not deviation <= TOLERANCE:
+            raise RuntimeError(f"{path}: {name} does not reproduce (largest deviation {deviation})")
+        deviations[name] = deviation
+    retained_on = retained.get("platforms", {})
+    print(
+        json.dumps(
+            {
+                "checked": names,
+                "largest_deviation": deviations,
+                "retained_platforms": {name: retained_on.get(name) for name in names},
+                "platform": platform(),
+                "versions": versions(),
+            }
+        )
+    )
+
+
+def largest_deviation(fresh: Any, retained: Any) -> float:
+    """The largest absolute difference between matching floats of two summaries; inf when their structure differs."""
+    if isinstance(fresh, bool) or isinstance(retained, bool):
+        return 0.0 if fresh == retained else math.inf
+    if isinstance(fresh, (int, float)) and isinstance(retained, (int, float)):
+        if isinstance(fresh, int) and isinstance(retained, int):
+            return 0.0 if fresh == retained else math.inf
+        return abs(float(fresh) - float(retained))
+    if isinstance(fresh, dict) and isinstance(retained, dict):
+        if fresh.keys() != retained.keys():
+            return math.inf
+        return max((largest_deviation(fresh[k], retained[k]) for k in fresh), default=0.0)
+    if isinstance(fresh, list) and isinstance(retained, list):
+        if len(fresh) != len(retained):
+            return math.inf
+        return max((largest_deviation(a, b) for a, b in zip(fresh, retained, strict=True)), default=0.0)
+    return 0.0 if fresh == retained else math.inf
+
+
+def inserted_estimate(retained: dict[str, Any]) -> dict[str, Any]:
+    """Per scored run, mean d over only the replicas whose padded law differs from the unpadded one."""
+    runs = []
+    for run in retained["runs"]:
+        if "per_replica" not in run:
+            continue
+        rows = [row for member in run["per_replica"].values() for row in member]
+        acting = [row["difference"] for row in rows if row["padded_law"] != row["unpadded_law"]]
+        n = len(acting)
+        mean = sum(acting) / n if n else None
+        se = float(np.std(acting, ddof=1) / math.sqrt(n)) if n > 1 else None
+        runs.append(
+            {
+                "run": run["run"],
+                "replicas": len(rows),
+                "acting_replicas": n,
+                "inserted_replicas": sum(1 for row in rows if row["inserted_dt"]),
+                "mean_difference": round(mean, 9) if mean is not None else None,
+                "standard_error": round(se, 9) if se is not None else None,
+            }
+        )
+    acting_runs = [run for run in runs if run["acting_replicas"]]
+    return {
+        "schema": INSERTED_SCHEMA,
+        "runs": runs,
+        "runs_with_acting_replicas": len(acting_runs),
+        "runs_lower": sum(1 for run in acting_runs if run["mean_difference"] < 0),
+    }
 
 
 def versions() -> dict[str, str]:
@@ -287,11 +358,19 @@ def main() -> int:
     parser.add_argument("--plan", action="store_true", help="print each run's eligibility, widths and replica count")
     parser.add_argument("--parts", type=Path, help="directory of per-run summaries to write and resume from")
     parser.add_argument("--parts-only", action="store_true", help="assemble from --parts and refuse to evaluate")
+    parser.add_argument("--inserted", type=Path, help="write the acting-replica estimate of a retained result to --out")
     parser.add_argument("--check", type=Path, help="rerun the --runs runs of a retained result and compare")
     args = parser.parse_args()
     index = json.loads(ghost_run.INDEX.read_text(encoding="utf-8"))
     if args.check:
         check(args.check, args.runs, index)
+        return 0
+    if args.inserted:
+        estimate = inserted_estimate(json.loads(args.inserted.read_text(encoding="utf-8")))
+        text = json.dumps(estimate, indent=1, sort_keys=True) + "\n"
+        if args.out:
+            args.out.write_text(text, encoding="utf-8")
+        print(text, end="")
         return 0
     names = ghost_run.audited_runs() if args.runs == "all" else args.runs.split(",")
     if args.parts and args.plan:
