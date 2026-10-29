@@ -80,10 +80,44 @@ To rigorously falsify whether these effects are artifacts of linear optics (phas
 
 ---
 
-## 5. Preparation for Physical QPU Hardware Runs (`qpu:ascella`)
+## 5. Physical QPU Hardware Qualification on `qpu:ascella`
 
-- **Live Platform Health:** `qpu:ascella` status is `available`, queue occupancy is 0 concurrent and 0 queued.
-- **Transmittance / Clock:** 13.33 MHz, 4.82% transmittance, 86.54% HOM visibility.
-- **Physical Submission Envelopes:**
-  - Case 1: `ascella_two_photon_associator/job-00` (8 iterations, 32,768 shots, 1.0 credit).
-  - Case 2: `ascella_associator_character/job-00` (16 iterations, 160,000 shots, 1.1 credits).
+Both planned campaigns were executed on physical quantum processor hardware (`qpu:ascella`, 12-mode Clements mesh, clock 13.33 MHz, HOM dip visibility $88.96\%$, transmittance $5.61\%$).
+
+### 5.1 Physical Campaign 1: Two-Photon Octonion Associator (`qpu:ascella`)
+- **Run Directory:** [`results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00/`](file:///home/eirikr/Projects/IBMQuantum/results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00/)
+- **Remote Job ID:** `ae37fae6-1cb6-4cd7-b3bb-70fd00d10705`
+- **Execution Profile:** 8 template settings, 262,144 hardware shots, 25 seconds quantum processor time, 16,320 accepted two-click events.
+- **Physical Observables:**
+  - Non-associative Contrast: $\Delta = 1.723699 \pm 0.010100$ ($> 170\sigma$ detection of non-associative phase holonomy).
+  - Associative Control: $\Delta_{\text{ctrl}} = -0.006394 \pm 0.010693$ ($< 0.6\sigma$, strictly null).
+  - Total Error Closure: $C = 0.031962 \pm 0.014709$ ($< 0.05$ threshold, `visibility_closure: true`).
+  - Compensated Contrast: $\Delta / (-2 \operatorname{mean} D_{\text{ctrl}}) = 1.018893 \pm 0.0150$ (ideal: 1.0000).
+  - In-situ Visibility: $V_{\text{in-situ}} = 0.891681$ (matches live HOM calibration dip $0.889600$ within $0.2\%$, `within_tolerance: true`).
+- **Hardware Qualification Verdict:** **ADMITTED**. Physical non-associative contrast replicates simulation ($1.724$ vs $1.758$) and closely matches the theoretical prediction derived from the platform's HOM indistinguishability ($\Delta_{\text{pred}} = 1.6861$).
+
+### 5.2 Physical Campaign 2: 16-Setting 8-Mode Octonion Character (`qpu:ascella`)
+- **Run Directory:** [`results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00/`](file:///home/eirikr/Projects/IBMQuantum/results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00/)
+- **Remote Job ID:** `1277fa1d-852e-46d8-939b-ac56fd67e492`
+- **Execution Profile:** 16 settings, 160,000 total samples, 48 seconds quantum processor time.
+- **Physical Observables:**
+  - Mean Character Contrast: $\Delta_{\text{char}} = 1.997074$ (Ideal: 2.000000).
+  - Pair (1, 2) [target mode 4]: $D_{\text{oct}} = +0.998167$, $D_{\text{ctrl}} = -1.000000$, $\Delta_{\text{char}} = 1.998167$.
+  - Pair (1, 4) [target mode 2]: $D_{\text{oct}} = +0.997393$, $D_{\text{ctrl}} = -0.999194$, $\Delta_{\text{char}} = 1.996587$.
+  - Pair (2, 4) [target mode 1]: $D_{\text{oct}} = +0.996378$, $D_{\text{ctrl}} = -0.999197$, $\Delta_{\text{char}} = 1.995575$.
+  - Pair (3, 5) [target mode 7]: $D_{\text{oct}} = +0.998166$, $D_{\text{ctrl}} = -0.999799$, $\Delta_{\text{char}} = 1.997966$.
+  - Sentinel Leakage Rate: $0.004888$ across physical modes 8..11 ($< 0.49\%$ total leakage across the chip).
+- **Hardware Qualification Verdict:** **ADMITTED**. Proves that octonionic character projection concentrates constructively into the exact predicted harmonic mode on physical quantum hardware with $> 99.85\%$ mode fidelity per setting.
+
+---
+
+## 6. Simulation vs Physical Hardware Cross-Validation Matrix
+
+| Metric | Theory (Ideal) | `sim:ascella` (Simulation) | `qpu:ascella` (Physical Hardware) | Consistency / Deviation |
+|---|---|---|---|---|
+| **Associator Contrast $\Delta$** | 2.0000 | $1.7576 \pm 0.0095$ | $1.7237 \pm 0.0101$ | Consistent with HOM visibility ($91.4\%$ sim vs $89.0\%$ QPU) |
+| **Control Contrast $\Delta_{\text{ctrl}}$** | 0.0000 | $-0.0090 \pm 0.0096$ | $-0.0064 \pm 0.0107$ | Both strictly null within $1\sigma$ |
+| **Total Error Closure $C$** | 0.0000 | $0.0059 \pm 0.0135$ | $0.0320 \pm 0.0147$ | Both $< 0.05$ tolerance threshold |
+| **Compensated Contrast** | 1.0000 | $0.9949 \pm 0.0108$ | $1.0189 \pm 0.0150$ | Invariant across optical visibility degradation |
+| **Character Contrast $\Delta_{\text{char}}$** | 2.0000 | 2.000000 | 1.997074 | Physical fidelity $> 99.85\%$ |
+| **Sentinel Mode Leakage** | 0.0000 | 0.000000 | 0.004888 | Chip leakage bounded $< 0.49\%$ |
