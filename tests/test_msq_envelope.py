@@ -944,3 +944,415 @@ def test_shared_laws_round_trip_and_leave_other_records() -> None:
     check(live_run.shared_law_record(other) is other, "only envelope records share laws")
     with pytest.raises(live_run.LiveRunError):
         live_run.stored_ideal({}, shared["groups"][0]["members"][0])
+
+
+# --- schema msq-envelope-v2: delay ladder, budget-derived ceilings, layout rule v2 ---------------------------------
+
+
+def execution_fixture() -> dict[str, Any]:
+    """Two PUBs of 1000 shots at 20 us; the planner charges 10 s of overhead and 5 s of circuit time per PUB."""
+    pubs = [{"shots": 1000, "estimated_execution_seconds": 5.0, "repetition_delay_seconds": 20e-6} for _ in range(2)]
+    return {"selected_job_costs": [{"overhead_seconds": 10.0, "pubs": pubs}]}
+
+
+def v2_args(**overrides: Any) -> Any:
+    import argparse
+
+    values: dict[str, Any] = {
+        "envelope_schema": env.ENVELOPE_SCHEMA,
+        "rep_delay": env.REP_DELAY_LADDER_S[0],
+        "max_total_execution_seconds": 140.0,
+        "reserve_seconds": 60.0,
+        "max_execution_seconds": None,
+        "fallback_max_execution_seconds": None,
+    }
+    values.update(overrides)
+    return argparse.Namespace(**values)
+
+
+def test_ladder_and_ceiling_arithmetic() -> None:
+    check(env.ENVELOPE_SCHEMA == "msq-envelope-v2" and env.ENVELOPE_SCHEMA_V1 == "msq-envelope-v1", "schema names")
+    check(env.REP_DELAY_LADDER_S == (20e-6, 30e-6, 40e-6, 50e-6, 60e-6), f"ladder {env.REP_DELAY_LADDER_S}")
+    check([env.delay_key(d) for d in env.REP_DELAY_LADDER_S] == ["2e-05", "3e-05", "4e-05", "5e-05", "6e-05"], "keys")
+    # 1.5 * (31.2 + 9e-6 * 160000) = 1.5 * 32.64 = 48.96 -> 49
+    check(env.attempt_ceiling(31.2, 160_000) == 49, "ceiling is ceil(1.5 * (planner + 9 us per shot))")
+    check(env.attempt_ceiling(0.0, 0) == 0, "zero charge")
+    with pytest.raises(env.EnvelopeError):
+        env.attempt_ceiling(math.nan, 10)
+
+
+def test_contract_carries_per_step_ceilings() -> None:
+    import live_run
+
+    record = {"execution_contract": execution_fixture(), "family_configuration": {"layout_width": 32}}
+    contract = live_run.envelope_contract(record, v2_args())
+    check(contract["schema"] == env.ENVELOPE_SCHEMA and "fallback_rep_delay_seconds" not in contract, "v2 fields")
+    check(contract["rep_delay_ladder_seconds"] == list(env.REP_DELAY_LADDER_S), "ladder recorded")
+    check(contract["ceiling_rule"] == {"factor": 1.5, "per_shot_residual_seconds": 9e-6}, "rule recorded")
+    charges, shots = live_run.envelope_ladder(record["execution_contract"])
+    check(shots == 2000 and charges["2e-05"] == 20.0, f"planner charges {charges} shots {shots}")
+    # 30 us adds 2000 shots * 10 us = 0.02 s of delay to 20 s; the ceiling at 20 us is ceil(1.5 * 20.018) = 31.
+    check(contract["ladder_ceiling_seconds"]["2e-05"] == 31, f"{contract['ladder_ceiling_seconds']}")
+    check(contract["ceiling_seconds"] == {"attempt_1": 31}, "attempt 1 takes the first ceiling")
+    check(contract["envelope_cap_seconds"] == 140.0, "the cap is the approved total")
+
+
+@pytest.mark.parametrize("cap", [4.0, 241.0, None, math.nan, 30.0])
+def test_contract_refuses_a_cap_outside_the_range_or_below_the_first_ceiling(cap: float | None) -> None:
+    import live_run
+
+    record = {"execution_contract": execution_fixture(), "family_configuration": {"layout_width": 32}}
+    with pytest.raises(live_run.LiveRunError):
+        live_run.envelope_contract(record, v2_args(max_total_execution_seconds=cap))
+    ceilings = {env.delay_key(d): 31 for d in env.REP_DELAY_LADDER_S}
+    check(env.contract_refusals(140.0, ceilings, 30.0) != [], "a bound under the first ceiling refuses")
+    check(
+        env.contract_refusals(140.0, ceilings, 31.0) == [] and env.contract_refusals(31.0, ceilings, None) == [], "ok"
+    )
+
+
+def test_parser_refuses_v2_flags_the_schema_does_not_take(capsys: Any) -> None:
+    import live_run
+
+    base = ["--family", "measurement-sequence-envelope", "--layout-width", "32", "--max-total-execution-seconds", "140"]
+    cases = [
+        (["--rep-delay", "5e-5"], "ladder's first value"),
+        (["--rep-delay", "2e-5", "--fallback-max-execution-seconds", "60"], "msq-envelope-v1 approvals only"),
+    ]
+    for extra, message in cases:
+        with pytest.raises(SystemExit):
+            live_run.main([*base, *extra])
+        check(message in capsys.readouterr().err, f"refusal names {message}")
+
+
+V2_LADDER = {"2e-05": 74, "3e-05": 86, "4e-05": 99, "5e-05": 111, "6e-05": 124}
+
+
+def test_v2_attempt_one_does_not_reserve_attempt_two() -> None:
+    check(env.attempt_admission_v2(1, 160.0, 60.0, 140.0, 74.0) == [], "c1 74 fits remaining 160 minus reserve 60")
+    check(env.attempt_admission(1, 160.0, 60.0, 147.0, 74.0) != [], "v1 with cap 147 refuses the same quota")
+    check(env.attempt_admission_v2(1, 160.0, 60.0, 70.0, 74.0) != [], "ceiling past the cap")
+    check(env.attempt_admission_v2(1, 130.0, 60.0, 140.0, 74.0) != [], "ceiling past remaining minus reserve")
+
+
+def test_v2_fallback_step_is_the_smallest_admitted() -> None:
+    step, rejected = env.select_fallback_step(20e-6, V2_LADDER, 158.0, 60.0, 140.0, 2.0, False)
+    check(step == (30e-6, 86.0) and rejected == {}, f"billed 2 s picks 30 us: {step}")
+    step, rejected = env.select_fallback_step(20e-6, V2_LADDER, 140.0, 60.0, 140.0, 2.0, False)
+    check(step is None and list(rejected) == ["3e-05", "4e-05", "5e-05", "6e-05"], f"{rejected}")
+    check(all(reasons for reasons in rejected.values()), "every step names its reasons")
+    # An unattributed attempt 1 keeps its ceiling 74 reserved: 74 + 86 = 160 <= 220 - 60 admits 30 us, 219 does not.
+    step, _ = env.select_fallback_step(20e-6, V2_LADDER, 220.0, 60.0, 240.0, 74.0, True)
+    check(step == (30e-6, 86.0), "unattributed earlier at the boundary")
+    step, rejected = env.select_fallback_step(20e-6, V2_LADDER, 219.0, 60.0, 240.0, 74.0, True)
+    check(step is None and "3e-05" in rejected, "one second short rejects 30 us and every larger step")
+    step, rejected = env.select_fallback_step(20e-6, V2_LADDER, 400.0, 60.0, 240.0, 2.0, False, 90.0)
+    check(step == (30e-6, 86.0), "a bound of 90 keeps 30 us")
+    step, rejected = env.select_fallback_step(20e-6, V2_LADDER, 400.0, 60.0, 240.0, 2.0, False, 80.0)
+    check(step is None and "3e-05" in rejected, "a bound under every ceiling leaves no candidate")
+    step, _ = env.select_fallback_step(40e-6, V2_LADDER, 400.0, 60.0, 240.0, 2.0, False)
+    check(step == (50e-6, 111.0), "only steps above attempt 1's delay are candidates")
+
+
+def v2_contract() -> dict[str, Any]:
+    return {
+        "schema": env.ENVELOPE_SCHEMA,
+        "rep_delay_seconds": 20e-6,
+        "rep_delay_ladder_seconds": list(env.REP_DELAY_LADDER_S),
+        "ladder_ceiling_seconds": V2_LADDER,
+        "ceiling_seconds": {"attempt_1": 74},
+        "ceiling_bound_seconds": None,
+        "envelope_cap_seconds": 140.0,
+        "reserve_seconds": 60.0,
+    }
+
+
+def test_v2_send_admission_and_v1_unchanged() -> None:
+    import live_run
+
+    first = {"envelope": {"contract": v2_contract()}}
+    check(live_run.envelope_send_refusals(first, 160.0) == [], "v2 attempt 1 admits")
+    check(live_run.envelope_send_refusals(first, 133.0) != [], "v2 attempt 1 short of its ceiling")
+    second = {
+        "envelope": {
+            "contract": v2_contract(),
+            "attempt": 2,
+            "fallback_evidence": {"billed_seconds": 2.0, "chosen": {"rep_delay_seconds": 3e-5, "ceiling_seconds": 86}},
+        }
+    }
+    check(live_run.envelope_send_refusals(second, 146.0) == [], "attempt 2 needs its chosen ceiling only")
+    check(live_run.envelope_send_refusals(second, 145.0) != [], "attempt 2 short of its chosen ceiling")
+    v1 = {
+        "envelope": {
+            "contract": {
+                "schema": env.ENVELOPE_SCHEMA_V1,
+                "reserve_seconds": 60.0,
+                "envelope_cap_seconds": 147.0,
+                "ceiling_seconds": {"attempt_1": 74.0, "attempt_2": 73.0},
+            }
+        }
+    }
+    check(live_run.envelope_send_refusals(v1, 160.0) != [], "v1 attempt 1 reserves the whole cap")
+    check(live_run.envelope_send_refusals(v1, 207.0) == [], "v1 attempt 1 admits with the cap and reserve free")
+
+
+def v2_approved(tmp_path: Any, billed_job: FakeJob) -> tuple[Any, Any]:
+    import hashlib
+    import json
+
+    directory, _, approved = approved_envelope(tmp_path)
+    approved["envelope"]["contract"] = v2_contract()
+    data = json.dumps(approved).encode()
+    (directory / "record.json").write_bytes(data)
+    first = tmp_path / "first"
+    first.mkdir()
+    meta = {"run": "approved", "record_sha256": hashlib.sha256(data).hexdigest(), "envelope": True}
+    record = {"shots": 8192, "approved_record": meta, "submission": {"jobs": [{"job_id": "j1", "pubs": [{"n": "p"}]}]}}
+    (first / "record.json").write_text(json.dumps(record))
+    return directory, first
+
+
+def test_v2_fallback_setup_chooses_a_step_and_records_the_rest(tmp_path: Any) -> None:
+    import argparse
+
+    import live_run
+
+    job = FakeJob("ERROR", "Error code 1305; ran longer", None, 2)
+    directory, first = v2_approved(tmp_path, job)
+    args = argparse.Namespace(envelope_fallback=first)
+    evidence = live_run.envelope_fallback_setup(FakeService(job, 158.0), args)
+    check(evidence["chosen"] == {"rep_delay_seconds": 3e-5, "ceiling_seconds": 86.0}, f"{evidence}")
+    check(
+        args.rep_delay == 3e-5 and args.max_execution_seconds == 86.0 and args.envelope_attempt["attempt_index"] == 2,
+        "args",
+    )
+    tight = argparse.Namespace(envelope_fallback=first)
+    with pytest.raises(live_run.LiveRunError, match="3e-05"):
+        live_run.envelope_fallback_setup(FakeService(job, 140.0), tight)
+
+
+def test_v2_attempt_two_mismatches_need_an_approved_ladder_step(tmp_path: Any) -> None:
+    import copy
+    import json
+
+    import live_run
+
+    directory, sha, approved = approved_envelope(tmp_path)
+    approved["envelope"]["contract"] = v2_contract()
+    (directory / "record.json").write_bytes(json.dumps(approved).encode())
+    import hashlib
+
+    sha = hashlib.sha256((directory / "record.json").read_bytes()).hexdigest()
+    second = copy.deepcopy(approved)
+    second["execution_contract"] = execution_fixture()
+    second["envelope"]["attempt"] = 2
+    second["envelope"]["fallback_evidence"] = {"chosen": {"rep_delay_seconds": 3e-5, "ceiling_seconds": 86}}
+    second["policy"] = {"rep_delay_seconds": 3e-5, "max_execution_seconds": 86}
+    check(live_run.approved_envelope_mismatches(directory, second, sha) == [], "an approved ladder step matches")
+    second["envelope"]["fallback_evidence"]["chosen"]["ceiling_seconds"] = 87
+    second["policy"]["max_execution_seconds"] = 87
+    check(live_run.approved_envelope_mismatches(directory, second, sha) != [], "a ceiling the ladder does not hold")
+    second["envelope"]["fallback_evidence"]["chosen"] = {"rep_delay_seconds": 3.5e-5, "ceiling_seconds": 86}
+    second["policy"]["rep_delay_seconds"] = 3.5e-5
+    second["policy"]["max_execution_seconds"] = 86
+    check(live_run.approved_envelope_mismatches(directory, second, sha) != [], "a delay off the ladder")
+
+
+def scaled_execution(circuit_seconds: float) -> dict[str, Any]:
+    """execution_fixture with each PUB's planner circuit time set to circuit_seconds."""
+    execution = execution_fixture()
+    for pub in execution["selected_job_costs"][0]["pubs"]:
+        pub["estimated_execution_seconds"] = circuit_seconds
+    return execution
+
+
+def v2_planned(tmp_path: Any) -> tuple[Any, str, dict[str, Any]]:
+    """An approved v2 dry run whose contract the ceiling rule derives from execution_fixture."""
+    import hashlib
+    import json
+
+    import live_run
+
+    directory, _, approved = approved_envelope(tmp_path)
+    approved["execution_contract"] = execution_fixture()
+    approved["envelope"]["contract"] = live_run.envelope_contract(approved, v2_args())
+    approved["policy"] = {**approved["policy"], "max_execution_seconds": 31.0}
+    (directory / "record.json").write_bytes(json.dumps(approved).encode())
+    return directory, hashlib.sha256((directory / "record.json").read_bytes()).hexdigest(), approved
+
+
+def test_v2_mismatches_bound_the_ladder_the_fresh_execution_contract_implies(tmp_path: Any) -> None:
+    import copy
+
+    import live_run
+
+    directory, sha, approved = v2_planned(tmp_path)
+    fresh = copy.deepcopy(approved)
+    check(live_run.approved_envelope_mismatches(directory, fresh, sha) == [], "the approved plan matches itself")
+    fresh["execution_contract"] = scaled_execution(4.0)
+    check(live_run.approved_envelope_mismatches(directory, fresh, sha) == [], "a cheaper fresh plan keeps the approval")
+    # The stale contract still holds the approved ceilings; the comparison reads the refreshed execution contract.
+    fresh["execution_contract"] = scaled_execution(6.0)
+    found = live_run.approved_envelope_mismatches(directory, fresh, sha)
+    check(len([m for m in found if "exceeds the approved" in m]) == len(env.REP_DELAY_LADDER_S), f"{found}")
+    second = copy.deepcopy(fresh)
+    chosen = approved["envelope"]["contract"]["ladder_ceiling_seconds"]["3e-05"]
+    second["envelope"]["attempt"] = 2
+    second["envelope"]["fallback_evidence"] = {"chosen": {"rep_delay_seconds": 3e-5, "ceiling_seconds": chosen}}
+    second["policy"] = {"rep_delay_seconds": 3e-5, "max_execution_seconds": chosen}
+    found = live_run.approved_envelope_mismatches(directory, second, sha)
+    check(
+        any("exceeds the approved" in m for m in found), f"attempt 2 under the approved contract still refuses {found}"
+    )
+    second["execution_contract"] = {}
+    found = live_run.approved_envelope_mismatches(directory, second, sha)
+    check(any("no selected job costs" in m for m in found), f"a missing execution contract refuses: {found}")
+    fresh["execution_contract"] = scaled_execution(4.0)
+    fresh["envelope"]["contract"]["envelope_cap_seconds"] = 150.0
+    check(
+        "the envelope contract differs" in live_run.approved_envelope_mismatches(directory, fresh, sha), "the cap binds"
+    )
+
+
+def test_refresh_rebinds_attempt_one_to_the_fresh_ladder() -> None:
+    import live_run
+
+    record: dict[str, Any] = {
+        "execution_contract": execution_fixture(),
+        "family_configuration": {"layout_width": 32},
+        "policy": {"max_execution_seconds": 31.0},
+    }
+    args = v2_args(envelope_ceiling_bound=None)
+    record["envelope"] = {
+        "contract": live_run.envelope_contract(record, args),
+        "planner_charge_seconds": {"attempt_1": 20.0, "ladder": {}},
+    }
+    record["execution_contract"] = scaled_execution(6.0)
+    check(live_run.refresh_envelope_ceilings(record, args) == [], "a fresh plan inside the rule refreshes")
+    # ceil(1.5 * (10 + 12 + 2000 * 9e-6)) = ceil(33.027) = 34
+    check(record["envelope"]["contract"]["ceiling_seconds"] == {"attempt_1": 34}, f"{record['envelope']['contract']}")
+    check(args.max_execution_seconds == 34.0 and record["policy"]["max_execution_seconds"] == 34.0, "sent ceiling")
+    check(record["envelope"]["planner_charge_seconds"]["attempt_1"] == 22.0, "planner charge follows")
+    refused = live_run.refresh_envelope_ceilings(record, v2_args(envelope_ceiling_bound=33.0))
+    check(len(refused) == 1 and "ceiling rule" in refused[0], f"a bound under the fresh ceiling refuses: {refused}")
+    second = {**record, "envelope": {**record["envelope"], "attempt": 2}}
+    check(live_run.refresh_envelope_ceilings(second, v2_args()) == [], "attempt 2 keeps the approved contract")
+
+
+@pytest.mark.parametrize(
+    ("bound", "remaining", "expected"),
+    [
+        (None, 160.0, 100.0),
+        (None, 140.0, 80.0),
+        (None, 50.0, 100.0),
+        (None, None, 100.0),
+        (45.0, 160.0, 45.0),
+        (150.0, 160.0, 100.0),
+        (90.0, 140.0, 80.0),
+    ],
+)
+def test_candidate_ceiling_screens_v2_at_the_tightest_bound(
+    bound: float | None, remaining: float | None, expected: float
+) -> None:
+    import qpu_planning
+
+    args = v2_args(max_execution_seconds=bound, max_total_execution_seconds=100.0)
+    usage = {"usage_remaining_seconds": remaining}
+    check(qpu_planning.candidate_ceiling(args, usage) == expected, f"{bound} {remaining}")
+
+
+def test_candidate_ceiling_keeps_the_flag_outside_v2() -> None:
+    import qpu_planning
+
+    usage = {"usage_remaining_seconds": 40.0}
+    for schema in (None, env.ENVELOPE_SCHEMA_V1):
+        args = v2_args(envelope_schema=schema, max_execution_seconds=150, max_total_execution_seconds=100.0)
+        check(qpu_planning.candidate_ceiling(args, usage) == 150, f"{schema} keeps the flag")
+    with pytest.raises(ValueError):
+        qpu_planning.candidate_ceiling(v2_args(envelope_schema=None), usage)
+
+
+def test_dry_run_applies_the_attempt_one_send_admission() -> None:
+    import live_run
+
+    def plan_record() -> dict[str, Any]:
+        return {
+            "execution_contract": execution_fixture(),
+            "family_configuration": {"layout_width": 32},
+            "policy": {"max_execution_seconds": 30.0},
+            "budget_plan": {"admitted": True, "reasons": [], "jobs": []},
+        }
+
+    # Contract c1 = 31 s: remaining 90 minus reserve 60 leaves 30 s, so the send would refuse.
+    record = plan_record()
+    live_run.apply_envelope_ceiling(
+        record, [], v2_args(max_execution_seconds=30.0 + 100.0), {"usage_remaining_seconds": 90.0}
+    )
+    check(record["budget_plan"]["admitted"] is False and record["budget_plan"]["reasons"], f"{record['budget_plan']}")
+    record = plan_record()
+    live_run.apply_envelope_ceiling(record, [], v2_args(max_execution_seconds=None), {"usage_remaining_seconds": 91.0})
+    check(record["budget_plan"]["admitted"] is True and record["policy"]["max_execution_seconds"] == 31.0, "admits")
+
+
+def test_dry_run_applies_the_send_rule_to_a_v1_plan() -> None:
+    import live_run
+
+    record = {
+        "execution_contract": execution_fixture(),
+        "family_configuration": {"layout_width": 32},
+        "policy": {},
+        "budget_plan": {"admitted": True, "reasons": [], "jobs": []},
+    }
+    args = v2_args(
+        envelope_schema=env.ENVELOPE_SCHEMA_V1, max_execution_seconds=74.0, fallback_max_execution_seconds=73.0
+    )
+    live_run.apply_envelope_ceiling(record, [], args, {"usage_remaining_seconds": 160.0})
+    check(record["budget_plan"]["admitted"] is False, "remaining 160, reserve 60, cap 147: the send refuses")
+
+
+def test_layout_rule_v2_reaches_the_maximum_packing_greedy_misses() -> None:
+    """A 46-qubit path: errors favor q % 3 == 1, so greedy keeps 15 qubits while {0, 3, ..., 45} packs 16."""
+    qubits = {q: row(0.001 if q % 3 == 1 else 0.004) for q in range(46)}
+    edges = [(q, q + 1) for q in range(45)]
+    with pytest.raises(env.EnvelopeError, match="only 15 qubits"):
+        env.layout_rule(qubits, (), edges, 16)
+    check(env.layout_rule_v2(qubits, (), edges, 16) == list(range(0, 46, 3)), "v2 keeps the maximum packing")
+    with pytest.raises(env.EnvelopeError, match="only 16 qubits"):
+        env.layout_rule_v2(qubits, (), edges, 24)
+
+
+def test_layout_rule_v2_matches_brute_force() -> None:
+    import itertools
+
+    import msq_envelope_null as null
+
+    generator = np.random.default_rng(null.NULL_SEED)
+    edges = [(q, q + 1) for q in range(13)] + [(2, 9), (5, 11)]
+    for _ in range(4):
+        qubits = {q: row(float(generator.uniform(0.001, 0.01))) for q in range(14)}
+        near = {q: set(env.coupling_distances(edges, q, env.RULE_MIN_GRAPH_DISTANCE - 1)) for q in qubits}
+        for width in (3, 4):
+            admissible = [
+                subset
+                for subset in itertools.combinations(sorted(qubits), width)
+                if all(b not in near[a] for a, b in itertools.combinations(subset, 2))
+            ]
+            best = min(admissible, key=lambda s: (sum(float(qubits[q]["readout_error"] or 0.0) for q in s), s))
+            result = env.packed_layout(qubits, (), edges, width)
+            check(tuple(result) == best, f"width {width}: {result} vs brute force {best}")
+
+
+def test_layout_rule_v2_ties_resolve_to_the_smallest_index_tuple() -> None:
+    qubits = {q: row(0.002) for q in range(9)}
+    edges = [(q, q + 1) for q in range(8)]
+    check(env.packed_layout(qubits, (), edges, 3) == [0, 3, 6], "equal errors keep the smallest tuple")
+
+
+def test_place_layout_routes_by_schema_and_v1_is_unchanged() -> None:
+    qubits, edges = chain(60)
+    v1 = env.place_layout(env.ENVELOPE_SCHEMA_V1, qubits, (), edges, 16)
+    check(v1 == env.layout_rule(qubits, (), edges, 16), "v1 keeps the greedy rule")
+    v2 = env.place_layout(env.ENVELOPE_SCHEMA, qubits, (), edges, 16)
+    check(v2 == env.layout_rule_v2(qubits, (), edges, 16) and len(v2) == 16, "v2 routes to the packing")
+    with pytest.raises(env.EnvelopeError):
+        env.place_layout("msq-envelope-v0", qubits, (), edges, 16)

@@ -16,6 +16,14 @@ multi-environment audit, library roles and the 362-distribution inventory
 gate ledger and premerge cache, the Python and Qiskit pins, replay runtimes, the
 Rocq replays and gate cost.
 
+**Flag review.** Every command whose cost or correctness depends on its
+options (solvers, simulators, Python pools, compilers, cloud launchers,
+resource limiters) runs only after the review in
+[docs/runbooks/compute-flags.md](docs/runbooks/compute-flags.md): its memory and
+time limits, threads, environment and every flag checked against the tool's
+own help, starting from the best measured combination in that runbook's table
+and adding or superseding a row after the run.
+
 **Pull requests and the audit.** The workflow `pr.yml` runs
 `sh ci/pr_checks.sh lint|types|tests|gates` on every pull request push: Ruff
 and mypy over ci/, tests/, gororoba_quantum/, scripts/ and kaggle_kernel/,
@@ -129,8 +137,7 @@ list) and set h = 0. The reduced germ at p is the intersection of the
 `tangentcone`) on the A_5 strata ran past an hour at tens of GiB on the shared
 host, while the global route takes seconds
 ([a5-strata-regularity](docs/evidence/a5-strata-regularity/README.md)). A
-Singular run that may exceed a few GiB runs under `prlimit --as` with
-`GOROROBA_WORKERS` set.
+long Singular or msolve run follows the flag review above.
 
 ## Documents
 
@@ -272,7 +279,7 @@ and the repository Python documentation hub and multi-environment inventory in
   must match the record or the run writes an `approval_required` record and
   sends nothing, and the runner plans again; the first batch consumes the
   approval by writing `approval-consumed.json`. An envelope record
-  (`msq-envelope-v1`, the measurement-sequence-envelope family) binds its
+  (`msq-envelope-v1` or `-v2`, the measurement-sequence-envelope family) binds its
   layout rule, bounds, ceilings and constructor instead of the dry run's
   calibration values, and writes one consumed marker per attempt
   ([qpu-submission.md](docs/notes/ibm_quantum/qpu-submission.md)).

@@ -15,7 +15,7 @@ import math
 import threading
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 from typing import Any
 
@@ -160,11 +160,29 @@ def ramsey_analyzer_closure() -> dict[str, Any]:
 
 
 def observable_contract_records(contracts: Any) -> list[dict[str, Any]]:
-    """The observable contracts as record.json stores them, each term's score values through law_encoding."""
-    records = json.loads(json.dumps([asdict(contract) for contract in contracts]))
-    for record in records:
-        for term in record["terms"]:
-            term["values"] = law_encoding.encode(term["values"])
+    """The observable contracts as record.json stores them, each term's score values through law_encoding.
+
+    A term whose values are a tuple of builtin floats skips the JSON text round trip, which returns those
+    floats unchanged (repr round-trips; -0.0, NaN and the infinities included), so only its other fields are
+    copied through it; any other term keeps the round trip, which turns its entries into JSON-native values.
+    """
+    plain: list[dict[int, tuple[Any, ...]]] = []
+    stripped = []
+    for contract in contracts:
+        floats = {
+            index: term.values
+            for index, term in enumerate(contract.terms)
+            if type(term.values) is tuple and set(map(type, term.values)) <= {float}
+        }
+        plain.append(floats)
+        terms = tuple(
+            replace(term, values=()) if index in floats else term for index, term in enumerate(contract.terms)
+        )
+        stripped.append(replace(contract, terms=terms))
+    records = json.loads(json.dumps([asdict(contract) for contract in stripped]))
+    for record, floats in zip(records, plain, strict=True):
+        for index, term in enumerate(record["terms"]):
+            term["values"] = law_encoding.encode(floats[index] if index in floats else term["values"])
     return records
 
 
@@ -1383,7 +1401,8 @@ def measurement_sequence_candidates(
                 if snapshot.name != msq_envelope.ENVELOPE_BACKEND:
                     raise runtime.LiveRunError(f"the envelope runs on {msq_envelope.ENVELOPE_BACKEND} only")
                 envelope_calibration = msq_envelope.calibration_from_snapshot(snapshot)
-                qubits = msq_envelope.layout_rule(
+                qubits = msq_envelope.place_layout(
+                    getattr(args, "envelope_schema", msq_envelope.ENVELOPE_SCHEMA),
                     envelope_calibration["qubits"],
                     envelope_calibration["excluded"],
                     [tuple(edge) for edge in envelope_calibration["edges"]],
@@ -2045,6 +2064,28 @@ def check_compiled_ideals(runtime: Any, choices: list[Any]) -> None:
             raise runtime.LiveRunError(f"{name}: compiled labeled ideal differs from its exact oracle")
 
 
+def candidate_ceiling(args: Any, usage: dict[str, Any]) -> float:
+    """The per-job execution ceiling the optimizer screens each candidate job against.
+
+    Every family but a v2 envelope screens against --max-execution-seconds. A v2 envelope derives its ceiling from the
+    selected plan's charge afterwards (live_run.apply_envelope_ceiling), so its screen is the tightest bound every
+    admissible attempt meets: the approved cap, the optional ceiling bound and the remaining quota above the reserve. A
+    v2 ceiling is CEILING_FACTOR times the charge or more, so the screen rejects no candidate the envelope admits; a
+    quota at or below the reserve leaves the other bounds, and the optimizer's reserve check rejects the plan with its
+    reason.
+    """
+    ceiling = getattr(args, "max_execution_seconds", None)
+    if getattr(args, "envelope_schema", None) != msq_envelope.ENVELOPE_SCHEMA:
+        if ceiling is None:
+            raise ValueError("--max-execution-seconds is required outside a v2 envelope")
+        return ceiling
+    bounds = [float(args.max_total_execution_seconds)] + ([float(ceiling)] if ceiling is not None else [])
+    remaining = usage.get("usage_remaining_seconds")
+    if remaining is not None and float(remaining) - float(args.reserve_seconds) > 0:
+        bounds.append(float(remaining) - float(args.reserve_seconds))
+    return min(bounds)
+
+
 def prepare(
     runtime: Any, snapshots: list[Any], args: Any, usage: dict[str, Any], trace: dict[str, Any]
 ) -> tuple[list[Any], dict[str, Any]]:
@@ -2057,6 +2098,7 @@ def prepare(
     if excitation is not None and args.family not in N21_FAMILIES:
         raise runtime.LiveRunError("--prep-excitation applies to the N21 families")
     candidates = admitted_family_candidates(runtime, family_candidates(runtime, snapshots, args, trace), trace)
+    job_ceiling = candidate_ceiling(args, usage)
     if not candidates:
         diagnostic = runtime._scrub_instances(runtime._jsonable(trace))
         raise runtime.LiveRunError(
@@ -2116,15 +2158,14 @@ def prepare(
                     choice.snap.name, choice.snap.backend.target, choice.snap.properties, local_compute.settings(args)
                 )
 
-    # Aer releases the GIL while it simulates, so independent choices run on
-    # threads. Each simulator already uses the policy's thread count, so the
-    # pool runs only as many simulators as fit in the available CPUs. Each
-    # pool thread reuses one simulator per snapshot, built from the
-    # snapshot's cached noise model, for every choice it runs: local_compute.run
-    # sets the device and method of each batch, and AerSimulator.from_backend
-    # converts the whole-device Target to BackendProperties on every build. A
-    # task returns the batch evidence its run appended, which joins the
-    # snapshot simulator in serial order.
+    # AerSimulator.run holds the GIL for the whole call, so threads never overlap
+    # two simulations: parallelism comes from the OpenMP shot threads of one
+    # call (max_parallel_shots), and the choice threads only keep one simulator
+    # per snapshot and thread, built from the snapshot's cached noise model.
+    # AerSimulator.from_backend converts the whole-device Target to
+    # BackendProperties on every build, and local_compute.run sets the device
+    # and method of each batch. A task returns the batch evidence its run
+    # appended, which joins the snapshot simulator in serial order.
     # A declared initial excitation enters the sampled model and the exact
     # law alike, so the sampled falsifier tests the law the plan prices.
     excited = {"prep_excitation": excitation} if excitation else {}
@@ -2224,7 +2265,7 @@ def prepare(
                                 pubs=tuple(pubs),
                                 shots=shots,
                                 overhead_seconds=args.job_overhead_seconds,
-                                max_execution_seconds=args.max_execution_seconds,
+                                max_execution_seconds=job_ceiling,
                                 overhead_assumption=(
                                     "declared overhead; 2.3 s default is the retained dynamic job's non-circuit "
                                     "charge, not a backend guarantee"

@@ -1,0 +1,123 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="https://zbmath.org/zbmath/elements/1.0/"
+           targetNamespace="https://zbmath.org/zbmath/elements/1.0/"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <xs:annotation>
+    <xs:documentation xml:lang="en">
+      Simple zbMath XML Schema, 2020-09-01
+      by Haritz Salaberri (haritz@zbmath.org).
+      This schema defines terms for Simple zbMath.
+    </xs:documentation>
+  </xs:annotation>
+
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/03/xml.xsd"/>
+  
+  <xs:element name="document_id" type="numericalElementType"/>
+  <xs:element name="zbl_id" type="stringElementType"/>
+  <xs:element name="time" type="dateTimeElementType"/>
+  <xs:element name="document_type" type="stringElementType"/>
+  <xs:element name="year" type="numericalElementType"/>
+  <xs:element name="document_author" type="stringSequenceType"/>
+  <xs:element name="author_id" type="stringSequenceType"/>
+  <xs:element name="document_title" type="stringElementType"/>
+  <xs:element name="document_subtitle" type="stringElementType"/>
+  <xs:element name="original_title" type="stringElementType"/>
+  <xs:element name="source" type="stringElementType"/>
+  <xs:element name="classification" type="stringSequenceType"/>
+  <xs:element name="keyword" type="stringSequenceType"/>
+  <xs:element name="document_language" type="stringSequenceType"/>
+  <xs:element name="pagination" type="stringElementType"/>
+  <xs:element name="electronic_id" type="stringElementType"/>
+  <xs:element name="author_variation" type="stringSequenceType"/>
+  <xs:element name="author_reference" type="stringSequenceType"/>
+  <xs:element name="biographic_reference" type="stringSequenceType"/>
+  <xs:element name="software" type="stringSequenceType"/>
+  <xs:element name="review" type="reviewType"/>
+  <xs:element name="serial" type="serialType"/>
+  
+  <xs:group name="elementsGroup">
+  <xs:sequence>
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+          
+      <xs:element ref="document_id"/>
+      <xs:element ref="zbl_id"/>
+      <xs:element ref="time"/>
+      <xs:element ref="document_type"/>
+      <xs:element ref="year"/>
+      <xs:element ref="document_author"/>
+      <xs:element ref="author_id"/>
+      <xs:element ref="document_title"/>
+      <xs:element ref="document_subtitle"/>
+      <xs:element ref="original_title"/>
+      <xs:element ref="source"/>
+      <xs:element ref="classification"/>
+      <xs:element ref="keyword"/>
+      <xs:element ref="document_language"/>
+      <xs:element ref="pagination"/>
+      <xs:element ref="electronic_id"/>
+      <xs:element ref="author_variation"/>
+      <xs:element ref="author_reference"/>
+      <xs:element ref="biographic_reference"/>
+      <xs:element ref="software"/>
+      <xs:element ref="review"/>
+      <xs:element ref="serial"/>
+
+    </xs:choice>
+    </xs:sequence>
+  </xs:group>
+
+  <xs:complexType name="numericalElementType">
+  
+    <xs:simpleContent>
+      <xs:extension base="xs:integer"/>
+    </xs:simpleContent>
+    
+  </xs:complexType>
+  
+  <xs:complexType name="stringElementType">
+  
+    <xs:simpleContent>
+      <xs:extension base="xs:string"/>
+    </xs:simpleContent>
+    
+  </xs:complexType>
+  
+  <xs:complexType name="dateTimeElementType">
+  
+    <xs:simpleContent>
+      <xs:extension base="xs:dateTime"/>
+    </xs:simpleContent>
+    
+  </xs:complexType>
+
+  <xs:complexType name="stringSequenceType">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="stringElementType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="reviewType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+    
+      <xs:element ref="zbmath:review_sign"/>
+      <xs:element ref="zbmath:review_text"/>
+      <xs:element ref="zbmath:review_language"/>
+      <xs:element ref="zbmath:reviewer"/>
+      <xs:element ref="zbmath:reviewer_id"/>
+      <xs:element ref="zbmath:review_type"/>
+      
+    </xs:choice>
+  </xs:complexType>
+  
+  <xs:complexType name="serialType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+    
+      <xs:element ref="zbmath:serial_title"/>
+      <xs:element ref="zbmath:serial_publisher"/>
+      
+    </xs:choice>
+  </xs:complexType>
+  
+</xs:schema>

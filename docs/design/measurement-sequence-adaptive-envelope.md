@@ -227,6 +227,29 @@ attempts' summed ceilings, as the most the envelope can bill.
 The collected width-32 run billed 38 s with 35.36 s of circuit time; its `collect.json` is 42.4 MB and its run directory, `raw/` included, 361 MB, so the table's size columns describe the submit-free dry run. The backup instance reported 369 s remaining at the width-32 dry run (`results/live/2026-10-27T012214.435220Z`); the primorial-coherence branch's run (`results/live/2026-10-26T045124.175747Z`,
 job dbfdotnpc3tc739n8nm0, 23 s) shares the instance, and the branch that merges second regenerates its job inventory.
 
+## Adaptive delay and budget (envelope v2)
+
+Schema `msq-envelope-v2` replaces the fixed 20 us attempt and 50 us fallback with the ladder
+`msq_envelope.REP_DELAY_LADDER_S` (20 to 60 us in 10 us steps; 20 us is IBM's Heron r2 changelog floor, and
+`configuration().rep_delay_range` reads [0, 2 ms] on ibm_kingston and bounds nothing). The ceiling at a step is
+`ceil(1.5 * (planner charge at that delay + 9 us per shot))` (`msq_envelope.attempt_ceiling`), and the contract records
+each step's ceiling in `ladder_ceiling_seconds` under the key `repr(delay)`, such as `"2e-05"`. The approved total C
+(`--max-total-execution-seconds`, 5 s to 240 s, at least the first ceiling) is the envelope cap; `--max-execution-seconds`,
+when given, bounds every attempt's ceiling.
+
+Attempt 1 sends at the first step when its ceiling c1 fits C and the remaining quota minus the reserve
+(`msq_envelope.attempt_admission_v2`). Attempt 2 runs only after `fallback_permitted` and takes the smallest ladder step
+above attempt 1's delay whose ceiling c satisfies earlier + c <= C and, against the live quota read at its own send,
+c (plus attempt 1's ceiling while that charge is unattributed) <= remaining - reserve
+(`msq_envelope.select_fallback_step`); the attempt-2 evidence records the chosen step and each rejected step's reasons.
+The v1 cap summed both ceilings and attempt 1 required the whole sum, so it overstated the reachable spend: attempt 2
+runs only after a fallback signature and rechecks the quota itself, and the dry run's budget plan admitted plans the
+send then refused. The v2 dry run applies the send rule to attempt 1 and marks the budget plan inadmissible when it
+refuses. The v2 layout rule `msq_envelope.layout_rule_v2` replaces the greedy scan with the exact maximum packing of
+lowest summed readout error, because greedy kept 28 to 31 qubits on snapshots that hold 34 or 35. The decomposition
+behind the 9 us residual is in [qpu_run_economy.md](../notes/qpu_run_economy.md). The v1 text above and below records
+what the width-32 run ran under.
+
 ## Sequence
 
 1. One Codex pass on the v3.1 dispositions of B, C, E and the aggregate cap, answered Fixed, Refuted or Boundary; the
