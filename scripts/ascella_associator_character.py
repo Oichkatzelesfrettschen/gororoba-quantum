@@ -446,9 +446,19 @@ def analyze(run_dir: Path) -> dict[str, Any]:
 
         denom = max(1, c_omega + c_0)
         d_obs = (c_omega - c_0) / denom
-        # Wilson score continuity floor ensures strictly positive uncertainty for boundary observations (|d| ~ 1)
-        var = max(1.0 - d_obs**2, 1.0 / denom) / denom
-        se = math.sqrt(var)
+
+        # Exact Wilson score interval for binomial proportion p = c_omega / denom transformed to D = 2p - 1
+        z = 1.96
+        p_hat = c_omega / denom
+        denom_wilson = 1.0 + (z**2) / denom
+        center = (p_hat + (z**2) / (2.0 * denom)) / denom_wilson
+        half_width = (z / denom_wilson) * math.sqrt((p_hat * (1.0 - p_hat) / denom) + ((z**2) / (4.0 * (denom**2))))
+        p_lower = max(0.0, center - half_width)
+        p_upper = min(1.0, center + half_width)
+
+        d_lower = max(-1.0, 2.0 * p_lower - 1.0)
+        d_upper = min(1.0, 2.0 * p_upper - 1.0)
+        se = (d_upper - d_lower) / (2.0 * z)
 
         record = {
             "name": name,
@@ -459,7 +469,7 @@ def analyze(run_dir: Path) -> dict[str, Any]:
             "c_0": c_0,
             "d_observable": round(d_obs, 6),
             "std_error": round(se, 6),
-            "ci95": [round(d_obs - 1.96 * se, 6), round(d_obs + 1.96 * se, 6)],
+            "ci95": [round(d_lower, 6), round(d_upper, 6)],
         }
         per_setting_reports.append(record)
 

@@ -173,3 +173,35 @@ def test_sentinel_only_leakage_rate_preserved_on_refusal(tmp_path):
     leakage = report["verdicts"]["sentinel_leakage_rate"]
     if leakage != 1.0:
         raise AssertionError(f"expected sentinel_leakage_rate 1.0, got {leakage}")
+
+
+def test_wilson_confidence_interval_at_boundary(tmp_path):
+    """Verify that 50 successes and 0 failures produces CI strictly within [-1.0, 1.0] with no overshoot."""
+    docs = build_documents()
+    cases_file = tmp_path / "cases.json"
+    cases_file.write_bytes(docs["cases.json"])
+    manifest = json.loads(docs["cases.json"].decode())
+
+    # Build 50 counts in mode omega for setting 0 (octonion)
+    boundary_iterations = []
+    for s in manifest["settings"]:
+        omega = s["omega_target"]
+        state = [0] * MODES
+        state[omega] = 1
+        state_str = "|" + ",".join(str(v) for v in state) + ">"
+        boundary_iterations.append({"name": s["name"], "counts": {state_str: 100}})
+
+    results_file = tmp_path / "results.json"
+    results_file.write_text(json.dumps({"iterations": boundary_iterations}))
+
+    report = analyze(tmp_path)
+    if report["status"] != "ADMITTED":
+        raise AssertionError(f"expected ADMITTED on 100 counts, got {report['status']}")
+    for record in report["iterations"]:
+        ci = record["ci95"]
+        if ci[0] < -1.0 or ci[1] > 1.0:
+            raise AssertionError(f"CI {ci} exceeds valid observable bounds [-1.0, 1.0]")
+        if ci[1] < ci[0]:
+            raise AssertionError(f"CI inverted: {ci}")
+        if record["std_error"] <= 0.0:
+            raise AssertionError(f"std_error {record['std_error']} must be positive")
