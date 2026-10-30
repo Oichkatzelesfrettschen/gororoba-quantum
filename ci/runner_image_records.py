@@ -4,14 +4,15 @@ A fitted float byte-replays only under the arithmetic that wrote it: the
 libm, Python build, numpy, scipy and OpenBLAS of ci/runner-image/Containerfile
 and ci/install_pins.sh. ci/runner_image_records.json binds each such record's
 sha256 to the digest of IMAGE_INPUTS (the image, the pins, the script that
-runs the producer and the gate environment it runs under) and of the
-arithmetic variables run_gates.environment_for assigns; ``check`` (a pr gate)
+runs the producer and the gate environment it runs under) and of
+LEDGER_ARITHMETIC, the kernel, thread and loader variables every record of
+the ledger was written under; ``check`` (a pr gate)
 fails once any of them or a record changes, naming the records to rewrite
 through ci/runner_image.sh, before their replay gates report float
 differences.
 
 ``"$PYTHON" ci/runner_image_records.py write COMMAND...`` runs COMMAND
-through ci/runner_image.sh over a snapshot of the tree, copies back every
+under LEDGER_ARITHMETIC through ci/runner_image.sh over a snapshot of the tree, copies back every
 file the command wrote there and appends a receipt (path, sha256, image
 digest) for each to RECEIPTS.
 ``"$PYTHON" ci/runner_image_records.py add PATH...`` binds records under the
@@ -47,9 +48,6 @@ import tempfile
 import time
 from pathlib import Path
 from typing import Any
-from unittest import mock
-
-import run_gates
 
 ROOT = Path(__file__).resolve().parent.parent
 LEDGER = ROOT / "ci" / "runner_image_records.json"
@@ -70,27 +68,29 @@ IMAGE_INPUTS = (
     "ci/runner_image.sh",
     "ci/gate_env.py",
 )
-# The variables of run_gates.environment_for that select a kernel, a thread count or the TLS reservation.
-ARITHMETIC_VARIABLES = (
-    "BLIS_NUM_THREADS",
-    "GLIBC_TUNABLES",
-    "MKL_NUM_THREADS",
-    "NPY_DISABLE_CPU_FEATURES",
-    "NUMEXPR_NUM_THREADS",
-    "OMP_NUM_THREADS",
-    "OPENBLAS_CORETYPE",
-    "OPENBLAS_NUM_THREADS",
-    "QISKIT_NUM_PROCS",
-    "RAYON_NUM_THREADS",
-    "VECLIB_MAXIMUM_THREADS",
-)
+# The kernel, thread and loader variables the ledger's records were written under: the OpenBLAS Haswell core and
+# numpy's x86-64-v3 dispatch cap select one AVX2 path, and single-threaded libraries fix the reduction order. The
+# ledger declares them rather than reading run_gates.environment_for, so a gate environment that computes on the
+# runner's native path leaves the digest, and every record ``write`` reproduces, on this path
+# (docs/design/native-numeric-replay.md).
+LEDGER_ARITHMETIC = {
+    "BLIS_NUM_THREADS": "1",
+    "GLIBC_TUNABLES": "glibc.rtld.optional_static_tls=4096",
+    "MKL_NUM_THREADS": "1",
+    "NPY_DISABLE_CPU_FEATURES": "X86_V4 AVX512_ICL AVX512_SPR",
+    "NUMEXPR_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_CORETYPE": "Haswell",
+    "OPENBLAS_NUM_THREADS": "1",
+    "QISKIT_NUM_PROCS": "1",
+    "RAYON_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1",
+}
 
 
 def arithmetic_environment() -> dict[str, str]:
-    """The arithmetic variables a gate receives from an empty caller environment."""
-    with mock.patch.dict("os.environ", {}, clear=True):
-        environment = run_gates.environment_for(None)
-    return {name: environment[name] for name in ARITHMETIC_VARIABLES}
+    """The arithmetic variables every record of the ledger was written under."""
+    return dict(LEDGER_ARITHMETIC)
 
 
 def requirement_lines(data: bytes) -> bytes:
@@ -258,7 +258,11 @@ def write(command: list[str]) -> int:
         # HZ=100, the lowest tick rate Linux builds with); the pause puts every copied file's time below the margin.
         time.sleep(0.05)
         start = time.time_ns() - 10_000_000
-        status = subprocess.run(["sh", str(snapshot / "ci" / "runner_image.sh"), *command], cwd=snapshot, check=False)
+        # env applies the ledger's arithmetic after ci/gate_env.py assigns the gate environment, so it wins.
+        pinned = ["env", *(f"{name}={value}" for name, value in sorted(LEDGER_ARITHMETIC.items()))]
+        status = subprocess.run(
+            ["sh", str(snapshot / "ci" / "runner_image.sh"), *pinned, *command], cwd=snapshot, check=False
+        )
         if status.returncode != 0:
             return status.returncode
         rows = []
