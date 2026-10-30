@@ -1,6 +1,6 @@
 # gororoba-quantum
 
-Quantum circuits whose structure comes from the open_gororoba Cayley-Dickson
+Quantum circuits whose structure comes from the gororoba-open Cayley-Dickson
 algebra kernel, targeting IBM Quantum Heron r2 backends. Left multiplication by a
 basis unit is a signed permutation of the 2^k basis states, so it is unitary on
 k qubits; two algebraic defects the kernel measures classically become hardware
@@ -635,5 +635,5 @@ which puts their sibling imports on sys.path; they form no installable package,
 and pyproject.toml carries only lint and type-check configuration. The IBM Quantum credential
 is read from the qiskit account store (`~/.qiskit/qiskit-ibm.json`), not from
 this repository. The kernel ground-truth CSV is located through `GOROROBA_ROOT`
-(default `~/Github/open_gororoba`); `verify.py` needs that checkout, the circuit
+(default `../gororoba-open`, beside this repository); `verify.py` needs that checkout, the circuit
 modules do not.

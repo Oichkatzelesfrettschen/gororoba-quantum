@@ -1,6 +1,6 @@
-# open_gororoba survey for factoring and higher-dimensional circuit design
+# gororoba-open survey for factoring and higher-dimensional circuit design
 
-Scope: read-only survey of the open_gororoba repository at commit fe668020
+Scope: read-only survey of the gororoba-open repository at commit fe668020
 (working tree: `.gitignore` modified and `.ignore` untracked before the survey
 began; the survey changed nothing in the repository). Companion file with the
 replayable scripts and the full evidence log:

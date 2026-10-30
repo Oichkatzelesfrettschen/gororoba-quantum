@@ -1,4 +1,4 @@
-"""Write open_gororoba's git-ignored data/csv files from its registry records.
+"""Write gororoba-open's git-ignored data/csv files from its registry records.
 
 Each TOML record under ROOT/registry/data/project_csv names its CSV in
 `source_csv`, pins the bytes in `source_sha256` and `source_size_bytes`, and

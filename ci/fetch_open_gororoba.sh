@@ -1,13 +1,13 @@
 #!/bin/sh
 # Usage: fetch_open_gororoba.sh DEST PATH...
-# Check out the open_gororoba commit named by ci/open_gororoba.pin into DEST,
+# Check out the gororoba-open commit named by ci/open_gororoba.pin into DEST,
 # materializing only the cone directories PATH... (blobs outside them are never
 # downloaded). The checkout is detached at the pin and `git rev-parse HEAD` must
 # equal it, so a moved branch or a truncated fetch fails the step. Writes only
 # under DEST; a second run on the same DEST fetches and re-checks out.
 set -eu
 
-REPO_URL=${OPEN_GOROROBA_URL:-https://github.com/Oichkatzelesfrettschen/open_gororoba.git}
+REPO_URL=${OPEN_GOROROBA_URL:-https://github.com/Oichkatzelesfrettschen/gororoba-open.git}
 here=$(cd "$(dirname "$0")" && pwd)
 pin=$(tr -d ' \t\r\n' < "$here/open_gororoba.pin")
 case "$pin" in

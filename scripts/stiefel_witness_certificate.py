@@ -8,7 +8,7 @@ inverse; with d the least common denominator of that inverse and N = d L_v^-1,
 the integer identity N L_v = d I holds.
 
 proofs/StiefelWitnessInvertible.v carries v, d and N as data, recomputes L_v
-from v with open_gororoba's cd_sign_fuel (verified/C1474_FuelAdequacy.v, copied
+from v with gororoba-open's cd_sign_fuel (verified/C1474_FuelAdequacy.v, copied
 from a pinned GOROROBA_ROOT by docs/evidence/stiefel_witness/replay_rocq.sh),
 and checks N L_v = d I and the Stiefel conditions by vm_compute. N determines
 L_v as d N^-1, so the identity can only pass when cd_sign_fuel reproduces
@@ -111,7 +111,7 @@ PREAMBLE = r"""(** * The A_6 Stiefel witness of math/0512517 is not a zero divis
     v is an integer vector of length 64 in the cd_core doubling convention:
     its halves a (indices 0-31) and b (indices 32-63) are pure elements of
     A_5, orthogonal, with squared norm 62. The left multiplication
-    L_v i j = sigma(i xor j, j) v (i xor j) takes sigma from open_gororoba's
+    L_v i j = sigma(i xor j, j) v (i xor j) takes sigma from gororoba-open's
     cd_sign_fuel (C-1474), at fuel 7 for dimension 64, the fuel that
     fuel_adequate_64 proves sufficient. N L_v = d I is checked by vm_compute;
     N determines L_v as d N^-1, so the check passes only when cd_sign_fuel
