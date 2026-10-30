@@ -21,6 +21,91 @@ protobuf: `python-protobuf` is `36.1-1.1` and
 `importlib.metadata.version("protobuf")` is `7.36.1`. The tables use the
 Python distribution version unless they name the pacman package.
 
+Which archive was installed, and which archives were available and left
+unused, is in
+[Mirrors and the other install paths](#mirrors-and-the-other-install-paths).
+Usage taken from each program's `--help` is in [Command help](#command-help).
+
+## Mirrors and the other install paths
+
+Three places can supply one of these packages: the pacman mirrors behind
+`paru` and `pacman -S`, the AUR, and a recipe under `~/Github/PKGBUILDs`.
+The path that was used is the one named in each package's section. The
+others below were checked and left unused.
+
+### OpenTelemetry pkgrel 4 and pkgrel 5
+
+`/etc/pacman.d/mirrorlist` tries, in order,
+`https://archlinux.cachyos.org/repo/$repo/os/$arch`,
+`https://geo.mirror.pkgbuild.com/$repo/os/$arch`,
+`https://mirror.osbeck.com/archlinux/$repo/os/$arch`, then
+`mirror.sahil.world`, `fastly.mirror.pkgbuild.com`, and further Arch
+mirrors. The local sync database still names both OpenTelemetry packages
+`0.66b1-4`. A `paru -S --needed` run selected those pkgrel 4 files. The
+download then failed: the mirrors it asked returned 404, and pacman stopped
+with `no packages were upgraded`. Nothing from that transaction was
+installed.
+
+A later HEAD of
+`python-opentelemetry-instrumentation-aws-lambda-0.66b1-<pkgrel>-any.pkg.tar.zst`,
+and the same check for the X-Ray propagator on `geo.mirror.pkgbuild.com`:
+
+| Mirror | pkgrel 4 | pkgrel 5 |
+|---|---|---|
+| `archlinux.cachyos.org/repo/extra/os/x86_64` | 404 | 200 |
+| `geo.mirror.pkgbuild.com/extra/os/x86_64` | 404 | 200 |
+| `fastly.mirror.pkgbuild.com/extra/os/x86_64` | 404 | 200 |
+| `mirror.osbeck.com/archlinux/extra/os/x86_64` | 200 | 200 |
+
+The first mirrors have replaced pkgrel 4 with pkgrel 5. osbeck still had
+both files. The local database had not been refreshed, so it kept
+advertising the file the first mirrors no longer store.
+
+The install that landed is `pacman -U` of the pkgrel 4 archives already in
+`/var/cache/pacman/pkg/`. That command does not refresh the database and
+does not move the rest of `extra`. Both installed packages are `0.66b1-4`.
+
+The unused alternatives:
+
+- Refresh the sync database and install the two packages. They then resolve
+  to `0.66b1-5` on a mirror that has that file. A database refresh changes
+  what a later install sees, so it was left unrun.
+- Install pkgrel 4 from osbeck while that mirror still has the file. The
+  next time osbeck drops pkgrel 4, that URL 404s as well.
+- A full system upgrade. That moves these two packages and every other
+  outdated package. It was not run.
+- A PKGBUILD pinned to either pkgrel. Both releases are the Arch `extra`
+  package, and pkgrel 4 is already installed from the cache.
+
+### paru selects BlackArch for boltons
+
+`paru -Sp python-boltons` prints
+`https://mirrors.dotsrc.org/blackarch/blackarch/os/x86_64/python-boltons-25.0.0-2-any.pkg.tar.zst`.
+`paru --aur -Sp python-boltons` prints that same BlackArch archive. The AUR
+package is 26.2.0-1, which is the release the Braket SDK depends on. The
+path that was used is the wheel recipe
+`~/Github/PKGBUILDs/python-boltons`, installed as `python-boltons` 26.2.0-1.
+`paru -S python-boltons` stays unused.
+
+### A newer release than paru's package
+
+When `extra` or the AUR is behind the release this stack needs, the recipe
+in `~/Github/PKGBUILDs` is the install. That is how scramp 1.4.9, pyathena
+4.2.1, redshift-connector 2.2.0, and the other local recipes landed. The
+AUR and PyPI versions that were left uninstalled are in
+[Left uninstalled](#left-uninstalled). Replacing `python-boto3` 1.43.108-1
+or installing `extra/aws-cli` 1.x is not one of those paths.
+
+### moto's server extra
+
+`/usr/bin/moto_server` imports `flask_cors` and raises
+`ModuleNotFoundError: No module named 'flask_cors'`. The `moto[server]`
+extra is not installed. `moto.mock_aws` is the in-process interface and
+does not import that module. Installing `python-flask-cors` would be what
+makes `moto_server` start. It was not installed. `moto_proxy --help` does
+run. Its options are `-H/--host`, `-p/--port`, and `-v/--verbose`. The
+proxy was not started.
+
 ## Core SDK, left at the installed release
 
 These were already installed. The PKGBUILD set does not replace them, and
@@ -146,6 +231,196 @@ outside what `awslocal` supports and that they want AWS CLI v1. The `ver1`
 extra of the distribution requires the `awscli` distribution, which is that
 v1 package and stays uninstalled. `awslocal` was not executed.
 
+## Command help
+
+Each block is what the program printed for `--help` on 2026-10-29, or the
+usage it printed when `--help` is not a flag it accepts. None of these
+commands was used to call AWS, start Docker, or start a server.
+
+### aws
+
+`aws --help` exits 252 because a command is required. The usage it prints
+is `aws [options] <command> <subcommand> [<subcommand> ...] [parameters]`,
+with further text from `aws help`, `aws <command> help`, and
+`aws <command> <subcommand> help`. The binary is AWS CLI v2. Service
+commands are that CLI's command set. `aws help` is the manual.
+
+### awslocal
+
+`awslocal -h` prints the wrapper summary. Its example is
+`awslocal kinesis list-streams` in place of
+`aws --endpoint-url=https://localhost:4568 --no-verify-ssl kinesis list-streams`.
+Subcommand help is `aws help`. The CloudFormation `package` and `deploy`
+limit is in the section above.
+
+### sam
+
+`sam --help` is the AWS SAM CLI. Commands it lists:
+
+| Group | Commands |
+|---|---|
+| Learn | `docs` |
+| Create an App | `init` |
+| Develop your App | `build`, `local`, `validate`, `sync`, `remote` |
+| Deploy your App | `package`, `deploy` |
+| Monitor your App | `logs`, `traces` |
+| And More | `list`, `delete`, `pipeline`, `publish` |
+
+Global options: `--beta-features` / `--no-beta-features`, `--debug`,
+`--version`, `--info`. The example in the help is `sam init`.
+
+`sam build --help` builds one optional `RESOURCE_LOGICAL_ID`. It names
+`AWS::Serverless::Function`, `AWS::Lambda::Function`,
+`AWS::Serverless::LayerVersion`, and `AWS::Lambda::LayerVersion`. The
+Python runtimes it lists are 3.8, 3.9, 3.10, 3.11, 3.12, and 3.13. The same
+help says SAM CLI collects telemetry unless `SAM_CLI_TELEMETRY=0`. `sam
+build` was not run.
+
+`sam validate --help` lints a template. The default file is
+`template.yaml`. The help's example is `sam validate --lint`, and it says
+the command may not require AWS credentials. It was not run.
+
+`sam local --help` has `generate-event`, `invoke`, `start-api`, and
+`start-lambda`. Those start a local runtime and were not run. `sync`,
+`deploy`, `package`, `logs`, `traces`, `remote`, `delete`, `pipeline`, and
+`publish` talk to AWS and were not run.
+
+### cfn-lint
+
+`cfn-lint --help` gives these forms:
+
+```text
+cfn-lint test.yaml
+cfn-lint -i E3012 -- test.yaml
+cfn-lint -x E3012:strict=true -t test.yaml
+cfn-lint dir/**/*.yaml
+```
+
+The flags it prints: `-t/--template`, `-b/--ignore-bad-template`,
+`--ignore-templates`, `--deployment-files`, `--parameters`,
+`--parameter-files`, `-f/--format` (`quiet`, `parseable`, `json`, `junit`,
+`pretty`, `sarif`), `-l/--list-rules`, `-r/--regions`,
+`-i/--ignore-checks`, `-c/--include-checks`, `-m/--mandatory-checks`,
+`-e/--include-experimental`, `-x/--configure-rule` as `RuleId:key=value`,
+`--config-file`, `-z/--custom-rules`, `-v/--version`, `--output-file`,
+`--merge-configs`, and `--non-zero-exit-code` (`informational`, `warning`,
+`error`, `none`). Debugging flags: `-D/--debug`, `-I/--info`,
+`-L/--list-templates`, `-a/--append-rules`, `-o/--override-spec`,
+`-g/--build-graph`, `-s/--registry-schemas`, `-u/--update-specs`. `-u`
+downloads CloudFormation specs and was not used. A local lint of a template
+file does not call AWS.
+
+### cookiecutter
+
+`cookiecutter --help` usage is
+`cookiecutter [OPTIONS] [TEMPLATE] [EXTRA_CONTEXT]...`. Flags: `-V/--version`,
+`--no-input`, `-c/--checkout`, `--directory`, `-v/--verbose`, `--replay`,
+`--replay-file`, `-f/--overwrite-if-exists`, `-s/--skip-if-file-exists`,
+`-o/--output-dir`, `--config-file`, `--default-config`, `--debug-file`,
+`--accept-hooks` (`yes`, `ask`, `no`), `-l/--list-installed`,
+`--keep-project-on-failure`. The help says `--no-input` deletes cached
+resources and redownloads them, and that it cannot be combined with
+`--replay`. `cookiecutter` was not run.
+
+### localstack
+
+`localstack --help` prints that the `localstack` CLI is deprecated in favor
+of `lstk`, then continues. Options: `-v/--version`, `-d/--debug`,
+`-p/--profile`. Commands: `auth`, `completion`, `config`, `logs`,
+`restart`, `ssh`, `start`, `status`, `stop`, `update`, `wait`. Advanced
+commands: `aws`, `dns`, `ephemeral`, `extensions`, `license`, `pod`,
+`replicator`, `state`. `/usr/bin/lstk` is not installed, so the recommended
+replacement is absent.
+
+`localstack start --help` defaults to `--docker`, which starts a container.
+`--host` is marked deprecated. Other flags: `--no-banner`, `-d/--detached`,
+`--network`, `-e/--env`, `-p/--publish`, `-v/--volume`, `--host-dns`,
+`-s/--stack` (the help's example values are `localstack:4.5` and
+`snowflake`). `start` was not run.
+
+### chevron
+
+`chevron --help` usage is
+`chevron [-h] [-v] [-d DATA] [-p PARTIALS_PATH] [-e PARTIALS_EXT] [-l DEF_LDEL] [-r DEF_RDEL] [-w] template`.
+`-d` is a JSON data file. `-p` is the partials directory. `-e` defaults to
+`mustache`. `-l` and `-r` default to `{{` and `}}`. `-w` warns on each
+undefined key.
+
+### lambda-builders
+
+`lambda-builders --help` exits 1 with `JSONDecodeError`. The program reads
+one JSON object from its first argument, or from stdin when there is no
+argument, and `json.loads` it. `--help` is not a flag. `main` accepts only
+the method `LambdaBuilder.build`. Any other `method` is JSON-RPC error
+`-32601`, "Method unavailable". The request's `params` carry
+`__protocol_version`, `capability` (`language`, `dependency_manager`,
+`application_framework`), and the build directories. SAM is the caller.
+No build request was sent.
+
+### fastavro
+
+`fastavro --help` usage is
+`fastavro [--schema] [--metadata] [--codecs] [--version] [-p] [file ...]`.
+It iterates an Avro file and emits records as JSON. `--schema` dumps the
+schema, `--metadata` dumps metadata, `--codecs` prints codecs, and
+`-p/--pretty` pretty-prints. A file named `-` reads stdin.
+
+### py-build-cmake
+
+`py-build-cmake --help` usage is `py-build-cmake [OPTIONS] COMMAND`. Global
+options: `-C/--directory`, `-B/--build-path`, `-V/--verbose`, `-n/--dry`,
+`--local`, `--cross`, `-o/--override`, `-v/--version`. `-n` prints the
+CMake command and does not run it. Commands:
+
+```text
+py-build-cmake configure [--preset PRESET] [--use-build-presets] [--index INDEX]
+py-build-cmake build [--preset PRESET] [--config CONFIG] [--index INDEX]
+py-build-cmake install [--config CONFIG] [--component COMP] [--index INDEX]
+py-build-cmake config format
+```
+
+The Ion extension was built by the recipe's PEP 517 backend. This CLI was
+not run by hand.
+
+### jsonpath_ng
+
+`jsonpath_ng --help` usage is `jsonpath_ng expression [file ...]`. With no
+files it reads stdin. The help's JSONPath summary: `$` is the root,
+`` `this` `` is the current object, `path1.path2` descends, `path1|path2`
+is a union, `path1..path2` searches in between, a bare name is a field,
+`*` is any field, `[*]` is any index, and `[_start_?:_end_?]` is a slice.
+
+### uvicorn
+
+`uvicorn --help` usage is `uvicorn [OPTIONS] APP`. Defaults it prints:
+`--host 127.0.0.1`, `--port 8000`, `--reload-delay 0.25`, `--loop auto`,
+`--http auto`, `--ws auto`, `--ws-max-size 16777216`, `--ws-max-queue 32`,
+`--ws-ping-interval 20.0`, `--ws-ping-timeout 20.0`, per-message deflate
+on, `--lifespan auto`, `--interface auto`, `--log-level info`, access log
+on, `--timeout-keep-alive 5`, `--timeout-worker-healthcheck 5`.
+`--factory` treats `APP` as a zero-argument callable. Further flags cover
+reload globs, workers, SSL, proxy headers, and concurrency limits. The
+server was not started.
+
+### dateparser-download
+
+`~/.local/bin/dateparser-download --help` and
+`/usr/bin/dateparser-download --help` print the same usage:
+`dateparser-download [--fasttext FASTTEXT] [--clear]`. `--fasttext` takes
+`small` or `large` and downloads a language-detection model. `--clear`
+clears cached models. The copy on `PATH` is the user-site script. Neither
+flag was run.
+
+### moto_proxy
+
+`moto_proxy --help` usage is `moto_proxy [-H HOST] [-p PORT] [-v]`. The
+help shows `HTTPS_PROXY=http://localhost:5005` and then an `aws` command
+with `--no-verify-ssl`. That would send the AWS call to the proxy. The
+proxy was not started. `moto_server --help` raises
+`ModuleNotFoundError: No module named 'flask_cors'` before argument
+parsing, as recorded under
+[moto's server extra](#motos-server-extra).
+
 ## dateparser
 
 `python-dateparser` 1.4.3-1 is installed and owns
@@ -163,9 +438,11 @@ The console script on both copies is
 
 ## Repository packages installed with paru
 
-These came from `extra`, or from the local package cache when the mirror had
-already moved on. Versions are the installed pacman release and the matching
-distribution version.
+These came from `extra`. The two OpenTelemetry packages came from the local
+pkgrel 4 cache, for the reason in
+[OpenTelemetry pkgrel 4 and pkgrel 5](#opentelemetry-pkgrel-4-and-pkgrel-5).
+Versions are the installed pacman release and the matching distribution
+version.
 
 ### python-aioitertools 0.13.0-2
 
@@ -337,9 +614,9 @@ ContextAPI()
 
 ### OpenTelemetry AWS packages
 
-Both are pacman `0.66b1-4`, installed from `/var/cache/pacman/pkg/` because
-the mirrors had already published pkgrel 5. A full system upgrade would move
-them. They were not upgraded.
+Both are pacman `0.66b1-4`, installed from `/var/cache/pacman/pkg/`. The
+mirror split and the unused pkgrel 5 install are in
+[OpenTelemetry pkgrel 4 and pkgrel 5](#opentelemetry-pkgrel-4-and-pkgrel-5).
 
 `python-opentelemetry-instrumentation-aws-lambda` has distribution version
 `0.66b1`. Import
@@ -1384,7 +1661,7 @@ raises `TypeError` because `qubit_count` is not a parameter of `run`.
 | AUR `python-redshift-connector` 2.1.8 | the recipe installed 2.2.0 |
 | a current `boto3-stubs` PKGBUILD | it would conflict with the installed AUR stubs |
 | `aws-sam-cli` 1.170.0 | the AUR package 1.138.0 stays |
-| OpenTelemetry pkgrel 5 | pkgrel 4 is installed from the local cache |
+| OpenTelemetry pkgrel 5 | pkgrel 4 is installed from the local cache; see [the mirror table](#opentelemetry-pkgrel-4-and-pkgrel-5) |
 | `sagemaker` 3.27.0 and `sagemaker-train`, `sagemaker-serve`, `sagemaker-mlops` | train pulls MLflow; mlops pulls `pyiceberg` |
 | `mlflow`, `mlflow-skinny`, `mlflow-tracing`, `huey`, `skops`, `pyiceberg`, `sagemaker-mlflow` | none of that closure is packaged here |
 | `lstk` | the LocalStack package ships the legacy `localstack` script only |

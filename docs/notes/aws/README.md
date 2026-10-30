@@ -16,7 +16,7 @@ it records each credit activity's $20 as a reward rather than a price.
 | Path | Content |
 |---|---|
 | [free-plan-usage.md](free-plan-usage.md) | measured plan, the five activities, always-free quantities, and credit-metered usage |
-| [python-packages.md](python-packages.md) | host Python packages for AWS: imports, public names, and what was left uninstalled |
+| [python-packages.md](python-packages.md) | host Python packages for AWS: imports, public names, mirror choices, and CLI help |
 | [aws-starter-rules.md](aws-starter-rules.md) | the Agent Toolkit's rules for the new AWS experience, verbatim at commit `e8c63094` of `aws/agent-toolkit-for-aws`, under a header naming the URL and the sha256 |
 
 ## Account, plan and spend
