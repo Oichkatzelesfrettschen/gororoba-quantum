@@ -16,6 +16,18 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/demarrais-8192d-cross-platform/pauli_propagation.py --check docs/evidence/demarrais-8192d-cross-platform/pauli-propagation.json",
+   "name": "core-demarrais-pauli-propagation-replay",
+   "seconds": 1.1,
+   "tier": "pr",
+   "workers": 1,
+   "replays": [
+    "docs/evidence/demarrais-8192d-cross-platform/pauli-propagation.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B scripts/frozen_case_sources.py --check docs/evidence/quandela/frozen-case-source-pins.json results/quandela/cases",
    "name": "core-ascella-predecessor-source-pin",
    "seconds": 0.08,

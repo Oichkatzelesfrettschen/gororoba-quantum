@@ -627,9 +627,13 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [],
+   "imported_by": [
+    "gororoba_quantum/demarrais_structures.py"
+   ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "gororoba_quantum/demarrais_structures.py"
+   ]
   },
   {
    "distribution": "cuquantum-cu11",
@@ -738,7 +742,8 @@
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
-    "scripts/qd_classical_benchmark.py"
+    "scripts/qd_classical_benchmark.py",
+    "scripts/qd_demarrais_tower.py"
    ]
   },
   {
@@ -2455,9 +2460,13 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [],
+   "imported_by": [
+    "gororoba_quantum/demarrais_structures.py"
+   ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "gororoba_quantum/demarrais_structures.py"
+   ]
   },
   {
    "distribution": "numga",
@@ -2517,6 +2526,7 @@
     "gororoba_quantum/correction_statistics.py",
     "gororoba_quantum/correction_statistics_contracts.py",
     "gororoba_quantum/crossed_tile_template.py",
+    "gororoba_quantum/demarrais_structures.py",
     "gororoba_quantum/designs.py",
     "gororoba_quantum/diagnostic_controls.py",
     "gororoba_quantum/diagnostic_experiments.py",
@@ -2708,6 +2718,7 @@
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_classical_benchmark.py",
+    "scripts/qd_demarrais_tower.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
@@ -2779,6 +2790,7 @@
     "gororoba_quantum/correction_statistics.py",
     "gororoba_quantum/correction_statistics_contracts.py",
     "gororoba_quantum/crossed_tile_template.py",
+    "gororoba_quantum/demarrais_structures.py",
     "gororoba_quantum/designs.py",
     "gororoba_quantum/diagnostic_controls.py",
     "gororoba_quantum/diagnostic_experiments.py",
@@ -2972,6 +2984,7 @@
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_classical_benchmark.py",
+    "scripts/qd_demarrais_tower.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
@@ -3784,6 +3797,7 @@
     "scripts/bdsc_packages.py",
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
+    "scripts/qd_demarrais_tower.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_platform.py",
     "scripts/qd_teleportation_rehearsal.py"
@@ -3805,6 +3819,7 @@
     "scripts/bdsc_packages.py",
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
+    "scripts/qd_demarrais_tower.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_platform.py",
     "scripts/qd_teleportation_rehearsal.py"
@@ -4447,6 +4462,7 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "gororoba_quantum/demarrais_structures.py",
     "scripts/a5_stiefel_pfaffian_germs.py",
     "scripts/a5_zero_divisor_strata.py",
     "scripts/ascella_associator_character.py",
@@ -4466,6 +4482,7 @@
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "gororoba_quantum/demarrais_structures.py",
     "scripts/a5_stiefel_pfaffian_germs.py",
     "scripts/a5_zero_divisor_strata.py",
     "scripts/ascella_associator_character.py",
@@ -4789,6 +4806,7 @@
     "scripts/primorial_probe_case.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_cancellation_cases.py",
+    "scripts/qi_demarrais_tower.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_zero_divisor_cases.py",
@@ -4949,6 +4967,7 @@
     "scripts/primorial_probe_case.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_cancellation_cases.py",
+    "scripts/qi_demarrais_tower.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_zero_divisor_cases.py",
@@ -6015,6 +6034,7 @@
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
+    "scripts/qi_demarrais_tower.py",
     "scripts/qi_mcp_server.py",
     "scripts/qi_tuna_qx_local_replay.py",
     "scripts/qx_local_series.py"
@@ -6025,6 +6045,7 @@
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
+    "scripts/qi_demarrais_tower.py",
     "scripts/qi_mcp_server.py",
     "scripts/qi_tuna_qx_local_replay.py",
     "scripts/qx_local_series.py"
@@ -8329,6 +8350,22 @@
    "qiskit",
    "rank_sector_experiments",
    "scipy",
+   "typing"
+  ],
+  "gororoba_quantum/demarrais_structures.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "cupy",
+   "dataclasses",
+   "flint",
+   "functools",
+   "math",
+   "numba",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "sys",
    "typing"
   ],
   "gororoba_quantum/designs.py": [
@@ -13606,6 +13643,22 @@
    "qd_network_protocol",
    "sys"
   ],
+  "scripts/qd_demarrais_tower.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "demarrais_structures",
+   "hypercomplex_cases",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_platform",
+   "sys",
+   "tempfile",
+   "typing"
+  ],
   "scripts/qd_mcp_server.py": [
    "__future__",
    "anyio",
@@ -13843,6 +13896,21 @@
    "sys",
    "tempfile",
    "typing"
+  ],
+  "scripts/qi_demarrais_tower.py": [
+   "__future__",
+   "argparse",
+   "demarrais_structures",
+   "hashlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "qi_platform",
+   "qiskit",
+   "qxelarator",
+   "sys",
+   "typing",
+   "warnings"
   ],
   "scripts/qi_ibm_noise_replay.py": [
    "__future__",
@@ -15480,6 +15548,9 @@
   "cqasm": [
    "libqasm"
   ],
+  "cupy": [
+   "cupy"
+  ],
   "cvxpy": [
    "cvxpy"
   ],
@@ -15527,6 +15598,9 @@
   ],
   "networkx": [
    "networkx"
+  ],
+  "numba": [
+   "numba"
   ],
   "numpy": [
    "numpy"

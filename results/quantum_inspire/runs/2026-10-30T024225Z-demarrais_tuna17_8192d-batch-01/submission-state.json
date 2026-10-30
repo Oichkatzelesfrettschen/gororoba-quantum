@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-30T02:42:30+00:00",
+ "approval": "user: 8192D decomposed exploration and lower-dim controls approved on QX (2048 shots) and Tuna-17 (75536 shots)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "83ff175559bd6a30fa57571386f998a05c492bfc2d70aff78571ee06f95451f3",
+ "shots": 75536,
+ "jobs": [
+  {
+   "file": "01-control-sedenion-pathion-32d.cq",
+   "job": 1642263,
+   "sha256": "4946599a8c81f3e38941e210d382ce84b019b355719fbcbc832db17d5ccb4b85"
+  },
+  {
+   "file": "02-control-chingon-routon-voudon-4096d.cq",
+   "job": 1642264,
+   "sha256": "517c896f7ecec86b6ad24432339663b6ac97249173dffd1d0bc7c88d0d6a190a"
+  },
+  {
+   "file": "03-dekatrisvoudon-8192d-pure-shell.cq",
+   "job": 1642265,
+   "sha256": "89f9a2a5452f4541a0bee715cb931782f2d4f8cbcdc9910e41fb493c62d4d5fc"
+  }
+ ],
+ "project": 804532,
+ "batch_job": 903631,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-30T02:42:32+00:00",
+  "approval": "user: 8192D decomposed exploration and lower-dim controls approved on QX (2048 shots) and Tuna-17 (75536 shots)",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "83ff175559bd6a30fa57571386f998a05c492bfc2d70aff78571ee06f95451f3",
+  "backend_status_at_submit": "calibrating",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 903631,
+  "project": 804532,
+  "shots": 75536,
+  "jobs": [
+   {
+    "file": "01-control-sedenion-pathion-32d.cq",
+    "job": 1642263,
+    "sha256": "4946599a8c81f3e38941e210d382ce84b019b355719fbcbc832db17d5ccb4b85"
+   },
+   {
+    "file": "02-control-chingon-routon-voudon-4096d.cq",
+    "job": 1642264,
+    "sha256": "517c896f7ecec86b6ad24432339663b6ac97249173dffd1d0bc7c88d0d6a190a"
+   },
+   {
+    "file": "03-dekatrisvoudon-8192d-pure-shell.cq",
+    "job": 1642265,
+    "sha256": "89f9a2a5452f4541a0bee715cb931782f2d4f8cbcdc9910e41fb493c62d4d5fc"
+   }
+  ],
+  "submitted_utc": "2026-10-30T02:42:32+00:00"
+ },
+ "confirmed_utc": "2026-10-30T02:42:32+00:00"
+}

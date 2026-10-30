@@ -1,0 +1,33 @@
+{
+ "schema": "qi-demarrais-tower-series-v1",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "dekavoudon-1024d-midden.cq",
+    "cowbird-mandala-1024d.cq",
+    "roundabout-dmz-1024d.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "files": [
+    "01-control-sedenion-pathion-32d.cq",
+    "02-control-chingon-routon-512d.cq",
+    "03-dekavoudon-1024d-pure-shell.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "files": [
+    "04-dekavoudon-1024d-catamaran-lanyard.cq",
+    "05-dekavoudon-1024d-dmz-shell.cq",
+    "06-dekavoudon-1024d-sleeper-null.cq"
+   ]
+  }
+ ]
+}

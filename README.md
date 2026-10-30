@@ -32,7 +32,7 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 25 |
-| exploratory reanalysis | exploratory | 97 |
+| exploratory reanalysis | exploratory | 100 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 30 |
@@ -424,6 +424,13 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00](results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00) | Quandela Cloud | photonic 16-setting octonion associator character hardware execution | qpu:ascella | 1 | 16 | completed | 1.1 credits |
 | [2026-10-29T221537Z-qpu_ascella-ascella_associator_character-job-01](results/quandela/runs/2026-10-29T221537Z-qpu_ascella-ascella_associator_character-job-01) | Quandela Cloud | photonic 21-pair octonion associator character atlas | qpu:ascella | 1 | 84 | completed | 1.1 credits |
 | [2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01](results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01) | Quandela Cloud | photonic two-photon 21-pair octonion associator character atlas | sim:ascella | 1 | 84 | completed | 1.0 credits |
+| [2026-10-30T014852Z-demarrais_qx_1024d-batch-00](results/quantum_inspire/runs/2026-10-30T014852Z-demarrais_qx_1024d-batch-00) | Quantum Inspire | DeMarrais CZ-graph Pauli propagation | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-30T015009Z-demarrais_tuna17_8192d-batch-00](results/quantum_inspire/runs/2026-10-30T015009Z-demarrais_tuna17_8192d-batch-00) | Quantum Inspire | DeMarrais CZ-graph Pauli propagation | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-30T023915Z-demarrais_qx_1024d-batch-01](results/quantum_inspire/runs/2026-10-30T023915Z-demarrais_qx_1024d-batch-01) | Quantum Inspire | DeMarrais CZ-graph Pauli propagation | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-30T024133Z-demarrais_qx_1024d-batch-02](results/quantum_inspire/runs/2026-10-30T024133Z-demarrais_qx_1024d-batch-02) | Quantum Inspire | DeMarrais CZ-graph Pauli propagation | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change |
+| [2026-10-30T024225Z-demarrais_tuna17_8192d-batch-01](results/quantum_inspire/runs/2026-10-30T024225Z-demarrais_tuna17_8192d-batch-01) | Quantum Inspire | DeMarrais CZ-graph Pauli propagation | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-30T040508Z-demarrais_tuna17_8192d-batch-02](results/quantum_inspire/runs/2026-10-30T040508Z-demarrais_tuna17_8192d-batch-02) | Quantum Inspire | DeMarrais CZ-graph Pauli propagation | tuna_17 | 3 | 3 | completed | 0 ledger change |
+| [2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4](results/quandela/runs/2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4) | Quandela Cloud | DeMarrais tower photonic quotient | sim:belenos | 1 | 24 | error | 0.0 credits |
 | [2026-10-30T045729Z-sim_belenos-box_kite_photonic_packed-job-00](results/quandela/runs/2026-10-30T045729Z-sim_belenos-box_kite_photonic_packed-job-00) | Quandela Cloud | box-kite photonic packed | sim:belenos | 1 | 6 | completed | 1.0 credits |
 | [2026-10-30T045904Z-sim_belenos-box_kite_photonic_packed-job-01](results/quandela/runs/2026-10-30T045904Z-sim_belenos-box_kite_photonic_packed-job-01) | Quandela Cloud | box-kite photonic packed | sim:belenos | 1 | 6 | completed | 1.0 credits |
 | [2026-10-30T050025Z-sim_belenos-box_kite_photonic_packed-job-02](results/quandela/runs/2026-10-30T050025Z-sim_belenos-box_kite_photonic_packed-job-02) | Quandela Cloud | box-kite photonic packed | sim:belenos | 1 | 6 | completed | 1.0 credits |
@@ -441,9 +448,9 @@ The IBM service inventory observed at 2026-10-28T00:29:17.005404+00:00 holds 43 
 
 The IBM service inventory observed at 2026-10-29T23:07:45.159780+00:00 holds 32 physical jobs with 451 settled seconds; the account then reported 451 of 600 s consumed in the rolling window ending 2026-10-29T23:07:45.079Z. That is an observation, not a current balance or an authorization.
 
-The Quantum Inspire ledger retrieved at 2026-10-28T00:24:11+00:00 lists 432 jobs with 7813120 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+The Quantum Inspire ledger retrieved at 2026-10-30T06:04:43+00:00 lists 450 jobs with 8511376 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 120 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 121 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 49 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->
