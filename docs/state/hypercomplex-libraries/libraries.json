@@ -2676,6 +2676,7 @@
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/msq_envelope_exploratory.py",
     "scripts/msq_envelope_raw_diagnostics.py",
+    "scripts/msq_reset_persistence.py",
     "scripts/msq_successor_replay.py",
     "scripts/n21_detuning_sign.py",
     "scripts/n21_dose_decisions.py",
@@ -12728,6 +12729,18 @@
    "parallel",
    "pathlib",
    "scipy",
+   "sys",
+   "typing"
+  ],
+  "scripts/msq_reset_persistence.py": [
+   "__future__",
+   "argparse",
+   "ast",
+   "collections",
+   "json",
+   "math",
+   "numpy",
+   "pathlib",
    "sys",
    "typing"
   ],

@@ -126,9 +126,13 @@ def diagnostic_main(backend: str) -> tuple[int, ...]:
 
 
 def select_extra_qubits(
-    calibration: dict[str, Any], main: tuple[int, ...] = MSQD_MAIN_QUBITS, count: int = EXTRA_COUNT
+    calibration: dict[str, Any],
+    main: tuple[int, ...] = MSQD_MAIN_QUBITS,
+    count: int = EXTRA_COUNT,
+    minimum: int | None = None,
 ) -> list[int]:
-    """The further qubits SELECTION_RULE keeps, in the order it keeps them."""
+    """The further qubits SELECTION_RULE keeps, in the order it keeps them: up to `count`, refused below `minimum`
+    diagnostic qubits in all (main and kept), which defaults to the main qubits plus all `count`."""
     graph = adjacency(calibration["edges"])
     excluded = set(calibration["excluded"])
     blocked = set(main)
@@ -146,10 +150,11 @@ def select_extra_qubits(
         blocked |= {q} | graph.get(q, set())
         if len(kept) == count:
             break
+    required = len(main) + count if minimum is None else minimum
     check(
-        len(main) + len(kept) >= DIAGNOSTIC_MIN_QUBITS,
+        len(main) + len(kept) >= required,
         f"the rule keeps {len(kept)} of {count} further qubits beside {len(main)} main ones, "
-        f"below {DIAGNOSTIC_MIN_QUBITS} diagnostic qubits",
+        f"below {required} diagnostic qubits",
     )
     return kept
 
@@ -508,7 +513,7 @@ def main(argv: list[str] | None = None) -> int:
             snapshot = live_run.take_snapshot(ibm_account.open_service(), args.backend)
         calibration = calibration_from_snapshot(snapshot)
         main = diagnostic_main(args.backend)
-        extra = select_extra_qubits(calibration, main)
+        extra = select_extra_qubits(calibration, main, minimum=DIAGNOSTIC_MIN_QUBITS)
         layout = [*main, *extra]
         faults = layout_violations(layout, calibration["edges"], set(calibration["excluded"]))
         check(not faults, "; ".join(faults))

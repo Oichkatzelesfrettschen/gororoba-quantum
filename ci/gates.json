@@ -4671,6 +4671,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/measurement_sequence_scatter.py check results/live/2026-10-29T231232.725730Z docs/evidence/measurement_sequence/scatter-floor-ibm_fez.json",
+   "name": "core-msq-scatter-floor-fez-replay",
+   "seconds": 3.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/a5_zero_divisor_strata.py --check docs/evidence/a5-zero-divisor-strata/result.json",
    "name": "core-694",
    "seconds": 9.6,
