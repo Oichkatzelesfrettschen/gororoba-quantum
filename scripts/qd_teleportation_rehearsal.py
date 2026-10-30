@@ -1470,59 +1470,64 @@ def simulated_results(manifest: Mapping[str, Any], circuit: Mapping[str, Any], v
 # ---------------------------------------------------------------- commands
 
 
-def check() -> int:
-    """Rebuild each job in memory, require the retained bytes, validate them and their derivation and body.
+def check(names: Sequence[str] | None = None) -> int:
+    """Rebuild each registered job (or the named ones) in memory, require the retained bytes, validate them and
+    their derivation and body.
 
     A job's layout must be the one its own platform read selects, and its budgets those its retained derivation and
     shot estimate give. Only DECISION_CASES carry the decision rule."""
     decided = sorted(name for name, (rule, _) in CASE_DESIGNS.items() if rule == DECISION)
     require(set(decided) <= set(DECISION_CASES), f"cases {decided} take the decision rule beyond {DECISION_CASES}")
-    for job in JOBS.values():
-        out = CASES / job.name
-        require((out / "cases.json").is_file(), f"{job.name} is registered, and its case directory has no cases.json")
-        built = documents(job)
-        require(documents(job) == built, f"{job.name}: a second build differs from the first")
-        retained = {name: (out / name).read_bytes() for name in built}
-        label = (out / "cases.json").relative_to(ROOT)
-        close(json.loads(built["cases.json"]), json.loads(retained["cases.json"]), str(label))
-        require(retained["circuit.json"] == built["circuit.json"], f"{out.relative_to(ROOT)}/circuit.json differs")
-        manifest, circuit = json.loads(retained["cases.json"]), json.loads(retained["circuit.json"])
-        validate(manifest, circuit)
-        refused = rejections(manifest, circuit)
-        t_out, dark, _ = read_perfs(json.loads((out / READ).read_text(encoding="utf-8")))
-        require(
-            choose_layout(t_out, dark) == job.request.layout, f"{job.name}: the retained read selects another layout"
-        )
-        derived = retained_derivation(job.name)
-        close(
-            justify(job.request),
-            json.loads((out / "noise-model.json").read_text(encoding="utf-8")),
-            f"{job.name}/noise-model.json",
-        )
-        require(
-            derived["samples_per_iteration"] <= job.samples,
-            f"{job.name}: {job.samples} samples per iteration are below the derived {derived['samples_per_iteration']}",
-        )
-        estimate = json.loads((out / ESTIMATE).read_text(encoding="utf-8"))
-        require(
-            estimate["samples"] == job.samples and estimate["shots_per_iteration"] == job.shots,
-            f"{job.name}: max_shots {job.shots} differs from the retained estimate's {estimate['shots_per_iteration']}",
-        )
-        require(
-            job.credit_ceiling >= PER_JOB_CREDITS + job.shots * PRICE_PER_SHOT - 1e-9,
-            f"{job.name}: the credit ceiling {job.credit_ceiling} is below the per-job price plus max_shots",
-        )
-        clock = read_perfs(json.loads((ROOT / job.request.anchor_read).read_text(encoding="utf-8")))[2]["clock_mhz"]
-        seconds = expected_seconds(derived, job.samples, clock, job.request.blocks)
-        require(
-            job.expected_seconds == seconds and seconds <= MAX_DURATION,
-            f"{job.name}: expected {job.expected_seconds} s, derived {seconds:g} s against max_duration {MAX_DURATION}",
-        )
-        print(
-            f"teleportation rehearsal {job.name}: {len(manifest['settings'])} inputs validated, cases.json "
-            f"{sha256_bytes(retained['cases.json'])}; refused {', '.join(refused)}"
-        )
+    for line in ordered_map(check_job, list(JOBS) if names is None else list(names)):
+        print(line)
     return 0
+
+
+def check_job(name: str) -> str:
+    """One registered job's check; the line reports its validated inputs and refusals."""
+    job = JOBS[name]
+    out = CASES / job.name
+    require((out / "cases.json").is_file(), f"{job.name} is registered, and its case directory has no cases.json")
+    built = documents(job)
+    require(documents(job) == built, f"{job.name}: a second build differs from the first")
+    retained = {name: (out / name).read_bytes() for name in built}
+    label = (out / "cases.json").relative_to(ROOT)
+    close(json.loads(built["cases.json"]), json.loads(retained["cases.json"]), str(label))
+    require(retained["circuit.json"] == built["circuit.json"], f"{out.relative_to(ROOT)}/circuit.json differs")
+    manifest, circuit = json.loads(retained["cases.json"]), json.loads(retained["circuit.json"])
+    validate(manifest, circuit)
+    refused = rejections(manifest, circuit)
+    t_out, dark, _ = read_perfs(json.loads((out / READ).read_text(encoding="utf-8")))
+    require(choose_layout(t_out, dark) == job.request.layout, f"{job.name}: the retained read selects another layout")
+    derived = retained_derivation(job.name)
+    close(
+        justify(job.request),
+        json.loads((out / "noise-model.json").read_text(encoding="utf-8")),
+        f"{job.name}/noise-model.json",
+    )
+    require(
+        derived["samples_per_iteration"] <= job.samples,
+        f"{job.name}: {job.samples} samples per iteration are below the derived {derived['samples_per_iteration']}",
+    )
+    estimate = json.loads((out / ESTIMATE).read_text(encoding="utf-8"))
+    require(
+        estimate["samples"] == job.samples and estimate["shots_per_iteration"] == job.shots,
+        f"{job.name}: max_shots {job.shots} differs from the retained estimate's {estimate['shots_per_iteration']}",
+    )
+    require(
+        job.credit_ceiling >= PER_JOB_CREDITS + job.shots * PRICE_PER_SHOT - 1e-9,
+        f"{job.name}: the credit ceiling {job.credit_ceiling} is below the per-job price plus max_shots",
+    )
+    clock = read_perfs(json.loads((ROOT / job.request.anchor_read).read_text(encoding="utf-8")))[2]["clock_mhz"]
+    seconds = expected_seconds(derived, job.samples, clock, job.request.blocks)
+    require(
+        job.expected_seconds == seconds and seconds <= MAX_DURATION,
+        f"{job.name}: expected {job.expected_seconds} s, derived {seconds:g} s against max_duration {MAX_DURATION}",
+    )
+    return (
+        f"teleportation rehearsal {job.name}: {len(manifest['settings'])} inputs validated, cases.json "
+        f"{sha256_bytes(retained['cases.json'])}; refused {', '.join(refused)}"
+    )
 
 
 def build(job: Job) -> int:
