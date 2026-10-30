@@ -149,8 +149,23 @@ the readout factor closes little: ibm_marrakesh qubit 47 falls from 0.509 to
 qubit 143 from 0.451 to 0.446 at r = 0.5 against 0.081. A model with one
 frequency line per qubit leaves the second line of qubit 143 and the herald
 backaction of qubit 47 outside every error factor
-(`hw-n21-q143-segmented-lines`). core-339 reads the six parts, and core-614
-(full tier) reruns the two orbit-window fits on the CPU.
+(`hw-n21-q143-segmented-lines`).
+
+`part_g.json` holds three Kingston runs, swept on the build host's CPU. The
+idle-penalty probe 2026-10-26T202817 and its repeat point 2026-10-27T160530
+(44 PUBs each, about 30 CZ per run) fit at the bottom of the CZ grid,
+c = 0.5, with r = 1.5 (bootstrap 16-84 % r from 1.5 to 2), and the fit moves
+their mean distance by only -0.0011 (standard error 0.0003) and -0.0007
+(0.0004), from 0.171 and 0.162, which stay twenty times above their resample
+floors of 0.008. Their idle budgets c_idle of 299 and 295 (`idle_budget.json`)
+measure the deliberate idle windows of the probe, which no CZ or readout
+factor stands in for. The n21 detuning-sign run 2026-10-27T173602 (56 PUBs)
+fits at the top of the CZ grid, c = 12 with r = 1.0 (grid top in 0.85 of
+bootstrap draws), lowering the mean distance from 0.182 to 0.174 (paired
+change -0.008, standard error 0.003); c = 12 is a lower bound, and the
+distance stays twelve times above the resample floor of 0.015, as on the Fez
+orbit-window runs. core-339 reads the seven parts, and core-614 (full tier)
+reruns the two orbit-window fits on the CPU.
 
 ## Prediction for sweep part a
 

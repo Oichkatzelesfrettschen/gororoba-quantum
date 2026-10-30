@@ -6408,11 +6408,11 @@
       "evidence": [
         {
           "path": "docs/evidence/ghost_runs/result.json",
-          "sha256": "7718ec59672ec6681cbb9c58d06aaf36ec1c45449c49e0b89e2e1b46291da168"
+          "sha256": "142293ae69224a80261594a547db9366fd2bad0fd8b2585d41b59a126b4fd9cf"
         },
         {
           "path": "docs/evidence/ghost_runs/report.json",
-          "sha256": "e91742aafef2659491267a9967a837748777e1903e600b776ab7376da8db5869"
+          "sha256": "85b07a3681e702b983d636e98f6437c80eeed0c9577b781b54832fa5670913de"
         },
         {
           "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db5qmqclf4us73c4e1ug",

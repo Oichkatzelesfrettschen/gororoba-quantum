@@ -110,8 +110,20 @@ backends. Both runs reproduce their recorded replays within 0.011 TV (mean
 to hardware, 0.509 and 0.451 TV, belong to a noise model with one frequency
 line per qubit (`hw-n21-q143-segmented-lines`).
 
-The current snapshots (2026-10-15) predate the execution of the eleven runs
-of 2026-10-18 to 2026-10-20, so their "current minus execution" column
+A fourth merge added three Kingston runs: the idle-penalty probe of
+2026-10-26T202817 (44 members), its first repeat point 2026-10-27T160530
+(44 members) and the n21 detuning-sign run 2026-10-27T173602 (56 members),
+each executed under its own snapshot (2026-10-26T14:25:32, 2026-10-27T09:07:55
+and 10:34:08-07:00), with 90 (run, snapshot) pairs for the Kingston runs
+already retained. The three reproduce their recorded replays to sampling
+precision (mean |ghost - recorded| 0.0063, 0.0063 and 0.0068 TV over 1364,
+1320 and 1064 replica pairs, against 0.0060, 0.0063 and 0.0069 between two
+ghost draws), and their execution-state distances to hardware are 0.171,
+0.162 and 0.182 TV. Every retained Kingston calibration moves their
+predicted distance by at most 0.0104 TV.
+
+The current snapshots (2026-10-15) predate the 16 runs executed
+from 2026-10-18 to 2026-10-27, so their "current minus execution" column
 compares an older calibration with the one they ran under, and the report
 keeps them out of its correlations (`executed_after_current`). The
 correlations therefore cover the 14 kernel runs: readout +0.32, and CZ
