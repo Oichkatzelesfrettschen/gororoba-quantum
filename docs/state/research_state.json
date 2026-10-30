@@ -13414,7 +13414,7 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "A simulator reproduces the preregistered ideals; it carries no device error, so it qualifies the packed case and the analysis rather than the chip. Four of the 16 half blocks sit 2.1 to 2.6 standard errors from 1/2, all but one below, which bounds the simulator's own sampling bias at the 0.012 scale.",
+      "boundary": "A simulator reproduces the preregistered ideals; it carries no device error, so it qualifies the packed case and the analysis rather than the chip. Under the binomial standard error at 1/2 over each block's one-click samples, 3 of the 16 half blocks lie beyond two standard errors (+2.56, +2.71 and -2.20) and the largest deviation is 0.0149; this is descriptive sampling scatter, not a bound on simulator bias.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-30T045729Z-sim_belenos-box_kite_photonic_packed-job-00/analysis.json",
@@ -13484,7 +13484,7 @@
     },
     {
       "id": "qd-qpu-belenos-packed-dark-bright-contrast",
-      "statement": "On qpu:belenos the same six packed jobs (60000 shots per job, the last 20000) read the 8 dark blocks at a = 0.005 to 0.050 (mean 0.033) and the 8 bright blocks at a = 0.863 to 0.994 (mean 0.960), so the t sign flip that turns each zero product x y = 0 into a bright product moves the algebra fraction by 0.93 on average against the ideal 1; the 16 half blocks read 0.405 to 0.619 (mean 0.511) against 1/2, departing up to 23 standard errors.",
+      "statement": "On qpu:belenos the same six packed jobs (60000 shots per job, the last 20000) read the 8 dark blocks at a = 0.005 to 0.050 (mean 0.033) and the 8 bright blocks at a = 0.863 to 0.994 (mean 0.960), so the t sign flip that turns each zero product x y = 0 into a bright product moves the algebra fraction by 0.93 on average against the ideal 1; the 16 half blocks read 0.405 to 0.619 (mean 0.511) against 1/2, up to 19.8 binomial standard errors from 1/2.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
