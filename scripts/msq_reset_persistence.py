@@ -16,8 +16,9 @@ Per qubit and pooled the result reports:
 - the coincidence: shots holding two or more events across qubits, against independent qubits.
 
 A record whose collect.json carries the successor analysis (`pattern_crosscheck`, `screens`, `qubits`) also gets the
-cross-shot model (pattern-row carryover against reset residue times persistence: chi-square with no fitted parameter
-on one degree of freedom per qubit, and at the best common scale on one fewer), the residue's
+cross-shot model (pattern-row carryover against reset residue times persistence: squared residuals in units of the
+observed standard error, as predicted and at the best common scale; the prediction's own sampling error is not
+propagated, so the scores are descriptive and calibrate no p value), the residue's
 dependence on 1/T1, and the partial correlation of the measure arm's N = 16 transition excess with persistence given
 the in-run assignment error and 1/T1, with each carrier left out and with every carrier left out. Small fits run in
 pure Python, so the bytes do not depend on the BLAS build.
