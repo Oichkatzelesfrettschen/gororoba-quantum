@@ -360,6 +360,14 @@ output through `cell.model.outputs.toJSON()`.
    account's one TPU batch slot, so a second TPU push is refused until it
    ends; cancelling a queued version to try the other TPU type presumably
    starts its wait over (inferred: Kaggle shows no queue position).
+1a. A push refused with "Maximum batch TPU session count of 1 reached"
+   while no TPU session runs means a queued version holds the slot. The
+   API status of an ended kernel can stay at `CANCEL_ACKNOWLEDGED` after the
+   web UI shows it cancelled, and `kaggle kernels status` reports a queued
+   version the API cannot cancel. Deleting the queued kernel from its page
+   in the web UI frees the slot, and the next push is accepted (observed
+   2026-10-29; the freed slot then queued again, so it proves the slot
+   rule, not TPU assignment).
 2. `kaggle kernels pull -m OWNER/SLUG` seconds after the push names an
    image; every CPU session here showed `gcr.io/kaggle-images/python`
    there, and what it shows for a real TPU VM is unobserved, so it is a hint

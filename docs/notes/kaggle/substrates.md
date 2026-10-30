@@ -37,6 +37,33 @@ Kaggle session with the build host.
 | CPU + GPU + TPU at once | not inside one Kaggle session | across sessions: Kaggle GPU kernels for Aer, a Kaggle TPU session for CPU-heavy Aer or JAX, the build host for dry runs, calibration exports and replay gates |
 | Any of the above + IBM | only after an approved case | IBM answers device questions; every substrate above feeds its design, never its result |
 
+## Weekly budget and tandem capacity
+
+Kaggle meters GPU and TPU time per account per week and caps live batch
+sessions per pool; the two limits are independent
+([workflow.md](workflow.md) holds the session-count messages). The MCP call
+`get_accelerator_quota` returns the weekly allowance, the time used and
+`quota_refresh_time`, and `kaggle quota` prints the same numbers.
+
+| Pool | Weekly allowance | Live batch sessions | Per session |
+| --- | --- | --- | --- |
+| CPU | unmetered | 5, shared with TPU requests | 4 cores, about 30 GiB RAM, 19.5 GiB `/kaggle/working`, 12 h run limit |
+| GPU (T4 x2, P100, L4 shapes) | 30 h (108,000 s) | 2 | 4 cores, about 29 GiB RAM beside the accelerator |
+| TPU (`TpuV5E8`, `TpuV6E8`) | 20 h (72,000 s) | 1 | v5e-8 VM; no repository run has yet reached it (see [tpu-research.md](tpu-research.md)) |
+
+The quota refreshes weekly at Saturday 00:00 UTC, which is Friday 17:00
+Pacific daylight time (PDT, UTC-7) and, after daylight time ends on the
+first Sunday of November, Friday 16:00 Pacific standard time (PST, UTC-8).
+Unused hours do not carry over.
+
+Run in tandem, one account holds at most eight live sessions: five CPU
+sessions (one fewer per live TPU request), two GPU sessions and one TPU
+session, each with its own 4-core host or TPU VM. A classical algebra job
+that needs RAM rather than an accelerator gains only from the hosts: a CPU
+or GPU session gives about 30 GiB and 4 cores, so jobs larger than that
+stay on the build host (62 GiB) or an approved cloud VM, and GPU hours spent
+on CPU-only work buy nothing a CPU session lacks.
+
 ## Qubit size guide
 
 Exact state memory is 16 x 2^n bytes for a double-precision statevector,
