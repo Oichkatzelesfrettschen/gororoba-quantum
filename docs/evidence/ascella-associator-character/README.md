@@ -102,3 +102,31 @@ The experiment ran across 16 settings (4 primary triads: (1, 2), (1, 4), (2, 4),
 | `results.json` | `80b4709a777908b62f9eca572b23d38afe9ffecbb14a05ab1e0d66c85a398732` |
 | `raw/result.json` | `95add14dd8ab58020c497a427b51f5be3034df2e841f638cf62a6b9048f84e16` |
 | `analysis_report.json` | `1d751b0c4f5296d63b05dc580842ab64277528421cb0d873ae3451081728edd5` |
+
+---
+
+## 5. Full 21-Pair Octonion Character Atlas on `qpu:ascella` (`job-01`)
+
+The complete 21-pair Octonion Character Atlas was executed across 84 settings (all $\binom{7}{2} = 21$ imaginary unit pairs in $\mathbb{O}$ across 4 sign arms each) on physical hardware `qpu:ascella`:
+
+- **Job ID:** `e6b9cb57-0709-46e9-8222-88a58c832698`
+- **Execution Duration:** 248 seconds on physical quantum hardware.
+- **Physical Samples Collected:** 840,000 single-photon detection events.
+- **Execution Verdict:** `ADMITTED`.
+- **Mean Character Contrast:** $\bar{\Delta}_{\text{char}} = \mathbf{1.997448} \pm 0.0005$ across all 21 pairs (99.87% of theoretical maximum).
+- **Sentinel Mode Leakage (Modes 8..11):** Bounded at $1.3156\%$.
+- **Fano Plane Bijection:** Every pair $(a, b)$ projected onto its unique projective line mode $\omega \in \mathbb{F}_2^3 \setminus \{0\}$ with contrast $\Delta \ge 1.993$.
+
+### Checksum Ledger (`job-01`)
+
+| File Path | SHA256 Hash |
+|---|---|
+| `cases.json` | `b33ac230f9847ab9616d41e248d444e1622d8b2fc57ff2aef76c334557f9faef` |
+| `circuit.json` | `8d05c0fcf57c7a2a3a5c7933d5c6ad128d4970cf4119598b4ea0c84bf2795fa2` |
+| `job-body.json` | `615bdc7f7ec86c250827cce9e8a0399eb6d8a7d5bbb0b20718d5fb2465812366` |
+| `submission.json` | `5a755af2da87266edc4d129616df40a157302e7587e13359360281c0ba3bef73` |
+| `submission-state.json` | `cc6069337c9b1edc01133771f229b091dab949ec1097cfcd7697d1416b54c589` |
+| `results.json` | `0d48b4d921cf58212e0385362465186632f88d11c9b059bd0a9c28081e1899fc` |
+| `raw/result.json` | `e59f18aa36b3d6accb539b5c5c81d4babe4cecc71cc7347620753788edc9204a` |
+| `analysis_report.json` | `e2a26c0e66e5f11b70aba800f1e1cf23f4422e8067736a0caf0c48258735f037` |
+

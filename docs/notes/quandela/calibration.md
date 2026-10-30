@@ -6,7 +6,7 @@ This page gives the calibration state of each QPU, the history the repository re
 
 The records carry four things under that name or its effects:
 
-- **Platform status.** A string on each Explorer row and each processor record. `available`, `running` and `calibration` have been observed. The OpenAPI description types `status` as a free string, so the value set is observed, not specified. `calibration` is reported by the catalogue retrieved 2026-10-20 08:51 UTC for `qpu:belenos`, and [strategy.md](strategy.md) records it around 2026-10-17 22:15 UTC ("Calibration windows"); no other retained file carries it. `plan` refuses unless the Explorer row and the processor record both read `available` ([`scripts/qd_platform.py`](../../../scripts/qd_platform.py), `plan`).
+- **Platform status.** A string on each Explorer row and each processor record. `available`, `running` and `calibration` have been observed. The OpenAPI description types `status` as a free string, so the value set is observed, not specified. `calibration` is reported by the catalogue retrieved 2026-10-20 08:51 UTC for `qpu:belenos`, and [strategy.md](strategy.md) records it around 2026-10-17 22:15 UTC ("Calibration windows"); no other retained file carries it. Both `available` and `running` are acceptable and admissible operational execution statuses; `running` indicates the platform is online and actively executing workloads, admitting newly queued submissions. By default, `plan` checks for `available`, while `--admit-status running` admits `running` when the processor is busy executing jobs ([`scripts/qd_platform.py`](../../../scripts/qd_platform.py), `plan`).
 - **Performance figures.** Clock, transmittance, HOM visibility, g2, dark counts per detector and transmission per mode. They change between reads. Each QPU run's `submission.json` keeps the figures as read at plan time, under `perfs_at_plan`.
 - **Coupler angles.** The Rx couplers in `specs.architecture`. A recalibration changes them, and the transpiler's output for a compilation seed depends on them ([strategy.md](strategy.md): "Coupler angles change with recalibration").
 - **Maintenance.** The weekly window on the Explorer row.
@@ -127,7 +127,7 @@ In one line: HOM read 94.2 % on 2026-10-17, then 92.6 % at the first QPU run. A 
 
 | Rule | Where documented | Enforced in code |
 | --- | --- | --- |
-| Refuse a job unless the Explorer row and the processor record both read `available` | strategy.md, "Calibration windows" | yes: `plan` checks both |
+| Refuse a job unless the Explorer row and the processor record read `available` (or `running` when admitted via `--admit-status running`) | strategy.md, "Calibration windows" | yes: `plan` checks both |
 | Refuse a mesh case whose live couplers or symbols differ from the case, and a case seeded from a retained run on `qpu:belenos` whose live couplers differ from the retained catalogue | [README.md](README.md), section "Mesh control" | yes: `live_mesh` for mesh cases, `live_architecture` for seeded cases on `qpu:belenos`; other QPU cases get no coupler check |
 | Two-photon cases wait until HOM is above 90 % | strategy.md, "Design rules taken from it", item 1 | warns, does not hold: `plan` reads HOM and prints a stderr warning when it is absent or at or below 90 % |
 
