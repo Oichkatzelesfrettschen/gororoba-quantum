@@ -10,7 +10,8 @@ through the [kernel-attachments ledger](../a5-kernel-attachments/README.md).
 Every file of the working directory is retained, with home paths written `~`, the session scratch directory
 `SCRATCH`, session identifiers `SESSION` or `UUID`, and the build host's name and owner handles replaced. Files
 above 50 MB are split into 45 MB parts named `FILE.part00`, `FILE.part01`, ...; `cat FILE.part* > FILE` restores
-the original bytes. The split files are listed in [split.txt](split.txt).
+the original bytes. The split files are listed in [split.txt](split.txt). `sh retain_working.sh SOURCE_DIR` applies the same scrub and
+split and copies every file whose scrubbed bytes differ from the retained copy (`--dry-run` lists them).
 
 | Path under `working/` | Content |
 |---|---|
