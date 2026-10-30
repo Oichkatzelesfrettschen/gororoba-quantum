@@ -1,6 +1,6 @@
 # Kaggle competition requirements and deadlines
 
-This note records, for nine Kaggle competitions, what each one requires of a
+This note records, for ten Kaggle competitions, what each one requires of a
 participant, when each deadline falls, and what its prizes and judging rules
 say. The text comes from each competition's Overview, Rules, Evaluation,
 Timeline, Prizes, Data and Code Requirements pages as the Kaggle MCP server
@@ -26,10 +26,11 @@ authenticated account.
 | [ARC Prize 2026, ARC-AGI-2](https://www.kaggle.com/competitions/arc-prize-2026-arc-agi-2) | no | 2026-10-26 (closed) | 2026-10-26 (closed) | 2026-11-02 | $700,000 |
 | [ARC Prize 2026, Paper Track](https://www.kaggle.com/competitions/arc-prize-2026-paper-track) | yes | 2026-11-09 | 2026-11-09 | 2026-11-09 | $75,000 plus a bonus of up to $375,000 |
 | [Gemma 4 Developer Agent, Paper Track](https://www.kaggle.com/competitions/gemma-4-developer-agent-paper) | yes | 2026-11-12 | 2026-11-12 | 2026-11-12 | $35,000 |
-| [Gemma 4 Developer Agent](https://www.kaggle.com/competitions/gemma-4-developer-agent) | no | 2026-11-25 | 2026-11-25 | 2026-12-02 | $65,000 plus a $10,000 small-model bonus |
-| [Enveda CASMI 2026, Molecule ID From Mass Spectra](https://www.kaggle.com/competitions/enveda-CASMI26-molecule-id-mass-spectra) | no | 2026-12-07 | 2026-12-07 | 2026-12-14 | $50,000 |
+| [Gemma 4 Developer Agent](https://www.kaggle.com/competitions/gemma-4-developer-agent) | yes | 2026-11-25 | 2026-11-25 | 2026-12-02 | $65,000 plus a $10,000 small-model bonus |
+| [Enveda CASMI 2026, Molecule ID From Mass Spectra](https://www.kaggle.com/competitions/enveda-CASMI26-molecule-id-mass-spectra) | yes | 2026-12-07 | 2026-12-07 | 2026-12-14 | $50,000 |
+| [Google Quantum AI, Verifiable Quantum Circuit Compilation](https://www.kaggle.com/competitions/google-verifiable-quantum-circuit-compilation) | yes | 2027-01-13 | 2027-01-13 | 2027-01-20 | $150,000 |
 | [NFL Big Data Bowl 2027](https://www.kaggle.com/competitions/nfl-big-data-bowl-2027) | yes | 2027-01-06 | 2027-01-06 | 2027-01-06 | $100,000 |
-| [Squares in Squares](https://www.kaggle.com/competitions/squares-in-squares) | no | 2027-07-11 | 2027-07-11 | 2027-07-18 | $50,000 |
+| [Squares in Squares](https://www.kaggle.com/competitions/squares-in-squares) | yes | 2027-07-11 | 2027-07-11 | 2027-07-18 | $50,000 |
 
 The ARC-AGI-3 and ARC-AGI-2 entry deadlines passed on 2026-10-26, so the
 authenticated account cannot enter either one. The ARC Paper Track requires a
@@ -45,11 +46,50 @@ state no entry deadline (the Squares in Squares Timeline page prints the
 unrendered template tokens `${competition.ProhibitNewEntrantsExplicitDeadline}`
 and `${competition.TeamMergerExplicitDeadline}` in their place).
 
-Entry order by urgency: Playground S6E10 (2026-10-31), the ARC Paper Track
-(2026-11-09), the Gemma 4 Developer Agent Paper Track (2026-11-12), the Gemma 4
-Developer Agent (2026-11-25), Enveda CASMI 2026 (2026-12-07), the NFL Big Data
-Bowl 2027 (entered already; writeup due 2027-01-06), and Squares in Squares
-(2027-07-11).
+## Entry audit
+
+The search group `Entered` lists every competition the authenticated account
+has joined; the audit ran on 2026-10-30 and returned seven. The `deadline`,
+`new_entrant_deadline`, `team_count` and `max_daily_submissions` fields below
+come from that listing.
+
+| Entered competition | Teams | Daily submissions | Team size | Last day to enter | Final deadline | Action that remains |
+| --- | --- | --- | --- | --- | --- | --- |
+| ARC Prize 2026, Paper Track | 355 | 5 | 8 | 2026-11-09 | 2026-11-09 | Submit one writeup; it needs a prior ARC-AGI-2 or ARC-AGI-3 submission and a matching team. |
+| Gemma 4 Developer Agent, Paper Track | 429 | 5 | 5 | 2026-11-12 | 2026-11-12 | Submit one research-paper writeup. |
+| Gemma 4 Developer Agent | 4,210 | 1 | 5 | 2026-11-25 | 2026-12-02 | Submit `submission.zip` with `agent.yaml`; teams merge until 2026-11-25. |
+| Enveda CASMI 2026 | 4,398 | 5 | 5 | 2026-12-07 | 2026-12-14 | Submit a notebook (a code competition); teams merge until 2026-12-07. |
+| Google Quantum AI, Verifiable Quantum Circuit Compilation | 1,703 | 5 | 5 | 2027-01-13 | 2027-01-20 | Submit a zip of three circuit sets; the milestone prize closes 2026-11-20. |
+| NFL Big Data Bowl 2027 | 446 | 5 | 5 | 2027-01-06 | 2027-01-06 | Submit one writeup. |
+| Squares in Squares | 1,282 | 10 | 5 | 2027-07-11 | 2027-07-18 | Submit a CSV; the three-month cutoff is 2027-01-17. |
+
+The account has not entered three of the competitions this note covers:
+Playground Series S6E10 (open until 2026-10-31, the day its submissions also
+close), and ARC-AGI-3 and ARC-AGI-2 (closed to new entrants on 2026-10-26).
+Entering Playground S6E10 stays possible for one more day, and its final
+submission deadline is the same day, so a late entry leaves no room for a
+second attempt.
+
+`search_competition_submissions` returned an empty result for each of the seven
+entered competitions with the groups `All` and sorting by date. An empty result
+reports no listed submission and does not distinguish a competition with no
+submissions from a tool that cannot see them, so the submission counts stay
+unverified; read the Submissions tab of each competition on kaggle.com.
+
+The audit also found one competition outside the original list: the Google
+Quantum AI Verifiable Quantum Circuit Compilation competition, which the
+account has entered. Its section below records its rules. Its timeline holds
+the nearest unmet milestone of the seven, the Mid-Competition Milestone Prize
+cutoff on 2026-11-20.
+
+Deadline order across the seven entered competitions: ARC Paper Track
+(2026-11-09), Gemma 4 Developer Agent Paper Track (2026-11-12), Quantum AI
+mid-competition milestone (2026-11-20), Gemma 4 Developer Agent entry cutoff
+(2026-11-25) and final (2026-12-02), Enveda entry cutoff (2026-12-07) and final
+(2026-12-14), Quantum AI longest-leader cutoff (2027-01-04), NFL Big Data Bowl
+2027 (2027-01-06), Quantum AI entry cutoff (2027-01-13), Squares three-month
+cutoff (2027-01-17), Quantum AI final (2027-01-20), and the Squares final
+(2027-07-18).
 
 ## Rules common to every competition
 
@@ -446,6 +486,56 @@ perpetual, worldwide license to the participant's name, voice, image and
 likeness in recordings; the commercial software exception covers software the
 sponsor can procure for no more than a prize amount; and the Final Submission
 selection allows one submission.
+
+## Google Quantum AI, Verifiable Quantum Circuit Compilation
+
+Sponsor: Google LLC. Category: Featured with a $150,000 prize pool, awarding
+points and medals. Format: submit a zip archive of kickmix circuits that a
+verifier simulates and a metric notebook scores. The task needs no quantum
+hardware and no training data; the competition's own framing is a closed loop of
+AI coding agents, classical optimization and a verifier.
+
+| Item | Requirement |
+| --- | --- |
+| Task | Shrink three fault-tolerant subroutines written as kickmix circuits (reversible classical gates, diagonal phase gates and measurement-based uncomputation), which the open-source kickmix library in Qualtran fuzz-tests on classical inputs. |
+| Task `invsqrt` (fusion energy) | Map `|x>|0>` to `exp(2 pi i / sqrt(x)) |x>|0>` for every `x` from 1 to 3,133,452 in a 22-qubit register `x`; 64 tests per input; every phase within `2^-24 / sqrt(x)` turns. Cost is qubits times Toffoli-equivalents (Toffolis plus T gates divided by 4). |
+| Task `dqi` (combinatorial optimization) | A reversible decoder for the Reed-Solomon code RS(4095, 4025) over GF(2^12), with syndromes in registers `S0` to `S69` and a classical record in `E0` to `E4094`; 102,400 test shots, failures allowed. Cost is `R(eps_plus) * Q^2 * T` with a repetition factor that grows with the failure rate. |
+| Task `dfthcsos` (quantum chemistry) | Circuits that load the Givens-rotation angles of a factorized FeMoCo Hamiltonian plus `submission.npz` holding the factorization and the Givens tree. A circuit wider than 128 qubits, an encoded Hamiltonian more than 20 mHa from the reference, a normalization above 49.0 or a gap at or below 3.914898 Ha rejects the submission. |
+| Score | The geometric mean over the three tasks of the baseline cost divided by the submission cost; the reference submission scores 1.0 and higher is better. |
+| Submission file | A zip containing `invsqrt.kmb` or `.kmx`, `dqi.kmb` or `.kmx`, and a folder `dfthcsos` with `angle_k_0` to `angle_k_<n-1>` (numbered without gaps, each `.kmb` or `.kmx`) plus `submission.npz` (`U`, `W`, `H2_I`, `H1_I`, `Hsym_lower`, `tree_edges`). |
+| Scoring time | About 45 minutes per submission. |
+| Files | `verifiable_circuit_compilation.pdf` (the paper, arXiv 2610.23832), `sample_submission/`, `verifiers/` (each task's verifier and reference-circuit script), `kickmix/` (the simulator `kickmix.so` for the Kaggle notebook image). A separate starter-kit dataset builds a complete `dfthcsos` submission. |
+| Metric implementation | The `metric/google-quantum-ai-metric` notebook on Kaggle. |
+| Daily submissions | 5 per day. |
+| Final submissions | 2 selected for judging. |
+| Team size | 5 at most; mergers allowed while the combined submission count stays within days run times 5. |
+| Start | 2026-10-22. |
+| Mid-Competition Milestone Prize cutoff | 2026-11-20. |
+| Longest Leader Prize period ends | 2027-01-04. |
+| Entry and team merger deadline | 2027-01-13. |
+| Final submission deadline | 2027-01-20. |
+
+Verification seeds each test from a hash of the submission plus a secret salt,
+so any change to a circuit draws fresh tests and no hidden test set exists.
+
+Prizes: leaderboard first $50,000, second $25,000, third $10,000, fourth,
+fifth and sixth $5,000 each; additional prizes total $50,000. The Mid-Competition
+Milestone Prize ($10,000) goes to the highest public leaderboard score at the
+2026-11-20 cutoff and needs a public notebook kept public until the final
+deadline. The Longest Leader Prize ($10,000) goes to the team whose notebooks
+hold the best leaderboard score for the longest time between the start and
+2027-01-04, with the notebooks and datasets public by that date. The three
+Single Task Performance Prizes pay $10,000 each for the best selected score on
+`invsqrt`, `dqi` and `dfthcsos`. Winner license: Apache 2.0 for the submission
+and its source code, with an exception for input data or pretrained models under
+an incompatible license. Data license: Apache 2.0, and the data may serve
+commercial and non-commercial use. A winner delivers training and inference
+code, a description of the computational environment, and signed prize
+documents with U.S. tax forms.
+
+The Data page states that the kickmix library is to move to PyPI and leave the
+competition dataset, and that the metric will then read the PyPI copy; recheck
+the Data page for the library source before pinning a version.
 
 ## Not read
 
