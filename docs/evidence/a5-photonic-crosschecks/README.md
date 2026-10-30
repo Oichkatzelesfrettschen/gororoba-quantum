@@ -73,3 +73,5 @@ With system Python selected as `PYTHON`, the project TLS setting and the recorde
 The [Ascella kernel-slice case](../../design/ascella-a5-kernel-slice.md) retains a [simulator analysis](ascella-simulator-kernel-slice.json) and a [hardware analysis](ascella-hardware-kernel-slice.json). Both jobs return 60,000 events. The six hardware conditional branch fractions are 0.513568, 0.002622, 0.998198, 0.001953, 0.999700 and 0.518652 in request order. The analysis records sentinel and invalid events separately. The slice does not establish full operator nullity or physical nonassociativity.
 
 The [pooled replay record](pooled-result.json) preserves the [serial replay record](result.json); their scientific fields match while their producer digests identify different implementations. The serial producer remains available in the parent commit.
+
+The [pooled spectrum record](pooled-spectrum-result.json) binds the pooled replay; the [original spectrum record](spectrum-result.json) remains unchanged. The spectra match apart from producer and replay digests.

@@ -17,7 +17,7 @@ from replay import WITNESSES  # noqa: E402
 import cd_core  # noqa: E402
 import parallel  # noqa: E402
 
-RECORD = Path(__file__).with_name("spectrum-result.json")
+RECORD = Path(__file__).with_name("pooled-spectrum-result.json")
 
 
 def witness_spectrum(item: tuple) -> dict:
