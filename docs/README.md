@@ -418,6 +418,7 @@ differs from it only in the `cd_core.py` digest.
 |---|---|
 | [build_host/custatevec.md](notes/build_host/custatevec.md) | cuStateVec in the host Aer build |
 | [build_host/python-stack.md](notes/build_host/python-stack.md) | build-host Python stack |
+| [competition-requirements.md](notes/kaggle/competition-requirements.md) | entry status, deadlines, submission formats, scoring, limits prizes and the entry audit of ten Kaggle competitions |
 | [jax-bridge-structure-report.md](notes/kaggle/jax-bridge-structure-report.md) | JAX bridge sweep, export once per structure |
 | [simulation-cost-levers.md](runbooks/simulation-cost-levers.md) | planner, ghost replay and package costs |
 | [compute-flags.md](runbooks/compute-flags.md) | pre-run flag review: memory caps, threads and solver options for Singular and msolve |

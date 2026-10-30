@@ -13,6 +13,7 @@ Kaggle kernels run every simulation of 14 qubits or fewer (root AGENTS.md,
 | [hypercomplex-stack.md](hypercomplex-stack.md) | the eight hypercomplex packages built and proved identically on the host and in every kernel |
 | [interfaces.md](interfaces.md) | every CLI command, kagglesdk method and MCP tool, mapped onto shared operations; which call addresses which kernel version, where a session id comes from, how a session is cancelled; accelerator fields, authentication and the host's MCP permission policy |
 | [tpu-research.md](tpu-research.md) | every TPU request route measured on this account, the server record of each version, the markers that decide whether a session is a TPU VM, the root-cause analysis and its sources, and the push procedure |
+| [competition-requirements.md](competition-requirements.md) | entry status, deadlines, submission formats, scoring, limits, prizes and licenses of ten Kaggle competitions (Playground S6E10, ARC Prize 2026 ARC-AGI-3, ARC-AGI-2 and Paper Track, Gemma 4 Developer Agent and its Paper Track, Enveda CASMI 2026, NFL Big Data Bowl 2027, Squares in Squares, Google Quantum AI Verifiable Quantum Circuit Compilation), read from the competition pages |
 | [libraries.md](libraries.md) | the Kaggle PyPI packages: kaggle, kagglesdk and kagglehub as installed Arch packages with their recipes and run examples, the packages left out and why, and what a kernel image carries |
 
 ## Captured Kaggle documentation
