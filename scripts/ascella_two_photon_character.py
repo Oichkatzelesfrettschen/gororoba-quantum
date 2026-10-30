@@ -649,6 +649,7 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     contrasts_summary = {}
     displacing_contrasts = []
     stabilizer_persistences = []
+    null_contrasts: list[float] = []
 
     for pair_key, arm_map in pair_contrasts.items():
         parts = pair_key.split("_")
@@ -670,23 +671,32 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         else:
             delta = d_oct - d_ctrl
             displacing_contrasts.append(delta)
-            contrasts_summary[pair_key] = {
+            summary = {
                 "type": "displacing",
                 "omega": om,
                 "d_octonion": round(d_oct, 6),
                 "d_clifford_control": round(d_ctrl, 6),
                 "delta_character": round(delta, 6),
             }
+            if "diagonal_null" in arm_map:
+                null_contrasts.append(d_oct - arm_map["diagonal_null"])
+                summary["d_diagonal_null"] = round(arm_map["diagonal_null"], 6)
+                summary["delta_versus_null"] = round(d_oct - arm_map["diagonal_null"], 6)
+            contrasts_summary[pair_key] = summary
 
     mean_delta = float(np.mean(displacing_contrasts)) if displacing_contrasts else 0.0
     mean_stabilizer = float(np.mean(stabilizer_persistences)) if stabilizer_persistences else 0.0
+    # An algebra-specific signal must separate the octonion arm from the diagonal null as well as from the control.
+    mean_versus_null = float(np.mean(null_contrasts)) if null_contrasts else None
+    signal = mean_delta > 1.5 and (mean_versus_null is None or mean_versus_null > 1.5)
 
     return {
         "status": "ADMITTED",
         "verdicts": {
             "execution_status": "ADMITTED",
-            "character_signal_detected": bool(mean_delta > 1.5),
+            "character_signal_detected": bool(signal),
             "mean_displacing_contrast": round(mean_delta, 6),
+            "mean_contrast_versus_null": None if mean_versus_null is None else round(mean_versus_null, 6),
             "mean_stabilizer_persistence": round(mean_stabilizer, 6),
             "sentinel_leakage_rate": round(observed_sentinel_rate, 6),
         },

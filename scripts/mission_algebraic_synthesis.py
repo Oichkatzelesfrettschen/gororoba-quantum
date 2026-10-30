@@ -23,6 +23,7 @@ from typing import Any
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
+RUNS = ROOT / "results/quandela/runs"
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
@@ -222,15 +223,17 @@ def synthesize_missions(
     dyadic_summary = evaluate_2adic_ultrametric_geometry()
 
     # 2. Ingest Mission 1 physical hardware data
-    m1_report_path = ROOT / "results/quandela/cases/ascella_associator_character/job-01/analysis_report.json"
+    m1_report_path = (
+        RUNS / "2026-10-29T221537Z-qpu_ascella-ascella_associator_character-job-01" / "analysis_report.json"
+    )
     m1_data = json.loads(m1_report_path.read_text()) if m1_report_path.exists() else None
 
     # 3. Ingest Mission 2 twin simulator data
-    m2_sim_path = ROOT / "results/quandela/cases/ascella_two_photon_character/sim-01/analysis_report.json"
+    m2_sim_path = RUNS / "2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01" / "analysis_report.json"
     m2_sim_data = json.loads(m2_sim_path.read_text()) if m2_sim_path.exists() else None
 
     # 4. Ingest Mission 2 physical hardware data (if collected)
-    m2_qpu_path = ROOT / "results/quandela/cases/ascella_two_photon_character/job-01/analysis_report.json"
+    m2_qpu_path = RUNS / "2026-10-29T230909Z-qpu_ascella-ascella_two_photon_character-job-01" / "analysis_report.json"
     m2_qpu_data = json.loads(m2_qpu_path.read_text()) if m2_qpu_path.exists() else None
 
     # 5. Bootstrap of the admitted Mission 1 pair contrasts, on their own scale

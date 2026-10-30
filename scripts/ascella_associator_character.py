@@ -571,26 +571,36 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     # Compute contrast Delta_char = D_oct - D_ctrl for each pair
     contrasts_summary = {}
     all_contrasts = []
+    null_contrasts: list[float] = []
     for pair_key, arm_map in pair_contrasts.items():
         d_oct = arm_map.get("octonion", 0.0)
         d_ctrl = arm_map.get("clifford_control", 0.0)
         delta = d_oct - d_ctrl
-        contrasts_summary[pair_key] = {
+        summary = {
             "d_octonion": round(d_oct, 6),
             "d_clifford_control": round(d_ctrl, 6),
             "delta_character": round(delta, 6),
         }
+        if "diagonal_null" in arm_map:
+            null_contrasts.append(d_oct - arm_map["diagonal_null"])
+            summary["d_diagonal_null"] = round(arm_map["diagonal_null"], 6)
+            summary["delta_versus_null"] = round(d_oct - arm_map["diagonal_null"], 6)
+        contrasts_summary[pair_key] = summary
         all_contrasts.append(delta)
 
     mean_delta = float(np.mean(all_contrasts))
     sentinel_rate = observed_sentinel_rate
+    # An algebra-specific signal must separate the octonion arm from the diagonal null as well as from the control.
+    mean_versus_null = float(np.mean(null_contrasts)) if null_contrasts else None
+    signal = mean_delta > 1.5 and (mean_versus_null is None or mean_versus_null > 1.5)
 
     return {
         "status": "ADMITTED",
         "verdicts": {
             "execution_status": "ADMITTED",
-            "character_signal_detected": bool(mean_delta > 1.5),
+            "character_signal_detected": bool(signal),
             "mean_character_contrast": round(mean_delta, 6),
+            "mean_contrast_versus_null": None if mean_versus_null is None else round(mean_versus_null, 6),
             "sentinel_leakage_rate": round(sentinel_rate, 6),
         },
         "contrasts_by_pair": contrasts_summary,

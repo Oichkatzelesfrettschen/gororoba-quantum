@@ -233,3 +233,19 @@ def test_sentinel_leakage_above_the_preregistered_limit_refuses(tmp_path: Path) 
         raise AssertionError(f"{verdicts['admission_errors']}")
     if verdicts["mean_displacing_contrast"] is not None or verdicts["mean_stabilizer_persistence"] is not None:
         raise AssertionError("a refused report carries admitted-only metrics")
+
+
+def test_a_null_arm_that_reproduces_the_signal_withholds_it(tmp_path: Path) -> None:
+    docs = build_documents(samples_per_iteration=10000, shots_factor=1, job_name="job-null", all_pairs=True)
+    (tmp_path / "cases.json").write_bytes(docs["cases.json"])
+    iterations = []
+    for s in json.loads(docs["cases.json"].decode())["settings"]:
+        routed = s["focal_pair"] if s["arm"] in ("octonion", "reversed", "diagonal_null") else s["control_pair"]
+        state = [0] * MODES
+        state[routed[0]] += 1
+        state[routed[1]] += 1
+        iterations.append({"setting": s["name"], "counts": {f"|{','.join(map(str, state))}>": 10000}})
+    (tmp_path / "results.json").write_text(json.dumps({"iterations": iterations}))
+    verdicts = analyze(tmp_path)["verdicts"]
+    if verdicts["character_signal_detected"] or verdicts["mean_contrast_versus_null"] != 0.0:
+        raise AssertionError(f"a null reproducing the focal routing still reports a signal: {verdicts}")

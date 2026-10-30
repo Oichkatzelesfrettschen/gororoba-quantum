@@ -104,9 +104,9 @@ Both planned campaigns were executed on physical quantum processor hardware (`qp
   - Pair (1, 4) [target mode 2]: $D_{\text{oct}} = +0.997393$, $D_{\text{ctrl}} = -0.999194$, $\Delta_{\text{char}} = 1.996587$; Unconditional mode fidelity: $99.60\%$ (oct), $99.18\%$ (ctrl).
   - Pair (2, 4) [target mode 1]: $D_{\text{oct}} = +0.996378$, $D_{\text{ctrl}} = -0.999197$, $\Delta_{\text{char}} = 1.995575$; Unconditional mode fidelity: $99.22\%$ (oct), $99.59\%$ (ctrl).
   - Pair (3, 5) [target mode 7]: $D_{\text{oct}} = +0.998166$, $D_{\text{ctrl}} = -0.999799$, $\Delta_{\text{char}} = 1.997966$; Unconditional mode fidelity: $98.08\%$ (oct), $99.72\%$ (ctrl).
-  - Unconditional Mode Fidelity: Evaluated across all 12 detected output modes, raw target-mode fidelity spans $98.03\%$ to $99.78\%$ (mean $99.22\%$ across all 16 settings; mean $98.99\%$ across the 8 octonion settings).
+  - Unconditional Mode Fidelity: Evaluated across all 12 detected output modes, raw target-mode fidelity spans $98.03\%$ to $99.78\%$ (mean $99.22\%$ across all 16 settings; $98.08\%$ to $99.60\%$, mean $98.75\%$, across the 4 octonion-arm settings).
   - Routing Noise & Leakage: Sentinel leakage across uncoupled chip modes 8..11 is $0.004888$ ($< 0.49\%$), while cross-talk into non-target logical modes 0..7 accounts for $\approx 0.76\%$, explaining the raw fidelity difference from the normalized $\{0, \omega\}$ conditional subspace.
-- **Hardware Qualification Verdict:** **ADMITTED**. Confirms that the encoded octonion character routes constructively into the predicted harmonic mode on physical quantum hardware with $98.10\%$ to $99.60\%$ raw unconditional mode fidelity on canonical octonion settings and $> 1.995$ conditional contrast on $\{0, \omega\}$.
+- **Hardware Qualification Verdict:** **ADMITTED**. Confirms that the encoded octonion character routes constructively into the predicted harmonic mode on physical quantum hardware with $98.08\%$ to $99.60\%$ raw unconditional mode fidelity on the octonion-arm settings and $> 1.995$ conditional contrast on $\{0, \omega\}$.
 
 ---
 
