@@ -46,13 +46,20 @@ LAGS = (0, 1, 2, 10, 100)
 CARRIER_PERSISTENCE = 0.1
 
 
+def decode(bitstrings: list[str]) -> np.ndarray:
+    """One register's shot-ordered bit strings as integers."""
+    return np.array([int(bits, 2) for bits in bitstrings])
+
+
 def registers(path: Path) -> dict[str, np.ndarray]:
-    """Every classical register of one raw PUB file as an integer array over shots."""
+    """Every classical register of one raw PUB file as an integer array over shots, decoded register by register
+    through the pool in register order."""
     data = json.loads(path.read_text())
     regs = data["registers"]
     if isinstance(regs, str):
         regs = ast.literal_eval(regs)
-    return {name: np.array([int(bits, 2) for bits in body["bitstrings"]]) for name, body in regs.items()}
+    names = list(regs)
+    return dict(zip(names, ordered_map(decode, [regs[name]["bitstrings"] for name in names], min_items=2), strict=True))
 
 
 def rate(successes: int, trials: int) -> dict[str, Any]:
