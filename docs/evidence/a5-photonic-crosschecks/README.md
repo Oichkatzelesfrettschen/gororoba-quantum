@@ -28,7 +28,7 @@ chi_C(lambda) = lambda (lambda^2 + Q)^3
                 (lambda^4 + 2 Q lambda^2 + G)^2.
 ```
 
-The quartic contributes three independent coefficient terms: `1`, `2Q` and `G`. The equalities `Q=G=0` alone do not determine the kernel dimension. The [exact replay](replay.py) computes multiplication with `cd_core`, checks matrix ranks independently with FLINT and SymPy, and evaluates the invariants; these are four finite witnesses, not a new classification theorem.
+The quartic contributes three independent coefficient terms: `1`, `2Q` and `G`. The equalities `Q=G=0` alone do not determine the kernel dimension. The [exact replay](a5_photonic_replay.py) computes multiplication with `cd_core`, checks matrix ranks independently with FLINT and SymPy, and evaluates the invariants; these are four finite witnesses, not a new classification theorem.
 
 | A5 input | Q | Delta | G | Nullity of L_y | Squared singular values and multiplicities |
 | --- | ---: | ---: | ---: | ---: | --- |
@@ -68,10 +68,12 @@ The following are design candidates, not approved submissions:
 
 ## Replay
 
-With system Python selected as `PYTHON`, the project TLS setting and the recorded two-worker, single-BLAS-thread limits, run `"$PYTHON" docs/evidence/a5-photonic-crosschecks/replay.py --check` and `"$PYTHON" docs/evidence/a5-photonic-crosschecks/spectrum.py --check`. The records bind the producer and `cd_core` source digests. The mutation removes the qutrit phase and must fail the exact basis-overlap check.
+With system Python selected as `PYTHON`, the project TLS setting and the recorded two-worker, single-BLAS-thread limits, run `"$PYTHON" docs/evidence/a5-photonic-crosschecks/a5_photonic_replay.py --check` and `"$PYTHON" docs/evidence/a5-photonic-crosschecks/spectrum.py --check`. The records bind the producer and `cd_core` source digests. The mutation removes the qutrit phase and must fail the exact basis-overlap check.
 
 The [Ascella kernel-slice case](../../design/ascella-a5-kernel-slice.md) retains a [simulator analysis](ascella-simulator-kernel-slice.json) and a [hardware analysis](ascella-hardware-kernel-slice.json). Both jobs return 60,000 events. The six hardware conditional branch fractions are 0.513568, 0.002622, 0.998198, 0.001953, 0.999700 and 0.518652 in request order. The analysis records sentinel and invalid events separately. The slice does not establish full operator nullity or physical nonassociativity.
 
 The [pooled replay record](pooled-result.json) preserves the [serial replay record](result.json); their scientific fields match while their producer digests identify different implementations. The serial producer remains available in the parent commit.
 
 The [pooled spectrum record](pooled-spectrum-result.json) binds the pooled replay; the [original spectrum record](spectrum-result.json) remains unchanged. The spectra match apart from producer and replay digests.
+
+The [named-source spectrum record](named-source-spectrum-result.json) binds the uniquely named replay module and preserves both earlier spectrum records.

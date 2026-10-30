@@ -1,5 +1,7 @@
 # Quantum experiment conformance evidence
 
+The [Ascella queue-admission source replay](ascella-queue-admission-source-replay.json) binds the changed platform client to the unchanged campaign bytes.
+
 The [Ascella worker-command source replay](ascella-worker-command-source-replay.json)
 binds the current platform worker-command restoration to the unchanged Qiskit 2.6.1 campaign bytes.
 The [Ascella predecessor source replay](ascella-predecessor-source-replay.json)

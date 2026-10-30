@@ -12,12 +12,12 @@ import sympy as sym
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
-from replay import WITNESSES  # noqa: E402
+from a5_photonic_replay import WITNESSES  # noqa: E402
 
 import cd_core  # noqa: E402
 import parallel  # noqa: E402
 
-RECORD = Path(__file__).with_name("pooled-spectrum-result.json")
+RECORD = Path(__file__).with_name("named-source-spectrum-result.json")
 
 
 def witness_spectrum(item: tuple) -> dict:
@@ -50,7 +50,7 @@ def result() -> dict:
     return {
         "schema": "a5-witness-squared-spectra-v1",
         "producer_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-        "replay_sha256": hashlib.sha256(Path(__file__).with_name("replay.py").read_bytes()).hexdigest(),
+        "replay_sha256": hashlib.sha256(Path(__file__).with_name("a5_photonic_replay.py").read_bytes()).hexdigest(),
         "cd_core_sha256": hashlib.sha256((ROOT / "gororoba_quantum/cd_core.py").read_bytes()).hexdigest(),
         "witnesses": parallel.ordered_map(witness_spectrum, list(WITNESSES), min_items=1),
         "boundary": "Exact classical matrix spectra; LCU probabilities assume the stated normalization.",
