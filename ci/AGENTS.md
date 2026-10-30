@@ -21,7 +21,7 @@ per native library, `GOROROBA_PINS_REQUIRED=1`):
   kaggle_kernel/;
 - `types` runs mypy over the same directories from gororoba_quantum/;
 - `tests` runs `pytest -n auto --dist loadgroup -m "not audit"` over tests/
-  under a 4-minute step timeout and writes the 25 slowest tests to the job
+  under a 5-minute step timeout and writes the 25 slowest tests to the job
   summary;
 - `gates` diffs the head from its merge base with main and runs, through
   `ci/run_gates.py --affected-by`, every gate of at most 15 measured seconds
@@ -400,7 +400,7 @@ on every pull request. The rules that keep that run small:
 - Cases that differ in kind are `pytest.mark.parametrize` rows of one test;
   a numeric sweep belongs in an audit test.
 - The job summary lists the 25 slowest tests. Hosted pytest time at about
-  2 minutes is the point to shrink or mark tests, well inside the 4-minute
+  2 minutes is the point to shrink or mark tests, well inside the 5-minute
   step timeout; the PR job adds no coverage or other plugin.
 The audit gates select by path and ignore the marker, so they still run every
 marked test. In the audit, gate core-615 runs `pytest -n auto --dist
