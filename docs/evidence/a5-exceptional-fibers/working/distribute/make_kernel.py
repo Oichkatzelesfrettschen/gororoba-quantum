@@ -150,6 +150,8 @@ PLAN = {
                             chain_job("xp_p2", f"{P2}/xp-np.sing", 32029, [2, 3], 5 * H)]),
     "a5-p2-iso": (False, [chain_job("iso_p2", f"{P2}/iso-np.sing", 32029, [2, 3], 10 * H)]),
     "a5-p2-w8": (True, [chain_job("w8_p2", f"{P2}/w8-nm.sing", 32029, [2, 3], 10 * H)]),
+    "a5-xm-d4": (False, [chain_job("xm_p1", f"{P1}/xm-nm.sing", 32009, [2, 3, 4], 10 * H)]),
+    "a5-iso-d4": (False, [chain_job("iso_p1", f"{P1}/iso-np.sing", 32009, [2, 3, 4], 10 * H)]),
     "a5-e8-d2": (True, [chain_job("e8np_p2", f"{P2}/e8-np.sing", 32029, [2], 8 * H),
                         chain_job("e8nm_p2", f"{P2}/e8-nm.sing", 32029, [2], 8 * H),
                         chain_job("e8nm_p1", f"{P1}/e8-nm.sing", 32009, [2], 8 * H)]),
