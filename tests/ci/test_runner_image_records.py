@@ -285,6 +285,7 @@ def test_a_declared_directory_stands_for_each_file_unless_exempt(tmp_path: Path)
         raise AssertionError(found)
 
 
+@pytest.mark.audit
 def test_digest_follows_the_ledger_arithmetic_not_the_gate_environment() -> None:
     with TemporaryDirectory() as directory:
         root = Path(directory)
