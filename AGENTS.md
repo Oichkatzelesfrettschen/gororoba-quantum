@@ -408,7 +408,11 @@ code-review quota, the owner decides how the PR proceeds.
 
 **One round, per PR:**
 1. Wait until the Codex review completes: its summary stops reading
-   Running. Then read every unresolved thread
+   Running. `scripts/codex_review_wait.sh PR DEADLINE LOG` waits on the
+   review and the checks and repeats a request once when a round shows no
+   result after 600 s, since up to one request in seven gets no result from the
+   service ([codex-review-stalls.md](docs/runbooks/codex-review-stalls.md)).
+   Then read every unresolved thread
    in full from `codex_review_status.sh` or the GraphQL thread connection.
    Threads can arrive between rounds and attach to the newest commit, so the
    open-thread list,
