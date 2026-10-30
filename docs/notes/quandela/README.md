@@ -358,6 +358,23 @@ unpublished method enters a Quandela job only with that use accepted.
   and `raw/result.json` byte for byte. scripts/research_state.py reads every
   run through `qd_platform.run_facts` as the `quandela` provider.
 
+The token's provider limits and the repository runner's admission rule are
+separate. The recorded provider limits allow one running job and one queued
+job on the same token. A `running` platform status describes the platform,
+while `num_concurrent_jobs` and `num_jobs_in_queue` describe this token. The
+limits do not establish whether a particular submission starts immediately,
+enters the queue, or is accepted when the queue is already full. Check the
+live counters and the provider's response for that submission.
+
+`qd_platform.py plan` and `submit` currently require both token counters to
+be zero. This repository rule is stricter than the provider's recorded
+capacity: the runner refuses a second case even when one job is running and
+the provider reports an empty queue. The Ascella predecessor case also freezes
+that single-job condition. Using the provider's queue capacity for that case
+requires a revised case and runner admission policy that preserve the token
+lock, reviewed submission binding, cost ceiling and one-attempt guard. A busy
+token does not authorize cancellation of another job.
+
 ## Runner
 
 ```sh

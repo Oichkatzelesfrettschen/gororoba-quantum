@@ -410,6 +410,10 @@ processor record. A running platform can queue an approved job; platform
 occupancy does not establish the token's occupancy or the job's start time.
 Both planning and submission pass `--admit-status running`. The token must
 remain free of running and queued jobs under the existing single-job case policy.
+The [Quandela runner guidance](../notes/quandela/README.md#use-in-this-repository)
+distinguishes that case rule from the provider's separate running and queued
+job limits. A successor that uses those limits needs a revised admission policy
+and a newly bound review packet.
 
 The retained [admission observation](../evidence/ascella-predecessor-admission/plan-status.json)
 records a refusal under the earlier available-only policy. Its bytes remain
@@ -437,6 +441,8 @@ passes with Explorer `running`, processor `available`, and zero token running
 or queued jobs. The estimate is 262,144 shots and 1.032768 credits. The
 observation binds the recorded case and source digests; a later submission
 refreshes all admission checks and requires exact owner approval.
+
+<a id="procedure-after-exact-owner-approval"></a>
 
 ## Successor admission procedure
 
