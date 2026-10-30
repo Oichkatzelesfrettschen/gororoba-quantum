@@ -554,7 +554,7 @@ def test_submit_reads_the_platform_first_and_retains_the_admitting_model(
         calls.append("submit")
         if case_dir != run or platform != rehearsal.PLATFORM or not approval:
             raise AssertionError((case_dir, platform, approval))
-        if args != (2.2, 120.0, rehearsal.PER_JOB_CREDITS):
+        if args != (2.2, 120.0, rehearsal.PER_JOB_CREDITS, rehearsal.ADMIT_STATUSES):
             raise AssertionError(args)
         verify({"body": load("job-body.json")})
         return {"job_id": "job-id", "platform": platform}
@@ -1056,7 +1056,8 @@ def test_break_even_ratio_bisects_the_box_bound(monkeypatch: pytest.MonkeyPatch)
         raise AssertionError("a lower bound above the ceiling's bound reports the ceiling")
 
 
-def test_a_descriptive_case_admits_only_its_prepared_read(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_a_descriptive_case_admits_a_live_record_inside_its_budget(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(rehearsal, "ITERATION_SECONDS", 1.0)
     read = json.loads((ROOT / rehearsal.ANCHOR_READ).read_text(encoding="utf-8"))["processors"][rehearsal.PLATFORM]
     request = rehearsal.Request(
         "job-01", rehearsal.LAYOUT, rehearsal.JOB_01_COMPILATION_SEEDS, rehearsal.ANCHOR_READ, rehearsal.DESCRIPTIVE, 2
@@ -1067,5 +1068,27 @@ def test_a_descriptive_case_admits_only_its_prepared_read(monkeypatch: pytest.Mo
     changed = copy.deepcopy(read["perfs"])
     changed["g2 (%)"] = changed["g2 (%)"] + 0.1
     moved = rehearsal.model_at(changed, request)
-    if moved["inside_justified_range"] or "differs from the prepared read" not in rehearsal.admission_failure(moved):
+    if not moved["inside_justified_range"] or moved["perfs_sha256"] == moved["prepared_perfs_sha256"]:
         raise AssertionError(moved)
+    hot = copy.deepcopy(read["perfs"])
+    hot["Dark counts (detection/s)"][rehearsal.LAYOUT[0]] = rehearsal.DARK_LIMIT + 1.0
+    refused = rehearsal.model_at(hot, request)
+    if refused["inside_justified_range"] or "dark rate" not in rehearsal.admission_failure(refused):
+        raise AssertionError(refused)
+    slow = copy.deepcopy(read["perfs"])
+    slow["Clock (MHz)"] = slow["Clock (MHz)"] / 100.0
+    late = rehearsal.model_at(slow, request)
+    if late["inside_justified_range"] or "max_duration" not in rehearsal.admission_failure(late):
+        raise AssertionError(late)
+
+
+def test_a_twelve_iteration_case_exceeds_the_observed_iteration_rate() -> None:
+    read = json.loads((ROOT / rehearsal.ANCHOR_READ).read_text(encoding="utf-8"))["processors"][rehearsal.PLATFORM]
+    request = rehearsal.Request(
+        "job-01", rehearsal.LAYOUT, rehearsal.JOB_01_COMPILATION_SEEDS, rehearsal.ANCHOR_READ, rehearsal.DESCRIPTIVE, 2
+    )
+    model = rehearsal.model_at(read["perfs"], request)
+    if model["inside_justified_range"] or model["expected_seconds"] <= rehearsal.MAX_DURATION:
+        raise AssertionError(model)
+    if "max_duration" not in rehearsal.admission_failure(model):
+        raise AssertionError(rehearsal.admission_failure(model))

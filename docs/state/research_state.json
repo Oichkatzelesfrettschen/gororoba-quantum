@@ -2788,6 +2788,13 @@
       "question": "Does the frozen Ascella predecessor case, with only its job name and platform changed to sim:ascella, return eight complete iterations whose signed target-slot contrasts the frozen analyzer's checks accept, so the pipeline's zero-memory contrast level is known before the QPU run?"
     },
     {
+      "id": "qd-qpu-belenos-teleportation-rehearsal-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01",
+      "family": "single-chip teleportation rehearsal on a recovered chip",
+      "question": "How often does an accepted event of twelve independently compiled known-input teleportation circuits decode to the input's eigenvalue on a recovered qpu:belenos, with an anytime-valid lower bound?"
+    },
+    {
       "id": "qd-ascella-predecessor-current-schema",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-schema",
@@ -14019,6 +14026,57 @@
       "acquisitions": [
         "fez-measurement-sequence-successor"
       ]
+    },
+    {
+      "id": "qd-belenos-teleportation-rehearsal-job-01",
+      "statement": "The single-chip teleportation rehearsal on a recovered qpu:belenos, job 708bb40d-78d1-4903-9d61-e38705b85465 submitted 2026-10-30 20:23:48 UTC (live HOM 87.1 %, g2 1.3 %, transmittance 4.99 %, model pooled fidelity 0.8407), started 12.6 s after creation and was canceled by the service at its 300 s maximum duration (reported duration 318 s, progress 0.917) after 11 of 12 iterations. It returned 13,200 of the 14,400 requested samples, billed its full 4.2-credit ceiling (qpu:belenos usage 62.90742 to 67.10742) and left the final iteration (+Z, block B) without counts. Over 1262 accepted events the pooled accepted-event correctness reads 0.802 (1012 correct) with an anytime-valid lower bound of 0.759 at alpha 0.01. The preregistered rule treats the partial job as descriptive and inconclusive, evaluates neither classical comparison, and flags the blocks as different for inputs +X, +Y, -X and -Y (p 7.5e-4 down to 3.8e-7); the in-situ fit and the exploratory Cayley-Dickson lens report no algebra-specific separation.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One partial job on one chip in one calibration state. A stop chosen by the service may depend on the outcomes, so the lower bound is a descriptive figure and not a verdict; the 300 s limit exceeded the expected 240 s of the seconds model, which therefore underestimates this chip, and the case ran under the budget-based admission of an unreviewed branch and under the admitted status running. The 0.759 bound lies above the 0.75 two-copy classical value, but that comparison needs a complete run and a homogeneous block pair, and neither holds here.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01/results.json",
+          "sha256": "57517c6cd1bb62ed9dab3650bfca4581c91dc3af4d716971a150dc97a04c71ec"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01/raw/result.json",
+          "sha256": "1d12b83eb0e157a189532521b1107688f6eeab245b353fe309d5eb9556aa03e9"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01/submission.json",
+          "sha256": "83c0d53ee9b1dd5a3d229d0d826c30c75dd8f3355f3885d76aee60485d1a5af8"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01/submit-model.json",
+          "sha256": "e33562928d60356cfd251cce34470cfc19df08582eccc65fcd7f98c6f8265574"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01/analysis.json",
+          "sha256": "2e98222575669288a61227ed053c22d3b310d08bb3d0e89c3c85e78f5c7275a3"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01/secondary-analysis.json",
+          "sha256": "f589f2d582b4e5126b3c32ce2e3c0b4d2159fa734544c05ac9d91ade1a523bd3"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-belenos-entanglement-teleportation.md",
+        "scripts/qd_teleportation_rehearsal.py",
+        "scripts/qd_rehearsal_secondary.py"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-teleportation-rehearsal-job-01"
+      ],
+      "assumptions": [
+        "The preregistered rule of the descriptive-v2 analysis binds each result iteration to its setting by circuit parameters and compilation seed."
+      ],
+      "depends_on": [
+        "qd-belenos-teleportation-rehearsal-job-00"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     },
     {
       "id": "ascella-predecessor-current-target-slot-response",

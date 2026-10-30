@@ -128,6 +128,12 @@ Q0, Q1, A0, A1, B0, B1, H0, H1 = range(LOGICAL)
 SOURCES = (Q0, A0, B0)
 MIN_CLICKS = 3
 MAX_DURATION = 300
+# The Explorer row of qpu:belenos reads running while other jobs execute, and a job planned under it queues; the plan
+# and the submission admit it beside available.
+ADMIT_STATUSES = ("running",)
+# Provider seconds per template iteration of these circuits: job-01 ran 11 iterations in the 300 s the service allows,
+# so the figure bounds the rate from below, and an admission that needs more seconds than iterations take refuses.
+ITERATION_SECONDS = 27.3
 PER_JOB_CREDITS = 1.0
 PRICE_PER_SHOT = 1e-6
 TOLERANCE = 1e-12
@@ -1639,7 +1645,12 @@ def live_model(request: Request | None = None) -> dict[str, Any]:
 
 def model_at(perfs: Mapping[str, Any], request: Request | None = None) -> dict[str, Any]:
     """The noise model's pooled fidelity at one processor record's perfs object, against the justified mean score of
-    the case `request` (job-00 unless named, the case scripts/qd_record_watch.py gates on)."""
+    the case `request` (job-00 unless named, the case scripts/qd_record_watch.py gates on).
+
+    A descriptive case holds its lower bound at any accepted count, so its admission re-evaluates only what the frozen
+    budget depends on: no mode of the layout reads a dark rate above DARK_LIMIT, and the larger of expected_seconds at
+    the live clock and per-input sample probabilities and the iterations at ITERATION_SECONDS each stays within
+    MAX_DURATION."""
     request = request or REQUESTS["job-00"]
     figures = {
         "hom": perfs["HOM (%)"] / 100.0,
@@ -1661,22 +1672,34 @@ def model_at(perfs: Mapping[str, Any], request: Request | None = None) -> dict[s
     from qd_record_watch import digest
 
     prepared = json.loads((ROOT / request.anchor_read).read_text(encoding="utf-8"))["processors"][PLATFORM]["perfs"]
+    probability = {s["label"]: row["sample_probability"] for s, row in zip(settings, rows, strict=True)}
+    samples = int(retained_derivation(request.name)["samples_per_iteration"])
+    modeled = expected_seconds({"sample_probability": probability}, samples, perfs["Clock (MHz)"], request.blocks)
+    seconds = max(modeled, float(math.ceil(len(settings) * ITERATION_SECONDS)))
+    dark = perfs["Dark counts (detection/s)"]
+    hot = [mode for mode in request.layout if dark[mode] > DARK_LIMIT]
     record.update(perfs_sha256=digest(perfs), prepared_perfs_sha256=digest(prepared))
-    record["inside_justified_range"] = record["perfs_sha256"] == record["prepared_perfs_sha256"]
+    record.update(expected_seconds=seconds, dark_modes_above_limit=hot)
+    record["inside_justified_range"] = not hot and seconds <= MAX_DURATION
     return record
 
 
 def admission_failure(model: Mapping[str, Any]) -> str:
     """Why a model record refuses admission: the decision rule's pooled fidelity below its mean score, or a live
-    performance record that differs from a descriptive case's prepared read."""
+    performance record that breaks a descriptive case's layout dark-rate rule or its seconds limit."""
     if "mean_score" in model:
         return (
             f"model pooled fidelity {model['pooled_fidelity']:.4f} is below the justified mean score "
             f"{model['mean_score']}"
         )
+    if model["dark_modes_above_limit"]:
+        return (
+            f"layout modes {model['dark_modes_above_limit']} read a dark rate above {DARK_LIMIT:g} per second "
+            f"in the live performance record {model['perfs_sha256'][:12]}"
+        )
     return (
-        f"the live performance record {model['perfs_sha256'][:12]} differs from the prepared read "
-        f"{model['prepared_perfs_sha256'][:12]}"
+        f"the live performance record {model['perfs_sha256'][:12]} puts the case's expected "
+        f"{model['expected_seconds']:g} s above max_duration {MAX_DURATION} s"
     )
 
 
@@ -1731,7 +1754,7 @@ def planned(job: Job, out: Path, suffix: str, model: dict[str, Any]) -> int:
     mean score both refuse: the preregistered budget assumes the pooled fidelity of the noise model, so a plan
     at figures below it is no admission."""
     try:
-        checked = plan(out, PLATFORM, job.credit_ceiling, job.expected_seconds, PER_JOB_CREDITS)
+        checked = plan(out, PLATFORM, job.credit_ceiling, job.expected_seconds, PER_JOB_CREDITS, ADMIT_STATUSES)
     except PlatformError as error:
         return retain_refusal(job, out, suffix, model, str(error))
     if not model["inside_justified_range"]:
@@ -1769,9 +1792,11 @@ def staged(run: Path) -> Job:
 
 
 def binding(job: Job, admitted: dict[str, Any]) -> Callable[[dict[str, Any]], None]:
-    """The verify step: the planned body is the retained body beyond process_id, and the live record admits the case
-    (the decision rule's pooled fidelity at the live figures reaches F*; a descriptive case's live perfs equal its
-    prepared read). The model of an admitted request lands in `admitted`."""
+    """The verify step: the planned body is the retained body beyond process_id, and the live record admits the case.
+
+    The decision rule admits when its pooled fidelity at the live figures reaches F*; a descriptive case admits when
+    its layout keeps the dark-rate rule and its expected seconds stay within max_duration at the live record. The
+    model of an admitted request lands in `admitted`."""
     out = CASES / job.name
 
     def bound(checked: dict[str, Any]) -> None:
@@ -1809,6 +1834,7 @@ def send(run: Path, approval: str, anchor: bool = False) -> int:
             job.credit_ceiling,
             job.expected_seconds,
             PER_JOB_CREDITS,
+            ADMIT_STATUSES,
             verify=binding(job, admitted),
         )
     gate = {
