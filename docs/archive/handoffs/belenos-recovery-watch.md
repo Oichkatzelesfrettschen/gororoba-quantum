@@ -127,7 +127,7 @@ holds the question, the preregistration rule and the six-step procedure. The fac
   (`CASE_DESIGNS`).
   - The descriptive rule's analysis writes schema `qd-teleportation-analysis-v2`, and binds result iterations by
     circuit parameters and compilation seed.
-  - Its `binding` gate admits a live performance record that keeps the layout's dark-rate rule and the expected seconds within `max_duration`.
+  - Its `binding` gate admits a live performance record that keeps the layout's dark-rate rule and the expected seconds, floored at 27.3 s per iteration, within `max_duration`.
   - `scripts/qd_rehearsal_secondary.py` binds the same way.
 - `--prepare job-01` derives the layout, `noise-model.json` and `shot-estimate.json` from
   `results/quandela/cases/teleportation_rehearsal/job-01/platform-read/catalogue.json`, prints the forecast, then

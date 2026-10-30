@@ -131,6 +131,9 @@ MAX_DURATION = 300
 # The Explorer row of qpu:belenos reads running while other jobs execute, and a job planned under it queues; the plan
 # and the submission admit it beside available.
 ADMIT_STATUSES = ("running",)
+# Provider seconds per template iteration of these circuits: job-01 ran 11 iterations in the 300 s the service allows,
+# so the figure bounds the rate from below, and an admission that needs more seconds than iterations take refuses.
+ITERATION_SECONDS = 27.3
 PER_JOB_CREDITS = 1.0
 PRICE_PER_SHOT = 1e-6
 TOLERANCE = 1e-12
@@ -1645,8 +1648,9 @@ def model_at(perfs: Mapping[str, Any], request: Request | None = None) -> dict[s
     the case `request` (job-00 unless named, the case scripts/qd_record_watch.py gates on).
 
     A descriptive case holds its lower bound at any accepted count, so its admission re-evaluates only what the frozen
-    budget depends on: no mode of the layout reads a dark rate above DARK_LIMIT, and expected_seconds at the live
-    clock and per-input sample probabilities stays within MAX_DURATION."""
+    budget depends on: no mode of the layout reads a dark rate above DARK_LIMIT, and the larger of expected_seconds at
+    the live clock and per-input sample probabilities and the iterations at ITERATION_SECONDS each stays within
+    MAX_DURATION."""
     request = request or REQUESTS["job-00"]
     figures = {
         "hom": perfs["HOM (%)"] / 100.0,
@@ -1670,7 +1674,8 @@ def model_at(perfs: Mapping[str, Any], request: Request | None = None) -> dict[s
     prepared = json.loads((ROOT / request.anchor_read).read_text(encoding="utf-8"))["processors"][PLATFORM]["perfs"]
     probability = {s["label"]: row["sample_probability"] for s, row in zip(settings, rows, strict=True)}
     samples = int(retained_derivation(request.name)["samples_per_iteration"])
-    seconds = expected_seconds({"sample_probability": probability}, samples, perfs["Clock (MHz)"], request.blocks)
+    modeled = expected_seconds({"sample_probability": probability}, samples, perfs["Clock (MHz)"], request.blocks)
+    seconds = max(modeled, float(math.ceil(len(settings) * ITERATION_SECONDS)))
     dark = perfs["Dark counts (detection/s)"]
     hot = [mode for mode in request.layout if dark[mode] > DARK_LIMIT]
     record.update(perfs_sha256=digest(perfs), prepared_perfs_sha256=digest(prepared))

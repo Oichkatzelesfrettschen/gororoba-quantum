@@ -1056,7 +1056,8 @@ def test_break_even_ratio_bisects_the_box_bound(monkeypatch: pytest.MonkeyPatch)
         raise AssertionError("a lower bound above the ceiling's bound reports the ceiling")
 
 
-def test_a_descriptive_case_admits_a_live_record_inside_its_budget() -> None:
+def test_a_descriptive_case_admits_a_live_record_inside_its_budget(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(rehearsal, "ITERATION_SECONDS", 1.0)
     read = json.loads((ROOT / rehearsal.ANCHOR_READ).read_text(encoding="utf-8"))["processors"][rehearsal.PLATFORM]
     request = rehearsal.Request(
         "job-01", rehearsal.LAYOUT, rehearsal.JOB_01_COMPILATION_SEEDS, rehearsal.ANCHOR_READ, rehearsal.DESCRIPTIVE, 2
@@ -1079,3 +1080,15 @@ def test_a_descriptive_case_admits_a_live_record_inside_its_budget() -> None:
     late = rehearsal.model_at(slow, request)
     if late["inside_justified_range"] or "max_duration" not in rehearsal.admission_failure(late):
         raise AssertionError(late)
+
+
+def test_a_twelve_iteration_case_exceeds_the_observed_iteration_rate() -> None:
+    read = json.loads((ROOT / rehearsal.ANCHOR_READ).read_text(encoding="utf-8"))["processors"][rehearsal.PLATFORM]
+    request = rehearsal.Request(
+        "job-01", rehearsal.LAYOUT, rehearsal.JOB_01_COMPILATION_SEEDS, rehearsal.ANCHOR_READ, rehearsal.DESCRIPTIVE, 2
+    )
+    model = rehearsal.model_at(read["perfs"], request)
+    if model["inside_justified_range"] or model["expected_seconds"] <= rehearsal.MAX_DURATION:
+        raise AssertionError(model)
+    if "max_duration" not in rehearsal.admission_failure(model):
+        raise AssertionError(rehearsal.admission_failure(model))

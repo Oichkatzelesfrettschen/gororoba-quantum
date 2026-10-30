@@ -494,8 +494,10 @@ and its anchor read. The layout, the model forecasts, the attempt-box bound and 
 that read, and `estimate_required_shots` under its perfs sizes `max_shots`.
 
 The submission gate `binding` admits the case while the live performance record keeps what the frozen budget
-depends on: no mode of the case's layout reads a dark rate above `DARK_LIMIT`, and `expected_seconds` at the live
-clock and per-input sample probabilities stays within `MAX_DURATION`. The anytime-valid lower bound holds at any
+depends on: no mode of the case's layout reads a dark rate above `DARK_LIMIT`, and the larger of `expected_seconds` at
+the live clock and per-input sample probabilities and the iterations at `ITERATION_SECONDS` (27.3 s, the rate job-01
+showed by running 11 iterations in the 300 s limit) stays within `MAX_DURATION`; a twelve-iteration job therefore
+refuses. The anytime-valid lower bound holds at any
 accepted count, so the pooled fidelity at the live figures decides nothing, and a refresh of the performance figures
 leaves the case valid while it keeps both conditions. The first rule of this section compared the sha256 of the
 canonical perfs object; two reads 69 minutes apart on 2026-10-30 differed, so that equality refused every submission
