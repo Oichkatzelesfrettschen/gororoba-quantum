@@ -14,7 +14,7 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
-from qiskit import qpy
+from qiskit import QuantumCircuit, qpy
 from qiskit.circuit import Delay, Measure, Parameter, Reset
 from qiskit.circuit.library import XGate
 from qiskit.primitives.containers import BitArray, DataBin, PrimitiveResult, SamplerPubResult
@@ -400,6 +400,17 @@ def test_archive_dispatches_every_circuit_in_order(environment: Any, monkeypatch
                 record["execution_pubs"][0],
             )
         )
+
+
+def test_target_validation_preserves_circuit_order_and_reports_unsupported_instruction(environment: Any) -> None:
+    target = environment.backend.target
+    valid = QuantumCircuit(156)
+    valid.x(0)
+    invalid = QuantumCircuit(156)
+    invalid.h(0)
+    results = family.parallel.ordered_map(family._target_violations, [(valid, target), (invalid, target)], min_items=1)
+    if results != [[], ["target lacks h(0,)"]]:
+        raise AssertionError(f"Target validation lost ordered violations: {results}")
 
 
 @pytest.mark.parametrize("field", ["status", "hardware_verdict"])

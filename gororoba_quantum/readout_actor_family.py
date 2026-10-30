@@ -280,6 +280,30 @@ def _compile(task: tuple[dict[str, Any], dict[str, Any], Any, tuple[int, ...]]) 
     return compiled
 
 
+def _schedule(task: tuple[QuantumCircuit, Any]) -> dict[str, Any]:
+    circuit, target = task
+    starts = [
+        int(circuit.op_start_times[index])
+        for index, item in enumerate(circuit.data)
+        if item.operation.name == "measure"
+    ]
+    if not starts or len(set(starts)) != 1:
+        raise ValueError("the compiled full-PUB measurements require one start tick")
+    return {
+        "name": circuit.name,
+        "measurement_start_dt": starts[0],
+        "duration_seconds": float(circuit.estimate_duration(target, unit="s")),
+    }
+
+
+def _target_violations(task: tuple[QuantumCircuit, Any]) -> list[str]:
+    # The worker imports the canonical validator in its own spawned process.
+    from live_run import target_violations
+
+    circuit, target = task
+    return target_violations(circuit, target)
+
+
 def compile_case(case: dict[str, Any], target: Any) -> tuple[list[QuantumCircuit], list[dict[str, Any]]]:
     validate_case(case)
     if target.num_qubits != case["width"] or target.dt is None or not math.isfinite(target.dt) or target.dt <= 0:
@@ -291,22 +315,7 @@ def compile_case(case: dict[str, Any], target: Any) -> tuple[list[QuantumCircuit
     if any(abs(value / target.dt - tick) > 1e-7 for value, tick in zip(durations, ticks, strict=True)):
         raise ValueError("X durations must align with Target dt")
     circuits = parallel.ordered_map(_compile, [(case, allocation, target, ticks) for allocation in case["allocations"]])
-    schedules = []
-    for circuit in circuits:
-        starts = [
-            int(circuit.op_start_times[index])
-            for index, item in enumerate(circuit.data)
-            if item.operation.name == "measure"
-        ]
-        if len(set(starts)) != 1:
-            raise ValueError("the compiled full-PUB measurements require one start tick")
-        schedules.append(
-            {
-                "name": circuit.name,
-                "measurement_start_dt": starts[0],
-                "duration_seconds": float(circuit.estimate_duration(target, unit="s")),
-            }
-        )
+    schedules = parallel.ordered_map(_schedule, [(circuit, target) for circuit in circuits])
     if len({row["measurement_start_dt"] for row in schedules}) != 1:
         raise ValueError("actor arms have unequal compiled measurement start times")
     return circuits, schedules
@@ -379,8 +388,9 @@ def plan(runtime: Any, service: Any, case: dict[str, Any]) -> tuple[dict[str, An
         raise ValueError(
             "cost scenario requires at least the Target reset/measurement proxy and documented two-second overhead"
         )
-    for circuit in circuits:
-        violations = runtime.target_violations(circuit, snapshot.backend.target)
+    for violations in parallel.ordered_map(
+        _target_violations, [(circuit, snapshot.backend.target) for circuit in circuits]
+    ):
         if violations:
             raise ValueError("; ".join(violations))
     for allocation in case["allocations"]:
