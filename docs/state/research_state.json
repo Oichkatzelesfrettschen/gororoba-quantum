@@ -2676,6 +2676,55 @@
       "question": "qpu:belenos, six one-photon sign blocks packed in one job (two_label-30, two_label-31): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
     },
     {
+      "id": "qi-demarrais-qx-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-30T014852Z-demarrais_qx_1024d-batch-00",
+      "family": "DeMarrais CZ-graph Pauli propagation",
+      "question": "On QXsinglenodesimulator (10 qubits), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled midden, cowbird, dmz?"
+    },
+    {
+      "id": "qi-demarrais-tuna17-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-30T015009Z-demarrais_tuna17_8192d-batch-00",
+      "family": "DeMarrais CZ-graph Pauli propagation",
+      "question": "On Tuna-17 (17 transmons, its 18 native couplers), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled midden, cowbird, dmz?"
+    },
+    {
+      "id": "qi-demarrais-qx-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-30T023915Z-demarrais_qx_1024d-batch-01",
+      "family": "DeMarrais CZ-graph Pauli propagation",
+      "question": "On QXsinglenodesimulator (10 qubits), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled ctrl_low_32d, ctrl_mid_512d, explore_1024d_pure?"
+    },
+    {
+      "id": "qi-demarrais-qx-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-30T024133Z-demarrais_qx_1024d-batch-02",
+      "family": "DeMarrais CZ-graph Pauli propagation",
+      "question": "On QXsinglenodesimulator (10 qubits), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled explore_1024d_catamaran, explore_1024d_dmz, null_1024d_sleeper?"
+    },
+    {
+      "id": "qi-demarrais-tuna17-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-30T024225Z-demarrais_tuna17_8192d-batch-01",
+      "family": "DeMarrais CZ-graph Pauli propagation",
+      "question": "On Tuna-17 (17 transmons, its 18 native couplers), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled ctrl_low_32d, ctrl_mid_4096d, explore_8192d_pure?"
+    },
+    {
+      "id": "qi-demarrais-tuna17-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-30T040508Z-demarrais_tuna17_8192d-batch-02",
+      "family": "DeMarrais CZ-graph Pauli propagation",
+      "question": "On Tuna-17 (17 transmons, its 18 native couplers), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled explore_8192d_catamaran, explore_8192d_dmz, null_8192d_sleeper?"
+    },
+    {
+      "id": "qd-sim-belenos-demarrais-tower-job-dm4",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4",
+      "family": "DeMarrais tower photonic quotient",
+      "question": "Does sim:belenos compile and sample the 24 job-dm4 settings (nine 16D to 4096D midden-quotient controls, then 8192D settings and null arms), and do the returned settings read their ideal dispersive contrast D?"
+    },
+    {
       "id": "fez-measurement-sequence-scatter-floor",
       "provider": "ibm",
       "run": "results/live/2026-10-29T231232.725730Z",
@@ -13564,6 +13613,117 @@
         "qd-qpu-belenos-packed-job-03",
         "qd-qpu-belenos-packed-job-04",
         "qd-qpu-belenos-packed-job-05"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "demarrais-tuna17-cz-graph-pauli-propagation",
+      "statement": "Every circuit of the Tuna-17 DeMarrais campaign is H on all 17 qubits, Tuna-17's 18 native CZ couplers, X on two to four hub qubits, the same CZ layer and H, so its ideal outcome is the CZ-neighbour parity of the X'd hubs; pauli_propagation.py derives all nine ideal strings from the edge list and hubs and matches the exact statevector and each manifest. Over 75536 shots per circuit (nine jobs, 1642194 to 1642318) the data qubits with an odd number of X'd neighbours (ideal 1) read a mean P(1) of 0.67 to 0.86 and those with none (ideal 0) 0.26 to 0.41, the full 17-bit string matches on 0.9 to 1.4 % of shots, and the all-zero sentinel herald keeps 11 to 16 %.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The circuits carry no Cayley-Dickson content: the 8192D, 4096D and 32D labels select only which qubits receive X on one shared CZ graph, cd_core enters no gate, and no circuit changes its ideal outcome when an algebraic property is removed, so the campaign fails the repository's mutation test and measures Tuna-17's fidelity on a two-layer 36-CZ Clifford circuit. Two-path extinction is Z Z = I on a qubit with two X'd neighbours. The sleeper null removes the X gates and so tests readout bias and Pauli propagation, not algebra. The herald selects shots whose nine sentinels all read 0, about 0.79^9 of them, which raises the heralded contrast by error detection.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-30T015009Z-demarrais_tuna17_8192d-batch-00/analysis.json",
+          "sha256": "659a89e83e1671b3fd3936936df9f751f4b555d9bdf4a3fcf24f1bb24ba2cd77"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-30T024225Z-demarrais_tuna17_8192d-batch-01/analysis.json",
+          "sha256": "0a7d93633fbacc5c9bb2cb411b190ec576c0e2c07f5c466d9c12e1193eeefb25"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-30T040508Z-demarrais_tuna17_8192d-batch-02/analysis.json",
+          "sha256": "3e21ade1e311ccea25c9bc4da9a2d663547dcff2e79739bbc9c5e9d53bfad6db"
+        },
+        {
+          "path": "docs/evidence/demarrais-8192d-cross-platform/pauli-propagation.json",
+          "sha256": "a22b0f4841723610d236be2a1cf6751ff408aa0a093341ddce55650ab93cdba1"
+        }
+      ],
+      "gates": {
+        "core-demarrais-pauli-propagation-replay": "replay"
+      },
+      "documents": [
+        "docs/evidence/demarrais-8192d-cross-platform/README.md"
+      ],
+      "acquisitions": [
+        "qi-demarrais-tuna17-batch-00",
+        "qi-demarrais-tuna17-batch-01",
+        "qi-demarrais-tuna17-batch-02"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "demarrais-qx-cz-graph-pauli-propagation",
+      "statement": "On the Quantum Inspire QX simulator the nine 10-qubit DeMarrais circuits (one 10-edge CZ graph, X on zero to four hubs, 2048 shots each) return their CZ-neighbour parity string on every shot, the exact outcome pauli_propagation.py derives from each circuit's edges and hubs.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "A noiseless simulator of a Clifford circuit with one deterministic outcome reproduces that outcome by construction; it qualifies the cases and the analysis, and the 1024D labels set no gate.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-30T014852Z-demarrais_qx_1024d-batch-00/analysis.json",
+          "sha256": "7332c970fd27c0bd026b9a012ae95d3dc3c7cd3e1a61ab30c770bc76b7475d73"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-30T023915Z-demarrais_qx_1024d-batch-01/analysis.json",
+          "sha256": "a5486bac0371994cbf706f664444e829e4892c447350cc9b373c14e2db62c5de"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-30T024133Z-demarrais_qx_1024d-batch-02/analysis.json",
+          "sha256": "a0c884a8aff85c3aebaf91cddde9b53802c9b7f09391b4a3c44fdcc2ba3eb0fa"
+        },
+        {
+          "path": "docs/evidence/demarrais-8192d-cross-platform/pauli-propagation.json",
+          "sha256": "a22b0f4841723610d236be2a1cf6751ff408aa0a093341ddce55650ab93cdba1"
+        }
+      ],
+      "gates": {
+        "core-demarrais-pauli-propagation-replay": "replay"
+      },
+      "documents": [
+        "docs/evidence/demarrais-8192d-cross-platform/README.md"
+      ],
+      "acquisitions": [
+        "qi-demarrais-qx-batch-00",
+        "qi-demarrais-qx-batch-01",
+        "qi-demarrais-qx-batch-02"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-sim-belenos-demarrais-tower-dm4-compiler-failure",
+      "statement": "On sim:belenos job 0866fc0c (job-dm4, 24 settings at 10000 samples each) returned its first nine settings, the 16D to 4096D midden-quotient controls, each at the ideal dispersive contrast D = 1.0 with no click above the lower 12 modes, and then failed at the first 8192D setting with 'RuntimeError: Circuit optimizer: No trial converged' (90000 samples, 90004 shots); the remaining fourteen settings, every 8192D and null arm among them, returned nothing.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "A simulator run qualifies the case and the provider's compiler, not a device. With no null arm returned the analysis withholds a verdict. The returned controls send one photon through a 12-mode quotient unitary whose ideal outcome is a basis-mode routing, so their agreement tests compilation, not a zero-divisor property.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4/results.json",
+          "sha256": "278f22b32c60c07f1c53f5453fd51e11741c8933648cea3487126c04e8a78ddc"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4/analysis.json",
+          "sha256": "549c3c7e33930c8bf516efade405a5e5fb65545900055f6071dff063f588540b"
+        }
+      ],
+      "gates": {},
+      "documents": [
+        "docs/evidence/demarrais-8192d-cross-platform/README.md"
+      ],
+      "acquisitions": [
+        "qd-sim-belenos-demarrais-tower-job-dm4"
       ],
       "assumptions": [],
       "depends_on": [],

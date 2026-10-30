@@ -15846,6 +15846,285 @@
    "gate_changes": {}
   },
   {
+   "case": "results/quantum_inspire/cases/demarrais_qx_1024d/batch-00/dekavoudon-1024d-midden.cq",
+   "sha256": "9f761ebe403d8f3162b5ffea05a0cdf0ea4ddce53e74a7ffb6540ea51764cc99",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "1e96bdc82b7e63ea81e914da68f2b24339aeb5644da8587f4bfb654cbd0f6fcf",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_qx_1024d/batch-00/cowbird-mandala-1024d.cq",
+   "sha256": "671688a46edae6d3cb9905f87295be2dcf8a0f41115f7c8a0ceb909d38974e89",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "63f46118af989f1bbb8993df64b889a0f99641f0c9dea4641a668d9e330954cb",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_qx_1024d/batch-00/roundabout-dmz-1024d.cq",
+   "sha256": "210a0ba257d2ef1fb90f9916f74854fc96721cadcc62ad70fc87684b7e6ee75c",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "ee54ed3fae1b8f5274f3b59da4bb5008b6a219adc36f07508924fce3f6236706",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_qx_1024d/batch-01/01-control-sedenion-pathion-32d.cq",
+   "sha256": "babd3a3036cc814348536b28daee280839c28ae5e6c056616eec443284249d69",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "9b54dede9c03a0c7d630f510b9897380fcecd0dd0ab03885144ff35a88f5ccc7",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_qx_1024d/batch-01/02-control-chingon-routon-512d.cq",
+   "sha256": "dac8c14f025bab86c77a7612e04991690a4658fe341c8eebdb35bc4e64002011",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b4de6ec72e41e387a63183a5b97ee87fe91c527d466361fb0d18a0bd1327243b",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_qx_1024d/batch-01/03-dekavoudon-1024d-pure-shell.cq",
+   "sha256": "20785c75ba804e635145fc28627e3bbac58b75350c89eec44cd2b549f6ac8c59",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "0a362f6f76e690b48e485d6582e306d6e36b298812d7c8f723e2d6f7a58d1b6b",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_qx_1024d/batch-02/04-dekavoudon-1024d-catamaran-lanyard.cq",
+   "sha256": "fc3350ae93d0f696dc63979ef060b1f4b7e1afcb8931b5539c2e06607f7a970d",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3957bbc7b43904b32af7d79ffeb71d8e604e3429338901fd0eb7bb11148e0b19",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_qx_1024d/batch-02/05-dekavoudon-1024d-dmz-shell.cq",
+   "sha256": "73091eb627332c098e1da2398dd4dc48ce404bd3899a396f7bf8f3b94082ba8b",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "41c19f97b7e3dd74d94166c2bf83684f984e07ead36815cb29c6855564ff1697",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_qx_1024d/batch-02/06-dekavoudon-1024d-sleeper-null.cq",
+   "sha256": "7423d9ffcc9f2375ba2876609858ea6dad1168489726072bb1f25721d540c449",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "56f655118c6bd65bdf0f2dbd86e3bf7ea317dd565bd28d863508abd2f21088e4",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_tuna17_8192d/batch-00/dekatrisvoudon-8192d-midden.cq",
+   "sha256": "2a27e73dda86280329034234f1d7c11e6bbcb39c5ad36e6203f419187047d5fa",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "e44b5b3164952f4ce5483066c213b1b238011189dcf2dbe8e27ef208288ea3d3",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_tuna17_8192d/batch-00/cowbird-mandala-roundabout.cq",
+   "sha256": "c147b3dc453933ce98040266ee73037d81feedaad60106a58d936cae2197d4a3",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "06bff68b6a718c373227470f1a31199579885daf4272edaa9ddcdabb27b357ee",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_tuna17_8192d/batch-00/zaslavsky-dmz-calibration.cq",
+   "sha256": "868643ffc59487844f8ec4493d9b137111055163fdbfb1c40c34ed527265a701",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "8c268e10d95a1dd09926431a1f2ac3727635a526dfb62502708332984637403e",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_tuna17_8192d/batch-01/01-control-sedenion-pathion-32d.cq",
+   "sha256": "4946599a8c81f3e38941e210d382ce84b019b355719fbcbc832db17d5ccb4b85",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "495227bfa962f58190b8d777d79a81486052fd22aff982a8b6fd02774cb8b1bd",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_tuna17_8192d/batch-01/02-control-chingon-routon-voudon-4096d.cq",
+   "sha256": "517c896f7ecec86b6ad24432339663b6ac97249173dffd1d0bc7c88d0d6a190a",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "37474977f180a26d3620c7f7a22d635db673a88945977f269fc0acf31099b212",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_tuna17_8192d/batch-01/03-dekatrisvoudon-8192d-pure-shell.cq",
+   "sha256": "89f9a2a5452f4541a0bee715cb931782f2d4f8cbcdc9910e41fb493c62d4d5fc",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "9958b60514130e78349f039fbcc02d84348d9ce2d10b71a9e7beb793e13ca880",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_tuna17_8192d/batch-02/04-dekatrisvoudon-8192d-catamaran-lanyard.cq",
+   "sha256": "f779128514b654c54d876426ab0a33c2d29bbe192e8f3583f3dcf8b651ef523c",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "68a1b5c06eb700f1f052e95dd5397d5105267d1aab7c6fd3d48bf1b3e4a41818",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_tuna17_8192d/batch-02/05-dekatrisvoudon-8192d-dmz-shell.cq",
+   "sha256": "a800f98f0092eb9bdd5af90f6a100b46cd19890e95508c6823c77a103d1feae5",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "36dc03d0d1ab971df55c7d22440a6ce70e4276879e723c951aa220684d38a13c",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/demarrais_tuna17_8192d/batch-02/06-dekatrisvoudon-8192d-sleeper-null.cq",
+   "sha256": "240ebd24e0cee82be584ee3c0288f89a3bcf42a17cf408a27773210494f793ac",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "0a7caa855d1dca43c4fd15039e39c1910382ce7dff3f35c0e7a76fe0c99fbcf3",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
    "case": "results/quantum_inspire/cases/kernel_cancellation_qx/batch-00/k+pi_36-000.cq",
    "sha256": "ae77074710d3381641fc78fdb1f6d2937b3d46a49c845a22c61a3bbc3d216374",
    "backend": "QXsinglenodesimulator",

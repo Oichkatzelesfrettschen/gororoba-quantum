@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-30T04:05:12+00:00",
+ "approval": "user: 8192D decomposed exploration and lower-dim controls approved on QX (2048 shots) and Tuna-17 (75536 shots)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "658c6fa870df9696701fddd3c38986b877f82b8717c48f2d38d8584286eea46f",
+ "shots": 75536,
+ "jobs": [
+  {
+   "file": "04-dekatrisvoudon-8192d-catamaran-lanyard.cq",
+   "job": 1642316,
+   "sha256": "f779128514b654c54d876426ab0a33c2d29bbe192e8f3583f3dcf8b651ef523c"
+  },
+  {
+   "file": "05-dekatrisvoudon-8192d-dmz-shell.cq",
+   "job": 1642317,
+   "sha256": "a800f98f0092eb9bdd5af90f6a100b46cd19890e95508c6823c77a103d1feae5"
+  },
+  {
+   "file": "06-dekatrisvoudon-8192d-sleeper-null.cq",
+   "job": 1642318,
+   "sha256": "240ebd24e0cee82be584ee3c0288f89a3bcf42a17cf408a27773210494f793ac"
+  }
+ ],
+ "project": 804583,
+ "batch_job": 903682,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-30T04:05:15+00:00",
+  "approval": "user: 8192D decomposed exploration and lower-dim controls approved on QX (2048 shots) and Tuna-17 (75536 shots)",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "658c6fa870df9696701fddd3c38986b877f82b8717c48f2d38d8584286eea46f",
+  "backend_status_at_submit": "calibrating",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 903682,
+  "project": 804583,
+  "shots": 75536,
+  "jobs": [
+   {
+    "file": "04-dekatrisvoudon-8192d-catamaran-lanyard.cq",
+    "job": 1642316,
+    "sha256": "f779128514b654c54d876426ab0a33c2d29bbe192e8f3583f3dcf8b651ef523c"
+   },
+   {
+    "file": "05-dekatrisvoudon-8192d-dmz-shell.cq",
+    "job": 1642317,
+    "sha256": "a800f98f0092eb9bdd5af90f6a100b46cd19890e95508c6823c77a103d1feae5"
+   },
+   {
+    "file": "06-dekatrisvoudon-8192d-sleeper-null.cq",
+    "job": 1642318,
+    "sha256": "240ebd24e0cee82be584ee3c0288f89a3bcf42a17cf408a27773210494f793ac"
+   }
+  ],
+  "submitted_utc": "2026-10-30T04:05:16+00:00"
+ },
+ "confirmed_utc": "2026-10-30T04:05:16+00:00"
+}

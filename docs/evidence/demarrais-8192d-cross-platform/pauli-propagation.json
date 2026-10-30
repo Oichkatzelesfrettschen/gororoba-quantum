@@ -1,0 +1,250 @@
+{
+ "circuits": [
+  {
+   "batch": "batch-00",
+   "cayley_dickson_target_dim": 8192,
+   "cz_edges": 18,
+   "family": "demarrais_tuna17_8192d",
+   "file": "dekatrisvoudon-8192d-midden.cq",
+   "ideal_shot": "10000000000100001",
+   "label": "midden",
+   "x_hubs": [
+    1,
+    8,
+    14
+   ]
+  },
+  {
+   "batch": "batch-00",
+   "cayley_dickson_target_dim": 8192,
+   "cz_edges": 18,
+   "family": "demarrais_tuna17_8192d",
+   "file": "cowbird-mandala-roundabout.cq",
+   "ideal_shot": "10001110000100001",
+   "label": "cowbird",
+   "x_hubs": [
+    2,
+    7,
+    15
+   ]
+  },
+  {
+   "batch": "batch-00",
+   "cayley_dickson_target_dim": 8192,
+   "cz_edges": 18,
+   "family": "demarrais_tuna17_8192d",
+   "file": "zaslavsky-dmz-calibration.cq",
+   "ideal_shot": "00000010000000000",
+   "label": "dmz",
+   "x_hubs": [
+    3,
+    9,
+    13
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "cayley_dickson_target_dim": 8192,
+   "cz_edges": 18,
+   "family": "demarrais_tuna17_8192d",
+   "file": "01-control-sedenion-pathion-32d.cq",
+   "ideal_shot": "00000000000110000",
+   "label": "ctrl_low_32d",
+   "x_hubs": [
+    1,
+    2
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "cayley_dickson_target_dim": 8192,
+   "cz_edges": 18,
+   "family": "demarrais_tuna17_8192d",
+   "file": "02-control-chingon-routon-voudon-4096d.cq",
+   "ideal_shot": "00001110001110000",
+   "label": "ctrl_mid_4096d",
+   "x_hubs": [
+    3,
+    8,
+    13
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "cayley_dickson_target_dim": 8192,
+   "cz_edges": 18,
+   "family": "demarrais_tuna17_8192d",
+   "file": "03-dekatrisvoudon-8192d-pure-shell.cq",
+   "ideal_shot": "00001000000110000",
+   "label": "explore_8192d_pure",
+   "x_hubs": [
+    8,
+    14,
+    15
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "cayley_dickson_target_dim": 8192,
+   "cz_edges": 18,
+   "family": "demarrais_tuna17_8192d",
+   "file": "04-dekatrisvoudon-8192d-catamaran-lanyard.cq",
+   "ideal_shot": "10000100000000000",
+   "label": "explore_8192d_catamaran",
+   "x_hubs": [
+    1,
+    2,
+    8,
+    15
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "cayley_dickson_target_dim": 8192,
+   "cz_edges": 18,
+   "family": "demarrais_tuna17_8192d",
+   "file": "05-dekatrisvoudon-8192d-dmz-shell.cq",
+   "ideal_shot": "10000000000010001",
+   "label": "explore_8192d_dmz",
+   "x_hubs": [
+    2,
+    8,
+    14
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "cayley_dickson_target_dim": 8192,
+   "cz_edges": 18,
+   "family": "demarrais_tuna17_8192d",
+   "file": "06-dekatrisvoudon-8192d-sleeper-null.cq",
+   "ideal_shot": "00000000000000000",
+   "label": "null_8192d_sleeper",
+   "x_hubs": []
+  },
+  {
+   "batch": "batch-00",
+   "cayley_dickson_target_dim": 1024,
+   "cz_edges": 10,
+   "family": "demarrais_qx_1024d",
+   "file": "dekavoudon-1024d-midden.cq",
+   "ideal_shot": "0010000001",
+   "label": "midden",
+   "x_hubs": [
+    1,
+    5,
+    9
+   ]
+  },
+  {
+   "batch": "batch-00",
+   "cayley_dickson_target_dim": 1024,
+   "cz_edges": 10,
+   "family": "demarrais_qx_1024d",
+   "file": "cowbird-mandala-1024d.cq",
+   "ideal_shot": "0010000100",
+   "label": "cowbird",
+   "x_hubs": [
+    1,
+    4,
+    8
+   ]
+  },
+  {
+   "batch": "batch-00",
+   "cayley_dickson_target_dim": 1024,
+   "cz_edges": 10,
+   "family": "demarrais_qx_1024d",
+   "file": "roundabout-dmz-1024d.cq",
+   "ideal_shot": "0001000001",
+   "label": "dmz",
+   "x_hubs": [
+    4,
+    8,
+    9
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "cayley_dickson_target_dim": 1024,
+   "cz_edges": 10,
+   "family": "demarrais_qx_1024d",
+   "file": "01-control-sedenion-pathion-32d.cq",
+   "ideal_shot": "0000001100",
+   "label": "ctrl_low_32d",
+   "x_hubs": [
+    1,
+    4
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "cayley_dickson_target_dim": 1024,
+   "cz_edges": 10,
+   "family": "demarrais_qx_1024d",
+   "file": "02-control-chingon-routon-512d.cq",
+   "ideal_shot": "0011000101",
+   "label": "ctrl_mid_512d",
+   "x_hubs": [
+    4,
+    5,
+    8
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "cayley_dickson_target_dim": 1024,
+   "cz_edges": 10,
+   "family": "demarrais_qx_1024d",
+   "file": "03-dekavoudon-1024d-pure-shell.cq",
+   "ideal_shot": "0000001100",
+   "label": "explore_1024d_pure",
+   "x_hubs": [
+    5,
+    8,
+    9
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "cayley_dickson_target_dim": 1024,
+   "cz_edges": 10,
+   "family": "demarrais_qx_1024d",
+   "file": "04-dekavoudon-1024d-catamaran-lanyard.cq",
+   "ideal_shot": "0001000100",
+   "label": "explore_1024d_catamaran",
+   "x_hubs": [
+    1,
+    4,
+    8,
+    9
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "cayley_dickson_target_dim": 1024,
+   "cz_edges": 10,
+   "family": "demarrais_qx_1024d",
+   "file": "05-dekavoudon-1024d-dmz-shell.cq",
+   "ideal_shot": "0011001001",
+   "label": "explore_1024d_dmz",
+   "x_hubs": [
+    1,
+    5,
+    8
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "cayley_dickson_target_dim": 1024,
+   "cz_edges": 10,
+   "family": "demarrais_qx_1024d",
+   "file": "06-dekavoudon-1024d-sleeper-null.cq",
+   "ideal_shot": "0000000000",
+   "label": "null_1024d_sleeper",
+   "x_hubs": []
+  }
+ ],
+ "rule": "bit q = parity of the X'd hubs adjacent to q in the circuit's CZ graph",
+ "schema": "demarrais-pauli-propagation-v1"
+}
