@@ -31,10 +31,11 @@ checks readout bias and the CZ layers, not an algebraic property.
 ## Measured on Tuna-17
 
 Nine jobs, 75536 shots each (batches 903568, 903631 and 903682; jobs 1642194 to 1642196, 1642263 to 1642265 and
-1642316 to 1642318), read from each run's `analysis.json`. A one-path qubit has one X'd neighbour (ideal 1); a
-zero-path qubit has none (ideal 0).
+1642316 to 1642318), read from each run's `analysis.json`. The analysis groups the data qubits with an odd number of X'd neighbours
+(ideal 1; it names them one-path, though in `explore_8192d_pure` qubit 12 has three) and those with none (ideal 0;
+a qubit with two X'd neighbours, also ideal 0, falls in neither group).
 
-| Circuit label | Hubs | Mean P(1), one-path qubits | Mean P(1), zero-path qubits | Full-string match | Sentinel herald |
+| Circuit label | Hubs | Mean P(1), odd-parity qubits | Mean P(1), no-neighbour qubits | Full-string match | Sentinel herald |
 |---|---|---:|---:|---:|---:|
 | `midden` | 1, 8, 14 | 0.687 | 0.408 | 0.0138 | 0.161 |
 | `cowbird` | 2, 7, 15 | 0.723 | 0.383 | 0.0135 | 0.147 |
@@ -48,8 +49,8 @@ zero-path qubit has none (ideal 0).
 
 The "32D control" reads the same bright and dark levels as the "8192D" circuits. The sentinel herald keeps the shots
 whose nine sentinel qubits all read 0, and at the measured per-qubit error that is about 0.79^9 of them, so a
-heralded contrast rises by error detection rather than interference. Across the campaign Tuna-17's one-path qubits
-read 0.67 to 0.86 and its zero-path qubits 0.26 to 0.41 on a two-layer, 36-CZ Clifford circuit.
+heralded contrast rises by error detection rather than interference. Across the campaign Tuna-17's odd-parity
+qubits read 0.67 to 0.86 and its no-neighbour qubits 0.26 to 0.41 on a two-layer, 36-CZ Clifford circuit.
 
 The QX simulator returns each circuit's parity string on every one of its 2048 shots, as a noiseless simulator of a
 deterministic Clifford circuit must.

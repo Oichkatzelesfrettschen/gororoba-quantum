@@ -13607,7 +13607,7 @@
     },
     {
       "id": "demarrais-tuna17-cz-graph-pauli-propagation",
-      "statement": "Every circuit of the Tuna-17 DeMarrais campaign is H on all 17 qubits, Tuna-17's 18 native CZ couplers, X on two to four hub qubits, the same CZ layer and H, so its ideal outcome is the CZ-neighbour parity of the X'd hubs; pauli_propagation.py derives all nine ideal strings from the edge list and hubs and matches the exact statevector and each manifest. Over 75536 shots per circuit (nine jobs, 1642194 to 1642318) the qubits whose ideal bit is 1 read a mean P(1) of 0.67 to 0.86, those whose ideal bit is 0 read 0.26 to 0.41, the full 17-bit string matches on 0.9 to 1.4 % of shots, and the all-zero sentinel herald keeps 11 to 16 %.",
+      "statement": "Every circuit of the Tuna-17 DeMarrais campaign is H on all 17 qubits, Tuna-17's 18 native CZ couplers, X on two to four hub qubits, the same CZ layer and H, so its ideal outcome is the CZ-neighbour parity of the X'd hubs; pauli_propagation.py derives all nine ideal strings from the edge list and hubs and matches the exact statevector and each manifest. Over 75536 shots per circuit (nine jobs, 1642194 to 1642318) the data qubits with an odd number of X'd neighbours (ideal 1) read a mean P(1) of 0.67 to 0.86 and those with none (ideal 0) 0.26 to 0.41, the full 17-bit string matches on 0.9 to 1.4 % of shots, and the all-zero sentinel herald keeps 11 to 16 %.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
