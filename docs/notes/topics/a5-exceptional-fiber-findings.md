@@ -75,6 +75,7 @@ ran 40,000 s without a result. Taking the radical first and `minAssChar` decompo
 |---|---|---|---|
 | X- | no | 12, 45, 112, 225 | one: (3, 12) |
 | E8-bar -> N+ | no | 16, 69, 195, 440 | two: (4, 11), (3, 4) |
+| E8-bar -> N- | no | | two: (4, 11) with 9 linear generators, (3, 4) with 14 (12 s, Kaggle CPU) |
 | E8-bar -> VB | yes | 10, 34, 80, 155 | two: (3, 3), (3, 4) |
 | Iso, W8 -> N- | not finished in 600 s | | |
 
@@ -137,7 +138,8 @@ coordinate symmetry. The X+ quadric ideal at 32029 (`working/runs/k2struct/xp_p2
 reproduces the X- structure at 32009 line for line: K2 and its radical are projective threefolds of degree 12, K2 is
 not radical, h = 15, 51, 122, 240 for K2 and 12, 45, 112, 225 for the radical, and the single minimal prime has
 projective dimension 3, degree 12 and three linear generators. For E8-bar -> N+ and N- the transport fails but the Hilbert functions agree through degree 2
-(21, 83); isomorphism is untested, and a structure computation on the N- quadrics decides it.
+(21, 83), and the N- quadric ideal has the same minimal-prime types as N+: not radical, primes (4, 11) and (3, 4).
+Isomorphism of the fibers is untested; an explicit linear map carrying the N- primes onto the N+ primes decides it.
 
 **Results at 32009 hold in characteristic zero.** Survives on one degree of one pair. Falsifier: any h_d at 32029
 that differs from 32009; a mismatch alone shows instability, and naming the exceptional prime needs a third.
@@ -156,7 +158,8 @@ non-reduced tangent cone; arcs on the normalization replace them.
 - X-: one irreducible reduced support of projective dimension 3 and degree 12 inside a P^11, with 3 nilpotent linear
   directions, so arcs certify only its support and the nilpotent part needs direct kernel limits.
 - E8-bar -> N+: non-reduced and not equidimensional at the quadric level.
-- Iso, W8, E8-bar -> N-: Hilbert functions through degree 3 or 2; no decomposition yet.
+- Iso, W8: Hilbert functions through degree 3 or 2; no decomposition yet.
+- E8-bar -> N-: Hilbert function through degree 2; K2 decomposes into the N+ prime types (4, 11) and (3, 4).
 - Exact degree-by-degree rank and arc families with exact containment checks are the working methods; every
   global elimination is retired.
 
@@ -180,7 +183,7 @@ measurement), *superseded* (replaced by a stronger or cheaper route).
 | The X- fiber support is one irreducible three-fold of degree 12 in a P^11 | survives over F_32009 at the quadric level | arc certificate inside the P^11 |
 | X+ and X- fibers correspond under t9 -> -t9 | survives (exact coefficient check) | none; proven for the inputs |
 | W8 -> N+ and W8 -> N- fibers correspond under t9 -> -t9 | survives (exact coefficient check) | none; proven for the inputs |
-| E8-bar -> N+ and E8-bar -> N- fibers are isomorphic | open | quadric structure of N-; Hilbert functions and quadric counts (148) agree through degree 2 |
+| E8-bar -> N+ and E8-bar -> N- fibers are isomorphic | open | Hilbert functions and quadric counts (148) agree through degree 2 and the K2 minimal primes match in dimension and degree; a linear map between the primes decides it |
 | Results at 32009 hold at a second prime | survives: at p = 32029, E8-bar -> VB 34, 80; X- and X+ 51, 122 with 69 quadrics; Iso 85, 265 with 68 quadrics, all equal to 32009; at 32029 also W8 -> N- 156 and E8-bar -> N+- 83 with 148 quadrics each | a third prime, and any higher degree at 32029 |
 | J is radical and prime through the origin | survives on all five pairs checked | none; checked |
 | The pivot is a nonzerodivisor modulo J | survives on every pivot used | none; checked |
