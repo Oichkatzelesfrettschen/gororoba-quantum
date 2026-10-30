@@ -927,6 +927,10 @@ def test_sparse_actor_retention_uses_external_anchor_without_current_source_reva
     submit_reviewed(
         live_run, environment, record, archive, run, approved, family.digest((approved / "record.json").read_bytes())
     )
+    if status == "DONE":
+        staging = run / "raw/fixture-job/.publication-staging"
+        staging.mkdir(parents=True)
+        (staging / "pending-abcdef12").write_bytes(b"interrupted")
     record_sha = family.digest((run / "record.json").read_bytes())
     collected = family.collect(live_run, environment, run, record_sha)
     anchor = tmp_path / "docs/evidence/readout-actor-acquisition-review/retention-anchors" / f"{record_sha}.json"
@@ -953,6 +957,8 @@ def test_sparse_actor_retention_uses_external_anchor_without_current_source_reva
         "timestamps": timestamps,
     }
     if status == "DONE":
+        if (staging / "pending-abcdef12").exists():
+            raise AssertionError("recollection must recover interrupted publication before retention")
         result = audit.archived_row((job, run / "raw/fixture-job/index.json", Decimal("0.01")))
         if result["provenance"] != "registered_actor_collection" or result["submitted_pub_shots"] != 32:
             raise AssertionError("actor retention must bind the genuine full-register collection")

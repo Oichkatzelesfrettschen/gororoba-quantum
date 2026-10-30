@@ -8248,24 +8248,42 @@ def _write_text_atomically(target: Path, text: str) -> None:
 
 def _write_once_atomically(target: Path, text: str) -> None:
     """Publish complete bytes once and reject a different existing snapshot."""
-    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=target.parent, delete=False) as handle:
-        temporary = Path(handle.name)
+    staging = target.parent / ".publication-staging"
+    if staging.is_symlink():
+        raise LiveRunError(f"publication staging must be a directory: {staging}")
+    staging.mkdir(exist_ok=True)
+    if (staging / ".lock").is_symlink():
+        raise LiveRunError(f"publication lock must be a regular file: {staging}")
+    with (staging / ".lock").open("a", encoding="utf-8") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
         try:
-            handle.write(text)
-            handle.flush()
-            os.fsync(handle.fileno())
-            try:
-                os.link(temporary, target)
-            except FileExistsError:
-                if target.read_bytes() != text.encode("utf-8"):
-                    raise LiveRunError(f"{target} differs from the immutable acquisition snapshot") from None
-            directory_fd = os.open(target.parent, os.O_RDONLY | os.O_DIRECTORY)
-            try:
-                os.fsync(directory_fd)
-            finally:
-                os.close(directory_fd)
+            for abandoned in staging.iterdir():
+                if re.fullmatch(r"pending-[a-z0-9_]{8}", abandoned.name) and not abandoned.is_symlink():
+                    if not abandoned.is_file():
+                        raise LiveRunError(f"invalid publication staging entry: {abandoned}")
+                    abandoned.unlink()
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=staging, prefix="pending-", delete=False
+            ) as handle:
+                temporary = Path(handle.name)
+                try:
+                    handle.write(text)
+                    handle.flush()
+                    os.fsync(handle.fileno())
+                    try:
+                        os.link(temporary, target)
+                    except FileExistsError:
+                        if target.read_bytes() != text.encode("utf-8"):
+                            raise LiveRunError(f"{target} differs from the immutable acquisition snapshot") from None
+                    directory_fd = os.open(target.parent, os.O_RDONLY | os.O_DIRECTORY)
+                    try:
+                        os.fsync(directory_fd)
+                    finally:
+                        os.close(directory_fd)
+                finally:
+                    temporary.unlink(missing_ok=True)
         finally:
-            temporary.unlink(missing_ok=True)
+            fcntl.flock(lock, fcntl.LOCK_UN)
 
 
 def preserve_raw(service: QiskitRuntimeService, run_dir: Path) -> dict[str, Any]:

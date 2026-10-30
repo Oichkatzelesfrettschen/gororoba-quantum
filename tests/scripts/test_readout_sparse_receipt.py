@@ -8,6 +8,7 @@ import multiprocessing
 import os
 import threading
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 
 import pytest
 import readout_sparse_receipt as verifier
@@ -186,16 +187,8 @@ def test_actual_raw_serializer_feeds_descriptive_verifier(tmp_path) -> None:
 
 
 @pytest.mark.parametrize("same_bytes", [True, False])
-def test_acquisition_index_concurrent_publish_is_write_once(tmp_path, monkeypatch, same_bytes: bool) -> None:
+def test_acquisition_index_concurrent_publish_is_write_once(tmp_path, same_bytes: bool) -> None:
     target = tmp_path / "acquisition-index.json"
-    synchronize = threading.Barrier(2)
-    link = live_run.os.link
-
-    def concurrent_link(source, destination) -> None:
-        synchronize.wait(timeout=10)
-        link(source, destination)
-
-    monkeypatch.setattr(live_run.os, "link", concurrent_link)
     payloads = ("first\n", "first\n" if same_bytes else "second\n")
     with ThreadPoolExecutor(max_workers=2) as pool:
         futures = [pool.submit(live_run._write_once_atomically, target, payload) for payload in payloads]
@@ -207,8 +200,10 @@ def test_acquisition_index_concurrent_publish_is_write_once(tmp_path, monkeypatc
                 errors.append(error)
     if len(errors) != (0 if same_bytes else 1) or target.read_text() not in payloads:
         raise AssertionError("concurrent publication must keep one complete value and reject conflicts")
-    if sorted(path.name for path in tmp_path.iterdir()) != [target.name]:
+    if sorted(path.name for path in tmp_path.iterdir() if path.is_file()) != [target.name]:
         raise AssertionError("concurrent publication must remove temporary files")
+    if sorted(path.name for path in (tmp_path / ".publication-staging").iterdir()) != [".lock"]:
+        raise AssertionError("publication staging must retain only its lock")
 
 
 def test_acquisition_index_interrupted_before_publish_leaves_no_target(tmp_path, monkeypatch) -> None:
@@ -220,7 +215,7 @@ def test_acquisition_index_interrupted_before_publish_leaves_no_target(tmp_path,
     monkeypatch.setattr(live_run.os, "link", interrupted_link)
     with pytest.raises(OSError, match="interrupted"):
         live_run._write_once_atomically(target, "complete\n")
-    if list(tmp_path.iterdir()):
+    if [path for path in tmp_path.iterdir() if path.is_file()]:
         raise AssertionError("failed publication must leave no target or temporary file")
 
 
@@ -339,15 +334,15 @@ def test_killed_raw_collector_releases_lock_and_recovers(tmp_path, monkeypatch) 
         def metrics(self) -> dict:
             return {}
 
-    publish = live_run._write_once_atomically
+    link = live_run.os.link
 
-    def kill_before_index(target, text) -> None:
-        if target.name == "acquisition-index.json":
+    def kill_before_index(source, destination) -> None:
+        if Path(destination).name == "acquisition-index.json":
             os._exit(73)
-        publish(target, text)
+        link(source, destination)
 
     with monkeypatch.context() as patch:
-        patch.setattr(live_run, "_write_once_atomically", kill_before_index)
+        patch.setattr(live_run.os, "link", kill_before_index)
         process = multiprocessing.get_context("fork").Process(
             target=write_raw_result, args=(tmp_path, "job-1", Job(), [Pub()], ["actor-active"])
         )
@@ -363,10 +358,18 @@ def test_killed_raw_collector_releases_lock_and_recovers(tmp_path, monkeypatch) 
     raw = (directory / "pub_00.json").read_bytes()
     if (directory / "acquisition-index.json").exists():
         raise AssertionError("the killed process must not publish a partial index")
+    staging = directory / ".publication-staging"
+    if len(list(staging.glob("pending-*"))) != 1:
+        raise AssertionError("the killed publisher must leave an identifiable staging file")
+    (staging / "unrelated.txt").write_bytes(b"preserve")
     write_raw_result(tmp_path, "job-1", Job(), [Pub()], ["actor-active"])
     index = json.loads((directory / "acquisition-index.json").read_bytes())
     if (directory / "pub_00.json").read_bytes() != raw or index["files"]["pub_00.json"] != digest(raw):
         raise AssertionError("recollection must release the abandoned lock and bind the original raw bytes")
+    if list(staging.glob("pending-*")):
+        raise AssertionError("recollection must remove the abandoned publication file")
+    if (staging / "unrelated.txt").read_bytes() != b"preserve":
+        raise AssertionError("recovery must preserve unrelated staging entries")
 
 
 @pytest.mark.parametrize("mutation", ["anchor", "raw", "index_digest", "manifest", "family", "missing_binding"])

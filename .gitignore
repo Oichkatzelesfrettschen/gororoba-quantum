@@ -37,3 +37,6 @@ qiskit-ibm.json
 
 # A local SDK credential file; secrets stay out of every commit.
 /SDK_KEY.md
+
+# Interrupted atomic-publication files and their synchronization lock.
+.publication-staging/
