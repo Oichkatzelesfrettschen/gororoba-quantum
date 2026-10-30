@@ -1,5 +1,8 @@
 # Quantum experiment conformance evidence
 
+The [Ascella predecessor source replay](ascella-predecessor-source-replay.json)
+binds the updated Quandela client to the unchanged Qiskit 2.6.1 campaign bytes.
+
 This bundle retains deterministic references and prospective cases for the
 [five-proposal design](../../design/quantum-experiment-conformance.md). The source artifact
 `multidimensional_spacetime_quantum_experiments.md` has SHA-256 `afbe80ced07e3400116ee201eb3604afcd174758a8e30d55dff8f4e257462032`; its original bytes remain
