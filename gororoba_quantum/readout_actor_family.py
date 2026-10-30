@@ -468,6 +468,13 @@ def plan(runtime: Any, service: Any, case: dict[str, Any]) -> tuple[dict[str, An
     return record, archive, snapshot
 
 
+def _verify_archive_circuit(task: tuple[QuantumCircuit, dict[str, Any], dict[str, Any], dict[str, Any]]) -> None:
+    circuit, case, allocation, manifest = task
+    verify_circuit(circuit, case, allocation)
+    if manifest["prepared_bits"] != prepared(case, allocation) or manifest["name"] != circuit.name:
+        raise ValueError("actor prepared-bit ideal differs from its constructor")
+
+
 def verify_archive(
     record: dict[str, Any], archive: bytes, *, require_current_sources: bool = True
 ) -> dict[str, QuantumCircuit]:
@@ -502,13 +509,12 @@ def verify_archive(
     decoded = qpy.load(io.BytesIO(archive))
     if len(decoded) != len(case["allocations"]):
         raise ValueError("actor QPY allocation count differs")
-    circuits = {}
-    for circuit, allocation, manifest in zip(decoded, case["allocations"], record["execution_pubs"], strict=True):
-        verify_circuit(circuit, case, allocation)
-        if manifest["prepared_bits"] != prepared(case, allocation) or manifest["name"] != circuit.name:
-            raise ValueError("actor prepared-bit ideal differs from its constructor")
-        circuits[circuit.name] = circuit
-    return circuits
+    tasks = [
+        (circuit, case, allocation, manifest)
+        for circuit, allocation, manifest in zip(decoded, case["allocations"], record["execution_pubs"], strict=True)
+    ]
+    parallel.ordered_map(_verify_archive_circuit, tasks, min_items=1)
+    return {circuit.name: circuit for circuit in decoded}
 
 
 def validate_submission(record: dict[str, Any], archive: bytes) -> None:

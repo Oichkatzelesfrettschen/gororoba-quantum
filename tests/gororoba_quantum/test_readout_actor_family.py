@@ -374,6 +374,34 @@ def test_archive_rejects_forged_pub_mapping(environment: Any, mutation: str) -> 
         family.verify_archive(record, archive)
 
 
+def test_archive_dispatches_every_circuit_in_order(environment: Any, monkeypatch: pytest.MonkeyPatch) -> None:
+    record, archive, _ = family.plan(live_run, environment, case())
+    seen: list[str] = []
+
+    def ordered(worker: Any, tasks: Any, min_items: int = 0) -> list[Any]:
+        if worker is not family._verify_archive_circuit or min_items != 1:
+            raise AssertionError("archive validation must use the ordered circuit worker")
+        seen.extend(task[0].name for task in tasks)
+        return [worker(task) for task in tasks]
+
+    monkeypatch.setattr(family.parallel, "ordered_map", ordered)
+    verified = family.verify_archive(record, archive)
+    expected = [entry["name"] for entry in record["execution_pubs"]]
+    if seen != expected or list(verified) != expected:
+        raise AssertionError("archive verification must retain every circuit's attribution and order")
+    invalid = copy.deepcopy(next(iter(verified.values())))
+    invalid.x(0)
+    with pytest.raises(ValueError, match="actor X"):
+        family._verify_archive_circuit(
+            (
+                invalid,
+                record["family_configuration"]["case"],
+                record["family_configuration"]["case"]["allocations"][0],
+                record["execution_pubs"][0],
+            )
+        )
+
+
 @pytest.mark.parametrize("field", ["status", "hardware_verdict"])
 def test_collector_rejects_forged_inference_verdict(environment: Any, tmp_path: Path, field: str) -> None:
     approved = tmp_path / "approved"
