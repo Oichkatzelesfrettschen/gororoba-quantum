@@ -493,11 +493,16 @@ the first read after the record recovers, retained as
 and its anchor read. The layout, the model forecasts, the attempt-box bound and the sample probabilities come from
 that read, and `estimate_required_shots` under its perfs sizes `max_shots`.
 
-The submission gate `binding` refuses whenever the live performance record differs from that read, compared by the
-sha256 of its canonical perfs object. The written case quotes that read, so a changed record calls for a new
-preparation and a new approval. An unchanged record most likely describes the last published calibration rather
-than the chip ([calibration.md](../notes/quandela/calibration.md)), so the gate guards the case's identity, not the
-chip's state. It also holds at read time only: `qd_platform.submit` POSTs after the last authenticated read, and no
+The submission gate `binding` admits the case while the live performance record keeps what the frozen budget
+depends on: no mode of the case's layout reads a dark rate above `DARK_LIMIT`, and the larger of `expected_seconds` at
+the live clock and per-input sample probabilities and the iterations at `ITERATION_SECONDS` (27.3 s, the rate job-01
+showed by running 11 iterations in the 300 s limit) stays within `MAX_DURATION`; a twelve-iteration job therefore
+refuses. The anytime-valid lower bound holds at any
+accepted count, so the pooled fidelity at the live figures decides nothing, and a refresh of the performance figures
+leaves the case valid while it keeps both conditions. The first rule of this section compared the sha256 of the
+canonical perfs object; two reads 69 minutes apart on 2026-10-30 differed, so that equality refused every submission
+that followed an approval round-trip. The record most likely describes the last published calibration rather than
+the chip ([calibration.md](../notes/quandela/calibration.md)), and the gate holds at read time only: `qd_platform.submit` POSTs after the last authenticated read, and no
 provider precondition binds that read to execution. `--anchor` refuses a case anchored at its own read. The record
 watch keeps triggering on job-00's F* = 0.86; it decides when to read.
 
