@@ -32,7 +32,51 @@ sequence) are standard and enter as written arguments; the producer covers the r
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/xi_real_type.py --check` (about 10 s, exact).
 
-## Open residuals
+## Smaller reductions on nullity 12
 
-The full component group of the kernel symmetry group and the smaller reductions on nullity 12 remain open; the
-program file gives their methods.
+The residual has two readings, and the record now settles one and bounds the other.
+
+*Topological.* The five nullity-twelve complex bundles are trivial (the kernel-bundle record's class table: `C^6`
+on every piece), and a trivial `C^6 = H^3` admits a global quaternionic structure anticommuting with `J`, so a
+topological `Sp(3)` reduction exists on every piece.
+
+*Equivariant.* An antilinear map commuting with a circle sends its weight-`w` eigenspace to weight `-w`. On `B9` the
+connected stabilizer `U(1)` acts on the kernel with weights `-1` and `-2` only (`3 C_(-1) + 3 C_(-2)`), and on `VB` the
+central weights of `V_(0,-4) + 2 V_(1,-3) + V_(0,-2)` are all negative, so neither piece carries a stabilizer-equivariant
+quaternionic structure. A change of lift convention flips every sign together (`-(w+t)` in the record's conversion)
+and keeps the weights of one sign. On `V` with `0 < rho < 1` the stabilizer `SU(2)` acts by `2 V_0 + 2 V_1`, which
+admits an equivariant quaternionic structure at each point (both summands are quaternionic after tensoring with
+`C^2`), and at `rho = 1` the `SU(3)` module `3 + conjugate(3)` admits one swapping the two summands. Whether those
+pointwise structures glue to a global equivariant one over the `V` moduli is open, and so is the aligned pair
+`V^a_+-`, whose stabilizer representation this record has not read.
+
+Falsifier for the equivariant exclusion: a stabilizer weight of positive sign on `B9` or `VB` in the record's
+stabilizer computation.
+
+## Full component group: reduction to the `G_2` centralizer
+
+`Out(g_2)` is trivial, so every component of the kernel symmetry group `K` meets the centralizer of `G_2` in `K`, and
+`pi_0(K) = pi_0(Z_K(G_2))`. `probes/g2_commutant.py` computes the commutant of the fourteen octonion-derivation triples
+in each slot of the transport triple exactly over Q: dimension 32 with a 4-dimensional invariant subspace in every
+slot, so each slot decomposes as `4 R + 4 R^7` and the centralizer is `GL(4) x GL(4)` per slot
+([log](probes/g2-commutant.log)). `Z_K(G_2)` is therefore the solution set of the group-level transport equations in
+96 unknowns, with Lie algebra the four central directions. Its component group is the next computation; a component
+outside the visible `S_3 x Z_2` falsifies exhaustiveness.
+
+## Nullity-4 strata carry continuous moduli
+
+The kernel symmetry triples are solved once over the whole doubly pure base, so the same 18-dimensional algebra acts
+on the nullity-4 strata, with base action of rank 16. `probes/nullity4_orbit_ranks.py` evaluates the tangent rank of
+the orbit at the 66 nullity-4 points of an exact integer grid in split coordinates (the strata record's `V(G)` point
+included) and sorts them by `V(Q)` and `V(G)` membership ([log](probes/nullity4-orbit-ranks.log)):
+
+| Stratum | Real unit dimension | Generic orbit rank | Real moduli | Points (rank 16, rank 13) |
+|---|---:|---:|---:|---|
+| `V(Q)` minus `V(G)` | 27 | 16 | 11 | 3, 9 |
+| `V(G)` minus `V(Q)` | 27 | 16 | 11 | 23, 29 |
+| `V(Q) n V(G)` | 25 | 16 | 9 | 2, 0 |
+
+Rank 16 equals the base rank, so it is the generic value; rank 13 marks a special sublocus. The nullity-4 kernel
+bundles are therefore families over moduli spaces of real dimension 11, 11 and 9, and the homogeneous
+stabilizer-representation route of the higher nullities does not classify them alone; their classes come from the
+kernel Gauss map into `Gr(2, C^16)` (real nullity 4, complex rank 2) over those moduli.

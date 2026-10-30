@@ -41,13 +41,13 @@ computed; exhaustiveness is not. Method: compute the normalizer of the constant-
 algebra's normalizer followed by a finite enumeration of the component group modulo the identity component on each
 nullity-12 and nullity-16 orbit. Falsifier: a component outside `S_3 x Z_2` that transports kernels at every
 representative. Substrate: Kaggle CPU (the normalizer computation is a linear system in 1024 unknowns per
-generator).
+generator). Status: reduced to the `G_2` centralizer, `GL(4) x GL(4)` per slot, 96 unknowns ([record](../evidence/a5-kernel-bundles-residuals/README.md#full-component-group-reduction-to-the-g_2-centralizer)).
 
 **Smaller reductions on nullity 12.** The canonical `U(6)` reduction is classified; nonconstant smaller reductions are
 not. Method: test for global anticommuting complex structures in the exact Pfaffian atlas
 (`transition_atlas.py` charts): solve for `J'` with `J'^2 = -1`, `J J' = -J' J`, commuting with the transition
 cocycle, as a polynomial system per chart and glue. Falsifier: a global solution, which reduces the structure group
-to `Sp(3)`. Substrate: the host or Kaggle CPU.
+to `Sp(3)`. Substrate: the host or Kaggle CPU. Status: the topological reduction exists (trivial bundles) and the equivariant one is excluded on `B9` and `VB` by stabilizer weights; the gluing of pointwise structures over `V` and the aligned pair remain ([record](../evidence/a5-kernel-bundles-residuals/README.md#smaller-reductions-on-nullity-12)).
 
 ## Attachments (roadmap item 6)
 
@@ -66,7 +66,7 @@ Admission: attaching maps on every admitted incidence, not a frontier matrix.
 
 ## Kernel bundles on the nullity-4 strata
 
-The item-5 records stop at nullity 8. The nullity-4 strata `D_(5,4)` are the generic rank stratum's boundary; their
+The orbit count is done ([residuals record](../evidence/a5-kernel-bundles-residuals/README.md#nullity-4-strata-carry-continuous-moduli)): the generic orbit has unit dimension 16 on every nullity-4 stratum, leaving real moduli of dimension 11, 11 and 9, so the classes come from the kernel Gauss map into `Gr(2, C^16)` (real nullity 4, complex rank 2) over those moduli rather than from stabilizer representations alone. The item-5 records stop at nullity 8. The nullity-4 strata `D_(5,4)` are the generic rank stratum's boundary; their
 kernel bundles need the same sequence the higher nullities used: kernel symmetry algebra, compact-orbit moduli,
 stabilizer representations, transition cocycle, classes. The orbits of `G_2(C) x SO(2, C) x C^*` on `R_4` from the
 regularity record are the starting charts. Falsifier for a claimed class: a transition outside the claimed

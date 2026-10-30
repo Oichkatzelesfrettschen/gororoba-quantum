@@ -71,5 +71,5 @@
   ],
   "scope": "Program file docs/design/dimension32-global-topology-program.md and the evidence records each package names; no provider or QPU job.",
   "owner": "repository maintainer",
-  "next_action": "Compute the full component group of the kernel symmetry group and test smaller nullity-12 reductions; start the nullity-4 kernel symmetry algebra."
+  "next_action": "Solve the group-level transport equations on the GL(4) x GL(4) centralizer slots for pi_0; glue or obstruct the pointwise quaternionic structures over V; build the nullity-4 kernel Gauss map into Gr(2, C^16) over the 11, 11 and 9 dimensional moduli."
 }
