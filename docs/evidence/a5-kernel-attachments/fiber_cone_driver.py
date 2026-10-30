@@ -408,13 +408,17 @@ def _run_item(item: dict[str, Any]) -> dict[str, Any]:
     prev = Path(item["previous_relations"]) if item.get("previous_relations") else None
     return run_degree(
         Path(item["header"]), int(item["degree"]), prev, Path(item["out"]), int(item["prime"]),
-        int(item.get("memory_gib", DEFAULT_MEMORY_GIB)),
+        int(item.get("memory_gib", DEFAULT_MEMORY_GIB)), int(item.get("timeout", DEFAULT_TIMEOUT_SECONDS)),
     )  # fmt: skip
 
 
-def run_batch(items: list[dict[str, Any]], budget_gib: int) -> list[dict[str, Any]]:
+def run_batch(
+    items: list[dict[str, Any]], budget_gib: int, timeout: int = DEFAULT_TIMEOUT_SECONDS
+) -> list[dict[str, Any]]:
     """Run independent items (pair, degree) concurrently under a total memory budget. parallel.ordered_map
-    sizes its pool from GOROROBA_WORKERS, so the admission bound is applied by chunking the items."""
+    sizes its pool from GOROROBA_WORKERS, so the admission bound is applied by chunking the items. An item's own
+    "timeout" key overrides the batch timeout for that item's Singular stages."""
+    items = [{"timeout": timeout, **item} for item in items]
     per_job = max(int(i.get("memory_gib", DEFAULT_MEMORY_GIB)) for i in items)
     width = admitted_workers(budget_gib, per_job, len(items))
     receipts: list[dict[str, Any]] = []
@@ -436,7 +440,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--batch-budget-gib", type=int, default=DEFAULT_MEMORY_GIB)
     args = ap.parse_args(argv)
     if args.batch:
-        receipts = run_batch(json.loads(args.batch.read_text()), args.batch_budget_gib)
+        receipts = run_batch(json.loads(args.batch.read_text()), args.batch_budget_gib, args.timeout)
     else:
         for name in ("header", "degree", "out", "prime"):
             _require(getattr(args, name) is not None, f"--{name} is required")

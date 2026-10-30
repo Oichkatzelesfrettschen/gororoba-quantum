@@ -50,3 +50,17 @@ def test_dense_family_verdicts() -> None:
     _check(cert.dense_family([[0, 0, 5]], comps, P)["status"] == "support lower bound")
     _check(cert.dense_family([[1, 0, 5]], comps, P)["status"] == "refuted")
     _check(cert.dense_family([], comps, P)["status"] == "support lower bound")
+
+
+def test_batch_timeout_reaches_each_stage(monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: list[int] = []
+
+    def fake_run_degree(*args: object) -> dict[str, object]:
+        seen.append(int(str(args[6])))
+        return {}
+
+    monkeypatch.setattr(drv, "run_degree", fake_run_degree)
+    monkeypatch.setattr(drv.parallel, "ordered_map", lambda f, items, min_items=1: [f(i) for i in items])
+    item = {"header": "h.sing", "degree": 2, "out": "o", "prime": P, "memory_gib": 4}
+    drv.run_batch([item, {**item, "timeout": 7}], budget_gib=8, timeout=3600)
+    _check(seen == [3600, 7])
