@@ -1,0 +1,25 @@
+// ** redefining blowup0 (;return();) input.sing:1
+// ** redefining blowup0 (;return();) input.sing:1
+// ** redefining elimRing (;return();) input.sing:1
+// ** redefining elimRing (;return();) input.sing:1
+// ** redefining elim (;return();) input.sing:1
+// ** redefining elim (;return();) input.sing:1
+// ** redefining elim2 (;return();) input.sing:1
+// ** redefining elim2 (;return();) input.sing:1
+// ** redefining elim1 (;return();) input.sing:1
+// ** redefining elim1 (;return();) input.sing:1
+// ** redefining nselect (;return();) input.sing:1
+// ** redefining nselect (;return();) input.sing:1
+// ** redefining sat (;return();) input.sing:1
+// ** redefining sat (;return();) input.sing:1
+// ** redefining sat_with_exp (;return();) input.sing:1
+// ** redefining sat_with_exp (;return();) input.sing:1
+// ** redefining select (;return();) input.sing:1
+// ** redefining select (;return();) input.sing:1
+// ** redefining select1 (;return();) input.sing:1
+// ** redefining select1 (;return();) input.sing:1
+RESULT normal_cubics 122
+RESULT products 122 seconds 4
+RESULT Q_gens 866
+RESULT std_Q_seconds 587 size 471
+RESULT done 598

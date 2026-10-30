@@ -1,0 +1,17 @@
+
+execute(read("~/Projects/IBMQuantum/docs/local/a5-failed-runs/build/logs/part-b/hdr/vb.sing"));
+// remove the LIB line effect: header already loaded primdec
+ring R=32009,(h,t1,t2,t3,t4,t5,t6,t7,t8),dp;
+ideal JJ=imap(r,J); ideal GG=imap(r,G);
+map f=R,h,h*t1,h*t2,h*t3,h*t4,h*t5,h*t6,h*t7,h*t8;
+ideal Jh=f(JJ); Jh=simplify(Jh,2);
+"RESULT sizes",size(JJ),size(Jh),size(GG); ideal S=sat(Jh,ideal(h)); if(typeof(S)=="list"){S=S[1];}
+S=std(S);
+"RESULT sat dim",dim(S),"size",size(S);
+"RESULT satsize",size(S); ideal C=subst(S,h,0); C=std(C);
+"RESULT cone dim",dim(C),"deg",mult(C),"gens",size(C);
+write(":w cone.txt",string(minbase(C)));
+// initial forms of G: degree-wise minimal
+ideal Gh=f(GG); int i; for(i=1;i<=size(GG);i++){ "ordG",i,deg(GG[i]), "lowest", ord(GG[i]);}
+for(i=1;i<=size(JJ);i++){ "ordJ",i,ord(JJ[i]);}
+quit;

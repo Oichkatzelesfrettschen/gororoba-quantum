@@ -1,0 +1,11 @@
+runs/w8_a2/nf2.txt
+build/logs/mine/vb4/sq.txt
+distribute/out/a5-p2-iso/iso_p2/d3/sq.txt
+distribute/out/a5-e8-d2/e8nm_p1/d2/sq.txt
+distribute/out/a5-e8-d2/e8nm_p2/d2/sq.txt
+distribute/out/a5-e8-d2/e8np_p2/d2/sq.txt
+distribute/out/a5-iso-d4/iso_p1/d3/sq.txt
+distribute/out/a5-p2-w8/w8_p2/d2/nf-d2.txt
+distribute/out/a5-p2-w8/w8_p2/d2/sq.txt
+distribute/out/a5-xm-d4/xm_p1/d4/nf-d4.txt
+distribute/out/a5-xm-d4/xm_p1/d4/sq.txt

@@ -1,0 +1,7 @@
+   ? error occurred in or before primdec.lib::absPrimdecGTZ_i line 5838: `           +"characteristic 0");`
+   ? last reserved name was `ERROR`
+   ? leaving primdec.lib::absPrimdecGTZ_i (0)
+   skipping text from `"` error at token `)`
+   ? leaving primdec.lib::absPrimdecGTZ_i (0)
+   ? leaving primdec.lib::absPrimdecGTZ (5814)
+exit 0

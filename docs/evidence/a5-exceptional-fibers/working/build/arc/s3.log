@@ -1,0 +1,3 @@
+// ** minbase applies only to the local or homogeneous case over coefficient fields
+RESULT S 27
+exit 0

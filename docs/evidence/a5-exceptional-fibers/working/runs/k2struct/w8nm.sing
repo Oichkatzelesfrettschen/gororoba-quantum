@@ -1,0 +1,9 @@
+LIB "primdec.lib";
+ring Y=32009,(y(1..24)),dp; execute("ideal K="+read("../w8_a2/w8_k2.rel")+";"); ideal sK=std(K);
+ideal rK=std(radical(K)); int d;
+"RESULT K2 projdim",dim(sK)-1,"degree",mult(sK); for(d=1;d<=4;d++){"RESULT K2 h",d,size(kbase(sK,d));}
+"RESULT radK2 projdim",dim(rK)-1,"degree",mult(rK); for(d=1;d<=4;d++){"RESULT radK2 h",d,size(kbase(rK,d));}
+"RESULT K2_radical",size(reduce(rK,sK))==0;
+list P=minAssChar(K); "RESULT minimal_primes",size(P); int c;
+for(c=1;c<=size(P);c++){ideal q=std(P[c]); "RESULT prime",c,dim(q)-1,mult(q),"linear_gens",size(jet(P[c],1)); kill q;}
+quit;

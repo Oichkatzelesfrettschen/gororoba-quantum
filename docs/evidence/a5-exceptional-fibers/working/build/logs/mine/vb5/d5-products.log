@@ -1,0 +1,11 @@
+RESULT generators 10
+RESULT targets 266
+RESULT products_ms 8723
+
+--- stderr ---
+Running as unit: run-p3869319-i685130304.service
+          Finished with result: exit-code
+Main processes terminated with: code=exited, status=124/n/a
+               Service runtime: 12h 728ms
+             CPU time consumed: 10h 35min 6.866s
+                   Memory peak: 12G (swap: 0B)

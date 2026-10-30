@@ -1,0 +1,29 @@
+Traceback (most recent call last):
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py", line 952, in <module>
+    main()
+    ~~~~^^
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py", line 936, in main
+    record, outcomes = build_record()
+                       ~~~~~~~~~~~~^^
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py", line 811, in build_record
+    singular_version = basepoints.schur._singular_version()
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py", line 940, in _singular_version
+    process = subprocess.run(
+        ["prlimit", f"--as={SINGULAR_MEMORY_LIMIT}", "Singular", "--version"],
+    ...<3 lines>...
+        timeout=30,
+    )
+  File "~/.local/share/uv/python/cpython-3.14.7-linux-x86_64-gnu/lib/python3.14/subprocess.py", line 557, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~/.local/share/uv/python/cpython-3.14.7-linux-x86_64-gnu/lib/python3.14/subprocess.py", line 1221, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~/.local/share/uv/python/cpython-3.14.7-linux-x86_64-gnu/lib/python3.14/subprocess.py", line 2154, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~/.local/share/uv/python/cpython-3.14.7-linux-x86_64-gnu/lib/python3.14/subprocess.py", line 1268, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['prlimit', '--as=4294967296', 'Singular', '--version']' timed out after 30 seconds

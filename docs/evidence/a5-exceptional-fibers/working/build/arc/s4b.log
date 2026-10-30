@@ -1,0 +1,45 @@
+
+// 'normal' created a list, say nor, of two elements.
+// To see the list type
+      nor;
+
+// * nor[1] is a list of 1 ring(s).
+// To access the i-th ring nor[1][i], give it a name, say Ri, and type
+     def R1 = nor[1][1]; setring R1; norid; normap;
+// For the other rings type first (if R is the name of your base ring)
+     setring R;
+// and then continue as for R1.
+// Ri/norid is the affine algebra of the normalization of R/P_i where
+// P_i is the i-th component of a decomposition of the input ideal id
+// and normap the normalization map from R to Ri/norid.
+
+// * nor[2] is a list of 1 ideal(s). Let ci be the last generator
+// of the ideal nor[2][i]. Then the integral closure of R/P_i is
+// generated as R-submodule of the total ring of fractions by
+// 1/ci * nor[2][i].
+RESULT nor2
+[1]:
+   _[1]=t2*t6+t3+t4
+   _[2]=t5^2-2*t5*t6+t6^2
+   _[3]=t3*t5+t4*t5-t3*t6-t4*t6
+   _[4]=t2*t5+t3+t4
+   _[5]=t3*t4+t4^2+t5*t6-t6^2
+   _[6]=t2*t4-t5+t6
+   _[7]=t2*t3+t5-t6
+   _[8]=t2^2
+   _[9]=t5*t7^2-t6*t7^2+t5-t6
+   _[10]=t3*t7^2+t4*t7^2+t3+t4
+   _[11]=t2*t7^2+t2
+   _[12]=h*t7^2+h+4*t2
+   _[13]=t8
+RESULT normap
+normap[1]=h
+normap[2]=t2
+normap[3]=t3
+normap[4]=t4
+normap[5]=t5
+normap[6]=t6
+normap[7]=t7
+normap[8]=t8
+RESULT dim 4 mult 22 nrel 303
+exit 0

@@ -1,0 +1,9 @@
+xp-np emitted vars=7 g=15 1.3s
+xm-nm emitted vars=7 g=15 1.3s
+iso-np emitted vars=6 g=17 0.7s
+iso-nm emitted vars=6 g=17 0.7s
+e8-np emitted vars=9 g=21 7.9s
+e8-nm emitted vars=9 g=21 7.9s
+w8-nm emitted vars=7 g=24 2.4s
+w8-np emitted vars=7 g=24 2.4s
+e8-vb emitted vars=8 g=10 0.3s

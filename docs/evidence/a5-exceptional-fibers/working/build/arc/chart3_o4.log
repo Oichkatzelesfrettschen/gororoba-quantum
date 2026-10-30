@@ -1,0 +1,12 @@
+(0, 5, 7) basepts 0
+(0, 3, 2) basepts 0
+(0, 1, 1) basepts 0
+(1, 5, 7) basepts 2
+  resid 0 nu 2 F [19687, 24418, 0, 31715, 27740, 294, 0, 4857, 1302, 12462] inP1,P2 [False, True]
+  resid 0 nu 2 F [23145, 3156, 0, 13958, 4385, 18051, 0, 26492, 9830, 9004] inP1,P2 [False, True]
+(2, 3, 1) basepts 2
+  resid 0 nu 2 F [40, 4048, 0, 0, 16, 0, 0, 0, 0, 0] inP1,P2 [False, True]
+  resid 0 nu 2 F [10723, 2024, 0, 22647, 8, 9362, 0, 31997, 11007, 21326] inP1,P2 [False, True]
+(0, 2, 9) basepts 0
+(0, 6, 13) basepts 0
+(0, 4, 4) basepts 0

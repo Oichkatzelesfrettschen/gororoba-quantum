@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py", line 944, in <module>
+    main()
+    ~~~~^^
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py", line 929, in main
+    _self_test(record)
+    ~~~~~~~~~~^^^^^^^^
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py", line 891, in _self_test
+    _require(row.get("blocked_stage") == PERMITTED_BLOCKED[name], f"{name} blocked at an unexpected stage")
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py", line 102, in _require
+    raise RuntimeError(message)
+RuntimeError: E8bar->N+ blocked at an unexpected stage

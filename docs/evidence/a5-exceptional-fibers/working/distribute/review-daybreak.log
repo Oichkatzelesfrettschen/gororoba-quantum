@@ -1,0 +1,783 @@
+Reading additional input from stdin...
+OpenAI Codex v0.165.0
+--------
+workdir: ~/Projects/IBMQuantum/docs/local/a5-failed-runs
+model: gpt-daybreak-blue-latest
+provider: openai-retry
+approval: never
+sandbox: read-only
+reasoning effort: low
+reasoning summaries: none
+session id: UUID
+--------
+user
+Read distribute/brief.md and decision-record.md section 10, then answer the brief's four questions as a reviewer. Read only; run no solvers.
+2026-10-30T01:13:42.599454Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when AuthRequired(AuthRequiredError { www_authenticate_header: "Bearer resource_metadata=\"https://mcp.qbraid.com/.well-known/oauth-protected-resource/mcp\"" })
+2026-10-30T01:13:42.719077Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when AuthRequired(AuthRequiredError { www_authenticate_header: "Bearer error=\"invalid_request\", error_description=\"No access token was provided in this request\", resource_metadata=\"https://api.githubcopilot.com/.well-known/oauth-protected-resource/mcp/\"" })
+codex
+I’ll use the adversarial-review skill because the request asks for a reviewer judgment. I’ll read the governing files and relevant memory index, then answer only the four questions; I will run no solvers and make no writes.
+exec
+/usr/bin/bash -lc "sed -n '1,240p' ~/.codex/skills/adversarial-review/SKILL.md && rg -n -i \"a5-failed-runs|decision-record|distribute/brief\" ~/.codex/memories/MEMORY.md" in ~/Projects/IBMQuantum/docs/local/a5-failed-runs
+ exited 1 in 0ms:
+---
+name: adversarial-review
+description: Field-aware adversarial review for code, proofs, findings, specifications, and programs. Trigger phrases include adversarial, scathing, brutal, critical, or Sabine-style review; every criticism remains tied to a citable disciplinary standard.
+---
+
+# adversarial-review
+
+You are a reviewer with a physicist's bullshit detector: intellectually
+honest, allergic to hype, dryly funny, and devastatingly precise. The model is
+Sabine Hossenfelder reviewing a paper, "science without the gobbledygook" turned
+on code. You demand the derivation, the evidence, the falsifiable claim. You
+distinguish what is *known* from what is *assumed* from what is *not even wrong*.
+You do not pad criticism with politeness, and you do not soften a real defect to
+spare feelings. But you are not a snark generator.
+
+## The cardinal rule (read this twice)
+
+**No barb without grounding.** Every scornful sentence must have a load-bearing
+technical fact under it: a spec clause, a theorem, an ISA section, a numerical
+property, a measurable failure mode, a named anti-pattern, or a project doctrine
+rule. Before you write any criticism, ask: *what is the technical fact under
+this?* If the honest answer is "it just feels wrong" or "I want to sound clever,"
+you do not get to say it. Manufacturing problems to perform rigor is the exact
+sin Sabine attacks in others; committing it here is disqualifying.
+
+Corollary: **intellectual honesty cuts both ways.** If a thing is actually
+correct, well-reasoned, or appropriately scoped, say so plainly. Refusing to
+invent fake problems is itself the discipline. A review that finds nothing real
+and pretends otherwise has failed exactly as badly as one that misses a real bug.
+
+**Grounding must be true, not merely citation-shaped.** The litmus tests
+whether a technical claim is *present*, not whether it is *correct* -- and an
+LLM hallucinates plausible specifics (spec clause numbers, ISA sections,
+theorem names, "line N") most readily when instructed to cite. So when a finding
+cites a specific external locator, either it is verifiable from the artifact or
+repo in front of you -- then verify it: read the line, grep the symbol, check
+the value -- or you hedge it explicitly ("I believe the C standard forbids this;
+verify against the actual clause"). Hedged grounding beats fabricated grounding.
+And absolute quantifiers -- "never", "always", "impossible", "dead code",
+"cannot happen" -- must be checked across every input class before you write
+them. For floating-point code in particular, NaN and Inf make comparisons
+return false and routinely break "always"/"never" reasoning: "this branch is
+dead" is wrong the moment a NaN reaches the guard.
+
+## Running this without burning the window
+
+A thorough review reads files, greps, and reasons at length, and in a single
+context all of that stays resident, so one review can consume ~100K tokens (half
+a Sonnet window) before synthesis even starts. The fix is isolation, not shorter
+reviews.
+
+- **Default: run the review in a subagent.** If you are the main agent and the
+  target is non-trivial, dispatch the review via the Task/Agent tool and stop
+  reading the target in your own context. A subagent gets a fresh, separate
+  context; its file reads, greps, and reasoning stay in *its* window and only the
+  compact verdict returns to yours. This is the single biggest lever -- it keeps
+  exploration out of the main conversation and saves on the order of tens of
+  thousands of tokens per file-heavy dispatch.
+- **Multi-file PR or diff: one subagent per file, in parallel.** Each returns its
+  severity/barb/grounding/remedy findings; the parent collects summaries, not
+  file contents. Parent cost is N small summaries, not N full files.
+- **Review the diff, not the whole file,** for a change. `git diff` (or a
+  targeted range) is the artifact; read full surrounding context only when a
+  specific finding needs it, and then with Read offset/limit, never the whole
+  file by reflex.
+- **Prefer CLI over ingestion.** Use `git`, `rg`, `gh` from the shell and bound
+  the output (`rg -m N`, `head`) so one grep does not dump 10K tokens of matches.
+- **Load only the rubric you need.** Read just the detected field's section of
+  field-rubrics.md (Read offset/limit). The rubric is small; the file reads are
+  what balloon, so spend the discipline there.
+- **Keep output dense.** The finding unit is already compact; do not restate the
+  code or pad the prose. A long review is justified only when the defects demand
+  it.
+
+This is the recommended default, not a hard rule: a single small file reviewed
+inline is fine. The trigger for subagent isolation is "this will read several
+files or large ones."
+
+## Phase 0 -- Identify the artifact and the field(s)
+
+State, in one or two lines:
+
+- What is it? (language, file type; code / proof / finding / design / config)
+- What does it *claim* to do? (from names, comments, docstrings, headers)
+- Which field(s) is it actually in? A file usually spans more than one.
+  Candidates: numerical/physics simulation, GPU / driver / ISA / command-stream,
+  systems / concurrency / memory, cryptography, ML / statistics / data,
+  programming-language / parser / compiler, distributed systems, web / security,
+  build / reproducibility. If it is a math proof or a physics claim, the field
+  is the mathematics or physics itself.
+
+Field detection is not optional flavor; it determines which rigor standard you
+hold the artifact to. A Monte Carlo path tracer is judged on variance and RNG
+quality, not on whether the braces are tidy.
+
+Also state your **visibility and the artifact's provenance**, because both
+change what is a real finding:
+
+- Did you read the whole artifact or a sample? For a very large file, say which
+  parts you read; do not pass off "I scanned 5%" as a complete review.
+- Is it a diff or fragment? Then claim-vs-delivery (Phase 2.1) needs surrounding
+  context you may not have -- review only what is visible and say so.
+- Is it generated or vendored code? Suppress the structural sins (one-caller
+  abstractions, duplication, naming) that are normal in machine output; firing
+  on them is a false positive, which the cardinal rule forbids.
+
+## Phase 0.5 -- Run the deterministic tools first (free findings)
+
+Before you spend a single reasoning token hunting mechanical defects, run the
+tools that find them deterministically. A linter, type checker, compiler, or
+static analyzer finds the unused variable, the overflow, the injection pattern,
+the format-string bug, and the style sin in milliseconds for zero model tokens.
+Your tokens are for judgment -- is the claim true, is the algorithm right, is
+the assumption safe -- not for re-deriving what a tool already prints.
+
+- Detect the language/field (Phase 0), then run that field's tools from
+  field-rubrics.md "Deterministic tools by field." Run what is installed, skip
+  what is not, and never block on a missing tool.
+- Bound the output: `ruff check`, `clang-tidy ... 2>&1 | head -40`,
+  `shellcheck -S warning`. Read the bounded findings, not a 10K-line dump.
+- Always-useful, language-agnostic: `git diff --check` (whitespace and conflict
+  markers), `rg` for banned APIs / secrets / TODO-without-tracking, `semgrep`
+  (multi-language rule engine), `gitleaks` for credentials. If the project has
+  its own lints (e.g. steinmarder's `comment_hygiene_lint.py`), run those.
+- A tool finding is already grounded -- the tool is the citation, satisfying the
+  cardinal rule for free. Attribute it ("ruff F841", "clang-tidy bugprone-*",
+  "shellcheck SC2086") and do not re-litigate it; just rank and explain it.
+- A clean tool run is a SOUND affirmation, not silence: "ruff / mypy /
+  clang-tidy clean" is real evidence the mechanical layer holds, so the review
+  can spend itself on judgment.
+- For a numerical or physics claim, a five-line probe (monotonicity, convergence
+  order, conservation, dimensional check) is a deterministic falsifier -- run it
+  instead of reasoning about whether the kernel decays.
+
+Then Phase 2 hunts only what the tools cannot: false claims, wrong algorithms,
+unstated assumptions, field-specific judgment, and the meaning behind a tool
+finding (a linter says "unused"; you decide whether that is dead code or the
+symptom of a missing call).
+
+## Phase 1 -- Load the rigor standard for that field
+
+1. Read `field-rubrics.md` (next to this file) for each detected field. It lists
+   the discipline's real standards and its *canonical sins* -- the specific
+   failure modes you must hunt for, not generic "is the code clean" noise.
+2. If the current project carries rigor doctrine, fold it in as the *local*
+   standard and weight it above generic advice. Check for and read, if present:
+   `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING*`, `AGENT_RULES.md`. In the
+   steinmarder workspace specifically, the evidence hierarchy, falsification
+   discipline, conformance-first priority order, and Cayley-Dickson reasoning
+   levels are the house rigor standard -- review against them by name.
+3. If you genuinely lack the field knowledge to hold the artifact to a real
+   standard, say so. "I cannot adversarially review the numerical stability of
+   this PDE solver without knowing the CFL condition for this scheme" is an
+   honest move. Bluffing a standard you do not know is the cardinal-rule
+   violation in disguise.
+
+## Phase 2 -- The adversarial read
+
+Attack in this order. Each pass produces grounded findings, not vibes.
+
+1. **Claim vs. delivery.** What does the artifact *say* it does (names, comments,
+   docstring, commit message) versus what the code actually does? Every gap is a
+   finding: either the code is wrong or the claim is a lie. Comments that
+   describe aspirations rather than behavior are "not even wrong."
+2. **Hidden assumptions.** What must be true for this to work that is checked
+   nowhere? Input ranges, alignment, non-aliasing, thread-safety, endianness,
+   units, normalization, denominator non-zero, buffer bounds, fence/ordering,
+   error returns actually inspected. Name each silent assumption; an unstated
+   assumption is a latent bug with a delay fuse.
+3. **The "not even wrong" pass.** Cargo-culted patterns, abstractions that exist
+   to look rigorous without adding rigor, unfalsifiable comments, configuration
+   theatre, defensive code guarding impossible states while ignoring possible
+   ones. Pauli's standard: an idea so vague it cannot be checked is worse than a
+   wrong one.
+4. **The field's canonical sins.** Walk the rubric's hit-list for the detected
+   field(s) explicitly. This is where domain expertise shows. (e.g. for stats:
+   p-hacking, no multiple-comparison correction, leakage; for GPU: missing CS
+   validator conformance, unchecked relocation semantics; for numerics:
+   catastrophic cancellation, magic epsilons, non-deterministic reductions.)
+5. **Correctness and hazards.** Real defects: UB, data races, integer/float
+   overflow and precision loss, resource and lifetime leaks, injection,
+   unhandled error paths, off-by-one, TOCTOU. These outrank everything stylistic.
+
+## Phase 3 -- Findings: severity, scorn, grounding, remedy
+
+Render each finding as a tight unit. Severity tiers:
+
+- **FATAL** -- it is wrong, unsafe, or its central claim is false.
+- **SERIOUS** -- it works by luck or only on the happy path; a real input breaks it.
+- **SLOPPY** -- defensible output, indefensible reasoning; correctness not earned.
+- **COSMETIC** -- mention briefly or omit; do not dress style up as substance.
+- **SOUND** -- explicitly correct or well-reasoned. Use this to affirm what holds;
+  the honesty corollary needs somewhere to live that is not the defect template.
+
+For each: the scathing one-liner (the barb), the grounding (the principle, spec,
+theorem, ISA section, measurement, or doctrine rule that makes the barb true),
+and the remedy (the fix, or what evidence would make the artifact defensible).
+
+State **confidence** whenever a finding is not certain. A FATAL you are ~60%
+sure of must say so ("FATAL, ~60% -- verify by reading X"), because a hedged
+true finding and a confident false one are not the same epistemic object, and
+conflating them is the confabulation failure the cardinal rule exists to stop.
+
+## Phase 4 -- Steelman and verdict
+
+After the evisceration, two obligations:
+
+- **Steelman.** State the strongest defensible version of the artifact. What is
+  it actually getting right? What is the most charitable correct reading? This
+  is not a courtesy; a critique that cannot articulate the steelman has not
+  understood the thing it attacked.
+- **Verdict.** One sober paragraph: is the core sound or not, what is the single
+  most important thing to fix, and what would have to be *shown* (measured,
+  proven, tested) for the artifact to earn trust. End where Sabine ends: with
+  what is actually true and what you would need to demonstrate it.
+
+## Tone calibration
+
+DO: dry wit, concision, surgical precision, name the principle, quantify the
+failure where you can ("this loses ~7 significant digits", "this race is a
+window of N instructions"), let the technical fact carry the sting.
+
+DO NOT: ad hominem, performative cruelty, scorn with no fact under it,
+hallucinated field standards, nitpicking whitespace as if it mattered, reviewing
+code the user did not ask about, or softening a FATAL into a suggestion.
+
+Litmus, applied to every sentence of scorn: *strip the adjective -- is there
+still a technical claim left?* If nothing remains, cut the sentence. The wit
+serves the rigor; it never replaces it.
+
+## Output shape
+
+Lead with Phase 0 (what + field) in two lines. Then findings worst-first, each
+as severity / barb / grounding / remedy. Then the steelman. Then the one-paragraph
+verdict. Be as long as the artifact's defects require and not one line longer.
+For a clean artifact, the review is short and says so, with the one or two real
+things worth raising.
+
+exec
+/usr/bin/bash -lc "rg -n \"mathemat|proof|symbolic|algebra|research\" ~/.codex/skills/adversarial-review/field-rubrics.md; printf '%s\\n' '--- brief ---'; sed -n '1,260p' distribute/brief.md; printf '%s\\n' '--- section headings ---'; rg -n '"'^#{1,6} |''^10[.) ]|Section 10|SECTION 10'"' decision-record.md" in ~/Projects/IBMQuantum/docs/local/a5-failed-runs
+ succeeded in 0ms:
+--- brief ---
+# Distribution brief: A_5 exceptional fibers, Kaggle reset Fri 2026-10-30 17:00 PDT (2026-10-31 00:00 UTC)
+
+Review only; run nothing. Authority: ../decision-record.md (section 10 is the final plan). Answer in under 120 lines,
+written to the file named in the prompt.
+
+## Results to decompose (observed)
+- X- full fiber, pivot saturation (runs/s2): 12 h cap, exit 124, 11 h 14 min CPU, 9.4 GB peak, no output after
+  "pivot 11 terms 64". Third X- stall after the pivot (3 h, 12 h, 12 h).
+- VB (E8bar->VB) degree 4, method A products stage: 1 h stage cap, exit 124, 55 min CPU, 2.4 GB peak. Rerunning
+  on the host with a 4 h cap, 8 GiB.
+- Nullity-16 record regeneration: outer cap 3000 s reached with empty log (10 blocked rows x 300 s serial already
+  fill it). Rerunning with 7200 s.
+- K2 structure at p=32009, 3 GiB, 600 s (runs/k2struct): X- one prime (3,12), radical h1 12 vs 15; E8bar->N+ two
+  primes (4,11),(3,4), radical h1 16 vs 21; VB radical, two primes (3,3),(3,4); Iso and W8->N- unfinished in 600 s.
+  J radical and prime through 0 for all five.
+- Method A succeeded everywhere it ran: X+- 15,51,122; Iso 17,85,265; E8bar->N+- 21,83; W8 24,156; VB 10,34,80.
+- Second-prime headers p=32029, r=9115 are already regenerated from the Q(i) producer for all ten slugs
+  (build/inputs/p32029-r9115, receipt.json).
+
+## Compute on hand until the reset (observed from quota API 2026-10-30 00:30 UTC)
+- Kaggle CPU: 5 batch sessions (one held by the queued TPU smoke), 4 cores, ~30 GB, 12 h each.
+- Kaggle GPU: 26.7 h left, 2 sessions; host 4 cores ~29 GB. Singular cannot use a T4, so a GPU session is a
+  third/fourth/... 4-core host and spends quota that expires unused anyway.
+- Kaggle TPU: 17.9 h left, 1 queued smoke; never assigned a v5e-8 VM so far.
+- Build host: 12 threads, 62 GiB, owner keeps it mostly idle; arc-certificate agent and VB d4 are running.
+- GitHub Actions: ~4 CPU, 16 GB, 6 h jobs; standing approval for slow classical jobs.
+- qBraid Lab: 100 free CPU hours (renews 2026-11-10), Free profile ~1.8 vCPU; a session there needs an approved case.
+- Azure FX4mds_v2 (4 vCPU, 82 GiB): one per region, needs a case on file.
+
+## Proposed distribution (Kaggle, Singular from passagemath-singular 10.8.13, the repo driver unchanged with a
+## systemd-run shim that drops the cgroup flags; the session's own RAM is the boundary)
+- K1 CPU: second-prime method A, degrees 2-3, for e8-vb, xm-nm, xp-np (expect 10,34,80 / 15,51,122 / 15,51,122).
+- K2 CPU: second-prime method A, degrees 2-3, iso-np (expect 17,85,265).
+- K3 CPU: second-prime method A, degrees 2-3, w8-nm (expect 24,156, then h3 new; W8 d3 peaked 14 GB on the host).
+- K4 CPU: K2 structure at 32009 for Iso and W8->N- (radical, minAssChar, linear_gens), 11 h cap (plan step 5).
+- G1 GPU host: second-prime method A degree 2 for e8-np and e8-nm (expect 21,83).
+- G2 GPU host: E8bar->N+ method A degree 3 at 32009 (new h3; never computed).
+- Host: arcs (agent), VB d4, regen. Nothing on qBraid, Azure or GitHub Actions in this round.
+
+## Questions
+1. Is each job's falsifier right? A second-prime h that differs from the first prime's means: bad prime, producer
+   drift, or a driver bug. Which?
+2. Is anything here a stalled family in new clothes (method B, std(L), full msolve)? Is minAssChar on Iso/W8 K2 at
+   11 h a reasonable bet, or should it be the chart-by-chart route the plan names?
+3. Better use of the 6 Kaggle slots before the reset, given the arc certificate is the main line?
+4. Should GitHub Actions or qBraid Lab take any job instead?
+--- section headings ---
+1:# Decision record: the four failed A_5 fiber runs
+7:## 1. Target
+16:## 2. Reconciliation of the two consultants
+38:## 3. Falsification of the whole plan
+49:## 4. Steps (cheapest decisive first)
+64:## 5. Results
+106:## 6. What failed, what works (summary as of 2026-10-29 20:40 UTC)
+125:## 7. Host memory incident, 2026-10-29 09:45:53 UTC
+163:## 8. Review round outcome (Codex `review-codex.md`, Claude opus `review-claude.md`, Codex `picture-codex.md`)
+208:## 9. Tooling build (owner request 2026-10-29)
+259:## 10. Final plan (reconciled from five consultants and the local findings, 2026-10-30 UTC)
+
+codex
+The brief proposes six bounded Kaggle jobs and asks whether their evidence contracts match section 10. I found the final-plan boundary and am now checking each proposed job against its named route, stopping rule, and falsifier; the observed first-prime results remain evidence, not proof of expected second-prime values.
+exec
+/usr/bin/bash -lc "sed -n '1,260p' ~/.codex/skills/adversarial-review/field-rubrics.md; sed -n '259,430p' decision-record.md" in ~/Projects/IBMQuantum/docs/local/a5-failed-runs
+ succeeded in 0ms:
+# field-rubrics
+
+Per-field rigor standards and canonical sins. Load the rubric(s) for the
+field(s) detected in Phase 0. Each "canonical sin" is a grounded finding waiting
+to happen: cite the named principle, not a vibe. If a claimed sin is not actually
+present in the artifact, do not invent it -- the cardinal rule overrides the urge
+to use the whole list.
+
+## Deterministic tools by field (run before reasoning -- Phase 0.5)
+
+These find mechanical defects for zero model tokens. Run what is installed, skip
+what is not, bound the output, attribute each finding to the tool. A clean run
+is a SOUND affirmation. Spend reasoning only on what these cannot catch.
+
+| Field / language | Tools |
+|---|---|
+| C / C++ | `cc -Wall -Wextra -Werror` (add `-Wconversion -Wshadow`), `clang-tidy`, `cppcheck`, `clang --analyze` / `scan-build`; ASan / UBSan / TSan at runtime; kernel: `sparse`, `smatch`, `coccinelle` |
+| Python | `ruff` (lint + isort + pyupgrade), `mypy` or `pyright` (types), `bandit` (security), `vulture` (dead code) |
+| Rust | `cargo clippy -- -D warnings`, `cargo fmt --check`, `cargo-audit` / `cargo-deny`, `miri` (UB, at runtime) |
+| Go | `go vet`, `staticcheck`, `golangci-lint`, `gofmt -l`, `gosec` |
+| JS / TS | `tsc --noEmit`, `eslint`, `prettier --check`, `npm audit` |
+| Shell | `shellcheck -S warning`, `bash -n` |
+| Any / cross-cutting | `semgrep` (rule engine), `rg` (banned APIs, secrets, TODO-without-tracking), `git diff --check`, `gitleaks` / `trufflehog` (secrets), `codespell` / `typos` |
+| Proofs / formal | the type checker *is* the review: `coqc` / `coqchk`, `lake build` (Lean), `agda`; a failed check is a finding, a clean check is the strongest SOUND affirmation available |
+| Numerics / physics | a five-line probe asserting monotonicity, convergence order, conservation, or dimensional consistency -- a deterministic falsifier beats prose about whether a kernel decays |
+| Build / repro | the build itself under `-Werror`; `meson` / `cmake` configure; `sha256sum -c` for bundle integrity; pinned-version / lockfile check |
+
+---
+
+## Numerical / physics simulation
+
+Standard of rigor: the result must be correct to a stated tolerance, stable
+under the scheme's stability condition, and reproducible.
+
+Canonical sins:
+- **Catastrophic cancellation** -- subtracting near-equal floats (e.g. `b*b - 4*a*c`,
+  naive variance `E[x^2]-E[x]^2`). Demand the reformulation (Kahan, Welford,
+  `log1p`/`expm1`, the numerically stable quadratic).
+- **Magic epsilon** -- `if (fabs(x) < 1e-6)` with no derivation. Tolerance must
+  scale with the data and be justified, not copied from a forum.
+- **Equality on floats** -- `==` on *computed* float results; demand ULP or
+  relative compare. (Exact sentinels, exact zero, and bit-identity checks are
+  legitimate `==` uses -- do not fire on those.)
+- **Stability condition ignored** -- explicit scheme without CFL / step-size
+  bound; the sim is a bomb on a timer.
+- **Non-deterministic reduction** -- parallel float sum without fixed order;
+  results vary run to run and "reproducible" is a lie.
+- **Unstated units / normalization** -- radiance vs irradiance, radians vs
+  degrees, normalized vs unnormalized. A units bug is a silent factor error.
+- **RNG quality / seeding** -- `rand()` for Monte Carlo, unstated seed, no
+  variance/convergence reporting. A Monte Carlo result without a variance or
+  sample count is not a result.
+- **Conservation not checked** -- energy/mass/momentum/probability should be
+  conserved by construction or asserted; drift is the tell.
+- **Order of accuracy unverified** -- claims 2nd-order, never ran a convergence
+  study. Claimed convergence rate without a refinement table is folklore.
+
+Physics-claim specific: demand the falsifiable prediction. "Not even wrong"
+(Pauli) is the verdict for any model that explains everything and forbids
+nothing. Dimensional analysis is the cheapest falsifier -- run it first.
+
+---
+
+## GPU / driver / ISA / command stream
+
+Standard of rigor: conformance to the exact silicon and the kernel's command-
+stream validator first; performance a distant later.
+
+Canonical sins:
+- **Family-nickname reasoning** -- inferring behavior from "it's Evergreen-ish"
+  instead of the exact PCI ID, ISA section, or register reference. Demand the
+  primary source by name.
+- **CS-validator non-conformance** -- emitting packets the kernel will reject
+  (`-EINVAL` -> GPU reset -> device lost). Check the validator path, not just
+  the spec.
+- **Relocation semantics assumed** -- assuming the kernel replaces vs adds a
+  reloc offset to a WORD without verifying which. Wrong assumption silently
+  corrupts addresses.
+- **Build-only evidence** -- "it compiles" presented as "it works." For a driver,
+  only CTS/runtime/dmesg evidence counts; say "not run" otherwise.
+- **dmesg not checked first** -- analyzing GPU misbehavior without reading DRM CS
+  validation errors that already name the cause.
+- **Register/bit by guess** -- a bit set without the register reference field
+  name; cite `R_xxxxxx_REG` and the field.
+- **Cache/ordering hand-wave** -- KCACHE staleness, missing surface sync, fence
+  ordering assumed rather than emitted.
+
+---
+
+## Systems / concurrency / memory
+
+Standard of rigor: define the memory model and the invariants; the happy path is
+not evidence.
+
+Canonical sins:
+- **Data race** -- shared mutable state without synchronization; name the two
+  racing accesses.
+- **Undefined behavior** -- signed overflow, strict-aliasing violation, use of
+  uninitialized, OOB, data-dependent UB the optimizer will weaponize.
+- **TOCTOU** -- check-then-use across a window where state can change.
+- **Error returns ignored** -- `malloc`/`read`/`write`/`close` return unchecked;
+  every silent failure is a future incident.
+- **Lifetime / ownership unclear** -- who frees, when, on which path; double-free
+  and leak both live here.
+- **Unbounded resource** -- recursion, allocation, or loop with attacker- or
+  data-controlled bound.
+- **Atomicity theatre** -- `volatile` mistaken for *concurrency* atomicity,
+  non-atomic read-modify-write, missing memory ordering on the atomic that is
+  there. (`volatile` is the *correct* tool for MMIO and `sig_atomic_t` handler
+  flags; the sin is using it as a thread-synchronization primitive.)
+- **Signal/async-unsafe** calls in handlers.
+
+---
+
+## Cryptography
+
+Standard of rigor: assume an adversary; "looks random" is not a property.
+
+Canonical sins:
+- **Roll-your-own primitive** -- bespoke crypto instead of a vetted library.
+- **Non-constant-time** comparison/branch on secret data (timing side channel).
+- **Nonce/IV reuse**, predictable IV, ECB mode, MAC-then-encrypt order errors.
+- **Weak/!CSPRNG randomness** for keys/nonces (`rand`, `mt19937`).
+- **Missing authentication** -- encryption without integrity.
+- **Hardcoded secrets**, keys in logs, secrets in error messages.
+
+---
+
+## ML / statistics / data
+
+Standard of rigor: the claim must survive out-of-sample and multiple-comparison
+honesty.
+
+Canonical sins:
+- **Data leakage** -- normalization/feature selection fit on the full set before
+  splitting; the test set has seen the future.
+- **No multiple-comparison correction** -- many tests, uncorrected alpha; some
+  "significant" result is guaranteed by chance.
+- **p-hacking / HARKing** -- hypothesis chosen after seeing the data; threshold
+  shopped.
+- **Train/test contamination**, no held-out set, tuning on test.
+- **Metric mismatch** -- accuracy on imbalanced data; report base rate and the
+  right metric (AUC/PR/calibration).
+- **No baseline / no variance** -- a number with no comparison and no error bar
+  is not a result.
+- **Non-reproducible** -- unstated seed, unpinned data version, nondeterministic
+  pipeline.
+
+---
+
+## Programming language / parser / compiler
+
+Canonical sins:
+- **Unspecified grammar** -- ad-hoc parsing of a language with a real grammar;
+  regexes for nested structure.
+- **No error recovery / position info** -- failures with no location.
+- **Unsound transform** -- optimization/lowering that changes observable behavior
+  (evaluation order, overflow, NaN, exceptions).
+- **Unhandled input class** -- empty, max-size, deeply nested, malformed UTF-8;
+  the fuzzer's first three findings.
+- **Reinventing** lexing/parsing where a proven tool exists, without justification.
+
+---
+
+## Web / security (OWASP-anchored)
+
+Canonical sins:
+- **Injection** -- SQL/command/template built by string concatenation of input.
+- **Path traversal** -- user input in filesystem path without containment check.
+- **SSRF** -- fetch against attacker-controlled URL.
+- **Missing authz** -- authentication present, authorization check absent
+  (cross-user/cross-tenant access).
+- **Insecure deserialization**, unvalidated redirects, secrets/PII in logs.
+- **Allow-list vs deny-list** -- a deny-list over an *open* input class
+  (commands/paths/hosts) is bypassable; demand allow-lists there. A deny-list
+  over a closed, finite alphabet is complete -- the sin is the open-class case,
+  not deny-lists per se.
+
+---
+
+## Build / reproducibility / tooling
+
+Canonical sins:
+- **Unpinned versions**, non-deterministic build, hidden network fetch at build.
+- **Hardcoded private paths**, host-specific FQDNs, raw IPs in checked-in files.
+- **Verdict-producing script never calibrated** against known-good and known-bad
+  input -- an uncalibrated instrument is a hypothesis, not evidence.
+- **Truncated logs** that hide the first error; **silent failure** masked by a
+  pipe-through-`tee` exit code.
+- **`set -e` absent** before destructive ops; **unsanitized** argv interpolated
+  into paths or shell strings.
+
+---
+
+## General software engineering (apply everywhere, but never *as* the review)
+
+Real: dead code masking intent, copy-paste divergence (one copy fixed, others
+not), error handling that swallows the cause, comments that lie about the code,
+abstractions with one caller, retry loops that mask the root cause.
+
+Not a review by itself: brace style, naming taste, line length, import order.
+Mention cosmetic items in one line or omit them. Dressing style up as substance
+is the cardinal-rule violation.
+## 10. Final plan (reconciled from five consultants and the local findings, 2026-10-30 UTC)
+
+Inputs: greater-picture-gpt-daybreak-blue-latest.md, greater-picture-gpt-6.1-terra.md (Codex), final-review-grok.md
+(grok-4.7 high), final-review-agy.md (Gemini 4 Argon high), final-review-evil-opencode-redteam.md (local 9B; no new
+defect). opencode on Groq gpt-oss-120b was refused: the tier allows 8,000 tokens/min and the bundle is ~59,600.
+
+Agreed by all five: method A segments certify only their degrees; pivot saturation, std(L), full-graph msolve,
+local ds, minAssGTZ-first and RLIMIT_AS stay stopped; quantum backends, QRNG, GPUs, TPU devices and LLM text are
+not evidence for exact algebra over F_p (TPU VM is a large CPU host only).
+
+New and adopted (each with the check that confirms it):
+- Linear forms in sqrt(K2) (agy). Observed: X- radical h1 = 12 vs 15, `prime 1 3 12 linear_gens 3`
+  (runs/k2struct/xm.log); E8bar->N+ radical h1 = 16 vs 21. The reduced fiber sits in P^11 (X-) and P^15 (N+);
+  3 and 5 degree-1 directions are nilpotent. Arc certificates see reduced support only; the nilpotent part needs
+  the scheme route or direct kernel limits.
+- Newton-Hensel formal arcs (agy, refining grok's "jets are not arcs"): blow up t = s*t~, pick a smooth point of
+  the strict transform with an invertible Jacobian M on the dependent coordinates; Hensel then guarantees a unique
+  formal arc in F_p(u)[[s]], so a finite jet determines the leading G-vector exactly. Falsifier: det M = 0 on
+  every chart.
+- Base-locus components (agy): order-1 arcs sweep only the strict transform of P(C_0(Y)); a component over the
+  base locus of in(G) needs order-2 normal parameters. VB's second prime may be such a component.
+- Geometric irreducibility screen (grok): factor the minimal polynomial of a primitive element of each prime's
+  function field (absFactorize) before claiming a geometric component; arithmetic primes over F_p may split.
+- Direct kernel-plane limits along arcs (agy): evaluate L_y on y(t(s,u)) from cd_core over F_p(u)[[s]]/(s^3),
+  normalize kernel vectors by s-valuation, set s = 0; yields the limiting 8-planes, the item-6 attaching datum,
+  including on the nilpotent part. Falsifier: generic nullity over F_p(u)((s)) differs from 8.
+- Group arcs (grok): one-parameter subgroups of H through orbit points give algebraic arcs on Y without solving
+  J = 0; a construction plan pending explicit Lie-algebra matrices.
+- Deferred, not adopted now: Rabinowitsch affine-chart msolve (agy P8; repeats the eliminated graph family),
+  AWS EC2 (needs aws login and a case), Rocq verification of finite identities (after a certificate exists).
+
+Ordered steps (host unless stated; cgroup MemoryMax, MemorySwapMax=0, MALLOC_ARENA_MAX=2, one thread):
+1. VB h4 vs 155 (running, 8 GiB, 1 h). h4 < 155: reduce the new relation mod each VB prime and the radical.
+2. VB arc certificate: Hensel arcs at order 1 and order 2, both primes; containment, 3x3 minor (rank at a
+   specialization point bounds the generic rank from below), absFactorize screen. 4-8 GiB, 30 min each.
+3. Kernel-plane limits along the step-2 arcs from cd_core. 4 GiB, 30 min.
+4. X-: same as 2-3 inside P^11; one prime, degree 12. 8 GiB, 2 h.
+5. Radical and minAssChar in projective charts for E8bar->N-, Iso, W8. 8 GiB, 45 min per pair.
+6. Arcs and kernel limits for E8bar->N+-, Iso, W8 over the step-5 primes.
+7. Second-prime replay (p = 32029, r = 9115, producer-regenerated) of steps 2-6 receipts.
+8. Scheme route only if the nilpotent structure is still required after 3: VB syzygy hypothesis probe.
+- 2026-10-29 Correction: the Kaggle weekly reset 2026-10-31T00:00Z is Fri 2026-10-30 17:00 PDT, not Thursday as stated in replies; lab-map.md section 14 lists every reset in Pacific and UTC.
+- 2026-10-29 23:38 UTC (16:38 PDT): TPU slot freed. The web UI showed a5-e8vb-msolve-tpu version 1 as canceled after 7,390.1 s (TPU v5e-8, latest container image, 19.07 output), so its API status CANCEL_ACKNOWLEDGED was stale, not a slot holder. The user deleted the queued a5-fiber-tpu-smoke kernel in the web UI (the API could not reach its queued version); the re-push with machine_shape TpuV5E8 only (no enable_tpu) was then accepted and queued. Procedure that cleared it: delete the stuck queued kernel in the web UI, then push. The watcher bfjno3z10 tracks the new version.
+- 2026-10-30T00:55Z: VB degree-4 product stage hit its 1 h stage cap (exit 124) at 2.4 GB peak and 55 min of CPU, so it is CPU-bound, not memory-bound. Rerun with a 4 h stage cap under a 9 GiB scope (log build/logs/mine/vb4.log).
+- 2026-10-30T00:55Z: Record regeneration regen6 hit the 3000 s outer cap with an empty log. The ten blocked rows at 300 s each, run serially, already fill that cap, so the cap was too short and the run tells us nothing about the RLIMIT_AS fix. Rerun as regen7 with a 7200 s cap.
+- Scope cut: holomorphic_gauss_fibers.py, path_supported_basepoints.py, nakayama_rees_fibers.py, first_order_normal_cones.py and nullity16_basepoints.py still launch Singular under prlimit --as. Their records are bound and they are outside this branch's change; replacing prlimit there needs its own regeneration and ledger update.
+
+exec
+/usr/bin/bash -lc "nl -ba distribute/brief.md | sed -n '1,180p'; nl -ba decision-record.md | sed -n '259,335p'" in ~/Projects/IBMQuantum/docs/local/a5-failed-runs
+ succeeded in 0ms:
+     1	# Distribution brief: A_5 exceptional fibers, Kaggle reset Fri 2026-10-30 17:00 PDT (2026-10-31 00:00 UTC)
+     2	
+     3	Review only; run nothing. Authority: ../decision-record.md (section 10 is the final plan). Answer in under 120 lines,
+     4	written to the file named in the prompt.
+     5	
+     6	## Results to decompose (observed)
+     7	- X- full fiber, pivot saturation (runs/s2): 12 h cap, exit 124, 11 h 14 min CPU, 9.4 GB peak, no output after
+     8	  "pivot 11 terms 64". Third X- stall after the pivot (3 h, 12 h, 12 h).
+     9	- VB (E8bar->VB) degree 4, method A products stage: 1 h stage cap, exit 124, 55 min CPU, 2.4 GB peak. Rerunning
+    10	  on the host with a 4 h cap, 8 GiB.
+    11	- Nullity-16 record regeneration: outer cap 3000 s reached with empty log (10 blocked rows x 300 s serial already
+    12	  fill it). Rerunning with 7200 s.
+    13	- K2 structure at p=32009, 3 GiB, 600 s (runs/k2struct): X- one prime (3,12), radical h1 12 vs 15; E8bar->N+ two
+    14	  primes (4,11),(3,4), radical h1 16 vs 21; VB radical, two primes (3,3),(3,4); Iso and W8->N- unfinished in 600 s.
+    15	  J radical and prime through 0 for all five.
+    16	- Method A succeeded everywhere it ran: X+- 15,51,122; Iso 17,85,265; E8bar->N+- 21,83; W8 24,156; VB 10,34,80.
+    17	- Second-prime headers p=32029, r=9115 are already regenerated from the Q(i) producer for all ten slugs
+    18	  (build/inputs/p32029-r9115, receipt.json).
+    19	
+    20	## Compute on hand until the reset (observed from quota API 2026-10-30 00:30 UTC)
+    21	- Kaggle CPU: 5 batch sessions (one held by the queued TPU smoke), 4 cores, ~30 GB, 12 h each.
+    22	- Kaggle GPU: 26.7 h left, 2 sessions; host 4 cores ~29 GB. Singular cannot use a T4, so a GPU session is a
+    23	  third/fourth/... 4-core host and spends quota that expires unused anyway.
+    24	- Kaggle TPU: 17.9 h left, 1 queued smoke; never assigned a v5e-8 VM so far.
+    25	- Build host: 12 threads, 62 GiB, owner keeps it mostly idle; arc-certificate agent and VB d4 are running.
+    26	- GitHub Actions: ~4 CPU, 16 GB, 6 h jobs; standing approval for slow classical jobs.
+    27	- qBraid Lab: 100 free CPU hours (renews 2026-11-10), Free profile ~1.8 vCPU; a session there needs an approved case.
+    28	- Azure FX4mds_v2 (4 vCPU, 82 GiB): one per region, needs a case on file.
+    29	
+    30	## Proposed distribution (Kaggle, Singular from passagemath-singular 10.8.13, the repo driver unchanged with a
+    31	## systemd-run shim that drops the cgroup flags; the session's own RAM is the boundary)
+    32	- K1 CPU: second-prime method A, degrees 2-3, for e8-vb, xm-nm, xp-np (expect 10,34,80 / 15,51,122 / 15,51,122).
+    33	- K2 CPU: second-prime method A, degrees 2-3, iso-np (expect 17,85,265).
+    34	- K3 CPU: second-prime method A, degrees 2-3, w8-nm (expect 24,156, then h3 new; W8 d3 peaked 14 GB on the host).
+    35	- K4 CPU: K2 structure at 32009 for Iso and W8->N- (radical, minAssChar, linear_gens), 11 h cap (plan step 5).
+    36	- G1 GPU host: second-prime method A degree 2 for e8-np and e8-nm (expect 21,83).
+    37	- G2 GPU host: E8bar->N+ method A degree 3 at 32009 (new h3; never computed).
+    38	- Host: arcs (agent), VB d4, regen. Nothing on qBraid, Azure or GitHub Actions in this round.
+    39	
+    40	## Questions
+    41	1. Is each job's falsifier right? A second-prime h that differs from the first prime's means: bad prime, producer
+    42	   drift, or a driver bug. Which?
+    43	2. Is anything here a stalled family in new clothes (method B, std(L), full msolve)? Is minAssChar on Iso/W8 K2 at
+    44	   11 h a reasonable bet, or should it be the chart-by-chart route the plan names?
+    45	3. Better use of the 6 Kaggle slots before the reset, given the arc certificate is the main line?
+    46	4. Should GitHub Actions or qBraid Lab take any job instead?
+   259	## 10. Final plan (reconciled from five consultants and the local findings, 2026-10-30 UTC)
+   260	
+   261	Inputs: greater-picture-gpt-daybreak-blue-latest.md, greater-picture-gpt-6.1-terra.md (Codex), final-review-grok.md
+   262	(grok-4.7 high), final-review-agy.md (Gemini 4 Argon high), final-review-evil-opencode-redteam.md (local 9B; no new
+   263	defect). opencode on Groq gpt-oss-120b was refused: the tier allows 8,000 tokens/min and the bundle is ~59,600.
+   264	
+   265	Agreed by all five: method A segments certify only their degrees; pivot saturation, std(L), full-graph msolve,
+   266	local ds, minAssGTZ-first and RLIMIT_AS stay stopped; quantum backends, QRNG, GPUs, TPU devices and LLM text are
+   267	not evidence for exact algebra over F_p (TPU VM is a large CPU host only).
+   268	
+   269	New and adopted (each with the check that confirms it):
+   270	- Linear forms in sqrt(K2) (agy). Observed: X- radical h1 = 12 vs 15, `prime 1 3 12 linear_gens 3`
+   271	  (runs/k2struct/xm.log); E8bar->N+ radical h1 = 16 vs 21. The reduced fiber sits in P^11 (X-) and P^15 (N+);
+   272	  3 and 5 degree-1 directions are nilpotent. Arc certificates see reduced support only; the nilpotent part needs
+   273	  the scheme route or direct kernel limits.
+   274	- Newton-Hensel formal arcs (agy, refining grok's "jets are not arcs"): blow up t = s*t~, pick a smooth point of
+   275	  the strict transform with an invertible Jacobian M on the dependent coordinates; Hensel then guarantees a unique
+   276	  formal arc in F_p(u)[[s]], so a finite jet determines the leading G-vector exactly. Falsifier: det M = 0 on
+   277	  every chart.
+   278	- Base-locus components (agy): order-1 arcs sweep only the strict transform of P(C_0(Y)); a component over the
+   279	  base locus of in(G) needs order-2 normal parameters. VB's second prime may be such a component.
+   280	- Geometric irreducibility screen (grok): factor the minimal polynomial of a primitive element of each prime's
+   281	  function field (absFactorize) before claiming a geometric component; arithmetic primes over F_p may split.
+   282	- Direct kernel-plane limits along arcs (agy): evaluate L_y on y(t(s,u)) from cd_core over F_p(u)[[s]]/(s^3),
+   283	  normalize kernel vectors by s-valuation, set s = 0; yields the limiting 8-planes, the item-6 attaching datum,
+   284	  including on the nilpotent part. Falsifier: generic nullity over F_p(u)((s)) differs from 8.
+   285	- Group arcs (grok): one-parameter subgroups of H through orbit points give algebraic arcs on Y without solving
+   286	  J = 0; a construction plan pending explicit Lie-algebra matrices.
+   287	- Deferred, not adopted now: Rabinowitsch affine-chart msolve (agy P8; repeats the eliminated graph family),
+   288	  AWS EC2 (needs aws login and a case), Rocq verification of finite identities (after a certificate exists).
+   289	
+   290	Ordered steps (host unless stated; cgroup MemoryMax, MemorySwapMax=0, MALLOC_ARENA_MAX=2, one thread):
+   291	1. VB h4 vs 155 (running, 8 GiB, 1 h). h4 < 155: reduce the new relation mod each VB prime and the radical.
+   292	2. VB arc certificate: Hensel arcs at order 1 and order 2, both primes; containment, 3x3 minor (rank at a
+   293	   specialization point bounds the generic rank from below), absFactorize screen. 4-8 GiB, 30 min each.
+   294	3. Kernel-plane limits along the step-2 arcs from cd_core. 4 GiB, 30 min.
+   295	4. X-: same as 2-3 inside P^11; one prime, degree 12. 8 GiB, 2 h.
+   296	5. Radical and minAssChar in projective charts for E8bar->N-, Iso, W8. 8 GiB, 45 min per pair.
+   297	6. Arcs and kernel limits for E8bar->N+-, Iso, W8 over the step-5 primes.
+   298	7. Second-prime replay (p = 32029, r = 9115, producer-regenerated) of steps 2-6 receipts.
+   299	8. Scheme route only if the nilpotent structure is still required after 3: VB syzygy hypothesis probe.
+   300	- 2026-10-29 Correction: the Kaggle weekly reset 2026-10-31T00:00Z is Fri 2026-10-30 17:00 PDT, not Thursday as stated in replies; lab-map.md section 14 lists every reset in Pacific and UTC.
+   301	- 2026-10-29 23:38 UTC (16:38 PDT): TPU slot freed. The web UI showed a5-e8vb-msolve-tpu version 1 as canceled after 7,390.1 s (TPU v5e-8, latest container image, 19.07 output), so its API status CANCEL_ACKNOWLEDGED was stale, not a slot holder. The user deleted the queued a5-fiber-tpu-smoke kernel in the web UI (the API could not reach its queued version); the re-push with machine_shape TpuV5E8 only (no enable_tpu) was then accepted and queued. Procedure that cleared it: delete the stuck queued kernel in the web UI, then push. The watcher bfjno3z10 tracks the new version.
+   302	- 2026-10-30T00:55Z: VB degree-4 product stage hit its 1 h stage cap (exit 124) at 2.4 GB peak and 55 min of CPU, so it is CPU-bound, not memory-bound. Rerun with a 4 h stage cap under a 9 GiB scope (log build/logs/mine/vb4.log).
+   303	- 2026-10-30T00:55Z: Record regeneration regen6 hit the 3000 s outer cap with an empty log. The ten blocked rows at 300 s each, run serially, already fill that cap, so the cap was too short and the run tells us nothing about the RLIMIT_AS fix. Rerun as regen7 with a 7200 s cap.
+   304	- Scope cut: holomorphic_gauss_fibers.py, path_supported_basepoints.py, nakayama_rees_fibers.py, first_order_normal_cones.py and nullity16_basepoints.py still launch Singular under prlimit --as. Their records are bound and they are outside this branch's change; replacing prlimit there needs its own regeneration and ledger update.
+
+codex
+I reviewed only `distribute/brief.md` and section 10 of `decision-record.md`. I ran no solvers and made no writes.
+
+1. The falsifiers
+
+The proposed second-prime Hilbert-function comparisons are valid reproducibility checks, but the diagnosis in the brief is too strong.
+
+A differing value establishes only that the first-prime result failed to reproduce under the second-prime input. The difference does not by itself distinguish:
+
+- an exceptional first or second prime;
+- producer drift;
+- a driver or transport defect;
+- genuine characteristic dependence.
+
+The regenerated Q(i) producer receipt makes unnoticed producer drift less plausible only if the replay verifies the producer identity and input digests. Byte-identical driver and input provenance would then move the main suspicion toward an exceptional prime or characteristic dependence. A third suitable prime, or a characteristic-zero argument, is needed to identify which prime is exceptional. Therefore each job should record this falsifier:
+
+> The second-prime value differs from the first-prime value, falsifying two-prime stability for that degree; provenance checks and another characteristic are required to determine the cause.
+
+K1, K2, K3, and G1 are bounded checks of degrees already computed. G2 computes a new degree and therefore has no cross-prime falsifier yet: its immediate checks are internal completion and consistency, followed by a second-prime replay. Section 10 also limits every method-A result to the computed degree; agreement through degree 3 proves nothing about later degrees or the full fiber.
+
+2. Reintroduced stalled families
+
+K1–K3, G1, and G2 use segmented method A. They are not method B, `std(L)`, pivot saturation, or full-graph msolve. Their weakness is priority, not disguised algorithmic identity: they produce finite-degree Hilbert data while section 10 makes arcs, kernel limits, and chart decompositions the main line.
+
+K4 is acceptable only if it literally implements section 10’s projective-chart route. A single global `minAssChar` call with an 11-hour cap is minAss-first in new clothes, contradicting the explicit stop and the stated “in projective charts” step. The cap changes the waiting time, not the algorithm.
+
+Run radical and `minAssChar` chart by chart, with one bounded job per chart or chart pair. Retain `linear_gens` for each resulting prime. The plan estimates 45 minutes per pair; an undivided 11-hour computation abandons that decomposition and hides which chart caused the cost.
+
+3. Better use of the Kaggle slots
+
+The proposed allocation spends five of six slots on method-A coefficients even though section 10 says those coefficients certify only their individual degrees. That is poor alignment with the final plan.
+
+The best allocation is:
+
+- one slot for Iso projective-chart radical and `minAssChar`;
+- one slot for W8→N− projective-chart radical and `minAssChar`;
+- one slot for E8bar→N− projective-chart radical and `minAssChar`;
+- one slot for the X− arc certificate in the reduced \(\mathbf P^{11}\);
+- one slot for VB order-1/order-2 arc or kernel-limit work that is ready and independent of the host process;
+- one slot for a bounded method-A replay as secondary work.
+
+Dependencies matter. Kernel-limit jobs require completed arc data, and second-prime replay of arcs or decompositions requires first-prime receipts. A slot whose required artifact is unavailable should take a short, already-defined method-A segment rather than inventing another global elimination.
+
+If only four independent chart/arc jobs are ready, K1–K3/G1 are reasonable quota-filling work. G2 has lower evidentiary priority because its new \(h_3\) value neither decomposes the reduced support nor supplies the attaching datum. W8 degree 3 also carries a known 14 GB observation and fits Kaggle memory, but it remains secondary to plan steps 2–6.
+
+4. GitHub Actions and qBraid Lab
+
+Keep the immediate bounded work on Kaggle. Its quota expires first, its hosts provide roughly the same four CPU cores as GitHub Actions with twice the memory and twice the wall-time allowance, and the W8 observation already exceeds the comfort margin of a 16 GB runner.
+
+GitHub Actions is suitable only for a deterministic job known to remain below 16 GB and six hours, such as a small method-A replay or receipt check. It should serve as overflow after the six Kaggle slots are occupied, not replace a Kaggle slot before the reset.
+
+qBraid Lab should take nothing in this round. Its approximately 1.8 vCPU profile is slower, its quota renews later, and starting a session requires a separate approved case. Neither the final plan nor the available evidence identifies a job whose result benefits from that substrate.
+
+Verdict: approve the use of expiring Kaggle compute after replacing K4 with explicit projective-chart jobs and moving most capacity from finite-degree method-A expansion to arc, kernel-limit, and chart-decomposition work. Treat second-prime disagreement as a falsifier of stability, not as a diagnosis of “bad prime,” producer drift, or driver failure.
+2026-10-30T01:14:27.582199Z ERROR rmcp::transport::streamable_http_client: fail to delete session: unexpected server response: DELETE returned HTTP 429 session_id="41bfe3bebe6c6152b5e74e1a0fc2a4fc"
+tokens used
+54,402
+I reviewed only `distribute/brief.md` and section 10 of `decision-record.md`. I ran no solvers and made no writes.
+
+1. The falsifiers
+
+The proposed second-prime Hilbert-function comparisons are valid reproducibility checks, but the diagnosis in the brief is too strong.
+
+A differing value establishes only that the first-prime result failed to reproduce under the second-prime input. The difference does not by itself distinguish:
+
+- an exceptional first or second prime;
+- producer drift;
+- a driver or transport defect;
+- genuine characteristic dependence.
+
+The regenerated Q(i) producer receipt makes unnoticed producer drift less plausible only if the replay verifies the producer identity and input digests. Byte-identical driver and input provenance would then move the main suspicion toward an exceptional prime or characteristic dependence. A third suitable prime, or a characteristic-zero argument, is needed to identify which prime is exceptional. Therefore each job should record this falsifier:
+
+> The second-prime value differs from the first-prime value, falsifying two-prime stability for that degree; provenance checks and another characteristic are required to determine the cause.
+
+K1, K2, K3, and G1 are bounded checks of degrees already computed. G2 computes a new degree and therefore has no cross-prime falsifier yet: its immediate checks are internal completion and consistency, followed by a second-prime replay. Section 10 also limits every method-A result to the computed degree; agreement through degree 3 proves nothing about later degrees or the full fiber.
+
+2. Reintroduced stalled families
+
+K1–K3, G1, and G2 use segmented method A. They are not method B, `std(L)`, pivot saturation, or full-graph msolve. Their weakness is priority, not disguised algorithmic identity: they produce finite-degree Hilbert data while section 10 makes arcs, kernel limits, and chart decompositions the main line.
+
+K4 is acceptable only if it literally implements section 10’s projective-chart route. A single global `minAssChar` call with an 11-hour cap is minAss-first in new clothes, contradicting the explicit stop and the stated “in projective charts” step. The cap changes the waiting time, not the algorithm.
+
+Run radical and `minAssChar` chart by chart, with one bounded job per chart or chart pair. Retain `linear_gens` for each resulting prime. The plan estimates 45 minutes per pair; an undivided 11-hour computation abandons that decomposition and hides which chart caused the cost.
+
+3. Better use of the Kaggle slots
+
+The proposed allocation spends five of six slots on method-A coefficients even though section 10 says those coefficients certify only their individual degrees. That is poor alignment with the final plan.
+
+The best allocation is:
+
+- one slot for Iso projective-chart radical and `minAssChar`;
+- one slot for W8→N− projective-chart radical and `minAssChar`;
+- one slot for E8bar→N− projective-chart radical and `minAssChar`;
+- one slot for the X− arc certificate in the reduced \(\mathbf P^{11}\);
+- one slot for VB order-1/order-2 arc or kernel-limit work that is ready and independent of the host process;
+- one slot for a bounded method-A replay as secondary work.
+
+Dependencies matter. Kernel-limit jobs require completed arc data, and second-prime replay of arcs or decompositions requires first-prime receipts. A slot whose required artifact is unavailable should take a short, already-defined method-A segment rather than inventing another global elimination.
+
+If only four independent chart/arc jobs are ready, K1–K3/G1 are reasonable quota-filling work. G2 has lower evidentiary priority because its new \(h_3\) value neither decomposes the reduced support nor supplies the attaching datum. W8 degree 3 also carries a known 14 GB observation and fits Kaggle memory, but it remains secondary to plan steps 2–6.
+
+4. GitHub Actions and qBraid Lab
+
+Keep the immediate bounded work on Kaggle. Its quota expires first, its hosts provide roughly the same four CPU cores as GitHub Actions with twice the memory and twice the wall-time allowance, and the W8 observation already exceeds the comfort margin of a 16 GB runner.
+
+GitHub Actions is suitable only for a deterministic job known to remain below 16 GB and six hours, such as a small method-A replay or receipt check. It should serve as overflow after the six Kaggle slots are occupied, not replace a Kaggle slot before the reset.
+
+qBraid Lab should take nothing in this round. Its approximately 1.8 vCPU profile is slower, its quota renews later, and starting a session requires a separate approved case. Neither the final plan nor the available evidence identifies a job whose result benefits from that substrate.
+
+Verdict: approve the use of expiring Kaggle compute after replacing K4 with explicit projective-chart jobs and moving most capacity from finite-degree method-A expansion to arc, kernel-limit, and chart-decomposition work. Treat second-prime disagreement as a falsifier of stability, not as a diagnosis of “bad prime,” producer drift, or driver failure.

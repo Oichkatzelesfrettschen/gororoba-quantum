@@ -1,0 +1,14 @@
+LIB "normal.lib";
+ring R=32009,(h,t1,t2,t3,t4,t5,t6,t7,t8),dp;
+execute("ideal S="+read("strict_transform.txt")+";");
+ideal S1=subst(S,t1,1); S1=std(S1);
+ring Q=32009,(h,t2,t3,t4,t5,t6,t7,t8),dp;
+ideal S1=imap(R,S1); S1=std(S1);
+"RESULT chart dim",dim(S1),"size",size(S1);
+"RESULT prime?",size(reduce(radical(S1),S1))==0;
+list nr=normal(S1);
+"RESULT normal list size",size(nr);
+def Rn=nr[1][1]; setring Rn; 
+"RESULT ring";  Rn; 
+norid; normap;
+quit;

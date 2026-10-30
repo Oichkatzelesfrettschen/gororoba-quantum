@@ -1,0 +1,71 @@
+{
+  "degree": 1,
+  "generator_count": 15,
+  "generator_order_sha256": "30eed48f21e9e6e0ecc2bc333df8e82120a339b2049518a038ea3a3ea81d1eee",
+  "input": "docs/local/a5-failed-runs/build/logs/part-b/hdr/xm.sing",
+  "input_sha256": "a2f22fbddf2ea707814389b9690f291d3df49fbad227d4466e6aeb86ec1936f7",
+  "matrix": {
+    "cols": 437,
+    "nonzeros": 1042,
+    "rows": 15
+  },
+  "membership_check": {
+    "checked": 0,
+    "failures": 0
+  },
+  "memory_cap_gib": 3,
+  "normal_form_file": "docs/local/a5-failed-runs/build/logs/mine/xm1/nf-d1.txt",
+  "normal_form_sha256": "4719922ab20ac448e31fcf88a6b307964af7ed49a35af16c0795aec98018676c",
+  "previous_relations": null,
+  "previous_relations_sha256": null,
+  "prime": 32009,
+  "rank_h_d": 15,
+  "relation_count": 0,
+  "relation_file": "docs/local/a5-failed-runs/build/logs/mine/xm1/relations-d1.rel",
+  "relation_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "root_of_minus_one": null,
+  "schema": "a5-fiber-cone-degree-receipt-v1",
+  "stage_seconds_not_cumulative": {
+    "linear_algebra": 0.005,
+    "singular_products_std": 0.088
+  },
+  "stages": {
+    "linear_algebra": {
+      "peak_bytes": 35708928,
+      "wall_seconds": 0.005
+    },
+    "singular_products_std": {
+      "peak_bytes": 4823449,
+      "products_ms": 2,
+      "reduce_ms": 0,
+      "std_ms": 42,
+      "wall_seconds": 0.088
+    }
+  },
+  "status": "degree-certified",
+  "target_monomials": [
+    "y(15)",
+    "y(14)",
+    "y(13)",
+    "y(12)",
+    "y(11)",
+    "y(10)",
+    "y(9)",
+    "y(8)",
+    "y(7)",
+    "y(6)",
+    "y(5)",
+    "y(4)",
+    "y(3)",
+    "y(2)",
+    "y(1)"
+  ],
+  "target_monomials_sha256": "6569f464a10348ae817826cd9855ff1e72bd4dca9f337e2e3eec8a343050a4d7",
+  "timeout_seconds": 900,
+  "tool_versions": {
+    "flint": "30600",
+    "macaulay2": "1.26.06-3-ga5ff8d7ebc-dirty (makepkg)",
+    "python-flint": "0.9.0",
+    "singular": "4.4.1"
+  }
+}

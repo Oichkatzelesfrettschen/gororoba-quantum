@@ -1,0 +1,13 @@
+{
+ "id": "probablyeric/a5-xm-d4",
+ "title": "a5-xm-d4",
+ "code_file": "a5-xm-d4.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": false,
+ "enable_internet": true,
+ "dataset_sources": [],
+ "kernel_sources": [],
+ "competition_sources": []
+}

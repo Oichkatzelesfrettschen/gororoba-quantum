@@ -1,0 +1,4 @@
+RESULT chart 10 dim 6
+RESULT chart 10 radical 1
+RESULT chart 10 primes 1
+RESULT chart 10 prime 1 dim 6 linear_gens 37

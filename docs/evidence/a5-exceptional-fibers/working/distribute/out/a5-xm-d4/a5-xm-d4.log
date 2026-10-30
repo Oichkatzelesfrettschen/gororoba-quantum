@@ -1,0 +1,45 @@
+[{"stream_name":"stderr","time":0.998999048,"data":"/kaggle/src/script.py:11: DeprecationWarning: Python 3.14 will, by default, filter extracted tar archives and reject files or modify their metadata. Use the filter argument to control this behavior.\n"}
+,{"stream_name":"stderr","time":0.999038708,"data":"  tarfile.open(fileobj=io.BytesIO(base64.b64decode(PAYLOAD))).extractall(W)\n"}
+,{"stream_name":"stdout","time":15092.378046813,"data":"{\n"}
+,{"stream_name":"stdout","time":15092.378144334,"data":" \"cpu_count\": 4,\n"}
+,{"stream_name":"stdout","time":15092.378151714,"data":" \"meminfo_kib\": {\n"}
+,{"stream_name":"stdout","time":15092.378156743,"data":"  \"MemTotal\": \"32869296\",\n"}
+,{"stream_name":"stdout","time":15092.378161474,"data":"  \"MemAvailable\": \"31764568\"\n"}
+,{"stream_name":"stdout","time":15092.378166374,"data":" },\n"}
+,{"stream_name":"stdout","time":15092.378171043,"data":" \"python\": \"3.13.15\",\n"}
+,{"stream_name":"stdout","time":15092.378176543,"data":" \"singular\": \"4.4.1\",\n"}
+,{"stream_name":"stdout","time":15092.378181543,"data":" \"jobs\": {\n"}
+,{"stream_name":"stdout","time":15092.378186503,"data":"  \"xm_p1\": [\n"}
+,{"stream_name":"stdout","time":15092.378191283,"data":"   {\n"}
+,{"stream_name":"stdout","time":15092.378195934,"data":"    \"degree\": 2,\n"}
+,{"stream_name":"stdout","time":15092.378200483,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":15092.378204734,"data":"    \"seconds\": 20.0,\n"}
+,{"stream_name":"stdout","time":15092.378209274,"data":"    \"tail\": \"degree 2 h=51 relations=69 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":15092.378214383,"data":"   },\n"}
+,{"stream_name":"stdout","time":15092.378218983,"data":"   {\n"}
+,{"stream_name":"stdout","time":15092.378223683,"data":"    \"degree\": 3,\n"}
+,{"stream_name":"stdout","time":15092.378228143,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":15092.378232354,"data":"    \"seconds\": 546.5,\n"}
+,{"stream_name":"stdout","time":15092.378236974,"data":"    \"tail\": \"degree 3 h=122 relations=0 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":15092.378241763,"data":"   },\n"}
+,{"stream_name":"stdout","time":15092.378246193,"data":"   {\n"}
+,{"stream_name":"stdout","time":15092.378250333,"data":"    \"degree\": 4,\n"}
+,{"stream_name":"stdout","time":15092.378254523,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":15092.378259363,"data":"    \"seconds\": 14479.6,\n"}
+,{"stream_name":"stdout","time":15092.378263933,"data":"    \"tail\": \"degree 4 h=240 relations=0 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":15092.378268523,"data":"   }\n"}
+,{"stream_name":"stdout","time":15092.378272953,"data":"  ]\n"}
+,{"stream_name":"stdout","time":15092.378277793,"data":" },\n"}
+,{"stream_name":"stdout","time":15092.378282353,"data":" \"meminfo_end_kib\": {\n"}
+,{"stream_name":"stdout","time":15092.378287123,"data":"  \"MemTotal\": \"32869296\",\n"}
+,{"stream_name":"stdout","time":15092.378291573,"data":"  \"MemAvailable\": \"31728788\"\n"}
+,{"stream_name":"stdout","time":15092.378296533,"data":" },\n"}
+,{"stream_name":"stdout","time":15092.378300983,"data":" \"total_seconds\": 15091.4\n"}
+,{"stream_name":"stdout","time":15092.378305673,"data":"}\n"}
+,{"stream_name":"stderr","time":15094.72047346,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":15094.72050934,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":15095.148363744,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":15095.148410174,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":15096.331223977,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":15097.465660781,"data":"[NbConvertApp] Writing 318752 bytes to __results__.html\n"}
+]

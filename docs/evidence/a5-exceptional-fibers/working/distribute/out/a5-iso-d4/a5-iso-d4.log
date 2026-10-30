@@ -1,0 +1,45 @@
+[{"stream_name":"stderr","time":0.939532284,"data":"/kaggle/src/script.py:11: DeprecationWarning: Python 3.14 will, by default, filter extracted tar archives and reject files or modify their metadata. Use the filter argument to control this behavior.\n"}
+,{"stream_name":"stderr","time":0.939579794,"data":"  tarfile.open(fileobj=io.BytesIO(base64.b64decode(PAYLOAD))).extractall(W)\n"}
+,{"stream_name":"stdout","time":37925.899268886,"data":"{\n"}
+,{"stream_name":"stdout","time":37925.899596626,"data":" \"cpu_count\": 4,\n"}
+,{"stream_name":"stdout","time":37925.899612764,"data":" \"meminfo_kib\": {\n"}
+,{"stream_name":"stdout","time":37925.899619014,"data":"  \"MemTotal\": \"32869296\",\n"}
+,{"stream_name":"stdout","time":37925.899624989,"data":"  \"MemAvailable\": \"31861528\"\n"}
+,{"stream_name":"stdout","time":37925.899630914,"data":" },\n"}
+,{"stream_name":"stdout","time":37925.899637573,"data":" \"python\": \"3.13.15\",\n"}
+,{"stream_name":"stdout","time":37925.899643648,"data":" \"singular\": \"4.4.1\",\n"}
+,{"stream_name":"stdout","time":37925.899649386,"data":" \"jobs\": {\n"}
+,{"stream_name":"stdout","time":37925.899654683,"data":"  \"iso_p1\": [\n"}
+,{"stream_name":"stdout","time":37925.899660902,"data":"   {\n"}
+,{"stream_name":"stdout","time":37925.899666339,"data":"    \"degree\": 2,\n"}
+,{"stream_name":"stdout","time":37925.899672028,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":37925.899677486,"data":"    \"seconds\": 32.5,\n"}
+,{"stream_name":"stdout","time":37925.899683637,"data":"    \"tail\": \"degree 2 h=85 relations=68 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":37925.8996897,"data":"   },\n"}
+,{"stream_name":"stdout","time":37925.89969514,"data":"   {\n"}
+,{"stream_name":"stdout","time":37925.899700451,"data":"    \"degree\": 3,\n"}
+,{"stream_name":"stdout","time":37925.899706074,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":37925.899711561,"data":"    \"seconds\": 1836.8,\n"}
+,{"stream_name":"stdout","time":37925.899717382,"data":"    \"tail\": \"degree 3 h=265 relations=0 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":37925.899723308,"data":"   },\n"}
+,{"stream_name":"stdout","time":37925.899728504,"data":"   {\n"}
+,{"stream_name":"stdout","time":37925.899734202,"data":"    \"degree\": 4,\n"}
+,{"stream_name":"stdout","time":37925.899739808,"data":"    \"rc\": 1,\n"}
+,{"stream_name":"stdout","time":37925.89974516,"data":"    \"seconds\": 36002.4,\n"}
+,{"stream_name":"stdout","time":37925.899784107,"data":"    \"tail\": \"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n               args.memory_gib, args.timeout)\\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"/kaggle/tmp/w/docs/evidence/a5-kernel-attachments/fiber_cone_driver.py\\\", line 310, in run_degree\\n    _require(first.error is None, f\\\"products stage failed: {first.error}\\\")\\n    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"/kaggle/tmp/w/docs/evidence/a5-kernel-attachments/fiber_cone_driver.py\\\", line 42, in _require\\n    raise ValueError(message)\\nValueError: products stage failed: exit status 124\\n\"\n"}
+,{"stream_name":"stdout","time":37925.899798897,"data":"   }\n"}
+,{"stream_name":"stdout","time":37925.899804313,"data":"  ]\n"}
+,{"stream_name":"stdout","time":37925.899809597,"data":" },\n"}
+,{"stream_name":"stdout","time":37925.899814709,"data":" \"meminfo_end_kib\": {\n"}
+,{"stream_name":"stdout","time":37925.89982001,"data":"  \"MemTotal\": \"32869296\",\n"}
+,{"stream_name":"stdout","time":37925.899825544,"data":"  \"MemAvailable\": \"31942620\"\n"}
+,{"stream_name":"stdout","time":37925.899831201,"data":" },\n"}
+,{"stream_name":"stdout","time":37925.899836854,"data":" \"total_seconds\": 37925.0\n"}
+,{"stream_name":"stdout","time":37925.899905308,"data":"}\n"}
+,{"stream_name":"stderr","time":37929.024731005,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":37929.024769115,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":37929.470417871,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":37929.470450231,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":37930.793544323,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":37932.316518481,"data":"[NbConvertApp] Writing 317436 bytes to __results__.html\n"}
+]
