@@ -5131,7 +5131,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1 --replay-receipt docs/evidence/quantum-experiment-conformance/ascella-predecessor-source-replay.json --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
+   "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1 --replay-receipt docs/evidence/quantum-experiment-conformance/ascella-worker-command-source-replay.json --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
    "name": "core-quantum-experiment-cases",
    "seconds": 15.0,
    "tier": "full",

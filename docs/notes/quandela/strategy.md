@@ -168,8 +168,11 @@ near 4 x 10^4 one-photon samples per second.
   simulator and the QPU. Width therefore cannot shorten a photon's path; a
   compact job tests placement at the chip's edge.
 - **Calibration windows.** qpu:belenos reports status `calibration` outside
-  its weekly maintenance (observed 2026-10-17 about 22:15 UTC); `plan` refuses
-  any status but `available`, so a job waits rather than queues.
+  its weekly maintenance (observed 2026-10-17 about 22:15 UTC). Both `available`
+  and `running` are acceptable and admissible execution statuses (`running`
+  indicates jobs are actively processing on the hardware); `plan` refuses
+  `calibration`, but admits `running` when `--admit-status running` is passed,
+  allowing jobs to enter the queue behind active workloads.
 - **Compilation seeds** are an iteration key, and `CompilationAveraging` is a
   known mitigation of both Belenos platforms, so the spread over compilations
   is measurable inside one job.

@@ -1057,7 +1057,27 @@ def explorer_row(platform: str) -> dict[str, Any]:
 
 
 # Frozen processor records whose server command sets stand in for a live record that omits specs.commands.
-RETAINED_RECORDS = (ROOT / "docs/evidence/bdsc/inputs/receipt.json",)
+RETAINED_RECORDS = (
+    ROOT / "docs/evidence/bdsc/inputs/receipt.json",
+    ROOT / "docs/evidence/quandela/catalogue.json",
+)
+
+
+def same_worker_version(frozen: dict[str, Any], live: dict[str, Any]) -> bool:
+    """Whether a frozen processor record and a live specs share the worker software that fixes Perceval commands.
+
+    Perceval RPC serialization and Command schemas are governed by pcvl_version, pcvl-worker and
+    perceval-quandela. Hardware driver patches (such as mosaiq-arcturus or universalchipworker) do not alter
+    the client-server RPC Command parameter signatures.
+    """
+    if frozen.get("pcvl_version") != live.get("pcvl_version"):
+        return False
+    frozen_sw = frozen.get("software_versions", {})
+    live_sw = live.get("software_versions", {})
+    if frozen_sw == live_sw:
+        return True
+    rpc_keys = ("pcvl-worker", "perceval-quandela")
+    return all(frozen_sw.get(k) == live_sw.get(k) and live_sw.get(k) is not None for k in rpc_keys)
 
 
 def retained_commands(platform: str, specs: Any) -> tuple[Any, str] | None:
@@ -1065,8 +1085,7 @@ def retained_commands(platform: str, specs: Any) -> tuple[Any, str] | None:
     for path in RETAINED_RECORDS:
         record = json.loads(path.read_text(encoding="utf-8"))
         frozen = record.get("processors", {}).get(platform, {}).get("specs", {})
-        same_worker = all(frozen.get(key) == specs.get(key) for key in ("pcvl_version", "software_versions"))
-        if same_worker and isinstance(frozen.get("commands"), str):
+        if same_worker_version(frozen, specs) and isinstance(frozen.get("commands"), str):
             return frozen["commands"], f"{path.relative_to(ROOT)} retrieved {record.get('retrieved_utc')}"
     return None
 
@@ -1078,8 +1097,9 @@ def payload_version_basis(specs: Any, platform: str) -> str:
     RemoteComputer builds its command signatures once, at construction, from specs.commands, and without them from
     CommandFactory, whose sample_count lacks compilation_seed; RPCBasedCommunicationLayer.send builds a version-2
     body only when specs.commands is present, and PayloadUpdater's upgrade of a version-1 body drops an explicit
-    mitigation list. A frozen record with equal pcvl_version and software_versions names the same worker, so its
-    serialized commands are the live server's; without one the commands stay absent.
+    mitigation list. A frozen record with the same pcvl_version and the same pcvl-worker and perceval-quandela
+    versions names the same worker, so its serialized commands are the live server's; without one the commands
+    stay absent.
     """
     if "commands" in specs:
         return "declared"
@@ -2358,6 +2378,16 @@ def payload_version_self_test() -> None:
     specs = PlatformSpecs(dict(same))
     if not payload_version_basis(specs, "qpu:belenos").startswith("restored from"):
         raise PlatformError("self-test: the frozen worker's command set was not restored")
+    ascella_frozen = json.loads(RETAINED_RECORDS[1].read_text(encoding="utf-8"))["processors"]["qpu:ascella"]["specs"]
+    ascella_same = {key: ascella_frozen[key] for key in ("pcvl_version", "software_versions", "available_commands")}
+    ascella_specs = PlatformSpecs(dict(ascella_same))
+    if not payload_version_basis(ascella_specs, "qpu:ascella").startswith("restored from"):
+        raise PlatformError("self-test: qpu:ascella frozen worker command set was not restored")
+    ascella_other = PlatformSpecs(
+        {**ascella_same, "software_versions": {**ascella_same["software_versions"], "pcvl-worker": "0.0.0"}}
+    )
+    if payload_version_basis(ascella_other, "qpu:ascella") != "absent" or "commands" in ascella_other:
+        raise PlatformError("self-test: another ascella worker record received the frozen command set")
     sample_count = next(c for c in specs.commands if c.name == "sample_count")
     built = pcvl.Experiment(pcvl.BS())
     built.with_input(pcvl.BasicState([1, 0]))

@@ -760,7 +760,9 @@
       "docs/evidence/quandela/catalogue.json",
       "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
       "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
-      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/provenance.json"
+      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/provenance.json",
+      "docs/evidence/quantum-experiment-conformance/ascella-worker-command-source-replay.json",
+      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1-regeneration-receipt.json"
     ],
     "core-quantum-experiment-toolchain": [
       "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/**",

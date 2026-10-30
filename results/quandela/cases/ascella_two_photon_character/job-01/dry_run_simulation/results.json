@@ -1,0 +1,760 @@
+{
+  "iterations": [
+    {
+      "setting": "iter00-pair_1_2-octonion",
+      "counts": {
+        "|0,0,0,0,1,0,1,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 0.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter01-pair_1_2-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 2.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter02-pair_1_2-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 5.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter03-pair_1_2-reversed",
+      "counts": {
+        "|0,0,0,0,1,0,1,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 7.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter04-pair_1_3-octonion",
+      "counts": {
+        "|0,0,0,0,1,0,1,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 10.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter05-pair_1_3-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 12.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter06-pair_1_3-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 15.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter07-pair_1_3-reversed",
+      "counts": {
+        "|0,0,0,0,1,0,1,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 17.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter08-pair_1_4-octonion",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 20.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter09-pair_1_4-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 22.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter10-pair_1_4-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 25.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter11-pair_1_4-reversed",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 27.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter12-pair_1_5-octonion",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 30.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter13-pair_1_5-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 32.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter14-pair_1_5-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 35.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter15-pair_1_5-reversed",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 37.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter16-pair_1_6-octonion",
+      "counts": {
+        "|0,0,0,0,1,0,1,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 40.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter17-pair_1_6-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 42.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter18-pair_1_6-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 45.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter19-pair_1_6-reversed",
+      "counts": {
+        "|0,0,0,0,1,0,1,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 47.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter20-pair_1_7-octonion",
+      "counts": {
+        "|0,0,0,0,1,0,1,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 50.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter21-pair_1_7-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 52.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter22-pair_1_7-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 55.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter23-pair_1_7-reversed",
+      "counts": {
+        "|0,0,0,0,1,0,1,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 57.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter24-pair_2_3-octonion",
+      "counts": {
+        "|0,0,0,0,1,0,1,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 60.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter25-pair_2_3-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 62.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter26-pair_2_3-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 65.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter27-pair_2_3-reversed",
+      "counts": {
+        "|0,0,0,0,1,0,1,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 67.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter28-pair_2_4-octonion",
+      "counts": {
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 70.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter29-pair_2_4-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 72.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter30-pair_2_4-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 75.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter31-pair_2_4-reversed",
+      "counts": {
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 77.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter32-pair_2_5-octonion",
+      "counts": {
+        "|0,0,0,0,0,1,0,1,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 80.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter33-pair_2_5-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 82.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter34-pair_2_5-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 85.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter35-pair_2_5-reversed",
+      "counts": {
+        "|0,0,0,0,0,1,0,1,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 87.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter36-pair_2_6-octonion",
+      "counts": {
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 90.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter37-pair_2_6-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 92.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter38-pair_2_6-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 95.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter39-pair_2_6-reversed",
+      "counts": {
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 97.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter40-pair_2_7-octonion",
+      "counts": {
+        "|0,0,0,0,0,1,0,1,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 100.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter41-pair_2_7-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 102.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter42-pair_2_7-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 105.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter43-pair_2_7-reversed",
+      "counts": {
+        "|0,0,0,0,0,1,0,1,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 107.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter44-pair_3_4-octonion",
+      "counts": {
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 110.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter45-pair_3_4-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 112.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter46-pair_3_4-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 115.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter47-pair_3_4-reversed",
+      "counts": {
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 117.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter48-pair_3_5-octonion",
+      "counts": {
+        "|0,0,0,0,0,1,0,1,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 120.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter49-pair_3_5-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 122.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter50-pair_3_5-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 125.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter51-pair_3_5-reversed",
+      "counts": {
+        "|0,0,0,0,0,1,0,1,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 127.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter52-pair_3_6-octonion",
+      "counts": {
+        "|0,0,0,0,0,1,0,1,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 130.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter53-pair_3_6-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 132.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter54-pair_3_6-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 135.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter55-pair_3_6-reversed",
+      "counts": {
+        "|0,0,0,0,0,1,0,1,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 137.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter56-pair_3_7-octonion",
+      "counts": {
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 140.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter57-pair_3_7-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 142.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter58-pair_3_7-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 145.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter59-pair_3_7-reversed",
+      "counts": {
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 147.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter60-pair_4_5-octonion",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 150.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter61-pair_4_5-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 152.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter62-pair_4_5-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 155.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter63-pair_4_5-reversed",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 157.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter64-pair_4_6-octonion",
+      "counts": {
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 160.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter65-pair_4_6-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 162.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter66-pair_4_6-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 165.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter67-pair_4_6-reversed",
+      "counts": {
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 167.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter68-pair_4_7-octonion",
+      "counts": {
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 170.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter69-pair_4_7-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 172.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter70-pair_4_7-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 175.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter71-pair_4_7-reversed",
+      "counts": {
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 177.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter72-pair_5_6-octonion",
+      "counts": {
+        "|0,0,0,0,0,1,0,1,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 180.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter73-pair_5_6-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 182.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter74-pair_5_6-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 185.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter75-pair_5_6-reversed",
+      "counts": {
+        "|0,0,0,0,0,1,0,1,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 187.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter76-pair_5_7-octonion",
+      "counts": {
+        "|0,0,0,0,0,1,0,1,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 190.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter77-pair_5_7-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 192.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter78-pair_5_7-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 195.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter79-pair_5_7-reversed",
+      "counts": {
+        "|0,0,0,0,0,1,0,1,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 197.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter80-pair_6_7-octonion",
+      "counts": {
+        "|0,0,0,0,1,0,1,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 200.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter81-pair_6_7-clifford_control",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 202.5,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter82-pair_6_7-diagonal_null",
+      "counts": {
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 3932,
+        "|0,1,0,1,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 205.0,
+      "duration": 2.5
+    },
+    {
+      "setting": "iter83-pair_6_7-reversed",
+      "counts": {
+        "|0,0,0,0,1,0,1,0,0,0,0,0>": 3932,
+        "|1,0,1,0,0,0,0,0,0,0,0,0>": 164
+      },
+      "elapsed_seconds": 207.5,
+      "duration": 2.5
+    }
+  ]
+}
