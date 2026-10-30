@@ -2786,6 +2786,13 @@
       "run": "results/quandela/runs/2026-10-30T010726Z-sim_ascella-ascella_predecessor-source-compatible",
       "family": "photonic predecessor-contrast pipeline qualification",
       "question": "Does the frozen Ascella predecessor case, with only its job name and platform changed to sim:ascella, return eight complete iterations whose signed target-slot contrasts the frozen analyzer's checks accept, so the pipeline's zero-memory contrast level is known before the QPU run?"
+    },
+    {
+      "id": "qd-ascella-predecessor-current-schema",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-schema",
+      "family": "photonic target-slot diagnostic",
+      "question": "What signed target-slot response and predecessor distribution differences occur in the eight-iteration Ascella acquisition under the current command-schema route?"
     }
   ],
   "claims": [
@@ -13924,6 +13931,35 @@
       "acquisitions": [
         "fez-measurement-sequence-successor"
       ]
+    },
+    {
+      "id": "ascella-predecessor-current-target-slot-response",
+      "statement": "The Ascella current-source eight-iteration target-slot job 0e41a8a7 returns 262144 events. Its descriptive signed common contrast norm is approximately 0.01099, its reversal norm 0.01016, and its two predecessor distribution distances 0.63411 and 0.63329. All eight returned circuit and input identities pass the case checks.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The contrast is descriptive; no reviewed sampling contract or confidence bound is admitted. Requested iterator order does not establish physical chronology, and quadratic drift or carryover can produce the observed contrast without an identified predecessor effect. The simulator is not a physical history control.",
+      "evidence": [
+        {
+          "path": "docs/evidence/ascella-predecessor-admission/current-source-qpu.json",
+          "sha256": "4a7072fec087eef169efabccce2de6e7abb178af04c66db574c8ef8533a0ee0c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-schema/results.json",
+          "sha256": "7c484b8b13b82afa15db2c7d27b993e73d859e59347847bdd979f0af7c300612"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-predecessor-intervention.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-predecessor-current-schema"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }
