@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+from concurrent.futures import ThreadPoolExecutor
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
@@ -96,6 +97,39 @@ def test_case_publication_is_idempotent_and_refuses_conflicting_bytes(tmp_path: 
         case.publish_case(tmp_path, {"cases.json": b"changed\n", "circuit.json": b"circuit\n"})
     if any((tmp_path / name).read_bytes() != data for name, data in payload.items()):
         raise AssertionError("a conflicting build replaced retained case bytes")
+    with pytest.raises(ValueError, match="retained case differs"):
+        case.publish_case(tmp_path, {"cases.json": b"case\n", "circuit.json": b"changed\n"})
+    if any((tmp_path / name).read_bytes() != data for name, data in payload.items()):
+        raise AssertionError("a circuit conflict replaced retained case bytes")
+
+
+def test_case_publication_completes_an_interrupted_candidate(tmp_path: Path) -> None:
+    (tmp_path / "cases.json").write_bytes(b"case\n")
+    case.publish_case(tmp_path, {"cases.json": b"case\n", "circuit.json": b"circuit\n"})
+    if (tmp_path / "circuit.json").read_bytes() != b"circuit\n":
+        raise AssertionError("a matching partial publication did not finish")
+
+
+def test_case_publication_serializes_competing_builders(tmp_path: Path) -> None:
+    candidates = [
+        {"cases.json": b"case-a\n", "circuit.json": b"circuit-a\n"},
+        {"cases.json": b"case-b\n", "circuit.json": b"circuit-b\n"},
+    ]
+
+    def publish(payload: dict[str, bytes]) -> bool:
+        try:
+            case.publish_case(tmp_path, payload)
+        except ValueError:
+            return False
+        return True
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        outcomes = list(pool.map(publish, candidates))
+    if outcomes.count(True) != 1:
+        raise AssertionError("exactly one conflicting publication must succeed")
+    accepted = candidates[outcomes.index(True)]
+    if any((tmp_path / name).read_bytes() != data for name, data in accepted.items()):
+        raise AssertionError("competing builders produced mixed case bytes")
 
 
 @pytest.mark.audit
