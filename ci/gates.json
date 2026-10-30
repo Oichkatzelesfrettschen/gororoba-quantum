@@ -16,6 +16,18 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/demarrais-8192d-cross-platform/pauli_propagation.py --check docs/evidence/demarrais-8192d-cross-platform/pauli-propagation.json",
+   "name": "core-demarrais-pauli-propagation-replay",
+   "seconds": 2.1,
+   "tier": "pr",
+   "workers": 1,
+   "replays": [
+    "docs/evidence/demarrais-8192d-cross-platform/pauli-propagation.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check ci tests && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check ci tests && \"$PYTHON\" ci/pinned_tool.py mypy ci/run_gates.py ci/runner_specs.py ci/premerge_gates.py ci/gate_inputs.py ci/analyze_timings.py ci/changed_paths.py ci/pins.py ci/pinned_tool.py ci/gate_ledger.py ci/merge_gate_timings.py ci/host_identity.py ci/read_trace/sitecustomize.py tests",
    "name": "core-000",
    "seconds": 0.7,

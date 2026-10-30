@@ -1,0 +1,149 @@
+{
+  "schema": "qi-demarrais-tower-analysis-v1",
+  "batch": "batch-01",
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "nqubits": 10,
+  "shots": 2048,
+  "cayley_dickson_target_dim": 1024,
+  "cayley_dickson_target_name": "DekaVoudon",
+  "bipartition_a_data_qubits": [
+    0,
+    2,
+    3,
+    6,
+    7
+  ],
+  "bipartition_b_sentinel_qubits": [
+    1,
+    4,
+    5,
+    8,
+    9
+  ],
+  "voudon_switch_qubits": [
+    6,
+    7
+  ],
+  "shell_8192d_or_1024d_vs_32d_control_contrast": 1.0,
+  "mid_tower_vs_pure_shell_switching_contrast": 1.0,
+  "circuits": {
+    "ctrl_low_32d": {
+      "file": "01-control-sedenion-pathion-32d.cq",
+      "shots": 2048,
+      "ideal_shot_string": "0000001100",
+      "exact_17q_or_10q_match_probability": 1.0,
+      "mean_one_path_bright_p1": 1.0,
+      "mean_two_path_destructive_dark_p1": 0.0,
+      "mean_zero_path_dmz_dark_p1": 0.0,
+      "interference_contrast_one_minus_two_path": 1.0,
+      "mean_sentinel_syndrome_p0": 1.0,
+      "sentinel_all_zero_herald_rate": 1.0,
+      "heralded_one_path_bright_p1": 1.0,
+      "heralded_two_path_destructive_dark_p1": 0.0,
+      "heralded_interference_contrast": 1.0,
+      "per_qubit_p1": {
+        "0": 0.0,
+        "1": 0.0,
+        "2": 1.0,
+        "3": 1.0,
+        "4": 0.0,
+        "5": 0.0,
+        "6": 0.0,
+        "7": 0.0,
+        "8": 0.0,
+        "9": 0.0
+      },
+      "per_qubit_accuracy": {
+        "0": 1.0,
+        "1": 1.0,
+        "2": 1.0,
+        "3": 1.0,
+        "4": 1.0,
+        "5": 1.0,
+        "6": 1.0,
+        "7": 1.0,
+        "8": 1.0,
+        "9": 1.0
+      }
+    },
+    "ctrl_mid_512d": {
+      "file": "02-control-chingon-routon-512d.cq",
+      "shots": 2048,
+      "ideal_shot_string": "0011000101",
+      "exact_17q_or_10q_match_probability": 1.0,
+      "mean_one_path_bright_p1": 1.0,
+      "mean_two_path_destructive_dark_p1": 0.0,
+      "mean_zero_path_dmz_dark_p1": 0.0,
+      "interference_contrast_one_minus_two_path": 1.0,
+      "mean_sentinel_syndrome_p0": 1.0,
+      "sentinel_all_zero_herald_rate": 1.0,
+      "heralded_one_path_bright_p1": 1.0,
+      "heralded_two_path_destructive_dark_p1": 0.0,
+      "heralded_interference_contrast": 1.0,
+      "per_qubit_p1": {
+        "0": 1.0,
+        "1": 0.0,
+        "2": 1.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0,
+        "6": 1.0,
+        "7": 1.0,
+        "8": 0.0,
+        "9": 0.0
+      },
+      "per_qubit_accuracy": {
+        "0": 1.0,
+        "1": 1.0,
+        "2": 1.0,
+        "3": 1.0,
+        "4": 1.0,
+        "5": 1.0,
+        "6": 1.0,
+        "7": 1.0,
+        "8": 1.0,
+        "9": 1.0
+      }
+    },
+    "explore_1024d_pure": {
+      "file": "03-dekavoudon-1024d-pure-shell.cq",
+      "shots": 2048,
+      "ideal_shot_string": "0000001100",
+      "exact_17q_or_10q_match_probability": 1.0,
+      "mean_one_path_bright_p1": 1.0,
+      "mean_two_path_destructive_dark_p1": 0.0,
+      "mean_zero_path_dmz_dark_p1": 0.0,
+      "interference_contrast_one_minus_two_path": 1.0,
+      "mean_sentinel_syndrome_p0": 1.0,
+      "sentinel_all_zero_herald_rate": 1.0,
+      "heralded_one_path_bright_p1": 1.0,
+      "heralded_two_path_destructive_dark_p1": 0.0,
+      "heralded_interference_contrast": 1.0,
+      "per_qubit_p1": {
+        "0": 0.0,
+        "1": 0.0,
+        "2": 1.0,
+        "3": 1.0,
+        "4": 0.0,
+        "5": 0.0,
+        "6": 0.0,
+        "7": 0.0,
+        "8": 0.0,
+        "9": 0.0
+      },
+      "per_qubit_accuracy": {
+        "0": 1.0,
+        "1": 1.0,
+        "2": 1.0,
+        "3": 1.0,
+        "4": 1.0,
+        "5": 1.0,
+        "6": 1.0,
+        "7": 1.0,
+        "8": 1.0,
+        "9": 1.0
+      }
+    }
+  }
+}

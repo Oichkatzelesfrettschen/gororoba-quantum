@@ -1,0 +1,287 @@
+{
+ "schema": "qi-demarrais-tower-cases-v1",
+ "batch": "batch-00",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 75536,
+ "cayley_dickson_target_dim": 8192,
+ "cayley_dickson_target_name": "DekatrisVoudon",
+ "bipartition_a_data_qubits": [
+  0,
+  4,
+  5,
+  6,
+  10,
+  11,
+  12,
+  16
+ ],
+ "bipartition_b_sentinel_qubits": [
+  1,
+  2,
+  3,
+  7,
+  8,
+  9,
+  13,
+  14,
+  15
+ ],
+ "couplers": [
+  [
+   0,
+   1
+  ],
+  [
+   0,
+   2
+  ],
+  [
+   1,
+   4
+  ],
+  [
+   2,
+   5
+  ],
+  [
+   3,
+   6
+  ],
+  [
+   4,
+   8
+  ],
+  [
+   5,
+   8
+  ],
+  [
+   6,
+   9
+  ],
+  [
+   7,
+   10
+  ],
+  [
+   7,
+   11
+  ],
+  [
+   8,
+   11
+  ],
+  [
+   8,
+   12
+  ],
+  [
+   10,
+   13
+  ],
+  [
+   11,
+   14
+  ],
+  [
+   12,
+   14
+  ],
+  [
+   12,
+   15
+  ],
+  [
+   14,
+   16
+  ],
+  [
+   15,
+   16
+  ]
+ ],
+ "certificate": {
+  "tower_levels": 14,
+  "tower_max_dim": 8192,
+  "tower_max_name": "DekatrisVoudon",
+  "tower_max_trips": 11180715,
+  "tower_max_midden_part_size": 1024,
+  "sedenion_box_kites": 7,
+  "pathion_sand_mandalas": 15,
+  "pathion_dmz_filled_cells": 72,
+  "pathion_dmz_empty_cells": 96,
+  "cowbird_eggs_certified": 4,
+  "cowbird_eggs_moufang_and_norm_multiplicative": true
+ },
+ "circuits": [
+  {
+   "file": "dekatrisvoudon-8192d-midden.cq",
+   "kind": "midden",
+   "nqubits": 17,
+   "sha256": "0697e5fce36504b2f92299cf138c396cda33da0b34bb5e2901994c9c89c5e28a",
+   "oracle_hubs": [
+    1,
+    8,
+    14
+   ],
+   "ideal_bits_by_qubit": {
+    "0": 1,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 1,
+    "6": 0,
+    "7": 0,
+    "8": 0,
+    "9": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0,
+    "13": 0,
+    "14": 0,
+    "15": 0,
+    "16": 1
+   },
+   "ideal_shot_string": "10000000000100001",
+   "two_path_destructive_dark_qubits": [
+    4,
+    11,
+    12
+   ],
+   "one_path_constructive_bright_qubits": [
+    0,
+    5,
+    16
+   ],
+   "zero_path_dmz_qubits": [
+    6,
+    10
+   ],
+   "sentinel_zero_qubits": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9,
+    13,
+    14,
+    15
+   ]
+  },
+  {
+   "file": "cowbird-mandala-roundabout.cq",
+   "kind": "cowbird",
+   "nqubits": 17,
+   "sha256": "71452feddd4916cbf3f9a9af2ae1bf9b10193487b6a4e8c03759e2a113a16469",
+   "oracle_hubs": [
+    2,
+    7,
+    15
+   ],
+   "ideal_bits_by_qubit": {
+    "0": 1,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 1,
+    "6": 0,
+    "7": 0,
+    "8": 0,
+    "9": 0,
+    "10": 1,
+    "11": 1,
+    "12": 1,
+    "13": 0,
+    "14": 0,
+    "15": 0,
+    "16": 1
+   },
+   "ideal_shot_string": "10001110000100001",
+   "two_path_destructive_dark_qubits": [],
+   "one_path_constructive_bright_qubits": [
+    0,
+    5,
+    10,
+    11,
+    12,
+    16
+   ],
+   "zero_path_dmz_qubits": [
+    4,
+    6
+   ],
+   "sentinel_zero_qubits": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9,
+    13,
+    14,
+    15
+   ]
+  },
+  {
+   "file": "zaslavsky-dmz-calibration.cq",
+   "kind": "dmz",
+   "nqubits": 17,
+   "sha256": "4c49d6c5f35eb97e4c45376ab8728ebe41ea9d5265ed1bab9d14e79c430fa49a",
+   "oracle_hubs": [
+    3,
+    9,
+    13
+   ],
+   "ideal_bits_by_qubit": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0,
+    "6": 0,
+    "7": 0,
+    "8": 0,
+    "9": 0,
+    "10": 1,
+    "11": 0,
+    "12": 0,
+    "13": 0,
+    "14": 0,
+    "15": 0,
+    "16": 0
+   },
+   "ideal_shot_string": "00000010000000000",
+   "two_path_destructive_dark_qubits": [
+    6
+   ],
+   "one_path_constructive_bright_qubits": [
+    10
+   ],
+   "zero_path_dmz_qubits": [
+    0,
+    4,
+    5,
+    11,
+    12,
+    16
+   ],
+   "sentinel_zero_qubits": [
+    1,
+    2,
+    3,
+    7,
+    8,
+    9,
+    13,
+    14,
+    15
+   ]
+  }
+ ]
+}
