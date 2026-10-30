@@ -35,11 +35,11 @@ ran on and certifies only the degrees it computes.
 | Pair | h_1, h_2, h_3 (h_4) | New relations beyond the quadrics K2 | Cost of the largest degree |
 |---|---|---|---|
 | X+-, X- | 15, 51, 122, 240 | none in degrees 3 and 4 (degree 4 on X-; X+ by the sign symmetry) | 14,480 s at degree 4 (Kaggle CPU) |
-| Iso | 17, 85, 265 | none in degree 3; degree 4 stopped at the 10 h products-stage cap (Kaggle CPU) | 1,837 s at degree 3 |
+| Iso | 17, 85, 265 | none in degree 3; degree 4 stopped at the 10 h stage cap inside std(J + m P_4), after 32 s of products (Kaggle CPU) | 1,837 s at degree 3 |
 | E8-bar -> N+ | 21, 83 | (degree 3 stopped) | 6,029 s |
 | E8-bar -> N- | 21, 83 (148 quadrics, at 32009 and 32029) | (degree 3 not run) | 13,827 s at degree 2 (Kaggle) |
-| W8 -> N- | 24, 156 | degree 3 stopped for memory: 14 GB on the host, killed at the 30 GB Kaggle limit after 18,999 s | 5,619 s, 6.7 GB at degree 2 |
-| E8-bar -> VB | 10, 34, 80, 155 | none in degrees 3 and 4; degree 5 stopped at the 12 h products-stage cap (host, 15 GiB) | 5,184 s at degree 4, 2.4 GB |
+| W8 -> N- | 24, 156 | degree 3 stopped for memory: 14 GB on the host, killed at the 30 GB Kaggle limit after 18,999 s inside std(J + m P_3), after 444 s of products | 5,619 s, 6.7 GB at degree 2 |
+| E8-bar -> VB | 10, 34, 80, 155 | none in degrees 3 and 4; degree 5 stopped at the 12 h stage cap inside std(J + m P_5), after 9 s of products, peak 12 GB (host, 15 GiB) | 5,184 s at degree 4, 2.4 GB |
 
 **Sign symmetry under t9 -> -t9.** J- = eps J+ and G- = delta G+ coefficient by coefficient for X, and likewise for
 W8 -> N+ against W8 -> N-, with no failure; those fibers follow by y_j -> +-y_j. For E8-bar the symmetry fails: the
@@ -172,7 +172,7 @@ measurement), *superseded* (replaced by a stronger or cheaper route).
 |---|---|---|
 | F(I) = k[y]/K2 for E8-bar -> VB | survives through degree 4 (h_4 = 155, no new relation) | degree 5 against the quadric value |
 | F(I) = k[y]/K2 for X+- | survives through degree 4 (h_4 = 240, the quadric value) | degree 5 |
-| F(I) = k[y]/K2 for Iso | survives through degree 3 | degree 4 (stopped at 10 h in the products stage) |
+| F(I) = k[y]/K2 for Iso | survives through degree 3 | degree 4 (stopped at 10 h inside std(J + m P_4)) |
 | F(I) = k[y]/K2 for E8-bar -> N+-, W8 | survives through degree 2 | degree 3 |
 | The E8-bar -> VB fiber contains the degree-4 component | survives (certified over F_32009) | second-prime arc replay |
 | The E8-bar -> VB fiber contains the degree-3 component | open, favored by the Hilbert data | arcs in the remaining charts; a relation of degree 5 or more vanishing on the degree-4 component |
@@ -212,7 +212,7 @@ measurement), *superseded* (replaced by a stronger or cheaper route).
 | Raising the per-call cap to 16 GiB fixed those exits | refuted | the cap never governed while `RLIMIT_AS` was set |
 | The cancelled msolve TPU kernel held the account's TPU slot | refuted | the web UI showed it ended; deleting the queued smoke kernel freed the slot |
 | The value 155 is a product 54 x 12 of earlier counts | refuted | 155 is h_4 of k[y]/K2 for E8-bar -> VB |
-| Iso and W8 quadric schemes decompose chart by chart within 45 minutes per chart | refuted | 40 of 41 charts stopped at the 45-minute cap inside `minAssChar`; the charts give affine dimension 5 (Iso) and 6 (W8) with radical certificates on 9 and 14 charts; W8 chart 10 finished with one prime of affine dimension 6 and 37 linear generators |
+| Iso and W8 quadric schemes decompose chart by chart within 45 minutes per chart | refuted | 40 of 41 charts stopped at the 45-minute cap, 18 inside `radical` and 22 inside `minAssChar` (called on the original ideal rather than on its radical); the charts give affine dimension 5 (Iso) and 6 (W8) with radical certificates on 9 and 14 charts; W8 chart 10 finished with one prime of affine dimension 6 and 37 linear generators |
 
 ## Work in progress
 
@@ -220,9 +220,11 @@ measurement), *superseded* (replaced by a stronger or cheaper route).
   radical finished, or the radical computed once globally and decomposed by `minAssChar` there.
 - **Degree 3 of W8 -> N-** on a host above 30 GB, which the memory record places on the 84 GiB cloud VM under its own
   case.
-- **Products-stage cost at degrees 4 and 5** (Iso degree 4 past 10 h, E8-bar -> VB degree 5 past 12 h): the
-  degree-by-degree route reaches its time limit there, so higher degrees need a cheaper product stage or a cut to the
-  targets the quadric prediction leaves undecided.
+- **Standard-basis cost at degrees 4 and 5**: `std(J + m P_d)` takes 95 to 99 % of every driver run and stops Iso
+  degree 4 (10 h), E8-bar -> VB degree 5 (12 h) and W8 degree 3 (30 GB); the products take seconds to minutes. A
+  leading-form certificate (the products' lowest m-adic forms independent modulo the tangent cone of J) decides a
+  degree with no new relation without that basis; for E8-bar -> VB, whose K2 is radical, arcs reaching the degree-3
+  prime would prove F(I) = k[y]/K2 in every degree.
 - **E8-bar -> N- quadric structure**, from the 148 quadrics now at both primes.
 - **Remaining arc charts on E8-bar -> VB** (t5 = 1, t7 = 1, the locus k^2 + 3 = 0 and the singular points of the
   normalization): the search for arcs into the degree-3 component.
