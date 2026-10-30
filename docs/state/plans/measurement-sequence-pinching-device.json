@@ -12,7 +12,7 @@
     "status": "verified",
     "note": "Owner approved the width-32 run and ratified the envelope doctrine; attempt 1 submitted."
   },
-  "next_action": "Owner decides on results/live/MEASUREMENT_SEQUENCE_SUCCESSOR_CASE.md (width 32, 5600 shots, 20-60 us ladder, cap 100 s on the backup account, F = 1.5 pool coverage); on approval run its approved_run.sh command at the next Kingston calibration. The case branch's merge waits on core-n21-dose-decisions-replay, which fails on AVX-512 runners on main as well.",
+  "next_action": "The ibm_fez width-24 run (job dbhutsene4hc73bdm7j0, 31 s) issued no verdict: the reader carryover screen bounds one measure-and-flip reset, whose residue exceeds its 0.0047 margin on every Heron r2 qubit measured, while the inherited cross-shot carryover is an eighth of it (results/live/MEASUREMENT_SEQUENCE_SUCCESSOR_FEZ_RESULT.md). Next: a successor design that bounds carryover from what the next shot inherits and screens reset-immune carriers by measured persistence, with its null and a written case. Registering the Fez runs waits on PR #650, whose retained jobs share the backup instance.",
   "scope": "Heron r2 (ibm_kingston) pinching run under a calibration-adaptive envelope approval: layout rule at width tier 16/24/32, terminal resets, reset controls, Hadamard crosstalk patterns, 20 us repetition delay with a 50 us fallback attempt, preregistered screens and stochastic null.",
   "owner": "measurement-sequence-pinching branch",
   "steps": [
