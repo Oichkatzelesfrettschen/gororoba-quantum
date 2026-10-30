@@ -1,0 +1,65 @@
+{
+  "schema": "work-plan-v1",
+  "id": "native-numeric-replay",
+  "kind": "implementation",
+  "summary": "Keep bit-exact replay of retained float records meaningful once every producer and CI runner computes on its native numeric path: exact bytes within a measured identity, exact decisions and bounded floats across identities, the capped v1 ledger frozen.",
+  "sources": [
+    "docs/design/native-numeric-replay.md",
+    "docs/archive/reviews/2026-10-30-native-numeric-replay-review.md",
+    "ci/runner_image_records.py",
+    "ci/replay_check.py",
+    "ci/run_gates.py"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The owner chose the hybrid successor ledger on 2026-10-30 after the adversarial review; the caps stay in the gate environment until the native-baselines-and-switch step lands."
+  },
+  "scope": "ci/runner_image_records.py and its ledger, ci/replay_check.py, the numeric-stack probe of ci/run_gates.py, the replay declarations of ci/gates.json, scripts/n21_dose_decisions.py diagnostics, ci/pr_checks.sh and the ci.yml and null-shards.yml workflows. Retained record bytes stay unchanged.",
+  "owner": "repository maintainer",
+  "next_action": "Freeze the v1 ledger digest on its recorded arithmetic environment.",
+  "steps": [
+    {
+      "id": "freeze-v1-ledger-digest",
+      "state": "doing",
+      "action": "Make ci/runner_image_records.py hash the v1 ledger's recorded arithmetic environment instead of the live gate environment, so the ledger digest and gate core-635 survive the removal of OPENBLAS_CORETYPE and NPY_DISABLE_CPU_FEATURES from run_gates.environment_for.",
+      "acceptance": "Fails if `runner_image_records.py id` changes or raises after both caps leave environment_for, or if core-635 fails on main."
+    },
+    {
+      "id": "replay-root-inventory",
+      "state": "todo",
+      "action": "Classify every replay root of ci/gates.json, directories expanded to files, as float-free exact, identity-exact, cross-identity bounded or decision-bearing, tracing each producer closure; retain the inventory as a generated registry.",
+      "acceptance": "Fails if any ledger record or replay root lacks a class, or a record classed float-free holds a float."
+    },
+    {
+      "id": "numeric-identity-probe",
+      "state": "todo",
+      "action": "Extend NUMERIC_STACK_PROBE of ci/run_gates.py to the identity of the design contract: CPU flags, numpy dispatch, OpenBLAS cores, glibc and libm version, Python build, loaded arithmetic object hashes, thread and worker counts and the numerics_fingerprint operation digests.",
+      "acceptance": "Fails if two shards that reproduce a record differently report equal identities."
+    },
+    {
+      "id": "dose-staged-trace",
+      "state": "todo",
+      "action": "Add a diagnostic staged hexadecimal-float trace to scripts/n21_dose_decisions.py and run it on Zen 3, Intel AVX-512 and Zen 4 or Zen 5 runners over the retained inputs to locate the first unequal operation of issue 679.",
+      "acceptance": "Fails to locate if every checkpoint matches while the output differs; the first unequal checkpoint names the operation class otherwise."
+    },
+    {
+      "id": "semantic-comparator",
+      "state": "todo",
+      "action": "Build the cross-identity comparator: exact non-floats and decisions, per-field float bounds, non-finite and signed-zero rules, retained decision margins, and mutation tests that move each decision across its boundary.",
+      "acceptance": "Fails if a mutation that flips a decision passes the comparator, or a native run on another identity fails a record whose decisions are unchanged."
+    },
+    {
+      "id": "fixed-order-decision-reductions",
+      "state": "todo",
+      "action": "Benchmark fixed-order or compensated arithmetic for the decision-bearing reductions the staged trace implicates; adopt one only within its accuracy and wall-time budgets.",
+      "acceptance": "Fails if the adopted reduction still differs across identities or exceeds its declared wall-time budget."
+    },
+    {
+      "id": "native-baselines-and-switch",
+      "state": "todo",
+      "action": "Write native baselines with receipts at new paths, switch gate declarations and the successor ledger in one change, remove both caps from ci/run_gates.py, ci/pr_checks.sh and the workflows (branch ci/openblas-native-kernel), and report per-identity coverage in each audit.",
+      "acceptance": "Fails if a nightly audit reports a skipped replay as passed, or the v1 ledger records lose their historical gate."
+    }
+  ]
+}
