@@ -1146,8 +1146,9 @@ def _verify() -> None:
             continue
         raise RuntimeError(f"delay arm accepted invalid duration {invalid_delay}")
     print(
-        "QPE diagnostics: 16 folded laws, the N=21 laws of every orbit variant but the dose quadratures, with their heralded twins, and the "
-        "ten spectator Ramsey laws with theirs match exact circuit branches and sampled labels; heralded circuits "
+        "QPE diagnostics: 16 folded laws, the N=21 laws of every orbit variant but the dose quadratures, with "
+        "their heralded twins, and the ten spectator Ramsey laws with theirs match exact circuit branches and "
+        "sampled labels; heralded circuits "
         "measure every qubit before a full barrier, read the window bracket of their unheralded twins and "
         "marginalize to the unheralded law"
     )
