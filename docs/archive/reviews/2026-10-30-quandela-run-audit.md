@@ -102,8 +102,9 @@ sit a factor of 13 and 108 from the degraded figures. The recovery
 condition in the teleportation handoff
 ([belenos-recovery-watch.md](../handoffs/belenos-recovery-watch.md)) is met, and plan step `recovered-chip-rehearsal`
 of `ascella-belenos-entanglement-teleportation` holds its run: twelve iterations in two blocks, block B mirrored. The
-preregistered fidelity target F* = 0.86 comes from the anchor figures; the model needs rescoring at the live figures
-(HOM 87 %, g2 1.3 %) before the case is written. Belenos lists weekly maintenance from 2026-11-05 08:30 UTC.
+job-01 case exists under the descriptive rule, prepared at an earlier read; the F* = 0.86 target belongs to the job-00
+decision rule and the record watch. [The handoff](../handoffs/2026-10-30-quandela-next-cases.md) covers the gate that
+refuses job-01 once the record moves. Belenos lists weekly maintenance from 2026-11-05 08:30 UTC.
 
 Autonomous spending is off. The `quandela-schedule.yml` workflow reads `disabled_manually` while the repository variable
 `QUANDELA_SCHEDULE_ENABLED` reads `true`; both schedule files read `"enabled": true`, and every job they list (one Ascella
@@ -114,8 +115,8 @@ again.
 
 The monthly allowance resets 2026-11-01 00:00 UTC (2026-10-31 17:00 Pacific), per the Explorer plan facts in
 [README.md](../../notes/quandela/README.md): 200 credits per calendar month, no carry-over. `qd_usage` reports no period
-boundary; the 130.97 credits used leave about 69 remaining if all 133 jobs ran in October, which the dates of the 128
-retained runs support. A run submitted before the reset spends expiring credit, and a run submitted after it draws on the
+boundary; the 130.97 credits used at the first read leave about 69 remaining if all 133 jobs ran in October, which the dates of
+the 128 retained runs support, and the later 1.131072-credit Ascella job leaves about 68. A run submitted before the reset spends expiring credit, and a run submitted after it draws on the
 new allowance. Job count sets the cost (one credit per job), and a single job runs up to 300 s, so packing settings into a
 job lowers the cost per setting.
 
@@ -130,7 +131,8 @@ job lowers the cost per setting.
    schedule receipts and the Codex worktree `a9e6`, whose 41 runs end at 2026-10-22.
 3. Merge or discard `fix/ascella-predecessor-current-command-binding`: it holds the one retained Quandela run absent from
    `main`.
-4. Rescore the teleportation fidelity model at the live Belenos figures and write `teleportation_rehearsal/job-01`.
+4. Submit `teleportation_rehearsal/job-01` once the owner approves its 4.2-credit ceiling, `qpu:belenos` reads
+   `available` and the admission tolerance of branch `fix/teleportation-job-gate-tolerance` has had its review.
 5. Compute the power of the lag-trend statistic for a random walk against a bounded mean-reverting drift at nine runs
    over 48 hours, per plan `belenos-drift-memory-successor`, and write that case only above 0.8.
 6. Turn the join used here into a gated script, so the inventory regenerates from the records.

@@ -11,7 +11,7 @@ through `qd_platform.py plan` and `qd_teleportation_rehearsal.py --plan`, which 
 third time on `qpu:ascella` under the owner's approval at the 1.131072-credit ceiling: job
 `cb8717bc-6bb3-4cbd-b508-a8f4d73c20c7`, completed, 327,680 samples, retained as
 `results/quandela/runs/2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition/`. The baseline
-(`ascella-context-packed-forward`) started 2026-10-28 00:38 UTC and the first day repeat 2026-10-29 09:39 UTC.
+(`ascella-context-packed-forward`) started 2026-10-28 00:38:05 UTC, the first day repeat 2026-10-29 09:39 UTC, and the third acquisition's provider start fell 67.3 hours after the baseline start.
 
 **Comparison.** `scripts/ascella_matched_port_comparison.py` compares the single-click port distributions of the three
 acquisitions, setting by setting (`port-comparison.json` in the run directory). Settings, circuit parameters and
@@ -39,7 +39,7 @@ returned no three-click sample on the degraded record, so it says nothing about 
 **Cost and time (corrected).** The registered `JOBS["job-01"]` row sets 1200 samples per iteration, 3,200,000
 `max_shots` per iteration, a credit ceiling of 4.2 (1 credit per job plus 3,200,000 times 1e-06) and 240 expected
 seconds. The figure of about 2.2 credits quoted earlier in the session was job-00's ceiling and applies to no job-01
-case. Both fit the 69 credits that remain before the 2026-11-01 00:00 UTC reset.
+case. Both fit the roughly 68 credits that remain before the 2026-11-01 00:00 UTC reset.
 
 **Blocker.** The retained case was prepared at the platform read of 2026-10-30 01:20 UTC (perfs sha256 `f421bed7...`,
 HOM 83.9 %, g2 1.3 %, transmittance 5.19 %, pooled model fidelity 0.8204). The live record at 19:14 UTC reads perfs
