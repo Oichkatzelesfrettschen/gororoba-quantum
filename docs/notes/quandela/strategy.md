@@ -1074,6 +1074,22 @@ Not yet used:
 | 2026-10-24 09:18 | 739a5271 | qpu:ascella | ascella_signed_coherence job-00, 64 settings at 8192 samples | 1.016384 | 186 s; 27 of 27 endpoints qualify; 1.27 % of events outside the logical block, 4 to 586 per setting |
 | 2026-10-24 15:31 | 6ef8e8db | qpu:ascella | ascella_signed_coherence job-01, job-00's 64 circuits in ANU QRNG order at 16384 samples | 1.032768 | 186 s at twice the samples; 27 of 27 qualify; outside-block clicks follow execution order (lag-1 -0.65), not the setting (Spearman -0.08); X and Y analyzer residuals reproduce (r 0.97, 0.80) |
 | 2026-10-26 02:54 | 55479252 | qpu:belenos | teleportation_rehearsal job-00, six Pauli eigenstates, anchor gate while the platform record held one state | 2.2 | 292 s; 0 three-click samples in all six iterations, each reporting its max_shots 1,200,000 as nb_shots_used; verdict inconclusive, record state degraded-as-recorded |
+| 2026-10-30 05:59 | b21b2c7b | qpu:belenos | packed_swapped/job-00, the packed block set on slots three places along | 0 (usage report unchanged) | 55 s, 60000 shots |
+| 2026-10-30 06:05 | 2d45cd77 | qpu:belenos | packed_swapped/job-01, the packed block set on slots three places along | 0 (usage report unchanged) | 53 s, 60000 shots |
+| 2026-10-30 06:10 | 5d263c09 | qpu:belenos | packed_swapped/job-02, the packed block set on slots three places along | 0 (usage report unchanged) | 55 s, 60000 shots |
+| 2026-10-30 06:14 | 0678e186 | qpu:belenos | packed_swapped/job-03, the packed block set on slots three places along | 0 (usage report unchanged) | 55 s, 60000 shots |
+| 2026-10-30 06:22 | 8eda97f0 | qpu:belenos | packed_swapped/job-04, the packed block set on slots three places along | 0 (usage report unchanged) | 55 s, 60000 shots |
+| 2026-10-30 06:36 | 5947894b | qpu:belenos | packed_swapped/job-05, two blocks on modes 12-19 | 0 (usage report unchanged) | 34 s, 20000 shots |
+
+The mode-swap comparison against the packed series (`scripts/qd_packed_mode_swap_analysis.py`) returns the
+preregistered verdict mixed: 26 of 32 blocks moved by more than 4.5 standard errors of the two-sample
+binomial (largest |delta a| 0.146, z up to 36), so the residual a - p depends on the modes a block sits on.
+Both predictors correlate negatively over the 16 half blocks (block r -0.34, slot r -0.59 with interval
+-0.84 to -0.13), so the packed slot means do not carry over to the new occupants. The 86.1 % bright block
+[[1,-1],[-1,1]] at t = -1 read 98.9 % on slot 2 (modes 8-11) against 86.1 % on slot 5 (modes 20-23). The
+series has no same-layout repeat, so run-to-run drift between the two layouts (about one hour apart) is not
+bounded and the placement effect is not yet separated from it; the free_credits counter held at 40.07
+across the six jobs and differs from the 56.59 another session read during the packed run.
 
 A QPU approval quotes the expected credits, the expected seconds and why a
 local Perceval simulation cannot answer the question. Job 4e208d22's quotes
