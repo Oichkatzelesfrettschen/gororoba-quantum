@@ -102,7 +102,8 @@ Subject: zbMATH Open REST API 1.9.33 and citation matcher: documentation points 
 > **A6. Status codes.** An unknown identifier answers HTTP 200 with `execution_bool` false, and a search
 > without hits answers HTTP 404. The reverse pairing is the common HTTP convention; whichever convention the
 > API keeps, a sentence in the description would guide clients (captures 05 and 09).
-> `curl -w '%{http_code}' 'https://api.zbmath.org/v1/document/99999999999'`.
+> `curl -w '%{http_code}' 'https://api.zbmath.org/v1/document/99999999999'` and
+> `curl -w '%{http_code}' 'https://api.zbmath.org/v1/document/_search?search_string=zzqqxxnotaword'`.
 >
 > **A7. Citation matcher default score.** The Script API PDF gives `m` a default of 5.0. A `match` request
 > without `m` returns hits scored 0.0, and the same request with `m=5` returns only the hit scored 15.0
