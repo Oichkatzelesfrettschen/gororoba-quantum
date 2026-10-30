@@ -67,8 +67,18 @@ while :; do
                         exit 5
                     fi
                 else
+                    # The round starts at the later of the summary's round-start and the newest request, since the
+                    # summary keeps an older round-start until the bot picks a new request up.
                     round=$(printf '%s\n' "$status" | sed -n 's/.* round-start=\([^ ]*\) .*/\1/p')
-                    if [ -n "$round" ] && [ "$round" != - ] && [ $((now - $(date -d "$round" +%s))) -ge "$stall" ]; then
+                    requested=$(timeout -k 10 60 gh api --paginate "repos/$slug/issues/$pr/comments" \
+                        --jq '.[] | select(.body | startswith("@codex review")) | .created_at' 2>>"$log" |
+                        sort | tail -n 1) || requested=
+                    start=0
+                    if [ -n "$round" ] && [ "$round" != - ]; then start=$(date -d "$round" +%s); fi
+                    if [ -n "$requested" ] && [ "$(date -d "$requested" +%s)" -gt "$start" ]; then
+                        start=$(date -d "$requested" +%s)
+                    fi
+                    if [ "$start" -gt 0 ] && [ $((now - start)) -ge "$stall" ]; then
                         timeout -k 10 60 gh api "repos/$slug/issues/$pr/comments" -f body='@codex review' >/dev/null
                         echo "$(date -u +%FT%TZ) round $round showed no result after ${stall}s; requested again" >>"$log"
                         retried_at=$now
