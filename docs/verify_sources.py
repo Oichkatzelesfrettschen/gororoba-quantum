@@ -7,12 +7,21 @@ import io
 import json
 import re
 import subprocess
+import sys
 import tarfile
 from datetime import datetime, timedelta
 from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from typing import Any
 from urllib.parse import unquote, urljoin, urlsplit
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+from check_markdown_links import strip_code  # noqa: E402
+
+
+def note_link_targets(text: str) -> list[str]:
+    """Inline link targets of a note outside fenced, indented and inline code, where `Y[t](+)` is notation."""
+    return re.findall(r"\[[^\]]*\]\(([^\s)]+)\)", "\n".join(strip_code(text.splitlines())))
 
 
 def require(condition: bool, message: str) -> None:
@@ -1229,12 +1238,17 @@ def verify() -> None:
     link_count = 0
     # The pages under notes/kaggle/site are kaggle.com's own Markdown, bound byte
     # for byte by site/MANIFEST.json, and their links resolve against
-    # https://www.kaggle.com/ rather than the checkout.
-    verbatim_captures = (library / "local_source_cache", library / "notes" / "kaggle" / "site")
+    # https://www.kaggle.com/ rather than the checkout. The retained fiber working
+    # record keeps its reports' links as written, file:line targets on the build host.
+    verbatim_captures = (
+        library / "local_source_cache",
+        library / "notes" / "kaggle" / "site",
+        library / "evidence" / "a5-exceptional-fibers" / "working",
+    )
     for note in library.rglob("*.md"):
         if any(capture in note.parents for capture in verbatim_captures):
             continue
-        for target in re.findall(r"\[[^\]]*\]\(([^\s)]+)\)", note.read_text()):
+        for target in note_link_targets(note.read_text()):
             if ":" in target or target.startswith("#"):
                 continue
             relative_target = target.split("#", 1)[0]

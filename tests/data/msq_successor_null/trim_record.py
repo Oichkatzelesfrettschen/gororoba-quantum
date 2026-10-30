@@ -1,5 +1,5 @@
 """Write the successor null's test record: the fields `msq_successor_null_batch.build_setup` reads from a dry-run
-record directory, with its snapshot cut to the layout qubits' properties and sx gates.
+record directory (including its `shots`), with its snapshot cut to the layout qubits' properties and sx gates.
 
     "$PYTHON" tests/data/msq_successor_null/trim_record.py results/live/RECORD tests/data/msq_successor_null/record
 """
@@ -45,6 +45,7 @@ def trim(source: Path, target: Path) -> str:
     kept = {
         "family_configuration": {key: configuration[key] for key in CONFIGURATION},
         "groups": [{"backend": group["backend"]} for group in record["groups"]],
+        "shots": record["shots"],
         "envelope": {"planning_snapshot_sha256": trimmed},
         "source": {"record": source.name, "planning_snapshot_sha256": digest},
     }

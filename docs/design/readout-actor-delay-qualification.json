@@ -1,0 +1,251 @@
+{
+  "schema": "readout-actor-case-v1",
+  "backend": "ibm_kingston",
+  "width": 156,
+  "reporters": [
+    0,
+    1
+  ],
+  "actors": [
+    2
+  ],
+  "pairs": [
+    [
+      0,
+      1
+    ]
+  ],
+  "groups": [
+    [
+      0
+    ],
+    [
+      1
+    ],
+    [
+      155
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      0,
+      155
+    ],
+    [
+      1,
+      155
+    ],
+    [
+      0,
+      1,
+      155
+    ]
+  ],
+  "allocations": [
+    {
+      "name": "delay-30us-idle-input-0",
+      "arm": "idle",
+      "input": 0,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 3e-05
+    },
+    {
+      "name": "delay-30us-idle-input-1",
+      "arm": "idle",
+      "input": 1,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 3e-05
+    },
+    {
+      "name": "delay-30us-idle-input-2",
+      "arm": "idle",
+      "input": 2,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 3e-05
+    },
+    {
+      "name": "delay-30us-idle-input-3",
+      "arm": "idle",
+      "input": 3,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 3e-05
+    },
+    {
+      "name": "delay-30us-active-input-0",
+      "arm": "active",
+      "input": 0,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 3e-05
+    },
+    {
+      "name": "delay-30us-active-input-1",
+      "arm": "active",
+      "input": 1,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 3e-05
+    },
+    {
+      "name": "delay-30us-active-input-2",
+      "arm": "active",
+      "input": 2,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 3e-05
+    },
+    {
+      "name": "delay-30us-active-input-3",
+      "arm": "active",
+      "input": 3,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 3e-05
+    },
+    {
+      "name": "delay-50us-idle-input-0",
+      "arm": "idle",
+      "input": 0,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 5e-05
+    },
+    {
+      "name": "delay-50us-idle-input-1",
+      "arm": "idle",
+      "input": 1,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 5e-05
+    },
+    {
+      "name": "delay-50us-idle-input-2",
+      "arm": "idle",
+      "input": 2,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 5e-05
+    },
+    {
+      "name": "delay-50us-idle-input-3",
+      "arm": "idle",
+      "input": 3,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 5e-05
+    },
+    {
+      "name": "delay-50us-active-input-0",
+      "arm": "active",
+      "input": 0,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 5e-05
+    },
+    {
+      "name": "delay-50us-active-input-1",
+      "arm": "active",
+      "input": 1,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 5e-05
+    },
+    {
+      "name": "delay-50us-active-input-2",
+      "arm": "active",
+      "input": 2,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 5e-05
+    },
+    {
+      "name": "delay-50us-active-input-3",
+      "arm": "active",
+      "input": 3,
+      "stage": "pilot",
+      "shots": 4096,
+      "rep_delay_seconds": 5e-05
+    },
+    {
+      "name": "delay-250us-idle-input-0",
+      "arm": "idle",
+      "input": 0,
+      "stage": "references",
+      "shots": 1024,
+      "rep_delay_seconds": 0.00025
+    },
+    {
+      "name": "delay-250us-idle-input-1",
+      "arm": "idle",
+      "input": 1,
+      "stage": "references",
+      "shots": 1024,
+      "rep_delay_seconds": 0.00025
+    },
+    {
+      "name": "delay-250us-idle-input-2",
+      "arm": "idle",
+      "input": 2,
+      "stage": "references",
+      "shots": 1024,
+      "rep_delay_seconds": 0.00025
+    },
+    {
+      "name": "delay-250us-idle-input-3",
+      "arm": "idle",
+      "input": 3,
+      "stage": "references",
+      "shots": 1024,
+      "rep_delay_seconds": 0.00025
+    },
+    {
+      "name": "delay-250us-active-input-0",
+      "arm": "active",
+      "input": 0,
+      "stage": "references",
+      "shots": 1024,
+      "rep_delay_seconds": 0.00025
+    },
+    {
+      "name": "delay-250us-active-input-1",
+      "arm": "active",
+      "input": 1,
+      "stage": "references",
+      "shots": 1024,
+      "rep_delay_seconds": 0.00025
+    },
+    {
+      "name": "delay-250us-active-input-2",
+      "arm": "active",
+      "input": 2,
+      "stage": "references",
+      "shots": 1024,
+      "rep_delay_seconds": 0.00025
+    },
+    {
+      "name": "delay-250us-active-input-3",
+      "arm": "active",
+      "input": 3,
+      "stage": "references",
+      "shots": 1024,
+      "rep_delay_seconds": 0.00025
+    }
+  ],
+  "purpose": "Unapproved descriptive full-register delay-and-activity pilot on reporters 0 and 1 and actor 2. Retain all 156 bits from every shared PUB shot. The pilot characterizes this layout; it neither confirms parity superiority nor qualifies the array.",
+  "reference_rule": "Acquire all four reporter preparations and both actor arms at 250 microseconds, 1024 shots each. This retained default-delay comparison is not a certified initialization baseline. Keep its acquisition period separate from the 30 and 50 microsecond pilot jobs.",
+  "carryover_rule": "Retain within-PUB shot order, job and PUB identity and available timing. Cross-PUB order and immediate physical predecessors remain unavailable unless provider evidence establishes them. Report initialization and carryover qualification as unresolved; descriptive similarity never passes equivalence.",
+  "selection_rule": "Freeze reporters 0 and 1, actor 2 and the declared projections before acquisition. Report every preparation, arm and delay without pair selection, pooling or outcome-dependent exclusions. Acquire all 24 PUBs at fixed counts. Freeze any later delay and confirmation design in a separately approved case.",
+  "inference": "descriptive",
+  "max_execution_seconds": 6,
+  "max_total_execution_seconds": 20,
+  "reserve_seconds": 48,
+  "max_pending": 100,
+  "initialization_seconds": 2.212e-06,
+  "job_overhead_seconds": 2
+}

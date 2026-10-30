@@ -17,6 +17,7 @@ captured docs stay the authority.
 | `api/` | the REST API OpenAPI document `openapi-v2.json` (`--api`) |
 | `pypi/` | release metadata and file sha256 of `qbraid` 0.13.0 and `qbraid-core` 0.6.36 (`--pypi`) |
 | `requirements-qbraid.txt` | the environment lock |
+| [mcp.md](mcp.md) | the hosted MCP server: OAuth discovery, published tool categories, and client registration |
 
 `capture_qbraid_docs.py --check` rechecks every captured byte offline
 (`tests/test_cli_record_checks.py`), and its `--self-test` proves the check
@@ -280,7 +281,8 @@ statevector reach past the build host and Kaggle, so a qBraid job is
 warranted for a noiseless reference too wide for them, or for the Quobly
 emulator as a device model. Every job waits for the owner's approval of a
 written case (root AGENTS.md, "Hardware services"), and the free daily
-allowance is the budget it states. No adapter or MCP server exists yet; a
-first run adds one with its retained-run directory under `results/qbraid/`.
-qBraid's own MCP server is documented at `docs/v2/ai/integrations/mcp-server.md`
-and is not registered.
+allowance is the budget it states. No adapter exists yet; a first run adds
+one with its retained-run directory under `results/qbraid/`. The hosted MCP
+server, its OAuth discovery, and the client registration are in
+[mcp.md](mcp.md). The captured vendor page stays at
+`docs/v2/ai/integrations/mcp-server.md`.

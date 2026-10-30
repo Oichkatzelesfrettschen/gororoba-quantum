@@ -1,0 +1,889 @@
+{
+  "boundary": "Post-acquisition empirical distances under fixed early-label permutations and polarity flips. Terminal projection is invariant under those maps. Separate jobs and a stopped nominal-zero case do not establish a causal destination effect or identify a physical mechanism.",
+  "cases": {
+    "nominal_one": {
+      "maps": [
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 0,
+          "tv_numerator": 600
+        },
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 1,
+          "tv_numerator": 9876
+        },
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 2,
+          "tv_numerator": 5566
+        },
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 3,
+          "tv_numerator": 9910
+        },
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 4,
+          "tv_numerator": 12886
+        },
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 5,
+          "tv_numerator": 12906
+        },
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 6,
+          "tv_numerator": 12886
+        },
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 7,
+          "tv_numerator": 13180
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 0,
+          "tv_numerator": 9380
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 1,
+          "tv_numerator": 12772
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 2,
+          "tv_numerator": 9090
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 3,
+          "tv_numerator": 11272
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 4,
+          "tv_numerator": 9362
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 5,
+          "tv_numerator": 11544
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 6,
+          "tv_numerator": 4106
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 7,
+          "tv_numerator": 10284
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 0,
+          "tv_numerator": 8006
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 1,
+          "tv_numerator": 7974
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 2,
+          "tv_numerator": 7468
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 3,
+          "tv_numerator": 2504
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 4,
+          "tv_numerator": 13184
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 5,
+          "tv_numerator": 12908
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 6,
+          "tv_numerator": 12884
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 7,
+          "tv_numerator": 12882
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 0,
+          "tv_numerator": 9340
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 1,
+          "tv_numerator": 9332
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 2,
+          "tv_numerator": 7850
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 3,
+          "tv_numerator": 3828
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 4,
+          "tv_numerator": 12802
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 5,
+          "tv_numerator": 11584
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 6,
+          "tv_numerator": 11550
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 7,
+          "tv_numerator": 11524
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 0,
+          "tv_numerator": 9330
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 1,
+          "tv_numerator": 12808
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 2,
+          "tv_numerator": 9054
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 3,
+          "tv_numerator": 11322
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 4,
+          "tv_numerator": 8350
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 5,
+          "tv_numerator": 11584
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 6,
+          "tv_numerator": 4066
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 7,
+          "tv_numerator": 11296
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 0,
+          "tv_numerator": 1884
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 1,
+          "tv_numerator": 11270
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 2,
+          "tv_numerator": 5912
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 3,
+          "tv_numerator": 11284
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 4,
+          "tv_numerator": 11492
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 5,
+          "tv_numerator": 11622
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 6,
+          "tv_numerator": 11512
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 7,
+          "tv_numerator": 12834
+        }
+      ],
+      "minimum_tv_numerator": 600,
+      "terminal_tv_numerator": 232,
+      "tv_denominator": 16384
+    },
+    "nominal_zero_prefix": {
+      "maps": [
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 0,
+          "tv_numerator": 7918
+        },
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 1,
+          "tv_numerator": 8400
+        },
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 2,
+          "tv_numerator": 15796
+        },
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 3,
+          "tv_numerator": 15802
+        },
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 4,
+          "tv_numerator": 6310
+        },
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 5,
+          "tv_numerator": 6426
+        },
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 6,
+          "tv_numerator": 15788
+        },
+        {
+          "output_bit_sources": [
+            0,
+            1,
+            2
+          ],
+          "polarity_mask": 7,
+          "tv_numerator": 15788
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 0,
+          "tv_numerator": 10304
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 1,
+          "tv_numerator": 10680
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 2,
+          "tv_numerator": 13868
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 3,
+          "tv_numerator": 13986
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 4,
+          "tv_numerator": 8238
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 5,
+          "tv_numerator": 8242
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 6,
+          "tv_numerator": 13402
+        },
+        {
+          "output_bit_sources": [
+            0,
+            2,
+            1
+          ],
+          "polarity_mask": 7,
+          "tv_numerator": 13508
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 0,
+          "tv_numerator": 12594
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 1,
+          "tv_numerator": 11994
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 2,
+          "tv_numerator": 12202
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 3,
+          "tv_numerator": 11126
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 4,
+          "tv_numerator": 11878
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 5,
+          "tv_numerator": 11284
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 6,
+          "tv_numerator": 10930
+        },
+        {
+          "output_bit_sources": [
+            1,
+            0,
+            2
+          ],
+          "polarity_mask": 7,
+          "tv_numerator": 10220
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 0,
+          "tv_numerator": 9562
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 1,
+          "tv_numerator": 8476
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 2,
+          "tv_numerator": 13638
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 3,
+          "tv_numerator": 13426
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 4,
+          "tv_numerator": 10442
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 5,
+          "tv_numerator": 8984
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 6,
+          "tv_numerator": 13962
+        },
+        {
+          "output_bit_sources": [
+            1,
+            2,
+            0
+          ],
+          "polarity_mask": 7,
+          "tv_numerator": 13738
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 0,
+          "tv_numerator": 12616
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 1,
+          "tv_numerator": 12118
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 2,
+          "tv_numerator": 12430
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 3,
+          "tv_numerator": 11674
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 4,
+          "tv_numerator": 11754
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 5,
+          "tv_numerator": 11262
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 6,
+          "tv_numerator": 10382
+        },
+        {
+          "output_bit_sources": [
+            2,
+            0,
+            1
+          ],
+          "polarity_mask": 7,
+          "tv_numerator": 9992
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 0,
+          "tv_numerator": 7198
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 1,
+          "tv_numerator": 6320
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 2,
+          "tv_numerator": 15794
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 3,
+          "tv_numerator": 15790
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 4,
+          "tv_numerator": 8390
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 5,
+          "tv_numerator": 7146
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 6,
+          "tv_numerator": 15800
+        },
+        {
+          "output_bit_sources": [
+            2,
+            1,
+            0
+          ],
+          "polarity_mask": 7,
+          "tv_numerator": 15790
+        }
+      ],
+      "minimum_tv_numerator": 6310,
+      "terminal_tv_numerator": 6286,
+      "tv_denominator": 16384
+    }
+  },
+  "inputs": {
+    "docs/evidence/tuna-projector-geometry/joint-response-analysis.json": "8e81167d7fc6c6dcde0d859bcdbb99c2da8869488b42ac13dfc1919cbaaa8ab2",
+    "scripts/qi_tuna_joint_response.py": "9e022041e15e99dc10b348e40dd2ec7fbb7af980c9b44f65bd4547d19b90d492"
+  },
+  "producer_sha256": "271486a916177ad96d5f5203c2c5c4233e14312542b8954abd7abd3050f789af",
+  "schema": "qi-tuna-early-label-map-exploration-v1"
+}

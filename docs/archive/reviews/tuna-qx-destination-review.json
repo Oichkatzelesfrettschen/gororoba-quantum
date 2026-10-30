@@ -1,0 +1,38 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "reasoning_effort": "high",
+  "reports": [
+    {
+      "raw_sha256": "8ee0da18e7006215e9ba8b85b6056978536de6db918ad9f81ead72504c7c8586",
+      "report": "docs/archive/reviews/tuna-qx-destination-initial-review.md",
+      "retained_sha256": "5007c132aec5a83fa582610d21bcb1e3dc761caadc6cdcae29cd93eae4675cb8",
+      "sanitization": "Local absolute paths removed; repository links made relative."
+    },
+    {
+      "raw_sha256": "2020060509904c9f148760b34baa37a9bd502139ad122dea7a79827b6d421f07",
+      "report": "docs/archive/reviews/tuna-qx-destination-followup-review.md",
+      "retained_sha256": "d25d131af0cd50e1dc5b05169531315d50d4da8850f1f39a6c2eeff4519df559",
+      "sanitization": "Local absolute paths removed; repository links made relative."
+    },
+    {
+      "raw_sha256": "7535344fdbb8a9e41695ff4247803946057ea271128cb7623e91f4b545bfaa5d",
+      "report": "docs/archive/reviews/tuna-qx-destination-repair-review.md",
+      "retained_sha256": "a2fcee0c0c833b4afbc1e4b4bca71ce779bb1d098de3028645240e41c7d7d306",
+      "sanitization": "Local absolute paths removed, links made relative, trailing whitespace removed."
+    },
+    {
+      "raw_sha256": "0d2213d913eefb205d4aa9f4da09dd9b855a251d440dc19c5b84fdbb3157619d",
+      "report": "docs/archive/reviews/tuna-qx-destination-capacity-review.md",
+      "retained_sha256": "7bb30e5387f0a4a5366dd5808aa03e4ad2b1dbc2ede3d6007a13dbca1a117172",
+      "sanitization": "Local absolute paths removed; repository links made relative."
+    },
+    {
+      "raw_sha256": "f5aeb045b660914c3fc9afad25c24d24c6f9439bed380466fb96365e20f09efb",
+      "report": "docs/archive/reviews/tuna-qx-destination-mutation-review.md",
+      "retained_sha256": "e21bea76b6046f8fd8e2dcf8c9857293baf3e74dcd5847ca50a5ac8002b0c9d4",
+      "sanitization": "Local absolute paths removed, links made relative, trailing whitespace removed."
+    }
+  ],
+  "service_tier": "default"
+}

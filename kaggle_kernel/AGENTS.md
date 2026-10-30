@@ -64,11 +64,11 @@ interpreter routing. Kernel packages are pinned as follows:
 
 | Package | Pin | Kernel source |
 | --- | --- | --- |
-| qiskit | 2.6.0 | PyPI |
-| qiskit-aer-gpu-cu11 | 0.17.2 (the CUDA 12 `qiskit-aer-gpu` stops at 0.15.1 and has no Python 3.13 wheel) | PyPI |
+| qiskit | 2.6.1 | PyPI |
+| qiskit-aer-gpu-cu11 | 0.18.2 (the CUDA 11 build; the CUDA 12 `qiskit-aer-gpu` 0.18.2 also ships cp313 wheels but requires `cuquantum-cu12<24.11`) | PyPI |
 | cuquantum-cu11 | 24.8.0 (brings custatevec-cu11 1.6.0.post1 and cutensornet-cu11 2.5.0; the libraries the cu11 Aer wheel links) | PyPI |
 | cutensor-cu11 | 2.2.0 (the newest release inside cutensornet-cu11 2.5.0's `>=2.0.1,<3`) | PyPI |
-| qiskit-ibm-runtime | 0.50.0 (fake backends such as FakeFez; no account or credential) | PyPI |
+| qiskit-ibm-runtime | 0.51.0 (fake backends such as FakeFez; no account or credential) | PyPI |
 | hypercomplex, hypercomplex-engine, hypercomplex-algebra, Cayley-Calculator, octonion, mathdunders | 0.3.4, 0.5.0, 0.2.0.2, 1.3.1, 0.1.0, 0.4.2 | PyPI sdist, sha256-pinned |
 | quaternionic, clifford, kingdon, galgebra, pyoctonion | 1.0.18, 1.5.1, 3.0.0, 0.6.0, 3.12 | PyPI sdist, sha256-pinned |
 | pyquaternion | 0.9.9 | PyPI sdist, sha256-pinned, PKGBUILD recipe (writes the VERSION.txt the sdist omits) |
@@ -103,7 +103,7 @@ interpreter routing. Kernel packages are pinned as follows:
 
 - **Requesting a GPU.** Push with `--machine NvidiaTeslaT4` and a `--timeout`
   sized to the work; kaggle_run.py refuses an accelerator push without one.
-  The kernel installs qiskit-aer-gpu-cu11 0.17.2, cuquantum-cu11 24.8.0 and
+  The kernel installs qiskit-aer-gpu-cu11 0.18.2, cuquantum-cu11 24.8.0 and
   cutensor-cu11 2.2.0 and sets `GOROROBA_AER_DEVICE=GPU`.
 - **cuStateVec.** `noise_simulator(..., custatevec=True)`, or
   `GOROROBA_AER_CUSTATEVEC=1` in the entry's environment, sets

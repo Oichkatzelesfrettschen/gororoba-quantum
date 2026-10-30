@@ -96,6 +96,19 @@ predecessors while the target remains wrong. Otherwise stop inconclusive within
 the written budget. Neither outcome separates stale applied controls from result
 association without provider-side execution evidence. Do not retry automatically.
 
+Ascella has its own predecessor case,
+[Ascella predecessor intervention](../design/ascella-predecessor-intervention.md).
+The candidate above stays on Belenos job `e99c049c-b9c1-4663-bbd0-e57e59bb6993`,
+observation indices 6, 14 and 22. The Ascella case uses retained Ascella seed-0
+settings, a twelve-mode histogram, and a target whose retained responses already
+lie near its request. Its signed common and reversal contrasts preserve the
+direction of the target differences before taking a total-variation norm.
+The offline analyzer reports descriptive contrasts by default and admits only
+explicitly sampling-model-conditional response bounds under an independently
+digest-bound contract. Result-list order supplies attribution rather than
+physical chronology, so the analyzer withholds predecessor-causal claims.
+The case remains unapproved and unsubmitted.
+
 ## Frozen and terminal cases
 
 | Case | Retained scope and disposition | Remaining boundary |

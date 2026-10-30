@@ -1,0 +1,50 @@
+{
+  "alternatives": [
+    "All selected realized predictable response contrasts are within 0.10 with the baseline endpoint screen satisfied.",
+    "At least one selected realized predictable response contrast exceeds 0.10 with the baseline endpoint screen satisfied.",
+    "Baseline changes or interval overlap leave the bounded comparison inconclusive."
+  ],
+  "analysis_contract_sha256": "0be6473032f4875f438ec22296d5a52dee6a51b5b8263198ede06b0386df1e26",
+  "backend": "tuna_17",
+  "campaign_sha256": "53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76",
+  "case_id": "tuna-readout-destination-sequential",
+  "credits_ceiling": 0,
+  "dependence_model": "Arbitrary adapted shot dependence and history-dependent conditional means. Fixed weights and sample sizes support conditional Hoeffding martingale concentration. Neither stationary repeated-run means nor counterfactual response during rotation is inferred.",
+  "discriminating_observable": "24 inverse-decoded early/final binary joint cells across nominal zero/one preparations and physical qubits4,11,6, with24 before/after baseline contrasts.",
+  "end_without_retry": "End after six complete jobs or the first operational invalidity/deadline. Preserve dispatched identities and collect them through read-only recovery. Require a separately approved case for further dispatch.",
+  "execution_authorized": false,
+  "expected_credits": 0,
+  "expected_execution_seconds_decimal": "29.533215",
+  "layout_timing_identity": "17qubits,20classicalbits,early measured physical qubits4,11,6,terminal all17,zero explicit gap. Only early destinations cycle17,18,19 to19,17,18. Local physical instruction equality is compiled and checked. Served analog schedule equality remains unavailable.",
+  "objective": "Bound selected realized predictable early/final response contrasts between destination-rotated and bracketing baseline jobs; causal destination attribution remains unresolved.",
+  "observation_chain": "Frozen cQASM, manifests and local compiler replay -> serial digest-guarded submission -> provider identities and creation/completion order -> retained full raw shots and histogram replay -> frozen inverse decoder and analyzer.",
+  "power_model": {
+    "evidence": "docs/evidence/tuna-projector-geometry/destination-response-uncertainty.md; exact rounded-up radii and separation guarantees are frozen by the campaign analysis contract.",
+    "scope": "Uniform finite-sample precision and separation for realized predictable contrasts only; causal-effect power and repeated-run population power remain unqualified.",
+    "status": "qualified"
+  },
+  "processing_policy": "Preserve complete raw strings, failures and identities; inverse-decode declared bits; validate six fixed ordered single-job batches before classification; retain all24cells and all24baseline contrasts; no postselection or label repair.",
+  "provider": "quantum_inspire",
+  "reserve_seconds": 0,
+  "retry_authorized": false,
+  "schema": "acquisition-decision-v1",
+  "seconds_ceiling": 1800,
+  "shot_ceiling": 24576,
+  "simulation_justification": "The question concerns returned physical acquisition response and provider reconstruction. Terminal QX conformance and local compiler replay cannot establish the served Tuna early-history response.",
+  "sources": {
+    "campaign": "results/quantum_inspire/proposals/tuna-readout-destination-sequential/campaign.json",
+    "mathematical_qualification": "docs/evidence/tuna-projector-geometry/destination-response-uncertainty.md",
+    "upstream_report": "docs/notes/quantum_inspire/upstream-readout-report.md",
+    "written_case": "docs/design/tuna-readout-ordered-response-admission.md"
+  },
+  "status": "admitted-for-owner-approval",
+  "stopping_outcomes": {
+    "implementation route unavailable": "Required acquisition artifact files are unavailable; preserve the partial record and refuse statistical inference.",
+    "inconclusive within budget": "The complete valid case fails to certify baseline tolerance or response intervals overlap the decision boundary. End without extending the sample.",
+    "objective established within scope": "All24simultaneous response intervals lie inside[-0.10,0.10], with all24baseline intervals inside that tolerance. Conclude bounded realized-response equivalence only.",
+    "protocol inadmissible": "Changed bindings, structural drift, nonzero charge, failed job, invalid identity, malformed/partial shots, or failed order/pause invalidate the case.",
+    "specified alternative supported": "At least one simultaneous response interval lies strictly beyond[-0.10,0.10], with every baseline interval inside tolerance. Conclude selected realized-response departure only."
+  },
+  "trial_definition": "A shot supplies a bounded cell indicator. A job is one intervention unit. The target averages conditional next-shot probabilities along the observed complete six-job history.",
+  "written_case_sha256": "a78a7fb77589f945bec1b91636998859bfbc32960f95747fb71dc4bcadfd4057"
+}

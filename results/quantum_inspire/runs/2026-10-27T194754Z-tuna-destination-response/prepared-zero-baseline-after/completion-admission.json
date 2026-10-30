@@ -1,0 +1,17 @@
+{
+ "schema": "qi-tuna-sequential-completion-v1",
+ "batch": "prepared-zero-baseline-after",
+ "job": 1618590,
+ "batch_job": 895884,
+ "created_on": "2026-10-27T20:23:27.501228Z",
+ "queued_at": "2026-10-27T20:51:25.002692Z",
+ "finished_at": "2026-10-27T20:51:29.770929Z",
+ "execution_seconds_decimal": "4.469031",
+ "inputs": {
+  "cases.json": "ba8bda4c2be667b64cd4db2dd30d02390a158098d50e8d9317aaa77a6847e2aa",
+  "baseline-after.cq": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267",
+  "submission.json": "889a391577b3928743304bbd114e15ac7b711bfbe198ceba176ee7f33ccd3f12",
+  "results.json": "84b8028fa85c32ca99e0b4edb5898ae180af9633561de1bc6975127c5c9de896",
+  "raw/baseline-after.cq.json": "d2bbdbf242b3089cc2684da542f358b13add1d33d64fd45dd5d4368cf8dbfca2"
+ }
+}

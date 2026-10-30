@@ -1,0 +1,86 @@
+{
+ "blocks": [
+  {
+   "a": 0.490073038,
+   "a_wilson95": [
+    0.480141424,
+    0.500012494
+   ],
+   "config": "two_label-30",
+   "dark_corrected": null,
+   "in_block": 0.502637022,
+   "in_block_wilson95": [
+    0.49559053,
+    0.509682466
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 0,
+   "one_click_by_mode": [
+    0,
+    4764,
+    2486,
+    2471
+   ],
+   "one_click_outside_block": 9619,
+   "one_click_outside_by_mode": {
+    "4": 4854,
+    "6": 2381,
+    "7": 2384
+   },
+   "other_multi_click": 660,
+   "p_algebra": "1/2",
+   "total_variation_from_ideal": 0.009926962
+  },
+  {
+   "a": 0.504626261,
+   "a_wilson95": [
+    0.49463482,
+    0.514614008
+   ],
+   "config": "two_label-31",
+   "dark_corrected": null,
+   "in_block": 0.497362978,
+   "in_block_wilson95": [
+    0.490317534,
+    0.50440947
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 0,
+   "one_click_by_mode": [
+    4854,
+    0,
+    2381,
+    2384
+   ],
+   "one_click_outside_block": 9721,
+   "one_click_outside_by_mode": {
+    "1": 4764,
+    "2": 2486,
+    "3": 2471
+   },
+   "other_multi_click": 660,
+   "p_algebra": "1/2",
+   "total_variation_from_ideal": 0.004626261
+  }
+ ],
+ "cases_sha256": "abcd36ae814561cae68a899ae4385148c845d4ffb516ac8bbcafe9863009306b",
+ "compiled": {
+  "distinct": 1,
+  "iterations": [],
+  "job": {
+   "chars": 16242,
+   "sha256": "aef5677c97ed5dc7db935899cff6d82a7cda7b12c81014f970956c93d6222731"
+  }
+ },
+ "job_id": "5f52696d-c41d-4953-a2dc-995ce97e12fd",
+ "logical_perf": 0.9999998672001456,
+ "noise": ":PCVL:NoiseModel:{\"g2\": 0.003, \"indistinguishability\": 0.92, \"transmittance\": 0.06}",
+ "physical_perf": 0.11655951974051128,
+ "platform": "sim:belenos",
+ "result_sha256": "126d8b68fc3a63693cfcbcbccc81ba56985da948aac822fe04e5fafd78e5c3a3",
+ "run": "2026-10-30T050354Z-sim_belenos-box_kite_photonic_packed-job-05",
+ "samples": 20000,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 20000,
+ "status": "completed"
+}

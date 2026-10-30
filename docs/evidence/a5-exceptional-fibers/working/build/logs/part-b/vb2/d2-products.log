@@ -1,0 +1,13 @@
+RESULT generators 10
+RESULT targets 55
+RESULT products_ms 10
+RESULT std_ms 5503 size 431
+RESULT reduce_ms 25
+
+--- stderr ---
+Running as unit: run-p3207569-i684459192.service; invocation ID: f174f182f8a54d828d84499c9d7b35ce
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 5.609s
+             CPU time consumed: 5.535s
+                   Memory peak: 28.2M (swap: 0B)

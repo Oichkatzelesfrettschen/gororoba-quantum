@@ -1,6 +1,6 @@
 {
  "schema": "ghost-idle-budget-v1",
- "ghost_runs_sha256": "7718ec59672ec6681cbb9c58d06aaf36ec1c45449c49e0b89e2e1b46291da168",
+ "ghost_runs_sha256": "142293ae69224a80261594a547db9366fd2bad0fd8b2585d41b59a126b4fd9cf",
  "runs": [
   {
    "run": "results/live/2026-10-11T152922.787095Z",
@@ -461,6 +461,57 @@
    "broadcasts": 0,
    "resets": 240,
    "measure_captures": 720
+  },
+  {
+   "run": "results/live/2026-10-26T202817.431767Z",
+   "snapshots": {
+    "docs/evidence/calibration/history/ibm_kingston/20261026T1425320700.json": "245cac4be71b51ec22b9468200446fb7213c3d12f520fb3d9f78cb2b10cf152f"
+   },
+   "isa_qpy_sha256": "245b02c7d65ea0eab4a43dfd712b2cb78f0fd2dde474f3d6869f4557a5228c6b",
+   "raw_pubs_sha256": "550b0014f5c3a2fb65a82bdcf5367539abdf7aef16bae3cac3f059b053c81417",
+   "pubs": 44,
+   "cz": 31,
+   "e_cz": 0.068315,
+   "idle_us": 9089.696,
+   "e_idle": 20.330402,
+   "c_idle": 298.599,
+   "broadcasts": 0,
+   "resets": 2728,
+   "measure_captures": 6076
+  },
+  {
+   "run": "results/live/2026-10-27T160530.294787Z",
+   "snapshots": {
+    "docs/evidence/calibration/history/ibm_kingston/20261027T0907550700.json": "e7bf5303df7bf154b31ead449843298a60886d11eabffdbf3ea2b885efd81657"
+   },
+   "isa_qpy_sha256": "8c5633ee6afb70bb2e9754e8c5c6f794d709e15c48eae17be46af8f609bbaee9",
+   "raw_pubs_sha256": "0e9014133bb9b5c11eabc7f6e23568cde021c8c85cc55a265e3e1897c7445b57",
+   "pubs": 44,
+   "cz": 30,
+   "e_cz": 0.066931,
+   "idle_us": 8796.48,
+   "e_idle": 19.690013,
+   "c_idle": 295.1849,
+   "broadcasts": 0,
+   "resets": 2640,
+   "measure_captures": 5880
+  },
+  {
+   "run": "results/live/2026-10-27T173602.753176Z",
+   "snapshots": {
+    "docs/evidence/calibration/history/ibm_kingston/20261027T1034080700.json": "5dffbce2723bdebb40598a65ad45967d7e904c4d6ae8bd8a6e247f4a11f03b5e"
+   },
+   "isa_qpy_sha256": "668e406057286913ca3b166336531013bea277315134f4000e27636c955cabff",
+   "raw_pubs_sha256": "84a572c6508b7b3a38bd04ecac38f836b4e9cc10e5cba250f093160e88ced2b2",
+   "pubs": 56,
+   "cz": 18240,
+   "e_cz": 38.251138,
+   "idle_us": 11135.328,
+   "e_idle": 30.65959,
+   "c_idle": 1.8015,
+   "broadcasts": 0,
+   "resets": 380,
+   "measure_captures": 5700
   }
  ]
 }

@@ -27,7 +27,9 @@ def test_local_launcher_selects_the_source_compatible_successor(monkeypatch: pyt
     monkeypatch.setitem(sys.modules, "ascella_transition_day_repeat", runner)
     with pytest.raises(SystemExit) as exited:
         runpy.run_path(str(ROOT / "scripts/ascella_transition_local_repeat.py"), run_name="__main__")
-    if exited.value.code != 0 or runner.BUNDLE != Path("docs/evidence/ascella-transition-day-repeat-ci"):
+    if exited.value.code != 0 or runner.BUNDLE != Path(
+        "docs/evidence/ascella-transition-day-repeat-reviewed-transport"
+    ):
         raise AssertionError("the launcher did not select the source-compatible successor")
 
 

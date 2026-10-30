@@ -1,0 +1,14 @@
+RESULT K2 projdim 3 degree 7
+RESULT K2 h 1 10
+RESULT K2 h 2 34
+RESULT K2 h 3 80
+RESULT K2 h 4 155
+RESULT radK2 projdim 3 degree 7
+RESULT radK2 h 1 10
+RESULT radK2 h 2 34
+RESULT radK2 h 3 80
+RESULT radK2 h 4 155
+RESULT K2_radical 1
+RESULT minimal_primes 2
+RESULT prime 1 3 3 linear_gens 4
+RESULT prime 2 3 4 linear_gens 3

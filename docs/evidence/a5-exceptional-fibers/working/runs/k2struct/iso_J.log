@@ -1,0 +1,4 @@
+RESULT J_radical 1
+RESULT J dim 5
+RESULT J_minimal_primes 1
+RESULT Jprime 1 dim 5 through_origin 1

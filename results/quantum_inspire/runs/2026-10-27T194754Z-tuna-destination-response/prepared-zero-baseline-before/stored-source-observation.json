@@ -1,0 +1,27 @@
+{
+  "boundary": "Stored source identity does not establish served pulse, integration, or acquisition reconstruction identity.",
+  "jobs": [
+    {
+      "compile_properties": {},
+      "compile_stage": "none",
+      "file": "baseline-before.cq",
+      "job": 1618109,
+      "local_source_sha256": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267",
+      "response_field_names": [
+        "commit_id",
+        "compile_properties",
+        "compile_stage",
+        "content",
+        "generated",
+        "id",
+        "language_id",
+        "name"
+      ],
+      "source_matches": true,
+      "stored_source_sha256": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267"
+    }
+  ],
+  "method": "Authenticated read-only job and file GETs; selected response fields only",
+  "observed_utc": "2026-10-27T20:15:16+00:00",
+  "schema": "qi-stored-source-observation-v1"
+}

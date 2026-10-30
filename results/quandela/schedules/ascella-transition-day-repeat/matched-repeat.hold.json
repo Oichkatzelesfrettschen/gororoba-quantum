@@ -1,0 +1,9 @@
+{
+ "held_utc": "2026-10-29T07:18:49+00:00",
+ "key": "matched-repeat",
+ "reason": "no start before 2026-10-29T06:59:00Z",
+ "run_id": "40834477705.1",
+ "schedule": "ascella-transition-day-repeat",
+ "schema": "qd-schedule-hold-v1",
+ "stage": "latest_start"
+}

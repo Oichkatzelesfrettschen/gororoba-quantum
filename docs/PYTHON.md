@@ -10,6 +10,7 @@ prose:
 - [ci/requirements-replay.txt](../ci/requirements-replay.txt) (historical Qiskit 2.5.2 replays);
 - [packaging/qiskit-aer-cuda/build-requirements.txt](../packaging/qiskit-aer-cuda/build-requirements.txt) (qiskit-aer CUDA wheel packaging);
 - the build host's Arch packages in [python-stack.md](notes/build_host/python-stack.md), and the Qiskit-adjacent packages and `/opt` stacks beyond the core in [qiskit-packages/README.md](notes/qiskit-packages/README.md);
+- the host AWS Python packages and command-line programs in [python-packages.md](notes/aws/python-packages.md), and the project, plan, and credit rules in [aws/README.md](notes/aws/README.md);
 - the isolated provider environments: [Quantum Inspire](notes/quantum_inspire/README.md), [Open Quantum](notes/open_quantum/README.md), [Quandela](notes/quandela/README.md) ([quandela/python-stack.md](notes/quandela/python-stack.md)), [IQM](notes/iqm/README.md) ([iqm/python-stack-versions.json](notes/iqm/python-stack-versions.json)), and [Kaggle](notes/kaggle/README.md) ([kaggle_kernel/AGENTS.md](../kaggle_kernel/AGENTS.md)).
 
 The central [library register](state/hypercomplex-libraries/libraries.md) lists every
@@ -40,6 +41,10 @@ platform boundaries:
      rotation-composite audits.
    - Local hypercomplex verification stack: 17 packages extracted and validated against
      `gororoba_quantum/cd_core.py` by `scripts/algebra_package_tables.py`.
+   - AWS clients, console scripts, and local stand-ins on this interpreter are catalogued
+     in [python-packages.md](notes/aws/python-packages.md). The project, plan, and credit
+     rules are in [aws/README.md](notes/aws/README.md). A package enters the library
+     register when a scanned tree imports it.
 
 2. **Hosted CI / Pull-Request Verification (`ci/`)**
    - Python 3.14.7 container environment.
@@ -162,7 +167,7 @@ many also run under `-O`, so a check raises explicitly instead of using
 
 | Manifest / Register | Scope and purpose | Verification gate |
 | --- | --- | --- |
-| [requirements.txt](../requirements.txt) | Primary runtime dependencies (Qiskit 2.6.0, runtime 0.50.0, FLINT, SymPy, SciPy, NumPy) | `sh ci/pr_checks.sh tests` |
+| [requirements.txt](../requirements.txt) | Primary runtime dependencies (Qiskit 2.6.1, Aer 0.18.2, runtime 0.51.0, FLINT, SymPy, SciPy, NumPy) | `sh ci/pr_checks.sh tests` |
 | [ci/requirements-ci.txt](../ci/requirements-ci.txt) | CI gate tools, testing plugins, Quandela adapters, CVXPY/Clarabel solvers, MCP | `sh ci/pr_checks.sh lint\|types\|tests` |
 | [ci/requirements-browser.txt](../ci/requirements-browser.txt) | Headless Playwright browser automation for measured explorer verification | `scripts/validate_measured_explorer.py` |
 | [ci/requirements-replay.txt](../ci/requirements-replay.txt) | Pinned Qiskit 2.5.2 compiler stack for bit-for-bit historical replay | `ci/run_gates.py --replay-python` |
@@ -200,6 +205,7 @@ many also run under `-O`, so a check raises explicitly instead of using
 | Thread accounting | threadpoolctl | recording the BLAS and OpenMP runtimes a gate used | [numerics_best_practice.md](notes/topics/numerics_best_practice.md) |
 | Provider MCP servers | mcp | `scripts/*_mcp_server.py` | provider guides |
 | Kaggle control, browser checks | kaggle, kagglesdk, requests; playwright, selenium | kernel push and status; rendered-viewer and session checks | [kaggle/README.md](notes/kaggle/README.md), [ci/requirements-browser.txt](../ci/requirements-browser.txt) |
+| AWS service calls and local stand-ins | host AWS packages | a build-host client, a console script, or a local stand-in named in the package note | [python-packages.md](notes/aws/python-packages.md), [aws/README.md](notes/aws/README.md) |
 | Process pools | `gororoba_quantum/parallel.py` | every CPU-bound loop over independent items; dask and joblib stay unused | below |
 
 A gate that needs a library outside the pin files retains its output with

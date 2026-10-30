@@ -1,0 +1,230 @@
+# Case: the measurement-sequence successor on ibm_kingston, width 32 at 5600 shots
+
+Status: written, not approved. Plan record
+[measurement-sequence-pinching-device](../../docs/state/plans/measurement-sequence-pinching-device.json), step
+`successor-case`. Design v4.0:
+[measurement-sequence-envelope-successor.md](../../docs/design/measurement-sequence-envelope-successor.md), under the
+envelope contract `msq-envelope-v2` of
+[measurement-sequence-adaptive-envelope.md](../../docs/design/measurement-sequence-adaptive-envelope.md).
+
+## What it measures and why simulation cannot answer it
+
+The run measures the per-measurement departure from ideal pinching on Heron r2: N steps of RX(8 pi / 9 / N), each
+followed by a mid-circuit measurement whose outcome is discarded, read against the ideal P0 = (1 + cos(theta / N)^N) / 2,
+a unitary N = 16 arm, a duration-matched delay arm and a settle-gap arm. The quantity is the extra transition a real
+readout drives per measurement (residual resonator photons, measurement-induced state transitions, leakage), which no
+calibration field reports. The Aer noise model applies each measurement as an ideal projector plus the reported
+assignment error and idle relaxation, so it predicts zero departure by construction; only the device answers.
+
+The width-32 envelope run of 2026-10-27 (job `dbg08t9j4t8s73abaghg`, billed 38 s) returned no device verdict: its
+reset screen withheld all 32 qubits
+([findings](MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md)). Its raw shot-ordered bits then showed that the screen
+guarded a bias the device does not have: carryover through the terminal reset, the 20 us repetition delay and
+`init_qubits` is +0.00020 +- 0.00006, and the analysis's (T1, q) fit, not the device, produced half the +0.0185 N = 16
+residual ([raw diagnostics](../../docs/evidence/measurement_sequence/envelope-run-raw-diagnostics.json)). The
+successor reads relaxation through a gamma-rate fit at q = 1, measures q with a 400 us equilibrium row, bounds
+carryover with twelve in-circuit readers, and vetoes q inconsistency with the settle gap.
+
+## Proposed run
+
+One dynamic job of 109 PUBs on ibm_kingston, 32 layout qubits, 5600 shots per PUB, repetition delay 20 us, no
+twirling and no dynamical decoupling (the job carries mid-circuit measurement and reset). Every layout qubit runs in
+parallel in each circuit. IBM documents column-wise execution over circuits and shots but guarantees neither the
+order of a job's PUBs nor that the job runs as one batch
+([repetition-rate-execution.md](../../docs/notes/ibm_quantum/repetition-rate-execution.md)), so the shot that follows
+a circuit may belong to any circuit; the in-circuit readers and `pattern_crosscheck` measure what one shot leaves for
+the next under whatever order ran. The layout rule (`layout_rule_v2`, maximum packing at the lowest summed readout error) solves each width
+separately; the width-24 alternative below is not a subset of the width-32 layout (qubits 21, 38 and 149 appear only
+at width 24).
+
+The width-24 rehearsal (101 PUBs, attempt-1 ceiling 52 s) is the alternative at nearly the same price; width 32 costs
+2 s more of ceiling for 8 more qubits, which raise the per-qubit sample and the sparse settle arm's pool.
+
+## Shots: why 5600
+
+The planner admits a design only when every per-qubit planning endpoint reaches its declared confidence half-width
+simultaneously: 0.03 on P0 endpoints and 0.055 on contrasts (`MSQ_PRECISION`, from the pinching design), 17 endpoints
+per qubit, Bonferroni over 544 endpoints at width 32 (408 at width 24). The binding endpoints are the five single-member T1
+points (`msq_p1_t1_d0` to `msq_p1_t1_d4`), which the planner's Hoeffding bound treats alike. Clopper-Pearson does
+not admit 4096 either: at the width-32 point nearest P1 = 0.5 its half-width at 4096 shots is 0.0307. Both 4096
+rehearsals of 2026-10-29 (`2026-10-29T005449.339992Z` at width 32, `2026-10-29T010313.262887Z` at width 24) ended
+`design_infeasible`. Without the declaration below, the pooled Zeno contrast endpoint bound and set the earlier
+8192 floor.
+
+The relaxation family declares every PUB of its job one independent block (`qpu_planning.pub_independence`, the
+optimizer's existing independent-block radius): shots of different PUBs are independent samples. That is an
+assumption beyond the within-PUB independence every Hoeffding radius already makes. IBM guarantees no PUB order, and
+under column-wise execution shot j of one PUB runs next to shot j of another, so the cross-PUB dependence is the
+carryover channel itself. The recorded justification string (`MSQR_SAMPLING_ASSUMPTION`, which reasons from an
+alternating order) overstates this; it stays unedited in this run because `qpu_planning.py` is in the experiment
+digest, and a reworded string would need a new rehearsal and null. The carryover the in-circuit readers measured
+on the retained run has a median of 2.0e-4
+([envelope-run-raw-diagnostics.json](../../docs/evidence/measurement_sequence/envelope-run-raw-diagnostics.json),
+`carryover.median_difference`), against the 0.03 half-width, and the binding T1 points are single-member endpoints
+the declaration does not touch. Under it the pooled and contrast endpoints tighten and the single-member T1 points
+bind at 5549 shots (width 32) and 5389 (width 24); a test runs the optimizer at 5548 (refused) and 5549 (admitted). The run uses 5600: the selected candidate's normalized precision
+radius is 0.995, every T1 point's half-width 0.0299, the Zeno contrast 0.0211.
+
+## What the run can detect
+
+`measurement_sequence_analysis.minimum_detectable` on the planning row of each rehearsal at 5600 shots, with the
+registered scatter floor, finds the pooled departure z reaching -3 at a per-step loss of 0.00439 at width 32, an
+N = 16 P0 departure of -0.0491 (mean departure standard error 0.0173), and at 0.00441 at width 24 (-0.0493, 0.0174).
+The width-24 rehearsal of 2026-10-28 (`2026-10-28T163139.827337Z`, another calibration) gave -0.0509 at 8192 shots
+and -0.0510 at 4096: the per-qubit gate-model systematic enters `pooled_z` as a shared
+term, so neither width nor shots move the limit by more than a few percent. The expected outcome is `consistent`
+unless the measurement-induced loss exceeds about 0.0044 per step; a run that reads `consistent` bounds it there.
+
+## What the null establishes, and the two readings it leaves
+
+The null ran on both 5600-shot rehearsals, each arm on its own rehearsal's calibrations and sparse-gap scale
+([successor-sparse-scale/277a1f8b04db2b3a-w32-s5600.json](../../docs/evidence/measurement_sequence/successor-sparse-scale/277a1f8b04db2b3a-w32-s5600.json),
+[e77b74e8c6d03f18-w24-s5600.json](../../docs/evidence/measurement_sequence/successor-sparse-scale/e77b74e8c6d03f18-w24-s5600.json)).
+[successor-null-s5600.json](../../docs/evidence/measurement_sequence/successor-null-s5600.json) retains the 22 arm
+records' statistics with each full record's sha256. Every arm at both widths has 0 false fires and meets every target.
+The width-24 plateau-retained arm issues a verdict in 1.4 % of replicates and needed 21,399 to reach 299, so it runs
+at a cap of 30,000; its first 20,000 rows equal those of the cap-20,000 run, which the cap only stops. Two commands
+wrote the records: `"$PYTHON" scripts/msq_successor_null.py results/live/2026-10-29T012554.415581Z
+results/live/2026-10-29T013110.359249Z --calibrate-sparse --arms all --out-dir DIR` (the sparse scales and 22 arm
+records) and `"$PYTHON" scripts/msq_successor_null.py results/live/2026-10-29T013110.359249Z --arms plateau-retained
+--cap plateau-retained=30000 --out-dir DIR2` (the width-24 plateau-retained record the summary retains).
+
+| Arm | Width 32 (the run's width) | Width 24 |
+|---|---|---|
+| carryover-positive | 299 issued in 305; bounds 0.00997 issued, 0.0098 overall | 299 in 335; 0.00997, 0.0089 |
+| carryover-negative | 299 issued in 349 (common veto 14 %); 0.00997, 0.0085 | 299 in 349 (10 %); 0.00997, 0.0085 |
+| carryover-boundary | issued 0, 0 and 23 of 300 at 0, 1 and 2 SE inside (descriptive) | 0, 0 and 4 of 300 |
+| q-tolerance | common veto 100 %; overall bound 0.0099 | 98.7 %; 0.0099 |
+| q-minority | 299 exposed in 450; bounds 0.00997 exposed, 0.0066 overall | 299 in 430; 0.00997, 0.0069 |
+| settle-common | common veto 99.7 %, 100 %, 100 % at 8, 9, 32 qubits | 99.3 %, 100 %, 100 % at 8, 9, 24 |
+| settle-sparse | 408 exposed per width, family exposed bound 0.00998; power over the first 300 replicates 0.882, 0.914, 0.901 at 8, 9, 32 (family upper bounds 0.909, 0.937, 0.925) | 408 exposed per width; 0.899, 0.897, 0.904 at 8, 9, 24 (0.924, 0.922, 0.928) |
+| plateau-low | every departure verdict withheld | the same |
+| plateau-retained | 299 issued in 5,069 (5.9 %); 0.00997 issued, 0.0006 overall | 299 in 21,399 (1.4 %); 0.00997, 0.0001 |
+| plateau-minority | 299 exposed in 1,145; 0.00997 exposed, 0.0026 overall | 299 in 1,172; 0.00997, 0.0026 |
+| gamma | 399 of 400 informative (99.8 %); bound 0.0075 | 398 of 400 (99.5 %); 0.0075 |
+
+The settle-sparse arm passes when the family upper bound on the veto's power stays at or above 0.9. At 8 qubits on
+the width-32 calibrations the point estimate is 0.882 and the bound 0.909, so the target passes on its
+preregistered 300-replicate window. Over every replicate the 8-qubit power is 0.895 at width 32 (family upper bound
+0.9005) and 0.890 at width 24 (family upper bound 0.895), so the full sample does not support 0.9 at 8 qubits on the
+width-24 calibrations: the veto's power on a two-qubit defect at the detectable gap sits near 0.89 there. A tail
+below that gap stays the veto's stated blind spot.
+
+The two devices this run may meet, at width 32:
+
+- gamma (healthy relaxation, q = 1, gamma-distributed rates): 399 of 400 replicates issue a device verdict.
+- plateau-retained (each qubit draws a (T1, q) pair of the retained width-32 run, q from 0.28 to 1.02): 299 of
+  5,069 replicates issue a verdict (5.9 %); the equilibrium screen withholds 86 % of qubits and the common settle
+  veto fires in 12 % of replicates.
+
+If the device is the gamma device, the run issues a departure verdict. If it is the device the retained (T1, q) fit
+described, the equilibrium row and the settle veto withhold it, and the run reports per-qubit q_hat, the settle gaps
+and the carryover bounds instead. Both outcomes answer whether q = 1 holds on Kingston, which the retained run could
+not; neither can fire a false departure at more than 0.01.
+
+## Assumptions the case states
+
+- Carryover readers ([design](../../docs/design/measurement-sequence-envelope-successor.md#carryover-readers)): the
+  qubit's evolution from the terminal reset to the next shot is Markovian; the executor's repetition delay starts
+  after the terminal reset completes, so the in-circuit 20 us idle is a prefix of the cross-shot sequence; excitation
+  and leakage do not cancel between predecessor classes (the reader reads |2> as 1). `pattern_crosscheck` reads the
+  cross-shot carryover under the submitted order and can only refute these.
+- One-sign carryover: the vertex allocation bounds every allocation whose carryover keeps one sign across predecessor
+  classes; a sign that differs between classes can reach 1.6 to 1.8 times the bound.
+- PUB independence (above): the planner's precision guarantee holds for independent shots across PUBs, an assumption
+  beyond within-PUB independence because the PUB order is unguaranteed and adjacent shots carry the carryover the
+  readers bound; the qubits of one fused PUB may depend within a shot.
+- Coverage: the binding run executes inside the calibration domain the null sampled (below).
+
+## Coverage of the null
+
+A replicate of the null gives each slot a calibration drawn with replacement from the rehearsal layout's qubits, at
+the rehearsal's shots, so the binding run must plan the rehearsal's family, width and shots, and its layout's
+calibration must lie in that pool. `scripts/msq_successor_coverage.py REHEARSAL RUN --factor 1.5` refuses a run when
+a live T1, T2 or sx error lies outside the pool's range widened by 1.5, a readout error above 1.5 times the pool's
+largest, or the live layout's median of a quantity beyond a factor 1.5 of the pool's (both ways except readout).
+The owner chose F = 1.5 and, on 2026-10-28, this pool rule over the earlier per-qubit ratio.
+
+Measured on Kingston record pairs at F = 1.5, the later record as the rehearsal:
+
+| Stand-in run | Rehearsal | Apart | Layout overlap | Per-qubit ratio rule | Pool rule (calibration) |
+|---|---|---|---|---|---|
+| 2026-10-29T005449.339992Z | 2026-10-29T012554.415581Z | 40.5 min, width 32 | 32/32 | 11 sx refusals | passes |
+| 2026-10-29T010313.262887Z | 2026-10-29T013110.359249Z | 40.5 min, width 24 | 24/24 | 9 sx refusals | passes |
+| 2026-10-28T224031.317960Z | 2026-10-29T013110.359249Z | 3.4 h, width 24 | 11/24 | 21 refusals | q122 sx error 9.9e-4 above the widened maximum 8.2e-4 |
+| 2026-10-28T163139.827337Z | 2026-10-29T013110.359249Z | 8.7 h, width 24 | 8/24 | 20 refusals | q122 sx error, as above |
+
+The Apart column is the gap between the two records' calibration stamps. Across the first two pairs T1, T2 and both
+readout errors are bit-identical on every qubit (that calibration remeasured sx only) while per-qubit sx error moved
+by factors 0.46 to 2.7. Only the last two pairs span a remeasurement of T1, T2 and readout, and both refuse on q122, a
+width-24 qubit outside the width-32 layout; no width-32 pair across such a remeasurement exists. The command below
+waits for exactly such a remeasurement, so its first plan may refuse; a refusal sends nothing. The stand-ins run at 4096 or
+8192 shots under an earlier experiment digest, so the script also refuses each on shots and digest; the table reports
+the calibration rule alone. A joint (T1, T2, readout, sx) combination the pool never held stays uncovered.
+
+## Records
+
+Both rehearsals ran at code commit `99ff7d3` (sources unmodified), experiment digest `a078afc16bdad2cc...`, on the
+backup account (instance `f59f9992321c`):
+
+| Record | Width | PUBs | Snapshot | record.json sha256 | Planner charge at 20 us | Attempt-1 ceiling |
+|---|---|---|---|---|---|---|
+| 2026-10-29T012554.415581Z | 32 | 109 | `277a1f8b04db2b3a...` | `a8559c3e01146614...` | 30.33 s | 54 s |
+| 2026-10-29T013110.359249Z | 24 | 101 | `e77b74e8c6d03f18...` | `35ad8cc0d93d2b83...` | 29.15 s | 52 s |
+
+Width-32 layout: 0, 5, 11, 15, 17, 20, 23, 29, 33, 42, 45, 50, 55, 57, 61, 64, 71, 74, 82, 89, 93, 98, 105, 109, 123,
+126, 134, 140, 144, 148, 151, 154.
+
+## Cost and account
+
+The envelope's ceiling rule is ceil(1.5 x (planner charge + 9 us x total shots)); the expected charge is the bracket,
+35.8 s at width 32 (30.33 s + 9 us x 5600 x 109) and 34.2 s at width 24. The repetition-delay ladder and its
+ceilings at width 32: 20 us 54 s, 30 us 63 s, 40 us 73 s, 50 us 82 s, 60 us 91 s (width 24: 52, 60, 69, 77, 86 s).
+Attempt 1 runs at 20 us, the Heron r2 floor; a later attempt steps up the ladder only on the delay error codes 1602
+or 8030, or a timeout (1305) billed at most 3 s, and the envelope replans at most 3 times.
+
+A usage read on 2026-10-29 near 04:40 UTC gave the backup account `backup-ibm-quantum-platform` 160 s remaining
+and the primary 68 s, below a 54 s ceiling plus its 60 s reserve, so the backup serves. The case proposes the approved cap C = 100 s (the backup's 160 s less its 60 s
+reserve), inside the owner's 5 to 240 s range; attempt 1 reserves only its own 54 s ceiling.
+
+## Owner decisions
+
+Taken on 2026-10-28:
+
+- Endpoint precision stays 0.03 with the Hoeffding bound, and the relaxation family declares PUB independence; shots
+  5600.
+- Repetition delay adapts on the 20 to 60 us ladder, preferring 20 us.
+- Coverage factor F = 1.5 under the pool rule.
+- Width 32, with researched dry-run flags (`--simulation-threads 12`).
+
+Requested for approval: the rule and bounds of the run above (width 32, 5600 shots, the 20 to 60 us ladder, cap C =
+100 s on the backup account, coverage at F = 1.5 against the width-32 rehearsal), executed by the commands below.
+
+## Commands
+
+From the repository root:
+
+```sh
+export PYTHON=$HOME/.cache/gororoba-quantum/ci-py3.14.7/bin/python3
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+export GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform
+REHEARSAL=results/live/2026-10-29T012554.415581Z
+sh scripts/wait_calibration.sh --deadline 86400 -- ibm_kingston --baseline docs/local/kingston-baseline.json \
+    --qubits 0,5,11,15,17,20,23,29,33,42,45,50,55,57,61,64,71,74,82,89,93,98,105,109,123,126,134,140,144,148,151,154 \
+  && sh scripts/approved_run.sh \
+    --check "\"\$PYTHON\" ../scripts/msq_successor_coverage.py ../$REHEARSAL \"\$RUN\" --factor 1.5 \
+        --null ../docs/evidence/measurement_sequence/successor-null-s5600.json" \
+    -- --family measurement-sequence-relaxation --layout-width 32 --rep-delay 2e-05 --shot-allocation uniform \
+    --objective minimum_charge --local-compute auto --local-compute-method density_matrix_dynamic_statevector \
+    --simulation-threads 12 --simulation-memory-mb 2048 --optimize --backends ibm_kingston --shots 5600 --seeds 8 \
+    --max-pending 200 --min-remaining-seconds 60.0 --no-isolated-reference --cross-group-buffer --shot-tiers 5600 \
+    --replica-tiers 1 --optimizer-candidates 1 --model-shots 8192 --precision 0.08 --alpha 0.05 --power 0.8 \
+    --simulation-alpha 0.01 --job-overhead-seconds 2.3 --classical-latency-us 20.0 --reserve-seconds 60.0 \
+    --max-total-execution-seconds 100 --out ../results/live
+```
+
+The binding table (the binding dry run, its sha256, the job id and the billed seconds) is filled from the records
+after the submit.
+
+The case ran on ibm_fez at width 24; [its result](MEASUREMENT_SEQUENCE_SUCCESSOR_FEZ_RESULT.md) holds the records, the
+screens' outcome and why the reader carryover screen cannot pass on a measure-based reset.

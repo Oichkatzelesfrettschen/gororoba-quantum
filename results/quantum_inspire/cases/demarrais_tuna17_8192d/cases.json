@@ -1,0 +1,33 @@
+{
+ "schema": "qi-demarrais-tower-series-v1",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 75536,
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "dekatrisvoudon-8192d-midden.cq",
+    "cowbird-mandala-roundabout.cq",
+    "zaslavsky-dmz-calibration.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "files": [
+    "01-control-sedenion-pathion-32d.cq",
+    "02-control-chingon-routon-voudon-4096d.cq",
+    "03-dekatrisvoudon-8192d-pure-shell.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "files": [
+    "04-dekatrisvoudon-8192d-catamaran-lanyard.cq",
+    "05-dekatrisvoudon-8192d-dmz-shell.cq",
+    "06-dekatrisvoudon-8192d-sleeper-null.cq"
+   ]
+  }
+ ]
+}

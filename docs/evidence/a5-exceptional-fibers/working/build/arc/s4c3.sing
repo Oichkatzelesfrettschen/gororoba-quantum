@@ -1,0 +1,12 @@
+LIB "normal.lib";
+ring R=32009,(h,t1,t2,t3,t4,t5,t6,t7,t8),dp;
+execute("ideal S="+read("strict_transform.txt")+";");
+ideal S1=subst(S,t3,1);
+ring Q=32009,(h,t1,t2,t4,t5,t6,t7,t8),dp;
+ideal S1=imap(R,S1); S1=std(S1);
+list nr=normal(S1);
+"RESULT nor2"; nr[2];
+def Rn=nr[1][1]; setring Rn;
+
+write(":w c3/norid.txt",string(norid)); write(":w c3/normap.txt",string(normap));
+quit;

@@ -1,0 +1,1495 @@
+{
+  "schema": "work-plan-v1",
+  "id": "readout-information-context-controls",
+  "kind": "experiment",
+  "summary": "Design a budgeted actor-reporter test with paired parity-error and activity-response controls.",
+  "sources": [
+    "docs/design/readout-information-context-and-budget.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The full-PUB software route passes integration tests and a submit-free live Target compile. Acquisition still requires frozen carryover, inference, reference allocations and complete bounded charge contracts; IQM requires an enforceable credit ceiling."
+  },
+  "steps": [
+    {
+      "id": "prior-art",
+      "state": "todo",
+      "action": "Compare targeted prior art and retained experiments",
+      "acceptance": "Identify nearest published and internal experiments, distinguish the proposed endpoint, and record remaining novelty uncertainty."
+    },
+    {
+      "id": "controls",
+      "state": "todo",
+      "action": "Validate paired-error and information controls",
+      "acceptance": "Verify exact error-table identities, information controls and counterexamples, then independently review a sampling-bound analyzer for the selected endpoint."
+    },
+    {
+      "id": "case",
+      "state": "todo",
+      "action": "Construct a source-bound provider candidate",
+      "acceptance": "Bind inputs, mappings, intervention, control mutations, execution order and a finite uncertainty and multiplicity contract."
+    },
+    {
+      "id": "budget",
+      "state": "todo",
+      "action": "Qualify native placement and resource ceilings",
+      "acceptance": "Measure or conservatively bound current compiled runtime, cost and provider ordering under the independent account limits; retain unresolved billing risks."
+    },
+    {
+      "id": "sparse-retention",
+      "state": "todo",
+      "action": "Design and verify scalable full-register retention",
+      "acceptance": "Preserve full shared-PUB shots and project only declared outcomes before any dense or int64 conversion; bind raw receipt, physical maps, preparations and compiled identities, check cross-register alignment and missing data, and measure wide-record memory while preserving provider ordering limits."
+    },
+    {
+      "id": "paired-admission",
+      "state": "todo",
+      "action": "Bind paired-score sampling and confirmation evidence",
+      "acceptance": "Freeze both same-shot score variances and their joint four-cell law, selection, multiplicity, power and dependence rules; refuse confirmation without authenticated acquisition and validated assumptions."
+    },
+    {
+      "id": "runner-binding",
+      "state": "todo",
+      "action": "Integrate the candidate with the approved IBM execution path",
+      "acceptance": "Register the family, bind constructor and analyzer dependencies and compiled layouts to a complete approval record, and account for distinct shot tiers and sub-jobs."
+    },
+    {
+      "id": "review",
+      "state": "todo",
+      "action": "Review and freeze the candidate",
+      "acceptance": "Resolve scientific, implementation, prior-art and accounting findings and bind exact candidate artifacts before fresh admission."
+    },
+    {
+      "id": "approval",
+      "state": "todo",
+      "action": "Refresh admission and request exact-case approval",
+      "acceptance": "Present the reviewed case and provider limits; obtain explicit authorization before any job, upload, booking or provider draw."
+    },
+    {
+      "id": "full-pub-integration",
+      "state": "done",
+      "action": "Integrate and verify full-PUB planning, sparse collection and adjudication",
+      "acceptance": "Software tests cover source and approval binding, full-register ownership, sparse output, partial collection, recovery and digest dispatch; a submit-free live Target compilation passes. Scientific acquisition admission remains separate.",
+      "receipts": [
+        {
+          "result": "Full-PUB planning, approval binding, sparse collection and adjudication pass 147 focused tests; full mypy passes 650 files. Submit-free live Target compilation succeeds in results/live/2026-10-28T221449.819104Z. Outputs remain descriptive and the smoke case remains unapproved.",
+          "observed_at": "2026-10-28T22:18:00.645194+00:00",
+          "revision": "1d77f0d84e256020a4ea9940bbef942bc49f900b",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "da1ecf7ef0fcba2bc478af34f099acf700e5770a5da67a3af40beaba3d685b05"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "e34f6c2da752bf2588f4f25a6eb2122cf047cb5631f85e8626626fba2be67a3d"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "36461833b63ef10fd866c1e91adeaebca123a7bf7ceafe8287320caa46318d5f"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "c6ada6b7eb3eed9cd0e29e7d74eb6ce5f69d013d3bc29b9bb9d58494a5e9a069"
+            },
+            {
+              "ref": "scripts/readout_information_controls.py",
+              "sha256": "de6cd96e58568416a74a35f7a8f3d2437747646b9b4f41d9e2f9aa266decfd89"
+            },
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "5704ec2a2cabb31cb38ca8b689304b491853161d0475110fedecd4d1ba6926db"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Current-head revalidation: 113 focused cost, paired-control, projection, receipt and actor-family tests pass, including partial retention and recovery. The fresh submit-free pilot compiles all 24 full-register PUBs at a common measurement tick; offline verify_archive checks the current source closure, operational case, QPY and absence of a submission record. Statistical qualifications remain outside software conformance.",
+          "observed_at": "2026-10-29T00:33:47.329677+00:00",
+          "revision": "6841c2408d41b5bdc1bce9e07807e1ed0ec909b6",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "3cabfc500c045a0e78e08330552551377d2209fd62c34a38cd964fdca6f11442"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "4c4659cf54f48a0939236b6c3ad5128c46dd01ca89fd92796d82bbfdc96aa6ee"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "0537912bb6aaa0578df742df2f40d2f4bd31bc5afebd1f0b439c51d3d015099b"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "1533f63507061b65bc7baa362172c394fc8b09bb9761f7abd78dc839d589b213"
+            },
+            {
+              "ref": "scripts/readout_information_controls.py",
+              "sha256": "de6cd96e58568416a74a35f7a8f3d2437747646b9b4f41d9e2f9aa266decfd89"
+            },
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "11727927dff10a64f4402219c4a5734d074a0b3b5a86a71163cc3971197a7f69"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/record.json",
+              "sha256": "3b11c9b3ecd8af388a65866f82b446d26e8d544e8de9cfed83a3286ef26e2b95"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/isa.qpy",
+              "sha256": "f6baf70a13b0be2ba060d9540c3a3eb9d6470db95dc0af5870a647407eebc6af"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Bounded acquisition review and revalidation: 113 focused tests pass. Independent inspection verifies the reviewed artifact hashes and actor validator. The fresh submit-free plan matches the reviewed record; a separate read-only usage call reports primary remaining 68 s. The packet preserves 3x6=18 s, aggregate20 s and reserve48 s, records repeated full-ceiling reservation and withholds approval below conservative78 s start headroom. Write-once custody anchors live outside analyzed run directories. Production source and analyzer bytes remain unchanged.",
+          "observed_at": "2026-10-29T00:56:55.871109+00:00",
+          "revision": "a7b58d987c252cee2a77b92f1ccbdaa345c7aeb1",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "3cabfc500c045a0e78e08330552551377d2209fd62c34a38cd964fdca6f11442"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "4c4659cf54f48a0939236b6c3ad5128c46dd01ca89fd92796d82bbfdc96aa6ee"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "0537912bb6aaa0578df742df2f40d2f4bd31bc5afebd1f0b439c51d3d015099b"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "1533f63507061b65bc7baa362172c394fc8b09bb9761f7abd78dc839d589b213"
+            },
+            {
+              "ref": "scripts/readout_information_controls.py",
+              "sha256": "de6cd96e58568416a74a35f7a8f3d2437747646b9b4f41d9e2f9aa266decfd89"
+            },
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "2431209747745275154cab986cdac4adc11ecc569e458750cefb28790080cb12"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/record.json",
+              "sha256": "3b11c9b3ecd8af388a65866f82b446d26e8d544e8de9cfed83a3286ef26e2b95"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/isa.qpy",
+              "sha256": "f6baf70a13b0be2ba060d9540c3a3eb9d6470db95dc0af5870a647407eebc6af"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/README.md",
+              "sha256": "1f535daf5cbfb5466903017a22086e313d9712a7d10e3d866109c042dff64aa4"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/packet.json",
+              "sha256": "ebefced053ef9539e5759fde905f949465f69088fcfd57f926fa2346cbc4f8ce"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/admission.json",
+              "sha256": "83d391ece792d004ba01fbf644c43c3b47f5467fb8279fad3e959136e2d8b502"
+            },
+            {
+              "ref": "results/live/2026-10-29T004725.208468Z/record.json",
+              "sha256": "5a0f3205cfefc31fa9c98d058a508edbd2fdbdacbe06abc35be3a259217b0fa1"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Budget admission closes through documented independently budgeted backup routing: a read-only observation reports160 s against78 s conservative start headroom; the fresh backup plan and offline verify_archive bind24 full-register PUBs and the unchanged independently reviewed production closure. Three6 s ceilings total18 s inside aggregate20 s, with48 s reserve. Source files remain unchanged; no provider job is submitted and owner approval remains pending.",
+          "observed_at": "2026-10-29T01:31:57.747225+00:00",
+          "revision": "11c28b84f8cf54e1218bed03321846c1de9e6e9b",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "3cabfc500c045a0e78e08330552551377d2209fd62c34a38cd964fdca6f11442"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "4c4659cf54f48a0939236b6c3ad5128c46dd01ca89fd92796d82bbfdc96aa6ee"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "0537912bb6aaa0578df742df2f40d2f4bd31bc5afebd1f0b439c51d3d015099b"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "1533f63507061b65bc7baa362172c394fc8b09bb9761f7abd78dc839d589b213"
+            },
+            {
+              "ref": "scripts/readout_information_controls.py",
+              "sha256": "de6cd96e58568416a74a35f7a8f3d2437747646b9b4f41d9e2f9aa266decfd89"
+            },
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "6fa1f13cc6f29617f0b35b02030bd2264b8899f50c22279caf6bb67820608892"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/record.json",
+              "sha256": "3b11c9b3ecd8af388a65866f82b446d26e8d544e8de9cfed83a3286ef26e2b95"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/isa.qpy",
+              "sha256": "f6baf70a13b0be2ba060d9540c3a3eb9d6470db95dc0af5870a647407eebc6af"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/README.md",
+              "sha256": "1f535daf5cbfb5466903017a22086e313d9712a7d10e3d866109c042dff64aa4"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/packet.json",
+              "sha256": "ebefced053ef9539e5759fde905f949465f69088fcfd57f926fa2346cbc4f8ce"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/admission.json",
+              "sha256": "83d391ece792d004ba01fbf644c43c3b47f5467fb8279fad3e959136e2d8b502"
+            },
+            {
+              "ref": "results/live/2026-10-29T004725.208468Z/record.json",
+              "sha256": "5a0f3205cfefc31fa9c98d058a508edbd2fdbdacbe06abc35be3a259217b0fa1"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/budget-admission-closure.md",
+              "sha256": "c03a88c8d1de92333455aef5daaab092437c5d13666b2b97f42632cac9fa5bf4"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/backup-qualified-packet.json",
+              "sha256": "aba87cbcd08729b25c1a88bb88d8ea66e4ac57c0bfbff2ac77e6053ecf89449a"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/backup-admission.json",
+              "sha256": "ab8899d8ce51e137221179d3fd8f5eb895ef690cc4f9d4fb70369f6e9dd859d1"
+            },
+            {
+              "ref": "results/live/2026-10-29T010517.821761Z/record.json",
+              "sha256": "375b197e5277ca9afaebe15fd627f89249a3d1a34691302bc61e07a1fa1e5aa2"
+            },
+            {
+              "ref": "results/live/2026-10-29T010517.821761Z/isa.qpy",
+              "sha256": "f6baf70a13b0be2ba060d9540c3a3eb9d6470db95dc0af5870a647407eebc6af"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Revalidated actor planning and sparse collection after review fixes: 94 focused tests and sparse receipt checks pass; a fresh submit-free Fez Target compilation binds 24 conditions, prepared bits, QPY and source identities. The case remains descriptive and the compilation authorizes no job.",
+          "observed_at": "2026-10-29T19:40:22.220453+00:00",
+          "revision": "7c6aa740cbe6288923b57157a66b727fb5bccdd8",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "2c37d60c858b65ca83b42a7dbe11a5a23ba234bfb483bcb9388b1f647c21b532"
+            },
+            {
+              "ref": "results/live/2026-10-29T193911.165282Z/record.json",
+              "sha256": "aa229afb8a53546a6f0e754bd9ff5f7bc126853b10f54c47227163260755aeb5"
+            },
+            {
+              "ref": "results/live/2026-10-29T193911.165282Z/isa.qpy",
+              "sha256": "4b3534a56ed96c3013958311aff490a3ac4b8a0b4ded093ace0494dd238fa581"
+            },
+            {
+              "ref": "results/live/2026-10-29T193911.165282Z/UNAPPROVED_CASE.md",
+              "sha256": "248d5adb0756b9a44a300041d8b45e823e71e167a853e80f937fd006b70ee99e"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "16d98b9298732ad91de92db5368f65165fd01a647f12c1a1904b2f5c2fd219fc"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "60d4dac08c347754d37039914c632e4c64fff4ef9b21bf89e4736631ba513d32"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "14ff216630fc5e2e67ef9226c102aedec123f9d39c7b9ddc07a98a81e1ad08cd"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "fdbcfd6f23abed9a5d3ef8a8788e3db352eefca0833bce3773e7397bfbbdaf88"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Revalidated full-PUB integration after historical source separation and partial-PUB recovery: 96 focused tests pass; historical Fez adjudication reproduces 24 original projections; a fresh submit-free Fez compilation binds current source, QPY and 24 prepared conditions. The plan remains descriptive and does not authorize another acquisition.",
+          "observed_at": "2026-10-29T19:48:47.036283+00:00",
+          "revision": "b96de4dcc303d14bb14109643efe67d93e09cd16",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "2c37d60c858b65ca83b42a7dbe11a5a23ba234bfb483bcb9388b1f647c21b532"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "16d98b9298732ad91de92db5368f65165fd01a647f12c1a1904b2f5c2fd219fc"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "1a336befe0779faf8967784707b98bd99d3a44079558837015ccb37a93ae03a1"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "7574be4a9fb34c68b50ec556813ab15ab8687f59b544c1d54d429a24e0e3b6d2"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "fdbcfd6f23abed9a5d3ef8a8788e3db352eefca0833bce3773e7397bfbbdaf88"
+            },
+            {
+              "ref": "results/live/2026-10-29T194752.938875Z/record.json",
+              "sha256": "b294c2e95928102afd4dec28e0eb494562008fac0ca9670c291718b79e559002"
+            },
+            {
+              "ref": "results/live/2026-10-29T194752.938875Z/isa.qpy",
+              "sha256": "4b3534a56ed96c3013958311aff490a3ac4b8a0b4ded093ace0494dd238fa581"
+            },
+            {
+              "ref": "results/live/2026-10-29T194752.938875Z/UNAPPROVED_CASE.md",
+              "sha256": "198de6bbeeb1704ade37568ccc4aa562c55e9999a52afff629b87825979aea94"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Revalidated actor integration after collector provenance checks: 97 focused tests pass, malformed source identities are rejected, legacy collection records replay, and a fresh submit-free Fez Target compilation binds 24 conditions. Historical Fez adjudication reproduces its original projections; execution and sampling inference remain bounded.",
+          "observed_at": "2026-10-29T19:52:24.598578+00:00",
+          "revision": "9fad1a1482008bbf5922a8ca153bf11e729fa7bd",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "2c37d60c858b65ca83b42a7dbe11a5a23ba234bfb483bcb9388b1f647c21b532"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "16d98b9298732ad91de92db5368f65165fd01a647f12c1a1904b2f5c2fd219fc"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "2d4d7ee5483b022a481bfea733a0ccb4d36f6be4c1af670453ada7c17c38932f"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "7574be4a9fb34c68b50ec556813ab15ab8687f59b544c1d54d429a24e0e3b6d2"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            },
+            {
+              "ref": "results/live/2026-10-29T195142.288785Z/record.json",
+              "sha256": "95ae00bb2f326e0cf51fae65302f689137a2d8b04ffa5d0b19d4c78f304abaeb"
+            },
+            {
+              "ref": "results/live/2026-10-29T195142.288785Z/isa.qpy",
+              "sha256": "4b3534a56ed96c3013958311aff490a3ac4b8a0b4ded093ace0494dd238fa581"
+            },
+            {
+              "ref": "results/live/2026-10-29T195142.288785Z/UNAPPROVED_CASE.md",
+              "sha256": "3a335255c004098eb7e440b17896f7c6ff5a024beebc4a1136bd52f6bac9d9c1"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Revalidated actor dispatch after full-diff review: 100 focused tests pass; missing anchors refuse before provider access and damaged actor identities cannot reach the dense path. Generic and Fez submit-free dry runs pass, and Fez compilation binds the current source closure and QPY. Hardware inference remains descriptive.",
+          "observed_at": "2026-10-29T19:59:11.604858+00:00",
+          "revision": "0c1174fc2dab890ea0d1e7504fbce54edec36c62",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "2c37d60c858b65ca83b42a7dbe11a5a23ba234bfb483bcb9388b1f647c21b532"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "66531e7f8acdfaa1d777983852aaa25ae32ceb05a75b36e6aedbcdf28fdaafbf"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "2d4d7ee5483b022a481bfea733a0ccb4d36f6be4c1af670453ada7c17c38932f"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "cde343f64216b7c491ba0215897591ac715e1481e8b2f971d2636a95fe8f0496"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            },
+            {
+              "ref": "results/live/2026-10-29T195800.891065Z/record.json",
+              "sha256": "7f00be96f4ad38013fae2e240fe415ba7446607c7642a2db616bce36379e8ec7"
+            },
+            {
+              "ref": "results/live/2026-10-29T195800.891065Z/isa.qpy",
+              "sha256": "4b3534a56ed96c3013958311aff490a3ac4b8a0b4ded093ace0494dd238fa581"
+            },
+            {
+              "ref": "results/live/2026-10-29T195800.891065Z/UNAPPROVED_CASE.md",
+              "sha256": "18a49b4085c369575b3f57eb1b4fab7cbd64c4ddad24ec8389e065c5619cc187"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "The merged Qiskit 2.6.1 branch passes 104 focused integration tests and seven cost-model tests. A fresh submit-free Fez compilation verifies 24 full-register circuits and their source closure; a generic submit-free live run also completes. The pilot remains descriptive.",
+          "observed_at": "2026-10-29T23:46:21.036099+00:00",
+          "revision": "12f9161b06312bdda51a4cd45e18eb6eed4459ae",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "59f7aca990c9e002ebb0a2cfff623a5808897680d533f754cb8027825147b484"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/record.json",
+              "sha256": "99f4ff7b0c2c6e077921ab64e68a732a4310d09783b15ecbe364a26da16d27e9"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/UNAPPROVED_CASE.md",
+              "sha256": "038b3b88151573ec54c9135a7ca671347472b7014b0e655fcb114d8f656843fe"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "6c67498bc01c0ca4e1cf78eb196ed3dececbf507c596c1262f4c288b3330375e"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "2d4d7ee5483b022a481bfea733a0ccb4d36f6be4c1af670453ada7c17c38932f"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "cde343f64216b7c491ba0215897591ac715e1481e8b2f971d2636a95fe8f0496"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "The settled-inventory documentation names the completed Fez acquisition and the zero-charge Kingston cancellations. The same Qiskit 2.6.1 validation passes 104 integration tests, seven cost tests, 24-circuit archive verification and both submit-free plans; the design retains its descriptive boundary.",
+          "observed_at": "2026-10-29T23:58:23.805295+00:00",
+          "revision": "561e290f1b810c934b7221ab7a9de54fb0400a7b",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/record.json",
+              "sha256": "99f4ff7b0c2c6e077921ab64e68a732a4310d09783b15ecbe364a26da16d27e9"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/UNAPPROVED_CASE.md",
+              "sha256": "038b3b88151573ec54c9135a7ca671347472b7014b0e655fcb114d8f656843fe"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "6c67498bc01c0ca4e1cf78eb196ed3dececbf507c596c1262f4c288b3330375e"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "2d4d7ee5483b022a481bfea733a0ccb4d36f6be4c1af670453ada7c17c38932f"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "cde343f64216b7c491ba0215897591ac715e1481e8b2f971d2636a95fe8f0496"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "The integrated Ascella and IBM tree passes 113 focused tests. A fresh submit-free Fez plan verifies all 24 circuits and the updated source closure; the prior generic submit-free run and cost checks remain descriptive evidence. The pilot makes no inferential hardware decision.",
+          "observed_at": "2026-10-30T00:14:52.974132+00:00",
+          "revision": "581c71e03c17301b81cee8df2fde2d7010af23e0",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T001355.330762Z/record.json",
+              "sha256": "93325cea9acd4317700823192bd18fa9c3d727b62298bda8f802c8acc52521f4"
+            },
+            {
+              "ref": "results/live/2026-10-30T001355.330762Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T001355.330762Z/UNAPPROVED_CASE.md",
+              "sha256": "ddc5a5916efc4188c7c1020183141ee2be75456c6250832bc34110c2a1fa41c4"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "6c67498bc01c0ca4e1cf78eb196ed3dececbf507c596c1262f4c288b3330375e"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "2d4d7ee5483b022a481bfea733a0ccb4d36f6be4c1af670453ada7c17c38932f"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "cde343f64216b7c491ba0215897591ac715e1481e8b2f971d2636a95fe8f0496"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "The write-once and metrics recovery changes pass 77 focused sparse and actor tests, including killed-process and retention recovery; prior cost tests pass. A fresh submit-free Fez plan verifies 24 circuits and the current source closure, and the generic submit-free run completes. The pilot remains descriptive.",
+          "observed_at": "2026-10-30T00:30:47.164533+00:00",
+          "revision": "e6d4773c5854cb9bf4e239a863dc511fe034a796",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T002939.860862Z/record.json",
+              "sha256": "7f12c7bae6cbfb438ccaddc87437e5065f16c96b1312aca7380e2c24dd438f60"
+            },
+            {
+              "ref": "results/live/2026-10-30T002939.860862Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T002939.860862Z/UNAPPROVED_CASE.md",
+              "sha256": "ea7f3d3ac4b0ee1fce79b93adccceb04e1fa4f046e5ec56e8e8e985d6918685e"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "c0fced48d63b02fd92a6ea75b92e72d1c3a823da47290e3ed55e36de52771721"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "2d4d7ee5483b022a481bfea733a0ccb4d36f6be4c1af670453ada7c17c38932f"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "23120daa7172fa8c8b8ebb81d3749d2cc150da69a05e61c2907b0d8ec4719376"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            },
+            {
+              "ref": "tests/scripts/test_readout_sparse_receipt.py",
+              "sha256": "4359f6404c0d3b87f58a40420aa6e99c6bfa76822fa864b21db99cd829442fa2"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "The archive verification runs independent circuit checks through the ordered pool. Seventy-eight focused tests pass, and a two-worker spawned-process replay verifies all 24 circuits from the fresh submit-free Fez plan. The prior generic submit-free run and cost checks remain valid; hardware inference remains descriptive.",
+          "observed_at": "2026-10-30T00:39:11.140460+00:00",
+          "revision": "6a9a80deccb8754b856ef171ae65ca9eaeaf14ae",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T003838.148646Z/record.json",
+              "sha256": "50b9e232581f895ccac12fc861457c38478d8d97cff0591e3ebf32133cc3e144"
+            },
+            {
+              "ref": "results/live/2026-10-30T003838.148646Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T003838.148646Z/UNAPPROVED_CASE.md",
+              "sha256": "1f92342653feff90b9e2e3f63fd1c0acf26eb396363dc80c3174625bea6430cb"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "c0fced48d63b02fd92a6ea75b92e72d1c3a823da47290e3ed55e36de52771721"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "432a245639bd2e4137c47970731b916f302b3f663dcd913f61df952e6c661668"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "7851125c438b9b09ccd176445c3de4f2481c872634d47a9616392ef1b5be7ec9"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            },
+            {
+              "ref": "tests/scripts/test_readout_sparse_receipt.py",
+              "sha256": "4359f6404c0d3b87f58a40420aa6e99c6bfa76822fa864b21db99cd829442fa2"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "The actor Target validation and schedule extraction run in ordered worker pools. Fifty-two focused actor tests pass. A two-worker spawned-process check rejects an unsupported instruction, and the fresh submit-free Fez plan and 24-circuit archive verification pass. Hardware inference remains descriptive.",
+          "observed_at": "2026-10-30T00:47:06.675718+00:00",
+          "revision": "5c88e630de76d4e56def990d032e8ee0c2754b0c",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/record.json",
+              "sha256": "8bf299ead696dca1549c306f53d7f4718c182ea48d641a23fc6edee1036ea799"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/UNAPPROVED_CASE.md",
+              "sha256": "7f9ebe191a5c4f4d14499aaa7ba648f8887c663ba9c32c35216c1620bc2de1bb"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "c0fced48d63b02fd92a6ea75b92e72d1c3a823da47290e3ed55e36de52771721"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "d6b54b8c90ee243aca71329665cdf4ba75471c74531e8e370f6ad92459546df9"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "e0f314a00aa76b6a55b84d6e5e92a28c408e9167b89dabed69184dfca1a564bb"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            },
+            {
+              "ref": "tests/scripts/test_readout_sparse_receipt.py",
+              "sha256": "4359f6404c0d3b87f58a40420aa6e99c6bfa76822fa864b21db99cd829442fa2"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Revalidated over live_run.py as the ibm_fez successor branch leaves it: reuse_approved_predictions now copies the approved record's ideal_laws and shared_law_record starts from a record's existing laws, which no readout-actor record carries. The focused actor and sparse-receipt tests pass with the envelope tests (182), and the submit-free dry run of the merged tree (ibm_fez and ibm_kingston) plans.",
+          "observed_at": "2026-10-30T01:51:03+00:00",
+          "revision": "4f7d709e1b9737dffa754daf58956904dd916ff9",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/record.json",
+              "sha256": "8bf299ead696dca1549c306f53d7f4718c182ea48d641a23fc6edee1036ea799"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/UNAPPROVED_CASE.md",
+              "sha256": "7f9ebe191a5c4f4d14499aaa7ba648f8887c663ba9c32c35216c1620bc2de1bb"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "1d904d8682b1dca88c8842a44e5d48dac07ab15ce4c86b620afab3cdeb6352cc"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "d6b54b8c90ee243aca71329665cdf4ba75471c74531e8e370f6ad92459546df9"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "e0f314a00aa76b6a55b84d6e5e92a28c408e9167b89dabed69184dfca1a564bb"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            },
+            {
+              "ref": "tests/scripts/test_readout_sparse_receipt.py",
+              "sha256": "4359f6404c0d3b87f58a40420aa6e99c6bfa76822fa864b21db99cd829442fa2"
+            },
+            {
+              "ref": "results/live/2026-10-30T014957.640282Z/record.json",
+              "sha256": "470d029fc557dddfee454b8ca3717bf90a79366545d80262ba8da783db1a6cfb"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Revalidated after main changed scripts/qd_platform.py: the change admits a frozen Quandela processor record whose pcvl-worker and perceval-quandela versions match the live specs and adds the catalogue to the retained records, a Quandela path the readout actor never calls. The actor, sparse-receipt, cost-model and qd_platform observe tests pass (87).",
+          "observed_at": "2026-10-30T04:51:58+00:00",
+          "revision": "7d9f827769bbc740806d4c2450e701e7fa9588c5",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/record.json",
+              "sha256": "8bf299ead696dca1549c306f53d7f4718c182ea48d641a23fc6edee1036ea799"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/UNAPPROVED_CASE.md",
+              "sha256": "7f9ebe191a5c4f4d14499aaa7ba648f8887c663ba9c32c35216c1620bc2de1bb"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "1d904d8682b1dca88c8842a44e5d48dac07ab15ce4c86b620afab3cdeb6352cc"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "d6b54b8c90ee243aca71329665cdf4ba75471c74531e8e370f6ad92459546df9"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "e0f314a00aa76b6a55b84d6e5e92a28c408e9167b89dabed69184dfca1a564bb"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "182f179bee6275248a136c37e1dde1d06d873b3c1ba0108d8b00edca491c4239"
+            },
+            {
+              "ref": "tests/scripts/test_readout_sparse_receipt.py",
+              "sha256": "4359f6404c0d3b87f58a40420aa6e99c6bfa76822fa864b21db99cd829442fa2"
+            },
+            {
+              "ref": "results/live/2026-10-30T014957.640282Z/record.json",
+              "sha256": "470d029fc557dddfee454b8ca3717bf90a79366545d80262ba8da783db1a6cfb"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        }
+      ]
+    },
+    {
+      "id": "delay-pilot-case",
+      "state": "done",
+      "action": "Bind the descriptive full-register delay pilot and its complete allocation",
+      "acceptance": "The operational JSON validates; exact cost arithmetic accounts for all 24 PUBs; a submit-free Target compile binds measurement timing, sources and QPY; inference stays descriptive and exact-case approval remains pending.",
+      "receipts": [
+        {
+          "result": "The 113 focused actor-family, sparse receipt/projection, paired-control and cost tests pass; pinned Ruff and touched-file mypy pass. A submit-free live Kingston plan and offline archive verification bind 24 full-register PUBs, 73728 shots, matched measurement tick 8, three modeled batch costs totaling 10.995612672 s and summed ceilings of 18 s inside a 20 s envelope. The record remains planned and descriptive; execution and sampling qualifications remain gated.",
+          "observed_at": "2026-10-29T00:32:52.810621+00:00",
+          "revision": "6841c2408d41b5bdc1bce9e07807e1ed0ec909b6",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "11727927dff10a64f4402219c4a5734d074a0b3b5a86a71163cc3971197a7f69"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/record.json",
+              "sha256": "3b11c9b3ecd8af388a65866f82b446d26e8d544e8de9cfed83a3286ef26e2b95"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/isa.qpy",
+              "sha256": "f6baf70a13b0be2ba060d9540c3a3eb9d6470db95dc0af5870a647407eebc6af"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/UNAPPROVED_CASE.md",
+              "sha256": "7a0c2489ac6a37ea19e2c3668ce234c1e90d95df3e33c7a5c861ade94ea8b7d7"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/actor-case.json",
+              "sha256": "749400ca2914ac09c3f9062be63d31b84ad361806ba118e38dcc311916f31a3d"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        },
+        {
+          "result": "Bounded acquisition review and revalidation: 113 focused tests pass. Independent inspection verifies the reviewed artifact hashes and actor validator. The fresh submit-free plan matches the reviewed record; a separate read-only usage call reports primary remaining 68 s. The packet preserves 3x6=18 s, aggregate20 s and reserve48 s, records repeated full-ceiling reservation and withholds approval below conservative78 s start headroom. Write-once custody anchors live outside analyzed run directories. Production source and analyzer bytes remain unchanged.",
+          "observed_at": "2026-10-29T00:56:55.873359+00:00",
+          "revision": "a7b58d987c252cee2a77b92f1ccbdaa345c7aeb1",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "2431209747745275154cab986cdac4adc11ecc569e458750cefb28790080cb12"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/record.json",
+              "sha256": "3b11c9b3ecd8af388a65866f82b446d26e8d544e8de9cfed83a3286ef26e2b95"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/isa.qpy",
+              "sha256": "f6baf70a13b0be2ba060d9540c3a3eb9d6470db95dc0af5870a647407eebc6af"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/UNAPPROVED_CASE.md",
+              "sha256": "7a0c2489ac6a37ea19e2c3668ce234c1e90d95df3e33c7a5c861ade94ea8b7d7"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/actor-case.json",
+              "sha256": "749400ca2914ac09c3f9062be63d31b84ad361806ba118e38dcc311916f31a3d"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/README.md",
+              "sha256": "1f535daf5cbfb5466903017a22086e313d9712a7d10e3d866109c042dff64aa4"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/packet.json",
+              "sha256": "ebefced053ef9539e5759fde905f949465f69088fcfd57f926fa2346cbc4f8ce"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/admission.json",
+              "sha256": "83d391ece792d004ba01fbf644c43c3b47f5467fb8279fad3e959136e2d8b502"
+            },
+            {
+              "ref": "results/live/2026-10-29T004725.208468Z/record.json",
+              "sha256": "5a0f3205cfefc31fa9c98d058a508edbd2fdbdacbe06abc35be3a259217b0fa1"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        },
+        {
+          "result": "Budget admission closes through documented independently budgeted backup routing: a read-only observation reports160 s against78 s conservative start headroom; the fresh backup plan and offline verify_archive bind24 full-register PUBs and the unchanged independently reviewed production closure. Three6 s ceilings total18 s inside aggregate20 s, with48 s reserve. Source files remain unchanged; no provider job is submitted and owner approval remains pending.",
+          "observed_at": "2026-10-29T01:31:57.782893+00:00",
+          "revision": "11c28b84f8cf54e1218bed03321846c1de9e6e9b",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "6fa1f13cc6f29617f0b35b02030bd2264b8899f50c22279caf6bb67820608892"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/record.json",
+              "sha256": "3b11c9b3ecd8af388a65866f82b446d26e8d544e8de9cfed83a3286ef26e2b95"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/isa.qpy",
+              "sha256": "f6baf70a13b0be2ba060d9540c3a3eb9d6470db95dc0af5870a647407eebc6af"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/UNAPPROVED_CASE.md",
+              "sha256": "7a0c2489ac6a37ea19e2c3668ce234c1e90d95df3e33c7a5c861ade94ea8b7d7"
+            },
+            {
+              "ref": "results/live/2026-10-29T002839.028671Z/actor-case.json",
+              "sha256": "749400ca2914ac09c3f9062be63d31b84ad361806ba118e38dcc311916f31a3d"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/README.md",
+              "sha256": "1f535daf5cbfb5466903017a22086e313d9712a7d10e3d866109c042dff64aa4"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/packet.json",
+              "sha256": "ebefced053ef9539e5759fde905f949465f69088fcfd57f926fa2346cbc4f8ce"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/admission.json",
+              "sha256": "83d391ece792d004ba01fbf644c43c3b47f5467fb8279fad3e959136e2d8b502"
+            },
+            {
+              "ref": "results/live/2026-10-29T004725.208468Z/record.json",
+              "sha256": "5a0f3205cfefc31fa9c98d058a508edbd2fdbdacbe06abc35be3a259217b0fa1"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/budget-admission-closure.md",
+              "sha256": "c03a88c8d1de92333455aef5daaab092437c5d13666b2b97f42632cac9fa5bf4"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/backup-qualified-packet.json",
+              "sha256": "aba87cbcd08729b25c1a88bb88d8ea66e4ac57c0bfbff2ac77e6053ecf89449a"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/backup-admission.json",
+              "sha256": "ab8899d8ce51e137221179d3fd8f5eb895ef690cc4f9d4fb70369f6e9dd859d1"
+            },
+            {
+              "ref": "results/live/2026-10-29T010517.821761Z/record.json",
+              "sha256": "375b197e5277ca9afaebe15fd627f89249a3d1a34691302bc61e07a1fa1e5aa2"
+            },
+            {
+              "ref": "results/live/2026-10-29T010517.821761Z/isa.qpy",
+              "sha256": "f6baf70a13b0be2ba060d9540c3a3eb9d6470db95dc0af5870a647407eebc6af"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        },
+        {
+          "result": "Revalidated actor planning and sparse collection after review fixes: 94 focused tests and sparse receipt checks pass; a fresh submit-free Fez Target compilation binds 24 conditions, prepared bits, QPY and source identities. The case remains descriptive and the compilation authorizes no job.",
+          "observed_at": "2026-10-29T19:40:22.220453+00:00",
+          "revision": "7c6aa740cbe6288923b57157a66b727fb5bccdd8",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "2c37d60c858b65ca83b42a7dbe11a5a23ba234bfb483bcb9388b1f647c21b532"
+            },
+            {
+              "ref": "results/live/2026-10-29T193911.165282Z/record.json",
+              "sha256": "aa229afb8a53546a6f0e754bd9ff5f7bc126853b10f54c47227163260755aeb5"
+            },
+            {
+              "ref": "results/live/2026-10-29T193911.165282Z/isa.qpy",
+              "sha256": "4b3534a56ed96c3013958311aff490a3ac4b8a0b4ded093ace0494dd238fa581"
+            },
+            {
+              "ref": "results/live/2026-10-29T193911.165282Z/UNAPPROVED_CASE.md",
+              "sha256": "248d5adb0756b9a44a300041d8b45e823e71e167a853e80f937fd006b70ee99e"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "docs/design/readout-actor-fez-delay-qualification.json",
+              "sha256": "f4f0c8e5d830f30285896e58b438a409ce9a3c9804dcf3571b1762cbe9acccca"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        },
+        {
+          "result": "The merged Qiskit 2.6.1 branch passes 104 focused integration tests and seven cost-model tests. A fresh submit-free Fez compilation verifies 24 full-register circuits and their source closure; a generic submit-free live run also completes. The pilot remains descriptive.",
+          "observed_at": "2026-10-29T23:46:21.037273+00:00",
+          "revision": "12f9161b06312bdda51a4cd45e18eb6eed4459ae",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "59f7aca990c9e002ebb0a2cfff623a5808897680d533f754cb8027825147b484"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/record.json",
+              "sha256": "99f4ff7b0c2c6e077921ab64e68a732a4310d09783b15ecbe364a26da16d27e9"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/UNAPPROVED_CASE.md",
+              "sha256": "038b3b88151573ec54c9135a7ca671347472b7014b0e655fcb114d8f656843fe"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "docs/design/readout-actor-fez-delay-qualification.json",
+              "sha256": "f4f0c8e5d830f30285896e58b438a409ce9a3c9804dcf3571b1762cbe9acccca"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        },
+        {
+          "result": "The settled-inventory documentation names the completed Fez acquisition and the zero-charge Kingston cancellations. The same Qiskit 2.6.1 validation passes 104 integration tests, seven cost tests, 24-circuit archive verification and both submit-free plans; the design retains its descriptive boundary.",
+          "observed_at": "2026-10-29T23:58:23.805840+00:00",
+          "revision": "561e290f1b810c934b7221ab7a9de54fb0400a7b",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/record.json",
+              "sha256": "99f4ff7b0c2c6e077921ab64e68a732a4310d09783b15ecbe364a26da16d27e9"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-29T234451.870135Z/UNAPPROVED_CASE.md",
+              "sha256": "038b3b88151573ec54c9135a7ca671347472b7014b0e655fcb114d8f656843fe"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "docs/design/readout-actor-fez-delay-qualification.json",
+              "sha256": "f4f0c8e5d830f30285896e58b438a409ce9a3c9804dcf3571b1762cbe9acccca"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        },
+        {
+          "result": "The integrated Ascella and IBM tree passes 113 focused tests. A fresh submit-free Fez plan verifies all 24 circuits and the updated source closure; the prior generic submit-free run and cost checks remain descriptive evidence. The pilot makes no inferential hardware decision.",
+          "observed_at": "2026-10-30T00:14:52.974785+00:00",
+          "revision": "581c71e03c17301b81cee8df2fde2d7010af23e0",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T001355.330762Z/record.json",
+              "sha256": "93325cea9acd4317700823192bd18fa9c3d727b62298bda8f802c8acc52521f4"
+            },
+            {
+              "ref": "results/live/2026-10-30T001355.330762Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T001355.330762Z/UNAPPROVED_CASE.md",
+              "sha256": "ddc5a5916efc4188c7c1020183141ee2be75456c6250832bc34110c2a1fa41c4"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "docs/design/readout-actor-fez-delay-qualification.json",
+              "sha256": "f4f0c8e5d830f30285896e58b438a409ce9a3c9804dcf3571b1762cbe9acccca"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        },
+        {
+          "result": "The write-once and metrics recovery changes pass 77 focused sparse and actor tests, including killed-process and retention recovery; prior cost tests pass. A fresh submit-free Fez plan verifies 24 circuits and the current source closure, and the generic submit-free run completes. The pilot remains descriptive.",
+          "observed_at": "2026-10-30T00:30:47.166006+00:00",
+          "revision": "e6d4773c5854cb9bf4e239a863dc511fe034a796",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T002939.860862Z/record.json",
+              "sha256": "7f12c7bae6cbfb438ccaddc87437e5065f16c96b1312aca7380e2c24dd438f60"
+            },
+            {
+              "ref": "results/live/2026-10-30T002939.860862Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T002939.860862Z/UNAPPROVED_CASE.md",
+              "sha256": "ea7f3d3ac4b0ee1fce79b93adccceb04e1fa4f046e5ec56e8e8e985d6918685e"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "docs/design/readout-actor-fez-delay-qualification.json",
+              "sha256": "f4f0c8e5d830f30285896e58b438a409ce9a3c9804dcf3571b1762cbe9acccca"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        },
+        {
+          "result": "The archive verification runs independent circuit checks through the ordered pool. Seventy-eight focused tests pass, and a two-worker spawned-process replay verifies all 24 circuits from the fresh submit-free Fez plan. The prior generic submit-free run and cost checks remain valid; hardware inference remains descriptive.",
+          "observed_at": "2026-10-30T00:39:11.141718+00:00",
+          "revision": "6a9a80deccb8754b856ef171ae65ca9eaeaf14ae",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T003838.148646Z/record.json",
+              "sha256": "50b9e232581f895ccac12fc861457c38478d8d97cff0591e3ebf32133cc3e144"
+            },
+            {
+              "ref": "results/live/2026-10-30T003838.148646Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T003838.148646Z/UNAPPROVED_CASE.md",
+              "sha256": "1f92342653feff90b9e2e3f63fd1c0acf26eb396363dc80c3174625bea6430cb"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "docs/design/readout-actor-fez-delay-qualification.json",
+              "sha256": "f4f0c8e5d830f30285896e58b438a409ce9a3c9804dcf3571b1762cbe9acccca"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        },
+        {
+          "result": "The actor Target validation and schedule extraction run in ordered worker pools. Fifty-two focused actor tests pass. A two-worker spawned-process check rejects an unsupported instruction, and the fresh submit-free Fez plan and 24-circuit archive verification pass. Hardware inference remains descriptive.",
+          "observed_at": "2026-10-30T00:47:06.677139+00:00",
+          "revision": "5c88e630de76d4e56def990d032e8ee0c2754b0c",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/record.json",
+              "sha256": "8bf299ead696dca1549c306f53d7f4718c182ea48d641a23fc6edee1036ea799"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/UNAPPROVED_CASE.md",
+              "sha256": "7f9ebe191a5c4f4d14499aaa7ba648f8887c663ba9c32c35216c1620bc2de1bb"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "docs/design/readout-actor-fez-delay-qualification.json",
+              "sha256": "f4f0c8e5d830f30285896e58b438a409ce9a3c9804dcf3571b1762cbe9acccca"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        },
+        {
+          "result": "Revalidated after main changed scripts/qd_platform.py: the change admits a frozen Quandela processor record whose pcvl-worker and perceval-quandela versions match the live specs and adds the catalogue to the retained records, a Quandela path the readout actor never calls. The actor, sparse-receipt, cost-model and qd_platform observe tests pass (87).",
+          "observed_at": "2026-10-30T04:51:58+00:00",
+          "revision": "7d9f827769bbc740806d4c2450e701e7fa9588c5",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/record.json",
+              "sha256": "8bf299ead696dca1549c306f53d7f4718c182ea48d641a23fc6edee1036ea799"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/UNAPPROVED_CASE.md",
+              "sha256": "7f9ebe191a5c4f4d14499aaa7ba648f8887c663ba9c32c35216c1620bc2de1bb"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "docs/design/readout-actor-fez-delay-qualification.json",
+              "sha256": "f4f0c8e5d830f30285896e58b438a409ce9a3c9804dcf3571b1762cbe9acccca"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "182f179bee6275248a136c37e1dde1d06d873b3c1ba0108d8b00edca491c4239"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        }
+      ]
+    },
+    {
+      "id": "acquisition-review",
+      "state": "done",
+      "action": "Review the bounded descriptive pilot and bind one-attempt approval evidence",
+      "acceptance": "Independent review findings, exact artifact digests, externally retained custody anchors and a separate read-only quota/backend admission observation bind the proposed attempt; unresolved gates withhold submission.",
+      "receipts": [
+        {
+          "result": "Bounded acquisition review and revalidation: 113 focused tests pass. Independent inspection verifies the reviewed artifact hashes and actor validator. The fresh submit-free plan matches the reviewed record; a separate read-only usage call reports primary remaining 68 s. The packet preserves 3x6=18 s, aggregate20 s and reserve48 s, records repeated full-ceiling reservation and withholds approval below conservative78 s start headroom. Write-once custody anchors live outside analyzed run directories. Production source and analyzer bytes remain unchanged.",
+          "observed_at": "2026-10-29T00:56:55.874927+00:00",
+          "revision": "a7b58d987c252cee2a77b92f1ccbdaa345c7aeb1",
+          "evidence": [
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/README.md",
+              "sha256": "1f535daf5cbfb5466903017a22086e313d9712a7d10e3d866109c042dff64aa4"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/packet.json",
+              "sha256": "ebefced053ef9539e5759fde905f949465f69088fcfd57f926fa2346cbc4f8ce"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/admission.json",
+              "sha256": "83d391ece792d004ba01fbf644c43c3b47f5467fb8279fad3e959136e2d8b502"
+            },
+            {
+              "ref": "results/live/2026-10-29T004725.208468Z/record.json",
+              "sha256": "5a0f3205cfefc31fa9c98d058a508edbd2fdbdacbe06abc35be3a259217b0fa1"
+            }
+          ],
+          "scope_sha256": "e4db4406088f9eb2fbe389730bf43b5dad4ae2ae5d37adbc76be0c65fd3efbe0"
+        },
+        {
+          "result": "Budget admission closes through documented independently budgeted backup routing: a read-only observation reports160 s against78 s conservative start headroom; the fresh backup plan and offline verify_archive bind24 full-register PUBs and the unchanged independently reviewed production closure. Three6 s ceilings total18 s inside aggregate20 s, with48 s reserve. Source files remain unchanged; no provider job is submitted and owner approval remains pending.",
+          "observed_at": "2026-10-29T01:31:57.784893+00:00",
+          "revision": "11c28b84f8cf54e1218bed03321846c1de9e6e9b",
+          "evidence": [
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/README.md",
+              "sha256": "1f535daf5cbfb5466903017a22086e313d9712a7d10e3d866109c042dff64aa4"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/packet.json",
+              "sha256": "ebefced053ef9539e5759fde905f949465f69088fcfd57f926fa2346cbc4f8ce"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/admission.json",
+              "sha256": "83d391ece792d004ba01fbf644c43c3b47f5467fb8279fad3e959136e2d8b502"
+            },
+            {
+              "ref": "results/live/2026-10-29T004725.208468Z/record.json",
+              "sha256": "5a0f3205cfefc31fa9c98d058a508edbd2fdbdacbe06abc35be3a259217b0fa1"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/budget-admission-closure.md",
+              "sha256": "c03a88c8d1de92333455aef5daaab092437c5d13666b2b97f42632cac9fa5bf4"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/backup-qualified-packet.json",
+              "sha256": "aba87cbcd08729b25c1a88bb88d8ea66e4ac57c0bfbff2ac77e6053ecf89449a"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/backup-admission.json",
+              "sha256": "ab8899d8ce51e137221179d3fd8f5eb895ef690cc4f9d4fb70369f6e9dd859d1"
+            },
+            {
+              "ref": "results/live/2026-10-29T010517.821761Z/record.json",
+              "sha256": "375b197e5277ca9afaebe15fd627f89249a3d1a34691302bc61e07a1fa1e5aa2"
+            },
+            {
+              "ref": "results/live/2026-10-29T010517.821761Z/isa.qpy",
+              "sha256": "f6baf70a13b0be2ba060d9540c3a3eb9d6470db95dc0af5870a647407eebc6af"
+            }
+          ],
+          "scope_sha256": "e4db4406088f9eb2fbe389730bf43b5dad4ae2ae5d37adbc76be0c65fd3efbe0"
+        }
+      ]
+    },
+    {
+      "id": "budget-reconciliation",
+      "state": "done",
+      "action": "Resolve repeated full-ceiling reservation or qualify sufficient start headroom",
+      "acceptance": "A reviewed budget model accounts for already posted charges and outstanding job liabilities without double spending, or a fresh observation meets the documented conservative start threshold; the 48-second reserve and complete-program ceilings remain enforced.",
+      "receipts": [
+        {
+          "result": "Budget admission closes through documented independently budgeted backup routing: a read-only observation reports160 s against78 s conservative start headroom; the fresh backup plan and offline verify_archive bind24 full-register PUBs and the unchanged independently reviewed production closure. Three6 s ceilings total18 s inside aggregate20 s, with48 s reserve. Source files remain unchanged; no provider job is submitted and owner approval remains pending.",
+          "observed_at": "2026-10-29T01:31:57.786364+00:00",
+          "revision": "11c28b84f8cf54e1218bed03321846c1de9e6e9b",
+          "evidence": [
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/budget-admission-closure.md",
+              "sha256": "c03a88c8d1de92333455aef5daaab092437c5d13666b2b97f42632cac9fa5bf4"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/backup-qualified-packet.json",
+              "sha256": "aba87cbcd08729b25c1a88bb88d8ea66e4ac57c0bfbff2ac77e6053ecf89449a"
+            },
+            {
+              "ref": "docs/evidence/readout-actor-acquisition-review/backup-admission.json",
+              "sha256": "ab8899d8ce51e137221179d3fd8f5eb895ef690cc4f9d4fb70369f6e9dd859d1"
+            },
+            {
+              "ref": "results/live/2026-10-29T010517.821761Z/record.json",
+              "sha256": "375b197e5277ca9afaebe15fd627f89249a3d1a34691302bc61e07a1fa1e5aa2"
+            },
+            {
+              "ref": "results/live/2026-10-29T010517.821761Z/isa.qpy",
+              "sha256": "f6baf70a13b0be2ba060d9540c3a3eb9d6470db95dc0af5870a647407eebc6af"
+            }
+          ],
+          "scope_sha256": "1c05832f8cbf846989cfe23c16b4e5dede4f06cb0f49f4576f159d29d277cc37"
+        }
+      ]
+    },
+    {
+      "id": "approved-pilot-acquisition",
+      "state": "doing",
+      "action": "Execute the explicitly approved backup-instance pilot once and retain descriptive evidence",
+      "acceptance": "The exact approved source/case and per-job/aggregate/reserve bounds gate one invocation; submission and collection anchors remain independently retained; completed results or a terminal refusal are preserved without another submission."
+    }
+  ],
+  "scope": "Design an IBM actor-reporter and paired-error case, with separately admitted IQM, QX and Ascella cases; exact case approval precedes provider actions.",
+  "owner": "readout-information experiment",
+  "next_action": "Request owner approval of the backup-qualified one-attempt descriptive pilot; preserve18 s summed job ceilings,20 s aggregate ceiling,48 s reserve and independent digest custody. Run the binding invocation on the selected backup instance only after approval; IQM execution remains blocked."
+}

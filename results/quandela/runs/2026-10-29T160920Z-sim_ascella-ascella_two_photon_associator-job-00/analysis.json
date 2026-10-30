@@ -1,0 +1,58 @@
+{
+ "accepted_two_click_events": 16383,
+ "associator": {
+  "Delta": 1.757568359375,
+  "routes": {
+   "LaLb": {
+    "D": 0.8828125,
+    "events": 4096,
+    "se": 0.006613237339151141
+   },
+   "Lab": {
+    "D": -0.874755859375,
+    "events": 4096,
+    "se": 0.006856613523793953
+   }
+  },
+  "se": 0.009526177466256704
+ },
+ "associator_counted_iterations": 4,
+ "control": {
+  "Delta": -0.009003989716880323,
+  "routes": {
+   "LaLb": {
+    "D": -0.8803418803418803,
+    "events": 4095,
+    "se": 0.006667013374443862
+   },
+   "Lab": {
+    "D": -0.871337890625,
+    "events": 4096,
+    "se": 0.006936322895742938
+   }
+  },
+  "se": 0.009620896145839067
+ },
+ "control_counted_iterations": 4,
+ "decisions": {
+  "associator_realised": true,
+  "closure": 0.005888588408119677,
+  "closure_se": 0.013539191252347312,
+  "compensated_contrast": 1.0033616808880936,
+  "complete_blocks": {
+   "associator": true,
+   "control": true
+  },
+  "hom_comparison": null,
+  "in_situ_visibility": 0.9136529713331463,
+  "visibility_closure": true,
+  "visibility_hom": null
+ },
+ "excluded_by_cause": {
+  "fewer_than_two_clicks": 0,
+  "three_or_more_clicks": 1,
+  "two_clicks_outside_block": 0
+ },
+ "excluded_events": 1,
+ "multiphoton_estimate": null
+}

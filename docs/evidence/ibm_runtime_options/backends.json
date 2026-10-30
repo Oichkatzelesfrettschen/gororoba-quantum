@@ -102,7 +102,7 @@
      "duration_ns_max": 24.0,
      "duration_ns_median": 24.0,
      "duration_ns_min": 24.0,
-     "error_median": 0.00028966693012794407,
+     "error_median": 0.0002933337197292548,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -110,7 +110,7 @@
      "duration_ns_max": 116.0,
      "duration_ns_median": 68.0,
      "duration_ns_min": 68.0,
-     "error_median": 0.002820400939608919,
+     "error_median": 0.0026205953261135423,
      "present": true,
      "qargs_with_properties": 352
     }
@@ -120,7 +120,7 @@
      "duration_ns_max": 88.0,
      "duration_ns_median": 68.0,
      "duration_ns_min": 68.0,
-     "error_median": 0.002555200193244858,
+     "error_median": 0.002466702138593818,
      "present": true,
      "qargs_with_properties": 352
     },
@@ -139,7 +139,7 @@
      "duration_ns_max": 24.0,
      "duration_ns_median": 24.0,
      "duration_ns_min": 24.0,
-     "error_median": 0.00028966693012794407,
+     "error_median": 0.0002933337197292548,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -155,7 +155,7 @@
      "duration_ns_max": 1660.0,
      "duration_ns_median": 1660.0,
      "duration_ns_min": 1660.0,
-     "error_median": 0.01239013671875,
+     "error_median": 0.01025390625,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -163,7 +163,7 @@
      "duration_ns_max": 1340.0,
      "duration_ns_median": 1340.0,
      "duration_ns_min": 1340.0,
-     "error_median": 0.0140380859375,
+     "error_median": 0.013427734375,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -217,7 +217,7 @@
      "duration_ns_max": 24.0,
      "duration_ns_median": 24.0,
      "duration_ns_min": 24.0,
-     "error_median": 0.00028966693012794407,
+     "error_median": 0.0002933337197292548,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -228,7 +228,7 @@
      "duration_ns_max": 24.0,
      "duration_ns_median": 24.0,
      "duration_ns_min": 24.0,
-     "error_median": 0.00028966693012794407,
+     "error_median": 0.0002933337197292548,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -236,7 +236,7 @@
      "duration_ns_max": 1000.0,
      "duration_ns_median": 1000.0,
      "duration_ns_min": 1000.0,
-     "error_median": 0.00028966693012794407,
+     "error_median": 0.0002933337197292548,
      "present": true,
      "qargs_with_properties": 156
     }
@@ -246,7 +246,7 @@
     "groups": 1,
     "largest_group": 156
    },
-   "properties_last_update": "2026-10-17T14:32:07-07:00",
+   "properties_last_update": "2026-10-29T01:45:35-07:00",
    "rzz_transpile_probe": {
     "results": {
      "default (backend plugin)": {
@@ -283,7 +283,7 @@
    "status": {
     "backend_version": "",
     "operational": true,
-    "pending_jobs": 1,
+    "pending_jobs": 8,
     "status_msg": "active"
    },
    "wire_units": {
@@ -391,7 +391,7 @@
      "duration_ns_max": 32.0,
      "duration_ns_median": 32.0,
      "duration_ns_min": 32.0,
-     "error_median": 0.0002991230021516942,
+     "error_median": 0.0002252051959860439,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -399,7 +399,7 @@
      "duration_ns_max": 108.0,
      "duration_ns_median": 68.0,
      "duration_ns_min": 68.0,
-     "error_median": 0.0019856656642906617,
+     "error_median": 0.0019570954789189937,
      "present": true,
      "qargs_with_properties": 352
     }
@@ -409,7 +409,7 @@
      "duration_ns_max": 108.0,
      "duration_ns_median": 68.0,
      "duration_ns_min": 68.0,
-     "error_median": 0.0019881847890784315,
+     "error_median": 0.0017633860145358365,
      "present": true,
      "qargs_with_properties": 352
     },
@@ -428,7 +428,7 @@
      "duration_ns_max": 32.0,
      "duration_ns_median": 32.0,
      "duration_ns_min": 32.0,
-     "error_median": 0.0002991230021516942,
+     "error_median": 0.0002252051959860439,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -444,7 +444,7 @@
      "duration_ns_max": 2180.0,
      "duration_ns_median": 2180.0,
      "duration_ns_min": 2180.0,
-     "error_median": 0.00970458984375,
+     "error_median": 0.0107421875,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -452,7 +452,7 @@
      "duration_ns_max": 1380.0,
      "duration_ns_median": 1380.0,
      "duration_ns_min": 1380.0,
-     "error_median": 0.0093994140625,
+     "error_median": 0.0084228515625,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -506,7 +506,7 @@
      "duration_ns_max": 32.0,
      "duration_ns_median": 32.0,
      "duration_ns_min": 32.0,
-     "error_median": 0.0002991230021516942,
+     "error_median": 0.0002252051959860439,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -517,7 +517,7 @@
      "duration_ns_max": 32.0,
      "duration_ns_median": 32.0,
      "duration_ns_min": 32.0,
-     "error_median": 0.0002991230021516942,
+     "error_median": 0.0002252051959860439,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -525,7 +525,7 @@
      "duration_ns_max": 1000.0,
      "duration_ns_median": 1000.0,
      "duration_ns_min": 1000.0,
-     "error_median": 0.0002991230021516942,
+     "error_median": 0.0002252051959860439,
      "present": true,
      "qargs_with_properties": 156
     }
@@ -535,7 +535,7 @@
     "groups": 1,
     "largest_group": 156
    },
-   "properties_last_update": "2026-10-17T13:50:45-07:00",
+   "properties_last_update": "2026-10-29T01:12:30-07:00",
    "rzz_transpile_probe": {
     "results": {
      "default (backend plugin)": {
@@ -572,7 +572,7 @@
    "status": {
     "backend_version": "",
     "operational": true,
-    "pending_jobs": 1,
+    "pending_jobs": 130,
     "status_msg": "active"
    },
    "wire_units": {
@@ -680,7 +680,7 @@
      "duration_ns_max": 36.0,
      "duration_ns_median": 36.0,
      "duration_ns_min": 36.0,
-     "error_median": 0.0004008303913820688,
+     "error_median": 0.0004414554122186542,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -688,7 +688,7 @@
      "duration_ns_max": 140.0,
      "duration_ns_median": 68.0,
      "duration_ns_min": 68.0,
-     "error_median": 0.004179254526548562,
+     "error_median": 0.002894693802185086,
      "present": true,
      "qargs_with_properties": 352
     }
@@ -698,7 +698,7 @@
      "duration_ns_max": 96.0,
      "duration_ns_median": 68.0,
      "duration_ns_min": 68.0,
-     "error_median": 0.0028694069984573634,
+     "error_median": 0.002872391947500927,
      "present": true,
      "qargs_with_properties": 352
     },
@@ -717,7 +717,7 @@
      "duration_ns_max": 36.0,
      "duration_ns_median": 36.0,
      "duration_ns_min": 36.0,
-     "error_median": 0.0004008303913820688,
+     "error_median": 0.0004414554122186542,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -733,7 +733,7 @@
      "duration_ns_max": 2684.0,
      "duration_ns_median": 2684.0,
      "duration_ns_min": 2684.0,
-     "error_median": 0.01678466796875,
+     "error_median": 0.019775390625,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -741,7 +741,7 @@
      "duration_ns_max": 1884.0,
      "duration_ns_median": 1884.0,
      "duration_ns_min": 1884.0,
-     "error_median": 0.020751953125,
+     "error_median": 0.01904296875,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -795,7 +795,7 @@
      "duration_ns_max": 36.0,
      "duration_ns_median": 36.0,
      "duration_ns_min": 36.0,
-     "error_median": 0.0004008303913820688,
+     "error_median": 0.0004414554122186542,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -806,7 +806,7 @@
      "duration_ns_max": 36.0,
      "duration_ns_median": 36.0,
      "duration_ns_min": 36.0,
-     "error_median": 0.0004008303913820688,
+     "error_median": 0.0004414554122186542,
      "present": true,
      "qargs_with_properties": 156
     },
@@ -814,7 +814,7 @@
      "duration_ns_max": 1000.0,
      "duration_ns_median": 1000.0,
      "duration_ns_min": 1000.0,
-     "error_median": 0.0004008303913820688,
+     "error_median": 0.0004414554122186542,
      "present": true,
      "qargs_with_properties": 156
     }
@@ -824,7 +824,7 @@
     "groups": 1,
     "largest_group": 156
    },
-   "properties_last_update": "2026-10-17T14:18:18-07:00",
+   "properties_last_update": "2026-10-29T01:46:43-07:00",
    "rzz_transpile_probe": {
     "results": {
      "default (backend plugin)": {
@@ -861,7 +861,7 @@
    "status": {
     "backend_version": "",
     "operational": true,
-    "pending_jobs": 0,
+    "pending_jobs": 5,
     "status_msg": "active"
    },
    "wire_units": {
@@ -886,139 +886,139 @@
  "reads": [
   {
    "call": "QiskitRuntimeService() from the saved account",
-   "time": "2026-10-17T21:46:09+00:00"
+   "time": "2026-10-29T09:09:24+00:00"
   },
   {
    "call": "service.backends()",
-   "time": "2026-10-17T21:46:10+00:00"
+   "time": "2026-10-29T09:09:25+00:00"
   },
   {
    "call": "service.backends(dynamic_circuits=True)",
-   "time": "2026-10-17T21:46:10+00:00"
+   "time": "2026-10-29T09:09:25+00:00"
   },
   {
    "call": "service.backends(use_fractional_gates=True)",
-   "time": "2026-10-17T21:46:10+00:00"
+   "time": "2026-10-29T09:09:25+00:00"
   },
   {
    "call": "service.usage()",
-   "time": "2026-10-17T21:46:10+00:00"
+   "time": "2026-10-29T09:09:25+00:00"
   },
   {
    "call": "service.backend('ibm_fez')",
-   "time": "2026-10-17T21:46:10+00:00"
+   "time": "2026-10-29T09:09:25+00:00"
   },
   {
    "call": "ibm_fez.configuration()",
-   "time": "2026-10-17T21:46:10+00:00"
+   "time": "2026-10-29T09:09:25+00:00"
   },
   {
    "call": "ibm_fez.status()",
-   "time": "2026-10-17T21:46:10+00:00"
+   "time": "2026-10-29T09:09:25+00:00"
   },
   {
    "call": "ibm_fez.properties()",
-   "time": "2026-10-17T21:46:11+00:00"
+   "time": "2026-10-29T09:09:26+00:00"
   },
   {
    "call": "ibm_fez.target",
-   "time": "2026-10-17T21:46:11+00:00"
+   "time": "2026-10-29T09:09:26+00:00"
   },
   {
    "call": "service.backend('ibm_fez', use_fractional_gates=True)",
-   "time": "2026-10-17T21:46:12+00:00"
+   "time": "2026-10-29T09:09:27+00:00"
   },
   {
    "call": "ibm_fez.target with fractional gates",
-   "time": "2026-10-17T21:46:12+00:00"
+   "time": "2026-10-29T09:09:27+00:00"
   },
   {
    "call": "ibm_fez: local rzz transpile probe finished",
-   "time": "2026-10-17T21:46:14+00:00"
+   "time": "2026-10-29T09:09:27+00:00"
   },
   {
    "call": "service.backend('ibm_kingston')",
-   "time": "2026-10-17T21:46:14+00:00"
+   "time": "2026-10-29T09:09:27+00:00"
   },
   {
    "call": "ibm_kingston.configuration()",
-   "time": "2026-10-17T21:46:14+00:00"
+   "time": "2026-10-29T09:09:27+00:00"
   },
   {
    "call": "ibm_kingston.status()",
-   "time": "2026-10-17T21:46:15+00:00"
+   "time": "2026-10-29T09:09:27+00:00"
   },
   {
    "call": "ibm_kingston.properties()",
-   "time": "2026-10-17T21:46:16+00:00"
+   "time": "2026-10-29T09:09:28+00:00"
   },
   {
    "call": "ibm_kingston.target",
-   "time": "2026-10-17T21:46:16+00:00"
+   "time": "2026-10-29T09:09:28+00:00"
   },
   {
    "call": "service.backend('ibm_kingston', use_fractional_gates=True)",
-   "time": "2026-10-17T21:46:17+00:00"
+   "time": "2026-10-29T09:09:29+00:00"
   },
   {
    "call": "ibm_kingston.target with fractional gates",
-   "time": "2026-10-17T21:46:17+00:00"
+   "time": "2026-10-29T09:09:29+00:00"
   },
   {
    "call": "ibm_kingston: local rzz transpile probe finished",
-   "time": "2026-10-17T21:46:17+00:00"
+   "time": "2026-10-29T09:09:29+00:00"
   },
   {
    "call": "service.backend('ibm_marrakesh')",
-   "time": "2026-10-17T21:46:17+00:00"
+   "time": "2026-10-29T09:09:29+00:00"
   },
   {
    "call": "ibm_marrakesh.configuration()",
-   "time": "2026-10-17T21:46:17+00:00"
+   "time": "2026-10-29T09:09:29+00:00"
   },
   {
    "call": "ibm_marrakesh.status()",
-   "time": "2026-10-17T21:46:17+00:00"
+   "time": "2026-10-29T09:09:29+00:00"
   },
   {
    "call": "ibm_marrakesh.properties()",
-   "time": "2026-10-17T21:46:18+00:00"
+   "time": "2026-10-29T09:09:30+00:00"
   },
   {
    "call": "ibm_marrakesh.target",
-   "time": "2026-10-17T21:46:18+00:00"
+   "time": "2026-10-29T09:09:30+00:00"
   },
   {
    "call": "service.backend('ibm_marrakesh', use_fractional_gates=True)",
-   "time": "2026-10-17T21:46:19+00:00"
+   "time": "2026-10-29T09:09:31+00:00"
   },
   {
    "call": "ibm_marrakesh.target with fractional gates",
-   "time": "2026-10-17T21:46:19+00:00"
+   "time": "2026-10-29T09:09:31+00:00"
   },
   {
    "call": "ibm_marrakesh: local rzz transpile probe finished",
-   "time": "2026-10-17T21:46:19+00:00"
+   "time": "2026-10-29T09:09:31+00:00"
   }
  ],
- "retrieved": "2026-10-17T21:46:09+00:00",
+ "retrieved": "2026-10-29T09:09:24+00:00",
  "schema": "ibm-runtime-backend-controls-v1",
  "usage": {
   "instance_sha256_12": "e3de05b6901e",
-  "usage_consumed_ru": 5.376124,
-  "usage_consumed_seconds": 334,
+  "usage_consumed_ru": 8.553764,
+  "usage_consumed_seconds": 532,
   "usage_instance_is_active_instance": true,
   "usage_limit_reached": false,
   "usage_limit_ru": 10,
   "usage_limit_seconds": 600,
   "usage_period": {
-   "end_time": "2026-10-17T21:46:10.438Z",
-   "start_time": "2026-09-19T21:46:10.438Z"
+   "end_time": "2026-10-29T09:09:25.624Z",
+   "start_time": "2026-10-01T09:09:25.624Z"
   },
-  "usage_remaining_seconds": 266
+  "usage_remaining_seconds": 68
  },
  "versions": {
-  "qiskit": "2.5.2",
-  "qiskit-ibm-runtime": "0.50.0"
+  "qiskit": "2.6.1",
+  "qiskit-ibm-runtime": "0.51.0"
  }
 }

@@ -4,6 +4,39 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "OPENBLAS_NUM_THREADS=1 \"$PYTHON\" -B -W error -O docs/evidence/ibm-fez-actor-pilot/analyze.py --check",
+   "name": "core-ibm-fez-actor-pilot-replay",
+   "seconds": 1.08,
+   "tier": "pr",
+   "workers": 2,
+   "replays": [
+    "docs/evidence/ibm-fez-actor-pilot/analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/demarrais-8192d-cross-platform/pauli_propagation.py --check docs/evidence/demarrais-8192d-cross-platform/pauli-propagation.json",
+   "name": "core-demarrais-pauli-propagation-replay",
+   "seconds": 1.1,
+   "tier": "pr",
+   "workers": 1,
+   "replays": [
+    "docs/evidence/demarrais-8192d-cross-platform/pauli-propagation.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B scripts/frozen_case_sources.py --check docs/evidence/quandela/frozen-case-source-pins.json results/quandela/cases",
+   "name": "core-ascella-predecessor-source-pin",
+   "seconds": 0.08,
+   "tier": "pr",
+   "workers": 1
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check ci tests && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check ci tests && \"$PYTHON\" ci/pinned_tool.py mypy ci/run_gates.py ci/runner_specs.py ci/premerge_gates.py ci/gate_inputs.py ci/analyze_timings.py ci/changed_paths.py ci/pins.py ci/pinned_tool.py ci/gate_ledger.py ci/merge_gate_timings.py ci/host_identity.py ci/read_trace/sitecustomize.py tests",
    "name": "core-000",
    "seconds": 0.7,
@@ -843,7 +876,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check --no-cache --extend-exclude docs/evidence/a5-exceptional-fibers/working docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
    "name": "sources-120",
    "seconds": 0.1,
    "tier": "pr"
@@ -851,7 +884,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check --no-cache --extend-exclude docs/evidence/a5-exceptional-fibers/working docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
    "name": "sources-121",
    "seconds": 0.1,
    "tier": "pr"
@@ -859,7 +892,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
+   "cmd": "MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases --exclude 'ibm-fez-actor-pilot/analyze[.]py$' --exclude 'a5-exceptional-fibers/working/' docs/verify_sources.py docs/check_verify_sources.py docs/evidence && MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/ibm-fez-actor-pilot/analyze.py",
    "name": "sources-122",
    "seconds": 11.5,
    "tier": "pr"
@@ -1500,7 +1533,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json docs/evidence/ghost_error_scale/part_f.json --runs results/live/2026-10-19T151959.226467Z,results/live/2026-10-19T170620.832658Z,results/live/2026-10-21T064222.721454Z",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json docs/evidence/ghost_error_scale/part_f.json docs/evidence/ghost_error_scale/part_g.json --runs results/live/2026-10-19T151959.226467Z,results/live/2026-10-19T170620.832658Z,results/live/2026-10-21T064222.721454Z",
    "name": "core-614",
    "seconds": 250.0,
    "tier": "full"
@@ -2348,6 +2381,17 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/msq_reset_persistence.py results/live/2026-10-27T014422.881898Z results/live/2026-10-30T010826.175789Z --check docs/evidence/measurement_sequence/reset-persistence.json",
+   "name": "core-msq-reset-persistence-replay",
+   "seconds": 0.8,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/measurement_sequence/reset-persistence.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/msq_successor_replay.py results/live/2026-10-27T014422.881898Z --check docs/evidence/measurement_sequence/successor-replay.json",
    "name": "core-msq-successor-replay",
    "seconds": 6.3,
@@ -3028,7 +3072,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json docs/evidence/ghost_error_scale/part_f.json --runs results/live/2026-10-13T080216.451663Z,results/live/2026-10-18T090603.530638Z",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json docs/evidence/ghost_error_scale/part_f.json docs/evidence/ghost_error_scale/part_g.json --runs results/live/2026-10-13T080216.451663Z,results/live/2026-10-18T090603.530638Z",
    "name": "core-339",
    "seconds": 133.9,
    "tier": "full"
@@ -4484,7 +4528,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-12",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-14",
    "name": "core-670",
    "seconds": 12.0,
    "tier": "pr"
@@ -4642,6 +4686,14 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/measurement_sequence_scatter.py check results/live/2026-10-26T031010.724660Z docs/evidence/measurement_sequence/scatter-floor.json",
    "name": "core-msq-scatter-floor-replay",
+   "seconds": 3.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/measurement_sequence_scatter.py check results/live/2026-10-29T231232.725730Z docs/evidence/measurement_sequence/scatter-floor-ibm_fez.json",
+   "name": "core-msq-scatter-floor-fez-replay",
    "seconds": 3.5,
    "tier": "pr"
   },
@@ -5100,12 +5152,12 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-scalar-operators --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
+   "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1 --replay-receipt docs/evidence/quantum-experiment-conformance/ascella-worker-command-source-replay.json --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
    "name": "core-quantum-experiment-cases",
    "seconds": 15.0,
    "tier": "full",
    "replays": [
-    "docs/evidence/quantum-experiment-conformance/runner-scalar-operators"
+    "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1"
    ],
    "workers": "all"
   },
@@ -5120,7 +5172,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/experiment_toolchain.py --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators/campaign.json --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain.json --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/experiment_toolchain.py --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/campaign.json --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-1.json --check",
    "name": "core-quantum-experiment-toolchain",
    "seconds": 30.0,
    "tier": "full",
@@ -5128,7 +5180,192 @@
     "qi"
    ],
    "replays": [
-    "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain.json"
+    "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-1.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_idle_falsifier.py --check docs/evidence/local_idle_padding/result.json.gz --runs results/live/2026-10-13T080216.451663Z",
+   "name": "core-local-idle-falsifier",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_idle_falsifier.py --check docs/evidence/local_idle_padding/result.json.gz --runs results/live/2026-10-12T055624.091217Z,results/live/2026-10-13T020454.599853Z,results/live/2026-10-18T090603.530638Z",
+   "name": "core-local-idle-falsifier-full",
+   "seconds": 300.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_projector_conformance.py --check results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json && \"$PYTHON\" scripts/qi_projector_distribution_audit.py --check results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/joint-law-audit.json",
+   "name": "core-qi-projector-conformance",
+   "seconds": 0.7,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json",
+    "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/joint-law-audit.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_projector_compiler_admission.py --check-retained",
+   "name": "core-qi-projector-compiler-admission",
+   "seconds": 0.1,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/proposals/tuna-projector-geometry/compiler-admission.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -m pytest -q tests/scripts/test_qi_tuna_qualification.py -k retained_hardware_refusal_replays",
+   "name": "core-qi-tuna-projector-qualification",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_readout_diagnostics.py --check results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-diagnostics.json && \"$PYTHON\" scripts/qi_tuna_readout_response_mixture.py --check results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-response-mixture.json",
+   "name": "core-qi-tuna-readout-diagnosis",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-diagnostics.json",
+    "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-response-mixture.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_destination_prefix.py results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response --check results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-recovery-order.json",
+   "name": "core-qi-tuna-destination-prefix",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/analysis.json",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-recovery-order.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_destination_analysis_receipt.py results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response --check results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json",
+   "name": "core-qi-tuna-destination-one-response",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis.json",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-canonical.json",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_final_result_receipt.py docs/evidence/tuna-projector-geometry/destination-final-result-projections.json --check docs/evidence/tuna-projector-geometry/destination-final-result-checked-receipt.json",
+   "name": "core-qi-tuna-final-result-equivalence",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/tuna-projector-geometry/destination-final-result-projections.json",
+    "docs/evidence/tuna-projector-geometry/destination-final-result-checked-receipt.json",
+    "docs/evidence/tuna-projector-geometry/destination-final-result-equivalence.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_joint_response.py --check docs/evidence/tuna-projector-geometry/joint-response-analysis.json",
+   "name": "core-qi-tuna-joint-response",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/tuna-projector-geometry/joint-response-analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_joint_algebra.py --check docs/evidence/tuna-projector-geometry/joint-algebra-analysis.json",
+   "name": "core-qi-tuna-joint-algebra",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/tuna-projector-geometry/joint-algebra-analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_early_label_maps.py --check docs/evidence/tuna-projector-geometry/early-label-map-analysis.json",
+   "name": "core-qi-tuna-early-label-maps",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/tuna-projector-geometry/early-label-map-analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -m pytest -q -p no:cacheprovider tests/scripts/test_qi_tuna_assignment_commitment.py",
+   "name": "core-qi-tuna-assignment-commitment",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B scripts/qi_tuna_destination_slot_cases.py --check",
+   "name": "core-qi-tuna-destination-slot-alternatives",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/proposals/tuna-destination-slot-alternatives/catalogue.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -m pytest -q -p no:cacheprovider tests/scripts/test_qi_tuna_sequential_score.py tests/scripts/test_qi_tuna_sequential_retained_decode.py",
+   "name": "core-qi-tuna-sequential-score",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_tuna_qx_destination.py --local-replay-check",
+   "name": "core-qi-tuna-qx-local-replay",
+   "seconds": 6.0,
+   "tier": "pr",
+   "requires": [
+    "qi"
+   ],
+   "replays": [
+    "results/quantum_inspire/proposals/tuna-destination-qx-conformance/local-replay.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_qx_destination.py --manifest-check results/quantum_inspire/proposals/tuna-destination-qx-conformance/cases.json",
+   "name": "core-qi-tuna-qx-destination",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/proposals/tuna-destination-qx-conformance/cases.json"
    ]
   }
  ],

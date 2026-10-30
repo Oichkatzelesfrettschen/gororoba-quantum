@@ -2,6 +2,48 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qi-tuna-destination-one-baseline-before",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before",
+      "family": "nominal-one classical-destination response comparison",
+      "question": "What early/final binary response does the nominal-one control return in the baseline-before position of the separately approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-one-rotated",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations",
+      "family": "nominal-one classical-destination response comparison",
+      "question": "What early/final binary response does the nominal-one control return in the rotated-destinations position of the separately approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-one-baseline-after",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after",
+      "family": "nominal-one classical-destination response comparison",
+      "question": "What early/final binary response does the nominal-one control return in the baseline-after position of the separately approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-zero-baseline-before",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before",
+      "family": "nominal-zero classical-destination response prefix",
+      "question": "What early/final binary response does the nominal-zero control return in the baseline-before position of the approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-zero-rotated",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations",
+      "family": "nominal-zero classical-destination response prefix",
+      "question": "What early/final binary response does the nominal-zero control return in the rotated-destinations position of the approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-zero-baseline-after",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after",
+      "family": "nominal-zero classical-destination response prefix",
+      "question": "What early/final binary response does the nominal-zero control return in the baseline-after position of the approved destination comparison?"
+    },
+    {
       "id": "qd-ascella-signed-coherence-replication-job-06",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06",
@@ -2471,9 +2513,416 @@
       "run": "results/quandela/runs/ascella-transition-mesh-port-6",
       "family": "dimension-six compilation and output-port diagnostics",
       "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
+    },
+    {
+      "id": "qi-qx-projector-geometry-conformance",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx",
+      "family": "sequential projector geometry remote conformance",
+      "question": "Do the three approved QX terminal circuits reproduce the frozen herald, joint-acceptance and signed-moment tolerances before Tuna qualification?"
+    },
+    {
+      "id": "qi-tuna-projector-register-qualification",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna",
+      "family": "sequential projector physical register qualification",
+      "question": "Does the unchanged three-circuit Tuna case pass the frozen assignment-contrast and early/final register-consistency screens?"
+    },
+    {
+      "id": "qd-ascella-transition-matched-mesh-day-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat",
+      "family": "day-separated dimension-six matched meshes",
+      "question": "How do five retained transition distributions compare at least 24 hours later under matching returned mesh identities?"
+    },
+    {
+      "id": "ibm-fez-actor-delay-pilot",
+      "provider": "ibm",
+      "run": "results/live/2026-10-29T191606.826758Z",
+      "family": "readout-actor",
+      "question": "Describe full-register reporter errors under actor activity and repetition-delay conditions."
+    },
+    {
+      "id": "qd-sim-ascella-two-photon-associator",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00",
+      "family": "photonic two-photon octonion associator qualification",
+      "question": "Does simulated two-photon Hong-Ou-Mandel interference across the 12-mode Ascella mesh reproduce the non-associative sign witness with positive contrast and bounded null control?"
+    },
+    {
+      "id": "qd-sim-ascella-associator-character",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00",
+      "family": "photonic 16-setting octonion associator character qualification",
+      "question": "Does simulated 8-mode character projection concentrate constructively into the exact predicted harmonic mode for all 16 octonion association settings?"
+    },
+    {
+      "id": "qd-ascella-two-photon-associator",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00",
+      "family": "photonic two-photon octonion associator hardware execution",
+      "question": "Does physical two-photon Hong-Ou-Mandel interference on qpu:ascella preserve non-associative sign witness contrast above 170 standard errors while confirming zero null-arm offset?"
+    },
+    {
+      "id": "qd-ascella-associator-character",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00",
+      "family": "photonic 16-setting octonion associator character hardware execution",
+      "question": "Does physical 8-mode character projection on qpu:ascella achieve >98% raw output mode fidelity and >1.99 conditional character contrast across all 16 octonion multiplication settings?"
+    },
+    {
+      "id": "qd-ascella-associator-character-atlas",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T221537Z-qpu_ascella-ascella_associator_character-job-01",
+      "family": "photonic 21-pair octonion associator character atlas",
+      "question": "Does every one of the 21 octonion basis pairs route a single photon on qpu:ascella into its predicted character mode omega(a, b), with the reversed arm matching and the Clifford control and diagonal null arms routing to mode 0?"
+    },
+    {
+      "id": "qd-sim-ascella-associator-character-atlas",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T192313Z-sim_ascella-ascella_associator_character-sim-01",
+      "family": "photonic 21-pair octonion associator character atlas",
+      "question": "Does sim:ascella route each of the 21 octonion basis pairs into its predicted character mode, as the twin of the qpu:ascella atlas?"
+    },
+    {
+      "id": "qd-sim-ascella-two-photon-character-atlas",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01",
+      "family": "photonic two-photon 21-pair octonion associator character atlas",
+      "question": "Does sim:ascella route two photons through each of the 21 octonion pairs' character unitaries into the predicted focal coset pair, with the stabilizer-line pairs persisting in (0, 2)?"
+    },
+    {
+      "id": "qd-sim-belenos-packed-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T045729Z-sim_belenos-box_kite_photonic_packed-job-00",
+      "family": "box-kite photonic packed",
+      "question": "sim:belenos, six one-photon sign blocks packed in one job (two_label-00, two_label-01, two_label-02, two_label-03, two_label-04, two_label-05): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-sim-belenos-packed-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T045904Z-sim_belenos-box_kite_photonic_packed-job-01",
+      "family": "box-kite photonic packed",
+      "question": "sim:belenos, six one-photon sign blocks packed in one job (two_label-06, two_label-07, two_label-08, two_label-09, two_label-10, two_label-11): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-sim-belenos-packed-job-02",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T050025Z-sim_belenos-box_kite_photonic_packed-job-02",
+      "family": "box-kite photonic packed",
+      "question": "sim:belenos, six one-photon sign blocks packed in one job (two_label-12, two_label-13, two_label-14, two_label-15, two_label-16, two_label-17): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-sim-belenos-packed-job-03",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T050137Z-sim_belenos-box_kite_photonic_packed-job-03",
+      "family": "box-kite photonic packed",
+      "question": "sim:belenos, six one-photon sign blocks packed in one job (two_label-18, two_label-19, two_label-20, two_label-21, two_label-22, two_label-23): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-sim-belenos-packed-job-04",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T050247Z-sim_belenos-box_kite_photonic_packed-job-04",
+      "family": "box-kite photonic packed",
+      "question": "sim:belenos, six one-photon sign blocks packed in one job (two_label-24, two_label-25, two_label-26, two_label-27, two_label-28, two_label-29): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-sim-belenos-packed-job-05",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T050354Z-sim_belenos-box_kite_photonic_packed-job-05",
+      "family": "box-kite photonic packed",
+      "question": "sim:belenos, six one-photon sign blocks packed in one job (two_label-30, two_label-31): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T050544Z-qpu_belenos-box_kite_photonic_packed-job-00",
+      "family": "box-kite photonic packed",
+      "question": "qpu:belenos, six one-photon sign blocks packed in one job (two_label-00, two_label-01, two_label-02, two_label-03, two_label-04, two_label-05): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T050812Z-qpu_belenos-box_kite_photonic_packed-job-01",
+      "family": "box-kite photonic packed",
+      "question": "qpu:belenos, six one-photon sign blocks packed in one job (two_label-06, two_label-07, two_label-08, two_label-09, two_label-10, two_label-11): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-job-02",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T051102Z-qpu_belenos-box_kite_photonic_packed-job-02",
+      "family": "box-kite photonic packed",
+      "question": "qpu:belenos, six one-photon sign blocks packed in one job (two_label-12, two_label-13, two_label-14, two_label-15, two_label-16, two_label-17): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-job-03",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T051319Z-qpu_belenos-box_kite_photonic_packed-job-03",
+      "family": "box-kite photonic packed",
+      "question": "qpu:belenos, six one-photon sign blocks packed in one job (two_label-18, two_label-19, two_label-20, two_label-21, two_label-22, two_label-23): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-job-04",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T051558Z-qpu_belenos-box_kite_photonic_packed-job-04",
+      "family": "box-kite photonic packed",
+      "question": "qpu:belenos, six one-photon sign blocks packed in one job (two_label-24, two_label-25, two_label-26, two_label-27, two_label-28, two_label-29): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-job-05",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T051818Z-qpu_belenos-box_kite_photonic_packed-job-05",
+      "family": "box-kite photonic packed",
+      "question": "qpu:belenos, six one-photon sign blocks packed in one job (two_label-30, two_label-31): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qi-demarrais-qx-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-30T014852Z-demarrais_qx_1024d-batch-00",
+      "family": "DeMarrais CZ-graph Pauli propagation",
+      "question": "On QXsinglenodesimulator (10 qubits), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled midden, cowbird, dmz?"
+    },
+    {
+      "id": "qi-demarrais-tuna17-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-30T015009Z-demarrais_tuna17_8192d-batch-00",
+      "family": "DeMarrais CZ-graph Pauli propagation",
+      "question": "On Tuna-17 (17 transmons, its 18 native couplers), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled midden, cowbird, dmz?"
+    },
+    {
+      "id": "qi-demarrais-qx-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-30T023915Z-demarrais_qx_1024d-batch-01",
+      "family": "DeMarrais CZ-graph Pauli propagation",
+      "question": "On QXsinglenodesimulator (10 qubits), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled ctrl_low_32d, ctrl_mid_512d, explore_1024d_pure?"
+    },
+    {
+      "id": "qi-demarrais-qx-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-30T024133Z-demarrais_qx_1024d-batch-02",
+      "family": "DeMarrais CZ-graph Pauli propagation",
+      "question": "On QXsinglenodesimulator (10 qubits), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled explore_1024d_catamaran, explore_1024d_dmz, null_1024d_sleeper?"
+    },
+    {
+      "id": "qi-demarrais-tuna17-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-30T024225Z-demarrais_tuna17_8192d-batch-01",
+      "family": "DeMarrais CZ-graph Pauli propagation",
+      "question": "On Tuna-17 (17 transmons, its 18 native couplers), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled ctrl_low_32d, ctrl_mid_4096d, explore_8192d_pure?"
+    },
+    {
+      "id": "qi-demarrais-tuna17-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-30T040508Z-demarrais_tuna17_8192d-batch-02",
+      "family": "DeMarrais CZ-graph Pauli propagation",
+      "question": "On Tuna-17 (17 transmons, its 18 native couplers), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled explore_8192d_catamaran, explore_8192d_dmz, null_8192d_sleeper?"
+    },
+    {
+      "id": "qd-sim-belenos-demarrais-tower-job-dm4",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4",
+      "family": "DeMarrais tower photonic quotient",
+      "question": "Does sim:belenos compile and sample the 24 job-dm4 settings (nine 16D to 4096D midden-quotient controls, then 8192D settings and null arms), and do the returned settings read their ideal dispersive contrast D?"
+    },
+    {
+      "id": "fez-measurement-sequence-scatter-floor",
+      "provider": "ibm",
+      "run": "results/live/2026-10-29T231232.725730Z",
+      "family": "measurement-sequence-diagnostic",
+      "question": "On 47 pairwise uncoupled ibm_fez qubits (the successor's 24 main qubits and 23 chosen by a calibration-only rule), how far does the readout-corrected P0 of the 32-sx unitary sequence at N = 16 lie from the pinching analysis's Bloch-iteration prediction, qubit by qubit, and how does that scatter floor compare with ibm_kingston's?"
+    },
+    {
+      "id": "fez-measurement-sequence-successor",
+      "provider": "ibm",
+      "run": "results/live/2026-10-30T010826.175789Z",
+      "family": "measurement-sequence envelope",
+      "question": "Do 24 ibm_fez qubits pass the successor's reader-carryover, reset and crosstalk screens, and does a sequence of 16 measurements pinch the state beyond the projective prediction on the qubits that pass?"
+    },
+    {
+      "id": "qd-sim-ascella-predecessor-source-compatible",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T010726Z-sim_ascella-ascella_predecessor-source-compatible",
+      "family": "photonic predecessor-contrast pipeline qualification",
+      "question": "Does the frozen Ascella predecessor case, with only its job name and platform changed to sim:ascella, return eight complete iterations whose signed target-slot contrasts the frozen analyzer's checks accept, so the pipeline's zero-memory contrast level is known before the QPU run?"
     }
   ],
   "claims": [
+    {
+      "id": "ibm-fez-actor-pilot-descriptive-errors",
+      "statement": "Across 24 retained Fez pilot conditions, the empirical paired parity margin is negative for the selected reporter pair; one of 279072 exploratory spectator-pair tables has a positive margin based on one shared error.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The acquisition supplies descriptive full-register records without an admitted dependence model or confirmatory selection procedure. Activity and repetition-delay contrasts do not establish causation, physical shot alignment, or cross-PUB order.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-29T191606.826758Z/actor-collection-979b07a5ab676cca4918dc9c2b690ab4c145e93b017a4d5cc45537ed6138b186.json",
+          "sha256": "979b07a5ab676cca4918dc9c2b690ab4c145e93b017a4d5cc45537ed6138b186"
+        },
+        {
+          "path": "docs/evidence/ibm-fez-actor-pilot/analysis.json",
+          "sha256": "e1c79886827420c8491f906c5b5b3e68570a9c2461f42b0e2b721910cf06c4b7"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ibm-fez-actor-pilot/findings.md"
+      ],
+      "gates": {
+        "core-ibm-fez-actor-pilot-replay": "replay"
+      },
+      "acquisitions": [
+        "ibm-fez-actor-delay-pilot"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna-destination-one-response",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "statement": "The three complete 4096-shot nominal-one Tuna-17 jobs establish all 12 selected realized predictable destination-response cell contrasts within 0.10, with all 12 baseline endpoint intervals within 0.10, under the frozen simultaneous 99% martingale contract.",
+      "boundary": "The endpoint covers marginal early/final cells on declared qubits 4, 11 and 6 and one nominal preparation. It establishes neither physical populations, QND readout, causal destination dependence, full-register invariance nor projector geometry. The old six-job endpoint remains unavailable; the zero/one comparison is retrospective. Further hardware requires another approved case accounting for measured waits and benchmarking context.",
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/nominal-one-destination-response.md",
+        "docs/notes/quantum_inspire/destination-response-upstream-request.md"
+      ],
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-canonical.json",
+          "sha256": "ba74fbfb5f26ec5463059b26d66138b571be8792a2dbbd32dc58bd5a5bf9ab1a"
+        },
+        {
+          "path": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json",
+          "sha256": "b89b115df823113dc8430c7eebddee1898a3906ac7109ea0624edd6803be0027"
+        }
+      ],
+      "gates": {
+        "core-qi-tuna-destination-one-response": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-destination-one-baseline-before",
+        "qi-tuna-destination-one-rotated",
+        "qi-tuna-destination-one-baseline-after"
+      ],
+      "assumptions": [
+        "Trusted chronological binary shot records, coherent provider/local timestamps and the declared inverse decoder.",
+        "Conditional-response targets and finite-sample uncertainty follow the frozen three-job mathematical contract; transient bounds remain unverified."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qi-tuna-destination-case-deadline",
+        "qi-tuna-destination-zero-prefix-response"
+      ]
+    },
+    {
+      "domain": "hardware",
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/ordered-response-acquisition.md"
+      ],
+      "gates": {
+        "core-qi-tuna-destination-prefix": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-destination-zero-baseline-before",
+        "qi-tuna-destination-zero-rotated",
+        "qi-tuna-destination-zero-baseline-after"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "qi-tuna-destination-case-deadline",
+      "statement": "The approved six-job destination comparison stopped at its 3600-second request deadline after three nominal-zero submissions. All 12,288 submitted shots were retained in 14.356782 reported execution seconds with zero charges; the frozen whole-case decision is implementation route unavailable because the nominal-one acquisitions are absent.",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Operational incomplete-case outcome. Read-only recovery collected the third already submitted job after the executor stopped. The whole-case equivalence/departure endpoint remains unavailable; further submissions require a separately approved case.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/analysis.json",
+          "sha256": "ab4f4b9f9a5669eebce38be49da4f3fc440ec440ec536719d2a6431de960f38e"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/execution-state.json",
+          "sha256": "8956ff400539f04972751c53d5f762e4e40a64b3702f8b015ad038a5c078224b"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/read-only-recovery-receipt.json",
+          "sha256": "7ed20c380814d7a1df6f5c66c3aa5783e6274418b2297e8cf400c73f1a6fc660"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/completion-admission.json",
+          "sha256": "01635028b4276f2d5bc78b2df62362b6f26e3f73f0856921938ba678d9b41048"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/completion-admission.json",
+          "sha256": "97bc60ca2a29ebcc850da60aee80b001e969a6f3d1e5604fac74a4144f77bb55"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/completion-admission.json",
+          "sha256": "d888483de2a3dad1e61c321088c3c2979a5da7143f20b0548396e0daf829f14a"
+        }
+      ],
+      "assumptions": [
+        "Provider timestamp fields and result identities describe the recorded service operations.",
+        "The frozen complete-case decision requires both nominal preparations."
+      ],
+      "related_claims": [
+        "qi-tuna-destination-zero-prefix-response",
+        "qi-tuna-projector-register-qualification"
+      ]
+    },
+    {
+      "domain": "hardware",
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/ordered-response-acquisition.md"
+      ],
+      "gates": {
+        "core-qi-tuna-destination-prefix": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-destination-zero-baseline-before",
+        "qi-tuna-destination-zero-rotated",
+        "qi-tuna-destination-zero-baseline-after"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "qi-tuna-destination-zero-prefix-response",
+      "statement": "In the retained posthoc nominal-zero prefix, q6 terminal-one counts are 938, 2525 and 969 out of 4096 before, during and after rotation; the maximum empirical early/final joint-cell contrast is 0.43896484375. The q4 and q11 maximum contrasts are 0.0052490234375 and 0.001708984375.",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive frequencies from the incomplete case. A transformation restricted to stored early labels leaves each dataset terminal marginal unchanged; broader reconstruction/scheduling changes and a coincident transient remain alternatives. Neither statistical acceptance of the six-job case nor physical causation or populations is established.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-recovery-order.json",
+          "sha256": "0868bfaa271898d680db09ff245bdeb2e5cb2436cd5270c72cc7e058ded085fa"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/stored-source-observation.json",
+          "sha256": "3f919abc1ca2418aa1699ad26f451e837032d017f45c846b250534b614525955"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/stored-source-observation.json",
+          "sha256": "f417decd2d03dfedef2c145fae537439280bb78531cee6b5df2953912dece90e"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/stored-source-observation.json",
+          "sha256": "602e8d35d66f3d93174aeb13f13654a0e511be4589ab8c309aa6952c954d81ec"
+        }
+      ],
+      "assumptions": [
+        "The documented rightmost classical-bit-zero convention supplies the decoder.",
+        "Stored source identity establishes transport bytes, while served analog schedules remain unavailable."
+      ],
+      "related_claims": [
+        "qi-tuna-destination-case-deadline",
+        "qi-tuna-readout-response-mixture"
+      ]
+    },
     {
       "id": "ascella-signed-coherence-permuted-repeat",
       "statement": "The approved permuted repeat on qpu:ascella (job 6ef8e8db) ran job-00's 64 circuits, all 64 compiled circuits equal to job-00's, in ANU QRNG order at 16384 samples per iteration: 1048576 samples in 186 s, job-00's duration, for 1.032768 free credits, and all 27 endpoints qualify again. Under the preregistered comparison the outside-block clicks follow the execution sequence, not the setting: per-setting Spearman against job-00 -0.075 (p 0.56), lag-1 autocorrelation -0.653 in the new order (p below 1e-4), compiled-phase change Spearman 0.12 (p 0.35), and the median count grows with the budget (log2 ratio 0.83). The per-setting analyzer residuals reproduce, Pearson 0.974 on X and 0.802 on Y (p below 1e-4), at contrast 0.9719 against 0.9699 on X and 0.9669 against 0.9702 on Y.",
@@ -5980,11 +6429,11 @@
       "evidence": [
         {
           "path": "docs/evidence/ghost_runs/result.json",
-          "sha256": "7718ec59672ec6681cbb9c58d06aaf36ec1c45449c49e0b89e2e1b46291da168"
+          "sha256": "142293ae69224a80261594a547db9366fd2bad0fd8b2585d41b59a126b4fd9cf"
         },
         {
           "path": "docs/evidence/ghost_runs/report.json",
-          "sha256": "e91742aafef2659491267a9967a837748777e1903e600b776ab7376da8db5869"
+          "sha256": "85b07a3681e702b983d636e98f6437c80eeed0c9577b781b54832fa5670913de"
         },
         {
           "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db5qmqclf4us73c4e1ug",
@@ -11211,8 +11660,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-12/result.json",
-          "sha256": "a95bcc841475c3d2aa129c68560ab06f34386a57eece29e679e8ef1a70a2d943"
+          "path": "docs/evidence/algebra-device-conjectures-14/result.json",
+          "sha256": "14b5b6c76cb9ee4f84d80844e452f58f5b6a41e4bdf390b391174e5999019951"
         }
       ],
       "gates": {
@@ -12724,6 +13173,665 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "qi-qx-projector-geometry-conformance",
+      "statement": "All 18 preregistered projector-geometry QX discrepancy checks pass across three 2048-shot terminal circuits; the jobs report 1.254351 seconds total execution and zero recorded transaction charges.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "Finite-shot conformance of the three named noiseless QX circuits. The result establishes neither Tuna behavior nor early classical-bit retention, calibration, causal measurement disturbance or a new algebra theorem. Zero charges describe the retained collection and account ledger.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json",
+          "sha256": "ceb6efcf570c43a6e772254716119fa8f555d20279832acd5a9d5968ffbc9c62"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/results.json",
+          "sha256": "a0929b26fa2899f2386ee99eccf1226db30c8cd4731dca4de752e1fabf62d3c4"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/design-at-approval.md",
+          "sha256": "d13acc9a43da288c439c6cff1cdffc809ca4945a7127cc4e67d96ef913515b9c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/qx-conformance.md"
+      ],
+      "gates": {
+        "core-qi-projector-conformance": "replay"
+      },
+      "acquisitions": [
+        "qi-qx-projector-geometry-conformance"
+      ],
+      "assumptions": [
+        "The retained raw shot strings follow the observed QX qubit-zero-rightmost convention.",
+        "The frozen finite-shot discrepancy screen is a conformance qualification, not a hardware significance test."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": []
+    },
+    {
+      "id": "qi-tuna-projector-register-qualification",
+      "statement": "The three 4096-shot Tuna qualification jobs completed with zero recorded transaction charges but failed four of twelve required assignment contrasts and all nine early/final consistency checks.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Failure of the specified zero-wait repeated-readout instrument screen. The data do not identify calibration, scheduling, readout context or acquisition reconstruction as the cause, and support no hardware projector-geometry or causal backaction claim.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+          "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+          "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification-at-approval.md",
+          "sha256": "e504d9e4962338df58dcdf16b8564cd2ef2677d996bd90bed2a2588cc7da51c4"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/live-admission.json",
+          "sha256": "c6db70139af4d05b9a18d134372d437f320c9d177d8f29134197d74dc67b9d66"
+        }
+      ],
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/tuna-qualification.md"
+      ],
+      "gates": {
+        "core-qi-tuna-projector-qualification": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-projector-register-qualification"
+      ],
+      "assumptions": [
+        "Classical bit zero is the rightmost character under the recorded Tuna convention.",
+        "The frozen pilot thresholds assess the specified instrument path rather than an isolated physical mechanism."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qi-qx-projector-geometry-conformance"
+      ]
+    },
+    {
+      "id": "qi-tuna-readout-response-mixture",
+      "statement": "A post-hoc convex combination of nominal-zero and nominal-one early/final control tables approximates each geometry ancilla table with empirical total variation residual below 0.0093; exhaustive fixed early-bit permutation/polarity choices cannot repair the frozen qualification.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive fits and exact finite relabeling checks on one retained three-job batch. Mixture coordinates are not populations; calibration-context transfer, independence, stationarity, QND behavior and a physical cause remain unestablished. The frozen qualification remains refused.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-diagnostics.json",
+          "sha256": "25f1090b25a06ef4ce56537d52a3bf9b569da4981474c84568f19f886f60bd77"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-response-mixture.json",
+          "sha256": "8507279a292c0e3d7682ffb00abde6d159ebef71783713eaf54fe2a41d250258"
+        }
+      ],
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/readout-cause-diagnosis.md"
+      ],
+      "gates": {
+        "core-qi-tuna-readout-diagnosis": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-projector-register-qualification"
+      ],
+      "assumptions": [
+        "The documented classical-bit order supplies the fixed decoder.",
+        "Control-to-geometry transfer is a post-hoc sensitivity assumption, not an admitted calibration."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qi-tuna-projector-register-qualification"
+      ]
+    },
+    {
+      "id": "ascella-transition-day-separated-matched-mesh",
+      "statement": "The five-setting Ascella repeat started 33.38 hours after its forward-packed baseline and retained 327,680 accepted events. Returned circuit and input serializations match the baseline for all five settings. Four of five total-variation intervals exclude zero: identity input 5 leakage fell from 1.941% to 0.208% and Fourier-to-chirped input 0 from 3.214% to 0.655%, while Fourier-to-chirped input 4 rose from 0.198% to 6.410% (leakage-difference interval [5.81%, 6.62%]); identity input 0 is consistent with no change.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Five selected settings, a fixed 140-endpoint family and IID accepted-event intervals. A matched returned mesh does not establish identical applied analog controls; elapsed time, calibration and source or detector response can confound the comparison, and changes of comparable size are already recorded between jobs minutes apart in different contexts, so the 33-hour difference is not attributed to drift.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat/day-repeat-analysis.json",
+          "sha256": "b41b3ffc7eb067d128d3307176edac36aaf64192710beb2aa5d1d4867dad693d"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-day-repeat-ci/acquisition-inventory.json",
+          "sha256": "32bca62f65802a6d04f09a657679f5aa770cf4b3ef981679a5bc40aea34774ff"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-day-repeat-ci/campaign.json",
+          "sha256": "51e909b0287da357ec3f09fc93be3b2d6fb08b8356ad471583d6e18fb89dea1f"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-transition-day-repeat-ci/README.md",
+        "docs/evidence/ascella-transition-day-repeat-ci/scheduler-admission.md",
+        "docs/evidence/ascella-transition-day-repeat-ci/findings.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-transition-matched-mesh-day-repeat"
+      ],
+      "assumptions": [
+        "Simultaneous binomial coverage is conditional on IID accepted events within each setting."
+      ],
+      "depends_on": [
+        "ascella-transition-context-matched-mesh",
+        "ascella-transition-mesh-port-variation"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-two-photon-associator-qualification",
+      "statement": "Physical execution on qpu:ascella and twin simulation on sim:ascella confirm the two-photon octonion associator witness with positive contrast Delta = 1.7237 +- 0.0101 (>170 sigma on hardware, 1.7576 on simulator) against null control Delta_ctrl = -0.0064 +- 0.0107 (<0.6 sigma on hardware, -0.0090 on simulator), with in-situ visibility V = 0.8917 tracking the platform HOM calibration dip (0.8896).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Admitted under approved execution on qpu:ascella and sim:ascella with frozen worker schema. Contrast is bounded by platform partial indistinguishability (HOM dip 88.96%).",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00/results.json",
+          "sha256": "3743d753e0b1e66ece7dc7ecbe422f1af75b2dca60ba78dbb4185710824c511e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00/analysis.json",
+          "sha256": "d36ea935af66951cf4bcf997e3210caf805e6663a690c9600b42c513da5cf82c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00/results.json",
+          "sha256": "239ab4ea7085c04f5eac4803cb3aaf6a23458d5cac2fd86890d7de233acaf315"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00/analysis.json",
+          "sha256": "3ba8a5092548b65e92983dec294b82f620bcf0cc9c429d50b2bfc060a0a27c35"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-sim-twin-falsification/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-two-photon-associator",
+        "qd-ascella-two-photon-associator"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-predecessor-simulator-qualification",
+      "statement": "The frozen Ascella predecessor case, run on sim:ascella with only its job name and platform substituted (job 51c0552b), returns all eight iterations at 32,768 events each, 3 of the 262,144 events outside single-photon eligibility. The signed common target-slot contrast norm is 153/65536 (0.0023) and the reversal norm 71/65536 (0.0011). Every returned computed circuit differs from the preregistered QPU compilation identity, while every computed input matches it.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive only: the sampling contract and its conditional envelopes bind the QPU case alone. The simulator carries no predecessor memory, so these contrasts measure the analysis pipeline's level at zero memory on sim:ascella and say nothing about the device's response; the differing computed circuits show that sim:ascella compiles the case differently from the QPU.",
+      "evidence": [
+        {
+          "path": "docs/evidence/ascella-predecessor-admission/simulator-qualification.json",
+          "sha256": "db9ead7dcebc4e93714f9f6d81f107fa0b67b7ffecd22bd7c61a2614d3004ee6"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T010726Z-sim_ascella-ascella_predecessor-source-compatible/results.json",
+          "sha256": "36440a7d0df81cfc980065e4860672c40620d91b9ce4a2cb937a65b9c40e1840"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-predecessor-intervention.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-predecessor-source-compatible"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-octonion-character-qualification",
+      "statement": "Physical 16-setting octonion associator character execution on qpu:ascella and twin simulation on sim:ascella route the encoded octonion character of each pair into the predicted harmonic mode: raw unconditional output mode fidelity over all 12 detected modes is 98.08% to 99.60% on the four octonion-arm settings (mean 98.75%) and 98.03% to 99.78% over all 16 settings (mean 99.22%), the conditional character contrast on the {0, omega} subspace is Delta_char = 1.997074, and sentinel mode leakage across modes 8..11 is 0.4888%.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Sixteen discrete (a, b) octonion settings executed on qpu:ascella (160,000 samples) and sim:ascella (160,000 samples). Raw mode fidelity accounts for all 12 detected physical output modes including 0.49% sentinel leakage and 0.76% cross-talk, whereas conditional contrast is evaluated strictly on the {0, omega} logical subspace.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00/results.json",
+          "sha256": "c5b7d133f40c34f7426d774aafaf51a63399a88f4048873e009c19304cf02d7b"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00/analysis.json",
+          "sha256": "1da83513cc510f503910714eabc1a8cd7f5e11ff7cf9e77153a78b6fa239b6da"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00/results.json",
+          "sha256": "63f1d68dbe1aceceeb6452196ebf45bd8b8ae4960fdefe7787bae11c64a4281d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00/analysis.json",
+          "sha256": "08e1a185375174d89a986f78eecb3cfd26f353edc5a5ba098b8403bb263f6c2c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-sim-twin-falsification/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-associator-character",
+        "qd-ascella-associator-character"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-octonion-character-atlas",
+      "statement": "The 21-pair, 84-setting single-photon character atlas on qpu:ascella (10,000 samples per setting, 840,000 in all) and its sim:ascella twin route every octonion pair's encoded character into its predicted mode omega(a, b): on the QPU the octonion arm reads D from 0.9944 to 0.9996 and the reversed arm 0.9956 to 0.9996, the Clifford control and diagonal null arms route to mode 0 (D -1.000 to -0.9944 and -1.000 to -0.9973), the mean character contrast is 1.997448 and sentinel leakage is 1.3156%; raw unconditional mode fidelity spans 89.17% to 99.84% over the 84 settings (mean 98.28%). The twin reads D = +-1.000000 on every setting with zero leakage.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The observables are routing properties of the cd_core sign table carried by an associative linear-optical unitary; they establish the encoding and the device's routing fidelity, not physical non-associativity. Contrasts are conditional on the {0, omega} subspace; the fidelity figure counts every detected output mode.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-29T221537Z-qpu_ascella-ascella_associator_character-job-01/results.json",
+          "sha256": "0d48b4d921cf58212e0385362465186632f88d11c9b059bd0a9c28081e1899fc"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T221537Z-qpu_ascella-ascella_associator_character-job-01/analysis_report.json",
+          "sha256": "e2a26c0e66e5f11b70aba800f1e1cf23f4422e8067736a0caf0c48258735f037"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T192313Z-sim_ascella-ascella_associator_character-sim-01/results.json",
+          "sha256": "a09973d465d6c3acf81d9d9d04964fdaafcd94fb18b62c586ea3cf6c25d75c14"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T192313Z-sim_ascella-ascella_associator_character-sim-01/analysis_report.json",
+          "sha256": "e51ec3863e475b730143439fe7ff90f008bd5984a4681aacb30e1de48a9e2c4e"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-sim-twin-falsification/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-associator-character-atlas",
+        "qd-sim-ascella-associator-character-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-two-photon-character-twin",
+      "statement": "The two-photon, 84-setting character atlas on sim:ascella (2,030 two-click events per setting, 170,520 in all) routes both photons into each displacing pair's predicted focal coset pair (mean displacing contrast 2.0) and keeps the stabilizer-line pairs in (0, 2) (mean persistence 1.0), with zero sentinel leakage; it is the simulator twin of the qpu:ascella atlas whose job awaits collection.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "A simulator result under ideal two-photon interference; it predicts the hardware atlas and establishes no device property. The hardware job (4c4f0273-6e69-4b52-af92-550a5e4356d8) is retained in its case directory until it completes.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01/results.json",
+          "sha256": "545cc70d9df79bd8fdba7691211cc852a127d59400900647e2622d89d5ac984a"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01/analysis_report.json",
+          "sha256": "4ef705c18dbda2f31c28dae6808642cb609ce6b908a0ddf4a44f9c1026b09ef7"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-sim-twin-falsification/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-two-photon-character-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-sim-belenos-packed-blocks-exact",
+      "statement": "On sim:belenos the six packed box-kite jobs (32 one-photon sign blocks, 20000 to 60001 samples per job) return every dark block at a = 0 and every bright block at a = 1 with no violating sample, and the 16 half blocks at a = 0.488 to 0.515 (mean 0.4996) against the exact 1/2.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "A simulator reproduces the preregistered ideals; it carries no device error, so it qualifies the packed case and the analysis rather than the chip. Under the binomial standard error at 1/2 over each block's one-click samples, 3 of the 16 half blocks lie beyond two standard errors (+2.56, +2.71 and -2.20) and the largest deviation is 0.0149; this is descriptive sampling scatter, not a bound on simulator bias.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-30T045729Z-sim_belenos-box_kite_photonic_packed-job-00/analysis.json",
+          "sha256": "799e8c3c65e38d48b868be8ca6586ea6d4f6df851219e74d79a4c484ab96b24c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T045729Z-sim_belenos-box_kite_photonic_packed-job-00/results.json",
+          "sha256": "c578f8770348ec6bbe13df363f5315ace8001cc96aba52571bee75fdbfe5fa69"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T045904Z-sim_belenos-box_kite_photonic_packed-job-01/analysis.json",
+          "sha256": "2ef226e358cff1f89a35d48ef938aa9f24ceb2a9e86b3b25a978f592fb3ee4b1"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T045904Z-sim_belenos-box_kite_photonic_packed-job-01/results.json",
+          "sha256": "f99f29313db51708adee87fa0aa77bf723cd6a9ebc2aefd802e361df32dd1e3e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050025Z-sim_belenos-box_kite_photonic_packed-job-02/analysis.json",
+          "sha256": "5afb29ed520c9908b72be693a9fe320d9184c452ec321d9356104bfc31510188"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050025Z-sim_belenos-box_kite_photonic_packed-job-02/results.json",
+          "sha256": "60daa82207e410386896fa8442126afad9ae36872e3f79f6afcfb1380ce335c7"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050137Z-sim_belenos-box_kite_photonic_packed-job-03/analysis.json",
+          "sha256": "519ea9e08fde4dd0435f1e5696d0ed2f25198ebb5ce35cbebe6c993094a2d403"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050137Z-sim_belenos-box_kite_photonic_packed-job-03/results.json",
+          "sha256": "b93ca58c86a32944ea0d670e09c1f356eb9f6a899212c0fc90498ee7fe924ea4"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050247Z-sim_belenos-box_kite_photonic_packed-job-04/analysis.json",
+          "sha256": "52d0812b61cc38db36651e0c201988074a7f2cf6079495e6abab5f255853196c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050247Z-sim_belenos-box_kite_photonic_packed-job-04/results.json",
+          "sha256": "8d5b31d451662e8a779349d0c3907b6866036efec7d5fbc2ac0cb3ef7d8bd10b"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050354Z-sim_belenos-box_kite_photonic_packed-job-05/analysis.json",
+          "sha256": "dc5e5897fdcf1b48df89beddf352755495879fa8781bccf993df2d0c8a14f338"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050354Z-sim_belenos-box_kite_photonic_packed-job-05/results.json",
+          "sha256": "0187d49000660db112af6fe9c1aa33e1bb983a75fe922f5ef3570a9730de1932"
+        }
+      ],
+      "gates": {},
+      "documents": [
+        "docs/notes/quandela/README.md"
+      ],
+      "acquisitions": [
+        "qd-sim-belenos-packed-job-00",
+        "qd-sim-belenos-packed-job-01",
+        "qd-sim-belenos-packed-job-02",
+        "qd-sim-belenos-packed-job-03",
+        "qd-sim-belenos-packed-job-04",
+        "qd-sim-belenos-packed-job-05"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-qpu-belenos-packed-dark-bright-contrast",
+      "statement": "On qpu:belenos the same six packed jobs (60000 shots per job, the last 20000) read the 8 dark blocks at a = 0.005 to 0.050 (mean 0.033) and the 8 bright blocks at a = 0.863 to 0.994 (mean 0.960), so the t sign flip that turns each zero product x y = 0 into a bright product moves the algebra fraction by 0.93 on average against the ideal 1; the 16 half blocks read 0.405 to 0.619 (mean 0.511) against 1/2, up to 19.8 binomial standard errors from 1/2.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The jobs ran without a preregistered decision rule, so every figure is descriptive. In a packed job each block holds about one sixth of the one-click samples, so in_block is a share across blocks and not the single-block routing fidelity of the earlier Belenos claims. The dark floor mixes dark counts, multiphoton emission and mesh error, which this design does not separate.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-30T050544Z-qpu_belenos-box_kite_photonic_packed-job-00/analysis.json",
+          "sha256": "964d508269dd56a248d9c67685a1d2e589d79385aea48d5df60fc438bc7dc779"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050544Z-qpu_belenos-box_kite_photonic_packed-job-00/results.json",
+          "sha256": "da750d709eb9544044f5e8ee5fc7d9e1a4a6efb08ad917d44980b2b0aaecfb06"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050812Z-qpu_belenos-box_kite_photonic_packed-job-01/analysis.json",
+          "sha256": "e46a8d59331e1a65f0f97ba47b0df12eb45612d57544fd95d75d26e5e4271c3b"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050812Z-qpu_belenos-box_kite_photonic_packed-job-01/results.json",
+          "sha256": "b330a0bb67a55201b03168d99ac0e37d7f9760cab82d4406e712d2ae97e2f58a"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051102Z-qpu_belenos-box_kite_photonic_packed-job-02/analysis.json",
+          "sha256": "ca1a83a177075712580c0fb42737d268db04255b2b46b11d630d91212be7cd3d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051102Z-qpu_belenos-box_kite_photonic_packed-job-02/results.json",
+          "sha256": "dd8a7497efed1aa47b4510561b924caaaa62f5774c6a8b2a134578447b30950a"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051319Z-qpu_belenos-box_kite_photonic_packed-job-03/analysis.json",
+          "sha256": "e1a3021440b7ba68aac313f5907bbe7cf74015df8d04ccab88b8d3580ec7fb31"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051319Z-qpu_belenos-box_kite_photonic_packed-job-03/results.json",
+          "sha256": "7a04222ffc7354e75d251dceda319f42c9295ecd96e0abc494f583497429bc6d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051558Z-qpu_belenos-box_kite_photonic_packed-job-04/analysis.json",
+          "sha256": "1a0cf8266d6899b9f7b4b3d43e75cb1a609cfb49b0c6a75d3ffb8a1dde692367"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051558Z-qpu_belenos-box_kite_photonic_packed-job-04/results.json",
+          "sha256": "5a277899449e907871c914cd67693c1f82862506605fa317899540688a295cc7"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051818Z-qpu_belenos-box_kite_photonic_packed-job-05/analysis.json",
+          "sha256": "776f9c45a4fc868cf5993c1cabe4f30036bdab6e83e76185b02e38a9adf7bab9"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051818Z-qpu_belenos-box_kite_photonic_packed-job-05/results.json",
+          "sha256": "e8a41eb175afc6673a4748ff9a61d0aa1e18c70a22f9946b0c1835745f796a38"
+        }
+      ],
+      "gates": {},
+      "documents": [
+        "docs/notes/quandela/README.md"
+      ],
+      "acquisitions": [
+        "qd-qpu-belenos-packed-job-00",
+        "qd-qpu-belenos-packed-job-01",
+        "qd-qpu-belenos-packed-job-02",
+        "qd-qpu-belenos-packed-job-03",
+        "qd-qpu-belenos-packed-job-04",
+        "qd-qpu-belenos-packed-job-05"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "demarrais-tuna17-cz-graph-pauli-propagation",
+      "statement": "Every circuit of the Tuna-17 DeMarrais campaign is H on all 17 qubits, Tuna-17's 18 native CZ couplers, X on two to four hub qubits, the same CZ layer and H, so its ideal outcome is the CZ-neighbour parity of the X'd hubs; pauli_propagation.py derives all nine ideal strings from the edge list and hubs and matches the exact statevector and each manifest. Over 75536 shots per circuit (nine jobs, 1642194 to 1642318) the data qubits with an odd number of X'd neighbours (ideal 1) read a mean P(1) of 0.67 to 0.86 and those with none (ideal 0) 0.26 to 0.41, the full 17-bit string matches on 0.9 to 1.4 % of shots, and the all-zero sentinel herald keeps 11 to 16 %.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The circuits carry no Cayley-Dickson content: the 8192D, 4096D and 32D labels select only which qubits receive X on one shared CZ graph, cd_core enters no gate, and no circuit changes its ideal outcome when an algebraic property is removed, so the campaign fails the repository's mutation test and measures Tuna-17's fidelity on a two-layer 36-CZ Clifford circuit. Two-path extinction is Z Z = I on a qubit with two X'd neighbours. The sleeper null removes the X gates and so tests readout bias and Pauli propagation, not algebra. The herald selects shots whose nine sentinels all read 0, about 0.79^9 of them, which raises the heralded contrast by error detection.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-30T015009Z-demarrais_tuna17_8192d-batch-00/analysis.json",
+          "sha256": "659a89e83e1671b3fd3936936df9f751f4b555d9bdf4a3fcf24f1bb24ba2cd77"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-30T024225Z-demarrais_tuna17_8192d-batch-01/analysis.json",
+          "sha256": "0a7d93633fbacc5c9bb2cb411b190ec576c0e2c07f5c466d9c12e1193eeefb25"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-30T040508Z-demarrais_tuna17_8192d-batch-02/analysis.json",
+          "sha256": "3e21ade1e311ccea25c9bc4da9a2d663547dcff2e79739bbc9c5e9d53bfad6db"
+        },
+        {
+          "path": "docs/evidence/demarrais-8192d-cross-platform/pauli-propagation.json",
+          "sha256": "a22b0f4841723610d236be2a1cf6751ff408aa0a093341ddce55650ab93cdba1"
+        }
+      ],
+      "gates": {
+        "core-demarrais-pauli-propagation-replay": "replay"
+      },
+      "documents": [
+        "docs/evidence/demarrais-8192d-cross-platform/README.md"
+      ],
+      "acquisitions": [
+        "qi-demarrais-tuna17-batch-00",
+        "qi-demarrais-tuna17-batch-01",
+        "qi-demarrais-tuna17-batch-02"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "demarrais-qx-cz-graph-pauli-propagation",
+      "statement": "On the Quantum Inspire QX simulator the nine 10-qubit DeMarrais circuits (one 10-edge CZ graph, X on zero to four hubs, 2048 shots each) return their CZ-neighbour parity string on every shot, the exact outcome pauli_propagation.py derives from each circuit's edges and hubs.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "A noiseless simulator of a Clifford circuit with one deterministic outcome reproduces that outcome by construction; it qualifies the cases and the analysis, and the 1024D labels set no gate.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-30T014852Z-demarrais_qx_1024d-batch-00/analysis.json",
+          "sha256": "7332c970fd27c0bd026b9a012ae95d3dc3c7cd3e1a61ab30c770bc76b7475d73"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-30T023915Z-demarrais_qx_1024d-batch-01/analysis.json",
+          "sha256": "a5486bac0371994cbf706f664444e829e4892c447350cc9b373c14e2db62c5de"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-30T024133Z-demarrais_qx_1024d-batch-02/analysis.json",
+          "sha256": "a0c884a8aff85c3aebaf91cddde9b53802c9b7f09391b4a3c44fdcc2ba3eb0fa"
+        },
+        {
+          "path": "docs/evidence/demarrais-8192d-cross-platform/pauli-propagation.json",
+          "sha256": "a22b0f4841723610d236be2a1cf6751ff408aa0a093341ddce55650ab93cdba1"
+        }
+      ],
+      "gates": {
+        "core-demarrais-pauli-propagation-replay": "replay"
+      },
+      "documents": [
+        "docs/evidence/demarrais-8192d-cross-platform/README.md"
+      ],
+      "acquisitions": [
+        "qi-demarrais-qx-batch-00",
+        "qi-demarrais-qx-batch-01",
+        "qi-demarrais-qx-batch-02"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-sim-belenos-demarrais-tower-dm4-compiler-failure",
+      "statement": "On sim:belenos job 0866fc0c (job-dm4, 24 settings at 10000 samples each) returned its first nine settings, the 16D to 4096D midden-quotient controls, each at the ideal dispersive contrast D = 1.0 with no click above the lower 12 modes, and then failed at the first 8192D setting with 'RuntimeError: Circuit optimizer: No trial converged' (90000 samples, 90004 shots); the remaining fourteen settings, every 8192D and null arm among them, returned nothing.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "A simulator run qualifies the case and the provider's compiler, not a device. With no null arm returned the analysis withholds a verdict. The returned controls send one photon through a 12-mode quotient unitary whose ideal outcome is a basis-mode routing, so their agreement tests compilation, not a zero-divisor property.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4/results.json",
+          "sha256": "278f22b32c60c07f1c53f5453fd51e11741c8933648cea3487126c04e8a78ddc"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4/analysis.json",
+          "sha256": "549c3c7e33930c8bf516efade405a5e5fb65545900055f6071dff063f588540b"
+        }
+      ],
+      "gates": {},
+      "documents": [
+        "docs/evidence/demarrais-8192d-cross-platform/README.md"
+      ],
+      "acquisitions": [
+        "qd-sim-belenos-demarrais-tower-job-dm4"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "fez-gate-model-scatter-floor",
+      "statement": "On ibm_fez (calibration 2026-10-29T15:59:57-07:00; backup instance, one static job at 8192 shots over 47 pairwise uncoupled qubits, 15 s billed) the readout-corrected P0 of the 32-sx unitary sequence at N = 16 differs from the pinching analysis's Bloch-iteration prediction by a root-mean-square of 0.0338 over all 47 informative qubits, 0.0390 over the 24 main qubits and 0.0273 over the 23 further qubits, against a statistical root-mean-square of 0.0028. The preregistered floor, the larger of the all-qubit and main-qubit values, is 0.039015, about twice ibm_kingston's 0.018784. The mean residual is +0.020, and the residual's Spearman correlation with T2 is -0.35 (two-sided p 0.015) and with the sx error 0.003 (p 0.98).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One calibration window, one job, one backend; the floor includes counting noise and measures the sign-even part of the gate-model error. The negative T2 correlation runs against the drive-dephasing lead's direction, as on ibm_kingston, and is descriptive over qubits chosen by readout error; it establishes no mechanism.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-29T231232.725730Z/collect.json",
+          "sha256": "52407cab233697eedefff984a2e26333422fc82ae85a8b4d48aa6ee80cdff99c"
+        },
+        {
+          "path": "results/live/2026-10-29T231232.725730Z/record.json",
+          "sha256": "6263e35ce1a0ce40af8a43b055bdccfe75c6ba0781831c9e1b32532208acc0aa"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/scatter-floor-ibm_fez.json",
+          "sha256": "b5bdb12c55a8b3aa9c1fd339727461b0bc3319079d25ece626a1b246e447180b"
+        }
+      ],
+      "gates": {
+        "core-msq-scatter-floor-fez-replay": "replay"
+      },
+      "documents": [
+        "results/live/MEASUREMENT_SEQUENCE_SUCCESSOR_FEZ_RESULT.md"
+      ],
+      "acquisitions": [
+        "fez-measurement-sequence-scatter-floor"
+      ]
+    },
+    {
+      "id": "fez-measurement-sequence-successor-reader-screen",
+      "statement": "On 24 ibm_fez qubits (backup instance, one dynamic job of 101 PUBs at 5600 shots and a 20 us repetition delay, 31 s billed against 27.2 s planned) the successor analysis keeps no qubit and withholds the device verdict: the in-circuit reader carryover D is a median 0.019 (0.012 to 0.030) on all 20 qubits that reach the screen against a 0.0047 margin, and it tracks the single-reset control (median 0.017, ratio 1.14). The carryover between consecutive pattern rows is 0.00061 +- 0.00008 on the 20 pattern-passing qubits, three times ibm_kingston's 0.00020 +- 0.00006. A failed measure-and-flip reset is followed, at the same shot index of the next PUB, by a read of 1 with probability 0.081 (237/2925) against 0.0024 after a successful one (z 66); qubits 23, 95, 121, 147 and 151 carry that persistence, and ibm_kingston shows the same at 0.065 against 0.0033 (z 74) on qubits 50, 59, 62, 95, 100 and 154. The excess is absent at shot offsets 1, 2, 10 and 100 and strikes qubits independently.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Runtime guarantees neither the PUB order nor a single batch and the run records no per-shot time, so the persistence and cross-shot figures pair shots by index, and the separation in time between paired shots is unmeasured. The reader screen bounds the residue of one reset, not the carryover after init_qubits, so its failure on Heron r2 was predictable from the 2026-10-27 Kingston reset control; the pinching question stays open. The persistence and carrier rows are exploratory reanalyses of the raw bits. Leakage outside the computational subspace and a repeating readout fault both fit the persistence; the twice-misread counts favor the readout fault without excluding leakage. The run record's ideal_laws were restored from the approved record by content digest after collection refused the as-submitted record.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-30T010826.175789Z/collect.json",
+          "sha256": "21efb346d6251d658677a5933d0ab74af2d859b1371ed024410df0edc48903c9"
+        },
+        {
+          "path": "results/live/2026-10-30T010826.175789Z/record.json",
+          "sha256": "661d402712c672ce0006f66548fb7b6228ac359bf9671e1b7ad04dc92ebec34c"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/reset-persistence.json",
+          "sha256": "c6e930cd4afd1462483c889688e24a0bd15c3d4eb8bda6c0bb93bb1ddc13d794"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/successor-null-fez-w24-s5600.json",
+          "sha256": "aeb40f5f8d9379d4b8296f79d284bde8cf203d024da42e902087cec211ebaada"
+        }
+      ],
+      "gates": {
+        "core-msq-reset-persistence-replay": "replay"
+      },
+      "documents": [
+        "results/live/MEASUREMENT_SEQUENCE_SUCCESSOR_FEZ_RESULT.md",
+        "results/live/MEASUREMENT_SEQUENCE_SUCCESSOR_CASE.md"
+      ],
+      "acquisitions": [
+        "fez-measurement-sequence-successor"
+      ]
     }
   ]
 }

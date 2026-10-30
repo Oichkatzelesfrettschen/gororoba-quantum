@@ -1,0 +1,18 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "c526a618454b9f6d5c554d1066fdedcd14f3822fc791956b90278b2c19d79bb7",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-attempt-retention-followup-review.md",
+  "retained_sha256": "efe2ba7238a31afc33dc05afc7b86d8fd66c6329126548f29c8076ec72c0dc8f",
+  "reviewed_sha256": {
+    "docs/archive/reviews/tuna-attempt-transport-review.md": "9826e7cebf3a90303bf51551659be8a2a025850166401bdb48cff97beb03830e",
+    "docs/archive/reviews/tuna-private-attempt-journal-review.md": "1bca745e934c8c414a15180927cdcd683cfb3b121cb130d9a2ff119195db4221",
+    "scripts/qi_tuna_attempt_journal.py": "b497a26c7cf8e66315898665b4a8422e1281caeb63ff0f928f7d56d05efb7635",
+    "scripts/qi_tuna_attempt_transport.py": "d4f128f7b6eb43d918895dad18f5b8aa7378a0f9535eb64398c7fef567885068",
+    "tests/scripts/test_qi_tuna_attempt_journal.py": "b20c7336d2137dda9f86047fbb5f9b84a6467ac21a78663ff2b6dd35cb26c788",
+    "tests/scripts/test_qi_tuna_attempt_transport.py": "29e62f2d191ccc4e8c1945dd8028f0e7da946502e0ac0a9a6449285e23d8e052"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

@@ -1,0 +1,11 @@
+execute(read("~/Projects/IBMQuantum/docs/local/a5-failed-runs/build/logs/part-b/hdr/vb.sing"));
+ring R=32009,(t2,t4,t6,t8,t1,t3,t5,t7),(dp(4),dp(4));
+ideal JJ=imap(r,J); ideal GG=imap(r,G);
+option(redSB);
+ideal S=std(JJ);
+"RESULT std size",size(S),"dim",dim(S),"mult",mult(S);
+ideal Sx=S; int i; 
+for(i=1;i<=size(S);i++){ "lead",leadmonom(S[i]); }
+// lowest-degree forms of G
+for(i=1;i<=size(GG);i++){ poly g=GG[i]; poly lo=0; int dd=1; while(lo==0){ lo=jet(g,dd)-jet(g,dd-1); dd++;} "Gmin",i,dd-1,size(lo); kill g,lo,dd;}
+quit;

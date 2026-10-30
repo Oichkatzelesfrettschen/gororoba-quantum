@@ -31,7 +31,7 @@ from parallel import ordered_map  # noqa: E402
 sys.path.insert(0, str(ROOT / "scripts"))
 import plan_records  # noqa: E402
 
-DEFAULT_MANIFEST = ROOT / "docs/evidence/algebra-device-conjectures-12/manifest.json"
+DEFAULT_MANIFEST = ROOT / "docs/evidence/algebra-device-conjectures-14/manifest.json"
 SCHEMA = "algebra-device-conjectures-v1"
 # Files the check imports and runs: research_state's provider adapters re-derive every acquisition's facts and
 # parallel.ordered_map keeps item order, so a behavior change in either fails the replay as a fact difference.

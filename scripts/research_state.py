@@ -58,7 +58,9 @@ rule violation or rendered difference; --write rewrites the rendered text;
 --add-acquisition ID PROVIDER RUN FAMILY QUESTION appends one acquisition as
 text, which scripts/retain_run.sh calls when it retains an IBM run; it holds
 every rule except that a claim cite the new acquisition, which --check and
---write require once the operator writes that claim.
+--write require once the operator writes that claim. The flag repeats, and the
+entries append and validate together: one inventory observation that retains
+two runs of an instance makes the audit list both, so neither registers alone.
 """
 
 from __future__ import annotations
@@ -269,7 +271,17 @@ class IbmRuns:
     def runs(self) -> dict[str, dict[str, Any]]:
         grouped: dict[str, list[dict[str, Any]]] = {}
         for job in self.jobs:
-            grouped.setdefault(job["run"], []).append(job)
+            run = job["run"]
+            if run is None:
+                require(
+                    job.get("provenance") == "unexecuted_cancellation"
+                    and job.get("status") == "CANCELLED"
+                    and job.get("final_qpu_charge_seconds") == 0,
+                    f"audited job {job['job_id']} lacks a retained run",
+                )
+                continue
+            require(isinstance(run, str) and bool(run), f"audited job {job['job_id']} has an invalid run")
+            grouped.setdefault(run, []).append(job)
         facts = {}
         for run, jobs in grouped.items():
             jobs = sorted(jobs, key=lambda job: job["created_at"])
@@ -717,7 +729,7 @@ def _static_check(command: str) -> bool:
 
 
 def validate(registry: dict[str, Any], context: Context, uncited: frozenset[str] = frozenset()) -> None:
-    """Every registry rule. UNCITED names acquisitions exempt from claim coverage: add_acquisition saves a newly
+    """Every registry rule. UNCITED names acquisitions exempt from claim coverage: add_acquisitions saves a newly
     retained run's acquisition before the operator writes the claim that cites it, and --check and --write, which
     pass no exemption, keep every acquisition cited."""
     require(registry.get("schema") == SCHEMA, f"registry schema must be {SCHEMA}")
@@ -1700,19 +1712,25 @@ def _check_declared_retained_summary(qi: QuantumInspireRuns) -> None:
     require("declared unretained" not in line, f"a retained declared job enters the unretained summary: {line}")
 
 
-def add_acquisition(entry: dict[str, str]) -> None:
-    """Append one acquisition to the registry file as text, keeping the hand formatting of every other entry, and
-    refuse an entry the registry rules reject."""
-    require(set(entry) == ACQUISITION_KEYS and all(entry.values()), "an acquisition needs every field")
+def add_acquisitions(entries: list[dict[str, str]]) -> None:
+    """Append acquisitions to the registry file as text, keeping the hand formatting of every other entry, and
+    refuse entries the registry rules reject once all of them are in place."""
     text = REGISTRY.read_text(encoding="utf-8")
     registry = json.loads(text)
-    require(entry["id"] not in {row["id"] for row in registry["acquisitions"]}, f"{entry['id']} is registered")
-    require(entry["run"] not in {row["run"] for row in registry["acquisitions"]}, f"{entry['run']} is registered")
+    ids = {row["id"] for row in registry["acquisitions"]}
+    runs = {row["run"] for row in registry["acquisitions"]}
+    blocks = []
+    for entry in entries:
+        require(set(entry) == ACQUISITION_KEYS and all(entry.values()), "an acquisition needs every field")
+        require(entry["id"] not in ids, f"{entry['id']} is registered")
+        require(entry["run"] not in runs, f"{entry['run']} is registered")
+        ids.add(entry["id"])
+        runs.add(entry["run"])
+        blocks.append("\n".join("    " + line for line in json.dumps(entry, indent=2, ensure_ascii=False).splitlines()))
     head, separator, tail = text.partition('\n  ],\n  "claims": [\n')
     require(bool(separator), "the registry's acquisitions list ends in an unexpected layout")
-    block = "\n".join("    " + line for line in json.dumps(entry, indent=2, ensure_ascii=False).splitlines())
-    updated = f"{head},\n{block}{separator}{tail}"
-    validate(json.loads(updated), Context(), uncited=frozenset({entry["id"]}))
+    updated = head + "".join(f",\n{block}" for block in blocks) + separator + tail
+    validate(json.loads(updated), Context(), uncited=frozenset(entry["id"] for entry in entries))
     REGISTRY.write_text(updated, encoding="utf-8")
 
 
@@ -1725,19 +1743,21 @@ def main() -> int:
     mode.add_argument(
         "--add-acquisition",
         nargs=5,
+        action="append",
         metavar=("ID", "PROVIDER", "RUN", "FAMILY", "QUESTION"),
-        help="append one acquisition before its claim exists; write the claim, then --write renders the views",
+        help="append an acquisition before its claim exists (repeatable; the entries validate together); write the "
+        "claim, then --write renders the views",
     )
     arguments = parser.parse_args()
     if arguments.add_acquisition:
+        fields = ("id", "provider", "run", "family", "question")
         try:
-            add_acquisition(
-                dict(zip(("id", "provider", "run", "family", "question"), arguments.add_acquisition, strict=True))
-            )
+            add_acquisitions([dict(zip(fields, values, strict=True)) for values in arguments.add_acquisition])
         except (ValueError, KeyError, TypeError, OSError) as error:
             print(f"research state: {error}", file=sys.stderr)
             return 1
-        print(f"research state: registered acquisition {arguments.add_acquisition[0]}")
+        for values in arguments.add_acquisition:
+            print(f"research state: registered acquisition {values[0]}")
         return 0
     try:
         registry = load_json(REGISTRY)

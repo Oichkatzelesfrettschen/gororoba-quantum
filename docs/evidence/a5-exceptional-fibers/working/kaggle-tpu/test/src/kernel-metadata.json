@@ -1,0 +1,14 @@
+{
+ "id": "probablyeric/a5-fiber-tpu-smoke",
+ "title": "a5-fiber-tpu-smoke",
+ "code_file": "a5-fiber-tpu-smoke.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": false,
+ "enable_internet": true,
+ "dataset_sources": [],
+ "kernel_sources": [],
+ "competition_sources": [],
+ "machine_shape": "TpuV5E8"
+}

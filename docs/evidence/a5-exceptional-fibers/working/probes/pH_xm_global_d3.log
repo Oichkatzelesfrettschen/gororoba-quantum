@@ -1,0 +1,7 @@
+RESULT normal cubics 122
+
+Singular error: no more memory
+System 333536k:333608k Appl 327092k/6386k Malloc 162k/0k Valloc 333316k/6386k Pages 83329/0 Regions 547:547 Internal: 93032
+
+halt 14
+exit 14

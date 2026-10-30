@@ -1,0 +1,282 @@
+{
+  "id": 7,
+  "name": "Tuna-17",
+  "infrastructure": "On-premise",
+  "description": "The Tuna-17 backend has 17 transmon qubits in a ninja-star configuration, with 24 flux-tunable couplers connecting nearest neighbors.",
+  "image_id": "1772648307-tuna-17_schematic-svg.svg",
+  "is_hardware": true,
+  "supports_raw_data": true,
+  "features": [],
+  "default_compiler_config": {
+    "mapping": [],
+    "routing": [],
+    "optimization": [],
+    "decomposition": [
+      {
+        "path": "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+        "method": "decompose",
+        "arguments": {}
+      },
+      {
+        "path": "opensquirrel.passes.decomposer.CZDecomposer",
+        "method": "decompose",
+        "arguments": {}
+      }
+    ]
+  },
+  "gateset": [
+    "I",
+    "Rx",
+    "X",
+    "X90",
+    "mX90",
+    "Ry",
+    "Y",
+    "Y90",
+    "mY90",
+    "Rz",
+    "Z",
+    "S",
+    "T",
+    "Sdag",
+    "Tdag",
+    "H",
+    "CZ",
+    "init",
+    "measure",
+    "reset",
+    "barrier",
+    "wait"
+  ],
+  "topology": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      2,
+      0
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      2
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      4,
+      7
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      4,
+      8
+    ],
+    [
+      8,
+      4
+    ],
+    [
+      5,
+      2
+    ],
+    [
+      2,
+      5
+    ],
+    [
+      5,
+      3
+    ],
+    [
+      3,
+      5
+    ],
+    [
+      5,
+      8
+    ],
+    [
+      8,
+      5
+    ],
+    [
+      5,
+      9
+    ],
+    [
+      9,
+      5
+    ],
+    [
+      6,
+      3
+    ],
+    [
+      3,
+      6
+    ],
+    [
+      6,
+      9
+    ],
+    [
+      9,
+      6
+    ],
+    [
+      10,
+      7
+    ],
+    [
+      7,
+      10
+    ],
+    [
+      10,
+      13
+    ],
+    [
+      13,
+      10
+    ],
+    [
+      11,
+      7
+    ],
+    [
+      7,
+      11
+    ],
+    [
+      11,
+      8
+    ],
+    [
+      8,
+      11
+    ],
+    [
+      11,
+      13
+    ],
+    [
+      13,
+      11
+    ],
+    [
+      11,
+      14
+    ],
+    [
+      14,
+      11
+    ],
+    [
+      12,
+      8
+    ],
+    [
+      8,
+      12
+    ],
+    [
+      12,
+      9
+    ],
+    [
+      9,
+      12
+    ],
+    [
+      12,
+      14
+    ],
+    [
+      14,
+      12
+    ],
+    [
+      12,
+      15
+    ],
+    [
+      15,
+      12
+    ],
+    [
+      16,
+      14
+    ],
+    [
+      14,
+      16
+    ],
+    [
+      16,
+      15
+    ],
+    [
+      15,
+      16
+    ]
+  ],
+  "nqubits": 17,
+  "status": "executing",
+  "messages": {
+    "Tuna-17": {
+      "content": ""
+    }
+  },
+  "default_number_of_shots": 8192,
+  "max_number_of_shots": 131072,
+  "enabled": true,
+  "identifier": "tuna_17",
+  "protocol_version": 2,
+  "job_execution_time_limit": 300,
+  "max_jobs_per_batch_job": 5,
+  "batchjobs_per_queue_limit": 5,
+  "queue": {
+    "number_of_jobs_in_queue": 0,
+    "min_wait_time_in_queue_secs": 0,
+    "avg_wait_time_in_queue_secs": 0,
+    "max_wait_time_in_queue_secs": 0
+  },
+  "backend_instances": [
+    {
+      "id": 7,
+      "name": "Tuna-17",
+      "location": "TU Delft",
+      "backend_type_id": 7,
+      "status": "executing",
+      "message": {
+        "content": ""
+      },
+      "last_heartbeat": "2026-10-27T15:35:42.570951Z"
+    }
+  ],
+  "queue_user_only": true,
+  "request_started_utc": "2026-10-27T15:35:44.859684+00:00",
+  "retrieved_utc": "2026-10-27T15:35:45.866122+00:00"
+}

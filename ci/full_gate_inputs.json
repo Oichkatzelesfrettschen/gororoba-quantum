@@ -142,7 +142,10 @@
       "results/live/2026-10-19T231043.083602Z/**",
       "results/live/2026-10-20T031212.175942Z/**",
       "results/live/2026-10-21T043156.858484Z/**",
-      "results/live/2026-10-21T064222.721454Z/**"
+      "results/live/2026-10-21T064222.721454Z/**",
+      "results/live/2026-10-26T202817.431767Z/**",
+      "results/live/2026-10-27T160530.294787Z/**",
+      "results/live/2026-10-27T173602.753176Z/**"
     ],
     "core-597": [
       "docs/evidence/ghost_runs/**",
@@ -164,7 +167,10 @@
       "results/live/2026-10-19T231043.083602Z/**",
       "results/live/2026-10-20T031212.175942Z/**",
       "results/live/2026-10-21T043156.858484Z/**",
-      "results/live/2026-10-21T064222.721454Z/**"
+      "results/live/2026-10-21T064222.721454Z/**",
+      "results/live/2026-10-26T202817.431767Z/**",
+      "results/live/2026-10-27T160530.294787Z/**",
+      "results/live/2026-10-27T173602.753176Z/**"
     ],
     "core-311": [
       "docs/evidence/walk_scaffold_channels/**",
@@ -755,18 +761,27 @@
       "docs/evidence/a5-rank-strata-equations/**"
     ],
     "core-quantum-experiment-cases": [
-      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/**",
+      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/**",
       "docs/evidence/quantum_inspire/catalogue.json",
       "docs/evidence/quandela/catalogue.json",
       "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
       "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
-      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/provenance.json"
+      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/provenance.json",
+      "docs/evidence/quantum-experiment-conformance/ascella-worker-command-source-replay.json",
+      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1-regeneration-receipt.json"
     ],
     "core-quantum-experiment-toolchain": [
-      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/**",
-      "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain.json",
+      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/**",
+      "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-1.json",
       "docs/evidence/quantum_inspire/catalogue.json",
       "docs/notes/quantum_inspire/requirements-qi.txt"
+    ],
+    "core-local-idle-falsifier-full": [
+      "docs/evidence/local_idle_padding/**",
+      "docs/evidence/calibration/history/**",
+      "results/live/2026-10-12T055624.091217Z/**",
+      "results/live/2026-10-13T020454.599853Z/**",
+      "results/live/2026-10-18T090603.530638Z/**"
     ]
   }
 }

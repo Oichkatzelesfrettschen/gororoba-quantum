@@ -1,0 +1,12 @@
+{
+ "schema": "qi-campaign-v1",
+ "plan_sha256": "53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76",
+ "batches": {
+  "prepared-zero-baseline-before": "b8ec020a157d48b414c10a544b8f692fd26fa721edd4745d2d91da4382f3eabe",
+  "prepared-zero-rotated-destinations": "2396adc9c5eef41452655d41bbc4df7cfb26a76f78e3e6b9a8d2d9e3327a9eb5",
+  "prepared-zero-baseline-after": "ba8bda4c2be667b64cd4db2dd30d02390a158098d50e8d9317aaa77a6847e2aa",
+  "prepared-one-baseline-before": "1b64e00601d4a8eab1ddada93e13c7323790320e6ef6ec409deb5f8851929ae6",
+  "prepared-one-rotated-destinations": "fc09d1b9c08c82d1b7f11c81233ccb65cb012bfead8a9af8ffddae5a83893950",
+  "prepared-one-baseline-after": "fc88c1fd2d3cdef71d96f00c1f5a873541070cef36cbcaccbffe4af1ab5efcf5"
+ }
+}

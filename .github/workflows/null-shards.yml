@@ -1,15 +1,16 @@
 name: null-shards
 
 # Shards of the measurement-sequence successor's classical null on hosted runners. Each matrix job runs
-# scripts/msq_successor_null.py --arms ... --shard K --shards N on a dry-run record of the dispatched ref and
-# uploads its shard records with the runner's CPU and timing; docs/runbooks/null-shards.md merges them. A shard
-# runs every case to its limit, so a limit near the case's verdict count (--limit) bounds the work. The repository is
+# scripts/msq_successor_null.py --arms ... --shard K --shards N on the dry-run records of the dispatched ref (one
+# or several, run through one pool, each writing its shard records under its own directory name when several run)
+# and uploads them with the runner's CPU and timing; docs/runbooks/null-shards.md merges them. A shard runs every
+# case to its limit, so a limit near the case's verdict count (--limit) bounds the work. The repository is
 # public, so the logs and artifacts are public too; the null reads only files the dispatched ref already holds.
 on:
   workflow_dispatch:
     inputs:
       record_dir:
-        description: dry-run record directory under results/live
+        description: space-separated dry-run record directories under results/live
         required: true
         type: string
       arms:
@@ -18,7 +19,7 @@ on:
         type: string
         default: all
       limits:
-        description: space-separated ARM=N or ARM/CASE=N stop limits
+        description: space-separated [RECORD:]ARM=N or [RECORD:]ARM/CASE=N stop limits
         required: false
         type: string
         default: ""
@@ -67,7 +68,7 @@ jobs:
       - name: Null shard
         shell: sh
         env:
-          RECORD_DIR: ${{ inputs.record_dir }}
+          RECORD_DIRS: ${{ inputs.record_dir }}
           ARMS: ${{ inputs.arms }}
           LIMITS: ${{ inputs.limits }}
           SHARD: ${{ matrix.shard }}
@@ -78,11 +79,14 @@ jobs:
           mkdir -p "$out"
           set --
           for limit in $LIMITS; do set -- "$@" --limit "$limit"; done
+          records=""
+          for record in $RECORD_DIRS; do records="$records results/live/$record"; done
           lscpu > "$out/cpu-shard$SHARD.txt"
-          # ARMS splits into the arm names, which argparse checks against NULL_PLAN.
+          # RECORD_DIRS splits into record directories and ARMS into the arm names, which argparse checks against
+          # NULL_PLAN.
           # shellcheck disable=SC2086
           /usr/bin/time -v -o "$out/time-shard$SHARD.txt" "$PYTHON" -B scripts/msq_successor_null.py \
-            "results/live/$RECORD_DIR" --arms $ARMS "$@" --shard "$SHARD" --shards "$SHARDS" --out-dir "$out"
+            $records --arms $ARMS "$@" --shard "$SHARD" --shards "$SHARDS" --out-dir "$out"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
         with:
           name: null-shard-${{ matrix.shard }}

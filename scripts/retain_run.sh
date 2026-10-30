@@ -9,6 +9,9 @@
 # Each register appends: the audit rows and comparison rows are per job and the claims and the algebra-device
 # bundle bind job records (docs/design/retention-bookkeeping-per-record.md), so no earlier evidence changes.
 #
+# An observation that settles two runs of one instance lists both in the audit, so the one-run acquisition step
+# fails; research_state.py then takes both acquisitions as repeated --add-acquisition flags in one call.
+#
 # Usage: sh scripts/retain_run.sh RUN ID FAMILY QUESTION   (from the repository root; GOROROBA_IBM_ACCOUNT selects
 #        the account as for the run's --collect). Exit 0 retained, 1 a step failed, 2 usage.
 set -eu
@@ -25,10 +28,7 @@ run=${1%/}
 id=$2
 family=$3
 question=$4
-[ -f "$run/collect.json" ] || {
-	echo "retain_run: $run holds no collect.json; collect the run first" >&2
-	exit 1
-}
+"$PYTHON" scripts/reconcile_qpu_inventory.py --retention-preflight "$run"
 new=
 cleanup() { if [ -n "$new" ]; then rm -f "$new"; fi; }
 trap cleanup EXIT

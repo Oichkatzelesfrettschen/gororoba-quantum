@@ -1,0 +1,329 @@
+{
+  "blocks": [
+    {
+      "herald_counts": [
+        141,
+        116,
+        143
+      ],
+      "joint_zero": [
+        0.55078125,
+        0.453125,
+        0.55859375
+      ],
+      "joint_zero_counts": [
+        141,
+        116,
+        143
+      ],
+      "signed_joint_sums": [
+        141,
+        116,
+        143
+      ],
+      "start": 0,
+      "stop": 256
+    },
+    {
+      "herald_counts": [
+        125,
+        129,
+        128
+      ],
+      "joint_zero": [
+        0.48828125,
+        0.50390625,
+        0.5
+      ],
+      "joint_zero_counts": [
+        125,
+        129,
+        128
+      ],
+      "signed_joint_sums": [
+        125,
+        129,
+        128
+      ],
+      "start": 256,
+      "stop": 512
+    },
+    {
+      "herald_counts": [
+        133,
+        130,
+        119
+      ],
+      "joint_zero": [
+        0.51953125,
+        0.5078125,
+        0.46484375
+      ],
+      "joint_zero_counts": [
+        133,
+        130,
+        119
+      ],
+      "signed_joint_sums": [
+        133,
+        130,
+        119
+      ],
+      "start": 512,
+      "stop": 768
+    },
+    {
+      "herald_counts": [
+        129,
+        127,
+        138
+      ],
+      "joint_zero": [
+        0.50390625,
+        0.49609375,
+        0.5390625
+      ],
+      "joint_zero_counts": [
+        129,
+        127,
+        138
+      ],
+      "signed_joint_sums": [
+        129,
+        127,
+        138
+      ],
+      "start": 768,
+      "stop": 1024
+    },
+    {
+      "herald_counts": [
+        139,
+        122,
+        121
+      ],
+      "joint_zero": [
+        0.54296875,
+        0.4765625,
+        0.47265625
+      ],
+      "joint_zero_counts": [
+        139,
+        122,
+        121
+      ],
+      "signed_joint_sums": [
+        139,
+        122,
+        121
+      ],
+      "start": 1024,
+      "stop": 1280
+    },
+    {
+      "herald_counts": [
+        124,
+        126,
+        131
+      ],
+      "joint_zero": [
+        0.484375,
+        0.4921875,
+        0.51171875
+      ],
+      "joint_zero_counts": [
+        124,
+        126,
+        131
+      ],
+      "signed_joint_sums": [
+        124,
+        126,
+        131
+      ],
+      "start": 1280,
+      "stop": 1536
+    },
+    {
+      "herald_counts": [
+        126,
+        139,
+        124
+      ],
+      "joint_zero": [
+        0.4921875,
+        0.54296875,
+        0.484375
+      ],
+      "joint_zero_counts": [
+        126,
+        139,
+        124
+      ],
+      "signed_joint_sums": [
+        126,
+        139,
+        124
+      ],
+      "start": 1536,
+      "stop": 1792
+    },
+    {
+      "herald_counts": [
+        122,
+        120,
+        120
+      ],
+      "joint_zero": [
+        0.4765625,
+        0.46875,
+        0.46875
+      ],
+      "joint_zero_counts": [
+        122,
+        120,
+        120
+      ],
+      "signed_joint_sums": [
+        122,
+        120,
+        120
+      ],
+      "start": 1792,
+      "stop": 2048
+    }
+  ],
+  "cross_replica_joint_counts": [
+    [
+      1039,
+      511,
+      504
+    ],
+    [
+      511,
+      1009,
+      501
+    ],
+    [
+      504,
+      501,
+      1024
+    ]
+  ],
+  "cross_replica_joint_moments": [
+    [
+      0.50732421875,
+      0.24951171875,
+      0.24609375
+    ],
+    [
+      0.24951171875,
+      0.49267578125,
+      0.24462890625
+    ],
+    [
+      0.24609375,
+      0.24462890625,
+      0.5
+    ]
+  ],
+  "interpretation": "descriptive; no IID p-values",
+  "provenance": {
+    "analysis_metadata": {
+      "bit_order": "classical bit zero is the rightmost character",
+      "index_convention": "zero-based string offsets from the left",
+      "replicas": [
+        {
+          "angle_degrees": 0,
+          "data": 8,
+          "endpoint": "z",
+          "final_herald": 7,
+          "herald": 7,
+          "physical_triple_a_c_b": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "angle_degrees": 45,
+          "data": 5,
+          "endpoint": "z",
+          "final_herald": 4,
+          "herald": 4,
+          "physical_triple_a_c_b": [
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "angle_degrees": 90,
+          "data": 2,
+          "endpoint": "z",
+          "final_herald": 1,
+          "herald": 1,
+          "physical_triple_a_c_b": [
+            6,
+            7,
+            8
+          ]
+        }
+      ],
+      "source": "docs/notes/quantum_inspire/cqasm.md#bit-and-qubit-order",
+      "width": 9
+    },
+    "analyzer_sha256": "8f8a1daa28dc1f22e5ff86bc67a61e4e5c03a8a926a35268ccf2aeddffa9f56c",
+    "cases_sha256": "bb52460648caed1a8fe2be39131f88efaaa7022f53614f386b48034027290554",
+    "circuit_sha256": "b48d8602072dae41d30635f3e7185883c966575a09e6324beefb9cb24121c6e5",
+    "raw_sha256": "43459bf6d6e4bc00a041b376aa64c42bedca7882123ff4b9a775ace5a7cfb301"
+  },
+  "replicas": [
+    {
+      "conditional_signed": 1.0,
+      "conditional_zero": 1.0,
+      "data_zero": 1.0,
+      "data_zero_count": 2048,
+      "endpoint": "z",
+      "herald": 0.50732421875,
+      "herald_count": 1039,
+      "herald_disagreement": 0.0,
+      "herald_disagreement_count": 0,
+      "joint_zero": 0.50732421875,
+      "joint_zero_count": 1039,
+      "signed_joint": 0.50732421875,
+      "signed_joint_sum": 1039
+    },
+    {
+      "conditional_signed": 1.0,
+      "conditional_zero": 1.0,
+      "data_zero": 1.0,
+      "data_zero_count": 2048,
+      "endpoint": "z",
+      "herald": 0.49267578125,
+      "herald_count": 1009,
+      "herald_disagreement": 0.0,
+      "herald_disagreement_count": 0,
+      "joint_zero": 0.49267578125,
+      "joint_zero_count": 1009,
+      "signed_joint": 0.49267578125,
+      "signed_joint_sum": 1009
+    },
+    {
+      "conditional_signed": 1.0,
+      "conditional_zero": 1.0,
+      "data_zero": 1.0,
+      "data_zero_count": 2048,
+      "endpoint": "z",
+      "herald": 0.5,
+      "herald_count": 1024,
+      "herald_disagreement": 0.0,
+      "herald_disagreement_count": 0,
+      "joint_zero": 0.5,
+      "joint_zero_count": 1024,
+      "signed_joint": 0.5,
+      "signed_joint_sum": 1024
+    }
+  ],
+  "shots": 2048
+}

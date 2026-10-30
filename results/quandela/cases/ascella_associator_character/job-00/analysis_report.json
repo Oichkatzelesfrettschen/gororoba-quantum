@@ -1,0 +1,321 @@
+{
+  "status": "ADMITTED",
+  "verdicts": {
+    "execution_status": "ADMITTED",
+    "character_signal_detected": true,
+    "mean_character_contrast": 1.99732,
+    "sentinel_leakage_rate": 0.023213
+  },
+  "contrasts_by_pair": {
+    "pair_1_2": {
+      "d_octonion": 0.997618,
+      "d_clifford_control": -0.999799,
+      "delta_character": 1.997418
+    },
+    "pair_1_4": {
+      "d_octonion": 0.998068,
+      "d_clifford_control": -0.998997,
+      "delta_character": 1.997065
+    },
+    "pair_2_4": {
+      "d_octonion": 0.99782,
+      "d_clifford_control": -0.999398,
+      "delta_character": 1.997218
+    },
+    "pair_3_5": {
+      "d_octonion": 0.998593,
+      "d_clifford_control": -0.998988,
+      "delta_character": 1.997581
+    }
+  },
+  "iterations": [
+    {
+      "name": "iter00-pair_1_2-octonion",
+      "pair": [
+        1,
+        2
+      ],
+      "arm": "octonion",
+      "omega": 4,
+      "c_omega": 9226,
+      "c_0": 11,
+      "d_observable": 0.997618,
+      "std_error": 0.000718,
+      "wilson_se": 0.000748,
+      "ci95": [
+        0.995737,
+        0.99867
+      ]
+    },
+    {
+      "name": "iter01-pair_1_2-clifford_control",
+      "pair": [
+        1,
+        2
+      ],
+      "arm": "clifford_control",
+      "omega": 4,
+      "c_omega": 1,
+      "c_0": 9972,
+      "d_observable": -0.999799,
+      "std_error": 0.000201,
+      "wilson_se": 0.000281,
+      "ci95": [
+        -0.999965,
+        -0.998864
+      ]
+    },
+    {
+      "name": "iter02-pair_1_2-diagonal_null",
+      "pair": [
+        1,
+        2
+      ],
+      "arm": "diagonal_null",
+      "omega": 4,
+      "c_omega": 1,
+      "c_0": 8963,
+      "d_observable": -0.999777,
+      "std_error": 0.000223,
+      "wilson_se": 0.000312,
+      "ci95": [
+        -0.999961,
+        -0.998737
+      ]
+    },
+    {
+      "name": "iter03-pair_1_2-reversed",
+      "pair": [
+        1,
+        2
+      ],
+      "arm": "reversed",
+      "omega": 4,
+      "c_omega": 9953,
+      "c_0": 7,
+      "d_observable": 0.998594,
+      "std_error": 0.000531,
+      "wilson_se": 0.000566,
+      "ci95": [
+        0.9971,
+        0.999319
+      ]
+    },
+    {
+      "name": "iter04-pair_1_4-octonion",
+      "pair": [
+        1,
+        4
+      ],
+      "arm": "octonion",
+      "omega": 2,
+      "c_omega": 9308,
+      "c_0": 9,
+      "d_observable": 0.998068,
+      "std_error": 0.000644,
+      "wilson_se": 0.000677,
+      "ci95": [
+        0.99633,
+        0.998983
+      ]
+    },
+    {
+      "name": "iter05-pair_1_4-clifford_control",
+      "pair": [
+        1,
+        4
+      ],
+      "arm": "clifford_control",
+      "omega": 2,
+      "c_omega": 5,
+      "c_0": 9961,
+      "d_observable": -0.998997,
+      "std_error": 0.000449,
+      "wilson_se": 0.00049,
+      "ci95": [
+        -0.999571,
+        -0.997652
+      ]
+    },
+    {
+      "name": "iter06-pair_1_4-diagonal_null",
+      "pair": [
+        1,
+        4
+      ],
+      "arm": "diagonal_null",
+      "omega": 2,
+      "c_omega": 6,
+      "c_0": 9638,
+      "d_observable": -0.998756,
+      "std_error": 0.000508,
+      "wilson_se": 0.000547,
+      "ci95": [
+        -0.99943,
+        -0.997286
+      ]
+    },
+    {
+      "name": "iter07-pair_1_4-reversed",
+      "pair": [
+        1,
+        4
+      ],
+      "arm": "reversed",
+      "omega": 2,
+      "c_omega": 9954,
+      "c_0": 9,
+      "d_observable": 0.998193,
+      "std_error": 0.000602,
+      "wilson_se": 0.000633,
+      "ci95": [
+        0.996568,
+        0.999049
+      ]
+    },
+    {
+      "name": "iter08-pair_2_4-octonion",
+      "pair": [
+        2,
+        4
+      ],
+      "arm": "octonion",
+      "omega": 1,
+      "c_omega": 9163,
+      "c_0": 10,
+      "d_observable": 0.99782,
+      "std_error": 0.000689,
+      "wilson_se": 0.000721,
+      "ci95": [
+        0.995989,
+        0.998815
+      ]
+    },
+    {
+      "name": "iter09-pair_2_4-clifford_control",
+      "pair": [
+        2,
+        4
+      ],
+      "arm": "clifford_control",
+      "omega": 1,
+      "c_omega": 3,
+      "c_0": 9968,
+      "d_observable": -0.999398,
+      "std_error": 0.000347,
+      "wilson_se": 0.000399,
+      "ci95": [
+        -0.999795,
+        -0.998231
+      ]
+    },
+    {
+      "name": "iter10-pair_2_4-diagonal_null",
+      "pair": [
+        2,
+        4
+      ],
+      "arm": "diagonal_null",
+      "omega": 1,
+      "c_omega": 2,
+      "c_0": 9930,
+      "d_observable": -0.999597,
+      "std_error": 0.000285,
+      "wilson_se": 0.000346,
+      "ci95": [
+        -0.99989,
+        -0.998532
+      ]
+    },
+    {
+      "name": "iter11-pair_2_4-reversed",
+      "pair": [
+        2,
+        4
+      ],
+      "arm": "reversed",
+      "omega": 1,
+      "c_omega": 9787,
+      "c_0": 7,
+      "d_observable": 0.998571,
+      "std_error": 0.00054,
+      "wilson_se": 0.000576,
+      "ci95": [
+        0.997051,
+        0.999307
+      ]
+    },
+    {
+      "name": "iter12-pair_3_5-octonion",
+      "pair": [
+        3,
+        5
+      ],
+      "arm": "octonion",
+      "omega": 7,
+      "c_omega": 9943,
+      "c_0": 7,
+      "d_observable": 0.998593,
+      "std_error": 0.000532,
+      "wilson_se": 0.000567,
+      "ci95": [
+        0.997097,
+        0.999318
+      ]
+    },
+    {
+      "name": "iter13-pair_3_5-clifford_control",
+      "pair": [
+        3,
+        5
+      ],
+      "arm": "clifford_control",
+      "omega": 7,
+      "c_omega": 5,
+      "c_0": 9875,
+      "d_observable": -0.998988,
+      "std_error": 0.000453,
+      "wilson_se": 0.000494,
+      "ci95": [
+        -0.999568,
+        -0.997632
+      ]
+    },
+    {
+      "name": "iter14-pair_3_5-diagonal_null",
+      "pair": [
+        3,
+        5
+      ],
+      "arm": "diagonal_null",
+      "omega": 7,
+      "c_omega": 2,
+      "c_0": 9963,
+      "d_observable": -0.999599,
+      "std_error": 0.000284,
+      "wilson_se": 0.000345,
+      "ci95": [
+        -0.99989,
+        -0.998537
+      ]
+    },
+    {
+      "name": "iter15-pair_3_5-reversed",
+      "pair": [
+        3,
+        5
+      ],
+      "arm": "reversed",
+      "omega": 7,
+      "c_omega": 9941,
+      "c_0": 4,
+      "d_observable": 0.999196,
+      "std_error": 0.000402,
+      "wilson_se": 0.000448,
+      "ci95": [
+        0.997932,
+        0.999687
+      ]
+    }
+  ]
+}

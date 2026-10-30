@@ -1,0 +1,8 @@
+[{"stream_name":"stdout","time":41061.208514282,"data":"{\"label\": \"A_5 fiber pack A: X+ to N+, X- to N-, iso K2 components\", \"wheel\": \"passagemath-singular==10.8.13\", \"wall_seconds\": 41060.3, \"peak_child_rss_kib\": 12563024, \"mem_total_kib\": 32869296, \"jobs\": {\"xp_np\": {\"return_code\": 14, \"ended_seconds\": 25693.6, \"results\": [\"RESULT generators 15\", \"RESULT slice_variables 7\", \"RESULT h2 51\", \"PROGRESS degree2_seconds 25470\"]}, \"xm_nm\": {\"return_code\": 124, \"ended_seconds\": 41060.3, \"results\": [\"RESULT generators 15\", \"RESULT slice_variables 7\", \"RESULT h2 51\", \"PROGRESS degree2_seconds 25459\", \"RESULT relations 69\", \"RESULT V_projdim 3\", \"RESULT V_degree 12\"]}, \"iso_k2\": {\"return_code\": 124, \"ended_seconds\": 41060.3, \"results\": [\"RESULT K2_projdim 4\", \"RESULT K2_degree 23\"]}}, \"machine\": \"x86_64\", \"python\": \"3.13.15\"}\n"}
+,{"stream_name":"stderr","time":41064.402563065,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":41064.402601572,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":41064.872028102,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":41064.872065013,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":41066.133540544,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":41067.667167974,"data":"[NbConvertApp] Writing 354023 bytes to __results__.html\n"}
+]

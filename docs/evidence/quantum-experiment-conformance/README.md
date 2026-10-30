@@ -1,5 +1,10 @@
 # Quantum experiment conformance evidence
 
+The [Ascella worker-command source replay](ascella-worker-command-source-replay.json)
+binds the current platform worker-command restoration to the unchanged Qiskit 2.6.1 campaign bytes.
+The [Ascella predecessor source replay](ascella-predecessor-source-replay.json)
+records those same campaign bytes at the preceding platform client.
+
 This bundle retains deterministic references and prospective cases for the
 [five-proposal design](../../design/quantum-experiment-conformance.md). The source artifact
 `multidimensional_spacetime_quantum_experiments.md` has SHA-256 `afbe80ced07e3400116ee201eb3604afcd174758a8e30d55dff8f4e257462032`; its original bytes remain
@@ -106,7 +111,7 @@ and supply neither an independence certificate nor a correction for unobserved d
 The [supplemental validation](validation-toolchain.json) records 102 passing focused tests, full lint
 and types, source identities and the required-QI live replay.
 
-[scalar-operator-toolchain.json](scalar-operator-toolchain.json) binds all 384 cQASM payloads in the 128 QI cases, their
+[scalar-operator-toolchain-qiskit-2-6-1.json](scalar-operator-toolchain-qiskit-2-6-1.json) binds all 384 cQASM payloads in the 128 QI cases, their
 manifest and campaign digests, retained compiler configurations, producing sources and pinned stack.
 Local libqasm analysis and OpenSquirrel decomposition admit every payload and preserve every barrier
 and measurement destination. OpenSquirrel normalizes rotation angles when serializing 122 payloads;
@@ -117,13 +122,19 @@ Platform scheduling and physical execution remain unobserved.
 ```sh
 export QI_PYTHON=/path/to/quantum-inspire/environment/bin/python
 "$PYTHON" -B -W error scripts/experiment_toolchain.py \
-  --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators/campaign.json \
-  --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain.json --check
+  --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/campaign.json \
+  --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-1.json --check
 ```
 
 A pinned QI stack repeats all compilation and requires byte-identical receipts. A host without that stack
 checks the retained digest chain and reports that compilation was skipped. The required-QI gate refuses
 a missing stack. The original global QI toolchain record and its producing source keep their bytes.
+The [original receipt](scalar-operator-toolchain.json) binds the campaign written under Qiskit 2.6.0 in
+[runner-scalar-operators](runner-scalar-operators/campaign.json), and both keep their bytes. The successor above binds
+the campaign written under Qiskit 2.6.1 in [runner-scalar-operators-qiskit-2-6-1](runner-scalar-operators-qiskit-2-6-1/campaign.json),
+which `core-quantum-experiment-cases` regenerates and the runner-image ledger binds. The two campaigns differ only in
+the recorded Qiskit version and the campaign and 128 manifest digests that follow from it; the successor receipt's
+384 compiled circuits, sources and toolchain versions equal the original's.
 
 ## Prospective acquisition cases
 

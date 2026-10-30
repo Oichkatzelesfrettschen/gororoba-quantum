@@ -1,0 +1,1679 @@
+{
+ "schema": "quantum-experiment-campaign-v1",
+ "families": [
+  "mub-six",
+  "quarter-mass",
+  "sedenion-lcu"
+ ],
+ "routes": [
+  "tuna",
+  "qx",
+  "ascella"
+ ],
+ "budgets": {
+  "tuna_shots": 1575,
+  "qx_shots": 1575,
+  "photonic_samples": 1575,
+  "photonic_shots": 3150,
+  "execution_seconds": 300.0,
+  "photonic_credits": 1.00315
+ },
+ "cases": [
+  {
+   "path": "ascella/mub-six/computational-to-computational-input-0",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-0",
+   "sha256": "37f28ba10975c41344aca130f59a1b3d0802d061d6108dec2088ed9fae8fff1b"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-computational-input-1",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-1",
+   "sha256": "894a701a72b9aff943fdb32df033ba46462279ebe094fbe50931a45fae8d2cd0"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-computational-input-2",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-2",
+   "sha256": "dcec38cc384521297056886070b09b57c09642b607589c915eefb8cade00bb26"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-computational-input-3",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-3",
+   "sha256": "d9725deec97769d6b2b5f2507cd4534e1d5dcbacbc019073303433d7c22b82c1"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-computational-input-4",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-4",
+   "sha256": "8d9c01d355f9ece36cddd5ede76067139980358c3026002064e882034cf4ee51"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-computational-input-5",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-5",
+   "sha256": "3220aa95be736f04683ae94fd10c75848aefaa88910801ada14ae24c5e28deda"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-product_chirped-input-0",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-0",
+   "sha256": "cf99b81bc0d1a1546cf580ff437a1ddc6d059cc1aadc0e82d06c38f463a2f271"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-product_chirped-input-1",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-1",
+   "sha256": "35e1856d9bcfbabefabee61ca3140834208fbc00dba4d1ef61dfb5efe4f6fe54"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-product_chirped-input-2",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-2",
+   "sha256": "90431d2099b35f8702ae5d728acce1af462ae7d2a7b0ef0c46bb9de224d2f820"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-product_chirped-input-3",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-3",
+   "sha256": "ae9adc04ee4600c450e3b4eb72e55c74e43374539b82f80bc99decedd3f92206"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-product_chirped-input-4",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-4",
+   "sha256": "a1ccffef4d368985395233fb7b524422016f2606fef4c7101af43ef156e81f56"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-product_chirped-input-5",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-5",
+   "sha256": "35fec3da540b342c32d8ca211b66739c2d5f787ad1abe88ad30cee4ade62040e"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-product_fourier-input-0",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-0",
+   "sha256": "f9c27b4f521e974f764c73277686e026d81e6591ef22ac2748279d0727132d0e"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-product_fourier-input-1",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-1",
+   "sha256": "b182e5c66e5ad4f5b1a0475ec68af6546574f3d4aa65cafcdf529169bfa3b8ae"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-product_fourier-input-2",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-2",
+   "sha256": "6e0008f78e4d5b87b1804226aa89f42a81f1200c65cecaacacb1a81ceacac00d"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-product_fourier-input-3",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-3",
+   "sha256": "667aee4a5c365dd56583efc0c4b1ce96e9a9648a218a9b3eb4746cadad113869"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-product_fourier-input-4",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-4",
+   "sha256": "4448641869e1f32740a26e6f78b7d8eb7c139d6730b38e68e3856704d84fa99c"
+  },
+  {
+   "path": "ascella/mub-six/computational-to-product_fourier-input-5",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-5",
+   "sha256": "ef5f7242a9aaf7ee38e22ec706d08dd8d9fcf8d7611cb94f6781e943a136ff72"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-computational-input-0",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-0",
+   "sha256": "59176903ed34ecec2b8511c8c9f403e2fb796bb007ff12835550f02f9247a51d"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-computational-input-1",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-1",
+   "sha256": "5cfaf05e1b1932a402011ca081432b288b1205d924a10dcbc1bce92ff2ffc871"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-computational-input-2",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-2",
+   "sha256": "a356e41001163615eda4e71e9065daddc9dec63e78b11a003289c94ae6808593"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-computational-input-3",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-3",
+   "sha256": "ee9dc24f61bc4442ebfce83a9a6f1c93e272b4bf71745a8002f674db91cd0ff9"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-computational-input-4",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-4",
+   "sha256": "b9b3a97fd2c1efb8236768a66338406c1ea86c052996c65938d92abcbcb2539d"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-computational-input-5",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-5",
+   "sha256": "23e80d0221a541116a30e0bd05979bbe9ddae8abf340b3af9a0065b91a8cd71d"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-product_chirped-input-0",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-0",
+   "sha256": "27405a613589428145fe615dec79e9385763bfc0d1b7e890bec5d8a33377fa45"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-product_chirped-input-1",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-1",
+   "sha256": "600d5f2284d21608b30db1a8cf4238ce831ed47f635cc242436b89b05940865a"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-product_chirped-input-2",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-2",
+   "sha256": "f791b8818b4b781ea6e85398d80eab4636f840daa350ed94b3495de75a8ff20e"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-product_chirped-input-3",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-3",
+   "sha256": "dfcb222e4bb67fc66dd9f1fc430b4dc471c058e90d5503d1ea27d436a7c32f5c"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-product_chirped-input-4",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-4",
+   "sha256": "48af6f2a38779a59f9485c30c78db09a92414f0ce4e389e3d24e5283c08920da"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-product_chirped-input-5",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-5",
+   "sha256": "cdca107e1e04465a77f8d56c70f8ada274e0ae3dc64012c150262da66cd636e6"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-product_fourier-input-0",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-0",
+   "sha256": "e4f49d312747fd72851f434dc143608d8d0452f2d2ccf0ee9192d15111848d35"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-product_fourier-input-1",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-1",
+   "sha256": "a04a8341980ba53c39225d4c3bf4d5711dba5d7fb1bc08b7da1fe5095565b726"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-product_fourier-input-2",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-2",
+   "sha256": "ad9dcde7d2d93ad365b29dc6f6deb168dcc52383e3550435632b4852a790c35e"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-product_fourier-input-3",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-3",
+   "sha256": "655c5fc944a4f69b472772140a353dd9a5a0e7e7f10480ee0e6c4a7276248891"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-product_fourier-input-4",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-4",
+   "sha256": "4c757220ea14256421250586b02bcb4fda5c1aa0481bd5b3aa9c3565d73ba9ae"
+  },
+  {
+   "path": "ascella/mub-six/product_chirped-to-product_fourier-input-5",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-5",
+   "sha256": "5e7f1306349486b8c7f5a272c76483496186341b2daa52a9284faa068d3e223c"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-computational-input-0",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-0",
+   "sha256": "865b973a4281cd84155f4fbcbd415f0dcda992075a0e22e6bfe920fde01557c2"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-computational-input-1",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-1",
+   "sha256": "c349134d67d5cc5582ba523aa861b608508f48f5830cfc7b9160df1cf879b8a2"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-computational-input-2",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-2",
+   "sha256": "18b57d53c0516a5f9445b913900f649987c5f3127777a097f2d067663b71a055"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-computational-input-3",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-3",
+   "sha256": "cd56a1753afc76fcef411f58b934f33c71705afde14c248deee131beb27bbffc"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-computational-input-4",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-4",
+   "sha256": "6f77d0a97f06970ce3c1de58d4d8de691a1a76efb51622db9132d6a275c3a197"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-computational-input-5",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-5",
+   "sha256": "63d03db128ab475871b569f79964f38723f51156e7e4aef91b454721bf09e782"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-product_chirped-input-0",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-0",
+   "sha256": "01fcd64895e92c43ca8c8db319704132272319d1b99161906d9a04910170a719"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-product_chirped-input-1",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-1",
+   "sha256": "f67219f06674c2c0645c4089ac0ae149f09bc107c3c4fd5ce08e2b5736760f11"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-product_chirped-input-2",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-2",
+   "sha256": "820cda594f07e6814e3cc35d69089643825864bd21f69d8748741a5e611140da"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-product_chirped-input-3",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-3",
+   "sha256": "044e89461797771efb4a08f89cb42ac2ce919f53fd189ae2c9f2951768256e1a"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-product_chirped-input-4",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-4",
+   "sha256": "95809e7d076939481dec77d8feac5bf0fc501105f7d82928a21d45f6b72105ca"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-product_chirped-input-5",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-5",
+   "sha256": "47748b4ef640af5f56a5951a6ede445c67039e877c15e1764fa081e8cf76205d"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-product_fourier-input-0",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-0",
+   "sha256": "2cde61cc208999154a5f14e86d6fff442bc3b8e2da1e963d663c879e3d371355"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-product_fourier-input-1",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-1",
+   "sha256": "b00b563710f87e6c1258bedc5c42b45f94d217bec23ca66c9fa98ff4d08b5a99"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-product_fourier-input-2",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-2",
+   "sha256": "2cbd646c9fbe51bda19e0adb953bec9a0bcfb5a95f07d5d768e0f9f573f6e6c9"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-product_fourier-input-3",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-3",
+   "sha256": "65228ec8133af190bb688763c63151d53f47a0e60b4e7978791e332c6f4a38a4"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-product_fourier-input-4",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-4",
+   "sha256": "a878c8f790e7af3194b1745a52757dabcf22b4322f3e8fa1f50b88ab8fbf101d"
+  },
+  {
+   "path": "ascella/mub-six/product_fourier-to-product_fourier-input-5",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-5",
+   "sha256": "f97ae6f0303deacb98353249179610c5f3b0018f65cf8a01cc321fe3400ac2e9"
+  },
+  {
+   "path": "ascella/sedenion-lcu/bright-repeat",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "sedenion-lcu",
+   "setting": "bright-repeat",
+   "sha256": "506683650822fbbf83e1802dcca6e8ef00c363a596df8dc7bfd3eaf0f065de02"
+  },
+  {
+   "path": "ascella/sedenion-lcu/bright",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "sedenion-lcu",
+   "setting": "bright",
+   "sha256": "c8c51bf4173557090a011671dc54ac396845c4f6a70e5bc238b9b011c9303b93"
+  },
+  {
+   "path": "ascella/sedenion-lcu/dark-repeat",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "sedenion-lcu",
+   "setting": "dark-repeat",
+   "sha256": "6ec55be0983b55a27ca5d7f36b75faca54615e8035aecfbf7312cd4382b3edd6"
+  },
+  {
+   "path": "ascella/sedenion-lcu/dark",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "sedenion-lcu",
+   "setting": "dark",
+   "sha256": "b4478a45e498f9febef5f0b6a893c5ac0767dfc488db965c9a7fae1ed2ba3083"
+  },
+  {
+   "path": "ascella/sedenion-lcu/fixture",
+   "provider": "qd",
+   "backend": "ascella",
+   "family": "sedenion-lcu",
+   "setting": "fixture",
+   "sha256": "290429ee267e85afa9794aad76435a09b4e5ef09ecc7c56882d04cc5205ca379"
+  },
+  {
+   "path": "qx/mub-six/computational-to-computational-input-0",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-0",
+   "sha256": "f954b905cc523ab3dfa081c8d93872959caae15ca98a3ba002f50f38999e6c61"
+  },
+  {
+   "path": "qx/mub-six/computational-to-computational-input-1",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-1",
+   "sha256": "327a3e7c0d7a268a41b352501dec5b971b1b4b4fc77a6f1f2c115c1b31d4cb26"
+  },
+  {
+   "path": "qx/mub-six/computational-to-computational-input-2",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-2",
+   "sha256": "8e1c2d8e1998ca2b31c3142bd1dabd9fd977a8a2bdf492ba0ee82c87fa1bf5b7"
+  },
+  {
+   "path": "qx/mub-six/computational-to-computational-input-3",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-3",
+   "sha256": "1cbf6124d59ac621f20f69044ee08253ab311e79d169b6ee31b8e19b180607fc"
+  },
+  {
+   "path": "qx/mub-six/computational-to-computational-input-4",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-4",
+   "sha256": "cf72e71527c96d29487cf518da22a207a0ba496c0801a2a15b6dbf9f5c4bdcf2"
+  },
+  {
+   "path": "qx/mub-six/computational-to-computational-input-5",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-5",
+   "sha256": "46b0aada4399bd4257ef58b3da6b4b95c07462d6a1b69f3f125e19edd2b850c5"
+  },
+  {
+   "path": "qx/mub-six/computational-to-product_chirped-input-0",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-0",
+   "sha256": "88fa749fd969178cc14c99a8fdf068b41dc1e3a61db90ec4dcf697a781a1c874"
+  },
+  {
+   "path": "qx/mub-six/computational-to-product_chirped-input-1",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-1",
+   "sha256": "63ccb2c0284d5204f54a2edd044d14e99bc282ea1259f6130bc53c89ac4f4a12"
+  },
+  {
+   "path": "qx/mub-six/computational-to-product_chirped-input-2",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-2",
+   "sha256": "f063f36fc69e1c94afd22a1b5f9102a6a16bb1a28e165137fafec4e9985f22e2"
+  },
+  {
+   "path": "qx/mub-six/computational-to-product_chirped-input-3",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-3",
+   "sha256": "aa5b8c078e2a25bdd76e3dcfb2a8e2598181b2b729890c14905cb0584898370d"
+  },
+  {
+   "path": "qx/mub-six/computational-to-product_chirped-input-4",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-4",
+   "sha256": "caebfc7a6731c75d3d1702a25d1378a246c436697492892ad1f28ac7af879f17"
+  },
+  {
+   "path": "qx/mub-six/computational-to-product_chirped-input-5",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-5",
+   "sha256": "2e3ae693c790f955aa8df32745ec420f65dfa10a58671f9385b66b4d526ee55e"
+  },
+  {
+   "path": "qx/mub-six/computational-to-product_fourier-input-0",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-0",
+   "sha256": "46044588fa45e7ed6cdadb8a9d1e1d39b441b774c67038bdb42f160485d1b519"
+  },
+  {
+   "path": "qx/mub-six/computational-to-product_fourier-input-1",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-1",
+   "sha256": "f237340d0775deba415e1efe4ffb3d41eccf9038dd91fc6adeb706b573a4b02c"
+  },
+  {
+   "path": "qx/mub-six/computational-to-product_fourier-input-2",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-2",
+   "sha256": "b5d3f28fbd9069af5f67dcd49922dca103165c3b865ba8a4904383123ad840b3"
+  },
+  {
+   "path": "qx/mub-six/computational-to-product_fourier-input-3",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-3",
+   "sha256": "7b083d3cb630fa7b9968cbfb93b7c662dbb2a25ebc0e41818f7d0ae123e82889"
+  },
+  {
+   "path": "qx/mub-six/computational-to-product_fourier-input-4",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-4",
+   "sha256": "68e7c93af3a6c337cb38fa8c6026a4138554ed6a90a86286406e76d88ea106ca"
+  },
+  {
+   "path": "qx/mub-six/computational-to-product_fourier-input-5",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-5",
+   "sha256": "649b3fd2ef43ef9fdc7648a038f0b86eb70b308d407ae1aa74b3919709be7904"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-computational-input-0",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-0",
+   "sha256": "acff856a969eede184057af4584a951dc34a8b5fc0269b2640b5032004775d0b"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-computational-input-1",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-1",
+   "sha256": "fa66ce76f3fdd712b58107faf79aa4bcabab3f450062140800e02e6e3545ea6a"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-computational-input-2",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-2",
+   "sha256": "66f29febaa4596d6acd633922d2bae62d43a859970340a3ef6b852286a0dac42"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-computational-input-3",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-3",
+   "sha256": "61cbb33fe2918292b5cd1344fb8b7757779e79a6df3b636f93d2cc6c8c068266"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-computational-input-4",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-4",
+   "sha256": "989ccd15f2b97ac000c717807d0dc9d20ddb6ec6a20f215efc44c506569fc872"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-computational-input-5",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-5",
+   "sha256": "7f57a352d937d6485f4bb9461cc2af5ca561a7c1dd72730fc9f08cb3855850d5"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-product_chirped-input-0",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-0",
+   "sha256": "81b7f93c29d1629f49a6a00ceaa9f15ebddeaccbf8df1de5996841c653e4e8b4"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-product_chirped-input-1",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-1",
+   "sha256": "37822753205eaa925e860dd8e4a183902245dc631f5acb93182de6b8bfbf0915"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-product_chirped-input-2",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-2",
+   "sha256": "3084db1d06e35b3990c47353fa3fdb10703a626e8450b2da28c4e85575401acb"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-product_chirped-input-3",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-3",
+   "sha256": "e8106a5fec6a9c621739d9ce496080ff3b17196625aea05ad85863278f5c4244"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-product_chirped-input-4",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-4",
+   "sha256": "a22fb93e7a39d49b1a05bacb0f3eb09a308d379c9cabd9c3838e66c0e736d394"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-product_chirped-input-5",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-5",
+   "sha256": "c02b1cb5f1de8468bba273308e2ad68aafb1ecc079b5011f2b63840bcdb859f7"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-product_fourier-input-0",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-0",
+   "sha256": "0cf25c7f92b1ca0410d8c3b3729f22cc2b9e2e6fc877abe999d847a6009c9579"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-product_fourier-input-1",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-1",
+   "sha256": "4ae820cb51370577a14d5f6e53c0b68f02dafed07920b4d5d1f8e16ab22512a0"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-product_fourier-input-2",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-2",
+   "sha256": "2e01541805f594d5b0582a2c06fcf5fed426f6862f70f4784549653bae8e6e5f"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-product_fourier-input-3",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-3",
+   "sha256": "1f017995a8438cb75d5757c85f4a87023a7909fc7390719c2ebf125f70c1a420"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-product_fourier-input-4",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-4",
+   "sha256": "40214352c3f5feac23cc2a8b5400cf2d7324e98d728edb8f44b98b6035639011"
+  },
+  {
+   "path": "qx/mub-six/product_chirped-to-product_fourier-input-5",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-5",
+   "sha256": "ae822f8983b0cb28fc3fdfca952e4cf3273b2954880273ac29535e491c300c03"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-computational-input-0",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-0",
+   "sha256": "2216a1caca9ce01a9442b6a12df3165aabee56fcee308e5c5fb6c06689bfe56e"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-computational-input-1",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-1",
+   "sha256": "f68664c2166fa318d2a15a13d06d7244b4c468abef125cdb24cdc84e48dbb0dd"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-computational-input-2",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-2",
+   "sha256": "a209c7bb0efad59e2a949b7125b415512f7da16895cbaf5814684921b517898d"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-computational-input-3",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-3",
+   "sha256": "b28549775f09ead34fdcad6188d3d9dc85cc21ba0d206bb35136685188325be8"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-computational-input-4",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-4",
+   "sha256": "f3552e9c25718d9deb23f137c113bd1773604cca6d9476a10bcdd13ac4b3b1e6"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-computational-input-5",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-5",
+   "sha256": "2140ef10123827ed08f5800cc781e2de1acb5c77a951fc8233562d3ce3f144ed"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-product_chirped-input-0",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-0",
+   "sha256": "983122c2bff9dea9cadbd0e7e1538a68595a5e71e162fa76610479bdc1ec876c"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-product_chirped-input-1",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-1",
+   "sha256": "3d170e837e5f0c913a220df30a6208220d25dde0485fb1f127edd1eb05bc75d0"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-product_chirped-input-2",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-2",
+   "sha256": "e4531b33fd2129d75b60819437bb208ab02f234298571489712167896e4e67be"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-product_chirped-input-3",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-3",
+   "sha256": "e9a0c18bddc12327994f7db384e6277c585939a53f947e5485f3f4faf08796e1"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-product_chirped-input-4",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-4",
+   "sha256": "9ccbe8e56b69343007e5bfa0bb99547d1cf92d8e562d18f1bb678a9473311b13"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-product_chirped-input-5",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-5",
+   "sha256": "3ea1ee63d2d67cf744e4ddfea8564efd2a5bd3a787c0180a4b262269f9e3b8f6"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-product_fourier-input-0",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-0",
+   "sha256": "bde77faa4c7c55ba77a983794aa14a81c1cdc2df5e982f6dce933d8395b2b2f5"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-product_fourier-input-1",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-1",
+   "sha256": "860948567059542465c13cf961954d28c2d6ae81c792e5990bd84cdc74a3923f"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-product_fourier-input-2",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-2",
+   "sha256": "bd04031c1dab5ffca9861c2b05df18031591c1b7678f245d3043a197e3936b38"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-product_fourier-input-3",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-3",
+   "sha256": "5f9ff69114c5970e929dfa840c4b880708bc877364b279e4140a3027e893e9c7"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-product_fourier-input-4",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-4",
+   "sha256": "75cb446255715afe20736eeae47f721d82bdf551c231cb4287e0668e77d5704a"
+  },
+  {
+   "path": "qx/mub-six/product_fourier-to-product_fourier-input-5",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-5",
+   "sha256": "18a22c308d56bf2bd5d3d6a9f6c94e5c301ac24d08ad909c3656019e8e89950f"
+  },
+  {
+   "path": "qx/quarter-mass/amplified",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "quarter-mass",
+   "setting": "amplified",
+   "sha256": "52171af7b0c752f85ad2a8f83ae5ef6ceffb0b9c0320746acf7db63d93dc3c61"
+  },
+  {
+   "path": "qx/quarter-mass/direct_target",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "quarter-mass",
+   "setting": "direct_target",
+   "sha256": "ceb81f8f14088d26914a476a7ff47b71bbab2cd674e778425b0df98dccb33387"
+  },
+  {
+   "path": "qx/quarter-mass/omit_oracle",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "quarter-mass",
+   "setting": "omit_oracle",
+   "sha256": "016be0b8340ba6e1b13cffa201c681313b786a12b07e09c03c00db628a3853ec"
+  },
+  {
+   "path": "qx/quarter-mass/omit_reflection",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "quarter-mass",
+   "setting": "omit_reflection",
+   "sha256": "dadb5f9604df523f37c76c841fa3825c9147adbb579e48c9593eea5fe9a093e3"
+  },
+  {
+   "path": "qx/quarter-mass/preparation",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "quarter-mass",
+   "setting": "preparation",
+   "sha256": "7ee3764ad1b1b6df8341a24c40f99c5a7d44382b6908de4dd950ca5a2b161c69"
+  },
+  {
+   "path": "qx/sedenion-lcu/bright-repeat",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "sedenion-lcu",
+   "setting": "bright-repeat",
+   "sha256": "19234de030c5c6fd0eecd1eb3f4fbd6f81dd2ac11adcfee74d0633e756419e7b"
+  },
+  {
+   "path": "qx/sedenion-lcu/bright",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "sedenion-lcu",
+   "setting": "bright",
+   "sha256": "ae8e5583eef3403ecacce0791968ea7f885d11ff78d9b3a307ee9d8fb5470e29"
+  },
+  {
+   "path": "qx/sedenion-lcu/dark-repeat",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "sedenion-lcu",
+   "setting": "dark-repeat",
+   "sha256": "bd2ff20033a08ff091157f7ec9911f7f4ef90848e846a9368df56a746fc1dab8"
+  },
+  {
+   "path": "qx/sedenion-lcu/dark",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "sedenion-lcu",
+   "setting": "dark",
+   "sha256": "b1600192c79d67e4befed5d4d5a826a77dcd71798c18d0bbd440a7919f623a31"
+  },
+  {
+   "path": "qx/sedenion-lcu/fixture",
+   "provider": "qi",
+   "backend": "qx",
+   "family": "sedenion-lcu",
+   "setting": "fixture",
+   "sha256": "8eeafc9bd008619bee05b7fb4e231fa6cc85712cfee2e4e6b05b3b02d9daf06f"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-computational-input-0",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-0",
+   "sha256": "8665790f5478196e8c2cb430f729040c93e5c1d2a360c0c6c7f10aac57f61861"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-computational-input-1",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-1",
+   "sha256": "ee9de0cbb24ab9cfb9f33261ad94b128a31095aeeaf59c84b1ad7aa9598a43d8"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-computational-input-2",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-2",
+   "sha256": "ef5c63bd7e2fdd717fe3f84bfb2bcba3d6cc57c6b9d274a2544b977a6e871aae"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-computational-input-3",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-3",
+   "sha256": "66571b790fd39f75aa9f0e6d103f3898de551ffdefc9eca9c624d0ed161c17e3"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-computational-input-4",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-4",
+   "sha256": "1c4e8504403901c9563bd3b4849600e7d54abf0d1c56b50d3964fe98f670e060"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-computational-input-5",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-5",
+   "sha256": "624a73ddcea5017a5d1df16ed47a21ac4c0e4e7cf21616f6d743743e4ce425c9"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-product_chirped-input-0",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-0",
+   "sha256": "68fec4ca66f4a12394de97aa68800ca913d50239755854fa74eebf92831d1092"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-product_chirped-input-1",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-1",
+   "sha256": "b7de999a6b7356d528c6b32cd4374c51cbe662e60d6034ed57df0f8896841863"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-product_chirped-input-2",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-2",
+   "sha256": "ed010ff57763e5402f297f6355651f379ef1b8d82a5802cdb5f86ae1739e451b"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-product_chirped-input-3",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-3",
+   "sha256": "c886a4fc12372562d2de4ed614ae4df0e1510503aeaafbdcb430d759771c7093"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-product_chirped-input-4",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-4",
+   "sha256": "71610b0c69e1b611120317e68429cb83ef4e16770b8899ef8ae3c27051063788"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-product_chirped-input-5",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-5",
+   "sha256": "866bef1a25b385a7172c7176506c8366a9d27a2c337a673b0a3939b1df1c0363"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-product_fourier-input-0",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-0",
+   "sha256": "bcb4d0433bee564cd8f016543563de103b4d83ad1c03418690d387cbb3648498"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-product_fourier-input-1",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-1",
+   "sha256": "edda06902d600c57b014bbefdbc95ad6424b1981f5202591ee9757620008149b"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-product_fourier-input-2",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-2",
+   "sha256": "17369956ca837436828684c79053188b7bb2537bb8db09c23bf1a79628de6c1c"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-product_fourier-input-3",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-3",
+   "sha256": "81e1dcd000ed99e76a9cb9df9efd0ea87be5493909b58b53dc4c36a72fcd5268"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-product_fourier-input-4",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-4",
+   "sha256": "f7fabdf5424b99e10396083b2be9ee2e6f817ad66028343b97879e1cb20c3960"
+  },
+  {
+   "path": "tuna/mub-six/computational-to-product_fourier-input-5",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-5",
+   "sha256": "9a19d352e01d7f38c36f4b6cfd8caff8776fd9a30e3b990966884eb586400047"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-computational-input-0",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-0",
+   "sha256": "3a1541091fed487f767a86d2e064cc2f91bdd503293feed210877e2d8673412d"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-computational-input-1",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-1",
+   "sha256": "b943c710962118051a44919b76b7d7f604358deba939324957acd6fbeebd0136"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-computational-input-2",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-2",
+   "sha256": "769916b239a8e0ef10f8da1ad774b56a378374410eb6c4df959b297aa796a94f"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-computational-input-3",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-3",
+   "sha256": "3e7a6ff4a3c25ac256a36eab5b4477a17932f1fe86368b162b1923263f8fd49a"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-computational-input-4",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-4",
+   "sha256": "fde721e73defc0cd13e74acc00df43d07d386ec99f5029d7dc84506bec298b4d"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-computational-input-5",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-5",
+   "sha256": "a3c0d487cc1f0c7833c80a9576264863a451dd15a4592a9ca8ffc39aa79c76b5"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-product_chirped-input-0",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-0",
+   "sha256": "e044c66ca121c396edec6ccf7244dcee77f6dbe301bcfaf869652a9bf9dfc342"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-product_chirped-input-1",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-1",
+   "sha256": "d5f026fc0878af231f7dff7f0ef38b1c7aa4251aa0f0e3625466df5c1e671e77"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-product_chirped-input-2",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-2",
+   "sha256": "1901dc7bbc31711a33ec5d18280820844a3da84f7f4d9f7cdab4ffcffcf00e75"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-product_chirped-input-3",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-3",
+   "sha256": "c4dce8679a9fe8da6dc1547b83896b99d8fe9f44f3d4e0cb4cc5ca40af92969c"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-product_chirped-input-4",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-4",
+   "sha256": "bd21b8e98904ed6a368b0f5cbb328bfefa36039634c02d9075804bc7520a2ca8"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-product_chirped-input-5",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-5",
+   "sha256": "3253cfa9bf5d96e4d317c3798e85626c1796a7ebd730e53504911914edfe086e"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-product_fourier-input-0",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-0",
+   "sha256": "a69f1a0b65e32b892211a165db0dc927b9f744d25fbcefe2bc66888038951fbd"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-product_fourier-input-1",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-1",
+   "sha256": "b355dc3f890fd08a2fe9ee720a72c3f49fee15d172cefc4285f8ea42c1085919"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-product_fourier-input-2",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-2",
+   "sha256": "9e92bd0fc3733530db87ca68829e8a14b9008180c15e6cf5534384e110962d1c"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-product_fourier-input-3",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-3",
+   "sha256": "6b30f28a13624c8c7313d81b3f32a171bbf1a842c014e082536f8333ef8f8260"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-product_fourier-input-4",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-4",
+   "sha256": "f80c94ef4195ae640a1ec0416b5ca3e1be8e1e2a07870bc5c8354b7452cc819a"
+  },
+  {
+   "path": "tuna/mub-six/product_chirped-to-product_fourier-input-5",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-5",
+   "sha256": "0692f50ec7f626e37ac932594336b1cb448aaaed3ff59004c1366d8487eb6b16"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-computational-input-0",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-0",
+   "sha256": "316e89178e86d45e774a1cc37ce8cf92fbf1de3ac14e96b33a9449d80dacf2ac"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-computational-input-1",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-1",
+   "sha256": "06b69b9e613ea6efb1024e5533f3ddb87217d54e21ef4a0667c350a94f77895b"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-computational-input-2",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-2",
+   "sha256": "fd29ba7d3da1a8a5453002bf9f5b850d11e7713891556ad7820a898708b5097d"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-computational-input-3",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-3",
+   "sha256": "f4b790ca5b6ad122edcf5583c3d090120d086445d67c944d1856a84e6a3e95a7"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-computational-input-4",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-4",
+   "sha256": "6690a483c1ed7148ec6bf4bec6bd02423c633ae596960e51c2de138879276a78"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-computational-input-5",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-5",
+   "sha256": "9cbf8342e2c97f6b2f54cd271d8360f2fb51696feeec619e360161ec5af1b7d4"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-product_chirped-input-0",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-0",
+   "sha256": "90b38f183634e5c659e2b6a7ab7a12ac1f12ccb3df1ae40aa897ea70e23eb8a1"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-product_chirped-input-1",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-1",
+   "sha256": "5e0ee95fce088603f3becd905ea8e910fa9b8d04ceb829723854e6602c5019f8"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-product_chirped-input-2",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-2",
+   "sha256": "e936eea3ceb24022be068afc74525c820b728dc0e18401f113f62e85862f5100"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-product_chirped-input-3",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-3",
+   "sha256": "1613281044e54c9b087bdc9deaf5c5d7b4697ad9ff2b015a6ad5794c90e325de"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-product_chirped-input-4",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-4",
+   "sha256": "f909b31623f95518fd8c43c5fba7c483085bdaad446ff38725ac1a104ce0091b"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-product_chirped-input-5",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-5",
+   "sha256": "28fe2b6b6ef7724207cc2e0590d7b524697f3aec85cc66004abfe293e67b9f05"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-product_fourier-input-0",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-0",
+   "sha256": "f0fbc983691648ca97fd625de35ddabaa2f13c33fb59e52dc8828fc2454d3b0a"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-product_fourier-input-1",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-1",
+   "sha256": "697b1f6bcc24387e313a7aa6cb18d22f5cc0d1f3b92e299e7402e5962a4c6a7c"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-product_fourier-input-2",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-2",
+   "sha256": "4b22faaba689fad8da66e081f0b6f616193be8a59d31eded86051ee8afecc23a"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-product_fourier-input-3",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-3",
+   "sha256": "26d85cc12b533dc41e8a876d4bc91f6433e0e73adba345be32116fc562829ffd"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-product_fourier-input-4",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-4",
+   "sha256": "7ff66673f03029c3f3798052096c86d3bd0131c1d5720027f1cb6edef58cd1f0"
+  },
+  {
+   "path": "tuna/mub-six/product_fourier-to-product_fourier-input-5",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-5",
+   "sha256": "671368d92a8e7d2c82ec3bb02e17df9c713c6225be08a449b0edee47062716d4"
+  },
+  {
+   "path": "tuna/quarter-mass/amplified",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "quarter-mass",
+   "setting": "amplified",
+   "sha256": "94d9349ba3dfd5b8a6f00dc47742a92b5d9af60007e1b35aeff1b929507a22cf"
+  },
+  {
+   "path": "tuna/quarter-mass/direct_target",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "quarter-mass",
+   "setting": "direct_target",
+   "sha256": "3cd8ffdbb1601665b7c44add9fe7b126f90b1788ba3d559d26103f295f83d25d"
+  },
+  {
+   "path": "tuna/quarter-mass/omit_oracle",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "quarter-mass",
+   "setting": "omit_oracle",
+   "sha256": "dae2bebdab30307868526ab95c9a9abc9aa9032183050a68ea4989583675329f"
+  },
+  {
+   "path": "tuna/quarter-mass/omit_reflection",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "quarter-mass",
+   "setting": "omit_reflection",
+   "sha256": "f0477fa3f99c2009d24bb6baccae00c3e72dcac9ede4b057e6839991d99741da"
+  },
+  {
+   "path": "tuna/quarter-mass/preparation",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "quarter-mass",
+   "setting": "preparation",
+   "sha256": "3a00e38044c22524e56b6c611b4b936007875f1ccfcfd0482b245a2e33584c3e"
+  },
+  {
+   "path": "tuna/sedenion-lcu/bright-repeat",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "sedenion-lcu",
+   "setting": "bright-repeat",
+   "sha256": "2f4cc10a8cbe66cb2be1551fedf13eb9c84805601100ea3285d655df0b86bd3d"
+  },
+  {
+   "path": "tuna/sedenion-lcu/bright",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "sedenion-lcu",
+   "setting": "bright",
+   "sha256": "192e70ed931ae59dd851c6231dd0916ba7290c3c3107f0b8c2908630a1fc0496"
+  },
+  {
+   "path": "tuna/sedenion-lcu/dark-repeat",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "sedenion-lcu",
+   "setting": "dark-repeat",
+   "sha256": "2f80f8872b4d31b05e18147dbd70f784c10296048411c826aed3ce0e0ba4274a"
+  },
+  {
+   "path": "tuna/sedenion-lcu/dark",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "sedenion-lcu",
+   "setting": "dark",
+   "sha256": "648c7ba35fb31e1b9a067e2ce958bbb20e442d8b28ec72a0f7fc5b700fcbee77"
+  },
+  {
+   "path": "tuna/sedenion-lcu/fixture",
+   "provider": "qi",
+   "backend": "tuna",
+   "family": "sedenion-lcu",
+   "setting": "fixture",
+   "sha256": "627e6b4d0767fd21e29bc3a23e44958fe7aaebcc6418a2bfe64cefcd16935131"
+  }
+ ],
+ "acquisition_status": "unsubmitted",
+ "interval_families": {
+  "ascella:mub-six": {
+   "backend": "ascella",
+   "family": "mub-six",
+   "endpoint_count": 648,
+   "settings": 54
+  },
+  "ascella:sedenion-lcu": {
+   "backend": "ascella",
+   "family": "sedenion-lcu",
+   "endpoint_count": 65,
+   "settings": 5
+  },
+  "qx:mub-six": {
+   "backend": "qx",
+   "family": "mub-six",
+   "endpoint_count": 432,
+   "settings": 54
+  },
+  "qx:quarter-mass": {
+   "backend": "qx",
+   "family": "quarter-mass",
+   "endpoint_count": 25,
+   "settings": 5
+  },
+  "qx:sedenion-lcu": {
+   "backend": "qx",
+   "family": "sedenion-lcu",
+   "endpoint_count": 165,
+   "settings": 5
+  },
+  "tuna:mub-six": {
+   "backend": "tuna",
+   "family": "mub-six",
+   "endpoint_count": 432,
+   "settings": 54
+  },
+  "tuna:quarter-mass": {
+   "backend": "tuna",
+   "family": "quarter-mass",
+   "endpoint_count": 25,
+   "settings": 5
+  },
+  "tuna:sedenion-lcu": {
+   "backend": "tuna",
+   "family": "sedenion-lcu",
+   "endpoint_count": 165,
+   "settings": 5
+  }
+ },
+ "acquisition_schedule": [
+  {
+   "path": "ascella/sedenion-lcu/dark",
+   "backend": "ascella",
+   "order": 0,
+   "contrast_weight": 1,
+   "repeat_of": null
+  },
+  {
+   "path": "ascella/sedenion-lcu/bright",
+   "backend": "ascella",
+   "order": 1,
+   "contrast_weight": -1,
+   "repeat_of": null
+  },
+  {
+   "path": "ascella/sedenion-lcu/bright-repeat",
+   "backend": "ascella",
+   "order": 2,
+   "contrast_weight": -1,
+   "repeat_of": "bright"
+  },
+  {
+   "path": "ascella/sedenion-lcu/dark-repeat",
+   "backend": "ascella",
+   "order": 3,
+   "contrast_weight": 1,
+   "repeat_of": "dark"
+  },
+  {
+   "path": "ascella/sedenion-lcu/fixture",
+   "backend": "ascella",
+   "order": 4,
+   "contrast_weight": 0,
+   "repeat_of": null
+  },
+  {
+   "path": "qx/sedenion-lcu/dark",
+   "backend": "qx",
+   "order": 0,
+   "contrast_weight": 1,
+   "repeat_of": null
+  },
+  {
+   "path": "qx/sedenion-lcu/bright",
+   "backend": "qx",
+   "order": 1,
+   "contrast_weight": -1,
+   "repeat_of": null
+  },
+  {
+   "path": "qx/sedenion-lcu/bright-repeat",
+   "backend": "qx",
+   "order": 2,
+   "contrast_weight": -1,
+   "repeat_of": "bright"
+  },
+  {
+   "path": "qx/sedenion-lcu/dark-repeat",
+   "backend": "qx",
+   "order": 3,
+   "contrast_weight": 1,
+   "repeat_of": "dark"
+  },
+  {
+   "path": "qx/sedenion-lcu/fixture",
+   "backend": "qx",
+   "order": 4,
+   "contrast_weight": 0,
+   "repeat_of": null
+  },
+  {
+   "path": "tuna/sedenion-lcu/dark",
+   "backend": "tuna",
+   "order": 0,
+   "contrast_weight": 1,
+   "repeat_of": null
+  },
+  {
+   "path": "tuna/sedenion-lcu/bright",
+   "backend": "tuna",
+   "order": 1,
+   "contrast_weight": -1,
+   "repeat_of": null
+  },
+  {
+   "path": "tuna/sedenion-lcu/bright-repeat",
+   "backend": "tuna",
+   "order": 2,
+   "contrast_weight": -1,
+   "repeat_of": "bright"
+  },
+  {
+   "path": "tuna/sedenion-lcu/dark-repeat",
+   "backend": "tuna",
+   "order": 3,
+   "contrast_weight": 1,
+   "repeat_of": "dark"
+  },
+  {
+   "path": "tuna/sedenion-lcu/fixture",
+   "backend": "tuna",
+   "order": 4,
+   "contrast_weight": 0,
+   "repeat_of": null
+  }
+ ],
+ "contrast_admission": "requires retained execution order, per-batch readout and matching optical computed meshes",
+ "scope": "MUB overlaps, quarter-mass amplification and certified sedenion support restrictions"
+}

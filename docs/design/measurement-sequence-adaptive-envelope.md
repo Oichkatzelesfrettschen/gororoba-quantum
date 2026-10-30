@@ -26,7 +26,7 @@ The owner approves an envelope: the dry run's `record.json`, whose `envelope` se
 written case is generated from, bound by the record's sha256. It binds the experiment digest and the pinching analysis digest, the family definition (arms, N grid,
 signs, member list and order, control members), shots, seeds (`seed_transpiler` 20261010 and its count, the simulator
 seed), Sampler policy (twirling and dynamical decoupling off, `init_qubits` true), the repetition delay and its
-fallback, the IBM Cloud instance, the dependency versions, the backend (ibm_kingston only), the layout function and its
+fallback, the IBM Cloud instance, the dependency versions, the backend (the one the plan chose among ibm_fez, ibm_kingston and ibm_marrakesh, `msq_envelope.ENVELOPE_BACKENDS`), the layout function and its
 width tiers, the replan bound, the per-attempt ceilings, and the code digest of the constructor.
 
 The constructor is a pure function `plan(snapshot)` of one canonical snapshot: the backend configuration and properties

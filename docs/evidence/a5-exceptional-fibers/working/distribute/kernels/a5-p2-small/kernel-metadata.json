@@ -1,0 +1,13 @@
+{
+ "id": "probablyeric/a5-p2-small",
+ "title": "a5-p2-small",
+ "code_file": "a5-p2-small.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": false,
+ "enable_internet": true,
+ "dataset_sources": [],
+ "kernel_sources": [],
+ "competition_sources": []
+}

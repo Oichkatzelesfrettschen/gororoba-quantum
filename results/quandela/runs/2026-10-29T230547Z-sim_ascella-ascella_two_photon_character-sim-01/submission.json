@@ -1,0 +1,112 @@
+{
+ "admitted_statuses": [
+  "available"
+ ],
+ "approval": "approved: Mission 2 twin falsifier on sim:ascella",
+ "availability_at_plan": {
+  "max_concurrent_jobs": 1,
+  "max_jobs_in_queue": 1,
+  "max_running_qt_jobs": 10,
+  "num_concurrent_jobs": 0,
+  "num_jobs_in_queue": 0,
+  "num_running_qt_jobs": 0
+ },
+ "body_sha256": "04c6f669b96e00f67ec2fe3568e5033fae6f95a686a9b81fd8490faa228a73d3",
+ "case": "sim-01",
+ "cases_sha256": "68c6a74d061b6a5ea4bff6cd2358bac0bc107f1aad5c25be47a3f2d4eb2850d9",
+ "credit_ceiling": 0.0,
+ "estimated_credits": 0.0,
+ "estimated_shots": 172032,
+ "expected_seconds": 120.0,
+ "job_id": "65755d93-5dd6-4e42-afe9-0c0f184e500c",
+ "max_credits": 0.0,
+ "max_samples": 172032,
+ "max_shots": 5505024,
+ "payload_version_basis": "declared",
+ "per_job_credits": 0.0,
+ "perfs_at_plan": {},
+ "platform": "sim:ascella",
+ "platform_at_plan": {
+  "bookable": false,
+  "description": "Arcturus simulator",
+  "is_locked": false,
+  "is_offer_platform": true,
+  "maintenance": null,
+  "max_duration": 300,
+  "name": "sim:ascella",
+  "price_per_shot": 0.0,
+  "statistic": {
+   "2026-10-22": {
+    "availability": 99.91000000000001
+   },
+   "2026-10-23": {
+    "availability": 99.89999999999999
+   },
+   "2026-10-24": {
+    "availability": 99.91
+   },
+   "2026-10-25": {
+    "availability": 99.89999999999999
+   },
+   "2026-10-26": {
+    "availability": 99.9
+   },
+   "2026-10-27": {
+    "availability": 99.89999999999999
+   },
+   "2026-10-28": {
+    "availability": 99.9
+   },
+   "2026-10-29": {
+    "availability": 99.17
+   }
+  },
+  "status": "available",
+  "type": "simulator"
+ },
+ "schema": "qd-submission-v1",
+ "status_at_plan": {
+  "explorer": "available",
+  "processor": "available"
+ },
+ "submitted_utc": "2026-10-29T23:05:47+00:00",
+ "usage_before": [
+  {
+   "total_jobs": 111,
+   "usage": [
+    {
+     "credits": 0.0,
+     "duration_seconds": 2985,
+     "free_credits": 40.067744000000005,
+     "nb_jobs": 41,
+     "platform_name": "qpu:ascella"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 1128,
+     "free_credits": 16.0,
+     "nb_jobs": 17,
+     "platform_name": "sim:belenos"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 5570,
+     "free_credits": 50.26742,
+     "nb_jobs": 49,
+     "platform_name": "qpu:belenos"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 100,
+     "free_credits": 4.0,
+     "nb_jobs": 4,
+     "platform_name": "sim:ascella"
+    }
+   ]
+  }
+ ],
+ "versions": {
+  "exqalibur": "1.4.2",
+  "perceval-quandela": "1.3.1"
+ }
+}

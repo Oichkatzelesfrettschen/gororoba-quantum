@@ -121,6 +121,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import uuid
 import zlib
 from collections.abc import Callable
 from fractions import Fraction
@@ -261,7 +262,7 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
         headers["Authorization"] = f"Bearer {token()}"
     data = None
     if body is not None:
-        data = json.dumps(body).encode("utf-8")
+        data = json.dumps(body, sort_keys=True).encode("utf-8")
         headers["Content-Type"] = "application/json"
     call = urllib.request.Request(API + route, data=data, headers=headers, method=method)
     try:
@@ -1056,7 +1057,27 @@ def explorer_row(platform: str) -> dict[str, Any]:
 
 
 # Frozen processor records whose server command sets stand in for a live record that omits specs.commands.
-RETAINED_RECORDS = (ROOT / "docs/evidence/bdsc/inputs/receipt.json",)
+RETAINED_RECORDS = (
+    ROOT / "docs/evidence/bdsc/inputs/receipt.json",
+    ROOT / "docs/evidence/quandela/catalogue.json",
+)
+
+
+def same_worker_version(frozen: dict[str, Any], live: dict[str, Any]) -> bool:
+    """Whether a frozen processor record and a live specs share the worker software that fixes Perceval commands.
+
+    Perceval RPC serialization and Command schemas are governed by pcvl_version, pcvl-worker and
+    perceval-quandela. Hardware driver patches (such as mosaiq-arcturus or universalchipworker) do not alter
+    the client-server RPC Command parameter signatures.
+    """
+    if frozen.get("pcvl_version") != live.get("pcvl_version"):
+        return False
+    frozen_sw = frozen.get("software_versions", {})
+    live_sw = live.get("software_versions", {})
+    if frozen_sw == live_sw:
+        return True
+    rpc_keys = ("pcvl-worker", "perceval-quandela")
+    return all(frozen_sw.get(k) == live_sw.get(k) and live_sw.get(k) is not None for k in rpc_keys)
 
 
 def retained_commands(platform: str, specs: Any) -> tuple[Any, str] | None:
@@ -1064,8 +1085,7 @@ def retained_commands(platform: str, specs: Any) -> tuple[Any, str] | None:
     for path in RETAINED_RECORDS:
         record = json.loads(path.read_text(encoding="utf-8"))
         frozen = record.get("processors", {}).get(platform, {}).get("specs", {})
-        same_worker = all(frozen.get(key) == specs.get(key) for key in ("pcvl_version", "software_versions"))
-        if same_worker and isinstance(frozen.get("commands"), str):
+        if same_worker_version(frozen, specs) and isinstance(frozen.get("commands"), str):
             return frozen["commands"], f"{path.relative_to(ROOT)} retrieved {record.get('retrieved_utc')}"
     return None
 
@@ -1077,8 +1097,9 @@ def payload_version_basis(specs: Any, platform: str) -> str:
     RemoteComputer builds its command signatures once, at construction, from specs.commands, and without them from
     CommandFactory, whose sample_count lacks compilation_seed; RPCBasedCommunicationLayer.send builds a version-2
     body only when specs.commands is present, and PayloadUpdater's upgrade of a version-1 body drops an explicit
-    mitigation list. A frozen record with equal pcvl_version and software_versions names the same worker, so its
-    serialized commands are the live server's; without one the commands stay absent.
+    mitigation list. A frozen record with the same pcvl_version and the same pcvl-worker and perceval-quandela
+    versions names the same worker, so its serialized commands are the live server's; without one the commands
+    stay absent.
     """
     if "commands" in specs:
         return "declared"
@@ -1420,8 +1441,152 @@ def write_json(path: Path, value: object, exclusive: bool = False) -> None:
             os.link(temporary, path)
         else:
             os.replace(temporary, path)
+        directory_fd = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
     finally:
         temporary.unlink(missing_ok=True)
+
+
+def acquisition_sources(manifest: dict[str, Any]) -> dict[str, str]:
+    """Verify every declared analyzer dependency before preparing or sending a reviewed case."""
+    expected = manifest.get("analysis_sources")
+    required = {
+        "scripts/qd_platform.py",
+        "scripts/ascella_predecessor_case.py",
+        "scripts/ascella_predecessor_analysis.py",
+        "scripts/ascella_experiment_analysis.py",
+        "scripts/experiment_analysis.py",
+        "gororoba_quantum/parallel.py",
+    }
+    if not isinstance(expected, dict) or set(expected) != required:
+        raise PlatformError("a reviewed acquisition requires complete constructor/analyzer source identities")
+    for name, checksum in expected.items():
+        if not isinstance(name, str) or not isinstance(checksum, str):
+            raise PlatformError("invalid reviewed source identity")
+        path = (ROOT / name).resolve()
+        if Path(name).is_absolute() or not path.is_relative_to(ROOT.resolve()):
+            raise PlatformError("reviewed source escapes the repository")
+        if sha256_bytes(path.read_bytes()) != checksum:
+            raise PlatformError(f"reviewed source changed: {name}")
+    return dict(expected)
+
+
+def requires_acquisition_review(manifest: dict[str, Any]) -> bool:
+    """Recognize the registered diagnostic by family, design or analyzer identity."""
+    sources = manifest.get("analysis_sources")
+    return (
+        manifest.get("family") == "ascella_predecessor"
+        or manifest.get("design") == "docs/design/ascella-predecessor-intervention.md"
+        or isinstance(sources, dict)
+        and "scripts/ascella_predecessor_analysis.py" in sources
+    )
+
+
+def acquisition_policy(
+    platform: str, max_credits: float, expected_seconds: float, per_job_credits: float, admit_statuses: tuple[str, ...]
+) -> dict[str, Any]:
+    return {
+        "platform": platform,
+        "max_credits": max_credits,
+        "expected_seconds": expected_seconds,
+        "per_job_credits": per_job_credits,
+        "admit_statuses": list(admit_statuses),
+    }
+
+
+def prepare_acquisition_review(
+    case_dir: Path,
+    platform: str,
+    max_credits: float,
+    expected_seconds: float,
+    per_job_credits: float,
+    admit_statuses: tuple[str, ...],
+    destination: Path,
+) -> dict[str, Any]:
+    """Retain the complete submitted-body candidate; perform provider reads only."""
+    manifest, _, case_sha = load_case(case_dir)
+    sources = acquisition_sources(manifest)
+    checked = plan(case_dir, platform, max_credits, expected_seconds, per_job_credits, admit_statuses)
+    if checked["cases_sha256"] != case_sha:
+        raise PlatformError("the case changed while preparing the review")
+    acquisition_sources(manifest)
+    packet = {
+        "schema": "qd-reviewed-acquisition-v1",
+        "prepared_utc": now(),
+        "cases_sha256": case_sha,
+        "circuit_sha256": manifest["circuit"]["sha256"],
+        "analysis_sources": sources,
+        "policy": acquisition_policy(platform, max_credits, expected_seconds, per_job_credits, admit_statuses),
+        "binding": {
+            key: checked[key]
+            for key in (
+                "body",
+                "body_sha256",
+                "versions",
+                "payload_version_basis",
+                "estimated_shots",
+                "admitted_statuses",
+            )
+        },
+        "provider_observation": {key: value for key, value in checked.items() if key != "body"},
+        "scope": "descriptive target-slot diagnostic; physical predecessor attribution unavailable",
+        "authorization": "pending-owner-approval",
+        "process_id_policy": "pin reviewed Perceval transport process UUID; compare the complete posted body",
+    }
+    write_json(destination, packet, exclusive=True)
+    return packet
+
+
+def verify_acquisition_review(
+    case_dir: Path, checked: dict[str, Any], packet_path: Path, expected_sha256: str, policy: dict[str, Any]
+) -> dict[str, Any]:
+    """Bind fresh admission and the exact POST body to an externally retained review digest."""
+    if not re.fullmatch(r"[0-9a-f]{64}", expected_sha256):
+        raise PlatformError("a reviewed acquisition requires an external SHA-256 anchor")
+    with packet_path.open("rb") as stream:
+        raw = stream.read(20 * 1024 * 1024 + 1)
+    if len(raw) > 20 * 1024 * 1024 or sha256_bytes(raw) != expected_sha256:
+        raise PlatformError("reviewed acquisition packet differs from its external anchor")
+    packet = json.loads(raw)
+    if not isinstance(packet, dict) or packet.get("schema") != "qd-reviewed-acquisition-v1":
+        raise PlatformError("unsupported reviewed acquisition packet")
+    manifest, _, case_sha = load_case(case_dir)
+    sources = acquisition_sources(manifest)
+    circuit_sha = sha256_bytes((case_dir / manifest["circuit"]["file"]).read_bytes())
+    if (
+        packet.get("policy") != policy
+        or packet.get("cases_sha256") != case_sha
+        or checked.get("cases_sha256") != case_sha
+        or packet.get("analysis_sources") != sources
+        or packet.get("circuit_sha256") != circuit_sha
+        or circuit_sha != manifest["circuit"]["sha256"]
+    ):
+        raise PlatformError("the fresh acquisition changes reviewed policy, case, circuit or sources")
+    binding = packet.get("binding")
+    if not isinstance(binding, dict) or not isinstance(binding.get("body"), dict):
+        raise PlatformError("reviewed acquisition body is absent")
+    for key in ("versions", "payload_version_basis", "estimated_shots", "admitted_statuses"):
+        if checked.get(key) != binding.get(key):
+            raise PlatformError(f"the fresh acquisition changes reviewed {key}")
+    body = checked.get("body")
+    if not isinstance(body, dict):
+        raise PlatformError("the fresh acquisition body is absent")
+    try:
+        uuid.UUID(body["process_id"])
+        uuid.UUID(binding["body"]["process_id"])
+    except (ValueError, TypeError, KeyError, AttributeError) as error:
+        raise PlatformError("Perceval transport process identity must be a UUID") from error
+    # Perceval payload_generator gives process_id a uuid4 at module load. Pin
+    # that transport identifier so the actual POST remains byte-bound across processes.
+    body["process_id"] = binding["body"]["process_id"]
+    body_sha = sha256_bytes(json.dumps(body, sort_keys=True).encode())
+    if body != binding["body"] or body_sha != binding.get("body_sha256"):
+        raise PlatformError("the fresh acquisition changes the reviewed POST body")
+    checked["body_sha256"] = body_sha
+    return packet
 
 
 def submit(
@@ -1433,6 +1598,8 @@ def submit(
     per_job_credits: float,
     admit_statuses: tuple[str, ...] = (),
     verify: Callable[[dict[str, Any]], None] | None = None,
+    reviewed_packet: Path | None = None,
+    reviewed_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Send one approved case as one job while holding the token's submit lock beside the token file.
 
@@ -1442,7 +1609,11 @@ def submit(
     """
     if not approval.strip():
         raise PlatformError("a nonempty approval is required")
-    manifest = load_case(case_dir)[0]
+    manifest, _, gated_case_sha256 = load_case(case_dir)
+    if (reviewed_packet is None) != (reviewed_sha256 is None):
+        raise PlatformError("reviewed packet and digest must be supplied together")
+    if requires_acquisition_review(manifest) and reviewed_packet is None:
+        raise PlatformError("Ascella target-slot acquisition requires an externally anchored reviewed packet")
     if manifest.get("acquisition_admission", "ready") != "ready":
         raise PlatformError(f"{manifest['job']}: acquisition admission is {manifest['acquisition_admission']}")
     if manifest.get("draft"):
@@ -1454,15 +1625,56 @@ def submit(
         if any((case_dir / name).exists() for name in ("submission.json", "submission-state.json", "job-body.json")):
             raise PlatformError(f"{case_dir} was submitted or holds an interrupted submission; never resubmit it")
         checked = plan(case_dir, platform, max_credits, expected_seconds, per_job_credits, admit_statuses)
+        if checked.get("cases_sha256") != gated_case_sha256:
+            raise PlatformError("the acquisition case changed between admission and planning")
         if verify is not None:
             verify(checked)
+        reviewed = None
+        if reviewed_packet is not None and reviewed_sha256 is not None:
+            reviewed = verify_acquisition_review(
+                case_dir,
+                checked,
+                reviewed_packet,
+                reviewed_sha256,
+                acquisition_policy(platform, max_credits, expected_seconds, per_job_credits, admit_statuses),
+            )
         usage_before = usage_rows(get("/api/tokens/usage/report"))
+        if reviewed_packet is not None and reviewed_sha256 is not None:
+            reviewed = verify_acquisition_review(
+                case_dir,
+                checked,
+                reviewed_packet,
+                reviewed_sha256,
+                acquisition_policy(platform, max_credits, expected_seconds, per_job_credits, admit_statuses),
+            )
         receipt = {
             "schema": SUBMISSION_SCHEMA,
             "approval": approval,
             "usage_before": usage_before,
             **{key: value for key, value in checked.items() if key != "body"},
         }
+        if reviewed is not None:
+            attempts = lock.parent / "reviewed-acquisition-attempts"
+            attempts.mkdir(mode=0o700, exist_ok=True)
+            parent_fd = os.open(attempts.parent, os.O_RDONLY | os.O_DIRECTORY)
+            try:
+                os.fsync(parent_fd)
+            finally:
+                os.close(parent_fd)
+            try:
+                write_json(
+                    attempts / f"{reviewed['cases_sha256']}.json",
+                    {
+                        "cases_sha256": reviewed["cases_sha256"],
+                        "reviewed_packet_sha256": reviewed_sha256,
+                        "body_sha256": checked["body_sha256"],
+                        "consumed_utc": now(),
+                    },
+                    exclusive=True,
+                )
+            except FileExistsError:
+                raise PlatformError("the reviewed case-wide acquisition attempt is already consumed") from None
+            receipt["reviewed_packet_sha256"] = reviewed_sha256
         state = {
             "schema": STATE_SCHEMA,
             "phase": "post_outcome_unknown",
@@ -1518,6 +1730,8 @@ def parse_counts(results: str) -> dict[str, int]:
         raw = stream.decompress(base64.b64decode(text[len(":PCVL:zip:") :], validate=True), RESULT_LIMIT)
         if stream.unconsumed_tail:
             raise PlatformError(f"a zipped result exceeds {RESULT_LIMIT} bytes")
+        if not stream.eof or stream.unused_data:
+            raise PlatformError("a zipped result must contain exactly one complete compressed stream")
         text = raw.decode("ascii")
     prefix = ":PCVL:BSCount:"
     if not text.startswith(prefix) or not (text.endswith("}") and text[len(prefix)] == "{"):
@@ -2164,6 +2378,16 @@ def payload_version_self_test() -> None:
     specs = PlatformSpecs(dict(same))
     if not payload_version_basis(specs, "qpu:belenos").startswith("restored from"):
         raise PlatformError("self-test: the frozen worker's command set was not restored")
+    ascella_frozen = json.loads(RETAINED_RECORDS[1].read_text(encoding="utf-8"))["processors"]["qpu:ascella"]["specs"]
+    ascella_same = {key: ascella_frozen[key] for key in ("pcvl_version", "software_versions", "available_commands")}
+    ascella_specs = PlatformSpecs(dict(ascella_same))
+    if not payload_version_basis(ascella_specs, "qpu:ascella").startswith("restored from"):
+        raise PlatformError("self-test: qpu:ascella frozen worker command set was not restored")
+    ascella_other = PlatformSpecs(
+        {**ascella_same, "software_versions": {**ascella_same["software_versions"], "pcvl-worker": "0.0.0"}}
+    )
+    if payload_version_basis(ascella_other, "qpu:ascella") != "absent" or "commands" in ascella_other:
+        raise PlatformError("self-test: another ascella worker record received the frozen command set")
     sample_count = next(c for c in specs.commands if c.name == "sample_count")
     built = pcvl.Experiment(pcvl.BS())
     built.with_input(pcvl.BasicState([1, 0]))
@@ -2861,7 +3085,7 @@ def main() -> int:
     p.add_argument("--agents", type=Path, nargs="+", help="files carrying the quandela-facts section")
     p = sub.add_parser("facts")
     p.add_argument("directory", type=Path)
-    for name in ("plan", "submit"):
+    for name in ("plan", "review", "submit"):
         p = sub.add_parser(name)
         p.add_argument("case_dir", type=Path)
         p.add_argument("--platform", required=True)
@@ -2876,6 +3100,10 @@ def main() -> int:
         )
         if name == "submit":
             p.add_argument("--approval", required=True, help="the user's approval, quoted, kept in submission.json")
+            p.add_argument("--reviewed-packet", type=Path, help="the externally reviewed acquisition packet")
+            p.add_argument("--reviewed-sha256", help="the independently retained packet SHA-256")
+        if name == "review":
+            p.add_argument("--out", type=Path, required=True, help="write-once complete acquisition review packet")
     p = sub.add_parser("recover")
     p.add_argument("case_dir", type=Path)
     p = sub.add_parser("collect")
@@ -2901,7 +3129,7 @@ def main() -> int:
         check(args.directory, args.agents)
     elif args.command == "facts":
         print(facts_table(load(args.directory)), end="")
-    elif args.command in ("plan", "submit", "recover", "collect", "runs"):
+    elif args.command in ("plan", "review", "submit", "recover", "collect", "runs"):
         try:
             if args.command == "plan":
                 checked = plan(
@@ -2913,6 +3141,25 @@ def main() -> int:
                     tuple(args.admit_status),
                 )
                 print(json.dumps({k: v for k, v in checked.items() if k != "body"}, indent=1, sort_keys=True))
+            elif args.command == "review":
+                packet = prepare_acquisition_review(
+                    args.case_dir,
+                    args.platform,
+                    args.max_credits,
+                    args.expected_seconds,
+                    args.per_job_credits,
+                    tuple(args.admit_status),
+                    args.out,
+                )
+                print(
+                    json.dumps(
+                        {
+                            "packet_sha256": sha256_bytes(args.out.read_bytes()),
+                            "body_sha256": packet["binding"]["body_sha256"],
+                        },
+                        indent=1,
+                    )
+                )
             elif args.command == "submit":
                 record = submit(
                     args.case_dir,
@@ -2922,6 +3169,8 @@ def main() -> int:
                     args.expected_seconds,
                     args.per_job_credits,
                     tuple(args.admit_status),
+                    reviewed_packet=args.reviewed_packet,
+                    reviewed_sha256=args.reviewed_sha256,
                 )
                 print(f"job {record['job_id']} on {record['platform']}")
             elif args.command == "recover":

@@ -1,0 +1,20 @@
+E8bar->N+ blocked_error {'blocked_diagnostic': 'Singular exited with status 14'}
+E8bar->N- blocked_error {'blocked_diagnostic': 'Singular exited with status 14'}
+Iso->N+ blocked_timeout {'blocked_diagnostic': 'Singular exceeded the 300-second timeout'}
+Iso->N- blocked_timeout {'blocked_diagnostic': 'Singular exceeded the 300-second timeout'}
+W8->N+ blocked_error {'blocked_diagnostic': 'Singular exited with status 14'}
+W8->N- blocked_error {'blocked_diagnostic': 'Singular exited with status 14'}
+X+->N+ blocked_timeout {'blocked_diagnostic': 'Singular exceeded the 300-second timeout'}
+X+->N- blocked_timeout {'blocked_diagnostic': 'Singular exceeded the 300-second timeout'}
+X-->N+ blocked_timeout {'blocked_diagnostic': 'Singular exceeded the 300-second timeout'}
+X-->N- blocked_timeout {'blocked_diagnostic': 'Singular exceeded the 300-second timeout'}
+COST E8bar->N+ blocked_error modular_rees_fiber 227 2535084
+COST E8bar->N- blocked_error modular_rees_fiber 226 2535104
+COST Iso->N+ blocked_timeout modular_rees_fiber 300 None
+COST Iso->N- blocked_timeout modular_rees_fiber 300 None
+COST W8->N+ blocked_error modular_rees_fiber 83 2542112
+COST W8->N- blocked_error modular_rees_fiber 86 2542368
+COST X+->N+ blocked_timeout modular_rees_fiber 300 None
+COST X+->N- blocked_timeout modular_rees_fiber 300 None
+COST X-->N+ blocked_timeout modular_rees_fiber 300 None
+COST X-->N- blocked_timeout modular_rees_fiber 300 None

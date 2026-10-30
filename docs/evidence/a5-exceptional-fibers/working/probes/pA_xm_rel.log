@@ -1,0 +1,16 @@
+RESULT size 69
+RESULT projdim 3 degree 12 std_seconds 0
+   ? `intvec`(h) = `bigintvec` is not supported
+   ? expected `intvec` = `intvec`
+   ? error occurred in or before pA_xm_rel.sing line 11: `intvec h=hilb(sK,1);`
+   ? expected intvec-expression. type 'help intvec;'
+RESULT hilb1 `h`
+RESULT HF 0
+RESULT HF_deg 1 15
+RESULT HF_deg 2 51
+RESULT HF_deg 3 122
+RESULT HF_deg 4 240
+RESULT HF_deg 5 417
+RESULT initial_degrees 2
+RESULT size_std 72
+exit 0

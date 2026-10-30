@@ -1,0 +1,203 @@
+{
+ "admitted_statuses": [
+  "available",
+  "running"
+ ],
+ "approval": "User 2026-10-29T22:01:07-07:00: continue and execute checking against ideals, then on qpu (packed box-kite blocks, qpu:belenos, sim results matched ideals)",
+ "availability_at_plan": {
+  "max_concurrent_jobs": 1,
+  "max_jobs_in_queue": 1,
+  "max_running_qt_jobs": 10,
+  "num_concurrent_jobs": 0,
+  "num_jobs_in_queue": 0,
+  "num_running_qt_jobs": 0
+ },
+ "body_sha256": "0aec9ab3e95af08d49aa729652e4940e982259e8cbb1257368ef7158f67da690",
+ "case": "job-01",
+ "cases_sha256": "02ec2747a7f0487c674ca4cc96e4041d93f6b8a426c7078a79b60955738ef66b",
+ "credit_ceiling": 1.12,
+ "estimated_credits": 1.06,
+ "estimated_shots": 60000,
+ "expected_seconds": 120.0,
+ "job_id": "d3161d56-75fb-4c6a-a666-6c2308be3fda",
+ "max_credits": 1.5,
+ "max_samples": 60000,
+ "max_shots": 120000,
+ "payload_version_basis": "restored from docs/evidence/bdsc/inputs/receipt.json retrieved 2026-10-17T17:53:31+00:00",
+ "per_job_credits": 1.0,
+ "perfs_at_plan": {
+  "Clock (MHz)": 4.94,
+  "Dark counts (detection/s)": [
+   15.2,
+   5.5,
+   0.5,
+   1.1,
+   0.1,
+   2.6,
+   0.1,
+   0.1,
+   0.1,
+   0.2,
+   0.0,
+   0.1,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.2,
+   0.1,
+   7.0,
+   0.2,
+   0.6,
+   0.0,
+   0.1
+  ],
+  "HOM (%)": 87.0,
+  "Transmission per mode (%)": {
+   "t_in": [
+    7.12,
+    0.0,
+    6.19,
+    0.0,
+    5.62,
+    0.0,
+    6.7,
+    0.0,
+    4.59,
+    5.6,
+    0.0,
+    0.0,
+    5.4,
+    4.37,
+    0.0,
+    0.0,
+    4.55,
+    0.0,
+    4.33,
+    0.0,
+    4.1,
+    0.0,
+    2.7,
+    0.0
+   ],
+   "t_out": [
+    94.02,
+    83.18,
+    75.28,
+    69.51,
+    98.85,
+    59.51,
+    82.42,
+    85.24,
+    89.07,
+    89.88,
+    124.36,
+    106.33,
+    72.12,
+    103.37,
+    112.67,
+    29.05,
+    101.15,
+    132.4,
+    118.87,
+    118.08,
+    115.05,
+    137.76,
+    113.1,
+    118.32
+   ]
+  },
+  "Transmittance (%)": 5.56,
+  "g2 (%)": 1.3
+ },
+ "platform": "qpu:belenos",
+ "platform_at_plan": {
+  "bookable": true,
+  "description": "Belenos QPU",
+  "is_locked": false,
+  "is_offer_platform": true,
+  "maintenance": {
+   "end_time": "2026-11-05T12:00:00Z",
+   "maintenance_title": "Weekly maintenance",
+   "start_time": "2026-11-05T08:30:00Z",
+   "time_zone": "Europe/Paris"
+  },
+  "max_duration": 300,
+  "name": "qpu:belenos",
+  "price_per_shot": 1e-06,
+  "statistic": {
+   "2026-10-23": {
+    "availability": 80.98
+   },
+   "2026-10-24": {
+    "availability": 83.07
+   },
+   "2026-10-25": {
+    "availability": 88.65
+   },
+   "2026-10-26": {
+    "availability": 32.4
+   },
+   "2026-10-27": {
+    "availability": 0.0
+   },
+   "2026-10-28": {
+    "availability": 25.270000000000003
+   },
+   "2026-10-29": {
+    "availability": 82.73
+   },
+   "2026-10-30": {
+    "availability": 79.72999999999999
+   }
+  },
+  "status": "running",
+  "type": "qpu"
+ },
+ "schema": "qd-submission-v1",
+ "status_at_plan": {
+  "explorer": "running",
+  "processor": "running"
+ },
+ "submitted_utc": "2026-10-30T05:08:12+00:00",
+ "usage_before": [
+  {
+   "total_jobs": 122,
+   "usage": [
+    {
+     "credits": 0.0,
+     "duration_seconds": 2985,
+     "free_credits": 40.067744000000005,
+     "nb_jobs": 42,
+     "platform_name": "qpu:ascella"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 1526,
+     "free_credits": 22.0,
+     "nb_jobs": 24,
+     "platform_name": "sim:belenos"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 5623,
+     "free_credits": 51.32742000000001,
+     "nb_jobs": 50,
+     "platform_name": "qpu:belenos"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 204,
+     "free_credits": 6.0,
+     "nb_jobs": 6,
+     "platform_name": "sim:ascella"
+    }
+   ]
+  }
+ ],
+ "versions": {
+  "exqalibur": "1.4.2",
+  "perceval-quandela": "1.3.1"
+ }
+}

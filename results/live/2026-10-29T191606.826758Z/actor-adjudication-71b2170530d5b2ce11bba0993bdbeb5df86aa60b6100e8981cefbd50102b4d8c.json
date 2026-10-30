@@ -1,0 +1,2759 @@
+{
+ "acquisition_status": "complete",
+ "all_allocations_retained": true,
+ "allocations_without_results": [],
+ "analysis_digest": "8243bc0e9881bf78ef4b068372c0102165ac424f85988e33c6ac3045cb9d23a7",
+ "analysis_source_sha256": {
+  "gororoba_quantum/adjudicate.py": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e",
+  "gororoba_quantum/aer_identity.py": "9d2497f680457aa22e0bfc0b90b3990cb75e1ff46b0d9429e299c48a2c73f843",
+  "gororoba_quantum/aer_resources.py": "2a94c1f67b4debdbb50c5c086ab27a64026581d0adbef0070f5810a965ae45b6",
+  "gororoba_quantum/affine_residual.py": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec",
+  "gororoba_quantum/algebra_planning.py": "52ea1188fbb774f08327e092abc8b7ab85706ff61a5a2c88e52855d26f7d6a2d",
+  "gororoba_quantum/boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+  "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+  "gororoba_quantum/coherence_probes.py": "c6a4daa268fd6cc1ccd3254b3ddef7793da50cbd983a4e9d9ba562586c897b0a",
+  "gororoba_quantum/coherence_window.py": "123c0d02674b31dc9a51ed6af7a5f976dbe907c224ab8ac2025011d2420d80e7",
+  "gororoba_quantum/conditional_ramsey.py": "2ba6de1ce013c5c22adffc934ceefbbc7aaa7794f3f93a4b73c417f47317055f",
+  "gororoba_quantum/correction_circuits.py": "1df4b0a7b0681ee680122cd527494ee1323fb73c0524e570d495f572743da0f3",
+  "gororoba_quantum/correction_collection.py": "21a2c164a8b0c975812f477eacd27fa324a5313e3cd01d09747f19bcb15e6fd8",
+  "gororoba_quantum/correction_planning.py": "375ed74aa40c16ea38434d087618a48d4d137ad701f86d474798841cc01c243d",
+  "gororoba_quantum/correction_schedule.py": "ca6f58c9a9b0067ff5b7ca15c7ac1901ebfc2b65682df48765ef1e69325d7033",
+  "gororoba_quantum/correction_statistics.py": "0dcacbc5eab491e9cce6ab811a5c20a3e5c9a88f09a9f047c5342be84423223e",
+  "gororoba_quantum/crossed_tile_template.py": "eb8b56c939f21743a0a24d739a70a0dcfcc84a8b21139b241f0ebb32f1c25935",
+  "gororoba_quantum/designs.py": "30a89aaeb87557ff0da8b0763e2e3a62a5c316a647bc7c288ca251abfb52cd52",
+  "gororoba_quantum/diagnostic_controls.py": "a4ca158766428b1ceebfbabf27783ddc27cad881e67c8766aa6aa80a6a36e118",
+  "gororoba_quantum/diagnostic_experiments.py": "2f07d9a4d2c2e12981dc9ab8cfbdf1947ecab55026ad28f55c8115fa8e1e033d",
+  "gororoba_quantum/dynamic_density.py": "3bda5cf1169d4c223696e4c8c0096184ab963b48429df4c49450ff01c3992279",
+  "gororoba_quantum/et_campaign.py": "def989c129a5f0e7bf9b8b7a1f889b592cace88fa49e9e4c3857b4f01940d7ae",
+  "gororoba_quantum/et_planning.py": "3a04aa5cd86099b5f3e178fbec4297d4af3922f4c825211a83a88f1bc6a33d4d",
+  "gororoba_quantum/et_reference.py": "9e946fd826461e9c179013974eb53d26ad4d4af381662383bb2a230189f2ba07",
+  "gororoba_quantum/et_rows.py": "15f9f6e6235c5064aa7c9ca0bcf78873777c997df0cde208fcda90eeb31e91ce",
+  "gororoba_quantum/et_statistics.py": "fd775592dcc7ad31fab565fd5cd4450e6b34d882c80565c60e90495a9359a8db",
+  "gororoba_quantum/experiment_optimizer.py": "15526555785f8ad58a86764f221162c870306c18891b0800fc2d3d5f45ac80fe",
+  "gororoba_quantum/experiments.py": "2871c407d13b78acaea470c7400e6877e82908b53f204d62bb789e3ae2169d40",
+  "gororoba_quantum/factoring.py": "59d8bb783fa58e6079544874b689ee336c4d14b8b348c7f69864d4c9511918c4",
+  "gororoba_quantum/hybrid_shor.py": "5374ebf50f29ebd3357068a03c67dbb060f473f9c6816907a9e27347bbbb04e5",
+  "gororoba_quantum/ibm_account.py": "950cb1b250f92b914acf448fa0088cb1a7bd03214b3aaa9c525102567effb977",
+  "gororoba_quantum/idle_penalty.py": "5f3862e70442142babad88bdbfedb6274038af7cc9e86c051657a485e3dd5e62",
+  "gororoba_quantum/idle_readout.py": "586e5e57b9f7eda3b0284f36c54934a043a7a33057825de06aeb656035880b1b",
+  "gororoba_quantum/jax_bridge.py": "7aa1d4b7ad3f666bdb19abfc42d920db8345a7f8793fe4972a1f9beda8237bb5",
+  "gororoba_quantum/latency_recovery.py": "1adcfaa6a9de51f52582404c0c6299c74c642c498074ce257a413afa7892bea3",
+  "gororoba_quantum/law_encoding.py": "110a2ee5f66ca036bf18438327d77c6e0aac9663794d999964e54aaddf6a07d4",
+  "gororoba_quantum/live_run.py": "66531e7f8acdfaa1d777983852aaa25ae32ceb05a75b36e6aedbcdf28fdaafbf",
+  "gororoba_quantum/local_compute.py": "1873886f91c396179dcb26894ac3756dd75fa1bf7924b6b5bff960f74002825e",
+  "gororoba_quantum/maximal_experiments.py": "0d4e4c4d27dd4ac859c74b83d0ce269dece4aee670929f19b8d0391a02b5ec63",
+  "gororoba_quantum/measurement_sequence_analysis.py": "d5e2f1a51248fdb416bb7dc1f2a3ddcce1dd3d6325014fb0d51b1f0f8a364d58",
+  "gororoba_quantum/measurement_sequence_scatter.py": "6375b59d40c2f789f4e81b0b5f372853ff5b6ddeb87a2c20bf2581a7c3ef2ea8",
+  "gororoba_quantum/modular_arithmetic.py": "bb402d6c57b0d81fb3c53fee30e0c7764028aad3117b967d9670508b35b54725",
+  "gororoba_quantum/msq_envelope.py": "df0b3ab965d702840705219fe103c272533aeaef22727db9e5aab84ac61da9c6",
+  "gororoba_quantum/msq_envelope_analysis.py": "aebbcb0f5a9b9d46a0d1a45fcd5f065454fa1f8e1800c5363382ad0e18ec45bc",
+  "gororoba_quantum/msq_successor_analysis.py": "80a338d27e701c5561b6a605e93cc79413878bd6e76e837b00c6219e453c9eed",
+  "gororoba_quantum/n21_exact_planning.py": "b0c57e65cc43a3b5434178dc383caaf598c3e47c7846c205c93ea662a9600f22",
+  "gororoba_quantum/native_preflight.py": "454892065009078397471cce1ac9852754a5cc3c6a4460335c6c7c37577859c4",
+  "gororoba_quantum/order_finding.py": "18d27d9b007a670f309ba86c0cd0cddd04c75c1d182da4346d1192d4b6dc9001",
+  "gororoba_quantum/packing.py": "b4033e9323a3e82a1a66e9c18081df2476126762b9edbddc25547f2f3447c21b",
+  "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+  "gororoba_quantum/patch_characterization.py": "b96b75fa85b49308765a226e9cafc45432577778dd1a88aceb3ff70a8018a8b4",
+  "gororoba_quantum/placement_feasibility.py": "d86898b86460db166f258ced88c9da79f77b26b77a7e83fffd82055dbd2d5edf",
+  "gororoba_quantum/predict.py": "bf606703182e9bf847b15f433359cd64d84f3bc568d3b4b1d010cb2a3440dc3c",
+  "gororoba_quantum/primorial_campaigns.py": "9a25bd47e17da28cef61a92592eaef2fc2954b02bad7a1394af60a97c66a325b",
+  "gororoba_quantum/primorial_cover.py": "35d2acca2ecf20b39dded698c857d2fbe421648a3bdb714aef71ea23f3db8250",
+  "gororoba_quantum/primorial_tomography.py": "e8c5be162e6362db297587a8b694a6854dbe24efaa2730556de873cc8703f91c",
+  "gororoba_quantum/pub_calibration.py": "8e5484afc8abb1668e9490e46beb8f6bfb1e832fc3b3b281d796c1064a06a82e",
+  "gororoba_quantum/pub_shot_allocation.py": "978d8e4ac7a10818234a806d91b1d7cada4fe1628fd42ec23135a86edbcc6e61",
+  "gororoba_quantum/qet_ladder.py": "d8744d302f348af24dd6fec8d97a60bd88c72e9c292aa06e9cb0a0a1b5df614f",
+  "gororoba_quantum/qpe_diagnostics.py": "5d70a6194adfa7fbfb31614aaf6bb190e2f01848abbf87d4c2ce984c665eb138",
+  "gororoba_quantum/qpu_cases.py": "14aafa0ec2207fd24024c2676c5cc9aaa4f75b57fbb35ba1480949c766279dbb",
+  "gororoba_quantum/qpu_planning.py": "180b709c1db2ee059a38a4a161004cd22d249bd00d6af978c2d74b0798690925",
+  "gororoba_quantum/qrng_seeds.py": "96466443ff4c479c6f78512fc6702bef33d8b697c463d3be5bf8a96414e23f76",
+  "gororoba_quantum/qubit_baseline.py": "0d4708051b403a88041cb56a3ff48bb8fbe9630c58f99a5a39110f30878e9df3",
+  "gororoba_quantum/rank_attachments.py": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390",
+  "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
+  "gororoba_quantum/rank_polynomials.py": "0d08095bab24f8743f7c547f01223887e092e8643fb26661ed01b8f03a460f98",
+  "gororoba_quantum/rank_sector_experiments.py": "221bf8ed4043684843f9c6da24161a62ba5bde157078fd2f27e9b8b58d567436",
+  "gororoba_quantum/readout_actor_family.py": "2d4d7ee5483b022a481bfea733a0ccb4d36f6be4c1af670453ada7c17c38932f",
+  "gororoba_quantum/ripple_contracts.py": "d8aee5a4ef65680330df9246cbfd551ac551c499175130fcd21c54b2e9b147be",
+  "gororoba_quantum/ripple_dynamics.py": "0ef4f60eb3b0f9383098199364e304241b2da4ecbc5be15a830e16a4a976d53f",
+  "gororoba_quantum/ripple_experiments.py": "aa0cf6e365f3747a2f43b9a93a3e6b74513488f65184c4ec4b201774faba9602",
+  "gororoba_quantum/runtime_contracts.py": "8787cfae717a61dca59d9b8095afe47e86c421b6b8b28a5847a820dae030ec65",
+  "gororoba_quantum/select_lcu.py": "36302003a2b67e11f4e0cd9a1b89ed6b2c22a6019b64f868d5f8f56f48e08354",
+  "gororoba_quantum/star_ramsey.py": "fff981f88c7b39958cebd5005a1f6858bd940daa5d00fad12df9bb6cab83326a",
+  "gororoba_quantum/target_flip.py": "a609d56f188bca8b686c326964900dad9fd5312d1168adb0917e2e902b0e5fdc",
+  "gororoba_quantum/variance.py": "87a6eb18295d46beeed5c65be7472a45b1f8212c57b072d6e28a468c97859bb9",
+  "scripts/anu_qrng.py": "6dfb9876bd02df4656114a6c660956d584974ecbb1d7250e1bf40885aafcfaae",
+  "scripts/oq_platform.py": "7a109e1419d81ed6558f18f551805a20c3b4a134c63f2078b710dc03955b8316",
+  "scripts/outshift_qrng.py": "5948f33187b91ee0b18b4492c55692994b83018b5154b53c5439c902b112dc62",
+  "scripts/qd_belenos_mesh.py": "225e5070a17f2d1114c3c0ef9a23422485da2bc184efd8cbe6e6b181c262392b",
+  "scripts/qd_box_kite_analysis.py": "0fdad3599b3112da9920e6c64339e1c5620c7262c8ef07abef37113d72fa0d3e",
+  "scripts/qd_platform.py": "08941de901160d6f419b51905693d9921e3af34add328a82a5030ac4f55d9178",
+  "scripts/quandela_qrng.py": "ce4fa7008da3523fcf73eeaa23ff90a4710221dd1fbda55651361c887fd63149",
+  "scripts/readout_actor_cost_model.py": "fe0f37a7009d27c6037cd597da1ce9d1b369678285602c06b57948adda1329e3",
+  "scripts/readout_information_circuits.py": "282418abab3c38478830caf995833ad52646e8695040420171ae4047bdbaba66",
+  "scripts/readout_information_controls.py": "de6cd96e58568416a74a35f7a8f3d2437747646b9b4f41d9e2f9aa266decfd89",
+  "scripts/readout_sparse_projection.py": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e",
+  "scripts/readout_sparse_receipt.py": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+ },
+ "collection_sha256": "979b07a5ab676cca4918dc9c2b690ab4c145e93b017a4d5cc45537ed6138b186",
+ "inference": {
+  "hardware_verdict": null,
+  "physical_alignment": "unverified",
+  "predecessor_order": "unverified",
+  "status": "descriptive"
+ },
+ "jobs": {
+  "dbhpmuene4hc73bdcdbg": {
+   "pubs": [
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "10175e037d83f13b99d21066a49aad9fc5ed04d7c6debcb93aa530e47d7f0e40",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-30us-idle-input-0",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         4043,
+         53
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4007,
+         89
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4093,
+         3
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3954,
+         142
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4040,
+         56
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4004,
+         92
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3951,
+         145
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "b38834219345c7d84945bffe22dd3df4160be0f373c772b589db75600f045172",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3954,
+         89,
+         53,
+         0
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 0,
+      "pub_name": "delay-30us-idle-input-0",
+      "register_bitstrings_sha256": {
+       "c": "108d250426d82c791a86f5fa71ef1ca7356b9c173ae0bcc2bd78f944480d03f4"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "135f937c7543fe6c69d856c861f9cf305eddf94e4d6e9104cf6adf76c152d331",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "1ac650ec4e4257d7dc9ddc3bad777e22f51de0ecccd717d82b516c3e53e41d57",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-30us-idle-input-1",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         3948,
+         148
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3989,
+         107
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4093,
+         3
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3851,
+         245
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3945,
+         151
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3986,
+         110
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3848,
+         248
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "5a42d853b58a1df7a52e7db69cf4a62a565df31c89b122b706ff43a4dd336ad6",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3846,
+         102,
+         143,
+         5
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 1,
+      "pub_name": "delay-30us-idle-input-1",
+      "register_bitstrings_sha256": {
+       "c": "13d778cee1ef5b6af3bacaf296fffe5f614d09ab8f149f888d0ba8ec7fc364fb"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "6c3848ff6cf297e3629849a375ddbde49be06c19205e2455ddcb0f0d44ebe275",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "b7239a1ca6332839ac96c31e206647f864400829b952964988476c12abf87b86",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-30us-idle-input-2",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         4037,
+         59
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3984,
+         112
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4096,
+         0
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3933,
+         163
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4037,
+         59
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3984,
+         112
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3933,
+         163
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "f60d90468dd9b7ff49641dd29bbd0a3e5594ce2d306eb2cdd46df6de6542b225",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3929,
+         108,
+         55,
+         4
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 2,
+      "pub_name": "delay-30us-idle-input-2",
+      "register_bitstrings_sha256": {
+       "c": "32c6125dd2fd51dfa66cee4b4854186663b86448a24d66d4066b37f7b155d2d4"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "100e26da484f07b3af61fe2e4426cf99ef1158de66503a8df6076572e86f206c",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "eb41ed964657be31878160d6d65a401721d4765ece91618cb1e65844e04cf9e0",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-30us-idle-input-3",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         3931,
+         165
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3972,
+         124
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4091,
+         5
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3815,
+         281
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3926,
+         170
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3967,
+         129
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3810,
+         286
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "ca64bdad352d38ea002497e6e1230a4723e8fe950c749ebe43df1c7a3c9d22d8",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3811,
+         120,
+         161,
+         4
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 3,
+      "pub_name": "delay-30us-idle-input-3",
+      "register_bitstrings_sha256": {
+       "c": "f8d2251a4e71e3edb8a6528eb296e28bfbf4ecae6a7db8329b303b127ca3a193"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "09b0b08117f04f80f9215e97aa4453ca342a76bf3e9429d37ac3a3f86ea34397",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "553c81691899e25c94a0fcad9fdcd9690d407bb0ecb5110c4e98bb7a7f16ce52",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-30us-active-input-0",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         4020,
+         76
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4003,
+         93
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4092,
+         4
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3933,
+         163
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4016,
+         80
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3999,
+         97
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3929,
+         167
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "63ffd0c756147a9bdccfe8c9bfdd0dfb405d3126175ed45e6b8cc2c65eb4819c",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3930,
+         90,
+         73,
+         3
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 4,
+      "pub_name": "delay-30us-active-input-0",
+      "register_bitstrings_sha256": {
+       "c": "923a52fea63ebdd846558bdc01451d710bb1b12d8580ac8e83eab0c264e53590"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "45ef84fb44be9ef15ffbaab821615e9b09776537f1ed14a391432cb5db1cbfe5",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "e8c2e6f137aefe06d60cf150a735210dba217fd5166c30964b812b3d289ff12b",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-30us-active-input-1",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         3970,
+         126
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4007,
+         89
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4093,
+         3
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3885,
+         211
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3967,
+         129
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4004,
+         92
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3882,
+         214
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "5204a7091cb54cb710ebe70a5e947318828544232bbb83339ce64987ffcb3095",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3883,
+         87,
+         124,
+         2
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 5,
+      "pub_name": "delay-30us-active-input-1",
+      "register_bitstrings_sha256": {
+       "c": "e5c22c497591cac592b35d61db1303245580f33f51ecfeb79898f942c4aa65ea"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "c383e26940719010e30bd62ae545b84f4cbb947db8cfef117eb5338c614fdcdc",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "e5f1627ea6148f7440c3a66886ec12fcabfc1ba690450caee55eb620fc80d679",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-30us-active-input-2",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         4036,
+         60
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3961,
+         135
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4089,
+         7
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3905,
+         191
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4031,
+         65
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3954,
+         142
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3900,
+         196
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "7adb67c01f9d41b03747d60295550e67feb1d5de5227b512d8a762891f00fa16",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3903,
+         133,
+         58,
+         2
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 6,
+      "pub_name": "delay-30us-active-input-2",
+      "register_bitstrings_sha256": {
+       "c": "44e6a83787f8aff4c3ea8fa2d19d35d35817ca9303b87de276e13e7e5a98ee38"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "b27e91b7dac18e5f4b1778f7fb2c9f83c82cbbd3ec92a67d5344c20c8addf70d",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "db663686636aa091b75adbb0b6971ec488657c1c65ab184b5cd0be13ffb1c9fd",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-30us-active-input-3",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         3959,
+         137
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3967,
+         129
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4094,
+         2
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3838,
+         258
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3959,
+         137
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3965,
+         131
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3838,
+         258
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "06b434f5760dba9af90c7a7714d91e3cf0d1691c32e5b1e36d17dd7a84db7867",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3834,
+         125,
+         133,
+         4
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 7,
+      "pub_name": "delay-30us-active-input-3",
+      "register_bitstrings_sha256": {
+       "c": "218d2b3a8893ef0255ac52ecc78183dcd39a10d8c7a27a4b480e6aad858c4d4d"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "65a22cdbb9cb59757501fe3d039a8df0a994d77bed84cfb90c83c18e45eccfa7",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    }
+   ]
+  },
+  "dbhpmvene4hc73bdcdcg": {
+   "pubs": [
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "d56d7cb2f4afb912d84290d526f14ed2593d7976c032e9ffc9c13752033a5dca",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-50us-idle-input-0",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         4035,
+         61
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4014,
+         82
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4092,
+         4
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3955,
+         141
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4031,
+         65
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4010,
+         86
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3951,
+         145
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "3e53aa9b7a8332f08218a0c18d6747baca62e6426922c820e508e4a9dbd89e0f",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3954,
+         81,
+         60,
+         1
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 0,
+      "pub_name": "delay-50us-idle-input-0",
+      "register_bitstrings_sha256": {
+       "c": "0dada40e784080e98beb4a9edd12370f837f746881ea9615b4e2706436f63d4b"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "972678fdd62192babc33eb41bd2064410049fb6dc4bba90bc9f355e58e5ca7b3",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "698439314c68f20027d128363cc5c4e9eb1ae33fb5daa59b7727643069844b5f",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-50us-idle-input-1",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         3963,
+         133
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4027,
+         69
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4090,
+         6
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3898,
+         198
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3957,
+         139
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4021,
+         75
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3892,
+         204
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "91b0cf987c4494cce7db7bcdc9e11aded8e0bdcfe8ab69c2bb789b1f65a3988e",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3896,
+         67,
+         131,
+         2
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 1,
+      "pub_name": "delay-50us-idle-input-1",
+      "register_bitstrings_sha256": {
+       "c": "77a5d730060cf3d6a482d95b1791797a221356bffbe9e715c5d01d4190a758a5"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "e34b204a73e235d73622401877229dd696730310de05dd67ebe2c08fdd9b235a",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "fd0a3131e3b84a6302468a38def06b1472e13acae1af8f2032a6e83856d34a00",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-50us-idle-input-2",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         4045,
+         51
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3993,
+         103
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4090,
+         6
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3950,
+         146
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4039,
+         57
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3989,
+         107
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3946,
+         150
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "382f92d7151b2e9455cade069ddec9f3d61eeb08b2a263ea5aa096d29be1fd67",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3946,
+         99,
+         47,
+         4
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 2,
+      "pub_name": "delay-50us-idle-input-2",
+      "register_bitstrings_sha256": {
+       "c": "06d39994bedb916cfa11e39a37f21906b460371786d98f52dcf48bca4ad04747"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "8eb10616fce2c067d6eef5d4318017cd1345fc366f3cb931a20c148cbe906cde",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "3abcaacebf92771c11d394fe69b21bb310804ed9430161ddd914d2da6a355fc0",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-50us-idle-input-3",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         3948,
+         148
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3996,
+         100
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4091,
+         5
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3856,
+         240
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3943,
+         153
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3993,
+         103
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3853,
+         243
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "b6252b17ac75fdf9a96e9e2d9e80d1237e3d5882f7b90ba20b1d844573f1e2e1",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3852,
+         96,
+         144,
+         4
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 3,
+      "pub_name": "delay-50us-idle-input-3",
+      "register_bitstrings_sha256": {
+       "c": "6dde98253f9d45fbedf5a2eb5b75f93e961fd161fb13e5e2a67777c4134b0861"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "3ea1ae0fc91679e3c84570a33f0c607ebb8e53889a326d4c0279246607c1874f",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "957463f7cd8010b1e9fb6b123f4a8475279a2d1fb4f86600e8db29963500be03",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-50us-active-input-0",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         4041,
+         55
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4028,
+         68
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4092,
+         4
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3973,
+         123
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4037,
+         59
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4026,
+         70
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3971,
+         125
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "1c2adb0963a5bc1161393f2ee2065e47d70c957c1c9d7b06e0167f09355daa53",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3973,
+         68,
+         55,
+         0
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 4,
+      "pub_name": "delay-50us-active-input-0",
+      "register_bitstrings_sha256": {
+       "c": "e717885518112dc282d0958f4caa906ed21f869b3ccc309a9566cb7eca8cb364"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "52c72a18f5975e60f38e9994ce41fb688ebe26dca86ed3bdc64e29635401467a",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "cdf111453cc36aa2256ad9ffc86f01a9ffb4e5c162507ea402ed116e109f62ed",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-50us-active-input-1",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         3954,
+         142
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4024,
+         72
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4094,
+         2
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3882,
+         214
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3952,
+         144
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4022,
+         74
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3880,
+         216
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "4984d124591bb56c19378facda5128989ebc89cc3fc2eb550bc4bcfc898b8723",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3882,
+         72,
+         142,
+         0
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 5,
+      "pub_name": "delay-50us-active-input-1",
+      "register_bitstrings_sha256": {
+       "c": "6b7620a1d7161d7a996c186c439820f63e3cb5565c84af68f7724bd94caf1887"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "505db5dc5707f82092dc9b1fa3eee799d02b3ce8530c2321ccd6a21b44dc729f",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "32ac37862f6b16f0d39b9fe93e119c2ea43d1e7877690180c7867d582f13d999",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-50us-active-input-2",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         4025,
+         71
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3987,
+         109
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4095,
+         1
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3920,
+         176
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4024,
+         72
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3986,
+         110
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3919,
+         177
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "7fde6de6286f641af63efb1f1e851972c360860ee0524604c9ebf847743ef849",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3918,
+         107,
+         69,
+         2
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 6,
+      "pub_name": "delay-50us-active-input-2",
+      "register_bitstrings_sha256": {
+       "c": "02ac6dc1dc82f76f0af6f219000e860b244048ea3a3c2eae24b49b35b03af707"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "252a305fe4e4fe427c8721183d28e0230ceade7a9b3a62ee994ba69a9fb20b06",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "7ae66217f8523af813ecf537784a5fd0fa74255594401244fb0899ec4110d279",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-50us-active-input-3",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         3959,
+         137
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3977,
+         119
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         4093,
+         3
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3846,
+         250
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3956,
+         140
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3974,
+         122
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         3843,
+         253
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "5ae6e9c3c195d88e094fa8b09ba386d581a411fbce852dc326979a7246f4f410",
+      "num_shots": 4096,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         3843,
+         116,
+         134,
+         3
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 7,
+      "pub_name": "delay-50us-active-input-3",
+      "register_bitstrings_sha256": {
+       "c": "f3b904921c63239a6df690ab11c0d98e15201397d6825ef4d0941da7b1a63b48"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 4096
+      },
+      "work_units": 696320
+     },
+     "receipt_sha256": "30dab4b0ea548f1d604eb4e6aee12443cac3ed30ab8318507235bca52bb4720c",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    }
+   ]
+  },
+  "dbhpn042d77s739d75rg": {
+   "pubs": [
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "f5e32e146962ebb6d1c92a75a952b8471a29d8b36d3a42b132c97f91a58fbbdf",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-250us-idle-input-0",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         1010,
+         14
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1007,
+         17
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1024,
+         0
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         993,
+         31
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1010,
+         14
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1007,
+         17
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         993,
+         31
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "505bb5b0eb8ba62cc8ae3a85c2be7513c8c8a6cabaa400fe237b6ac39f6e4453",
+      "num_shots": 1024,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         993,
+         17,
+         14,
+         0
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 0,
+      "pub_name": "delay-250us-idle-input-0",
+      "register_bitstrings_sha256": {
+       "c": "df406e08cc6c0cd3f547e990951bd0695bbebd28b83bcb95a0cb3cb7bc8acd05"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 1024
+      },
+      "work_units": 174080
+     },
+     "receipt_sha256": "cb28db4fb03025bdec78a6d551c3e77cf02b1dd57506c6cf2a95dcbdf9b52328",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "223db2bf000c6b31516a4b80a2c2a29e5c1196b428cc8c181a91eb04fbc0d5fc",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-250us-idle-input-1",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         995,
+         29
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1009,
+         15
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1020,
+         4
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         986,
+         38
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         991,
+         33
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1005,
+         19
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         982,
+         42
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "864b77c82b24736a21c6aa5d61d5f7c34b5abf6525a74a375efd6d8ffca8a9a0",
+      "num_shots": 1024,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         983,
+         12,
+         26,
+         3
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 1,
+      "pub_name": "delay-250us-idle-input-1",
+      "register_bitstrings_sha256": {
+       "c": "50718f7616b20b383f6ff02a7564ca0864bc6ca68885cf33c70e7e4fd9f7c4d4"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 1024
+      },
+      "work_units": 174080
+     },
+     "receipt_sha256": "cff10137606fdc989651e35c04989d6123be9468325789d03dee8c7f119384d4",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "385da2a0fcc4fb2e7a75e67dd384d668e8de8d9aaddf254dfa654ea27f2804a3",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-250us-idle-input-2",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         1007,
+         17
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         991,
+         33
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1023,
+         1
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         976,
+         48
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1006,
+         18
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         990,
+         34
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         975,
+         49
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "fff7a4774e3428cd6d71f247fd0206aedbc6bad75d9aba38d32b0402b0e790e0",
+      "num_shots": 1024,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         975,
+         32,
+         16,
+         1
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 2,
+      "pub_name": "delay-250us-idle-input-2",
+      "register_bitstrings_sha256": {
+       "c": "683e2c77a3e314bc7d437adf5a76487c91f7690b282a16eb527075fe6d11b87c"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 1024
+      },
+      "work_units": 174080
+     },
+     "receipt_sha256": "e86c6ca6c56e900b348874bf888be2cd798109e66ba4f09262330b8e400ed571",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "f146e6adcdd27d3244387907e28c2d2d4fd79006f2678c96c5a2bc33e019fa05",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-250us-idle-input-3",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         980,
+         44
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         998,
+         26
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1023,
+         1
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         960,
+         64
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         979,
+         45
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         997,
+         27
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         959,
+         65
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "340dfe55f7eedfff65d8acd545983374867940a3d7574e1d3ef450eb493ae880",
+      "num_shots": 1024,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         957,
+         23,
+         41,
+         3
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 3,
+      "pub_name": "delay-250us-idle-input-3",
+      "register_bitstrings_sha256": {
+       "c": "47bf773f02ea5a7debdb6b6014a86337dd0a510a39ddb6e894bea2a95d7a5abd"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 1024
+      },
+      "work_units": 174080
+     },
+     "receipt_sha256": "3982001af67f2375ce3287df548f8ffe155f780f5e72128aa7f445ccf6c720c8",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "d40591e6af6f5db03290eaa812dbdcc371bb885e2651e13abb5bac243db70c0c",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-250us-active-input-0",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         1011,
+         13
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1007,
+         17
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1024,
+         0
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         994,
+         30
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1011,
+         13
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1007,
+         17
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         994,
+         30
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "e8299f7827bb62b3a8bcda2e2477a5c2faf82ad77a9fdca65bd0aaec168c7b88",
+      "num_shots": 1024,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         994,
+         17,
+         13,
+         0
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 4,
+      "pub_name": "delay-250us-active-input-0",
+      "register_bitstrings_sha256": {
+       "c": "69d6f541d2eb83a6af54348a44a1892830f4c29761962acd08cb4bbd389a4db1"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 1024
+      },
+      "work_units": 174080
+     },
+     "receipt_sha256": "1606381113437055b9d0f46c22f8ada8daad559db2e0f59d0f674e1d428c3b8b",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "760e7e59524b8c9cf85b5da95343d3787a1220d9c80d38ed8d593a9857eab103",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-250us-active-input-1",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         998,
+         26
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1005,
+         19
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1024,
+         0
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         981,
+         43
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         998,
+         26
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1005,
+         19
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         981,
+         43
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "19c5208ce4806eff90bab3b9eb64f075bb6b6cd57f5b81a87a044a3c9e9a7d06",
+      "num_shots": 1024,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         980,
+         18,
+         25,
+         1
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 5,
+      "pub_name": "delay-250us-active-input-1",
+      "register_bitstrings_sha256": {
+       "c": "f50d12427e9af7e5a3ad5f41c036762cc1d4e67d50bfbc9e9999450a202ad015"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 1024
+      },
+      "work_units": 174080
+     },
+     "receipt_sha256": "f4a8de42b5ce3c7b32a7191dcaf0adf8bd7c16d2d8ebb69af47d1ef9141c4c1f",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "5f9e29f16762e2b723544eecbdc8438ebb381d4f808736c087e2b731ba4cc1a8",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-250us-active-input-2",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         1009,
+         15
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         993,
+         31
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1023,
+         1
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         978,
+         46
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1008,
+         16
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         992,
+         32
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         977,
+         47
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "356567dc6a95ec64ca4d27a4b1ae8f9ab97e8e5eaccbb06340af291d95f48100",
+      "num_shots": 1024,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         978,
+         31,
+         15,
+         0
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 6,
+      "pub_name": "delay-250us-active-input-2",
+      "register_bitstrings_sha256": {
+       "c": "663770c1242fb531018c4b7d561a31461f2f14ced187895efc46121a97843e20"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 1024
+      },
+      "work_units": 174080
+     },
+     "receipt_sha256": "63f83fa3f73fcc3be4f31d01010a66d6a49448162c037e3c89c23582e06811c6",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    },
+    {
+     "boundary": "Internal byte and QPY wire consistency only; independent receipt provenance, approval, physical layout, preparation semantics, provider same-shot alignment and statistical admission remain unverified.",
+     "manifest_bytes_sha256": "9c3ef19f9f8df234971a39f73ebe40479dfd8d1ed923c8a75104e422bb8302ce",
+     "projection": {
+      "alignment": "Equal list positions are paired; physical same-shot alignment remains unauthenticated.",
+      "boundary": "Descriptive projection only; raw identity, physical mapping, predecessor order and inference are unauthenticated.",
+      "condition": "delay-250us-active-input-3",
+      "group_counts": [
+       {
+        "error_parity_even_odd": [
+         990,
+         34
+        ],
+        "logical_bits": [
+         0
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1001,
+         23
+        ],
+        "logical_bits": [
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1023,
+         1
+        ],
+        "logical_bits": [
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         969,
+         55
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         989,
+         35
+        ],
+        "logical_bits": [
+         0,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         1000,
+         24
+        ],
+        "logical_bits": [
+         1,
+         154
+        ]
+       },
+       {
+        "error_parity_even_odd": [
+         968,
+         56
+        ],
+        "logical_bits": [
+         0,
+         1,
+         154
+        ]
+       }
+      ],
+      "manifest_canonical_sha256": "80700d73c371f907a86f42e8c1586ecf16b2a299f25be04643ac851daa75e2aa",
+      "num_shots": 1024,
+      "pair_counts": [
+       {
+        "error_cells_00_01_10_11": [
+         968,
+         22,
+         33,
+         1
+        ],
+        "logical_bits": [
+         0,
+         1
+        ]
+       }
+      ],
+      "pub_index": 7,
+      "pub_name": "delay-250us-active-input-3",
+      "register_bitstrings_sha256": {
+       "c": "97067bcdefc956fb7c5d36ce635822b269fa5f6118105f3df8dbcd0e0fa3458f"
+      },
+      "schema": "readout-sparse-projection-result-v1",
+      "shot_index": {
+       "first": 0,
+       "meaning": "within-PUB list position",
+       "stop_exclusive": 1024
+      },
+      "work_units": 174080
+     },
+     "receipt_sha256": "b5159a5490b1d77fc61ed7796cb28d426d9d3dada045de065b935a063a64eeac",
+     "schema": "readout-sparse-receipt-verification-v1",
+     "verified_measurements": 156
+    }
+   ]
+  }
+ },
+ "reviewed_record_sha256": "4fa756abdb8534e8dffba3b78bc8a7f6906d6e32e2c8c768f7ec14395a14b6b1",
+ "schema": "readout-actor-adjudication-v1"
+}

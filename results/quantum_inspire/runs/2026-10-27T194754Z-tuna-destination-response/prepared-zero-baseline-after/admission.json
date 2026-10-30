@@ -1,0 +1,328 @@
+{
+ "schema": "qi-tuna-sequential-admission-v1",
+ "request_started_utc": "2026-10-27T20:23:17+00:00",
+ "observed_utc": "2026-10-27T20:23:22.960608+00:00",
+ "bindings": {
+  "campaign_sha256": "53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76",
+  "written_case_sha256": "a78a7fb77589f945bec1b91636998859bfbc32960f95747fb71dc4bcadfd4057",
+  "decision_sha256": "6c0beac3dfa4148ba6330a8eddc45faebfa15693de8e5127f8f9b94138a71367",
+  "terms_sha256": "e3702947c77cd23a6d1de2cd20d3da59ea7ae01a656ddaac692f3fdba3345931",
+  "analysis_contract_sha256": "0be6473032f4875f438ec22296d5a52dee6a51b5b8263198ede06b0386df1e26"
+ },
+ "public_policy_pages": [
+  {
+   "url": "https://www.quantum-inspire.com/faq/",
+   "html_sha256": "f10c0d090d5814ad8723d6b6b1fbe16f77f6f752c657286d657fc8833d42c9cd",
+   "text_sha256": "85d06920cdaab6850e3fc4df9080452542bf15b75e5a3c8f324cbd556062c830"
+  },
+  {
+   "url": "https://www.quantum-inspire.com/kbase/managing-your-account/",
+   "html_sha256": "9f070fa85ffe853343a4856fe9ad0cf934f4670babae1aff0ebe77868243a952",
+   "text_sha256": "88a54abe789c294f30cb5fe17187d0d7c5c9f66156821e47d33dd2f339d5ca25"
+  },
+  {
+   "url": "https://www.quantum-inspire.com/terms-and-conditions/",
+   "html_sha256": "d09e151592bfc51ca6a4f7e368e30fac78ed47f92cc4e1e0651a0b4e1ec39f6e",
+   "text_sha256": "dc96144f903ecdd1f5799e828b2a712f2ca73fa29186895a33e31852d2ce3259"
+  }
+ ],
+ "producer_sha256": "9edff4223e583b45d3c66bc3e6c7349a73b6e36925fec8774990b5a33a6490a5",
+ "boundary": "Read-only observations; provider state can change after observation.",
+ "admitted": true,
+ "failures": [],
+ "backend": {
+  "id": 7,
+  "identifier": "tuna_17",
+  "nqubits": 17,
+  "is_hardware": true,
+  "supports_raw_data": true,
+  "protocol_version": 2,
+  "job_execution_time_limit": 300.0,
+  "max_jobs_per_batch_job": 5,
+  "max_number_of_shots": 131072,
+  "batchjobs_per_queue_limit": 5,
+  "default_compiler_config": {
+   "mapping": [],
+   "routing": [],
+   "optimization": [],
+   "decomposition": [
+    {
+     "path": "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+     "method": "decompose",
+     "arguments": {}
+    },
+    {
+     "path": "opensquirrel.passes.decomposer.CZDecomposer",
+     "method": "decompose",
+     "arguments": {}
+    }
+   ]
+  }
+ },
+ "enabled": true,
+ "status": "executing",
+ "topology": [
+  [
+   0,
+   1
+  ],
+  [
+   1,
+   0
+  ],
+  [
+   0,
+   2
+  ],
+  [
+   2,
+   0
+  ],
+  [
+   4,
+   1
+  ],
+  [
+   1,
+   4
+  ],
+  [
+   4,
+   2
+  ],
+  [
+   2,
+   4
+  ],
+  [
+   4,
+   7
+  ],
+  [
+   7,
+   4
+  ],
+  [
+   4,
+   8
+  ],
+  [
+   8,
+   4
+  ],
+  [
+   5,
+   2
+  ],
+  [
+   2,
+   5
+  ],
+  [
+   5,
+   3
+  ],
+  [
+   3,
+   5
+  ],
+  [
+   5,
+   8
+  ],
+  [
+   8,
+   5
+  ],
+  [
+   5,
+   9
+  ],
+  [
+   9,
+   5
+  ],
+  [
+   6,
+   3
+  ],
+  [
+   3,
+   6
+  ],
+  [
+   6,
+   9
+  ],
+  [
+   9,
+   6
+  ],
+  [
+   10,
+   7
+  ],
+  [
+   7,
+   10
+  ],
+  [
+   10,
+   13
+  ],
+  [
+   13,
+   10
+  ],
+  [
+   11,
+   7
+  ],
+  [
+   7,
+   11
+  ],
+  [
+   11,
+   8
+  ],
+  [
+   8,
+   11
+  ],
+  [
+   11,
+   13
+  ],
+  [
+   13,
+   11
+  ],
+  [
+   11,
+   14
+  ],
+  [
+   14,
+   11
+  ],
+  [
+   12,
+   8
+  ],
+  [
+   8,
+   12
+  ],
+  [
+   12,
+   9
+  ],
+  [
+   9,
+   12
+  ],
+  [
+   12,
+   14
+  ],
+  [
+   14,
+   12
+  ],
+  [
+   12,
+   15
+  ],
+  [
+   15,
+   12
+  ],
+  [
+   16,
+   14
+  ],
+  [
+   14,
+   16
+  ],
+  [
+   16,
+   15
+  ],
+  [
+   15,
+   16
+  ]
+ ],
+ "gateset": [
+  "I",
+  "Rx",
+  "X",
+  "X90",
+  "mX90",
+  "Ry",
+  "Y",
+  "Y90",
+  "mY90",
+  "Rz",
+  "Z",
+  "S",
+  "T",
+  "Sdag",
+  "Tdag",
+  "H",
+  "CZ",
+  "init",
+  "measure",
+  "reset",
+  "barrier",
+  "wait"
+ ],
+ "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+ "required_edges": [
+  [
+   1,
+   4
+  ],
+  [
+   4,
+   8
+  ],
+  [
+   13,
+   11
+  ],
+  [
+   11,
+   14
+  ],
+  [
+   3,
+   6
+  ],
+  [
+   6,
+   9
+  ]
+ ],
+ "instances": [
+  {
+   "status": "executing",
+   "last_heartbeat": "2026-10-27T20:23:12.399843Z",
+   "age_seconds": 10.560765
+  }
+ ],
+ "heartbeat_max_age_seconds": 120,
+ "queue_user_only": true,
+ "queued_batches": 0,
+ "hardware_pause_left_seconds": 0,
+ "account_transaction_rows": 0,
+ "all_transaction_changes_zero": true,
+ "limits": {
+  "batch_circuits": 1,
+  "shots_per_circuit": 4096,
+  "account_hardware_queued_batches": 1,
+  "hardware_pause_seconds": 30
+ }
+}
