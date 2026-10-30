@@ -1,0 +1,19 @@
+{
+  "anti_self_dual_rank": 0,
+  "checks": {
+    "derivation_dimension_is_14": true,
+    "mutation_rejected": true,
+    "pair_product_is_e3": true,
+    "stabilizer_dimension_is_3": true,
+    "stabilizer_fixes_H": true,
+    "stabilizer_in_one_so4_factor": true
+  },
+  "derivation_dimension": 14,
+  "mutated_ranks": [
+    3,
+    1
+  ],
+  "pass": true,
+  "self_dual_rank": 3,
+  "stabilizer_dimension": 3
+}

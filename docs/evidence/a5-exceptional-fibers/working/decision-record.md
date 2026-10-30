@@ -325,3 +325,7 @@ Ordered steps (host unless stated; cgroup MemoryMax, MemorySwapMax=0, MALLOC_ARE
   - Both primes are geometrically irreducible by explicit rational parametrization; absPrimdecGTZ refuses characteristic p.
   - Open question: is P1 in the fiber at all? K2 only bounds the fiber from above. VB degree 4 (h4 vs 155) is the direct test.
 - 2026-10-30 E8-bar -> VB degree 4 (build/logs/mine/vb4/receipt-d4.json): h4 = 155 with 0 new relations, degree-certified. Products std took 5,184 s; peak 2.4 GB; matrix 155 x 20,339. F(I) = k[y]/K2 holds through degree 4. Tension with the arc data: no arc reaches the degree-3 component, yet no relation cutting it out appears through degree 4. A fiber equal to the degree-4 component alone needs new relations in some degree of 5 or more.
+
+## 2026-10-30 04:40 UTC: X+ quadric-ideal structure at p = 32029
+
+`runs/k2struct/xp_p2.sing` (radical plus `minAssChar` on the 69 X+ quadrics from the second-prime driver run, 8 GiB cap) returns, line for line, the X- result at p = 32009: K2 and its radical both a projective threefold of degree 12; h = 15, 51, 122, 240 for K2 and 12, 45, 112, 225 for the radical; K2 not radical; one minimal prime of projective dimension 3, degree 12, three linear generators. X+ and X- share their reduced quadric support structure, and the agreement crosses primes.

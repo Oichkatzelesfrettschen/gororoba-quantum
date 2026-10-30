@@ -5327,6 +5327,17 @@
    "replays": [
     "results/quantum_inspire/proposals/tuna-destination-qx-conformance/cases.json"
    ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/xi_real_type.py --check",
+   "name": "core-756",
+   "seconds": 0.4,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles-residuals/xi-real-type-result.json"
+   ]
   }
  ],
  "excluded": [

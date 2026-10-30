@@ -133,7 +133,10 @@ the fiber, the fiber is the single degree-4 component.
 least 3, and the nullity-8 record already found path-dependent boundary limits. The attaching datum is a family.
 
 **Sign-paired orbits have isomorphic fibers.** Survives for X+ with X- and W8 -> N+ with W8 -> N- by an explicit
-coordinate symmetry. For E8-bar -> N+ and N- the transport fails but the Hilbert functions agree through degree 2
+coordinate symmetry. The X+ quadric ideal at 32029 (`working/runs/k2struct/xp_p2.sing`, radical plus `minAssChar`)
+reproduces the X- structure at 32009 line for line: K2 and its radical are projective threefolds of degree 12, K2 is
+not radical, h = 15, 51, 122, 240 for K2 and 12, 45, 112, 225 for the radical, and the single minimal prime has
+projective dimension 3, degree 12 and three linear generators. For E8-bar -> N+ and N- the transport fails but the Hilbert functions agree through degree 2
 (21, 83); isomorphism is untested, and a structure computation on the N- quadrics decides it.
 
 **Results at 32009 hold in characteristic zero.** Survives on one degree of one pair. Falsifier: any h_d at 32029
