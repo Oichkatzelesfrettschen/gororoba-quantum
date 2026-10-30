@@ -1349,6 +1349,13 @@ def msqr_row_stems(width: int) -> tuple[str, ...]:
 # qubits chosen by the calibration-only rule of measurement_sequence_scatter.
 MSQD_FAMILY = "measurement-sequence-diagnostic"
 MSQD_MAIN_QUBITS = (91, 118, 95, 61, 147, 151, 59, 89)
+# The main qubits per backend: a floor holds for the backend it was measured on, and its main-qubit term reads the
+# qubits the pinching analysis runs there. ibm_fez's are the measurement-sequence successor's width-24 layout on the
+# 2026-10-29 15:30 PDT calibration (rehearsal results/live/2026-10-29T224918.845796Z).
+MSQD_MAIN_QUBITS_BY_BACKEND = {
+    "ibm_kingston": MSQD_MAIN_QUBITS,
+    "ibm_fez": (2, 8, 14, 18, 22, 28, 50, 54, 57, 64, 82, 86, 90, 94, 104, 110, 115, 124, 130, 134, 144, 147, 151, 154),
+}
 MSQD_ARM_STEPS = {
     "unitary": MSQ_ARM_STEPS["unitary"],
     "t1": "x, delay of 2 us, measure into final (the main family's t1 member at idle 0, ro1)",

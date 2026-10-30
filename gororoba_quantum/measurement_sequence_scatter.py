@@ -29,7 +29,7 @@ import numpy as np
 from scipy import stats
 
 import measurement_sequence_analysis as msa
-from diagnostic_experiments import MSQD_FAMILY, MSQD_MAIN_QUBITS
+from diagnostic_experiments import MSQD_FAMILY, MSQD_MAIN_QUBITS, MSQD_MAIN_QUBITS_BY_BACKEND
 from parallel import ordered_map
 
 SCHEMA = "measurement-sequence-scatter-v1"
@@ -42,6 +42,10 @@ READOUT_ERROR_MAX = 0.01
 SX_ERROR_MAX = 1.0e-3
 COHERENCE_MIN_S = 20.0e-6
 EXTRA_COUNT = 30
+# The fewest diagnostic qubits, main and further together, a floor rests on: the eight main and thirty further qubits
+# of the ibm_kingston diagnostic. A backend whose main layout blocks more of the coupling graph keeps fewer further
+# qubits and still meets it with more main ones.
+DIAGNOSTIC_MIN_QUBITS = 38
 # Fewer informative qubits than this leave the root-mean-square without a usable sampling error (1 / sqrt(2 n)).
 MIN_INFORMATIVE = 20
 
@@ -114,10 +118,21 @@ def adjacency(edges: list[list[int]]) -> dict[int, set[int]]:
     return graph
 
 
+def diagnostic_main(backend: str) -> tuple[int, ...]:
+    """The main qubits a diagnostic run on `backend` carries, from MSQD_MAIN_QUBITS_BY_BACKEND."""
+    if backend not in MSQD_MAIN_QUBITS_BY_BACKEND:
+        raise ScatterError(f"no diagnostic main qubits are registered for {backend}")
+    return MSQD_MAIN_QUBITS_BY_BACKEND[backend]
+
+
 def select_extra_qubits(
-    calibration: dict[str, Any], main: tuple[int, ...] = MSQD_MAIN_QUBITS, count: int = EXTRA_COUNT
+    calibration: dict[str, Any],
+    main: tuple[int, ...] = MSQD_MAIN_QUBITS,
+    count: int = EXTRA_COUNT,
+    minimum: int | None = None,
 ) -> list[int]:
-    """The further qubits SELECTION_RULE keeps, in the order it keeps them."""
+    """The further qubits SELECTION_RULE keeps, in the order it keeps them: up to `count`, refused below `minimum`
+    diagnostic qubits in all (main and kept), which defaults to the main qubits plus all `count`."""
     graph = adjacency(calibration["edges"])
     excluded = set(calibration["excluded"])
     blocked = set(main)
@@ -135,7 +150,12 @@ def select_extra_qubits(
         blocked |= {q} | graph.get(q, set())
         if len(kept) == count:
             break
-    check(len(kept) == count, f"the rule keeps {len(kept)} of {count} further qubits")
+    required = len(main) + count if minimum is None else minimum
+    check(
+        len(main) + len(kept) >= required,
+        f"the rule keeps {len(kept)} of {count} further qubits beside {len(main)} main ones, "
+        f"below {required} diagnostic qubits",
+    )
     return kept
 
 
@@ -402,7 +422,8 @@ def floor_document(run_dir: Path) -> dict[str, Any]:
     backends = sorted(msa.record_backends(record))
     check(len(backends) == 1, f"the record names backends {backends}")
     main = [int(q) for q in configuration["main_qubits"]]
-    check(main == list(MSQD_MAIN_QUBITS), f"the run's main qubits {main} are not the main family's {MSQD_MAIN_QUBITS}")
+    registered = list(diagnostic_main(backends[0]))
+    check(sorted(main) == sorted(registered), f"the run's main qubits {main} are not {backends[0]}'s {registered}")
     return {
         "schema": FLOOR_SCHEMA,
         "floor": float(summary["floor"]),
@@ -429,14 +450,15 @@ def floor_document(run_dir: Path) -> dict[str, Any]:
 def check_floor_file(run_dir: Path, path: Path) -> str:
     """Re-derive the floor document from the retained run and compare it with the registered file.
 
-    Every field is compared (floats to a relative 1e-9) except source.analysis_module_sha256: the file records the
-    analysis module that computed it, and that module then names the file's digest in MODEL_SCATTER_DIAGNOSTIC_SHA256,
-    so its bytes change once the file is bound and cannot match.
+    Every field is compared (floats to a relative 1e-9) except the two module digests under source: the analysis module
+    names the file's digest in its floor registry, so its bytes change once the file is bound, and either module's
+    bytes record provenance while the re-derived floor, rows and summary carry the result.
     """
     registered = json.loads(path.read_text(encoding="utf-8"))
     derived = floor_document(run_dir)
     for document in (registered, derived):
         document["source"].pop("analysis_module_sha256", None)
+        document["source"].pop("scatter_module_sha256", None)
     check(same(registered, derived), f"{path} differs from the floor re-derived from {run_dir}")
     return f"{path.name}: floor {registered['floor']:.6f} equals the re-derivation from {run_dir.name}"
 
@@ -490,8 +512,9 @@ def main(argv: list[str] | None = None) -> int:
         with redirect_stdout(io.StringIO()):
             snapshot = live_run.take_snapshot(ibm_account.open_service(), args.backend)
         calibration = calibration_from_snapshot(snapshot)
-        extra = select_extra_qubits(calibration)
-        layout = [*MSQD_MAIN_QUBITS, *extra]
+        main = diagnostic_main(args.backend)
+        extra = select_extra_qubits(calibration, main, minimum=DIAGNOSTIC_MIN_QUBITS)
+        layout = [*main, *extra]
         faults = layout_violations(layout, calibration["edges"], set(calibration["excluded"]))
         check(not faults, "; ".join(faults))
         print(
