@@ -32,7 +32,7 @@ The IBM service inventory observed at 2026-10-30T04:53:07.250163+00:00 holds 34 
 
 The Quantum Inspire ledger retrieved at 2026-10-30T06:04:43+00:00 lists 450 jobs with 8511376 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 128 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 129 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 49 IQM run directories are retained. That is an observation, not an authorization.
 
@@ -439,6 +439,7 @@ circuit and charges the account ledger's change.
 | [2026-10-30T061151Z-qpu_belenos-box_kite_photonic_packed_swapped-job-03](../../results/quandela/runs/2026-10-30T061151Z-qpu_belenos-box_kite_photonic_packed_swapped-job-03) | Quandela Cloud | box-kite photonic mode-swapped packed blocks | qpu:belenos | 1 | 6 | completed | 1.06 credits | qd-belenos-packed-mode-swap |
 | [2026-10-30T061942Z-qpu_belenos-box_kite_photonic_packed_swapped-job-04](../../results/quandela/runs/2026-10-30T061942Z-qpu_belenos-box_kite_photonic_packed_swapped-job-04) | Quandela Cloud | box-kite photonic mode-swapped packed blocks | qpu:belenos | 1 | 6 | completed | 1.06 credits | qd-belenos-packed-mode-swap |
 | [2026-10-30T062649Z-qpu_belenos-box_kite_photonic_packed_swapped-job-05](../../results/quandela/runs/2026-10-30T062649Z-qpu_belenos-box_kite_photonic_packed_swapped-job-05) | Quandela Cloud | box-kite photonic mode-swapped packed blocks | qpu:belenos | 1 | 2 | completed | 1.02 credits | qd-belenos-packed-mode-swap |
+| [2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition](../../results/quandela/runs/2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition) | Quandela Cloud | dimension-six compilation and output-port diagnostics | qpu:ascella | 1 | 5 | completed | 1.131072 credits | ascella-transition-matched-mesh-third-acquisition |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -838,6 +839,7 @@ circuit and charges the account ledger's change.
 - **qd-qpu-belenos-packed-swapped-job-03** (2026-10-30T061151Z-qpu_belenos-box_kite_photonic_packed_swapped-job-03, job 0678e186-f41b-4dd7-85a6-d5b9eff780cd, 60000 samples, 60000 shots): Does the packed-block residual a - p of each sign block follow the block or the 4-mode slot it sits on, with every block moved three slots from its packed run?
 - **qd-qpu-belenos-packed-swapped-job-04** (2026-10-30T061942Z-qpu_belenos-box_kite_photonic_packed_swapped-job-04, job 8eda97f0-fcfb-46d3-b310-2d27c6bf3f3f, 60000 samples, 60000 shots): Does the packed-block residual a - p of each sign block follow the block or the 4-mode slot it sits on, with every block moved three slots from its packed run?
 - **qd-qpu-belenos-packed-swapped-job-05** (2026-10-30T062649Z-qpu_belenos-box_kite_photonic_packed_swapped-job-05, job 5947894b-cd4b-4af8-9cee-4db9838b88e0, 20000 samples, 20000 shots): Does the packed-block residual a - p of each sign block follow the block or the 4-mode slot it sits on, with every block moved three slots from its packed run?
+- **qd-ascella-transition-matched-mesh-third-acquisition** (2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition, job cb8717bc-6bb3-4cbd-b508-a8f4d73c20c7, 327680 samples, 327680 shots): Do the five matched Ascella settings, replayed a third time 67 hours after their forward baseline, return port distributions that follow a linear drift of the first two acquisitions or step between them?
 
 ## Established claims
 
@@ -2340,6 +2342,12 @@ circuit and charges the account ledger's change.
   Evidence: [collect.json](../../results/live/2026-10-29T231232.725730Z/collect.json), [record.json](../../results/live/2026-10-29T231232.725730Z/record.json), [scatter-floor-ibm_fez.json](../evidence/measurement_sequence/scatter-floor-ibm_fez.json), [MEASUREMENT_SEQUENCE_SUCCESSOR_FEZ_RESULT.md](../../results/live/MEASUREMENT_SEQUENCE_SUCCESSOR_FEZ_RESULT.md).
   Gates: replayed by core-msq-scatter-floor-fez-replay.
   Acquisitions: fez-measurement-sequence-scatter-floor.
+- **ascella-transition-matched-mesh-third-acquisition** (exploratory reanalysis, hardware). Replayed a third time 66.9 hours after its forward-packed baseline (327,680 accepted events, 65,536 per setting), the five matched Ascella settings change their single-click output-port distributions between acquisitions far beyond counting error in four of five settings: homogeneity chi-square over the three acquisitions reads 5,149, 1,935, 5,595 and 2,707 on 22 degrees of freedom for settings 0, 1, 2 and 4, and 29.2 on 22 for setting 3. The changes follow no linear trend. Setting 2 moves by total variation 0.062 from the baseline to the first day repeat and returns to within 0.013 of the baseline at the third acquisition, and setting 0 holds (0.005) between the baseline and the first repeat, then moves 0.045 by the third.
+  Boundary: Five selected settings and three acquisitions, with homogeneity read as a multinomial chi-square under independent accepted events and no interval or preregistered rule. Mesh identity across the three runs rests on equal settings and compilation seeds in cases.json (the first repeat and the third carry identical cases.json bytes); the scheduled matched-mesh check, which compares returned circuits, fails on the retained campaign file for every run in the current tree, so this claim does not establish equal returned meshes or equal applied analog controls. No calibration read separates drift from a calibration change.
+  Assumptions: Accepted single-click events within each setting are independent draws from one multinomial..
+  Evidence: [results.json](../../results/quandela/runs/2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition/results.json), [port-comparison.json](../../results/quandela/runs/2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition/port-comparison.json), [2026-10-30-quandela-next-cases.md](../archive/handoffs/2026-10-30-quandela-next-cases.md).
+  Acquisitions: qd-ascella-transition-matched-mesh-third-acquisition.
+  Depends on: ascella-transition-day-separated-matched-mesh.
 
 ## Open claims
 

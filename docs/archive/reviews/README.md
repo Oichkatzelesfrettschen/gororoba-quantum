@@ -7,6 +7,7 @@ repository-relative; a branch name stands for its worktree.
 
 | Report | Subject |
 |---|---|
+| [2026-10-30-quandela-run-audit.md](2026-10-30-quandela-run-audit.md) | Ascella and Belenos run inventory, repeats, simulation pairs, mode-swap replay, across-time claim gap and live processor state |
 | [tuna-sequential-sensitivity-review.md](tuna-sequential-sensitivity-review.md) | Exact constant-response sensitivity and its model-specific interpretation |
 | [tuna-capture-prefix-retention-review.md](tuna-capture-prefix-retention-review.md) | Retention-order review, historical receipt interpretation and unresolved quarantine |
 | [tuna-capture-prefix-budget-review.md](tuna-capture-prefix-budget-review.md) | Prefix validation order, fixed-overhead bound and recovery limitations |
