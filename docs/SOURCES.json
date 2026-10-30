@@ -1632,6 +1632,114 @@
         "conditions": "Preserve author attribution, original notices, source and license links; identify changes. Repository licensing leaves original source licensing intact."
       },
       "redistribution": "explicit_license_verified"
+    },
+    {
+      "path": "docs/pdf/skiouris-2026-algebraic-hiddenness.pdf",
+      "source_url": "https://zenodo.org/records/22016333",
+      "note": "docs/notes/papers/skiouris-2026-algebraic-hiddenness.md",
+      "audited_at_utc": "2026-10-30T23:40:00+00:00",
+      "status": "retained",
+      "sha256": "48a4b2385b3ef16872c4c4a3e5d2d3972ee752bb8dfe10f091b7b6745553ef7b",
+      "bytes": 771773,
+      "pages": 32,
+      "acquisition": "download",
+      "prior_note_hash_match": null,
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "48a4b2385b3ef16872c4c4a3e5d2d3972ee752bb8dfe10f091b7b6745553ef7b",
+        "verified_at_utc": "2026-10-30T23:40:00+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://zenodo.org/api/records/22016333",
+        "evidence_sha256": "641312570a3973d1f75a733bc932e4a95c69b703c740fbfac35c677fe64cc481",
+        "evidence_locator": "metadata.license.id and files[0] in the author-linked Zenodo record",
+        "reading_scope": "Author-linked Zenodo license and file metadata; downloaded PDF response SHA-256, MD5 and byte count match the retained PDF and the record checksum. The note carries the content reading scope.",
+        "licensed_file": {
+          "url": "https://zenodo.org/api/records/22016333/files/algebraic_hiddenness_v1g.pdf/content",
+          "md5": "5ac9d520855917d37a8f40928fad83e7",
+          "sha256": "48a4b2385b3ef16872c4c4a3e5d2d3972ee752bb8dfe10f091b7b6745553ef7b",
+          "bytes": 771773
+        },
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "The source-specific license covers the retained version or a deposited file with matching bytes.",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Repository licensing does not relabel the source PDF.",
+        "evidence_path": "docs/evidence/source_rights/zenodo-record-22016333.json",
+        "evidence_retrieved_at_utc": "2026-10-30T23:18:58+00:00"
+      },
+      "redistribution": "explicit_license_verified"
+    },
+    {
+      "path": "docs/pdf/skiouris-2026-aphanics-pathion.pdf",
+      "source_url": "https://zenodo.org/records/22082732",
+      "note": "docs/notes/papers/skiouris-2026-aphanics-pathion.md",
+      "audited_at_utc": "2026-10-30T23:40:00+00:00",
+      "status": "retained",
+      "sha256": "5e715063e9d1eeb6f4746034f14fd67e9e5c31d85e648f92812e6d161cd6c81d",
+      "bytes": 616626,
+      "pages": 33,
+      "acquisition": "download",
+      "prior_note_hash_match": null,
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "5e715063e9d1eeb6f4746034f14fd67e9e5c31d85e648f92812e6d161cd6c81d",
+        "verified_at_utc": "2026-10-30T23:40:00+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://zenodo.org/api/records/22082732",
+        "evidence_sha256": "534f784d706c4290275385bb09225693d465ed4f4065197a144e0941a620115f",
+        "evidence_locator": "metadata.license.id and files[0] in the author-linked Zenodo record",
+        "reading_scope": "Author-linked Zenodo license and file metadata; downloaded PDF response SHA-256, MD5 and byte count match the retained PDF and the record checksum. The note carries the content reading scope.",
+        "licensed_file": {
+          "url": "https://zenodo.org/api/records/22082732/files/aphanics_pathion_clifford_triad_v2.pdf/content",
+          "md5": "283f1d83e42afcf6a68a5d81297b8839",
+          "sha256": "5e715063e9d1eeb6f4746034f14fd67e9e5c31d85e648f92812e6d161cd6c81d",
+          "bytes": 616626
+        },
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "The source-specific license covers the retained version or a deposited file with matching bytes.",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Repository licensing does not relabel the source PDF.",
+        "evidence_path": "docs/evidence/source_rights/zenodo-record-22082732.json",
+        "evidence_retrieved_at_utc": "2026-10-30T23:18:58+00:00"
+      },
+      "redistribution": "explicit_license_verified"
+    },
+    {
+      "path": "docs/pdf/levratti-2026-sign-parity-zero-divisors.pdf",
+      "source_url": "https://zenodo.org/records/20315751",
+      "note": "docs/notes/papers/levratti-2026-sign-parity-zero-divisors.md",
+      "audited_at_utc": "2026-10-30T23:40:00+00:00",
+      "status": "retained",
+      "sha256": "bd219f4429cc22277f80e06273a6450ff8fbd982ce0176761dab1f533feea9c3",
+      "bytes": 521657,
+      "pages": 28,
+      "acquisition": "download",
+      "prior_note_hash_match": null,
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "bd219f4429cc22277f80e06273a6450ff8fbd982ce0176761dab1f533feea9c3",
+        "verified_at_utc": "2026-10-30T23:40:00+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://zenodo.org/api/records/20315751",
+        "evidence_sha256": "f269c61ac485bdc5d5294934424504ecc5c47fc4d8d68d56fe9695b1c9c9af46",
+        "evidence_locator": "metadata.license.id and files[0] in the author-linked Zenodo record",
+        "reading_scope": "Author-linked Zenodo license and file metadata; downloaded PDF response SHA-256, MD5 and byte count match the retained PDF and the record checksum. The note carries the content reading scope.",
+        "licensed_file": {
+          "url": "https://zenodo.org/api/records/20315751/files/Zero_Divisor_Structure__Norm_Redistribution__and_Spectral_Theory_in_Cayley_Dickson_Algebras_v1.pdf/content",
+          "md5": "6cbfca5cec3deed7f1308e7f0351395b",
+          "sha256": "bd219f4429cc22277f80e06273a6450ff8fbd982ce0176761dab1f533feea9c3",
+          "bytes": 521657
+        },
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "The source-specific license covers the retained version or a deposited file with matching bytes.",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Repository licensing does not relabel the source PDF.",
+        "evidence_path": "docs/evidence/source_rights/zenodo-record-20315751.json",
+        "evidence_retrieved_at_utc": "2026-10-30T23:18:59+00:00"
+      },
+      "redistribution": "explicit_license_verified"
     }
   ],
   "aliases": [
@@ -2114,6 +2222,15 @@
       "status": "arxiv-journal-reference",
       "venue": "Nature Reviews Physics 7, 105-118 (2025)",
       "receipt_url": "https://arxiv.org/abs/2407.08828v2"
+    },
+    "docs/notes/papers/skiouris-2026-algebraic-hiddenness.md": {
+      "status": "journal-venue-unverified"
+    },
+    "docs/notes/papers/skiouris-2026-aphanics-pathion.md": {
+      "status": "journal-venue-unverified"
+    },
+    "docs/notes/papers/levratti-2026-sign-parity-zero-divisors.md": {
+      "status": "journal-venue-unverified"
     }
   },
   "web_sources": [
@@ -4544,6 +4661,33 @@
       "bytes": 3134,
       "retrieved_at_utc": "2026-10-30T23:19:00+00:00",
       "reading_scope": "arXiv API record: latest version v4, abstract, categories and the version comment; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/skiouris-2026-algebraic-hiddenness.md",
+      "url": "https://zenodo.org/api/records/22016333/versions/latest",
+      "sha256": "641312570a3973d1f75a733bc932e4a95c69b703c740fbfac35c677fe64cc481",
+      "bytes": 7554,
+      "retrieved_at_utc": "2026-10-30T23:34:42+00:00",
+      "reading_scope": "Zenodo latest-version redirect target: record 22016333 itself, so the retained record is the latest version",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/skiouris-2026-aphanics-pathion.md",
+      "url": "https://zenodo.org/api/records/22082732/versions/latest",
+      "sha256": "534f784d706c4290275385bb09225693d465ed4f4065197a144e0941a620115f",
+      "bytes": 7402,
+      "retrieved_at_utc": "2026-10-30T23:34:43+00:00",
+      "reading_scope": "Zenodo latest-version redirect target: record 22082732 itself, so the retained record is the latest version",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/levratti-2026-sign-parity-zero-divisors.md",
+      "url": "https://zenodo.org/api/records/20315751/versions/latest",
+      "sha256": "ec8890c683b27a37f7ef853b88c84fd315f7e33852313c7b3dabdb6d2eb6f9bf",
+      "bytes": 5751,
+      "retrieved_at_utc": "2026-10-30T23:34:43+00:00",
+      "reading_scope": "Zenodo latest-version redirect target: record 21296777 (2026-07-10), a later version of the retained record; title, file name, size and license metadata only",
       "retention": "retrieval_receipt; response bytes are unretained"
     }
   ],

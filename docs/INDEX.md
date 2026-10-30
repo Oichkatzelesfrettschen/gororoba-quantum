@@ -12,7 +12,7 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 
 | Location | Contents | Git treatment |
 | --- | --- | --- |
-| `docs/pdf/` | 47 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
+| `docs/pdf/` | 50 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
 | `docs/local_source_cache/` | 203 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 6 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
@@ -62,6 +62,9 @@ each source license in force.
 | [Gidney 2025 -- How to factor 2048 bit RSA integers with less than a million noisy qubits (arXiv 2505.15917)](notes/papers/2505.15917.md) | [2505.15917.pdf](pdf/2505.15917.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Cobos et al. 2025 -- Real-Time Dynamics in a (2+1)-D Gauge Theory: The Stringy Nature on a Superconducting Quantum Simulator (arXiv 2507.08088)](notes/2507.08088.md) | [2507.08088.pdf](pdf/2507.08088.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Pokharel et al. 2025 -- Order from chaos with adaptive circuits on quantum hardware (arXiv 2509.18259)](notes/2509.18259.md) | [2509.18259.pdf](pdf/2509.18259.pdf) | [CC0-1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
+| [Levratti: sign-parity classification of zero divisors in Cayley-Dickson algebras](notes/papers/levratti-2026-sign-parity-zero-divisors.md) | [levratti-2026-sign-parity-zero-divisors.pdf](pdf/levratti-2026-sign-parity-zero-divisors.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Skiouris: algebraic hiddenness in the sedenion algebra](notes/papers/skiouris-2026-algebraic-hiddenness.md) | [skiouris-2026-algebraic-hiddenness.pdf](pdf/skiouris-2026-algebraic-hiddenness.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Skiouris: aphanics at the pathion level](notes/papers/skiouris-2026-aphanics-pathion.md) | [skiouris-2026-aphanics-pathion.pdf](pdf/skiouris-2026-aphanics-pathion.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Levratti: active stabilizers and Cayley-Dickson zero-divisor supports](notes/papers/levratti-2026-active-stabilizers.md) | [levratti-2026-active-stabilizers.pdf](pdf/levratti-2026-active-stabilizers.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [van der Schoot et al. 2023 -- quantum metrics on Quantum Inspire Starmon-5 (arXiv 2310.01120)](notes/papers/2310.01120.md) | [2310.01120v1.pdf](pdf/2310.01120v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Strobel et al. 2024 -- Quantum teleportation with telecom photons from remote quantum emitters (arXiv 2411.12904)](notes/papers/2411.12904.md) | [2411.12904v1.pdf](pdf/2411.12904v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |

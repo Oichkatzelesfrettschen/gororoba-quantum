@@ -14,7 +14,7 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](../SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 47 licensed PDFs and two aliases;
+license evidence. The library publishes 50 licensed PDFs and two aliases;
 203 external sources retain citations and optional ignored local reading copies.
 Six licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
@@ -178,6 +178,9 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | 1811.08580 | Freedman, Shokrian-Zini, Wang, Quantum computing with octonions (2018) | none | medium | none |
 | levratti-2026-fano-css | Levratti, Fano duality, projective orthogonality and the CSS bridge (author-hosted, 2026) | none | high | none |
 | levratti-2026-active-stabilizers | Levratti, Active stabilizers in Reed-Muller CSS codes from Cayley-Dickson zero-divisors (author-hosted manuscript, 2026) | none | low | none |
+| [levratti-2026-sign-parity-zero-divisors](../notes/papers/levratti-2026-sign-parity-zero-divisors.md) | Levratti, Sign-parity classification of zero divisors in Cayley-Dickson algebras (Zenodo preprint, 2026): the count 336 x [n-1 choose 3]_2 checked at 16 and 32 dimensions | none | high | none |
+| [skiouris-2026-algebraic-hiddenness](../notes/papers/skiouris-2026-algebraic-hiddenness.md) | Skiouris, Algebraic hiddenness in the sedenion algebra (Zenodo preprint, 2026): determinant identity, 4-8-4 spectrum and R_l centrality checked | none | high | none |
+| [skiouris-2026-aphanics-pathion](../notes/papers/skiouris-2026-aphanics-pathion.md) | Skiouris, Aphanics at the pathion level (Zenodo preprint, 2026): stratified Gram spectra and the Clifford triad checked | none | medium | none |
 | [2102.01682](../notes/2102.01682.md) | Corcoles et al., Dynamic phase estimation on superconducting qubits, PRL 127, 100501 (2021) | high | indirect | limited |
 | [2608.08232](../notes/2608.08232.md) | Koebisu, Dimension-32 determinant factorization and rank-stratum Question 4 (2026 preprint) | none | high | none |
 | [2608.26893](../notes/2608.26893.md) | Zhilina, Doubly alternative zero divisors (2023 journal; 2026 arXiv posting) | none | high | none |
