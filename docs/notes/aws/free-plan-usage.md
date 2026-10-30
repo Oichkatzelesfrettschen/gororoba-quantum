@@ -220,6 +220,22 @@ policy and the statements that follow it in
 Braket is absent from the allow list, so every Braket call is denied. The same
 is true of the services in the paid-plan and unsupported lists.
 
+Bedrock model access is narrower than `bedrock:ListFoundationModels` suggests.
+On 2026-10-30, `bedrock-runtime converse` in `us-east-2` with the `gororoba`
+profile returned `AccessDeniedException` ("not available for this account") for
+every Anthropic model id (`anthropic.claude-opus-5-5`, `anthropic.claude-haiku-5-5`
+and their `us.` inference profiles) and for `us.xai.grok-4.6` and
+`us.openai.gpt-5.6-sol`; `ValidationException` for `amazon.nova-pro-v1:0`
+on demand (its inference profile id is required); `ResourceNotFoundException`
+(end of life) for `us.meta.llama3-1-405b-instruct-v1:0`; and
+`ThrottlingException` "Too many tokens per day" for `us.amazon.nova-pro-v1:0`,
+`us.amazon.nova-2-lite-v1:0`, `deepseek.v3.2`, `qwen.qwen3-235b-a22b-2507-v1:0`
+and `mistral.mistral-large-3-675b-instruct` on the first call of the day with a
+12 KB prompt, so the free plan's per-day token quota for on-demand inference
+admits no review-sized request. A peer-review call therefore runs on the
+Codex account or a local Ollama model, and Bedrock stays a listing-only surface
+until the plan changes.
+
 Inside the allowed services, these actions are denied on their own:
 
 | Statement | What it refuses |
