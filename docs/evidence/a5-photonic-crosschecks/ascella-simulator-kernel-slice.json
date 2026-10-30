@@ -1,0 +1,185 @@
+{
+  "artifact_sha256": {
+    "cases.json": "a17be05d355b38e20cbaeab1685b3fe18dac761fdd90a8df474c4cf7df2edb7d",
+    "circuit.json": "8d05c0fcf57c7a2a3a5c7933d5c6ad128d4970cf4119598b4ea0c84bf2795fa2",
+    "job-body.json": "d5d543f71a1207e02306df9a81eac33fcc46fea0844e1dabac6bbd6659657bc9",
+    "raw/result.json": "c7c4246fb5f9a06678c5ddd9b18f0861e597cc955367b01ee3a15b4e181d3ad6",
+    "results.json": "efe4f16d0ef96f9ed6cf53847673481a7c2130c63d8aa2ec52067c24778a8bb5",
+    "submission.json": "fcf1b5abdb39600b2cce847fa73740dd584b4b8744723e0cc0f282a4c384925b"
+  },
+  "charge": 1.0,
+  "interpretation": "Descriptive conditional branch fractions; full A5 nullity and physical nonassociativity remain untested.",
+  "job_id": "83d1d00f-e392-47e7-a172-146bd78e9d69",
+  "observations": [
+    {
+      "conditional_success": 0.502,
+      "failure": 4980,
+      "ideal_success": "1/2",
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "control-dark",
+      "port_counts": [
+        1230,
+        1244,
+        1230,
+        1316,
+        1213,
+        1254,
+        1257,
+        1256,
+        0,
+        0,
+        0,
+        0
+      ],
+      "returned_events": 10000,
+      "sentinel": 0,
+      "shots_used": 10001,
+      "success": 5020
+    },
+    {
+      "conditional_success": 0.0,
+      "failure": 10000,
+      "ideal_success": "0",
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "kernel-dark",
+      "port_counts": [
+        0,
+        0,
+        0,
+        0,
+        5011,
+        0,
+        0,
+        4989,
+        0,
+        0,
+        0,
+        0
+      ],
+      "returned_events": 10000,
+      "sentinel": 0,
+      "shots_used": 10000,
+      "success": 0
+    },
+    {
+      "conditional_success": 1.0,
+      "failure": 0,
+      "ideal_success": "1",
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "mutation-dark",
+      "port_counts": [
+        5025,
+        0,
+        0,
+        4975,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "returned_events": 10000,
+      "sentinel": 0,
+      "shots_used": 10000,
+      "success": 10000
+    },
+    {
+      "conditional_success": 0.0,
+      "failure": 10000,
+      "ideal_success": "0",
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "mutation-bright",
+      "port_counts": [
+        0,
+        0,
+        0,
+        0,
+        5008,
+        0,
+        0,
+        4992,
+        0,
+        0,
+        0,
+        0
+      ],
+      "returned_events": 10000,
+      "sentinel": 0,
+      "shots_used": 10001,
+      "success": 0
+    },
+    {
+      "conditional_success": 1.0,
+      "failure": 0,
+      "ideal_success": "1",
+      "invalid_events": {
+        "other_photon_number": 1,
+        "zero_click": 0
+      },
+      "name": "kernel-bright",
+      "port_counts": [
+        5022,
+        0,
+        0,
+        4977,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "returned_events": 10000,
+      "sentinel": 0,
+      "shots_used": 10000,
+      "success": 9999
+    },
+    {
+      "conditional_success": 0.498,
+      "failure": 5020,
+      "ideal_success": "1/2",
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "control-bright",
+      "port_counts": [
+        1247,
+        1257,
+        1233,
+        1243,
+        1277,
+        1196,
+        1254,
+        1293,
+        0,
+        0,
+        0,
+        0
+      ],
+      "returned_events": 10000,
+      "sentinel": 0,
+      "shots_used": 10001,
+      "success": 4980
+    }
+  ],
+  "platform": "sim:ascella",
+  "schema": "ascella-a5-kernel-slice-analysis-v1"
+}
