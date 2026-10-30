@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import subprocess
@@ -12,6 +13,8 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts/qi_tuna_joint_package_runtime.py"
+# The probe imports these distributions at module load, before it reads any archive.
+PROBE_PACKAGES = ("hypercomplex", "hypercomplex_engine", "hyprat", "SplitOct", "flint")
 pytestmark = pytest.mark.audit
 
 
@@ -50,6 +53,9 @@ def test_archive_bound_packages_analyze_retained_joint_records(tmp_path: Path) -
 
 def test_runtime_audit_refuses_missing_registered_release_archives(tmp_path: Path) -> None:
     """Missing source archives cannot produce an attested package observation."""
+    missing = [name for name in PROBE_PACKAGES if importlib.util.find_spec(name) is None]
+    if missing:
+        pytest.skip(f"the package probe's stack is absent: {', '.join(missing)}")
     archive_dir = tmp_path / "empty-archives"
     archive_dir.mkdir()
     output = tmp_path / "untrusted.json"

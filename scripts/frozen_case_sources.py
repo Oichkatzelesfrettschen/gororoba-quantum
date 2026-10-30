@@ -1,6 +1,7 @@
 """Verify that each frozen Quandela case keeps a pinned source revision on main's history.
 
-A reviewed case binds the sha256 of every constructor and analyzer file it names in `analysis_sources`, and
+A reviewed case binds the sha256 of every constructor and analyzer file it names in `analysis_sources` (a campaign
+record binds them as `dependencies` rows), and
 `qd_platform.acquisition_sources` refuses a plan or submit whose working tree differs from those bytes. Those files
 are shared with every other Quandela experiment, so main moves past them. A pin names the revision whose tree holds
 every bound byte; the case's check, plan, submit and analysis run in a worktree at that revision, and main's own
@@ -53,6 +54,21 @@ def load(pin: Path) -> list[dict[str, str]]:
     return record["cases"]
 
 
+def bound_sources(record: dict[str, Any]) -> dict[str, str]:
+    """The sha256 of every source file a frozen record binds: a case's `analysis_sources`, or a campaign's
+    `dependencies` rows of `file` and `sha256`."""
+    if isinstance(record.get("analysis_sources"), dict):
+        return dict(record["analysis_sources"])
+    rows = record.get("dependencies")
+    if (
+        isinstance(rows, list)
+        and rows
+        and all(isinstance(row, dict) and set(row) == {"file", "sha256"} for row in rows)
+    ):
+        return {row["file"]: row["sha256"] for row in rows}
+    raise ValueError("a frozen record binds its sources as analysis_sources or as dependencies rows")
+
+
 def check_case(case: str, revision: str) -> dict[str, Any]:
     """One pinned case's verification; raises on a broken pin and reports main's drift."""
     commit = git("rev-parse", "--verify", f"{revision}^{{commit}}").decode().strip()
@@ -62,12 +78,50 @@ def check_case(case: str, revision: str) -> dict[str, Any]:
     retained = (ROOT / case).read_bytes()
     if retained != at(commit, case):
         raise ValueError(f"{case}: the case bytes differ from their bytes at {revision}")
-    sources = json.loads(retained)["analysis_sources"]
+    sources = bound_sources(json.loads(retained))
     for name, expected in sources.items():
         if sha256(at(commit, name)) != expected:
             raise ValueError(f"{case}: {name} at {revision} does not have the bound sha256")
     drift = sorted(name for name, expected in sources.items() if sha256((ROOT / name).read_bytes()) != expected)
     return {"case": case, "revision": commit, "sources": len(sources), "changed_on_head": drift}
+
+
+def run_at_pin(pin: Path, case: str, command: list[str], directory: Path) -> subprocess.CompletedProcess[str]:
+    """Run a command in a detached worktree at the case's pinned revision and remove the worktree afterwards.
+
+    A frozen case's check and analysis read the bound bytes of files main has moved past, so they run where those
+    bytes are; `git worktree remove` without --force refuses a worktree the command left modified.
+    """
+    revisions = {row["case"]: row["revision"] for row in load(pin)}
+    if case not in revisions:
+        raise ValueError(f"{case} has no pin in {pin}")
+    report = check_case(case, revisions[case])
+    git("worktree", "add", "--detach", str(directory), report["revision"])
+    try:
+        return subprocess.run(command, cwd=directory, text=True, capture_output=True, check=False)
+    finally:
+        git("worktree", "remove", str(directory))
+
+
+def run_pinned_audit_test(pin: Path, case: str, node: str, directory: Path) -> None:
+    """Run the pinned revision's own copy of an audit test node, which reads the frozen case's bound sources."""
+    command = [
+        sys.executable,
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-o",
+        "addopts=",
+        "-m",
+        "audit",
+        node,
+    ]
+    result = run_at_pin(pin, case, command, directory)
+    if result.returncode:
+        raise ValueError(f"{node} at the pin of {case} failed:\n{result.stdout}{result.stderr}")
 
 
 def bound_cases(scopes: list[Path]) -> list[str]:

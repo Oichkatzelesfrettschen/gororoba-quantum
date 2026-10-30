@@ -5,16 +5,17 @@ from __future__ import annotations
 import importlib
 import json
 import runpy
-import subprocess
 import sys
 import types
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
+import frozen_case_sources
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
+PINS = ROOT / "docs/evidence/quandela/frozen-case-source-pins.json"
 
 
 def module() -> Any:
@@ -34,16 +35,13 @@ def test_local_launcher_selects_the_source_compatible_successor(monkeypatch: pyt
 
 
 @pytest.mark.audit
-def test_local_launcher_checks_the_source_compatible_successor() -> None:
-    result = subprocess.run(
-        [sys.executable, str(ROOT / "scripts/ascella_transition_local_repeat.py"), "--check"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
+def test_local_launcher_checks_the_source_compatible_successor(tmp_path: Path) -> None:
+    frozen_case_sources.run_pinned_audit_test(
+        PINS,
+        "docs/evidence/ascella-transition-day-repeat-reviewed-transport/campaign.json",
+        "tests/scripts/test_ascella_transition_day_repeat.py::test_local_launcher_checks_the_source_compatible_successor",
+        tmp_path / "pinned",
     )
-    if result.returncode:
-        raise AssertionError(result.stdout + result.stderr)
 
 
 def test_repeat_waits_at_least_one_day_and_only_the_next_pacific_date() -> None:
