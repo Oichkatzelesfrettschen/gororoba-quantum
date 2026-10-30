@@ -1,0 +1,467 @@
+{
+  "analyzer_sha256": "6a614798c5d9c362ef8a7d52e1bee97b28b7af737c07a303a651ceb6155cc919",
+  "artifact_sha256": {
+    "cases.json": "91873d06d7b220e8ca9d08a79d24b6fb12f14edd8f525bc814dd80c6f06647ad",
+    "circuit.json": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f",
+    "job-body.json": "433620044bc05c397d99806329698ae26a8c90be3ea61454af958153d91c1822",
+    "raw/result.json": "a5a5bbcc264a9e0108da8308cfe2f4056402a7cff09982236d5732681c72bc07",
+    "results.json": "8b2a5e2700877563985b85063e059354e820a0bebc82c5152f3483c9120f4790",
+    "submission.json": "47e5460e723e37040da8e6d980385e2701b2a612ca7bac1c5da2a731c6ddd499"
+  },
+  "boundary": "Descriptive only; requested order does not establish physical chronology or causal history.",
+  "charge": 1.0,
+  "contrast_total_variation_norm": 0.000999461859805728,
+  "job_id": "a9e5e7c9-a771-4b30-bdbe-70b4cfd6268b",
+  "observations": [
+    {
+      "eligible": 32767,
+      "invalid": {
+        "other_photon_number": 1,
+        "zero_click": 0
+      },
+      "name": "0-A-0",
+      "ports": [
+        779,
+        1624,
+        0,
+        30364,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32767,
+      "invalid": {
+        "other_photon_number": 1,
+        "zero_click": 0
+      },
+      "name": "0-A-1",
+      "ports": [
+        30418,
+        1555,
+        0,
+        794,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32767,
+      "invalid": {
+        "other_photon_number": 1,
+        "zero_click": 0
+      },
+      "name": "1-B-0",
+      "ports": [
+        8073,
+        16413,
+        0,
+        8281,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32767,
+      "invalid": {
+        "other_photon_number": 1,
+        "zero_click": 0
+      },
+      "name": "1-B-1",
+      "ports": [
+        30398,
+        1603,
+        0,
+        766,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32765,
+      "invalid": {
+        "other_photon_number": 3,
+        "zero_click": 0
+      },
+      "name": "2-B-0",
+      "ports": [
+        8162,
+        16363,
+        0,
+        8240,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32768,
+      "invalid": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "2-B-1",
+      "ports": [
+        30421,
+        1570,
+        0,
+        777,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32768,
+      "invalid": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "3-A-0",
+      "ports": [
+        820,
+        1527,
+        0,
+        30421,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32768,
+      "invalid": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "3-A-1",
+      "ports": [
+        30415,
+        1562,
+        0,
+        791,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32767,
+      "invalid": {
+        "other_photon_number": 1,
+        "zero_click": 0
+      },
+      "name": "4-B-0",
+      "ports": [
+        8090,
+        16493,
+        0,
+        8184,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32768,
+      "invalid": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "4-B-1",
+      "ports": [
+        30418,
+        1583,
+        0,
+        767,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32768,
+      "invalid": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "5-A-0",
+      "ports": [
+        781,
+        1539,
+        0,
+        30448,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32768,
+      "invalid": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "5-A-1",
+      "ports": [
+        30451,
+        1529,
+        0,
+        788,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32767,
+      "invalid": {
+        "other_photon_number": 1,
+        "zero_click": 0
+      },
+      "name": "6-A-0",
+      "ports": [
+        779,
+        1589,
+        0,
+        30399,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32768,
+      "invalid": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "6-A-1",
+      "ports": [
+        30480,
+        1526,
+        0,
+        762,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32766,
+      "invalid": {
+        "other_photon_number": 2,
+        "zero_click": 0
+      },
+      "name": "7-B-0",
+      "ports": [
+        8193,
+        16444,
+        0,
+        8129,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    },
+    {
+      "eligible": 32768,
+      "invalid": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "7-B-1",
+      "ports": [
+        30416,
+        1547,
+        0,
+        805,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "reference_identity_matches": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "shots_used": 32768
+    }
+  ],
+  "physical_predecessor_attribution": "unavailable",
+  "platform": "sim:ascella",
+  "reference_compilation_matches_all": false,
+  "requested_index_contrast": [
+    0.0008468674497237594,
+    -0.0009994618598057163,
+    0.0,
+    0.00015259441008198035,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "schema": "ascella-target-slot-drift-analysis-v1"
+}

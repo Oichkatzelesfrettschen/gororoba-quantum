@@ -10653,6 +10653,27 @@
    "sys",
    "typing"
   ],
+  "scripts/ascella_target_slot_drift.py": [
+   "__future__",
+   "argparse",
+   "ascella_predecessor_case",
+   "json",
+   "pathlib",
+   "qd_platform",
+   "typing"
+  ],
+  "scripts/ascella_target_slot_drift_analysis.py": [
+   "__future__",
+   "argparse",
+   "ascella_target_slot_drift",
+   "experiment_analysis",
+   "hashlib",
+   "json",
+   "math",
+   "pathlib",
+   "qd_platform",
+   "typing"
+  ],
   "scripts/ascella_transition_ci_check.py": [
    "__future__",
    "argparse",

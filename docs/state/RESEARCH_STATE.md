@@ -32,7 +32,7 @@ The IBM service inventory observed at 2026-10-30T04:53:07.250163+00:00 holds 34 
 
 The Quantum Inspire ledger retrieved at 2026-10-30T06:04:43+00:00 lists 450 jobs with 8511376 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 131 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 133 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 49 IQM run directories are retained. That is an observation, not an authorization.
 
@@ -442,6 +442,8 @@ circuit and charges the account ledger's change.
 | [2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-schema](../../results/quandela/runs/2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-schema) | Quandela Cloud | photonic target-slot diagnostic | qpu:ascella | 1 | 8 | completed | 1.032768 credits | ascella-predecessor-current-target-slot-response |
 | [2026-10-30T190014Z-sim_ascella-a5-kernel-slice](../../results/quandela/runs/2026-10-30T190014Z-sim_ascella-a5-kernel-slice) | Quandela Cloud | ascella-a5-kernel-slice | sim:ascella | 1 | 6 | completed | 1.0 credits | ascella-a5-kernel-slice-observations |
 | [2026-10-30T190300Z-qpu_ascella-a5-kernel-slice](../../results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice) | Quandela Cloud | ascella-a5-kernel-slice | qpu:ascella | 1 | 6 | completed | 1.06 credits | ascella-a5-kernel-slice-observations |
+| [2026-10-30T200500Z-sim_ascella-target-slot-drift](../../results/quandela/runs/2026-10-30T200500Z-sim_ascella-target-slot-drift) | Quandela Cloud | ascella-target-slot-drift | sim:ascella | 1 | 16 | completed | 1.0 credits | ascella-eight-target-requested-slot-contrast |
+| [2026-10-30T200600Z-qpu_ascella-target-slot-drift](../../results/quandela/runs/2026-10-30T200600Z-qpu_ascella-target-slot-drift) | Quandela Cloud | ascella-target-slot-drift | qpu:ascella | 1 | 16 | completed | 1.032768 credits | ascella-eight-target-requested-slot-contrast |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -844,6 +846,8 @@ circuit and charges the account ledger's change.
 - **qd-ascella-predecessor-current-schema** (2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-schema, job 0e41a8a7-1993-47a4-a9f5-b350523b2e95, 262144 samples, 262144 shots): What signed target-slot response and predecessor distribution differences occur in the eight-iteration Ascella acquisition under the current command-schema route?
 - **qd-sim-ascella-a5-kernel-slice** (2026-10-30T190014Z-sim_ascella-a5-kernel-slice, job 83d1d00f-e392-47e7-a172-146bd78e9d69, 60000 samples, 60003 shots): How does the Ascella simulator respond to the six encoded A5 kernel-slice settings?
 - **qd-ascella-a5-kernel-slice** (2026-10-30T190300Z-qpu_ascella-a5-kernel-slice, job 66331d15-d398-4046-bc21-c07a197e8830, 60000 samples, 60000 shots): How does Ascella respond to the six encoded A5 kernel-slice settings?
+- **qd-sim-ascella-target-slot-drift** (2026-10-30T200500Z-sim_ascella-target-slot-drift, job a9e5e7c9-a771-4b30-bdbe-70b4cfd6268b, 524288 samples, 524288 shots): How do the Ascella simulator target outputs vary across eight requested slots?
+- **qd-ascella-target-slot-drift** (2026-10-30T200600Z-qpu_ascella-target-slot-drift, job e2b3d606-d4db-4a65-8da8-14a2458be77f, 524288 samples, 524288 shots): How do Ascella target outputs vary across eight requested slots?
 
 ## Established claims
 
@@ -2354,6 +2358,10 @@ circuit and charges the account ledger's change.
   Boundary: The outcome is conditional on an eligible detected photon; sentinel and invalid events are recorded separately. The two-input encoding does not determine full A5 nullity or establish physical nonassociativity. The contrasts are descriptive and do not establish causal temporal effects.
   Evidence: [ascella-simulator-kernel-slice.json](../evidence/a5-photonic-crosschecks/ascella-simulator-kernel-slice.json), [ascella-hardware-kernel-slice.json](../evidence/a5-photonic-crosschecks/ascella-hardware-kernel-slice.json), [results.json](../../results/quandela/runs/2026-10-30T190014Z-sim_ascella-a5-kernel-slice/results.json), [results.json](../../results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice/results.json), [ascella-a5-kernel-slice.md](../design/ascella-a5-kernel-slice.md).
   Acquisitions: qd-sim-ascella-a5-kernel-slice, qd-ascella-a5-kernel-slice.
+- **ascella-eight-target-requested-slot-contrast** (exploratory reanalysis, hardware). The Ascella and sim:ascella sixteen-iteration target-slot jobs each return 524288 events. The descriptive eight-target requested-index contrast total-variation norms are approximately 0.0061193 on Ascella and 0.0009995 on the simulator. All hardware settings match the retained circuit and input identities.
+  Boundary: The requested-index contrast cancels quadratic trends only under equal index spacing, while cubic drift and physical scheduling remain unresolved. The records do not identify predecessor causality or support a confidence verdict. Simulator and hardware observations are separate jobs.
+  Evidence: [target-slot-drift-simulator.json](../evidence/ascella-predecessor-admission/target-slot-drift-simulator.json), [target-slot-drift-hardware.json](../evidence/ascella-predecessor-admission/target-slot-drift-hardware.json), [results.json](../../results/quandela/runs/2026-10-30T200500Z-sim_ascella-target-slot-drift/results.json), [results.json](../../results/quandela/runs/2026-10-30T200600Z-qpu_ascella-target-slot-drift/results.json), [ascella-predecessor-intervention.md](../design/ascella-predecessor-intervention.md).
+  Acquisitions: qd-sim-ascella-target-slot-drift, qd-ascella-target-slot-drift.
 
 ## Open claims
 

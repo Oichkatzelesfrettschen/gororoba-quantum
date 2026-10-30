@@ -1,0 +1,71 @@
+"""Construct the Ascella eight-target quadratic-index drift diagnostic."""
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+from typing import Any
+
+import ascella_predecessor_case as original
+import qd_platform
+
+LABELS = ("A", "B", "B", "A", "B", "A", "A", "B")
+WEIGHTS = (1, -1, -1, 1, -1, 1, 1, -1)
+
+
+def documents(platform: str) -> dict[str, bytes]:
+    """Retain the original three optical settings while expanding the target-slot schedule."""
+    if platform not in {"sim:ascella", "qpu:ascella"}:
+        raise ValueError("the diagnostic requires Ascella or its simulator")
+    source = original.documents()
+    manifest = json.loads(source["cases.json"])
+    by_source = {setting["source_name"]: setting for setting in manifest["settings"]}
+    settings: list[dict[str, Any]] = []
+    for target_index, label in enumerate(LABELS):
+        predecessor = original.PREDECESSORS[0 if label == "A" else 1]
+        for slot, name in enumerate((predecessor, original.TARGET)):
+            index = len(settings)
+            setting = dict(by_source[name])
+            setting.update(name=f"{target_index}-{label}-{slot}", observation_index=index, order=label, slot=slot)
+            settings.append(setting)
+    manifest.update(
+        family="ascella_target_slot_drift",
+        job="index-diagnostic",
+        platforms=[platform],
+        iterations=len(settings),
+        max_samples=len(settings) * original.SAMPLES_PER_ITERATION,
+        max_shots=len(settings) * original.SHOTS_PER_ITERATION,
+        max_credits=2.0 if platform == "qpu:ascella" else 1.0,
+        settings=settings,
+        preregistered={
+            "question": "How does the fixed target response vary across eight requested target slots?",
+            "builder_sha256": qd_platform.sha256_bytes(Path(__file__).read_bytes()),
+            "target_labels": list(LABELS),
+            "contrast_weights_over_four": list(WEIGHTS),
+            "compilation_identity": original.compilation_identity(),
+            "inference": (
+                "descriptive only; the requested index contrast cancels polynomial index trends through degree two"
+            ),
+            "boundary": (
+                "Physical iteration order and timing are unverified; cubic drift and carryover remain confounded."
+            ),
+            "auto_retry": False,
+        },
+    )
+    qd_platform.template_experiment(manifest, json.loads(source["circuit.json"]))
+    return {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": source["circuit.json"]}
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--platform", choices=("sim:ascella", "qpu:ascella"), required=True)
+    parser.add_argument("--out", type=Path, required=True)
+    args = parser.parse_args()
+    original.publish_case(args.out, documents(args.platform))
+    print(f"{args.out}: 16 requested iterations; eight target slots")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

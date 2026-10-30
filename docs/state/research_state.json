@@ -2807,6 +2807,20 @@
       "run": "results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice",
       "family": "ascella-a5-kernel-slice",
       "question": "How does Ascella respond to the six encoded A5 kernel-slice settings?"
+    },
+    {
+      "id": "qd-sim-ascella-target-slot-drift",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T200500Z-sim_ascella-target-slot-drift",
+      "family": "ascella-target-slot-drift",
+      "question": "How do the Ascella simulator target outputs vary across eight requested slots?"
+    },
+    {
+      "id": "qd-ascella-target-slot-drift",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T200600Z-qpu_ascella-target-slot-drift",
+      "family": "ascella-target-slot-drift",
+      "question": "How do Ascella target outputs vary across eight requested slots?"
     }
   ],
   "claims": [
@@ -14067,6 +14081,44 @@
       "acquisitions": [
         "qd-sim-ascella-a5-kernel-slice",
         "qd-ascella-a5-kernel-slice"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-eight-target-requested-slot-contrast",
+      "statement": "The Ascella and sim:ascella sixteen-iteration target-slot jobs each return 524288 events. The descriptive eight-target requested-index contrast total-variation norms are approximately 0.0061193 on Ascella and 0.0009995 on the simulator. All hardware settings match the retained circuit and input identities.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The requested-index contrast cancels quadratic trends only under equal index spacing, while cubic drift and physical scheduling remain unresolved. The records do not identify predecessor causality or support a confidence verdict. Simulator and hardware observations are separate jobs.",
+      "evidence": [
+        {
+          "path": "docs/evidence/ascella-predecessor-admission/target-slot-drift-simulator.json",
+          "sha256": "a7ec44ed7cbc1f0de569ebc2a8d9ce0727ec08ccf025e316c03883e476e462ff"
+        },
+        {
+          "path": "docs/evidence/ascella-predecessor-admission/target-slot-drift-hardware.json",
+          "sha256": "4261a770bd6c26d147ef360dbacbc70791880d900a1eff407cc4ddb95c80e53e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T200500Z-sim_ascella-target-slot-drift/results.json",
+          "sha256": "8b2a5e2700877563985b85063e059354e820a0bebc82c5152f3483c9120f4790"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T200600Z-qpu_ascella-target-slot-drift/results.json",
+          "sha256": "8f3745c78ee8aa2c166cf24aa58a314581de4b125fdaffc8b60c369045898d2d"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-predecessor-intervention.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-target-slot-drift",
+        "qd-ascella-target-slot-drift"
       ],
       "assumptions": [],
       "depends_on": [],
