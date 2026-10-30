@@ -79,3 +79,27 @@ def test_series_with_different_blocks_is_refused() -> None:
     del swapped[next(iter(swapped))]
     with pytest.raises(ValueError, match="same blocks"):
         analysis.decide(packed, swapped)
+
+
+def test_retained_hardware_runs_replay_the_registered_comparison() -> None:
+    report = analysis.decide(
+        analysis.collect("qpu_belenos/box_kite_photonic_packed"),
+        analysis.collect("qpu_belenos/box_kite_photonic_packed_swapped"),
+    )
+    block_r, slot_r = report["block_predictor"], report["slot_predictor"]
+    require(report["verdict"] == "mixed" and len(report["moved"]) == 26, report)
+    require(round(block_r[0], 2) == -0.34 and round(slot_r[0], 2) == -0.59, (block_r, slot_r))
+
+
+def test_a_constant_residual_leaves_the_attribution_undetermined() -> None:
+    with TemporaryDirectory() as directory:
+        root = Path(directory)
+        packed = analysis.collect(synthesize("box_kite_photonic_packed", root, lambda index, slot: 0.0))
+        swapped = analysis.collect(synthesize("box_kite_photonic_packed_swapped", root, lambda index, slot: 0.0))
+    report = analysis.decide(packed, swapped)
+    require(report["verdict"] == "undetermined" and report["block_predictor"] is None, report)
+
+
+def test_a_series_without_jobs_is_refused() -> None:
+    with pytest.raises(ValueError, match="no job directories"):
+        analysis.series_jobs("qpu_belenos/no_such_family")

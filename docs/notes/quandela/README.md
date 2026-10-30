@@ -537,13 +537,16 @@ half-turn also breaks a confound of the packed layout, where every t = +1 block
 sat on an even slot and every t = -1 block on an odd one: after the move each
 block keeps its t and takes the other slot parity. The preregistered
 `mode_swap` record in each cases.json fixes the statistics, and
-`scripts/qd_packed_mode_swap_analysis.py PACKED_DIR SWAPPED_DIR` evaluates
+`scripts/qd_packed_mode_swap_analysis.py PACKED SWAPPED` evaluates
 them: the correlation of the 16 half blocks' residuals with the block
 predictor (the packed residual) and with the slot predictor (the other half
 blocks' packed residual on the slot a block now occupies), and per block the
-two-sample z of a_swapped - a_packed against 4.5. The packed qpu:belenos
-collection that serves as the baseline is the one retained under
-`box_kite_photonic_packed/qpu_belenos/`.
+two-sample z of a_swapped - a_packed against 4.5. A series is a directory of
+`job-NN/` collections or `PLATFORM/FAMILY`, which selects the retained runs
+under `results/quandela/runs/` in job order; the registered comparison replays
+as `qpu_belenos/box_kite_photonic_packed qpu_belenos/box_kite_photonic_packed_swapped`,
+the packed qpu:belenos runs serving as the baseline. A constant residual
+vector leaves its correlation undefined and the verdict `undetermined`.
 
 Local Perceval SLOS with the catalogue's source figures (indistinguishability
 0.942, g2 0.01) predicts a dark block's algebra fraction 0 and a bright
