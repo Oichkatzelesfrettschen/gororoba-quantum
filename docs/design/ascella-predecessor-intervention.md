@@ -442,8 +442,6 @@ or queued jobs. The estimate is 262,144 shots and 1.032768 credits. The
 observation binds the recorded case and source digests; a later submission
 refreshes all admission checks and requires exact owner approval.
 
-<a id="procedure-after-exact-owner-approval"></a>
-
 ## Successor admission procedure
 
 The generic submit command enforces the reviewed packet for this registered
@@ -524,3 +522,4 @@ partial or ambiguous acquisition requires diagnosis rather than automatic retry.
 | Eight iterations at this budget take about 24 s, with 40 s written as the expectation | Hypothesized from the retained per-iteration times. This schedule has not been timed. |
 | The common signed target-slot contrast exceeds 0.1 TVD | The response question, conditional on the sampling contract. |
 | The immediate physical predecessor causes a response change | Unidentified by this case's returned metadata and four target observations. |
+| On `sim:ascella` the case's eight iterations return their fixed 32,768 events each, the common target-slot contrast norm is 153/65536 and the reversal norm 71/65536, and every returned compiled circuit differs from the preregistered QPU compilation identity while every computed input matches | Measured by job `51c0552b`, read by [`ascella_predecessor_simulator.py`](../../scripts/ascella_predecessor_simulator.py) into [simulator-qualification.json](../evidence/ascella-predecessor-admission/simulator-qualification.json). The simulator has no predecessor memory, so its contrasts bound the analysis pipeline's zero, not the device's. The frozen analyzer reads only the QPU case bytes, and its digest stays bound by the case. |
