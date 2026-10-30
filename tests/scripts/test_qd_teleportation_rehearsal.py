@@ -554,7 +554,7 @@ def test_submit_reads_the_platform_first_and_retains_the_admitting_model(
         calls.append("submit")
         if case_dir != run or platform != rehearsal.PLATFORM or not approval:
             raise AssertionError((case_dir, platform, approval))
-        if args != (2.2, 120.0, rehearsal.PER_JOB_CREDITS):
+        if args != (2.2, 120.0, rehearsal.PER_JOB_CREDITS, rehearsal.ADMIT_STATUSES):
             raise AssertionError(args)
         verify({"body": load("job-body.json")})
         return {"job_id": "job-id", "platform": platform}

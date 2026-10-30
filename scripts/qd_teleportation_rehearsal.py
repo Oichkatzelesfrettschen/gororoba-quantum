@@ -128,6 +128,9 @@ Q0, Q1, A0, A1, B0, B1, H0, H1 = range(LOGICAL)
 SOURCES = (Q0, A0, B0)
 MIN_CLICKS = 3
 MAX_DURATION = 300
+# The Explorer row of qpu:belenos reads running while other jobs execute, and a job planned under it queues; the plan
+# and the submission admit it beside available.
+ADMIT_STATUSES = ("running",)
 PER_JOB_CREDITS = 1.0
 PRICE_PER_SHOT = 1e-6
 TOLERANCE = 1e-12
@@ -1746,7 +1749,7 @@ def planned(job: Job, out: Path, suffix: str, model: dict[str, Any]) -> int:
     mean score both refuse: the preregistered budget assumes the pooled fidelity of the noise model, so a plan
     at figures below it is no admission."""
     try:
-        checked = plan(out, PLATFORM, job.credit_ceiling, job.expected_seconds, PER_JOB_CREDITS)
+        checked = plan(out, PLATFORM, job.credit_ceiling, job.expected_seconds, PER_JOB_CREDITS, ADMIT_STATUSES)
     except PlatformError as error:
         return retain_refusal(job, out, suffix, model, str(error))
     if not model["inside_justified_range"]:
@@ -1826,6 +1829,7 @@ def send(run: Path, approval: str, anchor: bool = False) -> int:
             job.credit_ceiling,
             job.expected_seconds,
             PER_JOB_CREDITS,
+            ADMIT_STATUSES,
             verify=binding(job, admitted),
         )
     gate = {
