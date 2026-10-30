@@ -19,7 +19,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Open Quantum | brokered IonQ, Rigetti, IQM and AQT backends | [open_quantum/README.md](notes/open_quantum/README.md) |
 | Quandela | Belenos and Ascella photonic campaign | [quandela/README.md](notes/quandela/README.md) |
 | IQM Resonance | Emerald, Garnet and Sirius | [iqm/README.md](notes/iqm/README.md) |
-| qBraid | broker, Lab compute profiles, and free CPU/GPU simulators; captured docs, REST OpenAPI and pins | [qbraid/README.md](notes/qbraid/README.md) |
+| qBraid | broker, Lab compute profiles, free CPU/GPU simulators, and the hosted MCP server; captured docs, REST OpenAPI and pins | [qbraid/README.md](notes/qbraid/README.md) |
 | IonQ | cloud simulator with IonQ noise models; Forte QPUs without credit | [ionq/README.md](notes/ionq/README.md) |
 | BlueQubit | free CPU statevector, MPS and Pauli-path simulators; credit-only GPU and QPU | [bluequbit/README.md](notes/bluequbit/README.md) |
 | Quafu | BAQIS ScQ superconducting QPUs and a 10-qubit simulator | [quafu/README.md](notes/quafu/README.md) |
