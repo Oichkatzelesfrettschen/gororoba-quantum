@@ -28,6 +28,15 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B scripts/frozen_case_sources.py --check docs/evidence/quandela/frozen-case-source-pins.json results/quandela/cases",
+   "name": "core-ascella-predecessor-source-pin",
+   "seconds": 0.08,
+   "tier": "pr",
+   "workers": 1
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check ci tests && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check ci tests && \"$PYTHON\" ci/pinned_tool.py mypy ci/run_gates.py ci/runner_specs.py ci/premerge_gates.py ci/gate_inputs.py ci/analyze_timings.py ci/changed_paths.py ci/pins.py ci/pinned_tool.py ci/gate_ledger.py ci/merge_gate_timings.py ci/host_identity.py ci/read_trace/sitecustomize.py tests",
    "name": "core-000",
    "seconds": 0.7,
