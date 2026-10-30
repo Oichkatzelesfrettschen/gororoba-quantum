@@ -24,3 +24,7 @@ export GOROROBA_WORKERS=2
 [report.py](report.py) regenerates the figure from the retained JSON. The
 findings are a descriptive report, not a calibrated statistical test or a
 provider-independent causal claim.
+
+The documentation type-check gate checks the producer separately because a
+different evidence directory also has an `analyze.py` module. Both files remain
+in the type-check gate, and the retained producer path and bytes stay fixed.
