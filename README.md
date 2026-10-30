@@ -32,7 +32,7 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 25 |
-| exploratory reanalysis | exploratory | 101 |
+| exploratory reanalysis | exploratory | 102 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 30 |
@@ -433,6 +433,7 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-30T024225Z-demarrais_tuna17_8192d-batch-01](results/quantum_inspire/runs/2026-10-30T024225Z-demarrais_tuna17_8192d-batch-01) | Quantum Inspire | DeMarrais CZ-graph Pauli propagation | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-30T040508Z-demarrais_tuna17_8192d-batch-02](results/quantum_inspire/runs/2026-10-30T040508Z-demarrais_tuna17_8192d-batch-02) | Quantum Inspire | DeMarrais CZ-graph Pauli propagation | tuna_17 | 3 | 3 | completed | 0 ledger change |
 | [2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4](results/quandela/runs/2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4) | Quandela Cloud | DeMarrais tower photonic quotient | sim:belenos | 1 | 24 | error | 0.0 credits |
+| [2026-10-30T010726Z-sim_ascella-ascella_predecessor-source-compatible](results/quandela/runs/2026-10-30T010726Z-sim_ascella-ascella_predecessor-source-compatible) | Quandela Cloud | photonic predecessor-contrast pipeline qualification | sim:ascella | 1 | 8 | completed | 1.0 credits |
 | [2026-10-30T045729Z-sim_belenos-box_kite_photonic_packed-job-00](results/quandela/runs/2026-10-30T045729Z-sim_belenos-box_kite_photonic_packed-job-00) | Quandela Cloud | box-kite photonic packed | sim:belenos | 1 | 6 | completed | 1.0 credits |
 | [2026-10-30T045904Z-sim_belenos-box_kite_photonic_packed-job-01](results/quandela/runs/2026-10-30T045904Z-sim_belenos-box_kite_photonic_packed-job-01) | Quandela Cloud | box-kite photonic packed | sim:belenos | 1 | 6 | completed | 1.0 credits |
 | [2026-10-30T050025Z-sim_belenos-box_kite_photonic_packed-job-02](results/quandela/runs/2026-10-30T050025Z-sim_belenos-box_kite_photonic_packed-job-02) | Quandela Cloud | box-kite photonic packed | sim:belenos | 1 | 6 | completed | 1.0 credits |
@@ -452,7 +453,7 @@ The IBM service inventory observed at 2026-10-30T04:53:07.250163+00:00 holds 34 
 
 The Quantum Inspire ledger retrieved at 2026-10-30T06:04:43+00:00 lists 450 jobs with 8511376 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 121 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 122 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 49 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->

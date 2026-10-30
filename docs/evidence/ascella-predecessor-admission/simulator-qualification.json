@@ -1,0 +1,292 @@
+{
+  "case_variant": {
+    "job": "source-compatible-simulator",
+    "platforms": [
+      "sim:ascella"
+    ]
+  },
+  "common_norm_exact": "153/65536",
+  "common_vector_exact": [
+    "-133/65536",
+    "153/65536",
+    "0",
+    "-5/16384",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+  ],
+  "drift_boundary": "quadratic symmetric drift can produce a positive common contrast and zero reversal contrast",
+  "eligible_counts": [
+    32768,
+    32768,
+    32767,
+    32768,
+    32766,
+    32768,
+    32768,
+    32768
+  ],
+  "job_id": "51c0552b-91b1-4d71-ac1f-122cd05c1cee",
+  "observations": [
+    {
+      "detected_shots": 32768,
+      "eligible_port_counts": [
+        767,
+        1567,
+        0,
+        30434,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "identity_matches_preregistration": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "invalid_event_counts": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "A-0-predecessor-theta2-x-arm1",
+      "returned_events": 32768
+    },
+    {
+      "detected_shots": 32768,
+      "eligible_port_counts": [
+        30360,
+        1632,
+        0,
+        776,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "identity_matches_preregistration": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "invalid_event_counts": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "A-1-target-theta2-x-arm0",
+      "returned_events": 32768
+    },
+    {
+      "detected_shots": 32768,
+      "eligible_port_counts": [
+        8175,
+        16291,
+        0,
+        8301,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "identity_matches_preregistration": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "invalid_event_counts": {
+        "other_photon_number": 1,
+        "zero_click": 0
+      },
+      "name": "A-0-predecessor-theta0-x-arm0",
+      "returned_events": 32768
+    },
+    {
+      "detected_shots": 32768,
+      "eligible_port_counts": [
+        30450,
+        1520,
+        0,
+        798,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "identity_matches_preregistration": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "invalid_event_counts": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "A-1-target-theta2-x-arm0",
+      "returned_events": 32768
+    },
+    {
+      "detected_shots": 32768,
+      "eligible_port_counts": [
+        8267,
+        16402,
+        0,
+        8097,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "identity_matches_preregistration": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "invalid_event_counts": {
+        "other_photon_number": 2,
+        "zero_click": 0
+      },
+      "name": "B-0-predecessor-theta0-x-arm0",
+      "returned_events": 32768
+    },
+    {
+      "detected_shots": 32768,
+      "eligible_port_counts": [
+        30428,
+        1548,
+        0,
+        792,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "identity_matches_preregistration": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "invalid_event_counts": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "B-1-target-theta2-x-arm0",
+      "returned_events": 32768
+    },
+    {
+      "detected_shots": 32768,
+      "eligible_port_counts": [
+        793,
+        1530,
+        0,
+        30445,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "identity_matches_preregistration": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "invalid_event_counts": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "B-0-predecessor-theta2-x-arm1",
+      "returned_events": 32768
+    },
+    {
+      "detected_shots": 32768,
+      "eligible_port_counts": [
+        30385,
+        1589,
+        0,
+        794,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "identity_matches_preregistration": {
+        "computed_circuit": false,
+        "computed_input": true
+      },
+      "invalid_event_counts": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "B-1-target-theta2-x-arm0",
+      "returned_events": 32768
+    }
+  ],
+  "physical_predecessor_attribution": "unavailable",
+  "predecessor_tvd_exact": [
+    "362611855/536854528",
+    "122039729/178946048"
+  ],
+  "reversal_norm_exact": "71/65536",
+  "reversal_vector_exact": [
+    "47/65536",
+    "-71/65536",
+    "0",
+    "3/8192",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+  ],
+  "run_bindings": {
+    "cases.json": "3a8c4a11f1390cdc35c426566657ef2f2a498a7083cd983234077dea6fcaad9e",
+    "circuit.json": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f",
+    "job-body.json": "f4f78f85e83f89dc11dd9f6604ee05d0eb356e155d63dba67e2292c714e482b4",
+    "raw/result.json": "1dc6519d825d1da20a5d7a610d65406c6adbb58952430c415b4187e0c0a52a96",
+    "results.json": "36440a7d0df81cfc980065e4860672c40620d91b9ce4a2cb937a65b9c40e1840",
+    "submission.json": "4ae07dab8d0ad0a48786c401aef4acd9e1524a2b8c438370f326dfe740803c15"
+  },
+  "schema": "ascella-predecessor-simulator-v1",
+  "source_sha256": {
+    "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+    "scripts/ascella_experiment_analysis.py": "b9c495807ee9ee19a411bd7891a7545bb4a93d7adc5a62b0fdc23e266cc39bdc",
+    "scripts/ascella_predecessor_analysis.py": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398",
+    "scripts/ascella_predecessor_case.py": "2310aa98d1c0c68812d7edcbd30fd6a0713ca5fb6ab1e1b8c3c96e3d845b197b",
+    "scripts/experiment_analysis.py": "737504232eeca0e5112df232fe76bcabd198d3bc17b2018c55a1871e846ec3b2",
+    "scripts/qd_platform.py": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+  },
+  "temporal_boundary": "returned position attributes settings; physical order, target time spacing and carryover are unestablished",
+  "verdict": "descriptive-only"
+}

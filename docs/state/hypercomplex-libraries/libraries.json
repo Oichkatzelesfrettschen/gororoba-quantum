@@ -10517,6 +10517,18 @@
    "tempfile",
    "typing"
   ],
+  "scripts/ascella_predecessor_simulator.py": [
+   "__future__",
+   "argparse",
+   "ascella_predecessor_analysis",
+   "ascella_predecessor_case",
+   "hashlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "typing"
+  ],
   "scripts/ascella_replication_offsets.py": [
    "__future__",
    "ascella_compilation_reading",
