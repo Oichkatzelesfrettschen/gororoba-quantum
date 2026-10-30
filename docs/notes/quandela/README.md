@@ -480,7 +480,21 @@ reduces to.
 | `box_kite_photonic_pairs` | 16 | 2 | 5000 | 347113 | 0.35 per job, 5.6 in all |
 
 The estimates come from `plan` against the live platform on 2026-10-17 and
-exclude the offer's per-job price. Belenos practice the cases follow:
+exclude the offer's per-job price.
+
+The packed series ran on 2026-10-30 as six jobs on `sim:belenos` and the same
+six on `qpu:belenos` (60000 samples per job, the last 20000), each written to
+its run directory and read by `scripts/qd_box_kite_analysis.py`. The simulator
+returns every dark block at a = 0 and every bright block at a = 1; on the chip
+the 8 dark blocks read a = 0.005 to 0.050 and the 8 bright blocks 0.863 to
+0.994, so the t sign flip that turns a zero product into a bright one moves a
+by 0.93 on average, and the 16 half blocks read 0.405 to 0.619 against 1/2.
+The jobs ran without a preregistered decision rule; the registry claims
+`qd-sim-belenos-packed-blocks-exact` and
+`qd-qpu-belenos-packed-dark-bright-contrast` carry the figures and their
+boundary. In a packed job each block holds about a sixth of the one-click
+samples, so `in_block` there is a share across blocks, not the single-block
+routing fidelity the Q1 runs report. Belenos practice the cases follow:
 
 - Every photon enters a connected input mode, so input adaptation adds no
   routing permutation (guide `04-compilation`).

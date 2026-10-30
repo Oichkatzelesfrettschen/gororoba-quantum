@@ -2590,6 +2590,90 @@
       "run": "results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01",
       "family": "photonic two-photon 21-pair octonion associator character atlas",
       "question": "Does sim:ascella route two photons through each of the 21 octonion pairs' character unitaries into the predicted focal coset pair, with the stabilizer-line pairs persisting in (0, 2)?"
+    },
+    {
+      "id": "qd-sim-belenos-packed-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T045729Z-sim_belenos-box_kite_photonic_packed-job-00",
+      "family": "box-kite photonic packed",
+      "question": "sim:belenos, six one-photon sign blocks packed in one job (two_label-00, two_label-01, two_label-02, two_label-03, two_label-04, two_label-05): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-sim-belenos-packed-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T045904Z-sim_belenos-box_kite_photonic_packed-job-01",
+      "family": "box-kite photonic packed",
+      "question": "sim:belenos, six one-photon sign blocks packed in one job (two_label-06, two_label-07, two_label-08, two_label-09, two_label-10, two_label-11): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-sim-belenos-packed-job-02",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T050025Z-sim_belenos-box_kite_photonic_packed-job-02",
+      "family": "box-kite photonic packed",
+      "question": "sim:belenos, six one-photon sign blocks packed in one job (two_label-12, two_label-13, two_label-14, two_label-15, two_label-16, two_label-17): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-sim-belenos-packed-job-03",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T050137Z-sim_belenos-box_kite_photonic_packed-job-03",
+      "family": "box-kite photonic packed",
+      "question": "sim:belenos, six one-photon sign blocks packed in one job (two_label-18, two_label-19, two_label-20, two_label-21, two_label-22, two_label-23): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-sim-belenos-packed-job-04",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T050247Z-sim_belenos-box_kite_photonic_packed-job-04",
+      "family": "box-kite photonic packed",
+      "question": "sim:belenos, six one-photon sign blocks packed in one job (two_label-24, two_label-25, two_label-26, two_label-27, two_label-28, two_label-29): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-sim-belenos-packed-job-05",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T050354Z-sim_belenos-box_kite_photonic_packed-job-05",
+      "family": "box-kite photonic packed",
+      "question": "sim:belenos, six one-photon sign blocks packed in one job (two_label-30, two_label-31): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T050544Z-qpu_belenos-box_kite_photonic_packed-job-00",
+      "family": "box-kite photonic packed",
+      "question": "qpu:belenos, six one-photon sign blocks packed in one job (two_label-00, two_label-01, two_label-02, two_label-03, two_label-04, two_label-05): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T050812Z-qpu_belenos-box_kite_photonic_packed-job-01",
+      "family": "box-kite photonic packed",
+      "question": "qpu:belenos, six one-photon sign blocks packed in one job (two_label-06, two_label-07, two_label-08, two_label-09, two_label-10, two_label-11): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-job-02",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T051102Z-qpu_belenos-box_kite_photonic_packed-job-02",
+      "family": "box-kite photonic packed",
+      "question": "qpu:belenos, six one-photon sign blocks packed in one job (two_label-12, two_label-13, two_label-14, two_label-15, two_label-16, two_label-17): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-job-03",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T051319Z-qpu_belenos-box_kite_photonic_packed-job-03",
+      "family": "box-kite photonic packed",
+      "question": "qpu:belenos, six one-photon sign blocks packed in one job (two_label-18, two_label-19, two_label-20, two_label-21, two_label-22, two_label-23): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-job-04",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T051558Z-qpu_belenos-box_kite_photonic_packed-job-04",
+      "family": "box-kite photonic packed",
+      "question": "qpu:belenos, six one-photon sign blocks packed in one job (two_label-24, two_label-25, two_label-26, two_label-27, two_label-28, two_label-29): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-job-05",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T051818Z-qpu_belenos-box_kite_photonic_packed-job-05",
+      "family": "box-kite photonic packed",
+      "question": "qpu:belenos, six one-photon sign blocks packed in one job (two_label-30, two_label-31): does each block's algebra fraction a reach its exact p_algebra, dark 0 and bright 1 under the t sign flip?"
     }
   ],
   "claims": [
@@ -13318,6 +13402,154 @@
       "gates": {},
       "acquisitions": [
         "qd-sim-ascella-two-photon-character-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-sim-belenos-packed-blocks-exact",
+      "statement": "On sim:belenos the six packed box-kite jobs (32 one-photon sign blocks, 20000 to 60001 samples per job) return every dark block at a = 0 and every bright block at a = 1 with no violating sample, and the 16 half blocks at a = 0.488 to 0.515 (mean 0.4996) against the exact 1/2.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "A simulator reproduces the preregistered ideals; it carries no device error, so it qualifies the packed case and the analysis rather than the chip. Four of the 16 half blocks sit 2.1 to 2.6 standard errors from 1/2, all but one below, which bounds the simulator's own sampling bias at the 0.012 scale.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-30T045729Z-sim_belenos-box_kite_photonic_packed-job-00/analysis.json",
+          "sha256": "799e8c3c65e38d48b868be8ca6586ea6d4f6df851219e74d79a4c484ab96b24c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T045729Z-sim_belenos-box_kite_photonic_packed-job-00/results.json",
+          "sha256": "c578f8770348ec6bbe13df363f5315ace8001cc96aba52571bee75fdbfe5fa69"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T045904Z-sim_belenos-box_kite_photonic_packed-job-01/analysis.json",
+          "sha256": "2ef226e358cff1f89a35d48ef938aa9f24ceb2a9e86b3b25a978f592fb3ee4b1"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T045904Z-sim_belenos-box_kite_photonic_packed-job-01/results.json",
+          "sha256": "f99f29313db51708adee87fa0aa77bf723cd6a9ebc2aefd802e361df32dd1e3e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050025Z-sim_belenos-box_kite_photonic_packed-job-02/analysis.json",
+          "sha256": "5afb29ed520c9908b72be693a9fe320d9184c452ec321d9356104bfc31510188"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050025Z-sim_belenos-box_kite_photonic_packed-job-02/results.json",
+          "sha256": "60daa82207e410386896fa8442126afad9ae36872e3f79f6afcfb1380ce335c7"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050137Z-sim_belenos-box_kite_photonic_packed-job-03/analysis.json",
+          "sha256": "519ea9e08fde4dd0435f1e5696d0ed2f25198ebb5ce35cbebe6c993094a2d403"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050137Z-sim_belenos-box_kite_photonic_packed-job-03/results.json",
+          "sha256": "b93ca58c86a32944ea0d670e09c1f356eb9f6a899212c0fc90498ee7fe924ea4"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050247Z-sim_belenos-box_kite_photonic_packed-job-04/analysis.json",
+          "sha256": "52d0812b61cc38db36651e0c201988074a7f2cf6079495e6abab5f255853196c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050247Z-sim_belenos-box_kite_photonic_packed-job-04/results.json",
+          "sha256": "8d5b31d451662e8a779349d0c3907b6866036efec7d5fbc2ac0cb3ef7d8bd10b"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050354Z-sim_belenos-box_kite_photonic_packed-job-05/analysis.json",
+          "sha256": "dc5e5897fdcf1b48df89beddf352755495879fa8781bccf993df2d0c8a14f338"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050354Z-sim_belenos-box_kite_photonic_packed-job-05/results.json",
+          "sha256": "0187d49000660db112af6fe9c1aa33e1bb983a75fe922f5ef3570a9730de1932"
+        }
+      ],
+      "gates": {},
+      "documents": [
+        "docs/notes/quandela/README.md"
+      ],
+      "acquisitions": [
+        "qd-sim-belenos-packed-job-00",
+        "qd-sim-belenos-packed-job-01",
+        "qd-sim-belenos-packed-job-02",
+        "qd-sim-belenos-packed-job-03",
+        "qd-sim-belenos-packed-job-04",
+        "qd-sim-belenos-packed-job-05"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-qpu-belenos-packed-dark-bright-contrast",
+      "statement": "On qpu:belenos the same six packed jobs (60000 shots per job, the last 20000) read the 8 dark blocks at a = 0.005 to 0.050 (mean 0.033) and the 8 bright blocks at a = 0.863 to 0.994 (mean 0.960), so the t sign flip that turns each zero product x y = 0 into a bright product moves the algebra fraction by 0.93 on average against the ideal 1; the 16 half blocks read 0.405 to 0.619 (mean 0.511) against 1/2, departing up to 23 standard errors.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The jobs ran without a preregistered decision rule, so every figure is descriptive. In a packed job each block holds about one sixth of the one-click samples, so in_block is a share across blocks and not the single-block routing fidelity of the earlier Belenos claims. The dark floor mixes dark counts, multiphoton emission and mesh error, which this design does not separate.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-30T050544Z-qpu_belenos-box_kite_photonic_packed-job-00/analysis.json",
+          "sha256": "964d508269dd56a248d9c67685a1d2e589d79385aea48d5df60fc438bc7dc779"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050544Z-qpu_belenos-box_kite_photonic_packed-job-00/results.json",
+          "sha256": "da750d709eb9544044f5e8ee5fc7d9e1a4a6efb08ad917d44980b2b0aaecfb06"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050812Z-qpu_belenos-box_kite_photonic_packed-job-01/analysis.json",
+          "sha256": "e46a8d59331e1a65f0f97ba47b0df12eb45612d57544fd95d75d26e5e4271c3b"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T050812Z-qpu_belenos-box_kite_photonic_packed-job-01/results.json",
+          "sha256": "b330a0bb67a55201b03168d99ac0e37d7f9760cab82d4406e712d2ae97e2f58a"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051102Z-qpu_belenos-box_kite_photonic_packed-job-02/analysis.json",
+          "sha256": "ca1a83a177075712580c0fb42737d268db04255b2b46b11d630d91212be7cd3d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051102Z-qpu_belenos-box_kite_photonic_packed-job-02/results.json",
+          "sha256": "dd8a7497efed1aa47b4510561b924caaaa62f5774c6a8b2a134578447b30950a"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051319Z-qpu_belenos-box_kite_photonic_packed-job-03/analysis.json",
+          "sha256": "e1a3021440b7ba68aac313f5907bbe7cf74015df8d04ccab88b8d3580ec7fb31"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051319Z-qpu_belenos-box_kite_photonic_packed-job-03/results.json",
+          "sha256": "7a04222ffc7354e75d251dceda319f42c9295ecd96e0abc494f583497429bc6d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051558Z-qpu_belenos-box_kite_photonic_packed-job-04/analysis.json",
+          "sha256": "1a0cf8266d6899b9f7b4b3d43e75cb1a609cfb49b0c6a75d3ffb8a1dde692367"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051558Z-qpu_belenos-box_kite_photonic_packed-job-04/results.json",
+          "sha256": "5a277899449e907871c914cd67693c1f82862506605fa317899540688a295cc7"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051818Z-qpu_belenos-box_kite_photonic_packed-job-05/analysis.json",
+          "sha256": "776f9c45a4fc868cf5993c1cabe4f30036bdab6e83e76185b02e38a9adf7bab9"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T051818Z-qpu_belenos-box_kite_photonic_packed-job-05/results.json",
+          "sha256": "e8a41eb175afc6673a4748ff9a61d0aa1e18c70a22f9946b0c1835745f796a38"
+        }
+      ],
+      "gates": {},
+      "documents": [
+        "docs/notes/quandela/README.md"
+      ],
+      "acquisitions": [
+        "qd-qpu-belenos-packed-job-00",
+        "qd-qpu-belenos-packed-job-01",
+        "qd-qpu-belenos-packed-job-02",
+        "qd-qpu-belenos-packed-job-03",
+        "qd-qpu-belenos-packed-job-04",
+        "qd-qpu-belenos-packed-job-05"
       ],
       "assumptions": [],
       "depends_on": [],
