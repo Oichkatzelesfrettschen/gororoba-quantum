@@ -388,14 +388,13 @@ limits do not establish whether a particular submission starts immediately,
 enters the queue, or is accepted when the queue is already full. Check the
 live counters and the provider's response for that submission.
 
-`qd_platform.py plan` and `submit` currently require both token counters to
-be zero. This repository rule is stricter than the provider's recorded
-capacity: the runner refuses a second case even when one job is running and
-the provider reports an empty queue. The Ascella predecessor case also freezes
-that single-job condition. Using the provider's queue capacity for that case
-requires a revised case and runner admission policy that preserve the token
-lock, reviewed submission binding, cost ceiling and one-attempt guard. A busy
-token does not authorize cancellation of another job.
+The historical Ascella predecessor cases and other runner cases require both
+token counters to be zero. The `current-schema` Ascella predecessor case admits
+one running job when a token queue slot remains available; the runner refuses a
+full queue or invalid capacity counters. The provider still decides whether the
+new job starts or queues. The token lock, reviewed submission binding, cost
+ceiling and one-attempt guard also apply. A busy token does not authorize
+cancellation of another job.
 
 ## Runner
 

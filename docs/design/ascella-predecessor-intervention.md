@@ -408,8 +408,8 @@ unresolved, so it cannot identify that state as predecessor memory.
 The case admits `available` and `running` on both the Explorer row and
 processor record. A running platform can queue an approved job; platform
 occupancy does not establish the token's occupancy or the job's start time.
-Both planning and submission pass `--admit-status running`. The token must
-remain free of running and queued jobs under the existing single-job case policy.
+Both planning and submission pass `--admit-status running`. The historical case
+requires the token to be free of running and queued jobs.
 The [Quandela runner guidance](../notes/quandela/README.md#use-in-this-repository)
 distinguishes that case rule from the provider's separate running and queued
 job limits. A successor that uses those limits needs a revised admission policy
@@ -451,8 +451,10 @@ and simulator qualification intact. The current analyzer
 `scripts/ascella_predecessor_current_analysis.py` validates the actual job
 records and produces descriptive target-slot contrasts; it does not issue a
 conditional confidence verdict. The runner checks the current builder and
-analyzer digests along with the other case sources. A changed returned circuit
-or input remains an invalid comparison, rather than evidence of history.
+analyzer digests along with the other case sources. The runner admits the current
+case when another job is running and a token queue slot is available; it refuses
+a full queue. A changed returned circuit or input remains an invalid comparison,
+rather than evidence of history.
 
 Build a request in a new run directory with `"$PYTHON"
 scripts/ascella_predecessor_current_case.py --build --out RUN`; `--check --out

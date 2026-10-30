@@ -12,6 +12,18 @@ import pytest
 import qd_platform as qd
 
 
+def test_current_case_admits_running_job_only_with_an_available_queue_slot() -> None:
+    current_case = {"family": "ascella_predecessor", "job": current.JOB}
+    counters = {"max_concurrent_jobs": 1, "max_jobs_in_queue": 1, "num_concurrent_jobs": 1, "num_jobs_in_queue": 0}
+    qd.require_token_capacity(current_case, counters)
+    with pytest.raises(qd.PlatformError, match="running or queued"):
+        qd.require_token_capacity({"family": "ascella_predecessor", "job": original.JOB}, counters)
+    with pytest.raises(qd.PlatformError, match="no available queue slot"):
+        qd.require_token_capacity(current_case, {**counters, "num_jobs_in_queue": 1})
+    with pytest.raises(qd.PlatformError, match="integer"):
+        qd.require_token_capacity(current_case, {**counters, "max_jobs_in_queue": None})
+
+
 def test_current_request_preserves_scientific_fields_and_binds_current_sources(tmp_path: Path) -> None:
     prior = original.documents()
     newer = current.documents()

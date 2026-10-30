@@ -48,7 +48,7 @@ Subcommands:
   the live price per shot stays within C, the processor's perfs (HOM and g2 among them) are
   recorded, and a two-photon case on a QPU whose HOM visibility is absent or
   not above 90 % draws a warning on stderr,
-  the token has no running or queued job, and Perceval's
+  the token satisfies the case's occupancy policy, and Perceval's
   estimate_required_shots for max_samples stays within max_shots. It builds
   the job body through Perceval's own RemoteComputer.prepare_payload and
   communication-layer send with create_job replaced by a recorder, so the
@@ -1250,6 +1250,21 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     return {"body": body, "estimated_shots": estimate, "versions": found, "payload_version_basis": basis}
 
 
+def require_token_capacity(manifest: dict[str, Any], counters: dict[str, Any]) -> None:
+    """Admit the current case when the token has a queue slot; preserve older case policies."""
+    if manifest.get("family") != "ascella_predecessor" or manifest.get("job") != "current-schema":
+        if counters["num_concurrent_jobs"] or counters["num_jobs_in_queue"]:
+            raise PlatformError(f"the token has a running or queued job: {counters}")
+        return
+    keys = ("max_concurrent_jobs", "max_jobs_in_queue", "num_concurrent_jobs", "num_jobs_in_queue")
+    if any(type(counters.get(key)) is not int or counters[key] < 0 for key in keys):
+        raise PlatformError("the current case requires non-negative integer token capacity counters")
+    if counters["max_concurrent_jobs"] < 1 or counters["num_concurrent_jobs"] > counters["max_concurrent_jobs"]:
+        raise PlatformError(f"the token running-job capacity is invalid: {counters}")
+    if counters["max_jobs_in_queue"] < 1 or counters["num_jobs_in_queue"] >= counters["max_jobs_in_queue"]:
+        raise PlatformError(f"the token has no available queue slot: {counters}")
+
+
 def plan(
     case_dir: Path,
     platform: str,
@@ -1316,8 +1331,7 @@ def plan(
     if "seeded_from" in manifest:
         live_architecture(processor, platform)
     counters = availability()
-    if counters["num_concurrent_jobs"] or counters["num_jobs_in_queue"]:
-        raise PlatformError(f"the token has a running or queued job: {counters}")
+    require_token_capacity(manifest, counters)
     built = payload(case_dir, manifest, circuit, platform)
     estimate = built["estimated_shots"]
     if estimate is None or estimate > manifest["max_shots"]:
