@@ -551,6 +551,58 @@
             }
           ],
           "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "The integrated Ascella and IBM tree passes 113 focused tests. A fresh submit-free Fez plan verifies all 24 circuits and the updated source closure; the prior generic submit-free run and cost checks remain descriptive evidence. The pilot makes no inferential hardware decision.",
+          "observed_at": "2026-10-30T00:14:52.974132+00:00",
+          "revision": "581c71e03c17301b81cee8df2fde2d7010af23e0",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T001355.330762Z/record.json",
+              "sha256": "93325cea9acd4317700823192bd18fa9c3d727b62298bda8f802c8acc52521f4"
+            },
+            {
+              "ref": "results/live/2026-10-30T001355.330762Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T001355.330762Z/UNAPPROVED_CASE.md",
+              "sha256": "ddc5a5916efc4188c7c1020183141ee2be75456c6250832bc34110c2a1fa41c4"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "6c67498bc01c0ca4e1cf78eb196ed3dececbf507c596c1262f4c288b3330375e"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "2d4d7ee5483b022a481bfea733a0ccb4d36f6be4c1af670453ada7c17c38932f"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "cde343f64216b7c491ba0215897591ac715e1481e8b2f971d2636a95fe8f0496"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
         }
       ]
     },
@@ -824,6 +876,46 @@
             {
               "ref": "tests/scripts/test_readout_actor_cost_model.py",
               "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        },
+        {
+          "result": "The integrated Ascella and IBM tree passes 113 focused tests. A fresh submit-free Fez plan verifies all 24 circuits and the updated source closure; the prior generic submit-free run and cost checks remain descriptive evidence. The pilot makes no inferential hardware decision.",
+          "observed_at": "2026-10-30T00:14:52.974785+00:00",
+          "revision": "581c71e03c17301b81cee8df2fde2d7010af23e0",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T001355.330762Z/record.json",
+              "sha256": "93325cea9acd4317700823192bd18fa9c3d727b62298bda8f802c8acc52521f4"
+            },
+            {
+              "ref": "results/live/2026-10-30T001355.330762Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T001355.330762Z/UNAPPROVED_CASE.md",
+              "sha256": "ddc5a5916efc4188c7c1020183141ee2be75456c6250832bc34110c2a1fa41c4"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "docs/design/readout-actor-fez-delay-qualification.json",
+              "sha256": "f4f0c8e5d830f30285896e58b438a409ce9a3c9804dcf3571b1762cbe9acccca"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
             }
           ],
           "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
