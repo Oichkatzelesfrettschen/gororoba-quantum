@@ -1,9 +1,24 @@
 """Failed static jobs retain service diagnostics without inventing counts."""
 
+import base64
 import json
+import zlib
 
 import pytest
-from qd_platform import PlatformError, result_summary
+from qd_platform import PlatformError, parse_counts, result_summary
+
+
+def test_zipped_counts_require_exactly_one_complete_stream() -> None:
+    payload = zlib.compress(b":PCVL:BSCount:{|1,0>=7}")
+
+    def encoded(data: bytes) -> str:
+        return ":PCVL:zip:" + base64.b64encode(data).decode("ascii")
+
+    if parse_counts(encoded(payload)) != {"1,0": 7}:
+        raise AssertionError("the complete compressed histogram must decode")
+    for malformed in (payload[:-1], payload[:-5], payload + b"trailing", payload + zlib.compress(b"other")):
+        with pytest.raises(PlatformError, match="stream"):
+            parse_counts(encoded(malformed))
 
 
 def test_static_instrument_error_is_retained_only_for_failed_job() -> None:

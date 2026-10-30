@@ -4,7 +4,7 @@ from pathlib import Path
 
 import ascella_transition_day_repeat as repeat
 
-repeat.BUNDLE = Path("docs/evidence/ascella-transition-day-repeat-ci")
+repeat.BUNDLE = Path("docs/evidence/ascella-transition-day-repeat-reviewed-transport")
 
 if __name__ == "__main__":
     raise SystemExit(repeat.main())
