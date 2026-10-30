@@ -121,9 +121,11 @@ marks repository interpretation. Printed page numbers equal PDF page indices.
   disjoint-support layout state the same condition.
 - [I] Theorem 7.16 extends the count to `A_5` as 5040 under `cd_core`, which agrees with the [E] check; the repository's
   dimension-32 notes can cite the closed form for the two-support count and keep the all-weight counts separate.
-- [I] Dimension 32 kernel dimension 8 for weight-2 zero divisors agrees with Theorem 5.17 and with the nullity-8 orbit
-  closures of the [A_5 exceptional fiber findings](../topics/a5-exceptional-fiber-findings.md); identifying those orbits with
-  the paper's `ZD(5)` supports is open.
+- [E] Weight-two elements of `A_5` do not share one kernel dimension: exact row reduction of
+  `cd_core.left_mult_matrix_exact(32, v)` gives nullity 8 for `e1 + e10`, 12 for `e1 + e18` and 4 for `e1 + e26`. Theorem
+  5.17's kernel dimension 8 therefore matches only the subfamily of `e1 + e10`; the other two supports fall in the
+  nullity-12 and nullity-4 strata of the [A_5 exceptional fiber findings](../topics/a5-exceptional-fiber-findings.md).
+  Which weight-two supports the paper's `ZD(5)` covers, and how they split across the three strata, is open.
 - [I] Sign-parity analysis (Theorem 7.3) is an alternative route to the two-support classification of the
   [Moreno](../math-0512517.md) and [Reggiani](2411.18881.md) notes. A comparison of the 84 active (flat, split) pairs with
   the box-kite assessors of the repository is open.
