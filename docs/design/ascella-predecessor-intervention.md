@@ -444,6 +444,24 @@ refreshes all admission checks and requires exact owner approval.
 
 ## Successor admission procedure
 
+The current-source request uses `scripts/ascella_predecessor_current_case.py`
+to derive the eight settings from the retained reference while using today's
+`qd_platform.py`. Its separate case directory leaves the historical request
+and simulator qualification intact. The current analyzer
+`scripts/ascella_predecessor_current_analysis.py` validates the actual job
+records and produces descriptive target-slot contrasts; it does not issue a
+conditional confidence verdict. The runner checks the current builder and
+analyzer digests along with the other case sources. A changed returned circuit
+or input remains an invalid comparison, rather than evidence of history.
+
+Build a request in a new run directory with `"$PYTHON"
+scripts/ascella_predecessor_current_case.py --build --out RUN`; `--check --out
+RUN` repeats the source and circuit comparison. The analyzer reads the request
+from that run directory. A fresh provider plan determines actual availability,
+command-schema basis and cost before any job. The simulator qualification is a
+check of the same settings, not proof that the QPU compiles or orders them
+identically.
+
 The generic submit command enforces the reviewed packet for this registered
 diagnostic. The token lock, externally anchored packet and atomic token-store
 attempt marker bind the posted body, current source closure and one attempt.

@@ -1463,7 +1463,18 @@ def acquisition_sources(manifest: dict[str, Any]) -> dict[str, str]:
     }
     if not isinstance(expected, dict) or set(expected) != required:
         raise PlatformError("a reviewed acquisition requires complete constructor/analyzer source identities")
-    for name, checksum in expected.items():
+    registered = manifest.get("preregistered", {})
+    if not isinstance(registered, dict):
+        raise PlatformError("reviewed acquisition preregistration must be an object")
+    additional = registered.get("current_case_sources")
+    if manifest.get("job") == "current-schema":
+        names = {"scripts/ascella_predecessor_current_case.py", "scripts/ascella_predecessor_current_analysis.py"}
+        if not isinstance(additional, dict) or set(additional) != names:
+            raise PlatformError("the current case requires its builder and analyzer identities")
+    elif additional is not None:
+        raise PlatformError("current case sources require the current-schema job")
+    combined = {**expected, **(additional or {})}
+    for name, checksum in combined.items():
         if not isinstance(name, str) or not isinstance(checksum, str):
             raise PlatformError("invalid reviewed source identity")
         path = (ROOT / name).resolve()
@@ -1471,7 +1482,7 @@ def acquisition_sources(manifest: dict[str, Any]) -> dict[str, str]:
             raise PlatformError("reviewed source escapes the repository")
         if sha256_bytes(path.read_bytes()) != checksum:
             raise PlatformError(f"reviewed source changed: {name}")
-    return dict(expected)
+    return combined
 
 
 def requires_acquisition_review(manifest: dict[str, Any]) -> bool:

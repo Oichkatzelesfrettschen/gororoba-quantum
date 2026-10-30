@@ -10517,6 +10517,30 @@
    "tempfile",
    "typing"
   ],
+  "scripts/ascella_predecessor_current_analysis.py": [
+   "__future__",
+   "argparse",
+   "ascella_experiment_analysis",
+   "ascella_predecessor_analysis",
+   "ascella_predecessor_case",
+   "ascella_predecessor_current_case",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "tempfile",
+   "typing"
+  ],
+  "scripts/ascella_predecessor_current_case.py": [
+   "__future__",
+   "argparse",
+   "ascella_predecessor_case",
+   "hashlib",
+   "json",
+   "pathlib"
+  ],
   "scripts/ascella_predecessor_simulator.py": [
    "__future__",
    "argparse",
