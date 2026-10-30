@@ -381,7 +381,12 @@ def test_classification_reasons() -> None:
         raise AssertionError(rehearsal.classify(clicks(q0, q1, b1), layout))
 
 
-@pytest.mark.parametrize("name", sorted(rehearsal.JOBS))
+# check_job builds a job twice in the spawn pool; job-01's twelve settings run past the 10 s budget on the two-core
+# hosted runner, so it runs in the audit tier and job-00 covers the same path in the pull-request suite.
+@pytest.mark.parametrize(
+    "name",
+    [name if name == "job-00" else pytest.param(name, marks=pytest.mark.audit) for name in sorted(rehearsal.JOBS)],
+)
 def test_check_rederives_the_noise_model_and_accepts_the_retained_case(name: str) -> None:
     if rehearsal.check([name]) != 0:
         raise AssertionError(f"check failed for {name}")
