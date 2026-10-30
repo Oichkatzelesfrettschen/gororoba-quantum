@@ -7,12 +7,21 @@ import io
 import json
 import re
 import subprocess
+import sys
 import tarfile
 from datetime import datetime, timedelta
 from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from typing import Any
 from urllib.parse import unquote, urljoin, urlsplit
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+from check_markdown_links import strip_code  # noqa: E402
+
+
+def note_link_targets(text: str) -> list[str]:
+    """Inline link targets of a note outside fenced, indented and inline code, where `Y[t](+)` is notation."""
+    return re.findall(r"\[[^\]]*\]\(([^\s)]+)\)", "\n".join(strip_code(text.splitlines())))
 
 
 def require(condition: bool, message: str) -> None:
@@ -598,6 +607,57 @@ def verify_osf_evidence(root: Path, entry: dict[str, Any], rights: dict[str, Any
     require(entry["source_url"] == f"https://osf.io/download/{related('primary_file')}/", "captured OSF file identity")
 
 
+def verify_crossref_evidence(
+    root: Path, entry: dict[str, Any], rights: dict[str, Any], doi: str, payload: bytes
+) -> None:
+    """Bind a version-of-record PDF to its Crossref DOI record and that record's article-level license.
+
+    Crossref's `license` list names the grant per content version; the version of record (`vor`) must carry the
+    registered license URL with no embargo. The PDF's own XMP `prism:doi` binds the retained bytes to the DOI, so
+    the file may come from the publisher or from a repository deposit of the same publisher PDF.
+    """
+    slug = re.sub(r"[^A-Za-z0-9.]+", "_", doi)
+    relative = f"docs/evidence/source_rights/crossref-{slug}.json"
+    require(rights.get("evidence_path") == relative, "captured Crossref evidence path")
+    source = root / relative
+    require(
+        source.is_file() and not source.is_symlink() and source.resolve() == root.resolve() / relative,
+        "captured Crossref evidence file",
+    )
+    require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured Crossref retrieval timestamp")
+    raw_response = source.read_bytes()
+    require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured Crossref evidence SHA-256")
+    try:
+        decoded = json.loads(raw_response)
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("captured Crossref JSON") from error
+    message = require_mapping(
+        require_mapping(decoded, "captured Crossref record").get("message"), "captured Crossref message"
+    )
+    require(
+        require_text(message.get("DOI"), "captured Crossref DOI").lower() == doi.lower(),
+        "captured Crossref DOI identity",
+    )
+    require(rights.get("doi") == doi, "captured Crossref registered DOI")
+    title = require_text(rights.get("publisher_title"), "captured Crossref registered title")
+    require(message.get("title") == [title], "captured Crossref title identity")
+    observed = require_url(rights.get("observed_license_url"), "captured Crossref observed license URL")
+    require(
+        observed.replace("http://", "https://", 1) == LICENSE_URLS[rights["license_identifier"]],
+        "captured Crossref license identity",
+    )
+    licenses = message.get("license")
+    if not isinstance(licenses, list):
+        raise ValueError("captured Crossref license list")
+    grants = [
+        item
+        for item in licenses
+        if isinstance(item, dict) and item.get("content-version") == "vor" and item.get("URL") == observed
+    ]
+    require(len(grants) == 1 and grants[0].get("delay-in-days") == 0, "captured Crossref version-of-record license")
+    require(f"<prism:doi>{doi}</prism:doi>".encode() in payload, "captured Crossref PDF DOI identity")
+
+
 def verify_zenodo_evidence(root: Path, rights: dict[str, Any], licensed_file: dict[str, Any], record_id: str) -> None:
     """Bind the declared license and deposit identity to the retained endpoint response."""
     relative = f"docs/evidence/source_rights/zenodo-record-{record_id}.json"
@@ -715,6 +775,13 @@ def verify_source_rights(
             verify_pdg_evidence(root, entry, rights, review[1])
         else:
             raise ValueError("published INSPIRE evidence route")
+    elif published and urlsplit(rights["evidence_url"]).netloc == "api.crossref.org":
+        work = re.fullmatch(
+            r"https://api\.crossref\.org/works/(10\.[0-9]{4,9}/[A-Za-z0-9._;()/:-]+)", rights["evidence_url"]
+        )
+        if work is None:
+            raise ValueError("published Crossref evidence route")
+        verify_crossref_evidence(root, entry, rights, work[1], payload)
     elif published and urlsplit(rights["evidence_url"]).netloc == "api.osf.io":
         osf = re.fullmatch(r"https://api\.osf\.io/v2/preprints/([a-z0-9]{5}_v[1-9]\d*)/", rights["evidence_url"])
         if osf is None:
@@ -863,6 +930,15 @@ def source_archive_prefix(entry: dict[str, Any]) -> str:
     if wayback is not None:
         require(version == wayback[2], "archive pinned version")
         return f"{wayback[1]}-{wayback[2]}"
+    # A PyPI source distribution sits under the project's first letter and is rooted at NAME-VERSION.
+    sdist = re.fullmatch(
+        r"https://files\.pythonhosted\.org/packages/source/([a-z0-9])/([a-z0-9][a-z0-9_.-]*)/\2-([0-9]+(?:\.[0-9]+)+)\.tar\.gz",
+        source_url,
+    )
+    if sdist is not None:
+        require(sdist[1] == sdist[2][0], "archive source route")
+        require(version == sdist[3], "archive pinned version")
+        return f"{sdist[2]}-{sdist[3]}"
     interval = re.fullmatch(
         r"https://coqinterval\.gitlabpages\.inria\.fr/releases/interval-([0-9]+\.[0-9]+\.[0-9]+)\.tar\.gz",
         source_url,
@@ -993,7 +1069,7 @@ def verify_source_archives(root: Path, registry: dict[str, Any]) -> int:
         prefix = source_archive_prefix(entry)
         relative_note = require_text(entry.get("note"), "archive owning note")
         require(
-            re.fullmatch(r"docs/notes/(?:papers/)?[A-Za-z0-9_.-]+\.md", relative_note) is not None,
+            re.fullmatch(r"docs/notes/(?:papers/|quantum-tools/)?[A-Za-z0-9_.-]+\.md", relative_note) is not None,
             "archive owning note path",
         )
         note = root / relative_note
@@ -1177,7 +1253,7 @@ def verify() -> None:
     for note in library.rglob("*.md"):
         if any(capture in note.parents for capture in verbatim_captures):
             continue
-        for target in re.findall(r"\[[^\]]*\]\(([^\s)]+)\)", note.read_text()):
+        for target in note_link_targets(note.read_text()):
             if ":" in target or target.startswith("#"):
                 continue
             relative_target = target.split("#", 1)[0]

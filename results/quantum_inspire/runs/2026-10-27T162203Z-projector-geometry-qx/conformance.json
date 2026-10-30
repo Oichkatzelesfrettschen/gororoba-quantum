@@ -1,0 +1,256 @@
+{
+  "boundary": "Remote QX finite-shot conformance; hardware behavior and early-bit retention remain unmeasured.",
+  "checks": [
+    {
+      "expected_numerator": 1024,
+      "file": "geometry-z.cq",
+      "metric": "herald_count",
+      "observed_numerator": 1009,
+      "passed": true,
+      "replica_index": 0,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 1024,
+      "file": "geometry-z.cq",
+      "metric": "joint_zero_count",
+      "observed_numerator": 1009,
+      "passed": true,
+      "replica_index": 0,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 1024,
+      "file": "geometry-z.cq",
+      "metric": "herald_count",
+      "observed_numerator": 1005,
+      "passed": true,
+      "replica_index": 1,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 768,
+      "file": "geometry-z.cq",
+      "metric": "joint_zero_count",
+      "observed_numerator": 757,
+      "passed": true,
+      "replica_index": 1,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 1024,
+      "file": "geometry-z.cq",
+      "metric": "herald_count",
+      "observed_numerator": 1036,
+      "passed": true,
+      "replica_index": 2,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 512,
+      "file": "geometry-z.cq",
+      "metric": "joint_zero_count",
+      "observed_numerator": 524,
+      "passed": true,
+      "replica_index": 2,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 1024,
+      "file": "mutation-z.cq",
+      "metric": "herald_count",
+      "observed_numerator": 1039,
+      "passed": true,
+      "replica_index": 0,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 1024,
+      "file": "mutation-z.cq",
+      "metric": "joint_zero_count",
+      "observed_numerator": 1039,
+      "passed": true,
+      "replica_index": 0,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 1024,
+      "file": "mutation-z.cq",
+      "metric": "herald_count",
+      "observed_numerator": 1009,
+      "passed": true,
+      "replica_index": 1,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 1024,
+      "file": "mutation-z.cq",
+      "metric": "joint_zero_count",
+      "observed_numerator": 1009,
+      "passed": true,
+      "replica_index": 1,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 1024,
+      "file": "mutation-z.cq",
+      "metric": "herald_count",
+      "observed_numerator": 1024,
+      "passed": true,
+      "replica_index": 2,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 1024,
+      "file": "mutation-z.cq",
+      "metric": "joint_zero_count",
+      "observed_numerator": 1024,
+      "passed": true,
+      "replica_index": 2,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 1024,
+      "file": "geometry-x.cq",
+      "metric": "herald_count",
+      "observed_numerator": 1003,
+      "passed": true,
+      "replica_index": 0,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 0,
+      "file": "geometry-x.cq",
+      "metric": "signed_joint_sum",
+      "observed_numerator": 57,
+      "passed": true,
+      "replica_index": 0,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        10
+      ]
+    },
+    {
+      "expected_numerator": 1024,
+      "file": "geometry-x.cq",
+      "metric": "herald_count",
+      "observed_numerator": 1059,
+      "passed": true,
+      "replica_index": 1,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 512,
+      "file": "geometry-x.cq",
+      "metric": "signed_joint_sum",
+      "observed_numerator": 513,
+      "passed": true,
+      "replica_index": 1,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        10
+      ]
+    },
+    {
+      "expected_numerator": 1024,
+      "file": "geometry-x.cq",
+      "metric": "herald_count",
+      "observed_numerator": 1056,
+      "passed": true,
+      "replica_index": 2,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        20
+      ]
+    },
+    {
+      "expected_numerator": 0,
+      "file": "geometry-x.cq",
+      "metric": "signed_joint_sum",
+      "observed_numerator": 14,
+      "passed": true,
+      "replica_index": 2,
+      "shots": 2048,
+      "tolerance": [
+        1,
+        10
+      ]
+    }
+  ],
+  "execution_seconds_decimal": "1.254351",
+  "inputs": {
+    "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/cases.json": "bb52460648caed1a8fe2be39131f88efaaa7022f53614f386b48034027290554",
+    "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/raw/geometry-x.cq.json": "cb04efd1a68301106a2321a5a7e039feb5a69f4597d011425d50c9f498424258",
+    "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/raw/geometry-z.cq.json": "50d4603a7b31ba0f22149b26228464b79330bdc67bc4fcceb9a1ceaeee44d2e3",
+    "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/raw/mutation-z.cq.json": "43459bf6d6e4bc00a041b376aa64c42bedca7882123ff4b9a775ace5a7cfb301",
+    "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/results.json": "a0929b26fa2899f2386ee99eccf1226db30c8cd4731dca4de752e1fabf62d3c4",
+    "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/submission.json": "cd28627c7c58f068171a8469be80c53a8e6c708d24573a77e720de3106455642",
+    "scripts/qi_projector_conformance.py": "91673afc2ab504a13413d78ec2b512bcd99370fb56b135e35eb7f0ad20b8aff9",
+    "scripts/qi_projector_geometry.py": "8f8a1daa28dc1f22e5ff86bc67a61e4e5c03a8a926a35268ccf2aeddffa9f56c"
+  },
+  "passed": true,
+  "run": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx",
+  "schema": "qi-projector-conformance-v1",
+  "shots_total": 6144,
+  "transaction_change": 0,
+  "zero_recorded_charge": true
+}

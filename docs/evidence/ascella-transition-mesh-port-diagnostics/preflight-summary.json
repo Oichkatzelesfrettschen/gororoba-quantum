@@ -1,0 +1,66 @@
+{
+  "baseline_complete": true,
+  "jobs": [
+    {
+      "body_sha256": "ee18187cf79b9237c59c02e572c7812cca4edda4c625738625eeb809668456f2",
+      "case_sha256": "6fb21a2662a68246542bc9947a58bbbb1454e7f1fd2474aaae0921158799c171",
+      "credit_ceiling": 1.131072,
+      "job": "mesh-port-1",
+      "status_at_plan": {
+        "explorer": "available",
+        "processor": "available"
+      }
+    },
+    {
+      "body_sha256": "15e9174502693070307694d1ef34591ef9da95647c93d6c5f8e75e6845445065",
+      "case_sha256": "841ab1eb0b2aabe2a9b782dc8babd82dd41357ff55b471b58ba3dc439a412274",
+      "credit_ceiling": 1.131072,
+      "job": "mesh-port-2",
+      "status_at_plan": {
+        "explorer": "available",
+        "processor": "available"
+      }
+    },
+    {
+      "body_sha256": "916b73c635e534fa74153403c86fbb1571ea91262ca2ac37dd44b7fcde04b79a",
+      "case_sha256": "a95b26ec5406f2b510e9abafa99416618818321b34675c0abf721b98ab600049",
+      "credit_ceiling": 1.131072,
+      "job": "mesh-port-3",
+      "status_at_plan": {
+        "explorer": "available",
+        "processor": "available"
+      }
+    },
+    {
+      "body_sha256": "5d37c75dd2de3c3f284d0f9cc5598ec693ebe0946d02a309ddad4b15df30ff97",
+      "case_sha256": "9797347742026f27a3bd62533daf6ee2d63da2a643bc60a843009bc72e1afb4f",
+      "credit_ceiling": 1.131072,
+      "job": "mesh-port-4",
+      "status_at_plan": {
+        "explorer": "available",
+        "processor": "available"
+      }
+    },
+    {
+      "body_sha256": "5dd0f86c13d5080d405bbd745a4c3f160bc8c0e543c3643df6407d02e9d71246",
+      "case_sha256": "f159645cd346a4d1e8554ff18501046380e5a3b78eb9760c1fe7416f435b3086",
+      "credit_ceiling": 1.131072,
+      "job": "mesh-port-5",
+      "status_at_plan": {
+        "explorer": "available",
+        "processor": "available"
+      }
+    },
+    {
+      "body_sha256": "fa91e9fe3d6c38811767597edafa4df58d263aafffc81dd3c2e7bd67e4a4bbe3",
+      "case_sha256": "27e1ebe9b3fab9cf55e6eb53996b3dcf66d023287b4ee21d6462820e37fa90a2",
+      "credit_ceiling": 1.131072,
+      "job": "mesh-port-6",
+      "status_at_plan": {
+        "explorer": "available",
+        "processor": "available"
+      }
+    }
+  ],
+  "schema": "ascella-transition-mesh-port-preflight-v1"
+}

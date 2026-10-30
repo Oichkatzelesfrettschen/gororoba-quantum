@@ -470,15 +470,18 @@ def noise_simulator(
     names the sampler that produced its counts. On the CPU batched_shots is
     ignored and the simulator carries Aer's default CPU options. Shot
     branching is never enabled: Aer 0.17.2's shot branching drops the
-    readout channel of a mid-circuit measurement.
+    readout channel of a mid-circuit measurement, and Aer 0.18.2's GPU shot
+    branching intermittently places shots on outcomes of probability zero
+    after initialize or reset in a multi-circuit run (Qiskit/qiskit-aer#2512).
 
     custatevec sets Aer's cuStateVec_enable on a GPU run, statevector or
     density matrix, which routes gate application and sampling through
     libcustatevec; an Aer built or wheeled without cuQuantum raises at run
-    time. Left unset it follows aer_custatevec(). Aer 0.17.2 reports
-    cuStateVec_enable False on a run that also sets batched_shots_gpu, so
-    custatevec turns the batched default off and raises on an explicit
-    batched_shots=True instead of falling back unseen.
+    time. Left unset it follows aer_custatevec(). Aer keeps only one of
+    cuStateVec_enable and batched_shots_gpu on a run that sets both (0.17.2
+    reports cuStateVec_enable False, 0.18.2 reports batched_shots_optimization
+    False), so custatevec turns the batched default off and raises on an
+    explicit batched_shots=True instead of falling back unseen.
     """
     if custatevec is None:
         custatevec = aer_custatevec()

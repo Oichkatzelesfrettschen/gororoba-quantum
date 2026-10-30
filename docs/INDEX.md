@@ -12,9 +12,9 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 
 | Location | Contents | Git treatment |
 | --- | --- | --- |
-| `docs/pdf/` | 45 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 197 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
-| `docs/source_archives/` | 5 licensed original software archives, with exact inspected members and notices | Tracked |
+| `docs/pdf/` | 46 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
+| `docs/local_source_cache/` | 202 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/source_archives/` | 6 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
 The local cache lives inside `docs/`. A fresh checkout receives the public notes
@@ -84,6 +84,7 @@ each source license in force.
 | [Google Quantum AI and Collaborators 2023 -- Non-Abelian braiding of graph vertices in a superconducting processor](notes/papers/2210.10255.md) | [2210.10255v2.pdf](pdf/2210.10255v2.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Matsumoto et al. 2026 -- Two-qubit logic and teleportation with mobile spin qubits in silicon (Nature 653, 391)](notes/papers/s41586-026-10423-9.md) | [s41586-026-10423-9.pdf](pdf/s41586-026-10423-9.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Wu et al. 2026 -- Simultaneous high-fidelity single-qubit gates in a spin qubit array (Nature Physics)](notes/papers/s41567-026-03466-2.md) | [s41567-026-03466-2.pdf](pdf/s41567-026-03466-2.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Togo, Shinohara and Tanaka 2024 -- Spglib: a software library for crystal symmetry search (Sci. Technol. Adv. Mater. Methods 4, 2384822)](notes/papers/1808.01590.md) | [27660400.2024.2384822.pdf](pdf/27660400.2024.2384822.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Ejlli et al. 2019 -- Upper limits on the amplitude of ultra-high-frequency gravitational waves from graviton to photon conversion (Eur. Phys. J. C 79, 1032)](notes/papers/s10052-019-7542-5.md) | [s10052-019-7542-5.pdf](pdf/s10052-019-7542-5.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Pais 2023 -- SUPERFORCE, the Fundamental Force of Unification (OSF 9kebt_v1)](notes/papers/pais-superforce-sources.md) | [pais-2023-superforce.pdf](pdf/pais-2023-superforce.pdf) | [CC0-1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
 | [Particle Data Group 2024 -- Review of Particle Physics, chapter 9 Quantum Chromodynamics](notes/papers/pais-superforce-sources.md) | [rpp2024-rev-qcd.pdf](pdf/rpp2024-rev-qcd.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
@@ -261,6 +262,9 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [OpenAI 2026 -- The maximum number of mutually unbiased bases in dimension six (openai/math family 266, unrefereed)](notes/papers/openai-2026-mub-dimension-six.md) | [PDF](https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026.pdf) | `openai-math-266-mub-dimension-six.pdf` | [Repository-wide Apache-2.0 license, no manuscript grant](https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE) |
 | [OpenAI 2026 -- Exact Fourier certificates for complex Hadamard matrices of order six (openai/math family 266, unrefereed)](notes/papers/openai-2026-hadamard-order-six-fourier-certificates.md) | [PDF](https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026.pdf) | `openai-math-266-hadamard-order-six-fourier-certificates.pdf` | [Repository-wide Apache-2.0 license, no manuscript grant](https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE) |
 | [OpenAI 2026 -- Exact quantum factoring over a fixed finite gate set (openai/math family 279, unrefereed)](notes/papers/openai-2026-exact-quantum-factoring.md) | [PDF](https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/Exact-quantum-factoring-over-a-fixed-finite-gate-set-September-25-2026/main.pdf) | `openai-math-279-exact-quantum-factoring.pdf` | [Repository-wide Apache-2.0 license, no manuscript grant](https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE) |
+| [OpenAI 2026 -- A torsion-free group algebra with zero divisors (openai/math family 196, unrefereed)](notes/papers/openai-2026-torsion-free-zero-divisors.md) | [PDF](https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-Torsion-Free-Group-Algebra-with-Zero-Divisors-September-23-2026/paper.pdf) | `openai-math-196-torsion-free-zero-divisors.pdf` | [Repository-wide Apache-2.0 license, no manuscript grant](https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE) |
+| [OpenAI 2026 -- A torsion-free group algebra that is not directly finite (openai/math family 197, unrefereed)](notes/papers/openai-2026-torsion-free-not-directly-finite.md) | [PDF](https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-Torsion-Free-Group-Algebra-That-Is-Not-Directly-Finite-October-4-2026/direct-finiteness.pdf) | `openai-math-197-torsion-free-not-directly-finite.pdf` | [Repository-wide Apache-2.0 license, no manuscript grant](https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE) |
+| [OpenAI 2026 -- A torsion-free counterexample to the Kadison-Kaplansky projection conjecture (openai/math family 285, unrefereed)](notes/papers/openai-2026-kadison-kaplansky-projection.md) | [PDF](https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-Torsion-Free-Counterexample-to-the-Kadison-Kaplansky-Projection-Conjecture-September-23-2026/paper.pdf) | `openai-math-285-kadison-kaplansky-projection.pdf` | [Repository-wide Apache-2.0 license, no manuscript grant](https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE) |
 | [Luhn, Nasri and Ramond 2007 -- Simple Finite Non-Abelian Flavor Groups (arXiv 0709.1447)](notes/papers/0709.1447.md) | [PDF](https://arxiv.org/pdf/0709.1447v2) | `0709.1447v2.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/0709.1447v2) |
 | [Horodecki, Shor and Ruskai 2003 -- Entanglement breaking channels (arXiv quant-ph/0302031)](notes/papers/quant-ph-0302031.md) | [PDF](https://arxiv.org/pdf/quant-ph/0302031v2) | `quant-ph-0302031v2.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/quant-ph/0302031v2) |
 | [Horodecki, Horodecki and Horodecki 1999 -- General teleportation channel, singlet fraction and quasi-distillation (arXiv quant-ph/9807091)](notes/papers/quant-ph-9807091.md) | [PDF](https://arxiv.org/pdf/quant-ph/9807091v2) | `quant-ph-9807091v2.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/quant-ph/9807091v2) |
@@ -302,6 +306,8 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Wilmot 2025: exceptional Lie algebra G2 and non-associative algebras from Clifford algebra (arXiv 2505.06011)](notes/papers/2505.06011.md) | [PDF](https://arxiv.org/pdf/2505.06011v1) | `2505.06011v1.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2505.06011v1) |
 | [Chapman, Guterman, Vishkautsan and Zhilina 2022: roots and critical points of polynomials over Cayley-Dickson algebras (arXiv 2205.05605)](notes/papers/2205.05605.md) | [PDF](https://arxiv.org/pdf/2205.05605v1) | `2205.05605v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2205.05605v1) |
 | [R. B. Brown 1967: on generalized Cayley-Dickson algebras (Pacific J. Math. 20)](notes/papers/brown-1967-generalized-cayley-dickson.md) | [PDF](http://msp.org/pjm/1967/20-3/pjm-v20-n3-p03-s.pdf) | `brown-1967-generalized-cayley-dickson.pdf` | [Rehosting permission unestablished](https://msp.org/pjm/1967/20-3/p03.xhtml) |
+| [Hinuma et al. 2017 -- Band structure diagram paths based on crystallography (arXiv 1602.06402)](notes/papers/1602.06402.md) | [PDF](https://arxiv.org/pdf/1602.06402v4) | `1602.06402v4.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1602.06402v4) |
+| [Togo, Shinohara and Tanaka 2024 -- Spglib: a software library for crystal symmetry search (arXiv 1808.01590)](notes/papers/1808.01590.md) | [PDF](https://arxiv.org/pdf/1808.01590v2) | `1808.01590v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1808.01590v2) |
 | [Chan and Dokovic 2006: conjugacy classes of subalgebras of the real sedenions](notes/papers/chan-dokovic-2006-sedenion-subalgebras.md) | [PDF](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/E3602D99D8C6C96F78EADAD2EDC1BC27/S0008439500006020a.pdf/div-class-title-conjugacy-classes-of-subalgebras-of-the-real-sedenions-div.pdf) | `chan-dokovic-2006-sedenion-subalgebras.pdf` | [Rehosting permission unestablished](https://www.cambridge.org/core/journals/canadian-mathematical-bulletin/article/conjugacy-classes-of-subalgebras-of-the-real-sedenions/E3602D99D8C6C96F78EADAD2EDC1BC27) |
 
 ## Licensed software source snapshots
@@ -328,6 +334,7 @@ are checked by `verify_sources.py` without extraction or execution.
 | [CoqEAL](notes/papers/mathcomp-coqeal-matrix-certificates.md) | [coqeal-8fd26cf.tar.gz](source_archives/coqeal-8fd26cf.tar.gz) | MIT |
 | [wheel (Rust crate)](notes/wheel-rust-crate.md) | [wheel-0.1.0.crate](source_archives/wheel-0.1.0.crate) | Apache-2.0 OR MPL-2.0 |
 | [SCSCP C/C++ library](notes/scscp-source-archive.md) | [scscp-1.0.3.tar.gz](source_archives/scscp-1.0.3.tar.gz) | CECILL-C (dual CECILL-C or CeCILL v2.0) |
+| [SeeK-path](notes/quantum-tools/seekpath.md) | [seekpath-2.2.2.tar.gz](source_archives/seekpath-2.2.2.tar.gz) | MIT |
 
 ## Repository research certificates
 
@@ -464,7 +471,7 @@ nine arXiv HTML renderings (2604.25863v3, 2604.03360v2, 2606.00433v2, 2412.04053
 [backend configuration snapshot](evidence/heron_platform/backend_configuration.json) holds the sorted configuration
 key names of the three account backends.
 The [hardware controls audit](notes/ibm_quantum/hardware-controls.md) inventories every option field, REST endpoint
-and client-side restriction of the installed qiskit-ibm-runtime 0.50.0 in
+and client-side restriction of the installed qiskit-ibm-runtime 0.51.0 in
 [inventory.json](evidence/ibm_runtime_options/inventory.json) (gate core-533), records read-only backend limits
 (max_shots, rep_delay range, measure_2, fractional angle bounds) in
 [backends.json](evidence/ibm_runtime_options/backends.json), and states the configuration per workload type with the

@@ -1,0 +1,7 @@
+{
+  "collection_sha256": "979b07a5ab676cca4918dc9c2b690ab4c145e93b017a4d5cc45537ed6138b186",
+  "record_sha256": "57ba884d85602af45de06e6604b289482cecca4cec184ea58f73109eaf28d00c",
+  "reviewed_record_sha256": "4fa756abdb8534e8dffba3b78bc8a7f6906d6e32e2c8c768f7ec14395a14b6b1",
+  "run": "results/live/2026-10-29T191606.826758Z",
+  "schema": "readout-actor-retention-anchor-v1"
+}

@@ -8,6 +8,7 @@ import contextlib
 import io
 import json
 import os
+import sys
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
@@ -220,3 +221,18 @@ def test_only_a_changed_files_run_decides_admission(root: Path, tmp_path: Path) 
         statuses = [run_gates.main([]), run_gates.main(["--changed-files", str(changed)])]
     if statuses != [0, 0] or seen != [False, True]:
         raise AssertionError(f"admission passed as {seen} with statuses {statuses}:\n{output.getvalue()}")
+
+
+def test_numeric_stack_reports_the_selected_openblas_core() -> None:
+    environment = run_gates.environment_for(None) | {"OPENBLAS_CORETYPE": "Prescott"}
+    report = json.loads(run_gates.numeric_stack(sys.executable, environment))
+    if set(report) != {"avx512f", "cpu", "numpy_dispatch", "openblas"} or not report["openblas"]:
+        raise AssertionError(report)
+    # OpenBLAS maps the Prescott request onto its oldest x86-64 kernel set, which every runner supports.
+    if {item["core"] for item in report["openblas"]} != {"Katmai"}:
+        raise AssertionError(report["openblas"])
+
+
+def test_numeric_stack_names_a_failed_probe() -> None:
+    if not run_gates.numeric_stack("/nonexistent/python", dict(os.environ)).startswith("unavailable ("):
+        raise AssertionError("a missing interpreter reports unavailable")

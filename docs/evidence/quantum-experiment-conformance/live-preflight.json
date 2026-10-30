@@ -1,0 +1,104 @@
+{
+  "case": "docs/evidence/quantum-experiment-conformance/cases/ascella/mub-six/product_chirped-to-product_chirped-input-0",
+  "expected_seconds_input_boundary": "300 seconds is the declared per-job ceiling, not a measured runtime forecast",
+  "mode": "read-only budget-envelope preflight",
+  "observed_at": "2026-10-27T20:04:28.486021+00:00",
+  "plan": {
+    "admitted_statuses": [
+      "available"
+    ],
+    "availability_at_plan": {
+      "max_concurrent_jobs": 1,
+      "max_jobs_in_queue": 1,
+      "max_running_qt_jobs": 10,
+      "num_concurrent_jobs": 0,
+      "num_jobs_in_queue": 0,
+      "num_running_qt_jobs": 0
+    },
+    "body_sha256": "b9f398a40ee61e160fd5e58ef3d79e255be77e916a887dd88915c0c41bad70b8",
+    "case": "product_chirped-to-product_chirped-input-0",
+    "cases_sha256": "c7bfe885f95b04ec14fbad58d2288b8f785fbaaf7c0e4a8d9977616e2a0dc3b5",
+    "credit_ceiling": 1.00315,
+    "estimated_credits": 1.001575,
+    "estimated_shots": 1575,
+    "expected_seconds": 300,
+    "max_credits": 1.00315,
+    "max_samples": 1575,
+    "max_shots": 3150,
+    "mitigations": [],
+    "mitigations_key": true,
+    "payload_version": 2,
+    "payload_version_basis": "declared",
+    "per_job_credits": 1.0,
+    "perfs_at_plan": {
+      "Clock (MHz)": 13.33,
+      "Dark counts (detection/s)": [
+        329.0,
+        330.0,
+        269.0,
+        89.0,
+        125.0,
+        382.0,
+        212.0,
+        519.0,
+        2800.0,
+        3255.0,
+        4558.0,
+        637.0
+      ],
+      "HOM (%)": 87.44,
+      "g2 (%)": 2.1
+    },
+    "platform": "qpu:ascella",
+    "platform_at_plan": {
+      "bookable": true,
+      "description": "Ascella QPU",
+      "is_locked": false,
+      "is_offer_platform": true,
+      "maintenance": null,
+      "max_duration": 300,
+      "name": "qpu:ascella",
+      "price_per_shot": 1e-06,
+      "statistic": {
+        "2026-10-20": {
+          "availability": 89.97
+        },
+        "2026-10-21": {
+          "availability": 89.4
+        },
+        "2026-10-22": {
+          "availability": 89.83
+        },
+        "2026-10-23": {
+          "availability": 90.81
+        },
+        "2026-10-24": {
+          "availability": 92.25
+        },
+        "2026-10-25": {
+          "availability": 92.22000000000001
+        },
+        "2026-10-26": {
+          "availability": 92.10000000000001
+        },
+        "2026-10-27": {
+          "availability": 92.32
+        }
+      },
+      "status": "available",
+      "type": "qpu"
+    },
+    "status_at_plan": {
+      "explorer": "available",
+      "processor": "available"
+    },
+    "submitted": false,
+    "versions": {
+      "exqalibur": "1.4.2",
+      "perceval-quandela": "1.3.1"
+    }
+  },
+  "result": "payload-admitted",
+  "schema": "quantum-experiment-live-preflight-v1",
+  "submission": false
+}

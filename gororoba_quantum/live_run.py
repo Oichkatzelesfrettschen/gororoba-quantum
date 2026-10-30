@@ -29,23 +29,29 @@ from __future__ import annotations
 import argparse
 import copy
 import dataclasses
+import fcntl
 import hashlib
 import heapq
 import io
 import json
 import math
 import os
+import re
 import subprocess
 import sys
+import tempfile
+import threading
 import time
 from collections import OrderedDict
-from collections.abc import Callable, Collection, Mapping
+from collections.abc import Callable, Collection, Iterator, Mapping
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from decimal import ROUND_HALF_EVEN, Decimal, InvalidOperation
 from importlib.metadata import version
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple, NoReturn
 
 import numpy as np
 import rustworkx as rx
@@ -61,18 +67,25 @@ from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.executor_sampler import Sampler
 
 import correction_collection
+import diagnostic_experiments
 import ibm_account
+import idle_padding
 import law_encoding
 import local_compute
+import msq_envelope
+import msq_successor_analysis
 import packing
 import parallel
 import placement_feasibility
+import pub_calibration
 import qpu_planning
 import qrng_seeds
 import variance
 from coherence_window import COHERENCE_PRECISION
 from diagnostic_experiments import (
     FAMILY_NAMES,
+    MSQE_FAMILY,
+    MSQR_FAMILY,
     N21_FAMILIES,
     PATCH_FAMILIES,
     n21_ramsey_windows,
@@ -103,6 +116,12 @@ TWIRLING_RANDOMIZATIONS = 32
 # Campaigns whose members carry the structure-preserving compilation contract and run on the paths
 # --pin-layout names: the coherence probes and the primorial gap-88 tomography of those paths.
 PINNED_CAMPAIGNS = frozenset({"coherence_probes", "primorial_gap88"})
+# Campaigns --pin-layout may also place: idle_penalty places by the quality policy, and a pin holds one ordered
+# cohort of (target, spectator) pairs fixed so two runs compare the same qubits in the same roles.
+# idle_readout assigns a body to each replica by its index among the pinned pairs, so it runs only pinned.
+IDLE_CAMPAIGNS = frozenset({"idle_penalty", "idle_readout"})
+PIN_CAPABLE_CAMPAIGNS = PINNED_CAMPAIGNS | IDLE_CAMPAIGNS
+PIN_REQUIRED_CAMPAIGNS = frozenset({"idle_readout"})
 TWIRLING_MIN_SHOTS_PER_RANDOMIZATION = 64
 OPT_LEVEL = 3
 SEED_TRANSPILER = 20261010
@@ -160,6 +179,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "factoring.py",
     "hybrid_shor.py",
     "ibm_account.py",
+    "idle_padding.py",
     "integral_homology.py",
     "jax_bridge.py",
     "latency_recovery.py",
@@ -167,7 +187,12 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "live_run.py",
     "local_compute.py",
     "maximal_experiments.py",
+    "measurement_sequence_analysis.py",
+    "measurement_sequence_scatter.py",
     "modular_arithmetic.py",
+    "msq_envelope.py",
+    "msq_envelope_analysis.py",
+    "msq_successor_analysis.py",
     "n21_exact_planning.py",
     "native_preflight.py",
     "order_finding.py",
@@ -175,6 +200,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "parallel.py",
     "placement_feasibility.py",
     "predict.py",
+    "pub_calibration.py",
     "pub_shot_allocation.py",
     "qpe_diagnostics.py",
     "patch_characterization.py",
@@ -188,6 +214,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "crossed_tile_template.py",
     "diagnostic_controls.py",
     "idle_penalty.py",
+    "idle_readout.py",
     "qpu_cases.py",
     "qpu_planning.py",
     "qrng_seeds.py",
@@ -999,6 +1026,10 @@ class Entry:
     replicas holds the single-replica circuits split from packed, in replica
     order, each carrying only its own registers; simulation, readout
     correction, and replay run on them, never on the packed width.
+    A patterned entry (Member.replica_bodies) records the body name each
+    replica runs and the packing.body_digest of that body's compiled
+    instruction sequence on the unrelabeled base qubits; both stay None
+    for every other entry, so their records are unchanged.
     """
 
     name: str
@@ -1010,6 +1041,8 @@ class Entry:
     replica_qubits: list[list[int]]
     reference: bool = False
     weights: np.ndarray | None = None
+    replica_bodies: tuple[str, ...] | None = None
+    body_digests: tuple[str, ...] | None = None
 
 
 @dataclass(frozen=True)
@@ -1025,7 +1058,11 @@ class ReplicaPolicy:
 
 @dataclass
 class Choice:
-    """The winning compile of a group, its replica placements, and its PUB entries."""
+    """The winning compile of a group, its replica placements, and its PUB entries.
+
+    template_isas holds the routed Group.body_templates by name; they feed
+    patterned entries and form no entry of their own.
+    """
 
     group: Group
     snap: Snapshot
@@ -1038,6 +1075,7 @@ class Choice:
     replicas: list[Replica] = field(default_factory=list)
     replica_floor: float = DEFAULT_REPLICA_FLOOR
     fusion_index: int | None = None
+    template_isas: dict[str, QuantumCircuit] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -1055,7 +1093,7 @@ class PubComponent:
         ]
         if any(not register_names for register_names in registers_by_replica):
             raise LiveRunError(f"{self.entry.name}: fused component has a replica without result registers")
-        return {
+        manifest: dict[str, Any] = {
             "group": self.choice.group.name,
             "member": self.entry.name,
             "reference": self.entry.reference,
@@ -1063,6 +1101,10 @@ class PubComponent:
             "physical_qubits": sorted({qubit for replica in self.entry.replica_qubits for qubit in replica}),
             "registers_by_replica": registers_by_replica,
         }
+        if self.entry.replica_bodies is not None:
+            manifest["replica_bodies"] = list(self.entry.replica_bodies)
+            manifest["replica_body_sha256"] = list(self.entry.body_digests or ())
+        return manifest
 
 
 @dataclass(frozen=True)
@@ -1103,7 +1145,7 @@ class _FusionPlacementPool:
     candidates: list[Replica]
     original_index: int
     pattern_width: int
-    bases: list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]] | None = None
+    bases: list[EntryBase] | None = None
     selected: list[Replica] = field(default_factory=list)
     blocked: set[int] = field(default_factory=set)
     physical_graph: Any = None
@@ -1550,10 +1592,46 @@ def place_replicas(snap: Snapshot, isas: list[QuantumCircuit], floor: float, pol
     return replicas
 
 
+class EntryBase(NamedTuple):
+    """One single-copy entry definition: name, compiled base, ideal, score weights and per-replica bodies.
+
+    A patterned member (Member.replica_bodies) adds the body names and the compiled body of each
+    replica in placement order; its isa is the first body's.
+    """
+
+    name: str
+    isa: QuantumCircuit
+    ideal: np.ndarray
+    weights: np.ndarray | None
+    body_names: tuple[str, ...] | None = None
+    bodies: tuple[QuantumCircuit, ...] | None = None
+
+
 def _entry(
-    name: str, base: QuantumCircuit, ideal: np.ndarray, replicas: list[Replica], weights: np.ndarray | None = None
+    name: str,
+    base: QuantumCircuit,
+    ideal: np.ndarray,
+    replicas: list[Replica],
+    weights: np.ndarray | None = None,
+    body_names: tuple[str, ...] | None = None,
+    bodies: tuple[QuantumCircuit, ...] | None = None,
 ) -> Entry:
-    packed = packing.pack(base, replicas, name)
+    """The entry packing base on every replica, or the replica's own body when bodies are given.
+
+    The digest of each body is taken from the compiled body the name selects on the unrelabeled
+    base qubits, so collection can test the archived replica against what the plan named.
+    """
+    digests: tuple[str, ...] | None = None
+    if bodies is not None:
+        if body_names is None or len(bodies) != len(body_names):
+            raise LiveRunError(f"{name}: replica bodies and their names differ in count")
+        if len(bodies) != len(replicas):
+            raise LiveRunError(f"{name}: {len(replicas)} replicas for {len(bodies)} replica bodies")
+        digests = tuple(
+            packing.body_digest(body, {qubit: qubit for qubit in replica.mapping})
+            for body, replica in zip(bodies, replicas, strict=True)
+        )
+    packed = packing.pack(base if bodies is None else bodies, replicas, name)
     return Entry(
         weights=weights,
         name=name,
@@ -1563,26 +1641,63 @@ def _entry(
         replicas=[packing.split(packed, r.prefix, r.qubits, name) for r in replicas],
         prefixes=[r.prefix for r in replicas],
         replica_qubits=[r.qubits for r in replicas],
+        replica_bodies=body_names,
+        body_digests=digests,
     )
 
 
-def _entry_bases(choice: Choice) -> list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]]:
+def _compiled_bodies(choice: Choice, name: str, body_names: tuple[str, ...]) -> tuple[QuantumCircuit, ...]:
+    """The routed circuit of each named body, from the group's unpatterned members and its templates."""
+    compiled = dict(choice.template_isas)
+    if not choice.isas:
+        raise LiveRunError(f"{name}: replica bodies need the group's routed circuits")
+    for member, isa in zip(choice.group.members, choice.isas, strict=True):
+        if member.replica_bodies is None:
+            compiled[member.name] = isa
+    missing = sorted({body for body in body_names if body not in compiled})
+    if missing:
+        raise LiveRunError(f"{name}: no routed circuit for replica bodies {missing}")
+    bodies = tuple(compiled[body] for body in body_names)
+    pattern = packing.pattern(_ops(bodies[0]))
+    for body_name, body in zip(body_names, bodies, strict=True):
+        if packing.pattern(_ops(body)) != pattern:
+            raise LiveRunError(f"{name}: replica body {body_name} touches another qubit set or coupler than the first")
+    return bodies
+
+
+def _entry_bases(choice: Choice) -> list[EntryBase]:
     """Stable non-reference entry definitions for initial and joint placement.
 
     A mirror twin is cut from the member's single-copy ISA. The later entry
     builder packs the member and twin on identical replicas so corresponding
-    samples retain their physical-qubit pairing.
+    samples retain their physical-qubit pairing. A patterned member resolves
+    its replica bodies by name through the group's routed members and templates.
     """
     if choice.entries:
-        return [(entry.name, entry.base, entry.ideal, entry.weights) for entry in choice.entries if not entry.reference]
-    bases: list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]] = []
+        return [
+            EntryBase(
+                entry.name,
+                entry.base,
+                entry.ideal,
+                entry.weights,
+                entry.replica_bodies,
+                None if entry.replica_bodies is None else _compiled_bodies(choice, entry.name, entry.replica_bodies),
+            )
+            for entry in choice.entries
+            if not entry.reference
+        ]
+    bases: list[EntryBase] = []
     for member, isa in zip(choice.group.members, choice.isas, strict=True):
-        bases.append((member.name, isa, member.ideal, member.weights))
+        if member.replica_bodies is not None:
+            bodies = _compiled_bodies(choice, member.name, member.replica_bodies)
+            bases.append(EntryBase(member.name, bodies[0], member.ideal, member.weights, member.replica_bodies, bodies))
+            continue
+        bases.append(EntryBase(member.name, isa, member.ideal, member.weights))
         if member.mirror:
             name = member.name + MIRROR_SUFFIX
             zeros = np.zeros(2**member.circuit.num_clbits)
             zeros[0] = 1.0
-            bases.append((name, mirror_isa(isa, choice.snap.backend, name), zeros, None))
+            bases.append(EntryBase(name, mirror_isa(isa, choice.snap.backend, name), zeros, None))
     return bases
 
 
@@ -1590,18 +1705,22 @@ def _set_entries(
     choice: Choice,
     replicas: list[Replica],
     policy: ReplicaPolicy,
-    bases: list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]] | None = None,
+    bases: list[EntryBase] | None = None,
 ) -> Choice:
     """Rebuild one group's logical entries on an already admitted replica set.
 
     bases, the group's single-copy entry definitions with their mirror twins,
     is computed once per routed candidate when the caller passes it, since the
-    twins come from the transpiler.
+    twins come from the transpiler. A patterned member needs exactly one
+    replica per body.
     """
     bases = _entry_bases(choice) if bases is None else bases
     choice.replica_floor = replica_floor(choice.group, policy)
     choice.replicas = replicas
-    choice.entries = [_entry(name, isa, ideal, choice.replicas, w) for name, isa, ideal, w in bases]
+    choice.entries = [
+        _entry(base.name, base.isa, base.ideal, choice.replicas, base.weights, base.body_names, base.bodies)
+        for base in bases
+    ]
     if policy.isolated_reference and len(choice.replicas) > 1:
         primary = choice.entries[0]
         alone = primary.replicas[0].copy(name=primary.name + ISOLATED_SUFFIX)
@@ -1625,7 +1744,7 @@ def build_entries(choice: Choice, policy: ReplicaPolicy) -> Choice:
     """Build one group's independently placed logical entries for candidate selection."""
     bases = _entry_bases(choice)
     floor = replica_floor(choice.group, policy)
-    replicas = place_replicas(choice.snap, [base[1] for base in bases], floor, policy)
+    replicas = place_replicas(choice.snap, [base.isa for base in bases], floor, policy)
     return _set_entries(choice, replicas, policy)
 
 
@@ -1804,7 +1923,7 @@ def allocate_fusion_replicas(
                 graph, candidates, pattern_width, bases = cache[key]
             else:
                 bases = _entry_bases(choice)
-                graph, candidates, pattern_width = _replica_candidates(choice.snap, [base[1] for base in bases], floor)
+                graph, candidates, pattern_width = _replica_candidates(choice.snap, [base.isa for base in bases], floor)
                 if cache is not None:
                     cache[key] = (graph, candidates, pattern_width, bases)
             if not candidates:
@@ -2124,6 +2243,7 @@ def select_candidates(
             try:
                 templates = {id(primary.circuit): isa}
                 isas = []
+                template_isas: dict[str, QuantumCircuit] = {}
                 if group.name == "spectator_wavefront_ramsey":
                     from maximal_experiments import (
                         build_spectator_wavefront_circuits,
@@ -2167,27 +2287,35 @@ def select_candidates(
                         if key not in templates:
                             templates[key] = _compile(member.circuit, snap, seed, layout)
                         isas.append(_bind(templates[key], member))
+                    for template_name, template_circuit, _ in group.body_templates:
+                        key = id(template_circuit)
+                        if key not in templates:
+                            templates[key] = _compile(template_circuit, snap, seed, layout)
+                        template_isas[template_name] = templates[key]
             except (QiskitError, ValueError) as error:
                 trace.append({"seed": seed, "layout": layout, "member_compile_error": type(error).__name__})
                 continue
             member_rejections = {
-                member.name: rejected
-                for member, member_isa in zip(group.members, isas, strict=True)
-                if (rejected := compiled_violations(member_isa, snap))
+                name: rejected
+                for name, routed in [
+                    *((member.name, member_isa) for member, member_isa in zip(group.members, isas, strict=True)),
+                    *template_isas.items(),
+                ]
+                if (rejected := compiled_violations(routed, snap))
             }
             if member_rejections:
                 trace.append({"seed": seed, "layout": layout, "member_rejections": member_rejections})
                 continue
             if group.routed_violations is not None:
                 compiled_target = snap.admission_target if snap.admission_target is not None else snap.backend.target
-                routed_rejections = group.routed_violations(isas, compiled_target)
+                routed_rejections = group.routed_violations([*isas, *template_isas.values()], compiled_target)
                 if routed_rejections:
                     trace.append({"seed": seed, "layout": layout, "routed_rejections": routed_rejections})
                     continue
             scores = [layout_score(c, snap.backend.target) for c in isas]
             joint = math.exp(sum(math.log(s) for s in scores) / len(scores))
             trace.append({"seed": seed, "joint_score": joint, "layout": layout})
-            candidates.append(Choice(group, snap, seed, layout, isas, scores, joint))
+            candidates.append(Choice(group, snap, seed, layout, isas, scores, joint, template_isas=template_isas))
     candidates.sort(key=lambda choice: (choice.joint_score, -choice.snap.pending_jobs), reverse=True)
     if candidates:
         return candidates
@@ -2485,7 +2613,8 @@ def simulate_entries(noise: Any, entries: list[Entry], shots: int, seed: int) ->
     draws: the shared replica-0 reference draws independently of packed
     replica 0. Planning batches one choice per call and --collect batches
     one calibration per call (replay_entries), each in a fixed order, so each
-    is deterministic for its inputs.
+    is deterministic for its inputs. Each replica circuit is the replica's own
+    body, so a patterned entry simulates the body its replica runs.
     """
     circuits = [replica for entry in entries for replica in entry.replicas]
     result = local_compute.run(noise, circuits, shots, seed)
@@ -2844,9 +2973,13 @@ def _physical(isa: QuantumCircuit) -> list[int]:
 
 
 def _member_fields(entry: Entry) -> dict[str, Any]:
-    """An entry's record fields that its circuits and oracle fix, before any replica."""
+    """An entry's record fields that its circuits and oracle fix, before any replica.
+
+    Only a patterned entry carries replica_bodies and replica_body_sha256, so every other
+    entry's fields, and the approved records that compare them, are unchanged.
+    """
     dynamic = _is_dynamic(entry.base)
-    return {
+    fields: dict[str, Any] = {
         "name": entry.name,
         "reference": entry.reference,
         "cz": entry.base.count_ops().get("cz", 0),
@@ -2856,8 +2989,35 @@ def _member_fields(entry: Entry) -> dict[str, Any]:
         "feed_forward": _has_feed_forward(entry.base),
         "replica_prefixes": entry.prefixes,
         "replica_qubits": entry.replica_qubits,
-        "ideal": law_encoding.encode([round(float(p), 12) for p in entry.ideal]),
+        "ideal": encoded_ideal(entry.ideal),
     }
+    if entry.replica_bodies is not None:
+        fields["replica_bodies"] = list(entry.replica_bodies)
+        fields["replica_body_sha256"] = list(entry.body_digests or ())
+    return fields
+
+
+_ENCODED_IDEALS: OrderedDict[bytes, Any] = OrderedDict()
+_ENCODED_IDEALS_LOCK = threading.Lock()
+
+
+def encoded_ideal(ideal: Any) -> Any:
+    """law_encoding.encode of the ideal rounded to 12 decimals, computed once per distinct float64 bit pattern.
+
+    Every qubit of a fused family carries the same ideal laws, and rounding is a function of each value's bits, so
+    the cached form equals a fresh one; the returned object is shared and never mutated by record writers.
+    """
+    array = np.ascontiguousarray(np.asarray(ideal, dtype=float))
+    key = hashlib.sha256(array.tobytes()).digest() + array.shape[0].to_bytes(8, "little")
+    with _ENCODED_IDEALS_LOCK:
+        cached = _ENCODED_IDEALS.get(key)
+    if cached is None:
+        cached = law_encoding.encode([round(float(p), 12) for p in array])
+        with _ENCODED_IDEALS_LOCK:
+            _ENCODED_IDEALS[key] = cached
+            while len(_ENCODED_IDEALS) > 256:
+                _ENCODED_IDEALS.popitem(last=False)
+    return cached
 
 
 def _replica_fields(replica: QuantumCircuit, target: Any) -> dict[str, Any]:
@@ -2907,14 +3067,60 @@ def choice_structure(choice: Choice) -> dict[str, Any]:
     }
 
 
+def idle_padded_choice(choice: Choice) -> tuple[Choice, dict[str, list[dict[str, Any]]]]:
+    """choice with every replica's ALAP list-schedule idle written in as delays, and each replica's inserted idle.
+
+    NoiseModel.from_backend relaxes a qubit only during its own gates and explicit delays, so the unpadded
+    prediction charges no relaxation while a qubit waits behind others. idle_padding.pad places the replica as late
+    as its makespan allows under the snapshot Target's durations, the placement IBM's scheduler plays, and the
+    noise model's RelaxationNoisePass relaxes each inserted delay at the qubit's T1 and T2. A replica holding an
+    instruction the Target states no duration for keeps its unpadded circuit and names the refusal.
+    """
+    duration = idle_padding.target_duration(choice.snap.backend.target)
+    entries = []
+    idle: dict[str, list[dict[str, Any]]] = {}
+    for entry in choice.entries:
+        replicas = []
+        for replica in entry.replicas:
+            try:
+                padded, inserted = idle_padding.pad(replica, duration, placement="alap")
+            except (KeyError, RuntimeError) as error:
+                replicas.append(replica)
+                idle.setdefault(entry.name, []).append({"refused": str(error)})
+                continue
+            replicas.append(padded)
+            idle.setdefault(entry.name, []).append(
+                {"placement": "alap", "inserted_dt": {str(q): v for q, v in sorted(inserted.items())}}
+            )
+        entries.append(dataclasses.replace(entry, replicas=replicas))
+    return dataclasses.replace(choice, entries=entries), idle
+
+
 def _choice_record(
     choice: Choice,
     noisy: dict[str, list[np.ndarray]],
     noise_calibration: str,
     shots: int,
     scopes: dict[str, dict[str, Any]] | None = None,
+    padded: tuple[dict[str, list[np.ndarray]], dict[str, list[dict[str, Any]]]] | None = None,
 ) -> dict[str, Any]:
     target = choice.snap.backend.target
+
+    def idle_padded(entry: Entry, k: int) -> dict[str, Any]:
+        if padded is None:
+            return {}
+        laws, idle = padded
+        if "refused" in idle[entry.name][k]:
+            return {"idle_padded": idle[entry.name][k]}
+        dist = laws[entry.name][k]
+        return {
+            "idle_padded": {
+                **idle[entry.name][k],
+                "noisy": law_encoding.encode([round(float(p), 6) for p in dist]),
+                "tvd_noisy_to_ideal": tvd(dist, entry.ideal),
+            }
+        }
+
     members = [
         {
             **_member_fields(entry),
@@ -2923,8 +3129,9 @@ def _choice_record(
                     **_replica_fields(rep, target),
                     "noisy": law_encoding.encode([round(float(p), 6) for p in dist]),
                     "tvd_noisy_to_ideal": tvd(dist, entry.ideal),
+                    **idle_padded(entry, k),
                 }
-                for rep, dist in zip(entry.replicas, noisy[entry.name], strict=True)
+                for k, (rep, dist) in enumerate(zip(entry.replicas, noisy[entry.name], strict=True))
             ],
         }
         for entry in choice.entries
@@ -2966,6 +3173,24 @@ def choice_calibration_values(choice: Choice) -> dict[str, Any]:
 PLACED_QUBIT_FIELDS = ("T1", "T2", "readout_error", "prob_meas1_prep0", "prob_meas0_prep1", "frequency")
 
 
+def placed_gate_calibration(properties: Any, qubits: list[int]) -> dict[str, dict[str, float]]:
+    """Per executing qubit, the sx error and duration and the measure duration in seconds.
+
+    The measurement-sequence analysis models each RX step with two sx and each mid-circuit measurement with the
+    Target's measure duration; BackendProperties reports gate and readout lengths in seconds.
+    """
+    if properties is None:
+        return {}
+    return {
+        str(qubit): {
+            "sx_error": float(properties.gate_error("sx", qubit)),
+            "sx_duration_s": float(properties.gate_length("sx", qubit)),
+            "measure_duration_s": float(properties.readout_length(qubit)),
+        }
+        for qubit in qubits
+    }
+
+
 def placed_qubit_calibration(properties: Any, qubits: list[int]) -> dict[str, dict[str, float]]:
     """The snapshot's per-qubit coherence and assignment values for every executing qubit.
 
@@ -2981,6 +3206,21 @@ def placed_qubit_calibration(properties: Any, qubits: list[int]) -> dict[str, di
             name: float(values[name]) for name in PLACED_QUBIT_FIELDS if isinstance(values.get(name), (int, float))
         }
     return placed
+
+
+def pub_execution_calibration(
+    properties: Any, pub_manifest: dict[str, Any], *, with_gates: bool
+) -> dict[str, dict[str, dict[str, float]]]:
+    """The calibration values over every qubit of one PUB, as collect.json stores them once per PUB.
+
+    The mapping holds `placed_qubit_calibration` and, when with_gates, `placed_gate_calibration`; a member's
+    `executed` entry takes its own qubits from it through pub_calibration.split_pub_calibration.
+    """
+    qubits = sorted({int(q) for part in pub_manifest["components"] for q in part["physical_qubits"]})
+    values = {"placed_qubit_calibration": placed_qubit_calibration(properties, qubits)}
+    if with_gates:
+        values["placed_gate_calibration"] = placed_gate_calibration(properties, qubits)
+    return values
 
 
 def discover_snapshots(
@@ -3284,17 +3524,27 @@ FRESH_GROUP_FIELDS = (
     "calibration_fingerprint",
     "calibration_fingerprint_sha256",
 )
-PREDICTION_REPLICA_FIELDS = ("noisy", "tvd_noisy_to_ideal")
+PREDICTION_REPLICA_FIELDS = ("noisy", "tvd_noisy_to_ideal", "idle_padded")
 
 
-def _approved_structure(group: Mapping[str, Any]) -> dict[str, Any]:
-    """An approved group record projected onto the fields choice_structure computes."""
+def _approved_structure(group: Mapping[str, Any], laws: Mapping[str, Any]) -> dict[str, Any]:
+    """An approved group record projected onto the fields choice_structure computes.
+
+    A member ideal that shared_law_record moved into the record's ideal_laws resolves to its encoded law, the form
+    choice_structure computes.
+    """
+
+    def resolved(key: str, value: Any) -> Any:
+        if key == "ideal" and isinstance(value, dict) and "law_sha256" in value:
+            return laws.get(value["law_sha256"], value)
+        return value
+
     return {
         **{key: group.get(key) for key in ("group", "backend", "seed_transpiler", "initial_layout")},
         **{key: group.get(key) for key in ("joint_score", "replica_floor", "replicas")},
         "members": [
             {
-                **{key: value for key, value in member.items() if key != "replicas"},
+                **{key: resolved(key, value) for key, value in member.items() if key != "replicas"},
                 "replicas": [
                     {key: value for key, value in replica.items() if key not in PREDICTION_REPLICA_FIELDS}
                     for replica in member.get("replicas", [])
@@ -3338,7 +3588,7 @@ def approved_choice_blockers(approved_dir: Path, approved: Mapping[str, Any], ch
         changes = calibration_value_changes(values, choice_calibration_values(choice)["calibration_fingerprint"])
         if changes:
             blockers.append(f"{choice.group.name}: {_changes_summary(changes)}")
-        if _json_value(choice_structure(choice)) != _approved_structure(group):
+        if _json_value(choice_structure(choice)) != _approved_structure(group, approved.get("ideal_laws", {})):
             blockers.append(f"{choice.group.name}: compiled members, placement or Target-derived fields differ")
     if _json_value([pub.manifest() for pub in execution_pubs(choices)]) != approved.get("execution_pubs"):
         blockers.append("fused PUB manifests differ")
@@ -3477,16 +3727,13 @@ def approved_family_design(
     if blockers or approved is None:
         log["design"] = {"reused": False, "blockers": blockers}
         return None
-    for choice in choices:
-        if args.family == "et-row":
-            from et_planning import validate_ideals
+    if args.family == "et-row":
+        from et_planning import validate_ideals
 
+        for choice in choices:
             validate_ideals(choice)
-            continue
-        for entry in choice.entries:
-            for replica in entry.replicas:
-                if not np.allclose(qpu_planning.ideal_compiled_probabilities(replica), entry.ideal, rtol=0, atol=1e-10):
-                    raise LiveRunError(f"{entry.name}: compiled labeled ideal differs from its exact oracle")
+    else:
+        qpu_planning.check_compiled_ideals(sys.modules[__name__], choices)
     args.shots = approved["shots"]
     if "pub_shots" in approved:
         args.pub_shots = dict(approved["pub_shots"])
@@ -3610,7 +3857,7 @@ def pinned_replicas(candidate: Choice, paths: list[list[int]]) -> list[Replica]:
     snap = candidate.snap
     bases = _entry_bases(candidate)
     judge = PlacementJudge(
-        tuple(isa for _, isa, _, _ in bases),
+        (*(base.isa for base in bases), *candidate.template_isas.values()),
         snap.backend.target,
         frozenset(snap.excluded_qubits),
         frozenset(snap.excluded_edges),
@@ -3677,7 +3924,8 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
     snaps, skipped, inventory = discovery
     approved_dir = getattr(args, "approved_record", None)
     preflight: dict[str, Any] | None = None
-    if getattr(args, "submit", False) and approved_dir is not None:
+    # An envelope approval binds the layout rule, not calibration values, so its plan re-derives on any calibration.
+    if getattr(args, "submit", False) and approved_dir is not None and not approved_is_envelope(Path(approved_dir)):
         preflight = approved_calibration_preflight(Path(approved_dir), snaps)
         _preflight_refusal(args, Path(approved_dir), preflight, discovery)
         print(
@@ -3719,11 +3967,38 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             campaigns = sorted(group.name for group in groups if group.name in standalone)
             if campaigns and len(groups) > 1:
                 raise LiveRunError(f"{campaigns[0]} requires an isolated campaign; cannot co-run with other groups")
-            if "idle_penalty" in campaigns and (args.dd or args.twirl):
+            idle_campaigns = sorted(set(campaigns) & IDLE_CAMPAIGNS)
+            if idle_campaigns and (args.dd or args.twirl):
                 # The relaxation, Ramsey and readout-crosstalk idles measure free evolution, which
                 # dynamical decoupling would fill with echo pulses, and twirling would randomize the
                 # coherent phases the during and after arms compare.
-                raise LiveRunError("idle_penalty runs without dynamical decoupling or twirling; omit --dd and --twirl")
+                raise LiveRunError(
+                    f"{idle_campaigns[0]} runs without dynamical decoupling or twirling; omit --dd and --twirl"
+                )
+            for campaign in sorted(set(campaigns) & PIN_REQUIRED_CAMPAIGNS):
+                # A patterned member assigns its bodies to replicas by index, so the replicas are the
+                # pinned paths in pin order and their count is the tuple length of every such member.
+                pin = getattr(args, "pin_layout", None)
+                bodies = {
+                    len(member.replica_bodies)
+                    for group in groups
+                    if group.name == campaign
+                    for member in group.members
+                    if member.replica_bodies is not None
+                }
+                if pin is None:
+                    raise LiveRunError(f"{campaign} runs on the paths --pin-layout names")
+                if bodies and len(pin.get("replicas", [pin["qubits"]])) not in bodies:
+                    raise LiveRunError(
+                        f"{campaign} assigns one body to each of {sorted(bodies)} pinned paths; "
+                        f"--pin-layout names {len(pin.get('replicas', [pin['qubits']]))}"
+                    )
+            if idle_campaigns and (pin := getattr(args, "pin_layout", None)) is not None:
+                paths = len(pin.get("replicas", [pin["qubits"]]))
+                if args.max_replicas != paths:
+                    raise LiveRunError(
+                        f"{idle_campaigns[0]} runs one replica on each pinned path; pass --max-replicas {paths}"
+                    )
             if "qubit_baseline" in campaigns and args.dd:
                 # The Ramsey and relaxation idles measure free evolution, which
                 # dynamical decoupling would fill with echo pulses.
@@ -3842,8 +4117,11 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
     if preflight is not None:
         record["approval_preflight"] = preflight
         record["prediction_reuse"] = reuse_log
-    record["budget_plan"] = qpu_planning.budget_plan(sys.modules[__name__], choices, args, service.usage())
+    usage = service.usage()
+    record["budget_plan"] = qpu_planning.budget_plan(sys.modules[__name__], choices, args, usage)
     record["execution_contract"] = qpu_planning.execution_contract(choices, record)
+    if is_envelope_family(getattr(args, "family", None)):
+        apply_envelope_ceiling(record, choices, args, usage)
     if design.get("optimization", {}).get("selected") is None and design:
         record["state"] = "design_infeasible"
     if not record["budget_plan"]["admitted"]:
@@ -3876,45 +4154,69 @@ def check_choice_targets(choices: list[Choice]) -> None:
 
 
 def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
-    """Noise-simulate each choice under its backend's live properties, after proving they match the Target."""
-    # One simulator per snapshot: a group recompiled on a fresh snapshot of a
-    # backend is simulated with that snapshot's Target, not an earlier one.
-    sims: dict[int, tuple[AerSimulator, str]] = {}
-    record["groups"] = []
+    """Noise-simulate each choice under its backend's live properties, after proving they match the Target.
+
+    The choices run on threads, as qpu_planning.prepare runs them. AerSimulator.run holds the GIL, so the threads
+    overlap no simulation (the OpenMP shot threads inside one call carry the parallelism); each thread keeps one
+    simulator per snapshot, and each choice's batch is seeded by its own call (simulate_entries), so the predictions
+    equal the serial loop's. The batch evidence joins per snapshot in choice order.
+    """
     record["execution_requirements"] = {choice.group.name: execution_requirements(choice) for choice in choices}
     pubs = execution_pubs(choices)
     record["fusion_summary"] = fusion_summary(pubs)
     record["execution_pubs"] = [pub.manifest() for pub in pubs]
     scopes = pub_scopes(pubs)
     check_choice_targets(choices)
-    for choice in choices:
-        key = id(choice.snap)
-        if key not in sims:
-            sims[key] = (
-                noise_simulator(
-                    choice.snap.name,
-                    choice.snap.backend.target,
-                    choice.snap.properties,
-                    record.get("policy", {}).get("local_compute", local_compute.settings()),
-                ),
-                choice.snap.calibration,
+    settings = record.get("policy", {}).get("local_compute", local_compute.settings())
+    excitation = record.get("policy", {}).get("design", {}).get("prep_excitation")
+    et_row = record.get("family_configuration", {}).get("name") == "et-row"
+    shots = int(record["shots"])
+    lane = threading.local()
+
+    def simulate_choice(
+        choice: Choice,
+    ) -> tuple[
+        list[dict[str, Any]],
+        dict[str, list[np.ndarray]],
+        tuple[dict[str, list[np.ndarray]], dict[str, list[dict[str, Any]]]] | None,
+        Any,
+    ]:
+        # One simulator per snapshot and thread: a group recompiled on a fresh snapshot of a backend is simulated
+        # with that snapshot's Target, not an earlier one.
+        owned: dict[int, AerSimulator] = lane.__dict__.setdefault("simulators", {})
+        sim = owned.get(id(choice.snap))
+        if sim is None:
+            sim = owned[id(choice.snap)] = noise_simulator(
+                choice.snap.name, choice.snap.backend.target, choice.snap.properties, settings
             )
-        sim, cal = sims[key]
-        excitation = record.get("policy", {}).get("design", {}).get("prep_excitation")
-        if record.get("family_configuration", {}).get("name") == "et-row":
+        start = len(local_compute.batches(sim))
+        padded = None
+        if et_row:
             from et_planning import simulate as simulate_et
 
-            noisy = simulate_et(sys.modules[__name__], choice, sim, int(record["shots"]))
+            # et_planning.simulate draws its own replica circuits, so the et-row prediction stays unpadded.
+            noisy = simulate_et(sys.modules[__name__], choice, sim, shots)
         else:
             noisy = (
-                simulate(choice, sim, int(record["shots"]), prep_excitation=excitation)
-                if excitation
-                else simulate(choice, sim, int(record["shots"]))
+                simulate(choice, sim, shots, prep_excitation=excitation) if excitation else simulate(choice, sim, shots)
             )
-        entry = _choice_record(choice, noisy, cal, int(record["shots"]), scopes)
+            # The idle-padded prediction runs beside the unpadded one under the same simulator, shots and seed;
+            # PREDICTION_REPLICA_FIELDS keeps it out of the approved-record structure comparison.
+            padded_choice, idle = idle_padded_choice(choice)
+            padded = (simulate(padded_choice, sim, shots, prep_excitation=excitation or 0.0), idle)
+        return local_compute.batches(sim)[start:], noisy, padded, getattr(sim, "_gororoba_noise_digest", None)
+
+    concurrent = max(1, parallel.workers() // int(settings.get("threads", 1) or 1))
+    with ThreadPoolExecutor(max_workers=concurrent) as pool:
+        simulated = list(pool.map(simulate_choice, choices))
+    record["groups"] = []
+    evidence: dict[int, list[dict[str, Any]]] = {}
+    for choice, (batches, noisy, padded, digest) in zip(choices, simulated, strict=True):
+        evidence.setdefault(id(choice.snap), []).extend(batches)
+        entry = _choice_record(choice, noisy, choice.snap.calibration, shots, scopes, padded)
         # Provenance of the whole-device noise model the prediction ran under;
         # the approval binds the group's calibration_fingerprint, not this digest.
-        entry["noise_serialized_channels_sha256"] = getattr(sim, "_gororoba_noise_digest", None)
+        entry["noise_serialized_channels_sha256"] = digest
         record["groups"].append(entry)
         cz = [m["cz"] for m in entry["members"]]
         summary = {k: round(v, 4) for k, v in entry["summary"].items()}
@@ -3924,9 +4226,7 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
             f"joint_score={choice.joint_score:.4f} replicas={len(choice.replicas)} scores={scores} "
             f"cz={cz} summary={summary}"
         )
-    record["evaluation_simulation_batches"] = [
-        batch for simulator, _calibration in sims.values() for batch in local_compute.batches(simulator)
-    ]
+    record["evaluation_simulation_batches"] = [batch for batches in evidence.values() for batch in batches]
 
 
 def check_budget(name: str, usage: dict[str, Any], minimum: float) -> None:
@@ -4038,15 +4338,18 @@ def refreshed_plan_view(record: dict[str, Any], choices: list[Choice], pubs: lis
 APPROVAL_CONSUMED_FILE = "approval-consumed.json"
 
 
-def consume_approval(approved_dir: Path, run_name: str) -> dict[str, Any]:
+def consume_approval(
+    approved_dir: Path, run_name: str, marker_name: str = APPROVAL_CONSUMED_FILE, detail: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """Mark the approved record's one-attempt authorization as consumed by run_name, exactly once.
 
     The marker is created with O_EXCL inside the approved record directory,
     so a second invocation that passes every comparison still finds the
-    authorization spent and sends nothing.
+    authorization spent and sends nothing. An envelope approval holds one
+    marker per attempt (envelope_marker), and detail records what admitted it.
     """
-    marker = approved_dir / APPROVAL_CONSUMED_FILE
-    payload = {"consumed_at": _now(), "run": run_name}
+    marker = approved_dir / marker_name
+    payload = {"consumed_at": _now(), "run": run_name, **(detail or {})}
     try:
         descriptor = os.open(marker, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
     except FileExistsError:
@@ -4156,6 +4459,580 @@ def approved_record_mismatches(
         mismatches.append("fused PUB manifests differ")
     if approved_qpy != qpy_archive_sha256:
         mismatches.append(f"QPY archive {approved_qpy[:12]} -> {qpy_archive_sha256[:12]}")
+    return mismatches
+
+
+# An envelope approval (docs/design/measurement-sequence-adaptive-envelope.md) binds the constructor rather than one
+# calibration: these record fields and family fields must equal the approved dry run's, while the layout, the compiled
+# circuits, the calibration values and the planner price follow msq_envelope.layout_rule on the live snapshot.
+ENVELOPE_RECORD_FIELDS = (
+    "experiment_digest",
+    "schema_version",
+    "schema_contract",
+    "shots",
+    "pub_shots",
+    "policy",
+    "versions",
+    "instance_sha256_12",
+)
+ENVELOPE_FAMILY_FIELDS = (
+    "name",
+    "layout_width",
+    "layout_source",
+    "arms",
+    "total_rotation_rad",
+    "steps",
+    "placement_contract",
+)
+
+
+class EnvelopeReplan(LiveRunError):
+    """The live calibration changed the envelope's plan after its pre-submit check; the invocation re-plans."""
+
+
+ENVELOPE_FAMILIES = (MSQE_FAMILY, MSQR_FAMILY)
+
+
+def is_envelope_family(name: Any) -> bool:
+    return name in ENVELOPE_FAMILIES
+
+
+def approved_is_envelope(approved_dir: Path | None) -> bool:
+    """Whether the approved dry run in approved_dir is an envelope plan."""
+    if approved_dir is None:
+        return False
+    try:
+        approved = json.loads((Path(approved_dir) / "record.json").read_text())
+    except (OSError, ValueError):
+        return False
+    return is_envelope_family(approved.get("family_configuration", {}).get("name"))
+
+
+def envelope_marker(attempt: int) -> str:
+    return f"approval-consumed-attempt-{attempt}.json"
+
+
+def snapshot_bytes(snapshot: Snapshot) -> bytes:
+    """The canonical bytes of one snapshot's configuration, properties and queue, which the rebuild gate replays."""
+    return msq_envelope.canonical_snapshot(
+        snapshot.backend.configuration().to_dict(), snapshot.properties.to_dict(), snapshot.pending_jobs
+    )
+
+
+def planner_charge(execution: Mapping[str, Any], rep_delay: float) -> float:
+    """The planner's charge of the selected jobs with every PUB's repetition delay replaced by rep_delay."""
+    total = 0.0
+    for job in execution.get("selected_job_costs", []):
+        total += float(job.get("overhead_seconds", 0.0))
+        for pub in job.get("pubs", []):
+            shots = int(pub["shots"])
+            total += float(pub["estimated_execution_seconds"]) + shots * (
+                rep_delay - float(pub["repetition_delay_seconds"])
+            )
+    return total
+
+
+def envelope_ladder(execution: Mapping[str, Any]) -> tuple[dict[str, float], int]:
+    """Planner charge at each v2 ladder delay (keyed by msq_envelope.delay_key) and the job's total shots."""
+    charges = {
+        msq_envelope.delay_key(delay): planner_charge(execution, delay) for delay in msq_envelope.REP_DELAY_LADDER_S
+    }
+    shots = sum(int(pub["shots"]) for job in execution.get("selected_job_costs", []) for pub in job.get("pubs", []))
+    return charges, shots
+
+
+def envelope_contract(record: Mapping[str, Any], args: argparse.Namespace) -> dict[str, Any]:
+    """The approval-bound envelope: delays, ceilings, the aggregate cap and the replan bound."""
+    fallback_rule = {
+        "delay_codes": list(msq_envelope.FALLBACK_DELAY_CODES),
+        "timeout_code": msq_envelope.FALLBACK_TIMEOUT_CODE,
+        "timeout_max_billed_seconds": msq_envelope.FALLBACK_MAX_BILLED_S,
+    }
+    if getattr(args, "envelope_schema", msq_envelope.ENVELOPE_SCHEMA) == msq_envelope.ENVELOPE_SCHEMA:
+        charges, shots = envelope_ladder(record.get("execution_contract", {}))
+        ceilings = msq_envelope.ladder_ceilings(charges, shots)
+        cap = getattr(args, "max_total_execution_seconds", None)
+        bound = getattr(args, "envelope_ceiling_bound", None)
+        refusals = msq_envelope.contract_refusals(cap, ceilings, bound)
+        if refusals:
+            raise LiveRunError("; ".join(refusals))
+        return {
+            "schema": msq_envelope.ENVELOPE_SCHEMA,
+            "backend": msq_envelope.ENVELOPE_BACKEND,
+            "layout_width": record.get("family_configuration", {}).get("layout_width"),
+            "rep_delay_seconds": getattr(args, "rep_delay", None),
+            "rep_delay_ladder_seconds": list(msq_envelope.REP_DELAY_LADDER_S),
+            "ceiling_rule": {
+                "factor": msq_envelope.CEILING_FACTOR,
+                "per_shot_residual_seconds": msq_envelope.PER_SHOT_RESIDUAL_S,
+            },
+            "ladder_ceiling_seconds": ceilings,
+            "ceiling_seconds": {"attempt_1": ceilings[msq_envelope.delay_key(msq_envelope.REP_DELAY_LADDER_S[0])]},
+            "ceiling_bound_seconds": bound,
+            "envelope_cap_seconds": cap,
+            "reserve_seconds": getattr(args, "reserve_seconds", None),
+            "max_replans": msq_envelope.MAX_REPLANS,
+            "fallback_rule": fallback_rule,
+        }
+    ceiling_1 = getattr(args, "max_execution_seconds", None)
+    ceiling_2 = getattr(args, "fallback_max_execution_seconds", None)
+    return {
+        "schema": msq_envelope.ENVELOPE_SCHEMA_V1,
+        "backend": msq_envelope.ENVELOPE_BACKEND,
+        "layout_width": record.get("family_configuration", {}).get("layout_width"),
+        "rep_delay_seconds": getattr(args, "rep_delay", None),
+        "fallback_rep_delay_seconds": msq_envelope.FALLBACK_REP_DELAY_S,
+        "ceiling_seconds": {"attempt_1": ceiling_1, "attempt_2": ceiling_2},
+        "envelope_cap_seconds": None if ceiling_1 is None or ceiling_2 is None else ceiling_1 + ceiling_2,
+        "reserve_seconds": getattr(args, "reserve_seconds", None),
+        "max_replans": msq_envelope.MAX_REPLANS,
+        "fallback_rule": fallback_rule,
+    }
+
+
+def approved_envelope_schema(approved_dir: Path | None) -> str | None:
+    """The contract schema of the approved envelope dry run in approved_dir, or None when it cannot be read."""
+    if approved_dir is None:
+        return None
+    try:
+        approved = json.loads((Path(approved_dir) / "record.json").read_text())
+        return str(approved["envelope"]["contract"]["schema"])
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def fallback_approved_dir(first_dir: Path, first: Mapping[str, Any]) -> Path:
+    """The approved dry run that the attempt-1 record in first_dir ran under, beside attempt 1."""
+    meta = first.get("approved_record", {})
+    return first_dir.parent / str(meta.get("relative_path", meta["run"]))
+
+
+def envelope_flag_schema(args: argparse.Namespace) -> str:
+    """The envelope schema this invocation follows: the approved record's, else v2 for a new dry run."""
+    approved = getattr(args, "approved_record", None)
+    if approved is None and getattr(args, "envelope_fallback", None):
+        first_dir = Path(args.envelope_fallback)
+        try:
+            approved = fallback_approved_dir(first_dir, json.loads((first_dir / "record.json").read_text()))
+        except (OSError, ValueError, KeyError):
+            approved = None
+    return approved_envelope_schema(approved) or msq_envelope.ENVELOPE_SCHEMA
+
+
+def apply_envelope_ceiling(
+    record: dict[str, Any], choices: list[Choice], args: argparse.Namespace, usage: dict[str, Any]
+) -> None:
+    """Bind an envelope plan to its attempt-1 ceiling and apply the send admission to the budget plan.
+
+    A v2 family takes its attempt-1 ceiling from the ladder (msq_envelope.contract_refusals refuses an unusable cap
+    or bound), so args.max_execution_seconds, the policy and the budget plan carry it; the flag becomes the ceiling
+    bound. Attempt 1 then meets envelope_send_refusals on the live quota, the rule the send applies, and a refusal
+    marks the budget plan inadmissible.
+    """
+    if getattr(args, "envelope_fallback", None):
+        return
+    if getattr(args, "envelope_schema", msq_envelope.ENVELOPE_SCHEMA) == msq_envelope.ENVELOPE_SCHEMA:
+        if not hasattr(args, "envelope_ceiling_bound"):
+            args.envelope_ceiling_bound = args.max_execution_seconds
+        contract = envelope_contract(record, args)
+        args.max_execution_seconds = float(contract["ceiling_seconds"]["attempt_1"])
+        record["policy"]["max_execution_seconds"] = args.max_execution_seconds
+        record["budget_plan"] = qpu_planning.budget_plan(sys.modules[__name__], choices, args, usage)
+    else:
+        contract = envelope_contract(record, args)
+    remaining = usage.get("usage_remaining_seconds")
+    if remaining is None or contract["envelope_cap_seconds"] is None:
+        return
+    refused = envelope_send_refusals({"envelope": {"contract": contract}}, remaining)
+    if refused:
+        budget = record["budget_plan"]
+        budget["admitted"] = False
+        budget["reasons"].extend(refused)
+        print(f"envelope attempt 1 admission refuses the plan: {'; '.join(refused)}")
+
+
+def envelope_plan(
+    record: Mapping[str, Any], qpy_archive_sha256: str, planned_jobs: list[dict[str, Any]] | None = None
+) -> dict[str, Any]:
+    """The full submission plan msq_envelope.plan_digest hashes."""
+    execution = record.get("execution_contract", {})
+    delay = record.get("policy", {}).get("rep_delay_seconds")
+    return {
+        "layout": list(record.get("family_configuration", {}).get("qubits", [])),
+        "qpy_sha256": qpy_archive_sha256,
+        "execution_pubs": record.get("execution_pubs"),
+        "sampler_options": [job.get("options") for job in planned_jobs or []],
+        "rep_delay": delay,
+        "shots": record.get("shots"),
+        "planner_seconds": planner_charge(execution, delay) if delay is not None else None,
+    }
+
+
+# Reasons choice_change_reasons gives that move no byte of an envelope plan: the envelope binds the layout rule and
+# the compiled circuits, not the calibration values the circuits read.
+ENVELOPE_VALUE_REASON = "calibration values changed on compiled instructions"
+
+
+def record_envelope_schema(record: Mapping[str, Any], args: argparse.Namespace | None = None) -> str:
+    """The envelope schema a record's layout and admission follow: its contract's, else the invocation's."""
+    schema = record.get("envelope", {}).get("contract", {}).get("schema")
+    return str(schema or getattr(args, "envelope_schema", msq_envelope.ENVELOPE_SCHEMA_V1))
+
+
+def envelope_drift(
+    record: Mapping[str, Any], choices: list[Choice], fresh: Snapshot, args: argparse.Namespace | None = None
+) -> list[str]:
+    """Why the envelope's plan on fresh differs from the planned one, or [] when it would send the same bytes.
+
+    The layout rule's qubits, every dt duration the circuits carry (measure, settle and pre-readout idles and the t1
+    idles), capabilities and exclusions must hold; calibration values alone do not move the plan. With args, the
+    constructor also compiles the family on fresh, and its fused PUB circuits and manifests must equal the planned
+    ones byte for byte, so the sent plan is the constructor's output on that snapshot.
+    """
+    configuration = record["family_configuration"]
+    reasons: list[str] = []
+    calibration = msq_envelope.calibration_from_snapshot(fresh)
+    try:
+        layout = msq_envelope.place_layout(
+            record_envelope_schema(record, args),
+            calibration["qubits"],
+            calibration["excluded"],
+            [tuple(edge) for edge in calibration["edges"]],
+            int(configuration["layout_width"]),
+        )
+    except msq_envelope.EnvelopeError as error:
+        return [str(error)]
+    if layout != list(configuration["qubits"]):
+        reasons.append(f"the layout rule moved to {layout}")
+    runtime = sys.modules[__name__]
+    for qubit in layout if layout == list(configuration["qubits"]) else []:
+        durations = {
+            "measurement_delay_dt": qpu_planning.measurement_delay(runtime, fresh, qubit),
+            "settle_delay_dt": qpu_planning.settle_delay(runtime, fresh),
+            "prereadout_delay_dt": qpu_planning.prereadout_delay(runtime, fresh),
+        }
+        for name, value in durations.items():
+            if configuration[name][str(qubit)] != value:
+                reasons.append(f"q{qubit}: {name} {configuration[name][str(qubit)]} -> {value}")
+    t1 = [
+        qpu_planning.rounded_delay(runtime, fresh, microseconds * 1e-6)
+        for microseconds in diagnostic_experiments.MSQ_T1_MICROSECONDS
+    ]
+    if t1 != list(configuration["t1_delays_dt"]):
+        reasons.append(f"t1 idles {configuration['t1_delays_dt']} -> {t1}")
+    if "equilibrium_delay_dt" in configuration:
+        equilibrium = qpu_planning.rounded_delay(runtime, fresh, diagnostic_experiments.MSQR_EQUILIBRIUM_SECONDS)
+        if equilibrium != configuration["equilibrium_delay_dt"]:
+            reasons.append(f"equilibrium idle {configuration['equilibrium_delay_dt']} -> {equilibrium}")
+    if "reader_idle_delay_dt" in configuration:
+        reader_idle = qpu_planning.floored_delay(runtime, fresh, diagnostic_experiments.MSQR_READER_IDLE_SECONDS)
+        if reader_idle != configuration["reader_idle_delay_dt"]:
+            reasons.append(f"reader idle {configuration['reader_idle_delay_dt']} -> {reader_idle}")
+    for choice in choices:
+        reasons.extend(
+            f"{choice.group.name}: {reason}"
+            for reason in choice_change_reasons(choice, fresh)
+            if reason != ENVELOPE_VALUE_REASON
+        )
+    if reasons or args is None:
+        return reasons
+    trace: dict[str, Any] = {}
+    rebuilt = qpu_planning.measurement_sequence_candidates(runtime, [fresh], args, trace)
+    if not rebuilt:
+        return [f"the constructor admits no plan on the fresh snapshot: {trace.get('family_rejections')}"]
+    planned, fresh_pubs = execution_pubs(choices), execution_pubs(rebuilt[0][0])
+    if _qpy_digest([pub.circuit for pub in planned]) != _qpy_digest([pub.circuit for pub in fresh_pubs]):
+        reasons.append("the constructor compiles different PUB circuits on the fresh snapshot")
+    if [pub.manifest() for pub in planned] != [pub.manifest() for pub in fresh_pubs]:
+        reasons.append("the constructor builds a different PUB manifest on the fresh snapshot")
+    return reasons
+
+
+def note_envelope_replan(record: dict[str, Any], reasons: Any) -> None:
+    """Record one re-plan of the envelope; past msq_envelope.MAX_REPLANS the run returns to approval."""
+    replans = record.setdefault("envelope", {}).setdefault("replans", [])
+    replans.append({"at": _now(), "reasons": _json_value(reasons)})
+    if len(replans) > msq_envelope.MAX_REPLANS:
+        record["state"] = "approval_required"
+        raise LiveRunError(
+            f"the live calibration moved the envelope's plan {len(replans)} times; the envelope allows "
+            f"{msq_envelope.MAX_REPLANS}; no Runtime job was submitted"
+        )
+
+
+def envelope_batch_replan(
+    record: dict[str, Any], batch: str, snapshot_sha256: str, moved: list[str], checkpoint: Callable[[], None]
+) -> NoReturn:
+    """Return the record to its admitted plan and raise EnvelopeReplan, or refuse once a batch of this run is out.
+
+    A replan resends the whole plan, so it is sound only while no job of the invocation was accepted; the approval
+    marker is written just before the first job call, so it is still unwritten. The moved snapshot sent nothing and
+    keeps no layout.
+    """
+    if record["submission"]["jobs"]:
+        raise LiveRunError(
+            f"{batch} {'; '.join(moved)} after an earlier batch was sent; no circuit in this batch was submitted"
+        )
+    record.setdefault("envelope", {}).setdefault("replan_snapshots", []).append(
+        {"batch": batch, "snapshot_sha256": snapshot_sha256, "moved": moved}
+    )
+    record["envelope"]["rebuild_pending"] = True
+    del record["submission"]
+    record["state"] = "planned"
+    checkpoint()
+    raise EnvelopeReplan(f"{batch} {'; '.join(moved)}")
+
+
+def envelope_send_refusals(record: Mapping[str, Any], remaining: Any) -> list[str]:
+    """Reasons the envelope's aggregate cap refuses this attempt at its send, read from the record and live quota.
+
+    Attempt 2 carries attempt 1's billed charge, or attempt 1's ceiling while the fallback setup found it unbilled;
+    that ceiling then stays reserved against the quota, as envelope_fallback_setup reserved it. A v1 contract
+    reserves the whole cap at attempt 1; a v2 contract (msq_envelope.attempt_admission_v2) reserves only the attempt's
+    own ceiling, and attempt 2's ceiling is the step the fallback setup chose.
+    """
+    contract = record["envelope"]["contract"]
+    attempt_index = int(record["envelope"].get("attempt", 1))
+    evidence = record["envelope"].get("fallback_evidence", {})
+    earlier = evidence.get("billed_seconds") if attempt_index == 2 else 0.0
+    v2 = contract.get("schema") == msq_envelope.ENVELOPE_SCHEMA
+    ceiling = (
+        evidence["chosen"]["ceiling_seconds"]
+        if v2 and attempt_index == 2
+        else contract["ceiling_seconds"][f"attempt_{attempt_index}"]
+    )
+    admission = msq_envelope.attempt_admission_v2 if v2 else msq_envelope.attempt_admission
+    return admission(
+        attempt_index,
+        float(remaining) if remaining is not None else math.nan,
+        float(contract["reserve_seconds"] or 0.0),
+        float(contract["envelope_cap_seconds"]),
+        float(ceiling),
+        float(earlier if earlier is not None else contract["ceiling_seconds"]["attempt_1"]),
+        earlier_unsettled=attempt_index == 2 and earlier is None,
+    )
+
+
+def job_error_code(message: Any) -> int | None:
+    """The service's numeric error code in a job's error text ("Error code 1305; ..."), or None."""
+    match = re.search(r"[Ee]rror code (\d+)", str(message or ""))
+    return int(match.group(1)) if match else None
+
+
+def envelope_fallback_setup(service: QiskitRuntimeService, args: argparse.Namespace) -> dict[str, Any]:
+    """Admit the 50 us attempt 2 of the envelope that attempt 1 in args.envelope_fallback ran under, or raise.
+
+    Attempt 1 must be the envelope's one accepted job, in a terminal state msq_envelope.fallback_permitted accepts
+    from its status, error code, circuit time and attributed charge; attempt 2 must fit the aggregate cap with attempt
+    1's charge (its ceiling while unattributed). args then carries attempt 2's delay, ceiling, approval and identity.
+    """
+    first_dir = Path(args.envelope_fallback)
+    first = json.loads((first_dir / "record.json").read_text())
+    approved_meta = first.get("approved_record", {})
+    if not approved_meta.get("envelope"):
+        raise LiveRunError(f"{first_dir.name} is not an envelope attempt")
+    approved_dir = fallback_approved_dir(first_dir, first)
+    approved_sha = str(approved_meta["record_sha256"])
+    if not (approved_dir / "record.json").is_file():
+        raise LiveRunError(f"the approved envelope record {approved_dir} is not retained beside attempt 1")
+    if hashlib.sha256((approved_dir / "record.json").read_bytes()).hexdigest() != approved_sha:
+        raise LiveRunError(f"the approved envelope {approved_dir.name} no longer carries sha256 {approved_sha}")
+    jobs = first.get("submission", {}).get("jobs", [])
+    if len(jobs) != 1:
+        raise LiveRunError(f"attempt 1 holds {len(jobs)} accepted jobs; the envelope's fallback needs exactly one")
+    job = service.job(jobs[0]["job_id"])
+    status = str(job.status())
+    code = job_error_code(job.error_message()) if status == "ERROR" else None
+    metrics = job.metrics()
+    circuit_ns = metrics.get("circuits_execution_time_ns") if isinstance(metrics, dict) else None
+    usage = job_usage_record(job, len(jobs[0].get("pubs", [])), int(first.get("shots", 0)))
+    billed = usage.get("qpu_charge_time_seconds")
+    billed_seconds = float(billed) if billed is not None else None
+    evidence = {
+        "attempt_1_run": first_dir.name,
+        "attempt_1_job": jobs[0]["job_id"],
+        "status": status,
+        "error_code": code,
+        "circuits_execution_time_ns": circuit_ns,
+        "billed_seconds": billed_seconds,
+    }
+    if not msq_envelope.fallback_permitted(status, code, circuit_ns, billed_seconds):
+        raise LiveRunError(f"attempt 1 does not authorize the 50 us fallback: {evidence}")
+    contract = json.loads((approved_dir / "record.json").read_text())["envelope"]["contract"]
+    remaining = service.usage().get("usage_remaining_seconds")
+    if contract.get("schema") == msq_envelope.ENVELOPE_SCHEMA:
+        return envelope_fallback_step(args, contract, evidence, remaining, approved_dir, approved_sha, billed_seconds)
+    refused = msq_envelope.attempt_admission(
+        2,
+        float(remaining) if remaining is not None else math.nan,
+        float(contract["reserve_seconds"] or 0.0),
+        float(contract["envelope_cap_seconds"]),
+        float(contract["ceiling_seconds"]["attempt_2"]),
+        billed_seconds if billed_seconds is not None else float(contract["ceiling_seconds"]["attempt_1"]),
+        earlier_unsettled=billed_seconds is None,
+    )
+    if refused:
+        raise LiveRunError(f"attempt 2 leaves the envelope cap: {'; '.join(refused)}")
+    args.submit = True
+    args.approved_record = approved_dir
+    args.approved_record_sha256 = approved_sha
+    args.rep_delay = float(contract["fallback_rep_delay_seconds"])
+    args.max_execution_seconds = float(contract["ceiling_seconds"]["attempt_2"])
+    args.envelope_attempt = {"rep_delay": args.rep_delay, "attempt_index": 2, "envelope_sha256": approved_sha}
+    args.envelope_fallback_evidence = evidence
+    return evidence
+
+
+def envelope_fallback_step(
+    args: argparse.Namespace,
+    contract: Mapping[str, Any],
+    evidence: dict[str, Any],
+    remaining: Any,
+    approved_dir: Path,
+    approved_sha: str,
+    billed_seconds: float | None,
+) -> dict[str, Any]:
+    """Choose a v2 envelope's attempt 2 from the live quota (msq_envelope.select_fallback_step) and set args."""
+    first_ceiling = float(contract["ceiling_seconds"]["attempt_1"])
+    step, rejected = msq_envelope.select_fallback_step(
+        float(contract["rep_delay_seconds"]),
+        contract["ladder_ceiling_seconds"],
+        float(remaining) if remaining is not None else math.nan,
+        float(contract["reserve_seconds"] or 0.0),
+        float(contract["envelope_cap_seconds"]),
+        billed_seconds if billed_seconds is not None else first_ceiling,
+        billed_seconds is None,
+        contract.get("ceiling_bound_seconds"),
+    )
+    evidence["rejected_steps"] = rejected
+    if step is None:
+        raise LiveRunError(f"attempt 2 fits no ladder step of the envelope: {rejected}")
+    delay, ceiling = step
+    evidence["chosen"] = {"rep_delay_seconds": delay, "ceiling_seconds": ceiling}
+    args.submit = True
+    args.approved_record = approved_dir
+    args.approved_record_sha256 = approved_sha
+    args.envelope_schema = msq_envelope.ENVELOPE_SCHEMA
+    args.rep_delay = delay
+    args.max_execution_seconds = ceiling
+    args.envelope_attempt = {"rep_delay": delay, "attempt_index": 2, "envelope_sha256": approved_sha}
+    args.envelope_fallback_evidence = evidence
+    return evidence
+
+
+def envelope_ceiling_excess(approved: Mapping[str, Any], fresh: Mapping[str, Any]) -> list[str]:
+    """Each v2 ladder step whose fresh ceiling exceeds the approved one, or that the fresh contract lacks."""
+    held = approved.get("ladder_ceiling_seconds", {})
+    now = fresh.get("ladder_ceiling_seconds", {})
+    return [
+        f"ladder step {key} ceiling {now.get(key)!r} s exceeds the approved {limit!r} s"
+        for key, limit in held.items()
+        if not isinstance(now.get(key), (int, float)) or now[key] > limit
+    ]
+
+
+def refresh_envelope_ceilings(record: dict[str, Any], args: argparse.Namespace) -> list[str]:
+    """Rebind a v2 attempt 1 to the ladder of its refreshed execution contract; return the ceiling rule's refusals.
+
+    The pre-submit refresh rebuilds the execution contract, so attempt 1's contract, sent ceiling
+    (args.max_execution_seconds), policy and planner charges follow it. Attempt 2 keeps the approved contract and sends
+    the chosen step's approved ceiling, which approved_envelope_mismatches bounds against the fresh ladder.
+    """
+    section = record.get("envelope", {})
+    if section.get("contract", {}).get("schema") != msq_envelope.ENVELOPE_SCHEMA or section.get("attempt", 1) != 1:
+        return []
+    try:
+        contract = envelope_contract(record, args)
+    except LiveRunError as error:
+        return [f"the refreshed plan leaves the ceiling rule: {error}"]
+    section["contract"] = contract
+    args.max_execution_seconds = float(contract["ceiling_seconds"]["attempt_1"])
+    record["policy"]["max_execution_seconds"] = args.max_execution_seconds
+    if "planner_charge_seconds" in section:
+        execution = record.get("execution_contract", {})
+        section["planner_charge_seconds"] = {
+            "attempt_1": planner_charge(execution, contract["rep_delay_seconds"]),
+            "ladder": envelope_ladder(execution)[0],
+        }
+    return []
+
+
+def approved_envelope_mismatches(
+    approved_dir: Path, record: dict[str, Any], expected_record_sha256: str | None
+) -> list[str]:
+    """Every way the fresh envelope plan departs from the approved envelope; calibration-dependent fields may move.
+
+    The record fields, the calibration-free family fields, the envelope contract, the groups' seeds and backend and
+    the PUB count must equal the approved dry run's, and the fresh layout must hold layout_width qubits.
+    """
+    approved, blockers = _read_approved(approved_dir, expected_record_sha256)
+    if approved is None:
+        return blockers
+    if record.get("envelope", {}).get("attempt") == 2:
+        # Attempt 2 runs the approved fallback delay under the approved second ceiling.
+        contract = approved.get("envelope", {}).get("contract", {})
+        delay: Any = contract.get("fallback_rep_delay_seconds")
+        ceiling: Any = contract.get("ceiling_seconds", {}).get("attempt_2")
+        chosen_mismatches: list[str] = []
+        if contract.get("schema") == msq_envelope.ENVELOPE_SCHEMA:
+            # A v2 attempt 2 runs the step the fallback setup chose, which must be an approved ladder step at its
+            # approved ceiling.
+            chosen = record.get("envelope", {}).get("fallback_evidence", {}).get("chosen", {})
+            delay, ceiling = chosen.get("rep_delay_seconds"), chosen.get("ceiling_seconds")
+            held = contract.get("ladder_ceiling_seconds", {})
+            if (
+                delay not in contract.get("rep_delay_ladder_seconds", [])
+                or delay == contract.get("rep_delay_seconds")
+                or held.get(msq_envelope.delay_key(delay) if delay is not None else "") != ceiling
+            ):
+                chosen_mismatches.append(f"attempt 2 step {delay!r} at {ceiling!r} s is not an approved ladder step")
+        approved = {
+            **approved,
+            "policy": {**approved.get("policy", {}), "rep_delay_seconds": delay, "max_execution_seconds": ceiling},
+        }
+    mismatches: list[str] = chosen_mismatches if record.get("envelope", {}).get("attempt") == 2 else []
+    old_contract = approved.get("envelope", {}).get("contract", {})
+    new_contract = record.get("envelope", {}).get("contract", {})
+    if old_contract.get("schema") == msq_envelope.ENVELOPE_SCHEMA:
+        # A v2 approval binds the ceiling rule and bounds each ceiling: a fresh layout whose planner charge moves keeps
+        # the approval while every fresh ladder ceiling stays at or below the approved one.
+        # The fresh ladder comes from the refreshed execution contract, since an attempt-2 record carries the approved
+        # contract unchanged.
+        execution = record.get("execution_contract", {})
+        if not execution.get("selected_job_costs"):
+            mismatches.append("the fresh plan carries no selected job costs to bound its ladder ceilings")
+        fresh_ladder = msq_envelope.ladder_ceilings(*envelope_ladder(execution))
+        mismatches.extend(envelope_ceiling_excess(old_contract, {"ladder_ceiling_seconds": fresh_ladder}))
+        derived = ("ladder_ceiling_seconds", "ceiling_seconds")
+        old_contract = {k: v for k, v in old_contract.items() if k not in derived}
+        new_contract = {k: v for k, v in new_contract.items() if k not in derived}
+        approved = {
+            **approved,
+            "policy": {k: v for k, v in approved.get("policy", {}).items() if k != "max_execution_seconds"},
+        }
+        record = {
+            **record,
+            "policy": {k: v for k, v in record.get("policy", {}).items() if k != "max_execution_seconds"},
+        }
+    for name in ENVELOPE_RECORD_FIELDS:
+        if approved.get(name) != record.get(name):
+            mismatches.append(f"{name} differs")
+    old_family, new_family = approved.get("family_configuration", {}), record.get("family_configuration", {})
+    for name in ENVELOPE_FAMILY_FIELDS:
+        if old_family.get(name) != new_family.get(name):
+            mismatches.append(f"family {name} {old_family.get(name)!r} -> {new_family.get(name)!r}")
+    if not is_envelope_family(new_family.get("name")):
+        mismatches.append("the fresh plan is not an envelope family")
+    if len(new_family.get("qubits", [])) != new_family.get("layout_width"):
+        mismatches.append(f"the fresh layout holds {len(new_family.get('qubits', []))} qubits")
+    if old_contract != new_contract:
+        mismatches.append("the envelope contract differs")
+    old_groups = sorted((g.get("backend"), g.get("seed_transpiler")) for g in approved.get("groups", []))
+    new_groups = sorted((g.get("backend"), g.get("seed_transpiler")) for g in record.get("groups", []))
+    if {g for g in old_groups} != {g for g in new_groups}:
+        mismatches.append(f"group backends or seeds {sorted(set(old_groups))} -> {sorted(set(new_groups))}")
+    if len(approved.get("execution_pubs", [])) != len(record.get("execution_pubs", [])):
+        mismatches.append("the fused PUB count differs")
     return mismatches
 
 
@@ -4380,22 +5257,30 @@ def _recovery_tags(
     batch_count: int,
     pubs: list[dict[str, Any]],
     qpy_archive_sha256: str,
+    attempt: dict[str, Any] | None = None,
 ) -> list[str]:
-    """Tags that identify exactly one planned Runtime job after response loss."""
+    """Tags that identify exactly one planned Runtime job after response loss.
+
+    An envelope attempt adds its repetition delay, attempt index and envelope digest, so two attempts of one approval
+    never share a batch tag; a record without an attempt keeps the identity its retained tags were computed from.
+    """
     run_digest = hashlib.sha256(started.encode()).hexdigest()[:20]
-    batch_identity = json.dumps(
-        {
-            "started": started,
-            "backend": backend,
-            "kind": kind,
-            "batch_index": batch_index,
-            "batch_count": batch_count,
-            "pubs": pubs,
-            "qpy_archive_sha256": qpy_archive_sha256,
-        },
-        sort_keys=True,
-        separators=(",", ":"),
-    )
+    identity: dict[str, Any] = {
+        "started": started,
+        "backend": backend,
+        "kind": kind,
+        "batch_index": batch_index,
+        "batch_count": batch_count,
+        "pubs": pubs,
+        "qpy_archive_sha256": qpy_archive_sha256,
+    }
+    if attempt is not None:
+        if set(attempt) != {"rep_delay", "attempt_index", "envelope_sha256"}:
+            raise LiveRunError(
+                f"an envelope attempt identity needs rep_delay, attempt_index, envelope_sha256: {sorted(attempt)}"
+            )
+        identity["attempt"] = attempt
+    batch_identity = json.dumps(identity, sort_keys=True, separators=(",", ":"))
     batch_digest = hashlib.sha256(batch_identity.encode()).hexdigest()[:24]
     return ["gororoba-quantum", f"gororoba-run-{run_digest}", f"gororoba-batch-{batch_digest}"]
 
@@ -4429,6 +5314,7 @@ def build_submission_plan(
                 pub_manifests = [pub.manifest() for pub in batch]
                 members = [component.entry.name for pub in batch for component in pub.components]
                 batch_count = len(batches)
+                attempt = getattr(args, "envelope_attempt", None)
                 recovery_tags = _recovery_tags(
                     args.started,
                     name,
@@ -4437,6 +5323,7 @@ def build_submission_plan(
                     batch_count,
                     pub_manifests,
                     qpy_archive_sha256,
+                    attempt,
                 )
                 sampler = configure_sampler(
                     backend,
@@ -4465,6 +5352,7 @@ def build_submission_plan(
                         "recovery_tags": recovery_tags,
                         "options": sampler.options.model_dump(mode="json"),
                         "state": "planned",
+                        **({"attempt": attempt} if attempt is not None else {}),
                     }
                 )
                 runtime_batches.append((plan_index, name, kind, batch))
@@ -4550,6 +5438,7 @@ def submission_gaps(submission: dict[str, Any]) -> tuple[list[dict[str, Any]], l
             int(planned_job["batch_count"]),
             planned_job.get("pubs", []),
             archive_digest,
+            planned_job.get("attempt"),
         )
         if planned_job.get("recovery_tags") != expected_tags:
             raise LiveRunError(f"planned job {key} recovery tags do not bind its fused-PUB manifest")
@@ -4692,9 +5581,30 @@ def submit(
         )
     fresh_design: dict[str, Any] = {}
     reuse_log: dict[str, Any] = {}
+    planning_layout = list(record.get("family_configuration", {}).get("qubits", []))
     unchanged = unchanged_since_planning(
         record, inventory, choices, fresh_snapshots, service.usage().get("usage_remaining_seconds")
     )
+    approved_record = getattr(args, "approved_record", None)
+    # A batch-time replan (envelope_batch_replan) already counted its move and saw a change the refresh check below
+    # cannot see (compiled bytes), so its pass rebuilds without a second count.
+    batch_replan = bool(record.get("envelope", {}).pop("rebuild_pending", False))
+    if batch_replan:
+        unchanged = False
+    elif not unchanged and approved_record is not None and approved_is_envelope(Path(approved_record)):
+        # An envelope plan reads the layout rule and the circuits' dt durations, not calibration values: a republish
+        # that moves neither sends the same bytes, so the plan stands without a second planning simulation.
+        fresh_by_name = {snapshot.name: snapshot for snapshot in fresh_snapshots}
+        planned_backend = choices[0].snap.name
+        refresh_drift = (
+            envelope_drift(record, choices, fresh_by_name[planned_backend])
+            if planned_backend in fresh_by_name
+            else ["the planned backend left the eligible set"]
+        )
+        record.setdefault("envelope", {}).setdefault("refresh_checks", []).append(
+            {"at": _now(), "drift": refresh_drift}
+        )
+        unchanged = not refresh_drift
     if unchanged:
         # plan() ran in this process against the same calibrations, so a
         # rebuild reproduces its choices exactly; the approved-record
@@ -4785,6 +5695,39 @@ def submit(
         }
     )
     refresh_backend_identity(record, inventory)
+    approved_dir = getattr(args, "approved_record", None)
+    envelope = approved_is_envelope(Path(approved_dir)) if approved_dir is not None else False
+    if reselected and envelope and fresh_design and fresh_design["optimization"]["selected"] is None:
+        record["state"] = "approval_required"
+        checkpoint()
+        raise LiveRunError("the rebuilt envelope plan admits no design; no Runtime job was submitted")
+    if reselected and envelope:
+        # The envelope's plan is the constructor's output on the live snapshot: a moved layout or calibration
+        # re-plans and re-evaluates instead of returning to approval, and approved_envelope_mismatches bounds it.
+        record["system_inventory"] = inventory
+        record["backends"] = {snapshot.name: snapshot.summary() for snapshot in fresh_snapshots}
+        record["skipped_backends"] = skipped
+        record["selection_trace"] = attempt_trace
+        record["fusion_placement"] = fresh_fusion_placement
+        evaluate(choices, record)
+        record["reevaluated_before_submit"] = int(record.get("reevaluated_before_submit", 0)) + 1
+        if not batch_replan:
+            note_envelope_replan(record, reselected)
+        # The rebuilt plan is the rule's output on the refreshed snapshot, so that snapshot becomes the planning
+        # snapshot; the superseded one stays paired with the layout it produced for --check-envelope.
+        planned_snapshot = next(snapshot for snapshot in fresh_snapshots if snapshot.name == choices[0].snap.name)
+        snapshot_data = snapshot_bytes(planned_snapshot)
+        directory = getattr(args, "envelope_snapshot_dir", None)
+        envelope_section = record.setdefault("envelope", {})
+        envelope_section.setdefault("superseded_planning", []).append(
+            {"snapshot_sha256": envelope_section.get("planning_snapshot_sha256"), "layout": planning_layout}
+        )
+        envelope_section["planning_snapshot_sha256"] = (
+            write_envelope_snapshot(directory, snapshot_data)
+            if directory is not None
+            else msq_envelope.sha256_hex(snapshot_data)
+        )
+        reselected = {}
     if reselected:
         record["system_inventory"] = inventory
         record["backends"] = {snapshot.name: snapshot.summary() for snapshot in fresh_snapshots}
@@ -4807,8 +5750,38 @@ def submit(
             "a renewed written submission case and user approval; no Runtime job was submitted"
         )
     qpy_archive_sha256 = archive()
-    approved_dir = getattr(args, "approved_record", None)
-    if approved_dir is not None:
+    if envelope and approved_dir is not None:
+        record["execution_pubs"] = [pub.manifest() for pub in fresh_execution_pubs]
+        mismatches = refresh_envelope_ceilings(record, args) + approved_envelope_mismatches(
+            Path(approved_dir), record, getattr(args, "approved_record_sha256", None)
+        )
+        run_dir = getattr(args, "envelope_snapshot_dir", None)
+        record["approved_record"] = {
+            "run": Path(approved_dir).name,
+            "record_sha256": hashlib.sha256((Path(approved_dir) / "record.json").read_bytes()).hexdigest(),
+            "envelope": True,
+            "mismatches": mismatches,
+            # Relative to this run's parent, so --envelope-fallback finds the approval under any --out.
+            **(
+                {"relative_path": os.path.relpath(Path(approved_dir).resolve(), Path(run_dir).resolve().parent)}
+                if run_dir is not None
+                else {}
+            ),
+        }
+        if mismatches:
+            record["state"] = "approval_required"
+            record["renewed_approval"] = {
+                "required_at": _now(),
+                "reason": "the fresh plan leaves the approved envelope",
+                "mismatches": mismatches,
+                "qpy_archive_sha256": qpy_archive_sha256,
+            }
+            checkpoint()
+            raise LiveRunError(
+                f"the fresh plan leaves the approved envelope {Path(approved_dir).name} ({'; '.join(mismatches)}); "
+                "no Runtime job was submitted"
+            )
+    elif approved_dir is not None:
         # The comparison reads the refreshed choices and PUBs, the plan that
         # build_submission_plan sends, since record["groups"] still describes
         # the initial snapshot when the refresh changed nothing routable.
@@ -4852,6 +5825,11 @@ def submit(
         raise LiveRunError("; ".join(record["budget_plan"]["reasons"]))
     submission, runtime_batches = build_submission_plan(choices, args, qpy_archive_sha256)
     submission["budget_reservation"] = record["budget_plan"]
+    if envelope:
+        plan_view = envelope_plan(record, qpy_archive_sha256, submission["planned_jobs"])
+        record["envelope"].setdefault("plans", []).append(
+            {"plan_sha256": msq_envelope.plan_digest(plan_view), "layout": plan_view["layout"]}
+        )
     # The complete batch ledger reaches disk before the first job starts. A
     # partial submission can therefore name every unsent circuit, including a
     # later batch on a backend that already accepted an earlier one.
@@ -4885,7 +5863,29 @@ def submit(
             }
         except Exception:
             batch_values = None
-        drift = approved_calibration_drift(record, name, fresh.calibration, batch_values)
+        if envelope:
+            # The batch sends the constructor's output on this snapshot: the rule must keep the planned layout and the
+            # circuits' durations and exclusions must hold, or the invocation re-plans on it.
+            moved = envelope_drift(record, owners, fresh, args)
+            fresh_bytes = snapshot_bytes(fresh)
+            directory = getattr(args, "envelope_snapshot_dir", None)
+            digest = (
+                write_envelope_snapshot(directory, fresh_bytes)
+                if directory is not None
+                else msq_envelope.sha256_hex(fresh_bytes)
+            )
+            if moved:
+                envelope_batch_replan(record, f"{name}: {batch_tag}", digest, moved, checkpoint)
+            record.setdefault("envelope", {}).setdefault("batch_snapshots", []).append(
+                {
+                    "batch": batch_tag,
+                    "snapshot_sha256": digest,
+                    "layout": list(record["family_configuration"]["qubits"]),
+                }
+            )
+            drift = None
+        else:
+            drift = approved_calibration_drift(record, name, fresh.calibration, batch_values)
         if drift is not None:
             raise LiveRunError(f"{name}: {batch_tag} {drift}; no circuit in this batch was submitted")
         owner_reasons: dict[str, list[str]] = {}
@@ -4893,7 +5893,7 @@ def submit(
             reasons = choice_change_reasons(owner, fresh)
             if reasons:
                 owner_reasons[owner.group.name] = reasons
-        if owner_reasons:
+        if owner_reasons and not envelope:
             raise LiveRunError(
                 f"{name}: {batch_tag} hardware moved after batch planning; "
                 f"no circuit in this batch was submitted ({owner_reasons})"
@@ -4950,11 +5950,24 @@ def submit(
             raise LiveRunError(
                 f"{name}: {batch_tag} execution ceiling {ceiling} s exceeds the {remaining} s of QPU time remaining"
             )
+        if envelope:
+            refused = envelope_send_refusals(record, remaining)
+            if refused:
+                raise LiveRunError(f"{name}: {batch_tag} {'; '.join(refused)}; no circuit in this batch was submitted")
         if approved_dir is not None and plan_index == runtime_batches[0][0]:
             # The authorization is spent at the first batch of the invocation;
             # a later batch of the same plan belongs to the same attempt.
             try:
-                record["approval_consumed"] = consume_approval(Path(approved_dir), record["started"])
+                record["approval_consumed"] = (
+                    consume_approval(
+                        Path(approved_dir),
+                        record["started"],
+                        envelope_marker(int(record["envelope"].get("attempt", 1))),
+                        record["envelope"].get("fallback_evidence"),
+                    )
+                    if envelope
+                    else consume_approval(Path(approved_dir), record["started"])
+                )
             except LiveRunError:
                 record["state"] = "approval_required"
                 checkpoint()
@@ -5582,9 +6595,66 @@ def _validate_archived_pub(pub_manifest: dict[str, Any], circuit: QuantumCircuit
             )
 
 
+def _verified_replica_bodies(
+    group_name: str,
+    member: dict[str, Any],
+    component: dict[str, Any],
+    replicas: list[QuantumCircuit],
+    placements: dict[str, dict[str, int]],
+    declared_bodies: dict[tuple[str, str], tuple[str, ...] | None],
+) -> tuple[tuple[str, ...] | None, tuple[str, ...] | None]:
+    """The recorded body names and digests of a patterned member, after testing each archived replica against them.
+
+    An unpatterned member must carry neither the group record's fields nor the PUB component's.
+    """
+    name = member["name"]
+    recorded = member.get("replica_bodies")
+    digests = member.get("replica_body_sha256")
+    if recorded is None:
+        if digests is not None or component.get("replica_bodies") is not None:
+            raise LiveRunError(f"logical member {name!r} carries replica body fields its group record lacks")
+        if declared_bodies.get((group_name, name)) is not None:
+            raise LiveRunError(
+                f"logical member {name!r} is patterned in code but its group record has no replica bodies"
+            )
+        return None, None
+    if component.get("replica_bodies") != recorded or component.get("replica_body_sha256") != digests:
+        raise LiveRunError(f"logical member {name!r} replica bodies differ between group record and PUB map")
+    code = declared_bodies.get((group_name, name))
+    if code is not None and list(code) != recorded:
+        raise LiveRunError(
+            f"logical member {name!r} replica bodies {recorded} differ from the group definition {list(code)}"
+        )
+    if digests is None or not len(replicas) == len(recorded) == len(digests):
+        raise LiveRunError(
+            f"logical member {name!r} records {len(recorded)} replica bodies for {len(replicas)} replicas"
+        )
+    for index, (replica, body, digest, prefix) in enumerate(
+        zip(replicas, recorded, digests, member["replica_prefixes"], strict=True)
+    ):
+        mapping = placements.get(prefix)
+        if mapping is None:
+            raise LiveRunError(f"logical member {name!r} replica {index} has no recorded placement")
+        to_base = {physical: int(base) for base, physical in mapping.items()}
+        if packing.body_digest(replica, to_base) != digest:
+            raise LiveRunError(
+                f"logical member {name!r} replica {index} ({prefix}): the archived circuit is not the body "
+                f"{body!r} the plan recorded"
+            )
+    return tuple(recorded), tuple(digests)
+
+
 def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -> dict[str, list[Entry]]:
-    """Rebuild logical entries from archived fused PUBs and their component map."""
-    weights = {m.name: m.weights for g in [*all_experiment_groups(), *record_groups(record)] for m in g.members}
+    """Rebuild logical entries from archived fused PUBs and their component map.
+
+    A patterned member (Member.replica_bodies) must read back as recorded: the group record's
+    body names equal the PUB component's and the code's, and each archived replica body, mapped
+    to the unrelabeled base qubits through the recorded placement, matches the digest the plan
+    took from the named compiled body.
+    """
+    known_groups = [*all_experiment_groups(), *record_groups(record)]
+    weights = {m.name: m.weights for g in known_groups for m in g.members}
+    declared_bodies = {(g.name, m.name): m.replica_bodies for g in known_groups for m in g.members}
     planned_jobs = record.get("submission", {}).get("planned_jobs")
     if planned_jobs is None:
         raise LiveRunError("schema-5 collection needs the immutable fused-PUB submission plan")
@@ -5602,6 +6672,7 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
     out: dict[str, list[Entry]] = {}
     for group in record["groups"]:
         entries = out.setdefault(group["group"], [])
+        placements = {placement["prefix"]: placement["mapping"] for placement in group.get("replicas", [])}
         for member in group["members"]:
             member_name = member["name"]
             if member_name not in components:
@@ -5625,6 +6696,9 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
                 packing.split(packed, prefix, qubits, member_name)
                 for prefix, qubits in zip(prefixes, member["replica_qubits"], strict=True)
             ]
+            bodies, digests = _verified_replica_bodies(
+                group["group"], member, component, replicas, placements, declared_bodies
+            )
             weight_name = member_name
             if member["reference"] and member_name not in weights:
                 weight_name = member_name.removesuffix(ISOLATED_SUFFIX)
@@ -5632,21 +6706,41 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
                 Entry(
                     name=member_name,
                     base=replicas[0],
-                    ideal=np.asarray(law_encoding.dense(member["ideal"])),
+                    ideal=np.asarray(stored_ideal(record, member)),
                     packed=packed,
                     replicas=replicas,
                     prefixes=prefixes,
                     replica_qubits=member["replica_qubits"],
                     reference=member["reference"],
                     weights=weights.get(weight_name),
+                    replica_bodies=bodies,
+                    body_digests=digests,
                 )
             )
     return out
 
 
-def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
+def actor_run_marker(record: Mapping[str, Any], run_dir: Path) -> bool:
+    """Keep actor records on the sparse path even when one identity field is damaged."""
+    configuration = record.get("family_configuration")
+    return (
+        record.get("schema_version") == "readout-actor-run-v1"
+        or (isinstance(configuration, Mapping) and configuration.get("name") == "readout-actor")
+        or (run_dir / "actor-case.json").exists()
+    )
+
+
+def collect(service: QiskitRuntimeService, run_dir: Path, *, actor_record_sha256: str | None = None) -> None:
     """Measured replica distributions against the noise model of the calibration in force at execution."""
     record = json.loads((run_dir / "record.json").read_text())
+    if actor_record_sha256 is not None or actor_run_marker(record, run_dir):
+        import readout_actor_family
+
+        try:
+            readout_actor_family.collect(sys.modules[__name__], service, run_dir, actor_record_sha256)
+        except (ValueError, OSError) as error:
+            raise LiveRunError(str(error)) from error
+        return
     _require_record_instance(service, record, f"{run_dir}: collect")
     qpy_bytes = (run_dir / "isa.qpy").read_bytes()
     groups = {g.name: g for g in [*all_experiment_groups(), *record_groups(record)]}
@@ -5851,6 +6945,12 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         props_by_name: dict[str, Any] = {}
         replayed: dict[str, list[np.ndarray]] = {}
         executed: dict[str, dict[str, Any]] = {}
+        pub_values: dict[str, dict[str, dict[str, dict[str, float]]]] = {}
+        gate_calibration_family = record.get("family_configuration", {}).get("name") in (
+            "measurement-sequence",
+            "measurement-sequence-diagnostic",
+            *ENVELOPE_FAMILIES,
+        )
         # Every windowed component of the job replays in one batch per
         # calibration, in manifest order, and replay_entries gives each batch
         # its own seed, so no two components of the job share a (seed,
@@ -5922,17 +7022,22 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 if window is not None:
                     props_then = at[window[0]][0]
                     props_by_name[name] = props_then
-                    # The calibration in force at the PUB's execution start,
-                    # by value, over every qubit the PUB ran, so the fused
-                    # components of one PUB carry one execution evidence.
-                    executed[name]["placed_qubit_calibration"] = placed_qubit_calibration(
-                        props_then,
-                        sorted({int(q) for part in pub_manifest["components"] for q in part["physical_qubits"]}),
+                    # The calibration in force at the PUB's execution start, by
+                    # value: the PUB's full values go once into the header's pub_calibration
+                    # and the member keeps those of its own qubits.
+                    if pub_manifest["name"] not in pub_values:
+                        pub_values[pub_manifest["name"]] = pub_execution_calibration(
+                            props_then, pub_manifest, with_gates=gate_calibration_family
+                        )
+                    executed[name] |= pub_calibration.split_pub_calibration(
+                        pub_values[pub_manifest["name"]], [int(q) for q in component["physical_qubits"]]
                     )
                     calibration = props_then.last_update_date
                     sims_by_calibration.setdefault(calibration, at[window[0]][1])
                     replay_batches.setdefault(calibration, []).append(entry)
         replayed = replay_entries(sims_by_calibration, replay_batches, shots, seed)
+        if pub_values:
+            out[0].setdefault("pub_calibration", {}).update(pub_values)
         family_measured.update(measured)
         family_replayed.update(replayed)
         family_executed.update(executed)
@@ -6059,10 +7164,29 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             replica_registers=(
                 qpu_planning.n21_exact_planning.retained_registers(run_dir, bounded_pubs) if bounded_pubs else None
             ),
+            shot_order=relaxation_shot_order(record, run_dir),
         )
     out[0]["invocation_usage"] = invocation_usage(record, jobs_out)
     checkpoint(out, final=True)
     print(json.dumps(out, indent=2))
+
+
+def relaxation_shot_order(record: dict[str, Any], run_dir: Path) -> dict[str, Any] | None:
+    """The relaxation family's order evidence: the shot-ordered registers of the PUBs its analysis reads and the
+    executor's chunk_timing, both from the raw files written before analysis; None for every other family. A
+    register file that fails its digest check or the record's PUB layout becomes the reason the analysis withholds;
+    an unreadable chunk_timing becomes None with its reason, since the chunk condition is a reported diagnostic."""
+    if record.get("family_configuration", {}).get("name") != MSQR_FAMILY:
+        return None
+    try:
+        names = msq_successor_analysis.required_pubs(record)
+        registers = qpu_planning.n21_exact_planning.retained_registers(run_dir, names)
+    except (OSError, ValueError, KeyError, LookupError) as error:
+        return {"reason": f"the order evidence is unreadable: {error}"}
+    try:
+        return {"registers": registers, "chunks": msq_successor_analysis.retained_chunks(run_dir)}
+    except (OSError, ValueError, KeyError, LookupError, TypeError, AttributeError) as error:
+        return {"registers": registers, "chunks": None, "chunk_reason": f"the chunk_timing is unreadable: {error}"}
 
 
 def invocation_usage(record: dict[str, Any], jobs_out: dict[str, dict[str, Any]]) -> dict[str, Any]:
@@ -6181,7 +7305,9 @@ def main(argv: list[str] | None = None) -> int:
         help="withhold these physical qubits of BACKEND from placement whatever their calibration; repeatable",
     )
     parser.add_argument(
-        "--family", choices=FAMILY_NAMES, help="complete experiment family with statistical design admission"
+        "--family",
+        choices=(*FAMILY_NAMES, "readout-actor"),
+        help="complete experiment family or descriptive full-PUB acquisition",
     )
     parser.add_argument(
         "--optimize", action="store_true", help="search bounded shot and replica tiers for the experiment family"
@@ -6215,15 +7341,41 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--layout",
         type=lambda value: [int(item) for item in value.split(",")],
-        help="physical qubits state-prep-control characterizes; omitted, the replica qubits of "
-        "diagnostic_experiments.STATE_PREP_SOURCE_RECORD on its backend",
+        help="physical qubits state-prep-control or measurement-sequence characterizes; for state-prep-control, "
+        "omitted, the replica qubits of diagnostic_experiments.STATE_PREP_SOURCE_RECORD on its backend; "
+        "measurement-sequence requires it",
+    )
+    parser.add_argument(
+        "--check-envelope",
+        type=Path,
+        metavar="RUN_DIR",
+        help="replay the layout rule on an envelope run's retained snapshots and compare the recorded layouts; offline",
+    )
+    parser.add_argument(
+        "--envelope-fallback",
+        type=Path,
+        metavar="RUN_DIR",
+        help="send the envelope's 50 us attempt 2 after the attempt-1 run in RUN_DIR ended in a fallback signature",
+    )
+    parser.add_argument(
+        "--fallback-max-execution-seconds",
+        type=float,
+        help="msq-envelope-v1 approvals only: the 50 us attempt's execution ceiling, bound into the envelope cap",
+    )
+    parser.add_argument(
+        "--layout-width",
+        type=int,
+        choices=(16, 24, 32),
+        help="measurement-sequence-envelope and -relaxation: the qubit count msq_envelope.layout_rule keeps "
+        "on the live calibration",
     )
     parser.add_argument(
         "--state-prep-arms",
         type=lambda value: value.split(","),
-        help="state-prep-control arms among prep0, reset, x and x_history, comma-separated: prep0 among "
-        "them, or x_history alone, since it sets the end state every shot of its job leaves; "
-        "omitted, prep0, reset and x; the policy binds a selection",
+        help="state-prep-control arms among prep0, reset, x, x_history, x_remeasure and remeasure, "
+        "comma-separated: prep0 or remeasure among them, or x_history alone, since it sets the end state every "
+        "shot of its job leaves; the remeasure arms read each shot twice; omitted, prep0, reset and x; the "
+        "policy binds a selection",
     )
     parser.add_argument(
         "--latency-dt",
@@ -6287,6 +7439,13 @@ def main(argv: list[str] | None = None) -> int:
         "nonzero dose; 0 and at least two more distinct doses (0 or at least 2 dt, nonzero doses multiples of 4 dt "
         "for the echo), which the policy and family configuration bind sorted; excludes --overlap-split, "
         "--ground-control-split and their sweeps",
+    )
+    parser.add_argument(
+        "--detuning-sign",
+        action="store_true",
+        help="with --window-doses-dt and --init-herald: the detuning-sign test, the free-idle pair's no-feedback "
+        "member in both quadratures at every dose, the echo's at the largest dose, and Ramsey arms of the work bits "
+        "for 1 and 16 in X and Y at every dose, all without feed-forward",
     )
     parser.add_argument(
         "--segmented-delays-dt",
@@ -6486,7 +7645,52 @@ def main(argv: list[str] | None = None) -> int:
             "this QPU usage; a dry run carries it so the approved record's policy matches the submission"
         ),
     )
+    parser.add_argument("--actor-case", type=Path, help="complete full-PUB actor operational case")
+    parser.add_argument("--actor-reviewed-record", type=Path, help="independently reviewed actor dry-run directory")
+    parser.add_argument("--actor-reviewed-sha256", help="independently retained reviewed actor record digest")
+    parser.add_argument(
+        "--actor-record-sha256", help="independently retained actor submission record digest for collection"
+    )
     args = parser.parse_args(argv)
+    if args.actor_case is not None and args.family != "readout-actor":
+        parser.error("--actor-case applies only to --family readout-actor")
+    if args.family == "readout-actor" and (args.actor_case is None or args.out is None):
+        parser.error("readout-actor requires --actor-case and --out")
+    if (args.actor_reviewed_record is None) != (args.actor_reviewed_sha256 is None):
+        parser.error("actor reviewed-record path and digest must be supplied together")
+    if args.submit and args.family == "readout-actor" and args.actor_reviewed_record is None:
+        parser.error("readout-actor submission requires an independently reviewed record and digest")
+    if args.actor_reviewed_record is not None and args.family != "readout-actor":
+        parser.error("actor reviewed-record flags apply only to --family readout-actor")
+    if args.family == "readout-actor" and (
+        args.optimize or args.native_dry_run or args.rep_delay is not None or args.pin_layout is not None
+    ):
+        parser.error(
+            "readout-actor binds allocation, delay and layout in its case; optimizer and native mock are unsupported"
+        )
+    if args.family == "readout-actor":
+        allowed = {
+            "--family",
+            "--actor-case",
+            "--actor-reviewed-record",
+            "--actor-reviewed-sha256",
+            "--out",
+            "--backends",
+            "--max-execution-seconds",
+            "--max-total-execution-seconds",
+            "--submit",
+            "--approved-record",
+            "--approved-record-sha256",
+        }
+        unexpected = [
+            argument.split("=", 1)[0]
+            for argument in (argv if argv is not None else sys.argv[1:])
+            if argument.startswith("--") and argument.split("=", 1)[0] not in allowed
+        ]
+        if unexpected:
+            parser.error(f"readout-actor takes its complete operational settings from --actor-case: {unexpected}")
+    if args.actor_record_sha256 is not None and args.collect is None:
+        parser.error("--actor-record-sha256 requires --collect")
     global SEED_TRANSPILER, SEED_SIMULATOR
     SEED_TRANSPILER, SEED_SIMULATOR = args.seed_transpiler, args.seed_simulator
     exclusions: dict[str, set[int]] = {}
@@ -6505,7 +7709,9 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--approved-record applies only with --submit")
     if args.submit and not args.approved_record_sha256:
         parser.error("--submit needs --approved-record-sha256, the record.json digest the written case names")
-    if args.submit and args.max_execution_seconds is None:
+    args.envelope_schema = envelope_flag_schema(args) if is_envelope_family(args.family) else None
+    v2_envelope = args.envelope_schema == msq_envelope.ENVELOPE_SCHEMA
+    if args.submit and args.max_execution_seconds is None and not v2_envelope:
         parser.error("--submit needs --max-execution-seconds, the execution ceiling the written case names")
     if args.approved_record_sha256 and not args.submit:
         parser.error("--approved-record-sha256 applies only with --submit")
@@ -6529,7 +7735,9 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("precision_at_budget requires the folded-qpe precision-only family")
     if len({scenario["name"] for scenario in args.cost_scenarios}) != len(args.cost_scenarios):
         parser.error("--cost-scenario names must be distinct")
-    if args.family and (args.max_execution_seconds is None or args.max_total_execution_seconds is None):
+    if args.family and (
+        (args.max_execution_seconds is None and not v2_envelope) or args.max_total_execution_seconds is None
+    ):
         parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
     if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
         parser.error("the folded family uses one fixed physical placement per candidate; --max-replicas must be 1")
@@ -6548,8 +7756,41 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--patch-qubits applies to the pinned-patch families only")
     if args.family in PATCH_FAMILIES and args.max_replicas not in (None, 1):
         parser.error("the patch family runs one pinned placement; --max-replicas must be 1")
-    if args.layout is not None and args.family != "state-prep-control":
-        parser.error("--layout applies to the state-prep-control family only")
+    layout_families = ("state-prep-control", "measurement-sequence", "measurement-sequence-diagnostic")
+    if args.layout is not None and args.family not in layout_families:
+        parser.error("--layout applies to the state-prep-control and measurement-sequence families only")
+    if args.family in layout_families[1:] and args.layout is None:
+        parser.error(f"{args.family} requires --layout: the physical qubits whose measurement it characterizes")
+    if (args.layout_width is not None) != is_envelope_family(args.family):
+        parser.error(f"{' and '.join(ENVELOPE_FAMILIES)} require --layout-width, and only they take one")
+    if args.envelope_fallback and (
+        args.submit or args.approved_record or not is_envelope_family(args.family) or not args.out
+    ):
+        parser.error(
+            "--envelope-fallback takes attempt 1's planning flags and --out; it derives --submit and the approval "
+            "from attempt 1's record"
+        )
+    if is_envelope_family(args.family) and v2_envelope:
+        if args.fallback_max_execution_seconds is not None:
+            parser.error("--fallback-max-execution-seconds applies to msq-envelope-v1 approvals only")
+        if args.rep_delay != msq_envelope.REP_DELAY_LADDER_S[0]:
+            parser.error(
+                f"{args.family} binds --rep-delay to the ladder's first value {msq_envelope.REP_DELAY_LADDER_S[0]!r}"
+            )
+        if args.max_total_execution_seconds is None or not (
+            msq_envelope.CAP_MIN_S <= args.max_total_execution_seconds <= msq_envelope.CAP_MAX_S
+        ):
+            parser.error(
+                f"--max-total-execution-seconds is the envelope's total cap, within "
+                f"[{msq_envelope.CAP_MIN_S:g}, {msq_envelope.CAP_MAX_S:g}] s"
+            )
+    elif is_envelope_family(args.family) and (
+        args.rep_delay is None or args.max_execution_seconds is None or args.fallback_max_execution_seconds is None
+    ):
+        parser.error(
+            f"{args.family} binds --rep-delay, --max-execution-seconds and "
+            "--fallback-max-execution-seconds into its envelope"
+        )
     if args.state_prep_arms is not None:
         if args.family != "state-prep-control":
             parser.error("--state-prep-arms applies to the state-prep-control family only")
@@ -6566,9 +7807,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.pin_layout is not None and "replicas" in args.pin_layout and args.family is not None:
         parser.error("--pin-layout names one path for a family; several paths apply to the pinned campaigns only")
     if args.pin_layout is not None and args.family != "n21-orbit-rca":
-        if args.family is not None or not args.groups or not set(args.groups) <= PINNED_CAMPAIGNS:
+        if args.family is not None or not args.groups or not set(args.groups) <= PIN_CAPABLE_CAMPAIGNS:
             parser.error(
-                f"--pin-layout applies to the n21-orbit-rca family and the campaigns {sorted(PINNED_CAMPAIGNS)} only"
+                f"--pin-layout applies to the n21-orbit-rca family and the campaigns {sorted(PIN_CAPABLE_CAMPAIGNS)} "
+                "only"
             )
     if args.init_herald and args.family != "n21-orbit-rca":
         parser.error("--init-herald applies to the n21-orbit-rca family only")
@@ -6595,6 +7837,8 @@ def main(argv: list[str] | None = None) -> int:
         ):
             if given:
                 parser.error(f"--window-doses-dt and {flag} are separate n21-orbit-rca configurations")
+    if args.detuning_sign and (args.window_doses_dt is None or not args.init_herald):
+        parser.error("--detuning-sign requires --window-doses-dt and --init-herald")
     args.segmented_sweep = None
     segmented_flags = (args.segments, args.backaction_delays_dt, args.backaction_pre_idle_dt)
     if args.segmented_delays_dt is None and any(value is not None for value in segmented_flags):
@@ -6626,8 +7870,13 @@ def main(argv: list[str] | None = None) -> int:
             "--ground-control-split requires --init-herald: idle_ground's contracts read only shots whose "
             "herald reads the control 0"
         )
-    if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
-        parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
+    if args.family in (
+        "state-prep-control",
+        "measurement-sequence",
+        "measurement-sequence-diagnostic",
+        *ENVELOPE_FAMILIES,
+    ) and args.max_replicas not in (None, 1):
+        parser.error(f"{args.family} pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "latency-recovery" and args.max_replicas not in (None, 1):
         parser.error("latency-recovery reads one placement's schedule; --max-replicas must be 1")
     if args.family == "folded-correction":
@@ -6707,15 +7956,32 @@ def main(argv: list[str] | None = None) -> int:
             )
         print(f"FAIL: {error}", file=sys.stderr)
         return 1
+    if args.check_envelope:
+        violations = envelope_layout_violations(args.check_envelope)
+        for violation in violations:
+            print(f"FAIL: {violation}", file=sys.stderr)
+        if not violations:
+            print(f"{args.check_envelope.name}: every retained snapshot replays its recorded layout")
+        return 1 if violations else 0
     service = ibm_account.open_service(QiskitRuntimeService)
     try:
         if args.collect:
-            collect(service, args.collect)
+            collect(service, args.collect, actor_record_sha256=args.actor_record_sha256)
             return 0
         if args.preserve_raw:
             preserved = preserve_raw(service, args.preserve_raw)
             print(f"raw results preserved for {len(preserved)} jobs under {args.preserve_raw / RAW_DIRECTORY}")
             return 0
+        if args.family == "readout-actor":
+            import readout_actor_family
+
+            try:
+                return readout_actor_family.run_cli(sys.modules[__name__], service, args)
+            except ValueError as error:
+                raise LiveRunError(str(error)) from error
+        if args.envelope_fallback:
+            evidence = envelope_fallback_setup(service, args)
+            print(f"envelope fallback admitted: {evidence}")
         now = datetime.now(UTC)
         args.started = now.isoformat(timespec="microseconds")
         # Microsecond names and exclusive creation keep concurrent runs from
@@ -6728,9 +7994,47 @@ def main(argv: list[str] | None = None) -> int:
         choices, record = plan(service, args)
         if not reuse_approved_predictions(choices, record, args):
             evaluate(choices, record)
+        envelope_snapshot: bytes | None = None
+        if is_envelope_family(record.get("family_configuration", {}).get("name")):
+            envelope_snapshot = snapshot_bytes(choices[0].snap)
+            record["envelope"] = {
+                "contract": envelope_contract(record, args),
+                "planning_snapshot_sha256": msq_envelope.sha256_hex(envelope_snapshot),
+            }
+            if getattr(args, "envelope_fallback", None):
+                # Attempt 2's delay and ceiling come from the approved contract, which binds it unchanged.
+                approved = json.loads((Path(args.approved_record) / "record.json").read_text())
+                record["envelope"].update(
+                    contract=approved["envelope"]["contract"],
+                    attempt=2,
+                    fallback_evidence=args.envelope_fallback_evidence,
+                )
+            elif args.submit:
+                args.envelope_attempt = {
+                    "rep_delay": args.rep_delay,
+                    "attempt_index": 1,
+                    "envelope_sha256": str(args.approved_record_sha256).lower(),
+                }
         if run_dir:
             run_dir.mkdir(parents=True, exist_ok=False)
-            write_archive(run_dir, choices)
+            qpy_sha256 = write_archive(run_dir, choices)
+            if envelope_snapshot is not None:
+                write_envelope_snapshot(run_dir, envelope_snapshot)
+                plan_view = envelope_plan(record, qpy_sha256)
+                record["envelope"]["planning_plan_sha256"] = msq_envelope.plan_digest(plan_view)
+                if record["envelope"]["contract"].get("schema") == msq_envelope.ENVELOPE_SCHEMA:
+                    ladder_charges, _ = envelope_ladder(record.get("execution_contract", {}))
+                    record["envelope"]["planner_charge_seconds"] = {
+                        "attempt_1": plan_view["planner_seconds"],
+                        "ladder": ladder_charges,
+                    }
+                else:
+                    record["envelope"]["planner_charge_seconds"] = {
+                        "attempt_1": plan_view["planner_seconds"],
+                        "attempt_2": planner_charge(
+                            record.get("execution_contract", {}), msq_envelope.FALLBACK_REP_DELAY_S
+                        ),
+                    }
             write_json(run_dir, record)
             if args.native_dry_run:
                 from native_preflight import qualify
@@ -6747,15 +8051,24 @@ def main(argv: list[str] | None = None) -> int:
                 if case_path is not None:
                     print(f"unapproved written case: {case_path}")
         if args.submit and run_dir:
+            args.envelope_snapshot_dir = run_dir
             try:
-                submit(
-                    service,
-                    choices,
-                    args,
-                    record,
-                    lambda: write_archive(run_dir, choices),
-                    lambda: write_json(run_dir, record),
-                )
+                while True:
+                    try:
+                        submit(
+                            service,
+                            choices,
+                            args,
+                            record,
+                            lambda: write_archive(run_dir, choices),
+                            lambda: write_json(run_dir, record),
+                        )
+                        break
+                    except EnvelopeReplan as replan:
+                        # Raised before the approval marker is written, so the next pass re-snapshots and re-plans
+                        # under the same unconsumed authorization.
+                        print(f"envelope re-plan: {replan}")
+                        note_envelope_replan(record, str(replan))
             finally:
                 write_json(run_dir, record)
     except ApprovalPreflightRefused as exc:
@@ -6816,6 +8129,24 @@ def write_raw_result(run_dir: Path, job_id: str, job: Any, result: Any, pub_name
     """
     directory = run_dir / RAW_DIRECTORY / job_id
     directory.mkdir(parents=True, exist_ok=True)
+    with _raw_collection_lock(directory):
+        return _write_raw_result_locked(directory, job_id, job, result, pub_names)
+
+
+@contextmanager
+def _raw_collection_lock(directory: Path) -> Iterator[None]:
+    """Serialize writers and metrics revisions for one retained job."""
+    with (directory / ".collection.lock").open("a", encoding="utf-8") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+
+
+def _write_raw_result_locked(
+    directory: Path, job_id: str, job: Any, result: Any, pub_names: list[str]
+) -> dict[str, Any]:
     files: dict[str, Any] = {}
     for index, pub_result in enumerate(result):
         registers: dict[str, Any] = {}
@@ -6840,17 +8171,15 @@ def write_raw_result(run_dir: Path, job_id: str, job: Any, result: Any, pub_name
         text = json.dumps(payload, indent=1, sort_keys=True) + "\n"
         digest = hashlib.sha256(text.encode()).hexdigest()
         target = directory / name
-        if target.exists():
-            if hashlib.sha256(target.read_bytes()).hexdigest() != digest:
-                raise LiveRunError(f"{target} differs from the result the service returned; raw evidence is write-once")
-        else:
-            _write_text_atomically(target, text)
+        _write_once_atomically(target, text)
         digests[name] = digest
+    acquisition_index = json.dumps({"job_id": job_id, "files": digests}, indent=1, sort_keys=True) + "\n"
+    _write_once_atomically(directory / "acquisition-index.json", acquisition_index)
     _write_text_atomically(
         directory / "index.json",
         json.dumps(_merged_index(directory, job_id, digests), indent=1, sort_keys=True) + "\n",
     )
-    snapshot_metrics(run_dir, job_id, job)
+    _snapshot_metrics_locked(directory, job_id, job)
     return {"directory": f"{RAW_DIRECTORY}/{job_id}", "files": digests}
 
 
@@ -6871,6 +8200,16 @@ def snapshot_metrics(run_dir: Path, job_id: str, job: Any) -> str:
     pending at retrieval carries the finalized metrics in its raw evidence.
     """
     directory = run_dir / RAW_DIRECTORY / job_id
+    with _raw_collection_lock(directory):
+        return _snapshot_metrics_locked(directory, job_id, job)
+
+
+def _snapshot_metrics_locked(directory: Path, job_id: str, job: Any) -> str:
+    for abandoned in directory.iterdir():
+        if re.fullmatch(r"(?:index|job_metrics(?:\.[0-9]+)?)\.json\.tmp", abandoned.name):
+            if abandoned.is_symlink() or not abandoned.is_file():
+                raise LiveRunError(f"invalid metrics staging entry: {abandoned}")
+            abandoned.unlink()
     metrics = job.metrics() if hasattr(job, "metrics") else {}
     metrics_text = json.dumps(_scrub_instances(_jsonable(metrics)), indent=1, sort_keys=True) + "\n"
     snapshots = _metrics_snapshots(directory)
@@ -6910,6 +8249,46 @@ def _write_text_atomically(target: Path, text: str) -> None:
         handle.write(text)
 
     _replace_atomically(target, write, "w")
+
+
+def _write_once_atomically(target: Path, text: str) -> None:
+    """Publish complete bytes once and reject a different existing snapshot."""
+    staging = target.parent / ".publication-staging"
+    if staging.is_symlink():
+        raise LiveRunError(f"publication staging must be a directory: {staging}")
+    staging.mkdir(exist_ok=True)
+    if (staging / ".lock").is_symlink():
+        raise LiveRunError(f"publication lock must be a regular file: {staging}")
+    with (staging / ".lock").open("a", encoding="utf-8") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        try:
+            for abandoned in staging.iterdir():
+                if re.fullmatch(r"pending-[a-z0-9_]{8}", abandoned.name) and not abandoned.is_symlink():
+                    if not abandoned.is_file():
+                        raise LiveRunError(f"invalid publication staging entry: {abandoned}")
+                    abandoned.unlink()
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=staging, prefix="pending-", delete=False
+            ) as handle:
+                temporary = Path(handle.name)
+                try:
+                    handle.write(text)
+                    handle.flush()
+                    os.fsync(handle.fileno())
+                    try:
+                        os.link(temporary, target)
+                    except FileExistsError:
+                        if target.read_bytes() != text.encode("utf-8"):
+                            raise LiveRunError(f"{target} differs from the immutable acquisition snapshot") from None
+                    directory_fd = os.open(target.parent, os.O_RDONLY | os.O_DIRECTORY)
+                    try:
+                        os.fsync(directory_fd)
+                    finally:
+                        os.close(directory_fd)
+                finally:
+                    temporary.unlink(missing_ok=True)
+        finally:
+            fcntl.flock(lock, fcntl.LOCK_UN)
 
 
 def preserve_raw(service: QiskitRuntimeService, run_dir: Path) -> dict[str, Any]:
@@ -6967,6 +8346,74 @@ def archive_bytes(choices: list[Choice]) -> bytes:
     return buffer.getvalue()
 
 
+ENVELOPE_SNAPSHOT_DIRECTORY = "envelope-snapshots"
+
+
+def write_envelope_snapshot(run_dir: Path, data: bytes) -> str:
+    """Retain one canonical snapshot under its sha256, the input the envelope rebuild gate replays."""
+    digest = msq_envelope.sha256_hex(data)
+    directory = run_dir / ENVELOPE_SNAPSHOT_DIRECTORY
+    directory.mkdir(exist_ok=True)
+    target = directory / f"{digest}.json"
+    if not target.exists():
+        _write_text_atomically(target, data.decode())
+    return digest
+
+
+def envelope_layout_violations(run_dir: Path) -> list[str]:
+    """Every retained snapshot of an envelope run whose replayed layout rule differs from the layout it records.
+
+    The planning snapshot must reproduce the planned layout, and every batch snapshot the layout that batch sent.
+    """
+    record = json.loads((run_dir / "record.json").read_text())
+    envelope = record.get("envelope")
+    if not isinstance(envelope, dict):
+        return [f"{run_dir.name} carries no envelope section"]
+    width = int(record["family_configuration"]["layout_width"])
+    checks = [(envelope["planning_snapshot_sha256"], record["family_configuration"]["qubits"], "planning")]
+    checks += [
+        (entry["snapshot_sha256"], entry["layout"], f"superseded planning {index}")
+        for index, entry in enumerate(envelope.get("superseded_planning", []))
+    ]
+    planned = (record.get("submission") or {}).get("planned_jobs") or []
+    checks += [
+        (entry["snapshot_sha256"], entry["layout"], entry["batch"]) for entry in envelope.get("batch_snapshots", [])
+    ]
+    backend = envelope.get("contract", {}).get("backend", msq_envelope.ENVELOPE_BACKEND)
+    operator_excluded = {
+        int(q) for q in (record.get("policy", {}).get("operator_excluded_qubits") or {}).get(backend, [])
+    }
+    violations = []
+    for digest, layout, label in checks:
+        path = run_dir / ENVELOPE_SNAPSHOT_DIRECTORY / f"{digest}.json"
+        if not path.exists():
+            violations.append(f"{label}: snapshot {digest[:12]} is not retained")
+            continue
+        data = path.read_bytes()
+        if msq_envelope.sha256_hex(data) != digest:
+            violations.append(f"{label}: snapshot bytes differ from {digest[:12]}")
+            continue
+        rows = msq_envelope.calibration_from_canonical(data)
+        # --exclude-qubits withholds qubits from every snapshot the run takes, so the replay withholds them too.
+        excluded = sorted(set(rows["excluded"]) | operator_excluded)
+        try:
+            replayed = msq_envelope.place_layout(
+                envelope.get("contract", {}).get("schema", msq_envelope.ENVELOPE_SCHEMA_V1),
+                rows["qubits"],
+                excluded,
+                [tuple(edge) for edge in rows["edges"]],
+                width,
+            )
+        except msq_envelope.EnvelopeError as error:
+            violations.append(f"{label}: the rule refuses this snapshot ({error})")
+            continue
+        if replayed != list(layout):
+            violations.append(f"{label}: the rule replays {replayed}, the record holds {list(layout)}")
+    if planned and envelope.get("batch_snapshots") is None:
+        violations.append("a submitted envelope run retains no batch snapshot")
+    return violations
+
+
 def write_archive(run_dir: Path, choices: list[Choice]) -> str:
     """Write the exact fused Runtime PUB circuits and return the QPY-file digest."""
     qpy_bytes = archive_bytes(choices)
@@ -6974,9 +8421,45 @@ def write_archive(run_dir: Path, choices: list[Choice]) -> str:
     return hashlib.sha256(qpy_bytes).hexdigest()
 
 
+# A member ideal whose JSON text exceeds this many characters is stored once per record under its digest in an envelope
+# record, where every qubit repeats the same 17-clbit laws of the 16-step members.
+SHARED_LAW_MIN_CHARS = 4096
+
+
+def shared_law_record(record: dict[str, Any]) -> dict[str, Any]:
+    """An envelope record with each repeated large member ideal moved into ideal_laws; other records unchanged."""
+    if not is_envelope_family(record.get("family_configuration", {}).get("name")):
+        return record
+    laws: dict[str, Any] = {}
+    groups = []
+    for group in record.get("groups", []):
+        members = []
+        for member in group.get("members", []):
+            ideal = member.get("ideal")
+            text = json.dumps(ideal, sort_keys=True, separators=(",", ":"))
+            if len(text) > SHARED_LAW_MIN_CHARS:
+                digest = hashlib.sha256(text.encode()).hexdigest()
+                laws[digest] = ideal
+                member = {**member, "ideal": {"law_sha256": digest}}
+            members.append(member)
+        groups.append({**group, "members": members})
+    return {**record, "groups": groups, "ideal_laws": laws} if laws else record
+
+
+def stored_ideal(record: Mapping[str, Any], member: Mapping[str, Any]) -> list[float]:
+    """A member's ideal law from a record, resolving a shared law reference."""
+    ideal = member["ideal"]
+    if isinstance(ideal, dict) and "law_sha256" in ideal:
+        shared = record.get("ideal_laws", {}).get(ideal["law_sha256"])
+        if shared is None:
+            raise LiveRunError(f"{member.get('name')}: the shared ideal law {ideal['law_sha256'][:12]} is missing")
+        ideal = shared
+    return law_encoding.dense(ideal)
+
+
 def write_json(run_dir: Path, record: dict[str, Any]) -> None:
     """The run's JSON record."""
-    text = json.dumps(record, indent=2, default=str) + "\n"
+    text = json.dumps(shared_law_record(record), indent=2, default=str) + "\n"
     _replace_atomically(run_dir / "record.json", lambda handle: handle.write(text), "w")
     print(f"audit record: {run_dir}")
 

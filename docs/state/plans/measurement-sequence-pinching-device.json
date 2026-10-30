@@ -4,12 +4,880 @@
   "kind": "investigation",
   "summary": "Measure the per-measurement departure from ideal pinching: N steps of RX(8pi/9 / N), on the pi/36 angle grid, each followed by a discarded mid-circuit measurement; ideal P0 = (1 + cos(THETA/N)^N)/2, against a unitary N = 16 null, a duration-matched delay control and a settle-gap control.",
   "sources": [
-    "docs/archive/reviews/quantum-recovery-proposal-audit.md"
+    "docs/archive/reviews/quantum-recovery-proposal-audit.md",
+    "docs/design/measurement-sequence-adaptive-envelope.md"
   ],
-  "state": "inbox",
+  "state": "active",
   "reconciliation": {
-    "status": "unresolved",
-    "note": "Captured context; triage and evidence review pending."
+    "status": "verified",
+    "note": "Owner approved the width-32 run and ratified the envelope doctrine; attempt 1 submitted."
   },
-  "next_action": "Write the circuit family and a submit-free dry run on Tuna-17 (mid-circuit measurement, no feed-forward) and on a Heron r2 Target, with N in {1,2,4,8,16}, signed arms +,-,-,+ and the duration-matched delay null; then a written case."
+  "next_action": "Owner decides on results/live/MEASUREMENT_SEQUENCE_SUCCESSOR_CASE.md (width 32, 5600 shots, 20-60 us ladder, cap 100 s on the backup account, F = 1.5 pool coverage); on approval run its approved_run.sh command at the next Kingston calibration. The case branch's merge waits on core-n21-dose-decisions-replay, which fails on AVX-512 runners on main as well.",
+  "scope": "Heron r2 (ibm_kingston) pinching run under a calibration-adaptive envelope approval: layout rule at width tier 16/24/32, terminal resets, reset controls, Hadamard crosstalk patterns, 20 us repetition delay with a 50 us fallback attempt, preregistered screens and stochastic null.",
+  "owner": "measurement-sequence-pinching branch",
+  "steps": [
+    {
+      "id": "envelope-dry-run",
+      "action": "Run and retain the envelope dry run at the largest width tier that meets the size and time limits.",
+      "acceptance": "results/live run with an envelope section, live_run.py --check-envelope passing, the charge table filled.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Width-32 dry run on the 17:47 PDT Kingston calibration: one 88-PUB job, planner 31.2 s at 20 us and 52.8 s at 50 us; --check-envelope replays the layout from every snapshot.",
+          "observed_at": "2026-10-27T02:30:58+00:00",
+          "revision": "0c1a77952d2972bff3f35a50772e0f05827d0bbb",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/record.json",
+              "sha256": "ac412781c7d1c5c10325b6a6c6d93013ad734cce31b7b815ec510621b191c8b4"
+            },
+            {
+              "ref": "docs/design/measurement-sequence-adaptive-envelope.md",
+              "sha256": "c5b761cb85b21560dc9a95219137229bef30aa3dd1df2de9bd8ac34c435aabc7"
+            }
+          ],
+          "scope_sha256": "8864c9ae88f4975e04a3eb88015f726a0e6b38c293966ec7357234f853331dbe"
+        },
+        {
+          "result": "Revalidated after the design doc recorded the run outcome: the width-32 dry run record and --check-envelope result are unchanged.",
+          "observed_at": "2026-10-27T03:41:33+00:00",
+          "revision": "bda6e130e4dd19d79b5bb3a062b6709b5cdfd991",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/record.json",
+              "sha256": "ac412781c7d1c5c10325b6a6c6d93013ad734cce31b7b815ec510621b191c8b4"
+            },
+            {
+              "ref": "docs/design/measurement-sequence-adaptive-envelope.md",
+              "sha256": "747cb0f056f4967eb43dbe2678c4946eef768be375dd7d178f8ae5e05794bde2"
+            }
+          ],
+          "scope_sha256": "8864c9ae88f4975e04a3eb88015f726a0e6b38c293966ec7357234f853331dbe"
+        },
+        {
+          "result": "Width-32 envelope dry run on the merged code and the 2026-10-27 07:53 PDT Kingston calibration; --check-envelope replays its layout.",
+          "observed_at": "2026-10-27T15:44:52+00:00",
+          "revision": "84355f16db71e570aabebabd2f1ab31d0b7d79b7",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T153449.309331Z/record.json",
+              "sha256": "dc8a95e036d8b8a2bd979ac22a47fb9f7d2cbd150892095f83026032aa486a4b"
+            },
+            {
+              "ref": "docs/design/measurement-sequence-adaptive-envelope.md",
+              "sha256": "19ecd4bddc3b6ab91ed977fe701b427101e50d926b0a0df8e8cfa9fcb67c9287"
+            }
+          ],
+          "scope_sha256": "8864c9ae88f4975e04a3eb88015f726a0e6b38c293966ec7357234f853331dbe"
+        },
+        {
+          "result": "Revalidated over the adaptive-envelope design as envelope v2 (#635) extended it with the 20 to 60 us ladder and derived ceilings; the retained width-32 v1 dry run and its envelope section are unchanged and stay the v1 record this step observed.",
+          "observed_at": "2026-10-29T05:06:08+00:00",
+          "revision": "a8ef63791b6b9f0ed373f27af78a7e3f8b42be3a",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T153449.309331Z/record.json",
+              "sha256": "dc8a95e036d8b8a2bd979ac22a47fb9f7d2cbd150892095f83026032aa486a4b"
+            },
+            {
+              "ref": "docs/design/measurement-sequence-adaptive-envelope.md",
+              "sha256": "522c969ebe44a7e6d954d0594abfcd328d014a5b572905159660e2d92006faf7"
+            }
+          ],
+          "scope_sha256": "8864c9ae88f4975e04a3eb88015f726a0e6b38c293966ec7357234f853331dbe"
+        }
+      ]
+    },
+    {
+      "id": "null-calibration",
+      "action": "Run msq_envelope_null.py at the chosen width with at least 299 replicates and retain its output.",
+      "acceptance": "Clopper-Pearson 95 % upper bound on the false-fire rate below 0.01.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "400 replicates at W = 32: 0 fires, Clopper-Pearson 95 % upper bound 0.0075 < 0.01.",
+          "observed_at": "2026-10-27T02:30:58+00:00",
+          "revision": "0c1a77952d2972bff3f35a50772e0f05827d0bbb",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement_sequence/envelope-null-w32.json",
+              "sha256": "6ed17f600fd9bff894b0ae265670f6b355b6af66f34ccf11be4b54f2cd5f6975"
+            }
+          ],
+          "scope_sha256": "4856063ae9801cfd57668a0219bcccc5e50f075cc48ec984f34cd5f75a576f83"
+        }
+      ]
+    },
+    {
+      "id": "written-case",
+      "action": "Write the case from the record's envelope section with the doctrine change as its own question.",
+      "acceptance": "Owner approval of the run and a separate ratification of the doctrine edit.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Owner approved the width-32 run and ratified the envelope doctrine; attempt 1 consumed its marker at 2026-10-27T01:54:58Z.",
+          "observed_at": "2026-10-27T02:30:58+00:00",
+          "revision": "0c1a77952d2972bff3f35a50772e0f05827d0bbb",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "9f950f360ef0c18b163926b4cc3bb16cffc4ca04a11fa412bea9afe8c6155fbd"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "6a90c385c909a84c9806e4302052489e756aa0883f0821996fc6c63195317c25"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after merging main: the envelope exception and the attempt-1 approval marker are unchanged.",
+          "observed_at": "2026-10-27T03:41:33+00:00",
+          "revision": "bda6e130e4dd19d79b5bb3a062b6709b5cdfd991",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "aefadaa60876892fd998479199cb10968a4074353b6e5eb2368cde184313c9d3"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "6a90c385c909a84c9806e4302052489e756aa0883f0821996fc6c63195317c25"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after merging main: the msq-envelope-v1 exception is unchanged; main adds the one-command binding dry run and submit (scripts/approved_run.sh), which the successor case uses.",
+          "observed_at": "2026-10-27T19:04:43+00:00",
+          "revision": "7a180b6c0445ad4bb298d432f2fb7b4f5c45afe0",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "be176e74db7bd523d7122a2bc4a2f33985e08311e480de03f145a48a3530154c"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "6356035deab7899cb353432d87f8c8d7821fec4a9cfaefad1d148cbdd236d7b8"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after merging main: AGENTS.md (QPU time and calibration) and qpu-submission.md still bind an msq-envelope-v1 record's layout rule, bounds, ceilings and constructor in place of the dry run's calibration values, and the attempt-1 approval marker is unchanged.",
+          "observed_at": "2026-10-27T23:09:56+00:00",
+          "revision": "b480f1d67e7bb4b8c3f0e672f3340d68565ee392",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "be176e74db7bd523d7122a2bc4a2f33985e08311e480de03f145a48a3530154c"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "6356035deab7899cb353432d87f8c8d7821fec4a9cfaefad1d148cbdd236d7b8"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after merging main: the calibration-wait paragraph #616 added leaves AGENTS.md (QPU time and calibration) and qpu-submission.md binding an msq-envelope-v1 record's layout rule, bounds, ceilings and constructor in place of the dry run's calibration values, and the attempt-1 approval marker is unchanged.",
+          "observed_at": "2026-10-28T00:56:52+00:00",
+          "revision": "8b5fd53b411bccd8665cb9f209728b235652932b",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "be176e74db7bd523d7122a2bc4a2f33985e08311e480de03f145a48a3530154c"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "b072641ac08f519068935e050226281897df6f511737411a4e9096d419cda6c3"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after the retention-procedure paragraph of qpu-submission.md moved to the unseeded current-runtime comparison: AGENTS.md (QPU time and calibration) and qpu-submission.md still bind an msq-envelope-v1 record's layout rule, bounds, ceilings and constructor in place of the dry run's calibration values, and the attempt-1 approval marker is unchanged.",
+          "observed_at": "2026-10-28T01:16:36+00:00",
+          "revision": "ac236fba886790e23e41a1cae6000ae253a16aca",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "be176e74db7bd523d7122a2bc4a2f33985e08311e480de03f145a48a3530154c"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "e0542c045028e1bcf3a2ec6855e37d6934179cd940ff901d26f81fd115bbcba8"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after merging main, whose qpu-submission.md moves run retention to scripts/retain_run.sh and per-job comparison rows: AGENTS.md (QPU time and calibration) and qpu-submission.md still bind an msq-envelope-v1 record's layout rule, bounds, ceilings and constructor in place of the dry run's calibration values, and the attempt-1 approval marker is unchanged.",
+          "observed_at": "2026-10-28T05:10:26+00:00",
+          "revision": "908970ff4600b42b71255b9b338901542f32f420",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "be176e74db7bd523d7122a2bc4a2f33985e08311e480de03f145a48a3530154c"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "de41bacad0b120d42453cf1a57a0045b9ba1ccbcd7bbf5b3069daa6df6f47af5"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after merging main, whose AGENTS.md adds pointers to docs/PYTHON.md in its layout and Heron r2 paragraphs: the QPU time and calibration section and qpu-submission.md still bind an msq-envelope-v1 record's layout rule, bounds, ceilings and constructor in place of the dry run's calibration values, and the attempt-1 approval marker is unchanged.",
+          "observed_at": "2026-10-28T20:25:22+00:00",
+          "revision": "24fcd03e110603354c27cd1b84574476c9844a40",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "ca088c3df091d91eafd9f4c01a1ef7fff81bde12e691baef5dec9e01e07c2abe"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "de41bacad0b120d42453cf1a57a0045b9ba1ccbcd7bbf5b3069daa6df6f47af5"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after merging main, whose AGENTS.md adds the flag-review rule to Layout and gates: the QPU time and calibration section and qpu-submission.md still bind an envelope record's layout rule, bounds, ceilings and constructor, and the attempt-1 approval marker is unchanged.",
+          "observed_at": "2026-10-29T05:06:08+00:00",
+          "revision": "a8ef63791b6b9f0ed373f27af78a7e3f8b42be3a",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "5c05a7dcf145d5f644a866e44288ac0e43e8a05b947d37f9f74a2969fe6e65c5"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "fe972ac42364ef7936abe54b946d2bc84e072f3405217486471a386b32da8e42"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        }
+      ]
+    },
+    {
+      "id": "submit-collect",
+      "action": "Submit under the envelope (job dbg08t9j4t8s73abaghg, record results/live/2026-10-27T014422.881898Z), collect, run --envelope-fallback on the qualifying error signature, and run msq_envelope_analysis.",
+      "acceptance": "Retained raw shots and collect.json with the envelope screens and the pinching verdict.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Attempt 1 completed at 20 us, billed 38 s; the reset screen withheld all 32 qubits, so the preregistered device verdict is withheld.",
+          "observed_at": "2026-10-27T03:41:20+00:00",
+          "revision": "bac05773b33a85f6239b3d2de05b013178c345cc",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T014422.881898Z/collect.json",
+              "sha256": "e0a690e4610096ed20c7c8ec082d66a4d3c4f181b1fcced7fa350218574e7fb3"
+            },
+            {
+              "ref": "results/live/2026-10-27T014422.881898Z/raw/dbg08t9j4t8s73abaghg/index.json",
+              "sha256": "219780d1c62e6a7ed202ffb0970675c83d0f7f62db96131aa31e919347d4418c"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "22dcbfd628188ad4ce3893723c66d16d97647f8ec973aaa3d70dcaeec3ece604"
+            }
+          ],
+          "scope_sha256": "98316f0941a8839518724325907fd5c9728db6f2930a952841db9351833e3a77"
+        },
+        {
+          "result": "Attempt 1 completed at 20 us, billed 38 s; the reset screen withheld all 32 qubits, so the preregistered device verdict is withheld. The findings add the run's shot-order diagnostics.",
+          "observed_at": "2026-10-27T17:24:55+00:00",
+          "revision": "5d40ece81564583adb42e14ac76aec43c728806f",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T014422.881898Z/collect.json",
+              "sha256": "e0a690e4610096ed20c7c8ec082d66a4d3c4f181b1fcced7fa350218574e7fb3"
+            },
+            {
+              "ref": "results/live/2026-10-27T014422.881898Z/raw/dbg08t9j4t8s73abaghg/index.json",
+              "sha256": "219780d1c62e6a7ed202ffb0970675c83d0f7f62db96131aa31e919347d4418c"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "f1d4ebeaaf7a4c88d40acb89f547f77fec019551e7a96b7a8d5d53088198ef28"
+            }
+          ],
+          "scope_sha256": "98316f0941a8839518724325907fd5c9728db6f2930a952841db9351833e3a77"
+        },
+        {
+          "result": "Attempt 1 completed at 20 us, billed 38 s; the reset screen withheld all 32 qubits, so the preregistered device verdict is withheld. The findings add the run's shot-order diagnostics.",
+          "observed_at": "2026-10-27T17:30:45+00:00",
+          "revision": "6d5508774ac29ed0fa5a8ff877cc5e7295abb484",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T014422.881898Z/collect.json",
+              "sha256": "e0a690e4610096ed20c7c8ec082d66a4d3c4f181b1fcced7fa350218574e7fb3"
+            },
+            {
+              "ref": "results/live/2026-10-27T014422.881898Z/raw/dbg08t9j4t8s73abaghg/index.json",
+              "sha256": "219780d1c62e6a7ed202ffb0970675c83d0f7f62db96131aa31e919347d4418c"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "53a6a14a58eba3bc468a159414ca2bac8af756717b70161f1c6d07b605a06793"
+            }
+          ],
+          "scope_sha256": "98316f0941a8839518724325907fd5c9728db6f2930a952841db9351833e3a77"
+        },
+        {
+          "result": "Attempt 1 completed at 20 us, billed 38 s; the reset screen withheld all 32 qubits, so the preregistered device verdict is withheld. The findings add the run's shot-order diagnostics.",
+          "observed_at": "2026-10-27T17:35:12+00:00",
+          "revision": "76d68f494edc4939f44aee7f0bb3bed5183971ab",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T014422.881898Z/collect.json",
+              "sha256": "e0a690e4610096ed20c7c8ec082d66a4d3c4f181b1fcced7fa350218574e7fb3"
+            },
+            {
+              "ref": "results/live/2026-10-27T014422.881898Z/raw/dbg08t9j4t8s73abaghg/index.json",
+              "sha256": "219780d1c62e6a7ed202ffb0970675c83d0f7f62db96131aa31e919347d4418c"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "ea115e67afae5e55dbfe521c82fd8f6664156cbd66a9e401e97eb2eafe6c2742"
+            }
+          ],
+          "scope_sha256": "98316f0941a8839518724325907fd5c9728db6f2930a952841db9351833e3a77"
+        },
+        {
+          "result": "Attempt 1 completed at 20 us, billed 38 s; the reset screen withheld all 32 qubits, so the preregistered device verdict is withheld. The findings add the run's shot-order diagnostics.",
+          "observed_at": "2026-10-27T18:03:21+00:00",
+          "revision": "03b119129487a0be01369cb232323103dd9a53d6",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T014422.881898Z/collect.json",
+              "sha256": "e0a690e4610096ed20c7c8ec082d66a4d3c4f181b1fcced7fa350218574e7fb3"
+            },
+            {
+              "ref": "results/live/2026-10-27T014422.881898Z/raw/dbg08t9j4t8s73abaghg/index.json",
+              "sha256": "219780d1c62e6a7ed202ffb0970675c83d0f7f62db96131aa31e919347d4418c"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "98316f0941a8839518724325907fd5c9728db6f2930a952841db9351833e3a77"
+        }
+      ]
+    },
+    {
+      "id": "retain-register",
+      "action": "Retain the collected run (done, awaiting_observation in the backup audit); add its research_state acquisition and claim after the other sessions' backup-instance runs land on main and the inventory is re-observed.",
+      "acceptance": "tests and gates lanes green with the run retained.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "The backup re-observation covers job dbg08t9j4t8s73abaghg (audit awaiting_observation empty); research_state.json registers acquisition kingston-measurement-sequence-envelope and claim kingston-measurement-sequence-envelope-reset-screen, and research_state.py --check passes.",
+          "observed_at": "2026-10-27T23:09:05+00:00",
+          "revision": "b480f1d67e7bb4b8c3f0e672f3340d68565ee392",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "01c5325de760038485ae4b486aeb120fd16cf5c2d4fca9b0d8d2ded4be4073f2"
+            },
+            {
+              "ref": "results/live/qpu-job-retention-audit.f59f9992321c.json",
+              "sha256": "88975ced695bb7752d5a2b857fdf1df4ce60c70066f86b04c6b0e32c23c7537d"
+            }
+          ],
+          "scope_sha256": "26696832075fb0a3b177ea68ff5c4cc001da29a4d14bd16694f0474e17d1dfbc"
+        },
+        {
+          "result": "Revalidated on the registry records: acquisition kingston-measurement-sequence-envelope and claim kingston-measurement-sequence-envelope-reset-screen are registered, the backup audit covers job dbg08t9j4t8s73abaghg with awaiting_observation empty, and research_state.py --check passes.",
+          "observed_at": "2026-10-27T23:17:06+00:00",
+          "revision": "53e0c1ec8c5db4ef00f9a98a6515107da9a277bb",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=kingston-measurement-sequence-envelope",
+              "sha256": "832d924be5fb55d02836f83bea9d586a2d6c368247eac18b67178e3386fc8b9b"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=kingston-measurement-sequence-envelope-reset-screen",
+              "sha256": "7fb3e64f9a2dc67eb9937f5aac4d579a3c0e3f41b59567d7ef7a7df7fc625efa"
+            },
+            {
+              "ref": "results/live/qpu-job-retention-audit.f59f9992321c.json",
+              "sha256": "88975ced695bb7752d5a2b857fdf1df4ce60c70066f86b04c6b0e32c23c7537d"
+            }
+          ],
+          "scope_sha256": "26696832075fb0a3b177ea68ff5c4cc001da29a4d14bd16694f0474e17d1dfbc"
+        },
+        {
+          "result": "Revalidated after main's backup re-observation of 2026-10-28: acquisition kingston-measurement-sequence-envelope and claim kingston-measurement-sequence-envelope-reset-screen are registered, the backup audit's jobs list covers dbg08t9j4t8s73abaghg with awaiting_observation empty, and research_state.py --check passes. The audit reference binds the job's row, so later observations that leave the row unchanged keep the receipt fresh.",
+          "observed_at": "2026-10-28T00:55:21+00:00",
+          "revision": "18c9128a98ba592a02af443634baf9391b88b798",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=kingston-measurement-sequence-envelope",
+              "sha256": "832d924be5fb55d02836f83bea9d586a2d6c368247eac18b67178e3386fc8b9b"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=kingston-measurement-sequence-envelope-reset-screen",
+              "sha256": "7fb3e64f9a2dc67eb9937f5aac4d579a3c0e3f41b59567d7ef7a7df7fc625efa"
+            },
+            {
+              "ref": "results/live/qpu-job-retention-audit.f59f9992321c.json#jobs/job_id=dbg08t9j4t8s73abaghg",
+              "sha256": "7253e2743ecde54703bc76896e1f5b8602377722bd519bffb880a34d46d47d2f"
+            }
+          ],
+          "scope_sha256": "26696832075fb0a3b177ea68ff5c4cc001da29a4d14bd16694f0474e17d1dfbc"
+        }
+      ]
+    },
+    {
+      "id": "pr-review-merge",
+      "action": "Push the branch, update the PR #516 body, run the Codex review loop to a clean head, and merge.",
+      "acceptance": "PR #516 merged with all four checks green and every review thread resolved.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "PR #516 merged as bd6fb9e after four Codex rounds (clean at 12f85c4) with lint, types, tests and gates green.",
+          "observed_at": "2026-10-27T16:19:02+00:00",
+          "revision": "bd6fb9e9412c1060d0176cf7228561bd2950a598",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "0f372d12b4e18c81c8915170ae6d9c44fba9b062f3a44aeeab3c67b97207f690"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "22dcbfd628188ad4ce3893723c66d16d97647f8ec973aaa3d70dcaeec3ece604"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "PR #516 merged as bd6fb9e after four Codex rounds (clean at 12f85c4) with lint, types, tests and gates green; the findings add the run's shot-order diagnostics.",
+          "observed_at": "2026-10-27T17:24:55+00:00",
+          "revision": "5d40ece81564583adb42e14ac76aec43c728806f",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "0f372d12b4e18c81c8915170ae6d9c44fba9b062f3a44aeeab3c67b97207f690"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "f1d4ebeaaf7a4c88d40acb89f547f77fec019551e7a96b7a8d5d53088198ef28"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "PR #516 merged as bd6fb9e after four Codex rounds (clean at 12f85c4) with lint, types, tests and gates green; the findings add the run's shot-order diagnostics.",
+          "observed_at": "2026-10-27T17:30:45+00:00",
+          "revision": "6d5508774ac29ed0fa5a8ff877cc5e7295abb484",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "0f372d12b4e18c81c8915170ae6d9c44fba9b062f3a44aeeab3c67b97207f690"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "53a6a14a58eba3bc468a159414ca2bac8af756717b70161f1c6d07b605a06793"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "PR #516 merged as bd6fb9e after four Codex rounds (clean at 12f85c4) with lint, types, tests and gates green; the findings add the run's shot-order diagnostics.",
+          "observed_at": "2026-10-27T17:35:12+00:00",
+          "revision": "76d68f494edc4939f44aee7f0bb3bed5183971ab",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "0f372d12b4e18c81c8915170ae6d9c44fba9b062f3a44aeeab3c67b97207f690"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "ea115e67afae5e55dbfe521c82fd8f6664156cbd66a9e401e97eb2eafe6c2742"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "PR #516 merged as bd6fb9e after four Codex rounds (clean at 12f85c4) with lint, types, tests and gates green; the findings add the run's shot-order diagnostics.",
+          "observed_at": "2026-10-27T18:03:21+00:00",
+          "revision": "03b119129487a0be01369cb232323103dd9a53d6",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "0f372d12b4e18c81c8915170ae6d9c44fba9b062f3a44aeeab3c67b97207f690"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "PR #516 merged as bd6fb9e after four Codex rounds (clean at 12f85c4); revalidated after merging main, whose live_run.py adds the one-command binding run.",
+          "observed_at": "2026-10-27T19:05:00+00:00",
+          "revision": "985180110702ea11fa59a4c94808f0a9ceba443a",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "d5c991dd40443743a5258b7c397c1401920ecf5e8992c6f207bc92b38e6d5600"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "Revalidated after merging main, whose live_run.py stores each PUB's placed calibration once in the collect.json header (PR #594); the retained envelope run and its findings are unchanged.",
+          "observed_at": "2026-10-27T21:30:38+00:00",
+          "revision": "ce9e046ec974c96b689e21ac58f15cfb9b559215",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "59f0960d5f479b24b62a08aa570a78134634ea79bb3e5f92092b0ff571cc6fb8"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "PR #516 merged as bd6fb9e9412c1060d0176cf7228561bd2950a598 on 2026-10-27T16:14:40Z; the merge commit is an ancestor of this branch.",
+          "observed_at": "2026-10-27T23:09:32+00:00",
+          "revision": "b480f1d67e7bb4b8c3f0e672f3340d68565ee392",
+          "evidence": [
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "22dcbfd628188ad4ce3893723c66d16d97647f8ec973aaa3d70dcaeec3ece604"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "Revalidated on the successor branch, whose live_run.py adds the measurement-sequence-relaxation family to the envelope families and its shot-order collect evidence; the retained envelope run, its family and its findings are unchanged.",
+          "observed_at": "2026-10-27T23:12:23+00:00",
+          "revision": "21a27ec4f9117aa06625a02069c3a95510d275df",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "0d0d081b78aaa6c6e36a932ca7b50ca546b34e7cb835b4795312f17e37651ebb"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "Revalidated after live_run.py binds msq_successor_analysis.py into the experiment source manifest; the retained envelope run, its family and its findings are unchanged.",
+          "observed_at": "2026-10-27T23:15:24+00:00",
+          "revision": "a2a673b41f3af534225049c271cf71c56d66e1be",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "c46a289de7e48b36f192f4bc58ace13d22fc9ad565251058bdd3cde8a0a89295"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "Revalidated after the successor's in-circuit carryover readers add the reader idle to live_run.py's calibration drift check; the retained envelope run, its family and its findings are unchanged.",
+          "observed_at": "2026-10-28T16:30:09+00:00",
+          "revision": "619cd7c622bdd9528f9c42efcd09a17ef0d359e3",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "cc301c45e8afe6b88cdc7cda24cce39274edeb3c7640c12722ae573ba28a6a18"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "PR #516 merged as bd6fb9e after four Codex rounds (clean at 12f85c4) with lint, types, tests and gates green; revalidated over live_run.py as the successor branch carries it (the relaxation family's order evidence), which leaves the merged envelope path unchanged.",
+          "observed_at": "2026-10-28T18:04:31+00:00",
+          "revision": "a1355f00792ea7536d324c9163a94e984d17574b",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "4ad08ac8f29918ee5fa6da4f40543e26743a82b357d383618d79160369882eaa"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "PR #516 merged as bd6fb9e after four Codex rounds (clean at 12f85c4); revalidated over live_run.py and msq_envelope.py as envelope v2 (#635) leaves them, which add the v2 schema and keep the merged v1 envelope path.",
+          "observed_at": "2026-10-29T05:06:08+00:00",
+          "revision": "a8ef63791b6b9f0ed373f27af78a7e3f8b42be3a",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "eff55eced3cb27af41f80cfd30572c3d73e414d3a89754925886c1a6181b0f47"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "df0b3ab965d702840705219fe103c272533aeaef22727db9e5aab84ac61da9c6"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "PR #516 remains merged as bd6fb9e; revalidated over live_run.py as the successor fold leaves it, which records an ALAP idle-padded prediction beside the unpadded law outside the approval. The default live_run.py dry run of this tree passed (audit record results/live/2026-10-29T195407.901803Z) and the non-audit lane's live_run tests pass.",
+          "observed_at": "2026-10-29T20:01:08+00:00",
+          "revision": "55a2a13cfaea9c915b978e3c07f1014d881b22d6",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "dd748b4cd08625aeb9a149d1dd6b2eade12d31aa5f5618996d1e6db768570661"
+            },
+            {
+              "ref": "results/live/2026-10-29T195407.901803Z/record.json",
+              "sha256": "f46f8b03150a1fb3cb40f63617e1102eb5b2491096ebdfe48a816ebb3c5f3921"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        }
+      ]
+    },
+    {
+      "id": "successor-design",
+      "action": "Design the successor case: size the reset/history screen from the endpoint sensitivity to carried-over excitation, fix or demote the settle prediction, report per-qubit results below 8 kept qubits; review by the adversarial skill, Codex gpt-daybreak-blue in tmux and the advisor.",
+      "acceptance": "Design doc whose every screen is attainable and no verdict fires on known model error when replayed over the retained run (sizing, not confirmation).",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Design v4.0 merged on main in PR #629 (031fd5a) with its width-24 null; the one-pool null scheduler (#633) and envelope v2 (#635) followed; the 5600-shot null on the width-32 and width-24 rehearsals has 0 false fires and meets every target.",
+          "observed_at": "2026-10-29T04:49:30+00:00",
+          "revision": "91862b0ff8e5253d85ebd1d73e851fbd56004cde",
+          "evidence": [
+            {
+              "ref": "docs/design/measurement-sequence-envelope-successor.md",
+              "sha256": "4cb27506d9dbb45ce85a73f1c0a80bf1fe2cb10094ca9ee36c526166119298fa"
+            },
+            {
+              "ref": "docs/evidence/measurement_sequence/successor-null.json",
+              "sha256": "3c704f7db2fe4dd8a102c5f89dc6c5ce1e07195b974072cbdbfb1137370b3e77"
+            },
+            {
+              "ref": "docs/evidence/measurement_sequence/successor-null-s5600.json",
+              "sha256": "0537d6edd1b31870d2551abcafd2700d3ebbd9834a5e8c59a661057adfafd1fe"
+            }
+          ],
+          "scope_sha256": "2e651afc2a7552dafea3345c5cf3c4de636e61803f0f8cf39b2b19a903e3b1c5"
+        },
+        {
+          "result": "Revalidated over the design text this branch corrects: the coverage paragraph names the calibration stamps (40.5 min apart, a recalibration that remeasured sx alone) and the 5600-shot pointer names the two commands that wrote the null; the design's rules are unchanged.",
+          "observed_at": "2026-10-29T05:06:08+00:00",
+          "revision": "a8ef63791b6b9f0ed373f27af78a7e3f8b42be3a",
+          "evidence": [
+            {
+              "ref": "docs/design/measurement-sequence-envelope-successor.md",
+              "sha256": "ce69bbcfe06e7bccd475ed7d542ec62bbc24a500f3aec96e9b99d81f11c36df4"
+            },
+            {
+              "ref": "docs/evidence/measurement_sequence/successor-null.json",
+              "sha256": "3c704f7db2fe4dd8a102c5f89dc6c5ce1e07195b974072cbdbfb1137370b3e77"
+            },
+            {
+              "ref": "docs/evidence/measurement_sequence/successor-null-s5600.json",
+              "sha256": "0537d6edd1b31870d2551abcafd2700d3ebbd9834a5e8c59a661057adfafd1fe"
+            }
+          ],
+          "scope_sha256": "2e651afc2a7552dafea3345c5cf3c4de636e61803f0f8cf39b2b19a903e3b1c5"
+        }
+      ]
+    },
+    {
+      "id": "batched-null",
+      "action": "Batch the null estimator across replicates with a scalar bit-identity gate (issue #579) and plant the idle-model error the retained run shows.",
+      "acceptance": "Gate proving batched equals scalar bits; null upper bound below 0.01 at the successor width.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Batched null merged in PR #589 (5185f9c): blocks of 25 replicates keep the scalar bits (float.hex row tests, SciPy solver replays); envelope-null-w32.json regenerates byte-identical.",
+          "observed_at": "2026-10-27T19:04:43+00:00",
+          "revision": "7a180b6c0445ad4bb298d432f2fb7b4f5c45afe0",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/msq_envelope_null.py",
+              "sha256": "f7b7e622cb02148b863022ef363f7675b5e6059e1b475779d9d80c4ae77eea42"
+            },
+            {
+              "ref": "tests/test_msq_envelope.py",
+              "sha256": "0fbc98562cb2461b06490589893c1e6ab5d2f9321e82be928c16dec9ee3dd16d"
+            },
+            {
+              "ref": "docs/evidence/measurement_sequence/envelope-null-w32.json",
+              "sha256": "6ed17f600fd9bff894b0ae265670f6b355b6af66f34ccf11be4b54f2cd5f6975"
+            },
+            {
+              "ref": "docs/runbooks/vectorized-fits.md",
+              "sha256": "5c67264229c46ab107d4a1d64a8054f3263ba872ddaac6bb59b25b8e60fa8342"
+            }
+          ],
+          "scope_sha256": "c1b3b02f804e86b0a8674e6f16498620476903c78f969f215ec63f7c6138eb39"
+        },
+        {
+          "result": "Revalidated after the runbook gained its cross-host, library-choice and quadrature-accuracy section; the retained envelope null, its tests and envelope-null-w32.json keep their bytes.",
+          "observed_at": "2026-10-28T00:30:31+00:00",
+          "revision": "8421e251e305b5580d96e199c829ea76cf7fa9fc",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/msq_envelope_null.py",
+              "sha256": "f7b7e622cb02148b863022ef363f7675b5e6059e1b475779d9d80c4ae77eea42"
+            },
+            {
+              "ref": "tests/test_msq_envelope.py",
+              "sha256": "0fbc98562cb2461b06490589893c1e6ab5d2f9321e82be928c16dec9ee3dd16d"
+            },
+            {
+              "ref": "docs/evidence/measurement_sequence/envelope-null-w32.json",
+              "sha256": "6ed17f600fd9bff894b0ae265670f6b355b6af66f34ccf11be4b54f2cd5f6975"
+            },
+            {
+              "ref": "docs/runbooks/vectorized-fits.md",
+              "sha256": "b13fea7fd1b7f401189731e09768667a9e1f5136ec87e9c168c3c5d7672b720d"
+            }
+          ],
+          "scope_sha256": "c1b3b02f804e86b0a8674e6f16498620476903c78f969f215ec63f7c6138eb39"
+        },
+        {
+          "result": "Revalidated over main's tests/test_msq_envelope.py, which envelope v2 (#635) extended: the 103 tests pass on this branch, the batched-equals-scalar row tests among them, and envelope-null-w32.json keeps its bytes.",
+          "observed_at": "2026-10-29T05:06:08+00:00",
+          "revision": "a8ef63791b6b9f0ed373f27af78a7e3f8b42be3a",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/msq_envelope_null.py",
+              "sha256": "f7b7e622cb02148b863022ef363f7675b5e6059e1b475779d9d80c4ae77eea42"
+            },
+            {
+              "ref": "tests/test_msq_envelope.py",
+              "sha256": "67ecc74a27c45c396686660e588b6d05717e7b4fbd2a2db5603a0fa2dca19675"
+            },
+            {
+              "ref": "docs/evidence/measurement_sequence/envelope-null-w32.json",
+              "sha256": "6ed17f600fd9bff894b0ae265670f6b355b6af66f34ccf11be4b54f2cd5f6975"
+            },
+            {
+              "ref": "docs/runbooks/vectorized-fits.md",
+              "sha256": "b13fea7fd1b7f401189731e09768667a9e1f5136ec87e9c168c3c5d7672b720d"
+            }
+          ],
+          "scope_sha256": "c1b3b02f804e86b0a8674e6f16498620476903c78f969f215ec63f7c6138eb39"
+        }
+      ]
+    },
+    {
+      "id": "successor-case",
+      "action": "Dry run, written case and owner approval of the successor envelope run.",
+      "acceptance": "Owner approval of the written case.",
+      "state": "doing",
+      "reason": "Case written at width 32 and 5600 shots against the 2026-10-29T012554.415581Z rehearsal; its 5600-shot null has 0 false fires and meets every target at widths 32 and 24; awaiting owner approval."
+    }
+  ]
 }

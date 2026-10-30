@@ -9,8 +9,7 @@ A check stays on its own gate in ci/gates.json when a claim in docs/state/resear
 that gate, when a script or a retained file names the gate (scripts/research_state.py --check, core-270;
 scripts/n21_exact_model_validation.py --check, core-485, named in retained case addenda), when it
 belongs to the sources suite, when its command carries more than one script invocation, or when its gate
-declares a runtime or a requirement (scripts/compare_submitted_circuits.py --check, core-281, recomputes QPY
-digests under the historical qiskit-2.5 runtime; scripts/qi_toolchain_check.py --check, core-368, needs the
+declares a runtime or a requirement (scripts/qi_toolchain_check.py --check, core-368, needs the
 Quantum Inspire stack that `--requires qi` selects).
 scripts/aer_blocking_probe.py keeps its gates for the reason tests/test_cli_self_tests.py states.
 
@@ -70,6 +69,7 @@ RECORD_CHECKS = (
     ("scripts/cd_two_blade_blocks.py", ".", "--check docs/evidence/box_kite_census/two_blade_blocks.json", 5),
     ("scripts/bdsc_diagnostic.py", ".", "--check", 5),
     ("scripts/cd_star_lattice.py", ".", "--check docs/evidence/cd-star-lattice/census.json", 6),
+    ("scripts/cd_one_sided_inverses.py", ".", "--check docs/evidence/cd-one-sided-inverses/record.json", 8),
     ("scripts/ascella_coherence_request.py", ".", "--check", 7),
     ("scripts/heron_feedforward_latency.py", ".", "--check", 7),
     ("scripts/box_kite_follow_design.py", ".", "--check docs/evidence/box_kite_follow_design/design.json", 5),
@@ -91,6 +91,8 @@ RECORD_CHECKS = (
     ("scripts/capture_oq_docs.py", ".", "--check", 5),
     ("scripts/capture_qbraid_docs.py", ".", "--check", 5),
     ("scripts/capture_kaggle_docs.py", ".", "--check", 5),
+    ("scripts/zbmath.py", ".", "check docs/evidence/zbmath-api-audit", 6),
+    ("scripts/zbmath.py", ".", "check-fields docs/evidence/zbmath-search-fields/fields.json", 6),
 )
 
 

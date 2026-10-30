@@ -24,16 +24,17 @@ Each template iteration carries its own compilation_seed, the service's per-iter
 value per input in the order of the iterations, and validation requires exactly the case's seeds. The analysis draws
 nothing.
 
-A Request is the budget-free part of a case: its layout, its seeds, its anchor read (the platform read whose
-performance figures preregister the analysis, size max_shots and serve the --anchor gate), its rule and its block
-count. job-00 follows the decision rule (DECISION): six iterations and a beats-classical verdict against the bound
-at the modeled attempts. job-01 follows the descriptive rule (DESCRIPTIVE): two blocks of the six inputs, block B in
-mirrored order, an anytime-valid lower confidence bound on the accepted events' average correctness, a block
-homogeneity veto, and two classical comparisons that hold only under the assumptions each names. A Job adds the budgets
-and the written case's plan arguments. job-00 takes the 2026-10-24 read ANCHOR_READ as its anchor; a later case takes
-its own platform read, so its decision rule describes the chip state it is sent into and only the live gate applies.
---prepare JOB derives such a case from its retained read (CASES/JOB/platform-read/catalogue.json): the layout,
-noise-model.json, shot-estimate.json, and the REQUESTS and JOBS rows it prints for the change that registers the case.
+A Request is the budget-free part of a case: its layout, its seeds, its anchor read (the platform read whose performance
+figures preregister the analysis, size max_shots and serve the --anchor gate), its rule and its block count. job-00
+follows the decision rule (DECISION): six iterations and a beats-classical verdict against the bound at the modeled
+attempts; DECISION_CASES confines that rule to job-00. job-01 follows the descriptive rule (DESCRIPTIVE): two blocks of
+the six inputs, block B in mirrored order, an anytime-valid lower confidence bound on the accepted events' average
+correctness, a block homogeneity veto, and two classical comparisons that hold only under the assumptions each names. A
+Job adds the budgets and the written case's plan arguments. job-00 takes the 2026-10-24 read ANCHOR_READ as its anchor;
+a later case takes its own platform read, so its decision rule describes the chip state it is sent into and only the
+live gate applies. --prepare JOB derives such a case from its retained read (CASES/JOB/platform-read/catalogue.json):
+the layout, noise-model.json, shot-estimate.json, and the REQUESTS and JOBS rows it prints for the change that registers
+the case.
 
 --check rebuilds every registered case in memory, requires the retained bytes (cases.json within the shared check
 tolerance, circuit.json exactly), validates them through qd_platform.template_experiment and the closed form of every
@@ -152,6 +153,13 @@ DECISION = "decision-v1"
 DESCRIPTIVE = "descriptive-v2"
 # The rule and the block count of each seeded case.
 CASE_DESIGNS = {"job-00": (DECISION, 1), "job-01": (DESCRIPTIVE, 2)}
+# The decision rule's unconditional verdict compares the pooled fidelity with attempts_benchmark at two attempt
+# profiles, the reported nb_shots_used and the modeled attempts. nb_shots_used counts detection events with at least
+# one photon and no result field counts source triggers (gororoba_quantum/provider_counters.py), so the attempt
+# profile the benchmark needs is unobserved and the two candidates do not bound every profile. The rule therefore
+# admits only its retained case, whose analysis replays; a new case takes the descriptive rule, whose comparisons
+# state the assumptions they hold under.
+DECISION_CASES = ("job-00",)
 ANALYZER_MODES = (Q0, Q1, A0, A1)
 RECEIVER_MODES = (B0, B1)
 HERALD_MODES = (H0, H1)
@@ -1453,7 +1461,9 @@ def check() -> int:
     """Rebuild each job in memory, require the retained bytes, validate them and their derivation and body.
 
     A job's layout must be the one its own platform read selects, and its budgets those its retained derivation and
-    shot estimate give."""
+    shot estimate give. Only DECISION_CASES carry the decision rule."""
+    decided = sorted(name for name, (rule, _) in CASE_DESIGNS.items() if rule == DECISION)
+    require(set(decided) <= set(DECISION_CASES), f"cases {decided} take the decision rule beyond {DECISION_CASES}")
     for job in JOBS.values():
         out = CASES / job.name
         require((out / "cases.json").is_file(), f"{job.name} is registered, and its case directory has no cases.json")
@@ -1837,6 +1847,10 @@ def prepare(name: str) -> int:
     re-derives and compares a retained noise-model.json and reuses a retained shot-estimate.json, so a failed live
     estimate resumes without rewriting a retained file."""
     require(name in CASE_SEEDS and name not in JOBS, f"{name} is not a seeded case without a registered job")
+    require(
+        CASE_DESIGNS[name][0] != DECISION or name in DECISION_CASES,
+        f"{name}: the decision rule admits only {DECISION_CASES}",
+    )
     request_dir = CASES / name
     read = request_dir / READ
     require(read.is_file(), f"{read.relative_to(ROOT)} is absent; snapshot the platform into it first")

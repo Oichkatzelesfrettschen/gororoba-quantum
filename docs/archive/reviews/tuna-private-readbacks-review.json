@@ -1,0 +1,32 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "deca0f063cac7dcfd52effa1638ecb756a7d87b711886c091bf58529cf3d458d",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-private-readbacks-review.md",
+  "retained_sha256": "ba14de7563dddbf6e7888725f5107f31f42af022ae09df10d0900878a22b5005",
+  "reviewed_sha256": {
+    "docs/design/tuna-destination-sequential-evidence-case.md": "bea0efbe93d7ce86346a638c1e68358f2e0c956cb5128527d8eaa5023fbeb081",
+    "docs/design/tuna-readout-mapping-identifiability.md": "ec84bc1e8a57705b891bf0fd2858c290608c9f89a6cd2ec90766fc4cc44e0ff8",
+    "scripts/qi_tuna_private_readbacks.py": "4fb6db329b26db801ef871ab4bd083888296503e6c34e76e6ebea35d6ed69a66",
+    "scripts/qi_tuna_readback_collection.py": "42b825488bc60aee3745f9597b1b85b04c271e8e286efb21d32e40b67dc089df",
+    "scripts/qi_tuna_readback_transport.py": "246672e6346a555ec67bb54f23e6be47157b357f36c451a6d8649766d2c65a00",
+    "scripts/qi_tuna_sequential_score.py": "d344f69db36dcc79a6ce605686aa1dfcc488fa034ad09fdfab5c7d7f9d16611b",
+    "scripts/qi_tuna_source_association.py": "4abd49b146891fcb3ab374e20bd2dc978025046f7381b191923e315e35ab75be",
+    "tests/scripts/test_qi_tuna_private_readbacks.py": "c152c48e6aad2d515ec55b1addf3c5742df81cbaf9b9ff4ae6354e1ec63a33b9",
+    "tests/scripts/test_qi_tuna_readback_collection.py": "16411ec2ca498b13608303e3192c96bd4329e5851a5ee9d6b40dbc3aedfe0c91"
+  },
+  "reviewed_worktree_sha256": {
+    "docs/design/tuna-destination-sequential-evidence-case.md": "ec226298cd14453e2855387d0f3e4d4a90ca41298000a111f8a63c23fffaa45b",
+    "docs/design/tuna-readout-mapping-identifiability.md": "ec84bc1e8a57705b891bf0fd2858c290608c9f89a6cd2ec90766fc4cc44e0ff8",
+    "scripts/qi_tuna_private_readbacks.py": "4fb6db329b26db801ef871ab4bd083888296503e6c34e76e6ebea35d6ed69a66",
+    "scripts/qi_tuna_readback_collection.py": "42b825488bc60aee3745f9597b1b85b04c271e8e286efb21d32e40b67dc089df",
+    "scripts/qi_tuna_readback_transport.py": "246672e6346a555ec67bb54f23e6be47157b357f36c451a6d8649766d2c65a00",
+    "scripts/qi_tuna_sequential_score.py": "d344f69db36dcc79a6ce605686aa1dfcc488fa034ad09fdfab5c7d7f9d16611b",
+    "scripts/qi_tuna_source_association.py": "4abd49b146891fcb3ab374e20bd2dc978025046f7381b191923e315e35ab75be",
+    "tests/scripts/test_qi_tuna_private_readbacks.py": "c152c48e6aad2d515ec55b1addf3c5742df81cbaf9b9ff4ae6354e1ec63a33b9",
+    "tests/scripts/test_qi_tuna_readback_collection.py": "defce53be3bb1d2c119db4369f05b3748238d5949c100825a3b058959fca336b"
+  },
+  "sanitization": "Local absolute repository paths converted to relative links; line suffixes removed from link targets and trailing whitespace removed.",
+  "service_tier": "default"
+}

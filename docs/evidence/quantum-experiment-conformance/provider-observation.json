@@ -1,0 +1,359 @@
+{
+  "schema": "quantum-experiment-provider-observation-v1",
+  "observed_at": "2026-10-27T19:49:43.068068+00:00",
+  "operations": [
+    "qd_platform(qpu:ascella)",
+    "qi_backend(7,user_only=true)",
+    "qi_backend(1,user_only=true)"
+  ],
+  "boundary": "Read-only processor/backend descriptions. Provider execution, compilation uploads and queue mutations were excluded.",
+  "ascella": {
+    "status": "available",
+    "type": "qpu",
+    "record_fields": {
+      "commands": "present",
+      "available_commands": "present",
+      "default_mitigations": "present",
+      "known_mitigations": "present",
+      "architecture": "present",
+      "type": "present",
+      "record_type": "present"
+    },
+    "specs": {
+      "constraints": {
+        "max_mode_count": 12,
+        "max_photon_count": 6,
+        "max_sample_count": null,
+        "min_mode_count": 1,
+        "min_photon_count": 1,
+        "support_multi_photon": false
+      },
+      "connected_input_modes": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "available_commands": [
+        "probs",
+        "samples",
+        "sample_count",
+        "entropy",
+        "entropy_demo"
+      ],
+      "detector": "threshold",
+      "software_versions": {
+        "exqalibur": "1.4.1",
+        "hardware-core-quandela": "3.9.11",
+        "mosaiq-arcturus": "2.1.5.2.post4",
+        "pcvl-worker": "2.1.1",
+        "perceval-quandela": "1.3.0",
+        "universalchipworker": "2.1.3"
+      },
+      "parameters": {
+        "final_mode_number": "number of modes of the output states. States having a photon on unused modes will be ignored. Useful when using computed circuits (default input_state.m)",
+        "use_photon_recycling": "Legacy - Use the mitigation setter instead - boolean enabling the Photon Recycling noise mitigation process. Replaces default mitigation if no user-defined mitigation is given, else it is ignored (Default False)"
+      }
+    }
+  },
+  "tuna17": {
+    "id": 7,
+    "identifier": "tuna_17",
+    "nqubits": 17,
+    "topology": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        4,
+        7
+      ],
+      [
+        7,
+        4
+      ],
+      [
+        4,
+        8
+      ],
+      [
+        8,
+        4
+      ],
+      [
+        5,
+        2
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        3,
+        5
+      ],
+      [
+        5,
+        8
+      ],
+      [
+        8,
+        5
+      ],
+      [
+        5,
+        9
+      ],
+      [
+        9,
+        5
+      ],
+      [
+        6,
+        3
+      ],
+      [
+        3,
+        6
+      ],
+      [
+        6,
+        9
+      ],
+      [
+        9,
+        6
+      ],
+      [
+        10,
+        7
+      ],
+      [
+        7,
+        10
+      ],
+      [
+        10,
+        13
+      ],
+      [
+        13,
+        10
+      ],
+      [
+        11,
+        7
+      ],
+      [
+        7,
+        11
+      ],
+      [
+        11,
+        8
+      ],
+      [
+        8,
+        11
+      ],
+      [
+        11,
+        13
+      ],
+      [
+        13,
+        11
+      ],
+      [
+        11,
+        14
+      ],
+      [
+        14,
+        11
+      ],
+      [
+        12,
+        8
+      ],
+      [
+        8,
+        12
+      ],
+      [
+        12,
+        9
+      ],
+      [
+        9,
+        12
+      ],
+      [
+        12,
+        14
+      ],
+      [
+        14,
+        12
+      ],
+      [
+        12,
+        15
+      ],
+      [
+        15,
+        12
+      ],
+      [
+        16,
+        14
+      ],
+      [
+        14,
+        16
+      ],
+      [
+        16,
+        15
+      ],
+      [
+        15,
+        16
+      ]
+    ],
+    "gateset": [
+      "I",
+      "Rx",
+      "X",
+      "X90",
+      "mX90",
+      "Ry",
+      "Y",
+      "Y90",
+      "mY90",
+      "Rz",
+      "Z",
+      "S",
+      "T",
+      "Sdag",
+      "Tdag",
+      "H",
+      "CZ",
+      "init",
+      "measure",
+      "reset",
+      "barrier",
+      "wait"
+    ],
+    "default_compiler_config": {
+      "mapping": [],
+      "routing": [],
+      "optimization": [],
+      "decomposition": [
+        {
+          "path": "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+          "method": "decompose",
+          "arguments": {}
+        },
+        {
+          "path": "opensquirrel.passes.decomposer.CZDecomposer",
+          "method": "decompose",
+          "arguments": {}
+        }
+      ]
+    },
+    "supports_raw_data": true,
+    "max_number_of_shots": 131072,
+    "job_execution_time_limit": 300,
+    "status": "executing",
+    "enabled": true,
+    "retrieved_utc": "2026-10-27T19:49:42.402448+00:00"
+  },
+  "qx": {
+    "id": 1,
+    "identifier": "QXsinglenodesimulator",
+    "nqubits": 10,
+    "gateset": [
+      "H",
+      "I",
+      "S",
+      "Sdag",
+      "T",
+      "Tdag",
+      "X",
+      "X90",
+      "Y",
+      "Y90",
+      "Z",
+      "Z90",
+      "mX90",
+      "mY90",
+      "mZ90",
+      "Rx",
+      "Ry",
+      "Rz",
+      "U",
+      "Rn",
+      "CNOT",
+      "CR",
+      "CRk",
+      "CZ",
+      "SWAP",
+      "Hadamard",
+      "Identity",
+      "init",
+      "measure",
+      "reset",
+      "barrier",
+      "wait"
+    ],
+    "default_compiler_config": {
+      "mapping": [],
+      "routing": [],
+      "optimization": [],
+      "decomposition": []
+    },
+    "supports_raw_data": true,
+    "max_number_of_shots": 2048,
+    "job_execution_time_limit": 3600,
+    "status": "idle",
+    "enabled": true,
+    "retrieved_utc": "2026-10-27T19:49:43.068068+00:00"
+  },
+  "qualification": "Published capabilities and observed status establish catalogue facts only. Instrument-layer readiness, execution duration and prices remain separate admission checks."
+}

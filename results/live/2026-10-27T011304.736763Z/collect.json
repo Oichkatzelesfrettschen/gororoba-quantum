@@ -1,0 +1,62 @@
+[
+  {
+    "submission_complete": true,
+    "backends_without_recorded_job_id": [],
+    "members_without_recorded_job_id": [],
+    "jobs_without_recorded_id": [],
+    "jobs": {
+      "dbfvqm8iudkc73e3diq0": {
+        "backend": "ibm_kingston",
+        "kind": "dynamic",
+        "usage": {
+          "job_status": "ERROR",
+          "usage_status": "final",
+          "usage_source": "job.usage(partial=False)",
+          "submitted_pub_shots": 212992,
+          "qpu_charge_time_seconds": "2",
+          "pub_shots_per_qpu_second": null,
+          "throughput_unavailable_reason": "job status ERROR did not complete the workload",
+          "raw_usage_metadata": {
+            "qpu_charge_time_seconds": 2,
+            "value": 0.029201,
+            "unit": "resource_units",
+            "status": "complete",
+            "details": [
+              {
+                "value": 0.029201,
+                "unit": "resource_units",
+                "metric": {
+                  "id": "caffe3ca-729c-5750-8777-df63bbf8bfd9",
+                  "value": 2
+                }
+              }
+            ]
+          }
+        },
+        "pub_timing": {},
+        "backend_identity": {
+          "backend_version": "1.0.0",
+          "processor_type": {
+            "family": "Heron",
+            "revision": "2"
+          },
+          "backend_version_at_execution": {}
+        },
+        "result_unavailable": "RuntimeJobMaxTimeoutError: 'Error code 1305; Job %!v(MISSING) ran longer than %!v(MISSING). Contact support.'"
+      }
+    },
+    "family_analysis": {
+      "withheld": "missing measured members ['n21_orbit_window_dose_d0_feedback', 'n21_orbit_window_dose_d0_no_feedback', 'n21_orbit_window_dose_d10500_feedback', 'n21_orbit_window_dose_d10500_no_feedback', 'n21_orbit_window_dose_d14000_feedback', 'n21_orbit_window_dose_d14000_no_feedback', 'n21_orbit_window_dose_d1752_feedback', 'n21_orbit_window_dose_d1752_no_feedback', 'n21_orbit_window_dose_d3500_feedback', 'n21_orbit_window_dose_d3500_no_feedback', 'n21_orbit_window_dose_d5252_feedback', 'n21_orbit_window_dose_d5252_no_feedback', 'n21_orbit_window_dose_d7000_feedback', 'n21_orbit_window_dose_d7000_no_feedback', 'n21_orbit_window_dose_echo_d10500_feedback', 'n21_orbit_window_dose_echo_d10500_no_feedback', 'n21_orbit_window_dose_echo_d14000_feedback', 'n21_orbit_window_dose_echo_d14000_no_feedback', 'n21_orbit_window_dose_echo_d1752_feedback', 'n21_orbit_window_dose_echo_d1752_no_feedback', 'n21_orbit_window_dose_echo_d3500_feedback', 'n21_orbit_window_dose_echo_d3500_no_feedback', 'n21_orbit_window_dose_echo_d5252_feedback', 'n21_orbit_window_dose_echo_d5252_no_feedback', 'n21_orbit_window_dose_echo_d7000_feedback', 'n21_orbit_window_dose_echo_d7000_no_feedback']"
+    },
+    "invocation_usage": {
+      "known_final_charge_seconds": "2",
+      "total_charge_seconds": "2",
+      "charge_complete": true,
+      "workload_complete": false,
+      "predicted_charge_seconds": 23.535761152000006,
+      "charge_prediction_residual_seconds": null,
+      "charge_prediction_residual_withheld": "the complete planned workload lacks final charge or successful completion",
+      "jobs_without_final_charge": []
+    }
+  }
+]

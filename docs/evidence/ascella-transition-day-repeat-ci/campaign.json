@@ -1,0 +1,54 @@
+{
+  "baseline_run": "results/quandela/runs/ascella-context-packed-forward",
+  "baseline_start_unix": 1793147885.339165,
+  "case": {
+    "file": "case/cases.json",
+    "sha256": "75952fbb446b76557af4231467d29b4b930f874b2aac2fe2710b06e26ccb465a"
+  },
+  "confidence": 0.95,
+  "credit_ceiling": 1.131072,
+  "dependencies": [
+    {
+      "file": "scripts/ascella_transition_context.py",
+      "sha256": "dfbf84493d38533bea504d5f6565365d89ea2caee763bdaa67faf575908af3e1"
+    },
+    {
+      "file": "scripts/ascella_transition_interventions.py",
+      "sha256": "4122d9081d23732ebc30770fbdb5014ee29ea184ddf59ff09e703fbc59ff8786"
+    },
+    {
+      "file": "scripts/ascella_experiment_analysis.py",
+      "sha256": "b9c495807ee9ee19a411bd7891a7545bb4a93d7adc5a62b0fdc23e266cc39bdc"
+    },
+    {
+      "file": "scripts/qd_platform.py",
+      "sha256": "08941de901160d6f419b51905693d9921e3af34add328a82a5030ac4f55d9178"
+    },
+    {
+      "file": "scripts/ascella_transition_day_repeat_service.sh",
+      "sha256": "ef87916f886a0c3f888e8cb14f90c8da37d82eb92ce1cfc29b3157ed6a5ac61c"
+    },
+    {
+      "file": "gororoba_quantum/parallel.py",
+      "sha256": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
+    }
+  ],
+  "endpoints": 140,
+  "intervention_analysis": {
+    "file": "results/quandela/ascella-transition-mesh-port-analysis.json",
+    "sha256": "927bef0f733efd2b61c648bee59c539ae03b538e4eae1f463fc410bb2695df07"
+  },
+  "not_before_utc": "2026-10-29T00:38:05.339165+00:00",
+  "producer_sha256": "7ba0712356c50de2e08dd51509f4481e3ea5e3055869701af74a8d81faad6e41",
+  "required_pacific_date": "2026-10-28",
+  "run": "results/quandela/runs/ascella-transition-matched-mesh-day-repeat",
+  "schema": "ascella-transition-day-repeat-campaign-v1",
+  "source_manifest": {
+    "file": "docs/evidence/ascella-transition-context-diagnostics/cases/packed-forward/cases.json",
+    "sha256": "5b3773de73119bcafaa646fdaced6fc5e98bc197494054de259713ea05b83f53"
+  },
+  "written_case": {
+    "file": "docs/evidence/ascella-transition-day-repeat-ci/README.md",
+    "sha256": "0cf580f39771dd2a183dc01084e6b95b4ba80f9d7fbce0212269f5d4608b3be9"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "retrieved_utc": "2026-10-27T15:38:26.420816+00:00",
+  "http_status": 400,
+  "elapsed_seconds": 10.194036235916428,
+  "request": {
+    "intervalMs": 3600,
+    "maxDataPoints": 1000,
+    "timeRange": {
+      "from": "now-3600s",
+      "to": "now",
+      "timezone": "utc"
+    }
+  },
+  "response": {
+    "results": {
+      "A": {
+        "error": "Post \"https://prometheus.qi2.qutech.support/api/v1/query\": dial tcp 131.180.205.138:443: i/o timeout",
+        "errorSource": "downstream",
+        "status": 502,
+        "frames": []
+      }
+    }
+  }
+}

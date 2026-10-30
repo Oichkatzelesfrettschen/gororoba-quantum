@@ -1,0 +1,20 @@
+{
+  "schema": "ascella-predecessor-admission-observation-v1",
+  "observed_at": "2026-10-28T22:12:04Z",
+  "operation": "read-only qd_platform.py plan",
+  "platform": "qpu:ascella",
+  "cases_sha256": "33ce1d4a89b1585ec1bc0db4662206434f0c06e5b53661a488cc2e8df47b26b4",
+  "planner_source_sha256": "b5bdf1aa76139f17ab178e3a20f4a120cc1543c414fb800273adbeb080e7d8fb",
+  "exit_code": 1,
+  "result": "refused",
+  "reason": "qpu:ascella is running",
+  "admitted_statuses": [
+    "available"
+  ],
+  "observed_explorer_status": "running",
+  "remaining_checks": "Processor status, token occupancy, payload/body digest, live charge estimate and shot estimate are unobserved because admission stops at Explorer status.",
+  "max_credits": 1.032768,
+  "expected_seconds": 40,
+  "per_job_credits": 1,
+  "submission_authorized": false
+}

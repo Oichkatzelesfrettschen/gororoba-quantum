@@ -1,0 +1,56 @@
+{
+ "schema": "submitted-circuit-row-v1",
+ "row": {
+  "job_id": "dbb4se1gv2cc73e7pf40",
+  "run": "results/live/2026-10-19T170620.832658Z",
+  "retained_file": "results/live/2026-10-19T170620.832658Z/isa.qpy",
+  "retained_sha256": "3dab923b6306cf8bc50eff8e8be549e9427a050abcbbae25a6d24edc21da8e10",
+  "order_source": "record.json submission.jobs[].pubs",
+  "expected_pubs": [
+   "ibm_fez_dynamic_pub_01",
+   "ibm_fez_dynamic_pub_02",
+   "ibm_fez_dynamic_pub_03",
+   "ibm_fez_dynamic_pub_04",
+   "ibm_fez_dynamic_pub_05",
+   "ibm_fez_dynamic_pub_06",
+   "ibm_fez_dynamic_pub_07",
+   "ibm_fez_dynamic_pub_08",
+   "ibm_fez_dynamic_pub_09",
+   "ibm_fez_dynamic_pub_10",
+   "ibm_fez_dynamic_pub_11",
+   "ibm_fez_dynamic_pub_12"
+  ],
+  "items": 12,
+  "item_kinds": [
+   "CircuitItem"
+  ],
+  "positional_matches": 12,
+  "submitted_qpy_sha256": [
+   "cde668b915a7dee991d5866ba8351ace407c4c5f2764bfb22468c033775e0f69",
+   "d2f20ab3cf2cc7700ee1f54d81f7bf13637b18475bc97e1f4848ccf742a37272",
+   "0183a37fc808b04a562139c81743a8d67432b9ad4c362d84b278c8abfb72e5c5",
+   "c21361efd672b17897712fb1b124e7c742b501279d5921b0517aafd46be97ce8",
+   "9ea98daddf6ac2f284a5aa09fed8e457c652512f77b9d04dcd46a018b9320fd0",
+   "4eae915cf4d9ed855d68eb4bc82adfb36ada42aa5bba6260dd20391d0649b9c4",
+   "19ad1601a6e1cdb1ddfba01b9a40952db19798a7e3e1fd231215349400f20624",
+   "131ce22fd331f901901e3044005639703102bc8aaf4ee21fa64dbbd4c2d45703",
+   "a81430c43c23b9af917d068559b9733b4e40620cc88157a53ef2f53aeb4feb08",
+   "ef363e9f810249a8929c441ff448d2f3fd24c46a53650dff8959bb70a9698f75",
+   "8ad52a8f60655534495fc8094e0d9e2c79cfbc78fe909197eab0f29011a637e2",
+   "ffb6179c4175421b89043bfc3136c55fc35eb338d33de2e2cba92b694df2ee09"
+  ]
+ },
+ "provenance": {
+  "origin": {
+   "file": "docs/evidence/submitted_circuits/comparison-qpy18-full-retrieval.json",
+   "sha256": "1e7072ce8d059b90298559dac822c2ac1b47eda45081f5d96346ce08f2d52c58"
+  },
+  "retrieved_utc": "2026-10-28T00:35:31.259774+00:00",
+  "operation": "read existing job inputs; submissions and uploads excluded",
+  "runtime_versions": {
+   "qiskit": "2.6.0",
+   "qiskit-ibm-runtime": "0.50.0"
+  },
+  "collector_sha256": "77eaddfaac4f54e8a6986bf92547bbb92a721404507fbd9d529fd3c2596093c9"
+ }
+}

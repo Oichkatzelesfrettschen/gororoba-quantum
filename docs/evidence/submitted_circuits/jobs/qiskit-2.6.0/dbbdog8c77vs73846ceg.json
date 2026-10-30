@@ -1,0 +1,60 @@
+{
+ "schema": "submitted-circuit-row-v1",
+ "row": {
+  "job_id": "dbbdog8c77vs73846ceg",
+  "run": "results/live/2026-10-20T031212.175942Z",
+  "retained_file": "results/live/2026-10-20T031212.175942Z/isa.qpy",
+  "retained_sha256": "ed6094da6a282b2d5fc64ca678f63c107c565f1acc6eeddd701ac9b251c999dc",
+  "order_source": "record.json submission.jobs[].pubs",
+  "expected_pubs": [
+   "ibm_fez_dynamic_pub_01",
+   "ibm_fez_dynamic_pub_02",
+   "ibm_fez_dynamic_pub_03",
+   "ibm_fez_dynamic_pub_04",
+   "ibm_fez_dynamic_pub_05",
+   "ibm_fez_dynamic_pub_06",
+   "ibm_fez_dynamic_pub_07",
+   "ibm_fez_dynamic_pub_08",
+   "ibm_fez_dynamic_pub_09",
+   "ibm_fez_dynamic_pub_10",
+   "ibm_fez_dynamic_pub_11",
+   "ibm_fez_dynamic_pub_12",
+   "ibm_fez_dynamic_pub_13",
+   "ibm_fez_dynamic_pub_14"
+  ],
+  "items": 14,
+  "item_kinds": [
+   "CircuitItem"
+  ],
+  "positional_matches": 14,
+  "submitted_qpy_sha256": [
+   "2f086af084b99ef9c10faf627ba7ba66cec498c6b209d9fccb1b4568ddb9886c",
+   "cbfe8e204def8b5d922e0ea7a230584cfecf0fc0f3efb32e164cca8941ac1b55",
+   "7fa996c3dceb5328cdc1633e6456e23ba4e4ddd72c1cec2349acc3210079e123",
+   "3c90a575cb1d146e09ac25081dfb02e7f489f86b58666ef792e852272c4c139d",
+   "afe7110ae9ca1f051fba9cc83f64ec0afaa69d027d1cc8e69b39c16d3febf0e7",
+   "59183a79922ebe38b823db4dea78ef96c7054e7df84ceceb9448a12c23d34e16",
+   "d950d896b405a99dd9d8bac952240647a7dcadb0fd66904fee50eda834e3abb1",
+   "ea3d17f05a9bbfb6e2a91d424bc924a813c2e62b3e27b15072f2dd71f77535bb",
+   "067462cc01f31fd31ab3f936e489764d83827429a87feb549a470b34bdf67074",
+   "df6c882f293a90018b765e58eb11dcd86dd0178b5abdfe1c006fe0c523303e38",
+   "ff395cf957eb5374e75ba789fdfc9866de11c0332a6a0d3c2ae1bcd4b0148c13",
+   "7e27c4c17771162bd78b9fcc0fb70ee60f1c78829dd2a0583de861b8e0ce9713",
+   "9eb27bb51f075ee43ce5d78c7a3572c3b9c006eac7f505d52ad397ea291005b6",
+   "108998ad763dec28a05bd3e107cedae191cc9e33a6da37f6c30586284c35dec8"
+  ]
+ },
+ "provenance": {
+  "origin": {
+   "file": "docs/evidence/submitted_circuits/comparison-qpy18-full-retrieval.json",
+   "sha256": "1e7072ce8d059b90298559dac822c2ac1b47eda45081f5d96346ce08f2d52c58"
+  },
+  "retrieved_utc": "2026-10-28T00:35:31.259774+00:00",
+  "operation": "read existing job inputs; submissions and uploads excluded",
+  "runtime_versions": {
+   "qiskit": "2.6.0",
+   "qiskit-ibm-runtime": "0.50.0"
+  },
+  "collector_sha256": "77eaddfaac4f54e8a6986bf92547bbb92a721404507fbd9d529fd3c2596093c9"
+ }
+}

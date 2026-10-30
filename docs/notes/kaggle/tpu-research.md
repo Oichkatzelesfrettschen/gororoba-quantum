@@ -175,6 +175,17 @@ the account's one TPU batch slot (kaggle-api issue 1197 and the
 refused second push above), so a queued session blocks later TPU pushes
 until it starts or is cancelled.
 
+The public API carries no queue position or start estimate either. Read on 2026-10-28 with kaggle 2.2.5,
+kagglesdk 0.1.38, kagglehub 1.0.3 and kaggle-benchmarks 0.6.2 against a `TpuV5E8` batch version queued since
+18:19 UTC: the raw body of `kernels.KernelsApiService/GetKernelSessionStatus` is `{}`, because `QUEUED` is
+`KernelWorkerStatus` value 0 and the proto JSON omits a default (a running session answers
+`{"status":"RUNNING"}`); `GetKernel` returns kernel metadata with no session timing; `GetKernelSessionLogsStream`
+answers 400 before a session starts; and `GetAcceleratorQuotaStatistics` keeps TPU `timeUsed` and `timeReserved`
+at 0. Of the 13 methods of `KernelsApiService`, none reads a queue. kagglehub exposes no kernel-session call, and
+kaggle-benchmarks' `orchestration/task_queue.py` schedules benchmark tasks, not kernels. Read a quota duration from
+the typed field (`quota.total_time_allowed.total_seconds()`, as `kaggle quota` does): kagglesdk 0.1.38's `to_json`
+drops a duration's whole days, printing 108,000 s as `"21600s"`.
+
 ### Whether libtpu is in the TPU image
 
 Finding, rated high: the CPU-session reading is correct. The TPU image

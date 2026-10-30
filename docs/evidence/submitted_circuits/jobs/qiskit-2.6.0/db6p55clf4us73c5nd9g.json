@@ -1,0 +1,40 @@
+{
+ "schema": "submitted-circuit-row-v1",
+ "row": {
+  "job_id": "db6p55clf4us73c5nd9g",
+  "run": "results/live/2026-10-13T020454.599853Z",
+  "retained_file": "results/live/2026-10-13T020454.599853Z/isa.qpy",
+  "retained_sha256": "6ad11f4df63879fff798eeecb8350f4c2b8197d8cc3f787dd52dd36ac884e09e",
+  "order_source": "record.json submission.jobs[].pubs",
+  "expected_pubs": [
+   "ibm_kingston_dynamic_pub_01",
+   "ibm_kingston_dynamic_pub_02",
+   "ibm_kingston_dynamic_pub_03",
+   "ibm_kingston_dynamic_pub_04"
+  ],
+  "items": 4,
+  "item_kinds": [
+   "CircuitItem"
+  ],
+  "positional_matches": 4,
+  "submitted_qpy_sha256": [
+   "54496eedeb4d02af67de0986b2ca17cac97acd1bb8948c8699a0a09f87125f9a",
+   "b9aeb954e24ab86962df0ec2ed567c340eca04db4638bc8b247615ff61b12020",
+   "688e1c7fbac9fecf7c06339f435c7db53b46688a75a00a5ea0af1343456b5cbb",
+   "3f49fd645e3f828314190976efc73e4318db26c59036f5cf602113b8076144be"
+  ]
+ },
+ "provenance": {
+  "origin": {
+   "file": "docs/evidence/submitted_circuits/comparison-qpy18-full-retrieval.json",
+   "sha256": "1e7072ce8d059b90298559dac822c2ac1b47eda45081f5d96346ce08f2d52c58"
+  },
+  "retrieved_utc": "2026-10-28T00:35:31.259774+00:00",
+  "operation": "read existing job inputs; submissions and uploads excluded",
+  "runtime_versions": {
+   "qiskit": "2.6.0",
+   "qiskit-ibm-runtime": "0.50.0"
+  },
+  "collector_sha256": "77eaddfaac4f54e8a6986bf92547bbb92a721404507fbd9d529fd3c2596093c9"
+ }
+}

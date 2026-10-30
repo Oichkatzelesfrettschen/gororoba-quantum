@@ -1,0 +1,955 @@
+{
+  "backend_instances": [
+    {
+      "backend_type_id": 7,
+      "id": 7,
+      "last_heartbeat": "2026-10-27T15:35:42.570951Z",
+      "location": "TU Delft",
+      "message": {
+        "content": ""
+      },
+      "name": "Tuna-17",
+      "status": "executing"
+    }
+  ],
+  "batchjobs_per_queue_limit": 5,
+  "coupling_map": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      2,
+      0
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      2
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      4,
+      7
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      4,
+      8
+    ],
+    [
+      8,
+      4
+    ],
+    [
+      5,
+      2
+    ],
+    [
+      2,
+      5
+    ],
+    [
+      5,
+      3
+    ],
+    [
+      3,
+      5
+    ],
+    [
+      5,
+      8
+    ],
+    [
+      8,
+      5
+    ],
+    [
+      5,
+      9
+    ],
+    [
+      9,
+      5
+    ],
+    [
+      6,
+      3
+    ],
+    [
+      3,
+      6
+    ],
+    [
+      6,
+      9
+    ],
+    [
+      9,
+      6
+    ],
+    [
+      10,
+      7
+    ],
+    [
+      7,
+      10
+    ],
+    [
+      10,
+      13
+    ],
+    [
+      13,
+      10
+    ],
+    [
+      11,
+      7
+    ],
+    [
+      7,
+      11
+    ],
+    [
+      11,
+      8
+    ],
+    [
+      8,
+      11
+    ],
+    [
+      11,
+      13
+    ],
+    [
+      13,
+      11
+    ],
+    [
+      11,
+      14
+    ],
+    [
+      14,
+      11
+    ],
+    [
+      12,
+      8
+    ],
+    [
+      8,
+      12
+    ],
+    [
+      12,
+      9
+    ],
+    [
+      9,
+      12
+    ],
+    [
+      12,
+      14
+    ],
+    [
+      14,
+      12
+    ],
+    [
+      12,
+      15
+    ],
+    [
+      15,
+      12
+    ],
+    [
+      16,
+      14
+    ],
+    [
+      14,
+      16
+    ],
+    [
+      16,
+      15
+    ],
+    [
+      15,
+      16
+    ]
+  ],
+  "default_compiler_config": {
+    "decomposition": [
+      {
+        "arguments": {},
+        "method": "decompose",
+        "path": "opensquirrel.passes.decomposer.SWAP2CZDecomposer"
+      },
+      {
+        "arguments": {},
+        "method": "decompose",
+        "path": "opensquirrel.passes.decomposer.CZDecomposer"
+      }
+    ],
+    "mapping": [],
+    "optimization": [],
+    "routing": []
+  },
+  "default_number_of_shots": 8192,
+  "description": "The Tuna-17 backend has 17 transmon qubits in a ninja-star configuration, with 24 flux-tunable couplers connecting nearest neighbors.",
+  "enabled": true,
+  "features": [],
+  "gates": [
+    "I",
+    "Rx",
+    "X",
+    "X90",
+    "mX90",
+    "Ry",
+    "Y",
+    "Y90",
+    "mY90",
+    "Rz",
+    "Z",
+    "S",
+    "T",
+    "Sdag",
+    "Tdag",
+    "H",
+    "CZ",
+    "init",
+    "measure",
+    "reset",
+    "barrier",
+    "wait"
+  ],
+  "gateset": [
+    "I",
+    "Rx",
+    "X",
+    "X90",
+    "mX90",
+    "Ry",
+    "Y",
+    "Y90",
+    "mY90",
+    "Rz",
+    "Z",
+    "S",
+    "T",
+    "Sdag",
+    "Tdag",
+    "H",
+    "CZ",
+    "init",
+    "measure",
+    "reset",
+    "barrier",
+    "wait"
+  ],
+  "id": 7,
+  "identifier": "tuna_17",
+  "image_id": "1772648307-tuna-17_schematic-svg.svg",
+  "infrastructure": "On-premise",
+  "is_hardware": true,
+  "job_execution_time_limit": 300,
+  "max_jobs_per_batch_job": 5,
+  "max_number_of_shots": 131072,
+  "messages": {
+    "Tuna-17": {
+      "content": ""
+    }
+  },
+  "name": "Tuna-17",
+  "nqubits": 17,
+  "protocol_version": 2,
+  "queue": {
+    "avg_wait_time_in_queue_secs": 0,
+    "max_wait_time_in_queue_secs": 0,
+    "min_wait_time_in_queue_secs": 0,
+    "number_of_jobs_in_queue": 0
+  },
+  "queue_user_only": true,
+  "qx_backend_type_id": 1,
+  "qx_identifier": "QXsinglenodesimulator",
+  "qx_snapshot": {
+    "backend_instances": [
+      {
+        "backend_type_id": 1,
+        "id": 1,
+        "last_heartbeat": "2026-10-27T15:54:16.952195Z",
+        "location": "Cloud",
+        "message": {
+          "content": ""
+        },
+        "name": "QX emulator",
+        "status": "idle"
+      }
+    ],
+    "batchjobs_per_queue_limit": 5,
+    "default_compiler_config": {
+      "decomposition": [],
+      "mapping": [],
+      "optimization": [],
+      "routing": []
+    },
+    "default_number_of_shots": 1024,
+    "description": "Quantum Inspire offers a powerful quantum computer simulator backend. The QX Simulator can simulate up to 34 qubits (on the Lisa supercomputer) on a classical computer setup. It can execute quantum circuits and allows inspection of the simulated quantum state.",
+    "enabled": true,
+    "features": [],
+    "gateset": [
+      "H",
+      "I",
+      "S",
+      "Sdag",
+      "T",
+      "Tdag",
+      "X",
+      "X90",
+      "Y",
+      "Y90",
+      "Z",
+      "Z90",
+      "mX90",
+      "mY90",
+      "mZ90",
+      "Rx",
+      "Ry",
+      "Rz",
+      "U",
+      "Rn",
+      "CNOT",
+      "CR",
+      "CRk",
+      "CZ",
+      "SWAP",
+      "Hadamard",
+      "Identity",
+      "init",
+      "measure",
+      "reset",
+      "barrier",
+      "wait"
+    ],
+    "id": 1,
+    "identifier": "QXsinglenodesimulator",
+    "image_id": "img-3",
+    "infrastructure": "Cloud",
+    "is_hardware": false,
+    "job_execution_time_limit": 3600,
+    "max_jobs_per_batch_job": 5,
+    "max_number_of_shots": 2048,
+    "messages": {
+      "QX emulator": {
+        "content": ""
+      }
+    },
+    "name": "QX emulator",
+    "nqubits": 10,
+    "protocol_version": null,
+    "queue": {
+      "avg_wait_time_in_queue_secs": 0,
+      "max_wait_time_in_queue_secs": 0,
+      "min_wait_time_in_queue_secs": 0,
+      "number_of_jobs_in_queue": 0
+    },
+    "queue_user_only": true,
+    "request_started_utc": "2026-10-27T15:54:20.086319+00:00",
+    "retrieved_utc": "2026-10-27T15:54:21.409691+00:00",
+    "status": "idle",
+    "supports_raw_data": true,
+    "topology": [
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        0,
+        4
+      ],
+      [
+        0,
+        5
+      ],
+      [
+        0,
+        6
+      ],
+      [
+        0,
+        7
+      ],
+      [
+        0,
+        8
+      ],
+      [
+        0,
+        9
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        1,
+        4
+      ],
+      [
+        1,
+        5
+      ],
+      [
+        1,
+        6
+      ],
+      [
+        1,
+        7
+      ],
+      [
+        1,
+        8
+      ],
+      [
+        1,
+        9
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        2,
+        7
+      ],
+      [
+        2,
+        8
+      ],
+      [
+        2,
+        9
+      ],
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        3,
+        5
+      ],
+      [
+        3,
+        6
+      ],
+      [
+        3,
+        7
+      ],
+      [
+        3,
+        8
+      ],
+      [
+        3,
+        9
+      ],
+      [
+        4,
+        0
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        4,
+        6
+      ],
+      [
+        4,
+        7
+      ],
+      [
+        4,
+        8
+      ],
+      [
+        4,
+        9
+      ],
+      [
+        5,
+        0
+      ],
+      [
+        5,
+        1
+      ],
+      [
+        5,
+        2
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        5,
+        6
+      ],
+      [
+        5,
+        7
+      ],
+      [
+        5,
+        8
+      ],
+      [
+        5,
+        9
+      ],
+      [
+        6,
+        0
+      ],
+      [
+        6,
+        1
+      ],
+      [
+        6,
+        2
+      ],
+      [
+        6,
+        3
+      ],
+      [
+        6,
+        4
+      ],
+      [
+        6,
+        5
+      ],
+      [
+        6,
+        7
+      ],
+      [
+        6,
+        8
+      ],
+      [
+        6,
+        9
+      ],
+      [
+        7,
+        0
+      ],
+      [
+        7,
+        1
+      ],
+      [
+        7,
+        2
+      ],
+      [
+        7,
+        3
+      ],
+      [
+        7,
+        4
+      ],
+      [
+        7,
+        5
+      ],
+      [
+        7,
+        6
+      ],
+      [
+        7,
+        8
+      ],
+      [
+        7,
+        9
+      ],
+      [
+        8,
+        0
+      ],
+      [
+        8,
+        1
+      ],
+      [
+        8,
+        2
+      ],
+      [
+        8,
+        3
+      ],
+      [
+        8,
+        4
+      ],
+      [
+        8,
+        5
+      ],
+      [
+        8,
+        6
+      ],
+      [
+        8,
+        7
+      ],
+      [
+        8,
+        9
+      ],
+      [
+        9,
+        0
+      ],
+      [
+        9,
+        1
+      ],
+      [
+        9,
+        2
+      ],
+      [
+        9,
+        3
+      ],
+      [
+        9,
+        4
+      ],
+      [
+        9,
+        5
+      ],
+      [
+        9,
+        6
+      ],
+      [
+        9,
+        7
+      ],
+      [
+        9,
+        8
+      ]
+    ]
+  },
+  "request_started_utc": "2026-10-27T15:35:44.859684+00:00",
+  "retrieved_utc": "2026-10-27T15:35:45.866122+00:00",
+  "source_snapshots": {
+    "docs/evidence/tuna-projector-geometry/backend-observation.json": "e92dab9819a2c20da16d057373e5025e89f6e22abc34253178cb801ac32e1223",
+    "docs/evidence/tuna-projector-geometry/qx-backend-observation.json": "7cb57ccf7bf7b5e390657db6e8db497e43af8bf177de99478a0da9852cf29133"
+  },
+  "status": "executing",
+  "supports_raw_data": true,
+  "topology": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      2,
+      0
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      1,
+      4
+    ],
+    [
+      4,
+      2
+    ],
+    [
+      2,
+      4
+    ],
+    [
+      4,
+      7
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      4,
+      8
+    ],
+    [
+      8,
+      4
+    ],
+    [
+      5,
+      2
+    ],
+    [
+      2,
+      5
+    ],
+    [
+      5,
+      3
+    ],
+    [
+      3,
+      5
+    ],
+    [
+      5,
+      8
+    ],
+    [
+      8,
+      5
+    ],
+    [
+      5,
+      9
+    ],
+    [
+      9,
+      5
+    ],
+    [
+      6,
+      3
+    ],
+    [
+      3,
+      6
+    ],
+    [
+      6,
+      9
+    ],
+    [
+      9,
+      6
+    ],
+    [
+      10,
+      7
+    ],
+    [
+      7,
+      10
+    ],
+    [
+      10,
+      13
+    ],
+    [
+      13,
+      10
+    ],
+    [
+      11,
+      7
+    ],
+    [
+      7,
+      11
+    ],
+    [
+      11,
+      8
+    ],
+    [
+      8,
+      11
+    ],
+    [
+      11,
+      13
+    ],
+    [
+      13,
+      11
+    ],
+    [
+      11,
+      14
+    ],
+    [
+      14,
+      11
+    ],
+    [
+      12,
+      8
+    ],
+    [
+      8,
+      12
+    ],
+    [
+      12,
+      9
+    ],
+    [
+      9,
+      12
+    ],
+    [
+      12,
+      14
+    ],
+    [
+      14,
+      12
+    ],
+    [
+      12,
+      15
+    ],
+    [
+      15,
+      12
+    ],
+    [
+      16,
+      14
+    ],
+    [
+      14,
+      16
+    ],
+    [
+      16,
+      15
+    ],
+    [
+      15,
+      16
+    ]
+  ]
+}

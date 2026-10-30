@@ -35,6 +35,37 @@ paths recompile and re-emulate against the retained records; a local live run
 exports `QI_PYTHON` the same way, since gororoba_quantum/qi_stack.py reads
 the environment alone.
 
+On the pinned Linux x86-64 Python 3.13.15 environment, importing
+OpenSquirrel 0.9.1 loads libqasm 1.2.1's SWIG extension. A local probe on
+2026-10-28 UTC found that Python's `-W error` makes that import terminate with
+signal 11; the Python fault trace ends in native extension creation. With
+`-W default`, Python reports three missing-`__module__` deprecations for
+`SwigPyPacked`, `SwigPyObject` and `swigvarlink`. The documented compiler
+replay passes without `-W error`. The same replay also passes with warnings
+treated as errors except for those three named deprecations:
+
+```sh
+"$QI_PYTHON" -B -W error \
+  -W 'ignore:builtin type SwigPyPacked has no __module__ attribute:DeprecationWarning' \
+  -W 'ignore:builtin type SwigPyObject has no __module__ attribute:DeprecationWarning' \
+  -W 'ignore:builtin type swigvarlink has no __module__ attribute:DeprecationWarning' \
+  scripts/qi_tuna_destination_sequential_cases.py --check
+```
+
+The debugger's main-thread backtrace reaches `SWIG_Python_NewPointerObj` from
+`PyInit__libqasm` and faults in `_PyObject_New`. The host's system debug files
+reported CRC mismatches, so that stack identifies a native call boundary rather
+than an exact source statement. The probe ran `ulimit -c 0` followed by
+`gdb -batch -ex run -ex 'thread apply all bt 12' --args "$QI_PYTHON" -B -W error -c 'import opensquirrel'`.
+An instruction-level repeat on x86-64 showed `_PyObject_New` dereferencing
+`0x20(%rdi)` with `rdi=0`, consistent with a null type argument at the fault;
+the probe does not establish why the SWIG initializer passed it. The targeted filter isolates an observed
+warning interaction; it does not identify the underlying native defect or
+establish that other stack versions behave the same way. The existing
+`qi_stack` probe already filters this SWIG warning family. The frozen compiler
+producer remains unchanged. Provider execution and served scheduling are
+outside the local replay.
+
 ## Login (OAuth device authorization)
 
 ```sh

@@ -1,0 +1,150 @@
+{
+  "schema": "work-plan-v1",
+  "id": "cd-flexible-real-rocq",
+  "kind": "investigation",
+  "summary": "Prove in Rocq, on the real pair tower, Corollary 2.9 of math/0511691: every Cayley-Dickson algebra is flexible, (x y) x = x (y x), by the paper's self-conjugate trilinear sum and Lemma 2.8, and retain the receipts.",
+  "sources": [
+    "docs/notes/math-0511691.md",
+    "proofs/CdAnnihilatorSymmetryReal.v",
+    "docs/evidence/cd-annihilator-symmetry-real/README.md"
+  ],
+  "state": "closed",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Opened from the math-0511691 note, which recorded Corollary 2.9 as established by neither bundle. Scope read from the paper's proof: the sum x(yz) - (xy)z + z(yx) - (zy)x is trivial when an argument is real, is its own conjugate for imaginary arguments, and has real part zero by Lemma 2.8."
+  },
+  "scope": "proofs/CdAnnihilatorSymmetryReal.v: re_add, re_scale, flex_sum, flex_sum_conj_l, flex_sum_conj_m, flex_sum_conj_r, conj_flex_sum, flex_sum_self_conj, re_flex_sum, flex_sum_zero and flexible at every level of the real tower of proofs/CdTowerReal.v; the bundle docs/evidence/cd-annihilator-symmetry-real/ with two added assumption queries, regenerated receipts and rebound source hashes; the [R] statement in the math-0511691 note, the docs map row and formalization.yaml. Flexibility on the integer tower and the alternative laws (x x) y = x (x y) stay out of scope.",
+  "owner": "Repository Rocq maintainer",
+  "next_action": "None; the plan is closed.",
+  "related": [
+    "cd-annihilator-symmetry-real-rocq",
+    "cd-annihilator-lemma-9-5-rocq",
+    "cd-tower-ordered-domain-rocq"
+  ],
+  "steps": [
+    {
+      "id": "flexible-proof",
+      "state": "done",
+      "action": "Define flex_sum and prove the three one-argument conjugation signs, conj_flex_sum, flex_sum_self_conj, re_flex_sum, flex_sum_zero and flexible in CdAnnihilatorSymmetryReal.v under rocq 9.3.0 with -w @all, each by the alg rewrite database, conj_split and coordinate ring identities.",
+      "acceptance": "Fails if rocq compile prints any output, if Print Assumptions on flex_sum_zero or flexible lists an axiom other than ClassicalDedekindReals.sig_forall_dec and FunctionalExtensionality.functional_extensionality_dep, or if a step needs an induction on the level or associativity. Stop condition: a conjugation sign the alg database cannot normalize is recorded with its lemma name and ends the step.",
+      "receipts": [
+        {
+          "result": "CdAnnihilatorSymmetryReal.v compiles under rocq 9.3.0 on OCaml 5.5.1 with -w @all and no output; Print Assumptions on flex_sum_zero and flexible lists exactly ClassicalDedekindReals.sig_forall_dec and FunctionalExtensionality.functional_extensionality_dep, as do the fourteen earlier queries, and rocq check passes with an unchanged kernel.txt. Each conjugation sign closes by conj_split, the alg database and a coordinate ring identity; flex_sum_zero uses add_conj and re_associator twice, with no induction on the level and no associativity.",
+          "observed_at": "2026-10-27T19:54:51+00:00",
+          "revision": "63053de9da2ff443f60fc5f00f51a15f53896b43",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerReal.v",
+              "sha256": "5cb866c0e3d34da4d8ae14217ebd47e332cb86ca2e289069651e260b56334251"
+            },
+            {
+              "ref": "proofs/CdAnnihilatorSymmetryReal.v",
+              "sha256": "70b15f8a9a24b7d089812b513144c124f366d6505a5bfac5472e073d3e3c4fc7"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/assumptions.txt",
+              "sha256": "f64401baa25e0284d6adad97f62f48121d38a42bc9be0575c5e99a35c2816934"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/kernel.txt",
+              "sha256": "882de7e58a24b8eb660b82644f9bd1351555365ca2c71004e57c6d431a8674e6"
+            }
+          ],
+          "scope_sha256": "c231b2abc61c54ef7e66e2b116ae01001c87656101b8254e67b9e041afb49649"
+        }
+      ]
+    },
+    {
+      "id": "bundle-and-notes",
+      "state": "done",
+      "action": "Add the two assumption queries to assumptions.v, regenerate assumptions.txt and kernel.txt, rebind source_hashes.sha256, extend the bundle README table and prose, and record the [R] statement in docs/notes/math-0511691.md, docs/README.md and formalization.yaml.",
+      "acceptance": "Fails if replay_rocq.sh departs from its receipts, if sha256sum -c rejects source_hashes.sha256, if tests/test_evidence_ledgers.py or tests/ci/test_rocq_ci_pins.py fails, if formalization.yaml fails the retained v0.4 schema, or if check_markdown_links.py reports a broken link.",
+      "receipts": [
+        {
+          "result": "replay_rocq.sh passes against the regenerated receipts (sixteen assumption queries, two axioms each) and sha256sum -c accepts source_hashes.sha256; tests/test_evidence_ledgers.py and tests/ci/test_rocq_ci_pins.py pass (16 tests) under the pinned interpreter; ci/check_rocq_ci_pins.py reports 14 bundles agreeing; formalization.yaml validates against the retained v0.4 schema with jsonschema 4.26.0 and lists flexible among the main results; check_markdown_links.py resolves every link of 704 files.",
+          "observed_at": "2026-10-27T19:54:51+00:00",
+          "revision": "63053de9da2ff443f60fc5f00f51a15f53896b43",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/replay_rocq.sh",
+              "sha256": "baadc680d44005a4a04d7606a5e9b3ff63ad469e07ce730d967fb06e32662279"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/source_hashes.sha256",
+              "sha256": "6ea3f7c87ffd13e4d807fcfc0fb317d6d4be831533e9ffc7af5927a48523013e"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/README.md",
+              "sha256": "92fe465d58f6c6e5d7d8bd4ecacd4877f752a416eb9af213cdc51734f53eb617"
+            },
+            {
+              "ref": "docs/notes/math-0511691.md",
+              "sha256": "97c41645958f5ec8b13c29e1d00bd2cfb28419c6236c3a267a9bd896b147f375"
+            },
+            {
+              "ref": "docs/README.md",
+              "sha256": "af59f18970338d59b2b714f3ae66697ee83f29a1819ae464cb037f841235d25d"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "823fa04b25e521d016a504762554ec42b6175f63cda9e2621dbde77d5b3c6366"
+            }
+          ],
+          "scope_sha256": "2002d985e6effb487523476145cd24620819639dc4100ca4d7f742342140692d"
+        },
+        {
+          "result": "Revalidation at the revision that bridges every functor theorem: edits recording Lemma 9.5, Corollary 2.9, the ordered-domain functor and its bridges changed bound note, map and index files, and the acceptance reruns: the cd-annihilator-symmetry, cd-annihilator-symmetry-real and cd-tower-domain replays pass against their receipts and sha256sum -c accepts each ledger; tests/test_evidence_ledgers.py and tests/ci/test_rocq_ci_pins.py pass (16 unmarked, 44 audit) under the pinned interpreter; ci/check_rocq_ci_pins.py reports 15 bundles agreeing; formalization.yaml validates against the retained v0.4 schema with jsonschema 4.26.0; check_markdown_links.py resolves every link of 705 files.",
+          "observed_at": "2026-10-27T20:58:39+00:00",
+          "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/replay_rocq.sh",
+              "sha256": "baadc680d44005a4a04d7606a5e9b3ff63ad469e07ce730d967fb06e32662279"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/source_hashes.sha256",
+              "sha256": "6ea3f7c87ffd13e4d807fcfc0fb317d6d4be831533e9ffc7af5927a48523013e"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/README.md",
+              "sha256": "92fe465d58f6c6e5d7d8bd4ecacd4877f752a416eb9af213cdc51734f53eb617"
+            },
+            {
+              "ref": "docs/notes/math-0511691.md",
+              "sha256": "275501f8a4ae7ed3a77e088e89ca0d92dd16d362e95c9827df32f51196bc3295"
+            },
+            {
+              "ref": "docs/README.md",
+              "sha256": "35a98fc4105e87fde8eb63b19f4bc17e2bf449a336f52c463521cc9e1e5d6dcb"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "5091ed1c757bfb768137331856a75b6d4adfaded62f6e48d2d85489c8440974c"
+            }
+          ],
+          "scope_sha256": "2002d985e6effb487523476145cd24620819639dc4100ca4d7f742342140692d"
+        }
+      ]
+    }
+  ],
+  "receipts": [
+    {
+      "result": "Both steps are done with receipts at the revision that carries the flexibility theorems, the regenerated receipts and the note statements.",
+      "observed_at": "2026-10-27T19:54:51+00:00",
+      "revision": "63053de9da2ff443f60fc5f00f51a15f53896b43",
+      "evidence": [
+        {
+          "ref": "proofs/CdAnnihilatorSymmetryReal.v",
+          "sha256": "70b15f8a9a24b7d089812b513144c124f366d6505a5bfac5472e073d3e3c4fc7"
+        },
+        {
+          "ref": "docs/evidence/cd-annihilator-symmetry-real/README.md",
+          "sha256": "92fe465d58f6c6e5d7d8bd4ecacd4877f752a416eb9af213cdc51734f53eb617"
+        }
+      ],
+      "scope_sha256": "13ae217dd57c74cec9f05eefc311675ede7b976e408d0da28813379eaceb26c9"
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "flex_sum_zero and flexible hold at every level of the real pair tower in proofs/CdAnnihilatorSymmetryReal.v, by the paper's route: the trilinear sum is negated by conjugating any one argument and conjugates to minus the sum of the conjugates, so it is its own conjugate and re_associator cancels its real part; every assumption query lists only the two Stdlib real-construction axioms, the bundle replays against its regenerated receipts, and the math/0511691 note, the docs map and formalization.yaml record the theorem. Flexibility on the integer tower and the alternative laws remain without a Rocq source."
+}

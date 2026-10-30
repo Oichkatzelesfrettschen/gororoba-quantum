@@ -41,6 +41,13 @@ The [readout-preflight successor](comparison-readout-preflight.json) rebinds the
 offline after `live_run.py` listed the `readout_preflight` campaign among its pinned campaigns; it differs from
 the primorial-campaign successor only in the `live_run.py` digest and the offline validation time.
 
+The [measurement-sequence successor](comparison-measurement-sequence-families.json) rebinds the retained-audit
+comparison offline after `live_run.py` gained the measurement-sequence and measurement-sequence-diagnostic families;
+it differs from the QET-campaign successor only in the `live_run.py` digest and the offline validation time.
+
+The [compiled-ideal successor](comparison-pooled-compiled-ideals.json) rebinds it after `live_run.py` and `qpu_planning.py`
+proved the compiled ideals through the process pool; its rows equal the predecessor's.
+
 The [idle-penalty retrieval](comparison-idle-penalty-retrieval.json) covers all 41 jobs of the retained-job audit
 after Kingston job `dbfrg3fpc3tc739o4kag` joined it. Seeded from the original comparison, it retrieved the 13 jobs
 that comparison lacks, the earlier twelve and the new one, through the read-only job interface, and every item equals
@@ -49,31 +56,102 @@ source. The [idle-penalty successor](comparison-idle-penalty-probe.json) rebinds
 `live_run.py` listed `idle_penalty.py` in its experiment manifest and refused dynamical decoupling and twirling for
 the campaign. It binds the direct dependencies.
 
+The [idle-penalty pin successor](comparison-idle-penalty-pin.json) rebinds the same retrieval offline after
+`live_run.py` admitted `idle_penalty` to `--pin-layout`; it differs from the idle-penalty successor only in the
+`live_run.py` digest and the offline validation time.
+
 The [window-dose successor](comparison-window-doses.json) rebinds the idle-penalty retrieval offline after
 `live_run.py` gained `--window-doses-dt`; it differs from the idle-penalty successor only in the `live_run.py`
-digest and the offline validation time. Gate `core-281` checks it.
+digest and the offline validation time.
 
-The active successor binds the audit, original seed, current collector, predecessor comparison and archived
+The [pin and window-dose successor](comparison-pin-window-doses.json) rebinds the same retrieval offline
+against the `live_run.py` that carries both changes; it differs from its two siblings only in the `live_run.py`
+digest and the offline validation time.
+
+The [idle-readout successor](comparison-idle-readout.json) rebinds the same retrieval offline after `live_run.py`
+gained role-patterned members and listed `idle_readout.py` in its experiment manifest.
+
+The [idle-readout and window-dose successor](comparison-idle-readout-window-doses.json) rebinds the same
+retrieval offline against the `live_run.py` that carries the role-patterned members and the window doses; it
+differs from the idle-readout successor only in the `live_run.py` digest and the offline validation time.
+
+The [adaptive-envelope successor](comparison-adaptive-envelope.json) rebinds the idle-penalty retrieval offline
+after `live_run.py` gained the measurement-sequence envelope's approval, fallback and replan contract beside the
+window doses; its 41 rows equal the window-dose successor's.
+
+The [detuning-sign successor](comparison-detuning-sign.json) rebinds the idle-penalty retrieval offline after
+`live_run.py` gained `--detuning-sign`; its 41 rows equal the adaptive-envelope successor's, and it differs from that
+successor only in the `live_run.py` digest and the offline validation time.
+
+The [idle-penalty repeat retrieval](comparison-idle-penalty-repeat-retrieval.json) reads the same 41 jobs afresh
+through the read-only job interface, seeded from the original comparison, after the retention audit listed the
+stability repeat's Kingston job `dbgcnp5rd2mc73cuf5p0` under `awaiting_observation`; that audit change ends the
+offline rebind chain, which binds the audit's digest. Its collector equals the archived
+[collector text](collector-idle-penalty-retrieval.py.txt), and it binds the `live_run.py` that carries the pin
+admission, the window doses, the envelope contract and `--detuning-sign`. Every item equals its retained circuit
+in order.
+
+The [idle-readout repeat successor](comparison-idle-readout-repeat.json) rebinds the idle-penalty repeat retrieval
+offline against the `live_run.py` that adds the role-patterned members and lists `idle_readout.py` in its
+experiment manifest; it differs from that retrieval only in the `live_run.py` digest and the offline validation
+time. The [state-prep remeasure successor](comparison-state-prep-remeasure.json) rebinds the same retrieval
+offline against the `live_run.py` whose `--state-prep-arms` help names the two-read arms `x_remeasure` and
+`remeasure`; it differs from the retrieval only in that digest and the validation time.
+
+The [detuning-sign retrieval](comparison-detuning-sign-retrieval.json) reads the same 41 jobs afresh through the
+read-only job interface, seeded from the original comparison, after the retention audit added the N=21
+detuning-sign Kingston job `dbge2jpj4t8s73ac6fk0` under `awaiting_observation`, which moves the audit digest every
+earlier comparison binds. Its 41 rows equal the idle-penalty repeat retrieval's. A fresh retrieval binds the audit,
+the original seed and the collector, so a later `live_run.py` change leaves it valid.
+
+The [QPY-18 full retrieval](comparison-qpy18-full-retrieval.json) covers all 43 jobs of the retention audit after a
+fresh primary-instance inventory bound the idle-penalty repeat's job `dbgcnp5rd2mc73cuf5p0` and the detuning-sign
+job `dbge2jpj4t8s73ac6fk0`. Both runs retain an `isa.qpy` in QPY format 18, which Qiskit 2.6.0 writes and Qiskit
+2.5.2 cannot read, so no seeded extension of the 2.5.2 chain can validate them. The collector therefore runs
+unseeded under Qiskit 2.6.0 and qiskit-ibm-runtime 0.50.0, reads all 43 jobs' submitted inputs through the
+read-only job interface, and records 786 items, each equal to its retained circuit in order, with QPY digests
+serialized by 2.6.0. Its collector bytes equal the archived [collector text](collector-idle-penalty-retrieval.py.txt).
+The 2.5.2 comparisons above keep their bytes as the record of the earlier serializer.
+
+An offline rebind successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
 named files and the pinned Qiskit/runtime versions bound the replay; the provenance does not claim a complete
-transitive import closure. Every earlier comparison retains its recorded bytes. Gate `core-281` checks the
-active successor and its predecessor chain on the historical `qiskit-2.5` replay runtime.
+transitive import closure. Every earlier comparison retains its recorded bytes; each binds an earlier audit digest
+and job set, so none checks against the current audit.
 
-Replay from the repository root with the interpreter qualified against `ci/requirements-replay.txt`:
+The [row ledger](jobs/) replaces whole-audit successors. `jobs/qiskit-<release>/<job_id>.json` holds one audited
+job's row with its own provenance (origin, retrieval time, runtime versions, collector digest) and keeps its bytes
+once written. The QPY-18 full retrieval was split into `jobs/qiskit-2.6.0/` offline (`--split`), each row naming the
+comparison file and digest it came from. `--append` reads only the audited jobs without a row through the read-only
+job interface and writes one file each, so a retention adds one row per new job. `--check-rows` requires exactly one
+row per audited job, retrieved under the running Qiskit release, and re-derives every submitted digest from the
+retained circuits; it binds neither the audit's bytes nor this script's, because the re-derivation is the check.
+QPY bytes follow the Qiskit release (35 of 684 circuits serialize differently under 2.5.2 and 2.6.0 even at QPY
+format 17 with the generator version masked), so a Qiskit pin change fills a new `jobs/qiskit-<release>/` by
+`--append` and leaves the earlier ledger as its record.
+
+The `jobs/qiskit-2.6.1/` ledger came from an `--append` run under Qiskit 2.6.1 and qiskit-ibm-runtime 0.51.0 that
+retrieved the submitted inputs of all 43 audited jobs through the read-only job interface: 786 items, each equal to
+its retained circuit in order. Against the `jobs/qiskit-2.6.0/` rows, which stay as that release's record, only the `submitted_qpy_sha256`
+lists differ, in all 786 items.
+
+Replay the row ledger from the repository root with the current pinned interpreter, and append rows for newly
+audited jobs:
 
 ```sh
-export PYTHON="${REPLAY_PYTHON:?Set REPLAY_PYTHON to the qualified qiskit-2.5 interpreter}"
+export PYTHON="${PYTHON:-python3}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
-"$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check \
-  --out docs/evidence/submitted_circuits/comparison-window-doses.json
+"$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check-rows
+"$PYTHON" -B -W error scripts/compare_submitted_circuits.py --append
 ```
 
 QPY reserialization depends on the Qiskit version: Qiskit 2.5.2 reproduces all 28 original rows, while Qiskit 2.6.0
 produces different serialized digests. The checker requires the successor's recorded runtime versions; changing
 serialization versions requires a separately justified successor rather than replacing the original hashes.
 
-An authorized future read-only extension uses `--write --out NEW_PATH --seed
-docs/evidence/submitted_circuits/comparison.json`. The collector validates seed rows before opening the service,
+A future read-only extension under the current runtime uses `--write --out NEW_PATH` without a seed, because
+`--seed` accepts only the v3 original, whose 2.5.2 digests the current serializer does not reproduce. With a
+seed, the collector validates seed rows before opening the service,
 fetches only missing jobs, validates every complete row before publication, and refuses an occupied output path.
 The collector creates neither quantum jobs nor circuit uploads. Independent per-job QPY validation runs through
 the order-preserving process pool; sequential service retrieval preserves the read-only request order. Tests

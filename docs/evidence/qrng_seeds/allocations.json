@@ -108,6 +108,62 @@
    "index": 0
   },
   {
+   "path": "scripts/measurement_sequence_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 29206,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T225550Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/measurement_sequence_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 27743,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T225550Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/measurement_sequence_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 23218,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T225550Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/measurement_sequence_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 58511,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T225550Z.json",
+   "index": 3
+  },
+  {
+   "path": "scripts/measurement_sequence_scatter_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 51265,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T013550Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/measurement_sequence_scatter_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 23818,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T013550Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/measurement_sequence_scatter_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 46022,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T013550Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/measurement_sequence_scatter_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 56168,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T013550Z.json",
+   "index": 3
+  },
+  {
    "path": "scripts/qd_teleportation_rehearsal.py",
    "name": "COMPILATION_SEEDS",
    "value": 37522,
@@ -248,6 +304,20 @@
    "index": 0
   },
   {
+   "path": "gororoba_quantum/msq_envelope_null.py",
+   "name": "NULL_SEED",
+   "value": 56182,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 1
+  },
+  {
+   "path": "gororoba_quantum/diagnostic_experiments.py",
+   "name": "MSQE_PATTERN_SEED",
+   "value": 49615,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 0
+  },
+  {
    "path": "tests/scripts/test_qd_rehearsal_secondary.py",
    "name": "TEST_SEEDS",
    "value": 57403,
@@ -288,6 +358,55 @@
    "value": 44477,
    "record": "docs/evidence/anu_qrng/draw-2026-10-26T021247Z.json",
    "index": 0
+  },
+  {
+   "path": "tests/scripts/test_idle_readout_attribution.py",
+   "name": "BOOTSTRAP_SEED",
+   "value": 16771,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T034547Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/n21_detuning_sign.py",
+   "name": "SELF_TEST_SEED",
+   "value": 39927,
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
+   "index": 2
+  },
+  {
+   "path": "tests/test_msq_successor_analysis.py",
+   "name": "TEST_SEED",
+   "value": 585,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T200026Z.json",
+   "index": 0
+  },
+  {
+   "path": "gororoba_quantum/msq_successor_null_batch.py",
+   "name": "SUCCESSOR_NULL_SEED",
+   "value": 35417,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json",
+   "index": 0
+  },
+  {
+   "path": "gororoba_quantum/msq_successor_null_batch.py",
+   "name": "SPARSE_CALIBRATION_SEED",
+   "value": 26209,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json",
+   "index": 2
+  },
+  {
+   "path": "gororoba_quantum/msq_successor_null_batch.py",
+   "name": "SPARSE_CONFIRMATION_SEED",
+   "value": 15296,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json",
+   "index": 3
+  },
+  {
+   "path": "tests/test_msq_successor_null.py",
+   "name": "TEST_SEED",
+   "value": 39316,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json",
+   "index": 1
   }
  ],
  "runtime": [
@@ -308,6 +427,32 @@
    "experiment": "2026-10-25T223857.467590Z"
   },
   {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json",
+   "index": 0,
+   "value": 6224,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-10-27T003928.422192Z",
+   "resubmissions": [
+    "2026-10-27T010222.461059Z",
+    "2026-10-27T013902.641724Z"
+   ],
+   "envelope": "docs/design/n21-orbit-window-dose-envelope.md"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json",
+   "index": 1,
+   "value": 40816,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-10-27T003928.422192Z",
+   "resubmissions": [
+    "2026-10-27T010222.461059Z",
+    "2026-10-27T013902.641724Z"
+   ],
+   "envelope": "docs/design/n21-orbit-window-dose-envelope.md"
+  },
+  {
    "record": "docs/evidence/anu_qrng/draw-2026-10-26T191135Z.json",
    "index": 0,
    "value": 40932,
@@ -322,6 +467,110 @@
    "script": "gororoba_quantum/live_run.py",
    "flag": "--seed-simulator",
    "experiment": "2026-10-26T202236.647959Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T034547Z.json",
+   "index": 3,
+   "value": 31650,
+   "script": "scripts/idle_readout_attribution.py",
+   "flag": "--seed",
+   "experiment": "results/live/2026-10-27T191953.122214Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T155928Z.json",
+   "index": 0,
+   "value": 20306,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-10-27T155934.096853Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T155928Z.json",
+   "index": 1,
+   "value": 9144,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-10-27T155934.096853Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T155928Z.json",
+   "index": 4,
+   "value": 3375,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-10-27T155933.767848Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T155928Z.json",
+   "index": 5,
+   "value": 14614,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-10-27T155933.767848Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T155928Z.json",
+   "index": 6,
+   "value": 25371,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-10-27T160617.546354Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T155928Z.json",
+   "index": 7,
+   "value": 65000,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-10-27T160617.546354Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T155928Z.json",
+   "index": 8,
+   "value": 39185,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-10-28T000211.008810Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T155928Z.json",
+   "index": 9,
+   "value": 51026,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-10-28T000211.008810Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T191741Z.json",
+   "index": 0,
+   "value": 11449,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-10-27T191809.705421Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T191741Z.json",
+   "index": 1,
+   "value": 2156,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-10-27T191809.705421Z"
+  },
+  {
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
+   "index": 0,
+   "value": 34509,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-10-27T173041.727190Z"
+  },
+  {
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
+   "index": 1,
+   "value": 63882,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-10-27T173041.727190Z"
   }
  ],
  "reserved": [
@@ -366,6 +615,405 @@
    "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
    "index": 3,
    "reason": "LINE_SEEDS maps each n to a seed in a dict whose int keys the scan does not read"
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 34907,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 2,
+   "reason": "Compilation identifier for mub-six setting computational-to-computational-input-0; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 24454,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 3,
+   "reason": "Compilation identifier for mub-six setting computational-to-computational-input-1; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 464,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 4,
+   "reason": "Compilation identifier for mub-six setting computational-to-computational-input-2; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 4365,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 5,
+   "reason": "Compilation identifier for mub-six setting computational-to-computational-input-3; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 53776,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 6,
+   "reason": "Compilation identifier for mub-six setting computational-to-computational-input-4; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 17509,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 7,
+   "reason": "Compilation identifier for mub-six setting computational-to-computational-input-5; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 6765,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 8,
+   "reason": "Compilation identifier for mub-six setting computational-to-product_fourier-input-0; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 33662,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 9,
+   "reason": "Compilation identifier for mub-six setting computational-to-product_fourier-input-1; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 51709,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 10,
+   "reason": "Compilation identifier for mub-six setting computational-to-product_fourier-input-2; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 3895,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 11,
+   "reason": "Compilation identifier for mub-six setting computational-to-product_fourier-input-3; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 57762,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 12,
+   "reason": "Compilation identifier for mub-six setting computational-to-product_fourier-input-4; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 13141,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 13,
+   "reason": "Compilation identifier for mub-six setting computational-to-product_fourier-input-5; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 44402,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 14,
+   "reason": "Compilation identifier for mub-six setting computational-to-product_chirped-input-0; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 47611,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 15,
+   "reason": "Compilation identifier for mub-six setting computational-to-product_chirped-input-1; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 13319,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 16,
+   "reason": "Compilation identifier for mub-six setting computational-to-product_chirped-input-2; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 12419,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 17,
+   "reason": "Compilation identifier for mub-six setting computational-to-product_chirped-input-3; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 56950,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 18,
+   "reason": "Compilation identifier for mub-six setting computational-to-product_chirped-input-4; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 63123,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 19,
+   "reason": "Compilation identifier for mub-six setting computational-to-product_chirped-input-5; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 3783,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 20,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-computational-input-0; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 6659,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 21,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-computational-input-1; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 47841,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 22,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-computational-input-2; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 12385,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 23,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-computational-input-3; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 28587,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 24,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-computational-input-4; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 38912,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 25,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-computational-input-5; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 60262,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 26,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-product_fourier-input-0; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 43383,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 27,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-product_fourier-input-1; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 57337,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 28,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-product_fourier-input-2; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 27532,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 29,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-product_fourier-input-3; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 63559,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 30,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-product_fourier-input-4; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 40888,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 31,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-product_fourier-input-5; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 16340,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 32,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-product_chirped-input-0; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 12339,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 33,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-product_chirped-input-1; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 59350,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 34,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-product_chirped-input-2; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 20145,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 35,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-product_chirped-input-3; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 26521,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 36,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-product_chirped-input-4; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 27994,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 37,
+   "reason": "Compilation identifier for mub-six setting product_fourier-to-product_chirped-input-5; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 49140,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 38,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-computational-input-0; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 18511,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 39,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-computational-input-1; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 504,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 40,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-computational-input-2; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 55633,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 41,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-computational-input-3; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 57061,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 42,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-computational-input-4; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 5205,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 43,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-computational-input-5; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 702,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 44,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-product_fourier-input-0; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 42538,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 45,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-product_fourier-input-1; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 38104,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 46,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-product_fourier-input-2; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 53606,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 47,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-product_fourier-input-3; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 20079,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 48,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-product_fourier-input-4; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 59899,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 49,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-product_fourier-input-5; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 60457,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 50,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-product_chirped-input-0; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 20268,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 51,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-product_chirped-input-1; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 38323,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 52,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-product_chirped-input-2; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 2133,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 53,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-product_chirped-input-3; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 45680,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 54,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-product_chirped-input-4; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 10405,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 55,
+   "reason": "Compilation identifier for mub-six setting product_chirped-to-product_chirped-input-5; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 55048,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 56,
+   "reason": "Compilation identifier for sedenion-lcu setting dark; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 6151,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 57,
+   "reason": "Compilation identifier for sedenion-lcu setting bright; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+   "value": 37568,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 58,
+   "reason": "Compilation identifier for sedenion-lcu setting fixture; repeated arms reproduce that named mesh."
   }
  ],
  "owned": [

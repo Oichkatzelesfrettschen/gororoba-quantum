@@ -1,5 +1,9 @@
 # Qiskit ecosystem audit
 
+The host-installed set beyond the pinned core, with its install surfaces
+and interconnections, is [qiskit-packages/README.md](qiskit-packages/README.md);
+the version columns below record the 2026-10-16 survey.
+
 Scope: Python packages that bear on noise simulation of circuits up to 14
 qubits against IBM Heron r2 calibration, dynamic circuits, readout
 mitigation, characterization, transpilation, algebra circuits and sampling
@@ -218,8 +222,8 @@ skip.
 |---|---|---|---|---|---|---|---|---|
 | qiskit-ibm-transpiler 0.18.0 | <3.14,>=3.10 | cp310 to cp313 | <3,>=1.4.2: yes | indirect: serverless~=0.30 needs runtime<0.46 | yes: drops runtime to <0.46, networkx==2.8.5 | Apache-2.0 | active | skip: cloud AI passes (credential) and a hard conflict with the pin |
 | qiskit-ibm-ai-local-transpiler 0.5.5 | >=3.10 | cp313+cp314 | >=1.4.2: yes | >=0.37.0: yes | networkx==2.8.5 | unstated | active | skip: no consumer in the repository; pins an old networkx |
-| qiskit-ibm-catalog 0.21.0 | >=3.9 | pure | via serverless | via serverless: yes | numpy>=2.2.6 | Apache-2.0 | active | skip: Qiskit Functions client, cloud only |
-| qiskit-serverless 0.37.0 | >=3.10 | pure | <3,>=2.2: yes | <0.51.0,>=0.50.0: yes | numpy>=2.2.6; 15 exact or tight pins | Apache-2.0 | active | skip: cloud job client, exceeds Kaggle numpy |
+| qiskit-ibm-catalog 0.21.0 | >=3.9 | pure | via serverless | via serverless: yes | numpy>=2.2.6 | Apache-2.0 | active | host only, installed: Qiskit Functions client, cloud only; never on Kaggle ([qiskit-functions.md](qiskit-packages/qiskit-functions.md)) |
+| qiskit-serverless 0.37.0 | >=3.10 | pure | <3,>=2.2: yes | <0.51.0,>=0.50.0: yes | numpy>=2.2.6; 15 exact or tight pins | Apache-2.0 | active | host only, installed with the runtime cap and image pins relaxed; exceeds Kaggle numpy ([qiskit-functions.md](qiskit-packages/qiskit-functions.md)) |
 | qiskit-ibm-experiment 0.4.8 | >=3.8 | pure | >=0.32: yes | - | no | Apache-2.0 | archived | skip: archived |
 | qiskit-ibm-provider 0.11.0 | >=3.8 | pure | >=0.45.0: yes | - | no | Apache-2.0 | archived | skip: replaced by runtime |
 | qiskit-gym 0.4.2 | >=3.10 | cp313+cp314 | <3,>=2.1: yes | - | twisterl, gymnasium | Apache-2.0 | active | skip: reinforcement-learning synthesis |
@@ -289,7 +293,8 @@ constructing a service or submitting a job is not.
 | qiskit-noise-learning | experiments run through primitives on a backend | fitting and analysis | allowed with Aer backends only |
 | qiskit-addon-cutting, qiskit-addon-obp | import `qiskit-ibm-runtime` primitives | cutting, reconstruction and backpropagation numerics | not installed |
 | qiskit-addon-utils | none | circuit slicing and coupling-map helpers | allowed; QT pin 0.4.0 |
-| qiskit-addon-sqd, -slc, -pna, -mpf, -aqc-tensor, pauli-prop, qiskit-paulice | none | local numerics (chemistry, mitigation, tensor networks) | not installed |
+| qiskit-addon-slc, pauli-prop | none | shaded-lightcone PEC bounds and Pauli propagation | host only, installed ([qiskit-addon-slc.md](qiskit-packages/qiskit-addon-slc.md)) |
+| qiskit-addon-sqd, -pna, -mpf, -aqc-tensor, qiskit-paulice | none | local numerics (chemistry, mitigation, tensor networks) | not installed |
 | MCP server family | network calls to IBM services | none | never |
 
 ## Retained Kaggle environment records

@@ -22,10 +22,10 @@ PDF page indices.
   27 October 2026 returned no record.
 - Commit-pinned PDF, 35 pages, 396,915 bytes.
 - SHA-256: `6bc2448ff13557610112e91ae6e713d0b469588cd9e1e3f9b44c04fc422fd612`
-- Reading scope: pp. 1-4 (introduction, proof strategy, Sections 2 and 3.1) and p. 24 (end of Section 7.4) in full,
-  and the directory README. Sections 3.2-7.3 were read for result labels only, and the verifier of Appendix A was
-  inspected for its imports (standard-library `itertools`, `functools`, `fractions`, `math`, `collections`) and not
-  run.
+- Reading scope: pp. 1-4 (introduction, proof strategy, Sections 2 and 3.1), p. 24 (end of Section 7.4) and p. 25
+  (Appendix A expected output) in full, and the directory README. Sections 3.2-7.3 were read for result labels only.
+  The verifier of Appendix A was inspected for its imports (standard-library `itertools`, `functools`, `fractions`,
+  `math`, `collections`) and then run once (see [Verifier replay](#verifier-replay)).
 
 ## Transcribed statements
 
@@ -51,6 +51,27 @@ PDF page indices.
 - [P] README: `python3 verification/run.py` with assertions enabled; `run.py` refuses `-O` and checks the
   verifier digest `104a7306205b8544c8f913f6afdb59603f2e04a207c9ac592c383b80eb0e2aa9` before running it.
 
+## Verifier replay
+
+- [E] On 27 October 2026 the commit-pinned `verification/run.py` (sha256
+  `670e627fc97030104873c26572c0d1f6d1cb3d969cc99c95d2de9e26619a495e`) and `verification/verify.py` (sha256
+  `104a7306205b8544c8f913f6afdb59603f2e04a207c9ac592c383b80eb0e2aa9`, the digest the wrapper and p. 25 print) ran
+  as `python3 -I verification/run.py` from a directory holding only those two files, with `PYTHONOPTIMIZE` and
+  `PYTHONPATH` unset, under CPython 3.14.7 (Clang 22.1.3) on x86_64 Linux with an 8 GiB address-space limit.
+- [E] The run exited 0 in 58 s wall time (57.2 s user) at 341 MB peak resident memory, and its standard output is
+  byte-identical to the three lines p. 25 prints:
+
+  ```text
+  rank table: 8871 909 897
+  rank table: 46041 3429 2767
+  -613302797399911/6480 179721388988719/6480 5000000000000000
+  ```
+
+- [I] The replay establishes that the two exact rational certificates of Propositions 3.4 and 6.3, as encoded in
+  the verifier, hold in integer and rational arithmetic on this interpreter. It does not establish that the verifier
+  encodes the paper's moment identities faithfully, nor the cubic character counts, which the paper specifies by
+  finite sums and loops outside the program.
+
 ## Formal statement
 
 - [P] [`lean/docs/266.md`](https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/docs/266.md)
@@ -62,8 +83,12 @@ PDF page indices.
 
 - [I] Evidence shape. The certificate is exact rational arithmetic over a finite identity, the same evidence class as
   this repository's exact replays. The verifier's checks are `assert` statements, so it is valid only without `-O`,
-  the failure mode behind this repository's rule that checks raise explicitly.
-- [I] Hardware and algebra: no circuit, record or Cayley-Dickson check uses order-six Hadamard matrices.
+  the failure mode behind this repository's rule that checks raise explicitly; `run.py` closes that gap by refusing
+  `sys.flags.optimize`.
+- [I] Hardware and algebra: the [transition-conformance design](../../design/quantum-experiment-conformance.md)
+  uses the explicit cubic Tao matrix as an offline overlap comparator. Its exact residuals against the three
+  product bases establish a candidate-specific comparison; the prospective hardware suite uses the three
+  reference bases and makes no universal fourth-basis exclusion claim.
 
 ## Relevance
 
@@ -73,6 +98,6 @@ PDF page indices.
 
 ## Boundaries
 
-[I] No proof step of Sections 3-7 was checked. Running the Appendix A verifier is downloaded third-party code
-execution and was not run; a replay needs the owner's approval and an isolated interpreter (`-I`, no `-O`). The
-manuscript is unrefereed.
+[I] No proof step of Sections 3-7 was checked by hand. The Appendix A verifier ran once with the owner's approval
+([Verifier replay](#verifier-replay)); its scope is the encoded certificates, not the derivation of the identities
+they certify. The manuscript is unrefereed.

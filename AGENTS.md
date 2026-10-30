@@ -8,9 +8,21 @@ supplies what it leaves unstated. CLAUDE.md loads it.
 
 The modules run as scripts from gororoba_quantum/ and form no installable
 package; requirements.txt pins the tested runtime and pyproject.toml carries
-lint and type-check configuration only. [ci/AGENTS.md](ci/AGENTS.md) holds the
-gate machinery: runner and shards, the gate ledger and premerge cache, the
-Python and Qiskit pins, replay runtimes, the Rocq replays and gate cost.
+lint and type-check configuration only. [docs/PYTHON.md](docs/PYTHON.md) is the
+central documentation hub for all Python interpreters, dependency manifests,
+multi-environment audit, library roles and the 362-distribution inventory
+([docs/state/hypercomplex-libraries/libraries.md](docs/state/hypercomplex-libraries/libraries.md)).
+[ci/AGENTS.md](ci/AGENTS.md) holds the gate machinery: runner and shards, the
+gate ledger and premerge cache, the Python and Qiskit pins, replay runtimes, the
+Rocq replays and gate cost.
+
+**Flag review.** Every command whose cost or correctness depends on its
+options (solvers, simulators, Python pools, compilers, cloud launchers,
+resource limiters) runs only after the review in
+[docs/runbooks/compute-flags.md](docs/runbooks/compute-flags.md): its memory and
+time limits, threads, environment and every flag checked against the tool's
+own help, starting from the best measured combination in that runbook's table
+and adding or superseding a row after the run.
 
 **Pull requests and the audit.** The workflow `pr.yml` runs
 `sh ci/pr_checks.sh lint|types|tests|gates` on every pull request push: Ruff
@@ -125,8 +137,7 @@ list) and set h = 0. The reduced germ at p is the intersection of the
 `tangentcone`) on the A_5 strata ran past an hour at tens of GiB on the shared
 host, while the global route takes seconds
 ([a5-strata-regularity](docs/evidence/a5-strata-regularity/README.md)). A
-Singular run that may exceed a few GiB runs under `prlimit --as` with
-`GOROROBA_WORKERS` set.
+long Singular or msolve run follows the flag review above.
 
 ## Documents
 
@@ -230,9 +241,11 @@ Binding rules for circuit and hardware work, before the notes open:
 The full rules, witnesses, observables and the Cayley-Dickson package table are
 in [docs/notes/algebra_circuit_rules.md](docs/notes/algebra_circuit_rules.md).
 The Heron r2 execution facts are in
-[docs/notes/ibm_heron_platform.md](docs/notes/ibm_heron_platform.md), and the
+[docs/notes/ibm_heron_platform.md](docs/notes/ibm_heron_platform.md), the
 build-host Python stack in
-[docs/notes/build_host/python-stack.md](docs/notes/build_host/python-stack.md).
+[docs/notes/build_host/python-stack.md](docs/notes/build_host/python-stack.md),
+and the repository Python documentation hub and multi-environment inventory in
+[docs/PYTHON.md](docs/PYTHON.md).
 
 ## QPU time and calibration
 
@@ -256,12 +269,20 @@ build-host Python stack in
   drift); its case states why Aer cannot answer it.
 - Every `--submit` waits for the user's approval of a written case: what the
   run measures, why noise simulation cannot answer it, and its expected
-  seconds. The sequence is a submit-free dry run, its analysis, the written
-  case, the approval, and then `--submit` with `--approved-record` (the dry
-  run's record), `--approved-record-sha256` (its record.json digest) and
-  `--max-execution-seconds` (the case's seconds). The fresh plan must match the
-  record or the run writes an `approval_required` record and sends nothing; the
-  first batch consumes the approval by writing `approval-consumed.json`.
+  seconds. The case is written against a submit-free dry run, and the owner
+  approves its rule and bounds. The binding dry run and `--submit` then run
+  back to back in one invocation, `sh scripts/approved_run.sh --check CMD --
+  FLAGS`, which plans, runs the case's mechanical checks and submits with
+  `--approved-record`, `--approved-record-sha256` and the case's
+  `--max-execution-seconds` without an operator step in between; the case's
+  binding table is filled from the records after the submit. The fresh plan
+  must match the record or the run writes an `approval_required` record and
+  sends nothing, and the runner plans again; the first batch consumes the
+  approval by writing `approval-consumed.json`. An envelope record
+  (`msq-envelope-v1` or `-v2`, the measurement-sequence-envelope family) binds its
+  layout rule, bounds, ceilings and constructor instead of the dry run's
+  calibration values, and writes one consumed marker per attempt
+  ([qpu-submission.md](docs/notes/ibm_quantum/qpu-submission.md)).
 - Calibration is a property of the run. live_run.py fetches each backend's
   Target and properties afresh in the process that decides, compiles,
   simulates and submits, and no calibration value is cached or read back from

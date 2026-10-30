@@ -23,7 +23,10 @@ import numpy as np
 from qiskit import qpy
 from qiskit.circuit import ControlFlowOp, Delay
 from qiskit_aer import AerSimulator
+from qiskit_aer.backends.backend_utils import circuit_optypes
+from qiskit_aer.noise import NoiseModel
 from qiskit_aer.noise.errors.base_quantum_error import QuantumChannelInstruction
+from qiskit_aer.noise.noise_model import QuantumErrorLocation
 
 import aer_identity
 import aer_resources
@@ -305,12 +308,65 @@ class SerializedNoiseSimulator(AerSimulator):
         unchanged circuits with the configured model's serialization
         restricted to the batch's qubits (_Serialization.restrict).
         """
-        if any(Delay in types or QuantumChannelInstruction in types for types in optypes):
-            return super()._assemble_noise_model(circuits, optypes, **run_options)
         model = run_options.get("noise_model", getattr(self.options, "noise_model", None))
+        configured = model is not None and model is getattr(self.options, "noise_model", None)
+        if any(QuantumChannelInstruction in types for types in optypes):
+            return super()._assemble_noise_model(circuits, optypes, **run_options)
+        if any(Delay in types for types in optypes):
+            if not configured or _serialization(model).nonlocal_errors:
+                return super()._assemble_noise_model(circuits, optypes, **run_options)
+            return self._assemble_delay_noise(model, circuits, optypes, run_options)
         if model is not None and model is getattr(self.options, "noise_model", None):
             model = _SerializedNoise(serialized_noise(model, circuit_qubits(circuits)))
         return copy.copy(circuits), model, run_options
+
+    def _assemble_delay_noise(self, model: Any, circuits: Any, optypes: Any, run_options: Any) -> Any:
+        """The stock delay path's circuits and noise, without its deep copy of the whole-device model.
+
+        AerBackend._assemble_noise_model runs the model's noise passes on the circuits that hold a Delay, replaces
+        each QuantumChannelInstruction they insert by a QuantumErrorLocation, and adds each new error to a deep copy
+        of the model as an all-qubit error under its id. NoiseModel.to_dict lists the all-qubit errors first, so the
+        copy serializes as the configured model's errors with the new ones after its own all-qubit errors. This
+        method builds that serialization from the configured model's restriction to the batch's qubits
+        (_Serialization.restrict, which keeps every all-qubit error and the opset witnesses) with the new errors
+        inserted at the same place, so the controller receives the restricted form of the stock input.
+        """
+        run_circuits = copy.copy(circuits)
+        passes = model._pass_manager()
+        if passes is not None:
+            indices = [index for index, types in enumerate(optypes) if Delay in types]
+            transpiled = passes.run([run_circuits[index] for index in indices])
+            if not isinstance(transpiled, list):
+                transpiled = [transpiled]
+            for index, circuit in zip(indices, transpiled, strict=True):
+                run_circuits[index] = circuit
+                optypes[index] = circuit_optypes(circuit)
+        added = NoiseModel()
+        for index, circuit in enumerate(run_circuits):
+            if QuantumChannelInstruction not in optypes[index]:
+                continue
+            data = []
+            for datum in circuit.data:
+                operation = datum.operation
+                if isinstance(operation, QuantumChannelInstruction):
+                    error = operation._quantum_error
+                    data.append((QuantumErrorLocation(error), datum.qubits, datum.clbits))
+                    if error.id not in model._default_quantum_errors and error.id not in added._default_quantum_errors:
+                        added.add_all_qubit_quantum_error(error, error.id)
+                else:
+                    data.append((operation, datum.qubits, datum.clbits))
+            updated = circuit.copy()
+            updated.data = data
+            run_circuits[index] = updated
+            optypes[index].add(QuantumErrorLocation)
+            optypes[index].discard(QuantumChannelInstruction)
+        restricted = serialized_noise(model, circuit_qubits(run_circuits))
+        if not added._default_quantum_errors:
+            return run_circuits, _SerializedNoise(restricted), run_options
+        insert = len(model._default_quantum_errors)
+        errors = restricted["errors"]
+        combined = {"errors": [*errors[:insert], *added.to_dict(serializable=True)["errors"], *errors[insert:]]}
+        return run_circuits, _SerializedNoise(combined), run_options
 
     def _execute_circuits(self, aer_circuits: Any, noise_model: Any, config: Any) -> Any:
         if noise_model is not None and noise_model is getattr(self.options, "noise_model", None):
@@ -366,7 +422,8 @@ def route(policy: dict[str, Any], circuits: list[Any]) -> tuple[str, dict[str, A
     try:
         admission = aer_resources.admit_gpu(circuits, policy["memory_mb"], aer_resources.gpu_snapshot())
         admission["runtime"] = aer_identity.gpu_runtime_identity()
-        # Aer 0.17.2 exposes no device selector, so admission of device zero
+        # Aer selects a device only through the run option target_gpus,
+        # which this executor does not set, so admission of device zero
         # covers execution only on a host with exactly one GPU.
         if admission["runtime"].get("device_count") != 1:
             raise ValueError("GPU admission requires a single-GPU host")

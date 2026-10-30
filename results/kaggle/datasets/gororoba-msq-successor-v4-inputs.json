@@ -1,0 +1,23 @@
+{
+ "schema": "kaggle-dataset-v1",
+ "ref": "probablyeric/gororoba-msq-successor-v4-inputs",
+ "archive": "repository-files.bundle",
+ "archive_sha256": "2243d2acc57c34dc53feb233ccdf6c8c73054a364cb8d32f09ed446719f8a6c2",
+ "git_commit": "ce6c0144d37d4368682f1248f2877f1d701560e8",
+ "includes": [
+  "results/live/2026-10-28T163139.827337Z/record.json",
+  "results/live/2026-10-28T163139.827337Z/envelope-snapshots",
+  "docs/evidence/measurement_sequence/envelope-run-exploratory.json",
+  "docs/evidence/measurement_sequence/scatter-floor.json",
+  "docs/evidence/measurement_sequence/successor-sparse-scale.json"
+ ],
+ "files": {
+  "docs/evidence/measurement_sequence/envelope-run-exploratory.json": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
+  "docs/evidence/measurement_sequence/scatter-floor.json": "c39c5b7202fd6d2cd44629a86eed1402a0d234e95502540f37c8216bccc3c080",
+  "docs/evidence/measurement_sequence/successor-sparse-scale.json": "c59860e836f9adbb33e92e50dc74e26cacb9349a4c054bbe27579ce716182193",
+  "results/live/2026-10-28T163139.827337Z/envelope-snapshots/e185caeaeb6846125301d6a6f7a763fbbb9e796c9dcd83eda462c0d7fb284293.json": "e185caeaeb6846125301d6a6f7a763fbbb9e796c9dcd83eda462c0d7fb284293",
+  "results/live/2026-10-28T163139.827337Z/record.json": "3e43b4db8de0d8cb219022bd47c68193a4c834a88700b5830beba0f9944f546e"
+ },
+ "reply": "Starting upload for file repository-files.bundle\nUpload successful: repository-files.bundle (672KB)\nYour private Dataset is being created. Please check progress at https://www.kaggle.com/datasets/probablyeric/gororoba-msq-successor-v4-inputs",
+ "history": []
+}

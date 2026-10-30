@@ -26,6 +26,11 @@ license entry without a material qualifier (the arXiv preprint grant carries one
 the publisher. The publisher's own site may serve only a client challenge to automated requests; the capture then
 binds the deposited bytes through the record, and the PDF's Open Access paragraph supplies the page-level check.
 
+For a version of record whose publisher serves automated requests a challenge, a captured Crossref work record
+binds the hosting decision: its DOI and title must match the registry, and exactly one `license` entry for the
+`vor` content version must carry the registered Creative Commons URL with no embargo. The retained PDF must carry
+the same DOI in its XMP `prism:doi`, which admits a repository deposit of the publisher PDF.
+
 For Dagstuhl, article-specific title, DOI, abstract link, PDF link and license
 must agree with the registry and the captured canonical landing URL. The
 storage URL must identify that DOI's PDF. A footer grant cannot qualify a

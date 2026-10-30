@@ -14,9 +14,9 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](../SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 45 licensed PDFs and two aliases;
-193 external sources retain citations and optional ignored local reading copies.
-Five licensed original software archives retain upstream notices under
+license evidence. The library publishes 46 licensed PDFs and two aliases;
+202 external sources retain citations and optional ignored local reading copies.
+Six licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](../PDF_SHA256SUMS) verifies the published PDF set from the
 repository root with `sha256sum -c docs/PDF_SHA256SUMS`.
@@ -127,6 +127,9 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [openai-2026-mub-dimension-six](../notes/papers/openai-2026-mub-dimension-six.md) | OpenAI, The maximum number of mutually unbiased bases in dimension six (openai/math manuscript, 2026, unrefereed) | none | none | none |
 | [openai-2026-hadamard-order-six-fourier-certificates](../notes/papers/openai-2026-hadamard-order-six-fourier-certificates.md) | OpenAI, Exact Fourier certificates for complex Hadamard matrices of order six (openai/math manuscript, 2026, unrefereed) | none | none | none |
 | [openai-2026-exact-quantum-factoring](../notes/papers/openai-2026-exact-quantum-factoring.md) | OpenAI, Exact quantum factoring over a fixed finite gate set (openai/math manuscript, 2026, unrefereed) | none | none | low |
+| [openai-2026-torsion-free-zero-divisors](../notes/papers/openai-2026-torsion-free-zero-divisors.md) | OpenAI, A Torsion-Free Group Algebra with Zero Divisors (openai/math manuscript, 2026, unrefereed) | none | low | none |
+| [openai-2026-torsion-free-not-directly-finite](../notes/papers/openai-2026-torsion-free-not-directly-finite.md) | OpenAI, A Torsion-Free Group Algebra That Is Not Directly Finite (openai/math manuscript, 2026, unrefereed) | none | low | none |
+| [openai-2026-kadison-kaplansky-projection](../notes/papers/openai-2026-kadison-kaplansky-projection.md) | OpenAI, A torsion-free counterexample to the Kadison-Kaplansky projection conjecture (openai/math manuscript, 2026, unrefereed) | none | low | none |
 | [1107.1375](../notes/papers/1107.1375.md) | Bales, Cayley-Dickson and Clifford algebras as twisted group algebras (2003; arXiv 2011) | none | medium | none |
 | [2103.12805](../notes/papers/2103.12805.md) | Flaut and Boboescu, A twisted group algebra structure for an algebra obtained by the Cayley-Dickson process (2021) | none | medium | none |
 | [0804.3416](../notes/papers/0804.3416.md) | de Marrais 2008: Voyage by Catamaran, zero-divisor ensembles of the 2^N-ions | none | high | none |
@@ -257,6 +260,8 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [2104.05219](../notes/papers/2104.05219.md) | McEwen et al., Resolving catastrophic error bursts from cosmic rays in large arrays of superconducting qubits, Nat. Phys. 18, 107 (2022) | low | none | low |
 | [ioannidis-2005-false-findings](../notes/papers/ioannidis-2005-false-findings.md) | Ioannidis, Why most published research findings are false, PLoS Med. 2, e124 (2005) | none | none | none |
 | [munafo-2017-reproducible-science](../notes/papers/munafo-2017-reproducible-science.md) | Munafo et al., A manifesto for reproducible science, Nat. Hum. Behav. 1, 0021 (2017) | none | none | none |
+| [1602.06402](../notes/papers/1602.06402.md) | Hinuma, Pizzi, Kumagai, Oba and Tanaka, Band structure diagram paths based on crystallography, Comput. Mater. Sci. 128, 140 (2017) | none | low | none |
+| [1808.01590](../notes/papers/1808.01590.md) | Togo, Shinohara and Tanaka, Spglib: a software library for crystal symmetry search, Sci. Technol. Adv. Mater. Methods 4, 2384822 (2024; version of record hosted, CC BY 4.0) | none | low | none |
 | [asa-2016-p-value-statement](../notes/papers/asa-2016-p-value-statement.md) | ASA release on the Statement on Statistical Significance and P-Values, Am. Stat. 70, 129 (2016) | none | none | none |
 | [diedenhofen-musch-2015-cocor](../notes/papers/diedenhofen-musch-2015-cocor.md) | Diedenhofen and Musch, cocor: comparison of correlations, PLOS ONE 10, e0121945 (2015) | none | none | none |
 | [1910.06343](../notes/papers/1910.06343.md) | Eisert et al., Quantum certification and benchmarking, Nat. Rev. Phys. 2, 382 (2020) | low | none | none |

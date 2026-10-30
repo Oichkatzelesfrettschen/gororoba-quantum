@@ -1,0 +1,74 @@
+{
+  "schema": "ascella-transition-mesh-port-inventory-v1",
+  "runs": [
+    {
+      "name": "mesh-port-1",
+      "directory": "results/quandela/runs/ascella-transition-mesh-port-1",
+      "job_id": "16e939e2-1630-452a-9921-be9bc114e154",
+      "status": "completed",
+      "duration_seconds": 68,
+      "accepted_samples": 1441792,
+      "credit_charge": 1.131072,
+      "raw_sha256": "b9a37d5257e8f338713b7cd6bdc09a19d7f2037fe0f2580c3e2d5f1b44fd5be8",
+      "result_sha256": "a8ca0ab04751023be67821ec4b23c39cd142c510ea5d96b92c1a785573a1874e"
+    },
+    {
+      "name": "mesh-port-2",
+      "directory": "results/quandela/runs/ascella-transition-mesh-port-2",
+      "job_id": "4d561f1d-f2f4-48da-80c1-79eec68bb54f",
+      "status": "completed",
+      "duration_seconds": 68,
+      "accepted_samples": 1441792,
+      "credit_charge": 1.131072,
+      "raw_sha256": "1edbe479d0ba9ad2070bc8c6d136e7cb5691160e57b5f95fe11dad91bb294696",
+      "result_sha256": "3a5a73b33a1d0b01ff40f6bddfd73bffe44f2377d4dfa6e10e132a1047bd12b4"
+    },
+    {
+      "name": "mesh-port-3",
+      "directory": "results/quandela/runs/ascella-transition-mesh-port-3",
+      "job_id": "a4d0e229-9c73-4a5e-969e-985cddf76210",
+      "status": "completed",
+      "duration_seconds": 68,
+      "accepted_samples": 1441792,
+      "credit_charge": 1.131072,
+      "raw_sha256": "39902b777368d63c17482d6fb6afdea54bdc8d3af8d81fb9ffa8221020ecd8ac",
+      "result_sha256": "f3719f9084abd448138f954af4e69f4694c936791a8297dc66abb84910076780"
+    },
+    {
+      "name": "mesh-port-4",
+      "directory": "results/quandela/runs/ascella-transition-mesh-port-4",
+      "job_id": "bdbee629-1ec5-4af5-aeef-fd1f8335c3e0",
+      "status": "completed",
+      "duration_seconds": 67,
+      "accepted_samples": 1441792,
+      "credit_charge": 1.131072,
+      "raw_sha256": "59990fad0d35c118d42af1a092f46cbbafe6df90c54df703cdabb2252a3e5f51",
+      "result_sha256": "6b96f90d3f42a746c15ef9832b317ddababce24a031c87c1e5ccb7de0d3400af"
+    },
+    {
+      "name": "mesh-port-5",
+      "directory": "results/quandela/runs/ascella-transition-mesh-port-5",
+      "job_id": "7e24f82f-049d-46e1-b03d-f4592e67d53a",
+      "status": "completed",
+      "duration_seconds": 68,
+      "accepted_samples": 1441792,
+      "credit_charge": 1.131072,
+      "raw_sha256": "d3bcadbf6da8423199589fb473898d5d1a33a7db00f9b8300b51610460da8010",
+      "result_sha256": "39c32c8c77072c0ef2cc111c39826379305746fa3e7fcd235e1ebae17a57529f"
+    },
+    {
+      "name": "mesh-port-6",
+      "directory": "results/quandela/runs/ascella-transition-mesh-port-6",
+      "job_id": "04964a3b-00f3-4cc4-ac65-cde85c3ead34",
+      "status": "completed",
+      "duration_seconds": 68,
+      "accepted_samples": 1441792,
+      "credit_charge": 1.131072,
+      "raw_sha256": "5f5a75b098bfefc2996eb82644d912c829b688b0c87f9d2cf86c849c4be9dc8c",
+      "result_sha256": "01077659f8481882e8df9288481b42ee1cdc5b6c406d5aa403ae065b20b41f20"
+    }
+  ],
+  "total_accepted_samples": 8650752,
+  "total_duration_seconds": 407,
+  "total_credit_charge": 6.7864320000000005
+}

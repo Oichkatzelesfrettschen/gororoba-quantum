@@ -6,28 +6,34 @@ two phase bits do not supply an order-recovery experiment. The
 state-prep-control family reads each named qubit's excited fraction after
 initialization, after an active reset, and after an X, at one repetition
 delay, or alone the excited fraction after shots that end with an X on
-the measured state; run
-directly with --self-test it checks the family's exact laws.
+the measured state. The measurement-sequence family compares a named qubit's
+final Z outcome after N rotations that each precede a mid-circuit measurement
+with the same rotations separated by an idle of the measurement's duration;
+run directly with --self-test it checks both families' exact laws.
 """
 
 from __future__ import annotations
 
 import argparse
+import functools
 import math
+from dataclasses import replace
 from typing import Any
 
 import numpy as np
-from qiskit import QuantumCircuit
+from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 
 from experiment_optimizer import ObservableContract, ObservableTerm
-from experiments import Group, Member, tvd
+from experiments import Group, Member, Summary, tvd
 from qpe_diagnostics import (
     N21_ORBIT_SWEEP_VARIANTS,
     N21_ORBIT_VARIANTS,
+    N21_PHASE_OUTCOMES,
     N21_SPECTATOR_GROUND_KINDS,
     N21_SPECTATOR_KINDS,
     N21_SPECTATOR_QUADRATURES,
     N21_SPECTATOR_SPLIT_KINDS,
+    N21_WORK_RAMSEY_QUBITS,
     folded_diagnostic,
     folded_ideal,
     folded_terminal_weights,
@@ -45,6 +51,9 @@ from qpe_diagnostics import (
     n21_segmented_ramsey,
     n21_spectator_law,
     n21_spectator_ramsey,
+    n21_work_ramsey,
+    n21_work_ramsey_law,
+    n21_work_ramsey_name,
     phase_marginal,
 )
 
@@ -61,6 +70,10 @@ FAMILY_NAMES = (
     "ripple",
     "rank-sector",
     "state-prep-control",
+    "measurement-sequence",
+    "measurement-sequence-diagnostic",
+    "measurement-sequence-envelope",
+    "measurement-sequence-relaxation",
     "latency-recovery",
 )
 # Families that run on one pinned patch (--patch-qubits, patch_characterization.PATCH_ROLES).
@@ -174,18 +187,32 @@ _SIGNED = (0.0, 1.0, 0.0, -1.0)
 # job; the X after the measurement makes H dynamic
 # (local_compute.is_dynamic), so that job runs with twirling and DD off.
 STATE_PREP_FAMILY = "state-prep-control"
-STATE_PREP_ARMS = ("prep0", "reset", "x", "x_history")
+# The order is the row order of the fused PUBs within one job: the service
+# runs every circuit of shot s in that order before shot s + 1
+# (docs/notes/ibm_quantum/repetition-rate-execution.md), so a remeasure shot
+# follows an x_remeasure shot, the |1> readout event the arm conditions on.
+STATE_PREP_ARMS = ("prep0", "reset", "x", "x_history", "x_remeasure", "remeasure")
 # The selection an omitted --state-prep-arms makes.
 STATE_PREP_DEFAULT_ARMS = ("prep0", "reset", "x")
 STATE_PREP_HISTORY_ARM = "x_history"
+# The two arms that read each shot twice. A measurement projects the qubit
+# onto the state it reads up to misassignment, so the second read separates a
+# population the first read found (it reads 1 again, less T1 decay over one
+# measurement) from a misassignment of the first read (it reads the prepared
+# state). Bit 0 of the register is the first read, bit 1 the second.
+STATE_PREP_REMEASURE_ARMS = ("x_remeasure", "remeasure")
 STATE_PREP_ARM_STEPS = {
     "prep0": "init, measure",
     "reset": "init, reset, measure",
     "x": "x, measure",
     "x_history": "init, measure, x",
+    "x_remeasure": "x, measure, measure",
+    "remeasure": "init, measure, measure",
 }
 # Arms whose circuits local_compute.is_dynamic classifies dynamic: each runs
-# in its own per-qubit group, since one group holds one job kind.
+# in its own per-qubit group, since one group holds one job kind. A second
+# measurement after the first is no later quantum work, so the remeasure arms
+# are static and fuse into the static job with prep0 and x.
 STATE_PREP_DYNAMIC_ARMS = ("reset", "x_history")
 # The retained n21-feedback-encoded dry run whose R = 2 replica qubits the
 # family measures when --layout is absent; repository-relative.
@@ -195,8 +222,19 @@ STATE_PREP_SOURCE_RECORD = "results/live/2026-10-17T130242.718497Z/record.json"
 # Hoeffding radius of one PUB is 0.0213 at 8192 shots and 0.0301 at 4096; a
 # two-PUB difference takes 0.0445 and 0.0630, so 8192 shots is the smallest
 # admitted power-of-two tier.
-STATE_PREP_PRECISION = {"excited": 0.025, "reset_benefit": 0.05, "one_column": 0.025, "history_excited": 0.025}
+STATE_PREP_PRECISION = {
+    "excited": 0.025,
+    "reset_benefit": 0.05,
+    "one_column": 0.025,
+    "history_excited": 0.025,
+    "remeasure_excited": 0.025,
+    "remeasure_persisting": 0.025,
+    "x_remeasure_one_column": 0.025,
+}
 _EXCITED = (0.0, 1.0)
+# Scores over the two-read register, outcome index = first read + 2 * second read.
+_FIRST_READ_ONE = (0.0, 1.0, 0.0, 1.0)
+_BOTH_READS_ONE = (0.0, 0.0, 0.0, 1.0)
 
 
 def state_prep_member(arm: str, qubit: int) -> str:
@@ -204,26 +242,30 @@ def state_prep_member(arm: str, qubit: int) -> str:
 
 
 def state_prep_circuit(arm: str, qubit: int) -> QuantumCircuit:
-    """One arm on one qubit: init then measure, init-reset-measure, x then measure, or measure then x."""
+    """One arm on one qubit: STATE_PREP_ARM_STEPS, the remeasure arms on a two-bit register."""
     if arm not in STATE_PREP_ARMS:
         raise ValueError(f"unknown state-prep arm {arm!r}")
-    circuit = QuantumCircuit(1, 1, name=state_prep_member(arm, qubit))
+    remeasure = arm in STATE_PREP_REMEASURE_ARMS
+    circuit = QuantumCircuit(1, 2 if remeasure else 1, name=state_prep_member(arm, qubit))
     if arm == "reset":
         circuit.reset(0)
-    elif arm == "x":
+    elif arm in ("x", "x_remeasure"):
         circuit.x(0)
     circuit.measure(0, 0)
     if arm == STATE_PREP_HISTORY_ARM:
         circuit.x(0)
+    if remeasure:
+        circuit.measure(0, 1)
     return circuit
 
 
 def state_prep_arms(arms: Any = None) -> tuple[str, ...]:
     """The selected arms in STATE_PREP_ARMS order; None selects prep0, reset and x.
 
-    Every selection holds prep0, or is x_history alone: x_history sets the
-    history of every shot of its job, so another arm in that job would start
-    from a |1> history as well.
+    Every selection reads the initial excited fraction through prep0 or
+    remeasure, or is x_history alone: x_history sets the history of every
+    shot of its job, so another arm in that job would start from a |1>
+    history as well.
     """
     if arms is None:
         return STATE_PREP_DEFAULT_ARMS
@@ -234,20 +276,26 @@ def state_prep_arms(arms: Any = None) -> tuple[str, ...]:
         raise ValueError(
             "x_history sets the end state every shot of its job leaves, so it runs as the only arm of its job"
         )
-    if "prep0" not in selected and selected != (STATE_PREP_HISTORY_ARM,):
+    if not {"prep0", "remeasure"} & set(selected) and selected != (STATE_PREP_HISTORY_ARM,):
         raise ValueError(
-            "the family measures the initial excited fraction, which only the prep0 and x_history arms read"
+            "the family measures the initial excited fraction, which only the prep0, remeasure and x_history arms read"
         )
     return tuple(arm for arm in STATE_PREP_ARMS if arm in selected)
 
 
+def _two_read_fractions(law: np.ndarray) -> tuple[float, float]:
+    """(P(first read 1), P(both reads 1)) of a two-bit law indexed first read + 2 * second read."""
+    return float(law[1] + law[3]), float(law[3])
+
+
 def state_prep_groups(qubits: list[int], arms: Any = None) -> list[Group]:
-    """Per qubit, a static group (prep0, then x) and one dynamic group per dynamic arm (reset, x_history).
+    """Per qubit, a static group (prep0, x, x_remeasure, remeasure) and one dynamic group per dynamic arm.
 
     Fusion joins row r of every group of one kind into one PUB, so PUB A
     measures every qubit's prep0 arm in the same shots, PUB C every x arm,
     the dynamic PUB B every reset arm, and the dynamic PUB H, alone in its
-    job, every x_history arm.
+    job, every x_history arm. The remeasure arms follow in the static job,
+    x_remeasure before remeasure, each on a two-bit register.
     """
     if not qubits or len(set(qubits)) != len(qubits) or any(type(q) is not int or q < 0 for q in qubits):
         raise ValueError(f"state-prep-control needs distinct nonnegative qubits, got {qubits}")
@@ -255,7 +303,14 @@ def state_prep_groups(qubits: list[int], arms: Any = None) -> list[Group]:
     static_arms = tuple(arm for arm in selected if arm not in STATE_PREP_DYNAMIC_ARMS)
     groups = []
     for qubit in qubits:
-        ideal = {"prep0": (1.0, 0.0), "reset": (1.0, 0.0), "x": (0.0, 1.0), "x_history": (1.0, 0.0)}
+        ideal = {
+            "prep0": (1.0, 0.0),
+            "reset": (1.0, 0.0),
+            "x": (0.0, 1.0),
+            "x_history": (1.0, 0.0),
+            "x_remeasure": (0.0, 0.0, 0.0, 1.0),
+            "remeasure": (1.0, 0.0, 0.0, 0.0),
+        }
         members = {
             arm: Member(
                 state_prep_member(arm, qubit),
@@ -268,11 +323,20 @@ def state_prep_groups(qubits: list[int], arms: Any = None) -> list[Group]:
 
         def summarize_static(distributions: dict[str, np.ndarray], qubit: int = qubit) -> dict[str, float]:
             names = {"prep0": f"q{qubit}_excited_fraction", "x": f"q{qubit}_one_fraction"}
-            return {
+            out = {
                 names[arm]: float(distributions[state_prep_member(arm, qubit)][1])
                 for arm in names
                 if state_prep_member(arm, qubit) in distributions
             }
+            for arm, first, both in (
+                ("remeasure", "remeasure_excited_fraction", "remeasure_persisting_fraction"),
+                ("x_remeasure", "x_remeasure_one_fraction", "x_remeasure_both_one_fraction"),
+            ):
+                if state_prep_member(arm, qubit) in distributions:
+                    read_one, both_one = _two_read_fractions(distributions[state_prep_member(arm, qubit)])
+                    out[f"q{qubit}_{first}"] = read_one
+                    out[f"q{qubit}_{both}"] = both_one
+            return out
 
         def summarize_reset(distributions: dict[str, np.ndarray], qubit: int = qubit) -> dict[str, float]:
             return {f"q{qubit}_reset_excited_fraction": float(distributions[state_prep_member("reset", qubit)][1])}
@@ -302,8 +366,12 @@ def state_prep_contracts(
     an active reset, positive where initialization leaves more excitation
     than the reset's own misassignment; spc_one_column_qQ reads P(1) after
     an X, the |1> column of the assignment matrix; spc_history_excited_qQ
-    reads P(1) after initialization from a |1> history. Each endpoint needs
-    every arm it reads among the selected arms.
+    reads P(1) after initialization from a |1> history;
+    spc_remeasure_excited_qQ reads P(first read 1) after initialization and
+    spc_remeasure_persisting_qQ P(both reads 1), the part of that excitation
+    a second measurement reads again; spc_x_remeasure_one_column_qQ reads
+    P(first read 1) after an X. Each endpoint needs every arm it reads among
+    the selected arms.
     """
     selected = state_prep_arms(arms)
     endpoints = [
@@ -313,6 +381,9 @@ def state_prep_contracts(
             ("reset_benefit", {"prep0", "reset"}),
             ("one_column", {"x"}),
             ("history_excited", {STATE_PREP_HISTORY_ARM}),
+            ("remeasure_excited", {"remeasure"}),
+            ("remeasure_persisting", {"remeasure"}),
+            ("x_remeasure_one_column", {"x_remeasure"}),
         )
         if needs <= set(selected)
     ]
@@ -353,6 +424,27 @@ def state_prep_contracts(
                     power=power,
                     precision_half_width=STATE_PREP_PRECISION["history_excited"],
                 ),
+                ObservableContract(
+                    f"spc_remeasure_excited_q{qubit}",
+                    (ObservableTerm(state_prep_member("remeasure", qubit), _FIRST_READ_ONE),),
+                    alpha=share,
+                    power=power,
+                    precision_half_width=STATE_PREP_PRECISION["remeasure_excited"],
+                ),
+                ObservableContract(
+                    f"spc_remeasure_persisting_q{qubit}",
+                    (ObservableTerm(state_prep_member("remeasure", qubit), _BOTH_READS_ONE),),
+                    alpha=share,
+                    power=power,
+                    precision_half_width=STATE_PREP_PRECISION["remeasure_persisting"],
+                ),
+                ObservableContract(
+                    f"spc_x_remeasure_one_column_q{qubit}",
+                    (ObservableTerm(state_prep_member("x_remeasure", qubit), _FIRST_READ_ONE),),
+                    alpha=share,
+                    power=power,
+                    precision_half_width=STATE_PREP_PRECISION["x_remeasure_one_column"],
+                ),
             )
             if contract.name.removeprefix("spc_").rsplit("_q", 1)[0] in endpoints
         )
@@ -372,6 +464,983 @@ def state_prep_excitation(excited: float, prob_meas1_prep0: float, prob_meas0_pr
     if not contrast > 0:
         raise ValueError("the readout channel carries no information about the prepared state")
     return (excited - prob_meas1_prep0) / contrast
+
+
+# measurement-sequence: does a mid-circuit measurement act as ideal pinching,
+# a nonselective projective measurement in Z, on a named qubit? A measure arm
+# applies N rotations RX(sign * THETA / N), each followed by a measurement
+# whose outcome the program never reads. A delay arm replaces each such
+# measurement with an idle of the backend's measure duration on that qubit: it
+# keeps the elapsed time and drops the projection, but idle dephasing pinches
+# the qubit too, so it is the elapsed-time control and quantifies dephasing's
+# share of the rise. A unitary arm (N = 16 only) plays the rotations back to
+# back with a barrier between them, which stops the transpiler from merging
+# them into one gate; it keeps neither the measurements nor the idle, and is
+# the mutation null. A settle arm (N = 16 only) is the measure arm with an
+# idle of MSQ_SETTLE_SECONDS after each mid-circuit measurement, before the
+# next rotation: a readout-induced frequency shift that outlasts the readout
+# acts during the next pulse at second order in delta * tau (about -2.5e-6 per
+# step in the flip probability at N = 16 for tau <= 100 ns and
+# delta <= 2 pi * 100 kHz). The 2 us gap is a hypothesis: the Heron r2
+# sources give no ring-down time. The arm tests whether lengthening the gap
+# from zero to 2 us changes the deficit; an unchanged deficit bounds only a
+# tail that decays within 2 us. All four read the qubit in Z at the end. The state
+# after each measurement is diagonal in Z, so the measure arm's final P0
+# follows the Markov law of MSQ_THETA / N rotations; the delay and unitary
+# arms' coherent rotations compose to RX(sign * THETA) in the ideal.
+#
+# Register layout, clbit 0 first: "final" (1 bit) holds the last read and
+# every distribution and summary reads it; the measure arm's "mcm" register
+# (N bits) holds the mid-circuit outcomes, which the raw shots keep and no
+# endpoint conditions on. A measure member's ideal and weights span all
+# N + 1 clbits, as every family with a register no endpoint reads does
+# (n21_segmented_law); weights select final == 0.
+MSQ_FAMILY = "measurement-sequence"
+MSQ_THETA = 8.0 * math.pi / 9.0
+MSQ_STEPS = (1, 2, 4, 8, 16)
+MSQ_ARMS = ("measure", "delay", "unitary", "settle")
+# The step counts each arm runs.
+MSQ_UNITARY_STEPS = 16
+MSQ_SETTLE_STEPS = 16
+# The idle after each mid-circuit measurement of the settle arm, rounded up to
+# the Target's timing granularity (qpu_planning.settle_delay).
+MSQ_SETTLE_SECONDS = 2.0e-6
+# The idle before the final measurement of every member, rounded up the same
+# way: residual readout photons of the last mid-circuit measurement decay
+# before the read, so the final assignment carries no history of it.
+MSQ_PREREADOUT_SECONDS = 2.0e-6
+# The t1 arm: x, an idle of each duration below, the pre-readout idle, then the
+# final measurement. It measures the qubit's relaxation in the job, so the
+# analysis fits T1 from these members for the measure-arm and settle
+# predictions instead of the Target's T1. A zero duration omits the idle.
+MSQ_T1_MICROSECONDS = (0, 20, 50, 100, 200)
+# The zero-pulse readout member: the pre-readout idle, then the final measurement. With the t1 member at idle 0
+# (the same circuit after one x) it brackets the final read's assignment channel, offset and scale, for every
+# member of both jobs: the family runs with no twirling and no dynamical decoupling, so the static and dynamic
+# jobs read through the same unsymmetrized measure after the same wait.
+MSQ_RO0 = "ro0"
+# The measure arm at N = 1 would read the delay arm's ideal and, with its
+# pre-readout delay between two measurements, would fuse as a dynamic PUB, so it
+# does not run; every measure member is dynamic.
+MSQ_MEASURE_STEPS = tuple(n for n in MSQ_STEPS if n >= 2)
+MSQ_ARM_COUNTS = {
+    "measure": MSQ_MEASURE_STEPS,
+    "delay": MSQ_STEPS,
+    "unitary": (MSQ_UNITARY_STEPS,),
+    "settle": (MSQ_SETTLE_STEPS,),
+}
+# Arms that measure into the mid-circuit register mcm.
+MSQ_MEASURING_ARMS = ("measure", "settle")
+# The four signed members of one (arm, N), in execution order +, -, -, +: the
+# sign of the rotation and the repeat letter that names the member.
+MSQ_SIGNED = (("p", "a", 1), ("m", "a", -1), ("m", "b", -1), ("p", "b", 1))
+# Steps with a gate after a measurement run as dynamic circuits
+# (local_compute.is_dynamic), so every measure member and the settle members
+# sit in a qubit's dynamic group; the delay, unitary and t1 members are static.
+MSQ_DYNAMIC_STEPS = MSQ_MEASURE_STEPS
+MSQ_ARM_STEPS = {
+    "measure": "rx(sign * THETA / N), measure into mcm, repeated N times; measure into final",
+    "delay": "rx(sign * THETA / N), delay of one measure duration, repeated N times; measure into final",
+    "unitary": "rx(sign * THETA / 16), barrier, repeated 16 times; measure into final",
+    "settle": "rx(sign * THETA / 16), measure into mcm, delay of 2 us, repeated 16 times; measure into final",
+    "t1": "x, delay of 0, 20, 50, 100 or 200 us, delay of 2 us, measure into final",
+    "ro0": "delay of 2 us, measure into final",
+}
+# Two-sided half-widths every endpoint must reach at the family-wise alpha
+# split over 17 endpoints per qubit (4 measure P0, 5 delay P0, the unitary P0,
+# the settle P0, the N = 16 contrast and 5 t1 P1). The optimizer takes each
+# endpoint's PUBs as streams of span 0.25 (a pooled member weighs 1/4) and gives
+# each stream the tail alpha_endpoint / streams, so a pooled P0 over 4 PUBs has
+# radius sqrt(ln(8 / alpha_endpoint) / (2 shots)), the contrast over 8 PUBs
+# 2 * sqrt(ln(16 / alpha_endpoint) / (2 shots)), and a t1 endpoint, one PUB,
+# sqrt(ln(2 / alpha_endpoint) / (2 shots)). With alpha 0.05 and 14 qubits
+# (alpha_endpoint 2.10e-4) a pooled P0 reaches 0.0254 at 8192 shots and 0.0359
+# at 4096, a t1 P1 0.0237 and 0.0334, and the contrast 0.0524 and 0.0741, so
+# 8192 shots is the smallest admitted power-of-two tier from 1 to 14 qubits.
+MSQ_PRECISION = {"p0": 0.03, "contrast": 0.055}
+MSQ_ENDPOINTS_PER_QUBIT = sum(len(counts) for counts in MSQ_ARM_COUNTS.values()) + 1 + len(MSQ_T1_MICROSECONDS)
+
+
+def msq_member(arm: str, steps: int, signed: tuple[str, str, int], qubit: int) -> str:
+    """msq_{arm}_n{N}_{sign}{repeat}_q{qubit}: sign p is RX(+THETA / N), m is RX(-THETA / N); repeat a or b."""
+    return f"msq_{arm}_n{steps}_{signed[0]}{signed[1]}_q{qubit}"
+
+
+def msq_circuit(
+    arm: str,
+    steps: int,
+    sign: int,
+    qubit: int,
+    name: str,
+    delay_dt: int,
+    settle_dt: int = 1,
+    prereadout_dt: int = 1,
+) -> QuantumCircuit:
+    """One signed member: steps rotations, each followed by a measure (mcm), a delay, a measure and a settle
+    delay, or nothing but a barrier, then the final read."""
+    if arm not in MSQ_ARMS or steps not in MSQ_ARM_COUNTS.get(arm, ()) or sign not in (1, -1):
+        raise ValueError(f"unknown measurement-sequence member {arm!r} n{steps} sign {sign!r}")
+    if type(delay_dt) is not int or delay_dt <= 0:
+        raise ValueError(f"the delay of {name} must be a positive integer number of dt, got {delay_dt!r}")
+    if type(settle_dt) is not int or settle_dt <= 0:
+        raise ValueError(f"the settle delay of {name} must be a positive integer number of dt, got {settle_dt!r}")
+    if type(prereadout_dt) is not int or prereadout_dt <= 0:
+        raise ValueError(f"the pre-readout delay of {name} must be a positive integer number of dt")
+    wire = QuantumRegister(1, "q")
+    final = ClassicalRegister(1, "final")
+    if arm in MSQ_MEASURING_ARMS:
+        mcm = ClassicalRegister(steps, "mcm")
+        circuit = QuantumCircuit(wire, final, mcm, name=name)
+    else:
+        circuit = QuantumCircuit(wire, final, name=name)
+    for step in range(steps):
+        circuit.rx(sign * MSQ_THETA / steps, 0)
+        if arm in MSQ_MEASURING_ARMS:
+            circuit.measure(0, circuit.clbits[1 + step])
+            if arm == "settle":
+                circuit.delay(settle_dt, 0, unit="dt")
+        elif arm == "delay":
+            circuit.delay(delay_dt, 0, unit="dt")
+        elif step < steps - 1:
+            circuit.barrier(0)
+    circuit.delay(prereadout_dt, 0, unit="dt")
+    circuit.measure(0, final[0])
+    return circuit
+
+
+def msq_t1_member(index: int, qubit: int) -> str:
+    return f"msq_t1_d{index}_q{qubit}"
+
+
+def msq_t1_circuit(index: int, qubit: int, idle_dt: int, prereadout_dt: int) -> QuantumCircuit:
+    """x, an idle of idle_dt (omitted at 0), the pre-readout idle, then the final measurement."""
+    if index not in range(len(MSQ_T1_MICROSECONDS)) or type(idle_dt) is not int or idle_dt < 0:
+        raise ValueError(f"unknown t1 member {index!r} with idle {idle_dt!r}")
+    if type(prereadout_dt) is not int or prereadout_dt <= 0:
+        raise ValueError("the pre-readout delay must be a positive integer number of dt")
+    circuit = QuantumCircuit(QuantumRegister(1, "q"), ClassicalRegister(1, "final"), name=msq_t1_member(index, qubit))
+    circuit.x(0)
+    if idle_dt:
+        circuit.delay(idle_dt, 0, unit="dt")
+    circuit.delay(prereadout_dt, 0, unit="dt")
+    circuit.measure(0, 0)
+    return circuit
+
+
+def msq_ro0_member(qubit: int) -> str:
+    return f"msq_{MSQ_RO0}_q{qubit}"
+
+
+def msq_ro0_circuit(qubit: int, prereadout_dt: int) -> QuantumCircuit:
+    """The pre-readout idle, then the final measurement of a qubit that starts in |0>."""
+    if type(prereadout_dt) is not int or prereadout_dt <= 0:
+        raise ValueError("the pre-readout delay must be a positive integer number of dt")
+    circuit = QuantumCircuit(QuantumRegister(1, "q"), ClassicalRegister(1, "final"), name=msq_ro0_member(qubit))
+    circuit.delay(prereadout_dt, 0, unit="dt")
+    circuit.measure(0, 0)
+    return circuit
+
+
+def msq_pinched_p0(steps: int) -> float:
+    """Ideal final P0 of the measure arm: (1 + cos(THETA / N) ** N) / 2."""
+    return (1.0 + math.cos(MSQ_THETA / steps) ** steps) / 2.0
+
+
+def msq_delay_p0() -> float:
+    """Ideal final P0 of the delay and unitary arms: cos(THETA / 2) ** 2."""
+    return math.cos(MSQ_THETA / 2.0) ** 2
+
+
+def msq_measure_law(steps: int) -> np.ndarray:
+    """Ideal law of a measure member over its N + 1 clbits: index = final + 2 * (mcm bits, step k at bit k).
+
+    The qubit holds the last outcome after each measurement, so a rotation by
+    phi = THETA / N repeats it with probability cos(phi / 2) ** 2 and flips it
+    with probability sin(phi / 2) ** 2, starting from outcome 0; the final read
+    repeats the last mcm bit. The law is the same for both rotation signs.
+    """
+    stay = math.cos(MSQ_THETA / steps / 2.0) ** 2
+    flip = math.sin(MSQ_THETA / steps / 2.0) ** 2
+    law = np.ones(1)
+    last = np.zeros(1, dtype=np.int64)
+    for _ in range(steps):
+        law = np.concatenate([law * np.where(last == bit, stay, flip) for bit in (0, 1)])
+        last = np.concatenate([np.full(last.size, bit, dtype=np.int64) for bit in (0, 1)])
+    full = np.zeros(2 ** (steps + 1))
+    full[(np.arange(law.size) << 1) | last] = law
+    return full
+
+
+def msq_weights(steps: int, arm: str) -> np.ndarray:
+    """1 on every outcome whose final bit (clbit 0) reads 0, over the member's outcome space."""
+    width = 2 ** (steps + 1) if arm in MSQ_MEASURING_ARMS else 2
+    return np.asarray([1.0 - (index & 1) for index in range(width)])
+
+
+def msq_delays(qubits: list[int], measurement_delay_dt: Any, label: str = "measure") -> dict[int, int]:
+    """The per-qubit duration in dt (the measure duration, or the settle idle), one positive integer per qubit."""
+    if not qubits or len(set(qubits)) != len(qubits) or any(type(q) is not int or q < 0 for q in qubits):
+        raise ValueError(f"measurement-sequence needs distinct nonnegative qubits, got {qubits}")
+    if not isinstance(measurement_delay_dt, dict):
+        raise ValueError(f"measurement-sequence needs a {label} duration in dt for each qubit")
+    delays = {int(qubit): duration for qubit, duration in measurement_delay_dt.items()}
+    if set(delays) != set(qubits) or any(type(d) is not int or d <= 0 for d in delays.values()):
+        raise ValueError(
+            f"measurement-sequence needs one positive {label} dt duration per qubit, got {measurement_delay_dt}"
+        )
+    return delays
+
+
+def msq_t1_delays(value: Any) -> tuple[int, ...]:
+    """The t1 idles in dt, one per MSQ_T1_MICROSECONDS entry; the first is 0 and the rest increase."""
+    delays = tuple(value) if isinstance(value, (list, tuple)) else ()
+    if (
+        len(delays) != len(MSQ_T1_MICROSECONDS)
+        or any(type(d) is not int or d < 0 for d in delays)
+        or delays[0] != 0
+        or any(a >= b for a, b in zip(delays, delays[1:], strict=False))
+    ):
+        raise ValueError(f"the t1 idles need {len(MSQ_T1_MICROSECONDS)} increasing dt durations from 0, got {value}")
+    return delays
+
+
+def msq_members(
+    qubit: int, delay_dt: int, settle_dt: int, prereadout_dt: int, t1_dt: tuple[int, ...]
+) -> tuple[tuple[Member, ...], tuple[Member, ...]]:
+    """(static members, dynamic members) of one qubit, in execution order.
+
+    Static: the delay arm at each N, the unitary arm, then ro0. Dynamic:
+    the measure arm at N >= 2, then the settle arm. Within an (arm, N) the order is +, -, -, +. The
+    static members end with the t1 members, one per idle, whose ideal is the noise-free P1 = 1 and whose
+    decay the noise model prices from the Target's T1.
+    """
+
+    def build(arm: str, steps: int) -> list[Member]:
+        ideal = (
+            msq_measure_law(steps) if arm in MSQ_MEASURING_ARMS else np.asarray([msq_delay_p0(), 1.0 - msq_delay_p0()])
+        )
+        weights = msq_weights(steps, arm)
+        return [
+            Member(
+                msq_member(arm, steps, signed, qubit),
+                msq_circuit(
+                    arm,
+                    steps,
+                    signed[2],
+                    qubit,
+                    msq_member(arm, steps, signed, qubit),
+                    delay_dt,
+                    settle_dt,
+                    prereadout_dt,
+                ),
+                ideal,
+                weights=weights,
+            )
+            for signed in MSQ_SIGNED
+        ]
+
+    static = [
+        *(m for steps in MSQ_STEPS for m in build("delay", steps)),
+        *build("unitary", MSQ_UNITARY_STEPS),
+        Member(
+            msq_ro0_member(qubit),
+            msq_ro0_circuit(qubit, prereadout_dt),
+            np.asarray([1.0, 0.0]),
+            weights=np.asarray([1.0, 0.0]),
+        ),
+        *(
+            Member(
+                msq_t1_member(index, qubit),
+                msq_t1_circuit(index, qubit, idle, prereadout_dt),
+                np.asarray([0.0, 1.0]),
+                weights=np.asarray([0.0, 1.0]),
+            )
+            for index, idle in enumerate(t1_dt)
+        ),
+    ]
+    dynamic = [
+        *(m for steps in MSQ_DYNAMIC_STEPS for m in build("measure", steps)),
+        *build("settle", MSQ_SETTLE_STEPS),
+    ]
+    return tuple(static), tuple(dynamic)
+
+
+def _msq_final_p0(distribution: np.ndarray) -> float:
+    return float(distribution[0::2].sum())
+
+
+def _msq_summary(distributions: dict[str, np.ndarray], qubit: int) -> dict[str, float]:
+    """Pooled final P0 per (arm, N) whose four signed members are present, and the measure arm's deficit."""
+    result: dict[str, float] = {}
+    for arm in MSQ_ARMS:
+        for steps in MSQ_ARM_COUNTS[arm]:
+            names = [msq_member(arm, steps, signed, qubit) for signed in MSQ_SIGNED]
+            if not all(name in distributions for name in names):
+                continue
+            pooled = math.fsum(_msq_final_p0(distributions[name]) for name in names) / len(names)
+            result[f"q{qubit}_msq_p0_{arm}_n{steps}"] = pooled
+            if arm in MSQ_MEASURING_ARMS:
+                prefix = "" if arm == "measure" else f"{arm}_"
+                result[f"q{qubit}_msq_{prefix}deficit_n{steps}"] = msq_pinched_p0(steps) - pooled
+    if msq_ro0_member(qubit) in distributions:
+        result[f"q{qubit}_msq_p1_ro0"] = float(distributions[msq_ro0_member(qubit)][1])
+    for index in range(len(MSQ_T1_MICROSECONDS)):
+        name = msq_t1_member(index, qubit)
+        if name in distributions:
+            result[f"q{qubit}_msq_p1_t1_d{index}"] = float(distributions[name][1])
+    return result
+
+
+def _msq_summarizer(qubit: int) -> Summary:
+    def summarize(distributions: dict[str, np.ndarray]) -> dict[str, float]:
+        return _msq_summary(distributions, qubit)
+
+    return summarize
+
+
+def measurement_sequence_groups(
+    qubits: list[int],
+    measurement_delay_dt: Any,
+    settle_delay_dt: Any,
+    prereadout_delay_dt: Any,
+    t1_delays_dt: Any,
+) -> list[Group]:
+    """Per qubit, a static group and a dynamic group; row r of each kind fuses across the qubits into one PUB.
+
+    measurement_delay_dt maps each qubit to its measure duration in dt, which
+    the delay arm idles per step; settle_delay_dt maps each qubit to the idle
+    after each mid-circuit measurement of the settle arm. Each group's summary reports, per N, the
+    final P0 pooled over the four signed members and, for the measure arm,
+    the deficit ideal - measured.
+    """
+    delays = msq_delays(qubits, measurement_delay_dt)
+    settles = msq_delays(qubits, settle_delay_dt, "settle")
+    prereadouts = msq_delays(qubits, prereadout_delay_dt, "pre-readout")
+    t1_dt = msq_t1_delays(t1_delays_dt)
+    groups = []
+    for qubit in qubits:
+        static, dynamic = msq_members(qubit, delays[qubit], settles[qubit], prereadouts[qubit], t1_dt)
+        groups.append(Group(f"msq_static_q{qubit}", static, _msq_summarizer(qubit)))
+        groups.append(Group(f"msq_dynamic_q{qubit}", dynamic, _msq_summarizer(qubit)))
+    return groups
+
+
+def measurement_sequence_contracts(qubits: list[int], alpha: float, power: float) -> tuple[ObservableContract, ...]:
+    """Seventeen two-sided precision endpoints per qubit at the family-wise alpha split over all.
+
+    msq_p0_{measure,delay}_nN_qQ, msq_p0_unitary_n16_qQ and msq_p0_settle_n16_qQ read the final P0
+    pooled over the four signed members of the arm at N;
+    msq_zeno_contrast_n16_qQ reads the measure arm minus the unitary arm at
+    N = 16, the mutation-test endpoint; msq_p1_t1_dK_qQ reads the t1 member's
+    P1 (one PUB, unpooled). A pooled member carries score values at weight 1/4, so the endpoint's
+    estimate is the pooled mean.
+    """
+    if not qubits or len(set(qubits)) != len(qubits) or any(type(q) is not int or q < 0 for q in qubits):
+        raise ValueError(f"measurement-sequence needs distinct nonnegative qubits, got {qubits}")
+    share = alpha / (MSQ_ENDPOINTS_PER_QUBIT * len(qubits))
+
+    def terms(arm: str, steps: int, qubit: int, sign: int = 1) -> tuple[ObservableTerm, ...]:
+        values = tuple(float(value) / len(MSQ_SIGNED) for value in msq_weights(steps, arm))
+        return tuple(ObservableTerm(msq_member(arm, steps, signed, qubit), values, sign=sign) for signed in MSQ_SIGNED)
+
+    contracts: list[ObservableContract] = []
+    for qubit in qubits:
+        contracts.extend(
+            ObservableContract(
+                f"msq_p1_t1_d{index}_q{qubit}",
+                (ObservableTerm(msq_t1_member(index, qubit), (0.0, 1.0)),),
+                alpha=share,
+                power=power,
+                precision_half_width=MSQ_PRECISION["p0"],
+            )
+            for index in range(len(MSQ_T1_MICROSECONDS))
+        )
+        for arm in MSQ_ARMS:
+            contracts.extend(
+                ObservableContract(
+                    f"msq_p0_{arm}_n{steps}_q{qubit}",
+                    terms(arm, steps, qubit),
+                    alpha=share,
+                    power=power,
+                    precision_half_width=MSQ_PRECISION["p0"],
+                )
+                for steps in MSQ_ARM_COUNTS[arm]
+            )
+        top = MSQ_UNITARY_STEPS
+        contracts.append(
+            ObservableContract(
+                f"msq_zeno_contrast_n{top}_q{qubit}",
+                (*terms("measure", top, qubit), *terms("unitary", top, qubit, sign=-1)),
+                alpha=share,
+                power=power,
+                precision_half_width=MSQ_PRECISION["contrast"],
+            )
+        )
+    return tuple(contracts)
+
+
+# measurement-sequence-envelope: the main family re-planned on each calibration by the envelope's layout rule
+# (msq_envelope.layout_rule). Every member of the main family runs with a reset of its qubit after its final
+# measurement, so the next shot starts from the reset state whatever circuit ran before it (IBM orders a job's
+# circuits column-wise with no guaranteed circuit order). Each member then holds a reset, so every PUB is dynamic and
+# the family runs as one job. Two reset controls per qubit measure what the terminal reset passes on: x, measure into
+# pre, reset, the pre-readout idle, measure into final; and the same without the x. K pattern members prepare every
+# selected qubit in |0> or |1> and measure them all. The pattern bits are the non-constant columns of a normalized
+# Hadamard matrix of order K, so every column holds K / 2 ones and every two columns agree in exactly K / 2 rows:
+# within the K / 2 patterns of either own state, every other selected qubit sits in |1> in exactly K / 4 of them, and
+# each (qubit, own state) dispersion test sees every single-neighbor shift. A Paley construction gives the smallest
+# order above each width tier. MSQE_PATTERN_SEED permutes the columns over the layout ranks and the rows into
+# execution order. The design and its tests are in docs/design/measurement-sequence-adaptive-envelope.md.
+MSQE_FAMILY = "measurement-sequence-envelope"
+# Width tier -> (Hadamard order K, Paley construction, prime q): Paley I gives order q + 1 for q = 3 mod 4, Paley II
+# order 2 (q + 1) for q = 1 mod 4.
+MSQE_PATTERN_DESIGNS = {16: (20, 1, 19), 24: (28, 2, 13), 32: (36, 2, 17)}
+MSQE_MAX_WIDTH = max(MSQE_PATTERN_DESIGNS)
+# ANU QRNG docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json, index 0.
+MSQE_PATTERN_SEED = 49615
+MSQE_RESET_CONTROLS = ("rc1", "rc0")
+
+
+def _jacobsthal(q: int) -> np.ndarray:
+    """Q[i, j] = the quadratic character of j - i modulo the prime q."""
+    character = [0] + [1 if pow(a, (q - 1) // 2, q) == 1 else -1 for a in range(1, q)]
+    return np.asarray([[character[(j - i) % q] for j in range(q)] for i in range(q)], dtype=np.int64)
+
+
+def paley_hadamard(construction: int, q: int) -> np.ndarray:
+    """A Hadamard matrix by Paley I (order q + 1, q = 3 mod 4) or Paley II (order 2 (q + 1), q = 1 mod 4), q prime."""
+    jacobsthal = _jacobsthal(q)
+    if construction == 1 and q % 4 == 3:
+        matrix = np.ones((q + 1, q + 1), dtype=np.int64)
+        matrix[1:, 0] = -1
+        matrix[1:, 1:] = jacobsthal + np.eye(q, dtype=np.int64)
+    elif construction == 2 and q % 4 == 1:
+        conference = np.zeros((q + 1, q + 1), dtype=np.int64)
+        conference[0, 1:] = 1
+        conference[1:, 0] = 1
+        conference[1:, 1:] = jacobsthal
+        off, on = np.asarray([[1, -1], [-1, -1]]), np.asarray([[1, 1], [1, -1]])
+        matrix = np.block([[on if i == j else conference[i, j] * off for j in range(q + 1)] for i in range(q + 1)])
+    else:
+        raise ValueError(f"no Paley {construction} construction for q = {q}")
+    order = matrix.shape[0]
+    if not np.array_equal(matrix @ matrix.T, order * np.eye(order, dtype=np.int64)):
+        raise ValueError(f"Paley {construction} with q = {q} is not a Hadamard matrix")
+    return matrix
+
+
+def msqe_pattern_tier(width: int) -> int:
+    """The smallest width tier that holds width qubits."""
+    if type(width) is not int or width < 1:
+        raise ValueError(f"the envelope pattern width must be a positive integer, got {width!r}")
+    for tier in sorted(MSQE_PATTERN_DESIGNS):
+        if width <= tier:
+            return tier
+    raise ValueError(f"the envelope pattern width {width} exceeds {MSQE_MAX_WIDTH}")
+
+
+def msqe_pattern_bits(width: int) -> tuple[tuple[int, ...], ...]:
+    """Pattern bits, row k = pattern k in execution order, column r = layout rank r, for width ranks."""
+    order, construction, q = MSQE_PATTERN_DESIGNS[msqe_pattern_tier(width)]
+    matrix = paley_hadamard(construction, q)
+    # Normalize the first column to +1 and drop it; the remaining order - 1 columns are balanced and orthogonal.
+    columns = (matrix * matrix[:, :1])[:, 1:]
+    generator = np.random.default_rng(MSQE_PATTERN_SEED)
+    column_order = generator.permutation(order - 1)
+    row_order = generator.permutation(order)
+    bits = (columns[np.ix_(row_order, column_order[:width])] < 0).astype(np.int64)
+    return tuple(tuple(int(v) for v in row) for row in bits)
+
+
+def msqe_reset_member(control: str, qubit: int) -> str:
+    return f"msqe_{control}_q{qubit}"
+
+
+def msqe_reset_circuit(control: str, qubit: int, prereadout_dt: int) -> QuantumCircuit:
+    """rc1: x, measure into pre, reset, the pre-readout idle, measure into final, reset; rc0 omits the x."""
+    if control not in MSQE_RESET_CONTROLS or type(prereadout_dt) is not int or prereadout_dt <= 0:
+        raise ValueError(f"unknown reset control {control!r} or pre-readout delay {prereadout_dt!r}")
+    final, pre = ClassicalRegister(1, "final"), ClassicalRegister(1, "pre")
+    circuit = QuantumCircuit(QuantumRegister(1, "q"), final, pre, name=msqe_reset_member(control, qubit))
+    if control == "rc1":
+        circuit.x(0)
+    circuit.measure(0, pre[0])
+    circuit.reset(0)
+    circuit.delay(prereadout_dt, 0, unit="dt")
+    circuit.measure(0, final[0])
+    circuit.reset(0)
+    return circuit
+
+
+def msqe_pattern_member(index: int, qubit: int) -> str:
+    return f"msqe_pat{index}_q{qubit}"
+
+
+def msqe_pattern_circuit(index: int, bit: int, qubit: int, prereadout_dt: int) -> QuantumCircuit:
+    """x when bit is 1, the pre-readout idle, measure into final, reset."""
+    if type(index) is not int or index < 0 or bit not in (0, 1) or type(prereadout_dt) is not int or prereadout_dt <= 0:
+        raise ValueError(f"unknown pattern member {index!r} bit {bit!r} or pre-readout delay {prereadout_dt!r}")
+    circuit = QuantumCircuit(
+        QuantumRegister(1, "q"), ClassicalRegister(1, "final"), name=msqe_pattern_member(index, qubit)
+    )
+    if bit:
+        circuit.x(0)
+    circuit.delay(prereadout_dt, 0, unit="dt")
+    circuit.measure(0, 0)
+    circuit.reset(0)
+    return circuit
+
+
+def _with_terminal_reset(member: Member) -> Member:
+    """The member with a reset of its qubit after the final measurement; its ideal law over the clbits is unchanged."""
+    circuit = member.circuit.copy()
+    circuit.reset(0)
+    return replace(member, circuit=circuit)
+
+
+def _msqe_summary(distributions: dict[str, np.ndarray], qubit: int) -> dict[str, float]:
+    """The main family's summary plus each reset control's final P1 and each pattern's final P1."""
+    result = _msq_summary(distributions, qubit)
+    for control in MSQE_RESET_CONTROLS:
+        name = msqe_reset_member(control, qubit)
+        if name in distributions:
+            result[f"q{qubit}_msqe_p1_{control}"] = float(distributions[name][1::2].sum())
+    index = 0
+    while (name := msqe_pattern_member(index, qubit)) in distributions:
+        result[f"q{qubit}_msqe_p1_pat{index}"] = float(distributions[name][1])
+        index += 1
+    return result
+
+
+def _msqe_summarizer(qubit: int) -> Summary:
+    def summarize(distributions: dict[str, np.ndarray]) -> dict[str, float]:
+        return _msqe_summary(distributions, qubit)
+
+    return summarize
+
+
+def msqe_groups(
+    qubits: list[int],
+    measurement_delay_dt: Any,
+    settle_delay_dt: Any,
+    prereadout_delay_dt: Any,
+    t1_delays_dt: Any,
+) -> list[Group]:
+    """One group per qubit in layout order: the main family's members with a terminal reset, the reset controls,
+    then the patterns of the width's tier; row r fuses across the qubits into one dynamic PUB."""
+    delays = msq_delays(qubits, measurement_delay_dt)
+    settles = msq_delays(qubits, settle_delay_dt, "settle")
+    prereadouts = msq_delays(qubits, prereadout_delay_dt, "pre-readout")
+    t1_dt = msq_t1_delays(t1_delays_dt)
+    bits = msqe_pattern_bits(len(qubits))
+    groups = []
+    for rank, qubit in enumerate(qubits):
+        static, dynamic = msq_members(qubit, delays[qubit], settles[qubit], prereadouts[qubit], t1_dt)
+        controls = [
+            Member(
+                msqe_reset_member(control, qubit),
+                msqe_reset_circuit(control, qubit, prereadouts[qubit]),
+                # index = final + 2 * pre: rc1 reads pre 1 and final 0, rc0 reads both 0.
+                np.asarray([0.0, 0.0, 1.0, 0.0] if control == "rc1" else [1.0, 0.0, 0.0, 0.0]),
+                weights=np.asarray([0.0, 1.0, 0.0, 1.0]),
+            )
+            for control in MSQE_RESET_CONTROLS
+        ]
+        patterns = [
+            Member(
+                msqe_pattern_member(index, qubit),
+                msqe_pattern_circuit(index, row[rank], qubit, prereadouts[qubit]),
+                np.asarray([1.0 - row[rank], float(row[rank])]),
+                weights=np.asarray([0.0, 1.0]),
+            )
+            for index, row in enumerate(bits)
+        ]
+        members = (*(_with_terminal_reset(m) for m in (*static, *dynamic)), *controls, *patterns)
+        groups.append(Group(f"msqe_q{qubit}", members, _msqe_summarizer(qubit)))
+    return groups
+
+
+# measurement-sequence-relaxation: the envelope's constructor with the successor's rows (docs/design/
+# measurement-sequence-envelope-successor.md). Every member keeps the envelope's terminal reset, so the family stays
+# one dynamic job and row r of every qubit fuses into PUB r in the order below:
+#   head        the main family's static members (delay arm at every N, unitary arm, ro0, t1 series), whose delay
+#               rows at N = 4 and N = 8 are the first order-sentinel segment;
+#   readers     each measure row at N = 2, 4, 8 is followed by one carryover reader: the same signed measure member,
+#               then its terminal reset, an idle of MSQR_READER_IDLE_SECONDS and a measurement into the 1-bit register
+#               `reader`, then a reset. The reader reads the excitation the predecessor's end state leaves in the same
+#               shot, so no PUB order enters it;
+#   sentinels   a block of four delay-arm rows (N = 4 twice, N = 8 twice) between the N = 4 and N = 8 reader blocks
+#               and another among the patterns, so each third of the job holds one order-sentinel segment;
+#   equilibrium a ground-start member that idles MSQR_EQUILIBRIUM_SECONDS, then the pre-readout wait, reads and
+#               resets, directly after the last reader; the four N = 16 measure rows follow it;
+#   tail        the settle arm, the reset controls and the width tier's patterns with the second sentinel block.
+MSQR_FAMILY = "measurement-sequence-relaxation"
+# Step counts whose four signed measure rows each carry a reader, in job order.
+MSQR_READER_STEPS = (2, 4, 8)
+MSQR_READERS = len(MSQR_READER_STEPS) * len(MSQ_SIGNED)
+# The equilibrium row's idle from the initialized state, rounded up to the Target's timing granularity.
+MSQR_EQUILIBRIUM_SECONDS = 400.0e-6
+# A reader's idle between its terminal reset and its measurement: the Heron r2 rep_delay floor
+# (qpu_planning.REP_DELAY_FLOOR_SECONDS), rounded down to the Target's granularity. Between shots the executor adds at
+# least this delay and the init reset, each a map that shrinks a difference in excitation, so the reader bounds the
+# excitation the next shot starts with.
+MSQR_READER_IDLE_SECONDS = 20.0e-6
+# A sentinel block: (steps, signed member) of its four delay-arm rows. Rows (0, 1) and (2, 3) are its two pairs of
+# consecutive rows; the head's pairs are the delay rows (8, 9) and (12, 13) of the job.
+MSQR_SENTINEL_ROWS = (
+    (4, MSQ_SIGNED[0]),
+    (4, MSQ_SIGNED[1]),
+    (8, MSQ_SIGNED[0]),
+    (8, MSQ_SIGNED[1]),
+)
+# Sentinel segment numbers by position in the job: the head's delay rows are segment 0.
+MSQR_SENTINEL_MIDDLE, MSQR_SENTINEL_TAIL = 1, 2
+# The middle block follows the reader block of this step count.
+MSQR_SENTINEL_AFTER_STEPS = 4
+
+
+def msqr_reader_member(index: int, qubit: int) -> str:
+    return f"msqr_reader{index}_q{qubit}"
+
+
+def msqr_equilibrium_member(qubit: int) -> str:
+    return f"msqr_eq_q{qubit}"
+
+
+def msqr_sentinel_member(segment: int, index: int, qubit: int) -> str:
+    """msqr_sent{segment}{index}_n{N}_q{qubit}: row `index` of the segment's block of delay-arm rows."""
+    return f"msqr_sent{segment}{index}_n{MSQR_SENTINEL_ROWS[index][0]}_q{qubit}"
+
+
+def msqr_reader_stem(index: int) -> tuple[int, tuple[str, str, int]]:
+    """(steps, signed member) of the measure member that reader `index` repeats, in reader order."""
+    if type(index) is not int or not 0 <= index < MSQR_READERS:
+        raise ValueError(f"unknown carryover reader {index!r}")
+    return MSQR_READER_STEPS[index // len(MSQ_SIGNED)], MSQ_SIGNED[index % len(MSQ_SIGNED)]
+
+
+def msqr_reader_circuit(
+    index: int, qubit: int, delay_dt: int, settle_dt: int, prereadout_dt: int, reader_idle_dt: int
+) -> QuantumCircuit:
+    """The signed measure member of `msqr_reader_stem`, its terminal reset, the reader idle, then a measurement into
+    the register `reader` and a reset: clbit 0 is the predecessor's final bit and clbit N + 1 the reader's."""
+    steps, signed = msqr_reader_stem(index)
+    if type(reader_idle_dt) is not int or reader_idle_dt <= 0:
+        raise ValueError(f"the reader idle must be a positive integer number of dt, got {reader_idle_dt!r}")
+    name = msqr_reader_member(index, qubit)
+    circuit = msq_circuit("measure", steps, signed[2], qubit, name, delay_dt, settle_dt, prereadout_dt)
+    reader = ClassicalRegister(1, "reader")
+    circuit.add_register(reader)
+    circuit.reset(0)
+    circuit.delay(reader_idle_dt, 0, unit="dt")
+    circuit.measure(0, reader[0])
+    circuit.reset(0)
+    return circuit
+
+
+def msqr_reader_law(steps: int) -> np.ndarray:
+    """Ideal law of a reader over its N + 2 clbits: the measure member's law with the reader bit at 0."""
+    law = msq_measure_law(steps)
+    return np.concatenate([law, np.zeros_like(law)])
+
+
+def msqr_equilibrium_circuit(qubit: int, equilibrium_dt: int, prereadout_dt: int) -> QuantumCircuit:
+    """The equilibrium idle from the initialized state, the pre-readout idle, then the final measurement."""
+    if type(equilibrium_dt) is not int or equilibrium_dt <= 0:
+        raise ValueError(f"the equilibrium idle must be a positive integer number of dt, got {equilibrium_dt!r}")
+    if type(prereadout_dt) is not int or prereadout_dt <= 0:
+        raise ValueError("the pre-readout delay must be a positive integer number of dt")
+    circuit = QuantumCircuit(
+        QuantumRegister(1, "q"), ClassicalRegister(1, "final"), name=msqr_equilibrium_member(qubit)
+    )
+    circuit.delay(equilibrium_dt, 0, unit="dt")
+    circuit.delay(prereadout_dt, 0, unit="dt")
+    circuit.measure(0, 0)
+    circuit.reset(0)
+    return circuit
+
+
+def msqr_row_count(width: int) -> int:
+    """PUBs of the family at layout width `width`: the envelope's rows plus the readers, the equilibrium row and the
+    two sentinel blocks."""
+    base = 4 * len(MSQ_STEPS) + 4 + 1 + len(MSQ_T1_MICROSECONDS) + 4 * len(MSQ_DYNAMIC_STEPS) + 4
+    return (
+        base + len(MSQE_RESET_CONTROLS) + len(msqe_pattern_bits(width)) + MSQR_READERS + 1 + 2 * len(MSQR_SENTINEL_ROWS)
+    )
+
+
+def msqr_members(
+    qubit: int,
+    delay_dt: int,
+    settle_dt: int,
+    prereadout_dt: int,
+    t1_dt: tuple[int, ...],
+    equilibrium_dt: int,
+    reader_idle_dt: int,
+    pattern_column: tuple[int, ...],
+) -> tuple[Member, ...]:
+    """One qubit's members in job order (the layout above); pattern_column holds its bit in each pattern."""
+    static, dynamic = msq_members(qubit, delay_dt, settle_dt, prereadout_dt, t1_dt)
+    by_name = {m.name: _with_terminal_reset(m) for m in (*static, *dynamic)}
+    delay_ideal = np.asarray([msq_delay_p0(), 1.0 - msq_delay_p0()])
+
+    def measure_rows(steps: int) -> list[Member]:
+        return [by_name[msq_member("measure", steps, signed, qubit)] for signed in MSQ_SIGNED]
+
+    def reader(index: int) -> Member:
+        steps, _ = msqr_reader_stem(index)
+        weights = msq_weights(steps, "measure")
+        return Member(
+            msqr_reader_member(index, qubit),
+            msqr_reader_circuit(index, qubit, delay_dt, settle_dt, prereadout_dt, reader_idle_dt),
+            msqr_reader_law(steps),
+            weights=np.concatenate([weights, weights]),
+        )
+
+    def sentinels(segment: int) -> list[Member]:
+        members = []
+        for index, (steps, signed) in enumerate(MSQR_SENTINEL_ROWS):
+            name = msqr_sentinel_member(segment, index, qubit)
+            circuit = msq_circuit("delay", steps, signed[2], qubit, name, delay_dt, settle_dt, prereadout_dt)
+            circuit.reset(0)
+            members.append(Member(name, circuit, delay_ideal, weights=msq_weights(steps, "delay")))
+        return members
+
+    rows = [by_name[m.name] for m in static]
+    index = 0
+    for steps in MSQR_READER_STEPS:
+        for member in measure_rows(steps):
+            rows += [member, reader(index)]
+            index += 1
+        if steps == MSQR_SENTINEL_AFTER_STEPS:
+            rows += sentinels(MSQR_SENTINEL_MIDDLE)
+    rows.append(
+        Member(
+            msqr_equilibrium_member(qubit),
+            msqr_equilibrium_circuit(qubit, equilibrium_dt, prereadout_dt),
+            np.asarray([1.0, 0.0]),
+            weights=np.asarray([1.0, 0.0]),
+        )
+    )
+    rows += measure_rows(MSQ_STEPS[-1])
+    rows += [by_name[msq_member("settle", MSQ_SETTLE_STEPS, signed, qubit)] for signed in MSQ_SIGNED]
+    rows += [
+        Member(
+            msqe_reset_member(control, qubit),
+            msqe_reset_circuit(control, qubit, prereadout_dt),
+            np.asarray([0.0, 0.0, 1.0, 0.0] if control == "rc1" else [1.0, 0.0, 0.0, 0.0]),
+            weights=np.asarray([0.0, 1.0, 0.0, 1.0]),
+        )
+        for control in MSQE_RESET_CONTROLS
+    ]
+    patterns = [
+        Member(
+            msqe_pattern_member(k, qubit),
+            msqe_pattern_circuit(k, bit, qubit, prereadout_dt),
+            np.asarray([1.0 - bit, float(bit)]),
+            weights=np.asarray([0.0, 1.0]),
+        )
+        for k, bit in enumerate(pattern_column)
+    ]
+    # The second sentinel block sits mid-pattern, so it lies in the job's last third at every width tier.
+    split = len(patterns) // 2
+    return (*rows, *patterns[:split], *sentinels(MSQR_SENTINEL_TAIL), *patterns[split:])
+
+
+def _msqr_summary(distributions: dict[str, np.ndarray], qubit: int) -> dict[str, float]:
+    """The envelope's summary plus each reader's reader-bit and final P1 and the equilibrium row's final P1."""
+    result = _msqe_summary(distributions, qubit)
+    for index in range(MSQR_READERS):
+        if (name := msqr_reader_member(index, qubit)) in distributions:
+            law = np.asarray(distributions[name])
+            result[f"q{qubit}_msqr_p1_reader{index}"] = float(law[law.size // 2 :].sum())
+            result[f"q{qubit}_msqr_p1_reader{index}_final"] = float(law[1::2].sum())
+    if (name := msqr_equilibrium_member(qubit)) in distributions:
+        result[f"q{qubit}_msqr_p1_eq"] = float(distributions[name][1])
+    for segment in (MSQR_SENTINEL_MIDDLE, MSQR_SENTINEL_TAIL):
+        for index in range(len(MSQR_SENTINEL_ROWS)):
+            if (name := msqr_sentinel_member(segment, index, qubit)) in distributions:
+                result[f"q{qubit}_msqr_p0_sent{segment}{index}"] = _msq_final_p0(distributions[name])
+    return result
+
+
+def _msqr_summarizer(qubit: int) -> Summary:
+    def summarize(distributions: dict[str, np.ndarray]) -> dict[str, float]:
+        return _msqr_summary(distributions, qubit)
+
+    return summarize
+
+
+def msqr_groups(
+    qubits: list[int],
+    measurement_delay_dt: Any,
+    settle_delay_dt: Any,
+    prereadout_delay_dt: Any,
+    t1_delays_dt: Any,
+    equilibrium_delay_dt: Any,
+    reader_idle_delay_dt: Any,
+) -> list[Group]:
+    """One group per qubit in layout order; row r fuses across the qubits into one dynamic PUB."""
+    delays = msq_delays(qubits, measurement_delay_dt)
+    settles = msq_delays(qubits, settle_delay_dt, "settle")
+    prereadouts = msq_delays(qubits, prereadout_delay_dt, "pre-readout")
+    t1_dt = msq_t1_delays(t1_delays_dt)
+    if type(equilibrium_delay_dt) is not int or equilibrium_delay_dt <= 0:
+        raise ValueError(f"the equilibrium idle must be a positive integer number of dt, got {equilibrium_delay_dt!r}")
+    if type(reader_idle_delay_dt) is not int or reader_idle_delay_dt <= 0:
+        raise ValueError(f"the reader idle must be a positive integer number of dt, got {reader_idle_delay_dt!r}")
+    bits = msqe_pattern_bits(len(qubits))
+    return [
+        Group(
+            f"msqr_q{qubit}",
+            msqr_members(
+                qubit,
+                delays[qubit],
+                settles[qubit],
+                prereadouts[qubit],
+                t1_dt,
+                equilibrium_delay_dt,
+                reader_idle_delay_dt,
+                tuple(row[rank] for row in bits),
+            ),
+            _msqr_summarizer(qubit),
+        )
+        for rank, qubit in enumerate(qubits)
+    ]
+
+
+def msqr_sentinel_pairs() -> tuple[tuple[tuple[str, str], ...], ...]:
+    """The pairs of consecutive delay-arm rows (row stems) that read the job's shot order, by segment.
+
+    Segment 0 is the head's delay rows at N = 4 and N = 8; segments MSQR_SENTINEL_MIDDLE and MSQR_SENTINEL_TAIL are
+    the first and second pairs of each sentinel block (MSQR_SENTINEL_ROWS).
+    """
+
+    def stem(name: str) -> str:
+        return name.rpartition("_q")[0]
+
+    head = tuple(
+        (stem(msq_member("delay", steps, MSQ_SIGNED[0], 0)), stem(msq_member("delay", steps, MSQ_SIGNED[1], 0)))
+        for steps in (4, 8)
+    )
+    blocks = tuple(
+        tuple(
+            (stem(msqr_sentinel_member(segment, first, 0)), stem(msqr_sentinel_member(segment, first + 1, 0)))
+            for first in range(0, len(MSQR_SENTINEL_ROWS), 2)
+        )
+        for segment in (MSQR_SENTINEL_MIDDLE, MSQR_SENTINEL_TAIL)
+    )
+    return (head, *blocks)
+
+
+@functools.cache
+def msqr_row_stems(width: int) -> tuple[str, ...]:
+    """The member name of each job row without its qubit suffix, in job order: the one source of the row layout."""
+    members = msqr_members(0, 1, 1, 1, (0, 1, 2, 3, 4), 1, 1, tuple(row[0] for row in msqe_pattern_bits(width)))
+    return tuple(member.name.rpartition("_q")[0] for member in members)
+
+
+# measurement-sequence-diagnostic: the gate-model scatter floor of the pinching analysis. Each named qubit runs the
+# members of the main family that need no measurement history and carry the model's unitary-arm test: the four
+# signed unitary members at N = 16, ro0, and the t1 member at idle 0 (ro1). Their circuits come from msq_circuit,
+# msq_ro0_circuit and msq_t1_circuit with the main family's names, so the analysis helpers read both families
+# alike. Every member is static, so each row fuses across all named qubits into one PUB and the run costs about one
+# PUB-duration per member whatever the qubit count. The qubits are the main family's MSQD_MAIN_QUBITS and further
+# qubits chosen by the calibration-only rule of measurement_sequence_scatter.
+MSQD_FAMILY = "measurement-sequence-diagnostic"
+MSQD_MAIN_QUBITS = (91, 118, 95, 61, 147, 151, 59, 89)
+MSQD_ARM_STEPS = {
+    "unitary": MSQ_ARM_STEPS["unitary"],
+    "t1": "x, delay of 2 us, measure into final (the main family's t1 member at idle 0, ro1)",
+    "ro0": MSQ_ARM_STEPS["ro0"],
+}
+# Static members per qubit: the four signed unitary members, ro0 and ro1.
+MSQD_MEMBERS_PER_QUBIT = len(MSQ_SIGNED) + 2
+# Endpoints per qubit: the pooled unitary P0 and ro1's P1.
+MSQD_ENDPOINTS_PER_QUBIT = 2
+
+
+def msqd_members(qubit: int, prereadout_dt: int) -> tuple[Member, ...]:
+    """The static members of one diagnostic qubit in execution order: unitary +, -, -, +, then ro0 and ro1."""
+    ideal = np.asarray([msq_delay_p0(), 1.0 - msq_delay_p0()])
+    weights = msq_weights(MSQ_UNITARY_STEPS, "unitary")
+    return (
+        *(
+            Member(
+                msq_member("unitary", MSQ_UNITARY_STEPS, signed, qubit),
+                msq_circuit(
+                    "unitary",
+                    MSQ_UNITARY_STEPS,
+                    signed[2],
+                    qubit,
+                    msq_member("unitary", MSQ_UNITARY_STEPS, signed, qubit),
+                    1,
+                    1,
+                    prereadout_dt,
+                ),
+                ideal,
+                weights=weights,
+            )
+            for signed in MSQ_SIGNED
+        ),
+        Member(
+            msq_ro0_member(qubit),
+            msq_ro0_circuit(qubit, prereadout_dt),
+            np.asarray([1.0, 0.0]),
+            weights=np.asarray([1.0, 0.0]),
+        ),
+        Member(
+            msq_t1_member(0, qubit),
+            msq_t1_circuit(0, qubit, 0, prereadout_dt),
+            np.asarray([0.0, 1.0]),
+            weights=np.asarray([0.0, 1.0]),
+        ),
+    )
+
+
+def msq_diagnostic_groups(qubits: list[int], prereadout_delay_dt: Any) -> list[Group]:
+    """One static group per qubit; row r fuses across the qubits into one PUB, six PUBs in all."""
+    prereadouts = msq_delays(qubits, prereadout_delay_dt, "pre-readout")
+    return [
+        Group(f"msqd_static_q{qubit}", msqd_members(qubit, prereadouts[qubit]), _msq_summarizer(qubit))
+        for qubit in qubits
+    ]
+
+
+def msq_diagnostic_contracts(qubits: list[int], alpha: float, power: float) -> tuple[ObservableContract, ...]:
+    """Two two-sided precision endpoints per qubit at the family-wise alpha split over all.
+
+    msq_p0_unitary_n16_qQ is the P0 pooled over the four signed unitary members and msq_p1_t1_d0_qQ is ro1's P1,
+    both at the main family's half-width.
+    """
+    if not qubits or len(set(qubits)) != len(qubits) or any(type(q) is not int or q < 0 for q in qubits):
+        raise ValueError(f"measurement-sequence-diagnostic needs distinct nonnegative qubits, got {qubits}")
+    share = alpha / (MSQD_ENDPOINTS_PER_QUBIT * len(qubits))
+    values = tuple(float(v) / len(MSQ_SIGNED) for v in msq_weights(MSQ_UNITARY_STEPS, "unitary"))
+    contracts: list[ObservableContract] = []
+    for qubit in qubits:
+        contracts.append(
+            ObservableContract(
+                f"msq_p0_unitary_n{MSQ_UNITARY_STEPS}_q{qubit}",
+                tuple(
+                    ObservableTerm(msq_member("unitary", MSQ_UNITARY_STEPS, signed, qubit), values)
+                    for signed in MSQ_SIGNED
+                ),
+                alpha=share,
+                power=power,
+                precision_half_width=MSQ_PRECISION["p0"],
+            )
+        )
+        contracts.append(
+            ObservableContract(
+                f"msq_p1_t1_d0_q{qubit}",
+                (ObservableTerm(msq_t1_member(0, qubit), (0.0, 1.0)),),
+                alpha=share,
+                power=power,
+                precision_half_width=MSQ_PRECISION["p0"],
+            )
+        )
+    return tuple(contracts)
 
 
 # Clbits of a heralded n21-orbit-rca member: two phase bits and one herald
@@ -547,6 +1616,8 @@ def n21_orbit_rca_group(
     ramsey_windows: tuple[int, ...] = (),
     segmented: dict[str, Any] | None = None,
     window_doses: tuple[int, ...] = (),
+    detuning_sign: bool = False,
+    dose_roles: dict[str, int] | None = None,
 ) -> Group:
     """Pair feed-forward with its omitted-correction control in each window variant.
 
@@ -601,7 +1672,15 @@ def n21_orbit_rca_group(
     window_dose pair at every dose and a window_dose_echo pair at every
     nonzero dose, with doses absolute dt independent of window_delay_dt and
     echo_half_dt. It excludes every other configuration.
+
+    detuning_sign, with window_doses and init_herald, replaces the sweep
+    with the detuning-sign test (n21_detuning_sign_group), whose Ramsey arms
+    sit on dose_roles.
     """
+    if dose_roles is not None and not detuning_sign:
+        raise ValueError("dose_roles is a detuning_sign configuration")
+    if detuning_sign and not window_doses:
+        raise ValueError("detuning_sign is a window_doses configuration")
     if window_doses:
         conflicts = [
             name
@@ -616,6 +1695,10 @@ def n21_orbit_rca_group(
         ]
         if conflicts:
             raise ValueError(f"window_doses excludes {', '.join(conflicts)}")
+        if detuning_sign:
+            if not init_herald:
+                raise ValueError("detuning_sign members are dynamic through their heralds; it requires init_herald")
+            return n21_detuning_sign_group(window_doses, dose_roles)
         return n21_window_dose_group(window_doses, init_herald)
     if ramsey_windows and not ground_control_split:
         raise ValueError("ramsey_windows is a ground_control_split configuration")
@@ -781,6 +1864,107 @@ def n21_window_dose_group(doses: tuple[int, ...], init_herald: bool = False) -> 
     return Group("n21_orbit_rca", members, summarize)
 
 
+# Parity of the two phase bits, (-1)^(b0 + b1): under P(b0) = 1/2 it is half
+# the control's second-round contrast given b0 = 0 minus that given b0 = 1,
+# which cancels the relaxation offset common to both branches.
+_N21_PARITY = (1.0, -1.0, -1.0, 1.0)
+# (-1)^b1 of a work Ramsey member, whose clbit 0 stays 0.
+_N21_WORK_READ = (1.0, 0.0, -1.0, 0.0)
+
+
+def n21_detuning_sign_arms(doses: tuple[int, ...]) -> tuple[tuple[str, str, int], ...]:
+    """(kind, name stem, dose) of every detuning-sign member, in member order.
+
+    kind is orbit or ramsey. Dose by dose, the arms are window_dose and
+    window_dose_y without feed-forward and the Ramsey arms of the work bits
+    for 1 and for 16 in X and Y, so drift over the job enters every reading
+    of a dose alike; window_dose_echo and window_dose_echo_y at the largest
+    dose close the list. The first arm is window_dose at dose 0, the group's
+    primary.
+    """
+    checked = n21_window_doses(doses)
+    arms: list[tuple[str, str, int]] = []
+    for dose in checked:
+        arms += [("orbit", variant, dose) for variant in ("window_dose", "window_dose_y")]
+        arms += [
+            ("ramsey", n21_work_ramsey_name(role, quadrature, dose), dose)
+            for role in ("one", "sixteen")
+            for quadrature in N21_SPECTATOR_QUADRATURES
+        ]
+    arms += [("orbit", variant, checked[-1]) for variant in ("window_dose_echo", "window_dose_echo_y")]
+    return tuple(arms)
+
+
+def n21_detuning_dose_roles(roles: Any) -> dict[str, int]:
+    """The logical index of each work role's dose-time qubit, validated; None gives the unrouted 1 and 3."""
+    if roles is None:
+        return dict(N21_WORK_RAMSEY_QUBITS)
+    if (
+        not isinstance(roles, dict)
+        or set(roles) != set(N21_WORK_RAMSEY_QUBITS)
+        or any(type(index) is not int or not 0 <= index < 4 for index in roles.values())
+        or roles["one"] == roles["sixteen"]
+    ):
+        raise ValueError(f"dose_roles maps one and sixteen to two distinct logical indices 0 to 3, not {roles!r}")
+    return {role: roles[role] for role in N21_WORK_RAMSEY_QUBITS}
+
+
+def n21_detuning_sign_group(doses: tuple[int, ...], dose_roles: dict[str, int] | None = None) -> Group:
+    """The detuning-sign test as one heralded n21_orbit_rca group.
+
+    The free-idle window-dose member without feed-forward reads the cosine
+    of the work superposition's relative phase at each dose and its
+    window_dose_y twin the sine, so the phase's slope over the dose is the
+    frame offset of the work bit for 16 minus that of the bit for 1, with
+    its sign. The work Ramsey arms read each of those bits' own offsets in
+    the same job. The echo pair at the largest dose reads the phase the
+    echo leaves, which equals the undosed phase when the precession runs
+    during the dose. dose_roles names the logical index whose initial qubit
+    holds each work role at the dose (n21_detuning_dose_roles), where the
+    Ramsey arms put their qubit on the equator. summarize reports each orbit
+    arm's parity and each Ramsey arm's (-1)^b1 under the stem of its member
+    name.
+    """
+    roles = n21_detuning_dose_roles(dose_roles)
+    clbits = N21_ORBIT_HERALDED_CLBITS
+    members = []
+    for kind, stem, dose in n21_detuning_sign_arms(doses):
+        if kind == "orbit":
+            law = (
+                n21_labeled_law(False)
+                if stem in ("window_dose", "window_dose_echo")
+                else np.full(N21_PHASE_OUTCOMES, 1.0 / N21_PHASE_OUTCOMES)
+            )
+            members.append(
+                Member(
+                    n21_dose_name(stem, dose, False),
+                    n21_orbit_diagnostic(False, stem, init_herald=True, dose_dt=dose),
+                    lift_phase_law(law, clbits),
+                    weights=lift_phase_values(_N21_PARITY, clbits),
+                )
+            )
+        else:
+            role, quadrature = stem.removeprefix("n21_work_ramsey_").split("_")[:2]
+            members.append(
+                Member(
+                    stem,
+                    n21_work_ramsey(role, quadrature, dose, qubit=roles[role], init_herald=True),
+                    lift_phase_law(n21_work_ramsey_law(quadrature), clbits),
+                    weights=lift_phase_values(_N21_WORK_READ, clbits),
+                )
+            )
+
+    def summarize(distributions: dict[str, np.ndarray]) -> dict[str, float]:
+        result = {}
+        for member in members:
+            marginal = phase_marginal(distributions[member.name])
+            values = _N21_PARITY if member.name.startswith("n21_orbit_") else _N21_WORK_READ
+            result[f"{member.name.removeprefix('n21_')}_read"] = float(np.asarray(values) @ marginal)
+        return result
+
+    return Group("n21_orbit_rca", tuple(members), summarize)
+
+
 def n21_segmented_group(config: dict[str, Any]) -> Group:
     """The segmented ground sweep as one n21_orbit_rca group: one member per n21_segmented_arms entry.
 
@@ -822,7 +2006,8 @@ def family_contracts(
 ) -> tuple[ObservableContract, ...]:
     """Simultaneous raw terminal-bit intervals or a directional labeled contrast.
 
-    state-prep-control reads its qubits from the family configuration.
+    state-prep-control and measurement-sequence read their qubits from the
+    family configuration.
     """
     if family == "et-row":
         from et_campaign import contracts
@@ -834,6 +2019,18 @@ def family_contracts(
         return state_prep_contracts(
             [int(qubit) for qubit in configuration["qubits"]], alpha, power, configuration.get("arms")
         )
+    if family == MSQ_FAMILY:
+        if configuration is None or not configuration.get("qubits"):
+            raise ValueError("measurement-sequence contracts need the configuration's named qubits")
+        return measurement_sequence_contracts([int(qubit) for qubit in configuration["qubits"]], alpha, power)
+    if family in (MSQE_FAMILY, MSQR_FAMILY):
+        if configuration is None or not configuration.get("qubits"):
+            raise ValueError(f"{family} contracts need the configuration's named qubits")
+        return measurement_sequence_contracts([int(qubit) for qubit in configuration["qubits"]], alpha, power)
+    if family == MSQD_FAMILY:
+        if configuration is None or not configuration.get("qubits"):
+            raise ValueError("measurement-sequence-diagnostic contracts need the configuration's named qubits")
+        return msq_diagnostic_contracts([int(qubit) for qubit in configuration["qubits"]], alpha, power)
     if family == "latency-recovery":
         from latency_recovery import latency_recovery_contracts
 
@@ -880,6 +2077,23 @@ def family_contracts(
                 for member in group.members
             )
         heralded = bool((configuration or {}).get("init_herald"))
+        if (configuration or {}).get("detuning_sign"):
+            # One precision endpoint per member on its read; the preregistered
+            # analysis (scripts/n21_detuning_sign.py) fits the phases.
+            group = n21_detuning_sign_group(
+                tuple((configuration or {})["window_doses"]), (configuration or {}).get("dose_roles")
+            )
+            share = alpha / len(group.members)
+            return tuple(
+                ObservableContract(
+                    f"{member.name}_read",
+                    (ObservableTerm(member.name, tuple(float(x) for x in np.asarray(member.weights))),),
+                    precision_half_width=precision,
+                    alpha=share,
+                    power=power,
+                )
+                for member in group.members
+            )
         if (configuration or {}).get("window_doses"):
             # One precision endpoint per dose pair on its contrast
             # difference: the sweep estimates a decay, so no endpoint
@@ -1033,6 +2247,8 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
                 tuple(int(multiple) for multiple in family.get("ramsey_windows", ())),
                 family.get("segmented_sweep"),
                 tuple(int(dose) for dose in family.get("window_doses", ())),
+                bool(family.get("detuning_sign", False)),
+                family.get("dose_roles"),
             )
         ]
     if family.get("name") in N21_FAMILIES:
@@ -1045,6 +2261,34 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
         return [latency_recovery_group(int(family["latency_dt"]), int(family["window_dt"]))]
     if family.get("name") == STATE_PREP_FAMILY:
         return state_prep_groups([int(qubit) for qubit in family["qubits"]], family.get("arms"))
+    if family.get("name") == MSQ_FAMILY:
+        return measurement_sequence_groups(
+            [int(qubit) for qubit in family["qubits"]],
+            family["measurement_delay_dt"],
+            family["settle_delay_dt"],
+            family["prereadout_delay_dt"],
+            family["t1_delays_dt"],
+        )
+    if family.get("name") == MSQE_FAMILY:
+        return msqe_groups(
+            [int(qubit) for qubit in family["qubits"]],
+            family["measurement_delay_dt"],
+            family["settle_delay_dt"],
+            family["prereadout_delay_dt"],
+            family["t1_delays_dt"],
+        )
+    if family.get("name") == MSQR_FAMILY:
+        return msqr_groups(
+            [int(qubit) for qubit in family["qubits"]],
+            family["measurement_delay_dt"],
+            family["settle_delay_dt"],
+            family["prereadout_delay_dt"],
+            family["t1_delays_dt"],
+            family["equilibrium_delay_dt"],
+            family["reader_idle_delay_dt"],
+        )
+    if family.get("name") == MSQD_FAMILY:
+        return msq_diagnostic_groups([int(qubit) for qubit in family["qubits"]], family["prereadout_delay_dt"])
     return []
 
 
@@ -1060,7 +2304,9 @@ def _state_prep_self_test() -> None:
     groups = state_prep_groups(qubits)
     if len(groups) != 2 * len(qubits):
         raise AssertionError("each qubit needs one static and one dynamic group")
-    for group in [*groups, *state_prep_groups(qubits, (STATE_PREP_HISTORY_ARM,))]:
+    remeasure_arms = ("prep0", "x_remeasure", "remeasure")
+    remeasure_groups = state_prep_groups(qubits, remeasure_arms)
+    for group in [*groups, *state_prep_groups(qubits, (STATE_PREP_HISTORY_ARM,)), *remeasure_groups]:
         kinds = {is_dynamic(member.circuit) for member in group.members}
         dynamic = group.name.startswith(("state_prep_reset_", "state_prep_x_history_"))
         if kinds != {dynamic}:
@@ -1069,6 +2315,12 @@ def _state_prep_self_test() -> None:
             law = np.asarray([float(value) for value in ideal_branch_probabilities(member.circuit)])
             if not np.array_equal(law, member.ideal):
                 raise AssertionError(f"{member.name}: ideal law {law} differs from {member.ideal}")
+    # The static group's row order is the in-job order: x_remeasure's read precedes remeasure's shot.
+    rows = [member.name.split("_q")[0].removeprefix("spc_") for member in remeasure_groups[0].members]
+    if rows != list(remeasure_arms) or len(remeasure_groups) != len(qubits):
+        raise AssertionError(f"the remeasure selection fused into rows {rows} over {len(remeasure_groups)} groups")
+    if [member.circuit.num_clbits for member in remeasure_groups[0].members] != [1, 2, 2]:
+        raise AssertionError("the remeasure arms need a two-bit register, prep0 one bit")
     contracts = state_prep_contracts(qubits, 0.05, 0.8)
     if len(contracts) != 3 * len(qubits) or not math.isclose(math.fsum(c.alpha for c in contracts), 0.05):
         raise AssertionError("the endpoints do not split the family-wise alpha over three per qubit")
@@ -1101,11 +2353,24 @@ def _state_prep_self_test() -> None:
         recovered = state_prep_excitation(float(laws["prep0"][1]), e10, e01)
         if abs(recovered - epsilon) > 1e-14:
             raise AssertionError(f"eps {epsilon}: the excited fraction implies {recovered}")
+        # A measurement projects onto the true state and misassigns each read independently, so the first read
+        # of a remeasure arm follows its one-read arm and both reads are 1 with the two misassignments squared.
+        for arm, population, first in (("remeasure", epsilon, excited), ("x_remeasure", flipped, one)):
+            read_one, both_one = _two_read_fractions(laws[arm])
+            both = population * (1 - e01) ** 2 + (1 - population) * e10**2
+            if abs(read_one - first) > 1e-15 or abs(both_one - both) > 1e-15:
+                raise AssertionError(f"{arm} at eps {epsilon}: reads {read_one}, {both_one} != {first}, {both}")
     for arms, group_count, endpoint_names in (
         (("prep0",), 1, {"excited"}),
         (("x", "prep0"), 1, {"excited", "one_column"}),
         (("prep0", "reset"), 2, {"excited", "reset_benefit"}),
         (("x_history",), 1, {"history_excited"}),
+        (("remeasure",), 1, {"remeasure_excited", "remeasure_persisting"}),
+        (
+            ("remeasure", "x_remeasure", "prep0"),
+            1,
+            {"excited", "remeasure_excited", "remeasure_persisting", "x_remeasure_one_column"},
+        ),
     ):
         subset = state_prep_groups(qubits, arms)
         members = {member.name.split("_q")[0].removeprefix("spc_") for group in subset for member in group.members}
@@ -1126,6 +2391,9 @@ def _state_prep_self_test() -> None:
         ("x_history", "x"),
         ("x_history", "reset"),
         ("x_history", "x_history"),
+        ("x_remeasure",),
+        ("x_remeasure", "x"),
+        ("x_history", "remeasure"),
     ):
         try:
             state_prep_arms(refused)
@@ -1134,17 +2402,213 @@ def _state_prep_self_test() -> None:
         raise AssertionError(f"arms {refused} were admitted")
     print(
         f"state-prep-control: {len(qubits)} qubits, {len(contracts)} endpoints at alpha {share:.3g} each, "
-        "8192 shots the smallest admitted tier; prep0, reset, x and x_history laws match their closed forms "
-        "under readout, reset and X errors and an initial excitation, which the excited fraction recovers; arm "
-        "subsets keep the endpoints their arms support, and x_history runs only alone"
+        "8192 shots the smallest admitted tier; prep0, reset, x, x_history, x_remeasure and remeasure laws match "
+        "their closed forms under readout, reset and X errors and an initial excitation, which the excited "
+        "fraction recovers; arm subsets keep the endpoints their arms support, x_history runs only alone, and "
+        "the remeasure arms are static two-bit rows after prep0"
+    )
+
+
+def _msq_density_p0(steps: int, sign: int) -> float:
+    """Final P0 of the measure arm by density-matrix evolution: rotate, then keep the diagonal, N times."""
+    phi = sign * MSQ_THETA / steps
+    rotation = np.array([[math.cos(phi / 2), -1j * math.sin(phi / 2)], [-1j * math.sin(phi / 2), math.cos(phi / 2)]])
+    rho = np.array([[1.0, 0.0], [0.0, 0.0]], dtype=complex)
+    for _ in range(steps):
+        rho = rotation @ rho @ rotation.conj().T
+        rho = np.diag(np.diag(rho))
+    return float(rho[0, 0].real)
+
+
+def _msq_unitary_p0(steps: int, sign: int) -> float:
+    """Final P0 of the delay and unitary arms by unitary evolution of the N rotations."""
+    phi = sign * MSQ_THETA / steps
+    rotation = np.array([[math.cos(phi / 2), -1j * math.sin(phi / 2)], [-1j * math.sin(phi / 2), math.cos(phi / 2)]])
+    state = np.array([1.0, 0.0], dtype=complex)
+    for _ in range(steps):
+        state = rotation @ state
+    return float(abs(state[0]) ** 2)
+
+
+def _measurement_sequence_diagnostic_self_test() -> None:
+    """The diagnostic members equal the main family's, six static per qubit, and the shot tier admits 38 qubits."""
+    from local_compute import is_dynamic
+
+    qubits = [57, 65, 66, 104]
+    prereadouts = {qubit: 500 for qubit in qubits}
+    delays = {qubit: 545 for qubit in qubits}
+    settles = {qubit: 500 for qubit in qubits}
+    t1_dt = (0, 5000, 12500, 25000, 50000)
+    groups = msq_diagnostic_groups(qubits, prereadouts)
+    if len(groups) != len(qubits):
+        raise AssertionError("one diagnostic group per qubit")
+    for qubit, group in zip(qubits, groups, strict=True):
+        static, _ = msq_members(qubit, delays[qubit], settles[qubit], prereadouts[qubit], t1_dt)
+        main = {m.name: m for m in static}
+        if len(group.members) != MSQD_MEMBERS_PER_QUBIT or MSQD_MEMBERS_PER_QUBIT != 6:
+            raise AssertionError("the diagnostic holds the four unitary members, ro0 and ro1")
+        expected = [msq_member("unitary", MSQ_UNITARY_STEPS, s, qubit) for s in MSQ_SIGNED]
+        expected += [msq_ro0_member(qubit), msq_t1_member(0, qubit)]
+        if [m.name for m in group.members] != expected:
+            raise AssertionError("the diagnostic member order moved")
+        for member in group.members:
+            twin = main[member.name]
+            if (
+                member.circuit != twin.circuit
+                or not np.array_equal(member.ideal, twin.ideal)
+                or not np.array_equal(np.asarray(member.weights), np.asarray(twin.weights))
+                or is_dynamic(member.circuit)
+            ):
+                raise AssertionError(f"{member.name}: differs from the main family's member or is dynamic")
+    contracts = msq_diagnostic_contracts(qubits, 0.05, 0.8)
+    if len(contracts) != MSQD_ENDPOINTS_PER_QUBIT * len(qubits) or not math.isclose(
+        math.fsum(c.alpha for c in contracts), 0.05
+    ):
+        raise AssertionError("the diagnostic endpoints do not split the family-wise alpha")
+    for count in (8, 38, 60):
+        share = 0.05 / (MSQD_ENDPOINTS_PER_QUBIT * count)
+        single = math.sqrt(math.log(8 / share) / (2 * 8192))
+        if single > MSQ_PRECISION["p0"]:
+            raise AssertionError(f"{count} qubits: the pooled P0 radius {single:.4f} exceeds the half-width")
+    print(
+        f"measurement-sequence-diagnostic: {MSQD_MEMBERS_PER_QUBIT} static members per qubit equal the main "
+        f"family's, {len(contracts)} endpoints on {len(qubits)} qubits, 8192 shots admit 8 to 60 qubits"
+    )
+
+
+def _measurement_sequence_self_test() -> None:
+    """Ideal laws, job kinds, member order, circuit structure and the admitted shot tier of measurement-sequence."""
+    from local_compute import is_dynamic
+    from qpe_diagnostics import ideal_branch_probabilities
+
+    for steps in MSQ_STEPS:
+        closed = (1.0 + math.cos(MSQ_THETA / steps) ** steps) / 2.0
+        law = msq_measure_law(steps)
+        if steps == 1:
+            try:
+                msq_circuit("measure", 1, 1, 0, "check", 1)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError("the one-step measure arm was admitted")
+        if abs(math.fsum(law) - 1.0) > 1e-12 or abs(_msq_final_p0(law) - closed) > 1e-12:
+            raise AssertionError(f"n{steps}: the joint law marginalizes to {_msq_final_p0(law)}, not {closed}")
+        for sign in (1, -1):
+            if abs(_msq_density_p0(steps, sign) - closed) > 1e-12:
+                raise AssertionError(f"n{steps} sign {sign}: density-matrix P0 differs from {closed}")
+            if abs(_msq_unitary_p0(steps, sign) - msq_delay_p0()) > 1e-12:
+                raise AssertionError(f"n{steps} sign {sign}: unitary P0 differs from cos(THETA / 2) ** 2")
+        if 2 <= steps <= 8:
+            circuit = msq_circuit("measure", steps, 1, 0, "check", 1)
+            branch = np.asarray(ideal_branch_probabilities(circuit))
+            if not np.allclose(branch, law, rtol=0, atol=1e-12):
+                raise AssertionError(f"n{steps}: the joint law differs from the branch enumeration")
+        delay_law = np.asarray(ideal_branch_probabilities(msq_circuit("delay", steps, -1, 0, "check", 1)))
+        if not np.allclose(delay_law, [msq_delay_p0(), 1.0 - msq_delay_p0()], rtol=0, atol=1e-12):
+            raise AssertionError(f"n{steps}: the delay arm branch law differs from cos(THETA / 2) ** 2")
+    unitary = msq_circuit("unitary", MSQ_UNITARY_STEPS, -1, 0, "check", 1)
+    unitary_ops = unitary.count_ops()
+    if (
+        unitary_ops.get("rx") != MSQ_UNITARY_STEPS
+        or unitary_ops.get("barrier") != MSQ_UNITARY_STEPS - 1
+        or unitary_ops.get("measure") != 1
+        or unitary_ops.get("delay") != 1
+    ):
+        raise AssertionError(f"unitary arm operations {dict(unitary_ops)}")
+    if not np.allclose(
+        np.asarray(ideal_branch_probabilities(unitary)), [msq_delay_p0(), 1.0 - msq_delay_p0()], rtol=0, atol=1e-12
+    ):
+        raise AssertionError("the unitary arm branch law differs from cos(THETA / 2) ** 2")
+    settle = msq_circuit("settle", MSQ_SETTLE_STEPS, 1, 0, "check", 1, 3)
+    settle_ops = settle.count_ops()
+    if (
+        settle_ops.get("rx") != MSQ_SETTLE_STEPS
+        or settle_ops.get("measure") != MSQ_SETTLE_STEPS + 1
+        or settle_ops.get("delay") != MSQ_SETTLE_STEPS + 1
+        or not is_dynamic(settle)
+    ):
+        raise AssertionError(f"settle arm operations {dict(settle_ops)}")
+    short_settle = msq_circuit("settle", MSQ_SETTLE_STEPS, -1, 0, "check", 1, 3)
+    if not np.allclose(
+        np.asarray(ideal_branch_probabilities(short_settle)), msq_measure_law(MSQ_SETTLE_STEPS), rtol=0, atol=1e-12
+    ):
+        raise AssertionError("the settle arm law differs from the measure arm's joint law")
+    table = [round(msq_pinched_p0(steps), 4) for steps in MSQ_STEPS]
+    if table != [0.0302, 0.5151, 0.6722, 0.8040, 0.8914] or round(msq_delay_p0(), 4) != 0.0302:
+        raise AssertionError(f"the ideal table moved: {table}, delay {msq_delay_p0():.4f}")
+    if round(msq_pinched_p0(16) - msq_delay_p0(), 4) != 0.8612:
+        raise AssertionError("the N = 16 contrast is not 0.8612")
+
+    qubits = [57, 65, 66, 104]
+    delays = {qubit: 1000 + qubit for qubit in qubits}
+    settles = {qubit: 100 + qubit for qubit in qubits}
+    prereadouts = {qubit: 100 + qubit for qubit in qubits}
+    t1_idles = [0, 5000, 12500, 25000, 50000]
+    groups = measurement_sequence_groups(qubits, delays, settles, prereadouts, t1_idles)
+    if len(groups) != 2 * len(qubits):
+        raise AssertionError("each qubit needs one static and one dynamic group")
+    for group in groups:
+        dynamic = group.name.startswith("msq_dynamic_")
+        if {is_dynamic(member.circuit) for member in group.members} != {dynamic}:
+            raise AssertionError(f"{group.name}: job kind differs from its group")
+        for member in group.members:
+            if (
+                member.weights is None
+                or len(member.ideal) != 2**member.circuit.num_clbits
+                or len(member.weights) != len(member.ideal)
+            ):
+                raise AssertionError(f"{member.name}: ideal and weights do not span the clbits")
+            branch = member.circuit.count_ops()
+            if "_delay_" in member.name:
+                steps = int(member.name.split("_n")[1].split("_")[0])
+                if branch.get("measure") != 1 or branch.get("delay") != steps + 1 or branch.get("rx") != steps:
+                    raise AssertionError(f"{member.name}: delay arm operations {dict(branch)}")
+            if member.circuit.data[-2].operation.name != "delay" or member.circuit.data[-1].operation.name != "measure":
+                raise AssertionError(f"{member.name}: no pre-readout delay precedes the final measurement")
+            if "_t1_" in member.name:
+                index = int(member.name.split("_d")[1].split("_")[0])
+                if branch.get("x") != 1 or branch.get("delay") != 1 + int(t1_idles[index] > 0):
+                    raise AssertionError(f"{member.name}: t1 operations {dict(branch)}")
+                if not np.array_equal(member.ideal, [0.0, 1.0]) or is_dynamic(member.circuit):
+                    raise AssertionError(f"{member.name}: the t1 law or job kind moved")
+    static_members, dynamic_members = msq_members(57, delays[57], settles[57], prereadouts[57], tuple(t1_idles))
+    expected = [signed[0] + signed[1] for signed in MSQ_SIGNED]
+    if (
+        expected != ["pa", "ma", "mb", "pb"]
+        or len(static_members) != 4 * len(MSQ_STEPS) + 4 + 1 + len(MSQ_T1_MICROSECONDS)
+        or len(dynamic_members) != 20
+    ):
+        raise AssertionError("the member order or counts moved")
+    contracts = measurement_sequence_contracts(qubits, 0.05, 0.8)
+    if len(contracts) != MSQ_ENDPOINTS_PER_QUBIT * len(qubits) or not math.isclose(
+        math.fsum(c.alpha for c in contracts), 0.05
+    ):
+        raise AssertionError("the endpoints do not split the family-wise alpha over seventeen per qubit")
+    for count in (1, 4, 14):
+        share = 0.05 / (MSQ_ENDPOINTS_PER_QUBIT * count)
+        for shots, admitted in ((4096, False), (8192, True)):
+            single = math.sqrt(math.log(8 / share) / (2 * shots))
+            contrast = 2 * math.sqrt(math.log(16 / share) / (2 * shots))
+            fits = single <= MSQ_PRECISION["p0"] and contrast <= MSQ_PRECISION["contrast"]
+            if fits is not admitted:
+                raise AssertionError(f"{count} qubits, {shots} shots: radii {single:.4f}, {contrast:.4f}")
+    print(
+        f"measurement-sequence: ideal P0 {table} for N = {list(MSQ_STEPS)} match exact density-matrix evolution to "
+        "1e-12, the delay and unitary arms match unitary evolution at cos(THETA / 2) ** 2, "
+        "the N = 16 measure-minus-unitary contrast is 0.8612; "
+        f"{len(contracts)} endpoints on {len(qubits)} qubits, 8192 shots the smallest admitted tier from 1 to 14 qubits"
     )
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--self-test", action="store_true", help="check the state-prep-control exact laws")
+    parser.add_argument(
+        "--self-test", action="store_true", help="check the state-prep-control and measurement-sequence exact laws"
+    )
     if parser.parse_args().self_test:
         _state_prep_self_test()
+        _measurement_sequence_self_test()
+        _measurement_sequence_diagnostic_self_test()
     return 0
 
 

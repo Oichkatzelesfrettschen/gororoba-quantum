@@ -19,8 +19,8 @@ and the Kaggle noise-snapshot rule.
 - Simulations of 14 qubits or fewer run on Kaggle kernels through
   `scripts/kaggle_run.py` (`push`, `status`, `collect`), which bundles the
   entry's repository imports with `kaggle_kernel/` (the kernel program and
-  its AGENTS.md), installs qiskit 2.6.0 and qiskit-ibm-runtime 0.50.0 with
-  qiskit-aer 0.17.2 (or qiskit-aer-gpu-cu11 0.17.2 on a GPU), proves the
+  its AGENTS.md), installs qiskit 2.6.1 and qiskit-ibm-runtime 0.51.0 with
+  qiskit-aer 0.18.2 (or qiskit-aer-gpu-cu11 0.18.2 on a GPU), proves the
   hypercomplex package stack before the entry runs, and retains the output
   under results/kaggle/.
   A kernel runs on a CPU machine by default and on a GPU only when its
@@ -109,6 +109,57 @@ and the Kaggle noise-snapshot rule.
   invocation on the same record sends nothing. Calibration reads,
   transpilation, noise simulation, result retrieval, and `--preserve-raw`
   need no approval.
+- The binding dry run and its submit run as one command,
+  `sh scripts/approved_run.sh [--attempts N] [--check CMD] [--log DIR] -- FLAGS`
+  from the repository root, with FLAGS the case's live_run.py flags. It plans,
+  runs CMD from gororoba_quantum/ with RUN set to the dry run's directory (a
+  self-check, a placement check, a digest or budget comparison), and on success
+  submits with the identical flags, the record and its digest. A backend
+  republishes its calibration many times a day, and any changed value
+  touching the packed circuits refuses the submit, so the plan and the submit
+  run with no operator review between them: the review belongs to the case
+  and its rehearsal dry run, and the binding run's checks are mechanical. A
+  refusal sends nothing and leaves the approval unconsumed, and the runner
+  plans again up to N times (default 3). A consumed approval ends the run:
+  success needs a zero exit and `submission.complete` in the submit's record,
+  and a failed or partial submission exits 4 with no retry. Independent jobs
+  of one case run as parallel invocations, each with its own seeds and
+  account. The case's binding table records the dry run, its digest and
+  calibration after the submit.
+- A case that waits on a calibration chains the runner after
+  `sh scripts/wait_calibration.sh [--interval S] [--deadline S] -- BACKEND
+  --baseline FILE [--qubits LIST] [--min-moved N]`, which reads the backend's
+  published properties every 60 s by default (one read takes about 5 s) and
+  exits 0 once the stamp moves and, with `--qubits`, once the reported T1 and
+  T2 each moved on `--min-moved` of those qubits (default half). Kingston
+  republishes its stamp every 15 to 60 minutes and refreshes T1 and T2 once a
+  day; the published stamp trails the calibration by 5 minutes or more, so a
+  job can execute under a calibration its plan never read.
+- Envelope approval. A record whose `envelope` section carries schema
+  `msq-envelope-v2` (`--family measurement-sequence-envelope`) is the one
+  exception to value binding; schema `msq-envelope-v1` records keep their
+  fixed 20 us and 50 us delays, summed cap and greedy layout rule. The approval binds the experiment digest, the
+  family definition, shots, seeds, Sampler policy, instance, dependency
+  versions, the layout rule (`msq_envelope.layout_rule_v2`, the width-qubit packing at
+  CZ-graph distance 3 of lowest summed readout error) and its width, the
+  repetition-delay ladder 20, 30, 40, 50 and 60 us, the ceiling rule
+  (`ceil(1.5 * (planner charge + 9 us per shot))` per ladder step), the total
+  cap C (`--max-total-execution-seconds`, 5 s to 240 s) and the replan bound,
+  and a fresh plan keeps the approval while every ladder ceiling stays at or
+  below the approved one;
+  attempt 1 sends at 20 us when its ceiling fits C and the remaining quota
+  minus the reserve, reserving nothing for attempt 2, and attempt 2 takes the
+  smallest ladder step above attempt 1's delay that fits C and the live quota; calibration values are inputs the submission
+  re-reads. At submit live_run plans on the live calibration, and before each
+  send `envelope_drift` recompiles the family on a fresh snapshot and compares
+  the fused PUBs' QPY digest and manifests with the plan; a change of the
+  rule's qubit set, a carried dt duration, the capabilities, the exclusions or
+  the compiled bytes re-plans, at most `msq_envelope.MAX_REPLANS` times. Each
+  attempt writes `approval-consumed-attempt-N.json`, and attempt 2
+  (`--envelope-fallback RUN_DIR`) runs only on the fallback signature of
+  `msq_envelope.fallback_permitted`, within the cap C
+  ([design](../../design/measurement-sequence-adaptive-envelope.md)). Every
+  other family keeps value binding.
 - Calibration is a property of the run. live_run.py fetches each backend's
   Target and properties afresh in the process that decides, compiles,
   simulates, and submits; no calibration value is cached or read back from a
@@ -135,19 +186,20 @@ and the Kaggle noise-snapshot rule.
   per instance, while the historical-job and campaign accounting bind the
   default instance. The `ibm_account.py --self-test` in gate `core-self-test-05` (`tests/test_cli_self_tests.py`)
   holds the account selection and the instance refusal.
-- Retaining a collected run. A run directory joins the tree with every
-  register that enumerates retained jobs, in one change: the instance's job
+- Retaining a collected run. `sh scripts/retain_run.sh RUN ID FAMILY
+  QUESTION`, under the run's `GOROROBA_IBM_ACCOUNT`, joins a run directory to
+  the tree with every register that enumerates retained jobs, in one change,
+  and leaves only the claim to write: the runtime seed rows, the instance's job
   inventory (`scripts/observe_qpu_job_inventory.py`, a service read), the
   retention audit (`scripts/reconcile_qpu_inventory.py`, which writes each
   instance's audit and creates the file exclusively), the submitted-circuit
-  comparison (a successor written by `scripts/compare_submitted_circuits.py
-  --write --out NEW_PATH --seed PREVIOUS`, a service read of the missing jobs'
-  submitted programs under the replay interpreter of gate core-281, because
-  QPY digests follow the Qiskit version; the procedure is in
+  comparison (`scripts/compare_submitted_circuits.py --append`, a read of
+  each new audited job's submitted program that writes one row file per job
+  under the running Qiskit release's ledger; the procedure is in
   [the comparison README](../../evidence/submitted_circuits/README.md)), and
   the registry (`scripts/research_state.py --write`, with the claim that cites
   the run). Run-family registers (the ghost, scaffolding-exposure and
   local-member CZ records) follow the gates that read the run. Gate core-281
-  fails while an audited job is missing from the comparison, and the
+  fails while an audited job has no comparison row, and the
   `research_state.py --check` gate while a retained run is missing from the
   registry.

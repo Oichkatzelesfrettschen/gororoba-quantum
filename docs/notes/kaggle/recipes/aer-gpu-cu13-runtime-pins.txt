@@ -1,4 +1,4 @@
-# CUDA 13 libraries that qiskit-aer-gpu-cu13 0.17.2 loads from site-packages.
+# CUDA 13 libraries that qiskit-aer-gpu-cu13 0.18.2 loads from site-packages.
 # The nvidia-* versions are the CUDA 13.0.3 toolkit components the module
 # compiles against (the T4 driver 580 runs CUDA 13.0); the cuQuantum versions
 # are the headers it compiles against. nvidia/cu13/lib holds the toolkit

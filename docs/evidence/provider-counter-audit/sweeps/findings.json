@@ -1,0 +1,1384 @@
+{
+ "findings": [
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "docs/evidence/provider-counter-audit/exposure_sensitivity.py",
+   "function": "scenario",
+   "line": 39,
+   "source": "duration = float(json.loads((run / \"raw/result.json\").read_text(encoding=\"utf-8\"))[\"duration\"])",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "docs/evidence/provider-counter-audit/exposure_sensitivity.py",
+   "function": "box_kite_scenario",
+   "line": 93,
+   "source": "duration = float(json.loads((run / \"raw/result.json\").read_text(encoding=\"utf-8\"))[\"duration\"])",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "docs/evidence/provider-counter-audit/exposure_sensitivity.py",
+   "function": "box_kite",
+   "line": 118,
+   "source": "duration = float(json.loads((run / \"raw/result.json\").read_text(encoding=\"utf-8\"))[\"duration\"])",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "docs/evidence/provider-counter-audit/gate_model_counter_census.py",
+   "function": "quantum_inspire",
+   "line": 47,
+   "source": "values = (job.get(\"number_of_shots\"), result.get(\"shots_requested\"), result.get(\"shots_done\"))",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+   "function": "run_row",
+   "line": 76,
+   "source": "\"outer_duration_s\": number(outer.get(\"duration\")),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+   "function": "run_row",
+   "line": 97,
+   "source": "\"nb_shots_used\": number(fields.get(\"nb_shots_used\")),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+   "function": "run_row",
+   "line": 101,
+   "source": "\"physical_perf\": number(fields.get(\"physical_perf\")),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+   "function": "run_row",
+   "line": 102,
+   "source": "\"logical_perf\": number(fields.get(\"logical_perf\")),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+   "function": "run_row",
+   "line": 107,
+   "source": "used = [i[\"nb_shots_used\"] for i in iterations]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "gororoba_quantum/calibration_snapshot.py",
+   "function": "build_target",
+   "line": 187,
+   "source": "{tuple(r[\"qargs\"]): InstructionProperties(duration=r[\"duration\"], error=r[\"error\"]) for r in rows},",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "gororoba_quantum/calibration_snapshot.py",
+   "function": "build_target",
+   "line": 194,
+   "source": "{tuple(r[\"qargs\"]): InstructionProperties(duration=r[\"duration\"], error=r[\"error\"]) for r in rows},",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "gororoba_quantum/heron_multiprogramming.py",
+   "function": "_edge_table",
+   "line": 189,
+   "source": "for qargs, dur, err in zip(entry[\"qargs\"], entry[\"duration\"], entry[\"error\"], strict=True):",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "gororoba_quantum/heron_multiprogramming.py",
+   "function": "_qubit_durations",
+   "line": 197,
+   "source": "return {int(q[0]): float(d) for q, d in zip(entry[\"qargs\"], entry[\"duration\"], strict=True)}",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "gororoba_quantum/jax_bridge.py",
+   "function": "cz_channel",
+   "line": 331,
+   "source": "return CzChannel.build(relaxation, entries[0][\"duration\"]), entries[0][\"error\"]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "gororoba_quantum/live_run.py",
+   "function": "check_snapshot_matches_properties",
+   "line": 967,
+   "source": "values[\"duration\"] = props.gate_length(operation_name, gate_qubits)",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "gororoba_quantum/live_run.py",
+   "function": "check_target_matches_properties",
+   "line": 1005,
+   "source": "pairs += [(\"error\", inst.error, values[\"error\"]), (\"duration\", inst.duration, values[\"duration\"])]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "gororoba_quantum/provider_counters.py",
+   "function": "quandela_iteration",
+   "line": 274,
+   "source": "reported = _count(entry.get(\"nb_shots_used\"))",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/algebra_device_conjectures.py",
+   "function": "synthesis",
+   "line": 666,
+   "source": "lower_ns = min(target[\"instructions\"][\"measure_2\"][\"duration\"]) * 1e9",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported as wall time: Quandela job duration, which includes compilation, read as elapsed time",
+   "file": "scripts/ascella_new_mesh_score.py",
+   "function": "job_05_iterations",
+   "line": 105,
+   "source": "duration = first[\"duration\"]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported as wall time: Quandela job duration, which includes compilation, read as elapsed time",
+   "file": "scripts/ascella_new_mesh_score.py",
+   "function": "returned",
+   "line": 167,
+   "source": "\"duration\": status.get(\"duration\"),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/bdsc_diagnostic.py",
+   "function": "readout",
+   "line": 909,
+   "source": "windows[job] = (start, start + float(result[\"data\"][\"duration\"]))",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/bdsc_diagnostic.py",
+   "function": "observations",
+   "line": 1005,
+   "source": "perf = iteration.get(\"result_fields\", {}).get(\"physical_perf\")",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: counter echoed into a record without arithmetic",
+   "file": "scripts/bdsc_forensics.py",
+   "function": "setting_rows",
+   "line": 230,
+   "source": "\"duration_s\": run[\"result\"][\"data\"][\"duration\"],",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: counter echoed into a record without arithmetic",
+   "file": "scripts/bdsc_forensics.py",
+   "function": "setting_rows",
+   "line": 268,
+   "source": "\"provider_perf\": {\"physical_perf\": fields[\"physical_perf\"], \"global_perf\": fields[\"global_perf\"]},",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: a local Perceval simulator's documented filter share",
+   "file": "scripts/bdsc_packages.py",
+   "function": "share",
+   "line": 292,
+   "source": "return sel, multi, float(result[\"global_perf\"])",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported as wall time: Quandela job duration, which includes compilation, read as elapsed time",
+   "file": "scripts/bdsc_stationarity.py",
+   "function": "readout",
+   "line": 565,
+   "source": "windows[job] = (start, start + float(result[\"data\"][\"duration\"]))",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "model-dependent, labeled: wall time as an upper detector exposure (README sink table)",
+   "file": "scripts/bdsc_stray_mode_veto.py",
+   "function": "job_dark",
+   "line": 119,
+   "source": "\"duration_seconds\": float(result[\"data\"][\"duration\"]),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/box_kite_analysis.py",
+   "function": "load_batch",
+   "line": 362,
+   "source": "done = sum(r[\"shots_done\"] for r in job[\"results\"])",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/box_kite_follow_design.py",
+   "function": "tuna_jobs",
+   "line": 107,
+   "source": "result[\"shots_done\"],",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/check_qi_platform_retention.py",
+   "function": "test_snapshot_rejects_inconsistent_completed_shots",
+   "line": 1238,
+   "source": "usage[\"totals\"][\"shots_done\"] += 1",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/evidence_closure.py",
+   "function": "quantum_inspire",
+   "line": 161,
+   "source": "require(job.get(\"number_of_shots\") == sub.get(\"shots\"), f\"{run}: requested shot identity differs\")",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/evidence_closure.py",
+   "function": "quantum_inspire",
+   "line": 163,
+   "source": "done = [r.get(\"shots_done\") for r in results]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: Quandela nb_shots_used summed over disjoint iterations as detection events",
+   "file": "scripts/evidence_closure.py",
+   "function": "quandela",
+   "line": 206,
+   "source": "shots_used = result.get(\"shots_used\")",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: Quandela nb_shots_used summed over disjoint iterations as detection events",
+   "file": "scripts/evidence_closure.py",
+   "function": "quandela",
+   "line": 210,
+   "source": "parts = [i.get(\"result_fields\", {}).get(\"nb_shots_used\") for i in iterations]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: accepted samples over detection events, an acceptance fraction (README sink table)",
+   "file": "scripts/experiment_analysis.py",
+   "function": "analyze_qi",
+   "line": 460,
+   "source": "if result.get(\"job_id\") != job[\"id\"] or result.get(\"shots_requested\") != manifest[\"shots\"]:",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: accepted samples over detection events, an acceptance fraction (README sink table)",
+   "file": "scripts/experiment_analysis.py",
+   "function": "analyze_qi",
+   "line": 464,
+   "source": "if not isinstance(shots, list) or len(shots) != result.get(\"shots_done\") or len(shots) > manifest[\"shots\"]:",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: accepted samples over detection events, an acceptance fraction (README sink table)",
+   "file": "scripts/experiment_analysis.py",
+   "function": "analyze_qd",
+   "line": 583,
+   "source": "detected = entry.get(\"result_fields\", {}).get(\"nb_shots_used\")",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/ghost_event_scale.py",
+   "function": "target_durations",
+   "line": 291,
+   "source": "ticks = entry[\"duration\"] / dt",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/heron_feedforward_latency.py",
+   "function": "target_cycles",
+   "line": 169,
+   "source": "sx = {round(d / backend[\"dt\"]) for d in backend[\"instructions\"][\"sx\"][\"duration\"] if d is not None}",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/heron_feedforward_latency.py",
+   "function": "target_cycles",
+   "line": 170,
+   "source": "measure = {round(d / backend[\"dt\"]) for d in backend[\"instructions\"][\"measure\"][\"duration\"] if d is not None}",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/heron_target_snapshot.py",
+   "function": "facts",
+   "line": 164,
+   "source": "\"measure_2_shorter\": median(ins[\"measure_2\"][\"duration\"]) < median(ins[\"measure\"][\"duration\"]),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/heron_target_snapshot.py",
+   "function": "facts",
+   "line": 166,
+   "source": "\"reset_lasts_as_long_as_measure_reset\": ins[\"reset\"][\"duration\"] == ins[\"measure_reset\"][\"duration\"]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/heron_target_snapshot.py",
+   "function": "facts",
+   "line": 167,
+   "source": "and ins[\"reset_2\"][\"duration\"] == ins[\"measure_reset_2\"][\"duration\"]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/heron_target_snapshot.py",
+   "function": "facts",
+   "line": 169,
+   "source": "\"xslow_1us\": set(ins[\"xslow\"][\"duration\"]) == {1e-6},",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/iqm_measurement_sequence.py",
+   "function": "mid_seconds",
+   "line": 426,
+   "source": "MEASURE_WINDOW_SECONDS if o[\"name\"] == \"measure\" else o[\"args\"][\"duration\"]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/iqm_measurement_sequence.py",
+   "function": "estimator_shot_seconds",
+   "line": 444,
+   "source": "delays = sum(o[\"args\"][\"duration\"] for o in c[\"instructions\"][:-1] if o[\"name\"] == \"delay\")",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/iqm_measurement_sequence.py",
+   "function": "check_structure",
+   "line": 1915,
+   "source": "expect(all(d[\"args\"][\"duration\"] == SETTLE_SECONDS for d in mid), f\"{name}: settle duration\")",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/iqm_measurement_sequence.py",
+   "function": "check_structure",
+   "line": 1921,
+   "source": "expect(all(d[\"args\"][\"duration\"] == DELAY_SECONDS for d in mid), f\"{name}: delay duration\")",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/iqm_measurement_sequence_aer_check.py",
+   "function": "p0_of",
+   "line": 62,
+   "source": "chain.append(Delay(o[\"args\"][\"duration\"], \"s\"), [index])",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/local_simulation_replay.py",
+   "function": "check_qi",
+   "line": 107,
+   "source": "if simulation[\"shots_done\"] != 1024 or sum(counts.values()) != 1024:",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: counter echoed into a record without arithmetic",
+   "file": "scripts/photonic_repeat_readout.py",
+   "function": "observation",
+   "line": 73,
+   "source": "\"reported_shots\": fields.get(\"nb_shots_used\"),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: counter echoed into a record without arithmetic",
+   "file": "scripts/photonic_repeat_readout.py",
+   "function": "observation",
+   "line": 74,
+   "source": "\"reported_physical_perf\": fields.get(\"physical_perf\"),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: counter echoed into a record without arithmetic",
+   "file": "scripts/photonic_repeat_readout.py",
+   "function": "observation",
+   "line": 75,
+   "source": "\"reported_logical_perf\": fields.get(\"logical_perf\"),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: counter echoed into a record without arithmetic",
+   "file": "scripts/photonic_repeat_readout.py",
+   "function": "observation",
+   "line": 76,
+   "source": "\"reported_global_perf\": fields.get(\"global_perf\"),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/primorial_probe_case.py",
+   "function": "channel_digest",
+   "line": 1290,
+   "source": "([row[\"qargs\"], row[\"duration\"], row[\"error\"]] for row in rows if set(row[\"qargs\"]) <= touched),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_cone.py",
+   "function": "run_cells",
+   "line": 167,
+   "source": "duration = float(outer[\"duration\"])",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_cone.py",
+   "function": "run_cells",
+   "line": 204,
+   "source": "float(entry[\"physical_perf\"]),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_cone.py",
+   "function": "run_cells",
+   "line": 211,
+   "source": "perf = row[\"physical_perf\"]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_mesh.py",
+   "function": "observed",
+   "line": 1476,
+   "source": "duration = json.loads((run / \"raw/result.json\").read_text(encoding=\"utf-8\"))[\"duration\"]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_mesh.py",
+   "function": "observed",
+   "line": 1477,
+   "source": "seconds = acquisition_seconds(int(single.sum() + multi), inner.get(\"physical_perf\"), perfs.get(\"Clock (MHz)\"))",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported as wall time: Quandela job duration, which includes compilation, read as elapsed time",
+   "file": "scripts/qd_belenos_mesh.py",
+   "function": "bridge_record",
+   "line": 2513,
+   "source": "duration = json.loads((bridge / \"results.json\").read_text(encoding=\"utf-8\"))[\"status\"][\"duration\"]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported as wall time: Quandela job duration, which includes compilation, read as elapsed time",
+   "file": "scripts/qd_belenos_mesh.py",
+   "function": "dwell_record",
+   "line": 2622,
+   "source": "run.name: json.loads((run / \"results.json\").read_text(encoding=\"utf-8\"))[\"status\"][\"duration\"]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_mesh.py",
+   "function": "analyze_run",
+   "line": 2867,
+   "source": "duration = float(json.loads((run / \"raw/result.json\").read_text(encoding=\"utf-8\")).get(\"duration\") or 0)",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_mesh.py",
+   "function": "analyze_run",
+   "line": 2870,
+   "source": "shots = [int(e.get(\"nb_shots_used\") or 0) for e in entries] if \"results_list\" in inner else [int(outer_shots or 0)]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_box_kite_analysis.py",
+   "function": "dark_expectation",
+   "line": 167,
+   "source": "sum(collected.get(\"counts\", {}).values()), inner.get(\"physical_perf\"), perfs.get(\"Clock (MHz)\")",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_box_kite_analysis.py",
+   "function": "analyze",
+   "line": 349,
+   "source": "\"physical_perf\": collected.get(\"result_fields\", {}).get(\"physical_perf\"),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_box_kite_analysis.py",
+   "function": "analyze",
+   "line": 350,
+   "source": "\"logical_perf\": collected.get(\"result_fields\", {}).get(\"logical_perf\"),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: a local Perceval simulator's documented filter share",
+   "file": "scripts/qd_mcp_server.py",
+   "function": "simulate",
+   "line": 352,
+   "source": "\"physical_perf\": float(outcome.get(\"physical_perf\", 1.0)),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: Quandela nb_shots_used summed over disjoint iterations as detection events",
+   "file": "scripts/qd_platform.py",
+   "function": "job_billing",
+   "line": 1385,
+   "source": "and data.get(\"duration\") is None",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: Quandela nb_shots_used summed over disjoint iterations as detection events",
+   "file": "scripts/qd_platform.py",
+   "function": "job_billing",
+   "line": 1397,
+   "source": "\"duration\": data.get(\"duration\"),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: Quandela nb_shots_used summed over disjoint iterations as detection events",
+   "file": "scripts/qd_platform.py",
+   "function": "result_summary",
+   "line": 1772,
+   "source": "per = [entry[\"result_fields\"].get(\"nb_shots_used\") for entry in counted]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: Quandela nb_shots_used summed over disjoint iterations as detection events",
+   "file": "scripts/qd_platform.py",
+   "function": "result_summary",
+   "line": 1782,
+   "source": "spent = [entry.get(\"result_fields\", {}).get(\"nb_shots_used\") for entry in iterations]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: Quandela nb_shots_used summed over disjoint iterations as detection events",
+   "file": "scripts/qd_platform.py",
+   "function": "run_facts",
+   "line": 1881,
+   "source": "shots = summary.get(\"shots_used\", summary.get(\"shots\") or 0)",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: Quandela nb_shots_used summed over disjoint iterations as detection events",
+   "file": "scripts/qd_platform.py",
+   "function": "charged",
+   "line": 1987,
+   "source": "and data.get(\"duration\") is None",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: Quandela nb_shots_used summed over disjoint iterations as detection events",
+   "file": "scripts/qd_platform.py",
+   "function": "runner_self_test",
+   "line": 2613,
+   "source": "or summary[\"shots_used\"] != 9",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported as wall time: Quandela job duration, which includes compilation, read as elapsed time",
+   "file": "scripts/qd_schedule.py",
+   "function": "execution_end",
+   "line": 306,
+   "source": "return float(status[\"start_time\"]) + float(status[\"duration\"])",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_results",
+   "line": 1137,
+   "source": "shots = entry.get(\"result_fields\", {}).get(\"nb_shots_used\")",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_descriptive",
+   "line": 1356,
+   "source": "\"nb_shots_used\": fields.get(\"nb_shots_used\"),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_descriptive",
+   "line": 1357,
+   "source": "\"physical_perf\": fields.get(\"physical_perf\"),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_coupler_zz_map.py",
+   "function": "sanity",
+   "line": 505,
+   "source": "done = sum(r[\"shots_done\"] for r in row[\"results\"])",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/qi_ibm_noise_replay.py",
+   "function": "__init__",
+   "line": 171,
+   "source": "self.duration[(op, tuple(row[\"qargs\"]))] = row[\"duration\"]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_platform.py",
+   "function": "ledger",
+   "line": 455,
+   "source": "\"number_of_shots\": job[\"number_of_shots\"],",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_platform.py",
+   "function": "ledger",
+   "line": 456,
+   "source": "\"shots_done\": sum(r[\"shots_done\"] or 0 for r in res),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_platform.py",
+   "function": "ledger",
+   "line": 476,
+   "source": "\"shots_done\": sum(j[\"shots_done\"] for j in job_rows),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_platform.py",
+   "function": "check",
+   "line": 590,
+   "source": "if totals[\"shots_done\"] != sum(j[\"shots_done\"] for j in usage[\"jobs\"]):",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_platform.py",
+   "function": "reconcile",
+   "line": 1092,
+   "source": "if job[\"id\"] != job_id or job[\"batch_job_id\"] != batch_id or job[\"number_of_shots\"] != record[\"shots\"]:",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_platform.py",
+   "function": "collect",
+   "line": 1132,
+   "source": "if job[\"number_of_shots\"] != record[\"shots\"]:",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_platform.py",
+   "function": "collect",
+   "line": 1147,
+   "source": "or result[\"shots_requested\"] != record[\"shots\"]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_platform.py",
+   "function": "collect",
+   "line": 1149,
+   "source": "or len(shots) != result[\"shots_done\"]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_platform.py",
+   "function": "collect",
+   "line": 1150,
+   "source": "or not 0 <= result[\"shots_done\"] <= record[\"shots\"]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_platform.py",
+   "function": "collect",
+   "line": 1188,
+   "source": "print(row[\"file\"], row[\"job\"][\"status\"], [r[\"shots_done\"] for r in row[\"results\"]])",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_readout_ringdown_cases.py",
+   "function": "sanity",
+   "line": 1094,
+   "source": "done = sum(r[\"shots_done\"] for r in row[\"results\"])",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_series_watch.py",
+   "function": "batch_line",
+   "line": 79,
+   "source": "f\"{row['file']} {row['results'][0]['execution_time_in_seconds']:.1f} s/{row['results'][0]['shots_done']}\"",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_zz_map_analysis.py",
+   "function": "read_batch",
+   "line": 125,
+   "source": "require(job[\"number_of_shots\"] == task[\"shots\"], \"job denominator mismatch\")",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_zz_map_qx.py",
+   "function": "read_batch",
+   "line": 241,
+   "source": "require(job[\"status\"] == \"completed\" and job[\"number_of_shots\"] == SHOTS, \"QX job incomplete\")",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_zz_map_qx.py",
+   "function": "read_batch",
+   "line": 253,
+   "source": "and result[\"shots_requested\"] == result[\"shots_done\"] == SHOTS",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/research_state.py",
+   "function": "_run",
+   "line": 419,
+   "source": "job[\"batch_job_id\"] == submission[\"batch_job\"] and job[\"number_of_shots\"] == submission[\"shots\"],",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/research_state.py",
+   "function": "_run",
+   "line": 427,
+   "source": "and results[0][\"shots_requested\"] == submission[\"shots\"],",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/research_state.py",
+   "function": "_run",
+   "line": 433,
+   "source": "done = sum(result[\"shots_done\"] for result in row[\"results\"])",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/research_state.py",
+   "function": "_run",
+   "line": 448,
+   "source": "isinstance(shots, list) and len(shots) == result[\"shots_done\"],",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/research_state.py",
+   "function": "_run",
+   "line": 449,
+   "source": "f\"{owner}: raw/{name} length differs from the {result['shots_done']} shots done\",",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/research_state.py",
+   "function": "runs",
+   "line": 486,
+   "source": "job[\"job\"]: (job[\"backend_type_id\"], job[\"batch_job\"], job[\"status\"], job[\"shots_done\"], job[\"charged\"])",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/research_state.py",
+   "function": "runs",
+   "line": 527,
+   "source": "totals[\"shots_done\"] == sum(job[\"shots_done\"] for job in self.ledger[\"jobs\"]),",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/research_state.py",
+   "function": "account_line",
+   "line": 578,
+   "source": "f\"jobs with {totals['shots_done']} shots done and a total ledger change of {totals['change']}\"",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/research_state.py",
+   "function": "aggregate_shots",
+   "line": 1322,
+   "source": "ledger[\"totals\"][\"shots_done\"] += 1",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/research_state.py",
+   "function": "_with_declared_job",
+   "line": 1514,
+   "source": "ledger[\"totals\"][\"shots_done\"] += template[\"shots_done\"]",
+   "tool": "ast-grep"
+  },
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "docs/evidence/provider-counter-audit/exposure_sensitivity.py",
+   "function": "scenario",
+   "line": 39,
+   "source": "duration = float(json.loads((run / \"raw/result.json\").read_text(encoding=\"utf-8\"))[\"duration\"])",
+   "tool": "semgrep"
+  },
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "docs/evidence/provider-counter-audit/exposure_sensitivity.py",
+   "function": "box_kite_scenario",
+   "line": 93,
+   "source": "duration = float(json.loads((run / \"raw/result.json\").read_text(encoding=\"utf-8\"))[\"duration\"])",
+   "tool": "semgrep"
+  },
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "docs/evidence/provider-counter-audit/exposure_sensitivity.py",
+   "function": "box_kite",
+   "line": 118,
+   "source": "duration = float(json.loads((run / \"raw/result.json\").read_text(encoding=\"utf-8\"))[\"duration\"])",
+   "tool": "semgrep"
+  },
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+   "function": "run_row",
+   "line": 109,
+   "source": "row[\"sum_nb_shots_used\"] = sum(used) if used and None not in used else None",
+   "tool": "semgrep"
+  },
+  {
+   "class": "audit replay: this bundle's own reconstruction",
+   "file": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+   "function": "run_row",
+   "line": 110,
+   "source": "row[\"sum_samples\"] = sum(returned) if returned and None not in returned else None",
+   "tool": "semgrep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/algebra_device_conjectures.py",
+   "function": "synthesis",
+   "line": 666,
+   "source": "lower_ns = min(target[\"instructions\"][\"measure_2\"][\"duration\"]) * 1e9",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported as wall time: Quandela job duration, which includes compilation, read as elapsed time",
+   "file": "scripts/ascella_new_mesh_score.py",
+   "function": "job_05_iterations",
+   "line": 108,
+   "source": "return 8 * math.floor(min(96.0, DURATION_TARGET * FIRST_ITERATIONS / duration) / 8)",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported as wall time: Quandela job duration, which includes compilation, read as elapsed time",
+   "file": "scripts/bdsc_stationarity.py",
+   "function": "readout",
+   "line": 583,
+   "source": "report[\"duration_per_sample\"] = {job: d[\"duration_seconds\"] / d[\"samples\"] for job, d in sorted(dark.items())}",
+   "tool": "semgrep"
+  },
+  {
+   "class": "model-dependent, labeled: wall time as an upper detector exposure (README sink table)",
+   "file": "scripts/bdsc_stray_mode_veto.py",
+   "function": "job_dark",
+   "line": 120,
+   "source": "\"samples\": sum(iteration[\"samples\"] for iteration in result[\"iterations\"]),",
+   "tool": "semgrep"
+  },
+  {
+   "class": "model-dependent, labeled: wall time as an upper detector exposure (README sink table)",
+   "file": "scripts/bdsc_stray_mode_veto.py",
+   "function": "stray_report",
+   "line": 230,
+   "source": "\"ungated_stray_share_bound\": rates[\"stray\"] * rates[\"duration_seconds\"] / rates[\"samples\"],",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/box_kite_analysis.py",
+   "function": "load_batch",
+   "line": 362,
+   "source": "done = sum(r[\"shots_done\"] for r in job[\"results\"])",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/evidence_closure.py",
+   "function": "quantum_inspire",
+   "line": 178,
+   "source": "\"provider_reported_shots\": sum(done) if done and all(isinstance(n, int) for n in done) else None,",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: Quandela nb_shots_used summed over disjoint iterations as detection events",
+   "file": "scripts/evidence_closure.py",
+   "function": "quandela",
+   "line": 212,
+   "source": "shots_used = sum(parts)",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: accepted samples over detection events, an acceptance fraction (README sink table)",
+   "file": "scripts/experiment_analysis.py",
+   "function": "analyze_qd",
+   "line": 605,
+   "source": "statistics[\"accepted_vs_detected_fraction\"] = accepted / detected if detected else None",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: accepted samples over detection events, an acceptance fraction (README sink table)",
+   "file": "scripts/experiment_analysis.py",
+   "function": "analyze_qd",
+   "line": 606,
+   "source": "statistics[\"detected_but_unaccepted_events\"] = None if detected is None else detected - accepted",
+   "tool": "semgrep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/ghost_event_scale.py",
+   "function": "target_durations",
+   "line": 291,
+   "source": "ticks = entry[\"duration\"] / dt",
+   "tool": "semgrep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/ghost_event_scale.py",
+   "function": "target_durations",
+   "line": 292,
+   "source": "require(abs(ticks - round(ticks)) < 1e-6, f\"{name}{entry['qargs']}: duration is not a whole dt\")",
+   "tool": "semgrep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/heron_feedforward_latency.py",
+   "function": "target_cycles",
+   "line": 169,
+   "source": "sx = {round(d / backend[\"dt\"]) for d in backend[\"instructions\"][\"sx\"][\"duration\"] if d is not None}",
+   "tool": "semgrep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/heron_feedforward_latency.py",
+   "function": "target_cycles",
+   "line": 170,
+   "source": "measure = {round(d / backend[\"dt\"]) for d in backend[\"instructions\"][\"measure\"][\"duration\"] if d is not None}",
+   "tool": "semgrep"
+  },
+  {
+   "class": "outside counter scope: a Target or circuit instruction duration, not a provider result field",
+   "file": "scripts/iqm_measurement_sequence.py",
+   "function": "estimator_shot_seconds",
+   "line": 444,
+   "source": "delays = sum(o[\"args\"][\"duration\"] for o in c[\"instructions\"][:-1] if o[\"name\"] == \"delay\")",
+   "tool": "semgrep"
+  },
+  {
+   "class": "false positive: taint reaches statevector probabilities through a mapping that also holds shots_done",
+   "file": "scripts/local_photonic_compiler_crosscheck.py",
+   "function": "qi_case",
+   "line": 174,
+   "source": "errors[name] = max(abs(actual - wanted) for actual, wanted in zip(probabilities, expected, strict=True))",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/n21_qx_conformance.py",
+   "function": "compare_qx",
+   "line": 1122,
+   "source": "if sum(run[\"counts\"].values()) != record[\"qx\"][\"shots\"]:",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/n21_qx_conformance.py",
+   "function": "compare_qx",
+   "line": 1123,
+   "source": "raise ValueError(f\"{row['file']}: seed {run['seed']} holds {sum(run['counts'].values())} shots\")",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/n21_qx_conformance.py",
+   "function": "compare_qx",
+   "line": 1125,
+   "source": "if shots is not None and sum(vectors[row[\"file\"]]) != shots:",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/n21_qx_conformance.py",
+   "function": "compare_qx",
+   "line": 1127,
+   "source": "shots = sum(vectors[row[\"file\"]])",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_cone.py",
+   "function": "run_cells",
+   "line": 209,
+   "source": "wall = duration * samples / job_samples",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_cone.py",
+   "function": "run_cells",
+   "line": 210,
+   "source": "off_total = sum(row[\"off_cone_by_mode\"].values())",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_cone.py",
+   "function": "run_cells",
+   "line": 224,
+   "source": "\"receipt_dark_off_cone_wall\": round(sum(rates[q] for q in off) * wall, 3),",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_cone.py",
+   "function": "run_cells",
+   "line": 225,
+   "source": "\"receipt_dark_off_cone_acquisition\": round(sum(rates[q] for q in off) * acquisition, 3),",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_cone.py",
+   "function": "run_cells",
+   "line": 228,
+   "source": "\"independent_gated_expectation\": round(off_total * perf / (1 - perf), 3),",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_mesh.py",
+   "function": "observed",
+   "line": 1476,
+   "source": "duration = json.loads((run / \"raw/result.json\").read_text(encoding=\"utf-8\"))[\"duration\"]",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_mesh.py",
+   "function": "observed",
+   "line": 1480,
+   "source": "dark = np.array(perfs[\"Dark counts (detection/s)\"], dtype=float) * seconds",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_mesh.py",
+   "function": "observed",
+   "line": 1481,
+   "source": "corrected = np.clip(single - dark, 0, None)",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_mesh.py",
+   "function": "observed",
+   "line": 1492,
+   "source": "return corrected / corrected.sum(), {\"facts\": facts, \"eta\": eta}",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported as wall time: Quandela job duration, which includes compilation, read as elapsed time",
+   "file": "scripts/qd_belenos_mesh.py",
+   "function": "bridge_record",
+   "line": 2513,
+   "source": "duration = json.loads((bridge / \"results.json\").read_text(encoding=\"utf-8\"))[\"status\"][\"duration\"]",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported as wall time: Quandela job duration, which includes compilation, read as elapsed time",
+   "file": "scripts/qd_belenos_mesh.py",
+   "function": "dwell_record",
+   "line": 2622,
+   "source": "run.name: json.loads((run / \"results.json\").read_text(encoding=\"utf-8\"))[\"status\"][\"duration\"]",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_mesh.py",
+   "function": "analyze_run",
+   "line": 2867,
+   "source": "duration = float(json.loads((run / \"raw/result.json\").read_text(encoding=\"utf-8\")).get(\"duration\") or 0)",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_belenos_mesh.py",
+   "function": "analyze_run",
+   "line": 2885,
+   "source": "receipt_dark = [[r * duration * used / max(sum(shots), 1) for r in receipt] for used in shots]",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_box_kite_analysis.py",
+   "function": "dark_expectation",
+   "line": 171,
+   "source": "return [float(rate) * seconds for rate in rates[:width]] + [0.0] * max(0, width - len(rates))",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: Quandela nb_shots_used summed over disjoint iterations as detection events",
+   "file": "scripts/qd_platform.py",
+   "function": "result_summary",
+   "line": 1775,
+   "source": "used = sum(per)",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: Quandela nb_shots_used summed over disjoint iterations as detection events",
+   "file": "scripts/qd_platform.py",
+   "function": "result_summary",
+   "line": 1784,
+   "source": "used, failed = sum(spent), False",
+   "tool": "semgrep"
+  },
+  {
+   "class": "outside the trial contract, labeled: returned samples over the requested budget, a delivery share",
+   "file": "scripts/qd_rehearsal_secondary.py",
+   "function": "record_state",
+   "line": 75,
+   "source": "returned = sum(entry[\"samples\"] for entry in entries if \"counts\" in entry)",
+   "tool": "semgrep"
+  },
+  {
+   "class": "outside the trial contract, labeled: returned samples over the requested budget, a delivery share",
+   "file": "scripts/qd_rehearsal_secondary.py",
+   "function": "record_state",
+   "line": 76,
+   "source": "share = returned / requested",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_results",
+   "line": 1151,
+   "source": "\"accepted_per_shot\": total / shots if shots else None,",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_results",
+   "line": 1160,
+   "source": "total_accepted = sum(row[\"accepted\"] for row in rows.values())",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_results",
+   "line": 1161,
+   "source": "pooled_fidelity = sum(successes.values()) / total_accepted if total_accepted else None",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_results",
+   "line": 1179,
+   "source": "lower = None if pooled_fidelity is None or radius is None else pooled_fidelity - radius",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_results",
+   "line": 1182,
+   "source": "elif lower - allowance > bound:",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_results",
+   "line": 1195,
+   "source": "row[\"conditional_fidelity\"] = successes[label] / row[\"accepted\"]",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_results",
+   "line": 1210,
+   "source": "\"inputs_pooled\": len(rows) - len(silent),",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_results",
+   "line": 1224,
+   "source": "\"margin\": None if lower is None or bound is None else lower - allowance - bound,",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_descriptive",
+   "line": 1360,
+   "source": "accepted_total = sum(row[\"accepted\"] for row in rows.values())",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_descriptive",
+   "line": 1361,
+   "source": "correct_total = sum(row[\"correct\"] for row in rows.values())",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_descriptive",
+   "line": 1363,
+   "source": "fidelity = correct_total / accepted_total if accepted_total else None",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_descriptive",
+   "line": 1384,
+   "source": "record[\"label\"], record[\"margin\"] = \"vetoed-blocks-differ\", lower - comparison[\"bound\"]",
+   "tool": "semgrep"
+  },
+  {
+   "class": "inventoried sink: classified in the README sink table",
+   "file": "scripts/qd_teleportation_rehearsal.py",
+   "function": "analyze_descriptive",
+   "line": 1386,
+   "source": "record[\"margin\"] = lower - comparison[\"bound\"]",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_coupler_zz_map.py",
+   "function": "sanity",
+   "line": 505,
+   "source": "done = sum(r[\"shots_done\"] for r in row[\"results\"])",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_platform.py",
+   "function": "ledger",
+   "line": 456,
+   "source": "\"shots_done\": sum(r[\"shots_done\"] or 0 for r in res),",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_platform.py",
+   "function": "ledger",
+   "line": 476,
+   "source": "\"shots_done\": sum(j[\"shots_done\"] for j in job_rows),",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_platform.py",
+   "function": "check",
+   "line": 590,
+   "source": "if totals[\"shots_done\"] != sum(j[\"shots_done\"] for j in usage[\"jobs\"]):",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/qi_readout_ringdown_cases.py",
+   "function": "sanity",
+   "line": 1094,
+   "source": "done = sum(r[\"shots_done\"] for r in row[\"results\"])",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/research_state.py",
+   "function": "_run",
+   "line": 433,
+   "source": "done = sum(result[\"shots_done\"] for result in row[\"results\"])",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/research_state.py",
+   "function": "_run",
+   "line": 456,
+   "source": "shots_done = sum(job[3] for job in jobs.values())",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/research_state.py",
+   "function": "_run",
+   "line": 457,
+   "source": "requested = len(jobs) * submission[\"shots\"]",
+   "tool": "semgrep"
+  },
+  {
+   "class": "supported: gate-model shots compared or summed within one population",
+   "file": "scripts/research_state.py",
+   "function": "runs",
+   "line": 527,
+   "source": "totals[\"shots_done\"] == sum(job[\"shots_done\"] for job in self.ledger[\"jobs\"]),",
+   "tool": "semgrep"
+  }
+ ],
+ "parse_errors": [
+  "scripts/gl52_split_conjugators.py"
+ ],
+ "rules_sha256": {
+  "counter-arithmetic.semgrep.yml": "fc680ad6f5b517fdac77d6d3733bd7aeb746a72d68dc6ec37c1504e3ff8df3f9",
+  "counter-reads.ast-grep.yml": "fd4233ad88f6e990a3bf998c3e473f5620cacbf0b5936a4a4c43b89f35b4bb9c"
+ },
+ "schema": "provider-counter-sweeps-v1",
+ "versions": {
+  "ast-grep": "ast-grep 0.42.3",
+  "semgrep": "1.164.0"
+ }
+}

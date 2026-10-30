@@ -417,7 +417,7 @@ jobs:
         run: |
           set -eu
           rocq=$(sed -n 's/^rocq //p' "$RUNNER_TEMP/opam_list.txt")
-          only="formal_certificates c881_exhaustive folding_proofs TargetFlipN21 cd-imaginary-sum-conference cd-tower-basis-sign cd-sign-row-anf cd-associator-anf cd-associator-census cd-sign-python-semantics cd-associator-point-indicators cd-sign-python-translation"
+          only="formal_certificates c881_exhaustive folding_proofs TargetFlipN21 cd-imaginary-sum-conference cd-tower-basis-sign cd-sign-row-anf cd-associator-anf cd-associator-census cd-sign-python-semantics cd-associator-point-indicators cd-sign-python-translation cd-annihilator-symmetry cd-annihilator-symmetry-real cd-tower-domain"
           if [ "${{ needs.changes.outputs.full }}" = true ]; then
             only="$only stiefel_witness"
           fi

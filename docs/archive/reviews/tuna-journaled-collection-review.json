@@ -1,0 +1,16 @@
+{
+  "model": "gpt-daybreak-blue-latest",
+  "provider_access": "unrun by reviewer",
+  "raw_sha256": "80bf2c8042e399b9f8eca23c774828a1a0d21765c88eee85515eae980b70f770",
+  "reasoning_effort": "high",
+  "report": "docs/archive/reviews/tuna-journaled-collection-review.md",
+  "retained_sha256": "e98d719879dde6dfc5a92c042a681e64ced12c9b5e32bfb54a133f9b361f5990",
+  "reviewed_sha256": {
+    "scripts/qi_tuna_capture_commitment.py": "ac48334497da49dbe7261fbb8a6c56024ab91e6aacf36da5442dbc3c8acfc15d",
+    "scripts/qi_tuna_journaled_collection.py": "dfde1bcfe2bc14ef703074fdbc8b20017a14ea02ebbfcfd8824530e444b5d27b",
+    "tests/scripts/test_qi_tuna_capture_commitment.py": "c07482f57fdbd0268de4bbf9af7c3d84ed9e971b9a26bc10de546d82a489f4e5",
+    "tests/scripts/test_qi_tuna_journaled_collection.py": "38d60c71bc26a247a632bc989f898fac818815eea5f49ad380add39ed78f4bf0"
+  },
+  "sanitization": "Trailing blank lines removed.",
+  "service_tier": "default"
+}

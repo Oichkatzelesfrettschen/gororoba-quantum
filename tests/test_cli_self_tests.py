@@ -68,6 +68,7 @@ SELF_TESTS = (
     ("scripts/wheel_rust_audit.py", ".", 9),
     ("scripts/walk_scaffold_channels.py", ".", 8),
     ("scripts/state_prep_excess.py", ".", 6),
+    ("scripts/remeasure_history.py", ".", 6),
     ("scripts/ghost_calibrations.py", ".", 9),
     ("scripts/ghost_run.py", ".", 9),
     ("gororoba_quantum/ibm_account.py", "gororoba_quantum", 5),
@@ -79,6 +80,7 @@ SELF_TESTS = (
     ("scripts/heron_feedforward_latency.py", ".", 9),
     ("scripts/latency_recovery_exposure.py", ".", 9),
     ("scripts/check_markdown_links.py", ".", 3),
+    ("scripts/zbmath.py", ".", 9),
 )
 
 

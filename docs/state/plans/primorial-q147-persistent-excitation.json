@@ -1,0 +1,260 @@
+{
+  "schema": "work-plan-v1",
+  "id": "primorial-q147-persistent-excitation",
+  "kind": "experiment",
+  "summary": "Case-3 post-hoc analyses: q147's preparation excess is not set by the previous shot's end state, and in stage 2 it exceeds the end-state ceiling by 2.2 to 4.0 standard errors; a repeated-measurement arm would separate population from misassignment.",
+  "sources": [
+    "docs/evidence/primorial_cover/case3/README.md",
+    "results/live/PRIMORIAL_Q147_REMEASURE_CASE.md",
+    "scripts/remeasure_history.py"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Case 3's post-hoc shot-history analysis (docs/evidence/primorial_cover/case3/README.md) found the in-job excess above the end-state ceiling and linked to the previous circuit's readout event; one-read arms cannot separate a population from a misassignment, so the family gained two-read arms and a written case."
+  },
+  "related": [
+    "primorial-coherent-device-question"
+  ],
+  "next_action": "Write a successor case that varies the time between q147's reads at a fixed measurement count, separating a measurement-driven transition from decay (docs/evidence/primorial_cover/q147-remeasure/README.md, Inference).",
+  "steps": [
+    {
+      "id": "two-read-arms",
+      "state": "done",
+      "action": "Add the static arms x_remeasure and remeasure to the state-prep-control family with two-bit registers, their summaries, endpoints, the planner's row-order contract and the written-case renderer, and dry-run the selection on ibm_kingston.",
+      "acceptance": "diagnostic_experiments.py --self-test, qpu_planning_contracts.py --state-prep and qpu_cases.py --check pass with the new arms, and a dry run plans three static PUBs in the order prep0, x_remeasure, remeasure on the six qubits with a written case.",
+      "receipts": [
+        {
+          "result": "diagnostic_experiments.py --self-test, qpu_planning_contracts.py --state-prep and qpu_cases.py --check pass with the two-read arms; the dry run 2026-10-27T191857.888009Z plans three static PUBs prep0, x_remeasure, remeasure on qubits 147, 148, 149, 141, 142, 143 at 32768 shots with a written case.",
+          "observed_at": "2026-10-27T19:28:42+00:00",
+          "revision": "a4c441fd074a8adb7357d1047856f0e14af536aa",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/diagnostic_experiments.py",
+              "sha256": "32d67a1f0e5c0389dbd0af30bfbf6cfabd45c64eefffc2a7e228a3c061a5061e"
+            },
+            {
+              "ref": "gororoba_quantum/qpu_planning_contracts.py",
+              "sha256": "e2bb49979c6b7e63e6c66ff31e67ba0260517f46f1d3bda53889a80b742cefcd"
+            },
+            {
+              "ref": "gororoba_quantum/qpu_cases.py",
+              "sha256": "a35b1b452390d7fc17257ec96bd9d2a2b1186b67699f223f931aae61bc2fc7fb"
+            },
+            {
+              "ref": "results/live/2026-10-27T191857.888009Z/record.json",
+              "sha256": "914a19475d3304e7851ea3a3347c93a84088d34862e8f8f2fcb96797eb305bc7"
+            }
+          ],
+          "scope_sha256": "032c3634a856a1daed6aa0bc9355908b14a0a3168c6f9853fad45f867698810b"
+        }
+      ]
+    },
+    {
+      "id": "analysis-rule",
+      "state": "done",
+      "action": "Write scripts/remeasure_history.py: the persistence rule (99 percent Clopper-Pearson against 0.5), the |1>-read-as-0 recovery, the readout-event link with its null arm, and the successor reading, with a synthetic self-test laid out by construction.",
+      "acceptance": "The script's --self-test reproduces every synthetic count and the rule's three verdicts match closed forms; the case document names the rule and the predictions under both readings.",
+      "receipts": [
+        {
+          "result": "scripts/remeasure_history.py --self-test reproduces every synthetic count and the rule's three verdicts match closed forms; the case document states the rule and both readings' predictions.",
+          "observed_at": "2026-10-27T19:28:42+00:00",
+          "revision": "a4c441fd074a8adb7357d1047856f0e14af536aa",
+          "evidence": [
+            {
+              "ref": "scripts/remeasure_history.py",
+              "sha256": "d2142d359a02d66c37b44f5cb9fa5f137ac0c421827c8c809814d7ee43d78506"
+            },
+            {
+              "ref": "results/live/PRIMORIAL_Q147_REMEASURE_CASE.md",
+              "sha256": "a806f67fa408d3d6966d90468969ed9746589e5043b450de4002f4cd3388c84e"
+            }
+          ],
+          "scope_sha256": "87a9347778034317e67760f3afe5d2ad4bc2bb608bebda6dfe09c04a5ae8a601"
+        },
+        {
+          "result": "scripts/remeasure_history.py --self-test reproduces every synthetic count, the cross-PUB block pairs shots only under a recorded one-chunk execution order with a flat null arm, and the rule's three verdicts match closed forms; the case document states the rule, the order check and both readings' predictions.",
+          "observed_at": "2026-10-27T19:52:07+00:00",
+          "revision": "989d3ec112d3804955f7fec384b197690632cc21",
+          "evidence": [
+            {
+              "ref": "scripts/remeasure_history.py",
+              "sha256": "a598540e2ba00098af8530968f1dd39ec0197874dbf9afe66482f9d9bfaeca93"
+            },
+            {
+              "ref": "results/live/PRIMORIAL_Q147_REMEASURE_CASE.md",
+              "sha256": "6795be8da60492ee25b31967864e728bcb5ea2a20882fd693dd5414a7e118367"
+            }
+          ],
+          "scope_sha256": "87a9347778034317e67760f3afe5d2ad4bc2bb608bebda6dfe09c04a5ae8a601"
+        },
+        {
+          "result": "Revalidated after the case recorded its approval and binding table: the rule section and the analysis script are unchanged, and scripts/remeasure_history.py --self-test passes.",
+          "observed_at": "2026-10-27T20:58:01+00:00",
+          "revision": "3011bcc9011873becd687a281af551b5fd8a569f",
+          "evidence": [
+            {
+              "ref": "scripts/remeasure_history.py",
+              "sha256": "a598540e2ba00098af8530968f1dd39ec0197874dbf9afe66482f9d9bfaeca93"
+            },
+            {
+              "ref": "results/live/PRIMORIAL_Q147_REMEASURE_CASE.md",
+              "sha256": "5aaace7a071386036c3c690b8ed766a28181166c0fddcb6c73927cd91ba1d12f"
+            }
+          ],
+          "scope_sha256": "87a9347778034317e67760f3afe5d2ad4bc2bb608bebda6dfe09c04a5ae8a601"
+        }
+      ]
+    },
+    {
+      "id": "approval",
+      "state": "done",
+      "action": "The owner approves the written case: six qubits, 32768 shots at 20 us, the backup account, the 12 s ceiling.",
+      "acceptance": "An approval in the owner's words recorded in the case's status line.",
+      "receipts": [
+        {
+          "result": "The owner approved the case as written on 2026-10-27 (\"approved.\"); the case's status line records it.",
+          "observed_at": "2026-10-27T20:56:15+00:00",
+          "revision": "e41633e5ed89fce7c26713cd8f1b44edf58d29fd",
+          "evidence": [
+            {
+              "ref": "results/live/PRIMORIAL_Q147_REMEASURE_CASE.md",
+              "sha256": "5aaace7a071386036c3c690b8ed766a28181166c0fddcb6c73927cd91ba1d12f"
+            }
+          ],
+          "scope_sha256": "063f37a93552e1e0807b788cfcc64eed671d04b8bc014ccd132d6a4b4b15a8cd"
+        }
+      ]
+    },
+    {
+      "id": "run-and-collect",
+      "state": "done",
+      "action": "Run approved_run.sh with the case's check and flags, collect the run with --collect, run remeasure_history.py with q147's execution calibration, and retain the run, its analysis and the registry row.",
+      "acceptance": "A collected run under results/live with raw shots, its execution-start calibration snapshot and remeasure-history.json under docs/evidence/primorial_cover/q147-remeasure/, and a findings README that reports every preregistered reading.",
+      "receipts": [
+        {
+          "result": "Job dbggr6giudkc73e4fijg ran on ibm_kingston (backup instance, 5 s billed) from the binding dry run 2026-10-27T204540.839611Z; the collected run, its execution-start snapshot, the preregistered report and the findings README are retained. The executor ran the three PUBs as one chunk in submitted order.",
+          "observed_at": "2026-10-27T20:56:15+00:00",
+          "revision": "e41633e5ed89fce7c26713cd8f1b44edf58d29fd",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T204605.871056Z/record.json",
+              "sha256": "5b590ea462c91593a7c512a50b1863bc0256ca94cb320426836aa445181a7129"
+            },
+            {
+              "ref": "results/live/2026-10-27T204605.871056Z/collect.json",
+              "sha256": "e020c4cd64de778702db3b9c4bb9c54a013d049198798494ed28d84c10b4f9c6"
+            },
+            {
+              "ref": "docs/evidence/primorial_cover/q147-remeasure/snapshot.json",
+              "sha256": "e24a3fa986a100450b4bcd9fb0972749d8a683b215a17240a6bb4f593be0411c"
+            },
+            {
+              "ref": "docs/evidence/primorial_cover/q147-remeasure/remeasure-history.json",
+              "sha256": "dac3e4749cf73b0fdc03a71c15c0c696dd9815837068114e9e128a593e847fee"
+            },
+            {
+              "ref": "docs/evidence/primorial_cover/q147-remeasure/README.md",
+              "sha256": "30ca89621789b046277caf72c67cd10aae65159b97f3d7fc6acd8b26e65b80e5"
+            }
+          ],
+          "scope_sha256": "e9c4fadd36fb220458434bc44e1032bfb31e38fca94b84bbd61cf9a05c020e16"
+        },
+        {
+          "result": "Revalidated after the README's Registration section named the registered acquisition and claim: the run record, collection, execution-start snapshot and preregistered report keep their bytes, and every reading the README reports is unchanged.",
+          "observed_at": "2026-10-27T23:11:46+00:00",
+          "revision": "b480f1d67e7bb4b8c3f0e672f3340d68565ee392",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T204605.871056Z/record.json",
+              "sha256": "5b590ea462c91593a7c512a50b1863bc0256ca94cb320426836aa445181a7129"
+            },
+            {
+              "ref": "results/live/2026-10-27T204605.871056Z/collect.json",
+              "sha256": "e020c4cd64de778702db3b9c4bb9c54a013d049198798494ed28d84c10b4f9c6"
+            },
+            {
+              "ref": "docs/evidence/primorial_cover/q147-remeasure/snapshot.json",
+              "sha256": "e24a3fa986a100450b4bcd9fb0972749d8a683b215a17240a6bb4f593be0411c"
+            },
+            {
+              "ref": "docs/evidence/primorial_cover/q147-remeasure/remeasure-history.json",
+              "sha256": "dac3e4749cf73b0fdc03a71c15c0c696dd9815837068114e9e128a593e847fee"
+            },
+            {
+              "ref": "docs/evidence/primorial_cover/q147-remeasure/README.md",
+              "sha256": "7ad23b853584879be31b778da68e928f022676ef73e318abf3626a7b288d0d1e"
+            }
+          ],
+          "scope_sha256": "e9c4fadd36fb220458434bc44e1032bfb31e38fca94b84bbd61cf9a05c020e16"
+        }
+      ]
+    },
+    {
+      "id": "register-acquisition",
+      "state": "done",
+      "action": "In the change that re-observes the backup instance's inventory (issue #585), register the run as an acquisition in docs/state/research_state.json with a claim citing the q147-remeasure evidence.",
+      "acceptance": "The backup retention audit lists no archive of this run under awaiting_observation, and research_state.py --check passes with the acquisition and a claim citing remeasure-history.json.",
+      "receipts": [
+        {
+          "result": "The backup re-observation covers job dbggr6giudkc73e4fijg (audit awaiting_observation empty); research_state.json registers acquisition kingston-primorial-q147-remeasure and claim kingston-q147-two-read-persistence citing remeasure-history.json, and research_state.py --check passes.",
+          "observed_at": "2026-10-27T23:09:05+00:00",
+          "revision": "b480f1d67e7bb4b8c3f0e672f3340d68565ee392",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "01c5325de760038485ae4b486aeb120fd16cf5c2d4fca9b0d8d2ded4be4073f2"
+            },
+            {
+              "ref": "results/live/qpu-job-retention-audit.f59f9992321c.json",
+              "sha256": "88975ced695bb7752d5a2b857fdf1df4ce60c70066f86b04c6b0e32c23c7537d"
+            }
+          ],
+          "scope_sha256": "6fbc8f2105cd20f9639659395f7d00a1ba2667215b2d69d1f4658c7fb5871524"
+        },
+        {
+          "result": "Revalidated on the registry records: acquisition kingston-primorial-q147-remeasure and claim kingston-q147-two-read-persistence are registered, the backup audit covers job dbggr6giudkc73e4fijg with awaiting_observation empty, and research_state.py --check passes.",
+          "observed_at": "2026-10-27T23:17:06+00:00",
+          "revision": "53e0c1ec8c5db4ef00f9a98a6515107da9a277bb",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=kingston-primorial-q147-remeasure",
+              "sha256": "d15d138691acbedb23cd5e6fcef40368438c4a37a9e716aa7e15c7ecf6ce2f93"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=kingston-q147-two-read-persistence",
+              "sha256": "c3541a3944183ccce06751d07e2cd2decfb3609c78aa0df374f89f014cb9b767"
+            },
+            {
+              "ref": "results/live/qpu-job-retention-audit.f59f9992321c.json",
+              "sha256": "88975ced695bb7752d5a2b857fdf1df4ce60c70066f86b04c6b0e32c23c7537d"
+            }
+          ],
+          "scope_sha256": "6fbc8f2105cd20f9639659395f7d00a1ba2667215b2d69d1f4658c7fb5871524"
+        },
+        {
+          "result": "Revalidated after main's backup re-observation of 2026-10-28: acquisition kingston-primorial-q147-remeasure and claim kingston-q147-two-read-persistence are registered, the backup audit's jobs list covers dbggr6giudkc73e4fijg with awaiting_observation empty, and research_state.py --check passes. The audit reference binds the job's row, so later observations that leave the row unchanged keep the receipt fresh.",
+          "observed_at": "2026-10-28T00:55:21+00:00",
+          "revision": "18c9128a98ba592a02af443634baf9391b88b798",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=kingston-primorial-q147-remeasure",
+              "sha256": "d15d138691acbedb23cd5e6fcef40368438c4a37a9e716aa7e15c7ecf6ce2f93"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=kingston-q147-two-read-persistence",
+              "sha256": "c3541a3944183ccce06751d07e2cd2decfb3609c78aa0df374f89f014cb9b767"
+            },
+            {
+              "ref": "results/live/qpu-job-retention-audit.f59f9992321c.json#jobs/job_id=dbggr6giudkc73e4fijg",
+              "sha256": "3dc085e667206ef4fafe4aaeb69afa9bd09759806fe4330c1629d265a6e5c090"
+            }
+          ],
+          "scope_sha256": "6fbc8f2105cd20f9639659395f7d00a1ba2667215b2d69d1f4658c7fb5871524"
+        }
+      ]
+    }
+  ],
+  "owner": "IBM Kingston primorial operator",
+  "scope": "One static ibm_kingston job on the backup account: the state-prep-control arms prep0, x_remeasure and remeasure on qubits 147, 148, 149, 141, 142 and 143, 32768 shots at a 20 us repetition delay, under a 12 s ceiling. It decides whether q147's preparation excess is a population the first read finds or a misassignment of that read, through the persistence of a second measurement, and reads the readout-event link and q142 descriptively. The case is results/live/PRIMORIAL_Q147_REMEASURE_CASE.md and the analysis scripts/remeasure_history.py; the gap-88 circuits and the split law stay out of scope."
+}

@@ -11,7 +11,7 @@ the only path from the repository to Kaggle:
 
 - ``push ENTRY --slug SLUG [-- ARGS]`` (ARGS after ``--`` go to ENTRY) resolves ENTRY's repository imports
   (``import X`` and ``from X import`` naming a module under gororoba_quantum/
-  or scripts/, transitively), bundles them with any ``--include`` file, or
+  or scripts/, transitively, less KERNEL_EXCLUDED_IMPORTS), bundles them with any ``--include`` file, or
   every tracked file of an ``--include`` directory, as a zip embedded in a
   generated ``run.py``, writes kernel-metadata.json
   (private, internet for the pinned pip install) and pushes the kernel.
@@ -81,11 +81,11 @@ MODULE_DIRS = ("gororoba_quantum", "scripts")
 # Pinning both holds every library Aer's cuStateVec_enable path loads at one
 # version.
 KERNEL_PINS = (
-    "qiskit==2.6.0",
-    "qiskit-aer-gpu-cu11==0.17.2",
+    "qiskit==2.6.1",
+    "qiskit-aer-gpu-cu11==0.18.2",
     "cuquantum-cu11==24.8.0",
     "cutensor-cu11==2.2.0",
-    "qiskit-ibm-runtime==0.50.0",
+    "qiskit-ibm-runtime==0.51.0",
 )
 # --gpu-env installs these in requirements.txt's qiskit-aer place inside a
 # venv on the image's Python 3.13, the newest Python the cu11 wheel ships for.
@@ -110,7 +110,7 @@ CU13_RUNTIME_PINS = (
 # sm_75 and sm_89 SASS, cuStateVec), which no index serves.
 GPU_AER_PINS: dict[str, tuple[str, ...]] = {
     "cu11": GPU_ENV_AER_PINS,
-    "cu13": ("qiskit-aer-gpu-cu13==0.17.2", *CU13_RUNTIME_PINS),
+    "cu13": ("qiskit-aer-gpu-cu13==0.18.2", *CU13_RUNTIME_PINS),
 }
 # A build no index serves: the private dataset slug that holds its wheel as an
 # artifact (``kaggle_run.py artifact``), the wheel's file name and its sha256.
@@ -119,8 +119,8 @@ GPU_AER_PINS: dict[str, tuple[str, ...]] = {
 AER_GPU_WHEELS: dict[str, tuple[str, str, str]] = {
     "cu13": (
         "gororoba-aer-gpu-cu13-wheel",
-        "qiskit_aer_gpu_cu13-0.17.2-cp313-cp313-manylinux_2_39_x86_64.whl",
-        "3d40fc33cd6674644807c15364b3e3ac1d417885e08ad255797ae93e886253d5",
+        "qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-manylinux_2_39_x86_64.whl",
+        "29f796542284c71991f241fae615f79931a0bed73a78313cdf283e9f0f14c875",
     ),
 }
 # Opt-in pins a --gpu-env venv adds (``push --gpu-env-with GROUP``), each at
@@ -135,7 +135,7 @@ GPU_ENV_GROUPS: dict[str, tuple[str, ...]] = {"torch": ("torch==2.14.1",)}
 MACHINE_GPUS = {"NvidiaTeslaT4": 2}
 # A CPU or TPU host has no NVIDIA GPU, and the cu11 wheel ships cp313 only,
 # so those kernels take the CPU build of the same Aer release.
-CPU_KERNEL_PINS = ("qiskit==2.6.0", "qiskit-aer==0.17.2", "qiskit-ibm-runtime==0.50.0")
+CPU_KERNEL_PINS = ("qiskit==2.6.1", "qiskit-aer==0.18.2", "qiskit-ibm-runtime==0.51.0")
 # Usage guides every bundle carries, so an agent or author inside a kernel
 # reads the same package manuals, workflow and substrate notes as the host:
 # every tracked file under each directory except the captured upstream
@@ -160,7 +160,7 @@ PIN_GROUPS: dict[str, tuple[str, ...]] = {
         "stim==1.16.0",
         "mthree==3.0.0",
         "runningman==2.3.0",
-        "qiskit-ibm-runtime==0.50.0",
+        "qiskit-ibm-runtime==0.51.0",
         # Runtime dependencies match the active CI qualification environment.
         "samplomatic==0.21.0",
         "ibm-quantum-schemas==0.13.20261016",
@@ -217,6 +217,13 @@ CI_ENV_FILES = (
 # Kaggle's SaveKernel accepts a 706,414-byte run.py and refuses a 1,662,849-byte
 # one with HTTP 400 (2026-10-16); the guard sits between the two.
 KERNEL_SOURCE_LIMIT = 1_000_000
+# Function-level imports the closure leaves out, by importing file: each one
+# serves only a provider cloud call that authenticates with a token file
+# outside every checkout, and a kernel holds no provider token.
+# quandela_qrng.draw imports qd_platform for qd_platform.request alone. Other
+# lazy imports of the same module (qd_platform's offline load_case and
+# template_experiment) and every module-level import stay in the closure.
+KERNEL_EXCLUDED_IMPORTS = {"scripts/quandela_qrng.py": frozenset({"qd_platform"})}
 # Files every kernel carries: its program and instructions, and the
 # hypercomplex stack check with the tables it must reproduce.
 KERNEL_FILES = (
@@ -310,6 +317,20 @@ def module_path(name: str) -> Path | None:
     return None
 
 
+def eager_imports(tree: ast.Module) -> set[int]:
+    """The ids of the import statements that run when the module is imported: every one outside a function body."""
+    eager: set[int] = set()
+    stack: list[ast.AST] = list(tree.body)
+    while stack:
+        node = stack.pop()
+        if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.Lambda):
+            continue
+        if isinstance(node, ast.Import | ast.ImportFrom):
+            eager.add(id(node))
+        stack.extend(ast.iter_child_nodes(node))
+    return eager
+
+
 def import_closure(entry: Path) -> list[Path]:
     seen: set[Path] = set()
     stack = [entry]
@@ -318,12 +339,17 @@ def import_closure(entry: Path) -> list[Path]:
         if path in seen:
             continue
         seen.add(path)
-        for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"), filename=str(path))):
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        eager = eager_imports(tree)
+        excluded = KERNEL_EXCLUDED_IMPORTS.get(path.relative_to(ROOT).as_posix(), frozenset())
+        for node in ast.walk(tree):
             names: list[str] = []
             if isinstance(node, ast.Import):
                 names = [alias.name for alias in node.names]
             elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
                 names = [node.module]
+            if id(node) not in eager:
+                names = [name for name in names if name.split(".")[0] not in excluded]
             for name in names:
                 found = module_path(name)
                 if found is not None and found not in seen:
@@ -551,6 +577,21 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     return submission
 
 
+def kaggle_api() -> Any:
+    """An authenticated KaggleApi. The kaggle and kagglesdk distributions sit in the operator's interpreter, outside
+    the CI pins: CI never contacts Kaggle, and `verify` reads retained receipts offline."""
+    try:
+        from kaggle.api.kaggle_api_extended import KaggleApi
+    except ModuleNotFoundError as error:
+        raise SystemExit(
+            f"{sys.executable} lacks the kaggle SDK ({error}); collect and accelerator pushes need the "
+            "kaggle and kagglesdk distributions, so run kaggle_run.py under the interpreter that holds them"
+        ) from error
+    api = KaggleApi()
+    api.authenticate()
+    return api
+
+
 def latest_state(ref: str) -> str | None:
     """The KernelWorkerStatus name of the kernel's latest version; None when the account holds no kernel at ref.
 
@@ -558,13 +599,11 @@ def latest_state(ref: str) -> str | None:
     or 404 (the Kaggle CLI's kernels_status reports a 401 or 403 as a wrong
     slug); every other failure raises, so the push that asked refuses.
     """
-    from kaggle.api.kaggle_api_extended import KaggleApi
+    api = kaggle_api()
     from kagglesdk.kernels.types.kernels_api_service import ApiGetKernelSessionStatusRequest
     from requests.exceptions import HTTPError
 
     owner, slug = ref.split("/")
-    api = KaggleApi()
-    api.authenticate()
     request = ApiGetKernelSessionStatusRequest()
     request.user_name = owner
     request.kernel_slug = slug
@@ -712,6 +751,11 @@ def self_test(args: argparse.Namespace) -> int:
 
     entry = "scripts/design_c_cubic_noise.py"
     data = "docs/evidence/calibration/ibm_kingston.json"
+    # An offline entry that calls qd_platform's token-free helpers keeps it in its closure.
+    for offline in ("scripts/local_optical_operator_replay.py", "scripts/local_photonic_compiler_crosscheck.py"):
+        require(
+            ROOT / "scripts/qd_platform.py" in import_closure(ROOT / offline), f"{offline} closure lacks qd_platform"
+        )
     for machine in (DEFAULT_MACHINE, GPU_MACHINE, TPU_MACHINE):
         submission = _self_test_kernel(entry, data, machine)
     _native_tls_self_test()
@@ -821,7 +865,7 @@ def _gpu_env_self_test(data: str) -> None:
     require(all(name in submission["bundle"] for name in CI_ENV_FILES), "a --gpu-env bundle lacks the pin files")
     pins = kernel_main.pinned(ROOT, spec["aer_pins"])
     require(
-        "qiskit-aer" not in pins and pins["qiskit-aer-gpu-cu11"] == "0.17.2" and pins["numpy"] == "2.5.4",
+        "qiskit-aer" not in pins and pins["qiskit-aer-gpu-cu11"] == "0.18.2" and pins["numpy"] == "2.5.4",
         f"GPU environment pins {pins}",
     )
     run = {"success": True, "device": "GPU", "cuStateVec_enable": False}
@@ -905,7 +949,7 @@ def _gpu_aer_self_test(data: str) -> None:
         if line.strip() and not line.lstrip().startswith("#")
     ]
     require(tuple(listed) == CU13_RUNTIME_PINS, f"CU13_RUNTIME_PINS differs from {CU13_RUNTIME_PINS_FILE}: {listed}")
-    cu11 = ("qiskit-aer-gpu-cu11==0.17.2", "cuquantum-cu11==24.8.0", "cutensor-cu11==2.2.0")
+    cu11 = ("qiskit-aer-gpu-cu11==0.18.2", "cuquantum-cu11==24.8.0", "cutensor-cu11==2.2.0")
     require(GPU_AER_PINS["cu11"] == GPU_ENV_AER_PINS == cu11, f"cu11 GPU Aer pins {GPU_AER_PINS['cu11']}")
     base = argparse.Namespace(
         entry="scripts/aer_gpu_probe.py",
@@ -954,7 +998,7 @@ def _gpu_aer_self_test(data: str) -> None:
         record_path.write_text(json.dumps(valid), encoding="utf-8")
         submission, job, metadata = built(gpu_aer="cu13")
         attached, attached_job, _ = built(gpu_aer="cu13", dataset=[slug])
-    cu13_pins = ["qiskit-aer-gpu-cu13==0.17.2", *CU13_RUNTIME_PINS]
+    cu13_pins = ["qiskit-aer-gpu-cu13==0.18.2", *CU13_RUNTIME_PINS]
     cu13_spec: dict[str, Any] = {
         "uv": UV_PIN,
         "aer_pins": cu13_pins,
@@ -974,7 +1018,7 @@ def _gpu_aer_self_test(data: str) -> None:
     )
     pins = kernel_main.pinned(ROOT, cu13_pins)
     require(
-        "qiskit-aer" not in pins and "qiskit-aer-gpu-cu11" not in pins and pins["qiskit-aer-gpu-cu13"] == "0.17.2",
+        "qiskit-aer" not in pins and "qiskit-aer-gpu-cu11" not in pins and pins["qiskit-aer-gpu-cu13"] == "0.18.2",
         f"cu13 GPU environment pins {pins}",
     )
     run = {"success": True, "device": "GPU", "cuStateVec_enable": False}
@@ -1281,6 +1325,10 @@ def _self_test_kernel(entry: str, data: str, machine: str) -> dict[str, Any]:
         expected = (entry, data, "gororoba_quantum/calibration_snapshot.py", "gororoba_quantum/cd_core.py")
         for needed in (*expected, *KERNEL_FILES):
             require(needed in submission["bundle"], f"bundle lacks {needed}")
+        # The entry reaches qd_platform only through quandela_qrng.draw's lazy import.
+        require(
+            "scripts/qd_platform.py" not in submission["bundle"], "bundle carries a lazily imported provider client"
+        )
         for rel, digest in submission["bundle"].items():
             require(digest == sha256((ROOT / rel).read_bytes()), f"bundle digest of {rel} differs from the tree")
         metadata = json.loads((run_dir / "kernel/kernel-metadata.json").read_text(encoding="utf-8"))
@@ -1536,11 +1584,9 @@ def download_version(owner: str, slug: str, version: int, target: Path) -> list[
     """
     import urllib.request
 
-    from kaggle.api.kaggle_api_extended import KaggleApi
+    api = kaggle_api()
     from kagglesdk.kernels.types.kernels_api_service import ApiListKernelSessionOutputRequest
 
-    api = KaggleApi()
-    api.authenticate()
     written: list[str] = []
     token: str | None = None
     log: str | None = None

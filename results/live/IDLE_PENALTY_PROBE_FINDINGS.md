@@ -25,6 +25,11 @@ The analysis digest is in each file's `identity`. The analyzer changed in one wa
 gate the case listed as the step before any readout verdict. Every estimator, threshold and decision rule is
 unchanged.
 
+`idle-penalty-report-vectorized-encoding.json` and `idle-penalty-exploratory-vectorized-encoding.json` replay both
+analyses after `law_encoding.py`, one of the analyzer sources the digest covers, gained a vectorized encoder that
+writes byte-identical laws; they differ from the two files above only in `identity.analysis_digest`, and gate
+`core-idle-penalty-report-replay` checks them. The two files above keep their bytes.
+
 ## Exposure
 
 The analyzer reads the service schedule of every PUB (`metadata.compilation.scheduler_timing` in `raw/`) before any
@@ -168,9 +173,13 @@ multiplier stays near 1.6.
 
 ## Open
 
-- **Stability across calibrations (question d).** It needs a repeat on the same ordered 31 pairs under a refreshed
-  T1/T2, compared with `--compare`.
+- **Stability across calibrations (question d).** The repeat on 30 of the 31 ordered pairs ran at two points
+  ([IDLE_PENALTY_REPEAT_CASE.md](IDLE_PENALTY_REPEAT_CASE.md#results-point-2)): the readout shift replicates with a
+  stable pair pattern (r 0.99), while every per-qubit multiplier reads "unresolved" (r -0.04 to 0.36) and the cohort
+  medians fell 12 to 13 % over 28 hours. Post hoc, the fitted physical rates keep their per-qubit pattern across a
+  same-day T1/T2 refresh while the reported normalization does not; a third point under a further refresh tests
+  that reading.
 - **Readout attribution, and whether phase rate and visibility loss share a cause.** This needs a campaign whose
   replica classes differ: focal partner only, background readers only, all readers, and none.
 - **The unplaced historical qubits 79, 92 and 93.** One guarded job cannot hold all three, because 93 neighbors both
-  79 and 92 (`targets.json`).
+  79 and 92 (`targets.json`); [IDLE_PENALTY_FOCAL_CASE.md](IDLE_PENALTY_FOCAL_CASE.md) places them in two jobs.

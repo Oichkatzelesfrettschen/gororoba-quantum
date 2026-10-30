@@ -1563,6 +1563,45 @@
         "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Third-party material in the article is covered only where the article's credit lines say so. Repository licensing does not relabel the source PDF.",
         "publisher_title": "Quantum teleportation using highly coherent emission from telecom C-band quantum dots"
       }
+    },
+    {
+      "title": "Spglib: a software library for crystal symmetry search",
+      "authors": [
+        "Atsushi Togo",
+        "Kohei Shinohara",
+        "Isao Tanaka"
+      ],
+      "version": "Science and Technology of Advanced Materials: Methods 4(1), 2384822 (2024), published online 2024-10-16; publisher PDF as deposited in the NIMS Materials Data Repository",
+      "source_url": "https://mdr.nims.go.jp/filesets/d30a5177-949d-44e2-880b-5f08d13673e3/download",
+      "note": "docs/notes/papers/1808.01590.md",
+      "audited_at_utc": "2026-10-28T00:43:42+00:00",
+      "sha256": "b5cab7d7ac26711726f13fff5380957c25c938e3b0e53a55f532d96c21bc0a85",
+      "bytes": 1562000,
+      "pages": 16,
+      "acquisition": "download",
+      "path": "docs/pdf/27660400.2024.2384822.pdf",
+      "status": "retained",
+      "redistribution": "explicit_license_verified",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "b5cab7d7ac26711726f13fff5380957c25c938e3b0e53a55f532d96c21bc0a85",
+        "verified_at_utc": "2026-10-28T00:43:42+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "evidence_url": "https://api.crossref.org/works/10.1080/27660400.2024.2384822",
+        "evidence_sha256": "65e92297afc7d7c8d4b275645ee1d4bf573a04a518f2a22ab9b94d308bb3b243",
+        "evidence_locator": "Crossref message.license entry for content-version vor; message.DOI and message.title; the PDF's XMP prism:doi and its page-2 Open Access paragraph",
+        "evidence_path": "docs/evidence/source_rights/crossref-10.1080_27660400.2024.2384822.json",
+        "evidence_retrieved_at_utc": "2026-10-28T00:29:31+00:00",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "observed_license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "doi": "10.1080/27660400.2024.2384822",
+        "publisher_title": "Spglib: a software library for crystal symmetry search",
+        "reading_scope": "Crossref version-of-record license, DOI and title; the PDF cover page, XMP DOI and page-2 Open Access paragraph; the note carries the content reading scope.",
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "Crossref registers CC BY 4.0 for the version of record with no embargo, the publisher article page's structured data names the same license, and the PDF's page 2 states the article is distributed under the Creative Commons Attribution License.",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Repository licensing does not relabel the source PDF."
+      }
     }
   ],
   "aliases": [
@@ -1778,6 +1817,9 @@
     "docs/notes/papers/openai-2026-mub-dimension-six.md": {"status": "journal-venue-unverified"},
     "docs/notes/papers/openai-2026-hadamard-order-six-fourier-certificates.md": {"status": "journal-venue-unverified"},
     "docs/notes/papers/openai-2026-exact-quantum-factoring.md": {"status": "journal-venue-unverified"},
+    "docs/notes/papers/openai-2026-torsion-free-zero-divisors.md": {"status": "journal-venue-unverified"},
+    "docs/notes/papers/openai-2026-torsion-free-not-directly-finite.md": {"status": "journal-venue-unverified"},
+    "docs/notes/papers/openai-2026-kadison-kaplansky-projection.md": {"status": "journal-venue-unverified"},
     "docs/notes/papers/ocathain-2012-nonaffine-hadamard.md": {
       "status": "journal-identity-verified",
       "doi": "10.1016/j.jcta.2012.02.011",
@@ -1940,6 +1982,18 @@
       "doi": "10.7151/dmgaa.1088",
       "venue": "Discussiones Mathematicae - General Algebra and Applications 24(2), 251-265 (2004)",
       "receipt_url": "https://api.crossref.org/works/10.7151/dmgaa.1088"
+    },
+    "docs/notes/papers/1602.06402.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1016/j.commatsci.2016.10.015",
+      "venue": "Computational Materials Science 128, 140-184 (2017)",
+      "receipt_url": "https://api.crossref.org/works/10.1016/j.commatsci.2016.10.015"
+    },
+    "docs/notes/papers/1808.01590.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1080/27660400.2024.2384822",
+      "venue": "Science and Technology of Advanced Materials: Methods 4(1), 2384822 (2024)",
+      "receipt_url": "https://api.crossref.org/works/10.1080/27660400.2024.2384822"
     },
     "docs/notes/papers/1103.1528.md": {
       "status": "journal-identity-verified",
@@ -4099,7 +4153,7 @@
       "sha256": "6bc2448ff13557610112e91ae6e713d0b469588cd9e1e3f9b44c04fc422fd612",
       "bytes": 396915,
       "retrieved_at_utc": "2026-10-27T03:46:26+00:00",
-      "reading_scope": "OpenAI, Exact Fourier certificates for complex Hadamard matrices of order six, 24 September 2026, 35 pages at openai/math commit 7ef5c0cc: pp. 1-4 and 24 in full (Theorems 1.1 and 1.2, Corollary 3.1, the Proposition 6.3 bound); Sections 3.2-7.3 for result labels only; the Appendix A verifier not run",
+      "reading_scope": "OpenAI, Exact Fourier certificates for complex Hadamard matrices of order six, 24 September 2026, 35 pages at openai/math commit 7ef5c0cc: pp. 1-4 and 24 in full (Theorems 1.1 and 1.2, Corollary 3.1, the Proposition 6.3 bound); Sections 3.2-7.3 for result labels only; the Appendix A verifier run once, its output identical to the three lines of p. 25",
       "retention": "external_reference; sha256 identifies the release artifact"
     },
     {
@@ -4279,7 +4333,7 @@
       "sha256": "104a7306205b8544c8f913f6afdb59603f2e04a207c9ac592c383b80eb0e2aa9",
       "bytes": 30160,
       "retrieved_at_utc": "2026-10-27T03:49:32+00:00",
-      "reading_scope": "Exact verifier read for its imports and absence of file or network access; not run",
+      "reading_scope": "Exact verifier read for its imports and absence of file or network access, then run once through run.py under an isolated interpreter; output identical to PDF p. 25",
       "retention": "external_reference; sha256 identifies the release artifact"
     },
     {
@@ -4289,6 +4343,159 @@
       "bytes": 31864,
       "retrieved_at_utc": "2026-10-27T04:02:02+00:00",
       "reading_scope": "Bloom, Erdos Problem 970 page: problem statement, the Iwaniec upper bound and the Ford-Green-Konyagin-Maynard-Tao lower bound as displayed, and the note that it generalizes Problem 687; Problem 687 and the cited sources were not retrieved",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-Torsion-Free-Group-Algebra-with-Zero-Divisors-September-23-2026/paper.pdf",
+      "note": "docs/notes/papers/openai-2026-torsion-free-zero-divisors.md",
+      "sha256": "b9788d4579b317fa2487796338fe3413322e105950880ec5a42bc85188a36bc6",
+      "bytes": 463825,
+      "retrieved_at_utc": "2026-10-27T15:21:38+00:00",
+      "reading_scope": "OpenAI, A Torsion-Free Group Algebra with Zero Divisors, 23 September 2026, 26 pages at openai/math commit 7ef5c0cc: pp. 1-4 and 24 in full (Theorem 1.1, the cancellation mechanism, the prescribed types, the proof of Theorem 1.1); Sections 2.2-5 for result labels only, no proof step checked",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-Torsion-Free-Group-Algebra-with-Zero-Divisors-September-23-2026/README.md",
+      "note": "docs/notes/papers/openai-2026-torsion-free-zero-divisors.md",
+      "sha256": "43e3933305c4313c0e1e80c37587dbed65204f9baa9c5384ace8ca3afa0ad285",
+      "bytes": 595,
+      "retrieved_at_utc": "2026-10-27T15:21:23+00:00",
+      "reading_scope": "Manuscript directory README: title, author, date, BibTeX citation",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE",
+      "note": "docs/notes/papers/openai-2026-torsion-free-zero-divisors.md",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "bytes": 11357,
+      "retrieved_at_utc": "2026-10-27T03:46:29+00:00",
+      "reading_scope": "Apache License 2.0 text: title and section 4 redistribution terms, read for the rights decision",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-Torsion-Free-Group-Algebra-That-Is-Not-Directly-Finite-October-4-2026/direct-finiteness.pdf",
+      "note": "docs/notes/papers/openai-2026-torsion-free-not-directly-finite.md",
+      "sha256": "7950476863f21811aaccb99ab12f24f81741e5077ca290394d029063024aaee8",
+      "bytes": 517870,
+      "retrieved_at_utc": "2026-10-27T15:21:38+00:00",
+      "reading_scope": "OpenAI, A Torsion-Free Group Algebra That Is Not Directly Finite, 4 October 2026, 31 pages at openai/math commit 7ef5c0cc: pp. 1-5 and 30 in full (Theorem 1.1, Proposition 2.1 with proof, the Fano label construction, Proposition 3.1, the proof of Theorem 1.1); Sections 3.2-6 for result labels only",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-Torsion-Free-Group-Algebra-That-Is-Not-Directly-Finite-October-4-2026/README.md",
+      "note": "docs/notes/papers/openai-2026-torsion-free-not-directly-finite.md",
+      "sha256": "3bdae29ba4de89d85e645d9898e9911a0f01e138b230740a69676f399b0e2628",
+      "bytes": 631,
+      "retrieved_at_utc": "2026-10-27T15:21:24+00:00",
+      "reading_scope": "Manuscript directory README: title, author, date, BibTeX citation",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE",
+      "note": "docs/notes/papers/openai-2026-torsion-free-not-directly-finite.md",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "bytes": 11357,
+      "retrieved_at_utc": "2026-10-27T03:46:29+00:00",
+      "reading_scope": "Apache License 2.0 text: title and section 4 redistribution terms, read for the rights decision",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-Torsion-Free-Counterexample-to-the-Kadison-Kaplansky-Projection-Conjecture-September-23-2026/paper.pdf",
+      "note": "docs/notes/papers/openai-2026-kadison-kaplansky-projection.md",
+      "sha256": "df6227b61598580506210a8236216e043d1acd4ba062a9901b3063559ff62a5a",
+      "bytes": 662684,
+      "retrieved_at_utc": "2026-10-27T15:21:40+00:00",
+      "reading_scope": "OpenAI, A torsion-free counterexample to the Kadison-Kaplansky projection conjecture, 23 September 2026, 76 pages at openai/math commit 7ef5c0cc: pp. 1-4 in full (Theorem 1.1, the group-ring remark, the proof strategy, Proposition 2.2 statement); Sections 3-11 for section titles only",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-Torsion-Free-Counterexample-to-the-Kadison-Kaplansky-Projection-Conjecture-September-23-2026/README.md",
+      "note": "docs/notes/papers/openai-2026-kadison-kaplansky-projection.md",
+      "sha256": "a0cedda326df31d0481fbd1ff9e1ef6533c19211cc54fbdd9c0599585aee60d8",
+      "bytes": 743,
+      "retrieved_at_utc": "2026-10-27T15:21:25+00:00",
+      "reading_scope": "Manuscript directory README: title, author, date, BibTeX citation",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE",
+      "note": "docs/notes/papers/openai-2026-kadison-kaplansky-projection.md",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "bytes": 11357,
+      "retrieved_at_utc": "2026-10-27T03:46:29+00:00",
+      "reading_scope": "Apache License 2.0 text: title and section 4 redistribution terms, read for the rights decision",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/docs/196.md",
+      "note": "docs/notes/papers/openai-2026-torsion-free-zero-divisors.md",
+      "sha256": "5edd7a5890540622fdfa39349e8520d66e5edf7ebf2af1685b23125264008667",
+      "bytes": 908,
+      "retrieved_at_utc": "2026-10-27T15:36:27+00:00",
+      "reading_scope": "Lean scope of family 196 in full",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/ComparatorChallenges/TorsionFreeZeroDivisors.lean",
+      "note": "docs/notes/papers/openai-2026-torsion-free-zero-divisors.md",
+      "sha256": "f0fa4b50cb7bab116b37c75a74fdea60fb206a35f2b0590157468c054dfec3c2",
+      "bytes": 1540,
+      "retrieved_at_utc": "2026-10-27T15:36:27+00:00",
+      "reading_scope": "Comparator challenge MainTheorem in full: torsion-freeness, finite two-dimensional classifying space, zero product in MonoidAlgebra (ZMod 2) G",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/ComparatorChallenges/TorsionFreeZeroDivisors.json",
+      "note": "docs/notes/papers/openai-2026-torsion-free-zero-divisors.md",
+      "sha256": "2b4e32790076384bd9c492bfdb032d0d9d6027bb98d4a6c728ebe3a5fe862f12",
+      "bytes": 326,
+      "retrieved_at_utc": "2026-10-27T15:36:27+00:00",
+      "reading_scope": "Comparator configuration in full: modules, theorem name, permitted axioms",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/docs/197.md",
+      "note": "docs/notes/papers/openai-2026-torsion-free-not-directly-finite.md",
+      "sha256": "c9bd633a2d69dc39581a08db24f2a5ceac6d6395c47c938fc9f0f59b60fdca46",
+      "bytes": 3629,
+      "retrieved_at_utc": "2026-10-27T15:36:27+00:00",
+      "reading_scope": "Lean scope of family 197 in full: it links the companion characteristic-two, odd-characteristic and determinant manuscripts, not this torsion-free one",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/ComparatorChallenges/KaplanskyDirectFiniteness.lean",
+      "note": "docs/notes/papers/openai-2026-torsion-free-not-directly-finite.md",
+      "sha256": "f576c3207dcde3eeefd59aef6f2d5a8f28a1f6df4f35307399e38528dcb6c52a",
+      "bytes": 352,
+      "retrieved_at_utc": "2026-10-27T15:47:14+00:00",
+      "reading_scope": "Comparator challenge MainClaim in full: finite characteristic-two field, finitely generated group, ab = 1 and ba != 1; no torsion clause",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/ComparatorChallenges/KaplanskyFinitelyPresented.lean",
+      "note": "docs/notes/papers/openai-2026-torsion-free-not-directly-finite.md",
+      "sha256": "1f7ec0c0ee0fed8abd5fabd58dfeb116f5afc0bc37d7041b2975412aca4f1638",
+      "bytes": 619,
+      "retrieved_at_utc": "2026-10-27T15:47:14+00:00",
+      "reading_scope": "Comparator challenge finitelyPresented_counterexample in full: finitely presented group with an element of odd prime order",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "note": "docs/notes/papers/1602.06402.md",
+      "url": "https://api.crossref.org/works/10.1016/j.commatsci.2016.10.015",
+      "retrieved_at_utc": "2026-10-28T00:09:05+00:00",
+      "sha256": "da37850767ddde56b7d3733a1ca5352df246bdb9c8c5a82d3932e6246bf540ae",
+      "bytes": 10100,
+      "reading_scope": "Crossref DOI metadata: title, journal, volume, pages, issue date and license list",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/1808.01590.md",
+      "url": "https://api.crossref.org/works/10.1080/27660400.2024.2384822",
+      "retrieved_at_utc": "2026-10-28T00:29:31+00:00",
+      "sha256": "65e92297afc7d7c8d4b275645ee1d4bf573a04a518f2a22ab9b94d308bb3b243",
+      "bytes": 7941,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, issue, article number, publication date and license list",
       "retention": "external_reference; mutable response hash identifies inspected bytes"
     }
   ],
@@ -11312,6 +11519,165 @@
         "reading_scope": "LICENSE title and section 4 redistribution terms; the full file list of the manuscript directory at the pinned commit and a search of its 11 text files (binary records excluded) and the PDF text layer for license, copyright and Creative Commons notices, which found none.",
         "evidence_summary": "Apache-2.0 covers the repository as a software license; no CC BY 4.0 or CC0 grant names the manuscript."
       }
+    },
+    {
+      "title": "A Torsion-Free Group Algebra with Zero Divisors",
+      "authors": [
+        "OpenAI"
+      ],
+      "version": "openai/math manuscript dated 2026-09-23 at commit 7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a; unrefereed, model-generated",
+      "source_url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-Torsion-Free-Group-Algebra-with-Zero-Divisors-September-23-2026/paper.pdf",
+      "note": "docs/notes/papers/openai-2026-torsion-free-zero-divisors.md",
+      "audited_at_utc": "2026-10-27T15:47:27+00:00",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "b9788d4579b317fa2487796338fe3413322e105950880ec5a42bc85188a36bc6",
+      "bytes": 463825,
+      "pages": 26,
+      "excluded_published_path": "docs/pdf/openai-math-196-torsion-free-zero-divisors.pdf",
+      "local_cache_path": "docs/local_source_cache/openai-math-196-torsion-free-zero-divisors.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Repository root LICENSE and the manuscript directory README at the pinned commit",
+      "rights_reason": "The openai/math repository root LICENSE is the Apache License 2.0, a repository-wide software license. The manuscript directory holds its README, LaTeX build sources, figures and BibTeX file and no license file, and none of its text files or the PDF text carries a license, copyright or Creative Commons notice; no source-specific CC BY 4.0 or CC0 grant names the manuscript, so the source_rights_policy keeps the PDF external.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "b9788d4579b317fa2487796338fe3413322e105950880ec5a42bc85188a36bc6",
+        "verified_at_utc": "2026-10-27T15:47:27+00:00",
+        "decision": "external_only",
+        "license_identifier": "Apache-2.0",
+        "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
+        "evidence_url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE",
+        "evidence_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "evidence_locator": "Root LICENSE file of openai/math at the pinned commit",
+        "reading_scope": "LICENSE title and section 4 redistribution terms; the full file list of the manuscript directory at the pinned commit and a search of its 10 text files and the PDF text layer for license, copyright and Creative Commons notices, which found none.",
+        "evidence_summary": "Apache-2.0 covers the repository as a software license; no CC BY 4.0 or CC0 grant names the manuscript."
+      }
+    },
+    {
+      "title": "A Torsion-Free Group Algebra That Is Not Directly Finite",
+      "authors": [
+        "OpenAI"
+      ],
+      "version": "openai/math manuscript dated 2026-10-04 at commit 7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a; unrefereed, model-generated",
+      "source_url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-Torsion-Free-Group-Algebra-That-Is-Not-Directly-Finite-October-4-2026/direct-finiteness.pdf",
+      "note": "docs/notes/papers/openai-2026-torsion-free-not-directly-finite.md",
+      "audited_at_utc": "2026-10-27T15:47:27+00:00",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "7950476863f21811aaccb99ab12f24f81741e5077ca290394d029063024aaee8",
+      "bytes": 517870,
+      "pages": 31,
+      "excluded_published_path": "docs/pdf/openai-math-197-torsion-free-not-directly-finite.pdf",
+      "local_cache_path": "docs/local_source_cache/openai-math-197-torsion-free-not-directly-finite.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Repository root LICENSE and the manuscript directory README at the pinned commit",
+      "rights_reason": "The openai/math repository root LICENSE is the Apache License 2.0, a repository-wide software license. The manuscript directory holds its README, LaTeX build sources, figures and BibTeX file and no license file, and none of its text files or the PDF text carries a license, copyright or Creative Commons notice; no source-specific CC BY 4.0 or CC0 grant names the manuscript, so the source_rights_policy keeps the PDF external.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "7950476863f21811aaccb99ab12f24f81741e5077ca290394d029063024aaee8",
+        "verified_at_utc": "2026-10-27T15:47:27+00:00",
+        "decision": "external_only",
+        "license_identifier": "Apache-2.0",
+        "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
+        "evidence_url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE",
+        "evidence_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "evidence_locator": "Root LICENSE file of openai/math at the pinned commit",
+        "reading_scope": "LICENSE title and section 4 redistribution terms; the full file list of the manuscript directory at the pinned commit and a search of its 14 text files and the PDF text layer for license, copyright and Creative Commons notices, which found none.",
+        "evidence_summary": "Apache-2.0 covers the repository as a software license; no CC BY 4.0 or CC0 grant names the manuscript."
+      }
+    },
+    {
+      "title": "A torsion-free counterexample to the Kadison-Kaplansky projection conjecture",
+      "authors": [
+        "OpenAI"
+      ],
+      "version": "openai/math manuscript dated 2026-09-23 at commit 7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a; unrefereed, model-generated",
+      "source_url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-Torsion-Free-Counterexample-to-the-Kadison-Kaplansky-Projection-Conjecture-September-23-2026/paper.pdf",
+      "note": "docs/notes/papers/openai-2026-kadison-kaplansky-projection.md",
+      "audited_at_utc": "2026-10-27T15:47:27+00:00",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "df6227b61598580506210a8236216e043d1acd4ba062a9901b3063559ff62a5a",
+      "bytes": 662684,
+      "pages": 76,
+      "excluded_published_path": "docs/pdf/openai-math-285-kadison-kaplansky-projection.pdf",
+      "local_cache_path": "docs/local_source_cache/openai-math-285-kadison-kaplansky-projection.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Repository root LICENSE and the manuscript directory README at the pinned commit",
+      "rights_reason": "The openai/math repository root LICENSE is the Apache License 2.0, a repository-wide software license. The manuscript directory holds its README, LaTeX build sources, a figure and BibTeX file and no license file, and none of its text files or the PDF text carries a license, copyright or Creative Commons notice; no source-specific CC BY 4.0 or CC0 grant names the manuscript, so the source_rights_policy keeps the PDF external.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "df6227b61598580506210a8236216e043d1acd4ba062a9901b3063559ff62a5a",
+        "verified_at_utc": "2026-10-27T15:47:27+00:00",
+        "decision": "external_only",
+        "license_identifier": "Apache-2.0",
+        "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
+        "evidence_url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE",
+        "evidence_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "evidence_locator": "Root LICENSE file of openai/math at the pinned commit",
+        "reading_scope": "LICENSE title and section 4 redistribution terms; the full file list of the manuscript directory at the pinned commit and a search of its 16 text files and the PDF text layer for license, copyright and Creative Commons notices, which found none.",
+        "evidence_summary": "Apache-2.0 covers the repository as a software license; no CC BY 4.0 or CC0 grant names the manuscript."
+      }
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/1602.06402v4",
+      "note": "docs/notes/papers/1602.06402.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "066a0b0a16556d73766cc4965a7c391ee76ae68b611b5d91036048dca7bc5283",
+      "bytes": 1946944,
+      "pages": 164,
+      "audited_at_utc": "2026-10-28T00:10:33+00:00",
+      "excluded_published_path": "docs/pdf/1602.06402v4.pdf",
+      "local_cache_path": "docs/local_source_cache/1602.06402v4.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "div.abs-license > a[title=\"Rights to this article\"] on exact-version abstract page",
+      "rights_reason": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1602.06402v4",
+        "evidence_locator": "div.abs-license > a[title=\"Rights to this article\"] on exact-version abstract page",
+        "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+        "verified": true,
+        "pdf_sha256": "066a0b0a16556d73766cc4965a7c391ee76ae68b611b5d91036048dca7bc5283",
+        "verified_at_utc": "2026-10-28T00:10:33+00:00",
+        "evidence_sha256": "259f4594198270dac527b39cc1dd00589765bb376dbbc6bdefc566c8816fe3f4",
+        "evidence_retrieved_at_utc": "2026-10-28T00:10:33+00:00",
+        "reading_scope": "Source-specific rights statement and operative terms.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1602.06402v4.html"
+      }
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/1808.01590v2",
+      "note": "docs/notes/papers/1808.01590.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "2676f767065fcc0f280ae9c2111865e76c9ec67c03ce86bad6f244ef4ee71d40",
+      "bytes": 293898,
+      "pages": 13,
+      "audited_at_utc": "2026-10-28T00:11:31+00:00",
+      "excluded_published_path": "docs/pdf/1808.01590v2.pdf",
+      "local_cache_path": "docs/local_source_cache/1808.01590v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "div.abs-license > a[title=\"Rights to this article\"] on exact-version abstract page",
+      "rights_reason": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1808.01590v2",
+        "evidence_locator": "div.abs-license > a[title=\"Rights to this article\"] on exact-version abstract page",
+        "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+        "verified": true,
+        "pdf_sha256": "2676f767065fcc0f280ae9c2111865e76c9ec67c03ce86bad6f244ef4ee71d40",
+        "verified_at_utc": "2026-10-28T00:11:31+00:00",
+        "evidence_sha256": "9c4f2b8e067b3e4c7e36bad7354907d697cd900d3130c3660b3ca7ed60815975",
+        "evidence_retrieved_at_utc": "2026-10-28T00:11:31+00:00",
+        "reading_scope": "Source-specific rights statement and operative terms.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1808.01590v2.html"
+      }
     }
   ],
   "local_cache_policy": "docs/local_source_cache/ preserves optional personal reading copies. Published inventories and Git-tracked files exclude that cache. Missing cache files are permitted; present registered copies must match their original PDF size and SHA-256.",
@@ -11652,6 +12018,61 @@
       "license_bytes": 21863,
       "copy_status": "unchanged",
       "conditions": "Preserve the complete original source archive, including author credits, copyright and license notices; no modifications or relabeling. The library is dual-licensed CeCILL-C or CeCILL v2.0 at the recipient's choice; this copy is redistributed under CeCILL-C."
+    },
+    {
+      "title": "SeeK-path",
+      "authors": [
+        "Giovanni Pizzi",
+        "Timo Reents (maintainer)",
+        "contributors"
+      ],
+      "version": "2.2.2",
+      "sha256": "d3bb08b7fb21d5cff5fc27aff9904a865da5e0648fc0f8fef699642d88e27f2b",
+      "bytes": 44937,
+      "retrieved_at_utc": "2026-10-28T00:10:24+00:00",
+      "license_identifier": "MIT",
+      "reading_scope": "Signatures and docstrings of every public and helper function; the hpkot.get_path flow; the bodies of check_spglib_version, get_dot_access_dataset, get_cell_params, pointgroup_has_inversion, get_spgroup_data_realtime and BZ._initialize_BZ; band_path_data path and point files of cP1, cP2, cF1, cF2, hP1, hP2; README and pyproject metadata.",
+      "compatibility": "Installed in an isolated virtual environment with spglib 2.8.0, numpy 2.5.4 and scipy 1.18.1 on Python 3.14.8; the installed package tree is byte-identical to the archive's seekpath/ directory",
+      "inspected_files": [
+        {
+          "file": "seekpath-2.2.2/README.md",
+          "sha256": "3f0e23b4c09430a4de6ac82c9394b7bcdb0972168da1b16e5672624ec8220de9",
+          "bytes": 3097
+        },
+        {
+          "file": "seekpath-2.2.2/pyproject.toml",
+          "sha256": "5b3acf3735108b302a04483745d3d442e42113fd10a41e370fb944e12b5f7ac1",
+          "bytes": 1584
+        },
+        {
+          "file": "seekpath-2.2.2/seekpath/__init__.py",
+          "sha256": "d55f66b026697dcec60f02e66b335a07924c0894e47128dd4aacf3c242760ded",
+          "bytes": 2098
+        },
+        {
+          "file": "seekpath-2.2.2/seekpath/getpaths.py",
+          "sha256": "ea6fefada1ed76bfa2457a06d9c0374ccee72e12257a8797b7d8fc3aaec2a790",
+          "bytes": 26506
+        },
+        {
+          "file": "seekpath-2.2.2/seekpath/hpkot/__init__.py",
+          "sha256": "2044e9ea1fc706e3ec8a716c4677e26fac7ee330a7d21d0ce93c645072676ff9",
+          "bytes": 21342
+        },
+        {
+          "file": "seekpath-2.2.2/seekpath/brillouinzone/brillouinzone.py",
+          "sha256": "1856714ab2d4f443afb42555241e0bf27858a5a214a83e9358558b985b31f254",
+          "bytes": 16591
+        }
+      ],
+      "path": "docs/source_archives/seekpath-2.2.2.tar.gz",
+      "source_url": "https://files.pythonhosted.org/packages/source/s/seekpath/seekpath-2.2.2.tar.gz",
+      "note": "docs/notes/quantum-tools/seekpath.md",
+      "license_member": "seekpath-2.2.2/LICENSE.txt",
+      "license_sha256": "4f7b45f47ca69c4fce34f7229e94b808e37f4c3ff586a506b471c2d28bcb66ea",
+      "license_bytes": 1474,
+      "copy_status": "unchanged",
+      "conditions": "Preserve the complete original source archive, including author credits, copyright and license notices; no modifications or relabeling. The MIT license permits unchanged redistribution with its notice."
     }
   ]
 }

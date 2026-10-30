@@ -1,0 +1,131 @@
+{
+  "identities": [
+    {
+      "basis_pairs": 4,
+      "dimension": 2,
+      "identities": [
+        "L0",
+        "L1",
+        "L2",
+        "L2'"
+      ]
+    },
+    {
+      "basis_pairs": 16,
+      "dimension": 4,
+      "identities": [
+        "L0",
+        "L1",
+        "L2",
+        "L2'"
+      ]
+    },
+    {
+      "basis_pairs": 64,
+      "dimension": 8,
+      "identities": [
+        "L0",
+        "L1",
+        "L2",
+        "L2'"
+      ]
+    },
+    {
+      "basis_pairs": 256,
+      "dimension": 16,
+      "identities": [
+        "L0",
+        "L1",
+        "L2",
+        "L2'"
+      ]
+    },
+    {
+      "basis_pairs": 1024,
+      "dimension": 32,
+      "identities": [
+        "L0",
+        "L1",
+        "L2",
+        "L2'"
+      ]
+    },
+    {
+      "basis_pairs": 4096,
+      "dimension": 64,
+      "identities": [
+        "L0",
+        "L1",
+        "L2",
+        "L2'"
+      ]
+    },
+    {
+      "basis_pairs": 16384,
+      "dimension": 128,
+      "identities": [
+        "L0",
+        "L1",
+        "L2",
+        "L2'"
+      ]
+    }
+  ],
+  "kernels": [
+    {
+      "annihilators_agree": true,
+      "dimension": 16,
+      "families": [
+        {
+          "elements": 210,
+          "family": "two_blade",
+          "inverse_offsets_checked": 336,
+          "kernel_dimension_histogram": {
+            "4": 84
+          },
+          "strictly_one_sided_inverses": 0,
+          "with_kernel": 84
+        },
+        {
+          "elements": 455,
+          "family": "three_unit",
+          "inverse_offsets_checked": 0,
+          "kernel_dimension_histogram": {},
+          "strictly_one_sided_inverses": 0,
+          "with_kernel": 0
+        },
+        {
+          "elements": 1764,
+          "family": "doubly_pure",
+          "inverse_offsets_checked": 3528,
+          "kernel_dimension_histogram": {
+            "4": 882
+          },
+          "strictly_one_sided_inverses": 0,
+          "with_kernel": 882
+        }
+      ],
+      "strictly_one_sided_inverses": 0
+    },
+    {
+      "annihilators_agree": true,
+      "dimension": 32,
+      "families": [
+        {
+          "elements": 930,
+          "family": "two_blade",
+          "inverse_offsets_checked": 5040,
+          "kernel_dimension_histogram": {
+            "12": 252,
+            "4": 168,
+            "8": 168
+          },
+          "strictly_one_sided_inverses": 0,
+          "with_kernel": 588
+        }
+      ],
+      "strictly_one_sided_inverses": 0
+    }
+  ],
+  "schema": "cd-one-sided-inverses-v2"
+}

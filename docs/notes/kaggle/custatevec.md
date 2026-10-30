@@ -170,17 +170,17 @@ device GPU, and every cuStateVec row reports `cuStateVec_enable` true; gate
 ## CUDA 13 build
 
 `push --gpu-env --gpu-aer cu13` runs the venv on qiskit-aer-gpu-cu13
-0.17.2 in place of the cu11 wheels. The default stays cu11.
+0.18.2 in place of the cu11 wheels. The default stays cu11.
 
 - **Wheel.** `docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh` builds
-  `qiskit_aer_gpu_cu13-0.17.2-cp313-cp313-manylinux_2_39_x86_64.whl` in
+  `qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-manylinux_2_39_x86_64.whl` in
   rootless podman from the CUDA 13.0.3 devel image on Ubuntu 24.04, with
   SASS for sm_75 (T4) and sm_89 and cuStateVec and cuTensorNet linked,
   under `$AER_CU13_WORK`, by default
   `${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/aer-gpu-cu13` outside
   the checkout. One run at a time holds that tree, and `check` verifies only
   a wheel whose recorded recipe digest matches the running recipe. Its
-  sha256, `3d40fc33...253d5`, is `AER_GPU_WHEELS["cu13"]` in
+  sha256, `29f79654...c875`, is `AER_GPU_WHEELS["cu13"]` in
   `scripts/kaggle_run.py`.
 - **Library chain.** `GPU_AER_PINS["cu13"]` adds the nine CUDA 13 wheels of
   `docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt`: the CUDA 13.0.3

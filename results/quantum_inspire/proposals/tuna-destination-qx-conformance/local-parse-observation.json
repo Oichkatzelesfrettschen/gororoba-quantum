@@ -1,0 +1,109 @@
+{
+  "asymmetric_only_adds_x_q0": true,
+  "baseline_rotated_physical_stream_equal": true,
+  "boundary": "Local source parsing and normalized instruction comparison only; no simulator execution or provider request.",
+  "libqasm_version": "1.2.1",
+  "observed_utc": "2026-10-28T02:48:26.310204+00:00",
+  "physical_stream_producer": "scripts/qi_tuna_readout_mapping_cases.py",
+  "physical_stream_producer_sha256": "ed385faf0876b1cf126aa306179290da25a053735c589954f241030bf3d28ef6",
+  "python_version": "3.13.15",
+  "schema": "qi-qx-reduced-destination-local-parse-v1",
+  "sources": [
+    {
+      "measurement_map": [
+        {
+          "classical_bit": 3,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 4,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 5,
+          "qubit": 2
+        },
+        {
+          "classical_bit": 0,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 1,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 2,
+          "qubit": 2
+        }
+      ],
+      "name": "baseline",
+      "parser_errors": [],
+      "sha256": "004667f94872f372eab01eb75dfbc6e5fb25e0b16534d3c20da6b1c7f5dc91af",
+      "source": "results/quantum_inspire/proposals/tuna-destination-qx-conformance/baseline.cq"
+    },
+    {
+      "measurement_map": [
+        {
+          "classical_bit": 5,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 3,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 4,
+          "qubit": 2
+        },
+        {
+          "classical_bit": 0,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 1,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 2,
+          "qubit": 2
+        }
+      ],
+      "name": "rotated",
+      "parser_errors": [],
+      "sha256": "39454ac0e32f0bebfd687d5def41666ee7e35b3af5d61430c2f0b084d355e584",
+      "source": "results/quantum_inspire/proposals/tuna-destination-qx-conformance/rotated.cq"
+    },
+    {
+      "measurement_map": [
+        {
+          "classical_bit": 3,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 4,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 5,
+          "qubit": 2
+        },
+        {
+          "classical_bit": 0,
+          "qubit": 0
+        },
+        {
+          "classical_bit": 1,
+          "qubit": 1
+        },
+        {
+          "classical_bit": 2,
+          "qubit": 2
+        }
+      ],
+      "name": "asymmetric",
+      "parser_errors": [],
+      "sha256": "dc9de0253a6d544bf76ba215a3fca2cf253dda549364f899064f927c1d7f0ecd",
+      "source": "results/quantum_inspire/proposals/tuna-destination-qx-conformance/asymmetric.cq"
+    }
+  ]
+}

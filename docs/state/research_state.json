@@ -2,6 +2,48 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qi-tuna-destination-one-baseline-before",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-before",
+      "family": "nominal-one classical-destination response comparison",
+      "question": "What early/final binary response does the nominal-one control return in the baseline-before position of the separately approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-one-rotated",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-rotated-destinations",
+      "family": "nominal-one classical-destination response comparison",
+      "question": "What early/final binary response does the nominal-one control return in the rotated-destinations position of the separately approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-one-baseline-after",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/prepared-one-baseline-after",
+      "family": "nominal-one classical-destination response comparison",
+      "question": "What early/final binary response does the nominal-one control return in the baseline-after position of the separately approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-zero-baseline-before",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before",
+      "family": "nominal-zero classical-destination response prefix",
+      "question": "What early/final binary response does the nominal-zero control return in the baseline-before position of the approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-zero-rotated",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations",
+      "family": "nominal-zero classical-destination response prefix",
+      "question": "What early/final binary response does the nominal-zero control return in the rotated-destinations position of the approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-zero-baseline-after",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after",
+      "family": "nominal-zero classical-destination response prefix",
+      "question": "What early/final binary response does the nominal-zero control return in the baseline-after position of the approved destination comparison?"
+    },
+    {
       "id": "qd-ascella-signed-coherence-replication-job-06",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06",
@@ -2137,6 +2179,13 @@
       "question": "Does a per-pair record-independent rz on B, fixed by that pair's reference arms, restore the channel floor margin, how large is the information excess in the compensated frame, and what does a 50 us repetition delay cost?"
     },
     {
+      "id": "kingston-measurement-sequence-scatter-floor",
+      "provider": "ibm",
+      "run": "results/live/2026-10-26T031010.724660Z",
+      "family": "measurement-sequence-diagnostic",
+      "question": "On 38 pairwise uncoupled ibm_kingston qubits (the main pinching family's eight and thirty chosen by a calibration-only rule), how far does the readout-corrected P0 of the 32-sx unitary sequence at N = 16 lie from the pinching analysis's Bloch-iteration prediction, qubit by qubit, and does the residual follow T2 as the drive-dephasing lead from IQM Garnet predicts?"
+    },
+    {
       "id": "iqm-garnet-mock-qet-ladder-accept",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept",
@@ -2177,9 +2226,500 @@
       "run": "results/live/2026-10-26T202817.431767Z",
       "family": "idle-penalty",
       "question": "On 31 coupled ibm_kingston pairs in one dynamic job, does relaxation, free or echoed dephasing, or readout elsewhere on the chip charge an idle qubit more than the reported T1 and Hahn-echo T2 predict, per physical qubit?"
+    },
+    {
+      "id": "kingston-primorial-coherence-case1",
+      "provider": "ibm",
+      "run": "results/live/2026-10-26T045124.175747Z",
+      "family": "primorial coherence probes",
+      "question": "Do the coherent tilt, detuning, ZZ and CZ-phase probes on ibm_kingston path 0-1-2 pass the case's in-job readout voiding rule and fix the coherent error budget of the gap-88 tomography?"
+    },
+    {
+      "id": "kingston-primorial-case2-prep0",
+      "provider": "ibm",
+      "run": "results/live/2026-10-26T190449.023973Z",
+      "family": "state-prep-control (prep0, 20 us)",
+      "question": "Which qubits of the 23 pinned primorial paths read excited after a near-|0> history at a 20 us repetition delay on ibm_kingston?"
+    },
+    {
+      "id": "kingston-primorial-case2-x-history",
+      "provider": "ibm",
+      "run": "results/live/2026-10-26T190506.325237Z",
+      "family": "state-prep-control (x_history, 20 us)",
+      "question": "Which qubits of the 23 pinned primorial paths read excited after an all-|1> history at a 20 us repetition delay on ibm_kingston?"
+    },
+    {
+      "id": "kingston-primorial-case2-probes",
+      "provider": "ibm",
+      "run": "results/live/2026-10-26T215611.599135Z",
+      "family": "primorial coherence probes",
+      "question": "What coherent tilt, detuning and CZ-phase estimates do the 22 retained paths carry, and which paths reach the gap-88 stage within the shot cap?"
+    },
+    {
+      "id": "kingston-primorial-case2-gap88",
+      "provider": "ibm",
+      "run": "results/live/2026-10-26T221707.355349Z",
+      "family": "primorial gap-88 tomography",
+      "question": "Do the gap-88 coefficients of the 21 admitted paths lie inside the bands the coherent-error model with the excitation term predicts?"
+    },
+    {
+      "id": "kingston-primorial-case3-prep0-a",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T010741.272123Z",
+      "family": "state-prep-control (prep0, 20 us)",
+      "question": "First prep0 replicate of case 3: which qubits read excited after a near-|0> history at 20 us?"
+    },
+    {
+      "id": "kingston-primorial-case3-x-history-a",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T010917.104805Z",
+      "family": "state-prep-control (x_history, 20 us)",
+      "question": "First x_history replicate of case 3: which qubits read excited after an all-|1> history at 20 us?"
+    },
+    {
+      "id": "kingston-primorial-case3-x-history-b",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T011025.944327Z",
+      "family": "state-prep-control (x_history, 20 us)",
+      "question": "Second x_history replicate of case 3: does the history excess reproduce across jobs?"
+    },
+    {
+      "id": "kingston-primorial-case3-prep0-b",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T011140.821404Z",
+      "family": "state-prep-control (prep0, 20 us)",
+      "question": "Second prep0 replicate of case 3: does the near-|0> excited fraction reproduce across jobs?"
+    },
+    {
+      "id": "kingston-primorial-case3-probes",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T011538.241671Z",
+      "family": "primorial coherence probes",
+      "question": "Which of the 22 paths enter the gap-88 stage under the split excitation law, with 147-148-149 as a positive-prediction path?"
+    },
+    {
+      "id": "kingston-primorial-case3-gap88",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T013626.332783Z",
+      "family": "primorial gap-88 tomography",
+      "question": "Do the gap-88 coefficients of the 22 paths lie inside the bands of the split excitation law, and how much of q147's excess does the in-job inversion absorb?"
+    },
+    {
+      "id": "kingston-primorial-q147-remeasure",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T204605.871056Z",
+      "family": "state-prep-control (two-read arms, 20 us)",
+      "question": "Is q147's excited read on ibm_kingston a population that a second measurement reads back, or a misassignment, and does the previous shot's readout event set it?"
+    },
+    {
+      "id": "kingston-n21-window-dose-attempt-20us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T005259.826486Z",
+      "family": "N=21 orbit window dose",
+      "question": "First submission of the N=21 orbit window-dose envelope at a 20 us repetition delay; it reached its 30 s execution limit."
+    },
+    {
+      "id": "kingston-n21-window-dose-attempt-50us",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T011304.736763Z",
+      "family": "N=21 orbit window dose",
+      "question": "Second submission of the N=21 orbit window-dose envelope at a 50 us repetition delay; it reached its 30 s execution limit."
+    },
+    {
+      "id": "kingston-n21-window-dose",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T014354.701394Z",
+      "family": "N=21 orbit window dose",
+      "question": "Does the N=21 orbit's feedback contrast fall with free-idle dose faster than the execution Target's T1 and T2 predict, and does a Hahn echo remove the excess?"
+    },
+    {
+      "id": "kingston-measurement-sequence-envelope",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T014422.881898Z",
+      "family": "measurement-sequence envelope",
+      "question": "Do 32 ibm_kingston qubits pass the reset and crosstalk screens, and does a sequence of 16 measurements pinch the state beyond the projective prediction on the qubits that pass?"
+    },
+    {
+      "id": "kingston-idle-penalty-focal-y",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T160529.294491Z",
+      "family": "idle-penalty",
+      "question": "Focal placement Y: do qubit 93 and the N=21 context qubit 124 carry an idle multiplier beyond the reported T1 and T2 under one calibration with a full cohort?"
+    },
+    {
+      "id": "kingston-idle-penalty-focal-x",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T160738.258133Z",
+      "family": "idle-penalty",
+      "question": "Focal placement X: do qubits 79 and 92 and the N=21 context qubits 104, 106, 125 and 126 carry an idle multiplier beyond the reported T1 and T2?"
+    },
+    {
+      "id": "kingston-idle-readout-attribution",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T191953.122214Z",
+      "family": "idle-readout attribution",
+      "question": "Does the readout-driven phase pull on idling ibm_kingston qubits replicate, and how does it split between the probe's own partner, readers within three CZ hops and a chip-wide baseline?"
+    },
+    {
+      "id": "kingston-idle-penalty-repeat-point2",
+      "provider": "ibm",
+      "run": "results/live/2026-10-28T000644.379196Z",
+      "family": "idle-penalty",
+      "question": "Stability repeat, point 2: after Kingston refreshed its reported T1 and T2, do the 30 coupled pairs of the idle-penalty probe reproduce their per-qubit multipliers and readout-driven phase pull?"
+    },
+    {
+      "id": "kingston-idle-penalty-repeat-point1",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T160530.294787Z",
+      "family": "idle-penalty",
+      "question": "Stability repeat, point 1: on 30 of the first run's 31 ordered pairs, under a later calibration that still carries the first run's reported T1 and T2, do the per-qubit idle multipliers, the single-run decisions and the readout-shift pair pattern repeat?"
+    },
+    {
+      "id": "kingston-n21-detuning-sign",
+      "provider": "ibm",
+      "run": "results/live/2026-10-27T173602.753176Z",
+      "family": "N=21 orbit detuning sign",
+      "question": "Does the N=21 orbit's relative phase turn at the Ramsey frame offset of the work qubit for 16 minus that of the work qubit for 1, with its sign, and does a Hahn echo return it?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-dark",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-dark",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-bright",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-bright",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-bright-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-bright-repeat",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-dark-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-dark-repeat",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-sedenion-cancellation-fixture",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-sedenion-cancellation-fixture",
+      "family": "sedenion cancellation screening",
+      "question": "Does Ascella reproduce the registered cancellation herald law and repeated compiled mesh under the frozen complete-output screening rule?"
+    },
+    {
+      "id": "qd-ascella-dimension-six-transition-pilot",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-dimension-six-transition-pilot",
+      "family": "dimension-six transition screening",
+      "question": "Do six computational identity inputs and six Fourier-to-chirped inputs qualify Ascella transition distributions against their returned meshes and leakage criteria?"
+    },
+    {
+      "id": "qd-ascella-context-single-identity-2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-context-single-identity-2",
+      "family": "dimension-six singleton and iterator context",
+      "question": "How do prior-pilot, singleton, forward-packed and reverse-packed transition outputs compare when the returned compiled mesh and input are matched?"
+    },
+    {
+      "id": "qd-ascella-context-single-identity-5",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-context-single-identity-5",
+      "family": "dimension-six singleton and iterator context",
+      "question": "How do prior-pilot, singleton, forward-packed and reverse-packed transition outputs compare when the returned compiled mesh and input are matched?"
+    },
+    {
+      "id": "qd-ascella-context-single-cross-4",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-context-single-cross-4",
+      "family": "dimension-six singleton and iterator context",
+      "question": "How do prior-pilot, singleton, forward-packed and reverse-packed transition outputs compare when the returned compiled mesh and input are matched?"
+    },
+    {
+      "id": "qd-ascella-context-single-identity-0",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-context-single-identity-0",
+      "family": "dimension-six singleton and iterator context",
+      "question": "How do prior-pilot, singleton, forward-packed and reverse-packed transition outputs compare when the returned compiled mesh and input are matched?"
+    },
+    {
+      "id": "qd-ascella-context-single-cross-0",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-context-single-cross-0",
+      "family": "dimension-six singleton and iterator context",
+      "question": "How do prior-pilot, singleton, forward-packed and reverse-packed transition outputs compare when the returned compiled mesh and input are matched?"
+    },
+    {
+      "id": "qd-ascella-context-packed-forward",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-context-packed-forward",
+      "family": "dimension-six singleton and iterator context",
+      "question": "How do prior-pilot, singleton, forward-packed and reverse-packed transition outputs compare when the returned compiled mesh and input are matched?"
+    },
+    {
+      "id": "qd-ascella-context-packed-reverse",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-context-packed-reverse",
+      "family": "dimension-six singleton and iterator context",
+      "question": "How do prior-pilot, singleton, forward-packed and reverse-packed transition outputs compare when the returned compiled mesh and input are matched?"
+    },
+    {
+      "id": "qd-ascella-transition-mesh-port-1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-transition-mesh-port-1",
+      "family": "dimension-six compilation and output-port diagnostics",
+      "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
+    },
+    {
+      "id": "qd-ascella-transition-mesh-port-2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-transition-mesh-port-2",
+      "family": "dimension-six compilation and output-port diagnostics",
+      "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
+    },
+    {
+      "id": "qd-ascella-transition-mesh-port-3",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-transition-mesh-port-3",
+      "family": "dimension-six compilation and output-port diagnostics",
+      "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
+    },
+    {
+      "id": "qd-ascella-transition-mesh-port-4",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-transition-mesh-port-4",
+      "family": "dimension-six compilation and output-port diagnostics",
+      "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
+    },
+    {
+      "id": "qd-ascella-transition-mesh-port-5",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-transition-mesh-port-5",
+      "family": "dimension-six compilation and output-port diagnostics",
+      "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
+    },
+    {
+      "id": "qd-ascella-transition-mesh-port-6",
+      "provider": "quandela",
+      "run": "results/quandela/runs/ascella-transition-mesh-port-6",
+      "family": "dimension-six compilation and output-port diagnostics",
+      "question": "How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?"
+    },
+    {
+      "id": "qi-qx-projector-geometry-conformance",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx",
+      "family": "sequential projector geometry remote conformance",
+      "question": "Do the three approved QX terminal circuits reproduce the frozen herald, joint-acceptance and signed-moment tolerances before Tuna qualification?"
+    },
+    {
+      "id": "qi-tuna-projector-register-qualification",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna",
+      "family": "sequential projector physical register qualification",
+      "question": "Does the unchanged three-circuit Tuna case pass the frozen assignment-contrast and early/final register-consistency screens?"
+    },
+    {
+      "id": "qd-ascella-transition-matched-mesh-day-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat",
+      "family": "day-separated dimension-six matched meshes",
+      "question": "How do five retained transition distributions compare at least 24 hours later under matching returned mesh identities?"
+    },
+    {
+      "id": "ibm-fez-actor-delay-pilot",
+      "provider": "ibm",
+      "run": "results/live/2026-10-29T191606.826758Z",
+      "family": "readout-actor",
+      "question": "Describe full-register reporter errors under actor activity and repetition-delay conditions."
     }
   ],
   "claims": [
+    {
+      "id": "ibm-fez-actor-pilot-descriptive-errors",
+      "statement": "Across 24 retained Fez pilot conditions, the empirical paired parity margin is negative for the selected reporter pair; one of 279072 exploratory spectator-pair tables has a positive margin based on one shared error.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The acquisition supplies descriptive full-register records without an admitted dependence model or confirmatory selection procedure. Activity and repetition-delay contrasts do not establish causation, physical shot alignment, or cross-PUB order.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-29T191606.826758Z/actor-collection-979b07a5ab676cca4918dc9c2b690ab4c145e93b017a4d5cc45537ed6138b186.json",
+          "sha256": "979b07a5ab676cca4918dc9c2b690ab4c145e93b017a4d5cc45537ed6138b186"
+        },
+        {
+          "path": "docs/evidence/ibm-fez-actor-pilot/analysis.json",
+          "sha256": "e1c79886827420c8491f906c5b5b3e68570a9c2461f42b0e2b721910cf06c4b7"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ibm-fez-actor-pilot/findings.md"
+      ],
+      "gates": {
+        "core-ibm-fez-actor-pilot-replay": "replay"
+      },
+      "acquisitions": [
+        "ibm-fez-actor-delay-pilot"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna-destination-one-response",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "statement": "The three complete 4096-shot nominal-one Tuna-17 jobs establish all 12 selected realized predictable destination-response cell contrasts within 0.10, with all 12 baseline endpoint intervals within 0.10, under the frozen simultaneous 99% martingale contract.",
+      "boundary": "The endpoint covers marginal early/final cells on declared qubits 4, 11 and 6 and one nominal preparation. It establishes neither physical populations, QND readout, causal destination dependence, full-register invariance nor projector geometry. The old six-job endpoint remains unavailable; the zero/one comparison is retrospective. Further hardware requires another approved case accounting for measured waits and benchmarking context.",
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/nominal-one-destination-response.md",
+        "docs/notes/quantum_inspire/destination-response-upstream-request.md"
+      ],
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-canonical.json",
+          "sha256": "ba74fbfb5f26ec5463059b26d66138b571be8792a2dbbd32dc58bd5a5bf9ab1a"
+        },
+        {
+          "path": "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json",
+          "sha256": "b89b115df823113dc8430c7eebddee1898a3906ac7109ea0624edd6803be0027"
+        }
+      ],
+      "gates": {
+        "core-qi-tuna-destination-one-response": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-destination-one-baseline-before",
+        "qi-tuna-destination-one-rotated",
+        "qi-tuna-destination-one-baseline-after"
+      ],
+      "assumptions": [
+        "Trusted chronological binary shot records, coherent provider/local timestamps and the declared inverse decoder.",
+        "Conditional-response targets and finite-sample uncertainty follow the frozen three-job mathematical contract; transient bounds remain unverified."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qi-tuna-destination-case-deadline",
+        "qi-tuna-destination-zero-prefix-response"
+      ]
+    },
+    {
+      "domain": "hardware",
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/ordered-response-acquisition.md"
+      ],
+      "gates": {
+        "core-qi-tuna-destination-prefix": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-destination-zero-baseline-before",
+        "qi-tuna-destination-zero-rotated",
+        "qi-tuna-destination-zero-baseline-after"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "qi-tuna-destination-case-deadline",
+      "statement": "The approved six-job destination comparison stopped at its 3600-second request deadline after three nominal-zero submissions. All 12,288 submitted shots were retained in 14.356782 reported execution seconds with zero charges; the frozen whole-case decision is implementation route unavailable because the nominal-one acquisitions are absent.",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Operational incomplete-case outcome. Read-only recovery collected the third already submitted job after the executor stopped. The whole-case equivalence/departure endpoint remains unavailable; further submissions require a separately approved case.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/analysis.json",
+          "sha256": "ab4f4b9f9a5669eebce38be49da4f3fc440ec440ec536719d2a6431de960f38e"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/execution-state.json",
+          "sha256": "8956ff400539f04972751c53d5f762e4e40a64b3702f8b015ad038a5c078224b"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/read-only-recovery-receipt.json",
+          "sha256": "7ed20c380814d7a1df6f5c66c3aa5783e6274418b2297e8cf400c73f1a6fc660"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/completion-admission.json",
+          "sha256": "01635028b4276f2d5bc78b2df62362b6f26e3f73f0856921938ba678d9b41048"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/completion-admission.json",
+          "sha256": "97bc60ca2a29ebcc850da60aee80b001e969a6f3d1e5604fac74a4144f77bb55"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/completion-admission.json",
+          "sha256": "d888483de2a3dad1e61c321088c3c2979a5da7143f20b0548396e0daf829f14a"
+        }
+      ],
+      "assumptions": [
+        "Provider timestamp fields and result identities describe the recorded service operations.",
+        "The frozen complete-case decision requires both nominal preparations."
+      ],
+      "related_claims": [
+        "qi-tuna-destination-zero-prefix-response",
+        "qi-tuna-projector-register-qualification"
+      ]
+    },
+    {
+      "domain": "hardware",
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/ordered-response-acquisition.md"
+      ],
+      "gates": {
+        "core-qi-tuna-destination-prefix": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-destination-zero-baseline-before",
+        "qi-tuna-destination-zero-rotated",
+        "qi-tuna-destination-zero-baseline-after"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "qi-tuna-destination-zero-prefix-response",
+      "statement": "In the retained posthoc nominal-zero prefix, q6 terminal-one counts are 938, 2525 and 969 out of 4096 before, during and after rotation; the maximum empirical early/final joint-cell contrast is 0.43896484375. The q4 and q11 maximum contrasts are 0.0052490234375 and 0.001708984375.",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive frequencies from the incomplete case. A transformation restricted to stored early labels leaves each dataset terminal marginal unchanged; broader reconstruction/scheduling changes and a coincident transient remain alternatives. Neither statistical acceptance of the six-job case nor physical causation or populations is established.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-recovery-order.json",
+          "sha256": "0868bfaa271898d680db09ff245bdeb2e5cb2436cd5270c72cc7e058ded085fa"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/stored-source-observation.json",
+          "sha256": "3f919abc1ca2418aa1699ad26f451e837032d017f45c846b250534b614525955"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/stored-source-observation.json",
+          "sha256": "f417decd2d03dfedef2c145fae537439280bb78531cee6b5df2953912dece90e"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/stored-source-observation.json",
+          "sha256": "602e8d35d66f3d93174aeb13f13654a0e511be4589ab8c309aa6952c954d81ec"
+        }
+      ],
+      "assumptions": [
+        "The documented rightmost classical-bit-zero convention supplies the decoder.",
+        "Stored source identity establishes transport bytes, while served analog schedules remain unavailable."
+      ],
+      "related_claims": [
+        "qi-tuna-destination-case-deadline",
+        "qi-tuna-readout-response-mixture"
+      ]
+    },
     {
       "id": "ascella-signed-coherence-permuted-repeat",
       "statement": "The approved permuted repeat on qpu:ascella (job 6ef8e8db) ran job-00's 64 circuits, all 64 compiled circuits equal to job-00's, in ANU QRNG order at 16384 samples per iteration: 1048576 samples in 186 s, job-00's duration, for 1.032768 free credits, and all 27 endpoints qualify again. Under the preregistered comparison the outside-block clicks follow the execution sequence, not the setting: per-setting Spearman against job-00 -0.075 (p 0.56), lag-1 autocorrelation -0.653 in the new order (p below 1e-4), compiled-phase change Spearman 0.12 (p 0.35), and the median count grows with the budget (log2 ratio 0.83). The per-setting analyzer residuals reproduce, Pearson 0.974 on X and 0.802 on Y (p below 1e-4), at contrast 0.9719 against 0.9699 on X and 0.9669 against 0.9702 on Y.",
@@ -4471,8 +5011,36 @@
       "boundary": "Empirical cost evidence on completed workloads; a future ceiling inherits no billing guarantee.",
       "evidence": [
         {
-          "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "4dce67ce39d77f4bccae33fb8f141b922b040d63a8f09bcd0f8228bd4a78372e"
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db67fqsvf2bc73d0pk4g",
+          "sha256": "6f3ceaaaa2ebfed5715d6e00e95844ceaea506b7167f4c51fed011dae7a00b9e"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db67frimb58s738bci4g",
+          "sha256": "6cf64a00840d9d69a5366daec91d3b5118d769c6523a4a45d5754a63f76550b5"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6p55clf4us73c5nd9g",
+          "sha256": "402b294bd9155f0b18ce02119a59503331658819e6370867c5beb82b988f0700"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6pepklf4us73c5nqcg",
+          "sha256": "1e5b7f16181311daa42cdc67dc1ec28c3ada18047d4210c8610e7ee4b441e140"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q2p2mb58s738c75gg",
+          "sha256": "e8f686952cb8257f1f26b756a619b0fd03b8f45ec11f2c8b08e3f644e0fdfee1"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q2rklf4us73c5oq90",
+          "sha256": "e213f7d1b1b0ce26fda29718d650b78aa2048e67751872aa41f56aa17d6530ce"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q9qo4qg6s73c57020",
+          "sha256": "d3b2836d7b3d741d921f6e83eca882711c385daba437a375e1baf127cffda693"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q9rsvf2bc73d1kpug",
+          "sha256": "45b7ca96dd4c7a10107c0eeb1424d3d13b8b8021d3b2f341f22ce6efe939405d"
         }
       ],
       "documents": [
@@ -5665,8 +6233,144 @@
           "sha256": "e91742aafef2659491267a9967a837748777e1903e600b776ab7376da8db5869"
         },
         {
-          "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "4dce67ce39d77f4bccae33fb8f141b922b040d63a8f09bcd0f8228bd4a78372e"
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db5qmqclf4us73c4e1ug",
+          "sha256": "f5019aadc1ffcbfef9237b0244045057f7e02f2c0015a5ce43d789b554c5f45c"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db67fqsvf2bc73d0pk4g",
+          "sha256": "6f3ceaaaa2ebfed5715d6e00e95844ceaea506b7167f4c51fed011dae7a00b9e"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db67frimb58s738bci4g",
+          "sha256": "6cf64a00840d9d69a5366daec91d3b5118d769c6523a4a45d5754a63f76550b5"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6p55clf4us73c5nd9g",
+          "sha256": "402b294bd9155f0b18ce02119a59503331658819e6370867c5beb82b988f0700"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6pepklf4us73c5nqcg",
+          "sha256": "1e5b7f16181311daa42cdc67dc1ec28c3ada18047d4210c8610e7ee4b441e140"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q2p2mb58s738c75gg",
+          "sha256": "e8f686952cb8257f1f26b756a619b0fd03b8f45ec11f2c8b08e3f644e0fdfee1"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q2rklf4us73c5oq90",
+          "sha256": "e213f7d1b1b0ce26fda29718d650b78aa2048e67751872aa41f56aa17d6530ce"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q9qo4qg6s73c57020",
+          "sha256": "d3b2836d7b3d741d921f6e83eca882711c385daba437a375e1baf127cffda693"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6q9rsvf2bc73d1kpug",
+          "sha256": "45b7ca96dd4c7a10107c0eeb1424d3d13b8b8021d3b2f341f22ce6efe939405d"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6ub8svf2bc73d1rc50",
+          "sha256": "713ac849c8344890abac6bd6caa92df43ba4e06c068815a8f3959e05c22e566c"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db6uqdkvf2bc73d1sc80",
+          "sha256": "04623c1f43e61f00c4b489386b982d21c227c8d4b3afe6de885b2d29e1045a6f"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db794cmil99s73fnjlk0",
+          "sha256": "28fb1ac303273817f38748c06e21f9b30781ba8a4392b72ab82d0c3b423a8dc0"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db794dor1c5c738k1a50",
+          "sha256": "d9f33fa6fe55453804050e25f4b678af266554c93381132d07d9146e48540aa1"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db794hmr6oqs73871tbg",
+          "sha256": "329d7b0930501fb4fdc6abaebec7efe9e5176fd662510913f04a55cf24880006"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db847nur6oqs7388nen0",
+          "sha256": "a4115b18adc0a51f2f8c143d6b6f5b71e3127f6ed73fa58a414dc9f87f099124"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db847oiraffc73fbmfk0",
+          "sha256": "d7f75b173e1a9515c5ffe26f107caa9108be95b50a5d3017934ab44cd61bdc36"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db848h6r6oqs7388nfm0",
+          "sha256": "7c3bac86db04d7bec0096d7affbc2bc71d1b2221a1d1a94ab51e94abd033fc8a"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db848hmil99s73fp99tg",
+          "sha256": "38b9832746d5d37b2a658a57afb61aaff92c70e07bcfb7cfe825f7049f9c7487"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db84dt6il99s73fp9gjg",
+          "sha256": "9de8b8bd149576396952840545fd519be784bf54f5beb922e4a8ad4ed7110d9e"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db84dv2raffc73fbmnag",
+          "sha256": "34425a99f7d174ff3f07e18b05412b53fc9e720e9a4d27f195c91d50dd30b47e"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db87o48r1c5c738lu8jg",
+          "sha256": "3806cfb4cc2d77d127dc9fd0684d88834dfb3cfc26099729a2fc7f07d77c8da7"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=db87o8or1c5c738lu910",
+          "sha256": "bd8dcd4ead45bb9a84a738d6e3d477371b746030e12c3578285aaf4ffeafaf5d"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dba8hnk24mrc73851u30",
+          "sha256": "13919d41bbff231753113ff2f47ef1377a5c65b8d4300109f9fb0ef4491d4f1f"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dba8hr424mrc73851u8g",
+          "sha256": "ae50447e6b1aba5d90fb0ea5be583239f362a53acb59aa350c3166975fff7b96"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dba8hsk24mrc73851uag",
+          "sha256": "a8b6b9ac35c0f0bb2aa36a2813784f741a4ad02bdb4a08435231f75660debf5d"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dba8huoc77vs7382f8mg",
+          "sha256": "c9f5325d74b6174c9b27df541c5c657b4d443ff0cf0bd0f2730215a47e424ec1"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dba8r7k24mrc738527d0",
+          "sha256": "194b86d5c5254d66e45f8732f9e72991a48699dbcb7fc8f210424fadbb69dda4"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbajs3gc77vs7382ulhg",
+          "sha256": "6331907f789d1cfda2508b1d08914e2cfccd520275e675cc1f01f5fe713b785c"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbak4pni0auc73925oc0",
+          "sha256": "43f481b8d851886067b7d3680e78b7b5626dbca30f61839fd20c7d55c41687ec"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbb3auvi0auc7392sfs0",
+          "sha256": "35ac9ab2ca40cd530f6eebf3ab06ee06232e04d6411f060321870a2656f1cba5"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbb4se1gv2cc73e7pf40",
+          "sha256": "d513283e1edd27f2f2396de069f35f76c4bf2ad36f2314fc5d9bcb07cc3b1e82"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbba739gv2cc73e81dg0",
+          "sha256": "1ac36d7bd7e1d1d39f8a4cc4a36efa8fe37c6dee0144d5dbc38a0790b2428c32"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbbdog8c77vs73846ceg",
+          "sha256": "dbb79967106d29232e0d3fa664caef1abe914622d3c654bb2b8811dfa7e4f7d6"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbc40u8c77vs7385ee0g",
+          "sha256": "a2ebe76eca41b494d0a33c301fd9ddb6d680b06a15285751398aded1cdb49864"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json#jobs/job_id=dbc5u19gv2cc73e9l340",
+          "sha256": "675a8b9942689f6842aaea7da83bcff04679bf647d57bde0ac09a52d759271b1"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -7901,7 +8605,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "The preregistered instrument model weights each mode by the receipt's t_out and subtracts the receipt's dark rates; the runs refute both (t_out reads 3 to 6 % on modes 0 to 11 and 194 to 400 % on modes 12 to 23, while modes 0 to 11 collect about twice the clicks of 12 to 23), so the verdict holds for that model and does not name the chip's optical error class.",
+      "boundary": "The preregistered instrument model weights each mode by the receipt's t_out and subtracts the receipt's dark rates, capped per mode at the lowest click fraction over the job's settings, which is zero on every mode of all four analyses, so the fits subtract no dark count (provider-counter audit); the runs refute both (t_out reads 3 to 6 % on modes 0 to 11 and 194 to 400 % on modes 12 to 23, while modes 0 to 11 collect about twice the clicks of 12 to 23), so the verdict holds for that model and does not name the chip's optical error class.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03/analysis.json",
@@ -7925,7 +8629,8 @@
         }
       ],
       "documents": [
-        "docs/notes/quandela/strategy.md"
+        "docs/notes/quandela/strategy.md",
+        "docs/evidence/provider-counter-audit/README.md"
       ],
       "gates": {
         "core-537": "replay",
@@ -8374,7 +9079,7 @@
     {
       "id": "qd-belenos-q1-leak-needs-single-job-and-large-budget",
       "statement": "On qpu:belenos mesh 29dc6ef8, Q1's single job kept in_block 0.918 (Wilson 0.903 to 0.931) at 1500 samples (job aa4218f1) against 0.470 and 0.504 at 10000, and every iteration of an iterated job at seed 20 kept 0.896 to 0.995 at 1500 to 60000 samples (job c1eb1cbb; preregistered reading flat). The preregistered readings are D1 intermediate, 0.016 short of 'dwell' after its 0.034 cross-job margin, and D2 flat; the single-job endpoint stays unresolved, and the two cells together do not establish what the single-job leak needs.",
-      "boundary": "One mesh, one job per cell, jobs about ten hours after Q1. An S job's 13 to 15 s is overhead and acquisition runs near 4 x 10^4 samples per second, so the budget is a sample count, not seconds of heater exposure; the single-job mechanism (chunked acquisition or re-settling) is inferred and untested. The light-cone reading (qd-belenos-light-cone-reading) excludes off-cone clicks: inside the cone every seeded iterated cell on 29dc6ef8 holds 0.990 to 0.995 at every budget and D1 reads 0.918; job-13 (qd-belenos-q1-leak-single-job-form-whatever-seed) settles the single-job endpoint at 10000 samples whatever the seed.",
+      "boundary": "One mesh, one job per cell, jobs about ten hours after Q1. An S job's 13 to 15 s is overhead and acquisition runs near 4 x 10^4 samples per second, the per-sample term of a linear fit of two iterated jobs' durations that two jobs determine exactly and nothing tests, so the budget reads as a sample count rather than seconds of heater exposure under that fit; the single-job mechanism (chunked acquisition or re-settling) is inferred and untested. The light-cone reading (qd-belenos-light-cone-reading) excludes off-cone clicks: inside the cone every seeded iterated cell on 29dc6ef8 holds 0.990 to 0.995 at every budget and D1 reads 0.918; job-13 (qd-belenos-q1-leak-single-job-form-whatever-seed) settles the single-job endpoint at 10000 samples whatever the seed.",
       "evidence": [
         {
           "path": "results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell.json",
@@ -8413,7 +9118,8 @@
       "status": "established",
       "documents": [
         "docs/notes/quandela/strategy.md",
-        "docs/notes/quandela/form-dwell-decomposition.md"
+        "docs/notes/quandela/form-dwell-decomposition.md",
+        "docs/evidence/provider-counter-audit/README.md"
       ],
       "assumptions": [],
       "supersedes": [],
@@ -8668,7 +9374,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One job on one mesh, about 6.8 hours after D1 to D4. The single jobs on e296b6a9 and 14a96ca6 hold, so the leak is specific to 29dc6ef8 among the three meshes tested; what a 10000-sample single job does differently from a 1500-sample one (0.924) or an iterated job is not isolated, and acquisition time does not order the cells (0.10 s here against 0.25 s for D1).",
+      "boundary": "One job on one mesh, about 6.8 hours after D1 to D4. The single jobs on e296b6a9 and 14a96ca6 hold, so the leak is specific to 29dc6ef8 among the three meshes tested; what a 10000-sample single job does differently from a 1500-sample one (0.924) or an iterated job is not isolated, and acquisition time does not order the cells (0.10 s here against 0.25 s for D1, estimates of samples / (physical_perf x clock), a timing model no Quandela document confirms, so the ordering is conditional on it).",
       "evidence": [
         {
           "path": "docs/evidence/quandela/belenos_seeded_single.json",
@@ -8684,7 +9390,8 @@
         }
       ],
       "documents": [
-        "docs/notes/quandela/strategy.md"
+        "docs/notes/quandela/strategy.md",
+        "docs/evidence/provider-counter-audit/README.md"
       ],
       "gates": {
         "core-547": "replay",
@@ -10750,8 +11457,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-8/result.json",
-          "sha256": "358a3b6bbf7e6bb77848d1a3648846ec50b34010054a5dd546097b0be502d2cb"
+          "path": "docs/evidence/algebra-device-conjectures-13/result.json",
+          "sha256": "0b309fb6c3fbe90b422b0cf686d035c2c9db2aba2a18eae80c45e04fc7d4b30e"
         }
       ],
       "gates": {
@@ -11370,6 +12077,41 @@
       ]
     },
     {
+      "id": "kingston-gate-model-scatter-floor",
+      "statement": "On ibm_kingston (calibration 2026-10-25T19:36:09-07:00; one static job of six PUBs at 8192 shots over 38 pairwise uncoupled qubits, 15 s charged) the readout-corrected P0 of the 32-sx unitary sequence at N = 16 differs from the pinching analysis's sign-pooled Bloch-iteration prediction by a root-mean-square of 0.0152 over all 38 informative qubits, 0.0188 over the eight main qubits and 0.0141 over the thirty further qubits, against a statistical root-mean-square standard error of 0.0024. The preregistered floor, the larger of the all-qubit and main-qubit values, is 0.018784. The mean residual is +0.0110: the model underpredicts P0 on 32 of 38 qubits (all eight main qubits), by up to +0.039 on q91 and +0.034 on q45, and overpredicts it on six. The residual does not follow T2 in the drive-dephasing lead's direction: its Spearman correlation with T2 is -0.29 (two-sided p 0.080; 9 of the 12 longest-T2 qubits positive, 2 of the 12 shortest negative) and with the sx error -0.33 (p 0.044).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One calibration window, one job, one backend; the floor is the root-mean-square of a model residual that includes counting noise, and it measures the sign-even part of the gate-model error because the pooled unitary arm is blind to the first-order axis tilt. The mean residual is positive, so the model underpredicts P0 systematically on this device and the floor mixes a common offset (+0.011) with qubit-to-qubit scatter. The correlations come from 38 qubits chosen by readout error, rank-based with a t-approximation p value, and are descriptive: the T2 test does not support the Garnet drive-dephasing lead and neither establishes a mechanism nor excludes one. The model takes the Target T1 at execution and the planning excitation, not a fit.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-26T031010.724660Z/collect.json",
+          "sha256": "0fd6b3a2213e01f9b7aea7f221631f5c0416ff69becbde14dde1c84ef950af90"
+        },
+        {
+          "path": "results/live/2026-10-26T031010.724660Z/record.json",
+          "sha256": "89d3b609b45284bbdcd38219b5a441752185425420687eefcbc4b0303be3dff5"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/scatter-floor.json",
+          "sha256": "c39c5b7202fd6d2cd44629a86eed1402a0d234e95502540f37c8216bccc3c080"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/minimum-detectable-measured-floor.json",
+          "sha256": "4d3d6a7a4031e3bcda5f4b21c5f5d4c2bc1cc95239874e2973d66ea74a63e33d"
+        }
+      ],
+      "gates": {
+        "core-msq-scatter-floor-replay": "replay"
+      },
+      "documents": [
+        "docs/design/measurement-sequence-pinching.md"
+      ],
+      "acquisitions": [
+        "kingston-measurement-sequence-scatter-floor"
+      ]
+    },
+    {
       "id": "iqm-garnet-cc-prx-feedback-label-limit",
       "statement": "The garnet:mock station control refused job 01a17621-1452-701f-8874-ba08a138aec4 (22 circuits x 200 shots, active_reset_cycles 1, all-zeros heralding) at compilation, charging 0.00 credits: \"Playlist segment 0 can't be handled by the instruments\" with \"unique feedback signal labels: 2/1\" on the drive AWG of each of the five qubits that receive cc_prx (QB1, QB6, QB13, QB17, QB19) and on no other drive. Each of those drives carried exactly one cc_prx label (its partner's qubit and key) across all 22 circuits, so the second label is the active reset's conditional pulse on the qubit's own readout: on Garnet a qubit whose drive takes another qubit's feedback bit cannot also take active reset, and a cc_prx case runs under passive reset.",
       "domain": "implementation",
@@ -11597,6 +12339,798 @@
       "related_claims": [
         "hw-n21-feedback-null-scheduled-idle"
       ]
+    },
+    {
+      "id": "kingston-primorial-case1-q0-readout-void",
+      "statement": "On ibm_kingston path 0-1-2 (backup instance, 98 probe circuits at 800 shots, calibration 2026-10-25T21:37:46-07:00, 23 s billed) the preregistered voiding rule fires on physical qubit 0: its in-job readout calibration reads |0> as 1 in 629 of 800 shots (e10 0.786) and |1> as 0 in 86 (e01 0.108), so 1 - e10 - e01 = 0.106 against the 0.8 floor, while the same calibration reported e10 0.006 and e01 0.009 and qubits 1 and 2 read normally in the same job. Stage 2, the gap-88 tomography, is not sent. Outside the decision, the estimates that rest only on qubits 1 and 2 read sx and x tilts of -0.00087 to +0.00158 rad (under 1 percent of the gate infidelity) and a raw CZ conditional phase of +0.0192 +- 0.0009 rad on coupler (1, 2), about 6 percent of the CZ infidelity.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job under one calibration. The void stops the case, so no decision record exists; the tilt and CZ-phase values are descriptive and leave qubit 0, coupler (0, 1), the detuning of qubits 0 and 1 and both ZZ rates unmeasured. The raw CZ phase omits the partner-in-0 ZZ share, at most 0.0026 rad for a 6 kHz ZZ. The findings note records a deviation from the preregistered decision input (groups[0].summary).",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-26T045124.175747Z/collect.json",
+          "sha256": "45914bc3c8b083aa1877cfc0290db7bb7ae61da9c9ecdc9c1765a380f39aa0fd"
+        },
+        {
+          "path": "results/live/2026-10-26T045124.175747Z/record.json",
+          "sha256": "8aae0f1c5318017cf6bffc50416a974f3f226dd2eddf559b1dcefef11cb5300e"
+        }
+      ],
+      "documents": [
+        "results/live/PRIMORIAL_COHERENCE_FINDINGS.md",
+        "results/live/PRIMORIAL_COHERENCE_CASE.md"
+      ],
+      "acquisitions": [
+        "kingston-primorial-coherence-case1"
+      ],
+      "related_claims": [
+        "primorial-probe-case-design"
+      ]
+    },
+    {
+      "id": "kingston-primorial-case2-band-misses",
+      "statement": "On ibm_kingston at a 20 us repetition delay (backup instance, 22 s billed over two state-prep controls, the probe stage and the gap-88 stage) the prep0 control drops path 82-83-96 (q96 reads 0.281 after a |0> history), stage 1 admits 21 of the 22 retained paths at 2700 shots, and in stage 2 five gap-88 coefficients on 58-71-72 (01, 02), 15-19-35 (01, 02) and 100-101-102 (01) fall below the bands of the coherent-error model with the excitation term. The packed-against-isolated test of the first gap-88 arm on 58-71-72 reads consistent (chi-square 9.35 on 7 degrees of freedom). A descriptive ablation chosen after the data reproduces the misses on 15-19-35 and 100-101-102 by applying each path's largest excitation to all three of its qubits, and brings 58-71-72 inside only when the history-independent excess enters as terminal readout error.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Stage 2 executed under a calibration label (15:03:42 PDT) that the submit-time read had not seen, though all 5010 channel values equal the stage-1 snapshot's, so the case's falsification reads descriptive rather than as a device claim. The ablation was chosen after the stage-2 data. The review of these results finds the band construction falsified, not the coherent-error model, and q147's history difference (21 against 1584 excited of 32768) real but confounded with job identity.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-26T221707.355349Z/collect.json",
+          "sha256": "93d3a75c0f8933b3634dde343985239b35b741f280bb41d7d504c8965c49c77a"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/case2/retained-paths.json",
+          "sha256": "6a7b373cdb98a5a13e19fdf7781605004bbde6779cb072db773a20babe593901"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/case2/stage1-decision.json",
+          "sha256": "37677d0a8dc5f2d10f0026d2cfa77d2c4a0ad413124954d09e36aa3a2c6fafc8"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/case2/stage2-crosstalk.json",
+          "sha256": "ef2e91ea79ba099cb81a54e470f1cc0986cc0aae0a78845e758583cc661f5e7b"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/case2/stage2-falsification.json",
+          "sha256": "1dba5343ddb445c70be41e798b1f71c649f8d4a14a5f5b312218924d522d3276"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/case2/excitation-ablation.json",
+          "sha256": "bfd86f6a16633c1dd03dfa8ba641ab42b3e0228e04a36a44cf97b466035affa2"
+        }
+      ],
+      "documents": [
+        "docs/evidence/primorial_cover/case2/README.md",
+        "results/live/PRIMORIAL_COHERENCE_CASE_2.md",
+        "docs/archive/reviews/primorial-coherence-case-2-results-codex-review.md"
+      ],
+      "acquisitions": [
+        "kingston-primorial-case2-prep0",
+        "kingston-primorial-case2-x-history",
+        "kingston-primorial-case2-probes",
+        "kingston-primorial-case2-gap88"
+      ],
+      "related_claims": [
+        "kingston-primorial-case1-q0-readout-void"
+      ]
+    },
+    {
+      "id": "kingston-primorial-case3-split-law",
+      "statement": "On 22 ibm_kingston paths at a 20 us repetition delay (backup instance, 33 s billed; channel digest of the 66 stage-2 qubits unchanged from the decision snapshot through both stage-2 reads) the split excitation law with the coherent-error model places 150 of 154 gap-88 coefficients inside their bands, including the five case-2 misses on 58-71-72, 15-19-35 and 100-101-102. Four coefficients lie above their bands, each within 0.22 half-widths of the edge (38-49-50 coefficient 2, 66-67-68 coefficient 1, 132-133-134 coefficients 01 and 1), so by the preregistered rule the law falsifies on those three paths. The first gap-88 member on 147-148-149 matches its isolated reference (chi-square 6.96 on 7, p 0.43); the positive prediction on 147-148-149 coefficient 2 lies inside its band (0.74 half-widths above center); and q147's excess on that path splits with lambda 0.66 +- 0.25 (0.59 to 0.74 across hd's interval), excluding absorption by the in-job inversion (lambda 0) at 2.6 standard errors. The controls read q147 excited in 0.08 percent of prep0 and 4.89 percent of x_history shots, hd 0.0484 [0.0446, 0.0523], reproducing across both replicate pairs.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One run per stage under one channel state; q58's prep0 differs between its two jobs (p below 1e-4), which widens its hd interval to [0, 0.040]. The four misses sit near their band edges and share no single offset. lambda carries the split center's assumption that hd acts as an initial X error on every arm, which the post-hoc shot-history analysis rejects as a mechanism.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-27T013626.332783Z/collect.json",
+          "sha256": "1a8170134ea1e57cdd353e90a7e2c1d7b09eb92a801319c6c5bab9d51e64356a"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/case3/split.json",
+          "sha256": "37d2120d2a7d822678994bb4fb34dca4e36fcbd95cd3b7e123d2a88850e590a0"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/case3/stage1-decision.json",
+          "sha256": "21a86b54c45b48fbf09dd861db8ba1d98334f0a98c490802220a9fe131449c08"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/case3/stage2-crosstalk.json",
+          "sha256": "604aa4cb6ac8db0139713331b01d98c4d73c76adda089f1b42ed6fd41f7c3444"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/case3/stage2-falsification.json",
+          "sha256": "0c97ce0639fa2874d4edbde214b50a0becc91b4021ef6bd9702b4a1bb1eeaf87"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/case3/lambda-bracket.json",
+          "sha256": "11897737c20320cf42476706af45d1108c2a29dbba67b1d92fcc7b5296687b55"
+        }
+      ],
+      "documents": [
+        "docs/evidence/primorial_cover/case3/README.md",
+        "results/live/PRIMORIAL_COHERENCE_CASE_3.md"
+      ],
+      "acquisitions": [
+        "kingston-primorial-case3-prep0-a",
+        "kingston-primorial-case3-x-history-a",
+        "kingston-primorial-case3-x-history-b",
+        "kingston-primorial-case3-prep0-b",
+        "kingston-primorial-case3-probes",
+        "kingston-primorial-case3-gap88"
+      ],
+      "related_claims": [
+        "kingston-primorial-case2-band-misses"
+      ]
+    },
+    {
+      "id": "kingston-primorial-offsets-and-q147-history",
+      "statement": "Exploratory, after the case-3 data: pooled over the 22 paths with scatter-scaled standard errors at the Bonferroni level over seven coefficients, the gap-88 residuals carry positive offsets on 02 (+0.0107, t 5.73) and 2 (+0.0155, t 4.86), and case 2 recentered under the split law gives 01 +0.0085 (t 3.45) and 02 +0.0105 (t 4.66), so the 01 and 02 offsets repeat at the same size on two runs. q147's excess follows the previous circuit's readout event rather than its end state: a |1> arm read as 0 is followed in submitted order by a |0> arm reading q147 excited more often (0.095 against 0.051, z -4.62), the following arm shows no link, conditioning on the previous shot's end state removes only 21 and 28 percent of the excess, and the all-|0> gap-88 readout arm reads q147 excited in 0.0675 +- 0.0040 of 4000 shots, 3.97 standard errors above the 0.0518 ceiling of any law scaled by q147's own end-state history.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Chosen after the stage-2 results; the script's docstring holds the predictions written before its first run. The end-state ceiling falls to 2.21 standard errors at the stage-2 |1> read efficiency of 0.873, which the x_history jobs do not measure. The column-wise execution order the history analysis assumes is supported by the forward-only link, not guaranteed by the service.",
+      "evidence": [
+        {
+          "path": "docs/evidence/primorial_cover/case3/offset-and-history.json",
+          "sha256": "e1411b47adecfa74c2ae4c8119fe6b81c3198c2ddceff379acc5f5649048b4b9"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/case3/offset_and_history.py",
+          "sha256": "ccf03bfc53fabbb60c3659952b0092a5b8e5e0669f53ebaa35dcc7155405fd04"
+        },
+        {
+          "path": "results/live/2026-10-27T013626.332783Z/collect.json",
+          "sha256": "1a8170134ea1e57cdd353e90a7e2c1d7b09eb92a801319c6c5bab9d51e64356a"
+        }
+      ],
+      "documents": [
+        "docs/evidence/primorial_cover/case3/README.md"
+      ],
+      "acquisitions": [
+        "kingston-primorial-case3-prep0-a",
+        "kingston-primorial-case3-x-history-a",
+        "kingston-primorial-case3-x-history-b",
+        "kingston-primorial-case3-prep0-b",
+        "kingston-primorial-case3-probes",
+        "kingston-primorial-case3-gap88",
+        "kingston-primorial-case2-prep0",
+        "kingston-primorial-case2-x-history",
+        "kingston-primorial-case2-gap88"
+      ],
+      "depends_on": [
+        "kingston-primorial-case3-split-law"
+      ],
+      "related_claims": [
+        "hw-kingston-init-survey-149q"
+      ]
+    },
+    {
+      "id": "kingston-q147-two-read-persistence",
+      "statement": "On ibm_kingston q147 (backup instance, one static job of three PUBs at 32768 shots and a 20 us repetition delay, calibration 2026-10-27T13:21:35-07:00, 5 s billed, one execution chunk in submitted order) a second measurement does not read back the first: a prepared |1> read as 1 re-reads 1 in 0.775 of shots against the 0.985 that e01 and T1 predict and 0.980 to 0.988 on the five neighbors, and a first read of 0 is followed by 1 in 0.0465 against e10 0.0024. The preregistered persistence of remeasure's excited first reads (0.0692 of shots) is 0.815 [0.793, 0.836] at 99 percent, which the rule reads as population, beside the |1> reference and 0.040 +- 0.0085 above it. The forward readout-event link reproduces case 3's sign (0.089 after an x_remeasure first read of 0 against 0.067 after 1, z -4.68, one-shot-later null z -0.23), and the q142 prediction fails (first read 0.0408 against prep0 0.0393).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job under one calibration. The failed two-read model means the misassignment reading of the |1> shots read as 0 cannot separate decay before the first read from a transition caused by it. That q147's readout is not quantum-nondemolition is an inference of low confidence; separating a measurement-driven transition from decay needs reads at fixed count and varied spacing. The excess of persistence over the |1> reference is unexplained. The reference qubits' successor rows rest on 27 to 38 conditioning shots and are counts, not tests.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-27T204605.871056Z/collect.json",
+          "sha256": "e020c4cd64de778702db3b9c4bb9c54a013d049198798494ed28d84c10b4f9c6"
+        },
+        {
+          "path": "results/live/2026-10-27T204605.871056Z/record.json",
+          "sha256": "5b590ea462c91593a7c512a50b1863bc0256ca94cb320426836aa445181a7129"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/q147-remeasure/remeasure-history.json",
+          "sha256": "dac3e4749cf73b0fdc03a71c15c0c696dd9815837068114e9e128a593e847fee"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/q147-remeasure/snapshot.json",
+          "sha256": "e24a3fa986a100450b4bcd9fb0972749d8a683b215a17240a6bb4f593be0411c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/primorial_cover/q147-remeasure/README.md",
+        "results/live/PRIMORIAL_Q147_REMEASURE_CASE.md"
+      ],
+      "acquisitions": [
+        "kingston-primorial-q147-remeasure"
+      ],
+      "related_claims": [
+        "kingston-primorial-offsets-and-q147-history"
+      ]
+    },
+    {
+      "id": "kingston-n21-window-dose-idle-excess",
+      "statement": "On ibm_kingston (backup instance, 19 four-qubit N=21 orbit replicas, 26 dynamic PUBs at 8192 shots and a 50 us repetition delay, calibration 2026-10-26T17:55:09-07:00, 86 s billed) the free-idle arm's feedback contrast falls by 0.246 +- 0.005 from dose 0 to 14,000 dt (D1 holds), its fitted rate is kappa_P 1.77 [1.17, 2.56] times the Target's (D2: idle loss beyond the Target), and the Hahn echo removes most of the excess, kappa_P - kappa_E 1.17 [0.84, 1.51] (D3 holds). The one-rate family misfits by a chi-square scale factor of 85, so the rates read the pooled loss of a per-replica coherent precession rather than a decay rate. Two earlier submissions of the same envelope at 20 us and 50 us ended with error 1305 at their 30 s execution limit because the service runs the replicas' feed-forward branches one after another, which the planner priced as parallel.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Every interval is conditional on the execution Target's per-qubit T1 and T2 point values. One calibration, no between-calibration variance. Block drift exceeds shot noise (chi-square 485.2 on 390) and inflates member covariances. Both arms sit below the model at dose 0, an offset this run does not locate. The dose grid's 14 us top spacing aliases near 35 kHz. The failed attempts hold no shots.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-27T014354.701394Z/dose-decisions.json",
+          "sha256": "518e9a039f5d358cace2508b5cd44d711c069c9b06b5f1c7b8e8cfc2b80c1fa0"
+        },
+        {
+          "path": "results/live/2026-10-27T014354.701394Z/collect.json",
+          "sha256": "c0a08a82149f142b8d8d53c351f1f099696279d225ba877868139e61c9bb342a"
+        },
+        {
+          "path": "results/live/2026-10-27T014354.701394Z/idle-replay.json",
+          "sha256": "9ef548341c67bb137d726833b277560282d6d317834d44fcf013f22252429a37"
+        },
+        {
+          "path": "results/live/2026-10-27T014354.701394Z/idle-scaling.json",
+          "sha256": "f8f713bb141825d34a72a27fe6d84a8a43a15e3bd0316e704f7c6b751ebe1280"
+        },
+        {
+          "path": "results/live/2026-10-27T005259.826486Z/collect.json",
+          "sha256": "0409e307d8362609b66f1326e42a9f81fce78ad00a5d75050600b48a2c9870da"
+        },
+        {
+          "path": "results/live/2026-10-27T011304.736763Z/collect.json",
+          "sha256": "2b8e49d22b6af277bb2040cb274af1f3e338f7b7545f25fe3366e18c5c69d1b2"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-27T014354.701394Z/FINDINGS.md",
+        "docs/design/n21-orbit-window-dose-envelope.md"
+      ],
+      "acquisitions": [
+        "kingston-n21-window-dose",
+        "kingston-n21-window-dose-attempt-20us",
+        "kingston-n21-window-dose-attempt-50us"
+      ],
+      "related_claims": [
+        "hw-n21-feedback-null-scheduled-idle",
+        "hw-idle-detuning-scale"
+      ]
+    },
+    {
+      "id": "kingston-measurement-sequence-envelope-reset-screen",
+      "statement": "On 32 ibm_kingston qubits (backup instance, one dynamic job of 88 PUBs at 8192 shots and a 20 us repetition delay, 38 s billed against 37.7 s expected) the preregistered pinching analysis keeps no qubit and the run has no device verdict: the readout-corrected difference between reset residuals from |1> and from |0> is positive on all 32 qubits (median 0.0123, range 0.0049 to 0.0366) against a screen that admits a point estimate below about 0.0045, and qubits 1, 17, 59, 62, 100 and 154 also fail the crosstalk screen on their |0> readout error. The reset difference runs about 1.7 times each qubit's calibrated prob_meas0_prep1 (median 0.0071, r 0.34 across qubits).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The screen's margin was set below the readout error a measure-based reset residual inherits, so its failure was predictable from the calibration and withholds qubits on a residual the N = 16 endpoint does not inherit at that size. The exploratory all-qubit reading (no measurement-induced deficit at the 0.0188 floor) ignores the screens and is not a result of the case.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-27T014422.881898Z/collect.json",
+          "sha256": "e0a690e4610096ed20c7c8ec082d66a4d3c4f181b1fcced7fa350218574e7fb3"
+        },
+        {
+          "path": "results/live/2026-10-27T014422.881898Z/record.json",
+          "sha256": "4f9809940276dccc27bf21f5f180aba279574fde0ba99fb25d0742ccb33d541f"
+        }
+      ],
+      "documents": [
+        "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+        "docs/design/measurement-sequence-adaptive-envelope.md"
+      ],
+      "acquisitions": [
+        "kingston-measurement-sequence-envelope"
+      ]
+    },
+    {
+      "id": "kingston-idle-penalty-focal-region",
+      "statement": "On ibm_kingston (backup instance, two jobs of 44 PUBs at 4096 shots, both under the 2026-10-27T09:07:55-07:00 calibration, 16 s billed each) the focal qubits read kappa_1 0.945 (79), 1.583 (92, elevated) and 1.373 (93), with every other focal multiplier nominal or unresolved. The preregistered historical reading over the region 73, 79, 92, 93, 94 and 95 is unresolved: kappa_1 region median 1.399 against 1.070 for the other 64 cohort qubits (one-sided exact p 0.031) and kappa_2* 1.709 against 1.228 (p 0.113), about half the multiplier near 3 the retained 2026-10-12 and 2026-10-13 runs fitted. Within the one calibration window the per-qubit multipliers of qubits that keep role and partner reproduce at Pearson r 0.91 to 0.99 among the three runs (the two placements and the stability repeat), and at 0.91 to 0.95 between the two placements alone.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The per-qubit readings decide nothing: one elevated reading among three qubits occurs for three random qubits with probability 0.79. The region test pools the stability repeat's report from the primary instance, whose job is outside the backup inventory. Neither reading reconstructs the two-week-old rates. The context qubits 104, 106, 124, 125 and 126 carry no decision.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-27T160738.258133Z/idle-penalty-focal-decisions.json",
+          "sha256": "f3b1a1647f4ac03113004b82c5dd8b31e2a535a22feb128b2169203e4c3c38c5"
+        },
+        {
+          "path": "results/live/2026-10-27T160738.258133Z/idle-penalty-report.json",
+          "sha256": "1a318cb024090ca0e39629f344a8e81d700a05010f886fe0157991b5f94a9aba"
+        },
+        {
+          "path": "results/live/2026-10-27T160529.294491Z/idle-penalty-report.json",
+          "sha256": "8c985f3c5a64b663e8c1355c82851747afff27e0b2207dd563878ad3affe8ffc"
+        },
+        {
+          "path": "results/live/2026-10-27T160530.294787Z/idle-penalty-report.json",
+          "sha256": "5e2c3e75774bf7214e27756fc546459a736e2f26808195630d955113aadfe8c3"
+        }
+      ],
+      "documents": [
+        "results/live/IDLE_PENALTY_FOCAL_CASE.md"
+      ],
+      "acquisitions": [
+        "kingston-idle-penalty-focal-x",
+        "kingston-idle-penalty-focal-y"
+      ],
+      "related_claims": [
+        "kingston-idle-penalty-multipliers-and-readout-phase",
+        "kingston-idle-penalty-retained-kappa-qubits"
+      ]
+    },
+    {
+      "id": "kingston-idle-readout-attribution-mixed",
+      "statement": "On ibm_kingston (backup instance, one job of 55 PUBs at 4096 shots, calibration 2026-10-27T12:00:41-07:00, 16 s billed) the readout-driven phase pull on idling probes replicates at the probe run's size, pair mean -2.64 kHz (SE 0.56, t -4.73) with the quiet null at +0.003 kHz; the own-partner, within-three-hop and chip-baseline split fits additively (median residual +0.010 kHz [-0.075, 0.095]); the far-field baseline reads -0.41 kHz [-1.35, +0.011], absent or unresolved; and on the 43 probes that resolve the shift no source carries it alone (median shares: baseline 0.27, own partner 0.26, within three hops 0.17), so the attribution reads mixed.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job under one calibration. Per-probe terms up to -15.8 kHz are descriptive and need a replication; a physical attribution needs the feedline map the design names. The baseline interval crosses zero by 0.011 kHz.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-27T191953.122214Z/idle-readout-attribution.json",
+          "sha256": "2a016a77f70b2ee41af11ba3805548785e11a176ffe2427484d11305949f2181"
+        },
+        {
+          "path": "results/live/2026-10-27T191953.122214Z/collect.json",
+          "sha256": "979e0de289cc7022f373d9cd6eac405912d0a58e90b9df7ed852376498987a09"
+        }
+      ],
+      "documents": [
+        "results/live/IDLE_READOUT_ATTRIBUTION_CASE.md",
+        "docs/design/heron-idle-readout-attribution.md"
+      ],
+      "acquisitions": [
+        "kingston-idle-readout-attribution"
+      ],
+      "depends_on": [
+        "kingston-idle-penalty-multipliers-and-readout-phase"
+      ]
+    },
+    {
+      "id": "kingston-idle-penalty-repeat-refreshed-calibration",
+      "statement": "On ibm_kingston (backup instance, one job of 44 dynamic PUBs at 4096 shots over 30 of the probe's 31 coupled pairs, execution calibration 2026-10-27T16:56:11-07:00, whose reported T1 differs from the first run's on 58 and T2 on 60 of 60 qubits; 16 s billed) the preregistered multiplier-stability decision reads unresolved for kappa_1 (Pearson r -0.041, median second/first ratio 0.872 [0.705, 0.974]), kappa_2* (0.339, 0.876 [0.683, 1.061]) and kappa_2e (-0.043, 0.869 [0.719, 1.008]). The single-run decisions replicate: optimistic_t1 absent or unresolved, echo gain present, and the readout phase pull present at -2.66 +- 0.57 kHz against the after arm and -2.67 +- 0.56 kHz against the quiet arm with the quiet null absent; its per-pair pattern correlates with the first run's at r 0.987 (pair pattern stable). Visibility reads pairwise heterogeneity (pair-mean t -2.39 and -1.93 against -3.396).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job and one placement against one first run 28 hours earlier; the 25 s ceiling and pair means are the statistical unit as in the probe. The reading that IBM's reported normalization removes the per-qubit multiplier pattern while the fitted rates keep theirs (rates against point 1 at r 0.63 to 0.81, reported T1 across the refresh at r 0.51) and the 13 to 16 % fall of the fitted rates are post hoc and of moderate confidence; point 1 ran on the primary instance and enters only through its retained report.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-28T000644.379196Z/idle-penalty-repeat-decisions.json",
+          "sha256": "40dd0b535fb031dd7dd056c4471f2d296371871b9af3a35206d2dadb46eff12b"
+        },
+        {
+          "path": "results/live/2026-10-28T000644.379196Z/idle-penalty-compare.json",
+          "sha256": "e622b4ba94eb2cc74fa40d5830186ff705d224118943ee82437d985f89b8b92b"
+        },
+        {
+          "path": "results/live/2026-10-28T000644.379196Z/idle-penalty-report.json",
+          "sha256": "0196948a32017eab5bf4dcdfc29c4990ff646b0a56e893f8af4d8b65c7e718cf"
+        },
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/idle-penalty-report.json",
+          "sha256": "2bee55b8eb66048a87ce0673fb8afa51ac3e28a58d4be779719e098ea5b1eb47"
+        }
+      ],
+      "documents": [
+        "results/live/IDLE_PENALTY_REPEAT_CASE.md"
+      ],
+      "acquisitions": [
+        "kingston-idle-penalty-repeat-point2"
+      ],
+      "related_claims": [
+        "kingston-idle-penalty-multipliers-and-readout-phase",
+        "kingston-idle-penalty-focal-region"
+      ]
+    },
+    {
+      "id": "kingston-idle-penalty-repeat-point1-stability",
+      "statement": "On ibm_kingston (primary instance, one job of 44 dynamic PUBs at 4096 shots and a 20 us repetition delay over 30 of the first run's 31 ordered pairs, execution calibration 2026-10-27T09:07:55-07:00, 16 s billed) the preregistered admission reads not admitted, because the calibration carried the first run's reported T1 and T2 on all 60 qubits, so each multiplier ratio compares fitted physical rates about 19 hours apart. Multiplier stability reads unresolved on all three: Pearson r 0.195 (kappa_1), 0.357 (kappa_2*) and 0.318 (kappa_2e), each below 0.5, with median second/first ratios 0.939 [0.836, 1.052], 0.906 [0.801, 0.998] and 0.961 [0.840, 1.028]. The single-run decisions replicate: optimistic T1 absent or unresolved, echo gain present, and the readout shift present and negative at -2.627 +- 0.557 kHz against the after arm and -2.632 +- 0.557 kHz against the quiet arm, with the quiet null at -0.005 +- 0.020 kHz. Visibility reads pairwise heterogeneity (pair-mean t -2.48 and -2.28 against -3.396), and the readout shift's pair pattern is stable at Pearson r 0.988 over 30 pairs.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Not a test across a T1/T2 refresh: admission failed by construction, so the point reads drift of the fitted physical rates over 19 hours, not of IBM's reported normalization. One job and one calibration; pair means of the two probes are the statistical unit. The low correlations measure per-qubit drift against the focal jobs' test-retest floor (r 0.91 to 0.99 in one window); the leverage checks that support that reading are post hoc. Medians carry order-statistic intervals over this cohort.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-27T160530.294787Z/idle-penalty-repeat-decisions.json",
+          "sha256": "27a8b5be301592acb0daea392ec7efe14263f954e50038e69d8033b66019aa2d"
+        },
+        {
+          "path": "results/live/2026-10-27T160530.294787Z/idle-penalty-compare.json",
+          "sha256": "9cec612981c9b8b88047ce9774705fb9e1302451fa098ef09d4fc4433c2491df"
+        },
+        {
+          "path": "results/live/2026-10-27T160530.294787Z/idle-penalty-report.json",
+          "sha256": "5e2c3e75774bf7214e27756fc546459a736e2f26808195630d955113aadfe8c3"
+        },
+        {
+          "path": "results/live/2026-10-27T160530.294787Z/collect.json",
+          "sha256": "efe610466b15a9b023d3032fdf925becad96c07462adf475dd36bb6a5648bbe7"
+        },
+        {
+          "path": "results/live/2026-10-27T160530.294787Z/record.json",
+          "sha256": "93b2240b849b25b0daddeb0f11efadb05037f1fbc60f477e5d5112cadebdbde7"
+        }
+      ],
+      "documents": [
+        "results/live/IDLE_PENALTY_REPEAT_CASE.md",
+        "results/live/IDLE_PENALTY_PROBE_FINDINGS.md"
+      ],
+      "acquisitions": [
+        "kingston-idle-penalty-repeat-point1"
+      ],
+      "depends_on": [
+        "kingston-idle-penalty-multipliers-and-readout-phase"
+      ],
+      "related_claims": [
+        "kingston-idle-penalty-focal-region",
+        "kingston-idle-penalty-repeat-refreshed-calibration"
+      ]
+    },
+    {
+      "id": "kingston-n21-detuning-sign-precession",
+      "statement": "On ibm_kingston (primary instance, 19 four-qubit N=21 orbit replicas in one dynamic job of 56 PUBs at 4096 shots and a 20 us repetition delay, planned at calibration 2026-10-27T09:07:55-07:00 and executed under 2026-10-27T10:34:08-07:00, 17 s billed against a 15.35 s plan) the orbit's relative phase turns at the Ramsey frame offset of the work qubit for 16 minus that of the work qubit for 1: the slope through the origin is 1.010 [0.977, 1.043] over 18 replicas (D1 holds), the orbit turns with the sign of the offset difference on 17 of 17 resolved replicas (D2 holds), and a Hahn echo returns the undosed phase within three standard errors on 17 of 17 moved replicas (D3 holds). The pair 58 and 69, whose offsets are equal, reads -0.18 +- 0.25 kHz, as the offset difference predicts.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration. The slope's chi-square of 106.8 on 17 degrees of freedom puts the scatter at 2.5 times shot noise, and the interval carries sqrt(chi2/df). Orbit and Ramsey members run as separate PUBs, so frequency wander between them is not separated from a shift the orbit's own gates impose (largest residual: pair 3 and 0 at -5.62 +- 0.17 kHz against -3.75 predicted). The pair 88 and 91 resolves too few doses for a rate and enters no decision. Reading the window-dose sweep's residual as this precession carries the mechanism across a different calibration and instance.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-27T173602.753176Z/detuning-sign-decisions.json",
+          "sha256": "89358388a379a10ae1613796bf6c131eb7e8c0b87e950a31520afd9ace4231b1"
+        },
+        {
+          "path": "results/live/2026-10-27T173602.753176Z/collect.json",
+          "sha256": "de96b87b24a73efdc0fd45fe447deb92b622352c702ecc5fe03569fd61a79784"
+        },
+        {
+          "path": "results/live/2026-10-27T173602.753176Z/record.json",
+          "sha256": "8d082ac026d2045c246f4f02527a81d90053de486a25ab4585e45d04dd060f77"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-27T173602.753176Z/FINDINGS.md",
+        "docs/design/n21-orbit-detuning-sign-envelope.md"
+      ],
+      "gates": {
+        "core-n21-detuning-sign-replay": "replay"
+      },
+      "acquisitions": [
+        "kingston-n21-detuning-sign"
+      ],
+      "related_claims": [
+        "kingston-n21-window-dose-idle-excess",
+        "hw-idle-detuning-scale"
+      ]
+    },
+    {
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "evidence": [
+        {
+          "path": "results/quandela/ascella-cancellation-transition-returned-mesh-analysis.json",
+          "sha256": "64cda022b6abf96beb4da9d2dc3da075d1af6ad18410f81a7aa88881d4ab1998"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/qualification-profile.json",
+          "sha256": "10a966a7af73530a281586e7c32842c8c2fa737b89dd23dd79fbd88c48eda6c4"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/acquisition-inventory.json",
+          "sha256": "4c32a9c2084d2eb9336cd589aab8127cdfc708f708d5684e1d9f45fcbeb68208"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/account-after.json",
+          "sha256": "03d10f05953c979c072ff1b0bf511aca9b6b2fca64463812f0b6b88557e7ef11"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-cancellation-transition-acquisition/README.md",
+        "docs/evidence/ascella-cancellation-transition-acquisition/findings.md"
+      ],
+      "gates": {},
+      "assumptions": [
+        "Simultaneous Clopper-Pearson coverage is conditional on IID events within each setting; accepted-event proportions include invalid photon-number outcomes."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "ascella-cancellation-repeated-mesh-heralds",
+      "statement": "Five Ascella acquisitions each retain 65,536 accepted events and pass the frozen cancellation, bright, mutation, leakage, precision and repeat criteria. Herald counts in dark, bright, bright-repeat, dark-repeat and fixture order are 147, 65,276, 65,354, 116 and 33,076. Both repeated pairs return identical compiled circuit/input serializations, and separate execution envelopes establish the requested order.",
+      "boundary": "One five-job screening cohort on qpu:ascella, with a fixed family of 243 endpoints shared with the twelve-setting pilot. The measurements establish finite output-probability conformance. Unequal interjob spacing leaves linear-drift cancellation unassessed; incident-photon loss and spacetime effects remain outside the measured surface.",
+      "acquisitions": [
+        "qd-ascella-sedenion-cancellation-dark",
+        "qd-ascella-sedenion-cancellation-bright",
+        "qd-ascella-sedenion-cancellation-bright-repeat",
+        "qd-ascella-sedenion-cancellation-dark-repeat",
+        "qd-ascella-sedenion-cancellation-fixture"
+      ]
+    },
+    {
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "evidence": [
+        {
+          "path": "results/quandela/ascella-cancellation-transition-returned-mesh-analysis.json",
+          "sha256": "64cda022b6abf96beb4da9d2dc3da075d1af6ad18410f81a7aa88881d4ab1998"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/qualification-profile.json",
+          "sha256": "10a966a7af73530a281586e7c32842c8c2fa737b89dd23dd79fbd88c48eda6c4"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/acquisition-inventory.json",
+          "sha256": "4c32a9c2084d2eb9336cd589aab8127cdfc708f708d5684e1d9f45fcbeb68208"
+        },
+        {
+          "path": "docs/evidence/ascella-cancellation-transition-acquisition/account-after.json",
+          "sha256": "03d10f05953c979c072ff1b0bf511aca9b6b2fca64463812f0b6b88557e7ef11"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-cancellation-transition-acquisition/README.md",
+        "docs/evidence/ascella-cancellation-transition-acquisition/findings.md"
+      ],
+      "gates": {},
+      "assumptions": [
+        "Simultaneous Clopper-Pearson coverage is conditional on IID events within each setting; accepted-event proportions include invalid photon-number outcomes."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "ascella-dimension-six-pilot-qualification",
+      "statement": "The completed twelve-setting Ascella pilot retains 65,536 accepted events per setting. Computational identity inputs 2 and 5 fail the correct-output and leakage criteria; Fourier-to-chirped inputs 1, 2, 4 and 5 fail the conservative returned-mesh total-variation upper-bound criterion. Six settings pass and six fail; expansion to all 54 settings remains ineligible under the frozen decision rule.",
+      "boundary": "A fixed pilot of six identity settings and six cross-basis settings, with all returned port and invalid-event categories and 243 simultaneous endpoints. Failure of an upper-bound qualification rule alone does not establish true total variation above its threshold. Returned-mesh predictions and device histograms are distinct evidence surfaces; the pilot identifies neither a causal error mechanism nor a universal dimension-six MUB bound.",
+      "acquisitions": [
+        "qd-ascella-dimension-six-transition-pilot"
+      ]
+    },
+    {
+      "id": "ascella-transition-context-matched-mesh",
+      "statement": "Seven Ascella jobs retain fifteen complete observations of five dimension-six settings. All twenty comparisons against the prior pilot or another diagnostic context return matching compiled circuit and input serializations. Identity input 5 has leakage of 0.142%, 1.941% and 6.346% in singleton, forward and reverse requests; the singleton-versus-reverse total-variation interval is [0.0568, 0.0747]. Identity input 2 has about 6.21% leakage in the prior pilot and about 0.23% in each new context.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Twenty observations across the original pilot and seven follow-up jobs, with a 280-endpoint simultaneous family under IID trials within each observation. Matching returned serializations do not establish identical applied analog controls. Distinct job times confound packing and drift, and packed-iteration physical order is not recorded. The study identifies no unique physical cause and measures neither incident-photon loss nor a universal MUB bound.",
+      "evidence": [
+        {
+          "path": "results/quandela/ascella-transition-context-analysis.json",
+          "sha256": "fd9c3f0765559dc405e20a771a809a7672b220490aacb46b4cc71db1c2d09bdf"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-context-diagnostics/campaign.json",
+          "sha256": "67d974effd0b698da3882aebb73eaeba0deed37f472570637d3c1a0ea8383af7"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-context-diagnostics/acquisition-inventory.json",
+          "sha256": "0f702ebf3742b67ed0c2ba6429a50c31263e88d347a5986dbdc70e365d3d8888"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-context-diagnostics/account-after.json",
+          "sha256": "3b801708d7effca58b58455b57994838b271a0397e6e518808c61e590b62887a"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-transition-context-diagnostics/README.md",
+        "docs/evidence/ascella-transition-context-diagnostics/findings.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-context-single-identity-2",
+        "qd-ascella-context-single-identity-5",
+        "qd-ascella-context-single-cross-4",
+        "qd-ascella-context-single-identity-0",
+        "qd-ascella-context-single-cross-0",
+        "qd-ascella-context-packed-forward",
+        "qd-ascella-context-packed-reverse"
+      ],
+      "assumptions": [
+        "Clopper-Pearson coverage is conditional on IID events within each observation; all returned invalid categories remain in the denominator."
+      ],
+      "depends_on": [
+        "ascella-dimension-six-pilot-qualification"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-transition-mesh-port-variation",
+      "statement": "Six Ascella jobs measured 132 settings, with 8,650,752 accepted events. Fifteen setting and output-map groups each returned eight distinct new meshes, and all twelve anchors matched their reference mesh and input serializations. Mean identity-input-5 leakage was 2.44% on the original map, 0.22% on the logical swap, and 0.48% on the outer swap; matched identity-input-0 anchors also varied across jobs.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Five selected settings and three output maps, with 1,876 simultaneous endpoints under IID accepted events per observation. Each map changes the compiled operator. Mesh, time, analog controls, calibration and detector response may confound the observed associations; incident-pulse loss and physical iteration order remain unknown.",
+      "evidence": [
+        {
+          "path": "results/quandela/ascella-transition-mesh-port-analysis.json",
+          "sha256": "927bef0f733efd2b61c648bee59c539ae03b538e4eae1f463fc410bb2695df07"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-mesh-port-diagnostics/campaign.json",
+          "sha256": "f64cffbd76f142955b92509f5c7e7deb6c54b3cf0c5d818addbe34a21ca3bcc8"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-mesh-port-diagnostics/acquisition-inventory.json",
+          "sha256": "47a36edf6274811b15285b0bb381fc8ae6598924f97a9cd3196c6e3e52d6fdd4"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-transition-mesh-port-diagnostics/README.md",
+        "docs/evidence/ascella-transition-mesh-port-diagnostics/findings.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-transition-mesh-port-1",
+        "qd-ascella-transition-mesh-port-2",
+        "qd-ascella-transition-mesh-port-3",
+        "qd-ascella-transition-mesh-port-4",
+        "qd-ascella-transition-mesh-port-5",
+        "qd-ascella-transition-mesh-port-6"
+      ],
+      "assumptions": [
+        "Simultaneous binomial intervals assume IID accepted events within each observation."
+      ],
+      "depends_on": [
+        "ascella-transition-context-matched-mesh"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-qx-projector-geometry-conformance",
+      "statement": "All 18 preregistered projector-geometry QX discrepancy checks pass across three 2048-shot terminal circuits; the jobs report 1.254351 seconds total execution and zero recorded transaction charges.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "Finite-shot conformance of the three named noiseless QX circuits. The result establishes neither Tuna behavior nor early classical-bit retention, calibration, causal measurement disturbance or a new algebra theorem. Zero charges describe the retained collection and account ledger.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json",
+          "sha256": "ceb6efcf570c43a6e772254716119fa8f555d20279832acd5a9d5968ffbc9c62"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/results.json",
+          "sha256": "a0929b26fa2899f2386ee99eccf1226db30c8cd4731dca4de752e1fabf62d3c4"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/design-at-approval.md",
+          "sha256": "d13acc9a43da288c439c6cff1cdffc809ca4945a7127cc4e67d96ef913515b9c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/qx-conformance.md"
+      ],
+      "gates": {
+        "core-qi-projector-conformance": "replay"
+      },
+      "acquisitions": [
+        "qi-qx-projector-geometry-conformance"
+      ],
+      "assumptions": [
+        "The retained raw shot strings follow the observed QX qubit-zero-rightmost convention.",
+        "The frozen finite-shot discrepancy screen is a conformance qualification, not a hardware significance test."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": []
+    },
+    {
+      "id": "qi-tuna-projector-register-qualification",
+      "statement": "The three 4096-shot Tuna qualification jobs completed with zero recorded transaction charges but failed four of twelve required assignment contrasts and all nine early/final consistency checks.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Failure of the specified zero-wait repeated-readout instrument screen. The data do not identify calibration, scheduling, readout context or acquisition reconstruction as the cause, and support no hardware projector-geometry or causal backaction claim.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+          "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+          "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification-at-approval.md",
+          "sha256": "e504d9e4962338df58dcdf16b8564cd2ef2677d996bd90bed2a2588cc7da51c4"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/live-admission.json",
+          "sha256": "c6db70139af4d05b9a18d134372d437f320c9d177d8f29134197d74dc67b9d66"
+        }
+      ],
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/tuna-qualification.md"
+      ],
+      "gates": {
+        "core-qi-tuna-projector-qualification": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-projector-register-qualification"
+      ],
+      "assumptions": [
+        "Classical bit zero is the rightmost character under the recorded Tuna convention.",
+        "The frozen pilot thresholds assess the specified instrument path rather than an isolated physical mechanism."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qi-qx-projector-geometry-conformance"
+      ]
+    },
+    {
+      "id": "qi-tuna-readout-response-mixture",
+      "statement": "A post-hoc convex combination of nominal-zero and nominal-one early/final control tables approximates each geometry ancilla table with empirical total variation residual below 0.0093; exhaustive fixed early-bit permutation/polarity choices cannot repair the frozen qualification.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive fits and exact finite relabeling checks on one retained three-job batch. Mixture coordinates are not populations; calibration-context transfer, independence, stationarity, QND behavior and a physical cause remain unestablished. The frozen qualification remains refused.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-diagnostics.json",
+          "sha256": "25f1090b25a06ef4ce56537d52a3bf9b569da4981474c84568f19f886f60bd77"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-response-mixture.json",
+          "sha256": "8507279a292c0e3d7682ffb00abde6d159ebef71783713eaf54fe2a41d250258"
+        }
+      ],
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/readout-cause-diagnosis.md"
+      ],
+      "gates": {
+        "core-qi-tuna-readout-diagnosis": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-projector-register-qualification"
+      ],
+      "assumptions": [
+        "The documented classical-bit order supplies the fixed decoder.",
+        "Control-to-geometry transfer is a post-hoc sensitivity assumption, not an admitted calibration."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qi-tuna-projector-register-qualification"
+      ]
+    },
+    {
+      "id": "ascella-transition-day-separated-matched-mesh",
+      "statement": "The five-setting Ascella repeat started 33.38 hours after its forward-packed baseline and retained 327,680 accepted events. Returned circuit and input serializations match the baseline for all five settings. Four of five total-variation intervals exclude zero: identity input 5 leakage fell from 1.941% to 0.208% and Fourier-to-chirped input 0 from 3.214% to 0.655%, while Fourier-to-chirped input 4 rose from 0.198% to 6.410% (leakage-difference interval [5.81%, 6.62%]); identity input 0 is consistent with no change.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Five selected settings, a fixed 140-endpoint family and IID accepted-event intervals. A matched returned mesh does not establish identical applied analog controls; elapsed time, calibration and source or detector response can confound the comparison, and changes of comparable size are already recorded between jobs minutes apart in different contexts, so the 33-hour difference is not attributed to drift.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat/day-repeat-analysis.json",
+          "sha256": "b41b3ffc7eb067d128d3307176edac36aaf64192710beb2aa5d1d4867dad693d"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-day-repeat-ci/acquisition-inventory.json",
+          "sha256": "32bca62f65802a6d04f09a657679f5aa770cf4b3ef981679a5bc40aea34774ff"
+        },
+        {
+          "path": "docs/evidence/ascella-transition-day-repeat-ci/campaign.json",
+          "sha256": "51e909b0287da357ec3f09fc93be3b2d6fb08b8356ad471583d6e18fb89dea1f"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-transition-day-repeat-ci/README.md",
+        "docs/evidence/ascella-transition-day-repeat-ci/scheduler-admission.md",
+        "docs/evidence/ascella-transition-day-repeat-ci/findings.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-transition-matched-mesh-day-repeat"
+      ],
+      "assumptions": [
+        "Simultaneous binomial coverage is conditional on IID accepted events within each setting."
+      ],
+      "depends_on": [
+        "ascella-transition-context-matched-mesh",
+        "ascella-transition-mesh-port-variation"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }

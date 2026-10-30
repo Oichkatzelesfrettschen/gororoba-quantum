@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-27T17:05:12+00:00",
+ "approval": "did you fully analyze and debug the results, have a peer review of the full tuna campaign in `tmux` via `codex` gpt-daybreak-blue-latest on high and then execute.",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "d9a41a677a2a4bff4e2d3f4e10c4db2017d41ba1ee910da67960333d151dcfb2",
+ "backend_status_at_submit": "executing",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 895407,
+ "project": 795008,
+ "shots": 4096,
+ "jobs": [
+  {
+   "file": "readout-zero.cq",
+   "job": 1616329,
+   "sha256": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267"
+  },
+  {
+   "file": "readout-one.cq",
+   "job": 1616330,
+   "sha256": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f"
+  },
+  {
+   "file": "geometry.cq",
+   "job": 1616331,
+   "sha256": "069fc4696b40610d4eb963b1898aec24603fe0839d6ea17b868196fc7e5dfe8f"
+  }
+ ],
+ "submitted_utc": "2026-10-27T17:05:12+00:00"
+}

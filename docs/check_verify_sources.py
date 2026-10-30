@@ -57,6 +57,16 @@ def license_documents_fixture() -> dict[str, Any]:
     }
 
 
+class NoteLinkChecks(unittest.TestCase):
+    def test_code_notation_is_not_a_link(self) -> None:
+        import verify_sources
+
+        text = (
+            "Define `Y[t](+)` and [draft](draft.md).\n\n    tau[t] = E[Y[t](+) - Y[t](-)]\n\n```\n[x](fenced.md)\n```\n"
+        )
+        self.assertEqual(verify_sources.note_link_targets(text), ["draft.md"])
+
+
 class WebSourceChecks(unittest.TestCase):
     def test_receipts_and_descriptive_entries(self) -> None:
         import verify_sources
@@ -402,6 +412,45 @@ class SourceRightsChecks(unittest.TestCase):
     def write_osf_capture(self) -> None:
         raw_response = json.dumps(self.osf_record).encode()
         self.osf_path.write_bytes(raw_response)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw_response).hexdigest()
+
+    def use_crossref(self) -> None:
+        doi = "10.1080/27660400.2024.2384822"
+        self.payload = b"%PDF-1.4\n<x:xmpmeta><prism:doi>" + doi.encode() + b"</prism:doi></x:xmpmeta>\n"
+        digest = hashlib.sha256(self.payload).hexdigest()
+        self.entry.update(
+            sha256=digest, bytes=len(self.payload), source_url="https://repository.example.org/download/article.pdf"
+        )
+        self.entry["rights"].update(
+            pdf_sha256=digest,
+            evidence_url=f"https://api.crossref.org/works/{doi}",
+            observed_license_url="http://creativecommons.org/licenses/by/4.0/",
+            doi=doi,
+            publisher_title="Article title",
+        )
+        self.crossref_record: dict[str, Any] = {
+            "message": {
+                "DOI": doi,
+                "title": ["Article title"],
+                "license": [
+                    {"content-version": "tdm", "delay-in-days": 0, "URL": "https://publisher.example/tdm"},
+                    {
+                        "content-version": "vor",
+                        "delay-in-days": 0,
+                        "URL": "http://creativecommons.org/licenses/by/4.0/",
+                    },
+                ],
+            }
+        }
+        self.crossref_path = self.root / "docs/evidence/source_rights/crossref-10.1080_27660400.2024.2384822.json"
+        self.crossref_path.parent.mkdir(parents=True, exist_ok=True)
+        self.entry["rights"]["evidence_path"] = self.crossref_path.relative_to(self.root).as_posix()
+        self.entry["rights"]["evidence_retrieved_at_utc"] = "2026-10-28T00:29:31+00:00"
+        self.write_crossref_capture()
+
+    def write_crossref_capture(self) -> None:
+        raw_response = json.dumps(self.crossref_record).encode()
+        self.crossref_path.write_bytes(raw_response)
         self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw_response).hexdigest()
 
     def use_dagstuhl(self) -> None:
@@ -1108,6 +1157,51 @@ class SourceRightsChecks(unittest.TestCase):
         self.pdg_path.write_bytes(self.pdg_path.read_bytes() + b" ")
         self.reject("captured PDG evidence SHA-256")
 
+    def test_crossref_version_of_record_passes(self) -> None:
+        self.use_crossref()
+        self.verify()
+
+    def test_crossref_mutations_are_rejected_after_rehash(self) -> None:
+        self.use_crossref()
+        original = copy.deepcopy(self.crossref_record)
+
+        def mutate(change: Any) -> None:
+            self.crossref_record = copy.deepcopy(original)
+            change(self.crossref_record["message"])
+            self.write_crossref_capture()
+
+        cases: tuple[tuple[Any, str], ...] = (
+            (lambda message: message.update(DOI="10.1080/other"), "captured Crossref DOI identity"),
+            (lambda message: message.update(title=["Other"]), "captured Crossref title identity"),
+            (lambda message: message["license"][1].update(URL="http://creativecommons.org/licenses/by-nc/4.0/"),
+             "captured Crossref version-of-record license"),
+            (lambda message: message["license"][1].update(**{"delay-in-days": 365}),
+             "captured Crossref version-of-record license"),
+            (lambda message: message["license"][1].update(**{"content-version": "am"}),
+             "captured Crossref version-of-record license"),
+            (lambda message: message["license"].append(dict(message["license"][1])),
+             "captured Crossref version-of-record license"),
+            (lambda message: message.pop("license"), "captured Crossref license list"),
+        )  # fmt: skip
+        for change, message in cases:
+            with self.subTest(message=message):
+                mutate(change)
+                self.reject(message)
+
+    def test_crossref_payload_route_and_hash_are_checked(self) -> None:
+        self.use_crossref()
+        self.payload = self.payload.replace(b"2384822", b"2384823")
+        digest = hashlib.sha256(self.payload).hexdigest()
+        self.entry.update(sha256=digest, bytes=len(self.payload))
+        self.entry["rights"]["pdf_sha256"] = digest
+        self.reject("captured Crossref PDF DOI identity")
+        self.use_crossref()
+        self.entry["rights"]["evidence_url"] = "https://api.crossref.org/works?query=spglib"
+        self.reject("published Crossref evidence route")
+        self.use_crossref()
+        self.crossref_path.write_bytes(self.crossref_path.read_bytes() + b" ")
+        self.reject("captured Crossref evidence SHA-256")
+
     def test_osf_cc0_preprint_passes(self) -> None:
         self.use_osf()
         self.verify()
@@ -1598,6 +1692,15 @@ class SourceArchiveChecks(unittest.TestCase):
         self.entry["note"] = "docs/notes/papers/sub/research-source.md"
         self.reject("archive owning note path")
 
+    def test_owning_note_may_be_a_tool_manual(self) -> None:
+        self.note = self.root / "docs/notes/quantum-tools/research-source.md"
+        self.note.parent.mkdir()
+        self.entry["note"] = self.note.relative_to(self.root).as_posix()
+        self.write_note()
+        self.assertEqual(verify_source_archives(self.root, self.registry), 1)
+        self.entry["note"] = "docs/notes/packages/research-source.md"
+        self.reject("archive owning note path")
+
     def test_uninspected_symlink_is_preserved_without_following_it(self) -> None:
         member = tarfile.TarInfo(f"{self.prefix}/uninspected-link")
         member.type = tarfile.SYMTYPE
@@ -1859,6 +1962,33 @@ class SourceArchiveChecks(unittest.TestCase):
         self.entry["source_url"] = "https://static.crates.io/crates/research/research-0.1.0.crate"
         self.entry["license_identifier"] = "MIT"
         self.reject("archive license text identity")
+
+    def test_pypi_sdist_route_is_bound_to_archive_root(self) -> None:
+        old_prefix = self.prefix
+        self.prefix = "research-2.2.2"
+        for member, _ in self.members:
+            member.name = member.name.replace(old_prefix, self.prefix)
+        self.entry.update(
+            source_url="https://files.pythonhosted.org/packages/source/r/research/research-2.2.2.tar.gz",
+            version="2.2.2",
+            license_member=self.members[0][0].name,
+        )
+        self.entry["inspected_files"][0]["file"] = self.members[1][0].name
+        self.write_archive()
+        self.assertEqual(verify_source_archives(self.root, self.registry), 1)
+        self.entry["version"] = "2.2.1"
+        self.reject("archive pinned version")
+        self.entry["version"] = "2.2.2"
+        for url in (
+            "https://files.pythonhosted.org/packages/source/s/research/research-2.2.2.tar.gz",
+            "https://files.pythonhosted.org/packages/source/r/research/other-2.2.2.tar.gz",
+            "https://files.pythonhosted.org/packages/source/r/research/research-2.2.2.zip",
+            "http://files.pythonhosted.org/packages/source/r/research/research-2.2.2.tar.gz",
+        ):
+            with self.subTest(url=url):
+                self.entry["source_url"] = url
+                self.write_note()
+                self.reject("archive source route")
 
 
 class HostedArxivCaptureChecks(unittest.TestCase):

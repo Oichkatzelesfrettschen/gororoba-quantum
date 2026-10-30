@@ -811,18 +811,18 @@
      "validators": []
     },
     {
-     "annotation": "PostSelectionOptions",
+     "annotation": "SimulatorOptions",
      "bounds": {},
      "declared_in": "qiskit_ibm_runtime.options_models.noise_learner_v3.NoiseLearnerV3Options",
-     "default": "PostSelectionOptions()",
+     "default": "SimulatorOptions()",
      "deprecated": null,
      "documented_default": null,
      "literals": [],
-     "name": "post_selection",
+     "name": "simulator",
      "nested": [
-      "qiskit_ibm_runtime.options_models.post_selection.PostSelectionOptions"
+      "qiskit_ibm_runtime.options_models.simulator.SimulatorOptions"
      ],
-     "summary": "Options for post selecting the results of noise learning circuits.",
+     "summary": "Options related to local mode simulations.",
      "validators": []
     },
     {
@@ -922,61 +922,6 @@
     }
    ],
    "summary": "Probabalistic error cancellation mitigation options."
-  },
-  {
-   "class": "qiskit_ibm_runtime.options_models.post_selection.PostSelectionOptions",
-   "family": "client",
-   "fields": [
-    {
-     "annotation": "Annotated[bool, AfterValidator(warn_post_selection)]",
-     "bounds": {},
-     "declared_in": "qiskit_ibm_runtime.options_models.post_selection.PostSelectionOptions",
-     "default": "False",
-     "deprecated": {
-      "msg": "The 'post_selection' field of NoiseLearnerV3 is deprecated",
-      "version": "0.49.0"
-     },
-     "documented_default": null,
-     "literals": [],
-     "name": "enable",
-     "nested": [],
-     "summary": "Whether to enable Post Selection when performing learning experiments.",
-     "validators": []
-    },
-    {
-     "annotation": "Literal['xslow', 'rx']",
-     "bounds": {},
-     "declared_in": "qiskit_ibm_runtime.options_models.post_selection.PostSelectionOptions",
-     "default": "'xslow'",
-     "deprecated": null,
-     "documented_default": null,
-     "literals": [
-      "xslow",
-      "rx"
-     ],
-     "name": "x_pulse_type",
-     "nested": [],
-     "summary": "The type of the X-pulse used for the post selection measurements.",
-     "validators": []
-    },
-    {
-     "annotation": "Literal['node', 'edge']",
-     "bounds": {},
-     "declared_in": "qiskit_ibm_runtime.options_models.post_selection.PostSelectionOptions",
-     "default": "'node'",
-     "deprecated": null,
-     "documented_default": null,
-     "literals": [
-      "node",
-      "edge"
-     ],
-     "name": "strategy",
-     "nested": [],
-     "summary": "The strategy used to decide if a shot should be kept or discarded.",
-     "validators": []
-    }
-   ],
-   "summary": "Options for post selecting results."
   },
   {
    "class": "qiskit_ibm_runtime.options_models.resilience.ResilienceOptions",
@@ -2489,12 +2434,6 @@
    "version": "0.50.0"
   },
   {
-   "module": "qiskit_ibm_runtime.options_models.post_selection",
-   "msg": "The 'post_selection' field of NoiseLearnerV3 is deprecated",
-   "site": "warn_post_selection",
-   "version": "0.49.0"
-  },
-  {
    "module": "qiskit_ibm_runtime.sampler",
    "msg": "The SamplerV2 class is deprecated",
    "site": "SamplerV2.__init__",
@@ -2640,7 +2579,7 @@
   },
   {
    "name": "qiskit_ibm_runtime.QiskitRuntimeService.backends",
-   "signature": "(self, name: 'str | None' = None, min_num_qubits: 'int | None' = None, instance: 'str | None' = None, dynamic_circuits: 'bool | None' = None, filters: 'Callable[[IBMBackend], bool] | None' = None, *, use_fractional_gates: 'bool | None' = False, calibration_id: 'str | None' = None, **kwargs: 'Any') -> 'list[IBMBackend]'"
+   "signature": "(self, name: 'str | None' = None, min_num_qubits: 'int | None' = None, instance: 'str | None' = None, dynamic_circuits: 'bool | None' = None, filters: 'Callable[[IBMBackend], bool] | None' = None, *, use_fractional_gates: 'bool | None' = False, calibration_id: 'str | None' = None, include_mocks: 'bool' = False, **kwargs: 'Any') -> 'list[IBMBackend]'"
   },
   {
    "name": "qiskit_ibm_runtime.QiskitRuntimeService.backend",
@@ -2666,7 +2605,7 @@
  "probe_environment": {
   "ibm-quantum-schemas": "0.13.20261016",
   "pydantic": "2.14.1",
-  "qiskit": "2.6.0",
+  "qiskit": "2.6.1",
   "qiskit-mitigation": "0.1.1",
   "samplomatic": "0.21.0"
  },
@@ -2956,7 +2895,7 @@
    "primitive": "client Estimator"
   }
  ],
- "qiskit_ibm_runtime": "0.50.0",
+ "qiskit_ibm_runtime": "0.51.0",
  "rest": {
   "adaptors": [
    {
@@ -3395,9 +3334,10 @@
     "bit_flip_checks.post_circuit.enable",
     "bit_flip_checks.post_circuit.x_pulse_type",
     "bit_flip_checks.post_circuit.strategy",
-    "post_selection.enable",
-    "post_selection.x_pulse_type",
-    "post_selection.strategy",
+    "simulator.angle_decimals",
+    "simulator.layer_noise_model",
+    "simulator.seed_simulator",
+    "simulator.warn_absent",
     "experimental",
     "execution.init_qubits",
     "execution.rep_delay",
@@ -3505,7 +3445,7 @@
  ],
  "runtime_requirements": [
   "ibm-platform-services >=0.61.1",
-  "ibm-quantum-schemas <1,>=0.12.20260921",
+  "ibm-quantum-schemas <1,>=0.13.20261016",
   "numpy >=1.26.2",
   "pybase64 >=1.4.0",
   "pydantic >=2.13.0",

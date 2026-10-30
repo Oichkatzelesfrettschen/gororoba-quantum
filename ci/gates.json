@@ -4,6 +4,18 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "OPENBLAS_NUM_THREADS=1 \"$PYTHON\" -B -W error -O docs/evidence/ibm-fez-actor-pilot/analyze.py --check",
+   "name": "core-ibm-fez-actor-pilot-replay",
+   "seconds": 1.08,
+   "tier": "pr",
+   "workers": 2,
+   "replays": [
+    "docs/evidence/ibm-fez-actor-pilot/analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check ci tests && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check ci tests && \"$PYTHON\" ci/pinned_tool.py mypy ci/run_gates.py ci/runner_specs.py ci/premerge_gates.py ci/gate_inputs.py ci/analyze_timings.py ci/changed_paths.py ci/pins.py ci/pinned_tool.py ci/gate_ledger.py ci/merge_gate_timings.py ci/host_identity.py ci/read_trace/sitecustomize.py tests",
    "name": "core-000",
    "seconds": 0.7,
@@ -12,7 +24,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py results/local-simulation/ascella-signed-coherence-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py docs/evidence/albuquerque-majid-convention/am_convention_replay.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py results/local-simulation/ascella-signed-coherence-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py docs/evidence/albuquerque-majid-convention/am_convention_replay.py docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py",
    "name": "core-001",
    "seconds": 0.6,
    "tier": "pr"
@@ -20,7 +32,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py results/local-simulation/ascella-signed-coherence-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py docs/evidence/albuquerque-majid-convention/am_convention_replay.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py results/local-simulation/ascella-signed-coherence-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py docs/evidence/albuquerque-majid-convention/am_convention_replay.py docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py",
    "name": "core-002",
    "seconds": 0.6,
    "tier": "pr"
@@ -196,7 +208,7 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py ../results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py ../results/local-simulation/ascella-serialized-order-replay/producer.py ../docs/evidence/cd-imaginary-sum-conference/tower_bridge.py ../docs/evidence/ascella-order-coefficients/replay.py ../docs/evidence/albuquerque-majid-convention/am_convention_replay.py",
+   "cmd": "\"$PYTHON\" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py ../results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py ../results/local-simulation/ascella-serialized-order-replay/producer.py ../docs/evidence/cd-imaginary-sum-conference/tower_bridge.py ../docs/evidence/ascella-order-coefficients/replay.py ../docs/evidence/albuquerque-majid-convention/am_convention_replay.py ../docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py",
    "name": "core-039",
    "seconds": 51.6,
    "tier": "pr"
@@ -859,7 +871,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
+   "cmd": "MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases --exclude 'ibm-fez-actor-pilot/analyze[.]py$' docs/verify_sources.py docs/check_verify_sources.py docs/evidence && MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/ibm-fez-actor-pilot/analyze.py",
    "name": "sources-122",
    "seconds": 11.5,
    "tier": "pr"
@@ -1930,6 +1942,17 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_record_checks.py -k group08",
+   "name": "core-record-check-08",
+   "seconds": 10.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/cd-one-sided-inverses/record.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/calibration_scoped_family_analysis.py results/live/2026-10-15T031229.371738Z --check results/live/2026-10-15T031229.371738Z/calibration-scoped-analysis.json",
    "name": "core-266",
    "seconds": 3.8,
@@ -2292,25 +2315,58 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-window-doses.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check-rows",
    "name": "core-281",
-   "seconds": 6.2,
+   "seconds": 10.0,
    "tier": "pr",
-   "runtime": "qiskit-2.5",
    "replays": [
-    "docs/evidence/submitted_circuits/comparison-window-doses.json"
+    "docs/evidence/submitted_circuits/jobs"
    ]
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/idle_penalty_report.py results/live/2026-10-26T202817.431767Z --out results/live/2026-10-26T202817.431767Z/idle-penalty-report.json --check && \"$PYTHON\" -B -W error scripts/idle_penalty_exploratory.py results/live/2026-10-26T202817.431767Z --historical results/live/2026-10-12T055624.091217Z results/live/2026-10-13T020454.599853Z results/live/2026-10-18T090603.530638Z results/live/2026-10-25T193443.839527Z --out results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory.json --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/idle_penalty_report.py results/live/2026-10-26T202817.431767Z --out results/live/2026-10-26T202817.431767Z/idle-penalty-report-vectorized-encoding.json --check && \"$PYTHON\" -B -W error scripts/idle_penalty_exploratory.py results/live/2026-10-26T202817.431767Z --historical results/live/2026-10-12T055624.091217Z results/live/2026-10-13T020454.599853Z results/live/2026-10-18T090603.530638Z results/live/2026-10-25T193443.839527Z --out results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory-vectorized-encoding.json --check",
    "name": "core-idle-penalty-report-replay",
    "seconds": 8.7,
    "tier": "pr",
    "replays": [
-    "results/live/2026-10-26T202817.431767Z/idle-penalty-report.json",
-    "results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory.json"
+    "results/live/2026-10-26T202817.431767Z/idle-penalty-report-vectorized-encoding.json",
+    "results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory-vectorized-encoding.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/msq_envelope_exploratory.py results/live/2026-10-27T014422.881898Z --check docs/evidence/measurement_sequence/envelope-run-exploratory.json",
+   "name": "core-msq-envelope-exploratory-replay",
+   "seconds": 9.2,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/measurement_sequence/envelope-run-exploratory.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/msq_envelope_raw_diagnostics.py results/live/2026-10-27T014422.881898Z --check docs/evidence/measurement_sequence/envelope-run-raw-diagnostics.json",
+   "name": "core-msq-envelope-raw-diagnostics-replay",
+   "seconds": 6.3,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/measurement_sequence/envelope-run-raw-diagnostics.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/msq_successor_replay.py results/live/2026-10-27T014422.881898Z --check docs/evidence/measurement_sequence/successor-replay.json",
+   "name": "core-msq-successor-replay",
+   "seconds": 6.3,
+   "tier": "pr",
+   "workers": "all",
+   "replays": [
+    "docs/evidence/measurement_sequence/successor-replay.json"
    ]
   },
   {
@@ -3422,6 +3478,30 @@
   {
    "suite": "sources",
    "cwd": ".",
+   "cmd": "shellcheck docs/evidence/cd-annihilator-symmetry/replay_rocq.sh",
+   "name": "sources-413",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "shellcheck docs/evidence/cd-annihilator-symmetry-real/replay_rocq.sh",
+   "name": "sources-414",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "shellcheck docs/evidence/cd-tower-domain/replay_rocq.sh",
+   "name": "sources-415",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
    "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
    "name": "sources-410",
    "seconds": 0.1,
@@ -3434,6 +3514,17 @@
    "name": "sources-411",
    "seconds": 0.2,
    "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py --check",
+   "name": "sources-412",
+   "seconds": 3.1,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/kaplansky-cd-mechanisms/result.json"
+   ]
   },
   {
    "suite": "sources",
@@ -3787,6 +3878,28 @@
    "name": "core-682",
    "seconds": 35.0,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_detuning_sign.py results/live/2026-10-27T173602.753176Z --check results/live/2026-10-27T173602.753176Z/detuning-sign-decisions.json",
+   "name": "core-n21-detuning-sign-replay",
+   "seconds": 3.0,
+   "tier": "pr",
+   "replays": [
+    "results/live/2026-10-27T173602.753176Z/detuning-sign-decisions.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/live/2026-10-27T014354.701394Z/dose-decisions.json -- \"$PYTHON\" scripts/n21_dose_decisions.py results/live/2026-10-27T014354.701394Z --out {out}",
+   "name": "core-n21-dose-decisions-replay",
+   "seconds": 4.6,
+   "tier": "pr",
+   "replays": [
+    "results/live/2026-10-27T014354.701394Z/dose-decisions.json"
+   ]
   },
   {
    "suite": "core",
@@ -4383,7 +4496,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-8",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-13",
    "name": "core-670",
    "seconds": 12.0,
    "tier": "pr"
@@ -4534,6 +4647,14 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/stiefel_pfaffian_higher.py --self-test && \"$PYTHON\" -B -W error -O scripts/stiefel_pfaffian_higher.py --self-test",
    "name": "core-693",
    "seconds": 4.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/measurement_sequence_scatter.py check results/live/2026-10-26T031010.724660Z docs/evidence/measurement_sequence/scatter-floor.json",
+   "name": "core-msq-scatter-floor-replay",
+   "seconds": 3.5,
    "tier": "pr"
   },
   {
@@ -4987,6 +5108,225 @@
    "name": "core-755",
    "seconds": 7.2,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1 --replay-receipt docs/evidence/quantum-experiment-conformance/ascella-predecessor-source-replay.json --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
+   "name": "core-quantum-experiment-cases",
+   "seconds": 15.0,
+   "tier": "full",
+   "replays": [
+    "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1"
+   ],
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/experiment_analysis.py --self-test && \"$PYTHON\" -O scripts/experiment_analysis.py --self-test",
+   "name": "core-quantum-experiment-analysis",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/experiment_toolchain.py --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/campaign.json --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-1.json --check",
+   "name": "core-quantum-experiment-toolchain",
+   "seconds": 30.0,
+   "tier": "full",
+   "requires": [
+    "qi"
+   ],
+   "replays": [
+    "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-1.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_idle_falsifier.py --check docs/evidence/local_idle_padding/result.json.gz --runs results/live/2026-10-13T080216.451663Z",
+   "name": "core-local-idle-falsifier",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_idle_falsifier.py --check docs/evidence/local_idle_padding/result.json.gz --runs results/live/2026-10-12T055624.091217Z,results/live/2026-10-13T020454.599853Z,results/live/2026-10-18T090603.530638Z",
+   "name": "core-local-idle-falsifier-full",
+   "seconds": 300.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_projector_conformance.py --check results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json && \"$PYTHON\" scripts/qi_projector_distribution_audit.py --check results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/joint-law-audit.json",
+   "name": "core-qi-projector-conformance",
+   "seconds": 0.7,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json",
+    "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/joint-law-audit.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_projector_compiler_admission.py --check-retained",
+   "name": "core-qi-projector-compiler-admission",
+   "seconds": 0.1,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/proposals/tuna-projector-geometry/compiler-admission.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -m pytest -q tests/scripts/test_qi_tuna_qualification.py -k retained_hardware_refusal_replays",
+   "name": "core-qi-tuna-projector-qualification",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_readout_diagnostics.py --check results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-diagnostics.json && \"$PYTHON\" scripts/qi_tuna_readout_response_mixture.py --check results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-response-mixture.json",
+   "name": "core-qi-tuna-readout-diagnosis",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-diagnostics.json",
+    "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-response-mixture.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_destination_prefix.py results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response --check results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-recovery-order.json",
+   "name": "core-qi-tuna-destination-prefix",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/analysis.json",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-recovery-order.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_destination_analysis_receipt.py results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response --check results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json",
+   "name": "core-qi-tuna-destination-one-response",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis.json",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-canonical.json",
+    "results/quantum_inspire/runs/20261027T232908Z-tuna-destination-one-response/analysis-serialization-receipt.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_final_result_receipt.py docs/evidence/tuna-projector-geometry/destination-final-result-projections.json --check docs/evidence/tuna-projector-geometry/destination-final-result-checked-receipt.json",
+   "name": "core-qi-tuna-final-result-equivalence",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/tuna-projector-geometry/destination-final-result-projections.json",
+    "docs/evidence/tuna-projector-geometry/destination-final-result-checked-receipt.json",
+    "docs/evidence/tuna-projector-geometry/destination-final-result-equivalence.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_joint_response.py --check docs/evidence/tuna-projector-geometry/joint-response-analysis.json",
+   "name": "core-qi-tuna-joint-response",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/tuna-projector-geometry/joint-response-analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_joint_algebra.py --check docs/evidence/tuna-projector-geometry/joint-algebra-analysis.json",
+   "name": "core-qi-tuna-joint-algebra",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/tuna-projector-geometry/joint-algebra-analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_early_label_maps.py --check docs/evidence/tuna-projector-geometry/early-label-map-analysis.json",
+   "name": "core-qi-tuna-early-label-maps",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/tuna-projector-geometry/early-label-map-analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -m pytest -q -p no:cacheprovider tests/scripts/test_qi_tuna_assignment_commitment.py",
+   "name": "core-qi-tuna-assignment-commitment",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B scripts/qi_tuna_destination_slot_cases.py --check",
+   "name": "core-qi-tuna-destination-slot-alternatives",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/proposals/tuna-destination-slot-alternatives/catalogue.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -m pytest -q -p no:cacheprovider tests/scripts/test_qi_tuna_sequential_score.py tests/scripts/test_qi_tuna_sequential_retained_decode.py",
+   "name": "core-qi-tuna-sequential-score",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_tuna_qx_destination.py --local-replay-check",
+   "name": "core-qi-tuna-qx-local-replay",
+   "seconds": 6.0,
+   "tier": "pr",
+   "requires": [
+    "qi"
+   ],
+   "replays": [
+    "results/quantum_inspire/proposals/tuna-destination-qx-conformance/local-replay.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_qx_destination.py --manifest-check results/quantum_inspire/proposals/tuna-destination-qx-conformance/cases.json",
+   "name": "core-qi-tuna-qx-destination",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/proposals/tuna-destination-qx-conformance/cases.json"
+   ]
   }
  ],
  "excluded": [

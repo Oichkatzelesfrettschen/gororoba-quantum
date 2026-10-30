@@ -1,0 +1,45 @@
+<schema targetNamespace="https://zbmath.org/OAI/2.0/oai_zb_preview/"
+        xmlns:oai_zb_preview="https://zbmath.org/OAI/2.0/oai_zb_preview/"
+        xmlns:zbmath="https://zbmath.org/zbmath/elements/1.0/" 
+        xmlns="http://www.w3.org/2001/XMLSchema" 
+        elementFormDefault="qualified" attributeFormDefault="unqualified">
+	
+<annotation>
+  <documentation> 
+      XML Schema 2020-08-12 by Haritz Salaberri.
+      Adaptation of the (http://www.openarchives.org/OAI/2.0/oai_dc.xsd) schema for usage of the OAI-PMH protocol with the zbMath data.
+  </documentation>
+</annotation>
+
+<import namespace="https://zbmath.org/zbmath/elements/1.0/" schemaLocation="./simplezbmath20200901.xsd"/>
+	
+<element name="zbmath" type="oai_zb_preview:oai_zb_previewType"/>
+
+<complexType name="oai_zb_previewType">
+  <choice minOccurs="0" maxOccurs="unbounded">
+    <element ref="zbmath:document_id"/>
+    <element ref="zbmath:zbl_id"/>
+    <element ref="zbmath:time"/>
+    <element ref="zbmath:document_type"/>
+    <element ref="zbmath:year"/>
+    <element ref="zbmath:document_author"/>
+    <element ref="zbmath:author_id"/>	
+    <element ref="zbmath:document_title"/>
+    <element ref="zbmath:document_subtitle"/>
+    <element ref="zbmath:original_title"/>
+    <element ref="zbmath:source"/>
+    <element ref="zbmath:classification"/>
+    <element ref="zbmath:keyword"/>
+    <element ref="zbmath:document_language"/>
+    <element ref="zbmath:pagination"/>
+    <element ref="zbmath:electronic_id"/>
+    <element ref="zbmath:author_variation"/>
+    <element ref="zbmath:author_reference"/>
+    <element ref="zbmath:biographic_reference"/>
+    <element ref="zbmath:software"/>
+    <element ref="zbmath:review"/>
+    <element ref="zbmath:serial"/>
+  </choice>
+</complexType>
+
+</schema>

@@ -1,0 +1,16 @@
+{
+  "observed_at": "2026-10-29T01:04:25.360344+00:00",
+  "account_role": "documented backup instance",
+  "usage_remaining_seconds": 160,
+  "usage_period": {
+    "start_time": "2026-10-01T01:04:25.280Z",
+    "end_time": "2026-10-29T01:04:25.280Z"
+  },
+  "backend_inventory": [
+    "ibm_fez",
+    "ibm_kingston",
+    "ibm_marrakesh"
+  ],
+  "conservative_required_seconds": 78,
+  "scope": "read-only admission; no quota pooling and zero job submissions"
+}

@@ -255,8 +255,8 @@
    "observed_host_version": "0.11.0",
    "role": "Array dispatch for qualified tensor-network backends.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:106",
-    "docs/notes/qiskit-ecosystem.md:189"
+    "docs/notes/qiskit-ecosystem.md:110",
+    "docs/notes/qiskit-ecosystem.md:193"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -589,8 +589,8 @@
    "observed_host_version": "0.8.2",
    "role": "Contraction planning for tensor-network references.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:105",
-    "docs/notes/qiskit-ecosystem.md:188"
+    "docs/notes/qiskit-ecosystem.md:109",
+    "docs/notes/qiskit-ecosystem.md:192"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -1034,8 +1034,8 @@
    "observed_host_version": "0.4.11",
    "role": "Finite-field Fano incidence and binary algebra certificates.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:108",
-    "docs/notes/qiskit-ecosystem.md:191"
+    "docs/notes/qiskit-ecosystem.md:112",
+    "docs/notes/qiskit-ecosystem.md:195"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -1242,6 +1242,7 @@
     "scripts/bdsc_packages.py",
     "scripts/box_kite_packages.py",
     "scripts/echo_dilation_noise.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_rotation_composite.py",
     "scripts/stiefel_witness_certificate.py",
     "scripts/walk_scaffold_channels.py"
@@ -1252,6 +1253,7 @@
     "scripts/bdsc_packages.py",
     "scripts/box_kite_packages.py",
     "scripts/echo_dilation_noise.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_rotation_composite.py",
     "scripts/stiefel_witness_certificate.py",
     "scripts/walk_scaffold_channels.py"
@@ -1290,6 +1292,7 @@
     "scripts/box_kite_packages.py",
     "scripts/cd_two_blade_blocks.py",
     "scripts/echo_dilation_noise.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/walk_scaffold_channels.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
@@ -1298,6 +1301,7 @@
     "scripts/box_kite_packages.py",
     "scripts/cd_two_blade_blocks.py",
     "scripts/echo_dilation_noise.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/walk_scaffold_channels.py"
    ]
   },
@@ -1344,6 +1348,7 @@
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
     "scripts/box_kite_packages.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_rotation_composite.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
@@ -1351,6 +1356,7 @@
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
     "scripts/box_kite_packages.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_rotation_composite.py"
    ]
   },
@@ -1394,8 +1400,8 @@
    "observed_host_version": "0.12.20260921",
    "role": "Runtime task and option schema conformance.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:176",
-    "docs/notes/qiskit-ecosystem.md:88"
+    "docs/notes/qiskit-ecosystem.md:180",
+    "docs/notes/qiskit-ecosystem.md:92"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -1948,15 +1954,19 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "scripts/experiment_toolchain.py",
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qi_matched_zero_divisor.py",
-    "scripts/qi_toolchain_check.py"
+    "scripts/qi_toolchain_check.py",
+    "scripts/qi_tuna_qx_local_replay.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/experiment_toolchain.py",
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qi_matched_zero_divisor.py",
-    "scripts/qi_toolchain_check.py"
+    "scripts/qi_toolchain_check.py",
+    "scripts/qi_tuna_qx_local_replay.py"
    ]
   },
   {
@@ -1999,8 +2009,8 @@
    "observed_host_version": "1.3.4",
    "role": "Identifiable device/noise parameter fitting with retained residuals.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:109",
-    "docs/notes/qiskit-ecosystem.md:192"
+    "docs/notes/qiskit-ecosystem.md:113",
+    "docs/notes/qiskit-ecosystem.md:196"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -2238,10 +2248,14 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "gororoba_quantum/operator_arithmetic.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_nullity12_refinement.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "gororoba_quantum/operator_arithmetic.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_nullity12_refinement.py"
    ]
   },
@@ -2255,8 +2269,8 @@
    "role": "Readout sensitivity analysis with explicit calibration and factorization assumptions.",
    "documentation_mentions": [
     "docs/notes/iqm/pypi/mthree.json",
-    "docs/notes/qiskit-ecosystem.md:182",
-    "docs/notes/qiskit-ecosystem.md:99"
+    "docs/notes/qiskit-ecosystem.md:103",
+    "docs/notes/qiskit-ecosystem.md:186"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -2433,8 +2447,8 @@
    "observed_host_version": "0.68.0",
    "role": "Compiled numeric kernels; compilation speed does not change the arithmetic contract.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:110",
-    "docs/notes/qiskit-ecosystem.md:193"
+    "docs/notes/qiskit-ecosystem.md:114",
+    "docs/notes/qiskit-ecosystem.md:197"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -2511,6 +2525,7 @@
     "gororoba_quantum/et_rows.py",
     "gororoba_quantum/et_statistics.py",
     "gororoba_quantum/experiment_optimizer.py",
+    "gororoba_quantum/experiment_references.py",
     "gororoba_quantum/experiments.py",
     "gororoba_quantum/factoring.py",
     "gororoba_quantum/heron_multiprogramming.py",
@@ -2518,6 +2533,7 @@
     "gororoba_quantum/hypercomplex_dynamics.py",
     "gororoba_quantum/hypercomplex_operators.py",
     "gororoba_quantum/idle_penalty.py",
+    "gororoba_quantum/idle_readout.py",
     "gororoba_quantum/jax_bridge.py",
     "gororoba_quantum/latency_recovery.py",
     "gororoba_quantum/law_encoding.py",
@@ -2526,9 +2542,17 @@
     "gororoba_quantum/local_compute.py",
     "gororoba_quantum/maximal_contracts.py",
     "gororoba_quantum/maximal_experiments.py",
+    "gororoba_quantum/measurement_sequence_analysis.py",
+    "gororoba_quantum/measurement_sequence_scatter.py",
     "gororoba_quantum/modular_arithmetic.py",
+    "gororoba_quantum/msq_envelope.py",
+    "gororoba_quantum/msq_envelope_analysis.py",
+    "gororoba_quantum/msq_envelope_null.py",
+    "gororoba_quantum/msq_successor_analysis.py",
+    "gororoba_quantum/msq_successor_null_batch.py",
     "gororoba_quantum/n21_exact_planning.py",
     "gororoba_quantum/native_preflight_contracts.py",
+    "gororoba_quantum/operator_arithmetic.py",
     "gororoba_quantum/order_finding.py",
     "gororoba_quantum/parameter_binding_contracts.py",
     "gororoba_quantum/patch_characterization.py",
@@ -2560,6 +2584,9 @@
     "scripts/aer_gpu_probe.py",
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
+    "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_character.py",
+    "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_analysis.py",
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_coherence_request.py",
@@ -2567,6 +2594,7 @@
     "scripts/ascella_compilation_reading.py",
     "scripts/ascella_configuration_holdout.py",
     "scripts/ascella_drive_response.py",
+    "scripts/ascella_experiment_analysis.py",
     "scripts/ascella_fixed_mesh_confirmation.py",
     "scripts/ascella_fixed_mesh_error.py",
     "scripts/ascella_heater_coupling.py",
@@ -2578,6 +2606,7 @@
     "scripts/ascella_response_geometry.py",
     "scripts/ascella_seed_repeat_reading.py",
     "scripts/ascella_source_detector.py",
+    "scripts/ascella_transition_interventions.py",
     "scripts/ascella_twelve_output.py",
     "scripts/associator_cubic_normal_form.py",
     "scripts/associator_walsh_classes.py",
@@ -2610,6 +2639,8 @@
     "scripts/design_c_cubic_noise.py",
     "scripts/design_c_hardware_verdict.py",
     "scripts/echo_dilation_noise.py",
+    "scripts/experiment_analysis.py",
+    "scripts/experiment_cases.py",
     "scripts/extract_measured_ripple.py",
     "scripts/ghost_branching_benchmark.py",
     "scripts/ghost_error_scale.py",
@@ -2621,7 +2652,10 @@
     "scripts/hypercomplex_evidence.py",
     "scripts/hypercomplex_photonic_cases.py",
     "scripts/idle_penalty_exploratory.py",
+    "scripts/idle_penalty_focal_decisions.py",
+    "scripts/idle_penalty_repeat_decisions.py",
     "scripts/idle_penalty_report.py",
+    "scripts/idle_readout_attribution.py",
     "scripts/iqm_cancellation_probe.py",
     "scripts/iqm_idle_schedule_probe.py",
     "scripts/iqm_measurement_diagnostic.py",
@@ -2631,12 +2665,19 @@
     "scripts/iqm_qet_ladder.py",
     "scripts/iqm_signed_resolve.py",
     "scripts/jax_bridge_sweep.py",
+    "scripts/local_idle_controls.py",
+    "scripts/local_idle_falsifier.py",
     "scripts/local_member_cz_conformance.py",
     "scripts/local_optical_operator_replay.py",
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/local_simulation_replay.py",
     "scripts/lsq_conditioning_study.py",
+    "scripts/measurement_sequence_scatter_validation.py",
     "scripts/mod15_signed_multiplier_census.py",
+    "scripts/msq_envelope_exploratory.py",
+    "scripts/msq_envelope_raw_diagnostics.py",
+    "scripts/msq_successor_replay.py",
+    "scripts/n21_detuning_sign.py",
     "scripts/n21_dose_decisions.py",
     "scripts/n21_exact_crosscheck.py",
     "scripts/n21_exact_model_validation.py",
@@ -2648,9 +2689,11 @@
     "scripts/n21_qx_conformance.py",
     "scripts/n21_replica_covariance.py",
     "scripts/n21_spectator_ramsey.py",
+    "scripts/numerics_fingerprint.py",
     "scripts/packed_pauli_analysis.py",
     "scripts/pais_claim_bounds.py",
     "scripts/patch_window_analysis.py",
+    "scripts/persona_corpus_checks.py",
     "scripts/photonic_compilation_audit.py",
     "scripts/photonic_repeat_readout.py",
     "scripts/photonic_repeat_readout_pooled.py",
@@ -2674,14 +2717,25 @@
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_ladder_line_bins.py",
     "scripts/qi_matched_zero_divisor.py",
+    "scripts/qi_projector_geometry.py",
     "scripts/qi_readout_ringdown_cases.py",
     "scripts/qi_shot_record_line.py",
     "scripts/qi_tuna17_device_context.py",
+    "scripts/qi_tuna_destination_one_analysis.py",
+    "scripts/qi_tuna_early_label_maps.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
+    "scripts/qi_tuna_joint_response.py",
+    "scripts/qi_tuna_qualification.py",
+    "scripts/qi_tuna_readout_destination_analysis.py",
+    "scripts/qi_tuna_readout_diagnostics.py",
+    "scripts/qi_tuna_readout_response_mixture.py",
     "scripts/qi_walsh_exemplar_analysis.py",
     "scripts/qi_walsh_exemplar_cases.py",
     "scripts/qi_zero_divisor_cases.py",
     "scripts/qi_zz_map_analysis.py",
     "scripts/rank_locus_nullity12_refinement.py",
+    "scripts/readout_information_controls.py",
+    "scripts/readout_sparse_projection.py",
     "scripts/render_rank_sector_norms.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_wide_control_job.py",
@@ -2690,6 +2744,7 @@
     "scripts/singular_sector_dynamics.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/state_prep_split.py",
     "scripts/stiefel_pfaffian_higher.py",
     "scripts/stiefel_pfaffian_identity.py",
     "scripts/substrate_crossover.py",
@@ -2730,6 +2785,7 @@
     "gororoba_quantum/et_rows.py",
     "gororoba_quantum/et_statistics.py",
     "gororoba_quantum/experiment_optimizer.py",
+    "gororoba_quantum/experiment_references.py",
     "gororoba_quantum/experiments.py",
     "gororoba_quantum/factoring.py",
     "gororoba_quantum/heron_multiprogramming.py",
@@ -2737,6 +2793,7 @@
     "gororoba_quantum/hypercomplex_dynamics.py",
     "gororoba_quantum/hypercomplex_operators.py",
     "gororoba_quantum/idle_penalty.py",
+    "gororoba_quantum/idle_readout.py",
     "gororoba_quantum/jax_bridge.py",
     "gororoba_quantum/latency_recovery.py",
     "gororoba_quantum/law_encoding.py",
@@ -2745,9 +2802,17 @@
     "gororoba_quantum/local_compute.py",
     "gororoba_quantum/maximal_contracts.py",
     "gororoba_quantum/maximal_experiments.py",
+    "gororoba_quantum/measurement_sequence_analysis.py",
+    "gororoba_quantum/measurement_sequence_scatter.py",
     "gororoba_quantum/modular_arithmetic.py",
+    "gororoba_quantum/msq_envelope.py",
+    "gororoba_quantum/msq_envelope_analysis.py",
+    "gororoba_quantum/msq_envelope_null.py",
+    "gororoba_quantum/msq_successor_analysis.py",
+    "gororoba_quantum/msq_successor_null_batch.py",
     "gororoba_quantum/n21_exact_planning.py",
     "gororoba_quantum/native_preflight_contracts.py",
+    "gororoba_quantum/operator_arithmetic.py",
     "gororoba_quantum/order_finding.py",
     "gororoba_quantum/parameter_binding_contracts.py",
     "gororoba_quantum/patch_characterization.py",
@@ -2781,6 +2846,9 @@
     "scripts/aer_gpu_probe.py",
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
+    "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_character.py",
+    "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_analysis.py",
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_coherence_request.py",
@@ -2788,6 +2856,7 @@
     "scripts/ascella_compilation_reading.py",
     "scripts/ascella_configuration_holdout.py",
     "scripts/ascella_drive_response.py",
+    "scripts/ascella_experiment_analysis.py",
     "scripts/ascella_fixed_mesh_confirmation.py",
     "scripts/ascella_fixed_mesh_error.py",
     "scripts/ascella_heater_coupling.py",
@@ -2799,6 +2868,7 @@
     "scripts/ascella_response_geometry.py",
     "scripts/ascella_seed_repeat_reading.py",
     "scripts/ascella_source_detector.py",
+    "scripts/ascella_transition_interventions.py",
     "scripts/ascella_twelve_output.py",
     "scripts/associator_cubic_normal_form.py",
     "scripts/associator_walsh_classes.py",
@@ -2831,6 +2901,8 @@
     "scripts/design_c_cubic_noise.py",
     "scripts/design_c_hardware_verdict.py",
     "scripts/echo_dilation_noise.py",
+    "scripts/experiment_analysis.py",
+    "scripts/experiment_cases.py",
     "scripts/extract_measured_ripple.py",
     "scripts/ghost_branching_benchmark.py",
     "scripts/ghost_error_scale.py",
@@ -2842,7 +2914,10 @@
     "scripts/hypercomplex_evidence.py",
     "scripts/hypercomplex_photonic_cases.py",
     "scripts/idle_penalty_exploratory.py",
+    "scripts/idle_penalty_focal_decisions.py",
+    "scripts/idle_penalty_repeat_decisions.py",
     "scripts/idle_penalty_report.py",
+    "scripts/idle_readout_attribution.py",
     "scripts/iqm_cancellation_probe.py",
     "scripts/iqm_idle_schedule_probe.py",
     "scripts/iqm_measurement_diagnostic.py",
@@ -2852,12 +2927,19 @@
     "scripts/iqm_qet_ladder.py",
     "scripts/iqm_signed_resolve.py",
     "scripts/jax_bridge_sweep.py",
+    "scripts/local_idle_controls.py",
+    "scripts/local_idle_falsifier.py",
     "scripts/local_member_cz_conformance.py",
     "scripts/local_optical_operator_replay.py",
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/local_simulation_replay.py",
     "scripts/lsq_conditioning_study.py",
+    "scripts/measurement_sequence_scatter_validation.py",
     "scripts/mod15_signed_multiplier_census.py",
+    "scripts/msq_envelope_exploratory.py",
+    "scripts/msq_envelope_raw_diagnostics.py",
+    "scripts/msq_successor_replay.py",
+    "scripts/n21_detuning_sign.py",
     "scripts/n21_dose_decisions.py",
     "scripts/n21_exact_crosscheck.py",
     "scripts/n21_exact_model_validation.py",
@@ -2869,9 +2951,11 @@
     "scripts/n21_qx_conformance.py",
     "scripts/n21_replica_covariance.py",
     "scripts/n21_spectator_ramsey.py",
+    "scripts/numerics_fingerprint.py",
     "scripts/packed_pauli_analysis.py",
     "scripts/pais_claim_bounds.py",
     "scripts/patch_window_analysis.py",
+    "scripts/persona_corpus_checks.py",
     "scripts/photonic_compilation_audit.py",
     "scripts/photonic_repeat_readout.py",
     "scripts/photonic_repeat_readout_pooled.py",
@@ -2895,14 +2979,25 @@
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_ladder_line_bins.py",
     "scripts/qi_matched_zero_divisor.py",
+    "scripts/qi_projector_geometry.py",
     "scripts/qi_readout_ringdown_cases.py",
     "scripts/qi_shot_record_line.py",
     "scripts/qi_tuna17_device_context.py",
+    "scripts/qi_tuna_destination_one_analysis.py",
+    "scripts/qi_tuna_early_label_maps.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
+    "scripts/qi_tuna_joint_response.py",
+    "scripts/qi_tuna_qualification.py",
+    "scripts/qi_tuna_readout_destination_analysis.py",
+    "scripts/qi_tuna_readout_diagnostics.py",
+    "scripts/qi_tuna_readout_response_mixture.py",
     "scripts/qi_walsh_exemplar_analysis.py",
     "scripts/qi_walsh_exemplar_cases.py",
     "scripts/qi_zero_divisor_cases.py",
     "scripts/qi_zz_map_analysis.py",
     "scripts/rank_locus_nullity12_refinement.py",
+    "scripts/readout_information_controls.py",
+    "scripts/readout_sparse_projection.py",
     "scripts/render_rank_sector_norms.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_wide_control_job.py",
@@ -2911,6 +3006,7 @@
     "scripts/singular_sector_dynamics.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/state_prep_split.py",
     "scripts/stiefel_pfaffian_higher.py",
     "scripts/stiefel_pfaffian_identity.py",
     "scripts/substrate_crossover.py",
@@ -3126,8 +3222,8 @@
    "observed_host_version": "1.0.1",
    "role": "OpenQASM syntax and AST support.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:179",
-    "docs/notes/qiskit-ecosystem.md:91"
+    "docs/notes/qiskit-ecosystem.md:183",
+    "docs/notes/qiskit-ecosystem.md:95"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -3255,12 +3351,16 @@
    "hardware_execution": false,
    "imported_by": [
     "scripts/opensquirrel_fullprecision.py",
-    "scripts/qi_toolchain_check.py"
+    "scripts/qi_projector_compiler_admission.py",
+    "scripts/qi_toolchain_check.py",
+    "scripts/qi_tuna_readout_mapping_cases.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/opensquirrel_fullprecision.py",
-    "scripts/qi_toolchain_check.py"
+    "scripts/qi_projector_compiler_admission.py",
+    "scripts/qi_toolchain_check.py",
+    "scripts/qi_tuna_readout_mapping_cases.py"
    ]
   },
   {
@@ -3553,9 +3653,13 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [],
+   "imported_by": [
+    "scripts/qi_tuna_joint_package_runtime.py"
+   ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "scripts/qi_tuna_joint_package_runtime.py"
+   ]
   },
   {
    "distribution": "parso",
@@ -3594,8 +3698,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: Pauli propagation for large observables",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:125",
-    "docs/notes/qiskit-ecosystem.md:208"
+    "docs/notes/qiskit-ecosystem.md:129",
+    "docs/notes/qiskit-ecosystem.md:212"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -3659,7 +3763,14 @@
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [
+    "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_character.py",
+    "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_request.py",
+    "scripts/ascella_experiment_analysis.py",
+    "scripts/ascella_experiment_request.py",
+    "scripts/ascella_transition_context.py",
+    "scripts/ascella_transition_interventions.py",
     "scripts/ascella_twelve_output.py",
     "scripts/bdsc_cases.py",
     "scripts/bdsc_forensics.py",
@@ -3672,7 +3783,14 @@
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/ascella_associator_case.py",
+    "scripts/ascella_associator_character.py",
+    "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_request.py",
+    "scripts/ascella_experiment_analysis.py",
+    "scripts/ascella_experiment_request.py",
+    "scripts/ascella_transition_context.py",
+    "scripts/ascella_transition_interventions.py",
     "scripts/ascella_twelve_output.py",
     "scripts/bdsc_cases.py",
     "scripts/bdsc_forensics.py",
@@ -4097,8 +4215,8 @@
    "observed_host_version": null,
    "role": "Error-model decoding when a detector-code experiment requires it.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:102",
-    "docs/notes/qiskit-ecosystem.md:185"
+    "docs/notes/qiskit-ecosystem.md:106",
+    "docs/notes/qiskit-ecosystem.md:189"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4323,6 +4441,8 @@
     "scripts/a5_zero_divisor_strata.py",
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
+    "scripts/persona_corpus_checks.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_gap_directions.py",
     "scripts/rank_locus_padic_lift.py",
     "scripts/rank_locus_quadric_germ.py",
@@ -4337,6 +4457,8 @@
     "scripts/a5_zero_divisor_strata.py",
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
+    "scripts/persona_corpus_checks.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_gap_directions.py",
     "scripts/rank_locus_padic_lift.py",
     "scripts/rank_locus_quadric_germ.py",
@@ -4415,8 +4537,8 @@
    "observed_host_version": "0.10.7",
    "role": "ZX circuit simplification followed by exact operator-equivalence checks.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:107",
-    "docs/notes/qiskit-ecosystem.md:190"
+    "docs/notes/qiskit-ecosystem.md:111",
+    "docs/notes/qiskit-ecosystem.md:194"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4496,17 +4618,17 @@
     "docs/notes/ionq/requirements-ionq.txt": "2.6.1",
     "docs/notes/open_quantum/requirements-oq.txt": "2.5.2",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.3.1",
-    "requirements.txt": "2.6.0",
-    "scripts/kaggle_run.py:84:KERNEL_PINS": "2.6.0",
-    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "2.6.0",
+    "requirements.txt": "2.6.1",
+    "scripts/kaggle_run.py:84:KERNEL_PINS": "2.6.1",
+    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "2.6.1",
     "IQM retained environment": "2.1.2"
    },
    "observed_host_version": "2.5.2",
    "role": "Circuits, native synthesis, topology placement and operator verification.",
    "documentation_mentions": [
     "docs/notes/iqm/pypi/qiskit.json",
-    "docs/notes/qiskit-ecosystem.md:171",
-    "docs/notes/qiskit-ecosystem.md:82"
+    "docs/notes/qiskit-ecosystem.md:175",
+    "docs/notes/qiskit-ecosystem.md:86"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4543,6 +4665,7 @@
     "gororoba_quantum/designs.py",
     "gororoba_quantum/diagnostic_controls.py",
     "gororoba_quantum/diagnostic_experiments.py",
+    "gororoba_quantum/dimension_six_circuits.py",
     "gororoba_quantum/dynamic_density.py",
     "gororoba_quantum/et_campaign.py",
     "gororoba_quantum/et_planning.py",
@@ -4550,7 +4673,9 @@
     "gororoba_quantum/experiments.py",
     "gororoba_quantum/heron_multiprogramming.py",
     "gororoba_quantum/hybrid_shor.py",
+    "gororoba_quantum/idle_padding.py",
     "gororoba_quantum/idle_penalty.py",
+    "gororoba_quantum/idle_readout.py",
     "gororoba_quantum/jax_bridge.py",
     "gororoba_quantum/kernel_cancellation.py",
     "gororoba_quantum/latency_recovery.py",
@@ -4579,6 +4704,7 @@
     "gororoba_quantum/qubit_baseline.py",
     "gororoba_quantum/rank_sector_contracts.py",
     "gororoba_quantum/rank_sector_experiments.py",
+    "gororoba_quantum/readout_actor_family.py",
     "gororoba_quantum/ripple_contracts.py",
     "gororoba_quantum/ripple_dynamics.py",
     "gororoba_quantum/ripple_experiments.py",
@@ -4607,6 +4733,7 @@
     "scripts/conditional_ramsey_power.py",
     "scripts/design_c_cubic_noise.py",
     "scripts/echo_dilation_noise.py",
+    "scripts/experiment_cases.py",
     "scripts/extract_measured_ripple.py",
     "scripts/ghost_error_scale.py",
     "scripts/ghost_error_scale_branching.py",
@@ -4619,6 +4746,7 @@
     "scripts/hypercomplex_cases.py",
     "scripts/ibm_runtime_options_inventory.py",
     "scripts/idle_penalty_report.py",
+    "scripts/idle_readout_attribution.py",
     "scripts/iqm_cancellation_probe.py",
     "scripts/iqm_idle_schedule_probe.py",
     "scripts/iqm_measurement_sequence_aer_check.py",
@@ -4628,7 +4756,10 @@
     "scripts/iqm_signed_resolve.py",
     "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
+    "scripts/local_idle_controls.py",
+    "scripts/local_idle_falsifier.py",
     "scripts/local_member_cz_conformance.py",
+    "scripts/measurement_sequence_validation.py",
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/n21_conjugation_noise.py",
     "scripts/n21_exact_crosscheck.py",
@@ -4645,6 +4776,9 @@
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_zero_divisor_cases.py",
+    "scripts/readout_actor_schedule_replay.py",
+    "scripts/readout_information_circuits.py",
+    "scripts/readout_sparse_receipt.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_folded_jobs.py",
     "scripts/review_wide_control_job.py",
@@ -4689,6 +4823,7 @@
     "gororoba_quantum/designs.py",
     "gororoba_quantum/diagnostic_controls.py",
     "gororoba_quantum/diagnostic_experiments.py",
+    "gororoba_quantum/dimension_six_circuits.py",
     "gororoba_quantum/dynamic_density.py",
     "gororoba_quantum/et_campaign.py",
     "gororoba_quantum/et_planning.py",
@@ -4696,7 +4831,9 @@
     "gororoba_quantum/experiments.py",
     "gororoba_quantum/heron_multiprogramming.py",
     "gororoba_quantum/hybrid_shor.py",
+    "gororoba_quantum/idle_padding.py",
     "gororoba_quantum/idle_penalty.py",
+    "gororoba_quantum/idle_readout.py",
     "gororoba_quantum/jax_bridge.py",
     "gororoba_quantum/kernel_cancellation.py",
     "gororoba_quantum/latency_recovery.py",
@@ -4726,6 +4863,7 @@
     "gororoba_quantum/qubit_baseline.py",
     "gororoba_quantum/rank_sector_contracts.py",
     "gororoba_quantum/rank_sector_experiments.py",
+    "gororoba_quantum/readout_actor_family.py",
     "gororoba_quantum/ripple_contracts.py",
     "gororoba_quantum/ripple_dynamics.py",
     "gororoba_quantum/ripple_experiments.py",
@@ -4754,6 +4892,7 @@
     "scripts/conditional_ramsey_power.py",
     "scripts/design_c_cubic_noise.py",
     "scripts/echo_dilation_noise.py",
+    "scripts/experiment_cases.py",
     "scripts/extract_measured_ripple.py",
     "scripts/ghost_error_scale.py",
     "scripts/ghost_error_scale_branching.py",
@@ -4766,6 +4905,7 @@
     "scripts/hypercomplex_cases.py",
     "scripts/ibm_runtime_options_inventory.py",
     "scripts/idle_penalty_report.py",
+    "scripts/idle_readout_attribution.py",
     "scripts/iqm_cancellation_probe.py",
     "scripts/iqm_idle_schedule_probe.py",
     "scripts/iqm_measurement_sequence_aer_check.py",
@@ -4775,7 +4915,10 @@
     "scripts/iqm_signed_resolve.py",
     "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
+    "scripts/local_idle_controls.py",
+    "scripts/local_idle_falsifier.py",
     "scripts/local_member_cz_conformance.py",
+    "scripts/measurement_sequence_validation.py",
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/n21_conjugation_noise.py",
     "scripts/n21_exact_crosscheck.py",
@@ -4792,6 +4935,9 @@
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_zero_divisor_cases.py",
+    "scripts/readout_actor_schedule_replay.py",
+    "scripts/readout_information_circuits.py",
+    "scripts/readout_sparse_receipt.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_folded_jobs.py",
     "scripts/review_wide_control_job.py",
@@ -4810,8 +4956,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: approximate quantum compilation with tensor networks; quimb and cotengra already cover contraction",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:119",
-    "docs/notes/qiskit-ecosystem.md:202"
+    "docs/notes/qiskit-ecosystem.md:123",
+    "docs/notes/qiskit-ecosystem.md:206"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4826,8 +4972,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: circuits stay within 14 qubits, so wire cutting has no use",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:120",
-    "docs/notes/qiskit-ecosystem.md:203"
+    "docs/notes/qiskit-ecosystem.md:124",
+    "docs/notes/qiskit-ecosystem.md:207"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4842,8 +4988,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: chemistry HPC solvers",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:131",
-    "docs/notes/qiskit-ecosystem.md:213"
+    "docs/notes/qiskit-ecosystem.md:135",
+    "docs/notes/qiskit-ecosystem.md:217"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4858,8 +5004,8 @@
    "observed_host_version": null,
    "role": "Optional multiproduct-formula Trotter-error reduction using CVXPY. The 2026-10-16 ecosystem audit declined the workflow; host CVXPY availability does not establish its admission. Qualify circuit approximations, solver residuals and error budgets before use.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:118",
-    "docs/notes/qiskit-ecosystem.md:201"
+    "docs/notes/qiskit-ecosystem.md:122",
+    "docs/notes/qiskit-ecosystem.md:205"
    ],
    "role_sources": [
     "docs/notes/qiskit-ecosystem.md:201",
@@ -4877,8 +5023,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: operator backpropagation targets observable estimation of Trotter circuits",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:117",
-    "docs/notes/qiskit-ecosystem.md:200"
+    "docs/notes/qiskit-ecosystem.md:121",
+    "docs/notes/qiskit-ecosystem.md:204"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4893,8 +5039,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: optimization modeling",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:124",
-    "docs/notes/qiskit-ecosystem.md:207"
+    "docs/notes/qiskit-ecosystem.md:128",
+    "docs/notes/qiskit-ecosystem.md:211"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4909,8 +5055,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: global-noise-channel mitigation of observables",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:123",
-    "docs/notes/qiskit-ecosystem.md:206"
+    "docs/notes/qiskit-ecosystem.md:127",
+    "docs/notes/qiskit-ecosystem.md:210"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4925,8 +5071,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: PEC overhead reduction; pins pauli-prop below 0.2",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:122",
-    "docs/notes/qiskit-ecosystem.md:205"
+    "docs/notes/qiskit-ecosystem.md:126",
+    "docs/notes/qiskit-ecosystem.md:209"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4941,8 +5087,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: chemistry configuration recovery, pulls pyscf (not installed)",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:121",
-    "docs/notes/qiskit-ecosystem.md:204"
+    "docs/notes/qiskit-ecosystem.md:125",
+    "docs/notes/qiskit-ecosystem.md:208"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4957,8 +5103,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: chemistry HPC solvers",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:130",
-    "docs/notes/qiskit-ecosystem.md:213"
+    "docs/notes/qiskit-ecosystem.md:134",
+    "docs/notes/qiskit-ecosystem.md:217"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4975,8 +5121,8 @@
    "observed_host_version": "0.4.0",
    "role": "Supported circuit interchange and utility operations.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:116",
-    "docs/notes/qiskit-ecosystem.md:199"
+    "docs/notes/qiskit-ecosystem.md:120",
+    "docs/notes/qiskit-ecosystem.md:203"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -4989,16 +5135,16 @@
    "distribution": "qiskit-aer",
    "declared_versions": {
     "ci/requirements-replay.txt": "0.17.2",
-    "requirements.txt": "0.17.2",
-    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.17.2",
+    "requirements.txt": "0.18.2",
+    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.18.2",
     "IQM retained environment": "0.17.2"
    },
    "observed_host_version": "0.17.2",
    "role": "Ideal/noise circuit simulation; provider/routing approval rules apply to submitted jobs.",
    "documentation_mentions": [
     "docs/notes/iqm/pypi/qiskit-aer.json",
-    "docs/notes/qiskit-ecosystem.md:172",
-    "docs/notes/qiskit-ecosystem.md:83"
+    "docs/notes/qiskit-ecosystem.md:176",
+    "docs/notes/qiskit-ecosystem.md:87"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5020,6 +5166,7 @@
     "gororoba_quantum/n21_exact_planning.py",
     "gororoba_quantum/order_finding.py",
     "gororoba_quantum/qpe_diagnostics.py",
+    "gororoba_quantum/qpu_planning.py",
     "gororoba_quantum/qpu_planning_contracts.py",
     "gororoba_quantum/snapshot_laws.py",
     "gororoba_quantum/test_heron_multiprogramming.py",
@@ -5045,11 +5192,15 @@
     "scripts/iqm_signed_probe.py",
     "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
+    "scripts/local_idle_controls.py",
+    "scripts/local_idle_falsifier.py",
+    "scripts/measurement_sequence_validation.py",
     "scripts/n21_conjugation_noise.py",
     "scripts/n21_exact_crosscheck.py",
     "scripts/n21_exact_model_validation.py",
     "scripts/n21_qx_conformance.py",
     "scripts/primorial_cover_noise.py",
+    "scripts/primorial_probe_case.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/signed_kernel_noise.py",
     "scripts/singular_sector_dynamics.py",
@@ -5074,6 +5225,7 @@
     "gororoba_quantum/n21_exact_planning.py",
     "gororoba_quantum/order_finding.py",
     "gororoba_quantum/qpe_diagnostics.py",
+    "gororoba_quantum/qpu_planning.py",
     "gororoba_quantum/qpu_planning_contracts.py",
     "gororoba_quantum/snapshot_laws.py",
     "gororoba_quantum/test_heron_multiprogramming.py",
@@ -5099,11 +5251,15 @@
     "scripts/iqm_signed_probe.py",
     "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
+    "scripts/local_idle_controls.py",
+    "scripts/local_idle_falsifier.py",
+    "scripts/measurement_sequence_validation.py",
     "scripts/n21_conjugation_noise.py",
     "scripts/n21_exact_crosscheck.py",
     "scripts/n21_exact_model_validation.py",
     "scripts/n21_qx_conformance.py",
     "scripts/primorial_cover_noise.py",
+    "scripts/primorial_probe_case.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/signed_kernel_noise.py",
     "scripts/singular_sector_dynamics.py",
@@ -5117,7 +5273,7 @@
    "observed_host_version": null,
    "role": "CUDA 12 Aer alternative remains unused: retained ecosystem audit records release 0.15.1 without a Python 3.13 wheel; do not coinstall qiskit_aer owners.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:85"
+    "docs/notes/qiskit-ecosystem.md:89"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5129,13 +5285,13 @@
   {
    "distribution": "qiskit-aer-gpu-cu11",
    "declared_versions": {
-    "scripts/kaggle_run.py:85:KERNEL_PINS": "0.17.2"
+    "scripts/kaggle_run.py:85:KERNEL_PINS": "0.18.2"
    },
    "observed_host_version": null,
    "role": "CUDA 11 Aer wheel for the isolated Kaggle GPU path; exclusively owns qiskit_aer and shares the CPU/CUDA 13 Aer engine.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:173",
-    "docs/notes/qiskit-ecosystem.md:84"
+    "docs/notes/qiskit-ecosystem.md:177",
+    "docs/notes/qiskit-ecosystem.md:88"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5147,7 +5303,7 @@
   {
    "distribution": "qiskit-aer-gpu-cu13",
    "declared_versions": {
-    "scripts/kaggle_run.py:113:GPU_AER_PINS": "0.17.2"
+    "scripts/kaggle_run.py:113:GPU_AER_PINS": "0.18.2"
    },
    "observed_host_version": null,
    "role": "Repository-built CUDA 13 Aer wheel for qualified Kaggle GPU simulation; exclusively owns qiskit_aer in that environment and shares the Aer engine, not an independent witness.",
@@ -5168,8 +5324,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: host only, optional: phase and amplitude estimation references for algebra-circuit cross-checks; no current consumer",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:150",
-    "docs/notes/qiskit-ecosystem.md:227"
+    "docs/notes/qiskit-ecosystem.md:154",
+    "docs/notes/qiskit-ecosystem.md:231"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5184,7 +5340,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:144"
+    "docs/notes/qiskit-ecosystem.md:148"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5199,8 +5355,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: host only: benchmarks that submit to IBM backends; needs an IBM credential",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:129",
-    "docs/notes/qiskit-ecosystem.md:212"
+    "docs/notes/qiskit-ecosystem.md:133",
+    "docs/notes/qiskit-ecosystem.md:216"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5215,7 +5371,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:144"
+    "docs/notes/qiskit-ecosystem.md:148"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5230,8 +5386,8 @@
    "observed_host_version": null,
    "role": "Continuous-system simulation alternative; the retained note records its archive status.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:155",
-    "docs/notes/qiskit-ecosystem.md:232"
+    "docs/notes/qiskit-ecosystem.md:159",
+    "docs/notes/qiskit-ecosystem.md:236"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5248,8 +5404,8 @@
    "observed_host_version": "0.14.2",
    "role": "Device-characterization circuits and analyses; calibration jobs require approval.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:181",
-    "docs/notes/qiskit-ecosystem.md:98"
+    "docs/notes/qiskit-ecosystem.md:102",
+    "docs/notes/qiskit-ecosystem.md:185"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5264,8 +5420,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: fermionic systems",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:127",
-    "docs/notes/qiskit-ecosystem.md:210"
+    "docs/notes/qiskit-ecosystem.md:131",
+    "docs/notes/qiskit-ecosystem.md:214"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5280,8 +5436,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: finance",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:154",
-    "docs/notes/qiskit-ecosystem.md:231"
+    "docs/notes/qiskit-ecosystem.md:158",
+    "docs/notes/qiskit-ecosystem.md:235"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5296,8 +5452,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: reinforcement-learning synthesis",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:143",
-    "docs/notes/qiskit-ecosystem.md:225"
+    "docs/notes/qiskit-ecosystem.md:147",
+    "docs/notes/qiskit-ecosystem.md:229"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5312,7 +5468,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:144"
+    "docs/notes/qiskit-ecosystem.md:148"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5327,8 +5483,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: no consumer in the repository; pins an old networkx",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:138",
-    "docs/notes/qiskit-ecosystem.md:220"
+    "docs/notes/qiskit-ecosystem.md:142",
+    "docs/notes/qiskit-ecosystem.md:224"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5341,10 +5497,10 @@
    "distribution": "qiskit-ibm-catalog",
    "declared_versions": {},
    "observed_host_version": null,
-   "role": "Documented ecosystem candidate: skip: Qiskit Functions client, cloud only",
+   "role": "Documented ecosystem candidate: host only, installed: Qiskit Functions client, cloud only; never on Kaggle ([qiskit-functions.md](../../notes/qiskit-packages/qiskit-functions.md))",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:139",
-    "docs/notes/qiskit-ecosystem.md:221"
+    "docs/notes/qiskit-ecosystem.md:143",
+    "docs/notes/qiskit-ecosystem.md:225"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5359,8 +5515,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: archived",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:141",
-    "docs/notes/qiskit-ecosystem.md:223"
+    "docs/notes/qiskit-ecosystem.md:145",
+    "docs/notes/qiskit-ecosystem.md:227"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5375,8 +5531,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: replaced by runtime",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:142",
-    "docs/notes/qiskit-ecosystem.md:224"
+    "docs/notes/qiskit-ecosystem.md:146",
+    "docs/notes/qiskit-ecosystem.md:228"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5389,17 +5545,17 @@
    "distribution": "qiskit-ibm-runtime",
    "declared_versions": {
     "ci/requirements-replay.txt": "0.50.0",
-    "requirements.txt": "0.50.0",
-    "scripts/kaggle_run.py:88:KERNEL_PINS": "0.50.0",
-    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.50.0",
-    "scripts/kaggle_run.py:163:PIN_GROUPS": "0.50.0",
+    "requirements.txt": "0.51.0",
+    "scripts/kaggle_run.py:88:KERNEL_PINS": "0.51.0",
+    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.51.0",
+    "scripts/kaggle_run.py:163:PIN_GROUPS": "0.51.0",
     "IQM retained environment": "0.43.1"
    },
    "observed_host_version": "0.50.0",
    "role": "IBM execution and result collection through the approved-record runner.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:174",
-    "docs/notes/qiskit-ecosystem.md:86"
+    "docs/notes/qiskit-ecosystem.md:178",
+    "docs/notes/qiskit-ecosystem.md:90"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5422,6 +5578,7 @@
     "gororoba_quantum/linear_conjugation_challenger.py",
     "gororoba_quantum/live_run.py",
     "gororoba_quantum/maximal_contracts.py",
+    "gororoba_quantum/msq_envelope.py",
     "gororoba_quantum/native_preflight_contracts.py",
     "gororoba_quantum/parameter_binding_contracts.py",
     "gororoba_quantum/pub_shot_runtime_contracts.py",
@@ -5436,6 +5593,8 @@
     "scripts/heron_backend_config_snapshot.py",
     "scripts/heron_target_snapshot.py",
     "scripts/ibm_runtime_options_inventory.py",
+    "scripts/measurement_sequence_scatter_validation.py",
+    "scripts/measurement_sequence_validation.py",
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/n21_orbit_rca.py",
     "scripts/observe_qpu_job_inventory.py",
@@ -5466,6 +5625,7 @@
     "gororoba_quantum/linear_conjugation_challenger.py",
     "gororoba_quantum/live_run.py",
     "gororoba_quantum/maximal_contracts.py",
+    "gororoba_quantum/msq_envelope.py",
     "gororoba_quantum/native_preflight_contracts.py",
     "gororoba_quantum/parameter_binding_contracts.py",
     "gororoba_quantum/pub_shot_runtime_contracts.py",
@@ -5480,6 +5640,8 @@
     "scripts/heron_backend_config_snapshot.py",
     "scripts/heron_target_snapshot.py",
     "scripts/ibm_runtime_options_inventory.py",
+    "scripts/measurement_sequence_scatter_validation.py",
+    "scripts/measurement_sequence_validation.py",
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/n21_orbit_rca.py",
     "scripts/observe_qpu_job_inventory.py",
@@ -5498,7 +5660,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:144"
+    "docs/notes/qiskit-ecosystem.md:148"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5513,8 +5675,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: cloud AI passes (credential) and a hard conflict with the pin",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:137",
-    "docs/notes/qiskit-ecosystem.md:219"
+    "docs/notes/qiskit-ecosystem.md:141",
+    "docs/notes/qiskit-ecosystem.md:223"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5529,7 +5691,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:144"
+    "docs/notes/qiskit-ecosystem.md:148"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5559,8 +5721,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:151",
-    "docs/notes/qiskit-ecosystem.md:228"
+    "docs/notes/qiskit-ecosystem.md:155",
+    "docs/notes/qiskit-ecosystem.md:232"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5575,7 +5737,7 @@
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:144"
+    "docs/notes/qiskit-ecosystem.md:148"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5594,8 +5756,8 @@
    "observed_host_version": "0.1.1",
    "role": "Hardware mitigation tasks; invocation can submit and needs the written case.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:177",
-    "docs/notes/qiskit-ecosystem.md:89"
+    "docs/notes/qiskit-ecosystem.md:181",
+    "docs/notes/qiskit-ecosystem.md:93"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5610,8 +5772,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: chemistry",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:153",
-    "docs/notes/qiskit-ecosystem.md:230"
+    "docs/notes/qiskit-ecosystem.md:157",
+    "docs/notes/qiskit-ecosystem.md:234"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5626,8 +5788,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: host plus Kaggle candidate via commit-pinned source: randomization-based Pauli noise characterization against the Aer replay; needs samplomatic>=0.21, numpy>=2",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:128",
-    "docs/notes/qiskit-ecosystem.md:211"
+    "docs/notes/qiskit-ecosystem.md:132",
+    "docs/notes/qiskit-ecosystem.md:215"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5642,8 +5804,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: archived",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:152",
-    "docs/notes/qiskit-ecosystem.md:229"
+    "docs/notes/qiskit-ecosystem.md:156",
+    "docs/notes/qiskit-ecosystem.md:233"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5658,8 +5820,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip: spacetime Pauli checks target error detection at scale",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:126",
-    "docs/notes/qiskit-ecosystem.md:209"
+    "docs/notes/qiskit-ecosystem.md:130",
+    "docs/notes/qiskit-ecosystem.md:213"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5676,8 +5838,8 @@
    "observed_host_version": "0.6.0",
    "role": "Validated OpenQASM interchange between isolated SDK environments.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:178",
-    "docs/notes/qiskit-ecosystem.md:90"
+    "docs/notes/qiskit-ecosystem.md:182",
+    "docs/notes/qiskit-ecosystem.md:94"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5705,10 +5867,10 @@
    "distribution": "qiskit-serverless",
    "declared_versions": {},
    "observed_host_version": null,
-   "role": "Documented ecosystem candidate: skip: cloud job client, exceeds Kaggle numpy",
+   "role": "Documented ecosystem candidate: host only, installed with the runtime cap and image pins relaxed; exceeds Kaggle numpy ([qiskit-functions.md](../../notes/qiskit-packages/qiskit-functions.md))",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:140",
-    "docs/notes/qiskit-ecosystem.md:222"
+    "docs/notes/qiskit-ecosystem.md:144",
+    "docs/notes/qiskit-ecosystem.md:226"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5794,8 +5956,8 @@
    "observed_host_version": "1.15.0",
    "role": "Tensor-network classical references and marginal/expectation calculations.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:104",
-    "docs/notes/qiskit-ecosystem.md:187"
+    "docs/notes/qiskit-ecosystem.md:108",
+    "docs/notes/qiskit-ecosystem.md:191"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -5835,6 +5997,7 @@
     "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
     "scripts/qi_mcp_server.py",
+    "scripts/qi_tuna_qx_local_replay.py",
     "scripts/qx_local_series.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
@@ -5844,6 +6007,7 @@
     "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
     "scripts/qi_mcp_server.py",
+    "scripts/qi_tuna_qx_local_replay.py",
     "scripts/qx_local_series.py"
    ]
   },
@@ -5992,8 +6156,8 @@
    "observed_host_version": "2.3.0",
    "role": "Execution support used by measurement mitigation; provider submission stays guarded.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:100",
-    "docs/notes/qiskit-ecosystem.md:183"
+    "docs/notes/qiskit-ecosystem.md:104",
+    "docs/notes/qiskit-ecosystem.md:187"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6016,8 +6180,8 @@
    "observed_host_version": "0.18.1",
    "role": "Coupling graphs, placement and disjoint-support candidates.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:180",
-    "docs/notes/qiskit-ecosystem.md:92"
+    "docs/notes/qiskit-ecosystem.md:184",
+    "docs/notes/qiskit-ecosystem.md:96"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6071,8 +6235,8 @@
    "observed_host_version": "0.21.0",
    "role": "Runtime circuit preparation; dynamic-circuit restrictions remain binding.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:175",
-    "docs/notes/qiskit-ecosystem.md:87"
+    "docs/notes/qiskit-ecosystem.md:179",
+    "docs/notes/qiskit-ecosystem.md:91"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6128,10 +6292,18 @@
     "gororoba_quantum/empirical_bernstein_contracts.py",
     "gororoba_quantum/et_statistics.py",
     "gororoba_quantum/hypercomplex_dynamics.py",
+    "gororoba_quantum/measurement_sequence_analysis.py",
+    "gororoba_quantum/measurement_sequence_scatter.py",
+    "gororoba_quantum/msq_envelope.py",
+    "gororoba_quantum/msq_envelope_analysis.py",
+    "gororoba_quantum/msq_envelope_null.py",
+    "gororoba_quantum/msq_successor_analysis.py",
+    "gororoba_quantum/msq_successor_null_batch.py",
     "gororoba_quantum/placement_feasibility.py",
     "gororoba_quantum/primorial_cover.py",
     "gororoba_quantum/variance.py",
     "scripts/a5_zero_divisor_strata.py",
+    "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_compilation_design.py",
     "scripts/ascella_compilation_reading.py",
@@ -6154,23 +6326,31 @@
     "scripts/bdsc_null_calibration.py",
     "scripts/bdsc_stationarity.py",
     "scripts/bdsc_stray_mode_veto.py",
+    "scripts/experiment_analysis.py",
     "scripts/ghost_error_scale_branching.py",
     "scripts/hypercomplex_cases.py",
     "scripts/hypercomplex_evidence.py",
+    "scripts/idle_penalty_focal_decisions.py",
+    "scripts/idle_penalty_repeat_decisions.py",
     "scripts/idle_penalty_report.py",
+    "scripts/idle_readout_attribution.py",
     "scripts/iqm_measurement_diagnostic.py",
     "scripts/iqm_measurement_sequence.py",
     "scripts/iqm_qet_ladder.py",
     "scripts/lsq_conditioning_study.py",
+    "scripts/measurement_sequence_scatter_validation.py",
+    "scripts/msq_envelope_raw_diagnostics.py",
     "scripts/n21_dose_decisions.py",
     "scripts/n21_orbit_context_refit.py",
     "scripts/n21_orbit_rca.py",
     "scripts/n21_q143_beat_model.py",
     "scripts/n21_q143_segmented_sweep.py",
     "scripts/n21_spectator_ramsey.py",
+    "scripts/numerics_fingerprint.py",
     "scripts/pais_claim_bounds.py",
     "scripts/pais_superforce_bounds.py",
     "scripts/patch_window_analysis.py",
+    "scripts/persona_corpus_checks.py",
     "scripts/primorial_probe_case.py",
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_mesh.py",
@@ -6179,10 +6359,14 @@
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_shot_record_line.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/qi_zz_map_analysis.py",
     "scripts/rank_sector_endpoint_decomposition.py",
+    "scripts/readout_information_controls.py",
+    "scripts/remeasure_history.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/state_prep_split.py",
     "scripts/walk_scaffold_channels.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
@@ -6196,10 +6380,18 @@
     "gororoba_quantum/empirical_bernstein_contracts.py",
     "gororoba_quantum/et_statistics.py",
     "gororoba_quantum/hypercomplex_dynamics.py",
+    "gororoba_quantum/measurement_sequence_analysis.py",
+    "gororoba_quantum/measurement_sequence_scatter.py",
+    "gororoba_quantum/msq_envelope.py",
+    "gororoba_quantum/msq_envelope_analysis.py",
+    "gororoba_quantum/msq_envelope_null.py",
+    "gororoba_quantum/msq_successor_analysis.py",
+    "gororoba_quantum/msq_successor_null_batch.py",
     "gororoba_quantum/placement_feasibility.py",
     "gororoba_quantum/primorial_cover.py",
     "gororoba_quantum/variance.py",
     "scripts/a5_zero_divisor_strata.py",
+    "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_compilation_design.py",
     "scripts/ascella_compilation_reading.py",
@@ -6222,23 +6414,31 @@
     "scripts/bdsc_null_calibration.py",
     "scripts/bdsc_stationarity.py",
     "scripts/bdsc_stray_mode_veto.py",
+    "scripts/experiment_analysis.py",
     "scripts/ghost_error_scale_branching.py",
     "scripts/hypercomplex_cases.py",
     "scripts/hypercomplex_evidence.py",
+    "scripts/idle_penalty_focal_decisions.py",
+    "scripts/idle_penalty_repeat_decisions.py",
     "scripts/idle_penalty_report.py",
+    "scripts/idle_readout_attribution.py",
     "scripts/iqm_measurement_diagnostic.py",
     "scripts/iqm_measurement_sequence.py",
     "scripts/iqm_qet_ladder.py",
     "scripts/lsq_conditioning_study.py",
+    "scripts/measurement_sequence_scatter_validation.py",
+    "scripts/msq_envelope_raw_diagnostics.py",
     "scripts/n21_dose_decisions.py",
     "scripts/n21_orbit_context_refit.py",
     "scripts/n21_orbit_rca.py",
     "scripts/n21_q143_beat_model.py",
     "scripts/n21_q143_segmented_sweep.py",
     "scripts/n21_spectator_ramsey.py",
+    "scripts/numerics_fingerprint.py",
     "scripts/pais_claim_bounds.py",
     "scripts/pais_superforce_bounds.py",
     "scripts/patch_window_analysis.py",
+    "scripts/persona_corpus_checks.py",
     "scripts/primorial_probe_case.py",
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_mesh.py",
@@ -6247,10 +6447,14 @@
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_shot_record_line.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/qi_zz_map_analysis.py",
     "scripts/rank_sector_endpoint_decomposition.py",
+    "scripts/readout_information_controls.py",
+    "scripts/remeasure_history.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/state_prep_split.py",
     "scripts/walk_scaffold_channels.py"
    ]
   },
@@ -6372,8 +6576,8 @@
    "observed_host_version": null,
    "role": "Documented ecosystem candidate: skip, same reason as pymatching",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:103",
-    "docs/notes/qiskit-ecosystem.md:186"
+    "docs/notes/qiskit-ecosystem.md:107",
+    "docs/notes/qiskit-ecosystem.md:190"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6562,12 +6766,14 @@
    "hardware_execution": false,
    "imported_by": [
     "scripts/algebra_package_tables.py",
-    "scripts/box_kite_packages.py"
+    "scripts/box_kite_packages.py",
+    "scripts/qi_tuna_joint_package_runtime.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/algebra_package_tables.py",
-    "scripts/box_kite_packages.py"
+    "scripts/box_kite_packages.py",
+    "scripts/qi_tuna_joint_package_runtime.py"
    ]
   },
   {
@@ -6660,8 +6866,8 @@
    "observed_host_version": "1.16.0",
    "role": "Stabilizer controls and Clifford subcircuits; not general quaternion wave evolution.",
    "documentation_mentions": [
-    "docs/notes/qiskit-ecosystem.md:101",
-    "docs/notes/qiskit-ecosystem.md:184"
+    "docs/notes/qiskit-ecosystem.md:105",
+    "docs/notes/qiskit-ecosystem.md:188"
    ],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6704,6 +6910,8 @@
     "gororoba_quantum/circle_kernel_attachments.py",
     "gororoba_quantum/complex_skew.py",
     "gororoba_quantum/complex_skew_contracts.py",
+    "gororoba_quantum/dimension_six_circuits.py",
+    "gororoba_quantum/experiment_references.py",
     "gororoba_quantum/four_support_doubling.py",
     "gororoba_quantum/four_support_geometry.py",
     "gororoba_quantum/four_support_homology.py",
@@ -6732,6 +6940,8 @@
     "scripts/algebra_device_conjectures.py",
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
+    "scripts/persona_corpus_checks.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_second_order.py"
    ],
@@ -6740,6 +6950,8 @@
     "gororoba_quantum/circle_kernel_attachments.py",
     "gororoba_quantum/complex_skew.py",
     "gororoba_quantum/complex_skew_contracts.py",
+    "gororoba_quantum/dimension_six_circuits.py",
+    "gororoba_quantum/experiment_references.py",
     "gororoba_quantum/four_support_doubling.py",
     "gororoba_quantum/four_support_geometry.py",
     "gororoba_quantum/four_support_homology.py",
@@ -6768,6 +6980,8 @@
     "scripts/algebra_device_conjectures.py",
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
+    "scripts/persona_corpus_checks.py",
+    "scripts/qi_tuna_joint_package_runtime.py",
     "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_second_order.py"
    ]
@@ -6815,11 +7029,15 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
-    "ci/runner_specs.py"
+    "ci/runner_specs.py",
+    "scripts/local_idle_falsifier.py",
+    "scripts/numerics_fingerprint.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
-    "ci/runner_specs.py"
+    "ci/runner_specs.py",
+    "scripts/local_idle_falsifier.py",
+    "scripts/numerics_fingerprint.py"
    ]
   },
   {
@@ -7250,7 +7468,7 @@
   "docs/notes/quandela/pypi/perceval-interop.json": "ed2babca56a9e95c47e4971053da3181e464d393b8eeac8d0104d3a4f9a67bdb",
   "docs/notes/quandela/pypi/perceval-quandela.json": "c8ed2fcbdd475a830b066ec7121fdff96e35850f98ecc4b3be945346aa2d49ea",
   "docs/notes/quandela/pypi/scmver.json": "a35d1d7f9d344b5c1270e3a5fad284f79474e6d67c50fa03f14f28be4ba2c01d",
-  "docs/notes/qiskit-ecosystem.md": "cef7080dc6240810c48915ad4355914ec924040d19c7620cbc4f427610d9b962",
+  "docs/notes/qiskit-ecosystem.md": "ccdcb14e5702cdcd248ae4510d3c950eecf734cba851e7509b3e07bc20ca6608",
   "docs/notes/packages/candidates.md": "9686e4e3cabe939651db5bf5b64b46fcd5a361e8f5d23fa430de6627dcd9d11b",
   "ci/requirements-browser.txt": "6f9875723235ece07415e7d19103f2ec61ec35e1392d23fbd1c1290e043eaeb8",
   "ci/requirements-ci.txt": "a83d9288a87525f62db022ca032a876a2f0d5f5a93f21bf4fce19fd35d72f7d3",
@@ -7264,13 +7482,13 @@
   "docs/notes/quafu/requirements-quafu.txt": "0792aae81e6f09210b366b8a4db405e74c35435207f1e67ddc3b61707db9e61f",
   "docs/notes/quantum_inspire/requirements-qi.txt": "95deb5311e97df0c191622f407f6f4ab747459c1e97e5d2cbf4d36b959654d88",
   "packaging/qiskit-aer-cuda/build-requirements.txt": "10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352",
-  "requirements.txt": "c83769287c82d8b2616f254226db544ed0c323756f648a813290d36aa1f59816",
-  "scripts/kaggle_run.py": "49d1afaa05d733a6094c3c50ce6f3d4cc41e4f818d64c6761623d56593a85114",
-  "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "b0b9e3b345886f2acee26395802129d8ad1c5dc5618533c77653a88d939bd6ba",
+  "requirements.txt": "49a450b4495470d5a42522602b6c59bc0b6ac81822a530109ce9a774c286527b",
+  "scripts/kaggle_run.py": "056a4da780305f35588487102dad7e2d9b460291505643ccbf9d57f3e5c4d2a9",
+  "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "91341759b26f68f39d0764b256139b147f538e39824de48eb3acc0ea828da1d2",
   "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",
-  "scripts/hypercomplex_libraries.py": "de1125f46866b0df683500c9a992bd08f38e0d25b6559c14e98114f0151a31f1",
+  "scripts/hypercomplex_libraries.py": "0f4cb3cffa3d88479952e557e0f706cc03a42f28deb1abd60091db026659116e",
   "docs/notes/quandela/python-stack.md": "e9ccf726ac8f136c9be0fb570fc4442846d50809620eb91726543d2ea43d4571",
-  "docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh": "8a7d8de6918424b5d187b85671827cdcbfe0d33421eae5b30ed6c837ff952c67",
+  "docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh": "3253fac412585aa0321ab568e78140b6139289c4be9f8bd16f27f62d7da2151e",
   "docs/notes/iqm/python-stack-versions.json": "295941539dd0065d5ece5eb164df8131d38157e2e1ba8d9f5d95a7db5ef74062"
  },
  "tracked_import_roots": {
@@ -7514,6 +7732,7 @@
    "qiskit",
    "qiskit_ibm_runtime",
    "qrng_seeds",
+   "readout_actor_family",
    "sys",
    "tempfile",
    "types",
@@ -8114,10 +8333,12 @@
    "argparse",
    "coherence_window",
    "correction_planning",
+   "dataclasses",
    "dynamic_density",
    "et_campaign",
    "experiment_optimizer",
    "experiments",
+   "functools",
    "latency_recovery",
    "local_compute",
    "math",
@@ -8130,6 +8351,14 @@
    "ripple_contracts",
    "ripple_experiments",
    "typing"
+  ],
+  "gororoba_quantum/dimension_six_circuits.py": [
+   "__future__",
+   "experiment_references",
+   "functools",
+   "math",
+   "qiskit",
+   "sympy"
   ],
   "gororoba_quantum/dynamic_density.py": [
    "__future__",
@@ -8225,6 +8454,17 @@
    "numpy",
    "typing"
   ],
+  "gororoba_quantum/experiment_references.py": [
+   "__future__",
+   "cd_core",
+   "copy",
+   "functools",
+   "itertools",
+   "numpy",
+   "parallel",
+   "sympy",
+   "typing"
+  ],
   "gororoba_quantum/experiments.py": [
    "__future__",
    "cd_core",
@@ -8236,6 +8476,7 @@
    "diagnostic_controls",
    "factoring",
    "idle_penalty",
+   "idle_readout",
    "math",
    "maximal_experiments",
    "numpy",
@@ -8400,9 +8641,25 @@
    "types",
    "typing"
   ],
+  "gororoba_quantum/idle_padding.py": [
+   "__future__",
+   "collections",
+   "qiskit",
+   "typing"
+  ],
   "gororoba_quantum/idle_penalty.py": [
    "__future__",
    "experiments",
+   "local_compute",
+   "numpy",
+   "qiskit",
+   "typing"
+  ],
+  "gororoba_quantum/idle_readout.py": [
+   "__future__",
+   "experiments",
+   "idle_penalty",
+   "itertools",
    "local_compute",
    "numpy",
    "qiskit",
@@ -8521,6 +8778,8 @@
    "coherence_probes",
    "coherence_window",
    "collections",
+   "concurrent",
+   "contextlib",
    "copy",
    "correction_collection",
    "crossed_tile_template",
@@ -8533,9 +8792,11 @@
    "et_rows",
    "experiment_optimizer",
    "experiments",
+   "fcntl",
    "hashlib",
    "heapq",
    "ibm_account",
+   "idle_padding",
    "importlib",
    "io",
    "json",
@@ -8543,6 +8804,8 @@
    "local_compute",
    "math",
    "maximal_experiments",
+   "msq_envelope",
+   "msq_successor_analysis",
    "native_preflight",
    "numpy",
    "os",
@@ -8550,15 +8813,20 @@
    "parallel",
    "pathlib",
    "placement_feasibility",
+   "pub_calibration",
    "qiskit",
    "qiskit_aer",
    "qiskit_ibm_runtime",
    "qpu_cases",
    "qpu_planning",
    "qrng_seeds",
+   "re",
+   "readout_actor_family",
    "rustworkx",
    "subprocess",
    "sys",
+   "tempfile",
+   "threading",
    "time",
    "typing",
    "variance"
@@ -8603,6 +8871,40 @@
    "qiskit",
    "typing"
   ],
+  "gororoba_quantum/measurement_sequence_analysis.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "functools",
+   "hashlib",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
+   "sys",
+   "typing"
+  ],
+  "gororoba_quantum/measurement_sequence_scatter.py": [
+   "__future__",
+   "argparse",
+   "contextlib",
+   "diagnostic_experiments",
+   "hashlib",
+   "ibm_account",
+   "io",
+   "json",
+   "live_run",
+   "math",
+   "measurement_sequence_analysis",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
+   "sys",
+   "typing"
+  ],
   "gororoba_quantum/modular_arithmetic.py": [
    "__future__",
    "affine_residual",
@@ -8614,6 +8916,80 @@
    "parallel",
    "qiskit",
    "target_flip",
+   "typing"
+  ],
+  "gororoba_quantum/msq_envelope.py": [
+   "__future__",
+   "collections",
+   "datetime",
+   "hashlib",
+   "json",
+   "math",
+   "measurement_sequence_scatter",
+   "numpy",
+   "qiskit_ibm_runtime",
+   "scipy",
+   "typing"
+  ],
+  "gororoba_quantum/msq_envelope_analysis.py": [
+   "__future__",
+   "diagnostic_experiments",
+   "math",
+   "measurement_sequence_analysis",
+   "msq_envelope",
+   "numpy",
+   "scipy",
+   "statistics",
+   "typing"
+  ],
+  "gororoba_quantum/msq_envelope_null.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "diagnostic_experiments",
+   "itertools",
+   "json",
+   "math",
+   "measurement_sequence_analysis",
+   "msq_envelope_analysis",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
+   "typing"
+  ],
+  "gororoba_quantum/msq_successor_analysis.py": [
+   "__future__",
+   "collections",
+   "diagnostic_experiments",
+   "functools",
+   "hashlib",
+   "json",
+   "math",
+   "measurement_sequence_analysis",
+   "msq_envelope_analysis",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
+   "statistics",
+   "typing"
+  ],
+  "gororoba_quantum/msq_successor_null_batch.py": [
+   "__future__",
+   "collections",
+   "diagnostic_experiments",
+   "hashlib",
+   "json",
+   "math",
+   "measurement_sequence_analysis",
+   "msq_envelope_analysis",
+   "msq_envelope_null",
+   "msq_successor_analysis",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
    "typing"
   ],
   "gororoba_quantum/n21_exact_planning.py": [
@@ -8698,6 +9074,13 @@
    "sympy",
    "typing"
   ],
+  "gororoba_quantum/operator_arithmetic.py": [
+   "__future__",
+   "math",
+   "mpmath",
+   "numpy",
+   "typing"
+  ],
   "gororoba_quantum/order_finding.py": [
    "__future__",
    "factoring",
@@ -8713,6 +9096,9 @@
    "__future__",
    "collections",
    "dataclasses",
+   "hashlib",
+   "json",
+   "numbers",
    "qiskit",
    "rustworkx",
    "typing"
@@ -8870,6 +9256,17 @@
    "kernel_limits",
    "sympy"
   ],
+  "gororoba_quantum/provider_counters.py": [
+   "__future__",
+   "collections",
+   "dataclasses",
+   "enum",
+   "math",
+   "typing"
+  ],
+  "gororoba_quantum/pub_calibration.py": [
+   "__future__"
+  ],
   "gororoba_quantum/pub_shot_allocation.py": [
    "__future__",
    "dataclasses",
@@ -8936,6 +9333,7 @@
   "gororoba_quantum/qpe_diagnostics.py": [
    "__future__",
    "fractions",
+   "hashlib",
    "json",
    "math",
    "numpy",
@@ -8975,6 +9373,7 @@
    "io",
    "json",
    "law_encoding",
+   "live_run",
    "local_compute",
    "math",
    "n21_exact_planning",
@@ -8982,7 +9381,9 @@
    "pathlib",
    "qiskit",
    "re",
+   "readout_actor_family",
    "shlex",
+   "sys",
    "tempfile",
    "typing"
   ],
@@ -8998,14 +9399,21 @@
    "correction_planning",
    "dataclasses",
    "diagnostic_experiments",
+   "dynamic_density",
    "et_planning",
    "experiment_optimizer",
    "hashlib",
    "json",
    "latency_recovery",
    "law_encoding",
+   "live_run",
    "local_compute",
    "math",
+   "measurement_sequence_analysis",
+   "measurement_sequence_scatter",
+   "msq_envelope",
+   "msq_envelope_analysis",
+   "msq_successor_analysis",
    "n21_exact_planning",
    "numpy",
    "packing",
@@ -9014,6 +9422,7 @@
    "pathlib",
    "pub_shot_allocation",
    "qiskit",
+   "qiskit_aer",
    "qpe_diagnostics",
    "rustworkx",
    "threading",
@@ -9035,6 +9444,7 @@
    "live_run",
    "local_compute",
    "math",
+   "measurement_sequence_scatter",
    "n21_exact_planning",
    "native_preflight",
    "numpy",
@@ -9154,6 +9564,27 @@
    "qiskit",
    "rank_attachments",
    "select_lcu",
+   "typing"
+  ],
+  "gororoba_quantum/readout_actor_family.py": [
+   "__future__",
+   "copy",
+   "datetime",
+   "hashlib",
+   "io",
+   "json",
+   "live_run",
+   "math",
+   "os",
+   "parallel",
+   "pathlib",
+   "qiskit",
+   "qpu_cases",
+   "qpu_planning",
+   "readout_information_circuits",
+   "readout_sparse_receipt",
+   "subprocess",
+   "sys",
    "typing"
   ],
   "gororoba_quantum/real_frontier_contracts.py": [
@@ -9603,6 +10034,7 @@
    "math",
    "parallel",
    "pathlib",
+   "plan_records",
    "platform",
    "research_state",
    "subprocess",
@@ -9659,6 +10091,55 @@
    "sys",
    "typing",
    "urllib"
+  ],
+  "scripts/ascella_associator_case.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "hypercomplex_cases",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_platform",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_associator_character.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "hypercomplex_cases",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_platform",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_associator_predecessor.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "hypercomplex_cases",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_platform",
+   "scipy",
+   "sys",
+   "typing"
   ],
   "scripts/ascella_coherence_analysis.py": [
    "__future__",
@@ -9769,6 +10250,51 @@
    "pathlib",
    "sys",
    "typing"
+  ],
+  "scripts/ascella_experiment_analysis.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "datetime",
+   "experiment_analysis",
+   "functools",
+   "hashlib",
+   "importlib",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_platform",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_experiment_request.py": [
+   "__future__",
+   "argparse",
+   "copy",
+   "experiment_analysis",
+   "hashlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_platform",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_experiment_run.py": [
+   "__future__",
+   "argparse",
+   "ascella_experiment_analysis",
+   "ascella_experiment_request",
+   "json",
+   "math",
+   "pathlib",
+   "qd_platform",
+   "typing",
+   "uuid"
   ],
   "scripts/ascella_fixed_mesh_confirmation.py": [
    "__future__",
@@ -9895,6 +10421,38 @@
    "sys",
    "typing"
   ],
+  "scripts/ascella_predecessor_analysis.py": [
+   "__future__",
+   "argparse",
+   "ascella_experiment_analysis",
+   "ascella_predecessor_case",
+   "datetime",
+   "decimal",
+   "experiment_analysis",
+   "fractions",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "tempfile",
+   "typing"
+  ],
+  "scripts/ascella_predecessor_case.py": [
+   "__future__",
+   "argparse",
+   "fcntl",
+   "functools",
+   "json",
+   "math",
+   "os",
+   "pathlib",
+   "qd_platform",
+   "sys",
+   "tempfile",
+   "typing"
+  ],
   "scripts/ascella_replication_offsets.py": [
    "__future__",
    "ascella_compilation_reading",
@@ -9969,6 +10527,75 @@
    "scipy",
    "sys",
    "typing"
+  ],
+  "scripts/ascella_transition_ci_check.py": [
+   "__future__",
+   "argparse",
+   "ascella_transition_context",
+   "ascella_transition_day_repeat",
+   "json",
+   "math",
+   "pathlib",
+   "typing"
+  ],
+  "scripts/ascella_transition_context.py": [
+   "__future__",
+   "argparse",
+   "ascella_experiment_analysis",
+   "ascella_experiment_run",
+   "copy",
+   "experiment_analysis",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_platform",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_transition_day_repeat.py": [
+   "__future__",
+   "argparse",
+   "ascella_transition_context",
+   "copy",
+   "datetime",
+   "json",
+   "math",
+   "os",
+   "pathlib",
+   "qd_platform",
+   "subprocess",
+   "sys",
+   "tempfile",
+   "time",
+   "typing",
+   "zoneinfo"
+  ],
+  "scripts/ascella_transition_interventions.py": [
+   "__future__",
+   "anu_qrng",
+   "argparse",
+   "ascella_transition_context",
+   "copy",
+   "functools",
+   "hypercomplex_cases",
+   "importlib",
+   "json",
+   "math",
+   "numpy",
+   "operator_arithmetic",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_platform",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_transition_local_repeat.py": [
+   "ascella_transition_day_repeat",
+   "pathlib"
   ],
   "scripts/ascella_twelve_output.py": [
    "__future__",
@@ -10412,6 +11039,17 @@
    "sys",
    "typing"
   ],
+  "scripts/calibration_watch.py": [
+   "__future__",
+   "argparse",
+   "ibm_account",
+   "json",
+   "live_run",
+   "math",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
   "scripts/capture_iqm_docs.py": [
    "__future__",
    "argparse",
@@ -10525,6 +11163,20 @@
    "pathlib",
    "predict",
    "sys"
+  ],
+  "scripts/cd_one_sided_inverses.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "collections",
+   "fractions",
+   "functools",
+   "itertools",
+   "json",
+   "parallel",
+   "pathlib",
+   "sys",
+   "typing"
   ],
   "scripts/cd_phase_degree.py": [
    "__future__",
@@ -10939,6 +11591,68 @@
    "random",
    "sys"
   ],
+  "scripts/experiment_analysis.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "datetime",
+   "hashlib",
+   "importlib",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qd_belenos_mesh",
+   "qd_platform",
+   "qi_platform",
+   "re",
+   "scipy",
+   "sys",
+   "typing"
+  ],
+  "scripts/experiment_cases.py": [
+   "__future__",
+   "argparse",
+   "dataclasses",
+   "difflib",
+   "dimension_six_circuits",
+   "experiment_references",
+   "functools",
+   "hashlib",
+   "hypercomplex_cases",
+   "importlib",
+   "json",
+   "math",
+   "numpy",
+   "operator_arithmetic",
+   "parallel",
+   "pathlib",
+   "platform",
+   "qd_platform",
+   "qi_zero_divisor_cases",
+   "qiskit",
+   "qrng_seeds",
+   "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/experiment_toolchain.py": [
+   "__future__",
+   "argparse",
+   "cqasm",
+   "importlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "qi_stack",
+   "qi_toolchain_check",
+   "re",
+   "sys",
+   "tempfile",
+   "typing",
+   "warnings"
+  ],
   "scripts/extract_measured_ripple.py": [
    "__future__",
    "argparse",
@@ -11216,6 +11930,7 @@
    "json",
    "math",
    "numpy",
+   "operator_arithmetic",
    "parallel",
    "pathlib",
    "qi_zero_divisor_cases",
@@ -11310,6 +12025,31 @@
    "sys",
    "typing"
   ],
+  "scripts/idle_penalty_focal_decisions.py": [
+   "__future__",
+   "argparse",
+   "idle_penalty_report",
+   "itertools",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
+   "sys",
+   "typing"
+  ],
+  "scripts/idle_penalty_repeat_decisions.py": [
+   "__future__",
+   "argparse",
+   "idle_penalty_report",
+   "json",
+   "math",
+   "numpy",
+   "pathlib",
+   "scipy",
+   "sys",
+   "typing"
+  ],
   "scripts/idle_penalty_report.py": [
    "__future__",
    "argparse",
@@ -11322,6 +12062,27 @@
    "parallel",
    "pathlib",
    "qiskit",
+   "scheduled_idle_replay",
+   "scipy",
+   "sys",
+   "typing"
+  ],
+  "scripts/idle_readout_attribution.py": [
+   "__future__",
+   "argparse",
+   "dataclasses",
+   "idle_penalty",
+   "idle_penalty_report",
+   "idle_readout",
+   "itertools",
+   "json",
+   "law_encoding",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qiskit",
+   "qrng_seeds",
    "scheduled_idle_replay",
    "scipy",
    "sys",
@@ -11700,12 +12461,59 @@
    "time",
    "typing"
   ],
+  "scripts/local_idle_controls.py": [
+   "__future__",
+   "argparse",
+   "calibration_snapshot",
+   "dynamic_density",
+   "ghost_error_scale",
+   "ghost_event_scale",
+   "ghost_run",
+   "hashlib",
+   "idle_padding",
+   "io",
+   "json",
+   "local_idle_falsifier",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qiskit",
+   "qiskit_aer",
+   "scheduled_idle_replay",
+   "sys",
+   "typing"
+  ],
+  "scripts/local_idle_falsifier.py": [
+   "__future__",
+   "argparse",
+   "calibration_snapshot",
+   "dynamic_density",
+   "ghost_run",
+   "gzip",
+   "hashlib",
+   "idle_padding",
+   "io",
+   "json",
+   "math",
+   "numpy",
+   "os",
+   "parallel",
+   "pathlib",
+   "qiskit",
+   "qiskit_aer",
+   "scheduled_idle_replay",
+   "snapshot_laws",
+   "sys",
+   "threadpoolctl",
+   "typing"
+  ],
   "scripts/local_member_cz_conformance.py": [
    "__future__",
    "argparse",
    "collections",
    "diagnostic_experiments",
    "experiments",
+   "fractions",
    "glob",
    "hashlib",
    "json",
@@ -11810,6 +12618,48 @@
    "tomllib",
    "typing"
   ],
+  "scripts/measurement_sequence_scatter_validation.py": [
+   "__future__",
+   "argparse",
+   "contextlib",
+   "dataclasses",
+   "diagnostic_experiments",
+   "hashlib",
+   "io",
+   "json",
+   "live_run",
+   "math",
+   "measurement_sequence_scatter",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qiskit_ibm_runtime",
+   "qpu_planning",
+   "qpu_planning_contracts",
+   "scipy",
+   "sys",
+   "typing"
+  ],
+  "scripts/measurement_sequence_validation.py": [
+   "__future__",
+   "argparse",
+   "contextlib",
+   "copy",
+   "dataclasses",
+   "hashlib",
+   "io",
+   "json",
+   "live_run",
+   "measurement_sequence_analysis",
+   "pathlib",
+   "qiskit",
+   "qiskit_aer",
+   "qiskit_ibm_runtime",
+   "qpu_planning",
+   "qpu_planning_contracts",
+   "sys",
+   "typing"
+  ],
   "scripts/mod15_signed_multiplier_census.py": [
    "__future__",
    "argparse",
@@ -11841,6 +12691,78 @@
    "sys",
    "typing"
   ],
+  "scripts/msq_carryover_sensitivity.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "functools",
+   "json",
+   "measurement_sequence_analysis",
+   "msq_envelope_exploratory",
+   "pathlib",
+   "statistics",
+   "sys",
+   "typing"
+  ],
+  "scripts/msq_envelope_exploratory.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "law_encoding",
+   "measurement_sequence_analysis",
+   "msq_envelope_analysis",
+   "numpy",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/msq_envelope_raw_diagnostics.py": [
+   "__future__",
+   "argparse",
+   "diagnostic_experiments",
+   "hashlib",
+   "json",
+   "math",
+   "measurement_sequence_analysis",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
+   "sys",
+   "typing"
+  ],
+  "scripts/msq_successor_coverage.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "msq_successor_null_batch",
+   "pathlib",
+   "statistics",
+   "sys",
+   "typing"
+  ],
+  "scripts/msq_successor_null.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "msq_successor_null_batch",
+   "pathlib",
+   "qrng_seeds",
+   "sys"
+  ],
+  "scripts/msq_successor_replay.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "measurement_sequence_analysis",
+   "msq_envelope_analysis",
+   "msq_envelope_raw_diagnostics",
+   "msq_successor_analysis",
+   "numpy",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
   "scripts/n21_conjugation_noise.py": [
    "__future__",
    "argparse",
@@ -11861,6 +12783,21 @@
    "snapshot_laws",
    "sys",
    "time",
+   "typing"
+  ],
+  "scripts/n21_detuning_sign.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "hashlib",
+   "json",
+   "math",
+   "n21_exact_planning",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qpe_diagnostics",
+   "sys",
    "typing"
   ],
   "scripts/n21_dose_decisions.py": [
@@ -12093,6 +13030,24 @@
    "tempfile",
    "typing"
   ],
+  "scripts/numerics_fingerprint.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "json",
+   "math",
+   "measurement_sequence_analysis",
+   "msq_successor_analysis",
+   "numpy",
+   "os",
+   "pathlib",
+   "platform",
+   "scipy",
+   "subprocess",
+   "sys",
+   "threadpoolctl",
+   "time"
+  ],
   "scripts/observe_qpu_job_inventory.py": [
    "__future__",
    "argparse",
@@ -12225,6 +13180,26 @@
    "scipy",
    "sys",
    "typing"
+  ],
+  "scripts/persona_corpus_checks.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "collections",
+   "flint",
+   "fractions",
+   "functools",
+   "hypercomplex_operators",
+   "importlib",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
+   "sympy",
+   "sys"
   ],
   "scripts/photonic_compilation_audit.py": [
    "__future__",
@@ -12394,6 +13369,7 @@
    "primorial_null_residuals",
    "primorial_tomography",
    "qiskit",
+   "qiskit_aer",
    "qiskit_ibm_runtime",
    "samplomatic",
    "scipy",
@@ -12626,6 +13602,7 @@
    "typing",
    "unittest",
    "urllib",
+   "uuid",
    "zlib"
   ],
   "scripts/qd_record_watch.py": [
@@ -12894,6 +13871,76 @@
    "time",
    "typing"
   ],
+  "scripts/qi_platform_submission_deadline.py": [
+   "__future__",
+   "collections",
+   "hashlib",
+   "json",
+   "math",
+   "pathlib",
+   "qi_platform",
+   "time",
+   "typing"
+  ],
+  "scripts/qi_projector_compiler_admission.py": [
+   "__future__",
+   "argparse",
+   "importlib",
+   "json",
+   "math",
+   "opensquirrel",
+   "parallel",
+   "pathlib",
+   "qi_toolchain_check",
+   "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_projector_conformance.py": [
+   "__future__",
+   "argparse",
+   "decimal",
+   "hashlib",
+   "json",
+   "pathlib",
+   "qi_projector_geometry",
+   "typing"
+  ],
+  "scripts/qi_projector_distribution_audit.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "decimal",
+   "hashlib",
+   "itertools",
+   "json",
+   "parallel",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_projector_geometry.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "json",
+   "math",
+   "numpy",
+   "pathlib",
+   "typing"
+  ],
+  "scripts/qi_projector_live_admission.py": [
+   "__future__",
+   "argparse",
+   "datetime",
+   "hashlib",
+   "json",
+   "math",
+   "pathlib",
+   "qi_platform",
+   "qi_projector_compiler_admission",
+   "typing"
+  ],
   "scripts/qi_readout_ringdown_cases.py": [
    "__future__",
    "argparse",
@@ -12985,6 +14032,404 @@
    "qi_coupler_zz_map",
    "sys",
    "typing"
+  ],
+  "scripts/qi_tuna_account_binding.py": [
+   "collections",
+   "hmac"
+  ],
+  "scripts/qi_tuna_assignment_commitment.py": [
+   "__future__",
+   "anu_qrng",
+   "datetime",
+   "hashlib",
+   "hmac",
+   "json",
+   "re",
+   "typing"
+  ],
+  "scripts/qi_tuna_attempt_journal.py": [
+   "dataclasses",
+   "hashlib",
+   "json",
+   "os",
+   "qi_tuna_attempt_transport",
+   "qi_tuna_private_readbacks",
+   "qi_tuna_readback_transport",
+   "qi_tuna_source_association",
+   "types",
+   "typing"
+  ],
+  "scripts/qi_tuna_attempt_transport.py": [
+   "collections",
+   "dataclasses",
+   "hashlib",
+   "math",
+   "qi_tuna_readback_transport",
+   "typing"
+  ],
+  "scripts/qi_tuna_bounded_lock.py": [
+   "collections",
+   "contextlib",
+   "fcntl",
+   "math",
+   "os",
+   "stat",
+   "time"
+  ],
+  "scripts/qi_tuna_capture_commitment.py": [
+   "hashlib",
+   "hmac",
+   "json",
+   "qi_tuna_readback_collection",
+   "qi_tuna_readback_transport",
+   "re"
+  ],
+  "scripts/qi_tuna_consumption_marker.py": [
+   "hashlib",
+   "json",
+   "os",
+   "stat"
+  ],
+  "scripts/qi_tuna_destination_analysis_receipt.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "re",
+   "typing"
+  ],
+  "scripts/qi_tuna_destination_one_analysis.py": [
+   "__future__",
+   "acquisition_decisions",
+   "argparse",
+   "collections",
+   "datetime",
+   "decimal",
+   "hashlib",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_projector_compiler_admission",
+   "qi_projector_live_admission",
+   "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_destination_one_cases.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "qi_tuna_destination_sequential_cases",
+   "qi_tuna_readout_mapping_cases",
+   "typing"
+  ],
+  "scripts/qi_tuna_destination_one_run.py": [
+   "__future__",
+   "acquisition_decisions",
+   "argparse",
+   "collections",
+   "datetime",
+   "html",
+   "json",
+   "math",
+   "pathlib",
+   "qi_platform",
+   "qi_platform_submission_deadline",
+   "qi_projector_live_admission",
+   "qi_tuna_destination_one_analysis",
+   "qi_tuna_destination_one_cases",
+   "qi_tuna_readout_mapping_cases",
+   "time",
+   "typing",
+   "urllib"
+  ],
+  "scripts/qi_tuna_destination_prefix.py": [
+   "__future__",
+   "argparse",
+   "datetime",
+   "decimal",
+   "json",
+   "pathlib",
+   "qi_tuna_readout_destination_analysis",
+   "typing"
+  ],
+  "scripts/qi_tuna_destination_sequential_cases.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "qi_tuna_readout_mapping_cases",
+   "typing"
+  ],
+  "scripts/qi_tuna_destination_sequential_run.py": [
+   "__future__",
+   "acquisition_decisions",
+   "argparse",
+   "collections",
+   "datetime",
+   "html",
+   "json",
+   "math",
+   "pathlib",
+   "qi_platform",
+   "qi_projector_live_admission",
+   "qi_tuna_destination_sequential_cases",
+   "qi_tuna_readout_destination_analysis",
+   "qi_tuna_readout_mapping_cases",
+   "time",
+   "typing",
+   "urllib"
+  ],
+  "scripts/qi_tuna_destination_slot_cases.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "qi_projector_compiler_admission",
+   "qi_tuna_readout_mapping_cases",
+   "typing"
+  ],
+  "scripts/qi_tuna_dispatch_clock.py": [
+   "dataclasses",
+   "math"
+  ],
+  "scripts/qi_tuna_early_label_maps.py": [
+   "__future__",
+   "argparse",
+   "itertools",
+   "numpy",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "qi_tuna_joint_response",
+   "typing"
+  ],
+  "scripts/qi_tuna_final_result_receipt.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "hashlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "re",
+   "typing"
+  ],
+  "scripts/qi_tuna_identity_guard.py": [
+   "hmac",
+   "qi_tuna_subject_binding"
+  ],
+  "scripts/qi_tuna_joint_algebra.py": [
+   "__future__",
+   "algebra_package_tables",
+   "argparse",
+   "fractions",
+   "json",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "qi_tuna_joint_response",
+   "typing"
+  ],
+  "scripts/qi_tuna_joint_package_runtime.py": [
+   "SplitOct",
+   "__future__",
+   "algebra_package_tables",
+   "argparse",
+   "cd_core",
+   "flint",
+   "fractions",
+   "hypercomplex",
+   "hypercomplex_engine",
+   "hyprat",
+   "importlib",
+   "json",
+   "math",
+   "mpmath",
+   "numpy",
+   "pandas",
+   "parallel",
+   "pathlib",
+   "qi_tuna_destination_one_analysis",
+   "qi_tuna_joint_algebra",
+   "qi_tuna_joint_response",
+   "scipy",
+   "sympy",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_joint_response.py": [
+   "__future__",
+   "argparse",
+   "decimal",
+   "json",
+   "numpy",
+   "pathlib",
+   "qi_tuna_destination_analysis_receipt",
+   "qi_tuna_destination_one_analysis",
+   "qi_tuna_destination_prefix",
+   "typing"
+  ],
+  "scripts/qi_tuna_journaled_collection.py": [
+   "collections",
+   "dataclasses",
+   "math",
+   "qi_tuna_attempt_transport",
+   "qi_tuna_capture_commitment",
+   "qi_tuna_readback_collection",
+   "qi_tuna_readback_transport",
+   "qi_tuna_source_association",
+   "typing"
+  ],
+  "scripts/qi_tuna_private_readbacks.py": [
+   "hashlib",
+   "json",
+   "os",
+   "qi_tuna_readback_collection",
+   "qi_tuna_readback_transport",
+   "qi_tuna_source_association",
+   "stat",
+   "types"
+  ],
+  "scripts/qi_tuna_qualification.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "decimal",
+   "hashlib",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_qx_destination.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "datetime",
+   "decimal",
+   "hashlib",
+   "json",
+   "os",
+   "pathlib",
+   "qi_platform",
+   "qi_stack",
+   "qi_tuna_readout_mapping_cases",
+   "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_qx_local_replay.py": [
+   "__future__",
+   "argparse",
+   "cqasm",
+   "datetime",
+   "importlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "qi_tuna_qx_destination",
+   "qxelarator",
+   "sys",
+   "typing",
+   "warnings"
+  ],
+  "scripts/qi_tuna_readback_collection.py": [
+   "collections",
+   "dataclasses",
+   "hashlib",
+   "qi_tuna_readback_transport",
+   "qi_tuna_source_association",
+   "typing"
+  ],
+  "scripts/qi_tuna_readback_transport.py": [
+   "collections",
+   "dataclasses",
+   "hashlib",
+   "math",
+   "re",
+   "typing"
+  ],
+  "scripts/qi_tuna_readout_destination_analysis.py": [
+   "__future__",
+   "acquisition_decisions",
+   "argparse",
+   "collections",
+   "datetime",
+   "decimal",
+   "hashlib",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_projector_compiler_admission",
+   "qi_projector_live_admission",
+   "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_readout_diagnostics.py": [
+   "__future__",
+   "argparse",
+   "itertools",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_tuna_qualification",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_readout_mapping_cases.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "importlib",
+   "json",
+   "opensquirrel",
+   "parallel",
+   "pathlib",
+   "qi_projector_compiler_admission",
+   "qi_toolchain_check",
+   "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_readout_response_mixture.py": [
+   "__future__",
+   "argparse",
+   "decimal",
+   "fractions",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_tuna_qualification",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_sequential_score.py": [
+   "__future__",
+   "fractions",
+   "typing"
+  ],
+  "scripts/qi_tuna_source_association.py": [
+   "collections",
+   "hashlib",
+   "json",
+   "math",
+   "qi_tuna_sequential_score",
+   "typing"
+  ],
+  "scripts/qi_tuna_subject_binding.py": [
+   "dataclasses",
+   "hmac",
+   "qi_tuna_account_binding",
+   "qi_tuna_source_association"
   ],
   "scripts/qi_walsh_exemplar_analysis.py": [
    "__future__",
@@ -13358,6 +14803,56 @@
    "sys",
    "typing"
   ],
+  "scripts/readout_actor_cost_model.py": [
+   "fractions"
+  ],
+  "scripts/readout_actor_schedule_replay.py": [
+   "__future__",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "qiskit",
+   "readout_information_circuits",
+   "sys",
+   "typing"
+  ],
+  "scripts/readout_information_circuits.py": [
+   "qiskit"
+  ],
+  "scripts/readout_information_controls.py": [
+   "__future__",
+   "argparse",
+   "fractions",
+   "json",
+   "math",
+   "numpy",
+   "scipy",
+   "typing"
+  ],
+  "scripts/readout_information_iqm.py": [
+   "math",
+   "typing"
+  ],
+  "scripts/readout_sparse_projection.py": [
+   "__future__",
+   "hashlib",
+   "json",
+   "numpy",
+   "typing"
+  ],
+  "scripts/readout_sparse_receipt.py": [
+   "__future__",
+   "hashlib",
+   "hmac",
+   "io",
+   "json",
+   "qiskit",
+   "re",
+   "readout_sparse_projection",
+   "typing"
+  ],
   "scripts/reconcile_qpu_inventory.py": [
    "__future__",
    "argparse",
@@ -13365,8 +14860,24 @@
    "decimal",
    "hashlib",
    "json",
+   "parallel",
    "pathlib",
    "re",
+   "readout_sparse_receipt",
+   "sys",
+   "typing"
+  ],
+  "scripts/remeasure_history.py": [
+   "__future__",
+   "argparse",
+   "diagnostic_experiments",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "scipy",
+   "sys",
+   "tempfile",
    "typing"
   ],
   "scripts/render_folded_job_review.py": [
@@ -13435,6 +14946,7 @@
    "numpy",
    "parallel",
    "pathlib",
+   "pins",
    "qiskit",
    "re",
    "sys",
@@ -13482,6 +14994,7 @@
    "os",
    "parallel",
    "pathlib",
+   "plan_records",
    "qd_platform",
    "qi_platform",
    "re",
@@ -13678,6 +15191,18 @@
    "tempfile",
    "typing"
   ],
+  "scripts/state_prep_split.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
+   "state_prep_excess",
+   "sys",
+   "typing"
+  ],
   "scripts/stiefel_pfaffian_higher.py": [
    "__future__",
    "argparse",
@@ -13833,6 +15358,27 @@
    "sys",
    "typing",
    "wheel_algebra"
+  ],
+  "scripts/zbmath.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "dataclasses",
+   "datetime",
+   "gzip",
+   "hashlib",
+   "http",
+   "json",
+   "pathlib",
+   "re",
+   "shutil",
+   "sys",
+   "tempfile",
+   "time",
+   "typing",
+   "urllib",
+   "uuid",
+   "xml"
   ]
  },
  "import_root_distributions": {
@@ -13916,6 +15462,9 @@
   ],
   "opensquirrel": [
    "opensquirrel"
+  ],
+  "pandas": [
+   "pandas"
   ],
   "perceval": [
    "perceval-quandela"
