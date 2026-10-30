@@ -1,0 +1,54 @@
+{
+  "allocation": {
+    "automatic_retries": 0,
+    "expected_seconds": 40,
+    "iterations": 8,
+    "max_credits": 1.032768,
+    "max_duration_seconds": 300,
+    "max_samples": 262144,
+    "max_shots": 262144
+  },
+  "artifacts_sha256": {
+    "docs/evidence/ascella-predecessor-admission/acquisition-review-admission.json": "2d05e6831e5faf7fa3f26ae3505e1f10e1d39dc1c0cac37aee2d32b9646eaba8",
+    "docs/evidence/ascella-predecessor-admission/running-plan.json": "89b521b75811d385895ee3c68aca93f4966b6dfe4f3ebce0c5d611b6945a0f6e",
+    "results/quandela/cases/ascella_predecessor/job-00/cases.json": "9778e3a35512bcbf80b79d2c36d2530d13057b313926333921a61bb9c940a2b9",
+    "results/quandela/cases/ascella_predecessor/job-00/circuit.json": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f",
+    "scripts/ascella_predecessor_analysis.py": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398",
+    "scripts/ascella_predecessor_case.py": "91ed74f831d0bc14b0c3248c9e8dc1299c1bcd4af2b11bec63327145506a911b",
+    "scripts/qd_platform.py": "b5bdf1aa76139f17ab178e3a20f4a120cc1543c414fb800273adbeb080e7d8fb"
+  },
+  "authorization": "pending",
+  "body_difference_interpretation": "The fresh body digest differs while cases, reported package versions and shot count match. The retained plan summaries omit body bytes; the difference cause remains unestablished. Body identity does not follow from case identity alone.",
+  "custody": {
+    "origin": "independent agent inspection and parent read-only admission observation",
+    "owner_approval": null,
+    "result_anchor": null,
+    "review_anchor_store": "outside the analyzed run directory, in the committed packet and owner-local write-once review store",
+    "sampling_contract": null,
+    "submission_anchor": null
+  },
+  "findings": [
+    {
+      "disposition": "Bind approved body, case and source/analyzer identities before spending.",
+      "finding": "The generic submit CLI refreshes its plan but supplies zero approved-plan verification callback; live analysis_sources are not checked by plan.",
+      "locator": "scripts/qd_platform.py:1456 and 2919",
+      "severity": "serious"
+    },
+    {
+      "disposition": "Establish a case-wide single-attempt approval guard before spending.",
+      "finding": "The interruption/retry guard applies to one run directory. A fresh copy bypasses case-wide approval consumption.",
+      "locator": "scripts/qd_platform.py:1454",
+      "severity": "boundary"
+    }
+  ],
+  "fresh_body_sha256": "be723686ef415d77ba6205b36ff68b255023259d07d942c4a5fa01b6f4aa4dce",
+  "fresh_provider_observation": "provider-plan-passed",
+  "historical_body_sha256": "4ae3b423e325e39827d217d78118f72164c7228cc49157f1f106fc6f87e39f29",
+  "owner_scope_choice": "retain existing diagnostic with causal attribution unavailable and prepare a separate causal successor",
+  "prepared_at": "2026-10-29T00:54:26.035927+00:00",
+  "reviewed_head": "68ecb43aaa372bea4cafc91cb3a60e8e117bf1b9",
+  "schema": "ascella-diagnostic-acquisition-review-packet-v1",
+  "scope": "one eight-iteration descriptive target-slot diagnostic; physical predecessor causal attribution unavailable; conditional confidence bounds outside this approval scope",
+  "status": "approval-request-withheld",
+  "successor_scope": "separate predecessor-causality design with qualified chronology, randomization and carryover"
+}
