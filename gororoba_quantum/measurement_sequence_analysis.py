@@ -107,6 +107,14 @@ PLANNING_SHOTS = 8192
 MODEL_SCATTER_FLOOR: float | None = None
 MODEL_SCATTER_DIAGNOSTIC_SHA256: str | None = "c39c5b7202fd6d2cd44629a86eed1402a0d234e95502540f37c8216bccc3c080"
 MODEL_SCATTER_FLOOR_FILE = "docs/evidence/measurement_sequence/scatter-floor.json"
+# Floors measured on other backends, each a scatter-floor document bound by its digest: backend -> (path, sha256).
+# A run on a backend listed here reads that backend's floor; every other run reads the file above.
+MODEL_SCATTER_FLOORS: dict[str, tuple[str, str]] = {
+    "ibm_fez": (
+        "docs/evidence/measurement_sequence/scatter-floor-ibm_fez.json",
+        "b5bdb12c55a8b3aa9c1fd339727461b0bc3319079d25ece626a1b246e447180b",
+    ),
+}
 SCATTER_FLOOR_SCHEMA = "measurement-sequence-scatter-floor-v1"
 # An illustrative floor for the sweeps and the Aer validation, which exercise the mechanism. It is not a measurement
 # of any device.
@@ -1377,23 +1385,28 @@ def bound_floor(backends: set[str]) -> tuple[float | None, str | None]:
     """
     if MODEL_SCATTER_FLOOR is not None:
         return MODEL_SCATTER_FLOOR, None
-    if MODEL_SCATTER_DIAGNOSTIC_SHA256 is None:
+    named = next(iter(backends)) if len(backends) == 1 else None
+    if named in MODEL_SCATTER_FLOORS:
+        relative, bound = MODEL_SCATTER_FLOORS[named]
+    elif MODEL_SCATTER_DIAGNOSTIC_SHA256 is None:
         return None, (
             "no model scatter floor: MODEL_SCATTER_FLOOR is None and MODEL_SCATTER_DIAGNOSTIC_SHA256 binds no "
             "diagnostic file; run the measurement-sequence-diagnostic family and register its scatter-floor.json"
         )
-    path = Path(__file__).resolve().parents[1] / MODEL_SCATTER_FLOOR_FILE
+    else:
+        relative, bound = MODEL_SCATTER_FLOOR_FILE, MODEL_SCATTER_DIAGNOSTIC_SHA256
+    path = Path(__file__).resolve().parents[1] / relative
     try:
         data = path.read_bytes()
     except OSError as error:
-        return None, f"the bound scatter-floor file {MODEL_SCATTER_FLOOR_FILE} is unreadable: {error}"
+        return None, f"the bound scatter-floor file {relative} is unreadable: {error}"
     digest = hashlib.sha256(data).hexdigest()
-    if digest != MODEL_SCATTER_DIAGNOSTIC_SHA256:
-        return None, f"{MODEL_SCATTER_FLOOR_FILE} hashes to {digest}, not the bound {MODEL_SCATTER_DIAGNOSTIC_SHA256}"
+    if digest != bound:
+        return None, f"{relative} hashes to {digest}, not the bound {bound}"
     document = json.loads(data)
     floor = document.get("floor")
     if document.get("schema") != SCATTER_FLOOR_SCHEMA or not isinstance(floor, float) or not 0 < floor < 1:
-        return None, f"{MODEL_SCATTER_FLOOR_FILE} is not a {SCATTER_FLOOR_SCHEMA} document with a floor in (0, 1)"
+        return None, f"{relative} is not a {SCATTER_FLOOR_SCHEMA} document with a floor in (0, 1)"
     if backends != {document.get("backend")}:
         return None, f"the scatter floor was measured on {document.get('backend')}, not on {sorted(backends)}"
     return floor, None
