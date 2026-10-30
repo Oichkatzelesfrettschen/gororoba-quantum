@@ -18,10 +18,10 @@
     "mean_delta": -0.001709,
     "standard_error": 0.001303
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.093624,
-    0.103179
+    0.104963
    ],
    "self_check": {
     "pairs": 29,
@@ -55,7 +55,7 @@
     "mean_delta": -0.018082,
     "standard_error": 0.001519
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.087975,
     0.141502
@@ -92,7 +92,7 @@
     "mean_delta": -0.031616,
     "standard_error": 0.001346
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.140198,
     0.185516
@@ -129,7 +129,7 @@
     "mean_delta": -0.031616,
     "standard_error": 0.001346
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.164581,
     0.2099
@@ -354,7 +354,7 @@
     "mean_delta": -0.009147,
     "standard_error": 0.002392
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.194173,
     0.204981
@@ -392,7 +392,7 @@
     "mean_delta": -0.001483,
     "standard_error": 0.000346
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.0702,
     0.084521
@@ -431,7 +431,7 @@
     "mean_delta": -0.001784,
     "standard_error": 0.000427
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.0819,
     0.086299
@@ -468,7 +468,7 @@
     "mean_delta": -0.004185,
     "standard_error": 0.002446
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.423829,
     0.444755
@@ -505,7 +505,7 @@
     "mean_delta": -0.002874,
     "standard_error": 0.001246
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.09342,
     0.098038
@@ -542,10 +542,10 @@
     "mean_delta": 0.001819,
     "standard_error": null
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.002955,
-    0.008277
+    0.009003
    ],
    "self_check": {
     "pairs": 149,
@@ -579,10 +579,10 @@
     "mean_delta": 0.002239,
     "standard_error": null
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.002158,
-    0.007638
+    0.008282
    ],
    "self_check": {
     "pairs": 149,
@@ -616,10 +616,10 @@
     "mean_delta": 0.002757,
     "standard_error": null
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.003018,
-    0.008926
+    0.009481
    ],
    "self_check": {
     "pairs": 149,
@@ -653,10 +653,10 @@
     "mean_delta": 0.002431,
     "standard_error": null
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.00215,
-    0.007683
+    0.0084
    ],
    "self_check": {
     "pairs": 149,
@@ -690,10 +690,10 @@
     "mean_delta": -0.002475,
     "standard_error": 0.000835
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.01762,
-    0.025655
+    0.029415
    ],
    "self_check": {
     "pairs": 2,
@@ -743,10 +743,10 @@
     "mean_delta": -0.000195,
     "standard_error": null
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.005879,
-    0.00887
+    0.010444
    ],
    "self_check": {
     "pairs": 148,
@@ -780,10 +780,10 @@
     "mean_delta": -7.1e-05,
     "standard_error": null
    },
-   "distinct_states": 8,
+   "distinct_states": 10,
    "state_mean_tvd_range": [
     0.006358,
-    0.008677
+    0.009675
    ],
    "self_check": {
     "pairs": 148,
@@ -1024,13 +1024,124 @@
    "executed_after_current": true
   },
   {
+   "run": "results/live/2026-10-26T202817.431767Z",
+   "backend": "ibm_kingston",
+   "members": 44,
+   "shots": {
+    "4096": 44
+   },
+   "execution_mean_tvd": [
+    0.170697
+   ],
+   "current_minus_execution": {
+    "replicas": 1364,
+    "pubs": 44,
+    "mean_delta": -0.001238,
+    "standard_error": 0.000794
+   },
+   "distinct_states": 10,
+   "state_mean_tvd_range": [
+    0.165804,
+    0.172096
+   ],
+   "self_check": {
+    "pairs": 1364,
+    "mean_abs_ghost_minus_recorded_tvd": 0.006308,
+    "max_abs_ghost_minus_recorded_tvd": 0.035156,
+    "mean_abs_ghost_minus_resampled_tvd": 0.005996,
+    "mean_ghost_minus_recorded_tvd": -0.000112,
+    "sd": 0.008639
+   },
+   "calibration_change": {
+    "qubits": 62,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261026T1425320700.json",
+    "cz_error_change": 9.4894e-05,
+    "readout_error_change": -0.001171481
+   },
+   "executed_after_current": true
+  },
+  {
+   "run": "results/live/2026-10-27T160530.294787Z",
+   "backend": "ibm_kingston",
+   "members": 44,
+   "shots": {
+    "4096": 44
+   },
+   "execution_mean_tvd": [
+    0.161682
+   ],
+   "current_minus_execution": {
+    "replicas": 1320,
+    "pubs": 44,
+    "mean_delta": -0.000464,
+    "standard_error": 0.000985
+   },
+   "distinct_states": 10,
+   "state_mean_tvd_range": [
+    0.158361,
+    0.161781
+   ],
+   "self_check": {
+    "pairs": 1320,
+    "mean_abs_ghost_minus_recorded_tvd": 0.006313,
+    "max_abs_ghost_minus_recorded_tvd": 0.028076,
+    "mean_abs_ghost_minus_resampled_tvd": 0.006268,
+    "mean_ghost_minus_recorded_tvd": 0.000374,
+    "sd": 0.008412
+   },
+   "calibration_change": {
+    "qubits": 60,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261027T0907550700.json",
+    "cz_error_change": 9.4477e-05,
+    "readout_error_change": -0.001411947
+   },
+   "executed_after_current": true
+  },
+  {
+   "run": "results/live/2026-10-27T173602.753176Z",
+   "backend": "ibm_kingston",
+   "members": 56,
+   "shots": {
+    "4096": 56
+   },
+   "execution_mean_tvd": [
+    0.181876
+   ],
+   "current_minus_execution": {
+    "replicas": 1064,
+    "pubs": 56,
+    "mean_delta": -0.000568,
+    "standard_error": 0.000299
+   },
+   "distinct_states": 10,
+   "state_mean_tvd_range": [
+    0.171463,
+    0.181876
+   ],
+   "self_check": {
+    "pairs": 1064,
+    "mean_abs_ghost_minus_recorded_tvd": 0.006803,
+    "max_abs_ghost_minus_recorded_tvd": 0.034668,
+    "mean_abs_ghost_minus_resampled_tvd": 0.006866,
+    "mean_ghost_minus_recorded_tvd": 0.000165,
+    "sd": 0.008961
+   },
+   "calibration_change": {
+    "qubits": 76,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261027T1034080700.json",
+    "cz_error_change": 0.000332844,
+    "readout_error_change": -0.002120169
+   },
+   "executed_after_current": true
+  },
+  {
    "run": "results/live/kingston-wide-control-result",
    "skipped": "the run keeps no record.json, isa.qpy, collect.json"
   }
  ],
  "correlations": {
   "runs": 14,
-  "executed_after_current": 13,
+  "executed_after_current": 16,
   "cz_runs": 13,
   "cz_error_higher_now": 9,
   "cz_error_change_vs_distance_change": -0.2976,
