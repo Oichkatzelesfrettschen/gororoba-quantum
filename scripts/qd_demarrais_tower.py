@@ -561,8 +561,11 @@ def analyze_run(run_dir: Path) -> dict[str, Any]:
                 else:
                     c_leak += int(cnt)
 
-        denom = max(1, c_self + c_disp)
-        d_obs = (c_disp - c_self) / denom
+        if c_self + c_disp == 0:
+            # No detection on the self or dispersive modes measures nothing about this setting's observable.
+            unavailable.append({"name": s["name"], "arm": s["arm"], "reason": "no accepted detections"})
+            continue
+        d_obs = (c_disp - c_self) / (c_self + c_disp)
         ideal_d = float(s["ideal"]["d_observable"])
         arm = s["arm"]
         if "null" in arm:

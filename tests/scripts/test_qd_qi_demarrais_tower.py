@@ -33,6 +33,7 @@ def test_qd_demarrais_tower_self_test_and_check() -> None:
     qd_demarrais_tower.check_all_cases()
 
 
+@pytest.mark.audit
 def test_qd_demarrais_tower_synthetic_analysis(tmp_path: Path) -> None:
     case_dir = qd_demarrais_tower.CASE_ROOT / "ascella" / "job-dm3"
     cases = json.loads((case_dir / "cases.json").read_text(encoding="utf-8"))
@@ -126,6 +127,7 @@ def test_qi_demarrais_tower_check_and_synthetic_analysis(tmp_path: Path) -> None
         _check(abs(b_analysis[expected_key] - 1.0) < 1e-9, f"{batch_name} {expected_key} != 1.0")
 
 
+@pytest.mark.audit
 def test_qd_demarrais_tower_withholds_a_verdict_without_null_or_counts(tmp_path: Path) -> None:
     cases = json.loads(
         (qd_demarrais_tower.CASE_ROOT / "ascella" / "job-dm1" / "cases.json").read_text(encoding="utf-8")
@@ -144,3 +146,38 @@ def test_qd_demarrais_tower_withholds_a_verdict_without_null_or_counts(tmp_path:
     report = qd_demarrais_tower.analyze_run(run_dir)
     _check(report["verdict"] == "UNADJUDICATED: settings without counts", f"partial verdict {report['verdict']}")
     _check(len(report["unavailable_settings"]) == len(cases["settings"]), "every unavailable setting is reported")
+
+
+def constructed_run(tmp_path: Path, arms: list[str], iterations: list[dict[str, object]]) -> Path:
+    """A run directory whose manifest the test builds: one photon in mode 0 of a 12-mode window per setting."""
+    settings = [
+        {"name": f"s{i}", "subfamily": "unit", "arm": arm, "ideal": {"d_observable": -1.0 if "null" in arm else 1.0}}
+        for i, arm in enumerate(arms)
+    ]
+    run_dir = tmp_path / "run"
+    run_dir.mkdir()
+    manifest = {"family": "unit", "job": "unit", "output_modes": 12, "settings": settings}
+    (run_dir / "cases.json").write_text(json.dumps(manifest) + "\n", encoding="utf-8")
+    (run_dir / "results.json").write_text(json.dumps({"iterations": iterations}) + "\n", encoding="utf-8")
+    return run_dir
+
+
+DISPERSIVE = {"counts": {"|0,0,1,0,0,0,0,0,0,0,0,0>": 100}}
+SELF = {"counts": {"|1,0,0,0,0,0,0,0,0,0,0,0>": 100}}
+
+
+@pytest.mark.parametrize(
+    ("arms", "iterations", "verdict"),
+    [
+        (["active", "null"], [DISPERSIVE, SELF], "CONFORMANT"),
+        (["active", "null"], [SELF, SELF], "FALSIFIED"),
+        (["active", "active"], [DISPERSIVE, DISPERSIVE], "UNADJUDICATED: no null arm"),
+        (["active", "null"], [{"missing": True}, SELF], "UNADJUDICATED: settings without counts"),
+        (["active", "null"], [{"counts": {}, "samples": 0}, SELF], "UNADJUDICATED: settings without counts"),
+    ],
+)
+def test_qd_demarrais_tower_verdict_on_a_constructed_manifest(
+    tmp_path: Path, arms: list[str], iterations: list[dict[str, object]], verdict: str
+) -> None:
+    report = qd_demarrais_tower.analyze_run(constructed_run(tmp_path, arms, iterations))
+    _check(report["verdict"] == verdict, f"verdict {report['verdict']}, expected {verdict}")
