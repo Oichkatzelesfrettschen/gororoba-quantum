@@ -2590,6 +2590,48 @@
       "run": "results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01",
       "family": "photonic two-photon 21-pair octonion associator character atlas",
       "question": "Does sim:ascella route two photons through each of the 21 octonion pairs' character unitaries into the predicted focal coset pair, with the stabilizer-line pairs persisting in (0, 2)?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-swapped-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T054727Z-qpu_belenos-box_kite_photonic_packed_swapped-job-00",
+      "family": "box-kite photonic mode-swapped packed blocks",
+      "question": "Does the packed-block residual a - p of each sign block follow the block or the 4-mode slot it sits on, with every block moved three slots from its packed run?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-swapped-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T060255Z-qpu_belenos-box_kite_photonic_packed_swapped-job-01",
+      "family": "box-kite photonic mode-swapped packed blocks",
+      "question": "Does the packed-block residual a - p of each sign block follow the block or the 4-mode slot it sits on, with every block moved three slots from its packed run?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-swapped-job-02",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T060813Z-qpu_belenos-box_kite_photonic_packed_swapped-job-02",
+      "family": "box-kite photonic mode-swapped packed blocks",
+      "question": "Does the packed-block residual a - p of each sign block follow the block or the 4-mode slot it sits on, with every block moved three slots from its packed run?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-swapped-job-03",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T061151Z-qpu_belenos-box_kite_photonic_packed_swapped-job-03",
+      "family": "box-kite photonic mode-swapped packed blocks",
+      "question": "Does the packed-block residual a - p of each sign block follow the block or the 4-mode slot it sits on, with every block moved three slots from its packed run?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-swapped-job-04",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T061942Z-qpu_belenos-box_kite_photonic_packed_swapped-job-04",
+      "family": "box-kite photonic mode-swapped packed blocks",
+      "question": "Does the packed-block residual a - p of each sign block follow the block or the 4-mode slot it sits on, with every block moved three slots from its packed run?"
+    },
+    {
+      "id": "qd-qpu-belenos-packed-swapped-job-05",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T062649Z-qpu_belenos-box_kite_photonic_packed_swapped-job-05",
+      "family": "box-kite photonic mode-swapped packed blocks",
+      "question": "Does the packed-block residual a - p of each sign block follow the block or the 4-mode slot it sits on, with every block moved three slots from its packed run?"
     }
   ],
   "claims": [
@@ -13318,6 +13360,56 @@
       "gates": {},
       "acquisitions": [
         "qd-sim-ascella-two-photon-character-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-packed-mode-swap",
+      "statement": "Moving each of the 32 packed box-kite sign blocks three of the six 4-mode slots on qpu:belenos (six jobs, 320,000 shots, 0 reported credits) changes the block's single-click algebra-mode share a by more than 4.5 two-sample standard errors in 26 of 32 blocks, with the largest change 0.146 (z 36). The preregistered rule returns mixed: over the 16 half blocks the swapped residual a - 1/2 correlates at r = -0.34 (95 % interval -0.71 to +0.19) with the same block's packed residual and at r = -0.59 (-0.84 to -0.13) with the packed mean of the other half blocks on the slot it now occupies. The bright block [[1,-1],[-1,1]] at t = -1 reads 98.9 % on modes 8-11 against 86.1 % on modes 20-23.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One chip in one calibration state, the two layouts about one hour apart and no same-layout repeat, so run-to-run drift is not bounded and the placement effect is not separated from it. Both predictors correlate negatively, so neither the block nor the slot account of the residual holds in the form preregistered; the data do not identify a slot-by-t interaction, which the per-cell means (one to four blocks each) only suggest. The comparison reads the packed qpu:belenos collection retained beside box_kite_photonic_packed, not these runs' directories.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-30T054727Z-qpu_belenos-box_kite_photonic_packed_swapped-job-00/results.json",
+          "sha256": "474aaa8bf31d326ece0ee05b153805b8194e57ea8e534588b49548af39110ff0"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T060255Z-qpu_belenos-box_kite_photonic_packed_swapped-job-01/results.json",
+          "sha256": "8801b3fd556aacbcb28ed611a276a43105b63ee56b2036cfe202bd34e04b94f4"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T060813Z-qpu_belenos-box_kite_photonic_packed_swapped-job-02/results.json",
+          "sha256": "c53d0ca2fe2035fcbc694649344cd58f4909f84ba33a10e121a471c583d795b5"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T061151Z-qpu_belenos-box_kite_photonic_packed_swapped-job-03/results.json",
+          "sha256": "b44ddd1a1519b36090e7dbacd65c49f47aee1b0b8c3eb7582f54f3428ab4551a"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T061942Z-qpu_belenos-box_kite_photonic_packed_swapped-job-04/results.json",
+          "sha256": "d9108f23e414d5fd51ac007d7e6db2e72c3f6ae074d9ab33ac5403f7750d5792"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T062649Z-qpu_belenos-box_kite_photonic_packed_swapped-job-05/results.json",
+          "sha256": "0c54c60a14868dfc752166c3551c14f68cc9019888d79b612cd7e6c223ff14cf"
+        }
+      ],
+      "documents": [
+        "docs/notes/quandela/strategy.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-packed-swapped-job-00",
+        "qd-qpu-belenos-packed-swapped-job-01",
+        "qd-qpu-belenos-packed-swapped-job-02",
+        "qd-qpu-belenos-packed-swapped-job-03",
+        "qd-qpu-belenos-packed-swapped-job-04",
+        "qd-qpu-belenos-packed-swapped-job-05"
       ],
       "assumptions": [],
       "depends_on": [],
