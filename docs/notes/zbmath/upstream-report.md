@@ -10,6 +10,18 @@ Every item cites a capture of the audit retained at merge commit `a9956e3`
 [guide](README.md#falsification-of-the-deviations). An item enters a sent message only after its falsifier
 below has been run on the day of sending and has failed to falsify it.
 
+Neither message is needed by this repository: `scripts/zbmath.py` already handles every behavior below
+(`check_window` enforces the paging bounds, `envelope` reads `execution_bool` rather than the HTTP status,
+`oai_parse` takes the OAI error code from the element text, and `run_match` and `run_bibtex` send `m` explicitly).
+An upstream fix changes no current result here. Three items would add content or reach for this repository:
+A7 (the matcher honoring its documented default), A9 and B9 (summaries now withheld behind the license
+placeholder), and B4 (a harvestable `openaire` set). The remaining items benefit other clients, generated
+code and validators. Sending is therefore a courtesy the owner may decline, and the record stands as the
+audit's reconciliation either way.
+
+A message cites only retained bytes. A behavior verified by curl but absent from the retained captures
+carries its reproduction line and the words "not among the retained captures".
+
 ## Falsification ledger
 
 Before sending: run `"$PYTHON" scripts/zbmath.py capture --out docs/evidence/zbmath-api-audit-SENDDATE` and
@@ -20,9 +32,9 @@ the behavior. An item whose finding no longer holds, or that turns out to be doc
 | Item | Claim | Falsifier | Status |
 |---|---|---|---|
 | A1 | the OpenAPI document states neither the page-size range 1..500 nor the 10,000-result window | a `minimum`/`maximum` in a `page` or `results_per_page` schema, or the bounds named in an endpoint description or help page | open |
-| A2 | the `_structured_search` examples use parameter names the endpoints ignore | any of `reference_zbmath_id`, `zbmath_id`, `contributor_name`, `author_code`, `collective`, `in_collective` returning results alone | open |
+| A2 | the `_structured_search` examples use parameter names the endpoints ignore (the name mismatch is in capture 00; the ignored-name responses are curl-only, not retained) | any of `reference_zbmath_id`, `zbmath_id`, `contributor_name`, `author_code`, `collective`, `in_collective` returning results alone | open |
 | A3 | `last_id` is null on every answer while the OpenAPI example shows 1000000 | a non-null `last_id` on any request, or a request parameter that consumes it | open |
-| A4 | `/docs` and `/redoc` redirect to 404 | either path serving the Swagger or ReDoc page, with or without the terms cookie | open |
+| A4 | `/docs` redirects to a 404 envelope (capture 57); `/redoc` and the with-cookie variant are curl-only, not retained | `/docs` serving the Swagger page | open |
 | A5 | error envelopes stamp `time_stamp` in local time without a zone | an error `time_stamp` within seconds of the UTC `time_stamp` of an adjacent success answer, or carrying a zone | open |
 | A6 | an unknown id answers HTTP 200 while a search without hits answers HTTP 404 | the two status codes agreeing on the send date | open |
 | A7 | the citation matcher returns hits below its documented default minimum score 5.0 when `m` is absent | a request without `m` returning only scores of 5.0 or more for a query that yields lower-scored hits with `m=0` | open |
@@ -31,17 +43,18 @@ the behavior. An item whose finding no longer holds, or that turns out to be doc
 | B1 | the first resumptionToken carries `cursor="100"` | `cursor="0"` on the first page of a list | open |
 | B2 | `earliestDatestamp` is the bare year `1755` | a full `YYYY-MM-DDThh:mm:ssZ` value | open |
 | B3 | a month `from` and a mixed-granularity `from`/`until` are accepted | `badArgument` for either request | open |
-| B4 | an unknown set, and the advertised `openaire` set, answer `invalid set` | a protocol error code, or records for `openaire` | open |
+| B4 | an unknown set (capture 44), and the advertised `openaire` set in ListIdentifiers `oai_dc` (capture 51), answer `invalid set`; the ListRecords and `oai_zb_preview` variants are curl-only, not retained | a protocol error code, or records for `openaire` | open |
 | B5 | a resumptionToken not shaped as a UUID answers an HTML HTTP 500 | `badResumptionToken` for `deadbeef` | open |
 | B6 | the `oai_zb_preview` schema URL is relative and resolves to 404 against the base URL | an absolute schema URL, or the schema served under `/v1/static/` | open |
 | B7 | absent values print as the string `None` in `oai_dc` and `oai_zb_preview` | empty or omitted elements for the absent contributor and reviewer of 6123912 | open |
-| B8 | OAI errors carry HTTP 400 or 404 | HTTP 200 on error answers | open; a note |
-| B9 | the `oai_zb_preview` summary of 6123912 was served once and the placeholder afterwards | the summary served again | open; a question |
+| B8 | OAI errors carry HTTP 400 or 404 | HTTP 200 on error answers | withheld from message B: section 3.1.2.2 permits non-200 codes, so the point is advice, not conformance |
+| B9 | the `oai_zb_preview` summary of 6123912 was served in the 13:54:39Z observation and the placeholder in the later capture 34 | the summary served again | open; a question, labeled B8 in message B |
 
 Withheld, with the reason: DOI in the REST path (route design; `doi:` search serves it), HEAD and OPTIONS
 405, absent compression, validator, CORS and rate-limit headers on REST (design choices with no stated
-contract), the Cloudflare challenge on the collaboration-distance page (site policy for a web tool), and the
-missing cursor beyond 10,000 REST results (OAI-PMH serves bulk access).
+contract), the Cloudflare challenge on the collaboration-distance page (site policy for a web tool), the
+missing cursor beyond 10,000 REST results (OAI-PMH serves bulk access), and HTTP 400/404 on OAI errors (B8,
+permitted by section 3.1.2.2).
 
 ## Message A: REST API and citation matcher
 
@@ -51,8 +64,8 @@ Subject: zbMATH Open REST API 1.9.33 and citation matcher: documentation points 
 > Dear zbMATH Open API team,
 >
 > The zbMATH Open REST API (OpenAPI version 1.9.33) and the citation matcher (Script API v1.6.26) serve a
-> literature audit for research on Cayley-Dickson algebras. A systematic pass over every endpoint and search
-> field on 2026-10-29 found the interfaces robust and well suited to citation work. Nine observations concern
+> literature audit for research on Cayley-Dickson algebras. A pass over each endpoint and the documented search
+> fields on 2026-10-29 found the interfaces robust and well suited to citation work. Nine observations concern
 > documentation and a few response conventions; each links the retained raw response and gives a one-line
 > reproduction.
 >
@@ -61,23 +74,25 @@ Subject: zbMATH Open REST API 1.9.33 and citation matcher: documentation points 
 > too large"). The OpenAPI schemas of `page` and `results_per_page` carry no `minimum` or `maximum`, and the
 > endpoint descriptions name neither bound, while the API description announces endpoint-specific limits.
 > Stating both bounds in the schemas would let generated clients validate locally.
+> `curl 'https://api.zbmath.org/v1/document/_search?search_string=cc:17&results_per_page=501'` and
 > `curl 'https://api.zbmath.org/v1/document/_search?search_string=cc:17&page=10000&results_per_page=1'`
 > (captures 14 and 16).
 >
 > **A2. Structured-search examples.** The examples of `/document/_structured_search` and
 > `/author/_structured_search` use `reference_zbmath_id`, `zbmath_id`, `contributor_name`, `author_code`,
-> `collective` and `in_collective`; the endpoints accept the descriptive names (`Reference text`,
-> `Author name`, `Collective code`, ...) and answer "no parameters given" to a request carrying only an
-> example name.
+> `collective` and `in_collective`, while the same document declares the parameters under descriptive names
+> (`Reference text`, `Author name`, `Collective code`, ...) (capture 00). A request carrying only an example
+> name answers "no parameters given", the answer of an empty request (capture 19); the example-name
+> response itself is not among the retained captures:
 > `curl 'https://api.zbmath.org/v1/document/_structured_search?zbmath_id=6383667'`.
 >
-> **A3. `last_id`.** Every answer carries `"last_id": null`; the example response in the OpenAPI document shows
+> **A3. `last_id`.** Every retained answer carries `"last_id": null`; the example response in the OpenAPI document shows
 > `"last_id": 1000000` beside `"internal_code": "dev id to find bugs"`. A sentence on the intended meaning of
 > `last_id`, or its removal from the example, would settle how clients should treat it (capture 00).
 >
-> **A4. Documentation paths.** `https://api.zbmath.org/docs` and `/redoc` redirect to `/v1/docs` and
-> `/v1/redoc`, which answer the JSON 404 envelope with or without the terms cookie; the Swagger page itself
-> lives at `https://api.zbmath.org/?tnc_agreed=1` (captures 57 and 58).
+> **A4. Documentation path.** `https://api.zbmath.org/docs` redirects to `/v1/docs`, which answers the JSON
+> 404 envelope; the Swagger page itself lives at `https://api.zbmath.org/?tnc_agreed=1` (captures 57 and
+> 58).
 >
 > **A5. Time stamps.** Success envelopes stamp `time_stamp` in UTC with a `Z` suffix
 > (`2026-10-29T15:28:34Z`); error envelopes stamp local time without a zone and with a space separator
@@ -124,8 +139,8 @@ Subject: zbMATH Open OAI-PMH (https://oai.zbmath.org/v1/): conformance points ag
 > The zbMATH Open OAI-PMH interface serves incremental harvests by MSC class for a research literature audit.
 > A conformance pass on 2026-10-29 against the OAI-PMH 2.0 specification
 > (https://www.openarchives.org/OAI/openarchivesprotocol.html) found the verbs, both metadata formats and
-> resumption working. Seven conformance points, a note and a question each cite the clause concerned and the
-> retained raw response.
+> resumption working. Six conformance points, a metadata-quality point and a question each cite the clause
+> concerned and the retained raw response.
 >
 > **B1. Cursor.** The first ListIdentifiers page returns `<resumptionToken completeListSize="135"
 > cursor="100">`. Section 3.5 defines `cursor` as "a count of the number of elements of the complete list thus
@@ -144,8 +159,8 @@ Subject: zbMATH Open OAI-PMH (https://oai.zbmath.org/v1/): conformance points ag
 >
 > **B4. Sets.** An unknown set returns `<error code="400">invalid set</error>`; section 3.6 lists the error
 > codes, and `badArgument` fits an illegal set. ListSets advertises `openaire` ("Required set for OpenAIRE"),
-> and every request naming it returns the same `invalid set`, across ListIdentifiers, ListRecords and both
-> metadata formats (captures 32, 44 and 51).
+> and a ListIdentifiers request naming it returns the same `invalid set` (captures 32, 44 and 51). Should
+> `openaire` remain advertised?
 >
 > **B5. Malformed resumptionToken.** A token outside the UUID shape (`resumptionToken=deadbeef`) returns an
 > HTML "500 Internal Server Error" page, while an unknown UUID-shaped token returns `badResumptionToken`
@@ -162,12 +177,8 @@ Subject: zbMATH Open OAI-PMH (https://oai.zbmath.org/v1/): conformance points ag
 > and `<zbmath:review_sign>None</zbmath:review_sign>` in `oai_zb_preview`, where the record has no such value;
 > omitting the element keeps "None" from entering harvested metadata as a name (captures 33 and 34).
 >
-> **Note B8.** Error answers carry HTTP 400 or 404 (badVerb 404, cannotDisseminateFormat 400). Section
-> 3.1.2.2 keeps OAI-PMH errors distinct from HTTP status codes; harvesting libraries that stop at a non-200
-> status lose the OAI error code, so HTTP 200 with the `<error>` element serves them best (captures 37 to 41).
->
-> **Question B9.** At 2026-10-29T13:54:39Z, GetRecord in `oai_zb_preview` for `oai:zbmath.org:6123912` served
-> the full summary of the article; every request from 14:04Z on served the license placeholder. Which of the
+> **Question B8.** At 2026-10-29T13:54:39Z, GetRecord in `oai_zb_preview` for `oai:zbmath.org:6123912` served
+> the full summary of the article; the later capture at 15:29:28Z served the license placeholder. Which of the
 > two reflects the intended state of that record?
 >
 > The raw responses and an offline replay of every point are public at
