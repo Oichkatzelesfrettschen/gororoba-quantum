@@ -397,6 +397,9 @@ def main() -> None:
     for row in receipt["incidences"]:
         status = row.get("comparison", {}).get("status", "emitted")
         print(f"{row['slug']} {status} vars={len(row['variables'])} g={row['generator_count']} {row['wall_seconds']}s")
+    different = [row["slug"] for row in receipt["incidences"] if row.get("comparison", {}).get("status") == "different"]
+    if different:
+        raise SystemExit(f"regenerated fiber inputs differ from the computed headers: {', '.join(different)}")
 
 
 if __name__ == "__main__":
