@@ -1,0 +1,252 @@
+{
+ "blocks": [
+  {
+   "a": 1.0,
+   "a_wilson95": [
+    0.999543544,
+    1.0
+   ],
+   "config": "two_label-18",
+   "dark_corrected": null,
+   "in_block": 0.164341812,
+   "in_block_wilson95": [
+    0.16115661,
+    0.167577392
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 0,
+   "one_click_by_mode": [
+    4173,
+    4239,
+    0,
+    0
+   ],
+   "one_click_outside_block": 42774,
+   "one_click_outside_by_mode": {
+    "14": 4281,
+    "15": 4290,
+    "18": 4438,
+    "19": 4116,
+    "20": 4243,
+    "21": 4269,
+    "6": 4342,
+    "7": 4243,
+    "8": 4244,
+    "9": 4308
+   },
+   "other_multi_click": 8814,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.003922967
+  },
+  {
+   "a": 0.0,
+   "a_wilson95": [
+    0.0,
+    0.000447262
+   ],
+   "config": "two_label-19",
+   "dark_corrected": null,
+   "in_block": 0.167721643,
+   "in_block_wilson95": [
+    0.164509912,
+    0.170983244
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 0,
+   "one_click_by_mode": [
+    0,
+    0,
+    4342,
+    4243
+   ],
+   "one_click_outside_block": 42601,
+   "one_click_outside_by_mode": {
+    "0": 4173,
+    "1": 4239,
+    "14": 4281,
+    "15": 4290,
+    "18": 4438,
+    "19": 4116,
+    "20": 4243,
+    "21": 4269,
+    "8": 4244,
+    "9": 4308
+   },
+   "other_multi_click": 8814,
+   "p_algebra": "0",
+   "total_variation_from_ideal": 0.005765871
+  },
+  {
+   "a": 1.0,
+   "a_wilson95": [
+    0.999551013,
+    1.0
+   ],
+   "config": "two_label-20",
+   "dark_corrected": null,
+   "in_block": 0.167076935,
+   "in_block_wilson95": [
+    0.163870227,
+    0.17033361
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 0,
+   "one_click_by_mode": [
+    4244,
+    4308,
+    0,
+    0
+   ],
+   "one_click_outside_block": 42634,
+   "one_click_outside_by_mode": {
+    "0": 4173,
+    "1": 4239,
+    "14": 4281,
+    "15": 4290,
+    "18": 4438,
+    "19": 4116,
+    "20": 4243,
+    "21": 4269,
+    "6": 4342,
+    "7": 4243
+   },
+   "other_multi_click": 8814,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.003741815
+  },
+  {
+   "a": 0.0,
+   "a_wilson95": [
+    0.0,
+    0.000447992
+   ],
+   "config": "two_label-21",
+   "dark_corrected": null,
+   "in_block": 0.16744813,
+   "in_block_wilson95": [
+    0.164238528,
+    0.170707644
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 1,
+   "one_click_by_mode": [
+    0,
+    0,
+    4281,
+    4290
+   ],
+   "one_click_outside_block": 42615,
+   "one_click_outside_by_mode": {
+    "0": 4173,
+    "1": 4239,
+    "18": 4438,
+    "19": 4116,
+    "20": 4243,
+    "21": 4269,
+    "6": 4342,
+    "7": 4243,
+    "8": 4244,
+    "9": 4308
+   },
+   "other_multi_click": 8813,
+   "p_algebra": "0",
+   "total_variation_from_ideal": 0.000525026
+  },
+  {
+   "a": 0.0,
+   "a_wilson95": [
+    0.0,
+    0.000448882
+   ],
+   "config": "two_label-22",
+   "dark_corrected": null,
+   "in_block": 0.167116008,
+   "in_block_wilson95": [
+    0.163908996,
+    0.170372982
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 0,
+   "one_click_by_mode": [
+    0,
+    0,
+    4438,
+    4116
+   ],
+   "one_click_outside_block": 42632,
+   "one_click_outside_by_mode": {
+    "0": 4173,
+    "1": 4239,
+    "14": 4281,
+    "15": 4290,
+    "20": 4243,
+    "21": 4269,
+    "6": 4342,
+    "7": 4243,
+    "8": 4244,
+    "9": 4308
+   },
+   "other_multi_click": 8814,
+   "p_algebra": "0",
+   "total_variation_from_ideal": 0.018821604
+  },
+  {
+   "a": 1.0,
+   "a_wilson95": [
+    0.999548904,
+    1.0
+   ],
+   "config": "two_label-23",
+   "dark_corrected": null,
+   "in_block": 0.166295471,
+   "in_block_wilson95": [
+    0.163094876,
+    0.169546151
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 0,
+   "one_click_by_mode": [
+    4243,
+    4269,
+    0,
+    0
+   ],
+   "one_click_outside_block": 42674,
+   "one_click_outside_by_mode": {
+    "0": 4173,
+    "1": 4239,
+    "14": 4281,
+    "15": 4290,
+    "18": 4438,
+    "19": 4116,
+    "6": 4342,
+    "7": 4243,
+    "8": 4244,
+    "9": 4308
+   },
+   "other_multi_click": 8814,
+   "p_algebra": "1",
+   "total_variation_from_ideal": 0.001527256
+  }
+ ],
+ "cases_sha256": "3653abd9599a6f4244fc8ff13b19c3f15f66fb0929a863d402bf8a78ce6511df",
+ "compiled": {
+  "distinct": 1,
+  "iterations": [],
+  "job": {
+   "chars": 16226,
+   "sha256": "0f7eec1172ff7bb76a32b198cb7c4743b78ca6163bceacc0dcf092d8e188698a"
+  }
+ },
+ "job_id": "e6b22a57-18df-4abb-957b-5f5cc9aacfa1",
+ "logical_perf": 0.9999987092998667,
+ "noise": ":PCVL:NoiseModel:{\"g2\": 0.003, \"indistinguishability\": 0.92, \"transmittance\": 0.06}",
+ "physical_perf": 0.3105037742049767,
+ "platform": "sim:belenos",
+ "result_sha256": "6e460ab87f3879f6227e76f8bc187a5c542db08ed038010c8f4d18d65ccbcce8",
+ "run": "2026-10-30T050137Z-sim_belenos-box_kite_photonic_packed-job-03",
+ "samples": 60000,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 60001,
+ "status": "completed"
+}
