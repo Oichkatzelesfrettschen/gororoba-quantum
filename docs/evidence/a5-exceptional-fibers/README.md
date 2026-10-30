@@ -2,15 +2,16 @@
 
 This directory retains the working record of the exceptional-fiber computations on the A_5 nullity-8 closures:
 input scripts, run logs, relation and receipt files, consultant briefs and answers, the formal-arc certificate and
-the Kaggle distribution scripts. The A_5 exceptional-fiber findings note states the results, the hypotheses tested
-against them and what survives; this directory is the data it rests on. Results
+the Kaggle distribution scripts. The [findings note](../../notes/topics/a5-exceptional-fiber-findings.md) states
+the results, the hypotheses tested against them and what survives; this directory is the data it rests on. Results
 here are diagnostic working data over F_32009 (and F_32029 where named) and enter the tracked claim record only
-through the kernel-attachments ledger.
+through the [kernel-attachments ledger](../a5-kernel-attachments/README.md).
 
 Every file of the working directory is retained, with home paths written `~`, the session scratch directory
 `SCRATCH`, session identifiers `SESSION` or `UUID`, and the build host's name and owner handles replaced. Files
 above 50 MB are split into 45 MB parts named `FILE.part00`, `FILE.part01`, ...; `cat FILE.part* > FILE` restores
-the original bytes. The split files are listed in [split.txt](split.txt).
+the original bytes. The split files are listed in [split.txt](split.txt). `sh retain_working.sh SOURCE_DIR` applies the same scrub and
+split and copies every file whose scrubbed bytes differ from the retained copy (`--dry-run` lists them).
 
 | Path under `working/` | Content |
 |---|---|

@@ -1,0 +1,2173 @@
+{
+  "execution_contract": {
+    "modular_prime": 32003,
+    "singular_address_space_bytes": 4294967296,
+    "singular_timeout_seconds": 300
+  },
+  "falsifier": "A Nakayama count, chosen generator, presolved variable set, embedding rank, component invariant, committed-arc containment, or characteristic comparison changes; the projective negative control enters the column span; the generator-deletion mutation survives; or a row exceeds one second.",
+  "incidences": [
+    {
+      "arc_checks": [
+        {
+          "approach": "null-fiber-line-1",
+          "coordinate_order": 2,
+          "holomorphic_kernel_matches_committed_plane_plus_boundary_line": true,
+          "modular_component_indices_one_based": [
+            1
+          ],
+          "modular_in_fiber": true,
+          "projective_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "40",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-40"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "40"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-40",
+              "0"
+            ]
+          ],
+          "rational_component_indices_one_based": [
+            1
+          ],
+          "rational_in_fiber": true,
+          "rational_preimage": [
+            [
+              "40",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ]
+        },
+        {
+          "approach": "null-fiber-line-2",
+          "coordinate_order": 2,
+          "holomorphic_kernel_matches_committed_plane_plus_boundary_line": true,
+          "modular_component_indices_one_based": [
+            1
+          ],
+          "modular_in_fiber": true,
+          "projective_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "40",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-40"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "40"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-40",
+              "0"
+            ]
+          ],
+          "rational_component_indices_one_based": [
+            1
+          ],
+          "rational_in_fiber": true,
+          "rational_preimage": [
+            [
+              "40",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ]
+        }
+      ],
+      "boundary_orbit": "VB",
+      "characteristic_invariants_agree": true,
+      "chosen_coordinate_indices_one_based": [
+        7,
+        8,
+        12
+      ],
+      "eliminated_slice_variables": [
+        "t7",
+        "t2"
+      ],
+      "embedding_rank": 3,
+      "expected_projective_dimension_degree_components": [
+        2,
+        1,
+        1
+      ],
+      "incidence": "X+->VB",
+      "modular": {
+        "arcs": [
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          },
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          }
+        ],
+        "component_count": 1,
+        "components": [
+          {
+            "degree": 1,
+            "generators": [],
+            "projective_dimension": 2
+          }
+        ],
+        "image_degree": 1,
+        "image_projective_dimension": 2
+      },
+      "modular_prime": 32003,
+      "mutation_control": null,
+      "nakayama_generator_count": 3,
+      "negative_control": {
+        "coordinate_index_zero_based": 0,
+        "kind": "first standard projective basis point outside both embedding column spans",
+        "modular_in_column_span": false,
+        "rational_in_column_span": false
+      },
+      "pass": true,
+      "rational": {
+        "arcs": [
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          },
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          }
+        ],
+        "component_count": 1,
+        "components": [
+          {
+            "degree": 1,
+            "generators": [],
+            "projective_dimension": 2
+          }
+        ],
+        "image_degree": 1,
+        "image_projective_dimension": 2
+      },
+      "remaining_slice_variables": [
+        "t1",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t8"
+      ],
+      "schur_coordinate_sha256": "2a2960fcaa49f9e93030151d8e070be3e5a11cbb6f93535068d980a9022521d7",
+      "source_orbit": "X+"
+    },
+    {
+      "arc_checks": [
+        {
+          "approach": "null-fiber-line-1",
+          "coordinate_order": 2,
+          "holomorphic_kernel_matches_committed_plane_plus_boundary_line": true,
+          "modular_component_indices_one_based": [
+            1
+          ],
+          "modular_in_fiber": true,
+          "projective_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "120",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "120"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-120"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-120",
+              "0"
+            ]
+          ],
+          "rational_component_indices_one_based": [
+            1
+          ],
+          "rational_in_fiber": true,
+          "rational_preimage": [
+            [
+              "120",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ]
+        },
+        {
+          "approach": "null-fiber-line-2",
+          "coordinate_order": 2,
+          "holomorphic_kernel_matches_committed_plane_plus_boundary_line": true,
+          "modular_component_indices_one_based": [
+            1
+          ],
+          "modular_in_fiber": true,
+          "projective_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "120",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "120"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-120"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-120",
+              "0"
+            ]
+          ],
+          "rational_component_indices_one_based": [
+            1
+          ],
+          "rational_in_fiber": true,
+          "rational_preimage": [
+            [
+              "120",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ]
+        }
+      ],
+      "boundary_orbit": "VB",
+      "characteristic_invariants_agree": true,
+      "chosen_coordinate_indices_one_based": [
+        7,
+        8,
+        12
+      ],
+      "eliminated_slice_variables": [
+        "t7",
+        "t2"
+      ],
+      "embedding_rank": 3,
+      "expected_projective_dimension_degree_components": [
+        2,
+        1,
+        1
+      ],
+      "incidence": "X-->VB",
+      "modular": {
+        "arcs": [
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          },
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          }
+        ],
+        "component_count": 1,
+        "components": [
+          {
+            "degree": 1,
+            "generators": [],
+            "projective_dimension": 2
+          }
+        ],
+        "image_degree": 1,
+        "image_projective_dimension": 2
+      },
+      "modular_prime": 32003,
+      "mutation_control": null,
+      "nakayama_generator_count": 3,
+      "negative_control": {
+        "coordinate_index_zero_based": 0,
+        "kind": "first standard projective basis point outside both embedding column spans",
+        "modular_in_column_span": false,
+        "rational_in_column_span": false
+      },
+      "pass": true,
+      "rational": {
+        "arcs": [
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          },
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          }
+        ],
+        "component_count": 1,
+        "components": [
+          {
+            "degree": 1,
+            "generators": [],
+            "projective_dimension": 2
+          }
+        ],
+        "image_degree": 1,
+        "image_projective_dimension": 2
+      },
+      "remaining_slice_variables": [
+        "t1",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t8"
+      ],
+      "schur_coordinate_sha256": "2a2960fcaa49f9e93030151d8e070be3e5a11cbb6f93535068d980a9022521d7",
+      "source_orbit": "X-"
+    },
+    {
+      "arc_checks": [
+        {
+          "approach": "fixed-degeneracy-second-jet-1",
+          "coordinate_order": 2,
+          "holomorphic_kernel_matches_committed_plane_plus_boundary_line": true,
+          "modular_component_indices_one_based": [
+            1
+          ],
+          "modular_in_fiber": true,
+          "projective_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-6",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-6"
+            ],
+            [
+              "6",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "3"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-3",
+              "0"
+            ]
+          ],
+          "rational_component_indices_one_based": [
+            1
+          ],
+          "rational_in_fiber": true,
+          "rational_preimage": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-6",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "3"
+            ]
+          ]
+        },
+        {
+          "approach": "fixed-degeneracy-second-jet-2",
+          "coordinate_order": 2,
+          "holomorphic_kernel_matches_committed_plane_plus_boundary_line": true,
+          "modular_component_indices_one_based": [
+            1
+          ],
+          "modular_in_fiber": true,
+          "projective_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-24",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-24"
+            ],
+            [
+              "24",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "12"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-12",
+              "0"
+            ]
+          ],
+          "rational_component_indices_one_based": [
+            1
+          ],
+          "rational_in_fiber": true,
+          "rational_preimage": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-24",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "12"
+            ]
+          ]
+        }
+      ],
+      "boundary_orbit": "VB",
+      "characteristic_invariants_agree": true,
+      "chosen_coordinate_indices_one_based": [
+        8,
+        12,
+        17,
+        18
+      ],
+      "eliminated_slice_variables": [
+        "t1",
+        "t7",
+        "t8"
+      ],
+      "embedding_rank": 4,
+      "expected_projective_dimension_degree_components": [
+        3,
+        1,
+        1
+      ],
+      "incidence": "Iso->VB",
+      "modular": {
+        "arcs": [
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          },
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          }
+        ],
+        "component_count": 1,
+        "components": [
+          {
+            "degree": 1,
+            "generators": [],
+            "projective_dimension": 3
+          }
+        ],
+        "image_degree": 1,
+        "image_projective_dimension": 3
+      },
+      "modular_prime": 32003,
+      "mutation_control": null,
+      "nakayama_generator_count": 4,
+      "negative_control": {
+        "coordinate_index_zero_based": 0,
+        "kind": "first standard projective basis point outside both embedding column spans",
+        "modular_in_column_span": false,
+        "rational_in_column_span": false
+      },
+      "pass": true,
+      "rational": {
+        "arcs": [
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          },
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          }
+        ],
+        "component_count": 1,
+        "components": [
+          {
+            "degree": 1,
+            "generators": [],
+            "projective_dimension": 3
+          }
+        ],
+        "image_degree": 1,
+        "image_projective_dimension": 3
+      },
+      "remaining_slice_variables": [
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6"
+      ],
+      "schur_coordinate_sha256": "d93ffbf5f05a4d64b40452f273c81748d2be09ac5d442d851b9fc726b44eec87",
+      "source_orbit": "Iso"
+    },
+    {
+      "arc_checks": [
+        {
+          "approach": "fixed-degeneracy-second-jet-plus",
+          "coordinate_order": 2,
+          "holomorphic_kernel_matches_committed_plane_plus_boundary_line": true,
+          "modular_component_indices_one_based": [
+            1
+          ],
+          "modular_in_fiber": true,
+          "projective_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "1"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-2",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "rational_component_indices_one_based": [
+            1
+          ],
+          "rational_in_fiber": true,
+          "rational_preimage": [
+            [
+              "0",
+              "1"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-2",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ]
+        },
+        {
+          "approach": "fixed-degeneracy-second-jet-minus",
+          "coordinate_order": 2,
+          "holomorphic_kernel_matches_committed_plane_plus_boundary_line": true,
+          "modular_component_indices_one_based": [
+            1
+          ],
+          "modular_in_fiber": true,
+          "projective_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-1"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-2",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "rational_component_indices_one_based": [
+            1
+          ],
+          "rational_in_fiber": true,
+          "rational_preimage": [
+            [
+              "0",
+              "-1"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-2",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ]
+        }
+      ],
+      "boundary_orbit": "VB",
+      "characteristic_invariants_agree": true,
+      "chosen_coordinate_indices_one_based": [
+        8,
+        12,
+        16,
+        17,
+        18
+      ],
+      "eliminated_slice_variables": [
+        "t2",
+        "t3"
+      ],
+      "embedding_rank": 5,
+      "expected_projective_dimension_degree_components": [
+        4,
+        1,
+        1
+      ],
+      "incidence": "W8->VB",
+      "modular": {
+        "arcs": [
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          },
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          }
+        ],
+        "component_count": 1,
+        "components": [
+          {
+            "degree": 1,
+            "generators": [],
+            "projective_dimension": 4
+          }
+        ],
+        "image_degree": 1,
+        "image_projective_dimension": 4
+      },
+      "modular_prime": 32003,
+      "mutation_control": {
+        "broken_arc_containments": [
+          "fixed-degeneracy-second-jet-plus",
+          "fixed-degeneracy-second-jet-minus"
+        ],
+        "detected": true,
+        "dropped_generator_index_one_based": 1,
+        "dropped_original_coordinate_index_one_based": 8,
+        "fiber_changed": true,
+        "modular_fiber": {
+          "arcs": [],
+          "component_count": 1,
+          "components": [
+            {
+              "degree": 1,
+              "generators": [],
+              "projective_dimension": 3
+            }
+          ],
+          "image_degree": 1,
+          "image_projective_dimension": 3
+        },
+        "name": "drop_one_nakayama_generator_from_rees_ideal",
+        "rational_fiber": {
+          "arcs": [],
+          "component_count": 1,
+          "components": [
+            {
+              "degree": 1,
+              "generators": [],
+              "projective_dimension": 3
+            }
+          ],
+          "image_degree": 1,
+          "image_projective_dimension": 3
+        }
+      },
+      "nakayama_generator_count": 5,
+      "negative_control": {
+        "coordinate_index_zero_based": 0,
+        "kind": "first standard projective basis point outside both embedding column spans",
+        "modular_in_column_span": false,
+        "rational_in_column_span": false
+      },
+      "pass": true,
+      "rational": {
+        "arcs": [
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          },
+          {
+            "component_indices_one_based": [
+              1
+            ],
+            "in_fiber": true
+          }
+        ],
+        "component_count": 1,
+        "components": [
+          {
+            "degree": 1,
+            "generators": [],
+            "projective_dimension": 4
+          }
+        ],
+        "image_degree": 1,
+        "image_projective_dimension": 4
+      },
+      "remaining_slice_variables": [
+        "t1",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t8"
+      ],
+      "schur_coordinate_sha256": "d65fe1c09639980a6e551bba02b1392c23d57b5893a8c719859650180a8b2905",
+      "source_orbit": "W8"
+    },
+    {
+      "arc_checks": [
+        {
+          "approach": "middle-coordinate-sheet--1",
+          "coordinate_order": 2,
+          "holomorphic_kernel_matches_committed_plane_plus_boundary_line": true,
+          "modular_component_indices_one_based": [
+            2
+          ],
+          "modular_in_fiber": true,
+          "projective_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "4",
+              "0"
+            ],
+            [
+              "0",
+              "4"
+            ],
+            [
+              "0",
+              "-4"
+            ],
+            [
+              "4",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "rational_component_indices_one_based": [
+            2
+          ],
+          "rational_in_fiber": true,
+          "rational_preimage": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "4",
+              "0"
+            ]
+          ]
+        },
+        {
+          "approach": "middle-coordinate-sheet-+1",
+          "coordinate_order": 2,
+          "holomorphic_kernel_matches_committed_plane_plus_boundary_line": true,
+          "modular_component_indices_one_based": [
+            2
+          ],
+          "modular_in_fiber": true,
+          "projective_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "4",
+              "0"
+            ],
+            [
+              "0",
+              "4"
+            ],
+            [
+              "0",
+              "-4"
+            ],
+            [
+              "4",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "rational_component_indices_one_based": [
+            2
+          ],
+          "rational_in_fiber": true,
+          "rational_preimage": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "4",
+              "0"
+            ]
+          ]
+        }
+      ],
+      "boundary_orbit": "Va+",
+      "characteristic_invariants_agree": true,
+      "chosen_coordinate_indices_one_based": [
+        3,
+        5,
+        8,
+        9,
+        16,
+        17
+      ],
+      "eliminated_slice_variables": [],
+      "embedding_rank": 6,
+      "expected_projective_dimension_degree_components": [
+        2,
+        2,
+        2
+      ],
+      "incidence": "E8bar->Va+",
+      "modular": {
+        "arcs": [
+          {
+            "component_indices_one_based": [
+              2
+            ],
+            "in_fiber": true
+          },
+          {
+            "component_indices_one_based": [
+              2
+            ],
+            "in_fiber": true
+          }
+        ],
+        "component_count": 2,
+        "components": [
+          {
+            "degree": 1,
+            "generators": [
+              "y6",
+              "y2",
+              "y1"
+            ],
+            "projective_dimension": 2
+          },
+          {
+            "degree": 1,
+            "generators": [
+              "y5",
+              "y4",
+              "y3"
+            ],
+            "projective_dimension": 2
+          }
+        ],
+        "image_degree": 2,
+        "image_projective_dimension": 2
+      },
+      "modular_prime": 32003,
+      "mutation_control": null,
+      "nakayama_generator_count": 6,
+      "negative_control": {
+        "coordinate_index_zero_based": 0,
+        "kind": "first standard projective basis point outside both embedding column spans",
+        "modular_in_column_span": false,
+        "rational_in_column_span": false
+      },
+      "pass": true,
+      "rational": {
+        "arcs": [
+          {
+            "component_indices_one_based": [
+              2
+            ],
+            "in_fiber": true
+          },
+          {
+            "component_indices_one_based": [
+              2
+            ],
+            "in_fiber": true
+          }
+        ],
+        "component_count": 2,
+        "components": [
+          {
+            "degree": 1,
+            "generators": [
+              "y6",
+              "y2",
+              "y1"
+            ],
+            "projective_dimension": 2
+          },
+          {
+            "degree": 1,
+            "generators": [
+              "y5",
+              "y4",
+              "y3"
+            ],
+            "projective_dimension": 2
+          }
+        ],
+        "image_degree": 2,
+        "image_projective_dimension": 2
+      },
+      "remaining_slice_variables": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t8"
+      ],
+      "schur_coordinate_sha256": "b5a0b737dd37a78ceda21dd50acc205024cb6f9d59ae9c0716f2578bfd962a96",
+      "source_orbit": "E8bar"
+    },
+    {
+      "arc_checks": [
+        {
+          "approach": "middle-coordinate-sheet--1",
+          "coordinate_order": 2,
+          "holomorphic_kernel_matches_committed_plane_plus_boundary_line": true,
+          "modular_component_indices_one_based": [
+            2
+          ],
+          "modular_in_fiber": true,
+          "projective_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-4",
+              "0"
+            ],
+            [
+              "0",
+              "-4"
+            ],
+            [
+              "0",
+              "4"
+            ],
+            [
+              "-4",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "rational_component_indices_one_based": [
+            2
+          ],
+          "rational_in_fiber": true,
+          "rational_preimage": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-4",
+              "0"
+            ]
+          ]
+        },
+        {
+          "approach": "middle-coordinate-sheet-+1",
+          "coordinate_order": 2,
+          "holomorphic_kernel_matches_committed_plane_plus_boundary_line": true,
+          "modular_component_indices_one_based": [
+            2
+          ],
+          "modular_in_fiber": true,
+          "projective_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-4",
+              "0"
+            ],
+            [
+              "0",
+              "-4"
+            ],
+            [
+              "0",
+              "4"
+            ],
+            [
+              "-4",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "rational_component_indices_one_based": [
+            2
+          ],
+          "rational_in_fiber": true,
+          "rational_preimage": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-4",
+              "0"
+            ]
+          ]
+        }
+      ],
+      "boundary_orbit": "Va-",
+      "characteristic_invariants_agree": true,
+      "chosen_coordinate_indices_one_based": [
+        3,
+        5,
+        8,
+        9,
+        16,
+        17
+      ],
+      "eliminated_slice_variables": [],
+      "embedding_rank": 6,
+      "expected_projective_dimension_degree_components": [
+        2,
+        2,
+        2
+      ],
+      "incidence": "E8bar->Va-",
+      "modular": {
+        "arcs": [
+          {
+            "component_indices_one_based": [
+              2
+            ],
+            "in_fiber": true
+          },
+          {
+            "component_indices_one_based": [
+              2
+            ],
+            "in_fiber": true
+          }
+        ],
+        "component_count": 2,
+        "components": [
+          {
+            "degree": 1,
+            "generators": [
+              "y6",
+              "y2",
+              "y1"
+            ],
+            "projective_dimension": 2
+          },
+          {
+            "degree": 1,
+            "generators": [
+              "y5",
+              "y4",
+              "y3"
+            ],
+            "projective_dimension": 2
+          }
+        ],
+        "image_degree": 2,
+        "image_projective_dimension": 2
+      },
+      "modular_prime": 32003,
+      "mutation_control": null,
+      "nakayama_generator_count": 6,
+      "negative_control": {
+        "coordinate_index_zero_based": 0,
+        "kind": "first standard projective basis point outside both embedding column spans",
+        "modular_in_column_span": false,
+        "rational_in_column_span": false
+      },
+      "pass": true,
+      "rational": {
+        "arcs": [
+          {
+            "component_indices_one_based": [
+              2
+            ],
+            "in_fiber": true
+          },
+          {
+            "component_indices_one_based": [
+              2
+            ],
+            "in_fiber": true
+          }
+        ],
+        "component_count": 2,
+        "components": [
+          {
+            "degree": 1,
+            "generators": [
+              "y6",
+              "y2",
+              "y1"
+            ],
+            "projective_dimension": 2
+          },
+          {
+            "degree": 1,
+            "generators": [
+              "y5",
+              "y4",
+              "y3"
+            ],
+            "projective_dimension": 2
+          }
+        ],
+        "image_degree": 2,
+        "image_projective_dimension": 2
+      },
+      "remaining_slice_variables": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t8"
+      ],
+      "schur_coordinate_sha256": "a47da7b01c160c84888d40b2a80a4253c303197f0d596bec4d760fc5755c1f3c",
+      "source_orbit": "E8bar"
+    }
+  ],
+  "inputs": {
+    "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "68488363760fef1c904356f4cead3a1fa2d69983eaa3ce653c9b6b64b31ae099",
+    "docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py": "ade16627774974b2f3b3ea7565af4e18249bbbd9f95481ac91e735498e061044",
+    "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
+    "docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py": "4cb005dc80b6b3f819d6e1a8d8c5fddafa1da27bfef5cada67b11edc3da01f1a",
+    "docs/evidence/a5-kernel-attachments/schur-degeneracy-witnesses-result.json": "0d8400675385e462aa809b5dd3dec584111f036dba6255fa52eec6700e38e48f",
+    "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
+    "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+    "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
+  },
+  "mutation_control": {
+    "broken_arc_containments": [
+      "fixed-degeneracy-second-jet-plus",
+      "fixed-degeneracy-second-jet-minus"
+    ],
+    "detected": true,
+    "dropped_generator_index_one_based": 1,
+    "dropped_original_coordinate_index_one_based": 8,
+    "fiber_changed": true,
+    "modular_fiber": {
+      "arcs": [],
+      "component_count": 1,
+      "components": [
+        {
+          "degree": 1,
+          "generators": [],
+          "projective_dimension": 3
+        }
+      ],
+      "image_degree": 1,
+      "image_projective_dimension": 3
+    },
+    "name": "drop_one_nakayama_generator_from_rees_ideal",
+    "rational_fiber": {
+      "arcs": [],
+      "component_count": 1,
+      "components": [
+        {
+          "degree": 1,
+          "generators": [],
+          "projective_dimension": 3
+        }
+      ],
+      "image_degree": 1,
+      "image_projective_dimension": 3
+    }
+  },
+  "pass": true,
+  "schema": "a5-kernel-attachments-nakayama-rees-fibers-v1",
+  "scope": {
+    "claim_boundary": "The record computes six holomorphic special fibers at the selected path-supported basepoints. It does not compute E8-bar to VB or variation along a boundary orbit.",
+    "excluded_blocked_incidence": {
+      "incidence": "E8bar->VB",
+      "ledger_reference": "docs/evidence/a5-kernel-attachments/ledger.md#ledger-rows, item 2j-c",
+      "status": "blocked"
+    },
+    "incidences": [
+      "X+->VB",
+      "X-->VB",
+      "Iso->VB",
+      "W8->VB",
+      "E8bar->Va+",
+      "E8bar->Va-"
+    ]
+  },
+  "summary": {
+    "all_arcs_contained": true,
+    "all_characteristic_invariants_agree": true,
+    "committed_arc_count": 12,
+    "incidence_count": 6
+  },
+  "tools": {
+    "python_flint": "0.9.0",
+    "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Jun 30 2026 11:57:00"
+  }
+}

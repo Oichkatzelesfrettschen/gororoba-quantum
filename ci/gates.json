@@ -5367,6 +5367,93 @@
    "replays": [
     "results/quantum_inspire/proposals/tuna-destination-qx-conformance/cases.json"
    ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/xi_real_type.py --check",
+   "name": "core-756",
+   "seconds": 0.4,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles-residuals/xi-real-type-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json",
+   "name": "core-757",
+   "seconds": 1.3,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --self-test",
+   "name": "core-758",
+   "seconds": 2.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/incidence_census.py --check docs/evidence/a5-kernel-attachments/incidence-census-result.json",
+   "name": "core-759",
+   "seconds": 7.8,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-attachments/incidence-census-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/incidence_census.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-attachments/incidence_census.py --self-test",
+   "name": "core-760",
+   "seconds": 15.8,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/partner_purity.py --check docs/evidence/a5-kernel-attachments/partner-purity-result.json",
+   "name": "core-761",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-attachments/partner-purity-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/partner_purity.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-attachments/partner_purity.py --self-test",
+   "name": "core-762",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/schur_degeneracy_witnesses.py --check docs/evidence/a5-kernel-attachments/schur-degeneracy-witnesses-result.json",
+   "name": "core-763",
+   "seconds": 5.6,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-attachments/schur-degeneracy-witnesses-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/schur_degeneracy_witnesses.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-attachments/schur_degeneracy_witnesses.py --self-test",
+   "name": "core-764",
+   "seconds": 11.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
@@ -5394,6 +5481,36 @@
    "cmd": "\"$SAGE_PYTHON\" docs/evidence/cd-star-lattice/external/hadamard_replay.py > docs/evidence/cd-star-lattice/external/hadamard_replay.txt",
    "cwd": ".",
    "reason": "needs an interpreter that imports SageMath (nauty, GAP), which no gate image or CI job carries; the retained output is the replay record and docs/evidence/cd-star-lattice/README.md#external-replay gives the command"
+  },
+  {
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/first_order_normal_cones.py --check docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json",
+   "cwd": ".",
+   "reason": "the producer runs Singular 4.4, which no gate image or CI job carries; the retained result is the replay record and docs/evidence/a5-kernel-attachments/README.md gives the command"
+  },
+  {
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py --check docs/evidence/a5-kernel-attachments/holomorphic-gauss-fibers-result.json",
+   "cwd": ".",
+   "reason": "the producer runs Singular 4.4, which no gate image or CI job carries; the retained result is the replay record and docs/evidence/a5-kernel-attachments/README.md gives the command"
+  },
+  {
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py --check docs/evidence/a5-kernel-attachments/nakayama-rees-fibers-result.json",
+   "cwd": ".",
+   "reason": "the producer runs Singular 4.4, which no gate image or CI job carries; the retained result is the replay record and docs/evidence/a5-kernel-attachments/README.md gives the command"
+  },
+  {
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/nullity16_basepoints.py --check docs/evidence/a5-kernel-attachments/nullity16-basepoints-result.json",
+   "cwd": ".",
+   "reason": "the producer runs Singular 4.4, which no gate image or CI job carries; the retained result is the replay record and docs/evidence/a5-kernel-attachments/README.md gives the command"
+  },
+  {
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py --check docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json",
+   "cwd": ".",
+   "reason": "the producer runs Singular 4.4, which no gate image or CI job carries; the retained result is the replay record and docs/evidence/a5-kernel-attachments/README.md gives the command"
+  },
+  {
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/path_supported_basepoints.py --check docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json",
+   "cwd": ".",
+   "reason": "the producer runs Singular 4.4, which no gate image or CI job carries; the retained result is the replay record and docs/evidence/a5-kernel-attachments/README.md gives the command"
   }
  ]
 }
