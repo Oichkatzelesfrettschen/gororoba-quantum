@@ -26,11 +26,13 @@ trap 'exit 130' INT TERM HUP
 
 end=$(( $(date +%s) + deadline ))
 failures=0
-retried_round=
+retried_at=
 status=
 pending=
 while :; do
-    if status=$(timeout -k 10 120 sh "$here/codex_review_status.sh" "$pr" 2>>"$log" | head -n 1) &&
+    # The status command's own exit status counts as a poll failure, so it is captured before its first line.
+    if report=$(timeout -k 10 120 sh "$here/codex_review_status.sh" "$pr" 2>>"$log") &&
+        status=$(printf '%s\n' "$report" | head -n 1) && [ -n "$status" ] &&
         pull=$(timeout -k 10 60 gh api "repos/$slug/pulls/$pr" --jq '"\(.head.sha) \(.mergeable_state)"' 2>>"$log") &&
         head=${pull% *} && mergeable=${pull#* } &&
         pending=$(timeout -k 10 60 gh api "repos/$slug/commits/$head/check-runs?per_page=100" \
@@ -56,16 +58,21 @@ while :; do
                 fi
                 ;;
             *)
-                round=$(printf '%s\n' "$status" | sed -n 's/.* round-start=\([^ ]*\) .*/\1/p')
-                if [ -n "$round" ] && [ "$round" != - ] && [ "$round" != "$retried_round" ] &&
-                    [ $(( $(date +%s) - $(date -d "$round" +%s) )) -ge "$stall" ]; then
-                    if [ -n "$retried_round" ]; then
-                        echo "PR $pr: the repeated request of round $retried_round also stalled; last: $status"
+                # The repeated request is timed from when this script sent it: the summary can keep an older
+                # round-start until the bot picks the new request up.
+                now=$(date +%s)
+                if [ -n "$retried_at" ]; then
+                    if [ $((now - retried_at)) -ge "$stall" ]; then
+                        echo "PR $pr: the repeated request also showed no result after ${stall}s; last: $status"
                         exit 5
                     fi
-                    timeout -k 10 60 gh api "repos/$slug/issues/$pr/comments" -f body='@codex review' >/dev/null
-                    echo "$(date -u +%FT%TZ) round $round showed no result after ${stall}s; requested again" >>"$log"
-                    retried_round=$round
+                else
+                    round=$(printf '%s\n' "$status" | sed -n 's/.* round-start=\([^ ]*\) .*/\1/p')
+                    if [ -n "$round" ] && [ "$round" != - ] && [ $((now - $(date -d "$round" +%s))) -ge "$stall" ]; then
+                        timeout -k 10 60 gh api "repos/$slug/issues/$pr/comments" -f body='@codex review' >/dev/null
+                        echo "$(date -u +%FT%TZ) round $round showed no result after ${stall}s; requested again" >>"$log"
+                        retried_at=$now
+                    fi
                 fi
                 ;;
         esac
