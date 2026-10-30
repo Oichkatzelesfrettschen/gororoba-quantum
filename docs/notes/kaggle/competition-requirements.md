@@ -144,12 +144,13 @@ the differences listed in its section.
 - Ties go to the earliest submission. A disqualified participant may lose
   leaderboard placement, points and medals.
 - In the competitions that score a held-out test set (Playground S6E10,
-  ARC-AGI-3, ARC-AGI-2, Gemma 4 Developer Agent, Enveda), final standing uses the private leaderboard
-  over the private test set, and the public leaderboard covers a sample of the
-  test data. The Paper Tracks and the NFL competition judge writeups against a
-  rubric, Squares in Squares scores the submitted placements directly, and the
-  Quantum AI competition scores circuits against a verifier seeded from each
-  submission's hash, so none of those four has a hidden test set.
+  ARC-AGI-3, ARC-AGI-2, Gemma 4 Developer Agent, Enveda), final standing uses
+  the private leaderboard over the private test set, and the public
+  leaderboard covers a sample of the test data. The Paper Tracks and the NFL
+  competition judge writeups against a rubric, Squares in Squares scores the
+  submitted placements directly, and the Quantum AI competition scores
+  circuits against a verifier seeded from each submission's hash, so none of
+  those has a hidden test set.
 
 ## Playground Series S6E10, Predicting Airline Satisfaction
 
