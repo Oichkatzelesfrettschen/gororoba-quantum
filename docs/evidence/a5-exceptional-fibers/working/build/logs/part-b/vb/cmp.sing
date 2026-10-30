@@ -1,0 +1,4 @@
+option(redSB); ring Y=32009,(y(1..10)),dp;
+execute("ideal A="+read("ref.rel")+";"); execute("ideal B="+read("new.rel")+";");
+ideal sA=std(A); ideal sB=std(B);
+"RESULT a_in_b",size(reduce(A,sB))==0; "RESULT b_in_a",size(reduce(B,sA))==0; quit;

@@ -1,0 +1,32 @@
+RESULT sizes 17 17 10
+RESULT sat dim 5 size 27
+RESULT satsize 27
+RESULT cone dim 5 deg 2 gens 10
+ordG 1 5 lowest 5
+ordG 2 5 lowest 5
+ordG 3 5 lowest 5
+ordG 4 5 lowest 5
+ordG 5 5 lowest 5
+ordG 6 5 lowest 5
+ordG 7 5 lowest 5
+ordG 8 5 lowest 5
+ordG 9 5 lowest 5
+ordG 10 5 lowest 5
+ordJ 1 2
+ordJ 2 2
+ordJ 3 3
+ordJ 4 3
+ordJ 5 3
+ordJ 6 3
+ordJ 7 3
+ordJ 8 3
+ordJ 9 3
+ordJ 10 3
+ordJ 11 3
+ordJ 12 3
+ordJ 13 4
+ordJ 14 4
+ordJ 15 4
+ordJ 16 4
+ordJ 17 4
+exit 0

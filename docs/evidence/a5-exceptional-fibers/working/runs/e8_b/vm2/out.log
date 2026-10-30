@@ -1,0 +1,21 @@
+// ** redefining blowup0 (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining blowup0 (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining elimRing (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining elimRing (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining elim (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining elim (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining elim2 (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining elim2 (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining elim1 (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining elim1 (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining nselect (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining nselect (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining sat (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining sat (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining sat_with_exp (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining sat_with_exp (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining select (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining select (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining select1 (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+// ** redefining select1 (LIB "elim.lib"; option(redSB); int t0=timer;) input.sing:15
+RESULT generators 21 pivot 19 terms 183 seconds 139

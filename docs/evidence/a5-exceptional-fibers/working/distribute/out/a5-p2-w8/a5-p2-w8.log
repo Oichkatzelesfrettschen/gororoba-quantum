@@ -1,0 +1,39 @@
+[{"stream_name":"stderr","time":1.482724254,"data":"/kaggle/src/script.py:11: DeprecationWarning: Python 3.14 will, by default, filter extracted tar archives and reject files or modify their metadata. Use the filter argument to control this behavior.\n"}
+,{"stream_name":"stderr","time":1.482795502,"data":"  tarfile.open(fileobj=io.BytesIO(base64.b64decode(PAYLOAD))).extractall(W)\n"}
+,{"stream_name":"stdout","time":29528.575330191,"data":"{\n"}
+,{"stream_name":"stdout","time":29528.578473854,"data":" \"cpu_count\": 4,\n"}
+,{"stream_name":"stdout","time":29528.578489725,"data":" \"meminfo_kib\": {\n"}
+,{"stream_name":"stdout","time":29528.57849532,"data":"  \"MemTotal\": \"32869296\",\n"}
+,{"stream_name":"stdout","time":29528.578500766,"data":"  \"MemAvailable\": \"31777092\"\n"}
+,{"stream_name":"stdout","time":29528.578506085,"data":" },\n"}
+,{"stream_name":"stdout","time":29528.578511498,"data":" \"python\": \"3.13.15\",\n"}
+,{"stream_name":"stdout","time":29528.578520066,"data":" \"singular\": \"4.4.1\",\n"}
+,{"stream_name":"stdout","time":29528.578523742,"data":" \"jobs\": {\n"}
+,{"stream_name":"stdout","time":29528.57853288,"data":"  \"w8_p2\": [\n"}
+,{"stream_name":"stdout","time":29528.578536469,"data":"   {\n"}
+,{"stream_name":"stdout","time":29528.578539829,"data":"    \"degree\": 2,\n"}
+,{"stream_name":"stdout","time":29528.578543425,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":29528.578546831,"data":"    \"seconds\": 10469.6,\n"}
+,{"stream_name":"stdout","time":29528.578550526,"data":"    \"tail\": \"degree 2 h=156 relations=144 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":29528.578554257,"data":"   },\n"}
+,{"stream_name":"stdout","time":29528.578557589,"data":"   {\n"}
+,{"stream_name":"stdout","time":29528.578560967,"data":"    \"degree\": 3,\n"}
+,{"stream_name":"stdout","time":29528.578564358,"data":"    \"rc\": 1,\n"}
+,{"stream_name":"stdout","time":29528.578568869,"data":"    \"seconds\": 18998.7,\n"}
+,{"stream_name":"stdout","time":29528.578574035,"data":"    \"tail\": \"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n               args.memory_gib, args.timeout)\\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"/kaggle/tmp/w/docs/evidence/a5-kernel-attachments/fiber_cone_driver.py\\\", line 310, in run_degree\\n    _require(first.error is None, f\\\"products stage failed: {first.error}\\\")\\n    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"/kaggle/tmp/w/docs/evidence/a5-kernel-attachments/fiber_cone_driver.py\\\", line 42, in _require\\n    raise ValueError(message)\\nValueError: products stage failed: exit status -9\\n\"\n"}
+,{"stream_name":"stdout","time":29528.578581497,"data":"   }\n"}
+,{"stream_name":"stdout","time":29528.578584825,"data":"  ]\n"}
+,{"stream_name":"stdout","time":29528.57858816,"data":" },\n"}
+,{"stream_name":"stdout","time":29528.578591482,"data":" \"meminfo_end_kib\": {\n"}
+,{"stream_name":"stdout","time":29528.578594971,"data":"  \"MemTotal\": \"32869296\",\n"}
+,{"stream_name":"stdout","time":29528.578598506,"data":"  \"MemAvailable\": \"30177288\"\n"}
+,{"stream_name":"stdout","time":29528.578602103,"data":" },\n"}
+,{"stream_name":"stdout","time":29528.578605719,"data":" \"total_seconds\": 29527.1\n"}
+,{"stream_name":"stdout","time":29528.578609327,"data":"}\n"}
+,{"stream_name":"stderr","time":29533.458696107,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":29533.458732618,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":29534.106924131,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":29534.106986316,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":29537.761681158,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":29539.325360501,"data":"[NbConvertApp] Writing 354921 bytes to __results__.html\n"}
+]

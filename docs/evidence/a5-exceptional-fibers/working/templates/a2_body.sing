@@ -1,0 +1,12 @@
+// Method A at degrees 1 and 2: h_d = dim span NF(P_d mod J + m*P_d). Writes the normal forms for an exact F_p rank.
+option(redSB); int t0=timer;
+ideal sJ=std(J); int n=ncols(G); int i; int j; int k; int c;
+for(i=1;i<=n;i++){G[i]=reduce(G[i],sJ);}
+ideal Q1=sJ; for(k=1;k<=nvars(basering);k++){for(i=1;i<=n;i++){Q1=Q1,var(k)*G[i];}}
+ideal N1=reduce(G,std(Q1)); write(":w nf1.txt",N1); "RESULT h1_nf_written",timer-t0;
+ideal P2; c=0; for(i=1;i<=n;i++){for(j=i;j<=n;j++){c++; P2[c]=reduce(G[i]*G[j],sJ);}}
+"RESULT products",c;
+ideal Q=sJ; for(k=1;k<=nvars(basering);k++){for(i=1;i<=c;i++){Q=Q,var(k)*P2[i];}}
+ideal sQ=std(Q); "RESULT std_Q_seconds",timer-t0,"size",size(sQ);
+ideal N=reduce(P2,sQ); write(":w nf2.txt",N);
+"RESULT done",timer-t0; quit;

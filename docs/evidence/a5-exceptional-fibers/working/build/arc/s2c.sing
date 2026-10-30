@@ -1,0 +1,7 @@
+execute(read("~/Projects/IBMQuantum/docs/local/a5-failed-runs/build/logs/part-b/hdr/vb.sing"));
+ring R=(32009,t1,t3,t5,t7),(t2,t4,t6,t8),dp;
+ideal JJ=imap(r,J);
+ideal S=std(JJ);
+"RESULT vdim",vdim(S),"dim",dim(S),"size",size(S);
+int i; for(i=1;i<=size(S);i++){ "lead",leadmonom(S[i]); }
+quit;

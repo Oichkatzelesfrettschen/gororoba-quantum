@@ -1,0 +1,10 @@
+LIB "primdec.lib";
+ring Y=32009,(y(1..17)),dp; execute("ideal K="+read("k2.rel")+";");
+ideal Kc=std(subst(K,y(12),1)); "RESULT chart 12 dim",dim(Kc);
+if(dim(Kc)>=0){
+ideal rc=std(radical(Kc)); "RESULT chart 12 radical",size(reduce(rc,Kc))==0;
+list P=minAssChar(Kc); "RESULT chart 12 primes",size(P); int c;
+for(c=1;c<=size(P);c++){ideal q=std(P[c]); "RESULT chart 12 prime",c,"dim",dim(q),"linear_gens",size(jet(P[c],1));
+write(":w /kaggle/working/iso_c12/prime"+string(c)+".txt",P[c]); kill q;}
+}
+quit;

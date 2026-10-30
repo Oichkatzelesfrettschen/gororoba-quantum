@@ -1,0 +1,14 @@
+// Probe C: kill the nilpotent coordinates y1,y5,y6 (y^2 in K) and decompose in 12 variables.
+LIB "primdec.lib";
+ring Y=32009,(y(1..15)),dp;
+execute("ideal K="+read("../kaggle-pack-a/xm_nm/xm_nm_fiber.rel")+";");
+ideal K1=std(K+ideal(y(1),y(5),y(6)));
+"RESULT reduced12 projdim",dim(K1)-1,"degree",mult(K1),"size",size(K1);
+int i; for(i=1;i<=15;i++){ if(i!=1 && i!=5 && i!=6 && reduce(var(i)^2,K1)==0){"RESULT more nilpotent y"+string(i);} }
+int t0=timer;
+list F=facstd(K1);"RESULT facstd12 pieces",size(F),"seconds",timer-t0;
+for(i=1;i<=size(F);i++){ideal Q=std(F[i]);"RESULT piece",i,"projdim",dim(Q)-1,"degree",mult(Q),"size",size(Q);kill Q;}
+t0=timer;
+list L=minAssChar(K1);"RESULT minAssChar comps",size(L),"seconds",timer-t0;
+for(i=1;i<=size(L);i++){ideal Q=std(L[i]);"RESULT comp",i,"projdim",dim(Q)-1,"degree",mult(Q),"size",size(Q);kill Q;}
+quit;

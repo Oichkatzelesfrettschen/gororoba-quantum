@@ -1,0 +1,17 @@
+Downloading gb.out to .
+0.00B [00:00, ?B/s]0.00B [00:00, ?B/s]
+
+Output file downloaded to ./gb.out
+Downloading input.ms to .
+  0%|          | 0.00/3.97k [00:00<?, ?B/s]100%|██████████| 3.97k/3.97k [00:00<00:00, 20.9MB/s]
+
+Output file downloaded to ./input.ms
+Downloading msolve.log to .
+  0%|          | 0.00/8.89k [00:00<?, ?B/s]100%|██████████| 8.89k/8.89k [00:00<00:00, 50.4MB/s]
+
+Output file downloaded to ./msolve.log
+Downloading samples.tsv to .
+  0%|          | 0.00/5.77k [00:00<?, ?B/s]100%|██████████| 5.77k/5.77k [00:00<00:00, 37.3MB/s]
+
+Output file downloaded to ./samples.tsv
+Kernel log downloaded to ./a5-e8vb-msolve-tpu.log 

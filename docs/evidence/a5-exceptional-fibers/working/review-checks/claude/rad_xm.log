@@ -1,0 +1,14 @@
+RESULT K2 dim 3 mult 12
+RESULT rad dim 3 mult 12
+RESULT h 1 15 12
+RESULT h 2 51 45
+RESULT h 3 122 112
+RESULT h 4 240 225
+RESULT h 5 417 396
+RESULT K2_saturated 1
+RESULT sat dim 3 mult 12
+RESULT hsat 1 15
+RESULT hsat 2 51
+RESULT hsat 3 122
+RESULT hsat 4 240
+RESULT hsat 5 417

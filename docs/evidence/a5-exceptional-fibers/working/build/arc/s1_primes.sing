@@ -1,0 +1,7 @@
+LIB "primdec.lib";
+ring Y=32009,(y(1..10)),dp; execute("ideal K="+read("~/Projects/IBMQuantum/docs/local/a5-failed-runs/runs/e8vb_a2/k2.rel")+";");
+ideal rK=std(radical(K));
+list P=minAssChar(rK); int c;
+for(c=1;c<=size(P);c++){ideal q=std(P[c]); "RESULT prime",c,dim(q)-1,mult(q),size(q);
+ write(":w primeP"+string(c)+".txt", string(minbase(q))); kill q;}
+quit;

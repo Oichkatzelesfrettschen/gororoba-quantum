@@ -1,0 +1,9 @@
+RESULT generators 15
+RESULT slice_variables 7
+RESULT h2 51
+PROGRESS degree2_seconds 25470
+
+Singular error: no more memory
+System 12548743k:12549504k Appl 12352648k/196094k Malloc 2735k/0k Valloc 12546008k/196094k Pages 3136502/0 Regions 6627:6627 Internal: 779400
+
+halt 14

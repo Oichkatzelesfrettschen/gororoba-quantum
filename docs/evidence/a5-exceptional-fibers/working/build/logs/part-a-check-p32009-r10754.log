@@ -1,0 +1,9 @@
+xp-np identical vars=7 g=15 1.7s
+xm-nm identical vars=7 g=15 1.5s
+iso-np equal-up-to-order-sign vars=6 g=17 0.7s
+iso-nm equal-up-to-order-sign vars=6 g=17 0.7s
+e8-np identical vars=9 g=21 7.7s
+e8-nm identical vars=9 g=21 7.7s
+w8-nm identical vars=7 g=24 2.2s
+w8-np identical vars=7 g=24 2.3s
+e8-vb equal-span-mod-J vars=8 g=10 0.3s

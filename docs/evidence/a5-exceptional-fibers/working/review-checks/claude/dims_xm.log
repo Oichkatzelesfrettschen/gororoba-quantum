@@ -1,0 +1,25 @@
+// ** redefining blowup0 (;return();) dims_xm.sing:1
+// ** redefining blowup0 (;return();) dims_xm.sing:1
+// ** redefining elimRing (;return();) dims_xm.sing:1
+// ** redefining elimRing (;return();) dims_xm.sing:1
+// ** redefining elim (;return();) dims_xm.sing:1
+// ** redefining elim (;return();) dims_xm.sing:1
+// ** redefining elim2 (;return();) dims_xm.sing:1
+// ** redefining elim2 (;return();) dims_xm.sing:1
+// ** redefining elim1 (;return();) dims_xm.sing:1
+// ** redefining elim1 (;return();) dims_xm.sing:1
+// ** redefining nselect (;return();) dims_xm.sing:1
+// ** redefining nselect (;return();) dims_xm.sing:1
+// ** redefining sat (;return();) dims_xm.sing:1
+// ** redefining sat (;return();) dims_xm.sing:1
+// ** redefining sat_with_exp (;return();) dims_xm.sing:1
+// ** redefining sat_with_exp (;return();) dims_xm.sing:1
+// ** redefining select (;return();) dims_xm.sing:1
+// ** redefining select (;return();) dims_xm.sing:1
+// ** redefining select1 (;return();) dims_xm.sing:1
+// ** redefining select1 (;return();) dims_xm.sing:1
+RESULT dimY 4
+RESULT dimVG 3
+RESULT K2_radical 0
+RESULT nprimes 1
+RESULT dimK 4

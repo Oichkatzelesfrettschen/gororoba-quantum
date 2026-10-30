@@ -1,0 +1,7 @@
+RESULT vdim 8 dim 0 size 5
+lead t4
+lead t2*t8
+lead t6^2
+lead t2^2
+lead t8^3
+exit 0
