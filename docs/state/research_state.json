@@ -2590,6 +2590,20 @@
       "run": "results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01",
       "family": "photonic two-photon 21-pair octonion associator character atlas",
       "question": "Does sim:ascella route two photons through each of the 21 octonion pairs' character unitaries into the predicted focal coset pair, with the stabilizer-line pairs persisting in (0, 2)?"
+    },
+    {
+      "id": "fez-measurement-sequence-scatter-floor",
+      "provider": "ibm",
+      "run": "results/live/2026-10-29T231232.725730Z",
+      "family": "measurement-sequence-diagnostic",
+      "question": "On 47 pairwise uncoupled ibm_fez qubits (the successor's 24 main qubits and 23 chosen by a calibration-only rule), how far does the readout-corrected P0 of the 32-sx unitary sequence at N = 16 lie from the pinching analysis's Bloch-iteration prediction, qubit by qubit, and how does that scatter floor compare with ibm_kingston's?"
+    },
+    {
+      "id": "fez-measurement-sequence-successor",
+      "provider": "ibm",
+      "run": "results/live/2026-10-30T010826.175789Z",
+      "family": "measurement-sequence envelope",
+      "question": "Do 24 ibm_fez qubits pass the successor's reader-carryover, reset and crosstalk screens, and does a sequence of 16 measurements pinch the state beyond the projective prediction on the qubits that pass?"
     }
   ],
   "claims": [
@@ -13323,6 +13337,73 @@
       "depends_on": [],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "fez-gate-model-scatter-floor",
+      "statement": "On ibm_fez (calibration 2026-10-29T15:59:57-07:00; backup instance, one static job at 8192 shots over 47 pairwise uncoupled qubits, 15 s billed) the readout-corrected P0 of the 32-sx unitary sequence at N = 16 differs from the pinching analysis's Bloch-iteration prediction by a root-mean-square of 0.0338 over all 47 informative qubits, 0.0390 over the 24 main qubits and 0.0273 over the 23 further qubits, against a statistical root-mean-square of 0.0028. The preregistered floor, the larger of the all-qubit and main-qubit values, is 0.039015, about twice ibm_kingston's 0.018784. The mean residual is +0.020, and the residual's Spearman correlation with T2 is -0.35 (two-sided p 0.015) and with the sx error 0.003 (p 0.98).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One calibration window, one job, one backend; the floor includes counting noise and measures the sign-even part of the gate-model error. The negative T2 correlation runs against the drive-dephasing lead's direction, as on ibm_kingston, and is descriptive over qubits chosen by readout error; it establishes no mechanism.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-29T231232.725730Z/collect.json",
+          "sha256": "52407cab233697eedefff984a2e26333422fc82ae85a8b4d48aa6ee80cdff99c"
+        },
+        {
+          "path": "results/live/2026-10-29T231232.725730Z/record.json",
+          "sha256": "6263e35ce1a0ce40af8a43b055bdccfe75c6ba0781831c9e1b32532208acc0aa"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/scatter-floor-ibm_fez.json",
+          "sha256": "b5bdb12c55a8b3aa9c1fd339727461b0bc3319079d25ece626a1b246e447180b"
+        }
+      ],
+      "gates": {
+        "core-msq-scatter-floor-fez-replay": "replay"
+      },
+      "documents": [
+        "results/live/MEASUREMENT_SEQUENCE_SUCCESSOR_FEZ_RESULT.md"
+      ],
+      "acquisitions": [
+        "fez-measurement-sequence-scatter-floor"
+      ]
+    },
+    {
+      "id": "fez-measurement-sequence-successor-reader-screen",
+      "statement": "On 24 ibm_fez qubits (backup instance, one dynamic job of 101 PUBs at 5600 shots and a 20 us repetition delay, 31 s billed against 27.2 s planned) the successor analysis keeps no qubit and withholds the device verdict: the in-circuit reader carryover D is a median 0.019 (0.012 to 0.030) on all 20 qubits that reach the screen against a 0.0047 margin, and it tracks the single-reset control (median 0.017, ratio 1.14). The carryover the next shot inherits, from consecutive pattern rows, is 0.00061 +- 0.00008 on the 20 pattern-passing qubits, three times ibm_kingston's 0.00020 +- 0.00006. A failed measure-and-flip reset is followed by a next-shot read of 1 with probability 0.081 (237/2925) against 0.0024 after a successful one (z 66); qubits 23, 95, 121, 147 and 151 carry that persistence, and ibm_kingston shows the same at 0.065 against 0.0033 (z 74) on qubits 50, 59, 62, 95, 100 and 154. The persistent state is gone 101 PUB steps later and strikes qubits independently.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The reader screen bounds the residue of one reset, not the carryover after init_qubits, so its failure on Heron r2 was predictable from the 2026-10-27 Kingston reset control; the pinching question stays open. The persistence and carrier rows are exploratory reanalyses of the raw bits. Leakage outside the computational subspace and a repeating readout fault both fit the persistence; the twice-misread counts favor the readout fault without excluding leakage. The run record's ideal_laws were restored from the approved record by content digest after collection refused the as-submitted record.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-30T010826.175789Z/collect.json",
+          "sha256": "21efb346d6251d658677a5933d0ab74af2d859b1371ed024410df0edc48903c9"
+        },
+        {
+          "path": "results/live/2026-10-30T010826.175789Z/record.json",
+          "sha256": "661d402712c672ce0006f66548fb7b6228ac359bf9671e1b7ad04dc92ebec34c"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/reset-persistence.json",
+          "sha256": "c16c3e77272434d3c1dfeab176a491e1da88fbfa0fe67e7f5546f1e8e6874126"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/successor-null-fez-w24-s5600.json",
+          "sha256": "aeb40f5f8d9379d4b8296f79d284bde8cf203d024da42e902087cec211ebaada"
+        }
+      ],
+      "gates": {
+        "core-msq-reset-persistence-replay": "replay"
+      },
+      "documents": [
+        "results/live/MEASUREMENT_SEQUENCE_SUCCESSOR_FEZ_RESULT.md",
+        "results/live/MEASUREMENT_SEQUENCE_SUCCESSOR_CASE.md"
+      ],
+      "acquisitions": [
+        "fez-measurement-sequence-successor"
+      ]
     }
   ]
 }
