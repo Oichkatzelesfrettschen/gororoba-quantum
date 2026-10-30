@@ -1,0 +1,89 @@
+{
+  "schema": "work-plan-v1",
+  "id": "repository-layout-reconciliation",
+  "kind": "implementation",
+  "summary": "Reconcile the checkout layout: producer-side slimming of live records, evidence homes for vendor captures and paper notes, code out of results/, a package hierarchy in waves, and the owner decisions on bulk retention.",
+  "sources": [
+    "docs/design/repository-layout-reconciliation.md"
+  ],
+  "state": "planned",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Every quantity in the design document is measured at a1d1743 with git ls-files, git count-objects, ci/gates.json and the run directories; the mechanisms are read from live_run.py, ci/pinned_tool.py, the capture scripts and docs/verify_sources.py."
+  },
+  "scope": "Checkout layout of this repository: results/live producers (circuit archive store, allocation-search sidecar), docs homes (paper notes, vendor captures, design prose in the code directory, one documentation map), code out of results/, a gororoba_quantum package hierarchy in five waves, scripts grouped by provider, caches and object store outside the checkout. Retained bytes keep their paths until every binding is rebound in the same change. Deletion or relocation of the a5 working bundle and of unreferenced dry runs waits for the owner's decision recorded in the design document.",
+  "owner": "repository maintainer",
+  "next_action": "Owner answers the three decisions in docs/design/repository-layout-reconciliation.md; the cache and object-store item and the circuit-archive store proceed meanwhile.",
+  "related": [
+    "retention-bookkeeping-per-record",
+    "native-numeric-replay"
+  ],
+  "steps": [
+    {
+      "id": "caches-outside-checkout",
+      "action": "ci/pinned_tool.py keys the mypy cache under ${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/mypy/ and the canonical checkout registers git maintenance",
+      "acceptance": "a gate run leaves no .mypy_cache in the checkout; git count-objects -v reports a loose count under gc.auto after a day of commits",
+      "state": "todo"
+    },
+    {
+      "id": "circuit-archive-store",
+      "action": "live_run.py writes each compiled archive once under results/live/archives/<sha256>.qpy and a resolver serves the 48 readers; retained directories keep isa.qpy",
+      "acceptance": "a dry run of an existing case writes no isa.qpy in its directory; adjudicate.py on a retained run reads its original bytes; every gate binding a retained run passes",
+      "state": "todo"
+    },
+    {
+      "id": "allocation-search-sidecar",
+      "action": "the planner writes allocation_search.candidates to allocation-search.json beside the record",
+      "acceptance": "a dry run of the ripple atlas case writes a record under 2 MB and the planning contracts read the candidates from the sidecar",
+      "state": "todo"
+    },
+    {
+      "id": "paper-notes-in-library",
+      "action": "the 22 identifier-named notes under docs/notes/ move to docs/notes/papers/ with their SOURCES.json note fields and inbound links",
+      "acceptance": "docs/verify_sources.py, the sources suite and scripts/check_markdown_links.py pass",
+      "state": "todo"
+    },
+    {
+      "id": "vendor-captures-home",
+      "action": "manifest-bound capture trees move from docs/notes/<provider>/ to docs/captures/<provider>/ with their scripts, gates and README tables",
+      "acceptance": "every capture --check passes offline and docs/notes/ holds about 500 Markdown files",
+      "state": "todo"
+    },
+    {
+      "id": "design-prose-out-of-code",
+      "action": "the thirteen Markdown documents in gororoba_quantum/ move to docs/design/ or docs/notes/topics/ with their map rows",
+      "acceptance": "the link checker passes and gororoba_quantum/ holds Python, its agent guide and requirements",
+      "state": "todo"
+    },
+    {
+      "id": "results-hold-written-bytes",
+      "action": "the Python files and case and findings documents under results/live/ move to scripts/, tests/ and docs/evidence/ibm-live-cases/ with their gates rewritten",
+      "acceptance": "ci/run_gates.py --affected-by reaches every rewritten gate and each passes",
+      "state": "todo"
+    },
+    {
+      "id": "one-documentation-map",
+      "action": "docs/INDEX.md keeps only the source index, docs/README.md keeps areas and task entries, the generated catalogs are linked once",
+      "acceptance": "the two files share no link target outside the source hubs",
+      "state": "todo"
+    },
+    {
+      "id": "package-hierarchy-waves",
+      "action": "gororoba_quantum becomes a package and its modules move into infra, algebra, hardware, analysis and providers subpackages one cluster per pull request, with live_run.py split along its section boundaries",
+      "acceptance": "per wave: mypy over the five code roots, the tests check, every gate with cwd gororoba_quantum the diff reaches, and a live_run.py dry run writing its audit record",
+      "state": "todo"
+    },
+    {
+      "id": "scripts-by-provider",
+      "action": "scripts/ gains provider directories for the qi, ascella and qd, iqm and n21 clusters with package imports replacing sys.path insertion",
+      "acceptance": "ci/seed_provenance.py scans the new paths and the gates naming each script pass",
+      "state": "todo"
+    },
+    {
+      "id": "owner-decisions",
+      "action": "the owner decides the home of the a5 working bundle, the retention of unreferenced dry runs and the depth of the package hierarchy",
+      "acceptance": "the three answers are recorded in the design document and the dependent steps carry them",
+      "state": "todo"
+    }
+  ]
+}
