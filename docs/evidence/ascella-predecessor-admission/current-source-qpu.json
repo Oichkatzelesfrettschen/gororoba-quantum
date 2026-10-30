@@ -1,0 +1,252 @@
+{
+  "anchor_boundary": "Caller-held digests bind bytes; they do not authenticate the caller or provider.",
+  "cases_sha256": "f7dca476ad6ffe4232d69c8ffd2d64488f2faaa528d711b70c47829ed31bcc49",
+  "common_norm_exact": "6332910980959043/576320025015418880",
+  "common_vector_exact": [
+    "-5665495755833681/576320025015418880",
+    "-47672516080383/41165716072529920",
+    "140721650868233/576320025015418880",
+    "75732985640285/115264005003083776",
+    "5367922719/70351565553640",
+    "219877093040137/576320025015418880",
+    "52775752359957/576320025015418880",
+    "80914177615463/115264005003083776",
+    "914680397299727/576320025015418880",
+    "1600698344800283/576320025015418880",
+    "319133979430329/82331432145059840",
+    "68602009477123/115264005003083776"
+  ],
+  "current_case_sources": {
+    "scripts/ascella_predecessor_current_analysis.py": "a7579183320fca593db412f4e486569e977c2bfed1f2e88d74c25ad404bf8c81",
+    "scripts/ascella_predecessor_current_case.py": "097909cc8b7086ebbd0e2d66c8368894c4a16b55dbd2a3fc91fbdd90b8f5b180"
+  },
+  "drift_boundary": "quadratic symmetric drift can produce a positive common contrast and zero reversal contrast",
+  "eligible_counts": [
+    32760,
+    32767,
+    32761,
+    32768,
+    32757,
+    32765,
+    32766,
+    32764
+  ],
+  "job_id": "0e41a8a7-1993-47a4-a9f5-b350523b2e95",
+  "observations": [
+    {
+      "eligible_port_counts": [
+        880,
+        1668,
+        45,
+        28549,
+        16,
+        39,
+        20,
+        47,
+        364,
+        447,
+        619,
+        66
+      ],
+      "invalid_event_counts": {
+        "other_photon_number": 8,
+        "zero_click": 0
+      },
+      "name": "A-0-predecessor-theta2-x-arm1",
+      "returned_events": 32768
+    },
+    {
+      "eligible_port_counts": [
+        29882,
+        1897,
+        3,
+        939,
+        2,
+        3,
+        5,
+        3,
+        13,
+        10,
+        7,
+        3
+      ],
+      "invalid_event_counts": {
+        "other_photon_number": 1,
+        "zero_click": 0
+      },
+      "name": "A-1-target-theta2-x-arm0",
+      "returned_events": 32768
+    },
+    {
+      "eligible_port_counts": [
+        7983,
+        15339,
+        23,
+        9243,
+        6,
+        11,
+        18,
+        13,
+        38,
+        37,
+        42,
+        8
+      ],
+      "invalid_event_counts": {
+        "other_photon_number": 7,
+        "zero_click": 0
+      },
+      "name": "A-0-predecessor-theta0-x-arm0",
+      "returned_events": 32768
+    },
+    {
+      "eligible_port_counts": [
+        29925,
+        1882,
+        3,
+        923,
+        0,
+        3,
+        7,
+        1,
+        5,
+        9,
+        5,
+        5
+      ],
+      "invalid_event_counts": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "A-1-target-theta2-x-arm0",
+      "returned_events": 32768
+    },
+    {
+      "eligible_port_counts": [
+        8098,
+        15402,
+        16,
+        9116,
+        6,
+        10,
+        7,
+        11,
+        16,
+        38,
+        32,
+        5
+      ],
+      "invalid_event_counts": {
+        "other_photon_number": 11,
+        "zero_click": 0
+      },
+      "name": "B-0-predecessor-theta0-x-arm0",
+      "returned_events": 32768
+    },
+    {
+      "eligible_port_counts": [
+        29881,
+        1912,
+        2,
+        910,
+        2,
+        3,
+        8,
+        5,
+        13,
+        12,
+        12,
+        5
+      ],
+      "invalid_event_counts": {
+        "other_photon_number": 3,
+        "zero_click": 0
+      },
+      "name": "B-1-target-theta2-x-arm0",
+      "returned_events": 32768
+    },
+    {
+      "eligible_port_counts": [
+        962,
+        1862,
+        17,
+        29868,
+        5,
+        7,
+        6,
+        8,
+        14,
+        4,
+        11,
+        2
+      ],
+      "invalid_event_counts": {
+        "other_photon_number": 2,
+        "zero_click": 0
+      },
+      "name": "B-0-predecessor-theta2-x-arm1",
+      "returned_events": 32768
+    },
+    {
+      "eligible_port_counts": [
+        29278,
+        1821,
+        18,
+        937,
+        5,
+        28,
+        16,
+        49,
+        109,
+        193,
+        264,
+        46
+      ],
+      "invalid_event_counts": {
+        "other_photon_number": 4,
+        "zero_click": 0
+      },
+      "name": "B-1-target-theta2-x-arm0",
+      "returned_events": 32768
+    }
+  ],
+  "physical_predecessor_attribution": "unavailable",
+  "predecessor_tvd_exact": [
+    "1869653/2948490",
+    "5269177/8320278"
+  ],
+  "reversal_norm_exact": "5857507598316733/576320025015418880",
+  "reversal_vector_exact": [
+    "-4925255775796911/576320025015418880",
+    "-66589415894273/41165716072529920",
+    "140720040599543/576320025015418880",
+    "19350930377379/115264005003083776",
+    "1073872879/70351565553640",
+    "219875482771447/576320025015418880",
+    "87948851355627/576320025015418880",
+    "73878699006361/115264005003083776",
+    "773970288361457/576320025015418880",
+    "1583105085849573/576320025015418880",
+    "314108330848839/82331432145059840",
+    "75636843978749/115264005003083776"
+  ],
+  "run_bindings": {
+    "cases.json": "f7dca476ad6ffe4232d69c8ffd2d64488f2faaa528d711b70c47829ed31bcc49",
+    "circuit.json": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f",
+    "job-body.json": "9cdf9c51e25eaa8410d71b827c5ff35cf945d2f53afc2194c9fae7574b2ff873",
+    "raw/result.json": "61cd00f17b8f6068dd820275484386d8d68d4defa554b3609a3bf02fd0dd3580",
+    "results.json": "7c484b8b13b82afa15db2c7d27b993e73d859e59347847bdd979f0af7c300612",
+    "submission.json": "e0e36b6a13f1a09cfa577d658069e94d3eb78f26f494e1720234af955ae30017"
+  },
+  "schema": "ascella-predecessor-current-analysis-v1",
+  "source_sha256": {
+    "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+    "scripts/ascella_experiment_analysis.py": "b9c495807ee9ee19a411bd7891a7545bb4a93d7adc5a62b0fdc23e266cc39bdc",
+    "scripts/ascella_predecessor_analysis.py": "0d5296bbf7582471e8bd3151baedcdf9228201f014fd2a288b07dcff5651c398",
+    "scripts/ascella_predecessor_case.py": "2310aa98d1c0c68812d7edcbd30fd6a0713ca5fb6ab1e1b8c3c96e3d845b197b",
+    "scripts/experiment_analysis.py": "737504232eeca0e5112df232fe76bcabd198d3bc17b2018c55a1871e846ec3b2",
+    "scripts/qd_platform.py": "941ec569863dce3ceefab4e8ea974d0029bc2818b35621baa9b874be7e05b3e6"
+  },
+  "temporal_boundary": "returned position attributes settings; physical order, target time spacing and carryover are unestablished",
+  "verdict": "descriptive-only"
+}

@@ -1,0 +1,16 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=6&type=uint16",
+ "retrieved_utc": "2026-10-30T185614Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"6\", \"data\": [19975, 4557, 62065, 2325, 62300, 34625]}",
+ "raw_sha256": "4e358f4e19cbc9ee200000e5cfc06a245c3b86aa2d6b2f44dae9bddb4d0ed7a7",
+ "type": "uint16",
+ "values": [
+  19975,
+  4557,
+  62065,
+  2325,
+  62300,
+  34625
+ ]
+}

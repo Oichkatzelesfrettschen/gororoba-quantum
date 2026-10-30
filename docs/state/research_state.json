@@ -2793,6 +2793,41 @@
       "run": "results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01",
       "family": "single-chip teleportation rehearsal on a recovered chip",
       "question": "How often does an accepted event of twelve independently compiled known-input teleportation circuits decode to the input's eigenvalue on a recovered qpu:belenos, with an anytime-valid lower bound?"
+    },
+    {
+      "id": "qd-ascella-predecessor-current-schema",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-schema",
+      "family": "photonic target-slot diagnostic",
+      "question": "What signed target-slot response and predecessor distribution differences occur in the eight-iteration Ascella acquisition under the current command-schema route?"
+    },
+    {
+      "id": "qd-sim-ascella-a5-kernel-slice",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T190014Z-sim_ascella-a5-kernel-slice",
+      "family": "ascella-a5-kernel-slice",
+      "question": "How does the Ascella simulator respond to the six encoded A5 kernel-slice settings?"
+    },
+    {
+      "id": "qd-ascella-a5-kernel-slice",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice",
+      "family": "ascella-a5-kernel-slice",
+      "question": "How does Ascella respond to the six encoded A5 kernel-slice settings?"
+    },
+    {
+      "id": "qd-sim-ascella-target-slot-drift",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T200500Z-sim_ascella-target-slot-drift",
+      "family": "ascella-target-slot-drift",
+      "question": "How do the Ascella simulator target outputs vary across eight requested slots?"
+    },
+    {
+      "id": "qd-ascella-target-slot-drift",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T200600Z-qpu_ascella-target-slot-drift",
+      "family": "ascella-target-slot-drift",
+      "question": "How do Ascella target outputs vary across eight requested slots?"
     }
   ],
   "claims": [
@@ -3593,14 +3628,36 @@
       "status": "exploratory",
       "boundary": "Conditional frequencies given reported total occupation one, and decoded numerical metadata from these five jobs. The historical JSON's one-click label denotes that occupation-sum selection; the mixed threshold/quasi-PNR documentation does not establish a uniform physical-click model. The records establish a compilation-metadata/measurement mismatch, rather than which applied-control or result-association mechanism caused it. Fixed request ordering confounds a setting-specific response with a preceding-setting effect. The analysis supplies neither calibrated uncertainty coverage, absolute transmission, process tomography nor fundamental quaternionic-physics evidence. A newly ordered intervention requires its own approved case.",
       "evidence": [
-        {"path": "results/hypercomplex/belenos-repeat-readout.json", "sha256": "bdb822bf69bfba2ce0114c65ae070f409c909697ae49b6f7e584c32d7952346b"},
-        {"path": "results/hypercomplex/belenos-compilation-measurement-audit.json", "sha256": "ec923d72db2cfa4d5a5e9ee6eba5b6f5fdd413b56d1cb09b18b61e1c46bbdf5a"},
-        {"path": "results/hypercomplex/belenos-repeat-readout-pooled.json", "sha256": "3f5ff8f59afe020a9f84112a6a124876b6227069f08088ea08f3236b6e0f5c27"},
-        {"path": "results/hypercomplex/belenos-compilation-measurement-audit-pooled.json", "sha256": "bdc25d02692cc080a2f90a9adc1cb5062916510c13912d0123f977ffeeede3d7"}
+        {
+          "path": "results/hypercomplex/belenos-repeat-readout.json",
+          "sha256": "bdb822bf69bfba2ce0114c65ae070f409c909697ae49b6f7e584c32d7952346b"
+        },
+        {
+          "path": "results/hypercomplex/belenos-compilation-measurement-audit.json",
+          "sha256": "ec923d72db2cfa4d5a5e9ee6eba5b6f5fdd413b56d1cb09b18b61e1c46bbdf5a"
+        },
+        {
+          "path": "results/hypercomplex/belenos-repeat-readout-pooled.json",
+          "sha256": "3f5ff8f59afe020a9f84112a6a124876b6227069f08088ea08f3236b6e0f5c27"
+        },
+        {
+          "path": "results/hypercomplex/belenos-compilation-measurement-audit-pooled.json",
+          "sha256": "bdc25d02692cc080a2f90a9adc1cb5062916510c13912d0123f977ffeeede3d7"
+        }
       ],
-      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
-      "gates": {"core-651": "replay"},
-      "acquisitions": ["qd-belenos-order-repeat", "qd-belenos-wave-repeat-0", "qd-belenos-wave-repeat-1", "qd-belenos-wave-repeat-2", "qd-belenos-transform-repeat"],
+      "documents": [
+        "docs/design/ascella-instrument-readiness-and-packed-tests.md"
+      ],
+      "gates": {
+        "core-651": "replay"
+      },
+      "acquisitions": [
+        "qd-belenos-order-repeat",
+        "qd-belenos-wave-repeat-0",
+        "qd-belenos-wave-repeat-1",
+        "qd-belenos-wave-repeat-2",
+        "qd-belenos-transform-repeat"
+      ],
       "assumptions": [],
       "depends_on": [],
       "supersedes": [],
@@ -3613,10 +3670,19 @@
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
       "boundary": "One descriptive recheck submitted after the static readiness stopping rule had fired, without a recorded explicit override. The stopping-rule adjudication classifies this submission as a protocol deviation, rather than preregistered adherence. The observed public status transition was insufficient to restore this sampling path. The instrument's private configuration and internal worker control flow remain unobserved.",
-      "evidence": [{"path": "results/quandela/runs/ascella-native-input-map-recheck/results.json", "sha256": "5aca406d3137d65ab3b65f430412b6bfee497be9427ae5d615fd82ea24ace55f"}],
-      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "evidence": [
+        {
+          "path": "results/quandela/runs/ascella-native-input-map-recheck/results.json",
+          "sha256": "5aca406d3137d65ab3b65f430412b6bfee497be9427ae5d615fd82ea24ace55f"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-instrument-readiness-and-packed-tests.md"
+      ],
       "gates": {},
-      "acquisitions": ["qd-ascella-native-input-map-recheck"],
+      "acquisitions": [
+        "qd-ascella-native-input-map-recheck"
+      ],
       "assumptions": [],
       "depends_on": [],
       "supersedes": [],
@@ -3630,13 +3696,28 @@
       "status": "exploratory",
       "boundary": "Three sampling requests under their recorded platform snapshots. The native-mesh request followed the static readiness stopping rule without a recorded explicit override; the stopping-rule adjudication classifies it as a protocol deviation. Its result is descriptive rather than evidence of preregistered adherence. The observations reject static payload class and native-architecture compatibility as sufficient remedies on the tested paths. They provide neither measured operator probabilities nor an exhaustive statement about every command or future configuration. The deployment's instrument map and private worker implementation remain unobserved.",
       "evidence": [
-        {"path": "results/quandela/runs/ascella-hypercomplex-order-pilot/results.json", "sha256": "ee7b4034fa7d6ec33b28c787d2f63491f44805021c24ebe26a9b46920c911711"},
-        {"path": "results/quandela/runs/ascella-static-input-readiness/results.json", "sha256": "b958067cdc273f7e372b8a9f7d214f3d01f1db359187e6b0cde4b206c300c019"},
-        {"path": "results/quandela/runs/ascella-calibrated-mesh-input-readiness/results.json", "sha256": "9533f4effa537caf97a80911434083d95c374ed7d2760e98440fd1416dbb461d"}
+        {
+          "path": "results/quandela/runs/ascella-hypercomplex-order-pilot/results.json",
+          "sha256": "ee7b4034fa7d6ec33b28c787d2f63491f44805021c24ebe26a9b46920c911711"
+        },
+        {
+          "path": "results/quandela/runs/ascella-static-input-readiness/results.json",
+          "sha256": "b958067cdc273f7e372b8a9f7d214f3d01f1db359187e6b0cde4b206c300c019"
+        },
+        {
+          "path": "results/quandela/runs/ascella-calibrated-mesh-input-readiness/results.json",
+          "sha256": "9533f4effa537caf97a80911434083d95c374ed7d2760e98440fd1416dbb461d"
+        }
       ],
-      "documents": ["docs/design/ascella-instrument-readiness-and-packed-tests.md"],
+      "documents": [
+        "docs/design/ascella-instrument-readiness-and-packed-tests.md"
+      ],
       "gates": {},
-      "acquisitions": ["qd-ascella-order-input-readiness", "qd-ascella-static-input-readiness", "qd-ascella-calibrated-mesh-input-readiness"],
+      "acquisitions": [
+        "qd-ascella-order-input-readiness",
+        "qd-ascella-static-input-readiness",
+        "qd-ascella-calibrated-mesh-input-readiness"
+      ],
       "assumptions": [],
       "depends_on": [],
       "supersedes": [],
@@ -3650,8 +3731,13 @@
       "status": "proposed",
       "boundary": "Local exact and compiler checks establish software conformance. Physical scheduling, refreshed budget, frozen covariance analysis and user approval precede provider execution; the contrast cannot identify a unique noise mechanism.",
       "evidence": [],
-      "documents": ["docs/design/tuna17-zero-divisor-matched-response.md"],
-      "gates": {"core-632": "replay", "core-633": "replay"},
+      "documents": [
+        "docs/design/tuna17-zero-divisor-matched-response.md"
+      ],
+      "gates": {
+        "core-632": "replay",
+        "core-633": "replay"
+      },
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -11487,7 +11573,9 @@
       "documents": [
         "docs/design/iqm-garnet-idle-schedule-train-readout.md"
       ],
-      "gates": {"core-684": "replay"},
+      "gates": {
+        "core-684": "replay"
+      },
       "acquisitions": [
         "iqm-garnet-idle-schedule"
       ],
@@ -12147,8 +12235,7 @@
       "supersedes": [],
       "superseded_by": null,
       "proof_origin": "unproved-open"
-    }
-,
+    },
     {
       "id": "kingston-latency-recovery-window-cost",
       "statement": "On ibm_kingston (calibration 2026-10-25T12:18:10-07:00, executed on physical qubits 106, 105, 104, 117, 107, 125 for r, d0, d1, d2, a0, a1; one job of 34 dynamic PUBs at 16384 shots) a single conditional X recovers an injected X error on a bit-flip-coded Bell pair: F(ff_0) - null is 0.745 [0.699, 0.790] and F(ff_0) - F(unencoded) is 0.553 [0.507, 0.598]. The controller latency and the conditional cost no resolved fidelity beyond their idle: frame_0 - ff_0 reads 0.010 [-0.035, 0.055] and frame_l - ff_0 reads -0.004 [-0.049, 0.041]. A requested 10 us idle, executed as 9.748 us on the feed-forward path (the broadcast overlaps the delay) and 10.000 us on the frame path per the returned scheduler_timing, costs 0.217 [0.172, 0.262] and 0.223 [0.178, 0.268], against 0.082 and 0.079 predicted from the calibrated T1 and T2: a finite-window slope of 0.022 per us on both paths, and -ln(F(W)/F(0)) of 0.033 to 0.034 per us. Descriptively, about 0.12 of that loss is a -0.81 rad rotation of the four-qubit block (near -13 kHz) and the rest a coherence decay with time constant 38 to 40 us against 65 to 67 us predicted.",
@@ -13529,11 +13616,11 @@
     },
     {
       "id": "ascella-two-photon-character-twin",
-      "statement": "The two-photon, 84-setting character atlas on sim:ascella (2,030 two-click events per setting, 170,520 in all) routes both photons into each displacing pair's predicted focal coset pair (mean displacing contrast 2.0) and keeps the stabilizer-line pairs in (0, 2) (mean persistence 1.0), with zero sentinel leakage; it is the simulator twin of the qpu:ascella atlas whose job awaits collection.",
+      "statement": "The two-photon, 84-setting character atlas on sim:ascella (2,030 two-click events per setting, 170,520 in all) routes both photons into each displacing pair's predicted focal coset pair (mean displacing contrast 2.0) and keeps the stabilizer-line pairs in (0, 2) (mean persistence 1.0), with zero sentinel leakage; its planned qpu:ascella counterpart was canceled before execution.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "A simulator result under ideal two-photon interference; it predicts the hardware atlas and establishes no device property. The hardware job (4c4f0273-6e69-4b52-af92-550a5e4356d8) is retained in its case directory until it completes.",
+      "boundary": "A simulator result under ideal two-photon interference; it predicts the hardware atlas and establishes no device property. Hardware job 4c4f0273-6e69-4b52-af92-550a5e4356d8 was canceled under the recorded job-specific authority, with zero shots and zero samples. A replacement is a separate acquisition.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01/results.json",
@@ -13542,6 +13629,14 @@
         {
           "path": "results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01/analysis_report.json",
           "sha256": "4ef705c18dbda2f31c28dae6808642cb609ce6b908a0ddf4a44f9c1026b09ef7"
+        },
+        {
+          "path": "results/quandela/cases/ascella_two_photon_character/job-01/results.json",
+          "sha256": "1bd949709a910582019aecbe300b3cdfdf964f50be5de1ea953916380682b8b8"
+        },
+        {
+          "path": "results/quandela/cases/ascella_two_photon_character/job-01/cancellation-authority.json",
+          "sha256": "e4dbf45640ce4aab2d46983f5953482b5236cec27ca98e9fa632d8da1cf5358a"
         }
       ],
       "documents": [
@@ -13980,6 +14075,111 @@
       "depends_on": [
         "qd-belenos-teleportation-rehearsal-job-00"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-predecessor-current-target-slot-response",
+      "statement": "The Ascella current-source eight-iteration target-slot job 0e41a8a7 returns 262144 events. Its descriptive signed common contrast norm is approximately 0.01099, its reversal norm 0.01016, and its two predecessor distribution distances 0.63411 and 0.63329. All eight returned circuit and input identities pass the case checks.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The contrast is descriptive; no reviewed sampling contract or confidence bound is admitted. Requested iterator order does not establish physical chronology, and quadratic drift or carryover can produce the observed contrast without an identified predecessor effect. The simulator is not a physical history control.",
+      "evidence": [
+        {
+          "path": "docs/evidence/ascella-predecessor-admission/current-source-qpu.json",
+          "sha256": "4a7072fec087eef169efabccce2de6e7abb178af04c66db574c8ef8533a0ee0c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-schema/results.json",
+          "sha256": "7c484b8b13b82afa15db2c7d27b993e73d859e59347847bdd979f0af7c300612"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-predecessor-intervention.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-predecessor-current-schema"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-a5-kernel-slice-observations",
+      "statement": "The Ascella simulator and QPU each return 60000 events for six A5 kernel-slice settings. The QPU conditional success fractions are approximately 0.513568, 0.002622, 0.998198, 0.001953, 0.999700 and 0.518652 in request order.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The outcome is conditional on an eligible detected photon; sentinel and invalid events are recorded separately. The two-input encoding does not determine full A5 nullity or establish physical nonassociativity. The contrasts are descriptive and do not establish causal temporal effects.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-photonic-crosschecks/ascella-simulator-kernel-slice.json",
+          "sha256": "076f4f66e4c3dc7cdd02b3d76ac4a02ae4ffa88e1b9fe3be44a73427bdaec8a5"
+        },
+        {
+          "path": "docs/evidence/a5-photonic-crosschecks/ascella-hardware-kernel-slice.json",
+          "sha256": "2bf62e2da270b0986f48a4f6ea385607cd4127ae3dbc2a0139f4553584afc490"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T190014Z-sim_ascella-a5-kernel-slice/results.json",
+          "sha256": "efe4f16d0ef96f9ed6cf53847673481a7c2130c63d8aa2ec52067c24778a8bb5"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice/results.json",
+          "sha256": "6dd0c2b28d5baaa7cae808a452b743997dd1ba068e17346fa20cbb384515c944"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-a5-kernel-slice.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-a5-kernel-slice",
+        "qd-ascella-a5-kernel-slice"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-eight-target-requested-slot-contrast",
+      "statement": "The Ascella and sim:ascella sixteen-iteration target-slot jobs each return 524288 events. The descriptive eight-target requested-index contrast total-variation norms are approximately 0.0061193 on Ascella and 0.0009995 on the simulator. All hardware settings match the retained circuit and input identities.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The requested-index contrast cancels quadratic trends only under equal index spacing, while cubic drift and physical scheduling remain unresolved. The records do not identify predecessor causality or support a confidence verdict. Simulator and hardware observations are separate jobs.",
+      "evidence": [
+        {
+          "path": "docs/evidence/ascella-predecessor-admission/target-slot-drift-simulator.json",
+          "sha256": "a7ec44ed7cbc1f0de569ebc2a8d9ce0727ec08ccf025e316c03883e476e462ff"
+        },
+        {
+          "path": "docs/evidence/ascella-predecessor-admission/target-slot-drift-hardware.json",
+          "sha256": "4261a770bd6c26d147ef360dbacbc70791880d900a1eff407cc4ddb95c80e53e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T200500Z-sim_ascella-target-slot-drift/results.json",
+          "sha256": "8b2a5e2700877563985b85063e059354e820a0bebc82c5152f3483c9120f4790"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T200600Z-qpu_ascella-target-slot-drift/results.json",
+          "sha256": "8f3745c78ee8aa2c166cf24aa58a314581de4b125fdaffc8b60c369045898d2d"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-predecessor-intervention.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-target-slot-drift",
+        "qd-ascella-target-slot-drift"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     }

@@ -1,0 +1,185 @@
+{
+  "artifact_sha256": {
+    "cases.json": "34046ff6fefd87b4c33944892fe077c0b1c2f31a234d592720e13e0382f086f4",
+    "circuit.json": "8d05c0fcf57c7a2a3a5c7933d5c6ad128d4970cf4119598b4ea0c84bf2795fa2",
+    "job-body.json": "e8cd4e67fbe75c17ded6f54c4e788a513451c4783422b3a3937e45e032464db9",
+    "raw/result.json": "ed1b04edcadf6cfe2edb68c45e49ca45ef87e03b97070d892cbdd8bec680230a",
+    "results.json": "6dd0c2b28d5baaa7cae808a452b743997dd1ba068e17346fa20cbb384515c944",
+    "submission.json": "68f86de9dc2a1334d5cd59b21cf7d560e952de7778078733befa46d80deb180e"
+  },
+  "charge": 1.06,
+  "interpretation": "Descriptive conditional branch fractions; full A5 nullity and physical nonassociativity remain untested.",
+  "job_id": "66331d15-d398-4046-bc21-c07a197e8830",
+  "observations": [
+    {
+      "conditional_success": 0.5135676379293082,
+      "failure": 4858,
+      "ideal_success": "1/2",
+      "invalid_events": {
+        "other_photon_number": 8,
+        "zero_click": 0
+      },
+      "name": "control-dark",
+      "port_counts": [
+        1231,
+        1356,
+        1329,
+        1213,
+        1230,
+        1295,
+        1144,
+        1189,
+        2,
+        1,
+        1,
+        1
+      ],
+      "returned_events": 10000,
+      "sentinel": 5,
+      "shots_used": 10000,
+      "success": 5129
+    },
+    {
+      "conditional_success": 0.0026217606130886357,
+      "failure": 9891,
+      "ideal_success": "0",
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "kernel-dark",
+      "port_counts": [
+        12,
+        1,
+        6,
+        7,
+        4918,
+        7,
+        15,
+        4951,
+        29,
+        16,
+        36,
+        2
+      ],
+      "returned_events": 10000,
+      "sentinel": 83,
+      "shots_used": 10000,
+      "success": 26
+    },
+    {
+      "conditional_success": 0.9981976569540403,
+      "failure": 18,
+      "ideal_success": "1",
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "mutation-dark",
+      "port_counts": [
+        4971,
+        8,
+        0,
+        4990,
+        16,
+        1,
+        0,
+        1,
+        5,
+        4,
+        3,
+        1
+      ],
+      "returned_events": 10000,
+      "sentinel": 13,
+      "shots_used": 10000,
+      "success": 9969
+    },
+    {
+      "conditional_success": 0.0019533257941811454,
+      "failure": 9708,
+      "ideal_success": "0",
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "mutation-bright",
+      "port_counts": [
+        4,
+        13,
+        2,
+        0,
+        4826,
+        11,
+        4,
+        4867,
+        76,
+        71,
+        117,
+        9
+      ],
+      "returned_events": 10000,
+      "sentinel": 273,
+      "shots_used": 10000,
+      "success": 19
+    },
+    {
+      "conditional_success": 0.999699549323986,
+      "failure": 3,
+      "ideal_success": "1",
+      "invalid_events": {
+        "other_photon_number": 4,
+        "zero_click": 0
+      },
+      "name": "kernel-bright",
+      "port_counts": [
+        4700,
+        10,
+        6,
+        5266,
+        2,
+        0,
+        0,
+        1,
+        3,
+        1,
+        2,
+        5
+      ],
+      "returned_events": 10000,
+      "sentinel": 11,
+      "shots_used": 10000,
+      "success": 9982
+    },
+    {
+      "conditional_success": 0.5186517315794882,
+      "failure": 4684,
+      "ideal_success": "1/2",
+      "invalid_events": {
+        "other_photon_number": 6,
+        "zero_click": 0
+      },
+      "name": "control-bright",
+      "port_counts": [
+        1294,
+        1263,
+        1093,
+        1397,
+        1260,
+        1218,
+        1073,
+        1133,
+        65,
+        67,
+        110,
+        21
+      ],
+      "returned_events": 10000,
+      "sentinel": 263,
+      "shots_used": 10000,
+      "success": 5047
+    }
+  ],
+  "platform": "qpu:ascella",
+  "schema": "ascella-a5-kernel-slice-analysis-v1"
+}

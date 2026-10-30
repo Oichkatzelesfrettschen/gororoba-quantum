@@ -571,6 +571,54 @@
    "experiment": "2026-10-27T191809.705421Z"
   },
   {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T185614Z.json",
+   "index": 0,
+   "value": 19975,
+   "script": "scripts/ascella_a5_kernel_slice.py",
+   "flag": "--draw",
+   "experiment": "ascella-a5-kernel-slice"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T185614Z.json",
+   "index": 1,
+   "value": 4557,
+   "script": "scripts/ascella_a5_kernel_slice.py",
+   "flag": "--draw",
+   "experiment": "ascella-a5-kernel-slice"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T185614Z.json",
+   "index": 2,
+   "value": 62065,
+   "script": "scripts/ascella_a5_kernel_slice.py",
+   "flag": "--draw",
+   "experiment": "ascella-a5-kernel-slice"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T185614Z.json",
+   "index": 3,
+   "value": 2325,
+   "script": "scripts/ascella_a5_kernel_slice.py",
+   "flag": "--draw",
+   "experiment": "ascella-a5-kernel-slice"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T185614Z.json",
+   "index": 4,
+   "value": 62300,
+   "script": "scripts/ascella_a5_kernel_slice.py",
+   "flag": "--draw",
+   "experiment": "ascella-a5-kernel-slice"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T185614Z.json",
+   "index": 5,
+   "value": 34625,
+   "script": "scripts/ascella_a5_kernel_slice.py",
+   "flag": "--draw",
+   "experiment": "ascella-a5-kernel-slice"
+  },
+  {
    "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
    "index": 0,
    "value": 34509,
