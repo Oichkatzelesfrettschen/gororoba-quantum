@@ -638,6 +638,28 @@ def render_circuit_svg(modes: int, output_path: Path) -> int:
     return int(output_path.stat().st_size)
 
 
+def _twin_setting_counts(item: tuple[dict[str, Any], int, float, list[float], int]) -> dict[str, int]:
+    """One setting's single-photon SLOS distribution mixed with the dark-count floor, as rounded sample counts."""
+    import perceval as pcvl
+
+    s, output_modes, dark_leak_fraction, dark_weights, samples_per_iter = item
+    active_modes = output_modes if bool(s.get("full_chip_modes", False)) else WINDOW_MODES
+    u_full = np.eye(output_modes, dtype=complex)
+    u_full[:active_modes, :active_modes] = unitary_for_spec(s, modes=active_modes)
+    backend = pcvl.BackendFactory.get_backend("SLOS")
+    backend.set_circuit(pcvl.Unitary(pcvl.Matrix(u_full)))
+    backend.set_input_state(pcvl.BasicState([1] + [0] * (output_modes - 1)))
+    dist = backend.prob_distribution()
+    state_counts: dict[str, int] = {}
+    for mode_idx in range(output_modes):
+        bstate = pcvl.BasicState([1 if m == mode_idx else 0 for m in range(output_modes)])
+        p_eff = (1.0 - dark_leak_fraction) * float(dist.get(bstate, 0.0)) + dark_leak_fraction * dark_weights[mode_idx]
+        cnt = int(round(p_eff * samples_per_iter))
+        if cnt > 0:
+            state_counts[str(bstate)] = cnt
+    return state_counts
+
+
 def simulate_local_twin(
     job_name: str,
     platform: str,
@@ -650,8 +672,6 @@ def simulate_local_twin(
       Transmittance=8.99%, g2=0.72%), mixes the exact SLOS distribution with the measured SNSPD dark-count
       and multi-photon g2 leakage floor per detector port, then runs `analyze_run`.
     """
-    import perceval as pcvl
-
     require(platform in PLATFORMS, f"unsupported platform {platform!r}")
     chip = "belenos" if "belenos" in platform else "ascella"
     docs = build_documents(job_name, chip=chip)
@@ -675,29 +695,10 @@ def simulate_local_twin(
 
     dark_weights = dark_rates / float(np.sum(dark_rates)) if np.sum(dark_rates) > 0 else np.zeros(output_modes)
 
-    backend = pcvl.BackendFactory.get_backend("SLOS")
-    counts_list: list[dict[str, int]] = []
     samples_per_iter = int(manifest.get("samples_per_iteration", DEFAULT_SAMPLES_PER_ITERATION))
-
-    for s in settings:
-        use_full_chip = bool(s.get("full_chip_modes", False))
-        active_modes = output_modes if use_full_chip else WINDOW_MODES
-        u_active = unitary_for_spec(s, modes=active_modes)
-        u_full = np.eye(output_modes, dtype=complex)
-        u_full[:active_modes, :active_modes] = u_active
-        backend.set_circuit(pcvl.Unitary(pcvl.Matrix(u_full)))
-        backend.set_input_state(pcvl.BasicState([1] + [0] * (output_modes - 1)))
-        dist = backend.prob_distribution()
-
-        state_counts: dict[str, int] = {}
-        for mode_idx in range(output_modes):
-            bstate = pcvl.BasicState([1 if m == mode_idx else 0 for m in range(output_modes)])
-            p_ideal = float(dist.get(bstate, 0.0))
-            p_eff = (1.0 - dark_leak_fraction) * p_ideal + dark_leak_fraction * float(dark_weights[mode_idx])
-            cnt = int(round(p_eff * samples_per_iter))
-            if cnt > 0:
-                state_counts[str(bstate)] = cnt
-        counts_list.append(state_counts)
+    weights = [float(w) for w in dark_weights]
+    items = [(s, output_modes, dark_leak_fraction, weights, samples_per_iter) for s in settings]
+    counts_list: list[dict[str, int]] = ordered_map(_twin_setting_counts, items, min_items=2)
 
     target_dir = out_dir or (ROOT / "docs/local/demarrais-twin" / f"{platform.replace(':', '_')}-{job_name}")
     target_dir.mkdir(parents=True, exist_ok=True)
