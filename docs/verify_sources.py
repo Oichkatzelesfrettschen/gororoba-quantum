@@ -1248,8 +1248,13 @@ def verify() -> None:
     link_count = 0
     # The pages under notes/kaggle/site are kaggle.com's own Markdown, bound byte
     # for byte by site/MANIFEST.json, and their links resolve against
-    # https://www.kaggle.com/ rather than the checkout.
-    verbatim_captures = (library / "local_source_cache", library / "notes" / "kaggle" / "site")
+    # https://www.kaggle.com/ rather than the checkout. The retained fiber working
+    # record keeps its reports' links as written, file:line targets on the build host.
+    verbatim_captures = (
+        library / "local_source_cache",
+        library / "notes" / "kaggle" / "site",
+        library / "evidence" / "a5-exceptional-fibers" / "working",
+    )
     for note in library.rglob("*.md"):
         if any(capture in note.parents for capture in verbatim_captures):
             continue

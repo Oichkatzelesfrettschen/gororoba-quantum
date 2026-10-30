@@ -855,7 +855,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check --no-cache --extend-exclude docs/evidence/a5-exceptional-fibers/working docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
    "name": "sources-120",
    "seconds": 0.1,
    "tier": "pr"
@@ -863,7 +863,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check --no-cache --extend-exclude docs/evidence/a5-exceptional-fibers/working docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
    "name": "sources-121",
    "seconds": 0.1,
    "tier": "pr"
@@ -871,7 +871,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases --exclude 'ibm-fez-actor-pilot/analyze[.]py$' docs/verify_sources.py docs/check_verify_sources.py docs/evidence && MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/ibm-fez-actor-pilot/analyze.py",
+   "cmd": "MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases --exclude 'ibm-fez-actor-pilot/analyze[.]py$' --exclude 'a5-exceptional-fibers/working/' docs/verify_sources.py docs/check_verify_sources.py docs/evidence && MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/ibm-fez-actor-pilot/analyze.py",
    "name": "sources-122",
    "seconds": 11.5,
    "tier": "pr"
