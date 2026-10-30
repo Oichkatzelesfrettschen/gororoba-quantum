@@ -150,3 +150,6 @@ records early builder feedback, disposition and the separate final-review requir
 The [Tuna early-label map review](tuna-early-label-map-review.md), its
 [coverage follow-up](tuna-early-label-map-followup-review.md) and
 [model provenance](tuna-early-label-map-review.json) bind the exhaustive-map check.
+
+The [native numeric replay review](2026-10-30-native-numeric-replay-review.md) derived the identity-scoped
+replay contract of [design/native-numeric-replay.md](../../design/native-numeric-replay.md).

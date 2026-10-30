@@ -1,0 +1,75 @@
+{
+  "schema": "work-plan-v1",
+  "id": "dimension32-global-topology",
+  "kind": "investigation",
+  "summary": "Open work of dimension32-global-topology after items 3-5: kernel-bundle residuals (xi_R real type, full component group, smaller nullity-12 reductions), attachments, nullity-4 kernel bundles, the finite global model of Z_5 and the uniform structure in n.",
+  "sources": [
+    "docs/design/dimension32-global-topology-program.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "steps": [
+    {
+      "id": "xi-real-type",
+      "state": "done",
+      "action": "Prove xi_R over V_2(R^7) actually nontrivial via the SU(3)/SU(2) fiber clutching, with an exact producer check that the stabilizer acts on H^perp through one S^3 factor.",
+      "acceptance": "Fails if H^perp admits a global frame over the fiber S^5 or the stabilizer action meets both S^3 factors.",
+      "receipts": [
+        {
+          "result": "xi_real_type.py --check passes: der(O) dimension 14, stabilizer of (e1,e2) dimension 3 fixing H, self-dual rank 3 and anti-self-dual rank 0 on H^perp, mutation rejected; with pi_4(SU(3))=0 the S^5 clutching is the generator, so xi_R is actually nontrivial.",
+          "observed_at": "2026-10-30T04:46:57+00:00",
+          "revision": "b695169d13bb4305950fa4fd8c3820341b0e9931",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-kernel-bundles-residuals/xi-real-type-result.json",
+              "sha256": "c66aecb59de395cd85a7df5e90e8ff58d666083761be3611e9df4e16679ce571"
+            }
+          ],
+          "scope_sha256": "c0a3343b1df732f06d5b97a6f8789580c21ff1476c6e9971070c70a6d05bf241"
+        }
+      ]
+    },
+    {
+      "id": "full-component-group",
+      "state": "todo",
+      "action": "Compute the normalizer of the kernel-symmetry identity component and enumerate its components on each nullity-12 and nullity-16 orbit.",
+      "acceptance": "Fails if a component outside S_3 x Z_2 transports kernels at every representative, or a listed component fails transport."
+    },
+    {
+      "id": "nullity12-smaller-reductions",
+      "state": "todo",
+      "action": "Test for global anticommuting complex structures commuting with the exact Pfaffian transition cocycle.",
+      "acceptance": "A global solution reduces the structure group to Sp(3); none across a glued atlas keeps U(6) minimal."
+    },
+    {
+      "id": "attachments",
+      "state": "doing",
+      "action": "Complete roadmap item 6: chart decompositions of the four exceptional fibers, kernel-plane limits along formal arcs, the X-minus arc certificate, nullity-8 Grassmannian limit sets.",
+      "acceptance": "Attaching maps on every admitted incidence of D_(5,12); a frontier matrix alone fails."
+    },
+    {
+      "id": "nullity4-kernel-bundles",
+      "state": "todo",
+      "action": "Kernel symmetry algebra, compact-orbit moduli, stabilizer representations, transition cocycle and classes on the nullity-4 strata.",
+      "acceptance": "Fails on a transition outside the claimed structure group or a class differing between charts."
+    },
+    {
+      "id": "global-model",
+      "state": "todo",
+      "action": "Assemble the finite model of Z_5 as a homotopy colimit of attaching maps over the incidence poset, with chain maps, homology and cup products.",
+      "acceptance": "Chain maps and selected homotopy invariants; homology agreement alone fails admission."
+    },
+    {
+      "id": "uniform-structure",
+      "state": "todo",
+      "action": "Compare the n = 4 and n = 5 models and prove a recurrence across the doubling ladder.",
+      "acceptance": "Fails if an n = 5 invariant is not produced by the recurrence from n = 4."
+    }
+  ],
+  "scope": "Program file docs/design/dimension32-global-topology-program.md and the evidence records each package names; no provider or QPU job.",
+  "owner": "repository maintainer",
+  "next_action": "Solve the group-level transport equations on the GL(4) x GL(4) centralizer slots for pi_0; glue or obstruct the pointwise quaternionic structures over V; build the nullity-4 kernel Gauss map into Gr(2, C^16) over the 11, 11 and 9 dimensional moduli."
+}

@@ -5152,7 +5152,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1 --replay-receipt docs/evidence/quantum-experiment-conformance/ascella-worker-command-source-replay.json --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
+   "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1 --replay-receipt docs/evidence/quantum-experiment-conformance/ascella-drift-source-replay.json --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
    "name": "core-quantum-experiment-cases",
    "seconds": 15.0,
    "tier": "full",
@@ -5366,6 +5366,202 @@
    "tier": "pr",
    "replays": [
     "results/quantum_inspire/proposals/tuna-destination-qx-conformance/cases.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/xi_real_type.py --check",
+   "name": "core-756",
+   "seconds": 0.4,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles-residuals/xi-real-type-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json",
+   "name": "core-757",
+   "seconds": 1.3,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --self-test",
+   "name": "core-758",
+   "seconds": 2.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/incidence_census.py --check docs/evidence/a5-kernel-attachments/incidence-census-result.json",
+   "name": "core-759",
+   "seconds": 7.8,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-attachments/incidence-census-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/incidence_census.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-attachments/incidence_census.py --self-test",
+   "name": "core-760",
+   "seconds": 15.8,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/partner_purity.py --check docs/evidence/a5-kernel-attachments/partner-purity-result.json",
+   "name": "core-761",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-attachments/partner-purity-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/partner_purity.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-attachments/partner_purity.py --self-test",
+   "name": "core-762",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/schur_degeneracy_witnesses.py --check docs/evidence/a5-kernel-attachments/schur-degeneracy-witnesses-result.json",
+   "name": "core-763",
+   "seconds": 5.6,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-attachments/schur-degeneracy-witnesses-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/schur_degeneracy_witnesses.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-attachments/schur_degeneracy_witnesses.py --self-test",
+   "name": "core-764",
+   "seconds": 11.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/first_order_normal_cones.py --check docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json; else echo \"skipped: Singular 4.4 is absent here; the singular-stack job of ci.yml replays this record\"; fi",
+   "name": "core-765",
+   "seconds": 60.0,
+   "tier": "full",
+   "requires": [
+    "singular"
+   ],
+   "replays": [
+    "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py --check docs/evidence/a5-kernel-attachments/holomorphic-gauss-fibers-result.json; else echo \"skipped: Singular 4.4 is absent here; the singular-stack job of ci.yml replays this record\"; fi",
+   "name": "core-766",
+   "seconds": 1.0,
+   "tier": "full",
+   "requires": [
+    "singular"
+   ],
+   "replays": [
+    "docs/evidence/a5-kernel-attachments/holomorphic-gauss-fibers-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py --check docs/evidence/a5-kernel-attachments/nakayama-rees-fibers-result.json; else echo \"skipped: Singular 4.4 is absent here; the singular-stack job of ci.yml replays this record\"; fi",
+   "name": "core-767",
+   "seconds": 8.0,
+   "tier": "full",
+   "requires": [
+    "singular"
+   ],
+   "replays": [
+    "docs/evidence/a5-kernel-attachments/nakayama-rees-fibers-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/nullity16_basepoints.py --check docs/evidence/a5-kernel-attachments/nullity16-basepoints-result.json; else echo \"skipped: Singular 4.4 is absent here; the singular-stack job of ci.yml replays this record\"; fi",
+   "name": "core-768",
+   "seconds": 640.0,
+   "tier": "full",
+   "workers": 4,
+   "requires": [
+    "singular"
+   ],
+   "replays": [
+    "docs/evidence/a5-kernel-attachments/nullity16-basepoints-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py --check docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json; else echo \"skipped: Singular 4.4 is absent here; the singular-stack job of ci.yml replays this record\"; fi",
+   "name": "core-769",
+   "seconds": 9000.0,
+   "tier": "full",
+   "requires": [
+    "singular"
+   ],
+   "replays": [
+    "docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/path_supported_basepoints.py --check docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json; else echo \"skipped: Singular 4.4 is absent here; the singular-stack job of ci.yml replays this record\"; fi",
+   "name": "core-770",
+   "seconds": 60.0,
+   "tier": "full",
+   "requires": [
+    "singular"
+   ],
+   "replays": [
+    "docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json"
+   ]
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-photonic-crosschecks/a5_photonic_replay.py --check",
+   "name": "sources-a5-photonic-basis-replay",
+   "seconds": 3.0,
+   "tier": "pr",
+   "workers": 2,
+   "replays": [
+    "docs/evidence/a5-photonic-crosschecks/pooled-result.json"
+   ]
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-photonic-crosschecks/spectrum.py --check",
+   "name": "sources-a5-photonic-spectrum-replay",
+   "seconds": 3.0,
+   "tier": "pr",
+   "workers": 2,
+   "replays": [
+    "docs/evidence/a5-photonic-crosschecks/named-source-spectrum-result.json"
    ]
   }
  ],

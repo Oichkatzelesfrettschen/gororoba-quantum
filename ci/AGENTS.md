@@ -140,6 +140,10 @@ the plotting-only `matplotlib==3.11.2`). The `qi-stack` job applies the same cha
 that ci/gates.json
 tags `"requires": ["qi"]`, under the Quantum Inspire interpreter
 ([Quantum Inspire](../docs/notes/quantum_inspire/README.md#binding-rules)). The
+`singular-stack` job installs Singular 4.4.1 from the `passagemath-singular==10.8.13` wheel into a separate virtual
+environment, links its binary onto PATH, runs with stdin from `/dev/null` (Singular reads stdin even for `--version`) and
+runs the gates tagged `"requires": ["singular"]` with `GOROROBA_SINGULAR_REQUIRED=1`; in every other lane those gates
+print a skip line. The
 `external-ground-truth` job runs `verify.py` over the open_gororoba commit
 named in [ci/open_gororoba.pin](open_gororoba.pin):
 `ci/fetch_open_gororoba.sh` sparse-checks out the paths it is given, and

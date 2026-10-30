@@ -23,6 +23,12 @@ Every msolve run on the A_5 Rees-fiber eliminations died with exit 139 under a
 | `prlimit --as` 28 GiB | `-t 3 -m 200000 -s 24 -l 1 -e 1 -g 2` | degree 6, "Enlarging exponent vector for hash table failed for esz = 268435456" | 28.0 GB |
 | `prlimit --as` 28 GiB | `-t 3 -s 24 -u 2 -e 1 -g 2` | same point, same message | 18.1 GB |
 
+Singular 4.4.1 reads standard input whenever it is not a terminal, even for `Singular --version`, so a
+call from a background shell or a pipeline whose stdin stays open waits until its timeout (exit 124) before doing
+anything. Every producer that spawns Singular, and every command that runs such a producer from a background job,
+starts it with stdin from `/dev/null` (`< /dev/null`, or `stdin=subprocess.DEVNULL`). `sleep 20 | timeout 10
+Singular --version` exits 124; the same command with `< /dev/null` returns in 0.01 s.
+
 `RLIMIT_AS`, which `prlimit --as` and Python's
 `resource.setrlimit(RLIMIT_AS, ...)` set, limits reserved virtual address
 space, not resident memory. The msolve 0.10.1 source names the two failing

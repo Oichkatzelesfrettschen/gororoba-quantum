@@ -1,0 +1,60 @@
+{
+  "schema": "work-plan-v1",
+  "id": "a5-kernel-attachments",
+  "kind": "investigation",
+  "summary": "Roadmap item 6 of dimension32-global-topology: how A_5 partner spheres specialize across the 33 closure incidences 8 -> 12, 12 -> 16 and 8 -> 16, as closed kernel Gauss-graph fibers with two-sided real certificates and attaching maps, run as a Codex program.",
+  "sources": [
+    "docs/design/a5-kernel-attachments-program.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "scope": "Evidence bundle docs/evidence/a5-kernel-attachments (scripts, records, README, ledger) and the program file docs/design/a5-kernel-attachments-program.md; the 33 incidences between the nullity-8, nullity-12 and nullity-16 orbits. Same-nullity incidences are recorded once by the constant-rank lemma. Nullity 4 and roadmap items 7-8 proper stay out of scope.",
+  "owner": "repository maintainer",
+  "next_action": "Run the Codex program from the program file; review and commit each sub-step.",
+  "related": [
+    "a5-kernel-bundles",
+    "a5-kernel-bundles-nullity8",
+    "a5-strata-regularity"
+  ],
+  "claims": [
+    "dimension32-global-topology",
+    "a5-kernel-bundles",
+    "a5-kernel-bundles-nullity8",
+    "a5-strata-regularity"
+  ],
+  "steps": [
+    {
+      "id": "incidence-census-real-complex",
+      "state": "doing",
+      "action": "Enumerate all 33 incidences with exact boundary points, moved points included, and decide per incidence whether the first-order effective form on the boundary kernel is complex-linear in the normal direction.",
+      "acceptance": "Fails if a declared incidence lacks an exact verified point or a second boundary point reverses a complex-linearity verdict without explanation."
+    },
+    {
+      "id": "limit-sets-8-to-12",
+      "state": "todo",
+      "action": "Compute the closed Gauss-graph fiber in Gr(4,6) for every 8 -> 12 incidence with an exact upper bound and filling exact real arcs, and its variation over the boundary moduli.",
+      "acceptance": "Fails if an exact arc limit escapes the upper bound, a point of the bound is reached by no certified arc, or a moved boundary point changes the set beyond the stated variation."
+    },
+    {
+      "id": "limit-sets-into-nullity-16",
+      "state": "todo",
+      "action": "The same for the 8 incidences 12 -> 16 and the 10 incidences 8 -> 16, starting with a two-approach path-dependence test.",
+      "acceptance": "Fails on the same criteria as the 8 -> 12 step."
+    },
+    {
+      "id": "compatibility",
+      "state": "todo",
+      "action": "Compare limits composed through nullity 12 with the direct 8 -> 16 limit sets.",
+      "acceptance": "Fails if a composed limit lies outside the direct limit set or the reverse inclusion is claimed without arcs."
+    },
+    {
+      "id": "attaching-maps",
+      "state": "todo",
+      "action": "Describe the link-to-limit-set maps and the sphere-union maps into the boundary partner sphere with their homotopy data in a form a global model can assemble.",
+      "acceptance": "Fails if a stated homotopy datum is neither computed by a replayed producer nor labeled as an argument."
+    }
+  ]
+}

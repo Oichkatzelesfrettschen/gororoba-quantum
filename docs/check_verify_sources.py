@@ -1905,6 +1905,28 @@ class SourceArchiveChecks(unittest.TestCase):
         self.entry["version"] = "4.11.4"
         self.reject("archive pinned version")
 
+    def test_wayback_capture_route_is_bound_to_archive_root(self) -> None:
+        old_prefix = self.prefix
+        self.prefix = "research-1.2.3"
+        capture = "https://web.archive.org/web/20230613103250id_/https://example.org/download/research-1.2.3.tar.gz"
+        self.entry.update(source_url=capture, version="1.2.3")
+        for member, _ in self.members:
+            member.name = member.name.replace(old_prefix, self.prefix)
+        self.entry["license_member"] = self.members[0][0].name
+        self.entry["inspected_files"][0]["file"] = self.members[1][0].name
+        self.write_archive()
+        self.assertEqual(verify_source_archives(self.root, self.registry), 1)
+        self.entry["version"] = "1.2.4"
+        self.reject("archive pinned version")
+        self.entry["version"] = "1.2.3"
+        for unpinned in (
+            capture.replace("20230613103250id_", "2023id_"),
+            capture.replace("id_/", "/"),
+            capture.replace("id_/https://", "id_/http://"),
+        ):
+            self.entry["source_url"] = unpinned
+            self.reject("archive source route")
+
     def test_crates_io_route_is_bound_to_archive_root(self) -> None:
         old_prefix = self.prefix
         self.prefix = "research-0.1.0"

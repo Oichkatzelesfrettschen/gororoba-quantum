@@ -2596,6 +2596,7 @@
     "scripts/aer_gpu_probe.py",
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
+    "scripts/ascella_a5_kernel_slice.py",
     "scripts/ascella_associator_case.py",
     "scripts/ascella_associator_character.py",
     "scripts/ascella_associator_predecessor.py",
@@ -6985,6 +6986,7 @@
     "scripts/a5_zero_divisor_strata.py",
     "scripts/algebra_device_conjectures.py",
     "scripts/algebra_package_tables.py",
+    "scripts/ascella_a5_kernel_slice.py",
     "scripts/bdsc_packages.py",
     "scripts/persona_corpus_checks.py",
     "scripts/qi_tuna_joint_package_runtime.py",
@@ -7725,15 +7727,13 @@
    "json",
    "os",
    "pathlib",
-   "run_gates",
    "shlex",
    "shutil",
    "subprocess",
    "sys",
    "tempfile",
    "time",
-   "typing",
-   "unittest"
+   "typing"
   ],
   "ci/runner_specs.py": [
    "__future__",
@@ -10154,6 +10154,32 @@
    "typing",
    "urllib"
   ],
+  "scripts/ascella_a5_kernel_analysis.py": [
+   "__future__",
+   "argparse",
+   "experiment_analysis",
+   "hashlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "typing"
+  ],
+  "scripts/ascella_a5_kernel_slice.py": [
+   "__future__",
+   "anu_qrng",
+   "argparse",
+   "cd_core",
+   "hypercomplex_cases",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "sympy",
+   "sys",
+   "typing"
+  ],
   "scripts/ascella_associator_case.py": [
    "__future__",
    "argparse",
@@ -10517,6 +10543,30 @@
    "tempfile",
    "typing"
   ],
+  "scripts/ascella_predecessor_current_analysis.py": [
+   "__future__",
+   "argparse",
+   "ascella_experiment_analysis",
+   "ascella_predecessor_analysis",
+   "ascella_predecessor_case",
+   "ascella_predecessor_current_case",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "tempfile",
+   "typing"
+  ],
+  "scripts/ascella_predecessor_current_case.py": [
+   "__future__",
+   "argparse",
+   "ascella_predecessor_case",
+   "hashlib",
+   "json",
+   "pathlib"
+  ],
   "scripts/ascella_predecessor_simulator.py": [
    "__future__",
    "argparse",
@@ -10602,6 +10652,28 @@
    "pathlib",
    "scipy",
    "sys",
+   "typing"
+  ],
+  "scripts/ascella_target_slot_drift.py": [
+   "__future__",
+   "argparse",
+   "ascella_predecessor_case",
+   "json",
+   "pathlib",
+   "qd_platform",
+   "typing"
+  ],
+  "scripts/ascella_target_slot_drift_analysis.py": [
+   "__future__",
+   "argparse",
+   "ascella_target_slot_drift",
+   "experiment_analysis",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "qd_platform",
    "typing"
   ],
   "scripts/ascella_transition_ci_check.py": [

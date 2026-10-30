@@ -1,0 +1,92 @@
+{
+  "boundary": "Exact classical matrix spectra; LCU probabilities assume the stated normalization.",
+  "cd_core_sha256": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+  "producer_sha256": "40b7a4ed9729e9122bacb9b87ed07b78223d8b7b339f3f43a03b94490a70b5b5",
+  "replay_sha256": "6327736ad6a8a114a952481f778ad9fa02786003aafe2728e400a5f9b3af3563",
+  "schema": "a5-witness-squared-spectra-v1",
+  "witnesses": [
+    {
+      "alpha": 2,
+      "squared_singular_multiplicities": {
+        "2": 32
+      },
+      "terms": [
+        [
+          1,
+          1
+        ],
+        [
+          9,
+          1
+        ]
+      ],
+      "uniform_basis_mean_success": "1/2"
+    },
+    {
+      "alpha": 2,
+      "squared_singular_multiplicities": {
+        "0": 8,
+        "2": 16,
+        "4": 8
+      },
+      "terms": [
+        [
+          1,
+          1
+        ],
+        [
+          10,
+          1
+        ]
+      ],
+      "uniform_basis_mean_success": "1/2"
+    },
+    {
+      "alpha": 2,
+      "squared_singular_multiplicities": {
+        "0": 12,
+        "2": 8,
+        "4": 12
+      },
+      "terms": [
+        [
+          1,
+          1
+        ],
+        [
+          18,
+          1
+        ]
+      ],
+      "uniform_basis_mean_success": "1/2"
+    },
+    {
+      "alpha": 4,
+      "squared_singular_multiplicities": {
+        "0": 16,
+        "16": 4,
+        "4": 8,
+        "8": 4
+      },
+      "terms": [
+        [
+          1,
+          1
+        ],
+        [
+          10,
+          -1
+        ],
+        [
+          18,
+          1
+        ],
+        [
+          25,
+          1
+        ]
+      ],
+      "uniform_basis_mean_success": "1/4"
+    }
+  ]
+}
