@@ -13529,11 +13529,11 @@
     },
     {
       "id": "ascella-two-photon-character-twin",
-      "statement": "The two-photon, 84-setting character atlas on sim:ascella (2,030 two-click events per setting, 170,520 in all) routes both photons into each displacing pair's predicted focal coset pair (mean displacing contrast 2.0) and keeps the stabilizer-line pairs in (0, 2) (mean persistence 1.0), with zero sentinel leakage; it is the simulator twin of the qpu:ascella atlas whose job awaits collection.",
+      "statement": "The two-photon, 84-setting character atlas on sim:ascella (2,030 two-click events per setting, 170,520 in all) routes both photons into each displacing pair's predicted focal coset pair (mean displacing contrast 2.0) and keeps the stabilizer-line pairs in (0, 2) (mean persistence 1.0), with zero sentinel leakage; its planned qpu:ascella counterpart was canceled before execution.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "A simulator result under ideal two-photon interference; it predicts the hardware atlas and establishes no device property. The hardware job (4c4f0273-6e69-4b52-af92-550a5e4356d8) is retained in its case directory until it completes.",
+      "boundary": "A simulator result under ideal two-photon interference; it predicts the hardware atlas and establishes no device property. Hardware job 4c4f0273-6e69-4b52-af92-550a5e4356d8 was canceled under the recorded job-specific authority, with zero shots and zero samples. A replacement is a separate acquisition.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01/results.json",
@@ -13542,6 +13542,14 @@
         {
           "path": "results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01/analysis_report.json",
           "sha256": "4ef705c18dbda2f31c28dae6808642cb609ce6b908a0ddf4a44f9c1026b09ef7"
+        },
+        {
+          "path": "results/quandela/cases/ascella_two_photon_character/job-01/results.json",
+          "sha256": "1bd949709a910582019aecbe300b3cdfdf964f50be5de1ea953916380682b8b8"
+        },
+        {
+          "path": "results/quandela/cases/ascella_two_photon_character/job-01/cancellation-authority.json",
+          "sha256": "e4dbf45640ce4aab2d46983f5953482b5236cec27ca98e9fa632d8da1cf5358a"
         }
       ],
       "documents": [
