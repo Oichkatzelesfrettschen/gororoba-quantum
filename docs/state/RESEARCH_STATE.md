@@ -28,7 +28,7 @@ and neither establishes a theorem or authorizes a QPU run.
 
 The IBM service inventory observed at 2026-10-28T00:29:17.005404+00:00 holds 43 physical jobs with 532 settled seconds; the account then reported 532 of 600 s consumed in the rolling window ending 2026-10-28T00:29:16.938Z. That is an observation, not a current balance or an authorization.
 
-The IBM service inventory observed at 2026-10-28T00:23:56.659482+00:00 holds 25 physical jobs with 440 settled seconds; the account then reported 440 of 600 s consumed in the rolling window ending 2026-10-28T00:23:56.594Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-29T23:07:45.159780+00:00 holds 32 physical jobs with 451 settled seconds; the account then reported 451 of 600 s consumed in the rolling window ending 2026-10-29T23:07:45.079Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-28T00:24:11+00:00 lists 432 jobs with 7813120 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
@@ -403,6 +403,7 @@ circuit and charges the account ledger's change.
 | [ascella-transition-mesh-port-5](../../results/quandela/runs/ascella-transition-mesh-port-5) | Quandela Cloud | dimension-six compilation and output-port diagnostics | qpu:ascella | 1 | 22 | completed | 1.131072 credits | ascella-transition-mesh-port-variation |
 | [ascella-transition-mesh-port-6](../../results/quandela/runs/ascella-transition-mesh-port-6) | Quandela Cloud | dimension-six compilation and output-port diagnostics | qpu:ascella | 1 | 22 | completed | 1.131072 credits | ascella-transition-mesh-port-variation |
 | [2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat](../../results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat) | Quandela Cloud | day-separated dimension-six matched meshes | qpu:ascella | 1 | 5 | completed | 1.131072 credits | ascella-transition-day-separated-matched-mesh |
+| [2026-10-29T191606.826758Z](../../results/live/2026-10-29T191606.826758Z) | IBM Quantum | readout-actor | ibm_fez | 3 | 24 | DONE | 11 s | ibm-fez-actor-pilot-descriptive-errors |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -766,6 +767,7 @@ circuit and charges the account ledger's change.
 - **qd-ascella-transition-mesh-port-5** (ascella-transition-mesh-port-5, job 7e24f82f-049d-46e1-b03d-f4592e67d53a, 1441792 samples, 1441792 shots): How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?
 - **qd-ascella-transition-mesh-port-6** (ascella-transition-mesh-port-6, job 04964a3b-00f3-4cc4-ac65-cde85c3ead34, 1441792 samples, 1441792 shots): How do selected transition distributions vary across returned compiled meshes and output-port mappings with repeated matched-mesh anchors?
 - **qd-ascella-transition-matched-mesh-day-repeat** (2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat, job 078ecca0-fb08-4cf1-960f-6c12301a19da, 327680 samples, 327680 shots): How do five retained transition distributions compare at least 24 hours later under matching returned mesh identities?
+- **ibm-fez-actor-delay-pilot** (2026-10-29T191606.826758Z): Describe full-register reporter errors under actor activity and repetition-delay conditions.
 
 ## Established claims
 
@@ -1761,6 +1763,11 @@ circuit and charges the account ledger's change.
   Boundary: Simulator runs only; sim:belenos applies a fixed noise model and its default DetectorBalancing returns counts drawn from a corrected distribution, so neither policy here tests the QPU's observation contract, and the readout admits qpu:belenos runs only. One timeout in two provider-default runs establishes no rate; Perceval computes the same noisy distribution in 0.1 s locally, so the stall is placed in the service worker by inference.
   Evidence: [results.json](../../results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-none-e1/results.json), [results.json](../../results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-def-e1/results.json), [results.json](../../results/quandela/runs/2026-10-21T071011Z-sim_belenos-bdsc_qualification-tc-def-e1/results.json), [bdsc-qualification-case.md](../runbooks/bdsc-qualification-case.md).
   Acquisitions: qd-sim-belenos-bdsc-tc-none-e1, qd-sim-belenos-bdsc-tc-def-e1-timeout, qd-sim-belenos-bdsc-tc-def-e1-rerun.
+- **ibm-fez-actor-pilot-descriptive-errors** (exploratory reanalysis, hardware). Across 24 retained Fez pilot conditions, the empirical paired parity margin is negative for the selected reporter pair; one of 279072 exploratory spectator-pair tables has a positive margin based on one shared error.
+  Boundary: The acquisition supplies descriptive full-register records without an admitted dependence model or confirmatory selection procedure. Activity and repetition-delay contrasts do not establish causation, physical shot alignment, or cross-PUB order.
+  Evidence: [actor-collection-979b07a5ab676cca4918dc9c2b690ab4c145e93b017a4d5cc45537ed6138b186.json](../../results/live/2026-10-29T191606.826758Z/actor-collection-979b07a5ab676cca4918dc9c2b690ab4c145e93b017a4d5cc45537ed6138b186.json), [analysis.json](../evidence/ibm-fez-actor-pilot/analysis.json), [findings.md](../evidence/ibm-fez-actor-pilot/findings.md).
+  Gates: replayed by core-ibm-fez-actor-pilot-replay.
+  Acquisitions: ibm-fez-actor-delay-pilot.
 - **qi-tuna-destination-zero-prefix-response** (exploratory reanalysis, hardware). In the retained posthoc nominal-zero prefix, q6 terminal-one counts are 938, 2525 and 969 out of 4096 before, during and after rotation; the maximum empirical early/final joint-cell contrast is 0.43896484375. The q4 and q11 maximum contrasts are 0.0052490234375 and 0.001708984375.
   Boundary: Descriptive frequencies from the incomplete case. A transformation restricted to stored early labels leaves each dataset terminal marginal unchanged; broader reconstruction/scheduling changes and a coincident transient remain alternatives. Neither statistical acceptance of the six-job case nor physical causation or populations is established.
   Assumptions: The documented rightmost classical-bit-zero convention supplies the decoder.; Stored source identity establishes transport bytes, while served analog schedules remain unavailable..

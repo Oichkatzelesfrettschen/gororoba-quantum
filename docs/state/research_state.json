@@ -2534,9 +2534,47 @@
       "run": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat",
       "family": "day-separated dimension-six matched meshes",
       "question": "How do five retained transition distributions compare at least 24 hours later under matching returned mesh identities?"
+    },
+    {
+      "id": "ibm-fez-actor-delay-pilot",
+      "provider": "ibm",
+      "run": "results/live/2026-10-29T191606.826758Z",
+      "family": "readout-actor",
+      "question": "Describe full-register reporter errors under actor activity and repetition-delay conditions."
     }
   ],
   "claims": [
+    {
+      "id": "ibm-fez-actor-pilot-descriptive-errors",
+      "statement": "Across 24 retained Fez pilot conditions, the empirical paired parity margin is negative for the selected reporter pair; one of 279072 exploratory spectator-pair tables has a positive margin based on one shared error.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The acquisition supplies descriptive full-register records without an admitted dependence model or confirmatory selection procedure. Activity and repetition-delay contrasts do not establish causation, physical shot alignment, or cross-PUB order.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-29T191606.826758Z/actor-collection-979b07a5ab676cca4918dc9c2b690ab4c145e93b017a4d5cc45537ed6138b186.json",
+          "sha256": "979b07a5ab676cca4918dc9c2b690ab4c145e93b017a4d5cc45537ed6138b186"
+        },
+        {
+          "path": "docs/evidence/ibm-fez-actor-pilot/analysis.json",
+          "sha256": "e1c79886827420c8491f906c5b5b3e68570a9c2461f42b0e2b721910cf06c4b7"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ibm-fez-actor-pilot/findings.md"
+      ],
+      "gates": {
+        "core-ibm-fez-actor-pilot-replay": "replay"
+      },
+      "acquisitions": [
+        "ibm-fez-actor-delay-pilot"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
     {
       "id": "qi-tuna-destination-one-response",
       "domain": "hardware",

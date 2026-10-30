@@ -29,6 +29,7 @@ from __future__ import annotations
 import argparse
 import copy
 import dataclasses
+import fcntl
 import hashlib
 import heapq
 import io
@@ -38,11 +39,13 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 from collections import OrderedDict
-from collections.abc import Callable, Collection, Mapping
+from collections.abc import Callable, Collection, Iterator, Mapping
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from decimal import ROUND_HALF_EVEN, Decimal, InvalidOperation
@@ -6734,9 +6737,27 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
     return out
 
 
-def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
+def actor_run_marker(record: Mapping[str, Any], run_dir: Path) -> bool:
+    """Keep actor records on the sparse path even when one identity field is damaged."""
+    configuration = record.get("family_configuration")
+    return (
+        record.get("schema_version") == "readout-actor-run-v1"
+        or (isinstance(configuration, Mapping) and configuration.get("name") == "readout-actor")
+        or (run_dir / "actor-case.json").exists()
+    )
+
+
+def collect(service: QiskitRuntimeService, run_dir: Path, *, actor_record_sha256: str | None = None) -> None:
     """Measured replica distributions against the noise model of the calibration in force at execution."""
     record = json.loads((run_dir / "record.json").read_text())
+    if actor_record_sha256 is not None or actor_run_marker(record, run_dir):
+        import readout_actor_family
+
+        try:
+            readout_actor_family.collect(sys.modules[__name__], service, run_dir, actor_record_sha256)
+        except (ValueError, OSError) as error:
+            raise LiveRunError(str(error)) from error
+        return
     _require_record_instance(service, record, f"{run_dir}: collect")
     qpy_bytes = (run_dir / "isa.qpy").read_bytes()
     groups = {g.name: g for g in [*all_experiment_groups(), *record_groups(record)]}
@@ -7301,7 +7322,9 @@ def main(argv: list[str] | None = None) -> int:
         help="withhold these physical qubits of BACKEND from placement whatever their calibration; repeatable",
     )
     parser.add_argument(
-        "--family", choices=FAMILY_NAMES, help="complete experiment family with statistical design admission"
+        "--family",
+        choices=(*FAMILY_NAMES, "readout-actor"),
+        help="complete experiment family or descriptive full-PUB acquisition",
     )
     parser.add_argument(
         "--optimize", action="store_true", help="search bounded shot and replica tiers for the experiment family"
@@ -7639,7 +7662,52 @@ def main(argv: list[str] | None = None) -> int:
             "this QPU usage; a dry run carries it so the approved record's policy matches the submission"
         ),
     )
+    parser.add_argument("--actor-case", type=Path, help="complete full-PUB actor operational case")
+    parser.add_argument("--actor-reviewed-record", type=Path, help="independently reviewed actor dry-run directory")
+    parser.add_argument("--actor-reviewed-sha256", help="independently retained reviewed actor record digest")
+    parser.add_argument(
+        "--actor-record-sha256", help="independently retained actor submission record digest for collection"
+    )
     args = parser.parse_args(argv)
+    if args.actor_case is not None and args.family != "readout-actor":
+        parser.error("--actor-case applies only to --family readout-actor")
+    if args.family == "readout-actor" and (args.actor_case is None or args.out is None):
+        parser.error("readout-actor requires --actor-case and --out")
+    if (args.actor_reviewed_record is None) != (args.actor_reviewed_sha256 is None):
+        parser.error("actor reviewed-record path and digest must be supplied together")
+    if args.submit and args.family == "readout-actor" and args.actor_reviewed_record is None:
+        parser.error("readout-actor submission requires an independently reviewed record and digest")
+    if args.actor_reviewed_record is not None and args.family != "readout-actor":
+        parser.error("actor reviewed-record flags apply only to --family readout-actor")
+    if args.family == "readout-actor" and (
+        args.optimize or args.native_dry_run or args.rep_delay is not None or args.pin_layout is not None
+    ):
+        parser.error(
+            "readout-actor binds allocation, delay and layout in its case; optimizer and native mock are unsupported"
+        )
+    if args.family == "readout-actor":
+        allowed = {
+            "--family",
+            "--actor-case",
+            "--actor-reviewed-record",
+            "--actor-reviewed-sha256",
+            "--out",
+            "--backends",
+            "--max-execution-seconds",
+            "--max-total-execution-seconds",
+            "--submit",
+            "--approved-record",
+            "--approved-record-sha256",
+        }
+        unexpected = [
+            argument.split("=", 1)[0]
+            for argument in (argv if argv is not None else sys.argv[1:])
+            if argument.startswith("--") and argument.split("=", 1)[0] not in allowed
+        ]
+        if unexpected:
+            parser.error(f"readout-actor takes its complete operational settings from --actor-case: {unexpected}")
+    if args.actor_record_sha256 is not None and args.collect is None:
+        parser.error("--actor-record-sha256 requires --collect")
     global SEED_TRANSPILER, SEED_SIMULATOR
     SEED_TRANSPILER, SEED_SIMULATOR = args.seed_transpiler, args.seed_simulator
     exclusions: dict[str, set[int]] = {}
@@ -7915,12 +7983,19 @@ def main(argv: list[str] | None = None) -> int:
     service = ibm_account.open_service(QiskitRuntimeService)
     try:
         if args.collect:
-            collect(service, args.collect)
+            collect(service, args.collect, actor_record_sha256=args.actor_record_sha256)
             return 0
         if args.preserve_raw:
             preserved = preserve_raw(service, args.preserve_raw)
             print(f"raw results preserved for {len(preserved)} jobs under {args.preserve_raw / RAW_DIRECTORY}")
             return 0
+        if args.family == "readout-actor":
+            import readout_actor_family
+
+            try:
+                return readout_actor_family.run_cli(sys.modules[__name__], service, args)
+            except ValueError as error:
+                raise LiveRunError(str(error)) from error
         if args.envelope_fallback:
             evidence = envelope_fallback_setup(service, args)
             print(f"envelope fallback admitted: {evidence}")
@@ -8071,6 +8146,24 @@ def write_raw_result(run_dir: Path, job_id: str, job: Any, result: Any, pub_name
     """
     directory = run_dir / RAW_DIRECTORY / job_id
     directory.mkdir(parents=True, exist_ok=True)
+    with _raw_collection_lock(directory):
+        return _write_raw_result_locked(directory, job_id, job, result, pub_names)
+
+
+@contextmanager
+def _raw_collection_lock(directory: Path) -> Iterator[None]:
+    """Serialize writers and metrics revisions for one retained job."""
+    with (directory / ".collection.lock").open("a", encoding="utf-8") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+
+
+def _write_raw_result_locked(
+    directory: Path, job_id: str, job: Any, result: Any, pub_names: list[str]
+) -> dict[str, Any]:
     files: dict[str, Any] = {}
     for index, pub_result in enumerate(result):
         registers: dict[str, Any] = {}
@@ -8095,17 +8188,15 @@ def write_raw_result(run_dir: Path, job_id: str, job: Any, result: Any, pub_name
         text = json.dumps(payload, indent=1, sort_keys=True) + "\n"
         digest = hashlib.sha256(text.encode()).hexdigest()
         target = directory / name
-        if target.exists():
-            if hashlib.sha256(target.read_bytes()).hexdigest() != digest:
-                raise LiveRunError(f"{target} differs from the result the service returned; raw evidence is write-once")
-        else:
-            _write_text_atomically(target, text)
+        _write_once_atomically(target, text)
         digests[name] = digest
+    acquisition_index = json.dumps({"job_id": job_id, "files": digests}, indent=1, sort_keys=True) + "\n"
+    _write_once_atomically(directory / "acquisition-index.json", acquisition_index)
     _write_text_atomically(
         directory / "index.json",
         json.dumps(_merged_index(directory, job_id, digests), indent=1, sort_keys=True) + "\n",
     )
-    snapshot_metrics(run_dir, job_id, job)
+    _snapshot_metrics_locked(directory, job_id, job)
     return {"directory": f"{RAW_DIRECTORY}/{job_id}", "files": digests}
 
 
@@ -8126,6 +8217,16 @@ def snapshot_metrics(run_dir: Path, job_id: str, job: Any) -> str:
     pending at retrieval carries the finalized metrics in its raw evidence.
     """
     directory = run_dir / RAW_DIRECTORY / job_id
+    with _raw_collection_lock(directory):
+        return _snapshot_metrics_locked(directory, job_id, job)
+
+
+def _snapshot_metrics_locked(directory: Path, job_id: str, job: Any) -> str:
+    for abandoned in directory.iterdir():
+        if re.fullmatch(r"(?:index|job_metrics(?:\.[0-9]+)?)\.json\.tmp", abandoned.name):
+            if abandoned.is_symlink() or not abandoned.is_file():
+                raise LiveRunError(f"invalid metrics staging entry: {abandoned}")
+            abandoned.unlink()
     metrics = job.metrics() if hasattr(job, "metrics") else {}
     metrics_text = json.dumps(_scrub_instances(_jsonable(metrics)), indent=1, sort_keys=True) + "\n"
     snapshots = _metrics_snapshots(directory)
@@ -8165,6 +8266,46 @@ def _write_text_atomically(target: Path, text: str) -> None:
         handle.write(text)
 
     _replace_atomically(target, write, "w")
+
+
+def _write_once_atomically(target: Path, text: str) -> None:
+    """Publish complete bytes once and reject a different existing snapshot."""
+    staging = target.parent / ".publication-staging"
+    if staging.is_symlink():
+        raise LiveRunError(f"publication staging must be a directory: {staging}")
+    staging.mkdir(exist_ok=True)
+    if (staging / ".lock").is_symlink():
+        raise LiveRunError(f"publication lock must be a regular file: {staging}")
+    with (staging / ".lock").open("a", encoding="utf-8") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        try:
+            for abandoned in staging.iterdir():
+                if re.fullmatch(r"pending-[a-z0-9_]{8}", abandoned.name) and not abandoned.is_symlink():
+                    if not abandoned.is_file():
+                        raise LiveRunError(f"invalid publication staging entry: {abandoned}")
+                    abandoned.unlink()
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=staging, prefix="pending-", delete=False
+            ) as handle:
+                temporary = Path(handle.name)
+                try:
+                    handle.write(text)
+                    handle.flush()
+                    os.fsync(handle.fileno())
+                    try:
+                        os.link(temporary, target)
+                    except FileExistsError:
+                        if target.read_bytes() != text.encode("utf-8"):
+                            raise LiveRunError(f"{target} differs from the immutable acquisition snapshot") from None
+                    directory_fd = os.open(target.parent, os.O_RDONLY | os.O_DIRECTORY)
+                    try:
+                        os.fsync(directory_fd)
+                    finally:
+                        os.close(directory_fd)
+                finally:
+                    temporary.unlink(missing_ok=True)
+        finally:
+            fcntl.flock(lock, fcntl.LOCK_UN)
 
 
 def preserve_raw(service: QiskitRuntimeService, run_dir: Path) -> dict[str, Any]:
