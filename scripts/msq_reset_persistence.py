@@ -133,6 +133,18 @@ def qubit_persistence(arrays: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarr
     }
 
 
+def residue_fit(item: tuple[list[float], list[float]]) -> dict[str, float]:
+    """The reset residue's least-squares line against one 1/T1 column."""
+    residue, inv = item
+    beta, res = ols(residue, [inv])
+    return {"slope_us": beta[0], "intercept": beta[1], "r_squared": r_squared(residue, res)}
+
+
+def partial_corr_item(item: tuple[list[float], list[float], list[list[float]]]) -> float:
+    """partial_corr for one leave-one-carrier-out exclusion."""
+    return partial_corr(*item)
+
+
 def coincidence_of(pairs: list[tuple[np.ndarray, np.ndarray | None]]) -> dict[str, Any]:
     """One event class over the qubits: an event is first == 1 (and second == 1 where a second register is given);
     shots holding two or more events against the count independent qubits would give."""
@@ -252,20 +264,21 @@ def successor_links(
     chi_scaled = math.fsum(((o - scale * p) / s) ** 2 for p, o, s in zip(predicted, observed, se, strict=True))
     inv_t1_cal = [1 / calibration[q]["T1"] for q in qubits]
     inv_t1_fit = [1e-6 / rows[q]["fitted"]["t1_s"] for q in qubits]
-    fits = {}
-    for label, inv in (("calibrated_t1", inv_t1_cal), ("fitted_t1", inv_t1_fit)):
-        beta, res = ols(residue, [inv])
-        fits[label] = {"slope_us": beta[0], "intercept": beta[1], "r_squared": r_squared(residue, res)}
+    labels = ("calibrated_t1", "fitted_t1")
+    fits = dict(
+        zip(labels, ordered_map(residue_fit, [(residue, inv_t1_cal), (residue, inv_t1_fit)], min_items=2), strict=True)
+    )
     excess = [rows[q]["transitions"]["16"]["rate"] - rows[q]["transitions"]["16"]["ideal"] for q in qubits]
     ground = [float(ro0[pro[q] + "r0_final"].mean()) for q in qubits]
     assignment = [g + rows[q]["readout"]["offset"] + g for g, q in zip(ground, qubits, strict=True)]
     controls = [assignment, inv_t1_cal]
-    left_out = {}
+    exclusions = []
     for drop in carriers:
         keep = [i for i, q in enumerate(qubits) if q != drop]
-        left_out[drop] = partial_corr(
-            [excess[i] for i in keep], [persistence[i] for i in keep], [[c[i] for i in keep] for c in controls]
+        exclusions.append(
+            ([excess[i] for i in keep], [persistence[i] for i in keep], [[c[i] for i in keep] for c in controls])
         )
+    left_out = dict(zip(carriers, ordered_map(partial_corr_item, exclusions, min_items=2), strict=True))
     keep = [i for i, q in enumerate(qubits) if q not in carriers]
     departure = [rows[q]["departure_n16"]["difference"] for q in qubits]
     return {
@@ -302,7 +315,7 @@ def main(argv: list[str] | None = None) -> int:
     mode.add_argument("--out", type=Path)
     mode.add_argument("--check", type=Path)
     args = parser.parse_args(argv)
-    text = render([analyse(run) for run in args.runs])
+    text = render(ordered_map(analyse, list(args.runs), min_items=2))
     if args.out is not None:
         args.out.write_text(text)
         return 0
