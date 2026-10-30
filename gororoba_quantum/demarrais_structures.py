@@ -1074,27 +1074,36 @@ def emanation_and_dmz_cell_counts(
     }
 
 
+def _scaling_counts(item: tuple[int, int, bool]) -> dict[str, Any]:
+    dim, strut_s, prefer_gpu = item
+    return emanation_and_dmz_cell_counts(dim, strut_s, prefer_gpu=prefer_gpu)
+
+
 def verify_tower_emanation_and_dmz_scaling(
     max_level: int = 13,
     prefer_gpu: bool = True,
 ) -> list[dict[str, Any]]:
     """Verify Type-I Full Emanation (S=1) and High-Strut DMZ Sparsity (S=2^{N-2}+1) across N=4..max_level."""
     require(4 <= max_level <= 13, f"max_level must be in 4..13, got {max_level}")
+    levels = list(range(4, max_level + 1))
+    items = [(1 << level, strut, prefer_gpu) for level in levels for strut in (1, ((1 << level) >> 2) + 1)]
+    # A CUDA context does not cross the spawn pool, so the GPU path runs in this process; every CPU count is an
+    # independent scan, mapped in level order.
+    if prefer_gpu and cp is not None and _get_cuda_emanation_kernel() is not None:
+        counts = [_scaling_counts(item) for item in items]
+    else:
+        counts = ordered_map(_scaling_counts, items, min_items=2)
     records: list[dict[str, Any]] = []
-    for level in range(4, max_level + 1):
-        dim = 1 << level
-        s_full = 1
-        s_dmz = (dim >> 2) + 1
-        res_full = emanation_and_dmz_cell_counts(dim, s_full, prefer_gpu=prefer_gpu)
-        res_dmz = emanation_and_dmz_cell_counts(dim, s_dmz, prefer_gpu=prefer_gpu)
+    for index, level in enumerate(levels):
+        res_full, res_dmz = counts[2 * index], counts[2 * index + 1]
         records.append(
             {
                 "level": level,
-                "dimension": dim,
+                "dimension": 1 << level,
                 "name": tower_taxonomy()[level].name,
                 "total_fillable_cells": res_full["total_fillable_cells"],
                 "s1_active_cells": res_full["active_cells"],
-                "s_high_strut": s_dmz,
+                "s_high_strut": res_dmz["strut_s"],
                 "s_high_active_cells": res_dmz["active_cells"],
                 "s_high_dmz_empty_cells": res_dmz["dmz_empty_cells"],
                 "backend": res_dmz["backend"],

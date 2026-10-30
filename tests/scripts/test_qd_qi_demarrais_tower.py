@@ -90,6 +90,7 @@ def test_qi_demarrais_tower_check_and_synthetic_analysis(tmp_path: Path) -> None
         (run_dir / "raw" / f"{row['file']}.json").write_text(json.dumps(shots) + "\n", encoding="utf-8")
 
     analysis = qi_demarrais_tower.analyze_batch_run(run_dir)
+    row_kinds = {row["kind"]: row for row in small_cases["circuits"]}
     _check(analysis["cayley_dickson_target_dim"] == 8192, "expected 8192D in analysis")
     _check(
         abs(analysis["voudon_switching_contrast_cowbird_minus_midden"] - 1.0) < 1e-9, "expected switching contrast 1"
@@ -97,7 +98,12 @@ def test_qi_demarrais_tower_check_and_synthetic_analysis(tmp_path: Path) -> None
     for kind in ("midden", "cowbird", "dmz"):
         c_rep = analysis["circuits"][kind]
         _check(abs(c_rep["exact_17q_or_10q_match_probability"] - 1.0) < 1e-9, f"{kind} exact match != 1.0")
-        _check(abs(c_rep["interference_contrast_one_minus_two_path"] - 1.0) < 1e-9, f"{kind} contrast != 1.0")
+        contrast = c_rep["interference_contrast_one_minus_two_path"]
+        _check(contrast is None or abs(contrast - 1.0) < 1e-9, f"{kind} contrast {contrast} != 1.0")
+        _check(
+            (contrast is None) == (not row_kinds[kind]["two_path_destructive_dark_qubits"]),
+            f"{kind}: a contrast is reported exactly when the two-path group is nonempty",
+        )
         _check(abs(c_rep["sentinel_all_zero_herald_rate"] - 1.0) < 1e-9, f"{kind} herald rate != 1.0")
 
     for batch_name, expected_key in (

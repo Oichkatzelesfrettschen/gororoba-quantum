@@ -13615,15 +13615,15 @@
       "evidence": [
         {
           "path": "results/quantum_inspire/runs/2026-10-30T015009Z-demarrais_tuna17_8192d-batch-00/analysis.json",
-          "sha256": "b39be5f25d32552ff2d3ed6a37479fb3189adbab4897cfff0133c08a33ad2a0a"
+          "sha256": "659a89e83e1671b3fd3936936df9f751f4b555d9bdf4a3fcf24f1bb24ba2cd77"
         },
         {
           "path": "results/quantum_inspire/runs/2026-10-30T024225Z-demarrais_tuna17_8192d-batch-01/analysis.json",
-          "sha256": "6413e854cb3d7ddb57533be7e751ec4e161991697497a9400a64a1c2a5cb3585"
+          "sha256": "0a7d93633fbacc5c9bb2cb411b190ec576c0e2c07f5c466d9c12e1193eeefb25"
         },
         {
           "path": "results/quantum_inspire/runs/2026-10-30T040508Z-demarrais_tuna17_8192d-batch-02/analysis.json",
-          "sha256": "c4776fa3da62979b0898bd7b347516510a4751e4adb47df5957292d5e13ae9c5"
+          "sha256": "3e21ade1e311ccea25c9bc4da9a2d663547dcff2e79739bbc9c5e9d53bfad6db"
         },
         {
           "path": "docs/evidence/demarrais-8192d-cross-platform/pauli-propagation.json",
@@ -13660,11 +13660,11 @@
         },
         {
           "path": "results/quantum_inspire/runs/2026-10-30T023915Z-demarrais_qx_1024d-batch-01/analysis.json",
-          "sha256": "93a945bd9ffcc5869820bbf8d74058a951b8031e787b6efab941d3d351fcde8a"
+          "sha256": "a5486bac0371994cbf706f664444e829e4892c447350cc9b373c14e2db62c5de"
         },
         {
           "path": "results/quantum_inspire/runs/2026-10-30T024133Z-demarrais_qx_1024d-batch-02/analysis.json",
-          "sha256": "34226bb459ce6fdd5258be9ae206d88ce6fd6ef7576f593833f14133973da774"
+          "sha256": "a0c884a8aff85c3aebaf91cddde9b53802c9b7f09391b4a3c44fdcc2ba3eb0fa"
         },
         {
           "path": "docs/evidence/demarrais-8192d-cross-platform/pauli-propagation.json",

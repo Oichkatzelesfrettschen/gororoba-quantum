@@ -417,6 +417,11 @@ def _bit_at(shot: str, qubit: int) -> int:
     return int(shot[len(shot) - 1 - qubit])
 
 
+def group_mean(per_qubit_p1: dict[str, float], qubits: list[int]) -> float | None:
+    """The mean P(1) of a measurement group, or None for a group the circuit leaves empty."""
+    return sum(per_qubit_p1[str(q)] for q in qubits) / len(qubits) if qubits else None
+
+
 def analyze_batch_run(run_dir: Path) -> dict[str, Any]:
     """Analyze a collected Quantum Inspire batch run directory."""
     cases = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
@@ -447,15 +452,9 @@ def analyze_batch_run(run_dir: Path) -> dict[str, Any]:
         one_path_qubits = [int(q) for q in row["one_path_constructive_bright_qubits"]]
         zero_path_qubits = [int(q) for q in row["zero_path_dmz_qubits"]]
 
-        mean_one_path_p1 = (
-            sum(per_qubit_p1[str(q)] for q in one_path_qubits) / len(one_path_qubits) if one_path_qubits else 0.0
-        )
-        mean_two_path_p1 = (
-            sum(per_qubit_p1[str(q)] for q in two_path_qubits) / len(two_path_qubits) if two_path_qubits else 0.0
-        )
-        mean_zero_path_p1 = (
-            sum(per_qubit_p1[str(q)] for q in zero_path_qubits) / len(zero_path_qubits) if zero_path_qubits else 0.0
-        )
+        mean_one_path_p1 = group_mean(per_qubit_p1, one_path_qubits)
+        mean_two_path_p1 = group_mean(per_qubit_p1, two_path_qubits)
+        mean_zero_path_p1 = group_mean(per_qubit_p1, zero_path_qubits)
         mean_sentinel_p0 = sum(1.0 - per_qubit_p1[str(q)] for q in b_qubits) / len(b_qubits)
         sentinel_all_zero_rate = sum(1 for s in shots if all(_bit_at(s, q) == 0 for q in b_qubits)) / len(shots)
 
@@ -482,7 +481,11 @@ def analyze_batch_run(run_dir: Path) -> dict[str, Any]:
             "mean_one_path_bright_p1": mean_one_path_p1,
             "mean_two_path_destructive_dark_p1": mean_two_path_p1,
             "mean_zero_path_dmz_dark_p1": mean_zero_path_p1,
-            "interference_contrast_one_minus_two_path": mean_one_path_p1 - mean_two_path_p1,
+            "interference_contrast_one_minus_two_path": (
+                mean_one_path_p1 - mean_two_path_p1
+                if mean_one_path_p1 is not None and mean_two_path_p1 is not None
+                else None
+            ),
             "mean_sentinel_syndrome_p0": mean_sentinel_p0,
             "sentinel_all_zero_herald_rate": sentinel_all_zero_rate,
             "heralded_one_path_bright_p1": heralded_one_path_p1,
@@ -518,9 +521,10 @@ def analyze_batch_run(run_dir: Path) -> dict[str, Any]:
                 circuit_reports[mid_key]["per_qubit_p1"]["11"] - circuit_reports[pure_key]["per_qubit_p1"]["11"]
             )
         else:
-            # On QX-10, q[7] is 1 in c1 and 0 in c2
+            # On QX-10, q[7] reads 1 only in the mid control; the shell metric compares the pure shell with the
+            # 32D control, both 0 ideally, and the mid metric compares the mid control with the pure shell.
             shell_contrast = (
-                circuit_reports[mid_key]["per_qubit_p1"]["7"] - circuit_reports[low_key]["per_qubit_p1"]["7"]
+                circuit_reports[pure_key]["per_qubit_p1"]["7"] - circuit_reports[low_key]["per_qubit_p1"]["7"]
             )
             mid_vs_pure = circuit_reports[mid_key]["per_qubit_p1"]["7"] - circuit_reports[pure_key]["per_qubit_p1"]["7"]
         extra_metrics["shell_8192d_or_1024d_vs_32d_control_contrast"] = shell_contrast
@@ -530,10 +534,11 @@ def analyze_batch_run(run_dir: Path) -> dict[str, Any]:
         dmz_key = "explore_8192d_dmz" if nqubits == 17 else "explore_1024d_dmz"
         null_key = "null_8192d_sleeper" if nqubits == 17 else "null_1024d_sleeper"
         target_q = 16 if nqubits == 17 else 7
-        cat_vs_null = (
-            circuit_reports[cat_key]["mean_one_path_bright_p1"]
-            - circuit_reports[null_key]["mean_zero_path_dmz_dark_p1"]
+        bright, floor = (
+            circuit_reports[cat_key]["mean_one_path_bright_p1"],
+            circuit_reports[null_key]["mean_zero_path_dmz_dark_p1"],
         )
+        cat_vs_null = bright - floor if bright is not None and floor is not None else None
         dmz_vs_null = (
             circuit_reports[dmz_key]["per_qubit_p1"][str(target_q)]
             - circuit_reports[null_key]["per_qubit_p1"][str(target_q)]

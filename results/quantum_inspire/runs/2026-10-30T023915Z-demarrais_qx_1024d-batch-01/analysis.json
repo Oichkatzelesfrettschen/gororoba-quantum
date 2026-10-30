@@ -25,7 +25,7 @@
     6,
     7
   ],
-  "shell_8192d_or_1024d_vs_32d_control_contrast": 1.0,
+  "shell_8192d_or_1024d_vs_32d_control_contrast": 0.0,
   "mid_tower_vs_pure_shell_switching_contrast": 1.0,
   "circuits": {
     "ctrl_low_32d": {
@@ -74,7 +74,7 @@
       "exact_17q_or_10q_match_probability": 1.0,
       "mean_one_path_bright_p1": 1.0,
       "mean_two_path_destructive_dark_p1": 0.0,
-      "mean_zero_path_dmz_dark_p1": 0.0,
+      "mean_zero_path_dmz_dark_p1": null,
       "interference_contrast_one_minus_two_path": 1.0,
       "mean_sentinel_syndrome_p0": 1.0,
       "sentinel_all_zero_herald_rate": 1.0,
