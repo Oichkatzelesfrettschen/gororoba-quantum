@@ -27,6 +27,7 @@ trap 'exit 130' INT TERM HUP
 end=$(( $(date +%s) + deadline ))
 failures=0
 retried_at=
+polled=
 status=
 pending=
 while :; do
@@ -37,6 +38,7 @@ while :; do
         head=${pull% *} && mergeable=${pull#* } &&
         pending=$(timeout -k 10 60 gh api "repos/$slug/commits/$head/check-runs?per_page=100" \
             --jq '[.check_runs[] | select(.status != "completed")] | length' 2>>"$log"); then
+        polled=1
         echo "$(date -u +%FT%TZ) mergeable=$mergeable pending=$pending $status" >>"$log"
         if [ "$mergeable" = dirty ]; then
             echo "PR $pr conflicts with its base: no merge commit, no check runs; merge the base and push"
@@ -72,13 +74,8 @@ while :; do
                     # A failed fetch counts as a failed poll: the stale round-start alone would spend the retry early.
                     if ! requests=$(timeout -k 10 60 gh api --paginate "repos/$slug/issues/$pr/comments" \
                         --jq '.[] | select(.body | startswith("@codex review")) | .created_at' 2>>"$log"); then
-                        failures=$((failures + 1))
-                        if [ "$failures" -ge 5 ]; then echo "PR $pr: 5 consecutive poll failures; see $log"; exit 3; fi
-                        sleep 90 &
-                        child=$!
-                        wait "$child"
-                        child=
-                        continue
+                        polled=
+                        requests=
                     fi
                     requested=$(printf '%s\n' "$requests" | sort | tail -n 1)
                     start=0
@@ -86,7 +83,7 @@ while :; do
                     if [ -n "$requested" ] && [ "$(date -d "$requested" +%s)" -gt "$start" ]; then
                         start=$(date -d "$requested" +%s)
                     fi
-                    if [ "$start" -gt 0 ] && [ $((now - start)) -ge "$stall" ]; then
+                    if [ -n "$polled" ] && [ "$start" -gt 0 ] && [ $((now - start)) -ge "$stall" ]; then
                         timeout -k 10 60 gh api "repos/$slug/issues/$pr/comments" -f body='@codex review' >/dev/null
                         echo "$(date -u +%FT%TZ) round $round showed no result after ${stall}s; requested again" >>"$log"
                         retried_at=$now
@@ -94,6 +91,11 @@ while :; do
                 fi
                 ;;
         esac
+    else
+        polled=
+    fi
+    # Every poll, complete or failed, reaches the failure count and the deadline before the next sleep.
+    if [ -n "$polled" ]; then
         failures=0
     else
         failures=$((failures + 1))
