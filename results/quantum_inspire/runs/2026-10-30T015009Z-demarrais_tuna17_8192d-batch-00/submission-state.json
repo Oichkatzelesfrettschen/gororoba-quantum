@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-10-30T01:50:14+00:00",
+ "approval": "User approved 2026-10-29: dispatch Tuna-17 8192D DekatrisVoudon 17-qubit batch at 75536 shots per circuit",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "a988de64a103e4359659d35447b5c86d3deacddeaa75dc7e9abeb62aa98733cb",
+ "shots": 75536,
+ "jobs": [
+  {
+   "file": "dekatrisvoudon-8192d-midden.cq",
+   "job": 1642194,
+   "sha256": "0697e5fce36504b2f92299cf138c396cda33da0b34bb5e2901994c9c89c5e28a"
+  },
+  {
+   "file": "cowbird-mandala-roundabout.cq",
+   "job": 1642195,
+   "sha256": "71452feddd4916cbf3f9a9af2ae1bf9b10193487b6a4e8c03759e2a113a16469"
+  },
+  {
+   "file": "zaslavsky-dmz-calibration.cq",
+   "job": 1642196,
+   "sha256": "4c49d6c5f35eb97e4c45376ab8728ebe41ea9d5265ed1bab9d14e79c430fa49a"
+  }
+ ],
+ "project": 804466,
+ "batch_job": 903568,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-10-30T01:50:17+00:00",
+  "approval": "User approved 2026-10-29: dispatch Tuna-17 8192D DekatrisVoudon 17-qubit batch at 75536 shots per circuit",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "a988de64a103e4359659d35447b5c86d3deacddeaa75dc7e9abeb62aa98733cb",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 903568,
+  "project": 804466,
+  "shots": 75536,
+  "jobs": [
+   {
+    "file": "dekatrisvoudon-8192d-midden.cq",
+    "job": 1642194,
+    "sha256": "0697e5fce36504b2f92299cf138c396cda33da0b34bb5e2901994c9c89c5e28a"
+   },
+   {
+    "file": "cowbird-mandala-roundabout.cq",
+    "job": 1642195,
+    "sha256": "71452feddd4916cbf3f9a9af2ae1bf9b10193487b6a4e8c03759e2a113a16469"
+   },
+   {
+    "file": "zaslavsky-dmz-calibration.cq",
+    "job": 1642196,
+    "sha256": "4c49d6c5f35eb97e4c45376ab8728ebe41ea9d5265ed1bab9d14e79c430fa49a"
+   }
+  ],
+  "submitted_utc": "2026-10-30T01:50:17+00:00"
+ },
+ "confirmed_utc": "2026-10-30T01:50:17+00:00"
+}

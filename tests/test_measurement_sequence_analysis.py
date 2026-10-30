@@ -379,7 +379,7 @@ def test_collected_withholds_without_a_bound_floor(monkeypatch: pytest.MonkeyPat
     result = msa.collected(record, distributions, executed)
     check("withheld" not in result, f"{result.get('withheld')}")
     check(all(row["model_scatter_floor"] == 0.02 for row in result["qubits"].values()))
-    other = {**record, "groups": [{"backend": "ibm_fez"}]}
+    other = {**record, "groups": [{"backend": "ibm_marrakesh"}]}
     check("not on" in msa.collected(other, distributions, executed)["withheld"])
 
 
@@ -503,7 +503,7 @@ def test_registered_scatter_floor_is_bound_by_digest() -> None:
     if floor is None:
         raise AssertionError(str(reason))
     check(floor == document["floor"] and 0.01 < floor < 0.03, f"{floor}")
-    other, why = msa.bound_floor({"ibm_fez"})
+    other, why = msa.bound_floor({"ibm_marrakesh"})
     check(other is None and "not on" in str(why))
 
 
@@ -518,5 +518,5 @@ def test_collected_reads_the_registered_scatter_floor_on_kingston() -> None:
     check("withheld" not in result, f"{result.get('withheld')}")
     floor, _ = msa.bound_floor({"ibm_kingston"})
     check(all(row["model_scatter_floor"] == floor for row in result["qubits"].values()))
-    record["groups"] = [{"backend": "ibm_fez"}]
+    record["groups"] = [{"backend": "ibm_marrakesh"}]
     check("not on" in msa.collected(record, distributions, executed)["withheld"])

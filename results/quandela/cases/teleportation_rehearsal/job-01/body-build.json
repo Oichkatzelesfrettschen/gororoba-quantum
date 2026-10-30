@@ -1,0 +1,14 @@
+{
+ "platform": "qpu:belenos",
+ "cases_sha256": "9310f3e2cff9fb711da8ea3cb0a68b79e59b74b4c7f75208cf1e7c1e60b1da6c",
+ "job_body_sha256": "48057d653df9030a029f950528c6e5c54e1dd634b5a5fd38d341a66fb5a85dba",
+ "estimated_shots": 26272596,
+ "payload_version_basis": "restored from docs/evidence/bdsc/inputs/receipt.json retrieved 2026-10-17T17:53:31+00:00",
+ "versions": {
+  "perceval-quandela": "1.3.1",
+  "exqalibur": "1.4.2"
+ },
+ "perfs_basis": "live processor record",
+ "built_utc": "2026-10-30T01:20:39+00:00",
+ "sent": false
+}

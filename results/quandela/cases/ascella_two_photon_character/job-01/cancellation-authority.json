@@ -1,0 +1,8 @@
+{
+  "schema": "job-cancellation-authority-v1",
+  "provider": "quandela",
+  "job_id": "4c4f0273-6e69-4b52-af92-550a5e4356d8",
+  "authority": "User explicit authorization on 2026-10-29T21:41:53-07:00 to cancel waiting qpu:ascella job 4c4f0273-6e69-4b52-af92-550a5e4356d8 so sim:belenos and qpu:belenos jobs can be dispatched.",
+  "submission_receipt_sha256": "82c39381d67b344a42c183f39d8d2d913aa1fd2d4e4f7a9b5d3efec30c398b6d",
+  "queue_scope_authorizes_other_jobs": false
+}

@@ -1,0 +1,104 @@
+{
+ "blocks": [
+  {
+   "a": 0.450709382,
+   "a_wilson95": [
+    0.441398222,
+    0.460055194
+   ],
+   "config": "two_label-30",
+   "dark_corrected": {
+    "a": 0.450506949,
+    "expected_dark_in_block": 4.629,
+    "expected_dark_outside": 0.602,
+    "in_block": 0.569042903
+   },
+   "in_block": 0.569128985,
+   "in_block_wilson95": [
+    0.562110622,
+    0.576119686
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 27,
+   "one_click_by_mode": [
+    44,
+    4880,
+    4817,
+    1184
+   ],
+   "one_click_outside_block": 8271,
+   "one_click_outside_by_mode": {
+    "10": 2,
+    "13": 1,
+    "14": 1,
+    "4": 4479,
+    "5": 164,
+    "6": 1876,
+    "7": 1748
+   },
+   "other_multi_click": 777,
+   "p_algebra": "1/2",
+   "total_variation_from_ideal": 0.194942792
+  },
+  {
+   "a": 0.561630579,
+   "a_wilson95": [
+    0.550908444,
+    0.572295465
+   ],
+   "config": "two_label-31",
+   "dark_corrected": {
+    "a": 0.561603677,
+    "expected_dark_in_block": 0.602,
+    "expected_dark_outside": 4.629,
+    "in_block": 0.430748663
+   },
+   "in_block": 0.430662638,
+   "in_block_wilson95": [
+    0.423672391,
+    0.437680631
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 32,
+   "one_click_by_mode": [
+    4479,
+    164,
+    1876,
+    1748
+   ],
+   "one_click_outside_block": 10929,
+   "one_click_outside_by_mode": {
+    "0": 44,
+    "1": 4880,
+    "10": 2,
+    "13": 1,
+    "14": 1,
+    "2": 4817,
+    "3": 1184
+   },
+   "other_multi_click": 772,
+   "p_algebra": "1/2",
+   "total_variation_from_ideal": 0.061630579
+  }
+ ],
+ "cases_sha256": "abcd36ae814561cae68a899ae4385148c845d4ffb516ac8bbcafe9863009306b",
+ "compiled": {
+  "distinct": 1,
+  "iterations": [],
+  "job": {
+   "chars": 16242,
+   "sha256": "aef5677c97ed5dc7db935899cff6d82a7cda7b12c81014f970956c93d6222731"
+  }
+ },
+ "job_id": "f6f2ec55-9e97-457d-b11c-48b00a7c2d69",
+ "logical_perf": 1,
+ "noise": ":PCVL:NoiseModel:{\"g2\": 0.013000000000000001, \"indistinguishability\": 0.87, \"transmittance\": 0.0556}",
+ "physical_perf": 0.019502915747609564,
+ "platform": "qpu:belenos",
+ "result_sha256": "a82ba8b9792819d7329586a6f9383f31104ac5f697477eb2ee5d49eaeb30a8f5",
+ "run": "2026-10-30T051818Z-qpu_belenos-box_kite_photonic_packed-job-05",
+ "samples": 20000,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 20000,
+ "status": "completed"
+}

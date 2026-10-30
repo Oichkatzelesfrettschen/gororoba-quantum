@@ -16,6 +16,27 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/demarrais-8192d-cross-platform/pauli_propagation.py --check docs/evidence/demarrais-8192d-cross-platform/pauli-propagation.json",
+   "name": "core-demarrais-pauli-propagation-replay",
+   "seconds": 1.1,
+   "tier": "pr",
+   "workers": 1,
+   "replays": [
+    "docs/evidence/demarrais-8192d-cross-platform/pauli-propagation.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B scripts/frozen_case_sources.py --check docs/evidence/quandela/frozen-case-source-pins.json results/quandela/cases",
+   "name": "core-ascella-predecessor-source-pin",
+   "seconds": 0.08,
+   "tier": "pr",
+   "workers": 1
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check ci tests && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check ci tests && \"$PYTHON\" ci/pinned_tool.py mypy ci/run_gates.py ci/runner_specs.py ci/premerge_gates.py ci/gate_inputs.py ci/analyze_timings.py ci/changed_paths.py ci/pins.py ci/pinned_tool.py ci/gate_ledger.py ci/merge_gate_timings.py ci/host_identity.py ci/read_trace/sitecustomize.py tests",
    "name": "core-000",
    "seconds": 0.7,
@@ -1512,7 +1533,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json docs/evidence/ghost_error_scale/part_f.json --runs results/live/2026-10-19T151959.226467Z,results/live/2026-10-19T170620.832658Z,results/live/2026-10-21T064222.721454Z",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json docs/evidence/ghost_error_scale/part_f.json docs/evidence/ghost_error_scale/part_g.json --runs results/live/2026-10-19T151959.226467Z,results/live/2026-10-19T170620.832658Z,results/live/2026-10-21T064222.721454Z",
    "name": "core-614",
    "seconds": 250.0,
    "tier": "full"
@@ -2360,6 +2381,17 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/msq_reset_persistence.py results/live/2026-10-27T014422.881898Z results/live/2026-10-30T010826.175789Z --check docs/evidence/measurement_sequence/reset-persistence.json",
+   "name": "core-msq-reset-persistence-replay",
+   "seconds": 0.8,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/measurement_sequence/reset-persistence.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/msq_successor_replay.py results/live/2026-10-27T014422.881898Z --check docs/evidence/measurement_sequence/successor-replay.json",
    "name": "core-msq-successor-replay",
    "seconds": 6.3,
@@ -3040,7 +3072,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json docs/evidence/ghost_error_scale/part_f.json --runs results/live/2026-10-13T080216.451663Z,results/live/2026-10-18T090603.530638Z",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.json docs/evidence/ghost_error_scale/part_b.json docs/evidence/ghost_error_scale/part_c.json docs/evidence/ghost_error_scale/part_d.json docs/evidence/ghost_error_scale/part_e.json docs/evidence/ghost_error_scale/part_f.json docs/evidence/ghost_error_scale/part_g.json --runs results/live/2026-10-13T080216.451663Z,results/live/2026-10-18T090603.530638Z",
    "name": "core-339",
    "seconds": 133.9,
    "tier": "full"
@@ -4496,7 +4528,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-13",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-14",
    "name": "core-670",
    "seconds": 12.0,
    "tier": "pr"
@@ -4654,6 +4686,14 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/measurement_sequence_scatter.py check results/live/2026-10-26T031010.724660Z docs/evidence/measurement_sequence/scatter-floor.json",
    "name": "core-msq-scatter-floor-replay",
+   "seconds": 3.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/measurement_sequence_scatter.py check results/live/2026-10-29T231232.725730Z docs/evidence/measurement_sequence/scatter-floor-ibm_fez.json",
+   "name": "core-msq-scatter-floor-fez-replay",
    "seconds": 3.5,
    "tier": "pr"
   },
