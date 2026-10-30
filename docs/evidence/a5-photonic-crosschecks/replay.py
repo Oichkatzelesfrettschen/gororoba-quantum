@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import cd_core  # noqa: E402
 import parallel  # noqa: E402
 
-RECORD = Path(__file__).with_name("result.json")
+RECORD = Path(__file__).with_name("pooled-result.json")
 WITNESSES = (
     (((1, 1), (9, 1)), 0, "2", "0", "4"),
     (((1, 1), (10, 1)), 8, "2", "1", "0"),
@@ -62,7 +62,8 @@ def rank_witness(item: tuple) -> dict:
     }
 
 
-def basis_checks(mutation: bool = False) -> list[dict]:
+def basis_pair_check(task: tuple[int, int, bool]) -> dict:
+    first, second, mutation = task
     omega = (-1 + sym.I * sym.sqrt(3)) / 2
     hadamard = sym.Matrix([[1, 1], [1, -1]]) / sym.sqrt(2)
     fourier = sym.Matrix([[omega ** (j * k) for k in range(3)] for j in range(3)]) / sym.sqrt(3)
@@ -73,16 +74,17 @@ def basis_checks(mutation: bool = False) -> list[dict]:
         sym.kronecker_product(hadamard, fourier),
         sym.kronecker_product(qubit_phase * hadamard, qutrit_phase * fourier),
     )
-    output = []
-    for first in range(3):
-        for second in range(first, 3):
-            transition = bases[first].conjugate().T * bases[second]
-            actual = transition.applyfunc(lambda z: sym.simplify(sym.expand_complex(z * sym.conjugate(z))))
-            expected = sym.eye(6) if first == second else sym.ones(6) / 6
-            if actual != expected:
-                raise ValueError(f"basis overlap fails for {first}, {second}")
-            output.append({"bases": [first, second], "squared_overlap": "identity" if first == second else "1/6"})
-    return output
+    transition = bases[first].conjugate().T * bases[second]
+    actual = transition.applyfunc(lambda z: sym.simplify(sym.expand_complex(z * sym.conjugate(z))))
+    expected = sym.eye(6) if first == second else sym.ones(6) / 6
+    if actual != expected:
+        raise ValueError(f"basis overlap fails for {first}, {second}")
+    return {"bases": [first, second], "squared_overlap": "identity" if first == second else "1/6"}
+
+
+def basis_checks(mutation: bool = False) -> list[dict]:
+    tasks = [(first, second, mutation) for first in range(3) for second in range(first, 3)]
+    return parallel.ordered_map(basis_pair_check, tasks, min_items=1)
 
 
 def result() -> dict:
