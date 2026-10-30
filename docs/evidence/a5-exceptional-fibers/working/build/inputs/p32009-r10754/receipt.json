@@ -1,0 +1,87 @@
+{
+  "i_root": 10754,
+  "incidences": [
+    {
+      "candidate_count": 21,
+      "comparison": {
+        "computed_file": "docs/local/a5-failed-runs/runs/e8vb_b/input.sing",
+        "computed_ring_order": "dp",
+        "computed_sha256": "c82a4e843669293bbe1c6f47228797ebfdf8fefa0f7e70397e99a795a0a368b8",
+        "computed_variables": [
+          "t1",
+          "t2",
+          "t3",
+          "t4",
+          "t5",
+          "t6",
+          "t7",
+          "t8"
+        ],
+        "g_text_identical": false,
+        "j_text_identical": true,
+        "regenerated_variables": [
+          "t1",
+          "t2",
+          "t3",
+          "t4",
+          "t5",
+          "t6",
+          "t7",
+          "t8"
+        ],
+        "singular": {
+          "g_count_computed": 10,
+          "g_count_new": 10,
+          "g_matched_exact": 0,
+          "g_matched_signed": 0,
+          "g_matched_signed_mod_j": 10,
+          "g_same_order": 0,
+          "j_canonical_equal": 1,
+          "j_ideal_equal": 1,
+          "span_rank_computed": 10,
+          "span_rank_new": 10,
+          "span_rank_union": 10
+        },
+        "status": "equal-span-mod-J"
+      },
+      "eliminated": [],
+      "generator_count": 10,
+      "header_file": "e8-vb.sing",
+      "header_sha256": "4dbcb4676ca0821a49641bb6a406254b5c3c7bd56452419c0790c81ae6b6edd5",
+      "incidence": "E8bar->VB",
+      "peak_rss_kib": 25120,
+      "route": "nakayama",
+      "selected_indices_one_based": [
+        7,
+        8,
+        10,
+        11,
+        12,
+        14,
+        15,
+        17,
+        18,
+        21
+      ],
+      "slug": "e8-vb",
+      "variables": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t8"
+      ],
+      "wall_seconds": 0.3
+    }
+  ],
+  "prime": 32009,
+  "producer_sha256": "e56ede876250926086fe615168903f241bf79a913a3cd15f66d09f84aa906682",
+  "schema": "a5-fiber-inputs-v1",
+  "tools": {
+    "python_flint": "0.9.0",
+    "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Jun 30 2026 11:57:00"
+  }
+}

@@ -1,0 +1,13 @@
+{
+ "id": "probablyeric/a5-chart-w8nm",
+ "title": "a5-chart-w8nm",
+ "code_file": "a5-chart-w8nm.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": false,
+ "enable_internet": true,
+ "dataset_sources": [],
+ "kernel_sources": [],
+ "competition_sources": []
+}

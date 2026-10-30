@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/fiber_cone_driver.py", line 453, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/fiber_cone_driver.py", line 444, in main
+    run_degree(args.header, args.degree, args.previous_relations, args.out, args.prime,
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+               args.memory_gib, args.timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/fiber_cone_driver.py", line 310, in run_degree
+    _require(first.error is None, f"products stage failed: {first.error}")
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/fiber_cone_driver.py", line 42, in _require
+    raise ValueError(message)
+ValueError: products stage failed: exit status 124

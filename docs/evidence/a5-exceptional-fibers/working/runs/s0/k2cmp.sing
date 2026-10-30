@@ -1,0 +1,5 @@
+ring Y=32009,(y(1..15)),dp;
+execute("ideal A="+read("xm_k2_check.rel")+";"); execute("ideal B="+read("../../kaggle-pack-a/xm_nm/xm_nm_fiber.rel")+";");
+ideal sA=std(A); ideal sB=std(B);
+"RESULT same_ideal", size(reduce(A,sB))==0 and size(reduce(B,sA))==0;
+int d; for(d=1;d<=3;d++){"RESULT h",d,size(kbase(sA,d));} quit;

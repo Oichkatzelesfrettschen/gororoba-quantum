@@ -1,0 +1,10 @@
+LIB "primdec.lib";
+ring Y=32009,(y(1..15)),dp;
+execute("ideal K="+read("../../kaggle-pack-a/xm_nm/xm_nm_fiber.rel")+";");
+ideal sK=std(K); ideal rK=std(radical(K));
+"RESULT K2 dim",dim(sK)-1,"mult",mult(sK); "RESULT rad dim",dim(rK)-1,"mult",mult(rK);
+int d; for(d=1;d<=5;d++){"RESULT h",d,size(kbase(sK,d)),size(kbase(rK,d));}
+ideal S=std(sat(K,maxideal(1))); "RESULT K2_saturated",size(reduce(S,sK))==0;
+ideal Sr=std(sat(rK,maxideal(1))); "RESULT sat dim",dim(S)-1,"mult",mult(S);
+for(d=1;d<=5;d++){"RESULT hsat",d,size(kbase(S,d));}
+quit;

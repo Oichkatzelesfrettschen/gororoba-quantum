@@ -1,0 +1,14 @@
+{
+ "id": "probablyeric/a5-e8-d2",
+ "title": "a5-e8-d2",
+ "code_file": "a5-e8-d2.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_internet": true,
+ "dataset_sources": [],
+ "kernel_sources": [],
+ "competition_sources": [],
+ "machine_shape": "NvidiaTeslaT4"
+}

@@ -1,0 +1,4 @@
+RESULT sizes 16 16 21 21
+RESULT J signs + + - - - - - - - + + + + - - +
+RESULT G signs X X X X X X X X X X X X X X X X X X X X X
+RESULT failures 21

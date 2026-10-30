@@ -1,0 +1,31 @@
+{
+  "certificate": "candidate-ideal",
+  "checks": {
+    "H_in_L": false,
+    "L_colon_g_equals_L": false,
+    "L_in_kernel": false,
+    "fiber_equals_K": false,
+    "pivot": "3 terms 9"
+  },
+  "input": "docs/local/a5-failed-runs/build/logs/part-b/hdr/vb.sing",
+  "input_sha256": "cefd373c26d610ac045510a1bf6db87a80916a87da72f5d99c3e581e9024c4db",
+  "memory_cap_gib": 3,
+  "peak_bytes": 3221225472,
+  "prime": 32009,
+  "relations_sha256": "9093ca54b6ff305b9122b1294af20674e3476cea81bb2f1242250a187405e586",
+  "schema": "a5-fiber-certificate-v1",
+  "singular_error": "exit status 1",
+  "singular_results": {
+    "lifted_degree": "2 21",
+    "lifts_ms": "40371",
+    "pivot": "3 terms 9"
+  },
+  "status": "candidate-not-verified",
+  "tool_versions": {
+    "flint": "30600",
+    "macaulay2": "1.26.06-3-ga5ff8d7ebc-dirty (makepkg)",
+    "python-flint": "0.9.0",
+    "singular": "4.4.1"
+  },
+  "wall_seconds": 852.002
+}

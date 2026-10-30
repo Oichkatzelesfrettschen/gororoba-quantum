@@ -1,0 +1,2 @@
+ring Y=32009,(y(1..21)),dp; execute("ideal K="+read("e8_k2.rel")+";"); ideal sK=std(K);
+"RESULT projdim",dim(sK)-1,"degree",mult(sK); int d; for(d=1;d<=4;d++){"RESULT h",d,size(kbase(sK,d));} quit;

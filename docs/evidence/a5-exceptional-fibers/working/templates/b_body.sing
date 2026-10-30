@@ -1,0 +1,22 @@
+// Method B: full special fiber by pivot saturation. F = k[t,y]/((H : g^inf) + (t)), H = J + (g*y_j - G_j*y_q).
+// Falsifiers: F5 projective dim <= germ bound; F6 nonzerodivisor pivot; F4 HF agrees with method A where both ran.
+LIB "elim.lib"; option(redSB); int t0=timer;
+int n=ncols(G); ideal sJ0=std(J); int i; int q=1; int best=-1;
+for(i=1;i<=n;i++){ G[i]=reduce(G[i],sJ0); }
+for(i=1;i<=n;i++){ if(size(reduce(quotient(sJ0,ideal(G[i])),sJ0))==0){ if(best<0 or size(G[i])<size(G[q])){q=i;best=1;} } }
+if(best<0){"RESULT no_nonzerodivisor_pivot"; quit;}
+"RESULT generators",n,"pivot",q,"terms",size(G[q]),"seconds",timer-t0;
+string sv=varstr(basering); int nv=nvars(basering);
+execute("ring R=32009,("+sv+",y(1.."+string(n)+")),dp;");
+ideal Jr=std(imap(r,J)); ideal Gr=imap(r,G); poly g=Gr[q];
+ideal H=Jr; for(i=1;i<=n;i++){ if(i!=q){ H=H,g*y(i)-Gr[i]*y(q); } }
+ideal Rees=sat(H,ideal(g)); "RESULT sat_seconds",timer-t0,"gens",size(Rees);
+write(":w rees.txt",Rees);
+ideal tv; for(i=1;i<=nv;i++){ tv=tv,var(i); }
+ideal F=std(Rees+tv);
+execute("ring Yf=32009,(y(1.."+string(n)+")),dp;"); ideal Fy=std(imap(R,F));
+"RESULT fiber_projdim",dim(Fy)-1,"degree",mult(Fy),"seconds",timer-t0;
+"RESULT hilb_numerator"; hilb(Fy,1);
+write(":w fiber.txt",Fy);
+int d; for(d=1;d<=5;d++){ "RESULT h",d,size(kbase(Fy,d)); }
+"RESULT done",timer-t0; quit;

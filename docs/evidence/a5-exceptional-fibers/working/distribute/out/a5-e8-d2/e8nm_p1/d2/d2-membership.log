@@ -1,0 +1,7 @@
+RESULT generators 21
+RESULT targets 231
+RESULT products_ms 17716
+RESULT membership_failures 0
+RESULT membership_ms 1102270
+
+--- stderr ---

@@ -1,0 +1,49 @@
+[{"stream_name":"stderr","time":0.806071582,"data":"/kaggle/src/script.py:11: DeprecationWarning: Python 3.14 will, by default, filter extracted tar archives and reject files or modify their metadata. Use the filter argument to control this behavior.\n"}
+,{"stream_name":"stderr","time":0.806124382,"data":"  tarfile.open(fileobj=io.BytesIO(base64.b64decode(PAYLOAD))).extractall(W)\n"}
+,{"stream_name":"stdout","time":13862.995176925,"data":"{\n"}
+,{"stream_name":"stdout","time":13862.995282651,"data":" \"cpu_count\": 4,\n"}
+,{"stream_name":"stdout","time":13862.995292583,"data":" \"meminfo_kib\": {\n"}
+,{"stream_name":"stdout","time":13862.995296052,"data":"  \"MemTotal\": \"32869296\",\n"}
+,{"stream_name":"stdout","time":13862.995299268,"data":"  \"MemAvailable\": \"31648752\"\n"}
+,{"stream_name":"stdout","time":13862.995302468,"data":" },\n"}
+,{"stream_name":"stdout","time":13862.995305472,"data":" \"python\": \"3.13.15\",\n"}
+,{"stream_name":"stdout","time":13862.995308799,"data":" \"singular\": \"4.4.1\",\n"}
+,{"stream_name":"stdout","time":13862.995311964,"data":" \"jobs\": {\n"}
+,{"stream_name":"stdout","time":13862.995314974,"data":"  \"e8np_p2\": [\n"}
+,{"stream_name":"stdout","time":13862.995318028,"data":"   {\n"}
+,{"stream_name":"stdout","time":13862.99532162,"data":"    \"degree\": 2,\n"}
+,{"stream_name":"stdout","time":13862.995340055,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":13862.995345453,"data":"    \"seconds\": 13823.4,\n"}
+,{"stream_name":"stdout","time":13862.995350836,"data":"    \"tail\": \"degree 2 h=83 relations=148 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":13862.99535651,"data":"   }\n"}
+,{"stream_name":"stdout","time":13862.995360928,"data":"  ],\n"}
+,{"stream_name":"stdout","time":13862.995365272,"data":"  \"e8nm_p2\": [\n"}
+,{"stream_name":"stdout","time":13862.995369679,"data":"   {\n"}
+,{"stream_name":"stdout","time":13862.995374052,"data":"    \"degree\": 2,\n"}
+,{"stream_name":"stdout","time":13862.99537849,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":13862.995394077,"data":"    \"seconds\": 13742.6,\n"}
+,{"stream_name":"stdout","time":13862.995398434,"data":"    \"tail\": \"degree 2 h=83 relations=148 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":13862.995403015,"data":"   }\n"}
+,{"stream_name":"stdout","time":13862.995412203,"data":"  ],\n"}
+,{"stream_name":"stdout","time":13862.99541524,"data":"  \"e8nm_p1\": [\n"}
+,{"stream_name":"stdout","time":13862.995418122,"data":"   {\n"}
+,{"stream_name":"stdout","time":13862.995421004,"data":"    \"degree\": 2,\n"}
+,{"stream_name":"stdout","time":13862.995437126,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":13862.995442473,"data":"    \"seconds\": 13826.6,\n"}
+,{"stream_name":"stdout","time":13862.995448055,"data":"    \"tail\": \"degree 2 h=83 relations=148 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":13862.995453089,"data":"   }\n"}
+,{"stream_name":"stdout","time":13862.995457112,"data":"  ]\n"}
+,{"stream_name":"stdout","time":13862.995461123,"data":" },\n"}
+,{"stream_name":"stdout","time":13862.995465053,"data":" \"meminfo_end_kib\": {\n"}
+,{"stream_name":"stdout","time":13862.995469269,"data":"  \"MemTotal\": \"32869296\",\n"}
+,{"stream_name":"stdout","time":13862.995473522,"data":"  \"MemAvailable\": \"31790184\"\n"}
+,{"stream_name":"stdout","time":13862.99547786,"data":" },\n"}
+,{"stream_name":"stdout","time":13862.995481902,"data":" \"total_seconds\": 13862.2\n"}
+,{"stream_name":"stdout","time":13862.995486054,"data":"}\n"}
+,{"stream_name":"stderr","time":13865.182514179,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":13865.182555332,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":13865.536021036,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":13865.536045857,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":13866.659274392,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":13867.735882188,"data":"[NbConvertApp] Writing 415688 bytes to __results__.html\n"}
+]

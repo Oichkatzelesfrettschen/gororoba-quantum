@@ -1,0 +1,40 @@
+{
+ "cpu_count": 4,
+ "meminfo_kib": {
+  "MemTotal": "32869296",
+  "MemAvailable": "31648752"
+ },
+ "python": "3.13.15",
+ "singular": "4.4.1",
+ "jobs": {
+  "e8np_p2": [
+   {
+    "degree": 2,
+    "rc": 0,
+    "seconds": 13823.4,
+    "tail": "degree 2 h=83 relations=148 status=degree-certified\n"
+   }
+  ],
+  "e8nm_p2": [
+   {
+    "degree": 2,
+    "rc": 0,
+    "seconds": 13742.6,
+    "tail": "degree 2 h=83 relations=148 status=degree-certified\n"
+   }
+  ],
+  "e8nm_p1": [
+   {
+    "degree": 2,
+    "rc": 0,
+    "seconds": 13826.6,
+    "tail": "degree 2 h=83 relations=148 status=degree-certified\n"
+   }
+  ]
+ },
+ "meminfo_end_kib": {
+  "MemTotal": "32869296",
+  "MemAvailable": "31790184"
+ },
+ "total_seconds": 13862.2
+}

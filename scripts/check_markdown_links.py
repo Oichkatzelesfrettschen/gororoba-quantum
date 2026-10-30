@@ -26,6 +26,7 @@ keep the links of their source):
     transpiler-stages,execute-dynamic-circuits,fractional-gates,stretch,qiskit-runtime-circuit-timing,
     repetition-rate-execution,calibration-jobs,estimate-job-run-time}.md   transcribed IBM documentation
   docs/local_source_cache/, docs/source_archives/  retained source copies
+  docs/evidence/a5-exceptional-fibers/working/  retained working record, links kept as written
 
 Usage:
   "$PYTHON" scripts/check_markdown_links.py [--root DIR]
@@ -63,6 +64,7 @@ EXCLUDED_PREFIXES = (
     "docs/notes/quantum_inspire/site/",
     "docs/local_source_cache/",
     "docs/source_archives/",
+    "docs/evidence/a5-exceptional-fibers/working/",
 )
 IBM_TRANSCRIPTIONS = (
     "calibration-jobs",

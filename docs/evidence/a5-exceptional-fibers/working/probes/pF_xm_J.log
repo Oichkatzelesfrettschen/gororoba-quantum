@@ -1,0 +1,6 @@
+RESULT J dim 4 mult 6 std_seconds 0 size 12
+RESULT HF_J 7 27 67 132 228 361
+RESULT G_nf_maxdeg 9 G_nf_mindeg 2
+RESULT G_maxdeg 9
+RESULT order_G 2 2
+exit 0
