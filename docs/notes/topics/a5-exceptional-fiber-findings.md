@@ -177,7 +177,7 @@ measurement), *superseded* (replaced by a stronger or cheaper route).
 | X+ and X- fibers correspond under t9 -> -t9 | survives (exact coefficient check) | none; proven for the inputs |
 | W8 -> N+ and W8 -> N- fibers correspond under t9 -> -t9 | survives (exact coefficient check) | none; proven for the inputs |
 | E8-bar -> N+ and E8-bar -> N- fibers are isomorphic | open | quadric structure of N-; Hilbert functions agree through degree 2 |
-| Results at 32009 hold at a second prime | survives on E8-bar -> VB degree 2 | the second-prime replay of every pair |
+| Results at 32009 hold at a second prime | survives: at p = 32029, E8-bar -> VB 34, 80; X- and X+ 51, 122 with 69 quadrics; Iso 85, 265 with 68 quadrics, all equal to 32009 | W8 -> N- and E8-bar -> N+- at 32029 (running) |
 | J is radical and prime through the origin | survives on all five pairs checked | none; checked |
 | The pivot is a nonzerodivisor modulo J | survives on every pivot used | none; checked |
 | Iso and W8 quadric schemes decompose chart by chart within 45 minutes per chart | open | chart jobs running |
@@ -214,7 +214,8 @@ measurement), *superseded* (replaced by a stronger or cheaper route).
 
 - **Chart-by-chart radical and minimal primes of the Iso and W8 -> N- quadrics** (each coordinate set to 1 in turn,
   45 minutes per chart): the first structure for those pairs.
-- **Second-prime degree-by-degree replay at p = 32029** for E8-bar -> VB, X+-, Iso, W8 -> N- and E8-bar -> N+-.
+- **Second-prime degree-by-degree replay at p = 32029** for W8 -> N- and E8-bar -> N+- (E8-bar -> VB, X+- and Iso
+  agree with 32009 through degree 3).
 - **E8-bar -> N- quadric relations at 32009**, the input to its structure computation.
 - **Remaining arc charts on E8-bar -> VB** (t5 = 1, t7 = 1, the locus k^2 + 3 = 0 and the singular points of the
   normalization): the search for arcs into the degree-3 component.

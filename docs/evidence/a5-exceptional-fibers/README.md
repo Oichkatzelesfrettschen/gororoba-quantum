@@ -7,10 +7,10 @@ the results, the hypotheses tested against them and what survives; this director
 here are diagnostic working data over F_32009 (and F_32029 where named) and enter the tracked claim record only
 through the [kernel-attachments ledger](../a5-kernel-attachments/README.md).
 
-Files over 1 MB (normal-form and product dumps the run scripts regenerate), binary caches, reviewer transcripts that
-carry session identifiers, and generated kernel payloads stay out; [excluded-files.md](excluded-files.md) lists each
-with its size and sha256. Local paths read `~` for the home directory and `SCRATCH` for the session scratch
-directory.
+Every file of the working directory is retained, with home paths written `~`, the session scratch directory
+`SCRATCH`, session identifiers `SESSION` or `UUID`, and the build host's name and owner handles replaced. Files
+above 50 MB are split into 45 MB parts named `FILE.part00`, `FILE.part01`, ...; `cat FILE.part* > FILE` restores
+the original bytes. The split files are listed in [split.txt](split.txt).
 
 | Path under `working/` | Content |
 |---|---|

@@ -1,0 +1,67 @@
+[{"stream_name":"stderr","time":1.310760679,"data":"/kaggle/src/script.py:11: DeprecationWarning: Python 3.14 will, by default, filter extracted tar archives and reject files or modify their metadata. Use the filter argument to control this behavior.\n"}
+,{"stream_name":"stderr","time":1.310810976,"data":"  tarfile.open(fileobj=io.BytesIO(base64.b64decode(PAYLOAD))).extractall(W)\n"}
+,{"stream_name":"stdout","time":1140.857787641,"data":"{\n"}
+,{"stream_name":"stdout","time":1140.857964044,"data":" \"cpu_count\": 4,\n"}
+,{"stream_name":"stdout","time":1140.857971864,"data":" \"meminfo_kib\": {\n"}
+,{"stream_name":"stdout","time":1140.857978107,"data":"  \"MemTotal\": \"32869296\",\n"}
+,{"stream_name":"stdout","time":1140.85806997,"data":"  \"MemAvailable\": \"31908696\"\n"}
+,{"stream_name":"stdout","time":1140.858088982,"data":" },\n"}
+,{"stream_name":"stdout","time":1140.858094753,"data":" \"python\": \"3.13.15\",\n"}
+,{"stream_name":"stdout","time":1140.858101509,"data":" \"singular\": \"4.4.1\",\n"}
+,{"stream_name":"stdout","time":1140.858107346,"data":" \"jobs\": {\n"}
+,{"stream_name":"stdout","time":1140.858113049,"data":"  \"vb_p2\": [\n"}
+,{"stream_name":"stdout","time":1140.858118611,"data":"   {\n"}
+,{"stream_name":"stdout","time":1140.858123984,"data":"    \"degree\": 2,\n"}
+,{"stream_name":"stdout","time":1140.858129834,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":1140.858135553,"data":"    \"seconds\": 25.7,\n"}
+,{"stream_name":"stdout","time":1140.858141425,"data":"    \"tail\": \"degree 2 h=34 relations=21 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":1140.85814756,"data":"   },\n"}
+,{"stream_name":"stdout","time":1140.858152694,"data":"   {\n"}
+,{"stream_name":"stdout","time":1140.858157997,"data":"    \"degree\": 3,\n"}
+,{"stream_name":"stdout","time":1140.858163791,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":1140.85816933,"data":"    \"seconds\": 783.7,\n"}
+,{"stream_name":"stdout","time":1140.858175171,"data":"    \"tail\": \"degree 3 h=80 relations=0 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":1140.858180763,"data":"   }\n"}
+,{"stream_name":"stdout","time":1140.858186136,"data":"  ],\n"}
+,{"stream_name":"stdout","time":1140.858191856,"data":"  \"xm_p2\": [\n"}
+,{"stream_name":"stdout","time":1140.858196978,"data":"   {\n"}
+,{"stream_name":"stdout","time":1140.858202088,"data":"    \"degree\": 2,\n"}
+,{"stream_name":"stdout","time":1140.858207416,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":1140.858213077,"data":"    \"seconds\": 43.4,\n"}
+,{"stream_name":"stdout","time":1140.858218844,"data":"    \"tail\": \"degree 2 h=51 relations=69 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":1140.858224519,"data":"   },\n"}
+,{"stream_name":"stdout","time":1140.858229837,"data":"   {\n"}
+,{"stream_name":"stdout","time":1140.858235226,"data":"    \"degree\": 3,\n"}
+,{"stream_name":"stdout","time":1140.85824056,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":1140.858246551,"data":"    \"seconds\": 1044.3,\n"}
+,{"stream_name":"stdout","time":1140.858252431,"data":"    \"tail\": \"degree 3 h=122 relations=0 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":1140.858258187,"data":"   }\n"}
+,{"stream_name":"stdout","time":1140.858263301,"data":"  ],\n"}
+,{"stream_name":"stdout","time":1140.858268439,"data":"  \"xp_p2\": [\n"}
+,{"stream_name":"stdout","time":1140.858274099,"data":"   {\n"}
+,{"stream_name":"stdout","time":1140.858278859,"data":"    \"degree\": 2,\n"}
+,{"stream_name":"stdout","time":1140.858284153,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":1140.858306326,"data":"    \"seconds\": 42.7,\n"}
+,{"stream_name":"stdout","time":1140.858311337,"data":"    \"tail\": \"degree 2 h=51 relations=69 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":1140.858316215,"data":"   },\n"}
+,{"stream_name":"stdout","time":1140.858320492,"data":"   {\n"}
+,{"stream_name":"stdout","time":1140.858324819,"data":"    \"degree\": 3,\n"}
+,{"stream_name":"stdout","time":1140.858329143,"data":"    \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":1140.858334242,"data":"    \"seconds\": 1049.0,\n"}
+,{"stream_name":"stdout","time":1140.858338869,"data":"    \"tail\": \"degree 3 h=122 relations=0 status=degree-certified\\n\"\n"}
+,{"stream_name":"stdout","time":1140.858344069,"data":"   }\n"}
+,{"stream_name":"stdout","time":1140.858348201,"data":"  ]\n"}
+,{"stream_name":"stdout","time":1140.858352489,"data":" },\n"}
+,{"stream_name":"stdout","time":1140.858356777,"data":" \"meminfo_end_kib\": {\n"}
+,{"stream_name":"stdout","time":1140.858361914,"data":"  \"MemTotal\": \"32869296\",\n"}
+,{"stream_name":"stdout","time":1140.858366718,"data":"  \"MemAvailable\": \"31684384\"\n"}
+,{"stream_name":"stdout","time":1140.858371243,"data":" },\n"}
+,{"stream_name":"stdout","time":1140.858375474,"data":" \"total_seconds\": 1139.6\n"}
+,{"stream_name":"stdout","time":1140.858379862,"data":"}\n"}
+,{"stream_name":"stderr","time":1144.222549809,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1144.222590055,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1144.812923871,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1144.812962774,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1146.476475536,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1148.15590549,"data":"[NbConvertApp] Writing 325332 bytes to __results__.html\n"}
+]

@@ -1,0 +1,3 @@
+runs/w8_a2/nf2.txt
+build/logs/mine/vb4/sq.txt
+distribute/out/a5-p2-iso/iso_p2/d3/sq.txt
