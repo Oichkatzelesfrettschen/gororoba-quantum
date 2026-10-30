@@ -1,7 +1,7 @@
 # Ascella Simulation Campaigns, Qubit Baseline Twin, and Multi-Technology Falsification
 
 This evidence bundle documents the dual simulation runs executed on Quandela Cloud `sim:ascella`,
-the exact 3-qubit baseline twin model for QX emulator and Qiskit Aer, the live platform availability
+the exact 3-qubit baseline twin model (its exact statevector law), the live platform availability
 audit (Tuna-17, QX, Belenos, Ascella), and the cross-technology falsification matrix.
 
 ---
@@ -12,7 +12,7 @@ audit (Tuna-17, QX, Belenos, Ascella), and the cross-technology falsification ma
 |---|---|---|---|---|---|
 | **Two-Photon Octonion Associator** | `sim:ascella` | `fe44988c-f21f-44ec-bce9-b3fe184d43d5` | Associator $\Delta = 1.7576 \pm 0.0095$<br>Control $\Delta_{\text{ctrl}} = -0.0090 \pm 0.0096$<br>Closure $= 0.0059 \pm 0.0135$ | $> 184\sigma$ effect<br>Null $< 1\sigma$<br>In-situ $V = 0.9137$ | **ADMITTED** |
 | **16-Setting 8-Mode Octonion Character** | `sim:ascella` | `7d70a2d2-d234-4d53-a47c-8a0c5c4c36b7` | Mean Contrast $\Delta = 2.000000$<br>Sentinel Leakage $= 0.000000$<br>Clopper-Pearson 95% CI: $[0.999262, 1.0]$ | 160,000 samples<br>Zero leakage across modes 8..11 | **ADMITTED** |
-| **3-Qubit Baseline Twin Model** | Qiskit Aer / QX | Local / cQASM | Octonion $\to |\omega\rangle$<br>Clifford Control $\to |000\rangle$<br>Measured $\Delta = 2.000000$ | Exact deterministic parity isomorphism | **PASS (3/3)** |
+| **3-Qubit Baseline Twin Model** | exact statevector (`scripts/qubit_baseline_twin.py`) | Local | Octonion $\to |\omega\rangle$<br>Clifford Control $\to |000\rangle$<br>Exact $\Delta = 2.000000$ | Exact deterministic parity isomorphism | **PASS (4/4 pairs)** |
 | **Flint Algebraic Certification** | Local | Exact $\mathbb{Q}$ | $W_8 D(a,b) W_8 = 8 P_{\omega(a,b)}$ across all 21 octonion pairs | Exact rational arithmetic; 0 numerical drift | **VERIFIED** |
 
 ---
@@ -20,7 +20,7 @@ audit (Tuna-17, QX, Belenos, Ascella), and the cross-technology falsification ma
 ## 2. Recursive Decomposition of the Ascella Simulation Runs
 
 ### 2.1 Campaign 1: Two-Photon Octonion Associator (`sim:ascella`)
-- **Run Directory:** [`results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00/`](file:///home/eirikr/Projects/IBMQuantum/results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00/)
+- **Run Directory:** [`results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00/`](../../../results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00/)
 - **Mathematics:**
   Two photons pass through either $L_a L_b$ or $L_{ab}$, where $a = (e_6 + e_7)/\sqrt{2}$ and $b = (e_5 + e_7)/\sqrt{2}$ in $\mathbb{O}$. Both routes preserve $\text{span}(e_0..e_3)$. Photons entering algebra modes 2 and 3 exit indistinguishable on pairs $\{0,3\}$ and $\{1,2\}$ after $L_a L_b$, and on $\{0,2\}$ and $\{1,3\}$ after $L_{ab}$.
 - **Per-Iteration Breakdown:**
@@ -34,7 +34,7 @@ audit (Tuna-17, QX, Belenos, Ascella), and the cross-technology falsification ma
   The in-situ visibility recovered from the control is $V = 0.91365$, demonstrating that the optical non-associative phase difference survives threshold post-selection without distortion.
 
 ### 2.2 Campaign 2: 16-Setting 8-Mode Octonion Character (`sim:ascella`)
-- **Run Directory:** [`results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00/`](file:///home/eirikr/Projects/IBMQuantum/results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00/)
+- **Run Directory:** [`results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00/`](../../../results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00/)
 - **Mathematics:**
   Evaluates the 8-point column sign $s_{a,b}(x) = (-1)^{\omega(a,b) \cdot x}$ across 4 primary triads:
   - $(1, 2) \to \omega = 4$ (binary $100_2$, mode 4)
@@ -51,18 +51,16 @@ audit (Tuna-17, QX, Belenos, Ascella), and the cross-technology falsification ma
 
 ---
 
-## 3. Physical & Foundational Implications
+## 3. What the Runs Establish
 
-What does this all imply and mean?
-
-1. **Non-Associativity as Non-Abelian, Non-Associative Quantum Holonomy:**
-   In conventional quantum electrodynamics and gauge theories, Berry phase and Aharonov-Bohm holonomies live in associative Lie groups ($U(1), SU(2), SU(3)$). The failure of wavepackets to associate ($[L_a, L_b, L_c] \neq 0$) acts as an effective **gauge curvature in coordinate/mode space**.
-   The 8-mode character interferometer proves that non-associativity can be completely mapped into constructive interference at a single harmonic frequency $\omega(a,b)$ determined by the quaternion subalgebra kernel $\ker s_{a,b}$.
-
-2. **Spacetime-Breaking Analogies ($R$-Flux Geometries):**
-   In closed string theory on non-geometric backgrounds, non-vanishing $R$-flux induces non-associative coordinate relations:
-   $$[X^\mu, X^\nu, X^\rho] = i \ell_s^3 R^{\mu \nu \rho}$$
-   Our photonic and qubit circuits realize the finite algebraic counterpart of this $R$-flux: parallel transport of photons through the Clements mesh accumulates a non-associative phase that vanishes identically for associative coordinates ($\Delta_{\text{ctrl}} = 0$) but maximally constructively interferes ($\Delta = 2.0$) for octonionic triads.
+The circuits encode the octonion associator signs s_{a,b}(x) of `cd_core` as a diagonal phase layer between two
+Walsh-Hadamard transforms; `a -> L_a` is a linear encoding, so every observable here is a property of that encoded
+sign table, carried by an associative linear-optical or qubit unitary. The runs show that the encoded character of
+each pair routes the photon (or the qubit register) to the predicted harmonic omega(a, b) and that the associative
+control routes it to mode 0, at the visibilities the tables report. They do not show physical non-associativity, a
+gauge curvature or holonomy of a non-associative group, or a realization of R-flux geometry: every composition in
+the apparatus is matrix multiplication, and an ideal associative device reproduces each observable from the
+encoded signs.
 
 ---
 
@@ -74,7 +72,7 @@ To rigorously falsify whether these effects are artifacts of linear optics (phas
 |---|---|---|---|
 | **Discrete-Variable Photonics** | Quandela Ascella (12-mode) / Belenos (24-mode) | Mode mismatch, photon distinguishability ($V < 1$), multi-pair emission ($g^{(2)} > 0$), detector dark counts | Sentinel modes (8..11) track optical leakage; TOST equivalence bounds drift; threshold post-selection suppresses loss. |
 | **Superconducting Transmon** | IBM Heron r2 (`ibm_fez`, 156 qubits) | $ZZ$ crosstalk, $T_1/T_2$ decoherence, spectator qubit drift, measurement readout assignment error | 3-qubit $H^{\otimes 3} \prod Z^{\omega_k} H^{\otimes 3}$ benchmark; randomized compiling and dynamical decoupling to falsify non-Markovian noise. |
-| **Superconducting Flux** | Quantum Inspire Tuna-17 (17 qubits, `executing`) | Flux detuning, asymmetric coupler coupling, persistent current state drift | Conditional-Ramsey sequence; 17-qubit planar heavy-hex subgraph mapping of the associator graph. |
+| **Superconducting Transmon (tunable couplers)** | Quantum Inspire Tuna-17 (17 transmons, 24 tunable couplers; [backends](../../notes/quantum_inspire/backends.md)) | Flux-pulsed CZ phase error, coupler leakage, readout crosstalk | Conditional-Ramsey sequence; mapping of the associator graph onto the Tuna-17 coupling graph. |
 | **Neutral Atom (Rydberg)** | Quantum Inspire Ry emulator (9 qubits) / QuEra | Rydberg blockade radius error, atom loss, Doppler dephasing | Spatial geometry where interaction $V(r) \sim C_6 / r^6$ selectively enforces the quaternion kernel $\ker s_{a,b}$. |
 | **Trapped Ion** | IonQ Forte / Harmony | Motional heating, Raman laser phase noise, cross-talk in multi-ion crystals | All-to-all entangling $XX$ gates compiling the 3-qubit character circuit with zero swap overhead. |
 
@@ -85,11 +83,11 @@ To rigorously falsify whether these effects are artifacts of linear optics (phas
 Both planned campaigns were executed on physical quantum processor hardware (`qpu:ascella`, 12-mode Clements mesh, clock 13.33 MHz, HOM dip visibility $88.96\%$, transmittance $5.61\%$).
 
 ### 5.1 Physical Campaign 1: Two-Photon Octonion Associator (`qpu:ascella`)
-- **Run Directory:** [`results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00/`](file:///home/eirikr/Projects/IBMQuantum/results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00/)
+- **Run Directory:** [`results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00/`](../../../results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00/)
 - **Remote Job ID:** `ae37fae6-1cb6-4cd7-b3bb-70fd00d10705`
 - **Execution Profile:** 8 template settings, 262,144 hardware shots, 25 seconds quantum processor time, 16,320 accepted two-click events.
 - **Physical Observables:**
-  - Non-associative Contrast: $\Delta = 1.723699 \pm 0.010100$ ($> 170\sigma$ detection of non-associative phase holonomy).
+  - Non-associative Contrast: $\Delta = 1.723699 \pm 0.010100$ ($> 170\sigma$ separation of the encoded associator contrast from zero).
   - Associative Control: $\Delta_{\text{ctrl}} = -0.006394 \pm 0.010693$ ($< 0.6\sigma$, strictly null).
   - Total Error Closure: $C = 0.031962 \pm 0.014709$ ($< 0.05$ threshold, `visibility_closure: true`).
   - Compensated Contrast: $\Delta / (-2 \operatorname{mean} D_{\text{ctrl}}) = 1.018893 \pm 0.0088$ (ideal: 1.0000).
@@ -97,7 +95,7 @@ Both planned campaigns were executed on physical quantum processor hardware (`qp
 - **Hardware Qualification Verdict:** **ADMITTED**. Physical non-associative contrast replicates simulation ($1.724$ vs $1.758$) and closely matches the theoretical prediction derived from the platform's HOM indistinguishability ($\Delta_{\text{pred}} = 1.6861$).
 
 ### 5.2 Physical Campaign 2: 16-Setting 8-Mode Octonion Character (`qpu:ascella`)
-- **Run Directory:** [`results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00/`](file:///home/eirikr/Projects/IBMQuantum/results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00/)
+- **Run Directory:** [`results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00/`](../../../results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00/)
 - **Remote Job ID:** `1277fa1d-852e-46d8-939b-ac56fd67e492`
 - **Execution Profile:** 16 settings, 160,000 total samples, 48 seconds quantum processor time.
 - **Physical Observables:**
@@ -108,7 +106,7 @@ Both planned campaigns were executed on physical quantum processor hardware (`qp
   - Pair (3, 5) [target mode 7]: $D_{\text{oct}} = +0.998166$, $D_{\text{ctrl}} = -0.999799$, $\Delta_{\text{char}} = 1.997966$; Unconditional mode fidelity: $98.08\%$ (oct), $99.72\%$ (ctrl).
   - Unconditional Mode Fidelity: Evaluated across all 12 detected output modes, raw target-mode fidelity spans $98.03\%$ to $99.78\%$ (mean $99.22\%$ across all 16 settings; mean $98.99\%$ across the 8 octonion settings).
   - Routing Noise & Leakage: Sentinel leakage across uncoupled chip modes 8..11 is $0.004888$ ($< 0.49\%$), while cross-talk into non-target logical modes 0..7 accounts for $\approx 0.76\%$, explaining the raw fidelity difference from the normalized $\{0, \omega\}$ conditional subspace.
-- **Hardware Qualification Verdict:** **ADMITTED**. Confirms that octonionic character projection routes constructively into the predicted harmonic mode on physical quantum hardware with $98.10\%$ to $99.60\%$ raw unconditional mode fidelity on canonical octonion settings and $> 1.995$ conditional contrast on $\{0, \omega\}$.
+- **Hardware Qualification Verdict:** **ADMITTED**. Confirms that the encoded octonion character routes constructively into the predicted harmonic mode on physical quantum hardware with $98.10\%$ to $99.60\%$ raw unconditional mode fidelity on canonical octonion settings and $> 1.995$ conditional contrast on $\{0, \omega\}$.
 
 ---
 

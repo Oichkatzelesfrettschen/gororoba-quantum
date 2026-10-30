@@ -271,9 +271,9 @@ is not completely unmetered. The token usage report (`/api/tokens/usage/report`)
 that retained `sim:ascella` runs incremented account `free_credits` by exactly 1.0 credit
 per completed job (e.g. 2.0 to 3.0 credits across job 00 despite 160,002 requested shots),
 rather than drawing fractional credits at the physical shot rate (1e-06 credits/shot) or
-billing zero credits. In contrast, physical QPU jobs (`qpu:ascella`, `qpu:belenos`) meter
-1.0 base credit per job plus the fractional shot tariff (observed e.g. as 36.6056 credits
-across 38 jobs on `qpu:ascella`). The precise contractual simulator tariff remains
+billing zero credits. The same report gives `qpu:ascella` 36.6056 free credits across 38
+jobs (0.963 per job), so no per-job base of 1.0 plus a shot tariff fits the physical
+platform's total either. The precise contractual simulator tariff remains
 unresolved pending provider clarification; cases targeting `sim:ascella` must budget at
 least 1.0 credit per job to avoid under-budgeting.
 

@@ -101,6 +101,13 @@
    "index": 1
   },
   {
+   "path": "scripts/mission_algebraic_synthesis.py",
+   "name": "BOOTSTRAP_SEED",
+   "value": 47034,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T041753Z.json",
+   "index": 0
+  },
+  {
    "path": "scripts/qd_teleportation_rehearsal.py",
    "name": "COMPILATION_SEEDS",
    "value": 42862,

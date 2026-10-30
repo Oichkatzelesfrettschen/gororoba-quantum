@@ -208,3 +208,28 @@ def test_adversarial_sentinel_leakage_rejection(tmp_path: Path) -> None:
         raise AssertionError("expected REFUSED on high sentinel leakage")
     if not report["verdicts"]["admission_errors"]:
         raise AssertionError("expected admission errors on sentinel leakage")
+
+
+def test_sentinel_leakage_above_the_preregistered_limit_refuses(tmp_path: Path) -> None:
+    docs = build_documents(samples_per_iteration=200, shots_factor=5, job_name="job-leak-ideal")
+    (tmp_path / "cases.json").write_bytes(docs["cases.json"])
+    iterations = []
+    for s in json.loads(docs["cases.json"].decode())["settings"]:
+        ideal = [0] * MODES
+        target = s["control_pair"] if s["is_stabilizer"] or s["arm"] != "octonion" else s["focal_pair"]
+        ideal[target[0]] += 1
+        ideal[target[1]] += 1
+        leak = [0] * MODES
+        leak[0] = 1
+        leak[8] = 1
+        counts = {f"|{','.join(map(str, ideal))}>": 100, f"|{','.join(map(str, leak))}>": 9900}
+        iterations.append({"setting": s["name"], "counts": counts})
+    (tmp_path / "results.json").write_text(json.dumps({"iterations": iterations}))
+    report = analyze(tmp_path)
+    verdicts = report["verdicts"]
+    if report["status"] != "REFUSED" or verdicts["character_signal_detected"]:
+        raise AssertionError(f"99 % sentinel leakage admitted: {verdicts}")
+    if not any("sentinel leakage" in error for error in verdicts["admission_errors"]):
+        raise AssertionError(f"{verdicts['admission_errors']}")
+    if verdicts["mean_displacing_contrast"] is not None or verdicts["mean_stabilizer_persistence"] is not None:
+        raise AssertionError("a refused report carries admitted-only metrics")

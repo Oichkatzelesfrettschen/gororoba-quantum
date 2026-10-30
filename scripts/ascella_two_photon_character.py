@@ -79,6 +79,8 @@ CONTROL_PAIR = (0, 2)
 DEFAULT_SAMPLES_PER_ITERATION = 4096
 DEFAULT_SHOTS_FACTOR = 64
 MIN_FOCAL_SAMPLES_PER_SETTING = 50
+# The preregistered ceiling on the fraction of two-click events in the sentinel modes.
+SENTINEL_LEAKAGE_MAX = 0.05
 MAX_DURATION = 300
 TOLERANCE = 1e-12
 BODY_TOLERANCE = 1e-9
@@ -286,7 +288,9 @@ def build_documents(
             "stabilizer_coset_invariance": "P(0, 2) = 1.0 for Line 2 pairs (omega == 2)",
             "ideal_contrast": 2.0,
             "non_bunching_theorem": "P(2_m) = 0 for all modes m (bunching identically zero)",
-            "sentinel_leakage_endpoint": "fraction of two-click counts in sentinel modes 8..11 < 0.05",
+            "sentinel_leakage_endpoint": (
+                f"fraction of two-click counts in sentinel modes 8..11 < {SENTINEL_LEAKAGE_MAX}"
+            ),
         },
     }
 
@@ -622,6 +626,10 @@ def analyze(run_dir: Path) -> dict[str, Any]:
 
     total_events = total_focal + total_sentinel
     observed_sentinel_rate = total_sentinel / total_events if total_events > 0 else 0.0
+    if total_events > 0 and observed_sentinel_rate >= SENTINEL_LEAKAGE_MAX:
+        admission_errors.append(
+            f"sentinel leakage {observed_sentinel_rate:.6f} reaches the preregistered limit {SENTINEL_LEAKAGE_MAX}"
+        )
 
     if admission_errors:
         return {
@@ -630,7 +638,8 @@ def analyze(run_dir: Path) -> dict[str, Any]:
                 "execution_status": "REFUSED",
                 "admission_errors": admission_errors,
                 "character_signal_detected": False,
-                "mean_character_contrast": 0.0,
+                "mean_displacing_contrast": None,
+                "mean_stabilizer_persistence": None,
                 "sentinel_leakage_rate": round(observed_sentinel_rate, 6) if total_events > 0 else None,
             },
             "contrasts_by_pair": {},

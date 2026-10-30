@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from qubit_baseline_twin import (  # noqa: E402
     build_twin_circuit,
     get_character_frequency,
-    run_aer_twin,
+    twin_laws,
 )
 
 
@@ -37,8 +37,8 @@ def test_twin_circuit_construction() -> None:
         raise AssertionError("qc_ctrl dimension mismatch")
 
 
-def test_aer_twin_execution() -> None:
-    res = run_aer_twin(shots=512)
+def test_exact_twin_laws() -> None:
+    res = twin_laws()
     if len(res) != 4:
         raise AssertionError("result count != 4")
     for _pair_key, data in res.items():

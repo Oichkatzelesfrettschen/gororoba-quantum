@@ -13,10 +13,9 @@ Isomorphism:
 - Clifford associative control arm: H^{ox 3} I H^{ox 3} |000> = |000>.
 - Primary contrast: Delta = D_oct - D_ctrl = +1.0 - (-1.0) = 2.0.
 
-Cross-platform validation:
-This script can run against:
-1. Qiskit Aer (AerSimulator) locally.
-2. QX emulator / Quantum Inspire when credentials and network are configured.
+The twin is noiseless and deterministic, so the script evaluates each circuit's exact outcome law from its
+statevector (eight amplitudes) rather than sampling shots; build_twin_circuit keeps the measured circuit for a
+QX emulator or Quantum Inspire run, which is a provider job with its own written case.
 """
 
 from __future__ import annotations
@@ -28,13 +27,16 @@ from pathlib import Path
 from typing import Any
 
 from qiskit import QuantumCircuit
-from qiskit_aer import AerSimulator
+from qiskit.quantum_info import Statevector
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from cd_core import cd_sign  # noqa: E402
+from parallel import ordered_map  # noqa: E402
+
+PRIMARY_PAIRS = ((1, 2), (1, 4), (2, 4), (3, 5))
 
 
 def associator_sign(a: int, b: int, x: int) -> int:
@@ -77,52 +79,46 @@ def build_twin_circuit(a: int, b: int, arm: str = "octonion") -> QuantumCircuit:
     return qc
 
 
-def run_aer_twin(shots: int = 4096) -> dict[str, Any]:
-    """Execute all 4 primary triads across arms on Qiskit AerSimulator."""
-    simulator = AerSimulator()
-    pairs = ((1, 2), (1, 4), (2, 4), (3, 5))
-    results: dict[str, Any] = {}
+def outcome_law(qc: QuantumCircuit) -> dict[str, float]:
+    """The exact outcome probabilities of a measured twin circuit, keyed by Qiskit bitstring (qubit 0 rightmost)."""
+    law = Statevector(qc.remove_final_measurements(inplace=False)).probabilities_dict()
+    return {key: float(value) for key, value in sorted(law.items()) if value > 1e-12}
 
-    for a, b in pairs:
-        pair_key = f"pair_{a}_{b}"
-        omega = get_character_frequency(a, b)
-        target_bitstring = f"{omega:03b}"
 
-        # Octonion arm
-        qc_oct = build_twin_circuit(a, b, "octonion")
-        counts_oct = simulator.run(qc_oct, shots=shots).result().get_counts()
-        c_omega = counts_oct.get(target_bitstring, 0)
-        c_0 = counts_oct.get("000", 0)
-        d_oct = (c_omega - c_0) / max(1, c_omega + c_0)
+def pair_twin(pair: tuple[int, int]) -> tuple[str, dict[str, Any]]:
+    """One pair's octonion and control laws and their character contrast."""
+    a, b = pair
+    omega = get_character_frequency(a, b)
+    target = f"{omega:03b}"
+    law_oct = outcome_law(build_twin_circuit(a, b, "octonion"))
+    law_ctrl = outcome_law(build_twin_circuit(a, b, "clifford_control"))
 
-        # Control arm
-        qc_ctrl = build_twin_circuit(a, b, "clifford_control")
-        counts_ctrl = simulator.run(qc_ctrl, shots=shots).result().get_counts()
-        c_omega_ctrl = counts_ctrl.get(target_bitstring, 0)
-        c_0_ctrl = counts_ctrl.get("000", 0)
-        d_ctrl = (c_omega_ctrl - c_0_ctrl) / max(1, c_omega_ctrl + c_0_ctrl)
+    def contrast(law: dict[str, float]) -> float:
+        p_omega, p_0 = law.get(target, 0.0), law.get("000", 0.0)
+        return (p_omega - p_0) / (p_omega + p_0)
 
-        contrast = d_oct - d_ctrl
+    d_oct, d_ctrl = contrast(law_oct), contrast(law_ctrl)
+    return f"pair_{a}_{b}", {
+        "omega": omega,
+        "target_bitstring": target,
+        "d_oct": round(d_oct, 6),
+        "d_ctrl": round(d_ctrl, 6),
+        "delta_character": round(d_oct - d_ctrl, 6),
+        "law_oct": law_oct,
+        "law_ctrl": law_ctrl,
+    }
 
-        results[pair_key] = {
-            "omega": omega,
-            "target_bitstring": target_bitstring,
-            "d_oct": round(d_oct, 6),
-            "d_ctrl": round(d_ctrl, 6),
-            "delta_character": round(contrast, 6),
-            "counts_oct": counts_oct,
-            "counts_ctrl": counts_ctrl,
-        }
 
-    return results
+def twin_laws(pairs: tuple[tuple[int, int], ...] = PRIMARY_PAIRS) -> dict[str, Any]:
+    """Every primary pair's exact twin laws, one pool item per pair, in pair order."""
+    return dict(ordered_map(pair_twin, list(pairs)))
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("--shots", type=int, default=4096, help="shots per circuit")
-    args = parser.parse_args()
+    parser.parse_args()
 
-    results = run_aer_twin(shots=args.shots)
+    results = twin_laws()
     print(json.dumps(results, indent=2))
     return 0
 

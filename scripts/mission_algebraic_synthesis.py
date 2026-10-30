@@ -26,13 +26,17 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-import clifford as cf  # noqa: E402
 import flint  # noqa: E402
-import pyadic  # noqa: E402
 from ascella_associator_character import ALL_PAIRS, character_frequency  # noqa: E402
 
+import qrng_seeds  # noqa: E402
 from cd_core import cd_sign  # noqa: E402
 from parallel import ordered_map  # noqa: E402
+
+# ANU draw-2026-10-30T041753Z.json index 0, allocated to this bootstrap in docs/evidence/qrng_seeds/allocations.json.
+BOOTSTRAP_SEED = 47034
+BOOTSTRAP_DRAW = "docs/evidence/anu_qrng/draw-2026-10-30T041753Z.json#0"
+BOOTSTRAP_REPLICATES = 10000
 
 
 def require(condition: bool, message: str) -> None:
@@ -42,6 +46,8 @@ def require(condition: bool, message: str) -> None:
 
 def evaluate_clifford_associativity() -> dict[str, Any]:
     """Verify in Cl(0, 3) that all blade associators vanish identically."""
+    import clifford as cf  # the system interpreter carries it; the pinned CI interpreter does not
+
     layout, blades = cf.Cl(0, 3)
     e1, e2, e3 = blades["e1"], blades["e2"], blades["e3"]
 
@@ -99,29 +105,28 @@ def evaluate_octonion_non_associativity() -> dict[str, Any]:
     }
 
 
+def _sedenion_pair_character(pair: tuple[int, int]) -> tuple[tuple[int, int], bool, int]:
+    """One pair's associator signs over S, whether they form a character of F_2^4, and their sum."""
+    a, b = pair
+    signs = []
+    for x in range(16):
+        lhs = cd_sign(16, a, b) * cd_sign(16, a ^ b, x)
+        rhs = cd_sign(16, b, x) * cd_sign(16, a, b ^ x)
+        signs.append(lhs * rhs)
+    is_hom = all(signs[x ^ y] == signs[x] * signs[y] for x in range(16) for y in range(16))
+    return pair, is_hom, sum(signs)
+
+
 def evaluate_sedenion_non_alternativity() -> dict[str, Any]:
     """Verify in Sedenions S that alternativity fails, collapsing the character property on 84 pairs."""
+    pairs = [(a, b) for a in range(1, 16) for b in range(a + 1, 16)]
     character_pairs = []
     failed_pairs = []
-    for a in range(1, 16):
-        for b in range(a + 1, 16):
-            signs = []
-            for x in range(16):
-                lhs = cd_sign(16, a, b) * cd_sign(16, a ^ b, x)
-                rhs = cd_sign(16, b, x) * cd_sign(16, a, b ^ x)
-                signs.append(lhs * rhs)
-            is_hom = True
-            for x in range(16):
-                for y in range(16):
-                    if signs[x ^ y] != signs[x] * signs[y]:
-                        is_hom = False
-                        break
-                if not is_hom:
-                    break
-            if is_hom:
-                character_pairs.append((a, b))
-            else:
-                failed_pairs.append((a, b, sum(signs)))
+    for pair, is_hom, sign_sum in ordered_map(_sedenion_pair_character, pairs):
+        if is_hom:
+            character_pairs.append(pair)
+        else:
+            failed_pairs.append((*pair, sign_sum))
 
     # Compute 16-mode Hadamard dispersion for pair (1, 8)
     s_1_8 = []
@@ -152,6 +157,8 @@ def evaluate_sedenion_non_alternativity() -> dict[str, Any]:
 
 def evaluate_2adic_ultrametric_geometry() -> dict[str, Any]:
     """Compute 2-adic valuations and ultrametric tree distances on F_2^3."""
+    import pyadic  # the system interpreter carries it; the pinned CI interpreter does not
+
     valuations = {}
     for x in range(1, 8):
         padic_val = pyadic.PAdic(x, 2, 5).n
@@ -164,52 +171,50 @@ def evaluate_2adic_ultrametric_geometry() -> dict[str, Any]:
     return valuations
 
 
-def load_anu_qrng_seed() -> tuple[int, str]:
-    """Load the first available uint16 seed from retained ANU QRNG draws."""
-    draw_path = ROOT / "docs/evidence/anu_qrng/draw-2026-10-28T003533Z.json"
-    if not draw_path.exists():
-        # Fallback to another draw
-        draw_path = ROOT / "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json"
-    data = json.loads(draw_path.read_text())
-    values = data.get("values") or data.get("data")
-    if not values:
-        raise ValueError(f"no values in ANU QRNG draw {draw_path}")
-    seed = int(values[0])
-    return seed, str(draw_path.relative_to(ROOT))
-
-
-def bootstrap_contrast(
-    counts_focal: np.ndarray,
-    counts_control: np.ndarray,
-    seed: int,
-    replicates: int = 10000,
-) -> dict[str, float]:
-    """Perform bootstrap resampling over Poisson/binomial yields using ANU QRNG seed."""
+def bootstrap_draws(n: int, seed: int, replicates: int) -> np.ndarray:
+    """Every replicate's resampling indices, drawn in the generator's order (row r is replicate r)."""
     rng = np.random.default_rng(seed)
-    n = len(counts_focal)
-    boot_deltas = np.empty(replicates, dtype=float)
+    return np.stack([rng.integers(0, n, size=n) for _ in range(replicates)])
 
-    for r in range(replicates):
-        idx = rng.integers(0, n, size=n)
-        sample_focal = counts_focal[idx]
-        sample_ctrl = counts_control[idx]
-        denom = np.maximum(1, sample_focal + sample_ctrl)
-        d_sample = (sample_focal - sample_ctrl) / denom
-        boot_deltas[r] = float(np.mean(d_sample))
 
-    mean_val = float(np.mean(boot_deltas))
-    std_err = float(np.std(boot_deltas))
-    ci95 = [float(np.percentile(boot_deltas, 2.5)), float(np.percentile(boot_deltas, 97.5))]
+def bootstrap_means_scalar(values: np.ndarray, draws: np.ndarray) -> np.ndarray:
+    """The reference: each replicate's mean of the resampled values, one replicate at a time."""
+    return np.array([float(np.mean(values[row])) for row in draws])
 
+
+def bootstrap_means(values: np.ndarray, draws: np.ndarray) -> np.ndarray:
+    """Every replicate's mean of the resampled values in one batched reduction; the same bits as the reference."""
+    return np.mean(values[draws], axis=1)
+
+
+def bootstrap_mean_contrast(
+    contrasts: np.ndarray, seed: int, replicates: int = BOOTSTRAP_REPLICATES
+) -> dict[str, float]:
+    """Nonparametric bootstrap of the mean pair contrast, on the contrast's own scale."""
+    boot = bootstrap_means(contrasts, bootstrap_draws(len(contrasts), seed, replicates))
     return {
-        "bootstrap_mean": round(mean_val, 6),
-        "bootstrap_se": round(std_err, 6),
-        "ci95_lower": round(ci95[0], 6),
-        "ci95_upper": round(ci95[1], 6),
+        "bootstrap_mean": round(float(np.mean(boot)), 6),
+        "bootstrap_se": round(float(np.std(boot)), 6),
+        "ci95_lower": round(float(np.percentile(boot, 2.5)), 6),
+        "ci95_upper": round(float(np.percentile(boot, 97.5)), 6),
+        "replicates": replicates,
     }
 
 
-def synthesize_missions(out_path: Path | None = None) -> dict[str, Any]:
+def verdict(report: dict[str, Any] | None, key: str) -> Any:
+    """An admitted-only metric of an analysis report, or None when the report is missing or refused."""
+    if report is None or report.get("status") != "ADMITTED":
+        return None
+    return report["verdicts"][key]
+
+
+def leakage(report: dict[str, Any] | None) -> Any:
+    return None if report is None else report["verdicts"].get("sentinel_leakage_rate")
+
+
+def synthesize_missions(
+    out_path: Path | None = None, seed: int = BOOTSTRAP_SEED, seed_spelling: str = BOOTSTRAP_DRAW
+) -> dict[str, Any]:
     # 1. Theoretical evaluations
     clifford_summary = evaluate_clifford_associativity()
     octonion_summary = evaluate_octonion_non_associativity()
@@ -228,27 +233,25 @@ def synthesize_missions(out_path: Path | None = None) -> dict[str, Any]:
     m2_qpu_path = ROOT / "results/quandela/cases/ascella_two_photon_character/job-01/analysis_report.json"
     m2_qpu_data = json.loads(m2_qpu_path.read_text()) if m2_qpu_path.exists() else None
 
-    # 5. QRNG Bootstrap Resampling
-    qrng_seed, draw_record = load_anu_qrng_seed()
-
+    # 5. Bootstrap of the admitted Mission 1 pair contrasts, on their own scale
     m1_bootstrap = None
-    if m1_data:
-        m1_deltas = [
-            pair_data["delta_character"]
-            for pair_data in m1_data.get("contrasts_by_pair", {}).values()
-            if "delta_character" in pair_data
-        ]
-        # Reconstruct pseudo-counts for bootstrap
-        focal_arr = np.array([int(round(5000 * (1.0 + d / 2.0))) for d in m1_deltas])
-        ctrl_arr = np.array([int(round(5000 * (1.0 - d / 2.0))) for d in m1_deltas])
-        m1_bootstrap = bootstrap_contrast(focal_arr, ctrl_arr, seed=qrng_seed, replicates=10000)
+    if verdict(m1_data, "mean_character_contrast") is not None:
+        admitted = m1_data or {}
+        deltas = np.array(
+            [
+                pair_data["delta_character"]
+                for pair_data in admitted.get("contrasts_by_pair", {}).values()
+                if "delta_character" in pair_data
+            ]
+        )
+        m1_bootstrap = bootstrap_mean_contrast(deltas, seed)
 
     report = {
         "schema": "mission-algebraic-synthesis-v1",
         "qrng_provenance": {
             "source": "ANU Quantum Random Numbers (Vacuum Fluctuation Homodyne)",
-            "draw_record": draw_record,
-            "seed_value": qrng_seed,
+            "seed": seed_spelling,
+            "seed_value": seed,
         },
         "algebraic_foundations": {
             "clifford_control": clifford_summary,
@@ -262,8 +265,8 @@ def synthesize_missions(out_path: Path | None = None) -> dict[str, Any]:
             "iterations": 84,
             "photons": 1,
             "status": m1_data.get("status") if m1_data else "MISSING",
-            "mean_contrast": m1_data["verdicts"]["mean_character_contrast"] if m1_data else None,
-            "sentinel_leakage": m1_data["verdicts"]["sentinel_leakage_rate"] if m1_data else None,
+            "mean_contrast": verdict(m1_data, "mean_character_contrast"),
+            "sentinel_leakage": leakage(m1_data),
             "qrng_bootstrap": m1_bootstrap,
         },
         "mission_2_twin_simulator_summary": {
@@ -272,11 +275,9 @@ def synthesize_missions(out_path: Path | None = None) -> dict[str, Any]:
             "iterations": 84,
             "photons": 2,
             "status": m2_sim_data.get("status") if m2_sim_data else "MISSING",
-            "mean_displacing_contrast": m2_sim_data["verdicts"]["mean_displacing_contrast"] if m2_sim_data else None,
-            "mean_stabilizer_persistence": (
-                m2_sim_data["verdicts"]["mean_stabilizer_persistence"] if m2_sim_data else None
-            ),
-            "sentinel_leakage": m2_sim_data["verdicts"]["sentinel_leakage_rate"] if m2_sim_data else None,
+            "mean_displacing_contrast": verdict(m2_sim_data, "mean_displacing_contrast"),
+            "mean_stabilizer_persistence": verdict(m2_sim_data, "mean_stabilizer_persistence"),
+            "sentinel_leakage": leakage(m2_sim_data),
         },
         "mission_2_physical_summary": {
             "platform": "qpu:ascella (physical hardware)",
@@ -284,11 +285,9 @@ def synthesize_missions(out_path: Path | None = None) -> dict[str, Any]:
             "iterations": 84,
             "photons": 2,
             "status": m2_qpu_data.get("status") if m2_qpu_data else "PENDING_COLLECTION",
-            "mean_displacing_contrast": (m2_qpu_data["verdicts"]["mean_displacing_contrast"] if m2_qpu_data else None),
-            "mean_stabilizer_persistence": (
-                m2_qpu_data["verdicts"]["mean_stabilizer_persistence"] if m2_qpu_data else None
-            ),
-            "sentinel_leakage": m2_qpu_data["verdicts"]["sentinel_leakage_rate"] if m2_qpu_data else None,
+            "mean_displacing_contrast": verdict(m2_qpu_data, "mean_displacing_contrast"),
+            "mean_stabilizer_persistence": verdict(m2_qpu_data, "mean_stabilizer_persistence"),
+            "sentinel_leakage": leakage(m2_qpu_data),
         },
         "synthesis_conclusions": {
             "pontryagin_duality_proven": True,
@@ -314,9 +313,11 @@ def synthesize_missions(out_path: Path | None = None) -> dict[str, Any]:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "results/quandela/cases/mission_algebraic_synthesis.json")
+    qrng_seeds.add_seed_argument(parser, "--bootstrap-seed", default=BOOTSTRAP_SEED, help="qrng:<draw>#<index>")
     args = parser.parse_args()
+    spelling = BOOTSTRAP_DRAW if args.bootstrap_seed_source == "default" else args.bootstrap_seed_source
 
-    report = synthesize_missions(out_path=args.out)
+    report = synthesize_missions(out_path=args.out, seed=args.bootstrap_seed, seed_spelling=spelling)
     print(
         f"Synthesis complete: M1 contrast={report['mission_1_physical_summary']['mean_contrast']}, "
         f"M2 sim displacing={report['mission_2_twin_simulator_summary']['mean_displacing_contrast']}, "
