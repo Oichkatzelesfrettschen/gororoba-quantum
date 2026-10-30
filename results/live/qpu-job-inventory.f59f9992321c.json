@@ -1,12 +1,12 @@
 {
   "account_usage": {
-    "usage_consumed_seconds": 440,
+    "usage_consumed_seconds": 451,
     "usage_limit_seconds": 600,
     "usage_period": {
-      "end_time": "2026-10-28T00:23:56.594Z",
-      "start_time": "2026-09-30T00:23:56.594Z"
+      "end_time": "2026-10-29T23:07:45.079Z",
+      "start_time": "2026-10-01T23:07:45.079Z"
     },
-    "usage_remaining_seconds": 160
+    "usage_remaining_seconds": 149
   },
   "complete_service_inventory": true,
   "instance_crn_hash": "f59f9992321c",
@@ -410,10 +410,122 @@
         "running": "2026-10-28T00:07:30.114714Z"
       },
       "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-29T01:58:38.853604+00:00",
+      "final_qpu_charge_seconds": 0,
+      "input_schema_version": "v2.0",
+      "job_id": "dbhagjht9uhs73c9rvp0",
+      "pub_count": 8,
+      "shots_per_pub": 4096,
+      "status": "CANCELLED",
+      "timestamps": {
+        "created": "2026-10-29T01:58:38.853604Z",
+        "finished": "2026-10-29T19:11:46.48405Z",
+        "running": null
+      },
+      "usage_status": null
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-29T01:58:43.051309+00:00",
+      "final_qpu_charge_seconds": 0,
+      "input_schema_version": "v2.0",
+      "job_id": "dbhagkpt9uhs73c9rvs0",
+      "pub_count": 8,
+      "shots_per_pub": 4096,
+      "status": "CANCELLED",
+      "timestamps": {
+        "created": "2026-10-29T01:58:43.051309Z",
+        "finished": "2026-10-29T19:11:47.461131Z",
+        "running": null
+      },
+      "usage_status": null
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-29T01:58:47.950576+00:00",
+      "final_qpu_charge_seconds": 0,
+      "input_schema_version": "v2.0",
+      "job_id": "dbhaglote5oc738jqdj0",
+      "pub_count": 8,
+      "shots_per_pub": 1024,
+      "status": "CANCELLED",
+      "timestamps": {
+        "created": "2026-10-29T01:58:47.950576Z",
+        "finished": "2026-10-29T19:11:48.520243Z",
+        "running": null
+      },
+      "usage_status": null
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-29T13:41:02.140630+00:00",
+      "final_qpu_charge_seconds": 0,
+      "input_schema_version": "v2.0",
+      "job_id": "dbhkprlep8hs73amc680",
+      "pub_count": 109,
+      "shots_per_pub": 5600,
+      "status": "CANCELLED",
+      "timestamps": {
+        "created": "2026-10-29T13:41:02.14063Z",
+        "finished": "2026-10-29T22:45:00.747136Z",
+        "running": null
+      },
+      "usage_status": "pending"
+    },
+    {
+      "backend": "ibm_fez",
+      "created_at": "2026-10-29T19:16:09.952237+00:00",
+      "final_qpu_charge_seconds": 3,
+      "input_schema_version": "v2.0",
+      "job_id": "dbhpmuene4hc73bdcdbg",
+      "pub_count": 8,
+      "shots_per_pub": 4096,
+      "status": "DONE",
+      "timestamps": {
+        "created": "2026-10-29T19:16:09.952237Z",
+        "finished": "2026-10-29T19:16:18.503569Z",
+        "running": "2026-10-29T19:16:12.2752Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_fez",
+      "created_at": "2026-10-29T19:16:13.426038+00:00",
+      "final_qpu_charge_seconds": 4,
+      "input_schema_version": "v2.0",
+      "job_id": "dbhpmvene4hc73bdcdcg",
+      "pub_count": 8,
+      "shots_per_pub": 4096,
+      "status": "DONE",
+      "timestamps": {
+        "created": "2026-10-29T19:16:13.426038Z",
+        "finished": "2026-10-29T19:16:22.41846Z",
+        "running": "2026-10-29T19:16:14.643101Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_fez",
+      "created_at": "2026-10-29T19:16:16.340429+00:00",
+      "final_qpu_charge_seconds": 4,
+      "input_schema_version": "v2.0",
+      "job_id": "dbhpn042d77s739d75rg",
+      "pub_count": 8,
+      "shots_per_pub": 1024,
+      "status": "DONE",
+      "timestamps": {
+        "created": "2026-10-29T19:16:16.340429Z",
+        "finished": "2026-10-29T19:16:34.761265Z",
+        "running": "2026-10-29T19:16:20.485825Z"
+      },
+      "usage_status": "complete"
     }
   ],
   "new_qpu_submissions": 0,
-  "observed_at": "2026-10-28T00:23:56.659482+00:00",
+  "observed_at": "2026-10-29T23:07:45.159780+00:00",
   "retrieval_boundary": "Read-only service.jobs(limit=None), decoded QuantumProgram inputs and finalized metrics. Physical jobs require a finished status (DONE, ERROR or CANCELLED) and positive settled charge; local simulations and mock results are separate evidence.",
   "schema": "completed-qpu-job-inventory-v1"
 }

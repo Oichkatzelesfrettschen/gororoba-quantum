@@ -1,0 +1,13 @@
+{
+ "circuit_name": "delay-30us-idle-input-0",
+ "family": "actor-reporter",
+ "job_id": "dbhpmuene4hc73bdcdbg",
+ "manifest_sha256": "10175e037d83f13b99d21066a49aad9fc5ed04d7c6debcb93aa530e47d7f0e40",
+ "pub_index": 0,
+ "pub_name": "delay-30us-idle-input-0",
+ "qpy_sha256": "4b3534a56ed96c3013958311aff490a3ac4b8a0b4ded093ace0494dd238fa581",
+ "raw_index_sha256": "bbfba69e669467c62b7b1b392d6c1c5fed262e2d76798144d69c6bce2402857e",
+ "raw_pub_filename": "pub_00.json",
+ "raw_pub_sha256": "c310d0addc74e051a40c38c660dd5f6f9eee82bee1ae6c07a12e4cdbb65cefee",
+ "schema": "readout-sparse-receipt-v1"
+}

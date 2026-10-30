@@ -156,6 +156,7 @@ differs from it only in the `cd_core.py` digest.
 
 | File | Contents |
 |---|---|
+| [design/readout-information-context-and-budget.md](design/readout-information-context-and-budget.md) | Classical information-order controls and prospective provider-budgeted experiments |
 | [gororoba_quantum/AGENTS.md](../gororoba_quantum/AGENTS.md) | module guide for the circuit and runner code |
 | [scripts/AGENTS.md](../scripts/AGENTS.md) | guide for the platform, replay and census scripts |
 | [kaggle_kernel/AGENTS.md](../kaggle_kernel/AGENTS.md) | Kaggle kernel program and its bundle rules |

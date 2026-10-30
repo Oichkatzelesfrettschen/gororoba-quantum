@@ -1,0 +1,26 @@
+{
+ "caller": "qiskit",
+ "circuits_execution_time_ns": 1263233536,
+ "qiskit_version": "qiskit_ibm_runtime-0.50.0,qiskit-2.6.0*,qiskit_aer-0.17.2*",
+ "timestamps": {
+  "created": "2026-10-29T19:16:09.952237Z",
+  "finished": "2026-10-29T19:16:18.503569Z",
+  "running": "2026-10-29T19:16:12.2752Z"
+ },
+ "usage": {
+  "details": [
+   {
+    "metric": {
+     "id": "caffe3ca-729c-5750-8777-df63bbf8bfd9",
+     "value": 3
+    },
+    "unit": "resource_units",
+    "value": 0.049655
+   }
+  ],
+  "qpu_charge_time_seconds": 3,
+  "status": "complete",
+  "unit": "resource_units",
+  "value": 0.049655
+ }
+}

@@ -16,6 +16,7 @@ import math
 import os
 import re
 import shlex
+import sys
 import tempfile
 from functools import cache
 from pathlib import Path
@@ -2639,6 +2640,8 @@ def _render(
 def write_case(run_dir: Path, record: dict[str, Any]) -> Path | None:
     """Write an unapproved case only for an admitted family dry-run artifact pair."""
     family = record.get("family_configuration", {}).get("name")
+    if family == "readout-actor":
+        return _write_actor_case(run_dir, record)
     if family not in FAMILIES or record.get("state") != "planned":
         return None
     if (
@@ -2657,6 +2660,101 @@ def write_case(run_dir: Path, record: dict[str, Any]) -> Path | None:
         record_digest,
         qpy_digest,
         _native_qualification(run_dir, record_digest, qpy_digest, family=family),
+    )
+    destination = run_dir / CASE_FILENAME
+    temporary: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=run_dir, prefix=".qpu-case-", delete=False
+        ) as handle:
+            temporary = Path(handle.name)
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, destination)
+    finally:
+        if temporary is not None and temporary.exists():
+            temporary.unlink()
+    return destination
+
+
+def _write_actor_case(run_dir: Path, record: dict[str, Any]) -> Path | None:
+    """Bind a descriptive full-PUB plan to its retained record and exact QPY."""
+    import readout_actor_family
+
+    if record.get("state") != "planned" or record.get("submission") or (run_dir / "approval-consumed.json").exists():
+        return None
+    record_bytes = (run_dir / "record.json").read_bytes()
+    _require(json.loads(record_bytes) == record, "supplied actor record differs from retained record")
+    archive = (run_dir / "isa.qpy").read_bytes()
+    readout_actor_family.verify_archive(record, archive)
+    case = record["family_configuration"]["case"]
+    case_bytes = (run_dir / "actor-case.json").read_bytes()
+    _require(case_bytes == readout_actor_family.encode(case), "actor-case.json differs from the retained plan")
+    execution = record["execution_contract"]
+    reviewed = os.path.relpath(run_dir.resolve(), Path(__file__).resolve().parent)
+    record_digest = hashlib.sha256(record_bytes).hexdigest()
+    check = (
+        f'"$PYTHON" qpu_cases.py --validate-actor "$RUN" --reviewed-record {shlex.quote(reviewed)} '
+        f"--reviewed-sha256 {record_digest}"
+    )
+    arguments = [
+        "--family",
+        "readout-actor",
+        "--actor-case",
+        f"{reviewed}/actor-case.json",
+        "--actor-reviewed-record",
+        reviewed,
+        "--actor-reviewed-sha256",
+        record_digest,
+        "--out",
+        "../results/live",
+        "--max-execution-seconds",
+        str(case["max_execution_seconds"]),
+        "--max-total-execution-seconds",
+        str(case["max_total_execution_seconds"]),
+    ]
+    invocation = "sh scripts/approved_run.sh --check " + shlex.quote(check) + " -- " + shlex.join(arguments)
+    text = "\n".join(
+        [
+            "# Unapproved QPU case: full-register actor preparation",
+            "",
+            "Status: UNAPPROVED. This descriptive plan authorizes no submission.",
+            "",
+            "The same full-register shots supply the declared reporter projections. "
+            "The plan describes gate, preparation and readout behavior of the selected device; "
+            "a noise simulator does not measure the device response.",
+            "",
+            f"- Record SHA-256: `{hashlib.sha256(record_bytes).hexdigest()}`.",
+            f"- QPY SHA-256: `{hashlib.sha256(archive).hexdigest()}`.",
+            f"- Frozen operational case SHA-256: `{hashlib.sha256(case_bytes).hexdigest()}`.",
+            f"- Source-closure digest: `{record['experiment_digest']}`.",
+            f"- Backend: `{_identifier(case['backend'], 'actor backend')}`.",
+            f"- Per-job ceiling: {case['max_execution_seconds']} seconds; "
+            f"total ceiling: {case['max_total_execution_seconds']} seconds; "
+            f"reserve: {case['reserve_seconds']} seconds.",
+            f"- Estimated job seconds: `{execution['batch_estimate_seconds']}`.",
+            "- Inference: descriptive; physical shot alignment, carryover and statistical admission remain unverified.",
+            "",
+            "## Frozen operational case",
+            "",
+            "The case records measured width, reporter and actor roles, projections, "
+            "per-PUB preparations, shot allocations, delays and stated controls.",
+            "",
+            "```json",
+            json.dumps(case, indent=2, sort_keys=True),
+            "```",
+            "",
+            "A separately reviewed case, an independently retained approval and the binding "
+            "dry-run checks are required before any provider submission.",
+            "",
+            "After explicit case approval, run from the repository root:",
+            "",
+            "```sh",
+            invocation,
+            "```",
+            "",
+        ]
     )
     destination = run_dir / CASE_FILENAME
     temporary: Path | None = None
@@ -3321,6 +3419,9 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("run_dir", nargs="?", type=Path)
     parser.add_argument("--check", action="store_true", help="run credential-free case-writer regression checks")
+    parser.add_argument("--validate-actor", action="store_true", help="compare a fresh actor plan to reviewed bytes")
+    parser.add_argument("--reviewed-record", type=Path)
+    parser.add_argument("--reviewed-sha256")
     args = parser.parse_args(argv)
     if args.check:
         _verify()
@@ -3328,6 +3429,22 @@ def main(argv: list[str] | None = None) -> int:
     if args.run_dir is None:
         parser.error("supply a retained run directory or --check")
     record = json.loads((args.run_dir / "record.json").read_text())
+    if args.validate_actor:
+        if args.reviewed_record is None or args.reviewed_sha256 is None:
+            parser.error("--validate-actor requires the reviewed record and its SHA-256")
+        import live_run
+        import readout_actor_family
+
+        archive = (args.run_dir / "isa.qpy").read_bytes()
+        readout_actor_family.verify_archive(record, archive)
+        mismatches = live_run.approved_record_mismatches(
+            args.reviewed_record, record, hashlib.sha256(archive).hexdigest(), args.reviewed_sha256
+        )
+        if mismatches:
+            print("Actor case mismatch: " + "; ".join(mismatches), file=sys.stderr)
+            return 1
+        print("Actor fresh plan matches the independently reviewed record.")
+        return 0
     destination = write_case(args.run_dir, record)
     if destination is None:
         print("The saved record supplies no admitted family dry-run case.")
