@@ -11732,6 +11732,16 @@
    "tempfile",
    "typing"
   ],
+  "scripts/frozen_case_sources.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "json",
+   "pathlib",
+   "subprocess",
+   "sys",
+   "typing"
+  ],
   "scripts/ghost_branching_benchmark.py": [
    "__future__",
    "aer_resources",
