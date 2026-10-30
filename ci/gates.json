@@ -5539,6 +5539,30 @@
    "replays": [
     "docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json"
    ]
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-photonic-crosschecks/a5_photonic_replay.py --check",
+   "name": "sources-a5-photonic-basis-replay",
+   "seconds": 3.0,
+   "tier": "pr",
+   "workers": 2,
+   "replays": [
+    "docs/evidence/a5-photonic-crosschecks/pooled-result.json"
+   ]
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-photonic-crosschecks/spectrum.py --check",
+   "name": "sources-a5-photonic-spectrum-replay",
+   "seconds": 3.0,
+   "tier": "pr",
+   "workers": 2,
+   "replays": [
+    "docs/evidence/a5-photonic-crosschecks/named-source-spectrum-result.json"
+   ]
   }
  ],
  "excluded": [
