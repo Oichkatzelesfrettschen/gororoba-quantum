@@ -1,0 +1,62 @@
+{
+  "antiholomorphic_border": {
+    "antiholomorphic_derivative_has_only_scalar_border": true,
+    "restriction_to_zero_scalar_hyperplane_is_zero": true
+  },
+  "baseline": {
+    "hermitian_pairing": "z1*zbar1 + z10*zbar10 + z11*zbar11 + z12*zbar12 + z13*zbar13 + z14*zbar14 + z15*zbar15 + z2*zbar2 + z3*zbar3 + z4*zbar4 + z5*zbar5 + z6*zbar6 + z7*zbar7 + z8*zbar8 + z9*zbar9",
+    "interior_is_skew": true,
+    "interior_matches_repository_bordered_block": true,
+    "left_identity_zT_Cz_zero": true,
+    "mutation": "baseline",
+    "projected_partner_remainder": "0",
+    "projected_partner_remainder_zero": true,
+    "right_identity_Cz_z_zero": true,
+    "right_identity_first_coordinate": "0"
+  },
+  "falsifier": "The reconstructed interior block differs from the repository bordered matrix; C_z is not skew; C_z*z or z^T*C_z is nonzero; z^T*conjugate(z) does not reduce to the positive Euclidean norm; the projected equation retains a partner-coordinate term; or the skew-pair sign mutation survives.",
+  "inference": {
+    "first_order_consequence": "The antiholomorphic bordered derivative restricts to zero on every boundary kernel at every nonzero doubly pure point.",
+    "lower_kernel_equation": "a*conjugate(z)+C_z*u=0",
+    "nonzero_input_conclusion": "a=0",
+    "projected_equation": "a*(z^T*conjugate(z))=0",
+    "real_coordinate_conclusion": "Every partner has zero e_0 and e_16 coordinates, so every complex kernel vector has zero scalar row."
+  },
+  "inputs": {
+    "docs/evidence/a5-kernel-attachments/partner_purity.py": "b1b3eff0f8a0e5916484b63518ff7d59824a86d494697f78f58fa0d459331841",
+    "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+  },
+  "mutation_control": {
+    "detected": true,
+    "input_change": "flip the Cayley-Dickson signs for the skew pair e_1*e_2 and e_2*e_1 before constructing C_z",
+    "mutated": {
+      "hermitian_pairing": "z1*zbar1 + z10*zbar10 + z11*zbar11 + z12*zbar12 + z13*zbar13 + z14*zbar14 + z15*zbar15 + z2*zbar2 + z3*zbar3 + z4*zbar4 + z5*zbar5 + z6*zbar6 + z7*zbar7 + z8*zbar8 + z9*zbar9",
+      "interior_is_skew": true,
+      "interior_matches_repository_bordered_block": false,
+      "left_identity_zT_Cz_zero": false,
+      "mutation": "flip_e1_e2_skew_pair",
+      "projected_partner_remainder": "-2*u1*z2*z3 + 2*u2*z1*z3",
+      "projected_partner_remainder_zero": false,
+      "right_identity_Cz_z_zero": false,
+      "right_identity_first_coordinate": "2*z2*z3"
+    },
+    "name": "flip_e1_e2_skew_pair"
+  },
+  "pass": true,
+  "positive_norm": {
+    "euclidean_sum_of_squares": "x1**2 + x10**2 + x11**2 + x12**2 + x13**2 + x14**2 + x15**2 + x2**2 + x3**2 + x4**2 + x5**2 + x6**2 + x7**2 + x8**2 + x9**2 + y1**2 + y10**2 + y11**2 + y12**2 + y13**2 + y14**2 + y15**2 + y2**2 + y3**2 + y4**2 + y5**2 + y6**2 + y7**2 + y8**2 + y9**2",
+    "hermitian_norm": "x1**2 + x10**2 + x11**2 + x12**2 + x13**2 + x14**2 + x15**2 + x2**2 + x3**2 + x4**2 + x5**2 + x6**2 + x7**2 + x8**2 + x9**2 + y1**2 + y10**2 + y11**2 + y12**2 + y13**2 + y14**2 + y15**2 + y2**2 + y3**2 + y4**2 + y5**2 + y6**2 + y7**2 + y8**2 + y9**2",
+    "hermitian_norm_equals_euclidean_norm": true,
+    "nonzero_real_input_has_positive_norm": "A nonzero real coordinate pair (x,y) has sum_j (x_j^2+y_j^2)>0."
+  },
+  "schema": "a5-kernel-attachments-partner-purity-v1",
+  "scope": {
+    "algebra": "real Cayley-Dickson algebra A_5 in the repository split-complex coordinates",
+    "claim_boundary": "The proof forces both scalar coordinates of every left-annihilating partner to vanish. It does not classify the remaining partner coordinates or any Gauss-graph limit set.",
+    "domain": "every nonzero doubly pure left factor"
+  },
+  "tools": {
+    "sympy": "1.14.0"
+  }
+}

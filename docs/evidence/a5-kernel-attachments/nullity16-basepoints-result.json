@@ -1,0 +1,1399 @@
+{
+  "blocked_rows": [
+    {
+      "incidence": "E8bar->N+",
+      "stage": "nakayama_count",
+      "status": "blocked_timeout"
+    },
+    {
+      "incidence": "E8bar->N-",
+      "stage": "nakayama_count",
+      "status": "blocked_timeout"
+    },
+    {
+      "incidence": "W8->N+",
+      "stage": "nakayama_count",
+      "status": "blocked_timeout"
+    },
+    {
+      "incidence": "W8->N-",
+      "stage": "nakayama_count",
+      "status": "blocked_timeout"
+    },
+    {
+      "incidence": "X+->N+",
+      "stage": "nakayama_count",
+      "status": "blocked_timeout"
+    },
+    {
+      "incidence": "X+->N-",
+      "stage": "nakayama_count",
+      "status": "blocked_timeout"
+    },
+    {
+      "incidence": "X-->N+",
+      "stage": "nakayama_count",
+      "status": "blocked_timeout"
+    },
+    {
+      "incidence": "X-->N-",
+      "stage": "nakayama_count",
+      "status": "blocked_timeout"
+    }
+  ],
+  "execution_contract": {
+    "blocked_rows_continue": true,
+    "singular_address_space_bytes": 4294967296,
+    "singular_timeout_seconds": 300,
+    "wall_clock_gate": null
+  },
+  "falsifier": "A census-supported point leaves its stated orbit or source closure; a transverse slice has dimension other than nine; a reduced germ differs from the committed regularity invariants; the boundary C_z rank, Pfaffian-adjugate identity, Schur skewness, coordinate count, or Nakayama count fails; a row exceeds the 300-second or 4 GiB Singular limit without a blocked record; or the source-ideal mutation survives.",
+  "incidences": [
+    {
+      "boundary_c_kernel_dimension": 9,
+      "boundary_c_rank": 6,
+      "boundary_orbit": "N+",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N+:canonical",
+      "census_support_verified": true,
+      "coordinate_count": 36,
+      "coordinate_kind": "upper_triangle_entries_of_rank_two_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        3,
+        1,
+        3,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "B9->N+",
+      "maximum_coordinate_component_terms": 44,
+      "maximum_coordinate_total_degree": 4,
+      "mutation": "",
+      "nakayama_count": 3,
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        3,
+        1,
+        3,
+        1
+      ],
+      "pass": true,
+      "passage": "12->16",
+      "pfaffian_adjugate_identity": true,
+      "pivot_indices_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "pivot_pfaffian_at_origin": [
+        "-2",
+        "0"
+      ],
+      "schur_coordinate_sha256": "96f1023c1422dd15bbf23e0ceb3fcca5f42eb9d0f1682d986c8d880673f9fdf9",
+      "schur_skew": true,
+      "selected_coordinate_indices_one_based": [
+        23,
+        24,
+        31
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 12,
+      "source_orbit": "B9",
+      "status": "completed"
+    },
+    {
+      "boundary_c_kernel_dimension": 9,
+      "boundary_c_rank": 6,
+      "boundary_orbit": "N-",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "0",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N-:canonical",
+      "census_support_verified": true,
+      "coordinate_count": 36,
+      "coordinate_kind": "upper_triangle_entries_of_rank_two_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        3,
+        1,
+        3,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "B9->N-",
+      "maximum_coordinate_component_terms": 44,
+      "maximum_coordinate_total_degree": 4,
+      "mutation": "",
+      "nakayama_count": 3,
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        3,
+        1,
+        3,
+        1
+      ],
+      "pass": true,
+      "passage": "12->16",
+      "pfaffian_adjugate_identity": true,
+      "pivot_indices_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "pivot_pfaffian_at_origin": [
+        "-2",
+        "0"
+      ],
+      "schur_coordinate_sha256": "ef80f2d055eaf70599728f78e4ae63844898d0e42acb9dc67bdbc975043f2335",
+      "schur_skew": true,
+      "selected_coordinate_indices_one_based": [
+        23,
+        24,
+        31
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 12,
+      "source_orbit": "B9",
+      "status": "completed"
+    },
+    {
+      "boundary_c_kernel_dimension": 9,
+      "boundary_c_rank": 6,
+      "boundary_orbit": "N+",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N+:canonical",
+      "census_support_verified": true,
+      "coordinate_count": 36,
+      "coordinate_kind": "upper_triangle_entries_of_rank_two_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        2,
+        2,
+        3,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "V->N+",
+      "maximum_coordinate_component_terms": 44,
+      "maximum_coordinate_total_degree": 4,
+      "mutation": "",
+      "nakayama_count": 3,
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        2,
+        2,
+        3,
+        1
+      ],
+      "pass": true,
+      "passage": "12->16",
+      "pfaffian_adjugate_identity": true,
+      "pivot_indices_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "pivot_pfaffian_at_origin": [
+        "-2",
+        "0"
+      ],
+      "schur_coordinate_sha256": "96f1023c1422dd15bbf23e0ceb3fcca5f42eb9d0f1682d986c8d880673f9fdf9",
+      "schur_skew": true,
+      "selected_coordinate_indices_one_based": [
+        9,
+        12,
+        31
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 12,
+      "source_orbit": "V",
+      "status": "completed"
+    },
+    {
+      "boundary_c_kernel_dimension": 9,
+      "boundary_c_rank": 6,
+      "boundary_orbit": "N-",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "0",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N-:canonical",
+      "census_support_verified": true,
+      "coordinate_count": 36,
+      "coordinate_kind": "upper_triangle_entries_of_rank_two_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        2,
+        2,
+        3,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "V->N-",
+      "maximum_coordinate_component_terms": 44,
+      "maximum_coordinate_total_degree": 4,
+      "mutation": "",
+      "nakayama_count": 3,
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        2,
+        2,
+        3,
+        1
+      ],
+      "pass": true,
+      "passage": "12->16",
+      "pfaffian_adjugate_identity": true,
+      "pivot_indices_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "pivot_pfaffian_at_origin": [
+        "-2",
+        "0"
+      ],
+      "schur_coordinate_sha256": "ef80f2d055eaf70599728f78e4ae63844898d0e42acb9dc67bdbc975043f2335",
+      "schur_skew": true,
+      "selected_coordinate_indices_one_based": [
+        9,
+        12,
+        31
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 12,
+      "source_orbit": "V",
+      "status": "completed"
+    },
+    {
+      "boundary_c_kernel_dimension": 9,
+      "boundary_c_rank": 6,
+      "boundary_orbit": "N+",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N+:canonical",
+      "census_support_verified": true,
+      "coordinate_count": 36,
+      "coordinate_kind": "upper_triangle_entries_of_rank_two_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "VB->N+",
+      "maximum_coordinate_component_terms": 44,
+      "maximum_coordinate_total_degree": 4,
+      "mutation": "",
+      "nakayama_count": 1,
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "pass": true,
+      "passage": "12->16",
+      "pfaffian_adjugate_identity": true,
+      "pivot_indices_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "pivot_pfaffian_at_origin": [
+        "-2",
+        "0"
+      ],
+      "schur_coordinate_sha256": "96f1023c1422dd15bbf23e0ceb3fcca5f42eb9d0f1682d986c8d880673f9fdf9",
+      "schur_skew": true,
+      "selected_coordinate_indices_one_based": [
+        31
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 12,
+      "source_orbit": "VB",
+      "status": "completed"
+    },
+    {
+      "boundary_c_kernel_dimension": 9,
+      "boundary_c_rank": 6,
+      "boundary_orbit": "N-",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "0",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N-:canonical",
+      "census_support_verified": true,
+      "coordinate_count": 36,
+      "coordinate_kind": "upper_triangle_entries_of_rank_two_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "VB->N-",
+      "maximum_coordinate_component_terms": 44,
+      "maximum_coordinate_total_degree": 4,
+      "mutation": "",
+      "nakayama_count": 1,
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "pass": true,
+      "passage": "12->16",
+      "pfaffian_adjugate_identity": true,
+      "pivot_indices_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "pivot_pfaffian_at_origin": [
+        "-2",
+        "0"
+      ],
+      "schur_coordinate_sha256": "ef80f2d055eaf70599728f78e4ae63844898d0e42acb9dc67bdbc975043f2335",
+      "schur_skew": true,
+      "selected_coordinate_indices_one_based": [
+        31
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 12,
+      "source_orbit": "VB",
+      "status": "completed"
+    },
+    {
+      "boundary_c_kernel_dimension": 9,
+      "boundary_c_rank": 6,
+      "boundary_orbit": "N+",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N+:canonical",
+      "census_support_verified": true,
+      "coordinate_count": 36,
+      "coordinate_kind": "upper_triangle_entries_of_rank_two_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "Va+->N+",
+      "maximum_coordinate_component_terms": 44,
+      "maximum_coordinate_total_degree": 4,
+      "mutation": "",
+      "nakayama_count": 1,
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "pass": true,
+      "passage": "12->16",
+      "pfaffian_adjugate_identity": true,
+      "pivot_indices_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "pivot_pfaffian_at_origin": [
+        "-2",
+        "0"
+      ],
+      "schur_coordinate_sha256": "96f1023c1422dd15bbf23e0ceb3fcca5f42eb9d0f1682d986c8d880673f9fdf9",
+      "schur_skew": true,
+      "selected_coordinate_indices_one_based": [
+        9
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 12,
+      "source_orbit": "Va+",
+      "status": "completed"
+    },
+    {
+      "boundary_c_kernel_dimension": 9,
+      "boundary_c_rank": 6,
+      "boundary_orbit": "N-",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "0",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N-:canonical",
+      "census_support_verified": true,
+      "coordinate_count": 36,
+      "coordinate_kind": "upper_triangle_entries_of_rank_two_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "Va-->N-",
+      "maximum_coordinate_component_terms": 44,
+      "maximum_coordinate_total_degree": 4,
+      "mutation": "",
+      "nakayama_count": 1,
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "pass": true,
+      "passage": "12->16",
+      "pfaffian_adjugate_identity": true,
+      "pivot_indices_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "pivot_pfaffian_at_origin": [
+        "-2",
+        "0"
+      ],
+      "schur_coordinate_sha256": "ef80f2d055eaf70599728f78e4ae63844898d0e42acb9dc67bdbc975043f2335",
+      "schur_skew": true,
+      "selected_coordinate_indices_one_based": [
+        9
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 12,
+      "source_orbit": "Va-",
+      "status": "completed"
+    },
+    {
+      "blocked_diagnostic": "Singular exceeded the 300-second timeout",
+      "blocked_stage": "nakayama_count",
+      "boundary_orbit": "N+",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N+:canonical",
+      "coordinate_count": 126,
+      "coordinate_kind": "principal_four_pfaffians_of_rank_four_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        5,
+        3,
+        8,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "E8bar->N+",
+      "mutation": "",
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        5,
+        3,
+        8,
+        1
+      ],
+      "pass": false,
+      "passage": "8->16",
+      "schur_coordinate_sha256": "9650b11ee1da61a84e7a644746e2c8e32c0e38263f634cc8e3075b4bc4061995",
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 8,
+      "source_orbit": "E8bar",
+      "status": "blocked_timeout"
+    },
+    {
+      "blocked_diagnostic": "Singular exceeded the 300-second timeout",
+      "blocked_stage": "nakayama_count",
+      "boundary_orbit": "N-",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "0",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N-:canonical",
+      "coordinate_count": 126,
+      "coordinate_kind": "principal_four_pfaffians_of_rank_four_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        5,
+        3,
+        8,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "E8bar->N-",
+      "mutation": "",
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        5,
+        3,
+        8,
+        1
+      ],
+      "pass": false,
+      "passage": "8->16",
+      "schur_coordinate_sha256": "bc75f14810475557c68edf5028bccb84b1e20d145eb1cc666dcd03c61bc8b7fb",
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 8,
+      "source_orbit": "E8bar",
+      "status": "blocked_timeout"
+    },
+    {
+      "boundary_c_kernel_dimension": 9,
+      "boundary_c_rank": 6,
+      "boundary_orbit": "N+",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N+:canonical",
+      "census_support_verified": true,
+      "coordinate_count": 126,
+      "coordinate_kind": "principal_four_pfaffians_of_rank_four_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        5,
+        2,
+        6,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "Iso->N+",
+      "maximum_coordinate_component_terms": 1049,
+      "maximum_coordinate_total_degree": 8,
+      "mutation": "",
+      "nakayama_count": 17,
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        5,
+        2,
+        6,
+        1
+      ],
+      "pass": true,
+      "passage": "8->16",
+      "pfaffian_adjugate_identity": true,
+      "pivot_indices_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "pivot_pfaffian_at_origin": [
+        "-2",
+        "0"
+      ],
+      "schur_coordinate_sha256": "9650b11ee1da61a84e7a644746e2c8e32c0e38263f634cc8e3075b4bc4061995",
+      "schur_skew": true,
+      "selected_coordinate_indices_one_based": [
+        8,
+        9,
+        16,
+        23,
+        31,
+        41,
+        76,
+        77,
+        78,
+        79,
+        88,
+        89,
+        96,
+        98,
+        109,
+        118,
+        119
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 8,
+      "source_orbit": "Iso",
+      "status": "completed"
+    },
+    {
+      "boundary_c_kernel_dimension": 9,
+      "boundary_c_rank": 6,
+      "boundary_orbit": "N-",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "0",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N-:canonical",
+      "census_support_verified": true,
+      "coordinate_count": 126,
+      "coordinate_kind": "principal_four_pfaffians_of_rank_four_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        5,
+        2,
+        6,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "Iso->N-",
+      "maximum_coordinate_component_terms": 1049,
+      "maximum_coordinate_total_degree": 8,
+      "mutation": "",
+      "nakayama_count": 17,
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        5,
+        2,
+        6,
+        1
+      ],
+      "pass": true,
+      "passage": "8->16",
+      "pfaffian_adjugate_identity": true,
+      "pivot_indices_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "pivot_pfaffian_at_origin": [
+        "-2",
+        "0"
+      ],
+      "schur_coordinate_sha256": "bc75f14810475557c68edf5028bccb84b1e20d145eb1cc666dcd03c61bc8b7fb",
+      "schur_skew": true,
+      "selected_coordinate_indices_one_based": [
+        8,
+        9,
+        16,
+        23,
+        31,
+        41,
+        76,
+        77,
+        78,
+        79,
+        88,
+        89,
+        96,
+        98,
+        109,
+        118,
+        119
+      ],
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 8,
+      "source_orbit": "Iso",
+      "status": "completed"
+    },
+    {
+      "blocked_diagnostic": "Singular exceeded the 300-second timeout",
+      "blocked_stage": "nakayama_count",
+      "boundary_orbit": "N+",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N+:canonical",
+      "coordinate_count": 126,
+      "coordinate_kind": "principal_four_pfaffians_of_rank_four_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        6,
+        2,
+        7,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "W8->N+",
+      "mutation": "",
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        6,
+        2,
+        7,
+        1
+      ],
+      "pass": false,
+      "passage": "8->16",
+      "schur_coordinate_sha256": "9650b11ee1da61a84e7a644746e2c8e32c0e38263f634cc8e3075b4bc4061995",
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 8,
+      "source_orbit": "W8",
+      "status": "blocked_timeout"
+    },
+    {
+      "blocked_diagnostic": "Singular exceeded the 300-second timeout",
+      "blocked_stage": "nakayama_count",
+      "boundary_orbit": "N-",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "0",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N-:canonical",
+      "coordinate_count": 126,
+      "coordinate_kind": "principal_four_pfaffians_of_rank_four_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        6,
+        2,
+        7,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "W8->N-",
+      "mutation": "",
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        6,
+        2,
+        7,
+        1
+      ],
+      "pass": false,
+      "passage": "8->16",
+      "schur_coordinate_sha256": "bc75f14810475557c68edf5028bccb84b1e20d145eb1cc666dcd03c61bc8b7fb",
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 8,
+      "source_orbit": "W8",
+      "status": "blocked_timeout"
+    },
+    {
+      "blocked_diagnostic": "Singular exceeded the 300-second timeout",
+      "blocked_stage": "nakayama_count",
+      "boundary_orbit": "N+",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N+:canonical",
+      "coordinate_count": 126,
+      "coordinate_kind": "principal_four_pfaffians_of_rank_four_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        4,
+        2,
+        7,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "X+->N+",
+      "mutation": "",
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        4,
+        2,
+        7,
+        1
+      ],
+      "pass": false,
+      "passage": "8->16",
+      "schur_coordinate_sha256": "9650b11ee1da61a84e7a644746e2c8e32c0e38263f634cc8e3075b4bc4061995",
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 8,
+      "source_orbit": "X+",
+      "status": "blocked_timeout"
+    },
+    {
+      "blocked_diagnostic": "Singular exceeded the 300-second timeout",
+      "blocked_stage": "nakayama_count",
+      "boundary_orbit": "N-",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "0",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N-:canonical",
+      "coordinate_count": 126,
+      "coordinate_kind": "principal_four_pfaffians_of_rank_four_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        4,
+        1,
+        4,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "X+->N-",
+      "mutation": "",
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        4,
+        1,
+        4,
+        1
+      ],
+      "pass": false,
+      "passage": "8->16",
+      "schur_coordinate_sha256": "bc75f14810475557c68edf5028bccb84b1e20d145eb1cc666dcd03c61bc8b7fb",
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 8,
+      "source_orbit": "X+",
+      "status": "blocked_timeout"
+    },
+    {
+      "blocked_diagnostic": "Singular exceeded the 300-second timeout",
+      "blocked_stage": "nakayama_count",
+      "boundary_orbit": "N+",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N+:canonical",
+      "coordinate_count": 126,
+      "coordinate_kind": "principal_four_pfaffians_of_rank_four_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        4,
+        1,
+        4,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "X-->N+",
+      "mutation": "",
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        4,
+        1,
+        4,
+        1
+      ],
+      "pass": false,
+      "passage": "8->16",
+      "schur_coordinate_sha256": "9650b11ee1da61a84e7a644746e2c8e32c0e38263f634cc8e3075b4bc4061995",
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 8,
+      "source_orbit": "X-",
+      "status": "blocked_timeout"
+    },
+    {
+      "blocked_diagnostic": "Singular exceeded the 300-second timeout",
+      "blocked_stage": "nakayama_count",
+      "boundary_orbit": "N-",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "0",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "census_point_key": "N-:canonical",
+      "coordinate_count": 126,
+      "coordinate_kind": "principal_four_pfaffians_of_rank_four_form",
+      "expected_germ_dimension_multiplicity_embedding_components": [
+        4,
+        2,
+        7,
+        1
+      ],
+      "germ_matches_regularity_record": true,
+      "incidence": "X-->N-",
+      "mutation": "",
+      "observed_germ_dimension_multiplicity_embedding_components": [
+        4,
+        2,
+        7,
+        1
+      ],
+      "pass": false,
+      "passage": "8->16",
+      "schur_coordinate_sha256": "bc75f14810475557c68edf5028bccb84b1e20d145eb1cc666dcd03c61bc8b7fb",
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 9,
+      "source_nullity": 8,
+      "source_orbit": "X-",
+      "status": "blocked_timeout"
+    }
+  ],
+  "inputs": {
+    "docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py": "ade16627774974b2f3b3ea7565af4e18249bbbd9f95481ac91e735498e061044",
+    "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
+    "docs/evidence/a5-kernel-attachments/incidence-census-result.json": "e9e0405d1dfcba6146eabf97435ada98c429b5ed996b41c6da00d254fa40b19e",
+    "docs/evidence/a5-kernel-attachments/nullity16_basepoints.py": "7d02631cb5ac5538a6841b6097184983bc6a04ad742d61032e157b65ac67eb07",
+    "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
+    "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+    "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
+  },
+  "mutation_control": {
+    "baseline_germ_dimension_multiplicity_embedding_components": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "detected": true,
+    "input_change": "drop the first exact generator from the Va+ source-closure ideal",
+    "mutated_germ_dimension_multiplicity_embedding_components": [
+      2,
+      1,
+      2,
+      1
+    ],
+    "name": "drop_first_source_closure_generator",
+    "target": "Va+->N+"
+  },
+  "pass": false,
+  "schema": "a5-kernel-attachments-nullity16-basepoints-v1",
+  "scope": {
+    "boundary_orbits": [
+      "N+",
+      "N-"
+    ],
+    "claim_boundary": "The record certifies canonical census-supported basepoints, coordinate transverse slices, reduced source-closure germs, and local Schur-coordinate Nakayama counts for the 18 incidences into nullity 16. It does not compute their Gauss fibers or attaching maps.",
+    "incidence_count": 18,
+    "passages": [
+      "12->16",
+      "8->16"
+    ]
+  },
+  "summary": {
+    "all_completed_rows_pass": true,
+    "blocked_count": 8,
+    "completed_count": 10,
+    "incidence_count": 18
+  },
+  "tools": {
+    "python_flint": "0.9.0",
+    "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Jun 30 2026 11:57:00"
+  }
+}
