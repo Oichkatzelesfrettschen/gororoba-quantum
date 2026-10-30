@@ -1,0 +1,207 @@
+{
+ "schema": "qi-demarrais-tower-cases-v1",
+ "batch": "batch-01",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "cayley_dickson_target_dim": 1024,
+ "cayley_dickson_target_name": "DekaVoudon",
+ "bipartition_a_data_qubits": [
+  0,
+  2,
+  3,
+  6,
+  7
+ ],
+ "bipartition_b_sentinel_qubits": [
+  1,
+  4,
+  5,
+  8,
+  9
+ ],
+ "couplers": [
+  [
+   0,
+   1
+  ],
+  [
+   0,
+   4
+  ],
+  [
+   2,
+   1
+  ],
+  [
+   2,
+   5
+  ],
+  [
+   3,
+   4
+  ],
+  [
+   3,
+   8
+  ],
+  [
+   6,
+   5
+  ],
+  [
+   6,
+   9
+  ],
+  [
+   7,
+   8
+  ],
+  [
+   7,
+   9
+  ]
+ ],
+ "certificate": {
+  "tower_levels": 14,
+  "tower_max_dim": 8192,
+  "tower_max_name": "DekatrisVoudon",
+  "tower_max_trips": 11180715,
+  "tower_max_midden_part_size": 1024,
+  "sedenion_box_kites": 7,
+  "pathion_sand_mandalas": 15,
+  "pathion_dmz_filled_cells": 72,
+  "pathion_dmz_empty_cells": 96,
+  "cowbird_eggs_certified": 4,
+  "cowbird_eggs_moufang_and_norm_multiplicative": true,
+  "dmz_scaling_8192d_fillable_cells": 16752648,
+  "dmz_scaling_8192d_high_strut_active_cells": 24552
+ },
+ "circuits": [
+  {
+   "file": "01-control-sedenion-pathion-32d.cq",
+   "kind": "ctrl_low_32d",
+   "nqubits": 10,
+   "sha256": "babd3a3036cc814348536b28daee280839c28ae5e6c056616eec443284249d69",
+   "oracle_hubs": [
+    1,
+    4
+   ],
+   "ideal_bits_by_qubit": {
+    "0": 0,
+    "1": 0,
+    "2": 1,
+    "3": 1,
+    "4": 0,
+    "5": 0,
+    "6": 0,
+    "7": 0,
+    "8": 0,
+    "9": 0
+   },
+   "ideal_shot_string": "0000001100",
+   "two_path_destructive_dark_qubits": [
+    0
+   ],
+   "one_path_constructive_bright_qubits": [
+    2,
+    3
+   ],
+   "zero_path_dmz_qubits": [
+    6,
+    7
+   ],
+   "sentinel_zero_qubits": [
+    1,
+    4,
+    5,
+    8,
+    9
+   ]
+  },
+  {
+   "file": "02-control-chingon-routon-512d.cq",
+   "kind": "ctrl_mid_512d",
+   "nqubits": 10,
+   "sha256": "dac8c14f025bab86c77a7612e04991690a4658fe341c8eebdb35bc4e64002011",
+   "oracle_hubs": [
+    4,
+    5,
+    8
+   ],
+   "ideal_bits_by_qubit": {
+    "0": 1,
+    "1": 0,
+    "2": 1,
+    "3": 0,
+    "4": 0,
+    "5": 0,
+    "6": 1,
+    "7": 1,
+    "8": 0,
+    "9": 0
+   },
+   "ideal_shot_string": "0011000101",
+   "two_path_destructive_dark_qubits": [
+    3
+   ],
+   "one_path_constructive_bright_qubits": [
+    0,
+    2,
+    6,
+    7
+   ],
+   "zero_path_dmz_qubits": [],
+   "sentinel_zero_qubits": [
+    1,
+    4,
+    5,
+    8,
+    9
+   ]
+  },
+  {
+   "file": "03-dekavoudon-1024d-pure-shell.cq",
+   "kind": "explore_1024d_pure",
+   "nqubits": 10,
+   "sha256": "20785c75ba804e635145fc28627e3bbac58b75350c89eec44cd2b549f6ac8c59",
+   "oracle_hubs": [
+    5,
+    8,
+    9
+   ],
+   "ideal_bits_by_qubit": {
+    "0": 0,
+    "1": 0,
+    "2": 1,
+    "3": 1,
+    "4": 0,
+    "5": 0,
+    "6": 0,
+    "7": 0,
+    "8": 0,
+    "9": 0
+   },
+   "ideal_shot_string": "0000001100",
+   "two_path_destructive_dark_qubits": [
+    6,
+    7
+   ],
+   "one_path_constructive_bright_qubits": [
+    2,
+    3
+   ],
+   "zero_path_dmz_qubits": [
+    0
+   ],
+   "sentinel_zero_qubits": [
+    1,
+    4,
+    5,
+    8,
+    9
+   ]
+  }
+ ]
+}

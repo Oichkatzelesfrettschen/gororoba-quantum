@@ -1,0 +1,148 @@
+{
+  "iterations": [
+    {
+      "setting": "iter00-pair_1_2-octonion",
+      "counts": {
+        "|0,0,0,0,1,0,0,0,0,0,0,0>": 9800,
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 0.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter01-pair_1_2-clifford_control",
+      "counts": {
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 9800,
+        "|0,0,0,0,1,0,0,0,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 2.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter02-pair_1_2-diagonal_null",
+      "counts": {
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 9800,
+        "|0,0,0,0,1,0,0,0,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 4.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter03-pair_1_2-reversed",
+      "counts": {
+        "|0,0,0,0,1,0,0,0,0,0,0,0>": 9800,
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 6.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter04-pair_1_4-octonion",
+      "counts": {
+        "|0,0,1,0,0,0,0,0,0,0,0,0>": 9800,
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 8.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter05-pair_1_4-clifford_control",
+      "counts": {
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 9800,
+        "|0,0,1,0,0,0,0,0,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 10.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter06-pair_1_4-diagonal_null",
+      "counts": {
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 9800,
+        "|0,0,1,0,0,0,0,0,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 12.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter07-pair_1_4-reversed",
+      "counts": {
+        "|0,0,1,0,0,0,0,0,0,0,0,0>": 9800,
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 14.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter08-pair_2_4-octonion",
+      "counts": {
+        "|0,1,0,0,0,0,0,0,0,0,0,0>": 9800,
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 16.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter09-pair_2_4-clifford_control",
+      "counts": {
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 9800,
+        "|0,1,0,0,0,0,0,0,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 18.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter10-pair_2_4-diagonal_null",
+      "counts": {
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 9800,
+        "|0,1,0,0,0,0,0,0,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 20.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter11-pair_2_4-reversed",
+      "counts": {
+        "|0,1,0,0,0,0,0,0,0,0,0,0>": 9800,
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 22.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter12-pair_3_5-octonion",
+      "counts": {
+        "|0,0,0,0,0,0,0,1,0,0,0,0>": 9800,
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 24.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter13-pair_3_5-clifford_control",
+      "counts": {
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 9800,
+        "|0,0,0,0,0,0,0,1,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 26.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter14-pair_3_5-diagonal_null",
+      "counts": {
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 9800,
+        "|0,0,0,0,0,0,0,1,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 28.0,
+      "duration": 2.0
+    },
+    {
+      "setting": "iter15-pair_3_5-reversed",
+      "counts": {
+        "|0,0,0,0,0,0,0,1,0,0,0,0>": 9800,
+        "|1,0,0,0,0,0,0,0,0,0,0,0>": 200
+      },
+      "elapsed_seconds": 30.0,
+      "duration": 2.0
+    }
+  ]
+}

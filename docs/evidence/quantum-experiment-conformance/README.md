@@ -1,7 +1,9 @@
 # Quantum experiment conformance evidence
 
+The [Ascella worker-command source replay](ascella-worker-command-source-replay.json)
+binds the current platform worker-command restoration to the unchanged Qiskit 2.6.1 campaign bytes.
 The [Ascella predecessor source replay](ascella-predecessor-source-replay.json)
-binds the updated Quandela client to the unchanged Qiskit 2.6.1 campaign bytes.
+records those same campaign bytes at the preceding platform client.
 
 This bundle retains deterministic references and prospective cases for the
 [five-proposal design](../../design/quantum-experiment-conformance.md). The source artifact

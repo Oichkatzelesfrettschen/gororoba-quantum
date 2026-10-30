@@ -26,7 +26,11 @@ ENVELOPE_SCHEMA = "msq-envelope-v2"
 ENVELOPE_SCHEMA_V1 = "msq-envelope-v1"
 SNAPSHOT_SCHEMA = "ibm-canonical-snapshot-v1"
 ENVELOPE_FILE = "envelope.json"
-ENVELOPE_BACKEND = "ibm_kingston"
+# The Heron r2 backends an envelope plan may run on. The plan records the one it chose in its contract, which the
+# approval binds, so a binding dry run on another backend fails the approved-record comparison.
+ENVELOPE_BACKENDS = ("ibm_fez", "ibm_kingston", "ibm_marrakesh")
+# A contract written before the backend became a planned field ran on ibm_kingston.
+LEGACY_ENVELOPE_BACKEND = "ibm_kingston"
 
 # The layout rule keeps the scatter-floor qubit screen (measurement_sequence_scatter.eligible) and adds
 # prob_meas1_prep0, the calibration's ground-state readout error: a readout-channel screen, while the shot-history

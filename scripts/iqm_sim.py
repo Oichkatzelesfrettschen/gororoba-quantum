@@ -61,22 +61,49 @@ class Calibration:
         self.values = {o["dut_field"]: o["value"] for o in metrics["observations"] if not o.get("invalid")}
         self.metrics_id = metrics.get("observation_set_id")
         architecture = json.loads((folder / "dynamic-quantum-architecture.json").read_text(encoding="utf-8"))
-        self.qubits: list[str] = architecture["qubits"]
+        self.qubits: list[str] = list(architecture["qubits"]) + list(architecture.get("computational_resonators", []))
         self.set_id: str = architecture["calibration_set_id"]
         # The metrics must describe the architecture's calibration set; a pair from two sets (an interrupted
         # refresh) would predict from one set while the job pins the other.
         described = metrics.get("describes_id")
         if described is not None and described != self.set_id:
             raise ValueError(f"{folder}: metrics describe set {described}, the architecture is set {self.set_id}")
+        self.prx: dict[str, float] = {}
+        prx_gate = architecture["gates"].get("prx", {})
+        for implementation in prx_gate.get("implementations", {}):
+            for qubit in architecture["qubits"]:
+                for suffix in (":par=d2", ":par=d1", ""):
+                    fidelity = self.values.get(f"metrics.rb.prx.{implementation}.{qubit}.fidelity{suffix}")
+                    if fidelity is not None:
+                        self.prx[qubit] = fidelity
+                        break
         cz = architecture["gates"]["cz"]
         self.cz: dict[frozenset[str], float] = {}
         for implementation, spec in cz["implementations"].items():
             for a, b in spec["loci"]:
-                fidelity = self.values.get(f"metrics.irb.cz.{implementation}.{a}__{b}.fidelity:par=d2")
-                if fidelity is None:
-                    fidelity = self.values.get(f"metrics.irb.cz.{implementation}.{b}__{a}.fidelity:par=d2")
+                fidelity = None
+                for suffix in (":par=d2", ""):
+                    fidelity = self.values.get(f"metrics.irb.cz.{implementation}.{a}__{b}.fidelity{suffix}")
+                    if fidelity is None:
+                        fidelity = self.values.get(f"metrics.irb.cz.{implementation}.{b}__{a}.fidelity{suffix}")
+                    if fidelity is not None:
+                        break
                 if fidelity is not None:
                     self.cz[frozenset((a, b))] = fidelity
+        self.move: dict[frozenset[str], float] = {}
+        move_gate = architecture["gates"].get("move")
+        if move_gate is not None:
+            for implementation, spec in move_gate["implementations"].items():
+                for a, b in spec["loci"]:
+                    fidelity = None
+                    for suffix in (":n_interleaved_gates=2", ":par=d2", ""):
+                        fidelity = self.values.get(f"metrics.irb.move.{implementation}.{a}__{b}.fidelity{suffix}")
+                        if fidelity is None:
+                            fidelity = self.values.get(f"metrics.irb.move.{implementation}.{b}__{a}.fidelity{suffix}")
+                        if fidelity is not None:
+                            break
+                    if fidelity is not None:
+                        self.move[frozenset((a, b))] = fidelity
 
     def readout(self, qubit: str, heralded: bool = False) -> tuple[float, float]:
         """(P(read 1 | 0), P(read 0 | 1)), unheralded or conditioned on an all-zeros herald."""
@@ -87,13 +114,17 @@ class Calibration:
         )
 
     def prx_p(self, qubit: str) -> float:
-        return 2 * (1 - self.values[PRX_FIELD.format(q=qubit)])
+        fidelity = self.prx.get(qubit, self.values.get(PRX_FIELD.format(q=qubit)))
+        if fidelity is None:
+            raise KeyError(f"missing PRX fidelity for {qubit}")
+        return 2 * (1 - fidelity)
 
     def noise_model(self, heralded: bool = False) -> NoiseModel:
-        """Depolarizing PRX and CZ and readout error; heralded selects the herald-conditioned readout."""
-        model = NoiseModel(basis_gates=["r", "cz"])
+        """Depolarizing PRX, CZ, MOVE (where present) and readout error; heralded selects herald-conditioned readout."""
+        basis = ["r", "cz", "swap"] if self.move else ["r", "cz"]
+        model = NoiseModel(basis_gates=basis)
         for n, qubit in enumerate(self.qubits):
-            if PRX_FIELD.format(q=qubit) in self.values:
+            if qubit in self.prx or PRX_FIELD.format(q=qubit) in self.values:
                 model.add_quantum_error(depolarizing_error(self.prx_p(qubit), 1), "r", [n])
             if READOUT_FIELD.format(q=qubit, kind="error_0_to_1") in self.values:
                 e01, e10 = self.readout(qubit, heralded)
@@ -104,6 +135,12 @@ class Calibration:
             error = depolarizing_error(p, 2)
             model.add_quantum_error(error, "cz", [self.qubits.index(a), self.qubits.index(b)])
             model.add_quantum_error(error, "cz", [self.qubits.index(b), self.qubits.index(a)])
+        for pair, fidelity in self.move.items():
+            a, b = sorted(pair, key=self.qubits.index)
+            p = 4 * (1 - fidelity) / 3
+            error = depolarizing_error(p, 2)
+            model.add_quantum_error(error, "swap", [self.qubits.index(a), self.qubits.index(b)])
+            model.add_quantum_error(error, "swap", [self.qubits.index(b), self.qubits.index(a)])
         return model
 
 
@@ -125,10 +162,16 @@ def to_qiskit(circuit: dict[str, Any], calibration: Calibration) -> tuple[Quantu
             if frozenset(op["locus"]) not in calibration.cz:
                 raise ValueError(f"{circuit['name']}: cz on {op['locus']} has no calibrated coupler")
             out.cz(*locus)
+        elif op["name"] == "move":
+            if frozenset(op["locus"]) not in calibration.move:
+                raise ValueError(f"{circuit['name']}: move on {op['locus']} has no calibrated resonator coupler")
+            out.swap(*locus)
         elif op["name"] == "measure":
             for q in locus:
                 out.measure(q, bit)
                 bit += 1
+        elif op["name"] == "barrier":
+            out.barrier(*locus)
         else:
             raise ValueError(f"{circuit['name']}: {op['name']} has no local model")
     return out, bits
@@ -188,6 +231,10 @@ def run_case(case_dir: Path, qc: str, seed: int) -> list[dict[str, Any]]:
     return ordered_map(simulate_circuit, items)
 
 
+# docs/evidence/anu_qrng/draw-2026-10-30T041753Z.json#1
+SIRIUS_SELF_TEST_SEED = 60869
+
+
 def self_test() -> str:
     calibration = Calibration("garnet")
     x = {
@@ -223,9 +270,30 @@ def self_test() -> str:
         pass
     else:
         raise RuntimeError("a cz off the coupler graph was accepted")
+    sirius = Calibration("sirius")
+    if "COMPR1" not in sirius.qubits or len(sirius.cz) != 16 or len(sirius.move) != 16:
+        raise RuntimeError(
+            f"sirius calibration incomplete: {len(sirius.qubits)} nodes, {len(sirius.cz)} cz, {len(sirius.move)} move"
+        )
+    star_circuit = {
+        "name": "sirius_star_test",
+        "instructions": [
+            {"name": "prx", "locus": ["QB8"], "args": {"angle": math.pi, "phase": 0.0}},
+            {"name": "move", "locus": ["QB8", "COMPR1"], "args": {}},
+            {"name": "cz", "locus": ["QB1", "COMPR1"], "args": {}},
+            {"name": "move", "locus": ["QB8", "COMPR1"], "args": {}},
+            {"name": "measure", "locus": ["QB8", "QB1"], "args": {"key": "m"}},
+        ],
+    }
+    sirius_sim = AerSimulator(noise_model=sirius.noise_model(), seed_simulator=SIRIUS_SELF_TEST_SEED)
+    star_counts = sirius_sim.run(to_qiskit(star_circuit, sirius)[0], shots=10000).result().get_counts()
+    p1_qb8 = sum(c for s, c in star_counts.items() if s[::-1][0] == "1") / 10000
+    if not 0.85 < p1_qb8 < 1.0:
+        raise RuntimeError(f"sirius MOVE-CZ-MOVE round-trip P(1) on QB8 is {p1_qb8}")
     return (
         f"iqm sim: {len(calibration.qubits)} qubits, {len(calibration.cz)} CZ couplers; "
-        f"X on QB1 exact P(1) {exact:.4f}, sampled {sampled:.4f}; off-graph cz refused"
+        f"X on QB1 exact P(1) {exact:.4f}, sampled {sampled:.4f}; "
+        f"sirius star MOVE-CZ-MOVE P(1) {p1_qb8:.4f}; off-graph cz refused"
     )
 
 

@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-30T02:39:22+00:00",
+ "approval": "user: 8192D decomposed exploration and lower-dim controls approved on QX (2048 shots) and Tuna-17 (75536 shots)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "d04d0b09d0524ad96bcdfbfe42f60b6ca3a7dbe97a940b3f830b45b0298705b7",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 903629,
+ "project": 804530,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "01-control-sedenion-pathion-32d.cq",
+   "job": 1642257,
+   "sha256": "babd3a3036cc814348536b28daee280839c28ae5e6c056616eec443284249d69"
+  },
+  {
+   "file": "02-control-chingon-routon-512d.cq",
+   "job": 1642258,
+   "sha256": "dac8c14f025bab86c77a7612e04991690a4658fe341c8eebdb35bc4e64002011"
+  },
+  {
+   "file": "03-dekavoudon-1024d-pure-shell.cq",
+   "job": 1642259,
+   "sha256": "20785c75ba804e635145fc28627e3bbac58b75350c89eec44cd2b549f6ac8c59"
+  }
+ ],
+ "submitted_utc": "2026-10-30T02:39:22+00:00"
+}

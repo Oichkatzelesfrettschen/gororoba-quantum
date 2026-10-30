@@ -381,9 +381,15 @@ def test_classification_reasons() -> None:
         raise AssertionError(rehearsal.classify(clicks(q0, q1, b1), layout))
 
 
-def test_check_rederives_the_noise_model_and_accepts_the_retained_case() -> None:
-    if rehearsal.check() != 0:
-        raise AssertionError("check failed")
+# check_job builds a job twice in the spawn pool; job-01's twelve settings run past the 10 s budget on the two-core
+# hosted runner, so it runs in the audit tier and job-00 covers the same path in the pull-request suite.
+@pytest.mark.parametrize(
+    "name",
+    [name if name == "job-00" else pytest.param(name, marks=pytest.mark.audit) for name in sorted(rehearsal.JOBS)],
+)
+def test_check_rederives_the_noise_model_and_accepts_the_retained_case(name: str) -> None:
+    if rehearsal.check([name]) != 0:
+        raise AssertionError(f"check failed for {name}")
 
 
 def planned_model(pooled_fidelity: float) -> dict[str, Any]:
@@ -716,7 +722,14 @@ def test_the_decision_rule_refuses_a_read_without_power_and_prepare_an_unseeded_
         rehearsal.prepare("job-00")
 
 
+def unregister_job_01(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Return job-01 to its state before registration: a seeded case with no request or job yet."""
+    monkeypatch.delitem(rehearsal.REQUESTS, "job-01")
+    monkeypatch.delitem(rehearsal.JOBS, "job-01")
+
+
 def test_the_decision_rule_admits_only_its_retained_case(monkeypatch: pytest.MonkeyPatch) -> None:
+    unregister_job_01(monkeypatch)
     designs = {**rehearsal.CASE_DESIGNS, "job-01": (rehearsal.DECISION, 1)}
     monkeypatch.setattr(rehearsal, "CASE_DESIGNS", designs)
     with pytest.raises(ValueError, match="take the decision rule beyond"):
@@ -742,6 +755,7 @@ def test_expected_seconds_reproduce_job_00_and_bound_the_job_by_max_duration() -
 def test_prepare_refuses_a_case_whose_expected_seconds_exceed_max_duration(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    unregister_job_01(monkeypatch)
     cases = staged_case_tree(
         tmp_path, monkeypatch, json.loads((ROOT / rehearsal.ANCHOR_READ).read_text(encoding="utf-8"))
     )
@@ -757,6 +771,7 @@ def test_prepare_refuses_a_case_whose_expected_seconds_exceed_max_duration(
 def test_prepare_derives_a_case_that_builds_checks_simulates_and_analyzes(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
+    unregister_job_01(monkeypatch)
     import perceval
 
     catalogue = json.loads((ROOT / rehearsal.ANCHOR_READ).read_text(encoding="utf-8"))

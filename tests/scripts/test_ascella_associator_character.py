@@ -58,6 +58,24 @@ def test_character_unitaries_orthogonality():
                 raise AssertionError(f"pair ({a}, {b}) arm {arm} not orthogonal")
 
 
+def test_all_21_pairs_schedule_spec():
+    from ascella_associator_character import ALL_PAIRS, build_schedule_spec
+
+    spec_16 = build_schedule_spec(all_pairs=False)
+    if len(spec_16) != 16:
+        raise AssertionError(f"expected 16 settings, got {len(spec_16)}")
+
+    spec_84 = build_schedule_spec(all_pairs=True)
+    if len(spec_84) != 84:
+        raise AssertionError(f"expected 84 settings, got {len(spec_84)}")
+
+    pairs_seen = set()
+    for item in spec_84:
+        pairs_seen.add(item["pair"])
+    if pairs_seen != set(ALL_PAIRS):
+        raise AssertionError(f"pairs_seen {len(pairs_seen)} != ALL_PAIRS {len(ALL_PAIRS)}")
+
+
 def test_embedded_12_mode_unitary():
     u8 = build_character_unitary(1, 2, "octonion")
     u12 = embed_12(u8)

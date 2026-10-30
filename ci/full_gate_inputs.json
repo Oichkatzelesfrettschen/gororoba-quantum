@@ -142,7 +142,10 @@
       "results/live/2026-10-19T231043.083602Z/**",
       "results/live/2026-10-20T031212.175942Z/**",
       "results/live/2026-10-21T043156.858484Z/**",
-      "results/live/2026-10-21T064222.721454Z/**"
+      "results/live/2026-10-21T064222.721454Z/**",
+      "results/live/2026-10-26T202817.431767Z/**",
+      "results/live/2026-10-27T160530.294787Z/**",
+      "results/live/2026-10-27T173602.753176Z/**"
     ],
     "core-597": [
       "docs/evidence/ghost_runs/**",
@@ -164,7 +167,10 @@
       "results/live/2026-10-19T231043.083602Z/**",
       "results/live/2026-10-20T031212.175942Z/**",
       "results/live/2026-10-21T043156.858484Z/**",
-      "results/live/2026-10-21T064222.721454Z/**"
+      "results/live/2026-10-21T064222.721454Z/**",
+      "results/live/2026-10-26T202817.431767Z/**",
+      "results/live/2026-10-27T160530.294787Z/**",
+      "results/live/2026-10-27T173602.753176Z/**"
     ],
     "core-311": [
       "docs/evidence/walk_scaffold_channels/**",
@@ -760,7 +766,9 @@
       "docs/evidence/quandela/catalogue.json",
       "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
       "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
-      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/provenance.json"
+      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/provenance.json",
+      "docs/evidence/quantum-experiment-conformance/ascella-worker-command-source-replay.json",
+      "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1-regeneration-receipt.json"
     ],
     "core-quantum-experiment-toolchain": [
       "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/**",
