@@ -1523,6 +1523,8 @@ def measurement_sequence_candidates(
                     runtime.ReplicaPolicy(args.replica_floor, 1, False, True),
                 )
                 choices.append(choice)
+            # A backend without registered diagnostic main qubits raises ScatterError, a ValueError, here.
+            diagnostic_main = set(measurement_sequence_scatter.diagnostic_main(snapshot.name)) if diagnostic else set()
             pubs = runtime.execution_pubs(choices)
             kinds = sorted(pub.kind for pub in pubs)
             if kinds != expected_kinds:
@@ -1540,12 +1542,8 @@ def measurement_sequence_candidates(
                         "name": MSQD_FAMILY,
                         "qubits": qubits,
                         "layout_source": "declared",
-                        "main_qubits": [
-                            q for q in qubits if q in measurement_sequence_scatter.diagnostic_main(snapshot.name)
-                        ],
-                        "extra_qubits": [
-                            q for q in qubits if q not in measurement_sequence_scatter.diagnostic_main(snapshot.name)
-                        ],
+                        "main_qubits": [q for q in qubits if q in diagnostic_main],
+                        "extra_qubits": [q for q in qubits if q not in diagnostic_main],
                         "arms": dict(MSQD_ARM_STEPS),
                         "total_rotation_rad": MSQ_THETA,
                         "steps": [16],
