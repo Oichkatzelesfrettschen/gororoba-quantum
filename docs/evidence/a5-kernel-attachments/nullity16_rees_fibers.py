@@ -797,6 +797,25 @@ def _mutation_candidate(row: dict[str, Any]) -> dict[str, Any] | None:
     return cast(dict[str, Any] | None, row.get("mutation_control"))
 
 
+def admitted_row_workers(budget_gib: int, items: int) -> int:
+    """Each row analysis holds one Singular scope of SINGULAR_MEMORY_LIMIT bytes, so a budget of B GiB admits
+    floor(B / 16) concurrent rows; the CPU allocation and the row count cap it further, and at least one runs."""
+    per_row_gib = int(SINGULAR_MEMORY_LIMIT) // 2**30
+    return max(1, min(budget_gib // per_row_gib, items, parallel.workers()))
+
+
+def _analyze_rows(tasks: tuple[RowTask, ...]) -> tuple[RowOutcome, ...]:
+    """Row analyses in order, pooled in chunks of the admitted width. GOROROBA_SINGULAR_BUDGET_GIB sets the
+    memory budget (default 16 GiB, one row at a time); a row's 300 s timeout makes its outcome depend on the
+    host, so a replay of the retained record keeps the retained host's width."""
+    budget = int(os.environ.get("GOROROBA_SINGULAR_BUDGET_GIB", "16"))
+    width = admitted_row_workers(budget, len(tasks))
+    outcomes: list[RowOutcome] = []
+    for start in range(0, len(tasks), width):
+        outcomes.extend(parallel.ordered_map(_analyze_row, tasks[start : start + width], min_items=2))
+    return tuple(outcomes)
+
+
 def build_record() -> tuple[dict[str, Any], tuple[RowOutcome, ...]]:
     _require(
         all(root * root % MODULAR_PRIME == MODULAR_PRIME - 1 for root in MODULAR_I_ROOTS),
@@ -812,8 +831,7 @@ def build_record() -> tuple[dict[str, Any], tuple[RowOutcome, ...]]:
     source_orbits = tuple(sorted({str(row["source_orbit"]) for row in basepoint_record["incidences"]}))
     closures = dict(parallel.ordered_map(_closure_row, source_orbits, min_items=1))
     tasks = parallel.ordered_map(partial(_task_row, closures=closures), basepoint_record["incidences"], min_items=1)
-    # Each row analysis runs Singular under a 16 GiB MemoryMax scope; the host admits one such scope at a time.
-    outcomes = tuple(_analyze_row(task) for task in tasks)
+    outcomes = _analyze_rows(tuple(tasks))
     rows = tuple(outcome.record for outcome in outcomes)
     pass_flags = parallel.ordered_map(_row_pass, rows, min_items=1)
     completed_flags = parallel.ordered_map(_completed_row, rows, min_items=1)

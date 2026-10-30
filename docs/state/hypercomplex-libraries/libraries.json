@@ -13718,6 +13718,17 @@
    "sys",
    "typing"
   ],
+  "scripts/qd_packed_mode_swap_analysis.py": [
+   "__future__",
+   "fractions",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "re",
+   "sys",
+   "typing"
+  ],
   "scripts/qd_platform.py": [
    "__future__",
    "argparse",

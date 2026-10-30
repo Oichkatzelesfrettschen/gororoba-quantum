@@ -205,6 +205,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "qpe_diagnostics.py",
     "patch_characterization.py",
     "qet_ladder.py",
+    "readout_actor_family.py",
     "coherence_window.py",
     "conditional_ramsey.py",
     "coherence_probes.py",

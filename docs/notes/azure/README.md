@@ -96,7 +96,9 @@ and qBraid ([qbraid/README.md](../qbraid/README.md)).
 ## Classical compute on the trial
 
 `az vm list-usage -l eastus` caps the subscription at 4 total regional vCPUs
-and 3 low-priority vCPUs. GPU sizes are unavailable in practice: the T4
+and 3 low-priority vCPUs. The cap is per region: westus2 reports its own
+`cores` and `FXmdsv2` limits of 4, so two `Standard_FX4mds_v2` VMs run at
+once only in two regions, one in eastus and one in westus2. GPU sizes are unavailable in practice: the T4
 family (`Standard NCASv3_T4`) has a quota of 0, and the legacy NC and NV
 families sit under the same 4-vCPU regional cap. HPC families (HB, HC, HX)
 read 0.

@@ -112,3 +112,9 @@ refused all three candidates. The fixed allocation fails calibrated inference;
 the invocation's 360-second aggregate ceiling plus 10-second reserve also
 exceeds the observed 198-second allowance. Software integration therefore
 does not admit an acquisition or a next-dimension hardware campaign.
+
+The bundle README is bound by its `integrity.json` ledger and keeps its
+recorded statement that new ET artifacts require Qiskit 2.6.0. New ET
+artifacts take the Qiskit version of requirements.txt instead:
+`scripts/replay_et_pilot.py` reads it through `ci/pins.py`. Historical evidence
+keeps the separately pinned replay interpreter.

@@ -148,6 +148,7 @@ The repository audit recognizes four operational statuses across all Python dist
 | `OQ_PYTHON` | Open Quantum SDK | [open_quantum/README.md](notes/open_quantum/README.md) |
 | `QD_PYTHON` | the Quandela MCP server; Perceval itself runs on `$PYTHON` | [quandela/README.md](notes/quandela/README.md) |
 | `iqm-python` | IQM Resonance client stack | [iqm/README.md](notes/iqm/README.md) |
+| `kaggle-environments-python` (Python 3.13), `kaggle-benchmarks-python` (Python 3.14) | Kaggle's simulation environments and benchmark authoring, isolated from the system protobuf | [kaggle/libraries.md](notes/kaggle/libraries.md#installed-as-isolated-stacks) |
 | `qi-stack-python`, `qi-stack` (Python 3.13) | the hash-locked Quantum Inspire stack: SDK, Qiskit provider and PennyLane plugin on qiskit 2.3.0 | [quantum-inspire-family.md](notes/qiskit-packages/quantum-inspire-family.md) |
 | `qiskit-debugger-python` (Python 3.11) | qiskit-debugger on its pinned Qiskit 0.43.2 | [qiskit-debugger.md](notes/qiskit-packages/qiskit-debugger.md) |
 | `quantum-pipeline-python`, `quantum-pipeline` (Python 3.13) | quantum-pipeline VQE runs on Aer 0.17.2 | [quantum-pipeline.md](notes/qiskit-packages/quantum-pipeline.md) |

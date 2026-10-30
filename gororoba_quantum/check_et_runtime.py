@@ -89,7 +89,7 @@ class ETRuntimeTests(unittest.TestCase):
             LiveRunError=live_run.LiveRunError, select_candidates=lambda *arguments: [first, second]
         )
         arguments = SimpleNamespace(max_replicas=1, replica_tiers=[1], optimizer_candidates=2, seeds=2)
-        group = SimpleNamespace(members=(object(),))
+        group = SimpleNamespace(members=(SimpleNamespace(name="fixture", replica_bodies=None, mirror=False),))
         trace: dict[str, Any] = {}
         with (
             patch.object(et_planning, "configuration", return_value={}),

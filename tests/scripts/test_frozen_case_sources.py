@@ -62,3 +62,31 @@ def test_every_bound_case_under_a_scope_is_found(repo: tuple[Path, str]) -> None
     (root / "cases" / "bound" / "cases.json").write_text('{"analysis_sources": {}}', encoding="utf-8")
     if pin.bound_cases([Path("cases")]) != ["cases/bound/cases.json"]:
         raise AssertionError("the scope scan missed a bound case or admitted an unbound one")
+
+
+def test_a_campaign_binds_its_sources_as_dependency_rows(repo: tuple[Path, str]) -> None:
+    root, _ = repo
+    digest = hashlib.sha256(b"frozen\n").hexdigest()
+    (root / "campaign.json").write_text(
+        json.dumps({"dependencies": [{"file": "shared.py", "sha256": digest}]}), encoding="utf-8"
+    )
+    revision = commit(root, "campaign")
+    (root / "shared.py").write_text("moved on\n", encoding="utf-8")
+    commit(root, "main moves")
+    if pin.check_case("campaign.json", revision)["changed_on_head"] != ["shared.py"]:
+        raise AssertionError("a pinned campaign must report main's drift of its dependency")
+    with pytest.raises(ValueError, match="analysis_sources or as dependencies rows"):
+        pin.bound_sources({"dependencies": [{"file": "shared.py"}]})
+
+
+def test_a_pinned_command_runs_at_the_revision_and_leaves_no_worktree(repo: tuple[Path, str], tmp_path: Path) -> None:
+    root, revision = repo
+    (root / "pins.json").write_text(
+        json.dumps({"schema": pin.SCHEMA, "cases": [{"case": "cases.json", "revision": revision}]}), encoding="utf-8"
+    )
+    commit(root, "pin")
+    (root / "shared.py").write_text("moved on\n", encoding="utf-8")
+    commit(root, "main moves")
+    result = pin.run_at_pin(root / "pins.json", "cases.json", ["cat", "shared.py"], tmp_path / "pinned")
+    if result.stdout != "frozen\n" or (tmp_path / "pinned").exists():
+        raise AssertionError("the command must read the pinned bytes and the worktree must be removed")
