@@ -213,6 +213,7 @@ differs from it only in the `cd_core.py` digest.
 
 | File | Contents |
 |---|---|
+| [topics/a5-exceptional-fiber-findings.md](notes/topics/a5-exceptional-fiber-findings.md) | A_5 exceptional fibers of the nullity-8 closures along their boundary orbits: Hilbert functions by degree-by-degree membership rank, quadric-scheme structure, formal-arc support certificate, retired elimination routes, and the hypotheses that survive falsification |
 | [topics/box-kites/README.md](notes/topics/box-kites/README.md) | box-kite experiment program index |
 | [bdsc-pauli-readout.md](notes/topics/bdsc-pauli-readout.md) | BDSC target and blade effects as three-term four-qubit Pauli sums; local readout and 13-basis cover |
 | [algebra-hardware-probe-principles.md](notes/topics/algebra-hardware-probe-principles.md) | first principles of algebra hardware probes: mutation test, eigen-observable, interleaving, null arm, noisy coherent response; findings ledger of the Garnet runs |
