@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import math
 from typing import Any
 
@@ -944,6 +945,44 @@ def test_shared_laws_round_trip_and_leave_other_records() -> None:
     check(live_run.shared_law_record(other) is other, "only envelope records share laws")
     with pytest.raises(live_run.LiveRunError):
         live_run.stored_ideal({}, shared["groups"][0]["members"][0])
+
+
+def test_reused_predictions_carry_their_shared_laws(tmp_path: Any, monkeypatch: pytest.MonkeyPatch) -> None:
+    import argparse
+    import hashlib
+    import types
+
+    import live_run
+
+    big = {"encoding": "support", "length": 1 << 17, "support": {str(k): 1.0 / 2000 for k in range(2000)}}
+    planned: dict[str, Any] = {
+        "state": "planned",
+        "family_configuration": {"name": "measurement-sequence-envelope"},
+        "groups": [{"group": "g", "members": [{"name": "m_q0", "ideal": big}]}],
+    }
+    approved = live_run.shared_law_record(planned)
+    (tmp_path / "record.json").write_text(json.dumps(approved))
+    (tmp_path / "isa.qpy").write_bytes(b"")
+    for name in ("device_blockers", "approved_choice_blockers"):
+        monkeypatch.setattr(live_run, name, lambda *_args: [])
+    monkeypatch.setattr(live_run, "check_choice_targets", lambda _choices: None)
+    monkeypatch.setattr(live_run, "execution_requirements", lambda _choice: {})
+    monkeypatch.setattr(live_run, "execution_pubs", lambda _choices: [])
+    monkeypatch.setattr(live_run, "fusion_summary", lambda _pubs: {})
+    monkeypatch.setattr(live_run, "placed_qubit_calibration", lambda *_args: {})
+    monkeypatch.setattr(live_run, "choice_calibration_values", lambda _choice: {})
+    snap = types.SimpleNamespace(calibration="now", identity={}, properties=None)
+    choice: Any = types.SimpleNamespace(group=types.SimpleNamespace(name="g"), snap=snap, replicas=[])
+    record = {name: approved.get(name) for name in (*live_run.APPROVED_RECORD_FIELDS, "seed_simulator")}
+    digest = hashlib.sha256((tmp_path / "record.json").read_bytes()).hexdigest()
+    args = argparse.Namespace(submit=True, approved_record=str(tmp_path), approved_record_sha256=digest)
+    check(live_run.reuse_approved_predictions([choice], record, args), str(record.get("prediction_reuse")))
+    member = live_run.shared_law_record(record)["groups"][0]["members"][0]
+    check(
+        live_run.stored_ideal(live_run.shared_law_record(record), member)
+        == live_run.stored_ideal(planned, planned["groups"][0]["members"][0]),
+        "the submitted record resolves the reused law",
+    )
 
 
 # --- schema msq-envelope-v2: delay ladder, budget-derived ceilings, layout rule v2 ---------------------------------

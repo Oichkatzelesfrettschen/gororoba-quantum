@@ -3817,6 +3817,9 @@ def reuse_approved_predictions(choices: list[Choice], record: dict[str, Any], ar
         }
         groups.append(copy.deepcopy(group) | {key: fresh[key] for key in FRESH_GROUP_FIELDS if key in fresh})
     record["groups"] = groups
+    if "ideal_laws" in approved:
+        # The copied member ideals reference the approved record's shared laws by digest.
+        record["ideal_laws"] = copy.deepcopy(approved["ideal_laws"])
     record["evaluation_simulation_batches"] = copy.deepcopy(approved.get("evaluation_simulation_batches", []))
     log.update(
         {
@@ -8303,7 +8306,7 @@ def shared_law_record(record: dict[str, Any]) -> dict[str, Any]:
     """An envelope record with each repeated large member ideal moved into ideal_laws; other records unchanged."""
     if not is_envelope_family(record.get("family_configuration", {}).get("name")):
         return record
-    laws: dict[str, Any] = {}
+    laws: dict[str, Any] = dict(record.get("ideal_laws", {}))
     groups = []
     for group in record.get("groups", []):
         members = []
