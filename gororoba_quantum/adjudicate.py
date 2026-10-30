@@ -334,11 +334,23 @@ def _simulate(simulator: Any, circuit: QuantumCircuit, shots: int, seed: int) ->
 
 
 def adjudicate(
-    service: Any, run_dir: Path, seed: int = ANALYSIS_SEED, seed_source: dict[str, Any] | None = None
+    service: Any,
+    run_dir: Path,
+    seed: int = ANALYSIS_SEED,
+    seed_source: dict[str, Any] | None = None,
+    *,
+    actor_collection_sha256: str | None = None,
 ) -> dict[str, Any]:
     import live_run
 
     record = json.loads((run_dir / "record.json").read_text())
+    if actor_collection_sha256 is not None or live_run.actor_run_marker(record, run_dir):
+        import readout_actor_family
+
+        try:
+            return readout_actor_family.adjudicate(live_run, run_dir, actor_collection_sha256)
+        except (ValueError, OSError) as error:
+            raise AdjudicationError(str(error)) from error
     qpy_bytes = (run_dir / "isa.qpy").read_bytes()
     expected_qpy = record.get("submission", {}).get("qpy_archive_sha256")
     if hashlib.sha256(qpy_bytes).hexdigest() != expected_qpy:
@@ -869,6 +881,7 @@ def main() -> int:
     parser.add_argument("run", nargs="?", type=Path, help="run directory with record.json, isa.qpy, and raw/")
     qrng_seeds.add_seed_argument(parser, "--seed", default=ANALYSIS_SEED)
     parser.add_argument("--check", action="store_true", help="run the self-check on synthetic data and exit")
+    parser.add_argument("--actor-collection-sha256", help="independently retained sparse collection digest")
     args = parser.parse_args()
     if args.check:
         _check()
@@ -878,6 +891,7 @@ def main() -> int:
     from qiskit_ibm_runtime import QiskitRuntimeService
 
     import ibm_account
+    import live_run
 
     try:
         seed_source = None
@@ -885,7 +899,12 @@ def main() -> int:
             seed_source = qrng_seeds.seed_record(
                 "gororoba_quantum/adjudicate.py", "--seed", qrng_seeds.repo_relative(args.run), args.seed_source
             )
-        out = adjudicate(ibm_account.open_service(QiskitRuntimeService), args.run, args.seed, seed_source)
+        record = json.loads((args.run / "record.json").read_text())
+        actor = args.actor_collection_sha256 is not None or live_run.actor_run_marker(record, args.run)
+        service = None if actor else ibm_account.open_service(QiskitRuntimeService)
+        out = adjudicate(
+            service, args.run, args.seed, seed_source, actor_collection_sha256=args.actor_collection_sha256
+        )
     except AdjudicationError as error:
         print(f"FAIL: {error}", file=sys.stderr)
         return 1

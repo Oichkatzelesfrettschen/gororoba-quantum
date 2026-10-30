@@ -1,0 +1,21 @@
+{
+  "schema": "readout-actor-admission-observation-v1",
+  "observed_at": "2026-10-29T00:47:21.312632+00:00",
+  "surface": "read-only IBM service usage and backend inventory; zero submission calls",
+  "account_role": "default primary",
+  "usage_remaining_seconds": 68,
+  "usage_period": {
+    "start_time": "2026-10-01T00:47:21.250Z",
+    "end_time": "2026-10-29T00:47:21.250Z"
+  },
+  "immediate_submit_gate_seconds": 66,
+  "conservative_three_job_start_seconds": 78,
+  "configured_aggregate_ceiling_seconds": 20,
+  "summed_job_ceilings_seconds": 18,
+  "reserve_seconds": 48,
+  "backend_inventory": [
+    "ibm_fez",
+    "ibm_kingston",
+    "ibm_marrakesh"
+  ]
+}

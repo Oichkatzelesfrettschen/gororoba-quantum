@@ -32,7 +32,7 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 25 |
-| exploratory reanalysis | exploratory | 90 |
+| exploratory reanalysis | exploratory | 91 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 30 |
@@ -416,10 +416,11 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [ascella-transition-mesh-port-5](results/quandela/runs/ascella-transition-mesh-port-5) | Quandela Cloud | dimension-six compilation and output-port diagnostics | qpu:ascella | 1 | 22 | completed | 1.131072 credits |
 | [ascella-transition-mesh-port-6](results/quandela/runs/ascella-transition-mesh-port-6) | Quandela Cloud | dimension-six compilation and output-port diagnostics | qpu:ascella | 1 | 22 | completed | 1.131072 credits |
 | [2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat](results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat) | Quandela Cloud | day-separated dimension-six matched meshes | qpu:ascella | 1 | 5 | completed | 1.131072 credits |
+| [2026-10-29T191606.826758Z](results/live/2026-10-29T191606.826758Z) | IBM Quantum | readout-actor | ibm_fez | 3 | 24 | DONE | 11 s |
 
 The IBM service inventory observed at 2026-10-28T00:29:17.005404+00:00 holds 43 physical jobs with 532 settled seconds; the account then reported 532 of 600 s consumed in the rolling window ending 2026-10-28T00:29:16.938Z. That is an observation, not a current balance or an authorization.
 
-The IBM service inventory observed at 2026-10-28T00:23:56.659482+00:00 holds 25 physical jobs with 440 settled seconds; the account then reported 440 of 600 s consumed in the rolling window ending 2026-10-28T00:23:56.594Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-29T23:07:45.159780+00:00 holds 32 physical jobs with 451 settled seconds; the account then reported 451 of 600 s consumed in the rolling window ending 2026-10-29T23:07:45.079Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-28T00:24:11+00:00 lists 432 jobs with 7813120 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 

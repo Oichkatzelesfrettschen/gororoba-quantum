@@ -38,7 +38,7 @@ import json
 import re
 import sys
 from datetime import datetime
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
@@ -64,7 +64,28 @@ def require(condition: bool, message: str) -> None:
 
 
 def digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    checksum = hashlib.sha256()
+    with path.open("rb") as stream:
+        while block := stream.read(1024 * 1024):
+            checksum.update(block)
+    return checksum.hexdigest()
+
+
+def actor_bytes(path: Path, maximum: int) -> bytes:
+    """Bound materialization of each actor receipt input before parsing or projection."""
+    with path.open("rb") as stream:
+        data = stream.read(maximum + 1)
+    require(len(data) <= maximum, f"actor artifact exceeds its byte limit: {path.name}")
+    return data
+
+
+def actor_charge(value: Any) -> Decimal:
+    try:
+        charge = Decimal(str(value))
+    except InvalidOperation as error:
+        raise ValueError("actor charge is not a finite nonnegative number") from error
+    require(charge.is_finite() and charge >= 0, "actor charge is not a finite nonnegative number")
+    return charge
 
 
 BINARY_DIGITS = str.maketrans("", "", "01")
@@ -180,7 +201,282 @@ def failed_collections(instance: str, default_instance: str) -> dict[str, Path]:
             if "result_unavailable" in entry:
                 require(identity not in runs, f"two runs collect failed job {identity}")
                 runs[identity] = run
+    for record_path in sorted((ROOT / "results/live").glob("*/record.json")):
+        run = record_path.parent
+        record = read(record_path)
+        if record.get("schema_version") != "readout-actor-run-v1" or not record.get("submission", {}).get("jobs"):
+            continue
+        if archive_instance(run, default_instance) != instance:
+            continue
+        if not actor_anchor_path(run).is_file():
+            continue
+        _, actor_result, _ = actor_collection(run)
+        for identity, entry in actor_result["jobs"].items():
+            if entry.get("status") in FAILED_STATUSES:
+                require(identity not in runs, f"two runs collect failed job {identity}")
+                runs[identity] = run
     return runs
+
+
+def actor_anchor_path(run: Path) -> Path:
+    return (
+        ROOT
+        / "docs/evidence/readout-actor-acquisition-review/retention-anchors"
+        / f"{digest(run / 'record.json')}.json"
+    )
+
+
+def retention_family(run: Path, *, allow_recovered: bool = False) -> str:
+    """Select only known acquisition schemas or the uncollected retrospective archive."""
+    record_path = run / "record.json"
+    if not record_path.is_file():
+        require(
+            allow_recovered and not (run / "collect.json").exists() and not (run / "actor-case.json").exists(),
+            "run record is missing",
+        )
+        return "recovered"
+    record = read(record_path)
+    require(isinstance(record, dict), "run record must be an object")
+    schema = record.get("schema_version")
+    configuration = record.get("family_configuration")
+    family_name = configuration.get("name") if isinstance(configuration, dict) else None
+    actor_marker = (run / "actor-case.json").exists() or "reviewed_record_sha256" in record
+    if schema == "readout-actor-run-v1" and family_name == "readout-actor":
+        return "actor"
+    if type(schema) is int and schema in (6, 7) and family_name != "readout-actor" and not actor_marker:
+        return "legacy"
+    raise ValueError("unsupported or inconsistent retention record schema")
+
+
+def actor_collection(run: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, str]]:
+    """Read immutable actor anchors outside the analyzed run, independently retained by its operator."""
+    from readout_sparse_receipt import validate_collection_sources
+
+    record_path = run / "record.json"
+    record_sha = digest(record_path)
+    anchor_path = actor_anchor_path(run)
+    require(anchor_path.is_file(), "actor run lacks an independently retained external retention anchor")
+    anchor = read(anchor_path)
+    require(
+        anchor.get("schema") == "readout-actor-retention-anchor-v1"
+        and anchor.get("record_sha256") == record_sha
+        and anchor.get("run") == str(run.relative_to(ROOT)),
+        "actor retention anchor identity differs",
+    )
+    collection_sha = anchor.get("collection_sha256")
+    require(
+        isinstance(collection_sha, str) and bool(re.fullmatch(r"[0-9a-f]{64}", collection_sha)),
+        "actor collection anchor is invalid",
+    )
+    collection_path = run / f"actor-collection-{collection_sha}.json"
+    require(collection_path.is_file(), "anchored actor collection is missing")
+    require(digest(collection_path) == collection_sha, "actor collection differs from its external anchor")
+    record, collection = read(record_path), read(collection_path)
+    validate_collection_sources(collection)
+    require(record.get("schema_version") == "readout-actor-run-v1", "unsupported actor acquisition record")
+    require(
+        collection.get("schema") == "readout-actor-collection-v1"
+        and collection.get("record_sha256") == record_sha
+        and collection.get("reviewed_record_sha256")
+        == record.get("reviewed_record_sha256")
+        == anchor.get("reviewed_record_sha256"),
+        "actor collection submission binding differs",
+    )
+    require(
+        isinstance(anchor.get("reviewed_record_sha256"), str)
+        and bool(re.fullmatch(r"[0-9a-f]{64}", anchor["reviewed_record_sha256"]))
+        and type(collection.get("submission_complete")) is bool
+        and type(collection.get("all_allocations_retained")) is bool,
+        "actor reviewed identity or completeness types differ",
+    )
+    require(
+        record.get("inference")
+        == {
+            "status": "descriptive",
+            "hardware_verdict": None,
+            "physical_alignment": "unverified",
+            "predecessor_order": "unverified",
+        }
+        and collection.get("inference") == record.get("inference"),
+        "actor inference binding differs",
+    )
+    require(
+        digest(run / "isa.qpy")
+        == record.get("qpy_sha256")
+        == record["submission"].get("qpy_archive_sha256")
+        == collection.get("qpy_sha256"),
+        "actor submitted QPY differs",
+    )
+    submitted = record["submission"]["jobs"]
+    require(
+        bool(submitted)
+        and len({row["job_id"] for row in submitted}) == len(submitted)
+        and set(collection["jobs"]) == {row["job_id"] for row in submitted},
+        "actor accepted-job coverage differs",
+    )
+    requested = {row["name"] for row in record["family_configuration"]["case"]["allocations"]}
+    submitted_pubs = [pub for row in submitted for pub in row["pubs"]]
+    submitted_names = {pub["name"] for pub in submitted_pubs}
+    planned = {pub["name"]: pub for pub in record["execution_pubs"]}
+    require(
+        len(planned) == len(record["execution_pubs"])
+        and set(planned) == requested
+        and len(submitted_pubs) == len(submitted_names)
+        and all(pub == planned.get(pub["name"]) for pub in submitted_pubs),
+        "actor submitted PUB manifest differs from the frozen plan",
+    )
+    observed = [pub["name"] for row in collection["jobs"].values() for pub in row["pubs"]]
+    require(
+        len(observed) == len(set(observed)) and set(observed) <= submitted_names <= requested,
+        "actor retained allocation identities differ",
+    )
+    complete_submission = bool(record["submission"].get("complete")) and submitted_names == requested
+    require(
+        collection["submission_complete"] == complete_submission
+        and collection["allocations_without_results"] == sorted(requested - set(observed)),
+        "actor design-completeness accounting differs",
+    )
+    complete = (
+        complete_submission
+        and set(observed) == requested
+        and all("collection_error_type" not in row for row in collection["jobs"].values())
+    )
+    require(collection["all_allocations_retained"] == complete, "actor retention completeness differs")
+    sources = {
+        str(path.relative_to(ROOT)): digest(path)
+        for path in (anchor_path, record_path, collection_path, run / "isa.qpy")
+    }
+    return record, collection, sources
+
+
+def actor_pub_evidence(task: tuple[Any, ...]) -> tuple[dict[str, str], set[str]]:
+    """Verify one independent PUB against its frozen manifest and indexed evidence."""
+    from readout_sparse_receipt import verify_and_project
+
+    position, pub, expected, directory, case, immutable_bytes, archive, shots, root = task
+    sources: dict[str, str] = {}
+    supplemental: set[str] = set()
+    require(
+        pub["name"] == expected["name"] and pub["pub_index"] == position,
+        "actor retained PUB attribution differs",
+    )
+    inputs = {}
+    for field, prefix, maximum in (
+        ("receipt_file", "receipt", 1024 * 1024),
+        ("manifest_file", "projection", 4 * 1024 * 1024),
+        ("index_file", "index", 4 * 1024 * 1024),
+    ):
+        name = pub[field]
+        require(
+            isinstance(name, str) and bool(re.fullmatch(prefix + r"-[0-9a-f]{64}\.json", name)),
+            "actor supplemental filename differs",
+        )
+        path = directory / name
+        inputs[field] = actor_bytes(path, maximum)
+        checksum = hashlib.sha256(inputs[field]).hexdigest()
+        require(checksum == name[len(prefix) + 1 : -5], "actor supplemental digest differs")
+        sources[str(path.relative_to(root))] = checksum
+        supplemental.add(name)
+    index_bytes = inputs["index_file"]
+    require(
+        index_bytes == immutable_bytes,
+        "actor immutable acquisition snapshot differs",
+    )
+    expected_manifest = {
+        "schema": "readout-sparse-projection-v1",
+        "condition": expected["name"],
+        "pub_name": expected["name"],
+        "pub_index": position,
+        "registers": {"c": case["width"]},
+        "bits": [
+            {"register": "c", "index": bit, "logical": bit, "physical": bit, "prepared": value}
+            for bit, value in enumerate(expected["prepared_bits"])
+        ],
+        "pairs": case["pairs"],
+        "groups": case["groups"],
+    }
+    require(
+        json.loads(inputs["manifest_file"]) == expected_manifest,
+        "actor projection differs from the frozen preparation or mapping",
+    )
+    projected = verify_and_project(
+        actor_bytes(directory / f"pub_{position:02d}.json", 256 * 1024 * 1024),
+        index_bytes,
+        archive,
+        inputs["manifest_file"],
+        inputs["receipt_file"],
+        pub["receipt_sha256"],
+    )
+    require(
+        projected == pub["result"] and projected["projection"]["num_shots"] == shots,
+        "actor sparse projection or shot denominator differs",
+    )
+    return sources, supplemental
+
+
+def actor_job_evidence(
+    job: dict[str, Any], run: Path, charge: Decimal
+) -> tuple[dict[str, Any], dict[str, str], set[str]]:
+    """Verify a recorded actor receipt graph without requiring historical source bytes to match today's tree."""
+    record, collection, sources = actor_collection(run)
+    identity = job["job_id"]
+    require(
+        isinstance(identity, str)
+        and bool(identity)
+        and Path(identity).name == identity
+        and identity not in (".", ".."),
+        "actor job identity is not a local directory name",
+    )
+    sent = [row for row in record["submission"]["jobs"] if row.get("job_id") == identity]
+    require(len(sent) == 1, "actor job is absent or duplicated in the submitted ledger")
+    submitted = sent[0]
+    require(
+        submitted["backend"] == job["backend"]
+        and submitted["shots"] == job["shots_per_pub"]
+        and len(submitted["pubs"]) == job["pub_count"],
+        "actor provider denominator or backend differs",
+    )
+    entry = collection["jobs"].get(identity)
+    require(isinstance(entry, dict) and entry.get("status") == job["status"], "actor collection status differs")
+    require(
+        entry["usage"].get("job_status") == job["status"]
+        and entry["usage"].get("usage_status") == "final"
+        and actor_charge(entry["usage"].get("qpu_charge_time_seconds")) == charge,
+        "actor settled charge differs",
+    )
+    supplemental: set[str] = set()
+    if job["status"] == "DONE":
+        require(len(entry["pubs"]) == job["pub_count"], "actor completed-job PUB retention is incomplete")
+        archive = actor_bytes(run / "isa.qpy", 32 * 1024 * 1024)
+        directory = run / "raw" / identity
+        case = record["family_configuration"]["case"]
+        immutable_bytes = actor_bytes(directory / "acquisition-index.json", 4 * 1024 * 1024)
+        immutable = json.loads(immutable_bytes)
+        expected_files = {"result_metadata.json", *(f"pub_{position:02d}.json" for position in range(job["pub_count"]))}
+        require(
+            isinstance(immutable, dict)
+            and immutable.get("job_id") == identity
+            and isinstance(immutable.get("files"), dict)
+            and set(immutable["files"]) == expected_files,
+            "actor immutable acquisition identity or indexed file set differs",
+        )
+        for name, checksum in immutable["files"].items():
+            require(
+                isinstance(checksum, str)
+                and bool(re.fullmatch(r"[0-9a-f]{64}", checksum))
+                and digest(directory / name) == checksum,
+                "actor indexed raw artifact differs",
+            )
+        tasks = [
+            (position, pub, expected, directory, case, immutable_bytes, archive, job["shots_per_pub"], ROOT)
+            for position, (pub, expected) in enumerate(zip(entry["pubs"], submitted["pubs"], strict=True))
+        ]
+        for pub_sources, pub_supplemental in ordered_map(actor_pub_evidence, tasks, min_items=1):
+            sources.update(pub_sources)
+            supplemental.update(pub_supplemental)
+    else:
+        require(job["status"] in FAILED_STATUSES and not entry["pubs"], "failed actor job carries invented PUBs")
+    return collection, sources, supplemental
 
 
 def failed_row(job: dict[str, Any], run: Path | None, charge: Decimal) -> dict[str, Any]:
@@ -188,6 +484,19 @@ def failed_row(job: dict[str, Any], run: Path | None, charge: Decimal) -> dict[s
     identity = job["job_id"]
     if run is None:
         raise ValueError(f"failed job {identity} has no collection naming it")
+    if retention_family(run) == "actor":
+        collection, sources, _ = actor_job_evidence(job, run, charge)
+        return {
+            **job,
+            "run": str(run.relative_to(ROOT)),
+            "provenance": "failed_actor_collection",
+            "submitted_pub_shots": job["pub_count"] * job["shots_per_pub"],
+            "raw_data_files": 0,
+            "metrics_snapshots": 0,
+            "source_files": sources,
+            "design_complete": collection["all_allocations_retained"],
+            "result_unavailable": "provider terminal status " + job["status"],
+        }
     header = read(run / "collect.json")[0]
     entry = header["jobs"][identity]
     require(header["submission_complete"] is True, "collection is incomplete")
@@ -236,10 +545,34 @@ def archived_row(task: tuple[dict[str, Any], Path, Decimal]) -> dict[str, Any]:
     run = directory.parent.parent
     index = read(index_path)
     sources = {str(index_path.relative_to(ROOT)): digest(index_path)}
+    actor = retention_family(run, allow_recovered=True) == "actor"
+    supplemental: set[str] = set()
+    actor_data = None
+    if actor:
+        actor_data, actor_sources, supplemental = actor_job_evidence(job, run, charge)
+        sources.update(actor_sources)
+    immutable = directory / "acquisition-index.json"
+    if immutable.exists():
+        acquisition = read(immutable)
+        require(
+            acquisition == {"job_id": identity, "files": index["files"]},
+            "immutable acquisition index differs from the raw ledger",
+        )
+        supplemental.add(immutable.name)
+        sources[str(immutable.relative_to(ROOT))] = digest(immutable)
+    collection_lock = directory / ".collection.lock"
+    if collection_lock.exists():
+        require(
+            not collection_lock.is_symlink() and collection_lock.stat().st_size == 0,
+            "collection synchronization file differs",
+        )
+        supplemental.add(collection_lock.name)
     require("result_metadata.json" in index["files"], "indexed result metadata is missing")
     indexed = set(index["files"]) | set(index["metrics"]) | {"index.json"}
     present = {path.name for path in directory.iterdir() if path.is_file()}
-    require(present == indexed, f"raw files and index differ: {sorted(present ^ indexed)}")
+    require(
+        present == indexed | supplemental, f"raw files and index differ: {sorted(present ^ (indexed | supplemental))}"
+    )
     for name, expected in index["files"].items():
         require(
             name in {"result_metadata.json"} or bool(re.fullmatch(r"pub_[0-9]+\.json", name)),
@@ -284,7 +617,10 @@ def archived_row(task: tuple[dict[str, Any], Path, Decimal]) -> dict[str, Any]:
             width = register["num_bits"]
             require(width > 0 and binary_rows(bits, width), "register width or binary data differs")
     collection = run / "collect.json"
-    if collection.exists():
+    if actor:
+        evidence_names = []
+        provenance = "registered_actor_collection"
+    elif collection.exists():
         header = read(collection)[0]
         entry = header["jobs"][identity]
         require(header["submission_complete"] is True, "collection is incomplete")
@@ -333,7 +669,14 @@ def archived_row(task: tuple[dict[str, Any], Path, Decimal]) -> dict[str, Any]:
         "raw_data_files": len(index["files"]),
         "metrics_snapshots": len(names),
         "source_files": sources,
+        **({"design_complete": actor_data["all_allocations_retained"]} if actor_data is not None else {}),
     }
+
+
+def failure_summary(rows: list[dict[str, Any]]) -> tuple[int, Decimal]:
+    """Count settled failures from both supported collection families."""
+    failures = [row for row in rows if row["provenance"] in {"failed_collection", "failed_actor_collection"}]
+    return len(failures), sum((Decimal(str(row["final_qpu_charge_seconds"])) for row in failures), Decimal(0))
 
 
 def reconcile(snapshot_path: Path) -> dict[str, Any]:
@@ -422,6 +765,7 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
     else:
         historical, campaign, later = Decimal(0), Decimal(0), Decimal(total)
     require(campaign <= CAMPAIGN_CEILING_SECONDS, "new campaign exceeds authorized 180-second ceiling")
+    failed_count, failed_charge = failure_summary(rows)
     payload = {
         "schema": "qpu-job-retention-audit-v1",
         "observed_at": snapshot["observed_at"],
@@ -450,17 +794,8 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         "usage_window_charge_seconds": str(in_window),
         "account_usage_observation": snapshot["account_usage"],
         "awaiting_observation": sorted(awaiting),
-        "failed_job_count": sum(1 for row in rows if row["provenance"] == "failed_collection"),
-        "failed_charge_seconds": str(
-            sum(
-                (
-                    Decimal(str(row["final_qpu_charge_seconds"]))
-                    for row in rows
-                    if row["provenance"] == "failed_collection"
-                ),
-                Decimal(0),
-            )
-        ),
+        "failed_job_count": failed_count,
+        "failed_charge_seconds": str(failed_charge),
         "jobs": rows,
     }
     if not is_default:
@@ -480,8 +815,67 @@ def main() -> int:
     )
     parser.add_argument("--out", type=Path, help="audit path for --snapshot; default pairs with the inventory name")
     parser.add_argument("--check", action="store_true")
+    parser.add_argument(
+        "--actor-run", type=Path, help="verify externally anchored sparse actor retention before inventory"
+    )
+    parser.add_argument("--retention-preflight", type=Path, help="route a run to its required retention evidence")
     arguments = parser.parse_args()
     try:
+        if arguments.retention_preflight is not None:
+            require(
+                arguments.actor_run is None
+                and arguments.snapshot is None
+                and arguments.out is None
+                and not arguments.check,
+                "retention preflight is a separate offline verification mode",
+            )
+            run = arguments.retention_preflight.resolve()
+            if retention_family(run) == "actor":
+                arguments.actor_run = run
+            else:
+                require((run / "collect.json").is_file(), "run has no collected evidence")
+                print("Legacy collection exists; inventory verification remains separate")
+                return 0
+        if arguments.actor_run is not None:
+            require(
+                arguments.snapshot is None and arguments.out is None and not arguments.check,
+                "--actor-run is a separate offline verification mode",
+            )
+            run = arguments.actor_run.resolve()
+            record, collection, _ = actor_collection(run)
+            for entry in record["submission"]["jobs"]:
+                identity = entry["job_id"]
+                retained = collection["jobs"][identity]
+                require(retained.get("status") in {"DONE", *FAILED_STATUSES}, "actor job remains unfinished")
+                charge = actor_charge(retained["usage"].get("qpu_charge_time_seconds"))
+                job = {
+                    "job_id": identity,
+                    "backend": entry["backend"],
+                    "shots_per_pub": entry["shots"],
+                    "pub_count": len(entry["pubs"]),
+                    "status": retained["status"],
+                }
+                if retained["status"] == "DONE":
+                    index_path = run / "raw" / identity / "index.json"
+                    index = read(index_path)
+                    names = index["metrics"]
+                    require(isinstance(names, list) and bool(names), "actor metrics index is empty")
+                    latest = index.get("metrics_latest")
+                    if latest is None:
+                        require(len(names) == 1, "actor metrics lack a latest identity")
+                        latest = names[0]
+                    require(
+                        latest in names
+                        and isinstance(latest, str)
+                        and bool(re.fullmatch(r"job_metrics(?:\.[0-9]+)?\.json", latest)),
+                        "actor latest metrics identity differs",
+                    )
+                    job["timestamps"] = read(index_path.parent / latest)["timestamps"]
+                    archived_row((job, index_path, charge))
+                else:
+                    actor_job_evidence(job, run, charge)
+            print("Externally anchored actor retention verified; inventory observation remains separate")
+            return 0
         if arguments.snapshot is not None:
             snapshots = [arguments.snapshot]
         else:

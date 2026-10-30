@@ -20,6 +20,22 @@ def test_owned_draws_and_reserved_rows_validate() -> None:
     seed_provenance.check_tree_once()
 
 
+def test_owned_validation_reuses_manifest_claims(monkeypatch: pytest.MonkeyPatch) -> None:
+    scans: list[object] = []
+
+    def claimed(root: object) -> set[str]:
+        scans.append(root)
+        return {"draw-claimed.json"}
+
+    monkeypatch.setattr(seed_provenance, "claimed_records", claimed)
+    monkeypatch.setattr(seed_provenance, "load", lambda _path, _field: [])
+    monkeypatch.setattr(seed_provenance, "tracked_files", lambda: [])
+    monkeypatch.setattr(seed_provenance, "check_reserved", lambda *_args: None)
+    seed_provenance.check_tree_once()
+    if len(scans) != 1:
+        raise AssertionError("owned and reserved validation must share one manifest claim scan")
+
+
 def test_reproduction_seeds_only_shrink() -> None:
     seed_provenance.check_shrink()
 
