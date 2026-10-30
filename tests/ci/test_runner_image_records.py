@@ -169,8 +169,11 @@ def test_write_receipts_only_the_files_the_container_wrote(tmp_path: Path) -> No
     receipts = cache / "receipts.jsonl"
     host = root / "host.json"
 
+    # The producer runs under the ledger's arithmetic, whatever the gate environment assigns.
+    pinned = ["env", *(f"{name}={value}" for name, value in sorted(records.LEDGER_ARITHMETIC.items()))]
+
     def runner(arguments: list[str], cwd: Path, check: bool) -> subprocess.CompletedProcess[bytes]:
-        if cwd == root or arguments[1] != str(cwd / "ci" / "runner_image.sh") or arguments[2:] != ["producer"]:
+        if cwd == root or arguments[1] != str(cwd / "ci" / "runner_image.sh") or arguments[2:] != [*pinned, "producer"]:
             raise AssertionError(f"the command ran outside a snapshot: {arguments} in {cwd}")
         if (cwd / ".git").exists():
             raise AssertionError("the snapshot carries .git")
@@ -280,3 +283,17 @@ def test_a_declared_directory_stands_for_each_file_unless_exempt(tmp_path: Path)
     found = records.replay_problems([gate], ledger, tmp_path)
     if len(found) != 1 or not found[0].startswith("g replays out/frozen/case.json"):
         raise AssertionError(found)
+
+
+def test_digest_follows_the_ledger_arithmetic_not_the_gate_environment() -> None:
+    with TemporaryDirectory() as directory:
+        root = Path(directory)
+        copy_inputs(root)
+        before = records.image_id(root)
+        with mock.patch.dict("os.environ", {"OPENBLAS_CORETYPE": "SkylakeX", "OMP_NUM_THREADS": "8"}):
+            if records.image_id(root) != before:
+                raise AssertionError("the caller's environment moved the ledger digest")
+        moved = records.LEDGER_ARITHMETIC | {"OPENBLAS_CORETYPE": "SkylakeX"}
+        with mock.patch.object(records, "LEDGER_ARITHMETIC", moved):
+            if records.image_id(root) == before:
+                raise AssertionError("a changed ledger arithmetic left the digest unchanged")
