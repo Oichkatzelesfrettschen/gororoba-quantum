@@ -381,9 +381,10 @@ def test_classification_reasons() -> None:
         raise AssertionError(rehearsal.classify(clicks(q0, q1, b1), layout))
 
 
-def test_check_rederives_the_noise_model_and_accepts_the_retained_case() -> None:
-    if rehearsal.check() != 0:
-        raise AssertionError("check failed")
+@pytest.mark.parametrize("name", sorted(rehearsal.JOBS))
+def test_check_rederives_the_noise_model_and_accepts_the_retained_case(name: str) -> None:
+    if rehearsal.check([name]) != 0:
+        raise AssertionError(f"check failed for {name}")
 
 
 def planned_model(pooled_fidelity: float) -> dict[str, Any]:
