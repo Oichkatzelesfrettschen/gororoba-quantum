@@ -42,8 +42,12 @@ while :; do
             exit 4
         fi
         short=$(printf '%.7s' "$head")
+        # A completed round reads a stable snapshot and a verdict for the latest request:
+        # clean, or findings to read; pending means a newer request postdates the summary.
         case "$status" in
-            *review=done*"summary-head=$short"*)
+            *review=done*"summary-head=$short"*snapshot=stable*verdict=clean-* | \
+                *review=done*"summary-head=$short"*snapshot=stable*verdict=open-threads* | \
+                *review=done*"summary-head=$short"*snapshot=stable*verdict=later-finding*)
                 if [ "$pending" = 0 ]; then
                     echo "$status"
                     gh api "repos/$slug/commits/$head/check-runs?per_page=100" \
