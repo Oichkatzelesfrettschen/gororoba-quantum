@@ -1,0 +1,19 @@
+{
+  "schema": "qd-reviewed-binding-validation-v1",
+  "observed_at": "2026-10-29T01:24:08.458108+00:00",
+  "packet_sha256": "991f4a863293746f8d2f840950b94c7e5b068fbed85aafaad9458d9b0a6d71be",
+  "cases_sha256": "0e58c0b22c4f8650ae893c5a7dcae5daeb1e25e87012c1aa3be8318085c17c13",
+  "posted_body_sha256_if_approved": "638111c69bdbb250ee6b21bf16bcf607f0f1e1cf8e0c3e09a657a169b7e876f2",
+  "fresh_process_uuid_differs": true,
+  "complete_body_matches": true,
+  "source_closure_matches": true,
+  "attempt_consumed": false,
+  "job_submissions": 0,
+  "status_at_plan": {
+    "explorer": "running",
+    "processor": "available"
+  },
+  "estimated_shots": 262144,
+  "estimated_credits": 1.032768,
+  "scope": "read-only cross-process binding validation; descriptive diagnostic only"
+}

@@ -1,9 +1,8 @@
 """Separate retained runner, mock, local and physical evidence and bind every job identity.
 
-Every job id a runner record's submission names, and every job a retention.json
-recovers, belongs to the retained service inventory
-(results/live/qpu-job-inventory.json); the two sets are disjoint and together
-equal it. Native mock reports declare a mock or dry-run boundary, and local
+Every job id a runner record's submission names, every job a retention.json
+recovers, and every audited unexecuted cancellation belongs to the retained
+service inventory. Native mock reports declare a mock or dry-run boundary, and local
 compute, native preparation and compile artifacts declare no QPU execution.
 The printed counts describe retained evidence objects; they establish no
 physical job beyond the service inventory.
@@ -103,6 +102,37 @@ def submitted_after_observation(record: dict[str, Any], observed: dict[str, date
     return observed_instant(started) >= observed[instance]
 
 
+def unexecuted_cancellations(snapshot: dict[str, Any], audit: dict[str, Any], inventory_sha256: str) -> set[str]:
+    """Recognize cancellations without a retained run only when the audit binds the service observation."""
+    require(audit.get("inventory_sha256") == inventory_sha256, "Cancellation audit binds a different inventory")
+    observed = {entry["job_id"]: entry for entry in snapshot["jobs"]}
+    identities: set[str] = set()
+    for entry in audit["jobs"]:
+        if entry.get("run") is not None:
+            continue
+        identity = entry["job_id"]
+        service_job = observed.get(identity, {})
+        recorded_times = entry.get("timestamps")
+        observed_times = service_job.get("timestamps")
+        require(
+            entry.get("provenance") == "unexecuted_cancellation"
+            and entry.get("status") == service_job.get("status") == "CANCELLED"
+            and type(entry.get("final_qpu_charge_seconds")) in (int, float)
+            and type(service_job.get("final_qpu_charge_seconds")) in (int, float)
+            and entry.get("final_qpu_charge_seconds") == service_job.get("final_qpu_charge_seconds") == 0
+            and isinstance(recorded_times, dict)
+            and isinstance(observed_times, dict)
+            and "running" in recorded_times
+            and "running" in observed_times
+            and recorded_times["running"] is None
+            and observed_times["running"] is None,
+            f"{identity}: unexecuted cancellation evidence differs",
+        )
+        require(identity not in identities, f"{identity}: duplicate cancellation audit entry")
+        identities.add(identity)
+    return identities
+
+
 def inventory() -> dict[str, Any]:
     sys.path.insert(0, str(ROOT / "gororoba_quantum"))
     import parallel
@@ -134,7 +164,15 @@ def inventory() -> dict[str, Any]:
     retrospective = [descriptor(path) for path in retrospective_paths]
     retrospective_ids = {read(path)["job_id"] for path in retrospective_paths}
     require(registered_ids.isdisjoint(retrospective_ids), "Physical acquisition provenance is duplicated")
-    require(registered_ids | retrospective_ids == physical_ids, "Physical service inventory lacks a retention channel")
+    cancellations: set[str] = set()
+    for path, snapshot in zip([service_path, *additional_paths], snapshots, strict=True):
+        audit_path = path.with_name(path.name.replace("qpu-job-inventory", "qpu-job-retention-audit"))
+        cancellations.update(unexecuted_cancellations(snapshot, read(audit_path), digest(path)))
+    cancellation_only = cancellations - registered_ids - retrospective_ids
+    require(
+        registered_ids | retrospective_ids | cancellation_only == physical_ids,
+        "Physical service inventory lacks a retention channel",
+    )
 
     mock_paths = sorted((ROOT / "results/live").glob("*/native-dry-run/*/report.json"))
     mock_paths.extend(sorted((ROOT / "results/live").glob("*/native-validation.json")))
@@ -188,6 +226,7 @@ def inventory() -> dict[str, Any]:
             "registered_physical_jobs": len(registered_ids),
             "awaiting_observation_jobs": len(awaiting),
             "retrospective_physical_jobs": len(retrospective_ids),
+            "unexecuted_cancellation_jobs": len(cancellation_only),
             "native_mock_reports": len(mocks),
             "mock_diagnostics": len(diagnostics),
             "local_compute_json_artifacts": len(local),
@@ -195,6 +234,7 @@ def inventory() -> dict[str, Any]:
             "compile_algebra_simulation_json_artifacts": len(compiled),
         },
         "awaiting_observation_job_ids": awaiting,
+        "unexecuted_cancellation_job_ids": sorted(cancellation_only),
         "runner_records": records,
         "retrospective_physical_retention": retrospective,
         "native_mock_reports": mocks,
@@ -204,8 +244,8 @@ def inventory() -> dict[str, Any]:
         "compile_algebra_simulation_json_artifacts": compiled,
         "interpretation": "States are retained artifact fields; a running checkpoint does not establish a live "
         "process. Legacy unspecified states and missing batch metadata remain unknown. Software tests and failed "
-        f"native mocks inform implementation qualification. Measured physics comes from {len(physical_ids)} "
-        "hash-bound physical-job archives.",
+        "native mocks inform implementation qualification. Service observations describe "
+        f"{len(physical_ids)} jobs, including {len(cancellation_only)} unexecuted cancellations.",
     }
 
 

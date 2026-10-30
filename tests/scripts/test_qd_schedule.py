@@ -424,7 +424,8 @@ def test_submit_runs_verify_on_the_posted_plan_before_any_checkpoint(tmp_path: P
         (case / file).write_bytes((ROOT / "results/quandela/cases/bdsc_stationarity/b1-j1" / file).read_bytes())
     (tmp_path / "token").write_text("t\n")
     monkeypatch.setenv(qd.TOKEN_ENV, str(tmp_path / "token"))
-    monkeypatch.setattr(qd, "plan", lambda *args: {"body": dict(BODY), "body_sha256": "x"})
+    planned = {"body": dict(BODY), "body_sha256": "x", "cases_sha256": qd.load_case(case)[2]}
+    monkeypatch.setattr(qd, "plan", lambda *args: dict(planned))
 
     def refuse(*args: Any, **kwargs: Any) -> Any:
         raise AssertionError("submit reached the service after verify refused")
@@ -439,7 +440,7 @@ def test_submit_runs_verify_on_the_posted_plan_before_any_checkpoint(tmp_path: P
 
     with pytest.raises(qd.PlatformError, match="stop condition"):
         qd.submit(case, "qpu:belenos", "approved", 1.12, 200.0, 1.0, (), verify)
-    if seen != [{"body": BODY, "body_sha256": "x"}] or sorted(p.name for p in case.iterdir()) != sorted(qs.INPUTS):
+    if seen != [planned] or sorted(p.name for p in case.iterdir()) != sorted(qs.INPUTS):
         raise AssertionError("verify did not see the posted plan, or submit wrote a checkpoint")
 
 

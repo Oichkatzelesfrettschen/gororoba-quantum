@@ -269,7 +269,17 @@ class IbmRuns:
     def runs(self) -> dict[str, dict[str, Any]]:
         grouped: dict[str, list[dict[str, Any]]] = {}
         for job in self.jobs:
-            grouped.setdefault(job["run"], []).append(job)
+            run = job["run"]
+            if run is None:
+                require(
+                    job.get("provenance") == "unexecuted_cancellation"
+                    and job.get("status") == "CANCELLED"
+                    and job.get("final_qpu_charge_seconds") == 0,
+                    f"audited job {job['job_id']} lacks a retained run",
+                )
+                continue
+            require(isinstance(run, str) and bool(run), f"audited job {job['job_id']} has an invalid run")
+            grouped.setdefault(run, []).append(job)
         facts = {}
         for run, jobs in grouped.items():
             jobs = sorted(jobs, key=lambda job: job["created_at"])

@@ -32,7 +32,7 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 25 |
-| exploratory reanalysis | exploratory | 92 |
+| exploratory reanalysis | exploratory | 93 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 30 |
@@ -418,12 +418,13 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat](results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat) | Quandela Cloud | day-separated dimension-six matched meshes | qpu:ascella | 1 | 5 | completed | 1.131072 credits |
 | [2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00](results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00) | Quandela Cloud | photonic two-photon octonion associator qualification | sim:ascella | 1 | 8 | completed | 1.0 credits |
 | [2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00](results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00) | Quandela Cloud | photonic 16-setting octonion associator character qualification | sim:ascella | 1 | 16 | completed | 1.0 credits |
+| [2026-10-29T191606.826758Z](results/live/2026-10-29T191606.826758Z) | IBM Quantum | readout-actor | ibm_fez | 3 | 24 | DONE | 11 s |
 | [2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00](results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00) | Quandela Cloud | photonic two-photon octonion associator hardware execution | qpu:ascella | 1 | 8 | completed | 1.262144 credits |
 | [2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00](results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00) | Quandela Cloud | photonic 16-setting octonion associator character hardware execution | qpu:ascella | 1 | 16 | completed | 1.1 credits |
 
 The IBM service inventory observed at 2026-10-28T00:29:17.005404+00:00 holds 43 physical jobs with 532 settled seconds; the account then reported 532 of 600 s consumed in the rolling window ending 2026-10-28T00:29:16.938Z. That is an observation, not a current balance or an authorization.
 
-The IBM service inventory observed at 2026-10-28T00:23:56.659482+00:00 holds 25 physical jobs with 440 settled seconds; the account then reported 440 of 600 s consumed in the rolling window ending 2026-10-28T00:23:56.594Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-29T23:07:45.159780+00:00 holds 32 physical jobs with 451 settled seconds; the account then reported 451 of 600 s consumed in the rolling window ending 2026-10-29T23:07:45.079Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-28T00:24:11+00:00 lists 432 jobs with 7813120 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 

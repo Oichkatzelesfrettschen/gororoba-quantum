@@ -43,7 +43,7 @@ def second_instance_contract(
             "metrics_sha256": [audit.digest(raw / "job_metrics.json")],
         },
     )
-    write(run / "record.json", {"instance_sha256_12": other})
+    write(run / "record.json", {"schema_version": 7, "instance_sha256_12": other})
     write(
         run / "retention.json", {"job_id": "backup-job", "backend": "synthetic-backend", "final_qpu_charge_seconds": 2}
     )
@@ -103,7 +103,10 @@ def failed_job_contract(audit: Any, root: Path, source: Path, snapshot: dict[str
     run.mkdir(parents=True)
     (run / "isa.qpy").write_bytes(b"synthetic failed-job circuit bytes")
     sent = {"job_id": "failed-job", "backend": "synthetic-backend"}
-    record = {"submission": {"qpy_archive_sha256": audit.digest(run / "isa.qpy"), "jobs": [sent]}}
+    record: dict[str, Any] = {
+        "schema_version": 7,
+        "submission": {"qpy_archive_sha256": audit.digest(run / "isa.qpy"), "jobs": [sent]},
+    }
     write(run / "record.json", record)
     times = {"running": "2026-10-12T01:00:00Z", "finished": "2026-10-12T01:00:03Z"}
     entry = {
@@ -177,7 +180,7 @@ def failed_job_contract(audit: Any, root: Path, source: Path, snapshot: dict[str
         [{"job_id": "failed-job", "backend": "other-backend"}],
     ]
     for jobs in record_mutants:
-        write(run / "record.json", {"submission": record["submission"] | {"jobs": jobs}})
+        write(run / "record.json", {"schema_version": 7, "submission": record["submission"] | {"jobs": jobs}})
         rejects(audit, source, "absent from the jobs its collection's run record submitted")
     write(run / "record.json", record)
     (run / "isa.qpy").write_bytes(b"altered failed-job circuit bytes")

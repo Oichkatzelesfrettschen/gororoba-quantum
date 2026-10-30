@@ -1,0 +1,12 @@
+{
+  "schema": "perceval-transport-source-probe-v1",
+  "package": "perceval-quandela",
+  "version": "1.3.1",
+  "module": "perceval.runtime.payload_generator",
+  "source_sha256": "4ec0652a2da9bcb3a01fd3543721511a1b5b614a67efa68d6a04e1abcca3af01",
+  "observed_lines": [
+    "__process_id__ = uuid.uuid4()",
+    "KEY_PROCESS_ID: str(__process_id__),"
+  ],
+  "interpretation": "A module-level transport UUID is embedded beside payload, rather than in the scientific computation."
+}
