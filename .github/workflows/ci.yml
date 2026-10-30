@@ -298,6 +298,66 @@ jobs:
           name: qi-gate-timings
           path: ${{ runner.temp }}/qi-timings.json
 
+  singular-stack:
+    needs: changes
+    name: Singular 4.4 replays
+    runs-on: ubuntu-26.04
+    timeout-minutes: 330
+    env:
+      PYTHONHASHSEED: "0"
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
+        with:
+          python-version: "3.14.7"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            ci/requirements-ci.txt
+            ci/requirements-replay.txt
+      - name: Install pinned dependencies
+        run: sh ci/install_pins.sh
+      - name: Install Singular 4.4.1
+        # passagemath-singular 10.8.13 ships cp314 wheels with a Singular
+        # 4.4.1 binary under sage_wheels/bin. A separate venv keeps its
+        # dependencies out of the repository pins; the symlink exposes only
+        # the binary. Singular reads stdin whenever stdin is not a terminal,
+        # even for --version, so every call here takes /dev/null.
+        run: |
+          set -eu
+          python -m venv "$RUNNER_TEMP/singular-venv"
+          "$RUNNER_TEMP/singular-venv/bin/python" -m pip install --disable-pip-version-check passagemath-singular==10.8.13
+          binary=$(find "$RUNNER_TEMP/singular-venv" -path '*/sage_wheels/bin/Singular' | sed -n 1p)
+          test -x "$binary"
+          mkdir -p "$RUNNER_TEMP/singular-bin"
+          ln -s "$binary" "$RUNNER_TEMP/singular-bin/Singular"
+          echo "$RUNNER_TEMP/singular-bin" >> "$GITHUB_PATH"
+          version=$("$binary" --dump-versiontuple < /dev/null)
+          echo "Singular version tuple: $version"
+          test "$version" = 4.4.1
+      - name: Runner specs
+        run: '"$PYTHON" ci/runner_specs.py'
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2, Node 24
+        if: needs.changes.outputs.limited == 'true'
+        with:
+          name: ci-changed-files
+          path: ${{ runner.temp }}/ci-selection
+      - name: Run the singular gates
+        # --requires singular exports GOROROBA_SINGULAR_REQUIRED=1, so a gate
+        # that cannot reach Singular fails instead of skipping.
+        run: >-
+          "$PYTHON" ci/run_gates.py --requires singular
+          --tier full
+          ${{ needs.changes.outputs.limited == 'true' && format('--changed-files {0}/ci-selection/changed-files.bin', runner.temp) || '' }}
+          --timings ${{ runner.temp }}/singular-timings.json
+          < /dev/null
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        if: always()
+        with:
+          name: singular-gate-timings
+          path: ${{ runner.temp }}/singular-timings.json
+
   ubuntu-24-compatibility:
     name: Ubuntu 24.04 compatibility
     runs-on: ubuntu-24.04
@@ -444,7 +504,7 @@ jobs:
 
   audit-issue:
     name: track the audit outcome
-    needs: [changes, gates, ledger, qi-stack, ubuntu-24-compatibility, external-ground-truth, rocq-replay]
+    needs: [changes, gates, ledger, qi-stack, singular-stack, ubuntu-24-compatibility, external-ground-truth, rocq-replay]
     # A scheduled run opens or updates one tracking issue when a job fails and
     # closes it when every job passes; manual dispatch leaves the issue alone.
     if: always() && github.event_name == 'schedule'

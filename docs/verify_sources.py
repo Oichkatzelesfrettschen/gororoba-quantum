@@ -920,6 +920,16 @@ def source_archive_prefix(entry: dict[str, Any]) -> str:
     if crate is not None:
         require(version == crate[2], "archive pinned version")
         return f"{crate[1]}-{crate[2]}"
+    # A Wayback Machine raw capture (id_) of a release tarball whose origin host no longer serves it, rooted at
+    # NAME-VERSION; the 14-digit timestamp pins one capture.
+    wayback = re.fullmatch(
+        r"https://web\.archive\.org/web/[0-9]{14}id_/https://[A-Za-z0-9.-]+/[A-Za-z0-9_./-]*/"
+        r"([A-Za-z0-9_-]+)-([0-9]+\.[0-9]+\.[0-9]+)\.tar\.gz",
+        source_url,
+    )
+    if wayback is not None:
+        require(version == wayback[2], "archive pinned version")
+        return f"{wayback[1]}-{wayback[2]}"
     # A PyPI source distribution sits under the project's first letter and is rooted at NAME-VERSION.
     sdist = re.fullmatch(
         r"https://files\.pythonhosted\.org/packages/source/([a-z0-9])/([a-z0-9][a-z0-9_.-]*)/\2-([0-9]+(?:\.[0-9]+)+)\.tar\.gz",

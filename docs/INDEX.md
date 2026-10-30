@@ -333,6 +333,7 @@ are checked by `verify_sources.py` without extraction or execution.
 | [Mathematical Components](notes/papers/mathcomp-coqeal-matrix-certificates.md) | [mathcomp-9931c88.tar.gz](source_archives/mathcomp-9931c88.tar.gz) | CECILL-B |
 | [CoqEAL](notes/papers/mathcomp-coqeal-matrix-certificates.md) | [coqeal-8fd26cf.tar.gz](source_archives/coqeal-8fd26cf.tar.gz) | MIT |
 | [wheel (Rust crate)](notes/wheel-rust-crate.md) | [wheel-0.1.0.crate](source_archives/wheel-0.1.0.crate) | Apache-2.0 OR MPL-2.0 |
+| [SCSCP C/C++ library](notes/scscp-source-archive.md) | [scscp-1.0.3.tar.gz](source_archives/scscp-1.0.3.tar.gz) | CECILL-C (dual CECILL-C or CeCILL v2.0) |
 | [SeeK-path](notes/quantum-tools/seekpath.md) | [seekpath-2.2.2.tar.gz](source_archives/seekpath-2.2.2.tar.gz) | MIT |
 
 ## Repository research certificates

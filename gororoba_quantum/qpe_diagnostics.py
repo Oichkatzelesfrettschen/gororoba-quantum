@@ -1085,11 +1085,20 @@ def _verify() -> None:
         expected_laws.append(expected)
         circuits.append(n21_encoded_diagnostic(feed_forward))
         expected_laws.append(expected)
-        for variant in N21_ORBIT_BUILDABLE:
-            circuits.append(n21_orbit_diagnostic(feed_forward, variant, window_delay_dt=416, echo_half_dt=512))
+        # An ideal idle leaves the labeled law unchanged, so each dose variant keeps it at a nonzero dose; the
+        # quadrature variants read the sine of the work phase and carry their own laws, which
+        # tests/gororoba_quantum/test_detuning_sign.py checks member by member.
+        for variant in (name for name in N21_ORBIT_BUILDABLE if name not in N21_DOSE_QUADRATURE_VARIANTS):
+            dose_dt = 64 if variant in N21_DOSE_VARIANTS else None
+            delay_dt, echo_dt = (None, None) if dose_dt else (416, 512)
+            circuits.append(
+                n21_orbit_diagnostic(
+                    feed_forward, variant, window_delay_dt=delay_dt, echo_half_dt=echo_dt, dose_dt=dose_dt
+                )
+            )
             expected_laws.append(expected)
             heralded = n21_orbit_diagnostic(
-                feed_forward, variant, window_delay_dt=416, echo_half_dt=512, init_herald=True
+                feed_forward, variant, window_delay_dt=delay_dt, echo_half_dt=echo_dt, init_herald=True, dose_dt=dose_dt
             )
             _check_herald_structure(heralded, circuits[-1])
             circuits.append(heralded)
@@ -1142,8 +1151,9 @@ def _verify() -> None:
             continue
         raise RuntimeError(f"delay arm accepted invalid duration {invalid_delay}")
     print(
-        "QPE diagnostics: 16 folded laws, the N=21 laws of every orbit variant with their heralded twins, and the "
-        "ten spectator Ramsey laws with theirs match exact circuit branches and sampled labels; heralded circuits "
+        "QPE diagnostics: 16 folded laws, the N=21 laws of every orbit variant but the dose quadratures, with "
+        "their heralded twins, and the ten spectator Ramsey laws with theirs match exact circuit branches and "
+        "sampled labels; heralded circuits "
         "measure every qubit before a full barrier, read the window bracket of their unheralded twins and "
         "marginalize to the unheralded law"
     )

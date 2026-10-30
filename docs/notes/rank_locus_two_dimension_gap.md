@@ -337,5 +337,5 @@ admits on its own:
 | 7. Global model | a finite model of Z_5 with a proved map, homology, cup products | items 3-6 for every nullity | chain maps and selected homotopy invariants; homology agreement alone does not admit |
 | 8. Uniform structure in n | a recurrence across the doubling ladder | item 7 at n = 5 and the restricted family's sparse chain construction | a theorem, distinct from an algorithm that accepts n |
 
-Items 4 to 8 are research obligations with no near-term hardware question;
+Items 4 to 8 are research obligations with no near-term hardware question; [the open work program](../design/dimension32-global-topology-program.md) breaks the open items into packages with methods and falsifiers;
 item 6 starts from the kernel-bundle record, whose stabilizer representations already show each nullity-sixteen boundary adding exactly one doublet.

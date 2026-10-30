@@ -149,6 +149,7 @@ differs from it only in the `cd_core.py` digest.
 | Algebra and proofs | `gororoba_quantum/cd_core.py`, [algebra_circuit_rules.md](notes/algebra_circuit_rules.md), [formal_certificates](evidence/formal_certificates/README.md) |
 | Sources and papers | [INDEX.md](INDEX.md), [SOURCES.json](SOURCES.json), `verify_sources.py` |
 | CI and gates | [ci/AGENTS.md](../ci/AGENTS.md), [ci-runtime.md](runbooks/ci-runtime.md) |
+| Pull-request reviews | [AGENTS.md](../AGENTS.md) "Reviews and merges", [codex-review-stalls.md](runbooks/codex-review-stalls.md), `scripts/codex_review_wait.sh` |
 | State and records | [RESEARCH_STATE.md](state/RESEARCH_STATE.md), [QPU_RUN_CENSUS.md](state/QPU_RUN_CENSUS.md), [AGENTS.md](../AGENTS.md) "Records" |
 
 ## Files by area
@@ -279,6 +280,7 @@ differs from it only in the `cd_core.py` digest.
 
 | File | Contents |
 |---|---|
+| [topics/a5-exceptional-fiber-findings.md](notes/topics/a5-exceptional-fiber-findings.md) | A_5 exceptional fibers of the nullity-8 closures along their boundary orbits: Hilbert functions by degree-by-degree membership rank, quadric-scheme structure, formal-arc support certificate, retired elimination routes, and the hypotheses that survive falsification |
 | [topics/box-kites/README.md](notes/topics/box-kites/README.md) | box-kite experiment program index |
 | [bdsc-pauli-readout.md](notes/topics/bdsc-pauli-readout.md) | BDSC target and blade effects as three-term four-qubit Pauli sums; local readout and 13-basis cover |
 | [algebra-hardware-probe-principles.md](notes/topics/algebra-hardware-probe-principles.md) | first principles of algebra hardware probes: mutation test, eigen-observable, interleaving, null arm, noisy coherent response; findings ledger of the Garnet runs |
@@ -316,6 +318,9 @@ differs from it only in the `cd_core.py` digest.
 | [evidence/a5-kernel-bundles/README.md](evidence/a5-kernel-bundles/README.md) | kernel bundles of the A_5 strata of nullity at least 12 (roadmap item 5): kernel symmetry algebra, compact-orbit moduli, stabilizer representations, exact transition cocycle and equivalence classes, with an independent cd_core verification ([verification.md](evidence/a5-kernel-bundles/verification.md)) |
 | [evidence/a5-kernel-bundles-nullity8/README.md](evidence/a5-kernel-bundles-nullity8/README.md) | kernel bundles of the A_5 nullity-8 strata: compact-orbit moduli, stabilizer strata, path-dependent boundary limits into nullity 12, unit-section cores, U(4) transition data and classes (the order-two class on E8-bar and X_+-), with an independent cd_core verification ([verification.md](evidence/a5-kernel-bundles-nullity8/verification.md)) |
 | [design/a5-kernel-bundles-nullity8-program.md](design/a5-kernel-bundles-nullity8-program.md) | program goal for the kernel bundles of the A_5 nullity-8 strata (W8, E8-bar, Iso, X_+-): established inputs from the nullity >= 12 record, gaps, deliverables, behavior rules, and the [ledger](evidence/a5-kernel-bundles-nullity8/ledger.md) the program keeps |
+| [design/a5-kernel-attachments-program.md](design/a5-kernel-attachments-program.md) | program goal for roadmap item 6 of the A_5 topology: how partner spheres specialize across the 33 closure incidences 8 -> 12, 12 -> 16 and 8 -> 16 (closed kernel Gauss-graph fibers, two-sided real certificates, attaching maps), with the [ledger](evidence/a5-kernel-attachments/ledger.md) the program keeps |
+| [design/dimension32-global-topology-program.md](design/dimension32-global-topology-program.md) | open work of the dimension-32 classification after items 3-5: the three kernel-bundle residuals (with the argument that `xi_R` is actually nontrivial), attachments, nullity-4 kernel bundles, the finite global model of `Z_5` and the uniform structure in n, each with method, falsifier and substrate |
+| [evidence/a5-kernel-bundles-residuals/README.md](evidence/a5-kernel-bundles-residuals/README.md) | kernel-bundle residuals: the quaternionic four-plane `xi_R` over `V_2(R^7)` is actually nontrivial (exact G_2 stabilizer action on `H^perp` plus the `SU(3)/SU(2)` clutching), gate core-756 |
 | [design/a5-kernel-bundles-program.md](design/a5-kernel-bundles-program.md) | program goal for roadmap item 5, the kernel bundles of the A_5 zero-divisor strata: established facts, gaps (the kernel symmetry group, closed-form frames, unit-section topology, structure group), deliverables, behavior rules, and the [ledger](evidence/a5-kernel-bundles/ledger.md) the program keeps |
 | [coherent-error-families-report.md](notes/topics/coherent-error-families-report.md) | coherent error families, drift and Rocq replays |
 | [relativistic-metrology-scale.md](notes/topics/relativistic-metrology-scale.md) | the Belenos light cone as a mode-reachability set; relativistic and astronomical phases against the measured device instabilities, with the falsifiers of an astronomical coupling |
@@ -359,6 +364,7 @@ differs from it only in the `cd_core.py` digest.
 | [design/factoring-notes.md](design/factoring-notes.md) | factoring and the Cayley-Dickson ladder |
 | [design/gpu-exact-modular-linear-algebra.md](design/gpu-exact-modular-linear-algebra.md) | exact F_p linear algebra on the build host's tensor cores: INT8 and FP8 digit products, an HMM and pinned-staging memory hierarchy, recursive PLUQ, Freivalds verification, measured throughput |
 | [design/numpy-validation.md](design/numpy-validation.md) | numerical environment validation |
+| [design/native-numeric-replay.md](design/native-numeric-replay.md) | identity-scoped replay of retained float records once producers and CI runners compute on native numeric paths: exact within an identity, bounded with exact decisions across |
 | [design/bdsc-tuna17-pauli-pilot.md](design/bdsc-tuna17-pauli-pilot.md) | Tuna-17 pilot of the BDSC target as a four-qubit local Pauli readout: bank, placement, analysis |
 | [design/iqm-garnet-timing-pilot.md](design/iqm-garnet-timing-pilot.md) | IQM Garnet billing pilot: per-job, per-shot, per-circuit and active-reset cost |
 | [design/heron-latency-logical-recovery.md](design/heron-latency-logical-recovery.md) | Heron r2 feed-forward against Pauli-frame recovery of a bit-flip-coded Bell pair: latency and window cost of logical fidelity, arms, contracts, power |

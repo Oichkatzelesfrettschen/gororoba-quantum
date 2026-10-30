@@ -782,6 +782,62 @@
       "results/live/2026-10-12T055624.091217Z/**",
       "results/live/2026-10-13T020454.599853Z/**",
       "results/live/2026-10-18T090603.530638Z/**"
+    ],
+    "core-760": [
+      "docs/evidence/a5-kernel-attachments/**",
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**",
+      "gororoba_quantum/cd_core.py",
+      "gororoba_quantum/parallel.py"
+    ],
+    "core-765": [
+      "docs/evidence/a5-kernel-attachments/**",
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**",
+      "gororoba_quantum/cd_core.py",
+      "gororoba_quantum/parallel.py"
+    ],
+    "core-766": [
+      "docs/evidence/a5-kernel-attachments/**",
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**",
+      "gororoba_quantum/cd_core.py",
+      "gororoba_quantum/parallel.py"
+    ],
+    "core-767": [
+      "docs/evidence/a5-kernel-attachments/**",
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**",
+      "gororoba_quantum/cd_core.py",
+      "gororoba_quantum/parallel.py"
+    ],
+    "core-768": [
+      "docs/evidence/a5-kernel-attachments/**",
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**",
+      "gororoba_quantum/cd_core.py",
+      "gororoba_quantum/parallel.py"
+    ],
+    "core-769": [
+      "docs/evidence/a5-kernel-attachments/**",
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**",
+      "gororoba_quantum/cd_core.py",
+      "gororoba_quantum/parallel.py"
+    ],
+    "core-770": [
+      "docs/evidence/a5-kernel-attachments/**",
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**",
+      "gororoba_quantum/cd_core.py",
+      "gororoba_quantum/parallel.py"
     ]
   }
 }

@@ -32,6 +32,17 @@ QI: list[dict[str, Any]] = [
     {"name": "qi-pr", "cwd": ".", "cmd": 'test "${GOROROBA_QI_REQUIRED:-0}" = 1', "requires": ["qi"]},
     {"name": "qi-full", "cwd": ".", "cmd": "true", "requires": ["qi"], "tier": "full"},
 ]
+# A singular gate guards its live path on GOROROBA_SINGULAR_REQUIRED, which only
+# --requires singular exports.
+SINGULAR: list[dict[str, Any]] = [
+    {
+        "name": "singular-full",
+        "cwd": ".",
+        "cmd": 'test "${GOROROBA_SINGULAR_REQUIRED:-0}" = 1',
+        "requires": ["singular"],
+        "tier": "full",
+    },
+]
 
 
 @pytest.fixture
@@ -137,6 +148,22 @@ def test_requires_sets_the_live_path(root: Path, flag: list[str], expected: int)
         status = run_gates.main(["--tier", "pr", *flag])
     if status != expected:
         raise AssertionError(f"{flag or 'no flag'} gave GOROROBA_QI_REQUIRED wrongly:\n{output.getvalue()}")
+
+
+@pytest.mark.parametrize(("flag", "expected"), (([], 1), (["--requires", "singular"], 0)))
+def test_requires_singular_sets_the_live_path(root: Path, flag: list[str], expected: int) -> None:
+    manifest(root, LISTED + QI + SINGULAR)
+    with runner(root, GOROROBA_SINGULAR_REQUIRED=None) as output:
+        status = run_gates.main(["--tier", "full", *flag])
+    if status != expected:
+        raise AssertionError(f"{flag or 'no flag'} gave GOROROBA_SINGULAR_REQUIRED wrongly:\n{output.getvalue()}")
+
+
+def test_select_requires_singular_keeps_only_singular_gates(root: Path) -> None:
+    manifest(root, LISTED + QI + SINGULAR)
+    names = [gate["name"] for gate in run_gates.select(root, "full", None, "singular")]
+    if names != ["singular-full"]:
+        raise AssertionError(f"select(full, requires=singular) chose {names}")
 
 
 def test_gates_selects_by_name(root: Path) -> None:
