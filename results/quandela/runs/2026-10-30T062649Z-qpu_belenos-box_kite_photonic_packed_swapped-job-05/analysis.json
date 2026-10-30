@@ -1,0 +1,124 @@
+{
+ "blocks": [
+  {
+   "a": 0.541527258,
+   "a_wilson95": [
+    0.531825578,
+    0.551197554
+   ],
+   "config": "two_label-30",
+   "dark_corrected": {
+    "a": 0.541527258,
+    "expected_dark_in_block": 0.0,
+    "expected_dark_outside": 5.477,
+    "in_block": 0.52708773
+   },
+   "in_block": 0.526938035,
+   "in_block_wilson95": [
+    0.519886811,
+    0.533978529
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 3,
+   "one_click_by_mode": [
+    31,
+    5472,
+    2052,
+    2607
+   ],
+   "one_click_outside_block": 9123,
+   "one_click_outside_by_mode": {
+    "0": 4,
+    "1": 4,
+    "10": 35,
+    "11": 11,
+    "16": 3764,
+    "17": 42,
+    "18": 2585,
+    "19": 2602,
+    "2": 1,
+    "20": 2,
+    "23": 5,
+    "4": 5,
+    "5": 12,
+    "6": 4,
+    "7": 5,
+    "8": 29,
+    "9": 13
+   },
+   "other_multi_click": 712,
+   "p_algebra": "1/2",
+   "total_variation_from_ideal": 0.048071246
+  },
+  {
+   "a": 0.423218058,
+   "a_wilson95": [
+    0.413041607,
+    0.433460078
+   ],
+   "config": "two_label-31",
+   "dark_corrected": {
+    "a": 0.423272888,
+    "expected_dark_in_block": 1.246,
+    "expected_dark_outside": 4.231,
+    "in_block": 0.466388845
+   },
+   "in_block": 0.466320975,
+   "in_block_wilson95": [
+    0.4592876,
+    0.473367765
+   ],
+   "kind": "two_label",
+   "multi_click_in_block": 9,
+   "one_click_by_mode": [
+    3764,
+    42,
+    2585,
+    2602
+   ],
+   "one_click_outside_block": 10292,
+   "one_click_outside_by_mode": {
+    "0": 4,
+    "1": 4,
+    "10": 35,
+    "11": 11,
+    "12": 31,
+    "13": 5472,
+    "14": 2052,
+    "15": 2607,
+    "2": 1,
+    "20": 2,
+    "23": 5,
+    "4": 5,
+    "5": 12,
+    "6": 4,
+    "7": 5,
+    "8": 29,
+    "9": 13
+   },
+   "other_multi_click": 706,
+   "p_algebra": "1/2",
+   "total_variation_from_ideal": 0.081452241
+  }
+ ],
+ "cases_sha256": "379aaa900922ed99f9e82a1fa101b3d287e8ef86925ac92e80630d4a2e558ebd",
+ "compiled": {
+  "distinct": 1,
+  "iterations": [],
+  "job": {
+   "chars": 16246,
+   "sha256": "ced169d46df5cef5024e0688011ccc69e699be0422f946d613ae47c3353a35f4"
+  }
+ },
+ "job_id": "5947894b-cd4b-4af8-9cee-4db9838b88e0",
+ "logical_perf": 1,
+ "noise": ":PCVL:NoiseModel:{\"g2\": 0.012, \"indistinguishability\": 0.863, \"transmittance\": 0.0565}",
+ "physical_perf": 0.023728072872022332,
+ "platform": "qpu:belenos",
+ "result_sha256": "041534e2440cc49fae1f632516204a98a977a1501e25ba23aa65522f684cd021",
+ "run": "2026-10-30T062649Z-qpu_belenos-box_kite_photonic_packed_swapped-job-05",
+ "samples": 20000,
+ "schema": "qd-box-kite-analysis-v1",
+ "shots": 20000,
+ "status": "completed"
+}
