@@ -1,0 +1,68 @@
+{
+ "accepted_two_click_events": 16320,
+ "associator": {
+  "Delta": 1.7236995104039168,
+  "routes": {
+   "LaLb": {
+    "D": 0.8611995104039167,
+    "events": 4085,
+    "se": 0.007121478065441743
+   },
+   "Lab": {
+    "D": -0.8625,
+    "events": 4080,
+    "se": 0.007161991598317027
+   }
+  },
+  "se": 0.010099978885667611
+ },
+ "associator_counted_iterations": 4,
+ "control": {
+  "Delta": -0.006393993570038448,
+  "routes": {
+   "LaLb": {
+    "D": -0.8490658800393314,
+    "events": 4068,
+    "se": 0.007509929199478337
+   },
+   "Lab": {
+    "D": -0.8426718864692929,
+    "events": 4087,
+    "se": 0.007611963590487315
+   }
+  },
+  "se": 0.010693036345401705
+ },
+ "control_counted_iterations": 4,
+ "decisions": {
+  "associator_realised": true,
+  "closure": 0.03196174389529238,
+  "closure_se": 0.014708861267107439,
+  "compensated_contrast": 1.0188928476552572,
+  "complete_blocks": {
+   "associator": true,
+   "control": true
+  },
+  "hom_comparison": {
+   "Delta_predicted": 1.6861258529188776,
+   "departure": 0.03757365748503916,
+   "within_tolerance": true
+  },
+  "in_situ_visibility": 0.8916808025467178,
+  "visibility_closure": true,
+  "visibility_hom": 0.8896
+ },
+ "excluded_by_cause": {
+  "fewer_than_two_clicks": 0,
+  "three_or_more_clicks": 9,
+  "two_clicks_outside_block": 55
+ },
+ "excluded_events": 64,
+ "multiphoton_estimate": {
+  "estimated_lossy_events": 454.283422459893,
+  "estimated_share_of_accepted": 0.027835994023277758,
+  "lossy_per_three_click": 50.475935828877,
+  "model": "independent per-photon loss; bunching on threshold detectors ignored; descriptive",
+  "transmittance": 0.056100000000000004
+ }
+}

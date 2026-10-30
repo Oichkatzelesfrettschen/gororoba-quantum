@@ -2541,6 +2541,55 @@
       "run": "results/live/2026-10-29T191606.826758Z",
       "family": "readout-actor",
       "question": "Describe full-register reporter errors under actor activity and repetition-delay conditions."
+    },
+    {
+      "id": "qd-sim-ascella-two-photon-associator",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00",
+      "family": "photonic two-photon octonion associator qualification",
+      "question": "Does simulated two-photon Hong-Ou-Mandel interference across the 12-mode Ascella mesh reproduce the non-associative sign witness with positive contrast and bounded null control?"
+    },
+    {
+      "id": "qd-sim-ascella-associator-character",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00",
+      "family": "photonic 16-setting octonion associator character qualification",
+      "question": "Does simulated 8-mode character projection concentrate constructively into the exact predicted harmonic mode for all 16 octonion association settings?"
+    },
+    {
+      "id": "qd-ascella-two-photon-associator",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00",
+      "family": "photonic two-photon octonion associator hardware execution",
+      "question": "Does physical two-photon Hong-Ou-Mandel interference on qpu:ascella preserve non-associative sign witness contrast above 170 standard errors while confirming zero null-arm offset?"
+    },
+    {
+      "id": "qd-ascella-associator-character",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00",
+      "family": "photonic 16-setting octonion associator character hardware execution",
+      "question": "Does physical 8-mode character projection on qpu:ascella achieve >98% raw output mode fidelity and >1.99 conditional character contrast across all 16 octonion multiplication settings?"
+    },
+    {
+      "id": "qd-ascella-associator-character-atlas",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T221537Z-qpu_ascella-ascella_associator_character-job-01",
+      "family": "photonic 21-pair octonion associator character atlas",
+      "question": "Does every one of the 21 octonion basis pairs route a single photon on qpu:ascella into its predicted character mode omega(a, b), with the reversed arm matching and the Clifford control and diagonal null arms routing to mode 0?"
+    },
+    {
+      "id": "qd-sim-ascella-associator-character-atlas",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T192313Z-sim_ascella-ascella_associator_character-sim-01",
+      "family": "photonic 21-pair octonion associator character atlas",
+      "question": "Does sim:ascella route each of the 21 octonion basis pairs into its predicted character mode, as the twin of the qpu:ascella atlas?"
+    },
+    {
+      "id": "qd-sim-ascella-two-photon-character-atlas",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01",
+      "family": "photonic two-photon 21-pair octonion associator character atlas",
+      "question": "Does sim:ascella route two photons through each of the 21 octonion pairs' character unitaries into the predicted focal coset pair, with the stabilizer-line pairs persisting in (0, 2)?"
     }
   ],
   "claims": [
@@ -13129,6 +13178,149 @@
         "ascella-transition-context-matched-mesh",
         "ascella-transition-mesh-port-variation"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-two-photon-associator-qualification",
+      "statement": "Physical execution on qpu:ascella and twin simulation on sim:ascella confirm the two-photon octonion associator witness with positive contrast Delta = 1.7237 +- 0.0101 (>170 sigma on hardware, 1.7576 on simulator) against null control Delta_ctrl = -0.0064 +- 0.0107 (<0.6 sigma on hardware, -0.0090 on simulator), with in-situ visibility V = 0.8917 tracking the platform HOM calibration dip (0.8896).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Admitted under approved execution on qpu:ascella and sim:ascella with frozen worker schema. Contrast is bounded by platform partial indistinguishability (HOM dip 88.96%).",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00/results.json",
+          "sha256": "3743d753e0b1e66ece7dc7ecbe422f1af75b2dca60ba78dbb4185710824c511e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00/analysis.json",
+          "sha256": "d36ea935af66951cf4bcf997e3210caf805e6663a690c9600b42c513da5cf82c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00/results.json",
+          "sha256": "239ab4ea7085c04f5eac4803cb3aaf6a23458d5cac2fd86890d7de233acaf315"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00/analysis.json",
+          "sha256": "3ba8a5092548b65e92983dec294b82f620bcf0cc9c429d50b2bfc060a0a27c35"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-sim-twin-falsification/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-two-photon-associator",
+        "qd-ascella-two-photon-associator"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-octonion-character-qualification",
+      "statement": "Physical 16-setting octonion associator character execution on qpu:ascella and twin simulation on sim:ascella route the encoded octonion character of each pair into the predicted harmonic mode: raw unconditional output mode fidelity over all 12 detected modes is 98.08% to 99.60% on the four octonion-arm settings (mean 98.75%) and 98.03% to 99.78% over all 16 settings (mean 99.22%), the conditional character contrast on the {0, omega} subspace is Delta_char = 1.997074, and sentinel mode leakage across modes 8..11 is 0.4888%.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Sixteen discrete (a, b) octonion settings executed on qpu:ascella (160,000 samples) and sim:ascella (160,000 samples). Raw mode fidelity accounts for all 12 detected physical output modes including 0.49% sentinel leakage and 0.76% cross-talk, whereas conditional contrast is evaluated strictly on the {0, omega} logical subspace.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00/results.json",
+          "sha256": "c5b7d133f40c34f7426d774aafaf51a63399a88f4048873e009c19304cf02d7b"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00/analysis.json",
+          "sha256": "1da83513cc510f503910714eabc1a8cd7f5e11ff7cf9e77153a78b6fa239b6da"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00/results.json",
+          "sha256": "63f1d68dbe1aceceeb6452196ebf45bd8b8ae4960fdefe7787bae11c64a4281d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00/analysis.json",
+          "sha256": "08e1a185375174d89a986f78eecb3cfd26f353edc5a5ba098b8403bb263f6c2c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-sim-twin-falsification/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-associator-character",
+        "qd-ascella-associator-character"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-octonion-character-atlas",
+      "statement": "The 21-pair, 84-setting single-photon character atlas on qpu:ascella (10,000 samples per setting, 840,000 in all) and its sim:ascella twin route every octonion pair's encoded character into its predicted mode omega(a, b): on the QPU the octonion arm reads D from 0.9944 to 0.9996 and the reversed arm 0.9956 to 0.9996, the Clifford control and diagonal null arms route to mode 0 (D -1.000 to -0.9944 and -1.000 to -0.9973), the mean character contrast is 1.997448 and sentinel leakage is 1.3156%; raw unconditional mode fidelity spans 89.17% to 99.84% over the 84 settings (mean 98.28%). The twin reads D = +-1.000000 on every setting with zero leakage.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The observables are routing properties of the cd_core sign table carried by an associative linear-optical unitary; they establish the encoding and the device's routing fidelity, not physical non-associativity. Contrasts are conditional on the {0, omega} subspace; the fidelity figure counts every detected output mode.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-29T221537Z-qpu_ascella-ascella_associator_character-job-01/results.json",
+          "sha256": "0d48b4d921cf58212e0385362465186632f88d11c9b059bd0a9c28081e1899fc"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T221537Z-qpu_ascella-ascella_associator_character-job-01/analysis_report.json",
+          "sha256": "e2a26c0e66e5f11b70aba800f1e1cf23f4422e8067736a0caf0c48258735f037"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T192313Z-sim_ascella-ascella_associator_character-sim-01/results.json",
+          "sha256": "a09973d465d6c3acf81d9d9d04964fdaafcd94fb18b62c586ea3cf6c25d75c14"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T192313Z-sim_ascella-ascella_associator_character-sim-01/analysis_report.json",
+          "sha256": "e51ec3863e475b730143439fe7ff90f008bd5984a4681aacb30e1de48a9e2c4e"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-sim-twin-falsification/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-associator-character-atlas",
+        "qd-sim-ascella-associator-character-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-two-photon-character-twin",
+      "statement": "The two-photon, 84-setting character atlas on sim:ascella (2,030 two-click events per setting, 170,520 in all) routes both photons into each displacing pair's predicted focal coset pair (mean displacing contrast 2.0) and keeps the stabilizer-line pairs in (0, 2) (mean persistence 1.0), with zero sentinel leakage; it is the simulator twin of the qpu:ascella atlas whose job awaits collection.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "A simulator result under ideal two-photon interference; it predicts the hardware atlas and establishes no device property. The hardware job (4c4f0273-6e69-4b52-af92-550a5e4356d8) is retained in its case directory until it completes.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01/results.json",
+          "sha256": "545cc70d9df79bd8fdba7691211cc852a127d59400900647e2622d89d5ac984a"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01/analysis_report.json",
+          "sha256": "4ef705c18dbda2f31c28dae6808642cb609ce6b908a0ddf4a44f9c1026b09ef7"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ascella-sim-twin-falsification/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-two-photon-character-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     }

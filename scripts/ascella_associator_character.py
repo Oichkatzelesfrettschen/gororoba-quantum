@@ -67,6 +67,7 @@ TOLERANCE = 1e-12
 BODY_TOLERANCE = 1e-9
 
 PRIMARY_PAIRS = ((1, 2), (1, 4), (2, 4), (3, 5))
+ALL_PAIRS: tuple[tuple[int, int], ...] = tuple((a, b) for a in range(1, 8) for b in range(a + 1, 8))
 
 
 def require(condition: bool, message: str) -> None:
@@ -161,10 +162,11 @@ def build_setting_item(item: tuple[int, dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def build_schedule_spec() -> list[dict[str, Any]]:
+def build_schedule_spec(all_pairs: bool = False) -> list[dict[str, Any]]:
+    pairs = ALL_PAIRS if all_pairs else PRIMARY_PAIRS
     spec = []
-    # 4 arms across the 4 primary non-associative pairs (16 iterations total)
-    for a, b in PRIMARY_PAIRS:
+    # 4 arms across the selected non-associative pairs (16 or 84 iterations)
+    for a, b in pairs:
         spec.append({"pair": (a, b), "arm": "octonion", "name": f"pair_{a}_{b}-octonion"})
         spec.append({"pair": (a, b), "arm": "clifford_control", "name": f"pair_{a}_{b}-clifford_control"})
         spec.append({"pair": (a, b), "arm": "diagonal_null", "name": f"pair_{a}_{b}-diagonal_null"})
@@ -183,6 +185,7 @@ def build_documents(
     samples_per_iteration: int = DEFAULT_SAMPLES_PER_ITERATION,
     shots_factor: int = DEFAULT_SHOTS_FACTOR,
     job_name: str = "job-00",
+    all_pairs: bool = False,
 ) -> dict[str, bytes]:
     if samples_per_iteration <= 0:
         raise ValueError(f"samples_per_iteration must be positive integer, got {samples_per_iteration}")
@@ -192,7 +195,8 @@ def build_documents(
     circuit = build_template_circuit()
     circuit_bytes = (json.dumps(circuit, indent=1) + "\n").encode()
 
-    schedule = build_schedule_spec()
+    is_all_pairs = all_pairs or (job_name in ("job-01", "atlas"))
+    schedule = build_schedule_spec(all_pairs=is_all_pairs)
     settings = ordered_map(build_setting_item, list(enumerate(schedule)), min_items=1)
 
     shots_per_iteration = samples_per_iteration * shots_factor
@@ -254,6 +258,22 @@ def build_documents(
     return {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": circuit_bytes}
 
 
+def _verify_flint_pair(pair: tuple[int, int]) -> bool:
+    """Exact rational character projection verification for an octonion basis pair using python-flint."""
+    import flint
+
+    a, b = pair
+    w8 = flint.fmpz_mat(8, 8, [(-1) ** (bin(i & j).count("1")) for i in range(8) for j in range(8)])
+    om = character_frequency(a, b)
+    d_mat = flint.fmpz_mat(8, 8, [associator_sign(a, b, i) if i == j else 0 for i in range(8) for j in range(8)])
+    prod = w8 * d_mat * w8
+    for r in range(8):
+        expected = 8 if r == om else 0
+        if int(prod[r, 0]) != expected:
+            raise ValueError(f"Flint exact character check failed for ({a},{b}) at row {r}")
+    return True
+
+
 def check() -> int:
     """Verify 21-pair character kernel theorem, template binding, and ideal contrast endpoints."""
     # 1. Mathematical theorem verification across all 21 pairs
@@ -267,12 +287,24 @@ def check() -> int:
         omega = character_frequency(a, b)
         require(omega != 0, f"pair ({a}, {b}) omega is zero")
 
-    # 2. Template experiment binding
-    docs = build_documents()
-    manifest = json.loads(docs["cases.json"].decode())
-    circuit = json.loads(docs["circuit.json"].decode())
-    exp, settings = template_experiment(manifest, circuit)
-    require(exp is not None and len(settings) == 16, f"template experiment bound {len(settings)} settings, expected 16")
+    # 2. Template experiment binding for job-00 (16 settings) and job-01 (84 settings)
+    docs_16 = build_documents(job_name="job-00", all_pairs=False)
+    manifest_16 = json.loads(docs_16["cases.json"].decode())
+    circuit_16 = json.loads(docs_16["circuit.json"].decode())
+    exp_16, settings_16 = template_experiment(manifest_16, circuit_16)
+    require(
+        exp_16 is not None and len(settings_16) == 16,
+        f"template experiment bound {len(settings_16)} settings, expected 16",
+    )
+
+    docs_84 = build_documents(job_name="job-01", all_pairs=True)
+    manifest_84 = json.loads(docs_84["cases.json"].decode())
+    circuit_84 = json.loads(docs_84["circuit.json"].decode())
+    exp_84, settings_84 = template_experiment(manifest_84, circuit_84)
+    require(
+        exp_84 is not None and len(settings_84) == 84,
+        f"atlas template experiment bound {len(settings_84)} settings, expected 84",
+    )
 
     # 3. SLOS verification on first setting
     import perceval as pcvl
@@ -288,11 +320,23 @@ def check() -> int:
     require(abs(p_omega - 1.0) < BODY_TOLERANCE, f"SLOS P(omega) {p_omega} != 1.0")
     require(abs(p_0) < BODY_TOLERANCE, f"SLOS P(0) {p_0} != 0.0")
 
+    # 4. Exact rational arithmetic verification via python-flint pooled through parallel.py
+    try:
+        import flint  # noqa: F401
+
+        pairs = list(combinations(range(1, 8), 2))
+        list(ordered_map(_verify_flint_pair, pairs))
+        flint_verified = True
+    except ImportError:
+        flint_verified = False
+
     print("ascella_associator_character: check passed!")
     print("21-pair octonion character kernel theorem verified: ker s = {0, a, b, a^b} for all pairs")
-    print("16 settings across 4 primary triads bound to 8-mode Clements mesh")
+    if flint_verified:
+        print("Flint exact rational arithmetic verified: W_8 D(a,b) W_8 = 8 P_omega across all 21 pairs (0 drift)")
+    print("16 settings (job-00) and 84 settings (job-01 atlas) bound to 8-mode Clements mesh")
     print(f"SLOS single-photon transfer confirmed: P_omega = {p_omega:.6f}, P_0 = {p_0:.6f}")
-    print(f"credit ceiling confirmed at {manifest['credit_ceiling']:.6f} credits")
+    print(f"credit ceiling confirmed at {manifest_16['credit_ceiling']:.6f} credits (job-00)")
     return 0
 
 
@@ -301,16 +345,24 @@ def build_case(
     shots_factor: int = DEFAULT_SHOTS_FACTOR,
     job_name: str = "job-00",
     case_dir: Path | None = None,
+    all_pairs: bool = False,
 ) -> int:
+    is_all_pairs = all_pairs or (job_name in ("job-01", "atlas"))
     target_dir = case_dir or (ROOT / f"results/quandela/cases/ascella_associator_character/{job_name}")
     target_dir.mkdir(parents=True, exist_ok=True)
-    docs = build_documents(samples_per_iteration=samples, shots_factor=shots_factor, job_name=job_name)
+    docs = build_documents(
+        samples_per_iteration=samples,
+        shots_factor=shots_factor,
+        job_name=job_name,
+        all_pairs=is_all_pairs,
+    )
     for name, data in docs.items():
         (target_dir / name).write_bytes(data)
     manifest = json.loads(docs["cases.json"].decode())
     print(
-        f"Wrote {len(docs)} files to {target_dir} (job={job_name}, samples={manifest['samples_per_iteration']}, "
-        f"shots={manifest['shots_per_iteration']}, credits={manifest['credit_ceiling']})"
+        f"Wrote {len(docs)} files to {target_dir} (job={job_name}, settings={len(manifest['settings'])}, "
+        f"samples={manifest['samples_per_iteration']}, shots={manifest['shots_per_iteration']}, "
+        f"credits={manifest['credit_ceiling']})"
     )
     return 0
 
@@ -320,15 +372,22 @@ def dry_run(
     shots_factor: int = DEFAULT_SHOTS_FACTOR,
     job_name: str = "job-00",
     case_dir: Path | None = None,
+    all_pairs: bool = False,
 ) -> int:
-    """Execute local simulation across all 16 iterations to verify end-to-end pipeline and contrast."""
+    """Execute local simulation across all iterations to verify end-to-end pipeline and contrast."""
+    is_all_pairs = all_pairs or (job_name in ("job-01", "atlas"))
     target_dir = case_dir or (ROOT / f"results/quandela/cases/ascella_associator_character/{job_name}")
-    docs = build_documents(samples_per_iteration=samples, shots_factor=shots_factor, job_name=job_name)
+    docs = build_documents(
+        samples_per_iteration=samples,
+        shots_factor=shots_factor,
+        job_name=job_name,
+        all_pairs=is_all_pairs,
+    )
     manifest = json.loads(docs["cases.json"].decode())
     settings = manifest["settings"]
 
     simulated_iterations = []
-    print(f"Running local simulation of 16 character settings at {samples} samples/iteration...")
+    print(f"Running local simulation of {len(settings)} character settings at {samples} samples/iteration...")
     for idx, s in enumerate(settings):
         omega = s["omega_target"]
         arm = s["arm"]
@@ -473,6 +532,18 @@ def analyze(run_dir: Path) -> dict[str, Any]:
             "wilson_se": round(wilson_se, 6),
             "ci95": [round(d_lower, 6), round(d_upper, 6)],
         }
+
+        try:
+            import scipy.stats as stats
+
+            cp_low = stats.beta.ppf(0.025, c_omega, denom - c_omega + 1) if c_omega > 0 else 0.0
+            cp_high = stats.beta.ppf(0.975, c_omega + 1, denom - c_omega) if c_omega < denom else 1.0
+            d_cp_low = max(-1.0, 2.0 * cp_low - 1.0)
+            d_cp_high = min(1.0, 2.0 * cp_high - 1.0)
+            record["clopper_pearson_ci95"] = [round(float(d_cp_low), 6), round(float(d_cp_high), 6)]
+        except ImportError:
+            pass
+
         per_setting_reports.append(record)
 
         if pair_key not in pair_contrasts:
@@ -500,26 +571,36 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     # Compute contrast Delta_char = D_oct - D_ctrl for each pair
     contrasts_summary = {}
     all_contrasts = []
+    null_contrasts: list[float] = []
     for pair_key, arm_map in pair_contrasts.items():
         d_oct = arm_map.get("octonion", 0.0)
         d_ctrl = arm_map.get("clifford_control", 0.0)
         delta = d_oct - d_ctrl
-        contrasts_summary[pair_key] = {
+        summary = {
             "d_octonion": round(d_oct, 6),
             "d_clifford_control": round(d_ctrl, 6),
             "delta_character": round(delta, 6),
         }
+        if "diagonal_null" in arm_map:
+            null_contrasts.append(d_oct - arm_map["diagonal_null"])
+            summary["d_diagonal_null"] = round(arm_map["diagonal_null"], 6)
+            summary["delta_versus_null"] = round(d_oct - arm_map["diagonal_null"], 6)
+        contrasts_summary[pair_key] = summary
         all_contrasts.append(delta)
 
     mean_delta = float(np.mean(all_contrasts))
     sentinel_rate = observed_sentinel_rate
+    # An algebra-specific signal must separate the octonion arm from the diagonal null as well as from the control.
+    mean_versus_null = float(np.mean(null_contrasts)) if null_contrasts else None
+    signal = mean_delta > 1.5 and (mean_versus_null is None or mean_versus_null > 1.5)
 
     return {
         "status": "ADMITTED",
         "verdicts": {
             "execution_status": "ADMITTED",
-            "character_signal_detected": bool(mean_delta > 1.5),
+            "character_signal_detected": bool(signal),
             "mean_character_contrast": round(mean_delta, 6),
+            "mean_contrast_versus_null": None if mean_versus_null is None else round(mean_versus_null, 6),
             "sentinel_leakage_rate": round(sentinel_rate, 6),
         },
         "contrasts_by_pair": contrasts_summary,
@@ -533,21 +614,38 @@ def main() -> None:
     parser.add_argument("--build", action="store_true", help="build and write case files to results/")
     parser.add_argument("--dry-run", action="store_true", help="execute local simulation and test analysis")
     parser.add_argument("--job", default="job-00", help="job identifier (e.g. job-00)")
+    parser.add_argument("--all-pairs", action="store_true", help="build or run all 21 octonion pairs (84 iterations)")
     parser.add_argument("--case-dir", type=Path, default=None, help="case directory override")
     parser.add_argument("--samples", type=int, default=DEFAULT_SAMPLES_PER_ITERATION, help="samples per iteration")
     parser.add_argument("--shots-factor", type=int, default=DEFAULT_SHOTS_FACTOR, help="shots multiplier")
     parser.add_argument("--analyze", type=Path, help="analyze collected run directory")
     args = parser.parse_args()
 
+    job_name = args.job
+    if args.all_pairs and job_name == "job-00":
+        job_name = "job-01"
+
     if args.check:
         sys.exit(check())
     elif args.build:
         sys.exit(
-            build_case(samples=args.samples, shots_factor=args.shots_factor, job_name=args.job, case_dir=args.case_dir)
+            build_case(
+                samples=args.samples,
+                shots_factor=args.shots_factor,
+                job_name=job_name,
+                case_dir=args.case_dir,
+                all_pairs=args.all_pairs,
+            )
         )
     elif args.dry_run:
         sys.exit(
-            dry_run(samples=args.samples, shots_factor=args.shots_factor, job_name=args.job, case_dir=args.case_dir)
+            dry_run(
+                samples=args.samples,
+                shots_factor=args.shots_factor,
+                job_name=job_name,
+                case_dir=args.case_dir,
+                all_pairs=args.all_pairs,
+            )
         )
     elif args.analyze:
         print(json.dumps(analyze(args.analyze), indent=2))

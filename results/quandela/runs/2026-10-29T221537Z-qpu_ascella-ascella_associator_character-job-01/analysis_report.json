@@ -1,0 +1,1966 @@
+{
+  "status": "ADMITTED",
+  "verdicts": {
+    "execution_status": "ADMITTED",
+    "character_signal_detected": true,
+    "mean_character_contrast": 1.997448,
+    "sentinel_leakage_rate": 0.013156
+  },
+  "contrasts_by_pair": {
+    "pair_1_2": {
+      "d_octonion": 0.998985,
+      "d_clifford_control": -0.999365,
+      "delta_character": 1.99835
+    },
+    "pair_1_3": {
+      "d_octonion": 0.999599,
+      "d_clifford_control": -0.999582,
+      "delta_character": 1.999181
+    },
+    "pair_1_4": {
+      "d_octonion": 0.998798,
+      "d_clifford_control": -0.999195,
+      "delta_character": 1.997993
+    },
+    "pair_1_5": {
+      "d_octonion": 0.997991,
+      "d_clifford_control": -0.9998,
+      "delta_character": 1.997791
+    },
+    "pair_1_6": {
+      "d_octonion": 0.99715,
+      "d_clifford_control": -0.999599,
+      "delta_character": 1.996749
+    },
+    "pair_1_7": {
+      "d_octonion": 0.994408,
+      "d_clifford_control": -0.999599,
+      "delta_character": 1.994007
+    },
+    "pair_2_3": {
+      "d_octonion": 0.99892,
+      "d_clifford_control": -0.9998,
+      "delta_character": 1.99872
+    },
+    "pair_2_4": {
+      "d_octonion": 0.997191,
+      "d_clifford_control": -0.997931,
+      "delta_character": 1.995122
+    },
+    "pair_2_5": {
+      "d_octonion": 0.998963,
+      "d_clifford_control": -1.0,
+      "delta_character": 1.998963
+    },
+    "pair_2_6": {
+      "d_octonion": 0.997578,
+      "d_clifford_control": -0.999198,
+      "delta_character": 1.996777
+    },
+    "pair_2_7": {
+      "d_octonion": 0.999598,
+      "d_clifford_control": -0.999398,
+      "delta_character": 1.998996
+    },
+    "pair_3_4": {
+      "d_octonion": 0.998388,
+      "d_clifford_control": -0.999198,
+      "delta_character": 1.997586
+    },
+    "pair_3_5": {
+      "d_octonion": 0.999593,
+      "d_clifford_control": -1.0,
+      "delta_character": 1.999593
+    },
+    "pair_3_6": {
+      "d_octonion": 0.998976,
+      "d_clifford_control": -0.994437,
+      "delta_character": 1.993413
+    },
+    "pair_3_7": {
+      "d_octonion": 0.998395,
+      "d_clifford_control": -0.999583,
+      "delta_character": 1.997979
+    },
+    "pair_4_5": {
+      "d_octonion": 0.996987,
+      "d_clifford_control": -0.999799,
+      "delta_character": 1.996786
+    },
+    "pair_4_6": {
+      "d_octonion": 0.999197,
+      "d_clifford_control": -0.998995,
+      "delta_character": 1.998193
+    },
+    "pair_4_7": {
+      "d_octonion": 0.998596,
+      "d_clifford_control": -0.999177,
+      "delta_character": 1.997773
+    },
+    "pair_5_6": {
+      "d_octonion": 0.999396,
+      "d_clifford_control": -0.999799,
+      "delta_character": 1.999196
+    },
+    "pair_5_7": {
+      "d_octonion": 0.998587,
+      "d_clifford_control": -0.999599,
+      "delta_character": 1.998186
+    },
+    "pair_6_7": {
+      "d_octonion": 0.995249,
+      "d_clifford_control": -0.9998,
+      "delta_character": 1.995049
+    }
+  },
+  "iterations": [
+    {
+      "name": "iter00-pair_1_2-octonion",
+      "pair": [
+        1,
+        2
+      ],
+      "arm": "octonion",
+      "omega": 4,
+      "c_omega": 9847,
+      "c_0": 5,
+      "d_observable": 0.998985,
+      "std_error": 0.000454,
+      "wilson_se": 0.000495,
+      "ci95": [
+        0.997625,
+        0.999566
+      ],
+      "clopper_pearson_ci95": [
+        0.997632,
+        0.99967
+      ]
+    },
+    {
+      "name": "iter01-pair_1_2-clifford_control",
+      "pair": [
+        1,
+        2
+      ],
+      "arm": "clifford_control",
+      "omega": 4,
+      "c_omega": 3,
+      "c_0": 9448,
+      "d_observable": -0.999365,
+      "std_error": 0.000366,
+      "wilson_se": 0.000421,
+      "ci95": [
+        -0.999784,
+        -0.998134
+      ],
+      "clopper_pearson_ci95": [
+        -0.999869,
+        -0.998145
+      ]
+    },
+    {
+      "name": "iter02-pair_1_2-diagonal_null",
+      "pair": [
+        1,
+        2
+      ],
+      "arm": "diagonal_null",
+      "omega": 4,
+      "c_omega": 0,
+      "c_0": 9984,
+      "d_observable": -1.0,
+      "std_error": 0.0,
+      "wilson_se": 0.000196,
+      "ci95": [
+        -1.0,
+        -0.999231
+      ],
+      "clopper_pearson_ci95": [
+        -1.0,
+        -0.999261
+      ]
+    },
+    {
+      "name": "iter03-pair_1_2-reversed",
+      "pair": [
+        1,
+        2
+      ],
+      "arm": "reversed",
+      "omega": 4,
+      "c_omega": 9392,
+      "c_0": 7,
+      "d_observable": 0.99851,
+      "std_error": 0.000563,
+      "wilson_se": 0.0006,
+      "ci95": [
+        0.996927,
+        0.999278
+      ],
+      "clopper_pearson_ci95": [
+        0.996932,
+        0.999401
+      ]
+    },
+    {
+      "name": "iter04-pair_1_3-octonion",
+      "pair": [
+        1,
+        3
+      ],
+      "arm": "octonion",
+      "omega": 4,
+      "c_omega": 9961,
+      "c_0": 2,
+      "d_observable": 0.999599,
+      "std_error": 0.000284,
+      "wilson_se": 0.000345,
+      "ci95": [
+        0.998537,
+        0.99989
+      ],
+      "clopper_pearson_ci95": [
+        0.99855,
+        0.999951
+      ]
+    },
+    {
+      "name": "iter05-pair_1_3-clifford_control",
+      "pair": [
+        1,
+        3
+      ],
+      "arm": "clifford_control",
+      "omega": 4,
+      "c_omega": 2,
+      "c_0": 9571,
+      "d_observable": -0.999582,
+      "std_error": 0.000295,
+      "wilson_se": 0.000359,
+      "ci95": [
+        -0.999885,
+        -0.998477
+      ],
+      "clopper_pearson_ci95": [
+        -0.999949,
+        -0.998491
+      ]
+    },
+    {
+      "name": "iter06-pair_1_3-diagonal_null",
+      "pair": [
+        1,
+        3
+      ],
+      "arm": "diagonal_null",
+      "omega": 4,
+      "c_omega": 3,
+      "c_0": 9976,
+      "d_observable": -0.999399,
+      "std_error": 0.000347,
+      "wilson_se": 0.000399,
+      "ci95": [
+        -0.999796,
+        -0.998233
+      ],
+      "clopper_pearson_ci95": [
+        -0.999876,
+        -0.998243
+      ]
+    },
+    {
+      "name": "iter07-pair_1_3-reversed",
+      "pair": [
+        1,
+        3
+      ],
+      "arm": "reversed",
+      "omega": 4,
+      "c_omega": 9856,
+      "c_0": 4,
+      "d_observable": 0.999189,
+      "std_error": 0.000406,
+      "wilson_se": 0.000452,
+      "ci95": [
+        0.997915,
+        0.999684
+      ],
+      "clopper_pearson_ci95": [
+        0.997923,
+        0.999779
+      ]
+    },
+    {
+      "name": "iter08-pair_1_4-octonion",
+      "pair": [
+        1,
+        4
+      ],
+      "arm": "octonion",
+      "omega": 2,
+      "c_omega": 9976,
+      "c_0": 6,
+      "d_observable": 0.998798,
+      "std_error": 0.000491,
+      "wilson_se": 0.000528,
+      "ci95": [
+        0.997378,
+        0.999449
+      ],
+      "clopper_pearson_ci95": [
+        0.997384,
+        0.999559
+      ]
+    },
+    {
+      "name": "iter09-pair_1_4-clifford_control",
+      "pair": [
+        1,
+        4
+      ],
+      "arm": "clifford_control",
+      "omega": 2,
+      "c_omega": 4,
+      "c_0": 9939,
+      "d_observable": -0.999195,
+      "std_error": 0.000402,
+      "wilson_se": 0.000448,
+      "ci95": [
+        -0.999687,
+        -0.997932
+      ],
+      "clopper_pearson_ci95": [
+        -0.999781,
+        -0.997941
+      ]
+    },
+    {
+      "name": "iter10-pair_1_4-diagonal_null",
+      "pair": [
+        1,
+        4
+      ],
+      "arm": "diagonal_null",
+      "omega": 2,
+      "c_omega": 2,
+      "c_0": 9981,
+      "d_observable": -0.999599,
+      "std_error": 0.000283,
+      "wilson_se": 0.000345,
+      "ci95": [
+        -0.99989,
+        -0.998539
+      ],
+      "clopper_pearson_ci95": [
+        -0.999951,
+        -0.998553
+      ]
+    },
+    {
+      "name": "iter11-pair_1_4-reversed",
+      "pair": [
+        1,
+        4
+      ],
+      "arm": "reversed",
+      "omega": 2,
+      "c_omega": 9951,
+      "c_0": 16,
+      "d_observable": 0.996789,
+      "std_error": 0.000802,
+      "wilson_se": 0.000825,
+      "ci95": [
+        0.994787,
+        0.998023
+      ],
+      "clopper_pearson_ci95": [
+        0.994789,
+        0.998164
+      ]
+    },
+    {
+      "name": "iter12-pair_1_5-octonion",
+      "pair": [
+        1,
+        5
+      ],
+      "arm": "octonion",
+      "omega": 2,
+      "c_omega": 9945,
+      "c_0": 10,
+      "d_observable": 0.997991,
+      "std_error": 0.000635,
+      "wilson_se": 0.000665,
+      "ci95": [
+        0.996303,
+        0.998909
+      ],
+      "clopper_pearson_ci95": [
+        0.996307,
+        0.999036
+      ]
+    },
+    {
+      "name": "iter13-pair_1_5-clifford_control",
+      "pair": [
+        1,
+        5
+      ],
+      "arm": "clifford_control",
+      "omega": 2,
+      "c_omega": 1,
+      "c_0": 9980,
+      "d_observable": -0.9998,
+      "std_error": 0.0002,
+      "wilson_se": 0.00028,
+      "ci95": [
+        -0.999965,
+        -0.998865
+      ],
+      "clopper_pearson_ci95": [
+        -0.999995,
+        -0.998884
+      ]
+    },
+    {
+      "name": "iter14-pair_1_5-diagonal_null",
+      "pair": [
+        1,
+        5
+      ],
+      "arm": "diagonal_null",
+      "omega": 2,
+      "c_omega": 5,
+      "c_0": 9929,
+      "d_observable": -0.998993,
+      "std_error": 0.00045,
+      "wilson_se": 0.000491,
+      "ci95": [
+        -0.99957,
+        -0.997644
+      ],
+      "clopper_pearson_ci95": [
+        -0.999673,
+        -0.997652
+      ]
+    },
+    {
+      "name": "iter15-pair_1_5-reversed",
+      "pair": [
+        1,
+        5
+      ],
+      "arm": "reversed",
+      "omega": 2,
+      "c_omega": 9964,
+      "c_0": 13,
+      "d_observable": 0.997394,
+      "std_error": 0.000722,
+      "wilson_se": 0.000748,
+      "ci95": [
+        0.995544,
+        0.998477
+      ],
+      "clopper_pearson_ci95": [
+        0.995546,
+        0.998612
+      ]
+    },
+    {
+      "name": "iter16-pair_1_6-octonion",
+      "pair": [
+        1,
+        6
+      ],
+      "arm": "octonion",
+      "omega": 6,
+      "c_omega": 9810,
+      "c_0": 14,
+      "d_observable": 0.99715,
+      "std_error": 0.000761,
+      "wilson_se": 0.000787,
+      "ci95": [
+        0.995218,
+        0.998302
+      ],
+      "clopper_pearson_ci95": [
+        0.99522,
+        0.998441
+      ]
+    },
+    {
+      "name": "iter17-pair_1_6-clifford_control",
+      "pair": [
+        1,
+        6
+      ],
+      "arm": "clifford_control",
+      "omega": 6,
+      "c_omega": 2,
+      "c_0": 9972,
+      "d_observable": -0.999599,
+      "std_error": 0.000284,
+      "wilson_se": 0.000345,
+      "ci95": [
+        -0.99989,
+        -0.998538
+      ],
+      "clopper_pearson_ci95": [
+        -0.999951,
+        -0.998552
+      ]
+    },
+    {
+      "name": "iter18-pair_1_6-diagonal_null",
+      "pair": [
+        1,
+        6
+      ],
+      "arm": "diagonal_null",
+      "omega": 6,
+      "c_omega": 1,
+      "c_0": 9746,
+      "d_observable": -0.999795,
+      "std_error": 0.000205,
+      "wilson_se": 0.000287,
+      "ci95": [
+        -0.999964,
+        -0.998838
+      ],
+      "clopper_pearson_ci95": [
+        -0.999995,
+        -0.998857
+      ]
+    },
+    {
+      "name": "iter19-pair_1_6-reversed",
+      "pair": [
+        1,
+        6
+      ],
+      "arm": "reversed",
+      "omega": 6,
+      "c_omega": 9879,
+      "c_0": 17,
+      "d_observable": 0.996564,
+      "std_error": 0.000833,
+      "wilson_se": 0.000855,
+      "ci95": [
+        0.994501,
+        0.997854
+      ],
+      "clopper_pearson_ci95": [
+        0.994502,
+        0.997998
+      ]
+    },
+    {
+      "name": "iter20-pair_1_7-octonion",
+      "pair": [
+        1,
+        7
+      ],
+      "arm": "octonion",
+      "omega": 6,
+      "c_omega": 8917,
+      "c_0": 25,
+      "d_observable": 0.994408,
+      "std_error": 0.001117,
+      "wilson_se": 0.001138,
+      "ci95": [
+        0.991752,
+        0.996211
+      ],
+      "clopper_pearson_ci95": [
+        0.991751,
+        0.99638
+      ]
+    },
+    {
+      "name": "iter21-pair_1_7-clifford_control",
+      "pair": [
+        1,
+        7
+      ],
+      "arm": "clifford_control",
+      "omega": 6,
+      "c_omega": 2,
+      "c_0": 9974,
+      "d_observable": -0.999599,
+      "std_error": 0.000283,
+      "wilson_se": 0.000345,
+      "ci95": [
+        -0.99989,
+        -0.998538
+      ],
+      "clopper_pearson_ci95": [
+        -0.999951,
+        -0.998552
+      ]
+    },
+    {
+      "name": "iter22-pair_1_7-diagonal_null",
+      "pair": [
+        1,
+        7
+      ],
+      "arm": "diagonal_null",
+      "omega": 6,
+      "c_omega": 4,
+      "c_0": 9110,
+      "d_observable": -0.999122,
+      "std_error": 0.000439,
+      "wilson_se": 0.000488,
+      "ci95": [
+        -0.999659,
+        -0.997744
+      ],
+      "clopper_pearson_ci95": [
+        -0.999761,
+        -0.997753
+      ]
+    },
+    {
+      "name": "iter23-pair_1_7-reversed",
+      "pair": [
+        1,
+        7
+      ],
+      "arm": "reversed",
+      "omega": 6,
+      "c_omega": 9853,
+      "c_0": 16,
+      "d_observable": 0.996758,
+      "std_error": 0.00081,
+      "wilson_se": 0.000834,
+      "ci95": [
+        0.994736,
+        0.998004
+      ],
+      "clopper_pearson_ci95": [
+        0.994737,
+        0.998146
+      ]
+    },
+    {
+      "name": "iter24-pair_2_3-octonion",
+      "pair": [
+        2,
+        3
+      ],
+      "arm": "octonion",
+      "omega": 4,
+      "c_omega": 9257,
+      "c_0": 5,
+      "d_observable": 0.99892,
+      "std_error": 0.000483,
+      "wilson_se": 0.000527,
+      "ci95": [
+        0.997474,
+        0.999539
+      ],
+      "clopper_pearson_ci95": [
+        0.997481,
+        0.999649
+      ]
+    },
+    {
+      "name": "iter25-pair_2_3-clifford_control",
+      "pair": [
+        2,
+        3
+      ],
+      "arm": "clifford_control",
+      "omega": 4,
+      "c_omega": 1,
+      "c_0": 9976,
+      "d_observable": -0.9998,
+      "std_error": 0.0002,
+      "wilson_se": 0.000281,
+      "ci95": [
+        -0.999965,
+        -0.998865
+      ],
+      "clopper_pearson_ci95": [
+        -0.999995,
+        -0.998883
+      ]
+    },
+    {
+      "name": "iter26-pair_2_3-diagonal_null",
+      "pair": [
+        2,
+        3
+      ],
+      "arm": "diagonal_null",
+      "omega": 4,
+      "c_omega": 0,
+      "c_0": 9975,
+      "d_observable": -1.0,
+      "std_error": 0.0,
+      "wilson_se": 0.000196,
+      "ci95": [
+        -1.0,
+        -0.99923
+      ],
+      "clopper_pearson_ci95": [
+        -1.0,
+        -0.999261
+      ]
+    },
+    {
+      "name": "iter27-pair_2_3-reversed",
+      "pair": [
+        2,
+        3
+      ],
+      "arm": "reversed",
+      "omega": 4,
+      "c_omega": 9947,
+      "c_0": 6,
+      "d_observable": 0.998794,
+      "std_error": 0.000492,
+      "wilson_se": 0.00053,
+      "ci95": [
+        0.997371,
+        0.999447
+      ],
+      "clopper_pearson_ci95": [
+        0.997377,
+        0.999557
+      ]
+    },
+    {
+      "name": "iter28-pair_2_4-octonion",
+      "pair": [
+        2,
+        4
+      ],
+      "arm": "octonion",
+      "omega": 1,
+      "c_omega": 9955,
+      "c_0": 14,
+      "d_observable": 0.997191,
+      "std_error": 0.00075,
+      "wilson_se": 0.000775,
+      "ci95": [
+        0.995288,
+        0.998327
+      ],
+      "clopper_pearson_ci95": [
+        0.99529,
+        0.998464
+      ]
+    },
+    {
+      "name": "iter29-pair_2_4-clifford_control",
+      "pair": [
+        2,
+        4
+      ],
+      "arm": "clifford_control",
+      "omega": 1,
+      "c_omega": 10,
+      "c_0": 9657,
+      "d_observable": -0.997931,
+      "std_error": 0.000654,
+      "wilson_se": 0.000684,
+      "ci95": [
+        -0.998876,
+        -0.996193
+      ],
+      "clopper_pearson_ci95": [
+        -0.999008,
+        -0.996197
+      ]
+    },
+    {
+      "name": "iter30-pair_2_4-diagonal_null",
+      "pair": [
+        2,
+        4
+      ],
+      "arm": "diagonal_null",
+      "omega": 1,
+      "c_omega": 2,
+      "c_0": 9971,
+      "d_observable": -0.999599,
+      "std_error": 0.000284,
+      "wilson_se": 0.000345,
+      "ci95": [
+        -0.99989,
+        -0.998538
+      ],
+      "clopper_pearson_ci95": [
+        -0.999951,
+        -0.998552
+      ]
+    },
+    {
+      "name": "iter31-pair_2_4-reversed",
+      "pair": [
+        2,
+        4
+      ],
+      "arm": "reversed",
+      "omega": 1,
+      "c_omega": 9950,
+      "c_0": 11,
+      "d_observable": 0.997791,
+      "std_error": 0.000666,
+      "wilson_se": 0.000694,
+      "ci95": [
+        0.996047,
+        0.998766
+      ],
+      "clopper_pearson_ci95": [
+        0.99605,
+        0.998897
+      ]
+    },
+    {
+      "name": "iter32-pair_2_5-octonion",
+      "pair": [
+        2,
+        5
+      ],
+      "arm": "octonion",
+      "omega": 5,
+      "c_omega": 9637,
+      "c_0": 5,
+      "d_observable": 0.998963,
+      "std_error": 0.000464,
+      "wilson_se": 0.000506,
+      "ci95": [
+        0.997573,
+        0.999557
+      ],
+      "clopper_pearson_ci95": [
+        0.997581,
+        0.999663
+      ]
+    },
+    {
+      "name": "iter33-pair_2_5-clifford_control",
+      "pair": [
+        2,
+        5
+      ],
+      "arm": "clifford_control",
+      "omega": 5,
+      "c_omega": 0,
+      "c_0": 9983,
+      "d_observable": -1.0,
+      "std_error": 0.0,
+      "wilson_se": 0.000196,
+      "ci95": [
+        -1.0,
+        -0.999231
+      ],
+      "clopper_pearson_ci95": [
+        -1.0,
+        -0.999261
+      ]
+    },
+    {
+      "name": "iter34-pair_2_5-diagonal_null",
+      "pair": [
+        2,
+        5
+      ],
+      "arm": "diagonal_null",
+      "omega": 5,
+      "c_omega": 13,
+      "c_0": 9559,
+      "d_observable": -0.997284,
+      "std_error": 0.000753,
+      "wilson_se": 0.00078,
+      "ci95": [
+        -0.998412,
+        -0.995355
+      ],
+      "clopper_pearson_ci95": [
+        -0.998553,
+        -0.995357
+      ]
+    },
+    {
+      "name": "iter35-pair_2_5-reversed",
+      "pair": [
+        2,
+        5
+      ],
+      "arm": "reversed",
+      "omega": 5,
+      "c_omega": 9964,
+      "c_0": 3,
+      "d_observable": 0.999398,
+      "std_error": 0.000348,
+      "wilson_se": 0.000399,
+      "ci95": [
+        0.998231,
+        0.999795
+      ],
+      "clopper_pearson_ci95": [
+        0.998241,
+        0.999876
+      ]
+    },
+    {
+      "name": "iter36-pair_2_6-octonion",
+      "pair": [
+        2,
+        6
+      ],
+      "arm": "octonion",
+      "omega": 1,
+      "c_omega": 9899,
+      "c_0": 12,
+      "d_observable": 0.997578,
+      "std_error": 0.000699,
+      "wilson_se": 0.000726,
+      "ci95": [
+        0.995769,
+        0.998614
+      ],
+      "clopper_pearson_ci95": [
+        0.995772,
+        0.998748
+      ]
+    },
+    {
+      "name": "iter37-pair_2_6-clifford_control",
+      "pair": [
+        2,
+        6
+      ],
+      "arm": "clifford_control",
+      "omega": 1,
+      "c_omega": 4,
+      "c_0": 9974,
+      "d_observable": -0.999198,
+      "std_error": 0.000401,
+      "wilson_se": 0.000446,
+      "ci95": [
+        -0.999688,
+        -0.997939
+      ],
+      "clopper_pearson_ci95": [
+        -0.999782,
+        -0.997948
+      ]
+    },
+    {
+      "name": "iter38-pair_2_6-diagonal_null",
+      "pair": [
+        2,
+        6
+      ],
+      "arm": "diagonal_null",
+      "omega": 1,
+      "c_omega": 7,
+      "c_0": 9863,
+      "d_observable": -0.998582,
+      "std_error": 0.000536,
+      "wilson_se": 0.000571,
+      "ci95": [
+        -0.999313,
+        -0.997073
+      ],
+      "clopper_pearson_ci95": [
+        -0.99943,
+        -0.997079
+      ]
+    },
+    {
+      "name": "iter39-pair_2_6-reversed",
+      "pair": [
+        2,
+        6
+      ],
+      "arm": "reversed",
+      "omega": 1,
+      "c_omega": 9937,
+      "c_0": 19,
+      "d_observable": 0.996183,
+      "std_error": 0.000875,
+      "wilson_se": 0.000896,
+      "ci95": [
+        0.994042,
+        0.997556
+      ],
+      "clopper_pearson_ci95": [
+        0.994043,
+        0.997701
+      ]
+    },
+    {
+      "name": "iter40-pair_2_7-octonion",
+      "pair": [
+        2,
+        7
+      ],
+      "arm": "octonion",
+      "omega": 5,
+      "c_omega": 9940,
+      "c_0": 2,
+      "d_observable": 0.999598,
+      "std_error": 0.000284,
+      "wilson_se": 0.000346,
+      "ci95": [
+        0.998533,
+        0.99989
+      ],
+      "clopper_pearson_ci95": [
+        0.998547,
+        0.999951
+      ]
+    },
+    {
+      "name": "iter41-pair_2_7-clifford_control",
+      "pair": [
+        2,
+        7
+      ],
+      "arm": "clifford_control",
+      "omega": 5,
+      "c_omega": 3,
+      "c_0": 9968,
+      "d_observable": -0.999398,
+      "std_error": 0.000347,
+      "wilson_se": 0.000399,
+      "ci95": [
+        -0.999795,
+        -0.998231
+      ],
+      "clopper_pearson_ci95": [
+        -0.999876,
+        -0.998242
+      ]
+    },
+    {
+      "name": "iter42-pair_2_7-diagonal_null",
+      "pair": [
+        2,
+        7
+      ],
+      "arm": "diagonal_null",
+      "omega": 5,
+      "c_omega": 0,
+      "c_0": 9957,
+      "d_observable": -1.0,
+      "std_error": 0.0,
+      "wilson_se": 0.000197,
+      "ci95": [
+        -1.0,
+        -0.999229
+      ],
+      "clopper_pearson_ci95": [
+        -1.0,
+        -0.999259
+      ]
+    },
+    {
+      "name": "iter43-pair_2_7-reversed",
+      "pair": [
+        2,
+        7
+      ],
+      "arm": "reversed",
+      "omega": 5,
+      "c_omega": 9948,
+      "c_0": 2,
+      "d_observable": 0.999598,
+      "std_error": 0.000284,
+      "wilson_se": 0.000346,
+      "ci95": [
+        0.998535,
+        0.99989
+      ],
+      "clopper_pearson_ci95": [
+        0.998548,
+        0.999951
+      ]
+    },
+    {
+      "name": "iter44-pair_3_4-octonion",
+      "pair": [
+        3,
+        4
+      ],
+      "arm": "octonion",
+      "omega": 3,
+      "c_omega": 9916,
+      "c_0": 8,
+      "d_observable": 0.998388,
+      "std_error": 0.00057,
+      "wilson_se": 0.000603,
+      "ci95": [
+        0.99682,
+        0.999183
+      ],
+      "clopper_pearson_ci95": [
+        0.996824,
+        0.999304
+      ]
+    },
+    {
+      "name": "iter45-pair_3_4-clifford_control",
+      "pair": [
+        3,
+        4
+      ],
+      "arm": "clifford_control",
+      "omega": 3,
+      "c_omega": 4,
+      "c_0": 9971,
+      "d_observable": -0.999198,
+      "std_error": 0.000401,
+      "wilson_se": 0.000446,
+      "ci95": [
+        -0.999688,
+        -0.997939
+      ],
+      "clopper_pearson_ci95": [
+        -0.999781,
+        -0.997947
+      ]
+    },
+    {
+      "name": "iter46-pair_3_4-diagonal_null",
+      "pair": [
+        3,
+        4
+      ],
+      "arm": "diagonal_null",
+      "omega": 3,
+      "c_omega": 6,
+      "c_0": 9892,
+      "d_observable": -0.998788,
+      "std_error": 0.000495,
+      "wilson_se": 0.000533,
+      "ci95": [
+        -0.999444,
+        -0.997356
+      ],
+      "clopper_pearson_ci95": [
+        -0.999555,
+        -0.997362
+      ]
+    },
+    {
+      "name": "iter47-pair_3_4-reversed",
+      "pair": [
+        3,
+        4
+      ],
+      "arm": "reversed",
+      "omega": 3,
+      "c_omega": 9961,
+      "c_0": 3,
+      "d_observable": 0.999398,
+      "std_error": 0.000348,
+      "wilson_se": 0.000399,
+      "ci95": [
+        0.99823,
+        0.999795
+      ],
+      "clopper_pearson_ci95": [
+        0.998241,
+        0.999876
+      ]
+    },
+    {
+      "name": "iter48-pair_3_5-octonion",
+      "pair": [
+        3,
+        5
+      ],
+      "arm": "octonion",
+      "omega": 7,
+      "c_omega": 9821,
+      "c_0": 2,
+      "d_observable": 0.999593,
+      "std_error": 0.000288,
+      "wilson_se": 0.00035,
+      "ci95": [
+        0.998516,
+        0.999888
+      ],
+      "clopper_pearson_ci95": [
+        0.998529,
+        0.999951
+      ]
+    },
+    {
+      "name": "iter49-pair_3_5-clifford_control",
+      "pair": [
+        3,
+        5
+      ],
+      "arm": "clifford_control",
+      "omega": 7,
+      "c_omega": 0,
+      "c_0": 9973,
+      "d_observable": -1.0,
+      "std_error": 0.0,
+      "wilson_se": 0.000196,
+      "ci95": [
+        -1.0,
+        -0.99923
+      ],
+      "clopper_pearson_ci95": [
+        -1.0,
+        -0.99926
+      ]
+    },
+    {
+      "name": "iter50-pair_3_5-diagonal_null",
+      "pair": [
+        3,
+        5
+      ],
+      "arm": "diagonal_null",
+      "omega": 7,
+      "c_omega": 13,
+      "c_0": 9724,
+      "d_observable": -0.99733,
+      "std_error": 0.00074,
+      "wilson_se": 0.000767,
+      "ci95": [
+        -0.998439,
+        -0.995434
+      ],
+      "clopper_pearson_ci95": [
+        -0.998578,
+        -0.995436
+      ]
+    },
+    {
+      "name": "iter51-pair_3_5-reversed",
+      "pair": [
+        3,
+        5
+      ],
+      "arm": "reversed",
+      "omega": 7,
+      "c_omega": 9960,
+      "c_0": 4,
+      "d_observable": 0.999197,
+      "std_error": 0.000401,
+      "wilson_se": 0.000447,
+      "ci95": [
+        0.997936,
+        0.999688
+      ],
+      "clopper_pearson_ci95": [
+        0.997945,
+        0.999781
+      ]
+    },
+    {
+      "name": "iter52-pair_3_6-octonion",
+      "pair": [
+        3,
+        6
+      ],
+      "arm": "octonion",
+      "omega": 7,
+      "c_omega": 9758,
+      "c_0": 5,
+      "d_observable": 0.998976,
+      "std_error": 0.000458,
+      "wilson_se": 0.0005,
+      "ci95": [
+        0.997603,
+        0.999562
+      ],
+      "clopper_pearson_ci95": [
+        0.99761,
+        0.999667
+      ]
+    },
+    {
+      "name": "iter53-pair_3_6-clifford_control",
+      "pair": [
+        3,
+        6
+      ],
+      "arm": "clifford_control",
+      "omega": 7,
+      "c_omega": 25,
+      "c_0": 8963,
+      "d_observable": -0.994437,
+      "std_error": 0.001111,
+      "wilson_se": 0.001132,
+      "ci95": [
+        -0.99623,
+        -0.991794
+      ],
+      "clopper_pearson_ci95": [
+        -0.996398,
+        -0.991793
+      ]
+    },
+    {
+      "name": "iter54-pair_3_6-diagonal_null",
+      "pair": [
+        3,
+        6
+      ],
+      "arm": "diagonal_null",
+      "omega": 7,
+      "c_omega": 1,
+      "c_0": 9981,
+      "d_observable": -0.9998,
+      "std_error": 0.0002,
+      "wilson_se": 0.00028,
+      "ci95": [
+        -0.999965,
+        -0.998865
+      ],
+      "clopper_pearson_ci95": [
+        -0.999995,
+        -0.998884
+      ]
+    },
+    {
+      "name": "iter55-pair_3_6-reversed",
+      "pair": [
+        3,
+        6
+      ],
+      "arm": "reversed",
+      "omega": 7,
+      "c_omega": 9097,
+      "c_0": 11,
+      "d_observable": 0.997585,
+      "std_error": 0.000728,
+      "wilson_se": 0.000759,
+      "ci95": [
+        0.995677,
+        0.998651
+      ],
+      "clopper_pearson_ci95": [
+        0.99568,
+        0.998794
+      ]
+    },
+    {
+      "name": "iter56-pair_3_7-octonion",
+      "pair": [
+        3,
+        7
+      ],
+      "arm": "octonion",
+      "omega": 3,
+      "c_omega": 9962,
+      "c_0": 8,
+      "d_observable": 0.998395,
+      "std_error": 0.000567,
+      "wilson_se": 0.0006,
+      "ci95": [
+        0.996835,
+        0.999187
+      ],
+      "clopper_pearson_ci95": [
+        0.996839,
+        0.999307
+      ]
+    },
+    {
+      "name": "iter57-pair_3_7-clifford_control",
+      "pair": [
+        3,
+        7
+      ],
+      "arm": "clifford_control",
+      "omega": 3,
+      "c_omega": 2,
+      "c_0": 9600,
+      "d_observable": -0.999583,
+      "std_error": 0.000295,
+      "wilson_se": 0.000358,
+      "ci95": [
+        -0.999886,
+        -0.998482
+      ],
+      "clopper_pearson_ci95": [
+        -0.99995,
+        -0.998496
+      ]
+    },
+    {
+      "name": "iter58-pair_3_7-diagonal_null",
+      "pair": [
+        3,
+        7
+      ],
+      "arm": "diagonal_null",
+      "omega": 3,
+      "c_omega": 3,
+      "c_0": 9977,
+      "d_observable": -0.999399,
+      "std_error": 0.000347,
+      "wilson_se": 0.000399,
+      "ci95": [
+        -0.999796,
+        -0.998233
+      ],
+      "clopper_pearson_ci95": [
+        -0.999876,
+        -0.998244
+      ]
+    },
+    {
+      "name": "iter59-pair_3_7-reversed",
+      "pair": [
+        3,
+        7
+      ],
+      "arm": "reversed",
+      "omega": 3,
+      "c_omega": 9929,
+      "c_0": 5,
+      "d_observable": 0.998993,
+      "std_error": 0.00045,
+      "wilson_se": 0.000491,
+      "ci95": [
+        0.997644,
+        0.99957
+      ],
+      "clopper_pearson_ci95": [
+        0.997652,
+        0.999673
+      ]
+    },
+    {
+      "name": "iter60-pair_4_5-octonion",
+      "pair": [
+        4,
+        5
+      ],
+      "arm": "octonion",
+      "omega": 2,
+      "c_omega": 9942,
+      "c_0": 15,
+      "d_observable": 0.996987,
+      "std_error": 0.000777,
+      "wilson_se": 0.000802,
+      "ci95": [
+        0.995031,
+        0.998174
+      ],
+      "clopper_pearson_ci95": [
+        0.995033,
+        0.998313
+      ]
+    },
+    {
+      "name": "iter61-pair_4_5-clifford_control",
+      "pair": [
+        4,
+        5
+      ],
+      "arm": "clifford_control",
+      "omega": 2,
+      "c_omega": 1,
+      "c_0": 9971,
+      "d_observable": -0.999799,
+      "std_error": 0.000201,
+      "wilson_se": 0.000281,
+      "ci95": [
+        -0.999965,
+        -0.998864
+      ],
+      "clopper_pearson_ci95": [
+        -0.999995,
+        -0.998883
+      ]
+    },
+    {
+      "name": "iter62-pair_4_5-diagonal_null",
+      "pair": [
+        4,
+        5
+      ],
+      "arm": "diagonal_null",
+      "omega": 2,
+      "c_omega": 3,
+      "c_0": 9895,
+      "d_observable": -0.999394,
+      "std_error": 0.00035,
+      "wilson_se": 0.000402,
+      "ci95": [
+        -0.999794,
+        -0.998218
+      ],
+      "clopper_pearson_ci95": [
+        -0.999875,
+        -0.998229
+      ]
+    },
+    {
+      "name": "iter63-pair_4_5-reversed",
+      "pair": [
+        4,
+        5
+      ],
+      "arm": "reversed",
+      "omega": 2,
+      "c_omega": 9973,
+      "c_0": 7,
+      "d_observable": 0.998597,
+      "std_error": 0.00053,
+      "wilson_se": 0.000565,
+      "ci95": [
+        0.997106,
+        0.99932
+      ],
+      "clopper_pearson_ci95": [
+        0.997111,
+        0.999436
+      ]
+    },
+    {
+      "name": "iter64-pair_4_6-octonion",
+      "pair": [
+        4,
+        6
+      ],
+      "arm": "octonion",
+      "omega": 1,
+      "c_omega": 9963,
+      "c_0": 4,
+      "d_observable": 0.999197,
+      "std_error": 0.000401,
+      "wilson_se": 0.000447,
+      "ci95": [
+        0.997937,
+        0.999688
+      ],
+      "clopper_pearson_ci95": [
+        0.997946,
+        0.999781
+      ]
+    },
+    {
+      "name": "iter65-pair_4_6-clifford_control",
+      "pair": [
+        4,
+        6
+      ],
+      "arm": "clifford_control",
+      "omega": 1,
+      "c_omega": 5,
+      "c_0": 9949,
+      "d_observable": -0.998995,
+      "std_error": 0.000449,
+      "wilson_se": 0.00049,
+      "ci95": [
+        -0.999571,
+        -0.997649
+      ],
+      "clopper_pearson_ci95": [
+        -0.999674,
+        -0.997656
+      ]
+    },
+    {
+      "name": "iter66-pair_4_6-diagonal_null",
+      "pair": [
+        4,
+        6
+      ],
+      "arm": "diagonal_null",
+      "omega": 1,
+      "c_omega": 1,
+      "c_0": 9952,
+      "d_observable": -0.999799,
+      "std_error": 0.000201,
+      "wilson_se": 0.000281,
+      "ci95": [
+        -0.999965,
+        -0.998862
+      ],
+      "clopper_pearson_ci95": [
+        -0.999995,
+        -0.998881
+      ]
+    },
+    {
+      "name": "iter67-pair_4_6-reversed",
+      "pair": [
+        4,
+        6
+      ],
+      "arm": "reversed",
+      "omega": 1,
+      "c_omega": 9343,
+      "c_0": 18,
+      "d_observable": 0.996154,
+      "std_error": 0.000906,
+      "wilson_se": 0.000929,
+      "ci95": [
+        0.993925,
+        0.997567
+      ],
+      "clopper_pearson_ci95": [
+        0.993925,
+        0.99772
+      ]
+    },
+    {
+      "name": "iter68-pair_4_7-octonion",
+      "pair": [
+        4,
+        7
+      ],
+      "arm": "octonion",
+      "omega": 3,
+      "c_omega": 9964,
+      "c_0": 7,
+      "d_observable": 0.998596,
+      "std_error": 0.000531,
+      "wilson_se": 0.000566,
+      "ci95": [
+        0.997103,
+        0.99932
+      ],
+      "clopper_pearson_ci95": [
+        0.997108,
+        0.999435
+      ]
+    },
+    {
+      "name": "iter69-pair_4_7-clifford_control",
+      "pair": [
+        4,
+        7
+      ],
+      "arm": "clifford_control",
+      "omega": 3,
+      "c_omega": 4,
+      "c_0": 9722,
+      "d_observable": -0.999177,
+      "std_error": 0.000411,
+      "wilson_se": 0.000458,
+      "ci95": [
+        -0.99968,
+        -0.997886
+      ],
+      "clopper_pearson_ci95": [
+        -0.999776,
+        -0.997895
+      ]
+    },
+    {
+      "name": "iter70-pair_4_7-diagonal_null",
+      "pair": [
+        4,
+        7
+      ],
+      "arm": "diagonal_null",
+      "omega": 3,
+      "c_omega": 3,
+      "c_0": 9978,
+      "d_observable": -0.999399,
+      "std_error": 0.000347,
+      "wilson_se": 0.000399,
+      "ci95": [
+        -0.999796,
+        -0.998233
+      ],
+      "clopper_pearson_ci95": [
+        -0.999876,
+        -0.998244
+      ]
+    },
+    {
+      "name": "iter71-pair_4_7-reversed",
+      "pair": [
+        4,
+        7
+      ],
+      "arm": "reversed",
+      "omega": 3,
+      "c_omega": 9888,
+      "c_0": 5,
+      "d_observable": 0.998989,
+      "std_error": 0.000452,
+      "wilson_se": 0.000493,
+      "ci95": [
+        0.997635,
+        0.999568
+      ],
+      "clopper_pearson_ci95": [
+        0.997642,
+        0.999672
+      ]
+    },
+    {
+      "name": "iter72-pair_5_6-octonion",
+      "pair": [
+        5,
+        6
+      ],
+      "arm": "octonion",
+      "omega": 7,
+      "c_omega": 9939,
+      "c_0": 3,
+      "d_observable": 0.999396,
+      "std_error": 0.000348,
+      "wilson_se": 0.0004,
+      "ci95": [
+        0.998226,
+        0.999795
+      ],
+      "clopper_pearson_ci95": [
+        0.998237,
+        0.999876
+      ]
+    },
+    {
+      "name": "iter73-pair_5_6-clifford_control",
+      "pair": [
+        5,
+        6
+      ],
+      "arm": "clifford_control",
+      "omega": 7,
+      "c_omega": 1,
+      "c_0": 9970,
+      "d_observable": -0.999799,
+      "std_error": 0.000201,
+      "wilson_se": 0.000281,
+      "ci95": [
+        -0.999965,
+        -0.998864
+      ],
+      "clopper_pearson_ci95": [
+        -0.999995,
+        -0.998883
+      ]
+    },
+    {
+      "name": "iter74-pair_5_6-diagonal_null",
+      "pair": [
+        5,
+        6
+      ],
+      "arm": "diagonal_null",
+      "omega": 7,
+      "c_omega": 4,
+      "c_0": 9949,
+      "d_observable": -0.999196,
+      "std_error": 0.000402,
+      "wilson_se": 0.000447,
+      "ci95": [
+        -0.999687,
+        -0.997934
+      ],
+      "clopper_pearson_ci95": [
+        -0.999781,
+        -0.997943
+      ]
+    },
+    {
+      "name": "iter75-pair_5_6-reversed",
+      "pair": [
+        5,
+        6
+      ],
+      "arm": "reversed",
+      "omega": 7,
+      "c_omega": 9949,
+      "c_0": 5,
+      "d_observable": 0.998995,
+      "std_error": 0.000449,
+      "wilson_se": 0.00049,
+      "ci95": [
+        0.997649,
+        0.999571
+      ],
+      "clopper_pearson_ci95": [
+        0.997656,
+        0.999674
+      ]
+    },
+    {
+      "name": "iter76-pair_5_7-octonion",
+      "pair": [
+        5,
+        7
+      ],
+      "arm": "octonion",
+      "omega": 5,
+      "c_omega": 9898,
+      "c_0": 7,
+      "d_observable": 0.998587,
+      "std_error": 0.000534,
+      "wilson_se": 0.000569,
+      "ci95": [
+        0.997084,
+        0.999315
+      ],
+      "clopper_pearson_ci95": [
+        0.997089,
+        0.999432
+      ]
+    },
+    {
+      "name": "iter77-pair_5_7-clifford_control",
+      "pair": [
+        5,
+        7
+      ],
+      "arm": "clifford_control",
+      "omega": 5,
+      "c_omega": 2,
+      "c_0": 9976,
+      "d_observable": -0.999599,
+      "std_error": 0.000283,
+      "wilson_se": 0.000345,
+      "ci95": [
+        -0.99989,
+        -0.998539
+      ],
+      "clopper_pearson_ci95": [
+        -0.999951,
+        -0.998552
+      ]
+    },
+    {
+      "name": "iter78-pair_5_7-diagonal_null",
+      "pair": [
+        5,
+        7
+      ],
+      "arm": "diagonal_null",
+      "omega": 5,
+      "c_omega": 4,
+      "c_0": 9895,
+      "d_observable": -0.999192,
+      "std_error": 0.000404,
+      "wilson_se": 0.00045,
+      "ci95": [
+        -0.999686,
+        -0.997923
+      ],
+      "clopper_pearson_ci95": [
+        -0.99978,
+        -0.997931
+      ]
+    },
+    {
+      "name": "iter79-pair_5_7-reversed",
+      "pair": [
+        5,
+        7
+      ],
+      "arm": "reversed",
+      "omega": 5,
+      "c_omega": 9962,
+      "c_0": 6,
+      "d_observable": 0.998796,
+      "std_error": 0.000491,
+      "wilson_se": 0.000529,
+      "ci95": [
+        0.997375,
+        0.999448
+      ],
+      "clopper_pearson_ci95": [
+        0.997381,
+        0.999558
+      ]
+    },
+    {
+      "name": "iter80-pair_6_7-octonion",
+      "pair": [
+        6,
+        7
+      ],
+      "arm": "octonion",
+      "omega": 6,
+      "c_omega": 9659,
+      "c_0": 23,
+      "d_observable": 0.995249,
+      "std_error": 0.000989,
+      "wilson_se": 0.00101,
+      "ci95": [
+        0.992875,
+        0.996833
+      ],
+      "clopper_pearson_ci95": [
+        0.992875,
+        0.996987
+      ]
+    },
+    {
+      "name": "iter81-pair_6_7-clifford_control",
+      "pair": [
+        6,
+        7
+      ],
+      "arm": "clifford_control",
+      "omega": 6,
+      "c_omega": 1,
+      "c_0": 9983,
+      "d_observable": -0.9998,
+      "std_error": 0.0002,
+      "wilson_se": 0.00028,
+      "ci95": [
+        -0.999965,
+        -0.998866
+      ],
+      "clopper_pearson_ci95": [
+        -0.999995,
+        -0.998884
+      ]
+    },
+    {
+      "name": "iter82-pair_6_7-diagonal_null",
+      "pair": [
+        6,
+        7
+      ],
+      "arm": "diagonal_null",
+      "omega": 6,
+      "c_omega": 1,
+      "c_0": 9980,
+      "d_observable": -0.9998,
+      "std_error": 0.0002,
+      "wilson_se": 0.00028,
+      "ci95": [
+        -0.999965,
+        -0.998865
+      ],
+      "clopper_pearson_ci95": [
+        -0.999995,
+        -0.998884
+      ]
+    },
+    {
+      "name": "iter83-pair_6_7-reversed",
+      "pair": [
+        6,
+        7
+      ],
+      "arm": "reversed",
+      "omega": 6,
+      "c_omega": 9093,
+      "c_0": 20,
+      "d_observable": 0.995611,
+      "std_error": 0.00098,
+      "wilson_se": 0.001003,
+      "ci95": [
+        0.993225,
+        0.997158
+      ],
+      "clopper_pearson_ci95": [
+        0.993225,
+        0.997318
+      ]
+    }
+  ]
+}
