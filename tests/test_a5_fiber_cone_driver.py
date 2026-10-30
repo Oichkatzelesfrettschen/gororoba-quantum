@@ -64,3 +64,9 @@ def test_batch_timeout_reaches_each_stage(monkeypatch: pytest.MonkeyPatch) -> No
     item = {"header": "h.sing", "degree": 2, "out": "o", "prime": P, "memory_gib": 4}
     drv.run_batch([item, {**item, "timeout": 7}], budget_gib=8, timeout=3600)
     _check(seen == [3600, 7])
+
+
+def test_singular_errors_catch_indented_diagnostics() -> None:
+    text = "RESULT h 3\n   ? `K` is undefined\n   ? error occurred in or before STDIN line 4\nRESULT std_ms 5\n"
+    _check(drv.singular_errors(text) == ["? `K` is undefined", "? error occurred in or before STDIN line 4"])
+    _check(drv.singular_errors("RESULT h 3\n") == [])

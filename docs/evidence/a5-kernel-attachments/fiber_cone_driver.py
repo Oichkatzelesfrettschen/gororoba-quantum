@@ -157,6 +157,12 @@ def _peak(stderr: str) -> int | None:
     return int(float(hit.group(1)) * _UNITS[hit.group(2)]) if hit else None
 
 
+def singular_errors(text: str) -> list[str]:
+    """Singular prints each interpreter or computation error as a line whose first non-blank character is `?`,
+    indented inside procedures, and may continue and exit 0 afterwards."""
+    return [line.strip() for line in text.splitlines() if line.lstrip().startswith("?")]
+
+
 def run_singular(
     script: str,
     stage: str,
@@ -179,7 +185,7 @@ def run_singular(
     seconds = time.monotonic() - started
     (cwd / f"{stage}.log").write_text(proc.stdout + "\n--- stderr ---\n" + proc.stderr)
     results = {m.group(1): m.group(2).strip() for m in re.finditer(r"^RESULT (\S+) ?(.*)$", proc.stdout, re.M)}
-    errors = [ln for ln in (proc.stdout + proc.stderr).splitlines() if ln.startswith("?")]
+    errors = singular_errors(proc.stdout + proc.stderr)
     error = "\n".join(errors) if errors else (f"exit status {proc.returncode}" if proc.returncode else None)
     return Outcome(stage, seconds, _peak(proc.stderr), results, proc.returncode, error)
 
