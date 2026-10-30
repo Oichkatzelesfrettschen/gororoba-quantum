@@ -360,13 +360,12 @@ pass. The record certifies basepoints, slices, reduced germs, and the ten comple
 computes neither a nullity-16 Gauss fiber nor an attaching map. A changed germ or completed count, a blocked row that
 fails to name its stage, or a surviving source-ideal mutation falsifies the retained outcome.
 
-## The nullity-16 Rees-fiber attempt stops after survivor reduction
+## The nullity-16 Rees fibers: eight complete, ten block at the modular fiber
 
-[`nullity16_rees_fibers.py`](nullity16_rees_fibers.py) applies the prescribed one-pass normal-form reduction to the
-126 four-Pfaffian coordinates of the eight rows that timed out above, then asks for the Nakayama-reduced Rees fiber
-modulo 32003 and over `Q(i)`. The retained
-[`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json) certifies these exact survivor-selection
-results before the next modular stage reaches its resource boundary:
+[`nullity16_rees_fibers.py`](nullity16_rees_fibers.py) applies the one-pass normal-form reduction to the 126
+four-Pfaffian coordinates of the eight rows that timed out above, then computes the Nakayama-reduced Rees special
+fiber over `Q(i)` and modulo the split prime 32009 under both square roots of -1 (10754 and 21255). The retained
+[`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json) certifies these survivor selections:
 
 | Incidence family | Independent survivors | Coefficient monomials |
 | --- | ---: | ---: |
@@ -375,31 +374,25 @@ results before the next modular stage reaches its resource boundary:
 | `X+->N+`, `X-->N-` | 69 of 126 | 727 |
 | `X+->N-`, `X-->N+` | 69 of 126 | 731 |
 
-All eight survivor-reduced rows then reach the 300-second limit at `modular_nakayama_and_embedding`. The other ten
-rows stop immediately at that modular stage because Singular reports `2nd module does not lie in the first` for
-`lift(LiftBasis,FullF)`. The producer uses the committed minimal local Nakayama generators as `F` and constructs
-`LiftBasis = J + mF + G`. Those generators span `I/(mI+J)`, but they need not generate every original Schur
-coordinate as a module over the global polynomial ring. The requested lift of all 36 or 126 coordinates is therefore
-undefined. The zero rows printed after the failed lift carry no mathematical information and enter no claim.
+Eight incidences complete, with the rational fiber and both modular fibers agreeing in component count, degree and
+projective dimension:
 
-Three capped generation attempts exercised the same algebraic formulation. Attempts one and two stopped during
-aggregation after their mutation targets blocked; they took 11:00.74 at 264,204 KiB peak RSS and 11:03.41 at
-264,424 KiB peak RSS. Attempt three retained the blocked mutation outcome and took 11:02.23 at 264,312 KiB peak
-RSS. Every Singular call had a 4 GiB address-space cap and a 300-second timeout, the Python controller had the
-standing 16 GiB cap, and the producer imposed no wall-clock gate.
+| Incidence | Embedding rank | Special fiber |
+| --- | ---: | --- |
+| `B9->N+`, `B9->N-` | 3 | the plane `P^2` |
+| `V->N+`, `V->N-` | 3 | the conic `y2^2 - y1*y3` in `P^2` |
+| `VB->N+`, `VB->N-`, `Va+->N+`, `Va-->N-` | 1 | one point |
 
-The retained record has `pass=false`: all 18 incidences are blocked and zero Rees fibers complete. The record
-certifies only the eight exact survivor ranks above and the stage-specific cost outcome. It certifies no full Schur
-embedding, standard-basis-point control, characteristic comparison, Rees fiber, generator-deletion mutation, real
-fiber, or attaching map. A successful modular count, a valid full embedding of the original coordinates, or a
-detected generator-deletion mutation falsifies this blocked outcome.
+The generator-deletion mutation on `B9->N+` drops the first Nakayama generator (original coordinate 23) and changes
+the fiber from degree 2 to degree 1, so the check detects a missing generator. The ten incidences from the nullity-8
+sources `E8bar`, `Iso`, `W8`, `X+` and `X-` complete the Nakayama count and embedding and then reach the 300-second
+timeout at `modular_rees_fiber`; the self-test admits exactly that stage for them. Every Singular call runs in a cgroup scope with a 16 GiB `MemoryMax`, no swap and a 300-second timeout, and the row
+analyses run one at a time; the record's `execution_contract` binds these limits.
 
-The optimized self-test replays the same blocked invariants successfully. The byte-exact check does not pass: the
-`blocked_diagnostic` field retains `/usr/bin/time` measurements from the failed Singular lift, so a fresh run changes
-the JSON bytes even when every survivor rank and blocked stage agrees. The retained record digest is
-`ee1b8663a034439aa1b09616a6299f39b3358d09f04449ab48ff82108a716f63`; the replay digest was
-`81d51f41f84778acde79552507fb1e0a47ed665a90220f2cd535cf74fea7056a`. Fixing that serialization and regenerating
-the result would exceed the sub-step's three-attempt cap. The replay failure therefore remains part of the blocker.
+The record has `pass=false` because ten rows block. It certifies the survivor ranks, the eight fibers above, their
+characteristic agreement and the detected mutation. It certifies no fiber for the ten blocked rows, no real fiber
+and no attaching map. A completed modular fiber for a blocked row, a characteristic disagreement, a standard basis
+point inside an embedding span, or a surviving mutation falsifies it.
 
 ## Investigated questions
 
