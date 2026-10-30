@@ -1089,12 +1089,17 @@ def _verify() -> None:
         # quadrature variants read the sine of the work phase and carry their own laws, which
         # tests/gororoba_quantum/test_detuning_sign.py checks member by member.
         for variant in (name for name in N21_ORBIT_BUILDABLE if name not in N21_DOSE_QUADRATURE_VARIANTS):
-            timing = {"window_delay_dt": 416, "echo_half_dt": 512}
-            if variant in N21_DOSE_VARIANTS:
-                timing = {"dose_dt": 64}
-            circuits.append(n21_orbit_diagnostic(feed_forward, variant, **timing))
+            dose_dt = 64 if variant in N21_DOSE_VARIANTS else None
+            delay_dt, echo_dt = (None, None) if dose_dt else (416, 512)
+            circuits.append(
+                n21_orbit_diagnostic(
+                    feed_forward, variant, window_delay_dt=delay_dt, echo_half_dt=echo_dt, dose_dt=dose_dt
+                )
+            )
             expected_laws.append(expected)
-            heralded = n21_orbit_diagnostic(feed_forward, variant, init_herald=True, **timing)
+            heralded = n21_orbit_diagnostic(
+                feed_forward, variant, window_delay_dt=delay_dt, echo_half_dt=echo_dt, init_herald=True, dose_dt=dose_dt
+            )
             _check_herald_structure(heralded, circuits[-1])
             circuits.append(heralded)
             expected_laws.append(expected + (Fraction(0),) * ((1 << heralded.num_clbits) - len(expected)))
