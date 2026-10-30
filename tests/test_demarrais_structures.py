@@ -54,7 +54,8 @@ def test_tower_taxonomy_up_to_8192d() -> None:
     _check(tax[13].trip_count == 11_180_715, f"unexpected 8192D trip count {tax[13].trip_count}")
     _check(tax[13].midden_part_size == 1024, f"unexpected 8192D midden part size {tax[13].midden_part_size}")
     _check(tax[13].midden_vertices == 3072, f"unexpected 8192D midden vertices {tax[13].midden_vertices}")
-    _check(abs(tax[13].flat_band_fraction - 0.5) < TOLERANCE, "flat band fraction != 0.5")
+    _check(abs(tax[13].flat_band_fraction - 1023 / 1024) < TOLERANCE, "flat band fraction != (m - 1) / m")
+    _check(abs(tax[4].flat_band_fraction - 0.5) < TOLERANCE, "sedenion flat band fraction != 1/2")
 
 
 def test_sedenion_box_kites_and_harary_zaslavsky_spectrum() -> None:
@@ -110,7 +111,10 @@ def test_kite_chain_midden_quotients_16d_to_8192d() -> None:
         null = kite_chain_midden_quotient(level, sleeper_null=True)
         _check(active.dimension == (1 << level), f"N={level} dim mismatch")
         _check(active.part_size == (1 << (level - 3)), f"N={level} part_size mismatch")
-        _check(abs(active.flat_band_fraction - 0.5) < TOLERANCE, f"N={level} flat band != 0.5")
+        _check(
+            abs(active.flat_band_fraction - active.flat_band_zero_modes / active.total_midden_vertices) < TOLERANCE,
+            f"N={level} flat band fraction differs from zero modes over vertices",
+        )
         p_disp_active = sum(active.ideal_probabilities.get(str(m), 0.0) for m in range(2, 12))
         p_self_null = sum(null.ideal_probabilities.get(str(m), 0.0) for m in (0, 1))
         _check(abs(p_disp_active - 1.0) < TOLERANCE, f"N={level} active dispersive prob {p_disp_active} != 1.0")

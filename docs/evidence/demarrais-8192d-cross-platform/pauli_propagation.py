@@ -19,10 +19,14 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+from parallel import ordered_map  # noqa: E402
+
 CASES = ROOT / "results/quantum_inspire/cases"
 FAMILIES = ("demarrais_tuna17_8192d", "demarrais_qx_1024d")
 GATE = re.compile(r"^(H|X|CZ)\s+q\[(\d+)\](?:,\s*q\[(\d+)\])?$")
@@ -64,45 +68,55 @@ def predict(width: int, gates: list[tuple[str, tuple[int, ...]]]) -> tuple[str, 
 
 
 def statevector_outcome(width: int, gates: list[tuple[str, tuple[int, ...]]]) -> str:
+    """The single basis outcome of the circuit's statevector, qubit 0 rightmost."""
     circuit = QuantumCircuit(width)
     for name, qubits in gates:
         getattr(circuit, name.lower())(*qubits)
-    law = Statevector(circuit).probabilities_dict()
-    outcomes = [key for key, value in law.items() if value > 1e-9]
-    if len(outcomes) != 1:
-        raise ValueError(f"the circuit has {len(outcomes)} outcomes, not one")
-    return outcomes[0]
+    support = np.flatnonzero(np.abs(Statevector(circuit).data) ** 2 > 1e-9)
+    if len(support) != 1:
+        raise ValueError(f"the circuit has {len(support)} outcomes, not one")
+    return format(int(support[0]), f"0{width}b")
+
+
+def replay(item: tuple[str, str, int | None, Path, dict[str, Any]]) -> dict[str, Any]:
+    """One circuit's parity prediction, checked against its statevector and its manifest."""
+    family, batch, dim, path, row = item
+    width, gates = parse(path)
+    predicted, edges, hubs = predict(width, gates)
+    exact = statevector_outcome(width, gates)
+    if predicted != exact or predicted != row["ideal_shot_string"]:
+        raise ValueError(f"{row['file']}: parity {predicted}, statevector {exact}, manifest {row['ideal_shot_string']}")
+    return {
+        "family": family,
+        "batch": batch,
+        "file": row["file"],
+        "label": row["kind"],
+        "cayley_dickson_target_dim": dim,
+        "cz_edges": len(edges),
+        "x_hubs": hubs,
+        "ideal_shot": predicted,
+    }
 
 
 def record() -> dict[str, Any]:
-    rows = []
+    items = []
     for family in FAMILIES:
         for manifest in sorted((CASES / family).glob("batch-*/cases.json")):
             cases = json.loads(manifest.read_text(encoding="utf-8"))
             for row in cases["circuits"]:
-                width, gates = parse(manifest.parent / row["file"])
-                predicted, edges, hubs = predict(width, gates)
-                exact = statevector_outcome(width, gates)
-                if predicted != exact or predicted != row["ideal_shot_string"]:
-                    raise ValueError(
-                        f"{row['file']}: parity {predicted}, statevector {exact}, manifest {row['ideal_shot_string']}"
+                items.append(
+                    (
+                        family,
+                        manifest.parent.name,
+                        cases.get("cayley_dickson_target_dim"),
+                        manifest.parent / row["file"],
+                        row,
                     )
-                rows.append(
-                    {
-                        "family": family,
-                        "batch": manifest.parent.name,
-                        "file": row["file"],
-                        "label": row["kind"],
-                        "cayley_dickson_target_dim": cases.get("cayley_dickson_target_dim"),
-                        "cz_edges": len(edges),
-                        "x_hubs": hubs,
-                        "ideal_shot": predicted,
-                    }
                 )
     return {
         "schema": "demarrais-pauli-propagation-v1",
         "rule": "bit q = parity of the X'd hubs adjacent to q in the circuit's CZ graph",
-        "circuits": rows,
+        "circuits": ordered_map(replay, items),
     }
 
 

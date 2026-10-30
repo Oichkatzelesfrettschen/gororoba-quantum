@@ -73,7 +73,7 @@ counts describe the model, not `qpu:ascella` or `qpu:belenos`, and it writes to 
 [`gororoba_quantum/demarrais_structures.py`](../../../gororoba_quantum/demarrais_structures.py) computes the
 tower's combinatorics: the 14-level taxonomy to 8192D with its positive cyclic triple counts, the seven sedenion
 box-kites with their signed-adjacency spectrum {-4, 0, 0, 0, 2, 2}, the pathion emanation tables and their
-high-strut DMZ cell counts 24(2^(N-3) - 1), and the cowbird octonion eggs certified with `python-flint`. Its
+high-strut DMZ cell counts 24(2^(N-3) - 1) on the first eight struts above 2^(N-2), and the cowbird octonion eggs certified with `python-flint`. Its
 `--self-test` and the unit tests replay them; the full-tower tests take minutes and run in the audit tier. These are
 computations from the module's own constructors; no source-registry check compares them with de Marrais's
 published tables.

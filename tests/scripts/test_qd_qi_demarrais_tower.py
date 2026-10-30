@@ -23,6 +23,7 @@ def _check(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
+@pytest.mark.audit
 def test_qd_demarrais_tower_self_test_and_check() -> None:
     summary = qd_demarrais_tower.run_self_test()
     _check(summary["tower_levels"] == 14, "expected 14 tower levels")

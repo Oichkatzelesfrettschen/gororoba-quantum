@@ -137,9 +137,8 @@ def build_tower_level(spec: tuple[int, str, str]) -> TowerLevel:
     vertices = 3 * part_size
     edges = 3 * part_size * part_size
     # In K_{m,m,m} over 3m vertices, the adjacency matrix has rank 3 (eigenvalues 2m, -m, -m)
-    # and 3(m - 1) zero eigenvalues. For the signed assessor-plane bipartite doubled graph,
-    # half the spectrum lies in the flat zero-energy band; for each tripartite Midden K_{m,m,m},
-    # the zero-eigenvalue fraction is (m - 1) / m, and the bipartite-chiral flat-band fraction is 0.5.
+    # and 3(m - 1) zero eigenvalues, so the flat-band fraction is (m - 1) / m: 1/2 at the sedenion
+    # box-kite (m = 2), rising toward 1 up the tower.
     return TowerLevel(
         level=level,
         dimension=dim,
@@ -150,7 +149,7 @@ def build_tower_level(spec: tuple[int, str, str]) -> TowerLevel:
         midden_part_size=part_size,
         midden_vertices=vertices,
         midden_edges=edges,
-        flat_band_fraction=0.5,
+        flat_band_fraction=(part_size - 1) / part_size,
     )
 
 
@@ -1055,7 +1054,9 @@ def emanation_and_dmz_cell_counts(
             active_cells == expected_fillable and dmz_cells == 0,
             f"dim={dim} S={strut_s}: expected full emanation {expected_fillable}, got {active_cells}",
         )
-    elif strut_s > g_prev:
+    elif g_prev < strut_s <= g_prev + 8:
+        # 24(m - 1) active cells holds on the first eight high struts at every dimension through 128 and fails
+        # beyond them (552, not 168, at D = 64 and S = 25), so only that window is checked.
         m_part = dim >> 3
         expected_active = 24 * (m_part - 1)
         require(
