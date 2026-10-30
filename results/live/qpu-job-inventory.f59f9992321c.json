@@ -1,12 +1,12 @@
 {
   "account_usage": {
-    "usage_consumed_seconds": 451,
+    "usage_consumed_seconds": 497,
     "usage_limit_seconds": 600,
     "usage_period": {
-      "end_time": "2026-10-29T23:07:45.079Z",
-      "start_time": "2026-10-01T23:07:45.079Z"
+      "end_time": "2026-10-30T04:53:07.184Z",
+      "start_time": "2026-10-02T04:53:07.184Z"
     },
-    "usage_remaining_seconds": 149
+    "usage_remaining_seconds": 103
   },
   "complete_service_inventory": true,
   "instance_crn_hash": "f59f9992321c",
@@ -522,10 +522,42 @@
         "running": "2026-10-29T19:16:20.485825Z"
       },
       "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_fez",
+      "created_at": "2026-10-29T23:13:00.148352+00:00",
+      "final_qpu_charge_seconds": 15,
+      "input_schema_version": "v2.0",
+      "job_id": "dbht5v42d77s739ddn30",
+      "pub_count": 6,
+      "shots_per_pub": 8192,
+      "status": "DONE",
+      "timestamps": {
+        "created": "2026-10-29T23:13:00.148352Z",
+        "finished": "2026-10-29T23:13:21.475854Z",
+        "running": "2026-10-29T23:13:02.301616Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_fez",
+      "created_at": "2026-10-30T01:12:17.325837+00:00",
+      "final_qpu_charge_seconds": 31,
+      "input_schema_version": "v2.0",
+      "job_id": "dbhutsene4hc73bdm7j0",
+      "pub_count": 101,
+      "shots_per_pub": 5600,
+      "status": "DONE",
+      "timestamps": {
+        "created": "2026-10-30T01:12:17.325837Z",
+        "finished": "2026-10-30T01:13:27.341981Z",
+        "running": "2026-10-30T01:12:19.022996Z"
+      },
+      "usage_status": "complete"
     }
   ],
   "new_qpu_submissions": 0,
-  "observed_at": "2026-10-29T23:07:45.159780+00:00",
+  "observed_at": "2026-10-30T04:53:07.250163+00:00",
   "retrieval_boundary": "Read-only service.jobs(limit=None), decoded QuantumProgram inputs and finalized metrics. Physical jobs require a finished status (DONE, ERROR or CANCELLED) and positive settled charge; local simulations and mock results are separate evidence.",
   "schema": "completed-qpu-job-inventory-v1"
 }

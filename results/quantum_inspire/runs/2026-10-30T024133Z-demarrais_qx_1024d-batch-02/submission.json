@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-30T02:41:39+00:00",
+ "approval": "user: 8192D decomposed exploration and lower-dim controls approved on QX (2048 shots) and Tuna-17 (75536 shots)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "206ba7afe4a72bd5befb9b3d56e1b5e65be2ab7927fdf478f62f2276985dc0cc",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 903630,
+ "project": 804531,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "04-dekavoudon-1024d-catamaran-lanyard.cq",
+   "job": 1642260,
+   "sha256": "fc3350ae93d0f696dc63979ef060b1f4b7e1afcb8931b5539c2e06607f7a970d"
+  },
+  {
+   "file": "05-dekavoudon-1024d-dmz-shell.cq",
+   "job": 1642261,
+   "sha256": "73091eb627332c098e1da2398dd4dc48ce404bd3899a396f7bf8f3b94082ba8b"
+  },
+  {
+   "file": "06-dekavoudon-1024d-sleeper-null.cq",
+   "job": 1642262,
+   "sha256": "7423d9ffcc9f2375ba2876609858ea6dad1168489726072bb1f25721d540c449"
+  }
+ ],
+ "submitted_utc": "2026-10-30T02:41:39+00:00"
+}

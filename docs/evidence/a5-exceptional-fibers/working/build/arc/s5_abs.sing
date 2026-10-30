@@ -1,0 +1,10 @@
+LIB "primdec.lib";
+ring Y=32009,(y(1..10)),dp;
+int c; string fn;
+for(c=1;c<=2;c++){
+  execute("ideal P=" + read("primeP"+string(c)+".txt") + ";");
+  def Ra=absPrimdecGTZ(P); setring Ra;
+  "RESULT prime",c,"absolute_components",size(absolute_primes),"degree_of_field_extension",absolute_primes[1][2];
+  setring Y; kill Ra; kill P;
+}
+quit;

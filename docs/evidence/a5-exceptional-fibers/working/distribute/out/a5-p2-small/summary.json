@@ -1,0 +1,58 @@
+{
+ "cpu_count": 4,
+ "meminfo_kib": {
+  "MemTotal": "32869296",
+  "MemAvailable": "31908696"
+ },
+ "python": "3.13.15",
+ "singular": "4.4.1",
+ "jobs": {
+  "vb_p2": [
+   {
+    "degree": 2,
+    "rc": 0,
+    "seconds": 25.7,
+    "tail": "degree 2 h=34 relations=21 status=degree-certified\n"
+   },
+   {
+    "degree": 3,
+    "rc": 0,
+    "seconds": 783.7,
+    "tail": "degree 3 h=80 relations=0 status=degree-certified\n"
+   }
+  ],
+  "xm_p2": [
+   {
+    "degree": 2,
+    "rc": 0,
+    "seconds": 43.4,
+    "tail": "degree 2 h=51 relations=69 status=degree-certified\n"
+   },
+   {
+    "degree": 3,
+    "rc": 0,
+    "seconds": 1044.3,
+    "tail": "degree 3 h=122 relations=0 status=degree-certified\n"
+   }
+  ],
+  "xp_p2": [
+   {
+    "degree": 2,
+    "rc": 0,
+    "seconds": 42.7,
+    "tail": "degree 2 h=51 relations=69 status=degree-certified\n"
+   },
+   {
+    "degree": 3,
+    "rc": 0,
+    "seconds": 1049.0,
+    "tail": "degree 3 h=122 relations=0 status=degree-certified\n"
+   }
+  ]
+ },
+ "meminfo_end_kib": {
+  "MemTotal": "32869296",
+  "MemAvailable": "31684384"
+ },
+ "total_seconds": 1139.6
+}

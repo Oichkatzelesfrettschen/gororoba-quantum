@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py", line 944, in <module>
+    main()
+    ~~~~^^
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py", line 929, in main
+    _self_test(record)
+    ~~~~~~~~~~^^^^^^^^
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py", line 890, in _self_test
+    _require(row["status"] == "blocked_timeout", f"{name} blocked for a reason other than the timeout")
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "~/worktrees/IBMQuantum/a5-kernel-attachments/docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py", line 102, in _require
+    raise RuntimeError(message)
+RuntimeError: E8bar->N+ blocked for a reason other than the timeout

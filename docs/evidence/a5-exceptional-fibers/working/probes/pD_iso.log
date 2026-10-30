@@ -1,0 +1,9 @@
+RESULT size 68
+RESULT projdim 4 degree 23 std_seconds 0 size_std 81
+RESULT HF 1 17
+RESULT HF 2 85
+RESULT HF 3 265
+RESULT HF 4 640
+RESULT facstd pieces 1 seconds 0
+RESULT piece 1 projdim 4 degree 23 size 81
+exit 0

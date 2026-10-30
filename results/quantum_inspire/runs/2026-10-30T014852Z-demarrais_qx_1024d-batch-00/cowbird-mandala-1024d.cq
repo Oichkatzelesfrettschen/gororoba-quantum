@@ -1,0 +1,55 @@
+version 3.0
+
+// demarrais_qx_1024d kind=cowbird oracle_hubs=[1, 4, 8] ideal_shot=0010000100
+qubit[10] q
+bit[10] b
+
+H q[0]
+H q[1]
+H q[2]
+H q[3]
+H q[4]
+H q[5]
+H q[6]
+H q[7]
+H q[8]
+H q[9]
+barrier q
+CZ q[0], q[1]
+CZ q[0], q[4]
+CZ q[2], q[1]
+CZ q[2], q[5]
+CZ q[3], q[4]
+CZ q[3], q[8]
+CZ q[6], q[5]
+CZ q[6], q[9]
+CZ q[7], q[8]
+CZ q[7], q[9]
+barrier q
+X q[1]
+X q[4]
+X q[8]
+barrier q
+CZ q[0], q[1]
+CZ q[0], q[4]
+CZ q[2], q[1]
+CZ q[2], q[5]
+CZ q[3], q[4]
+CZ q[3], q[8]
+CZ q[6], q[5]
+CZ q[6], q[9]
+CZ q[7], q[8]
+CZ q[7], q[9]
+barrier q
+H q[0]
+H q[1]
+H q[2]
+H q[3]
+H q[4]
+H q[5]
+H q[6]
+H q[7]
+H q[8]
+H q[9]
+barrier q
+b = measure q

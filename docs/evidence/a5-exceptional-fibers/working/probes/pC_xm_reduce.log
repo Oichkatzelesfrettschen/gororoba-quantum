@@ -1,0 +1,6 @@
+RESULT reduced12 projdim 3 degree 12 size 39
+RESULT facstd12 pieces 1 seconds 0
+RESULT piece 1 projdim 3 degree 12 size 39
+RESULT minAssChar comps 1 seconds 1
+RESULT comp 1 projdim 3 degree 12 size 39
+exit 0

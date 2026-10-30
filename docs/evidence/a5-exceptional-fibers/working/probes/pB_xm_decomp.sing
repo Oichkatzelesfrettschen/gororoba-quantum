@@ -1,0 +1,13 @@
+// Probe B: decompose V(K2) of X- to N- without minAssGTZ. Falsifier: components must multiply out to projdim 3, degree 12.
+LIB "primdec.lib";
+ring Y=32009,(y(1..15)),dp;
+execute("ideal K="+read("../kaggle-pack-a/xm_nm/xm_nm_fiber.rel")+";");
+int t0=timer;
+list F=facstd(K);
+"RESULT facstd_pieces",size(F),"seconds",timer-t0;
+int i;
+for(i=1;i<=size(F);i++){ideal Q=std(F[i]);"RESULT piece",i,"projdim",dim(Q)-1,"degree",mult(Q),"size",size(Q);kill Q;}
+// linear forms vanishing on V and the variables in the radical
+ideal sK=std(K);
+for(i=1;i<=15;i++){ if(reduce(var(i)^2,sK)==0){"RESULT y"+string(i)+"^2 in K";} }
+quit;

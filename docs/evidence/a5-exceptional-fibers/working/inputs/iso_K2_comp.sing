@@ -1,0 +1,7 @@
+LIB "primdec.lib";
+ring Y=32009,(y(1..17)),dp;
+execute("ideal K2="+read("iso_K2.txt")+";");
+ideal sK=std(K2);"RESULT K2_projdim",dim(sK)-1;"RESULT K2_degree",mult(sK);
+int t0=timer;list PK=minAssGTZ(sK);"PROGRESS minass_seconds",timer-t0;"RESULT K2_components",size(PK);
+int i;for(i=1;i<=size(PK);i++){ideal Q=std(PK[i]);"RESULT comp_"+string(i),dim(Q)-1,mult(Q),size(Q);kill Q;}
+quit;

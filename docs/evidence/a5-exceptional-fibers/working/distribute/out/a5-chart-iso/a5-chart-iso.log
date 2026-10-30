@@ -1,0 +1,153 @@
+[{"stream_name":"stderr","time":0.856226348,"data":"/kaggle/src/script.py:11: DeprecationWarning: Python 3.14 will, by default, filter extracted tar archives and reject files or modify their metadata. Use the filter argument to control this behavior.\n"}
+,{"stream_name":"stderr","time":0.856279502,"data":"  tarfile.open(fileobj=io.BytesIO(base64.b64decode(PAYLOAD))).extractall(W)\n"}
+,{"stream_name":"stdout","time":13569.456923683,"data":"{\n"}
+,{"stream_name":"stdout","time":13569.457053061,"data":" \"cpu_count\": 4,\n"}
+,{"stream_name":"stdout","time":13569.457060964,"data":" \"meminfo_kib\": {\n"}
+,{"stream_name":"stdout","time":13569.457066363,"data":"  \"MemTotal\": \"32869296\",\n"}
+,{"stream_name":"stdout","time":13569.457071476,"data":"  \"MemAvailable\": \"31853332\"\n"}
+,{"stream_name":"stdout","time":13569.457076742,"data":" },\n"}
+,{"stream_name":"stdout","time":13569.457081533,"data":" \"python\": \"3.13.15\",\n"}
+,{"stream_name":"stdout","time":13569.457086241,"data":" \"singular\": \"4.4.1\",\n"}
+,{"stream_name":"stdout","time":13569.457090869,"data":" \"jobs\": {\n"}
+,{"stream_name":"stdout","time":13569.457095842,"data":"  \"iso_c01\": {\n"}
+,{"stream_name":"stdout","time":13569.457100537,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.457105618,"data":"   \"seconds\": 2700.0,\n"}
+,{"stream_name":"stdout","time":13569.457110459,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.457115284,"data":"    \"RESULT chart 1 dim 5\",\n"}
+,{"stream_name":"stdout","time":13569.457120124,"data":"    \"RESULT chart 1 radical 1\"\n"}
+,{"stream_name":"stdout","time":13569.457124949,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457129135,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.457133645,"data":"  \"iso_c02\": {\n"}
+,{"stream_name":"stdout","time":13569.457138201,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.457143325,"data":"   \"seconds\": 2700.0,\n"}
+,{"stream_name":"stdout","time":13569.457148527,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.457153649,"data":"    \"RESULT chart 2 dim 5\",\n"}
+,{"stream_name":"stdout","time":13569.457158576,"data":"    \"RESULT chart 2 radical 1\"\n"}
+,{"stream_name":"stdout","time":13569.457163308,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457167785,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.457171993,"data":"  \"iso_c03\": {\n"}
+,{"stream_name":"stdout","time":13569.457176476,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.457180992,"data":"   \"seconds\": 2700.8,\n"}
+,{"stream_name":"stdout","time":13569.457185211,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.457189664,"data":"    \"RESULT chart 3 dim 5\",\n"}
+,{"stream_name":"stdout","time":13569.457194327,"data":"    \"RESULT chart 3 radical 1\"\n"}
+,{"stream_name":"stdout","time":13569.457199238,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457203422,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.457207639,"data":"  \"iso_c04\": {\n"}
+,{"stream_name":"stdout","time":13569.457212007,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.457372427,"data":"   \"seconds\": 2700.3,\n"}
+,{"stream_name":"stdout","time":13569.45739317,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.45739867,"data":"    \"RESULT chart 4 dim 5\",\n"}
+,{"stream_name":"stdout","time":13569.457404238,"data":"    \"RESULT chart 4 radical 1\"\n"}
+,{"stream_name":"stdout","time":13569.457409414,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457413899,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.457418472,"data":"  \"iso_c05\": {\n"}
+,{"stream_name":"stdout","time":13569.457457441,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.45746341,"data":"   \"seconds\": 2700.0,\n"}
+,{"stream_name":"stdout","time":13569.457467367,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.457470977,"data":"    \"RESULT chart 5 dim 5\",\n"}
+,{"stream_name":"stdout","time":13569.457474693,"data":"    \"RESULT chart 5 radical 1\"\n"}
+,{"stream_name":"stdout","time":13569.457478467,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457482605,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.457486693,"data":"  \"iso_c06\": {\n"}
+,{"stream_name":"stdout","time":13569.457490483,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.4574944,"data":"   \"seconds\": 2700.1,\n"}
+,{"stream_name":"stdout","time":13569.457498252,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.457501618,"data":"    \"RESULT chart 6 dim 5\"\n"}
+,{"stream_name":"stdout","time":13569.457505789,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457509265,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.457512922,"data":"  \"iso_c07\": {\n"}
+,{"stream_name":"stdout","time":13569.457517111,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.45752078,"data":"   \"seconds\": 2700.0,\n"}
+,{"stream_name":"stdout","time":13569.457524903,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.457528667,"data":"    \"RESULT chart 7 dim 5\"\n"}
+,{"stream_name":"stdout","time":13569.457532254,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457536047,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.457539865,"data":"  \"iso_c08\": {\n"}
+,{"stream_name":"stdout","time":13569.457543423,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.457547629,"data":"   \"seconds\": 2700.4,\n"}
+,{"stream_name":"stdout","time":13569.457551161,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.457555358,"data":"    \"RESULT chart 8 dim 5\",\n"}
+,{"stream_name":"stdout","time":13569.457559058,"data":"    \"RESULT chart 8 radical 1\"\n"}
+,{"stream_name":"stdout","time":13569.45756282,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457566337,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.457570084,"data":"  \"iso_c09\": {\n"}
+,{"stream_name":"stdout","time":13569.457573657,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.457578213,"data":"   \"seconds\": 2700.0,\n"}
+,{"stream_name":"stdout","time":13569.457582517,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.457585697,"data":"    \"RESULT chart 9 dim 5\"\n"}
+,{"stream_name":"stdout","time":13569.457589304,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457592498,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.457595718,"data":"  \"iso_c10\": {\n"}
+,{"stream_name":"stdout","time":13569.457599826,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.457604489,"data":"   \"seconds\": 2700.3,\n"}
+,{"stream_name":"stdout","time":13569.457608841,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.457612008,"data":"    \"RESULT chart 10 dim 5\"\n"}
+,{"stream_name":"stdout","time":13569.457615908,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457619322,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.457622848,"data":"  \"iso_c11\": {\n"}
+,{"stream_name":"stdout","time":13569.45762659,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.457630688,"data":"   \"seconds\": 2700.1,\n"}
+,{"stream_name":"stdout","time":13569.457634844,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.457644203,"data":"    \"RESULT chart 11 dim 5\"\n"}
+,{"stream_name":"stdout","time":13569.45764836,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457651887,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.457656273,"data":"  \"iso_c12\": {\n"}
+,{"stream_name":"stdout","time":13569.457660343,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.457664057,"data":"   \"seconds\": 2700.0,\n"}
+,{"stream_name":"stdout","time":13569.457667443,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.457670764,"data":"    \"RESULT chart 12 dim 5\",\n"}
+,{"stream_name":"stdout","time":13569.45767474,"data":"    \"RESULT chart 12 radical 1\"\n"}
+,{"stream_name":"stdout","time":13569.457679237,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457682564,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.457687806,"data":"  \"iso_c13\": {\n"}
+,{"stream_name":"stdout","time":13569.457692561,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.457903561,"data":"   \"seconds\": 2700.1,\n"}
+,{"stream_name":"stdout","time":13569.457909403,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.457913403,"data":"    \"RESULT chart 13 dim 5\",\n"}
+,{"stream_name":"stdout","time":13569.457917707,"data":"    \"RESULT chart 13 radical 1\"\n"}
+,{"stream_name":"stdout","time":13569.457921739,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457925357,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.457929763,"data":"  \"iso_c14\": {\n"}
+,{"stream_name":"stdout","time":13569.457934693,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.457938539,"data":"   \"seconds\": 2700.1,\n"}
+,{"stream_name":"stdout","time":13569.457942258,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.457945478,"data":"    \"RESULT chart 14 dim 5\"\n"}
+,{"stream_name":"stdout","time":13569.457949423,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457952998,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.45795705,"data":"  \"iso_c15\": {\n"}
+,{"stream_name":"stdout","time":13569.457961444,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.457966113,"data":"   \"seconds\": 2700.0,\n"}
+,{"stream_name":"stdout","time":13569.457970229,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.457973935,"data":"    \"RESULT chart 15 dim 5\",\n"}
+,{"stream_name":"stdout","time":13569.457977802,"data":"    \"RESULT chart 15 radical 1\"\n"}
+,{"stream_name":"stdout","time":13569.457982485,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.457985777,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.45798954,"data":"  \"iso_c16\": {\n"}
+,{"stream_name":"stdout","time":13569.457993267,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.458007903,"data":"   \"seconds\": 2700.1,\n"}
+,{"stream_name":"stdout","time":13569.458013716,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.458017736,"data":"    \"RESULT chart 16 dim 5\"\n"}
+,{"stream_name":"stdout","time":13569.458021848,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.458025431,"data":"  },\n"}
+,{"stream_name":"stdout","time":13569.458028948,"data":"  \"iso_c17\": {\n"}
+,{"stream_name":"stdout","time":13569.458032756,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":13569.458037855,"data":"   \"seconds\": 2700.1,\n"}
+,{"stream_name":"stdout","time":13569.45804256,"data":"   \"results\": [\n"}
+,{"stream_name":"stdout","time":13569.458046289,"data":"    \"RESULT chart 17 dim 5\"\n"}
+,{"stream_name":"stdout","time":13569.458050025,"data":"   ]\n"}
+,{"stream_name":"stdout","time":13569.458064048,"data":"  }\n"}
+,{"stream_name":"stdout","time":13569.458068082,"data":" },\n"}
+,{"stream_name":"stdout","time":13569.458071835,"data":" \"meminfo_end_kib\": {\n"}
+,{"stream_name":"stdout","time":13569.458075226,"data":"  \"MemTotal\": \"32869296\",\n"}
+,{"stream_name":"stdout","time":13569.458088729,"data":"  \"MemAvailable\": \"31978444\"\n"}
+,{"stream_name":"stdout","time":13569.458092718,"data":" },\n"}
+,{"stream_name":"stdout","time":13569.458096003,"data":" \"total_seconds\": 13568.6\n"}
+,{"stream_name":"stdout","time":13569.458099765,"data":"}\n"}
+,{"stream_name":"stderr","time":13573.077463369,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":13573.077501007,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":13573.721409788,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":13573.721446162,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":13575.58349318,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":13577.183899914,"data":"[NbConvertApp] Writing 325116 bytes to __results__.html\n"}
+]

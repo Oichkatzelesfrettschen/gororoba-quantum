@@ -1,0 +1,7 @@
+RESULT generators 15
+RESULT targets 122
+RESULT products_ms 8487
+RESULT std_ms 1014121 size 471
+RESULT reduce_ms 18961
+
+--- stderr ---

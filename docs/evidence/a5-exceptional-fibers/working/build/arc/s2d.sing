@@ -1,0 +1,9 @@
+LIB "primdec.lib";
+ring R=32009,(t1,t2,t3,t4,t5,t6,t7,t8),dp;
+execute("ideal C="+read("cone.txt")+";");
+ideal sC=std(C); "RESULT cone dim",dim(sC),"mult",mult(sC);
+ideal rC=std(radical(C)); "RESULT rad dim",dim(rC),"mult",mult(rC),"size",size(rC);
+"RESULT cone_reduced",size(reduce(rC,sC))==0;
+list P=minAssChar(C); int c; "RESULT ncomp",size(P);
+for(c=1;c<=size(P);c++){ ideal q=std(P[c]); "RESULT comp",c,dim(q),mult(q); string(minbase(q)); kill q;}
+quit;

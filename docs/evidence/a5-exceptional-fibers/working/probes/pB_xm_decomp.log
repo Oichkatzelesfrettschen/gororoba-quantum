@@ -1,0 +1,6 @@
+RESULT facstd_pieces 1 seconds 0
+RESULT piece 1 projdim 3 degree 12 size 39
+RESULT y1^2 in K
+RESULT y5^2 in K
+RESULT y6^2 in K
+exit 0

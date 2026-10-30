@@ -225,3 +225,6 @@ sh scripts/wait_calibration.sh --deadline 86400 -- ibm_kingston --baseline docs/
 
 The binding table (the binding dry run, its sha256, the job id and the billed seconds) is filled from the records
 after the submit.
+
+The case ran on ibm_fez at width 24; [its result](MEASUREMENT_SEQUENCE_SUCCESSOR_FEZ_RESULT.md) holds the records, the
+screens' outcome and why the reader carryover screen cannot pass on a measure-based reset.

@@ -1,0 +1,9 @@
+execute(read("~/Projects/IBMQuantum/docs/local/a5-failed-runs/build/logs/part-b/hdr/vb.sing"));
+ring R=32009,(h,t1,t2,t3,t4,t5,t6,t7,t8),dp;
+ideal JJ=imap(r,J); ideal GG=imap(r,G);
+map f=R,h,h*t1,h*t2,h*t3,h*t4,h*t5,h*t6,h*t7,h*t8;
+ideal S=sat(f(JJ),ideal(h)); S=minbase(std(S));
+write(":w strict_transform.txt",string(S));
+write(":w J.txt",string(JJ)); write(":w G.txt",string(GG));
+"RESULT S",size(S);
+quit;

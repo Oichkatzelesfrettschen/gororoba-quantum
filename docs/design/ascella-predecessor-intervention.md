@@ -410,6 +410,10 @@ processor record. A running platform can queue an approved job; platform
 occupancy does not establish the token's occupancy or the job's start time.
 Both planning and submission pass `--admit-status running`. The token must
 remain free of running and queued jobs under the existing single-job case policy.
+The [Quandela runner guidance](../notes/quandela/README.md#use-in-this-repository)
+distinguishes that case rule from the provider's separate running and queued
+job limits. A successor that uses those limits needs a revised admission policy
+and a newly bound review packet.
 
 The retained [admission observation](../evidence/ascella-predecessor-admission/plan-status.json)
 records a refusal under the earlier available-only policy. Its bytes remain
@@ -448,15 +452,32 @@ recheck follows provider reads but does not lock external filesystem writers.
 The successor needs its own reviewed packet and independent digest custody.
 The historical packet retains its original bytes and cannot authorize the successor.
 
-Run the check, copy the request into a new run directory, and plan against
-the copy so the canonical case directory stays the request. The plan sends
-nothing. Submit only after the owner has approved this case and the plan's
-credit estimate is within 1.032768.
+The case binds the bytes of six constructor and analyzer files that other
+Quandela experiments share, and main moves past them: `qd_platform.py` on main
+also restores a frozen Ascella command set across a driver-package change,
+which three retained Ascella QPU runs used. The
+[source pins](../evidence/quandela/frozen-case-source-pins.json) name, for each
+bound case, the main revision whose tree holds every bound byte, and the gate
+`core-ascella-predecessor-source-pin` holds each pin and requires one for every
+bound case under `results/quandela/cases`. The check, plan, submit and analysis
+run in a detached worktree at the pinned revision, so `acquisition_sources`
+there sees the reviewed bytes; the run directory then moves to a branch off
+main.
+
+Create that worktree, run the check, copy the request into a new run
+directory, and plan against the copy so the canonical case directory stays the
+request. The plan sends nothing. Submit only after the owner has approved this
+case and the plan's credit estimate is within 1.032768.
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 export QUANDELA_TOKEN_FILE="$HOME/.config/quandela/cloud-token"
+CASE=results/quandela/cases/ascella_predecessor/source-compatible/cases.json
+FROZEN="$HOME/worktrees/IBMQuantum/ascella-predecessor-frozen"
+"$PYTHON" scripts/frozen_case_sources.py --worktree \
+  docs/evidence/quandela/frozen-case-source-pins.json "$CASE" "$FROZEN"
+cd "$FROZEN"
 "$PYTHON" scripts/ascella_predecessor_case.py --check
 RUN=results/quandela/runs/$(date -u +%Y-%m-%dT%H%M%SZ)-qpu_ascella-ascella_predecessor-source-compatible
 mkdir -p "$RUN"
@@ -518,3 +539,4 @@ partial or ambiguous acquisition requires diagnosis rather than automatic retry.
 | Eight iterations at this budget take about 24 s, with 40 s written as the expectation | Hypothesized from the retained per-iteration times. This schedule has not been timed. |
 | The common signed target-slot contrast exceeds 0.1 TVD | The response question, conditional on the sampling contract. |
 | The immediate physical predecessor causes a response change | Unidentified by this case's returned metadata and four target observations. |
+| On `sim:ascella` the case's eight iterations return their fixed 32,768 events each, the common target-slot contrast norm is 153/65536 and the reversal norm 71/65536, and every returned compiled circuit differs from the preregistered QPU compilation identity while every computed input matches | Measured by job `51c0552b`, read by [`ascella_predecessor_simulator.py`](../../scripts/ascella_predecessor_simulator.py) into [simulator-qualification.json](../evidence/ascella-predecessor-admission/simulator-qualification.json). The simulator has no predecessor memory, so its contrasts bound the analysis pipeline's zero, not the device's. The frozen analyzer reads only the QPU case bytes, and its digest stays bound by the case. |
