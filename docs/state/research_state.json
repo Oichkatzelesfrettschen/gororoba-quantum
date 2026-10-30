@@ -13387,7 +13387,7 @@
         },
         {
           "path": "docs/evidence/measurement_sequence/reset-persistence.json",
-          "sha256": "c16c3e77272434d3c1dfeab176a491e1da88fbfa0fe67e7f5546f1e8e6874126"
+          "sha256": "c6e930cd4afd1462483c889688e24a0bd15c3d4eb8bda6c0bb93bb1ddc13d794"
         },
         {
           "path": "docs/evidence/measurement_sequence/successor-null-fez-w24-s5600.json",

@@ -5362,9 +5362,11 @@
     "cross_shot_model": {
      "best_scale": 0.8372076679748104,
      "chi2_model": 73.27309376908478,
+     "chi2_scaled": 67.40225837272543,
      "chi2_zero": 222.67613992524699,
      "corr": 0.8984809629400334,
-     "dof": 23
+     "dof_model": 24,
+     "dof_scaled": 23
     },
     "departure_n16_corr_with_persistence": 0.1255851588456913,
     "residue_vs_inverse_t1": {

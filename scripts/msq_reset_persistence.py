@@ -15,7 +15,8 @@ Per qubit and pooled the result reports:
 - the coincidence: shots holding two or more events across qubits, against independent qubits.
 
 A record whose collect.json carries the successor analysis (`pattern_crosscheck`, `screens`, `qubits`) also gets the
-cross-shot model (pattern-row carryover against reset residue times persistence, no fitted parameter), the residue's
+cross-shot model (pattern-row carryover against reset residue times persistence: chi-square with no fitted parameter
+on one degree of freedom per qubit, and at the best common scale on one fewer), the residue's
 dependence on 1/T1, and the partial correlation of the measure arm's N = 16 transition excess with persistence given
 the in-run assignment error and 1/T1, with each carrier left out and with every carrier left out. Small fits run in
 pure Python, so the bytes do not depend on the BLAS build.
@@ -36,6 +37,9 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+from parallel import ordered_map  # noqa: E402
 
 SCHEMA = "msq-reset-persistence-v1"
 LAGS = (0, 1, 2, 10, 100)
@@ -99,6 +103,28 @@ def partial_corr(y: list[float], x: list[float], controls: list[list[float]]) ->
     return corr(ols(y, controls)[1], ols(x, controls)[1])
 
 
+def qubit_persistence(arrays: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]) -> dict[str, Any]:
+    """One qubit's reset failure, baselines and lagged persistence from its rc1 (pre, final) and rc0 (pre, final)."""
+    a, f, b, g = arrays
+    failed = f == 1
+    lags = {}
+    for k in LAGS:
+        ev, target = failed[: len(failed) - k], b[k:]
+        lags[str(k)] = {
+            "after_failure": rate(int(target[ev].sum()), int(ev.sum())),
+            "after_success": rate(int(target[~ev].sum()), int((~ev).sum())),
+        }
+    lag0 = lags["0"]
+    return {
+        "reset_failure": rate(int(f[a == 1].sum()), int((a == 1).sum())),
+        "ground_baseline": rate(int(g[b == 0].sum()), int((b == 0).sum())),
+        "immune_survival": rate(int(g[b == 1].sum()), int((b == 1).sum())),
+        "double_misread": rate(int(f[a == 0].sum()), int((a == 0).sum())),
+        "persistence": lag0["after_failure"]["p"] - lag0["after_success"]["p"],
+        "lags": lags,
+    }
+
+
 def analyse(run_dir: Path) -> dict[str, Any]:
     record = json.loads((run_dir / "record.json").read_text())
     pubs = record["execution_pubs"]
@@ -122,26 +148,7 @@ def analyse(run_dir: Path) -> dict[str, Any]:
     bits = {
         q: (r1[p1[q] + "r0_pre"], r1[p1[q] + "r0_final"], r0[p0[q] + "r0_pre"], r0[p0[q] + "r0_final"]) for q in qubits
     }
-    per: dict[str, Any] = {}
-    for q in qubits:
-        a, f, b, g = bits[q]
-        failed = f == 1
-        lags = {}
-        for k in LAGS:
-            ev, target = failed[: len(failed) - k], b[k:]
-            lags[str(k)] = {
-                "after_failure": rate(int(target[ev].sum()), int(ev.sum())),
-                "after_success": rate(int(target[~ev].sum()), int((~ev).sum())),
-            }
-        lag0 = lags["0"]
-        per[q] = {
-            "reset_failure": rate(int(f[a == 1].sum()), int((a == 1).sum())),
-            "ground_baseline": rate(int(g[b == 0].sum()), int((b == 0).sum())),
-            "immune_survival": rate(int(g[b == 1].sum()), int((b == 1).sum())),
-            "double_misread": rate(int(f[a == 0].sum()), int((a == 0).sum())),
-            "persistence": lag0["after_failure"]["p"] - lag0["after_success"]["p"],
-            "lags": lags,
-        }
+    per: dict[str, Any] = dict(zip(qubits, ordered_map(qubit_persistence, [bits[q] for q in qubits]), strict=True))
     carriers = [q for q in qubits if per[q]["persistence"] >= CARRIER_PERSISTENCE]
 
     def pooled(key: str, group: list[str]) -> dict[str, Any]:
@@ -229,6 +236,7 @@ def successor_links(
         p * p / s**2 for p, s in zip(predicted, se, strict=True)
     )
     chi = math.fsum(((o - p) / s) ** 2 for p, o, s in zip(predicted, observed, se, strict=True))
+    chi_scaled = math.fsum(((o - scale * p) / s) ** 2 for p, o, s in zip(predicted, observed, se, strict=True))
     inv_t1_cal = [1 / calibration[q]["T1"] for q in qubits]
     inv_t1_fit = [1e-6 / rows[q]["fitted"]["t1_s"] for q in qubits]
     fits = {}
@@ -250,10 +258,12 @@ def successor_links(
     return {
         "cross_shot_model": {
             "corr": corr(predicted, observed),
-            "chi2_model": chi,
             "chi2_zero": math.fsum((o / s) ** 2 for o, s in zip(observed, se, strict=True)),
+            "chi2_model": chi,
+            "dof_model": len(qubits),
             "best_scale": scale,
-            "dof": len(qubits) - 1,
+            "chi2_scaled": chi_scaled,
+            "dof_scaled": len(qubits) - 1,
         },
         "residue_vs_inverse_t1": fits,
         "transition_excess": {
