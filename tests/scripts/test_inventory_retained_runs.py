@@ -51,9 +51,19 @@ def test_inventory_accounts_for_cancelled_jobs_without_a_run(tmp_path: Path, mon
         "jobs": [{**copy.deepcopy(observed), "run": None, "provenance": "unexecuted_cancellation"}],
     }
     (live / "qpu-job-retention-audit.json").write_text(json.dumps(audit))
+    second_job = {**copy.deepcopy(observed), "job_id": "backup-cancelled"}
+    backup = {**snapshot, "instance_crn_hash": "fedcba987654", "jobs": [second_job]}
+    backup_path = live / "qpu-job-inventory.fedcba987654.json"
+    backup_path.write_text(json.dumps(backup))
+    backup_audit = {
+        "inventory_sha256": hashlib.sha256(backup_path.read_bytes()).hexdigest(),
+        "jobs": [{**second_job, "run": None, "provenance": "unexecuted_cancellation"}],
+    }
+    (live / "qpu-job-retention-audit.fedcba987654.json").write_text(json.dumps(backup_audit))
     monkeypatch.setattr(inventory, "ROOT", tmp_path)
     result = inventory.inventory()
-    if result["counts"]["unexecuted_cancellation_jobs"] != 1 or result["unexecuted_cancellation_job_ids"] != [
-        "cancelled"
+    if result["counts"]["unexecuted_cancellation_jobs"] != 2 or result["unexecuted_cancellation_job_ids"] != [
+        "backup-cancelled",
+        "cancelled",
     ]:
-        raise AssertionError("the service job must enter the cancellation channel")
+        raise AssertionError("each instance's service job must enter the cancellation channel")
