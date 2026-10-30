@@ -19,11 +19,14 @@ the record and replay checks ci/premerge_gates.py runs on a merge result.
 
 A gate's optional ``requires`` list names the toolchains its live path
 needs beyond the repository interpreter; ``qi`` is the Quantum Inspire stack
-under $QI_PYTHON (gororoba_quantum/qi_stack.py). Every run includes such a
-gate, which replays its retained record where the toolchain is absent.
-``--requires qi`` keeps only the gates that name it and exports
-GOROROBA_QI_REQUIRED=1, so each must take its live path or fail; the
-qi-stack job of .github/workflows/ci.yml runs that selection.
+under $QI_PYTHON (gororoba_quantum/qi_stack.py) and ``singular`` is Singular
+4.4 on PATH. Every run includes such a gate, which replays its retained record
+(qi) or skips (singular, by its GOROROBA_SINGULAR_REQUIRED guard) where the
+toolchain is absent. ``--requires qi`` keeps only the gates that name it and
+exports GOROROBA_QI_REQUIRED=1, so each must take its live path or fail;
+``--requires singular`` does the same with GOROROBA_SINGULAR_REQUIRED=1. The
+qi-stack and singular-stack jobs of .github/workflows/ci.yml run those
+selections.
 
 A gate without a ``runtime`` runs under $PYTHON, which pins.resolve_current
 chooses: an explicit $PYTHON as named (a ``--changed-files`` run, the merge
@@ -69,7 +72,7 @@ import parallel  # noqa: E402
 DEFAULT_SHARD_CPUS = 4
 TAIL_LINES = 40
 # Each named toolchain and the variable that makes its absence a gate failure.
-REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED"}
+REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED", "singular": "GOROROBA_SINGULAR_REQUIRED"}
 OPENBLAS_CORETYPE = "Haswell"
 # numpy's dispatched loops above x86-64-v3 (AVX-512 on the runners' Intel
 # CPUs) round differently from the AVX2 loops; every runner and build host
