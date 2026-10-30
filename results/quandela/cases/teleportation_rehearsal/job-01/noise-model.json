@@ -1,0 +1,270 @@
+{
+ "derived": {
+  "accepted_share": {
+   "+X": 0.09294744899389987,
+   "+Y": 0.09282585407838467,
+   "+Z": 0.09326079640317074,
+   "-X": 0.09293881520349355,
+   "-Y": 0.0928227855946976,
+   "-Z": 0.0868932589161937
+  },
+  "blocks": 2,
+  "comparisons": [
+   {
+    "assumptions": [
+     "one label-blind trace-nonincreasing instrument acts on every input",
+     "equal optical attempts per input (uniform priors), since unequal priors raise the six-state value",
+     "the input source emits at most two copies per attempt (Perceval's truncated source model)",
+     "the classical device may postselect on photon number with no acceptance constraint"
+    ],
+    "bound": 0.75,
+    "forecast_margin": 0.028714723389568375,
+    "name": "two-copy"
+   },
+   {
+    "assumptions": [
+     "one label-blind trace-nonincreasing instrument acts on every input",
+     "single-copy inputs: acceptance blind to photon number",
+     "each input's optical attempts lie within the ratio of the modeled profile"
+    ],
+    "bound": 0.704626501,
+    "forecast_margin": 0.07408822238956836,
+    "name": "attempt-box",
+    "ratio": 1.1
+   }
+  ],
+  "forecast_fidelity": 0.8204173924648392,
+  "forecast_lower_bound": 0.7787147233895684,
+  "lambda": 0.1668106763010831,
+  "least_accepted_share": 0.0868932589161937,
+  "planned_accepted": 1324,
+  "rule": "descriptive-v2",
+  "sample_probability": {
+   "+X": 6.0678813561110445e-05,
+   "+Y": 6.082619543147103e-05,
+   "+Z": 6.800556839863042e-05,
+   "-X": 6.071624214636471e-05,
+   "-Y": 6.082598979003582e-05,
+   "-Z": 5.306342135999564e-05
+  },
+  "samples_per_iteration": 1200
+ },
+ "schema": "qd-teleportation-noise-model-v1",
+ "variants": {
+  "anchor per-mode transmission": {
+   "g2": 0.013000000000000001,
+   "hom": 0.8390000000000001,
+   "inputs": {
+    "+X": {
+     "accepted_probability": 5.639940928481672e-06,
+     "accepted_share": 0.09294744899389987,
+     "conditional_fidelity": 0.8028136342460118,
+     "sample_probability": 6.0678813561110445e-05
+    },
+    "+Y": {
+     "accepted_probability": 5.646243541265038e-06,
+     "accepted_share": 0.09282585407838467,
+     "conditional_fidelity": 0.8040559167838291,
+     "sample_probability": 6.082619543147103e-05
+    },
+    "+Z": {
+     "accepted_probability": 6.342253468706573e-06,
+     "accepted_share": 0.09326079640317074,
+     "conditional_fidelity": 0.7291368124470522,
+     "sample_probability": 6.800556839863042e-05
+    },
+    "-X": {
+     "accepted_probability": 5.642895608691557e-06,
+     "accepted_share": 0.09293881520349355,
+     "conditional_fidelity": 0.8020564560724768,
+     "sample_probability": 6.071624214636471e-05
+    },
+    "-Y": {
+     "accepted_probability": 5.646037808865761e-06,
+     "accepted_share": 0.0928227855946976,
+     "conditional_fidelity": 0.8040370210536677,
+     "sample_probability": 6.082598979003582e-05
+    },
+    "-Z": {
+     "accepted_probability": 4.610853611213184e-06,
+     "accepted_share": 0.0868932589161937,
+     "conditional_fidelity": 0.9918323851281863,
+     "sample_probability": 5.306342135999564e-05
+    }
+   },
+   "pooled": 0.8204173924648392
+  },
+  "fresh per-mode transmission": {
+   "g2": 0.013000000000000001,
+   "hom": 0.8390000000000001,
+   "inputs": {
+    "+X": {
+     "accepted_probability": 5.639940928481672e-06,
+     "accepted_share": 0.09294744899389987,
+     "conditional_fidelity": 0.8028136342460118,
+     "sample_probability": 6.0678813561110445e-05
+    },
+    "+Y": {
+     "accepted_probability": 5.646243541265038e-06,
+     "accepted_share": 0.09282585407838467,
+     "conditional_fidelity": 0.8040559167838291,
+     "sample_probability": 6.082619543147103e-05
+    },
+    "+Z": {
+     "accepted_probability": 6.342253468706573e-06,
+     "accepted_share": 0.09326079640317074,
+     "conditional_fidelity": 0.7291368124470522,
+     "sample_probability": 6.800556839863042e-05
+    },
+    "-X": {
+     "accepted_probability": 5.642895608691557e-06,
+     "accepted_share": 0.09293881520349355,
+     "conditional_fidelity": 0.8020564560724768,
+     "sample_probability": 6.071624214636471e-05
+    },
+    "-Y": {
+     "accepted_probability": 5.646037808865761e-06,
+     "accepted_share": 0.0928227855946976,
+     "conditional_fidelity": 0.8040370210536677,
+     "sample_probability": 6.082598979003582e-05
+    },
+    "-Z": {
+     "accepted_probability": 4.610853611213184e-06,
+     "accepted_share": 0.0868932589161937,
+     "conditional_fidelity": 0.9918323851281863,
+     "sample_probability": 5.306342135999564e-05
+    }
+   },
+   "pooled": 0.8204173924648392
+  },
+  "fresh source figures": {
+   "g2": 0.013000000000000001,
+   "hom": 0.8390000000000001,
+   "inputs": {
+    "+X": {
+     "accepted_probability": 0.06492624947768556,
+     "accepted_share": 0.1055004040809003,
+     "conditional_fidelity": 0.824097025747042,
+     "sample_probability": 0.6154123298703057
+    },
+    "+Y": {
+     "accepted_probability": 0.06491191635053142,
+     "accepted_share": 0.10545891987486221,
+     "conditional_fidelity": 0.8249603902165844,
+     "sample_probability": 0.6155185016834617
+    },
+    "+Z": {
+     "accepted_probability": 0.07346674943394255,
+     "accepted_share": 0.10532008384715327,
+     "conditional_fidelity": 0.7478317858315081,
+     "sample_probability": 0.6975568832679798
+    },
+    "-X": {
+     "accepted_probability": 0.06492624947768554,
+     "accepted_share": 0.10550040408090028,
+     "conditional_fidelity": 0.8240970257470417,
+     "sample_probability": 0.6154123298703056
+    },
+    "-Y": {
+     "accepted_probability": 0.06491191635053138,
+     "accepted_share": 0.10545891987486213,
+     "conditional_fidelity": 0.8249603902165843,
+     "sample_probability": 0.6155185016834618
+    },
+    "-Z": {
+     "accepted_probability": 0.05535245660742611,
+     "accepted_share": 0.10397671455048782,
+     "conditional_fidelity": 0.9980004799147205,
+     "sample_probability": 0.532354353056123
+    }
+   },
+   "pooled": 0.8403066216615094
+  },
+  "source and uniform loss": {
+   "g2": 0.013000000000000001,
+   "hom": 0.8390000000000001,
+   "inputs": {
+    "+X": {
+     "accepted_probability": 9.810303806007494e-06,
+     "accepted_share": 0.10874190273465524,
+     "conditional_fidelity": 0.8019159908995478,
+     "sample_probability": 9.021640746848016e-05
+    },
+    "+Y": {
+     "accepted_probability": 9.805801346829556e-06,
+     "accepted_share": 0.10863130090398096,
+     "conditional_fidelity": 0.8041667914687838,
+     "sample_probability": 9.026681320420611e-05
+    },
+    "+Z": {
+     "accepted_probability": 1.0976140481181797e-05,
+     "accepted_share": 0.10760691592764812,
+     "conditional_fidelity": 0.7261367611501373,
+     "sample_probability": 0.00010200218440013508
+    },
+    "-X": {
+     "accepted_probability": 9.810303806007484e-06,
+     "accepted_share": 0.10874190273465514,
+     "conditional_fidelity": 0.8019159908995479,
+     "sample_probability": 9.021640746848015e-05
+    },
+    "-Y": {
+     "accepted_probability": 9.80580134682955e-06,
+     "accepted_share": 0.10863130090398086,
+     "conditional_fidelity": 0.8041667914687837,
+     "sample_probability": 9.026681320420614e-05
+    },
+    "-Z": {
+     "accepted_probability": 8.071832827787212e-06,
+     "accepted_share": 0.10362042992205346,
+     "conditional_fidelity": 0.9919945475925346,
+     "sample_probability": 7.789808278019208e-05
+    }
+   },
+   "pooled": 0.82054007165882
+  },
+  "source only": {
+   "g2": 0.013000000000000001,
+   "hom": 0.8390000000000001,
+   "inputs": {
+    "+X": {
+     "accepted_probability": 0.06492624947768556,
+     "accepted_share": 0.1055004040809003,
+     "conditional_fidelity": 0.824097025747042,
+     "sample_probability": 0.6154123298703057
+    },
+    "+Y": {
+     "accepted_probability": 0.06491191635053142,
+     "accepted_share": 0.10545891987486221,
+     "conditional_fidelity": 0.8249603902165844,
+     "sample_probability": 0.6155185016834617
+    },
+    "+Z": {
+     "accepted_probability": 0.07346674943394255,
+     "accepted_share": 0.10532008384715327,
+     "conditional_fidelity": 0.7478317858315081,
+     "sample_probability": 0.6975568832679798
+    },
+    "-X": {
+     "accepted_probability": 0.06492624947768554,
+     "accepted_share": 0.10550040408090028,
+     "conditional_fidelity": 0.8240970257470417,
+     "sample_probability": 0.6154123298703056
+    },
+    "-Y": {
+     "accepted_probability": 0.06491191635053138,
+     "accepted_share": 0.10545891987486213,
+     "conditional_fidelity": 0.8249603902165843,
+     "sample_probability": 0.6155185016834618
+    },
+    "-Z": {
+     "accepted_probability": 0.05535245660742611,
+     "accepted_share": 0.10397671455048782,
+     "conditional_fidelity": 0.9980004799147205,
+     "sample_probability": 0.532354353056123
+    }
+   },
+   "pooled": 0.8403066216615094
+  }
+ }
+}
