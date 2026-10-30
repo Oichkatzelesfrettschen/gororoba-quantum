@@ -2737,6 +2737,13 @@
       "run": "results/live/2026-10-30T010826.175789Z",
       "family": "measurement-sequence envelope",
       "question": "Do 24 ibm_fez qubits pass the successor's reader-carryover, reset and crosstalk screens, and does a sequence of 16 measurements pinch the state beyond the projective prediction on the qubits that pass?"
+    },
+    {
+      "id": "qd-sim-ascella-predecessor-source-compatible",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T010726Z-sim_ascella-ascella_predecessor-source-compatible",
+      "family": "photonic predecessor-contrast pipeline qualification",
+      "question": "Does the frozen Ascella predecessor case, with only its job name and platform changed to sim:ascella, return eight complete iterations whose signed target-slot contrasts the frozen analyzer's checks accept, so the pipeline's zero-memory contrast level is known before the QPU run?"
     }
   ],
   "claims": [
@@ -13360,6 +13367,35 @@
       "acquisitions": [
         "qd-sim-ascella-two-photon-associator",
         "qd-ascella-two-photon-associator"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-predecessor-simulator-qualification",
+      "statement": "The frozen Ascella predecessor case, run on sim:ascella with only its job name and platform substituted (job 51c0552b), returns all eight iterations at 32,768 events each, 3 of the 262,144 events outside single-photon eligibility. The signed common target-slot contrast norm is 153/65536 (0.0023) and the reversal norm 71/65536 (0.0011). Every returned computed circuit differs from the preregistered QPU compilation identity, while every computed input matches it.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive only: the sampling contract and its conditional envelopes bind the QPU case alone. The simulator carries no predecessor memory, so these contrasts measure the analysis pipeline's level at zero memory on sim:ascella and say nothing about the device's response; the differing computed circuits show that sim:ascella compiles the case differently from the QPU.",
+      "evidence": [
+        {
+          "path": "docs/evidence/ascella-predecessor-admission/simulator-qualification.json",
+          "sha256": "db9ead7dcebc4e93714f9f6d81f107fa0b67b7ffecd22bd7c61a2614d3004ee6"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T010726Z-sim_ascella-ascella_predecessor-source-compatible/results.json",
+          "sha256": "36440a7d0df81cfc980065e4860672c40620d91b9ce4a2cb937a65b9c40e1840"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-predecessor-intervention.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-predecessor-source-compatible"
       ],
       "assumptions": [],
       "depends_on": [],
