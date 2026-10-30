@@ -1,0 +1,128 @@
+{
+ "schema": "qd-box-kite-cases-v1",
+ "family": "box_kite_photonic_packed_swapped",
+ "job": "job-05",
+ "platforms": [
+  "sim:belenos",
+  "qpu:belenos"
+ ],
+ "command": "sample_count",
+ "gate_form": "unitary",
+ "min_detected_photons": 1,
+ "max_samples": 20000,
+ "max_shots": 40000,
+ "max_duration": 300,
+ "census": {
+  "path": "docs/evidence/box_kite_census/census.json",
+  "sha256": "36b820cf00c85e6889eeba9b1caf8a612bf2ff699208b5e19d3cef0c71d1f3c2"
+ },
+ "circuit": {
+  "file": "circuit.json",
+  "sha256": "edc86be92fb759a3b02fe0b5ef297b0162394d3e820cfd35d0a8db0c1abe93e5"
+ },
+ "blocks": [
+  {
+   "config": "two_label-30",
+   "kind": "two_label",
+   "offset": 12,
+   "photons": [
+    12
+   ],
+   "m": [
+    [
+     1,
+     -1
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "t": 1,
+   "witness": [
+    2,
+    3,
+    1,
+    4,
+    5,
+    1
+   ],
+   "roles": [
+    "label_0",
+    "label_1",
+    "dilation",
+    "dilation"
+   ],
+   "ideal": [
+    "0",
+    "1/2",
+    "1/4",
+    "1/4"
+   ],
+   "p_algebra": "1/2",
+   "rows": []
+  },
+  {
+   "config": "two_label-31",
+   "kind": "two_label",
+   "offset": 16,
+   "photons": [
+    16
+   ],
+   "m": [
+    [
+     1,
+     -1
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "t": -1,
+   "witness": [
+    2,
+    3,
+    1,
+    4,
+    5,
+    -1
+   ],
+   "roles": [
+    "label_0",
+    "label_1",
+    "dilation",
+    "dilation"
+   ],
+   "ideal": [
+    "1/2",
+    "0",
+    "1/4",
+    "1/4"
+   ],
+   "p_algebra": "1/2",
+   "rows": []
+  }
+ ],
+ "preregistered": {
+  "definitions": {
+   "dark": "a one-photon block whose ideal algebra-mode probability p_algebra is 0: x y = 0, so the photon leaves only through the dilation ports and any algebra-mode detection is implementation error",
+   "bright": "a one-photon block with p_algebra = 1: ||x y||^2 = 2, so the photon never reaches a dilation port",
+   "half": "a strut, non-kite or four-label block with p_algebra = 1/2, independent of the signs s and t"
+  },
+  "observable": "per block, the fraction a of detected samples whose photon lands on an algebra mode (roles other than dilation), counted on the samples with exactly one click inside the block; the full per-mode histogram is kept, since the dilation split carries the direction of y in the kernel",
+  "ideal": "a equals the block's p_algebra; the per-mode ideal is the exact |U[k][0]|^2 of circuit.json",
+  "simulator_stop_rule": "on sim:belenos, any algebra-mode sample of a dark block or dilation-mode sample of a bright block, or a half block outside |z| < 4.5 of its binomial, stops the series until the circuit, the compiler or the simulator's noise model explains it",
+  "hardware_report": "on qpu:belenos, the dark floor a_dark, the bright ceiling a_bright, the contrast a_bright - a_dark, the total variation distance of each per-mode histogram from its ideal and the one-hot leakage into the 14 unreachable labels, each with a Wilson 95% interval and the dark counts of the detectors involved",
+  "layout": "each job holds the block set of the same-numbered box_kite_photonic_packed job with every block on the slot three places along (modes 12-23 then 0-11), so each block's modes differ from its packed run and its job neighbors stay the same; a block's residual a - p that follows the block is an algebra or compilation property, one that follows the slot is a per-mode source, transmission or detector property",
+  "mode_swap": {
+   "pairing": "block (m, t) of job-NN here against the same block in the same-numbered job of box_kite_photonic_packed on qpu:belenos, both counted on the samples with exactly one click inside the block",
+   "observable": "the residual r = a - p of each of the 16 half blocks (p = 1/2) and the leakage of each dark (a) and bright (1 - a) block, per layout",
+   "block_predictor": "r_swapped(b) = r_packed(b), the residual belongs to the block",
+   "slot_predictor": "r_swapped(b) = the mean packed-layout residual of the other half blocks on the slot that b occupies here, the residual belongs to the modes",
+   "statistics": "the Pearson correlation of r_swapped with each predictor over the 16 half blocks, its Fisher-z 95% interval, and per block the two-sample z of a_swapped - a_packed",
+   "decision": "block attribute when the block predictor's correlation exceeds 0.7 with a lower bound above 0.3 and exceeds the slot predictor's; slot attribute for the reverse; mixed otherwise, and a 16-block correlation cannot distinguish a mixture's weights",
+   "falsifier": "a block whose |a_swapped - a_packed| exceeds 4.5 standard errors is a placement effect; a dark or bright block whose leakage moves with its slot places the 14% outlier in the modes"
+  }
+ }
+}
