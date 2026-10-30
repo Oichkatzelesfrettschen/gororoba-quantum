@@ -13,7 +13,7 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 | Location | Contents | Git treatment |
 | --- | --- | --- |
 | `docs/pdf/` | 50 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 203 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/local_source_cache/` | 205 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 6 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
@@ -196,6 +196,8 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Ford and Roman 1997 -- Restrictions on Negative Energy Density in Flat Spacetime](notes/papers/gr-qc-9607003.md) | [PDF](https://arxiv.org/pdf/gr-qc/9607003v2) | `gr-qc-9607003v2.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/gr-qc/9607003v2) |
 | [Wilmot 2025 -- Structure of the Cayley-Dickson algebras](notes/papers/2505.11747.md) | [PDF](https://arxiv.org/pdf/2505.11747v3) | `2505.11747v3.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2505.11747v3) |
 | [Wilmot 2025 -- Structure of the Cayley-Dickson algebras, version 4](notes/papers/2505.11747.md) | [PDF](https://arxiv.org/pdf/2505.11747v4) | `2505.11747v4.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2505.11747v4) |
+| [Kustin, Polini and Ulrich 2017 -- The equations defining blowup algebras of height three Gorenstein ideals (Algebra Number Theory 11, 1489)](notes/papers/1505.05210.md) | [PDF](https://arxiv.org/pdf/1505.05210v2) | `1505.05210v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1505.05210v2) |
+| [Branco Correia and Zarzuela 2013 -- Divisors of a module and blow up (J. Pure Appl. Algebra 217, 1773)](notes/papers/1207.1060.md) | [PDF](https://arxiv.org/pdf/1207.1060v1) | `1207.1060v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1207.1060v1) |
 | [LZ Collaboration 2026 -- Search for dark matter particle interactions in an extended nuclear recoil energy window with the LUX-ZEPLIN (LZ) experiment](notes/papers/2609.02823.md) | [PDF](https://arxiv.org/pdf/2609.02823v1) | `2609.02823v1.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2609.02823v1) |
 | [DES Collaboration 2026 -- Dark Energy Survey Year 6 Results: Cosmological Constraints from Galaxy Clustering and Weak Lensing](notes/papers/2601.14559.md) | [PDF](https://arxiv.org/pdf/2601.14559v2) | `2601.14559v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2601.14559v2) |
 | [Quantum collision models: open system dynamics from repeated interactions](notes/2106.11974.md) | [PDF](https://arxiv.org/pdf/2106.11974v2) | `2106.11974v2.pdf` | [Source-specific rights audit](https://arxiv.org/abs/2106.11974v2) |

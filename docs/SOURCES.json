@@ -2223,6 +2223,18 @@
       "venue": "Nature Reviews Physics 7, 105-118 (2025)",
       "receipt_url": "https://arxiv.org/abs/2407.08828v2"
     },
+    "docs/notes/papers/1505.05210.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.2140/ant.2017.11.1489",
+      "venue": "Algebra & Number Theory 11(7), 1489-1525 (2017)",
+      "receipt_url": "https://api.crossref.org/works/10.2140/ant.2017.11.1489"
+    },
+    "docs/notes/papers/1207.1060.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1016/j.jpaa.2012.12.008",
+      "venue": "Journal of Pure and Applied Algebra 217(9), 1773-1790 (2013)",
+      "receipt_url": "https://api.crossref.org/works/10.1016/j.jpaa.2012.12.008"
+    },
     "docs/notes/papers/skiouris-2026-algebraic-hiddenness.md": {
       "status": "journal-venue-unverified"
     },
@@ -4661,6 +4673,42 @@
       "bytes": 3134,
       "retrieved_at_utc": "2026-10-30T23:19:00+00:00",
       "reading_scope": "arXiv API record: latest version v4, abstract, categories and the version comment; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/1505.05210.md",
+      "url": "https://export.arxiv.org/api/query?id_list=1505.05210",
+      "sha256": "83b5e3f7869ba3bbb882f26fcdca0505ba6a88a8b6fef21979b347bae4dfe97e",
+      "bytes": 2510,
+      "retrieved_at_utc": "2026-10-30T23:18:59+00:00",
+      "reading_scope": "arXiv API record: latest version v2, abstract, comment, journal reference and DOI; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/1207.1060.md",
+      "url": "https://export.arxiv.org/api/query?id_list=1207.1060",
+      "sha256": "d104074f69bbf5d662c3da537942f7a030b1e7d66bccd89aa4c70bf82192700a",
+      "bytes": 2050,
+      "retrieved_at_utc": "2026-10-30T23:19:00+00:00",
+      "reading_scope": "arXiv API record: single version v1, abstract and categories; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/1505.05210.md",
+      "url": "https://api.crossref.org/works/10.2140/ant.2017.11.1489",
+      "sha256": "06a8214a7e3fddabb23aab32093fa34f84244df63e79678e85b06ac61c658967",
+      "bytes": 6209,
+      "retrieved_at_utc": "2026-10-30T23:26:33+00:00",
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, issue, pages and publication date for the version of record",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/1207.1060.md",
+      "url": "https://api.crossref.org/works/10.1016/j.jpaa.2012.12.008",
+      "sha256": "3aa7e1fe95f750c55368cd14b3e9f51db438becc0c12bb4419d25445fc7cd055",
+      "bytes": 9773,
+      "retrieved_at_utc": "2026-10-30T23:26:40+00:00",
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, issue, pages, publication date and license list for the version of record",
       "retention": "retrieval_receipt; response bytes are unretained"
     },
     {
@@ -11869,6 +11917,66 @@
         "evidence_retrieved_at_utc": "2026-10-28T00:11:31+00:00",
         "reading_scope": "Source-specific rights statement and operative terms.",
         "evidence_path": "docs/evidence/source_rights/arxiv-1808.01590v2.html"
+      }
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/1505.05210v2",
+      "note": "docs/notes/papers/1505.05210.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "fc6cd97f8cbebfd90a5a83a1ab0f5bc1b471ae8f4183b6b03008edbb228738f1",
+      "bytes": 325371,
+      "pages": 32,
+      "audited_at_utc": "2026-10-30T23:40:00+00:00",
+      "excluded_published_path": "docs/pdf/1505.05210v2.pdf",
+      "local_cache_path": "docs/local_source_cache/1505.05210v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata establishes no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "fc6cd97f8cbebfd90a5a83a1ab0f5bc1b471ae8f4183b6b03008edbb228738f1",
+        "verified_at_utc": "2026-10-30T23:40:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1505.05210v2",
+        "evidence_sha256": "1470c59dd5a3066dc2a14c5a9a2f24e3f401ec2e61cb9fb3cfbf81cd51732095",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata establishes no general downstream rehosting permission.",
+        "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1505.05210v2.html",
+        "evidence_retrieved_at_utc": "2026-10-30T23:19:25+00:00"
+      }
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/1207.1060v1",
+      "note": "docs/notes/papers/1207.1060.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "5e55f184e64b70606edcafb47c4a641aa254097c590a8fff18308677a23b4996",
+      "bytes": 350896,
+      "pages": 27,
+      "audited_at_utc": "2026-10-30T23:40:00+00:00",
+      "excluded_published_path": "docs/pdf/1207.1060v1.pdf",
+      "local_cache_path": "docs/local_source_cache/1207.1060v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata establishes no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "5e55f184e64b70606edcafb47c4a641aa254097c590a8fff18308677a23b4996",
+        "verified_at_utc": "2026-10-30T23:40:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1207.1060v1",
+        "evidence_sha256": "4afa728ff592cb71c483e44db7d5cc84ff644d381d9f47aced44c8d6dc106680",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata establishes no general downstream rehosting permission.",
+        "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1207.1060v1.html",
+        "evidence_retrieved_at_utc": "2026-10-30T23:19:31+00:00"
       }
     },
     {

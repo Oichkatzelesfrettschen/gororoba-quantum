@@ -196,3 +196,16 @@ statements were replayed and which were read only.
 The count lines of [INDEX.md](../INDEX.md) and [README.md](README.md) change in this survey (3 published and 17 external additions) and in the unmerged
 branch `sources/sedenion-graph-and-structure-papers` (new external entries), so the two branches edit the same lines. The
 merge keeps the sum of both additions.
+
+## Later admissions
+
+Three sources at dimension 16 and above entered the registry after the candidate table above and are absent from its counts, and
+a fourth entry records a newer version of a registered source. Each note states its reading scope and the checks it ran against
+`cd_core`.
+
+| Source | Dimension | Disposition |
+| --- | --- | --- |
+| Skiouris, Algebraic hiddenness in the sedenion algebra (Zenodo 10.5281/zenodo.22016333, CC BY 4.0) | 16 | registered and hosted: [note](../notes/papers/skiouris-2026-algebraic-hiddenness.md) |
+| Skiouris, Aphanics at the pathion level (Zenodo 10.5281/zenodo.22082732, CC BY 4.0) | 32 | registered and hosted: [note](../notes/papers/skiouris-2026-aphanics-pathion.md) |
+| Levratti, Sign-parity classification of zero divisors in Cayley-Dickson algebras (Zenodo 10.5281/zenodo.20315751, CC BY 4.0) | 16 and higher | registered and hosted: [note](../notes/papers/levratti-2026-sign-parity-zero-divisors.md); a later Zenodo version (record 21296777) is not retained |
+| Wilmot, arXiv 2505.11747v4 (CC BY-NC-SA 4.0) | 16 and higher | version 4 registered external beside version 3: [note](../notes/papers/2505.11747.md) |
