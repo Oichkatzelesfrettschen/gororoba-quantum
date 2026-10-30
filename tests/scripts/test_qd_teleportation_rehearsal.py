@@ -1056,7 +1056,7 @@ def test_break_even_ratio_bisects_the_box_bound(monkeypatch: pytest.MonkeyPatch)
         raise AssertionError("a lower bound above the ceiling's bound reports the ceiling")
 
 
-def test_a_descriptive_case_admits_only_its_prepared_read(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_a_descriptive_case_admits_a_live_record_inside_its_budget() -> None:
     read = json.loads((ROOT / rehearsal.ANCHOR_READ).read_text(encoding="utf-8"))["processors"][rehearsal.PLATFORM]
     request = rehearsal.Request(
         "job-01", rehearsal.LAYOUT, rehearsal.JOB_01_COMPILATION_SEEDS, rehearsal.ANCHOR_READ, rehearsal.DESCRIPTIVE, 2
@@ -1067,5 +1067,15 @@ def test_a_descriptive_case_admits_only_its_prepared_read(monkeypatch: pytest.Mo
     changed = copy.deepcopy(read["perfs"])
     changed["g2 (%)"] = changed["g2 (%)"] + 0.1
     moved = rehearsal.model_at(changed, request)
-    if moved["inside_justified_range"] or "differs from the prepared read" not in rehearsal.admission_failure(moved):
+    if not moved["inside_justified_range"] or moved["perfs_sha256"] == moved["prepared_perfs_sha256"]:
         raise AssertionError(moved)
+    hot = copy.deepcopy(read["perfs"])
+    hot["Dark counts (detection/s)"][rehearsal.LAYOUT[0]] = rehearsal.DARK_LIMIT + 1.0
+    refused = rehearsal.model_at(hot, request)
+    if refused["inside_justified_range"] or "dark rate" not in rehearsal.admission_failure(refused):
+        raise AssertionError(refused)
+    slow = copy.deepcopy(read["perfs"])
+    slow["Clock (MHz)"] = slow["Clock (MHz)"] / 100.0
+    late = rehearsal.model_at(slow, request)
+    if late["inside_justified_range"] or "max_duration" not in rehearsal.admission_failure(late):
+        raise AssertionError(late)

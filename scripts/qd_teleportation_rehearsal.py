@@ -1639,7 +1639,11 @@ def live_model(request: Request | None = None) -> dict[str, Any]:
 
 def model_at(perfs: Mapping[str, Any], request: Request | None = None) -> dict[str, Any]:
     """The noise model's pooled fidelity at one processor record's perfs object, against the justified mean score of
-    the case `request` (job-00 unless named, the case scripts/qd_record_watch.py gates on)."""
+    the case `request` (job-00 unless named, the case scripts/qd_record_watch.py gates on).
+
+    A descriptive case holds its lower bound at any accepted count, so its admission re-evaluates only what the frozen
+    budget depends on: no mode of the layout reads a dark rate above DARK_LIMIT, and expected_seconds at the live
+    clock and per-input sample probabilities stays within MAX_DURATION."""
     request = request or REQUESTS["job-00"]
     figures = {
         "hom": perfs["HOM (%)"] / 100.0,
@@ -1661,22 +1665,33 @@ def model_at(perfs: Mapping[str, Any], request: Request | None = None) -> dict[s
     from qd_record_watch import digest
 
     prepared = json.loads((ROOT / request.anchor_read).read_text(encoding="utf-8"))["processors"][PLATFORM]["perfs"]
+    probability = {s["label"]: row["sample_probability"] for s, row in zip(settings, rows, strict=True)}
+    samples = int(retained_derivation(request.name)["samples_per_iteration"])
+    seconds = expected_seconds({"sample_probability": probability}, samples, perfs["Clock (MHz)"], request.blocks)
+    dark = perfs["Dark counts (detection/s)"]
+    hot = [mode for mode in request.layout if dark[mode] > DARK_LIMIT]
     record.update(perfs_sha256=digest(perfs), prepared_perfs_sha256=digest(prepared))
-    record["inside_justified_range"] = record["perfs_sha256"] == record["prepared_perfs_sha256"]
+    record.update(expected_seconds=seconds, dark_modes_above_limit=hot)
+    record["inside_justified_range"] = not hot and seconds <= MAX_DURATION
     return record
 
 
 def admission_failure(model: Mapping[str, Any]) -> str:
     """Why a model record refuses admission: the decision rule's pooled fidelity below its mean score, or a live
-    performance record that differs from a descriptive case's prepared read."""
+    performance record that breaks a descriptive case's layout dark-rate rule or its seconds limit."""
     if "mean_score" in model:
         return (
             f"model pooled fidelity {model['pooled_fidelity']:.4f} is below the justified mean score "
             f"{model['mean_score']}"
         )
+    if model["dark_modes_above_limit"]:
+        return (
+            f"layout modes {model['dark_modes_above_limit']} read a dark rate above {DARK_LIMIT:g} per second "
+            f"in the live performance record {model['perfs_sha256'][:12]}"
+        )
     return (
-        f"the live performance record {model['perfs_sha256'][:12]} differs from the prepared read "
-        f"{model['prepared_perfs_sha256'][:12]}"
+        f"the live performance record {model['perfs_sha256'][:12]} puts the case's expected "
+        f"{model['expected_seconds']:g} s above max_duration {MAX_DURATION} s"
     )
 
 
@@ -1769,9 +1784,11 @@ def staged(run: Path) -> Job:
 
 
 def binding(job: Job, admitted: dict[str, Any]) -> Callable[[dict[str, Any]], None]:
-    """The verify step: the planned body is the retained body beyond process_id, and the live record admits the case
-    (the decision rule's pooled fidelity at the live figures reaches F*; a descriptive case's live perfs equal its
-    prepared read). The model of an admitted request lands in `admitted`."""
+    """The verify step: the planned body is the retained body beyond process_id, and the live record admits the case.
+
+    The decision rule admits when its pooled fidelity at the live figures reaches F*; a descriptive case admits when
+    its layout keeps the dark-rate rule and its expected seconds stay within max_duration at the live record. The
+    model of an admitted request lands in `admitted`."""
     out = CASES / job.name
 
     def bound(checked: dict[str, Any]) -> None:
