@@ -659,6 +659,62 @@
             }
           ],
           "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "The archive verification runs independent circuit checks through the ordered pool. Seventy-eight focused tests pass, and a two-worker spawned-process replay verifies all 24 circuits from the fresh submit-free Fez plan. The prior generic submit-free run and cost checks remain valid; hardware inference remains descriptive.",
+          "observed_at": "2026-10-30T00:39:11.140460+00:00",
+          "revision": "6a9a80deccb8754b856ef171ae65ca9eaeaf14ae",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T003838.148646Z/record.json",
+              "sha256": "50b9e232581f895ccac12fc861457c38478d8d97cff0591e3ebf32133cc3e144"
+            },
+            {
+              "ref": "results/live/2026-10-30T003838.148646Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T003838.148646Z/UNAPPROVED_CASE.md",
+              "sha256": "1f92342653feff90b9e2e3f63fd1c0acf26eb396363dc80c3174625bea6430cb"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "c0fced48d63b02fd92a6ea75b92e72d1c3a823da47290e3ed55e36de52771721"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "432a245639bd2e4137c47970731b916f302b3f663dcd913f61df952e6c661668"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "7851125c438b9b09ccd176445c3de4f2481c872634d47a9616392ef1b5be7ec9"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            },
+            {
+              "ref": "tests/scripts/test_readout_sparse_receipt.py",
+              "sha256": "4359f6404c0d3b87f58a40420aa6e99c6bfa76822fa864b21db99cd829442fa2"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
         }
       ]
     },
@@ -996,6 +1052,46 @@
             {
               "ref": "results/live/2026-10-30T002939.860862Z/UNAPPROVED_CASE.md",
               "sha256": "ea7f3d3ac4b0ee1fce79b93adccceb04e1fa4f046e5ec56e8e8e985d6918685e"
+            },
+            {
+              "ref": "docs/design/readout-actor-delay-qualification.json",
+              "sha256": "aa10b08f2597da9dbcb16bb8754c5369e4e8881abf3ddaef703e8acbcaaf02dc"
+            },
+            {
+              "ref": "docs/design/readout-actor-fez-delay-qualification.json",
+              "sha256": "f4f0c8e5d830f30285896e58b438a409ce9a3c9804dcf3571b1762cbe9acccca"
+            },
+            {
+              "ref": "tests/scripts/test_readout_actor_cost_model.py",
+              "sha256": "7c203f53b79a7cc2aa4a26b5773c53d238a1166fcf27f1f8f467a906469f6b56"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            }
+          ],
+          "scope_sha256": "4e052d8a3735f9fbae6e9381a895afef9ad2896cce09652d894c3114ac3a68da"
+        },
+        {
+          "result": "The archive verification runs independent circuit checks through the ordered pool. Seventy-eight focused tests pass, and a two-worker spawned-process replay verifies all 24 circuits from the fresh submit-free Fez plan. The prior generic submit-free run and cost checks remain valid; hardware inference remains descriptive.",
+          "observed_at": "2026-10-30T00:39:11.141718+00:00",
+          "revision": "6a9a80deccb8754b856ef171ae65ca9eaeaf14ae",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T003838.148646Z/record.json",
+              "sha256": "50b9e232581f895ccac12fc861457c38478d8d97cff0591e3ebf32133cc3e144"
+            },
+            {
+              "ref": "results/live/2026-10-30T003838.148646Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T003838.148646Z/UNAPPROVED_CASE.md",
+              "sha256": "1f92342653feff90b9e2e3f63fd1c0acf26eb396363dc80c3174625bea6430cb"
             },
             {
               "ref": "docs/design/readout-actor-delay-qualification.json",
