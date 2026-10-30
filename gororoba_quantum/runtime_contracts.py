@@ -1447,8 +1447,19 @@ def _verify_fused_collection() -> None:
         }
         fused_members = [component.entry.name for component in fused_pub.components]
         fused_evidence = [executed[name] for name in fused_members]
-        if len({json.dumps(evidence, sort_keys=True) for evidence in fused_evidence}) != 1:
+        # Each member's placed calibration is the PUB's restricted to its own qubits
+        # (pub_calibration.split_pub_calibration); every other field is the PUB's and shared.
+        per_member = ("placed_qubit_calibration", "placed_gate_calibration")
+        shared = [
+            {key: value for key, value in evidence.items() if key not in per_member} for evidence in fused_evidence
+        ]
+        if len({json.dumps(evidence, sort_keys=True) for evidence in shared}) != 1:
             raise RuntimeError("mocked collection gives fused components different execution evidence")
+        for name, evidence, part in zip(
+            fused_members, fused_evidence, planned_job["pubs"][fused_index]["components"], strict=True
+        ):
+            if set(evidence["placed_qubit_calibration"]) != {str(qubit) for qubit in part["physical_qubits"]}:
+                raise RuntimeError(f"{name}'s placed calibration covers qubits other than its own")
         expected_start, expected_stop = expected_fused_window
         if (
             fused_evidence[0]["pub"] != fused_pub.name
@@ -1559,7 +1570,8 @@ def _verify_fused_collection() -> None:
             with redirect_stdout(io.StringIO()):
                 _collect_with_zero_simulation(collection_service, run_dir)
         except LiveRunError as error:
-            if "write-once" not in str(error):
+            # The atomic publisher refuses differing bytes before the indexed sha256 check does.
+            if "write-once" not in str(error) and "immutable acquisition snapshot" not in str(error):
                 raise RuntimeError(f"tampered raw evidence reports {error}") from error
         else:
             raise RuntimeError("a collection over tampered raw evidence proceeds")

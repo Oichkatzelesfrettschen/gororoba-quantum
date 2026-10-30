@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import copy
 import json
 from decimal import Decimal, localcontext
 from fractions import Fraction
@@ -11,7 +10,10 @@ from typing import Any
 
 import ascella_predecessor_analysis as analysis
 import ascella_predecessor_case as case
+import frozen_case_sources
 import pytest
+
+PINS = case.ROOT / "docs/evidence/quandela/frozen-case-source-pins.json"
 
 
 def rows(target_counts: list[int], total: int = 32768) -> list[list[int]]:
@@ -235,100 +237,10 @@ def test_entry_preserves_invalid_event_denominator() -> None:
 
 
 @pytest.mark.audit
-def test_real_serializer_to_offline_analyzer(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    import perceval as pcvl
-    from perceval.serialization import OutputArchive, Serialization, deserialize, serialize
-
-    manifest = case.check()
-    prior = case.ROOT / case.MESH_RUNS["job-00"]
-    body = json.loads((prior / "job-body.json").read_bytes())
-    computation = deserialize(body["payload"]["computation"])
-    observed_entries = [entry(index)[1] for index in range(8)]
-    computation.iterations[:] = [copy.deepcopy(observed["iteration"]) for observed in observed_entries]
-    archive = OutputArchive()
-    Serialization.serialize(computation, archive)
-    body["payload"].update(
-        computation=archive.to_text(), max_samples=case.SAMPLES_PER_ITERATION, max_shots=case.SHOTS_PER_ITERATION
+def test_real_serializer_to_offline_analyzer(tmp_path: Path) -> None:
+    frozen_case_sources.run_pinned_audit_test(
+        PINS,
+        "results/quandela/cases/ascella_predecessor/source-compatible/cases.json",
+        "tests/scripts/test_ascella_predecessor_analysis.py::test_real_serializer_to_offline_analyzer",
+        tmp_path / "pinned",
     )
-    body["max_duration"] = case.MAX_DURATION
-    returned = []
-    for observed in observed_entries:
-        counts = pcvl.BSCount({pcvl.BasicState(f"|{state}>"): count for state, count in observed["counts"].items()})
-        returned.append({**observed["result_fields"], "iteration": observed["iteration"], "results": serialize(counts)})
-    raw: dict[str, Any] = {
-        "job_id": "offline-predecessor-fixture",
-        "shots": case.SHOTS_PER_ITERATION,
-        "results": json.dumps({"results_list": returned}),
-    }
-    raw_bytes = json.dumps(raw).encode()
-    status = {"status": "completed", "duration": 40, "shots": case.SHOTS_PER_ITERATION}
-    submission = json.loads((prior / "submission.json").read_bytes())
-    submission.update(
-        job_id=raw["job_id"],
-        cases_sha256=analysis.digest(case.CASE / "cases.json"),
-        body_sha256=case.sha256_bytes(json.dumps(body, sort_keys=True).encode()),
-        approval="synthetic offline fixture",
-        submitted_utc="2026-10-28T00:00:00Z",
-        credit_ceiling=case.charge(case.SHOTS_PER_ITERATION),
-    )
-    result = {
-        "schema": analysis.qd.COLLECTION_SCHEMA,
-        "job_id": raw["job_id"],
-        "status": status,
-        "data": {"payload": body["payload"]},
-        "result_sha256": case.sha256_bytes(raw_bytes),
-        **analysis.qd.result_summary(raw_bytes, raw["job_id"], status, True, 8),
-    }
-    (tmp_path / "raw").mkdir()
-    (tmp_path / "raw/result.json").write_bytes(raw_bytes)
-    for name, value in (
-        ("cases.json", manifest),
-        ("job-body.json", body),
-        ("submission.json", submission),
-        ("results.json", result),
-    ):
-        (tmp_path / name).write_bytes(
-            (case.CASE / name).read_bytes() if name == "cases.json" else json.dumps(value).encode()
-        )
-    (tmp_path / "circuit.json").write_bytes((case.CASE / "circuit.json").read_bytes())
-    submission_sha = analysis.digest(tmp_path / "submission.json")
-    results_sha = analysis.digest(tmp_path / "results.json")
-    report = analysis.analyze(tmp_path, submission_sha256=submission_sha, results_sha256=results_sha)
-    if report["verdict"] != "descriptive-only" or report["physical_predecessor_attribution"] != "unavailable":
-        raise AssertionError(report)
-    anchored_results = (tmp_path / "results.json").read_bytes()
-    anchor = analysis._anchor
-
-    def change_after_anchor(path: Path, expected: str) -> bytes:
-        data = anchor(path, expected)
-        if path == tmp_path / "results.json":
-            path.write_text("{}")
-        return data
-
-    with monkeypatch.context() as patch:
-        patch.setattr(analysis, "_anchor", change_after_anchor)
-        stable = analysis.analyze(tmp_path, submission_sha256=submission_sha, results_sha256=results_sha)
-    (tmp_path / "results.json").write_bytes(anchored_results)
-    if stable["common_norm_exact"] != report["common_norm_exact"]:
-        raise AssertionError("analysis must use the exact results bytes bound by its external anchor")
-    sampling = tmp_path / "sampling.json"
-    contract(sampling)
-    bounded = analysis.analyze(
-        tmp_path,
-        submission_sha256=submission_sha,
-        results_sha256=results_sha,
-        contract_path=sampling,
-        contract_sha256=analysis.digest(sampling),
-    )
-    if "common_norm_bounds" not in bounded or bounded["physical_predecessor_attribution"] != "unavailable":
-        raise AssertionError(bounded)
-    result["iterations"][0]["counts"] = {"1,0": 32768}
-    (tmp_path / "results.json").write_text(json.dumps(result))
-    with pytest.raises(ValueError, match="anchor"):
-        analysis.analyze(tmp_path, submission_sha256=submission_sha, results_sha256=results_sha)
-    with pytest.raises(analysis.qd.PlatformError, match="differs from the raw result"):
-        analysis.analyze(
-            tmp_path,
-            submission_sha256=submission_sha,
-            results_sha256=analysis.digest(tmp_path / "results.json"),
-        )

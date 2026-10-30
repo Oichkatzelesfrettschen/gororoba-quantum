@@ -12,6 +12,10 @@
     {
       "case": "results/quandela/cases/ascella_predecessor/reviewed-submission/cases.json",
       "revision": "11596cbc61d683cdb63d953e985a0c13e01cdab4"
+    },
+    {
+      "case": "docs/evidence/ascella-transition-day-repeat-reviewed-transport/campaign.json",
+      "revision": "60fdf76a007f9015bd38c15e3adbe7da8aeee195"
     }
   ]
 }

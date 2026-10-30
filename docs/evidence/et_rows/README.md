@@ -37,8 +37,7 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 The original pilot verifiers intentionally reject optimized Python. Their
 QPY replay runs under ordinary Python; integrated family contracts use explicit
 exceptions and also run under optimized Python. New ET artifacts require
-the Qiskit version of requirements.txt, read through `ci/pins.py`.
-Historical evidence continues using the separately pinned replay
+Qiskit 2.6.0. Historical evidence continues using the separately pinned replay
 interpreter when its gate requests Qiskit 2.5.2.
 
 The QPY gate also checks the retained receipt's coverage, circuit identities,

@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import ascella_predecessor_case as case
+import frozen_case_sources
 import pytest
 import qd_platform as qd
 
@@ -18,6 +19,7 @@ CASE = case.CASE
 SOURCE = ROOT / "results/quandela/cases/ascella_signed_coherence/job-00"
 JOB00_RUN = ROOT / "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00"
 JOB02_RUN = ROOT / "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02"
+PINS = ROOT / "docs/evidence/quandela/frozen-case-source-pins.json"
 
 
 def test_contrast_coefficients_expose_even_and_odd_drift_directions() -> None:
@@ -133,12 +135,13 @@ def test_case_publication_serializes_competing_builders(tmp_path: Path) -> None:
 
 
 @pytest.mark.audit
-def test_check_reproduces_the_retained_bytes() -> None:
-    rebuilt = case.check()
-    if rebuilt["family"] != "ascella_predecessor" or rebuilt["platforms"] != ["qpu:ascella"]:
-        raise AssertionError(rebuilt["platforms"])
-    if rebuilt["command"] != "sample_count" or rebuilt["mitigations"] != [] or rebuilt["iterations"] != 8:
-        raise AssertionError(rebuilt["iterations"])
+def test_check_reproduces_the_retained_bytes(tmp_path: Path) -> None:
+    frozen_case_sources.run_pinned_audit_test(
+        PINS,
+        "results/quandela/cases/ascella_predecessor/source-compatible/cases.json",
+        "tests/scripts/test_ascella_predecessor_case.py::test_check_reproduces_the_retained_bytes",
+        tmp_path / "pinned",
+    )
 
 
 @pytest.mark.audit

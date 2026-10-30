@@ -5506,7 +5506,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "e9de562ed54d798e613f9e380ad6f31b30029964417f92f0add278cf56ee8696"
+          "sha256": "bc3b7dbf36b8bb60c2cb0732725f3eff45cef05f8e6160530c99b0907c192c91"
         },
         {
           "path": "results/live/2026-10-13T025444.603480Z/isa.qpy",
@@ -5545,7 +5545,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "e9de562ed54d798e613f9e380ad6f31b30029964417f92f0add278cf56ee8696"
+          "sha256": "bc3b7dbf36b8bb60c2cb0732725f3eff45cef05f8e6160530c99b0907c192c91"
         },
         {
           "path": "results/live/2026-10-13T025444.603480Z/isa.qpy",
@@ -5619,7 +5619,7 @@
       "evidence": [
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "e9de562ed54d798e613f9e380ad6f31b30029964417f92f0add278cf56ee8696"
+          "sha256": "bc3b7dbf36b8bb60c2cb0732725f3eff45cef05f8e6160530c99b0907c192c91"
         },
         {
           "path": "results/live/2026-10-11T152922.787095Z/collect.json",
@@ -5665,7 +5665,7 @@
         },
         {
           "path": "docs/evidence/walk-control-scaffolding/exposure.json",
-          "sha256": "e9de562ed54d798e613f9e380ad6f31b30029964417f92f0add278cf56ee8696"
+          "sha256": "bc3b7dbf36b8bb60c2cb0732725f3eff45cef05f8e6160530c99b0907c192c91"
         }
       ],
       "documents": [
