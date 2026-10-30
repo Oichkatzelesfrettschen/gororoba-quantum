@@ -477,6 +477,7 @@ reduces to.
 |---|---|---|---|---|---|
 | `box_kite_photonic_single` | 35 | 1 | 10000 | 10000 | 0.01 per job, 0.35 in all |
 | `box_kite_photonic_packed` | 6 | 6, 6, 6, 6, 6, 2 | 10000 per block | equal to samples | 0.32 in all |
+| `box_kite_photonic_packed_swapped` | 6 | 6, 6, 6, 6, 6, 2 | 10000 per block | equal to samples | 0.32 in all |
 | `box_kite_photonic_pairs` | 16 | 2 | 5000 | 347113 | 0.35 per job, 5.6 in all |
 
 The estimates come from `plan` against the live platform on 2026-10-17 and
@@ -496,6 +497,22 @@ exclude the offer's per-job price. Belenos practice the cases follow:
 - The transpiler fits the whole 24-mode unitary; identity on the idle
   modes is part of what it fits, so the one-hot pair's leakage into the 14
   unreachable labels measures it.
+
+`box_kite_photonic_packed_swapped` separates a packed block's residual a - p
+from the modes it sat on. Each job holds the block set of the same-numbered
+packed job with every block moved three slots along (modes 12-23, then 0-11),
+so block, job neighbors and gate form stay fixed while the modes change. The
+half-turn also breaks a confound of the packed layout, where every t = +1 block
+sat on an even slot and every t = -1 block on an odd one: after the move each
+block keeps its t and takes the other slot parity. The preregistered
+`mode_swap` record in each cases.json fixes the statistics, and
+`scripts/qd_packed_mode_swap_analysis.py PACKED_DIR SWAPPED_DIR` evaluates
+them: the correlation of the 16 half blocks' residuals with the block
+predictor (the packed residual) and with the slot predictor (the other half
+blocks' packed residual on the slot a block now occupies), and per block the
+two-sample z of a_swapped - a_packed against 4.5. The packed qpu:belenos
+collection that serves as the baseline is the one retained under
+`box_kite_photonic_packed/qpu_belenos/`.
 
 Local Perceval SLOS with the catalogue's source figures (indistinguishability
 0.942, g2 0.01) predicts a dark block's algebra fraction 0 and a bright

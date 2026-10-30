@@ -63,14 +63,15 @@ product of any dimension then maps to one circuit of the family
   two-click samples, so each block preregisters the exact conditional label
   fraction f(V) from its two_click terms, and the suppressed blocks fit V.
 
-Three series land under results/quandela/cases/: box_kite_photonic_single
+Four series land under results/quandela/cases/: box_kite_photonic_single
 (one block per job: the 32 two-label configurations, the four-label
 control and the one-hot pair), box_kite_photonic_packed (the 32 two-label
-configurations six to a job) and box_kite_photonic_pairs (the 16 sign
+configurations six to a job), box_kite_photonic_packed_swapped (the same jobs
+with every block moved three slots along) and box_kite_photonic_pairs (the 16 sign
 blocks with two photons). Each job-NN/ holds cases.json
 and circuit.json; the series cases.json maps every census row to its job.
 
---write DIR writes both series; --check DIR regenerates them in memory,
+--write DIR writes every series; --check DIR regenerates them in memory,
 compares file sets and bytes and admits the retained files offline
 (digests, exact unitarity, connected input modes, ideals, row coverage);
 --self-test requires census, circuit, placement, ideal, coverage and
@@ -117,10 +118,11 @@ SHOT_HEADROOM = 2
 MAX_DURATION = 300
 SINGLE = "box_kite_photonic_single"
 PACKED = "box_kite_photonic_packed"
+SWAPPED = "box_kite_photonic_packed_swapped"
 PAIRS = "box_kite_photonic_pairs"
 DIAGNOSTICS = "belenos_diagnostics"
 FRINGE = "belenos_fringe"
-FAMILIES = (SINGLE, PACKED, PAIRS, DIAGNOSTICS, FRINGE)
+FAMILIES = (SINGLE, PACKED, SWAPPED, PAIRS, DIAGNOSTICS, FRINGE)
 # A fringe job scans the input phase phi = k pi/4, k = 0..7, through one
 # compiled circuit as Perceval iterations; FRINGE_BLOCKS names its sign blocks.
 FRINGE_STEPS = 8
@@ -146,6 +148,11 @@ PAIR_SAMPLES = 5_000
 # well under the cap, which bounds a QPU job at 2 credits.
 PAIR_MAX_SHOTS = 2_000_000
 PACK_OFFSETS = (0, 4, 8, 12, 16, 20)
+# The swapped layout keeps each packed job's block set and moves every block
+# half a turn around the six slots: slot k's block sits at PACK_OFFSETS[(k + 3) % 6].
+# A per-mode transmission or detector offset follows the slot; an algebra or
+# compilation offset follows the block.
+SWAP_OFFSETS = PACK_OFFSETS[3:] + PACK_OFFSETS[:3]
 ONE_HOT_X = (1, 10)
 ONE_HOT_Y = (4, 15)
 DIM = 16
@@ -748,6 +755,24 @@ DEFINITIONS = {
 }
 
 
+MODE_SWAP = {
+    "pairing": "block (m, t) of job-NN here against the same block in the same-numbered job of "
+    "box_kite_photonic_packed on qpu:belenos, both counted on the samples with exactly one click inside the block",
+    "observable": "the residual r = a - p of each of the 16 half blocks (p = 1/2) and the leakage of each dark "
+    "(a) and bright (1 - a) block, per layout",
+    "block_predictor": "r_swapped(b) = r_packed(b), the residual belongs to the block",
+    "slot_predictor": "r_swapped(b) = the mean packed-layout residual of the other half blocks on the slot that "
+    "b occupies here, the residual belongs to the modes",
+    "statistics": "the Pearson correlation of r_swapped with each predictor over the 16 half blocks, its Fisher-z "
+    "95% interval, and per block the two-sample z of a_swapped - a_packed",
+    "decision": "block attribute when the block predictor's correlation exceeds 0.7 with a lower bound above 0.3 "
+    "and exceeds the slot predictor's; slot attribute for the reverse; mixed otherwise, and a 16-block "
+    "correlation cannot distinguish a mixture's weights",
+    "falsifier": "a block whose |a_swapped - a_packed| exceeds 4.5 standard errors is a placement effect; a "
+    "dark or bright block whose leakage moves with its slot places the 14% outlier in the modes",
+}
+
+
 def preregistered(family: str) -> dict[str, Any]:
     if family == FRINGE:
         return {
@@ -804,6 +829,14 @@ def preregistered(family: str) -> dict[str, Any]:
             "at the fitted V, or suppressed blocks whose f values disagree with one V at that bound",
         }
     layout = "single blocks share no job"
+    if family == SWAPPED:
+        layout = (
+            "each job holds the block set of the same-numbered box_kite_photonic_packed job with every block on "
+            "the slot three places along (modes 12-23 then 0-11), so each block's modes differ from its packed "
+            "run and its job neighbors stay the same; a block's residual a - p that follows the block is an "
+            "algebra or compilation property, one that follows the slot is a per-mode source, transmission or "
+            "detector property"
+        )
     if family == PACKED:
         layout = (
             "blocks share a job and a block-diagonal unitary; inter-block crosstalk is a variable the single "
@@ -824,6 +857,7 @@ def preregistered(family: str) -> dict[str, Any]:
         "one-hot leakage into the 14 unreachable labels, each with a Wilson 95% interval and the dark counts "
         "of the detectors involved",
         "layout": layout,
+        **({"mode_swap": MODE_SWAP} if family == SWAPPED else {}),
     }
 
 
@@ -852,6 +886,10 @@ def family_jobs(configs: list[dict[str, Any]]) -> dict[str, list[Job]]:
         PACKED: [
             job([(c, PACK_OFFSETS[k]) for k, c in enumerate(pairs[start : start + len(PACK_OFFSETS)])])
             for start in range(0, len(pairs), len(PACK_OFFSETS))
+        ],
+        SWAPPED: [
+            job([(c, SWAP_OFFSETS[k]) for k, c in enumerate(pairs[start : start + len(SWAP_OFFSETS)])])
+            for start in range(0, len(pairs), len(SWAP_OFFSETS))
         ],
         PAIRS: [job([(c, PAIR_OFFSET)]) for c in configs if c["kind"] in TWO_PHOTON],
         DIAGNOSTICS: diagnostics,
