@@ -1,0 +1,17 @@
+{
+ "model": {
+  "figures": {
+   "g2": 0.013000000000000001,
+   "hom": 0.8390000000000001,
+   "transmittance": 0.0519
+  },
+  "inside_justified_range": true,
+  "perfs_sha256": "f421bed7f4098a4fd7b3f01d95d0f5bea105315555f5ad18c782a79612130e83",
+  "pooled_fidelity": 0.8204173924648392,
+  "prepared_perfs_sha256": "f421bed7f4098a4fd7b3f01d95d0f5bea105315555f5ad18c782a79612130e83"
+ },
+ "perfs_basis": "live processor record",
+ "planned_utc": "2026-10-30T01:20:57+00:00",
+ "refusal": "the token has a running or queued job: {'max_concurrent_jobs': 1, 'max_jobs_in_queue': 1, 'max_running_qt_jobs': 10, 'num_concurrent_jobs': 0, 'num_jobs_in_queue': 1, 'num_running_qt_jobs': 0}",
+ "sent": false
+}

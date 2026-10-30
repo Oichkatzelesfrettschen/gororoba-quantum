@@ -252,8 +252,21 @@ class Job:
         return self.request.name
 
 
-REQUESTS = {"job-00": Request("job-00", LAYOUT, COMPILATION_SEEDS, ANCHOR_READ)}
-JOBS = {"job-00": Job(REQUESTS["job-00"], 900, 1_200_000, 2.2, 120.0)}
+REQUESTS = {
+    "job-00": Request("job-00", LAYOUT, COMPILATION_SEEDS, ANCHOR_READ),
+    "job-01": Request(
+        "job-01",
+        (16, 19, 18, 20, 22, 23, 17, 21),
+        JOB_01_COMPILATION_SEEDS,
+        "results/quandela/cases/teleportation_rehearsal/job-01/platform-read/catalogue.json",
+        DESCRIPTIVE,
+        2,
+    ),
+}
+JOBS = {
+    "job-00": Job(REQUESTS["job-00"], 900, 1_200_000, 2.2, 120.0),
+    "job-01": Job(REQUESTS["job-01"], 1200, 3_200_000, 4.2, 240.0),
+}
 STAGED = ("cases.json", "circuit.json")
 # qd_platform.snapshot's catalogue and qd_platform.observe's raw route answers, read before the submission.
 BEFORE = "platform-before"

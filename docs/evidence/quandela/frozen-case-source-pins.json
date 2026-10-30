@@ -1,0 +1,17 @@
+{
+  "schema": "frozen-case-source-pin-v1",
+  "cases": [
+    {
+      "case": "results/quandela/cases/ascella_predecessor/job-00/cases.json",
+      "revision": "8898405f1ccf08255d5d96e12667b796f3c8992d"
+    },
+    {
+      "case": "results/quandela/cases/ascella_predecessor/source-compatible/cases.json",
+      "revision": "60fdf76a007f9015bd38c15e3adbe7da8aeee195"
+    },
+    {
+      "case": "results/quandela/cases/ascella_predecessor/reviewed-submission/cases.json",
+      "revision": "11596cbc61d683cdb63d953e985a0c13e01cdab4"
+    }
+  ]
+}
