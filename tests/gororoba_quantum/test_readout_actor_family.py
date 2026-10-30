@@ -959,6 +959,11 @@ def test_sparse_actor_retention_uses_external_anchor_without_current_source_reva
     if status == "DONE":
         if (staging / "pending-abcdef12").exists():
             raise AssertionError("recollection must recover interrupted publication before retention")
+        metrics_staging = run / "raw/fixture-job/job_metrics.1.json.tmp"
+        metrics_staging.write_bytes(b"interrupted metrics")
+        live_run.snapshot_metrics(run, "fixture-job", environment.job("fixture-job"))
+        if metrics_staging.exists():
+            raise AssertionError("metrics recovery must remove abandoned staging before retention")
         result = audit.archived_row((job, run / "raw/fixture-job/index.json", Decimal("0.01")))
         if result["provenance"] != "registered_actor_collection" or result["submitted_pub_shots"] != 32:
             raise AssertionError("actor retention must bind the genuine full-register collection")

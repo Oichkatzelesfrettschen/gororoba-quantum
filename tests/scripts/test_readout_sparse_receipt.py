@@ -372,6 +372,44 @@ def test_killed_raw_collector_releases_lock_and_recovers(tmp_path, monkeypatch) 
         raise AssertionError("recovery must preserve unrelated staging entries")
 
 
+def test_interrupted_metrics_write_recovers_when_metrics_revert(tmp_path, monkeypatch) -> None:
+    class Pub:
+        data: dict = {}
+        metadata: dict = {}
+
+    class Job:
+        value = 0
+
+        def metrics(self) -> dict:
+            return {"value": self.value}
+
+    job = Job()
+    write_raw_result(tmp_path, "job-1", job, [Pub()], ["actor-active"])
+    directory = tmp_path / "raw/job-1"
+    original = (directory / "job_metrics.json").read_bytes()
+    replace = live_run.os.replace
+
+    def interrupted(source, destination) -> None:
+        if Path(destination).name == "job_metrics.1.json":
+            raise OSError("interrupted metrics publication")
+        replace(source, destination)
+
+    job.value = 1
+    with monkeypatch.context() as patch:
+        patch.setattr(live_run.os, "replace", interrupted)
+        with pytest.raises(OSError, match="interrupted metrics"):
+            snapshot_metrics(tmp_path, "job-1", job)
+    if not (directory / "job_metrics.1.json.tmp").exists():
+        raise AssertionError("the interrupted write must leave the metrics staging file")
+    (directory / "unrelated.tmp").write_bytes(b"preserve")
+    job.value = 0
+    snapshot_metrics(tmp_path, "job-1", job)
+    if (directory / "job_metrics.1.json.tmp").exists() or (directory / "job_metrics.json").read_bytes() != original:
+        raise AssertionError("recovery must remove abandoned staging and preserve the indexed metrics")
+    if (directory / "unrelated.tmp").read_bytes() != b"preserve":
+        raise AssertionError("metrics recovery must preserve unrelated files")
+
+
 @pytest.mark.parametrize("mutation", ["anchor", "raw", "index_digest", "manifest", "family", "missing_binding"])
 def test_receipt_rejects_missing_or_corrupted_bindings(mutation: str) -> None:
     data, receipt = fixture()

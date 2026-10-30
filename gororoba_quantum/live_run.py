@@ -8205,6 +8205,11 @@ def snapshot_metrics(run_dir: Path, job_id: str, job: Any) -> str:
 
 
 def _snapshot_metrics_locked(directory: Path, job_id: str, job: Any) -> str:
+    for abandoned in directory.iterdir():
+        if re.fullmatch(r"(?:index|job_metrics(?:\.[0-9]+)?)\.json\.tmp", abandoned.name):
+            if abandoned.is_symlink() or not abandoned.is_file():
+                raise LiveRunError(f"invalid metrics staging entry: {abandoned}")
+            abandoned.unlink()
     metrics = job.metrics() if hasattr(job, "metrics") else {}
     metrics_text = json.dumps(_scrub_instances(_jsonable(metrics)), indent=1, sort_keys=True) + "\n"
     snapshots = _metrics_snapshots(directory)
