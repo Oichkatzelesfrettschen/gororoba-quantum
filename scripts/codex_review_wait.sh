@@ -37,7 +37,6 @@ while :; do
         head=${pull% *} && mergeable=${pull#* } &&
         pending=$(timeout -k 10 60 gh api "repos/$slug/commits/$head/check-runs?per_page=100" \
             --jq '[.check_runs[] | select(.status != "completed")] | length' 2>>"$log"); then
-        failures=0
         echo "$(date -u +%FT%TZ) mergeable=$mergeable pending=$pending $status" >>"$log"
         if [ "$mergeable" = dirty ]; then
             echo "PR $pr conflicts with its base: no merge commit, no check runs; merge the base and push"
@@ -70,9 +69,18 @@ while :; do
                     # The round starts at the later of the summary's round-start and the newest request, since the
                     # summary keeps an older round-start until the bot picks a new request up.
                     round=$(printf '%s\n' "$status" | sed -n 's/.* round-start=\([^ ]*\) .*/\1/p')
-                    requested=$(timeout -k 10 60 gh api --paginate "repos/$slug/issues/$pr/comments" \
-                        --jq '.[] | select(.body | startswith("@codex review")) | .created_at' 2>>"$log" |
-                        sort | tail -n 1) || requested=
+                    # A failed fetch counts as a failed poll: the stale round-start alone would spend the retry early.
+                    if ! requests=$(timeout -k 10 60 gh api --paginate "repos/$slug/issues/$pr/comments" \
+                        --jq '.[] | select(.body | startswith("@codex review")) | .created_at' 2>>"$log"); then
+                        failures=$((failures + 1))
+                        if [ "$failures" -ge 5 ]; then echo "PR $pr: 5 consecutive poll failures; see $log"; exit 3; fi
+                        sleep 90 &
+                        child=$!
+                        wait "$child"
+                        child=
+                        continue
+                    fi
+                    requested=$(printf '%s\n' "$requests" | sort | tail -n 1)
                     start=0
                     if [ -n "$round" ] && [ "$round" != - ]; then start=$(date -d "$round" +%s); fi
                     if [ -n "$requested" ] && [ "$(date -d "$requested" +%s)" -gt "$start" ]; then
@@ -86,6 +94,7 @@ while :; do
                 fi
                 ;;
         esac
+        failures=0
     else
         failures=$((failures + 1))
         if [ "$failures" -ge 5 ]; then echo "PR $pr: 5 consecutive poll failures; see $log"; exit 3; fi
