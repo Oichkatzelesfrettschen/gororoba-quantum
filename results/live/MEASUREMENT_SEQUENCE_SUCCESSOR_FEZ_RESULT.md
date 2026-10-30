@@ -68,7 +68,10 @@ case.
 
 Each row states a conjecture, the test run on the retained shot-ordered bits (ibm_fez run `2026-10-30T010826.175789Z`;
 ibm_kingston run `2026-10-27T014422.881898Z`, job `dbg08t9j4t8s73abaghg`) and the verdict. Pooled counts sum over
-qubits; rc1 is `x; measure pre; reset; idle; measure final; reset` and rc0 omits the x.
+qubits; rc1 is `x; measure pre; reset; idle; measure final; reset` and rc0 omits the x. A carrier is a qubit whose
+next-shot persistence after a failed reset reaches 0.1. `scripts/msq_reset_persistence.py` computes every number of
+the reset rows into [reset-persistence.json](../../docs/evidence/measurement_sequence/reset-persistence.json) and
+`--check` replays it.
 
 | Conjecture | Test | Verdict |
 |---|---|---|
@@ -81,12 +84,12 @@ qubits; rc1 is `x; measure pre; reset; idle; measure final; reset` and rc0 omits
 | A failed reset leaves a state that survives the next reset | rc1 final 1 to next shot's rc0 first read P1 0.081 (237/2925) against 0.0024 after final 0, z 66; an ordinary |1> survives at 0.022 | holds: a reset-immune subpopulation |
 | Ground-start shots that read 1 are misreads of |0> | rc0 shots with pre 1 read final 1 in 231/548 (0.42); a misread |0> would give 0.0028, a true |1> 0.022 | refuted: reset-immune states, about 0.17 % of ground-start shots |
 | Cross-shot carryover = residue x the qubit's measured persistence (no fitted parameter) | corr 0.90 over 24 qubits, best scale 0.84, chi2 223 (zero) to 67 on 23 dof | rejected as complete (p about 1e-5); it orders the qubits, and q95 and q132 carry the excess |
-| The pattern-screen failures are the reset-immune carriers | persistence q151 0.30, q121 0.29, q95 0.15, then q23 0.14 and q147 0.12; q56 falls below 0.03 but has the shortest fitted T1 (33 us); the four failures are the four largest cross-shot values | holds for three of four |
+| The pattern-screen failures are the reset-immune carriers | ibm_fez carriers q23, q95, q121, q147, q151; three of the four pattern failures (q95, q121, q151) are carriers, and q56 has the shortest fitted T1 (33 us); the four failures hold the four largest cross-shot values | holds for three of four |
 | The memory is a slow fluctuator (milliseconds or longer) | event at shot j, target at shot j + k of the next PUB: carriers P1 0.228 at k = 0, at baseline (z at most 1.6) for k = 1, 2, 10, 100; ibm_kingston 0.310, then baseline | refuted: the memory outlasts one shot step and is gone 101 PUB steps later |
 | The events are bursts that strike many qubits at once | shots holding two or more rc0 immune events: 2 against 3.9 for independent qubits (ibm_kingston 5 against 5.8); failed resets 561 against 533 (989 against 965) | refuted |
 | The pinching endpoint carries the persistence | corr(N = 16 departure, persistence) 0.13 over 24 qubits | not detected |
-| The reset-immune carriers are an ibm_fez property | ibm_kingston: reset failure 0.0185, persistence 0.065 (313/4848, z 64), immune survival 0.28 (330/1161); carriers q62 (0.30) and q154 (0.32), both withheld by its 2026-10-27 crosstalk screen | refuted: Heron r2 on both devices |
-| The measure arm's N = 16 transition excess is readout misassignment alone | excess median 0.0043 per step (z 23); partial corr with persistence given assignment error and 1/T1 0.75, leave-one-out at least 0.64, but 0.13 without q151, q121 and q95 | refuted on three carriers; no relation across the other 21 |
+| The reset-immune carriers are an ibm_fez property | ibm_kingston: reset failure 0.0185, next-shot P1 0.065 after a failure against 0.0033 (z 74), immune survival 0.28 (330/1161; carriers 0.63, others 0.14); carriers q50, q59, q62, q95, q100, q154, four of them among the six its 2026-10-27 crosstalk screen withheld | refuted: Heron r2 on both devices |
+| The measure arm's N = 16 transition excess is readout misassignment alone | excess median 0.0043 per step (z 23); partial corr with persistence given assignment error and 1/T1 0.75, leave-one-carrier-out at least 0.64 | refuted on the carriers; -0.17 across the 19 others |
 
 The reset-immune events read as 1, survive a measure-and-flip reset that fixes an ordinary |1> 98 % of the time, carry
 into the next shot through `init_qubits`, and are gone 101 PUB steps later; they strike qubits independently. Two

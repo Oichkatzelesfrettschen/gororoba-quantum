@@ -7,6 +7,7 @@
   "docs/evidence/linear_conjugation/search.json": "910f86c8f0631fa59e560d49ff479fb4aacce65765bf7b2f2b2b84e0a9058df3",
   "docs/evidence/measurement_sequence/envelope-run-exploratory.json": "8392c87cab4e7a83f4d65adb79a10e43ae9baa4e04dac2c4942c8bd982544551",
   "docs/evidence/measurement_sequence/envelope-run-raw-diagnostics.json": "4a6fbbbc08652b7e5feac78f9fa758d5a231e13ebf76ff7fde3fec2c7bc596fb",
+  "docs/evidence/measurement_sequence/reset-persistence.json": "c16c3e77272434d3c1dfeab176a491e1da88fbfa0fe67e7f5546f1e8e6874126",
   "docs/evidence/measurement_sequence/successor-replay.json": "4f80c0808e15b5db70080b2ba8d623897ecd4a905b5ef9f8dae333f674153049",
   "docs/evidence/primorial_cover/certificates.json": "38a788afce71f51ee8058dd52ed0d2ea723c4cdf145d1222818c328c279a6270",
   "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/ascella/mub-six/computational-to-computational-input-0/cases.json": "37f28ba10975c41344aca130f59a1b3d0802d061d6108dec2088ed9fae8fff1b",
