@@ -1,0 +1,7 @@
+RESULT cone dim 4 mult 2
+RESULT rad dim 4 mult 1 size 4
+RESULT cone_reduced 0
+RESULT ncomp 1
+RESULT comp 1 4 1
+t8,t5-t6,t3+t4,t2
+exit 0

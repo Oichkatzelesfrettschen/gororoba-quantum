@@ -1,0 +1,17 @@
+// Probe A: reload the 69 quadric relations of X- to N- and recompute invariants.
+// Falsifier: relations 69, projdim 3, degree 12 (kaggle-pack-a/result.json).
+LIB "primdec.lib";
+ring Y=32009,(y(1..15)),dp;
+execute("ideal K="+read("../kaggle-pack-a/xm_nm/xm_nm_fiber.rel")+";");
+"RESULT size",size(K);
+int t0=timer;
+option(redSB);
+ideal sK=std(K);
+"RESULT projdim",dim(sK)-1,"degree",mult(sK),"std_seconds",timer-t0;
+intvec h=hilb(sK,1);
+"RESULT hilb1",h;
+"RESULT HF", kbase(sK,2)[1]==0;
+int d;for(d=1;d<=5;d++){ideal kb=kbase(sK,d);"RESULT HF_deg",d,size(kb);kill kb;}
+"RESULT initial_degrees",sort(intvec(deg(sK[1])))[1];
+"RESULT size_std",size(sK);
+quit;

@@ -1,0 +1,19 @@
+{
+  "id": "probablyeric/a5-e8vb-msolve-tpu",
+  "id_no": 141385785,
+  "title": "a5-e8vb-msolve-tpu",
+  "code_file": "a5-e8vb-msolve-tpu.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_tpu": true,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [],
+  "kernel_sources": [],
+  "competition_sources": [],
+  "model_sources": [],
+  "docker_image": "gcr.io/kaggle-private-byod/python-tpuvm@sha256:ac9c852b3cdaddf50c4ab3d9eb9d11eb84d32d935f2dbf0f49f9fda276118d30",
+  "machine_shape": "TpuV5E8"
+}

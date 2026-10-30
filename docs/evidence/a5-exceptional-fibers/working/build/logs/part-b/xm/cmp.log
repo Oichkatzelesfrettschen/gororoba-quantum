@@ -1,0 +1,10 @@
+RESULT a_in_b 1
+RESULT b_in_a 1
+
+--- stderr ---
+Running as unit: run-p3178919-i684404464.service; invocation ID: fcdb3f75edf74d0eb915984c204e5a8c
+          Finished with result: success
+Main processes terminated with: code=exited, status=0/SUCCESS
+               Service runtime: 34ms
+             CPU time consumed: 23ms
+                   Memory peak: 3.1M (swap: 0B)

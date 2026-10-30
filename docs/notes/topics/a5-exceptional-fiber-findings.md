@@ -156,6 +156,59 @@ non-reduced tangent cone; arcs on the normalization replace them.
 - Exact degree-by-degree rank and arc families with exact containment checks are the working methods; every
   global elimination is retired.
 
+## Ledger of hypotheses
+
+Status vocabulary: *survives* (consistent with every test that ran, with the falsifier named), *open* (no deciding
+test yet), *refuted* (a measurement or argument contradicts it), *rejected* (dropped on an argument without a
+measurement), *superseded* (replaced by a stronger or cheaper route).
+
+### Standing
+
+| Hypothesis | Status | Deciding evidence or pending falsifier |
+|---|---|---|
+| F(I) = k[y]/K2 for E8-bar -> VB | survives through degree 3 | degree 4 against 155 |
+| F(I) = k[y]/K2 for X+- and Iso | survives through degree 3 | degree 4 not scheduled |
+| F(I) = k[y]/K2 for E8-bar -> N+-, W8 | survives through degree 2 | degree 3 |
+| The E8-bar -> VB fiber contains the degree-4 component | survives (certified over F_32009) | second-prime arc replay |
+| The E8-bar -> VB fiber contains the degree-3 component | open | arcs in the remaining charts; degree-4 Hilbert value |
+| The E8-bar -> VB fiber is reduced | survives at the quadric level | an embedded or nilpotent relation in a later degree |
+| The X- fiber support is one irreducible three-fold of degree 12 in a P^11 | survives over F_32009 at the quadric level | arc certificate inside the P^11 |
+| X+ and X- fibers correspond under t9 -> -t9 | survives (exact coefficient check) | none; proven for the inputs |
+| W8 -> N+ and W8 -> N- fibers correspond under t9 -> -t9 | survives (exact coefficient check) | none; proven for the inputs |
+| E8-bar -> N+ and E8-bar -> N- fibers are isomorphic | open | quadric structure of N-; Hilbert functions agree through degree 2 |
+| Results at 32009 hold at a second prime | survives on E8-bar -> VB degree 2 | the second-prime replay of every pair |
+| J is radical and prime through the origin | survives on all five pairs checked | none; checked |
+| The pivot is a nonzerodivisor modulo J | survives on every pivot used | none; checked |
+| Iso and W8 quadric schemes decompose chart by chart within 45 minutes per chart | open | chart jobs running |
+| Kernel-plane limits along the arcs have generic nullity 8 | open | the limit computation |
+| Arcs on the normalization certify every reduced component | survives on E8-bar -> VB's degree-4 component | a component no normalized arc reaches |
+
+### Refuted, rejected or superseded
+
+| Hypothesis | Status | Evidence |
+|---|---|---|
+| The exceptional fiber is reduced, for X- and E8-bar -> N+ | refuted | 3 and 5 nilpotent linear forms (radical h_1 = 12 vs 15, 16 vs 21) |
+| V(K2) of E8-bar -> VB is irreducible (a 2 x 7 scroll) | refuted | two minimal primes, degrees 3 and 4 |
+| V(K2) of E8-bar -> N+ is equidimensional | refuted | primes of projective dimension 4 and 3 |
+| One limiting kernel per boundary point (path independence) | refuted | positive-dimensional fibers; path-dependent limits in the nullity-8 record |
+| E8-bar -> N- follows from N+ by a diagonal sign change | refuted | span rank 41 of 42; global ideals differ |
+| Every fiber has dimension at most 3 | rejected | germ bounds of 4 (Iso, E8-bar) and 5 (W8); V(K2) reaches 4 and 5 |
+| One-point transport of the fiber by H-transitivity | rejected | the split boost has no kernel lift |
+| The regularity of k[y]/K2 bounds the missing relations | rejected | a new relation of F(I) can appear in any degree |
+| Pivot saturation completes the full fiber on this hardware | refuted | six stalls after the pivot, up to 12 h and 72 GB |
+| Pivot saturation is the only completion route | superseded | certified candidate ideal, dense arc family, bounded Hilbert function, unmixed candidate |
+| A certified candidate ideal L verifies cheaply | refuted on E8-bar -> VB | std(L) past 3 GB in 14 minutes |
+| Full Rees-graph elimination by msolve fits a session | refuted | degree-7 F4 step on E8-bar -> N+; 209 GB and degree 16 of at least 19 on E8-bar -> VB |
+| `minAssGTZ` decomposes the quadric scheme directly | refuted | Iso 40,000 s without result; radical first plus `minAssChar` takes 1 s on X- |
+| The local `ds` syzygy is required for h_d | superseded | global membership in J + m P_d, 17 s against 25,459 s |
+| Order-1 Hensel arcs certify E8-bar -> VB | refuted | det M = 0 over the non-reduced tangent cone |
+| Torus multigrading forces toric components | rejected | a grading splits blocks without forcing toric components; not tested |
+| GPU or TPU rank computation is the bottleneck | rejected | no measured matrix bottleneck; Singular uses neither |
+| A 4 GiB per-call cap caused the producer's "no more memory" exits | refuted | the cause is `RLIMIT_AS` inherited from a Python helper |
+| Raising the per-call cap to 16 GiB fixed those exits | refuted | the cap never governed while `RLIMIT_AS` was set |
+| The cancelled msolve TPU kernel held the account's TPU slot | refuted | the web UI showed it ended; deleting the queued smoke kernel freed the slot |
+| The value 155 is a product 54 x 12 of earlier counts | refuted | 155 is h_4 of k[y]/K2 for E8-bar -> VB |
+
 ## Work in progress
 
 - **Degree-4 Hilbert value of E8-bar -> VB against the quadric prediction 155**: decides whether a new relation

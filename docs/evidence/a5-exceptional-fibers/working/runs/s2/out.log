@@ -1,0 +1,21 @@
+// ** redefining blowup0 (;return();) input.sing:1
+// ** redefining blowup0 (;return();) input.sing:1
+// ** redefining elimRing (;return();) input.sing:1
+// ** redefining elimRing (;return();) input.sing:1
+// ** redefining elim (;return();) input.sing:1
+// ** redefining elim (;return();) input.sing:1
+// ** redefining elim2 (;return();) input.sing:1
+// ** redefining elim2 (;return();) input.sing:1
+// ** redefining elim1 (;return();) input.sing:1
+// ** redefining elim1 (;return();) input.sing:1
+// ** redefining nselect (;return();) input.sing:1
+// ** redefining nselect (;return();) input.sing:1
+// ** redefining sat (;return();) input.sing:1
+// ** redefining sat (;return();) input.sing:1
+// ** redefining sat_with_exp (;return();) input.sing:1
+// ** redefining sat_with_exp (;return();) input.sing:1
+// ** redefining select (;return();) input.sing:1
+// ** redefining select (;return();) input.sing:1
+// ** redefining select1 (;return();) input.sing:1
+// ** redefining select1 (;return();) input.sing:1
+RESULT pivot 11 terms 64 seconds 0
