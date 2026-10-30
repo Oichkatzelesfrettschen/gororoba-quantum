@@ -7,6 +7,11 @@ repository-relative; a branch name stands for its worktree.
 
 | Report | Subject |
 |---|---|
+| [layout-reconciliation/brief.md](layout-reconciliation/brief.md) | Peer-review brief for the repository layout reconciliation: measured storage classes, options and seven questions (2026-10-30) |
+| [layout-reconciliation/review-codex-daybreak-blue.md](layout-reconciliation/review-codex-daybreak-blue.md) | Codex gpt-daybreak-blue-latest review: lifecycle retention, sparse profiles, clone-size ranking, archive resolver, import-graph refutation of the prefix cut |
+| [layout-reconciliation/review-grok.md](layout-reconciliation/review-grok.md) | Grok Build review: non-cone sparse pattern, actions/checkout filter, successor-repository option, resolver for every duplicate group |
+| [layout-reconciliation/review-opencode-glm-4.7-flash.md](layout-reconciliation/review-opencode-glm-4.7-flash.md) | Local Ollama glm-4.7-flash-64k review through opencode; general answers, names a record field no record carries |
+| [layout-reconciliation/import-graph.txt](layout-reconciliation/import-graph.txt) | Import graph of gororoba_quantum at a1d1743: 517 edges, two 14-module strongly connected components, hub degrees |
 | [tuna-sequential-sensitivity-review.md](tuna-sequential-sensitivity-review.md) | Exact constant-response sensitivity and its model-specific interpretation |
 | [tuna-capture-prefix-retention-review.md](tuna-capture-prefix-retention-review.md) | Retention-order review, historical receipt interpretation and unresolved quarantine |
 | [tuna-capture-prefix-budget-review.md](tuna-capture-prefix-budget-review.md) | Prefix validation order, fixed-overhead bound and recovery limitations |
