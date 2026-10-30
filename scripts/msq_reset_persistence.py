@@ -1,10 +1,11 @@
 """Reset failure and its persistence across shots, read from the raw shot-ordered bits of measurement-sequence runs.
 
 Each run holds the reset controls rc1 (x, measure into pre, reset, idle, measure into final, reset) and rc0 (the same
-without the x) as consecutive fused PUBs, one member per layout qubit. The service executes a job column-wise, so shot
-j of rc0 follows shot j of rc1 through the terminal reset, the repetition delay and the service's initialization,
-and shot j + k (k >= 1) of rc0 follows it k full columns later
-(docs/notes/ibm_quantum/repetition-rate-execution.md).
+without the x) as consecutive fused PUBs, one member per layout qubit. Column-wise execution of one batch in PUB order
+would put shot j of rc0 right after shot j of rc1 (through the terminal reset, the repetition delay and the service's
+initialization) and shot j + k k columns later, but Runtime guarantees neither the PUB order nor a single batch
+(docs/notes/ibm_quantum/repetition-rate-execution.md) and the run records no per-shot time, so a lag k here is an
+offset in shot index whose temporal separation is not measured.
 
 Per qubit and pooled the result reports:
 - the reset failure: rc1's P(final 1 | pre 1), against rc0's ground baseline P(final 1 | pre 0);
@@ -132,6 +133,23 @@ def qubit_persistence(arrays: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarr
     }
 
 
+def coincidence_of(pairs: list[tuple[np.ndarray, np.ndarray | None]]) -> dict[str, Any]:
+    """One event class over the qubits: an event is first == 1 (and second == 1 where a second register is given);
+    shots holding two or more events against the count independent qubits would give."""
+    matrix = np.array([(first == 1) if second is None else (first == 1) & (second == 1) for first, second in pairs])
+    rates = [float(row.mean()) for row in matrix]
+    none = math.prod(1 - r for r in rates)
+    one = math.fsum(r * math.prod(1 - s for j, s in enumerate(rates) if j != i) for i, r in enumerate(rates))
+    per_shot = matrix.sum(axis=0)
+    return {
+        "events": int(matrix.sum()),
+        "shots": int(matrix.shape[1]),
+        "shots_with_two_or_more": int((per_shot >= 2).sum()),
+        "expected_independent": (1 - none - one) * matrix.shape[1],
+        "max_per_shot": int(per_shot.max()),
+    }
+
+
 def analyse(run_dir: Path) -> dict[str, Any]:
     record = json.loads((run_dir / "record.json").read_text())
     pubs = record["execution_pubs"]
@@ -184,23 +202,11 @@ def analyse(run_dir: Path) -> dict[str, Any]:
         entry["lags"] = lag_table
         summary[name] = entry
 
-    coincidence = {}
-    for name, events in (
-        ("immune", [(bits[q][2] == 1) & (bits[q][3] == 1) for q in qubits]),
-        ("reset_failure", [bits[q][1] == 1 for q in qubits]),
-    ):
-        matrix = np.array(events)
-        rates = [float(row.mean()) for row in matrix]
-        none = math.prod(1 - r for r in rates)
-        one = math.fsum(r * math.prod(1 - s for j, s in enumerate(rates) if j != i) for i, r in enumerate(rates))
-        per_shot = matrix.sum(axis=0)
-        coincidence[name] = {
-            "events": int(matrix.sum()),
-            "shots": int(matrix.shape[1]),
-            "shots_with_two_or_more": int((per_shot >= 2).sum()),
-            "expected_independent": (1 - none - one) * matrix.shape[1],
-            "max_per_shot": int(per_shot.max()),
-        }
+    events = {
+        "immune": [(bits[q][2], bits[q][3]) for q in qubits],
+        "reset_failure": [(bits[q][1], None) for q in qubits],
+    }
+    coincidence = dict(zip(events, ordered_map(coincidence_of, list(events.values()), min_items=2), strict=True))
     result: dict[str, Any] = {
         "run": run_dir.name,
         "shots": int(len(bits[qubits[0]][0])),

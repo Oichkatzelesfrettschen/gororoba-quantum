@@ -69,7 +69,11 @@ case.
 Each row states a conjecture, the test run on the retained shot-ordered bits (ibm_fez run `2026-10-30T010826.175789Z`;
 ibm_kingston run `2026-10-27T014422.881898Z`, job `dbg08t9j4t8s73abaghg`) and the verdict. Pooled counts sum over
 qubits; rc1 is `x; measure pre; reset; idle; measure final; reset` and rc0 omits the x. A carrier is a qubit whose
-next-shot persistence after a failed reset reaches 0.1. `scripts/msq_reset_persistence.py` computes every number of
+same-index persistence after a failed reset reaches 0.1. The persistence and lag rows pair rc1 shot j with rc0 shot
+j + k: column-wise execution in PUB order would make k = 0 the next shot, but Runtime guarantees neither the PUB order
+nor a single batch (docs/notes/ibm_quantum/repetition-rate-execution.md) and the run records no per-shot time, so k
+is a shot-index offset whose temporal separation is unmeasured. The pattern-row cross-shot estimate rests on the same
+pairing. `scripts/msq_reset_persistence.py` computes every number of
 the reset rows into [reset-persistence.json](../../docs/evidence/measurement_sequence/reset-persistence.json) and
 `--check` replays it.
 
@@ -81,21 +85,22 @@ the reset rows into [reset-persistence.json](../../docs/evidence/measurement_seq
 | A 50 us repetition delay rescues the screen | the reader idle is the constant `MSQR_READER_IDLE_SECONDS`, independent of the repetition delay | refuted by construction |
 | The next shot inherits D times the next reset's residue | mean D x rc 0.00033 against observed 0.00061 +- 0.00008 | right magnitude, refuted in detail (z 3.4) |
 | In-run ground readout is 20 times the calibration | raw ground P1 median 0.0039; the analysis's readout `offset` is 1 - P1(ro0) - P1(t1-0), not P(1|0) | refuted |
-| A failed reset leaves a state that survives the next reset | rc1 final 1 to next shot's rc0 first read P1 0.081 (237/2925) against 0.0024 after final 0, z 66; an ordinary |1> survives at 0.022 | holds: a reset-immune subpopulation |
+| A failed reset leaves a state that survives the next reset | rc1 final 1 to the same-index rc0 first read P1 0.081 (237/2925) against 0.0024 after final 0, z 66; an ordinary |1> survives at 0.022 | holds: a reset-immune subpopulation |
 | Ground-start shots that read 1 are misreads of |0> | rc0 shots with pre 1 read final 1 in 231/548 (0.42); a misread |0> would give 0.0028, a true |1> 0.022 | refuted: reset-immune states, about 0.17 % of ground-start shots |
 | Cross-shot carryover = residue x the qubit's measured persistence (no fitted parameter) | corr 0.90 over 24 qubits; chi2 223 for zero carryover, 73 on 24 dof for the model as predicted, 67 on 23 dof at the best common scale 0.84 | rejected as complete (p 7e-7 as predicted, 3e-6 at the best scale); it orders the qubits, and q95 and q132 carry the excess |
 | The pattern-screen failures are the reset-immune carriers | ibm_fez carriers q23, q95, q121, q147, q151; three of the four pattern failures (q95, q121, q151) are carriers, and q56 has the shortest fitted T1 (33 us); the four failures hold the four largest cross-shot values | holds for three of four |
-| The memory is a slow fluctuator (milliseconds or longer) | event at shot j, target at shot j + k of the next PUB: carriers P1 0.228 at k = 0, at baseline (z at most 1.6) for k = 1, 2, 10, 100; ibm_kingston 0.310, then baseline | refuted: the memory outlasts one shot step and is gone 101 PUB steps later |
+| The memory is a slow fluctuator (milliseconds or longer) | event at shot j, target at shot j + k of the next PUB (k a shot-index offset): carriers P1 0.228 at k = 0, at baseline (z at most 1.6) for k = 1, 2, 10, 100; ibm_kingston 0.310, then baseline | refuted: the memory outlasts one shot step and is gone 101 PUB steps later |
 | The events are bursts that strike many qubits at once | shots holding two or more rc0 immune events: 2 against 3.9 for independent qubits (ibm_kingston 5 against 5.8); failed resets 561 against 533 (989 against 965) | refuted |
 | The pinching endpoint carries the persistence | corr(N = 16 departure, persistence) 0.13 over 24 qubits | not detected |
-| The reset-immune carriers are an ibm_fez property | ibm_kingston: reset failure 0.0185, next-shot P1 0.065 after a failure against 0.0033 (z 74), immune survival 0.28 (330/1161; carriers 0.63, others 0.14); carriers q50, q59, q62, q95, q100, q154, four of them among the six its 2026-10-27 crosstalk screen withheld | refuted: Heron r2 on both devices |
+| The reset-immune carriers are an ibm_fez property | ibm_kingston: reset failure 0.0185, same-index P1 0.065 after a failure against 0.0033 (z 74), immune survival 0.28 (330/1161; carriers 0.63, others 0.14); carriers q50, q59, q62, q95, q100, q154, four of them among the six its 2026-10-27 crosstalk screen withheld | refuted: Heron r2 on both devices |
 | The measure arm's N = 16 transition excess is readout misassignment alone | excess median 0.0043 per step (z 23); partial corr with persistence given assignment error and 1/T1 0.75, leave-one-carrier-out at least 0.64 | refuted on the carriers; -0.17 across the 19 others |
 
 The reset-immune events read as 1, survive a measure-and-flip reset that fixes an ordinary |1> 98 % of the time, carry
-into the next shot through `init_qubits`, and are gone 101 PUB steps later; they strike qubits independently. Two
+to the same-index shot of the following PUB through `init_qubits`, leave no excess at shot offsets 1, 2, 10 and 100,
+and strike qubits independently; their lifetime in time is unmeasured, since the run records no shot timing. Two
 readings fit those counts: a population outside the computational subspace (a leaked |2>, read as 1 and left alone
-by the conditional x, decaying within tens of microseconds) and a readout fault on the same qubit with a similar
-lifetime. The carriers' rc1 shots that read 0 first and 1 at the end (6.8 % on ibm_fez carriers against 1.0 % on the
+by the conditional x, decaying before the following shot offset) and a readout fault on the same qubit that persists
+as long. The carriers' rc1 shots that read 0 first and 1 at the end (6.8 % on ibm_fez carriers against 1.0 % on the
 other qubits; ibm_kingston 7.4 % against 1.5 %) need a true |1> misread twice in a row, which a repeating readout
 fault produces directly and leakage only through a |2> read as 0 that decays to |1> before the final read, so the
 counts favor the readout fault without excluding leakage. A |1>-|2> pi pulse before the reset, or a
