@@ -55,8 +55,18 @@ def _entry(arguments: tuple[dict[str, Any], dict[str, Any], dict[str, Any]]) -> 
 
 
 def simulator_manifest() -> dict[str, Any]:
-    """The frozen manifest with the qualification's two fields replaced in place."""
-    return {**case.check(), **SIMULATOR_VARIANT}
+    """The retained frozen manifest with the qualification's two fields replaced in place.
+
+    Gate core-ascella-predecessor-source-pin holds the retained case bytes and their pinned revision, so this reads
+    them rather than rebuilding through `case.check()`, which reproduces them only in a worktree at the pin. Every
+    bound file this reader executes must still carry its pinned sha256; qd_platform.py serves only `run_facts`, the
+    registry's offline run reader, and evolves on main under its own evidence.
+    """
+    manifest = json.loads((case.CASE / "cases.json").read_bytes())
+    for name, digest in manifest["analysis_sources"].items():
+        if name != "scripts/qd_platform.py" and qd.sha256_bytes((case.ROOT / name).read_bytes()) != digest:
+            raise ValueError(f"{name} differs from the frozen case's bound bytes; run from the pinned revision")
+    return {**manifest, **SIMULATOR_VARIANT}
 
 
 def describe_run(directory: Path) -> dict[str, Any]:
