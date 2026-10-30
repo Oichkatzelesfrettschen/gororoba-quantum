@@ -10399,12 +10399,15 @@
   "scripts/ascella_predecessor_case.py": [
    "__future__",
    "argparse",
+   "fcntl",
    "functools",
    "json",
    "math",
+   "os",
    "pathlib",
    "qd_platform",
    "sys",
+   "tempfile",
    "typing"
   ],
   "scripts/ascella_replication_offsets.py": [

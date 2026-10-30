@@ -88,6 +88,16 @@ def manifest() -> dict[str, Any]:
     return json.loads((CASE / "cases.json").read_text(encoding="utf-8"))
 
 
+def test_case_publication_is_idempotent_and_refuses_conflicting_bytes(tmp_path: Path) -> None:
+    payload = {"cases.json": b"case\n", "circuit.json": b"circuit\n"}
+    case.publish_case(tmp_path, payload)
+    case.publish_case(tmp_path, payload)
+    with pytest.raises(ValueError, match="retained case differs"):
+        case.publish_case(tmp_path, {"cases.json": b"changed\n", "circuit.json": b"circuit\n"})
+    if any((tmp_path / name).read_bytes() != data for name, data in payload.items()):
+        raise AssertionError("a conflicting build replaced retained case bytes")
+
+
 @pytest.mark.audit
 def test_check_reproduces_the_retained_bytes() -> None:
     rebuilt = case.check()

@@ -15,9 +15,12 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import fcntl
 import json
 import math
+import os
 import sys
+import tempfile
 from functools import cache
 from pathlib import Path
 from typing import Any
@@ -31,10 +34,10 @@ from qd_platform import JOB_NAME_LIMIT, iteration_form, sha256_bytes, template_e
 MODES = 12
 LOGICAL = 4
 SOURCE_CASES = ROOT / "results/quandela/cases/ascella_signed_coherence"
-CASE = ROOT / "results/quandela/cases/ascella_predecessor/reviewed-submission"
+CASE = ROOT / "results/quandela/cases/ascella_predecessor/source-compatible"
 DESIGN = "docs/design/ascella-predecessor-intervention.md"
 FAMILY = "ascella_predecessor"
-JOB = "reviewed-submission"
+JOB = "source-compatible"
 PLATFORM = "qpu:ascella"
 COMMAND = "sample_count"
 MAX_DURATION = 300
@@ -427,6 +430,46 @@ def check() -> dict[str, Any]:
     return manifest
 
 
+def publish_case(directory: Path, payload: dict[str, bytes]) -> None:
+    """Publish complete case files once and refuse conflicting retained bytes."""
+    if set(payload) != {"cases.json", "circuit.json"} or any(
+        type(data) is not bytes or not data for data in payload.values()
+    ):
+        raise ValueError("a complete nonempty case and circuit are required")
+    directory.mkdir(parents=True, exist_ok=True)
+    with (directory / ".case-build.lock").open("a", encoding="utf-8") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        try:
+            for name, data in payload.items():
+                destination = directory / name
+                if destination.exists() and destination.read_bytes() != data:
+                    raise ValueError(f"retained case differs: {destination}; choose a successor directory")
+            for name, data in payload.items():
+                destination = directory / name
+                if destination.exists():
+                    continue
+                with tempfile.NamedTemporaryFile(dir=directory, delete=False) as stream:
+                    temporary = Path(stream.name)
+                    try:
+                        stream.write(data)
+                        stream.flush()
+                        os.fsync(stream.fileno())
+                        try:
+                            os.link(temporary, destination)
+                        except FileExistsError:
+                            if destination.read_bytes() != data:
+                                raise ValueError(f"retained case differs: {destination}") from None
+                    finally:
+                        temporary.unlink(missing_ok=True)
+            directory_fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY)
+            try:
+                os.fsync(directory_fd)
+            finally:
+                os.close(directory_fd)
+        finally:
+            fcntl.flock(lock, fcntl.LOCK_UN)
+
+
 def summary(manifest: dict[str, Any]) -> str:
     registered = manifest["preregistered"]
     lines = [
@@ -461,9 +504,7 @@ def main() -> int:
     group.add_argument("--check", action="store_true")
     args = parser.parse_args()
     if args.build:
-        CASE.mkdir(parents=True, exist_ok=True)
-        for name, data in documents().items():
-            (CASE / name).write_bytes(data)
+        publish_case(CASE, documents())
     manifest = check()
     sys.stdout.write(summary(manifest))
     return 0
