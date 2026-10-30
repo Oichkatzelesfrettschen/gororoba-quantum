@@ -112,8 +112,11 @@ the differences listed in its section.
   count within the per-day limit multiplied by the days elapsed, and completion
   before the merger deadline or the competition deadline.
 - Private sharing of competition code or data outside a team is prohibited.
-  Public sharing is allowed on the competition's forum or notebooks, under an
-  Open Source Initiative approved license that permits commercial use.
+  Public sharing of code is allowed on the competition's forum or notebooks,
+  under an Open Source Initiative approved license that permits commercial use.
+  That license governs shared code only; the competition data stays under the
+  data license in each section below (CC BY-NC 4.0 for Enveda and the NFL
+  competition) and goes to no party outside the competition.
 - Open-source components in a submission carry an Open Source Initiative
   approved license that does not limit commercial use, unless a competition's
   specific rules say otherwise.
@@ -140,8 +143,13 @@ the differences listed in its section.
   County courts.
 - Ties go to the earliest submission. A disqualified participant may lose
   leaderboard placement, points and medals.
-- Final standing uses the private leaderboard over the private test set, and
-  the public leaderboard covers a sample of the test data.
+- In the competitions that score a held-out test set (Playground S6E10,
+  ARC-AGI-3, ARC-AGI-2, Gemma 4 Developer Agent, Enveda), final standing uses the private leaderboard
+  over the private test set, and the public leaderboard covers a sample of the
+  test data. The Paper Tracks and the NFL competition judge writeups against a
+  rubric, Squares in Squares scores the submitted placements directly, and the
+  Quantum AI competition scores circuits against a verifier seeded from each
+  submission's hash, so none of those four has a hidden test set.
 
 ## Playground Series S6E10, Predicting Airline Satisfaction
 
