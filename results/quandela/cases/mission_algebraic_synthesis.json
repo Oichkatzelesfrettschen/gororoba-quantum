@@ -1,0 +1,238 @@
+{
+  "schema": "mission-algebraic-synthesis-v1",
+  "qrng_provenance": {
+    "source": "ANU Quantum Random Numbers (Vacuum Fluctuation Homodyne)",
+    "draw_record": "docs/evidence/anu_qrng/draw-2026-10-28T003533Z.json",
+    "seed_value": 37948
+  },
+  "algebraic_foundations": {
+    "clifford_control": {
+      "algebra": "Cl(0, 3)",
+      "dimension": 8,
+      "is_associative": true,
+      "generators_square": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "blade_associator_norm": 0.0,
+      "ideal_character_frequency": 0,
+      "ideal_control_contrast": -1.0
+    },
+    "octonion_associator": {
+      "algebra": "Cayley-Dickson Octonions (O)",
+      "dimension": 8,
+      "is_associative": false,
+      "total_imaginary_pairs": 21,
+      "fano_lines_count": 7,
+      "flint_exact_transfers": 21,
+      "fano_line_triads": {
+        "1": [
+          [
+            2,
+            4
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            4,
+            6
+          ]
+        ],
+        "2": [
+          [
+            1,
+            4
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            4,
+            5
+          ]
+        ],
+        "3": [
+          [
+            3,
+            4
+          ],
+          [
+            3,
+            7
+          ],
+          [
+            4,
+            7
+          ]
+        ],
+        "4": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            3
+          ]
+        ],
+        "5": [
+          [
+            2,
+            5
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            5,
+            7
+          ]
+        ],
+        "6": [
+          [
+            1,
+            6
+          ],
+          [
+            1,
+            7
+          ],
+          [
+            6,
+            7
+          ]
+        ],
+        "7": [
+          [
+            3,
+            5
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            5,
+            6
+          ]
+        ]
+      }
+    },
+    "sedenion_breakdown": {
+      "algebra": "Cayley-Dickson Sedenions (S)",
+      "dimension": 16,
+      "is_alternative": false,
+      "total_imaginary_pairs": 105,
+      "character_homomorphism_pairs": 21,
+      "failed_pairs_count": 84,
+      "pair_1_8_sign_sum": -8,
+      "pair_1_8_active_modes": [
+        0,
+        2,
+        4,
+        6
+      ],
+      "pair_1_8_probabilities": {
+        "0": 0.25,
+        "2": 0.25,
+        "4": 0.25,
+        "6": 0.25
+      }
+    },
+    "dyadic_2adic_tree": {
+      "1": {
+        "binary": "001",
+        "hamming_weight": 1,
+        "2_adic_valuation": 0,
+        "2_adic_norm": 1.0
+      },
+      "2": {
+        "binary": "010",
+        "hamming_weight": 1,
+        "2_adic_valuation": 1,
+        "2_adic_norm": 0.5
+      },
+      "3": {
+        "binary": "011",
+        "hamming_weight": 2,
+        "2_adic_valuation": 0,
+        "2_adic_norm": 1.0
+      },
+      "4": {
+        "binary": "100",
+        "hamming_weight": 1,
+        "2_adic_valuation": 2,
+        "2_adic_norm": 0.25
+      },
+      "5": {
+        "binary": "101",
+        "hamming_weight": 2,
+        "2_adic_valuation": 0,
+        "2_adic_norm": 1.0
+      },
+      "6": {
+        "binary": "110",
+        "hamming_weight": 2,
+        "2_adic_valuation": 1,
+        "2_adic_norm": 0.5
+      },
+      "7": {
+        "binary": "111",
+        "hamming_weight": 3,
+        "2_adic_valuation": 0,
+        "2_adic_norm": 1.0
+      }
+    }
+  },
+  "mission_1_physical_summary": {
+    "platform": "qpu:ascella (physical hardware)",
+    "job_id": "e6b9cb57-0709-46e9-8222-88a58c832698",
+    "iterations": 84,
+    "photons": 1,
+    "status": "ADMITTED",
+    "mean_contrast": 1.997448,
+    "sentinel_leakage": 0.013156,
+    "qrng_bootstrap": {
+      "bootstrap_mean": 0.99871,
+      "bootstrap_se": 0.000181,
+      "ci95_lower": 0.998343,
+      "ci95_upper": 0.999038
+    }
+  },
+  "mission_2_twin_simulator_summary": {
+    "platform": "sim:ascella (cloud simulator twin)",
+    "job_id": "65755d93-5dd6-4e42-afe9-0c0f184e500c",
+    "iterations": 84,
+    "photons": 2,
+    "status": "ADMITTED",
+    "mean_displacing_contrast": 2.0,
+    "mean_stabilizer_persistence": 1.0,
+    "sentinel_leakage": 0.0
+  },
+  "mission_2_physical_summary": {
+    "platform": "qpu:ascella (physical hardware)",
+    "job_id": "4c4f0273-6e69-4b52-af92-550a5e4356d8",
+    "iterations": 84,
+    "photons": 2,
+    "status": "PENDING_COLLECTION",
+    "mean_displacing_contrast": null,
+    "mean_stabilizer_persistence": null,
+    "sentinel_leakage": null
+  },
+  "synthesis_conclusions": {
+    "pontryagin_duality_proven": true,
+    "coset_partitioning_verified": true,
+    "non_bunching_immunity_verified": true,
+    "sedenion_non_alternativity_falsified": true,
+    "algebraic_scrambling_distinction": "Single-photon dynamics collapses onto 1D character lines P_omega, while two-photon entanglement tests whether non-associative phase conjugation induces multi-particle scrambling or preserves the invariant coset subspace F_2^3 / {0, 2}."
+  }
+}
