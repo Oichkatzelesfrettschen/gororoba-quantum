@@ -12,8 +12,8 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 
 | Location | Contents | Git treatment |
 | --- | --- | --- |
-| `docs/pdf/` | 46 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 202 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/pdf/` | 47 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
+| `docs/local_source_cache/` | 203 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 6 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
@@ -96,6 +96,7 @@ each source license in force.
 | [Jafferis et al. 2023 -- Comment on "Comment on 'Traversable wormhole dynamics on a quantum processor'" (arXiv 2303.15423)](notes/papers/2303.15423.md) | [2303.15423v1.pdf](pdf/2303.15423v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Silvestri et al. 2024 -- Experimental observation of Earth's rotation with quantum entanglement (arXiv 2310.16903)](notes/papers/2310.16903.md) | [2310.16903v1.pdf](pdf/2310.16903v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Lemley 2026: quasilinear multiplication in the real Cayley-Dickson tower (arXiv 2609.11588)](notes/papers/2609.11588.md) | [2609.11588v1.pdf](pdf/2609.11588v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Lemley 2026: quasilinear multiplication in the Cayley-Dickson tower, version 2 (arXiv 2609.11588v2)](notes/papers/2609.11588.md) | [2609.11588v2.pdf](pdf/2609.11588v2.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Chapman and Levin 2026: central products of Cayley-Dickson loops (arXiv 2603.20495)](notes/papers/2603.20495.md) | [2603.20495v3.pdf](pdf/2603.20495v3.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Gazeau 2026: a mnemonic matrix rule for octonionic multiplication and its extension to the Cayley-Dickson tower (arXiv 2512.22134)](notes/papers/2512.22134.md) | [2512.22134v3.pdf](pdf/2512.22134v3.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 
@@ -191,6 +192,7 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Hotta 2010 -- Energy-Entanglement Relation for Quantum Energy Teleportation](notes/papers/1002.0200.md) | [PDF](https://arxiv.org/pdf/1002.0200v2) | `1002.0200v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1002.0200v2) |
 | [Ford and Roman 1997 -- Restrictions on Negative Energy Density in Flat Spacetime](notes/papers/gr-qc-9607003.md) | [PDF](https://arxiv.org/pdf/gr-qc/9607003v2) | `gr-qc-9607003v2.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/gr-qc/9607003v2) |
 | [Wilmot 2025 -- Structure of the Cayley-Dickson algebras](notes/papers/2505.11747.md) | [PDF](https://arxiv.org/pdf/2505.11747v3) | `2505.11747v3.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2505.11747v3) |
+| [Wilmot 2025 -- Structure of the Cayley-Dickson algebras, version 4](notes/papers/2505.11747.md) | [PDF](https://arxiv.org/pdf/2505.11747v4) | `2505.11747v4.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2505.11747v4) |
 | [LZ Collaboration 2026 -- Search for dark matter particle interactions in an extended nuclear recoil energy window with the LUX-ZEPLIN (LZ) experiment](notes/papers/2609.02823.md) | [PDF](https://arxiv.org/pdf/2609.02823v1) | `2609.02823v1.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2609.02823v1) |
 | [DES Collaboration 2026 -- Dark Energy Survey Year 6 Results: Cosmological Constraints from Galaxy Clustering and Weak Lensing](notes/papers/2601.14559.md) | [PDF](https://arxiv.org/pdf/2601.14559v2) | `2601.14559v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2601.14559v2) |
 | [Quantum collision models: open system dynamics from repeated interactions](notes/2106.11974.md) | [PDF](https://arxiv.org/pdf/2106.11974v2) | `2106.11974v2.pdf` | [Source-specific rights audit](https://arxiv.org/abs/2106.11974v2) |

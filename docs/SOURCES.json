@@ -1602,6 +1602,36 @@
         "copy_status": "unchanged",
         "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Repository licensing does not relabel the source PDF."
       }
+    },
+    {
+      "path": "docs/pdf/2609.11588v2.pdf",
+      "source_url": "https://arxiv.org/pdf/2609.11588v2",
+      "note": "docs/notes/papers/2609.11588.md",
+      "audited_at_utc": "2026-10-30T23:40:00+00:00",
+      "status": "retained",
+      "sha256": "adb89bfb56b8a58b5674cc97cd862effb4acbdb36a6c74008c5079bbbf714a1b",
+      "bytes": 517719,
+      "pages": 28,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "adb89bfb56b8a58b5674cc97cd862effb4acbdb36a6c74008c5079bbbf714a1b",
+        "verified_at_utc": "2026-10-30T23:40:00+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://arxiv.org/abs/2609.11588v2",
+        "evidence_sha256": "325e8a3b16a821c00f2d6ecfdef072505894e308bd3b585eed20d2f37ca88f42",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract metadata, first-page title and abstract, and the statements transcribed in the note.",
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "Exact-version arXiv license metadata controls this admission route; preserve original notices.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2609.11588v2.html",
+        "evidence_retrieved_at_utc": "2026-10-30T23:19:45+00:00",
+        "observed_license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify changes. Repository licensing leaves original source licensing intact."
+      },
+      "redistribution": "explicit_license_verified"
     }
   ],
   "aliases": [
@@ -4497,6 +4527,24 @@
       "bytes": 7941,
       "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, issue, article number, publication date and license list",
       "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/2609.11588.md",
+      "url": "https://export.arxiv.org/api/query?id_list=2609.11588",
+      "sha256": "dc391870a8673f230c84782f03c3cf764e75964f79678bff05175e445ee52a41",
+      "bytes": 3672,
+      "retrieved_at_utc": "2026-10-30T23:18:59+00:00",
+      "reading_scope": "arXiv API record: latest version v2, title, authors, categories, comment and update date; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/2505.11747.md",
+      "url": "https://export.arxiv.org/api/query?id_list=2505.11747",
+      "sha256": "5bb0f48f8440ad6e41a29a76fb9a6a94cbed5b40169a081792db5e18e79457bf",
+      "bytes": 3134,
+      "retrieved_at_utc": "2026-10-30T23:19:00+00:00",
+      "reading_scope": "arXiv API record: latest version v4, abstract, categories and the version comment; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",
@@ -11677,6 +11725,41 @@
         "evidence_retrieved_at_utc": "2026-10-28T00:11:31+00:00",
         "reading_scope": "Source-specific rights statement and operative terms.",
         "evidence_path": "docs/evidence/source_rights/arxiv-1808.01590v2.html"
+      }
+    },
+    {
+      "title": "Structure of the Cayley-Dickson algebras",
+      "authors": [
+        "Wilmot, G. P."
+      ],
+      "version": "v4, 2026-10-29",
+      "source_url": "https://arxiv.org/pdf/2505.11747v4",
+      "note": "docs/notes/papers/2505.11747.md",
+      "audited_at_utc": "2026-10-30T23:40:00+00:00",
+      "sha256": "6b3a46ffaaaf0418f276e48142b98153cc7cf1f31edbf1d1e55214f2e55a6a15",
+      "bytes": 376832,
+      "pages": 32,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/2505.11747v4.pdf",
+      "local_cache_path": "docs/local_source_cache/2505.11747v4.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "6b3a46ffaaaf0418f276e48142b98153cc7cf1f31edbf1d1e55214f2e55a6a15",
+        "verified_at_utc": "2026-10-30T23:40:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "CC-BY-NC-SA-4.0",
+        "license_url": "http://creativecommons.org/licenses/by-nc-sa/4.0/",
+        "evidence_url": "https://arxiv.org/abs/2505.11747v4",
+        "evidence_sha256": "816bb2bf2055f171d5fbdb6cfd7b7f2747c6a9cac7ea125eb3183cc4447f3ab0",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+        "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2505.11747v4.html",
+        "evidence_retrieved_at_utc": "2026-10-30T23:19:38+00:00"
       }
     }
   ],

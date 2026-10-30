@@ -195,7 +195,7 @@ differs from it only in the `cd_core.py` digest.
 | [1102.5151.md](notes/papers/1102.5151.md) | Kirshtein 2011 automorphism groups of Cayley-Dickson loops: orders 2, 24, 1344, 2688 and the unsound third claim of Lemma 36 |
 | [1405.6888.md](notes/papers/1405.6888.md) | Saniga et al. 2014 finite geometry of the Cayley-Dickson tower: Tables 1 to 3 against `cd_core` (opposite algebra on the basis) and the line counts for 8 to 64 dimensions |
 | [2606.27798.md](notes/papers/2606.27798.md) | Aryapoor, Back and Pautrel 2026 involutions in the Cayley-Dickson construction: alpha and beta involutions, nuclei and commuter of dimension 1 at 8, 16 and 32 |
-| [2609.11588.md](notes/papers/2609.11588.md) | Lemley 2026 quasilinear multiplication: Algorithm 3.5 replayed for 2 to 256 dimensions and the multiplication-count bound (hosted, CC BY 4.0) |
+| [2609.11588.md](notes/papers/2609.11588.md) | Lemley 2026 quasilinear multiplication: Algorithm 3.5 replayed for 2 to 256 dimensions and the multiplication-count bound (hosted, CC BY 4.0); version 2 generalizes to commutative rings, adds the tensor-rank corollary and an octonion base case that lowers the counts at 16 dimensions and above |
 | [2603.20495.md](notes/papers/2603.20495.md) | Chapman and Levin 2026 central products of Cayley-Dickson loops: associativity degree for 4 to 64 dimensions (hosted, CC BY 4.0) |
 | [2501.00123.md](notes/papers/2501.00123.md) | Chapman, Levin, Vishne and Zaninelli 2024 loops with involution: the automorphism-group statement of the abstract against exact counts |
 | [1707.07318.md](notes/papers/1707.07318.md) | Bales 2017 the eight doubling products: `P3T` equals `cd_core`, four of the eight are not octonionic, and the twist rules reproduce to 64 dimensions |
