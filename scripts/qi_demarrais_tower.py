@@ -422,6 +422,77 @@ def group_mean(per_qubit_p1: dict[str, float], qubits: list[int]) -> float | Non
     return sum(per_qubit_p1[str(q)] for q in qubits) / len(qubits) if qubits else None
 
 
+def circuit_report(item: tuple[Path, dict[str, Any], int, int, list[int]]) -> tuple[str, dict[str, Any]]:
+    """One circuit's per-qubit, group, herald and match statistics from its raw shot list."""
+    run_dir, row, nqubits, expected_shots, b_qubits = item
+    filename = row["file"]
+    raw_path = run_dir / "raw" / f"{filename}.json"
+    shots: list[str] = json.loads(raw_path.read_text(encoding="utf-8"))
+    require(len(shots) == expected_shots, f"{filename}: shot count {len(shots)} != {expected_shots}")
+    ideal_shot = row["ideal_shot_string"]
+    exact_matches = sum(1 for s in shots if s == ideal_shot)
+    ideal_bits = {int(q): int(b) for q, b in row["ideal_bits_by_qubit"].items()}
+
+    per_qubit_p1: dict[str, float] = {}
+    per_qubit_accuracy: dict[str, float] = {}
+    for q in range(nqubits):
+        ones = sum(_bit_at(s, q) for s in shots)
+        p1 = ones / len(shots)
+        per_qubit_p1[str(q)] = p1
+        per_qubit_accuracy[str(q)] = p1 if ideal_bits[q] == 1 else (1.0 - p1)
+
+    two_path_qubits = [int(q) for q in row["two_path_destructive_dark_qubits"]]
+    one_path_qubits = [int(q) for q in row["one_path_constructive_bright_qubits"]]
+    zero_path_qubits = [int(q) for q in row["zero_path_dmz_qubits"]]
+
+    mean_one_path_p1 = group_mean(per_qubit_p1, one_path_qubits)
+    mean_two_path_p1 = group_mean(per_qubit_p1, two_path_qubits)
+    mean_zero_path_p1 = group_mean(per_qubit_p1, zero_path_qubits)
+    mean_sentinel_p0 = sum(1.0 - per_qubit_p1[str(q)] for q in b_qubits) / len(b_qubits)
+    sentinel_all_zero_rate = sum(1 for s in shots if all(_bit_at(s, q) == 0 for q in b_qubits)) / len(shots)
+
+    # Post-selected on all 9 (or 5) B-partition syndrome sentinels reading 0
+    heralded_shots = [s for s in shots if all(_bit_at(s, q) == 0 for q in b_qubits)]
+    heralded_one_path_p1 = (
+        sum(sum(_bit_at(s, q) for s in heralded_shots) / len(heralded_shots) for q in one_path_qubits)
+        / len(one_path_qubits)
+        if heralded_shots and one_path_qubits
+        else None
+    )
+    heralded_two_path_p1 = (
+        sum(sum(_bit_at(s, q) for s in heralded_shots) / len(heralded_shots) for q in two_path_qubits)
+        / len(two_path_qubits)
+        if heralded_shots and two_path_qubits
+        else None
+    )
+
+    return row["kind"], {
+        "file": filename,
+        "shots": len(shots),
+        "ideal_shot_string": ideal_shot,
+        "exact_17q_or_10q_match_probability": exact_matches / len(shots),
+        "mean_one_path_bright_p1": mean_one_path_p1,
+        "mean_two_path_destructive_dark_p1": mean_two_path_p1,
+        "mean_zero_path_dmz_dark_p1": mean_zero_path_p1,
+        "interference_contrast_one_minus_two_path": (
+            mean_one_path_p1 - mean_two_path_p1
+            if mean_one_path_p1 is not None and mean_two_path_p1 is not None
+            else None
+        ),
+        "mean_sentinel_syndrome_p0": mean_sentinel_p0,
+        "sentinel_all_zero_herald_rate": sentinel_all_zero_rate,
+        "heralded_one_path_bright_p1": heralded_one_path_p1,
+        "heralded_two_path_destructive_dark_p1": heralded_two_path_p1,
+        "heralded_interference_contrast": (
+            heralded_one_path_p1 - heralded_two_path_p1
+            if heralded_one_path_p1 is not None and heralded_two_path_p1 is not None
+            else None
+        ),
+        "per_qubit_p1": per_qubit_p1,
+        "per_qubit_accuracy": per_qubit_accuracy,
+    }
+
+
 def analyze_batch_run(run_dir: Path) -> dict[str, Any]:
     """Analyze a collected Quantum Inspire batch run directory."""
     cases = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
@@ -430,74 +501,13 @@ def analyze_batch_run(run_dir: Path) -> dict[str, Any]:
     a_qubits = [int(q) for q in cases["bipartition_a_data_qubits"]]
     b_qubits = [int(q) for q in cases["bipartition_b_sentinel_qubits"]]
 
-    circuit_reports: dict[str, Any] = {}
-    for row in cases["circuits"]:
-        filename = row["file"]
-        raw_path = run_dir / "raw" / f"{filename}.json"
-        shots: list[str] = json.loads(raw_path.read_text(encoding="utf-8"))
-        require(len(shots) == int(cases["shots"]), f"{filename}: shot count {len(shots)} != {cases['shots']}")
-        ideal_shot = row["ideal_shot_string"]
-        exact_matches = sum(1 for s in shots if s == ideal_shot)
-        ideal_bits = {int(q): int(b) for q, b in row["ideal_bits_by_qubit"].items()}
-
-        per_qubit_p1: dict[str, float] = {}
-        per_qubit_accuracy: dict[str, float] = {}
-        for q in range(nqubits):
-            ones = sum(_bit_at(s, q) for s in shots)
-            p1 = ones / len(shots)
-            per_qubit_p1[str(q)] = p1
-            per_qubit_accuracy[str(q)] = p1 if ideal_bits[q] == 1 else (1.0 - p1)
-
-        two_path_qubits = [int(q) for q in row["two_path_destructive_dark_qubits"]]
-        one_path_qubits = [int(q) for q in row["one_path_constructive_bright_qubits"]]
-        zero_path_qubits = [int(q) for q in row["zero_path_dmz_qubits"]]
-
-        mean_one_path_p1 = group_mean(per_qubit_p1, one_path_qubits)
-        mean_two_path_p1 = group_mean(per_qubit_p1, two_path_qubits)
-        mean_zero_path_p1 = group_mean(per_qubit_p1, zero_path_qubits)
-        mean_sentinel_p0 = sum(1.0 - per_qubit_p1[str(q)] for q in b_qubits) / len(b_qubits)
-        sentinel_all_zero_rate = sum(1 for s in shots if all(_bit_at(s, q) == 0 for q in b_qubits)) / len(shots)
-
-        # Post-selected on all 9 (or 5) B-partition syndrome sentinels reading 0
-        heralded_shots = [s for s in shots if all(_bit_at(s, q) == 0 for q in b_qubits)]
-        heralded_one_path_p1 = (
-            sum(sum(_bit_at(s, q) for s in heralded_shots) / len(heralded_shots) for q in one_path_qubits)
-            / len(one_path_qubits)
-            if heralded_shots and one_path_qubits
-            else None
+    circuit_reports: dict[str, Any] = dict(
+        parallel.ordered_map(
+            circuit_report,
+            [(run_dir, row, nqubits, int(cases["shots"]), b_qubits) for row in cases["circuits"]],
+            min_items=2,
         )
-        heralded_two_path_p1 = (
-            sum(sum(_bit_at(s, q) for s in heralded_shots) / len(heralded_shots) for q in two_path_qubits)
-            / len(two_path_qubits)
-            if heralded_shots and two_path_qubits
-            else None
-        )
-
-        circuit_reports[row["kind"]] = {
-            "file": filename,
-            "shots": len(shots),
-            "ideal_shot_string": ideal_shot,
-            "exact_17q_or_10q_match_probability": exact_matches / len(shots),
-            "mean_one_path_bright_p1": mean_one_path_p1,
-            "mean_two_path_destructive_dark_p1": mean_two_path_p1,
-            "mean_zero_path_dmz_dark_p1": mean_zero_path_p1,
-            "interference_contrast_one_minus_two_path": (
-                mean_one_path_p1 - mean_two_path_p1
-                if mean_one_path_p1 is not None and mean_two_path_p1 is not None
-                else None
-            ),
-            "mean_sentinel_syndrome_p0": mean_sentinel_p0,
-            "sentinel_all_zero_herald_rate": sentinel_all_zero_rate,
-            "heralded_one_path_bright_p1": heralded_one_path_p1,
-            "heralded_two_path_destructive_dark_p1": heralded_two_path_p1,
-            "heralded_interference_contrast": (
-                heralded_one_path_p1 - heralded_two_path_p1
-                if heralded_one_path_p1 is not None and heralded_two_path_p1 is not None
-                else None
-            ),
-            "per_qubit_p1": per_qubit_p1,
-            "per_qubit_accuracy": per_qubit_accuracy,
-        }
+    )
 
     # Cross-circuit switching contrast on the target qubits
     voudon_switch_qubits = [11, 12] if nqubits == 17 else [6, 7]
