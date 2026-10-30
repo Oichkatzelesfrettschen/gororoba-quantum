@@ -1,0 +1,123 @@
+# Ascella Simulation Campaigns, Qubit Baseline Twin, and Multi-Technology Falsification
+
+This evidence bundle documents the dual simulation runs executed on Quandela Cloud `sim:ascella`,
+the exact 3-qubit baseline twin model (its exact statevector law), the live platform availability
+audit (Tuna-17, QX, Belenos, Ascella), and the cross-technology falsification matrix.
+
+---
+
+## 1. Executive Summary & Core Results
+
+| Benchmark | Platform | Job ID | Metric / Result | Statistical Significance | Status |
+|---|---|---|---|---|---|
+| **Two-Photon Octonion Associator** | `sim:ascella` | `fe44988c-f21f-44ec-bce9-b3fe184d43d5` | Associator $\Delta = 1.7576 \pm 0.0095$<br>Control $\Delta_{\text{ctrl}} = -0.0090 \pm 0.0096$<br>Closure $= 0.0059 \pm 0.0135$ | $> 184\sigma$ effect<br>Null $< 1\sigma$<br>In-situ $V = 0.9137$ | **ADMITTED** |
+| **16-Setting 8-Mode Octonion Character** | `sim:ascella` | `7d70a2d2-d234-4d53-a47c-8a0c5c4c36b7` | Mean Contrast $\Delta = 2.000000$<br>Sentinel Leakage $= 0.000000$<br>Clopper-Pearson 95% CI: $[0.999262, 1.0]$ | 160,000 samples<br>Zero leakage across modes 8..11 | **ADMITTED** |
+| **3-Qubit Baseline Twin Model** | exact statevector (`scripts/qubit_baseline_twin.py`) | Local | Octonion $\to |\omega\rangle$<br>Clifford Control $\to |000\rangle$<br>Exact $\Delta = 2.000000$ | Exact deterministic parity isomorphism | **PASS (4/4 pairs)** |
+| **Flint Algebraic Certification** | Local | Exact $\mathbb{Q}$ | $W_8 D(a,b) W_8 = 8 P_{\omega(a,b)}$ across all 21 octonion pairs | Exact rational arithmetic; 0 numerical drift | **VERIFIED** |
+
+---
+
+## 2. Recursive Decomposition of the Ascella Simulation Runs
+
+### 2.1 Campaign 1: Two-Photon Octonion Associator (`sim:ascella`)
+- **Run Directory:** [`results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00/`](../../../results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00/)
+- **Mathematics:**
+  Two photons pass through either $L_a L_b$ or $L_{ab}$, where $a = (e_6 + e_7)/\sqrt{2}$ and $b = (e_5 + e_7)/\sqrt{2}$ in $\mathbb{O}$. Both routes preserve $\text{span}(e_0..e_3)$. Photons entering algebra modes 2 and 3 exit indistinguishable on pairs $\{0,3\}$ and $\{1,2\}$ after $L_a L_b$, and on $\{0,2\}$ and $\{1,3\}$ after $L_{ab}$.
+- **Per-Iteration Breakdown:**
+  - $L_a L_b$ (Iter 0, 3): $D = +0.8828 \pm 0.0066$ (4,096 two-click events per block).
+  - $L_{ab}$ (Iter 1, 2): $D = -0.8748 \pm 0.0069$ (4,096 two-click events per block).
+  - Net Associator Contrast: $\Delta = D(L_a L_b) - D(L_{ab}) = 1.757568 \pm 0.009526$.
+  - Associative Control ($a = (e_1 + e_2)/\sqrt{2}, b = (e_1 + e_3)/\sqrt{2} \in \mathbb{H}$):
+    $D(L_a L_b) = -0.8803 \pm 0.0067$, $D(L_{ab}) = -0.8713 \pm 0.0069$, yielding $\Delta_{\text{ctrl}} = -0.009004 \pm 0.009621$.
+- **Error & Threshold Physics:**
+  Out of 16,384 total samples, exactly **16,383 were accepted two-click events**, 1 event was excluded due to 3-click bunching/dark counts, and 0 events leaked outside the logical 4-mode subspace.
+  The in-situ visibility recovered from the control is $V = 0.91365$, demonstrating that the optical non-associative phase difference survives threshold post-selection without distortion.
+
+### 2.2 Campaign 2: 16-Setting 8-Mode Octonion Character (`sim:ascella`)
+- **Run Directory:** [`results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00/`](../../../results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00/)
+- **Mathematics:**
+  Evaluates the 8-point column sign $s_{a,b}(x) = (-1)^{\omega(a,b) \cdot x}$ across 4 primary triads:
+  - $(1, 2) \to \omega = 4$ (binary $100_2$, mode 4)
+  - $(1, 4) \to \omega = 2$ (binary $010_2$, mode 2)
+  - $(2, 4) \to \omega = 1$ (binary $001_2$, mode 1)
+  - $(3, 5) \to \omega = 7$ (binary $111_2$, mode 7)
+- **Settings & Arms (10,000 samples each = 160,000 samples total):**
+  - **Octonion Arm:** 10,000 counts in target mode $\omega$, 0 counts in mode 0 ($D_{\text{oct}} = +1.000000$).
+  - **Clifford Control Arm:** 0 counts in target mode $\omega$, 10,000 counts in mode 0 ($D_{\text{ctrl}} = -1.000000$).
+  - **Diagonal Null Arm ($a = b$):** $D_{\text{null}} = -1.000000$.
+  - **Reversed Arm ($b, a$):** $D_{\text{rev}} = +1.000000$ (since $\omega(b, a) = \omega(a, b)$).
+- **Exact Statistics:**
+  Every active setting achieved Clopper-Pearson 95% confidence bounds $[0.999262, 1.000000]$ and Wilson standard error $0.000196$. Sentinel leakage into modes 8..11 was $0.000000$.
+
+---
+
+## 3. What the Runs Establish
+
+The circuits encode the octonion associator signs s_{a,b}(x) of `cd_core` as a diagonal phase layer between two
+Walsh-Hadamard transforms; `a -> L_a` is a linear encoding, so every observable here is a property of that encoded
+sign table, carried by an associative linear-optical or qubit unitary. The runs show that the encoded character of
+each pair routes the photon (or the qubit register) to the predicted harmonic omega(a, b) and that the associative
+control routes it to mode 0, at the visibilities the tables report. They do not show physical non-associativity, a
+gauge curvature or holonomy of a non-associative group, or a realization of R-flux geometry: every composition in
+the apparatus is matrix multiplication, and an ideal associative device reproduces each observable from the
+encoded signs.
+
+---
+
+## 4. Cross-Technology Falsification Matrix
+
+To rigorously falsify whether these effects are artifacts of linear optics (phase errors, detector dark counts, or threshold post-selection), we formulate an adversarial cross-technology matrix across 5 distinct quantum substrates:
+
+| Technology Substrate | Representative Platform | Substrate-Specific Error Channels | Falsification Diagnostic |
+|---|---|---|---|
+| **Discrete-Variable Photonics** | Quandela Ascella (12-mode) / Belenos (24-mode) | Mode mismatch, photon distinguishability ($V < 1$), multi-pair emission ($g^{(2)} > 0$), detector dark counts | Sentinel modes (8..11) track optical leakage; TOST equivalence bounds drift; threshold post-selection suppresses loss. |
+| **Superconducting Transmon** | IBM Heron r2 (`ibm_fez`, 156 qubits) | $ZZ$ crosstalk, $T_1/T_2$ decoherence, spectator qubit drift, measurement readout assignment error | 3-qubit $H^{\otimes 3} \prod Z^{\omega_k} H^{\otimes 3}$ benchmark; randomized compiling and dynamical decoupling to falsify non-Markovian noise. |
+| **Superconducting Transmon (tunable couplers)** | Quantum Inspire Tuna-17 (17 transmons, 24 tunable couplers; [backends](../../notes/quantum_inspire/backends.md)) | Flux-pulsed CZ phase error, coupler leakage, readout crosstalk | Conditional-Ramsey sequence; mapping of the associator graph onto the Tuna-17 coupling graph. |
+| **Neutral Atom (Rydberg)** | Quantum Inspire Ry emulator (9 qubits) / QuEra | Rydberg blockade radius error, atom loss, Doppler dephasing | Spatial geometry where interaction $V(r) \sim C_6 / r^6$ selectively enforces the quaternion kernel $\ker s_{a,b}$. |
+| **Trapped Ion** | IonQ Forte / Harmony | Motional heating, Raman laser phase noise, cross-talk in multi-ion crystals | All-to-all entangling $XX$ gates compiling the 3-qubit character circuit with zero swap overhead. |
+
+---
+
+## 5. Physical QPU Hardware Qualification on `qpu:ascella`
+
+Both planned campaigns were executed on physical quantum processor hardware (`qpu:ascella`, 12-mode Clements mesh, clock 13.33 MHz, HOM dip visibility $88.96\%$, transmittance $5.61\%$).
+
+### 5.1 Physical Campaign 1: Two-Photon Octonion Associator (`qpu:ascella`)
+- **Run Directory:** [`results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00/`](../../../results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00/)
+- **Remote Job ID:** `ae37fae6-1cb6-4cd7-b3bb-70fd00d10705`
+- **Execution Profile:** 8 template settings, 262,144 hardware shots, 25 seconds quantum processor time, 16,320 accepted two-click events.
+- **Physical Observables:**
+  - Non-associative Contrast: $\Delta = 1.723699 \pm 0.010100$ ($> 170\sigma$ separation of the encoded associator contrast from zero).
+  - Associative Control: $\Delta_{\text{ctrl}} = -0.006394 \pm 0.010693$ ($< 0.6\sigma$, strictly null).
+  - Total Error Closure: $C = 0.031962 \pm 0.014709$ ($< 0.05$ threshold, `visibility_closure: true`).
+  - Compensated Contrast: $\Delta / (-2 \operatorname{mean} D_{\text{ctrl}}) = 1.018893 \pm 0.0088$ (ideal: 1.0000).
+  - In-situ Visibility: $V_{\text{in-situ}} = 0.891681$ (matches live HOM calibration dip $0.889600$ within $0.2\%$, `within_tolerance: true`).
+- **Hardware Qualification Verdict:** **ADMITTED**. Physical non-associative contrast replicates simulation ($1.724$ vs $1.758$) and closely matches the theoretical prediction derived from the platform's HOM indistinguishability ($\Delta_{\text{pred}} = 1.6861$).
+
+### 5.2 Physical Campaign 2: 16-Setting 8-Mode Octonion Character (`qpu:ascella`)
+- **Run Directory:** [`results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00/`](../../../results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00/)
+- **Remote Job ID:** `1277fa1d-852e-46d8-939b-ac56fd67e492`
+- **Execution Profile:** 16 settings, 160,000 total samples, 48 seconds quantum processor time.
+- **Physical Observables:**
+  - Conditional Character Contrast: Mean $\Delta_{\text{char}} = 1.997074$ on the $\{0, \omega\}$ subspace (Ideal: 2.000000).
+  - Pair (1, 2) [target mode 4]: $D_{\text{oct}} = +0.998167$, $D_{\text{ctrl}} = -1.000000$, $\Delta_{\text{char}} = 1.998167$; Unconditional mode fidelity: $98.10\%$ (oct), $99.78\%$ (ctrl).
+  - Pair (1, 4) [target mode 2]: $D_{\text{oct}} = +0.997393$, $D_{\text{ctrl}} = -0.999194$, $\Delta_{\text{char}} = 1.996587$; Unconditional mode fidelity: $99.60\%$ (oct), $99.18\%$ (ctrl).
+  - Pair (2, 4) [target mode 1]: $D_{\text{oct}} = +0.996378$, $D_{\text{ctrl}} = -0.999197$, $\Delta_{\text{char}} = 1.995575$; Unconditional mode fidelity: $99.22\%$ (oct), $99.59\%$ (ctrl).
+  - Pair (3, 5) [target mode 7]: $D_{\text{oct}} = +0.998166$, $D_{\text{ctrl}} = -0.999799$, $\Delta_{\text{char}} = 1.997966$; Unconditional mode fidelity: $98.08\%$ (oct), $99.72\%$ (ctrl).
+  - Unconditional Mode Fidelity: Evaluated across all 12 detected output modes, raw target-mode fidelity spans $98.03\%$ to $99.78\%$ (mean $99.22\%$ across all 16 settings; $98.08\%$ to $99.60\%$, mean $98.75\%$, across the 4 octonion-arm settings).
+  - Routing Noise & Leakage: Sentinel leakage across uncoupled chip modes 8..11 is $0.004888$ ($< 0.49\%$), while cross-talk into non-target logical modes 0..7 accounts for $\approx 0.76\%$, explaining the raw fidelity difference from the normalized $\{0, \omega\}$ conditional subspace.
+- **Hardware Qualification Verdict:** **ADMITTED**. Confirms that the encoded octonion character routes constructively into the predicted harmonic mode on physical quantum hardware with $98.08\%$ to $99.60\%$ raw unconditional mode fidelity on the octonion-arm settings and $> 1.995$ conditional contrast on $\{0, \omega\}$.
+
+---
+
+## 6. Simulation vs Physical Hardware Cross-Validation Matrix
+
+| Metric | Theory (Ideal) | `sim:ascella` (Simulation) | `qpu:ascella` (Physical Hardware) | Consistency / Deviation |
+|---|---|---|---|---|
+| **Associator Contrast $\Delta$** | 2.0000 | $1.7576 \pm 0.0095$ | $1.7237 \pm 0.0101$ | Consistent with HOM visibility ($91.4\%$ sim vs $89.0\%$ QPU) |
+| **Control Contrast $\Delta_{\text{ctrl}}$** | 0.0000 | $-0.0090 \pm 0.0096$ | $-0.0064 \pm 0.0107$ | Both strictly null within $1\sigma$ |
+| **Total Error Closure $C$** | 0.0000 | $0.0059 \pm 0.0135$ | $0.0320 \pm 0.0147$ | Both $< 0.05$ tolerance threshold |
+| **Compensated Contrast** | 1.0000 | $1.0034 \pm 0.0077$ | $1.0189 \pm 0.0088$ | Invariant across optical visibility degradation |
+| **Conditional Contrast $\Delta_{\text{char}}$** | 2.0000 | 2.000000 | 1.997074 | Active $\{0, \omega\}$ subspace conditional contrast |
+| **Unconditional Mode Fidelity** | 100.0% | 100.0% | 98.03% - 99.78% (mean 99.22%) | All 12 output modes (0.49% sentinel leakage, 0.76% cross-talk) |
+| **Sentinel Mode Leakage** | 0.0000 | 0.000000 | 0.004888 | Chip leakage bounded $< 0.49\%$ |

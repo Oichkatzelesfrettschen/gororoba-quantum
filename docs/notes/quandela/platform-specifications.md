@@ -63,7 +63,7 @@ Decoded from the `specs.architecture` blob of the snapshot with `decode()` in [`
 | `sim:sampling` | Boson sampler, Clifford and Clifford 2017 backend | - | 2 to 12 | `probs`, `samples`, `sample_count` | available | yes |
 | `sim:slos` | SLOS backend | - | 2 to 12 | `probs`, `samples`, `sample_count` | available | no |
 
-A dash means the record gives no mode count. Every simulator runs 300 s per job at 0 credits per shot. The accepted state kinds are FS, NFS and SVD for `sim:gpu:small` and `sim:sampling`, and FS, NFS, SVD, AFS and SV for `sim:slos`.
+A dash means the record gives no mode count. Every simulator runs 300 s per job. While the catalogue lists 0 base credits and 0 credits per shot for simulators, `/api/tokens/usage/report` reveals that retained simulator runs on `sim:ascella` incremented token usage by 1.0 credit per job (e.g. 3.0 credits across 3 jobs), while the same report gives `qpu:ascella` 36.6056 credits across 38 jobs (0.963 per job), which no per-job base of 1.0 plus the 1e-06 per-shot rate fits. The simulator billing tariff remains unresolved; executions should budget at least 1.0 credit per job. The accepted state kinds are FS, NFS and SVD for `sim:gpu:small` and `sim:sampling`, and FS, NFS, SVD, AFS and SV for `sim:slos`. Both `available` and `running` are acceptable operational platform statuses.
 
 ## Contradictions in the record
 

@@ -74,5 +74,5 @@ before invoking the source-bound analyzer.
 The current approval scope is descriptive. Conditional uncertainty retains its
 separate sampling-contract gate, and physical predecessor attribution remains
 unavailable. The causal successor retains its separate chronology, randomized
-assignment and carryover obligations. The [operator procedure](../../design/ascella-predecessor-intervention.md#procedure-after-exact-owner-approval)
+assignment and carryover obligations. The [operator procedure](../../design/ascella-predecessor-intervention.md#successor-admission-procedure)
 contains the bound command and full one-attempt limits.

@@ -263,6 +263,20 @@ took. Until the account's offer page shows the notebook price as free, a
 notebook session is spent compute: it waits for the same written case and
 approval as a job, and it is stopped as soon as its work ends.
 
+### Simulator billing reality and observed usage
+
+The public catalogue (`catalogue.json`) and platform specifications list 0 base credits
+and 0 credits per shot for cloud simulators such as `sim:ascella`. In practice, execution
+is not completely unmetered. The token usage report (`/api/tokens/usage/report`) records
+that retained `sim:ascella` runs incremented account `free_credits` by exactly 1.0 credit
+per completed job (e.g. 2.0 to 3.0 credits across job 00 despite 160,002 requested shots),
+rather than drawing fractional credits at the physical shot rate (1e-06 credits/shot) or
+billing zero credits. The same report gives `qpu:ascella` 36.6056 free credits across 38
+jobs (0.963 per job), so no per-job base of 1.0 plus a shot tariff fits the physical
+platform's total either. The precise contractual simulator tariff remains
+unresolved pending provider clarification; cases targeting `sim:ascella` must budget at
+least 1.0 credit per job to avoid under-budgeting.
+
 ## Platforms
 
 `qd_platform.py facts docs/evidence/quandela` renders this table from the
@@ -316,6 +330,14 @@ documentation gives the n-photon coincidence rate as
 `Clock [MHz] x (Transmittance x Brightness)^n`, which sets how long a
 sampling job on n photons runs against the 300 s limit; a case computes it
 from a fresh `qd_platform` read.
+
+Platform status on QPUs and simulators is observed as `available`, `running` or
+`calibration`. A status of `running` indicates the hardware or simulator
+instance is online and actively executing workloads; it is an acceptable and
+admissible platform status alongside `available`. When a platform is `running`,
+newly submitted jobs enter the provider queue rather than being rejected. The
+runner accepts `running` via `--admit-status running` (or `--admit-status
+available running`).
 
 ## Terms and data
 
