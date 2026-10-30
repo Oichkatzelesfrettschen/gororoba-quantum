@@ -631,7 +631,9 @@
     "gororoba_quantum/demarrais_structures.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "gororoba_quantum/demarrais_structures.py"
+   ]
   },
   {
    "distribution": "cuquantum-cu11",
@@ -736,12 +738,12 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
-    "scripts/qd_classical_benchmark.py",
-    "scripts/qd_demarrais_tower.py"
+    "scripts/qd_classical_benchmark.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
-    "scripts/qd_classical_benchmark.py"
+    "scripts/qd_classical_benchmark.py",
+    "scripts/qd_demarrais_tower.py"
    ]
   },
   {
@@ -2462,7 +2464,9 @@
     "gororoba_quantum/demarrais_structures.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "gororoba_quantum/demarrais_structures.py"
+   ]
   },
   {
    "distribution": "numga",
@@ -2786,6 +2790,7 @@
     "gororoba_quantum/correction_statistics.py",
     "gororoba_quantum/correction_statistics_contracts.py",
     "gororoba_quantum/crossed_tile_template.py",
+    "gororoba_quantum/demarrais_structures.py",
     "gororoba_quantum/designs.py",
     "gororoba_quantum/diagnostic_controls.py",
     "gororoba_quantum/diagnostic_experiments.py",
@@ -2979,6 +2984,7 @@
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_classical_benchmark.py",
+    "scripts/qd_demarrais_tower.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
@@ -3813,6 +3819,7 @@
     "scripts/bdsc_packages.py",
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
+    "scripts/qd_demarrais_tower.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_platform.py",
     "scripts/qd_teleportation_rehearsal.py"
@@ -4475,6 +4482,7 @@
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "gororoba_quantum/demarrais_structures.py",
     "scripts/a5_stiefel_pfaffian_germs.py",
     "scripts/a5_zero_divisor_strata.py",
     "scripts/ascella_associator_character.py",
@@ -4959,6 +4967,7 @@
     "scripts/primorial_probe_case.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_cancellation_cases.py",
+    "scripts/qi_demarrais_tower.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_zero_divisor_cases.py",
@@ -6036,6 +6045,7 @@
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
+    "scripts/qi_demarrais_tower.py",
     "scripts/qi_mcp_server.py",
     "scripts/qi_tuna_qx_local_replay.py",
     "scripts/qx_local_series.py"
@@ -13627,11 +13637,9 @@
    "__future__",
    "argparse",
    "collections",
-   "cvxpy",
    "demarrais_structures",
    "hypercomplex_cases",
    "json",
-   "math",
    "numpy",
    "parallel",
    "pathlib",

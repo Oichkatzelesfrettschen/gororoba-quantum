@@ -58,9 +58,13 @@ deterministic Clifford circuit must.
 
 [`scripts/qd_demarrais_tower.py`](../../../scripts/qd_demarrais_tower.py) builds 12- and 24-mode cases
 (`results/quandela/cases/demarrais_tower_8192d/`, `job-dm1` to `job-dm4`) from the 12-mode equitable-partition
-quotients of the kite-chain middens. One provider job ran: `sim:belenos` job-dm4 (`0866fc0c`), which failed in the
-provider's compiler at 33 % progress with "Circuit optimizer: No trial converged" and returned no counts. No QPU job
-of these cases exists. The tower's `simulate_local_twin` is a local Perceval model with calibration figures, so its
+quotients of the kite-chain middens. One provider job ran: `sim:belenos` job-dm4 (`0866fc0c`, retained under
+`results/quandela/runs/2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4`). Its first nine settings, the
+16D to 4096D controls, returned 10000 samples each at the ideal dispersive contrast D = 1.0; the provider's compiler
+then failed at the first 8192D setting with "Circuit optimizer: No trial converged", so no 8192D or null setting
+returned counts and the analysis withholds its verdict. No QPU job of these cases exists. The analysis reports the
+dispersive contrast and decides only against a returned null arm; it certifies no coherence, because a single photon
+entering one mode reaches the dispersive modes through the quotient unitary from an incoherent input as well. The tower's `simulate_local_twin` is a local Perceval model with calibration figures, so its
 counts describe the model, not `qpu:ascella` or `qpu:belenos`, and it writes to the ignored `docs/local/`.
 
 ## Classical structure computations

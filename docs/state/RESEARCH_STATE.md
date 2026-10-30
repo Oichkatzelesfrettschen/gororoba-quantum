@@ -32,7 +32,7 @@ The IBM service inventory observed at 2026-10-29T23:07:45.159780+00:00 holds 32 
 
 The Quantum Inspire ledger retrieved at 2026-10-30T06:04:43+00:00 lists 450 jobs with 8511376 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 108 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 109 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 49 IQM run directories are retained. That is an observation, not an authorization.
 
@@ -417,6 +417,7 @@ circuit and charges the account ledger's change.
 | [2026-10-30T024133Z-demarrais_qx_1024d-batch-02](../../results/quantum_inspire/runs/2026-10-30T024133Z-demarrais_qx_1024d-batch-02) | Quantum Inspire | DeMarrais CZ-graph Pauli propagation | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change | demarrais-qx-cz-graph-pauli-propagation |
 | [2026-10-30T024225Z-demarrais_tuna17_8192d-batch-01](../../results/quantum_inspire/runs/2026-10-30T024225Z-demarrais_tuna17_8192d-batch-01) | Quantum Inspire | DeMarrais CZ-graph Pauli propagation | tuna_17 | 3 | 3 | completed | 0 ledger change | demarrais-tuna17-cz-graph-pauli-propagation |
 | [2026-10-30T040508Z-demarrais_tuna17_8192d-batch-02](../../results/quantum_inspire/runs/2026-10-30T040508Z-demarrais_tuna17_8192d-batch-02) | Quantum Inspire | DeMarrais CZ-graph Pauli propagation | tuna_17 | 3 | 3 | completed | 0 ledger change | demarrais-tuna17-cz-graph-pauli-propagation |
+| [2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4](../../results/quandela/runs/2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4) | Quandela Cloud | DeMarrais tower photonic quotient | sim:belenos | 1 | 24 | error | 0.0 credits | qd-sim-belenos-demarrais-tower-dm4-compiler-failure |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -794,6 +795,7 @@ circuit and charges the account ledger's change.
 - **qi-demarrais-qx-batch-02** (2026-10-30T024133Z-demarrais_qx_1024d-batch-02, batch job 903630, 6144 of 6144 shots done): On QXsinglenodesimulator (10 qubits), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled explore_1024d_catamaran, explore_1024d_dmz, null_1024d_sleeper?
 - **qi-demarrais-tuna17-batch-01** (2026-10-30T024225Z-demarrais_tuna17_8192d-batch-01, batch job 903631, 226608 of 226608 shots done): On Tuna-17 (17 transmons, its 18 native couplers), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled ctrl_low_32d, ctrl_mid_4096d, explore_8192d_pure?
 - **qi-demarrais-tuna17-batch-02** (2026-10-30T040508Z-demarrais_tuna17_8192d-batch-02, batch job 903682, 226608 of 226608 shots done): On Tuna-17 (17 transmons, its 18 native couplers), how often does each qubit read the CZ-neighbour parity of the X'd hubs for the circuits labelled explore_8192d_catamaran, explore_8192d_dmz, null_8192d_sleeper?
+- **qd-sim-belenos-demarrais-tower-job-dm4** (2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4, job 0866fc0c-831f-4ff3-ac4e-e6765dbe80a4, 90000 samples, 90004 shots): Does sim:belenos compile and sample the 24 job-dm4 settings (nine 16D to 4096D midden-quotient controls, then 8192D settings and null arms), and do the returned settings read their ideal dispersive contrast D?
 
 ## Established claims
 
@@ -2266,6 +2268,10 @@ circuit and charges the account ledger's change.
   Evidence: [analysis.json](../../results/quantum_inspire/runs/2026-10-30T014852Z-demarrais_qx_1024d-batch-00/analysis.json), [analysis.json](../../results/quantum_inspire/runs/2026-10-30T023915Z-demarrais_qx_1024d-batch-01/analysis.json), [analysis.json](../../results/quantum_inspire/runs/2026-10-30T024133Z-demarrais_qx_1024d-batch-02/analysis.json), [pauli-propagation.json](../evidence/demarrais-8192d-cross-platform/pauli-propagation.json), [README.md](../evidence/demarrais-8192d-cross-platform/README.md).
   Gates: replayed by core-demarrais-pauli-propagation-replay.
   Acquisitions: qi-demarrais-qx-batch-00, qi-demarrais-qx-batch-01, qi-demarrais-qx-batch-02.
+- **qd-sim-belenos-demarrais-tower-dm4-compiler-failure** (exploratory reanalysis, hardware). On sim:belenos job 0866fc0c (job-dm4, 24 settings at 10000 samples each) returned its first nine settings, the 16D to 4096D midden-quotient controls, each at the ideal dispersive contrast D = 1.0 with no click above the lower 12 modes, and then failed at the first 8192D setting with 'RuntimeError: Circuit optimizer: No trial converged' (90000 samples, 90004 shots); the remaining fourteen settings, every 8192D and null arm among them, returned nothing.
+  Boundary: A simulator run qualifies the case and the provider's compiler, not a device. With no null arm returned the analysis withholds a verdict. The returned controls send one photon through a 12-mode quotient unitary whose ideal outcome is a basis-mode routing, so their agreement tests compilation, not a zero-divisor property.
+  Evidence: [results.json](../../results/quandela/runs/2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4/results.json), [analysis.json](../../results/quandela/runs/2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4/analysis.json), [README.md](../evidence/demarrais-8192d-cross-platform/README.md).
+  Acquisitions: qd-sim-belenos-demarrais-tower-job-dm4.
 
 ## Open claims
 

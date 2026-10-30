@@ -50,9 +50,10 @@ def test_qd_demarrais_tower_synthetic_analysis(tmp_path: Path) -> None:
 
     report = qd_demarrais_tower.analyze_run(run_dir)
     _check(report["job_id"] == "job-dm3", "unexpected job_id")
-    _check(abs(report["summary"]["mean_active_d_midden"] - 1.0) < 1e-9, "expected active D_midden == +1.0")
-    _check(abs(report["summary"]["mean_null_d_midden"] + 1.0) < 1e-9, "expected null D_midden == -1.0")
-    _check(abs(report["summary"]["delta_midden"] - 2.0) < 1e-9, "expected Delta_midden == +2.0")
+    _check(abs(report["mean_active_d"] - 1.0) < 1e-9, "expected active D_midden == +1.0")
+    _check(abs(report["mean_null_d"] + 1.0) < 1e-9, "expected null D_midden == -1.0")
+    _check(abs(report["measured_contrast_delta"] - 2.0) < 1e-9, "expected Delta_midden == +2.0")
+    _check(report["verdict"] == "CONFORMANT", f"verdict {report['verdict']}")
 
     for plat in ("sim:ascella", "qpu:ascella", "sim:belenos", "qpu:belenos"):
         twin = qd_demarrais_tower.simulate_local_twin("job-dm3", plat, out_dir=tmp_path / f"twin-{plat}")
@@ -116,3 +117,23 @@ def test_qi_demarrais_tower_check_and_synthetic_analysis(tmp_path: Path) -> None
         b_analysis = qi_demarrais_tower.analyze_batch_run(b_run)
         _check(expected_key in b_analysis, f"missing {expected_key} in {batch_name} analysis")
         _check(abs(b_analysis[expected_key] - 1.0) < 1e-9, f"{batch_name} {expected_key} != 1.0")
+
+
+def test_qd_demarrais_tower_withholds_a_verdict_without_null_or_counts(tmp_path: Path) -> None:
+    cases = json.loads(
+        (qd_demarrais_tower.CASE_ROOT / "ascella" / "job-dm1" / "cases.json").read_text(encoding="utf-8")
+    )
+    run_dir = tmp_path / "run-dm1"
+    run_dir.mkdir()
+    (run_dir / "cases.json").write_text(json.dumps(cases) + "\n", encoding="utf-8")
+    wrong = [{"counts": {"|1,0,0,0,0,0,0,0,0,0,0,0>": 1000}} for _ in cases["settings"]]
+    (run_dir / "results.json").write_text(json.dumps({"iterations": wrong}) + "\n", encoding="utf-8")
+    report = qd_demarrais_tower.analyze_run(run_dir)
+    _check(report["verdict"] == "UNADJUDICATED: no null arm", f"null-free verdict {report['verdict']}")
+
+    partial: list[dict[str, object]] = [{"missing": True} for _ in cases["settings"]]
+    partial[0] = {"iteration": 0, "error": "Circuit optimizer: No trial converged", "result_fields": {}}
+    (run_dir / "results.json").write_text(json.dumps({"iterations": partial}) + "\n", encoding="utf-8")
+    report = qd_demarrais_tower.analyze_run(run_dir)
+    _check(report["verdict"] == "UNADJUDICATED: settings without counts", f"partial verdict {report['verdict']}")
+    _check(len(report["unavailable_settings"]) == len(cases["settings"]), "every unavailable setting is reported")

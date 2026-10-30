@@ -1,0 +1,198 @@
+{
+ "schema": "qd-demarrais-tower-analysis-v1",
+ "family": "demarrais_tower_8192d_belenos",
+ "job": "job-dm4",
+ "job_id": "job-dm4",
+ "iterations": 24,
+ "mean_active_d": 1.0,
+ "mean_null_d": null,
+ "measured_contrast_delta": null,
+ "verdict": "UNADJUDICATED: settings without counts",
+ "unavailable_settings": [
+  {
+   "name": "iter09-explore_8192d_midden_s1",
+   "arm": "explore_8192d_midden_root",
+   "reason": "error: RuntimeError: Circuit optimizer: No trial converged."
+  },
+  {
+   "name": "iter10-explore_8192d_midden_s2",
+   "arm": "explore_8192d_midden_root",
+   "reason": "missing"
+  },
+  {
+   "name": "iter11-explore_8192d_midden_s3",
+   "arm": "explore_8192d_midden_root",
+   "reason": "missing"
+  },
+  {
+   "name": "iter12-explore_8192d_midden_s4",
+   "arm": "explore_8192d_midden_root",
+   "reason": "missing"
+  },
+  {
+   "name": "iter13-explore_8192d_midden_s5",
+   "arm": "explore_8192d_midden_root",
+   "reason": "missing"
+  },
+  {
+   "name": "iter14-explore_8192d_midden_s6",
+   "arm": "explore_8192d_midden_root",
+   "reason": "missing"
+  },
+  {
+   "name": "iter15-explore_8192d_midden_s7",
+   "arm": "explore_8192d_midden_root",
+   "reason": "missing"
+  },
+  {
+   "name": "iter16-explore_8192d_dmz_s2049_24552cells",
+   "arm": "explore_8192d_dmz_shell",
+   "reason": "missing"
+  },
+  {
+   "name": "iter17-explore_8192d_cowbird_octonion_egg",
+   "arm": "explore_8192d_cowbird_egg",
+   "reason": "missing"
+  },
+  {
+   "name": "iter18-explore_8192d_catamaran_brocade_twist",
+   "arm": "explore_8192d_catamaran",
+   "reason": "missing"
+  },
+  {
+   "name": "iter19-explore_8192d_zaslavsky_lanyard_gauge",
+   "arm": "explore_8192d_lanyard",
+   "reason": "missing"
+  },
+  {
+   "name": "iter20-explore_8192d_zigzag_trefoil_chiral",
+   "arm": "explore_8192d_zigzag_trefoil",
+   "reason": "missing"
+  },
+  {
+   "name": "iter21-null_8192d_sleeper_cell",
+   "arm": "sleeper_null_8192d",
+   "reason": "missing"
+  },
+  {
+   "name": "iter22-null_8192d_hbk_roundabout",
+   "arm": "roundabout_null_8192d",
+   "reason": "missing"
+  },
+  {
+   "name": "iter23-null_8192d_associative_clifford",
+   "arm": "clifford_null_8192d",
+   "reason": "missing"
+  }
+ ],
+ "settings": [
+  {
+   "name": "iter00-ctrl_n04_16d_sedenion",
+   "subfamily": "dekatrisvoudon_8192d_decomposed",
+   "arm": "lower_dim_control_active",
+   "c_self": 0,
+   "c_dispersive": 10000,
+   "c_upper_8192d_shell": 0,
+   "c_leakage": 0,
+   "d_observable": 1.0,
+   "ideal_d": 1.0,
+   "abs_error": 0.0
+  },
+  {
+   "name": "iter01-ctrl_n05_32d_pathion",
+   "subfamily": "dekatrisvoudon_8192d_decomposed",
+   "arm": "lower_dim_control_active",
+   "c_self": 0,
+   "c_dispersive": 10000,
+   "c_upper_8192d_shell": 0,
+   "c_leakage": 0,
+   "d_observable": 1.0,
+   "ideal_d": 1.0,
+   "abs_error": 0.0
+  },
+  {
+   "name": "iter02-ctrl_n06_64d_chingon",
+   "subfamily": "dekatrisvoudon_8192d_decomposed",
+   "arm": "lower_dim_control_active",
+   "c_self": 0,
+   "c_dispersive": 10000,
+   "c_upper_8192d_shell": 0,
+   "c_leakage": 0,
+   "d_observable": 1.0,
+   "ideal_d": 1.0,
+   "abs_error": 0.0
+  },
+  {
+   "name": "iter03-ctrl_n07_128d_routon",
+   "subfamily": "dekatrisvoudon_8192d_decomposed",
+   "arm": "lower_dim_control_active",
+   "c_self": 0,
+   "c_dispersive": 10000,
+   "c_upper_8192d_shell": 0,
+   "c_leakage": 0,
+   "d_observable": 1.0,
+   "ideal_d": 1.0,
+   "abs_error": 0.0
+  },
+  {
+   "name": "iter04-ctrl_n08_256d_voudon",
+   "subfamily": "dekatrisvoudon_8192d_decomposed",
+   "arm": "lower_dim_control_active",
+   "c_self": 0,
+   "c_dispersive": 10000,
+   "c_upper_8192d_shell": 0,
+   "c_leakage": 0,
+   "d_observable": 1.0,
+   "ideal_d": 1.0,
+   "abs_error": 0.0
+  },
+  {
+   "name": "iter05-ctrl_n09_512d_eriston",
+   "subfamily": "dekatrisvoudon_8192d_decomposed",
+   "arm": "lower_dim_control_active",
+   "c_self": 0,
+   "c_dispersive": 10000,
+   "c_upper_8192d_shell": 0,
+   "c_leakage": 0,
+   "d_observable": 1.0,
+   "ideal_d": 1.0,
+   "abs_error": 0.0
+  },
+  {
+   "name": "iter06-ctrl_n10_1024d_dekavoudon",
+   "subfamily": "dekatrisvoudon_8192d_decomposed",
+   "arm": "lower_dim_control_active",
+   "c_self": 0,
+   "c_dispersive": 9999,
+   "c_upper_8192d_shell": 0,
+   "c_leakage": 0,
+   "d_observable": 1.0,
+   "ideal_d": 1.0,
+   "abs_error": 0.0
+  },
+  {
+   "name": "iter07-ctrl_n11_2048d_endekavoudon",
+   "subfamily": "dekatrisvoudon_8192d_decomposed",
+   "arm": "lower_dim_control_active",
+   "c_self": 0,
+   "c_dispersive": 10000,
+   "c_upper_8192d_shell": 0,
+   "c_leakage": 0,
+   "d_observable": 1.0,
+   "ideal_d": 1.0,
+   "abs_error": 0.0
+  },
+  {
+   "name": "iter08-ctrl_n12_4096d_dodekavoudon",
+   "subfamily": "dekatrisvoudon_8192d_decomposed",
+   "arm": "lower_dim_control_active",
+   "c_self": 0,
+   "c_dispersive": 10000,
+   "c_upper_8192d_shell": 0,
+   "c_leakage": 0,
+   "d_observable": 1.0,
+   "ideal_d": 1.0,
+   "abs_error": 0.0
+  }
+ ]
+}

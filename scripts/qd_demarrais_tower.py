@@ -33,7 +33,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
 import sys
 from collections.abc import Sequence
 from pathlib import Path
@@ -498,39 +497,6 @@ def build_all_cases(
     return 0
 
 
-def certify_frustrated_coherence_sdp(p_dispersive: float, p_self: float) -> dict[str, Any]:
-    """Use CVXPY + Clarabel SDP to bound minimum initial-basis coherence required by P_dispersive.
-
-    In the 2D reflection plane spanned by |0> (self-assessor) and |psi_disp> (the normalized
-    sum of the 4 octahedral edge neighbors), U_6 acts as H_2 = [[0, 1], [1, 0]] when the pre-reflection
-    superposition has coherence rho_01. Given diagonal probabilities before reflection (1/2, 1/2) in the
-    balanced interferometer, achieving post-reflection dispersive probability p_dispersive requires a
-    PSD density matrix rho >= 0, Tr(rho) == 1 with Tr(Pi_disp U_6 rho U_6^T) == p_dispersive.
-    """
-    import cvxpy as cp
-
-    target_p = min(max(float(p_dispersive), 0.0), 1.0)
-    rho = cp.Variable((2, 2), symmetric=True)
-    h_rot = np.array([[1.0, 1.0], [1.0, -1.0]], dtype=float) / math.sqrt(2.0)
-    pi_disp = h_rot @ np.array([[1.0, 0.0], [0.0, 0.0]], dtype=float) @ h_rot.T
-    constraints = [
-        rho >> 0,
-        cp.trace(rho) == 1.0,
-        rho[0, 0] == 0.5,
-        rho[1, 1] == 0.5,
-        cp.trace(pi_disp @ rho) >= target_p - 1e-7,
-    ]
-    prob = cp.Problem(cp.Minimize(cp.abs(rho[0, 1])), constraints)
-    prob.solve(solver=cp.CLARABEL)
-    val = float(prob.value) if prob.value is not None else 0.0
-    return {
-        "solver": "CLARABEL",
-        "status": str(prob.status),
-        "target_p_dispersive": round(target_p, 6),
-        "coherence_lower_bound": round(val, 6),
-    }
-
-
 def check_all_cases(jobs: Sequence[str] = JOB_NAMES) -> int:
     for chip in ("ascella", "belenos"):
         for job_name in jobs:
@@ -562,8 +528,17 @@ def analyze_run(run_dir: Path) -> dict[str, Any]:
     active_d_vals: list[float] = []
     null_d_vals: list[float] = []
 
+    unavailable: list[dict[str, Any]] = []
     for s, entry in zip(settings, entries, strict=True):
-        counts = entry.get("counts", entry)
+        # A partial collection marks iterations the provider never returned as {"missing": true} and a failed one
+        # by its "error"; neither carries counts to compare.
+        if not isinstance(entry, dict) or entry.get("missing") or "error" in entry or "counts" not in entry:
+            reason = "missing" if isinstance(entry, dict) and entry.get("missing") else "error"
+            if isinstance(entry, dict) and "error" in entry:
+                reason = f"error: {entry['error']}"
+            unavailable.append({"name": s["name"], "arm": s["arm"], "reason": reason})
+            continue
+        counts = entry["counts"]
         use_full_chip = bool(s.get("full_chip_modes", False))
         active_limit = int(manifest["output_modes"]) if use_full_chip else WINDOW_MODES
         c_self = 0
@@ -610,28 +585,31 @@ def analyze_run(run_dir: Path) -> dict[str, Any]:
             }
         )
 
-    mean_active = float(np.mean(active_d_vals)) if active_d_vals else 0.0
-    mean_null = float(np.mean(null_d_vals)) if null_d_vals else 0.0
-    contrast = mean_active - mean_null
-    p_disp_mean = (1.0 + mean_active) / 2.0
-    sdp_cert = certify_frustrated_coherence_sdp(p_disp_mean, 1.0 - p_disp_mean)
+    mean_active = float(np.mean(active_d_vals)) if active_d_vals else None
+    mean_null = float(np.mean(null_d_vals)) if null_d_vals else None
+    contrast = mean_active - mean_null if mean_active is not None and mean_null is not None else None
+    # The contrast decides only against a measured null arm and only when every setting returned counts.
+    if unavailable:
+        verdict = "UNADJUDICATED: settings without counts"
+    elif contrast is None:
+        verdict = "UNADJUDICATED: no null arm"
+    else:
+        verdict = "CONFORMANT" if contrast > 1.0 else "FALSIFIED"
+
+    def rounded(value: float | None) -> float | None:
+        return None if value is None else round(value, 6)
+
     summary = {
         "schema": "qd-demarrais-tower-analysis-v1",
         "family": manifest["family"],
         "job": manifest["job"],
         "job_id": manifest["job"],
         "iterations": len(settings),
-        "mean_active_d": round(mean_active, 6),
-        "mean_null_d": round(mean_null, 6),
-        "measured_contrast_delta": round(contrast, 6),
-        "sdp_coherence_certificate": sdp_cert,
-        "summary": {
-            "mean_active_d_midden": round(mean_active, 6),
-            "mean_null_d_midden": round(mean_null, 6),
-            "delta_midden": round(contrast, 6),
-            "sdp_coherence_lower_bound": sdp_cert["coherence_lower_bound"],
-        },
-        "verdict": "CONFORMANT" if (not null_d_vals or contrast > 1.0) else "FALSIFIED",
+        "mean_active_d": rounded(mean_active),
+        "mean_null_d": rounded(mean_null),
+        "measured_contrast_delta": rounded(contrast),
+        "verdict": verdict,
+        "unavailable_settings": unavailable,
         "settings": reports,
     }
     (run_dir / "analysis.json").write_text(json.dumps(summary, indent=1) + "\n", encoding="utf-8")
@@ -670,7 +648,7 @@ def simulate_local_twin(
     - For `sim:ascella` and `sim:belenos`, models the ideal/simulator permanent distribution across all settings.
     - For `qpu:ascella` (HOM=89.1%, Transmittance=5.75%, g2=1.9%) and `qpu:belenos` (HOM=91.52%,
       Transmittance=8.99%, g2=0.72%), mixes the exact SLOS distribution with the measured SNSPD dark-count
-      and multi-photon g2 leakage floor per detector port, then runs `analyze_run` + Clarabel SDP certification.
+      and multi-photon g2 leakage floor per detector port, then runs `analyze_run`.
     """
     import perceval as pcvl
 
@@ -771,8 +749,6 @@ def run_self_test() -> dict[str, Any]:
     )
     d_slos = (p_disp - p_self) / (p_disp + p_self)
     require(abs(d_slos - 1.0) < 1e-6, f"SLOS 8192D DekatrisVoudon D_midden {d_slos} != 1.0")
-    sdp_cert = certify_frustrated_coherence_sdp(p_disp, p_self)
-    require(abs(sdp_cert["coherence_lower_bound"] - 0.5) < 1e-5, f"Clarabel SDP bound {sdp_cert} != 0.5")
 
     result = {
         "tower_levels": len(tax),
@@ -780,7 +756,6 @@ def run_self_test() -> dict[str, Any]:
         "max_name": tax[13].name,
         "slos_8192d_midden_contrast": round(float(d_slos), 6),
         "svg_schematic_bytes": svg_bytes,
-        "sdp_coherence_certificate": sdp_cert,
     }
     print(json.dumps(result, indent=2))
     return result
