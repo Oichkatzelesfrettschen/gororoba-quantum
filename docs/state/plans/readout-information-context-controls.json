@@ -771,6 +771,66 @@
             }
           ],
           "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
+        },
+        {
+          "result": "Revalidated over live_run.py as the ibm_fez successor branch leaves it: reuse_approved_predictions now copies the approved record's ideal_laws and shared_law_record starts from a record's existing laws, which no readout-actor record carries. The focused actor and sparse-receipt tests pass with the envelope tests (182), and the submit-free dry run of the merged tree (ibm_fez and ibm_kingston) plans.",
+          "observed_at": "2026-10-30T01:51:03+00:00",
+          "revision": "4f7d709e1b9737dffa754daf58956904dd916ff9",
+          "evidence": [
+            {
+              "ref": "docs/design/readout-information-context-and-budget.md",
+              "sha256": "a02a748a1a6d87d21b083222613aa963aed9c0ef4cf8a3e068c6900043bc0f5b"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/record.json",
+              "sha256": "8bf299ead696dca1549c306f53d7f4718c182ea48d641a23fc6edee1036ea799"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/isa.qpy",
+              "sha256": "e298b5b6bf28729f7cecf4982a083f576c6697b3f98efd2383036324977f4ee9"
+            },
+            {
+              "ref": "results/live/2026-10-30T004640.933278Z/UNAPPROVED_CASE.md",
+              "sha256": "7f9ebe191a5c4f4d14499aaa7ba648f8887c663ba9c32c35216c1620bc2de1bb"
+            },
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "1d904d8682b1dca88c8842a44e5d48dac07ab15ce4c86b620afab3cdeb6352cc"
+            },
+            {
+              "ref": "gororoba_quantum/adjudicate.py",
+              "sha256": "227f200876ee27cbc12405dffd99e1c469665f983e7d46b9d6aa98b68ffb864e"
+            },
+            {
+              "ref": "gororoba_quantum/readout_actor_family.py",
+              "sha256": "d6b54b8c90ee243aca71329665cdf4ba75471c74531e8e370f6ad92459546df9"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_readout_actor_family.py",
+              "sha256": "e0f314a00aa76b6a55b84d6e5e92a28c408e9167b89dabed69184dfca1a564bb"
+            },
+            {
+              "ref": "scripts/readout_sparse_projection.py",
+              "sha256": "b4c727979115c363a6c0f9bcb1e7e9c2dfbf83f4fcb9ad9bed6296c6a7268d0e"
+            },
+            {
+              "ref": "scripts/readout_sparse_receipt.py",
+              "sha256": "f078242bc05af683620ce8f85079b801657aed3a7d29ae75547c2e5c6a5c53c8"
+            },
+            {
+              "ref": "scripts/qd_platform.py",
+              "sha256": "6b6d8551a1a67945f2f6d44d0b27b9625f9ef83025b15feadaf3a6af9eadc209"
+            },
+            {
+              "ref": "tests/scripts/test_readout_sparse_receipt.py",
+              "sha256": "4359f6404c0d3b87f58a40420aa6e99c6bfa76822fa864b21db99cd829442fa2"
+            },
+            {
+              "ref": "results/live/2026-10-30T014957.640282Z/record.json",
+              "sha256": "470d029fc557dddfee454b8ca3717bf90a79366545d80262ba8da783db1a6cfb"
+            }
+          ],
+          "scope_sha256": "a7fdaa0bbff354d93234ea7090bce6ef090a499b0651fd2c8abb451c63adc5bc"
         }
       ]
     },
