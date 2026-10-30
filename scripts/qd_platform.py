@@ -1475,6 +1475,8 @@ def acquisition_sources(manifest: dict[str, Any]) -> dict[str, str]:
         "scripts/experiment_analysis.py",
         "gororoba_quantum/parallel.py",
     }
+    if manifest.get("family") == "ascella_target_slot_drift":
+        required |= {"scripts/ascella_target_slot_drift.py", "scripts/ascella_target_slot_drift_analysis.py"}
     if not isinstance(expected, dict) or set(expected) != required:
         raise PlatformError("a reviewed acquisition requires complete constructor/analyzer source identities")
     registered = manifest.get("preregistered", {})
@@ -1503,7 +1505,7 @@ def requires_acquisition_review(manifest: dict[str, Any]) -> bool:
     """Recognize the registered diagnostic by family, design or analyzer identity."""
     sources = manifest.get("analysis_sources")
     return (
-        manifest.get("family") == "ascella_predecessor"
+        manifest.get("family") in {"ascella_predecessor", "ascella_target_slot_drift"}
         or manifest.get("design") == "docs/design/ascella-predecessor-intervention.md"
         or isinstance(sources, dict)
         and "scripts/ascella_predecessor_analysis.py" in sources

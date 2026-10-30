@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 
 import ascella_target_slot_drift as case
+import pytest
+import qd_platform
 
 
 def test_requested_contrast_cancels_quadratic_index_drift() -> None:
@@ -27,3 +29,19 @@ def test_simulator_and_hardware_requests_match_settings() -> None:
         raise AssertionError("simulator and hardware settings differ")
     if len(sim_case["settings"]) != 16 or hardware_case["max_duration"] != 300 or hardware_case["max_credits"] != 2:
         raise AssertionError("hardware request exceeds the stated case")
+
+
+def test_review_rejects_changed_drift_sources() -> None:
+    manifest = json.loads(case.documents("qpu:ascella")["cases.json"])
+    qd_platform.acquisition_sources(manifest)
+    if not qd_platform.requires_acquisition_review({"family": "ascella_target_slot_drift"}):
+        raise AssertionError("the drift family must require the reviewed packet")
+    historical = json.loads(json.dumps(manifest))
+    del historical["analysis_sources"]["scripts/ascella_target_slot_drift.py"]
+    with pytest.raises(qd_platform.PlatformError, match="complete constructor/analyzer"):
+        qd_platform.acquisition_sources(historical)
+    for name in ("scripts/ascella_target_slot_drift.py", "scripts/ascella_target_slot_drift_analysis.py"):
+        changed = json.loads(json.dumps(manifest))
+        changed["analysis_sources"][name] = "0" * 64
+        with pytest.raises(qd_platform.PlatformError, match="reviewed source changed"):
+            qd_platform.acquisition_sources(changed)

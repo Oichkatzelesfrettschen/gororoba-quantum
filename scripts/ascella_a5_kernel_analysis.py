@@ -11,7 +11,37 @@ from typing import Any
 import qd_platform
 from experiment_analysis import decode_photonic_counts
 
+from parallel import ordered_map
+
 FILES = ("cases.json", "circuit.json", "job-body.json", "submission.json", "results.json", "raw/result.json")
+
+
+def observation(task: tuple[dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
+    setting, entry = task
+    iteration = entry["iteration"]
+    if any(iteration[key] != setting[key] for key in ("compilation_seed", "circuit_params")):
+        raise ValueError(f"{setting['name']}: returned iteration differs from its request")
+    ports, invalid = decode_photonic_counts(entry["counts"], 12)
+    events = sum(ports) + sum(invalid.values())
+    shots = entry["result_fields"]["nb_shots_used"]
+    if events != entry["samples"] or events != 10000 or type(shots) is not int or not events <= shots <= 100000:
+        raise ValueError(f"{setting['name']}: returned sample or shot count differs from the case")
+    success, failure = sum(ports[:4]), sum(ports[4:8])
+    denominator = success + failure
+    if denominator == 0:
+        raise ValueError(f"{setting['name']}: no eligible branch events")
+    return {
+        "name": setting["name"],
+        "ideal_success": setting["ideal_success"],
+        "port_counts": ports,
+        "invalid_events": invalid,
+        "returned_events": events,
+        "shots_used": shots,
+        "success": success,
+        "failure": failure,
+        "sentinel": sum(ports[8:]),
+        "conditional_success": success / denominator,
+    }
 
 
 def describe(directory: Path) -> dict[str, Any]:
@@ -25,34 +55,7 @@ def describe(directory: Path) -> dict[str, Any]:
     entries = results["iterations"]
     if len(settings) != 6 or len(entries) != len(settings):
         raise ValueError("the result must contain all six settings")
-    observations = []
-    for setting, entry in zip(settings, entries, strict=True):
-        iteration = entry["iteration"]
-        if any(iteration[key] != setting[key] for key in ("compilation_seed", "circuit_params")):
-            raise ValueError(f"{setting['name']}: returned iteration differs from its request")
-        ports, invalid = decode_photonic_counts(entry["counts"], 12)
-        events = sum(ports) + sum(invalid.values())
-        shots = entry["result_fields"]["nb_shots_used"]
-        if events != entry["samples"] or events != 10000 or type(shots) is not int or not events <= shots <= 100000:
-            raise ValueError(f"{setting['name']}: returned sample or shot count differs from the case")
-        success, failure = sum(ports[:4]), sum(ports[4:8])
-        denominator = success + failure
-        if denominator == 0:
-            raise ValueError(f"{setting['name']}: no eligible branch events")
-        observations.append(
-            {
-                "name": setting["name"],
-                "ideal_success": setting["ideal_success"],
-                "port_counts": ports,
-                "invalid_events": invalid,
-                "returned_events": events,
-                "shots_used": shots,
-                "success": success,
-                "failure": failure,
-                "sentinel": sum(ports[8:]),
-                "conditional_success": success / denominator,
-            }
-        )
+    observations = ordered_map(observation, list(zip(settings, entries, strict=True)), min_items=1)
     return {
         "schema": "ascella-a5-kernel-slice-analysis-v1",
         "job_id": results["job_id"],

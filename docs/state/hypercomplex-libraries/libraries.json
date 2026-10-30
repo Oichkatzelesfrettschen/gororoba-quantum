@@ -10160,6 +10160,7 @@
    "experiment_analysis",
    "hashlib",
    "json",
+   "parallel",
    "pathlib",
    "qd_platform",
    "typing"
@@ -10670,6 +10671,7 @@
    "hashlib",
    "json",
    "math",
+   "parallel",
    "pathlib",
    "qd_platform",
    "typing"

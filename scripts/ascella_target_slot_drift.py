@@ -20,6 +20,12 @@ def documents(platform: str) -> dict[str, bytes]:
         raise ValueError("the diagnostic requires Ascella or its simulator")
     source = original.documents()
     manifest = json.loads(source["cases.json"])
+    manifest["analysis_sources"].update(
+        {
+            name: qd_platform.sha256_bytes((original.ROOT / name).read_bytes())
+            for name in ("scripts/ascella_target_slot_drift.py", "scripts/ascella_target_slot_drift_analysis.py")
+        }
+    )
     by_source = {setting["source_name"]: setting for setting in manifest["settings"]}
     settings: list[dict[str, Any]] = []
     for target_index, label in enumerate(LABELS):

@@ -13,7 +13,46 @@ import qd_platform
 from ascella_target_slot_drift import LABELS, WEIGHTS
 from experiment_analysis import decode_photonic_counts
 
+from parallel import ordered_map
+
 FILES = ("cases.json", "circuit.json", "job-body.json", "submission.json", "results.json", "raw/result.json")
+
+
+def observation(task: tuple[int, dict[str, Any], dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
+    index, setting, entry, identities = task
+    if (
+        setting["order"] != LABELS[index // 2]
+        or setting["slot"] != index % 2
+        or setting["role"] != ("target" if index % 2 else "predecessor")
+    ):
+        raise ValueError("the requested setting order differs")
+    iteration = entry["iteration"]
+    if any(iteration[key] != setting[key] for key in ("compilation_seed", "circuit_params")):
+        raise ValueError(f"{setting['name']}: returned iteration differs from the request")
+    ports, invalid = decode_photonic_counts(entry["counts"], 12)
+    samples = sum(ports) + sum(invalid.values())
+    if samples != 32768 or entry["samples"] != samples or sum(ports) == 0:
+        raise ValueError(f"{setting['name']}: sample count or eligible denominator differs")
+    fields = entry["result_fields"]
+    if type(fields.get("nb_shots_used")) is not int or fields["nb_shots_used"] != 32768:
+        raise ValueError(f"{setting['name']}: shot count differs from the request")
+    expected = (
+        identities["target"] if setting["role"] == "target" else identities["predecessors"][setting["source_name"]]
+    )
+    identity = {}
+    for name in ("computed_circuit", "computed_input"):
+        blob = fields.get(name)
+        identity[name] = (
+            isinstance(blob, str) and hashlib.sha256(blob.encode()).hexdigest() == expected[f"{name}_sha256"]
+        )
+    return {
+        "name": setting["name"],
+        "ports": ports,
+        "invalid": invalid,
+        "eligible": sum(ports),
+        "shots_used": fields.get("nb_shots_used"),
+        "reference_identity_matches": identity,
+    }
 
 
 def analyze(directory: Path) -> dict[str, Any]:
@@ -28,46 +67,12 @@ def analyze(directory: Path) -> dict[str, Any]:
     if len(settings) != 16 or len(entries) != 16:
         raise ValueError("all sixteen iterations are required")
     identities = manifest["preregistered"]["compilation_identity"]
-    rows = []
-    laws = []
-    for index, (setting, entry) in enumerate(zip(settings, entries, strict=True)):
-        if (
-            setting["order"] != LABELS[index // 2]
-            or setting["slot"] != index % 2
-            or setting["role"] != ("target" if index % 2 else "predecessor")
-        ):
-            raise ValueError("the requested setting order differs")
-        iteration = entry["iteration"]
-        if any(iteration[key] != setting[key] for key in ("compilation_seed", "circuit_params")):
-            raise ValueError(f"{setting['name']}: returned iteration differs from the request")
-        ports, invalid = decode_photonic_counts(entry["counts"], 12)
-        samples = sum(ports) + sum(invalid.values())
-        if samples != 32768 or entry["samples"] != samples or sum(ports) == 0:
-            raise ValueError(f"{setting['name']}: sample count or eligible denominator differs")
-        fields = entry["result_fields"]
-        if type(fields.get("nb_shots_used")) is not int or fields["nb_shots_used"] != 32768:
-            raise ValueError(f"{setting['name']}: shot count differs from the request")
-        expected = (
-            identities["target"] if setting["role"] == "target" else identities["predecessors"][setting["source_name"]]
-        )
-        identity = {}
-        for name in ("computed_circuit", "computed_input"):
-            blob = fields.get(name)
-            identity[name] = (
-                isinstance(blob, str) and hashlib.sha256(blob.encode()).hexdigest() == expected[f"{name}_sha256"]
-            )
-        rows.append(
-            {
-                "name": setting["name"],
-                "ports": ports,
-                "invalid": invalid,
-                "eligible": sum(ports),
-                "shots_used": fields.get("nb_shots_used"),
-                "reference_identity_matches": identity,
-            }
-        )
-        if index % 2:
-            laws.append([count / sum(ports) for count in ports])
+    tasks = [
+        (index, setting, entry, identities)
+        for index, (setting, entry) in enumerate(zip(settings, entries, strict=True))
+    ]
+    rows = ordered_map(observation, tasks, min_items=1)
+    laws = [[count / row["eligible"] for count in row["ports"]] for row in rows[1::2]]
     contrast = [math.fsum(WEIGHTS[index] * law[mode] / 4 for index, law in enumerate(laws)) for mode in range(12)]
     qpu_identity_valid = all(all(row["reference_identity_matches"].values()) for row in rows)
     return {
