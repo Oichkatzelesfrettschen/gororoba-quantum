@@ -23,6 +23,8 @@ and the Kaggle noise-snapshot rule.
   qiskit-aer 0.18.2 (or qiskit-aer-gpu-cu11 0.18.2 on a GPU), proves the
   hypercomplex package stack before the entry runs, and retains the output
   under results/kaggle/.
+  Each Kaggle notebook session waits for the user's approval of a written
+  case (root AGENTS.md, "Hardware services").
   A kernel runs on a CPU machine by default and on a GPU only when its
   widest density matrix reaches `local_compute.GPU_MIN_ACTIVE_QUBITS`;
   [Simulation on Kaggle](../kaggle/README.md#simulation-on-kaggle-cpu-gpu-and-ci-replay)
@@ -107,7 +109,7 @@ and the Kaggle noise-snapshot rule.
   applies it. The first batch consumes the approval by writing
   `approval-consumed.json` into the approved record's directory, so a second
   invocation on the same record sends nothing. Calibration reads,
-  transpilation, noise simulation, result retrieval, and `--preserve-raw`
+  transpilation, local noise simulation, result retrieval, and `--preserve-raw`
   need no approval.
 - The binding dry run and its submit run as one command,
   `sh scripts/approved_run.sh [--attempts N] [--check CMD] [--log DIR] -- FLAGS`
@@ -203,3 +205,14 @@ and the Kaggle noise-snapshot rule.
   fails while an audited job has no comparison row, and the
   `research_state.py --check` gate while a retained run is missing from the
   registry.
+
+## Dynamic-circuit job split
+
+The Qiskit skill `migrate-qiskit-ibm-runtime` ran circuits through the
+client-side Sampler in its local verification and established the job split
+live_run.py uses
+([qiskit-skills.md](../../runbooks/qiskit-skills.md)). In runtime 0.50, gate
+twirling sends circuits through samplomatic boxing, which rejects `if_else`,
+and IBM's Sampler rejects dynamical decoupling on dynamic circuits. So
+live_run.py sends circuits with mid-circuit measurement, reset, or
+feed-forward in their own job, with twirling and dynamical decoupling off.
