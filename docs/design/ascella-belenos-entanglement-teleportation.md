@@ -689,6 +689,12 @@ A two-block design on Belenos whose veto is meant to test time gives both blocks
 only in when they run; a design that pools independently compiled meshes treats the mesh as a random effect and
 carries its spread in the interval instead of a binomial error.
 
+The mode-swap case (claim `qd-belenos-mode-swap-per-seed-mesh-variance`) since established that per-seed mesh error
+dominates drift and chip position on this chip and that a seed reproduces its mesh across jobs
+([strategy.md](../notes/quandela/strategy.md) section 2). The pooled 0.823 is therefore an average over the meshes the
+twelve seeds drew, and a selected mesh per input can read higher, which a case that screens seeds and replays
+the best tests.
+
 ## Provider request
 
 The request splits by channel. Items 2 and 3 concern the open-source client's

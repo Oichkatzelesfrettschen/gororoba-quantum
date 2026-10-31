@@ -129,4 +129,6 @@ unresolved on both pairs, and the closure fails through the control block. The c
 the overlap. As an exploratory reading chosen after the data, the largest |D| of each pair's eight meshes (0.902 and
 0.817) inverts to V 0.93 and 0.87 if mesh error and multiphoton emission only lower |D|. A follow-up that measures
 overlap on this chip either repeats one seed many times and selects the mesh with the largest contrast in a first
-job, or models the mesh as a random effect with enough seeds to estimate its distribution.
+job, or models the mesh as a random effect with enough seeds to estimate its distribution. The mode-swap case (claim
+`qd-belenos-mode-swap-per-seed-mesh-variance`) confirmed that a seed reproduces its mesh across jobs and that per-seed
+mesh error dominates this chip's error budget, so the selection route is sound.

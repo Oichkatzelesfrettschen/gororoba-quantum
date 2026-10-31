@@ -144,6 +144,20 @@ step.
 
 ## 2. Platform facts that shape a case
 
+- **The dominant error is the compiled mesh, and a seed fixes it.** On
+  `qpu:belenos` the per-seed compiled-mesh error of an observable exceeds
+  its binomial error, drift within and between jobs minutes apart, and any
+  effect of chip position: the mode-swap case measured a mesh standard
+  deviation of 0.0515 in a balanced single-photon share against a binomial
+  0.007 per 30,000-sample iteration, drift with kappa^2 at most 1.87, and
+  no placement effect beyond the mesh variance; the visibility and split
+  teleportation cases failed or flagged on the same error. The same circuit
+  parameters, input and compilation seed return the same `computed_circuit`
+  within a job and across jobs (teleportation replay, 6 of 6; mode-swap
+  sets 1 to 4, 8 of 8 pairs). A seed is therefore a hardware setting: a
+  case that compares meshes measures their variance with replicate seeds,
+  and a case that wants the best performance screens seeds and replays the
+  best (section 7, "Per-seed mesh variance of a share").
 - **Job names** are stored in a varchar(50); a longer `job_name` answers
   HTTP 424 "value too long for type character varying(50)". The runner names
   a job `SERIES/job-NN` and refuses longer names.

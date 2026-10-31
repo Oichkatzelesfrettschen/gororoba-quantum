@@ -125,6 +125,18 @@ counts from `start_time`):
   circuits and filters also differ; a job that varies the photon count at
   fixed circuit and filter would settle it). Plan a new shape from the row
   with its photon count, and measure the first job before sending the rest.
+- **Coincidences cost shots, and shots bill.** A sample that needs k
+  photons detected together costs many shots: about 1 for one photon, 74
+  for two (6de00147, 04f3d55a) and 1,800 for three (f918c870, e7f527ce),
+  roughly 24 times more per added photon at transmittance near 5 %. The
+  shot ceiling of the largest iteration bills at 1e-6 per shot, so a
+  three-photon iteration of 1,200 samples carries a 3,000,000-shot ceiling
+  and a 4-credit job. Extrapolated, a four-photon coincidence costs about
+  43,000 shots per sample and a six-photon one about 25 million (medium
+  confidence until a four-photon job measures the factor), so six
+  interfering photons all detected cannot fit one sample into a job, while
+  six photons in separate blocks read at one click per sample cost one shot
+  each (`belenos_mode_swap_interleaved`).
 - **The clock.** `duration` counts from `start_time`: a packed-series job
   that waited 1,382 s in the queue reports 34 s, so queue time and
   calibration windows before the start never count. A cut job reports the
