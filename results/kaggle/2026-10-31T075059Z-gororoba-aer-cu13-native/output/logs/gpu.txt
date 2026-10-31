@@ -1,0 +1,3 @@
+name, driver_version, compute_cap
+Tesla T4, 580.178.04, 7.5
+Tesla T4, 580.178.04, 7.5

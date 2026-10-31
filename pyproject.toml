@@ -10,6 +10,7 @@ src = ["gororoba_quantum"]
 extend-exclude = [
     "docs/evidence/reviewer_associator_audit/audit.py",
     "results/kaggle/2026-10-31T012131Z-gororoba-memory-probe-t4/kernel/memory-probe.py",
+    "results/kaggle/2026-10-31T075059Z-gororoba-aer-cu13-native/kernel/aer-cu13-native.py",
 ]
 
 # Quantum Inspire shares these modules with its pinned Python 3.13 interpreter.
