@@ -32,7 +32,7 @@ The IBM service inventory observed at 2026-10-30T04:53:07.250163+00:00 holds 34 
 
 The Quantum Inspire ledger retrieved at 2026-10-30T06:04:43+00:00 lists 450 jobs with 8511376 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 137 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 138 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 49 IQM run directories are retained. That is an observation, not an authorization.
 
@@ -448,6 +448,7 @@ circuit and charges the account ledger's change.
 | [2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01](../../results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01) | Quandela Cloud | single-chip teleportation rehearsal on a recovered chip | qpu:belenos | 1 | 12 | canceled | 4.2 credits | qd-belenos-teleportation-rehearsal-job-01 |
 | [2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02](../../results/quandela/runs/2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02) | Quandela Cloud | single-chip teleportation rehearsal on a recovered chip, split blocks | qpu:belenos | 1 | 6 | completed | 4.0 credits |  |
 | [2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03](../../results/quandela/runs/2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03) | Quandela Cloud | single-chip teleportation rehearsal on a recovered chip, split blocks | qpu:belenos | 1 | 6 | completed | 4.0 credits |  |
+| [2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay](../../results/quandela/runs/2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay) | Quandela Cloud | single-chip teleportation rehearsal on a recovered chip, split blocks | qpu:belenos | 1 | 6 | completed | 4.0 credits |  |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -856,6 +857,7 @@ circuit and charges the account ledger's change.
 - **qd-qpu-belenos-teleportation-rehearsal-job-01** (2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01, job 708bb40d-78d1-4903-9d61-e38705b85465, 13200 samples, 3200000 shots): How often does an accepted event of twelve independently compiled known-input teleportation circuits decode to the input's eigenvalue on a recovered qpu:belenos, with an anytime-valid lower bound?
 - **qd-qpu-belenos-teleportation-rehearsal-job-02** (2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02, job f918c870-786c-48a8-8cf4-1d5e6e334516, 7200 samples, 13549145 shots): How often does an accepted event of block A of the two-block teleportation design, run as its own six-iteration job, decode to the input's eigenvalue on qpu:belenos, for the pair analysis with the other block?
 - **qd-qpu-belenos-teleportation-rehearsal-job-03** (2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03, job e7f527ce-22eb-4f73-8a52-3395589ebbba, 7127 samples, 14022589 shots): How often does an accepted event of block B of the two-block teleportation design, run as its own six-iteration job, decode to the input's eigenvalue on qpu:belenos, for the pair analysis with the other block?
+- **qd-qpu-belenos-teleportation-rehearsal-job-02-replay** (2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay, job 137c771c-f7e8-4085-aa5d-065385368f54, 7200 samples, 14329409 shots): Does an exact replay of job-02 (same seeds, same compiled meshes) reproduce job-02's per-input counts, separating per-seed compiled-mesh error from drift in the job-02 against job-03 block difference?
 
 ## Established claims
 
