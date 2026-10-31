@@ -24,10 +24,10 @@ input ports P is |perm F[O, P]|^2.
 
 - **Periodic setting.** Ports P = {0, 2, 4}, a cyclic input of period m/n = 2. Exactly 12 of the 20 collision-free
   outputs have a zero permanent; the other 8 each carry probability 1/24. The zero set is the set of outputs whose
-  mode labels (0 to 5) do not sum to a multiple of three. The permanents establish the set; the label-sum rule, the
-  form the zero-transmission law of Tichy et al. takes for a cyclic Fourier input, agrees with them numerically (the
-  abstract of that paper is the only part read). The case computes both independently, and the test requires them to
-  agree on this set: 013, 014, 023, 025, 034, 035, 124, 125, 134, 145, 245, 235.
+  mode labels (0 to 5) do not sum to a multiple of three. The permanents establish the set; the label-sum rule
+  agrees with them numerically. The case attributes no statement of the periodic m/n form to Tichy et al., whose
+  abstract (the only part read) treats n photons on n ports. The case computes both independently, and the test
+  requires them to agree on this set: 013, 014, 023, 025, 034, 035, 124, 125, 134, 145, 245, 235.
 - **Control setting.** Ports {0, 1, 2}. Every one of the 20 collision-free outputs has a nonzero permanent (the
   smallest probability is 0.0046), so the suppressed set is empty.
 - **Shared law of distinguishable photons.** Every entry of F has modulus 1/sqrt6, so distinguishable photons leave
@@ -58,8 +58,8 @@ below include them through the click model; they are why the indistinguishable f
 
 ## Request
 
-`job-00` `cases.json` sha256 `3a70fc1faedfa76ec428e5361e5f2c8c2129010aaa5d495cb975f04fe5de12e2`, `job-01`
-`cases.json` sha256 `62abd8a823e1bcf240cdd0e553e34c18a38ad2b2a670b79805e499974a9d2d1e`; both `circuit.json` files have
+`job-00` `cases.json` sha256 `5920ca4126b26f1384804e529dc5bb568d4c184e6681b2c51c10022b5ea68a18`, `job-01`
+`cases.json` sha256 `a3cfbf0288091a9af63d59ace955a328a09cc925458f6a4474ddee8f743c683b`; both `circuit.json` files have
 sha256 `68946fe4bcbd44c7b6887d1d4c465cff5d30a786e11dd9c1234328c53d13f1d0`.
 
 **Layout.** `choose_window` reads the case's platform read
@@ -135,51 +135,79 @@ Forecast at the platform read (HOM 87.9 %, g2 1.4 %, Transmittance 5.37 %), reta
 
 The indistinguishable periodic forecast moves with g2 (0.188 at half g2, 0.246 at double) and with HOM:
 0.38, 0.34, 0.29, 0.24, 0.18, 0.12 and 0.06 at HOM 0.70, 0.75, 0.80, 0.85, 0.90, 0.95 and 1.00. At g2 1.4 % and HOM 1.00
-the fraction is still 0.058, so the g2 tail alone leaks 0.058. The slope is about -1.2 per unit HOM, so the statistic
-resolves the effective HOM to about 0.01 once the sampling error is 0.01. The paired contrast s(control) - s(periodic)
-is +0.436 for indistinguishable photons, 0 for distinguishable photons and -0.138 for the mean-field sampler.
+the fraction is still 0.058, so the g2 tail alone leaks 0.058. The slope is about -1.2 per unit HOM. Three effects move
+s by the same order and are not separable in this case: the HOM visibility, the g2 tail (about +-0.03) and compilation
+error. Compilation error is a one-sided bias, because the ideal fraction is 0 and a perturbed Fourier matrix can only
+add weight to the suppressed set; an independent review's Monte Carlo perturbation of the unitary by exp(i eps H) with random Hermitian H
+(not retained or reproduced here) raised the mean s from 0.001 to 0.114 as the single-photon column error grew from 0.010 to 0.102 (total variation
+distance), with a spread of about half the shift. An observed s above the forecast therefore does not show partial
+distinguishability. The paired contrast s(control) - s(periodic) is +0.436 for indistinguishable photons, exactly 0 for
+distinguishable photons at any detection efficiencies and g2, and -0.138 for the mean-field sampler.
 
 ## Decision rule
 
 The decision uses the per-iteration fractions of each arm, pooled over both jobs (four periodic and four control
 iterations), so every compilation seed counts once and the interval carries the variation between compiled meshes. The
 interval is one-sided Student t with alpha = 0.01 and 3 degrees of freedom. The forecasts are recomputed at the
-`perfs_at_plan` of each job's submission record, and the arm forecast is their mean.
+`perfs_at_plan` of each job's submission record, and the arm forecast is their mean. An iteration counts only with at
+least 200 accepted events (half of its 400 samples); a smaller one is reported apart and does not count.
 
-- **Suppression observed.** The upper 99 % bound of s_periodic lies at least 0.10 below the smaller of the
-  distinguishable and mean-field forecasts (about 0.50 at the read above). If it fails, the verdict is no
-  suppression beyond the distinguishable and mean-field forecasts.
+- **Suppression observed.** Two rules, both required:
+  - the upper 99 % bound of s_periodic lies at least 0.10 below the smaller of the distinguishable and mean-field
+    forecasts (about 0.50 at the read above);
+  - the lower 99 % bound of the paired contrast s_control - s_periodic is at least 0.10. The contrast is exactly 0
+    for distinguishable photons whatever the detection efficiencies, so this rule rejects the distinguishable and the
+    mean-field alternatives without the t_out detection model. Its forecast under the indistinguishable model is
+    +0.436 and its expected lower bound is about 0.37.
+
+  If either fails, the verdict is no suppression beyond the distinguishable and mean-field forecasts.
 - **Null arm and instrument check.** The control setting has an empty suppressed set. Its fraction must lie within 0.10
   of the indistinguishable control forecast (0.644); all three models lie within 0.06 of each other there. A
   departure means the detectors or the selection deplete or inflate the suppressed set, and the verdict is invalid
   control whatever the periodic arm shows.
 - **Level.** The periodic mean lies within max(0.05, 3 se) of the indistinguishable forecast: suppression at the
-  predicted level. Above it is suppression weaker than predicted (partial distinguishability beyond HOM, compilation
-  error, or a three-photon overlap below the model's); below it is suppression stronger than predicted. The analysis
-  reports the HOM at which the forecast curve reaches the observed mean, by interpolation.
-- **Undecided.** Fewer than four complete iterations in either arm.
+  predicted level. Below it is suppression stronger than predicted. Above it is suppression weaker than predicted,
+  and the case cannot attribute the excess to partial distinguishability: compilation error and the g2 tail raise s
+  too. The analysis reports the HOM at which the forecast curve reaches the observed mean as a lower bound on the
+  effective HOM (compilation error only raises s), under the Perceval source model and the forecast g2. Each counted
+  iteration returns its served mesh in `result_fields.computed_circuit`, which `photonic_compilation_audit._elements`
+  decodes; a forecast per served mesh would remove the compilation confound and is a follow-up, not part of this
+  rule.
+- **Undecided.** Fewer than four counted iterations in either arm, including a cut-short job whose lost iterations
+  come back as `missing`, `malformed` or `error` entries; the analysis tallies and skips those.
 
 The analysis binds each result iteration to its setting by `compilation_seed` (unique across the eight settings) and
 checks `circuit_params`; an iteration that binds to no setting or to two raises, so a dropped or reordered iteration
-leaves every count in its own arm.
+leaves every count in its own arm. It reads one run per job name and every compilation seed once, and refuses a second
+run of the same job. A repeat of a failed job supersedes the failed run, is never pooled with it, and takes fresh QRNG
+compilation seeds.
+
+**Job order.** `job-01` is submitted only after `job-00` is collected with at least 800 accepted events (half of the
+1,600 samples). A chip that degrades without a record update then costs one job's credits, not two.
 
 The analysis also reports, without deciding on them, the pooled binomial counts, the chi-square homogeneity of each
 arm's iterations, the paired contrast with its standard error against the three model contrasts, the forecast
-sensitivity to g2, and the excluded events by cause.
+sensitivity to g2, and the excluded events by cause, per arm and per iteration.
 
 **Falsifiers.** The case predicts s_periodic about 0.21 with a between-iteration standard error near 0.010 (1600
-accepted events per arm at the modeled yield, binomial error 0.010). It is wrong about genuine indistinguishable
-photons if s_periodic exceeds 0.50 (the distinguishable and mean-field models then describe the chip), and it is wrong
-about the Perceval overlap mapping if s_periodic leaves 0.21 +- 0.05. The expected upper bound under the forecast is
-0.25, so the sample size leaves the first decision a margin of 0.25.
+accepted events per arm at the modeled yield, binomial error 0.010). It is wrong about genuine three-photon
+indistinguishability if the upper bound of s_periodic exceeds about 0.50 or the lower bound of the paired contrast falls
+below 0.10; the distinguishable and mean-field models then describe the chip. The expected upper bound under the
+forecast is 0.25, so the sample size leaves the first rule a margin of 0.25. The level rule is a consistency check, not
+a falsifier of the Perceval overlap mapping: compilation error and g2 move s by the same order as the HOM mapping.
+
+**What the bound certifies.** One fully distinguishable photon with two identical ones gives s_periodic = 0.75, above the
+fully distinguishable 0.60. Pairwise interference alone therefore raises the suppressed fraction, and an upper bound at
+or below 0.50 needs a substantial fully indistinguishable three-photon component. The rule certifies genuine
+three-photon interference against distinguishable, partially distinguishable and mean-field alternatives.
 
 ## Written case
 
 **What it measures.** The suppressed-outcome fraction of collision-free three-click events of the six-mode Fourier
 matrix with a cyclic three-photon input, against the same fraction with a non-periodic input on the same chip modes and
 detectors. A fraction near 0.2 against 0.6 to 0.7 for the distinguishable and mean-field models shows three-photon
-interference at the visibility the chip reports. The result also measures the effective three-photon indistinguishability
-(the HOM value at which the forecast equals the observation).
+interference at about the visibility the chip reports. The result bounds the effective three-photon
+indistinguishability from below only, since compilation error raises s.
 
 **Why local simulation cannot answer it.** Perceval reproduces the models, and the case computes them. The question is
 the fraction the chip produces: the physical indistinguishability of three photons from the demultiplexed source, the
@@ -187,21 +215,25 @@ compiled phase error of a 24-mode thermo-optic mesh, the loss and the threshold 
 contains those, and the forecasts above are the predictions the data tests.
 
 **Backend and jobs.** `qpu:belenos`, two jobs (`job-00`, `job-01`), submitted one after the other because the account
-runs one job at a time and queues one.
+runs one job at a time and queues one; `job-01` waits for the `job-00` yield gate above.
 
 **Iterations and shots.** Four template iterations per job, 400 samples and a 1,500,000-shot cap per iteration (aggregate
 1,600 samples and 6,000,000 shots per job). The `qd_platform.py plan` estimate (read-only, retained in
 [shot-estimate.json](../../results/quandela/cases/belenos_suppression_law/shot-estimate.json)) is 1,182,561 shots per
 iteration and 4,730,244 per job; the cap is the largest estimate times 1.25, rounded up to 50,000.
 
-**Expected seconds.** 180 per job: four iterations at the measured 27.3 s per iteration of 24-mode template circuits
-(the teleportation rehearsal ran 11 in 300 s), times 1.25, rounded up to 60 s. The modeled acquisition is 2.4 s per
-iteration at 3.35e-5 three-click events per pulse and the 4.94 MHz clock, so compilation dominates.
+**Expected seconds.** 180 per job. The model is a fixed part per iteration plus the shots times a per-shot cost,
+fitted over retained qpu:belenos runs (the BDSC stationarity and qualification cases fix the 6.6 to 6.9 s fixed part;
+the teleportation rehearsal gives 9 to 12.8 microseconds per shot on a healthy chip and about 35 microseconds on a
+degraded one). At the 1,500,000-shot cap, an iteration takes 6.9 + 19.2 = 26.1 s and a job 104.4 s; scaled by 1.25 and
+rounded up to 60 s this is 180. Acquisition does not stay small: at the 1,182,561-shot estimate it is about 15 s per
+iteration. On a degraded chip (35 microseconds per shot) a job takes about 238 s, above 180 and below the 300 s
+`max_duration`, which is the worst case measured. The earlier clock model (3.35e-5 events per pulse at 4.94 MHz) is not
+used: it predicted 240 s for the teleportation rehearsal's job-01, which was cut at 300 s with 11 of 12 iterations.
 
-**Credits.** Each job bills 1 credit plus 1e-6 per shot of its largest iteration's `max_shots`: ceiling 2.5, expected 2.2
-to 2.5. The case totals at most 5.0 credits, under the 8 credits the case allows, and a repeat of one job fits inside
-that budget. `plan` for both jobs (2026-10-31, status running) returned `credit_ceiling` 2.5 and `estimated_credits`
-2.5.
+**Credits.** Quandela bills each job its full ceiling, 1 credit plus 1e-6 per shot of its largest iteration's
+`max_shots`: 2.5 per job and 5.0 for the case. A repeat of one job brings the total to 7.5, under the 8 credits the case
+allows. `plan` for both jobs (2026-10-31, status running) returned `credit_ceiling` 2.5 and `estimated_credits` 2.5.
 
 **Commands.** Per job, with the written case's arguments:
 
@@ -225,9 +257,15 @@ between running both jobs at the live HOM and waiting for HOM above 90 %, and ap
   t_in values select the sources and enter no forecast. The paired design removes a common detector factor but not a
   setting-dependent one, which the control check bounds.
 - The Perceval source model fixes how a two-photon HOM visibility becomes a three-photon distinguishability. The
-  analysis reports the implied HOM beside the plan's HOM and reaches no conclusion about the source model.
+  analysis reports the HOM lower bound beside the plan's HOM and reaches no conclusion about the source model.
 - The server re-transpiles every circuit, so each iteration realizes the Fourier matrix with a compilation phase error
-  that the case does not model. Its effect on s is the between-iteration spread the interval carries.
+  that the case does not model. The error raises s (one-sided, since the ideal is 0), so it biases the level rule and
+  the HOM lower bound and enters the between-iteration spread the interval carries. The primary rules have a margin of
+  about 0.25 against it.
+- The control is setting-independent only for fully distinguishable or symmetric partial distinguishability. If one
+  source's demultiplexed photons differ in overlap from the others, the control forecast shifts (with one photon
+  distinguishable, s_control is 0.50 or 0.75 by port), while the periodic forecast stays 0.75. At HOM 0.879 the
+  shift is likely inside the 0.10 control tolerance.
 - The mean-field definition rests on a machine-generated summary of the ar5iv rendering of Tichy et al. (2014); read the
   paper's section on the sampler before the owner cites the mean-field row. At the figures above the null in force is
   the smaller of the two forecasts, the distinguishable 0.602, so the mean-field definition does not change the primary

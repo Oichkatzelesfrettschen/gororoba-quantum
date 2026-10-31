@@ -1204,8 +1204,9 @@ and compiler publications.
   the paper's derivation for its six-mode, three-photon instance: it computes
   the 20 collision-free permanents with scripts/belenos_suppression_case.py,
   finds 12 exact zeros, and checks them against the label-sum rule (outputs
-  whose mode labels do not sum to a multiple of 3), which the case reads as the
-  law's instance for a cyclic input.
+  whose mode labels do not sum to a multiple of 3); the two agree numerically.
+  Whether the paper states the rule for a period-2 input on six modes is
+  unverified, since only its abstract (n bosons on n ports) was read.
 
 ### 34. Tichy et al., stringent assessment of boson-sampling devices
 
