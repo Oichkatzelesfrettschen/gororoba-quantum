@@ -92,3 +92,13 @@ def test_uncollected_run_rejected(tmp_path: Path) -> None:
     (moved / "results.json").unlink()
     with pytest.raises(qd_records.RecordError, match="results.json is missing"):
         qd_records.read_run(moved)
+
+
+def test_run_carries_the_case_digest_and_the_sent_body() -> None:
+    directory = _retained_runs()[0]
+    run = qd_records.read_run(directory)
+    _check(run.cases_sha256 == qd_records.sha256_bytes((directory / "cases.json").read_bytes()), "case digest differs")
+    _check(
+        qd_records.sha256_bytes(json.dumps(run.body, sort_keys=True).encode()) == run.submission["body_sha256"],
+        "the carried body is not the body the receipt sent",
+    )

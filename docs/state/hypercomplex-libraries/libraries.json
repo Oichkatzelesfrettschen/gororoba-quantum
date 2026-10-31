@@ -2762,6 +2762,7 @@
     "gororoba_quantum/primorial_tomography.py",
     "gororoba_quantum/pub_shot_allocation_contracts.py",
     "gororoba_quantum/qet_ladder.py",
+    "gororoba_quantum/qi_joint_response.py",
     "gororoba_quantum/qpe_diagnostics.py",
     "gororoba_quantum/qpu_planning.py",
     "gororoba_quantum/qpu_planning_contracts.py",
@@ -10181,6 +10182,7 @@
    "pathlib",
    "photonic_compilation_audit",
    "qd_belenos_mesh",
+   "qd_records",
    "re",
    "scipy",
    "sys",
@@ -10366,6 +10368,7 @@
    "json",
    "parallel",
    "pathlib",
+   "qd_records",
    "sys",
    "typing"
   ],
@@ -10409,6 +10412,7 @@
    "numpy",
    "parallel",
    "pathlib",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -10640,6 +10644,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "sys",
    "typing"
   ],
