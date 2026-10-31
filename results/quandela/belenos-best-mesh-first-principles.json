@@ -1,0 +1,621 @@
+{
+ "compiled": [
+  {
+   "click_total_variation": 0.00017285433131189094,
+   "compilation_seed": 19918,
+   "compiled_accepted_probability": 0.055568159154341004,
+   "compiled_conditional_fidelity": 0.9999999279922783,
+   "heater_phase_rad": 1750.1779007454081,
+   "index": 0,
+   "label": "+Z",
+   "max_column_power_difference": 9.924888928797282e-05,
+   "mesh_sha": "62b8fa56",
+   "run": "job-02",
+   "target_accepted_probability": 0.05555555555555553,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 8.639917052433391e-05,
+   "compilation_seed": 52848,
+   "compiled_accepted_probability": 0.05555922280435342,
+   "compiled_conditional_fidelity": 0.9999999843240329,
+   "heater_phase_rad": 1729.2229226010072,
+   "index": 1,
+   "label": "-Z",
+   "max_column_power_difference": 5.2930635312142815e-05,
+   "mesh_sha": "9d8936b5",
+   "run": "job-02",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 0.00010743362207864086,
+   "compilation_seed": 30689,
+   "compiled_accepted_probability": 0.05554119336301519,
+   "compiled_conditional_fidelity": 0.9999998497866088,
+   "heater_phase_rad": 1857.919208070291,
+   "index": 2,
+   "label": "+X",
+   "max_column_power_difference": 6.9001759498033e-05,
+   "mesh_sha": "8c083257",
+   "run": "job-02",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 8.628169837834322e-05,
+   "compilation_seed": 50293,
+   "compiled_accepted_probability": 0.05556451308817367,
+   "compiled_conditional_fidelity": 0.9999999880252043,
+   "heater_phase_rad": 1802.1804507143945,
+   "index": 3,
+   "label": "-X",
+   "max_column_power_difference": 4.6347632316035003e-05,
+   "mesh_sha": "76f9ca11",
+   "run": "job-02",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 0.00023022706856870367,
+   "compilation_seed": 57001,
+   "compiled_accepted_probability": 0.05554208137727179,
+   "compiled_conditional_fidelity": 0.9999998085923314,
+   "heater_phase_rad": 1796.747133879352,
+   "index": 4,
+   "label": "+Y",
+   "max_column_power_difference": 0.0001490446254361899,
+   "mesh_sha": "b3fecf82",
+   "run": "job-02",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 0.00011691770782710005,
+   "compilation_seed": 12608,
+   "compiled_accepted_probability": 0.05554780167752864,
+   "compiled_conditional_fidelity": 0.9999999385116181,
+   "heater_phase_rad": 1865.6727595734922,
+   "index": 5,
+   "label": "-Y",
+   "max_column_power_difference": 8.254105986640892e-05,
+   "mesh_sha": "810da4db",
+   "run": "job-02",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 0.00017285433131189094,
+   "compilation_seed": 19918,
+   "compiled_accepted_probability": 0.055568159154341004,
+   "compiled_conditional_fidelity": 0.9999999279922783,
+   "heater_phase_rad": 1750.1779007454081,
+   "index": 0,
+   "label": "+Z",
+   "max_column_power_difference": 9.924888928797282e-05,
+   "mesh_sha": "62b8fa56",
+   "run": "job-02-replay",
+   "target_accepted_probability": 0.05555555555555553,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 8.639917052433391e-05,
+   "compilation_seed": 52848,
+   "compiled_accepted_probability": 0.05555922280435342,
+   "compiled_conditional_fidelity": 0.9999999843240329,
+   "heater_phase_rad": 1729.2229226010072,
+   "index": 1,
+   "label": "-Z",
+   "max_column_power_difference": 5.2930635312142815e-05,
+   "mesh_sha": "9d8936b5",
+   "run": "job-02-replay",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 0.00010743362207864086,
+   "compilation_seed": 30689,
+   "compiled_accepted_probability": 0.05554119336301519,
+   "compiled_conditional_fidelity": 0.9999998497866088,
+   "heater_phase_rad": 1857.919208070291,
+   "index": 2,
+   "label": "+X",
+   "max_column_power_difference": 6.9001759498033e-05,
+   "mesh_sha": "8c083257",
+   "run": "job-02-replay",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 8.628169837834322e-05,
+   "compilation_seed": 50293,
+   "compiled_accepted_probability": 0.05556451308817367,
+   "compiled_conditional_fidelity": 0.9999999880252043,
+   "heater_phase_rad": 1802.1804507143945,
+   "index": 3,
+   "label": "-X",
+   "max_column_power_difference": 4.6347632316035003e-05,
+   "mesh_sha": "76f9ca11",
+   "run": "job-02-replay",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 0.00023022706856870367,
+   "compilation_seed": 57001,
+   "compiled_accepted_probability": 0.05554208137727179,
+   "compiled_conditional_fidelity": 0.9999998085923314,
+   "heater_phase_rad": 1796.747133879352,
+   "index": 4,
+   "label": "+Y",
+   "max_column_power_difference": 0.0001490446254361899,
+   "mesh_sha": "b3fecf82",
+   "run": "job-02-replay",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 0.00011691770782710005,
+   "compilation_seed": 12608,
+   "compiled_accepted_probability": 0.05554780167752864,
+   "compiled_conditional_fidelity": 0.9999999385116181,
+   "heater_phase_rad": 1865.6727595734922,
+   "index": 5,
+   "label": "-Y",
+   "max_column_power_difference": 8.254105986640892e-05,
+   "mesh_sha": "810da4db",
+   "run": "job-02-replay",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 7.361486199456587e-05,
+   "compilation_seed": 56057,
+   "compiled_accepted_probability": 0.05555993967719485,
+   "compiled_conditional_fidelity": 0.9999999591353214,
+   "heater_phase_rad": 1822.7674282744056,
+   "index": 0,
+   "label": "-Y",
+   "max_column_power_difference": 4.578425610257675e-05,
+   "mesh_sha": "6d3e44d0",
+   "run": "job-03",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 8.347852275867843e-05,
+   "compilation_seed": 55550,
+   "compiled_accepted_probability": 0.05556739111412683,
+   "compiled_conditional_fidelity": 0.9999999674001144,
+   "heater_phase_rad": 1848.012894046155,
+   "index": 1,
+   "label": "+Y",
+   "max_column_power_difference": 4.37355472270029e-05,
+   "mesh_sha": "402fc4fb",
+   "run": "job-03",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 8.284470845564171e-05,
+   "compilation_seed": 595,
+   "compiled_accepted_probability": 0.055558249448982834,
+   "compiled_conditional_fidelity": 0.9999999516789762,
+   "heater_phase_rad": 1822.5525417962906,
+   "index": 2,
+   "label": "-X",
+   "max_column_power_difference": 5.819220910013856e-05,
+   "mesh_sha": "1e2de61a",
+   "run": "job-03",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 9.810178578688174e-05,
+   "compilation_seed": 59482,
+   "compiled_accepted_probability": 0.055556884518561264,
+   "compiled_conditional_fidelity": 0.9999998408173268,
+   "heater_phase_rad": 1748.5209477122285,
+   "index": 3,
+   "label": "+X",
+   "max_column_power_difference": 6.020930453043416e-05,
+   "mesh_sha": "e0f0d5a7",
+   "run": "job-03",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 0.0001999486263797734,
+   "compilation_seed": 7821,
+   "compiled_accepted_probability": 0.055499304463457605,
+   "compiled_conditional_fidelity": 0.9999999628218719,
+   "heater_phase_rad": 1815.7648723435036,
+   "index": 4,
+   "label": "-Z",
+   "max_column_power_difference": 9.197958762158231e-05,
+   "mesh_sha": "46feed28",
+   "run": "job-03",
+   "target_accepted_probability": 0.055555555555555504,
+   "target_conditional_fidelity": 1.0
+  },
+  {
+   "click_total_variation": 7.75462549644097e-05,
+   "compilation_seed": 19846,
+   "compiled_accepted_probability": 0.05555512791201796,
+   "compiled_conditional_fidelity": 0.9999998886423748,
+   "heater_phase_rad": 1810.6416920844042,
+   "index": 5,
+   "label": "+Z",
+   "max_column_power_difference": 5.230602398498263e-05,
+   "mesh_sha": "4e37e40d",
+   "run": "job-03",
+   "target_accepted_probability": 0.05555555555555553,
+   "target_conditional_fidelity": 1.0
+  }
+ ],
+ "replay_budget": {
+  "credits": {
+   "2": 10.0,
+   "4": 20.0
+  },
+  "credits_per_job": 5.0,
+  "max_shots_per_iteration": 4000000,
+  "max_shots_per_sample_retained": 2661.9343389529727
+ },
+ "replay_power": {
+  "designs": [
+   {
+    "jobs": 2,
+    "mean_true_gap_kept": 0.045982233015151336,
+    "pairs_dropped": 0,
+    "power": 0.72911,
+    "scenario": "persistent mesh error"
+   },
+   {
+    "jobs": 2,
+    "mean_true_gap_kept": 0.0459643765448398,
+    "pairs_dropped": 1,
+    "power": 0.67412,
+    "scenario": "persistent mesh error"
+   },
+   {
+    "jobs": 2,
+    "mean_true_gap_kept": 0.04595463972277704,
+    "pairs_dropped": 2,
+    "power": 0.61082,
+    "scenario": "persistent mesh error"
+   },
+   {
+    "jobs": 2,
+    "mean_true_gap_kept": 0.04598375004203721,
+    "pairs_dropped": 3,
+    "power": 0.534835,
+    "scenario": "persistent mesh error"
+   },
+   {
+    "jobs": 2,
+    "mean_true_gap_kept": 0.04409864041934057,
+    "pairs_dropped": 0,
+    "power": 0.728355,
+    "scenario": "persistent mesh error, tau fixed at its maximum"
+   },
+   {
+    "jobs": 2,
+    "mean_true_gap_kept": 0.04408840580980526,
+    "pairs_dropped": 1,
+    "power": 0.66807,
+    "scenario": "persistent mesh error, tau fixed at its maximum"
+   },
+   {
+    "jobs": 2,
+    "mean_true_gap_kept": 0.04409703606804369,
+    "pairs_dropped": 2,
+    "power": 0.597435,
+    "scenario": "persistent mesh error, tau fixed at its maximum"
+   },
+   {
+    "jobs": 2,
+    "mean_true_gap_kept": 0.04412200286132842,
+    "pairs_dropped": 3,
+    "power": 0.519505,
+    "scenario": "persistent mesh error, tau fixed at its maximum"
+   },
+   {
+    "jobs": 2,
+    "mean_true_gap_kept": 0.0,
+    "pairs_dropped": 0,
+    "power": 0.051495,
+    "scenario": "no persistent mesh error"
+   },
+   {
+    "jobs": 2,
+    "mean_true_gap_kept": 0.0,
+    "pairs_dropped": 1,
+    "power": 0.052095,
+    "scenario": "no persistent mesh error"
+   },
+   {
+    "jobs": 2,
+    "mean_true_gap_kept": 0.0,
+    "pairs_dropped": 2,
+    "power": 0.05205,
+    "scenario": "no persistent mesh error"
+   },
+   {
+    "jobs": 2,
+    "mean_true_gap_kept": 0.0,
+    "pairs_dropped": 3,
+    "power": 0.05156,
+    "scenario": "no persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.045982233015151336,
+    "pairs_dropped": 0,
+    "power": 0.868145,
+    "scenario": "persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.0459643765448398,
+    "pairs_dropped": 1,
+    "power": 0.826445,
+    "scenario": "persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.04595463972277704,
+    "pairs_dropped": 2,
+    "power": 0.77219,
+    "scenario": "persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.04598375004203721,
+    "pairs_dropped": 3,
+    "power": 0.69758,
+    "scenario": "persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.04409864041934057,
+    "pairs_dropped": 0,
+    "power": 0.888155,
+    "scenario": "persistent mesh error, tau fixed at its maximum"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.04408840580980526,
+    "pairs_dropped": 1,
+    "power": 0.840725,
+    "scenario": "persistent mesh error, tau fixed at its maximum"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.04409703606804369,
+    "pairs_dropped": 2,
+    "power": 0.778325,
+    "scenario": "persistent mesh error, tau fixed at its maximum"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.04412200286132842,
+    "pairs_dropped": 3,
+    "power": 0.6971,
+    "scenario": "persistent mesh error, tau fixed at its maximum"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.0,
+    "pairs_dropped": 0,
+    "power": 0.050545,
+    "scenario": "no persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.0,
+    "pairs_dropped": 1,
+    "power": 0.050205,
+    "scenario": "no persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.0,
+    "pairs_dropped": 2,
+    "power": 0.05073,
+    "scenario": "no persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.0,
+    "pairs_dropped": 3,
+    "power": 0.0509,
+    "scenario": "no persistent mesh error"
+   }
+  ],
+  "samples_per_iteration": 1200,
+  "seed": 9719,
+  "trials": 200000
+ },
+ "schema": "belenos-best-mesh-first-principles-v1",
+ "seed_source": {
+  "experiment": "belenos-best-mesh-replay-power",
+  "flag": "--seed",
+  "script": "scripts/belenos_best_mesh_first_principles.py",
+  "sources": [
+   "qrng:docs/evidence/anu_qrng/draw-2026-10-31T193354Z.json#0"
+  ]
+ },
+ "shrinkage": {
+  "chi_square_on_6": 20.54890200318957,
+  "directional_bh_q": 0.1,
+  "inputs": {
+   "+X": {
+    "block_a": {
+     "accepted": 236,
+     "correct": 186,
+     "samples": 2400,
+     "seed": 30689,
+     "shots": 4608018
+    },
+    "block_b": {
+     "accepted": 131,
+     "correct": 96,
+     "samples": 1200,
+     "seed": 59482,
+     "shots": 2408909
+    },
+    "difference": 0.05531116573942296,
+    "expected_gap": 0.03547071767074655,
+    "gap_posterior_sd": 0.039034765166895365,
+    "probability_winner_is_better": 0.8208233948484229,
+    "shrinkage_factor": 0.6412939809992982,
+    "sign_determined_directional_bh": false,
+    "standard_error": 0.04692690922161964,
+    "two_sided_p": 0.23853108599636164,
+    "winner_block": "A",
+    "z": 1.178666284587535
+   },
+   "+Y": {
+    "block_a": {
+     "accepted": 295,
+     "correct": 244,
+     "samples": 2400,
+     "seed": 57001,
+     "shots": 4453760
+    },
+    "block_b": {
+     "accepted": 140,
+     "correct": 127,
+     "samples": 1200,
+     "seed": 55550,
+     "shots": 2086810
+    },
+    "difference": -0.08002421307506058,
+    "expected_gap": 0.06119669099436991,
+    "gap_posterior_sd": 0.03164955003218891,
+    "probability_winner_is_better": 0.9778653355427634,
+    "shrinkage_factor": 0.7647271824712484,
+    "sign_determined_directional_bh": true,
+    "standard_error": 0.032960578725735386,
+    "two_sided_p": 0.01518751580231692,
+    "winner_block": "B",
+    "z": -2.4278764563250292
+   },
+   "+Z": {
+    "block_a": {
+     "accepted": 331,
+     "correct": 255,
+     "samples": 2400,
+     "seed": 19918,
+     "shots": 4264692
+    },
+    "block_b": {
+     "accepted": 97,
+     "correct": 85,
+     "samples": 1200,
+     "seed": 19846,
+     "shots": 2043758
+    },
+    "difference": -0.10589591054910141,
+    "expected_gap": 0.07359141375529485,
+    "gap_posterior_sd": 0.03894755071966442,
+    "probability_winner_is_better": 0.9777414707621953,
+    "shrinkage_factor": 0.6949410357180155,
+    "sign_determined_directional_bh": true,
+    "standard_error": 0.04064480836975367,
+    "two_sided_p": 0.00917675391638939,
+    "winner_block": "B",
+    "z": -2.6053981995866695
+   },
+   "-X": {
+    "block_a": {
+     "accepted": 201,
+     "correct": 170,
+     "samples": 2400,
+     "seed": 50293,
+     "shots": 4215396
+    },
+    "block_b": {
+     "accepted": 133,
+     "correct": 117,
+     "samples": 1200,
+     "seed": 595,
+     "shots": 2181782
+    },
+    "difference": -0.03392810384169376,
+    "expected_gap": 0.024375393577153726,
+    "gap_posterior_sd": 0.03276558750936601,
+    "probability_winner_is_better": 0.7717792639688928,
+    "shrinkage_factor": 0.7184425540221071,
+    "sign_determined_directional_bh": false,
+    "standard_error": 0.03800880963254629,
+    "two_sided_p": 0.37205111843807614,
+    "winner_block": "B",
+    "z": -0.8926378955220345
+   },
+   "-Y": {
+    "block_a": {
+     "accepted": 263,
+     "correct": 203,
+     "samples": 2400,
+     "seed": 12608,
+     "shots": 4687899
+    },
+    "block_b": {
+     "accepted": 157,
+     "correct": 112,
+     "samples": 1200,
+     "seed": 56057,
+     "shots": 2301330
+    },
+    "difference": 0.05848732169237858,
+    "expected_gap": 0.038741559629543995,
+    "gap_posterior_sd": 0.03776957460660327,
+    "probability_winner_is_better": 0.8512811292872059,
+    "shrinkage_factor": 0.6623924383699786,
+    "sign_determined_directional_bh": false,
+    "standard_error": 0.0444061595798578,
+    "two_sided_p": 0.18780534168861873,
+    "winner_block": "A",
+    "z": 1.3170992998662252
+   },
+   "-Z": {
+    "block_a": {
+     "accepted": 397,
+     "correct": 359,
+     "samples": 2400,
+     "seed": 52848,
+     "shots": 5648789
+    },
+    "block_b": {
+     "accepted": 271,
+     "correct": 231,
+     "samples": 1127,
+     "seed": 7821,
+     "shots": 3000000
+    },
+    "difference": 0.05188359188377778,
+    "expected_gap": 0.043000267382477954,
+    "gap_posterior_sd": 0.024872989832032892,
+    "probability_winner_is_better": 0.961012458900178,
+    "shrinkage_factor": 0.8287835483480214,
+    "sign_determined_directional_bh": true,
+    "standard_error": 0.026120645900278305,
+    "two_sided_p": 0.046999372938659745,
+    "winner_block": "A",
+    "z": 1.9863058548343546
+   }
+  },
+  "james_stein_factor": 0.8053423974001567,
+  "mean_expected_gap": 0.04606267383493117,
+  "prior": "mu_i ~ N(0, tau^2), tau uniform on [0, 0.25]",
+  "signs_determined": 3,
+  "tau_90_interval": [
+   0.02925,
+   0.14275000000000002
+  ],
+  "tau_mle": 0.0565,
+  "tau_posterior_mean": 0.07366993326200481
+ }
+}
