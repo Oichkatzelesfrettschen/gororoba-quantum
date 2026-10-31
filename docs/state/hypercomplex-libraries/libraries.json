@@ -10843,6 +10843,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "sys",
    "tempfile",
    "typing"
@@ -10880,6 +10881,7 @@
    "parallel",
    "pathlib",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "tempfile",
@@ -10914,6 +10916,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -10984,6 +10987,7 @@
    "parallel",
    "pathlib",
    "qd_platform",
+   "qd_records",
    "qi_readout_ringdown_cases",
    "scipy",
    "sys",

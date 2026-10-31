@@ -38,6 +38,80 @@ def keys(value: Any) -> set[str]:
     return set()
 
 
+def _optional_bytes(path: Path) -> bytes | None:
+    return path.read_bytes() if path.is_file() else None
+
+
+def _optional_json(data: bytes | None) -> Any:
+    return None if data is None else json.loads(data)
+
+
+@dataclass(frozen=True)
+class Records:
+    """The files of one run directory as written, before any rule; None marks a file the directory lacks.
+
+    bytes_of and json_of raise RecordError for a missing file, so a loader that needs a file names it."""
+
+    directory: Path
+    interrupted: bool
+    manifest_bytes: bytes | None
+    circuit_bytes: bytes | None
+    body_bytes: bytes | None
+    submission_bytes: bytes | None
+    collected_bytes: bytes | None
+    raw: bytes | None
+
+    def bytes_of(self, name: str) -> bytes:
+        data = {
+            "cases.json": self.manifest_bytes,
+            "circuit": self.circuit_bytes,
+            "job-body.json": self.body_bytes,
+            "submission.json": self.submission_bytes,
+            "results.json": self.collected_bytes,
+            "raw/result.json": self.raw,
+        }[name]
+        if data is None:
+            raise RecordError(f"Quandela run {self.directory.name}: {name} is missing")
+        return data
+
+    def json_of(self, name: str) -> Any:
+        return json.loads(self.bytes_of(name))
+
+    @property
+    def manifest(self) -> Any:
+        return _optional_json(self.manifest_bytes)
+
+    @property
+    def submission(self) -> Any:
+        return _optional_json(self.submission_bytes)
+
+    @property
+    def collected(self) -> Any:
+        return _optional_json(self.collected_bytes)
+
+    @property
+    def body(self) -> Any:
+        return _optional_json(self.body_bytes)
+
+
+def load_run(directory: Path) -> Records:
+    """Read the files of one run directory without judging them; validate_run applies the rules."""
+    manifest_bytes = _optional_bytes(directory / "cases.json")
+    manifest = _optional_json(manifest_bytes)
+    circuit_name = manifest.get("circuit", {}).get("file") if isinstance(manifest, dict) else None
+    circuit_bytes = _optional_bytes(directory / circuit_name) if isinstance(circuit_name, str) else None
+    return Records(
+        directory=directory,
+        interrupted=(directory / "submission-state.json").is_file(),
+        manifest_bytes=manifest_bytes,
+        circuit_bytes=circuit_bytes,
+        body_bytes=_optional_bytes(directory / "job-body.json"),
+        submission_bytes=_optional_bytes(directory / "submission.json"),
+        collected_bytes=_optional_bytes(directory / "results.json"),
+        raw=_optional_bytes(directory / "raw" / "result.json"),
+    )
+
+
 FORBIDDEN_KEYS = (
     "token",
     "token_id",
@@ -76,19 +150,24 @@ def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def load_case(case_dir: Path) -> tuple[dict[str, Any], dict[str, Any], str]:
-    """cases.json, circuit.json and the cases.json sha256; raises when the circuit differs from its digest."""
-    cases_bytes = (case_dir / "cases.json").read_bytes()
-    manifest: dict[str, Any] = json.loads(cases_bytes)
+def validate_case(records: Records) -> tuple[dict[str, Any], dict[str, Any], str]:
+    """cases.json, circuit.json and the cases.json sha256 of loaded records; raises when the circuit differs."""
+    case_dir = records.directory
+    manifest: dict[str, Any] = records.json_of("cases.json")
     if manifest.get("schema") not in CASES_SCHEMAS:
         raise RecordError(f"{case_dir}/cases.json schema {manifest.get('schema')!r} is not a Quandela case")
-    circuit_bytes = (case_dir / manifest["circuit"]["file"]).read_bytes()
-    if sha256_bytes(circuit_bytes) != manifest["circuit"]["sha256"]:
+    circuit_bytes = records.circuit_bytes
+    if circuit_bytes is None or sha256_bytes(circuit_bytes) != manifest["circuit"]["sha256"]:
         raise RecordError(f"{case_dir}: circuit.json differs from its cases.json sha256")
     circuit: dict[str, Any] = json.loads(circuit_bytes)
     if circuit.get("schema") not in CIRCUIT_SCHEMAS:
         raise RecordError(f"{case_dir}: circuit schema {circuit.get('schema')!r}")
-    return manifest, circuit, sha256_bytes(cases_bytes)
+    return manifest, circuit, sha256_bytes(records.bytes_of("cases.json"))
+
+
+def load_case(case_dir: Path) -> tuple[dict[str, Any], dict[str, Any], str]:
+    """cases.json, circuit.json and the cases.json sha256; raises when the circuit differs from its digest."""
+    return validate_case(load_run(case_dir))
 
 
 def seed_value(seed: Any, owner: str) -> int:
@@ -377,7 +456,7 @@ class Run:
     body: dict[str, Any]
 
 
-def read_run(directory: Path) -> Run:
+def validate_run(records: Records) -> Run:
     """Offline rules of one retained run: receipt, digests, approval, collection and raw result bytes.
 
     Every rejection names the run. The returned Run carries the parsed receipt, manifest, circuit and collection,
@@ -385,28 +464,25 @@ def read_run(directory: Path) -> Run:
     registry records, the cases.json digest and the sent body; the credit charge is an account fact that
     qd_platform.run_facts adds.
     """
+    directory = records.directory
     owner = f"Quandela run {directory.name}"
-    if not (directory / "submission.json").is_file():
-        hint = (
-            "; submission-state.json records an interrupted submit"
-            if (directory / "submission-state.json").is_file()
-            else ""
-        )
+    if records.submission_bytes is None:
+        hint = "; submission-state.json records an interrupted submit" if records.interrupted else ""
         raise RecordError(f"{owner}: no submission.json{hint}")
-    submission = json.loads((directory / "submission.json").read_text(encoding="utf-8"))
-    manifest, circuit, cases_sha256 = load_case(directory)
+    submission = records.json_of("submission.json")
+    manifest, circuit, cases_sha256 = validate_case(records)
     if submission.get("schema") != SUBMISSION_SCHEMA or submission.get("cases_sha256") != cases_sha256:
         raise RecordError(f"{owner}: cases.json differs from submission.json")
     if not isinstance(submission.get("approval"), str) or not submission["approval"].strip():
         raise RecordError(f"{owner}: submission.json records no approval")
-    body = json.loads((directory / "job-body.json").read_text(encoding="utf-8"))
+    body = records.json_of("job-body.json")
     if sha256_bytes(json.dumps(body, sort_keys=True).encode()) != submission["body_sha256"]:
         raise RecordError(f"{owner}: job-body.json differs from the body the receipt sent")
     if submission["platform"] not in manifest["platforms"]:
         raise RecordError(f"{owner}: platform {submission['platform']} is outside cases.json")
-    if not (directory / "results.json").is_file():
+    if records.collected_bytes is None:
         raise RecordError(f"{owner}: results.json is missing; collect the run")
-    collected = json.loads((directory / "results.json").read_text(encoding="utf-8"))
+    collected = records.json_of("results.json")
     if collected.get("schema") != COLLECTION_SCHEMA or collected.get("job_id") != submission["job_id"]:
         raise RecordError(f"{owner}: results.json names another job or schema")
     if carried := sorted(set(FORBIDDEN_KEYS) & keys(collected)):
@@ -430,14 +506,14 @@ def read_run(directory: Path) -> Run:
     status = collected["status"]["status"]
     if status not in TERMINAL:
         raise RecordError(f"{owner}: job status {status} is not terminal")
-    raw = directory / "raw" / "result.json"
+    raw = records.raw
     shots = 0
     summary: dict[str, Any] | None = None
-    if status == "completed" or raw.exists():
-        if not raw.is_file() or sha256_bytes(raw.read_bytes()) != collected.get("result_sha256"):
+    if status == "completed" or raw is not None:
+        if raw is None or sha256_bytes(raw) != collected.get("result_sha256"):
             raise RecordError(f"{owner}: raw/result.json differs from its recorded sha256")
         summary = result_summary(
-            raw.read_bytes(),
+            raw,
             submission["job_id"],
             collected["status"],
             status == "completed",
@@ -446,7 +522,7 @@ def read_run(directory: Path) -> Run:
 
         if any(collected.get(key) != value for key, value in summary.items() if not predates(collected, summary, key)):
             raise RecordError(f"{owner}: results.json differs from the raw result")
-        modes = json.loads((directory / manifest["circuit"]["file"]).read_text(encoding="utf-8"))["modes"]
+        modes = circuit["modes"]
         if any(len(state.split(",")) != modes for state in summary["counts"]):
             raise RecordError(f"{owner}: a counted state has a mode count other than {modes}")
         if summary["samples"] > manifest["max_samples"]:
@@ -471,6 +547,11 @@ def read_run(directory: Path) -> Run:
         "detail": f"job {submission['job_id']}, {collected.get('samples', 0)} samples, {shots} shots",
     }
     return Run(submission, manifest, circuit, collected, summary, shots, facts, cases_sha256, body)
+
+
+def read_run(directory: Path) -> Run:
+    """load_run then validate_run: the one call a consumer of a retained run makes."""
+    return validate_run(load_run(directory))
 
 
 PlatformError = RecordError

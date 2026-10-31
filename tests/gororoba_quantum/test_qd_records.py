@@ -102,3 +102,24 @@ def test_run_carries_the_case_digest_and_the_sent_body() -> None:
         qd_records.sha256_bytes(json.dumps(run.body, sort_keys=True).encode()) == run.submission["body_sha256"],
         "the carried body is not the body the receipt sent",
     )
+
+
+def test_load_run_reads_without_judging_and_names_a_missing_file(tmp_path: Path) -> None:
+    """A receipt-less synthetic directory loads; validate_run refuses it; a missing file is named on access."""
+    run = tmp_path / "synthetic"
+    run.mkdir()
+    manifest = {"job": "x", "circuit": {"file": "circuit.json", "sha256": "0" * 64}}
+    (run / "cases.json").write_text(json.dumps(manifest), encoding="utf-8")
+    (run / "results.json").write_text(json.dumps({"status": {"status": "completed"}}), encoding="utf-8")
+    records = qd_records.load_run(run)
+    _check(records.manifest == manifest and records.submission is None and records.circuit_bytes is None, "load")
+    _check(records.json_of("results.json")["status"]["status"] == "completed", "results not read")
+    with pytest.raises(qd_records.RecordError, match="submission.json is missing"):
+        records.bytes_of("submission.json")
+    with pytest.raises(qd_records.RecordError, match="no submission.json"):
+        qd_records.validate_run(records)
+
+
+def test_read_run_is_validate_of_load() -> None:
+    directory = _retained_runs()[0]
+    _check(qd_records.validate_run(qd_records.load_run(directory)) == qd_records.read_run(directory), "paths differ")
