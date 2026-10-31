@@ -14,10 +14,12 @@ the parity of the input pair, 72 iterations each, in input-major order.
 
 An event is eligible when it carries exactly two threshold clicks across all twelve returned modes, one on a control
 rail and one on a target rail. The four eligible rail pairs of a setting give that setting's readout outcomes. The
-estimator normalizes each setting to its eligible events (a trace-preserving conditional process), inverts the
-144 x 4 outcome frequencies linearly onto the 16 x 16 Choi matrix, and projects the result onto the nearest
-completely positive trace-preserving map. It reports the process fidelity to the ideal CZ and the average gate
-fidelity (4 F + 1) / 5 with a bootstrap interval whose seed is a value of a retained QRNG draw.
+primary estimator divides each setting's eligible events by the iteration's nb_shots_used (a shot is a detection event
+of at least one photon, so under uniform loss the chance of one is the same for every setting), inverts the 144 x 4
+absolute rates linearly onto the 16 x 16 Choi matrix, projects onto the nearest positive matrix and reports
+F = <Phi_CZ| J |Phi_CZ> / (4 Tr J), the process fidelity of the trace-non-increasing postselected map, and the average
+gate fidelity (4 F + 1) / 5, with a bootstrap interval whose seed is a value of a retained QRNG draw. The conditional
+reconstruction (per-setting normalization, nearest CPTP map) stays as a descriptive companion.
 
 --check rebuilds both jobs in memory and compares them with the retained files, proves the CZ block and the folded
 settings by permanents and by Perceval's SLOS backend, binds every iteration through qd_platform.template_experiment,
@@ -39,6 +41,7 @@ import json
 import math
 import sys
 from collections.abc import Mapping, Sequence
+from datetime import datetime
 from functools import cache
 from pathlib import Path
 from typing import Any
@@ -82,10 +85,10 @@ SEED_RULE = (
     "then the bootstrap seed"
 )
 # Per-iteration budgets of one job (docs/design/ascella-cz-process-tomography-case.md, written case).
-SAMPLES_PER_ITERATION = 6000
+SAMPLES_PER_ITERATION = 4000
 # max_shots per iteration of each job: the largest Perceval estimate of the job's settings (shot-estimate.json) times
 # SHOT_MARGIN, rounded up to SHOT_QUANTUM. A job bills its largest iteration's max_shots.
-JOB_SHOTS = {"job-00": 500000, "job-01": 2300000}
+JOB_SHOTS = {"job-00": 400000, "job-01": 1600000}
 SHOT_MARGIN = 1.25
 SHOT_QUANTUM = 100000
 PER_JOB_CREDITS = 1.0
@@ -93,13 +96,25 @@ PRICE_PER_SHOT = 1e-6
 EXPECTED_SECONDS = 240
 BOOTSTRAP_REPLICATES = 500
 BOOTSTRAP_LEVEL = 0.95
-# The interval type the analysis reports. The coverage study of forecast.json decides it: the percentile interval of a
-# fidelity estimated under a positivity projection sits below the estimand by the projection's bias, and the basic
-# interval reflects that bias.
-INTERVAL_KIND = "basic"
-COVERAGE_DATASETS = 40
+# The interval type the analysis reports, the better covering of the two in the coverage study of forecast.json. The
+# primary estimator is a ratio of linear functionals of the rates and nearly unbiased, so the percentile and basic
+# types cover alike; the percentile type is the plain one.
+INTERVAL_KIND = "percentile"
+COVERAGE_DATASETS = 200
+# The ANU QRNG draw whose values seed the coverage datasets, one value each; forecast.json names it without an index,
+# so the forecast owns it whole.
+COVERAGE_DRAW = "docs/evidence/anu_qrng/draw-2026-10-31T044412Z.json"
 # The reported interval type must cover the estimand in at least this share of the synthetic datasets.
 COVERAGE_FLOOR = 0.9
+# Seconds one template iteration takes on qpu:ascella: retained jobs of 84, 96 and 80 iterations fit 2.95 to 3.0.
+ITERATION_SECONDS = 3.0
+# Pooling of the two jobs (preregistered): their plans' HOM and transmittance (percentage points) and the time between
+# their submissions bound the drift the pooled inversion tolerates.
+POOL_HOM_TOLERANCE = 1.0
+POOL_T_TOLERANCE = 0.3
+POOL_MAX_GAP_HOURS = 12.0
+# The entry kinds qd_platform.result_summary writes for an iteration of a partial job that carries no counts.
+UNCOUNTED = ("missing", "malformed", "error")
 COVERAGE_REPLICATES = 200
 COVERAGE_VARIANT = "source, loss and dark counts"
 SAMPLED_KEYS = (
@@ -109,7 +124,8 @@ SAMPLED_KEYS = (
     "process_fidelity_bootstrap_median",
     "average_gate_fidelity",
     "average_gate_fidelity_interval",
-    "linear_inversion_fidelity",
+    "projected_process_fidelity",
+    "conditional_process_fidelity",
     "events",
 )
 # Pauli eigenstates prepared on each qubit: label -> (theta, phi) of cos(theta/2)|0> + e^{i phi} sin(theta/2)|1>.
@@ -382,28 +398,57 @@ def documents(job: str) -> dict[str, bytes]:
         "circuit": {"file": "circuit.json", "sha256": sha256_bytes(circuit_bytes)},
         "compilation_seeds": {"draw": DRAW, "indices": indices, "rule": SEED_RULE},
         "preregistered": {
-            "estimator": "linear inversion of the 144 x 4 outcome frequencies onto the 16 x 16 Choi matrix, then the "
-            "nearest completely positive trace-preserving map by Dykstra alternating projections",
-            "process_fidelity": "F_pro = <Phi_CZ| J |Phi_CZ> / 16 for the Choi matrix J of trace 4",
+            "estimator": "primary: linear inversion of the 144 x 4 absolute outcome rates (eligible events over the "
+            "iteration's nb_shots_used) onto the 16 x 16 Choi matrix; the success probability of the postselected "
+            "map may depend on the input, so the Choi matrix is trace non-increasing and carries its total rate",
+            "rate_denominator": "nb_shots_used counts detection events of at least one photon; with uniform loss the "
+            "chance of at least one click is 1 - (1 - T)^2 for every setting, so eligible / nb_shots_used is an "
+            "absolute "
+            "rate common to all settings up to one factor per job",
+            "process_fidelity": "F_pro = <Phi_CZ| J |Phi_CZ> / (4 Tr J) for the unprojected Choi matrix J, a ratio of "
+            "linear functionals of the rates; Tr J / 4 is the mean eligible rate",
             "average_gate_fidelity": "F_avg = (4 F_pro + 1) / 5",
+            "descriptive_estimator": "per-setting normalization to the eligible events, linear inversion, nearest "
+            "completely positive trace-preserving map by Dykstra projections: the limit of this conditional "
+            "reconstruction differs from the postselected fidelity because the conditional map is not linear",
             "bootstrap": {
                 "replicates": BOOTSTRAP_REPLICATES,
                 "level": BOOTSTRAP_LEVEL,
-                "kind": "parametric multinomial resample of every setting's eligible events; the "
+                "kind": "parametric resample of every iteration: its samples multinomially over the four eligible "
+                "outcomes and the rest, its shots as the samples plus a negative binomial count of failures at the "
+                "observed sample share; the "
                 + INTERVAL_KIND
                 + " interval, chosen by the coverage study in forecast.json",
                 "seed_draw": DRAW,
                 "seed_index": bootstrap[0],
             },
-            "pooling": "both jobs; a missing setting leaves the estimate undecided and its subset descriptive",
+            "binding": "each returned iteration binds to the setting that has its echoed compilation_seed, one to one; "
+            "each run's cases.json must equal the retained case byte for byte and the two runs must be distinct jobs; "
+            "an entry that is missing, malformed or an error is counted and skipped",
+            "pooling": {
+                "rule": "both jobs; the rates of job-01 are multiplied by g(T_job-00) / g(T_job-01) with g(T) = "
+                "T / (2 - T), the ratio of the eligible rate to the shot rate under uniform loss, T read from each "
+                "run's perfs_at_plan",
+                "decided_when": {
+                    "hom_percentage_points": POOL_HOM_TOLERANCE,
+                    "transmittance_percentage_points": POOL_T_TOLERANCE,
+                    "max_gap_hours_between_submissions": POOL_MAX_GAP_HOURS,
+                },
+                "otherwise": "the pooled estimate is reported as descriptive",
+                "incomplete": "a missing setting, or a run that is not both jobs, leaves the estimate undecided",
+                "collect_timeout": "job-01 is submitted only after job-00 collects a terminal status; a collect that "
+                "times out is repeated once, and a second timeout stops the case with job-01 unsent",
+            },
             "descriptive": [
-                "linear-inversion fidelity before the projection",
+                "the fidelity of the nearest positive matrix of the same trace (biased low under noise)",
+                "the conditional estimator's fidelity",
+                "the least eigenvalue of J over its trace",
                 "per-setting eligible share of the two-click samples",
-                "exclusions by cause",
+                "exclusions by cause and uncounted iterations by kind",
                 "comparison with the retained noise forecast",
             ],
-            "vendor_comparison": "93.8 +- 0.6 % CNOT fidelity of the vendor chip, descriptive only: a different gate "
-            "on a calibrated, uncompiled-per-setting chip",
+            "vendor_comparison": "none: the vendor paper's 93.8 +- 0.6 % CNOT figure carries no fidelity type in "
+            "docs/notes/quandela/literature.md, so the case reports no difference to it",
             "interpretation": "service-compiled average postselected CZ; preparation, readout and gate errors are "
             "not separable because every setting compiles to its own mesh",
         },
@@ -456,11 +501,13 @@ def design_pseudoinverse() -> np.ndarray:
     return np.asarray(np.linalg.pinv(matrix))
 
 
+@cache
+def hermitian_stack() -> np.ndarray:
+    return np.asarray(hermitian_basis())
+
+
 def choi_of(coefficients: np.ndarray) -> np.ndarray:
-    total = np.zeros((16, 16), dtype=complex)
-    for coefficient, element in zip(coefficients, hermitian_basis(), strict=True):
-        total += coefficient * element
-    return total
+    return np.asarray(np.tensordot(coefficients, hermitian_stack(), axes=1))
 
 
 def linear_inversion(frequencies: np.ndarray) -> np.ndarray:
@@ -541,44 +588,118 @@ def estimate(frequencies: np.ndarray) -> dict[str, Any]:
     }
 
 
-def replicate_fidelity(frequencies: np.ndarray) -> float:
-    return float(estimate(frequencies)["process_fidelity"])
+def trace_normalized_fidelity(choi: np.ndarray) -> float:
+    """<Phi_CZ| J |Phi_CZ> / (4 Tr J): the process fidelity of a Choi matrix of any trace."""
+    vector = ideal_choi_vector()
+    return float(np.real(vector.conj() @ choi @ vector) / (4 * np.real(np.trace(choi))))
 
 
-def resampled_frequencies(counts: np.ndarray, generator: np.random.Generator, replicates: int) -> np.ndarray:
-    """(replicates, 576) outcome frequencies of multinomial resamples of the (144, 4) counts.
+def project_positive_fixed_trace(choi: np.ndarray) -> np.ndarray:
+    """The nearest positive matrix of the same trace: the eigenvalues projected onto the simplex of their sum."""
+    values, vectors = np.linalg.eigh((choi + choi.conj().T) / 2)
+    total = float(np.sum(values))
+    ordered = np.sort(values)[::-1]
+    running = np.cumsum(ordered) - total
+    index = np.arange(1, len(ordered) + 1)
+    kept = ordered - running / index > 0
+    shift = running[kept][-1] / index[kept][-1]
+    return np.asarray((vectors * np.clip(values - shift, 0.0, None)) @ vectors.conj().T)
 
-    One generator draws every replicate before the estimator maps over them, so the result does not depend on the
-    pool size."""
-    totals = counts.sum(axis=1)
-    probabilities = counts / totals[:, None]
-    draws = np.empty((replicates, counts.shape[0], 4))
+
+@cache
+def fidelity_functionals() -> tuple[np.ndarray, np.ndarray]:
+    """(a, b) with F = (rates . a) / (rates . b) for the unprojected Choi matrix of the rates: the numerator
+    <Phi| J |Phi> and the trace Tr J are linear in the rates, 4 Tr J is divided out in the second."""
+    vector = ideal_choi_vector()
+    stack = hermitian_stack()
+    numerator = np.real(np.einsum("i,kij,j->k", vector.conj(), stack, vector))
+    trace = np.real(np.trace(stack, axis1=1, axis2=2))
+    pinv = design_pseudoinverse()
+    return pinv.T @ numerator, 4.0 * (pinv.T @ trace)
+
+
+def batch_fidelity(rates: np.ndarray) -> np.ndarray:
+    """The unprojected process fidelity of each row of an (n, 576) array of absolute rates."""
+    numerator, denominator = fidelity_functionals()
+    return np.asarray((rates @ numerator) / (rates @ denominator))
+
+
+def estimate_rates(rates: np.ndarray) -> dict[str, Any]:
+    """The primary estimate from the (576,) absolute outcome rates: linear inversion onto the Choi matrix, and its
+    fidelity F = <Phi_CZ| J |Phi_CZ> / (4 Tr J), a ratio of linear functionals of the rates. The postselected map is
+    trace non-increasing, so the Choi matrix keeps its trace. The nearest positive matrix of the same trace is the
+    descriptive companion: it removes the unphysical directions and biases the fidelity downward under noise."""
+    raw = linear_inversion(rates)
+    fidelity = trace_normalized_fidelity(raw)
+    projected = project_positive_fixed_trace(raw)
+    values = np.linalg.eigvalsh((raw + raw.conj().T) / 2)
+    return {
+        "process_fidelity": fidelity,
+        "average_gate_fidelity": average_gate_fidelity(fidelity),
+        "projected_process_fidelity": trace_normalized_fidelity(projected),
+        "min_eigenvalue_over_trace": float(values[0] / np.real(np.trace(raw))),
+        "choi": raw,
+        "projected_choi": projected,
+    }
+
+
+def absolute_rates(eligible: np.ndarray, shots: np.ndarray, scale: np.ndarray) -> np.ndarray:
+    """(576,) eligible events per shot of every setting and outcome, times the setting's job scale."""
+    return np.asarray((eligible / shots[:, None] * scale[:, None]).reshape(-1))
+
+
+def resampled_rates(
+    eligible: np.ndarray,
+    samples: np.ndarray,
+    shots: np.ndarray,
+    scale: np.ndarray,
+    generator: np.random.Generator,
+    replicates: int,
+) -> np.ndarray:
+    """(replicates, 576) absolute rates of parametric resamples.
+
+    An iteration stops at its samples, so a resample draws them over the four eligible outcomes and the rest, and its
+    shots as the samples plus the failures of a negative binomial at the observed sample share. One generator draws
+    every replicate before the estimator maps over them, so the result does not depend on the pool size."""
+    rest = samples - eligible.sum(axis=1)
+    probabilities = np.concatenate([eligible, rest[:, None]], axis=1) / samples[:, None]
+    share = samples / shots
+    out = np.empty((replicates, eligible.shape[0], 4))
     for k in range(replicates):
-        for s in range(counts.shape[0]):
-            draws[k, s] = generator.multinomial(int(totals[s]), probabilities[s])
-    return np.asarray((draws / totals[None, :, None]).reshape(replicates, -1))
+        for s in range(eligible.shape[0]):
+            draw = generator.multinomial(int(samples[s]), probabilities[s])
+            drawn_shots = samples[s] + generator.negative_binomial(int(samples[s]), share[s])
+            out[k, s] = draw[:4] / drawn_shots * scale[s]
+    return np.asarray(out.reshape(replicates, -1))
 
 
 def intervals(point: float, replicate_values: Sequence[float], level: float) -> dict[str, list[float]]:
     """The percentile interval of the replicates and the basic interval (2 point - q_high, 2 point - q_low), which
-    reflects the replicates' bias about the point and stops at 1, the bound of both fidelities."""
+    reflects the replicates' bias about the point. Both stop at 1, the bound of both fidelities."""
     low, high = (float(q) for q in np.percentile(replicate_values, [50 * (1 - level), 50 * (1 + level)]))
-    return {"percentile": [low, high], "basic": [min(1.0, 2 * point - high), min(1.0, 2 * point - low)]}
+    return {
+        "percentile": [min(1.0, low), min(1.0, high)],
+        "basic": [min(1.0, 2 * point - high), min(1.0, 2 * point - low)],
+    }
 
 
 def tomography(
-    counts: np.ndarray, generator: np.random.Generator, replicates: int = BOOTSTRAP_REPLICATES
+    eligible: np.ndarray,
+    samples: np.ndarray,
+    shots: np.ndarray,
+    scale: np.ndarray,
+    generator: np.random.Generator,
+    replicates: int = BOOTSTRAP_REPLICATES,
+    conditional: bool = True,
 ) -> dict[str, Any]:
-    """The process estimate of (144, 4) eligible counts in schedule order, with its bootstrap intervals; the headline
-    interval is INTERVAL_KIND."""
-    frequencies = (counts / counts.sum(axis=1)[:, None]).reshape(-1)
-    point = estimate(frequencies)
-    fidelities = ordered_map(
-        replicate_fidelity, list(resampled_frequencies(counts, generator, replicates)), min_items=8
-    )
+    """The primary process estimate of one dataset in schedule order, with its bootstrap intervals (the headline
+    interval is INTERVAL_KIND) and, when asked, the descriptive conditional estimate."""
+    point = estimate_rates(absolute_rates(eligible, shots, scale))
+    batch = resampled_rates(eligible, samples, shots, scale, generator, replicates)
+    fidelities = [float(f) for f in batch_fidelity(batch)]
     process = intervals(point["process_fidelity"], fidelities, BOOTSTRAP_LEVEL)
     gate = intervals(point["average_gate_fidelity"], [average_gate_fidelity(f) for f in fidelities], BOOTSTRAP_LEVEL)
-    return {
+    out: dict[str, Any] = {
         "process_fidelity": point["process_fidelity"],
         "process_fidelity_interval": process[INTERVAL_KIND],
         "process_fidelity_intervals": process,
@@ -586,10 +707,14 @@ def tomography(
         "average_gate_fidelity": point["average_gate_fidelity"],
         "average_gate_fidelity_interval": gate[INTERVAL_KIND],
         "average_gate_fidelity_intervals": gate,
-        "linear_inversion_fidelity": point["linear_inversion_fidelity"],
+        "projected_process_fidelity": point["projected_process_fidelity"],
         "bootstrap": {"replicates": replicates, "level": BOOTSTRAP_LEVEL, "interval": INTERVAL_KIND},
-        "events": int(counts.sum()),
+        "events": int(eligible.sum()),
     }
+    if conditional:
+        frequencies = (eligible / eligible.sum(axis=1)[:, None]).reshape(-1)
+        out["conditional_process_fidelity"] = estimate(frequencies)["process_fidelity"]
+    return out
 
 
 def ideal_frequencies() -> np.ndarray:
@@ -652,6 +777,7 @@ def outcome_of(vector: Sequence[int]) -> int | None:
 
 
 FORECAST_VARIANTS = (
+    "indistinguishability only",
     "source only",
     "source and loss",
     "source, loss and dark counts",
@@ -666,14 +792,17 @@ def corrected_overlap(hom: float, g2: float) -> float:
 
 
 def forecast_setting(item: tuple[dict[str, Any], dict[str, float], list[float]]) -> dict[str, Any]:
-    """Per variant: the eligible share of the two-click samples and the conditional outcome probabilities."""
+    """Per variant, for one setting: the probability per attempt of at least one click and of two or more, and the
+    probability of each eligible outcome."""
     row, figures, dark_rates = item
     unitary = setting_unitary(row)
     photons = photon_distribution(unitary, figures["hom"], figures["g2"])
+    pure = photon_distribution(unitary, figures["hom"], 0.0)
     corrected = photon_distribution(unitary, corrected_overlap(figures["hom"], figures["g2"]), figures["g2"])
     dark_probability = [rate / (figures["clock_mhz"] * 1e6) for rate in dark_rates]
     quiet = [0.0] * MODES
     configurations = {
+        "indistinguishability only": (pure, 1.0, quiet),
         "source only": (photons, 1.0, quiet),
         "source and loss": (photons, figures["transmittance"], quiet),
         "source, loss and dark counts": (photons, figures["transmittance"], dark_probability),
@@ -682,17 +811,18 @@ def forecast_setting(item: tuple[dict[str, Any], dict[str, float], list[float]])
     out: dict[str, Any] = {}
     for name, (distribution, efficiency, dark) in configurations.items():
         clicks = detected_clicks(distribution, efficiency, dark)
+        any_click = sum(p for vector, p in clicks.items() if sum(vector) >= 1)
         sampled = sum(p for vector, p in clicks.items() if sum(vector) >= MIN_CLICKS)
         eligible = [0.0] * 4
         for vector, p in clicks.items():
             outcome = outcome_of(vector)
             if outcome is not None:
                 eligible[outcome] += p
-        total = sum(eligible)
         out[name] = {
+            "any_click_probability": any_click,
             "sample_probability": sampled,
-            "eligible_share": total / sampled,
-            "outcome_probabilities": [e / total for e in eligible],
+            "eligible_probabilities": eligible,
+            "eligible_share": sum(eligible) / sampled,
         }
     return out
 
@@ -706,21 +836,37 @@ def perf_figures(perfs: Mapping[str, Any]) -> dict[str, float]:
     }
 
 
-def expected_counts(per_setting: Sequence[Mapping[str, Any]], name: str) -> np.ndarray:
-    """(144, 4) expected eligible counts of a variant at the case's samples per iteration."""
-    return np.asarray(
-        [
-            [SAMPLES_PER_ITERATION * entry[name]["eligible_share"] * p for p in entry[name]["outcome_probabilities"]]
-            for entry in per_setting
-        ]
-    )
+def variant_arrays(per_setting: Sequence[Mapping[str, Any]], name: str) -> dict[str, np.ndarray]:
+    return {
+        "eligible": np.asarray([entry[name]["eligible_probabilities"] for entry in per_setting]),
+        "samples": np.asarray([entry[name]["sample_probability"] for entry in per_setting]),
+        "any": np.asarray([entry[name]["any_click_probability"] for entry in per_setting]),
+    }
 
 
-def sampled_counts(expected: np.ndarray, generator: np.random.Generator) -> np.ndarray:
-    """One synthetic dataset: every setting's rounded eligible total drawn multinomially from its outcome law."""
-    totals = np.rint(expected.sum(axis=1)).astype(int)
-    probabilities = expected / expected.sum(axis=1)[:, None]
-    return np.asarray([generator.multinomial(int(n), p) for n, p in zip(totals, probabilities, strict=True)])
+def exact_rates(arrays: Mapping[str, np.ndarray]) -> np.ndarray:
+    """(576,) eligible events per shot, a shot being a detection event of at least one photon."""
+    return np.asarray((arrays["eligible"] / arrays["any"][:, None]).reshape(-1))
+
+
+def exact_conditional(arrays: Mapping[str, np.ndarray]) -> np.ndarray:
+    return np.asarray((arrays["eligible"] / arrays["eligible"].sum(axis=1)[:, None]).reshape(-1))
+
+
+def sampled_dataset(
+    arrays: Mapping[str, np.ndarray], generator: np.random.Generator
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """One synthetic run: per setting, SAMPLES_PER_ITERATION samples over the four eligible outcomes and the rest, and
+    the shots those samples took (the samples plus a negative binomial count of failures at the sample share)."""
+    quota = SAMPLES_PER_ITERATION
+    eligible = np.empty((len(arrays["any"]), 4), dtype=int)
+    shots = np.empty(len(arrays["any"]), dtype=int)
+    for s in range(len(arrays["any"])):
+        within = arrays["eligible"][s] / arrays["samples"][s]
+        draw = generator.multinomial(quota, np.append(within, 1.0 - within.sum()))
+        eligible[s] = draw[:4]
+        shots[s] = quota + generator.negative_binomial(quota, arrays["samples"][s] / arrays["any"][s])
+    return eligible, np.full(len(arrays["any"]), quota), shots
 
 
 def dataset_streams(value: int) -> tuple[np.random.Generator, np.random.Generator]:
@@ -730,53 +876,67 @@ def dataset_streams(value: int) -> tuple[np.random.Generator, np.random.Generato
 
 
 def forecast_seeds() -> list[tuple[int, int]]:
-    """(index, value) of the draw's usable values after the compilation and bootstrap seeds: one per forecast variant,
-    then one per coverage dataset. The device analysis keeps its bootstrap seed to itself."""
+    """(index, value) of the case draw's usable values after the compilation and bootstrap seeds, one per forecast
+    variant. The remaining values of that draw are owned and unused."""
     usable = usable_draw()
     start = len(schedule()) + 1
-    need = len(FORECAST_VARIANTS) + COVERAGE_DATASETS
-    require(len(usable) >= start + need, f"{DRAW} holds {len(usable)} usable values, not {start + need}")
-    return usable[start : start + need]
+    require(len(usable) >= start + len(FORECAST_VARIANTS), f"{DRAW} holds too few usable values")
+    return usable[start : start + len(FORECAST_VARIANTS)]
 
 
-def coverage_study(expected: np.ndarray, seeds: Sequence[tuple[int, int]]) -> dict[str, Any]:
-    """How often each interval type covers the estimator's value at the expected counts across synthetic datasets.
+def coverage_seeds() -> list[tuple[int, int]]:
+    """(index, value) of the coverage draw's first COVERAGE_DATASETS usable values: nonzero, repeats skipped."""
+    record = json.loads((ROOT / COVERAGE_DRAW).read_text(encoding="utf-8"))
+    taken: set[int] = set()
+    usable = []
+    for index, value in enumerate(record["values"]):
+        if value != 0 and value not in taken:
+            taken.add(value)
+            usable.append((index, value))
+    require(len(usable) >= COVERAGE_DATASETS, f"{COVERAGE_DRAW} holds {len(usable)} usable values")
+    return usable[:COVERAGE_DATASETS]
 
-    Every dataset takes one draw value; its replicates are drawn before one pool maps the estimator over all of them."""
-    truth = estimate((expected / expected.sum(axis=1)[:, None]).reshape(-1))["process_fidelity"]
-    datasets = []
-    batches = []
+
+def coverage_study(arrays: Mapping[str, np.ndarray], seeds: Sequence[tuple[int, int]]) -> dict[str, Any]:
+    """How often each interval type covers the physical (absolute-rate) fidelity across synthetic datasets, with the
+    exact binomial interval of each coverage.
+
+    Every dataset takes one draw value; its replicates are drawn before one pool maps the estimator over them."""
+    from scipy.stats import binomtest
+
+    scale = np.ones(len(arrays["any"]))
+    truth = estimate_rates(exact_rates(arrays))["process_fidelity"]
+    hits = {"percentile": 0, "basic": 0}
+    biases = []
     for _, value in seeds:
         sampling, resampling = dataset_streams(value)
-        counts = sampled_counts(expected, sampling)
-        datasets.append(counts)
-        batches.append(resampled_frequencies(counts, resampling, COVERAGE_REPLICATES))
-    flat = [row for batch in batches for row in batch]
-    fidelities = ordered_map(replicate_fidelity, flat, min_items=8)
-    hits = {"percentile": 0, "basic": 0}
-    points = []
-    for k, counts in enumerate(datasets):
-        point = estimate((counts / counts.sum(axis=1)[:, None]).reshape(-1))["process_fidelity"]
-        points.append(point)
-        chunk = fidelities[k * COVERAGE_REPLICATES : (k + 1) * COVERAGE_REPLICATES]
-        for kind, (low, high) in intervals(point, chunk, BOOTSTRAP_LEVEL).items():
+        eligible, samples, shots = sampled_dataset(arrays, sampling)
+        found = tomography(eligible, samples, shots, scale, resampling, COVERAGE_REPLICATES, conditional=False)
+        biases.append(found["process_fidelity"] - truth)
+        for kind, (low, high) in found["process_fidelity_intervals"].items():
             hits[kind] += low <= truth <= high
+    count = len(seeds)
     return {
         "variant": COVERAGE_VARIANT,
         "estimand": truth,
-        "datasets": len(datasets),
+        "datasets": count,
         "replicates": COVERAGE_REPLICATES,
         "level": BOOTSTRAP_LEVEL,
-        "coverage": {kind: count / len(datasets) for kind, count in hits.items()},
-        "mean_point_bias": float(np.mean(points) - truth),
+        "coverage": {kind: hit / count for kind, hit in hits.items()},
+        "coverage_exact_binomial_interval": {
+            kind: [float(x) for x in (binomtest(hit, count).proportion_ci(0.95, method="exact"))]
+            for kind, hit in hits.items()
+        },
+        "mean_point_bias": float(np.mean(biases)),
+        "seed_draw": COVERAGE_DRAW,
         "seed_indices": [index for index, _ in seeds],
     }
 
 
 def forecast() -> dict[str, Any]:
-    """The noise forecast. Per variant: the estimator's value at the expected eligible counts of the case's budget
-    (the estimand), and the point and interval of one synthetic dataset sampled from those counts, as a run returns
-    them. The coverage study checks the preregistered interval type on the third variant."""
+    """The noise forecast. Per variant: the primary estimator's value at the exact absolute rates (the estimand) next to
+    the conditional estimator's, and the point and interval of one synthetic dataset as a run returns them. The
+    coverage study checks the preregistered interval type on the coverage variant."""
     perfs = read_perfs()
     figures = perf_figures(perfs)
     dark = list(perfs["Dark counts (detection/s)"])
@@ -785,24 +945,35 @@ def forecast() -> dict[str, Any]:
     seeds = forecast_seeds()
     result: dict[str, Any] = {}
     for k, name in enumerate(FORECAST_VARIANTS):
-        expected = expected_counts(per_setting, name)
-        shares = [entry[name]["eligible_share"] for entry in per_setting]
-        estimand = estimate((expected / expected.sum(axis=1)[:, None]).reshape(-1))
+        arrays = variant_arrays(per_setting, name)
+        estimand = estimate_rates(exact_rates(arrays))
+        conditional = estimate(exact_conditional(arrays))
         sampling, resampling = dataset_streams(seeds[k][1])
-        sampled = tomography(sampled_counts(expected, sampling), resampling)
+        eligible, samples, shots = sampled_dataset(arrays, sampling)
+        sampled = tomography(eligible, samples, shots, np.ones(len(rows)), resampling)
+        expected_shots = SAMPLES_PER_ITERATION * arrays["any"] / arrays["samples"]
         result[name] = {
-            "least_eligible_share": min(shares),
-            "mean_eligible_share": sum(shares) / len(shares),
-            "expected_eligible_events": float(expected.sum()),
+            "least_eligible_share": float(min(e[name]["eligible_share"] for e in per_setting)),
+            "mean_eligible_share": float(np.mean([e[name]["eligible_share"] for e in per_setting])),
+            "expected_eligible_events": float(
+                (SAMPLES_PER_ITERATION * arrays["eligible"] / arrays["samples"][:, None]).sum()
+            ),
+            "expected_shots_by_job": {
+                job: float(sum(expected_shots[row["schedule_index"]] for row in job_rows(job))) for job in JOBS
+            },
+            "any_click_probability_range": [float(arrays["any"].min()), float(arrays["any"].max())],
             "estimand_process_fidelity": estimand["process_fidelity"],
             "estimand_average_gate_fidelity": estimand["average_gate_fidelity"],
-            "estimand_linear_inversion_fidelity": estimand["linear_inversion_fidelity"],
+            "estimand_projected_process_fidelity": estimand["projected_process_fidelity"],
+            "estimand_min_eigenvalue_over_trace": estimand["min_eigenvalue_over_trace"],
+            "conditional_estimand_process_fidelity": conditional["process_fidelity"],
+            "conditional_estimand_linear_inversion_fidelity": conditional["linear_inversion_fidelity"],
             "sampled_dataset": {key: sampled[key] for key in SAMPLED_KEYS},
             "seed_index": seeds[k][0],
         }
-    study = coverage_study(expected_counts(per_setting, COVERAGE_VARIANT), seeds[len(FORECAST_VARIANTS) :])
+    study = coverage_study(variant_arrays(per_setting, COVERAGE_VARIANT), coverage_seeds())
     return {
-        "schema": "qd-cz-tomography-forecast-v2",
+        "schema": "qd-cz-tomography-forecast-v3",
         "read": {"path": READ, "sha256": sha256_bytes((FAMILY_DIR / READ).read_bytes()), **figures},
         "samples_per_iteration": SAMPLES_PER_ITERATION,
         "seed_draw": DRAW,
@@ -907,19 +1078,43 @@ def check_noise_limit() -> None:
 
 
 def check_estimator() -> float:
-    """The noiseless frequencies of all 144 settings reproduce the ideal CZ Choi matrix and process fidelity 1."""
-    point = estimate(ideal_frequencies())
+    """The noiseless rates of all 144 settings reproduce the ideal CZ Choi matrix and process fidelity 1 under the
+    primary estimator and the conditional one; a trace non-increasing map with input-dependent success keeps its
+    exact fidelity under the primary estimator."""
+    rates = ideal_frequencies() / 9.0
+    point = estimate_rates(rates)
     require(
         abs(point["process_fidelity"] - 1.0) < BODY_TOLERANCE, f"ideal process fidelity {point['process_fidelity']}"
     )
-    require(
-        abs(point["linear_inversion_fidelity"] - 1.0) < BODY_TOLERANCE,
-        f"ideal linear-inversion fidelity {point['linear_inversion_fidelity']}",
-    )
     require(abs(point["average_gate_fidelity"] - 1.0) < BODY_TOLERANCE, "ideal average gate fidelity")
-    gram = float(np.max(np.abs(partial_trace_output(point["choi"]) - np.eye(4))))
+    require(
+        abs(point["projected_process_fidelity"] - 1.0) < BODY_TOLERANCE,
+        f"ideal projected fidelity {point['projected_process_fidelity']}",
+    )
+    batch = batch_fidelity(np.stack([rates, 2.5 * rates]))
+    require(float(np.max(np.abs(batch - 1.0))) < BODY_TOLERANCE, "the fidelity functionals miss the ideal rates")
+    conditional = estimate(ideal_frequencies())
+    require(abs(conditional["process_fidelity"] - 1.0) < BODY_TOLERANCE, "ideal conditional fidelity")
+    gram = float(np.max(np.abs(partial_trace_output(conditional["choi"]) - np.eye(4))))
     require(gram < BODY_TOLERANCE, f"the ideal Choi matrix is not trace preserving ({gram:.2e})")
     return float(point["process_fidelity"])
+
+
+def worst_case_seconds(job: str) -> float:
+    """Seconds of the job with every iteration at its max_shots: ITERATION_SECONDS per iteration plus the shots at
+    the shot rate, the clock times the chance of at least one click, 1 - (1 - T)^2."""
+    figures = perf_figures(read_perfs())
+    rate = figures["clock_mhz"] * 1e6 * (1.0 - (1.0 - figures["transmittance"]) ** 2)
+    count = len(job_rows(job))
+    return ITERATION_SECONDS * count + JOB_SHOTS[job] * count / rate
+
+
+def expected_seconds_model(job: str) -> float:
+    """Seconds of the job at the plan's expected shots."""
+    figures = perf_figures(read_perfs())
+    rate = figures["clock_mhz"] * 1e6 * (1.0 - (1.0 - figures["transmittance"]) ** 2)
+    plan = json.loads((FAMILY_DIR / job / "plan-read.json").read_text(encoding="utf-8"))
+    return ITERATION_SECONDS * len(job_rows(job)) + plan["estimated_shots"] / rate
 
 
 def check_job(job: str) -> str:
@@ -943,7 +1138,13 @@ def check_job(job: str) -> str:
     require(plan["cases_sha256"] == sha256_bytes((out / "cases.json").read_bytes()), f"{job}: plan-read.json is stale")
     ceiling = PER_JOB_CREDITS + JOB_SHOTS[job] * PRICE_PER_SHOT
     require(abs(plan["credit_ceiling"] - ceiling) < TOLERANCE, f"{job}: the plan's credit ceiling is not {ceiling}")
-    return f"{FAMILY}/{job}: {len(settings)} iterations bound, credit ceiling {ceiling:g}"
+    worst, expected = worst_case_seconds(job), expected_seconds_model(job)
+    require(worst <= MAX_DURATION, f"{job}: every iteration at its cap takes {worst:.0f} s, past {MAX_DURATION} s")
+    require(expected <= EXPECTED_SECONDS, f"{job}: the modeled {expected:.0f} s pass the {EXPECTED_SECONDS} s bound")
+    return (
+        f"{FAMILY}/{job}: {len(settings)} iterations bound, credit ceiling {ceiling:g}, "
+        f"modeled {expected:.0f} s expected and {worst:.0f} s with every iteration at its cap"
+    )
 
 
 def check() -> int:
@@ -973,7 +1174,9 @@ def check() -> int:
     )
     require(retained["samples_per_iteration"] == SAMPLES_PER_ITERATION, "forecast.json predates the sample budget")
     require(retained["interval"] == INTERVAL_KIND, "forecast.json was built for another interval type")
-    coverage = retained["coverage_study"]["coverage"][INTERVAL_KIND]
+    study = retained["coverage_study"]
+    require(study["datasets"] == COVERAGE_DATASETS, "forecast.json holds another number of coverage datasets")
+    coverage = study["coverage"][INTERVAL_KIND]
     require(coverage >= COVERAGE_FLOOR, f"the {INTERVAL_KIND} interval covers {coverage} of the synthetic datasets")
     print(f"{FAMILY}: 144 settings, ideal process fidelity {fidelity:.12f}")
     return 0
@@ -985,7 +1188,9 @@ def check_forecast() -> int:
     variants = json.loads(retained)["variants"]
     for name, row in variants.items():
         print(
-            f"{name}: estimand {row['estimand_process_fidelity']:.4f}, eligible share {row['mean_eligible_share']:.4f}"
+            f"{name}: estimand {row['estimand_process_fidelity']:.4f} "
+            f"(conditional {row['conditional_estimand_process_fidelity']:.4f}), "
+            f"eligible share {row['mean_eligible_share']:.4f}"
         )
     return 0
 
@@ -1048,61 +1253,140 @@ def parse_state(key: str) -> list[int]:
     return [int(part) for part in key.strip("|>").split(",")]
 
 
-def eligible_counts(run: Path, manifest: Mapping[str, Any]) -> tuple[dict[str, list[int]], dict[str, int]]:
-    """({setting name: four eligible outcome counts}, exclusions by cause) of one collected run."""
+def load_run(run: Path) -> dict[str, Any]:
+    """One collected run bound to its retained case: cases.json must equal the retained bytes, and each returned
+    iteration binds to the setting that has its echoed compilation_seed, one to one. An entry that is missing,
+    malformed or an error is counted and skipped."""
+    raw = (run / "cases.json").read_bytes()
+    manifest = json.loads(raw)
+    job = manifest.get("job")
+    require(manifest.get("family") == FAMILY and job in JOBS, f"{run}: not a run of {FAMILY}")
+    retained = (FAMILY_DIR / job / "cases.json").read_bytes()
+    require(sha256_bytes(raw) == sha256_bytes(retained), f"{run}: cases.json differs from the retained {job}")
     results = json.loads((run / "results.json").read_text(encoding="utf-8"))
     entries = results.get("iterations") or []
-    tallies: dict[str, list[int]] = {}
+    require(len(entries) <= len(manifest["settings"]), f"{run}: {len(entries)} iterations for {job}")
+    by_seed = {setting["compilation_seed"]: setting["name"] for setting in manifest["settings"]}
+    tallies: dict[str, dict[str, Any]] = {}
+    uncounted: dict[str, int] = {}
     excluded = {"three_or_more_clicks": 0, "fewer_than_two_clicks": 0, "two_clicks_off_the_rails": 0}
-    for setting, entry in zip(manifest["settings"], entries, strict=False):
+    for entry in entries:
         counts = entry.get("counts") if isinstance(entry, dict) else None
         if not counts:
+            kind = next((k for k in UNCOUNTED if isinstance(entry, dict) and k in entry), "uncounted")
+            uncounted[kind] = uncounted.get(kind, 0) + 1
             continue
-        tally = [0, 0, 0, 0]
+        seed = (entry.get("iteration") or {}).get("compilation_seed")
+        require(seed in by_seed, f"{run}: an iteration echoes compilation_seed {seed!r}, which no setting has")
+        name = by_seed[seed]
+        require(name not in tallies, f"{run}: two iterations bind to {name}")
+        eligible = [0, 0, 0, 0]
         for key, count in counts.items():
-            vector = parse_state(key)
-            clicks = [1 if n else 0 for n in vector]
+            clicks = [1 if n else 0 for n in parse_state(key)]
             outcome = outcome_of(clicks)
             if outcome is not None:
-                tally[outcome] += count
+                eligible[outcome] += count
             elif sum(clicks) > MIN_CLICKS:
                 excluded["three_or_more_clicks"] += count
             elif sum(clicks) < MIN_CLICKS:
                 excluded["fewer_than_two_clicks"] += count
             else:
                 excluded["two_clicks_off_the_rails"] += count
-        tallies[setting["name"]] = tally
-    return tallies, excluded
+        samples = sum(counts.values())
+        shots = (entry.get("result_fields") or {}).get("nb_shots_used")
+        require(
+            isinstance(shots, int) and not isinstance(shots, bool) and shots >= samples,
+            f"{run}: {name} reports nb_shots_used {shots!r} below its {samples} samples",
+        )
+        tallies[name] = {"eligible": eligible, "samples": samples, "shots": shots}
+    submission_path = run / "submission.json"
+    submission = json.loads(submission_path.read_text(encoding="utf-8")) if submission_path.exists() else {}
+    return {
+        "job": job,
+        "cases_sha256": sha256_bytes(raw),
+        "tallies": tallies,
+        "uncounted": uncounted,
+        "excluded": excluded,
+        "perfs": submission.get("perfs_at_plan"),
+        "submitted_utc": submission.get("submitted_utc"),
+    }
+
+
+def shot_ratio(transmittance_percent: float) -> float:
+    """g(T) = T / (2 - T): under uniform loss the eligible rate (two photons detected, proportional to T^2) over the
+    shot rate (at least one click, 1 - (1 - T)^2)."""
+    fraction = transmittance_percent / 100.0
+    return fraction / (2.0 - fraction)
+
+
+def pooling(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """The job scales and the drift status of the pooled runs: job-00 is the reference, job-01's rates are multiplied
+    by g(T_job-00) / g(T_job-01), and the pool is decided only inside the preregistered tolerances."""
+    by_job = {entry["job"]: entry for entry in loaded}
+    reference, other = by_job[JOBS[0]], by_job[JOBS[1]]
+    scales = {JOBS[0]: 1.0, JOBS[1]: 1.0}
+    out: dict[str, Any] = {"scales": scales, "status": "descriptive", "reason": None}
+    perfs = [reference["perfs"], other["perfs"]]
+    times = [reference["submitted_utc"], other["submitted_utc"]]
+    if any(not isinstance(p, dict) for p in perfs) or any(not isinstance(t, str) for t in times):
+        out["reason"] = "a run lacks perfs_at_plan or submitted_utc"
+        return out
+    try:
+        gap = abs((datetime.fromisoformat(times[1]) - datetime.fromisoformat(times[0])).total_seconds()) / 3600.0
+        d_hom = abs(perfs[1]["HOM (%)"] - perfs[0]["HOM (%)"])
+        d_t = abs(perfs[1]["Transmittance (%)"] - perfs[0]["Transmittance (%)"])
+        scales[JOBS[1]] = shot_ratio(perfs[0]["Transmittance (%)"]) / shot_ratio(perfs[1]["Transmittance (%)"])
+    except (KeyError, TypeError, ValueError) as error:
+        out["reason"] = f"the plans' figures are unreadable: {error}"
+        return out
+    out.update({"hom_difference": d_hom, "transmittance_difference": d_t, "gap_hours": gap})
+    if d_hom <= POOL_HOM_TOLERANCE and d_t <= POOL_T_TOLERANCE and gap <= POOL_MAX_GAP_HOURS:
+        out["status"] = "decided"
+    else:
+        out["reason"] = "HOM, transmittance or the time between submissions passes the preregistered tolerance"
+    return out
 
 
 def analyze(runs: Sequence[Path], replicates: int = BOOTSTRAP_REPLICATES) -> dict[str, Any]:
-    """Pool collected runs: the process estimate when all 144 settings returned eligible events, else counts only."""
-    tallies: dict[str, list[int]] = {}
-    excluded = {"three_or_more_clicks": 0, "fewer_than_two_clicks": 0, "two_clicks_off_the_rails": 0}
-    for run in runs:
-        manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
-        require(manifest["family"] == FAMILY, f"{run}: not an {FAMILY} run")
-        found, lost = eligible_counts(run, manifest)
-        tallies.update(found)
-        for cause, count in lost.items():
-            excluded[cause] += count
+    """Pool collected runs: the primary process estimate when all 144 settings returned eligible events, else counts
+    only."""
+    loaded = [load_run(run) for run in runs]
+    jobs = [entry["job"] for entry in loaded]
+    require(len(set(jobs)) == len(jobs), f"the runs are not distinct jobs: {jobs}")
+    tallies: dict[str, dict[str, Any]] = {}
+    for entry in loaded:
+        tallies.update(entry["tallies"])
     rows = schedule()
     record: dict[str, Any] = {
-        "schema": "qd-cz-tomography-analysis-v1",
+        "schema": "qd-cz-tomography-analysis-v2",
+        "runs": [{"job": e["job"], "cases_sha256": e["cases_sha256"], "counted": len(e["tallies"])} for e in loaded],
         "settings_with_counts": len(tallies),
         "settings_expected": len(rows),
-        "excluded_by_cause": excluded,
-        "eligible_events": sum(sum(t) for t in tallies.values()),
-        "eligible_events_by_setting": {name: sum(t) for name, t in tallies.items()},
+        "uncounted_by_kind": {k: sum(e["uncounted"].get(k, 0) for e in loaded) for k in (*UNCOUNTED, "uncounted")},
+        "excluded_by_cause": {
+            k: sum(e["excluded"][k] for e in loaded)
+            for k in ("three_or_more_clicks", "fewer_than_two_clicks", "two_clicks_off_the_rails")
+        },
+        "eligible_events_by_setting": {name: sum(t["eligible"]) for name, t in tallies.items()},
     }
-    complete = len(tallies) == len(rows) and all(sum(tallies[row["name"]]) > 0 for row in rows)
+    record["eligible_events"] = sum(record["eligible_events_by_setting"].values())
+    complete = set(jobs) == set(JOBS) and all(
+        row["name"] in tallies and sum(tallies[row["name"]]["eligible"]) > 0 for row in rows
+    )
     if not complete:
         record["process"] = "undecided"
         return record
-    counts = np.asarray([tallies[row["name"]] for row in rows], dtype=float)
+    pool = pooling(loaded)
+    eligible = np.asarray([tallies[row["name"]]["eligible"] for row in rows], dtype=float)
+    samples = np.asarray([tallies[row["name"]]["samples"] for row in rows], dtype=float)
+    shots = np.asarray([tallies[row["name"]]["shots"] for row in rows], dtype=float)
+    scale = np.asarray([pool["scales"][row["job"]] for row in rows])
     seed = bootstrap_seed_of(runs[0])
-    record["process"] = tomography(counts, np.random.default_rng(seed), replicates)
-    record["process"]["bootstrap"]["seed"] = seed
+    process = tomography(eligible, samples, shots, scale, np.random.default_rng(seed), replicates)
+    process["bootstrap"]["seed"] = seed
+    process["pooling"] = pool
+    process["status"] = pool["status"]
+    record["process"] = process
     forecast_row = json.loads((FAMILY_DIR / FORECAST).read_text(encoding="utf-8"))["variants"]
     record["forecast_process_fidelity"] = {name: v["estimand_process_fidelity"] for name, v in forecast_row.items()}
     return record

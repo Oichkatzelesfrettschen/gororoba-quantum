@@ -9,8 +9,8 @@
  "gate_form": "template",
  "iterations": 72,
  "min_detected_photons": 2,
- "max_samples": 432000,
- "max_shots": 165600000,
+ "max_samples": 288000,
+ "max_shots": 115200000,
  "max_duration": 300,
  "mitigations": [],
  "output_modes": 12,
@@ -35632,24 +35632,39 @@
   "rule": "nonzero draw values in index order, repeats skipped; 144 compilation seeds in schedule order, then the bootstrap seed"
  },
  "preregistered": {
-  "estimator": "linear inversion of the 144 x 4 outcome frequencies onto the 16 x 16 Choi matrix, then the nearest completely positive trace-preserving map by Dykstra alternating projections",
-  "process_fidelity": "F_pro = <Phi_CZ| J |Phi_CZ> / 16 for the Choi matrix J of trace 4",
+  "estimator": "primary: linear inversion of the 144 x 4 absolute outcome rates (eligible events over the iteration's nb_shots_used) onto the 16 x 16 Choi matrix; the success probability of the postselected map may depend on the input, so the Choi matrix is trace non-increasing and carries its total rate",
+  "rate_denominator": "nb_shots_used counts detection events of at least one photon; with uniform loss the chance of at least one click is 1 - (1 - T)^2 for every setting, so eligible / nb_shots_used is an absolute rate common to all settings up to one factor per job",
+  "process_fidelity": "F_pro = <Phi_CZ| J |Phi_CZ> / (4 Tr J) for the unprojected Choi matrix J, a ratio of linear functionals of the rates; Tr J / 4 is the mean eligible rate",
   "average_gate_fidelity": "F_avg = (4 F_pro + 1) / 5",
+  "descriptive_estimator": "per-setting normalization to the eligible events, linear inversion, nearest completely positive trace-preserving map by Dykstra projections: the limit of this conditional reconstruction differs from the postselected fidelity because the conditional map is not linear",
   "bootstrap": {
    "replicates": 500,
    "level": 0.95,
-   "kind": "parametric multinomial resample of every setting's eligible events; the basic interval, chosen by the coverage study in forecast.json",
+   "kind": "parametric resample of every iteration: its samples multinomially over the four eligible outcomes and the rest, its shots as the samples plus a negative binomial count of failures at the observed sample share; the percentile interval, chosen by the coverage study in forecast.json",
    "seed_draw": "docs/evidence/anu_qrng/draw-2026-10-31T034409Z.json",
    "seed_index": 144
   },
-  "pooling": "both jobs; a missing setting leaves the estimate undecided and its subset descriptive",
+  "binding": "each returned iteration binds to the setting that has its echoed compilation_seed, one to one; each run's cases.json must equal the retained case byte for byte and the two runs must be distinct jobs; an entry that is missing, malformed or an error is counted and skipped",
+  "pooling": {
+   "rule": "both jobs; the rates of job-01 are multiplied by g(T_job-00) / g(T_job-01) with g(T) = T / (2 - T), the ratio of the eligible rate to the shot rate under uniform loss, T read from each run's perfs_at_plan",
+   "decided_when": {
+    "hom_percentage_points": 1.0,
+    "transmittance_percentage_points": 0.3,
+    "max_gap_hours_between_submissions": 12.0
+   },
+   "otherwise": "the pooled estimate is reported as descriptive",
+   "incomplete": "a missing setting, or a run that is not both jobs, leaves the estimate undecided",
+   "collect_timeout": "job-01 is submitted only after job-00 collects a terminal status; a collect that times out is repeated once, and a second timeout stops the case with job-01 unsent"
+  },
   "descriptive": [
-   "linear-inversion fidelity before the projection",
+   "the fidelity of the nearest positive matrix of the same trace (biased low under noise)",
+   "the conditional estimator's fidelity",
+   "the least eigenvalue of J over its trace",
    "per-setting eligible share of the two-click samples",
-   "exclusions by cause",
+   "exclusions by cause and uncounted iterations by kind",
    "comparison with the retained noise forecast"
   ],
-  "vendor_comparison": "93.8 +- 0.6 % CNOT fidelity of the vendor chip, descriptive only: a different gate on a calibrated, uncompiled-per-setting chip",
+  "vendor_comparison": "none: the vendor paper's 93.8 +- 0.6 % CNOT figure carries no fidelity type in docs/notes/quandela/literature.md, so the case reports no difference to it",
   "interpretation": "service-compiled average postselected CZ; preparation, readout and gate errors are not separable because every setting compiles to its own mesh"
  }
 }

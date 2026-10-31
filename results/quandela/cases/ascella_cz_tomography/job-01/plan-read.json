@@ -10,16 +10,16 @@
   "num_jobs_in_queue": 0,
   "num_running_qt_jobs": 0
  },
- "body_sha256": "0fa07395fb99fe0d656a1ba752c6776f75c23a4a086061e626d56cda8e830ac8",
+ "body_sha256": "557c406ee5bf43aca9e3e47788251b725402ed0a68d36b903f838e97a905775c",
  "case": "job-01",
- "cases_sha256": "e6f0cb67e897ddd6316d749de1943fafd426800e715510572040e362d6678c7c",
- "credit_ceiling": 3.3,
- "estimated_credits": 3.3,
- "estimated_shots": 21748730,
+ "cases_sha256": "e7c5b2969f5989157a0ba9d1da66fbb60a5468545d02ba004ceb411dafa1a6bc",
+ "credit_ceiling": 2.5999999999999996,
+ "estimated_credits": 2.5999999999999996,
+ "estimated_shots": 14499166,
  "expected_seconds": 240.0,
- "max_credits": 3.3,
- "max_samples": 432000,
- "max_shots": 165600000,
+ "max_credits": 2.6,
+ "max_samples": 288000,
+ "max_shots": 115200000,
  "payload_version_basis": "restored from docs/evidence/quandela/catalogue.json retrieved 2026-10-20T08:51:26+00:00",
  "per_job_credits": 1.0,
  "perfs_at_plan": {
@@ -75,7 +75,7 @@
     "availability": 92.03
    },
    "2026-10-31": {
-    "availability": 90.71
+    "availability": 91.94
    }
   },
   "status": "available",
