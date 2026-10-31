@@ -64,11 +64,8 @@ TUNA_DESTINATION = Layout(
 def _parity_signs(n: int) -> np.ndarray:
     """(-1)^(popcount(coordinate & mask)) over all 2^n coordinates and masks."""
     size = 1 << n
-    coordinates = np.arange(size, dtype=np.int64)[:, None]
-    masks = np.arange(size, dtype=np.int64)[None, :]
-    parity = np.zeros((size, size), dtype=np.int64)
-    for position in range(n):
-        parity ^= ((coordinates >> position) & 1) * ((masks >> position) & 1)
+    overlap = np.arange(size, dtype=np.int64)[:, None] & np.arange(size, dtype=np.int64)[None, :]
+    parity = ((overlap[:, :, None] >> np.arange(n, dtype=np.int64)) & 1).sum(axis=2) & 1
     return 1 - 2 * parity
 
 
@@ -101,14 +98,13 @@ def marginal_projections(joint_counts: Sequence[int], qubits: int) -> list[list[
     """Per-qubit (early, terminal) 2x2 tables, flattened as early*2 + terminal, projected from the joint table."""
     counts = np.asarray(joint_counts, dtype=np.int64)
     require(counts.shape == (1 << (2 * qubits),) and (counts >= 0).all(), "joint counts need 4^k nonnegative integers")
-    coordinates = np.arange(counts.size, dtype=np.int64)
-    tables = []
-    for index in range(qubits):
-        cell = 2 * ((coordinates >> index) & 1) + ((coordinates >> (index + qubits)) & 1)
-        projected = np.zeros(4, dtype=np.int64)
-        np.add.at(projected, cell, counts)
-        tables.append(projected.tolist())
-    return tables
+    coordinates = np.arange(counts.size, dtype=np.int64)[None, :]
+    index = np.arange(qubits, dtype=np.int64)[:, None]
+    # One scatter-add over every (qubit, coordinate) pair projects all k tables at once.
+    cells = 2 * ((coordinates >> index) & 1) + ((coordinates >> (index + qubits)) & 1)
+    tables = np.zeros((qubits, 4), dtype=np.int64)
+    np.add.at(tables, (np.broadcast_to(index, cells.shape), cells), np.broadcast_to(counts, cells.shape))
+    return tables.tolist()
 
 
 def contrasts(jobs: Sequence[dict[str, Any]], shots: int) -> dict[str, Any]:
