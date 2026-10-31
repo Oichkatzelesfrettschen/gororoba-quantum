@@ -13762,7 +13762,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One chip in one calibration state, the two layouts about one hour apart and no same-layout repeat, so run-to-run drift is not bounded and the placement effect is not separated from it. Both predictors correlate negatively, so neither the block nor the slot account of the residual holds in the form preregistered; the data do not identify a slot-by-t interaction, which the per-cell means (one to four blocks each) only suggest. The comparison reads the packed qpu:belenos collection retained beside box_kite_photonic_packed, not these runs' directories.",
+      "boundary": "One chip in one calibration state, the two layouts about one hour apart and no same-layout repeat, so run-to-run drift is not bounded and the placement effect is not separated from it. Both predictors correlate negatively, so neither the block nor the slot account of the residual holds in the form preregistered; the data do not identify a slot-by-t interaction, which the per-cell means (one to four blocks each) only suggest. The comparison reads the packed qpu:belenos collection retained beside box_kite_photonic_packed, not these runs' directories. The interleaved case qd-belenos-mode-swap-per-seed-mesh-variance places these moves within the per-seed compiled-mesh variance and reads the deltas as mesh error.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-30T054727Z-qpu_belenos-box_kite_photonic_packed_swapped-job-00/results.json",
@@ -14468,6 +14468,80 @@
       ],
       "depends_on": [
         "qd-belenos-teleportation-split-blocks-mesh-error"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-mode-swap-per-seed-mesh-variance",
+      "statement": "The interleaved mode-swap case on qpu:belenos ran job dc348230-ceb9-40b7-aa04-a5e09a51e213 (2026-10-31 06:07 UTC, HOM 88.6 %, g2 1.4 %, transmittance 4.89 %), cut at 300 s after its six set-0 iterations of 6,000 samples, and jobs c17b8312, 3c99e49c, 4b8a1795, 04e74386, 97aaf094, 83074d81, 90e03722 and f33dc283 (09:52 to 10:35 UTC, HOM 87.5 %, g2 1.2 %, transmittance 5.42 %), each five iterations of 30,000 samples in 213 to 245 s. Every primary pair kept one computed_circuit, across a set's two jobs for sets 1 to 4, and every replicate seed returned a distinct mesh. The per-seed mesh standard deviation of the single-click algebra-mode share is 0.0515 for half blocks (68 degrees of freedom, one-sided 95 % upper bound 0.060) and 0.0177 for extreme blocks (88, upper bound 0.020), with mesh spreads 50 and 80 times the binomial variance; slot 5 (chip modes 20 to 23) fails one mesh scale per class (S 85.9 on 26 degrees of freedom, p 2.5e-8) through seed-to-seed jumps of 0.07 to 0.13 in extreme blocks of sets 0, 1 and 3. Against that variance 1 of 30 blocks moves beyond 4.5 standard errors while 23 of 30 move against binomial error alone; the new and earlier packed-swapped deltas correlate at r 0.15 (95 % interval -0.23 to 0.48) with 22 of 30 signs agreeing (one-sided p 0.008), and the earlier deltas' excess X(1) reads 46.2 against the chi-square 0.99 quantile 50.9. The preregistered reading is: moves not shown beyond the mesh variance do not follow the earlier deltas, which stay within the per-seed mesh variance: the earlier deltas read as mesh error. Within-set drift stays small (pooled p 0.33, largest kappa^2 1.87). The descriptive slot predictor reads r 0.18 (-0.39 to 0.65) against the earlier -0.59.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One chip. Set 0 ran in an earlier calibration window (HOM 88.6 %) than sets 1 to 4 (87.5 %), with one replicate seed per layout against three, and its groups pool into the class variances. Slot 5's larger mesh error withholds the per-block beyond class by rule, though one block crossed the threshold. The signs agree above chance while the magnitudes do not correlate, which the preregistered rule reads as uncorrelated: a placement component smaller than the per-seed mesh error is not excluded, and the case's Monte Carlo puts the reproduce reading near 55 % when half of each earlier delta is placement. X(1) sits 9 % under its quantile, close to the window verdict. The slot predictor includes swap partners and carries no reading.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved-job-00/results.json",
+          "sha256": "48ad9dc6157f7247587bdb3012c2d8fb2780258972ccf82e3223155ad145a29f"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T095141Z-qpu_belenos-belenos_mode_swap_interleaved-job-03/results.json",
+          "sha256": "b0f0b0195a15e22b653731a490474a4cfb8729a3be68a413c7f812b13e59940b"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T095657Z-qpu_belenos-belenos_mode_swap_interleaved-job-04/results.json",
+          "sha256": "0758bae2b6926a7f63a8e3c9dbd8b07fde5aa76079a86f5028571c3d09bf8624"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T100240Z-qpu_belenos-belenos_mode_swap_interleaved-job-05/results.json",
+          "sha256": "9957b751331d463f707601ee3ab8fd76a02cc97f8aa1b45db12cce081ce6af6b"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T100724Z-qpu_belenos-belenos_mode_swap_interleaved-job-06/results.json",
+          "sha256": "3b7c8381b5388ddc1434a2f00a2875461d8ff102d731df85ebc6095f4fb3d593"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T101311Z-qpu_belenos-belenos_mode_swap_interleaved-job-07/results.json",
+          "sha256": "4cf5ff69df4829427595979e4ae309befc8ef4e5e58b626ca3235fc69fe6c132"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T101805Z-qpu_belenos-belenos_mode_swap_interleaved-job-08/results.json",
+          "sha256": "7e064e13fe31852aeb3d11db92f5230cf4a1467ff1924fa18080cd1ef9668305"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T102354Z-qpu_belenos-belenos_mode_swap_interleaved-job-09/results.json",
+          "sha256": "0f18efbc76fd93ad60973d0186ff00d4c07ac560010a5a109c449c2d8de25815"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T102907Z-qpu_belenos-belenos_mode_swap_interleaved-job-10/results.json",
+          "sha256": "ac459f137ff762a85d5b802eced0862ec183d3a899749321dac20182971780ed"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T095141Z-qpu_belenos-belenos_mode_swap_interleaved-job-03/analysis.json",
+          "sha256": "ede93e4bd9e9e250a2082fbd2b032c864f861126881041e3070a758b2d9a80b1"
+        }
+      ],
+      "documents": [
+        "docs/design/belenos-mode-swap-interleaved-case.md",
+        "scripts/belenos_mode_swap_interleaved.py"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-mode-swap-interleaved-job-00",
+        "qd-qpu-belenos-mode-swap-interleaved-job-03",
+        "qd-qpu-belenos-mode-swap-interleaved-job-04",
+        "qd-qpu-belenos-mode-swap-interleaved-job-05",
+        "qd-qpu-belenos-mode-swap-interleaved-job-06",
+        "qd-qpu-belenos-mode-swap-interleaved-job-07",
+        "qd-qpu-belenos-mode-swap-interleaved-job-08",
+        "qd-qpu-belenos-mode-swap-interleaved-job-09",
+        "qd-qpu-belenos-mode-swap-interleaved-job-10"
+      ],
+      "assumptions": [
+        "A result iteration binds to its setting by echoed circuit_params and compilation_seed; the two primary repeats of a layout bind in returned order."
+      ],
+      "depends_on": [
+        "qd-belenos-packed-mode-swap"
       ],
       "supersedes": [],
       "superseded_by": null

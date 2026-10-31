@@ -274,3 +274,29 @@ slot predictor is descriptive. The design does not show how a chip mode changes 
   step of about 0.05 (kappa^2 about 43). A set whose D detects drift below that threshold is recorded and the case
   continues. A job that errors or is cut
   short is resubmitted only on the owner's further approval.
+
+## Outcome
+
+All nine jobs ran on 2026-10-31 (claim `qd-belenos-mode-swap-per-seed-mesh-variance` in
+[research_state.json](../state/research_state.json)). Job-00 (`dc348230`, HOM 88.6 %) returned set 0 before its cut;
+job-03 to job-10 (HOM 87.5 %, g2 1.2 %, transmittance 5.42 %) each returned five iterations of 30,000 samples in 213
+to 245 s, 43 to 49 s per iteration. Every primary pair kept one mesh, across the two jobs of sets 1 to 4, and every
+replicate returned a distinct mesh.
+
+| Statistic | Value |
+|---|---|
+| Within-set drift D (12 degrees of freedom each), sets 0 to 4 | 4.9, 17.2, 3.9, 15.9, 22.4; pooled p 0.33; largest kappa^2 1.87 |
+| Mesh sigma, half blocks | 0.0515 on 68 degrees of freedom (upper bound 0.060), spread 50 times binomial |
+| Mesh sigma, extreme blocks | 0.0177 on 88 degrees of freedom (upper bound 0.020), spread 80 times binomial |
+| Slot homogeneity | slot 5 S 85.9 on 26 degrees of freedom, p 2.5e-8; slots 0 to 4 p 0.55 to 1 |
+| Blocks beyond the mesh variance | 1 of 30 (z -5.39, an extreme block of set 0 on slot 5); 23 of 30 against binomial error alone |
+| New against earlier deltas | r 0.15 (-0.23 to 0.48), 22 of 30 signs agree (p 0.008): uncorrelated |
+| Earlier excess | X(1) 46.2, X(3) 15.5 against q 50.9: mesh |
+| Slot predictor (descriptive) | r 0.18 (-0.39 to 0.65) |
+
+Reading: moves not shown beyond the mesh variance do not follow the earlier deltas, which stay within the per-seed mesh
+variance: the earlier deltas read as mesh error. The packed-swapped deltas of claim `qd-belenos-packed-mode-swap` are
+the size two compiled meshes of one layout differ by, and the reversed-sign slot pattern does not recur. Slot 5 (chip
+modes 20 to 23) carries larger per-seed mesh error than the other slots, from seed-to-seed jumps of 0.07 to 0.13 in
+extreme blocks of sets 0, 1 and 3. The sign agreement above chance leaves room for a placement component smaller than
+the mesh error, which this design cannot resolve.

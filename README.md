@@ -40,7 +40,7 @@ acquisition of every provider:
 | numerical or stochastic simulation | established | 11 |
 | numerical or stochastic simulation | superseded | 1 |
 | preregistered emulator control | established | 13 |
-| preregistered hardware inference | established | 86 |
+| preregistered hardware inference | established | 87 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |
