@@ -67,10 +67,11 @@ Templates live in `docs/runbooks/provider-credits/`: `gororoba-credits.timer` (d
 `snapshot`, then `check-alerts`, and calls `notify-send` when it prints alerts. The unit exits nonzero while an alert
 stands, so `systemctl --user status gororoba-credits.service` reads `failed` until the cause clears. `PYTHON` in the
 unit is `/usr/bin/python3` (Python 3.14 with qiskit-ibm-runtime 0.50), and `GLIBC_TUNABLES` is set because the
-Qiskit extensions need it. The unit's `REPO` placeholder is the absolute path of the checkout that holds the script:
+Qiskit extensions need it. The unit's `REPO` placeholder is the absolute path of the checkout that holds the script,
+and the block below runs from that checkout:
 
 ```sh
-repo=/home/eirikr/Projects/IBMQuantum
+repo=$(git rev-parse --show-toplevel)
 mkdir -p ~/.config/systemd/user
 for u in gororoba-credits.service gororoba-credits.timer; do
   sed "s|REPO|$repo|g" "$repo/docs/runbooks/provider-credits/$u" > ~/.config/systemd/user/$u
