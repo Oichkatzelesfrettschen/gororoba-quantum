@@ -373,14 +373,17 @@ class Run:
     summary: dict[str, Any] | None
     shots: int
     facts: dict[str, Any]
+    cases_sha256: str
+    body: dict[str, Any]
 
 
 def read_run(directory: Path) -> Run:
     """Offline rules of one retained run: receipt, digests, approval, collection and raw result bytes.
 
     Every rejection names the run. The returned Run carries the parsed receipt, manifest, circuit and collection,
-    the raw result summary (None for a result-less terminal job), the shots the job consumed and the facts the
-    registry records; the credit charge is an account fact that qd_platform.run_facts adds.
+    the raw result summary (None for a result-less terminal job), the shots the job consumed, the facts the
+    registry records, the cases.json digest and the sent body; the credit charge is an account fact that
+    qd_platform.run_facts adds.
     """
     owner = f"Quandela run {directory.name}"
     if not (directory / "submission.json").is_file():
@@ -467,7 +470,7 @@ def read_run(directory: Path) -> Run:
         "statuses": {status: 1},
         "detail": f"job {submission['job_id']}, {collected.get('samples', 0)} samples, {shots} shots",
     }
-    return Run(submission, manifest, circuit, collected, summary, shots, facts)
+    return Run(submission, manifest, circuit, collected, summary, shots, facts, cases_sha256, body)
 
 
 PlatformError = RecordError

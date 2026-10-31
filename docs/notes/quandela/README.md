@@ -384,6 +384,9 @@ unpublished method enters a Quandela job only with that use accepted.
   standard library alone. `qd_platform.run_facts` adds the credit charge to
   its facts, and scripts/research_state.py reads every run through it as the
   `quandela` provider.
+  The Ascella signed-coherence analyses (`ascella_coherence_repeat.run_record`
+  and its callers) read their runs through `read_run` too, so a run enters a
+  score only after the shared record rules.
 
 The token's provider limits and the repository runner's admission rule are
 separate. The recorded provider limits allow one running job and one queued
