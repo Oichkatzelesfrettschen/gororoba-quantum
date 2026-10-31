@@ -505,6 +505,118 @@
    "value": 19846,
    "record": "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json",
    "index": 11
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_00_COMPILATION_SEEDS",
+   "value": 21992,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_00_COMPILATION_SEEDS",
+   "value": 60642,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_00_COMPILATION_SEEDS",
+   "value": 22447,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_00_COMPILATION_SEEDS",
+   "value": 48697,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 3
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_00_COMPILATION_SEEDS",
+   "value": 62981,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 4
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_00_COMPILATION_SEEDS",
+   "value": 32522,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 5
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_00_COMPILATION_SEEDS",
+   "value": 49525,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 6
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_00_COMPILATION_SEEDS",
+   "value": 33203,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 7
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 65231,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 8
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 43547,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 9
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 10004,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 10
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 41732,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 11
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 19358,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 12
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 21749,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 13
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 33051,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 14
+  },
+  {
+   "path": "scripts/belenos_associator_visibility.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 43264,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
+   "index": 15
   }
  ],
  "runtime": [
