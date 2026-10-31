@@ -1,10 +1,13 @@
-"""qd_records reads a retained Quandela run offline from any location; qd_platform delegates to it."""
+"""qd_records reads a bounded synthetic Quandela run from any location; qd_platform delegates to it.
+
+The archive-wide replay (every retained run through both paths) carries the audit marker."""
 
 from __future__ import annotations
 
 import json
 import shutil
 from pathlib import Path
+from typing import Any
 
 import pytest
 import qd_platform
@@ -20,6 +23,72 @@ def _check(condition: object, message: str) -> None:
         raise AssertionError(message)
 
 
+def make_run(root: Path, *, detected: int | None = None) -> Path:
+    """One completed single-iteration run in the collector's format, small enough to read in a test."""
+    path = root / "2026-01-01T000000Z-qpu_ascella-fixture"
+    (path / "raw").mkdir(parents=True)
+
+    def save(name: str, value: Any) -> str:
+        data = (json.dumps(value, indent=1, sort_keys=True) + "\n").encode()
+        (path / name).write_bytes(data)
+        return qd_records.sha256_bytes(data)
+
+    circuit = {"schema": "qd-template-circuit-v1", "modes": 4, "input_state": [1, 0, 0, 0], "ops": [], "parameters": 0}
+    circuit_hash = save("circuit.json", circuit)
+    manifest = {
+        "schema": "qd-hypercomplex-cases-v1",
+        "family": "fixture",
+        "job": "fixture",
+        "platforms": ["qpu:ascella"],
+        "gate_form": "template",
+        "command": "sample_count",
+        "iterations": 1,
+        "settings": [{"name": "s0", "circuit_params": {}, "column": 0}],
+        "max_samples": 10,
+        "max_shots": 20,
+        "circuit": {"file": "circuit.json", "sha256": circuit_hash},
+    }
+    cases_hash = save("cases.json", manifest)
+    body = {"payload": {"test": "retained-payload"}}
+    save("job-body.json", body)
+    save(
+        "submission.json",
+        {
+            "schema": "qd-submission-v1",
+            "cases_sha256": cases_hash,
+            "job_id": "fixture-job",
+            "platform": "qpu:ascella",
+            "approval": "fixture approval",
+            "submitted_utc": "2026-01-01T00:00:00+00:00",
+            "body_sha256": qd_records.sha256_bytes(json.dumps(body, sort_keys=True).encode()),
+            "per_job_credits": 1.0,
+            "platform_at_plan": {"price_per_shot": 1e-6},
+        },
+    )
+    fields = {} if detected is None else {"nb_shots_used": detected}
+    answer = {
+        "job_id": "fixture-job",
+        "shots": 20,
+        "results": json.dumps({"results": ":PCVL:BSCount:{|1,0,0,0>=6;|0,1,0,0>=2;|0,0,1,0>=2}", **fields}),
+    }
+    save("raw/result.json", answer)
+    raw = (path / "raw/result.json").read_bytes()
+    status = {"status": "completed", "shots": 20}
+    save(
+        "results.json",
+        {
+            "schema": "qd-collection-v1",
+            "job_id": "fixture-job",
+            "status": status,
+            "collected_utc": "2026-01-01T00:01:00+00:00",
+            "data": {"payload": body["payload"]},
+            "result_sha256": qd_records.sha256_bytes(raw),
+            **qd_records.result_summary(raw, "fixture-job", status, expected=None),
+        },
+    )
+    return path
+
+
 def _retained_runs() -> list[Path]:
     return qd_records.run_directories(RUNS)
 
@@ -30,7 +99,9 @@ def test_platform_error_is_the_record_error() -> None:
     )
 
 
+@pytest.mark.audit
 def test_every_retained_run_reads_and_run_facts_adds_only_the_charge() -> None:
+    """End-to-end replay of the archive."""
     runs = _retained_runs()
     _check(len(runs) > 0, "no retained Quandela runs")
     for directory in runs:
@@ -47,14 +118,14 @@ def test_every_retained_run_reads_and_run_facts_adds_only_the_charge() -> None:
 
 
 def test_relocated_copy_reads_identically(tmp_path: Path) -> None:
-    original = next(d for d in _retained_runs() if (d / "raw/result.json").is_file())
+    original = make_run(tmp_path / "source")
     moved = tmp_path / "elsewhere" / "renamed"
     shutil.copytree(original, moved)
     _check(qd_records.read_run(moved) == qd_records.read_run(original), "relocation changed the run")
 
 
 def test_altered_raw_result_rejected(tmp_path: Path) -> None:
-    original = next(d for d in _retained_runs() if (d / "raw/result.json").is_file())
+    original = make_run(tmp_path / "source")
     moved = tmp_path / "run"
     shutil.copytree(original, moved)
     raw = moved / "raw/result.json"
@@ -64,7 +135,7 @@ def test_altered_raw_result_rejected(tmp_path: Path) -> None:
 
 
 def test_wrong_job_identity_rejected(tmp_path: Path) -> None:
-    original = next(d for d in _retained_runs() if (d / "raw/result.json").is_file())
+    original = make_run(tmp_path / "source")
     moved = tmp_path / "run"
     shutil.copytree(original, moved)
     path = moved / "results.json"
@@ -76,7 +147,7 @@ def test_wrong_job_identity_rejected(tmp_path: Path) -> None:
 
 
 def test_altered_circuit_bytes_rejected(tmp_path: Path) -> None:
-    original = next(d for d in _retained_runs() if (d / "raw/result.json").is_file())
+    original = make_run(tmp_path / "source")
     moved = tmp_path / "run"
     shutil.copytree(original, moved)
     circuit = moved / json.loads((moved / "cases.json").read_bytes())["circuit"]["file"]
@@ -86,7 +157,7 @@ def test_altered_circuit_bytes_rejected(tmp_path: Path) -> None:
 
 
 def test_uncollected_run_rejected(tmp_path: Path) -> None:
-    original = _retained_runs()[0]
+    original = make_run(tmp_path / "source")
     moved = tmp_path / "run"
     shutil.copytree(original, moved)
     (moved / "results.json").unlink()
@@ -94,8 +165,8 @@ def test_uncollected_run_rejected(tmp_path: Path) -> None:
         qd_records.read_run(moved)
 
 
-def test_run_carries_the_case_digest_and_the_sent_body() -> None:
-    directory = _retained_runs()[0]
+def test_run_carries_the_case_digest_and_the_sent_body(tmp_path: Path) -> None:
+    directory = make_run(tmp_path)
     run = qd_records.read_run(directory)
     _check(run.cases_sha256 == qd_records.sha256_bytes((directory / "cases.json").read_bytes()), "case digest differs")
     _check(
