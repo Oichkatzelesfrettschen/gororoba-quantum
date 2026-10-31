@@ -267,6 +267,10 @@ slot predictor is descriptive. The design does not show how a chip mode changes 
 - *Stopping rule.* A set's second job is planned and submitted as soon as its first job returns and its mesh digests
   check (primary repeats on one mesh, replicates distinct), which keeps the gap between them short. After a set's
   second job, the set's drift statistic D and the job's duration are read before the next set: a set whose primary
-  repeats return two meshes in every pair, whose replicates return their primaries' meshes, or whose D detects drift
-  (p < 0.01) stops the case for the owner, and so does a job that ran longer than 270 s. A job that errors or is cut
+  repeats return two meshes in every pair, whose replicates return their primaries' meshes, or whose kappa^2 exceeds
+  20 stops the case for the owner, and so does a job that ran longer than 270 s. At 30,000 samples a primary pair's
+  two-sample standard error is about 0.0095, so D detects a step of 0.01 to 0.02 between a set's two jobs, which the
+  Monte Carlo shows leaves the readings unchanged (kappa^2 median 8.5); the excess verdict moves toward "mesh" from a
+  step of about 0.05 (kappa^2 about 43). A set whose D detects drift below that threshold is recorded and the case
+  continues. A job that errors or is cut
   short is resubmitted only on the owner's further approval.
