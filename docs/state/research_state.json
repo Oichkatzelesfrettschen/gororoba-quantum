@@ -14257,6 +14257,90 @@
       "depends_on": [],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-teleportation-split-blocks-mesh-error",
+      "statement": "The split two-block teleportation rehearsal on qpu:belenos ran block A as job f918c870-786c-48a8-8cf4-1d5e6e334516 (submitted 2026-10-31 03:58:45 UTC) and block B as job e7f527ce-22eb-4f73-8a52-3395589ebbba (04:04:38 UTC), both at HOM 87.9 %, g2 1.4 %, transmittance 5.37 % on layout (18, 19, 20, 17, 22, 23, 16, 21), each completing six iterations within the 300 s limit (the B -Z iteration reached its 3,000,000 max_shots). Pooled, the accepted-event correctness reads 0.823 (1495 of 1816) with an anytime-valid lower bound of 0.787 at alpha 0.01; the block homogeneity veto flags +Z (p 1.3e-5) and -Z (p 4.0e-9), so the two-copy (margin +0.037) and attempt-box (+0.082) comparisons are vetoed. An exact replay of block A, job 137c771c-f7e8-4085-aa5d-065385368f54 at 04:27:33 UTC with the same circuit parameters and compilation seeds, returned the same computed_circuit for all six settings, read 0.825 (690 of 836) and agrees with block A on every input (p 0.079 to 0.985). The block difference therefore follows the per-seed compiled meshes, which differ between the blocks, and not drift between the jobs.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Three jobs on one chip in one calibration state within 29 minutes. The replay rules out drift between 03:58 and 04:27 at fixed meshes; a drift confined to the six minutes of block B that reverted before the replay is not excluded by these jobs, though it is the less economical reading. The replay comparison was designed after the block difference appeared, so it is exploratory; the vetoed comparisons stay vetoed under the preregistered rule, and a non-vetoed comparison needs a design whose blocks share seeds. Correctness is per accepted event and the comparisons hold only under the assumptions each names.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02/results.json",
+          "sha256": "b3adc2113789ead275f2433a709246fd154b5afb0dce651e939de85f2fff5790"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02/submission.json",
+          "sha256": "40f6aaa081186a12222aa5a1c072d8b3f7a25418c8dbc1261f078e2f25595190"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02/analysis.json",
+          "sha256": "5288f5cd725028fae059994cedada1077d9ffc597358c3b3ef324a94b26ff6e4"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02/raw/result.json",
+          "sha256": "f36be73454be3e2faa3402ae95e9fb55cf6409b0dae03f2f15fa22a8ae7e7df6"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03/results.json",
+          "sha256": "3353c1e76fb89ac199008519543dc7a97fb121cdfe9d883564884da67fa9c476"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03/submission.json",
+          "sha256": "f46bbfd32d92b8f86dbf78146b5520d1e199bcb15a4e39391e2ce2131fd8ae30"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03/analysis.json",
+          "sha256": "3058dee1b0832a9ddd71f45a8d9f003a5d9e521d91eb177363a3648a925cbcf0"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03/pair-analysis.json",
+          "sha256": "3e846a449707a89dab5d6a1915dd62ad35d64b59a1654f7ef6cd0dd8a7447f39"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03/raw/result.json",
+          "sha256": "49d058467706b49de1125506b4a4e2209553160f1f6c9344b1b555e4d66fa20d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay/results.json",
+          "sha256": "3435241e43b24131075c14e131ac0a226886407ee735c34bdfa7cb37f7480dd2"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay/submission.json",
+          "sha256": "6ed1bf93ed62a28aac63a3ec9a92aa6dcded771063ad7b14cd55f989580ada10"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay/analysis.json",
+          "sha256": "f130e82f01293317d16e5e2e84a88c97aa68b771e106d4cee07891c405d71bc6"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay/replay-analysis.json",
+          "sha256": "9525a18efe75daf732062dce425baf74a4cc4ef116035a3639fef9440aeb255c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay/raw/result.json",
+          "sha256": "bac69430d971704f07351760b5a89d208794fc62c0d4bf2fcc5bdd68f446d438"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-belenos-entanglement-teleportation.md",
+        "scripts/qd_teleportation_rehearsal.py"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-teleportation-rehearsal-job-02",
+        "qd-qpu-belenos-teleportation-rehearsal-job-03",
+        "qd-qpu-belenos-teleportation-rehearsal-job-02-replay"
+      ],
+      "assumptions": [
+        "The preregistered rule of the descriptive-v2 analysis binds each result iteration to its setting by circuit parameters and compilation seed."
+      ],
+      "depends_on": [
+        "qd-belenos-teleportation-rehearsal-job-01"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }

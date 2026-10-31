@@ -661,6 +661,34 @@ ANU QRNG draw [`draw-2026-10-30T205347Z.json`](../evidence/anu_qrng/draw-2026-10
   floored seconds stay within `MAX_DURATION` at the live record. The plan warns that HOM 87.9 % sits at or below the
   90 % of strategy.md design rule 1; that rule warns and does not hold a case.
 
+**Outcome: the block veto measures per-seed compiled meshes.** Both halves and an exact replay of job-02 ran on
+2026-10-31 at HOM 87.9 %, g2 1.4 %, transmittance 5.37 % (claim `qd-belenos-teleportation-split-blocks-mesh-error` in
+[research_state.json](../state/research_state.json)).
+
+| Run | Job | Submitted (UTC) | Correct / accepted | Correctness | Lower bound |
+|---|---|---|---|---|---|
+| job-02, block A | f918c870 | 03:58:45 | 727 / 887 | 0.820 | 0.767 |
+| job-03, block B | e7f527ce | 04:04:38 | 768 / 929 | 0.827 | 0.776 |
+| job-02 replay, block A | 137c771c | 04:27:33 | 690 / 836 | 0.825 | 0.771 |
+
+- The pair (`pair-analysis.json` in the job-03 run) reads 0.823 over 1816 accepted events with lower bound 0.787. The
+  homogeneity veto flags +Z (p 1.3e-5) and -Z (p 4.0e-9), so the two-copy (margin +0.037) and attempt-box (+0.082)
+  comparisons stay vetoed.
+- The replay (`--analyze-replay`, `replay-analysis.json` in the replay run) carries job-02's circuit parameters and
+  seeds. The service returned the same `computed_circuit` for all six settings, and every input agrees with job-02
+  (p 0.079 to 0.985) 29 minutes later. Fixed meshes therefore reproduce, and the A-B difference follows the
+  different seeds of the two blocks.
+- The in-situ visibility case ([belenos-associator-visibility-case.md](belenos-associator-visibility-case.md)) ran one
+  identical four-mode circuit under four seeds on chip modes 18 to 21 and 20 to 23: the two-click endpoint spread by
+  0.23 and 0.39 between seeds, a chi-square of 241 and 382 on 3 degrees of freedom. Per-seed mesh error on this chip is
+  large against binomial error.
+- Acceptance per sample ranges from 0.08 to 0.24 across settings, mostly through herald clicks, so a mesh moves the
+  accepted set as well as its correctness.
+
+A two-block design on Belenos whose veto is meant to test time gives both blocks the same seeds, so the blocks differ
+only in when they run; a design that pools independently compiled meshes treats the mesh as a random effect and
+carries its spread in the interval instead of a binomial error.
+
 ## Provider request
 
 The request splits by channel. Items 2 and 3 concern the open-source client's
