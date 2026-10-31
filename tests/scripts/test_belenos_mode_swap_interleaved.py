@@ -59,45 +59,66 @@ def test_seeds_are_the_registered_draws_in_index_order_and_each_is_used_once() -
             raise AssertionError(f"allocations.json does not register {draw} indices 0 to {len(seeds) - 1}")
 
 
-def test_each_replicate_sits_at_the_mean_time_of_its_primary_pair_and_each_seed_binds_its_iterations() -> None:
-    for job, sets in case.JOBS.items():
-        manifest = json.loads((case.CASES / job / "cases.json").read_text(encoding="utf-8"))
-        settings = manifest["settings"]
-        if len(settings) != case.ITERATIONS_PER_SET * len(sets):
-            raise AssertionError(f"{job}: {len(settings)} iterations")
-        for position, block_set in enumerate(sets):
-            mine = settings[position * 6 : (position + 1) * 6]
-            if {s["block_set"] for s in mine} != {block_set}:
-                raise AssertionError(f"{job}: set {block_set} does not run contiguously")
-            first = "packed" if block_set % 2 == 0 else "swapped"
-            if [s["layout"] for s in mine] != [first, case.MIRROR[first]] * 3:
-                raise AssertionError(f"{job}: set {block_set} does not alternate the layouts from {first}")
-            times: dict[tuple[str, str], list[int]] = {}
-            seeds: dict[tuple[str, str], set[int]] = {}
-            for slot, s in enumerate(mine):
-                times.setdefault((s["layout"], s["arm"]), []).append(slot)
-                seeds.setdefault((s["layout"], s["arm"]), set()).add(s["compilation_seed"])
-            if len(times) != 4 or any(len(v) != 1 for v in seeds.values()):
-                raise AssertionError(f"{job}: set {block_set} takes one seed per layout and arm")
-            for layout in ("packed", "swapped"):
-                pair, replicate = times[(layout, "primary")], times[(layout, "replicate")]
-                if len(pair) != 2 or replicate != [sum(pair) // 2] or sum(pair) % 2:
-                    raise AssertionError(f"{job}: set {block_set} {layout} replicate is off the primary mean time")
-            keys = {json.dumps([s["circuit_params"], s["compilation_seed"]], sort_keys=True) for s in mine}
-            if len(keys) != 4:
-                raise AssertionError(f"{job}: set {block_set} binds {len(keys)} distinct keys, not 4")
+def set_settings() -> dict[int, list[dict[str, Any]]]:
+    """Each block set's six settings in run order: set 0 from job-00, sets 1 to 4 from their two half-set jobs."""
+    out: dict[int, list[dict[str, Any]]] = {}
+    for job in case.JOBS:
+        settings = json.loads((case.CASES / job / "cases.json").read_text(encoding="utf-8"))["settings"]
+        for setting in settings:
+            if job in case.RETAINED_CASES and setting["block_set"] != 0:
+                continue
+            out.setdefault(setting["block_set"], []).append(setting)
+    return out
+
+
+def test_each_set_alternates_the_layouts_and_each_seed_binds_its_iterations() -> None:
+    sets = set_settings()
+    if sorted(sets) != [0, 1, 2, 3, 4]:
+        raise AssertionError(sorted(sets))
+    for block_set, mine in sets.items():
+        first = "packed" if block_set % 2 == 0 else "swapped"
+        if [s["layout"] for s in mine] != [first, case.MIRROR[first]] * 3:
+            raise AssertionError(f"set {block_set} does not alternate the layouts from {first}")
+        times: dict[tuple[str, str], list[int]] = {}
+        seeds: dict[tuple[str, str], set[int]] = {}
+        for slot, s in enumerate(mine):
+            times.setdefault((s["layout"], s["arm"]), []).append(slot)
+            seeds.setdefault((s["layout"], s["arm"]), set()).add(s["compilation_seed"])
+        if len(times) != 4 or any(len(v) != 1 for v in seeds.values()):
+            raise AssertionError(f"set {block_set} takes one seed per layout and arm")
+        for layout in ("packed", "swapped"):
+            pair, replicate = times[(layout, "primary")], times[(layout, "replicate")]
+            if len(pair) != 2 or replicate != [sum(pair) // 2] or sum(pair) % 2:
+                raise AssertionError(f"set {block_set} {layout} replicate is off the primary mean slot")
+            for arm in ("primary", "replicate"):
+                if seeds[(layout, arm)] != {case.seed_of(block_set, layout, arm)}:
+                    raise AssertionError(f"set {block_set} {layout} {arm} seed")
+    for job, parts in case.JOBS.items():
+        if job not in case.RETAINED_CASES and (len(parts) != 1 or case.iterations(job) != 3):
+            raise AssertionError(f"{job} is not one half set")
+
+
+def test_the_retained_job_00_keeps_its_bytes_and_its_settings_rebuild() -> None:
+    for job, digest in case.RETAINED_CASES.items():
+        data = (case.CASES / job / "cases.json").read_bytes()
+        if hashlib.sha256(data).hexdigest() != digest:
+            raise AssertionError(f"{job} cases.json moved")
+    with pytest.raises(RuntimeError, match="keeps its retained bytes"):
+        case.build("job-00")
 
 
 def test_duration_bound_leaves_margin_and_credits_follow_the_largest_iteration() -> None:
     for job in case.JOBS:
         manifest = json.loads((case.CASES / job / "cases.json").read_text(encoding="utf-8"))
+        if manifest["max_shots"] != case.SHOTS_PER_ITERATION * manifest["iterations"]:
+            raise AssertionError(f"{job}: max_shots")
+        if job in case.RETAINED_CASES:
+            continue
         stressed = case.bound_seconds(job, case.STRESS_FACTOR)
         if stressed > case.DURATION_MARGIN * case.MAX_DURATION or manifest["max_duration"] != case.MAX_DURATION:
             raise AssertionError(f"{job}: stressed bound {stressed} s")
         if not case.bound_seconds(job) <= case.expected_seconds(job) < stressed:
             raise AssertionError(f"{job}: expected seconds {case.expected_seconds(job)}")
-        if manifest["max_shots"] != case.SHOTS_PER_ITERATION * manifest["iterations"]:
-            raise AssertionError(f"{job}: max_shots")
 
 
 def test_the_frozen_interpretation_is_the_design_document_reading() -> None:
@@ -105,6 +126,8 @@ def test_the_frozen_interpretation_is_the_design_document_reading() -> None:
     if case.READING not in doc:
         raise AssertionError("the design document does not carry the preregistered reading word for word")
     for job in case.JOBS:
+        if job in case.RETAINED_CASES:
+            continue
         manifest = json.loads((case.CASES / job / "cases.json").read_text(encoding="utf-8"))
         prereg = manifest["preregistered"]
         if prereg["interpretation"] != case.READING:
@@ -130,8 +153,11 @@ def synthetic(
     for job in case.JOBS:
         raw = (case.CASES / job / "cases.json").read_bytes()
         manifest = json.loads(raw)
-        iterations = []
+        iterations: list[dict[str, Any]] = []
         for setting in manifest["settings"]:
+            if job in case.RETAINED_CASES and setting["block_set"] != 0:
+                iterations.append({"missing": True})
+                continue
             counts: dict[str, int] = {}
             for block in setting["blocks"]:
                 a = model(setting, block)
@@ -351,9 +377,9 @@ def test_drift_is_a_validity_finding_that_scales_the_binomial_variances(tmp_path
 
     runs = synthetic(tmp_path, drifting)
     record = case.analyze(runs, earlier=zero_deltas(runs))
-    jobs = record["validity"]["jobs"]
-    if not all(j["detected"] is True and j["inflation"] > 1 and j["dof"] > 0 for j in jobs.values()):
-        raise AssertionError(jobs)
+    sets = record["validity"]["sets"]
+    if not all(j["detected"] is True and j["inflation"] > 1 and j["dof"] > 0 for j in sets.values()):
+        raise AssertionError(sets)
     if record["validity"]["dof"] != 60:
         raise AssertionError(record["validity"]["dof"])
 
@@ -379,14 +405,14 @@ def test_a_cut_short_job_keeps_its_counted_iterations_and_withholds_the_pooled_r
     results["iterations"][0] = {"missing": True}
     path.write_text(json.dumps(results), encoding="utf-8")
     record = case.analyze(runs, earlier={})
-    if (record["iterations_bound"], record["iterations_uncounted"]) != (29, 1):
+    if (record["iterations_bound"], record["iterations_uncounted"]) != (29, 7):
         raise AssertionError(record)
     if not record["reading"].startswith("withheld"):
         raise AssertionError(record["reading"])
 
 
 def test_a_failed_repeat_holds_its_label_so_the_counted_repeat_keeps_repeat_one() -> None:
-    manifest = json.loads((case.CASES / "job-02" / "cases.json").read_text(encoding="utf-8"))
+    manifest = json.loads((case.CASES / "job-00" / "cases.json").read_text(encoding="utf-8"))
     settings = manifest["settings"]
     echo = {"circuit_params": settings[0]["circuit_params"], "compilation_seed": settings[0]["compilation_seed"]}
     failed = {"iteration": echo, "error": "lost"}
@@ -403,6 +429,19 @@ def test_a_result_iteration_outside_the_case_raises(tmp_path: Path) -> None:
     results["iterations"][0]["iteration"]["compilation_seed"] = 1
     path.write_text(json.dumps(results), encoding="utf-8")
     with pytest.raises(RuntimeError, match="binds to no remaining setting"):
+        case.analyze(runs, earlier={})
+
+
+def test_an_iteration_counted_in_two_runs_raises(tmp_path: Path) -> None:
+    runs = synthetic(tmp_path, flat)
+    first = json.loads((runs[0] / "results.json").read_text(encoding="utf-8"))
+    path = runs[1] / "results.json"
+    second = json.loads(path.read_text(encoding="utf-8"))
+    # job-03 is set 1 half 0; job-00 index 6 is the same set-1 setting, counted again.
+    duplicate = dict(second["iterations"][0])
+    first["iterations"][6] = duplicate
+    (runs[0] / "results.json").write_text(json.dumps(first), encoding="utf-8")
+    with pytest.raises(RuntimeError, match="returned counts in two runs"):
         case.analyze(runs, earlier={})
 
 

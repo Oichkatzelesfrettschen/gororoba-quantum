@@ -11,22 +11,25 @@ same-layout contrast between the replicate and the pooled primary repeats carrie
 per-seed mesh variance that the packed-swapped contrast is tested against. Both layouts put the six photons on chip
 modes 0, 4, 8, 12, 16 and 20, so one template circuit serves every iteration.
 
-JOBS assigns block sets (0, 1), (2, 3) and (4,) to job-00, job-01 and job-02. Set 5 holds two photons, not six, and
-stays out. The primary seed of each set-layout is, in job, set and layout order (packed, swapped), an index 0 to 9
-value of the ANU QRNG draw docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json; the replicate seed is the index 0 to 9
-value of docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json. docs/evidence/qrng_seeds/allocations.json registers both.
+JOBS lists the (block set, half) parts of each job. job-00 ran sets 0 and 1 whole and returned set 0 before the
+platform cut it at MAX_DURATION; RETAINED_CASES binds its bytes. job-03 to job-10 run the first and second halves of
+sets 1 to 4, three iterations each, so a set's primary pair straddles its two jobs. Set 5 holds two photons, not six,
+and stays out. The primary seed of set k and layout l (packed 0, swapped 1) is index 2k + l of the ANU QRNG draw
+docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json; the replicate seed is the same index of
+docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json. docs/evidence/qrng_seeds/allocations.json registers both.
 
---check rebuilds the cases, compares them with the retained bytes, binds every iteration through
-qd_platform.template_experiment, requires each iteration's template unitary to equal the block-diagonal unitary of
-the retained packed or swapped circuit.json within 1e-9, and holds each job's duration bound inside MAX_DURATION.
---build JOB writes a case. --analyze RUN RUN RUN pools the three collected runs into one block table over all 30
-blocks and writes analysis.json beside each: the within-job validity check, the per-class mesh variance with its
+--check rebuilds the cases, compares them with the retained bytes (for a retained job, its digest, settings and
+circuit), binds every iteration through qd_platform.template_experiment, requires each iteration's template unitary
+to equal the block-diagonal unitary of the retained packed or swapped circuit.json within 1e-9, and holds each new
+job's duration bound inside MAX_DURATION. --build JOB writes a case. --analyze RUN... pools the nine collected runs
+into one block table over all 30 blocks and writes analysis.json beside each: the per-set validity check, the
+per-class mesh variance with its
 slot-homogeneity check, the placement test against it, the descriptive slot predictor of
 scripts/qd_packed_mode_swap_analysis.py, the comparison with the earlier deltas and their excess over the mesh
 variance, and the preregistered reading.
 
 Usage:
-  "$PYTHON" scripts/belenos_mode_swap_interleaved.py [--check | --build JOB | --analyze RUN RUN RUN]
+  "$PYTHON" scripts/belenos_mode_swap_interleaved.py [--check | --build JOB | --analyze RUN x 9]
 """
 
 from __future__ import annotations
@@ -62,7 +65,13 @@ LAYOUTS = {"packed": "box_kite_photonic_packed", "swapped": "box_kite_photonic_p
 EARLIER = {"packed": "qpu_belenos/box_kite_photonic_packed", "swapped": "qpu_belenos/box_kite_photonic_packed_swapped"}
 DESIGN = "docs/design/belenos-mode-swap-interleaved-case.md"
 PLATFORM = "qpu:belenos"
-JOBS = {"job-00": (0, 1), "job-01": (2, 3), "job-02": (4,)}
+# Each job's (block set, half) parts in run order; half 0 is the first three iterations of SEQUENCE.
+JOBS = {
+    "job-00": ((0, 0), (0, 1), (1, 0), (1, 1)),
+    **{f"job-{3 + 2 * (s - 1) + h:02d}": ((s, h),) for s in range(1, 5) for h in (0, 1)},
+}
+# A job that ran keeps its frozen bytes; its preregistration predates the half-set jobs.
+RETAINED_CASES = {"job-00": "95568193475b218206a0163c29594d02fafa439a8b606fc87e21b6c1ad30465a"}
 # The iterations of an even block set as (layout, arm, repeat); an odd block set runs the mirror with the layouts
 # exchanged. Each replicate sits at the mean time of its layout's primary pair.
 SEQUENCE = (
@@ -84,14 +93,12 @@ REPLICATE_COMPILATION_SEEDS = (25506, 59555, 30521, 43387, 59603, 13108, 18076, 
 SAMPLES_PER_ITERATION = 6000
 SHOTS_PER_ITERATION = 18000
 MAX_DURATION = 300
-# Duration bound of one job from the retained qpu:belenos runs: the largest per-iteration cost of the 12 to 32
-# iteration single-photon jobs (115 s over 12 iterations), and the largest all-in cost per sample of the six-photon
-# packed and swapped jobs (55 s over 60,000 samples). STRESS_FACTOR scales the sample term by the 1.8x spread that
-# the retained two-photon packed and swapped jobs show for 20,000 samples (19 s against 34 s); the stressed bound
-# stays within DURATION_MARGIN of MAX_DURATION.
-SECONDS_PER_ITERATION = 9.6
-SECONDS_PER_SAMPLE = 0.917e-3
-STRESS_FACTOR = 1.8
+# Duration bound of one job: a 24-mode iteration reconfigures every slot of the chip, and job-00 completed six
+# iterations of 6,000 samples before the 300 s cut stopped its seventh, so one iteration takes at most 50 s; the
+# samples themselves take under a second at the measured global efficiency. STRESS_FACTOR covers a slower
+# reconfiguration, and the stressed bound stays within DURATION_MARGIN of MAX_DURATION.
+SECONDS_PER_ITERATION = 50.0
+STRESS_FACTOR = 1.5
 DURATION_MARGIN = 0.8
 # A block whose share moves by more than Z_CRITICAL standard errors moved, the criterion of
 # qd_packed_mode_swap_analysis.
@@ -216,34 +223,32 @@ def block_class(p_algebra: float) -> str:
     return "half" if p_algebra == 0.5 else "extreme"
 
 
-def seed_index(job: str, block_set: int, layout: str) -> int:
-    sets = [(name, s) for name, group in JOBS.items() for s in group]
-    return 2 * sets.index((job, block_set)) + (0 if layout == "packed" else 1)
+def seed_index(block_set: int, layout: str) -> int:
+    return 2 * block_set + (0 if layout == "packed" else 1)
 
 
-def seed_of(job: str, block_set: int, layout: str, arm: str) -> int:
+def seed_of(block_set: int, layout: str, arm: str) -> int:
     seeds = COMPILATION_SEEDS if arm == "primary" else REPLICATE_COMPILATION_SEEDS
-    return seeds[seed_index(job, block_set, layout)]
+    return seeds[seed_index(block_set, layout)]
 
 
 def rows(job: str) -> list[dict[str, Any]]:
     out = []
-    for block_set in JOBS[job]:
-        for layout, arm, repeat in SEQUENCE:
+    half_length = ITERATIONS_PER_SET // 2
+    for block_set, half in JOBS[job]:
+        for layout, arm, repeat in SEQUENCE[half * half_length : (half + 1) * half_length]:
             shown = layout if block_set % 2 == 0 else MIRROR[layout]
             out.append({"block_set": block_set, "layout": shown, "arm": arm, "repeat": repeat})
     return out
 
 
 def iterations(job: str) -> int:
-    return ITERATIONS_PER_SET * len(JOBS[job])
+    return len(rows(job))
 
 
 def bound_seconds(job: str, factor: float = 1.0) -> float:
-    """Upper bound on the job's duration: SECONDS_PER_ITERATION per iteration plus factor x SECONDS_PER_SAMPLE per
-    sample."""
-    count = iterations(job)
-    return count * SECONDS_PER_ITERATION + factor * SECONDS_PER_SAMPLE * SAMPLES_PER_ITERATION * count
+    """Upper bound on the job's duration: factor x SECONDS_PER_ITERATION per iteration."""
+    return factor * SECONDS_PER_ITERATION * iterations(job)
 
 
 def expected_seconds(job: str) -> int:
@@ -268,7 +273,7 @@ def build_setting(item: tuple[int, dict[str, Any], str]) -> tuple[dict[str, Any]
             for block in manifest["blocks"]
         ],
         "circuit_params": parameters,
-        "compilation_seed": seed_of(job, row["block_set"], row["layout"], row["arm"]),
+        "compilation_seed": seed_of(row["block_set"], row["layout"], row["arm"]),
         "column": [[float(value.real), float(value.imag)] for value in full[:, photons[0]]],
         "operator": encoded(full),
     }
@@ -282,24 +287,26 @@ def preregistered() -> dict[str, Any]:
         "scripts/qd_packed_mode_swap_analysis.py",
         "order": "per block set, the six iterations alternate the layouts, packed first for an even block set and "
         "swapped first for an odd one; each layout runs its primary seed at its first and last slot and its "
-        "replicate seed at the slot between them, so the replicate sits at the mean time of the primary pair and "
-        "the same-layout replicate contrast carries no linear drift; the mesh-averaged placement contrast then "
-        "carries a linear-drift imbalance of one slot whose sign flips with the parity of the block set",
+        "replicate seed at the slot between them; sets 1 to 4 run their first three and last three iterations as "
+        "two consecutive jobs, so a primary pair straddles the gap between them and the replicate sits off the "
+        "pair's mean time by half that gap; the within-set validity statistic measures the drift between the "
+        "repeats and its kappa^2 scales the binomial variances",
         "binding": "a result iteration binds to its setting by circuit_params and compilation_seed; the two "
         "primary repeats of one layout share both and bind in returned order; an iteration that returns no "
         "counts holds its slot",
-        "analysis": "--analyze pools the three runs into one table over all 30 blocks; every statistic below is "
-        "withheld unless all 30 blocks are complete, meaning all six iterations of their set returned counts",
+        "analysis": "--analyze pools the runs of job-00 (set 0) and job-03 to job-10 (sets 1 to 4) into one table "
+        "over all 30 blocks; every statistic below is withheld unless all 30 blocks are complete, meaning each of "
+        "the six iterations of their set returned counts in exactly one run",
         "mesh_identity": "the sha256 of each returned computed_circuit; the two primary repeats of a layout "
         "request one mesh, and a pair with different or missing digests drops out of the validity statistic, its "
         "block-layout contrasts drop out of the mesh variance and its blocks drop out of the placement test; the "
         "reading is withheld unless every replicate digest differs from its primary digest",
-        "validity": "per job, per block and layout, z = (a_repeat1 - a_repeat0) / two-sample se of the primary "
-        "repeats; D = sum z^2 over the job's mesh-identical pairs against chi-square with that many degrees of "
-        f"freedom, drift detected when p < {DRIFT_ALPHA}; a job with no mesh-identical pair withholds the "
-        "placement reading. D checks that the within-job contrast is internally valid and carries no statement "
-        "about the earlier hour-scale drift. kappa^2 = max(1, D / dof) of the job scales every binomial variance "
-        "of that job's blocks",
+        "validity": "per block set, per block and layout, z = (a_repeat1 - a_repeat0) / two-sample se of the "
+        "primary repeats; D = sum z^2 over the set's mesh-identical pairs against chi-square with that many "
+        f"degrees of freedom, drift detected when p < {DRIFT_ALPHA}; a set with no mesh-identical pair withholds "
+        "the placement reading. D checks that the within-set contrast is internally valid and carries no statement "
+        "about the earlier hour-scale drift. kappa^2 = max(1, D / dof) of the set scales every binomial variance "
+        "of that set's blocks",
         "mesh_variance": "per block and layout, R = a_replicate - a_primary(pooled repeats) has variance 2 "
         "sigma_c^2 + kappa^2 (binomial variances), c the block's class: half (p_algebra 1/2) or extreme (p_algebra 0 "
         "or 1); sigma_c^2 = max(0, mean over the class's contrasts of (R^2 - kappa^2 binomial variance) / 2) is the "
@@ -371,15 +378,23 @@ def documents(job: str) -> dict[str, bytes]:
 def check_job(job: str) -> str:
     case = CASES / job
     retained = {name: (case / name).read_bytes() for name in ("cases.json", "circuit.json")}
-    for name, data in documents(job).items():
-        require(retained[name] == data, f"{case.relative_to(ROOT)}/{name} differs from the builder's bytes")
+    built = documents(job)
+    if job in RETAINED_CASES:
+        require(sha256_bytes(retained["cases.json"]) == RETAINED_CASES[job], f"{job}: cases.json digest moved")
+        require(retained["circuit.json"] == built["circuit.json"], f"{job}: circuit.json differs from the builder's")
+        frozen_settings = json.loads(retained["cases.json"])["settings"]
+        require(frozen_settings == json.loads(built["cases.json"])["settings"], f"{job}: settings differ")
+    else:
+        for name, data in built.items():
+            require(retained[name] == data, f"{case.relative_to(ROOT)}/{name} differs from the builder's bytes")
     manifest = json.loads(retained["cases.json"])
     circuit = json.loads(retained["circuit.json"])
     _, settings = template_experiment(manifest, circuit)
     require(len(settings) == iterations(job), f"{job}: {len(settings)} settings bound")
     stressed = bound_seconds(job, STRESS_FACTOR)
     require(
-        stressed <= DURATION_MARGIN * MAX_DURATION and bound_seconds(job) <= expected_seconds(job),
+        job in RETAINED_CASES
+        or (stressed <= DURATION_MARGIN * MAX_DURATION and bound_seconds(job) <= expected_seconds(job)),
         f"{job}: the duration bound {stressed:.0f} s leaves no margin under {MAX_DURATION} s",
     )
     import perceval as pcvl
@@ -398,10 +413,12 @@ def check_job(job: str) -> str:
         _, retained_circuit = source(setting["layout"], setting["block_set"])
         expected = full_unitary(slot_unitaries(retained_circuit))
         require(np.abs(unitary - expected).max() < TOLERANCE, f"{setting['name']}: template unitary differs")
-    return (
-        f"{FAMILY} {job}: {len(settings)} iterations bound to the retained packed and swapped unitaries, "
-        f"duration bound {bound_seconds(job):.0f} s ({stressed:.0f} s stressed) of {MAX_DURATION} s"
+    timing = (
+        "retained run bytes"
+        if job in RETAINED_CASES
+        else f"duration bound {bound_seconds(job):.0f} s ({stressed:.0f} s stressed) of {MAX_DURATION} s"
     )
+    return f"{FAMILY} {job}: {len(settings)} iterations bound to the retained packed and swapped unitaries, {timing}"
 
 
 def check() -> int:
@@ -414,6 +431,7 @@ def check() -> int:
 
 def build(job: str) -> int:
     out = CASES / job
+    require(job not in RETAINED_CASES, f"{job} ran and keeps its retained bytes")
     out.mkdir(parents=True, exist_ok=True)
     built = documents(job)
     for name, data in built.items():
@@ -532,8 +550,7 @@ def collect_cells(loaded: list[dict[str, Any]]) -> dict[str, Any]:
     """Per-iteration block cells keyed by (block, layout, arm, repeat), with block and set bookkeeping."""
     cells: dict[tuple[Any, ...], dict[str, Any]] = {}
     info: dict[tuple[str, int], dict[str, Any]] = {}
-    sets_total: dict[int, int] = {}
-    sets_counted: dict[int, int] = {}
+    sets_counted: dict[int, set[tuple[str, str, int]]] = {}
     bound_total = uncounted_total = requested = 0
     for item in loaded:
         settings = item["manifest"]["settings"]
@@ -542,7 +559,6 @@ def collect_cells(loaded: list[dict[str, Any]]) -> dict[str, Any]:
         uncounted_total += uncounted
         requested += len(settings)
         for index, setting in enumerate(settings):
-            sets_total[setting["block_set"]] = sets_total.get(setting["block_set"], 0) + 1
             entry = bound.get(index)
             if entry is None:
                 continue
@@ -551,10 +567,14 @@ def collect_cells(loaded: list[dict[str, Any]]) -> dict[str, Any]:
             shares = block_shares(setting, entry["counts"])
             if any(share_["n"] == 0 for share_ in shares):
                 continue
-            sets_counted[setting["block_set"]] = sets_counted.get(setting["block_set"], 0) + 1
+            sets_counted.setdefault(setting["block_set"], set()).add(
+                (setting["layout"], setting["arm"], setting["repeat"])
+            )
             for share_, block in zip(shares, setting["blocks"], strict=True):
                 key = share_["key"]
-                cells[(key, setting["layout"], setting["arm"], setting["repeat"])] = {
+                cell = (key, setting["layout"], setting["arm"], setting["repeat"])
+                require(cell not in cells, f"{setting['name']} returned counts in two runs")
+                cells[cell] = {
                     **share_,
                     "mesh": digest,
                     "job": item["job"],
@@ -564,12 +584,12 @@ def collect_cells(loaded: list[dict[str, Any]]) -> dict[str, Any]:
                     key, {"set": setting["block_set"], "job": item["job"], "p": float(Fraction(block["p_algebra"]))}
                 )
                 require(known["set"] == setting["block_set"], f"block {key} sits in two block sets")
-    complete_sets = {k for k, total in sets_total.items() if sets_counted.get(k, 0) == total}
+    complete_sets = {k for k, slots in sets_counted.items() if len(slots) == ITERATIONS_PER_SET}
     return {
         "cells": cells,
         "info": info,
         "complete_sets": complete_sets,
-        "sets": sorted(sets_total),
+        "sets": sorted(sets_counted),
         "bound": bound_total,
         "uncounted": uncounted_total,
         "requested": requested,
@@ -577,25 +597,27 @@ def collect_cells(loaded: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def validity(data: dict[str, Any]) -> dict[str, Any]:
-    """The within-job drift statistic of the primary repeat pairs, per job and pooled."""
-    jobs: dict[str, dict[str, Any]] = {job: {"statistic": 0.0, "dof": 0} for job in JOBS}
+    """The within-set drift statistic of the primary repeat pairs, per block set and pooled."""
+    sets: dict[int, dict[str, Any]] = {
+        s: {"statistic": 0.0, "dof": 0} for s in sorted({s for j in JOBS.values() for s, _ in j})
+    }
     pair_rows = []
     cells, info = data["cells"], data["info"]
     for key in sorted(info):
-        job = info[key]["job"]
+        block_set = info[key]["set"]
         for layout in ("packed", "swapped"):
             first, second = cells.get((key, layout, "primary", 0)), cells.get((key, layout, "primary", 1))
             if first is None or second is None:
                 continue
             z = two_sample_z((first["hit"], first["n"]), (second["hit"], second["n"]))
             same = first["mesh"] is not None and first["mesh"] == second["mesh"]
-            pair_rows.append({"block": list(key), "layout": layout, "job": job, "z": z, "same_mesh": same})
+            pair_rows.append({"block": list(key), "layout": layout, "set": block_set, "z": z, "same_mesh": same})
             if z is not None and same:
-                jobs[job]["statistic"] += z * z
-                jobs[job]["dof"] += 1
-    total_statistic = sum(j["statistic"] for j in jobs.values())
-    total_dof = sum(j["dof"] for j in jobs.values())
-    for entry in jobs.values():
+                sets[block_set]["statistic"] += z * z
+                sets[block_set]["dof"] += 1
+    total_statistic = sum(j["statistic"] for j in sets.values())
+    total_dof = sum(j["dof"] for j in sets.values())
+    for entry in sets.values():
         dof = entry["dof"]
         p_value = float(chi2.sf(entry["statistic"], dof)) if dof else None
         entry["p_value"] = p_value
@@ -604,7 +626,7 @@ def validity(data: dict[str, Any]) -> dict[str, Any]:
     pooled_p = float(chi2.sf(total_statistic, total_dof)) if total_dof else None
     return {
         "rows": pair_rows,
-        "jobs": jobs,
+        "sets": sets,
         "statistic": total_statistic,
         "dof": total_dof,
         "p_value": pooled_p,
@@ -668,7 +690,7 @@ def slot_homogeneity(contrasts: list[dict[str, Any]], classes: dict[str, dict[st
     return {"rows": rows, "homogeneous": all(row["p"] >= SLOT_ALPHA / SLOTS for row in rows)}
 
 
-def mesh_and_placement(data: dict[str, Any], inflation: dict[str, float]) -> dict[str, Any]:
+def mesh_and_placement(data: dict[str, Any], inflation: dict[int, float]) -> dict[str, Any]:
     """The per-class mesh variance from the replicate contrasts and the placement test against it.
 
     A layout whose primary repeats returned different or missing digests averages two meshes in its pooled primary
@@ -682,7 +704,7 @@ def mesh_and_placement(data: dict[str, Any], inflation: dict[str, float]) -> dic
         merged = mesh_cells(data, key)
         if merged is None:
             raise RuntimeError(f"block {key} lacks a cell")
-        kappa2 = inflation[data["info"][key]["job"]]
+        kappa2 = inflation[data["info"][key]["set"]]
         kind = block_class(data["info"][key]["p"])
         identical = True
         for layout in ("packed", "swapped"):
@@ -825,9 +847,9 @@ def analyze(runs: list[Path], earlier: dict[tuple[str, int], dict[str, float]] |
     complete = len(data["info"]) == 30 and all(info["set"] in data["complete_sets"] for info in data["info"].values())
     if not complete:
         withheld.append("not every block set returned counts for all six iterations")
-    dofs_ok = all(entry["dof"] > 0 for entry in check_["jobs"].values())
+    dofs_ok = all(entry["dof"] > 0 for entry in check_["sets"].values())
     if not dofs_ok:
-        withheld.append("a job has no mesh-identical repeat pair (dof 0)")
+        withheld.append("a block set has no mesh-identical repeat pair (dof 0)")
     distinct = complete and replicate_meshes_distinct(data)
     if complete and not distinct:
         withheld.append("a replicate iteration returned the mesh of its primary iteration or no mesh digest")
@@ -842,7 +864,7 @@ def analyze(runs: list[Path], earlier: dict[tuple[str, int], dict[str, float]] |
     if withheld:
         record["reading"] = "withheld: " + "; ".join(withheld)
         return record
-    inflation = {job: entry["inflation"] for job, entry in check_["jobs"].items()}
+    inflation = {block_set: entry["inflation"] for block_set, entry in check_["sets"].items()}
     mesh = mesh_and_placement(data, inflation)
     if "withheld" in mesh:
         record["withheld"].append(mesh["withheld"])

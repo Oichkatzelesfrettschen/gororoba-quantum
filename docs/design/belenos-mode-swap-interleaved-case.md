@@ -1,6 +1,6 @@
 # Belenos interleaved mode swap
 
-`scripts/belenos_mode_swap_interleaved.py` builds three `qpu:belenos` jobs. They test the placement of a packed
+`scripts/belenos_mode_swap_interleaved.py` builds nine `qpu:belenos` jobs, one of which has run. They test the placement of a packed
 box-kite block on the chip against drift in time and against the per-seed variance of the compiled mesh.
 
 ## Question
@@ -30,68 +30,68 @@ swapped `circuit.json`. `--check` holds every iteration to that unitary within 1
 - **Order within a set.** The six iterations alternate the layouts: packed, swapped, packed, swapped, packed, swapped
   for an even block set (0, 2, 4) and swapped, packed, swapped, packed, swapped, packed for an odd one (1, 3).
 - **Primary seed.** Each layout runs its primary seed at the first and last of its three slots. The two repeats request
-  one compiled mesh, so their difference is drift at a fixed mesh, four slots (about 60 s) apart.
+  one compiled mesh, so their difference is drift at a fixed mesh, four slots apart.
 - **Replicate seed.** Each layout runs a second compilation seed at the slot between its primary repeats. The replicate
   against the pooled primary repeats of the same layout is a same-layout, different-seed contrast, which measures the
   per-seed mesh variance directly.
 
-**Order.** The replicate of each layout sits exactly at the mean time of that layout's primary pair (slot 2 between
-slots 0 and 4 for packed, slot 3 between 1 and 5 for swapped in an even set), so a linear drift cancels in every
-replicate contrast and cannot enter the mesh variance, where it would inflate the reference and move blocks into the
-"within the mesh variance" rows. The cost is the layout contrast: packed and swapped mean times sit one slot apart
-(about 15 s), the least that integer slots allow once each replicate sits at its pair mean, since six slots cannot make
-the layout means and the seed means all coincide. The mirror order of an odd set flips the sign of that imbalance, so the
-five sets net to one slot in total. An ABBA order would balance the layout means exactly but put each replicate 2.5 to
-3.5 slots from its pair mean, so drift would raise the mesh variance and could turn drift into a "mesh error"
-reading.
+**Order.** In slot order the replicate of each layout sits at the mean of that layout's primary pair (slot 2 between
+slots 0 and 4 for packed, slot 3 between 1 and 5 for swapped in an even set). The packed and swapped mean slots sit one
+slot apart, and the mirror order of an odd set flips the sign of that imbalance. An ABBA order would balance the layout
+means exactly but put each replicate 2.5 to 3.5 slots from its pair mean, so drift would raise the mesh variance and
+could turn drift into a "mesh error" reading.
 
-| Job | Block sets | Iterations | Samples | `max_shots` | Credit ceiling | Expected seconds |
+**Jobs.** A 24-mode iteration takes up to 50 s on `qpu:belenos` (see Duration), so a set of six iterations does not fit
+reliably inside the 300 s cut. Job-00 ran sets 0 and 1 whole and returned set 0 before the cut; sets 1 to 4 run as two
+jobs each, the first three and the last three iterations of the set's order, submitted one after the other. A primary
+pair then straddles the gap between its set's two jobs, so in time the replicate sits off the pair's mean by half that
+gap; the within-set validity statistic measures the drift between the repeats directly, and its kappa^2 scales the
+binomial variances.
+
+| Job | Block set and half | Iterations | Samples | `max_shots` | Credit ceiling | Expected seconds |
 |---|---|---|---|---|---|---|
-| job-00 | 0, 1 | 12 | 72,000 | 216,000 | 1.018 | 190 |
-| job-01 | 2, 3 | 12 | 72,000 | 216,000 | 1.018 | 190 |
-| job-02 | 4 | 6 | 36,000 | 108,000 | 1.018 | 100 |
+| job-00 (ran) | set 0 whole, set 1 whole (cut before set 1) | 12 | 72,000 | 216,000 | 1.018 | 190 |
+| job-03, job-04 | set 1, first and last three | 3 each | 18,000 | 54,000 | 1.018 | 150 |
+| job-05, job-06 | set 2, first and last three | 3 each | 18,000 | 54,000 | 1.018 | 150 |
+| job-07, job-08 | set 3, first and last three | 3 each | 18,000 | 54,000 | 1.018 | 150 |
+| job-09, job-10 | set 4, first and last three | 3 each | 18,000 | 54,000 | 1.018 | 150 |
 
 Each iteration takes 6,000 samples with a `max_shots` cap of 18,000 and `min_detected_photons` 1. Quandela bills a job
 1 credit plus 1e-6 per shot of its largest iteration ([credit optimization](../runbooks/quandela-credit-optimization.md)),
-so each job ceilings at 1 + 18,000 x 1e-6 = 1.018 and the case at 3.054 credits.
+so each job ceilings at 1 + 18,000 x 1e-6 = 1.018: job-00 billed 1.018, and the eight half-set jobs ceiling at 8.144
+credits. Job-00's frozen `cases.json` keeps its bytes (`RETAINED_CASES` binds its sha256), and its settings equal the
+rebuilt settings of sets 0 and 1; the never-run job-01 and job-02 cases are replaced by job-03 to job-10.
 
 **Set 5.** Set 5 holds two photons, not six, and stays out; the case covers 30 of the 32 blocks. The template fills an
 empty slot with the identity, so set 5 could run as a six-photon template with the identity on the four other slots.
-That adds 6 iterations to job-02, restores 2 of the 16 half blocks to the slot predictor and costs no credit, but its
+That adds 6 iterations, restores 2 of the 16 half blocks to the slot predictor and costs no credit, but its
 context then differs from the retained two-photon run, so its comparison with the earlier delta is the weakest of the
 six sets, and the case would pool 32 blocks where the preregistration fixes 30. The case keeps the 30 blocks; set 5 is a
 later case if the slot predictor's interval needs the two half blocks.
 
-**Compilation seeds.** The primary seed of each set and layout is, in job, set and layout order (packed, swapped), an
-index 0 to 9 value of the ANU QRNG draw [`draw-2026-10-31T043029Z.json`](../evidence/anu_qrng/draw-2026-10-31T043029Z.json).
+**Compilation seeds.** The primary seed of set k and layout l (packed 0, swapped 1) is index 2k + l of the ANU QRNG
+draw [`draw-2026-10-31T043029Z.json`](../evidence/anu_qrng/draw-2026-10-31T043029Z.json).
 The replicate seed of each set and layout is the same-index value of
 [`draw-2026-10-31T051136Z.json`](../evidence/anu_qrng/draw-2026-10-31T051136Z.json), drawn for the replicate arm and used
 once. [`allocations.json`](../evidence/qrng_seeds/allocations.json) registers indices 0 to 9 of both draws in order.
 
 ## Duration
 
-`qpu:belenos` cuts a job at 300 s (`max_duration`). The bound comes from the retained runs, not from one fixed cost.
+`qpu:belenos` cuts a job at 300 s (`max_duration`). Job-00 (`dc348230`) ran 12 iterations of 6,000 samples and was cut
+at 300 s during its seventh iteration, with the six iterations of set 0 returned. Each returned iteration reports
+`nb_shots_used` 6,000 and a global efficiency of 0.0034 to 0.0106, so at the 4.94 MHz clock its samples take under a
+second; the iteration time is the reconfiguration of the 24-mode chip, between 300 / 7 = 43 s and 300 / 6 = 50 s. The
+retained six-photon packed and swapped jobs each ran one iteration in 52 to 55 s, which the earlier bound of this case
+charged to their samples.
 
-- **Per iteration.** At most 9.6 s: the largest of the 12 to 32 iteration single-photon jobs (115 s over 12 iterations in
-  `bdsc_qualification` mm-none-e1; 107 to 136 s over 16 in `belenos_mesh`, 8.5 s at most; 165 to 176 s over 24 in
-  `bdsc_stationarity` and `bdsc_drift_series`, 7.3 s at most).
-- **Per sample.** At most 0.917 ms: the retained six-photon packed and swapped jobs took 52 to 55 s for 60,000 samples
-  with shots used equal to samples, which charges the whole job, fixed cost included, to the samples.
-- **Bound.** n x 9.6 s + S x 0.917 ms for n iterations of S samples. Twelve iterations of 6,000 samples bound at 115.2 +
-  66.0 = 181 s (expected seconds 190), and six iterations at 57.6 + 33.0 = 91 s (expected seconds 100).
-- **Stress.** The two-photon packed and swapped jobs took 19 s and 34 s for the same 20,000 samples, a 1.8x spread
-  between jobs. Scaling the sample term by 1.8 gives 234 s for twelve iterations and 117 s for six, inside 0.8 of the
-  limit, and `--check` requires that margin. Samples of 8,000 per iteration stress to 274 s and 10,000 to 313 s, which is
-  why the case takes 6,000.
-- **Cancelled run.** Teleportation job-01 was cancelled at 318 s over twelve iterations; the three-photon iterations of
-  its siblings drew about 1,900 shots per sample (13.5 million shots for 7,200 samples in job-02), a regime the
-  one-detection-per-sample six-photon runs do not reach.
+- **Bound.** n x 50 s for n iterations: 150 s for three (expected seconds 150).
+- **Stress.** 1.5 x the bound, 225 s for three, stays inside 0.8 of the limit, and `--check` requires that margin.
 
-The live plan of 2026-10-31 against the frozen bytes of each job (`qd_platform.py plan --platform qpu:belenos
---max-credits 1.018 --per-job-credits 1.0 --admit-status running`) estimates 72,000 shots for 72,000 samples in job-00
-and job-01 and 36,000 for 36,000 in job-02, one detection event per sample, against `max_shots` of three times that. It
-reports `credit_ceiling` 1.018 for each. It also prints the warning that `qpu:belenos` reports HOM 88.6 %, below the
-90 % that strategy.md design rule 1 asks of a six-photon interfering block; the submit step reads the live HOM again.
+The live plan of each half-set job (`qd_platform.py plan --platform qpu:belenos --max-credits 1.018 --expected-seconds
+150 --per-job-credits 1.0 --admit-status running`) runs against its frozen bytes before its submit. It prints the
+warning that `qpu:belenos` reports HOM below the 90 % that strategy.md design rule 1 asks of a six-photon interfering
+block; the template is block-diagonal with one photon per 4-mode slot, so no two photons interfere and the warning does
+not bind this case.
 
 **Power.** One-click samples per block run 7,985 to 17,898 (median 11,269) per 60,000-sample job in the retained series,
 so 798 to 1,790 (median 1,127) per iteration here. A placement contrast of median cells has a binomial standard error of
@@ -112,25 +112,25 @@ fraction of each earlier delta that is true placement, with the rest of the earl
 The per-block placement reading decides only when the earlier deltas were mostly placement, and the comparison with
 the earlier deltas carries the case.
 
-## Analysis (`--analyze RUN RUN RUN`)
+## Analysis (`--analyze RUN x 9`)
 
-The three runs pool into one block table over all 30 blocks. `--analyze` checks that each run's `cases.json` is
+The nine runs pool into one block table over all 30 blocks. `--analyze` checks that each run's `cases.json` is
 byte-identical to the frozen case, requires one run per job, and writes one `analysis.json` to each run directory.
-Every statistic below is withheld unless all 30 blocks are complete, meaning all six iterations of their set returned
-counts.
+Every statistic below is withheld unless all 30 blocks are complete, meaning each of the six iterations of their set
+returned counts in exactly one run; an iteration counted in two runs raises.
 
 - **Binding.** A result iteration binds by its echoed circuit parameters and compilation seed. The two primary repeats
   of a layout share both, so they bind in returned order. An iteration without counts holds the slot its echo names, so
   a later counted repeat keeps its label, and it counts as uncounted.
 - **Observable.** Per block and iteration, a is the share of samples with exactly one click in the block's slot that
   land on an algebra mode, as in `qd_packed_mode_swap_analysis.py`.
-- **Within-job validity.** For each block and layout, z is the two-sample z between the two primary repeats. Pairs whose
-  returned `computed_circuit` digests agree enter D = sum z^2 per job, tested against chi-square with that many degrees
-  of freedom; drift is detected at p < 0.01. D checks that the within-job contrast is internally valid. The repeats sit
-  about 60 s apart and the earlier confound was an hour, so D carries no statement about the earlier claim. The inflation
-  kappa^2 = max(1, D / dof) of a job scales every binomial variance of that job's blocks, which covers extra dispersion
-  between iterations. A job with no mesh-identical pair (dof 0) withholds the placement reading, and so does a replicate
-  digest that equals its primary digest or is missing.
+- **Within-set validity.** For each block and layout, z is the two-sample z between the two primary repeats. Pairs whose
+  returned `computed_circuit` digests agree enter D = sum z^2 per block set, tested against chi-square with that many
+  degrees of freedom; drift is detected at p < 0.01. D checks that the within-set contrast is internally valid. The
+  repeats sit minutes apart and the earlier confound was an hour, so D carries no statement about the earlier claim. The
+  inflation kappa^2 = max(1, D / dof) of a set scales every binomial variance of that set's blocks, which covers extra
+  dispersion between iterations and drift across the gap between a set's two jobs. A set with no mesh-identical pair
+  (dof 0) withholds the placement reading, and so does a replicate digest that equals its primary digest or is missing.
 - **Mesh identity.** A layout whose two primary repeats returned different or missing `computed_circuit` digests
   averages two meshes in its pooled primary cell, so its contrast leaves the mesh variance, its block leaves the
   placement test, and the block stays in the comparison with the earlier deltas. `analysis.json` lists the dropped
@@ -219,14 +219,16 @@ slot predictor is descriptive. The design does not show how a chip mode changes 
   `qpu:belenos`, which later multi-seed designs on this chip need; and whether the earlier deltas exceed it.
 - *Why a simulation cannot answer it.* The residual is the chip's compiled-mesh and detection error at each slot; an
   ideal or noise-model simulation gives every block its exact share at every slot and every seed.
-- *Backend and budget.* `qpu:belenos`, three jobs submitted one after the other, 12, 12 and 6 iterations of 6,000
-  samples, `max_shots` 18,000 per iteration and `min_detected_photons` 1. The credit ceiling is 1.018 per job and 3.054
-  for the case. Expected seconds are 190, 190 and 100 against the 300 s limit.
+- *Backend and budget.* `qpu:belenos`. Job-00 ran 12 iterations and billed 1.018 credits. Eight half-set jobs of 3
+  iterations of 6,000 samples each, `max_shots` 18,000 per iteration and `min_detected_photons` 1, submitted one after
+  the other: 1.018 credits per job, 8.144 for the eight, 9.162 for the case. Expected seconds are 150 per job against
+  the 300 s limit.
 - *Procedure.* Copy `cases.json` and `circuit.json` of the job into a fresh run directory under
   `results/quandela/runs/`, then run `scripts/qd_platform.py plan` and `submit` with `--platform qpu:belenos
-  --max-credits 1.018 --expected-seconds 190 --per-job-credits 1.0 --admit-status running` (expected seconds 100 for
-  job-02), `collect`, and after all three `scripts/belenos_mode_swap_interleaved.py --analyze RUN_00 RUN_01 RUN_02`.
-  Each run records the platform's HOM, g2 and transmittance at its plan.
-- *Stopping rule.* Job-00 is checked before job-01 is planned: a job with no mesh-identical primary pair, or whose
-  replicates returned their primaries' meshes, withholds the pooled reading by rule, so the case stops there. A job
-  that errors or is cut short is resubmitted only on the owner's further approval.
+  --max-credits 1.018 --expected-seconds 150 --per-job-credits 1.0 --admit-status running`, `collect`, and after all
+  nine `scripts/belenos_mode_swap_interleaved.py --analyze` on the runs of job-00 and job-03 to job-10. Each run
+  records the platform's HOM, g2 and transmittance at its plan.
+- *Stopping rule.* Each set's first job is checked before its second is planned, and the second before the next set:
+  a set whose primary repeats return two meshes in every pair, or whose replicates return their primaries' meshes,
+  withholds the pooled reading by rule, so the case stops there. A job that errors or is cut short is resubmitted only
+  on the owner's further approval.
