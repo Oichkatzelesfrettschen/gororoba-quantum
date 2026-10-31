@@ -111,7 +111,7 @@ PREAMBLE = r"""(** * The A_6 Stiefel witness of math/0512517 is not a zero divis
     v is an integer vector of length 64 in the cd_core doubling convention:
     its halves a (indices 0-31) and b (indices 32-63) are pure elements of
     A_5, orthogonal, with squared norm 62. The left multiplication
-    L_v i j = sigma(i xor j, j) v (i xor j) takes sigma from gororoba-open's
+    L_v i j = sigma(i xor j, j) v (i xor j) takes sigma from open_gororoba's
     cd_sign_fuel (C-1474), at fuel 7 for dimension 64, the fuel that
     fuel_adequate_64 proves sufficient. N L_v = d I is checked by vm_compute;
     N determines L_v as d N^-1, so the check passes only when cd_sign_fuel
