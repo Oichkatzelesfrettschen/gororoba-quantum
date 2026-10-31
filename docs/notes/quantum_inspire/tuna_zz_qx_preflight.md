@@ -113,6 +113,17 @@ receipt, service results and raw shots, then run:
   --out NEW_REPORT.json
 ```
 
+The retained plan binds `scripts/qi_zz_map_qx.py` byte for byte through
+`qx_builder_sha256`, so that module stays the pinned producer of the proposal.
+Its successor reads each batch through `gororoba_quantum/qi_records.py` and
+keeps the same design conditions and marginal criteria:
+
+```bash
+"$PYTHON" scripts/qi_zz_map_qx_analysis.py --runs RUNS_ROOT \
+  --plan results/quantum_inspire/cases/zz-map-qx-pause-ladder/plan.json \
+  --out NEW_REPORT.json
+```
+
 The output path must be new. A passing QX report supports ideal native-gate
 and wiring conformance for the compact twins. It does not validate Tuna's
 compiled physical schedule, calibrations, spectator effects, idle ZZ or

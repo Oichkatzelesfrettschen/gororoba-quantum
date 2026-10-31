@@ -87,6 +87,7 @@ import qd_platform  # noqa: E402
 import qi_platform  # noqa: E402
 
 import parallel  # noqa: E402
+import qi_records  # noqa: E402
 
 REGISTRY = ROOT / "docs/state/research_state.json"
 STATE_DOCUMENT = ROOT / "docs/state/RESEARCH_STATE.md"
@@ -313,10 +314,6 @@ class IbmRuns:
         return "\n\n".join(lines)
 
 
-def _optional_json(path: Path) -> Any:
-    return load_json(path) if path.is_file() else None
-
-
 TRANSACTION_FIELDS = ("id", "timestamp", "domain", "change", "job")
 # Ids of the +5 and -5 rows the self-test adds to a retained run and to the ledger.
 SYNTHETIC_ROW_ID = 10**9 + 1
@@ -351,143 +348,49 @@ class QuantumInspireRuns:
 
     def __init__(self) -> None:
         self.ledger: dict[str, Any] = load_json(QI_LEDGER)
-        self.records: dict[str, dict[str, Any]] = {}
         # Every run directory is a retained run, so one without a receipt fails
         # validation instead of leaving the run set.
-        for directory in qi_platform.run_directories(QI_RUNS):
-            cases = _optional_json(directory / "cases.json")
-            circuits = {}
-            for row in (cases or {}).get("circuits", []):
-                path = directory / row["file"]
-                circuits[row["file"]] = digest(path) if path.is_file() else None
-            raw_dir = directory / "raw"
-            raw = {path.name: load_json(path) for path in sorted(raw_dir.iterdir())} if raw_dir.is_dir() else {}
-            self.records[directory.relative_to(ROOT).as_posix()] = {
-                "submission": _optional_json(directory / "submission.json"),
-                "interrupted": (directory / "submission-state.json").is_file(),
-                "cases": cases,
-                "cases_sha256": digest(directory / "cases.json") if cases is not None else None,
-                "results": _optional_json(directory / "results.json"),
-                "circuits": circuits,
-                "raw": raw,
-            }
+        self.records: dict[str, dict[str, Any]] = {
+            directory.relative_to(ROOT).as_posix(): qi_records.load_run(directory)
+            for directory in qi_platform.run_directories(QI_RUNS)
+        }
+        self.acquisitions: dict[str, qi_records.Acquisition] = {}
 
     def _run(
         self, run: str, record: dict[str, Any]
     ) -> tuple[dict[str, Any], dict[int, tuple[Any, ...]], Counter[tuple[Any, ...]]]:
+        """The shared record rules of qi_records, then the ledger rows: every charge names a job of the run."""
         owner = f"Quantum Inspire run {run}"
-        submission = record["submission"]
-        require(
-            isinstance(submission, dict),
-            f"{owner}: no submission.json"
-            + (
-                "; submission-state.json records an interrupted submit, run qi_platform.py reconcile"
-                if record["interrupted"]
-                else ""
-            ),
-        )
-        require(
-            submission.get("schema") in {"qi-submission-v1", "qi-submission-v2"},
-            f"{owner}: submission.json schema differs",
-        )
-        require(
-            isinstance(submission.get("approval"), str) and submission["approval"].strip(),
-            f"{owner}: submission.json records no approval",
-        )
-        cases = record["cases"]
-        require(isinstance(cases, dict), f"{owner}: cases.json is missing")
-        if submission["schema"] == "qi-submission-v2" or "cases_sha256" in submission:
-            require(
-                submission.get("cases_sha256") == record["cases_sha256"],
-                f"{owner}: cases.json digest differs from submission.json",
-            )
-        if submission["schema"] == "qi-submission-v2":
-            require(submission.get("state") == "enqueued", f"{owner}: v2 submission was not confirmed enqueued")
-            for row in submission["jobs"]:
-                require(
-                    row.get("sha256") == record["circuits"].get(row["file"]),
-                    f"{owner}: circuit {row['file']} differs from the bytes its receipt uploaded",
-                )
-        for field, key in (("backend", "backend"), ("backend_type_id", "backend_type_id"), ("shots", "shots")):
-            require(cases.get(key) == submission[field], f"{owner}: cases.json and submission.json differ in {field}")
-        files = [row["file"] for row in submission["jobs"]]
-        require(len(set(files)) == len(files), f"{owner}: submitted circuit files repeat")
-        submitted_ids = [row["job"] for row in submission["jobs"]]
-        require(len(set(submitted_ids)) == len(submitted_ids), f"{owner}: submitted job ids repeat")
-        require(files == [row["file"] for row in cases["circuits"]], f"{owner}: submitted files differ from cases.json")
-        for row in cases["circuits"]:
-            require(
-                record["circuits"].get(row["file"]) == row["sha256"],
-                f"{owner}: circuit {row['file']} digest differs from cases.json",
-            )
-        collected = record["results"]
-        require(isinstance(collected, dict), f"{owner}: results.json is missing; collect the run")
-        require(collected.get("schema") == "qi-collection-v1", f"{owner}: results.json schema differs")
-        require(
-            [(row["file"], row["job"]["id"]) for row in collected["jobs"]]
-            == [(row["file"], row["job"]) for row in submission["jobs"]],
-            f"{owner}: results.json jobs differ from submission.json",
-        )
-        job_ids = {row["job"] for row in submission["jobs"]}
+        acquisition = qi_records.validate_run(record, owner)
+        job_ids = {job.job_id for job in acquisition.jobs}
         charges: Counter[int] = Counter()
         rows: Counter[tuple[Any, ...]] = Counter()
-        for transaction in collected["transactions"]:
+        for transaction in record["results"]["transactions"]:
             require(transaction["job"] in job_ids, f"{owner}: transaction {transaction['id']} charges another job")
             charges[transaction["job"]] += transaction["change"]
-            rows[_transaction_key(owner, transaction, submission["backend_type_id"])] += 1
-        completed: dict[str, dict[str, Any]] = {}
-        jobs: dict[int, tuple[Any, ...]] = {}
-        for row in collected["jobs"]:
-            job = row["job"]
-            require(
-                job["batch_job_id"] == submission["batch_job"] and job["number_of_shots"] == submission["shots"],
-                f"{owner}: job {job['id']} names another batch job or shot count",
+            rows[_transaction_key(owner, transaction, acquisition.backend_type_id)] += 1
+        jobs: dict[int, tuple[Any, ...]] = {
+            job.job_id: (
+                acquisition.backend_type_id,
+                acquisition.batch_job,
+                job.status,
+                job.shots_done,
+                charges[job.job_id],
             )
-            if job["status"] == "completed":
-                results = row["results"]
-                require(
-                    len(results) == 1
-                    and results[0]["job_id"] == job["id"]
-                    and results[0]["shots_requested"] == submission["shots"],
-                    f"{owner}: completed job {job['id']} holds one result of the submitted shots",
-                )
-                completed[f"{row['file']}.json"] = results[0]
-            else:
-                require(not row["results"], f"{owner}: {job['status']} job {job['id']} holds results")
-            done = sum(result["shots_done"] for result in row["results"])
-            jobs[job["id"]] = (
-                submission["backend_type_id"],
-                submission["batch_job"],
-                job["status"],
-                done,
-                charges[job["id"]],
-            )
-        require(
-            set(record["raw"]) == set(completed),
-            f"{owner}: raw/ holds {sorted(record['raw'])}, the completed jobs need {sorted(completed)}",
-        )
-        for name, result in completed.items():
-            shots = record["raw"][name]
-            require(
-                isinstance(shots, list) and len(shots) == result["shots_done"],
-                f"{owner}: raw/{name} length differs from the {result['shots_done']} shots done",
-            )
-            require(
-                Counter(shots) == Counter(result["results"]),
-                f"{owner}: raw/{name} differs from the recorded outcome histogram",
-            )
-        created = min(row["job"]["created_on"] for row in collected["jobs"])
-        shots_done = sum(job[3] for job in jobs.values())
-        requested = len(jobs) * submission["shots"]
+            for job in acquisition.jobs
+        }
+        shots_done = sum(job.shots_done for job in acquisition.jobs)
+        requested = len(jobs) * acquisition.shots
         facts = {
-            "created_at": created,
-            "backends": [submission["backend"]],
+            "created_at": acquisition.created_at,
+            "backends": [acquisition.backend],
             "jobs": len(jobs),
             "circuits": len(jobs),
-            "statuses": Counter(job[2] for job in jobs.values()),
+            "statuses": acquisition.statuses,
             "charge": sum(charges.values()),
-            "detail": f"batch job {submission['batch_job']}, {shots_done} of {requested} shots done",
+            "detail": f"batch job {acquisition.batch_job}, {shots_done} of {requested} shots done",
         }
+        self.acquisitions[run] = acquisition
         return facts, jobs, rows
 
     def runs(self) -> dict[str, dict[str, Any]]:

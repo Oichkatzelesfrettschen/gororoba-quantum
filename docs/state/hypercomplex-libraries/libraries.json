@@ -15152,6 +15152,7 @@
    "plan_records",
    "qd_platform",
    "qi_platform",
+   "qi_records",
    "re",
    "sys",
    "typing"
@@ -15603,6 +15604,7 @@
   ],
   "pyoctonion": [],
   "pyquaternion": [],
+  "qi_records": [],
   "qiskit": [
    "qiskit"
   ],
@@ -15668,6 +15670,7 @@
   "pyadic",
   "pyoctonion",
   "pyquaternion",
+  "qi_records",
   "quaternion",
   "quaternionic",
   "sage",
