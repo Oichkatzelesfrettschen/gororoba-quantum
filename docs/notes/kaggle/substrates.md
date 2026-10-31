@@ -236,6 +236,11 @@ on a T4 or the build host's RTX 4070 Ti. Measured on the T4 x2 (gate core-451):
 `results/kaggle/2026-10-31T012131Z-gororoba-memory-probe-t4` (kernel
 `probablyeric/memory-probe` version 3, T4 x2 shape, one GPU used)
 
+The kernel was pushed with the `kaggle` CLI rather than `scripts/kaggle_run.py`,
+so the run directory holds the kernel and its output with no submission or
+collection receipt, and the measurement enters no research-state claim; a
+substrate measurement guides placement and carries no scientific result.
+
 The probe measures three memory regimes in turn: host RAM with numpy and
 scipy, device memory with CuPy, and CUDA managed memory
 (`cupy.cuda.malloc_managed`, which calls `cudaMallocManaged`) sized past the
