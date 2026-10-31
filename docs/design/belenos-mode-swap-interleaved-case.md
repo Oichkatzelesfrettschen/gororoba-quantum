@@ -154,7 +154,7 @@ counts.
   and the slot homogeneity holds. The same Monte Carlo with no placement effect returns "beyond" in 0 of 2,000
   replicates under each of: one sigma of 0.03 for both classes; class sigmas 0.05 and 0.01 with Gaussian, Student t3,
   and Student t3 times a log-normal (0.5) scale per compiled mesh. One slot at three times the mesh scale returns it in
-  3 of 2,000 (0.15 percent), with the slot check withholding in 68 percent of those replicates. Blocks moved against
+  3 of 2,000 (0.15 percent); the slot check withholds "beyond" in 68 percent of all replicates of that model. Blocks moved against
   binomial error alone are the `moved` blocks of `decide()` on the pooled table, the earlier criterion.
 - **Slot predictor, descriptive.** `decide()` of `qd_packed_mode_swap_analysis.py` runs once on the pooled packed and
   swapped table of all 30 blocks, each share taken over every iteration of its layout, and `analysis.json` reports its
@@ -177,8 +177,9 @@ counts.
   **window** otherwise. The allowance w = 3 is the change of mesh variance between acquisition windows that the two
   visibility jobs of 2026-10-31 show (control spread 1.7 times in standard deviation). In the Monte Carlo, earlier
   deltas made entirely of mesh error at the old-delta bound (sigma 0.059 and 0.029) read mesh in 99.9 percent of the
-  uncorrelated outcomes; a mesh error of half that size (0.03 and 0.015) reads window in 97 percent; and a mesh error of
-  0.01 and 0.003, which leaves the earlier deltas to drift, reads excess in all of them.
+  uncorrelated outcomes; a mesh error of half that size (0.03 and 0.015) reads window in 98 percent of them; and a mesh
+  error of 0.01 and 0.003, which leaves the earlier deltas to drift, reads excess in all of them, while 93 percent of
+  all replicates of that model read "no moves", because no block then moves against binomial error alone.
 
 ### Reading
 
@@ -225,3 +226,7 @@ slot predictor is descriptive. The design does not show how a chip mode changes 
   `results/quandela/runs/`, then run `scripts/qd_platform.py plan` and `submit` with `--platform qpu:belenos
   --max-credits 1.018 --expected-seconds 190 --per-job-credits 1.0 --admit-status running` (expected seconds 100 for
   job-02), `collect`, and after all three `scripts/belenos_mode_swap_interleaved.py --analyze RUN_00 RUN_01 RUN_02`.
+  Each run records the platform's HOM, g2 and transmittance at its plan.
+- *Stopping rule.* Job-00 is checked before job-01 is planned: a job with no mesh-identical primary pair, or whose
+  replicates returned their primaries' meshes, withholds the pooled reading by rule, so the case stops there. A job
+  that errors or is cut short is resubmitted only on the owner's further approval.
