@@ -372,6 +372,80 @@
    "target_conditional_fidelity": 1.0
   }
  ],
+ "mesh_against_source": {
+  "+X A": {
+   "observed": 0.788135593220339,
+   "observed_minus_provider_convention": -0.04406692887323205,
+   "observed_minus_raw_visibility": -0.05479620590539369,
+   "standard_error": 0.026599499797734454
+  },
+  "+X B": {
+   "observed": 0.732824427480916,
+   "observed_minus_provider_convention": -0.09937809461265501,
+   "observed_minus_raw_visibility": -0.11010737164481665,
+   "standard_error": 0.038660075266409605
+  },
+  "+Y A": {
+   "observed": 0.8271186440677966,
+   "observed_minus_provider_convention": -0.00765309800840297,
+   "observed_minus_raw_visibility": -0.018436116112593992,
+   "standard_error": 0.022016433977730135
+  },
+  "+Y B": {
+   "observed": 0.9071428571428571,
+   "observed_minus_provider_convention": 0.07237111506665761,
+   "observed_minus_raw_visibility": 0.06158809696246659,
+   "standard_error": 0.02452909262161261
+  },
+  "+Z A": {
+   "observed": 0.770392749244713,
+   "observed_minus_provider_convention": 0.002896142260542467,
+   "observed_minus_raw_visibility": -0.011920721717484484,
+   "standard_error": 0.023117182186707604
+  },
+  "+Z B": {
+   "observed": 0.8762886597938144,
+   "observed_minus_provider_convention": 0.10879205280964388,
+   "observed_minus_raw_visibility": 0.09397518883161693,
+   "standard_error": 0.03343047016062692
+  },
+  "-X A": {
+   "observed": 0.845771144278607,
+   "observed_minus_provider_convention": 0.013568622185035961,
+   "observed_minus_raw_visibility": 0.0028393451528740954,
+   "standard_error": 0.02547482571471956
+  },
+  "-X B": {
+   "observed": 0.8796992481203008,
+   "observed_minus_provider_convention": 0.04749672602672972,
+   "observed_minus_raw_visibility": 0.03676744899456785,
+   "standard_error": 0.0282082056233254
+  },
+  "-Y A": {
+   "observed": 0.7718631178707225,
+   "observed_minus_provider_convention": -0.06290862420547694,
+   "observed_minus_raw_visibility": -0.07369164230966807,
+   "standard_error": 0.02587557571899397
+  },
+  "-Y B": {
+   "observed": 0.7133757961783439,
+   "observed_minus_provider_convention": -0.12139594589785552,
+   "observed_minus_raw_visibility": -0.13217896400204665,
+   "standard_error": 0.036088247253675355
+  },
+  "-Z A": {
+   "observed": 0.9042821158690176,
+   "observed_minus_provider_convention": -0.08713048523323053,
+   "observed_minus_raw_visibility": -0.08716702667451481,
+   "standard_error": 0.014765673548341672
+  },
+  "-Z B": {
+   "observed": 0.8523985239852399,
+   "observed_minus_provider_convention": -0.1390140771170083,
+   "observed_minus_raw_visibility": -0.1390506185582926,
+   "standard_error": 0.021546763722460244
+  }
+ },
  "replay_budget": {
   "credits": {
    "2": 10.0,
@@ -796,5 +870,421 @@
   ],
   "tau_mle": 0.0565,
   "tau_posterior_mean": 0.07366993326200481
+ },
+ "source_shift": {
+  "largest_shift_between_reads": {
+   "provider convention": 0.005275095780339689,
+   "raw visibility": 0.005752397749558713
+  },
+  "mean_conditional_fidelity": {
+   "provider convention": {
+    "2026-10-31T04:27Z": 0.84880962273766,
+    "2026-10-31T05:02Z": 0.8540847185179997,
+    "2026-10-31T09:52Z": 0.8498572931709645
+   },
+   "raw visibility": {
+    "2026-10-31T04:27Z": 0.858455955352996,
+    "2026-10-31T05:02Z": 0.8638761868088066,
+    "2026-10-31T09:52Z": 0.8581237890592479
+   }
+  },
+  "overlaps": {
+   "2026-10-31T04:27Z": {
+    "provider convention": 0.879,
+    "raw visibility": 0.8915481361966044
+   },
+   "2026-10-31T05:02Z": {
+    "provider convention": 0.886,
+    "raw visibility": 0.8986480644712074
+   },
+   "2026-10-31T09:52Z": {
+    "provider convention": 0.875,
+    "raw visibility": 0.8856765273877159
+   }
+  },
+  "read_runs": {
+   "2026-10-31T04:27Z": "2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay",
+   "2026-10-31T05:02Z": "2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00",
+   "2026-10-31T09:52Z": "2026-10-31T095141Z-qpu_belenos-belenos_mode_swap_interleaved-job-03"
+  },
+  "reads": {
+   "2026-10-31T04:27Z": {
+    "g2": 0.014,
+    "hom": 0.879,
+    "transmittance": 0.0537
+   },
+   "2026-10-31T05:02Z": {
+    "g2": 0.014,
+    "hom": 0.886,
+    "transmittance": 0.0489
+   },
+   "2026-10-31T09:52Z": {
+    "g2": 0.012,
+    "hom": 0.875,
+    "transmittance": 0.0542
+   }
+  },
+  "rows": [
+   {
+    "accepted_probability": 1.1524925937234533e-05,
+    "accepted_share": 0.10256078135197882,
+    "conditional_fidelity": 0.7674966069841705,
+    "label": "+Z",
+    "overlap": 0.879,
+    "read": "2026-10-31T04:27Z",
+    "reading": "provider convention",
+    "sample_probability": 0.00011237166668691891
+   },
+   {
+    "accepted_probability": 8.965838268594594e-06,
+    "accepted_share": 0.10480057503456223,
+    "conditional_fidelity": 0.9914126011022482,
+    "label": "-Z",
+    "overlap": 0.879,
+    "read": "2026-10-31T04:27Z",
+    "reading": "provider convention",
+    "sample_probability": 8.55514224577274e-05
+   },
+   {
+    "accepted_probability": 1.0586180471029844e-05,
+    "accepted_share": 0.10664058757665382,
+    "conditional_fidelity": 0.832202522093571,
+    "label": "+X",
+    "overlap": 0.879,
+    "read": "2026-10-31T04:27Z",
+    "reading": "provider convention",
+    "sample_probability": 9.926971251373162e-05
+   },
+   {
+    "accepted_probability": 1.0586180471029849e-05,
+    "accepted_share": 0.10664058757665384,
+    "conditional_fidelity": 0.832202522093571,
+    "label": "-X",
+    "overlap": 0.879,
+    "read": "2026-10-31T04:27Z",
+    "reading": "provider convention",
+    "sample_probability": 9.926971251373164e-05
+   },
+   {
+    "accepted_probability": 1.0582164868682123e-05,
+    "accepted_share": 0.10653612228432464,
+    "conditional_fidelity": 0.8347717420761995,
+    "label": "+Y",
+    "overlap": 0.879,
+    "read": "2026-10-31T04:27Z",
+    "reading": "provider convention",
+    "sample_probability": 9.93293602374633e-05
+   },
+   {
+    "accepted_probability": 1.058216486868212e-05,
+    "accepted_share": 0.10653612228432463,
+    "conditional_fidelity": 0.8347717420761994,
+    "label": "-Y",
+    "overlap": 0.879,
+    "read": "2026-10-31T04:27Z",
+    "reading": "provider convention",
+    "sample_probability": 9.932936023746327e-05
+   },
+   {
+    "accepted_probability": 1.1305916776507564e-05,
+    "accepted_share": 0.10090780065140983,
+    "conditional_fidelity": 0.7823134709621975,
+    "label": "+Z",
+    "overlap": 0.8915481361966044,
+    "read": "2026-10-31T04:27Z",
+    "reading": "raw visibility",
+    "sample_probability": 0.00011204204931157226
+   },
+   {
+    "accepted_probability": 8.964529641665057e-06,
+    "accepted_share": 0.10520517140330589,
+    "conditional_fidelity": 0.9914491425435324,
+    "label": "-Z",
+    "overlap": 0.8915481361966044,
+    "read": "2026-10-31T04:27Z",
+    "reading": "raw visibility",
+    "sample_probability": 8.520997135491918e-05
+   },
+   {
+    "accepted_probability": 1.0476090667689945e-05,
+    "accepted_share": 0.10589668884580106,
+    "conditional_fidelity": 0.8429317991257327,
+    "label": "+X",
+    "overlap": 0.8915481361966044,
+    "read": "2026-10-31T04:27Z",
+    "reading": "raw visibility",
+    "sample_probability": 9.892746205638643e-05
+   },
+   {
+    "accepted_probability": 1.0476090667689955e-05,
+    "accepted_share": 0.10589668884580111,
+    "conditional_fidelity": 0.8429317991257329,
+    "label": "-X",
+    "overlap": 0.8915481361966044,
+    "read": "2026-10-31T04:27Z",
+    "reading": "raw visibility",
+    "sample_probability": 9.892746205638649e-05
+   },
+   {
+    "accepted_probability": 1.0472544140706495e-05,
+    "accepted_share": 0.1057995396752681,
+    "conditional_fidelity": 0.8455547601803906,
+    "label": "+Y",
+    "overlap": 0.8915481361966044,
+    "read": "2026-10-31T04:27Z",
+    "reading": "raw visibility",
+    "sample_probability": 9.898477982843791e-05
+   },
+   {
+    "accepted_probability": 1.0472544140706495e-05,
+    "accepted_share": 0.10579953967526809,
+    "conditional_fidelity": 0.8455547601803906,
+    "label": "-Y",
+    "overlap": 0.8915481361966044,
+    "read": "2026-10-31T04:27Z",
+    "reading": "raw visibility",
+    "sample_probability": 9.898477982843792e-05
+   },
+   {
+    "accepted_probability": 8.612629622182643e-06,
+    "accepted_share": 0.10164553757826969,
+    "conditional_fidelity": 0.7755985659128006,
+    "label": "+Z",
+    "overlap": 0.886,
+    "read": "2026-10-31T05:02Z",
+    "reading": "provider convention",
+    "sample_probability": 8.473199933199916e-05
+   },
+   {
+    "accepted_probability": 6.770599162416893e-06,
+    "accepted_share": 0.10501844889735465,
+    "conditional_fidelity": 0.9914227493062648,
+    "label": "-Z",
+    "overlap": 0.886,
+    "read": "2026-10-31T05:02Z",
+    "reading": "provider convention",
+    "sample_probability": 6.447056906196069e-05
+   },
+   {
+    "accepted_probability": 7.949669204272134e-06,
+    "accepted_share": 0.10623735783187403,
+    "conditional_fidelity": 0.8380682901379412,
+    "label": "+X",
+    "overlap": 0.886,
+    "read": "2026-10-31T05:02Z",
+    "reading": "provider convention",
+    "sample_probability": 7.482931961516669e-05
+   },
+   {
+    "accepted_probability": 7.949669204272142e-06,
+    "accepted_share": 0.10623735783187407,
+    "conditional_fidelity": 0.8380682901379414,
+    "label": "-X",
+    "overlap": 0.886,
+    "read": "2026-10-31T05:02Z",
+    "reading": "provider convention",
+    "sample_probability": 7.482931961516674e-05
+   },
+   {
+    "accepted_probability": 7.946867903141534e-06,
+    "accepted_share": 0.10613864814454638,
+    "conditional_fidelity": 0.840675207806525,
+    "label": "+Y",
+    "overlap": 0.886,
+    "read": "2026-10-31T05:02Z",
+    "reading": "provider convention",
+    "sample_probability": 7.487251856005348e-05
+   },
+   {
+    "accepted_probability": 7.946867903141531e-06,
+    "accepted_share": 0.10613864814454635,
+    "conditional_fidelity": 0.840675207806525,
+    "label": "-Y",
+    "overlap": 0.886,
+    "read": "2026-10-31T05:02Z",
+    "reading": "provider convention",
+    "sample_probability": 7.487251856005347e-05
+   },
+   {
+    "accepted_probability": 8.447583313054428e-06,
+    "accepted_share": 0.09999019029271512,
+    "conditional_fidelity": 0.7907660635518209,
+    "label": "+Z",
+    "overlap": 0.8986480644712074,
+    "read": "2026-10-31T05:02Z",
+    "reading": "raw visibility",
+    "sample_probability": 8.448412077549456e-05
+   },
+   {
+    "accepted_probability": 6.770641117435757e-06,
+    "accepted_share": 0.105439328589151,
+    "conditional_fidelity": 0.9914130916413612,
+    "label": "-Z",
+    "overlap": 0.8986480644712074,
+    "read": "2026-10-31T05:02Z",
+    "reading": "raw visibility",
+    "sample_probability": 6.421362131219423e-05
+   },
+   {
+    "accepted_probability": 7.867821341969119e-06,
+    "accepted_share": 0.10549832709197313,
+    "conditional_fidelity": 0.8489385658972924,
+    "label": "+X",
+    "overlap": 0.8986480644712074,
+    "read": "2026-10-31T05:02Z",
+    "reading": "raw visibility",
+    "sample_probability": 7.457768818561432e-05
+   },
+   {
+    "accepted_probability": 7.867821341969122e-06,
+    "accepted_share": 0.10549832709197317,
+    "conditional_fidelity": 0.8489385658972927,
+    "label": "-X",
+    "overlap": 0.8986480644712074,
+    "read": "2026-10-31T05:02Z",
+    "reading": "raw visibility",
+    "sample_probability": 7.457768818561432e-05
+   },
+   {
+    "accepted_probability": 7.865261458237287e-06,
+    "accepted_share": 0.10540234044742196,
+    "conditional_fidelity": 0.8516004169325364,
+    "label": "+Y",
+    "overlap": 0.8986480644712074,
+    "read": "2026-10-31T05:02Z",
+    "reading": "raw visibility",
+    "sample_probability": 7.46213169921092e-05
+   },
+   {
+    "accepted_probability": 7.86526145823729e-06,
+    "accepted_share": 0.10540234044742192,
+    "conditional_fidelity": 0.8516004169325361,
+    "label": "-Y",
+    "overlap": 0.8986480644712074,
+    "read": "2026-10-31T05:02Z",
+    "reading": "raw visibility",
+    "sample_probability": 7.462131699210925e-05
+   },
+   {
+    "accepted_probability": 1.1793262401490057e-05,
+    "accepted_share": 0.10278571150125035,
+    "conditional_fidelity": 0.7680579120080031,
+    "label": "+Z",
+    "overlap": 0.875,
+    "read": "2026-10-31T09:52Z",
+    "reading": "provider convention",
+    "sample_probability": 0.0001147363989531424
+   },
+   {
+    "accepted_probability": 9.16363170439067e-06,
+    "accepted_share": 0.10493621981129862,
+    "conditional_fidelity": 0.9925981738099277,
+    "label": "-Z",
+    "overlap": 0.875,
+    "read": "2026-10-31T09:52Z",
+    "reading": "provider convention",
+    "sample_probability": 8.732572719761733e-05
+   },
+   {
+    "accepted_probability": 1.0779625271324024e-05,
+    "accepted_share": 0.10640305160306852,
+    "conditional_fidelity": 0.8335480425432019,
+    "label": "+X",
+    "overlap": 0.875,
+    "read": "2026-10-31T09:52Z",
+    "reading": "provider convention",
+    "sample_probability": 0.00010130936198650485
+   },
+   {
+    "accepted_probability": 1.0779625271324026e-05,
+    "accepted_share": 0.10640305160306854,
+    "conditional_fidelity": 0.8335480425432021,
+    "label": "-X",
+    "overlap": 0.875,
+    "read": "2026-10-31T09:52Z",
+    "reading": "provider convention",
+    "sample_probability": 0.00010130936198650485
+   },
+   {
+    "accepted_probability": 1.0777596803526476e-05,
+    "accepted_share": 0.10631520463142648,
+    "conditional_fidelity": 0.8356957940607261,
+    "label": "+Y",
+    "overlap": 0.875,
+    "read": "2026-10-31T09:52Z",
+    "reading": "provider convention",
+    "sample_probability": 0.00010137399293817142
+   },
+   {
+    "accepted_probability": 1.0777596803526474e-05,
+    "accepted_share": 0.10631520463142644,
+    "conditional_fidelity": 0.8356957940607261,
+    "label": "-Y",
+    "overlap": 0.875,
+    "read": "2026-10-31T09:52Z",
+    "reading": "provider convention",
+    "sample_probability": 0.00010137399293817143
+   },
+   {
+    "accepted_probability": 1.1601568624832966e-05,
+    "accepted_share": 0.1013701775387538,
+    "conditional_fidelity": 0.7806983187974729,
+    "label": "+Z",
+    "overlap": 0.8856765273877159,
+    "read": "2026-10-31T09:52Z",
+    "reading": "raw visibility",
+    "sample_probability": 0.00011444755160261695
+   },
+   {
+    "accepted_probability": 9.162366280243853e-06,
+    "accepted_share": 0.10528228520063873,
+    "conditional_fidelity": 0.9926335586033203,
+    "label": "-Z",
+    "overlap": 0.8856765273877159,
+    "read": "2026-10-31T09:52Z",
+    "reading": "raw visibility",
+    "sample_probability": 8.702666609850778e-05
+   },
+   {
+    "accepted_probability": 1.0683088164290907e-05,
+    "accepted_share": 0.10576364140271023,
+    "conditional_fidelity": 0.842760909135965,
+    "label": "+X",
+    "overlap": 0.8856765273877159,
+    "read": "2026-10-31T09:52Z",
+    "reading": "raw visibility",
+    "sample_probability": 0.00010100908046096406
+   },
+   {
+    "accepted_probability": 1.068308816429091e-05,
+    "accepted_share": 0.10576364140271031,
+    "conditional_fidelity": 0.8427609091359646,
+    "label": "-X",
+    "overlap": 0.8856765273877159,
+    "read": "2026-10-31T09:52Z",
+    "reading": "raw visibility",
+    "sample_probability": 0.000101009080460964
+   },
+   {
+    "accepted_probability": 1.0681479137303514e-05,
+    "accepted_share": 0.10568223708422961,
+    "conditional_fidelity": 0.8449445193413823,
+    "label": "+Y",
+    "overlap": 0.8856765273877159,
+    "read": "2026-10-31T09:52Z",
+    "reading": "raw visibility",
+    "sample_probability": 0.00010107166002542403
+   },
+   {
+    "accepted_probability": 1.0681479137303502e-05,
+    "accepted_share": 0.10568223708422955,
+    "conditional_fidelity": 0.8449445193413823,
+    "label": "-Y",
+    "overlap": 0.8856765273877159,
+    "read": "2026-10-31T09:52Z",
+    "reading": "raw visibility",
+    "sample_probability": 0.00010107166002542397
+   }
+  ]
  }
 }

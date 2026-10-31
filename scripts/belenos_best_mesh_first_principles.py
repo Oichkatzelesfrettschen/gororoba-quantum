@@ -14,6 +14,7 @@ reads:
   when a seed returns a new mesh, and its size when no mesh error persists.
 - replay_budget: the shot cap and credits per replay job from the lossiest retained mesh.
 - acceptance: acceptance per sample against correctness between the two meshes of each input.
+- source_shift: the source model's predicted conditional fidelity at each calibration read of the day.
 
 Usage: belenos_best_mesh_first_principles.py --out PATH --seed qrng:<draw>#<index>
 """
@@ -368,6 +369,110 @@ def replay_budget(counts: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+CALIBRATION_READS = {
+    "2026-10-31T04:27Z": {"hom": 0.879, "g2": 0.014, "transmittance": 0.0537},
+    "2026-10-31T05:02Z": {"hom": 0.886, "g2": 0.014, "transmittance": 0.0489},
+    "2026-10-31T09:52Z": {"hom": 0.875, "g2": 0.012, "transmittance": 0.0542},
+}
+READ_SOURCES = {
+    "2026-10-31T04:27Z": "2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay",
+    "2026-10-31T05:02Z": "2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00",
+    "2026-10-31T09:52Z": "2026-10-31T095141Z-qpu_belenos-belenos_mode_swap_interleaved-job-03",
+}
+
+
+def perceval_hom_visibility(overlap: float, g2: float) -> float:
+    """HOM visibility of Perceval's source model on a balanced beam splitter: 1 - P_c(overlap) / P_c(0) at fixed g2."""
+    import perceval as pcvl
+
+    def coincidence(m: float) -> float:
+        processor = pcvl.Processor("SLOS", pcvl.BS(), noise=pcvl.NoiseModel(indistinguishability=m, g2=g2))
+        processor.min_detected_photons_filter(0)
+        processor.with_input(pcvl.BasicState([1, 1]))
+        return float(sum(v for state, v in processor.probs()["results"].items() if state[0] and state[1]))
+
+    return 1.0 - coincidence(overlap) / coincidence(0.0)
+
+
+def overlap_for_visibility(visibility: float, g2: float) -> float:
+    """The source-model overlap whose simulated HOM visibility equals ``visibility`` at ``g2`` (bisection)."""
+    low, high = visibility, 1.0
+    for _ in range(40):
+        mid = 0.5 * (low + high)
+        low, high = (mid, high) if perceval_hom_visibility(mid, g2) < visibility else (low, mid)
+    return 0.5 * (low + high)
+
+
+def source_score(
+    item: tuple[str, str, float, float, float, Mapping[str, Any], Mapping[str, Any], tuple[int, ...]],
+) -> dict[str, Any]:
+    read, reading, overlap, g2, transmittance, setting, circuit, layout = item
+    variant = tr.Variant(reading, overlap, g2, (transmittance,) * tr.MODES)
+    scores = tr.variant_scores((variant, setting["label"], dict(setting), dict(circuit), layout))
+    return {"read": read, "reading": reading, "label": setting["label"], "overlap": overlap, **scores}
+
+
+def source_shift_section() -> dict[str, Any]:
+    """Predicted conditional fidelity of the six teleportation inputs at each calibration read, from the source model
+    alone (no mesh error), under two readings of the processor record's HOM field: Perceval's own convention, which
+    maps it to the source-model overlap (perceval.utils.noise_model, perfs "HOM (%)" / 100), and a raw HOM visibility,
+    inverted through the same source model at the read's g2 (Ollivier et al. 2021, Eq. 1, separate the overlap from the
+    multiphoton term). The spread between reads bounds the chip-wide correctness change the source explains."""
+    name = RUN_NAMES["job-02"]
+    cases = json.loads((RUNS / name / "cases.json").read_text(encoding="utf-8"))
+    circuit = json.loads((RUNS / name / "circuit.json").read_text(encoding="utf-8"))
+    layout = tuple(cases["layout"]["chip_modes"])
+    overlaps = {
+        read: {"provider convention": f["hom"], "raw visibility": overlap_for_visibility(f["hom"], f["g2"])}
+        for read, f in CALIBRATION_READS.items()
+    }
+    items = [
+        (read, reading, overlap, f["g2"], f["transmittance"], setting, circuit, layout)
+        for read, f in CALIBRATION_READS.items()
+        for reading, overlap in overlaps[read].items()
+        for setting in cases["settings"]
+    ]
+    rows = ordered_map(source_score, items, min_items=1)
+    summary: dict[str, dict[str, float]] = {}
+    for row in rows:
+        summary.setdefault(row["reading"], {}).setdefault(row["read"], 0.0)
+        summary[row["reading"]][row["read"]] += row["conditional_fidelity"] / len(LABELS)
+    return {
+        "reads": CALIBRATION_READS,
+        "read_runs": READ_SOURCES,
+        "overlaps": overlaps,
+        "rows": rows,
+        "mean_conditional_fidelity": summary,
+        "largest_shift_between_reads": {
+            reading: max(values.values()) - min(values.values()) for reading, values in summary.items()
+        },
+    }
+
+
+def mesh_against_source(counts: Mapping[str, Any], shift: Mapping[str, Any]) -> dict[str, Any]:
+    """Each retained mesh's correctness minus the source-only prediction at the 04:27 read, which both blocks ran
+    under. A positive excess on an input with a pessimistic source prediction shows the source model is no ceiling for
+    a postselected mesh, and the mesh-to-mesh spread is measured about each input's own source prediction."""
+    read = "2026-10-31T04:27Z"
+    predicted = {
+        (row["reading"], row["label"]): row["conditional_fidelity"] for row in shift["rows"] if row["read"] == read
+    }
+    out: dict[str, Any] = {}
+    for label in LABELS:
+        for block in ("A", "B"):
+            cell = counts[label][block]
+            f = cell["correct"] / cell["accepted"]
+            out[f"{label} {block}"] = {
+                "observed": f,
+                "standard_error": float(np.sqrt(f * (1 - f) / cell["accepted"])),
+                **{
+                    f"observed_minus_{reading.replace(' ', '_')}": f - predicted[(reading, label)]
+                    for reading in ("provider convention", "raw visibility")
+                },
+            }
+    return out
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     parser.add_argument("--out", type=Path, required=True)
@@ -376,6 +481,7 @@ def main() -> int:
     if args.seed is None:
         parser.error("--seed is required")
     counts = block_counts(iterations())
+    shift = source_shift_section()
     shrink = shrinkage(counts)
     power = replay_power(counts, shrink, args.seed)
     shrink.pop("_draw")
@@ -391,6 +497,8 @@ def main() -> int:
         "shrinkage": shrink,
         "replay_power": power,
         "acceptance": acceptance_section(counts),
+        "source_shift": shift,
+        "mesh_against_source": mesh_against_source(counts, shift),
         "replay_budget": replay_budget(counts),
     }
     args.out.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
