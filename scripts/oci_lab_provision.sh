@@ -21,8 +21,8 @@ MICRO2_IP=10.42.1.30
 # Always Free compute: A1.Flex totals 2 OCPU and 12 GB; boot volumes and the
 # data volume together stay within the 200 GB block-volume grant, and
 # LaunchInstance refuses a boot volume below 50 GB.
-A1_OCPUS=2
-A1_MEM_GB=12
+A1_OCPUS=${A1_OCPUS:-2}
+A1_MEM_GB=${A1_MEM_GB:-12}
 A1_BOOT_GB=50
 MICRO_BOOT_GB=50
 DATA_GB=50

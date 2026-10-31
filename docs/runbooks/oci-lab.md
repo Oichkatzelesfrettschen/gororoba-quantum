@@ -17,11 +17,11 @@ by display name before creating it, so a rerun creates nothing twice:
 ```sh
 sh scripts/oci_lab_provision.sh network   # VCN, internet gateway, route tables, security lists, subnets
 sh scripts/oci_lab_provision.sh route     # private 0.0.0.0/0 and the WireGuard range to the edge's private IP
-sh scripts/oci_lab_provision.sh a1        # one A1 launch; exit 75 on Out of host capacity
+sh scripts/oci_lab_provision.sh a1        # one A1 launch (A1_OCPUS, A1_MEM_GB override 2/12); exit 75 on Out of host capacity
 sh scripts/oci_lab_provision.sh volume    # lab-data (50 GB) attached to lab-a1
 sh scripts/oci_lab_provision.sh bastion   # lab-bastion on lab-private
 sh scripts/oci_lab_provision.sh status
-tmux new-session -d -s oci-a1-retry "sh $PWD/scripts/oci_lab/a1_retry.sh"   # 30 min cadence, 96 attempts
+tmux new-session -d -s oci-a1-retry "A1_OCPUS=1 A1_MEM_GB=10 sh $PWD/scripts/oci_lab/a1_retry.sh"   # 30 min cadence, 96 attempts
 ```
 
 `a1_retry.sh` logs each attempt to `~/.oci/lab/a1-retry.log` and calls
