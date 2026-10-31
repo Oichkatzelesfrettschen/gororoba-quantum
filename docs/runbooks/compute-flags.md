@@ -169,7 +169,7 @@ cgroup cap is the uniform rule.
 | Substrate | Cores | Memory cap | Notes |
 |---|---|---|---|
 | Build host | 6 cores, 12 threads | `systemd-run --user --scope -p MemoryMax` | the owner keeps it mostly idle |
-| Azure Standard_FX4mds_v2 | 2 cores, 4 threads | `systemd-run --user --scope -p MemoryMax`, lingering on | 84 GB; two jobs share 2 physical cores; a DevTestLab daily auto-shutdown schedule (`shutdown-computevm-NAME`) deallocates the VM and kills every job, so the launcher disables it at creation (`az vm auto-shutdown --off`) and confirms no schedule remains |
+| Azure Standard_FX4mds_v2 | 2 cores, 4 threads | `systemd-run --user --scope -p MemoryMax`, lingering on | 84 GB; two jobs share 2 physical cores; a DevTestLab daily auto-shutdown schedule (`shutdown-computevm-NAME`) deallocates the VM and kills every job, so the launcher disables it at creation (`az vm auto-shutdown --off`) and confirms no schedule remains; a watcher that deallocates the VM at one job's end ends every other job on it, so it checks every job's marker first or co-located jobs run on separate VMs |
 | Kaggle CPU kernel | 4 vCPU (treated as 2 cores) | RSS watchdog in the kernel script, reading cgroup `memory.max` less `memory.current` | 31.35 GiB total, 29.5 GiB cgroup headroom; a job fits below about 27 GiB ([substrates](../notes/kaggle/substrates.md#weekly-budget-and-tandem-capacity)) |
 
 ## Measured combinations
