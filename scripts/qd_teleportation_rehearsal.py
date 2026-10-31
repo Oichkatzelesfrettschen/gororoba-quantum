@@ -29,7 +29,10 @@ figures preregister the analysis, size max_shots and serve the --anchor gate), i
 follows the decision rule (DECISION): six iterations and a beats-classical verdict against the bound at the modeled
 attempts; DECISION_CASES confines that rule to job-00. job-01 follows the descriptive rule (DESCRIPTIVE): two blocks of
 the six inputs, block B in mirrored order, an anytime-valid lower confidence bound on the accepted events' average
-correctness, a block homogeneity veto, and two classical comparisons that hold only under the assumptions each names. A
+correctness, a block homogeneity veto, and two classical comparisons that hold only under the assumptions each names.
+job-02 and job-03 split that design into two jobs of six iterations (CASE_HALVES), since each template iteration takes
+about ITERATION_SECONDS of provider time and twelve overrun the 300 s limit; they share job-02's platform read
+(SHARED_READ) and preregistration, and --analyze-pair RUN_A RUN_B scores them as one two-block request. A
 Job adds the budgets and the written case's plan arguments. job-00 takes the 2026-10-24 read ANCHOR_READ as its anchor;
 a later case takes its own platform read, so its decision rule describes the chip state it is sent into and only the
 live gate applies. --prepare JOB derives such a case from its retained read (CASES/JOB/platform-read/catalogue.json):
@@ -41,7 +44,8 @@ tolerance, circuit.json exactly), validates them through qd_platform.template_ex
 setting, and requires the refusal of mutated requests. --justify retains job-00's noise-model derivation of the sample
 budget, and --estimate retains Perceval's shot estimate in its anchor state. --simulate OUT [JOB] writes a results.json
 of the local noise simulation of a registered case (job-00 by default) into OUT beside the staged request. --analyze RUN
-parses RUN/results.json into the joint histogram of qd_network_protocol.joint_teleportation_scores. --body JOB and
+parses RUN/results.json into the joint histogram of qd_network_protocol.joint_teleportation_scores; a split half alone
+evaluates no comparison. --body JOB and
 --plan JOB read the live platform record and send no job; with --anchor they evaluate the request under the anchor
 read's performance figures, which a case anchored at its own read refuses.
 
@@ -58,6 +62,7 @@ model beside the admitting one.
 Usage:
   "$PYTHON" scripts/qd_teleportation_rehearsal.py [--check | --justify | --estimate | --prepare JOB | JOB]
   "$PYTHON" scripts/qd_teleportation_rehearsal.py [--body JOB | --plan JOB] [--anchor]
+  "$PYTHON" scripts/qd_teleportation_rehearsal.py --analyze-pair RUN_A RUN_B [--check]
   "$PYTHON" scripts/qd_teleportation_rehearsal.py [--simulate OUT [JOB] | --analyze RUN [--check]]
   "$PYTHON" scripts/qd_teleportation_rehearsal.py --submit RUN APPROVAL [--anchor]
 """
@@ -154,11 +159,34 @@ COMPILATION_SEEDS = (42862, 37522, 45230, 47441, 29246, 17743)
 # +Y, -X, +X, -Z, +Z) indices 0 to 5 of the ANU QRNG draw docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json, each in
 # index order, registered in docs/evidence/qrng_seeds/allocations.json.
 JOB_01_COMPILATION_SEEDS = (8608, 30481, 4339, 55973, 12504, 37710, 5573, 39099, 45322, 55527, 43939, 10803)
-CASE_SEEDS = {"job-00": COMPILATION_SEEDS, "job-01": JOB_01_COMPILATION_SEEDS}
+# job-01's two blocks run as two jobs of six iterations each, job-02 block A (+Z, -Z, +X, -X, +Y, -Y) on indices 0 to
+# 5 and job-03 block B (-Y, +Y, -X, +X, -Z, +Z) on indices 6 to 11 of the ANU QRNG draw
+# docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json, each in index order, registered in
+# docs/evidence/qrng_seeds/allocations.json.
+JOB_02_COMPILATION_SEEDS = (19918, 52848, 30689, 50293, 57001, 12608)
+JOB_03_COMPILATION_SEEDS = (56057, 55550, 595, 59482, 7821, 19846)
+CASE_SEEDS = {
+    "job-00": COMPILATION_SEEDS,
+    "job-01": JOB_01_COMPILATION_SEEDS,
+    "job-02": JOB_02_COMPILATION_SEEDS,
+    "job-03": JOB_03_COMPILATION_SEEDS,
+}
 DECISION = "decision-v1"
 DESCRIPTIVE = "descriptive-v2"
-# The rule and the block count of each seeded case.
-CASE_DESIGNS = {"job-00": (DECISION, 1), "job-01": (DESCRIPTIVE, 2)}
+# The rule and the block count of each seeded case. A split case carries one block of a two-block design per job;
+# its preregistered planned count, lambda and homogeneity test cover the pair, which --analyze-pair scores.
+CASE_DESIGNS = {
+    "job-00": (DECISION, 1),
+    "job-01": (DESCRIPTIVE, 2),
+    "job-02": (DESCRIPTIVE, 2),
+    "job-03": (DESCRIPTIVE, 2),
+}
+# The block each split case runs, and the case whose platform read the second half shares, so both halves take one
+# layout and one preregistration.
+CASE_HALVES = {"job-02": "A", "job-03": "B"}
+SHARED_READ = {"job-03": "job-02"}
+# The cases whose written seconds predate the ITERATION_SECONDS floor; their retained JOBS rows keep the model value.
+UNFLOORED_SECONDS = ("job-00", "job-01")
 # The decision rule's unconditional verdict compares the pooled fidelity with attempts_benchmark at two attempt
 # profiles, the reported nb_shots_used and the modeled attempts. nb_shots_used counts detection events with at least
 # one photon and no result field counts source triggers (gororoba_quantum/provider_counters.py), so the attempt
@@ -221,7 +249,8 @@ BOX_ASSUMPTIONS = (
 class Request:
     """The budget-free part of a case: the chip mode of each logical mode, the compilation seed of each iteration in
     submission order (schedule), the repository path of the anchor read, whose performance figures preregister the
-    analysis, size max_shots and serve the --anchor gate, and the case's rule and block count."""
+    analysis, size max_shots and serve the --anchor gate, the case's rule and block count, and for a split case the
+    one block (A or B) its job runs."""
 
     name: str
     layout: tuple[int, ...]
@@ -229,15 +258,26 @@ class Request:
     anchor_read: str
     rule: str = DECISION
     blocks: int = 1
+    half: str = ""
 
     @property
     def directory(self) -> Path:
         return CASES / self.name
 
     @property
+    def read_path(self) -> Path:
+        """The case's fresh platform read; the second half of a split case shares its first half's."""
+        return CASES / SHARED_READ.get(self.name, self.name) / READ
+
+    @property
     def own_anchor(self) -> bool:
         """True when the anchor read is the case's own platform read, so only the live gate applies."""
-        return ROOT / self.anchor_read == self.directory / READ
+        return ROOT / self.anchor_read == self.read_path
+
+    @property
+    def iteration_blocks(self) -> int:
+        """The blocks the job itself runs: one for a split case, else every block."""
+        return 1 if self.half else self.blocks
 
 
 @dataclass(frozen=True)
@@ -268,10 +308,30 @@ REQUESTS = {
         DESCRIPTIVE,
         2,
     ),
+    "job-02": Request(
+        "job-02",
+        (18, 19, 20, 17, 22, 23, 16, 21),
+        JOB_02_COMPILATION_SEEDS,
+        "results/quandela/cases/teleportation_rehearsal/job-02/platform-read/catalogue.json",
+        DESCRIPTIVE,
+        2,
+        "A",
+    ),
+    "job-03": Request(
+        "job-03",
+        (18, 19, 20, 17, 22, 23, 16, 21),
+        JOB_03_COMPILATION_SEEDS,
+        "results/quandela/cases/teleportation_rehearsal/job-02/platform-read/catalogue.json",
+        DESCRIPTIVE,
+        2,
+        "B",
+    ),
 }
 JOBS = {
     "job-00": Job(REQUESTS["job-00"], 900, 1_200_000, 2.2, 120.0),
     "job-01": Job(REQUESTS["job-01"], 1200, 3_200_000, 4.2, 240.0),
+    "job-02": Job(REQUESTS["job-02"], 1200, 3_000_000, 4.0, 180.0),
+    "job-03": Job(REQUESTS["job-03"], 1200, 3_000_000, 4.0, 180.0),
 }
 STAGED = ("cases.json", "circuit.json")
 # qd_platform.snapshot's catalogue and qd_platform.observe's raw route answers, read before the submission.
@@ -447,7 +507,9 @@ def schedule(request: Request) -> list[dict[str, Any]]:
         require(request.blocks == 1, f"{request.name}: a decision case runs one block")
         return rows
     require(request.rule == DESCRIPTIVE and request.blocks == 2, f"{request.name}: rule {request.rule!r}")
-    return [{**row, "block": block} for block, order in (("A", rows), ("B", rows[::-1])) for row in order]
+    require(request.half in ("", "A", "B"), f"{request.name}: block {request.half!r}")
+    blocks = [(block, order) for block, order in (("A", rows), ("B", rows[::-1])) if request.half in ("", block)]
+    return [{**row, "block": block} for block, order in blocks for row in order]
 
 
 def ideal(label: str, layout: Sequence[int]) -> dict[str, float]:
@@ -676,7 +738,7 @@ def refusal(item: tuple[str, dict[str, Any], dict[str, Any]]) -> str:
     label, candidate, mesh = item
     try:
         validate(candidate, mesh)
-    except (ValueError, PlatformError):
+    except ValueError, PlatformError:
         return label
     raise ValueError(f"validate accepts the {label}")
 
@@ -825,7 +887,7 @@ def variants(request: Request) -> list[Variant]:
     anchor read and of the case's fresh read. A case anchored at its own read makes the fresh variants repeat the
     anchor ones, so its allowance holds UNMODELED_ALLOWANCE alone."""
     anchor = json.loads((ROOT / request.anchor_read).read_text(encoding="utf-8"))
-    fresh = json.loads((request.directory / READ).read_text(encoding="utf-8"))
+    fresh = json.loads(request.read_path.read_text(encoding="utf-8"))
     t_anchor, _, figures = read_perfs(anchor)
     t_fresh, _, fresh_figures = read_perfs(fresh)
     hom, g2, loss = figures["hom"], figures["g2"], figures["transmittance"]
@@ -977,6 +1039,17 @@ def expected_seconds(derived: Mapping[str, Any], samples: int, clock_mhz: float,
     acquisition = blocks * sum(samples / (clock_mhz * 1e6 * probability[label]) for label, *_ in SIX_STATES)
     modeled = COMPILE_SECONDS * len(SIX_STATES) * blocks + acquisition
     return float(math.ceil(modeled * SECONDS_MARGIN / SECONDS_QUANTUM) * SECONDS_QUANTUM)
+
+
+def written_seconds(derived: Mapping[str, Any], samples: int, clock_mhz: float, request: Request) -> float:
+    """The written case's seconds: expected_seconds over the blocks the job runs, floored at the job's iterations times
+    ITERATION_SECONDS in whole SECONDS_QUANTUM, except for the UNFLOORED_SECONDS cases written before the floor."""
+    modeled = expected_seconds(derived, samples, clock_mhz, request.iteration_blocks)
+    if request.name in UNFLOORED_SECONDS:
+        return modeled
+    iterations = request.iteration_blocks * len(SIX_STATES)
+    floor = math.ceil(iterations * ITERATION_SECONDS / SECONDS_QUANTUM) * SECONDS_QUANTUM
+    return float(max(modeled, floor))
 
 
 def retained_derivation(name: str) -> dict[str, Any]:
@@ -1394,10 +1467,11 @@ def analyze_descriptive(
         ]
         tests[label] = homogeneity(counts, level)
     differ = sorted(label for label, test in tests.items() if test["status"] == "differ")
+    untestable = sorted(label for label, test in tests.items() if test["status"] == "untestable")
     comparisons = []
     for comparison in preregistered["comparisons"]:
         record = {key: value for key, value in comparison.items() if key != "forecast_margin"}
-        if partial or absent or lower is None:
+        if partial or absent or untestable or lower is None:
             record["label"], record["margin"] = "not-evaluated", None
         elif differ:
             record["label"], record["margin"] = "vetoed-blocks-differ", lower - comparison["bound"]
@@ -1405,7 +1479,7 @@ def analyze_descriptive(
             record["margin"] = lower - comparison["bound"]
             record["label"] = "exceeds-under-assumptions" if record["margin"] > 0 else "not-shown"
         comparisons.append(record)
-    evaluated = not (partial or absent or lower is None or differ)
+    evaluated = not (partial or absent or untestable or lower is None or differ)
     break_even = (
         break_even_ratio(preregistered["sample_probability"], lower)
         if evaluated and lower is not None
@@ -1436,6 +1510,8 @@ def analyze_descriptive(
             if absent
             else "no accepted event"
             if lower is None
+            else "one block of the pair: comparisons need --analyze-pair"
+            if untestable
             else "blocks differ: " + ", ".join(differ)
             if differ
             else "complete"
@@ -1503,7 +1579,7 @@ def check_job(name: str) -> str:
     manifest, circuit = json.loads(retained["cases.json"]), json.loads(retained["circuit.json"])
     validate(manifest, circuit)
     refused = rejections(manifest, circuit)
-    t_out, dark, _ = read_perfs(json.loads((out / READ).read_text(encoding="utf-8")))
+    t_out, dark, _ = read_perfs(json.loads(job.request.read_path.read_text(encoding="utf-8")))
     require(choose_layout(t_out, dark) == job.request.layout, f"{job.name}: the retained read selects another layout")
     derived = retained_derivation(job.name)
     close(
@@ -1525,7 +1601,7 @@ def check_job(name: str) -> str:
         f"{job.name}: the credit ceiling {job.credit_ceiling} is below the per-job price plus max_shots",
     )
     clock = read_perfs(json.loads((ROOT / job.request.anchor_read).read_text(encoding="utf-8")))[2]["clock_mhz"]
-    seconds = expected_seconds(derived, job.samples, clock, job.request.blocks)
+    seconds = written_seconds(derived, job.samples, clock, job.request)
     require(
         job.expected_seconds == seconds and seconds <= MAX_DURATION,
         f"{job.name}: expected {job.expected_seconds} s, derived {seconds:g} s against max_duration {MAX_DURATION}",
@@ -1674,7 +1750,9 @@ def model_at(perfs: Mapping[str, Any], request: Request | None = None) -> dict[s
     prepared = json.loads((ROOT / request.anchor_read).read_text(encoding="utf-8"))["processors"][PLATFORM]["perfs"]
     probability = {s["label"]: row["sample_probability"] for s, row in zip(settings, rows, strict=True)}
     samples = int(retained_derivation(request.name)["samples_per_iteration"])
-    modeled = expected_seconds({"sample_probability": probability}, samples, perfs["Clock (MHz)"], request.blocks)
+    modeled = expected_seconds(
+        {"sample_probability": probability}, samples, perfs["Clock (MHz)"], request.iteration_blocks
+    )
     seconds = max(modeled, float(math.ceil(len(settings) * ITERATION_SECONDS)))
     dark = perfs["Dark counts (detection/s)"]
     hot = [mode for mode in request.layout if dark[mode] > DARK_LIMIT]
@@ -1896,23 +1974,27 @@ def prepare(name: str) -> int:
         f"{name}: the decision rule admits only {DECISION_CASES}",
     )
     request_dir = CASES / name
-    read = request_dir / READ
+    read = CASES / SHARED_READ.get(name, name) / READ
     require(read.is_file(), f"{read.relative_to(ROOT)} is absent; snapshot the platform into it first")
     t_out, dark, figures = read_perfs(json.loads(read.read_text(encoding="utf-8")))
     rule, blocks = CASE_DESIGNS[name]
-    request = Request(name, choose_layout(t_out, dark), CASE_SEEDS[name], str(read.relative_to(ROOT)), rule, blocks)
+    half = CASE_HALVES.get(name, "")
+    request = Request(
+        name, choose_layout(t_out, dark), CASE_SEEDS[name], str(read.relative_to(ROOT)), rule, blocks, half
+    )
     retained = request_dir / "noise-model.json"
     record = justify(request)
     if retained.is_file():
         close(record, json.loads(retained.read_text(encoding="utf-8")), f"{name}/noise-model.json")
     derived = record["derived"]
     samples = int(derived["samples_per_iteration"])
-    seconds = expected_seconds(derived, samples, figures["clock_mhz"], blocks)
+    seconds = written_seconds(derived, samples, figures["clock_mhz"], request)
     require(
         seconds <= MAX_DURATION,
         f"{name}: {samples} samples per iteration need an expected {seconds:g} s, above max_duration {MAX_DURATION} s",
     )
     if not retained.is_file():
+        request_dir.mkdir(parents=True, exist_ok=True)
         write_justification(request, record)
     if (request_dir / ESTIMATE).is_file():
         estimate = json.loads((request_dir / ESTIMATE).read_text(encoding="utf-8"))
@@ -1936,7 +2018,7 @@ def prepare(name: str) -> int:
                 f"{c['name']} {c['bound']:.4f} margin {c['forecast_margin']:+.4f}" for c in derived["comparisons"]
             )
         )
-    design = "" if rule == DECISION else f", DESCRIPTIVE, {blocks}"
+    design = "" if rule == DECISION else f", DESCRIPTIVE, {blocks}" + (f', "{half}"' if half else "")
     print(
         f'REQUESTS["{name}"] = Request("{name}", {request.layout}, {name.upper().replace("-", "_")}_COMPILATION_SEEDS, '
         f'"{request.anchor_read}"{design})'
@@ -1960,6 +2042,58 @@ def simulate(out: Path, job: Job) -> int:
     variant = next(v for v in variants(job.request) if v.name == "anchor per-mode transmission")
     write_json(out / "results.json", simulated_results(manifest, circuit, variant))
     print(f"teleportation rehearsal: {out / 'results.json'} from the {variant.name} variant")
+    return 0
+
+
+PAIR_ANALYSIS = "pair-analysis.json"
+# The manifest fields both halves of a split case share; settings, job and the per-job budgets differ.
+PAIR_FIELDS = ("family", "platforms", "min_detected_photons", "layout", "eligibility", "frames", "design")
+
+
+def pair_inputs(run_a: Path, run_b: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+    """The manifest and results of a split case's two runs joined into one two-block request.
+
+    Run A must hold block A and run B block B of one design: equal shared fields and preregistration, and the two
+    blocks' settings in submission order. The joined results are partial when either run is."""
+    manifests, outcomes = [], []
+    for run, block in ((run_a, "A"), (run_b, "B")):
+        manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+        blocks = {setting["block"] for setting in manifest["settings"]}
+        require(blocks == {block}, f"{run.name} holds blocks {sorted(blocks)}, not {block}")
+        manifests.append(manifest)
+        outcomes.append(json.loads((run / "results.json").read_text(encoding="utf-8")))
+    first, second = manifests
+    for field in (*PAIR_FIELDS, "preregistered"):
+        require(first[field] == second[field], f"the two halves differ in {field}")
+    joined = {**first, "job": f"{first['job']}+{second['job']}", "settings": first["settings"] + second["settings"]}
+    joined["iterations"] = len(joined["settings"])
+    results = {
+        "partial": any(outcome.get("partial") is True for outcome in outcomes),
+        "iterations": [entry for outcome in outcomes for entry in (outcome.get("iterations") or [])],
+    }
+    return joined, results
+
+
+def analyze_pair(run_a: Path, run_b: Path, replay: bool = False) -> int:
+    """Write RUN_B/pair-analysis.json, the descriptive analysis of both halves of a split case as one two-block job,
+    or with `replay` require the retained record to equal a fresh analysis."""
+    manifest, results = pair_inputs(run_a, run_b)
+    record = {"runs": [run_a.name, run_b.name], **analyze_descriptive(manifest, results, manifest.get("frames"))}
+    target = run_b / PAIR_ANALYSIS
+    if replay:
+        close(
+            json.loads(json.dumps(record)),
+            json.loads(target.read_text(encoding="utf-8")),
+            f"{run_b.name}/{PAIR_ANALYSIS}",
+        )
+        print(f"{run_b.name}: {PAIR_ANALYSIS} replays, {record['status']}")
+        return 0
+    write_json(target, record)
+    pooled_row = record["pooled"]
+    print(
+        f"{record['status']}: correctness {pooled_row['fidelity']} over {pooled_row['accepted']} accepted, lower "
+        f"bound {pooled_row['lower_bound']}; " + "; ".join(f"{c['name']} {c['label']}" for c in record["comparisons"])
+    )
     return 0
 
 
@@ -2020,6 +2154,8 @@ def main(argv: list[str]) -> int:
         return simulate(Path(argv[1]), JOBS[argv[2] if len(argv) == 3 else "job-00"])
     if len(argv) in (2, 3) and argv[0] == "--analyze" and argv[2:] in ([], ["--check"]):
         return analyze(Path(argv[1]), argv[2:] == ["--check"])
+    if len(argv) in (3, 4) and argv[0] == "--analyze-pair" and argv[3:] in ([], ["--check"]):
+        return analyze_pair(Path(argv[1]), Path(argv[2]), argv[3:] == ["--check"])
     if len(argv) in (3, 4) and argv[0] == "--submit" and argv[3:] in ([], ["--anchor"]):
         return send(Path(argv[1]), argv[2], argv[3:] == ["--anchor"])
     if len(argv) == 1 and argv[0] in JOBS:
@@ -2027,7 +2163,8 @@ def main(argv: list[str]) -> int:
     raise ValueError(
         "usage: qd_teleportation_rehearsal.py [--check | --justify | --estimate | --prepare CASE | JOB | "
         "--body JOB [--anchor] | --plan JOB [--anchor] | "
-        f"--simulate OUT [JOB] | --analyze RUN [--check] | --submit RUN APPROVAL [--anchor]], JOB in {sorted(JOBS)}, "
+        f"--simulate OUT [JOB] | --analyze RUN [--check] | --analyze-pair RUN_A RUN_B [--check] | "
+        f"--submit RUN APPROVAL [--anchor]], JOB in {sorted(JOBS)}, "
         f"CASE in {sorted(set(CASE_SEEDS) - set(JOBS))}, not {argv}"
     )
 

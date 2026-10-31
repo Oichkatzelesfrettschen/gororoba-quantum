@@ -609,6 +609,58 @@ above records how each was settled:
 - **The allowance is stated, not derived.** The 0.02 allowance is not a derived bound on compilation error or
   three-photon distinguishability.
 
+## Split recovered-chip rehearsal (job-02 and job-03)
+
+Job-01 ran 11 of its 12 iterations before the service canceled it at the 300 s `max_duration`; it billed its
+4.2-credit ceiling and left block B's +Z iteration without counts. Most of its time was acquisition. The one-photon
+Belenos jobs of 2026-10-21 to 2026-10-24 (BDSC qualification, diagnostic, stationarity and drift series) took 165 to
+176 s for 24 iterations of about 100,000 detection events (`nb_shots_used`) each, which bounds the fixed cost of an
+iteration at 6.9 s. Job-01's 11 iterations used 24.9 million detection events in 318 s, so at least 242 s of it, 76 %,
+scales with detection events: at most 12.8 microseconds per event, about 9.7 once the fixed-cost bound is
+subtracted. A three-photon iteration's time therefore grows with its samples, and a job's with its iterations times
+its samples. Six iterations at job-01's 2.3 million mean events take about 176 s; six that each run to the 3,000,000
+`max_shots` take at most 6 x (6.9 + 38.4) = 272 s, inside the 300 s limit. The service reports no per-iteration time,
+so the split rests on these bounds rather than a measured per-iteration profile.
+
+job-02 and job-03 run job-01's two-block descriptive design as two jobs of six iterations
+(`CASE_HALVES` in `scripts/qd_teleportation_rehearsal.py`): job-02 runs block A (+Z, -Z, +X, -X, +Y, -Y) and job-03
+block B in mirrored order (-Y, +Y, -X, +X, -Z, +Z). Both take job-02's platform read
+(`results/quandela/cases/teleportation_rehearsal/job-02/platform-read/catalogue.json`, `SHARED_READ`), so they carry
+one layout (q0 q1 a0 a1 b0 b1 h0 h1 on chip modes 18 19 20 17 22 23 16 21) and one preregistration: the planned
+count `n*` = 1506 and `lambda` cover both blocks, 1200 samples per iteration. The analysis is the job-01 analysis of
+the joined pair: `--analyze-pair RUN_A RUN_B` binds both runs' iterations to the two blocks by `circuit_params` and
+`compilation_seed`, writes `pair-analysis.json` into RUN_B, and refuses a pair whose shared manifest fields or
+preregistration differ. The block homogeneity test now also compares the two jobs in time, so a drift between them
+vetoes both comparisons. `--analyze` of one half alone reports counts and its lower bound and evaluates no
+comparison, since its homogeneity test has no second block.
+
+The written seconds of a case registered after job-01 are the larger of the seconds model and the job's iterations
+times `ITERATION_SECONDS`, in whole minutes (`written_seconds`): 180 s for six iterations. `ITERATION_SECONDS` holds
+at job-01's samples per iteration only, since an iteration's time scales with its detection events.
+
+**Compilation seeds.** job-02 takes 19918, 52848, 30689, 50293, 57001 and 12608 for +Z, -Z, +X, -X, +Y, -Y (indices 0
+to 5) and job-03 takes 56057, 55550, 595, 59482, 7821 and 19846 for -Y, +Y, -X, +X, -Z, +Z (indices 6 to 11) of the
+ANU QRNG draw [`draw-2026-10-30T205347Z.json`](../evidence/anu_qrng/draw-2026-10-30T205347Z.json), registered in
+[`allocations.json`](../evidence/qrng_seeds/allocations.json) as `JOB_02_COMPILATION_SEEDS` and
+`JOB_03_COMPILATION_SEEDS`.
+
+**Written case.**
+- *What it measures.* The accepted-event teleportation correctness of the six Pauli inputs across both blocks, with
+  its anytime-valid lower bound and the two labeled comparisons, on a complete two-block acquisition: job-01 could not
+  supply one, because its cut removed a block B iteration. A complete pair also tests the shortfall job-01 showed:
+  its model at the reported HOM 0.871 forecast 0.841 and it measured 0.802 over 1262 accepted events, which the
+  model reaches only at an effective two-photon indistinguishability near 0.81.
+- *Why a simulation cannot answer it.* The question is the chip's realized correctness under its compiled meshes,
+  source and detectors; the local model at the read forecasts 0.848 (lower bound 0.809 at `n*`) and is the
+  comparison, not the measurement.
+- *Backend and budget.* `qpu:belenos`, two jobs submitted one after the other, each six iterations of 1200 samples,
+  `max_shots` 3,000,000 per iteration (1.25 times Perceval's largest estimate, 2,365,123), 180 s written seconds
+  under the 300 s limit, credit ceiling 4.0 per job (1 + 3,000,000 x 1e-06), 8.0 credits for the pair. Job-01's
+  observed 2.0 to 2.7 million detection events per iteration sit below the per-iteration budget.
+- *Gate.* `--submit RUN APPROVAL` admits each job while no layout mode reads a dark rate above `DARK_LIMIT` and the
+  floored seconds stay within `MAX_DURATION` at the live record. The plan warns that HOM 87.9 % sits at or below the
+  90 % of strategy.md design rule 1; that rule warns and does not hold a case.
+
 ## Provider request
 
 The request splits by channel. Items 2 and 3 concern the open-source client's
