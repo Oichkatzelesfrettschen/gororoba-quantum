@@ -1,0 +1,82 @@
+{
+  "schema": "work-plan-v1",
+  "id": "operating-rules-contract",
+  "kind": "implementation",
+  "summary": "Decompose the agent guide's rules to the failures they prevent, keep forty lines of boundaries as text, replace the rest with checks that exist or are named, and give the CI a stateable purpose: reached gates on pull requests, cited gates nightly, the exhaustive audit weekly.",
+  "sources": [
+    "docs/design/operating-rules-contract.md"
+  ],
+  "state": "planned",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Every rule of the 203-line guide proposed in PR #692 was tabulated by two external reviews (Grok Build and Codex gpt-daybreak-blue-latest, 2026-10-30) against the operating data of PR #693; each file:line claim adopted in the design document was re-read in the tree (ci.yml triggers at lines 7-10 and 152, pr_checks.sh lines 105-106, run_gates.py line 256, gates core-000/001/002/039/615, audit_report.py citing_claims, research_state.py --add-acquisition)."
+  },
+  "scope": "The root agent guide, ci/AGENTS.md as session context, the pr.yml gate selection and the ci.yml schedule, the Codex review cadence, the dry-run rule, the retention-claim coupling and the plan-record rule. Provider approval, the force-push and recursive-delete denies, immutability of bound bytes and the four pr.yml checks stay as hard constraints. The guide text itself changes only on the owner's decision and on top of PR #692.",
+  "owner": "repository maintainer",
+  "next_action": "Owner answers the four decisions in docs/design/operating-rules-contract.md; the secret scanner, the gate protection classes and the snapshot dry run proceed meanwhile as checks that need no rule change.",
+  "related": [
+    "repository-layout-reconciliation"
+  ],
+  "steps": [
+    {
+      "id": "forty-line-guide",
+      "action": "AGENTS.md carries the seven boundaries and two overrides of the appendix on top of PR #692; procedures live in docs/runbooks/; ci/AGENTS.md stays on disk and out of session context",
+      "acceptance": "wc -l AGENTS.md at or under 60 lines of rules plus pointers; every removed sentence has a check or a runbook named in the design document",
+      "state": "todo"
+    },
+    {
+      "id": "secret-scanner",
+      "action": "a tests-job check fails on tokens, CRN-shaped strings, email addresses and home-directory paths in tracked text, with an allowlist for the GitHub owner and Kaggle slugs",
+      "acceptance": "a planted CRN fails the tests job; the current tree passes",
+      "state": "todo"
+    },
+    {
+      "id": "gate-protection-classes",
+      "action": "every ci/gates.json gate declares claim, immutable-binding, supported-runtime, ledger-sentinel or exploratory; the 12 uncited red gates get a claim or leave; ruff gates core-000/001/002 leave because the lint job runs them",
+      "acceptance": "a gate without a class fails the gates check; the scheduled audit is green or names a claim",
+      "state": "todo"
+    },
+    {
+      "id": "pr-gates-by-reach",
+      "action": "ci/pr_checks.sh runs every reached gate inside the job budget longest first and reports an unfinished reached gate as pending by name instead of dropping it at 15 s",
+      "acceptance": "a diff reaching core-615 runs it on the pull request or reports it pending",
+      "state": "todo"
+    },
+    {
+      "id": "nightly-cited-weekly-exhaustive",
+      "action": "ci.yml runs claim, binding and runtime gates plus a rotating sentinel sample nightly and the exhaustive --ledger-audit weekly and on dispatch; the dormant pull_request and push branches gain a trigger or leave",
+      "acceptance": "nightly wall time under 10 minutes; the weekly run reports the ledger audit",
+      "state": "todo"
+    },
+    {
+      "id": "one-codex-round",
+      "action": "the guide and docs/runbooks/codex-review-loop.md request one review per merge candidate head and a second only after the operator review changed code; codex_review_wait.sh waits on the review signal alone",
+      "acceptance": "requests per merged PR fall from 5.2 toward 2 over the next 30 merges",
+      "state": "todo"
+    },
+    {
+      "id": "snapshot-dry-run",
+      "action": "live_run.py gains a snapshot mode against docs/evidence/heron_platform/targets.json writing under a scratch directory; a tests-job check compares a retained case's record; the guide reserves the live dry run for admission, approval, submission and readiness changes",
+      "acceptance": "a refactoring PR adds no results/live directory; the snapshot record matches the retained case",
+      "state": "todo"
+    },
+    {
+      "id": "capture-before-claim",
+      "action": "research_state.py --check admits an acquisition whose claim is pending and reports unclaimed acquisitions; the claim is a later change",
+      "acceptance": "retain_run.sh followed by --check passes on a run with no claim and lists it as unclaimed",
+      "state": "todo"
+    },
+    {
+      "id": "plan-records-by-scope",
+      "action": "a plan record is required for provider operations, retained campaigns, stacked branches and multi-session work; a single-session change uses its PR; the 74 inbox records are triaged",
+      "acceptance": "no inbox record older than 14 days",
+      "state": "todo"
+    },
+    {
+      "id": "owner-decisions",
+      "action": "the owner answers the four decisions of the design document (forty-line guide, CI schedule, one review round, snapshot dry run)",
+      "acceptance": "each answer recorded in the design document and the dependent steps unblocked or closed",
+      "state": "todo"
+    }
+  ]
+}
