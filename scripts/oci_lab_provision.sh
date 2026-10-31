@@ -5,7 +5,7 @@
 # them, so a rerun creates nothing twice. OCIDs and addresses go to
 # $OCI_LAB_DIR/inventory.env (mode 600) and never to stdout.
 #
-# Usage: sh scripts/oci_lab_provision.sh network|edge|route|private|a1|volume|bastion|status
+# Usage: sh scripts/oci_lab_provision.sh network|image|edge|route|private|a1|volume|bastion|status
 set -eu
 
 OCI_LAB_DIR=${OCI_LAB_DIR:-$HOME/.oci/lab}
@@ -131,8 +131,11 @@ launch() { # name shape image subnet private-ip boot-gb public(true|false) [shap
 			--display-name "$1" --hostname-label "$1" --shape "$2" ${cfg:+--shape-config "$cfg"} \
 			--image-id "$3" --subnet-id "$4" --private-ip "$5" --boot-volume-size-in-gbs "$6" \
 			--assign-public-ip "$7" --ssh-authorized-keys-file "$SSH_PUB" \
-			--wait-for-state RUNNING --query data.id --raw-output)
+			--wait-for-state RUNNING --query data.id --raw-output) || true
 	fi
+	# set -e is suspended when the caller tests this function in an if, so
+	# an empty id is the failure signal that every caller sees.
+	[ -n "$id" ] || return 1
 	printf '%s' "$id"
 }
 
@@ -205,6 +208,33 @@ status() {
 		--output table
 }
 
+# image: import Debian's verified genericcloud qcow2 (DEBIAN_QCOW2, checked
+# against Debian's SHA512SUMS beforehand) as a paravirtualized custom image
+# for the E2.1.Micro shape, then remove the uploaded object so it stops
+# counting against the 20 GB Object Storage grant.
+image() {
+	ns=$(oci os ns get --query data --raw-output)
+	oci os bucket get --bucket-name lab-images >/dev/null 2>&1 ||
+		oci os bucket create --compartment-id "$TENANCY" --name lab-images >/dev/null
+	id=$(by_name lab-debian-13 compute image list)
+	if [ -z "$id" ]; then
+		obj=$(basename "$DEBIAN_QCOW2")
+		oci os object head --bucket-name lab-images --name "$obj" >/dev/null 2>&1 ||
+			oci os object put --bucket-name lab-images --file "$DEBIAN_QCOW2" --name "$obj" --force >/dev/null
+		id=$(oci compute image import from-object --compartment-id "$TENANCY" --display-name lab-debian-13 \
+			--namespace "$ns" --bucket-name lab-images --name "$obj" \
+			--source-image-type QCOW2 --launch-mode PARAVIRTUALIZED --operating-system Debian \
+			--operating-system-version 13 --query data.id --raw-output)
+		# import from-object takes no --wait-for-state; image get waits instead.
+		oci compute image get --image-id "$id" --wait-for-state AVAILABLE \
+			--max-wait-seconds 3600 >/dev/null
+		oci os object delete --bucket-name lab-images --object-name "$obj" --force
+	fi
+	save DEBIAN_IMAGE_ID "$id"
+	oci compute image-shape-compatibility-entry add --image-id "$DEBIAN_IMAGE_ID" \
+		--shape-name VM.Standard.E2.1.Micro >/dev/null
+}
+
 # a1: one A1 launch attempt; exit 75 (EX_TEMPFAIL) on "Out of host capacity".
 a1() {
 	img=$(image_for VM.Standard.A1.Flex "Canonical Ubuntu" "26.04")
@@ -219,9 +249,9 @@ a1() {
 }
 
 case ${1:-} in
-network | edge | route | private | a1 | volume | bastion | status) "$1" ;;
+network | image | edge | route | private | a1 | volume | bastion | status) "$1" ;;
 *)
-	echo "usage: $0 network|edge|route|private|a1|volume|bastion|status" >&2
+	echo "usage: $0 network|image|edge|route|private|a1|volume|bastion|status" >&2
 	exit 2
 	;;
 esac

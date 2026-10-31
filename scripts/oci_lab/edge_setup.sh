@@ -16,10 +16,12 @@ sysctl -q -p /etc/sysctl.d/90-lab-forward.conf
 
 # dnf's repository metadata for the Oracle Linux 9 repos exceeds 1 GB of
 # memory plus 2 GB of swap on an E2.1.Micro and stalls the host, so the
-# metadata timer stays off and wireguard-tools installs from the RPM the
-# operator copies to /tmp (WG_RPM).
+# metadata timer stays off and wireguard-tools installs with rpm from the
+# files the operator copies to $LAB_RPMS: wireguard-tools and the
+# systemd-resolved build matching the host's systemd, which wireguard-tools
+# requires and the Minimal image omits. systemd-resolved stays disabled.
 systemctl disable -q --now dnf-makecache.timer
-rpm -q wireguard-tools >/dev/null 2>&1 || rpm -i "${WG_RPM:-/tmp/wireguard-tools.rpm}"
+rpm -q wireguard-tools >/dev/null 2>&1 || rpm -i "${LAB_RPMS:-/tmp/lab-rpms}"/*.rpm
 
 # The public zone masquerades traffic leaving ens3; the trusted zone admits
 # the private subnet and WireGuard peers, so forwarding between them is open.
