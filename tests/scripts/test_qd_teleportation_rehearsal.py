@@ -1177,3 +1177,16 @@ def test_pair_analysis_equals_the_two_block_analysis_and_a_half_alone_evaluates_
     (run_b / "cases.json").write_text(json.dumps(changed), encoding="utf-8")
     with pytest.raises(ValueError, match="preregistered"):
         rehearsal.pair_inputs(run_a, run_b)
+
+
+def test_the_retained_job_02_replay_record_replays_and_a_run_is_not_its_own_repeat() -> None:
+    runs = ROOT / "results/quandela/runs"
+    run = runs / "2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02"
+    repeat = runs / "2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay"
+    if rehearsal.analyze_replay(run, repeat, replay=True) != 0:
+        raise AssertionError("the retained replay analysis does not replay")
+    record = json.loads((repeat / rehearsal.REPLAY_ANALYSIS).read_text(encoding="utf-8"))
+    if record["meshes"] != {"compared": 6, "identical": 6}:
+        raise AssertionError(record["meshes"])
+    with pytest.raises(ValueError, match="are one job"):
+        rehearsal.replay_record(run, run)

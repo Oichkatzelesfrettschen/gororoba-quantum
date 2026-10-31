@@ -32,7 +32,9 @@ the six inputs, block B in mirrored order, an anytime-valid lower confidence bou
 correctness, a block homogeneity veto, and two classical comparisons that hold only under the assumptions each names.
 job-02 and job-03 split that design into two jobs of six iterations (CASE_HALVES), since each template iteration takes
 about ITERATION_SECONDS of provider time and twelve overrun the 300 s limit; they share job-02's platform read
-(SHARED_READ) and preregistration, and --analyze-pair RUN_A RUN_B scores them as one two-block request. A
+(SHARED_READ) and preregistration, and --analyze-pair RUN_A RUN_B scores them as one two-block request.
+--analyze-replay RUN REPEAT compares a run with an exact repeat of its body (same seeds, hence the same compiled
+meshes) input by input, which separates per-seed mesh error from drift. A
 Job adds the budgets and the written case's plan arguments. job-00 takes the 2026-10-24 read ANCHOR_READ as its anchor;
 a later case takes its own platform read, so its decision rule describes the chip state it is sent into and only the
 live gate applies. --prepare JOB derives such a case from its retained read (CASES/JOB/platform-read/catalogue.json):
@@ -63,6 +65,7 @@ Usage:
   "$PYTHON" scripts/qd_teleportation_rehearsal.py [--check | --justify | --estimate | --prepare JOB | JOB]
   "$PYTHON" scripts/qd_teleportation_rehearsal.py [--body JOB | --plan JOB] [--anchor]
   "$PYTHON" scripts/qd_teleportation_rehearsal.py --analyze-pair RUN_A RUN_B [--check]
+  "$PYTHON" scripts/qd_teleportation_rehearsal.py --analyze-replay RUN REPEAT [--check]
   "$PYTHON" scripts/qd_teleportation_rehearsal.py [--simulate OUT [JOB] | --analyze RUN [--check]]
   "$PYTHON" scripts/qd_teleportation_rehearsal.py --submit RUN APPROVAL [--anchor]
 """
@@ -2097,6 +2100,78 @@ def analyze_pair(run_a: Path, run_b: Path, replay: bool = False) -> int:
     return 0
 
 
+REPLAY_ANALYSIS = "replay-analysis.json"
+
+
+def replay_record(run: Path, repeat: Path) -> dict[str, Any]:
+    """Per-input homogeneity between a run and its exact repeat, with each setting's compiled-mesh identity.
+
+    The repeat carries the run's cases.json bytes and is a different job. Both runs bind by circuit_params and
+    compilation_seed through analyze_descriptive; each input's correct, wrong and rejection counts form a two-row
+    table for homogeneity() at the run's per-input level. A setting's mesh is identical when both results echo the
+    same computed_circuit."""
+    require(
+        (run / "cases.json").read_bytes() == (repeat / "cases.json").read_bytes(),
+        f"{repeat.name} does not repeat the cases.json of {run.name}",
+    )
+    ids = [json.loads((r / "submission.json").read_text(encoding="utf-8"))["job_id"] for r in (run, repeat)]
+    require(ids[0] != ids[1], f"{run.name} and {repeat.name} are one job")
+    manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+    records, meshes = [], []
+    for path in (run, repeat):
+        results = json.loads((path / "results.json").read_text(encoding="utf-8"))
+        records.append(analyze_descriptive(manifest, results, manifest.get("frames")))
+        mesh: dict[int, str] = {}
+        for entry in results.get("iterations") or []:
+            if "counts" in entry:
+                circuit = entry.get("result_fields", {}).get("computed_circuit")
+                mesh[bound_setting(manifest["settings"], entry)] = sha256_bytes(
+                    json.dumps(circuit, sort_keys=True).encode()
+                )
+        meshes.append(mesh)
+    level = manifest["preregistered"]["homogeneity_alpha"] / len(SIX_STATES)
+    rows = [{row["label"]: row for row in record["iterations"]} for record in records]
+    tests: dict[str, Any] = {}
+    for label, *_ in SIX_STATES:
+        if label not in rows[0] or label not in rows[1]:
+            tests[label] = {"status": "untestable", "reason": "a run returned no counted iteration"}
+            continue
+        table = [[r[label]["correct"], r[label]["wrong"], *(r[label]["rejected"][k] for k in REJECTIONS)] for r in rows]
+        tests[label] = homogeneity(table, level)
+    shared = sorted(set(meshes[0]) & set(meshes[1]))
+    return {
+        "schema": "qd-teleportation-replay-v1",
+        "runs": [run.name, repeat.name],
+        "jobs": ids,
+        "pooled": [record["pooled"] for record in records],
+        "homogeneity": {
+            "alpha_per_input": level,
+            "tests": tests,
+            "differ": sorted(label for label, test in tests.items() if test["status"] == "differ"),
+        },
+        "meshes": {
+            "compared": len(shared),
+            "identical": sum(meshes[0][index] == meshes[1][index] for index in shared),
+        },
+    }
+
+
+def analyze_replay(run: Path, repeat: Path, replay: bool = False) -> int:
+    """Write REPEAT/replay-analysis.json, or with `replay` require the retained record to equal a fresh one."""
+    record = replay_record(run, repeat)
+    target = repeat / REPLAY_ANALYSIS
+    if replay:
+        close(json.loads(json.dumps(record)), json.loads(target.read_text(encoding="utf-8")), f"{repeat.name}")
+        print(f"{repeat.name}: {REPLAY_ANALYSIS} replays")
+        return 0
+    write_json(target, record)
+    print(
+        f"meshes identical {record['meshes']['identical']}/{record['meshes']['compared']}; inputs differing: "
+        f"{record['homogeneity']['differ'] or 'none'}"
+    )
+    return 0
+
+
 def analyze(run: Path, replay: bool = False) -> int:
     """Write RUN/analysis.json, or with `replay` require the retained one to equal a fresh analysis.
 
@@ -2156,6 +2231,8 @@ def main(argv: list[str]) -> int:
         return analyze(Path(argv[1]), argv[2:] == ["--check"])
     if len(argv) in (3, 4) and argv[0] == "--analyze-pair" and argv[3:] in ([], ["--check"]):
         return analyze_pair(Path(argv[1]), Path(argv[2]), argv[3:] == ["--check"])
+    if len(argv) in (3, 4) and argv[0] == "--analyze-replay" and argv[3:] in ([], ["--check"]):
+        return analyze_replay(Path(argv[1]), Path(argv[2]), argv[3:] == ["--check"])
     if len(argv) in (3, 4) and argv[0] == "--submit" and argv[3:] in ([], ["--anchor"]):
         return send(Path(argv[1]), argv[2], argv[3:] == ["--anchor"])
     if len(argv) == 1 and argv[0] in JOBS:
@@ -2164,7 +2241,8 @@ def main(argv: list[str]) -> int:
         "usage: qd_teleportation_rehearsal.py [--check | --justify | --estimate | --prepare CASE | JOB | "
         "--body JOB [--anchor] | --plan JOB [--anchor] | "
         f"--simulate OUT [JOB] | --analyze RUN [--check] | --analyze-pair RUN_A RUN_B [--check] | "
-        f"--submit RUN APPROVAL [--anchor]], JOB in {sorted(JOBS)}, "
+        "--analyze-replay RUN REPEAT [--check] | "
+        f"--analyze-replay RUN REPEAT [--check] | --submit RUN APPROVAL [--anchor]], JOB in {sorted(JOBS)}, "
         f"CASE in {sorted(set(CASE_SEEDS) - set(JOBS))}, not {argv}"
     )
 
