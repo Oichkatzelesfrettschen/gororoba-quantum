@@ -1,0 +1,219 @@
+{
+ "below_event_floor": [],
+ "decision": {
+  "absolute_rule": true,
+  "complete": true,
+  "contrast_rule": true,
+  "control_deviation": 0.012879065102975096,
+  "control_valid": true,
+  "hom_lower_bound": 0.9100269034998792,
+  "level": "at",
+  "level_deviation": -0.028261763982066035,
+  "level_tolerance": 0.05,
+  "null_forecast": 0.6019641236589639,
+  "paired_contrast": {
+   "distinguishable": 1.1102230246251565e-16,
+   "indistinguishable": 0.4447862559513647,
+   "lower": 0.3677207938466486,
+   "mean-field": -0.13826427802062047,
+   "observed": 0.4859270850364058,
+   "se": 0.026032597787522368
+  },
+  "suppression_observed": true,
+  "verdict": "suppression at the level the indistinguishable forecast predicts"
+ },
+ "excluded_events": {
+  "control": {
+   "collision": 0,
+   "fewer_than_three": 0,
+   "more_than_three": 1,
+   "outside_window": 143
+  },
+  "periodic": {
+   "collision": 0,
+   "fewer_than_three": 0,
+   "more_than_three": 2,
+   "outside_window": 106
+  }
+ },
+ "forecast": {
+  "control": {
+   "distinguishable": 0.601964123658964,
+   "ideal indistinguishable": 0.6661361159707547,
+   "indistinguishable": 0.6449699012736148,
+   "mean-field": 0.5885050829747743
+  },
+  "periodic": {
+   "distinguishable": 0.6019641236589639,
+   "ideal indistinguishable": 0.0,
+   "indistinguishable": 0.20018364532225008,
+   "mean-field": 0.7267693609953948
+  }
+ },
+ "heterogeneity": {
+  "control": {
+   "chi_square": 9.704597537232345,
+   "degrees": 3,
+   "p": 0.021251504503393505
+  },
+  "periodic": {
+   "chi_square": 5.698209781810047,
+   "degrees": 3,
+   "p": 0.12725257397777975
+  }
+ },
+ "iterations": {
+  "control": [
+   {
+    "accepted": 339,
+    "excluded": {
+     "collision": 0,
+     "fewer_than_three": 0,
+     "more_than_three": 1,
+     "outside_window": 60
+    },
+    "fraction": 0.6460176991150443,
+    "job": "job-00",
+    "name": "control-job-00-position1",
+    "suppressed": 219
+   },
+   {
+    "accepted": 357,
+    "excluded": {
+     "collision": 0,
+     "fewer_than_three": 0,
+     "more_than_three": 0,
+     "outside_window": 43
+    },
+    "fraction": 0.7170868347338936,
+    "job": "job-00",
+    "name": "control-job-00-position2",
+    "suppressed": 256
+   },
+   {
+    "accepted": 381,
+    "excluded": {
+     "collision": 0,
+     "fewer_than_three": 0,
+     "more_than_three": 0,
+     "outside_window": 19
+    },
+    "fraction": 0.6587926509186351,
+    "job": "job-01",
+    "name": "control-job-01-position0",
+    "suppressed": 251
+   },
+   {
+    "accepted": 379,
+    "excluded": {
+     "collision": 0,
+     "fewer_than_three": 0,
+     "more_than_three": 0,
+     "outside_window": 21
+    },
+    "fraction": 0.6094986807387863,
+    "job": "job-01",
+    "name": "control-job-01-position3",
+    "suppressed": 231
+   }
+  ],
+  "periodic": [
+   {
+    "accepted": 384,
+    "excluded": {
+     "collision": 0,
+     "fewer_than_three": 0,
+     "more_than_three": 1,
+     "outside_window": 15
+    },
+    "fraction": 0.13541666666666666,
+    "job": "job-00",
+    "name": "periodic-job-00-position0",
+    "suppressed": 52
+   },
+   {
+    "accepted": 391,
+    "excluded": {
+     "collision": 0,
+     "fewer_than_three": 0,
+     "more_than_three": 1,
+     "outside_window": 8
+    },
+    "fraction": 0.17902813299232737,
+    "job": "job-00",
+    "name": "periodic-job-00-position3",
+    "suppressed": 70
+   },
+   {
+    "accepted": 351,
+    "excluded": {
+     "collision": 0,
+     "fewer_than_three": 0,
+     "more_than_three": 0,
+     "outside_window": 49
+    },
+    "fraction": 0.1737891737891738,
+    "job": "job-01",
+    "name": "periodic-job-01-position1",
+    "suppressed": 61
+   },
+   {
+    "accepted": 366,
+    "excluded": {
+     "collision": 0,
+     "fewer_than_three": 0,
+     "more_than_three": 0,
+     "outside_window": 34
+    },
+    "fraction": 0.1994535519125683,
+    "job": "job-01",
+    "name": "periodic-job-01-position2",
+    "suppressed": 73
+   }
+  ]
+ },
+ "job_yield": {
+  "job-00": 1471,
+  "job-01": 1477
+ },
+ "pooled": {
+  "control": {
+   "events": 1456,
+   "fraction": 0.6572802197802198,
+   "suppressed": 957
+  },
+  "periodic": {
+   "events": 1492,
+   "fraction": 0.17158176943699732,
+   "suppressed": 256
+  }
+ },
+ "runs": [
+  "2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00",
+  "2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01"
+ ],
+ "schema": "qd-belenos-suppression-analysis-v1",
+ "summary": {
+  "control": {
+   "iterations": 4,
+   "lower": 0.5564195110232565,
+   "mean": 0.6578489663765898,
+   "sd": 0.04467566300311409,
+   "se": 0.022337831501557045,
+   "upper": 0.7592784217299232
+  },
+  "periodic": {
+   "iterations": 4,
+   "lower": 0.11121938663392145,
+   "mean": 0.17192188134018405,
+   "sd": 0.02673704780823494,
+   "se": 0.01336852390411747,
+   "upper": 0.23262437604644665
+  }
+ },
+ "uncounted_iterations": {
+  "error": 0,
+  "malformed": 0,
+  "missing": 0
+ }
+}

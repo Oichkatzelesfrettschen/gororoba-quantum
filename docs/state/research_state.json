@@ -2835,6 +2835,20 @@
       "run": "results/quandela/runs/2026-10-30T200600Z-qpu_ascella-target-slot-drift",
       "family": "ascella-target-slot-drift",
       "question": "How do Ascella target outputs vary across eight requested slots?"
+    },
+    {
+      "id": "qd-qpu-belenos-suppression-law-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00",
+      "family": "three-photon Fourier suppression law on qpu:belenos",
+      "question": "Does a three-photon input on a 6-mode Fourier interferometer suppress the outputs the label-sum rule forbids, beyond the distinguishable and mean-field forecasts, and does the paired control contrast exclude both without a detection model?"
+    },
+    {
+      "id": "qd-qpu-belenos-suppression-law-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01",
+      "family": "three-photon Fourier suppression law on qpu:belenos",
+      "question": "Does a three-photon input on a 6-mode Fourier interferometer suppress the outputs the label-sum rule forbids, beyond the distinguishable and mean-field forecasts, and does the paired control contrast exclude both without a detection model?"
     }
   ],
   "claims": [
