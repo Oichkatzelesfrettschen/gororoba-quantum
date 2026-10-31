@@ -2,7 +2,11 @@
 
 Each directory records one `gororoba_quantum/live_run.py` invocation under its
 UTC start time. `record.json` carries the schema-specific plan and lifecycle
-evidence; `isa.qpy` carries the exact circuits produced by that revision.
+evidence; the compiled circuits of that revision are the run's archive. A
+submitted run holds them as `isa.qpy` beside its record; a dry run holds a
+pointer `isa.qpy.sha256` naming one copy in `archives/<sha256>.qpy`, shared
+with every run that compiled the same circuits, and
+`gororoba_quantum/run_archive.py` resolves and verifies either shape.
 
 The registered campaign ran under the owner's bounded approval. Two
 folded-correction acquisitions on ibm_kingston

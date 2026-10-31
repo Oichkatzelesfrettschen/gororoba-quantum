@@ -5569,7 +5569,7 @@
   {
    "cmd": "\"$PYTHON\" verify.py",
    "cwd": "gororoba_quantum",
-   "reason": "runs in the ci.yml job external-ground-truth over the pinned open_gororoba checkout (ci/open_gororoba.pin)"
+   "reason": "runs in the ci.yml job external-ground-truth over the pinned gororoba-open checkout (ci/open_gororoba.pin)"
   },
   {
    "cmd": "ROCQ=\"${ROCQ:-rocq}\" sh docs/evidence/c881_exhaustive/replay_rocq.sh",
@@ -5579,7 +5579,7 @@
   {
    "cmd": "GOROROBA_ROOT=\"$GOROROBA_ROOT\" sh docs/evidence/stiefel_witness/replay_rocq.sh",
    "cwd": ".",
-   "reason": "runs in the ci.yml job rocq-replay on pushes to main and the nightly schedule, over the pinned open_gororoba checkout"
+   "reason": "runs in the ci.yml job rocq-replay on pushes to main and the nightly schedule, over the pinned gororoba-open checkout"
   },
   {
    "cmd": "\"$SAGE_PYTHON\" docs/evidence/cd-star-lattice/external/nauty_replay.py > docs/evidence/cd-star-lattice/external/nauty_replay.txt",

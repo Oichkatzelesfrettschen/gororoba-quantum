@@ -282,7 +282,7 @@ plane. Arbitrary real coefficients need not preserve those eight blocks.
 
 A coefficient projection, a combinatorial count, a unitary register reuse,
 and a deformation retraction preserve different objects. A transfer from
-`open_gororoba` requires the precise map and its hypotheses. In particular,
+`gororoba-open` requires the precise map and its hypotheses. In particular,
 for a candidate algebra collapse `P`, test `P(xy)=P(x)P(y)` before calling
 `P` multiplicative. Even multiplicativity only sends zero products to zero
 products; a normalized pair can collapse to zero, and a bundle or homotopy

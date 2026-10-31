@@ -182,5 +182,5 @@ ground state; [Ford and Roman](papers/gr-qc-9607003.md) bound free-field samplin
 and a cavity needs its own boundary-adapted inequality. Casimir residuals
 first face the Drude-plasma discriminators of [Ma et al.](papers/2601.00483.md) and
 Inacio et al. (web-source note) before any new-force attribution. The
-open_gororoba vacuum-model code checks live in
+gororoba-open vacuum-model code checks live in
 [open_gororoba_handoff.md](topics/open_gororoba_handoff.md#vacuum-model-code-checks).

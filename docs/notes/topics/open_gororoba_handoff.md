@@ -1,21 +1,21 @@
-# Handoff to open_gororoba: corrected claims and bounded deliverables
+# Handoff to gororoba-open: corrected claims and bounded deliverables
 
-open_gororoba is read-only from this repository. This note carries what
+gororoba-open is read-only from this repository. This note carries what
 this repository established or refuted about claims that live there, each
 with the artifact here that checks it and the acceptance test the receiving
 change needs. Pinned revisions: gororoba-quantum main after the adjudication
-of the first hardware record; open_gororoba
+of the first hardware record; gororoba-open
 `127816214c3f96cc1777bd4bd9ba1b286ccc5917`.
 
 ## Upstream status
 
 | section | upstream record |
 |---|---|
-| Sign kernel and the normalized associator code | landed in [open_gororoba PR 205](https://github.com/Oichkatzelesfrettschen/open_gororoba/pull/205) (Schreier-span characterization, normalized code, ANF basis and cardinality, quaternion exception, controlled phase) |
-| Sedenion zero-divisor predicate | landed in [open_gororoba PR 205](https://github.com/Oichkatzelesfrettschen/open_gororoba/pull/205) (exact, proximity and annihilator domains; e_0 + e_9 and e_1 + e_9 retained) and [PR 208](https://github.com/Oichkatzelesfrettschen/open_gororoba/pull/208) (scalar constraints) |
-| Frontier deliverables and the A_infinity refutation | landed in [open_gororoba PR 205](https://github.com/Oichkatzelesfrettschen/open_gororoba/pull/205); the A_5 chart is a fixed-pivot Schur chart, and smoothness of the complete stratum stays open |
-| Vacuum-model code checks | filed as open_gororoba issues [209](https://github.com/Oichkatzelesfrettschen/open_gororoba/issues/209) through [214](https://github.com/Oichkatzelesfrettschen/open_gororoba/issues/214) |
-| Degree of sign rows and associator phases ([cd_phase_degree.md](../cd_phase_degree.md#formalization-statement)) | filed as [open_gororoba issue 217](https://github.com/Oichkatzelesfrettschen/open_gororoba/issues/217) |
+| Sign kernel and the normalized associator code | landed in [gororoba-open PR 205](https://github.com/Oichkatzelesfrettschen/gororoba-open/pull/205) (Schreier-span characterization, normalized code, ANF basis and cardinality, quaternion exception, controlled phase) |
+| Sedenion zero-divisor predicate | landed in [gororoba-open PR 205](https://github.com/Oichkatzelesfrettschen/gororoba-open/pull/205) (exact, proximity and annihilator domains; e_0 + e_9 and e_1 + e_9 retained) and [PR 208](https://github.com/Oichkatzelesfrettschen/gororoba-open/pull/208) (scalar constraints) |
+| Frontier deliverables and the A_infinity refutation | landed in [gororoba-open PR 205](https://github.com/Oichkatzelesfrettschen/gororoba-open/pull/205); the A_5 chart is a fixed-pivot Schur chart, and smoothness of the complete stratum stays open |
+| Vacuum-model code checks | filed as gororoba-open issues [209](https://github.com/Oichkatzelesfrettschen/gororoba-open/issues/209) through [214](https://github.com/Oichkatzelesfrettschen/gororoba-open/issues/214) |
+| Degree of sign rows and associator phases ([cd_phase_degree.md](../cd_phase_degree.md#formalization-statement)) | filed as [gororoba-open issue 217](https://github.com/Oichkatzelesfrettschen/gororoba-open/issues/217) |
 
 ## Sign kernel and the normalized associator code
 
@@ -104,7 +104,7 @@ m_2 associative, so a replacement must change the structure
 
 ## Vacuum-model code checks
 
-Read at open_gororoba commit `b977e43f`. Each row names the file and line,
+Read at gororoba-open commit `b977e43f`. Each row names the file and line,
 the defect, the check that confirms it, and the acceptance test for a fix.
 
 | Location | Finding | Confirming check | Acceptance test |

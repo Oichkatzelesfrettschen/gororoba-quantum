@@ -2788,6 +2788,13 @@
       "question": "Does the frozen Ascella predecessor case, with only its job name and platform changed to sim:ascella, return eight complete iterations whose signed target-slot contrasts the frozen analyzer's checks accept, so the pipeline's zero-memory contrast level is known before the QPU run?"
     },
     {
+      "id": "qd-ascella-transition-matched-mesh-third-acquisition",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition",
+      "family": "dimension-six compilation and output-port diagnostics",
+      "question": "Do the five matched Ascella settings, replayed a third time 67 hours after their forward baseline, return port distributions that follow a linear drift of the first two acquisitions or step between them?"
+    },
+    {
       "id": "qd-qpu-belenos-teleportation-rehearsal-job-01",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01",
@@ -14026,6 +14033,39 @@
       "acquisitions": [
         "fez-measurement-sequence-successor"
       ]
+    },
+    {
+      "id": "ascella-transition-matched-mesh-third-acquisition",
+      "statement": "Replayed a third time, with the provider start 67.3 hours after the forward-packed baseline start (327,680 accepted events, 65,536 per setting), the five matched Ascella settings change their single-click output-port distributions between acquisitions far beyond counting error in four of five settings: homogeneity chi-square over the three acquisitions reads 5,149, 1,935, 5,595 and 2,707 on 22 degrees of freedom for settings 0, 1, 2 and 4, and 29.2 on 22 for setting 3. The changes follow no linear trend. Setting 2 moves by total variation 0.062 from the baseline to the first day repeat and returns to within 0.013 of the baseline at the third acquisition, and setting 0 holds (0.005) between the baseline and the first repeat, then moves 0.045 by the third.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Five selected settings and three acquisitions, with homogeneity read as a multinomial chi-square under independent accepted events and no interval or preregistered rule. Mesh identity across the three runs rests on equal settings and compilation seeds in cases.json (the first repeat and the third carry identical cases.json bytes); the scheduled matched-mesh check, which compares returned circuits, fails on the retained campaign file for every run in the current tree, so this claim does not establish equal returned meshes or equal applied analog controls. The parent claim records changes of comparable size between jobs minutes apart in different contexts, so the absence of a linear trend over 67 hours is not a statement about elapsed time. No calibration read separates drift from a calibration change.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition/results.json",
+          "sha256": "47f908081dd7c9f0e751e7f17879c70d298a104d2e5953ac86a485d5a7374317"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition/port-comparison.json",
+          "sha256": "03b6dfe587959a8c5fd32c4f1d4703e0557dbd51ca5fda530b48f83c718282fe"
+        }
+      ],
+      "documents": [
+        "docs/archive/handoffs/2026-10-30-quandela-next-cases.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-ascella-transition-matched-mesh-third-acquisition"
+      ],
+      "assumptions": [
+        "Accepted single-click events within each setting are independent draws from one multinomial."
+      ],
+      "depends_on": [
+        "ascella-transition-day-separated-matched-mesh"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     },
     {
       "id": "qd-belenos-teleportation-rehearsal-job-01",

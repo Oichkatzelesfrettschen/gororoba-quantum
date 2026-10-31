@@ -171,7 +171,7 @@ falsifier fixed before the run, and the backends.
 
 - Claim: the 42 assessors form 7 box-kites of 6 assessors, 3 struts and 12
   edges; every edge has exactly two vanishing sign choices, every strut none
-  (monograph A1-A5, de Marrais Theorem 3; open_gororoba C-003 and C-454
+  (monograph A1-A5, de Marrais Theorem 3; gororoba-open C-003 and C-454
   Verified, C-468 Verified; census `kites`, `theorem3_zero_sign_choices_over_49_planes`).
 - Observable: zero-product success P(selector = 0).
 - Circuits: full Design B (5 qubits: 4 data + selector) for all 840
@@ -217,8 +217,8 @@ falsifier fixed before the run, and the backends.
   3 opposite edges, each of the 3 trefoil sails has 1 opposite edge, the one
   not incident to the vertex it shares with the zigzag; the vent opposite the
   zigzag has 3 opposite edges and the other 3 vents 1 (monograph A6, A7, A15;
-  open_gororoba C-471, C-472 Verified; census `kites[].faces`, `edge_totals`).
-  The two all-opposite faces are the "2 zigzag faces" of open_gororoba's
+  gororoba-open C-471, C-472 Verified; census `kites[].faces`, `edge_totals`).
+  The two all-opposite faces are the "2 zigzag faces" of gororoba-open's
   `strut_table.rs`; the monographs call them the zigzag sail and its opposite
   vent, and the census classifies by computed properties (lows xor to 0 or
   not, opposite-edge count).
@@ -254,7 +254,7 @@ falsifier fixed before the run, and the backends.
   within-kite and non-kite rows, sends every edge of kite S to an edge of kite
   S ^ b ^ d of the other sign type (84 of 84) and every strut to a pair of
   (l, l^8) planes (`census:kites[].twists`). This links C-473's twist
-  navigation in open_gororoba to an observable.
+  navigation in gororoba-open to an observable.
 - Observable: zero-product success on both factorizations.
 - Circuits: no new circuits; the exhaustive family (a) on Kaggle contains
   both sides of every twist pair. On Tuna-17, one pair in the follow

@@ -1,0 +1,17 @@
+{
+ "model": {
+  "figures": {
+   "g2": 0.013000000000000001,
+   "hom": 0.871,
+   "transmittance": 0.0499
+  },
+  "inside_justified_range": false,
+  "perfs_sha256": "b27e054628f183d26c45b19b4da8b24e732fc08fb7ddf3356665526d05a0cddd",
+  "pooled_fidelity": 0.840684189104642,
+  "prepared_perfs_sha256": "f421bed7f4098a4fd7b3f01d95d0f5bea105315555f5ad18c782a79612130e83"
+ },
+ "perfs_basis": "live processor record",
+ "planned_utc": "2026-10-30T19:14:29+00:00",
+ "refusal": "qpu:belenos is running",
+ "sent": false
+}

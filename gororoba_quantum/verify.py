@@ -1,4 +1,4 @@
-"""Fail-closed checks of the cd_core port against open_gororoba ground truth.
+"""Fail-closed checks of the cd_core port against gororoba-open ground truth.
 
 Every check raises CheckFailed on a mismatch and the module exits nonzero; the
 checks use explicit raises because `python -O` strips assert.
@@ -55,9 +55,10 @@ from cd_core import (
 )
 from predict import associator_phase, walsh_distribution
 
-# GOROROBA_ROOT locates the open_gororoba checkout; the default assumes a
-# sibling checkout under ~/Github.
-GOROROBA_ROOT = Path(os.environ.get("GOROROBA_ROOT", "~/Github/open_gororoba")).expanduser()
+# GOROROBA_ROOT locates the gororoba-open checkout; the default is the
+# gororoba-open directory beside this repository's root.
+_SIBLING_ROOT = Path(__file__).resolve().parents[1].parent / "gororoba-open"
+GOROROBA_ROOT = Path(os.environ.get("GOROROBA_ROOT", str(_SIBLING_ROOT))).expanduser()
 REGISTRY = GOROROBA_ROOT / "registry/data/project_csv"
 ZD_CSV = "data/csv/reggiani_standard_zero_divisor_pairs.csv"
 ZD_COLUMNS = ("u_low", "u_high", "u_sign", "v_low", "v_high", "v_sign")
@@ -65,7 +66,7 @@ C881_SOURCE = "proofs/verified/C881_GF2CubicMinDegree.v"
 C881_SOURCE_SHA256 = "e72a6a1ae0ab345e482346c264451abe9acc0b959ac2bee645856d946a461a87"
 
 # C881_GF2CubicMinDegree.v transcribes these dim-32 top-level cross-assessor
-# component labels and classes from open_gororoba's Rust graph census. The
+# component labels and classes from gororoba-open's Rust graph census. The
 # Rocq file checks the cubic witness and all 2048 degree-at-most-two
 # coefficient vectors, including the constant monomial. The bounded
 # interpolant check independently reconstructs that finite lower bound.
