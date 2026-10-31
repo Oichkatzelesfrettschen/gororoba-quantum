@@ -433,9 +433,14 @@ through GitHub Actions, which calls the same plan, submit and collect
 
 ## Strategy guide
 
-[strategy.md](strategy.md) is the living guide to cost, platform behavior,
-native circuits, analysis and open conjectures on Belenos, with the run log.
-Every run updates it in the change that retains the run.
+[strategy.md](strategy.md) is the design guide for every Quandela case: its
+section 1b is the end-to-end procedure for building, reviewing, submitting
+and gating a case, and its other sections cover cost, platform behavior,
+native circuits, analysis, compiled-mesh variance and open conjectures on
+Belenos, with the run log. Job sizing (iterations, samples and the
+per-iteration time of each job shape) lives in
+[quandela-credit-optimization.md](../../runbooks/quandela-credit-optimization.md).
+Every run updates them in the change that retains the run.
 
 ## Dark-subspace certificate
 

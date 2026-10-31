@@ -170,7 +170,7 @@ differs from it only in the `cd_core.py` digest.
 | IBM hardware run | [AGENTS.md](../AGENTS.md) "QPU time and calibration", [qpu-submission.md](notes/ibm_quantum/qpu-submission.md), [QPU_EXECUTION_ROADMAP.md](../gororoba_quantum/QPU_EXECUTION_ROADMAP.md) |
 | Quantum Inspire run | [README](notes/quantum_inspire/README.md), [usage.md](notes/quantum_inspire/usage.md), [tuna-17-run-design.md](notes/quantum_inspire/tuna-17-run-design.md) |
 | Open Quantum run | [README](notes/open_quantum/README.md), `scripts/oq_platform.py` estimate |
-| Quandela run | [README](notes/quandela/README.md), [platform-specifications.md](notes/quandela/platform-specifications.md), [strategy.md](notes/quandela/strategy.md) |
+| Quandela run | [README](notes/quandela/README.md), [platform-specifications.md](notes/quandela/platform-specifications.md), [strategy.md](notes/quandela/strategy.md) (section 1b: building and running a case), [credit optimization](runbooks/quandela-credit-optimization.md) (job shape and cost) |
 | IQM run | [README](notes/iqm/README.md), [os-4.7.md](notes/iqm/os-4.7.md) |
 | Simulation and Kaggle | [README](notes/kaggle/README.md), [substrates.md](notes/kaggle/substrates.md), [gpu-runbook.md](notes/kaggle/gpu-runbook.md) |
 | Algebra and proofs | `gororoba_quantum/cd_core.py`, [algebra_circuit_rules.md](notes/algebra_circuit_rules.md), [formal_certificates](evidence/formal_certificates/README.md) |
@@ -415,7 +415,7 @@ differs from it only in the `cd_core.py` digest.
 | [design/ascella-belenos-entanglement-teleportation.md](design/ascella-belenos-entanglement-teleportation.md) | Ascella-Belenos entanglement and teleportation: claim levels, gates, ideal dual-rail instrument ([qd_network_protocol.py](../scripts/qd_network_protocol.py)), decision statistics, the single-chip Belenos rehearsal case ([qd_teleportation_rehearsal.py](../scripts/qd_teleportation_rehearsal.py)) and the unsent provider request |
 | [runbooks/bdsc-qualification-case.md](runbooks/bdsc-qualification-case.md) | order, prerequisites and stop conditions of the BDSC six-state consistency case |
 | [runbooks/bdsc-tuna17-pauli-pilot.md](runbooks/bdsc-tuna17-pauli-pilot.md) | build, dry run and submission order of the Tuna-17 four-qubit Pauli readout pilot |
-| [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela billing rule measured per job, packing limits and cost planning |
+| [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela job sizing for case design: the billing rule measured per job, the per-iteration time of each qpu:belenos job shape, packing limits, the shape rule and cost planning |
 | [runbooks/quandela-scheduled-runs.md](runbooks/quandela-scheduled-runs.md) | unattended submission of approved, spaced Quandela jobs from a committed schedule through GitHub Actions |
 | [runbooks/provider-credits.md](runbooks/provider-credits.md) | read-only daily snapshot of every provider's free allotment, alert thresholds and the systemd user timer |
 | [runbooks/classical-compute-pool.md](runbooks/classical-compute-pool.md) | free classical capacity per substrate (build host, Kaggle, GitHub Actions, Azure trial), what pooling across machines buys, tool installs per substrate, measured memory of the A_5 Rees eliminations |

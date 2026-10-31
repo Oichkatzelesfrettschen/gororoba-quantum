@@ -1,11 +1,22 @@
 # Quandela Belenos strategy guide
 
-A living guide to getting the most science per credit out of Quandela Cloud's
-photonic platforms with this repository's tooling. Each section states what
-holds, the authority behind it (a retained run, the captured guide, the
-Perceval 1.3.1 source or an exact computation), and what it changes in a
-case. A new run or a refuted conjecture updates the section it touches and
-the run log at the end.
+The design guide for every Quandela Cloud case in this repository: how to
+design, plan, build, review, submit, gate and analyze a `qpu:belenos` (and
+`qpu:ascella`) job and its iterations, shots and seeds to get the most
+science per credit. Each section states what holds, the authority behind it
+(a retained run, the captured guide, the Perceval 1.3.1 source or an exact
+computation), and what it changes in a case. A new run or a refuted
+conjecture updates the section it touches and the run log at the end.
+
+Where to look:
+
+| Question | Home |
+|---|---|
+| The end-to-end procedure for a new case | section 1b below |
+| What a job costs, how many iterations and samples fit in one, the per-iteration time of each job shape | [credit optimization](../../runbooks/quandela-credit-optimization.md) ("Job shape on qpu:belenos") |
+| Platform facts, circuits, analysis rules | sections 2, 4 and 5 |
+| Compiled meshes, per-seed mesh variance and the design rules for multi-seed cases | section 7 |
+| What each run found | section 11, the run log |
 
 ## 1. Cost model (measured)
 
@@ -21,6 +32,8 @@ The job, not the shot, is the cost unit: a 10000-shot QPU job costs 1.01
 credits and a 347113-shot two-photon job 1.35. Everything that puts more
 configurations into one job (iterations, packing) divides the cost; nothing
 that adds shots changes it materially.
+[quandela-credit-optimization.md](../../runbooks/quandela-credit-optimization.md)
+holds the full billing rule, its per-job evidence and the job-shape timing.
 
 ## 1a. Job anatomy and names
 
@@ -64,6 +77,70 @@ fit about 6.3 s per iteration plus 26 us per sample (c2eea262: 24 iterations,
 36000 samples, 152 s; c1eb1cbb: 9 iterations, 166000 samples, 61 s); the
 setting count, not the samples, fills the 300 s limit, and acquisition runs
 near 4 x 10^4 one-photon samples per second.
+
+## 1b. Building and running a case
+
+The checklist each new case follows, from the first sketch to the claim. The
+mode-swap case ([belenos-mode-swap-interleaved-case.md](../../design/belenos-mode-swap-interleaved-case.md),
+`scripts/belenos_mode_swap_interleaved.py`) is the worked example of every
+step.
+
+1. **Shape the jobs from measured times.** Take the per-iteration time of
+   the case's photon count from the job-shape table of the credit runbook,
+   fit k = floor(0.9 x 300 / t) iterations per job, then raise the samples
+   per iteration while the job stays inside that margin: samples cost 1e-6
+   credits per shot and well under a millisecond each, while every extra
+   job costs a full credit. Write the duration bound in the script from
+   named measurements (`SECONDS_PER_ITERATION`, the clock and the lowest
+   returned global efficiency) and have `--check` enforce the margin. A
+   shape no retained job has run gets its first job measured before the
+   rest are planned.
+2. **Decide what limits the statistics.** If compiled-mesh error dominates
+   binomial error (section 7, "Per-seed mesh variance of a share"), spend
+   the iterations on more compilation seeds; if binomial error dominates,
+   spend them on samples. In the mode-swap case the mesh variance ran about
+   ten times the binomial at 6,000 samples, so the jobs carry three
+   replicate seeds per layout and 30,000 samples, which cut binomial error
+   by sqrt(5) for 0.072 credits per job.
+3. **Order the iterations.** Repeat one seed at the first and last slot as
+   the drift reference, put replicate seeds at the repeats' mean slot,
+   alternate the conditions being contrasted, and end a job on the
+   iteration the analysis can best spare, since a cut at 300 s loses the
+   iteration in progress and bills the full ceiling.
+4. **Preregister the analysis and its readings in the frozen `cases.json`.**
+   Every reading names the statistic that supports its words; the design
+   rules of section 7 list the defects that recur. Keep the drift
+   inflation kappa^2 out of any variance it would be subtracted from.
+5. **Simulate the decision chain.** Run the case's own analysis functions
+   on synthetic binomial cells at the retained rates under the nulls that
+   matter (heavy tails, class differences, a bad slot, a step between two
+   jobs of one set) and under the effect sizes of interest, and quote the
+   simulated rates in the design document.
+6. **Review adversarially, then fix and re-freeze.** An independent review
+   reads the script, tests, document and frozen bytes; every finding is
+   triaged against the code, fixed or answered, and the unrun cases are
+   rebuilt. A job that ran keeps its bytes (`RETAINED_CASES` binds their
+   sha256), and the never-run cases it superseded leave.
+7. **Write the stopping rule before the first submit.** State which checks
+   gate the next job and which stop the case for the owner, with
+   thresholds set where a reading changes, not where a statistic first
+   fires: the mode-swap case stops on primary repeats split across meshes,
+   on kappa^2 above 20 (a drift that moves the readings in the Monte
+   Carlo) and on a job longer than 270 s; a drift detected below that
+   threshold is recorded and the case continues.
+8. **Run each job through one cycle.** Copy the frozen `cases.json` and
+   `circuit.json` into a fresh run directory, `plan` immediately before
+   `submit` (credit ceiling, estimated shots and `cases_sha256` match the
+   frozen bytes; the plan's HOM, g2 and transmittance are the job's
+   calibration record), `submit` with the owner's approval quoted,
+   `collect`, then gate: every iteration counted, shots used as requested,
+   duration inside the bound, the mesh digests the design expects. When two
+   jobs form one set, submit the second as soon as the first passes, which
+   keeps the drift step between them small.
+9. **Retain, analyze, claim.** Each collected run is committed and enters
+   `research_state.json` as an acquisition in the change that retains it;
+   the pooled analysis and its claim follow, and the design document gains
+   an Outcome section.
 
 ## 2. Platform facts that shape a case
 

@@ -1,5 +1,11 @@
 # Quandela credit and billing optimization
 
+The planning reference for sizing every Quandela Cloud job a case designs:
+what a job costs, how many iterations, samples and shots fit in one, and how
+long each job shape takes on `qpu:belenos`. The end-to-end procedure for
+designing, reviewing and running a case is
+[strategy.md](../notes/quandela/strategy.md) section 1b.
+
 Quandela Cloud bills per job, not per sample. A job costs 1 credit plus 1e-6
 per shot of its largest iteration, so a case's credits are set by its job
 count; packing settings into the iterations of a few jobs costs an order of
