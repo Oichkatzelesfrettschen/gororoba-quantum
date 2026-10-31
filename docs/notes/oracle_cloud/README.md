@@ -84,9 +84,10 @@ the tenancy can run.
 | Email Delivery | 100 messages per day, 10 approved senders | |
 | Container Engine, Generative AI (`container-engine`, `ai-generative`) | no limit values set | OKE and Generative AI need a paid account |
 
-The A1 allotment reads 2 OCPUs and 12 GB on this tenancy, half the 4 OCPUs
-and 24 GB that Oracle's Free Tier page advertises, so the limits service
-decides a capacity plan. San Jose Ampere capacity is often exhausted, and
+The A1 allotment of 2 OCPUs and 12 GB matches Oracle's Always Free page,
+which grants 1,500 OCPU-hours and 9,000 GB-hours per month, as one 2-OCPU
+instance or two 1-OCPU instances
+([Always Free resources](https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm)). San Jose Ampere capacity is often exhausted, and
 `LaunchInstance` then fails with `Out of host capacity`; that error is a
 capacity state and carries no quota meaning. The tenancy holds no GPU, HPC
 or quantum shape.
