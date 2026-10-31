@@ -80,7 +80,10 @@ The agent polls the service every few minutes; the dynamic group
 `lab-instances` and the policy `lab-instance-agent` grant it
 `instance-agent-command-execution-family`, and a newly created policy takes
 minutes to propagate before the agent's poll stops returning
-`NotAuthorizedOrNotFound`.
+`NotAuthorizedOrNotFound`. Repeated 404s open the agent's poll circuit
+breaker, which stays open after the policy propagates;
+`snap restart oracle-cloud-agent.oracle-cloud-agent` on the host closes it,
+and the next poll returns 200.
 
 Bastion port forwarding into the private subnet, independent of the edge:
 

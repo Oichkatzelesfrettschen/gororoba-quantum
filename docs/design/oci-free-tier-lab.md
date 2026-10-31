@@ -153,6 +153,12 @@ holds JSON collections and ORDS REST endpoints for run records.
 
 ## Service roles beyond the machines
 
+Three services the limits list are closed to this account, each answered by
+the service itself on 2026-10-31: NoSQL Always Free tables in San Jose,
+Container Registry for Free Tier accounts, and with it Functions. The
+`lab-events` Notifications topic carries an email subscription that becomes
+ACTIVE when its confirmation link is followed.
+
 Free status cites Oracle's
 [Always Free resources](https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm)
 page unless the row says otherwise; a limit value alone shows only what the
@@ -160,11 +166,11 @@ tenancy may create.
 
 | Service | Allowance | Lab role | Free status |
 |---|---|---|---|
-| MySQL HeatWave | 1 standalone DB system with a single-node HeatWave cluster, 50 GB data and logs, 50 GB backup | in-memory columnar analytics and HeatWave AutoML over result tables, on a private IP in `lab-private` | Always Free page |
-| NoSQL Database | 133 M reads and 133 M writes per month, 3 tables of 25 GB | job queue with conditional writes, shot-level results with TTL; client `borneo` | Always Free page |
+| MySQL HeatWave | 1 standalone DB system (shape `MySQL.Free`, 1 CPU, 8 GB) with a single-node `HeatWave.Free` cluster, 50 GB data and logs, 50 GB backup | `lab-mysql` at `10.42.1.40`: in-memory columnar analytics and HeatWave AutoML over result tables | Always Free page; `scripts/oci_lab/mysql_create.py` creates it |
+| NoSQL Database | 133 M reads and 133 M writes per month, 3 tables of 25 GB (page) | none in this region | unavailable: an Always Free table create fails with `Free tables are not available at this region`; a paid table bills |
 | Resource Manager | stacks 100, concurrent jobs 1 on this tenancy (the page says 2), 24 h per job | the lab as a Terraform stack, rebuildable after a reclamation; a `local-exec` step runs a script on Oracle's runner, outside the service's documented purpose | Always Free page |
-| Container Registry | registry free; image storage billed at the Object Storage Standard rate ([product page](https://www.oracle.com/ua/cloud/cloud-native/container-registry/)) | multi-arch lab images for the VMs and Functions | inferred free within the 20 GB Object Storage grant; the budget alert confirms |
-| Functions | `faas` 61440 MB total concurrency | burst fan-out of short pure-Python jobs | absent from the Always Free page; unverified |
+| Container Registry | registry free on paid accounts; image storage billed at the Object Storage Standard rate ([product page](https://www.oracle.com/ua/cloud/cloud-native/container-registry/)) | none | unavailable: `ListContainerRepositories` returns 403 `FREE_TIER_NOT_SUPPORTED` |
+| Functions | `faas` 61440 MB total concurrency | none | unusable: a function's image comes from Container Registry, which this account cannot reach; absent from the Always Free page |
 | DevOps build runners | 3 concurrent | none | billed: the managed build stage charges for the runner's OCPU and memory ([managed build stage](https://docs.oracle.com/en-us/iaas/Content/devops/using/managed_buildstage.htm)) |
 | Cloud Shell | 80 usage hours per month (tenancy limit), 5 GB home, 24 h sessions, 60 min idle timeout ([Cloud Shell](https://docs.cloud.oracle.com/Content/API/Concepts/cloudshellintro.htm)) | browser control plane with the CLI and Terraform | free within the tenancy limits (Cloud Shell page) |
 | Bastion | 5 bastions (tenancy limit) | `lab-bastion` on `lab-private` | Always Free page |
