@@ -42,8 +42,8 @@ replicate contrast and cannot enter the mesh variance, where it would inflate th
 (about 15 s), the least that integer slots allow once each replicate sits at its pair mean, since six slots cannot make
 the layout means and the seed means all coincide. The mirror order of an odd set flips the sign of that imbalance, so the
 five sets net to one slot in total. An ABBA order would balance the layout means exactly but put each replicate 2.5 to
-3.5 slots from its pair mean, so drift would raise the mesh variance and could turn an affirmative "mesh-specific"
-reading on drift.
+3.5 slots from its pair mean, so drift would raise the mesh variance and could turn drift into a "mesh error"
+reading.
 
 | Job | Block sets | Iterations | Samples | `max_shots` | Credit ceiling | Expected seconds |
 |---|---|---|---|---|---|---|
@@ -98,12 +98,19 @@ so 798 to 1,790 (median 1,127) per iteration here. A placement contrast of media
 0.013, so 4.5 binomial errors are 0.058, and 13 of the 32 earlier deltas exceed that. A repeat pair gives a z of about 2.4
 for a drift of 0.05.
 
-The decisive power is against the mesh variance. A block moves beyond it when |delta| exceeds 4.5 sqrt(sigma^2 + 1.7e-4),
-and the case needs two such blocks. For the earlier deltas taken at face value, 13, 11, 6, 2 and 0 of the 32 exceed that
-threshold at sigma = 0, 0.01, 0.02, 0.027 and 0.03. A per-seed mesh spread of 0.03 or more in a therefore leaves every
-effect of the earlier size in the rows "within the mesh variance", where **mesh-specific** means indistinguishable from
-per-seed mesh error at this sample size; those rows read reproduction through the pooled correlation with the earlier
-deltas instead, which needs no single block to clear the bar.
+The decisive power is against the mesh variance. A Monte Carlo of the analysis below, run through the case's own
+functions on binomial cells at the retained per-block one-click rates (2,000 replicates per model), puts λ as the
+fraction of each earlier delta that is true placement, with the rest of the earlier variance taken as mesh error:
+
+| λ | Half and extreme mesh sigma | Placement beyond the mesh variance | Comparison |
+|---|---|---|---|
+| 0.5 | 0.051, 0.025 | 0.3 % | reproduce 29 %, indeterminate 60 % |
+| 0.7 | 0.042, 0.021 | 7.7 % | reproduce 78 % |
+| 0.7 | 0.063, 0.031 (sigma x 1.5) | 1.0 % | reproduce 41 %, indeterminate 54 % |
+| 0.85 | 0.031, 0.015 | 55 % | reproduce 97 % |
+
+The per-block placement reading decides only when the earlier deltas were mostly placement, and the comparison with
+the earlier deltas carries the case.
 
 ## Analysis (`--analyze RUN RUN RUN`)
 
@@ -124,31 +131,54 @@ counts.
   kappa^2 = max(1, D / dof) of a job scales every binomial variance of that job's blocks, which covers extra dispersion
   between iterations. A job with no mesh-identical pair (dof 0) withholds the placement reading, and so does a replicate
   digest that equals its primary digest or is missing.
-- **Mesh variance.** For each block and layout, R = a(replicate) - a(primary, repeats pooled) has variance 2 sigma^2 plus
-  the inflated binomial variances. sigma^2 is the mean of (R^2 - inflated binomial variance) / 2 over the 60 contrasts,
-  truncated at 0. The excess ratio, sum R^2 over the sum of the inflated binomial variances, is reported beside it.
+- **Mesh identity.** A layout whose two primary repeats returned different or missing `computed_circuit` digests
+  averages two meshes in its pooled primary cell, so its contrast leaves the mesh variance, its block leaves the
+  placement test, and the block stays in the comparison with the earlier deltas. `analysis.json` lists the dropped
+  block-layouts.
+- **Mesh variance per class.** A single-photon share a = cos^2 theta moves by 2 sqrt(a (1 - a)) d theta under a mesh
+  rotation error d theta, so a half block (p_algebra 1/2, 14 blocks) carries about three times the mesh error of an
+  extreme block (p_algebra 0 or 1, 16 blocks); the retained deltas bound sigma at 0.059 and 0.029. For each block and
+  layout, R = a(replicate) - a(primary, repeats pooled) has variance 2 sigma_c^2 plus the inflated binomial variances,
+  c the block's class. sigma_c^2 is the mean of (R^2 - inflated binomial variance) / 2 over the class's contrasts (28
+  half, 32 extreme), truncated at 0; a class with fewer than 10 contrasts withholds the reading. Its one-sided 95
+  percent upper bound is (sum R^2 / chi2.ppf(0.05, m) - mean variance) / 2 over the class's m contrasts. The excess
+  ratio, sum R^2 over the sum of the inflated binomial variances, is reported per class.
+- **Slot homogeneity.** For each physical slot, S = sum R^2 / (2 sigma_c^2 + variance) over the ten contrasts the
+  slot holds is chi-square on that count under one mesh scale per class. A slot with p below 0.01 / 6 withholds the
+  "beyond" class, because one slot with a larger mesh scale would otherwise inflate both class scales and test the
+  other slots' blocks against the wrong scale.
 - **Placement against the mesh variance.** For each block, delta = (a(swapped, primary) + a(swapped, replicate)) / 2 -
-  (a(packed, primary) + a(packed, replicate)) / 2. With no placement effect it has variance sigma^2 plus a quarter of the
-  inflated binomial variances of its four cells, and z = delta / sqrt(sigma^2 + binomial variance). A block moved beyond
-  the mesh variance when |z| > 4.5, and the placement lies beyond the mesh variance when at least 2 blocks do. With the
-  scale estimated from ten independent set-layout pairs, a block crosses 4.5 under mesh error alone with probability
-  about 0.0011 (Student t, 10 degrees of freedom), so one block of 30 does so about 3 percent of the time and two or
-  more below 0.1 percent. Blocks moved against binomial error alone are the `moved` blocks of `decide()` on the pooled
-  table, the earlier criterion. The six blocks of one set share their meshes and the pooled scale assumes one sigma for
-  all blocks; `analysis.json` lists the contrasts per block and layout so a reader can see heterogeneity.
-- **Slot predictor.** `decide()` of `qd_packed_mode_swap_analysis.py` runs once on the pooled packed and swapped table of
-  all 30 blocks, each share taken over every iteration of its layout. Each block's predictor is the packed mean of the
-  other half blocks on its swapped slot, taken from other block sets and so from other compiled meshes. The slot
-  predictor's r with its Fisher 95 percent interval reads a **reversed-sign chip-mode effect** when the upper bound is
-  below -0.3, a **positive-sign chip-mode effect** when the lower bound is above +0.3, and no sign-specific chip-mode
-  reading otherwise. The verdict string of `decide()` is reported but carries no reading, since it returns `slot` only
-  for a positive correlation. Fourteen half blocks give a Fisher half-width of 0.59 in z.
+  (a(packed, primary) + a(packed, replicate)) / 2. With no placement effect it has variance sigma_c^2 plus a quarter of
+  the inflated binomial variances of its four cells, and z = delta / sqrt(sigma_c^2 + binomial variance). A block moved
+  beyond the mesh variance when |z| > 4.5, and the placement lies beyond the mesh variance when at least 2 blocks do
+  and the slot homogeneity holds. The same Monte Carlo with no placement effect returns "beyond" in 0 of 2,000
+  replicates under each of: one sigma of 0.03 for both classes; class sigmas 0.05 and 0.01 with Gaussian, Student t3,
+  and Student t3 times a log-normal (0.5) scale per compiled mesh. One slot at three times the mesh scale returns it in
+  3 of 2,000 (0.15 percent), with the slot check withholding in 68 percent of those replicates. Blocks moved against
+  binomial error alone are the `moved` blocks of `decide()` on the pooled table, the earlier criterion.
+- **Slot predictor, descriptive.** `decide()` of `qd_packed_mode_swap_analysis.py` runs once on the pooled packed and
+  swapped table of all 30 blocks, each share taken over every iteration of its layout, and `analysis.json` reports its
+  verdict, block predictor and slot predictor with Fisher 95 percent intervals. It carries no reading. Each block's
+  predictor is the packed mean of the other half blocks on its swapped slot; those come from other compiled meshes,
+  but in 10 of the 14 half blocks they include the block's own swap partner of the same set, and in 6 the predictor
+  rests on one block, so a pattern of offsets that follows the blocks can read as a chip-mode sign. Fourteen half
+  blocks give a Fisher half-width of 0.59 in z, and the reversed-sign reading the retained data suggest (r -0.73,
+  interval -0.91 to -0.32 on the 30 blocks) would clear a -0.3 bound at most 7 percent of the time even at λ 0.85.
 - **Comparison with the earlier deltas.** For each block, delta_new = a(swapped) - a(packed) of the pooled table is
   compared with delta_old of the retained `qpu_belenos` series (`qd_packed_mode_swap_analysis.collect`). The case
   reports the number of blocks whose signs agree with the one-sided exact binomial p against one half, and Pearson r with
   its Fisher interval. The comparison reads **reproduce** when r has a lower bound above 0.3 and the sign p is below
   0.01, **uncorrelated** when r has a lower bound at or below 0.3 and an upper bound below 0.7, and **indeterminate**
   otherwise. The new and the earlier deltas also differ in mesh, since the retained jobs carried no compilation seed.
+- **Earlier excess.** Each earlier delta is a contrast between two independent meshes of the earlier window, so with
+  no placement and no drift it has variance 2 sigma_c^2 plus its binomial variance. X(w) = sum over the 30 blocks of
+  delta_old^2 / (2 w sigma_c^2 upper bound + binomial variance) is tested against the 0.99 quantile q of chi-square on
+  30 degrees of freedom. An uncorrelated comparison reads **mesh** when X(1) <= q, **excess** when X(3) > q, and
+  **window** otherwise. The allowance w = 3 is the change of mesh variance between acquisition windows that the two
+  visibility jobs of 2026-10-31 show (control spread 1.7 times in standard deviation). In the Monte Carlo, earlier
+  deltas made entirely of mesh error at the old-delta bound (sigma 0.059 and 0.029) read mesh in 99.9 percent of the
+  uncorrelated outcomes; a mesh error of half that size (0.03 and 0.015) reads window in 97 percent; and a mesh error of
+  0.01 and 0.003, which leaves the earlier deltas to drift, reads excess in all of them.
 
 ### Reading
 
@@ -159,25 +189,33 @@ moves within it) with the comparison class.
 |---|---|---|
 | no block moved | any | no moves: the earlier separation fails |
 | beyond the mesh variance | reproduce | moves beyond the mesh variance reproduce the earlier deltas: not hour-scale drift |
-| beyond the mesh variance | uncorrelated | moves beyond the mesh variance do not follow the earlier deltas: mesh-specific |
 | beyond the mesh variance | indeterminate | moves beyond the mesh variance with the earlier deltas neither reproduced nor excluded: inconclusive |
-| within the mesh variance | reproduce | moves within the per-block mesh variance reproduce the earlier deltas: not hour-scale drift, placement per block unresolved |
-| within the mesh variance | uncorrelated | moves within the mesh variance do not follow the earlier deltas: mesh-specific |
-| within the mesh variance | indeterminate | moves within the mesh variance with the earlier deltas neither reproduced nor excluded: inconclusive |
+| beyond the mesh variance | uncorrelated, mesh | moves beyond the mesh variance do not follow the earlier deltas, which stay within the per-seed mesh variance: the earlier deltas read as mesh error |
+| beyond the mesh variance | uncorrelated, window | moves beyond the mesh variance do not follow the earlier deltas, which exceed the per-seed mesh variance only within a threefold window change: the source of the earlier deltas is unresolved |
+| beyond the mesh variance | uncorrelated, excess | moves beyond the mesh variance do not follow the earlier deltas, which exceed the per-seed mesh variance even at a threefold window change: the earlier deltas read as hour-scale drift or unseeded compilation |
+| not shown beyond | reproduce | moves not shown beyond the mesh variance reproduce the earlier deltas: not hour-scale drift, placement per block unresolved |
+| not shown beyond | indeterminate | moves not shown beyond the mesh variance with the earlier deltas neither reproduced nor excluded: inconclusive |
+| not shown beyond | uncorrelated, mesh | moves not shown beyond the mesh variance do not follow the earlier deltas, which stay within the per-seed mesh variance: the earlier deltas read as mesh error |
+| not shown beyond | uncorrelated, window | moves not shown beyond the mesh variance do not follow the earlier deltas, which exceed the per-seed mesh variance only within a threefold window change: the source of the earlier deltas is unresolved |
+| not shown beyond | uncorrelated, excess | moves not shown beyond the mesh variance do not follow the earlier deltas, which exceed the per-seed mesh variance even at a threefold window change: the earlier deltas read as hour-scale drift or unseeded compilation |
+
+"Not shown beyond" covers fewer than two blocks beyond the mesh variance and a failed slot homogeneity.
 
 The preregistered interpretation in each `cases.json` repeats this paragraph:
 
 The design shows whether moving a packed block changes its algebra-mode share by more than that share varies between
 compiled meshes of one layout, and whether the per-block changes reproduce the changes of the earlier separate jobs.
-Reproduction rules out hour-scale drift as their source; changes that do not follow the earlier deltas, or that stay
-within the mesh variance, read as mesh-specific. The slot predictor of the pooled blocks reads the sign of the chip-mode
-effect. The design does not show how a chip mode changes a share.
+Reproduction rules out hour-scale drift as their source. When the changes do not follow the earlier deltas, the size
+of the earlier deltas against the measured per-seed mesh variance reads them as mesh error, as hour-scale drift or
+unseeded compilation, or as unresolved within a threefold change of the mesh variance between acquisition windows. The
+slot predictor is descriptive. The design does not show how a chip mode changes a share.
 
 ## Written case
 
 - *What it measures.* Whether the packed series' block residual follows placement beyond the per-seed mesh variance, and
   whether it reproduces the earlier deltas, with mesh-identical primary repeats as the within-job validity reference and
-  a replicate seed per layout as the mesh reference.
+  a replicate seed per layout as the mesh reference; the per-class per-seed mesh variance of a single-photon share on
+  `qpu:belenos`, which later multi-seed designs on this chip need; and whether the earlier deltas exceed it.
 - *Why a simulation cannot answer it.* The residual is the chip's compiled-mesh and detection error at each slot; an
   ideal or noise-model simulation gives every block its exact share at every slot and every seed.
 - *Backend and budget.* `qpu:belenos`, three jobs submitted one after the other, 12, 12 and 6 iterations of 6,000

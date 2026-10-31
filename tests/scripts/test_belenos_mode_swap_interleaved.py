@@ -1,10 +1,12 @@
 """Contracts of the Belenos interleaved mode-swap request: frozen cases, seeds, timing, binding, validity, mesh
-variance, placement, the pooled slot reading and the comparison with the earlier deltas."""
+variance per class, slot homogeneity, placement, the descriptive slot predictor, the comparison with the earlier
+deltas and their excess over the mesh variance."""
 
 from __future__ import annotations
 
 import hashlib
 import json
+import math
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -118,8 +120,12 @@ def synthetic(
     primary_same_mesh: bool = True,
     replicate_distinct: bool = True,
     reverse: bool = False,
+    split_primary: tuple[int, str] | None = None,
 ) -> list[Path]:
-    """Three runs whose block shares follow model(setting, block), 20000 one-click samples per block."""
+    """Three runs whose block shares follow model(setting, block), 20000 one-click samples per block.
+
+    split_primary (block set, layout) returns that layout's two primary repeats on two meshes.
+    """
     runs = []
     for job in case.JOBS:
         raw = (case.CASES / job / "cases.json").read_bytes()
@@ -136,7 +142,8 @@ def synthetic(
                     state[block["offset"] + port] = 1
                     counts[",".join(map(str, state))] = n
             mesh = f"{setting['layout']}-{setting['block_set']}-{setting['arm']}"
-            if setting["arm"] == "primary" and not primary_same_mesh:
+            split = split_primary == (setting["block_set"], setting["layout"])
+            if setting["arm"] == "primary" and (not primary_same_mesh or split):
                 mesh += f"-{setting['repeat']}"
             if setting["arm"] == "replicate" and not replicate_distinct:
                 mesh = f"{setting['layout']}-{setting['block_set']}-primary"
@@ -151,7 +158,7 @@ def synthetic(
                 }
             )
         run = tmp_path / job
-        run.mkdir()
+        run.mkdir(parents=True)
         (run / "cases.json").write_bytes(raw)
         (run / "results.json").write_text(
             json.dumps({"iterations": iterations[::-1] if reverse else iterations}), encoding="utf-8"
@@ -169,19 +176,32 @@ def flat(setting: dict[str, Any], block: dict[str, Any]) -> float:
     return 0.5 + 0.001 * slot_of(block)
 
 
-def zero_deltas(runs: list[Path]) -> dict[Key, float]:
+def mesh_offset(setting: dict[str, Any], block: dict[str, Any], size: float = 0.04) -> float:
+    """A per-seed mesh offset of the block, the same for both primary repeats of a layout."""
+    return size * unit("mesh", setting["block_set"], setting["layout"], setting["arm"], block["t"], block["m"])
+
+
+def keys_of(runs: list[Path]) -> list[Key]:
     keys: set[Key] = set()
     for run in runs:
         for setting in json.loads((run / "cases.json").read_text(encoding="utf-8"))["settings"]:
             keys.update((json.dumps(b["m"]), b["t"]) for b in setting["blocks"])
-    return dict.fromkeys(keys, 0.0)
+    return sorted(keys)
 
 
-def earlier_from(record: dict[str, Any], scale: float = 1.0) -> dict[Key, float]:
-    return {(row["block"][0], row["block"][1]): scale * row["new"] for row in record["comparison"]["rows"]}
+def old_of(deltas: dict[Key, float], v: float = 1e-6) -> dict[Key, dict[str, float]]:
+    return {key: {"delta": delta, "v": v} for key, delta in deltas.items()}
 
 
-def test_a_chip_mode_effect_reads_as_a_positive_sign_slot_reading_and_reproduces_the_earlier_deltas(
+def zero_deltas(runs: list[Path]) -> dict[Key, dict[str, float]]:
+    return old_of(dict.fromkeys(keys_of(runs), 0.0))
+
+
+def earlier_from(record: dict[str, Any], scale: float = 1.0) -> dict[Key, dict[str, float]]:
+    return old_of({(row["block"][0], row["block"][1]): scale * row["new"] for row in record["comparison"]["rows"]})
+
+
+def test_a_chip_mode_effect_moves_beyond_the_mesh_variance_and_reproduces_the_earlier_deltas(
     tmp_path: Path,
 ) -> None:
     runs = synthetic(tmp_path, chip_mode(+1.0), reverse=True)
@@ -190,17 +210,20 @@ def test_a_chip_mode_effect_reads_as_a_positive_sign_slot_reading_and_reproduces
     if record["iterations_bound"] != 30 or record["withheld"]:
         raise AssertionError(record["withheld"])
     slot = record["slot_predictor"]
-    if slot["verdict"] != "slot" or slot["reading"] != "positive-sign chip-mode effect":
+    if slot["verdict"] != "slot" or slot["descriptive"] is not True or "reading" in slot:
         raise AssertionError(slot)
-    if record["validity"]["detected"] is not False or record["mesh_variance"]["sigma2"] > 1e-6:
+    classes = record["mesh_variance"]["classes"]
+    if record["validity"]["detected"] is not False or any(c["sigma2"] > 1e-6 for c in classes.values()):
         raise AssertionError(record["validity"])
+    if (classes["half"]["contrasts"], classes["extreme"]["contrasts"]) != (28, 32):
+        raise AssertionError(classes)
     if record["comparison"]["verdict"] != "reproduce" or record["comparison"]["sign_agreement"] != 30:
         raise AssertionError(record["comparison"])
     if record["reading"] != case.READING_TABLE[("beyond", "reproduce")]:
         raise AssertionError(record["reading"])
 
 
-def test_a_reversed_chip_mode_effect_reads_as_the_reversed_sign(tmp_path: Path) -> None:
+def test_the_slot_predictor_is_reported_without_a_reading(tmp_path: Path) -> None:
     def model(setting: dict[str, Any], block: dict[str, Any]) -> float:
         sign = 1.0 if setting["layout"] == "packed" else -1.0
         return 0.5 + sign * GAIN[slot_of(block)]
@@ -208,35 +231,98 @@ def test_a_reversed_chip_mode_effect_reads_as_the_reversed_sign(tmp_path: Path) 
     runs = synthetic(tmp_path, model)
     record = case.analyze(runs, earlier=zero_deltas(runs))
     slot = record["slot_predictor"]
-    r, _, upper = slot["slot_predictor"]
-    if r > -0.9 or upper >= -case.SLOT_SIGN_BOUND or slot["reading"] != "reversed-sign chip-mode effect":
+    if slot["slot_predictor"][0] > -0.9 or slot["descriptive"] is not True or "reading" in slot:
         raise AssertionError(slot)
-    if slot["verdict"] != "mixed":
-        raise AssertionError("decide() returns mixed for a negative correlation; the reading is the sign rule")
 
 
-def test_mesh_variance_absorbs_moves_that_binomial_error_alone_would_call_and_reads_mesh_specific(
-    tmp_path: Path,
-) -> None:
-    def mesh_only(setting: dict[str, Any], block: dict[str, Any]) -> float:
-        return 0.5 + 0.08 * unit(
-            "mesh", setting["block_set"], setting["layout"], setting["arm"], block["t"], block["m"]
-        )
+def test_the_mesh_variance_is_estimated_per_class(tmp_path: Path) -> None:
+    def model(setting: dict[str, Any], block: dict[str, Any]) -> float:
+        size = 0.08 if block["p_algebra"] == "1/2" else 0.02
+        return 0.5 + mesh_offset(setting, block, size)
 
-    runs = synthetic(tmp_path, mesh_only)
-    unrelated = {key: 0.2 * unit("earlier", key) for key in zero_deltas(runs)}
-    record = case.analyze(runs, earlier=unrelated)
+    runs = synthetic(tmp_path, model)
+    classes = case.analyze(runs, earlier=zero_deltas(runs))["mesh_variance"]["classes"]
+    half, extreme = classes["half"], classes["extreme"]
+    if not half["sigma"] > 2.5 * extreme["sigma"] or not half["sigma2_upper"] > half["sigma2"]:
+        raise AssertionError(classes)
+
+
+def test_mesh_variance_absorbs_moves_that_binomial_error_alone_would_call(tmp_path: Path) -> None:
+    runs = synthetic(tmp_path, lambda setting, block: 0.5 + mesh_offset(setting, block, 0.08))
+    record = case.analyze(runs, earlier=old_of({key: 0.2 * unit("earlier", key) for key in keys_of(runs)}))
     if record["moved_binomial"] < 10:
         raise AssertionError("the mesh offsets should move many blocks against binomial error alone")
-    mesh = record["mesh_variance"]
-    if not 0.02 < mesh["sigma"] < 0.06 or mesh["excess_ratio"] < 50:
-        raise AssertionError(mesh["sigma"])
-    if record["placement"]["beyond_mesh_variance"]:
+    if record["placement"]["beyond_mesh_variance"] or record["placement"]["moved_beyond_mesh"]:
         raise AssertionError(record["placement"]["moved_beyond_mesh"])
-    if record["comparison"]["verdict"] != "uncorrelated":
-        raise AssertionError(record["comparison"])
-    if record["reading"] != case.READING_TABLE[("within", "uncorrelated")]:
+    if any(c["excess_ratio"] < 20 for c in record["mesh_variance"]["classes"].values()):
+        raise AssertionError(record["mesh_variance"]["classes"])
+    if not record["reading"].startswith(case.PLACED["within"]):
         raise AssertionError(record["reading"])
+
+
+def placed(blocks: set[int], gain: float = 0.3) -> Model:
+    """Mesh offsets everywhere and a placement step on the swapped layout of the chosen block numbers."""
+
+    def model(setting: dict[str, Any], block: dict[str, Any]) -> float:
+        index = setting["blocks"].index(block) + 6 * setting["block_set"]
+        step = gain if setting["layout"] == "swapped" and index in blocks else 0.0
+        return 0.35 + mesh_offset(setting, block, 0.02) + step
+
+    return model
+
+
+def test_one_block_beyond_the_mesh_variance_stays_within_and_two_place_it_beyond(tmp_path: Path) -> None:
+    for chosen, beyond in (({0}, False), ({0, 7}, True)):
+        runs = synthetic(tmp_path / str(len(chosen)), placed(chosen))
+        record = case.analyze(runs, earlier=zero_deltas(runs))
+        placement = record["placement"]
+        if placement["moved_beyond_mesh"] != len(chosen) or placement["beyond_mesh_variance"] is not beyond:
+            raise AssertionError(placement["moved_beyond_mesh"])
+
+
+def test_one_slot_with_a_larger_mesh_scale_withholds_the_beyond_class(tmp_path: Path) -> None:
+    base = placed({0, 7})
+
+    def model(setting: dict[str, Any], block: dict[str, Any]) -> float:
+        wide = slot_of(block) == 5
+        return base(setting, block) + (mesh_offset(setting, block, 0.4) if wide else 0.0)
+
+    runs = synthetic(tmp_path, model)
+    record = case.analyze(runs, earlier=zero_deltas(runs))
+    homogeneity = record["slot_homogeneity"]
+    if homogeneity["homogeneous"] or min(row["p"] for row in homogeneity["rows"]) >= case.SLOT_ALPHA / case.SLOTS:
+        raise AssertionError(homogeneity)
+    if record["placement"]["moved_beyond_mesh"] < 2 or record["placement"]["beyond_mesh_variance"]:
+        raise AssertionError(record["placement"]["moved_beyond_mesh"])
+
+
+def test_a_primary_pair_on_two_meshes_drops_its_contrasts_and_blocks(tmp_path: Path) -> None:
+    runs = synthetic(tmp_path, placed({0, 7}), split_primary=(1, "swapped"))
+    record = case.analyze(runs, earlier=zero_deltas(runs))
+    dropped = record["mesh_variance"]["dropped"]
+    if len(dropped) != 6 or {row["layout"] for row in dropped} != {"swapped"}:
+        raise AssertionError(dropped)
+    if record["placement"]["blocks"] != 24 or record["validity"]["dof"] != 54 or record["withheld"]:
+        raise AssertionError(record["placement"]["blocks"])
+    if record["placement"]["moved_beyond_mesh"] != 1 or record["comparison"]["blocks"] != 30:
+        raise AssertionError("block 7 of set 1 leaves the placement test and stays in the comparison")
+
+
+def test_each_earlier_excess_branch_reads_end_to_end(tmp_path: Path) -> None:
+    runs = synthetic(tmp_path, lambda setting, block: 0.5 + mesh_offset(setting, block, 0.08))
+    keys = keys_of(runs)
+    probe = case.analyze(runs, earlier=zero_deltas(runs))
+    classes = probe["mesh_variance"]["classes"]
+    p_of = {(row["block"][0], row["block"][1]): row["class"] for row in probe["placement"]["rows"]}
+    sign = {key: 1.0 if unit("sign", key) > 0 else -1.0 for key in keys}
+    for factor, verdict in ((0.8, "mesh"), (3.0, "window"), (8.0, "excess")):
+        old = {key: sign[key] * math.sqrt(2 * factor * classes[p_of[key]]["sigma2_upper"]) for key in keys}
+        record = case.analyze(runs, earlier=old_of(old, 0.0))
+        comparison = record["comparison"]
+        if comparison["verdict"] != "uncorrelated" or comparison["excess"]["verdict"] != verdict:
+            raise AssertionError((factor, comparison["pearson"], comparison["excess"]))
+        if record["reading"] != case.READING_TABLE[("within", f"uncorrelated-{verdict}")]:
+            raise AssertionError(record["reading"])
 
 
 def test_the_default_earlier_deltas_resolve_every_block_of_the_case(tmp_path: Path) -> None:
@@ -247,6 +333,8 @@ def test_the_default_earlier_deltas_resolve_every_block_of_the_case(tmp_path: Pa
         "indeterminate",
     }:
         raise AssertionError(record["comparison"])
+    if any(entry["v"] <= 0 for entry in case.earlier_deltas().values()):
+        raise AssertionError("an earlier delta carries no binomial variance")
 
 
 def test_no_placement_effect_reads_no_moves(tmp_path: Path) -> None:
@@ -337,15 +425,15 @@ def test_the_comparison_with_the_earlier_deltas_reads_reproduce_uncorrelated_and
     new = [0.01 * (i - 15) for i in range(30)]
     table = table_of(new)
     keys = [(f"b{i}", 0) for i in range(len(new))]
-    reproduce = case.compare_earlier(table, {k: 2 * d for k, d in zip(keys, new, strict=True)})
+    reproduce = case.compare_earlier(table, old_of({k: 2 * d for k, d in zip(keys, new, strict=True)}))
     if (reproduce["verdict"], reproduce["sign_agreement"], reproduce["sign_comparable"]) != ("reproduce", 29, 29):
         raise AssertionError(reproduce)
-    uncorrelated = case.compare_earlier(table, {k: unit("old", k) for k in keys})
+    uncorrelated = case.compare_earlier(table, old_of({k: unit("old", k) for k in keys}))
     if uncorrelated["verdict"] != "uncorrelated":
         raise AssertionError(uncorrelated)
     # A loose positive correlation: the interval neither clears the floor nor excludes strong reproduction.
     loose = {k: d + 0.35 * unit("noise", k) for k, d in zip(keys, new, strict=True)}
-    indeterminate = case.compare_earlier(table, loose)
+    indeterminate = case.compare_earlier(table, old_of(loose))
     if indeterminate["verdict"] != "indeterminate":
         raise AssertionError(indeterminate)
     with pytest.raises(RuntimeError, match="lacks blocks"):
@@ -353,20 +441,10 @@ def test_the_comparison_with_the_earlier_deltas_reads_reproduce_uncorrelated_and
 
 
 def test_every_table_cell_has_a_reading() -> None:
-    verdicts = ("reproduce", "uncorrelated", "indeterminate")
-    seen = {case.read({"beyond_mesh_variance": flag}, 5, {"verdict": v}) for flag in (True, False) for v in verdicts}
+    comparisons = [{"verdict": v} for v in ("reproduce", "indeterminate")] + [
+        {"verdict": "uncorrelated", "excess": {"verdict": e}} for e in case.EARLIER_UNCORRELATED
+    ]
+    seen = {case.read({"beyond_mesh_variance": flag}, 5, c) for flag in (True, False) for c in comparisons}
     seen.add(case.read({"beyond_mesh_variance": False}, 0, {"verdict": "reproduce"}))
-    if seen != set(case.READING_TABLE.values()):
+    if seen != set(case.READING_TABLE.values()) or len(seen) != 11:
         raise AssertionError(seen ^ set(case.READING_TABLE.values()))
-
-
-def test_slot_sign_rule_is_symmetric() -> None:
-    expectations = (
-        ((-0.8, -0.95, -0.31), "reversed-sign chip-mode effect"),
-        ((0.8, 0.31, 0.95), "positive-sign chip-mode effect"),
-        ((-0.6, -0.9, -0.29), "no sign-specific chip-mode reading"),
-        ((-0.6, -0.9, 0.4), "no sign-specific chip-mode reading"),
-    )
-    for predictor, reading in expectations:
-        if case.slot_sign(predictor) != reading:
-            raise AssertionError((predictor, reading))
