@@ -1,0 +1,18 @@
+{
+ "gate": "live",
+ "job_id": "f918c870-786c-48a8-8cf4-1d5e6e334516",
+ "model": {
+  "dark_modes_above_limit": [],
+  "expected_seconds": 164.0,
+  "figures": {
+   "g2": 0.013999999999999999,
+   "hom": 0.879,
+   "transmittance": 0.0537
+  },
+  "inside_justified_range": true,
+  "perfs_sha256": "046c99e52258a6872f9660953652316ec75c9c8416d20fafeac557c0d9f5d2c6",
+  "pooled_fidelity": 0.8479795422264274,
+  "prepared_perfs_sha256": "046c99e52258a6872f9660953652316ec75c9c8416d20fafeac557c0d9f5d2c6"
+ },
+ "perfs_basis": "live processor record"
+}

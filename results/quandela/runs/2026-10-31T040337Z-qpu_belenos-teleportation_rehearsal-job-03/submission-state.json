@@ -1,0 +1,211 @@
+{
+ "body_sha256": "42063d3b1497c5e362a20ef290c18cd205729be57c90f5f7b92122603db49efe",
+ "cases_sha256": "cbba4ad7951674786568330f4c60dc403bafb32f9a09ae88317065f4e4a4c991",
+ "job_id": "e7f527ce-22eb-4f73-8a52-3395589ebbba",
+ "phase": "posted",
+ "platform": "qpu:belenos",
+ "receipt": {
+  "admitted_statuses": [
+   "available",
+   "running"
+  ],
+  "approval": "User 2026-10-31: approve job-02 and job-03 at 4.0 credits each (8.0 total), two six-iteration halves of the job-01 design, submitted from branch experiment/teleportation-two-job-blocks after the local adversarial review and before its Codex review.",
+  "availability_at_plan": {
+   "max_concurrent_jobs": 1,
+   "max_jobs_in_queue": 1,
+   "max_running_qt_jobs": 10,
+   "num_concurrent_jobs": 0,
+   "num_jobs_in_queue": 0,
+   "num_running_qt_jobs": 0
+  },
+  "body_sha256": "42063d3b1497c5e362a20ef290c18cd205729be57c90f5f7b92122603db49efe",
+  "case": "2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03",
+  "cases_sha256": "cbba4ad7951674786568330f4c60dc403bafb32f9a09ae88317065f4e4a4c991",
+  "credit_ceiling": 4.0,
+  "estimated_credits": 4.0,
+  "estimated_shots": 12247957,
+  "expected_seconds": 180.0,
+  "max_credits": 4.0,
+  "max_samples": 7200,
+  "max_shots": 18000000,
+  "payload_version_basis": "restored from docs/evidence/bdsc/inputs/receipt.json retrieved 2026-10-17T17:53:31+00:00",
+  "per_job_credits": 1.0,
+  "perfs_at_plan": {
+   "Clock (MHz)": 4.94,
+   "Dark counts (detection/s)": [
+    15.1,
+    5.9,
+    0.2,
+    0.7,
+    0.1,
+    1.9,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.1,
+    0.0,
+    0.0,
+    0.0,
+    0.2,
+    0.3,
+    0.1,
+    12.5,
+    0.2,
+    0.2,
+    0.0,
+    0.2
+   ],
+   "HOM (%)": 87.9,
+   "Transmission per mode (%)": {
+    "t_in": [
+     10.04,
+     0.0,
+     7.88,
+     0.0,
+     7.23,
+     0.0,
+     9.3,
+     0.0,
+     6.97,
+     4.3,
+     0.0,
+     0.0,
+     4.19,
+     3.23,
+     0.0,
+     0.0,
+     3.53,
+     0.0,
+     3.19,
+     0.0,
+     3.01,
+     0.0,
+     1.94,
+     0.0
+    ],
+    "t_out": [
+     58.4,
+     56.41,
+     50.77,
+     48.09,
+     67.31,
+     44.51,
+     60.5,
+     56.02,
+     73.53,
+     46.11,
+     152.34,
+     130.28,
+     86.71,
+     131.41,
+     136.41,
+     35.9,
+     113.29,
+     153.34,
+     148.05,
+     143.96,
+     151.77,
+     178.24,
+     134.0,
+     131.58
+    ]
+   },
+   "Transmittance (%)": 5.37,
+   "g2 (%)": 1.4
+  },
+  "platform": "qpu:belenos",
+  "platform_at_plan": {
+   "bookable": true,
+   "description": "Belenos QPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": {
+    "end_time": "2026-11-05T12:00:00Z",
+    "maintenance_title": "Weekly maintenance",
+    "start_time": "2026-11-05T08:30:00Z",
+    "time_zone": "Europe/Paris"
+   },
+   "max_duration": 300,
+   "name": "qpu:belenos",
+   "price_per_shot": 1e-06,
+   "statistic": {
+    "2026-10-24": {
+     "availability": 83.07
+    },
+    "2026-10-25": {
+     "availability": 88.65
+    },
+    "2026-10-26": {
+     "availability": 32.4
+    },
+    "2026-10-27": {
+     "availability": 0.0
+    },
+    "2026-10-28": {
+     "availability": 25.270000000000003
+    },
+    "2026-10-29": {
+     "availability": 82.73
+    },
+    "2026-10-30": {
+     "availability": 82.94
+    },
+    "2026-10-31": {
+     "availability": 83.25
+    }
+   },
+   "status": "running",
+   "type": "qpu"
+  },
+  "schema": "qd-submission-v1",
+  "status_at_plan": {
+   "explorer": "running",
+   "processor": "running"
+  },
+  "usage_before": [
+   {
+    "total_jobs": 141,
+    "usage": [
+     {
+      "credits": 0.0,
+      "duration_seconds": 3092,
+      "free_credits": 44.324352000000005,
+      "nb_jobs": 46,
+      "platform_name": "qpu:ascella"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 1526,
+      "free_credits": 22.0,
+      "nb_jobs": 24,
+      "platform_name": "sim:belenos"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 6659,
+      "free_credits": 71.10742,
+      "nb_jobs": 63,
+      "platform_name": "qpu:belenos"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 220,
+      "free_credits": 8.0,
+      "nb_jobs": 8,
+      "platform_name": "sim:ascella"
+     }
+    ]
+   }
+  ],
+  "versions": {
+   "exqalibur": "1.4.2",
+   "perceval-quandela": "1.3.1"
+  }
+ },
+ "schema": "qd-submission-state-v1",
+ "started_utc": "2026-10-31T04:04:35+00:00",
+ "submitted_utc": "2026-10-31T04:04:38+00:00"
+}
