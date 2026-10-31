@@ -617,6 +617,76 @@
    "value": 43264,
    "record": "docs/evidence/anu_qrng/draw-2026-10-31T040009Z.json",
    "index": 15
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 41251,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 50785,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 63940,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 45911,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json",
+   "index": 3
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 11390,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json",
+   "index": 4
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 34773,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json",
+   "index": 5
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 25508,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json",
+   "index": 6
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 5306,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json",
+   "index": 7
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 15866,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json",
+   "index": 8
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 64854,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json",
+   "index": 9
   }
  ],
  "runtime": [
