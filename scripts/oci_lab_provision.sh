@@ -16,7 +16,7 @@ PUB_CIDR=10.42.0.0/24
 PRIV_CIDR=10.42.1.0/24
 WG_CIDR=10.66.0.0/24
 EDGE_IP=10.42.0.10
-A1_IP=10.42.1.20
+A1_IP=${A1_IP:-10.42.1.20}
 MICRO2_IP=10.42.1.30
 # Always Free compute: A1.Flex totals 2 OCPU and 12 GB; boot volumes and the
 # data volume together stay within the 200 GB block-volume grant, and
@@ -236,11 +236,12 @@ image() {
 }
 
 # a1: one A1 launch attempt; exit 75 (EX_TEMPFAIL) on "Out of host capacity".
-a1() {
+a1() { # A1_NAME and A1_IP select the host; A1_ID records lab-a1, A1B_ID lab-a1b
 	img=$(image_for VM.Standard.A1.Flex "Canonical Ubuntu" "26.04")
-	if id=$(launch lab-a1 VM.Standard.A1.Flex "$img" "$SUBNET_PRIVATE_ID" "$A1_IP" "$A1_BOOT_GB" false \
+	name=${A1_NAME:-lab-a1}
+	if id=$(launch "$name" VM.Standard.A1.Flex "$img" "$SUBNET_PRIVATE_ID" "$A1_IP" "$A1_BOOT_GB" false \
 		"{\"ocpus\":$A1_OCPUS,\"memoryInGBs\":$A1_MEM_GB}" 2>"$OCI_LAB_DIR/a1-last.err"); then
-		save A1_ID "$id"
+		save "$(echo "${name#lab-}" | tr a-z A-Z)_ID" "$id"
 		return 0
 	fi
 	grep -q 'Out of host capacity' "$OCI_LAB_DIR/a1-last.err" && exit 75

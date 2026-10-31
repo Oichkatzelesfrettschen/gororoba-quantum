@@ -21,11 +21,16 @@ sh scripts/oci_lab_provision.sh a1        # one A1 launch (A1_OCPUS, A1_MEM_GB o
 sh scripts/oci_lab_provision.sh volume    # lab-data (50 GB) attached to lab-a1
 sh scripts/oci_lab_provision.sh bastion   # lab-bastion on lab-private
 sh scripts/oci_lab_provision.sh status
-tmux new-session -d -s oci-a1-retry "A1_OCPUS=1 A1_MEM_GB=10 sh $PWD/scripts/oci_lab/a1_retry.sh"   # 30 min cadence, 96 attempts
+"$PYTHON" -I scripts/oci_lab/a1_capacity.py 1 6   # free placement query per fault domain; exit 75 when none
+tmux new-session -d -s oci-a1-retry "sh $PWD/scripts/oci_lab/a1_retry.sh"   # 5 min polls, 48 h
 ```
 
-`a1_retry.sh` logs each attempt to `~/.oci/lab/a1-retry.log` and calls
-`notify-send` on its final outcome.
+`a1_retry.sh` polls the capacity report and launches only when a fault
+domain reports AVAILABLE, by default as two 1 OCPU / 6 GB hosts (`lab-a1` at
+10.42.1.20, `lab-a1b` at 10.42.1.21; `A1_HOSTS`, `A1_OCPUS` and `A1_MEM_GB`
+override). Two A1 boot volumes and the two micros' fill the 200 GB block
+storage allowance, so this layout carries no `lab-data` volume. Progress goes
+to `~/.oci/lab/a1-retry.log`, and `notify-send` reports the outcome.
 
 A Debian micro is rebuilt from a preserved boot volume, with a running lab
 host as the writer (the tenancy cannot import custom images):
