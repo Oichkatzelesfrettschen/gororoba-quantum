@@ -421,6 +421,62 @@
    "value": 39316,
    "record": "docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json",
    "index": 1
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 63889,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 65328,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 18934,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 51115,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 3
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 51480,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 4
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 31486,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 5
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 50307,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 6
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 51095,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 7
   }
  ],
  "runtime": [

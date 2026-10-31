@@ -1,0 +1,28 @@
+{
+ "basis": "estimate_required_shots under the perfs of results/quandela/cases/belenos_suppression_law/platform-read/catalogue.json",
+ "jobs": {
+  "job-00": {
+   "samples": 400,
+   "settings": {
+    "control-job-00-position1": 1182561,
+    "control-job-00-position2": 1182561,
+    "periodic-job-00-position0": 1182561,
+    "periodic-job-00-position3": 1182561
+   },
+   "total": 4730244
+  },
+  "job-01": {
+   "samples": 400,
+   "settings": {
+    "control-job-01-position0": 1182561,
+    "control-job-01-position3": 1182561,
+    "periodic-job-01-position1": 1182561,
+    "periodic-job-01-position2": 1182561
+   },
+   "total": 4730244
+  }
+ },
+ "largest": 1182561,
+ "schema": "qd-belenos-suppression-shot-estimate-v1",
+ "shots_per_iteration": 1500000
+}
