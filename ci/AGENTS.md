@@ -60,6 +60,11 @@ types and tests), an unset one takes the host environment, and a drifted one
 exits 2 naming the differing pins and the command that runs the lane under
 the host environment.
 
+A gate whose command a pr.yml job already runs carries `"lane": "audit"` in
+ci/gates.json (core-615, the behavioral suite the `tests` job runs under its
+call budget; unbounded on a hosted runner it took 18 minutes): the
+pull-request lane names it as AUDIT-ONLY and leaves it to the audit.
+
 **The audit.** `ci.yml` runs on two schedules and on manual dispatch. The
 nightly schedule (Monday to Saturday) runs the gates some claim of
 docs/state/research_state.json cites (`--cited-by`), with `--ledger-audit` on

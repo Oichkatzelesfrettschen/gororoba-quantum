@@ -306,3 +306,12 @@ def test_repository_claims_cite_existing_gates() -> None:
     missing = sorted(run_gates.cited_gates(ROOT / "docs/state/research_state.json") - names - expanded)
     if missing:
         raise AssertionError(f"claims cite gates the manifest lacks: {missing}")
+
+
+def test_audit_lane_gates_leave_the_pull_request_selection() -> None:
+    gates = json.loads((ROOT / "ci/gates.json").read_text())["gates"]
+    audit_only = [gate["name"] for gate in gates if gate.get("lane") == "audit"]
+    if "core-615" not in audit_only:
+        raise AssertionError("the behavioral suite gate carries lane audit")
+    if any(gate.get("lane") not in (None, "audit") for gate in gates):
+        raise AssertionError("lane takes only the value audit")

@@ -1768,7 +1768,8 @@
       "name": "core-615",
       "seconds": 15.1,
       "tier": "pr",
-      "workers": "all"
+      "workers": "all",
+      "lane": "audit"
     },
     {
       "suite": "core",

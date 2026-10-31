@@ -583,6 +583,12 @@ def main(argv: list[str] | None = None) -> int:
             base_paths = {path for path in tree.stdout.decode("utf-8").split("\0") if path}
         reached = gate_inputs.affected(ROOT, select(ROOT, "full"), edited, listed, traced, base, base_paths)
         gates = [gate for gate in gates if gate["name"] in reached]
+        # A gate whose command a pr.yml job already runs (the behavioral suite, which the tests job runs
+        # under its call budget) is audit-only: the pull-request lane names it and leaves it to the audit.
+        audit_only = [gate for gate in gates if gate.get("lane") == "audit"]
+        gates = [gate for gate in gates if gate.get("lane") != "audit"]
+        for gate in audit_only:
+            print(f"AUDIT-ONLY {gate['name']}  a pr.yml job runs this command; the audit runs the gate")
         print(f"affected: {len(reached)} gates reached by {len(edited)} changed paths, {len(gates)} selected")
     if arguments.cited_by is not None:
         cited = cited_gates(arguments.cited_by)
