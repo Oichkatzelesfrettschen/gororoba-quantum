@@ -14236,6 +14236,67 @@
       "depends_on": [],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "qd-ascella-postselected-cz-process-fidelity",
+      "statement": "The postselected CZ gate on qpu:ascella, measured by process tomography over 144 preparation and measurement settings in jobs fee9dd00-ef9d-4532-8cb6-40db4c90d1de (submitted 2026-10-31 05:22:47 UTC) and 518f8687-e291-447c-866d-3722adb7d817 (2026-10-31 05:27:31 UTC) at HOM 87.56 %, g2 1.8 %, transmittance 5.81 %, reaches process fidelity 0.849 (95 % percentile bootstrap interval 0.828 to 0.869, 500 replicates) and average gate fidelity 0.879 (0.863 to 0.895) from the preregistered unprojected Choi fit of absolute outcome rates over 100,629 eligible two-click events. Both jobs returned all 72 settings and pooled under the preregistered rule (4.7 minutes apart, equal HOM and transmittance). The measured process fidelity exceeds every forecast of the case's Perceval model at the read: 0.786 with source, loss and dark counts, 0.790 with source and loss, 0.823 source only and 0.834 with indistinguishability alone. The descriptive companions read 0.811 (positive projection) and 0.819 (conditional estimator).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Two jobs on one chip in one calibration state, each setting under its own compilation seed, so the fidelity averages over the served compiled meshes and is the gate as served rather than one fixed mesh. The interval covers sampling error; the estimator's coverage study gave 187 of 200 (0.935) at nominal 0.95. The forecasts take the reported HOM as Perceval's indistinguishability; the measurement exceeding the indistinguishability-only forecast indicates an in-situ overlap above the reported figure under that model, which this case does not measure directly. No comparison is made with the vendor's published CNOT figure, whose fidelity type the literature note does not state.",
+      "evidence": [
+        {
+          "path": "results/quandela/ascella-cz-tomography-analysis.json",
+          "sha256": "de25c047587b4fe8cf767d5e3c860b07775ef319853474d5386b100027c3ef2e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00/results.json",
+          "sha256": "e60f6b82048f4d65c88ad87c786404195fe916f5e3c7aa59d71f070dcc63fed2"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00/submission.json",
+          "sha256": "fbcc6816203f6c28ef781e3cecac5cc37ae4a87d2ea4326bf3e7d97d6346fc10"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00/cases.json",
+          "sha256": "2f5e9d9743da782043cb646c436d18a21ad37eef3a51b64984f661aef03455dd"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00/raw/result.json",
+          "sha256": "8f4469f28fa6ed137a5b6bea8f9cc2e98225e933d1d970dd0867438152f1f98c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01/results.json",
+          "sha256": "25fe70c1f70fbf45c96079fdeed119cb610f2d1859c954ea3e03b4be32c1dde3"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01/submission.json",
+          "sha256": "e63aca08232734ca272b2d22c11216c86d5f4f602f68a53eb677b70142db4fe4"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01/cases.json",
+          "sha256": "e7c5b2969f5989157a0ba9d1da66fbb60a5468545d02ba004ceb411dafa1a6bc"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01/raw/result.json",
+          "sha256": "ab09869bf68dc0ca247b4145dc32ef7bee60ee8e8789141d30effc9fa62a2fbf"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-cz-process-tomography-case.md",
+        "scripts/ascella_cz_tomography_case.py"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-ascella-cz-tomography-job-00",
+        "qd-qpu-ascella-cz-tomography-job-01"
+      ],
+      "assumptions": [
+        "A result iteration binds to its setting by its echoed compilation_seed, one to one."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }

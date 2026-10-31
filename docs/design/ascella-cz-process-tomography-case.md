@@ -299,3 +299,23 @@ retains them.
 | `ascella_cz_tomography_case.py --forecast` | recomputes forecast.json byte for byte |
 | `qd_platform.py plan` on job-00 and job-01 | passes: ceilings 1.4 and 2.6, HOM warning at 87.54 %; retained as `plan-read.json` in each job directory |
 | `ci/seed_provenance.py --check`, `anu_qrng.py check` | pass: the manifests and forecast own both draws, no literal seed |
+
+## Outcome
+
+Both jobs ran on 2026-10-31 at HOM 87.56 %, g2 1.8 %, transmittance 5.81 % (jobs fee9dd00 and 518f8687, 4.7 minutes
+apart, claim `qd-ascella-postselected-cz-process-fidelity` in [research_state.json](../state/research_state.json)).
+The owner admitted the status `running` after two submissions lost a race between `plan` and `submit`, so both jobs
+queued behind other users' jobs; nothing else in the case changed. Every setting returned counts, and the pool is
+decided.
+
+| Quantity | Estimate | 95 % percentile interval |
+|---|---|---|
+| Process fidelity (primary, unprojected) | 0.849 | 0.828 to 0.869 |
+| Average gate fidelity | 0.879 | 0.863 to 0.895 |
+| Projected process fidelity (descriptive) | 0.811 | |
+| Conditional process fidelity (descriptive) | 0.819 | |
+
+The primary estimate lies above every forecast variant, including indistinguishability alone (0.834) and the full
+source, loss and dark-count model (0.786). Under the Perceval model that places the in-situ photon overlap above the
+reported HOM, as the Ascella associator case's in-situ visibility (0.892 at HOM 0.890) and the Belenos suppression
+case's HOM lower bound (0.910 at HOM 0.886) also indicate.
