@@ -71,6 +71,9 @@ from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "gororoba_quantum"))
+from iqm_records import RecordError  # noqa: E402
+
 SERVER = "https://resonance.iqm.tech"
 API = "api/v1"
 USER_AGENT = "gororoba-quantum-iqm-platform/1"
@@ -109,8 +112,7 @@ MCP_MUTATING = ("iqm_cancel_job",)
 Transport = Callable[[str, str, bytes | None, dict[str, str]], tuple[int, dict[str, str], bytes]]
 
 
-class PlatformError(RuntimeError):
-    pass
+PlatformError = RecordError
 
 
 def now() -> str:

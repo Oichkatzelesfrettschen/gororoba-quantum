@@ -51,6 +51,7 @@ from iqm_jobs import CASE_SCHEMA, ceiling_credits, dump  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 from iqm_signed_probe import target_of, to_iqm  # noqa: E402
 
+import iqm_records  # noqa: E402
 import signed_kernel_probe as skp  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
@@ -305,19 +306,20 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
     counts: dict[str, tuple[int, int]] = {}
     runs = []
     for run_dir in sorted(run_dirs):
+        records = iqm_records.load_run(run_dir)
         facts = iqm_jobs.run_facts(run_dir)
-        submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
+        submission = records.json_of("submission.json")
         if submission["qc"] != QC:
             raise ValueError(f"{run_dir}: ran on {submission['qc']}; the analysis reads {QC} runs only")
-        record = json.loads((run_dir / "raw/job.json").read_bytes())
+        record = records.json_of("raw/job.json")
         if record["compilation"]["calibration_set_id"] != prediction["calibration_set"]:
             raise ValueError(
                 f"{run_dir}: compiled against another set than the predicted {prediction['calibration_set']}"
             )
-        case = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+        case = records.json_of("cases.json")
         row = next(r for r in case["jobs"] if r["job"] == submission["job"])
         names = [Path(entry["file"]).stem for entry in row["circuits"]]
-        for name, circuit in zip(names, json.loads((run_dir / "raw/measurements.json").read_bytes()), strict=True):
+        for name, circuit in zip(names, records.json_of("raw/measurements.json"), strict=True):
             bits = [shot[0] for shot in circuit["c"]]
             ones, n = counts.get(name, (0, 0))
             counts[name] = (ones + sum(bits), n + len(bits))

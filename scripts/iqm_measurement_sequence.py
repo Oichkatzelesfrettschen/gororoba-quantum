@@ -143,6 +143,7 @@ sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
 from iqm_jobs import CASE_SCHEMA, JOB_SECONDS, cancel_threshold_seconds, dump, replay_mismatch, run_facts  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 
+import iqm_records  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 CASE = "measurement-sequence-pinching"
@@ -1822,10 +1823,11 @@ def analyze(run_dir: Path, mock: bool = False, gate_model: str = "preregistered"
     """
     if gate_model not in GATE_MODELS:
         raise ValueError(f"gate model {gate_model!r} is not one of {GATE_MODELS}")
+    records = iqm_records.load_run(run_dir)
     facts = run_facts(run_dir)
-    submission = load_json(run_dir / "submission.json")
-    record = json.loads((run_dir / "raw/job.json").read_bytes())
-    case = load_json(run_dir / "cases.json")
+    submission = records.json_of("submission.json")
+    record = records.json_of("raw/job.json")
+    case = records.json_of("cases.json")
     prediction_bytes = (run_dir / "prediction.json").read_bytes()
     if sha256(prediction_bytes) != case.get("prediction_sha256"):
         raise ValueError(f"{run_dir}/prediction.json is not the prediction cases.json binds")
@@ -1840,7 +1842,7 @@ def analyze(run_dir: Path, mock: bool = False, gate_model: str = "preregistered"
         raise ValueError(f"{run_dir}: compiled against another calibration set than the case's")
     row = next(r for r in case["jobs"] if r["job"] == submission["job"])
     circuits = [load_json(run_dir / entry["file"]) for entry in row["circuits"]]
-    measurements = json.loads((run_dir / "raw/measurements.json").read_bytes())
+    measurements = records.json_of("raw/measurements.json")
     counts = tally(circuits, measurements)
     schedule, window = compiled_schedule(
         prediction, circuits, row["shots"], record["compilation"]["execution_runtime_estimate_seconds"], not mock
