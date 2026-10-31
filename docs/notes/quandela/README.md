@@ -377,8 +377,13 @@ unpublished method enters a Quandela job only with that use accepted.
   `submission.json` (approval, plan, platform record and availability at
   submission, Perceval and exqalibur versions, usage report before),
   `results.json` (scrubbed status and job data, counts, usage report after)
-  and `raw/result.json` byte for byte. scripts/research_state.py reads every
-  run through `qd_platform.run_facts` as the `quandela` provider.
+  and `raw/result.json` byte for byte. `gororoba_quantum/qd_records.py`
+  is the offline reader of one run directory (`read_run`: receipt binding,
+  circuit and body digests, platform admission, terminal status, the raw
+  result against the collection and the manifest's budgets); it needs the
+  standard library alone. `qd_platform.run_facts` adds the credit charge to
+  its facts, and scripts/research_state.py reads every run through it as the
+  `quandela` provider.
 
 The token's provider limits and the repository runner's admission rule are
 separate. The recorded provider limits allow one running job and one queued

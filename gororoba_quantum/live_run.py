@@ -230,6 +230,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "ripple_contracts.py",
     "ripple_dynamics.py",
     "ripple_experiments.py",
+    "run_archive.py",
     "runtime_contracts.py",
     "select_lcu.py",
     "star_ramsey.py",

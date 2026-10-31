@@ -9250,6 +9250,17 @@
    "typing",
    "unittest"
   ],
+  "gororoba_quantum/qd_records.py": [
+   "__future__",
+   "base64",
+   "dataclasses",
+   "hashlib",
+   "json",
+   "pathlib",
+   "re",
+   "typing",
+   "zlib"
+  ],
   "gororoba_quantum/qet_ladder.py": [
    "__future__",
    "collections",
@@ -13741,7 +13752,6 @@
    "fcntl",
    "fractions",
    "functools",
-   "hashlib",
    "http",
    "importlib",
    "io",
@@ -13753,6 +13763,7 @@
    "pathlib",
    "perceval",
    "qd_belenos_mesh",
+   "qd_records",
    "re",
    "shutil",
    "ssl",
