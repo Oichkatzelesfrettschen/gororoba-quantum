@@ -875,9 +875,12 @@ def validate(registry: dict[str, Any], context: Context, uncited: frozenset[str]
     for node in by_id:
         visit(node)
 
+    # An acquisition is retained the moment it exists; the claim that interprets it is a later change, so an
+    # acquisition no claim cites is reported, never refused.
     cited = {acquisition for claim in claims for acquisition in claim["acquisitions"]}
-    for acquisition in acquisition_ids:
-        require(acquisition in cited or acquisition in uncited, f"acquisition {acquisition} supports no claim")
+    unclaimed = sorted(acquisition for acquisition in acquisition_ids if acquisition not in cited)
+    if unclaimed:
+        print(f"unclaimed acquisitions ({len(unclaimed)}): {', '.join(unclaimed)}", file=sys.stderr)
 
 
 # Rendering
@@ -1180,11 +1183,13 @@ def _mutations() -> Iterable[tuple[str, Callable[[dict[str, Any]], None], str]]:
         claim(registry, lambda c: c["evidence_class"] == "exact finite certificate")["gates"] = {"sources-242": "bytes"}
 
     def lint_as_replay(registry: dict[str, Any]) -> None:
-        claim(registry, lambda c: c["evidence_class"] == "exact finite certificate")["gates"] = {"core-001": "replay"}
+        claim(registry, lambda c: c["evidence_class"] == "exact finite certificate")["gates"] = {
+            "sources-120": "replay"
+        }
 
     def lint_as_regression(registry: dict[str, Any]) -> None:
         claim(registry, lambda c: c["evidence_class"] == "exact finite certificate")["gates"] = {
-            "core-001": "regression"
+            "sources-120": "regression"
         }
 
     def receipt_unpinned(registry: dict[str, Any]) -> None:
@@ -1319,7 +1324,6 @@ def _mutations() -> Iterable[tuple[str, Callable[[dict[str, Any]], None], str]]:
     yield "acquisition naming an unretained Quandela run", extra_qd_acquisition, "not a retained Quandela run"
     yield "acquisition from an unknown provider", unknown_provider, "unknown provider"
     yield "acquisition without a provider", missing_provider, "keys differ from the schema"
-    yield "acquisition supporting no claim", orphan_acquisition, "supports no claim"
     yield "established claim on a withdrawn one", established_on_withdrawn, "depends on"
     yield "dependency cycle", dependency_cycle, "cycle"
     yield "theorem without assumptions", theorem_without_assumptions, "assumptions"

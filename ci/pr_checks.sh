@@ -7,7 +7,7 @@
 #                                      TEST_REPORT names a JUnit XML file of every test's time
 #   sh ci/pr_checks.sh gates [ARG...]  the ci/gates.json gates the branch's diff from
 #                                      origin/main reaches, of at most GATES_MAX_SECONDS
-#                                      (default 15) measured seconds; GATES_LEDGER names an
+#                                      measured seconds of reached gates per run (default 900); GATES_LEDGER names an
 #                                      audit ledger whose read sets widen the selection
 # PYTHON names an interpreter holding the pins; left unset, the host
 # environment sh ci/build_host_envs.sh builds serves. The environment below is
@@ -56,15 +56,22 @@ check=$1
 shift
 case $check in
 lint)
+	# The checked Python files outside the code directories: evidence replays and
+	# producers under results/ and docs/ that a gate or a ledger binds.
+	checked_files="results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py results/local-simulation/ascella-signed-coherence-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py docs/evidence/albuquerque-majid-convention/am_convention_replay.py docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py"
 	# shellcheck disable=SC2086
-	"$PYTHON" ci/pinned_tool.py ruff check $code_dirs
+	"$PYTHON" ci/pinned_tool.py ruff check $code_dirs $checked_files
 	# shellcheck disable=SC2086
-	"$PYTHON" ci/pinned_tool.py ruff format --check --target-version py313 $code_dirs
+	"$PYTHON" ci/pinned_tool.py ruff format --check --target-version py313 $code_dirs $checked_files
 	;;
 types)
-	# mypy resolves the bare sibling imports from gororoba_quantum/.
+	# mypy resolves the bare sibling imports from gororoba_quantum/. The typed
+	# files outside the code directories follow the lint lane's list where
+	# their imports resolve.
+	typed_files="../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py ../results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py ../results/local-simulation/ascella-serialized-order-replay/producer.py ../docs/evidence/cd-imaginary-sum-conference/tower_bridge.py ../docs/evidence/ascella-order-coefficients/replay.py ../docs/evidence/albuquerque-majid-convention/am_convention_replay.py ../docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py"
 	cd gororoba_quantum
-	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel
+	# shellcheck disable=SC2086
+	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel $typed_files
 	;;
 tests)
 	[ $# -ge 1 ] || set -- tests
@@ -92,8 +99,9 @@ tests)
 	;;
 gates)
 	# A record that binds its producer's digest, or a check whose input a change edits, fails only in
-	# the gate that replays it; this lane runs those gates before the merge, and the nightly audit
-	# keeps every gate above the seconds bound.
+	# the gate that replays it; this lane runs the reached gates cheapest first inside a budget of
+	# measured seconds and names every reached gate the budget could not hold as PENDING, so a green
+	# lane states what it did not run; the audit keeps every gate.
 	base=$(git merge-base origin/main HEAD) || {
 		echo "pr_checks.sh gates: no merge base with origin/main; fetch main" >&2
 		exit 2
@@ -103,7 +111,7 @@ gates)
 	git diff --no-renames --name-status -z "$base" HEAD >"$diff"
 	"$PYTHON" ci/run_gates.py --affected-by "$diff" --affected-base "$base" \
 		${GATES_LEDGER:+--affected-ledger "$GATES_LEDGER"} \
-		--max-seconds "${GATES_MAX_SECONDS:-15}" "$@"
+		--budget-seconds "${GATES_BUDGET_SECONDS:-900}" "$@"
 	;;
 *)
 	echo "pr_checks.sh: unknown check $check" >&2
