@@ -2856,6 +2856,20 @@
       "run": "results/quandela/runs/2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay",
       "family": "single-chip teleportation rehearsal on a recovered chip, split blocks",
       "question": "Does an exact replay of job-02 (same seeds, same compiled meshes) reproduce job-02's per-input counts, separating per-seed compiled-mesh error from drift in the job-02 against job-03 block difference?"
+    },
+    {
+      "id": "qd-qpu-belenos-associator-visibility-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00",
+      "family": "in-situ two-photon visibility on qpu:belenos source pairs",
+      "question": "What two-photon overlap does the control block of the associator closure design read for source pair (18, 20), the input and Bell photons the teleportation analyzer of job-02 interferes, and does the closure hold across the eight separately compiled meshes?"
+    },
+    {
+      "id": "qd-qpu-belenos-associator-visibility-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T050537Z-qpu_belenos-belenos_associator_visibility-job-01",
+      "family": "in-situ two-photon visibility on qpu:belenos source pairs",
+      "question": "What two-photon overlap does the control block of the associator closure design read for source pair (20, 22), the pair the postselected CNOT of job-02 entangles, and does the closure hold across the eight separately compiled meshes?"
     }
   ],
   "claims": [
