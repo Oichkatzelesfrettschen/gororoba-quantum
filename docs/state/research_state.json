@@ -2835,6 +2835,20 @@
       "run": "results/quandela/runs/2026-10-30T200600Z-qpu_ascella-target-slot-drift",
       "family": "ascella-target-slot-drift",
       "question": "How do Ascella target outputs vary across eight requested slots?"
+    },
+    {
+      "id": "qd-qpu-ascella-cz-tomography-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00",
+      "family": "postselected CZ process tomography on qpu:ascella",
+      "question": "What process fidelity and average gate fidelity does the postselected CZ gate reach on qpu:ascella as compiled per setting, fitted from absolute outcome rates over 144 preparation and measurement settings?"
+    },
+    {
+      "id": "qd-qpu-ascella-cz-tomography-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01",
+      "family": "postselected CZ process tomography on qpu:ascella",
+      "question": "What process fidelity and average gate fidelity does the postselected CZ gate reach on qpu:ascella as compiled per setting, fitted from absolute outcome rates over 144 preparation and measurement settings?"
     }
   ],
   "claims": [

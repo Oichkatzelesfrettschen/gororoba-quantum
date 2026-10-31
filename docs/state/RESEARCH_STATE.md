@@ -32,7 +32,7 @@ The IBM service inventory observed at 2026-10-30T04:53:07.250163+00:00 holds 34 
 
 The Quantum Inspire ledger retrieved at 2026-10-30T06:04:43+00:00 lists 450 jobs with 8511376 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 135 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 137 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 49 IQM run directories are retained. That is an observation, not an authorization.
 
@@ -446,6 +446,8 @@ circuit and charges the account ledger's change.
 | [2026-10-30T200500Z-sim_ascella-target-slot-drift](../../results/quandela/runs/2026-10-30T200500Z-sim_ascella-target-slot-drift) | Quandela Cloud | ascella-target-slot-drift | sim:ascella | 1 | 16 | completed | 1.0 credits | ascella-eight-target-requested-slot-contrast |
 | [2026-10-30T200600Z-qpu_ascella-target-slot-drift](../../results/quandela/runs/2026-10-30T200600Z-qpu_ascella-target-slot-drift) | Quandela Cloud | ascella-target-slot-drift | qpu:ascella | 1 | 16 | completed | 1.032768 credits | ascella-eight-target-requested-slot-contrast |
 | [2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01](../../results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01) | Quandela Cloud | single-chip teleportation rehearsal on a recovered chip | qpu:belenos | 1 | 12 | canceled | 4.2 credits | qd-belenos-teleportation-rehearsal-job-01 |
+| [2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00](../../results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00) | Quandela Cloud | postselected CZ process tomography on qpu:ascella | qpu:ascella | 1 | 72 | completed | 1.4 credits |  |
+| [2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01](../../results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01) | Quandela Cloud | postselected CZ process tomography on qpu:ascella | qpu:ascella | 1 | 72 | completed | 2.6 credits |  |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -852,6 +854,8 @@ circuit and charges the account ledger's change.
 - **qd-sim-ascella-target-slot-drift** (2026-10-30T200500Z-sim_ascella-target-slot-drift, job a9e5e7c9-a771-4b30-bdbe-70b4cfd6268b, 524288 samples, 524288 shots): How do the Ascella simulator target outputs vary across eight requested slots?
 - **qd-ascella-target-slot-drift** (2026-10-30T200600Z-qpu_ascella-target-slot-drift, job e2b3d606-d4db-4a65-8da8-14a2458be77f, 524288 samples, 524288 shots): How do Ascella target outputs vary across eight requested slots?
 - **qd-qpu-belenos-teleportation-rehearsal-job-01** (2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01, job 708bb40d-78d1-4903-9d61-e38705b85465, 13200 samples, 3200000 shots): How often does an accepted event of twelve independently compiled known-input teleportation circuits decode to the input's eigenvalue on a recovered qpu:belenos, with an anytime-valid lower bound?
+- **qd-qpu-ascella-cz-tomography-job-00** (2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00, job fee9dd00-ef9d-4532-8cb6-40db4c90d1de, 288000 samples, 13606863 shots): What process fidelity and average gate fidelity does the postselected CZ gate reach on qpu:ascella as compiled per setting, fitted from absolute outcome rates over 144 preparation and measurement settings?
+- **qd-qpu-ascella-cz-tomography-job-01** (2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01, job 518f8687-e291-447c-866d-3722adb7d817, 288000 samples, 15429049 shots): What process fidelity and average gate fidelity does the postselected CZ gate reach on qpu:ascella as compiled per setting, fitted from absolute outcome rates over 144 preparation and measurement settings?
 
 ## Established claims
 
