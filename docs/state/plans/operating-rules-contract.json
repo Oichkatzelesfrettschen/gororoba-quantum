@@ -13,7 +13,7 @@
   },
   "scope": "The root agent guide, ci/AGENTS.md as session context, the pr.yml gate selection and the ci.yml schedule, the Codex review cadence, the dry-run rule, the retention-claim coupling and the plan-record rule. Provider approval, the force-push and recursive-delete denies, immutability of bound bytes and the four pr.yml checks stay as hard constraints. The guide text itself changes only on the owner's decision and on top of PR #692.",
   "owner": "repository maintainer",
-  "next_action": "Owner answers the four decisions in docs/design/operating-rules-contract.md; the secret scanner, the gate protection classes and the snapshot dry run proceed meanwhile as checks that need no rule change.",
+  "next_action": "Owner removes lint and types from the required checks on main (the harness denies the PATCH from an agent); the forty-line guide lands on top of PR #692; the secret scanner, gate protection classes and snapshot dry run follow.",
   "related": [
     "repository-layout-reconciliation"
   ],
@@ -38,9 +38,9 @@
     },
     {
       "id": "pr-gates-by-reach",
-      "action": "ci/pr_checks.sh runs every reached gate inside the job budget longest first and reports an unfinished reached gate as pending by name instead of dropping it at 15 s",
+      "action": "ci/pr_checks.sh runs every reached gate inside the job budget longest first and reports an unfinished reached gate as pending by name instead of dropping it at 15 s; delivered together with the nightly split, the duplicate lint gates' removal and the unclaimed-acquisition report",
       "acceptance": "a diff reaching core-615 runs it on the pull request or reports it pending",
-      "state": "todo"
+      "state": "doing"
     },
     {
       "id": "nightly-cited-weekly-exhaustive",

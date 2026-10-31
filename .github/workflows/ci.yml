@@ -1,12 +1,14 @@
 name: ci
 
-# The audit: the nightly run executes every gate of both tiers with
-# --ledger-audit on main, and manual dispatch runs the same selection.
-# Pull-request acceptance is pr.yml. The event branches below keep their
-# pull_request and push forms for a later trigger.
+# The audit. The nightly schedule (Monday to Saturday) runs the gates some
+# claim of docs/state/research_state.json cites, with --ledger-audit on main:
+# a failure there qualifies a named claim. The weekly schedule (Sunday) and
+# manual dispatch run every gate of both tiers, the net for reads the tracer
+# cannot see. Pull-request acceptance is pr.yml.
 on:
   schedule:
-    - cron: "17 9 * * *"
+    - cron: "17 9 * * 1-6"
+    - cron: "17 9 * * 0"
   workflow_dispatch:
 
 concurrency:
@@ -108,6 +110,7 @@ jobs:
         run: >-
           "$PYTHON" ci/run_gates.py --tier full
           --shard ${{ matrix.shard }}/12
+          ${{ github.event.schedule == '17 9 * * 1-6' && '--cited-by docs/state/research_state.json' || '' }}
           ${{ needs.changes.outputs.limited == 'true' && format('--changed-files {0}/ci-selection/changed-files.bin', runner.temp) || '' }}
           --plan ${{ runner.temp }}/gate-plan.json --github-output "$GITHUB_OUTPUT"
       - name: Restore the recorded compiler runtime
@@ -143,11 +146,12 @@ jobs:
           key: gate-ledger-${{ github.sha }}
           restore-keys: gate-ledger-
       - name: Run shard
-        # Pull requests and pushes skip gates whose ledger key is unchanged;
-        # nightly and manual runs run every gate and audit the ledger.
+        # The nightly schedule runs the claim-cited gates; the weekly schedule
+        # and manual dispatch run every gate; all three audit the ledger.
         run: >-
           "$PYTHON" ci/run_gates.py
           --tier full
+          ${{ github.event.schedule == '17 9 * * 1-6' && '--cited-by docs/state/research_state.json' || '' }}
           ${{ needs.changes.outputs.limited == 'true' && format('--changed-files {0}/ci-selection/changed-files.bin', runner.temp) || '' }}
           ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && '--ledger-audit' || '--ledger' }} "$LEDGER"
           --ledger-out ${{ runner.temp }}/gate-ledger.json

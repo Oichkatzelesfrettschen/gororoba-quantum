@@ -80,7 +80,7 @@ jobs:
       # Gates that run pytest carry the audit's unbounded call time.
       GOROROBA_TEST_CALL_SECONDS: "0"
     steps:
-      # The whole history (about 18 MiB packed) gives the merge base with main.
+      # The whole history gives the merge base with main; the pack is about 915 MB.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
         with:
           fetch-depth: 0

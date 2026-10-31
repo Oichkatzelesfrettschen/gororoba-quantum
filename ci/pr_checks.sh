@@ -7,7 +7,7 @@
 #                                      TEST_REPORT names a JUnit XML file of every test's time
 #   sh ci/pr_checks.sh gates [ARG...]  the ci/gates.json gates the branch's diff from
 #                                      origin/main reaches, of at most GATES_MAX_SECONDS
-#                                      (default 15) measured seconds; GATES_LEDGER names an
+#                                      measured seconds of reached gates per run (default 900); GATES_LEDGER names an
 #                                      audit ledger whose read sets widen the selection
 # PYTHON names an interpreter holding the pins; left unset, the host
 # environment sh ci/build_host_envs.sh builds serves. The environment below is
@@ -92,8 +92,9 @@ tests)
 	;;
 gates)
 	# A record that binds its producer's digest, or a check whose input a change edits, fails only in
-	# the gate that replays it; this lane runs those gates before the merge, and the nightly audit
-	# keeps every gate above the seconds bound.
+	# the gate that replays it; this lane runs the reached gates cheapest first inside a budget of
+	# measured seconds and names every reached gate the budget could not hold as PENDING, so a green
+	# lane states what it did not run; the audit keeps every gate.
 	base=$(git merge-base origin/main HEAD) || {
 		echo "pr_checks.sh gates: no merge base with origin/main; fetch main" >&2
 		exit 2
@@ -103,7 +104,7 @@ gates)
 	git diff --no-renames --name-status -z "$base" HEAD >"$diff"
 	"$PYTHON" ci/run_gates.py --affected-by "$diff" --affected-base "$base" \
 		${GATES_LEDGER:+--affected-ledger "$GATES_LEDGER"} \
-		--max-seconds "${GATES_MAX_SECONDS:-15}" "$@"
+		--budget-seconds "${GATES_BUDGET_SECONDS:-900}" "$@"
 	;;
 *)
 	echo "pr_checks.sh: unknown check $check" >&2

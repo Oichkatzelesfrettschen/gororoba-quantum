@@ -257,6 +257,47 @@ def select(
     return gates
 
 
+def cited_gates(registry: Path) -> set[str]:
+    """The gate names some claim of the research registry cites; a failure of one qualifies that claim."""
+    claims = json.loads(registry.read_text())["claims"]
+    return {name for claim in claims for name in claim.get("gates", {})}
+
+
+def within_budget(gates: list[dict[str, Any]], budget: float) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Split gates into those whose measured seconds fit the budget, cheapest first, and the pending rest.
+
+    The pull-request lane has a job budget; a reached gate the budget cannot hold is reported by name as
+    pending rather than dropped, so a green lane states what it did not run.
+    """
+    ordered = sorted(gates, key=lambda gate: (float(gate.get("seconds", 10.0)), gate["name"]))
+    selected, pending, spent = [], [], 0.0
+    for gate in ordered:
+        cost = float(gate.get("seconds", 10.0))
+        if spent + cost <= budget:
+            selected.append(gate)
+            spent += cost
+        else:
+            pending.append(gate)
+    order = {gate["name"]: index for index, gate in enumerate(gates)}
+    return sorted(selected, key=lambda gate: order[gate["name"]]), sorted(pending, key=lambda gate: order[gate["name"]])
+
+
+def report_pending(pending: list[dict[str, Any]]) -> None:
+    """Name every reached gate the budget deferred, on stdout and in the GitHub step summary when one exists."""
+    if not pending:
+        return
+    lines = [
+        f"PENDING {gate['name']} {float(gate.get('seconds', 10.0)):7.1f}s  {gate['cmd'][:100]}" for gate in pending
+    ]
+    print("\n".join(lines), flush=True)
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary:
+        with open(summary, "a", encoding="utf-8") as handle:
+            handle.write(
+                f"### {len(pending)} reached gates pending beyond the budget\n\n```\n" + "\n".join(lines) + "\n```\n"
+            )
+
+
 def name_status(diff: bytes) -> tuple[list[str], list[str]]:
     """Every path of ``git diff --no-renames --name-status -z`` output and the added or deleted ones."""
     fields = [field for field in diff.decode("utf-8").split("\0") if field]
@@ -457,6 +498,16 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--max-seconds", type=float, help="only gates whose measured seconds are at most this")
     parser.add_argument(
+        "--budget-seconds",
+        type=float,
+        help="run the selected gates cheapest first while their measured seconds fit; report the rest as PENDING",
+    )
+    parser.add_argument(
+        "--cited-by",
+        type=Path,
+        help="a research_state.json; only gates some claim cites, the set whose failure qualifies a claim",
+    )
+    parser.add_argument(
         "--requires",
         choices=sorted(REQUIREMENTS),
         help="only gates whose live path needs this toolchain, each required to take that path",
@@ -533,6 +584,18 @@ def main(argv: list[str] | None = None) -> int:
         reached = gate_inputs.affected(ROOT, select(ROOT, "full"), edited, listed, traced, base, base_paths)
         gates = [gate for gate in gates if gate["name"] in reached]
         print(f"affected: {len(reached)} gates reached by {len(edited)} changed paths, {len(gates)} selected")
+    if arguments.cited_by is not None:
+        cited = cited_gates(arguments.cited_by)
+        gates = [
+            gate
+            for gate in gates
+            if gate["name"] in cited or any(name.startswith(gate["name"] + "--") for name in cited)
+        ]
+        print(f"cited: {len(gates)} gates cited by a claim of {arguments.cited_by}")
+    pending: list[dict[str, Any]] = []
+    if arguments.budget_seconds is not None:
+        gates, pending = within_budget(gates, arguments.budget_seconds)
+        report_pending(pending)
     candidates = gate_inputs.expand_cases(ROOT, gates)
     if arguments.gates is not None:
         named = {name for name in arguments.gates.split(",") if name}
