@@ -272,3 +272,19 @@ between running both jobs at the live HOM and waiting for HOM above 90 %, and ap
   decision.
 - Two-thirds of the three-photon events bunch (collisions) and drop out, and four-photon emissions that lose one photon
   enter the accepted set; both are in the forecast yield and fraction.
+
+## Outcome
+
+Both jobs ran on 2026-10-31 at HOM 88.6 %, g2 1.4 %, transmittance 4.89 % (jobs b0013bf3 and 98c9692d, claim
+`qd-belenos-three-photon-suppression-law` in [research_state.json](../state/research_state.json)). Every iteration
+cleared the 200-event floor (339 to 391 accepted events), so job-01 ran after the yield gate and the decision is
+complete.
+
+| Arm | Suppressed fraction per iteration | Mean | 99 % bound | Indistinguishable forecast | Distinguishable forecast |
+|---|---|---|---|---|---|
+| periodic | 0.135, 0.179, 0.174, 0.199 | 0.172 | upper 0.233 | 0.200 | 0.602 |
+| control | 0.646, 0.717, 0.659, 0.609 | 0.658 | | 0.645 | 0.602 |
+
+The paired contrast reads +0.486 with lower bound 0.368, against 0 for distinguishable photons and -0.138 for the
+mean-field sampler. Both rules hold, and the verdict is suppression at the level the indistinguishable forecast
+predicts. The HOM lower bound from the periodic level is 0.910, above the platform's reported 88.6 %.

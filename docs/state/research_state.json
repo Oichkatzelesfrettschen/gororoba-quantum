@@ -14236,6 +14236,71 @@
       "depends_on": [],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-three-photon-suppression-law",
+      "statement": "Three photons on chip modes 16, 18 and 20 of qpu:belenos through a 6-mode Fourier interferometer on modes 16 to 21 suppress the outputs the label-sum rule forbids. Jobs b0013bf3-8256-4c5b-baab-18e71a8929f7 (submitted 2026-10-31 05:11:21 UTC) and 98c9692d-e8ce-4243-80ba-f7f513783823 (2026-10-31 05:17:37 UTC), at HOM 88.6 %, g2 1.4 %, transmittance 4.89 %, returned all eight iterations with 339 to 391 accepted collision-free three-click events each. The periodic arm's suppressed fraction reads 0.172 over four compiled meshes (99 % one-sided Student-t upper bound 0.233) against the distinguishable forecast 0.602 and the mean-field forecast 0.727, and the paired contrast s(control) - s(periodic) reads +0.486 (lower bound 0.368) against exactly 0 for distinguishable photons and -0.138 for the mean-field sampler; both preregistered rules hold with the 0.10 margin, the control arm reads 0.658 against its 0.645 forecast, and the periodic level sits 0.028 below the indistinguishable forecast 0.200. The HOM lower bound the analysis derives from the periodic level is 0.910.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Two jobs on one chip in one calibration state, one source triple and one window. The forecasts use Perceval's source model and the t_out per-mode detection convention; the contrast rule needs neither, the level rule and the HOM lower bound need both. The compiled meshes are not modeled; compilation error can only raise the periodic fraction, so it biases the HOM lower bound downward and does not threaten the suppression verdict. The control arm's iterations spread beyond binomial error (chi-square 9.7 on 3 degrees of freedom, p 0.021), which the Student-t interval carries.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00/results.json",
+          "sha256": "889e121de88003d90689a17c2fa4964b069d885a59d7b855dd46ac4ebad6d5a1"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00/submission.json",
+          "sha256": "2dc02a5b8227b603bbfe8970c4771133ad2867455b56946a9066eb2341ef41c0"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00/analysis.json",
+          "sha256": "11cb1bd215d0d1ce94d5d85031af387da33cb8b71b0936e6c05fdcaa19bb53b9"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00/cases.json",
+          "sha256": "5920ca4126b26f1384804e529dc5bb568d4c184e6681b2c51c10022b5ea68a18"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00/raw/result.json",
+          "sha256": "a20bd998b0bc3aa51d0f0e25430ac0accb039327f2f540397d1da3a131df6869"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01/results.json",
+          "sha256": "a96de313d1f2c2257ac54c4f368dbb0d0e367da8d65aeb482829d100e2bddaf8"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01/submission.json",
+          "sha256": "6356c7fe036541676df6efaf1e3ee9daaf0e10175b38eb13e76cbad9f20c229c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01/analysis.json",
+          "sha256": "11cb1bd215d0d1ce94d5d85031af387da33cb8b71b0936e6c05fdcaa19bb53b9"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01/cases.json",
+          "sha256": "a3cfbf0288091a9af63d59ace955a328a09cc925458f6a4474ddee8f743c683b"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01/raw/result.json",
+          "sha256": "59ef3e9f46d3628aca2cc8ab13a8377e6d930753335dcd92a2739021d89e9845"
+        }
+      ],
+      "documents": [
+        "docs/design/belenos-suppression-law-case.md",
+        "scripts/belenos_suppression_case.py"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-suppression-law-job-00",
+        "qd-qpu-belenos-suppression-law-job-01"
+      ],
+      "assumptions": [
+        "A result iteration binds to its setting by its echoed compilation_seed, and an iteration below 200 accepted events does not count."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }
