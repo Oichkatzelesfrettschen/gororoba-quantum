@@ -2494,6 +2494,7 @@
     "gororoba_quantum/primorial_tomography.py",
     "gororoba_quantum/pub_shot_allocation_contracts.py",
     "gororoba_quantum/qet_ladder.py",
+    "gororoba_quantum/qi_joint_response.py",
     "gororoba_quantum/qpe_diagnostics.py",
     "gororoba_quantum/qpu_planning.py",
     "gororoba_quantum/qpu_planning_contracts.py",
@@ -9257,6 +9258,17 @@
    "numpy",
    "parallel",
    "qiskit",
+   "typing"
+  ],
+  "gororoba_quantum/qi_joint_response.py": [
+   "__future__",
+   "collections",
+   "dataclasses",
+   "decimal",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_records",
    "typing"
   ],
   "gororoba_quantum/qi_records.py": [

@@ -59,6 +59,9 @@ gate `core-record-check-05` (`tests/test_cli_record_checks.py`) rechecks every b
   digests, job identities and raw shots against the histogram.
   `scripts/research_state.py` and `scripts/results_index.py` consume it, and
   an analyzer adds its own design conditions on top.
+  `gororoba_quantum/qi_joint_response.py` decodes the joint early/terminal
+  response of a destination-control run under an explicit `Layout` and
+  reproduces the retained Tuna-17 joint tables from the retained bytes.
 - [docs/state/RESEARCH_STATE.md](../../state/RESEARCH_STATE.md): the
   Quantum Inspire acquisitions and claims beside the IBM ones.
 
