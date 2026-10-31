@@ -592,11 +592,11 @@ def main(argv: list[str] | None = None) -> int:
             if gate["name"] in cited or any(name.startswith(gate["name"] + "--") for name in cited)
         ]
         print(f"cited: {len(gates)} gates cited by a claim of {arguments.cited_by}")
-    pending: list[dict[str, Any]] = []
-    if arguments.budget_seconds is not None:
-        gates, pending = within_budget(gates, arguments.budget_seconds)
-        report_pending(pending)
     candidates = gate_inputs.expand_cases(ROOT, gates)
+    # The budget charges the expanded cases, the work that runs, not a case gate's parent estimate.
+    if arguments.budget_seconds is not None:
+        candidates, pending = within_budget(candidates, arguments.budget_seconds)
+        report_pending(pending)
     if arguments.gates is not None:
         named = {name for name in arguments.gates.split(",") if name}
         candidates = [gate for gate in candidates if gate["name"] in named or gate.get("parent") in named]

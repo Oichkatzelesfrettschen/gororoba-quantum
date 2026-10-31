@@ -523,6 +523,10 @@ jobs:
       TITLE: Nightly audit failing
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       FAILED: ${{ join(needs.*.result, ' ') }}
+      # The Monday-to-Saturday schedule runs the claim-cited gates only, so its
+      # pass closes no issue: a failure the weekly exhaustive run found on an
+      # uncited gate stays open until an exhaustive run passes.
+      EXHAUSTIVE: ${{ github.event.schedule != '17 9 * * 1-6' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2, Node 24
@@ -541,9 +545,14 @@ jobs:
           case " $FAILED " in
           *" failure "* | *" cancelled "*) ;;
           *)
-            [ -z "$number" ] || gh api "repos/$GITHUB_REPOSITORY/issues/$number/comments" \
-              -f body="The scheduled audit run $RUN_URL passed every job." --silent
-            [ -z "$number" ] || gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/$number" -f state=closed --silent
+            if [ "$EXHAUSTIVE" = true ]; then
+              [ -z "$number" ] || gh api "repos/$GITHUB_REPOSITORY/issues/$number/comments" \
+                -f body="The exhaustive audit run $RUN_URL passed every job." --silent
+              [ -z "$number" ] || gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/$number" -f state=closed --silent
+            else
+              [ -z "$number" ] || gh api "repos/$GITHUB_REPOSITORY/issues/$number/comments" \
+                -f body="The nightly run $RUN_URL passed every claim-cited gate; the issue stays open until an exhaustive (Sunday or dispatched) run passes." --silent
+            fi
             exit 0
             ;;
           esac

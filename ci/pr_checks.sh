@@ -56,15 +56,22 @@ check=$1
 shift
 case $check in
 lint)
+	# The checked Python files outside the code directories: evidence replays and
+	# producers under results/ and docs/ that a gate or a ledger binds.
+	checked_files="results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py results/local-simulation/ascella-signed-coherence-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py docs/evidence/albuquerque-majid-convention/am_convention_replay.py docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py"
 	# shellcheck disable=SC2086
-	"$PYTHON" ci/pinned_tool.py ruff check $code_dirs
+	"$PYTHON" ci/pinned_tool.py ruff check $code_dirs $checked_files
 	# shellcheck disable=SC2086
-	"$PYTHON" ci/pinned_tool.py ruff format --check --target-version py313 $code_dirs
+	"$PYTHON" ci/pinned_tool.py ruff format --check --target-version py313 $code_dirs $checked_files
 	;;
 types)
-	# mypy resolves the bare sibling imports from gororoba_quantum/.
+	# mypy resolves the bare sibling imports from gororoba_quantum/. The typed
+	# files outside the code directories follow the lint lane's list where
+	# their imports resolve.
+	typed_files="../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py ../results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py ../results/local-simulation/ascella-serialized-order-replay/producer.py ../docs/evidence/cd-imaginary-sum-conference/tower_bridge.py ../docs/evidence/ascella-order-coefficients/replay.py ../docs/evidence/albuquerque-majid-convention/am_convention_replay.py ../docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py"
 	cd gororoba_quantum
-	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel
+	# shellcheck disable=SC2086
+	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel $typed_files
 	;;
 tests)
 	[ $# -ge 1 ] || set -- tests
