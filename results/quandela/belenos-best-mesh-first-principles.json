@@ -459,175 +459,177 @@
   "designs": [
    {
     "jobs": 2,
-    "mean_true_gap_kept": 0.045982233015151336,
+    "mean_true_gap_kept": 0.04601548263748864,
     "pairs_dropped": 0,
-    "power": 0.72911,
+    "power": 0.72781,
     "scenario": "persistent mesh error"
    },
    {
     "jobs": 2,
-    "mean_true_gap_kept": 0.0459643765448398,
+    "mean_true_gap_kept": 0.04602596538020718,
     "pairs_dropped": 1,
-    "power": 0.67412,
+    "power": 0.67515,
     "scenario": "persistent mesh error"
    },
    {
     "jobs": 2,
-    "mean_true_gap_kept": 0.04595463972277704,
+    "mean_true_gap_kept": 0.04604235460660213,
     "pairs_dropped": 2,
-    "power": 0.61082,
+    "power": 0.61131,
     "scenario": "persistent mesh error"
    },
    {
     "jobs": 2,
-    "mean_true_gap_kept": 0.04598375004203721,
+    "mean_true_gap_kept": 0.04605983834992951,
     "pairs_dropped": 3,
-    "power": 0.534835,
+    "power": 0.535245,
     "scenario": "persistent mesh error"
    },
    {
     "jobs": 2,
-    "mean_true_gap_kept": 0.04409864041934057,
+    "mean_true_gap_kept": 0.04409318107531114,
     "pairs_dropped": 0,
-    "power": 0.728355,
+    "power": 0.725905,
     "scenario": "persistent mesh error, tau fixed at its maximum"
    },
    {
     "jobs": 2,
-    "mean_true_gap_kept": 0.04408840580980526,
+    "mean_true_gap_kept": 0.04410895005445533,
     "pairs_dropped": 1,
-    "power": 0.66807,
+    "power": 0.665385,
     "scenario": "persistent mesh error, tau fixed at its maximum"
    },
    {
     "jobs": 2,
-    "mean_true_gap_kept": 0.04409703606804369,
+    "mean_true_gap_kept": 0.04410201479603293,
     "pairs_dropped": 2,
-    "power": 0.597435,
+    "power": 0.59708,
     "scenario": "persistent mesh error, tau fixed at its maximum"
    },
    {
     "jobs": 2,
-    "mean_true_gap_kept": 0.04412200286132842,
+    "mean_true_gap_kept": 0.04411256408506713,
     "pairs_dropped": 3,
-    "power": 0.519505,
+    "power": 0.51855,
     "scenario": "persistent mesh error, tau fixed at its maximum"
    },
    {
     "jobs": 2,
     "mean_true_gap_kept": 0.0,
     "pairs_dropped": 0,
-    "power": 0.051495,
+    "power": 0.051105,
     "scenario": "no persistent mesh error"
    },
    {
     "jobs": 2,
     "mean_true_gap_kept": 0.0,
     "pairs_dropped": 1,
-    "power": 0.052095,
+    "power": 0.051905,
     "scenario": "no persistent mesh error"
    },
    {
     "jobs": 2,
     "mean_true_gap_kept": 0.0,
     "pairs_dropped": 2,
-    "power": 0.05205,
+    "power": 0.05164,
     "scenario": "no persistent mesh error"
    },
    {
     "jobs": 2,
     "mean_true_gap_kept": 0.0,
     "pairs_dropped": 3,
+    "power": 0.05175,
+    "scenario": "no persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.04601548263748864,
+    "pairs_dropped": 0,
+    "power": 0.868935,
+    "scenario": "persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.04602596538020718,
+    "pairs_dropped": 1,
+    "power": 0.828175,
+    "scenario": "persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.04604235460660213,
+    "pairs_dropped": 2,
+    "power": 0.77248,
+    "scenario": "persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.04605983834992951,
+    "pairs_dropped": 3,
+    "power": 0.69732,
+    "scenario": "persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.04409318107531114,
+    "pairs_dropped": 0,
+    "power": 0.889235,
+    "scenario": "persistent mesh error, tau fixed at its maximum"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.04410895005445533,
+    "pairs_dropped": 1,
+    "power": 0.839945,
+    "scenario": "persistent mesh error, tau fixed at its maximum"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.04410201479603293,
+    "pairs_dropped": 2,
+    "power": 0.77687,
+    "scenario": "persistent mesh error, tau fixed at its maximum"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.04411256408506713,
+    "pairs_dropped": 3,
+    "power": 0.69503,
+    "scenario": "persistent mesh error, tau fixed at its maximum"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.0,
+    "pairs_dropped": 0,
+    "power": 0.05119,
+    "scenario": "no persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.0,
+    "pairs_dropped": 1,
+    "power": 0.051355,
+    "scenario": "no persistent mesh error"
+   },
+   {
+    "jobs": 4,
+    "mean_true_gap_kept": 0.0,
+    "pairs_dropped": 2,
     "power": 0.05156,
     "scenario": "no persistent mesh error"
    },
    {
     "jobs": 4,
-    "mean_true_gap_kept": 0.045982233015151336,
-    "pairs_dropped": 0,
-    "power": 0.868145,
-    "scenario": "persistent mesh error"
-   },
-   {
-    "jobs": 4,
-    "mean_true_gap_kept": 0.0459643765448398,
-    "pairs_dropped": 1,
-    "power": 0.826445,
-    "scenario": "persistent mesh error"
-   },
-   {
-    "jobs": 4,
-    "mean_true_gap_kept": 0.04595463972277704,
-    "pairs_dropped": 2,
-    "power": 0.77219,
-    "scenario": "persistent mesh error"
-   },
-   {
-    "jobs": 4,
-    "mean_true_gap_kept": 0.04598375004203721,
-    "pairs_dropped": 3,
-    "power": 0.69758,
-    "scenario": "persistent mesh error"
-   },
-   {
-    "jobs": 4,
-    "mean_true_gap_kept": 0.04409864041934057,
-    "pairs_dropped": 0,
-    "power": 0.888155,
-    "scenario": "persistent mesh error, tau fixed at its maximum"
-   },
-   {
-    "jobs": 4,
-    "mean_true_gap_kept": 0.04408840580980526,
-    "pairs_dropped": 1,
-    "power": 0.840725,
-    "scenario": "persistent mesh error, tau fixed at its maximum"
-   },
-   {
-    "jobs": 4,
-    "mean_true_gap_kept": 0.04409703606804369,
-    "pairs_dropped": 2,
-    "power": 0.778325,
-    "scenario": "persistent mesh error, tau fixed at its maximum"
-   },
-   {
-    "jobs": 4,
-    "mean_true_gap_kept": 0.04412200286132842,
-    "pairs_dropped": 3,
-    "power": 0.6971,
-    "scenario": "persistent mesh error, tau fixed at its maximum"
-   },
-   {
-    "jobs": 4,
-    "mean_true_gap_kept": 0.0,
-    "pairs_dropped": 0,
-    "power": 0.050545,
-    "scenario": "no persistent mesh error"
-   },
-   {
-    "jobs": 4,
-    "mean_true_gap_kept": 0.0,
-    "pairs_dropped": 1,
-    "power": 0.050205,
-    "scenario": "no persistent mesh error"
-   },
-   {
-    "jobs": 4,
-    "mean_true_gap_kept": 0.0,
-    "pairs_dropped": 2,
-    "power": 0.05073,
-    "scenario": "no persistent mesh error"
-   },
-   {
-    "jobs": 4,
     "mean_true_gap_kept": 0.0,
     "pairs_dropped": 3,
-    "power": 0.0509,
+    "power": 0.051315,
     "scenario": "no persistent mesh error"
    }
   ],
   "samples_per_iteration": 1200,
-  "seed": 9719,
+  "seed_spawn_key": [
+   0
+  ],
   "trials": 200000
  },
  "schema": "belenos-best-mesh-first-principles-v1",
@@ -1285,6 +1287,205 @@
     "reading": "raw visibility",
     "sample_probability": 0.00010107166002542397
    }
+  ]
+ },
+ "structural": {
+  "coupler": [
+   {
+    "accepted": 0.05868389199594436,
+    "fidelity": 0.9113675518355994,
+    "label": "+Z",
+    "run": "job-02"
+   },
+   {
+    "accepted": 0.056181070216625065,
+    "fidelity": 0.9609212726377361,
+    "label": "-Z",
+    "run": "job-02"
+   },
+   {
+    "accepted": 0.05626774934094488,
+    "fidelity": 0.9472985277606207,
+    "label": "+X",
+    "run": "job-02"
+   },
+   {
+    "accepted": 0.05521101496549846,
+    "fidelity": 0.9472598658464296,
+    "label": "-X",
+    "run": "job-02"
+   },
+   {
+    "accepted": 0.055460155694628276,
+    "fidelity": 0.9567386978358978,
+    "label": "+Y",
+    "run": "job-02"
+   },
+   {
+    "accepted": 0.05730319115804314,
+    "fidelity": 0.9357044431659477,
+    "label": "-Y",
+    "run": "job-02"
+   },
+   {
+    "accepted": 0.057738603938209926,
+    "fidelity": 0.9307829740803046,
+    "label": "-Y",
+    "run": "job-03"
+   },
+   {
+    "accepted": 0.05700196287975159,
+    "fidelity": 0.9328939823849873,
+    "label": "+Y",
+    "run": "job-03"
+   },
+   {
+    "accepted": 0.05774378800045074,
+    "fidelity": 0.9430683181620648,
+    "label": "-X",
+    "run": "job-03"
+   },
+   {
+    "accepted": 0.05679011582530448,
+    "fidelity": 0.9322769488129401,
+    "label": "+X",
+    "run": "job-03"
+   },
+   {
+    "accepted": 0.056096749302836396,
+    "fidelity": 0.9619129682474897,
+    "label": "-Z",
+    "run": "job-03"
+   },
+   {
+    "accepted": 0.05630404878358563,
+    "fidelity": 0.9265529477206508,
+    "label": "+Z",
+    "run": "job-03"
+   }
+  ],
+  "coupler_sigma_rad": 0.05,
+  "heater": [
+   {
+    "accepted": 0.06558383325946748,
+    "fidelity": 0.6423051212406738,
+    "label": "+Z",
+    "run": "job-02"
+   },
+   {
+    "accepted": 0.05901150561657167,
+    "fidelity": 0.8060877410940358,
+    "label": "-Z",
+    "run": "job-02"
+   },
+   {
+    "accepted": 0.0627264746186341,
+    "fidelity": 0.7119709870598996,
+    "label": "+X",
+    "run": "job-02"
+   },
+   {
+    "accepted": 0.0575920562161539,
+    "fidelity": 0.7554381367883781,
+    "label": "-X",
+    "run": "job-02"
+   },
+   {
+    "accepted": 0.06017962296650201,
+    "fidelity": 0.7451096508716466,
+    "label": "+Y",
+    "run": "job-02"
+   },
+   {
+    "accepted": 0.06175647794163467,
+    "fidelity": 0.7140345521194266,
+    "label": "-Y",
+    "run": "job-02"
+   },
+   {
+    "accepted": 0.06312445724324453,
+    "fidelity": 0.6939498452781717,
+    "label": "-Y",
+    "run": "job-03"
+   },
+   {
+    "accepted": 0.06524137862613938,
+    "fidelity": 0.7510157178107733,
+    "label": "+Y",
+    "run": "job-03"
+   },
+   {
+    "accepted": 0.061333471878361544,
+    "fidelity": 0.723537987758027,
+    "label": "-X",
+    "run": "job-03"
+   },
+   {
+    "accepted": 0.06282825630226506,
+    "fidelity": 0.7411029592407792,
+    "label": "+X",
+    "run": "job-03"
+   },
+   {
+    "accepted": 0.06005181878934028,
+    "fidelity": 0.7888111951958837,
+    "label": "-Z",
+    "run": "job-03"
+   },
+   {
+    "accepted": 0.06374046312806801,
+    "fidelity": 0.6384016395758215,
+    "label": "+Z",
+    "run": "job-03"
+   }
+  ],
+  "heater_sigma_rad": 0.1,
+  "replicates": 200
+ },
+ "structural_test": {
+  "coupler_noise_fidelity": {
+   "delta_b_minus_a": [
+    0.015185395885051411,
+    0.0009916956097536511,
+    -0.015021578947680636,
+    -0.004191547684364805,
+    -0.023844715450910492,
+    -0.00492146908564306
+   ],
+   "one_sided_p": 0.3625,
+   "r": 0.18359049230398064
+  },
+  "heater_noise_fidelity": {
+   "delta_b_minus_a": [
+    -0.0039034816648523263,
+    -0.017276545898152085,
+    0.029131972180879595,
+    -0.0319001490303511,
+    0.005906066939126653,
+    -0.02008470684125485
+   ],
+   "one_sided_p": 0.5138888888888888,
+   "r": -0.027129121374095778
+  },
+  "heater_phase_sum": {
+   "delta_b_minus_a": [
+    60.46379133899609,
+    86.5419497424964,
+    -109.39826035806254,
+    20.372091081896087,
+    51.26576016680292,
+    -42.90533129908658
+   ],
+   "one_sided_p": 0.8638888888888889,
+   "r": 0.5361517078553025
+  },
+  "observed_delta_b_minus_a": [
+   0.10589591054910141,
+   -0.05188359188377778,
+   -0.05531116573942296,
+   0.03392810384169376,
+   0.08002421307506058,
+   -0.05848732169237858
   ]
  }
 }

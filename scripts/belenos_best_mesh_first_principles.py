@@ -15,6 +15,9 @@ reads:
 - replay_budget: the shot cap and credits per replay job from the lossiest retained mesh.
 - acceptance: acceptance per sample against correctness between the two meshes of each input.
 - source_shift: the source model's predicted conditional fidelity at each calibration read of the day.
+- structural: each mesh's conditional fidelity under unmodeled heater and coupler errors, tested within input.
+
+One QRNG value seeds a SeedSequence whose two children drive the power simulation and the mesh-error draws.
 
 Usage: belenos_best_mesh_first_principles.py --out PATH --seed qrng:<draw>#<index>
 """
@@ -286,7 +289,7 @@ def shrinkage(counts: Mapping[str, Mapping[str, Mapping[str, float]]]) -> dict[s
     }
 
 
-def replay_power(counts: Mapping[str, Any], shrink: Mapping[str, Any], seed: int) -> dict[str, Any]:
+def replay_power(counts: Mapping[str, Any], shrink: Mapping[str, Any], seed: np.random.SeedSequence) -> dict[str, Any]:
     """Posterior-predictive power of the winner-and-loser replay.
 
     Each trial draws tau from its posterior, each input's true A-minus-B difference from its conditional posterior
@@ -317,7 +320,12 @@ def replay_power(counts: Mapping[str, Any], shrink: Mapping[str, Any], seed: int
     gap_mle = sign * (factor_mle * d + np.sqrt(factor_mle) * s * rng.standard_normal((TRIALS, len(LABELS))))
     order = rng.random((TRIALS, len(LABELS))).argsort(axis=1)
     uniforms = [rng.random((TRIALS, len(LABELS))) for _ in range(4 * len(JOB_COUNTS))]
-    out: dict[str, Any] = {"seed": seed, "trials": TRIALS, "samples_per_iteration": REPLAY_SAMPLES, "designs": []}
+    out: dict[str, Any] = {
+        "seed_spawn_key": list(seed.spawn_key),
+        "trials": TRIALS,
+        "samples_per_iteration": REPLAY_SAMPLES,
+        "designs": [],
+    }
     for j, jobs in enumerate(JOB_COUNTS):
         samples = REPLAY_SAMPLES * jobs // 2
         u = uniforms[4 * j : 4 * j + 4]
@@ -449,6 +457,104 @@ def source_shift_section() -> dict[str, Any]:
     }
 
 
+HEATER_SIGMA = 0.1
+COUPLER_SIGMA = 0.05
+NOISE_REPLICATES = 200
+
+
+def noisy_unitary(arch: Sequence[Any], phases: np.ndarray, dphi: np.ndarray, dtheta: np.ndarray) -> np.ndarray:
+    """The 24-mode unitary of a returned mesh with heater phase errors dphi and coupler angle errors dtheta."""
+    u = np.eye(tr.MODES, dtype=complex)
+    ip = ib = 0
+    for kind, m, p in arch:
+        if kind == "bs":
+            u[m : m + 2, :] = mesh.coupler(p[0] + dtheta[ib], *p[1:]) @ u[m : m + 2, :]
+            ib += 1
+        else:
+            u[m, :] *= np.exp(1j * (phases[ip] + dphi[ip]))
+            ip += 1
+    return u
+
+
+def robustness_row(
+    item: tuple[str, str, str, Mapping[str, Any], tuple[int, ...], np.ndarray, np.ndarray],
+) -> dict[str, Any]:
+    """Mean conditional fidelity and accepted probability of one mesh under replicate error draws of one class."""
+    label, run, circuit_text, _, layout, dphi, dtheta = item
+    elements = mesh.decode(circuit_text)
+    arch = mesh.run_architecture(elements)
+    phases = np.asarray(mesh.mesh_phases(arch, elements))
+    source = tr.source_state(layout)
+    fidelity, accepted = [], []
+    for k in range(dphi.shape[0]):
+        acc, cor = tr.scored(label, clicks_of(noisy_unitary(arch, phases, dphi[k], dtheta[k]), source), layout)
+        accepted.append(acc)
+        fidelity.append(cor / acc if acc > 0 else 0.0)
+    return {"label": label, "run": run, "fidelity": float(np.mean(fidelity)), "accepted": float(np.mean(accepted))}
+
+
+def structural_section(seed_sequence: np.random.SeedSequence) -> dict[str, Any]:
+    """Each mesh's sensitivity to the error classes the compiler does not model.
+
+    The returned meshes are exact against the compiler's own coupler angles (the compiled section), so the
+    transmission floor of an imperfect coupler pair (Kumar et al. 2021, imperfect MZI reflectivity between
+    cos^2(2 theta) and 1) is already inside every mesh. What separates meshes is their response to deviations of
+    the chip from that model: residual heater phases, including crosstalk-induced phases on bare waveguides
+    (Fyrillas et al. 2025), and coupler angle errors. Each mesh is scored under the same replicate draws (common
+    random numbers) at HEATER_SIGMA rad of independent heater error and, separately, COUPLER_SIGMA rad of coupler
+    error. The predictors have no parameter fitted to correctness; the analyst had seen the retained correctness
+    before defining them, so their test on these meshes is not blind, and the replay is their first fresh test."""
+    rng = np.random.default_rng(seed_sequence)
+    items_meta = []
+    for run in ("job-02", "job-03"):
+        name = RUN_NAMES[run]
+        cases = json.loads((RUNS / name / "cases.json").read_text(encoding="utf-8"))
+        layout = tuple(cases["layout"]["chip_modes"])
+        for setting, text in zip(cases["settings"], mesh.computed_circuits(RUNS / name), strict=True):
+            items_meta.append((setting["label"], run, text, setting, layout))
+    arch0 = mesh.run_architecture(mesh.decode(items_meta[0][2]))
+    n_phase = sum(1 for kind, _, _ in arch0 if kind == "ps")
+    n_bs = sum(1 for kind, _, _ in arch0 if kind == "bs")
+    heater = (HEATER_SIGMA * rng.standard_normal((NOISE_REPLICATES, n_phase)), np.zeros((NOISE_REPLICATES, n_bs)))
+    coupler = (np.zeros((NOISE_REPLICATES, n_phase)), COUPLER_SIGMA * rng.standard_normal((NOISE_REPLICATES, n_bs)))
+    out: dict[str, Any] = {
+        "heater_sigma_rad": HEATER_SIGMA,
+        "coupler_sigma_rad": COUPLER_SIGMA,
+        "replicates": NOISE_REPLICATES,
+    }
+    for name, (dphi, dtheta) in (("heater", heater), ("coupler", coupler)):
+        rows = ordered_map(robustness_row, [(*meta, dphi, dtheta) for meta in items_meta], min_items=1)
+        out[name] = rows
+    return out
+
+
+def structural_test(
+    structural: Mapping[str, Any], counts: Mapping[str, Any], compiled: Sequence[Mapping[str, Any]]
+) -> dict[str, Any]:
+    """Within each input, block B minus block A of each predictor against B minus A of observed correctness, with
+    the exact one-sided permutation p in each predictor's physical direction: predicted fidelity up means observed
+    correctness up; heater phase (drive power, the crosstalk source) up means observed correctness down."""
+    observed = np.asarray(
+        [
+            counts[label]["B"]["correct"] / counts[label]["B"]["accepted"]
+            - counts[label]["A"]["correct"] / counts[label]["A"]["accepted"]
+            for label in LABELS
+        ]
+    )
+    result: dict[str, Any] = {}
+    for name in ("heater", "coupler"):
+        by = {(row["label"], row["run"]): row for row in structural[name]}
+        delta = np.asarray([by[(label, "job-03")]["fidelity"] - by[(label, "job-02")]["fidelity"] for label in LABELS])
+        r, p = exact_permutation_r(delta, observed, negative=False)
+        result[f"{name}_noise_fidelity"] = {"delta_b_minus_a": delta.tolist(), "r": r, "one_sided_p": p}
+    power = {(row["label"], row["run"]): row["heater_phase_rad"] for row in compiled}
+    delta = np.asarray([power[(label, "job-03")] - power[(label, "job-02")] for label in LABELS])
+    r, p = exact_permutation_r(delta, observed, negative=True)
+    result["heater_phase_sum"] = {"delta_b_minus_a": delta.tolist(), "r": r, "one_sided_p": p}
+    result["observed_delta_b_minus_a"] = observed.tolist()
+    return result
+
+
 def mesh_against_source(counts: Mapping[str, Any], shift: Mapping[str, Any]) -> dict[str, Any]:
     """Each retained mesh's correctness minus the source-only prediction at the 04:27 read, which both blocks ran
     under. A positive excess on an input with a pessimistic source prediction shows the source model is no ceiling for
@@ -483,7 +589,10 @@ def main() -> int:
     counts = block_counts(iterations())
     shift = source_shift_section()
     shrink = shrinkage(counts)
-    power = replay_power(counts, shrink, args.seed)
+    power_seed, noise_seed = np.random.SeedSequence(args.seed).spawn(2)
+    power = replay_power(counts, shrink, power_seed)
+    compiled = compiled_section()
+    structural = structural_section(noise_seed)
     shrink.pop("_draw")
     record = {
         "schema": "belenos-best-mesh-first-principles-v1",
@@ -493,7 +602,9 @@ def main() -> int:
             "belenos-best-mesh-replay-power",
             args.seed_source,
         ),
-        "compiled": compiled_section(),
+        "compiled": compiled,
+        "structural": structural,
+        "structural_test": structural_test(structural, counts, compiled),
         "shrinkage": shrink,
         "replay_power": power,
         "acceptance": acceptance_section(counts),
