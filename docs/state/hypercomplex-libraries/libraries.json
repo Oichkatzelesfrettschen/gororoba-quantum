@@ -10435,6 +10435,7 @@
    "__future__",
    "itertools",
    "json",
+   "parallel",
    "pathlib",
    "sys",
    "typing"

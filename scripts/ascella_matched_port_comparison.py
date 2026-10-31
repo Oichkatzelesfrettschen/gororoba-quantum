@@ -23,6 +23,10 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+
+from parallel import ordered_map  # noqa: E402
+
 RUNS = ROOT / "results/quandela/runs"
 PORTS = 12
 
@@ -74,31 +78,37 @@ def chi_square(rows: list[list[int]]) -> tuple[float, int]:
     return statistic, (len(rows) - 1) * (len(occupied) - 1)
 
 
+def compare_setting(item: tuple[int, list[str], list[dict[str, int]]]) -> dict[str, Any]:
+    """The comparison entry of one setting from each run's counts dictionary."""
+    index, runs, counts = item
+    tallies = [ports(run_counts) for run_counts in counts]
+    rows = [accepted for accepted, _ in tallies]
+    shares = [[count / sum(row) for count in row] for row in rows]
+    statistic, degrees = chi_square(rows)
+    return {
+        "setting": index,
+        "accepted": [sum(row) for row in rows],
+        "other": [other for _, other in tallies],
+        "total_variation": {
+            f"{runs[a]} | {runs[b]}": 0.5 * sum(abs(x - y) for x, y in zip(shares[a], shares[b], strict=True))
+            for a, b in itertools.combinations(range(len(runs)), 2)
+        },
+        "chi_square": statistic,
+        "degrees_of_freedom": degrees,
+    }
+
+
 def compare(runs: list[str]) -> dict[str, Any]:
     """The per-setting comparison record of the named runs, in the given order."""
     loaded = [load(run) for run in runs]
     keys = [[setting_key(s) for s in cases["settings"]] for cases, _ in loaded]
     if any(k != keys[0] for k in keys):
         raise ValueError("the runs do not carry the same settings in the same order")
-    settings = []
-    for index in range(len(keys[0])):
-        tallies = [ports(results["iterations"][index]["counts"]) for _, results in loaded]
-        rows = [accepted for accepted, _ in tallies]
-        shares = [[count / sum(row) for count in row] for row in rows]
-        statistic, degrees = chi_square(rows)
-        settings.append(
-            {
-                "setting": index,
-                "accepted": [sum(row) for row in rows],
-                "other": [other for _, other in tallies],
-                "total_variation": {
-                    f"{runs[a]} | {runs[b]}": 0.5 * sum(abs(x - y) for x, y in zip(shares[a], shares[b], strict=True))
-                    for a, b in itertools.combinations(range(len(runs)), 2)
-                },
-                "chi_square": statistic,
-                "degrees_of_freedom": degrees,
-            }
-        )
+    work = [
+        (index, runs, [results["iterations"][index]["counts"] for _, results in loaded])
+        for index in range(len(keys[0]))
+    ]
+    settings = ordered_map(compare_setting, work)
     return {"schema": "ascella-matched-port-comparison-v1", "runs": runs, "settings": settings}
 
 
