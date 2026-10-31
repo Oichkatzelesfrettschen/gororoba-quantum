@@ -73,7 +73,7 @@ def record_descriptor(path: Path) -> dict[str, Any]:
                 for name in ("local_simulation_batches", "evaluation_simulation_batches")
                 if name in data
             },
-            "qpy_present": (path.parent / "isa.qpy").is_file(),
+            "qpy_present": (path.parent / "isa.qpy").is_file() or (path.parent / "isa.qpy.sha256").is_file(),
             "collection_present": (path.parent / "collect.json").is_file(),
         }
     )

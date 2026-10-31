@@ -49,6 +49,7 @@ import hybrid_shor  # noqa: F401 - proves the digest ignores module load order
 import live_run as live_run_module
 import packing
 import parallel
+import run_archive
 import variance
 from experiments import MIRROR_SUFFIX, Group, experiment_groups
 from live_run import (
@@ -1377,8 +1378,7 @@ def _verify_fused_collection() -> None:
         record["state"] = "submitted"
         write_json(run_dir, record)
 
-        with open(run_dir / "isa.qpy", "rb") as handle:
-            archived = {circuit.name: circuit for circuit in qpy.load(handle)}
+        archived = {circuit.name: circuit for circuit in qpy.load(run_archive.open_archive(run_dir))}
         circuits = [archived[pub_manifest["name"]] for pub_manifest in planned_job["pubs"]]
 
         base_time = datetime(2026, 10, 10, 12, 0, tzinfo=UTC)
@@ -2226,7 +2226,7 @@ def _verify_approved_record_gate() -> None:
         write_archive(approved_dir, choices)
         write_json(approved_dir, record)
         fresh_record = copy.deepcopy(record)
-        fresh_qpy = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
+        fresh_qpy = run_archive.archive_sha256(approved_dir)
         if live_run_module.approved_record_mismatches(approved_dir, fresh_record, fresh_qpy):
             raise RuntimeError("an identical fresh plan mismatches its own approved record")
         record_sha256 = hashlib.sha256((approved_dir / "record.json").read_bytes()).hexdigest()
@@ -2374,7 +2374,7 @@ class _ShiftedReadout:
 def _legacy_approved(source: Path, destination: Path) -> Path:
     """A copy of an approved dry run whose groups carry no calibration values, as every earlier record."""
     destination.mkdir()
-    shutil.copyfile(source / "isa.qpy", destination / "isa.qpy")
+    (destination / "isa.qpy").write_bytes(run_archive.read_archive(source))
     legacy = json.loads((source / "record.json").read_text())
     for group in legacy["groups"]:
         group.pop("calibration_fingerprint")
@@ -2480,7 +2480,7 @@ def _verify_approval_calibration_values() -> None:
         write_archive(approved_dir, choices)
         write_json(approved_dir, record)
         legacy_dir = _legacy_approved(approved_dir, Path(directory) / "legacy")
-        qpy_digest = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
+        qpy_digest = run_archive.archive_sha256(approved_dir)
         pubs = execution_pubs(choices)
 
         # The refresh comparison.
@@ -2802,7 +2802,7 @@ def _verify_schema_lifecycle() -> None:
         if len(approval_checkpoints) != 1:
             raise RuntimeError(f"changed approved plan writes {len(approval_checkpoints)} approval checkpoints")
         renewed_approval = approval_record.get("renewed_approval", {})
-        archive_digest = hashlib.sha256((run_dir / "isa.qpy").read_bytes()).hexdigest()
+        archive_digest = run_archive.archive_sha256(run_dir)
         if renewed_approval.get("qpy_archive_sha256") != archive_digest:
             raise RuntimeError("renewed approval evidence lacks the revised QPY identity")
         changed_groups = renewed_approval.get("changed_groups", {})
@@ -2914,9 +2914,8 @@ def _verify_schema_lifecycle() -> None:
 
         write_json(run_dir, record)
         round_trip_record = json.loads((run_dir / "record.json").read_text())
-        qpy_bytes = (run_dir / "isa.qpy").read_bytes()
-        with open(run_dir / "isa.qpy", "rb") as handle:
-            round_trip_circuits = {circuit.name: circuit for circuit in qpy.load(handle)}
+        qpy_bytes = run_archive.read_archive(run_dir)
+        round_trip_circuits = {circuit.name: circuit for circuit in qpy.load(io.BytesIO(qpy_bytes))}
         if (
             round_trip_record["schema_version"] != RECORD_SCHEMA_VERSION
             or round_trip_record["schema_contract"] != RECORD_SCHEMA_CONTRACT
@@ -3660,7 +3659,7 @@ def _verify_backend_identity_records() -> None:
         approved_dir = Path(directory)
         write_archive(approved_dir, choices)
         write_json(approved_dir, record)
-        qpy_digest = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
+        qpy_digest = run_archive.archive_sha256(approved_dir)
         upgraded = copy.deepcopy(record)
         for entry in (upgraded["backends"]["viable"], upgraded["system_inventory"]["viable"], *upgraded["groups"]):
             entry |= {"backend_version": "9.9.9", "processor_type": {"family": "Heron", "revision": "3"}}
