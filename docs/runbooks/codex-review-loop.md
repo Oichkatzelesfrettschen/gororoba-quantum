@@ -46,7 +46,8 @@ PR proceeds. A round that never completes follows
    - Malformed or adversarial input outside the documented domain gets a reply
      naming the boundary and a follow-up issue.
 3. Fix every reachable thread on the PR's own branch in one commit. A change to
-   live_run.py or experiments.py also gets a live dry run, and a change to
+   calibration admission, the approval comparison, the submission path or
+   execution readiness also gets a live dry run, and a change to
    qiskit-ibm-runtime usage also gets `/migrate-qiskit-ibm-runtime`
    ([qiskit-skills.md](qiskit-skills.md)). Then push.
 4. Reply to each thread's root comment with
@@ -60,9 +61,11 @@ PR proceeds. A round that never completes follows
    those markers, and lists every other open thread as unanswered. A comment
    such as "will fix" or a question resolves nothing. Never resolve a thread
    whose finding has not been read and answered.
-6. Request Codex again and start at step 1. A PR leaves the loop when the
-   current-head Codex status reports `verdict=clean-comment...` or
-   `verdict=clean-reaction...` and every review thread is resolved.
+6. A push that fixed a finding gets one more request, and the loop starts
+   again at the wait. A PR leaves the loop when the current-head Codex status
+   reports `verdict=clean-comment...` or `verdict=clean-reaction...` and every
+   review thread is resolved. A round that produced no thread ends the loop
+   at once.
 
 ## Stacked PRs
 
@@ -77,18 +80,15 @@ PR proceeds. A round that never completes follows
 ## Merging
 
 A PR merges after this sequence:
-1. Codex reviews; every thread is fixed, refuted or bounded and resolved
-   (One round above), and the touched files pass the code-style tools
-   ([ci/AGENTS.md](../../ci/AGENTS.md#code-style-tools)).
-2. The operator reviews the whole PR diff against origin/main, every commit
-   regardless of author, not only the commits written in this loop, and fixes
-   what that review finds.
-3. Codex reviews the head once more; that round's threads are answered and
-   resolved the same way.
-4. The `pr.yml` jobs `lint`, `types`, `tests` and `gates` pass on the head. A push
-   that changes the head reruns them; a red job gets its fix commit on the
-   branch.
-5. GitHub reports mergeable_state clean.
+1. The operator reviews the whole PR diff against origin/main, every commit
+   regardless of author, and fixes what that review finds.
+2. Codex reviews the head; every thread is fixed, refuted or bounded and
+   resolved (One round above). A push that changed code after that round
+   gets one more request; a merge of main or a regenerated view does not.
+3. The `pr.yml` checks `tests` and `gates` pass on the head (`lint` and
+   `types` run beside them). A push that changes the head reruns them; a red
+   job gets its fix commit on the branch.
+4. GitHub reports mergeable_state clean.
 
 Then, bottom-up, for each PR:
 1. Merge it with a merge commit:
