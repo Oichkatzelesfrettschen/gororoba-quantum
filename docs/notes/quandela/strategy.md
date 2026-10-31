@@ -961,9 +961,10 @@ with it far beyond binomial error.
   iterations byte for byte, and the two primary repeats of each layout in
   mode-swap job-00 (dc348230), four iterations apart in one job, returned one
   digest each and agreed within binomial error (drift D 4.9 on 12 degrees of
-  freedom). The same identity across two jobs of one set is the mode-swap
-  case's job-03 and job-04 check
-  ([belenos-mode-swap-interleaved-case.md](../../design/belenos-mode-swap-interleaved-case.md)).
+  freedom). The identity holds across jobs minutes apart: every primary pair
+  of sets 1 to 4 of the mode-swap case returned one digest across its set's
+  two jobs ([belenos-mode-swap-interleaved-case.md](../../design/belenos-mode-swap-interleaved-case.md),
+  Outcome).
 - *Different seeds, different meshes, different answers.* One 4-mode
   two-photon circuit under four seeds read control endpoints D of -0.646,
   -0.873, -0.853 and -0.672 (chi-square 241 on 3 degrees of freedom; the
@@ -972,10 +973,13 @@ with it far beyond binomial error.
   Outcome). The split teleportation blocks differ by their meshes, not by
   drift ([ascella-belenos-entanglement-teleportation.md](../../design/ascella-belenos-entanglement-teleportation.md),
   "Outcome: the block veto measures per-seed compiled meshes"). For a
-  single-photon algebra-mode share, set 0 of the mode-swap case gives a mesh
-  standard deviation of about 0.057 for half blocks and 0.047 for extreme
-  blocks against a binomial 0.016 per 6,000-sample iteration, with heavy
-  tails: two contrasts of 11 and 12 binomial standard errors, both on slot 5.
+  single-photon algebra-mode share, the mode-swap case measures a mesh
+  standard deviation of 0.0515 for half blocks and 0.0177 for extreme
+  blocks (68 and 88 degrees of freedom), spreads 50 and 80 times the
+  binomial variance, and the earlier packed-swapped deltas sit inside it
+  (claim `qd-belenos-mode-swap-per-seed-mesh-variance`). Slot 5 (chip modes
+  20 to 23) carries heavier tails, seed-to-seed jumps of 0.07 to 0.13 in
+  extreme blocks, and fails one scale per class (p 2.5e-8).
 - *Class dependence.* A share a = cos^2 theta moves by 2 sqrt(a (1 - a))
   d theta under a mesh rotation error d theta, so a block near a = 1/2
   carries about three times the mesh error of a block near 0 or 1; the
