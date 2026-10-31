@@ -10125,6 +10125,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "sys",
    "typing"
   ],
@@ -10142,6 +10143,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -10159,6 +10161,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -10718,6 +10721,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -13615,6 +13619,7 @@
    "pathlib",
    "qd_belenos_mesh",
    "qd_box_kite_analysis",
+   "qd_records",
    "random",
    "statistics",
    "sys",
@@ -13658,6 +13663,7 @@
    "pathlib",
    "qd_belenos_mesh",
    "qd_platform",
+   "qd_records",
    "sys",
    "typing"
   ],
@@ -13703,6 +13709,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "sys",
    "tempfile",
    "typing"
