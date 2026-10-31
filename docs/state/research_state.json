@@ -14341,6 +14341,73 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-visibility-per-seed-mesh-spread",
+      "statement": "The in-situ two-photon visibility case on qpu:belenos ran job 6de00147-e40b-4a58-89be-692b9f14b4b9 (source pair 18, 20; submitted 2026-10-31 05:02:47 UTC) and job 04f3d55a-5ef0-4a07-8ef3-12678b7eeff2 (pair 20, 22; 05:06:07 UTC) at HOM 88.6 %, g2 1.4 %, transmittance 4.89 %, each returning all eight iterations and 16384 samples (14838 and 13947 accepted two-click events). In each job the four control iterations run one circuit (identical circuit_params) under four compilation seeds and four different computed_circuit meshes, and their two-click endpoint D spreads beyond binomial error: -0.646, -0.873, -0.853, -0.672 for pair (18, 20) (chi-square 241 on 3 degrees of freedom) and -0.817, -0.638, -0.528, -0.424 for pair (20, 22) (chi-square 382). The preregistered V_eff reads 0.827 and 0.696 with mesh-spread standard errors 0.047 and 0.084, the overlap reading is unresolved for both pairs, and the closure fails (C 0.238 and 0.165). Exploratory: the largest |D| among a pair's eight meshes, 0.902 +- 0.009 for (18, 20) and 0.817 +- 0.012 for (20, 22), inverts under the two-photon mixture model to V 0.93 and 0.87, both above the teleportation-fit forecast of 0.824 and 0.8265.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Two jobs on one chip in one calibration state, eight meshes per pair. The preregistered one-sided rule decides nothing here because the mesh spread inflates the standard error tenfold. The largest-|D| inversion was chosen after the data arrived and assumes that compiled-mesh error and multiphoton emission only lower |D|, which the case's sensitivity probe supports for random unitary error but does not prove for this chip; it is a maximum over eight noisy values, biased upward by about one standard error. The mixture model is two-photon and says nothing about the three-photon phase of the teleportation analyzer, and the pair (18, 22) was not measured.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00/results.json",
+          "sha256": "d9342c7fb67090d91b7e1e02d7e7ecf4ecc0e5ff22606bd02b12ef8433b7a4e5"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00/submission.json",
+          "sha256": "06ae31ece58ea0ea8bf5c0c60bb19abfc053fd6b08295f9fcf912964cef74db5"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00/analysis.json",
+          "sha256": "879393ec7f0176479f14e8b1614d7700df895fad23a2a67ea79dab149fb87a68"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00/cases.json",
+          "sha256": "3ff93d086ce2634d9b3ec5e0c7110091e4b5d22248bfaa28a6ae603cdaceda83"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00/raw/result.json",
+          "sha256": "e85c69cd7a145a590fbd5f6a99524033b148b2c7462c9b19367025104b6087c6"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050537Z-qpu_belenos-belenos_associator_visibility-job-01/results.json",
+          "sha256": "6467e30dece7105eca0168e621f95efcc74b139fa3b0038a3fb485ba5d3ed8b1"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050537Z-qpu_belenos-belenos_associator_visibility-job-01/submission.json",
+          "sha256": "84226c167727fc4001368d589d552b245b1ec7aecd9d38483404949b0fe34d3d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050537Z-qpu_belenos-belenos_associator_visibility-job-01/analysis.json",
+          "sha256": "875dbd0f725346aba746e5de20d8ad9824a807e9c04973c1fad6a597cd3454eb"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050537Z-qpu_belenos-belenos_associator_visibility-job-01/cases.json",
+          "sha256": "2ea2dca312825ce0a0bd281d229a4a4724c1acd7f7244354a8e26b1a0ba63230"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050537Z-qpu_belenos-belenos_associator_visibility-job-01/raw/result.json",
+          "sha256": "2075ea325219a5519629f4a7041a7cf631d1ecb96e5c3053bad4e798c7d97149"
+        }
+      ],
+      "documents": [
+        "docs/design/belenos-associator-visibility-case.md",
+        "scripts/belenos_associator_visibility.py"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-associator-visibility-job-00",
+        "qd-qpu-belenos-associator-visibility-job-01"
+      ],
+      "assumptions": [
+        "A result iteration binds to its setting by compilation_seed, each seed once, with matching echoed circuit_params."
+      ],
+      "depends_on": [
+        "qd-belenos-teleportation-split-blocks-mesh-error"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }

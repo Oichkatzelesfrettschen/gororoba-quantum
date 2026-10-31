@@ -112,3 +112,21 @@ convention for an overlap that high.
   `scripts/belenos_associator_visibility.py --analyze RUN`.
 - *Stopping rule.* A terminal error with no counted iteration allows one resubmission of the identical request under
   the same approval from a fresh run directory; a job that returned counts is not resubmitted.
+
+## Outcome
+
+Both jobs ran on 2026-10-31 at HOM 88.6 %, g2 1.4 %, transmittance 4.89 % and returned all eight iterations (claim
+`qd-belenos-visibility-per-seed-mesh-spread` in [research_state.json](../state/research_state.json)).
+
+| Job | Pair | Control D per seed (arms 0 to 3) | Spread chi-square (3 dof) | V_eff | se with spread | Closure C |
+|---|---|---|---|---|---|---|
+| 6de00147 | 18, 20 | -0.646, -0.873, -0.853, -0.672 | 241 | 0.827 | 0.047 | 0.238 |
+| 04f3d55a | 20, 22 | -0.817, -0.638, -0.528, -0.424 | 382 | 0.696 | 0.084 | 0.165 |
+
+The four control iterations of a job run one circuit, so their spread is the spread of the four compiled meshes the
+service returned. It inflates the visibility's standard error about tenfold, the preregistered overlap reading is
+unresolved on both pairs, and the closure fails through the control block. The case measured the mesh term rather than
+the overlap. As an exploratory reading chosen after the data, the largest |D| of each pair's eight meshes (0.902 and
+0.817) inverts to V 0.93 and 0.87 if mesh error and multiphoton emission only lower |D|. A follow-up that measures
+overlap on this chip either repeats one seed many times and selects the mesh with the largest contrast in a first
+job, or models the mesh as a random effect with enough seeds to estimate its distribution.
