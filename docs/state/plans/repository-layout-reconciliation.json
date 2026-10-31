@@ -2,117 +2,75 @@
   "schema": "work-plan-v1",
   "id": "repository-layout-reconciliation",
   "kind": "implementation",
-  "summary": "Reconcile the checkout layout: producer-side slimming of live records, evidence homes for vendor captures and paper notes, code out of results/, a package hierarchy in waves, and the owner decisions on bulk retention.",
+  "summary": "Layout reconciliation after a falsification pass: the producer writes each circuit archive once, live_run.py yields its record I/O under one import name, caches leave the checkout, and four rule changes (snapshot dry run, one review round, cited-gates nightly, capture before claim) await the owner.",
   "sources": [
     "docs/design/repository-layout-reconciliation.md"
   ],
   "state": "planned",
   "reconciliation": {
     "status": "verified",
-    "note": "Every quantity in the design document is measured at a1d1743 with git ls-files, git count-objects, ci/gates.json, an import-graph scan of gororoba_quantum (two 14-module strongly connected components; 334 cross-package edges against 183 intra for the first draft's five-way cut) and the run directories. Peer reviews by Codex gpt-daybreak-blue-latest and Grok Build on 2026-10-30 were checked line by line; both refuted the first draft's private-repository move, timestamp-search age-out and prefix-based package cut, and the document records the refutations."
+    "note": "Every quantity in the design document is measured at a1d1743 (git ls-files, ci/gates.json, an import-graph scan with two 14-module strongly connected components) or read from the GitHub REST API on 2026-10-30 (60 merged PRs: 312 Codex requests, 142 threads, 110 fixes; 100 pr.yml runs: lint and types 0 failures, tests 13, gates 9; 9 scheduled audits: 8 failed, 12 of 16 red gates uncited; bare dry-run directories against live_run commits per day r = 0.87). Reviews by Codex gpt-daybreak-blue-latest, Grok Build and an owner-supplied third review were checked line by line; the falsification table in the document records which recommendations each one refuted."
   },
-  "scope": "Checkout layout of this repository: results/live producers (circuit archive store, allocation-search sidecar), docs homes (paper notes, vendor captures, design prose in the code directory, one documentation map), code out of results/, a gororoba_quantum package hierarchy in five waves, scripts grouped by provider, caches and object store outside the checkout. Retained bytes keep their paths until every binding is rebound in the same change. Deletion or relocation of the a5 working bundle and of unreferenced dry runs waits for the owner's decision recorded in the design document.",
+  "scope": "Producer-side slimming of results/live (content-addressed isa.qpy, allocation-search sidecar, the other digest-carrying duplicate groups); extraction of record and archive I/O from live_run.py under one import name with an import-boundary test; mypy cache and git maintenance outside the checkout; and, on the owner's word, the AGENTS.md rule changes the operating data refuted: live dry run per refactor, the repeat Codex round, the always-red nightly, the claim coupling of retention. Document moves, map ownership, subpackages, sparse profiles and a public data repository are deferred and recorded in the design document.",
   "owner": "repository maintainer",
-  "next_action": "Owner answers the three decisions in docs/design/repository-layout-reconciliation.md (public data repository and size threshold, age-out window or none, interface extraction before directory moves); the cache, sparse-profile, archive-store and sidecar items proceed meanwhile.",
+  "next_action": "Owner answers the four decisions in docs/design/repository-layout-reconciliation.md; the archive store, sidecar, record I/O extraction and cache items proceed meanwhile.",
   "related": [
     "retention-bookkeeping-per-record",
     "native-numeric-replay"
   ],
   "steps": [
     {
-      "id": "caches-outside-checkout",
-      "action": "ci/pinned_tool.py keys the mypy cache under ${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/mypy/; the canonical checkout registers git maintenance; pr.yml's stale 18 MiB comment names the measured pack",
-      "acceptance": "a gate run leaves no .mypy_cache in the checkout; git count-objects -v reports a loose count under gc.auto after a day of commits",
-      "state": "todo"
-    },
-    {
-      "id": "sparse-materialization-profiles",
-      "action": "documented non-cone sparse-checkout profiles per worktree (code, documentation, evidence review, full audit); the link checker and ci/gate_inputs.py test the skip-worktree bit and hydrate or fail naming the path; pr.yml checks out with filter blob:none and the code profile",
-      "acceptance": "a code-profile worktree is under 1 GB; run_gates.py --affected-by reports a gate whose inputs are excluded; the link checker count matches a full worktree; pr.yml lint checkout time is recorded before and after",
-      "state": "todo"
-    },
-    {
-      "id": "run-lifecycle-ledger",
-      "action": "the retention audit becomes the digest-bound ledger of promoted runs (cased, approved, collected, cited); run state is read from it, never from a text search; an age-out job with tombstones exists only if the owner sets a window",
-      "acceptance": "the ledger lists every collected and cited run at a1d1743; the age-out dry run names the 16 unpromoted directories and no other",
-      "state": "todo"
-    },
-    {
       "id": "circuit-archive-store",
-      "action": "live_run.py writes each compiled archive once under results/live/archives/<sha256>.qpy; one verifying archive API (legacy isa.qpy first, then digest, bytes checked for every run) serves the 48 readers; the same shape covers the IQM metrics.json, Quandela, Kaggle and circuit.json duplicate groups",
-      "acceptance": "a dry run of an existing case writes no isa.qpy in its directory; adjudicate.py on a retained run reads its original bytes; every gate binding a retained run passes",
+      "action": "live_run.py writes each compiled archive once to results/live/archives/<sha256>.qpy and the allocation-search candidates to a sidecar; one verifying archive API in the run-record module serves the 48 readers and the IQM, Quandela, Kaggle and circuit.json duplicate groups",
+      "acceptance": "a dry run of an existing case writes no isa.qpy in its directory and a record under 2 MB; adjudication of a retained run reads its original bytes; the gates binding retained runs pass unchanged",
       "state": "todo"
     },
     {
-      "id": "allocation-search-sidecar",
-      "action": "the planner writes allocation_search.candidates to allocation-search.json beside the record",
-      "acceptance": "a dry run of the ripple atlas case writes a record under 2 MB and the planning contracts read the candidates from the sidecar",
+      "id": "live-run-record-io-extraction",
+      "action": "record and archive I/O (_write_once_atomically, _archived_entries, the archive API) leave live_run.py behind a stable module under one import name; live_run.py stays the CLI and facade; an import-boundary test rejects an edge back into live_run or either strongly connected component; compilation and planning follow when an active task touches them",
+      "acceptance": "mypy over the five code roots, the tests check and every reached gate pass; a snapshot dry run of a retained case is byte-identical to its record; the boundary test fails on an injected reverse edge",
       "state": "todo"
     },
     {
-      "id": "storage-class-rule",
-      "action": "a documented size-and-access threshold; bundles above it go to a public data repository pinned by commit and sha256 manifest and are hydrated by the gates that reach them; frozen milestones get a Zenodo deposit with a BagIt manifest; existing history stays",
-      "acceptance": "the manifest verifier rejects a bundle whose bytes differ; a gate reaching an external bundle hydrates and passes on a hosted runner inside its budget",
+      "id": "caches-outside-checkout",
+      "action": "ci/pinned_tool.py keys the mypy cache under ${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/; the canonical checkout registers git maintenance; pr.yml's stale 18 MiB comment names the measured pack",
+      "acceptance": "no .mypy_cache in a checkout after a gate run; loose objects under gc.auto after a day of commits",
       "state": "todo"
     },
     {
-      "id": "paper-notes-in-library",
-      "action": "the 22 identifier-named notes under docs/notes/ move to docs/notes/papers/ with their SOURCES.json note fields and inbound links",
-      "acceptance": "docs/verify_sources.py, the sources suite and scripts/check_markdown_links.py pass",
+      "id": "snapshot-dry-run-for-refactors",
+      "action": "live_run.py plans retained cases against docs/evidence/heron_platform/targets.json into a scratch directory and the tests check compares the record to the retained case; AGENTS.md reserves the live dry run for admission, approval, submission and readiness changes and every --submit",
+      "acceptance": "the snapshot dry run reproduces a retained case's record; a refactoring PR adds no results/live directory",
       "state": "todo"
     },
     {
-      "id": "vendor-captures-home",
-      "action": "manifest-bound capture trees move from docs/notes/<provider>/ to docs/captures/<provider>/ with their scripts, gates and README tables",
-      "acceptance": "every capture --check passes offline and docs/notes/ holds about 500 Markdown files",
+      "id": "ci-verdict-by-reach",
+      "action": "the pr.yml gates job runs every reached gate inside its budget longest first and reports an unfinished reached gate as pending; lint and types leave the branch-protection set; the nightly runs cited gates, the 12 uncited red gates get a claim or leave ci/gates.json, gates above 60 s run weekly and on input change through the ledger",
+      "acceptance": "the scheduled audit is green or names a claim; the gates summary reads RUN, REUSE and PENDING per gate",
       "state": "todo"
     },
     {
-      "id": "design-prose-out-of-code",
-      "action": "the thirteen Markdown documents in gororoba_quantum/ move to docs/design/ or docs/notes/topics/ with their map rows",
-      "acceptance": "the link checker passes and gororoba_quantum/ holds Python, its agent guide and requirements",
+      "id": "one-review-round",
+      "action": "AGENTS.md: one Codex round per PR; a PR with no thread merges on green checks after the operator reads the diff; a second round only when the operator review changed code",
+      "acceptance": "requests per merged PR fall from 5.2 toward 2 over the next 30 merges",
       "state": "todo"
     },
     {
-      "id": "results-hold-written-bytes",
-      "action": "the Python files and case and findings documents under results/live/ move to scripts/, tests/ and docs/evidence/ibm-live-cases/ with their gates rewritten",
-      "acceptance": "ci/run_gates.py --affected-by reaches every rewritten gate and each passes",
+      "id": "capture-before-claim",
+      "action": "a retained run enters research_state.json with its ledger row and research_state.py no longer requires a citing claim; the claim is a later change",
+      "acceptance": "retain_run.sh followed by the registry check passes on a run with no claim",
       "state": "todo"
     },
     {
-      "id": "documentation-map-ownership",
-      "action": "four entry documents (AGENTS.md, docs/README.md, docs/INDEX.md, docs/state/plans.md); INDEX.md keeps only the source index; a map check enforces one parent entry per authored document and a hub allowlist for targets shared by the maps",
-      "acceptance": "the map check reports zero duplicate non-hub targets and zero orphaned authored documents",
-      "state": "todo"
-    },
-    {
-      "id": "package-root-and-import-graph",
-      "action": "gororoba_quantum/__init__.py with the directory kept on sys.path; the import-graph scan (edges, strongly connected components, private-symbol consumers) retained under docs/evidence/ and regenerated by a gate",
-      "acceptance": "both import spellings resolve; the gate reproduces the scan byte for byte",
-      "state": "todo"
-    },
-    {
-      "id": "live-run-interface-extraction",
-      "action": "live_run.py yields record and archive I/O, Target snapshots, compilation and placement, planning and approval, submission and collection to interface modules, in the order the private-symbol consumers point to, and stays the CLI facade; an import-boundary test rejects reverse edges",
-      "acceptance": "a byte-identical dry run of a retained case per extraction; every gate with cwd gororoba_quantum the diff reaches passes; the boundary test passes",
-      "state": "todo"
-    },
-    {
-      "id": "subpackages-where-acyclic",
-      "action": "a cluster moves into a subpackage only when it has no edge into a strongly connected component, one per pull request, with gates and scripts rewritten in the same change",
-      "acceptance": "per move: mypy over the five code roots, the tests check, the reached gates and a live_run.py dry run",
-      "state": "todo"
-    },
-    {
-      "id": "scripts-by-provider",
-      "action": "scripts/ gains provider directories for the qi, ascella and qd, iqm and n21 clusters with package imports replacing sys.path insertion",
-      "acceptance": "ci/seed_provenance.py scans the new paths and the gates naming each script pass",
+      "id": "plan-inbox-triage",
+      "action": "the 74 inbox plan records are triaged to active or closed in one pass and the core-plan-tracker gate leaves the nightly blocking set; the root guide's cut to about 200 lines with the CI and review mechanics in runbooks is in progress on its own branch",
+      "acceptance": "no inbox record older than 14 days; the plan tracker gate is green or absent from the scheduled audit",
       "state": "todo"
     },
     {
       "id": "owner-decisions",
-      "action": "the owner decides the public data repository and size threshold, the age-out window or its absence, and the order of the package work",
-      "acceptance": "the three answers are recorded in the design document and the dependent steps carry them",
+      "action": "the owner answers the four rule changes (snapshot dry run, one review round, cited-gates nightly, capture before claim) in the design document",
+      "acceptance": "each answer recorded in the design document and the four rule steps unblocked or closed",
       "state": "todo"
     }
   ]
