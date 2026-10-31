@@ -687,6 +687,76 @@
    "value": 64854,
    "record": "docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json",
    "index": 9
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "REPLICATE_COMPILATION_SEEDS",
+   "value": 25506,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "REPLICATE_COMPILATION_SEEDS",
+   "value": 59555,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "REPLICATE_COMPILATION_SEEDS",
+   "value": 30521,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "REPLICATE_COMPILATION_SEEDS",
+   "value": 43387,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json",
+   "index": 3
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "REPLICATE_COMPILATION_SEEDS",
+   "value": 59603,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json",
+   "index": 4
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "REPLICATE_COMPILATION_SEEDS",
+   "value": 13108,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json",
+   "index": 5
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "REPLICATE_COMPILATION_SEEDS",
+   "value": 18076,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json",
+   "index": 6
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "REPLICATE_COMPILATION_SEEDS",
+   "value": 53193,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json",
+   "index": 7
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "REPLICATE_COMPILATION_SEEDS",
+   "value": 3029,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json",
+   "index": 8
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "REPLICATE_COMPILATION_SEEDS",
+   "value": 46479,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json",
+   "index": 9
   }
  ],
  "runtime": [
