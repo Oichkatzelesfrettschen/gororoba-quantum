@@ -67,7 +67,7 @@ Source keys (PDF page numbers, 1-based, as rendered by pdftotext):
 - M2  Theorem 7 and the Bitwise Geometry of Box-Kite Zero Divisors (10 pp)
 - M3  Reverse engineering the "Sedenion Zero-Divisor Field" ... falsifiable theses (8 pp)
 - M4  DAS MERGUS: A Reconstructed Monograph from Split and Negative to 128D CD Algebras ... (15 pp)
-- M5  Publication-Grade Synthesis of the CD Zero-Divisor Program in open_gororoba (17 pp)
+- M5  Publication-Grade Synthesis of the CD Zero-Divisor Program in gororoba-open (17 pp)
 - M6  Cayley-Dickson Ladder Taxonomy and Nomenclature from 32D to 8192D (11 pp)
 - M7  DAS MERGUS: A Derivation-First Synthesis of Bit-String Zero-Divisor Geometry ... (10 pp)
 - M8  DAS MERGUS: A Unified Algebra-Lattice-Graph-Dynamics Treatise ...
@@ -286,7 +286,7 @@ Skipped, with reason (zero or incidental hits for "box-kite", "assessor", "zero 
   follow-up should read de Marrais' Theorem 3 and Theorem 7 statements, the Placeholder Substructures III
   S-to-ET definition (needed for B4 and B5), and the Guterman-Zhilina relation-graph papers
   (cross-check of the 84-vertex 4-regular graph) before citing a primary page.
-- Source images, GitHub files and CSVs that the monographs reference (open_gororoba data/csv,
+- Source images, GitHub files and CSVs that the monographs reference (gororoba-open data/csv,
   boxkites.rs tests, the retained Rust census CSV) were not opened and are not available as primary
   evidence here; claims resting on them (A14 enumeration, A16 table, A17 for 64D and 128D, B2, B7) are
   taken as reported or marked as recomputed only where this inventory says RC.

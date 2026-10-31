@@ -50,7 +50,7 @@ gates the measured Design C verdicts.
 The proposal's correct statements are gated or recorded already: 84
 elements e_i + t e_j are zero divisors (42 index pairs, both signs); the
 associator is nonzero on 1848 of the 4096 ordered basis triples at D = 16
-and 168 of 512 at D = 8 (the open_gororoba cocycle-defect count); L_(e1 + e10)
+and 168 of 512 at D = 8 (the gororoba-open cocycle-defect count); L_(e1 + e10)
 has rank 12 of 16; Delta is invariant under the pure embedding; and the
 associator slices span RM(1, 3), whose Construction A is E8.
 
@@ -106,5 +106,5 @@ the acquisitions identify no unique physical noise mechanism.
 ## Provenance
 
 The proposal reached this repository as pasted text from another agent.
-Registry items it lists for open_gororoba (claims, experiment identifiers,
+Registry items it lists for gororoba-open (claims, experiment identifiers,
 upstream issues) belong to that repository.

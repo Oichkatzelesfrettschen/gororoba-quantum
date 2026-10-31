@@ -1,8 +1,8 @@
 # Exhaustive C881 proof at the latest audited source
 
-The `open_gororoba` HEAD `b977e43f71e8ec22a2eabc83197b649056e63a67`
+The `gororoba-open` HEAD `b977e43f71e8ec22a2eabc83197b649056e63a67`
 contains the complete finite minimum-degree proof in
-[`proofs/verified/C881_GF2CubicMinDegree.v`](https://github.com/Oichkatzelesfrettschen/open_gororoba/blob/b977e43f71e8ec22a2eabc83197b649056e63a67/proofs/verified/C881_GF2CubicMinDegree.v).
+[`proofs/verified/C881_GF2CubicMinDegree.v`](https://github.com/Oichkatzelesfrettschen/gororoba-open/blob/b977e43f71e8ec22a2eabc83197b649056e63a67/proofs/verified/C881_GF2CubicMinDegree.v).
 The file rejects every four-variable multilinear polynomial of degree at most
 two on the specified fifteen labels and verifies a degree-three
 separator. The [fresh replay](../evidence/c881_exhaustive/README.md) compiles

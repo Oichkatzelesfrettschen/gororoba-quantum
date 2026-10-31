@@ -30,7 +30,7 @@ skew framework to global determinant trivializations on each rank locus.
 They retain full bundle and attachment classification as open obligations.
 The [latest C881 audit](notes/c881_exhaustive_proof.md) and
 [Rocq replay](evidence/c881_exhaustive/README.md) refresh the finite
-separating-degree proof against the latest audited `open_gororoba` HEAD.
+separating-degree proof against the latest audited `gororoba-open` HEAD.
 
 The [projective kernel-frontier construction](notes/projective_kernel_frontiers.md)
 and [exact replay](evidence/projective_kernel_limits/README.md) recover leading

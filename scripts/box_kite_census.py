@@ -380,7 +380,7 @@ class DesignBRows:
 
 
 def census() -> dict[str, Any]:
-    """Every box-kite fact, recomputed from cd_core; the open_gororoba comparison is attached separately."""
+    """Every box-kite fact, recomputed from cd_core; the gororoba-open comparison is attached separately."""
     norms = parallel.ordered_map(blade_norm_row, BLADES)
     position = {blade: n for n, blade in enumerate(BLADES)}
 
@@ -728,7 +728,7 @@ def sha256(path: Path) -> str:
 
 
 def compare_open_gororoba(record: dict[str, Any], base: Path) -> dict[str, Any]:
-    """Agreement of open_gororoba's de_marrais CSVs with the census under the identity map."""
+    """Agreement of gororoba-open's de_marrais CSVs with the census under the identity map."""
     files = {name: sha256(base / name) for name in OPEN_GOROROBA_FILES}
 
     def rows(name: str) -> list[dict[str, str]]:

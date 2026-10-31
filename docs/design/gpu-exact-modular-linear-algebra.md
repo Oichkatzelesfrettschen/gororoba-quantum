@@ -169,7 +169,7 @@ kernels. Nsight Compute 2026.3 profiles the base-case elimination kernel.
 The code starts as a Python package (`numpy`, `torch` for `_int_mm` and `_scaled_mm`, `cupy` for `RawKernel`,
 prefetch and advise) under `~/Github`, with a test suite against FLINT and the measurement probes above. The
 replays import it as a pinned dependency. Publishing to PyPI waits for the owner's decision on name, license and
-contents. A Rust port fits `open_gororoba`, which already depends on `cudarc` 0.19 (cuBLAS, cuSOLVER, NVRTC).
+contents. A Rust port fits `gororoba-open`, which already depends on `cudarc` 0.19 (cuBLAS, cuSOLVER, NVRTC).
 
 ## Order
 

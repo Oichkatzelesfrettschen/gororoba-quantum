@@ -58,7 +58,7 @@ this repository lacks).
 | `total, bob_local = hamiltonians(h, k)` fails the enabled Ruff F rules | refuted | F841 excludes tuple unpacking (RUF059 covers it, not selected); the variable now feeds the local-energy identity check |
 | The two-qubit QET protocol injects h^2/r and lets Bob extract sqrt(h^2+4k^2) - (h^2+2k^2)/r | verified | scripts/qet_two_qubit_reference.py at machine precision; the supplied grid search sat about 4e-8 below the optimum at k = 0.1; the model matches [Hotta](../papers/1002.0200.md) under sigma^z -> -sigma^z |
 
-## Sister project (open_gororoba, read-only here)
+## Sister project (gororoba-open, read-only here)
 
 | Claim | Status | Evidence |
 |---|---|---|
@@ -68,7 +68,7 @@ this repository lacks).
 | The reported Monte Carlo error is negative | verified | same section |
 | The sign_imbalance energy law has no minimum at F = 3/8 | verified | same section |
 | The Leech complement is an algebraic coordinate complement, not a physical sector | verified | same section and the census proof |
-| The six findings warrant upstream issues | filed | open_gororoba #209 to #214 at b977e43f, including the seed overlap (4,174 shared seeds between adjacent quadrature nodes), the single-plate double-crossing fixture, and the 56 against 28 pair count |
+| The six findings warrant upstream issues | filed | gororoba-open #209 to #214 at b977e43f, including the seed overlap (4,174 shared seeds between adjacent quadrature nodes), the single-plate double-crossing fixture, and the 56 against 28 pair count |
 
 ## Literature claims
 

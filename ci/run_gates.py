@@ -593,13 +593,14 @@ def main(argv: list[str] | None = None) -> int:
         ]
         print(f"cited: {len(gates)} gates cited by a claim of {arguments.cited_by}")
     candidates = gate_inputs.expand_cases(ROOT, gates)
-    # The budget charges the expanded cases, the work that runs, not a case gate's parent estimate.
-    if arguments.budget_seconds is not None:
-        candidates, pending = within_budget(candidates, arguments.budget_seconds)
-        report_pending(pending)
     if arguments.gates is not None:
         named = {name for name in arguments.gates.split(",") if name}
         candidates = [gate for gate in candidates if gate["name"] in named or gate.get("parent") in named]
+    # The budget charges the expanded cases that remain selected, the work that runs, after the name filter
+    # and never a case gate's parent estimate.
+    if arguments.budget_seconds is not None:
+        candidates, pending = within_budget(candidates, arguments.budget_seconds)
+        report_pending(pending)
     selected = assign(candidates, count, arguments.shard_cpus, measured=measured_seconds(ROOT))[shard]
     if arguments.plan is not None:
         environments = sorted({gate["runtime"] for gate in selected if gate.get("runtime")})

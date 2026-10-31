@@ -1,7 +1,7 @@
-# open_gororoba inventory: box-kites, assessors, zero divisors
+# gororoba-open inventory: box-kites, assessors, zero divisors
 
-Compiled 2026-10-17 from a read-only search of the open_gororoba repository
-(github.com/Oichkatzelesfrettschen/open_gororoba) at commit
+Compiled 2026-10-17 from a read-only search of the gororoba-open repository
+(github.com/Oichkatzelesfrettschen/gororoba-open) at commit
 f540610412409004c4f8f0843dbee6352e6a293a; every path, count and claim id below
 refers to that tree, and registry/claims.toml at that commit is the status
 authority. Nothing was built or run. gororoba_quantum/cd_core.py is the
@@ -58,7 +58,7 @@ Legacy 16/32/64 adjacency matrices (LC-0151..0153) are Refuted/Superseded (C-020
 - Refuted/falsified near the program: C-020, C-044, C-025, C-068, C-426, C-455, C-466, C-1329, C-1332,
   C-1352, C-1353, C-1358, C-1461 (holonomy refuted), C-1530, C-1732, C-1372.
 
-## Doc discrepancies in open_gororoba
+## Doc discrepancies in gororoba-open
 
 - docs/book/src/algebra/box-kites.md cites C-050..C-060 for box-kite invariants; those ids are unrelated.
 - Same doc names emanation.rs (4400 lines, 113 tests); now a 30-file directory.
