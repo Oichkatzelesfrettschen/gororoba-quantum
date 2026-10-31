@@ -13,6 +13,7 @@ from typing import Any
 
 import belenos_mode_swap_interleaved as case
 import pytest
+from scipy.stats import chi2
 
 ROOT = Path(__file__).resolve().parents[2]
 Key = tuple[str, int]
@@ -61,7 +62,7 @@ def test_seeds_are_the_registered_draws_in_index_order_and_each_is_used_once() -
 
 
 def set_settings() -> dict[int, list[dict[str, Any]]]:
-    """Each block set's six settings in run order: set 0 from job-00, sets 1 to 4 from their two half-set jobs."""
+    """Each block set's settings in run order: set 0 from job-00, sets 1 to 4 from their two packed jobs."""
     out: dict[int, list[dict[str, Any]]] = {}
     for job in case.JOBS:
         settings = json.loads((case.CASES / job / "cases.json").read_text(encoding="utf-8"))["settings"]
@@ -111,15 +112,17 @@ def test_the_retained_job_00_keeps_its_bytes_and_its_settings_rebuild() -> None:
         case.build("job-00")
 
 
-def test_duration_bound_leaves_one_iteration_of_margin_and_credits_follow_the_largest_iteration() -> None:
+def test_duration_bound_stays_inside_the_margin_and_credits_follow_the_largest_iteration() -> None:
     for job in case.JOBS:
+        if job in case.RETAINED_CASES:
+            continue
         manifest = json.loads((case.CASES / job / "cases.json").read_text(encoding="utf-8"))
         if manifest["max_shots"] != case.SHOTS_PER_ITERATION * manifest["iterations"]:
             raise AssertionError(f"{job}: max_shots")
-        if job in case.RETAINED_CASES:
-            continue
+        if manifest["max_samples"] != case.SAMPLES_PER_ITERATION * manifest["iterations"]:
+            raise AssertionError(f"{job}: max_samples")
         bound = case.bound_seconds(job)
-        if bound + case.SECONDS_PER_ITERATION > case.MAX_DURATION or manifest["max_duration"] != case.MAX_DURATION:
+        if bound > case.DURATION_MARGIN * case.MAX_DURATION or manifest["max_duration"] != case.MAX_DURATION:
             raise AssertionError(f"{job}: bound {bound} s")
         if not bound <= case.expected_seconds(job) < case.MAX_DURATION:
             raise AssertionError(f"{job}: expected seconds {case.expected_seconds(job)}")
@@ -149,7 +152,7 @@ def synthetic(
     reverse: bool = False,
     split_primary: tuple[int, str] | None = None,
 ) -> list[Path]:
-    """Three runs whose block shares follow model(setting, block), 20000 one-click samples per block.
+    """The runs of every job whose block shares follow model(setting, block), 20000 one-click samples per block.
 
     split_primary (block set, layout) returns that layout's two primary repeats on two meshes.
     """
@@ -250,6 +253,10 @@ def test_a_chip_mode_effect_moves_beyond_the_mesh_variance_and_reproduces_the_ea
         raise AssertionError(record["validity"])
     if (classes["half"]["dof"], classes["extreme"]["dof"]) != (68, 88):
         raise AssertionError(classes)
+    weights = {row["mesh_weight"] for row in record["placement"]["rows"]}
+    set_zero = {tuple(row["block"]) for row in record["placement"]["rows"] if row["meshes"] == [2, 2]}
+    if weights != {1.0, 0.5} or len(set_zero) != 6:
+        raise AssertionError(weights)
     if record["comparison"]["verdict"] != "reproduce" or record["comparison"]["sign_agreement"] != 30:
         raise AssertionError(record["comparison"])
     if record["reading"] != case.READING_TABLE[("beyond", "reproduce")]:
@@ -494,3 +501,46 @@ def test_every_table_cell_has_a_reading() -> None:
     seen.add(case.read({"beyond_mesh_variance": False}, 0, {"verdict": "reproduce"}))
     if seen != set(case.READING_TABLE.values()) or len(seen) != 11:
         raise AssertionError(seen ^ set(case.READING_TABLE.values()))
+
+
+def test_the_class_scale_pools_groups_of_unequal_size_and_variance() -> None:
+    groups = [{"dof": 1, "s2": 0.01, "v": 0.001}, {"dof": 3, "s2": 0.004, "v": 0.0002}]
+    scale = case.contrast_scale(groups)
+    upper = 0.022 / float(chi2.ppf(case.SIGMA_UPPER_ALPHA, 4)) - 0.0016 / 4
+    expected = {"dof": 4, "sigma2": 0.0051, "sigma2_upper": upper, "excess_ratio": 13.75}
+    if any(abs(scale[name] - value) > 1e-12 for name, value in expected.items()):
+        raise AssertionError(scale)
+
+
+def test_a_drift_step_between_a_sets_two_jobs_raises_the_mesh_scale_rather_than_hiding_it(tmp_path: Path) -> None:
+    def stepped(step: float) -> Model:
+        def model(setting: dict[str, Any], block: dict[str, Any]) -> float:
+            layout = setting["layout"] if setting["block_set"] % 2 == 0 else case.MIRROR[setting["layout"]]
+            position = case.SEQUENCE_PACKED.index((layout, setting["arm"], setting["repeat"]))
+            later = setting["block_set"] > 0 and position >= case.ITERATIONS_PER_JOB
+            return 0.5 + mesh_offset(setting, block, 0.08) + (step if later else 0.0)
+
+        return model
+
+    sigmas = []
+    for step in (0.0, 0.06):
+        runs = synthetic(tmp_path / str(step), stepped(step))
+        record = case.analyze(runs, earlier=zero_deltas(runs))
+        if step and not record["validity"]["detected"]:
+            raise AssertionError("the step between jobs should read as drift in the primary repeats")
+        sigmas.append(record["mesh_variance"]["classes"]["half"]["sigma2"])
+    if sigmas[1] < sigmas[0]:
+        raise AssertionError(sigmas)
+
+
+def test_the_retained_job_00_run_binds_its_set_0_iterations_beside_the_packed_jobs(tmp_path: Path) -> None:
+    runs = synthetic(tmp_path, flat)
+    real = ROOT / "results/quandela/runs/2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved-job-00"
+    for name in ("cases.json", "results.json"):
+        (runs[0] / name).write_bytes((real / name).read_bytes())
+    record = case.analyze(runs, earlier=zero_deltas(runs))
+    if (record["iterations_bound"], record["iterations_uncounted"]) != (46, 6) or record["withheld"]:
+        raise AssertionError(record["withheld"])
+    set_zero = [g for g in record["mesh_variance"]["rows"] if len(g["shares"]) == 2]
+    if len(set_zero) != 12 or record["validity"]["sets"][0]["dof"] != 12:
+        raise AssertionError(len(set_zero))

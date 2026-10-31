@@ -3,13 +3,13 @@
 docs/design/belenos-mode-swap-interleaved-case.md fixes the request. Registry claim qd-belenos-packed-mode-swap found
 that moving a packed sign block three of six 4-mode slots changes its single-click algebra-mode share a, but the
 packed and swapped series ran as separate jobs about an hour apart, so placement and drift were confounded. Here each
-block set k of box_kite_photonic_packed/job-0k runs six template iterations that alternate the layouts: packed,
-swapped, packed, swapped, packed, swapped for an even block set and the mirror for an odd one. Each layout runs its
-primary seed at the first and last of its slots and a second, replicate seed between them. The two primary repeats
-request one compiled mesh, so their difference is drift. The replicate sits at the mean time of its primary pair, so a
-same-layout contrast between the replicate and the pooled primary repeats carries no linear drift and measures the
-per-seed mesh variance that the packed-swapped contrast is tested against. Both layouts put the six photons on chip
-modes 0, 4, 8, 12, 16 and 20, so one template circuit serves every iteration.
+block set k of box_kite_photonic_packed/job-0k runs template iterations that alternate the layouts, packed first for
+an even block set and swapped first for an odd one. Each layout runs its primary seed at the first and last of its
+slots and replicate seeds between them, whose mean slot is the pair's mean slot. The two primary repeats request one
+compiled mesh, so their difference is drift. The spread of a layout's meshes (pooled primary repeats and replicates)
+measures the per-seed mesh variance that the packed-swapped contrast is tested against; a linear drift moves single
+replicates off the pair mean and so adds to that spread. Both layouts put the six photons on chip modes 0, 4, 8, 12, 16
+and 20, so one template circuit serves every iteration.
 
 JOBS lists the (block set, iteration order) parts of each job. job-00 ran sets 0 and 1 in SEQUENCE and returned set 0
 before the platform cut it at MAX_DURATION; RETAINED_CASES binds its bytes. Sets 1 to 4 run SEQUENCE_PACKED, which
@@ -128,14 +128,20 @@ EXTRA_REPLICATE_SEEDS = (
     21943,
     31274,
 )
-SAMPLES_PER_ITERATION = 6000
-SHOTS_PER_ITERATION = 18000
+# job-00 ran 6,000 samples and 18,000 max_shots per iteration; the packed jobs run 30,000 and 90,000, and a job bills
+# 1 credit plus 1e-6 per shot of its largest iteration.
+SAMPLES_PER_ITERATION = 30000
+SHOTS_PER_ITERATION = 90000
 MAX_DURATION = 300
 # Duration bound of one job: a 24-mode iteration reconfigures every slot of the chip, and job-00 completed six
-# iterations of 6,000 samples before the 300 s cut stopped its seventh, so one iteration takes at most 50 s; the
-# samples themselves take under a second at the measured global efficiency. A job keeps one iteration of margin under
-# MAX_DURATION.
+# iterations of MEASURED_SAMPLES samples within the 300 s run clock (which starts at start_time) before the cut stopped
+# its seventh, so one such iteration takes at most 50 s. Each further sample adds 1 / (CLOCK_HZ x
+# MIN_GLOBAL_EFFICIENCY) s at job-00's lowest global efficiency. The bound stays within DURATION_MARGIN of MAX_DURATION.
 SECONDS_PER_ITERATION = 50.0
+MEASURED_SAMPLES = 6000
+CLOCK_HZ = 4.94e6
+MIN_GLOBAL_EFFICIENCY = 0.0034
+DURATION_MARGIN = 0.9
 # A block whose share moves by more than Z_CRITICAL standard errors moved, the criterion of
 # qd_packed_mode_swap_analysis.
 Z_CRITICAL = 4.5
@@ -294,9 +300,14 @@ def iterations(job: str) -> int:
     return len(rows(job))
 
 
+def iteration_seconds() -> float:
+    """Upper bound on one iteration: the measured iteration plus its further samples at the lowest efficiency."""
+    return SECONDS_PER_ITERATION + (SAMPLES_PER_ITERATION - MEASURED_SAMPLES) / (CLOCK_HZ * MIN_GLOBAL_EFFICIENCY)
+
+
 def bound_seconds(job: str) -> float:
-    """Upper bound on the job's duration: SECONDS_PER_ITERATION per iteration."""
-    return SECONDS_PER_ITERATION * iterations(job)
+    """Upper bound on the job's duration."""
+    return iteration_seconds() * iterations(job)
 
 
 def expected_seconds(job: str) -> int:
@@ -338,7 +349,8 @@ def preregistered() -> dict[str, Any]:
         "replicate seeds between them, one for set 0 and three for sets 1 to 4, whose mean slot is the pair's mean "
         "slot; sets 1 to 4 run their first five and last five iterations as two consecutive jobs, so a primary "
         "pair straddles the gap between them; the within-set validity statistic measures the drift between the "
-        "repeats and its kappa^2 scales the binomial variances",
+        "repeats and its kappa^2 scales the binomial variances of the placement test; a drift step between a set's "
+        "two jobs and a linear drift both add to the mesh spread, so they raise sigma_c^2 rather than lower it",
         "binding": "a result iteration binds to its setting by circuit_params and compilation_seed; the two "
         "primary repeats of one layout share both and bind in returned order; an iteration that returns no "
         "counts holds its slot",
@@ -354,11 +366,11 @@ def preregistered() -> dict[str, Any]:
         "primary repeats; D = sum z^2 over the set's mesh-identical pairs against chi-square with that many "
         f"degrees of freedom, drift detected when p < {DRIFT_ALPHA}; a set with no mesh-identical pair withholds "
         "the placement reading. D checks that the within-set contrast is internally valid and carries no statement "
-        "about the earlier hour-scale drift. kappa^2 = max(1, D / dof) of the set scales every binomial variance "
-        "of that set's blocks",
+        "about the earlier hour-scale drift. kappa^2 = max(1, D / dof) of the set scales the binomial variances "
+        "of that set's blocks in the placement test",
         "mesh_variance": "per block and layout, the m meshes are the pooled primary repeats and each replicate; "
         "their shares a_i have sample variance s^2 on m - 1 degrees of freedom with expectation sigma_c^2 + mean "
-        "kappa^2 binomial variance, c the block's class: half (p_algebra 1/2) or extreme (p_algebra 0 or 1); "
+        "binomial variance, c the block's class: half (p_algebra 1/2) or extreme (p_algebra 0 or 1); "
         "sigma_c^2 = max(0, sum (m - 1)(s^2 - mean variance) / sum (m - 1)) over the class's groups is the per-seed "
         "mesh variance of a in that class, withheld when the class keeps fewer than "
         f"{CLASS_CONTRASTS_MIN} degrees of freedom; its one-sided {1 - SIGMA_UPPER_ALPHA:.2f} upper bound is max(0, "
@@ -443,8 +455,8 @@ def check_job(job: str) -> str:
     require(len(settings) == iterations(job), f"{job}: {len(settings)} settings bound")
     require(
         job in RETAINED_CASES
-        or (bound_seconds(job) + SECONDS_PER_ITERATION <= MAX_DURATION and bound_seconds(job) <= expected_seconds(job)),
-        f"{job}: the duration bound {bound_seconds(job):.0f} s leaves no iteration of margin under {MAX_DURATION} s",
+        or (bound_seconds(job) <= DURATION_MARGIN * MAX_DURATION and bound_seconds(job) <= expected_seconds(job)),
+        f"{job}: the duration bound {bound_seconds(job):.0f} s exceeds {DURATION_MARGIN} x {MAX_DURATION} s",
     )
     import perceval as pcvl
 
@@ -755,10 +767,10 @@ def mesh_and_placement(data: dict[str, Any], inflation: dict[int, float]) -> dic
             meshes = mesh_groups(data, key, layout)
             first, second = cells[(key, layout, "primary", 0)], cells[(key, layout, "primary", 1)]
             shares = [share(c) for c in meshes]
-            variances = [kappa2 * variance(c) for c in meshes]
+            variances = [variance(c) for c in meshes]
             m = len(meshes)
             mean = sum(shares) / m
-            layouts[layout] = {"mean": mean, "m": m, "v": sum(variances) / m**2}
+            layouts[layout] = {"mean": mean, "m": m, "v": kappa2 * sum(variances) / m**2}
             if first["mesh"] is None or first["mesh"] != second["mesh"]:
                 identical = False
                 dropped.append({"block": list(key), "layout": layout})
@@ -903,7 +915,7 @@ def analyze(runs: list[Path], earlier: dict[tuple[str, int], dict[str, float]] |
     withheld: list[str] = []
     complete = len(data["info"]) == 30 and all(info["set"] in data["complete_sets"] for info in data["info"].values())
     if not complete:
-        withheld.append("not every block set returned counts for all six iterations")
+        withheld.append("not every block set returned counts for all of its iterations")
     dofs_ok = all(entry["dof"] > 0 for entry in check_["sets"].values())
     if not dofs_ok:
         withheld.append("a block set has no mesh-identical repeat pair (dof 0)")

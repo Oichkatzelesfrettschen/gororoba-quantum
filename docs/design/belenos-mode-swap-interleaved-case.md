@@ -40,7 +40,9 @@ block-diagonal unitary of the packed or swapped `circuit.json`. `--check` holds 
 between slots 0 and 4 in a six-iteration set, slots 2, 4 and 6 between 0 and 8 in a ten-iteration set (packed in an
 even set; swapped one slot later). The packed and swapped mean slots sit one slot apart, and the mirror order of an odd
 set flips the sign of that imbalance. An ABBA order would balance the layout means exactly but put the replicates off
-their pair mean, so drift would raise the mesh variance and could turn drift into a "mesh error" reading.
+their pair mean. In a ten-iteration set the replicates sit at the pair mean only on average (slots 2, 4 and 6 between
+0 and 8), so a linear drift, and a step between a set's two jobs, add to the spread of a layout's meshes and raise the
+measured mesh variance.
 
 **Jobs.** A 24-mode iteration takes up to 50 s on `qpu:belenos` (see Duration), and a job costs 1.018 credits whatever it
 holds, so each job carries as many iterations as fit with one iteration of margin under the 300 s cut: five. Job-00 ran
@@ -53,16 +55,22 @@ variances.
 | Job | Block set and part | Iterations | Samples | `max_shots` | Credit ceiling | Expected seconds |
 |---|---|---|---|---|---|---|
 | job-00 (ran) | sets 0 and 1 in `SEQUENCE`; cut after set 0 | 12 | 72,000 | 216,000 | 1.018 | 190 |
-| job-03, job-04 | set 1, first and last five | 5 each | 30,000 | 90,000 | 1.018 | 250 |
-| job-05, job-06 | set 2, first and last five | 5 each | 30,000 | 90,000 | 1.018 | 250 |
-| job-07, job-08 | set 3, first and last five | 5 each | 30,000 | 90,000 | 1.018 | 250 |
-| job-09, job-10 | set 4, first and last five | 5 each | 30,000 | 90,000 | 1.018 | 250 |
+| job-03, job-04 | set 1, first and last five | 5 each | 150,000 | 450,000 | 1.09 | 260 |
+| job-05, job-06 | set 2, first and last five | 5 each | 150,000 | 450,000 | 1.09 | 260 |
+| job-07, job-08 | set 3, first and last five | 5 each | 150,000 | 450,000 | 1.09 | 260 |
+| job-09, job-10 | set 4, first and last five | 5 each | 150,000 | 450,000 | 1.09 | 260 |
 
-Each iteration takes 6,000 samples with a `max_shots` cap of 18,000 and `min_detected_photons` 1. Quandela bills a job
+Each packed iteration takes 30,000 samples with a `max_shots` cap of 90,000 and `min_detected_photons` 1 (job-00 took
+6,000 and 18,000). Quandela bills a job
 1 credit plus 1e-6 per shot of its largest iteration ([credit optimization](../runbooks/quandela-credit-optimization.md)),
-so each job ceilings at 1 + 18,000 x 1e-6 = 1.018: job-00 billed 1.018, and the eight packed jobs ceiling at 8.144
-credits. Job-00's frozen `cases.json` keeps its bytes (`RETAINED_CASES` binds its sha256), and its settings equal the
-rebuilt settings of sets 0 and 1; the never-run job-01 and job-02 cases are replaced by job-03 to job-10.
+so job-00 billed 1 + 18,000 x 1e-6 = 1.018 and each packed job ceilings at 1 + 90,000 x 1e-6 = 1.09, 8.72 credits for
+the eight. Samples cost almost no time (see Duration), so the fivefold samples cut each block's binomial error by
+sqrt(5) at 0.072 credits per job. Job-00's frozen `cases.json` keeps its bytes (`RETAINED_CASES` binds its sha256), and its settings equal the
+rebuilt settings of sets 0 and 1; the never-run job-01 and job-02 cases are replaced by job-03 to job-10. Job-00's frozen
+preregistration names per-job kappa^2 and the R^2 formulas of a single replicate; with set 1 empty, its per-job kappa^2
+is set 0's per-set kappa^2 and the m = 2 formulas reduce to those, so set 0 differs from its frozen text only in pooling
+its sigma_c^2 with the m = 4 groups of sets 1 to 4, using the plain binomial variances in that pool, and in reading
+nine runs.
 
 **Set 5.** Set 5 holds two photons, not six, and stays out; the case covers 30 of the 32 blocks. The template fills an
 empty slot with the identity, so set 5 could run as a six-photon template with the identity on the four other slots.
@@ -85,16 +93,23 @@ the first two draws and 0 to 15 of the third in order.
 `qpu:belenos` cuts a job at 300 s (`max_duration`). Job-00 (`dc348230`) ran 12 iterations of 6,000 samples and was cut
 at 300 s during its seventh iteration, with the six iterations of set 0 returned. Each returned iteration reports
 `nb_shots_used` 6,000 and a global efficiency of 0.0034 to 0.0106, so at the 4.94 MHz clock its samples take under a
-second; the iteration time is the reconfiguration of the 24-mode chip, between 300 / 7 = 43 s and 300 / 6 = 50 s. The
-retained six-photon packed and swapped jobs each ran one iteration in 52 to 55 s, which the earlier bound of this case
-charged to their samples.
+second; the iteration time is the reconfiguration of the 24-mode chip. Job-00 reports progress 0.5097 of 12 iterations
+at the cut, 6.12 iterations in 300 s, so about 49 s per iteration, and at most 50 s since six completed. The retained
+six-photon packed and swapped jobs each ran one iteration in 52 to 55 s, which the earlier bound of this case charged
+to their samples. The 300 s clock runs from `start_time`: across the retained `qpu:belenos` runs `duration` counts from
+`start_time`, so queue time and calibration windows before the start do not count, and a cut job reports the cut plus
+its teardown (318 s and 339 s).
 
-- **Bound.** n x 50 s for n iterations: 250 s for five (expected seconds 250).
-- **Margin.** `--check` requires the bound plus one iteration to stay within 300 s, so a job keeps one iteration of
-  margin; a cut would lose only the iteration it interrupts, whose resubmission waits for the owner.
+- **Bound.** One iteration of 6,000 samples takes at most 50 s; each further sample adds 1 / (4.94 MHz x 0.0034), the
+  lowest global efficiency job-00 returned, so a 30,000-sample iteration takes at most 51.4 s and five take 257 s
+  (expected seconds 260). `--check` requires the bound to stay within 0.9 x 300 s.
+- **Cut.** A cut stops a job in its last iteration. The last iteration of a set's second job is a primary repeat, which
+  every block of the set needs, so a cut withholds the pooled reading until that job reruns in full (1.09 credits, on
+  the owner's further approval). A cut needs a slowdown of about 17 percent over job-00; a repeat of the teleportation
+  job-02 ran within 1 percent of the original, and the ten single-iteration six-photon jobs within 52 to 55 s.
 
 The live plan of each packed job (`qd_platform.py plan --platform qpu:belenos --max-credits 1.018 --expected-seconds
-250 --per-job-credits 1.0 --admit-status running`) runs against its frozen bytes before its submit. It prints the
+260 --per-job-credits 1.0 --admit-status running`) runs against its frozen bytes before its submit. It prints the
 warning that `qpu:belenos` reports HOM below the 90 % that strategy.md design rule 1 asks of a six-photon interfering
 block; the template is block-diagonal with one photon per 4-mode slot, so no two photons interfere and the warning does
 not bind this case.
@@ -110,20 +125,26 @@ fraction of each earlier delta that is true placement, with the rest of the earl
 
 | λ | Half and extreme mesh sigma | Placement beyond the mesh variance | Comparison |
 |---|---|---|---|
-| 0.5 | 0.051, 0.025 | 1.5 % | reproduce 56 %, indeterminate 42 % |
-| 0.7 | 0.042, 0.021 | 29 % | reproduce 92 % |
-| 0.7 | 0.063, 0.031 (sigma x 1.5) | 3.6 % | reproduce 65 %, indeterminate 34 % |
-| 0.85 | 0.031, 0.015 | 96 % | reproduce 99.8 % |
+| 0.5 | 0.051, 0.025 | 2.0 % | reproduce 55 %, indeterminate 43 % |
+| 0.7 | 0.042, 0.021 | 35 % | reproduce 92 % |
+| 0.7 | 0.063, 0.031 (sigma x 1.5) | 4.3 % | reproduce 65 %, indeterminate 34 % |
+| 0.85 | 0.031, 0.015 | 98 % | reproduce 99.7 % |
 
 The per-block placement reading decides when the earlier deltas were mostly placement (λ 0.85), and the comparison
 with the earlier deltas carries the case below that. The model runs set 0 with one replicate and sets 1 to 4 with three,
-as the jobs do.
+as the jobs do, at 6,000 samples per iteration for set 0 and 30,000 for sets 1 to 4.
+
+**Set 0 preview.** Job-00's set 0 gives a mesh sigma of about 0.057 for half blocks (8 contrasts) and 0.047 for extreme
+blocks (4), with heavy tails: the two largest contrasts, 11 and 12 binomial standard errors (a p_algebra 0 block from
+0.05 to 0.18 and a half block from 0.54 to 0.73), both sit on slot 5. A mesh sigma near the old-delta bound (0.059 and
+0.029) points to the rows that read the earlier deltas as mesh error, and outliers confined to one slot would fire the
+slot check; the power table assumes Gaussian mesh error, which these data do not fit.
 
 ## Analysis (`--analyze RUN x 9`)
 
 The nine runs pool into one block table over all 30 blocks. `--analyze` checks that each run's `cases.json` is
 byte-identical to the frozen case, requires one run per job, and writes one `analysis.json` to each run directory.
-Every statistic below is withheld unless all 30 blocks are complete, meaning each of the six iterations of their set
+Every statistic below is withheld unless all 30 blocks are complete, meaning each of the iterations of their set
 returned counts in exactly one run; an iteration counted in two runs raises.
 
 - **Binding.** A result iteration binds by its echoed circuit parameters and compilation seed. The two primary repeats
@@ -135,8 +156,10 @@ returned counts in exactly one run; an iteration counted in two runs raises.
   returned `computed_circuit` digests agree enter D = sum z^2 per block set, tested against chi-square with that many
   degrees of freedom; drift is detected at p < 0.01. D checks that the within-set contrast is internally valid. The
   repeats sit minutes apart and the earlier confound was an hour, so D carries no statement about the earlier claim. The
-  inflation kappa^2 = max(1, D / dof) of a set scales every binomial variance of that set's blocks, which covers extra
-  dispersion between iterations and drift across the gap between a set's two jobs. A set with no mesh-identical pair
+  inflation kappa^2 = max(1, D / dof) of a set scales the binomial variances of that set's blocks in the placement test,
+  which covers extra dispersion between iterations and drift across the gap between a set's two jobs. The mesh
+  variance uses the plain binomial variances: subtracting a drift-inflated binomial term from the mesh spread would
+  drive sigma_c^2 toward 0 and read the earlier deltas as drift. A set with no mesh-identical pair
   (dof 0) withholds the placement reading, and so does a replicate digest that equals its primary digest or is missing.
 - **Mesh identity.** A layout whose two primary repeats returned different or missing `computed_circuit` digests
   averages two meshes in its pooled primary cell, so its group leaves the mesh variance, its block leaves the placement
@@ -147,7 +170,7 @@ returned counts in exactly one run; an iteration counted in two runs raises.
   rotation error d theta, so a half block (p_algebra 1/2, 14 blocks) carries about three times the mesh error of an
   extreme block (p_algebra 0 or 1, 16 blocks); the retained deltas bound sigma at 0.059 and 0.029. For each block and
   layout, the m meshes (the pooled primary repeats and each replicate) have shares a_i whose sample variance s^2, on
-  m - 1 degrees of freedom, has expectation sigma_c^2 plus the mean inflated binomial variance, c the block's class.
+  m - 1 degrees of freedom, has expectation sigma_c^2 plus the mean binomial variance, c the block's class.
   sigma_c^2 = sum (m - 1)(s^2 - mean variance) / sum (m - 1) over the class's groups, truncated at 0; with all sets
   complete the half class holds 68 degrees of freedom and the extreme class 88, and a class with fewer than 10
   withholds the reading. Its one-sided 95 percent upper bound is sum (m - 1) s^2 / chi2.ppf(0.05, dof) - sum (m - 1)
@@ -163,8 +186,11 @@ returned counts in exactly one run; an iteration counted in two runs raises.
   the mesh variance when at least 2 blocks do and the slot homogeneity holds. The same Monte Carlo with no placement effect returns "beyond" in 0 of
   2,000 replicates under each of: one sigma of 0.03 for both classes; class sigmas 0.05 and 0.01 with Gaussian, Student
   t3, and Student t3 times a log-normal (0.5) scale per compiled mesh; and one slot at three times the mesh scale, where
-  the slot check withholds "beyond" in 99 percent of replicates. Under the heavy-tailed t3 nulls the slot check also
-  withholds in 16 to 21 percent of replicates, which only moves a reading to "not shown beyond". Blocks moved against
+  the slot check withholds "beyond" in 99.9 percent of replicates (96.7 percent with t3 tails). Under the heavy-tailed
+  t3 nulls the slot check also withholds in 19 to 24 percent of replicates, which only moves a reading to "not shown
+  beyond". A per-block drift step between a set's two jobs (standard deviation 0.02 to 0.10 times 2 sqrt(a (1 - a)))
+  returns "beyond" in 0 of 1,000 replicates; it raises the mesh sigma slightly and moves the earlier-excess verdict
+  toward "mesh", and its kappa^2 (median 8 to 150) fires the drift statistic that stops the case. Blocks moved against
   binomial error alone are the `moved` blocks of `decide()` on the pooled table, the earlier criterion.
 - **Slot predictor, descriptive.** `decide()` of `qd_packed_mode_swap_analysis.py` runs once on the pooled packed and
   swapped table of all 30 blocks, each share taken over every iteration of its layout, and `analysis.json` reports its
@@ -187,9 +213,9 @@ returned counts in exactly one run; an iteration counted in two runs raises.
   **window** otherwise. The allowance w = 3 is the change of mesh variance between acquisition windows that the two
   visibility jobs of 2026-10-31 show (control spread 1.7 times in standard deviation). In the Monte Carlo, earlier
   deltas made entirely of mesh error at the old-delta bound (sigma 0.059 and 0.029) read mesh in all of the
-  uncorrelated outcomes; a mesh error of half that size (0.03 and 0.015) reads window in 99.9 percent of them; and a
-  mesh error of 0.01 and 0.003, which leaves the earlier deltas to drift, reads excess in all of them, while 95 percent
-  of all replicates of that model read "no moves", because no block then moves against binomial error alone.
+  uncorrelated outcomes but one; a mesh error of half that size (0.03 and 0.015) reads window in 99.9 percent of them;
+  and a mesh error of 0.01 and 0.003, which leaves the earlier deltas to drift, reads excess in all of them, while 23
+  percent of all replicates of that model read "no moves", because no block then moves against binomial error alone.
 
 ### Reading
 
@@ -230,15 +256,17 @@ slot predictor is descriptive. The design does not show how a chip mode changes 
 - *Why a simulation cannot answer it.* The residual is the chip's compiled-mesh and detection error at each slot; an
   ideal or noise-model simulation gives every block its exact share at every slot and every seed.
 - *Backend and budget.* `qpu:belenos`. Job-00 ran 12 iterations and billed 1.018 credits. Eight packed jobs of 5
-  iterations of 6,000 samples each, `max_shots` 18,000 per iteration and `min_detected_photons` 1, submitted one after
-  the other: 1.018 credits per job, 8.144 for the eight, 9.162 for the case. Expected seconds are 250 per job against
+  iterations of 30,000 samples each, `max_shots` 90,000 per iteration and `min_detected_photons` 1, submitted one after
+  the other: 1.09 credits per job, 8.72 for the eight, 9.738 for the case. Expected seconds are 260 per job against
   the 300 s limit.
 - *Procedure.* Copy `cases.json` and `circuit.json` of the job into a fresh run directory under
   `results/quandela/runs/`, then run `scripts/qd_platform.py plan` and `submit` with `--platform qpu:belenos
-  --max-credits 1.018 --expected-seconds 250 --per-job-credits 1.0 --admit-status running`, `collect`, and after all
+  --max-credits 1.09 --expected-seconds 260 --per-job-credits 1.0 --admit-status running`, `collect`, and after all
   nine `scripts/belenos_mode_swap_interleaved.py --analyze` on the runs of job-00 and job-03 to job-10. Each run
   records the platform's HOM, g2 and transmittance at its plan.
-- *Stopping rule.* Each set's first job is checked before its second is planned, and the second before the next set:
-  a set whose primary repeats return two meshes in every pair, or whose replicates return their primaries' meshes,
-  withholds the pooled reading by rule, so the case stops there. A job that errors or is cut short is resubmitted only
-  on the owner's further approval.
+- *Stopping rule.* A set's second job is planned and submitted as soon as its first job returns and its mesh digests
+  check (primary repeats on one mesh, replicates distinct), which keeps the gap between them short. After a set's
+  second job, the set's drift statistic D and the job's duration are read before the next set: a set whose primary
+  repeats return two meshes in every pair, whose replicates return their primaries' meshes, or whose D detects drift
+  (p < 0.01) stops the case for the owner, and so does a job that ran longer than 270 s. A job that errors or is cut
+  short is resubmitted only on the owner's further approval.
