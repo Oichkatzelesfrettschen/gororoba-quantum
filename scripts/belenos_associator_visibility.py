@@ -17,12 +17,13 @@ docs/evidence/qrng_seeds/allocations.json.
 qd_platform.template_experiment, recomputes each iteration's two-click law on the window from Perceval's unitary,
 compares one iteration with Perceval's SLOS backend on all 24 modes, requires the ideal endpoints, and requires the
 retained platform read to connect both photon modes and to keep every window mode at or below the dark-rate limit of
-qd_teleportation_rehearsal. --build JOB writes a case; retained bytes are never rewritten. --analyze RUN writes the
+qd_teleportation_rehearsal; --check-live JOB repeats that read check on the live platform record between plan and
+submit. --build JOB writes a case; retained bytes are never rewritten. --analyze RUN writes the
 preregistered endpoints of a collected run. Submission uses scripts/qd_platform.py plan/submit/collect with the
 written case's arguments.
 
 Usage:
-  "$PYTHON" scripts/belenos_associator_visibility.py [--check | --build JOB | --analyze RUN]
+  "$PYTHON" scripts/belenos_associator_visibility.py [--check | --check-live JOB | --build JOB | --analyze RUN]
 """
 
 from __future__ import annotations
@@ -66,6 +67,10 @@ SHOTS_PER_ITERATION = base.SHOTS_PER_ITERATION
 MAX_DURATION = base.MAX_DURATION
 TOLERANCE = base.TOLERANCE
 BODY_TOLERANCE = base.BODY_TOLERANCE
+OVERLAP_SIGMAS = 3
+# V_eff that the Perceval NoiseModel (g2 0.014, per-mode transmission of READ) forecasts for each window at the source
+# indistinguishability 0.846, which reproduces the pooled teleportation correctness on the job-02 layout.
+TELEPORTATION_FIT_V_EFF = {"job-00": 0.824, "job-01": 0.8265}
 
 
 def require(condition: bool, message: str) -> None:
@@ -157,23 +162,49 @@ def documents(job: str) -> dict[str, bytes]:
             "closure_tolerance": base.CLOSURE_TOLERANCE,
             "calibration_tolerance": base.CALIBRATION_TOLERANCE,
             "hom_comparison": "descriptive: |Delta - Delta_pred(V_HOM)|, V_HOM the HOM fraction read at submission",
-            "teleportation_comparison": "descriptive: V_eff against 0.81, the effective indistinguishability at "
-            "which the teleportation model reproduces job-01's measured correctness 0.802",
-            "interpretation": "photon overlap of one source pair in the compiled circuit; the closure separates it "
-            "from route- and mesh-dependent error",
+            "hom_comparison_note": "Delta_pred(V_HOM) omits g2, so a source exactly at the read departs from it by "
+            "about 0.06 under the Perceval noise model; the comparison carries no decision",
+            "overlap_rule": {
+                "statement": f"V_eff - {OVERLAP_SIGMAS} se_with_mesh_spread above the teleportation-fit V_eff reads "
+                "overlap high; otherwise unresolved. Compiled-mesh error only lowers V_eff and the closure does not "
+                "see error common to every route, so the rule is one-sided",
+                "teleportation_fit_V_eff": TELEPORTATION_FIT_V_EFF,
+                "teleportation_fit": "source indistinguishability 0.846 reproduces the pooled correctness 0.823 "
+                "(1495 of 1816 accepted events) of teleportation job-02, job-03 and the job-02 replay on this layout "
+                "under the teleportation model at g2 0.014 and the anchor read's per-mode transmission; the "
+                "Perceval NoiseModel forecasts V_eff at that indistinguishability",
+            },
+            "interpretation": "photon overlap of one source pair in the compiled circuit; error common to every "
+            "route lowers it and passes the closure",
         },
     }
     return {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": circuit_bytes}
 
 
-def check_read(job: str) -> None:
-    t_out, dark, _ = read_perfs(json.loads(READ.read_text(encoding="utf-8")))
+def check_read(job: str, catalogue: dict[str, Any] | None = None) -> list[float]:
+    """Require both photon modes on connected source inputs and every window mode at or below DARK_LIMIT in the
+    catalogue (the retained READ by default); return the window's dark rates."""
+    t_out, dark, _ = read_perfs(catalogue or json.loads(READ.read_text(encoding="utf-8")))
     window = WINDOWS[job]
     for mode in photon_modes(window):
         require(mode in CONNECTED, f"{job}: photon mode {mode} is not a connected source input")
     hot = [mode for mode in range(window, window + LOGICAL) if dark[mode] > DARK_LIMIT]
     require(not hot, f"{job}: window modes {hot} read a dark rate above {DARK_LIMIT:g} per second")
     require(len(t_out) == MODES, f"{job}: the read carries {len(t_out)} output transmissions")
+    return [dark[mode] for mode in range(window, window + LOGICAL)]
+
+
+def check_live(job: str) -> int:
+    """check_read against the live qpu:belenos record, run between plan and submit."""
+    from qd_platform import get, platform_route
+
+    record = get(platform_route(PLATFORM))
+    rates = check_read(job, {"processors": {PLATFORM: record}})
+    perfs = record.get("perfs") or {}
+    print(
+        f"{FAMILY} {job}: live status {record.get('status')}, HOM {perfs.get('HOM (%)')} %, window dark rates {rates}"
+    )
+    return 0
 
 
 def check_job(job: str) -> str:
@@ -271,15 +302,25 @@ def analyze(run: Path) -> dict[str, Any]:
     accepted = 0
     counted = dict.fromkeys(base.PAIRS, 0)
     by_seed = {setting["compilation_seed"]: setting for setting in manifest["settings"]}
+    bound: set[int] = set()
+    per_iteration: dict[str, list[dict[str, Any]]] = {b: [] for b in base.PAIRS}
     for entry in entries:
         counts = entry.get("counts") if isinstance(entry, dict) else None
         if not counts:
             continue
-        seed = (entry.get("iteration") or {}).get("compilation_seed")
+        echoed = entry.get("iteration") or {}
+        seed = echoed.get("compilation_seed")
         require(seed in by_seed, f"a result iteration carries compilation_seed {seed!r} outside the case")
+        require(seed not in bound, f"compilation_seed {seed} binds a second result iteration")
         setting = by_seed[seed]
+        require(
+            echoed.get("circuit_params") == setting["circuit_params"],
+            f"the result iteration of compilation_seed {seed} echoes other circuit_params than {setting['name']}",
+        )
+        bound.add(setting["compilation_seed"])
         counted[setting["block"]] += 1
         tally = tallies[setting["block"]][setting["route"]]
+        own = [0, 0, 0]
         for state, count in counts.items():
             occupation = [int(c) for c in state.strip("|>").split(",")]
             occupied = [m for m, n in enumerate(occupation) if n > 0]
@@ -295,9 +336,16 @@ def analyze(run: Path) -> dict[str, Any]:
                 continue
             accepted += count
             pair = f"{occupied[0] - window}{occupied[1] - window}"
-            tally[0] += count if pair in base.PLUS_PAIRS else 0
-            tally[1] += count if pair in base.MINUS_PAIRS else 0
-            tally[2] += count
+            for target in (tally, own):
+                target[0] += count if pair in base.PLUS_PAIRS else 0
+                target[1] += count if pair in base.MINUS_PAIRS else 0
+                target[2] += count
+        if own[2]:
+            sign = 1 if setting["route"] == "LaLb" or setting["block"] == "control" else -1
+            d, se = binomial_endpoint(*own)
+            per_iteration[setting["block"]].append(
+                {"name": setting["name"], "route": setting["route"], "D": d, "se": se, "signed_D": sign * d}
+            )
     out: dict[str, Any] = {
         "window": window,
         "photon_modes": list(photon_modes(window)),
@@ -315,9 +363,8 @@ def analyze(run: Path) -> dict[str, Any]:
             if total == 0:
                 estimates[route] = None
                 continue
-            d = (plus - minus) / total
-            q = (plus + minus) / total
-            estimates[route] = {"D": d, "se": math.sqrt(max(q - d * d, 0.0) / total), "events": total}
+            d, se = binomial_endpoint(plus, minus, total)
+            estimates[route] = {"D": d, "se": se, "events": total}
         first, second = estimates["LaLb"], estimates["Lab"]
         if first is not None and second is not None:
             out[block] = {
@@ -327,17 +374,66 @@ def analyze(run: Path) -> dict[str, Any]:
             }
         else:
             out[block] = {"routes": estimates, "Delta": None}
+        out[block]["iterations"] = per_iteration[block]
+        out[block]["mesh_heterogeneity"] = heterogeneity(per_iteration[block])
     out["decisions"] = base.decisions(out, base.submission_visibility(run))
     control = out["control"]
-    if control.get("Delta") is not None:
+    if counted["control"] == len(base.ROUTE_ORDER) and control.get("Delta") is not None:
         routes = control["routes"]
         f = -(routes["LaLb"]["D"] + routes["Lab"]["D"]) / 2
         se_f = math.hypot(routes["LaLb"]["se"], routes["Lab"]["se"]) / 2
         slope = 1.5 / (1 + 0.5 * f) ** 2
-        out["in_situ_visibility"] = {"V_eff": base.visibility_from_contrast(f), "se": slope * se_f, "f": f}
+        birge = control["mesh_heterogeneity"]["birge_ratio"]
+        v_eff = base.visibility_from_contrast(f)
+        se_mesh = slope * se_f * max(1.0, birge)
+        out["in_situ_visibility"] = {"V_eff": v_eff, "se": slope * se_f, "se_with_mesh_spread": se_mesh, "f": f}
+        out["overlap_reading"] = overlap_reading(manifest, v_eff, se_mesh)
     else:
         out["in_situ_visibility"] = None
+        out["overlap_reading"] = "undecided: the control block lacks one of its four iterations"
     return out
+
+
+def binomial_endpoint(plus: int, minus: int, total: int) -> tuple[float, float]:
+    """D = (plus - minus) / total and its multinomial standard error over total accepted events."""
+    d = (plus - minus) / total
+    q = (plus + minus) / total
+    return d, math.sqrt(max(q - d * d, 0.0) / total)
+
+
+def heterogeneity(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Chi-square of a block's sign-aligned iteration endpoints about their inverse-variance mean.
+
+    Under the two-photon mixture model every control iteration reads -f(V) and every associator iteration reads +f(V)
+    after the Lab sign flip, so the iterations of one block share one expectation and their spread beyond binomial
+    error is the error of their separately compiled meshes. The Birge ratio sqrt(chi2 / dof) scales the visibility's
+    standard error when it exceeds 1.
+    """
+    from scipy.stats import chi2
+
+    usable = [row for row in rows if row["se"] > 0]
+    if len(usable) < 2:
+        return {"dof": 0, "chi2": None, "p": None, "birge_ratio": 1.0}
+    weights = [1 / row["se"] ** 2 for row in usable]
+    mean = sum(w * row["signed_D"] for w, row in zip(weights, usable, strict=True)) / sum(weights)
+    statistic = sum(w * (row["signed_D"] - mean) ** 2 for w, row in zip(weights, usable, strict=True))
+    dof = len(usable) - 1
+    return {
+        "dof": dof,
+        "chi2": statistic,
+        "p": float(chi2.sf(statistic, dof)),
+        "birge_ratio": math.sqrt(statistic / dof),
+    }
+
+
+def overlap_reading(manifest: dict[str, Any], v_eff: float, se: float) -> str:
+    """The preregistered one-sided reading: mesh error only lowers V_eff, so a V_eff above the teleportation-fit
+    forecast by OVERLAP_SIGMAS standard errors rules out low photon overlap as the teleportation shortfall, while a
+    lower V_eff leaves overlap and mesh error unresolved."""
+    threshold = manifest["preregistered"]["overlap_rule"]["teleportation_fit_V_eff"][manifest["job"]]
+    if v_eff - OVERLAP_SIGMAS * se > threshold:
+        return "overlap high: low photon overlap does not explain the teleportation shortfall on this pair"
+    return "unresolved: photon overlap and compiled-mesh error both remain candidates"
 
 
 def simulated_iteration(item: tuple[dict[str, Any], dict[str, Any], float, float, tuple[float, ...]]) -> dict[str, Any]:
@@ -391,6 +487,7 @@ def main() -> int:
     group.add_argument("--build", choices=sorted(WINDOWS))
     group.add_argument("--analyze", type=Path)
     group.add_argument("--simulate", nargs=2, metavar=("OUT", "JOB"))
+    group.add_argument("--check-live", choices=sorted(WINDOWS))
     parser.add_argument("--hom", type=float, default=1.0)
     parser.add_argument("--g2", type=float, default=0.0)
     parser.add_argument("--per-mode", action="store_true")
@@ -401,6 +498,8 @@ def main() -> int:
         return simulate(Path(out), job, args.hom, args.g2, args.per_mode)
     if args.build:
         return build(args.build)
+    if args.check_live:
+        return check_live(args.check_live)
     if args.analyze:
         record = analyze(args.analyze)
         (args.analyze / "analysis.json").write_text(json.dumps(record, indent=1, sort_keys=True) + "\n")
