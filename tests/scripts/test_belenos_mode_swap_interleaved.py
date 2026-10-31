@@ -57,7 +57,7 @@ def test_seeds_are_the_registered_draws_in_index_order_and_each_is_used_once() -
             raise AssertionError(f"allocations.json does not register {draw} indices 0 to {len(seeds) - 1}")
 
 
-def test_each_set_runs_abba_then_a_replicate_pair_with_one_seed_per_layout_and_arm() -> None:
+def test_each_replicate_sits_at_the_mean_time_of_its_primary_pair_and_each_seed_binds_its_iterations() -> None:
     for job, sets in case.JOBS.items():
         manifest = json.loads((case.CASES / job / "cases.json").read_text(encoding="utf-8"))
         settings = manifest["settings"]
@@ -67,17 +67,20 @@ def test_each_set_runs_abba_then_a_replicate_pair_with_one_seed_per_layout_and_a
             mine = settings[position * 6 : (position + 1) * 6]
             if {s["block_set"] for s in mine} != {block_set}:
                 raise AssertionError(f"{job}: set {block_set} does not run contiguously")
-            if [s["layout"] for s in mine[:4]] != list(case.ORDER) or {s["arm"] for s in mine[:4]} != {"primary"}:
-                raise AssertionError(f"{job}: set {block_set} does not open with ABBA")
-            tail = [s["layout"] for s in mine[4:]]
-            expected_tail = ["packed", "swapped"] if block_set % 2 == 0 else ["swapped", "packed"]
-            if {s["arm"] for s in mine[4:]} != {"replicate"} or tail != expected_tail:
-                raise AssertionError(f"{job}: set {block_set} replicate tail {tail}")
-            by_cell: dict[tuple[str, str], set[int]] = {}
-            for s in mine:
-                by_cell.setdefault((s["layout"], s["arm"]), set()).add(s["compilation_seed"])
-            if any(len(seeds) != 1 for seeds in by_cell.values()) or len(by_cell) != 4:
+            first = "packed" if block_set % 2 == 0 else "swapped"
+            if [s["layout"] for s in mine] != [first, case.MIRROR[first]] * 3:
+                raise AssertionError(f"{job}: set {block_set} does not alternate the layouts from {first}")
+            times: dict[tuple[str, str], list[int]] = {}
+            seeds: dict[tuple[str, str], set[int]] = {}
+            for slot, s in enumerate(mine):
+                times.setdefault((s["layout"], s["arm"]), []).append(slot)
+                seeds.setdefault((s["layout"], s["arm"]), set()).add(s["compilation_seed"])
+            if len(times) != 4 or any(len(v) != 1 for v in seeds.values()):
                 raise AssertionError(f"{job}: set {block_set} takes one seed per layout and arm")
+            for layout in ("packed", "swapped"):
+                pair, replicate = times[(layout, "primary")], times[(layout, "replicate")]
+                if len(pair) != 2 or replicate != [sum(pair) // 2] or sum(pair) % 2:
+                    raise AssertionError(f"{job}: set {block_set} {layout} replicate is off the primary mean time")
             keys = {json.dumps([s["circuit_params"], s["compilation_seed"]], sort_keys=True) for s in mine}
             if len(keys) != 4:
                 raise AssertionError(f"{job}: set {block_set} binds {len(keys)} distinct keys, not 4")
@@ -236,6 +239,16 @@ def test_mesh_variance_absorbs_moves_that_binomial_error_alone_would_call_and_re
         raise AssertionError(record["reading"])
 
 
+def test_the_default_earlier_deltas_resolve_every_block_of_the_case(tmp_path: Path) -> None:
+    record = case.analyze(synthetic(tmp_path, flat))
+    if record["comparison"]["blocks"] != 30 or record["comparison"]["verdict"] not in {
+        "reproduce",
+        "uncorrelated",
+        "indeterminate",
+    }:
+        raise AssertionError(record["comparison"])
+
+
 def test_no_placement_effect_reads_no_moves(tmp_path: Path) -> None:
     runs = synthetic(tmp_path, lambda setting, block: 0.5)
     record = case.analyze(runs, earlier=zero_deltas(runs))
@@ -291,7 +304,7 @@ def test_a_failed_repeat_holds_its_label_so_the_counted_repeat_keeps_repeat_one(
     failed = {"iteration": echo, "error": "lost"}
     counted = {"iteration": echo, "counts": {"1": 1}}
     bound, uncounted = case.bind_iterations(settings, {"iterations": [failed, counted]})
-    if list(bound) != [3] or uncounted != 1:
+    if list(bound) != [4] or uncounted != 1:
         raise AssertionError((list(bound), uncounted))
 
 

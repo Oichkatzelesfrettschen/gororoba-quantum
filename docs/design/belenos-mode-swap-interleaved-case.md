@@ -27,23 +27,23 @@ the six photons on chip modes 0, 4, 8, 12, 16 and 20, so one template circuit se
 4-mode triangular meshes, one per slot, whose parameters reproduce the retained block-diagonal unitary of the packed or
 swapped `circuit.json`. `--check` holds every iteration to that unitary within 1e-9.
 
-- **Primary arm, iterations 0 to 3.** The order packed, swapped, swapped, packed (ABBA) runs each layout twice under one
-  compilation seed. The two repeats request one compiled mesh, so their difference is drift at a fixed mesh. ABBA gives
-  packed and swapped the same mean time, so linear drift cancels in the primary packed-swapped contrast.
-- **Replicate arm, iterations 4 and 5.** One packed and one swapped iteration under a second compilation seed per layout.
-  The replicate against the primary of the same layout is a same-layout, different-seed contrast, which measures the
-  per-seed mesh variance directly. An even block set runs the replicate pair packed, swapped and an odd one swapped,
-  packed.
+- **Order within a set.** The six iterations alternate the layouts: packed, swapped, packed, swapped, packed, swapped
+  for an even block set (0, 2, 4) and swapped, packed, swapped, packed, swapped, packed for an odd one (1, 3).
+- **Primary seed.** Each layout runs its primary seed at the first and last of its three slots. The two repeats request
+  one compiled mesh, so their difference is drift at a fixed mesh, four slots (about 60 s) apart.
+- **Replicate seed.** Each layout runs a second compilation seed at the slot between its primary repeats. The replicate
+  against the pooled primary repeats of the same layout is a same-layout, different-seed contrast, which measures the
+  per-seed mesh variance directly.
 
-**Order.** Six slots cannot balance every contrast against a linear drift. Packed and swapped share a mean time only when
-the three slots of each sum to 7.5, which integer slots cannot do, and a primary pair shares a mean time with its single
-replicate only when the replicate sits between the pair, which forces the alternation packed, swapped, packed, swapped,
-packed, swapped and puts the packed and swapped means three slots apart. The order keeps the exact balance in the ABBA
-pair, the contrast the claim rests on, and appends the replicate pair after it. The mesh-averaged placement contrast
-then carries a drift imbalance of half a slot (about 8 s), with opposite sign in even and odd block sets, so it largely
-cancels over the five sets. The replicate sits 2.5 to 3.5 slots (about 40 to 55 s) from the mean time of its primary
-pair, so drift between them adds to the measured mesh variance and raises the bar the placement contrast must clear; a
-drift artifact never lowers it.
+**Order.** The replicate of each layout sits exactly at the mean time of that layout's primary pair (slot 2 between
+slots 0 and 4 for packed, slot 3 between 1 and 5 for swapped in an even set), so a linear drift cancels in every
+replicate contrast and cannot enter the mesh variance, where it would inflate the reference and move blocks into the
+"within the mesh variance" rows. The cost is the layout contrast: packed and swapped mean times sit one slot apart
+(about 15 s), the least that integer slots allow once each replicate sits at its pair mean, since six slots cannot make
+the layout means and the seed means all coincide. The mirror order of an odd set flips the sign of that imbalance, so the
+five sets net to one slot in total. An ABBA order would balance the layout means exactly but put each replicate 2.5 to
+3.5 slots from its pair mean, so drift would raise the mesh variance and could turn an affirmative "mesh-specific"
+reading on drift.
 
 | Job | Block sets | Iterations | Samples | `max_shots` | Credit ceiling | Expected seconds |
 |---|---|---|---|---|---|---|
@@ -98,6 +98,13 @@ so 798 to 1,790 (median 1,127) per iteration here. A placement contrast of media
 0.013, so 4.5 binomial errors are 0.058, and 13 of the 32 earlier deltas exceed that. A repeat pair gives a z of about 2.4
 for a drift of 0.05.
 
+The decisive power is against the mesh variance. A block moves beyond it when |delta| exceeds 4.5 sqrt(sigma^2 + 1.7e-4),
+and the case needs two such blocks. For the earlier deltas taken at face value, 13, 11, 6, 2 and 0 of the 32 exceed that
+threshold at sigma = 0, 0.01, 0.02, 0.027 and 0.03. A per-seed mesh spread of 0.03 or more in a therefore leaves every
+effect of the earlier size in the rows "within the mesh variance", where **mesh-specific** means indistinguishable from
+per-seed mesh error at this sample size; those rows read reproduction through the pooled correlation with the earlier
+deltas instead, which needs no single block to clear the bar.
+
 ## Analysis (`--analyze RUN RUN RUN`)
 
 The three runs pool into one block table over all 30 blocks. `--analyze` checks that each run's `cases.json` is
@@ -113,7 +120,7 @@ counts.
 - **Within-job validity.** For each block and layout, z is the two-sample z between the two primary repeats. Pairs whose
   returned `computed_circuit` digests agree enter D = sum z^2 per job, tested against chi-square with that many degrees
   of freedom; drift is detected at p < 0.01. D checks that the within-job contrast is internally valid. The repeats sit
-  15 to 45 s apart and the earlier confound was an hour, so D carries no statement about the earlier claim. The inflation
+  about 60 s apart and the earlier confound was an hour, so D carries no statement about the earlier claim. The inflation
   kappa^2 = max(1, D / dof) of a job scales every binomial variance of that job's blocks, which covers extra dispersion
   between iterations. A job with no mesh-identical pair (dof 0) withholds the placement reading, and so does a replicate
   digest that equals its primary digest or is missing.

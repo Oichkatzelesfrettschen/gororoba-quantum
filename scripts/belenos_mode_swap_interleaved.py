@@ -3,10 +3,11 @@
 docs/design/belenos-mode-swap-interleaved-case.md fixes the request. Registry claim qd-belenos-packed-mode-swap found
 that moving a packed sign block three of six 4-mode slots changes its single-click algebra-mode share a, but the
 packed and swapped series ran as separate jobs about an hour apart, so placement and drift were confounded. Here each
-block set k of box_kite_photonic_packed/job-0k runs six template iterations. The first four alternate the layouts in
-the order packed, swapped, swapped, packed (ABBA) under one compilation seed per layout, so a layout's two repeats
-request one compiled mesh and their difference is drift. The last two are the replicate arm: one packed and one
-swapped iteration under a second compilation seed per layout, so a same-layout contrast between seeds measures the
+block set k of box_kite_photonic_packed/job-0k runs six template iterations that alternate the layouts: packed,
+swapped, packed, swapped, packed, swapped for an even block set and the mirror for an odd one. Each layout runs its
+primary seed at the first and last of its slots and a second, replicate seed between them. The two primary repeats
+request one compiled mesh, so their difference is drift. The replicate sits at the mean time of its primary pair, so a
+same-layout contrast between the replicate and the pooled primary repeats carries no linear drift and measures the
 per-seed mesh variance that the packed-swapped contrast is tested against. Both layouts put the six photons on chip
 modes 0, 4, 8, 12, 16 and 20, so one template circuit serves every iteration.
 
@@ -61,11 +62,18 @@ EARLIER = {"packed": "qpu_belenos/box_kite_photonic_packed", "swapped": "qpu_bel
 DESIGN = "docs/design/belenos-mode-swap-interleaved-case.md"
 PLATFORM = "qpu:belenos"
 JOBS = {"job-00": (0, 1), "job-01": (2, 3), "job-02": (4,)}
-# The first four iterations of a block set alternate the layouts under the primary seeds; two replicate iterations
-# under the replicate seeds follow, in this order for an even block set and reversed for an odd one.
-ORDER = ("packed", "swapped", "swapped", "packed")
-REPLICATE_ORDER = ("packed", "swapped")
-ITERATIONS_PER_SET = len(ORDER) + len(REPLICATE_ORDER)
+# The iterations of an even block set as (layout, arm, repeat); an odd block set runs the mirror with the layouts
+# exchanged. Each replicate sits at the mean time of its layout's primary pair.
+SEQUENCE = (
+    ("packed", "primary", 0),
+    ("swapped", "primary", 0),
+    ("packed", "replicate", 0),
+    ("swapped", "replicate", 0),
+    ("packed", "primary", 1),
+    ("swapped", "primary", 1),
+)
+MIRROR = {"packed": "swapped", "swapped": "packed"}
+ITERATIONS_PER_SET = len(SEQUENCE)
 SEED_DRAW = "docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json"
 # One primary seed per (set, layout) in job, set and layout order; both repeats of a layout take it.
 COMPILATION_SEEDS = (41251, 50785, 63940, 45911, 11390, 34773, 25508, 5306, 15866, 64854)
@@ -186,13 +194,9 @@ def seed_of(job: str, block_set: int, layout: str, arm: str) -> int:
 def rows(job: str) -> list[dict[str, Any]]:
     out = []
     for block_set in JOBS[job]:
-        seen: dict[str, int] = {}
-        for layout in ORDER:
-            repeat = seen.get(layout, 0)
-            seen[layout] = repeat + 1
-            out.append({"block_set": block_set, "layout": layout, "arm": "primary", "repeat": repeat})
-        tail = REPLICATE_ORDER if block_set % 2 == 0 else REPLICATE_ORDER[::-1]
-        out.extend({"block_set": block_set, "layout": layout, "arm": "replicate", "repeat": 0} for layout in tail)
+        for layout, arm, repeat in SEQUENCE:
+            shown = layout if block_set % 2 == 0 else MIRROR[layout]
+            out.append({"block_set": block_set, "layout": shown, "arm": arm, "repeat": repeat})
     return out
 
 
@@ -241,10 +245,11 @@ def preregistered() -> dict[str, Any]:
         "observable": "per block and iteration, a = (samples with exactly one click in the block's slot that land on "
         "an algebra mode) / (samples with exactly one click in the slot), the observable of "
         "scripts/qd_packed_mode_swap_analysis.py",
-        "order": "per block set, iterations 0 to 3 run packed, swapped, swapped, packed under the primary seed of "
-        "each layout (ABBA); iterations 4 and 5 are the replicate arm, one packed and one swapped iteration under "
-        "the replicate seed of each layout, in the order packed, swapped for an even block set and swapped, packed "
-        "for an odd one",
+        "order": "per block set, the six iterations alternate the layouts, packed first for an even block set and "
+        "swapped first for an odd one; each layout runs its primary seed at its first and last slot and its "
+        "replicate seed at the slot between them, so the replicate sits at the mean time of the primary pair and "
+        "the same-layout replicate contrast carries no linear drift; the mesh-averaged placement contrast then "
+        "carries a linear-drift imbalance of one slot whose sign flips with the parity of the block set",
         "binding": "a result iteration binds to its setting by circuit_params and compilation_seed; the two "
         "primary repeats of one layout share both and bind in submission order; an iteration that returns no "
         "counts holds its slot",
