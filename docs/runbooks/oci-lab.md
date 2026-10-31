@@ -57,6 +57,25 @@ oracle-cloud-agent --classic`; the plugin set is applied through
 `oci compute instance update --agent-config` with the names the agent reports
 (`oci.compute_instance_agent.PluginClient.list_instance_agent_plugins`).
 
+## Resource Manager stack
+
+```sh
+sh scripts/oci_lab/rm_stack.sh    # discovery stack lab-stack, patched config, plan job; never applies
+```
+
+Resource Discovery captures the core, bastion, database, mysql, ons and
+budget services of the tenancy root into the stack `lab-stack` with a state
+file that already holds every live resource, so its plan adds and destroys
+nothing. The generated Terraform and the patched upload sit in
+`~/.oci/lab/rm-config/` and the last plan log in `~/.oci/lab/rm-plan.log`;
+the generated files carry OCIDs and stay out of the repository. The plan's
+in-place changes are tag timestamps on the budget alert rules and the
+`source_details.source_id` of instances launched from a rewritten boot
+volume; an apply would only rewrite those fields, and the stack serves as the
+rebuild record and drift check. A1 hosts enter the stack by rerunning
+discovery after they launch (delete `lab-stack` first; its state is the
+discovery snapshot).
+
 ## Access
 
 SSH reads `~/.ssh/config.d/oci-lab` (included from `~/.ssh/config`): `lab-edge`
