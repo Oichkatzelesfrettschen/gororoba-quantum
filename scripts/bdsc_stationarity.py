@@ -59,6 +59,7 @@ import bdsc_stray_mode_veto as veto  # noqa: E402
 from qi_readout_ringdown_cases import fsum_rows, libm_map  # noqa: E402
 
 import parallel  # noqa: E402
+import qd_records  # noqa: E402
 
 CASE = ROOT / "docs/evidence/bdsc/stationarity/case.json"
 CASES_DIR = ROOT / "results/quandela/cases/bdsc_stationarity"
@@ -330,16 +331,20 @@ def plan_check(path: Path) -> int:
 
 
 def admit(run: Path, validate: bool, frozen: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
-    """(manifest, result, submission) of one stationarity run after every integrity check of the readout."""
+    """(manifest, result, submission) of one stationarity run after every integrity check of the readout.
+
+    validate applies qd_records.validate_run, the shared record rules; the self-test's synthetic runs carry no
+    circuit or raw result and pass only the readout's own checks below."""
     import qd_platform
 
+    records = qd_records.load_run(run)
     if validate:
-        qd_platform.run_facts(run)
-    manifest_bytes = (run / "cases.json").read_bytes()
+        qd_records.validate_run(records)
+    manifest_bytes = records.bytes_of("cases.json")
     manifest = json.loads(manifest_bytes)
-    result = json.loads((run / "results.json").read_text(encoding="utf-8"))
-    submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
-    body_bytes = (run / "job-body.json").read_bytes()
+    result = records.json_of("results.json")
+    submission = records.json_of("submission.json")
+    body_bytes = records.bytes_of("job-body.json")
     job = manifest.get("job")
     require(job in JOBS and isinstance(frozen.get(job), dict), f"{run}: job {job!r} is not a job of the case")
     require(manifest_bytes == frozen[job]["cases.json"], f"{run}: cases.json differs from the frozen build")

@@ -387,6 +387,10 @@ unpublished method enters a Quandela job only with that use accepted.
   The Ascella signed-coherence analyses (`ascella_coherence_repeat.run_record`
   and its callers) read their runs through `read_run` too, so a run enters a
   score only after the shared record rules.
+  `load_run` reads a directory's files without judging them and
+  `validate_run` applies the rules to the loaded records, so the Belenos
+  (bdsc) readouts load every run the same way and validate the retained
+  ones, while their self-tests' synthetic runs carry no circuit or raw result.
 
 The token's provider limits and the repository runner's admission rule are
 separate. The recorded provider limits allow one running job and one queued

@@ -55,6 +55,7 @@ import bdsc_certificate as cert  # noqa: E402
 import qd_platform  # noqa: E402
 
 import parallel  # noqa: E402
+import qd_records  # noqa: E402
 
 RUNS = ROOT / "results/quandela/runs"
 RUN_GLOB = "*-qpu_belenos-bdsc_qualification-*"
@@ -146,13 +147,9 @@ def load_runs() -> list[dict[str, Any]]:
     capability = {None: "processor_record_completeness", (): "uncorrected_observations"}
     runs = []
     for path in sorted(RUNS.glob(RUN_GLOB)):
-        # run_facts binds cases.json, circuit.json and job-body.json to the receipt and results.json to raw/result.json.
-        qd_platform.run_facts(path)
-        manifest = json.loads((path / "cases.json").read_text(encoding="utf-8"))
-        result = json.loads((path / "results.json").read_text(encoding="utf-8"))
-        submission = json.loads((path / "submission.json").read_text(encoding="utf-8"))
-        body = json.loads((path / "job-body.json").read_text(encoding="utf-8"))
-        circuit = json.loads((path / "circuit.json").read_text(encoding="utf-8"))
+        # read_run binds cases.json, circuit.json and job-body.json to the receipt and results.json to raw/result.json.
+        run = qd_records.read_run(path)
+        manifest, result, submission, body, circuit = run.manifest, run.collected, run.submission, run.body, run.circuit
         require(submission["platform"] == bdsc_cases.QUALIFYING_PLATFORM, f"{path.name}: platform")
         served = result.get("data", {}).get("platform_name")
         require(served == bdsc_cases.QUALIFYING_PLATFORM, f"{path.name}: the service reports {served!r}")
