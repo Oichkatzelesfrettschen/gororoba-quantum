@@ -14,8 +14,8 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](../SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 46 licensed PDFs and two aliases;
-202 external sources retain citations and optional ignored local reading copies.
+license evidence. The library publishes 50 licensed PDFs and two aliases;
+205 external sources retain citations and optional ignored local reading copies.
 Six licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](../PDF_SHA256SUMS) verifies the published PDF set from the
@@ -141,7 +141,7 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [1102.5151](../notes/papers/1102.5151.md) | Kirshtein 2012: automorphism groups of Cayley-Dickson loops | none | high | none |
 | [1405.6888](../notes/papers/1405.6888.md) | Saniga, Holweck and Pracna 2014: Cayley-Dickson algebras and finite geometry | none | medium | none |
 | [2606.27798](../notes/papers/2606.27798.md) | Aryapoor, Back and Pautrel 2026: involutions in the Cayley-Dickson construction | none | medium | none |
-| [2609.11588](../notes/papers/2609.11588.md) | Lemley 2026: quasilinear multiplication in the real Cayley-Dickson tower (arXiv 2609.11588) | none | high | none |
+| [2609.11588](../notes/papers/2609.11588.md) | Lemley 2026: quasilinear multiplication in the Cayley-Dickson tower (arXiv 2609.11588; versions 1 and 2) | none | high | none |
 | [2603.20495](../notes/papers/2603.20495.md) | Chapman and Levin 2026: central products of Cayley-Dickson loops (arXiv 2603.20495) | none | high | none |
 | [2501.00123](../notes/papers/2501.00123.md) | Chapman, Levin, Vishne and Zaninelli 2024: loops with involution and the Cayley-Dickson doubling process | none | high | none |
 | [1707.07318](../notes/papers/1707.07318.md) | Bales: the Cayley-Dickson doubling products (arXiv 1707.07318) | none | high | none |
@@ -178,6 +178,11 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | 1811.08580 | Freedman, Shokrian-Zini, Wang, Quantum computing with octonions (2018) | none | medium | none |
 | levratti-2026-fano-css | Levratti, Fano duality, projective orthogonality and the CSS bridge (author-hosted, 2026) | none | high | none |
 | levratti-2026-active-stabilizers | Levratti, Active stabilizers in Reed-Muller CSS codes from Cayley-Dickson zero-divisors (author-hosted manuscript, 2026) | none | low | none |
+| [levratti-2026-sign-parity-zero-divisors](../notes/papers/levratti-2026-sign-parity-zero-divisors.md) | Levratti, Sign-parity classification of zero divisors in Cayley-Dickson algebras (Zenodo preprint, 2026): the count 336 x [n-1 choose 3]_2 checked at 16 and 32 dimensions | none | high | none |
+| [skiouris-2026-algebraic-hiddenness](../notes/papers/skiouris-2026-algebraic-hiddenness.md) | Skiouris, Algebraic hiddenness in the sedenion algebra (Zenodo preprint, 2026): determinant identity, 4-8-4 spectrum and R_l centrality checked | none | high | none |
+| [skiouris-2026-aphanics-pathion](../notes/papers/skiouris-2026-aphanics-pathion.md) | Skiouris, Aphanics at the pathion level (Zenodo preprint, 2026): stratified Gram spectra and the Clifford triad checked | none | medium | none |
+| [1505.05210](../notes/papers/1505.05210.md) | Kustin, Polini and Ulrich, The equations defining blowup algebras of height three Gorenstein ideals (Algebra Number Theory 11, 2017) | none | low | none |
+| [1207.1060](../notes/papers/1207.1060.md) | Branco Correia and Zarzuela, Divisors of a module and blow up (J. Pure Appl. Algebra 217, 2013) | none | low | none |
 | [2102.01682](../notes/2102.01682.md) | Corcoles et al., Dynamic phase estimation on superconducting qubits, PRL 127, 100501 (2021) | high | indirect | limited |
 | [2608.08232](../notes/2608.08232.md) | Koebisu, Dimension-32 determinant factorization and rank-stratum Question 4 (2026 preprint) | none | high | none |
 | [2608.26893](../notes/2608.26893.md) | Zhilina, Doubly alternative zero divisors (2023 journal; 2026 arXiv posting) | none | high | none |
@@ -347,7 +352,7 @@ hardware cases retain their independent admission gates.
 | Encoded field models | [Digital optics](../notes/1909.04408.md), [Gaussian coherence](../notes/papers/1610.03272.md), [lattice Casimir](../notes/papers/2105.02032.md), [Gaussian simulation](../notes/papers/quant-ph-0109047.md), [collision models](../notes/2106.11974.md); encoding, model bias and classical baselines |
 | Physical interpretation and execution | [Physical DCE](../notes/papers/1105.4714.md), [real-material Casimir](../notes/papers/0902.4022.md), [circuit QED](../notes/papers/2005.12667.md), [IBM policy](../notes/papers/ibm_fractional_execution_sources.md); apparatus, observable and runtime boundaries |
 | Vacuum, dark sector and negative energy | [ALPS II](../notes/papers/2512.14110.md), [Dark SRF](../notes/papers/2510.02427.md), [dielectric haloscope](../notes/papers/2503.23354.md), [qubit haloscope](../notes/papers/2503.18315.md), [atom interferometry](../notes/papers/2511.09750.md), [LZ](../notes/papers/2609.02823.md), [DES Y6](../notes/papers/2601.14559.md), [worldline DCE](../notes/papers/2604.13237.md), [magnetic-fluid Casimir](../notes/papers/2601.00483.md), [quantum inequalities](../notes/papers/gr-qc-9607003.md), [QET theory](../notes/papers/1002.0200.md) and [hardware](../notes/papers/2301.02666.md), [journal and IBM pages](../notes/papers/casimir-dark-sector-web-sources.md), [Pais patents, NAWCAD record and gyroscope nulls](../notes/papers/pais-patent-web-sources.md); exclusions, nuisances and energy accounting before any new-physics reading |
-| Cayley-Dickson associator structure | [defect census](../notes/topics/cd_associator_defect_census.md), [Wilmot](../notes/papers/2505.11747.md), [Kirshtein](../notes/1207.4230.md); closed forms, subspace types and the sufficient conditions of Lemma 3 |
+| Cayley-Dickson associator structure | [defect census](../notes/topics/cd_associator_defect_census.md), [Wilmot (versions 3 and 4)](../notes/papers/2505.11747.md), [Kirshtein](../notes/1207.4230.md); closed forms, subspace types and the sufficient conditions of Lemma 3 |
 | Sedenion automorphisms, sign matrices and Hadamard groups | [Wilmot automorphisms](../notes/papers/2512.07210.md), [Gresnigt review](../notes/papers/2609.10569.md), [Kivunge slides](../notes/papers/kivunge-2013-sign-matrices-2n-ons.md), [skew Hadamard morphisms](../notes/papers/1907.07024.md), [O Cathain](../notes/papers/ocathain-2012-nonaffine-hadamard.md), [PSL_2(7)](../notes/papers/0709.1447.md); printed sedenion tables checked against `cd_core`, the `S3` maps certified on basis pairs, the sign-matrix and Paley statements linked to the [star-lattice tower](../notes/topics/cd-star-lattice-tower.md) |
 | External algebra packages | [package index](../notes/packages/README.md): measured relation of eight hypercomplex packages to cd_core, independence, licenses and correct use |
 | Octonion structure checks | [associator codes, box-kite frustration and walk sectors](../notes/topics/octonion_structure_checks.md): RM(1,3) and E8 from the associator slices, shared-sign and shared-phase frustration minima 4 and 3, exact walk sector weights by Ramanujan sums, and the doubling-convention bridge |
