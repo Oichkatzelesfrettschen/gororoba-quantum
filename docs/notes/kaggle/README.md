@@ -7,7 +7,7 @@ Kaggle kernels run every simulation of 14 qubits or fewer (root AGENTS.md,
 | Guide | Content |
 | --- | --- |
 | [workflow.md](workflow.md) | `scripts/kaggle_run.py` push, status and collect; authentication; how a result enters the research state |
-| [substrates.md](substrates.md) | measured CPU, RAM, disk, GPU, TPU and qubit limits of each machine shape, and what runs on which substrate |
+| [substrates.md](substrates.md) | measured CPU, RAM, disk, GPU, TPU and qubit limits of each machine shape, and what runs on which substrate, including managed memory past T4 VRAM and the memory fit rule for classical algebra jobs such as the A_5 fibers |
 | [gpu-runbook.md](gpu-runbook.md) | how to run a GPU kernel without wasting quota: the procedure, the failures that shaped it, Aer and numpy practice, the quota ledger and the 15-qubit routing gate |
 | [custatevec.md](custatevec.md) | the cuQuantum libraries the cu11 Aer wheel loads, their pins, the cuStateVec T4 check and how to read it |
 | [hypercomplex-stack.md](hypercomplex-stack.md) | the eight hypercomplex packages built and proved identically on the host and in every kernel |
