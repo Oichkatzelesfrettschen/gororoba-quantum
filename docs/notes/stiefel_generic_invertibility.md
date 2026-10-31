@@ -47,7 +47,7 @@ has full measure. Its complement, the zero-divisor Stiefel elements of
      which is nonzero. The point `w / sqrt 62` lies in `V`.
 
    The evidence is the bundle in [stiefel_witness](../evidence/stiefel_witness/README.md):
-   `L_w` is built from open_gororoba's `cd_sign_fuel`, it agrees with
+   `L_w` is built from gororoba-open's `cd_sign_fuel`, it agrees with
    `cd_core` (forced by the identity) and with python-hypercomplex (zero
    mismatched entries), and `nullity.json` retains the determinant residues
    modulo `2^61 - 1` and `10^9 + 7` (gate core-267).

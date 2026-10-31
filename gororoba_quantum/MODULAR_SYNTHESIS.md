@@ -267,7 +267,7 @@ compiler does. The replay gates and the retained records are listed in
 
 ## Transfer from the dimension ladder and Rocq corpus
 
-The useful transfer from open_gororoba is structural compilation and proof
+The useful transfer from gororoba-open is structural compilation and proof
 reflection. Its sign kernel preserves operand swaps and zero predicates
 through recursion. Flattening those predicates prematurely into ANF obscures
 sharing, just as flattening a modular permutation into isolated basis swaps
@@ -275,7 +275,7 @@ obscures reversible switch structure. Cayley-Dickson nonassociativity remains
 an algebraic observable; ordinary circuit matrix composition remains
 associative.
 
-The fresh source audit pins open_gororoba at
+The fresh source audit pins gororoba-open at
 `127816214c3f96cc1777bd4bd9ba1b286ccc5917`. The source-hash and theorem-assumption
 record is `results/hw_estimate/n21_cross_project_proof_audit.json`.
 

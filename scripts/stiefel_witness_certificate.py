@@ -8,7 +8,7 @@ inverse; with d the least common denominator of that inverse and N = d L_v^-1,
 the integer identity N L_v = d I holds.
 
 proofs/StiefelWitnessInvertible.v carries v, d and N as data, recomputes L_v
-from v with open_gororoba's cd_sign_fuel (verified/C1474_FuelAdequacy.v, copied
+from v with gororoba-open's cd_sign_fuel (verified/C1474_FuelAdequacy.v, copied
 from a pinned GOROROBA_ROOT by docs/evidence/stiefel_witness/replay_rocq.sh),
 and checks N L_v = d I and the Stiefel conditions by vm_compute. N determines
 L_v as d N^-1, so the identity can only pass when cd_sign_fuel reproduces

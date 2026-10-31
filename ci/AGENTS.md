@@ -144,7 +144,7 @@ tags `"requires": ["qi"]`, under the Quantum Inspire interpreter
 environment, links its binary onto PATH, runs with stdin from `/dev/null` (Singular reads stdin even for `--version`) and
 runs the gates tagged `"requires": ["singular"]` with `GOROROBA_SINGULAR_REQUIRED=1`; in every other lane those gates
 print a skip line. The
-`external-ground-truth` job runs `verify.py` over the open_gororoba commit
+`external-ground-truth` job runs `verify.py` over the gororoba-open commit
 named in [ci/open_gororoba.pin](open_gororoba.pin):
 `ci/fetch_open_gororoba.sh` sparse-checks out the paths it is given, and
 `scripts/materialize_gororoba_csv.py` rewrites the git-ignored `data/csv`
@@ -378,7 +378,7 @@ push events, which ci.yml declares no trigger for, so a pull request that
 changes a proof input runs the local replay or dispatches ci.yml on its
 branch, and the nightly run replays every bundle on main.
 tests/ci/test_rocq_ci_pins.py holds the pin, the toolchain.txt banners, the
-path list and the open_gororoba fetch in agreement and rejects each mutation
+path list and the gororoba-open fetch in agreement and rejects each mutation
 of them. The manual procedure remains the local replay.
 
 **Behavioral suite.** tests/ holds one pytest suite with two selections.

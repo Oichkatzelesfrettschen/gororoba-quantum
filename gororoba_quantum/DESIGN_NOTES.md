@@ -1,6 +1,6 @@
 # Cayley-Dickson quantum circuits
 
-Quantum circuits whose structure comes from the open_gororoba Cayley-Dickson
+Quantum circuits whose structure comes from the gororoba-open Cayley-Dickson
 algebra kernel. Left multiplication L_{e_m} by a basis unit is a signed
 permutation of the 2^k basis states (e_p * e_q = cd_sign(dim,p,q) e_{p XOR q}),
 so it is unitary on k qubits. The designs turn two algebraic defects that the
