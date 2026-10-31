@@ -370,6 +370,7 @@ differs from it only in the `cd_core.py` digest.
 
 | File | Contents |
 |---|---|
+| [design/belenos-suppression-law-case.md](design/belenos-suppression-law-case.md) | written case for two qpu:belenos jobs: three photons through the six-mode Fourier matrix with a cyclic input (12 of 20 collision-free outputs suppressed) against a non-periodic control; preregistered suppressed-fraction decision against the distinguishable and mean-field models, forecasts at the live HOM and g2, credits and seconds |
 | [design/ascella-two-photon-associator-case.md](design/ascella-two-photon-associator-case.md) | written case for one qpu:ascella job: two photons through L_a L_b against L_(ab) (a = (e6+e7)/sqrt2, b = (e5+e7)/sqrt2) with a quaternion control; the associator appears only in two-photon interference; preregistered Delta endpoints, HOM-visibility model, credits, seconds and the HOM-floor decision |
 | [design/ascella-associator-thermal-seismograph.md](design/ascella-associator-thermal-seismograph.md) | written prospective case for one 32-iteration qpu:ascella job: two photons through octonion associator and quaternion control under counterbalanced Hot (pi), Cold (0), and Wrapped (2*pi) predecessor phase conditioning with 12-mode spatial sentinel monitoring |
 | [design/tuna-order-pilot-adversarial-admission.md](design/tuna-order-pilot-adversarial-admission.md) | descriptive pilot preregistration, adversarial findings and execution admission |
