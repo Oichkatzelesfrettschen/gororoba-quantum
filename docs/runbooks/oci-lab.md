@@ -57,6 +57,29 @@ oracle-cloud-agent --classic`; the plugin set is applied through
 `oci compute instance update --agent-config` with the names the agent reports
 (`oci.compute_instance_agent.PluginClient.list_instance_agent_plugins`).
 
+## Spend guards
+
+The account runs Pay As You Go, where service limits rise to paid levels, so
+two guards hold it to Always Free. The quota policy `lab-free-only`
+(`sh scripts/oci_lab/quota_free_only.sh`) zeroes each service family and then
+sets the free allowance: A1 2 OCPU / 12 GB, two E2.1.Micro, 200 GB and four
+volumes of block storage with five backups, two free Autonomous Databases,
+one 10 Mbps flexible load balancer, 20 GB of Object Storage, and zero for
+every other compute shape, GPU and paid data service. A quota refuses the
+create before it bills; `oci limits resource-availability get` reports the
+`effective-quota-value`. MySQL publishes no quota names, so its guard is the
+`MySQL.Free` shape in `mysql_create.py`. The budget `lab-guard` alerts on any
+actual spend and on a forecast of $1 through the `lab-events` email
+subscription, which delivers only after its confirmation link is clicked;
+budgets alert and never stop resources.
+
+`scripts/oci_lab/payg_watch.sh` (tmux `oci-payg-watch`) polls the compute
+service limits every 30 minutes and reports when the paid-shape limit
+leaves 0, together with the A1 service limit the upgraded account holds.
+`A1_QUOTA_OCPUS=4 A1_QUOTA_MEM_GB=24 sh scripts/oci_lab/quota_free_only.sh`
+raises the A1 quota only after an invoice or Oracle's limits page confirms
+that allowance at no charge.
+
 ## Resource Manager stack
 
 ```sh
