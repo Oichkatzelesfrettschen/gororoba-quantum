@@ -9259,6 +9259,15 @@
    "qiskit",
    "typing"
   ],
+  "gororoba_quantum/qi_records.py": [
+   "__future__",
+   "collections",
+   "dataclasses",
+   "hashlib",
+   "json",
+   "pathlib",
+   "typing"
+  ],
   "gororoba_quantum/qi_stack.py": [
    "__future__",
    "dataclasses",
@@ -9267,6 +9276,17 @@
    "os",
    "pathlib",
    "subprocess"
+  ],
+  "gororoba_quantum/qi_zz_preflight.py": [
+   "__future__",
+   "collections",
+   "dataclasses",
+   "json",
+   "parallel",
+   "pathlib",
+   "qi_records",
+   "tempfile",
+   "typing"
   ],
   "gororoba_quantum/qpe_diagnostics.py": [
    "__future__",
@@ -14699,6 +14719,15 @@
    "tempfile",
    "typing"
   ],
+  "scripts/qi_zz_map_qx_analysis.py": [
+   "__future__",
+   "argparse",
+   "pathlib",
+   "qi_zz_map",
+   "qi_zz_map_qx",
+   "qi_zz_preflight",
+   "sys"
+  ],
   "scripts/qi_zz_map_qx_plans.py": [
    "__future__",
    "argparse",
@@ -15604,7 +15633,6 @@
   ],
   "pyoctonion": [],
   "pyquaternion": [],
-  "qi_records": [],
   "qiskit": [
    "qiskit"
   ],
@@ -15670,7 +15698,6 @@
   "pyadic",
   "pyoctonion",
   "pyquaternion",
-  "qi_records",
   "quaternion",
   "quaternionic",
   "sage",

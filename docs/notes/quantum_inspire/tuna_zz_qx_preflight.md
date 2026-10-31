@@ -115,8 +115,10 @@ receipt, service results and raw shots, then run:
 
 The retained plan binds `scripts/qi_zz_map_qx.py` byte for byte through
 `qx_builder_sha256`, so that module stays the pinned producer of the proposal.
-Its successor reads each batch through `gororoba_quantum/qi_records.py` and
-keeps the same design conditions and marginal criteria:
+Its successor binds the design (plan schema, policy, backend, shots and the
+pinned `check_counts`) and calls `gororoba_quantum/qi_zz_preflight.py`, which
+reads each batch through `gororoba_quantum/qi_records.py` and rejects an
+empty or inconsistent plan:
 
 ```bash
 "$PYTHON" scripts/qi_zz_map_qx_analysis.py --runs RUNS_ROOT \
