@@ -57,8 +57,8 @@ record the same rule from the first iterated jobs.
 
 | Limit | Value | Source |
 |---|---|---|
-| Duration of one job | 300 s (`max_duration` of the Explorer row) | `qd_platforms`, `plan` refuses a longer case |
-| Time per iteration on qpu:belenos | 6.3 s plus 26 us per sample | c1eb1cbb: 9 iterations, 166000 samples, 61 s predicted and measured; 46b810ae: 157 s predicted, 149 s measured |
+| Duration of one job | 300 s (`max_duration` of the Explorer row), counted from `start_time` | `qd_platforms`, `plan` refuses a longer case; see "Job shape on qpu:belenos" |
+| Time per iteration on qpu:belenos | grows with the photon count: about 7 to 9 s for one photon, 46 to 50 s for six | "Job shape on qpu:belenos"; one-photon: 6.3 s plus 26 us per sample (c1eb1cbb: 9 iterations, 166000 samples, 61 s predicted and measured; 46b810ae: 157 s predicted, 149 s measured) |
 | Time per one-computation job | 13 to 15 s whatever its samples | aa4218f1, a5f0a8a4 |
 | Time per iteration on sim:belenos | about 13 to 14 s | 1d7160c1 and 32b28fe8, 16 iterations in 212 and 230 s |
 | Transmittance behind the rates | 2.69 to 2.95 % | `perfs_at_plan` of the retained runs; the rate scales with it |
@@ -77,15 +77,66 @@ For a case of N settings, k iterations per job and n samples per iteration,
 with max_shots = h n per iteration (h = 2 leaves room for shots that miss the
 photon filter):
 
-- jobs J = ceil(N / k), and k (6.3 + 26e-6 n) stays within a fraction of
-  300 s that leaves room for a slower acquisition (0.6 in the BDSC case);
+- jobs J = ceil(N / k), and k t(n) stays within a fraction of 300 s that
+  leaves room for a slower acquisition (0.6 in the BDSC case, 0.9 for a
+  shape whose iteration time a retained job of the same shape measured),
+  with t(n) the iteration time of the case's shape ("Job shape on
+  qpu:belenos"; 6.3 + 26e-6 n for one photon);
 - credits = J (1 + 1e-6 h n) on a QPU, J on a simulator;
-- seconds = J k (6.3 + 26e-6 n) on qpu:belenos.
+- seconds = J k t(n) on qpu:belenos.
 
 Because the per-shot term is small next to the 1 credit per job, the
 optimum fills each job with as many iterations as the duration allows and
 then spends the remaining seconds on samples, which buy statistical power
 at 2e-6 credits per sample.
+
+## Job shape on qpu:belenos
+
+The fixed cost of an iteration, not its samples, sets how many iterations a
+job holds, and that cost grows with the number of photons the iteration
+injects. Durations of the retained runs (`duration` of `results.json`, which
+counts from `start_time`):
+
+| Shape | Jobs | Iterations | Samples per iteration | Shots per sample | Duration | Per iteration |
+|---|---|---|---|---|---|---|
+| one photon, mesh settings | f945a01d and five more | 16 | 1500 | 1 | 107 to 136 s | 6.7 to 8.5 s |
+| one photon, BDSC qualification | 2524f061 and four more | 12 | 300000 | 1 | 87 to 115 s | 7.3 to 9.6 s |
+| one photon, BDSC stationarity and drift series | 29a3d112 and eleven more | 24 | 100000 | 1 | 165 to 176 s | 6.9 to 7.3 s |
+| two photons, `min_detected_photons` 2 | 6de00147, 04f3d55a | 8 | 2048 | about 74 | 101, 117 s | 12.6, 14.6 s |
+| three photons, postselected teleportation | f918c870, e7f527ce, 137c771c | 6 | 1200 | about 1,800 | 125 to 186 s | 21 to 31 s |
+| six photons, one-iteration packed series | 15a50126 and nine more | 1 | 60000 | 1 | 52 to 55 s | 52 to 55 s |
+| six photons, 24-mode template | dc348230 (cut), c17b8312 | 12, 5 | 6000, 30000 | 1 | 300 s cut after 6, 230 s | at most 50 s, 46 s |
+
+- **Samples are nearly free in time.** At `min_detected_photons` 1 a
+  sample is one detection event, and the rate is the returned global
+  efficiency times the 4.94 MHz clock: 0.0034 in dc348230, about 17,000
+  samples per second. Thirty thousand samples add under two seconds to a
+  46 s iteration, and 300,000 one-photon samples fit inside an 8 s
+  iteration. Under a coincidence filter the shots per sample, not the
+  samples, set the acquisition time (about 1,800 per three-photon sample).
+- **The per-iteration cost scales with photon count**, about 8 s per photon
+  across the shapes above (medium confidence: four photon counts whose
+  circuits and filters also differ; a job that varies the photon count at
+  fixed circuit and filter would settle it). Plan a new shape from the row
+  with its photon count, and measure the first job before sending the rest.
+- **The clock.** `duration` counts from `start_time`: a packed-series job
+  that waited 1,382 s in the queue reports 34 s, so queue time and
+  calibration windows before the start never count. A cut job reports the
+  cut plus its teardown (318 s for 708bb40d, 339 s for dc348230).
+- **A cut.** The service stops the iteration in progress at 300 s, returns
+  every completed iteration with counts (the rest as missing entries) and
+  bills the full ceiling (dc348230: 1.018 credits for 6 of 12 iterations).
+  Put the iteration the analysis can best spare last, so a cut costs it
+  rather than a reference iteration.
+- **Shape rule.** Take k = floor(0.9 x 300 / t) iterations at the measured
+  per-iteration time t of the shape, then raise the samples per iteration
+  while the time stays within the margin, since each further sample costs
+  2e-6 credits at h = 2 and almost no time. When the statistical error is
+  dominated by something samples do not reduce, such as per-seed compiled-mesh
+  error ([strategy.md](../notes/quandela/strategy.md) section 7, "Per-seed
+  mesh variance of a share"), spend the iterations on more compilation
+  seeds instead: `belenos_mode_swap_interleaved` runs three replicate seeds
+  per layout in five-iteration jobs of 30,000 samples for 1.09 credits each.
 
 ## Worked case: the BDSC six-state qualification
 

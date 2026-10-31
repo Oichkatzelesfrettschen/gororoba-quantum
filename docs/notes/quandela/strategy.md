@@ -875,6 +875,71 @@ the couplers equaled Q1's throughout.
     through consecutive large entries, the threshold, and whether opening
     on another mesh prevents the failure.
 
+**Per-seed mesh variance of a share.** The compiled mesh is a function of the
+iteration's circuit parameters and compilation seed, and the observable moves
+with it far beyond binomial error.
+
+- *Same parameters and seed, same mesh.* The exact replay of teleportation
+  job-02 (137c771c) returned the `computed_circuit` of all six f918c870
+  iterations byte for byte, and the two primary repeats of each layout in
+  mode-swap job-00 (dc348230), four iterations apart in one job, returned one
+  digest each and agreed within binomial error (drift D 4.9 on 12 degrees of
+  freedom). The same identity across two jobs of one set is the mode-swap
+  case's job-03 and job-04 check
+  ([belenos-mode-swap-interleaved-case.md](../../design/belenos-mode-swap-interleaved-case.md)).
+- *Different seeds, different meshes, different answers.* One 4-mode
+  two-photon circuit under four seeds read control endpoints D of -0.646,
+  -0.873, -0.853 and -0.672 (chi-square 241 on 3 degrees of freedom; the
+  second source pair 382), which made the in-situ visibility unresolved
+  ([belenos-associator-visibility-case.md](../../design/belenos-associator-visibility-case.md),
+  Outcome). The split teleportation blocks differ by their meshes, not by
+  drift ([ascella-belenos-entanglement-teleportation.md](../../design/ascella-belenos-entanglement-teleportation.md),
+  "Outcome: the block veto measures per-seed compiled meshes"). For a
+  single-photon algebra-mode share, set 0 of the mode-swap case gives a mesh
+  standard deviation of about 0.057 for half blocks and 0.047 for extreme
+  blocks against a binomial 0.016 per 6,000-sample iteration, with heavy
+  tails: two contrasts of 11 and 12 binomial standard errors, both on slot 5.
+- *Class dependence.* A share a = cos^2 theta moves by 2 sqrt(a (1 - a))
+  d theta under a mesh rotation error d theta, so a block near a = 1/2
+  carries about three times the mesh error of a block near 0 or 1; the
+  retained packed-swapped deltas bound the two at 0.059 and 0.029.
+
+Design rules that follow, each from a defect the two adversarial reviews of
+the mode-swap case found and its Monte Carlo confirmed:
+
+1. Test a contrast between two compiled meshes against a measured per-seed
+   mesh variance, not against binomial error: run replicate seeds of the
+   identical circuit in the same job, and pool their spread.
+2. Keep repeats of one seed as the drift reference, and place the replicates
+   at the repeats' mean slot, so a linear drift does not masquerade as mesh
+   variance.
+3. Estimate the mesh variance per share class (or in theta = arcsin sqrt a),
+   and withhold a per-block placement reading when one physical slot's
+   standardized spread exceeds the others (Bonferroni over the six slots).
+4. Subtract the plain binomial variance from a mesh spread; a binomial term
+   inflated by the drift between repeats drives the mesh variance to 0 and
+   reads drift as its absence.
+5. Once the mesh variance dominates the binomial (about ten to one in
+   variance at 6,000 samples), spend a job's iterations on more seeds and
+   its remaining seconds on samples, not more samples alone
+   ([credit optimization](../../runbooks/quandela-credit-optimization.md),
+   "Job shape on qpu:belenos").
+6. A predictor built from other blocks excludes the target's partners: the
+   packed slot predictor drew 10 of its 14 predictions from the block's own
+   swap partner and so reads partner offsets as a chip-mode sign.
+7. Give each reading the statistic that supports its words: new deltas that
+   do not follow old ones read "mesh error" only when the old deltas' size
+   fits the measured mesh variance (`earlier_excess`), with an allowance for
+   the variance change between acquisition windows (threefold here).
+8. Run the full decision chain through the case's own functions on
+   simulated binomial cells before freezing, under heavy tails, class
+   differences, a bad slot and the case's time structure (a step between
+   two jobs of one set), and quote the simulated rates instead of a
+   textbook tail.
+9. Measure the iteration time of a new job shape before freezing a
+   multi-job plan; the mode-swap job-00 bound charged the per-iteration cost
+   to samples and the service cut the job after 6 of 12 iterations.
+
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 
 The literature note transcribes 30 sources with their arXiv ids and the
