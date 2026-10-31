@@ -22,6 +22,7 @@ GAIN = {0: 0.02, 1: -0.05, 2: 0.09, 3: -0.12, 4: 0.15, 5: -0.03}
 ARMS = (
     (case.SEED_DRAW, case.COMPILATION_SEEDS),
     (case.REPLICATE_SEED_DRAW, case.REPLICATE_COMPILATION_SEEDS),
+    (case.EXTRA_REPLICATE_SEED_DRAW, case.EXTRA_REPLICATE_SEEDS),
 )
 
 
@@ -45,7 +46,7 @@ def test_seeds_are_the_registered_draws_in_index_order_and_each_is_used_once() -
         values = json.loads((ROOT / draw).read_text(encoding="utf-8"))["values"]
         if list(seeds) != values:
             raise AssertionError(f"{draw} is not the draw in index order")
-    every = case.COMPILATION_SEEDS + case.REPLICATE_COMPILATION_SEEDS
+    every = case.COMPILATION_SEEDS + case.REPLICATE_COMPILATION_SEEDS + case.EXTRA_REPLICATE_SEEDS
     if len(set(every)) != len(every):
         raise AssertionError("a compilation seed repeats across the arms")
     ledger = json.loads((ROOT / "docs/evidence/qrng_seeds/allocations.json").read_text(encoding="utf-8"))
@@ -73,29 +74,32 @@ def set_settings() -> dict[int, list[dict[str, Any]]]:
 
 def test_each_set_alternates_the_layouts_and_each_seed_binds_its_iterations() -> None:
     sets = set_settings()
-    if sorted(sets) != [0, 1, 2, 3, 4]:
-        raise AssertionError(sorted(sets))
+    if sorted(sets) != [0, 1, 2, 3, 4] or [len(sets[s]) for s in sorted(sets)] != [6, 10, 10, 10, 10]:
+        raise AssertionError({s: len(v) for s, v in sets.items()})
     for block_set, mine in sets.items():
         first = "packed" if block_set % 2 == 0 else "swapped"
-        if [s["layout"] for s in mine] != [first, case.MIRROR[first]] * 3:
+        if [s["layout"] for s in mine] != [first, case.MIRROR[first]] * (len(mine) // 2):
             raise AssertionError(f"set {block_set} does not alternate the layouts from {first}")
-        times: dict[tuple[str, str], list[int]] = {}
-        seeds: dict[tuple[str, str], set[int]] = {}
-        for slot, s in enumerate(mine):
-            times.setdefault((s["layout"], s["arm"]), []).append(slot)
-            seeds.setdefault((s["layout"], s["arm"]), set()).add(s["compilation_seed"])
-        if len(times) != 4 or any(len(v) != 1 for v in seeds.values()):
-            raise AssertionError(f"set {block_set} takes one seed per layout and arm")
+        seen: set[int] = set()
         for layout in ("packed", "swapped"):
-            pair, replicate = times[(layout, "primary")], times[(layout, "replicate")]
-            if len(pair) != 2 or replicate != [sum(pair) // 2] or sum(pair) % 2:
-                raise AssertionError(f"set {block_set} {layout} replicate is off the primary mean slot")
-            for arm in ("primary", "replicate"):
-                if seeds[(layout, arm)] != {case.seed_of(block_set, layout, arm)}:
-                    raise AssertionError(f"set {block_set} {layout} {arm} seed")
+            primary = [slot for slot, s in enumerate(mine) if (s["layout"], s["arm"]) == (layout, "primary")]
+            replicate = [slot for slot, s in enumerate(mine) if (s["layout"], s["arm"]) == (layout, "replicate")]
+            if len(primary) != 2 or sum(replicate) * 2 != sum(primary) * len(replicate):
+                raise AssertionError(f"set {block_set} {layout} replicates are off the primary mean slot")
+            if primary != [min(primary + replicate), max(primary + replicate)]:
+                raise AssertionError(f"set {block_set} {layout} primary repeats do not bracket the replicates")
+            for s in mine:
+                if s["layout"] != layout:
+                    continue
+                if s["compilation_seed"] != case.seed_of(block_set, layout, s["arm"], s["repeat"]):
+                    raise AssertionError(f"{s['name']} seed")
+                if s["arm"] == "replicate":
+                    seen.add(s["compilation_seed"])
+        if len(seen) != len(mine) - 4:
+            raise AssertionError(f"set {block_set} reuses a replicate seed")
     for job, parts in case.JOBS.items():
-        if job not in case.RETAINED_CASES and (len(parts) != 1 or case.iterations(job) != 3):
-            raise AssertionError(f"{job} is not one half set")
+        if job not in case.RETAINED_CASES and (len(parts) != 1 or case.iterations(job) != case.ITERATIONS_PER_JOB):
+            raise AssertionError(f"{job} is not one half of a packed set")
 
 
 def test_the_retained_job_00_keeps_its_bytes_and_its_settings_rebuild() -> None:
@@ -107,17 +111,17 @@ def test_the_retained_job_00_keeps_its_bytes_and_its_settings_rebuild() -> None:
         case.build("job-00")
 
 
-def test_duration_bound_leaves_margin_and_credits_follow_the_largest_iteration() -> None:
+def test_duration_bound_leaves_one_iteration_of_margin_and_credits_follow_the_largest_iteration() -> None:
     for job in case.JOBS:
         manifest = json.loads((case.CASES / job / "cases.json").read_text(encoding="utf-8"))
         if manifest["max_shots"] != case.SHOTS_PER_ITERATION * manifest["iterations"]:
             raise AssertionError(f"{job}: max_shots")
         if job in case.RETAINED_CASES:
             continue
-        stressed = case.bound_seconds(job, case.STRESS_FACTOR)
-        if stressed > case.DURATION_MARGIN * case.MAX_DURATION or manifest["max_duration"] != case.MAX_DURATION:
-            raise AssertionError(f"{job}: stressed bound {stressed} s")
-        if not case.bound_seconds(job) <= case.expected_seconds(job) < stressed:
+        bound = case.bound_seconds(job)
+        if bound + case.SECONDS_PER_ITERATION > case.MAX_DURATION or manifest["max_duration"] != case.MAX_DURATION:
+            raise AssertionError(f"{job}: bound {bound} s")
+        if not bound <= case.expected_seconds(job) < case.MAX_DURATION:
             raise AssertionError(f"{job}: expected seconds {case.expected_seconds(job)}")
 
 
@@ -171,8 +175,10 @@ def synthetic(
             split = split_primary == (setting["block_set"], setting["layout"])
             if setting["arm"] == "primary" and (not primary_same_mesh or split):
                 mesh += f"-{setting['repeat']}"
-            if setting["arm"] == "replicate" and not replicate_distinct:
-                mesh = f"{setting['layout']}-{setting['block_set']}-primary"
+            if setting["arm"] == "replicate":
+                mesh += f"-{setting['repeat']}"
+                if not replicate_distinct:
+                    mesh = f"{setting['layout']}-{setting['block_set']}-primary"
             iterations.append(
                 {
                     "iteration": {
@@ -204,7 +210,8 @@ def flat(setting: dict[str, Any], block: dict[str, Any]) -> float:
 
 def mesh_offset(setting: dict[str, Any], block: dict[str, Any], size: float = 0.04) -> float:
     """A per-seed mesh offset of the block, the same for both primary repeats of a layout."""
-    return size * unit("mesh", setting["block_set"], setting["layout"], setting["arm"], block["t"], block["m"])
+    seed = setting["arm"] + (str(setting["repeat"]) if setting["arm"] == "replicate" else "")
+    return size * unit("mesh", setting["block_set"], setting["layout"], seed, block["t"], block["m"])
 
 
 def keys_of(runs: list[Path]) -> list[Key]:
@@ -233,7 +240,7 @@ def test_a_chip_mode_effect_moves_beyond_the_mesh_variance_and_reproduces_the_ea
     runs = synthetic(tmp_path, chip_mode(+1.0), reverse=True)
     first = case.analyze(runs, earlier=zero_deltas(runs))
     record = case.analyze(runs, earlier=earlier_from(first, 1.1))
-    if record["iterations_bound"] != 30 or record["withheld"]:
+    if record["iterations_bound"] != 46 or record["withheld"]:
         raise AssertionError(record["withheld"])
     slot = record["slot_predictor"]
     if slot["verdict"] != "slot" or slot["descriptive"] is not True or "reading" in slot:
@@ -241,7 +248,7 @@ def test_a_chip_mode_effect_moves_beyond_the_mesh_variance_and_reproduces_the_ea
     classes = record["mesh_variance"]["classes"]
     if record["validity"]["detected"] is not False or any(c["sigma2"] > 1e-6 for c in classes.values()):
         raise AssertionError(record["validity"])
-    if (classes["half"]["contrasts"], classes["extreme"]["contrasts"]) != (28, 32):
+    if (classes["half"]["dof"], classes["extreme"]["dof"]) != (68, 88):
         raise AssertionError(classes)
     if record["comparison"]["verdict"] != "reproduce" or record["comparison"]["sign_agreement"] != 30:
         raise AssertionError(record["comparison"])
@@ -405,7 +412,7 @@ def test_a_cut_short_job_keeps_its_counted_iterations_and_withholds_the_pooled_r
     results["iterations"][0] = {"missing": True}
     path.write_text(json.dumps(results), encoding="utf-8")
     record = case.analyze(runs, earlier={})
-    if (record["iterations_bound"], record["iterations_uncounted"]) != (29, 7):
+    if (record["iterations_bound"], record["iterations_uncounted"]) != (45, 7):
         raise AssertionError(record)
     if not record["reading"].startswith("withheld"):
         raise AssertionError(record["reading"])

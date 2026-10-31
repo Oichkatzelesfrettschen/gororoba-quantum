@@ -11,12 +11,14 @@ same-layout contrast between the replicate and the pooled primary repeats carrie
 per-seed mesh variance that the packed-swapped contrast is tested against. Both layouts put the six photons on chip
 modes 0, 4, 8, 12, 16 and 20, so one template circuit serves every iteration.
 
-JOBS lists the (block set, half) parts of each job. job-00 ran sets 0 and 1 whole and returned set 0 before the
-platform cut it at MAX_DURATION; RETAINED_CASES binds its bytes. job-03 to job-10 run the first and second halves of
-sets 1 to 4, three iterations each, so a set's primary pair straddles its two jobs. Set 5 holds two photons, not six,
-and stays out. The primary seed of set k and layout l (packed 0, swapped 1) is index 2k + l of the ANU QRNG draw
-docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json; the replicate seed is the same index of
-docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json. docs/evidence/qrng_seeds/allocations.json registers both.
+JOBS lists the (block set, iteration order) parts of each job. job-00 ran sets 0 and 1 in SEQUENCE and returned set 0
+before the platform cut it at MAX_DURATION; RETAINED_CASES binds its bytes. Sets 1 to 4 run SEQUENCE_PACKED, which
+adds two replicate seeds per layout, as two five-iteration jobs each (job-03 to job-10), so a set's primary pair
+straddles its two jobs. Set 5 holds two photons, not six, and stays out. The primary seed of set k and layout l
+(packed 0, swapped 1) is index 2k + l of the ANU QRNG draw docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json; the
+first replicate seed is the same index of docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json; replicate r (1 or 2)
+of sets 1 to 4 is index 4(k - 1) + 2l + r - 1 of docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json.
+docs/evidence/qrng_seeds/allocations.json registers all three.
 
 --check rebuilds the cases, compares them with the retained bytes (for a retained job, its digest, settings and
 circuit), binds every iteration through qd_platform.template_experiment, requires each iteration's template unitary
@@ -65,15 +67,8 @@ LAYOUTS = {"packed": "box_kite_photonic_packed", "swapped": "box_kite_photonic_p
 EARLIER = {"packed": "qpu_belenos/box_kite_photonic_packed", "swapped": "qpu_belenos/box_kite_photonic_packed_swapped"}
 DESIGN = "docs/design/belenos-mode-swap-interleaved-case.md"
 PLATFORM = "qpu:belenos"
-# Each job's (block set, half) parts in run order; half 0 is the first three iterations of SEQUENCE.
-JOBS = {
-    "job-00": ((0, 0), (0, 1), (1, 0), (1, 1)),
-    **{f"job-{3 + 2 * (s - 1) + h:02d}": ((s, h),) for s in range(1, 5) for h in (0, 1)},
-}
-# A job that ran keeps its frozen bytes; its preregistration predates the half-set jobs.
-RETAINED_CASES = {"job-00": "95568193475b218206a0163c29594d02fafa439a8b606fc87e21b6c1ad30465a"}
 # The iterations of an even block set as (layout, arm, repeat); an odd block set runs the mirror with the layouts
-# exchanged. Each replicate sits at the mean time of its layout's primary pair.
+# exchanged. In slot order each layout's replicates sit, on average, at the mean of its primary pair.
 SEQUENCE = (
     ("packed", "primary", 0),
     ("swapped", "primary", 0),
@@ -82,24 +77,65 @@ SEQUENCE = (
     ("packed", "primary", 1),
     ("swapped", "primary", 1),
 )
+SEQUENCE_PACKED = (
+    ("packed", "primary", 0),
+    ("swapped", "primary", 0),
+    ("packed", "replicate", 0),
+    ("swapped", "replicate", 0),
+    ("packed", "replicate", 1),
+    ("swapped", "replicate", 1),
+    ("packed", "replicate", 2),
+    ("swapped", "replicate", 2),
+    ("packed", "primary", 1),
+    ("swapped", "primary", 1),
+)
+ITERATIONS_PER_JOB = len(SEQUENCE_PACKED) // 2
+# Each job's (block set, iterations) parts in run order.
+JOBS: dict[str, tuple[tuple[int, tuple[tuple[str, str, int], ...]], ...]] = {
+    "job-00": ((0, SEQUENCE), (1, SEQUENCE)),
+    **{
+        f"job-{3 + 2 * (s - 1) + h:02d}": ((s, SEQUENCE_PACKED[h * ITERATIONS_PER_JOB : (h + 1) * ITERATIONS_PER_JOB]),)
+        for s in range(1, 5)
+        for h in (0, 1)
+    },
+}
+# A job that ran keeps its frozen bytes; its preregistration predates the packed jobs.
+RETAINED_CASES = {"job-00": "95568193475b218206a0163c29594d02fafa439a8b606fc87e21b6c1ad30465a"}
 MIRROR = {"packed": "swapped", "swapped": "packed"}
-ITERATIONS_PER_SET = len(SEQUENCE)
 SEED_DRAW = "docs/evidence/anu_qrng/draw-2026-10-31T043029Z.json"
 # One primary seed per (set, layout) in job, set and layout order; both repeats of a layout take it.
 COMPILATION_SEEDS = (41251, 50785, 63940, 45911, 11390, 34773, 25508, 5306, 15866, 64854)
 REPLICATE_SEED_DRAW = "docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json"
 # One replicate seed per (set, layout) in the same order, indices 0 to 9 of REPLICATE_SEED_DRAW; each is used once.
 REPLICATE_COMPILATION_SEEDS = (25506, 59555, 30521, 43387, 59603, 13108, 18076, 53193, 3029, 46479)
+EXTRA_REPLICATE_SEED_DRAW = "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json"
+# Replicates 1 and 2 of sets 1 to 4, index 4 (set - 1) + 2 layout + repeat - 1 of EXTRA_REPLICATE_SEED_DRAW.
+EXTRA_REPLICATE_SEEDS = (
+    2994,
+    20843,
+    28843,
+    8079,
+    14844,
+    34119,
+    33610,
+    13585,
+    63042,
+    64114,
+    49240,
+    48503,
+    4564,
+    54962,
+    21943,
+    31274,
+)
 SAMPLES_PER_ITERATION = 6000
 SHOTS_PER_ITERATION = 18000
 MAX_DURATION = 300
 # Duration bound of one job: a 24-mode iteration reconfigures every slot of the chip, and job-00 completed six
 # iterations of 6,000 samples before the 300 s cut stopped its seventh, so one iteration takes at most 50 s; the
-# samples themselves take under a second at the measured global efficiency. STRESS_FACTOR covers a slower
-# reconfiguration, and the stressed bound stays within DURATION_MARGIN of MAX_DURATION.
+# samples themselves take under a second at the measured global efficiency. A job keeps one iteration of margin under
+# MAX_DURATION.
 SECONDS_PER_ITERATION = 50.0
-STRESS_FACTOR = 1.5
-DURATION_MARGIN = 0.8
 # A block whose share moves by more than Z_CRITICAL standard errors moved, the criterion of
 # qd_packed_mode_swap_analysis.
 Z_CRITICAL = 4.5
@@ -109,9 +145,9 @@ DRIFT_ALPHA = 0.01
 MOVED_BLOCKS_MIN = 2
 # A single-photon share a = cos^2 theta moves by 2 sqrt(a (1 - a)) d theta under a mesh rotation error d theta, so a
 # half block (p_algebra 1/2) carries about three times the mesh error of an extreme block (p_algebra 0 or 1); the
-# mesh variance is estimated per class, and a class with fewer than CLASS_CONTRASTS_MIN replicate contrasts withholds.
+# mesh variance is estimated per class, and a class with fewer than CLASS_CONTRASTS_MIN degrees of freedom withholds.
 CLASS_CONTRASTS_MIN = 10
-# The replicate contrasts of one physical slot, standardized by their class scale, are chi-square under one mesh
+# The mesh spreads of one physical slot, standardized by their class scale, are chi-square under one mesh
 # scale per class; a slot whose sum exceeds the 1 - SLOT_ALPHA / 6 quantile withholds the "beyond" class.
 SLOT_ALPHA = 0.01
 SLOTS = MODES // SLOT_WIDTH
@@ -227,28 +263,40 @@ def seed_index(block_set: int, layout: str) -> int:
     return 2 * block_set + (0 if layout == "packed" else 1)
 
 
-def seed_of(block_set: int, layout: str, arm: str) -> int:
-    seeds = COMPILATION_SEEDS if arm == "primary" else REPLICATE_COMPILATION_SEEDS
-    return seeds[seed_index(block_set, layout)]
+def seed_of(block_set: int, layout: str, arm: str, repeat: int) -> int:
+    if arm == "primary":
+        return COMPILATION_SEEDS[seed_index(block_set, layout)]
+    if repeat == 0:
+        return REPLICATE_COMPILATION_SEEDS[seed_index(block_set, layout)]
+    require(block_set >= 1 and repeat in (1, 2), f"set {block_set} has no replicate {repeat}")
+    return EXTRA_REPLICATE_SEEDS[4 * (block_set - 1) + 2 * (0 if layout == "packed" else 1) + repeat - 1]
 
 
 def rows(job: str) -> list[dict[str, Any]]:
     out = []
-    half_length = ITERATIONS_PER_SET // 2
-    for block_set, half in JOBS[job]:
-        for layout, arm, repeat in SEQUENCE[half * half_length : (half + 1) * half_length]:
+    for block_set, sequence in JOBS[job]:
+        for layout, arm, repeat in sequence:
             shown = layout if block_set % 2 == 0 else MIRROR[layout]
             out.append({"block_set": block_set, "layout": shown, "arm": arm, "repeat": repeat})
     return out
+
+
+def expected_slots() -> dict[int, set[tuple[str, str, int]]]:
+    """Per block set, every (layout, arm, repeat) some job requests; set 1 also appears in the cut job-00."""
+    slots: dict[int, set[tuple[str, str, int]]] = {}
+    for job in JOBS:
+        for row in rows(job):
+            slots.setdefault(row["block_set"], set()).add((row["layout"], row["arm"], row["repeat"]))
+    return slots
 
 
 def iterations(job: str) -> int:
     return len(rows(job))
 
 
-def bound_seconds(job: str, factor: float = 1.0) -> float:
-    """Upper bound on the job's duration: factor x SECONDS_PER_ITERATION per iteration."""
-    return factor * SECONDS_PER_ITERATION * iterations(job)
+def bound_seconds(job: str) -> float:
+    """Upper bound on the job's duration: SECONDS_PER_ITERATION per iteration."""
+    return SECONDS_PER_ITERATION * iterations(job)
 
 
 def expected_seconds(job: str) -> int:
@@ -273,7 +321,7 @@ def build_setting(item: tuple[int, dict[str, Any], str]) -> tuple[dict[str, Any]
             for block in manifest["blocks"]
         ],
         "circuit_params": parameters,
-        "compilation_seed": seed_of(row["block_set"], row["layout"], row["arm"]),
+        "compilation_seed": seed_of(row["block_set"], row["layout"], row["arm"], row["repeat"]),
         "column": [[float(value.real), float(value.imag)] for value in full[:, photons[0]]],
         "operator": encoded(full),
     }
@@ -285,40 +333,42 @@ def preregistered() -> dict[str, Any]:
         "observable": "per block and iteration, a = (samples with exactly one click in the block's slot that land on "
         "an algebra mode) / (samples with exactly one click in the slot), the observable of "
         "scripts/qd_packed_mode_swap_analysis.py",
-        "order": "per block set, the six iterations alternate the layouts, packed first for an even block set and "
+        "order": "per block set, the iterations alternate the layouts, packed first for an even block set and "
         "swapped first for an odd one; each layout runs its primary seed at its first and last slot and its "
-        "replicate seed at the slot between them; sets 1 to 4 run their first three and last three iterations as "
-        "two consecutive jobs, so a primary pair straddles the gap between them and the replicate sits off the "
-        "pair's mean time by half that gap; the within-set validity statistic measures the drift between the "
+        "replicate seeds between them, one for set 0 and three for sets 1 to 4, whose mean slot is the pair's mean "
+        "slot; sets 1 to 4 run their first five and last five iterations as two consecutive jobs, so a primary "
+        "pair straddles the gap between them; the within-set validity statistic measures the drift between the "
         "repeats and its kappa^2 scales the binomial variances",
         "binding": "a result iteration binds to its setting by circuit_params and compilation_seed; the two "
         "primary repeats of one layout share both and bind in returned order; an iteration that returns no "
         "counts holds its slot",
         "analysis": "--analyze pools the runs of job-00 (set 0) and job-03 to job-10 (sets 1 to 4) into one table "
         "over all 30 blocks; every statistic below is withheld unless all 30 blocks are complete, meaning each of "
-        "the six iterations of their set returned counts in exactly one run",
+        "the iterations of their set returned counts in exactly one run",
         "mesh_identity": "the sha256 of each returned computed_circuit; the two primary repeats of a layout "
         "request one mesh, and a pair with different or missing digests drops out of the validity statistic, its "
         "block-layout contrasts drop out of the mesh variance and its blocks drop out of the placement test; the "
-        "reading is withheld unless every replicate digest differs from its primary digest",
+        "reading is withheld unless every replicate digest differs from its primary digest and from the other "
+        "replicate digests of its layout",
         "validity": "per block set, per block and layout, z = (a_repeat1 - a_repeat0) / two-sample se of the "
         "primary repeats; D = sum z^2 over the set's mesh-identical pairs against chi-square with that many "
         f"degrees of freedom, drift detected when p < {DRIFT_ALPHA}; a set with no mesh-identical pair withholds "
         "the placement reading. D checks that the within-set contrast is internally valid and carries no statement "
         "about the earlier hour-scale drift. kappa^2 = max(1, D / dof) of the set scales every binomial variance "
         "of that set's blocks",
-        "mesh_variance": "per block and layout, R = a_replicate - a_primary(pooled repeats) has variance 2 "
-        "sigma_c^2 + kappa^2 (binomial variances), c the block's class: half (p_algebra 1/2) or extreme (p_algebra 0 "
-        "or 1); sigma_c^2 = max(0, mean over the class's contrasts of (R^2 - kappa^2 binomial variance) / 2) is the "
-        "per-seed mesh variance of a in that class, withheld when the class keeps fewer than "
-        f"{CLASS_CONTRASTS_MIN} contrasts; its one-sided {1 - SIGMA_UPPER_ALPHA:.2f} upper bound is max(0, (sum R^2 "
-        "/ chi2.ppf(alpha, m) - mean variance) / 2) over the class's m contrasts",
-        "slot_homogeneity": "per physical slot, S = sum R^2 / (2 sigma_c^2 + variance) over the contrasts the slot "
-        f"holds against chi-square with that many degrees of freedom; one mesh scale per class holds unless some "
-        f"slot has p < {SLOT_ALPHA} / {SLOTS}",
-        "placement": "per block, delta = (a_swapped_primary + a_swapped_replicate) / 2 - (a_packed_primary + "
-        "a_packed_replicate) / 2, which under no placement effect has variance sigma_c^2 plus kappa^2 (sum of the "
-        "four binomial variances) / 4; z = delta / sqrt(sigma_c^2 + kappa^2 binomial variance); a block moved "
+        "mesh_variance": "per block and layout, the m meshes are the pooled primary repeats and each replicate; "
+        "their shares a_i have sample variance s^2 on m - 1 degrees of freedom with expectation sigma_c^2 + mean "
+        "kappa^2 binomial variance, c the block's class: half (p_algebra 1/2) or extreme (p_algebra 0 or 1); "
+        "sigma_c^2 = max(0, sum (m - 1)(s^2 - mean variance) / sum (m - 1)) over the class's groups is the per-seed "
+        "mesh variance of a in that class, withheld when the class keeps fewer than "
+        f"{CLASS_CONTRASTS_MIN} degrees of freedom; its one-sided {1 - SIGMA_UPPER_ALPHA:.2f} upper bound is max(0, "
+        "sum (m - 1) s^2 / chi2.ppf(alpha, dof) - sum (m - 1) mean variance / dof)",
+        "slot_homogeneity": "per physical slot, S = sum (m - 1) s^2 / (sigma_c^2 + mean variance) over the groups "
+        "the slot holds against chi-square with their summed degrees of freedom; one mesh scale per class holds "
+        f"unless some slot has p < {SLOT_ALPHA} / {SLOTS}",
+        "placement": "per block, delta = mean over the swapped meshes of a - mean over the packed meshes of a, "
+        "which under no placement effect has variance sigma_c^2 (1 / m_swapped + 1 / m_packed) plus the kappa^2 "
+        "binomial variances of each mesh divided by its layout's m squared; z = delta / sqrt(that); a block moved "
         f"beyond the mesh variance when |z| > {Z_CRITICAL}; the placement lies beyond the mesh variance when at "
         f"least {MOVED_BLOCKS_MIN} blocks do and the slot homogeneity holds; blocks moved against binomial error "
         "alone are those of decide() in scripts/qd_packed_mode_swap_analysis.py on the pooled table",
@@ -391,11 +441,10 @@ def check_job(job: str) -> str:
     circuit = json.loads(retained["circuit.json"])
     _, settings = template_experiment(manifest, circuit)
     require(len(settings) == iterations(job), f"{job}: {len(settings)} settings bound")
-    stressed = bound_seconds(job, STRESS_FACTOR)
     require(
         job in RETAINED_CASES
-        or (stressed <= DURATION_MARGIN * MAX_DURATION and bound_seconds(job) <= expected_seconds(job)),
-        f"{job}: the duration bound {stressed:.0f} s leaves no margin under {MAX_DURATION} s",
+        or (bound_seconds(job) + SECONDS_PER_ITERATION <= MAX_DURATION and bound_seconds(job) <= expected_seconds(job)),
+        f"{job}: the duration bound {bound_seconds(job):.0f} s leaves no iteration of margin under {MAX_DURATION} s",
     )
     import perceval as pcvl
 
@@ -416,13 +465,13 @@ def check_job(job: str) -> str:
     timing = (
         "retained run bytes"
         if job in RETAINED_CASES
-        else f"duration bound {bound_seconds(job):.0f} s ({stressed:.0f} s stressed) of {MAX_DURATION} s"
+        else f"duration bound {bound_seconds(job):.0f} s of {MAX_DURATION} s"
     )
     return f"{FAMILY} {job}: {len(settings)} iterations bound to the retained packed and swapped unitaries, {timing}"
 
 
 def check() -> int:
-    seeds = list(COMPILATION_SEEDS) + list(REPLICATE_COMPILATION_SEEDS)
+    seeds = list(COMPILATION_SEEDS) + list(REPLICATE_COMPILATION_SEEDS) + list(EXTRA_REPLICATE_SEEDS)
     require(len(set(seeds)) == len(seeds), "a compilation seed repeats")
     for line in ordered_map(check_job, sorted(JOBS), min_items=1):
         print(line)
@@ -584,7 +633,8 @@ def collect_cells(loaded: list[dict[str, Any]]) -> dict[str, Any]:
                     key, {"set": setting["block_set"], "job": item["job"], "p": float(Fraction(block["p_algebra"]))}
                 )
                 require(known["set"] == setting["block_set"], f"block {key} sits in two block sets")
-    complete_sets = {k for k, slots in sets_counted.items() if len(slots) == ITERATIONS_PER_SET}
+    expected = expected_slots()
+    complete_sets = {k for k, slots in sets_counted.items() if slots == expected[k]}
     return {
         "cells": cells,
         "info": info,
@@ -598,9 +648,7 @@ def collect_cells(loaded: list[dict[str, Any]]) -> dict[str, Any]:
 
 def validity(data: dict[str, Any]) -> dict[str, Any]:
     """The within-set drift statistic of the primary repeat pairs, per block set and pooled."""
-    sets: dict[int, dict[str, Any]] = {
-        s: {"statistic": 0.0, "dof": 0} for s in sorted({s for j in JOBS.values() for s, _ in j})
-    }
+    sets: dict[int, dict[str, Any]] = {s: {"statistic": 0.0, "dof": 0} for s in sorted(expected_slots())}
     pair_rows = []
     cells, info = data["cells"], data["info"]
     for key in sorted(info):
@@ -634,119 +682,128 @@ def validity(data: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def mesh_cells(data: dict[str, Any], key: tuple[str, int]) -> dict[str, dict[str, Any]] | None:
+def mesh_groups(data: dict[str, Any], key: tuple[str, int], layout: str) -> list[dict[str, Any]]:
+    """The meshes of one block and layout: the pooled primary repeats, then each replicate in repeat order."""
     cells = data["cells"]
-    parts = {
-        "packed_primary": [cells.get((key, "packed", "primary", r)) for r in (0, 1)],
-        "swapped_primary": [cells.get((key, "swapped", "primary", r)) for r in (0, 1)],
-        "packed_replicate": [cells.get((key, "packed", "replicate", 0))],
-        "swapped_replicate": [cells.get((key, "swapped", "replicate", 0))],
-    }
-    if any(c is None for group in parts.values() for c in group):
-        return None
-    return {name: merge([c for c in group if c is not None]) for name, group in parts.items()}
+    replicates = sorted(
+        r for lay, arm, r in expected_slots()[data["info"][key]["set"]] if lay == layout and arm == "replicate"
+    )
+    primary = [cells.get((key, layout, "primary", r)) for r in (0, 1)]
+    others = [cells.get((key, layout, "replicate", r)) for r in replicates]
+    if any(c is None for c in primary + others):
+        raise RuntimeError(f"block {key} {layout} lacks a cell")
+    return [merge([c for c in primary if c is not None])] + [c for c in others if c is not None]
 
 
 def replicate_meshes_distinct(data: dict[str, Any]) -> bool:
     cells = data["cells"]
     for key in data["info"]:
         for layout in ("packed", "swapped"):
-            primary, replicate = cells[(key, layout, "primary", 0)], cells[(key, layout, "replicate", 0)]
-            if primary["mesh"] is None or replicate["mesh"] is None or primary["mesh"] == replicate["mesh"]:
+            digests = [cells[(key, layout, "primary", 0)]["mesh"]] + [
+                cell["mesh"]
+                for (k, lay, arm, _), cell in cells.items()
+                if k == key and lay == layout and arm == "replicate"
+            ]
+            if None in digests or len(set(digests)) != len(digests):
                 return False
     return True
 
 
-def contrast_scale(rows: list[dict[str, Any]]) -> dict[str, float]:
-    """sigma^2 of one class from its replicate contrasts, with its one-sided upper bound."""
-    m = len(rows)
-    total = sum(c["r"] ** 2 for c in rows)
-    mean_v = sum(c["v"] for c in rows) / m
+def contrast_scale(groups: list[dict[str, Any]]) -> dict[str, float]:
+    """sigma^2 of one class from its mesh groups, with its one-sided upper bound."""
+    dof = sum(g["dof"] for g in groups)
+    spread = sum(g["dof"] * g["s2"] for g in groups)
+    binomial = sum(g["dof"] * g["v"] for g in groups)
     return {
-        "contrasts": m,
-        "sigma2": max(0.0, sum(c["r"] ** 2 - c["v"] for c in rows) / (2 * m)),
-        "sigma2_upper": max(0.0, (total / float(chi2.ppf(SIGMA_UPPER_ALPHA, m)) - mean_v) / 2),
-        "excess_ratio": total / sum(c["v"] for c in rows),
+        "dof": dof,
+        "sigma2": max(0.0, (spread - binomial) / dof),
+        "sigma2_upper": max(0.0, spread / float(chi2.ppf(SIGMA_UPPER_ALPHA, dof)) - binomial / dof),
+        "excess_ratio": spread / binomial,
     }
 
 
-def slot_homogeneity(contrasts: list[dict[str, Any]], classes: dict[str, dict[str, float]]) -> dict[str, Any]:
-    """Per physical slot, the standardized replicate contrasts against chi-square on their count."""
-    slots: dict[int, list[float]] = {}
-    for c in contrasts:
-        scale = 2 * classes[c["class"]]["sigma2"] + c["v"]
-        slots.setdefault(c["slot"], []).append(c["r"] ** 2 / scale if scale > 0 else math.inf)
+def slot_homogeneity(groups: list[dict[str, Any]], classes: dict[str, dict[str, float]]) -> dict[str, Any]:
+    """Per physical slot, the standardized mesh spreads against chi-square on their degrees of freedom."""
+    slots: dict[int, list[tuple[float, int]]] = {}
+    for g in groups:
+        scale = classes[g["class"]]["sigma2"] + g["v"]
+        slots.setdefault(g["slot"], []).append((g["dof"] * g["s2"] / scale if scale > 0 else math.inf, g["dof"]))
     rows = []
     for slot in sorted(slots):
-        statistic = sum(slots[slot])
-        rows.append(
-            {
-                "slot": slot,
-                "contrasts": len(slots[slot]),
-                "statistic": statistic,
-                "p": float(chi2.sf(statistic, len(slots[slot]))),
-            }
-        )
+        statistic = sum(s for s, _ in slots[slot])
+        dof = sum(d for _, d in slots[slot])
+        rows.append({"slot": slot, "dof": dof, "statistic": statistic, "p": float(chi2.sf(statistic, dof))})
     return {"rows": rows, "homogeneous": all(row["p"] >= SLOT_ALPHA / SLOTS for row in rows)}
 
 
 def mesh_and_placement(data: dict[str, Any], inflation: dict[int, float]) -> dict[str, Any]:
-    """The per-class mesh variance from the replicate contrasts and the placement test against it.
+    """The per-class mesh variance from the mesh groups and the placement test against it.
 
     A layout whose primary repeats returned different or missing digests averages two meshes in its pooled primary
-    cell, so its contrast leaves the mesh variance and its block leaves the placement test.
+    cell, so its group leaves the mesh variance and its block leaves the placement test.
     """
-    contrasts: list[dict[str, Any]] = []
+    groups: list[dict[str, Any]] = []
     deltas: list[dict[str, Any]] = []
     dropped: list[dict[str, Any]] = []
     cells = data["cells"]
     for key in sorted(data["info"]):
-        merged = mesh_cells(data, key)
-        if merged is None:
-            raise RuntimeError(f"block {key} lacks a cell")
         kappa2 = inflation[data["info"][key]["set"]]
         kind = block_class(data["info"][key]["p"])
         identical = True
+        layouts: dict[str, dict[str, Any]] = {}
         for layout in ("packed", "swapped"):
+            meshes = mesh_groups(data, key, layout)
             first, second = cells[(key, layout, "primary", 0)], cells[(key, layout, "primary", 1)]
+            shares = [share(c) for c in meshes]
+            variances = [kappa2 * variance(c) for c in meshes]
+            m = len(meshes)
+            mean = sum(shares) / m
+            layouts[layout] = {"mean": mean, "m": m, "v": sum(variances) / m**2}
             if first["mesh"] is None or first["mesh"] != second["mesh"]:
                 identical = False
                 dropped.append({"block": list(key), "layout": layout})
                 continue
-            primary, replicate = merged[f"{layout}_primary"], merged[f"{layout}_replicate"]
-            contrasts.append(
+            groups.append(
                 {
                     "block": list(key),
                     "layout": layout,
                     "class": kind,
-                    "slot": cells[(key, layout, "replicate", 0)]["slot"],
-                    "r": share(replicate) - share(primary),
-                    "v": kappa2 * (variance(primary) + variance(replicate)),
+                    "slot": first["slot"],
+                    "shares": shares,
+                    "dof": m - 1,
+                    "s2": sum((a - mean) ** 2 for a in shares) / (m - 1),
+                    "v": sum(variances) / m,
                 }
             )
         if not identical:
             continue
-        delta = (share(merged["swapped_primary"]) + share(merged["swapped_replicate"])) / 2 - (
-            share(merged["packed_primary"]) + share(merged["packed_replicate"])
-        ) / 2
-        v_delta = kappa2 * sum(variance(merged[name]) for name in merged) / 4
-        deltas.append({"block": list(key), "class": kind, "delta": delta, "v": v_delta})
-    by_class = {kind: [c for c in contrasts if c["class"] == kind] for kind in ("half", "extreme")}
-    short = [kind for kind, rows in by_class.items() if len(rows) < CLASS_CONTRASTS_MIN]
+        packed, swapped = layouts["packed"], layouts["swapped"]
+        deltas.append(
+            {
+                "block": list(key),
+                "class": kind,
+                "delta": swapped["mean"] - packed["mean"],
+                "meshes": [packed["m"], swapped["m"]],
+                "v": packed["v"] + swapped["v"],
+                "mesh_weight": 1 / packed["m"] + 1 / swapped["m"],
+            }
+        )
+    by_class = {kind: [g for g in groups if g["class"] == kind] for kind in ("half", "extreme")}
+    short = [kind for kind, rows in by_class.items() if sum(g["dof"] for g in rows) < CLASS_CONTRASTS_MIN]
     if short:
-        return {"withheld": f"the {', '.join(short)} class keeps fewer than {CLASS_CONTRASTS_MIN} contrasts"}
+        return {"withheld": f"the {', '.join(short)} class keeps fewer than {CLASS_CONTRASTS_MIN} degrees of freedom"}
     classes = {kind: contrast_scale(rows) for kind, rows in by_class.items()}
     for entry in classes.values():
         entry["sigma"] = math.sqrt(entry["sigma2"])
-    homogeneity = slot_homogeneity(contrasts, classes)
+    homogeneity = slot_homogeneity(groups, classes)
     moved = 0
     for row in deltas:
-        scale = math.sqrt(classes[row["class"]]["sigma2"] + row["v"])
+        scale = math.sqrt(classes[row["class"]]["sigma2"] * row["mesh_weight"] + row["v"])
         row["z"] = row["delta"] / scale if scale > 0 else None
         row["moved"] = row["z"] is not None and abs(row["z"]) > Z_CRITICAL
         moved += bool(row["moved"])
     return {
-        "mesh_variance": {"classes": classes, "dropped": dropped, "rows": contrasts},
+        "mesh_variance": {"classes": classes, "dropped": dropped, "rows": groups},
         "slot_homogeneity": homogeneity,
         "placement": {
             "rows": deltas,

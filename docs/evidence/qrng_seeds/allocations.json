@@ -757,6 +757,118 @@
    "value": 46479,
    "record": "docs/evidence/anu_qrng/draw-2026-10-31T051136Z.json",
    "index": 9
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 2994,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 20843,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 28843,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 8079,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 3
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 14844,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 4
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 34119,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 5
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 33610,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 6
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 13585,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 7
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 63042,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 8
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 64114,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 9
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 49240,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 10
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 48503,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 11
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 4564,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 12
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 54962,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 13
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 21943,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 14
+  },
+  {
+   "path": "scripts/belenos_mode_swap_interleaved.py",
+   "name": "EXTRA_REPLICATE_SEEDS",
+   "value": 31274,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
+   "index": 15
   }
  ],
  "runtime": [
