@@ -2877,6 +2877,62 @@
       "run": "results/quandela/runs/2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved-job-00",
       "family": "interleaved packed and swapped box-kite layouts with replicate compilation seeds on qpu:belenos",
       "question": "Within one job, do the primary repeats of a packed or swapped layout return one compiled mesh with shares that agree, and how far does a replicate compilation seed move a block's single-click algebra-mode share (set 0; the job was cut at 300 s before set 1)?"
+    },
+    {
+      "id": "qd-qpu-belenos-mode-swap-interleaved-job-03",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T095141Z-qpu_belenos-belenos_mode_swap_interleaved-job-03",
+      "family": "interleaved packed and swapped box-kite layouts with replicate compilation seeds on qpu:belenos",
+      "question": "For block set 1, the first five of its ten iterations: do the primary repeats keep one compiled mesh across the set's two jobs, and how far do three replicate seeds per layout move each block's single-click algebra-mode share against the packed-swapped placement contrast?"
+    },
+    {
+      "id": "qd-qpu-belenos-mode-swap-interleaved-job-04",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T095657Z-qpu_belenos-belenos_mode_swap_interleaved-job-04",
+      "family": "interleaved packed and swapped box-kite layouts with replicate compilation seeds on qpu:belenos",
+      "question": "For block set 1, the last five of its ten iterations: do the primary repeats keep one compiled mesh across the set's two jobs, and how far do three replicate seeds per layout move each block's single-click algebra-mode share against the packed-swapped placement contrast?"
+    },
+    {
+      "id": "qd-qpu-belenos-mode-swap-interleaved-job-05",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T100240Z-qpu_belenos-belenos_mode_swap_interleaved-job-05",
+      "family": "interleaved packed and swapped box-kite layouts with replicate compilation seeds on qpu:belenos",
+      "question": "For block set 2, the first five of its ten iterations: do the primary repeats keep one compiled mesh across the set's two jobs, and how far do three replicate seeds per layout move each block's single-click algebra-mode share against the packed-swapped placement contrast?"
+    },
+    {
+      "id": "qd-qpu-belenos-mode-swap-interleaved-job-06",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T100724Z-qpu_belenos-belenos_mode_swap_interleaved-job-06",
+      "family": "interleaved packed and swapped box-kite layouts with replicate compilation seeds on qpu:belenos",
+      "question": "For block set 2, the last five of its ten iterations: do the primary repeats keep one compiled mesh across the set's two jobs, and how far do three replicate seeds per layout move each block's single-click algebra-mode share against the packed-swapped placement contrast?"
+    },
+    {
+      "id": "qd-qpu-belenos-mode-swap-interleaved-job-07",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T101311Z-qpu_belenos-belenos_mode_swap_interleaved-job-07",
+      "family": "interleaved packed and swapped box-kite layouts with replicate compilation seeds on qpu:belenos",
+      "question": "For block set 3, the first five of its ten iterations: do the primary repeats keep one compiled mesh across the set's two jobs, and how far do three replicate seeds per layout move each block's single-click algebra-mode share against the packed-swapped placement contrast?"
+    },
+    {
+      "id": "qd-qpu-belenos-mode-swap-interleaved-job-08",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T101805Z-qpu_belenos-belenos_mode_swap_interleaved-job-08",
+      "family": "interleaved packed and swapped box-kite layouts with replicate compilation seeds on qpu:belenos",
+      "question": "For block set 3, the last five of its ten iterations: do the primary repeats keep one compiled mesh across the set's two jobs, and how far do three replicate seeds per layout move each block's single-click algebra-mode share against the packed-swapped placement contrast?"
+    },
+    {
+      "id": "qd-qpu-belenos-mode-swap-interleaved-job-09",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T102354Z-qpu_belenos-belenos_mode_swap_interleaved-job-09",
+      "family": "interleaved packed and swapped box-kite layouts with replicate compilation seeds on qpu:belenos",
+      "question": "For block set 4, the first five of its ten iterations: do the primary repeats keep one compiled mesh across the set's two jobs, and how far do three replicate seeds per layout move each block's single-click algebra-mode share against the packed-swapped placement contrast?"
+    },
+    {
+      "id": "qd-qpu-belenos-mode-swap-interleaved-job-10",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T102907Z-qpu_belenos-belenos_mode_swap_interleaved-job-10",
+      "family": "interleaved packed and swapped box-kite layouts with replicate compilation seeds on qpu:belenos",
+      "question": "For block set 4, the last five of its ten iterations: do the primary repeats keep one compiled mesh across the set's two jobs, and how far do three replicate seeds per layout move each block's single-click algebra-mode share against the packed-swapped placement contrast?"
     }
   ],
   "claims": [
