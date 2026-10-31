@@ -1,0 +1,6400 @@
+{
+ "coverage_study": {
+  "coverage": {
+   "basic": 0.925,
+   "percentile": 0.35
+  },
+  "datasets": 40,
+  "estimand": 0.7826318979032132,
+  "level": 0.95,
+  "mean_point_bias": -0.008023033447369765,
+  "replicates": 200,
+  "seed_indices": [
+   149,
+   150,
+   151,
+   152,
+   153,
+   154,
+   155,
+   156,
+   157,
+   158,
+   159,
+   160,
+   161,
+   162,
+   163,
+   164,
+   165,
+   166,
+   167,
+   168,
+   169,
+   170,
+   171,
+   172,
+   173,
+   174,
+   175,
+   176,
+   177,
+   178,
+   179,
+   180,
+   181,
+   182,
+   183,
+   184,
+   185,
+   186,
+   187,
+   188
+  ],
+  "variant": "source, loss and dark counts"
+ },
+ "interval": "basic",
+ "read": {
+  "clock_mhz": 13.33,
+  "g2": 0.019,
+  "hom": 0.8754000000000001,
+  "path": "platform-read/ascella-perfs.json",
+  "sha256": "7d836cad5335c49424dae630f58b6f7b712b31f22f92fc8ca6363225d92fe548",
+  "transmittance": 0.0582
+ },
+ "samples_per_iteration": 6000,
+ "schema": "qd-cz-tomography-forecast-v2",
+ "seed_draw": "docs/evidence/anu_qrng/draw-2026-10-31T034409Z.json",
+ "settings": [
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.13986341731607496,
+    "outcome_probabilities": [
+     0.2503197409501826,
+     0.2496960223894927,
+     0.25030397761050727,
+     0.2496802590498174
+    ],
+    "sample_probability": 0.0028505955482231627
+   },
+   "name": "in-00-XX",
+   "source and loss": {
+    "eligible_share": 0.14299564087963565,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.24999999999999997
+    ],
+    "sample_probability": 0.002774863284398449
+   },
+   "source only": {
+    "eligible_share": 0.13886591472062323,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.7946375466391539
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.13919452547313838,
+    "outcome_probabilities": [
+     0.250319672046897,
+     0.24969609162040474,
+     0.2503039083795953,
+     0.24968032795310297
+    ],
+    "sample_probability": 0.002864228214469906
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.13986341731607496,
+    "outcome_probabilities": [
+     0.2503197409501826,
+     0.2496960223894927,
+     0.25030397761050727,
+     0.2496802590498174
+    ],
+    "sample_probability": 0.0028505955482231627
+   },
+   "name": "in-00-XY",
+   "source and loss": {
+    "eligible_share": 0.14299564087963565,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.24999999999999997
+    ],
+    "sample_probability": 0.002774863284398449
+   },
+   "source only": {
+    "eligible_share": 0.13886591472062323,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.7946375466391539
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.13919452547313838,
+    "outcome_probabilities": [
+     0.250319672046897,
+     0.24969609162040474,
+     0.2503039083795953,
+     0.24968032795310297
+    ],
+    "sample_probability": 0.002864228214469906
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.13997110209516544,
+    "outcome_probabilities": [
+     0.4994154066444899,
+     0.0006003558727052426,
+     0.49938388161009967,
+     0.0006003558727052426
+    ],
+    "sample_probability": 0.0028488437171885804
+   },
+   "name": "in-00-XZ",
+   "source and loss": {
+    "eligible_share": 0.14310441833256016,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.0027732030641736383
+   },
+   "source only": {
+    "eligible_share": 0.13908938578503308,
+    "outcome_probabilities": [
+     0.49999999999999994,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.794638347435273
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.13930221430620662,
+    "outcome_probabilities": [
+     0.49941554643882236,
+     0.0006002162640797726,
+     0.4993840210330181,
+     0.0006002162640797726
+    ],
+    "sample_probability": 0.00286248811212851
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.13986341731607496,
+    "outcome_probabilities": [
+     0.2503197409501826,
+     0.2496960223894927,
+     0.25030397761050727,
+     0.2496802590498174
+    ],
+    "sample_probability": 0.0028505955482231627
+   },
+   "name": "in-00-YX",
+   "source and loss": {
+    "eligible_share": 0.14299564087963565,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.24999999999999997
+    ],
+    "sample_probability": 0.002774863284398449
+   },
+   "source only": {
+    "eligible_share": 0.13886591472062323,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.7946375466391539
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.13919452547313838,
+    "outcome_probabilities": [
+     0.250319672046897,
+     0.24969609162040474,
+     0.2503039083795953,
+     0.24968032795310297
+    ],
+    "sample_probability": 0.002864228214469906
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.13986341731607496,
+    "outcome_probabilities": [
+     0.2503197409501826,
+     0.2496960223894927,
+     0.25030397761050727,
+     0.2496802590498174
+    ],
+    "sample_probability": 0.0028505955482231627
+   },
+   "name": "in-00-YY",
+   "source and loss": {
+    "eligible_share": 0.14299564087963565,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.24999999999999997
+    ],
+    "sample_probability": 0.002774863284398449
+   },
+   "source only": {
+    "eligible_share": 0.13886591472062323,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.7946375466391539
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.13919452547313838,
+    "outcome_probabilities": [
+     0.250319672046897,
+     0.24969609162040474,
+     0.2503039083795953,
+     0.24968032795310297
+    ],
+    "sample_probability": 0.002864228214469906
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.13997110209516544,
+    "outcome_probabilities": [
+     0.4994154066444899,
+     0.0006003558727052426,
+     0.49938388161009967,
+     0.0006003558727052426
+    ],
+    "sample_probability": 0.0028488437171885804
+   },
+   "name": "in-00-YZ",
+   "source and loss": {
+    "eligible_share": 0.14310441833256016,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.0027732030641736383
+   },
+   "source only": {
+    "eligible_share": 0.13908938578503308,
+    "outcome_probabilities": [
+     0.49999999999999994,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.794638347435273
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.13930221430620662,
+    "outcome_probabilities": [
+     0.49941554643882236,
+     0.0006002162640797726,
+     0.4993840210330181,
+     0.0006002162640797726
+    ],
+    "sample_probability": 0.00286248811212851
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.11171809742996736,
+    "outcome_probabilities": [
+     0.4813394437821389,
+     0.4809260359274376,
+     0.01927656820445595,
+     0.01845795208596753
+    ],
+    "sample_probability": 0.0035672796257452915
+   },
+   "name": "in-00-ZX",
+   "source and loss": {
+    "eligible_share": 0.1140314716313456,
+    "outcome_probabilities": [
+     0.4827006288670072,
+     0.48270062886700715,
+     0.017299371132992826,
+     0.017299371132992826
+    ],
+    "sample_probability": 0.003478466919059949
+   },
+   "source only": {
+    "eligible_share": 0.10950275721850272,
+    "outcome_probabilities": [
+     0.5,
+     0.5,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0000000000000002
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.11171777221553313,
+    "outcome_probabilities": [
+     0.4813393713146437,
+     0.48092596213879424,
+     0.019276642930293006,
+     0.018458023616269102
+    ],
+    "sample_probability": 0.0035672768352921947
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.11171809742996736,
+    "outcome_probabilities": [
+     0.4813394437821389,
+     0.4809260359274376,
+     0.01927656820445595,
+     0.01845795208596753
+    ],
+    "sample_probability": 0.0035672796257452915
+   },
+   "name": "in-00-ZY",
+   "source and loss": {
+    "eligible_share": 0.1140314716313456,
+    "outcome_probabilities": [
+     0.4827006288670072,
+     0.48270062886700715,
+     0.017299371132992826,
+     0.017299371132992826
+    ],
+    "sample_probability": 0.003478466919059949
+   },
+   "source only": {
+    "eligible_share": 0.10950275721850272,
+    "outcome_probabilities": [
+     0.5,
+     0.5,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0000000000000002
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.11171777221553313,
+    "outcome_probabilities": [
+     0.4813393713146437,
+     0.48092596213879424,
+     0.019276642930293006,
+     0.018458023616269102
+    ],
+    "sample_probability": 0.0035672768352921947
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.11178565780425916,
+    "outcome_probabilities": [
+     0.9618738983029579,
+     0.00039524505477221017,
+     0.03694021929743919,
+     0.0007906373448307629
+    ],
+    "sample_probability": 0.003565490791158599
+   },
+   "name": "in-00-ZZ",
+   "source and loss": {
+    "eligible_share": 0.11409913458028582,
+    "outcome_probabilities": [
+     0.9654048338705167,
+     0.0,
+     0.03459516612948332,
+     0.0
+    ],
+    "sample_probability": 0.003476760973351561
+   },
+   "source only": {
+    "eligible_share": 0.10968094244952144,
+    "outcome_probabilities": [
+     1.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.11178565780425916,
+    "outcome_probabilities": [
+     0.9618738983029579,
+     0.00039524505477221017,
+     0.03694021929743918,
+     0.0007906373448307629
+    ],
+    "sample_probability": 0.003565490791158599
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10754085412607023,
+    "outcome_probabilities": [
+     0.2501154893825226,
+     0.24990087919137827,
+     0.2500991208086217,
+     0.24988451061747743
+    ],
+    "sample_probability": 0.0035689644795793285
+   },
+   "name": "in-01-XX",
+   "source and loss": {
+    "eligible_share": 0.11001782867523398,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.24999999999999997
+    ],
+    "sample_probability": 0.003480161743180701
+   },
+   "source only": {
+    "eligible_share": 0.10932481106580347,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 1.0000000000000004
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10754045561327456,
+    "outcome_probabilities": [
+     0.2501154898401181,
+     0.24990087879863881,
+     0.2500991212013613,
+     0.24988451015988186
+    ],
+    "sample_probability": 0.0035689598134971295
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10754085412607023,
+    "outcome_probabilities": [
+     0.2501154893825226,
+     0.24990087919137827,
+     0.2500991208086217,
+     0.24988451061747743
+    ],
+    "sample_probability": 0.0035689644795793285
+   },
+   "name": "in-01-XY",
+   "source and loss": {
+    "eligible_share": 0.11001782867523398,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.24999999999999997
+    ],
+    "sample_probability": 0.003480161743180701
+   },
+   "source only": {
+    "eligible_share": 0.10932481106580347,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 1.0000000000000004
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10754045561327456,
+    "outcome_probabilities": [
+     0.2501154898401181,
+     0.24990087879863881,
+     0.2500991212013613,
+     0.24988451015988186
+    ],
+    "sample_probability": 0.0035689598134971295
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10760323633828682,
+    "outcome_probabilities": [
+     0.00041755378140948945,
+     0.49959881433716835,
+     0.00041755378140948934,
+     0.4995660781000127
+    ],
+    "sample_probability": 0.0035673508018916372
+   },
+   "name": "in-01-XZ",
+   "source and loss": {
+    "eligible_share": 0.1100861261341616,
+    "outcome_probabilities": [
+     0.0,
+     0.5,
+     0.0,
+     0.5
+    ],
+    "sample_probability": 0.0034784669190599487
+   },
+   "source only": {
+    "eligible_share": 0.10950275721850272,
+    "outcome_probabilities": [
+     0.0,
+     0.5,
+     0.0,
+     0.5
+    ],
+    "sample_probability": 1.0000000000000002
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10760290707991031,
+    "outcome_probabilities": [
+     0.00041755500275966154,
+     0.4995988131705631,
+     0.00041755500275966143,
+     0.4995660768239176
+    ],
+    "sample_probability": 0.0035673480115557122
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10754085412607023,
+    "outcome_probabilities": [
+     0.2501154893825226,
+     0.24990087919137827,
+     0.2500991208086217,
+     0.24988451061747743
+    ],
+    "sample_probability": 0.0035689644795793285
+   },
+   "name": "in-01-YX",
+   "source and loss": {
+    "eligible_share": 0.11001782867523398,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.24999999999999997
+    ],
+    "sample_probability": 0.003480161743180701
+   },
+   "source only": {
+    "eligible_share": 0.10932481106580347,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 1.0000000000000004
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10754045561327456,
+    "outcome_probabilities": [
+     0.2501154898401181,
+     0.24990087879863881,
+     0.2500991212013613,
+     0.24988451015988186
+    ],
+    "sample_probability": 0.0035689598134971295
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10754085412607023,
+    "outcome_probabilities": [
+     0.2501154893825226,
+     0.24990087919137827,
+     0.2500991208086217,
+     0.24988451061747743
+    ],
+    "sample_probability": 0.0035689644795793285
+   },
+   "name": "in-01-YY",
+   "source and loss": {
+    "eligible_share": 0.11001782867523398,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.24999999999999997
+    ],
+    "sample_probability": 0.003480161743180701
+   },
+   "source only": {
+    "eligible_share": 0.10932481106580347,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 1.0000000000000004
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10754045561327456,
+    "outcome_probabilities": [
+     0.2501154898401181,
+     0.24990087879863881,
+     0.2500991212013613,
+     0.24988451015988186
+    ],
+    "sample_probability": 0.0035689598134971295
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10760323633828682,
+    "outcome_probabilities": [
+     0.00041755378140948945,
+     0.49959881433716835,
+     0.00041755378140948934,
+     0.4995660781000127
+    ],
+    "sample_probability": 0.0035673508018916372
+   },
+   "name": "in-01-YZ",
+   "source and loss": {
+    "eligible_share": 0.1100861261341616,
+    "outcome_probabilities": [
+     0.0,
+     0.5,
+     0.0,
+     0.5
+    ],
+    "sample_probability": 0.0034784669190599487
+   },
+   "source only": {
+    "eligible_share": 0.10950275721850272,
+    "outcome_probabilities": [
+     0.0,
+     0.5,
+     0.0,
+     0.5
+    ],
+    "sample_probability": 1.0000000000000002
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10760290707991031,
+    "outcome_probabilities": [
+     0.00041755500275966154,
+     0.4995988131705631,
+     0.00041755500275966143,
+     0.4995660768239176
+    ],
+    "sample_probability": 0.0035673480115557122
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10760638776249395,
+    "outcome_probabilities": [
+     0.49973405865861076,
+     0.49930485222689197,
+     0.0004805445572486851,
+     0.0004805445572486852
+    ],
+    "sample_probability": 0.0035672630402154223
+   },
+   "name": "in-01-ZX",
+   "source and loss": {
+    "eligible_share": 0.11008612613416162,
+    "outcome_probabilities": [
+     0.5,
+     0.49999999999999994,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 0.0034784669190599483
+   },
+   "source only": {
+    "eligible_share": 0.10950275721850272,
+    "outcome_probabilities": [
+     0.5,
+     0.5,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10760605846547709,
+    "outcome_probabilities": [
+     0.499734057970689,
+     0.49930485010330566,
+     0.00048054596300268224,
+     0.00048054596300268224
+    ],
+    "sample_probability": 0.003567260249758836
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10760638776249395,
+    "outcome_probabilities": [
+     0.49973405865861076,
+     0.49930485222689197,
+     0.0004805445572486851,
+     0.0004805445572486852
+    ],
+    "sample_probability": 0.0035672630402154223
+   },
+   "name": "in-01-ZY",
+   "source and loss": {
+    "eligible_share": 0.11008612613416162,
+    "outcome_probabilities": [
+     0.5,
+     0.49999999999999994,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 0.0034784669190599483
+   },
+   "source only": {
+    "eligible_share": 0.10950275721850272,
+    "outcome_probabilities": [
+     0.5,
+     0.5,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10760605846547709,
+    "outcome_probabilities": [
+     0.499734057970689,
+     0.49930485010330566,
+     0.00048054596300268224,
+     0.00048054596300268224
+    ],
+    "sample_probability": 0.003567260249758836
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10766599589265981,
+    "outcome_probabilities": [
+     0.0008351014970517913,
+     0.998203811866255,
+     0.0,
+     0.0009610866366932254
+    ],
+    "sample_probability": 0.0035656372662261847
+   },
+   "name": "in-01-ZZ",
+   "source and loss": {
+    "eligible_share": 0.11015185606425057,
+    "outcome_probabilities": [
+     0.0,
+     1.0,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 0.0034767609733515597
+   },
+   "source only": {
+    "eligible_share": 0.10968094244952144,
+    "outcome_probabilities": [
+     0.0,
+     1.0,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 0.9999999999999998
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10766599589265981,
+    "outcome_probabilities": [
+     0.0008351014970517913,
+     0.998203811866255,
+     0.0,
+     0.0009610866366932254
+    ],
+    "sample_probability": 0.0035656372662261847
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12178182968971547,
+    "outcome_probabilities": [
+     0.499609550239625,
+     0.0004065094152271421,
+     0.4995774309299208,
+     0.00040650941522714216
+    ],
+    "sample_probability": 0.0032131614224959245
+   },
+   "name": "in-0+-XX",
+   "source and loss": {
+    "eligible_share": 0.12452634195749543,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.0031309718575487627
+   },
+   "source only": {
+    "eligible_share": 0.12258090579834531,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.8974856793281097
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12152284992236662,
+    "outcome_probabilities": [
+     0.49960962106368545,
+     0.0004064387832651547,
+     0.4995775013697842,
+     0.0004064387832651548
+    ],
+    "sample_probability": 0.0032199690462334867
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1216955882748712,
+    "outcome_probabilities": [
+     0.2502195525677974,
+     0.24979650805480363,
+     0.2502034919451963,
+     0.2497804474322027
+    ],
+    "sample_probability": 0.0032149129937229107
+   },
+   "name": "in-0+-XY",
+   "source and loss": {
+    "eligible_share": 0.1244400006405854,
+    "outcome_probabilities": [
+     0.25,
+     0.24999999999999997,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.003132636825008863
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.897485293989836
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12143688862471541,
+    "outcome_probabilities": [
+     0.2502195166363815,
+     0.24979654420072944,
+     0.2502034557992705,
+     0.24978048336361858
+    ],
+    "sample_probability": 0.003221713903785026
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12169558827487119,
+    "outcome_probabilities": [
+     0.2502195525677974,
+     0.24979650805480363,
+     0.2502034919451963,
+     0.2497804474322027
+    ],
+    "sample_probability": 0.0032149129937229103
+   },
+   "name": "in-0+-XZ",
+   "source and loss": {
+    "eligible_share": 0.1244400006405854,
+    "outcome_probabilities": [
+     0.25,
+     0.24999999999999997,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.0031326368250088627
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.8974852939898359
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1214368886247154,
+    "outcome_probabilities": [
+     0.2502195166363815,
+     0.24979654420072944,
+     0.2502034557992705,
+     0.24978048336361858
+    ],
+    "sample_probability": 0.003221713903785026
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12178182968971547,
+    "outcome_probabilities": [
+     0.499609550239625,
+     0.0004065094152271421,
+     0.4995774309299208,
+     0.00040650941522714216
+    ],
+    "sample_probability": 0.0032131614224959245
+   },
+   "name": "in-0+-YX",
+   "source and loss": {
+    "eligible_share": 0.12452634195749543,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.0031309718575487627
+   },
+   "source only": {
+    "eligible_share": 0.12258090579834531,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.8974856793281097
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12152284992236662,
+    "outcome_probabilities": [
+     0.49960962106368545,
+     0.0004064387832651547,
+     0.4995775013697842,
+     0.0004064387832651548
+    ],
+    "sample_probability": 0.0032199690462334867
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1216955882748712,
+    "outcome_probabilities": [
+     0.2502195525677974,
+     0.24979650805480363,
+     0.2502034919451963,
+     0.2497804474322027
+    ],
+    "sample_probability": 0.0032149129937229107
+   },
+   "name": "in-0+-YY",
+   "source and loss": {
+    "eligible_share": 0.1244400006405854,
+    "outcome_probabilities": [
+     0.25,
+     0.24999999999999997,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.003132636825008863
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.897485293989836
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12143688862471541,
+    "outcome_probabilities": [
+     0.2502195166363815,
+     0.24979654420072944,
+     0.2502034557992705,
+     0.24978048336361858
+    ],
+    "sample_probability": 0.003221713903785026
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12169558827487119,
+    "outcome_probabilities": [
+     0.2502195525677974,
+     0.24979650805480363,
+     0.2502034919451963,
+     0.2497804474322027
+    ],
+    "sample_probability": 0.0032149129937229103
+   },
+   "name": "in-0+-YZ",
+   "source and loss": {
+    "eligible_share": 0.1244400006405854,
+    "outcome_probabilities": [
+     0.25,
+     0.24999999999999997,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.0031326368250088627
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.8974852939898359
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1214368886247154,
+    "outcome_probabilities": [
+     0.2502195166363815,
+     0.24979654420072944,
+     0.2502034557992705,
+     0.24978048336361858
+    ],
+    "sample_probability": 0.003221713903785026
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10951814151553568,
+    "outcome_probabilities": [
+     0.9799069285433667,
+     0.00040265503443550526,
+     0.019287761387762278,
+     0.0004026550344355053
+    ],
+    "sample_probability": 0.0035723388926877844
+   },
+   "name": "in-0+-ZX",
+   "source and loss": {
+    "eligible_share": 0.11190463593962359,
+    "outcome_probabilities": [
+     0.9823979439078949,
+     0.0,
+     0.01760205609210509,
+     0.0
+    ],
+    "sample_probability": 0.003483622845299312
+   },
+   "source only": {
+    "eligible_share": 0.10968094244952144,
+    "outcome_probabilities": [
+     1.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0000000000000002
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10951814151553568,
+    "outcome_probabilities": [
+     0.9799069285433667,
+     0.00040265503443550526,
+     0.019287761387762278,
+     0.0004026550344355053
+    ],
+    "sample_probability": 0.0035723388926877844
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10945117188384235,
+    "outcome_probabilities": [
+     0.4903651254877552,
+     0.48994396392445577,
+     0.01005390926912023,
+     0.009637001318668747
+    ],
+    "sample_probability": 0.0035741226767370443
+   },
+   "name": "in-0+-ZY",
+   "source and loss": {
+    "eligible_share": 0.1118371963984446,
+    "outcome_probabilities": [
+     0.4911990579953473,
+     0.49119905799534724,
+     0.008800942004652718,
+     0.008800942004652718
+    ],
+    "sample_probability": 0.0034853217022838075
+   },
+   "source only": {
+    "eligible_share": 0.10950282041737033,
+    "outcome_probabilities": [
+     0.5,
+     0.5,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10945056486927922,
+    "outcome_probabilities": [
+     0.4903653786016559,
+     0.4899442146610033,
+     0.010053658815143227,
+     0.009636747922197524
+    ],
+    "sample_probability": 0.003574117808175941
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1094511718838423,
+    "outcome_probabilities": [
+     0.4903651254877553,
+     0.4899439639244557,
+     0.010053909269120231,
+     0.009637001318668749
+    ],
+    "sample_probability": 0.0035741226767370435
+   },
+   "name": "in-0+-ZZ",
+   "source and loss": {
+    "eligible_share": 0.11183719639844458,
+    "outcome_probabilities": [
+     0.4911990579953474,
+     0.49119905799534713,
+     0.008800942004652717,
+     0.008800942004652715
+    ],
+    "sample_probability": 0.003485321702283808
+   },
+   "source only": {
+    "eligible_share": 0.1095028204173703,
+    "outcome_probabilities": [
+     0.5000000000000001,
+     0.4999999999999999,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0000000000000002
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10945056486927919,
+    "outcome_probabilities": [
+     0.4903653786016561,
+     0.48994421466100324,
+     0.010053658815143227,
+     0.009636747922197523
+    ],
+    "sample_probability": 0.0035741178081759415
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1216955882748712,
+    "outcome_probabilities": [
+     0.2502195525677974,
+     0.24979650805480363,
+     0.2502034919451963,
+     0.2497804474322027
+    ],
+    "sample_probability": 0.0032149129937229107
+   },
+   "name": "in-0i-XX",
+   "source and loss": {
+    "eligible_share": 0.1244400006405854,
+    "outcome_probabilities": [
+     0.25,
+     0.24999999999999997,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.003132636825008863
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.897485293989836
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12143688862471541,
+    "outcome_probabilities": [
+     0.2502195166363815,
+     0.24979654420072944,
+     0.2502034557992705,
+     0.24978048336361858
+    ],
+    "sample_probability": 0.003221713903785026
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12178182968971547,
+    "outcome_probabilities": [
+     0.499609550239625,
+     0.0004065094152271421,
+     0.4995774309299208,
+     0.00040650941522714216
+    ],
+    "sample_probability": 0.0032131614224959245
+   },
+   "name": "in-0i-XY",
+   "source and loss": {
+    "eligible_share": 0.12452634195749543,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.0031309718575487627
+   },
+   "source only": {
+    "eligible_share": 0.12258090579834531,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.8974856793281097
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12152284992236662,
+    "outcome_probabilities": [
+     0.49960962106368545,
+     0.0004064387832651547,
+     0.4995775013697842,
+     0.0004064387832651548
+    ],
+    "sample_probability": 0.0032199690462334867
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12169558827487119,
+    "outcome_probabilities": [
+     0.2502195525677974,
+     0.24979650805480363,
+     0.2502034919451963,
+     0.2497804474322027
+    ],
+    "sample_probability": 0.0032149129937229103
+   },
+   "name": "in-0i-XZ",
+   "source and loss": {
+    "eligible_share": 0.1244400006405854,
+    "outcome_probabilities": [
+     0.25,
+     0.24999999999999997,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.0031326368250088627
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.8974852939898359
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1214368886247154,
+    "outcome_probabilities": [
+     0.2502195166363815,
+     0.24979654420072944,
+     0.2502034557992705,
+     0.24978048336361858
+    ],
+    "sample_probability": 0.003221713903785026
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1216955882748712,
+    "outcome_probabilities": [
+     0.2502195525677974,
+     0.24979650805480363,
+     0.2502034919451963,
+     0.2497804474322027
+    ],
+    "sample_probability": 0.0032149129937229107
+   },
+   "name": "in-0i-YX",
+   "source and loss": {
+    "eligible_share": 0.1244400006405854,
+    "outcome_probabilities": [
+     0.25,
+     0.24999999999999997,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.003132636825008863
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.897485293989836
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12143688862471541,
+    "outcome_probabilities": [
+     0.2502195166363815,
+     0.24979654420072944,
+     0.2502034557992705,
+     0.24978048336361858
+    ],
+    "sample_probability": 0.003221713903785026
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12178182968971547,
+    "outcome_probabilities": [
+     0.499609550239625,
+     0.0004065094152271421,
+     0.4995774309299208,
+     0.00040650941522714216
+    ],
+    "sample_probability": 0.0032131614224959245
+   },
+   "name": "in-0i-YY",
+   "source and loss": {
+    "eligible_share": 0.12452634195749543,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.0031309718575487627
+   },
+   "source only": {
+    "eligible_share": 0.12258090579834531,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.8974856793281097
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12152284992236662,
+    "outcome_probabilities": [
+     0.49960962106368545,
+     0.0004064387832651547,
+     0.4995775013697842,
+     0.0004064387832651548
+    ],
+    "sample_probability": 0.0032199690462334867
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12169558827487119,
+    "outcome_probabilities": [
+     0.2502195525677974,
+     0.24979650805480363,
+     0.2502034919451963,
+     0.2497804474322027
+    ],
+    "sample_probability": 0.0032149129937229103
+   },
+   "name": "in-0i-YZ",
+   "source and loss": {
+    "eligible_share": 0.1244400006405854,
+    "outcome_probabilities": [
+     0.25,
+     0.24999999999999997,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.0031326368250088627
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.8974852939898359
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1214368886247154,
+    "outcome_probabilities": [
+     0.2502195166363815,
+     0.24979654420072944,
+     0.2502034557992705,
+     0.24978048336361858
+    ],
+    "sample_probability": 0.003221713903785026
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10945117188384235,
+    "outcome_probabilities": [
+     0.4903651254877552,
+     0.48994396392445577,
+     0.01005390926912023,
+     0.009637001318668747
+    ],
+    "sample_probability": 0.0035741226767370443
+   },
+   "name": "in-0i-ZX",
+   "source and loss": {
+    "eligible_share": 0.1118371963984446,
+    "outcome_probabilities": [
+     0.4911990579953473,
+     0.49119905799534724,
+     0.008800942004652718,
+     0.008800942004652718
+    ],
+    "sample_probability": 0.0034853217022838075
+   },
+   "source only": {
+    "eligible_share": 0.10950282041737033,
+    "outcome_probabilities": [
+     0.5,
+     0.5,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10945056486927922,
+    "outcome_probabilities": [
+     0.4903653786016559,
+     0.4899442146610033,
+     0.010053658815143227,
+     0.009636747922197524
+    ],
+    "sample_probability": 0.003574117808175941
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10951814151553568,
+    "outcome_probabilities": [
+     0.9799069285433667,
+     0.00040265503443550526,
+     0.019287761387762278,
+     0.0004026550344355053
+    ],
+    "sample_probability": 0.0035723388926877844
+   },
+   "name": "in-0i-ZY",
+   "source and loss": {
+    "eligible_share": 0.11190463593962359,
+    "outcome_probabilities": [
+     0.9823979439078949,
+     0.0,
+     0.01760205609210509,
+     0.0
+    ],
+    "sample_probability": 0.003483622845299312
+   },
+   "source only": {
+    "eligible_share": 0.10968094244952144,
+    "outcome_probabilities": [
+     1.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0000000000000002
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10951814151553568,
+    "outcome_probabilities": [
+     0.9799069285433667,
+     0.00040265503443550526,
+     0.019287761387762278,
+     0.0004026550344355053
+    ],
+    "sample_probability": 0.0035723388926877844
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1094511718838423,
+    "outcome_probabilities": [
+     0.4903651254877553,
+     0.4899439639244557,
+     0.010053909269120231,
+     0.009637001318668749
+    ],
+    "sample_probability": 0.0035741226767370435
+   },
+   "name": "in-0i-ZZ",
+   "source and loss": {
+    "eligible_share": 0.11183719639844458,
+    "outcome_probabilities": [
+     0.4911990579953474,
+     0.49119905799534713,
+     0.008800942004652717,
+     0.008800942004652715
+    ],
+    "sample_probability": 0.003485321702283808
+   },
+   "source only": {
+    "eligible_share": 0.1095028204173703,
+    "outcome_probabilities": [
+     0.5000000000000001,
+     0.4999999999999999,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0000000000000002
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10945056486927919,
+    "outcome_probabilities": [
+     0.4903653786016561,
+     0.48994421466100324,
+     0.010053658815143227,
+     0.009636747922197523
+    ],
+    "sample_probability": 0.0035741178081759415
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.26965878618014627,
+    "outcome_probabilities": [
+     0.2502331225680498,
+     0.24979991842584703,
+     0.25020008157415297,
+     0.24976687743195028
+    ],
+    "sample_probability": 0.0021320408572339383
+   },
+   "name": "in-10-XX",
+   "source and loss": {
+    "eligible_share": 0.30260411005427346,
+    "outcome_probabilities": [
+     0.24999999999999994,
+     0.25000000000000006,
+     0.24999999999999994,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.0020695431979966122
+   },
+   "source only": {
+    "eligible_share": 0.2866110786555256,
+    "outcome_probabilities": [
+     0.25,
+     0.25000000000000006,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.5892729598318863
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.29152597412624237,
+    "outcome_probabilities": [
+     0.25021296473092364,
+     0.24981721924668754,
+     0.2501827807533124,
+     0.24978703526907634
+    ],
+    "sample_probability": 0.0021593045016717015
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.26965878618014627,
+    "outcome_probabilities": [
+     0.2502331225680498,
+     0.24979991842584703,
+     0.25020008157415297,
+     0.24976687743195028
+    ],
+    "sample_probability": 0.0021320408572339383
+   },
+   "name": "in-10-XY",
+   "source and loss": {
+    "eligible_share": 0.30260411005427346,
+    "outcome_probabilities": [
+     0.24999999999999994,
+     0.25000000000000006,
+     0.24999999999999994,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.0020695431979966122
+   },
+   "source only": {
+    "eligible_share": 0.2866110786555256,
+    "outcome_probabilities": [
+     0.25,
+     0.25000000000000006,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.5892729598318863
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.29152597412624237,
+    "outcome_probabilities": [
+     0.25021296473092364,
+     0.24981721924668754,
+     0.2501827807533124,
+     0.24978703526907634
+    ],
+    "sample_probability": 0.0021593045016717015
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.41180157428353303,
+    "outcome_probabilities": [
+     0.49961751109422603,
+     0.00041592384475025776,
+     0.4995506412162734,
+     0.00041592384475025776
+    ],
+    "sample_probability": 0.001397699948180769
+   },
+   "name": "in-10-XZ",
+   "source and loss": {
+    "eligible_share": 0.46486744167668553,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5000000000000001,
+     0.0
+    ],
+    "sample_probability": 0.0013485554818176665
+   },
+   "source only": {
+    "eligible_share": 0.4496221336405082,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.381909806780957
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.4380310883065557,
+    "outcome_probabilities": [
+     0.49965074236729823,
+     0.0003797958180428992,
+     0.4995896659966159,
+     0.0003797958180428992
+    ],
+    "sample_probability": 0.0014386473758519884
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.26965878618014627,
+    "outcome_probabilities": [
+     0.2502331225680498,
+     0.24979991842584703,
+     0.25020008157415297,
+     0.24976687743195028
+    ],
+    "sample_probability": 0.0021320408572339383
+   },
+   "name": "in-10-YX",
+   "source and loss": {
+    "eligible_share": 0.30260411005427346,
+    "outcome_probabilities": [
+     0.24999999999999994,
+     0.25000000000000006,
+     0.24999999999999994,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.0020695431979966122
+   },
+   "source only": {
+    "eligible_share": 0.2866110786555256,
+    "outcome_probabilities": [
+     0.25,
+     0.25000000000000006,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.5892729598318863
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.29152597412624237,
+    "outcome_probabilities": [
+     0.25021296473092364,
+     0.24981721924668754,
+     0.2501827807533124,
+     0.24978703526907634
+    ],
+    "sample_probability": 0.0021593045016717015
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.26965878618014627,
+    "outcome_probabilities": [
+     0.2502331225680498,
+     0.24979991842584703,
+     0.25020008157415297,
+     0.24976687743195028
+    ],
+    "sample_probability": 0.0021320408572339383
+   },
+   "name": "in-10-YY",
+   "source and loss": {
+    "eligible_share": 0.30260411005427346,
+    "outcome_probabilities": [
+     0.24999999999999994,
+     0.25000000000000006,
+     0.24999999999999994,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.0020695431979966122
+   },
+   "source only": {
+    "eligible_share": 0.2866110786555256,
+    "outcome_probabilities": [
+     0.25,
+     0.25000000000000006,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.5892729598318863
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.29152597412624237,
+    "outcome_probabilities": [
+     0.25021296473092364,
+     0.24981721924668754,
+     0.2501827807533124,
+     0.24978703526907634
+    ],
+    "sample_probability": 0.0021593045016717015
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.41180157428353303,
+    "outcome_probabilities": [
+     0.49961751109422603,
+     0.00041592384475025776,
+     0.4995506412162734,
+     0.00041592384475025776
+    ],
+    "sample_probability": 0.001397699948180769
+   },
+   "name": "in-10-YZ",
+   "source and loss": {
+    "eligible_share": 0.46486744167668553,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5000000000000001,
+     0.0
+    ],
+    "sample_probability": 0.0013485554818176665
+   },
+   "source only": {
+    "eligible_share": 0.4496221336405082,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.381909806780957
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.4380310883065557,
+    "outcome_probabilities": [
+     0.49965074236729823,
+     0.0003797958180428992,
+     0.4995896659966159,
+     0.0003797958180428992
+    ],
+    "sample_probability": 0.0014386473758519884
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.41171386279491323,
+    "outcome_probabilities": [
+     0.0010069972896646635,
+     0.0010069972896646635,
+     0.49943138225846867,
+     0.49855462316220195
+    ],
+    "sample_probability": 0.001397964713463528
+   },
+   "name": "in-10-ZX",
+   "source and loss": {
+    "eligible_share": 0.46486744167668553,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.5,
+     0.5000000000000001
+    ],
+    "sample_probability": 0.0013485554818176665
+   },
+   "source only": {
+    "eligible_share": 0.4496221336405083,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.5,
+     0.5
+    ],
+    "sample_probability": 0.38190980678095693
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.4379410144365014,
+    "outcome_probabilities": [
+     0.0009195255763440608,
+     0.0009195255763440609,
+     0.49948087263510693,
+     0.49868007621220495
+    ],
+    "sample_probability": 0.0014389121116136867
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.41171386279491323,
+    "outcome_probabilities": [
+     0.0010069972896646635,
+     0.0010069972896646635,
+     0.49943138225846867,
+     0.49855462316220195
+    ],
+    "sample_probability": 0.001397964713463528
+   },
+   "name": "in-10-ZY",
+   "source and loss": {
+    "eligible_share": 0.46486744167668553,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.5,
+     0.5000000000000001
+    ],
+    "sample_probability": 0.0013485554818176665
+   },
+   "source only": {
+    "eligible_share": 0.4496221336405083,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.5,
+     0.5
+    ],
+    "sample_probability": 0.38190980678095693
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.4379410144365014,
+    "outcome_probabilities": [
+     0.0009195255763440608,
+     0.0009195255763440609,
+     0.49948087263510693,
+     0.49868007621220495
+    ],
+    "sample_probability": 0.0014389121116136867
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.8682914532782581,
+    "outcome_probabilities": [
+     0.0020383324060207954,
+     0.0,
+     0.9971197476871446,
+     0.0008419199068346764
+    ],
+    "sample_probability": 0.0006635490224327182
+   },
+   "name": "in-10-ZZ",
+   "source and loss": {
+    "eligible_share": 1.0,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     1.0,
+     0.0
+    ],
+    "sample_probability": 0.000627469508655915
+   },
+   "source only": {
+    "eligible_share": 1.0,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     1.0,
+     0.0
+    ],
+    "sample_probability": 0.17454399060722012
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.8783051954083806,
+    "outcome_probabilities": [
+     0.0018609723208731703,
+     0.0,
+     0.9973703651987662,
+     0.0007686624803606573
+    ],
+    "sample_probability": 0.0007181561874021416
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1400665412076062,
+    "outcome_probabilities": [
+     0.2501269465530034,
+     0.24992055904999155,
+     0.2500794409500084,
+     0.24987305344699662
+    ],
+    "sample_probability": 0.0028504253296181004
+   },
+   "name": "in-11-XX",
+   "source and loss": {
+    "eligible_share": 0.14299564087963565,
+    "outcome_probabilities": [
+     0.24999999999999994,
+     0.25000000000000006,
+     0.24999999999999994,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.0027748632843984495
+   },
+   "source only": {
+    "eligible_share": 0.13886591472062323,
+    "outcome_probabilities": [
+     0.24999999999999992,
+     0.25000000000000006,
+     0.24999999999999992,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.794637546639154
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1393965770358821,
+    "outcome_probabilities": [
+     0.2501269434975722,
+     0.24992055160697002,
+     0.25007944839303003,
+     0.24987305650242783
+    ],
+    "sample_probability": 0.002864057894664087
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1400665412076062,
+    "outcome_probabilities": [
+     0.2501269465530035,
+     0.24992055904999147,
+     0.2500794409500085,
+     0.24987305344699656
+    ],
+    "sample_probability": 0.0028504253296181004
+   },
+   "name": "in-11-XY",
+   "source and loss": {
+    "eligible_share": 0.14299564087963565,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.0027748632843984495
+   },
+   "source only": {
+    "eligible_share": 0.13886591472062323,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.794637546639154
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1393965770358821,
+    "outcome_probabilities": [
+     0.25012694349757225,
+     0.24992055160696997,
+     0.2500794483930301,
+     0.24987305650242778
+    ],
+    "sample_probability": 0.002864057894664087
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.11187852291326561,
+    "outcome_probabilities": [
+     0.01949454271982943,
+     0.4805523773368777,
+     0.019432190824839202,
+     0.4805208891184536
+    ],
+    "sample_probability": 0.0035670163270392734
+   },
+   "name": "in-11-XZ",
+   "source and loss": {
+    "eligible_share": 0.11403147163134561,
+    "outcome_probabilities": [
+     0.017299371132992823,
+     0.48270062886700715,
+     0.017299371132992823,
+     0.48270062886700715
+    ],
+    "sample_probability": 0.003478466919059949
+   },
+   "source only": {
+    "eligible_share": 0.10950275721850272,
+    "outcome_probabilities": [
+     0.0,
+     0.5,
+     0.0,
+     0.5
+    ],
+    "sample_probability": 1.0000000000000002
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.11187819786761449,
+    "outcome_probabilities": [
+     0.019494618255655023,
+     0.48055230197279963,
+     0.019432266117620594,
+     0.4805208136539247
+    ],
+    "sample_probability": 0.0035670135366330058
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1400665412076062,
+    "outcome_probabilities": [
+     0.2501269465530034,
+     0.24992055904999155,
+     0.2500794409500084,
+     0.24987305344699662
+    ],
+    "sample_probability": 0.0028504253296181004
+   },
+   "name": "in-11-YX",
+   "source and loss": {
+    "eligible_share": 0.14299564087963565,
+    "outcome_probabilities": [
+     0.24999999999999994,
+     0.25000000000000006,
+     0.24999999999999994,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.0027748632843984495
+   },
+   "source only": {
+    "eligible_share": 0.13886591472062323,
+    "outcome_probabilities": [
+     0.24999999999999992,
+     0.25000000000000006,
+     0.24999999999999992,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.794637546639154
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1393965770358821,
+    "outcome_probabilities": [
+     0.2501269434975722,
+     0.24992055160697002,
+     0.25007944839303003,
+     0.24987305650242783
+    ],
+    "sample_probability": 0.002864057894664087
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1400665412076062,
+    "outcome_probabilities": [
+     0.2501269465530035,
+     0.24992055904999147,
+     0.2500794409500085,
+     0.24987305344699656
+    ],
+    "sample_probability": 0.0028504253296181004
+   },
+   "name": "in-11-YY",
+   "source and loss": {
+    "eligible_share": 0.14299564087963565,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.0027748632843984495
+   },
+   "source only": {
+    "eligible_share": 0.13886591472062323,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.794637546639154
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1393965770358821,
+    "outcome_probabilities": [
+     0.25012694349757225,
+     0.24992055160696997,
+     0.2500794483930301,
+     0.24987305650242778
+    ],
+    "sample_probability": 0.002864057894664087
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.11187852291326561,
+    "outcome_probabilities": [
+     0.01949454271982943,
+     0.4805523773368777,
+     0.019432190824839202,
+     0.4805208891184536
+    ],
+    "sample_probability": 0.0035670163270392734
+   },
+   "name": "in-11-YZ",
+   "source and loss": {
+    "eligible_share": 0.11403147163134561,
+    "outcome_probabilities": [
+     0.017299371132992823,
+     0.48270062886700715,
+     0.017299371132992823,
+     0.48270062886700715
+    ],
+    "sample_probability": 0.003478466919059949
+   },
+   "source only": {
+    "eligible_share": 0.10950275721850272,
+    "outcome_probabilities": [
+     0.0,
+     0.5,
+     0.0,
+     0.5
+    ],
+    "sample_probability": 1.0000000000000002
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.11187819786761449,
+    "outcome_probabilities": [
+     0.019494618255655023,
+     0.48055230197279963,
+     0.019432266117620594,
+     0.4805208136539247
+    ],
+    "sample_probability": 0.0035670135366330058
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.14016936744951944,
+    "outcome_probabilities": [
+     0.0014514792679583023,
+     0.0014514792679583023,
+     0.4987548985014802,
+     0.49834214296260326
+    ],
+    "sample_probability": 0.002848761234326481
+   },
+   "name": "in-11-ZX",
+   "source and loss": {
+    "eligible_share": 0.14310441833256016,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.4999999999999999,
+     0.5000000000000001
+    ],
+    "sample_probability": 0.002773203064173639
+   },
+   "source only": {
+    "eligible_share": 0.13908938578503308,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.4999999999999999,
+     0.5000000000000001
+    ],
+    "sample_probability": 0.7946383474352732
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1394994495393335,
+    "outcome_probabilities": [
+     0.0014511424474405417,
+     0.0014511424474405417,
+     0.49875523785456666,
+     0.49834247725055225
+    ],
+    "sample_probability": 0.0028624055278665948
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.14016936744951944,
+    "outcome_probabilities": [
+     0.0014514792679583023,
+     0.0014514792679583023,
+     0.49875489850148025,
+     0.4983421429626031
+    ],
+    "sample_probability": 0.002848761234326481
+   },
+   "name": "in-11-ZY",
+   "source and loss": {
+    "eligible_share": 0.14310441833256016,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.5,
+     0.5
+    ],
+    "sample_probability": 0.002773203064173639
+   },
+   "source only": {
+    "eligible_share": 0.13908938578503308,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.5,
+     0.5
+    ],
+    "sample_probability": 0.7946383474352732
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1394994495393335,
+    "outcome_probabilities": [
+     0.0014511424474405417,
+     0.0014511424474405417,
+     0.49875523785456677,
+     0.49834247725055214
+    ],
+    "sample_probability": 0.0028624055278665948
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1119428766196999,
+    "outcome_probabilities": [
+     0.0019115803759492916,
+     0.0009556121973409755,
+     0.03701138269397231,
+     0.9601214247327374
+    ],
+    "sample_probability": 0.003565315228369362
+   },
+   "name": "in-11-ZZ",
+   "source and loss": {
+    "eligible_share": 0.11409913458028582,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.03459516612948331,
+     0.9654048338705167
+    ],
+    "sample_probability": 0.003476760973351561
+   },
+   "source only": {
+    "eligible_share": 0.10968094244952145,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.0,
+     1.0
+    ],
+    "sample_probability": 1.0
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1119428766196999,
+    "outcome_probabilities": [
+     0.0019115803759492916,
+     0.0009556121973409755,
+     0.037011382693972306,
+     0.9601214247327374
+    ],
+    "sample_probability": 0.003565315228369362
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1952474666508416,
+    "outcome_probabilities": [
+     0.098991688485556,
+     0.40104728476329365,
+     0.09893954712600628,
+     0.40102147962514406
+    ],
+    "sample_probability": 0.002494527785887976
+   },
+   "name": "in-1+-XX",
+   "source and loss": {
+    "eligible_share": 0.2108707508873437,
+    "outcome_probabilities": [
+     0.11887262658456309,
+     0.38112737341543695,
+     0.11887262658456307,
+     0.38112737341543695
+    ],
+    "sample_probability": 0.002425573615921276
+   },
+   "source only": {
+    "eligible_share": 0.20156743698946797,
+    "outcome_probabilities": [
+     0.10551592046864207,
+     0.39448407953135795,
+     0.10551592046864207,
+     0.39448407953135795
+    ],
+    "sample_probability": 0.691787578213271
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20450597929933173,
+    "outcome_probabilities": [
+     0.12026440518929173,
+     0.37977250122237133,
+     0.12021502900124467,
+     0.37974806458709226
+    ],
+    "sample_probability": 0.002514964089417276
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19510812631356314,
+    "outcome_probabilities": [
+     0.2501896098105223,
+     0.2498493613825055,
+     0.2501506386174945,
+     0.2498103901894777
+    ],
+    "sample_probability": 0.002496354244735508
+   },
+   "name": "in-1+-XY",
+   "source and loss": {
+    "eligible_share": 0.210722350847824,
+    "outcome_probabilities": [
+     0.25000000000000006,
+     0.24999999999999994,
+     0.25000000000000006,
+     0.24999999999999994
+    ],
+    "sample_probability": 0.0024273113515860434
+   },
+   "source only": {
+    "eligible_share": 0.20166276070954006,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.6921206776494021
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20436094284782383,
+    "outcome_probabilities": [
+     0.2501795842446381,
+     0.24985732032363844,
+     0.25014267967636145,
+     0.24982041575536193
+    ],
+    "sample_probability": 0.0025167848075657714
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1956783164556593,
+    "outcome_probabilities": [
+     0.2993975122405444,
+     0.20064146146873393,
+     0.29933246502950406,
+     0.20062856126121761
+    ],
+    "sample_probability": 0.0024892415161005812
+   },
+   "name": "in-1+-XZ",
+   "source and loss": {
+    "eligible_share": 0.2113435304776209,
+    "outcome_probabilities": [
+     0.3094813383387046,
+     0.19051866166129536,
+     0.30948133833870467,
+     0.19051866166129536
+    ],
+    "sample_probability": 0.0024203801478601557
+   },
+   "source only": {
+    "eligible_share": 0.20198808815043745,
+    "outcome_probabilities": [
+     0.3033936044615117,
+     0.19660639553848827,
+     0.30339360446151176,
+     0.19660639553848827
+    ],
+    "sample_probability": 0.6914549224037196
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20495581704183494,
+    "outcome_probabilities": [
+     0.31004149223292565,
+     0.18999541404724227,
+     0.3099798955557462,
+     0.18998319816408585
+    ],
+    "sample_probability": 0.0025096933581666256
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1952474666508416,
+    "outcome_probabilities": [
+     0.098991688485556,
+     0.40104728476329365,
+     0.09893954712600628,
+     0.40102147962514406
+    ],
+    "sample_probability": 0.002494527785887976
+   },
+   "name": "in-1+-YX",
+   "source and loss": {
+    "eligible_share": 0.2108707508873437,
+    "outcome_probabilities": [
+     0.11887262658456309,
+     0.38112737341543695,
+     0.11887262658456307,
+     0.38112737341543695
+    ],
+    "sample_probability": 0.002425573615921276
+   },
+   "source only": {
+    "eligible_share": 0.20156743698946797,
+    "outcome_probabilities": [
+     0.10551592046864207,
+     0.39448407953135795,
+     0.10551592046864207,
+     0.39448407953135795
+    ],
+    "sample_probability": 0.691787578213271
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20450597929933173,
+    "outcome_probabilities": [
+     0.12026440518929173,
+     0.37977250122237133,
+     0.12021502900124467,
+     0.37974806458709226
+    ],
+    "sample_probability": 0.002514964089417276
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19510812631356314,
+    "outcome_probabilities": [
+     0.2501896098105223,
+     0.24984936138250546,
+     0.2501506386174945,
+     0.24981039018947773
+    ],
+    "sample_probability": 0.0024963542447355076
+   },
+   "name": "in-1+-YY",
+   "source and loss": {
+    "eligible_share": 0.21072235084782398,
+    "outcome_probabilities": [
+     0.2500000000000001,
+     0.24999999999999994,
+     0.25000000000000006,
+     0.25
+    ],
+    "sample_probability": 0.002427311351586044
+   },
+   "source only": {
+    "eligible_share": 0.20166276070954006,
+    "outcome_probabilities": [
+     0.25000000000000006,
+     0.24999999999999994,
+     0.24999999999999994,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.6921206776494021
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20436094284782383,
+    "outcome_probabilities": [
+     0.25017958424463815,
+     0.24985732032363844,
+     0.25014267967636145,
+     0.24982041575536196
+    ],
+    "sample_probability": 0.0025167848075657714
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1956783164556593,
+    "outcome_probabilities": [
+     0.2993975122405444,
+     0.20064146146873393,
+     0.29933246502950406,
+     0.20062856126121761
+    ],
+    "sample_probability": 0.0024892415161005812
+   },
+   "name": "in-1+-YZ",
+   "source and loss": {
+    "eligible_share": 0.2113435304776209,
+    "outcome_probabilities": [
+     0.3094813383387046,
+     0.19051866166129536,
+     0.30948133833870467,
+     0.19051866166129536
+    ],
+    "sample_probability": 0.0024203801478601557
+   },
+   "source only": {
+    "eligible_share": 0.20198808815043745,
+    "outcome_probabilities": [
+     0.3033936044615117,
+     0.19660639553848827,
+     0.30339360446151176,
+     0.19660639553848827
+    ],
+    "sample_probability": 0.6914549224037196
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20495581704183494,
+    "outcome_probabilities": [
+     0.31004149223292565,
+     0.18999541404724227,
+     0.3099798955557462,
+     0.18998319816408585
+    ],
+    "sample_probability": 0.0025096933581666256
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.22898591407235652,
+    "outcome_probabilities": [
+     0.0015958701882333609,
+     0.0007825176019491631,
+     0.19658349839445233,
+     0.8010381138153652
+    ],
+    "sample_probability": 0.002128497763989869
+   },
+   "name": "in-1+-ZX",
+   "source and loss": {
+    "eligible_share": 0.24773175818898346,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.23796861166544123,
+     0.7620313883345589
+    ],
+    "sample_probability": 0.002066105406306065
+   },
+   "source only": {
+    "eligible_share": 0.23936764895350665,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.21426193237386618,
+     0.7857380676261339
+    ],
+    "sample_probability": 0.588608721060335
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.23874774839524826,
+    "outcome_probabilities": [
+     0.0015106873370521862,
+     0.0007410185702997512,
+     0.23919661644664317,
+     0.7585516776460048
+    ],
+    "sample_probability": 0.0021557962155184457
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.22879181262308654,
+    "outcome_probabilities": [
+     0.0011891466012517533,
+     0.0011891466012517531,
+     0.49915419819427176,
+     0.49846750860322475
+    ],
+    "sample_probability": 0.0021303080390887466
+   },
+   "name": "in-1+-ZY",
+   "source and loss": {
+    "eligible_share": 0.24752070762374248,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.5,
+     0.5
+    ],
+    "sample_probability": 0.0020678085213555655
+   },
+   "source only": {
+    "eligible_share": 0.2394581671213216,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.5,
+     0.5
+    ],
+    "sample_probability": 0.5889403056883901
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.2385439215937953,
+    "outcome_probabilities": [
+     0.00112583718102709,
+     0.00112583718102709,
+     0.49919930793191347,
+     0.4985490177060323
+    ],
+    "sample_probability": 0.002157582122832224
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.22957500915960039,
+    "outcome_probabilities": [
+     0.001987237092412047,
+     0.00039119184300194515,
+     0.5968464488359329,
+     0.4007751222286532
+    ],
+    "sample_probability": 0.0021231954678750387
+   },
+   "name": "in-1+-ZZ",
+   "source and loss": {
+    "eligible_share": 0.2483767209151632,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.6190536697273147,
+     0.38094633027268526
+    ],
+    "sample_probability": 0.0020608774970549168
+   },
+   "source only": {
+    "eligible_share": 0.23988407561051434,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.6083865409687483,
+     0.3916134590312517
+    ],
+    "sample_probability": 0.5882750908158273
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.23935348060530254,
+    "outcome_probabilities": [
+     0.0018813085755920076,
+     0.00037044736862261836,
+     0.6182307089470882,
+     0.3795175351086972
+    ],
+    "sample_probability": 0.002150490853160538
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19510812631356314,
+    "outcome_probabilities": [
+     0.2501896098105223,
+     0.2498493613825055,
+     0.2501506386174945,
+     0.2498103901894777
+    ],
+    "sample_probability": 0.002496354244735508
+   },
+   "name": "in-1i-XX",
+   "source and loss": {
+    "eligible_share": 0.210722350847824,
+    "outcome_probabilities": [
+     0.25000000000000006,
+     0.24999999999999994,
+     0.25000000000000006,
+     0.24999999999999994
+    ],
+    "sample_probability": 0.0024273113515860434
+   },
+   "source only": {
+    "eligible_share": 0.20166276070954006,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.6921206776494021
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20436094284782383,
+    "outcome_probabilities": [
+     0.2501795842446381,
+     0.24985732032363844,
+     0.25014267967636145,
+     0.24982041575536193
+    ],
+    "sample_probability": 0.0025167848075657714
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1952474666508416,
+    "outcome_probabilities": [
+     0.098991688485556,
+     0.40104728476329365,
+     0.09893954712600628,
+     0.40102147962514406
+    ],
+    "sample_probability": 0.002494527785887976
+   },
+   "name": "in-1i-XY",
+   "source and loss": {
+    "eligible_share": 0.2108707508873437,
+    "outcome_probabilities": [
+     0.11887262658456309,
+     0.38112737341543695,
+     0.11887262658456307,
+     0.38112737341543695
+    ],
+    "sample_probability": 0.002425573615921276
+   },
+   "source only": {
+    "eligible_share": 0.20156743698946797,
+    "outcome_probabilities": [
+     0.10551592046864207,
+     0.39448407953135795,
+     0.10551592046864207,
+     0.39448407953135795
+    ],
+    "sample_probability": 0.691787578213271
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20450597929933173,
+    "outcome_probabilities": [
+     0.12026440518929173,
+     0.37977250122237133,
+     0.12021502900124467,
+     0.37974806458709226
+    ],
+    "sample_probability": 0.002514964089417276
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1956783164556593,
+    "outcome_probabilities": [
+     0.2993975122405444,
+     0.20064146146873393,
+     0.29933246502950406,
+     0.20062856126121761
+    ],
+    "sample_probability": 0.0024892415161005812
+   },
+   "name": "in-1i-XZ",
+   "source and loss": {
+    "eligible_share": 0.2113435304776209,
+    "outcome_probabilities": [
+     0.3094813383387046,
+     0.19051866166129536,
+     0.30948133833870467,
+     0.19051866166129536
+    ],
+    "sample_probability": 0.0024203801478601557
+   },
+   "source only": {
+    "eligible_share": 0.20198808815043745,
+    "outcome_probabilities": [
+     0.3033936044615117,
+     0.19660639553848827,
+     0.30339360446151176,
+     0.19660639553848827
+    ],
+    "sample_probability": 0.6914549224037196
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20495581704183494,
+    "outcome_probabilities": [
+     0.31004149223292565,
+     0.18999541404724227,
+     0.3099798955557462,
+     0.18998319816408585
+    ],
+    "sample_probability": 0.0025096933581666256
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1951081263135632,
+    "outcome_probabilities": [
+     0.25018960981052224,
+     0.24984936138250552,
+     0.25015063861749454,
+     0.24981039018947768
+    ],
+    "sample_probability": 0.0024963542447355076
+   },
+   "name": "in-1i-YX",
+   "source and loss": {
+    "eligible_share": 0.21072235084782398,
+    "outcome_probabilities": [
+     0.25000000000000006,
+     0.25,
+     0.2500000000000001,
+     0.24999999999999994
+    ],
+    "sample_probability": 0.002427311351586044
+   },
+   "source only": {
+    "eligible_share": 0.20166276070954006,
+    "outcome_probabilities": [
+     0.24999999999999994,
+     0.25000000000000006,
+     0.25000000000000006,
+     0.24999999999999994
+    ],
+    "sample_probability": 0.6921206776494021
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20436094284782383,
+    "outcome_probabilities": [
+     0.2501795842446381,
+     0.2498573203236385,
+     0.2501426796763615,
+     0.24982041575536193
+    ],
+    "sample_probability": 0.0025167848075657714
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1952474666508416,
+    "outcome_probabilities": [
+     0.098991688485556,
+     0.40104728476329365,
+     0.09893954712600628,
+     0.40102147962514406
+    ],
+    "sample_probability": 0.002494527785887976
+   },
+   "name": "in-1i-YY",
+   "source and loss": {
+    "eligible_share": 0.2108707508873437,
+    "outcome_probabilities": [
+     0.11887262658456309,
+     0.38112737341543695,
+     0.11887262658456307,
+     0.38112737341543695
+    ],
+    "sample_probability": 0.002425573615921276
+   },
+   "source only": {
+    "eligible_share": 0.20156743698946797,
+    "outcome_probabilities": [
+     0.10551592046864207,
+     0.39448407953135795,
+     0.10551592046864207,
+     0.39448407953135795
+    ],
+    "sample_probability": 0.691787578213271
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20450597929933173,
+    "outcome_probabilities": [
+     0.12026440518929173,
+     0.37977250122237133,
+     0.12021502900124467,
+     0.37974806458709226
+    ],
+    "sample_probability": 0.002514964089417276
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1956783164556593,
+    "outcome_probabilities": [
+     0.2993975122405444,
+     0.20064146146873393,
+     0.29933246502950406,
+     0.20062856126121761
+    ],
+    "sample_probability": 0.0024892415161005812
+   },
+   "name": "in-1i-YZ",
+   "source and loss": {
+    "eligible_share": 0.2113435304776209,
+    "outcome_probabilities": [
+     0.3094813383387046,
+     0.19051866166129536,
+     0.30948133833870467,
+     0.19051866166129536
+    ],
+    "sample_probability": 0.0024203801478601557
+   },
+   "source only": {
+    "eligible_share": 0.20198808815043745,
+    "outcome_probabilities": [
+     0.3033936044615117,
+     0.19660639553848827,
+     0.30339360446151176,
+     0.19660639553848827
+    ],
+    "sample_probability": 0.6914549224037196
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20495581704183494,
+    "outcome_probabilities": [
+     0.31004149223292565,
+     0.18999541404724227,
+     0.3099798955557462,
+     0.18998319816408585
+    ],
+    "sample_probability": 0.0025096933581666256
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.22879181262308654,
+    "outcome_probabilities": [
+     0.0011891466012517533,
+     0.0011891466012517531,
+     0.49915419819427176,
+     0.49846750860322475
+    ],
+    "sample_probability": 0.0021303080390887466
+   },
+   "name": "in-1i-ZX",
+   "source and loss": {
+    "eligible_share": 0.24752070762374248,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.5,
+     0.5
+    ],
+    "sample_probability": 0.0020678085213555655
+   },
+   "source only": {
+    "eligible_share": 0.2394581671213216,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.5,
+     0.5
+    ],
+    "sample_probability": 0.5889403056883901
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.2385439215937953,
+    "outcome_probabilities": [
+     0.00112583718102709,
+     0.00112583718102709,
+     0.49919930793191347,
+     0.4985490177060323
+    ],
+    "sample_probability": 0.002157582122832224
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.22898591407235652,
+    "outcome_probabilities": [
+     0.0015958701882333609,
+     0.0007825176019491631,
+     0.19658349839445233,
+     0.8010381138153652
+    ],
+    "sample_probability": 0.002128497763989869
+   },
+   "name": "in-1i-ZY",
+   "source and loss": {
+    "eligible_share": 0.24773175818898346,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.23796861166544123,
+     0.7620313883345589
+    ],
+    "sample_probability": 0.002066105406306065
+   },
+   "source only": {
+    "eligible_share": 0.23936764895350665,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.21426193237386618,
+     0.7857380676261339
+    ],
+    "sample_probability": 0.588608721060335
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.23874774839524826,
+    "outcome_probabilities": [
+     0.0015106873370521862,
+     0.0007410185702997512,
+     0.23919661644664317,
+     0.7585516776460048
+    ],
+    "sample_probability": 0.0021557962155184457
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.22957500915960039,
+    "outcome_probabilities": [
+     0.001987237092412047,
+     0.00039119184300194515,
+     0.5968464488359329,
+     0.4007751222286532
+    ],
+    "sample_probability": 0.0021231954678750387
+   },
+   "name": "in-1i-ZZ",
+   "source and loss": {
+    "eligible_share": 0.2483767209151632,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.6190536697273147,
+     0.38094633027268526
+    ],
+    "sample_probability": 0.0020608774970549168
+   },
+   "source only": {
+    "eligible_share": 0.23988407561051434,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.6083865409687483,
+     0.3916134590312517
+    ],
+    "sample_probability": 0.5882750908158273
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.23935348060530254,
+    "outcome_probabilities": [
+     0.0018813085755920076,
+     0.00037044736862261836,
+     0.6182307089470882,
+     0.3795175351086972
+    ],
+    "sample_probability": 0.002150490853160538
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19512294353090992,
+    "outcome_probabilities": [
+     0.40161788378987123,
+     0.40127935775695484,
+     0.09889338878098013,
+     0.09820936967219383
+    ],
+    "sample_probability": 0.002494704031552746
+   },
+   "name": "in-+0-XX",
+   "source and loss": {
+    "eligible_share": 0.2108707508873437,
+    "outcome_probabilities": [
+     0.3811273734154369,
+     0.38112737341543695,
+     0.11887262658456307,
+     0.11887262658456307
+    ],
+    "sample_probability": 0.002425573615921276
+   },
+   "source only": {
+    "eligible_share": 0.20156743698946794,
+    "outcome_probabilities": [
+     0.39448407953135795,
+     0.39448407953135795,
+     0.10551592046864205,
+     0.10551592046864205
+    ],
+    "sample_probability": 0.6917875782132711
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20438180862537494,
+    "outcome_probabilities": [
+     0.38030133218724604,
+     0.37998076855819923,
+     0.12018281193172382,
+     0.11953508732283082
+    ],
+    "sample_probability": 0.002515140319731051
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19512294353090992,
+    "outcome_probabilities": [
+     0.40161788378987123,
+     0.40127935775695484,
+     0.09889338878098013,
+     0.09820936967219383
+    ],
+    "sample_probability": 0.002494704031552746
+   },
+   "name": "in-+0-XY",
+   "source and loss": {
+    "eligible_share": 0.2108707508873437,
+    "outcome_probabilities": [
+     0.3811273734154369,
+     0.38112737341543695,
+     0.11887262658456307,
+     0.11887262658456307
+    ],
+    "sample_probability": 0.002425573615921276
+   },
+   "source only": {
+    "eligible_share": 0.20156743698946794,
+    "outcome_probabilities": [
+     0.39448407953135795,
+     0.39448407953135795,
+     0.10551592046864205,
+     0.10551592046864205
+    ],
+    "sample_probability": 0.6917875782132711
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20438180862537494,
+    "outcome_probabilities": [
+     0.38030133218724604,
+     0.37998076855819923,
+     0.12018281193172382,
+     0.11953508732283082
+    ],
+    "sample_probability": 0.002515140319731051
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.22885976303301409,
+    "outcome_probabilities": [
+     0.8023252226750242,
+     0.0003233919525482316,
+     0.19669185825776497,
+     0.0006595271146626919
+    ],
+    "sample_probability": 0.0021284977639898692
+   },
+   "name": "in-+0-XZ",
+   "source and loss": {
+    "eligible_share": 0.24773175818898352,
+    "outcome_probabilities": [
+     0.7620313883345587,
+     0.0,
+     0.23796861166544114,
+     0.0
+    ],
+    "sample_probability": 0.002066105406306065
+   },
+   "source only": {
+    "eligible_share": 0.23936764895350665,
+    "outcome_probabilities": [
+     0.7857380676261339,
+     0.0,
+     0.21426193237386612,
+     0.0
+    ],
+    "sample_probability": 0.5886087210603351
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.2386231947720002,
+    "outcome_probabilities": [
+     0.7597479927250443,
+     0.0003062326479233856,
+     0.23932146937753943,
+     0.0006243052494928471
+    ],
+    "sample_probability": 0.0021557962155184457
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19499027341430175,
+    "outcome_probabilities": [
+     0.2502686064992188,
+     0.24975735945236427,
+     0.25024264054763573,
+     0.24973139350078125
+    ],
+    "sample_probability": 0.002496439298002986
+   },
+   "name": "in-+0-YX",
+   "source and loss": {
+    "eligible_share": 0.21072235084782398,
+    "outcome_probabilities": [
+     0.25000000000000006,
+     0.24999999999999994,
+     0.25000000000000006,
+     0.24999999999999994
+    ],
+    "sample_probability": 0.002427311351586044
+   },
+   "source only": {
+    "eligible_share": 0.20166276070953995,
+    "outcome_probabilities": [
+     0.24999999999999994,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.6921206776494022
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20424377020267,
+    "outcome_probabilities": [
+     0.2502543569157909,
+     0.2497702358052123,
+     0.2502297641947877,
+     0.2497456430842092
+    ],
+    "sample_probability": 0.002516869911175764
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19499027341430175,
+    "outcome_probabilities": [
+     0.2502686064992188,
+     0.24975735945236427,
+     0.25024264054763573,
+     0.24973139350078125
+    ],
+    "sample_probability": 0.002496439298002986
+   },
+   "name": "in-+0-YY",
+   "source and loss": {
+    "eligible_share": 0.21072235084782398,
+    "outcome_probabilities": [
+     0.25000000000000006,
+     0.24999999999999994,
+     0.25000000000000006,
+     0.24999999999999994
+    ],
+    "sample_probability": 0.002427311351586044
+   },
+   "source only": {
+    "eligible_share": 0.20166276070953995,
+    "outcome_probabilities": [
+     0.24999999999999994,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.6921206776494022
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20424377020267,
+    "outcome_probabilities": [
+     0.2502543569157909,
+     0.2497702358052123,
+     0.2502297641947877,
+     0.2497456430842092
+    ],
+    "sample_probability": 0.002516869911175764
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.22867491077955998,
+    "outcome_probabilities": [
+     0.4995347604459478,
+     0.0004914413778993603,
+     0.4994823567982535,
+     0.0004914413778993601
+    ],
+    "sample_probability": 0.002130216847991306
+   },
+   "name": "in-+0-YZ",
+   "source and loss": {
+    "eligible_share": 0.24752070762374237,
+    "outcome_probabilities": [
+     0.5000000000000001,
+     0.0,
+     0.4999999999999999,
+     0.0
+    ],
+    "sample_probability": 0.0020678085213555655
+   },
+   "source only": {
+    "eligible_share": 0.23945816712132156,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.5,
+     0.0
+    ],
+    "sample_probability": 0.5889403056883901
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.23842896347133635,
+    "outcome_probabilities": [
+     0.49955954864435564,
+     0.00046526356400769053,
+     0.4995099242276289,
+     0.00046526356400769053
+    ],
+    "sample_probability": 0.002157490997685424
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19554582755715383,
+    "outcome_probabilities": [
+     0.20115977699016477,
+     0.20099054428812405,
+     0.29935150363236473,
+     0.29849817508934645
+    ],
+    "sample_probability": 0.0024895055048707255
+   },
+   "name": "in-+0-ZX",
+   "source and loss": {
+    "eligible_share": 0.2113435304776208,
+    "outcome_probabilities": [
+     0.19051866166129544,
+     0.19051866166129544,
+     0.3094813383387046,
+     0.3094813383387046
+    ],
+    "sample_probability": 0.0024203801478601557
+   },
+   "source only": {
+    "eligible_share": 0.20198808815043734,
+    "outcome_probabilities": [
+     0.19660639553848833,
+     0.19660639553848833,
+     0.3033936044615117,
+     0.30339360446151165
+    ],
+    "sample_probability": 0.6914549224037198
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20482342118254665,
+    "outcome_probabilities": [
+     0.19048038892541905,
+     0.1903201384511144,
+     0.3100037552683326,
+     0.309195717355134
+    ],
+    "sample_probability": 0.002509957331662055
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19554582755715383,
+    "outcome_probabilities": [
+     0.20115977699016477,
+     0.20099054428812405,
+     0.29935150363236473,
+     0.29849817508934645
+    ],
+    "sample_probability": 0.0024895055048707255
+   },
+   "name": "in-+0-ZY",
+   "source and loss": {
+    "eligible_share": 0.2113435304776208,
+    "outcome_probabilities": [
+     0.19051866166129544,
+     0.19051866166129544,
+     0.3094813383387046,
+     0.3094813383387046
+    ],
+    "sample_probability": 0.0024203801478601557
+   },
+   "source only": {
+    "eligible_share": 0.20198808815043734,
+    "outcome_probabilities": [
+     0.19660639553848833,
+     0.19660639553848833,
+     0.3033936044615117,
+     0.30339360446151165
+    ],
+    "sample_probability": 0.6914549224037198
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20482342118254665,
+    "outcome_probabilities": [
+     0.19048038892541905,
+     0.1903201384511144,
+     0.3100037552683326,
+     0.309195717355134
+    ],
+    "sample_probability": 0.002509957331662055
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.22943814972877996,
+    "outcome_probabilities": [
+     0.4018889453708427,
+     0.00016166894006169655,
+     0.5971281146934734,
+     0.0008212709956223337
+    ],
+    "sample_probability": 0.0021232832113819424
+   },
+   "name": "in-+0-ZZ",
+   "source and loss": {
+    "eligible_share": 0.24837672091516313,
+    "outcome_probabilities": [
+     0.3809463302726854,
+     0.0,
+     0.6190536697273146,
+     0.0
+    ],
+    "sample_probability": 0.0020608774970549168
+   },
+   "source only": {
+    "eligible_share": 0.23988407561051434,
+    "outcome_probabilities": [
+     0.39161345903125183,
+     0.0,
+     0.6083865409687482,
+     0.0
+    ],
+    "sample_probability": 0.5882750908158273
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.2392179592086254,
+    "outcome_probabilities": [
+     0.3805607655152723,
+     0.00015309130675242682,
+     0.6185086724422192,
+     0.0007774707357560702
+    ],
+    "sample_probability": 0.002150578596802097
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12186752917255558,
+    "outcome_probabilities": [
+     0.0009834878087866979,
+     0.0009834878087866979,
+     0.4992269238724567,
+     0.49880610050996993
+    ],
+    "sample_probability": 0.0032131639930228317
+   },
+   "name": "in-+1-XX",
+   "source and loss": {
+    "eligible_share": 0.12452634195749544,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.49999999999999983,
+     0.5000000000000001
+    ],
+    "sample_probability": 0.0031309718575487627
+   },
+   "source only": {
+    "eligible_share": 0.1225809057983453,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.4999999999999999,
+     0.5000000000000001
+    ],
+    "sample_probability": 0.8974856793281099
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12160833861305757,
+    "outcome_probabilities": [
+     0.0009833171736138508,
+     0.0009833171736138503,
+     0.49922709707757856,
+     0.4988062685751938
+    ],
+    "sample_probability": 0.003219971565475023
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1218675291725556,
+    "outcome_probabilities": [
+     0.0009834878087866979,
+     0.0009834878087866979,
+     0.4992269238724568,
+     0.49880610050996976
+    ],
+    "sample_probability": 0.0032131639930228313
+   },
+   "name": "in-+1-XY",
+   "source and loss": {
+    "eligible_share": 0.12452634195749543,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.5,
+     0.5
+    ],
+    "sample_probability": 0.0031309718575487627
+   },
+   "source only": {
+    "eligible_share": 0.1225809057983453,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.5,
+     0.5
+    ],
+    "sample_probability": 0.8974856793281097
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12160833861305759,
+    "outcome_probabilities": [
+     0.0009833171736138508,
+     0.0009833171736138503,
+     0.4992270970775786,
+     0.49880626857519367
+    ],
+    "sample_probability": 0.0032199715654750226
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1095933271855951,
+    "outcome_probabilities": [
+     0.0009741802657035588,
+     0.0009741802657035586,
+     0.01927452961544321,
+     0.9787771098531496
+    ],
+    "sample_probability": 0.0035723388092951925
+   },
+   "name": "in-+1-XZ",
+   "source and loss": {
+    "eligible_share": 0.11190463593962359,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.017602056092105082,
+     0.9823979439078949
+    ],
+    "sample_probability": 0.003483622845299312
+   },
+   "source only": {
+    "eligible_share": 0.10968094244952142,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.0,
+     1.0
+    ],
+    "sample_probability": 1.0000000000000002
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1095933271855951,
+    "outcome_probabilities": [
+     0.0009741802657035588,
+     0.0009741802657035586,
+     0.019274529615443205,
+     0.9787771098531496
+    ],
+    "sample_probability": 0.0035723388092951925
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12178515020915137,
+    "outcome_probabilities": [
+     0.2501213332784872,
+     0.24991090995379436,
+     0.2500890900462056,
+     0.24987866672151282
+    ],
+    "sample_probability": 0.003214827827605544
+   },
+   "name": "in-+1-YX",
+   "source and loss": {
+    "eligible_share": 0.12444000064058539,
+    "outcome_probabilities": [
+     0.24999999999999997,
+     0.25000000000000006,
+     0.25,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.003132636825008863
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.24999999999999997,
+     0.25000000000000006,
+     0.24999999999999997,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.897485293989836
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12152622493349276,
+    "outcome_probabilities": [
+     0.25012133196727676,
+     0.2499109057795333,
+     0.25008909422046666,
+     0.24987866803272324
+    ],
+    "sample_probability": 0.0032216286865691295
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12178515020915137,
+    "outcome_probabilities": [
+     0.25012133327848723,
+     0.24991090995379434,
+     0.2500890900462056,
+     0.24987866672151282
+    ],
+    "sample_probability": 0.003214827827605544
+   },
+   "name": "in-+1-YY",
+   "source and loss": {
+    "eligible_share": 0.12444000064058539,
+    "outcome_probabilities": [
+     0.25000000000000006,
+     0.24999999999999997,
+     0.25,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.003132636825008863
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.25000000000000006,
+     0.24999999999999997,
+     0.24999999999999997,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.897485293989836
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12152622493349276,
+    "outcome_probabilities": [
+     0.2501213319672768,
+     0.24991090577953323,
+     0.25008909422046666,
+     0.24987866803272324
+    ],
+    "sample_probability": 0.0032216286865691295
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10952953547758469,
+    "outcome_probabilities": [
+     0.01014052039643267,
+     0.48989141780020573,
+     0.010108744301769407,
+     0.4898593175015922
+    ],
+    "sample_probability": 0.0035740348569833205
+   },
+   "name": "in-+1-YZ",
+   "source and loss": {
+    "eligible_share": 0.1118371963984446,
+    "outcome_probabilities": [
+     0.008800942004652717,
+     0.49119905799534724,
+     0.008800942004652717,
+     0.4911990579953473
+    ],
+    "sample_probability": 0.0034853217022838066
+   },
+   "source only": {
+    "eligible_share": 0.10950282041737035,
+    "outcome_probabilities": [
+     0.0,
+     0.5,
+     0.0,
+     0.5
+    ],
+    "sample_probability": 0.9999999999999998
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10952892857257582,
+    "outcome_probabilities": [
+     0.010140270809939704,
+     0.4898916675892777,
+     0.010108494491159574,
+     0.489859567109623
+    ],
+    "sample_probability": 0.0035740299882862122
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12178515020915136,
+    "outcome_probabilities": [
+     0.25012133327848723,
+     0.24991090995379436,
+     0.25008909004620555,
+     0.24987866672151288
+    ],
+    "sample_probability": 0.003214827827605545
+   },
+   "name": "in-+1-ZX",
+   "source and loss": {
+    "eligible_share": 0.12444000064058539,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.24999999999999997,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.0031326368250088627
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.24999999999999992,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.8974852939898359
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12152622493349276,
+    "outcome_probabilities": [
+     0.25012133196727676,
+     0.24991090577953326,
+     0.25008909422046666,
+     0.2498786680327233
+    ],
+    "sample_probability": 0.003221628686569129
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12178515020915136,
+    "outcome_probabilities": [
+     0.25012133327848723,
+     0.24991090995379436,
+     0.25008909004620566,
+     0.24987866672151282
+    ],
+    "sample_probability": 0.0032148278276055444
+   },
+   "name": "in-+1-ZY",
+   "source and loss": {
+    "eligible_share": 0.12444000064058539,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25000000000000006,
+     0.25
+    ],
+    "sample_probability": 0.0031326368250088627
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.8974852939898359
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12152622493349276,
+    "outcome_probabilities": [
+     0.25012133196727676,
+     0.24991090577953326,
+     0.2500890942204667,
+     0.2498786680327232
+    ],
+    "sample_probability": 0.003221628686569129
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10952953547758466,
+    "outcome_probabilities": [
+     0.010140520396432672,
+     0.48989141780020584,
+     0.01010874430176941,
+     0.489859317501592
+    ],
+    "sample_probability": 0.003574034856983321
+   },
+   "name": "in-+1-ZZ",
+   "source and loss": {
+    "eligible_share": 0.11183719639844457,
+    "outcome_probabilities": [
+     0.00880094200465272,
+     0.4911990579953473,
+     0.00880094200465272,
+     0.49119905799534724
+    ],
+    "sample_probability": 0.0034853217022838058
+   },
+   "source only": {
+    "eligible_share": 0.10950282041737032,
+    "outcome_probabilities": [
+     0.0,
+     0.5000000000000001,
+     0.0,
+     0.4999999999999999
+    ],
+    "sample_probability": 0.9999999999999997
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10952892857257579,
+    "outcome_probabilities": [
+     0.010140270809939707,
+     0.48989166758927777,
+     0.010108494491159577,
+     0.4898595671096229
+    ],
+    "sample_probability": 0.0035740299882862114
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15370306725650928,
+    "outcome_probabilities": [
+     0.22738993583662082,
+     0.21839910285344497,
+     0.3275427488546851,
+     0.22666821245524907
+    ],
+    "sample_probability": 0.0028572419746108616
+   },
+   "name": "in-++-XX",
+   "source and loss": {
+    "eligible_share": 0.16201716389584175,
+    "outcome_probabilities": [
+     0.22010724319955075,
+     0.21238968493272484,
+     0.3473958286681737,
+     0.22010724319955066
+    ],
+    "sample_probability": 0.0027816578007622862
+   },
+   "source only": {
+    "eligible_share": 0.1569633258768046,
+    "outcome_probabilities": [
+     0.22117717893233588,
+     0.2191268331498984,
+     0.33851880898542996,
+     0.22117717893233577
+    ],
+    "sample_probability": 0.7946364799159432
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15772418860911286,
+    "outcome_probabilities": [
+     0.22053601518941557,
+     0.21182021759468408,
+     0.34780755556408527,
+     0.21983621165181513
+    ],
+    "sample_probability": 0.002870854925995319
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15360011204322882,
+    "outcome_probabilities": [
+     0.22299208713610452,
+     0.22280448727930444,
+     0.2773850623718652,
+     0.2768183632127258
+    ],
+    "sample_probability": 0.00285904288915649
+   },
+   "name": "in-++-XY",
+   "source and loss": {
+    "eligible_share": 0.16191033878027256,
+    "outcome_probabilities": [
+     0.21625342208589576,
+     0.21625342208589582,
+     0.28374657791410424,
+     0.2837465779141042
+    ],
+    "sample_probability": 0.0027833696304075724
+   },
+   "source only": {
+    "eligible_share": 0.1569019438694374,
+    "outcome_probabilities": [
+     0.22019216402402722,
+     0.22019216402402722,
+     0.2798078359759728,
+     0.2798078359759728
+    ],
+    "sample_probability": 0.7948027195705687
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15761865081549706,
+    "outcome_probabilities": [
+     0.21627412491476194,
+     0.21609217431701308,
+     0.28409166735872454,
+     0.2835420334095005
+    ],
+    "sample_probability": 0.0028726482632207653
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15370584449948335,
+    "outcome_probabilities": [
+     0.44132416035681116,
+     0.004513420876034486,
+     0.11356200721201015,
+     0.44060041155514423
+    ],
+    "sample_probability": 0.0028572455026392384
+   },
+   "name": "in-++-XZ",
+   "source and loss": {
+    "eligible_share": 0.1620194927822165,
+    "outcome_probabilities": [
+     0.42874223803220496,
+     0.003802088458320893,
+     0.1387134354772695,
+     0.4287422380322046
+    ],
+    "sample_probability": 0.0027816565484081904
+   },
+   "source only": {
+    "eligible_share": 0.15696346249305426,
+    "outcome_probabilities": [
+     0.44102071037741625,
+     0.0,
+     0.11795857924516785,
+     0.4410207103774159
+    ],
+    "sample_probability": 0.7946364806769408
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1577264420994823,
+    "outcome_probabilities": [
+     0.42802893846344126,
+     0.00437627547876855,
+     0.14026761900883566,
+     0.42732716704895457
+    ],
+    "sample_probability": 0.002870853674574438
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15360500684134068,
+    "outcome_probabilities": [
+     0.27748428309344697,
+     0.2225444825304533,
+     0.27744106030107435,
+     0.22253017407502534
+    ],
+    "sample_probability": 0.0028589534261911085
+   },
+   "name": "in-++-YX",
+   "source and loss": {
+    "eligible_share": 0.16191033878027258,
+    "outcome_probabilities": [
+     0.28374657791410435,
+     0.21625342208589568,
+     0.28374657791410435,
+     0.21625342208589562
+    ],
+    "sample_probability": 0.002783369630407572
+   },
+   "source only": {
+    "eligible_share": 0.1569019438694374,
+    "outcome_probabilities": [
+     0.2798078359759729,
+     0.22019216402402708,
+     0.2798078359759729,
+     0.22019216402402708
+    ],
+    "sample_probability": 0.7948027195705686
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15762366843176012,
+    "outcome_probabilities": [
+     0.28418783585029717,
+     0.215840063540826,
+     0.28414591464628214,
+     0.21582618596259476
+    ],
+    "sample_probability": 0.0028725588331345274
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15351200890890956,
+    "outcome_probabilities": [
+     0.44523841210836723,
+     0.054792078868360954,
+     0.0551388363054824,
+     0.4448306727177894
+    ],
+    "sample_probability": 0.0028608054396454118
+   },
+   "name": "in-++-YY",
+   "source and loss": {
+    "eligible_share": 0.16181361806316688,
+    "outcome_probabilities": [
+     0.4326278861048128,
+     0.06737211389518723,
+     0.0673721138951872,
+     0.4326278861048128
+    ],
+    "sample_probability": 0.002785136008832553
+   },
+   "source only": {
+    "eligible_share": 0.1568408688786814,
+    "outcome_probabilities": [
+     0.44251866438458903,
+     0.057481335615410994,
+     0.057481335615410994,
+     0.44251866438458903
+    ],
+    "sample_probability": 0.7949698499196746
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15752797933436088,
+    "outcome_probabilities": [
+     0.4318251379482133,
+     0.06820436825851887,
+     0.06854074725992201,
+     0.43142974653334587
+    ],
+    "sample_probability": 0.0028744070204378405
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1536050068549231,
+    "outcome_probabilities": [
+     0.27748428309344697,
+     0.22254448253045325,
+     0.2774410603010744,
+     0.22253017407502532
+    ],
+    "sample_probability": 0.002858953425938308
+   },
+   "name": "in-++-YZ",
+   "source and loss": {
+    "eligible_share": 0.16191033878027253,
+    "outcome_probabilities": [
+     0.2837465779141043,
+     0.2162534220858957,
+     0.2837465779141043,
+     0.21625342208589565
+    ],
+    "sample_probability": 0.002783369630407572
+   },
+   "source only": {
+    "eligible_share": 0.15690194386943737,
+    "outcome_probabilities": [
+     0.279807835975973,
+     0.22019216402402705,
+     0.279807835975973,
+     0.22019216402402705
+    ],
+    "sample_probability": 0.7948027195705687
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1576236684513396,
+    "outcome_probabilities": [
+     0.28418783585029717,
+     0.21584006354082602,
+     0.2841459146462821,
+     0.21582618596259479
+    ],
+    "sample_probability": 0.0028725588327777074
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1537058444588859,
+    "outcome_probabilities": [
+     0.441324160356811,
+     0.004513420876034486,
+     0.11356200721201011,
+     0.44060041155514434
+    ],
+    "sample_probability": 0.002857245503393905
+   },
+   "name": "in-++-ZX",
+   "source and loss": {
+    "eligible_share": 0.16201949278221647,
+    "outcome_probabilities": [
+     0.4287422380322048,
+     0.003802088458320892,
+     0.13871343547726947,
+     0.4287422380322048
+    ],
+    "sample_probability": 0.00278165654840819
+   },
+   "source only": {
+    "eligible_share": 0.15696346249305426,
+    "outcome_probabilities": [
+     0.4410207103774161,
+     0.0,
+     0.11795857924516782,
+     0.4410207103774161
+    ],
+    "sample_probability": 0.7946364806769406
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1577264420409602,
+    "outcome_probabilities": [
+     0.4280289384634411,
+     0.004376275478768549,
+     0.14026761900883564,
+     0.4273271670489547
+    ],
+    "sample_probability": 0.0028708536756396263
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1536001120296472,
+    "outcome_probabilities": [
+     0.22299208713610447,
+     0.22280448727930438,
+     0.2773850623718653,
+     0.2768183632127259
+    ],
+    "sample_probability": 0.0028590428894092923
+   },
+   "name": "in-++-ZY",
+   "source and loss": {
+    "eligible_share": 0.16191033878027256,
+    "outcome_probabilities": [
+     0.21625342208589565,
+     0.21625342208589574,
+     0.28374657791410435,
+     0.2837465779141043
+    ],
+    "sample_probability": 0.0027833696304075724
+   },
+   "source only": {
+    "eligible_share": 0.1569019438694374,
+    "outcome_probabilities": [
+     0.2201921640240271,
+     0.22019216402402714,
+     0.27980783597597286,
+     0.27980783597597286
+    ],
+    "sample_probability": 0.7948027195705687
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1576186507959188,
+    "outcome_probabilities": [
+     0.21627412491476183,
+     0.21609217431701297,
+     0.2840916673587246,
+     0.2835420334095005
+    ],
+    "sample_probability": 0.0028726482635775853
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1537030672565093,
+    "outcome_probabilities": [
+     0.22738993583662073,
+     0.21839910285344494,
+     0.3275427488546854,
+     0.22666821245524896
+    ],
+    "sample_probability": 0.0028572419746108603
+   },
+   "name": "in-++-ZZ",
+   "source and loss": {
+    "eligible_share": 0.16201716389584173,
+    "outcome_probabilities": [
+     0.2201072431995507,
+     0.21238968493272484,
+     0.3473958286681739,
+     0.22010724319955058
+    ],
+    "sample_probability": 0.0027816578007622862
+   },
+   "source only": {
+    "eligible_share": 0.15696332587680462,
+    "outcome_probabilities": [
+     0.22117717893233577,
+     0.21912683314989834,
+     0.3385188089854302,
+     0.22117717893233568
+    ],
+    "sample_probability": 0.7946364799159431
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15772418860911286,
+    "outcome_probabilities": [
+     0.22053601518941546,
+     0.21182021759468406,
+     0.34780755556408544,
+     0.21983621165181502
+    ],
+    "sample_probability": 0.002870854925995319
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15360011204322882,
+    "outcome_probabilities": [
+     0.22299208713610452,
+     0.22280448727930444,
+     0.2773850623718652,
+     0.2768183632127258
+    ],
+    "sample_probability": 0.00285904288915649
+   },
+   "name": "in-+i-XX",
+   "source and loss": {
+    "eligible_share": 0.16191033878027256,
+    "outcome_probabilities": [
+     0.21625342208589576,
+     0.21625342208589582,
+     0.28374657791410424,
+     0.2837465779141042
+    ],
+    "sample_probability": 0.0027833696304075724
+   },
+   "source only": {
+    "eligible_share": 0.1569019438694374,
+    "outcome_probabilities": [
+     0.22019216402402722,
+     0.22019216402402722,
+     0.2798078359759728,
+     0.2798078359759728
+    ],
+    "sample_probability": 0.7948027195705687
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15761865081549706,
+    "outcome_probabilities": [
+     0.21627412491476194,
+     0.21609217431701308,
+     0.28409166735872454,
+     0.2835420334095005
+    ],
+    "sample_probability": 0.0028726482632207653
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15370306725650928,
+    "outcome_probabilities": [
+     0.22738993583662082,
+     0.21839910285344497,
+     0.3275427488546851,
+     0.22666821245524907
+    ],
+    "sample_probability": 0.0028572419746108616
+   },
+   "name": "in-+i-XY",
+   "source and loss": {
+    "eligible_share": 0.16201716389584175,
+    "outcome_probabilities": [
+     0.22010724319955075,
+     0.21238968493272484,
+     0.3473958286681737,
+     0.22010724319955066
+    ],
+    "sample_probability": 0.0027816578007622862
+   },
+   "source only": {
+    "eligible_share": 0.1569633258768046,
+    "outcome_probabilities": [
+     0.22117717893233588,
+     0.2191268331498984,
+     0.33851880898542996,
+     0.22117717893233577
+    ],
+    "sample_probability": 0.7946364799159432
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15772418860911286,
+    "outcome_probabilities": [
+     0.22053601518941557,
+     0.21182021759468408,
+     0.34780755556408527,
+     0.21983621165181513
+    ],
+    "sample_probability": 0.002870854925995319
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15370584449948335,
+    "outcome_probabilities": [
+     0.44132416035681116,
+     0.004513420876034486,
+     0.11356200721201015,
+     0.44060041155514423
+    ],
+    "sample_probability": 0.0028572455026392384
+   },
+   "name": "in-+i-XZ",
+   "source and loss": {
+    "eligible_share": 0.1620194927822165,
+    "outcome_probabilities": [
+     0.42874223803220496,
+     0.003802088458320893,
+     0.1387134354772695,
+     0.4287422380322046
+    ],
+    "sample_probability": 0.0027816565484081904
+   },
+   "source only": {
+    "eligible_share": 0.15696346249305426,
+    "outcome_probabilities": [
+     0.44102071037741625,
+     0.0,
+     0.11795857924516785,
+     0.4410207103774159
+    ],
+    "sample_probability": 0.7946364806769408
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1577264420994823,
+    "outcome_probabilities": [
+     0.42802893846344126,
+     0.00437627547876855,
+     0.14026761900883566,
+     0.42732716704895457
+    ],
+    "sample_probability": 0.002870853674574438
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1535120089089096,
+    "outcome_probabilities": [
+     0.055167467653501605,
+     0.44485956763523193,
+     0.44520951719092466,
+     0.05476344752034174
+    ],
+    "sample_probability": 0.0028608054396454118
+   },
+   "name": "in-+i-YX",
+   "source and loss": {
+    "eligible_share": 0.1618136180631669,
+    "outcome_probabilities": [
+     0.06737211389518719,
+     0.43262788610481284,
+     0.43262788610481273,
+     0.06737211389518719
+    ],
+    "sample_probability": 0.002785136008832553
+   },
+   "source only": {
+    "eligible_share": 0.1568408688786814,
+    "outcome_probabilities": [
+     0.057481335615410994,
+     0.44251866438458903,
+     0.44251866438458903,
+     0.057481335615410994
+    ],
+    "sample_probability": 0.7949698499196746
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1575279793343609,
+    "outcome_probabilities": [
+     0.06856852167288188,
+     0.43145776639739164,
+     0.4317971180841675,
+     0.06817659384555895
+    ],
+    "sample_probability": 0.0028744070204378405
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15360500684134068,
+    "outcome_probabilities": [
+     0.27748428309344697,
+     0.2225444825304533,
+     0.27744106030107435,
+     0.22253017407502543
+    ],
+    "sample_probability": 0.0028589534261911085
+   },
+   "name": "in-+i-YY",
+   "source and loss": {
+    "eligible_share": 0.16191033878027258,
+    "outcome_probabilities": [
+     0.28374657791410435,
+     0.21625342208589565,
+     0.28374657791410435,
+     0.21625342208589565
+    ],
+    "sample_probability": 0.002783369630407572
+   },
+   "source only": {
+    "eligible_share": 0.15690194386943743,
+    "outcome_probabilities": [
+     0.27980783597597286,
+     0.22019216402402705,
+     0.27980783597597286,
+     0.22019216402402714
+    ],
+    "sample_probability": 0.7948027195705686
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15762366843176015,
+    "outcome_probabilities": [
+     0.28418783585029717,
+     0.21584006354082597,
+     0.2841459146462821,
+     0.21582618596259479
+    ],
+    "sample_probability": 0.0028725588331345274
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1536050068549231,
+    "outcome_probabilities": [
+     0.27748428309344697,
+     0.22254448253045325,
+     0.2774410603010744,
+     0.22253017407502532
+    ],
+    "sample_probability": 0.002858953425938308
+   },
+   "name": "in-+i-YZ",
+   "source and loss": {
+    "eligible_share": 0.16191033878027253,
+    "outcome_probabilities": [
+     0.2837465779141043,
+     0.2162534220858957,
+     0.2837465779141043,
+     0.21625342208589565
+    ],
+    "sample_probability": 0.002783369630407572
+   },
+   "source only": {
+    "eligible_share": 0.15690194386943737,
+    "outcome_probabilities": [
+     0.279807835975973,
+     0.22019216402402705,
+     0.279807835975973,
+     0.22019216402402705
+    ],
+    "sample_probability": 0.7948027195705687
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1576236684513396,
+    "outcome_probabilities": [
+     0.28418783585029717,
+     0.21584006354082602,
+     0.2841459146462821,
+     0.21582618596259479
+    ],
+    "sample_probability": 0.0028725588327777074
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1536001120296472,
+    "outcome_probabilities": [
+     0.22299208713610447,
+     0.22280448727930438,
+     0.2773850623718653,
+     0.2768183632127259
+    ],
+    "sample_probability": 0.0028590428894092923
+   },
+   "name": "in-+i-ZX",
+   "source and loss": {
+    "eligible_share": 0.16191033878027256,
+    "outcome_probabilities": [
+     0.21625342208589565,
+     0.21625342208589574,
+     0.28374657791410435,
+     0.2837465779141043
+    ],
+    "sample_probability": 0.0027833696304075724
+   },
+   "source only": {
+    "eligible_share": 0.1569019438694374,
+    "outcome_probabilities": [
+     0.2201921640240271,
+     0.22019216402402714,
+     0.27980783597597286,
+     0.27980783597597286
+    ],
+    "sample_probability": 0.7948027195705687
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1576186507959188,
+    "outcome_probabilities": [
+     0.21627412491476183,
+     0.21609217431701297,
+     0.2840916673587246,
+     0.2835420334095005
+    ],
+    "sample_probability": 0.0028726482635775853
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1537058444588859,
+    "outcome_probabilities": [
+     0.441324160356811,
+     0.004513420876034486,
+     0.11356200721201011,
+     0.44060041155514434
+    ],
+    "sample_probability": 0.002857245503393905
+   },
+   "name": "in-+i-ZY",
+   "source and loss": {
+    "eligible_share": 0.16201949278221647,
+    "outcome_probabilities": [
+     0.4287422380322048,
+     0.003802088458320892,
+     0.13871343547726947,
+     0.4287422380322048
+    ],
+    "sample_probability": 0.00278165654840819
+   },
+   "source only": {
+    "eligible_share": 0.15696346249305426,
+    "outcome_probabilities": [
+     0.4410207103774161,
+     0.0,
+     0.11795857924516782,
+     0.4410207103774161
+    ],
+    "sample_probability": 0.7946364806769406
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1577264420409602,
+    "outcome_probabilities": [
+     0.4280289384634411,
+     0.004376275478768549,
+     0.14026761900883564,
+     0.4273271670489547
+    ],
+    "sample_probability": 0.0028708536756396263
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1537030672565093,
+    "outcome_probabilities": [
+     0.22738993583662073,
+     0.21839910285344494,
+     0.3275427488546854,
+     0.22666821245524896
+    ],
+    "sample_probability": 0.0028572419746108603
+   },
+   "name": "in-+i-ZZ",
+   "source and loss": {
+    "eligible_share": 0.16201716389584173,
+    "outcome_probabilities": [
+     0.2201072431995507,
+     0.21238968493272484,
+     0.3473958286681739,
+     0.22010724319955058
+    ],
+    "sample_probability": 0.0027816578007622862
+   },
+   "source only": {
+    "eligible_share": 0.15696332587680462,
+    "outcome_probabilities": [
+     0.22117717893233577,
+     0.21912683314989834,
+     0.3385188089854302,
+     0.22117717893233568
+    ],
+    "sample_probability": 0.7946364799159431
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15772418860911286,
+    "outcome_probabilities": [
+     0.22053601518941546,
+     0.21182021759468406,
+     0.34780755556408544,
+     0.21983621165181502
+    ],
+    "sample_probability": 0.002870854925995319
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19499027341430175,
+    "outcome_probabilities": [
+     0.2502686064992188,
+     0.24975735945236427,
+     0.25024264054763573,
+     0.24973139350078125
+    ],
+    "sample_probability": 0.002496439298002986
+   },
+   "name": "in-i0-XX",
+   "source and loss": {
+    "eligible_share": 0.21072235084782398,
+    "outcome_probabilities": [
+     0.25000000000000006,
+     0.24999999999999994,
+     0.25000000000000006,
+     0.24999999999999994
+    ],
+    "sample_probability": 0.002427311351586044
+   },
+   "source only": {
+    "eligible_share": 0.20166276070953995,
+    "outcome_probabilities": [
+     0.24999999999999994,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.6921206776494022
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20424377020267,
+    "outcome_probabilities": [
+     0.2502543569157909,
+     0.2497702358052123,
+     0.2502297641947877,
+     0.2497456430842092
+    ],
+    "sample_probability": 0.002516869911175764
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19499027341430175,
+    "outcome_probabilities": [
+     0.2502686064992188,
+     0.24975735945236427,
+     0.25024264054763573,
+     0.24973139350078125
+    ],
+    "sample_probability": 0.002496439298002986
+   },
+   "name": "in-i0-XY",
+   "source and loss": {
+    "eligible_share": 0.21072235084782398,
+    "outcome_probabilities": [
+     0.25000000000000006,
+     0.24999999999999994,
+     0.25000000000000006,
+     0.24999999999999994
+    ],
+    "sample_probability": 0.002427311351586044
+   },
+   "source only": {
+    "eligible_share": 0.20166276070953995,
+    "outcome_probabilities": [
+     0.24999999999999994,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.6921206776494022
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20424377020267,
+    "outcome_probabilities": [
+     0.2502543569157909,
+     0.2497702358052123,
+     0.2502297641947877,
+     0.2497456430842092
+    ],
+    "sample_probability": 0.002516869911175764
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.22867491077956,
+    "outcome_probabilities": [
+     0.49953476044594786,
+     0.0004914413778993601,
+     0.4994823567982534,
+     0.00049144137789936
+    ],
+    "sample_probability": 0.002130216847991306
+   },
+   "name": "in-i0-XZ",
+   "source and loss": {
+    "eligible_share": 0.24752070762374248,
+    "outcome_probabilities": [
+     0.5000000000000001,
+     0.0,
+     0.4999999999999998,
+     0.0
+    ],
+    "sample_probability": 0.0020678085213555655
+   },
+   "source only": {
+    "eligible_share": 0.23945816712132165,
+    "outcome_probabilities": [
+     0.5,
+     0.0,
+     0.4999999999999999,
+     0.0
+    ],
+    "sample_probability": 0.5889403056883901
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.23842896347133638,
+    "outcome_probabilities": [
+     0.49955954864435576,
+     0.00046526356400769064,
+     0.4995099242276289,
+     0.0004652635640076904
+    ],
+    "sample_probability": 0.002157490997685424
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19512294353090992,
+    "outcome_probabilities": [
+     0.40161788378987123,
+     0.40127935775695484,
+     0.09889338878098013,
+     0.09820936967219383
+    ],
+    "sample_probability": 0.002494704031552746
+   },
+   "name": "in-i0-YX",
+   "source and loss": {
+    "eligible_share": 0.2108707508873437,
+    "outcome_probabilities": [
+     0.3811273734154369,
+     0.38112737341543695,
+     0.11887262658456307,
+     0.11887262658456307
+    ],
+    "sample_probability": 0.002425573615921276
+   },
+   "source only": {
+    "eligible_share": 0.20156743698946794,
+    "outcome_probabilities": [
+     0.39448407953135795,
+     0.39448407953135795,
+     0.10551592046864205,
+     0.10551592046864205
+    ],
+    "sample_probability": 0.6917875782132711
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20438180862537494,
+    "outcome_probabilities": [
+     0.38030133218724604,
+     0.37998076855819923,
+     0.12018281193172382,
+     0.11953508732283082
+    ],
+    "sample_probability": 0.002515140319731051
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19512294353090992,
+    "outcome_probabilities": [
+     0.40161788378987123,
+     0.40127935775695484,
+     0.09889338878098013,
+     0.09820936967219383
+    ],
+    "sample_probability": 0.002494704031552746
+   },
+   "name": "in-i0-YY",
+   "source and loss": {
+    "eligible_share": 0.2108707508873437,
+    "outcome_probabilities": [
+     0.3811273734154369,
+     0.38112737341543695,
+     0.11887262658456307,
+     0.11887262658456307
+    ],
+    "sample_probability": 0.002425573615921276
+   },
+   "source only": {
+    "eligible_share": 0.20156743698946794,
+    "outcome_probabilities": [
+     0.39448407953135795,
+     0.39448407953135795,
+     0.10551592046864205,
+     0.10551592046864205
+    ],
+    "sample_probability": 0.6917875782132711
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20438180862537494,
+    "outcome_probabilities": [
+     0.38030133218724604,
+     0.37998076855819923,
+     0.12018281193172382,
+     0.11953508732283082
+    ],
+    "sample_probability": 0.002515140319731051
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.22885976303301409,
+    "outcome_probabilities": [
+     0.8023252226750242,
+     0.0003233919525482316,
+     0.19669185825776497,
+     0.0006595271146626919
+    ],
+    "sample_probability": 0.0021284977639898692
+   },
+   "name": "in-i0-YZ",
+   "source and loss": {
+    "eligible_share": 0.24773175818898352,
+    "outcome_probabilities": [
+     0.7620313883345587,
+     0.0,
+     0.23796861166544114,
+     0.0
+    ],
+    "sample_probability": 0.002066105406306065
+   },
+   "source only": {
+    "eligible_share": 0.23936764895350665,
+    "outcome_probabilities": [
+     0.7857380676261339,
+     0.0,
+     0.21426193237386612,
+     0.0
+    ],
+    "sample_probability": 0.5886087210603351
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.2386231947720002,
+    "outcome_probabilities": [
+     0.7597479927250443,
+     0.0003062326479233856,
+     0.23932146937753943,
+     0.0006243052494928471
+    ],
+    "sample_probability": 0.0021557962155184457
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19554582755715383,
+    "outcome_probabilities": [
+     0.20115977699016477,
+     0.20099054428812405,
+     0.29935150363236473,
+     0.29849817508934645
+    ],
+    "sample_probability": 0.0024895055048707255
+   },
+   "name": "in-i0-ZX",
+   "source and loss": {
+    "eligible_share": 0.2113435304776208,
+    "outcome_probabilities": [
+     0.19051866166129544,
+     0.19051866166129544,
+     0.3094813383387046,
+     0.3094813383387046
+    ],
+    "sample_probability": 0.0024203801478601557
+   },
+   "source only": {
+    "eligible_share": 0.20198808815043734,
+    "outcome_probabilities": [
+     0.19660639553848833,
+     0.19660639553848833,
+     0.3033936044615117,
+     0.30339360446151165
+    ],
+    "sample_probability": 0.6914549224037198
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20482342118254665,
+    "outcome_probabilities": [
+     0.19048038892541905,
+     0.1903201384511144,
+     0.3100037552683326,
+     0.309195717355134
+    ],
+    "sample_probability": 0.002509957331662055
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.19554582755715383,
+    "outcome_probabilities": [
+     0.20115977699016477,
+     0.20099054428812405,
+     0.29935150363236473,
+     0.29849817508934645
+    ],
+    "sample_probability": 0.0024895055048707255
+   },
+   "name": "in-i0-ZY",
+   "source and loss": {
+    "eligible_share": 0.2113435304776208,
+    "outcome_probabilities": [
+     0.19051866166129544,
+     0.19051866166129544,
+     0.3094813383387046,
+     0.3094813383387046
+    ],
+    "sample_probability": 0.0024203801478601557
+   },
+   "source only": {
+    "eligible_share": 0.20198808815043734,
+    "outcome_probabilities": [
+     0.19660639553848833,
+     0.19660639553848833,
+     0.3033936044615117,
+     0.30339360446151165
+    ],
+    "sample_probability": 0.6914549224037198
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.20482342118254665,
+    "outcome_probabilities": [
+     0.19048038892541905,
+     0.1903201384511144,
+     0.3100037552683326,
+     0.309195717355134
+    ],
+    "sample_probability": 0.002509957331662055
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.22943814972877996,
+    "outcome_probabilities": [
+     0.4018889453708427,
+     0.00016166894006169655,
+     0.5971281146934734,
+     0.0008212709956223337
+    ],
+    "sample_probability": 0.0021232832113819424
+   },
+   "name": "in-i0-ZZ",
+   "source and loss": {
+    "eligible_share": 0.24837672091516313,
+    "outcome_probabilities": [
+     0.3809463302726854,
+     0.0,
+     0.6190536697273146,
+     0.0
+    ],
+    "sample_probability": 0.0020608774970549168
+   },
+   "source only": {
+    "eligible_share": 0.23988407561051434,
+    "outcome_probabilities": [
+     0.39161345903125183,
+     0.0,
+     0.6083865409687482,
+     0.0
+    ],
+    "sample_probability": 0.5882750908158273
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.2392179592086254,
+    "outcome_probabilities": [
+     0.3805607655152723,
+     0.00015309130675242682,
+     0.6185086724422192,
+     0.0007774707357560702
+    ],
+    "sample_probability": 0.002150578596802097
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12178515020915137,
+    "outcome_probabilities": [
+     0.2501213332784872,
+     0.24991090995379436,
+     0.2500890900462056,
+     0.24987866672151282
+    ],
+    "sample_probability": 0.003214827827605544
+   },
+   "name": "in-i1-XX",
+   "source and loss": {
+    "eligible_share": 0.12444000064058539,
+    "outcome_probabilities": [
+     0.24999999999999997,
+     0.25000000000000006,
+     0.25,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.003132636825008863
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.24999999999999997,
+     0.25000000000000006,
+     0.24999999999999997,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.897485293989836
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12152622493349276,
+    "outcome_probabilities": [
+     0.25012133196727676,
+     0.2499109057795333,
+     0.25008909422046666,
+     0.24987866803272324
+    ],
+    "sample_probability": 0.0032216286865691295
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12178515020915137,
+    "outcome_probabilities": [
+     0.2501213332784872,
+     0.24991090995379436,
+     0.25008909004620566,
+     0.24987866672151277
+    ],
+    "sample_probability": 0.003214827827605544
+   },
+   "name": "in-i1-XY",
+   "source and loss": {
+    "eligible_share": 0.12444000064058539,
+    "outcome_probabilities": [
+     0.24999999999999997,
+     0.25000000000000006,
+     0.25000000000000006,
+     0.24999999999999997
+    ],
+    "sample_probability": 0.003132636825008863
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.24999999999999997,
+     0.25000000000000006,
+     0.25000000000000006,
+     0.24999999999999997
+    ],
+    "sample_probability": 0.897485293989836
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12152622493349276,
+    "outcome_probabilities": [
+     0.25012133196727676,
+     0.2499109057795333,
+     0.2500890942204667,
+     0.24987866803272318
+    ],
+    "sample_probability": 0.0032216286865691295
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10952953547758469,
+    "outcome_probabilities": [
+     0.01014052039643267,
+     0.48989141780020573,
+     0.010108744301769407,
+     0.4898593175015922
+    ],
+    "sample_probability": 0.0035740348569833205
+   },
+   "name": "in-i1-XZ",
+   "source and loss": {
+    "eligible_share": 0.1118371963984446,
+    "outcome_probabilities": [
+     0.008800942004652717,
+     0.49119905799534724,
+     0.008800942004652717,
+     0.4911990579953473
+    ],
+    "sample_probability": 0.0034853217022838066
+   },
+   "source only": {
+    "eligible_share": 0.10950282041737035,
+    "outcome_probabilities": [
+     0.0,
+     0.5,
+     0.0,
+     0.5
+    ],
+    "sample_probability": 0.9999999999999998
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10952892857257582,
+    "outcome_probabilities": [
+     0.010140270809939704,
+     0.4898916675892777,
+     0.010108494491159574,
+     0.489859567109623
+    ],
+    "sample_probability": 0.0035740299882862122
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12186752917255558,
+    "outcome_probabilities": [
+     0.0009834878087866979,
+     0.0009834878087866979,
+     0.4992269238724567,
+     0.49880610050996993
+    ],
+    "sample_probability": 0.0032131639930228317
+   },
+   "name": "in-i1-YX",
+   "source and loss": {
+    "eligible_share": 0.12452634195749544,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.49999999999999983,
+     0.5000000000000001
+    ],
+    "sample_probability": 0.0031309718575487627
+   },
+   "source only": {
+    "eligible_share": 0.1225809057983453,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.4999999999999999,
+     0.5000000000000001
+    ],
+    "sample_probability": 0.8974856793281099
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12160833861305757,
+    "outcome_probabilities": [
+     0.0009833171736138508,
+     0.0009833171736138503,
+     0.49922709707757856,
+     0.4988062685751938
+    ],
+    "sample_probability": 0.003219971565475023
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1218675291725556,
+    "outcome_probabilities": [
+     0.0009834878087866979,
+     0.0009834878087866979,
+     0.4992269238724568,
+     0.49880610050996976
+    ],
+    "sample_probability": 0.0032131639930228313
+   },
+   "name": "in-i1-YY",
+   "source and loss": {
+    "eligible_share": 0.12452634195749543,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.5,
+     0.5
+    ],
+    "sample_probability": 0.0031309718575487627
+   },
+   "source only": {
+    "eligible_share": 0.1225809057983453,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.5,
+     0.5
+    ],
+    "sample_probability": 0.8974856793281097
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12160833861305759,
+    "outcome_probabilities": [
+     0.0009833171736138508,
+     0.0009833171736138503,
+     0.4992270970775786,
+     0.49880626857519367
+    ],
+    "sample_probability": 0.0032199715654750226
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1095933271855951,
+    "outcome_probabilities": [
+     0.0009741802657035588,
+     0.0009741802657035586,
+     0.01927452961544321,
+     0.9787771098531496
+    ],
+    "sample_probability": 0.0035723388092951925
+   },
+   "name": "in-i1-YZ",
+   "source and loss": {
+    "eligible_share": 0.11190463593962359,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.017602056092105082,
+     0.9823979439078949
+    ],
+    "sample_probability": 0.003483622845299312
+   },
+   "source only": {
+    "eligible_share": 0.10968094244952142,
+    "outcome_probabilities": [
+     0.0,
+     0.0,
+     0.0,
+     1.0
+    ],
+    "sample_probability": 1.0000000000000002
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1095933271855951,
+    "outcome_probabilities": [
+     0.0009741802657035588,
+     0.0009741802657035586,
+     0.019274529615443205,
+     0.9787771098531496
+    ],
+    "sample_probability": 0.0035723388092951925
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12178515020915136,
+    "outcome_probabilities": [
+     0.25012133327848723,
+     0.24991090995379436,
+     0.25008909004620555,
+     0.24987866672151288
+    ],
+    "sample_probability": 0.003214827827605545
+   },
+   "name": "in-i1-ZX",
+   "source and loss": {
+    "eligible_share": 0.12444000064058539,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.24999999999999997,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.0031326368250088627
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.24999999999999992,
+     0.25000000000000006
+    ],
+    "sample_probability": 0.8974852939898359
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12152622493349276,
+    "outcome_probabilities": [
+     0.25012133196727676,
+     0.24991090577953326,
+     0.25008909422046666,
+     0.2498786680327233
+    ],
+    "sample_probability": 0.003221628686569129
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.12178515020915136,
+    "outcome_probabilities": [
+     0.25012133327848723,
+     0.24991090995379436,
+     0.25008909004620566,
+     0.24987866672151282
+    ],
+    "sample_probability": 0.0032148278276055444
+   },
+   "name": "in-i1-ZY",
+   "source and loss": {
+    "eligible_share": 0.12444000064058539,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25000000000000006,
+     0.25
+    ],
+    "sample_probability": 0.0031326368250088627
+   },
+   "source only": {
+    "eligible_share": 0.12238266965753898,
+    "outcome_probabilities": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "sample_probability": 0.8974852939898359
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.12152622493349276,
+    "outcome_probabilities": [
+     0.25012133196727676,
+     0.24991090577953326,
+     0.2500890942204667,
+     0.2498786680327232
+    ],
+    "sample_probability": 0.003221628686569129
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.10952953547758466,
+    "outcome_probabilities": [
+     0.010140520396432672,
+     0.48989141780020584,
+     0.01010874430176941,
+     0.489859317501592
+    ],
+    "sample_probability": 0.003574034856983321
+   },
+   "name": "in-i1-ZZ",
+   "source and loss": {
+    "eligible_share": 0.11183719639844457,
+    "outcome_probabilities": [
+     0.00880094200465272,
+     0.4911990579953473,
+     0.00880094200465272,
+     0.49119905799534724
+    ],
+    "sample_probability": 0.0034853217022838058
+   },
+   "source only": {
+    "eligible_share": 0.10950282041737032,
+    "outcome_probabilities": [
+     0.0,
+     0.5000000000000001,
+     0.0,
+     0.4999999999999999
+    ],
+    "sample_probability": 0.9999999999999997
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.10952892857257579,
+    "outcome_probabilities": [
+     0.010140270809939707,
+     0.48989166758927777,
+     0.010108494491159577,
+     0.4898595671096229
+    ],
+    "sample_probability": 0.0035740299882862114
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15360500684134068,
+    "outcome_probabilities": [
+     0.27748428309344697,
+     0.2225444825304533,
+     0.27744106030107435,
+     0.22253017407502534
+    ],
+    "sample_probability": 0.0028589534261911085
+   },
+   "name": "in-i+-XX",
+   "source and loss": {
+    "eligible_share": 0.16191033878027258,
+    "outcome_probabilities": [
+     0.28374657791410435,
+     0.21625342208589568,
+     0.28374657791410435,
+     0.21625342208589562
+    ],
+    "sample_probability": 0.002783369630407572
+   },
+   "source only": {
+    "eligible_share": 0.1569019438694374,
+    "outcome_probabilities": [
+     0.2798078359759729,
+     0.22019216402402708,
+     0.2798078359759729,
+     0.22019216402402708
+    ],
+    "sample_probability": 0.7948027195705686
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15762366843176012,
+    "outcome_probabilities": [
+     0.28418783585029717,
+     0.215840063540826,
+     0.28414591464628214,
+     0.21582618596259476
+    ],
+    "sample_probability": 0.0028725588331345274
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1535120089089096,
+    "outcome_probabilities": [
+     0.055167467653501605,
+     0.44485956763523193,
+     0.44520951719092466,
+     0.05476344752034174
+    ],
+    "sample_probability": 0.0028608054396454118
+   },
+   "name": "in-i+-XY",
+   "source and loss": {
+    "eligible_share": 0.1618136180631669,
+    "outcome_probabilities": [
+     0.06737211389518719,
+     0.43262788610481284,
+     0.43262788610481273,
+     0.06737211389518719
+    ],
+    "sample_probability": 0.002785136008832553
+   },
+   "source only": {
+    "eligible_share": 0.1568408688786814,
+    "outcome_probabilities": [
+     0.057481335615410994,
+     0.44251866438458903,
+     0.44251866438458903,
+     0.057481335615410994
+    ],
+    "sample_probability": 0.7949698499196746
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1575279793343609,
+    "outcome_probabilities": [
+     0.06856852167288188,
+     0.43145776639739164,
+     0.4317971180841675,
+     0.06817659384555895
+    ],
+    "sample_probability": 0.0028744070204378405
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1536050068549231,
+    "outcome_probabilities": [
+     0.27748428309344697,
+     0.22254448253045325,
+     0.2774410603010744,
+     0.22253017407502532
+    ],
+    "sample_probability": 0.002858953425938308
+   },
+   "name": "in-i+-XZ",
+   "source and loss": {
+    "eligible_share": 0.16191033878027253,
+    "outcome_probabilities": [
+     0.2837465779141043,
+     0.2162534220858957,
+     0.2837465779141043,
+     0.21625342208589565
+    ],
+    "sample_probability": 0.002783369630407572
+   },
+   "source only": {
+    "eligible_share": 0.15690194386943737,
+    "outcome_probabilities": [
+     0.279807835975973,
+     0.22019216402402705,
+     0.279807835975973,
+     0.22019216402402705
+    ],
+    "sample_probability": 0.7948027195705687
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1576236684513396,
+    "outcome_probabilities": [
+     0.28418783585029717,
+     0.21584006354082602,
+     0.2841459146462821,
+     0.21582618596259479
+    ],
+    "sample_probability": 0.0028725588327777074
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15370306725650928,
+    "outcome_probabilities": [
+     0.22738993583662082,
+     0.21839910285344497,
+     0.3275427488546851,
+     0.22666821245524907
+    ],
+    "sample_probability": 0.0028572419746108616
+   },
+   "name": "in-i+-YX",
+   "source and loss": {
+    "eligible_share": 0.16201716389584175,
+    "outcome_probabilities": [
+     0.22010724319955075,
+     0.21238968493272484,
+     0.3473958286681737,
+     0.22010724319955066
+    ],
+    "sample_probability": 0.0027816578007622862
+   },
+   "source only": {
+    "eligible_share": 0.1569633258768046,
+    "outcome_probabilities": [
+     0.22117717893233588,
+     0.2191268331498984,
+     0.33851880898542996,
+     0.22117717893233577
+    ],
+    "sample_probability": 0.7946364799159432
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15772418860911286,
+    "outcome_probabilities": [
+     0.22053601518941557,
+     0.21182021759468408,
+     0.34780755556408527,
+     0.21983621165181513
+    ],
+    "sample_probability": 0.002870854925995319
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1536001120432288,
+    "outcome_probabilities": [
+     0.22299208713610455,
+     0.22280448727930438,
+     0.2773850623718652,
+     0.27681836321272585
+    ],
+    "sample_probability": 0.00285904288915649
+   },
+   "name": "in-i+-YY",
+   "source and loss": {
+    "eligible_share": 0.16191033878027256,
+    "outcome_probabilities": [
+     0.21625342208589576,
+     0.2162534220858958,
+     0.28374657791410424,
+     0.2837465779141042
+    ],
+    "sample_probability": 0.0027833696304075724
+   },
+   "source only": {
+    "eligible_share": 0.1569019438694374,
+    "outcome_probabilities": [
+     0.22019216402402722,
+     0.22019216402402716,
+     0.2798078359759728,
+     0.2798078359759728
+    ],
+    "sample_probability": 0.7948027195705687
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15761865081549706,
+    "outcome_probabilities": [
+     0.21627412491476194,
+     0.21609217431701305,
+     0.28409166735872454,
+     0.2835420334095005
+    ],
+    "sample_probability": 0.0028726482632207653
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15370584449948335,
+    "outcome_probabilities": [
+     0.44132416035681116,
+     0.004513420876034486,
+     0.11356200721201015,
+     0.44060041155514423
+    ],
+    "sample_probability": 0.0028572455026392384
+   },
+   "name": "in-i+-YZ",
+   "source and loss": {
+    "eligible_share": 0.1620194927822165,
+    "outcome_probabilities": [
+     0.42874223803220496,
+     0.003802088458320893,
+     0.1387134354772695,
+     0.4287422380322046
+    ],
+    "sample_probability": 0.0027816565484081904
+   },
+   "source only": {
+    "eligible_share": 0.15696346249305426,
+    "outcome_probabilities": [
+     0.44102071037741625,
+     0.0,
+     0.11795857924516785,
+     0.4410207103774159
+    ],
+    "sample_probability": 0.7946364806769408
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1577264420994823,
+    "outcome_probabilities": [
+     0.42802893846344126,
+     0.00437627547876855,
+     0.14026761900883566,
+     0.42732716704895457
+    ],
+    "sample_probability": 0.002870853674574438
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1537058444588859,
+    "outcome_probabilities": [
+     0.441324160356811,
+     0.004513420876034486,
+     0.11356200721201011,
+     0.44060041155514434
+    ],
+    "sample_probability": 0.002857245503393905
+   },
+   "name": "in-i+-ZX",
+   "source and loss": {
+    "eligible_share": 0.16201949278221647,
+    "outcome_probabilities": [
+     0.4287422380322048,
+     0.003802088458320892,
+     0.13871343547726947,
+     0.4287422380322048
+    ],
+    "sample_probability": 0.00278165654840819
+   },
+   "source only": {
+    "eligible_share": 0.15696346249305426,
+    "outcome_probabilities": [
+     0.4410207103774161,
+     0.0,
+     0.11795857924516782,
+     0.4410207103774161
+    ],
+    "sample_probability": 0.7946364806769406
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1577264420409602,
+    "outcome_probabilities": [
+     0.4280289384634411,
+     0.004376275478768549,
+     0.14026761900883564,
+     0.4273271670489547
+    ],
+    "sample_probability": 0.0028708536756396263
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15360011202964724,
+    "outcome_probabilities": [
+     0.22299208713610444,
+     0.22280448727930435,
+     0.2773850623718653,
+     0.27681836321272585
+    ],
+    "sample_probability": 0.0028590428894092923
+   },
+   "name": "in-i+-ZY",
+   "source and loss": {
+    "eligible_share": 0.16191033878027256,
+    "outcome_probabilities": [
+     0.21625342208589565,
+     0.21625342208589574,
+     0.28374657791410435,
+     0.2837465779141043
+    ],
+    "sample_probability": 0.0027833696304075724
+   },
+   "source only": {
+    "eligible_share": 0.1569019438694374,
+    "outcome_probabilities": [
+     0.2201921640240271,
+     0.22019216402402714,
+     0.2798078359759729,
+     0.27980783597597286
+    ],
+    "sample_probability": 0.7948027195705687
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1576186507959188,
+    "outcome_probabilities": [
+     0.21627412491476183,
+     0.21609217431701297,
+     0.2840916673587246,
+     0.2835420334095005
+    ],
+    "sample_probability": 0.0028726482635775853
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1537030672565093,
+    "outcome_probabilities": [
+     0.22738993583662073,
+     0.21839910285344494,
+     0.3275427488546854,
+     0.22666821245524896
+    ],
+    "sample_probability": 0.0028572419746108603
+   },
+   "name": "in-i+-ZZ",
+   "source and loss": {
+    "eligible_share": 0.16201716389584173,
+    "outcome_probabilities": [
+     0.2201072431995507,
+     0.21238968493272484,
+     0.3473958286681739,
+     0.22010724319955058
+    ],
+    "sample_probability": 0.0027816578007622862
+   },
+   "source only": {
+    "eligible_share": 0.15696332587680462,
+    "outcome_probabilities": [
+     0.22117717893233577,
+     0.21912683314989834,
+     0.3385188089854302,
+     0.22117717893233568
+    ],
+    "sample_probability": 0.7946364799159431
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15772418860911286,
+    "outcome_probabilities": [
+     0.22053601518941546,
+     0.21182021759468406,
+     0.34780755556408544,
+     0.21983621165181502
+    ],
+    "sample_probability": 0.002870854925995319
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15351200890890956,
+    "outcome_probabilities": [
+     0.44523841210836723,
+     0.054792078868360954,
+     0.0551388363054824,
+     0.4448306727177894
+    ],
+    "sample_probability": 0.0028608054396454118
+   },
+   "name": "in-ii-XX",
+   "source and loss": {
+    "eligible_share": 0.16181361806316688,
+    "outcome_probabilities": [
+     0.4326278861048128,
+     0.06737211389518723,
+     0.0673721138951872,
+     0.4326278861048128
+    ],
+    "sample_probability": 0.002785136008832553
+   },
+   "source only": {
+    "eligible_share": 0.1568408688786814,
+    "outcome_probabilities": [
+     0.44251866438458903,
+     0.057481335615410994,
+     0.057481335615410994,
+     0.44251866438458903
+    ],
+    "sample_probability": 0.7949698499196746
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15752797933436088,
+    "outcome_probabilities": [
+     0.4318251379482133,
+     0.06820436825851887,
+     0.06854074725992201,
+     0.43142974653334587
+    ],
+    "sample_probability": 0.0028744070204378405
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15360500684134068,
+    "outcome_probabilities": [
+     0.27748428309344697,
+     0.22254448253045336,
+     0.27744106030107435,
+     0.22253017407502534
+    ],
+    "sample_probability": 0.0028589534261911085
+   },
+   "name": "in-ii-XY",
+   "source and loss": {
+    "eligible_share": 0.16191033878027258,
+    "outcome_probabilities": [
+     0.28374657791410435,
+     0.21625342208589574,
+     0.28374657791410435,
+     0.2162534220858956
+    ],
+    "sample_probability": 0.002783369630407572
+   },
+   "source only": {
+    "eligible_share": 0.15690194386943743,
+    "outcome_probabilities": [
+     0.27980783597597286,
+     0.22019216402402714,
+     0.27980783597597286,
+     0.22019216402402705
+    ],
+    "sample_probability": 0.7948027195705686
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15762366843176015,
+    "outcome_probabilities": [
+     0.28418783585029717,
+     0.21584006354082602,
+     0.2841459146462821,
+     0.21582618596259473
+    ],
+    "sample_probability": 0.0028725588331345274
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1536050068549231,
+    "outcome_probabilities": [
+     0.27748428309344697,
+     0.22254448253045325,
+     0.2774410603010744,
+     0.22253017407502532
+    ],
+    "sample_probability": 0.002858953425938308
+   },
+   "name": "in-ii-XZ",
+   "source and loss": {
+    "eligible_share": 0.16191033878027253,
+    "outcome_probabilities": [
+     0.2837465779141043,
+     0.2162534220858957,
+     0.2837465779141043,
+     0.21625342208589565
+    ],
+    "sample_probability": 0.002783369630407572
+   },
+   "source only": {
+    "eligible_share": 0.15690194386943737,
+    "outcome_probabilities": [
+     0.279807835975973,
+     0.22019216402402705,
+     0.279807835975973,
+     0.22019216402402705
+    ],
+    "sample_probability": 0.7948027195705687
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1576236684513396,
+    "outcome_probabilities": [
+     0.28418783585029717,
+     0.21584006354082602,
+     0.2841459146462821,
+     0.21582618596259479
+    ],
+    "sample_probability": 0.0028725588327777074
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1536001120432288,
+    "outcome_probabilities": [
+     0.2229920871361045,
+     0.22280448727930446,
+     0.2773850623718652,
+     0.27681836321272585
+    ],
+    "sample_probability": 0.00285904288915649
+   },
+   "name": "in-ii-YX",
+   "source and loss": {
+    "eligible_share": 0.16191033878027256,
+    "outcome_probabilities": [
+     0.2162534220858957,
+     0.21625342208589582,
+     0.28374657791410424,
+     0.2837465779141042
+    ],
+    "sample_probability": 0.0027833696304075724
+   },
+   "source only": {
+    "eligible_share": 0.1569019438694374,
+    "outcome_probabilities": [
+     0.22019216402402716,
+     0.22019216402402722,
+     0.2798078359759728,
+     0.2798078359759728
+    ],
+    "sample_probability": 0.7948027195705687
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15761865081549706,
+    "outcome_probabilities": [
+     0.21627412491476192,
+     0.21609217431701308,
+     0.28409166735872454,
+     0.2835420334095005
+    ],
+    "sample_probability": 0.0028726482632207653
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15370306725650928,
+    "outcome_probabilities": [
+     0.22738993583662082,
+     0.21839910285344497,
+     0.3275427488546851,
+     0.22666821245524907
+    ],
+    "sample_probability": 0.0028572419746108616
+   },
+   "name": "in-ii-YY",
+   "source and loss": {
+    "eligible_share": 0.16201716389584175,
+    "outcome_probabilities": [
+     0.22010724319955075,
+     0.21238968493272484,
+     0.3473958286681737,
+     0.22010724319955066
+    ],
+    "sample_probability": 0.0027816578007622862
+   },
+   "source only": {
+    "eligible_share": 0.1569633258768046,
+    "outcome_probabilities": [
+     0.22117717893233588,
+     0.2191268331498984,
+     0.33851880898542996,
+     0.22117717893233577
+    ],
+    "sample_probability": 0.7946364799159432
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15772418860911286,
+    "outcome_probabilities": [
+     0.22053601518941557,
+     0.21182021759468408,
+     0.34780755556408527,
+     0.21983621165181513
+    ],
+    "sample_probability": 0.002870854925995319
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.15370584449948335,
+    "outcome_probabilities": [
+     0.44132416035681116,
+     0.004513420876034486,
+     0.11356200721201015,
+     0.44060041155514423
+    ],
+    "sample_probability": 0.0028572455026392384
+   },
+   "name": "in-ii-YZ",
+   "source and loss": {
+    "eligible_share": 0.1620194927822165,
+    "outcome_probabilities": [
+     0.42874223803220496,
+     0.003802088458320893,
+     0.1387134354772695,
+     0.4287422380322046
+    ],
+    "sample_probability": 0.0027816565484081904
+   },
+   "source only": {
+    "eligible_share": 0.15696346249305426,
+    "outcome_probabilities": [
+     0.44102071037741625,
+     0.0,
+     0.11795857924516785,
+     0.4410207103774159
+    ],
+    "sample_probability": 0.7946364806769408
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1577264420994823,
+    "outcome_probabilities": [
+     0.42802893846344126,
+     0.00437627547876855,
+     0.14026761900883566,
+     0.42732716704895457
+    ],
+    "sample_probability": 0.002870853674574438
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1536001120296472,
+    "outcome_probabilities": [
+     0.22299208713610447,
+     0.22280448727930435,
+     0.2773850623718653,
+     0.27681836321272596
+    ],
+    "sample_probability": 0.002859042889409292
+   },
+   "name": "in-ii-ZX",
+   "source and loss": {
+    "eligible_share": 0.16191033878027256,
+    "outcome_probabilities": [
+     0.21625342208589565,
+     0.21625342208589574,
+     0.28374657791410435,
+     0.2837465779141043
+    ],
+    "sample_probability": 0.0027833696304075724
+   },
+   "source only": {
+    "eligible_share": 0.1569019438694374,
+    "outcome_probabilities": [
+     0.2201921640240271,
+     0.22019216402402714,
+     0.27980783597597286,
+     0.2798078359759729
+    ],
+    "sample_probability": 0.7948027195705687
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1576186507959188,
+    "outcome_probabilities": [
+     0.21627412491476183,
+     0.21609217431701297,
+     0.2840916673587246,
+     0.2835420334095005
+    ],
+    "sample_probability": 0.0028726482635775853
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1537058444588859,
+    "outcome_probabilities": [
+     0.441324160356811,
+     0.004513420876034486,
+     0.11356200721201011,
+     0.44060041155514434
+    ],
+    "sample_probability": 0.002857245503393905
+   },
+   "name": "in-ii-ZY",
+   "source and loss": {
+    "eligible_share": 0.16201949278221647,
+    "outcome_probabilities": [
+     0.4287422380322048,
+     0.003802088458320892,
+     0.13871343547726947,
+     0.4287422380322048
+    ],
+    "sample_probability": 0.00278165654840819
+   },
+   "source only": {
+    "eligible_share": 0.15696346249305426,
+    "outcome_probabilities": [
+     0.4410207103774161,
+     0.0,
+     0.11795857924516782,
+     0.4410207103774161
+    ],
+    "sample_probability": 0.7946364806769406
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.1577264420409602,
+    "outcome_probabilities": [
+     0.4280289384634411,
+     0.004376275478768549,
+     0.14026761900883564,
+     0.4273271670489547
+    ],
+    "sample_probability": 0.0028708536756396263
+   }
+  },
+  {
+   "g2-corrected overlap, loss and dark counts": {
+    "eligible_share": 0.1537030672565093,
+    "outcome_probabilities": [
+     0.22738993583662073,
+     0.21839910285344494,
+     0.3275427488546854,
+     0.22666821245524896
+    ],
+    "sample_probability": 0.0028572419746108603
+   },
+   "name": "in-ii-ZZ",
+   "source and loss": {
+    "eligible_share": 0.16201716389584173,
+    "outcome_probabilities": [
+     0.2201072431995507,
+     0.21238968493272484,
+     0.3473958286681739,
+     0.22010724319955058
+    ],
+    "sample_probability": 0.0027816578007622862
+   },
+   "source only": {
+    "eligible_share": 0.15696332587680462,
+    "outcome_probabilities": [
+     0.22117717893233577,
+     0.21912683314989834,
+     0.3385188089854302,
+     0.22117717893233568
+    ],
+    "sample_probability": 0.7946364799159431
+   },
+   "source, loss and dark counts": {
+    "eligible_share": 0.15772418860911286,
+    "outcome_probabilities": [
+     0.22053601518941546,
+     0.21182021759468406,
+     0.34780755556408544,
+     0.21983621165181502
+    ],
+    "sample_probability": 0.002870854925995319
+   }
+  }
+ ],
+ "variants": {
+  "g2-corrected overlap, loss and dark counts": {
+   "estimand_average_gate_fidelity": 0.8570796607938711,
+   "estimand_linear_inversion_fidelity": 0.8358553809775577,
+   "estimand_process_fidelity": 0.8213495759923388,
+   "expected_eligible_events": 144696.60603778952,
+   "least_eligible_share": 0.10754085412607023,
+   "mean_eligible_share": 0.167472923654849,
+   "sampled_dataset": {
+    "average_gate_fidelity": 0.8436144469441287,
+    "average_gate_fidelity_interval": [
+     0.8399463990992049,
+     0.8584557890531558
+    ],
+    "events": 144699,
+    "linear_inversion_fidelity": 0.8308080154926545,
+    "process_fidelity": 0.8045180586801608,
+    "process_fidelity_bootstrap_median": 0.7982705156663166,
+    "process_fidelity_interval": [
+     0.799932998874006,
+     0.8230697363164448
+    ],
+    "process_fidelity_intervals": {
+     "basic": [
+      0.799932998874006,
+      0.8230697363164448
+     ],
+     "percentile": [
+      0.7859663810438768,
+      0.8091031184863156
+     ]
+    }
+   },
+   "seed_index": 148
+  },
+  "source and loss": {
+   "estimand_average_gate_fidelity": 0.8285124656415179,
+   "estimand_linear_inversion_fidelity": 0.8049557478932448,
+   "estimand_process_fidelity": 0.7856405820518975,
+   "expected_eligible_events": 153953.10389945813,
+   "least_eligible_share": 0.11001782867523398,
+   "mean_eligible_share": 0.17818646284659506,
+   "sampled_dataset": {
+    "average_gate_fidelity": 0.8164177526995845,
+    "average_gate_fidelity_interval": [
+     0.8108025009723824,
+     0.8310420913154137
+    ],
+    "events": 153943,
+    "linear_inversion_fidelity": 0.8004737861999578,
+    "process_fidelity": 0.7705221908744806,
+    "process_fidelity_bootstrap_median": 0.7644304891637853,
+    "process_fidelity_interval": [
+     0.7635031262154779,
+     0.7888026141442671
+    ],
+    "process_fidelity_intervals": {
+     "basic": [
+      0.7635031262154779,
+      0.7888026141442671
+     ],
+     "percentile": [
+      0.7522417676046941,
+      0.7775412555334833
+     ]
+    }
+   },
+   "seed_index": 146
+  },
+  "source only": {
+   "estimand_average_gate_fidelity": 0.8499562334450941,
+   "estimand_linear_inversion_fidelity": 0.835926046770419,
+   "estimand_process_fidelity": 0.8124452918063676,
+   "expected_eligible_events": 149243.3572284901,
+   "least_eligible_share": 0.10932481106580347,
+   "mean_eligible_share": 0.1727353671626043,
+   "sampled_dataset": {
+    "average_gate_fidelity": 0.8460655514503184,
+    "average_gate_fidelity_interval": [
+     0.8428615978352124,
+     0.8610828351932313
+    ],
+    "events": 149230,
+    "linear_inversion_fidelity": 0.8393919989241763,
+    "process_fidelity": 0.8075819393128979,
+    "process_fidelity_bootstrap_median": 0.8008753069450634,
+    "process_fidelity_interval": [
+     0.8035769972940154,
+     0.826353543991539
+    ],
+    "process_fidelity_intervals": {
+     "basic": [
+      0.8035769972940154,
+      0.826353543991539
+     ],
+     "percentile": [
+      0.7888103346342568,
+      0.8115868813317804
+     ]
+    }
+   },
+   "seed_index": 145
+  },
+  "source, loss and dark counts": {
+   "estimand_average_gate_fidelity": 0.8261055183225705,
+   "estimand_linear_inversion_fidelity": 0.8011678497878427,
+   "estimand_process_fidelity": 0.7826318979032132,
+   "expected_eligible_events": 148730.5850554295,
+   "least_eligible_share": 0.10754045561327456,
+   "mean_eligible_share": 0.17214188085119153,
+   "sampled_dataset": {
+    "average_gate_fidelity": 0.8223467730628787,
+    "average_gate_fidelity_interval": [
+     0.8184533054485176,
+     0.8369473509693108
+    ],
+    "events": 148727,
+    "linear_inversion_fidelity": 0.8058809446654254,
+    "process_fidelity": 0.7779334663285983,
+    "process_fidelity_bootstrap_median": 0.7707714404677701,
+    "process_fidelity_interval": [
+     0.7730666318106468,
+     0.7961841887116382
+    ],
+    "process_fidelity_intervals": {
+     "basic": [
+      0.7730666318106468,
+      0.7961841887116382
+     ],
+     "percentile": [
+      0.7596827439455583,
+      0.7828003008465497
+     ]
+    }
+   },
+   "seed_index": 147
+  }
+ }
+}

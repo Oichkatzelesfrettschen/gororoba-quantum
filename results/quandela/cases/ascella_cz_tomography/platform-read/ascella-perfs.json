@@ -1,0 +1,42 @@
+{
+ "connected_input_modes": [
+  0,
+  2,
+  4,
+  6,
+  8,
+  10
+ ],
+ "constraints": {
+  "max_mode_count": 12,
+  "max_photon_count": 6,
+  "max_sample_count": null,
+  "min_mode_count": 1,
+  "min_photon_count": 1,
+  "support_multi_photon": false
+ },
+ "perfs": {
+  "Clock (MHz)": 13.33,
+  "Dark counts (detection/s)": [
+   276.0,
+   267.0,
+   232.0,
+   114.0,
+   111.0,
+   273.0,
+   205.0,
+   446.0,
+   2251.0,
+   2583.0,
+   3585.0,
+   568.0
+  ],
+  "HOM (%)": 87.54,
+  "Transmittance (%)": 5.82,
+  "g2 (%)": 1.9
+ },
+ "retrieved_utc": "2026-10-31T04:11:33+00:00",
+ "schema": "qd-cz-tomography-platform-read-v1",
+ "source": "scripts/qd_platform.py snapshot (read-only), processor record of qpu:ascella",
+ "status": "available"
+}

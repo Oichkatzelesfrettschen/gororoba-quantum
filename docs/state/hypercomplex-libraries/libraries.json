@@ -2525,6 +2525,7 @@
     "scripts/ascella_compilation_design.py",
     "scripts/ascella_compilation_reading.py",
     "scripts/ascella_configuration_holdout.py",
+    "scripts/ascella_cz_tomography_case.py",
     "scripts/ascella_drive_response.py",
     "scripts/ascella_experiment_analysis.py",
     "scripts/ascella_fixed_mesh_confirmation.py",
@@ -3702,6 +3703,7 @@
     "scripts/ascella_associator_character.py",
     "scripts/ascella_associator_predecessor.py",
     "scripts/ascella_coherence_request.py",
+    "scripts/ascella_cz_tomography_case.py",
     "scripts/ascella_experiment_analysis.py",
     "scripts/ascella_experiment_request.py",
     "scripts/ascella_transition_context.py",
@@ -15534,6 +15536,24 @@
    "urllib",
    "uuid",
    "xml"
+  ],
+  "scripts/ascella_cz_tomography_case.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "functools",
+   "hypercomplex_cases",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_platform",
+   "qd_teleportation_rehearsal",
+   "sys",
+   "typing"
   ]
  },
  "import_root_distributions": {
