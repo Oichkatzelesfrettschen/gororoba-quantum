@@ -61,7 +61,7 @@ identifiers and stay out of every commit, log and record.
 | Policy | `Tenant Admin Policy`: `ALLOW GROUP Administrators to manage all-resources IN TENANCY` |
 | Identity domains | one, `Default`, license type `free` |
 | Compartments | none besides the root |
-| Resources | no instances, VCNs, buckets or budgets |
+| Resources | the lab of [oci-free-tier-lab](../../design/oci-free-tier-lab.md): one VCN, two Debian micros, two Autonomous Databases, a Bastion, the `lab-guard` budget; `lab-a1` waits on A1 capacity |
 
 The key therefore carries full administrator authority: anything the API
 can create, it can create. The limits below, not permissions, bound what
@@ -83,6 +83,8 @@ the tenancy can run.
 | Container Registry | 50 requests/s | OCIR images for Functions or VMs |
 | Email Delivery | 100 messages per day, 10 approved senders | |
 | Container Engine, Generative AI (`container-engine`, `ai-generative`) | no limit values set | OKE and Generative AI need a paid account |
+| Custom images (`custom-image-count`) | 0 | `ImportImage` returns `QuotaExceeded`; a custom OS enters through a preserved boot volume |
+| Boot volume | at least 50 GB | `LaunchInstance` refuses 47 GB |
 
 The A1 allotment of 2 OCPUs and 12 GB matches Oracle's Always Free page,
 which grants 1,500 OCPU-hours and 9,000 GB-hours per month, as one 2-OCPU
@@ -134,16 +136,16 @@ runs.
 
 ## Use in this repository
 
-The Always Free shapes give the lab an always-on ARM or x86 host and 20 GiB
-of object storage. That covers small classical jobs: cron-driven
-calibration reads, the poll loops of `poll-remote-jobs`, null calibrations
-that fit 2 OCPUs, and evidence mirrors. Long classical jobs route to Kaggle
-or GitHub Actions first (Kaggle CPU bits equal the host's); an OCI VM
-serves a job that must run continuously or hold state between runs.
-Creating any resource, and any change to the account's plan, waits for the
-owner's approval of a written case naming the resource and its limit; an
-upgrade to Pay As You Go starts billing beyond Always Free and is the
-owner's decision alone.
+[oci-free-tier-lab](../../design/oci-free-tier-lab.md) records the lab built
+inside these limits: machines and operating systems, the 200 GB storage
+split, the network and its control paths, the Autonomous Databases as OML4Py
+notebook compute, the role and free status of every other service, and the
+full limits audit. [oci-lab](../../runbooks/oci-lab.md) holds its commands and
+the host packages. Long classical jobs route to Kaggle or GitHub Actions
+first; the lab serves a job that must run continuously or hold state. Any
+resource beyond the design, and any change to the account's plan, waits for
+the owner's approval; an upgrade to Pay As You Go starts billing beyond
+Always Free and is the owner's decision alone.
 
 ## Replaying the survey
 

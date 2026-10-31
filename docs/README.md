@@ -28,7 +28,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Planck Technologies | account closed; audited SDK, key rejected and simulator returns random bits | [planck/README.md](notes/planck/README.md) |
 | AWS | free-plan project; always-free bands, credit-metered usage, the five $20 activity rewards, and the host Python packages; Braket unavailable | [aws/README.md](notes/aws/README.md) |
 | Azure | free-trial subscription; Quantum workspace with free Quantinuum, Pasqal and Rigetti emulator plans; 4-vCPU trial compute | [azure/README.md](notes/azure/README.md) |
-| Oracle Cloud (OCI) | personal Free Tier tenancy in San Jose: A1 ARM and E2 micro VMs, 200 GB block, 20 GiB object storage, Autonomous DB; SDK, CLI and oracle.oci collection | [oracle_cloud/README.md](notes/oracle_cloud/README.md) |
+| Oracle Cloud (OCI) | personal Free Tier tenancy in San Jose: A1 ARM and E2 micro VMs, 200 GB block, 20 GiB object storage, Autonomous DB; SDK, CLI and oracle.oci collection | [oracle_cloud/README.md](notes/oracle_cloud/README.md), [lab design](design/oci-free-tier-lab.md), [lab runbook](runbooks/oci-lab.md) |
 | zbMATH Open | REST, OAI-PMH and citation-matching client; API audit with replayable findings | [zbmath/README.md](notes/zbmath/README.md) |
 | QRNG seed sources | ANU, Outshift and Quandela draws for every new seed | [qrng/README.md](notes/qrng/README.md) |
 | Simulation | Kaggle CPU and GPU kernels, host Aer build | [kaggle/README.md](notes/kaggle/README.md) |
