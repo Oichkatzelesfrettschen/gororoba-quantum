@@ -89,10 +89,12 @@ JOB_ORDER = {
 # docs/evidence/qrng_seeds/allocations.json.
 DRAW = "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json"
 COMPILATION_SEEDS = (63889, 65328, 18934, 51115, 51480, 31486, 50307, 51095)
-# Provider seconds per template iteration of 24-mode circuits on qpu:belenos: the teleportation rehearsal's job-01 ran
-# 11 iterations in the 300 s the service allows.
-ITERATION_SECONDS = 27.3
-COMPILE_SECONDS = 10.0
+# Provider seconds of one template iteration on qpu:belenos: a fixed part plus the shots it runs times a per-shot cost.
+# Fitted over the retained qpu:belenos runs of the BDSC stationarity and qualification cases (fixed part 6.6 to 6.9 s)
+# and the teleportation rehearsal (per shot 9 to 12.8 microseconds on a healthy chip, about 35 microseconds degraded).
+FIXED_ITERATION_SECONDS = 6.9
+SECONDS_PER_SHOT = 12.8e-6
+DEGRADED_SECONDS_PER_SHOT = 35e-6
 SECONDS_MARGIN = 1.25
 SECONDS_QUANTUM = 60
 SAMPLES_PER_ITERATION = 400
@@ -108,6 +110,15 @@ NULL_MARGIN = 0.10
 FORECAST_TOLERANCE = 0.05
 CONTROL_TOLERANCE = 0.10
 MIN_ITERATIONS = 4
+# An iteration counts toward its arm only with at least this many accepted events (half of SAMPLES_PER_ITERATION).
+MIN_EVENTS = 200
+# The lower 1 - ALPHA bound of s_control - s_periodic must reach this margin; the contrast is 0 for distinguishable
+# photons whatever the detector efficiencies, since every Fourier entry has modulus 1/sqrt(6).
+CONTRAST_MARGIN = 0.10
+# job-01 is submitted only after job-00 is collected with at least this many accepted events (half of 1600).
+MIN_JOB_YIELD = 800
+# The entry kinds qd_platform.result_summary writes for an iteration of a partial job that carries no counts.
+UNCOUNTED = ("missing", "malformed", "error")
 # The mean-field phase average is exact when the grid has more points than the largest photon-number degree.
 PHASE_GRID = 7
 MAX_EMITTED = 6
@@ -360,11 +371,22 @@ def preregistration() -> dict[str, Any]:
         "forecast_tolerance": FORECAST_TOLERANCE,
         "control_tolerance": CONTROL_TOLERANCE,
         "min_iterations_per_arm": MIN_ITERATIONS,
+        "min_accepted_events_per_iteration": MIN_EVENTS,
+        "contrast_margin": CONTRAST_MARGIN,
+        "min_job_yield_before_next_job": MIN_JOB_YIELD,
         "interval": "one-sided Student t interval over the per-iteration fractions of an arm, pooled over both jobs",
-        "suppression_observed": "upper 1 - alpha bound of s_periodic <= min(s_distinguishable, s_mean_field) "
-        "- null_margin",
+        "runs": "one run per job name and every compilation seed once; a repeat of a failed job supersedes it with "
+        "fresh QRNG seeds and is never pooled with it",
+        "uncounted": "missing, malformed and error iterations are tallied and skipped; the decision is undecided "
+        "when an arm keeps fewer than min_iterations_per_arm iterations of at least min_accepted_events_per_iteration "
+        "accepted events",
+        "suppression_observed": "both: upper 1 - alpha bound of s_periodic <= min(s_distinguishable, s_mean_field) "
+        "- null_margin, and lower 1 - alpha bound of s_control - s_periodic >= contrast_margin",
         "control_valid": "|mean s_control - s_control forecast of the indistinguishable model| <= control_tolerance",
-        "level": "|mean s_periodic - s_indistinguishable forecast| <= max(forecast_tolerance, 3 se)",
+        "level": "|mean s_periodic - s_indistinguishable forecast| <= max(forecast_tolerance, 3 se); compile error "
+        "and g2 raise s, so a deviation above the forecast is not evidence of partial distinguishability",
+        "hom_lower_bound": "the HOM at which the indistinguishable forecast equals the periodic mean; compile error "
+        "raises s, so it bounds the effective HOM from below",
         "forecast_source": "perfs_at_plan of submission.json, per-mode detection from t_out",
     }
 
@@ -554,18 +576,15 @@ def forecast(perfs: Mapping[str, Any], start: int, sources: tuple[int, ...]) -> 
 # ---------------------------------------------------------------- budgets: seconds, shots, credits
 
 
-def expected_seconds(samples: int, probability: float, clock_mhz: float, iterations: int) -> float:
-    """The written case's seconds for one job: each iteration takes the larger of the measured ITERATION_SECONDS and
-    COMPILE_SECONDS plus samples over the clock rate times the modeled three-click probability per pulse, scaled by
+def modeled_seconds(shots: int, iterations: int, per_shot: float = SECONDS_PER_SHOT) -> float:
+    """Provider seconds of a job whose every iteration runs `shots` shots: the fixed part plus the shot cost."""
+    return iterations * (FIXED_ITERATION_SECONDS + shots * per_shot)
+
+
+def expected_seconds(shots: int, iterations: int) -> float:
+    """The written case's seconds for one job: the healthy-chip model at the iteration shot cap, scaled by
     SECONDS_MARGIN and rounded up to SECONDS_QUANTUM."""
-    acquisition = samples / (clock_mhz * 1e6 * probability)
-    per_iteration = max(ITERATION_SECONDS, COMPILE_SECONDS + acquisition)
-    return float(math.ceil(per_iteration * iterations * SECONDS_MARGIN / SECONDS_QUANTUM) * SECONDS_QUANTUM)
-
-
-def slowest_probability(record: Mapping[str, Any]) -> float:
-    """The smallest three-click probability per pulse among the arms under the indistinguishable model."""
-    return min(float(record["models"][arm]["indistinguishable"]["three_click_probability"]) for arm in ARMS)
+    return float(math.ceil(modeled_seconds(shots, iterations) * SECONDS_MARGIN / SECONDS_QUANTUM) * SECONDS_QUANTUM)
 
 
 def shot_estimate() -> dict[str, Any]:
@@ -645,12 +664,12 @@ def write_forecast() -> None:
     record["budget"] = {
         job: {
             "samples_per_iteration": SAMPLES_PER_ITERATION,
-            "expected_seconds": expected_seconds(
-                SAMPLES_PER_ITERATION,
-                slowest_probability(record),
-                float(record["figures"]["clock_mhz"]),
-                len(JOB_ORDER[job]),
+            "max_shots_per_iteration": SHOTS_PER_ITERATION,
+            "modeled_seconds_healthy": modeled_seconds(SHOTS_PER_ITERATION, len(JOB_ORDER[job])),
+            "modeled_seconds_degraded": modeled_seconds(
+                SHOTS_PER_ITERATION, len(JOB_ORDER[job]), DEGRADED_SECONDS_PER_SHOT
             ),
+            "expected_seconds": expected_seconds(SHOTS_PER_ITERATION, len(JOB_ORDER[job])),
             "credit_ceiling": credits(SHOTS_PER_ITERATION),
         }
         for job in JOB_ORDER
@@ -910,6 +929,10 @@ def interpolated_hom(fraction: float, forecasts: Sequence[Mapping[str, Any]]) ->
     return float(np.interp(fraction, values[::-1], [float(h) for h in homs][::-1]))
 
 
+# The causes tally_iteration excludes from the accepted events.
+EXCLUSIONS = ("outside_window", "collision", "more_than_three", "fewer_than_three")
+
+
 def bound_setting(settings: Sequence[Mapping[str, Any]], entry: Any) -> int:
     """The index of the one setting a result iteration binds to by its compilation_seed, which the case makes unique.
 
@@ -931,15 +954,29 @@ def bound_setting(settings: Sequence[Mapping[str, Any]], entry: Any) -> int:
 
 def analyze(runs: Sequence[Path], retained: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Preregistered endpoints of the collected runs of both jobs: per-arm suppressed fractions with their
-    between-iteration intervals, the three models' forecasts and the decision."""
+    between-iteration intervals, the three models' forecasts and the decision.
+
+    Each job name appears once and every compilation seed once across the runs, so a repeat of a failed job
+    supersedes the original and never pools with it. Iterations that carry no counts (missing, malformed, error) and
+    iterations below MIN_EVENTS accepted events are tallied and do not count toward their arm."""
     if retained is None:
         retained = json.loads((CASES / FORECAST).read_text(encoding="utf-8"))
     per_arm: dict[str, list[dict[str, Any]]] = {arm: [] for arm in ARMS}
-    excluded = {"outside_window": 0, "collision": 0, "more_than_three": 0, "fewer_than_three": 0}
+    below_floor: list[dict[str, Any]] = []
+    uncounted = dict.fromkeys(UNCOUNTED, 0)
     forecasts = []
+    jobs: dict[str, str] = {}
+    seeds: set[int] = set()
+    yields: dict[str, int] = {}
     for run in runs:
         manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
         results = json.loads((run / "results.json").read_text(encoding="utf-8"))
+        job = manifest["job"]
+        require(job not in jobs, f"{run.name} repeats job {job} already read from {jobs.get(job)}")
+        jobs[job] = run.name
+        run_seeds = {setting["compilation_seed"] for setting in manifest["settings"]}
+        require(not run_seeds & seeds, f"{run.name} reuses compilation seeds of another run")
+        seeds |= run_seeds
         start = int(manifest["layout"]["window_start"])
         forecasts.append(run_forecast(run, retained))
         # Both arms score the periodic setting's suppressed set; the control's own set is empty.
@@ -950,7 +987,15 @@ def analyze(runs: Sequence[Path], retained: Mapping[str, Any] | None = None) -> 
             for out in setting["ideal"]["suppressed_outputs"]
         }
         bound: set[int] = set()
+        yields[job] = 0
         for entry in results.get("iterations") or []:
+            kind = next(
+                (k for k in UNCOUNTED if isinstance(entry, dict) and entry.get(k)),
+                None if isinstance(entry, dict) else "malformed",
+            )
+            if kind is not None:
+                uncounted[kind] += 1
+                continue
             index = bound_setting(manifest["settings"], entry)
             require(
                 index not in bound, f"{run.name}: two result iterations bind to {manifest['settings'][index]['name']}"
@@ -959,21 +1004,23 @@ def analyze(runs: Sequence[Path], retained: Mapping[str, Any] | None = None) -> 
             setting = manifest["settings"][index]
             counts = entry.get("counts")
             if not counts:
+                uncounted["missing"] += 1
                 continue
             tally = tally_iteration(counts, start, suppressed)
-            for cause in excluded:
-                excluded[cause] += tally[cause]
             accepted = tally["suppressed"] + tally["allowed"]
-            if accepted:
-                per_arm[setting["arm"]].append(
-                    {
-                        "name": setting["name"],
-                        "job": manifest["job"],
-                        "suppressed": tally["suppressed"],
-                        "accepted": accepted,
-                        "fraction": tally["suppressed"] / accepted,
-                    }
-                )
+            yields[job] += accepted
+            row = {
+                "name": setting["name"],
+                "job": job,
+                "suppressed": tally["suppressed"],
+                "accepted": accepted,
+                "fraction": tally["suppressed"] / accepted if accepted else None,
+                "excluded": {cause: tally[cause] for cause in EXCLUSIONS},
+            }
+            if accepted >= MIN_EVENTS:
+                per_arm[setting["arm"]].append(row)
+            else:
+                below_floor.append({**row, "arm": setting["arm"]})
     summary = {arm: arm_summary([row["fraction"] for row in rows]) for arm, rows in per_arm.items()}
     pooled = {}
     for arm, rows in per_arm.items():
@@ -984,25 +1031,43 @@ def analyze(runs: Sequence[Path], retained: Mapping[str, Any] | None = None) -> 
         "schema": "qd-belenos-suppression-analysis-v1",
         "runs": [run.name for run in runs],
         "iterations": per_arm,
+        "below_event_floor": below_floor,
+        "uncounted_iterations": uncounted,
+        "job_yield": yields,
         "summary": summary,
         "pooled": pooled,
         "heterogeneity": {
             arm: heterogeneity([(row["suppressed"], row["accepted"]) for row in rows]) for arm, rows in per_arm.items()
         },
-        "excluded_events": excluded,
+        "excluded_events": {
+            arm: {cause: sum(row["excluded"][cause] for row in rows) for cause in EXCLUSIONS}
+            for arm, rows in per_arm.items()
+        },
         "forecast": {arm: {model: mean_over(forecasts, arm, model) for model in MODEL_NAMES} for arm in ARMS},
     }
     record["decision"] = decide(record, forecasts)
     return record
 
 
-def decide(record: Mapping[str, Any], forecasts: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
-    """The preregistered decision. Both arms need MIN_ITERATIONS complete iterations; otherwise it is undecided.
+def paired_contrast(control: Mapping[str, Any], periodic: Mapping[str, Any]) -> dict[str, float]:
+    """s_control - s_periodic with its between-iteration standard error and one-sided lower 1 - ALPHA bound; the
+    interval takes the smaller arm's degrees of freedom."""
+    contrast = control["mean"] - periodic["mean"]
+    se = math.hypot(control["se"], periodic["se"])
+    degrees = min(control["iterations"], periodic["iterations"]) - 1
+    return {"observed": contrast, "se": se, "lower": contrast - float(stats.t.ppf(1.0 - ALPHA, degrees)) * se}
 
-    suppression observed: the upper 1 - ALPHA bound of the periodic fraction lies at least NULL_MARGIN below the
-    smaller of the distinguishable and mean-field forecasts. control valid: the control fraction lies within
-    CONTROL_TOLERANCE of the indistinguishable forecast of the control. level: the periodic fraction lies within
-    max(FORECAST_TOLERANCE, 3 se) of the indistinguishable forecast."""
+
+def decide(record: Mapping[str, Any], forecasts: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """The preregistered decision. Both arms need MIN_ITERATIONS counted iterations; otherwise it is undecided.
+
+    suppression observed needs both rules: the upper 1 - ALPHA bound of the periodic fraction lies at least
+    NULL_MARGIN below the smaller of the distinguishable and mean-field forecasts, and the lower 1 - ALPHA bound of
+    the paired contrast s_control - s_periodic reaches CONTRAST_MARGIN (the contrast is 0 for distinguishable photons
+    at any detector efficiencies). control valid: the control fraction lies within CONTROL_TOLERANCE of the
+    indistinguishable forecast of the control. level: the periodic fraction lies within max(FORECAST_TOLERANCE, 3 se)
+    of the indistinguishable forecast; compile error and g2 raise s, so only a fraction below the forecast is
+    unambiguous."""
     periodic, control = record["summary"]["periodic"], record["summary"]["control"]
     forecast_row = record["forecast"]
     out: dict[str, Any] = {
@@ -1013,7 +1078,16 @@ def decide(record: Mapping[str, Any], forecasts: Sequence[Mapping[str, Any]]) ->
         return out
     null = min(forecast_row["periodic"]["distinguishable"], forecast_row["periodic"]["mean-field"])
     out["null_forecast"] = null
-    out["suppression_observed"] = bool(periodic["upper"] <= null - NULL_MARGIN)
+    out["absolute_rule"] = bool(periodic["upper"] <= null - NULL_MARGIN)
+    out["paired_contrast"] = {
+        **paired_contrast(control, periodic),
+        "indistinguishable": forecast_row["control"]["indistinguishable"]
+        - forecast_row["periodic"]["indistinguishable"],
+        "distinguishable": forecast_row["control"]["distinguishable"] - forecast_row["periodic"]["distinguishable"],
+        "mean-field": forecast_row["control"]["mean-field"] - forecast_row["periodic"]["mean-field"],
+    }
+    out["contrast_rule"] = bool(out["paired_contrast"]["lower"] >= CONTRAST_MARGIN)
+    out["suppression_observed"] = out["absolute_rule"] and out["contrast_rule"]
     out["control_deviation"] = control["mean"] - forecast_row["control"]["indistinguishable"]
     out["control_valid"] = bool(abs(out["control_deviation"]) <= CONTROL_TOLERANCE)
     tolerance = max(FORECAST_TOLERANCE, 3 * periodic["se"])
@@ -1021,16 +1095,7 @@ def decide(record: Mapping[str, Any], forecasts: Sequence[Mapping[str, Any]]) ->
     out["level_deviation"] = deviation
     out["level_tolerance"] = tolerance
     out["level"] = "at" if abs(deviation) <= tolerance else ("above" if deviation > 0 else "below")
-    out["implied_hom"] = interpolated_hom(periodic["mean"], forecasts)
-    contrast = control["mean"] - periodic["mean"]
-    out["paired_contrast"] = {
-        "observed": contrast,
-        "se": math.hypot(control["se"], periodic["se"]),
-        "indistinguishable": forecast_row["control"]["indistinguishable"]
-        - forecast_row["periodic"]["indistinguishable"],
-        "distinguishable": forecast_row["control"]["distinguishable"] - forecast_row["periodic"]["distinguishable"],
-        "mean-field": forecast_row["control"]["mean-field"] - forecast_row["periodic"]["mean-field"],
-    }
+    out["hom_lower_bound"] = interpolated_hom(periodic["mean"], forecasts)
     if not out["control_valid"]:
         out["verdict"] = "invalid control: the detectors or the selection deplete or inflate the suppressed set"
     elif not out["suppression_observed"]:

@@ -6156,10 +6156,16 @@
   "forecast_tolerance": 0.05,
   "control_tolerance": 0.1,
   "min_iterations_per_arm": 4,
+  "min_accepted_events_per_iteration": 200,
+  "contrast_margin": 0.1,
+  "min_job_yield_before_next_job": 800,
   "interval": "one-sided Student t interval over the per-iteration fractions of an arm, pooled over both jobs",
-  "suppression_observed": "upper 1 - alpha bound of s_periodic <= min(s_distinguishable, s_mean_field) - null_margin",
+  "runs": "one run per job name and every compilation seed once; a repeat of a failed job supersedes it with fresh QRNG seeds and is never pooled with it",
+  "uncounted": "missing, malformed and error iterations are tallied and skipped; the decision is undecided when an arm keeps fewer than min_iterations_per_arm iterations of at least min_accepted_events_per_iteration accepted events",
+  "suppression_observed": "both: upper 1 - alpha bound of s_periodic <= min(s_distinguishable, s_mean_field) - null_margin, and lower 1 - alpha bound of s_control - s_periodic >= contrast_margin",
   "control_valid": "|mean s_control - s_control forecast of the indistinguishable model| <= control_tolerance",
-  "level": "|mean s_periodic - s_indistinguishable forecast| <= max(forecast_tolerance, 3 se)",
+  "level": "|mean s_periodic - s_indistinguishable forecast| <= max(forecast_tolerance, 3 se); compile error and g2 raise s, so a deviation above the forecast is not evidence of partial distinguishability",
+  "hom_lower_bound": "the HOM at which the indistinguishable forecast equals the periodic mean; compile error raises s, so it bounds the effective HOM from below",
   "forecast_source": "perfs_at_plan of submission.json, per-mode detection from t_out"
  }
 }

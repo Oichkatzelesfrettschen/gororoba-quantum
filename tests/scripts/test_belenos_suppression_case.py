@@ -237,9 +237,12 @@ def test_decision_reads_suppression_at_the_forecast(tmp_path: Path) -> None:
         raise AssertionError(decision)
     if not decision["control_valid"] or not decision["suppression_observed"] or decision["level"] != "at":
         raise AssertionError(decision)
-    if not 0.8 < decision["implied_hom"] < 0.95:
-        raise AssertionError(f"implied HOM {decision['implied_hom']}")
-    if record["pooled"]["periodic"]["events"] != 4 * 400 or record["excluded_events"]["outside_window"] == 0:
+    if not 0.8 < decision["hom_lower_bound"] < 0.95:
+        raise AssertionError(f"HOM lower bound {decision['hom_lower_bound']}")
+    if (
+        record["pooled"]["periodic"]["events"] != 4 * 400
+        or record["excluded_events"]["periodic"]["outside_window"] == 0
+    ):
         raise AssertionError(record["pooled"])
 
 
@@ -327,3 +330,94 @@ def test_unbound_result_iteration_is_refused(tmp_path: Path) -> None:
     retained = json.loads((case.CASES / case.FORECAST).read_text(encoding="utf-8"))
     with pytest.raises(ValueError, match="binds to 0 settings"):
         case.analyze([run], retained)
+
+
+def _runs(tmp_path: Path, fractions: dict[str, float]) -> list[Path]:
+    runs = []
+    for job in case.JOB_ORDER:
+        parent = tmp_path / f"runs-{job}"
+        parent.mkdir()
+        runs.append(_run(parent, job, fractions))
+    return runs
+
+
+def _rewrite(run: Path, edit: Any) -> None:
+    results = json.loads((run / "results.json").read_text(encoding="utf-8"))
+    edit(results["iterations"])
+    (run / "results.json").write_text(json.dumps(results))
+
+
+def _retained() -> dict[str, Any]:
+    return dict(json.loads((case.CASES / case.FORECAST).read_text(encoding="utf-8")))
+
+
+@pytest.mark.parametrize("entry", [{"missing": True}, {"malformed": True}, {"error": "worker failed"}])
+def test_cut_short_job_reads_undecided(tmp_path: Path, entry: dict[str, Any]) -> None:
+    """qd_platform.result_summary appends an entry without counts or iteration for each lost iteration."""
+    runs = _runs(tmp_path, {"periodic": 0.21, "control": 0.64})
+    _rewrite(runs[1], lambda iterations: iterations.__setitem__(3, dict(entry)))
+    record = case.analyze(runs, _retained())
+    kind = next(iter(entry))
+    if record["decision"]["verdict"] != "undecided" or record["uncounted_iterations"][kind] != 1:
+        raise AssertionError(record["decision"], record["uncounted_iterations"])
+    if record["summary"]["control"]["iterations"] != 3 or record["summary"]["periodic"]["iterations"] != 4:
+        raise AssertionError(record["summary"])
+
+
+def test_the_same_job_twice_is_refused(tmp_path: Path) -> None:
+    fractions = {"periodic": 0.21, "control": 0.64}
+    first, second = tmp_path / "first", tmp_path / "second"
+    first.mkdir()
+    second.mkdir()
+    runs = [_run(first, "job-00", fractions), _run(second, "job-00", fractions)]
+    with pytest.raises(ValueError, match="repeats job job-00"):
+        case.analyze(runs, _retained())
+
+
+def test_a_repeat_under_another_name_cannot_reuse_seeds(tmp_path: Path) -> None:
+    runs = _runs(tmp_path, {"periodic": 0.21, "control": 0.64})
+    manifest = json.loads((runs[1] / "cases.json").read_text(encoding="utf-8"))
+    original = json.loads((runs[0] / "cases.json").read_text(encoding="utf-8"))
+    manifest["settings"][0]["compilation_seed"] = original["settings"][0]["compilation_seed"]
+    (runs[1] / "cases.json").write_text(json.dumps(manifest))
+    with pytest.raises(ValueError, match="reuses compilation seeds"):
+        case.analyze(runs, _retained())
+
+
+def test_an_iteration_below_the_event_floor_does_not_count(tmp_path: Path) -> None:
+    runs = _runs(tmp_path, {"periodic": 0.21, "control": 0.64})
+    _rewrite(runs[1], lambda iterations: iterations.__setitem__(0, {**iterations[0], "counts": _counts(0.0, 3)}))
+    record = case.analyze(runs, _retained())
+    if record["decision"]["verdict"] != "undecided" or len(record["below_event_floor"]) != 1:
+        raise AssertionError(record["decision"], record["below_event_floor"])
+    if record["below_event_floor"][0]["accepted"] != 3 or record["summary"]["control"]["iterations"] != 3:
+        raise AssertionError(record["below_event_floor"])
+
+
+def test_the_paired_contrast_is_a_second_rule(tmp_path: Path) -> None:
+    """A periodic fraction under the absolute limit still fails when the control is not clearly above it."""
+    record = _analyze(tmp_path, {"periodic": 0.48, "control": 0.55})
+    decision = record["decision"]
+    if not decision["absolute_rule"] or decision["contrast_rule"] or decision["suppression_observed"]:
+        raise AssertionError(decision)
+    if decision["verdict"] != "no suppression beyond the distinguishable and mean-field forecasts":
+        raise AssertionError(decision)
+
+
+def test_exclusions_are_reported_per_arm_and_iteration(tmp_path: Path) -> None:
+    record = _analyze(tmp_path, {"periodic": 0.21, "control": 0.64})
+    if set(record["excluded_events"]) != {"periodic", "control"}:
+        raise AssertionError(record["excluded_events"])
+    if any("excluded" not in row for rows in record["iterations"].values() for row in rows):
+        raise AssertionError("an iteration lacks its exclusion tally")
+    if record["excluded_events"]["periodic"]["outside_window"] != 4 * 3:
+        raise AssertionError(record["excluded_events"])
+
+
+def test_budget_models_a_fixed_part_and_a_shot_cost() -> None:
+    healthy = case.modeled_seconds(case.SHOTS_PER_ITERATION, 4)
+    degraded = case.modeled_seconds(case.SHOTS_PER_ITERATION, 4, case.DEGRADED_SECONDS_PER_SHOT)
+    if not 104 < healthy < 105 or not 237 < degraded < 240 or degraded >= case.MAX_DURATION:
+        raise AssertionError((healthy, degraded))
+    if case.expected_seconds(case.SHOTS_PER_ITERATION, 4) != 180.0:
+        raise AssertionError("expected seconds")

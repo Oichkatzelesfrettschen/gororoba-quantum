@@ -3,11 +3,17 @@
   "job-00": {
    "credit_ceiling": 2.5,
    "expected_seconds": 180.0,
+   "max_shots_per_iteration": 1500000,
+   "modeled_seconds_degraded": 237.59999999999997,
+   "modeled_seconds_healthy": 104.4,
    "samples_per_iteration": 400
   },
   "job-01": {
    "credit_ceiling": 2.5,
    "expected_seconds": 180.0,
+   "max_shots_per_iteration": 1500000,
+   "modeled_seconds_degraded": 237.59999999999997,
+   "modeled_seconds_healthy": 104.4,
    "samples_per_iteration": 400
   }
  },
