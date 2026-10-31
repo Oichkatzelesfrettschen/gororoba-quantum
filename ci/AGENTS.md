@@ -488,3 +488,36 @@ ledger rule on a bundle it builds.
   check holds in every interpreter mode and each gate runs its command once.
   The files whose bytes retained evidence pins keep their asserts under
   per-file ignores.
+
+## Code style tools
+
+Every Python file a change touches passes, before each push, through
+`"$PYTHON" ci/pinned_tool.py TOOL ARGS` (the versions of
+ci/requirements-ci.txt):
+- `ruff format --target-version py313` (120-column lines from pyproject.toml;
+  the Python 3.13 target is the Quantum Inspire interpreter's);
+- `ruff check` (pycodestyle, pyflakes, import order, bugbear, pyupgrade, S101);
+- `mypy` on the touched files, and over gororoba_quantum/, scripts/, ci/,
+  tests/ and kaggle_kernel/ (from gororoba_quantum/: `mypy . ../scripts ../ci
+  ../tests ../kaggle_kernel`) when a change alters a signature another module
+  imports.
+
+A gate command run outside ci/run_gates.py needs `PYTHON` exported
+(`export PYTHON="${PYTHON:-python3}"`); an unexported assignment expands empty
+and every gate exits 127 in 0.0 s.
+
+## Seed ledger
+
+`ci/seed_provenance.py`, run by the `tests` check, requires every integer seed
+literal in the code directories and in every git-tracked Python file under
+docs/ to be a row of ci/reproduction_seeds.json, which only shrinks against
+main, or an entry of docs/evidence/qrng_seeds/allocations.json naming a
+registered source's draw that no case manifest owns and the index holding that
+value. A tracked file that takes a draw value the literal scan cannot key (a
+helper alias, a mapping) gets a `reserved` row there instead. A seed a CLI takes
+at run time goes through `qrng_seeds.add_seed_argument`, which accepts
+`qrng:<draw>#<index>`, the flag's default or `repro:<integer>` and refuses any
+other integer; the run record's `seed_source` names the spelling, and the
+change that retains a qrng-seeded run adds its ledger row with
+`"$PYTHON" ci/seed_provenance.py --add-runtime`. The seed sources and their
+draw rules are in [docs/notes/qrng/README.md](../docs/notes/qrng/README.md).
