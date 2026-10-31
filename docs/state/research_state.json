@@ -2870,6 +2870,13 @@
       "run": "results/quandela/runs/2026-10-31T050537Z-qpu_belenos-belenos_associator_visibility-job-01",
       "family": "in-situ two-photon visibility on qpu:belenos source pairs",
       "question": "What two-photon overlap does the control block of the associator closure design read for source pair (20, 22), the pair the postselected CNOT of job-02 entangles, and does the closure hold across the eight separately compiled meshes?"
+    },
+    {
+      "id": "qd-qpu-belenos-mode-swap-interleaved-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved-job-00",
+      "family": "interleaved packed and swapped box-kite layouts with replicate compilation seeds on qpu:belenos",
+      "question": "Within one job, do the primary repeats of a packed or swapped layout return one compiled mesh with shares that agree, and how far does a replicate compilation seed move a block's single-click algebra-mode share (set 0; the job was cut at 300 s before set 1)?"
     }
   ],
   "claims": [

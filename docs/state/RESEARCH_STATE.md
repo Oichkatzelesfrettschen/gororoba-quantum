@@ -32,7 +32,7 @@ The IBM service inventory observed at 2026-10-30T04:53:07.250163+00:00 holds 34 
 
 The Quantum Inspire ledger retrieved at 2026-10-30T06:04:43+00:00 lists 450 jobs with 8511376 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 140 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 141 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 49 IQM run directories are retained. That is an observation, not an authorization.
 
@@ -451,6 +451,7 @@ circuit and charges the account ledger's change.
 | [2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay](../../results/quandela/runs/2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay) | Quandela Cloud | single-chip teleportation rehearsal on a recovered chip, split blocks | qpu:belenos | 1 | 6 | completed | 4.0 credits | qd-belenos-teleportation-split-blocks-mesh-error |
 | [2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00](../../results/quandela/runs/2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00) | Quandela Cloud | in-situ two-photon visibility on qpu:belenos source pairs | qpu:belenos | 1 | 8 | completed | 1.262144 credits | qd-belenos-visibility-per-seed-mesh-spread |
 | [2026-10-31T050537Z-qpu_belenos-belenos_associator_visibility-job-01](../../results/quandela/runs/2026-10-31T050537Z-qpu_belenos-belenos_associator_visibility-job-01) | Quandela Cloud | in-situ two-photon visibility on qpu:belenos source pairs | qpu:belenos | 1 | 8 | completed | 1.262144 credits | qd-belenos-visibility-per-seed-mesh-spread |
+| [2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved-job-00](../../results/quandela/runs/2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved-job-00) | Quandela Cloud | interleaved packed and swapped box-kite layouts with replicate compilation seeds on qpu:belenos | qpu:belenos | 1 | 12 | canceled | 1.018 credits |  |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -862,6 +863,7 @@ circuit and charges the account ledger's change.
 - **qd-qpu-belenos-teleportation-rehearsal-job-02-replay** (2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay, job 137c771c-f7e8-4085-aa5d-065385368f54, 7200 samples, 14329409 shots): Does an exact replay of job-02 (same seeds, same compiled meshes) reproduce job-02's per-input counts, separating per-seed compiled-mesh error from drift in the job-02 against job-03 block difference?
 - **qd-qpu-belenos-associator-visibility-job-00** (2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00, job 6de00147-e40b-4a58-89be-692b9f14b4b9, 16384 samples, 1215597 shots): What two-photon overlap does the control block of the associator closure design read for source pair (18, 20), the input and Bell photons the teleportation analyzer of job-02 interferes, and does the closure hold across the eight separately compiled meshes?
 - **qd-qpu-belenos-associator-visibility-job-01** (2026-10-31T050537Z-qpu_belenos-belenos_associator_visibility-job-01, job 04f3d55a-5ef0-4a07-8ef3-12678b7eeff2, 16384 samples, 1199237 shots): What two-photon overlap does the control block of the associator closure design read for source pair (20, 22), the pair the postselected CNOT of job-02 entangles, and does the closure hold across the eight separately compiled meshes?
+- **qd-qpu-belenos-mode-swap-interleaved-job-00** (2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved-job-00, job dc348230-ceb9-40b7-aa04-a5e09a51e213, 36000 samples, 18000 shots): Within one job, do the primary repeats of a packed or swapped layout return one compiled mesh with shares that agree, and how far does a replicate compilation seed move a block's single-click algebra-mode share (set 0; the job was cut at 300 s before set 1)?
 
 ## Established claims
 

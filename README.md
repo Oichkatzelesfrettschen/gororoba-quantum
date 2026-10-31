@@ -464,6 +464,7 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay](results/quandela/runs/2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay) | Quandela Cloud | single-chip teleportation rehearsal on a recovered chip, split blocks | qpu:belenos | 1 | 6 | completed | 4.0 credits |
 | [2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00](results/quandela/runs/2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00) | Quandela Cloud | in-situ two-photon visibility on qpu:belenos source pairs | qpu:belenos | 1 | 8 | completed | 1.262144 credits |
 | [2026-10-31T050537Z-qpu_belenos-belenos_associator_visibility-job-01](results/quandela/runs/2026-10-31T050537Z-qpu_belenos-belenos_associator_visibility-job-01) | Quandela Cloud | in-situ two-photon visibility on qpu:belenos source pairs | qpu:belenos | 1 | 8 | completed | 1.262144 credits |
+| [2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved-job-00](results/quandela/runs/2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved-job-00) | Quandela Cloud | interleaved packed and swapped box-kite layouts with replicate compilation seeds on qpu:belenos | qpu:belenos | 1 | 12 | canceled | 1.018 credits |
 
 The IBM service inventory observed at 2026-10-28T00:29:17.005404+00:00 holds 43 physical jobs with 532 settled seconds; the account then reported 532 of 600 s consumed in the rolling window ending 2026-10-28T00:29:16.938Z. That is an observation, not a current balance or an authorization.
 
@@ -471,7 +472,7 @@ The IBM service inventory observed at 2026-10-30T04:53:07.250163+00:00 holds 34 
 
 The Quantum Inspire ledger retrieved at 2026-10-30T06:04:43+00:00 lists 450 jobs with 8511376 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 140 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 141 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 49 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->
