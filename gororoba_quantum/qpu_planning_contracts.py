@@ -35,6 +35,7 @@ import native_preflight
 import qpe_diagnostics
 import qpu_cases
 import qpu_planning
+import run_archive
 from runtime_contracts import _fixture_args, _ProbeBackend, _ProbeSampler, _ProbeService
 
 
@@ -402,7 +403,7 @@ def _verify_approval_mutations(choices: list[live_run.Choice], metadata: dict[st
         approved = Path(directory)
         live_run.write_archive(approved, choices)
         live_run.write_json(approved, record)
-        qpy_digest = hashlib.sha256((approved / "isa.qpy").read_bytes()).hexdigest()
+        qpy_digest = run_archive.archive_sha256(approved)
         _require(
             not live_run.approved_record_mismatches(approved, record, qpy_digest),
             "unchanged diagnostic configuration failed approval comparison",
@@ -627,7 +628,7 @@ def _verify_infeasible_archive(
         _require(record["state"] == "design_infeasible", f"infeasible design recorded state {record['state']}")
         _require(record["optimization"]["selected"] is None, "infeasible dry run selected a shot tier")
         _require(bool(record["optimization"]["candidates"]), "infeasible dry run omitted its rejected candidates")
-        _require((records[0].parent / "isa.qpy").is_file(), "infeasible dry run omitted its concrete circuit archive")
+        _require(run_archive.has_archive(records[0].parent), "infeasible dry run omitted its concrete circuit archive")
         _require("submission" not in record, "infeasible dry run contains a submission ledger")
 
 
@@ -1103,7 +1104,7 @@ def _verify_rep_delay_approval() -> None:
         approved.mkdir()
         live_run.write_archive(approved, choices)
         live_run.write_json(approved, record)
-        qpy_digest = hashlib.sha256((approved / "isa.qpy").read_bytes()).hexdigest()
+        qpy_digest = run_archive.archive_sha256(approved)
         record_digest = hashlib.sha256((approved / "record.json").read_bytes()).hexdigest()
         _require(not live_run.approved_record_mismatches(approved, record, qpy_digest), "an unchanged plan mismatches")
         moved = copy.deepcopy(record)
@@ -1791,7 +1792,7 @@ def _submit_reuse_case(
     out = directory / name
     with redirect_stdout(io.StringIO()):
         status = live_run.main([*argv, "--out", str(out / "dry")])
-    dry_runs = list((out / "dry").iterdir())
+    dry_runs = [path for path in (out / "dry").iterdir() if (path / "record.json").is_file()]
     _require(status == 0 and len(dry_runs) == 1, f"{name}: the dry run exited {status}")
     approved = dry_runs[0]
     record_sha = hashlib.sha256((approved / "record.json").read_bytes()).hexdigest()

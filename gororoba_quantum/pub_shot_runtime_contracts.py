@@ -29,6 +29,7 @@ from qiskit_ibm_runtime.results.quantum_program import ChunkPart, ChunkSpan
 import live_run as runtime
 import packing
 import qpu_planning
+import run_archive
 from experiments import experiment_groups
 from runtime_contracts import (
     _collect_with_zero_simulation,
@@ -282,8 +283,7 @@ def _submit_fixture(
 def _result_jobs(
     run_dir: Path, record: dict[str, Any], wrong_count: bool = False, missing_windows: bool = False
 ) -> dict[str, _ProbeResultJob]:
-    with (run_dir / "isa.qpy").open("rb") as handle:
-        archived = {circuit.name: circuit for circuit in qpy.load(handle)}
+    archived = {circuit.name: circuit for circuit in qpy.load(run_archive.open_archive(run_dir))}
     jobs: dict[str, _ProbeResultJob] = {}
     base = datetime(2026, 10, 10, 12, 0, tzinfo=UTC)
     for job_index, job in enumerate(record["submission"]["jobs"]):
@@ -340,8 +340,8 @@ def _verify_collection(backend: _ProbeBackend, run_dir: Path, record: dict[str, 
 
     with tempfile.TemporaryDirectory(prefix="allocated-missing-windows-") as directory:
         missing_dir = Path(directory)
-        for name in ("record.json", "isa.qpy"):
-            (missing_dir / name).write_bytes((run_dir / name).read_bytes())
+        (missing_dir / "record.json").write_bytes((run_dir / "record.json").read_bytes())
+        (missing_dir / "isa.qpy").write_bytes(run_archive.read_archive(run_dir))
         missing_jobs = _result_jobs(missing_dir, record, missing_windows=True)
         with redirect_stdout(io.StringIO()):
             _collect_with_zero_simulation(_CollectionProbeService(backend, missing_jobs), missing_dir)
@@ -358,8 +358,8 @@ def _verify_collection(backend: _ProbeBackend, run_dir: Path, record: dict[str, 
 
     with tempfile.TemporaryDirectory(prefix="allocated-straddled-calibration-") as directory:
         straddled_dir = Path(directory)
-        for name in ("record.json", "isa.qpy"):
-            (straddled_dir / name).write_bytes((run_dir / name).read_bytes())
+        (straddled_dir / "record.json").write_bytes((run_dir / "record.json").read_bytes())
+        (straddled_dir / "isa.qpy").write_bytes(run_archive.read_archive(run_dir))
         original_execution = runtime.component_execution_records
 
         def straddled_execution(
@@ -387,8 +387,8 @@ def _verify_collection(backend: _ProbeBackend, run_dir: Path, record: dict[str, 
 
     with tempfile.TemporaryDirectory(prefix="allocated-wrong-count-") as directory:
         invalid_dir = Path(directory)
-        for name in ("record.json", "isa.qpy"):
-            (invalid_dir / name).write_bytes((run_dir / name).read_bytes())
+        (invalid_dir / "record.json").write_bytes((run_dir / "record.json").read_bytes())
+        (invalid_dir / "isa.qpy").write_bytes(run_archive.read_archive(run_dir))
         invalid_jobs = _result_jobs(invalid_dir, record, wrong_count=True)
         with redirect_stdout(io.StringIO()):
             _reject(

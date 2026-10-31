@@ -12,7 +12,6 @@ from __future__ import annotations
 import argparse
 import copy
 import hashlib
-import io
 import json
 import math
 from datetime import UTC, datetime
@@ -22,6 +21,8 @@ from typing import Any
 from uuid import uuid4
 
 from qiskit import qpy
+
+import run_archive
 
 
 class PreflightError(ValueError):
@@ -42,10 +43,12 @@ def _json_digest(value: Any) -> str:
 
 
 def _preserved_files(run_dir: Path) -> dict[str, str | None]:
-    return {
+    files = {
         name: _digest((run_dir / name).read_bytes()) if (run_dir / name).is_file() else None
-        for name in ("record.json", "isa.qpy", "approval-consumed.json")
+        for name in ("record.json", "approval-consumed.json")
     }
+    files["isa.qpy"] = _digest(run_archive.read_archive(run_dir)) if run_archive.has_archive(run_dir) else None
+    return files
 
 
 def _binding(runtime: Any, service: Any, choices: list[Any], record: dict[str, Any], run_dir: Path) -> dict[str, Any]:
@@ -73,7 +76,7 @@ def _binding(runtime: Any, service: Any, choices: list[Any], record: dict[str, A
         circuit = copy.copy(pub.circuit)
         circuit.name = pub.name
         named_circuits.append(circuit)
-    archive_bytes = (run_dir / "isa.qpy").read_bytes()
+    archive_bytes = run_archive.read_archive(run_dir)
     _require(
         runtime._qpy_digest(named_circuits) == _digest(archive_bytes), "QPY archive differs from execution choices"
     )
@@ -218,7 +221,7 @@ def qualify(runtime: Any, service: Any, choices: list[Any], record: dict[str, An
         )
         plan, batches = runtime.build_submission_plan(choices, args, binding["files"]["isa.qpy"])
         _require(bool(batches), "native qualification requires at least one batch")
-        archive = list(qpy.load(io.BytesIO((run_dir / "isa.qpy").read_bytes())))
+        archive = list(qpy.load(run_archive.open_archive(run_dir)))
         circuits_by_name = {circuit.name: circuit for circuit in archive}
         _require(len(circuits_by_name) == len(archive), "QPY archive contains duplicate circuit names")
         report["planned_jobs"] = len(batches)

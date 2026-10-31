@@ -19,6 +19,7 @@ from qiskit_ibm_runtime.fake_provider import FakeFez
 
 import live_run as runtime
 import native_preflight
+import run_archive
 from experiments import Group, Member
 from runtime_contracts import _fake_snapshot, _synthetic_fusion_choice
 
@@ -174,8 +175,7 @@ def _case(mutation: str | None = None, estimate: Any = 3.25) -> dict[str, Any]:
             record["budget_plan"].pop("combined_ceiling_seconds")
             (directory / "record.json").write_text(json.dumps(record))
         elif mutation == "qpy":
-            with (directory / "isa.qpy").open("ab") as handle:
-                handle.write(b"changed")
+            (directory / "isa.qpy").write_bytes(run_archive.read_archive(directory) + b"changed")
         elif mutation == "source":
             record["experiment_digest"] = "changed"
             (directory / "record.json").write_text(json.dumps(record))

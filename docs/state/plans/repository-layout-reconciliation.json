@@ -23,7 +23,7 @@
       "id": "circuit-archive-store",
       "action": "live_run.py writes each compiled archive once to results/live/archives/<sha256>.qpy and the allocation-search candidates to a sidecar; one verifying archive API in the run-record module serves the 48 readers and the IQM, Quandela, Kaggle and circuit.json duplicate groups",
       "acceptance": "a dry run of an existing case writes no isa.qpy in its directory and a record under 2 MB; adjudication of a retained run reads its original bytes; the gates binding retained runs pass unchanged",
-      "state": "todo"
+      "state": "doing"
     },
     {
       "id": "live-run-record-io-extraction",
