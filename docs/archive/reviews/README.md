@@ -7,6 +7,7 @@ repository-relative; a branch name stands for its worktree.
 
 | Report | Subject |
 |---|---|
+| [2026-10-30-quandela-run-audit.md](2026-10-30-quandela-run-audit.md) | Ascella and Belenos run inventory, repeats, simulation pairs, mode-swap replay, across-time claim gap and live processor state |
 | [layout-reconciliation/brief.md](layout-reconciliation/brief.md) | Peer-review brief for the repository layout reconciliation: measured storage classes, options and seven questions (2026-10-30) |
 | [layout-reconciliation/review-codex-daybreak-blue.md](layout-reconciliation/review-codex-daybreak-blue.md) | Codex gpt-daybreak-blue-latest review: lifecycle retention, sparse profiles, clone-size ranking, archive resolver, import-graph refutation of the prefix cut |
 | [layout-reconciliation/review-grok.md](layout-reconciliation/review-grok.md) | Grok Build review: non-cone sparse pattern, actions/checkout filter, successor-repository option, resolver for every duplicate group |

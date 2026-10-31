@@ -1,0 +1,110 @@
+{
+ "runs": [
+  "ascella-context-packed-forward",
+  "2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat",
+  "2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition"
+ ],
+ "schema": "ascella-matched-port-comparison-v1",
+ "settings": [
+  {
+   "accepted": [
+    65536,
+    65535,
+    65524
+   ],
+   "chi_square": 5149.074213615066,
+   "degrees_of_freedom": 22,
+   "other": [
+    0,
+    1,
+    12
+   ],
+   "setting": 0,
+   "total_variation": {
+    "2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat | 2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition": 0.04461191929697914,
+    "ascella-context-packed-forward | 2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat": 0.005081386774257647,
+    "ascella-context-packed-forward | 2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition": 0.04969330607123679
+   }
+  },
+  {
+   "accepted": [
+    65531,
+    65536,
+    65536
+   ],
+   "chi_square": 1934.866238813619,
+   "degrees_of_freedom": 22,
+   "other": [
+    5,
+    0,
+    0
+   ],
+   "setting": 1,
+   "total_variation": {
+    "2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat | 2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition": 0.0008544921875,
+    "ascella-context-packed-forward | 2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat": 0.018525865058289463,
+    "ascella-context-packed-forward | 2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition": 0.019029405097351963
+   }
+  },
+  {
+   "accepted": [
+    65499,
+    65489,
+    65501
+   ],
+   "chi_square": 5594.8138136072885,
+   "degrees_of_freedom": 22,
+   "other": [
+    37,
+    47,
+    35
+   ],
+   "setting": 2,
+   "total_variation": {
+    "2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat | 2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition": 0.04981238707801932,
+    "ascella-context-packed-forward | 2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat": 0.06201063077295513,
+    "ascella-context-packed-forward | 2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition": 0.013348432611933697
+   }
+  },
+  {
+   "accepted": [
+    65535,
+    65536,
+    65536
+   ],
+   "chi_square": 29.242342477445916,
+   "degrees_of_freedom": 22,
+   "other": [
+    1,
+    0,
+    0
+   ],
+   "setting": 3,
+   "total_variation": {
+    "2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat | 2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition": 0.0003662109375,
+    "ascella-context-packed-forward | 2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat": 0.0009155676240659751,
+    "ascella-context-packed-forward | 2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition": 0.0009613488807716
+   }
+  },
+  {
+   "accepted": [
+    65512,
+    65507,
+    65515
+   ],
+   "chi_square": 2706.6385082190404,
+   "degrees_of_freedom": 22,
+   "other": [
+    24,
+    29,
+    21
+   ],
+   "setting": 4,
+   "total_variation": {
+    "2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat | 2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition": 0.007058353981885651,
+    "ascella-context-packed-forward | 2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat": 0.02665489767282438,
+    "ascella-context-packed-forward | 2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition": 0.02999458660324377
+   }
+  }
+ ]
+}

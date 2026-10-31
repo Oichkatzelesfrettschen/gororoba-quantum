@@ -2864,6 +2864,7 @@
     "scripts/aer_gpu_probe.py",
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
+    "scripts/ascella_a5_kernel_slice.py",
     "scripts/ascella_associator_case.py",
     "scripts/ascella_associator_character.py",
     "scripts/ascella_associator_predecessor.py",
@@ -7027,6 +7028,7 @@
     "scripts/a5_zero_divisor_strata.py",
     "scripts/algebra_device_conjectures.py",
     "scripts/algebra_package_tables.py",
+    "scripts/ascella_a5_kernel_slice.py",
     "scripts/bdsc_packages.py",
     "scripts/persona_corpus_checks.py",
     "scripts/qi_tuna_joint_package_runtime.py",
@@ -10426,6 +10428,15 @@
    "parallel",
    "pathlib",
    "qd_belenos_mesh",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_matched_port_comparison.py": [
+   "__future__",
+   "itertools",
+   "json",
+   "parallel",
+   "pathlib",
    "sys",
    "typing"
   ],
