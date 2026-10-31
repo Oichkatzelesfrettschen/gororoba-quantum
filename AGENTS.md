@@ -10,6 +10,20 @@ machinery.
 
 - The modules run as scripts from gororoba_quantum/ and form no installable
   package.
+- Reusable acquisition readers and analysis functions live in
+  gororoba_quantum/ and take explicit inputs (`qi_records.py` is the
+  Quantum Inspire reader); scripts select inputs and call them. Acquisition
+  facts, experiment definitions and analysis results stay distinct. A
+  compatible new acquisition reuses the existing reader and analyzer without
+  a copy of their implementation or a change to another module's
+  configuration; new code answers new scientific behavior or an unsupported
+  record format, never a new job id or path. A digest-bound historical
+  producer keeps its bytes, and a change that would alter its identity or
+  meaning lands in an explicitly versioned successor
+  (`qi_zz_map_qx_analysis.py` succeeds the `--analyze` mode of the pinned
+  `qi_zz_map_qx.py`). A superseded unpinned implementation leaves once its
+  callers migrate. Record integrity and scientific behavior are tested on
+  bounded fixtures; historical replays stay for end-to-end reproduction.
 - The `pr.yml` checks `lint`, `types`, `tests` and `gates` green on the head
   admit a merge. No local gate run or premerge replay is required before a
   push, which overrides the user-level guide's local replica of the slowest
