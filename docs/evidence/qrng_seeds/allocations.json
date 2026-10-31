@@ -421,6 +421,90 @@
    "value": 39316,
    "record": "docs/evidence/anu_qrng/draw-2026-10-27T231303Z.json",
    "index": 1
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_02_COMPILATION_SEEDS",
+   "value": 19918,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_02_COMPILATION_SEEDS",
+   "value": 52848,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_02_COMPILATION_SEEDS",
+   "value": 30689,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_02_COMPILATION_SEEDS",
+   "value": 50293,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json",
+   "index": 3
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_02_COMPILATION_SEEDS",
+   "value": 57001,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json",
+   "index": 4
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_02_COMPILATION_SEEDS",
+   "value": 12608,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json",
+   "index": 5
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_03_COMPILATION_SEEDS",
+   "value": 56057,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json",
+   "index": 6
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_03_COMPILATION_SEEDS",
+   "value": 55550,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json",
+   "index": 7
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_03_COMPILATION_SEEDS",
+   "value": 595,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json",
+   "index": 8
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_03_COMPILATION_SEEDS",
+   "value": 59482,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json",
+   "index": 9
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_03_COMPILATION_SEEDS",
+   "value": 7821,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json",
+   "index": 10
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_03_COMPILATION_SEEDS",
+   "value": 19846,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json",
+   "index": 11
   }
  ],
  "runtime": [

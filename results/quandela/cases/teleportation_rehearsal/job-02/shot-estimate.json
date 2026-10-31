@@ -1,0 +1,15 @@
+{
+ "basis": "estimate_required_shots under the perfs of results/quandela/cases/teleportation_rehearsal/job-02/platform-read/catalogue.json",
+ "inputs": {
+  "+X": 2027248,
+  "+Y": 2027248,
+  "+Z": 1773842,
+  "-X": 2027248,
+  "-Y": 2027248,
+  "-Z": 2365123
+ },
+ "largest": 2365123,
+ "samples": 1200,
+ "schema": "qd-teleportation-shot-estimate-v1",
+ "shots_per_iteration": 3000000
+}
