@@ -2274,6 +2274,33 @@
       "retention": "retrieval_receipt; response bytes are unretained"
     },
     {
+      "url": "https://arxiv.org/abs/1002.5038",
+      "note": "docs/notes/quandela/literature.md",
+      "sha256": "a1b12a216bdcf9653d26cae80d45fa1c81f98407ac33d30fc46c0ed2bceb4c73",
+      "bytes": 40913,
+      "retrieved_at_utc": "2026-10-31T03:59:17+00:00",
+      "reading_scope": "Title, authors and abstract only; paper body unreviewed. Tichy, Tiersch, de Melo, Mintert and Buchleitner, zero-transmission law for the Fourier multiport (Phys. Rev. Lett. 104, 220405)",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/abs/1312.3080",
+      "note": "docs/notes/quandela/literature.md",
+      "sha256": "d39dea19d7a0a612fa4c7e446aa8fd7bc40c9989d240c06c8467c47fc585de25",
+      "bytes": 40884,
+      "retrieved_at_utc": "2026-10-31T03:59:17+00:00",
+      "reading_scope": "Title, authors and abstract only; paper body unreviewed. Tichy, Mayer, Buchleitner and Molmer, Fourier-matrix test against the semiclassical mean-field sampler (Phys. Rev. Lett. 113, 020502)",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/abs/1801.07014",
+      "note": "docs/notes/quandela/literature.md",
+      "sha256": "9899056d91c98a9f62f9ee9ab98d1225cdf9376d9a8c2c4b7914b8c39702940a",
+      "bytes": 41631,
+      "retrieved_at_utc": "2026-10-31T03:59:17+00:00",
+      "reading_scope": "Title, authors and abstract only; paper body unreviewed. Dittel, Dufour, Walschaers, Weihs, Buchleitner and Keil, algebraic suppression laws and their robustness to partial distinguishability (Phys. Rev. Lett. 120, 240404)",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
       "url": "https://arxiv.org/abs/2203.01234",
       "note": "docs/notes/papers/operational-instrument-sources.md",
       "sha256": "13f3c712785887756796f50fb8f6cd94e7b12f4e7048d91e6023554346993eb8",

@@ -67,6 +67,9 @@ and compiler publications.
 | 30 | 2408.15139v1, 2405.11044v1 | thermo-optic switching times | b | abstract only |
 | 31 | perceval-quandela 1.3.1 source | Perceval performance fields | d | sections |
 | 32 | 2601.10289v1 | Sanz, QFT multiphoton indistinguishability benchmark | d | abstract only |
+| 33 | 1002.5038v2 | Tichy, zero-transmission law for Fourier multiports | d | abstract only |
+| 34 | 1312.3080v2 | Tichy, Fourier test against the mean-field sampler | d | abstract only |
+| 35 | 1801.07014v2 | Dittel, totally destructive many-particle interference | d | abstract only |
 
 ## Conventions used in this note
 
@@ -1186,6 +1189,57 @@ and compiler publications.
   an internal-state effect: a photon in a|0>|alpha> + b|3>|beta>, with an
   internal state correlated to its path, gives path coherence proportional to
   <beta|alpha>. The Ascella records do not test that mechanism.
+
+### 33. Tichy et al., zero-transmission law for multiport beam splitters
+
+- M. C. Tichy, M. Tiersch, F. de Melo, F. Mintert, A. Buchleitner.
+  "Zero-Transmission Law for Multiport Beam Splitters." Phys. Rev. Lett. 104,
+  220405 (2010); arXiv:1002.5038. https://arxiv.org/abs/1002.5038. Retrieved
+  2026-10-31. Depth: abstract only.
+- Summary. The Hong-Ou-Mandel effect generalizes to n bosons on the n input
+  ports of a Fourier (Bell) multiport; the paper derives a strict suppression
+  law for most output events.
+- Use here: names the Fourier zero-transmission law that
+  docs/design/belenos-suppression-law-case.md tests. The case does not rely on
+  the paper's derivation for its six-mode, three-photon instance: it computes
+  the 20 collision-free permanents with scripts/belenos_suppression_case.py,
+  finds 12 exact zeros, and checks them against the label-sum rule (outputs
+  whose mode labels do not sum to a multiple of 3), which the case reads as the
+  law's instance for a cyclic input.
+
+### 34. Tichy et al., stringent assessment of boson-sampling devices
+
+- M. C. Tichy, K. Mayer, A. Buchleitner, K. Molmer. "Stringent and efficient
+  assessment of Boson-Sampling devices." Phys. Rev. Lett. 113, 020502 (2014);
+  arXiv:1312.3080. https://arxiv.org/abs/1312.3080. Retrieved 2026-10-31.
+  Depth: abstract only.
+- Summary. A semiclassical model of many-boson propagation reproduces the
+  coarse-grained observables proposed as boson-sampling witnesses; a test
+  built on Fourier matrices falsifies such alternatives.
+- Use here: the mean-field model of the Belenos suppression-law case. The
+  sampler's definition (n particles each in the equal-weight superposition of
+  the input ports with a random phase per port, averaged over the phases, so
+  that each particle occupies output q with probability |sum_j U_qj e^{i
+  phi_j}|^2 / n) was read from a machine-generated summary of the ar5iv
+  rendering, not from the paper's text; the case implements that definition and
+  labels it as such. Treat the definition as a lead until the paper's section
+  on the sampler is read.
+
+### 35. Dittel et al., totally destructive many-particle interference
+
+- C. Dittel, G. Dufour, M. Walschaers, G. Weihs, A. Buchleitner, R. Keil.
+  "Totally Destructive Many-Particle Interference." Phys. Rev. Lett. 120,
+  240404 (2018); arXiv:1801.07014. https://arxiv.org/abs/1801.07014. Retrieved
+  2026-10-31. Depth: abstract only.
+- Summary. Algebraic suppression laws follow from the permutation symmetry of
+  the input state; the interference behind them tolerates weak disorder and
+  imperfect indistinguishability; the abstract states that all suppression laws
+  described so far (the Fourier and Sylvester laws among them) embed in the
+  framework.
+- Use here: authority for the robustness claim the case tests, that a
+  suppressed output stays strongly suppressed under partial distinguishability.
+  The case measures that robustness; it takes no quantitative figure from the
+  paper.
 
 ---
 
