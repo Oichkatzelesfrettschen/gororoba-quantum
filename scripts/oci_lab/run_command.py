@@ -38,7 +38,8 @@ def main(name: str, command: str, timeout: int = 300) -> int:
             ),
         )
     ).data
-    deadline = time.monotonic() + timeout + 120
+    # The agent polls for new commands on a multi-minute interval, so pickup can lag creation by over 4 minutes.
+    deadline = time.monotonic() + timeout + 600
     while time.monotonic() < deadline:
         ex = agent.get_instance_agent_command_execution(cmd.id, instances[0].id).data
         if ex.lifecycle_state in ("SUCCEEDED", "FAILED", "TIMED_OUT", "CANCELED"):
