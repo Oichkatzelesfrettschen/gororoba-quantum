@@ -28,7 +28,7 @@ The source investigation joins four specific inputs:
   [algebra contract](../notes/algebra_circuit_rules.md),
   [projected-unitary source note](../notes/papers/1806.01838.md), and
   [Tuna shot-record literature](../notes/quantum_inspire/shot-record-literature.md) establish conventions and known
-  nuisance mechanisms. Private reading copies in `gororoba-quantum-documents` supplied primary manuscript pages;
+  nuisance mechanisms. Private reading copies in `gororoba-documents-private` supplied primary manuscript pages;
   source text is not redistributed here.
 
 The dimension-six Hadamard manuscript provides another exact-grid Ramsey candidate, but classically compiling

@@ -9,14 +9,18 @@ payload only when it starts with ``%PDF-`` and matches the registered size
 and digest, and writes it to its cache path through a temporary file in the
 same directory. A mismatch writes nothing and is reported, because the
 registry rows are immutable and a changed upstream file is a finding for a
-new record. ``--from-documents DIR`` reads the payloads from ``DIR/pdf/`` of a
-checkout of the private gororoba-quantum-documents repository, under the same
-admission rule, instead of the network. ``--check`` reads only the local
-cache and the registry.
+new record. ``--from-documents DIR``, repeatable, reads the payloads from
+checkouts of the workspace documents repositories gororoba-documents-private
+and gororoba-documents-public instead of the network, under the same
+admission rule: the entry's sha256 selects the file through the checkout's
+``manifest.tsv`` (columns ``sha256``, ``bytes``, ``path`` first), and a
+checkout without that row serves ``pdf/<cache name>``. ``--check`` reads only
+the local cache and the registry.
 
     $PYTHON scripts/fetch_source_cache.py --note docs/notes/papers/1210.4583.md
     $PYTHON scripts/fetch_source_cache.py --missing
-    $PYTHON scripts/fetch_source_cache.py --missing --from-documents ../gororoba-quantum-documents
+    $PYTHON scripts/fetch_source_cache.py --missing --from-documents ../gororoba-documents-private \
+        --from-documents ../gororoba-documents-public
     $PYTHON scripts/fetch_source_cache.py --check --note docs/notes/papers/1210.4583.md
 """
 
@@ -90,14 +94,32 @@ def network_loader(entry: dict[str, Any]) -> tuple[int, bytes]:
     return fetch_status(entry["source_url"])
 
 
-def documents_loader(documents: Path) -> Loader:
-    """A loader reading ``documents/pdf/<cache name>``, answering 404 for an absent or linked file."""
+def manifest_paths(documents: Path) -> dict[str, str]:
+    """Maps each sha256 of ``documents/manifest.tsv`` to its checkout-relative path; empty without a manifest."""
+    manifest = documents / "manifest.tsv"
+    if not manifest.is_file():
+        return {}
+    lines = manifest.read_text().splitlines()
+    if not lines or not lines[0].startswith("sha256\tbytes\tpath"):
+        raise SystemExit(f"{manifest}: header must start with sha256, bytes, path")
+    return {fields[0]: fields[2] for fields in (line.split("\t") for line in lines[1:]) if len(fields) >= 3}
+
+
+def documents_loader(roots: list[Path]) -> Loader:
+    """A loader reading the first documents checkout that holds the entry, answering 404 when none does.
+
+    A checkout's manifest row for the entry's sha256 names the file; a checkout without that row serves
+    ``pdf/<cache name>``. A linked or absent file is skipped.
+    """
+    indexed = [(documents, manifest_paths(documents)) for documents in roots]
 
     def load(entry: dict[str, Any]) -> tuple[int, bytes]:
-        source = documents / "pdf" / Path(entry["local_cache_path"]).name
-        if source.is_symlink() or not source.is_file():
-            return 404, b""
-        return 200, source.read_bytes()
+        for documents, paths in indexed:
+            relative = paths.get(entry["sha256"], f"pdf/{Path(entry['local_cache_path']).name}")
+            source = documents / relative
+            if not source.is_symlink() and source.is_file():
+                return 200, source.read_bytes()
+        return 404, b""
 
     return load
 
@@ -131,10 +153,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--missing", action="store_true", help="restore only entries whose copy is absent or wrong")
     parser.add_argument("--check", action="store_true", help="verify the local copies without network access")
     parser.add_argument(
-        "--from-documents", type=Path, help="read payloads from a gororoba-quantum-documents checkout's pdf/"
+        "--from-documents",
+        type=Path,
+        action="append",
+        default=[],
+        help="documents checkout (gororoba-documents-private or -public) to read payloads from; repeatable",
     )
     args = parser.parse_args(argv)
-    load = network_loader if args.from_documents is None else documents_loader(args.from_documents.resolve())
+    roots = [path.resolve() for path in args.from_documents]
+    load = documents_loader(roots) if roots else network_loader
     root = args.root.resolve()
     entries = select(registry_entries(root), args.note, args.file)
     failures = 0
