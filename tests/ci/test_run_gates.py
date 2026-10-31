@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import patch
 
+import gate_inputs
 import pytest
 import run_gates
 
@@ -263,3 +264,54 @@ def test_numeric_stack_reports_the_selected_openblas_core() -> None:
 def test_numeric_stack_names_a_failed_probe() -> None:
     if not run_gates.numeric_stack("/nonexistent/python", dict(os.environ)).startswith("unavailable ("):
         raise AssertionError("a missing interpreter reports unavailable")
+
+
+def test_within_budget_takes_cheapest_first_and_names_the_rest() -> None:
+    gates = [
+        {"name": "slow", "seconds": 50.0, "cmd": "x"},
+        {"name": "fast", "seconds": 1.0, "cmd": "x"},
+        {"name": "mid", "seconds": 10.0, "cmd": "x"},
+    ]
+    selected, pending = run_gates.within_budget(gates, 12.0)
+    if [gate["name"] for gate in selected] != ["fast", "mid"]:
+        raise AssertionError(f"budget selected {[gate['name'] for gate in selected]}")
+    if [gate["name"] for gate in pending] != ["slow"]:
+        raise AssertionError(f"budget deferred {[gate['name'] for gate in pending]}")
+    selected, pending = run_gates.within_budget(gates, 0.5)
+    if selected or len(pending) != 3:
+        raise AssertionError("a budget below every gate defers every gate")
+
+
+def test_report_pending_writes_the_step_summary(tmp_path: Path) -> None:
+    summary = tmp_path / "summary.md"
+    with patch.dict(os.environ, {"GITHUB_STEP_SUMMARY": str(summary)}):
+        run_gates.report_pending([{"name": "slow", "seconds": 50.0, "cmd": "sleep 50"}])
+    text = summary.read_text()
+    if "PENDING slow" not in text or "1 reached gates pending" not in text:
+        raise AssertionError(text)
+
+
+def test_cited_gates_reads_every_claim(tmp_path: Path) -> None:
+    registry = tmp_path / "research_state.json"
+    registry.write_text(
+        json.dumps({"claims": [{"gates": {"core-1": {}, "core-2": {}}}, {"gates": {"core-2": {}}}, {}]})
+    )
+    if run_gates.cited_gates(registry) != {"core-1", "core-2"}:
+        raise AssertionError(run_gates.cited_gates(registry))
+
+
+def test_repository_claims_cite_existing_gates() -> None:
+    names = {gate["name"] for gate in run_gates.select(ROOT, "full")}
+    expanded = {gate["name"] for gate in gate_inputs.expand_cases(ROOT, run_gates.select(ROOT, "full"))}
+    missing = sorted(run_gates.cited_gates(ROOT / "docs/state/research_state.json") - names - expanded)
+    if missing:
+        raise AssertionError(f"claims cite gates the manifest lacks: {missing}")
+
+
+def test_audit_lane_gates_leave_the_pull_request_selection() -> None:
+    gates = json.loads((ROOT / "ci/gates.json").read_text())["gates"]
+    audit_only = [gate["name"] for gate in gates if gate.get("lane") == "audit"]
+    if "core-615" not in audit_only:
+        raise AssertionError("the behavioral suite gate carries lane audit")
+    if any(gate.get("lane") not in (None, "audit") for gate in gates):
+        raise AssertionError("lane takes only the value audit")

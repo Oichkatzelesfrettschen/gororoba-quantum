@@ -1,12 +1,14 @@
 name: ci
 
-# The audit: the nightly run executes every gate of both tiers with
-# --ledger-audit on main, and manual dispatch runs the same selection.
-# Pull-request acceptance is pr.yml. The event branches below keep their
-# pull_request and push forms for a later trigger.
+# The audit. The nightly schedule (Monday to Saturday) runs the gates some
+# claim of docs/state/research_state.json cites, with --ledger-audit on main:
+# a failure there qualifies a named claim. The weekly schedule (Sunday) and
+# manual dispatch run every gate of both tiers, the net for reads the tracer
+# cannot see. Pull-request acceptance is pr.yml.
 on:
   schedule:
-    - cron: "17 9 * * *"
+    - cron: "17 9 * * 1-6"
+    - cron: "17 9 * * 0"
   workflow_dispatch:
 
 concurrency:
@@ -108,6 +110,7 @@ jobs:
         run: >-
           "$PYTHON" ci/run_gates.py --tier full
           --shard ${{ matrix.shard }}/12
+          ${{ github.event.schedule == '17 9 * * 1-6' && '--cited-by docs/state/research_state.json' || '' }}
           ${{ needs.changes.outputs.limited == 'true' && format('--changed-files {0}/ci-selection/changed-files.bin', runner.temp) || '' }}
           --plan ${{ runner.temp }}/gate-plan.json --github-output "$GITHUB_OUTPUT"
       - name: Restore the recorded compiler runtime
@@ -143,11 +146,12 @@ jobs:
           key: gate-ledger-${{ github.sha }}
           restore-keys: gate-ledger-
       - name: Run shard
-        # Pull requests and pushes skip gates whose ledger key is unchanged;
-        # nightly and manual runs run every gate and audit the ledger.
+        # The nightly schedule runs the claim-cited gates; the weekly schedule
+        # and manual dispatch run every gate; all three audit the ledger.
         run: >-
           "$PYTHON" ci/run_gates.py
           --tier full
+          ${{ github.event.schedule == '17 9 * * 1-6' && '--cited-by docs/state/research_state.json' || '' }}
           ${{ needs.changes.outputs.limited == 'true' && format('--changed-files {0}/ci-selection/changed-files.bin', runner.temp) || '' }}
           ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && '--ledger-audit' || '--ledger' }} "$LEDGER"
           --ledger-out ${{ runner.temp }}/gate-ledger.json
@@ -386,7 +390,7 @@ jobs:
           "$PYTHON" -B -W error scripts/check_n21_conjugation_target.py
 
   external-ground-truth:
-    name: verify.py against open_gororoba
+    name: verify.py against gororoba-open
     runs-on: ubuntu-26.04
     timeout-minutes: 15
     env:
@@ -403,7 +407,7 @@ jobs:
             ci/requirements-replay.txt
       - name: Install pinned dependencies
         run: sh ci/install_pins.sh
-      - name: Fetch the pinned open_gororoba registry and proofs
+      - name: Fetch the pinned gororoba-open registry and proofs
         run: sh ci/fetch_open_gororoba.sh "$RUNNER_TEMP/open_gororoba" registry/data/project_csv proofs
       - name: Materialize the kernel CSVs from the registry records
         run: >-
@@ -468,7 +472,7 @@ jobs:
         run: |
           sh ci/install_rocq.sh > "$RUNNER_TEMP/opam_list.txt"
           cat "$RUNNER_TEMP/opam_list.txt"
-      - name: Fetch the pinned open_gororoba sources
+      - name: Fetch the pinned gororoba-open sources
         run: >-
           sh ci/fetch_open_gororoba.sh "$RUNNER_TEMP/open_gororoba"
           proofs
@@ -519,6 +523,10 @@ jobs:
       TITLE: Nightly audit failing
       RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       FAILED: ${{ join(needs.*.result, ' ') }}
+      # The Monday-to-Saturday schedule runs the claim-cited gates only, so its
+      # pass closes no issue: a failure the weekly exhaustive run found on an
+      # uncited gate stays open until an exhaustive run passes.
+      EXHAUSTIVE: ${{ github.event.schedule != '17 9 * * 1-6' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2, Node 24
@@ -537,9 +545,14 @@ jobs:
           case " $FAILED " in
           *" failure "* | *" cancelled "*) ;;
           *)
-            [ -z "$number" ] || gh api "repos/$GITHUB_REPOSITORY/issues/$number/comments" \
-              -f body="The scheduled audit run $RUN_URL passed every job." --silent
-            [ -z "$number" ] || gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/$number" -f state=closed --silent
+            if [ "$EXHAUSTIVE" = true ]; then
+              [ -z "$number" ] || gh api "repos/$GITHUB_REPOSITORY/issues/$number/comments" \
+                -f body="The exhaustive audit run $RUN_URL passed every job." --silent
+              [ -z "$number" ] || gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/$number" -f state=closed --silent
+            else
+              [ -z "$number" ] || gh api "repos/$GITHUB_REPOSITORY/issues/$number/comments" \
+                -f body="The nightly run $RUN_URL passed every claim-cited gate; the issue stays open until an exhaustive (Sunday or dispatched) run passes." --silent
+            fi
             exit 0
             ;;
           esac

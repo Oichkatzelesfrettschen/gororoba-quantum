@@ -374,6 +374,6 @@ has shown the two agree.
   a direction along which the residual vanishes to high order passes
   uncorrected; such a test needs a scale where that order exceeds the
   tolerance, or extended precision.
-- Run ruff and mypy through `ci/pinned_tool.py` on every touched Python file, and mypy over gate core-039's scope when a change alters a signature another module imports.
+- Run ruff and mypy through `ci/pinned_tool.py` on every touched Python file, and mypy over the `types` lane's scope (`sh ci/pr_checks.sh types`) when a change alters a signature another module imports.
 - Record the versions a result depends on inside the result.
 - Mock outcomes (`--native-dry-run`) never enter an analysis or a figure.

@@ -25,6 +25,7 @@ from typing import Any
 from qiskit import QuantumCircuit, qpy
 
 import law_encoding
+import run_archive
 from diagnostic_experiments import MSQ_PRECISION, state_prep_arms
 
 CASE_FILENAME = "UNAPPROVED_CASE.md"
@@ -962,7 +963,7 @@ def _case_inputs(run_dir: Path, record: dict[str, Any]) -> tuple[dict[str, Any],
         contract_names == [item["name"] for item in candidate["observables"]],
         "endpoint contracts differ from selection",
     )
-    archive_bytes = (run_dir / "isa.qpy").read_bytes()
+    archive_bytes = run_archive.read_archive(run_dir)
     circuits = qpy.load(io.BytesIO(archive_bytes))
     _require(
         [circuit.name for circuit in circuits] == [pub["name"] for pub in record["execution_pubs"]],
@@ -2383,6 +2384,7 @@ def _render(
     record_digest: str,
     qpy_digest: str,
     native_lines: list[str] | None = None,
+    archive_link: str = "isa.qpy",
 ) -> str:
     family = record["family_configuration"]["name"]
     source = record["code_commit"]
@@ -2409,7 +2411,7 @@ def _render(
         "",
         f"- Saved run: `{location.as_posix()}`.",
         f"- [record.json](record.json) SHA-256: `{record_digest}`.",
-        f"- [isa.qpy](isa.qpy) SHA-256: `{qpy_digest}`.",
+        f"- [{archive_link}]({archive_link}) SHA-256: `{qpy_digest}`.",
         f"- Experiment source digest: `{record['experiment_digest']}`.",
         f"- Source commit: `{head}`; sources_modified=`{str(source['sources_modified']).lower()}`.",
         f"- Simulator seed: `{_count(record['seed_simulator'], 'simulator seed')}`; "
@@ -2660,6 +2662,7 @@ def write_case(run_dir: Path, record: dict[str, Any]) -> Path | None:
         record_digest,
         qpy_digest,
         _native_qualification(run_dir, record_digest, qpy_digest, family=family),
+        run_archive.archive_link(run_dir),
     )
     destination = run_dir / CASE_FILENAME
     temporary: Path | None = None
@@ -2686,7 +2689,7 @@ def _write_actor_case(run_dir: Path, record: dict[str, Any]) -> Path | None:
         return None
     record_bytes = (run_dir / "record.json").read_bytes()
     _require(json.loads(record_bytes) == record, "supplied actor record differs from retained record")
-    archive = (run_dir / "isa.qpy").read_bytes()
+    archive = run_archive.read_archive(run_dir)
     readout_actor_family.verify_archive(record, archive)
     case = record["family_configuration"]["case"]
     case_bytes = (run_dir / "actor-case.json").read_bytes()
@@ -3097,7 +3100,10 @@ def _verify() -> None:
             (run_dir / "record.json").write_text(json.dumps(value, indent=2) + "\n")
 
         retain(record)
-        originals = {name: (run_dir / name).read_bytes() for name in ("record.json", "isa.qpy")}
+        originals = {
+            "record.json": (run_dir / "record.json").read_bytes(),
+            "isa.qpy": run_archive.read_archive(run_dir),
+        }
         destination = write_case(run_dir, record)
         if destination is None:
             raise AssertionError
@@ -3435,7 +3441,7 @@ def main(argv: list[str] | None = None) -> int:
         import live_run
         import readout_actor_family
 
-        archive = (args.run_dir / "isa.qpy").read_bytes()
+        archive = run_archive.read_archive(args.run_dir)
         readout_actor_family.verify_archive(record, archive)
         mismatches = live_run.approved_record_mismatches(
             args.reviewed_record, record, hashlib.sha256(archive).hexdigest(), args.reviewed_sha256

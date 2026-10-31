@@ -1,0 +1,214 @@
+# Codex review: operating rules decomposed to first principles (2026-10-30)
+
+The Codex CLI (`gpt-daybreak-blue-latest`, medium reasoning, read-only sandbox) read the brief and the checkout at `a1f403fd7` and returned this report. Every `file:line` claim the design document adopts was re-read in the tree first.
+
+---
+
+# First-principles decomposition of the repository operating rules
+
+## Conclusion
+
+The minimal contract is much smaller than either the 534-line current guide or the proposed 203-line guide. The guide should retain only boundaries whose violation can spend money, disclose secrets or unpublished work, destroy irreplaceable evidence, corrupt another worker’s acquisition, or turn an unsupported scientific interpretation into a repository claim. Programs, schemas, branch protection, and focused checks should own repeatable procedure. Runbooks should own commands and changing provider facts.
+
+The four pull-request jobs have a concise purpose: `lint` rejects style and static defects, `types` rejects type-contract defects, `tests` rejects ordinary behavioral regressions, and `gates` rejects inexpensive evidence or replay contracts reached by the changed head. The workflow implements those four lanes independently and cancels a superseded run (`.github/workflows/pr.yml:15-17`, `.github/workflows/pr.yml:23-76`); the dispatcher defines their exact commands (`ci/pr_checks.sh:57-106`). The measured record supports keeping this admission layer: tests failed 13 of the last 100 runs and affected gates failed 9, while the whole workflow took about five minutes (`docs/local/rules-decomposition/brief.md:39-45`).
+
+The nightly’s repeated computation serves a different purpose. `--ledger-audit` executes gates even when the ledger predicts a safe skip, so the audit can detect an untraced input or a time-dependent read; the guide explicitly says that this bounds a missed read to one day (`ci/AGENTS.md:461-485`). Environment caches avoid rebuilding dependencies, but they do not reuse scientific verdicts (`.github/workflows/ci.yml:74-136`). The purpose is legitimate and answered an observed incident in which a nightly found three drifted bindings (`docs/local/rules-decomposition/brief.md:53-55`). Exhaustively replaying all 633 gates every night is not required to preserve that purpose. The current audit runs twelve full-tier shards with `--ledger-audit` (`.github/workflows/ci.yml:43-57`, `.github/workflows/ci.yml:145-172`), although 12 of 16 current red gates protect no cited claim and eight of nine recent nightlies failed (`docs/local/rules-decomposition/brief.md:42-45`). The replacement should run claim-cited, immutable-evidence, supported-runtime, and rotating ledger-sentinel gates nightly; it should run the remaining exhaustive inventory weekly or on manual dispatch.
+
+## Reading the inventory
+
+The table treats each independently actionable statement in the proposed guide as one rule. “Observed” names an incident or measurement in the brief; “precautionary” means the supplied record names no occurrence. Mechanism values are `yes`, `partial`, or `no`. Derivability means a cold reader can recover the rule from code, configuration, a test, or a linked runbook without loading the root guide.
+
+Cost uses five surfaces: `A` agent context, `C` CI or local compute, `H` human review, `P` provider/API activity, and `B` repository bytes. `Low`, `medium`, and `high` are comparative where the brief gives no measurement. The measured anchors are about five minutes per pull-request workflow; 504 measured gate-minutes across the two tiers; 312 review requests for 60 merged pull requests; and 277 MB of identical `isa.qpy` copies (`docs/local/rules-decomposition/brief.md:39-50`). “Leave F<n>” refers to the falsifier catalogue after the table.
+
+### Layout, execution, and gates
+
+| # | Rule | Failure prevented | Evidence status | Mechanism / derivable | Cost | Disposition |
+|---:|---|---|---|---|---|---|
+| 1 | Modules run as scripts; the tree is not an installable package (`AGENTS.md:9-14`). | Wrong invocation or packaging assumption. | Precautionary. | Yes: launcher/layout; derivable. | A low. | Leave F1. |
+| 2 | Four green pull-request jobs admit a merge; local exhaustive replay is unnecessary (`AGENTS.md:27-41`). | Merge of a head that fails an admission contract; wasted local replay. | Observed: 22 failures in 100 runs (`docs/local/rules-decomposition/brief.md:41-45`). | Yes: workflow plus branch protection; derivable. | C about 5 min/PR. | Keep only “four green checks” because the brief makes it a hard constraint; leave procedure F1. |
+| 3 | Touched Python passes pinned Ruff format/check and mypy before push (`AGENTS.md:43-52`). | Style, warning, or type drift. | Precautionary; lint/types had zero failures in the sample (`docs/local/rules-decomposition/brief.md:41-42`). | Yes: CI; derivable. | H/C local repetition, low to medium. | Replace with CI and optional pre-push hook; F2. |
+| 4 | Python uses the static-TLS tunable (`AGENTS.md:69-71`). | Qiskit/Aer loader failure. | Precautionary in supplied data. | Yes: launchers export it (`ci/pr_checks.sh:44-50`); derivable. | A low; C none. | Leave F1. |
+| 5 | Independent CPU work uses `parallel.py` (`AGENTS.md:57-60`). | Excessive runtime and inconsistent resource control. | Precautionary. | Partial: structural review plus performance tests; derivable pattern. | A/H medium; C saved when correct. | Move to engineering standard; F3. |
+| 6 | Seeded inputs are drawn before parallel mapping (`AGENTS.md:59-61`). | Serial/parallel byte divergence. | Precautionary. | Yes: equivalence test; derivable. | C low. | Replace with test; F2. |
+| 7 | Batched estimators preserve scalar arithmetic bits (`AGENTS.md:61-67`). | Optimized estimator changes retained results. | Precautionary. | Yes: scalar-equivalence gate; derivable. | C gate cost; A medium. | Replace with test/gate; F2. |
+| 8 | Cost- or correctness-sensitive flags require runbook review and a measured row (`AGENTS.md:19-25`). | Runaway memory/time or scientifically different solver behavior. | Precautionary. | Partial: wrapper can require a resource manifest; judgment remains. | H medium; C saved; A medium. | Keep one resource-boundary sentence; move procedure; F4. |
+| 9 | Mock timing outcomes never enter science or measured plots (`AGENTS.md:67-69`). | False empirical claim from synthetic data. | Precautionary. | Partial: provenance tags and sink checks. | A low; H low. | Keep until end-to-end provenance enforcement passes F5. |
+| 10 | Every change to `live_run.py` or `experiments.py` gets a live dry run (`AGENTS.md:71-73`). | Broken run construction reaches submission. | Measured cost, no prevented incident supplied. | Yes: path-triggered constructor/schema tests can replace it. | B 277 MB; 351 dirs/20 days; provider reads may occur (`docs/local/rules-decomposition/brief.md:46-48`). | Remove; replace with one retained fixture per semantic output change; F6. |
+| 11 | Proof/replay-input changes get a pinned Rocq replay (`AGENTS.md:73-75`, `AGENTS.md:126-129`). | Proof receipt no longer replays. | Precautionary. | Yes: path-triggered workflow; derivable. | C up to the workflow’s 60-min job bound (`.github/workflows/ci.yml:446-492`). | Replace with workflow; F2. |
+
+### Seeds
+
+| # | Rule | Failure prevented | Evidence status | Mechanism / derivable | Cost | Disposition |
+|---:|---|---|---|---|---|---|
+| 12 | Every new seed comes from a quantum random-number generator (`AGENTS.md:77-83`). | Unrecorded or retrospectively selected randomness. | Precautionary; enforced today (`docs/local/rules-decomposition/brief.md:51-52`). | Yes: allocation ledger and checker. | P one QRNG read per allocation batch; A/H medium. | Keep the provenance outcome, remove source ritual; F7. |
+| 13 | ANU is first; fallback order, quotas, keys, and approval live in the QRNG guide (`AGENTS.md:80-83`). | Unauthorized or exhausted source use. | Precautionary. | Yes: draw tool/provider configuration; derivable. | P low; A medium. | Leave F1. |
+| 14 | Code/case cites draw and index in order, once each (`AGENTS.md:84-85`). | Seed reuse or irreproducible origin. | Precautionary. | Yes: allocation schema/check. | H low; C low. | Replace with checker; F2. |
+| 15 | A retained-record, approved-plan, or mesh reproduction keeps its seed (`AGENTS.md:85-87`). | Replay identity silently changes. | Precautionary. | Partial: digest comparison detects change; intent still matters. | H low. | Keep concise identity boundary. |
+| 16 | Seed identity follows the scientific question; independent work gets a new draw (`AGENTS.md:88-91`). | Pseudoreplication presented as an independent replicate. | Precautionary. | Partial: case schema can declare `reproduction` or `independent`. | H medium; P low. | Keep until case schema enforces the distinction; F5. |
+| 17 | CLI seeds pass through `qrng_seeds.add_seed_argument` (`AGENTS.md:98-103`). | Arbitrary unprovenanced runtime seed. | Precautionary. | Yes: helper rejects it; derivable. | A low. | Leave F1. |
+| 18 | `ci/seed_provenance.py` enforces literals, allocations, reservations, and retained rows (`AGENTS.md:92-103`). | Ledger drift or unregistered seed. | Precautionary. | Yes; check itself is the rule. | C part of tests; A high documentation load. | Leave F1. |
+
+### Scientific grounding and algebra
+
+| # | Rule | Failure prevented | Evidence status | Mechanism / derivable | Cost | Disposition |
+|---:|---|---|---|---|---|---|
+| 19 | Hardware, timing, algebra, and invariants come from registered artifacts, never guesses (`AGENTS.md:170-175`, `AGENTS.md:210-212`). | False design or claim built on an invented fact. | Precautionary. | Partial: tests validate known mappings; universal judgment remains. | H/A medium. | Keep as scientific boundary. |
+| 20 | Heron notes, target snapshots, papers, proofs, and `cd_core.py` are authorities (`AGENTS.md:177-208`). | Wrong source selection. | Precautionary. | Yes: repository map and imports; derivable. | A high. | Replace with a short pointer; F1. |
+| 21 | `a -> L_a` is linear, not an algebra homomorphism (`AGENTS.md:219`). | Invalid algebraic inference. | Precautionary. | Yes: algebra docs/tests; derivable. | A low per rule, cumulative high. | Leave F1. |
+| 22 | `|0>` is `e_0 = 1`; a zero product is a zero-probability branch (`AGENTS.md:220-221`). | Confusing identity, zero vector, and heralded branch. | Precautionary. | Yes: domain docs/tests. | A low. | Leave F1. |
+| 23 | Algebra bit `b` maps to qubit `b`, little-endian (`AGENTS.md:222-223`). | Reversed observable/encoding. | Precautionary. | Yes: constructor and tests. | C low. | Replace with test; F2. |
+| 24 | Sign kickback uses `|->`; `|0>` records a path label (`AGENTS.md:224-225`). | Circuit measures the wrong semantics. | Precautionary. | Yes: constructor and mutation test. | C low. | Replace with test; F2. |
+| 25 | Zero-divisor pairs use `cd_core`; foreign packages need a complete declared basis map (`AGENTS.md:226-229`). | Convention mismatch promotes a false algebra result. | Precautionary. | Yes: validator over every basis pair. | C finite; H low. | Replace detail with validator; retain “registered algebra authority”; F2. |
+| 26 | Hardware algebra probes require mutation, `+,-,-,+` arms, and a null decision (`AGENTS.md:230-233`). | Hardware noise is mistaken for the algebraic property. | Precautionary. | Partial: case schema and ideal mutation check; interpretation remains. | H/C medium; P hardware time. | Keep scientific validity boundary until complete validator exists; F5. |
+| 27 | Named IBM backends are Heron r2; live Target controls timing; enumerate before selection (`AGENTS.md:234-237`). | Stale topology/timing or unavailable-backend assumption. | Precautionary. | Yes: live discovery and target validation. | P provider reads; A high and drift-prone. | Remove static inventory; F8. |
+| 28 | Pulse control is unavailable; designs use exposed gates/dynamic circuits (`AGENTS.md:238-239`). | Design relies on unsupported control. | Precautionary. | Yes: provider capability discovery/runbook. | A low but drift-prone. | Leave F8. |
+| 29 | Exact algebra replay uses the recorded global-order method (`AGENTS.md:131-140`). | Runaway local computation or wrong local invariant. | Observed performance limitation is recorded in the guide, not as an incident in the brief. | Yes: runbook and replay script. | C potentially very high; A medium. | Move entirely to runbook; F4. |
+
+### Provider spending, routing, and calibration
+
+| # | Rule | Failure prevented | Evidence status | Mechanism / derivable | Cost | Disposition |
+|---:|---|---|---|---|---|---|
+| 30 | IBM quota is 600 seconds over a rolling 28 days (`AGENTS.md:252-254`). | Accidental exhaustion from a reset-date assumption. | Precautionary. | Yes: live quota display and admission check. | P one status read; A drift-prone. | Leave F8. |
+| 31 | Default/backup instances have separate quotas; account selection stays fixed through dry run, submit, collect (`AGENTS.md:255-261`). | Cross-instance approval or retention mismatch. | Observed: two sessions blocked retention (`docs/local/rules-decomposition/brief.md:53-55`). | Yes: bind instance hash in records and lock by case. | H saved; P none extra. | Replace detail with binding/lock check; keep “approval binds execution identity”; F9. |
+| 32 | Routing uses Kaggle at 14 qubits or fewer, case choice at 15, IBM at 16+ or for device questions (`AGENTS.md:262-269`). | Spend scarce hardware on a simulable question or choose an incapable simulator. | Precautionary. | Partial: dispatcher can enforce size; scientific exception needs a case. | H medium; P potentially high. | Move thresholds to routing policy data; keep “case justifies substrate”; F8. |
+| 33 | Every IBM submit has a written question, simulation insufficiency, and seconds estimate (`AGENTS.md:270-272`). | Unapproved spending and uninterpretable acquisition. | Hard constraint; no spend incident supplied. | Partial: approval record plus deny-by-default wrapper. | H medium per case; protects P. | Keep. |
+| 34 | Dry run and submit execute through `approved_run.sh` with bound digest and ceiling (`AGENTS.md:272-285`). | Approved plan differs from submitted payload. | Precautionary. | Yes: wrapper; derivable. | C/P planning reads; A high. | Replace prose with mandatory entry point; F2. |
+| 35 | A mismatch writes `approval_required`; first batch consumes approval (`AGENTS.md:278-284`). | Reuse or mutation of approval. | Precautionary. | Yes: state machine and tests. | C low. | Leave F1. |
+| 36 | Submission fetches fresh Target/properties and never drives from cached calibration (`AGENTS.md:286-289`). | Submission based on stale device state. | Precautionary. | Yes: implementation/test invariant. | P calibration reads per plan. | Replace with test; F2. |
+| 37 | Reads, transpilation, local simulation, retrieval, and raw preservation need no approval (`AGENTS.md:289-290`). | Approval ceremony blocks harmless evidence work. | Precautionary. | Yes: permission matrix in harness. | H saved; P reads remain. | Encode in harness; retain only the positive submission boundary; F10. |
+| 38 | Detailed binding mechanics live in the QPU-submission note (`AGENTS.md:291-294`). | Operator misses procedure. | Precautionary. | Already derivable. | A low. | Leave F1. |
+
+### Other providers and secrets
+
+| # | Rule | Failure prevented | Evidence status | Mechanism / derivable | Cost | Disposition |
+|---:|---|---|---|---|---|---|
+| 39 | Every provider job, upload, provider QRNG read, booking, and notebook session requires a written case (`AGENTS.md:327-330`). | Unapproved spend, publication, quota use, or uninterpretable result. | Partial observation: a shared-token job was cancelled, not unapproved submission (`docs/local/rules-decomposition/brief.md:53-55`). | Partial: permission harness and case schema. | H high if applied to free mocks/reads; P protected. | Narrow text to hardware, paid execution, publication, and scarce bookings; encode service-specific additions; F10. |
+| 40 | Quantum Inspire batches retain pause/queue limits (`AGENTS.md:330-331`). | Queue monopolization or collision. | Precautionary. | Yes: provider runner. | P/H low. | Move to provider mechanism; F8. |
+| 41 | Open Quantum upload is public; unpublished methods stay off it (`AGENTS.md:331-333`). | Irreversible disclosure. | Precautionary. | Partial: explicit publication acknowledgement and classifier. | H low; consequence high. | Keep concise disclosure boundary. |
+| 42 | Queue visibility grants no authority to cancel another worker’s job (`AGENTS.md:298-301`). | Destruction of another session’s acquisition. | Observed Quandela cancellation (`docs/local/rules-decomposition/brief.md:53-55`). | Yes: deny cancellation unless case owns job ID. | H low; protects P/data. | Keep until permission deny is complete, then keep short ownership boundary. |
+| 43 | Provider guides own changing environments, keys, limits, and procedures (`AGENTS.md:303-325`). | Stale or misplaced provider setup. | Precautionary. | Yes; guide map is derivable. | A high. | Replace with one index link; F1. |
+| 44 | Tokens and keys stay outside checkout, commit, log, and memory (`AGENTS.md:303-306`). | Secret disclosure. | Hard constraint; supplied data names no leak. | Partial: secret scan/redaction; memory/log review remains. | C/H low. | Keep. |
+| 45 | Free approved exceptions and local simulation bypass provider approval (`AGENTS.md:80-83`, `AGENTS.md:289-290`). | Harmless local/read work stalls behind approval. | Precautionary. | Yes: permission matrix. | H saved. | Encode exceptions; F10. |
+
+### Qiskit runtime compatibility
+
+| # | Rule | Failure prevented | Evidence status | Mechanism / derivable | Cost | Disposition |
+|---:|---|---|---|---|---|---|
+| 46 | Run the migration skill for runtime API or pin changes and monthly updates (`AGENTS.md:359-365`). | Client uses removed or invented API. | Precautionary. | Yes for path/pin triggers; monthly task belongs in maintenance. | H/A medium. | Replace with compatibility tests and a path-triggered checklist; F11. |
+| 47 | The skill targets the client-side Sampler and rejects undocumented paths (`AGENTS.md:367-370`). | Unsupported runtime call. | Observed only as prior audit result, not incident. | Yes: skill and runtime test; derivable. | A medium. | Leave F1. |
+| 48 | Dynamic circuits split jobs and disable incompatible twirling/decoupling (`AGENTS.md:372-378`). | Provider/runtime rejection or scientifically altered circuit. | Observed by local verification cited in guide. | Yes: dispatcher and compatibility test. | C low. | Replace with test; F2. |
+
+### Records and source custody
+
+| # | Rule | Failure prevented | Evidence status | Mechanism / derivable | Cost | Disposition |
+|---:|---|---|---|---|---|---|
+| 49 | Raw bytes are written before analysis, never rewritten; later analyses get digest-named files (`AGENTS.md:486-495`). | Irrecoverable data loss or silent reinterpretation. | Hard constraint. | Yes: create-exclusive/append-only writes and digest check. | B grows intentionally; H low. | Keep immutable-evidence boundary and mechanize. |
+| 50 | Every retained acquisition enters research state with a citing claim and refreshed ledger/inventory (`AGENTS.md:496-504`). | Orphan result or claim without retained evidence. | Observed multi-session friction, not missing claim (`docs/local/rules-decomposition/brief.md:53-55`). | Yes: registry closure check. | H/C medium. | Replace detailed prose with closure check; retain claim/evidence boundary; F2. |
+| 51 | Shared ledgers distinguish retained, declared, and concurrently unretained jobs (`AGENTS.md:504-514`). | One session blocks or misattributes another’s acquisition. | Observed (`docs/local/rules-decomposition/brief.md:53-55`). | Yes: schema/checker. | A high; H saved. | Leave implementation detail F1. |
+| 52 | Records carry backend/system identity while old records remain accepted (`AGENTS.md:515-526`). | Result cannot be interpreted or old evidence becomes unreadable. | Precautionary. | Yes: schema and compatibility tests. | B low; A medium. | Leave F1. |
+| 53 | IBM instance identity is only a 12-hex CRN hash (`AGENTS.md:527`). | Account identifier disclosure. | Hard constraint. | Yes: schema validator. | C low. | Replace detail with secret/identifier check; F2. |
+| 54 | Tokens, identifiers, and absolute local paths stay out of commits (`AGENTS.md:528-531`). | Secret/privacy leak and nonportable record. | Hard constraint. | Partial: scanner and schema. | C low. | Keep concise boundary; remove duplicate wording. |
+| 55 | Credentials live in the account store; credential/ID/CRN/email are sensitive (`AGENTS.md:528-531`). | Secret disclosure. | Precautionary. | Yes for storage path and scanner taxonomy. | A medium. | Move taxonomy to scanner/config and provider guide; F12. |
+| 56 | Public GitHub/Kaggle handles remain in records for resolution (`AGENTS.md:531-534`). | Status/collect cannot locate published work. | Precautionary. | Yes: schema/consumer tests. | B trivial. | Leave F1. |
+| 57 | Redistribution-excluded sources live only in the private documents repository (`AGENTS.md:116-123`). | Copyright/licence breach. | Precautionary. | Yes: source registry and tracked-file admission check. | H/B low. | Keep concise source-custody boundary; mechanize; F12. |
+
+### Documents and planning
+
+| # | Rule | Failure prevented | Evidence status | Mechanism / derivable | Cost | Disposition |
+|---:|---|---|---|---|---|---|
+| 58 | Read the document map before writing (`AGENTS.md:142-145`). | Duplicate or misplaced documentation. | Precautionary. | Yes: map and contribution tooling; derivable. | A/H medium. | Leave F1. |
+| 59 | Extend the canonical fact; link rather than duplicate (`AGENTS.md:147-149`). | Conflicting truths drift apart. | Precautionary. | Partial: duplicate/link checks cannot infer semantic identity. | H medium. | Move to documentation guide; F13. |
+| 60 | Document kinds have prescribed directories; scratch is ignored (`AGENTS.md:150-156`). | Unnavigable tree or accidental scratch commit. | Precautionary. | Yes: linter and `.gitignore`; derivable. | A medium. | Replace with linter/map; F2. |
+| 61 | New documents get a map row or inbound link; links must resolve (`AGENTS.md:157-158`). | Orphan or broken documentation. | Precautionary. | Yes: link/reachability check. | C low. | Replace with check; F2. |
+| 62 | Durable names are mechanism-first and dates/phases stay in archive (`AGENTS.md:159-160`). | Artifacts require a private glossary. | Precautionary. | Partial: filename lint; prose review. | H/A medium. | Move to naming lint/documentation guide; F13. |
+| 63 | Digest-bound files retain bytes/path; correction is a new linked artifact (`AGENTS.md:161-163`). | Evidence tampering or lost provenance. | Hard constraint. | Yes: digest admission check. | B grows intentionally. | Keep once, remove duplicates. |
+| 64 | Moves update references, ledgers, and gates; scratch stays local (`AGENTS.md:164-165`). | Broken links or evidence bindings. | Precautionary. | Yes: outcome checks; `git mv` wording is unnecessary. | H/C low. | Replace with checks; F2. |
+| 65 | JSON plans own status and pass `plan_tracker.py check` (`AGENTS.md:105-112`). | Agents collide or obligations disappear. | Precautionary; 141 records with 74 inbox items show high inventory, not demonstrated closure (`docs/local/rules-decomposition/brief.md:49-50`). | Partial: schema validates records but cannot make planning useful. | A/H high. | Require a plan only for shared, provider, or multi-session work; archive stale inbox; F14. |
+| 66 | Root guide contains only non-derivable rules; procedures live elsewhere (`AGENTS.md:166-168`). | Context crowding and duplicate procedure. | Measured: 1,435 instruction lines/session before runbooks (`docs/local/rules-decomposition/brief.md:49-50`). | Editorial check can enforce size/links. | A very high today. | Keep as maintenance invariant. |
+
+### Reviews and merges
+
+| # | Rule | Failure prevented | Evidence status | Mechanism / derivable | Cost | Disposition |
+|---:|---|---|---|---|---|---|
+| 67 | Codex is the only hosted reviewer; request on open and after pushes; exclude billed Copilot (`AGENTS.md:382-389`). | Unreviewed merge or unintended billing. | Hard reviewer constraint; request cadence is measured. | Partial: reviewer identity/current-head check. | 312 requests/60 PRs; 91 requests on 29 thread-free PRs (`docs/local/rules-decomposition/brief.md:39-40`). | Keep reviewer identity; request only merge-candidate heads and fix heads; F15. |
+| 68 | Status accepts stable identities, current-head evidence, and a stable snapshot (`AGENTS.md:391-407`). | Stale or forged clean signal. | Precautionary. | Yes: status script; derivable. | API reads, A high. | Leave F1. |
+| 69 | Waiter retries one dropped request after 600 seconds and uses current open threads (`AGENTS.md:409-419`). | Permanent stall after dropped review. | Observed one-in-seven drop (`docs/local/rules-decomposition/brief.md:53-55`). | Yes: waiter retries once (`scripts/codex_review_wait.sh:61-90`). | At least one poll every 90 s (`scripts/codex_review_wait.sh:97-108`). | Keep mechanism; remove prose detail; F12. |
+| 70 | Reachable defects are fixed, false findings are source-refuted, and out-of-domain findings are bounded/tracked (`AGENTS.md:420-425`). | Valid defect ignored or invalid review expands scope silently. | Observed: 110 fixes and 7 refutations (`docs/local/rules-decomposition/brief.md:39-40`). | Partial: resolver checks reply shape; triage requires judgment. | H material. | Keep one triage boundary. |
+| 71 | Replies use `Fixed in`, `Refuted:`, or `Boundary:`; only answered threads resolve (`AGENTS.md:429-439`). | Finding disappears without accountable disposition. | Precautionary. | Yes: resolver script; derivable. | H low per thread. | Replace prose with resolver command; F2. |
+| 72 | Repeat until current head is clean and threads resolved (`AGENTS.md:440-442`). | Older clean review authorizes newer code. | Precautionary. | Yes: status tool plus merge gate. | Review/API high. | Keep outcome, remove loop narrative; F15. |
+| 73 | Stacked fixes land on lowest owning branch; merge upward; force-push is denied (`AGENTS.md:444-451`). | Fix disappears from lower branch or history is rewritten. | Precautionary; force-push deny is a hard constraint. | Partial: stack metadata/automation; denial is mechanical. | H medium. | Move transaction to stack tool/runbook; F9. |
+| 74 | Merge requires closure, whole-diff human review, final Codex, four green jobs, and clean mergeability (`AGENTS.md:453-464`). | Unreviewed or failing head merges. | Precautionary; checks catch failures. | Partial: all except human comprehension are mechanical. | H/review high. | Keep current-head Codex plus four green checks; collapse duplicate review rounds; F15. |
+| 75 | Merge commit, bottom-up stack order, and retarget-before-delete (`AGENTS.md:466-475`). | Dependent PR closes or reviewed history is lost. | Precautionary. | Yes: transactional merge script; derivable. | H medium. | Automate; remove from root guide; F9. |
+| 76 | GitHub uses REST except GraphQL review-thread operations (`AGENTS.md:477-480`). | Tool chooses an unsupported API. | Precautionary. | Yes: scripts; derivable. | A low. | Leave F1. |
+
+## Minimal operating contract
+
+### Text boundaries, ordered by what they protect
+
+1. **People, money, and scarce external resources.** Hardware execution, paid execution, public upload, and scarce timeslot booking require a written owner approval bound to the exact provider, execution identity, payload digest, shots, and ceiling. The harness denies any unbound submission. Queue visibility grants authority to observe, never to cancel a job owned by another case. The brief requires owner approval for hardware and paid-provider submission (`docs/local/rules-decomposition/brief.md:30-35`), and the recorded cancellation incident justifies the ownership sentence (`docs/local/rules-decomposition/brief.md:53-55`).
+2. **Secrets and private work.** Tokens and account identifiers never enter commits, retained logs, or agent memory. A provider operation that publishes input or output requires an explicit publication acknowledgement. Redistribution-excluded sources remain outside the public tree (`AGENTS.md:303-306`, `AGENTS.md:331-333`, `AGENTS.md:116-123`).
+3. **Irreplaceable evidence.** Digest-bound or ledger-bound bytes are immutable. Collection writes raw data before analysis; corrections and reinterpretations create new digest-addressed artifacts (`AGENTS.md:486-495`).
+4. **Shared work.** A case owns its submission and cancellation authority. Approval binds the provider instance and execution identity across planning, submission, and collection. Shared ledgers represent concurrent unretained work rather than requiring one session to absorb another’s acquisition (`AGENTS.md:255-261`, `AGENTS.md:504-514`).
+5. **Scientific claim integrity.** A repository claim cites retained evidence and its validating check. Mock outputs never support measured claims. Hardware, timing, algebra, and invariants come from registered sources. Independent and reproduction seeds are distinguished by scientific question (`AGENTS.md:67-69`, `AGENTS.md:170-175`, `AGENTS.md:85-91`).
+6. **Experiment validity.** Each paid/hardware case states the question, why simulation cannot answer it, the substrate, expected resource use, and a falsifier. Algebra-on-hardware claims require a mutation and null control until a complete case validator enforces them (`AGENTS.md:230-233`, `AGENTS.md:270-285`).
+7. **Merge admission.** The current head requires the four green branch-protection checks, a current-head Codex clean signal, and accountable disposition of every review thread. Codex remains the only hosted reviewer (`docs/local/rules-decomposition/brief.md:30-35`, `AGENTS.md:391-407`).
+8. **Resource safety.** Long or option-sensitive computation declares bounds and records the flags and tool version that determine correctness. The command wrapper, rather than guide prose, enforces the declaration (`AGENTS.md:19-25`).
+
+### Checks and mechanisms replacing text
+
+- Make the provider harness deny submission, upload, booking, or cancellation unless an approval record names the operation, owner/case, provider identity hash, payload digest, resource ceiling, and publication state. Bind instance identity across dry run, submit, and collect. The existing approved-run state machine already rejects a changed plan and consumes approval (`AGENTS.md:272-285`).
+- Add ownership to every provider job record and deny cancellation when the case does not own the job. This directly answers the observed shared-token cancellation (`docs/local/rules-decomposition/brief.md:53-55`).
+- Make raw/evidence writers create-exclusive and make CI compare every bound path against its digest. Keep a correction as a new object and link it from the superseded record (`AGENTS.md:486-495`).
+- Keep seed provenance in the ledger checker, but replace prose routing with a typed case field: `reproduction`, `independent`, or `deterministic-identifier`. Reject a mismatch between that field and allocation lineage (`AGENTS.md:85-103`).
+- Attach provenance class (`mock`, `simulated`, `provider`) to result records and reject claim/plot manifests that consume `mock` as measured evidence (`AGENTS.md:67-69`).
+- Put algebra endianness, sign-register preparation, `cd_core` basis agreement, and dynamic-circuit job separation into focused mutation/compatibility tests (`AGENTS.md:219-239`, `AGENTS.md:372-378`).
+- Replace unconditional live dry-run directories with an in-memory or temporary-directory constructor test on every relevant pull request. Retain one deduplicated `isa.qpy` only when a semantic artifact changes, addressed by digest. The unconditional rule generated the measured directory and byte growth (`docs/local/rules-decomposition/brief.md:46-48`).
+- Keep `pr.yml` as the admission workflow. It already scopes pytest away from audit tests and runs affected gates through the common dispatcher (`.github/workflows/pr.yml:48-71`, `.github/workflows/pr.yml:73-123`).
+- Classify every gate as at least one of: `claim`, `immutable-binding`, `supported-runtime`, `ledger-sentinel`, or `exploratory`. Require a current claim ID for `claim`; require a bound path for `immutable-binding`; require an advertised environment for `supported-runtime`. Archive an exploratory gate that has neither an owner nor a review date.
+- Run all claim, binding, and runtime gates when their inputs change. Nightly, rerun those gates plus time-sensitive gates and a rotating, stratified ledger-sentinel sample. Weekly or manually, run all 633 gates with `--ledger-audit`. Preserve failure timing records and the merged ledger (`.github/workflows/ci.yml:145-218`).
+- Keep dedicated Quantum Inspire, Singular, external-ground-truth, and Rocq environments only for gates whose declared requirements reach them. The workflow already separates those toolchains (`.github/workflows/ci.yml:220-359`, `.github/workflows/ci.yml:388-503`).
+- Simplify review requests: request Codex when a head is a merge candidate and again after a finding-fix push. Keep the single timed retry in `codex_review_wait.sh`; its status acceptance already binds completion to the current head and stable snapshot (`scripts/codex_review_wait.sh:47-90`). Let branch protection wait for green checks; use the waiter for review completion rather than polling all checks on every cycle.
+- Put thread-marker semantics in `resolve_answered_threads.sh`, merge-stack order in a transactional script, document placement in a linter, and changing provider inventory in live discovery/provider notes. Root prose should point to each mechanism once.
+- Require a shared plan record only for provider operations, retained-evidence campaigns, stacked branches, or work involving multiple sessions. A single-session code or document change uses the pull request and issue as its plan. The current inventory of 141 records with 74 inbox items is evidence that universal capture creates backlog without demonstrating closure (`docs/local/rules-decomposition/brief.md:49-50`).
+
+### Sentences that leave the root guide
+
+- Package layout, exact Ruff/mypy/pytest commands, environment variables, cache keys, shard count, timeout values, replay-runtime setup, and API choice. These facts are executable in `ci/pr_checks.sh` and the workflows (`ci/pr_checks.sh:17-106`, `.github/workflows/pr.yml:23-123`).
+- Static provider inventory, quotas, basis gates, pulse-history dates, credential paths, and per-provider interpreter names. Live discovery and provider notes own changing facts (`AGENTS.md:234-239`, `AGENTS.md:252-261`, `AGENTS.md:303-325`).
+- Algebra facts and implementation conventions that focused tests can state more strongly: linear-map semantics, identity encoding, bit order, sign-state preparation, basis mapping, and global monomial-order procedure (`AGENTS.md:131-140`, `AGENTS.md:219-229`).
+- The seed ledger’s syntax, ANU fallback procedure, CLI helper behavior, and checker internals (`AGENTS.md:77-103`). Retain only seed identity and provenance outcomes.
+- Approval-record field mechanics, calibration-fetch implementation, and permission exceptions. The harness and tests own them (`AGENTS.md:272-294`).
+- Record schema compatibility, public-handle exceptions, shared-ledger transaction states, and source-cache restoration commands (`AGENTS.md:116-123`, `AGENTS.md:504-534`).
+- Document directory taxonomy, map/link commands, `git mv`, and plan-check invocation (`AGENTS.md:105-112`, `AGENTS.md:142-168`).
+- Codex bot identities, pagination, timestamps, retry arithmetic, reply-marker syntax, REST/GraphQL choice, and stacked-merge commands (`AGENTS.md:391-480`). Keep only the required review outcome and human triage boundary.
+
+## Falsifiers for removals and replacements
+
+| ID | Proposal falsifier |
+|---|---|
+| F1 | A competent cold agent cannot discover the correct invocation or fact from the linked code/runbook within five minutes, or follows the tree and takes a harmful action that the removed sentence would have prevented. |
+| F2 | The replacement check passes a change that violates the removed rule, and the violation reaches a merge or retained artifact. Add the missing invariant to the check rather than restoring procedural prose unless judgment is essential. |
+| F3 | A serial independent loop enters the tree and materially exceeds the recorded resource budget without any performance or structural check failing. |
+| F4 | A bounded wrapper admits flags that change the scientific meaning or exhaust the host, or researchers routinely cannot classify a command without the old prose. |
+| F5 | Provenance/schema validation accepts mock evidence, an invalid probe, or pseudoreplication as measured independent evidence. Restore the concise boundary until the validator covers the counterexample. |
+| F6 | A `live_run.py` or `experiments.py` defect passes constructor/schema tests but the old full dry run would have caught it before submission. Retain that minimal counterexample as a fixture and expand the focused test. |
+| F7 | The provenance checker accepts an untraceable or reused seed, or a retained result cannot be replayed because the QRNG allocation was removed from prose. |
+| F8 | Live discovery or policy data chooses an unavailable, over-quota, or scientifically incapable backend that the removed static sentence would have rejected. |
+| F9 | Binding/transaction automation lets one session mutate, cancel, close, or orphan another session’s provider job or stacked pull request. |
+| F10 | The narrowed approval matrix permits unapproved spend or publication, or it blocks recurring read-only/local work enough to recreate manual bypasses. |
+| F11 | A runtime API or pin change passes compatibility tests but fails under the supported runtime in a way the mandatory migration-skill pass would have caught. |
+| F12 | Secret scanning, provider configuration, or review automation misses a leak or a dropped/stale review round that the removed procedural sentence would have prevented. |
+| F13 | Document duplication or opaque naming produces two conflicting authoritative facts or prevents a cold reviewer from finding the target/mechanism without a private glossary. |
+| F14 | A task without a plan record causes a measured agent collision, lost provider obligation, or unrecoverable handoff that the universal planning rule would have prevented. |
+| F15 | Merge-candidate-only review yields a higher escaped-defect rate, misses issues that intermediate-head review reliably found, or causes final reviews to exceed a stated latency/size budget. |
+| F16 | A rotating ledger audit misses an unchanged-key failure for longer than the declared weekly bound, or incident data show that daily exhaustive replay materially reduces evidence corruption. Increase sentinel coverage or restore the affected class to nightly, not necessarily all gates. |
+
+## What the first-principles view adds about CI purpose
+
+1. **The repository has three caches, not one idea called “CI caching.”** Dependency caches preserve constructed environments (`.github/workflows/ci.yml:74-136`). The gate ledger predicts whether declared and traced inputs are unchanged (`ci/AGENTS.md:461-479`). The nightly deliberately defeats that verdict prediction with `--ledger-audit` to test the prediction itself (`ci/AGENTS.md:479-485`). Repeated nightly computation is therefore an integrity probe for the selector, not an accidental failure to reuse results.
+2. **Admission and surveillance protect different time horizons.** Pull-request CI asks whether the changed head violates a cheap reachable contract (`ci/pr_checks.sh:93-106`). The audit asks whether supposedly unchanged contracts drifted, whether specialized environments still replay, and whether the selector omitted an input (`.github/workflows/ci.yml:145-172`, `.github/workflows/ci.yml:220-359`). The first should block a merge; the second should qualify affected claims and open repair work, which the CI guide already states (`ci/AGENTS.md:63-78`).
+3. **An uncited gate has no defined scientific consequence.** The audit issue can connect failed gates to claims, but the measured audit has 12 red gates cited by no claim (`docs/local/rules-decomposition/brief.md:42-43`). Such a gate may still protect a runtime, immutable binding, or ledger integrity; if it protects none, nightly execution is inventory maintenance rather than evidence assurance. Requiring a protection class makes the audit’s purpose stateable gate by gate.
+4. **The nightly should audit the auditor statistically and structurally.** The observed drift incident argues against deleting exhaustive replay (`docs/local/rules-decomposition/brief.md:53-55`). It does not establish that every gate needs a 24-hour freshness bound. A rotating sample across tracer/read kinds, plus mandatory daily time-sensitive and claim-cited checks, preserves a measurable probability of detecting selector unsoundness. A weekly exhaustive run bounds the miss window. F16 makes that proposal reversible.
+5. **Current workflow code carries dormant event complexity.** `ci.yml` currently triggers only on schedule and manual dispatch (`.github/workflows/ci.yml:7-10`), while its change selector still implements pull-request and push event shapes and says those forms are retained for a later trigger (`.github/workflows/ci.yml:3-6`, `.github/workflows/ci.yml:417-445`). That code should either gain a current consumer/test or move out of the operating narrative; otherwise agents reason about paths the workflow cannot receive.
+6. **Review polling is control-plane load, not scientific assurance.** The waiter polls status, PR mergeability, and check runs every 90 seconds (`scripts/codex_review_wait.sh:33-42`, `scripts/codex_review_wait.sh:97-108`) and separately fetches all review-request comments before a retry (`scripts/codex_review_wait.sh:71-90`). Branch protection already decides check admission. A review-only waiter or event-driven notification would preserve the current-head review invariant while reducing API reads and operator latency.
+7. **The cleanest CI taxonomy mirrors the owner’s objective.** A check earns recurring compute only if it protects (a) an approved-resource boundary, (b) immutable data, (c) a current claim, (d) shared-work integrity, (e) a supported execution environment, or (f) the soundness of the mechanism selecting those checks. This taxonomy turns “CI computes repeatedly” into a falsifiable budget decision instead of an inherited ritual.

@@ -1,6 +1,6 @@
 # gororoba-quantum
 
-Quantum circuits whose structure comes from the open_gororoba Cayley-Dickson
+Quantum circuits whose structure comes from the gororoba-open Cayley-Dickson
 algebra kernel, targeting IBM Quantum Heron r2 backends. Left multiplication by a
 basis unit is a signed permutation of the 2^k basis states, so it is unitary on
 k qubits; two algebraic defects the kernel measures classically become hardware
@@ -32,7 +32,7 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 25 |
-| exploratory reanalysis | exploratory | 106 |
+| exploratory reanalysis | exploratory | 107 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 30 |
@@ -455,6 +455,7 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-schema](results/quandela/runs/2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-schema) | Quandela Cloud | photonic target-slot diagnostic | qpu:ascella | 1 | 8 | completed | 1.032768 credits |
 | [2026-10-30T190014Z-sim_ascella-a5-kernel-slice](results/quandela/runs/2026-10-30T190014Z-sim_ascella-a5-kernel-slice) | Quandela Cloud | ascella-a5-kernel-slice | sim:ascella | 1 | 6 | completed | 1.0 credits |
 | [2026-10-30T190300Z-qpu_ascella-a5-kernel-slice](results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice) | Quandela Cloud | ascella-a5-kernel-slice | qpu:ascella | 1 | 6 | completed | 1.06 credits |
+| [2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition](results/quandela/runs/2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition) | Quandela Cloud | dimension-six compilation and output-port diagnostics | qpu:ascella | 1 | 5 | completed | 1.131072 credits |
 | [2026-10-30T200500Z-sim_ascella-target-slot-drift](results/quandela/runs/2026-10-30T200500Z-sim_ascella-target-slot-drift) | Quandela Cloud | ascella-target-slot-drift | sim:ascella | 1 | 16 | completed | 1.0 credits |
 | [2026-10-30T200600Z-qpu_ascella-target-slot-drift](results/quandela/runs/2026-10-30T200600Z-qpu_ascella-target-slot-drift) | Quandela Cloud | ascella-target-slot-drift | qpu:ascella | 1 | 16 | completed | 1.032768 credits |
 | [2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01](results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01) | Quandela Cloud | single-chip teleportation rehearsal on a recovered chip | qpu:belenos | 1 | 12 | canceled | 4.2 credits |
@@ -465,7 +466,7 @@ The IBM service inventory observed at 2026-10-30T04:53:07.250163+00:00 holds 34 
 
 The Quantum Inspire ledger retrieved at 2026-10-30T06:04:43+00:00 lists 450 jobs with 8511376 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 134 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 135 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 49 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->
@@ -635,5 +636,5 @@ which puts their sibling imports on sys.path; they form no installable package,
 and pyproject.toml carries only lint and type-check configuration. The IBM Quantum credential
 is read from the qiskit account store (`~/.qiskit/qiskit-ibm.json`), not from
 this repository. The kernel ground-truth CSV is located through `GOROROBA_ROOT`
-(default `~/Github/open_gororoba`); `verify.py` needs that checkout, the circuit
+(default `../gororoba-open`, beside this repository); `verify.py` needs that checkout, the circuit
 modules do not.

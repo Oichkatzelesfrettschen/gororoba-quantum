@@ -80,6 +80,7 @@ import placement_feasibility
 import pub_calibration
 import qpu_planning
 import qrng_seeds
+import run_archive
 import variance
 from coherence_window import COHERENCE_PRECISION
 from diagnostic_experiments import (
@@ -3333,8 +3334,7 @@ def approved_calibration_preflight(approved_dir: Path, snapshots: list[Snapshot]
     after planning, so the refusal costs one discovery instead of a re-plan.
     """
     approved = json.loads((approved_dir / "record.json").read_text())
-    with (approved_dir / "isa.qpy").open("rb") as handle:
-        archived = {circuit.name: circuit for circuit in qpy.load(handle)}
+    archived = {circuit.name: circuit for circuit in qpy.load(_archive_stream(approved_dir))}
     fresh = {snapshot.name: snapshot for snapshot in snapshots}
     components: dict[str, list[tuple[str, dict[str, Any]]]] = {}
     for pub in approved.get("execution_pubs", []):
@@ -3414,7 +3414,7 @@ def _preflight_refusal(args: argparse.Namespace, approved_dir: Path, preflight: 
         "approved_record": {
             "run": approved_dir.name,
             "record_sha256": hashlib.sha256((approved_dir / "record.json").read_bytes()).hexdigest(),
-            "qpy_archive_sha256": hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest(),
+            "qpy_archive_sha256": _archive_sha256(approved_dir),
             "calibration_preflight": preflight,
             "mismatches": mismatches,
         },
@@ -3593,7 +3593,7 @@ def approved_choice_blockers(approved_dir: Path, approved: Mapping[str, Any], ch
             blockers.append(f"{choice.group.name}: compiled members, placement or Target-derived fields differ")
     if _json_value([pub.manifest() for pub in execution_pubs(choices)]) != approved.get("execution_pubs"):
         blockers.append("fused PUB manifests differ")
-    approved_qpy = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
+    approved_qpy = _archive_sha256(approved_dir)
     if hashlib.sha256(archive_bytes(choices)).hexdigest() != approved_qpy:
         blockers.append("QPY archive bytes differ")
     return blockers
@@ -3789,7 +3789,7 @@ def reuse_approved_predictions(choices: list[Choice], record: dict[str, Any], ar
         {
             "approved_record": approved_dir.name,
             "record_sha256": hashlib.sha256((approved_dir / "record.json").read_bytes()).hexdigest(),
-            "qpy_archive_sha256": hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest(),
+            "qpy_archive_sha256": _archive_sha256(approved_dir),
         }
     )
     approved, blockers = _read_approved(approved_dir, expected)
@@ -4406,7 +4406,7 @@ def approved_record_mismatches(
     of each bound group's approved values) and accepted_timestamp_changes.
     """
     approved = json.loads((approved_dir / "record.json").read_text())
-    approved_qpy = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
+    approved_qpy = _archive_sha256(approved_dir)
     mismatches: list[str] = []
     if expected_record_sha256 is not None:
         actual = hashlib.sha256((approved_dir / "record.json").read_bytes()).hexdigest()
@@ -5815,7 +5815,7 @@ def submit(
         record["approved_record"] = {
             "run": Path(approved_dir).name,
             "record_sha256": hashlib.sha256((Path(approved_dir) / "record.json").read_bytes()).hexdigest(),
-            "qpy_archive_sha256": hashlib.sha256((Path(approved_dir) / "isa.qpy").read_bytes()).hexdigest(),
+            "qpy_archive_sha256": _archive_sha256(Path(approved_dir)),
             "calibrations": {group["backend"]: group["calibration"] for group in fresh_view["groups"]},
             # Groups bound by value keep the approval across a republished
             # timestamp; each batch rechecks these digests.
@@ -6760,7 +6760,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path, *, actor_record_sha256
             raise LiveRunError(str(error)) from error
         return
     _require_record_instance(service, record, f"{run_dir}: collect")
-    qpy_bytes = (run_dir / "isa.qpy").read_bytes()
+    qpy_bytes = _archive_bytes(run_dir)
     groups = {g.name: g for g in [*all_experiment_groups(), *record_groups(record)]}
     if (
         record.get("experiment_digest") != experiment_digest()
@@ -8078,7 +8078,7 @@ def main(argv: list[str] | None = None) -> int:
                             choices,
                             args,
                             record,
-                            lambda: write_archive(run_dir, choices),
+                            lambda: write_archive(run_dir, choices, materialize=True),
                             lambda: write_json(run_dir, record),
                         )
                         break
@@ -8432,11 +8432,34 @@ def envelope_layout_violations(run_dir: Path) -> list[str]:
     return violations
 
 
-def write_archive(run_dir: Path, choices: list[Choice]) -> str:
-    """Write the exact fused Runtime PUB circuits and return the QPY-file digest."""
-    qpy_bytes = archive_bytes(choices)
-    _replace_atomically(run_dir / "isa.qpy", lambda handle: handle.write(qpy_bytes), "wb")
-    return hashlib.sha256(qpy_bytes).hexdigest()
+def write_archive(run_dir: Path, choices: list[Choice], *, materialize: bool = False) -> str:
+    """Store the exact fused Runtime PUB circuits once under their digest and return that digest.
+
+    A dry run keeps a pointer file beside its record and shares the archive in the output root's
+    ``archives/`` store with every other run that compiled the same circuits; a submission
+    (``materialize``) also writes ``isa.qpy`` into the run directory, the self-contained shape the
+    retention audits and the inventory reconciliation bind by digest.
+    """
+    try:
+        return run_archive.write_archive(run_dir, archive_bytes(choices), materialize=materialize)
+    except run_archive.ArchiveError as error:
+        raise LiveRunError(str(error)) from error
+
+
+def _archive_bytes(run_dir: Path) -> bytes:
+    """The run's archive bytes through the store resolver, verified against the pointer digest."""
+    try:
+        return run_archive.read_archive(run_dir)
+    except run_archive.ArchiveError as error:
+        raise LiveRunError(str(error)) from error
+
+
+def _archive_sha256(run_dir: Path) -> str:
+    return hashlib.sha256(_archive_bytes(run_dir)).hexdigest()
+
+
+def _archive_stream(run_dir: Path) -> io.BytesIO:
+    return io.BytesIO(_archive_bytes(run_dir))
 
 
 # A member ideal whose JSON text exceeds this many characters is stored once per record under its digest in an envelope

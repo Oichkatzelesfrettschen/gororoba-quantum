@@ -60,9 +60,19 @@ types and tests), an unset one takes the host environment, and a drifted one
 exits 2 naming the differing pins and the command that runs the lane under
 the host environment.
 
-**The audit.** `ci.yml` runs on its nightly schedule and on manual dispatch
-only: every gate of both tiers on main with `--ledger-audit`, the
-retained-evidence replays, the Rocq replays and the Quantum Inspire stack.
+A gate whose command a pr.yml job already runs carries `"lane": "audit"` in
+ci/gates.json (core-615, the behavioral suite the `tests` job runs under its
+call budget; unbounded on a hosted runner it took 18 minutes): the
+pull-request lane names it as AUDIT-ONLY and leaves it to the audit.
+
+**The audit.** `ci.yml` runs on two schedules and on manual dispatch. The
+nightly schedule (Monday to Saturday) runs the gates some claim of
+docs/state/research_state.json cites (`--cited-by`), with `--ledger-audit` on
+main, so a red night names a claim. The weekly schedule (Sunday) and manual
+dispatch run every gate of both tiers, the retained-evidence replays, the Rocq
+replays and the Quantum Inspire stack; that run is the net for reads the
+tracer cannot see, and it bounds a missed read to one week. A gate no claim
+cites and no other schedule needs is a candidate for removal.
 After a scheduled run, job `audit-issue` opens or comments on the issue
 "Nightly audit failing" with the body [ci/audit_report.py](audit_report.py)
 writes: each failing gate from the shard timing records beside the claims of
@@ -144,7 +154,7 @@ tags `"requires": ["qi"]`, under the Quantum Inspire interpreter
 environment, links its binary onto PATH, runs with stdin from `/dev/null` (Singular reads stdin even for `--version`) and
 runs the gates tagged `"requires": ["singular"]` with `GOROROBA_SINGULAR_REQUIRED=1`; in every other lane those gates
 print a skip line. The
-`external-ground-truth` job runs `verify.py` over the open_gororoba commit
+`external-ground-truth` job runs `verify.py` over the gororoba-open commit
 named in [ci/open_gororoba.pin](open_gororoba.pin):
 `ci/fetch_open_gororoba.sh` sparse-checks out the paths it is given, and
 `scripts/materialize_gororoba_csv.py` rewrites the git-ignored `data/csv`
@@ -152,11 +162,11 @@ files from the registry records, whose sha256 pins `verify.py` rechecks. A
 pin bump is a reviewed commit. A new contract lands as a test function
 under tests/ (Behavioral suite below); a new evidence replay joins the gate
 list in ci/gates.json in the same change.
-The lint and type gates (core-000, core-001, core-002, core-039) cover
-gororoba_quantum/, scripts/, ci/ and kaggle_kernel/ whole, so a module there
-is linted and type-checked without a list edit; a checked file elsewhere in
-the tree, such as an evidence replay under results/ or docs/, is named in
-those gates' commands. They run ruff and mypy through
+The `lint` and `types` jobs of pr.yml (`sh ci/pr_checks.sh lint|types`) cover
+gororoba_quantum/, scripts/, ci/, tests/ and kaggle_kernel/ whole, so a module
+there is linted and type-checked without a list edit; a checked file elsewhere
+in the tree, such as an evidence replay under results/ or docs/, is named in
+that lane's command. They run ruff and mypy through
 `ci/pinned_tool.py TOOL ARGS`, which uses the installed tool when it reports
 the ci/requirements-ci.txt pin and otherwise runs the pinned release through
 uv: ruff through `uv tool run`, mypy layered over `"$PYTHON"`'s
@@ -378,7 +388,7 @@ push events, which ci.yml declares no trigger for, so a pull request that
 changes a proof input runs the local replay or dispatches ci.yml on its
 branch, and the nightly run replays every bundle on main.
 tests/ci/test_rocq_ci_pins.py holds the pin, the toolchain.txt banners, the
-path list and the open_gororoba fetch in agreement and rejects each mutation
+path list and the gororoba-open fetch in agreement and rejects each mutation
 of them. The manual procedure remains the local replay.
 
 **Behavioral suite.** tests/ holds one pytest suite with two selections.
@@ -477,11 +487,13 @@ ledger rule on a bundle it builds.
   `-E` or `-S` interpreter, a write inside the repository outside
   `__pycache__`, a non-Python child or a child environment that drops the
   trace. CI saves the merged ledger from main only (job `ledger`), and the
-  nightly run executes every gate with `--ledger-audit`, failing on a gate
+  weekly run executes every gate with `--ledger-audit`, failing on a gate
   the ledger would have skipped that fails. That run bounds a missed read to
-  one day on main; it is the only net for reads the tracer cannot see (the
+  one week on main; it is the only net for reads the tracer cannot see (the
   wall clock, C extensions opening files, stat through a dir_fd), so a check
-  against an expiry or a rolling window relies on it.
+  against an expiry or a rolling window relies on it. No current workflow
+  passes `--ledger` to skip a gate; pr.yml selects by reach and the audit
+  runs what it selects.
   tests/ci/test_gate_ledger.py plants every read kind and every escape.
 - Check with an explicit raise, never `assert`. `python -O` strips every
   assert, and ruff `S101` (pyproject.toml) rejects one at lint time, so each
