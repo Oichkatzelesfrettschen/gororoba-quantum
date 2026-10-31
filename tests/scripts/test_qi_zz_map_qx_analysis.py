@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import shutil
 from pathlib import Path
+from typing import Any, cast
 
 import pytest
 import qi_zz_map_qx
@@ -29,7 +31,7 @@ def _analyze(plan: Path, runs: Path) -> dict[str, object]:
 def test_ideal_fixture_passes_and_binds_its_sources(tmp_path: Path) -> None:
     plan, runs = _case(tmp_path)
     verdict = _analyze(plan, runs)
-    expected = [{"file": "fixture.cq", "job": "synthetic-job", "failures": []}]
+    expected = [{"batch": "batch-000", "file": "fixture.cq", "job": "synthetic-job", "failures": []}]
     _check(verdict["passes"] and verdict["circuits"] == expected, f"ideal fixture verdict {verdict['circuits']}")
     digests = verdict["source_digests"]
     _check(
@@ -101,3 +103,35 @@ def test_biased_y_probe_fails_the_familywise_bound(tmp_path: Path) -> None:
     circuits = verdict["circuits"]
     _check(not verdict["passes"], "a Y probe pinned to one outcome passed")
     _check(isinstance(circuits, list) and "familywise" in circuits[0]["failures"][0], f"failures {circuits}")
+
+
+def test_repeated_filename_across_batches_is_judged_by_its_own_batch(tmp_path: Path) -> None:
+    """A biased Y circuit in batch-000 keeps failing when batch-001 holds an X circuit under the same filename."""
+    plan, runs = _case(tmp_path, histogram={"11": qi_zz_map_qx.SHOTS})
+    shutil.copytree(runs / "batch-000", runs / "batch-001")
+    second = runs / "batch-001"
+    cases = json.loads((second / "cases.json").read_bytes())
+    cases["circuits"][0]["quadrature"] = "x"
+    cases_text = json.dumps(cases, indent=1, sort_keys=True) + "\n"
+    (second / "cases.json").write_text(cases_text, encoding="utf-8")
+    receipt = json.loads((second / "submission.json").read_bytes())
+    receipt["cases_sha256"] = qi_records.digest(cases_text.encode())
+    receipt["batch_job"] = "synthetic-batch-2"
+    receipt["jobs"][0]["job"] = "synthetic-job-2"
+    (second / "submission.json").write_text(json.dumps(receipt), encoding="utf-8")
+    collected = json.loads((second / "results.json").read_bytes())
+    collected["jobs"][0]["job"].update(id="synthetic-job-2", batch_job_id="synthetic-batch-2")
+    collected["jobs"][0]["results"][0]["job_id"] = "synthetic-job-2"
+    (second / "results.json").write_text(json.dumps(collected), encoding="utf-8")
+    value = json.loads(plan.read_bytes())
+    value["circuits"].append({**cases["circuits"][0], "batch_directory": "batch-001"})
+    value["batches"].append({"directory": "batch-001", "cases_sha256": receipt["cases_sha256"]})
+    value["cost"]["total_jobs"] = 2
+    plan.write_text(json.dumps(value), encoding="utf-8")
+    verdict = _analyze(plan, runs)
+    rows = cast(list[dict[str, Any]], verdict["circuits"])
+    _check([row["batch"] for row in rows] == ["batch-000", "batch-001"], f"batch order {rows}")
+    # Under its own Y row batch-000 fails the familywise bound; under its own X row the same
+    # counts fail the deterministic probe rule. A shared lookup would judge both by one row.
+    _check("familywise" in rows[0]["failures"][0], f"batch-000 {rows[0]}")
+    _check("deterministic q0" in rows[1]["failures"][0], f"batch-001 {rows[1]}")

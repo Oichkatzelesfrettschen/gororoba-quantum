@@ -42,7 +42,7 @@ class Design:
 
 
 def read_batch(task: dict[str, Any]) -> dict[str, Any]:
-    """Read one batch directory through qi_records, hold it to the design's record conditions, return counts."""
+    """Read one batch through qi_records, hold it to the design's conditions, judge each circuit's counts."""
     batch = task["batch"]
     directory = Path(task["runs_root"]) / batch["directory"]
     record = qi_records.load_run(directory)
@@ -60,13 +60,14 @@ def read_batch(task: dict[str, Any]) -> dict[str, Any]:
     require(acquisition.completed, f"QX job incomplete: {dict(acquisition.statuses)}")
     by_file = {job.file: job for job in acquisition.jobs}
     require(set(by_file) == {row["file"] for row in rows}, "QX acquisition file set mismatch")
-    counts = []
+    checked = []
     for row in rows:
         job = by_file[row["file"]]
         require(job.raw is not None, "QX raw output was not retained")
-        counts.append({"file": row["file"], "job": job.job_id, "counts": dict(Counter(job.raw))})
+        failures = task["check_counts"](row, Counter(job.raw), task["shots"])
+        checked.append({"batch": batch["directory"], "file": row["file"], "job": job.job_id, "failures": failures})
     return {
-        "counts": counts,
+        "circuits": checked,
         "input_sha256": {f"{batch['directory']}/{name}": value for name, value in record["digests"].items()},
     }
 
@@ -93,21 +94,15 @@ def analyze(plan_path: Path, runs_root: Path, design: Design) -> dict[str, Any]:
             "backend": design.backend,
             "backend_type_id": plan["backend_type_id"],
             "shots": design.shots,
+            "check_counts": design.check_counts,
             "rows": [row for row in circuits if row["batch_directory"] == batch["directory"]],
         }
         for batch in batches
     ]
+    # Each worker judges its batch's circuits against that batch's own plan rows, so a
+    # filename repeated across batches never meets another batch's criteria.
     results = ordered_map(read_batch, tasks)
-    rows = {row["file"]: row for row in circuits}
-    checked = [
-        {
-            "file": entry["file"],
-            "job": entry["job"],
-            "failures": design.check_counts(rows[entry["file"]], Counter(entry["counts"]), design.shots),
-        }
-        for result in results
-        for entry in result["counts"]
-    ]
+    checked = [row for result in results for row in result["circuits"]]
     require(
         len(checked) == len(circuits) and len({row["job"] for row in checked}) == len(circuits),
         "missing or reused QX acquisition",
