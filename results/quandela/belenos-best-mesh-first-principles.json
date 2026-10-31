@@ -1,4 +1,123 @@
 {
+ "acceptance": {
+  "acceptance_correctness_one_sided_permutation_p": 0.04027777777777778,
+  "acceptance_correctness_r": -0.747343166227538,
+  "herald_correctness_one_sided_permutation_p": 0.006944444444444444,
+  "herald_correctness_r": 0.8728494788796318,
+  "inputs": {
+   "+X": {
+    "acceptance_per_sample": {
+     "A": 0.09833333333333333,
+     "B": 0.10916666666666666
+    },
+    "acceptance_se_of_difference": 0.01086206126847018,
+    "chance_model_correctness_change_low_to_high": -0.028593608487514577,
+    "correctness": {
+     "A": 0.788135593220339,
+     "B": 0.732824427480916
+    },
+    "herald_rejections_per_sample": {
+     "A": 0.7654166666666666,
+     "B": 0.7558333333333334
+    },
+    "higher_acceptance_block": "B",
+    "observed_correctness_change_low_to_high": -0.05531116573942296
+   },
+   "+Y": {
+    "acceptance_per_sample": {
+     "A": 0.12291666666666666,
+     "B": 0.11666666666666667
+    },
+    "acceptance_se_of_difference": 0.01143676948183164,
+    "chance_model_correctness_change_low_to_high": -0.02070217917675543,
+    "correctness": {
+     "A": 0.8271186440677966,
+     "B": 0.9071428571428571
+    },
+    "herald_rejections_per_sample": {
+     "A": 0.7245833333333334,
+     "B": 0.77
+    },
+    "higher_acceptance_block": "A",
+    "observed_correctness_change_low_to_high": -0.08002421307506058
+   },
+   "+Z": {
+    "acceptance_per_sample": {
+     "A": 0.13791666666666666,
+     "B": 0.08083333333333333
+    },
+    "acceptance_se_of_difference": 0.01055726982607509,
+    "chance_model_correctness_change_low_to_high": -0.1557448531472888,
+    "correctness": {
+     "A": 0.770392749244713,
+     "B": 0.8762886597938144
+    },
+    "herald_rejections_per_sample": {
+     "A": 0.6558333333333334,
+     "B": 0.73
+    },
+    "higher_acceptance_block": "A",
+    "observed_correctness_change_low_to_high": -0.10589591054910141
+   },
+   "-X": {
+    "acceptance_per_sample": {
+     "A": 0.08375,
+     "B": 0.11083333333333334
+    },
+    "acceptance_se_of_difference": 0.010681653832060042,
+    "chance_model_correctness_change_low_to_high": -0.08449294878988522,
+    "correctness": {
+     "A": 0.845771144278607,
+     "B": 0.8796992481203008
+    },
+    "herald_rejections_per_sample": {
+     "A": 0.7908333333333334,
+     "B": 0.7933333333333333
+    },
+    "higher_acceptance_block": "B",
+    "observed_correctness_change_low_to_high": 0.03392810384169376
+   },
+   "-Y": {
+    "acceptance_per_sample": {
+     "A": 0.10958333333333334,
+     "B": 0.13083333333333333
+    },
+    "acceptance_se_of_difference": 0.011636987919870941,
+    "chance_model_correctness_change_low_to_high": -0.044156111501295614,
+    "correctness": {
+     "A": 0.7718631178707225,
+     "B": 0.7133757961783439
+    },
+    "herald_rejections_per_sample": {
+     "A": 0.7525,
+     "B": 0.7025
+    },
+    "higher_acceptance_block": "B",
+    "observed_correctness_change_low_to_high": -0.05848732169237858
+   },
+   "-Z": {
+    "acceptance_per_sample": {
+     "A": 0.16541666666666666,
+     "B": 0.24046140195208518
+    },
+    "acceptance_se_of_difference": 0.014818259269391716,
+    "chance_model_correctness_change_low_to_high": -0.12617095350739416,
+    "correctness": {
+     "A": 0.9042821158690176,
+     "B": 0.8523985239852399
+    },
+    "herald_rejections_per_sample": {
+     "A": 0.6975,
+     "B": 0.5936113575865128
+    },
+    "higher_acceptance_block": "B",
+    "observed_correctness_change_low_to_high": -0.05188359188377778
+   }
+  },
+  "loser_mean_acceptance_per_sample": 0.1375074558809031,
+  "status": "exploratory: the acceptance direction was stated before the computation, the herald direction follows from it, and neither test was preregistered",
+  "winner_mean_acceptance_per_sample": 0.11361111111111111
+ },
  "compiled": [
   {
    "click_total_variation": 0.00017285433131189094,
@@ -454,6 +573,11 @@
     "block_a": {
      "accepted": 236,
      "correct": 186,
+     "rejected_excess": 3,
+     "rejected_herald": 1837,
+     "rejected_outside": 2,
+     "rejected_pattern": 29,
+     "rejected_receiver": 293,
      "samples": 2400,
      "seed": 30689,
      "shots": 4608018
@@ -461,6 +585,11 @@
     "block_b": {
      "accepted": 131,
      "correct": 96,
+     "rejected_excess": 1,
+     "rejected_herald": 907,
+     "rejected_outside": 3,
+     "rejected_pattern": 24,
+     "rejected_receiver": 134,
      "samples": 1200,
      "seed": 59482,
      "shots": 2408909
@@ -480,6 +609,11 @@
     "block_a": {
      "accepted": 295,
      "correct": 244,
+     "rejected_excess": 4,
+     "rejected_herald": 1739,
+     "rejected_outside": 12,
+     "rejected_pattern": 33,
+     "rejected_receiver": 317,
      "samples": 2400,
      "seed": 57001,
      "shots": 4453760
@@ -487,6 +621,11 @@
     "block_b": {
      "accepted": 140,
      "correct": 127,
+     "rejected_excess": 0,
+     "rejected_herald": 924,
+     "rejected_outside": 5,
+     "rejected_pattern": 9,
+     "rejected_receiver": 122,
      "samples": 1200,
      "seed": 55550,
      "shots": 2086810
@@ -506,6 +645,11 @@
     "block_a": {
      "accepted": 331,
      "correct": 255,
+     "rejected_excess": 0,
+     "rejected_herald": 1574,
+     "rejected_outside": 3,
+     "rejected_pattern": 43,
+     "rejected_receiver": 449,
      "samples": 2400,
      "seed": 19918,
      "shots": 4264692
@@ -513,6 +657,11 @@
     "block_b": {
      "accepted": 97,
      "correct": 85,
+     "rejected_excess": 3,
+     "rejected_herald": 876,
+     "rejected_outside": 0,
+     "rejected_pattern": 16,
+     "rejected_receiver": 208,
      "samples": 1200,
      "seed": 19846,
      "shots": 2043758
@@ -532,6 +681,11 @@
     "block_a": {
      "accepted": 201,
      "correct": 170,
+     "rejected_excess": 2,
+     "rejected_herald": 1898,
+     "rejected_outside": 34,
+     "rejected_pattern": 13,
+     "rejected_receiver": 252,
      "samples": 2400,
      "seed": 50293,
      "shots": 4215396
@@ -539,6 +693,11 @@
     "block_b": {
      "accepted": 133,
      "correct": 117,
+     "rejected_excess": 1,
+     "rejected_herald": 952,
+     "rejected_outside": 2,
+     "rejected_pattern": 12,
+     "rejected_receiver": 100,
      "samples": 1200,
      "seed": 595,
      "shots": 2181782
@@ -558,6 +717,11 @@
     "block_a": {
      "accepted": 263,
      "correct": 203,
+     "rejected_excess": 2,
+     "rejected_herald": 1806,
+     "rejected_outside": 5,
+     "rejected_pattern": 26,
+     "rejected_receiver": 298,
      "samples": 2400,
      "seed": 12608,
      "shots": 4687899
@@ -565,6 +729,11 @@
     "block_b": {
      "accepted": 157,
      "correct": 112,
+     "rejected_excess": 1,
+     "rejected_herald": 843,
+     "rejected_outside": 3,
+     "rejected_pattern": 28,
+     "rejected_receiver": 168,
      "samples": 1200,
      "seed": 56057,
      "shots": 2301330
@@ -584,6 +753,11 @@
     "block_a": {
      "accepted": 397,
      "correct": 359,
+     "rejected_excess": 1,
+     "rejected_herald": 1674,
+     "rejected_outside": 13,
+     "rejected_pattern": 37,
+     "rejected_receiver": 278,
      "samples": 2400,
      "seed": 52848,
      "shots": 5648789
@@ -591,6 +765,11 @@
     "block_b": {
      "accepted": 271,
      "correct": 231,
+     "rejected_excess": 0,
+     "rejected_herald": 669,
+     "rejected_outside": 2,
+     "rejected_pattern": 50,
+     "rejected_receiver": 135,
      "samples": 1127,
      "seed": 7821,
      "shots": 3000000

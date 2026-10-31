@@ -13,6 +13,7 @@ reads:
 - replay_power: the posterior-predictive power of a winner-and-loser replay at two and four jobs, with inputs dropped
   when a seed returns a new mesh, and its size when no mesh error persists.
 - replay_budget: the shot cap and credits per replay job from the lossiest retained mesh.
+- acceptance: acceptance per sample against correctness between the two meshes of each input.
 
 Usage: belenos_best_mesh_first_principles.py --out PATH --seed qrng:<draw>#<index>
 """
@@ -142,7 +143,77 @@ def block_counts(rows: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, dict[
         for key, field in (("correct", "correct"), ("accepted", "accepted"), ("samples", "samples")):
             cell[key] += row[field]
         cell["shots"] += row["nb_shots_used"]
+        for reason in tr.REJECTIONS:
+            cell[f"rejected_{reason}"] = cell.get(f"rejected_{reason}", 0) + row["rejected"][reason]
     return out
+
+
+def exact_permutation_r(x: np.ndarray, y: np.ndarray, negative: bool) -> tuple[float, float]:
+    """Pearson r of paired values and its exact one-sided permutation p-value over all pairings: P(r_perm <= r) for a
+    predicted negative association, P(r_perm >= r) for a positive one."""
+    import itertools
+
+    def pearson(a: np.ndarray, b: np.ndarray) -> float:
+        a, b = a - a.mean(), b - b.mean()
+        return float(a @ b / np.sqrt((a @ a) * (b @ b)))
+
+    observed = pearson(x, y)
+    values = [pearson(x, np.asarray(perm)) for perm in itertools.permutations(y)]
+    if negative:
+        return observed, float(np.mean([v <= observed + 1e-12 for v in values]))
+    return observed, float(np.mean([v >= observed - 1e-12 for v in values]))
+
+
+def acceptance_section(counts: Mapping[str, Mapping[str, Mapping[str, float]]]) -> dict[str, Any]:
+    """Acceptance per sample against correctness, between the two meshes of each input.
+
+    Every mesh of one input implements the same logical unitary on the same chip modes, so the ideal accepted share
+    is common to both; a difference in acceptance per sample is mesh error. Calsamiglia and Lutkenhaus bound a passive
+    linear Bell analyzer at one half, so the ideal analyzer accepts exactly its two separable patterns and excess
+    acceptance means events from outside them (a misidentified Bell outcome, a herald photon routed into an accepted
+    pattern). The chance model scores such excess events at correctness one half: the higher-acceptance mesh then
+    reads (a_lo f_lo + (a_hi - a_lo) / 2) / a_hi."""
+    rows = {}
+    deltas_a, deltas_f, deltas_h = [], [], []
+    for label in LABELS:
+        a, b = counts[label]["A"], counts[label]["B"]
+        acc = {k: c["accepted"] / c["samples"] for k, c in (("A", a), ("B", b))}
+        cor = {k: c["correct"] / c["accepted"] for k, c in (("A", a), ("B", b))}
+        herald = {k: c["rejected_herald"] / c["samples"] for k, c in (("A", a), ("B", b))}
+        low, high = sorted(("A", "B"), key=lambda k: acc[k])
+        chance = (acc[low] * cor[low] + (acc[high] - acc[low]) / 2) / acc[high]
+        rows[label] = {
+            "acceptance_per_sample": acc,
+            "correctness": cor,
+            "herald_rejections_per_sample": herald,
+            "acceptance_se_of_difference": float(
+                np.sqrt(sum(acc[k] * (1 - acc[k]) / counts[label][k]["samples"] for k in ("A", "B")))
+            ),
+            "higher_acceptance_block": high,
+            "observed_correctness_change_low_to_high": cor[high] - cor[low],
+            "chance_model_correctness_change_low_to_high": chance - cor[low],
+        }
+        deltas_a.append(acc["B"] - acc["A"])
+        deltas_f.append(cor["B"] - cor["A"])
+        deltas_h.append(herald["B"] - herald["A"])
+    r_af, p_af = exact_permutation_r(np.asarray(deltas_a), np.asarray(deltas_f), negative=True)
+    r_hf, p_hf = exact_permutation_r(np.asarray(deltas_h), np.asarray(deltas_f), negative=False)
+    winner_block = {label: "A" if deltas_f[i] < 0 else "B" for i, label in enumerate(LABELS)}
+    winners = [counts[label][winner_block[label]] for label in LABELS]
+    losers = [counts[label]["B" if winner_block[label] == "A" else "A"] for label in LABELS]
+    return {
+        "inputs": rows,
+        "acceptance_correctness_r": r_af,
+        "acceptance_correctness_one_sided_permutation_p": p_af,
+        "herald_correctness_r": r_hf,
+        "herald_correctness_one_sided_permutation_p": p_hf,
+        "winner_mean_acceptance_per_sample": float(np.mean([c["accepted"] / c["samples"] for c in winners])),
+        "loser_mean_acceptance_per_sample": float(np.mean([c["accepted"] / c["samples"] for c in losers])),
+        "status": (
+            "exploratory: the acceptance direction was stated before the computation, the herald direction follows"
+            " from it, and neither test was preregistered"
+        ),
+    }
 
 
 def normal_cdf(x: Any) -> Any:
@@ -319,6 +390,7 @@ def main() -> int:
         "compiled": compiled_section(),
         "shrinkage": shrink,
         "replay_power": power,
+        "acceptance": acceptance_section(counts),
         "replay_budget": replay_budget(counts),
     }
     args.out.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
