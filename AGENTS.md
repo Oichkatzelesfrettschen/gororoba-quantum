@@ -178,9 +178,11 @@ and after every monthly skill update
   GitHub owner in every repository URL, the Kaggle username in a kernel or
   dataset slug `owner/slug`) names published work, and records keep it so
   `collect` and `status` resolve the kernel.
-- External-only sources (`redistribution: excluded_without_permission`) go
-  only to the owner's private repository gororoba-documents-private, never
-  into this tree ([docs/README.md](docs/README.md#source-cache-and-reading-copies)).
+- External-only sources (`redistribution: excluded_without_permission`) stay
+  out of this tree. Their reading copies live in the owner's documents
+  repositories, gororoba-documents-public when the file's own license allows
+  redistribution and gororoba-documents-private otherwise
+  ([docs/README.md](docs/README.md#source-cache-and-reading-copies)).
 
 ## Documents
 

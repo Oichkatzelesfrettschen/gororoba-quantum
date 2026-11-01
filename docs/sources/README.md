@@ -43,14 +43,15 @@ Downloaded documents retain their authors' notices and licenses; repository
 licensing does not relabel third-party papers. The source verifier checks local
 copies when present and permits a fresh checkout without those optional files.
 [`scripts/fetch_source_cache.py`](../../scripts/fetch_source_cache.py) restores
-those copies from the registered URLs or from a checkout of the owner's private
-gororoba-documents-private repository, which also holds their Markdown
-transcriptions, and admits a file only when its size and SHA-256 match the
-registry.
-[`reading-copies.md`](reading-copies.md), generated from the registry by
+those copies from the registered URLs or from checkouts of the owner's documents
+repositories gororoba-documents-public and gororoba-documents-private, which
+also hold their Markdown transcriptions, and admits a file only when its size
+and SHA-256 match the registry.
+[`reading-copies.md`](reading-copies.md), generated from the registry and
+[`reading-copy-locations.tsv`](reading-copy-locations.tsv) by
 [`scripts/source_reading_copies.py`](../../scripts/source_reading_copies.py)
 and checked by the gate `sources-reading-copies-index`, links each external PDF
-to its note, its public source and its copy in that private repository.
+to its note, its public source and its copy in one of those repositories.
 
 The [Cayley-Dickson survey at dimension 16 and above](cayley-dickson-2n-ion-survey.md) records every candidate source and its disposition.
 

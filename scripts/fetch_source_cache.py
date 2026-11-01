@@ -14,7 +14,7 @@ checkouts of the workspace documents repositories gororoba-documents-private
 and gororoba-documents-public instead of the network, under the same
 admission rule: the entry's sha256 selects the file through the checkout's
 ``manifest.tsv`` (columns ``sha256``, ``bytes``, ``path`` first), and a
-checkout without that row serves ``pdf/<cache name>``. ``--check`` reads only
+checkout without that row does not serve the entry. ``--check`` reads only
 the local cache and the registry.
 
     $PYTHON scripts/fetch_source_cache.py --note docs/notes/papers/1210.4583.md
@@ -108,14 +108,16 @@ def manifest_paths(documents: Path) -> dict[str, str]:
 def documents_loader(roots: list[Path]) -> Loader:
     """A loader reading the first documents checkout that holds the entry, answering 404 when none does.
 
-    A checkout's manifest row for the entry's sha256 names the file; a checkout without that row serves
-    ``pdf/<cache name>``. A linked or absent file is skipped.
+    A checkout's manifest row for the entry's sha256 names the file. A checkout without that row, and a linked
+    or absent file, is skipped.
     """
     indexed = [(documents, manifest_paths(documents)) for documents in roots]
 
     def load(entry: dict[str, Any]) -> tuple[int, bytes]:
         for documents, paths in indexed:
-            relative = paths.get(entry["sha256"], f"pdf/{Path(entry['local_cache_path']).name}")
+            relative = paths.get(entry["sha256"])
+            if relative is None:
+                continue
             source = documents / relative
             if not source.is_symlink() and source.is_file():
                 return 200, source.read_bytes()
