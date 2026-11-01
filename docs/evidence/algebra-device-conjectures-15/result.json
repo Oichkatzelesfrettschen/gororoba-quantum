@@ -12299,7 +12299,7 @@
     "reason": "ci/requirements-ci.txt moved mcp from 1.29.0 to 2.3.0, which bundle 14 binds by digest; the 22 proposals and the claim selection carry over"
   },
   "versions": {
-    "python": "3.14.8",
+    "python": "3.14.7",
     "sympy": "1.14.0"
   }
 }
