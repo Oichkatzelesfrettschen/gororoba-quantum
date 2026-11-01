@@ -5,7 +5,7 @@ the build host and, when a job outgrows it, on the free classical capacity the p
 lists that capacity with its source, decomposes what "pooling" can and cannot buy, names how each tool installs on
 each substrate, and records the memory the A_5 Rees eliminations measured. Offloading a classical job is a standing
 owner authorization; spending trial credit (an Azure VM) is a written case with expected hours and a deallocation
-step, like any spend ([provider-credits.md](provider-credits.md)).
+step, like any spend.
 
 ## Capacity
 
@@ -26,17 +26,10 @@ At full fan-out the reachable pool is the build host plus five Kaggle CPU sessio
 largest single address space reachable without a spend case is the build host's 62 GiB plus swap; with a case it is
 the Azure VM's 84 GB; a TPU VM's host RAM is larger once a queued session starts.
 
-## Access audit
+## Account access
 
-Read 2026-10-28 between 19:30 and 20:10 UTC with each service's own read-only call.
-
-| Service | State at the read | What it allows now |
-| --- | --- | --- |
-| Kaggle | GPU 0.07 of 30 h and TPU 0 of 20 h used, both reset 2026-10-31T00:00Z; AI models 1.48 of 10 USD daily (refill 2026-10-29T18:25Z) and of 100 USD monthly | five CPU and two GPU batch sessions; one TPU batch session, queued; Model Proxy tasks on the full catalog |
-| GitHub Actions | the repository is public | standard hosted runners at no cost; logs and artifacts are public |
-| Azure | subscription Enabled; eastus total regional vCPU 0 of 4 used, `StandardFXmdsv2Family` 0 of 4, low-priority 0 of 3 | one 4-vCPU VM, the 84 GB `Standard_FX4mds_v2` the largest, after a spend case |
-| AWS | after `aws login` (re-read 20:20 UTC) the identity resolves; in us-east-2 an `r7i.4xlarge` launch passes `--dry-run` and then fails as not free-tier eligible; spot is denied; us-east-1 denies EC2, Lambda, CodeBuild, SageMaker, Batch and ECS by service control policy | free-tier instances up to 8 GiB, smaller than a Kaggle session; larger memory needs the owner to move the account to the paid plan |
-| qBraid | tier Free; 0 credits, auto-recharge off; Lab CPU 0 of 100 h (renews 2026-11-10); server stopped; AI 0 of 5 USD (resets 2026-11-18, all models) | the 4 GB included server, started from the Lab web page (the read routes include no start call), and the 5 USD AI allowance |
+The accounts' access state, read with each service's own read-only call, and the live allotments are recorded in
+the private gororoba-infrastructure repository.
 
 ## What pooling buys
 
@@ -132,7 +125,7 @@ change without notice.
 
 **Kaggle Model Proxy (AI inference).**
 
-The daily and monthly quota reader is in [provider-credits.md](provider-credits.md).
+The provider credits monitor of the private gororoba-infrastructure repository reads the daily and monthly quota.
 
 - `kaggle benchmarks auth` mints a local token that lasts about 2 h and is limited to the 8 models in `LLMS_AVAILABLE`;
   the full catalog (Claude Opus 5.5, GPT-6 Sol and Astra, Gemini 4 Argon and others) runs only through

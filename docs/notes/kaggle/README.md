@@ -36,7 +36,8 @@ Facts the guides above rest on, with their source:
   ([site/notebooks.md](site/notebooks.md)).
 - TPU use: up to 20 hours per week and 9 hours per session
   ([site/tpu.md](site/tpu.md)).
-- Account quotas (private dataset and model storage, weekly GPU and TPU hours, AI-model spend) are recorded in the private gororoba-infrastructure repository; the provider credits monitor ([provider-credits.md](../../runbooks/provider-credits.md)) reads the hours and the AI-model spend.
+- Account quotas (private dataset and model storage, weekly GPU and TPU hours, AI-model spend) and the provider
+  credits monitor that reads the hours and the AI-model spend are in the private gororoba-infrastructure repository.
 - Accelerator IDs as of September 2026: NvidiaTeslaT4 (2 x T4),
   NvidiaTeslaA100, NvidiaL4, NvidiaL4X1, NvidiaH100, NvidiaRtxPro6000,
   TpuV5E8, TpuV6E8, some restricted to competitions or admins; the push's
