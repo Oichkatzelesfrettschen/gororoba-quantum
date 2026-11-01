@@ -134,7 +134,7 @@
    "distribution": "antlr4-python3-runtime",
    "declared_versions": {
     "docs/notes/qbraid/requirements-qbraid.txt": "4.13.2",
-    "scripts/kaggle_run.py:171:PIN_GROUPS": "4.13.2"
+    "scripts/kaggle_run.py:172:PIN_GROUPS": "4.13.2"
    },
    "observed_host_version": "4.13.2",
    "role": "Parser runtime for OpenQASM import.",
@@ -249,7 +249,7 @@
   {
    "distribution": "autoray",
    "declared_versions": {
-    "scripts/kaggle_run.py:177:PIN_GROUPS": "0.11.0",
+    "scripts/kaggle_run.py:178:PIN_GROUPS": "0.11.0",
     "IQM retained environment": "0.11.0"
    },
    "observed_host_version": "0.11.0",
@@ -576,7 +576,7 @@
   {
    "distribution": "cotengra",
    "declared_versions": {
-    "scripts/kaggle_run.py:176:PIN_GROUPS": "0.8.2",
+    "scripts/kaggle_run.py:177:PIN_GROUPS": "0.8.2",
     "IQM retained environment": "0.8.2"
    },
    "observed_host_version": "0.8.2",
@@ -1023,7 +1023,7 @@
   {
    "distribution": "galois",
    "declared_versions": {
-    "scripts/kaggle_run.py:179:PIN_GROUPS": "0.4.11"
+    "scripts/kaggle_run.py:180:PIN_GROUPS": "0.4.11"
    },
    "observed_host_version": "0.4.11",
    "role": "Finite-field Fano incidence and binary algebra certificates.",
@@ -1364,7 +1364,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.12.20260921",
     "requirements.txt": "0.13.20261016",
-    "scripts/kaggle_run.py:166:PIN_GROUPS": "0.13.20261016"
+    "scripts/kaggle_run.py:167:PIN_GROUPS": "0.13.20261016"
    },
    "observed_host_version": "0.12.20260921",
    "role": "Runtime task and option schema conformance.",
@@ -1772,7 +1772,9 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [],
+   "imported_by": [
+    "scripts/qd_mcp_server.py"
+   ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": []
   },
@@ -1931,7 +1933,7 @@
   {
    "distribution": "lmfit",
    "declared_versions": {
-    "scripts/kaggle_run.py:174:PIN_GROUPS": "1.3.4",
+    "scripts/kaggle_run.py:175:PIN_GROUPS": "1.3.4",
     "IQM retained environment": "1.3.4"
    },
    "observed_host_version": "1.3.4",
@@ -2062,7 +2064,7 @@
   {
    "distribution": "mcp",
    "declared_versions": {
-    "ci/requirements-ci.txt": "1.29.0",
+    "ci/requirements-ci.txt": "2.3.0",
     "docs/notes/open_quantum/requirements-oq.txt": "1.30.0",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.3.0"
    },
@@ -2190,7 +2192,7 @@
   {
    "distribution": "mthree",
    "declared_versions": {
-    "scripts/kaggle_run.py:161:PIN_GROUPS": "3.0.0",
+    "scripts/kaggle_run.py:162:PIN_GROUPS": "3.0.0",
     "IQM retained environment": "3.0.0"
    },
    "observed_host_version": "3.0.0",
@@ -2369,7 +2371,7 @@
    "distribution": "numba",
    "declared_versions": {
     "docs/notes/quafu/requirements-quafu.txt": "0.68.0",
-    "scripts/kaggle_run.py:180:PIN_GROUPS": "0.68.0",
+    "scripts/kaggle_run.py:181:PIN_GROUPS": "0.68.0",
     "IQM retained environment": "0.63.1"
    },
    "observed_host_version": "0.68.0",
@@ -2494,6 +2496,7 @@
     "gororoba_quantum/primorial_tomography.py",
     "gororoba_quantum/pub_shot_allocation_contracts.py",
     "gororoba_quantum/qet_ladder.py",
+    "gororoba_quantum/qi_joint_response.py",
     "gororoba_quantum/qpe_diagnostics.py",
     "gororoba_quantum/qpu_planning.py",
     "gororoba_quantum/qpu_planning_contracts.py",
@@ -2763,6 +2766,7 @@
     "gororoba_quantum/primorial_tomography.py",
     "gororoba_quantum/pub_shot_allocation_contracts.py",
     "gororoba_quantum/qet_ladder.py",
+    "gororoba_quantum/qi_joint_response.py",
     "gororoba_quantum/qpe_diagnostics.py",
     "gororoba_quantum/qpu_planning.py",
     "gororoba_quantum/qpu_planning_contracts.py",
@@ -3156,7 +3160,7 @@
    "distribution": "openqasm3",
    "declared_versions": {
     "docs/notes/qbraid/requirements-qbraid.txt": "1.0.1",
-    "scripts/kaggle_run.py:170:PIN_GROUPS": "1.0.1"
+    "scripts/kaggle_run.py:171:PIN_GROUPS": "1.0.1"
    },
    "observed_host_version": "1.0.1",
    "role": "OpenQASM syntax and AST support.",
@@ -3954,7 +3958,7 @@
   {
    "distribution": "pyadic",
    "declared_versions": {
-    "scripts/kaggle_run.py:185:PIN_GROUPS": "0.3.0"
+    "scripts/kaggle_run.py:186:PIN_GROUPS": "0.3.0"
    },
    "observed_host_version": "0.3.0",
    "role": "Finite-field and finite-precision p-adic coefficients; a separate arithmetic experiment.",
@@ -4359,7 +4363,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.9.0",
     "requirements.txt": "0.9.0",
-    "scripts/kaggle_run.py:185:PIN_GROUPS": "0.9.0"
+    "scripts/kaggle_run.py:186:PIN_GROUPS": "0.9.0"
    },
    "observed_host_version": "0.9.0",
    "role": "Exact rational/modular matrix rank and kernel certificates; defines no CD table.",
@@ -4473,7 +4477,7 @@
   {
    "distribution": "pyzx",
    "declared_versions": {
-    "scripts/kaggle_run.py:178:PIN_GROUPS": "0.10.7"
+    "scripts/kaggle_run.py:179:PIN_GROUPS": "0.10.7"
    },
    "observed_host_version": "0.10.7",
    "role": "ZX circuit simplification followed by exact operator-equivalence checks.",
@@ -5061,7 +5065,7 @@
   {
    "distribution": "qiskit-addon-utils",
    "declared_versions": {
-    "scripts/kaggle_run.py:172:PIN_GROUPS": "0.4.0"
+    "scripts/kaggle_run.py:173:PIN_GROUPS": "0.4.0"
    },
    "observed_host_version": "0.4.0",
    "role": "Supported circuit interchange and utility operations.",
@@ -5345,7 +5349,7 @@
   {
    "distribution": "qiskit-experiments",
    "declared_versions": {
-    "scripts/kaggle_run.py:173:PIN_GROUPS": "0.14.2"
+    "scripts/kaggle_run.py:174:PIN_GROUPS": "0.14.2"
    },
    "observed_host_version": "0.14.2",
    "role": "Device-characterization circuits and analyses; calibration jobs require approval.",
@@ -5494,7 +5498,7 @@
     "requirements.txt": "0.51.0",
     "scripts/kaggle_run.py:88:KERNEL_PINS": "0.51.0",
     "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.51.0",
-    "scripts/kaggle_run.py:163:PIN_GROUPS": "0.51.0",
+    "scripts/kaggle_run.py:164:PIN_GROUPS": "0.51.0",
     "IQM retained environment": "0.43.1"
    },
    "observed_host_version": "0.50.0",
@@ -5697,7 +5701,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.1.1",
     "requirements.txt": "0.1.1",
-    "scripts/kaggle_run.py:167:PIN_GROUPS": "0.1.1"
+    "scripts/kaggle_run.py:168:PIN_GROUPS": "0.1.1"
    },
    "observed_host_version": "0.1.1",
    "role": "Hardware mitigation tasks; invocation can submit and needs the written case.",
@@ -5779,7 +5783,7 @@
   {
    "distribution": "qiskit-qasm3-import",
    "declared_versions": {
-    "scripts/kaggle_run.py:169:PIN_GROUPS": "0.6.0"
+    "scripts/kaggle_run.py:170:PIN_GROUPS": "0.6.0"
    },
    "observed_host_version": "0.6.0",
    "role": "Validated OpenQASM interchange between isolated SDK environments.",
@@ -5894,7 +5898,7 @@
   {
    "distribution": "quimb",
    "declared_versions": {
-    "scripts/kaggle_run.py:175:PIN_GROUPS": "1.15.0",
+    "scripts/kaggle_run.py:176:PIN_GROUPS": "1.15.0",
     "IQM retained environment": "1.15.0"
    },
    "observed_host_version": "1.15.0",
@@ -5927,7 +5931,7 @@
    "distribution": "qxelarator",
    "declared_versions": {
     "docs/notes/quantum_inspire/requirements-qi.txt": "0.10.0",
-    "scripts/kaggle_run.py:190:PIN_GROUPS": "0.10.0"
+    "scripts/kaggle_run.py:191:PIN_GROUPS": "0.10.0"
    },
    "observed_host_version": null,
    "role": "Local QX execution; measurement-register semantics differ from Tuna classical bits.",
@@ -6096,7 +6100,7 @@
   {
    "distribution": "runningman",
    "declared_versions": {
-    "scripts/kaggle_run.py:162:PIN_GROUPS": "2.3.0",
+    "scripts/kaggle_run.py:163:PIN_GROUPS": "2.3.0",
     "IQM retained environment": "2.3.0"
    },
    "observed_host_version": "2.3.0",
@@ -6172,7 +6176,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.21.0",
     "requirements.txt": "0.21.0",
-    "scripts/kaggle_run.py:165:PIN_GROUPS": "0.21.0"
+    "scripts/kaggle_run.py:166:PIN_GROUPS": "0.21.0"
    },
    "observed_host_version": "0.21.0",
    "role": "Runtime circuit preparation; dynamic-circuit restrictions remain binding.",
@@ -6787,7 +6791,7 @@
   {
    "distribution": "stim",
    "declared_versions": {
-    "scripts/kaggle_run.py:160:PIN_GROUPS": "1.16.0",
+    "scripts/kaggle_run.py:161:PIN_GROUPS": "1.16.0",
     "IQM retained environment": "1.16.0"
    },
    "observed_host_version": "1.16.0",
@@ -7261,7 +7265,7 @@
   {
    "distribution": "uv",
    "declared_versions": {
-    "scripts/kaggle_run.py:207:UV_PIN": "0.13.0"
+    "scripts/kaggle_run.py:208:UV_PIN": "0.13.0"
    },
    "observed_host_version": null,
    "role": "Pinned environment installer used by Kaggle kernel bootstrap; records package resolution rather than quantum evidence.",
@@ -7398,7 +7402,7 @@
   "docs/notes/qiskit-ecosystem.md": "ccdcb14e5702cdcd248ae4510d3c950eecf734cba851e7509b3e07bc20ca6608",
   "docs/notes/packages/candidates.md": "9686e4e3cabe939651db5bf5b64b46fcd5a361e8f5d23fa430de6627dcd9d11b",
   "ci/requirements-browser.txt": "6f9875723235ece07415e7d19103f2ec61ec35e1392d23fbd1c1290e043eaeb8",
-  "ci/requirements-ci.txt": "a83d9288a87525f62db022ca032a876a2f0d5f5a93f21bf4fce19fd35d72f7d3",
+  "ci/requirements-ci.txt": "39f271c5f7577e825bd06489f279fdb97582abe50cda79e6b8ac06c90824248d",
   "ci/requirements-replay.txt": "e5e98e830c7d6f06cca129bc4a9cd4bda6cc44cde0fc0b0d8d427e0ab0801496",
   "docs/notes/bluequbit/requirements-bluequbit.txt": "9e2df74f3a0f821bdb8093a61944e284ed6f5bb93c4b6dd9092ea612f048c422",
   "docs/notes/ionq/requirements-ionq.txt": "f3c90a4ec3ed32cf753c37bc2c9c4ff97fd348d646f3769c18e28d3e915202ff",
@@ -7410,7 +7414,7 @@
   "docs/notes/quantum_inspire/requirements-qi.txt": "95deb5311e97df0c191622f407f6f4ab747459c1e97e5d2cbf4d36b959654d88",
   "packaging/qiskit-aer-cuda/build-requirements.txt": "10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352",
   "requirements.txt": "49a450b4495470d5a42522602b6c59bc0b6ac81822a530109ce9a774c286527b",
-  "scripts/kaggle_run.py": "056a4da780305f35588487102dad7e2d9b460291505643ccbf9d57f3e5c4d2a9",
+  "scripts/kaggle_run.py": "a6c47bd2dd5151a05fa5aacd760975c85d7934ee8c768194f1826e8723ef5e54",
   "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "91341759b26f68f39d0764b256139b147f538e39824de48eb3acc0ea828da1d2",
   "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",
   "scripts/hypercomplex_libraries.py": "0f4cb3cffa3d88479952e557e0f706cc03a42f28deb1abd60091db026659116e",
@@ -8613,6 +8617,14 @@
    "sympy",
    "typing"
   ],
+  "gororoba_quantum/iqm_records.py": [
+   "__future__",
+   "dataclasses",
+   "hashlib",
+   "json",
+   "pathlib",
+   "typing"
+  ],
   "gororoba_quantum/jax_bridge.py": [
    "__future__",
    "collections",
@@ -9255,6 +9267,17 @@
    "typing",
    "unittest"
   ],
+  "gororoba_quantum/qd_records.py": [
+   "__future__",
+   "base64",
+   "dataclasses",
+   "hashlib",
+   "json",
+   "pathlib",
+   "re",
+   "typing",
+   "zlib"
+  ],
   "gororoba_quantum/qet_ladder.py": [
    "__future__",
    "collections",
@@ -9265,6 +9288,26 @@
    "qiskit",
    "typing"
   ],
+  "gororoba_quantum/qi_joint_response.py": [
+   "__future__",
+   "collections",
+   "dataclasses",
+   "decimal",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_records",
+   "typing"
+  ],
+  "gororoba_quantum/qi_records.py": [
+   "__future__",
+   "collections",
+   "dataclasses",
+   "hashlib",
+   "json",
+   "pathlib",
+   "typing"
+  ],
   "gororoba_quantum/qi_stack.py": [
    "__future__",
    "dataclasses",
@@ -9273,6 +9316,17 @@
    "os",
    "pathlib",
    "subprocess"
+  ],
+  "gororoba_quantum/qi_zz_preflight.py": [
+   "__future__",
+   "collections",
+   "dataclasses",
+   "json",
+   "parallel",
+   "pathlib",
+   "qi_records",
+   "tempfile",
+   "typing"
   ],
   "gororoba_quantum/qpe_diagnostics.py": [
    "__future__",
@@ -10087,6 +10141,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "sys",
    "typing"
   ],
@@ -10104,6 +10159,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -10121,6 +10177,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -10144,6 +10201,7 @@
    "pathlib",
    "photonic_compilation_audit",
    "qd_belenos_mesh",
+   "qd_records",
    "re",
    "scipy",
    "sys",
@@ -10329,6 +10387,7 @@
    "json",
    "parallel",
    "pathlib",
+   "qd_records",
    "sys",
    "typing"
   ],
@@ -10372,6 +10431,7 @@
    "numpy",
    "parallel",
    "pathlib",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -10603,6 +10663,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "sys",
    "typing"
   ],
@@ -10676,6 +10737,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -10801,6 +10863,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "sys",
    "tempfile",
    "typing"
@@ -10838,6 +10901,7 @@
    "parallel",
    "pathlib",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "tempfile",
@@ -10872,6 +10936,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -10942,6 +11007,7 @@
    "parallel",
    "pathlib",
    "qd_platform",
+   "qd_records",
    "qi_readout_ringdown_cases",
    "scipy",
    "sys",
@@ -12221,6 +12287,7 @@
    "iqm_jobs",
    "iqm_platform",
    "iqm_probe_audit",
+   "iqm_records",
    "iqm_signed_probe",
    "iqm_sim",
    "json",
@@ -12242,6 +12309,7 @@
    "iqm_cancellation_probe",
    "iqm_jobs",
    "iqm_platform",
+   "iqm_records",
    "iqm_signed_probe",
    "iqm_signed_resolve",
    "iqm_sim",
@@ -12262,6 +12330,7 @@
    "datetime",
    "fcntl",
    "iqm_platform",
+   "iqm_records",
    "json",
    "math",
    "os",
@@ -12295,6 +12364,7 @@
    "iqm_jobs",
    "iqm_measurement_sequence",
    "iqm_platform",
+   "iqm_records",
    "json",
    "math",
    "numpy",
@@ -12311,6 +12381,7 @@
    "iqm_jobs",
    "iqm_measurement_sequence",
    "iqm_platform",
+   "iqm_records",
    "json",
    "math",
    "parallel",
@@ -12325,6 +12396,7 @@
    "functools",
    "iqm_jobs",
    "iqm_platform",
+   "iqm_records",
    "itertools",
    "json",
    "math",
@@ -12362,6 +12434,7 @@
    "fcntl",
    "hashlib",
    "http",
+   "iqm_records",
    "json",
    "os",
    "pathlib",
@@ -12399,6 +12472,7 @@
    "functools",
    "iqm_jobs",
    "iqm_platform",
+   "iqm_records",
    "iqm_signed_probe",
    "iqm_sim",
    "json",
@@ -12420,6 +12494,7 @@
    "argparse",
    "iqm_jobs",
    "iqm_platform",
+   "iqm_records",
    "iqm_sim",
    "json",
    "math",
@@ -12438,6 +12513,7 @@
    "iqm_cancellation_probe",
    "iqm_jobs",
    "iqm_platform",
+   "iqm_records",
    "iqm_signed_probe",
    "iqm_sim",
    "json",
@@ -13604,6 +13680,7 @@
    "pathlib",
    "qd_belenos_mesh",
    "qd_box_kite_analysis",
+   "qd_records",
    "random",
    "statistics",
    "sys",
@@ -13647,6 +13724,7 @@
    "pathlib",
    "qd_belenos_mesh",
    "qd_platform",
+   "qd_records",
    "sys",
    "typing"
   ],
@@ -13692,6 +13770,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "sys",
    "tempfile",
    "typing"
@@ -13703,6 +13782,7 @@
    "functools",
    "io",
    "json",
+   "jsonschema",
    "math",
    "mcp",
    "numpy",
@@ -13750,7 +13830,6 @@
    "fcntl",
    "fractions",
    "functools",
-   "hashlib",
    "http",
    "importlib",
    "io",
@@ -13762,6 +13841,7 @@
    "pathlib",
    "perceval",
    "qd_belenos_mesh",
+   "qd_records",
    "re",
    "shutil",
    "ssl",
@@ -14740,6 +14820,15 @@
    "tempfile",
    "typing"
   ],
+  "scripts/qi_zz_map_qx_analysis.py": [
+   "__future__",
+   "argparse",
+   "pathlib",
+   "qi_zz_map",
+   "qi_zz_map_qx",
+   "qi_zz_preflight",
+   "sys"
+  ],
   "scripts/qi_zz_map_qx_plans.py": [
    "__future__",
    "argparse",
@@ -15193,6 +15282,7 @@
    "plan_records",
    "qd_platform",
    "qi_platform",
+   "qi_records",
    "re",
    "sys",
    "typing"
@@ -15604,6 +15694,9 @@
   "hypercomplex_engine": [],
   "hyprat": [],
   "jax": [],
+  "jsonschema": [
+   "jsonschema"
+  ],
   "kaggle": [],
   "kagglesdk": [],
   "kingdon": [],

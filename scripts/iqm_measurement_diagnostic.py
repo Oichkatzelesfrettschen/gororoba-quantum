@@ -65,6 +65,7 @@ import iqm_measurement_sequence as seq  # noqa: E402
 from iqm_jobs import CASE_SCHEMA, JOB_SECONDS, cancel_threshold_seconds, dump, replay_mismatch, run_facts  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 
+import iqm_records  # noqa: E402
 from parallel import MIN_PARALLEL_ITEMS, ordered_map  # noqa: E402
 
 CASE = "measurement-sequence-diagnostic"
@@ -535,10 +536,11 @@ def evaluate(counts: dict[str, Any], prediction: dict[str, Any], excerpt: dict[s
 def analyze(run_dir: Path, mock: bool = False) -> dict[str, Any]:
     """The preregistered diagnosis of a garnet run; with mock the same pipeline over a garnet:mock run, whose random
     outcomes decide nothing."""
+    records = iqm_records.load_run(run_dir)
     facts = run_facts(run_dir)
-    submission = seq.load_json(run_dir / "submission.json")
-    record = json.loads((run_dir / "raw/job.json").read_bytes())
-    case = seq.load_json(run_dir / "cases.json")
+    submission = records.json_of("submission.json")
+    record = records.json_of("raw/job.json")
+    case = records.json_of("cases.json")
     prediction_bytes = (run_dir / "prediction.json").read_bytes()
     if sha256(prediction_bytes) != case.get("prediction_sha256"):
         raise ValueError(f"{run_dir}/prediction.json is not the prediction cases.json binds")
@@ -553,7 +555,7 @@ def analyze(run_dir: Path, mock: bool = False) -> dict[str, Any]:
     excerpt = seq.load_json(run_dir / EXCERPT)
     row = next(r for r in case["jobs"] if r["job"] == submission["job"])
     circuits = [seq.load_json(run_dir / entry["file"]) for entry in row["circuits"]]
-    counts = seq.tally(circuits, json.loads((run_dir / "raw/measurements.json").read_bytes()))
+    counts = seq.tally(circuits, records.json_of("raw/measurements.json"))
     estimated = record["compilation"]["execution_runtime_estimate_seconds"] - JOB_SECONDS
     predicted = prediction["estimator_per_shot_seconds_all_circuits"] * row["shots"]
     metrics = record["metrics"]
@@ -596,9 +598,10 @@ def drive_scan(run_dir: Path, labels: tuple[str, ...] | None = None) -> dict[str
     """The corrected D4 to D8 residuals of a retained diagnostic run under each relaxation-under-drive model: per
     model the D6 z of every usable qubit, the D6 difference over the main case's statistical standard error (the z the
     unitary-arm guard would read) and the sum of squared z over all five corrected circuits and usable qubits."""
-    case = seq.load_json(run_dir / "cases.json")
+    records = iqm_records.load_run(run_dir)
+    case = records.json_of("cases.json")
     circuits = [seq.load_json(run_dir / entry["file"]) for entry in case["jobs"][0]["circuits"]]
-    counts = seq.tally(circuits, json.loads((run_dir / "raw/measurements.json").read_bytes()))
+    counts = seq.tally(circuits, records.json_of("raw/measurements.json"))
     cals = sorted(seq.load_json(run_dir / EXCERPT)["qubits"].items())
     chosen = {k: v for k, v in DRIVE_SCAN.items() if labels is None or k in labels}
     ses = dict(

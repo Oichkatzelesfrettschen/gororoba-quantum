@@ -33,6 +33,7 @@ import iqm_measurement_sequence as seq  # noqa: E402
 from iqm_jobs import CASE_SCHEMA, cancel_threshold_seconds, dump, replay_mismatch, run_facts  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 
+import iqm_records  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 CASE = "measurement-sequence-pinching-probe"
@@ -219,9 +220,10 @@ def table(analysis: dict[str, Any]) -> str:
 def analyze(run_dir: Path, mock: bool = False) -> dict[str, Any]:
     """The stop rule over a garnet run of the probe; with mock the same pipeline over a garnet:mock run, whose random
     outcomes decide nothing."""
+    records = iqm_records.load_run(run_dir)
     facts = run_facts(run_dir)
-    submission = seq.load_json(run_dir / "submission.json")
-    case = seq.load_json(run_dir / "cases.json")
+    submission = records.json_of("submission.json")
+    case = records.json_of("cases.json")
     prediction_bytes = (run_dir / "prediction.json").read_bytes()
     if sha256(prediction_bytes) != case.get("prediction_sha256"):
         raise ValueError(f"{run_dir}/prediction.json is not the prediction cases.json binds")
@@ -233,8 +235,8 @@ def analyze(run_dir: Path, mock: bool = False) -> dict[str, Any]:
     prediction = json.loads(prediction_bytes)
     row = next(r for r in case["jobs"] if r["job"] == submission["job"])
     circuits = [seq.load_json(run_dir / entry["file"]) for entry in row["circuits"]]
-    results = json.loads((run_dir / "raw/measurements.json").read_bytes())
-    record = json.loads((run_dir / "raw/job.json").read_bytes())
+    results = records.json_of("raw/measurements.json")
+    record = records.json_of("raw/job.json")
     return {
         "schema": "iqm-measurement-preflight-analysis-v1",
         "run": run_dir.name,

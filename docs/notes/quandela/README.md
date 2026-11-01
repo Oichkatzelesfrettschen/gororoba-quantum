@@ -162,7 +162,7 @@ Routes (`api/cloud-openapi.json`, cloud API v2.10.1-rc1 at capture):
 
 `scripts/qd_mcp_server.py` runs on the interpreter
 `QD_PYTHON=${QD_PYTHON:-/usr/bin/python3}`, the system Python that carries
-mcp 1.29 (FastMCP), perceval-quandela and exqalibur. It registers as
+mcp 2.3 (MCPServer), perceval-quandela and exqalibur. It registers as
 `quandela` at Claude Code user scope and in `~/.codex/config.toml`, launching
 `"$QD_PYTHON" -I "$REPO/scripts/qd_mcp_server.py"`, where `REPO` is the
 primary checkout, with `QUANDELA_TOKEN_FILE`; `-I` keeps the user site and
@@ -176,8 +176,8 @@ Properties of the server that its code and gate hold:
   because urllib's redirect handler copies the Authorization header to the
   redirect target. A 401, 403 or 404 answer names its usual cause.
 - Each tool is a coroutine that runs its HTTP call or simulation in a worker
-  thread; FastMCP 1.29 runs a plain function on its event loop, where one
-  slow call stalls every other request.
+  thread, so a slow call never stalls the event loop that serves the other
+  requests.
 - The JSON-RPC stream owns a private duplicate of standard output, and
   descriptor 1 points at standard error. exqalibur's console logger, which
   Perceval uses by default, writes warnings to descriptor 1 from C++, so
@@ -189,8 +189,9 @@ Properties of the server that its code and gate hold:
   id is hexadecimal with dashes, so a path such as `../../api/tokens` fails
   validation before any request.
 - The protocol validates JSON types and rejects undeclared arguments before
-  FastMCP compatibility conversion. Boolean photon counts and JSON-string
-  matrices therefore fail at the protocol boundary. The HTTP adapter bounds
+  the SDK compatibility conversion: `ContractMCP.call_tool` validates each
+  call against the advertised schema with jsonschema. Boolean photon counts
+  and JSON-string matrices therefore fail at the protocol boundary. The HTTP adapter bounds
   responses to 64 MiB; an oversized or unusable JSON acknowledgment reports an
   unknown outcome, which requires reconciliation before a mutation retry.
 
@@ -377,8 +378,20 @@ unpublished method enters a Quandela job only with that use accepted.
   `submission.json` (approval, plan, platform record and availability at
   submission, Perceval and exqalibur versions, usage report before),
   `results.json` (scrubbed status and job data, counts, usage report after)
-  and `raw/result.json` byte for byte. scripts/research_state.py reads every
-  run through `qd_platform.run_facts` as the `quandela` provider.
+  and `raw/result.json` byte for byte. `gororoba_quantum/qd_records.py`
+  is the offline reader of one run directory (`read_run`: receipt binding,
+  circuit and body digests, platform admission, terminal status, the raw
+  result against the collection and the manifest's budgets); it needs the
+  standard library alone. `qd_platform.run_facts` adds the credit charge to
+  its facts, and scripts/research_state.py reads every run through it as the
+  `quandela` provider.
+  The Ascella signed-coherence analyses (`ascella_coherence_repeat.run_record`
+  and its callers) read their runs through `read_run` too, so a run enters a
+  score only after the shared record rules.
+  `load_run` reads a directory's files without judging them and
+  `validate_run` applies the rules to the loaded records, so the Belenos
+  (bdsc) readouts load every run the same way and validate the retained
+  ones, while their self-tests' synthetic runs carry no circuit or raw result.
 
 The token's provider limits and the repository runner's admission rule are
 separate. The recorded provider limits allow one running job and one queued

@@ -59,6 +59,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from hypercomplex_cases import encoded, photonic_template  # noqa: E402
 from qd_platform import sha256_bytes, template_experiment  # noqa: E402
 
+import qd_records  # noqa: E402
 from cd_core import cd_sign  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
@@ -865,15 +866,8 @@ def analyze(
     - TOST equivalence test against +/- 0.020 with confidence intervals
     - studentized step-change / abrupt transition quarantine
     """
-    cases_path = run_dir / "cases.json"
-    results_path = run_dir / "results.json"
-    if not cases_path.exists():
-        raise FileNotFoundError(f"missing cases.json in {run_dir}")
-    if not results_path.exists():
-        raise FileNotFoundError(f"missing results.json in {run_dir}")
-
-    manifest = json.loads(cases_path.read_text())
-    results = json.loads(results_path.read_text())
+    records = qd_records.load_run(run_dir)
+    manifest, results = records.json_of("cases.json"), records.json_of("results.json")
     entries = results.get("iterations")
     if not isinstance(entries, list):
         raise ValueError(f"results.json in {run_dir} does not contain an 'iterations' list")

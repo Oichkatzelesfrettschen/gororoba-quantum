@@ -370,7 +370,7 @@ isa = transpile_to_IQM(circuit, backend, seed_transpiler=7)
 `scripts/iqm_mcp_server.py` is registered at Claude Code user scope and in
 `~/.codex/config.toml` as `iqm`: `/usr/bin/python3 -I
 scripts/iqm_mcp_server.py` with `IQM_TOKENS_FILE`. It runs on the system
-Python (mcp 1.29) and imports nothing from the client stack. Claude allows
+Python (mcp 2.3, MCPServer) and imports nothing from the client stack. Claude allows
 and Codex approves the read tools; `iqm_cancel_job` asks every time.
 `iqm_platform.py check` holds the tool set and annotations. The server
 submits nothing and books no timeslot.
@@ -418,7 +418,14 @@ sends nothing. One run directory is admitted per quantum computer, case, job
 and cases.json digest, so a rebuilt case takes its own mock run. The timing,
 reset-billing and signed-probe cases predate `max_credits`; their retained
 bytes stay as approved, so a charged resubmission of them refuses and a rerun
-goes through a new case. The first case is the
+goes through a new case. `gororoba_quantum/iqm_records.py` is the offline
+reader of one run directory: `load_run` reads its files as written and
+`validate_run` applies the shared rules (case schema and circuit digests,
+receipt binding, the collection naming the same job with a terminal status,
+every raw file keeping its recorded digest, raw/job.json agreeing with the
+collection, a completed job returning the case's shots); `iqm_jobs.run_facts`
+adds the credit charge to its facts, and every IQM analyzer reads its run's
+files through the loaded records. The first case is the
 [Garnet timing pilot](../../design/iqm-garnet-timing-pilot.md), which prices
 later cases from measured billing.
 The [measurement-sequence pinching case](../../design/iqm-garnet-measurement-sequence-pinching.md)
