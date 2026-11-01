@@ -50,7 +50,7 @@ def load(path: Path) -> dict[str, Any] | None:
     """
     try:
         document = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+    except OSError, UnicodeDecodeError, json.JSONDecodeError:
         return None
     return document if isinstance(document, dict) else None
 
@@ -77,7 +77,10 @@ def report(
         lines.append("")
     if held:
         lines += ["Quarantined gates:", "", "| gate | scope | reason |", "| --- | --- | --- |"]
-        lines += [f"| `{gate}` | {d['scope']} | {d['reason']} |" for gate, d in sorted(held.items())]
+        lines += [
+            f"| `{gate}` | {d['scope']}{' until ' + d['until'] if 'until' in d else ''} | {d['reason']} |"
+            for gate, d in sorted(held.items())
+        ]
         lines.append("")
     lines.append("Each cited claim is qualified until its gate passes again on main.")
     return "\n".join(lines) + "\n"

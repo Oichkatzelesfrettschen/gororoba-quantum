@@ -10,6 +10,7 @@ import json
 import os
 import sys
 from collections.abc import Iterator
+from datetime import date
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
@@ -315,3 +316,19 @@ def test_audit_lane_gates_leave_the_pull_request_selection() -> None:
         raise AssertionError("the behavioral suite gate carries lane audit")
     if any(gate.get("lane") not in (None, "audit") for gate in gates):
         raise AssertionError("lane takes only the value audit")
+
+
+@pytest.mark.parametrize(("on", "wanted"), [(date(2026, 11, 30), ["fast"]), (date(2026, 12, 1), ["fast", "paused"])])
+def test_an_all_scope_quarantine_leaves_every_selection_until_its_date(root: Path, on: date, wanted: list[str]) -> None:
+    paused = {"scope": "all", "reason": "owner pause", "until": "2026-12-01"}
+    manifest(root, [LISTED[0], {"name": "paused", "cwd": ".", "cmd": "true", "seconds": 1.0, "quarantine": paused}])
+    with patch.object(run_gates.gate_quarantine, "today", return_value=on):
+        names = {tier: [gate["name"] for gate in run_gates.select(root, tier)] for tier in ("pr", "full")}
+        with runner(root) as output:
+            status = run_gates.main([])
+    text = output.getvalue()
+    if names != {"pr": wanted, "full": wanted} or status != 0:
+        raise AssertionError(f"on {on} the selections were {names}, exit {status}, not {wanted}:\n{text}")
+    announced = "QUARANTINED paused  every lane until 2026-12-01" in text
+    if announced != (on < date(2026, 12, 1)) or ("PASS paused" in text) == announced:
+        raise AssertionError(f"on {on} the run announced or ran the paused gate wrongly:\n{text}")

@@ -3533,7 +3533,12 @@
       "cmd": "\"$PYTHON\" -B -W error scripts/source_reading_copies.py --check",
       "name": "sources-reading-copies-index",
       "seconds": 0.2,
-      "tier": "pr"
+      "tier": "pr",
+      "quarantine": {
+        "scope": "all",
+        "reason": "The owner paused the reading-copy index check while the documents repositories reorganize; a source registered meanwhile needs its location row before the resume date.",
+        "until": "2026-12-01"
+      }
     },
     {
       "suite": "core",
