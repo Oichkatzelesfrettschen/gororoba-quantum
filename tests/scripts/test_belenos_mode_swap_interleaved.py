@@ -7,6 +7,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import sys
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -550,6 +551,41 @@ def test_the_excess_test_drops_deterministic_blocks_and_keeps_deltas_without_exp
     moved = case.earlier_excess({("a", 0): {"p": 0.0}}, {("a", 0): {"delta": 0.2, "v": 0.0}}, classes)
     if moved["verdict"] != "excess" or moved["statistic"] != float("inf"):
         raise AssertionError(moved)
+
+
+def test_two_certain_shares_that_differ_give_a_signed_infinite_z() -> None:
+    if case.two_sample_z((0, 20000), (20000, 20000)) != math.inf:
+        raise AssertionError("a deterministic flip vanished")
+    if case.two_sample_z((20000, 20000), (0, 20000)) != -math.inf:
+        raise AssertionError("the flip lost its sign")
+    if case.two_sample_z((0, 20000), (0, 10000)) is not None or case.two_sample_z((0, 0), (1, 2)) is not None:
+        raise AssertionError("equal certain shares or an empty count must stay undefined")
+
+
+def test_reanalysis_in_any_run_order_keeps_the_retained_bytes_and_refuses_a_different_record(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = sorted(ROOT.glob("results/quandela/runs/*-qpu_belenos-belenos_mode_swap_interleaved-job-*"))
+    runs = []
+    for run in source:
+        copy_dir = tmp_path / run.name
+        copy_dir.mkdir()
+        for name in ("cases.json", "results.json", "analysis.json"):
+            (copy_dir / name).write_bytes((run / name).read_bytes())
+        runs.append(copy_dir)
+    retained = {run: (run / "analysis.json").read_bytes() for run in runs}
+    monkeypatch.setattr(sys, "argv", ["belenos_mode_swap_interleaved.py", "--analyze", *map(str, reversed(runs))])
+    if case.main() != 0 or any((run / "analysis.json").read_bytes() != data for run, data in retained.items()):
+        raise AssertionError("a reordered reanalysis changed the retained bytes")
+    (runs[1] / "analysis.json").write_text("{}\n", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="holds a different analysis"):
+        case.main()
+    if (runs[0] / "analysis.json").read_bytes() != retained[runs[0]]:
+        raise AssertionError("a refused reanalysis wrote a record")
+    if not case.same_record({"p": 0.5545141403660423}, {"p": 0.5545141403660424}) or case.same_record(
+        {"p": 0.5}, {"p": 0.6}
+    ):
+        raise AssertionError("same_record must absorb a last-digit move and nothing larger")
 
 
 def test_a_drift_step_between_a_sets_two_jobs_raises_the_mesh_scale_rather_than_hiding_it(tmp_path: Path) -> None:

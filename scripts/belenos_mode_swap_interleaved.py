@@ -521,12 +521,18 @@ def block_shares(setting: dict[str, Any], counts: dict[str, int]) -> list[dict[s
 
 
 def two_sample_z(first: tuple[int, int], second: tuple[int, int]) -> float | None:
+    """The two-proportion z of second against first; None without a count or when both shares are equal and certain.
+
+    Two certain shares that differ (0 of n against n of n) have no binomial standard error and give a signed infinite
+    z, so a deterministic contrast counts as moved and as drift rather than vanishing."""
     (h0, n0), (h1, n1) = first, second
     if not n0 or not n1:
         return None
     a0, a1 = h0 / n0, h1 / n1
     se = math.sqrt(a0 * (1 - a0) / n0 + a1 * (1 - a1) / n1)
-    return (a1 - a0) / se if se > 0 else None
+    if se > 0:
+        return (a1 - a0) / se
+    return math.copysign(math.inf, a1 - a0) if a1 != a0 else None
 
 
 def request_key(params: Any, seed: Any) -> str:
@@ -604,7 +610,7 @@ def load_runs(runs: list[Path]) -> list[dict[str, Any]]:
             }
         )
     require(sorted(r["job"] for r in loaded) == sorted(JOBS), f"the runs hold jobs {[r['job'] for r in loaded]}")
-    return loaded
+    return sorted(loaded, key=lambda r: r["job"])
 
 
 def collect_cells(loaded: list[dict[str, Any]]) -> dict[str, Any]:
@@ -984,6 +990,22 @@ def analyze(runs: list[Path], earlier: dict[tuple[str, int], dict[str, float]] |
     return record
 
 
+def same_record(retained: Any, fresh: Any) -> bool:
+    """Equal JSON values, with floats equal to a relative 1e-12: a library build that moves a chi-square tail in its
+    last digit reproduces the record, and any other difference does not."""
+    if isinstance(retained, float) or isinstance(fresh, float):
+        if isinstance(retained, bool) or isinstance(fresh, bool):
+            return retained is fresh
+        if not isinstance(retained, int | float) or not isinstance(fresh, int | float):
+            return False
+        return retained == fresh or math.isclose(retained, fresh, rel_tol=1e-12, abs_tol=0.0)
+    if isinstance(retained, dict) and isinstance(fresh, dict):
+        return retained.keys() == fresh.keys() and all(same_record(retained[k], fresh[k]) for k in retained)
+    if isinstance(retained, list) and isinstance(fresh, list):
+        return len(retained) == len(fresh) and all(same_record(x, y) for x, y in zip(retained, fresh, strict=True))
+    return type(retained) is type(fresh) and retained == fresh
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     group = parser.add_mutually_exclusive_group()
@@ -996,8 +1018,16 @@ def main() -> int:
     if args.analyze:
         record = analyze(args.analyze)
         text = json.dumps(record, indent=1, sort_keys=True) + "\n"
-        for run in args.analyze:
-            (run / "analysis.json").write_text(text, encoding="utf-8")
+        targets = [run / "analysis.json" for run in args.analyze]
+        fresh = json.loads(text)
+        for target in targets:
+            require(
+                not target.exists() or same_record(json.loads(target.read_text(encoding="utf-8")), fresh),
+                f"{target} holds a different analysis; retained records keep their bytes",
+            )
+        for target in targets:
+            if not target.exists():
+                target.write_text(text, encoding="utf-8")
         print(record["reading"])
         return 0
     return check()
