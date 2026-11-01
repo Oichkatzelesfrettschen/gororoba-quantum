@@ -22,8 +22,9 @@ from plan_inventory import check_retained_inventory, git, scan
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = Path("docs/state/plans.md")
 CATALOGUE = Path("docs/state/plan-catalogue.md")
-# The paths check reads, which a gate command names so a change to any of them selects the gate.
-CHECK_INPUTS = (records.DIRECTORY.as_posix(), INDEX.as_posix(), CATALOGUE.as_posix())
+# The paths check reads, which a gate command names so a change to any of them selects the gate. INDEX and
+# CATALOGUE are git-ignored renders that `render --write` produces on demand and check never compares.
+CHECK_INPUTS = (records.DIRECTORY.as_posix(),)
 ORDER = {name: position for position, name in enumerate(("active", "paused", "planned", "inbox", "closed"))}
 
 
@@ -233,7 +234,7 @@ def parser() -> argparse.ArgumentParser:
         "inputs",
         nargs="*",
         choices=CHECK_INPUTS,
-        help="the record directory and generated views check reads, named for changed-path gate selection",
+        help="the record directory check reads, named for changed-path gate selection",
     )
     evidence = actions.add_parser("digest")
     evidence.add_argument(
@@ -279,10 +280,6 @@ def _run(arguments: argparse.Namespace) -> int:
             for path, content in outputs.items():
                 atomic_write(root / path, content)
         elif arguments.command == "check":
-            for path, content in outputs.items():
-                records.require(
-                    (root / path).exists() and (root / path).read_text() == content, f"stale generated view: {path}"
-                )
             if arguments.base is not None:
                 unfresh = closure_findings(root, plans, arguments.base)
                 records.require(not unfresh, "changed plans need fresh receipts:\n" + "\n".join(unfresh))
@@ -388,7 +385,7 @@ def _run(arguments: argparse.Namespace) -> int:
             plan["state"] = "active"
             plan["next_action"] = plan.pop("pause")["next_action"]
     publish(root, plans, plan)
-    print(f"Updated {plan['id']}; run render --write to regenerate views.")
+    print(f"Updated {plan['id']}; `render --write` renders the git-ignored views on demand.")
     return 0
 
 

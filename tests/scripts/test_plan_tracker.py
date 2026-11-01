@@ -220,7 +220,7 @@ def test_invalid_mutation_leaves_record_bytes(root: Path) -> None:
         raise RuntimeError("invalid update changed the record")
 
 
-def test_render_determinism_staleness_and_limit(root: Path) -> None:
+def test_render_determinism_limit_and_view_independence(root: Path) -> None:
     plans = {}
     for number in range(14):
         item = plan(f"investigation-{number}")
@@ -233,8 +233,9 @@ def test_render_determinism_staleness_and_limit(root: Path) -> None:
         raise RuntimeError("views must be deterministic and bounded")
     invoke(root, "render", "--write")
     (root / tracker.INDEX).write_text("handwritten status\n")
-    with pytest.raises(ValueError, match="stale generated"):
-        invoke(root, "check")
+    (root / tracker.CATALOGUE).unlink()
+    if invoke(root, "check") != 0:
+        raise RuntimeError("check validates records and never compares a rendered view")
 
 
 def test_semantic_merge_reports_clean_text_scope_receipt_overlap() -> None:

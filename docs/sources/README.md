@@ -47,7 +47,7 @@ those copies from the registered URLs or from checkouts of the owner's documents
 repositories gororoba-documents-public and gororoba-documents-private, which
 also hold their Markdown transcriptions, and admits a file only when its size
 and SHA-256 match the registry.
-[`reading-copies.md`](reading-copies.md), generated from the registry and
+`reading-copies.md`, rendered on demand and git-ignored ([generated views](../runbooks/generated-views.md)) from the registry and
 [`reading-copy-locations.tsv`](reading-copy-locations.tsv) by
 [`scripts/source_reading_copies.py`](../../scripts/source_reading_copies.py)
 and checked by the gate `sources-reading-copies-index`, links each external PDF

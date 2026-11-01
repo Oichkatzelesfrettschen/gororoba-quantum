@@ -11,7 +11,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Area | Owns | Entry |
 |---|---|---|
 | Rules | agent doctrine, gate machinery, provider tables | [AGENTS.md](../AGENTS.md), [ci/AGENTS.md](../ci/AGENTS.md) |
-| Sources and papers | PDFs, licenses, one note per source, verifier, reading-copy links | [INDEX.md](INDEX.md), [sources/README.md](sources/README.md), [sources/reading-copies.md](sources/reading-copies.md) |
+| Sources and papers | PDFs, licenses, one note per source, verifier, reading-copy links | [INDEX.md](INDEX.md), [sources/README.md](sources/README.md), [reading-copy-locations.tsv](sources/reading-copy-locations.tsv) |
 | Algebra and proofs | Cayley-Dickson conventions, rank strata, Rocq certificates | [algebra_circuit_rules.md](notes/algebra_circuit_rules.md) |
 | A5 and photonic candidates | Exact rank witnesses, heralding limits and retained Ascella and Belenos results | [A5 photonic cross-checks](evidence/a5-photonic-crosschecks/README.md) |
 | Circuit and QPU design | circuit designs, claim boundaries, QPU budgets | [DESIGN_NOTES.md](../gororoba_quantum/DESIGN_NOTES.md) |
@@ -35,10 +35,10 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Packages and tools | hypercomplex stack, quantum tool manuals, Aer packaging | [packages/README.md](notes/packages/README.md) |
 | Python | interpreters, library roles, optimization ladder | [PYTHON.md](PYTHON.md) |
 | CI and gates | gate list, ledger, runtime measurements | [ci/AGENTS.md](../ci/AGENTS.md) |
-| Planning | work records, next actions, blockers and completion receipts | [planning entrance](state/plans.md), [commands](runbooks/plan-tracker.md), [migration evidence](evidence/plan-reconciliation/README.md) |
+| Planning | work records, next actions, blockers and completion receipts | [plan records](state/plans/), [commands](runbooks/plan-tracker.md), [migration evidence](evidence/plan-reconciliation/README.md) |
 | Repository layout | measured checkout shape, producer-side record slimming, document and code homes, package hierarchy waves, owner decisions | [layout reconciliation](design/repository-layout-reconciliation.md) |
 | Operating rules | the six failures the rules prevent, the operating data, the forty-line contract, checks that replace text, falsifiers, what the CI is for | [operating rules contract](design/operating-rules-contract.md) |
-| State and records | claim registry, run census, roadmap | [RESEARCH_STATE.md](state/RESEARCH_STATE.md) |
+| State and records | claim registry, run census, roadmap, on-demand renders | [research_state.json](state/research_state.json), [generated views](runbooks/generated-views.md) |
 | Evidence closure | source-relative job identities, denominators, dependencies and acquisition decisions | [derived view](evidence/evidence-closure/README.md), [operator procedure](runbooks/evidence-closure.md), [derivation-led synthesis source](notes/topics/algebra_measurement_synthesis.tex) |
 | Results index and archive copies | run, job, acquisition and claim lookups; Software Heritage and git bundle copies | [results index](runbooks/results-index.md), [archive copies](runbooks/repository-archive.md), [archive observations](evidence/repository-archive/README.md) |
 | Archive | handoffs, handbacks, review reports | [archive/reviews/README.md](archive/reviews/README.md) |
@@ -70,11 +70,11 @@ list every file with its sha256, license, license evidence and kind in
 repeatable for both checkouts, restores the ignored `docs/local_source_cache/`
 by sha256, and the same command without `--from-documents` fetches the
 registered URLs.
-[sources/reading-copies.md](sources/reading-copies.md) links each source to its
-reading copy beside its public source. `scripts/source_reading_copies.py --locate`
+The git-ignored `sources/reading-copies.md` ([generated views](runbooks/generated-views.md)) links each
+source to its reading copy beside its public source. `scripts/source_reading_copies.py --locate`
 resolves every registered digest through both manifests into
 [sources/reading-copy-locations.tsv](sources/reading-copy-locations.tsv), and a
-plain run regenerates the index after every registry change. The `sources`
+plain run renders that index on demand. The `sources`
 suite in ci/gates.json covers the source registry, the evidence replays and
 their checksum ledgers.
 
@@ -152,7 +152,7 @@ sample and exposure counter counts, traces each to its scientific sinks and reco
 [current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized
 density interventions and a separately labeled trapped-ion qualification; every generated program remains
 unsubmitted and native-unadmitted. Its [implementation plan](design/provider-api-billing-research-plan.md)
-retains the historical checklist; the [planning catalogue](state/plan-catalogue.md) owns reconciled work status.
+retains the historical checklist; the [plan records](state/plans/) own reconciled work status.
 The [publication-status ledger](SOURCES.json) distinguishes journal identities from preprint versions;
 the [bibliographic reconciliation](notes/papers/hypercomplex_quantum_crossref_records.md) records reading scopes.
 
@@ -187,7 +187,7 @@ differs from it only in the `cd_core.py` digest.
 | Sources and papers | [INDEX.md](INDEX.md), [SOURCES.json](SOURCES.json), `verify_sources.py` |
 | CI and gates | [ci/AGENTS.md](../ci/AGENTS.md), [ci-runtime.md](runbooks/ci-runtime.md) |
 | Pull-request reviews | [AGENTS.md](../AGENTS.md) "Reviews and merges", [codex-review-loop.md](runbooks/codex-review-loop.md), [codex-review-stalls.md](runbooks/codex-review-stalls.md), `scripts/codex_review_wait.sh` |
-| State and records | [RESEARCH_STATE.md](state/RESEARCH_STATE.md), [QPU_RUN_CENSUS.md](state/QPU_RUN_CENSUS.md), [AGENTS.md](../AGENTS.md) "Records" |
+| State and records | [research_state.json](state/research_state.json), [QPU_RUN_CENSUS.md](state/QPU_RUN_CENSUS.md), [AGENTS.md](../AGENTS.md) "Records" |
 
 ## Files by area
 
@@ -432,6 +432,7 @@ differs from it only in the `cd_core.py` digest.
 | [runbooks/bdsc-tuna17-pauli-pilot.md](runbooks/bdsc-tuna17-pauli-pilot.md) | build, dry run and submission order of the Tuna-17 four-qubit Pauli readout pilot |
 | [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela job sizing for case design: the billing rule measured per job, the per-iteration time of each qpu:belenos job shape, packing limits, the shape rule and cost planning |
 | [runbooks/quandela-scheduled-runs.md](runbooks/quandela-scheduled-runs.md) | unattended submission of approved, spaced Quandela jobs from a committed schedule through GitHub Actions |
+| [runbooks/generated-views.md](runbooks/generated-views.md) | the plan, research-state and reading-copy views that render on demand, their commands and why none is committed |
 | [runbooks/classical-compute-pool.md](runbooks/classical-compute-pool.md) | free classical capacity per substrate (build host, Kaggle, GitHub Actions, Azure trial), what pooling across machines buys, tool installs per substrate, measured memory of the A_5 Rees eliminations |
 | [runbooks/critical-peer-review.md](runbooks/critical-peer-review.md) | reviewer checklist for quantum-hardware results: preregistration, multiplicity, effect size, dependent correlations, drift, provenance, simulation boundary and claim wording |
 | [QUANTUM_DISPATCH.md](../plans/QUANTUM_DISPATCH.md) | quantum dispatch plan |
