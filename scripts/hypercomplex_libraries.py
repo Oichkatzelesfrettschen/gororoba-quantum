@@ -300,26 +300,39 @@ def project_imports(
     return imports, unresolved
 
 
-def check_import_coverage(record: dict[str, Any], root: Path) -> None:
-    """Fresh tracked imports must equal the snapshot and its current distribution projection."""
-    roots, local_modules = tracked_imports(root)
-    if record.get("tracked_import_roots") != roots:
-        raise ValueError("inventory tracked import roots differ")
-    check_import_projection(record, roots, local_modules)
-
-
-def check_import_projection(record: dict[str, Any], roots: dict[str, list[str]], local_modules: set[str]) -> None:
-    """The retained mapping covers exactly the external roots and projects onto each library's importers."""
-    external = {
+def external_roots(roots: dict[str, list[str]], local_modules: set[str]) -> set[str]:
+    """Import roots that are neither standard library nor a tracked module."""
+    return {
         name
         for names in roots.values()
         for name in names
         if name not in sys.stdlib_module_names and name not in local_modules
     }
+
+
+def current_imports(record: dict[str, Any], root: Path) -> tuple[dict[str, list[str]], list[str]]:
+    """Per-distribution importing files and unresolved roots from the tracked tree and the retained mapping."""
+    roots, local_modules = tracked_imports(root)
+    imports, unresolved = project_imports(roots, local_modules, record["import_root_distributions"])
+    return {name: sorted(files) for name, files in imports.items()}, sorted(unresolved)
+
+
+def check_import_coverage(record: dict[str, Any], root: Path) -> None:
+    """The retained mapping must cover every external import root of the tracked tree."""
+    roots, local_modules = tracked_imports(root)
+    check_import_projection(record, roots, local_modules)
+
+
+def check_import_projection(record: dict[str, Any], roots: dict[str, list[str]], local_modules: set[str]) -> None:
+    """The retained mapping covers every external root and names only declared, normalized distributions.
+
+    The mapping is the host-observed part (it needs installed distributions to build); a root absent from it
+    is a new import that has no declared role. Mapping entries for roots no file imports any longer are inert.
+    """
     mapping = record.get("import_root_distributions")
-    if not isinstance(mapping, dict) or set(mapping) != external:
+    if not isinstance(mapping, dict) or not external_roots(roots, local_modules) <= set(mapping):
         raise ValueError("inventory import distribution mapping coverage differs")
-    rows = {row["distribution"]: row for row in record["libraries"]}
+    rows = {row["distribution"] for row in record["libraries"]}
     for distributions in mapping.values():
         if (
             not isinstance(distributions, list)
@@ -327,12 +340,6 @@ def check_import_projection(record: dict[str, Any], roots: dict[str, list[str]],
             or distributions != sorted(set(distributions))
         ):
             raise ValueError("inventory import distribution mapping is not normalized")
-    imports, unresolved = project_imports(roots, local_modules, mapping)
-    if record["unresolved_import_roots"] != sorted(unresolved):
-        raise ValueError("inventory unresolved import roots differ")
-    for name, row in rows.items():
-        if row["imported_by"] != sorted(imports.get(name, set())):
-            raise ValueError(f"inventory current import locations differ: {name}")
 
 
 def execution_declarations(root: Path) -> tuple[dict[str, dict[str, str]], dict[str, str]]:
@@ -512,7 +519,9 @@ def declared_libraries() -> dict[str, Any]:
     }
 
 
-def inventory() -> dict[str, Any]:
+def inventory(prior: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Build the retained record; a prior record keeps its nonempty import-root mapping so a regeneration
+    under an interpreter that lacks an optional distribution leaves the retained mapping intact."""
     declared = declared_libraries()
     declarations = declared["declarations"]
     sources = declared["sources"]
@@ -523,23 +532,19 @@ def inventory() -> dict[str, Any]:
     execution_sources = execution_declarations(ROOT)[1]
     package_map = metadata.packages_distributions()
     roots, local_modules = tracked_imports(ROOT)
-    external = {
-        name
-        for names in roots.values()
-        for name in names
-        if name not in sys.stdlib_module_names and name not in local_modules
-    }
+    retained_mapping = (prior or {}).get("import_root_distributions", {})
     mapping = {
-        name: sorted(
+        name: retained_mapping.get(name)
+        or sorted(
             {
                 normalized(distribution)
                 for distribution in package_map.get(name, [])
                 or ([ISOLATED_IMPORTS[name]] if name in ISOLATED_IMPORTS else [])
             }
         )
-        for name in sorted(external)
+        for name in sorted(external_roots(roots, local_modules))
     }
-    imports, unresolved = project_imports(roots, local_modules, mapping)
+    imports, _ = project_imports(roots, local_modules, mapping)
     for name in imports:
         declarations.setdefault(name, {})
     rows = []
@@ -569,7 +574,6 @@ def inventory() -> dict[str, Any]:
                 ),
                 "independent_algebra_witness": name in INDEPENDENT,
                 "hardware_execution": name in EXECUTION,
-                "imported_by": sorted(imports.get(name, set())),
                 "qualification": "admit only the documented API and declared convention; installation is not a run",
             }
         )
@@ -583,13 +587,12 @@ def inventory() -> dict[str, Any]:
         },
         "libraries": rows,
         "sources_sha256": sources,
-        "tracked_import_roots": roots,
         "import_root_distributions": mapping,
         "import_mapping_origin": (
             "normalized importlib.metadata.packages_distributions observation with ISOLATED_IMPORTS fallback; "
-            "checks project fresh tracked AST through this retained map instead of reinterpreting another host"
+            "importing files and unresolved roots are computed from the tracked tree through this retained map "
+            "at check time (current_imports) and are not stored"
         ),
-        "unresolved_import_roots": sorted(unresolved),
         "execution_flag_scope": "recognized provider dispatch surfaces; false does not prove absence of remote effects",
         "coverage": (
             "all requirements locks, top-level literal pins and referenced runtime pin files in "
@@ -608,10 +611,11 @@ def markdown(record: dict[str, Any]) -> str:
         f"The inventory explains {len(record['libraries'])} distributions over the declared source surfaces.",
         "",
         "Each row names a distribution, its scientific or operational role, and the observed host version. "
-        "The JSON register retains environment pins and import locations separately. "
+        "The JSON register retains environment pins and the import-root mapping separately. "
         "A missing host distribution may belong to an isolated provider environment. "
-        "Current import locations and unresolved roots follow a fresh tracked-source AST scan through the "
-        "retained normalized module mapping. Historical import locations remain separately recorded.",
+        "Current import locations and unresolved roots are computed at check time from a tracked-source AST "
+        "scan through the retained normalized module mapping. Archived historical import locations remain "
+        "recorded per distribution.",
         "",
         "Execution pins come from requirement locks and the dispatcher's top-level string literals plus referenced "
         "runtime pin files. The JSON records each pin's file, line and constant, and hashes every source. "
@@ -673,20 +677,21 @@ def main() -> int:
             raise ValueError("inventory Markdown differs")
         print(f"validated {len(record['libraries'])} distributions and every execution pin")
         return 0
-    record = inventory()
     prior_path = arguments.out / "libraries.json"
-    if prior_path.exists():
-        prior = {row["distribution"]: row for row in json.loads(prior_path.read_text())["libraries"]}
+    prior_record = json.loads(prior_path.read_text()) if prior_path.exists() else None
+    record = inventory(prior_record)
+    if prior_record is not None:
+        prior = {row["distribution"]: row for row in prior_record["libraries"]}
         for row in record["libraries"]:
             if row["distribution"] in prior:
                 retained = prior[row["distribution"]]
                 row["observed_host_version"] = retained["observed_host_version"]
-                row["historical_imported_by"] = sorted(
-                    set(retained.get("historical_imported_by", [])) | set(retained["imported_by"])
-                )
+                archived = retained.get("historical_imported_by", [])
+                if archived:
+                    row["historical_imported_by"] = sorted(archived)
         record["host_observation_policy"] = (
-            "host versions retained; historical import locations archived separately; "
-            "current imported_by follows fresh AST"
+            "host versions and the import-root mapping retained; historical import locations archived "
+            "separately; importing files are computed from the tracked tree at check time"
         )
     check_inventory_denominator(record, ROOT)
     check_execution_coverage(record, ROOT)

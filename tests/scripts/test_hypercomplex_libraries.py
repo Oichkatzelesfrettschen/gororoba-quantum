@@ -15,11 +15,13 @@ from hypercomplex_libraries import (
     check_import_coverage,
     check_import_projection,
     check_inventory_denominator,
+    current_imports,
     execution_declarations,
+    external_roots,
     inventory,
     main,
     markdown,
-    tracked_imports,
+    project_imports,
     tracked_sources,
 )
 
@@ -206,79 +208,89 @@ def import_snapshot(tmp_path: Path) -> tuple[Path, dict[str, Any]]:
     source.write_text("import numpy\nimport unresolved_probe\n")
     subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
     subprocess.run(["git", "add", "scripts/consumer.py"], cwd=tmp_path, check=True)
-    roots, _ = tracked_imports(tmp_path)
     record: dict[str, Any] = {
-        "libraries": [{"distribution": "numpy", "imported_by": ["scripts/consumer.py"]}],
-        "tracked_import_roots": roots,
-        "import_root_distributions": {"numpy": ["numpy"], "unresolved_probe": []},
-        "unresolved_import_roots": ["unresolved_probe"],
+        "libraries": [{"distribution": "numpy"}, {"distribution": "scipy"}],
+        "import_root_distributions": {"numpy": ["numpy"], "scipy": ["scipy"], "unresolved_probe": []},
     }
     check_import_coverage(record, tmp_path)
     return tmp_path, record
 
 
-@pytest.mark.parametrize("change", ["add", "remove", "new_file"])
-def test_current_import_scan_rejects_tracked_source_changes(
-    import_snapshot: tuple[Path, dict[str, Any]], change: str
-) -> None:
+def test_imports_are_computed_from_the_tree_at_call_time(import_snapshot: tuple[Path, dict[str, Any]]) -> None:
+    root, record = import_snapshot
+    if current_imports(record, root) != ({"numpy": ["scripts/consumer.py"]}, ["unresolved_probe"]):
+        raise RuntimeError("the computed importers differ from the tree")
+    source = root / "scripts/consumer.py"
+    source.write_text(source.read_text() + "import scipy\n")
+    (root / "scripts/new_tool.py").write_text("import scipy\n")
+    subprocess.run(["git", "add", "scripts/new_tool.py"], cwd=root, check=True)
+    imports, unresolved = current_imports(record, root)
+    expected = {"numpy": ["scripts/consumer.py"], "scipy": ["scripts/consumer.py", "scripts/new_tool.py"]}
+    if imports != expected or unresolved != ["unresolved_probe"]:
+        raise RuntimeError("the computed importers ignore a tracked change")
+
+
+@pytest.mark.parametrize("change", ["add_mapped", "remove", "new_file"])
+def test_mapped_import_changes_need_no_regeneration(import_snapshot: tuple[Path, dict[str, Any]], change: str) -> None:
     root, record = import_snapshot
     source = root / "scripts/consumer.py"
-    if change == "add":
+    if change == "add_mapped":
         source.write_text(source.read_text() + "import scipy\n")
     elif change == "remove":
         source.write_text(source.read_text().replace("import numpy\n", ""))
     else:
-        (root / "scripts/new_tool.py").write_text("import json\n")
+        (root / "scripts/new_tool.py").write_text("import json\nimport scipy\n")
         subprocess.run(["git", "add", "scripts/new_tool.py"], cwd=root, check=True)
-    with pytest.raises(ValueError, match="inventory tracked import roots differ"):
+    check_import_coverage(record, root)
+
+
+def test_an_undeclared_import_root_fails_the_coverage_check(import_snapshot: tuple[Path, dict[str, Any]]) -> None:
+    root, record = import_snapshot
+    (root / "scripts/new_tool.py").write_text("import brand_new_distribution\n")
+    subprocess.run(["git", "add", "scripts/new_tool.py"], cwd=root, check=True)
+    with pytest.raises(ValueError, match="inventory import distribution mapping coverage differs"):
         check_import_coverage(record, root)
 
 
-# The retained inventory against the tree. check_import_coverage reads git ls-files, each file's AST and
-# the retained mapping, never the installed distributions, so the pull-request interpreter decides it as
-# the system python3 that regenerates the inventory would; distribution resolution stays with the audit.
-# The parse of every runtime file splits into SHARDS cases so the xdist pool spreads it.
-SHARDS = 8
-REGENERATE = "PYTHON=python3 python3 scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries"
+@pytest.mark.parametrize("field", ["noncanonical", "undeclared_distribution"])
+def test_import_mapping_rejects_noncanonical_or_undeclared_distributions(
+    import_snapshot: tuple[Path, dict[str, Any]], field: str
+) -> None:
+    root, record = import_snapshot
+    record["import_root_distributions"]["numpy"] = ["NumPy"] if field == "noncanonical" else ["not-a-row"]
+    with pytest.raises(ValueError, match="inventory import distribution mapping is not normalized"):
+        check_import_coverage(record, root)
+
+
+# The retained inventory against the tree. The importing files and unresolved roots are computed from
+# git ls-files and each file's AST at check time, so only the import-root mapping (an observation of
+# installed distributions) is retained; an import of a root the mapping lacks fails until the mapping
+# gains the root, which an interpreter that holds the distribution adds.
+REGENERATE = (
+    'GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 "$PYTHON" scripts/hypercomplex_libraries.py '
+    "--out docs/state/hypercomplex-libraries, with $PYTHON the interpreter that holds the new distribution"
+)
 
 
 def retained_inventory() -> dict[str, Any]:
     return json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
 
 
+# The parse of every runtime file splits into SHARDS cases so the xdist pool spreads it under the per-test budget.
+SHARDS = 8
+
+
 @pytest.mark.parametrize("shard", range(SHARDS))
-def test_retained_inventory_records_each_tracked_file_imports(shard: int) -> None:
-    retained = retained_inventory()["tracked_import_roots"]
-    runtime_files, _ = tracked_sources(ROOT)
-    scanned = ordered_map(_file_imports, [(str(ROOT), name) for name in runtime_files[shard::SHARDS]])
-    differing = [name for name, roots in scanned if retained.get(name) != roots]
-    if differing:
-        raise ValueError(f"inventory import roots differ for {', '.join(differing)}; regenerate with {REGENERATE}")
-
-
-def test_retained_inventory_projects_the_tracked_file_set() -> None:
+def test_retained_inventory_maps_every_tracked_import_root(shard: int) -> None:
     record = retained_inventory()
     runtime_files, local_modules = tracked_sources(ROOT)
-    retained = record["tracked_import_roots"]
-    if set(retained) != set(runtime_files):
-        stale = sorted(set(retained) ^ set(runtime_files))
-        raise ValueError(f"inventory tracked files differ at {', '.join(stale)}; regenerate with {REGENERATE}")
-    check_import_projection(record, retained, local_modules)
-
-
-@pytest.mark.parametrize("field", ["imported_by", "unresolved", "mapping"])
-def test_current_import_projection_rejects_stale_or_noncanonical_fields(
-    import_snapshot: tuple[Path, dict[str, Any]], field: str
-) -> None:
-    root, record = import_snapshot
-    if field == "imported_by":
-        record["libraries"][0]["imported_by"] = []
-        message = "inventory current import locations differ"
-    elif field == "unresolved":
-        record["unresolved_import_roots"] = []
-        message = "inventory unresolved import roots differ"
-    else:
-        record["import_root_distributions"]["numpy"] = ["NumPy"]
-        message = "inventory import distribution mapping is not normalized"
-    with pytest.raises(ValueError, match=message):
-        check_import_coverage(record, root)
+    roots = dict(ordered_map(_file_imports, [(str(ROOT), name) for name in runtime_files[shard::SHARDS]]))
+    try:
+        check_import_projection(record, roots, local_modules)
+    except ValueError as error:
+        missing = sorted(external_roots(roots, local_modules) - set(record["import_root_distributions"]))
+        raise ValueError(f"{error}: unmapped roots {', '.join(missing)}; regenerate with {REGENERATE}") from error
+    imports, _ = project_imports(roots, local_modules, record["import_root_distributions"])
+    rows = {row["distribution"] for row in record["libraries"]}
+    if not set(imports) <= rows:
+        raise ValueError(f"imported distributions without a register row: {sorted(set(imports) - rows)}")
