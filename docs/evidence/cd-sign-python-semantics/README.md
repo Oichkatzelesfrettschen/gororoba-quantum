@@ -165,8 +165,8 @@ sha256sum -c docs/evidence/cd-sign-python-semantics/source_hashes.sha256
 - runs `rocq check`, and compares the outputs byte for byte with the
   receipts.
 
-The replay takes about 45 s on the build host, and the ci.yml job
-rocq-replay runs it. Gate sources-406 runs the extractor check, and
+The replay takes about 45 s on the build host, and the proofs.yml job
+rocq runs it. Gate sources-406 runs the extractor check, and
 `source_hashes.sha256` binds the proof sources, the extractor and the
 receipts. `"$PYTHON" scripts/cd_sign_rocq_ast.py --write` regenerates both
 terms after an edit to cd_sign; the proofs then have to be replayed.
