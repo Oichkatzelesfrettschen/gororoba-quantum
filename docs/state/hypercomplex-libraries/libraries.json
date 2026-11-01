@@ -134,7 +134,7 @@
    "distribution": "antlr4-python3-runtime",
    "declared_versions": {
     "docs/notes/qbraid/requirements-qbraid.txt": "4.13.2",
-    "scripts/kaggle_run.py:171:PIN_GROUPS": "4.13.2"
+    "scripts/kaggle_run.py:172:PIN_GROUPS": "4.13.2"
    },
    "observed_host_version": "4.13.2",
    "role": "Parser runtime for OpenQASM import.",
@@ -249,7 +249,7 @@
   {
    "distribution": "autoray",
    "declared_versions": {
-    "scripts/kaggle_run.py:177:PIN_GROUPS": "0.11.0",
+    "scripts/kaggle_run.py:178:PIN_GROUPS": "0.11.0",
     "IQM retained environment": "0.11.0"
    },
    "observed_host_version": "0.11.0",
@@ -576,7 +576,7 @@
   {
    "distribution": "cotengra",
    "declared_versions": {
-    "scripts/kaggle_run.py:176:PIN_GROUPS": "0.8.2",
+    "scripts/kaggle_run.py:177:PIN_GROUPS": "0.8.2",
     "IQM retained environment": "0.8.2"
    },
    "observed_host_version": "0.8.2",
@@ -1023,7 +1023,7 @@
   {
    "distribution": "galois",
    "declared_versions": {
-    "scripts/kaggle_run.py:179:PIN_GROUPS": "0.4.11"
+    "scripts/kaggle_run.py:180:PIN_GROUPS": "0.4.11"
    },
    "observed_host_version": "0.4.11",
    "role": "Finite-field Fano incidence and binary algebra certificates.",
@@ -1364,7 +1364,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.12.20260921",
     "requirements.txt": "0.13.20261016",
-    "scripts/kaggle_run.py:166:PIN_GROUPS": "0.13.20261016"
+    "scripts/kaggle_run.py:167:PIN_GROUPS": "0.13.20261016"
    },
    "observed_host_version": "0.12.20260921",
    "role": "Runtime task and option schema conformance.",
@@ -1931,7 +1931,7 @@
   {
    "distribution": "lmfit",
    "declared_versions": {
-    "scripts/kaggle_run.py:174:PIN_GROUPS": "1.3.4",
+    "scripts/kaggle_run.py:175:PIN_GROUPS": "1.3.4",
     "IQM retained environment": "1.3.4"
    },
    "observed_host_version": "1.3.4",
@@ -2190,7 +2190,7 @@
   {
    "distribution": "mthree",
    "declared_versions": {
-    "scripts/kaggle_run.py:161:PIN_GROUPS": "3.0.0",
+    "scripts/kaggle_run.py:162:PIN_GROUPS": "3.0.0",
     "IQM retained environment": "3.0.0"
    },
    "observed_host_version": "3.0.0",
@@ -2369,7 +2369,7 @@
    "distribution": "numba",
    "declared_versions": {
     "docs/notes/quafu/requirements-quafu.txt": "0.68.0",
-    "scripts/kaggle_run.py:180:PIN_GROUPS": "0.68.0",
+    "scripts/kaggle_run.py:181:PIN_GROUPS": "0.68.0",
     "IQM retained environment": "0.63.1"
    },
    "observed_host_version": "0.68.0",
@@ -3156,7 +3156,7 @@
    "distribution": "openqasm3",
    "declared_versions": {
     "docs/notes/qbraid/requirements-qbraid.txt": "1.0.1",
-    "scripts/kaggle_run.py:170:PIN_GROUPS": "1.0.1"
+    "scripts/kaggle_run.py:171:PIN_GROUPS": "1.0.1"
    },
    "observed_host_version": "1.0.1",
    "role": "OpenQASM syntax and AST support.",
@@ -3952,7 +3952,7 @@
   {
    "distribution": "pyadic",
    "declared_versions": {
-    "scripts/kaggle_run.py:185:PIN_GROUPS": "0.3.0"
+    "scripts/kaggle_run.py:186:PIN_GROUPS": "0.3.0"
    },
    "observed_host_version": "0.3.0",
    "role": "Finite-field and finite-precision p-adic coefficients; a separate arithmetic experiment.",
@@ -4357,7 +4357,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.9.0",
     "requirements.txt": "0.9.0",
-    "scripts/kaggle_run.py:185:PIN_GROUPS": "0.9.0"
+    "scripts/kaggle_run.py:186:PIN_GROUPS": "0.9.0"
    },
    "observed_host_version": "0.9.0",
    "role": "Exact rational/modular matrix rank and kernel certificates; defines no CD table.",
@@ -4471,7 +4471,7 @@
   {
    "distribution": "pyzx",
    "declared_versions": {
-    "scripts/kaggle_run.py:178:PIN_GROUPS": "0.10.7"
+    "scripts/kaggle_run.py:179:PIN_GROUPS": "0.10.7"
    },
    "observed_host_version": "0.10.7",
    "role": "ZX circuit simplification followed by exact operator-equivalence checks.",
@@ -5059,7 +5059,7 @@
   {
    "distribution": "qiskit-addon-utils",
    "declared_versions": {
-    "scripts/kaggle_run.py:172:PIN_GROUPS": "0.4.0"
+    "scripts/kaggle_run.py:173:PIN_GROUPS": "0.4.0"
    },
    "observed_host_version": "0.4.0",
    "role": "Supported circuit interchange and utility operations.",
@@ -5343,7 +5343,7 @@
   {
    "distribution": "qiskit-experiments",
    "declared_versions": {
-    "scripts/kaggle_run.py:173:PIN_GROUPS": "0.14.2"
+    "scripts/kaggle_run.py:174:PIN_GROUPS": "0.14.2"
    },
    "observed_host_version": "0.14.2",
    "role": "Device-characterization circuits and analyses; calibration jobs require approval.",
@@ -5492,7 +5492,7 @@
     "requirements.txt": "0.51.0",
     "scripts/kaggle_run.py:88:KERNEL_PINS": "0.51.0",
     "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.51.0",
-    "scripts/kaggle_run.py:163:PIN_GROUPS": "0.51.0",
+    "scripts/kaggle_run.py:164:PIN_GROUPS": "0.51.0",
     "IQM retained environment": "0.43.1"
    },
    "observed_host_version": "0.50.0",
@@ -5695,7 +5695,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.1.1",
     "requirements.txt": "0.1.1",
-    "scripts/kaggle_run.py:167:PIN_GROUPS": "0.1.1"
+    "scripts/kaggle_run.py:168:PIN_GROUPS": "0.1.1"
    },
    "observed_host_version": "0.1.1",
    "role": "Hardware mitigation tasks; invocation can submit and needs the written case.",
@@ -5777,7 +5777,7 @@
   {
    "distribution": "qiskit-qasm3-import",
    "declared_versions": {
-    "scripts/kaggle_run.py:169:PIN_GROUPS": "0.6.0"
+    "scripts/kaggle_run.py:170:PIN_GROUPS": "0.6.0"
    },
    "observed_host_version": "0.6.0",
    "role": "Validated OpenQASM interchange between isolated SDK environments.",
@@ -5892,7 +5892,7 @@
   {
    "distribution": "quimb",
    "declared_versions": {
-    "scripts/kaggle_run.py:175:PIN_GROUPS": "1.15.0",
+    "scripts/kaggle_run.py:176:PIN_GROUPS": "1.15.0",
     "IQM retained environment": "1.15.0"
    },
    "observed_host_version": "1.15.0",
@@ -5925,7 +5925,7 @@
    "distribution": "qxelarator",
    "declared_versions": {
     "docs/notes/quantum_inspire/requirements-qi.txt": "0.10.0",
-    "scripts/kaggle_run.py:190:PIN_GROUPS": "0.10.0"
+    "scripts/kaggle_run.py:191:PIN_GROUPS": "0.10.0"
    },
    "observed_host_version": null,
    "role": "Local QX execution; measurement-register semantics differ from Tuna classical bits.",
@@ -6094,7 +6094,7 @@
   {
    "distribution": "runningman",
    "declared_versions": {
-    "scripts/kaggle_run.py:162:PIN_GROUPS": "2.3.0",
+    "scripts/kaggle_run.py:163:PIN_GROUPS": "2.3.0",
     "IQM retained environment": "2.3.0"
    },
    "observed_host_version": "2.3.0",
@@ -6170,7 +6170,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.21.0",
     "requirements.txt": "0.21.0",
-    "scripts/kaggle_run.py:165:PIN_GROUPS": "0.21.0"
+    "scripts/kaggle_run.py:166:PIN_GROUPS": "0.21.0"
    },
    "observed_host_version": "0.21.0",
    "role": "Runtime circuit preparation; dynamic-circuit restrictions remain binding.",
@@ -6783,7 +6783,7 @@
   {
    "distribution": "stim",
    "declared_versions": {
-    "scripts/kaggle_run.py:160:PIN_GROUPS": "1.16.0",
+    "scripts/kaggle_run.py:161:PIN_GROUPS": "1.16.0",
     "IQM retained environment": "1.16.0"
    },
    "observed_host_version": "1.16.0",
@@ -7257,7 +7257,7 @@
   {
    "distribution": "uv",
    "declared_versions": {
-    "scripts/kaggle_run.py:207:UV_PIN": "0.13.0"
+    "scripts/kaggle_run.py:208:UV_PIN": "0.13.0"
    },
    "observed_host_version": null,
    "role": "Pinned environment installer used by Kaggle kernel bootstrap; records package resolution rather than quantum evidence.",
@@ -7406,7 +7406,7 @@
   "docs/notes/quantum_inspire/requirements-qi.txt": "95deb5311e97df0c191622f407f6f4ab747459c1e97e5d2cbf4d36b959654d88",
   "packaging/qiskit-aer-cuda/build-requirements.txt": "10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352",
   "requirements.txt": "49a450b4495470d5a42522602b6c59bc0b6ac81822a530109ce9a774c286527b",
-  "scripts/kaggle_run.py": "056a4da780305f35588487102dad7e2d9b460291505643ccbf9d57f3e5c4d2a9",
+  "scripts/kaggle_run.py": "a6c47bd2dd5151a05fa5aacd760975c85d7934ee8c768194f1826e8723ef5e54",
   "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "91341759b26f68f39d0764b256139b147f538e39824de48eb3acc0ea828da1d2",
   "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",
   "scripts/hypercomplex_libraries.py": "0f4cb3cffa3d88479952e557e0f706cc03a42f28deb1abd60091db026659116e",
