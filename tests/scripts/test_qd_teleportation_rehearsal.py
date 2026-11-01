@@ -1190,3 +1190,36 @@ def test_the_retained_job_02_replay_record_replays_and_a_run_is_not_its_own_repe
         raise AssertionError(record["meshes"])
     with pytest.raises(ValueError, match="are one job"):
         rehearsal.replay_record(run, run)
+
+
+def replay_copies(tmp_path: Path, name: str) -> tuple[Path, Path]:
+    """Two copies of a retained run that differ only in their job id, so replay_record treats them as run and repeat."""
+    source = ROOT / "results/quandela/runs" / name
+    run, repeat = tmp_path / "run", tmp_path / "repeat"
+    for target in (run, repeat):
+        target.mkdir()
+        for file in ("cases.json", "results.json", "submission.json"):
+            (target / file).write_bytes((source / file).read_bytes())
+    submission = json.loads((repeat / "submission.json").read_text(encoding="utf-8"))
+    submission["job_id"] = f"{submission['job_id']}-repeat"
+    (repeat / "submission.json").write_text(json.dumps(submission), encoding="utf-8")
+    return run, repeat
+
+
+def test_replay_meshes_compare_only_settings_whose_runs_both_echo_a_circuit(tmp_path: Path) -> None:
+    run, repeat = replay_copies(tmp_path, "2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02")
+    if rehearsal.replay_record(run, repeat)["meshes"] != {"compared": 6, "identical": 6}:
+        raise AssertionError("an exact copy compares six identical meshes")
+    for target in (run, repeat):
+        results = json.loads((target / "results.json").read_text(encoding="utf-8"))
+        counted = [entry for entry in results["iterations"] if "counts" in entry]
+        del counted[0]["result_fields"]["computed_circuit"]
+        (target / "results.json").write_text(json.dumps(results), encoding="utf-8")
+    if rehearsal.replay_record(run, repeat)["meshes"] != {"compared": 5, "identical": 5}:
+        raise AssertionError("two missing circuit echoes count as one identical mesh")
+
+
+def test_replay_refuses_a_run_that_carries_an_input_in_two_blocks(tmp_path: Path) -> None:
+    run, repeat = replay_copies(tmp_path, "2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01")
+    with pytest.raises(ValueError, match="repeats an input across blocks"):
+        rehearsal.replay_record(run, repeat)

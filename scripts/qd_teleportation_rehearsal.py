@@ -2108,8 +2108,9 @@ def replay_record(run: Path, repeat: Path) -> dict[str, Any]:
 
     The repeat carries the run's cases.json bytes and is a different job. Both runs bind by circuit_params and
     compilation_seed through analyze_descriptive; each input's correct, wrong and rejection counts form a two-row
-    table for homogeneity() at the run's per-input level. A setting's mesh is identical when both results echo the
-    same computed_circuit."""
+    table for homogeneity() at the run's per-input level, so the manifest carries each input once (one block). A
+    setting's mesh is compared only when both results echo a computed_circuit, and is identical when the two echoes
+    are equal."""
     require(
         (run / "cases.json").read_bytes() == (repeat / "cases.json").read_bytes(),
         f"{repeat.name} does not repeat the cases.json of {run.name}",
@@ -2123,14 +2124,19 @@ def replay_record(run: Path, repeat: Path) -> dict[str, Any]:
         records.append(analyze_descriptive(manifest, results, manifest.get("frames")))
         mesh: dict[int, str] = {}
         for entry in results.get("iterations") or []:
-            if "counts" in entry:
-                circuit = entry.get("result_fields", {}).get("computed_circuit")
+            circuit = entry.get("result_fields", {}).get("computed_circuit")
+            if "counts" in entry and circuit is not None:
                 mesh[bound_setting(manifest["settings"], entry)] = sha256_bytes(
                     json.dumps(circuit, sort_keys=True).encode()
                 )
         meshes.append(mesh)
     level = manifest["preregistered"]["homogeneity_alpha"] / len(SIX_STATES)
     rows = [{row["label"]: row for row in record["iterations"]} for record in records]
+    for path, record, by_label in zip((run, repeat), records, rows, strict=True):
+        require(
+            len(by_label) == len(record["iterations"]),
+            f"{path.name} repeats an input across blocks; replay_record compares one-block runs",
+        )
     tests: dict[str, Any] = {}
     for label, *_ in SIX_STATES:
         if label not in rows[0] or label not in rows[1]:
