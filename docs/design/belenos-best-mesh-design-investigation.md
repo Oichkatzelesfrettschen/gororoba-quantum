@@ -15,9 +15,10 @@ chip, and a seed reproduces its mesh ([strategy.md](../notes/quandela/strategy.m
 `qd-belenos-compilation-seed-selects-mesh` and `qd-belenos-mode-swap-per-seed-mesh-variance`). The pooled
 accepted-event correctness of 0.823 over twelve meshes is therefore an average over the meshes twelve seeds drew.
 
-A drafted case proposed four screen jobs of six candidate seeds per input, then two confirmation jobs replaying each
-input's best seed, to measure how much per-input mesh selection raises correctness over the mesh average. The
-question here is whether that design measures something worth its credits.
+A drafted case ([belenos-best-mesh-teleportation-case.md](belenos-best-mesh-teleportation-case.md)) proposed four screen
+jobs of six candidate seeds per input, then two confirmation jobs replaying each input's best seed, to measure how much
+per-input mesh selection raises correctness over the mesh average. The question here is whether that design measures
+something worth its credits.
 
 ## Findings
 
