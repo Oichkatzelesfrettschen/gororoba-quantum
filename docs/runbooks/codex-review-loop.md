@@ -84,7 +84,11 @@ A PR merges after this sequence:
    regardless of author, and fixes what that review finds.
 2. Codex reviews the head; every thread is fixed, refuted or bounded and
    resolved (One round above). A push that changed code after that round
-   gets one more request; a merge of main or a regenerated view does not:
+   gets one more request, up to the cap of two automated rounds per PR
+   counted from its first request; after the second round the operator
+   answers every thread in one push and asks the owner whether the PR merges
+   instead of requesting a third. A merge of main or a regenerated view earns
+   no request:
    `scripts/codex_review_wait.sh PR DEADLINE LOG 600 REVIEWED_HEAD` names
    the head that round reviewed, accepts its verdict, waits on the current
    head's checks and requests nothing (the plain form treats a new head as an
