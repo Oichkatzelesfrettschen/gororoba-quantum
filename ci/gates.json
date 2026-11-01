@@ -3533,12 +3533,7 @@
       "cmd": "\"$PYTHON\" -B -W error scripts/source_reading_copies.py --check",
       "name": "sources-reading-copies-index",
       "seconds": 0.2,
-      "tier": "pr",
-      "quarantine": {
-        "scope": "all",
-        "reason": "The owner paused the reading-copy index check while the documents repositories reorganize; a source registered meanwhile needs its location row before the resume date.",
-        "until": "2026-12-01"
-      }
+      "tier": "pr"
     },
     {
       "suite": "core",
@@ -3905,11 +3900,7 @@
       "tier": "pr",
       "replays": [
         "results/live/2026-10-27T014354.701394Z/dose-decisions.json"
-      ],
-      "quarantine": {
-        "scope": "avx512",
-        "reason": "The retained dose-decisions record replays bit for bit on AVX2 CPUs and differs in the last bit of 95 floats (sigma, chi2_min, lower, scale_factor) on the AMD EPYC 9V74 and 9V45 AVX-512 runner CPUs under the numpy dispatch cap and the Haswell OpenBLAS core; the component that rounds differently is not identified."
-      }
+      ]
     },
     {
       "suite": "core",
@@ -5547,17 +5538,17 @@
     {
       "cmd": "\"$PYTHON\" verify.py",
       "cwd": "gororoba_quantum",
-      "reason": "runs in the ci.yml job external-ground-truth over the pinned gororoba-open checkout (ci/open_gororoba.pin)"
+      "reason": "needs the gororoba-open checkout that ci/open_gororoba.pin pins and ci/fetch_open_gororoba.sh fetches; no workflow runs it"
     },
     {
       "cmd": "ROCQ=\"${ROCQ:-rocq}\" sh docs/evidence/c881_exhaustive/replay_rocq.sh",
       "cwd": ".",
-      "reason": "runs in the ci.yml job rocq-replay on proof paths under the toolchain of ci/rocq_toolchain.pin"
+      "reason": "runs in the proofs.yml job rocq on proof paths under the toolchain of ci/rocq_toolchain.pin"
     },
     {
       "cmd": "GOROROBA_ROOT=\"$GOROROBA_ROOT\" sh docs/evidence/stiefel_witness/replay_rocq.sh",
       "cwd": ".",
-      "reason": "runs in the ci.yml job rocq-replay on pushes to main and the nightly schedule, over the pinned gororoba-open checkout"
+      "reason": "runs in the proofs.yml job rocq on pushes to main and manual runs, over the pinned gororoba-open checkout"
     },
     {
       "cmd": "\"$SAGE_PYTHON\" docs/evidence/cd-star-lattice/external/nauty_replay.py > docs/evidence/cd-star-lattice/external/nauty_replay.txt",

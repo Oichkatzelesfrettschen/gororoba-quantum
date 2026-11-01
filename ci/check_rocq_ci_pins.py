@@ -1,13 +1,14 @@
 """Check that the Rocq replay job, its pins and the replay bundles name one toolchain and one path set.
 
-The ci.yml job rocq-replay builds the opam switch of ci/rocq_toolchain.pin and
+The proofs.yml job rocq builds the opam switch of ci/rocq_toolchain.pin and
 runs scripts/rocq_kaggle_replay.py against it. Each bundle's toolchain.txt is
 the banner ``rocq --version`` must print, so the compiler and Rocq versions of
 the pin, the constants OCAML, ROCQ_PACKAGES and SWITCH of the replay driver and
 those banners agree. The open_gororoba fetch in the workflow covers every
-directory a bundle's source_hashes.sha256 lists, and ci/rocq_changed.sh selects
-every bundle directory with a replay_rocq.sh. tests/ci/test_rocq_ci_pins.py
-mutates a copy of the inputs and requires each mutation to fail the check.
+directory a bundle's source_hashes.sha256 lists, and the ``paths:`` list of each
+trigger selects every bundle directory with a replay_rocq.sh.
+tests/ci/test_rocq_ci_pins.py mutates a copy of the inputs and requires each
+mutation to fail the check.
 """
 
 from __future__ import annotations
@@ -20,14 +21,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 HEX40 = re.compile(r"[0-9a-f]{40}")
+WORKFLOW = ".github/workflows/proofs.yml"
+# The events whose ``paths:`` list selects the workflow.
+PATH_TRIGGERS = ("pull_request", "push")
 FIXED_FILES = (
     "ci/rocq_toolchain.pin",
     "ci/open_gororoba.pin",
-    "ci/rocq_changed.sh",
     "ci/install_rocq.sh",
     "ci/fetch_open_gororoba.sh",
     "scripts/rocq_kaggle_replay.py",
-    ".github/workflows/ci.yml",
+    WORKFLOW,
     "ci/gates.json",
 )
 
@@ -43,13 +46,12 @@ def constant(source: str, name: str) -> str:
     return match.group(1)
 
 
-def selector_patterns(selector: str) -> set[str]:
-    """The whole patterns of the case list in ci/rocq_changed.sh."""
-    try:
-        listed = selector.split('case "$path" in', 1)[1].split(")", 1)[0]
-    except IndexError:
+def trigger_paths(workflow: str, event: str) -> set[str]:
+    """The whole patterns of the ``paths:`` list under ``on.EVENT`` in the workflow."""
+    match = re.search(rf"^  {event}:\n(?:    .*\n)*?    paths:\n((?:      - .*\n)+)", workflow, re.MULTILINE)
+    if match is None:
         return set()
-    return {pattern.strip() for pattern in listed.replace("\\\n", " ").split("|")} - {""}
+    return {line.strip()[2:].strip() for line in match.group(1).splitlines()}
 
 
 def read_pin(root: Path) -> dict[str, str]:
@@ -96,26 +98,24 @@ def check(root: Path) -> list[str]:
                 errors.append(f"docs/evidence/{name}/toolchain.txt is {banner!r}, the pin implies {expected!r}")
     if not HEX40.fullmatch((root / "ci/open_gororoba.pin").read_text(encoding="utf-8").strip()):
         errors.append("ci/open_gororoba.pin is not a 40-digit commit")
-    workflow = (root / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    workflow = (root / WORKFLOW).read_text(encoding="utf-8")
     for needle in (
         "ci/install_rocq.sh",
         "hashFiles('ci/rocq_toolchain.pin'",
         "ripgrep",
         "command -v rg",
-        "needs.changes.outputs.rocq == 'true'",
-        "ci/rocq_changed.sh",
         "--rocq ",
         "ci/open_gororoba.pin",
     ):
         if needle not in workflow:
-            errors.append(f"ci.yml lacks {needle!r}")
+            errors.append(f"proofs.yml lacks {needle!r}")
     fetched = set(re.findall(r"^\s+((?:proofs|crates)[^\s]*)$", workflow, re.MULTILINE))
     workflow_replays = {
         name for selection in re.findall(r'^\s+only="([^"]*)"', workflow, re.MULTILINE) for name in selection.split()
     }
     for name in bundles(root):
         if name not in workflow_replays:
-            errors.append(f"the ci.yml replay selection omits {name}")
+            errors.append(f"the proofs.yml replay selection omits {name}")
         hashes = root / f"docs/evidence/{name}/source_hashes.sha256"
         script = (root / f"docs/evidence/{name}/replay_rocq.sh").read_text(encoding="utf-8")
         if not hashes.exists() or "GOROROBA_ROOT" not in script:
@@ -127,21 +127,22 @@ def check(root: Path) -> list[str]:
         }
         for directory in sorted(directories):
             if not any(directory == cone or directory.startswith(cone + "/") for cone in fetched):
-                errors.append(f"the ci.yml fetch does not cover {directory}, which {name} hashes")
-    selector = selector_patterns((root / "ci/rocq_changed.sh").read_text(encoding="utf-8"))
-    required = [f"docs/evidence/{name}/*" for name in bundles(root)]
-    required += ["proofs/*", "scripts/rocq_kaggle_replay.py", "ci/open_gororoba.pin", "ci/rocq_toolchain.pin"]
-    required += [".github/workflows/ci.yml", "docs/evidence/rocq_kaggle_replay/*", "gororoba_quantum/parallel.py"]
-    for pattern in required:
-        if pattern not in selector:
-            errors.append(f"ci/rocq_changed.sh lacks {pattern}")
+                errors.append(f"the proofs.yml fetch does not cover {directory}, which {name} hashes")
+    required = [f"docs/evidence/{name}/**" for name in bundles(root)]
+    required += ["proofs/**", "scripts/rocq_kaggle_replay.py", "ci/open_gororoba.pin", "ci/rocq_toolchain.pin"]
+    required += [WORKFLOW, "docs/evidence/rocq_kaggle_replay/**", "gororoba_quantum/parallel.py"]
+    for event in PATH_TRIGGERS:
+        listed = trigger_paths(workflow, event)
+        for pattern in required:
+            if pattern not in listed:
+                errors.append(f"the proofs.yml {event} paths lack {pattern}")
     excluded = json.loads((root / "ci/gates.json").read_text(encoding="utf-8"))["excluded"]
     for name in ("c881_exhaustive", "stiefel_witness"):
         entries = [e for e in excluded if f"docs/evidence/{name}/replay_rocq.sh" in e["cmd"]]
         if len(entries) != 1:
             errors.append(f"ci/gates.json excludes no {name} replay")
-        elif "ci.yml job rocq-replay" not in entries[0]["reason"]:
-            errors.append(f"the excluded {name} replay does not name the ci.yml job rocq-replay")
+        elif "proofs.yml job rocq" not in entries[0]["reason"]:
+            errors.append(f"the excluded {name} replay does not name the proofs.yml job rocq")
     return errors
 
 

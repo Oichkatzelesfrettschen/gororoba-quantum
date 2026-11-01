@@ -1,5 +1,5 @@
 """Contract for ci/run_gates.py: unique gate names, every CPU, keep-going past a launch failure,
-one child worker by default, --device, --max-seconds, --gates, and the requires field with --requires.
+one child worker by default, --device, --max-seconds, --gates, and the requires field.
 """
 
 from __future__ import annotations
@@ -10,7 +10,6 @@ import json
 import os
 import sys
 from collections.abc import Iterator
-from datetime import date
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
@@ -28,22 +27,10 @@ LISTED: list[dict[str, Any]] = [
     {"name": "unmeasured", "cwd": ".", "cmd": "true"},
     {"name": "full-only", "cwd": ".", "cmd": "true", "seconds": 1.0, "tier": "full"},
 ]
-# A qi gate runs in every lane, on its replay path where the stack is absent;
-# --requires qi keeps only the qi gates and makes each take its live path.
+# A qi gate runs in every lane, on its replay path where the stack is absent, and takes its live path when
+# the caller exports GOROROBA_QI_REQUIRED.
 QI: list[dict[str, Any]] = [
     {"name": "qi-pr", "cwd": ".", "cmd": 'test "${GOROROBA_QI_REQUIRED:-0}" = 1', "requires": ["qi"]},
-    {"name": "qi-full", "cwd": ".", "cmd": "true", "requires": ["qi"], "tier": "full"},
-]
-# A singular gate guards its live path on GOROROBA_SINGULAR_REQUIRED, which only
-# --requires singular exports.
-SINGULAR: list[dict[str, Any]] = [
-    {
-        "name": "singular-full",
-        "cwd": ".",
-        "cmd": 'test "${GOROROBA_SINGULAR_REQUIRED:-0}" = 1',
-        "requires": ["singular"],
-        "tier": "full",
-    },
 ]
 
 
@@ -114,7 +101,7 @@ def test_device_reaches_every_gate(root: Path, flag: list[str], device: str) -> 
     with runner(root, GOROROBA_AER_DEVICE=None) as output:
         status = run_gates.main(flag)
     text = output.getvalue()
-    if status != 0 or f"gates in shard 0/1 on {device}" not in text:
+    if status != 0 or f"gates on {device}" not in text:
         raise AssertionError(f"{flag} did not give every gate GOROROBA_AER_DEVICE={device}:\n{text}")
 
 
@@ -128,44 +115,13 @@ def test_select_by_tier_and_measured_seconds(root: Path, tier: str, limit: float
         raise AssertionError(f"select({tier}, {limit}) chose {names}, not {wanted}")
 
 
-@pytest.mark.parametrize(
-    ("tier", "requires", "wanted"),
-    (
-        ("pr", None, ["fast", "slow", "unmeasured", "qi-pr"]),
-        ("pr", "qi", ["qi-pr"]),
-        ("full", "qi", ["qi-pr", "qi-full"]),
-    ),
-)
-def test_select_by_requires(root: Path, tier: str, requires: str | None, wanted: list[str]) -> None:
-    manifest(root, LISTED + QI)
-    names = [gate["name"] for gate in run_gates.select(root, tier, None, requires)]
-    if names != wanted:
-        raise AssertionError(f"select({tier}, requires={requires}) chose {names}, not {wanted}")
-
-
-@pytest.mark.parametrize(("flag", "expected"), (([], 1), (["--requires", "qi"], 0)))
-def test_requires_sets_the_live_path(root: Path, flag: list[str], expected: int) -> None:
-    manifest(root, LISTED + QI)
-    with runner(root, GOROROBA_QI_REQUIRED=None) as output:
-        status = run_gates.main(["--tier", "pr", *flag])
+@pytest.mark.parametrize(("exported", "expected"), ((True, 0), (False, 1)))
+def test_requires_names_the_variable_that_forces_the_live_path(root: Path, exported: bool, expected: int) -> None:
+    manifest(root, QI)
+    with runner(root, GOROROBA_QI_REQUIRED="1" if exported else None) as output:
+        status = run_gates.main([])
     if status != expected:
-        raise AssertionError(f"{flag or 'no flag'} gave GOROROBA_QI_REQUIRED wrongly:\n{output.getvalue()}")
-
-
-@pytest.mark.parametrize(("flag", "expected"), (([], 1), (["--requires", "singular"], 0)))
-def test_requires_singular_sets_the_live_path(root: Path, flag: list[str], expected: int) -> None:
-    manifest(root, LISTED + QI + SINGULAR)
-    with runner(root, GOROROBA_SINGULAR_REQUIRED=None) as output:
-        status = run_gates.main(["--tier", "full", *flag])
-    if status != expected:
-        raise AssertionError(f"{flag or 'no flag'} gave GOROROBA_SINGULAR_REQUIRED wrongly:\n{output.getvalue()}")
-
-
-def test_select_requires_singular_keeps_only_singular_gates(root: Path) -> None:
-    manifest(root, LISTED + QI + SINGULAR)
-    names = [gate["name"] for gate in run_gates.select(root, "full", None, "singular")]
-    if names != ["singular-full"]:
-        raise AssertionError(f"select(full, requires=singular) chose {names}")
+        raise AssertionError(f"GOROROBA_QI_REQUIRED exported={exported} gave status {status}:\n{output.getvalue()}")
 
 
 def test_gates_selects_by_name(root: Path) -> None:
@@ -292,19 +248,12 @@ def test_report_pending_writes_the_step_summary(tmp_path: Path) -> None:
         raise AssertionError(text)
 
 
-def test_cited_gates_reads_every_claim(tmp_path: Path) -> None:
-    registry = tmp_path / "research_state.json"
-    registry.write_text(
-        json.dumps({"claims": [{"gates": {"core-1": {}, "core-2": {}}}, {"gates": {"core-2": {}}}, {}]})
-    )
-    if run_gates.cited_gates(registry) != {"core-1", "core-2"}:
-        raise AssertionError(run_gates.cited_gates(registry))
-
-
 def test_repository_claims_cite_existing_gates() -> None:
     names = {gate["name"] for gate in run_gates.select(ROOT, "full")}
     expanded = {gate["name"] for gate in gate_inputs.expand_cases(ROOT, run_gates.select(ROOT, "full"))}
-    missing = sorted(run_gates.cited_gates(ROOT / "docs/state/research_state.json") - names - expanded)
+    claims = json.loads((ROOT / "docs/state/research_state.json").read_text())["claims"]
+    cited = {name for claim in claims for name in claim.get("gates", {})}
+    missing = sorted(cited - names - expanded)
     if missing:
         raise AssertionError(f"claims cite gates the manifest lacks: {missing}")
 
@@ -316,19 +265,3 @@ def test_audit_lane_gates_leave_the_pull_request_selection() -> None:
         raise AssertionError("the behavioral suite gate carries lane audit")
     if any(gate.get("lane") not in (None, "audit") for gate in gates):
         raise AssertionError("lane takes only the value audit")
-
-
-@pytest.mark.parametrize(("on", "wanted"), [(date(2026, 11, 30), ["fast"]), (date(2026, 12, 1), ["fast", "paused"])])
-def test_an_all_scope_quarantine_leaves_every_selection_until_its_date(root: Path, on: date, wanted: list[str]) -> None:
-    paused = {"scope": "all", "reason": "owner pause", "until": "2026-12-01"}
-    manifest(root, [LISTED[0], {"name": "paused", "cwd": ".", "cmd": "true", "seconds": 1.0, "quarantine": paused}])
-    with patch.object(run_gates.gate_quarantine, "today", return_value=on):
-        names = {tier: [gate["name"] for gate in run_gates.select(root, tier)] for tier in ("pr", "full")}
-        with runner(root) as output:
-            status = run_gates.main([])
-    text = output.getvalue()
-    if names != {"pr": wanted, "full": wanted} or status != 0:
-        raise AssertionError(f"on {on} the selections were {names}, exit {status}, not {wanted}:\n{text}")
-    announced = "QUARANTINED paused  every lane until 2026-12-01" in text
-    if announced != (on < date(2026, 12, 1)) or ("PASS paused" in text) == announced:
-        raise AssertionError(f"on {on} the run announced or ran the paused gate wrongly:\n{text}")

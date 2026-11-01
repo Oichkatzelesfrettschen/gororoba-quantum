@@ -1,13 +1,12 @@
-"""Run the repository gates listed in ci/gates.json, sharded and keep-going.
+"""Run the repository gates listed in ci/gates.json, keep-going.
 
 Each gate declares a shell command, working directory and measured duration.
-Shards balance estimated CPU-slot seconds under a stable planning profile.
 Execution shares detected affinity/cgroup CPU slots across concurrent gates:
 ordinary gates reserve one, and gates marked workers: all reserve the available
 allocation for their inner pool. Explicit caller caps bound every inner pool.
 Native library threads default to one. Every gate runs despite earlier failures;
 completions and failure tails print immediately, resource/timing records name
-the actual allocation, and any failed gate makes the shard exit nonzero.
+the actual allocation, and any failed gate makes the run exit nonzero.
 
 ``--device GPU`` exports GOROROBA_AER_DEVICE=GPU to every gate, so the
 replays that simulate run on the local GPU while CI's runners, which carry
@@ -22,11 +21,9 @@ needs beyond the repository interpreter; ``qi`` is the Quantum Inspire stack
 under $QI_PYTHON (gororoba_quantum/qi_stack.py) and ``singular`` is Singular
 4.4 on PATH. Every run includes such a gate, which replays its retained record
 (qi) or skips (singular, by its GOROROBA_SINGULAR_REQUIRED guard) where the
-toolchain is absent. ``--requires qi`` keeps only the gates that name it and
-exports GOROROBA_QI_REQUIRED=1, so each must take its live path or fail;
-``--requires singular`` does the same with GOROROBA_SINGULAR_REQUIRED=1. The
-qi-stack and singular-stack jobs of .github/workflows/ci.yml run those
-selections.
+toolchain is absent. A caller that exports the variable REQUIREMENTS names for
+the toolchain (GOROROBA_QI_REQUIRED=1 or GOROROBA_SINGULAR_REQUIRED=1) makes
+each such gate take its live path or fail.
 
 A gate without a ``runtime`` runs under $PYTHON, which pins.resolve_current
 chooses: an explicit $PYTHON as named (a ``--changed-files`` run, the merge
@@ -61,7 +58,6 @@ from typing import Any
 
 import gate_inputs
 import gate_ledger
-import gate_quarantine
 import host_identity
 import pins
 
@@ -69,10 +65,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import parallel  # noqa: E402
 
-# Stable across shards, matching the retained hosted four-CPU timing profile.
-DEFAULT_SHARD_CPUS = 4
 TAIL_LINES = 40
-# Each named toolchain and the variable that makes its absence a gate failure.
+# Each named toolchain and the variable that makes its absence a gate failure when the caller exports it.
 REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED", "singular": "GOROROBA_SINGULAR_REQUIRED"}
 OPENBLAS_CORETYPE = "Haswell"
 # numpy's dispatched loops above x86-64-v3 (AVX-512 on the runners' Intel
@@ -193,49 +187,14 @@ def allocated_workers(gate: dict[str, Any], capacity: int, caller_cap: str | Non
     return workers
 
 
-def measured_seconds(root: Path) -> dict[str, float]:
-    """Measured wall seconds per gate from ci/gate_timings.json (ci/merge_gate_timings.py), empty when absent."""
-    path = root / "ci" / "gate_timings.json"
-    if not path.is_file():
-        return {}
-    gates = json.loads(path.read_text())["gates"]
-    return {name: float(entry["wall_seconds"]) for name, entry in gates.items()}
-
-
-def assign(
-    gates: list[dict[str, Any]],
-    count: int,
-    capacity: int = 1,
-    caller_cap: str | None = None,
-    measured: dict[str, float] | None = None,
-) -> list[list[dict[str, Any]]]:
-    """Longest-first allocation by occupied CPU-slot seconds, measured where recorded, else estimated."""
-    shards: list[list[dict[str, Any]]] = [[] for _ in range(count)]
-    loads = [0.0] * count
-    measured = measured or {}
-    costs = {
-        gate["name"]: measured.get(gate["name"], float(gate.get("seconds", 10.0)))
-        * allocated_workers(gate, capacity, caller_cap)
-        for gate in gates
-    }
-    for gate in sorted(gates, key=lambda gate: (-costs[gate["name"]], gate["name"])):
-        target = min(range(count), key=lambda index: (loads[index], index))
-        shards[target].append(gate)
-        loads[target] += costs[gate["name"]]
-    return shards
-
-
 def select(
     root: Path,
     tier: str,
     max_seconds: float | None = None,
-    requires: str | None = None,
     changed: list[str] | None = None,
 ) -> list[dict[str, Any]]:
-    """The gates of the tree at root in its ci/gates.json order, limited to tier, measured seconds and toolchain."""
-    manifest = json.loads((root / "ci" / "gates.json").read_text())
-    held = gate_quarantine.suspended(manifest)
-    gates: list[dict[str, Any]] = [gate for gate in manifest["gates"] if gate["name"] not in held]
+    """The gates of the tree at root in its ci/gates.json order, limited to tier and measured seconds."""
+    gates: list[dict[str, Any]] = json.loads((root / "ci" / "gates.json").read_text())["gates"]
     for gate in gates:
         if gate.get("runtime") is not None and gate["runtime"] not in REPLAY_INTERPRETERS:
             raise SystemExit(f"{gate['name']}: unregistered historical runtime")
@@ -253,17 +212,9 @@ def select(
         gates = [gate for gate in gates if gate.get("tier", "pr") == "pr" or gate["name"] in affected]
     elif tier == "pr":
         gates = [gate for gate in gates if gate.get("tier", "pr") == "pr"]
-    if requires is not None:
-        gates = [gate for gate in gates if requires in gate.get("requires", [])]
     if max_seconds is not None:
         gates = [gate for gate in gates if float(gate.get("seconds", 10.0)) <= max_seconds]
     return gates
-
-
-def cited_gates(registry: Path) -> set[str]:
-    """The gate names some claim of the research registry cites; a failure of one qualifies that claim."""
-    claims = json.loads(registry.read_text())["claims"]
-    return {name for claim in claims for name in claim.get("gates", {})}
 
 
 def within_budget(gates: list[dict[str, Any]], budget: float) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -312,12 +263,10 @@ def name_status(diff: bytes) -> tuple[list[str], list[str]]:
     return [path for _, path in pairs], [path for status, path in pairs if status[:1] in "AD"]
 
 
-def environment_for(device: str | None, requires: str | None = None) -> dict[str, str]:
+def environment_for(device: str | None) -> dict[str, str]:
     environment = dict(os.environ)
     if device:
         environment["GOROROBA_AER_DEVICE"] = device
-    if requires is not None:
-        environment[REQUIREMENTS[requires]] = "1"
     environment.setdefault("PYTHON", sys.executable)
     retained_tunables = []
     tls_capacity = 4096
@@ -415,16 +364,10 @@ def execute(
     root: Path,
     ledger: Path | None = None,
     ledger_out: Path | None = None,
-    audit: Path | None = None,
 ) -> Iterator[GateResult]:
-    """Run gates, skipping those whose ledger key matches, and record traceable passes.
-
-    With ``audit`` every gate runs; a gate the ledger at that path would
-    have skipped and that fails now yields verdict FAIL with ``untraceable``
-    naming the audit, so the caller reports the ledger miss.
-    """
-    tracing = ledger_out is not None or audit is not None
-    stored = gate_ledger.load(ledger if audit is None else audit)
+    """Run gates, skipping those whose ledger key matches, and record traceable passes."""
+    tracing = ledger_out is not None
+    stored = gate_ledger.load(ledger)
     if not tracing and ledger is None:
         for gate, status, seconds, output in run_all(gates, environment, root):
             yield GateResult(gate, status, seconds, output, "PASS" if status == 0 else "FAIL")
@@ -444,11 +387,10 @@ def execute(
         if gate["name"] in stored and stored[gate["name"]]["key"] == key(gate, stored[gate["name"]]["reads"])
     }
     entries = dict(gate_ledger.load(ledger)) if ledger_out is not None else {}
-    to_run = gates if audit is not None else [gate for gate in gates if gate["name"] not in matching]
-    if audit is None:
-        for gate in gates:
-            if gate["name"] in matching:
-                yield GateResult(gate, 0, 0.0, "", "SKIP")
+    to_run = [gate for gate in gates if gate["name"] not in matching]
+    for gate in gates:
+        if gate["name"] in matching:
+            yield GateResult(gate, 0, 0.0, "", "SKIP")
     with TemporaryDirectory(prefix="ci-read-trace-") as temporary:
         traces = Path(temporary) if tracing else None
         for gate, status, seconds, output in run_all(to_run, environment, root, traces):
@@ -462,7 +404,7 @@ def execute(
                 if shell is not None:
                     reasons = [shell, *reasons]
                 if reads is not None and not reasons:
-                    # Another gate of the shard may have rewritten a file
+                    # Another gate of the run may have rewritten a file
                     # since an earlier key read it, so each key hashes the
                     # bytes on disk when its gate ends.
                     content.forget()
@@ -471,8 +413,6 @@ def execute(
                     entries.pop(gate["name"], None)
             else:
                 entries.pop(gate["name"], None)
-                if audit is not None and gate["name"] in matching:
-                    reasons = [f"ledger {audit} would have skipped this failing gate"]
             yield GateResult(gate, status, seconds, output, verdict, reasons)
     if ledger_out is not None:
         gate_ledger.write(ledger_out, entries, [gate["name"] for gate in gates])
@@ -480,14 +420,7 @@ def execute(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--shard", default="0/1", help="SHARD/COUNT, zero-based")
-    parser.add_argument(
-        "--shard-cpus",
-        type=int,
-        default=DEFAULT_SHARD_CPUS,
-        help="stable CPU profile for shard estimates; execution concurrency is detected per runner",
-    )
-    parser.add_argument("--list", action="store_true", help="print this shard's gates without running them")
+    parser.add_argument("--list", action="store_true", help="print the selected gates without running them")
     parser.add_argument(
         "--tier",
         choices=("pr", "full"),
@@ -504,16 +437,6 @@ def main(argv: list[str] | None = None) -> int:
         "--budget-seconds",
         type=float,
         help="run the selected gates cheapest first while their measured seconds fit; report the rest as PENDING",
-    )
-    parser.add_argument(
-        "--cited-by",
-        type=Path,
-        help="a research_state.json; only gates some claim cites, the set whose failure qualifies a claim",
-    )
-    parser.add_argument(
-        "--requires",
-        choices=sorted(REQUIREMENTS),
-        help="only gates whose live path needs this toolchain, each required to take that path",
     )
     parser.add_argument(
         "--changed-files", type=Path, help="NUL-delimited git paths; fast gates plus affected full gates"
@@ -536,8 +459,8 @@ def main(argv: list[str] | None = None) -> int:
         "--gates",
         help="comma-separated gate names; a registered case gate matches by its own or its parent's name",
     )
-    parser.add_argument("--timings", type=Path, help="write measured gate durations and shard wall time as JSON")
-    parser.add_argument("--plan", type=Path, help="write the selected shard and historical environments, then exit")
+    parser.add_argument("--timings", type=Path, help="write measured gate durations and run wall time as JSON")
+    parser.add_argument("--plan", type=Path, help="write the selected gates and historical environments, then exit")
     parser.add_argument("--github-output", type=Path, help="append historical=true/false for a --plan step")
     parser.add_argument(
         "--replay-python",
@@ -545,19 +468,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--ledger", type=Path, help="skip gates whose ledger key in this file is unchanged")
     parser.add_argument("--ledger-out", type=Path, help="trace every gate and write the merged ledger of this run")
-    parser.add_argument(
-        "--ledger-audit",
-        type=Path,
-        help="run every gate and fail on each one this ledger would have skipped that fails now",
-    )
     arguments = parser.parse_args(argv)
-    if arguments.ledger_audit is not None and arguments.ledger is not None:
-        parser.error("--ledger-audit runs every gate; it excludes --ledger")
-    if arguments.shard_cpus < 1:
-        parser.error("--shard-cpus must be positive")
-    shard, count = (int(part) for part in arguments.shard.split("/"))
-    if not 0 <= shard < count:
-        parser.error("shard must satisfy 0 <= SHARD < COUNT")
     changed = None
     if arguments.changed_files is not None:
         changed = arguments.changed_files.read_bytes().decode("utf-8").split("\0")
@@ -567,10 +478,7 @@ def main(argv: list[str] | None = None) -> int:
     if arguments.affected_by is not None and changed is not None:
         parser.error("--affected-by and --changed-files select differently; pass one")
     tier = "full" if arguments.affected_by is not None else arguments.tier
-    suspended = gate_quarantine.suspended(json.loads((ROOT / "ci" / "gates.json").read_text()))
-    for name, resume in sorted(suspended.items()):
-        print(f"QUARANTINED {name}  every lane until {resume.isoformat()}")
-    gates = select(ROOT, tier, arguments.max_seconds, arguments.requires, changed)
+    gates = select(ROOT, tier, arguments.max_seconds, changed)
     if arguments.affected_by is not None:
         edited, listed = name_status(arguments.affected_by.read_bytes())
         traced = gate_ledger.load(arguments.affected_ledger) if arguments.affected_ledger is not None else None
@@ -590,30 +498,21 @@ def main(argv: list[str] | None = None) -> int:
         reached = gate_inputs.affected(ROOT, select(ROOT, "full"), edited, listed, traced, base, base_paths)
         gates = [gate for gate in gates if gate["name"] in reached]
         # A gate whose command a pr.yml job already runs (the behavioral suite, which the tests job runs
-        # under its call budget) is audit-only: the pull-request lane names it and leaves it to the audit.
+        # under its call budget) carries lane audit: the pull-request lane names it and leaves it out.
         audit_only = [gate for gate in gates if gate.get("lane") == "audit"]
         gates = [gate for gate in gates if gate.get("lane") != "audit"]
         for gate in audit_only:
-            print(f"AUDIT-ONLY {gate['name']}  a pr.yml job runs this command; the audit runs the gate")
+            print(f"AUDIT-ONLY {gate['name']}  a pr.yml job runs this command")
         print(f"affected: {len(reached)} gates reached by {len(edited)} changed paths, {len(gates)} selected")
-    if arguments.cited_by is not None:
-        cited = cited_gates(arguments.cited_by)
-        gates = [
-            gate
-            for gate in gates
-            if gate["name"] in cited or any(name.startswith(gate["name"] + "--") for name in cited)
-        ]
-        print(f"cited: {len(gates)} gates cited by a claim of {arguments.cited_by}")
-    candidates = gate_inputs.expand_cases(ROOT, gates)
+    selected = gate_inputs.expand_cases(ROOT, gates)
     if arguments.gates is not None:
         named = {name for name in arguments.gates.split(",") if name}
-        candidates = [gate for gate in candidates if gate["name"] in named or gate.get("parent") in named]
+        selected = [gate for gate in selected if gate["name"] in named or gate.get("parent") in named]
     # The budget charges the expanded cases that remain selected, the work that runs, after the name filter
     # and never a case gate's parent estimate.
     if arguments.budget_seconds is not None:
-        candidates, pending = within_budget(candidates, arguments.budget_seconds)
+        selected, pending = within_budget(selected, arguments.budget_seconds)
         report_pending(pending)
-    selected = assign(candidates, count, arguments.shard_cpus, measured=measured_seconds(ROOT))[shard]
     if arguments.plan is not None:
         environments = sorted({gate["runtime"] for gate in selected if gate.get("runtime")})
         arguments.plan.write_text(
@@ -622,7 +521,6 @@ def main(argv: list[str] | None = None) -> int:
                     "schema": "gororoba-gate-plan-v1",
                     "gates": selected,
                     "environments": environments,
-                    "shard_cpus": arguments.shard_cpus,
                 },
                 indent=2,
             )
@@ -650,7 +548,7 @@ def main(argv: list[str] | None = None) -> int:
         if resolved is None:
             return 2
         primary = resolved
-    environment = environment_for(arguments.device, arguments.requires)
+    environment = environment_for(arguments.device)
     environment["PYTHON"] = primary
     print(f"numeric stack: {numeric_stack(primary, environment)}", flush=True)
     unresolved = []
@@ -666,10 +564,9 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     failures = []
     skipped = []
-    audit_misses = []
     started = time.monotonic()
     timings = []
-    outcomes = execute(selected, environment, ROOT, arguments.ledger, arguments.ledger_out, arguments.ledger_audit)
+    outcomes = execute(selected, environment, ROOT, arguments.ledger, arguments.ledger_out)
     for result in outcomes:
         gate, status, seconds, output = result.gate, result.status, result.seconds, result.output
         if result.verdict == "SKIP":
@@ -691,8 +588,6 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  untraceable {gate['name']}: {'; '.join(result.untraceable[:3])}", flush=True)
         if status != 0:
             failures.append((gate, status, output))
-            if arguments.ledger_audit is not None and result.untraceable:
-                audit_misses.append(gate["name"])
             tail = "\n".join(output.splitlines()[-TAIL_LINES:])
             print(f"\n=== {gate['name']} exit {status} in {gate['cwd']}\n{gate['cmd']}\n{tail}", flush=True)
     if arguments.timings is not None:
@@ -701,13 +596,10 @@ def main(argv: list[str] | None = None) -> int:
             json.dumps(
                 {
                     "schema": "gororoba-gate-timings-v1",
-                    "shard": arguments.shard,
                     "wall_seconds": time.monotonic() - started,
                     "cpu_capacity": _cpus(),
-                    "shard_cpus": arguments.shard_cpus,
                     "gates": sorted(timings, key=lambda row: str(row["name"])),
                     "skipped": sorted(skipped),
-                    "ledger_audit_misses": sorted(audit_misses),
                 },
                 indent=2,
             )
@@ -717,9 +609,7 @@ def main(argv: list[str] | None = None) -> int:
     device = environment.get("GOROROBA_AER_DEVICE", "CPU")
     cached = f", {len(skipped)} skipped" if skipped else ""
     summary = f"{passed} passed, {len(failures)} failed{cached} of {len(selected)} gates"
-    print(f"\n{summary} in shard {shard}/{count} on {device}")
-    if audit_misses:
-        print(f"ledger audit: the ledger would have skipped failing gates {', '.join(audit_misses)}")
+    print(f"\n{summary} on {device}")
     return 1 if failures else 0
 
 

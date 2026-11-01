@@ -189,12 +189,6 @@ class SelectionTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 self.chosen("unrelated.md")
 
-    def test_toolchain_filter_preserves_full_manifest_validation(self) -> None:
-        self.gates[1]["requires"] = ["qi"]
-        self.write("ci/gates.json", json.dumps({"gates": self.gates}))
-        selected = run_gates.select(self.root, "pr", requires="qi", changed=["helper.py"])
-        self.assertEqual([gate["name"] for gate in selected], ["long"])
-
     def test_timing_record_and_failure_keep_going(self) -> None:
         import contextlib
         import io
@@ -233,38 +227,12 @@ class SelectionTests(unittest.TestCase):
     def test_all_ci_configuration_and_dependency_pins_select_full(self) -> None:
         for path in (
             ".github/actionlint.yaml",
-            ".github/workflows/ci.yml",
+            ".github/workflows/pr.yml",
             "docs/notes/quantum_inspire/requirements-qi.txt",
         ):
             self.assertEqual(self.chosen(path), ["fast", "long"])
 
-    def test_workflow_diff_failure_selects_exhaustive_checks(self) -> None:
-        import subprocess
-
-        import changed_paths
-
-        destination = self.root / "changed.bin"
-        for base in ("", "0" * 40):
-            with patch.object(changed_paths.subprocess, "run") as run:
-                flags = changed_paths.select(self.root, "pull_request", base, destination)
-                self.assertFalse(flags["limited"])
-                self.assertTrue(flags["rocq"])
-                run.assert_not_called()
-        passed = subprocess.CompletedProcess([], 0, stdout=b"")
-        failed = subprocess.CompletedProcess([], 128, stdout=b"")
-        for responses in ([failed], [passed, failed]):
-            with patch.object(changed_paths.subprocess, "run", side_effect=responses):
-                flags = changed_paths.select(self.root, "push", "missing", destination)
-                self.assertEqual(flags, {"rocq": True, "full": True, "limited": False})
-        paths = b"old.py\0new name.py\0"
-        difference = subprocess.CompletedProcess([], 0, stdout=paths)
-        predicate = subprocess.CompletedProcess([], 1, stdout=b"")
-        with patch.object(changed_paths.subprocess, "run", side_effect=[passed, difference, predicate]):
-            flags = changed_paths.select(self.root, "pull_request", "base", destination)
-            self.assertEqual(flags, {"rocq": False, "full": False, "limited": True})
-            self.assertEqual(destination.read_bytes(), paths)
-
-    def test_case_expansion_coverage_and_sharding(self) -> None:
+    def test_case_expansion_coverage(self) -> None:
         self.write("entry.py", "CONTRACT_CASES: dict = {'first': first, 'second': second}\n")
         parent = dict(self.gates[1], case_registry="CONTRACT_CASES", seconds=10)
         expanded = gate_inputs.expand_cases(self.root, [parent])
@@ -273,8 +241,6 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(
             [gate["cmd"] for gate in expanded], ['"$PYTHON" entry.py --case first', '"$PYTHON" entry.py --case second']
         )
-        shards = run_gates.assign(expanded, 2)
-        self.assertEqual([len(shard) for shard in shards], [1, 1])
         for malformed in ("{}", "{'first': first, 'first': second}", "{**other}"):
             self.write("entry.py", f"CONTRACT_CASES: dict = {malformed}\n")
             with self.assertRaises(ValueError):
@@ -310,19 +276,6 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(len(results), 5)
         self.assertEqual(observed, {"full-pool": 4, **{str(index): 1 for index in range(4)}})
         self.assertEqual(maximum, 4)
-
-    def test_shards_balance_reserved_cpu_slots(self) -> None:
-        gates = [
-            {"name": "pool", "workers": "all", "seconds": 10},
-            *({"name": f"ordinary_{index}", "seconds": 15} for index in range(3)),
-        ]
-        shards = run_gates.assign(gates, 2, capacity=4)
-        self.assertEqual([gate["name"] for gate in shards[0]], ["pool"])
-        self.assertEqual(len(shards[1]), 3)
-        with patch.object(run_gates, "_cpus", return_value=2):
-            self.assertEqual(run_gates.assign(gates, 2, capacity=4), shards)
-        with patch.object(run_gates, "_cpus", return_value=8):
-            self.assertEqual(run_gates.assign(gates, 2, capacity=4), shards)
 
     def test_expensive_archive_replays_have_input_scopes(self) -> None:
         root = Path(__file__).resolve().parents[2]

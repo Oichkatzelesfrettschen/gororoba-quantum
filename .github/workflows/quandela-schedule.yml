@@ -61,7 +61,7 @@ jobs:
         id: python
         with:
           python-version: "3.14.7"
-      # The key equals ci.yml's, so a tick reuses the gates' pinned environment;
+      # The key equals the pins-venv action's, so a tick reuses the gates' pinned environment;
       # the body digest a schedule pins proves the runner's Perceval builds the
       # same request as the planning host.
       - name: Restore the pinned environment

@@ -215,10 +215,10 @@ def test_lane_resolution() -> None:
 
 def test_host_environment_python_version() -> None:
     # The host environments sit on the Python CI's setup-python installs.
-    workflow = (pins.ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    action = (pins.ROOT / ".github/actions/pins-venv/action.yml").read_text(encoding="utf-8")
     script = (pins.ROOT / "ci/build_host_envs.sh").read_text(encoding="utf-8")
-    if f'python-version: "{pins.PYTHON_VERSION}"' not in workflow:
-        raise AssertionError(f"ci.yml installs no Python {pins.PYTHON_VERSION}")
+    if f'python-version: "{pins.PYTHON_VERSION}"' not in action:
+        raise AssertionError(f"the pins-venv action installs no Python {pins.PYTHON_VERSION}")
     if f"python_version={pins.PYTHON_VERSION}\n" not in script:
         raise AssertionError(f"ci/build_host_envs.sh builds on another Python than {pins.PYTHON_VERSION}")
 

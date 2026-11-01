@@ -42,7 +42,7 @@ REPLAY_RUNTIMES = {"qiskit-2.5": ("REPLAY_PYTHON", ROOT / "ci" / "requirements-r
 REPLAY_VARIABLES = frozenset(variable for variable, _path in REPLAY_RUNTIMES.values())
 # The pin files of the current runtime, which every gate without a runtime field runs under.
 CURRENT_PINS = (ROOT / "requirements.txt", ROOT / "ci" / "requirements-ci.txt")
-# The setup-python version of .github/workflows/ci.yml, which each host environment is built on.
+# The setup-python version of .github/actions/pins-venv, which each host environment is built on.
 PYTHON_VERSION = "3.14.7"
 # Each runtime's host environment directory under the cache; "current" is the default runtime.
 HOST_ENVS = {"current": f"ci-py{PYTHON_VERSION}", "qiskit-2.5": f"replay-py{PYTHON_VERSION}"}

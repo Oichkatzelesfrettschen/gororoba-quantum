@@ -32,7 +32,7 @@ GLOBAL_INPUTS = (
 )
 
 
-# The files the pinned and replay venv cache keys hash (.github/workflows/ci.yml, pins-venv): a change
+# The files the pinned and replay venv cache keys hash (.github/workflows/pr.yml, pins-venv): a change
 # to one changes the interpreter every gate runs under.
 RUNTIME_INPUTS = (
     "requirements.txt",
