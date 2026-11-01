@@ -40,3 +40,9 @@ qiskit-ibm.json
 
 # Interrupted atomic-publication files and their synchronization lock.
 .publication-staging/
+
+# Generated views, rendered on demand and never committed (docs/runbooks/generated-views.md).
+/docs/state/plans.md
+/docs/state/plan-catalogue.md
+/docs/state/RESEARCH_STATE.md
+/docs/sources/reading-copies.md

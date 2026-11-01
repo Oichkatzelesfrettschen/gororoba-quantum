@@ -4513,7 +4513,7 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/plan_tracker.py check --base origin/main docs/state/plans docs/state/plans.md docs/state/plan-catalogue.md",
+      "cmd": "\"$PYTHON\" -B -W error scripts/plan_tracker.py check --base origin/main docs/state/plans",
       "name": "core-plan-tracker",
       "seconds": 1.0,
       "tier": "pr"

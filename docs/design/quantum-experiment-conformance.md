@@ -126,7 +126,7 @@ are specified. A finite filtering benchmark would receive a separate name and pr
 
 The [acquisition review procedure](../runbooks/quantum-experiment-acquisition.md) states the questions,
 controls and pending admission requirements. The [evidence bundle](../evidence/quantum-experiment-conformance/README.md) holds deterministic references,
-generated cases and replay instructions. The [planning entrance](../state/plans.md) owns implementation
+generated cases and replay instructions. The [planning records](../state/plans/) owns implementation
 obligations. Provider approval and the research registry keep their existing authority.
 
 Local validation uses exact arithmetic, complete operator comparisons, compiler checks and count fixtures.
