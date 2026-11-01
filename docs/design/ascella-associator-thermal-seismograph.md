@@ -20,7 +20,7 @@ Executable scripts:
 
 An adversarial review was conducted via Codex using `gpt-daybreak-blue-latest` to confront the proposed
 campaign with published literature, physical platform specifications, and prior art across
-the sibling checkouts `../math` and `../gororoba-quantum-documents` of the gororoba workspace, and external
+the sibling checkouts `../math` and `../gororoba-documents-private` of the gororoba workspace, and external
 publications.
 The audit report is recorded in `scratch/codex_review/review_report.md`.
 
