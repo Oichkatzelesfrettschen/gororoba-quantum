@@ -225,7 +225,10 @@ singular-stack job asserts the 4.4.1 version tuple.
 A gate that fails in one audit scope only carries `"quarantine": {"scope":
 "avx512", "reason": TEXT}` in ci/gates.json ([ci/gate_quarantine.py](gate_quarantine.py)):
 `ci/avx512_replay.sh` leaves it out, the audit report lists it with its reason,
-and `tests/ci/test_gate_quarantine.py` fails when a claim cites it.
+and `tests/ci/test_gate_quarantine.py` fails when a claim cites it. A gate the
+owner pauses for a time carries `"scope": "all"` with `"until": "YYYY-MM-DD"`:
+every `ci/run_gates.py` selection leaves it out and prints a `QUARANTINED` line
+until that UTC date, then runs it again with no edit.
 The library inventory `docs/state/hypercomplex-libraries` (documented in
 the central Python guide [docs/PYTHON.md](../docs/PYTHON.md)) retains authored
 roles, declared pins, source digests and the host-observed import-root

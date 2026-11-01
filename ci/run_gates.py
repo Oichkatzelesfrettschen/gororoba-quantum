@@ -61,6 +61,7 @@ from typing import Any
 
 import gate_inputs
 import gate_ledger
+import gate_quarantine
 import host_identity
 import pins
 
@@ -232,7 +233,9 @@ def select(
     changed: list[str] | None = None,
 ) -> list[dict[str, Any]]:
     """The gates of the tree at root in its ci/gates.json order, limited to tier, measured seconds and toolchain."""
-    gates: list[dict[str, Any]] = json.loads((root / "ci" / "gates.json").read_text())["gates"]
+    manifest = json.loads((root / "ci" / "gates.json").read_text())
+    held = gate_quarantine.suspended(manifest)
+    gates: list[dict[str, Any]] = [gate for gate in manifest["gates"] if gate["name"] not in held]
     for gate in gates:
         if gate.get("runtime") is not None and gate["runtime"] not in REPLAY_INTERPRETERS:
             raise SystemExit(f"{gate['name']}: unregistered historical runtime")
@@ -564,6 +567,9 @@ def main(argv: list[str] | None = None) -> int:
     if arguments.affected_by is not None and changed is not None:
         parser.error("--affected-by and --changed-files select differently; pass one")
     tier = "full" if arguments.affected_by is not None else arguments.tier
+    suspended = gate_quarantine.suspended(json.loads((ROOT / "ci" / "gates.json").read_text()))
+    for name, resume in sorted(suspended.items()):
+        print(f"QUARANTINED {name}  every lane until {resume.isoformat()}")
     gates = select(ROOT, tier, arguments.max_seconds, arguments.requires, changed)
     if arguments.affected_by is not None:
         edited, listed = name_status(arguments.affected_by.read_bytes())
