@@ -44,9 +44,9 @@ from qi_platform import Client, PlatformError, declared_qubits, ledger, submit, 
 
 LOCAL_MAX_QUBITS = 24
 LOCAL_MAX_SHOTS = 100_000
-READ = ToolAnnotations(readOnlyHint=True, openWorldHint=True)
-LOCAL = ToolAnnotations(readOnlyHint=True, openWorldHint=False)
-MUTATE = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=True)
+READ = ToolAnnotations(read_only_hint=True, open_world_hint=True)
+LOCAL = ToolAnnotations(read_only_hint=True, open_world_hint=False)
+MUTATE = ToolAnnotations(read_only_hint=False, destructive_hint=False, idempotent_hint=False, open_world_hint=True)
 LIMIT_FIELDS = (
     "id",
     "name",

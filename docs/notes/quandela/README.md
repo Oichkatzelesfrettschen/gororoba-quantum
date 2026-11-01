@@ -162,7 +162,7 @@ Routes (`api/cloud-openapi.json`, cloud API v2.10.1-rc1 at capture):
 
 `scripts/qd_mcp_server.py` runs on the interpreter
 `QD_PYTHON=${QD_PYTHON:-/usr/bin/python3}`, the system Python that carries
-mcp 1.29 (FastMCP), perceval-quandela and exqalibur. It registers as
+mcp 2.3 (MCPServer), perceval-quandela and exqalibur. It registers as
 `quandela` at Claude Code user scope and in `~/.codex/config.toml`, launching
 `"$QD_PYTHON" -I "$REPO/scripts/qd_mcp_server.py"`, where `REPO` is the
 primary checkout, with `QUANDELA_TOKEN_FILE`; `-I` keeps the user site and
@@ -176,8 +176,8 @@ Properties of the server that its code and gate hold:
   because urllib's redirect handler copies the Authorization header to the
   redirect target. A 401, 403 or 404 answer names its usual cause.
 - Each tool is a coroutine that runs its HTTP call or simulation in a worker
-  thread; FastMCP 1.29 runs a plain function on its event loop, where one
-  slow call stalls every other request.
+  thread, so a slow call never stalls the event loop that serves the other
+  requests.
 - The JSON-RPC stream owns a private duplicate of standard output, and
   descriptor 1 points at standard error. exqalibur's console logger, which
   Perceval uses by default, writes warnings to descriptor 1 from C++, so
@@ -189,8 +189,9 @@ Properties of the server that its code and gate hold:
   id is hexadecimal with dashes, so a path such as `../../api/tokens` fails
   validation before any request.
 - The protocol validates JSON types and rejects undeclared arguments before
-  FastMCP compatibility conversion. Boolean photon counts and JSON-string
-  matrices therefore fail at the protocol boundary. The HTTP adapter bounds
+  the SDK compatibility conversion: `ContractMCP.call_tool` validates each
+  call against the advertised schema with jsonschema. Boolean photon counts
+  and JSON-string matrices therefore fail at the protocol boundary. The HTTP adapter bounds
   responses to 64 MiB; an oversized or unusable JSON acknowledgment reports an
   unknown outcome, which requires reconciliation before a mutation retry.
 

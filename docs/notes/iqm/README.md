@@ -370,7 +370,7 @@ isa = transpile_to_IQM(circuit, backend, seed_transpiler=7)
 `scripts/iqm_mcp_server.py` is registered at Claude Code user scope and in
 `~/.codex/config.toml` as `iqm`: `/usr/bin/python3 -I
 scripts/iqm_mcp_server.py` with `IQM_TOKENS_FILE`. It runs on the system
-Python (mcp 1.29) and imports nothing from the client stack. Claude allows
+Python (mcp 2.3, MCPServer) and imports nothing from the client stack. Claude allows
 and Codex approves the read tools; `iqm_cancel_job` asks every time.
 `iqm_platform.py check` holds the tool set and annotations. The server
 submits nothing and books no timeslot.
