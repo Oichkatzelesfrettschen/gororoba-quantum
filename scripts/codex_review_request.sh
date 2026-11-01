@@ -47,10 +47,11 @@ if [ -n "$summary" ]; then
         fail "fetching main and the PR head failed"
     reviewed=$(git -C "$repo" rev-parse --verify -q "$summary^{commit}") ||
         fail "reviewed head $summary is not reachable locally"
-    # --verbatim keeps whitespace, since an indentation or string-literal change alters behavior.
+    # --verbatim keeps whitespace, since an indentation or string-literal change alters behavior; -U0 drops the
+    # context lines, which a merge of main can change beside an unchanged PR line.
     diff_id() {
         base=$(git -C "$repo" merge-base origin/main "$1") || return 1
-        patch=$(git -C "$repo" diff "$base" "$1") || return 1
+        patch=$(git -C "$repo" diff -U0 "$base" "$1") || return 1
         printf '%s\n' "$patch" | git -C "$repo" patch-id --verbatim | cut -d ' ' -f 1
     }
     before=$(diff_id "$reviewed") || fail "the reviewed head's diff failed"

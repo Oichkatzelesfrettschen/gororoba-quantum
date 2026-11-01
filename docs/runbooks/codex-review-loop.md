@@ -6,7 +6,7 @@ a review of the current head. The operator requests one when the PR is a merge
 candidate and again only after a push that changed code in response to a
 finding, at most two rounds per PR, through `scripts/codex_review_request.sh PR`:
 it refuses a request when the PR's own diff (`git patch-id --verbatim` of
-merge-base..head against current main) equals the last reviewed head's, so a
+merge-base..head against current main, without context lines) equals the last reviewed head's, so a
 merge of main earns none, and when two rounds were already requested. Codex is
 the only hosted reviewer.
 Copilot reviews are billed to the owner, so no pull request requests one; when
