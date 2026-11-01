@@ -37,10 +37,11 @@ Block A pools job-02 with its exact replay (`...-job-02-replay`), which used the
    target, so the per-seed differences arise in the hardware that realizes a mesh, not in the decomposition.
 2. **The between-mesh spread is real but small.** The six differences give chi-square 20.5 on 6 degrees of freedom.
    A normal-normal model with the between-mesh standard deviation tau carried as uncertain (Efron 2011, "Tweedie's
-   formula and selection bias", J. Am. Stat. Assoc. 106:1602, Eqs. 3.7-3.9) gives tau 0.057 at its maximum likelihood,
+   formula and selection bias", J. Am. Stat. Assoc. 106:1602, Eqs. 3.7-3.9;
+   [note](../notes/papers/efron-2011-tweedie-formula.md)) gives tau 0.057 at its maximum likelihood,
    posterior mean 0.074, 90 % interval 0.029 to 0.143. The expected gain of the observed winner over the loser after
    shrinkage averages 0.046 over the inputs. Directional Benjamini-Hochberg at q 0.10 (Weinstein and Yekutieli,
-   arXiv:1404.7403) fixes the winner's sign for +Z, -Z and +Y only.
+   [1404.7403](../notes/papers/1404.7403.md), Definition 2) fixes the winner's sign for +Z, -Z and +Y only.
 3. **A replay of the winners has modest power.** Posterior-predictive simulation (200,000 trials, 1,200 samples per
    iteration) gives power 0.73 with two six-iteration jobs and 0.87 with four, falling to 0.54 and 0.70 when three of
    the six pairs drop out; size is 0.051 when no mesh error persists. The drafted case's expectation of 0.95 with four
@@ -90,6 +91,3 @@ selection can ever pay.
 - Whether the meshes of job-02 and job-03 still exist after the chip's recalibrations since 2026-10-31.
 - Whether the acceptance-correctness relation holds outside these six inputs and twelve meshes.
 - Any per-mesh mechanism: the structural predictors tested are the ones computable from the compiled phases alone.
-
-Efron 2011 (PMC3325056) and Weinstein and Yekutieli (arXiv:1404.7403v4) are cited by their public identifiers; their
-admission to the source registry is open.
