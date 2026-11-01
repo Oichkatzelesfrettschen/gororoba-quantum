@@ -151,7 +151,8 @@ registered repository artifact (`docs/notes/ibm_quantum/`,
   acquisition decision statements and cancellation authority follow
   [evidence-closure](docs/runbooks/evidence-closure.md).
 - Tokens and keys live outside every checkout and never enter a commit, log
-  or memory. Provider environments, MCP names and key files:
+  or memory; the private gororoba-infrastructure repository records where
+  each lives. Provider interpreters and MCP names:
   [providers](docs/notes/providers.md).
 
 ## Qiskit skills
