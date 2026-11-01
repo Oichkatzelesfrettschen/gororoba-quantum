@@ -1,10 +1,9 @@
 """The interpreter, distribution, tool and environment identity a gate result depends on.
 
-ci/premerge_gates.py keys its base-result cache and ci/gate_ledger.py keys
-each gate's cached pass by this identity, so a pin, interpreter, PATH tool
-or gate-visible variable change invalidates both. Environment values enter
-as sha256 digests, so a credential a variable carries (QISKIT_IBM_TOKEN
-matches the QISKIT_ prefix) never reaches a cache or ledger file.
+ci/premerge_gates.py keys its base-result cache by this identity, so a pin,
+interpreter, PATH tool or gate-visible variable change invalidates the cache.
+Environment values enter as sha256 digests, so a credential a variable carries
+(QISKIT_IBM_TOKEN matches the QISKIT_ prefix) never reaches a cache file.
 """
 
 from __future__ import annotations

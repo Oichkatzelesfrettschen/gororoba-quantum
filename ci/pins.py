@@ -224,8 +224,8 @@ def resolve_current(
 
     An explicit $PYTHON is the caller's choice: it runs whatever it holds,
     with the differing pins named, unless PINS_REQUIRED demands every pin or
-    the run decides admission (``run_gates.py --changed-files``, the merge
-    verdict), whose gates count only under the pinned runtime. Without one,
+    the run decides admission (the premerge verdict), whose gates count only
+    under the pinned runtime. Without one,
     the running interpreter serves when it holds every pin, then the host
     environment; None means no interpreter holds them. A tree without pin
     files verifies nothing.

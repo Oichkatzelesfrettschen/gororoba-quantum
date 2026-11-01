@@ -17,7 +17,7 @@ no GPU, keep the CPU. A gate that passes on one device and fails on the
 other exposes a device-dependent result.
 
 ``--max-seconds S`` keeps the gates whose measured seconds are at most S,
-the record and replay checks ci/premerge_gates.py runs on a merge result.
+the fast gates ci/premerge_gates.py runs on a merge result.
 
 A gate's optional ``requires`` list names the toolchains its live path
 needs beyond the repository interpreter; ``qi`` is the Quantum Inspire stack
@@ -29,8 +29,7 @@ the toolchain (GOROROBA_QI_REQUIRED=1 or GOROROBA_SINGULAR_REQUIRED=1) makes
 each such gate take its live path or fail.
 
 A gate without a ``runtime`` runs under $PYTHON, which pins.resolve_current
-chooses: an explicit $PYTHON as named (a ``--changed-files`` run, the merge
-verdict, refuses one that differs from the pins), else the running interpreter when it
+chooses: an explicit $PYTHON as named, else the running interpreter when it
 holds every pin of requirements.txt and ci/requirements-ci.txt, else the
 host environment ci/build_host_envs.sh builds. A gate's ``runtime`` names a
 historical producer environment; its command runs under that runtime's
@@ -54,14 +53,10 @@ import sys
 import time
 from collections.abc import Iterator
 from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
-from dataclasses import dataclass, field
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any
 
-import gate_inputs
-import gate_ledger
-import host_identity
 import manifest
 import pins
 
@@ -128,9 +123,7 @@ def _cpus() -> int:
     return parallel.available_cpus()
 
 
-def _run(
-    gate: dict[str, Any], environment: dict[str, str], root: Path, trace: Path | None = None
-) -> tuple[dict[str, Any], int, float, str]:
+def _run(gate: dict[str, Any], environment: dict[str, str], root: Path) -> tuple[dict[str, Any], int, float, str]:
     start = time.monotonic()
     environment = dict(environment)
     environment.setdefault("GOROROBA_WORKERS", "1")
@@ -139,11 +132,6 @@ def _run(
         if not environment.get(variable):
             return gate, 127, 0.0, f"historical runtime {runtime} requires {variable}"
         environment = dict(environment, PYTHON=environment[variable])
-    if trace is not None:
-        trace.mkdir(parents=True)
-        pythons = [environment.get("PYTHON", ""), *(environment.get(name, "") for name in REPLAY_INTERPRETERS.values())]
-        resolved = [os.path.realpath(found) for found in map(_which, pythons) if found]
-        environment = gate_ledger.trace_environment(environment, trace, root, resolved)
     try:
         with TemporaryDirectory(prefix="ci-gate-resources-") as temporary:
             resource_file = Path(temporary) / "usage.json"
@@ -175,12 +163,6 @@ def _run(
     return measured, completed.returncode, time.monotonic() - start, completed.stdout
 
 
-def _which(name: str) -> str | None:
-    import shutil
-
-    return shutil.which(name) if name else None
-
-
 def allocated_workers(gate: dict[str, Any], capacity: int, caller_cap: str | None = None) -> int:
     """Bound inner concurrency by detected slots and the caller's explicit cap."""
     limit = min(capacity, int(caller_cap)) if caller_cap is not None else capacity
@@ -195,7 +177,6 @@ def select(
     root: Path,
     tier: str,
     max_seconds: float | None = None,
-    changed: list[str] | None = None,
     listing: str = manifest.GATES,
 ) -> list[dict[str, Any]]:
     """The gates of the tree at root in the file order of the manifest listing, limited to tier and measured seconds."""
@@ -212,60 +193,11 @@ def select(
         valid = isinstance(named, list) and all(isinstance(name, str) for name in named)
         if not valid or not named or set(named) - REQUIREMENTS.keys() or len(set(named)) < len(named):
             raise SystemExit(f"{gate['name']}: requires must be a nonempty list of distinct {sorted(REQUIREMENTS)}")
-    if changed is not None:
-        affected = gate_inputs.affected_full(root, gates, changed)
-        gates = [gate for gate in gates if gate.get("tier", "pr") == "pr" or gate["name"] in affected]
-    elif tier == "pr":
+    if tier == "pr":
         gates = [gate for gate in gates if gate.get("tier", "pr") == "pr"]
     if max_seconds is not None:
         gates = [gate for gate in gates if float(gate.get("seconds", 10.0)) <= max_seconds]
     return gates
-
-
-def within_budget(gates: list[dict[str, Any]], budget: float) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    """Split gates into those whose measured seconds fit the budget, cheapest first, and the pending rest.
-
-    The pull-request lane has a job budget; a reached gate the budget cannot hold is reported by name as
-    pending rather than dropped, so a green lane states what it did not run.
-    """
-    ordered = sorted(gates, key=lambda gate: (float(gate.get("seconds", 10.0)), gate["name"]))
-    selected, pending, spent = [], [], 0.0
-    for gate in ordered:
-        cost = float(gate.get("seconds", 10.0))
-        if spent + cost <= budget:
-            selected.append(gate)
-            spent += cost
-        else:
-            pending.append(gate)
-    order = {gate["name"]: index for index, gate in enumerate(gates)}
-    return sorted(selected, key=lambda gate: order[gate["name"]]), sorted(pending, key=lambda gate: order[gate["name"]])
-
-
-def report_pending(pending: list[dict[str, Any]]) -> None:
-    """Name every reached gate the budget deferred, on stdout and in the GitHub step summary when one exists."""
-    if not pending:
-        return
-    lines = [
-        f"PENDING {gate['name']} {float(gate.get('seconds', 10.0)):7.1f}s  {gate['cmd'][:100]}" for gate in pending
-    ]
-    print("\n".join(lines), flush=True)
-    summary = os.environ.get("GITHUB_STEP_SUMMARY")
-    if summary:
-        with open(summary, "a", encoding="utf-8") as handle:
-            handle.write(
-                f"### {len(pending)} reached gates pending beyond the budget\n\n```\n" + "\n".join(lines) + "\n```\n"
-            )
-
-
-def name_status(diff: bytes) -> tuple[list[str], list[str]]:
-    """Every path of ``git diff --no-renames --name-status -z`` output and the added or deleted ones."""
-    fields = [field for field in diff.decode("utf-8").split("\0") if field]
-    if len(fields) % 2:
-        raise SystemExit("--affected-by: expected status and path pairs")
-    pairs = list(zip(fields[::2], fields[1::2], strict=True))
-    if any(status[:1] not in "ACDMTU" for status, _ in pairs):
-        raise SystemExit("--affected-by: unexpected status; pass --no-renames")
-    return [path for _, path in pairs], [path for status, path in pairs if status[:1] in "AD"]
 
 
 def environment_for(device: str | None) -> dict[str, str]:
@@ -326,7 +258,7 @@ def numeric_stack(interpreter: str, environment: dict[str, str]) -> str:
 
 
 def run_all(
-    gates: list[dict[str, Any]], environment: dict[str, str], root: Path, traces: Path | None = None
+    gates: list[dict[str, Any]], environment: dict[str, str], root: Path
 ) -> Iterator[tuple[dict[str, Any], int, float, str]]:
     """Share detected CPU slots across independent gates and their process pools."""
     capacity = _cpus()
@@ -340,87 +272,13 @@ def run_all(
                 if workers > available:
                     continue
                 child_environment = dict(environment, GOROROBA_WORKERS=str(workers))
-                trace = None if traces is None else traces / gate["name"]
-                arguments = (gate, child_environment, root) if trace is None else (gate, child_environment, root, trace)
-                active[pool.submit(_run, *arguments)] = workers
+                active[pool.submit(_run, gate, child_environment, root)] = workers
                 available -= workers
                 pending.remove(gate)
             completed, _ = wait(active, return_when=FIRST_COMPLETED)
             for future in completed:
                 available += active.pop(future)
                 yield future.result()
-
-
-@dataclass
-class GateResult:
-    """One gate's verdict: PASS or FAIL from a run, SKIP from a matching ledger entry."""
-
-    gate: dict[str, Any]
-    status: int
-    seconds: float
-    output: str
-    verdict: str
-    untraceable: list[str] = field(default_factory=list)
-
-
-def execute(
-    gates: list[dict[str, Any]],
-    environment: dict[str, str],
-    root: Path,
-    ledger: Path | None = None,
-    ledger_out: Path | None = None,
-) -> Iterator[GateResult]:
-    """Run gates, skipping those whose ledger key matches, and record traceable passes."""
-    tracing = ledger_out is not None
-    stored = gate_ledger.load(ledger)
-    if not tracing and ledger is None:
-        for gate, status, seconds, output in run_all(gates, environment, root):
-            yield GateResult(gate, status, seconds, output, "PASS" if status == 0 else "FAIL")
-        return
-    replay = {variable: environment[variable] for variable in REPLAY_INTERPRETERS.values() if environment.get(variable)}
-    host = gate_ledger.host_digest(host_identity.identity(environment, environment["PYTHON"], replay))
-    content = gate_ledger.Content(root)
-    capacity = _cpus()
-    cap = environment.get("GOROROBA_WORKERS")
-
-    def key(gate: dict[str, Any], reads: dict[str, list[Any]]) -> str:
-        return gate_ledger.gate_key(gate, allocated_workers(gate, capacity, cap), host, reads, content)
-
-    matching = {
-        gate["name"]
-        for gate in gates
-        if gate["name"] in stored and stored[gate["name"]]["key"] == key(gate, stored[gate["name"]]["reads"])
-    }
-    entries = dict(gate_ledger.load(ledger)) if ledger_out is not None else {}
-    to_run = [gate for gate in gates if gate["name"] not in matching]
-    for gate in gates:
-        if gate["name"] in matching:
-            yield GateResult(gate, 0, 0.0, "", "SKIP")
-    with TemporaryDirectory(prefix="ci-read-trace-") as temporary:
-        traces = Path(temporary) if tracing else None
-        for gate, status, seconds, output in run_all(to_run, environment, root, traces):
-            reasons: list[str] = []
-            verdict = "PASS" if status == 0 else "FAIL"
-            if traces is None:
-                pass
-            elif status == 0:
-                shell = gate_ledger.shell_untraceable(gate["cmd"])
-                reads, reasons = gate_ledger.read_trace(traces / gate["name"])
-                if shell is not None:
-                    reasons = [shell, *reasons]
-                if reads is not None and not reasons:
-                    # Another gate of the run may have rewritten a file
-                    # since an earlier key read it, so each key hashes the
-                    # bytes on disk when its gate ends.
-                    content.forget()
-                    entries[gate["name"]] = {"key": key(gate, reads), "reads": reads}
-                else:
-                    entries.pop(gate["name"], None)
-            else:
-                entries.pop(gate["name"], None)
-            yield GateResult(gate, status, seconds, output, verdict, reasons)
-    if ledger_out is not None:
-        gate_ledger.write(ledger_out, entries, [gate["name"] for gate in gates])
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -436,7 +294,7 @@ def main(argv: list[str] | None = None) -> int:
         "--tier",
         choices=("pr", "full"),
         default="full",
-        help="pr runs the gates that fit pull-request CI; full adds the long simulation contracts",
+        help="pr keeps the pr-tier gates, the set ci/premerge_gates.py runs; full keeps every gate",
     )
     parser.add_argument(
         "--device",
@@ -444,28 +302,6 @@ def main(argv: list[str] | None = None) -> int:
         help="Aer device for every gate (GOROROBA_AER_DEVICE); unset keeps the environment's, CPU by default",
     )
     parser.add_argument("--max-seconds", type=float, help="only gates whose measured seconds are at most this")
-    parser.add_argument(
-        "--budget-seconds",
-        type=float,
-        help="run the selected gates cheapest first while their measured seconds fit; report the rest as PENDING",
-    )
-    parser.add_argument(
-        "--changed-files", type=Path, help="NUL-delimited git paths; fast gates plus affected full gates"
-    )
-    parser.add_argument(
-        "--affected-by",
-        type=Path,
-        help="git diff --no-renames --name-status -z output; only the gates the change reaches, either tier",
-    )
-    parser.add_argument(
-        "--affected-ledger",
-        type=Path,
-        help="a gate ledger whose traced read sets also decide which gates --affected-by reaches",
-    )
-    parser.add_argument(
-        "--affected-base",
-        help="the revision whose ci/gates.json entries --affected-by compares; a new or changed entry is reached",
-    )
     parser.add_argument(
         "--gates",
         help="comma-separated gate names; a registered case gate matches by its own or its parent's name",
@@ -477,53 +313,12 @@ def main(argv: list[str] | None = None) -> int:
         "--replay-python",
         help="interpreter for historical-runtime gates; it must hold every pin of ci/requirements-replay.txt",
     )
-    parser.add_argument("--ledger", type=Path, help="skip gates whose ledger key in this file is unchanged")
-    parser.add_argument("--ledger-out", type=Path, help="trace every gate and write the merged ledger of this run")
     arguments = parser.parse_args(argv)
-    changed = None
-    if arguments.changed_files is not None:
-        changed = arguments.changed_files.read_bytes().decode("utf-8").split("\0")
-        changed = [path for path in changed if path]
-    if (arguments.affected_ledger is not None or arguments.affected_base is not None) and arguments.affected_by is None:
-        parser.error("--affected-ledger and --affected-base require --affected-by")
-    if arguments.affected_by is not None and changed is not None:
-        parser.error("--affected-by and --changed-files select differently; pass one")
-    tier = "full" if arguments.affected_by is not None else arguments.tier
-    gates = select(ROOT, tier, arguments.max_seconds, changed, arguments.manifest)
-    if arguments.affected_by is not None:
-        edited, listed = name_status(arguments.affected_by.read_bytes())
-        traced = gate_ledger.load(arguments.affected_ledger) if arguments.affected_ledger is not None else None
-        base = base_paths = None
-        if arguments.affected_base is not None:
-            shown = subprocess.run(
-                ["git", "show", f"{arguments.affected_base}:ci/gates.json"], cwd=ROOT, capture_output=True, check=False
-            )
-            base = json.loads(shown.stdout)["gates"] if shown.returncode == 0 else []
-            tree = subprocess.run(
-                ["git", "ls-tree", "-r", "-z", "--name-only", arguments.affected_base],
-                cwd=ROOT,
-                capture_output=True,
-                check=True,
-            )
-            base_paths = {path for path in tree.stdout.decode("utf-8").split("\0") if path}
-        reached = gate_inputs.affected(ROOT, select(ROOT, "full"), edited, listed, traced, base, base_paths)
-        gates = [gate for gate in gates if gate["name"] in reached]
-        # A gate whose command a pr.yml job already runs (the behavioral suite, which the tests job runs
-        # under its call budget) carries lane audit: the pull-request lane names it and leaves it out.
-        audit_only = [gate for gate in gates if gate.get("lane") == "audit"]
-        gates = [gate for gate in gates if gate.get("lane") != "audit"]
-        for gate in audit_only:
-            print(f"AUDIT-ONLY {gate['name']}  a pr.yml job runs this command")
-        print(f"affected: {len(reached)} gates reached by {len(edited)} changed paths, {len(gates)} selected")
+    gates = select(ROOT, arguments.tier, arguments.max_seconds, arguments.manifest)
     selected = manifest.expand_cases(ROOT, gates)
     if arguments.gates is not None:
         named = {name for name in arguments.gates.split(",") if name}
         selected = [gate for gate in selected if gate["name"] in named or gate.get("parent") in named]
-    # The budget charges the expanded cases that remain selected, the work that runs, after the name filter
-    # and never a case gate's parent estimate.
-    if arguments.budget_seconds is not None:
-        selected, pending = within_budget(selected, arguments.budget_seconds)
-        report_pending(pending)
     if arguments.plan is not None:
         environments = sorted({gate["runtime"] for gate in selected if gate.get("runtime")})
         arguments.plan.write_text(
@@ -554,7 +349,7 @@ def main(argv: list[str] | None = None) -> int:
     # environments cannot swap packages under the verdict; the descriptor stays open until the process exits.
     pins.hold_host_envs(os.environ)
     if any(not gate.get("runtime") for gate in selected):
-        resolved, reason = pins.resolve_current(os.environ, sys.executable, ROOT, admission=changed is not None)
+        resolved, reason = pins.resolve_current(os.environ, sys.executable, ROOT)
         print(f"current runtime: {reason}", flush=True)
         if resolved is None:
             return 2
@@ -574,16 +369,9 @@ def main(argv: list[str] | None = None) -> int:
     if unresolved:
         return 2
     failures = []
-    skipped = []
     started = time.monotonic()
     timings = []
-    outcomes = execute(selected, environment, ROOT, arguments.ledger, arguments.ledger_out)
-    for result in outcomes:
-        gate, status, seconds, output = result.gate, result.status, result.seconds, result.output
-        if result.verdict == "SKIP":
-            skipped.append(gate["name"])
-            print(f"SKIP {gate['name']}  ledger key unchanged", flush=True)
-            continue
+    for gate, status, seconds, output in run_all(selected, environment, ROOT):
         timings.append(
             {
                 "name": gate["name"],
@@ -594,9 +382,7 @@ def main(argv: list[str] | None = None) -> int:
                 "runtime": gate.get("runtime", "current"),
             }
         )
-        print(f"{result.verdict} {gate['name']} {seconds:7.1f}s  {gate['cmd'][:100]}", flush=True)
-        if arguments.ledger_out is not None and status == 0 and result.untraceable:
-            print(f"  untraceable {gate['name']}: {'; '.join(result.untraceable[:3])}", flush=True)
+        print(f"{'PASS' if status == 0 else 'FAIL'} {gate['name']} {seconds:7.1f}s  {gate['cmd'][:100]}", flush=True)
         if status != 0:
             failures.append((gate, status, output))
             tail = "\n".join(output.splitlines()[-TAIL_LINES:])
@@ -610,16 +396,14 @@ def main(argv: list[str] | None = None) -> int:
                     "wall_seconds": time.monotonic() - started,
                     "cpu_capacity": _cpus(),
                     "gates": sorted(timings, key=lambda row: str(row["name"])),
-                    "skipped": sorted(skipped),
                 },
                 indent=2,
             )
             + "\n"
         )
-    passed = len(selected) - len(failures) - len(skipped)
+    passed = len(selected) - len(failures)
     device = environment.get("GOROROBA_AER_DEVICE", "CPU")
-    cached = f", {len(skipped)} skipped" if skipped else ""
-    summary = f"{passed} passed, {len(failures)} failed{cached} of {len(selected)} gates"
+    summary = f"{passed} passed, {len(failures)} failed of {len(selected)} gates"
     print(f"\n{summary} on {device}")
     return 1 if failures else 0
 
