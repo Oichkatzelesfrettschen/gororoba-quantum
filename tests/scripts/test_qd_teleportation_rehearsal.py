@@ -145,23 +145,30 @@ def test_request_is_byte_stable_and_validates() -> None:
         raise AssertionError("a mutated request validates")
 
 
+SPLIT_DRAW = "docs/evidence/anu_qrng/draw-2026-10-30T205347Z.json"
+
+
 @pytest.mark.parametrize(
     ("name", "constant", "records"),
     [
-        ("job-00", "COMPILATION_SEEDS", ["docs/evidence/anu_qrng/draw-2026-10-25T204252Z.json"]),
+        ("job-00", "COMPILATION_SEEDS", [("docs/evidence/anu_qrng/draw-2026-10-25T204252Z.json", 0)]),
         (
             "job-01",
             "JOB_01_COMPILATION_SEEDS",
             [
-                "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json",
-                "docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json",
+                ("docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json", 0),
+                ("docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json", 0),
             ],
         ),
+        ("job-02", "JOB_02_COMPILATION_SEEDS", [(SPLIT_DRAW, 0)]),
+        ("job-03", "JOB_03_COMPILATION_SEEDS", [(SPLIT_DRAW, 6)]),
     ],
 )
-def test_case_seeds_are_the_registered_draw_values_in_index_order(name: str, constant: str, records: list[str]) -> None:
+def test_case_seeds_are_the_registered_draw_values_in_index_order(
+    name: str, constant: str, records: list[tuple[str, int]]
+) -> None:
     seeds = rehearsal.CASE_SEEDS[name]
-    _, blocks = rehearsal.CASE_DESIGNS[name]
+    blocks = rehearsal.REQUESTS[name].iteration_blocks
     if getattr(rehearsal, constant) != seeds or len(seeds) != len(LABELS) * blocks or len(records) != blocks:
         raise AssertionError((name, seeds))
     rows = [
@@ -171,7 +178,7 @@ def test_case_seeds_are_the_registered_draw_values_in_index_order(name: str, con
         ]
         if row["path"] == "scripts/qd_teleportation_rehearsal.py" and row["name"] == constant
     ]
-    expected = [(record, index) for record in records for index in range(len(LABELS))]
+    expected = [(record, start + index) for record, start in records for index in range(len(LABELS))]
     if [(row["record"], row["index"]) for row in rows] != expected or [row["value"] for row in rows] != list(seeds):
         raise AssertionError(f"the allocation rows differ from {constant} in block and index order")
     for row in rows:
@@ -833,7 +840,8 @@ def test_prepare_derives_a_case_that_builds_checks_simulates_and_analyzes(
         raise AssertionError((job, seconds))
     monkeypatch.setitem(rehearsal.REQUESTS, "job-01", job.request)
     monkeypatch.setitem(rehearsal.JOBS, "job-01", job)
-    monkeypatch.delitem(rehearsal.JOBS, "job-00")
+    for other in ("job-00", "job-02", "job-03"):
+        monkeypatch.delitem(rehearsal.JOBS, other)
     rehearsal.build(job)
     if rehearsal.check() != 0:
         raise AssertionError("check refuses the prepared case")
@@ -1092,3 +1100,151 @@ def test_a_twelve_iteration_case_exceeds_the_observed_iteration_rate() -> None:
         raise AssertionError(model)
     if "max_duration" not in rehearsal.admission_failure(model):
         raise AssertionError(rehearsal.admission_failure(model))
+
+
+def test_split_halves_run_one_block_each_of_the_two_block_design() -> None:
+    whole = rehearsal.schedule(rehearsal.REQUESTS["job-01"])
+    halves = [rehearsal.schedule(rehearsal.REQUESTS[name]) for name in ("job-02", "job-03")]
+    if halves[0] + halves[1] != whole:
+        raise AssertionError("block A then mirrored block B across the two jobs differs from the two-block schedule")
+    if [{row["block"] for row in half} for half in halves] != [{"A"}, {"B"}]:
+        raise AssertionError("each half runs one block")
+    first, second = (rehearsal.REQUESTS[name] for name in ("job-02", "job-03"))
+    if first.layout != second.layout or first.read_path != second.read_path or not second.own_anchor:
+        raise AssertionError("the second half takes the first half's read and layout")
+    if (first.iteration_blocks, first.blocks) != (1, 2):
+        raise AssertionError("a half runs one block of a two-block preregistration")
+
+
+def test_written_seconds_floor_the_split_halves_at_the_observed_iteration_rate() -> None:
+    derived = rehearsal.retained_derivation("job-02")
+    clock = 4.94
+    for name in ("job-02", "job-03"):
+        request = rehearsal.REQUESTS[name]
+        modeled = rehearsal.expected_seconds(derived, 1200, clock, request.iteration_blocks)
+        written = rehearsal.written_seconds(derived, 1200, clock, request)
+        floor = math.ceil(len(LABELS) * rehearsal.ITERATION_SECONDS / 60) * 60
+        if written != max(modeled, floor) or written != rehearsal.JOBS[name].expected_seconds:
+            raise AssertionError((name, modeled, written))
+    job_01 = rehearsal.REQUESTS["job-01"]
+    retained = rehearsal.retained_derivation("job-01")
+    if rehearsal.written_seconds(retained, 1200, clock, job_01) != rehearsal.expected_seconds(retained, 1200, clock, 2):
+        raise AssertionError("job-01's written seconds predate the floor")
+
+
+def split_runs(tmp_path: Path, correct: dict[str, int], wrong: dict[str, int]) -> tuple[Path, Path]:
+    """The descriptive manifest's two blocks written as two half runs with their counts."""
+    manifest = descriptive_manifest()
+    results = descriptive_results(manifest, correct, wrong)
+    runs = []
+    for block, name in (("A", "job-02"), ("B", "job-03")):
+        run = tmp_path / name
+        run.mkdir()
+        keep = [index for index, setting in enumerate(manifest["settings"]) if setting["block"] == block]
+        half = {**manifest, "job": name, "settings": [manifest["settings"][i] for i in keep], "iterations": len(keep)}
+        (run / "cases.json").write_text(json.dumps(half), encoding="utf-8")
+        outcome = {"partial": False, "iterations": [results["iterations"][i] for i in keep]}
+        (run / "results.json").write_text(json.dumps(outcome), encoding="utf-8")
+        runs.append(run)
+    return runs[0], runs[1]
+
+
+def test_pair_analysis_equals_the_two_block_analysis_and_a_half_alone_evaluates_nothing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(rehearsal, "break_even_ratio", lambda probability, lower: {"status": "stub", "ratio": None})
+    manifest = descriptive_manifest()
+    keys = [s["block"] + s["label"] for s in manifest["settings"]]
+    correct, wrong = dict.fromkeys(keys, 90), dict.fromkeys(keys, 10)
+    run_a, run_b = split_runs(tmp_path, correct, wrong)
+    whole = rehearsal.analyze_results(manifest, descriptive_results(manifest, correct, wrong), manifest["frames"])
+    if rehearsal.analyze_pair(run_a, run_b) != 0:
+        raise AssertionError("the pair analysis failed")
+    pair = json.loads((run_b / rehearsal.PAIR_ANALYSIS).read_text(encoding="utf-8"))
+    if pair["runs"] != ["job-02", "job-03"] or {k: v for k, v in pair.items() if k != "runs"} != whole:
+        raise AssertionError("the pair analysis differs from the analysis of one two-block job")
+    if rehearsal.analyze_pair(run_a, run_b, replay=True) != 0:
+        raise AssertionError("the retained pair analysis does not replay")
+    half_manifest = json.loads((run_a / "cases.json").read_text(encoding="utf-8"))
+    half_results = json.loads((run_a / "results.json").read_text(encoding="utf-8"))
+    alone = rehearsal.analyze_results(half_manifest, half_results, half_manifest["frames"])
+    if {c["label"] for c in alone["comparisons"]} != {"not-evaluated"} or "one block" not in alone["status"]:
+        raise AssertionError(alone["status"])
+    with pytest.raises(ValueError, match="holds blocks"):
+        rehearsal.pair_inputs(run_b, run_a)
+    changed = json.loads((run_b / "cases.json").read_text(encoding="utf-8"))
+    changed["preregistered"]["lambda"] += 0.01
+    (run_b / "cases.json").write_text(json.dumps(changed), encoding="utf-8")
+    with pytest.raises(ValueError, match="preregistered"):
+        rehearsal.pair_inputs(run_a, run_b)
+
+
+def test_the_retained_job_02_replay_record_replays_and_a_run_is_not_its_own_repeat() -> None:
+    runs = ROOT / "results/quandela/runs"
+    run = runs / "2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02"
+    repeat = runs / "2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay"
+    if rehearsal.analyze_replay(run, repeat, replay=True) != 0:
+        raise AssertionError("the retained replay analysis does not replay")
+    record = json.loads((repeat / rehearsal.REPLAY_ANALYSIS).read_text(encoding="utf-8"))
+    if record["meshes"] != {"compared": 6, "identical": 6}:
+        raise AssertionError(record["meshes"])
+    with pytest.raises(ValueError, match="are one job"):
+        rehearsal.replay_record(run, run)
+
+
+def replay_copies(tmp_path: Path, name: str) -> tuple[Path, Path]:
+    """Two copies of a retained run that differ only in their job id, so replay_record treats them as run and repeat."""
+    source = ROOT / "results/quandela/runs" / name
+    run, repeat = tmp_path / "run", tmp_path / "repeat"
+    for target in (run, repeat):
+        target.mkdir()
+        for file in ("cases.json", "results.json", "submission.json"):
+            (target / file).write_bytes((source / file).read_bytes())
+    submission = json.loads((repeat / "submission.json").read_text(encoding="utf-8"))
+    submission["job_id"] = f"{submission['job_id']}-repeat"
+    (repeat / "submission.json").write_text(json.dumps(submission), encoding="utf-8")
+    return run, repeat
+
+
+def test_replay_meshes_compare_only_settings_whose_runs_both_echo_a_circuit(tmp_path: Path) -> None:
+    run, repeat = replay_copies(tmp_path, "2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02")
+    if rehearsal.replay_record(run, repeat)["meshes"] != {"compared": 6, "identical": 6}:
+        raise AssertionError("an exact copy compares six identical meshes")
+    for target in (run, repeat):
+        results = json.loads((target / "results.json").read_text(encoding="utf-8"))
+        counted = [entry for entry in results["iterations"] if "counts" in entry]
+        del counted[0]["result_fields"]["computed_circuit"]
+        (target / "results.json").write_text(json.dumps(results), encoding="utf-8")
+    if rehearsal.replay_record(run, repeat)["meshes"] != {"compared": 5, "identical": 5}:
+        raise AssertionError("two missing circuit echoes count as one identical mesh")
+
+
+def test_replay_refuses_a_run_that_carries_an_input_in_two_blocks(tmp_path: Path) -> None:
+    run, repeat = replay_copies(tmp_path, "2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01")
+    with pytest.raises(ValueError, match="repeats an input across blocks"):
+        rehearsal.replay_record(run, repeat)
+
+
+def test_analysis_writers_keep_a_retained_record_and_refuse_a_departing_one(tmp_path: Path) -> None:
+    runs = ROOT / "results/quandela/runs"
+    names = (
+        "2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02",
+        "2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay",
+        "2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03",
+    )
+    for name in names:
+        (tmp_path / name).mkdir()
+        for file in (runs / name).iterdir():
+            if file.is_file():
+                (tmp_path / name / file.name).write_bytes(file.read_bytes())
+    job_02, replay, job_03 = (tmp_path / name for name in names)
+    retained = (job_03 / rehearsal.PAIR_ANALYSIS).read_bytes()
+    if rehearsal.analyze_pair(job_02, job_03) != 0 or (job_03 / rehearsal.PAIR_ANALYSIS).read_bytes() != retained:
+        raise AssertionError("a matching reanalysis rewrote the retained pair record")
+    with pytest.raises(ValueError):
+        rehearsal.analyze_pair(replay, job_03)
+    if (job_03 / rehearsal.PAIR_ANALYSIS).read_bytes() != retained:
+        raise AssertionError("a departing pair analysis replaced the retained record")
+    before = (job_02 / "analysis.json").read_bytes()
+    if rehearsal.analyze(job_02) != 0 or (job_02 / "analysis.json").read_bytes() != before:
+        raise AssertionError("a matching reanalysis rewrote the retained run record")

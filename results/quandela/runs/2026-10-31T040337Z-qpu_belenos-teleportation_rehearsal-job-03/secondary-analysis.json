@@ -1,0 +1,180 @@
+{
+ "cd_lens": {
+  "controls": 999,
+  "dimensions": {
+   "128": {
+    "cayley_dickson": 0.4977839033851704,
+    "control_median": 0.4570189937610427,
+    "control_quantiles": [
+     0.4229969762429904,
+     0.4570189937610427,
+     0.49067483511942056
+    ],
+    "percentile": 0.005,
+    "status": "computed"
+   },
+   "256": {
+    "cayley_dickson": 0.40045379428154404,
+    "control_median": 0.3875165236619412,
+    "control_quantiles": [
+     0.36375617269623994,
+     0.3875165236619412,
+     0.41164739175733783
+    ],
+    "percentile": 0.135,
+    "status": "computed"
+   },
+   "64": {
+    "cayley_dickson": 0.7517677405807562,
+    "control_median": 0.7600615455742875,
+    "control_quantiles": [
+     0.7070371702207563,
+     0.7600615455742875,
+     0.8135719313565196
+    ],
+    "percentile": 0.63,
+    "status": "computed"
+   }
+  },
+  "flag": "no algebra-specific separation",
+  "label": "exploratory; outside the verdict and the evidence registry",
+  "rule": "flag when the percentile is at or below 0.01 in every dimension",
+  "seed": 64095
+ },
+ "design": "docs/design/ascella-belenos-entanglement-teleportation.md",
+ "in_situ_fit": {
+  "categories": [
+   "correct",
+   "wrong",
+   "excess",
+   "outside",
+   "herald",
+   "receiver",
+   "pattern"
+  ],
+  "counts": [
+   [
+    112,
+    45,
+    1,
+    3,
+    843,
+    168,
+    28
+   ],
+   [
+    127,
+    13,
+    0,
+    5,
+    924,
+    122,
+    9
+   ],
+   [
+    117,
+    16,
+    1,
+    2,
+    952,
+    100,
+    12
+   ],
+   [
+    96,
+    35,
+    1,
+    3,
+    907,
+    134,
+    24
+   ],
+   [
+    231,
+    40,
+    0,
+    2,
+    669,
+    135,
+    50
+   ],
+   [
+    85,
+    12,
+    3,
+    0,
+    876,
+    208,
+    16
+   ]
+  ],
+  "fits": {
+   "anchor": {
+    "status": "no grid cell assigns the observed categories positive probability"
+   },
+   "platform_before": {
+    "status": "no grid cell assigns the observed categories positive probability"
+   }
+  },
+  "grid": {
+   "g2": [
+    0.0,
+    0.02,
+    0.04,
+    0.06,
+    0.08,
+    0.1,
+    0.12,
+    0.14,
+    0.16,
+    0.18,
+    0.2,
+    0.22,
+    0.24
+   ],
+   "hom": [
+    0.7,
+    0.72,
+    0.74,
+    0.76,
+    0.78,
+    0.8,
+    0.82,
+    0.84,
+    0.86,
+    0.88,
+    0.9,
+    0.92,
+    0.94,
+    0.96,
+    0.98
+   ],
+   "transmittance": [
+    0.0001,
+    0.00017782794100389227,
+    0.00031622776601683794,
+    0.0005623413251903491,
+    0.001,
+    0.0017782794100389228,
+    0.0031622776601683794,
+    0.005623413251903491,
+    0.01,
+    0.01778279410038923,
+    0.03162277660168379,
+    0.05623413251903491,
+    0.1
+   ]
+  },
+  "status": "fitted"
+ },
+ "record_state": {
+  "counted_iterations": 6,
+  "partial": false,
+  "requested_samples": 7200,
+  "returned_samples": 7127,
+  "returned_share": 0.9898611111111111,
+  "rule": "near-anchor at a share >= 0.5, degraded-as-recorded at <= 0.01, else intermediate",
+  "state": "near-anchor"
+ },
+ "schema": "qd-teleportation-secondary-v1"
+}

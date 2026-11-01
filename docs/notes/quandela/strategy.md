@@ -1,11 +1,22 @@
 # Quandela Belenos strategy guide
 
-A living guide to getting the most science per credit out of Quandela Cloud's
-photonic platforms with this repository's tooling. Each section states what
-holds, the authority behind it (a retained run, the captured guide, the
-Perceval 1.3.1 source or an exact computation), and what it changes in a
-case. A new run or a refuted conjecture updates the section it touches and
-the run log at the end.
+The design guide for every Quandela Cloud case in this repository: how to
+design, plan, build, review, submit, gate and analyze a `qpu:belenos` (and
+`qpu:ascella`) job and its iterations, shots and seeds to get the most
+science per credit. Each section states what holds, the authority behind it
+(a retained run, the captured guide, the Perceval 1.3.1 source or an exact
+computation), and what it changes in a case. A new run or a refuted
+conjecture updates the section it touches and the run log at the end.
+
+Where to look:
+
+| Question | Home |
+|---|---|
+| The end-to-end procedure for a new case | section 1b below |
+| What a job costs, how many iterations and samples fit in one, the per-iteration time of each job shape | [credit optimization](../../runbooks/quandela-credit-optimization.md) ("Job shape on qpu:belenos") |
+| Platform facts, circuits, analysis rules | sections 2, 4 and 5 |
+| Compiled meshes, per-seed mesh variance and the design rules for multi-seed cases | section 7 |
+| What each run found | section 11, the run log |
 
 ## 1. Cost model (measured)
 
@@ -21,6 +32,8 @@ The job, not the shot, is the cost unit: a 10000-shot QPU job costs 1.01
 credits and a 347113-shot two-photon job 1.35. Everything that puts more
 configurations into one job (iterations, packing) divides the cost; nothing
 that adds shots changes it materially.
+[quandela-credit-optimization.md](../../runbooks/quandela-credit-optimization.md)
+holds the full billing rule, its per-job evidence and the job-shape timing.
 
 ## 1a. Job anatomy and names
 
@@ -65,8 +78,86 @@ fit about 6.3 s per iteration plus 26 us per sample (c2eea262: 24 iterations,
 setting count, not the samples, fills the 300 s limit, and acquisition runs
 near 4 x 10^4 one-photon samples per second.
 
+## 1b. Building and running a case
+
+The checklist each new case follows, from the first sketch to the claim. The
+mode-swap case ([belenos-mode-swap-interleaved-case.md](../../design/belenos-mode-swap-interleaved-case.md),
+`scripts/belenos_mode_swap_interleaved.py`) is the worked example of every
+step.
+
+1. **Shape the jobs from measured times.** Take the per-iteration time of
+   the case's photon count from the job-shape table of the credit runbook,
+   fit k = floor(0.9 x 300 / t) iterations per job, then raise the samples
+   per iteration while the job stays inside that margin: samples cost 1e-6
+   credits per shot and well under a millisecond each, while every extra
+   job costs a full credit. Write the duration bound in the script from
+   named measurements (`SECONDS_PER_ITERATION`, the clock and the lowest
+   returned global efficiency) and have `--check` enforce the margin. A
+   shape no retained job has run gets its first job measured before the
+   rest are planned.
+2. **Decide what limits the statistics.** If compiled-mesh error dominates
+   binomial error (section 7, "Per-seed mesh variance of a share"), spend
+   the iterations on more compilation seeds; if binomial error dominates,
+   spend them on samples. In the mode-swap case the mesh variance ran about
+   ten times the binomial at 6,000 samples, so the jobs carry three
+   replicate seeds per layout and 30,000 samples, which cut binomial error
+   by sqrt(5) for 0.072 credits per job.
+3. **Order the iterations.** Repeat one seed at the first and last slot as
+   the drift reference, put replicate seeds at the repeats' mean slot,
+   alternate the conditions being contrasted, and end a job on the
+   iteration the analysis can best spare, since a cut at 300 s loses the
+   iteration in progress and bills the full ceiling.
+4. **Preregister the analysis and its readings in the frozen `cases.json`.**
+   Every reading names the statistic that supports its words; the design
+   rules of section 7 list the defects that recur. Keep the drift
+   inflation kappa^2 out of any variance it would be subtracted from.
+5. **Simulate the decision chain.** Run the case's own analysis functions
+   on synthetic binomial cells at the retained rates under the nulls that
+   matter (heavy tails, class differences, a bad slot, a step between two
+   jobs of one set) and under the effect sizes of interest, and quote the
+   simulated rates in the design document.
+6. **Review adversarially, then fix and re-freeze.** An independent review
+   reads the script, tests, document and frozen bytes; every finding is
+   triaged against the code, fixed or answered, and the unrun cases are
+   rebuilt. A job that ran keeps its bytes (`RETAINED_CASES` binds their
+   sha256), and the never-run cases it superseded leave.
+7. **Write the stopping rule before the first submit.** State which checks
+   gate the next job and which stop the case for the owner, with
+   thresholds set where a reading changes, not where a statistic first
+   fires: the mode-swap case stops on primary repeats split across meshes,
+   on kappa^2 above 20 (a drift that moves the readings in the Monte
+   Carlo) and on a job longer than 270 s; a drift detected below that
+   threshold is recorded and the case continues.
+8. **Run each job through one cycle.** Copy the frozen `cases.json` and
+   `circuit.json` into a fresh run directory, `plan` immediately before
+   `submit` (credit ceiling, estimated shots and `cases_sha256` match the
+   frozen bytes; the plan's HOM, g2 and transmittance are the job's
+   calibration record), `submit` with the owner's approval quoted,
+   `collect`, then gate: every iteration counted, shots used as requested,
+   duration inside the bound, the mesh digests the design expects. When two
+   jobs form one set, submit the second as soon as the first passes, which
+   keeps the drift step between them small.
+9. **Retain, analyze, claim.** Each collected run is committed and enters
+   `research_state.json` as an acquisition in the change that retains it;
+   the pooled analysis and its claim follow, and the design document gains
+   an Outcome section.
+
 ## 2. Platform facts that shape a case
 
+- **The dominant error is the compiled mesh, and a seed fixes it.** On
+  `qpu:belenos` the per-seed compiled-mesh error of an observable exceeds
+  its binomial error, drift within and between jobs minutes apart, and any
+  effect of chip position: the mode-swap case measured a mesh standard
+  deviation of 0.0515 in a balanced single-photon share against a binomial
+  0.007 per 30,000-sample iteration, drift with kappa^2 at most 1.87, and
+  no placement effect beyond the mesh variance; the visibility and split
+  teleportation cases failed or flagged on the same error. The same circuit
+  parameters, input and compilation seed return the same `computed_circuit`
+  within a job and across jobs (teleportation replay, 6 of 6; mode-swap
+  sets 1 to 4, 8 of 8 pairs). A seed is therefore a hardware setting: a
+  case that compares meshes measures their variance with replicate seeds,
+  and a case that wants the best performance screens seeds and replays the
+  best (section 7, "Per-seed mesh variance of a share").
 - **Job names** are stored in a varchar(50); a longer `job_name` answers
   HTTP 424 "value too long for type character varying(50)". The runner names
   a job `SERIES/job-NN` and refuses longer names.
@@ -874,6 +965,75 @@ the couplers equaled Q1's throughout.
     Open: a matched 1500 and 10000 opening pair at one hour, persistence
     through consecutive large entries, the threshold, and whether opening
     on another mesh prevents the failure.
+
+**Per-seed mesh variance of a share.** The compiled mesh is a function of the
+iteration's circuit parameters and compilation seed, and the observable moves
+with it far beyond binomial error.
+
+- *Same parameters and seed, same mesh.* The exact replay of teleportation
+  job-02 (137c771c) returned the `computed_circuit` of all six f918c870
+  iterations byte for byte, and the two primary repeats of each layout in
+  mode-swap job-00 (dc348230), four iterations apart in one job, returned one
+  digest each and agreed within binomial error (drift D 4.9 on 12 degrees of
+  freedom). The identity holds across jobs minutes apart: every primary pair
+  of sets 1 to 4 of the mode-swap case returned one digest across its set's
+  two jobs ([belenos-mode-swap-interleaved-case.md](../../design/belenos-mode-swap-interleaved-case.md),
+  Outcome).
+- *Different seeds, different meshes, different answers.* One 4-mode
+  two-photon circuit under four seeds read control endpoints D of -0.646,
+  -0.873, -0.853 and -0.672 (chi-square 241 on 3 degrees of freedom; the
+  second source pair 382), which made the in-situ visibility unresolved
+  ([belenos-associator-visibility-case.md](../../design/belenos-associator-visibility-case.md),
+  Outcome). The split teleportation blocks differ by their meshes, not by
+  drift ([ascella-belenos-entanglement-teleportation.md](../../design/ascella-belenos-entanglement-teleportation.md),
+  "Outcome: the block veto measures per-seed compiled meshes"). For a
+  single-photon algebra-mode share, the mode-swap case measures a mesh
+  standard deviation of 0.0515 for half blocks and 0.0177 for extreme
+  blocks (68 and 88 degrees of freedom), spreads 50 and 80 times the
+  binomial variance, and the earlier packed-swapped deltas sit inside it
+  (claim `qd-belenos-mode-swap-per-seed-mesh-variance`). Slot 5 (chip modes
+  20 to 23) carries heavier tails, seed-to-seed jumps of 0.07 to 0.13 in
+  extreme blocks, and fails one scale per class (p 2.5e-8).
+- *Class dependence.* A share a = cos^2 theta moves by 2 sqrt(a (1 - a))
+  d theta under a mesh rotation error d theta, so a block near a = 1/2
+  carries about three times the mesh error of a block near 0 or 1; the
+  retained packed-swapped deltas bound the two at 0.059 and 0.029.
+
+Design rules that follow, each from a defect the two adversarial reviews of
+the mode-swap case found and its Monte Carlo confirmed:
+
+1. Test a contrast between two compiled meshes against a measured per-seed
+   mesh variance, not against binomial error: run replicate seeds of the
+   identical circuit in the same job, and pool their spread.
+2. Keep repeats of one seed as the drift reference, and place the replicates
+   at the repeats' mean slot, so a linear drift does not masquerade as mesh
+   variance.
+3. Estimate the mesh variance per share class (or in theta = arcsin sqrt a),
+   and withhold a per-block placement reading when one physical slot's
+   standardized spread exceeds the others (Bonferroni over the six slots).
+4. Subtract the plain binomial variance from a mesh spread; a binomial term
+   inflated by the drift between repeats drives the mesh variance to 0 and
+   reads drift as its absence.
+5. Once the mesh variance dominates the binomial (about ten to one in
+   variance at 6,000 samples), spend a job's iterations on more seeds and
+   its remaining seconds on samples, not more samples alone
+   ([credit optimization](../../runbooks/quandela-credit-optimization.md),
+   "Job shape on qpu:belenos").
+6. A predictor built from other blocks excludes the target's partners: the
+   packed slot predictor drew 10 of its 14 predictions from the block's own
+   swap partner and so reads partner offsets as a chip-mode sign.
+7. Give each reading the statistic that supports its words: new deltas that
+   do not follow old ones read "mesh error" only when the old deltas' size
+   fits the measured mesh variance (`earlier_excess`), with an allowance for
+   the variance change between acquisition windows (threefold here).
+8. Run the full decision chain through the case's own functions on
+   simulated binomial cells before freezing, under heavy tails, class
+   differences, a bad slot and the case's time structure (a step between
+   two jobs of one set), and quote the simulated rates instead of a
+   textbook tail.
+9. Measure the iteration time of a new job shape before freezing a
+   multi-job plan; the mode-swap job-00 bound charged the per-iteration cost
+   to samples and the service cut the job after 6 of 12 iterations.
 
 ## 7a. What the literature adds (docs/notes/quandela/literature.md)
 

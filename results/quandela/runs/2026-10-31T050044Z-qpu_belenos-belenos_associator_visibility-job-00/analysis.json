@@ -1,0 +1,152 @@
+{
+ "accepted_two_click_events": 14838,
+ "associator": {
+  "Delta": 1.7617871986417208,
+  "iterations": [
+   {
+    "D": 0.8884254431699687,
+    "name": "associator-LaLb-arm0",
+    "route": "LaLb",
+    "se": 0.009587133672992564,
+    "signed_D": 0.8884254431699687
+   },
+   {
+    "D": -0.8757870635374928,
+    "name": "associator-Lab-arm1",
+    "route": "Lab",
+    "se": 0.010176117235692294,
+    "signed_D": 0.8757870635374928
+   },
+   {
+    "D": -0.8583333333333333,
+    "name": "associator-Lab-arm2",
+    "route": "Lab",
+    "se": 0.010513439370986427,
+    "signed_D": 0.8583333333333333
+   },
+   {
+    "D": 0.9015415216310293,
+    "name": "associator-LaLb-arm3",
+    "route": "LaLb",
+    "se": 0.00870576355944151,
+    "signed_D": 0.9015415216310293
+   }
+  ],
+  "mesh_heterogeneity": {
+   "birge_ratio": 1.9026842878214574,
+   "chi2": 10.860622497367938,
+   "dof": 3,
+   "p": 0.012503917757408806
+  },
+  "routes": {
+   "LaLb": {
+    "D": 0.8951387121404938,
+    "events": 3929,
+    "se": 0.006462931093689383
+   },
+   "Lab": {
+    "D": -0.8666484865012272,
+    "events": 3667,
+    "se": 0.007336614710768969
+   }
+  },
+  "se": 0.009777289692754772
+ },
+ "associator_counted_iterations": 4,
+ "control": {
+  "Delta": 0.20307285542111297,
+  "iterations": [
+   {
+    "D": -0.6457949662369552,
+    "name": "control-LaLb-arm0",
+    "route": "LaLb",
+    "se": 0.017019069044905126,
+    "signed_D": -0.6457949662369552
+   },
+   {
+    "D": -0.8734110169491526,
+    "name": "control-Lab-arm1",
+    "route": "Lab",
+    "se": 0.009834383611603312,
+    "signed_D": -0.8734110169491526
+   },
+   {
+    "D": -0.8526834611171961,
+    "name": "control-Lab-arm2",
+    "route": "Lab",
+    "se": 0.01105337069203435,
+    "signed_D": -0.8526834611171961
+   },
+   {
+    "D": -0.6724591890468667,
+    "name": "control-LaLb-arm3",
+    "route": "LaLb",
+    "se": 0.014230385029957979,
+    "signed_D": -0.6724591890468667
+   }
+  ],
+  "mesh_heterogeneity": {
+   "birge_ratio": 8.959812244867164,
+   "chi2": 240.83470638981467,
+   "dof": 3,
+   "p": 6.280580251339337e-52
+  },
+  "routes": {
+   "LaLb": {
+    "D": -0.6601473922902494,
+    "events": 3528,
+    "se": 0.010976075364176321
+   },
+   "Lab": {
+    "D": -0.8632202477113624,
+    "events": 3714,
+    "se": 0.007386112816197953
+   }
+  },
+  "se": 0.013229848560496905
+ },
+ "control_counted_iterations": 4,
+ "decisions": {
+  "associator_realised": false,
+  "closure": 0.238419558640109,
+  "closure_se": 0.01645066219547805,
+  "compensated_contrast": 1.1565082205893888,
+  "complete_blocks": {
+   "associator": true,
+   "control": true
+  },
+  "hom_comparison": {
+   "Delta_predicted": 1.6764427625354772,
+   "departure": 0.08534443610624365,
+   "within_tolerance": false
+  },
+  "in_situ_visibility": 0.8274124081306855,
+  "visibility_closure": false,
+  "visibility_hom": 0.8859999999999999
+ },
+ "excluded_by_cause": {
+  "fewer_than_two_clicks": 0,
+  "three_or_more_clicks": 8,
+  "two_clicks_outside_window": 1538
+ },
+ "excluded_events": 1546,
+ "in_situ_visibility": {
+  "V_eff": 0.8274124081306855,
+  "f": 0.7616838200008059,
+  "se": 0.005203891302958297,
+  "se_with_mesh_spread": 0.04662588901720349
+ },
+ "multiphoton_estimate": {
+  "estimated_lossy_events": 466.79754601226995,
+  "estimated_share_of_accepted": 0.03145960008170036,
+  "lossy_per_three_click": 58.34969325153374,
+  "model": "independent per-photon loss; bunching on threshold detectors ignored; descriptive",
+  "transmittance": 0.0489
+ },
+ "overlap_reading": "unresolved: photon overlap and compiled-mesh error both remain candidates",
+ "photon_modes": [
+  18,
+  20
+ ],
+ "window": 18
+}

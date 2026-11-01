@@ -1,0 +1,75 @@
+{
+ "homogeneity": {
+  "alpha_per_input": 0.0016666666666666668,
+  "differ": [],
+  "tests": {
+   "+X": {
+    "dof": 6,
+    "p_value": 0.23644479449786163,
+    "statistic": 8.022702271893335,
+    "status": "consistent"
+   },
+   "+Y": {
+    "dof": 6,
+    "p_value": 0.9853576140311886,
+    "statistic": 1.0066855453044024,
+    "status": "consistent"
+   },
+   "+Z": {
+    "dof": 5,
+    "p_value": 0.5162314461959115,
+    "statistic": 4.234067949517004,
+    "status": "consistent"
+   },
+   "-X": {
+    "dof": 6,
+    "p_value": 0.683769862065545,
+    "statistic": 3.9475831104278507,
+    "status": "consistent"
+   },
+   "-Y": {
+    "dof": 6,
+    "p_value": 0.07859335055192698,
+    "statistic": 11.333743500318853,
+    "status": "consistent"
+   },
+   "-Z": {
+    "dof": 6,
+    "p_value": 0.7044650779727191,
+    "statistic": 3.7944825323150537,
+    "status": "consistent"
+   }
+  }
+ },
+ "jobs": [
+  "f918c870-786c-48a8-8cf4-1d5e6e334516",
+  "137c771c-f7e8-4085-aa5d-065385368f54"
+ ],
+ "meshes": {
+  "compared": 6,
+  "identical": 6
+ },
+ "pooled": [
+  {
+   "accepted": 887,
+   "alpha": 0.01,
+   "correct": 727,
+   "fidelity": 0.8196166854565953,
+   "lambda": 0.15640669882347025,
+   "lower_bound": 0.7668713035111945
+  },
+  {
+   "accepted": 836,
+   "alpha": 0.01,
+   "correct": 690,
+   "fidelity": 0.8253588516746412,
+   "lambda": 0.15640669882347025,
+   "lower_bound": 0.7705884436835277
+  }
+ ],
+ "runs": [
+  "2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02",
+  "2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay"
+ ],
+ "schema": "qd-teleportation-replay-v1"
+}

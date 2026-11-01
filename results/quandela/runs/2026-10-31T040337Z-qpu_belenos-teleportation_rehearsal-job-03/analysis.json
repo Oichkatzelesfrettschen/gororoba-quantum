@@ -1,0 +1,198 @@
+{
+ "break_even_ratio": {
+  "ratio": null,
+  "status": "not-evaluated"
+ },
+ "comparisons": [
+  {
+   "assumptions": [
+    "one label-blind trace-nonincreasing instrument acts on every input",
+    "equal optical attempts per input (uniform priors), since unequal priors raise the six-state value",
+    "the input source emits at most two copies per attempt (Perceval's truncated source model)",
+    "the classical device may postselect on photon number with no acceptance constraint"
+   ],
+   "bound": 0.75,
+   "label": "not-evaluated",
+   "margin": null,
+   "name": "two-copy"
+  },
+  {
+   "assumptions": [
+    "one label-blind trace-nonincreasing instrument acts on every input",
+    "single-copy inputs: acceptance blind to photon number",
+    "each input's optical attempts lie within the ratio of the modeled profile"
+   ],
+   "bound": 0.705390453,
+   "label": "not-evaluated",
+   "margin": null,
+   "name": "attempt-box",
+   "ratio": 1.1
+  }
+ ],
+ "homogeneity": {
+  "alpha_per_input": 0.0016666666666666668,
+  "differ": [],
+  "tests": {
+   "+X": {
+    "reason": "a block returned no counted iteration",
+    "status": "untestable"
+   },
+   "+Y": {
+    "reason": "a block returned no counted iteration",
+    "status": "untestable"
+   },
+   "+Z": {
+    "reason": "a block returned no counted iteration",
+    "status": "untestable"
+   },
+   "-X": {
+    "reason": "a block returned no counted iteration",
+    "status": "untestable"
+   },
+   "-Y": {
+    "reason": "a block returned no counted iteration",
+    "status": "untestable"
+   },
+   "-Z": {
+    "reason": "a block returned no counted iteration",
+    "status": "untestable"
+   }
+  }
+ },
+ "iterations": [
+  {
+   "accepted": 157,
+   "accepted_per_sample": 0.13083333333333333,
+   "basis": "Y",
+   "block": "B",
+   "compilation_seed": 56057,
+   "correct": 112,
+   "label": "-Y",
+   "nb_shots_used": 2301330,
+   "physical_perf": 7.567789148608214e-05,
+   "rejected": {
+    "excess": 1,
+    "herald": 843,
+    "outside": 3,
+    "pattern": 28,
+    "receiver": 168
+   },
+   "samples": 1200,
+   "wrong": 45
+  },
+  {
+   "accepted": 140,
+   "accepted_per_sample": 0.11666666666666667,
+   "basis": "Y",
+   "block": "B",
+   "compilation_seed": 55550,
+   "correct": 127,
+   "label": "+Y",
+   "nb_shots_used": 2086810,
+   "physical_perf": 8.395198525472534e-05,
+   "rejected": {
+    "excess": 0,
+    "herald": 924,
+    "outside": 5,
+    "pattern": 9,
+    "receiver": 122
+   },
+   "samples": 1200,
+   "wrong": 13
+  },
+  {
+   "accepted": 133,
+   "accepted_per_sample": 0.11083333333333334,
+   "basis": "X",
+   "block": "B",
+   "compilation_seed": 595,
+   "correct": 117,
+   "label": "-X",
+   "nb_shots_used": 2181782,
+   "physical_perf": 8.100426798432353e-05,
+   "rejected": {
+    "excess": 1,
+    "herald": 952,
+    "outside": 2,
+    "pattern": 12,
+    "receiver": 100
+   },
+   "samples": 1200,
+   "wrong": 16
+  },
+  {
+   "accepted": 131,
+   "accepted_per_sample": 0.10916666666666666,
+   "basis": "X",
+   "block": "B",
+   "compilation_seed": 59482,
+   "correct": 96,
+   "label": "+X",
+   "nb_shots_used": 2408909,
+   "physical_perf": 7.139633113124972e-05,
+   "rejected": {
+    "excess": 1,
+    "herald": 907,
+    "outside": 3,
+    "pattern": 24,
+    "receiver": 134
+   },
+   "samples": 1200,
+   "wrong": 35
+  },
+  {
+   "accepted": 271,
+   "accepted_per_sample": 0.24046140195208518,
+   "basis": "Z",
+   "block": "B",
+   "compilation_seed": 7821,
+   "correct": 231,
+   "label": "-Z",
+   "nb_shots_used": 3000000,
+   "physical_perf": 5.404319255233015e-05,
+   "rejected": {
+    "excess": 0,
+    "herald": 669,
+    "outside": 2,
+    "pattern": 50,
+    "receiver": 135
+   },
+   "samples": 1127,
+   "wrong": 40
+  },
+  {
+   "accepted": 97,
+   "accepted_per_sample": 0.08083333333333333,
+   "basis": "Z",
+   "block": "B",
+   "compilation_seed": 19846,
+   "correct": 85,
+   "label": "+Z",
+   "nb_shots_used": 2043758,
+   "physical_perf": 8.416034207966395e-05,
+   "rejected": {
+    "excess": 3,
+    "herald": 876,
+    "outside": 0,
+    "pattern": 16,
+    "receiver": 208
+   },
+   "samples": 1200,
+   "wrong": 12
+  }
+ ],
+ "iterations_without_counts": [],
+ "partial": false,
+ "pooled": {
+  "accepted": 929,
+  "alpha": 0.01,
+  "correct": 768,
+  "fidelity": 0.8266953713670614,
+  "lambda": 0.15640669882347025,
+  "lower_bound": 0.7754507115668529
+ },
+ "rule": "descriptive-v2",
+ "schema": "qd-teleportation-analysis-v2",
+ "status": "one block of the pair: comparisons need --analyze-pair",
+ "uncounted_iterations": []
+}
