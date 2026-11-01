@@ -519,6 +519,24 @@ def test_the_class_scale_reports_no_excess_ratio_when_every_group_has_zero_binom
             raise AssertionError(scale)
 
 
+def test_the_slot_test_drops_deterministic_groups_and_keeps_spread_without_expected_variance() -> None:
+    classes = {"extreme": {"sigma2": 0.0}, "half": {"sigma2": 0.001}}
+    deterministic = {"class": "extreme", "slot": 0, "dof": 2, "s2": 0.0, "v": 0.0}
+    half = {"class": "half", "slot": 0, "dof": 2, "s2": 0.002, "v": 0.001}
+    result = case.slot_homogeneity([deterministic, half], classes)
+    if (
+        result["rows"] != [{"slot": 0, "dof": 2, "statistic": 2.0, "p": float(chi2.sf(2.0, 2))}]
+        or not result["homogeneous"]
+    ):
+        raise AssertionError(result)
+    alone = case.slot_homogeneity([deterministic], classes)
+    if alone["rows"] != [{"slot": 0, "dof": 0, "statistic": 0, "p": 1.0}] or not alone["homogeneous"]:
+        raise AssertionError(alone)
+    spread = case.slot_homogeneity([{**deterministic, "s2": 0.01}], classes)
+    if spread["rows"][0]["p"] != 0.0 or spread["homogeneous"]:
+        raise AssertionError(spread)
+
+
 def test_a_drift_step_between_a_sets_two_jobs_raises_the_mesh_scale_rather_than_hiding_it(tmp_path: Path) -> None:
     def stepped(step: float) -> Model:
         def model(setting: dict[str, Any], block: dict[str, Any]) -> float:

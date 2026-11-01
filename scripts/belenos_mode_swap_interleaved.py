@@ -738,16 +738,26 @@ def contrast_scale(groups: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def slot_homogeneity(groups: list[dict[str, Any]], classes: dict[str, dict[str, float]]) -> dict[str, Any]:
-    """Per physical slot, the standardized mesh spreads against chi-square on their degrees of freedom."""
+    """Per physical slot, the standardized mesh spreads against chi-square on their degrees of freedom.
+
+    A group with zero expected variance and zero spread is deterministic and carries no evidence about spread, so it
+    leaves the test with its degrees of freedom; spread against zero expected variance stays infinite evidence. A slot
+    left without a testable group reads p = 1."""
     slots: dict[int, list[tuple[float, int]]] = {}
     for g in groups:
         scale = classes[g["class"]]["sigma2"] + g["v"]
-        slots.setdefault(g["slot"], []).append((g["dof"] * g["s2"] / scale if scale > 0 else math.inf, g["dof"]))
+        if scale > 0:
+            slots.setdefault(g["slot"], []).append((g["dof"] * g["s2"] / scale, g["dof"]))
+        elif g["s2"] > 0:
+            slots.setdefault(g["slot"], []).append((math.inf, g["dof"]))
+        else:
+            slots.setdefault(g["slot"], [])
     rows = []
     for slot in sorted(slots):
         statistic = sum(s for s, _ in slots[slot])
         dof = sum(d for _, d in slots[slot])
-        rows.append({"slot": slot, "dof": dof, "statistic": statistic, "p": float(chi2.sf(statistic, dof))})
+        p_value = float(chi2.sf(statistic, dof)) if dof > 0 else 1.0
+        rows.append({"slot": slot, "dof": dof, "statistic": statistic, "p": p_value})
     return {"rows": rows, "homogeneous": all(row["p"] >= SLOT_ALPHA / SLOTS for row in rows)}
 
 
