@@ -721,8 +721,11 @@ def replicate_meshes_distinct(data: dict[str, Any]) -> bool:
     return True
 
 
-def contrast_scale(groups: list[dict[str, Any]]) -> dict[str, float]:
-    """sigma^2 of one class from its mesh groups, with its one-sided upper bound."""
+def contrast_scale(groups: list[dict[str, Any]]) -> dict[str, Any]:
+    """sigma^2 of one class from its mesh groups, with its one-sided upper bound.
+
+    excess_ratio is the spread over its binomial share; it is None when every group's binomial variance is zero,
+    which happens when each mesh of the class reads an ideal share of 0 or 1."""
     dof = sum(g["dof"] for g in groups)
     spread = sum(g["dof"] * g["s2"] for g in groups)
     binomial = sum(g["dof"] * g["v"] for g in groups)
@@ -730,7 +733,7 @@ def contrast_scale(groups: list[dict[str, Any]]) -> dict[str, float]:
         "dof": dof,
         "sigma2": max(0.0, (spread - binomial) / dof),
         "sigma2_upper": max(0.0, spread / float(chi2.ppf(SIGMA_UPPER_ALPHA, dof)) - binomial / dof),
-        "excess_ratio": spread / binomial,
+        "excess_ratio": spread / binomial if binomial > 0 else None,
     }
 
 

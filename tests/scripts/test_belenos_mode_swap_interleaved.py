@@ -512,6 +512,13 @@ def test_the_class_scale_pools_groups_of_unequal_size_and_variance() -> None:
         raise AssertionError(scale)
 
 
+def test_the_class_scale_reports_no_excess_ratio_when_every_group_has_zero_binomial_variance() -> None:
+    for s2 in (0.0, 0.004):
+        scale = case.contrast_scale([{"dof": 1, "s2": s2, "v": 0.0}, {"dof": 2, "s2": s2, "v": 0.0}])
+        if scale["excess_ratio"] is not None or scale["sigma2"] != s2:
+            raise AssertionError(scale)
+
+
 def test_a_drift_step_between_a_sets_two_jobs_raises_the_mesh_scale_rather_than_hiding_it(tmp_path: Path) -> None:
     def stepped(step: float) -> Model:
         def model(setting: dict[str, Any], block: dict[str, Any]) -> float:
