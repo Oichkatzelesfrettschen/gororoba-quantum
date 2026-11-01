@@ -305,6 +305,7 @@ def analyze(run: Path) -> dict[str, Any]:
     bound: set[int] = set()
     per_iteration: dict[str, list[dict[str, Any]]] = {b: [] for b in base.PAIRS}
     iteration_events: dict[str, list[int]] = {b: [] for b in base.PAIRS}
+    work: list[tuple[dict[str, Any], dict[str, int]]] = []
     for entry in entries:
         counts = entry.get("counts") if isinstance(entry, dict) else None
         if not counts:
@@ -320,27 +321,15 @@ def analyze(run: Path) -> dict[str, Any]:
         )
         bound.add(setting["compilation_seed"])
         counted[setting["block"]] += 1
+        work.append((setting, counts))
+    reduced = ordered_map(reduce_iteration, [(counts, window) for _, counts in work], min_items=1) if work else []
+    for (setting, _), (own, own_excluded) in zip(work, reduced, strict=True):
+        for cause, count in own_excluded.items():
+            excluded[cause] += count
+        accepted += own[2]
         tally = tallies[setting["block"]][setting["route"]]
-        own = [0, 0, 0]
-        for state, count in counts.items():
-            occupation = [int(c) for c in state.strip("|>").split(",")]
-            occupied = [m for m, n in enumerate(occupation) if n > 0]
-            if len(occupied) != 2 or not all(window <= m < window + LOGICAL for m in occupied):
-                cause = (
-                    "three_or_more_clicks"
-                    if len(occupied) > 2
-                    else "two_clicks_outside_window"
-                    if len(occupied) == 2
-                    else "fewer_than_two_clicks"
-                )
-                excluded[cause] += count
-                continue
-            accepted += count
-            pair = f"{occupied[0] - window}{occupied[1] - window}"
-            for target in (tally, own):
-                target[0] += count if pair in base.PLUS_PAIRS else 0
-                target[1] += count if pair in base.MINUS_PAIRS else 0
-                target[2] += count
+        for index in range(3):
+            tally[index] += own[index]
         if own[2]:
             sign = 1 if setting["route"] == "LaLb" or setting["block"] == "control" else -1
             d, se = binomial_endpoint(*own)
@@ -380,7 +369,9 @@ def analyze(run: Path) -> dict[str, Any]:
         out[block]["mesh_heterogeneity"] = heterogeneity(per_iteration[block], iteration_events[block])
     out["decisions"] = base.decisions(out, base.submission_visibility(run))
     control = out["control"]
-    if counted["control"] == len(base.ROUTE_ORDER) and control.get("Delta") is not None:
+    # Every control mesh must contribute an accepted observation; an iteration with counts but no event inside the
+    # window leaves its mesh unobserved.
+    if len(per_iteration["control"]) == len(base.ROUTE_ORDER) and control.get("Delta") is not None:
         routes = control["routes"]
         f = -(routes["LaLb"]["D"] + routes["Lab"]["D"]) / 2
         se_f = math.hypot(routes["LaLb"]["se"], routes["Lab"]["se"]) / 2
@@ -394,6 +385,31 @@ def analyze(run: Path) -> dict[str, Any]:
         out["in_situ_visibility"] = None
         out["overlap_reading"] = "undecided: the control block lacks one of its four iterations"
     return out
+
+
+def reduce_iteration(item: tuple[dict[str, int], int]) -> tuple[list[int], dict[str, int]]:
+    """One iteration's (plus, minus, accepted) two-click tally inside the window and its excluded counts by cause."""
+    counts, window = item
+    own = [0, 0, 0]
+    excluded = {"three_or_more_clicks": 0, "two_clicks_outside_window": 0, "fewer_than_two_clicks": 0}
+    for state, count in counts.items():
+        occupation = [int(c) for c in state.strip("|>").split(",")]
+        occupied = [m for m, n in enumerate(occupation) if n > 0]
+        if len(occupied) != 2 or not all(window <= m < window + LOGICAL for m in occupied):
+            cause = (
+                "three_or_more_clicks"
+                if len(occupied) > 2
+                else "two_clicks_outside_window"
+                if len(occupied) == 2
+                else "fewer_than_two_clicks"
+            )
+            excluded[cause] += count
+            continue
+        pair = f"{occupied[0] - window}{occupied[1] - window}"
+        own[0] += count if pair in base.PLUS_PAIRS else 0
+        own[1] += count if pair in base.MINUS_PAIRS else 0
+        own[2] += count
+    return own, excluded
 
 
 def binomial_endpoint(plus: int, minus: int, total: int) -> tuple[float, float]:
