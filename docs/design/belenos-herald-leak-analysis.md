@@ -82,7 +82,16 @@ below the preregistered half.
 
 Each input's table spans 33 to 36 observed patterns, so the null-arm chi-squares sit where homogeneity puts them and
 the mesh-contrast chi-squares exceed them by a factor of 1.7 to 12. Block A pools two runs and so carries about twice
-block B's herald events.
+block B's herald events, which raises the mesh contrast's effective sample size (the harmonic mean of its row totals)
+about a third above the null arm's; that accounts for a factor near 1.33, not the factor 6.2 between the sums.
+
+"Broad" is the outcome of the preregistered rule and means that no single pattern carries half of an input's
+chi-square. A mesh error is a coherent change of the interferometer, so it moves probability across several patterns
+at once (at -Z the five leading patterns, 8 % to 16 % of the chi-square each, all click a1 or q1), and the rule
+cannot localize such a change to a mode. A
+mode-marginal test, counting herald events per clicked logical mode, is the test that could, and it was not
+preregistered here. The null arm's p 0.30 says the two same-mesh runs show no composition change at their counts; it
+is not an equivalence bound on drift within one mesh.
 
 **Filter link (exploratory).** Three of six inputs match the filter reading (herald and wrong rates move in opposite
 directions and the correct rate moves less than the wrong rate), sign-test p 0.66, and the null arm also matches
@@ -92,14 +101,15 @@ inputs the herald share and the other-rejection share (excess, outside, receiver
 directions, with the largest swings at -Z (herald -0.104, other +0.029, correct +0.055) and +Y (herald +0.045, other
 -0.039). A mesh moves events between rejection classes as a whole.
 
-**Observed after looking.** Four of the six top patterns click a1, which sits on chip mode 17, the one logical mode
+**Observed after looking.** Five of the six top patterns (all but +Z) click a1, which sits on chip mode 17, the one logical mode
 out of ascending order in the layout `(18, 19, 20, 17, 22, 23, 16, 21)`. No test was stated for this, and it raises
 the question for the persistence case rather than answering it.
 
 ### Consequence for the best-mesh program
 
-Finding 4 of the design investigation read part of a winning mesh's advantage as an acceptance filter. The herald
-composition depends strongly on the mesh, but no single herald pattern or mode carries the difference, and the
+Finding 4 of the design investigation raised a filter reading of a winning mesh's advantage. The herald
+composition depends strongly on the mesh, but no single herald pattern carries the difference (whether a mode does
+is untested), and the
 herald share does not trade against the wrong share more often than between two runs of one mesh. The mesh error
 redistributes photons across the output broadly. A per-seed mesh error of this kind needs the persistence replay
 (item 2 of the investigation's "What to do instead") to show whether it survives a recalibration; this analysis gives

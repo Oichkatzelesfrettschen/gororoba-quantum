@@ -1,8 +1,12 @@
 {
  "acceptance": {
+  "acceptance_correctness_cross_product": -0.011361807046566048,
   "acceptance_correctness_one_sided_permutation_p": 0.04027777777777778,
+  "acceptance_correctness_one_sided_sign_flip_p": 0.0625,
   "acceptance_correctness_r": -0.747343166227538,
+  "herald_correctness_cross_product": 0.02041774731645107,
   "herald_correctness_one_sided_permutation_p": 0.006944444444444444,
+  "herald_correctness_one_sided_sign_flip_p": 0.015625,
   "herald_correctness_r": 0.8728494788796318,
   "inputs": {
    "+X": {
@@ -115,8 +119,10 @@
    }
   },
   "loser_mean_acceptance_per_sample": 0.1375074558809031,
+  "loser_mean_correct_per_sample": 0.10950871290545205,
   "status": "exploratory: the acceptance direction was stated before the computation, the herald direction follows from it, and neither test was preregistered",
-  "winner_mean_acceptance_per_sample": 0.11361111111111111
+  "winner_mean_acceptance_per_sample": 0.11361111111111111,
+  "winner_mean_correct_per_sample": 0.09763888888888889
  },
  "compiled": [
   {
@@ -863,6 +869,7 @@
    }
   },
   "james_stein_factor": 0.8053423974001567,
+  "mean_expected_gain_over_pair_average": 0.023031336917465586,
   "mean_expected_gap": 0.04606267383493117,
   "prior": "mu_i ~ N(0, tau^2), tau uniform on [0, 0.25]",
   "signs_determined": 3,
