@@ -313,3 +313,40 @@ def test_freeze_needs_a_reason_a_predecessor_and_a_new_bundle(
         module.main()
     if stopped.value.code != 2 or message not in capsys.readouterr().err:
         raise AssertionError(f"--freeze {arguments} was accepted")
+
+
+def test_a_replay_takes_provenance_from_the_retained_result_and_content_from_the_fresh_one() -> None:
+    module = implementation()
+    fresh = {"schema": "s", "producer_sha256": "a" * 64, "versions": {"python": "3.14.8"}, "proposals": [1]}
+    retained = {"producer_sha256": "b" * 64, "versions": {"python": "3.14.7"}, "proposals": [2], "schema": "t"}
+    merged = module.with_retained_provenance(fresh, retained)
+    if merged != {"schema": "s", "producer_sha256": "b" * 64, "versions": {"python": "3.14.7"}, "proposals": [1]}:
+        raise AssertionError(merged)
+    if list(merged) != list(fresh):
+        raise AssertionError("the merged result reordered the fresh keys")
+
+
+def test_tooling_pin_drift_is_listed_while_an_executed_source_still_fails(monkeypatch: pytest.MonkeyPatch) -> None:
+    module = implementation()
+    manifest = module.load_manifest(module.DEFAULT_MANIFEST)
+    bound = {row["path"] for row in manifest["sources"]}
+    if not module.TOOLING_SOURCES <= bound:
+        raise AssertionError("the bundle binds no tooling pin to exercise")
+    frozen: dict[str, dict[str, Any]] = {}
+    for row in manifest["acquisitions"]:
+        frozen.setdefault(row["record"]["provider"], {})[row["record"]["run"]] = row["facts"]
+    monkeypatch.setattr(module, "_provider_facts", lambda name: (name, frozen.get(name, {})))
+    baseline = module.drifted_prose(manifest)
+    original = module.digest
+    for edited in ("ci/requirements-ci.txt", "gororoba_quantum/cd_core.py"):
+        changed = module.ROOT / edited
+        monkeypatch.setattr(
+            module, "digest", lambda path, changed=changed: "0" * 64 if path == changed else original(path)
+        )
+        if edited in module.TOOLING_SOURCES:
+            module.validate_manifest(manifest)
+            if module.drifted_prose(manifest) != sorted({*baseline, edited}):
+                raise AssertionError("tooling drift was not listed exactly")
+        else:
+            with pytest.raises(ValueError, match="source digest differs"):
+                module.validate_manifest(manifest)
