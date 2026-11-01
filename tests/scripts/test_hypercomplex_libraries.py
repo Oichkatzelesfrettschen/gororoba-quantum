@@ -10,6 +10,7 @@ from typing import Any
 import pytest
 from hypercomplex_libraries import (
     ROOT,
+    _file_imports,
     check_execution_coverage,
     check_import_coverage,
     check_import_projection,
@@ -20,8 +21,11 @@ from hypercomplex_libraries import (
     inventory,
     main,
     markdown,
-    tracked_imports,
+    project_imports,
+    tracked_sources,
 )
+
+from parallel import ordered_map
 
 
 @pytest.mark.audit
@@ -272,15 +276,21 @@ def retained_inventory() -> dict[str, Any]:
     return json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
 
 
-def test_retained_inventory_maps_every_tracked_import_root() -> None:
+# The parse of every runtime file splits into SHARDS cases so the xdist pool spreads it under the per-test budget.
+SHARDS = 8
+
+
+@pytest.mark.parametrize("shard", range(SHARDS))
+def test_retained_inventory_maps_every_tracked_import_root(shard: int) -> None:
     record = retained_inventory()
-    roots, local_modules = tracked_imports(ROOT)
+    runtime_files, local_modules = tracked_sources(ROOT)
+    roots = dict(ordered_map(_file_imports, [(str(ROOT), name) for name in runtime_files[shard::SHARDS]]))
     try:
         check_import_projection(record, roots, local_modules)
     except ValueError as error:
         missing = sorted(external_roots(roots, local_modules) - set(record["import_root_distributions"]))
         raise ValueError(f"{error}: unmapped roots {', '.join(missing)}; regenerate with {REGENERATE}") from error
-    imports, _ = current_imports(record, ROOT)
+    imports, _ = project_imports(roots, local_modules, record["import_root_distributions"])
     rows = {row["distribution"] for row in record["libraries"]}
     if not set(imports) <= rows:
         raise ValueError(f"imported distributions without a register row: {sorted(set(imports) - rows)}")
