@@ -1,0 +1,14 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=4&type=uint16",
+ "retrieved_utc": "2026-11-01T054809Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"4\", \"data\": [27895, 36200, 21344, 58377]}",
+ "raw_sha256": "11cbbcb830a17fda34828138d9d2673aa39d6904fe78447112d7c56e75477fd7",
+ "type": "uint16",
+ "values": [
+  27895,
+  36200,
+  21344,
+  58377
+ ]
+}
