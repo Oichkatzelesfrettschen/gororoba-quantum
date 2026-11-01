@@ -521,12 +521,18 @@ def block_shares(setting: dict[str, Any], counts: dict[str, int]) -> list[dict[s
 
 
 def two_sample_z(first: tuple[int, int], second: tuple[int, int]) -> float | None:
+    """The two-proportion z of second against first; None without a count or when both shares are equal and certain.
+
+    Two certain shares that differ (0 of n against n of n) have no binomial standard error and give a signed infinite
+    z, so a deterministic contrast counts as moved and as drift rather than vanishing."""
     (h0, n0), (h1, n1) = first, second
     if not n0 or not n1:
         return None
     a0, a1 = h0 / n0, h1 / n1
     se = math.sqrt(a0 * (1 - a0) / n0 + a1 * (1 - a1) / n1)
-    return (a1 - a0) / se if se > 0 else None
+    if se > 0:
+        return (a1 - a0) / se
+    return math.copysign(math.inf, a1 - a0) if a1 != a0 else None
 
 
 def request_key(params: Any, seed: Any) -> str:
@@ -604,18 +610,34 @@ def load_runs(runs: list[Path]) -> list[dict[str, Any]]:
             }
         )
     require(sorted(r["job"] for r in loaded) == sorted(JOBS), f"the runs hold jobs {[r['job'] for r in loaded]}")
-    return loaded
+    return sorted(loaded, key=lambda r: r["job"])
+
+
+def iteration_shares(item: tuple[dict[str, Any], dict[str, int]]) -> list[dict[str, Any]]:
+    """block_shares of one bound iteration, the unit collect_cells maps over the process pool."""
+    setting, counts = item
+    return block_shares(setting, counts)
 
 
 def collect_cells(loaded: list[dict[str, Any]]) -> dict[str, Any]:
-    """Per-iteration block cells keyed by (block, layout, arm, repeat), with block and set bookkeeping."""
+    """Per-iteration block cells keyed by (block, layout, arm, repeat), with block and set bookkeeping.
+
+    Every bound iteration's histogram reduces independently, so the reductions run through parallel.ordered_map
+    before the cells are assembled in the runs' order."""
+    bindings = [bind_iterations(item["manifest"]["settings"], item["results"]) for item in loaded]
+    work = [
+        (setting, bound[index]["counts"])
+        for item, (bound, _) in zip(loaded, bindings, strict=True)
+        for index, setting in enumerate(item["manifest"]["settings"])
+        if index in bound
+    ]
+    reduced = iter(ordered_map(iteration_shares, work, min_items=1) if work else [])
     cells: dict[tuple[Any, ...], dict[str, Any]] = {}
     info: dict[tuple[str, int], dict[str, Any]] = {}
     sets_counted: dict[int, set[tuple[str, str, int]]] = {}
     bound_total = uncounted_total = requested = 0
-    for item in loaded:
+    for item, (bound, uncounted) in zip(loaded, bindings, strict=True):
         settings = item["manifest"]["settings"]
-        bound, uncounted = bind_iterations(settings, item["results"])
         bound_total += len(bound)
         uncounted_total += uncounted
         requested += len(settings)
@@ -625,7 +647,7 @@ def collect_cells(loaded: list[dict[str, Any]]) -> dict[str, Any]:
                 continue
             circuit = (entry.get("result_fields") or {}).get("computed_circuit")
             digest = hashlib.sha256(json.dumps(circuit, sort_keys=True).encode()).hexdigest() if circuit else None
-            shares = block_shares(setting, entry["counts"])
+            shares = next(reduced)
             if any(share_["n"] == 0 for share_ in shares):
                 continue
             sets_counted.setdefault(setting["block_set"], set()).add(
@@ -721,8 +743,11 @@ def replicate_meshes_distinct(data: dict[str, Any]) -> bool:
     return True
 
 
-def contrast_scale(groups: list[dict[str, Any]]) -> dict[str, float]:
-    """sigma^2 of one class from its mesh groups, with its one-sided upper bound."""
+def contrast_scale(groups: list[dict[str, Any]]) -> dict[str, Any]:
+    """sigma^2 of one class from its mesh groups, with its one-sided upper bound.
+
+    excess_ratio is the spread over its binomial share; it is None when every group's binomial variance is zero,
+    which happens when each mesh of the class reads an ideal share of 0 or 1."""
     dof = sum(g["dof"] for g in groups)
     spread = sum(g["dof"] * g["s2"] for g in groups)
     binomial = sum(g["dof"] * g["v"] for g in groups)
@@ -730,21 +755,31 @@ def contrast_scale(groups: list[dict[str, Any]]) -> dict[str, float]:
         "dof": dof,
         "sigma2": max(0.0, (spread - binomial) / dof),
         "sigma2_upper": max(0.0, spread / float(chi2.ppf(SIGMA_UPPER_ALPHA, dof)) - binomial / dof),
-        "excess_ratio": spread / binomial,
+        "excess_ratio": spread / binomial if binomial > 0 else None,
     }
 
 
 def slot_homogeneity(groups: list[dict[str, Any]], classes: dict[str, dict[str, float]]) -> dict[str, Any]:
-    """Per physical slot, the standardized mesh spreads against chi-square on their degrees of freedom."""
+    """Per physical slot, the standardized mesh spreads against chi-square on their degrees of freedom.
+
+    A group with zero expected variance and zero spread is deterministic and carries no evidence about spread, so it
+    leaves the test with its degrees of freedom; spread against zero expected variance stays infinite evidence. A slot
+    left without a testable group reads p = 1."""
     slots: dict[int, list[tuple[float, int]]] = {}
     for g in groups:
         scale = classes[g["class"]]["sigma2"] + g["v"]
-        slots.setdefault(g["slot"], []).append((g["dof"] * g["s2"] / scale if scale > 0 else math.inf, g["dof"]))
+        if scale > 0:
+            slots.setdefault(g["slot"], []).append((g["dof"] * g["s2"] / scale, g["dof"]))
+        elif g["s2"] > 0:
+            slots.setdefault(g["slot"], []).append((math.inf, g["dof"]))
+        else:
+            slots.setdefault(g["slot"], [])
     rows = []
     for slot in sorted(slots):
         statistic = sum(s for s, _ in slots[slot])
         dof = sum(d for _, d in slots[slot])
-        rows.append({"slot": slot, "dof": dof, "statistic": statistic, "p": float(chi2.sf(statistic, dof))})
+        p_value = float(chi2.sf(statistic, dof)) if dof > 0 else 1.0
+        rows.append({"slot": slot, "dof": dof, "statistic": statistic, "p": p_value})
     return {"rows": rows, "homogeneous": all(row["p"] >= SLOT_ALPHA / SLOTS for row in rows)}
 
 
@@ -811,7 +846,11 @@ def mesh_and_placement(data: dict[str, Any], inflation: dict[int, float]) -> dic
     moved = 0
     for row in deltas:
         scale = math.sqrt(classes[row["class"]]["sigma2"] * row["mesh_weight"] + row["v"])
-        row["z"] = row["delta"] / scale if scale > 0 else None
+        if scale > 0:
+            row["z"] = row["delta"] / scale
+        else:
+            # Zero expected spread: a nonzero placement delta is certain movement, a zero one carries no reading.
+            row["z"] = math.copysign(math.inf, row["delta"]) if row["delta"] != 0 else None
         row["moved"] = row["z"] is not None and abs(row["z"]) > Z_CRITICAL
         moved += bool(row["moved"])
     return {
@@ -883,16 +922,27 @@ def earlier_excess(
     classes: dict[str, dict[str, float]],
 ) -> dict[str, Any]:
     """The earlier deltas against two independent meshes at the class upper bound, unscaled and at the window
-    allowance."""
+    allowance.
+
+    A block with zero expected variance and a zero delta is deterministic and carries no evidence, so it leaves the
+    test with its degree of freedom; a nonzero delta against zero expected variance stays infinite evidence. With no
+    testable block the verdict is mesh."""
+    tested = {
+        key: block
+        for key, block in info.items()
+        if old[key]["delta"] != 0 or 2 * classes[block_class(block["p"])]["sigma2_upper"] + old[key]["v"] > 0
+    }
 
     def statistic(w: float) -> float:
         total = 0.0
-        for key, block in info.items():
+        for key, block in tested.items():
             scale = 2 * w * classes[block_class(block["p"])]["sigma2_upper"] + old[key]["v"]
             total += old[key]["delta"] ** 2 / scale if scale > 0 else math.inf
         return total
 
-    quantile = float(chi2.ppf(1 - EXCESS_ALPHA, len(info)))
+    if not tested:
+        return {"statistic": 0.0, "statistic_window": 0.0, "quantile": None, "verdict": "mesh"}
+    quantile = float(chi2.ppf(1 - EXCESS_ALPHA, len(tested)))
     unscaled, allowed = statistic(1.0), statistic(WINDOW_ALLOWANCE)
     verdict = "mesh" if unscaled <= quantile else "excess" if allowed > quantile else "window"
     return {"statistic": unscaled, "statistic_window": allowed, "quantile": quantile, "verdict": verdict}
@@ -960,6 +1010,22 @@ def analyze(runs: list[Path], earlier: dict[tuple[str, int], dict[str, float]] |
     return record
 
 
+def same_record(retained: Any, fresh: Any) -> bool:
+    """Equal JSON values, with floats equal to a relative 1e-12: a library build that moves a chi-square tail in its
+    last digit reproduces the record, and any other difference does not."""
+    if isinstance(retained, float) or isinstance(fresh, float):
+        if isinstance(retained, bool) or isinstance(fresh, bool):
+            return retained is fresh
+        if not isinstance(retained, int | float) or not isinstance(fresh, int | float):
+            return False
+        return retained == fresh or math.isclose(retained, fresh, rel_tol=1e-12, abs_tol=0.0)
+    if isinstance(retained, dict) and isinstance(fresh, dict):
+        return retained.keys() == fresh.keys() and all(same_record(retained[k], fresh[k]) for k in retained)
+    if isinstance(retained, list) and isinstance(fresh, list):
+        return len(retained) == len(fresh) and all(same_record(x, y) for x, y in zip(retained, fresh, strict=True))
+    return type(retained) is type(fresh) and retained == fresh
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     group = parser.add_mutually_exclusive_group()
@@ -972,8 +1038,16 @@ def main() -> int:
     if args.analyze:
         record = analyze(args.analyze)
         text = json.dumps(record, indent=1, sort_keys=True) + "\n"
-        for run in args.analyze:
-            (run / "analysis.json").write_text(text, encoding="utf-8")
+        targets = [run / "analysis.json" for run in args.analyze]
+        fresh = json.loads(text)
+        for target in targets:
+            require(
+                not target.exists() or same_record(json.loads(target.read_text(encoding="utf-8")), fresh),
+                f"{target} holds a different analysis; retained records keep their bytes",
+            )
+        for target in targets:
+            if not target.exists():
+                target.write_text(text, encoding="utf-8")
         print(record["reading"])
         return 0
     return check()

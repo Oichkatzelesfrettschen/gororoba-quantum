@@ -44,7 +44,7 @@ licensing does not relabel third-party papers. The source verifier checks local
 copies when present and permits a fresh checkout without those optional files.
 [`scripts/fetch_source_cache.py`](../../scripts/fetch_source_cache.py) restores
 those copies from the registered URLs or from a checkout of the owner's private
-gororoba-quantum-documents repository, which also holds their Markdown
+gororoba-documents-private repository, which also holds their Markdown
 transcriptions, and admits a file only when its size and SHA-256 match the
 registry.
 [`reading-copies.md`](reading-copies.md), generated from the registry by

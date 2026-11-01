@@ -7,6 +7,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import sys
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -512,6 +513,81 @@ def test_the_class_scale_pools_groups_of_unequal_size_and_variance() -> None:
         raise AssertionError(scale)
 
 
+def test_the_class_scale_reports_no_excess_ratio_when_every_group_has_zero_binomial_variance() -> None:
+    for s2 in (0.0, 0.004):
+        scale = case.contrast_scale([{"dof": 1, "s2": s2, "v": 0.0}, {"dof": 2, "s2": s2, "v": 0.0}])
+        if scale["excess_ratio"] is not None or scale["sigma2"] != s2:
+            raise AssertionError(scale)
+
+
+def test_the_slot_test_drops_deterministic_groups_and_keeps_spread_without_expected_variance() -> None:
+    classes = {"extreme": {"sigma2": 0.0}, "half": {"sigma2": 0.001}}
+    deterministic = {"class": "extreme", "slot": 0, "dof": 2, "s2": 0.0, "v": 0.0}
+    half = {"class": "half", "slot": 0, "dof": 2, "s2": 0.002, "v": 0.001}
+    result = case.slot_homogeneity([deterministic, half], classes)
+    if (
+        result["rows"] != [{"slot": 0, "dof": 2, "statistic": 2.0, "p": float(chi2.sf(2.0, 2))}]
+        or not result["homogeneous"]
+    ):
+        raise AssertionError(result)
+    alone = case.slot_homogeneity([deterministic], classes)
+    if alone["rows"] != [{"slot": 0, "dof": 0, "statistic": 0, "p": 1.0}] or not alone["homogeneous"]:
+        raise AssertionError(alone)
+    spread = case.slot_homogeneity([{**deterministic, "s2": 0.01}], classes)
+    if spread["rows"][0]["p"] != 0.0 or spread["homogeneous"]:
+        raise AssertionError(spread)
+
+
+def test_the_excess_test_drops_deterministic_blocks_and_keeps_deltas_without_expected_variance() -> None:
+    classes = {"extreme": {"sigma2_upper": 0.0}, "half": {"sigma2_upper": 0.001}}
+    info = {("a", 0): {"p": 0.0}, ("b", 0): {"p": 0.5}}
+    old = {("a", 0): {"delta": 0.0, "v": 0.0}, ("b", 0): {"delta": 0.01, "v": 0.0005}}
+    mixed = case.earlier_excess(info, old, classes)
+    if mixed["quantile"] != float(chi2.ppf(1 - case.EXCESS_ALPHA, 1)) or mixed["statistic"] != 0.0001 / 0.0025:
+        raise AssertionError(mixed)
+    alone = case.earlier_excess({("a", 0): {"p": 0.0}}, old, classes)
+    if alone["verdict"] != "mesh" or alone["quantile"] is not None:
+        raise AssertionError(alone)
+    moved = case.earlier_excess({("a", 0): {"p": 0.0}}, {("a", 0): {"delta": 0.2, "v": 0.0}}, classes)
+    if moved["verdict"] != "excess" or moved["statistic"] != float("inf"):
+        raise AssertionError(moved)
+
+
+def test_two_certain_shares_that_differ_give_a_signed_infinite_z() -> None:
+    if case.two_sample_z((0, 20000), (20000, 20000)) != math.inf:
+        raise AssertionError("a deterministic flip vanished")
+    if case.two_sample_z((20000, 20000), (0, 20000)) != -math.inf:
+        raise AssertionError("the flip lost its sign")
+    if case.two_sample_z((0, 20000), (0, 10000)) is not None or case.two_sample_z((0, 0), (1, 2)) is not None:
+        raise AssertionError("equal certain shares or an empty count must stay undefined")
+
+
+def test_reanalysis_in_any_run_order_keeps_the_retained_bytes_and_refuses_a_different_record(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = sorted(ROOT.glob("results/quandela/runs/*-qpu_belenos-belenos_mode_swap_interleaved-job-*"))
+    runs = []
+    for run in source:
+        copy_dir = tmp_path / run.name
+        copy_dir.mkdir()
+        for name in ("cases.json", "results.json", "analysis.json"):
+            (copy_dir / name).write_bytes((run / name).read_bytes())
+        runs.append(copy_dir)
+    retained = {run: (run / "analysis.json").read_bytes() for run in runs}
+    monkeypatch.setattr(sys, "argv", ["belenos_mode_swap_interleaved.py", "--analyze", *map(str, reversed(runs))])
+    if case.main() != 0 or any((run / "analysis.json").read_bytes() != data for run, data in retained.items()):
+        raise AssertionError("a reordered reanalysis changed the retained bytes")
+    (runs[1] / "analysis.json").write_text("{}\n", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="holds a different analysis"):
+        case.main()
+    if (runs[0] / "analysis.json").read_bytes() != retained[runs[0]]:
+        raise AssertionError("a refused reanalysis wrote a record")
+    if not case.same_record({"p": 0.5545141403660423}, {"p": 0.5545141403660424}) or case.same_record(
+        {"p": 0.5}, {"p": 0.6}
+    ):
+        raise AssertionError("same_record must absorb a last-digit move and nothing larger")
+
+
 def test_a_drift_step_between_a_sets_two_jobs_raises_the_mesh_scale_rather_than_hiding_it(tmp_path: Path) -> None:
     def stepped(step: float) -> Model:
         def model(setting: dict[str, Any], block: dict[str, Any]) -> float:
@@ -544,3 +620,12 @@ def test_the_retained_job_00_run_binds_its_set_0_iterations_beside_the_packed_jo
     set_zero = [g for g in record["mesh_variance"]["rows"] if len(g["shares"]) == 2]
     if len(set_zero) != 12 or record["validity"]["sets"][0]["dof"] != 12:
         raise AssertionError(len(set_zero))
+
+
+def test_collect_cells_over_the_pool_equals_the_serial_reduction(monkeypatch: pytest.MonkeyPatch) -> None:
+    runs = sorted(ROOT.glob("results/quandela/runs/*-qpu_belenos-belenos_mode_swap_interleaved-job-*"))
+    loaded = case.load_runs(runs)
+    pooled = case.collect_cells(loaded)
+    monkeypatch.setattr(case, "ordered_map", lambda function, items, min_items=1: [function(i) for i in items])
+    if case.collect_cells(loaded) != pooled:
+        raise AssertionError("the pooled histogram reductions differ from the serial ones")

@@ -261,21 +261,4 @@ is a separate program.
 
 ## Client registration
 
-The URL is registered on this host. Sign-in is a browser authorization-code
-flow with PKCE. qBraid's page already allows the Grok redirect, and it asks
-for a support request that includes the full URL when a client stops on
-`redirect_mismatch`.
-
-| Client | Entry | Sign-in |
-|---|---|---|
-| Claude Code | user scope, HTTP, `https://mcp.qbraid.com/mcp` | `claude mcp login qbraid`, or `/mcp` inside Claude Code. `claude mcp get qbraid` reports Connected after the 2026-10-30 sign-in |
-| Codex | `[mcp_servers.qbraid]` `url` in `~/.codex/config.toml`, enabled | `codex mcp login qbraid` completed on 2026-10-30 and reported a successful login |
-| Grok | `[mcp_servers.qbraid]` `url` and `oauth_scopes` in `~/.grok/config.toml`, enabled | Grok opens the browser flow when a session connects. The MCP commands are list, add, remove, enable, disable, and doctor. `grok mcp doctor qbraid` starts the URL and stops at `AuthRequired` with the `WWW-Authenticate` challenge above. An already open session keeps the server list it started with |
-| agy and Gemini CLI | `serverUrl` in `~/.gemini/config/mcp_config.json`, timeout 300000 ms, enabled | both CLIs share that file. Their `mcp` commands are add, remove, list, enable, and disable. The app starts OAuth when it connects |
-| Vibe | `[[mcp_servers]]` name `qbraid`, `transport = "streamable-http"`, and `[mcp_servers.auth]` `type = "oauth"` with the three scopes, in `~/.vibe/config.toml` | `/mcp` inside Vibe runs the login. The loopback callback is `http://127.0.0.1:47823/callback`. There is no `vibe mcp` subcommand |
-
-`oauth_scopes` on the Grok entry, and `scopes` on the Vibe entry, are
-`openid`, `email`, and `profile`, matching `scopes_supported`. Claude Code
-and Codex take those scopes from the authorization server during
-`mcp login`. agy and Gemini CLI keep the URL and discover the same server
-when they connect.
+The server URL `https://mcp.qbraid.com/mcp` signs in through a browser authorization-code flow with PKCE, and qBraid asks for a support request that includes the full URL when a client stops on `redirect_mismatch`. The per-client entries, sign-in commands and dates are recorded in the private gororoba-infrastructure repository.

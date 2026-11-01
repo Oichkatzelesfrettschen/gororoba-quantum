@@ -249,7 +249,7 @@ reference checked against exact diagonalization at 12-14 qubits.
   `cc_prx` (Pais note item 3) separates a Heron-specific feed-forward loss from a protocol error. It first needs a
   garnet:mock compile and one priced batch to qualify a non-pi conditional angle.
 - **Quandela.** November's 200 credits cover the Ascella run above many times over.
-- **Other providers.** [provider-credits.md](../../runbooks/provider-credits.md) reads their balances; on 2026-10-28 Open
+- **Other providers.** The provider credits monitor (private gororoba-infrastructure repository) reads their balances; on 2026-10-28 Open
   Quantum held 25 Spark and 0 Full credits (every upload public) and Quantum Inspire's free-tier ledger had changed
   by 0. None of their backends adds a test of section 1 or 2.
 

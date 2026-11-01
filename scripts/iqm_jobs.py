@@ -56,17 +56,45 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import iqm_platform  # noqa: E402
-from iqm_platform import API, Client, PlatformError, read_tokens, sha256, tokens_path  # noqa: E402
+from iqm_platform import API, Client, PlatformError, read_tokens, tokens_path  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "gororoba_quantum"))
+from iqm_records import (  # noqa: E402
+    ARTIFACTS as ARTIFACTS,
+)
+from iqm_records import (
+    CASE_SCHEMA as CASE_SCHEMA,
+)
+from iqm_records import (
+    OPTIONAL_ARTIFACTS as OPTIONAL_ARTIFACTS,
+)
+from iqm_records import (
+    RESULTS_SCHEMA as RESULTS_SCHEMA,
+)
+from iqm_records import (
+    SUBMISSION_SCHEMA as SUBMISSION_SCHEMA,
+)
+from iqm_records import (
+    TERMINAL as TERMINAL,
+)
+from iqm_records import (
+    load_job as load_job,
+)
+from iqm_records import (
+    read_run as read_run,
+)
+from iqm_records import (
+    run_directories as run_directories,
+)
+from iqm_records import (
+    sha256 as sha256,
+)
+from iqm_records import (
+    shots_ok as shots_ok,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
 RUNS = ROOT / "results/iqm/runs"
-CASE_SCHEMA = "iqm-circuit-case-v1"
-SUBMISSION_SCHEMA = "iqm-submission-v1"
-RESULTS_SCHEMA = "iqm-results-v1"
-TERMINAL = ("completed", "failed", "cancelled")
-ARTIFACTS = ("measurements", "measurement_counts")
-# Kept when the server serves them: the compiler's runtime_estimates, which jobs of earlier servers lack.
-OPTIONAL_ARTIFACTS = ("runtime_estimates",)
 CREDIT_QUERY = "query($a: UUID!){ credit(accountId: $a) { currentBalance expiresAt } }"
 # IQM Server takes no runtime limit with a job, so collect holds the approved ceiling itself. Billing is
 # ceil(compilation + execution seconds) times the price. The compiler's estimate ran up to
@@ -261,20 +289,6 @@ def check_case(directory: Path) -> None:
 def ceiling_credits(expected_seconds: float, price: float, fixed: float = JOB_SECONDS) -> float:
     """The credits a job may bill: IQM bills ceil(runtime), bounded by the shot schedule plus the fixed cost."""
     return math.ceil(fixed + expected_seconds) * price
-
-
-def load_job(case_dir: Path, job: str) -> tuple[dict[str, Any], dict[str, Any], str]:
-    raw = (case_dir / "cases.json").read_bytes()
-    case = json.loads(raw)
-    if case.get("schema") != CASE_SCHEMA:
-        raise PlatformError(f"{case_dir}/cases.json is not {CASE_SCHEMA}")
-    rows = [row for row in case["jobs"] if row["job"] == job]
-    if len(rows) != 1:
-        raise PlatformError(f"{case_dir}: job {job} is not in the case")
-    for circuit in rows[0]["circuits"]:
-        if sha256((case_dir / circuit["file"]).read_bytes()) != circuit["sha256"]:
-            raise PlatformError(f"{case_dir}/{circuit['file']} differs from its recorded sha256")
-    return case, rows[0], sha256(raw)
 
 
 def body_of(case_dir: Path, row: dict[str, Any], qc: str) -> dict[str, Any]:
@@ -631,66 +645,11 @@ def collect_locked(run_dir: Path, client: Client, poll: float, timeout: float, c
     return results
 
 
-def shots_ok(returned: list[int], row: dict[str, Any]) -> bool:
-    """Every circuit returned the case's shots, or at most that many under all-zeros heralding, which
-    discards each shot whose pre-circuit measurement is not all zeros."""
-    heralded = row["options"].get("heralding_mode") == "zeros"
-    if len(returned) != len(row["circuits"]):
-        return False
-    return all(0 < n <= row["shots"] if heralded else n == row["shots"] for n in returned)
-
-
 def run_facts(run_dir: Path) -> dict[str, Any]:
-    """The registry facts of one retained run, after checking it against its own receipts.
-
-    The case files match cases.json, submission.json names the job, QC, approval and cases digest,
-    results.json names the same job with a terminal status, every raw file keeps the sha256
-    results.json records, and a completed job returns the case's shots for every circuit. The charge
-    is billed_seconds times the price per second the submission recorded.
-    """
-    submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
-    if submission.get("schema") != SUBMISSION_SCHEMA or not submission.get("approval"):
-        raise PlatformError(f"{run_dir}: submission.json is not an approved {SUBMISSION_SCHEMA} receipt")
-    _, row, cases_sha256 = load_job(run_dir, submission["job"])
-    if cases_sha256 != submission["cases_sha256"]:
-        raise PlatformError(f"{run_dir}: cases.json differs from the submission receipt")
-    results = json.loads((run_dir / "results.json").read_text(encoding="utf-8"))
-    if results.get("schema") != RESULTS_SCHEMA or results["job_id"] != submission["job_id"]:
-        raise PlatformError(f"{run_dir}: results.json names another job")
-    if results["status"] not in TERMINAL:
-        raise PlatformError(f"{run_dir}: job status {results['status']} is not terminal")
-    for name, digest in results["raw_sha256"].items():
-        if sha256((run_dir / "raw" / name).read_bytes()) != digest:
-            raise PlatformError(f"{run_dir}/raw/{name} differs from its recorded sha256")
-    record = json.loads((run_dir / "raw/job.json").read_bytes())
-    if record["id"] != submission["job_id"] or record["status"] != results["status"]:
-        raise PlatformError(f"{run_dir}: raw/job.json disagrees with results.json")
-    if results["status"] == "completed":
-        expected = {"job.json", *(f"{artifact}.json" for artifact in ARTIFACTS)}
-        optional = {f"{artifact}.json" for artifact in OPTIONAL_ARTIFACTS}
-        if not expected <= set(results["raw_sha256"]) <= expected | optional:
-            raise PlatformError(
-                f"{run_dir}: a completed run retains {sorted(results['raw_sha256'])}, not {sorted(expected)}"
-            )
-        # The shot counts come from the retained measurements, not from the summary that records them.
-        returned = [
-            len(next(iter(circuit.values())))
-            for circuit in json.loads((run_dir / "raw/measurements.json").read_bytes())
-        ]
-        if returned != results["shots_per_circuit"]:
-            raise PlatformError(f"{run_dir}: results.json records other shot counts than raw/measurements.json")
-        if not shots_ok(returned, row):
-            raise PlatformError(f"{run_dir}: a circuit returned other than {row['shots']} shots")
-    billed = float((record.get("metrics") or {}).get("billed_seconds") or 0.0)
-    return {
-        "created_at": submission["submitted_at"],
-        "backends": [submission["qc"]],
-        "jobs": 1,
-        "circuits": len(row["circuits"]),
-        "statuses": {results["status"]: 1},
-        "charge": round(billed * float(submission["price_per_second"]), 6),
-        "detail": f"{billed:g} billed seconds",
-    }
+    """iqm_records.read_run's facts plus the credit charge: billed seconds times the price per second the
+    submission recorded."""
+    run = read_run(run_dir)
+    return {**run.facts, "charge": round(run.billed_seconds * float(run.submission["price_per_second"]), 6)}
 
 
 # Preregistered predictions of the reset and billing pilot (docs/design/iqm-garnet-timing-pilot.md),
@@ -814,10 +773,6 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
         },
         "credits_charged": round(sum(r["charge"] for r in runs), 6),
     }
-
-
-def run_directories(runs: Path = RUNS) -> list[Path]:
-    return sorted(path for path in runs.iterdir() if path.is_dir()) if runs.is_dir() else []
 
 
 def self_test() -> str:

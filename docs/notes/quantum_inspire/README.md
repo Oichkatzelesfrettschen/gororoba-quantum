@@ -54,6 +54,14 @@ gate `core-record-check-05` (`tests/test_cli_record_checks.py`) rechecks every b
 - [results/quantum_inspire/](../../../results/quantum_inspire/): generated
   cases under `cases/` and every submitted run under `runs/`, each with its
   circuits, digests, receipt, raw shots, results and analysis.
+  `gororoba_quantum/qi_records.py` reads one run directory offline
+  (`read_run`) and applies the shared record rules: receipt binding, circuit
+  digests, job identities and raw shots against the histogram.
+  `scripts/research_state.py` and `scripts/results_index.py` consume it, and
+  an analyzer adds its own design conditions on top.
+  `gororoba_quantum/qi_joint_response.py` decodes the joint early/terminal
+  response of a destination-control run under an explicit `Layout` and
+  reproduces the retained Tuna-17 joint tables from the retained bytes.
 - [docs/state/RESEARCH_STATE.md](../../state/RESEARCH_STATE.md): the
   Quantum Inspire acquisitions and claims beside the IBM ones.
 
@@ -66,10 +74,9 @@ hardware and emulator backend.
 **Environment.** The quantuminspire SDK requires Python < 3.14 and
 qiskit-quantuminspire caps Qiskit below 2.4, so the Quantum Inspire stack
 lives in its own environment, never in the repository's Python 3.14 stack:
-`QI_ENV=$HOME/.local/share/quantuminspire/venv`, interpreter
-`QI_PYTHON=${QI_PYTHON:-$QI_ENV/bin/python}`, built with
-`uv venv --python 3.13 "$QI_ENV"` and
-`VIRTUAL_ENV="$QI_ENV" uv pip install -r docs/notes/quantum_inspire/requirements-qi.txt`.
+the lock `requirements-qi.txt` installs into a Python 3.13 venv (`QI_ENV`)
+whose interpreter is `QI_PYTHON`. The venv location is recorded in the private
+gororoba-infrastructure repository.
 No Arch package carries the stack. CI's `qi-stack` job installs the lock
 exactly (`pip install --no-deps` and `pip check`) under Python 3.13.15 beside
 Python 3.14.7 and exports `QI_PYTHON`; there qxelarator, libqasm and
@@ -100,20 +107,11 @@ quantuminspire 3.x and mcp 1.x modules absent from these pins and is not
 used; scripts/qi_mcp_server.py serves the same role on SDK 4.1.
 
 **Login.** `"$QI_ENV/bin/qi" login` runs the OAuth device flow: it prints a
-verification URL and code that the user approves in a browser, then stores
-access and refresh tokens in `~/.quantuminspire/config.json`, which the CLI
-writes mode 644; `chmod 600` it after login, and scripts/qi_platform.py's
-client narrows it to mode 600 before reading it. The
-access token lives 3600 s; scripts/qi_platform.py renews it before expiry.
-The SDK exchanges the refresh token only within 5 s of access-token expiry,
-and its `refresh_tokens` keeps the rotated tokens in memory only. Every
-process on the account read invalid_grant after one such expiry (2026-10-17,
-two sessions and several MCP servers live); rotation with reuse detection is
-the inferred mechanism, unconfirmed by a probe. `Client.refresh` therefore
-holds an flock on `~/.quantuminspire/config.json.lock`, rereads the file,
-exchanges only near expiry and writes the rotated tokens back atomically. A
-long-lived process (an MCP server) started before that rule restarts before
-QI work resumes.
+verification URL and code that the user approves in a browser. The
+access token lives 3600 s; scripts/qi_platform.py renews it before expiry
+under a lock and writes the rotated tokens back. The token store location, modes,
+refresh-token incident and renewal lock are recorded in the private
+gororoba-infrastructure repository.
 An agent that finds no login prompts the user to run `qi login` and approve
 the code; tokens never enter a commit, a log or memory. An invalid_grant
 needs `qi login --force`, since plain `qi login` cannot recover it;

@@ -415,7 +415,6 @@ def build(a_dir: Path, b_dir: Path) -> dict[str, Any]:
     records = []
     for directory in (a_dir, b_dir):
         record = repeat.run_record(directory)
-        record["results"] = repeat.load(directory / "results.json")
         records.append(record)
     a, b = records
     require(a["manifest"]["job"] == "job-00" and b["manifest"]["job"] == "job-01", "reads job-00 then job-01")

@@ -64,7 +64,7 @@ Seeds. A `compilation_seed` that explores new meshes comes from the ANU
 quantum random number generator: `scripts/anu_qrng.py draw` retains one
 1024-value uint16 draw per request under `docs/evidence/anu_qrng/` (raw
 response, sha256, UTC time) from the keyed ANU Quantum Numbers service
-(100 requests a month, key in `~/.config/anu-qrng/api-key`) or, with
+(100 requests a month) or, with
 `--source legacy`, the keyless service at one request per minute, and a case names the draw file and the index of every value it
 takes, consuming values in index order, so no value seeds two cases. A seed
 that reproduces a known served mesh (seed 20 for 29dc6ef8, seed 1 for

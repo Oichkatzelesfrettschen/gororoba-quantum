@@ -81,6 +81,7 @@ import bdsc_certificate as cert  # noqa: E402
 import bdsc_forensics as forensics  # noqa: E402
 
 import parallel  # noqa: E402
+import qd_records  # noqa: E402
 
 CASE = ROOT / "docs/evidence/bdsc/diagnostic/case.json"
 CASES_DIR = ROOT / "results/quandela/cases/bdsc_diagnostic"
@@ -828,22 +829,23 @@ def admit_run(
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     """(manifest, result, submission) of one diagnostic run after every integrity check the readout applies.
 
-    validate runs qd_platform.run_facts, binding cases.json, circuit.json, job-body.json and the receipt to one another
-    and results.json to raw/result.json; the self-test's synthetic runs carry no receipt or raw result. context holds
-    the QRNG draws and the frozen rebuild shared across one call's runs.
+    validate applies qd_records.validate_run, binding cases.json, circuit.json, job-body.json and the receipt to one
+    another and results.json to raw/result.json; the self-test's synthetic runs carry no circuit or raw result.
+    context holds the QRNG draws and the frozen rebuild shared across one call's runs.
     """
     import qd_platform
 
     record_sha = sha256_bytes(CASE.read_bytes())
     target_sha = json.loads(bdsc_cases.TARGET.read_text(encoding="utf-8"))["target_sha256"]
     draws: dict[str, tuple[list[int], list[int]]] = context.setdefault("draws", {})
+    records = qd_records.load_run(run)
     if validate:
-        qd_platform.run_facts(run)
-    manifest_bytes = (run / "cases.json").read_bytes()
+        qd_records.validate_run(records)
+    manifest_bytes = records.bytes_of("cases.json")
     manifest = json.loads(manifest_bytes)
-    result = json.loads((run / "results.json").read_text(encoding="utf-8"))
-    submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
-    body_bytes = (run / "job-body.json").read_bytes()
+    result = records.json_of("results.json")
+    submission = records.json_of("submission.json")
+    body_bytes = records.bytes_of("job-body.json")
     platform = bdsc_cases.QUALIFYING_PLATFORM
     require(submission.get("platform") == platform, f"{run}: submitted to {submission.get('platform')!r}")
     served = result.get("data", {}).get("platform_name")

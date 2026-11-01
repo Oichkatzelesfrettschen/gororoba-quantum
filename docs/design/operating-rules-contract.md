@@ -197,7 +197,7 @@ docs/runbooks/evidence-closure.md.
 
 Retained data. A file a ledger, record or digest binds keeps its path and bytes; a correction is a new
 file the old one's map row links. raw/<job_id>/ is never rewritten. External-only sources live only in
-the private gororoba-quantum-documents repository.
+the private gororoba-documents-private repository.
 
 Shared history. Branch, pull request, merge commit (merge_method=merge). Retarget a stacked PR to main
 before deleting its base. Codex is the only hosted reviewer: one @codex review per head, a second only

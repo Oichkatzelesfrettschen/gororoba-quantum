@@ -61,6 +61,7 @@ from iqm_platform import sha256  # noqa: E402
 from iqm_signed_probe import ACTIVE_SHOT_SECONDS, DURATIONS, relaxed, target_of  # noqa: E402
 from iqm_signed_resolve import COHERENT, TRAIN_QUBITS  # noqa: E402
 
+import iqm_records  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 CASE = "idle-schedule-train-readout"
@@ -378,10 +379,12 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
 def analyze(run_dir: Path) -> dict[str, Any]:
     import iqm_jobs
 
+    records = iqm_records.load_run(run_dir)
+
     facts = iqm_jobs.run_facts(run_dir)
-    submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
-    record = json.loads((run_dir / "raw/job.json").read_bytes())
-    case = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+    submission = records.json_of("submission.json")
+    record = records.json_of("raw/job.json")
+    case = records.json_of("cases.json")
     prediction_bytes = (run_dir / "prediction.json").read_bytes()
     if sha256(prediction_bytes) != case.get("prediction_sha256"):
         raise ValueError(f"{run_dir}/prediction.json is not the prediction cases.json binds")
@@ -395,7 +398,7 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         raise ValueError(f"{run_dir}: compiled against another calibration set than the prediction's")
     row = next(r for r in case["jobs"] if r["job"] == submission["job"])
     circuits = [json.loads((run_dir / entry["file"]).read_text(encoding="utf-8")) for entry in row["circuits"]]
-    counts = tally(circuits, json.loads((run_dir / "raw/measurements.json").read_bytes()))
+    counts = tally(circuits, records.json_of("raw/measurements.json"))
     return {
         "schema": "iqm-idle-schedule-probe-analysis-v1",
         "run": run_dir.name,

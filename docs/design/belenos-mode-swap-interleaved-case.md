@@ -44,8 +44,8 @@ their pair mean. In a ten-iteration set the replicates sit at the pair mean only
 0 and 8), so a linear drift, and a step between a set's two jobs, add to the spread of a layout's meshes and raise the
 measured mesh variance.
 
-**Jobs.** A 24-mode iteration takes up to 50 s on `qpu:belenos` (see Duration), and a job costs 1.018 credits whatever it
-holds, so each job carries as many iterations as fit with one iteration of margin under the 300 s cut: five. Job-00 ran
+**Jobs.** A 24-mode iteration takes up to 50 s on `qpu:belenos` (see Duration), and a job costs 1 credit plus 1e-6 per shot of
+its largest iteration whatever else it holds (1.018 for job-00, 1.09 for a packed job), so each job carries as many iterations as fit with one iteration of margin under the 300 s cut: five. Job-00 ran
 sets 0 and 1 in `SEQUENCE` and returned set 0 before the cut. Sets 1 to 4 run `SEQUENCE_PACKED` as two jobs each, its
 first five and last five iterations, submitted one after the other; the two added replicate seeds per layout fill the
 time a three-iteration half set would leave empty. A primary pair straddles the gap between its set's two jobs; the
@@ -108,7 +108,7 @@ its teardown (318 s and 339 s).
   the owner's further approval). A cut needs a slowdown of about 17 percent over job-00; a repeat of the teleportation
   job-02 ran within 1 percent of the original, and the ten single-iteration six-photon jobs within 52 to 55 s.
 
-The live plan of each packed job (`qd_platform.py plan --platform qpu:belenos --max-credits 1.018 --expected-seconds
+The live plan of each packed job (`qd_platform.py plan --platform qpu:belenos --max-credits 1.09 --expected-seconds
 260 --per-job-credits 1.0 --admit-status running`) runs against its frozen bytes before its submit. It prints the
 warning that `qpu:belenos` reports HOM below the 90 % that strategy.md design rule 1 asks of a six-photon interfering
 block; the template is block-diagonal with one photon per 4-mode slot, so no two photons interfere and the warning does

@@ -10,24 +10,7 @@ API and docs stay the authority.
 
 ## Environment and credential
 
-```sh
-IONQ_ENV=$HOME/.local/share/ionq/venv
-IONQ_PYTHON=${IONQ_PYTHON:-$IONQ_ENV/bin/python}
-uv venv --python 3.13 "$IONQ_ENV"
-VIRTUAL_ENV="$IONQ_ENV" uv pip install -r docs/notes/ionq/requirements-ionq.txt
-```
-
-On the build host the Arch package `ionq-stack` from the local PKGBUILD tree
-(`~/Github/PKGBUILDs/ionq-stack`) installs the same SDK as a hash-locked Python
-3.13 environment under `/opt/ionq-stack` and the interpreter `/usr/bin/ionq-python`
-(qiskit-ionq 1.1.1 with Qiskit 2.6.1); its `check()` runs an offline test, kept at
-`/usr/share/ionq-stack/test_ionq_stack.py`. A case sets `IONQ_PYTHON=/usr/bin/ionq-python`; the venv
-above serves a machine without the package.
-
-The lock pins `qiskit-ionq` 1.1.1 with Qiskit 2.6.1. The key is one line in
-`~/.config/ionq/api-key` (directory 700, file 600), read inside Python and
-sent as `Authorization: apiKey <key>`; it never enters a command line, a
-log or a commit.
+The pinned SDK (`qiskit-ionq` 1.1.1 with Qiskit 2.6.1) installs from `requirements-ionq.txt` into the interpreter that `IONQ_PYTHON` names. The key is sent as an `Authorization` header and never enters a command line, a log or a commit. This account's credential location, MCP registration and access limits are recorded in the private gororoba-infrastructure repository.
 
 ## API surface
 
@@ -41,8 +24,7 @@ log or a commit.
 
 Organization usage (`/organizations/{organization_id}/usage`) needs the
 full organization id, which the key does not return, and credit balances
-are visible only to organization admins in the console. Responses carry
-`ratelimit-limit: 500` per second.
+are visible only to organization admins in the console.
 
 ## Backends (2026-10-24)
 
@@ -60,13 +42,11 @@ The docs list `qpu.forte-enterprise-1` as available and omit
 
 | Item | Value | Source |
 |---|---|---|
-| Simulator | free to every account up to 29 qubits, noise models included; no reset cycle, since it is not metered | docs `user-manual/accounts.md` |
-| QPU | needs organization credit; a project budget of 0 blocks QPU jobs and still admits simulator jobs | docs `user-manual/projects.md` |
-| QPU price | rate card `forte_on_demand`, 0.249 credits per compute second; a 5-qubit, 100-shot, 15-gate estimate on Forte-1 reads 0.731 credits | `GET /jobs/estimate` |
 | Shots | at most 1,000,000 per job | OpenAPI `CircuitJobCreationPayload.shots` |
 | Circuits | at most 5,000 per multicircuit job | OpenAPI `JsonMultiCircuitInput` |
 | Runtime | a single-job timeout per backend (`TooLongPredictedExecutionTime`), no number published | docs v0.4 error codes |
-| Inactivity | the account suspends after 180 days without login or API use | docs `accounts.md` |
+
+The account's simulator and QPU allotment, QPU price and inactivity rule are recorded in the private gororoba-infrastructure repository.
 
 ## Data terms
 

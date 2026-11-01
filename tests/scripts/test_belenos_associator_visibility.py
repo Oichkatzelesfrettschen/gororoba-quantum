@@ -172,3 +172,34 @@ def test_one_control_mesh_off_the_others_raises_the_spread(tmp_path: Path) -> No
     visibility = record["in_situ_visibility"]
     if visibility["se_with_mesh_spread"] <= visibility["se"]:
         raise AssertionError(visibility)
+
+
+def test_deterministic_endpoints_stay_in_the_mesh_spread_check() -> None:
+    def row(d: float, n: int) -> dict[str, Any]:
+        plus = round(n * (1 + d) / 2)
+        d_value, se = case.binomial_endpoint(plus, n - plus, n)
+        return {"signed_D": d_value, "se": se}
+
+    rows = [row(-1.0, 2000), row(-1.0, 2000), row(-1.0, 2000), row(-0.6, 2000)]
+    spread = case.heterogeneity(rows, [2000] * 4)
+    if spread["dof"] != 3 or spread["birge_ratio"] < 10:
+        raise AssertionError(spread)
+    same = case.heterogeneity(rows[:3], [2000] * 3)
+    if same["dof"] != 2 or same["chi2"] != 0.0:
+        raise AssertionError(same)
+
+
+def test_a_control_iteration_without_an_accepted_event_withholds_the_visibility(tmp_path: Path) -> None:
+    manifest = json.loads((case.CASES / "job-00" / "cases.json").read_text(encoding="utf-8"))
+    control = {s["compilation_seed"] for s in manifest["settings"] if s["block"] == "control"}
+    window = manifest["window"]
+
+    def outside(iterations: list[dict[str, Any]]) -> None:
+        index = next(i for i, it in enumerate(iterations) if it["iteration"]["compilation_seed"] in control)
+        iterations[index]["counts"] = {_state((window - 1, window)): 500}
+
+    record = case.analyze(_rewrite(_run(tmp_path, "job-00", 0.9), outside))
+    if record["control_counted_iterations"] != 4 or record["in_situ_visibility"] is not None:
+        raise AssertionError((record["control_counted_iterations"], record["in_situ_visibility"]))
+    if not record["overlap_reading"].startswith("undecided"):
+        raise AssertionError(record["overlap_reading"])
