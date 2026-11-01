@@ -44,7 +44,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import ascella_associator_case as base  # noqa: E402
 from hypercomplex_cases import encoded, photonic_template  # noqa: E402
 from qd_platform import sha256_bytes, template_experiment  # noqa: E402
-from qd_teleportation_rehearsal import CONNECTED, DARK_LIMIT, read_perfs  # noqa: E402
+from qd_teleportation_rehearsal import CONNECTED, DARK_LIMIT, read_perfs, retain_record  # noqa: E402
 
 from parallel import ordered_map  # noqa: E402
 
@@ -304,6 +304,7 @@ def analyze(run: Path) -> dict[str, Any]:
     by_seed = {setting["compilation_seed"]: setting for setting in manifest["settings"]}
     bound: set[int] = set()
     per_iteration: dict[str, list[dict[str, Any]]] = {b: [] for b in base.PAIRS}
+    iteration_events: dict[str, list[int]] = {b: [] for b in base.PAIRS}
     for entry in entries:
         counts = entry.get("counts") if isinstance(entry, dict) else None
         if not counts:
@@ -346,6 +347,7 @@ def analyze(run: Path) -> dict[str, Any]:
             per_iteration[setting["block"]].append(
                 {"name": setting["name"], "route": setting["route"], "D": d, "se": se, "signed_D": sign * d}
             )
+            iteration_events[setting["block"]].append(own[2])
     out: dict[str, Any] = {
         "window": window,
         "photon_modes": list(photon_modes(window)),
@@ -375,7 +377,7 @@ def analyze(run: Path) -> dict[str, Any]:
         else:
             out[block] = {"routes": estimates, "Delta": None}
         out[block]["iterations"] = per_iteration[block]
-        out[block]["mesh_heterogeneity"] = heterogeneity(per_iteration[block])
+        out[block]["mesh_heterogeneity"] = heterogeneity(per_iteration[block], iteration_events[block])
     out["decisions"] = base.decisions(out, base.submission_visibility(run))
     control = out["control"]
     if counted["control"] == len(base.ROUTE_ORDER) and control.get("Delta") is not None:
@@ -401,22 +403,27 @@ def binomial_endpoint(plus: int, minus: int, total: int) -> tuple[float, float]:
     return d, math.sqrt(max(q - d * d, 0.0) / total)
 
 
-def heterogeneity(rows: list[dict[str, Any]]) -> dict[str, Any]:
+def heterogeneity(rows: list[dict[str, Any]], events: list[int]) -> dict[str, Any]:
     """Chi-square of a block's sign-aligned iteration endpoints about their inverse-variance mean.
 
     Under the two-photon mixture model every control iteration reads -f(V) and every associator iteration reads +f(V)
     after the Lab sign flip, so the iterations of one block share one expectation and their spread beyond binomial
     error is the error of their separately compiled meshes. The Birge ratio sqrt(chi2 / dof) scales the visibility's
     standard error when it exceeds 1.
+
+    A deterministic iteration (every accepted event on one side, so a zero binomial error) keeps its endpoint with the
+    one-event resolution 1/events as its error, so identical deterministic endpoints add nothing while a deterministic
+    endpoint far from the others counts as spread rather than leaving the test.
     """
     from scipy.stats import chi2
 
-    usable = [row for row in rows if row["se"] > 0]
+    require(len(rows) == len(events), "one event count per iteration row")
+    usable = [(row, row["se"] if row["se"] > 0 else 1 / n) for row, n in zip(rows, events, strict=True) if n > 0]
     if len(usable) < 2:
         return {"dof": 0, "chi2": None, "p": None, "birge_ratio": 1.0}
-    weights = [1 / row["se"] ** 2 for row in usable]
-    mean = sum(w * row["signed_D"] for w, row in zip(weights, usable, strict=True)) / sum(weights)
-    statistic = sum(w * (row["signed_D"] - mean) ** 2 for w, row in zip(weights, usable, strict=True))
+    weights = [1 / se**2 for _, se in usable]
+    mean = sum(w * row["signed_D"] for w, (row, _) in zip(weights, usable, strict=True)) / sum(weights)
+    statistic = sum(w * (row["signed_D"] - mean) ** 2 for w, (row, _) in zip(weights, usable, strict=True))
     dof = len(usable) - 1
     return {
         "dof": dof,
@@ -502,7 +509,7 @@ def main() -> int:
         return check_live(args.check_live)
     if args.analyze:
         record = analyze(args.analyze)
-        (args.analyze / "analysis.json").write_text(json.dumps(record, indent=1, sort_keys=True) + "\n")
+        retain_record(args.analyze / "analysis.json", record, f"{args.analyze.name}/analysis.json")
         return 0
     return check()
 

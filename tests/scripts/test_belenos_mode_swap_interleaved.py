@@ -620,3 +620,12 @@ def test_the_retained_job_00_run_binds_its_set_0_iterations_beside_the_packed_jo
     set_zero = [g for g in record["mesh_variance"]["rows"] if len(g["shares"]) == 2]
     if len(set_zero) != 12 or record["validity"]["sets"][0]["dof"] != 12:
         raise AssertionError(len(set_zero))
+
+
+def test_collect_cells_over_the_pool_equals_the_serial_reduction(monkeypatch: pytest.MonkeyPatch) -> None:
+    runs = sorted(ROOT.glob("results/quandela/runs/*-qpu_belenos-belenos_mode_swap_interleaved-job-*"))
+    loaded = case.load_runs(runs)
+    pooled = case.collect_cells(loaded)
+    monkeypatch.setattr(case, "ordered_map", lambda function, items, min_items=1: [function(i) for i in items])
+    if case.collect_cells(loaded) != pooled:
+        raise AssertionError("the pooled histogram reductions differ from the serial ones")

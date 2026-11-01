@@ -172,3 +172,18 @@ def test_one_control_mesh_off_the_others_raises_the_spread(tmp_path: Path) -> No
     visibility = record["in_situ_visibility"]
     if visibility["se_with_mesh_spread"] <= visibility["se"]:
         raise AssertionError(visibility)
+
+
+def test_deterministic_endpoints_stay_in_the_mesh_spread_check() -> None:
+    def row(d: float, n: int) -> dict[str, Any]:
+        plus = round(n * (1 + d) / 2)
+        d_value, se = case.binomial_endpoint(plus, n - plus, n)
+        return {"signed_D": d_value, "se": se}
+
+    rows = [row(-1.0, 2000), row(-1.0, 2000), row(-1.0, 2000), row(-0.6, 2000)]
+    spread = case.heterogeneity(rows, [2000] * 4)
+    if spread["dof"] != 3 or spread["birge_ratio"] < 10:
+        raise AssertionError(spread)
+    same = case.heterogeneity(rows[:3], [2000] * 3)
+    if same["dof"] != 2 or same["chi2"] != 0.0:
+        raise AssertionError(same)

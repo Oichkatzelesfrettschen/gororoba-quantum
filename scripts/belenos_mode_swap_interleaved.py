@@ -613,15 +613,31 @@ def load_runs(runs: list[Path]) -> list[dict[str, Any]]:
     return sorted(loaded, key=lambda r: r["job"])
 
 
+def iteration_shares(item: tuple[dict[str, Any], dict[str, int]]) -> list[dict[str, Any]]:
+    """block_shares of one bound iteration, the unit collect_cells maps over the process pool."""
+    setting, counts = item
+    return block_shares(setting, counts)
+
+
 def collect_cells(loaded: list[dict[str, Any]]) -> dict[str, Any]:
-    """Per-iteration block cells keyed by (block, layout, arm, repeat), with block and set bookkeeping."""
+    """Per-iteration block cells keyed by (block, layout, arm, repeat), with block and set bookkeeping.
+
+    Every bound iteration's histogram reduces independently, so the reductions run through parallel.ordered_map
+    before the cells are assembled in the runs' order."""
+    bindings = [bind_iterations(item["manifest"]["settings"], item["results"]) for item in loaded]
+    work = [
+        (setting, bound[index]["counts"])
+        for item, (bound, _) in zip(loaded, bindings, strict=True)
+        for index, setting in enumerate(item["manifest"]["settings"])
+        if index in bound
+    ]
+    reduced = iter(ordered_map(iteration_shares, work, min_items=1) if work else [])
     cells: dict[tuple[Any, ...], dict[str, Any]] = {}
     info: dict[tuple[str, int], dict[str, Any]] = {}
     sets_counted: dict[int, set[tuple[str, str, int]]] = {}
     bound_total = uncounted_total = requested = 0
-    for item in loaded:
+    for item, (bound, uncounted) in zip(loaded, bindings, strict=True):
         settings = item["manifest"]["settings"]
-        bound, uncounted = bind_iterations(settings, item["results"])
         bound_total += len(bound)
         uncounted_total += uncounted
         requested += len(settings)
@@ -631,7 +647,7 @@ def collect_cells(loaded: list[dict[str, Any]]) -> dict[str, Any]:
                 continue
             circuit = (entry.get("result_fields") or {}).get("computed_circuit")
             digest = hashlib.sha256(json.dumps(circuit, sort_keys=True).encode()).hexdigest() if circuit else None
-            shares = block_shares(setting, entry["counts"])
+            shares = next(reduced)
             if any(share_["n"] == 0 for share_ in shares):
                 continue
             sets_counted.setdefault(setting["block_set"], set()).add(
@@ -830,7 +846,11 @@ def mesh_and_placement(data: dict[str, Any], inflation: dict[int, float]) -> dic
     moved = 0
     for row in deltas:
         scale = math.sqrt(classes[row["class"]]["sigma2"] * row["mesh_weight"] + row["v"])
-        row["z"] = row["delta"] / scale if scale > 0 else None
+        if scale > 0:
+            row["z"] = row["delta"] / scale
+        else:
+            # Zero expected spread: a nonzero placement delta is certain movement, a zero one carries no reading.
+            row["z"] = math.copysign(math.inf, row["delta"]) if row["delta"] != 0 else None
         row["moved"] = row["z"] is not None and abs(row["z"]) > Z_CRITICAL
         moved += bool(row["moved"])
     return {
