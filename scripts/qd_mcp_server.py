@@ -4,7 +4,7 @@ The server calls the Quandela Cloud REST API through qd_platform.request with
 the job token from the file QUANDELA_TOKEN_FILE names; that function sends the
 token to qd_platform.API only and refuses redirects. It runs under the
 interpreter QD_PYTHON names, the build host's system Python, which carries mcp
-1.29 (FastMCP) and the perceval-quandela and exqalibur Arch packages, and it
+2.3 (MCPServer) and the perceval-quandela and exqalibur Arch packages, and it
 never writes Perceval's persistent configuration. Reads return
 JSON-serializable structures; a failed call raises ToolError, so the MCP
 result carries isError with the route and the service's message.
@@ -45,9 +45,9 @@ from typing import Annotated, Any
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import anyio  # noqa: E402
-from mcp.server.fastmcp import FastMCP  # noqa: E402
-from mcp.server.fastmcp.exceptions import ToolError  # noqa: E402
-from mcp.server.fastmcp.server import Settings  # noqa: E402
+import jsonschema  # noqa: E402
+from mcp.server.mcpserver import MCPServer  # noqa: E402
+from mcp.server.mcpserver.exceptions import ToolError  # noqa: E402
 from mcp.server.stdio import stdio_server  # noqa: E402
 from mcp.types import Tool, ToolAnnotations  # noqa: E402
 from pydantic import Field  # noqa: E402
@@ -73,9 +73,9 @@ LOCAL_MAX_STATES = 256
 UNITARY_TOLERANCE = 1e-9
 RESULT_CHARACTERS = 8000
 LOCAL_BACKENDS = ("SLOS", "Naive")
-READ = ToolAnnotations(readOnlyHint=True, openWorldHint=True)
-LOCAL = ToolAnnotations(readOnlyHint=True, openWorldHint=False)
-MUTATE = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=True, openWorldHint=True)
+READ = ToolAnnotations(read_only_hint=True, open_world_hint=True)
+LOCAL = ToolAnnotations(read_only_hint=True, open_world_hint=False)
+MUTATE = ToolAnnotations(read_only_hint=False, destructive_hint=True, idempotent_hint=True, open_world_hint=True)
 # Processor fields too large for a routine read: the serialized chip circuit
 # and the platform's HTML documentation.
 BULK_SPECS = ("architecture", "documentation")
@@ -92,18 +92,24 @@ Matrix = Annotated[
     Field(description="Square matrix as rows of numbers; real part, or imaginary part when passed as imag"),
 ]
 
-# MCP 1.29 defines Settings before FastMCP; resolve its lifespan annotation
-# after the SDK module has finished loading instead of suppressing warnings.
-Settings.model_rebuild(force=True)
 
+class ContractMCP(MCPServer):
+    """Validate every call against the advertised JSON Schema before the SDK's compatibility coercion."""
 
-class ContractMCP(FastMCP):
-    """Reject unadvertised arguments before the SDK's compatibility coercion."""
+    async def call_tool(self, name: str, arguments: dict[str, Any], context: Any = None) -> Any:
+        """MCPServer.call_tool preceded by JSON Schema validation of the arguments against list_tools' schema."""
+        schema = self._tool_input_schema(name)
+        if schema is not None:
+            try:
+                jsonschema.validate(arguments, {**schema, "additionalProperties": False})
+            except jsonschema.ValidationError as error:
+                raise ToolError(f"Input validation error: {error.message}") from error
+        return await super().call_tool(name, arguments, context)
 
     async def list_tools(self) -> list[Tool]:
         tools = await super().list_tools()
         for tool in tools:
-            tool.inputSchema = {**tool.inputSchema, "additionalProperties": False}
+            tool.input_schema = {**tool.input_schema, "additionalProperties": False}
         return tools
 
 
@@ -386,10 +392,7 @@ def serve() -> None:
 
     async def run() -> None:
         async with stream, stdio_server(stdout=stream) as (read_stream, write_stream):
-            core = server._mcp_server
-            # FastMCP disables JSON Schema checks to permit string-to-JSON
-            # conversion. The advertised JSON types form the server contract.
-            core.call_tool(validate_input=True)(server.call_tool)
+            core = server._lowlevel_server
             await core.run(read_stream, write_stream, core.create_initialization_options())
 
     anyio.run(run)
