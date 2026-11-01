@@ -402,10 +402,11 @@ on every pull request. The rules that keep that run small:
   bundle, or the gate machinery and its manifests carries `audit`, on the
   function or on the module through `pytestmark = pytest.mark.audit`.
   Provider clients are mocked; no pull-request test reaches the network.
-- tests/conftest.py fails an unmarked test whose call phase exceeds
-  `CALL_BUDGET_SECONDS` (10 s, about twice the slowest hosted test;
-  `GOROROBA_TEST_CALL_SECONDS` replaces it on a contended host and 0 lifts
-  it). An exhaustive or slow check carries `audit` and gets a small unmarked
+- tests/conftest.py targets `CALL_BUDGET_SECONDS` (10 s) for the call phase
+  of an unmarked test and fails it past `CALL_BUDGET_TOLERANCE` (1.5) times
+  that target, so hosted-runner jitter around 10 s passes;
+  `GOROROBA_TEST_CALL_SECONDS` replaces the target on a contended host and 0
+  lifts the bound. An exhaustive or slow check carries `audit` and gets a small unmarked
   counterpart that tests the same rule on a small input.
 - Setup that several tests share is a `scope="module"` or `"session"`
   fixture. Each xdist worker builds its own copy, and `--dist loadgroup`
