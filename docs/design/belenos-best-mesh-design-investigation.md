@@ -82,7 +82,9 @@ selection can ever pay.
 
 1. **Herald-leak pattern analysis, offline and free.** The 18 retained iterations hold the full click patterns of the
    rejected events. Classifying the herald rejections per mesh and input tests whether the acceptance filter of finding
-   4 is a specific leak (one herald pattern, one mode pair) or a broad loss, using data already paid for.
+   4 is a specific leak (one herald pattern, one mode pair) or a broad loss, using data already paid for. Done in
+   [belenos-herald-leak-analysis.md](belenos-herald-leak-analysis.md): the mesh changes the herald composition
+   broadly, with no single pattern, and the herald share does not act as a filter on wrong events.
 2. **A persistence case, written after that analysis.** Replay the twelve job-02 and job-03 seeds at a later
    calibration read, report acceptance beside correctness per mesh, and test the correlation of each mesh's
    correctness across the two reads. It needs the owner's approval of its written case like every provider job.

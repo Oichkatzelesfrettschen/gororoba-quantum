@@ -126,3 +126,55 @@ def test_replay_power_has_nominal_size_without_persistent_error_and_power_with_i
         raise AssertionError(by)
     if by["persistent mesh error"] < 0.9:
         raise AssertionError(by)
+
+
+# docs/evidence/anu_qrng/draw-2026-11-01T054809Z.json index 1 (ledger row in docs/evidence/qrng_seeds/allocations.json).
+REALLOCATION_SEED = 36200
+
+
+def test_two_row_chi_square_equals_the_pearson_statistic() -> None:
+    from scipy.stats import chi2_contingency
+
+    from mesh_selection import two_row_chi_square
+
+    table = np.array([[12.0, 30.0, 7.0, 51.0], [20.0, 18.0, 15.0, 40.0]])
+    expected = chi2_contingency(table, correction=False)[0]
+    got = float(two_row_chi_square(table[0], table.sum(axis=0)))
+    if not math.isclose(got, expected, rel_tol=1e-12):
+        raise AssertionError((got, expected))
+
+
+def test_a_two_by_two_adjusted_residual_squares_to_the_chi_square() -> None:
+    from mesh_selection import adjusted_residuals, two_row_chi_square
+
+    table = np.array([[30.0, 10.0], [20.0, 40.0]])
+    residual = adjusted_residuals(table)
+    chi_square = float(two_row_chi_square(table[0], table.sum(axis=0)))
+    if not np.allclose(residual**2, chi_square) or not np.allclose(residual[0], -residual[1]):
+        raise AssertionError((residual, chi_square))
+
+
+def test_proportional_rows_never_reject_and_disjoint_rows_always_do() -> None:
+    from mesh_selection import composition_test
+
+    proportional = [np.array([[10, 20, 30], [20, 40, 60]]), np.array([[5, 5, 0], [15, 15, 0]])]
+    record = composition_test(proportional, 500, REALLOCATION_SEED)
+    if record["statistic"] != 0.0 or record["p"] != 1.0:
+        raise AssertionError(record)
+    disjoint = [np.array([[60, 0, 0], [0, 30, 30]])]
+    record = composition_test(disjoint, 500, REALLOCATION_SEED)
+    if record["p"] != 1 / 501:
+        raise AssertionError(record)
+
+
+def test_the_composition_test_replays_from_its_seed_and_refuses_bad_tables() -> None:
+    from mesh_selection import composition_test
+
+    tables = [np.array([[12, 30, 7, 51], [20, 18, 15, 40]]), np.array([[3, 9, 4], [6, 2, 8]])]
+    first = composition_test(tables, 400, REALLOCATION_SEED)
+    second = composition_test(tables, 400, np.random.SeedSequence(REALLOCATION_SEED))
+    if first != second:
+        raise AssertionError((first, second))
+    for bad in (np.ones((3, 4), dtype=int), np.array([[0, 0, 0], [1, 2, 3]])):
+        with pytest.raises(ValueError):
+            composition_test([bad], 10, REALLOCATION_SEED)
