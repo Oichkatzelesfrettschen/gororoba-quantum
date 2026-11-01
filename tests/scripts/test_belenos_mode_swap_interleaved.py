@@ -537,6 +537,21 @@ def test_the_slot_test_drops_deterministic_groups_and_keeps_spread_without_expec
         raise AssertionError(spread)
 
 
+def test_the_excess_test_drops_deterministic_blocks_and_keeps_deltas_without_expected_variance() -> None:
+    classes = {"extreme": {"sigma2_upper": 0.0}, "half": {"sigma2_upper": 0.001}}
+    info = {("a", 0): {"p": 0.0}, ("b", 0): {"p": 0.5}}
+    old = {("a", 0): {"delta": 0.0, "v": 0.0}, ("b", 0): {"delta": 0.01, "v": 0.0005}}
+    mixed = case.earlier_excess(info, old, classes)
+    if mixed["quantile"] != float(chi2.ppf(1 - case.EXCESS_ALPHA, 1)) or mixed["statistic"] != 0.0001 / 0.0025:
+        raise AssertionError(mixed)
+    alone = case.earlier_excess({("a", 0): {"p": 0.0}}, old, classes)
+    if alone["verdict"] != "mesh" or alone["quantile"] is not None:
+        raise AssertionError(alone)
+    moved = case.earlier_excess({("a", 0): {"p": 0.0}}, {("a", 0): {"delta": 0.2, "v": 0.0}}, classes)
+    if moved["verdict"] != "excess" or moved["statistic"] != float("inf"):
+        raise AssertionError(moved)
+
+
 def test_a_drift_step_between_a_sets_two_jobs_raises_the_mesh_scale_rather_than_hiding_it(tmp_path: Path) -> None:
     def stepped(step: float) -> Model:
         def model(setting: dict[str, Any], block: dict[str, Any]) -> float:

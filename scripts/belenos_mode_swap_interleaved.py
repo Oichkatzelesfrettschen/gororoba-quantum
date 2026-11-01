@@ -896,16 +896,27 @@ def earlier_excess(
     classes: dict[str, dict[str, float]],
 ) -> dict[str, Any]:
     """The earlier deltas against two independent meshes at the class upper bound, unscaled and at the window
-    allowance."""
+    allowance.
+
+    A block with zero expected variance and a zero delta is deterministic and carries no evidence, so it leaves the
+    test with its degree of freedom; a nonzero delta against zero expected variance stays infinite evidence. With no
+    testable block the verdict is mesh."""
+    tested = {
+        key: block
+        for key, block in info.items()
+        if old[key]["delta"] != 0 or 2 * classes[block_class(block["p"])]["sigma2_upper"] + old[key]["v"] > 0
+    }
 
     def statistic(w: float) -> float:
         total = 0.0
-        for key, block in info.items():
+        for key, block in tested.items():
             scale = 2 * w * classes[block_class(block["p"])]["sigma2_upper"] + old[key]["v"]
             total += old[key]["delta"] ** 2 / scale if scale > 0 else math.inf
         return total
 
-    quantile = float(chi2.ppf(1 - EXCESS_ALPHA, len(info)))
+    if not tested:
+        return {"statistic": 0.0, "statistic_window": 0.0, "quantile": None, "verdict": "mesh"}
+    quantile = float(chi2.ppf(1 - EXCESS_ALPHA, len(tested)))
     unscaled, allowed = statistic(1.0), statistic(WINDOW_ALLOWANCE)
     verdict = "mesh" if unscaled <= quantile else "excess" if allowed > quantile else "window"
     return {"statistic": unscaled, "statistic_window": allowed, "quantile": quantile, "verdict": verdict}
