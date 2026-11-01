@@ -25,7 +25,10 @@ The vm1 tree's large outputs, all over F_32009 in Singular's `dp` ordering:
   monomials, is the measured h_4. The jet-truncated normal forms `trunc/iso_d4/jnf13.txt` (640 polynomials over 3,105
   monomials, rank 640) certify the same h_4 = 640 at a fraction of the size, together with the K2 count of 640.
 - `e8nm_a2/nf2.txt` (40 MB): the normal forms of the degree-2 products of the 21 E8-bar to N- generators modulo
-  std(J + m*P_2); their rank is h_2 = 83, and their left kernel is the 148 quadric relations K2, kept in the `.rel`
-  files beside it.
+  std(J + m*P_2); their rank is h_2 = 83, and their left kernel is the 148 quadric relations K2. The archive's
+  `e8nm_a2-nf1.rel` and `e8nm_a2-nf2.rel` are byte copies of `e8nm_a2/nf1.txt` and `e8nm_a2/nf2.txt` (normal forms,
+  not relations); the kernel step that turns normal forms into relations ran in the distributed degree-2 runs,
+  whose 148 relations in y(1..21) are retained as
+  `../distribute/out/a5-e8-d2/e8nm_p1/d2/relations-d2.rel` and `../distribute/out/a5-e8-d2/e8nm_p2/d2/relations-d2.rel`.
 
 Each regenerates from the retained inputs in hours; the archives are the audit record of the runs as executed.
