@@ -11,6 +11,11 @@ import pytest
 from mesh_selection import block_counts, contrast_shrinkage, exact_permutation_r, normal_cdf, replay_power
 
 LABELS = ("p", "q", "r", "s", "t", "u")
+# docs/evidence/anu_qrng/draw-2026-10-31T193354Z.json: index 1 seeds the power simulation, indices 2 and 3 are
+# fixture compilation seeds (ledger rows in docs/evidence/qrng_seeds/allocations.json).
+POWER_SEED = 50187
+FIXTURE_SEED = 54229
+OTHER_FIXTURE_SEED = 19256
 GRID = np.linspace(0.0, 0.25, 1001)
 
 
@@ -80,7 +85,7 @@ def test_block_counts_pool_a_blocks_runs_and_refuse_a_second_seed() -> None:
     row = {
         "label": "p",
         "block_of_seed": "A",
-        "compilation_seed": 7,
+        "compilation_seed": FIXTURE_SEED,
         "correct": 3,
         "accepted": 4,
         "samples": 10,
@@ -93,12 +98,12 @@ def test_block_counts_pool_a_blocks_runs_and_refuse_a_second_seed() -> None:
         "accepted": 8,
         "samples": 20,
         "shots": 200,
-        "seed": 7,
+        "seed": FIXTURE_SEED,
         "rejected_herald": 4,
     }:
         raise AssertionError(pooled)
     with pytest.raises(ValueError, match="mixes compilation seeds"):
-        block_counts([row, {**row, "compilation_seed": 8}], ["p"], ["herald"])
+        block_counts([row, {**row, "compilation_seed": OTHER_FIXTURE_SEED}], ["p"], ["herald"])
 
 
 def test_replay_power_has_nominal_size_without_persistent_error_and_power_with_it() -> None:
@@ -107,7 +112,7 @@ def test_replay_power_has_nominal_size_without_persistent_error_and_power_with_i
     record = replay_power(
         counts,
         shrink,
-        np.random.SeedSequence(20261101),
+        np.random.SeedSequence(POWER_SEED),
         labels=LABELS,
         tau_grid=GRID,
         trials=20_000,

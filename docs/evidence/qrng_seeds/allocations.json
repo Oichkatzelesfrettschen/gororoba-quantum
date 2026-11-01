@@ -869,6 +869,27 @@
    "value": 31274,
    "record": "docs/evidence/anu_qrng/draw-2026-10-31T092245Z.json",
    "index": 15
+  },
+  {
+   "path": "tests/gororoba_quantum/test_mesh_selection.py",
+   "name": "POWER_SEED",
+   "value": 50187,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T193354Z.json",
+   "index": 1
+  },
+  {
+   "path": "tests/gororoba_quantum/test_mesh_selection.py",
+   "name": "FIXTURE_SEED",
+   "value": 54229,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T193354Z.json",
+   "index": 2
+  },
+  {
+   "path": "tests/gororoba_quantum/test_mesh_selection.py",
+   "name": "OTHER_FIXTURE_SEED",
+   "value": 19256,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T193354Z.json",
+   "index": 3
   }
  ],
  "runtime": [
