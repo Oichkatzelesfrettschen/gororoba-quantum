@@ -3,7 +3,6 @@
 import json
 import sys
 import tempfile
-from datetime import timedelta
 from pathlib import Path
 from typing import Any
 
@@ -73,7 +72,7 @@ app.serve()
     async def exercise(errorlog: Any) -> None:
         parameters = StdioServerParameters(command=sys.executable, args=["-I", "-W", "error", "-c", bootstrap])
         async with stdio_client(parameters, errlog=errorlog) as (reader, writer):
-            async with ClientSession(reader, writer, read_timeout_seconds=timedelta(seconds=30)) as session:
+            async with ClientSession(reader, writer, read_timeout_seconds=30.0) as session:
                 await session.initialize()
                 definitions = {tool.name: tool for tool in (await session.list_tools()).tools}
                 expected = {
@@ -91,14 +90,14 @@ app.serve()
                 if set(definitions) != expected:
                     raise AssertionError(f"MCP tools differ: {set(definitions) ^ expected}")
                 for name, tool in definitions.items():
-                    if tool.annotations is None or tool.annotations.readOnlyHint != (name != "qd_cancel_job"):
+                    if tool.annotations is None or tool.annotations.read_only_hint != (name != "qd_cancel_job"):
                         raise AssertionError(f"incorrect mutation annotation for {name}")
-                    if tool.inputSchema.get("additionalProperties") is not False:
+                    if tool.input_schema.get("additionalProperties") is not False:
                         raise AssertionError(f"undeclared arguments remain admitted by {name}")
 
                 async def call(name: str, arguments: dict[str, Any]) -> Any:
                     result = await session.call_tool(name, arguments)
-                    if result.isError:
+                    if result.is_error:
                         raise AssertionError(f"{name} failed: {result.content}")
                     if not result.content or not isinstance(result.content[0], TextContent):
                         raise AssertionError(f"{name} returned an unexpected content type: {result.content}")
@@ -154,7 +153,7 @@ app.serve()
                 if vacuum["probabilities"] != {"|0>": 1.0}:
                     raise AssertionError(f"vacuum simulation changed its state: {vacuum}")
                 failed = await session.call_tool("qd_platform", {"name": "qpu:fixture-failure"})
-                if not failed.isError or "qd_platform:" not in str(failed.content):
+                if not failed.is_error or "qd_platform:" not in str(failed.content):
                     raise AssertionError(f"tool failure lost its named error envelope: {failed}")
                 for name, arguments in (
                     ("qd_job_status", {"job_id": "../../api/tokens"}),
@@ -162,7 +161,7 @@ app.serve()
                     ("qd_platform", {"name": "qpu:ascella", "hardware_config": {}}),
                 ):
                     rejected = await session.call_tool(name, arguments)
-                    if not rejected.isError or "Input validation error" not in str(rejected.content):
+                    if not rejected.is_error or "Input validation error" not in str(rejected.content):
                         raise AssertionError(f"schema violation reached a tool: {name}: {rejected}")
 
     with tempfile.TemporaryFile(mode="w+") as errorlog:

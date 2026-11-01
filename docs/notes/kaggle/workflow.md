@@ -233,7 +233,7 @@ id:
 ```
 
 The script calls the MCP server over HTTP with the bearer header that
-`~/.config/shell/kaggle-mcp-headers.sh` prints, so it needs no MCP tools in
+the Kaggle MCP header helper prints, so it needs no MCP tools in
 the agent session; a session with the Kaggle MCP loaded can call
 `cancel_notebook_session` directly with the same id. The version moves to
 CANCEL_REQUESTED, then CANCEL_ACKNOWLEDGED, and the quota's reserved time

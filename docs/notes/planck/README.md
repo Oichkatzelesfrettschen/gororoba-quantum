@@ -6,35 +6,16 @@ SDK (<https://github.com/HectorNaaa/Planck-QSaaS>, SDK under `sdk/python`).
 The read-only probe of 2026-10-24 found two facts that bound its use: the
 stored key is rejected, and the platform's simulator returns random bits.
 
-The owner's account was deleted on 2026-10-25 through the settings page's
-Delete Account action (`deleteUserAccount` in `app/qsaas/settings/actions.ts`).
-The key file under `~/.config/planck/` is removed and the `planck-stack`
-package is uninstalled; the PKGBUILD and the lock below remain so a
-re-audit can rebuild the environment.
+The account is closed and its key removed; the `planck-stack` package is uninstalled, and the PKGBUILD and the lock below remain so a re-audit can rebuild the environment. This account's credential location, MCP registration and access limits are recorded in the private gororoba-infrastructure repository.
 
 ## Environment and credential
 
-`planck-sdk` is not on PyPI (404), contrary to its README, so the lock
-installs it from the audited source commit:
-
-```sh
-PL_ENV=$HOME/.local/share/planck/venv
-uv venv --python 3.13 "$PL_ENV"
-VIRTUAL_ENV="$PL_ENV" uv pip install -r docs/notes/planck/requirements-planck.txt
-```
-
-On the build host the Arch package `planck-stack` from the local PKGBUILD tree
-(`~/Github/PKGBUILDs/planck-stack`) installs the same SDK as a hash-locked Python
-3.13 environment under `/opt/planck-stack` and the interpreter `/usr/bin/planck-python`
-(planck_sdk 1.0.0 from the audited commit); its `check()` runs an offline test, kept at
-`/usr/share/planck-stack/test_planck_stack.py`. A case sets `PL_PYTHON=/usr/bin/planck-python`; the venv
-above serves a machine without the package. The package sources the GitHub archive of HectorNaaa/Planck-QSaaS at commit d57e32e7 under a b2sum and installs `sdk/python` from it, since PyPI carries no `planck-sdk`.
+`planck-sdk` is not on PyPI (404), contrary to its README, so `requirements-planck.txt` installs it from the audited source commit into the interpreter that `PL_PYTHON` names. The package sources the GitHub archive of HectorNaaa/Planck-QSaaS at commit d57e32e7 and installs `sdk/python` from it.
 
 The SDK (version 1.0.0, MIT) uses the standard library only and contacts
 only its configured base URL. Pass `base_url="https://www.plancktechnologies.xyz"`:
 the bare domain answers 308, which breaks the SDK's POST health check. The
-key is one line in `~/.config/planck/api-key` (directory 700, file 600),
-sent as `X-API-Key`. The SDK and server allow one request every 3 s.
+SDK and server allow one request every 3 s. This account's credential location, MCP registration and access limits are recorded in the private gororoba-infrastructure repository.
 
 ## What the probe established
 

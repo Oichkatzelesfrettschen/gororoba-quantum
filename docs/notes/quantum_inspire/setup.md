@@ -15,12 +15,12 @@ conflict with the repository's:
 - No Arch package or local PKGBUILD carries quantuminspire.
 
 ```sh
-QI_ENV=${QI_ENV:-$HOME/.local/share/quantuminspire/venv}
-QI_PYTHON=${QI_PYTHON:-$QI_ENV/bin/python}
 uv venv --python 3.13 "$QI_ENV"
 VIRTUAL_ENV="$QI_ENV" uv pip install -r docs/notes/quantum_inspire/requirements-qi.txt
 "$QI_PYTHON" -c "import quantuminspire, qiskit_quantuminspire, qxelarator, mcp"
 ```
+
+`QI_ENV` names the venv and `QI_PYTHON` its interpreter; their default locations are recorded in the private gororoba-infrastructure repository.
 
 [requirements-qi.txt](requirements-qi.txt) is the full lock (Python 3.13.15,
 uv 0.13.0, Linux x86_64). The direct packages and their roles are tabled in
@@ -82,11 +82,7 @@ outside the local replay.
    port is needed, so it works over ssh.
 3. The user signs in (e-mail or a listed identity provider) and confirms the
    code; the CLI prints `Login successful! Using member ID N`.
-4. Tokens land in `~/.quantuminspire/config.json` under the host
-   `https://api.quantum-inspire.com`: access token (3600 s), refresh token,
-   `generated_at`, and `team_member_id`. The CLI writes the file mode 644;
-   tighten it with `chmod 600 ~/.quantuminspire/config.json`. The file never
-   enters the repository, a log or agent memory.
+4. The tokens land in the CLI's token store: access token (3600 s), refresh token, `generated_at`, and `team_member_id`. The CLI writes the file mode 644. The file never enters the repository, a log or agent memory. Its location is recorded in the private gororoba-infrastructure repository.
 
 A login made in another OS user, container, WSL distribution or cloud VM
 does not reach this environment. An agent that finds no login runs `qi
@@ -103,7 +99,7 @@ failure:
 | Error text | Meaning | Action |
 |---|---|---|
 | `403 {"detail":"Signature has expired"}` | the request carried an expired access token; the API answers it with 403, not 401 | `Client` refreshes once and retries; from any other caller (curl, an SDK object), repeat the read through `qi_platform.py` or an MCP tool |
-| `refresh token is no longer valid (invalid_grant)`, or the SDK's `403 {"error":"invalid_grant","error_description":"Unknown or invalid refresh token."}` | the login is dead for every process on the account | `"$QI_ENV/bin/qi" login --force`, approve the code, `chmod 600 ~/.quantuminspire/config.json` |
+| `refresh token is no longer valid (invalid_grant)`, or the SDK's `403 {"error":"invalid_grant","error_description":"Unknown or invalid refresh token."}` | the login is dead for every process on the account | `"$QI_ENV/bin/qi" login --force`, approve the code, tighten the token file to mode 600 |
 | `no Quantum Inspire login` | no tokens are stored | `"$QI_ENV/bin/qi" login` |
 | an MCP tool outlives the client's wait | `qi_usage` pages every job of the account and takes minutes; authentication is fine | wait for the backgrounded result |
 
@@ -132,7 +128,7 @@ login whatever the renewal path, and the exchange log tells the two apart.
 
 **What spends a login.** The authorization server, auth.quantum-inspire.com
 (an Auth0 tenant by its OpenID configuration), rotates the refresh token at
-every exchange. `Client.refresh` holds `~/.quantuminspire/config.json.lock`,
+every exchange. `Client.refresh` holds the token-file lock,
 rereads the file and writes the rotated pair back. Three paths exchange
 outside that lock:
 
@@ -144,32 +140,7 @@ outside that lock:
   already spent;
 - a copy of the token file on another host, container or sandbox.
 
-The recorded deaths fall at 2026-10-17 04:50Z, near 2026-10-22 04:03Z,
-between 2026-10-22 14:16Z and 16:53Z, and between 2026-10-23 08:25Z and
-14:17Z, each 5 to 13 hours after the last successful use. Two mechanisms fit
-them, and the tenant's settings are not readable from the account: a spent
-token presented again, which Auth0 reuse detection answers by revoking the
-whole token family, or a short refresh-token lifetime.
-
-**Exchange log.** `Client.refresh` appends one JSON line per exchange to
-`~/.quantuminspire/refresh-log.jsonl` (mode 600, no token bytes): the UTC
-time, the outcome (`exchanged`, `exchanged-not-persisted`, or `rejected` with
-the error text), the pid, the parent process name and the script. At the
-next invalid_grant, read the last `exchanged` line before the first
-`rejected` one:
-
-- a rejection within one access-token lifetime (3600 s) of a logged
-  exchange names an exchange outside the log, the reuse mechanism;
-- a rejection after a quiet gap with no SDK-native process running bounds
-  the tenant's refresh-token idle lifetime by that gap;
-- an `exchanged-not-persisted` line names the process that spent the token
-  and lost its successor.
-
-Every session of a host that registers the server starts its own copy
-(`pgrep -af qi_mcp_server.py` lists them with their parents); each one is a
-`Client` and shares the lock. A server keeps the `qi_platform.py` it imported
-at start, so a server older than the exchange log writes no line until its
-session reconnects it (`/mcp` in Claude Code).
+The recorded refresh-token deaths, the exchange log (its fields and how to read it at the next invalid_grant) and the per-session server copies are recorded in the private gororoba-infrastructure repository.
 
 Project-local settings (algorithm names, backend ids, shots) live in
 `PROJECT_ROOT/.quantuminspire/config.json`, found relative to the working

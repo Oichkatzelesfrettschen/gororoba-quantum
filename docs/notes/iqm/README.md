@@ -72,50 +72,32 @@ in [hardware-pre-4.7.md](hardware-pre-4.7.md).
 
 ## Account and credential
 
-The account is PERSONAL with 30.00 credits that expire 2026-11-01. The
-Starter plan on https://www.iqm.tech/products/iqm-resonance (read
-2026-10-24) grants "Up to 30 credits per month, based on availability" and
-states no reset date; the account's expiry at 00:00 UTC on the first of the
-next month fits a calendar-month grant, so a fresh balance after
-2026-11-01 is expected but unconfirmed until `iqm_credit` reads it.
-Purchased pay-as-you-go credits "don't expire" (same page). API
-tokens are created on the profile page (https://resonance.iqm.tech/profile),
+IQM Resonance API tokens are created on the profile page (https://resonance.iqm.tech/profile),
 are personal and scoped to one workspace, and carry scopes:
 `job_execution` (submit and manage own jobs, list timeslots; all of
 iqm-client), `timeslot_management`, `account_management`,
 `account_analytics`. A token's permissions are its owner's role intersected
-with its scopes; this account's token holds `job_execution` alone and
-expires 2027-01-19, and so does its refresh token. An account holds at most
-10 active tokens.
+with its scopes. An account holds at most 10 active tokens.
 
-The token pair lives in `~/.config/iqm/tokens.json` (directory 700, file
-600) as `{"access_token", "refresh_token"}`, outside every checkout.
-`IQM_TOKENS_FILE` names it to scripts/iqm_platform.py and the MCP server,
-which reread it on every call, so a refreshed file reaches them without a
-restart. iqm-client takes the access token as `token=` read from that file
-(see [Qiskit](#qiskit)): iqm-client 36's `TokensFileReader` passes the token
-to `TokenManager.time_left_seconds`, which decodes a JWT `exp` claim, and an
+`IQM_TOKENS_FILE` names the token pair file (`{"access_token", "refresh_token"}`)
+to scripts/iqm_platform.py and the MCP server, which reread it on every call,
+so a refreshed file reaches them without a restart. iqm-client takes the
+access token as `token=` read from that file (see [Qiskit](#qiskit)):
+iqm-client 36's `TokensFileReader` passes the token to
+`TokenManager.time_left_seconds`, which decodes a JWT `exp` claim, and an
 opaque Resonance token has none, so the reader raises "Access token in file
 has expired or is not valid" for a token the API accepts.
 
-`"$PYTHON" scripts/iqm_platform.py refresh` renews the token through
-`POST /api/v1/tokens/current/refresh` with the refresh token as Bearer. A
-refresh with `activated` true invalidates the refresh token at once, so a
-lost response would lose both; the script requests `activated: false`,
-writes the new pair to `tokens.json.pending`, then calls
-`POST /api/v1/tokens/current/activate` with `{"api_token": NEW}` and the
-same refresh token, and only then replaces `tokens.json`. A rerun after a
-failed activation resumes from the pending file. An flock on
-`tokens.json.lock` serializes refreshes, and the script refreshes only when
-the current token expires within `--min-days` (14) days; `--days` (90) sets
-both new lifetimes, each between 3600 s and 31536000 s.
+`"$PYTHON" scripts/iqm_platform.py refresh` renews the pair through
+`POST /api/v1/tokens/current/refresh` and `/activate`. A refresh with
+`activated` true invalidates the refresh token at once, so the script requests
+`activated: false`, writes the new pair aside and activates it before it
+replaces the file. Cloudflare answers the default `Python-urllib` User-Agent
+with error 1010, so every client names its own.
 
-Rate limiting is per user: 3000 cost units per 10 s rolling window, a 30 s
-block on excess with `Retry-After`, `RateLimit-Limit` and
-`RateLimit-Remaining` on every success. Reads cost little, a refresh or
-activation 100, a job submission 100 plus 100 per 10 MiB of payload.
-Cloudflare answers the default `Python-urllib` User-Agent with error 1010,
-so every client names its own.
+The account's plan, credit balance, token scope and expiry dates, token file
+location, refresh schedule and rate limits are recorded in the private
+gororoba-infrastructure repository.
 
 ## API surface
 
@@ -367,13 +349,12 @@ isa = transpile_to_IQM(circuit, backend, seed_transpiler=7)
 
 ## MCP
 
-`scripts/iqm_mcp_server.py` is registered at Claude Code user scope and in
-`~/.codex/config.toml` as `iqm`: `/usr/bin/python3 -I
-scripts/iqm_mcp_server.py` with `IQM_TOKENS_FILE`. It runs on the system
-Python (mcp 1.29) and imports nothing from the client stack. Claude allows
-and Codex approves the read tools; `iqm_cancel_job` asks every time.
-`iqm_platform.py check` holds the tool set and annotations. The server
-submits nothing and books no timeslot.
+`scripts/iqm_mcp_server.py` runs on the system Python (mcp 2.3, MCPServer) and
+imports nothing from the client stack. It serves read tools and `iqm_cancel_job`,
+which asks every time. `iqm_platform.py check` holds the tool set and
+annotations. The server submits nothing and books no timeslot. Its registration
+(server name `iqm`, launcher, environment) and per-client approval settings are
+recorded in the private gororoba-infrastructure repository.
 
 Dictionary GET responses retain `_observation` with the exact request path and subsecond UTC start/end
 times. The interval belongs to that GET, rather than the calibration's creation timestamp or an atomic

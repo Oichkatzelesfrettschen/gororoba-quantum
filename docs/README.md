@@ -26,8 +26,8 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Quafu | BAQIS ScQ superconducting QPUs and a 10-qubit simulator | [quafu/README.md](notes/quafu/README.md) |
 | Origin Quantum | Wukong 180 QPU and four simulators; 60 s registration grant | [originquantum/README.md](notes/originquantum/README.md) |
 | Planck Technologies | account closed; audited SDK, key rejected and simulator returns random bits | [planck/README.md](notes/planck/README.md) |
-| AWS | free-plan project; always-free bands, credit-metered usage, the five $20 activity rewards, and the host Python packages; Braket unavailable | [aws/README.md](notes/aws/README.md) |
-| Azure | free-trial subscription; Quantum workspace with free Quantinuum, Pasqal and Rigetti emulator plans; 4-vCPU trial compute | [azure/README.md](notes/azure/README.md) |
+| AWS | free-plan project, a tooling cloud with Braket unavailable; the host Python packages | [aws/README.md](notes/aws/README.md) |
+| Azure | Quantum workspace with free Quantinuum, Pasqal and Rigetti emulator plans | [azure/README.md](notes/azure/README.md) |
 | zbMATH Open | REST, OAI-PMH and citation-matching client; API audit with replayable findings | [zbmath/README.md](notes/zbmath/README.md) |
 | QRNG seed sources | ANU, Outshift and Quandela draws for every new seed | [qrng/README.md](notes/qrng/README.md) |
 | Simulation | Kaggle CPU and GPU kernels, host Aer build | [kaggle/README.md](notes/kaggle/README.md) |
@@ -425,7 +425,6 @@ differs from it only in the `cd_core.py` digest.
 | [runbooks/bdsc-tuna17-pauli-pilot.md](runbooks/bdsc-tuna17-pauli-pilot.md) | build, dry run and submission order of the Tuna-17 four-qubit Pauli readout pilot |
 | [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela billing rule measured per job, packing limits and cost planning |
 | [runbooks/quandela-scheduled-runs.md](runbooks/quandela-scheduled-runs.md) | unattended submission of approved, spaced Quandela jobs from a committed schedule through GitHub Actions |
-| [runbooks/provider-credits.md](runbooks/provider-credits.md) | read-only daily snapshot of every provider's free allotment, alert thresholds and the systemd user timer |
 | [runbooks/classical-compute-pool.md](runbooks/classical-compute-pool.md) | free classical capacity per substrate (build host, Kaggle, GitHub Actions, Azure trial), what pooling across machines buys, tool installs per substrate, measured memory of the A_5 Rees eliminations |
 | [runbooks/critical-peer-review.md](runbooks/critical-peer-review.md) | reviewer checklist for quantum-hardware results: preregistration, multiplicity, effect size, dependent correlations, drift, provenance, simulation boundary and claim wording |
 | [QUANTUM_DISPATCH.md](../plans/QUANTUM_DISPATCH.md) | quantum dispatch plan |
@@ -449,7 +448,7 @@ differs from it only in the `cd_core.py` digest.
 
 | File | Contents |
 |---|---|
-| [providers.md](notes/providers.md) | provider interpreters, venvs, MCP server names and key files, with the guide of each provider |
+| [providers.md](notes/providers.md) | provider interpreter variables and MCP server names, with the guide of each provider |
 | [tuna17-bipartite-designs.md](notes/quantum_inspire/tuna17-bipartite-designs.md) | Tuna-17 cubic Walsh classes and box-kite packing |
 | [quandela/literature.md](notes/quandela/literature.md) | published methods for characterizing a Belenos-class mesh |
 | [quandela/quickstart.md](notes/quandela/quickstart.md) | Quandela Cloud quick start |

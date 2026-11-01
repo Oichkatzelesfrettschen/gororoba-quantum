@@ -11,7 +11,7 @@ Installation and the version caps that force a separate environment are in
 
 The repository's own `$PYTHON` (Python 3.14, Arch packages) never imports
 this stack. `scripts/iqm_platform.py` and `scripts/iqm_mcp_server.py` talk to
-Resonance over HTTPS with the standard library and the system's mcp 1.29;
+Resonance over HTTPS with the standard library and the system's mcp 2.3;
 anything that compiles, transpiles or simulates for IQM runs under
 `iqm-python`.
 

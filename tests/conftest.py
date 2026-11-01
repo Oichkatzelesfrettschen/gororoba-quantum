@@ -57,11 +57,13 @@ def create_perceval_data_directory() -> None:
     Path(PlatformDirs("perceval-quandela", "quandela").user_data_dir).mkdir(parents=True, exist_ok=True)
 
 
-# The call phase of a test outside the audit marker fails past this many
-# seconds. The hosted pull-request runner measures about twice the build
-# host's time, and its slowest unmarked test took 4.97 s.
-# GOROROBA_TEST_CALL_SECONDS replaces the bound on a contended host; 0 lifts it.
+# The call phase of a test outside the audit marker targets this many seconds
+# and fails only past CALL_BUDGET_TOLERANCE times it, so hosted-runner jitter
+# around the target never fails a pull request. The hosted pull-request runner
+# measures about twice the build host's time. GOROROBA_TEST_CALL_SECONDS
+# replaces the target on a contended host; 0 lifts the bound.
 CALL_BUDGET_SECONDS = float(os.environ.get("GOROROBA_TEST_CALL_SECONDS", "10"))
+CALL_BUDGET_TOLERANCE = 1.5
 
 
 @pytest.hookimpl(wrapper=True)
@@ -73,12 +75,13 @@ def pytest_runtest_makereport(
         call.when == "call"
         and report.passed
         and CALL_BUDGET_SECONDS > 0
-        and call.duration > CALL_BUDGET_SECONDS
+        and call.duration > CALL_BUDGET_SECONDS * CALL_BUDGET_TOLERANCE
         and item.get_closest_marker("audit") is None
     ):
         report.outcome = "failed"
         report.longrepr = (
-            f"{item.nodeid} took {call.duration:.2f} s, over the {CALL_BUDGET_SECONDS:.0f} s pull-request budget:"
+            f"{item.nodeid} took {call.duration:.2f} s, over {CALL_BUDGET_TOLERANCE:g} times the"
+            f" {CALL_BUDGET_SECONDS:.0f} s pull-request budget:"
             " shrink its input or mark it audit with a small unmarked counterpart"
         )
     return report
