@@ -686,8 +686,7 @@ def main() -> int:
             if row["distribution"] in prior:
                 retained = prior[row["distribution"]]
                 row["observed_host_version"] = retained["observed_host_version"]
-                # A stored imported_by from a record written before importers were computed folds into the archive.
-                archived = set(retained.get("historical_imported_by", [])) | set(retained.get("imported_by", []))
+                archived = retained.get("historical_imported_by", [])
                 if archived:
                     row["historical_imported_by"] = sorted(archived)
         record["host_observation_policy"] = (
