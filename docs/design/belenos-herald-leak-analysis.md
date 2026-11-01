@@ -60,4 +60,47 @@ change of composition.
 
 ## Results
 
-Pending: the results follow the preregistration in a later commit.
+`scripts/belenos_herald_leak.py` writes
+[results/quandela/belenos-herald-leak.json](../../results/quandela/belenos-herald-leak.json) from
+`--seed qrng:docs/evidence/anu_qrng/draw-2026-11-01T054809Z.json#0` and replays it byte for byte. Its
+classification of every iteration reproduces the correct, wrong, sample and rejection counts of each run's retained
+`analysis.json`.
+
+**Verdict: the mesh changes the herald composition, and the change is broad.** The mesh contrast sums to chi-square
+1285.1 (p 1/20,001, the smallest the 20,000 draws can report); the same-mesh null arm sums to 208.2 (p 0.30). No
+input meets the specific-leak rule: the top pattern of each input carries 12 % to 29 % of that input's chi-square,
+below the preregistered half.
+
+| Input | Herald events A / B | Chi-square, mesh contrast | Chi-square, null arm | Top pattern | Its share | Its adjusted residual (A) |
+|---|---|---|---|---|---|---|
+| +Z | 1574 / 876 | 94.7 | 34.9 | a0+b0+h0 | 0.13 | -3.64 |
+| -Z | 1674 / 669 | 404.6 | 33.9 | a1+b1+h0 | 0.16 | -8.08 |
+| +X | 1837 / 907 | 238.0 | 45.9 | a1+h0+h1 | 0.29 | -8.59 |
+| -X | 1898 / 952 | 176.1 | 22.0 | a1+b1+h1 | 0.14 | -4.91 |
+| +Y | 1739 / 924 | 69.9 | 41.3 | a1+b1+h0 | 0.19 | -3.70 |
+| -Y | 1806 / 843 | 301.8 | 30.2 | a1+b0+h1 | 0.12 | +6.08 |
+
+Each input's table spans 33 to 36 observed patterns, so the null-arm chi-squares sit where homogeneity puts them and
+the mesh-contrast chi-squares exceed them by a factor of 1.7 to 12. Block A pools two runs and so carries about twice
+block B's herald events.
+
+**Filter link (exploratory).** Three of six inputs match the filter reading (herald and wrong rates move in opposite
+directions and the correct rate moves less than the wrong rate), sign-test p 0.66, and the null arm also matches
+three of six. The herald rejections do not act as a filter that removes would-be wrong events. The per-sample rates
+are shares of the detected three-click events, so the four differences of an input sum to zero; in five of six
+inputs the herald share and the other-rejection share (excess, outside, receiver, pattern) move in opposite
+directions, with the largest swings at -Z (herald -0.104, other +0.029, correct +0.055) and +Y (herald +0.045, other
+-0.039). A mesh moves events between rejection classes as a whole.
+
+**Observed after looking.** Four of the six top patterns click a1, which sits on chip mode 17, the one logical mode
+out of ascending order in the layout `(18, 19, 20, 17, 22, 23, 16, 21)`. No test was stated for this, and it raises
+the question for the persistence case rather than answering it.
+
+### Consequence for the best-mesh program
+
+Finding 4 of the design investigation read part of a winning mesh's advantage as an acceptance filter. The herald
+composition depends strongly on the mesh, but no single herald pattern or mode carries the difference, and the
+herald share does not trade against the wrong share more often than between two runs of one mesh. The mesh error
+redistributes photons across the output broadly. A per-seed mesh error of this kind needs the persistence replay
+(item 2 of the investigation's "What to do instead") to show whether it survives a recalibration; this analysis gives
+that case no narrower target.
