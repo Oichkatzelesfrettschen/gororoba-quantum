@@ -39,8 +39,8 @@ Facts the guides above rest on, with their source:
 - Account quotas on the settings page, read 2026-10-28: private datasets and
   private models 214.75 GB each (330.47 MB of datasets used); GPU 30 h and TPU
   20 h a week; AI models 10 USD a day and 100 USD a month. The provider
-  credits monitor reads the hours and the AI-model spend; no CLI or API call
-  reports the storage quota ([provider-credits.md](../../runbooks/provider-credits.md)).
+  credits monitor of the private gororoba-infrastructure repository reads the
+  hours and the AI-model spend; no CLI or API call reports the storage quota.
 - Accelerator IDs as of September 2026: NvidiaTeslaT4 (2 x T4),
   NvidiaTeslaA100, NvidiaL4, NvidiaL4X1, NvidiaH100, NvidiaRtxPro6000,
   TpuV5E8, TpuV6E8, some restricted to competitions or admins; the push's
