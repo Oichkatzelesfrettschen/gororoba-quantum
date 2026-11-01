@@ -4,7 +4,7 @@ Each step below names what it spends. Steps 1 to 4 spend nothing and need no
 approval; step 5 sends a job, which waits for a written case and the user's
 approval (README, "Use in this repository"). Every snippet runs under the
 repository's `$PYTHON` with the Arch-packaged Perceval 1.3.1; the token file
-is `~/.config/quandela/cloud-token`, named through `QUANDELA_TOKEN_FILE`.
+is named through `QUANDELA_TOKEN_FILE`.
 
 ## 1. Read the account and the platforms (no token for the public lists)
 
@@ -14,7 +14,7 @@ From an agent session, the `quandela` MCP server answers `qd_platforms`,
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
-QUANDELA_TOKEN_FILE="$HOME/.config/quandela/cloud-token" \
+QUANDELA_TOKEN_FILE="${QUANDELA_TOKEN_FILE:?set to the token file}" \
     "$PYTHON" scripts/qd_platform.py snapshot --out docs/evidence/quandela
 "$PYTHON" scripts/qd_platform.py facts docs/evidence/quandela
 "$PYTHON" scripts/qd_platform.py check docs/evidence/quandela \
