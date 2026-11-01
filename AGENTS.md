@@ -212,9 +212,13 @@ lives; read it before writing one.
   merge candidate, and again only after a push that changed code in response
   to a finding or to the operator's own review; a clean round with no thread
   followed by green checks admits the merge, and a merge of main or a
-  regenerated view earns no new request. Copilot reviews are billed to the
-  owner, so no pull request requests one; when the Codex app reports
-  exhausted code-review quota, the owner decides how the PR proceeds.
+  regenerated view earns no new request. A PR gets at most two automated
+  review rounds, counted from its first request: after the second round the
+  operator answers every thread in one push and asks the owner whether the PR
+  merges, because each further round has found new edge cases without
+  converging (PR #712 ran eight). Copilot reviews are billed to the owner, so
+  no pull request requests one; when the Codex app reports exhausted
+  code-review quota, the owner decides how the PR proceeds.
 - Reply to each thread's root comment beginning `Fixed in <commit>`,
   `Refuted:` followed by the refuting source line, or `Boundary:` followed by
   the documented limit and the follow-up issue, then run
