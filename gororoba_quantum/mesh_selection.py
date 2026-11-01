@@ -11,6 +11,8 @@ selecting its own runs and blocks.
   Benjamini-Hochberg sign decisions (Weinstein and Yekutieli, arXiv 1404.7403, Definition 2).
 - replay_power is the posterior-predictive power of a winner-and-loser replay of the two blocks.
 - exact_permutation_r is Pearson r with its exact one-sided permutation p-value.
+- sign_flip_cross_product is the label-invariant counterpart for within-input B minus A differences: the uncentered
+  cross product with its exact one-sided p-value over sign flips of the second difference.
 - composition_test is the conditional Monte Carlo test that the two rows of 2 x K count tables share one
   composition (multivariate hypergeometric reallocation given both margins); two_row_chi_square and
   adjusted_residuals are its statistic and its per-cell residuals.
@@ -70,6 +72,22 @@ def exact_permutation_r(x: np.ndarray, y: np.ndarray, negative: bool) -> tuple[f
     if negative:
         return observed, float(np.mean([v <= observed + 1e-12 for v in values]))
     return observed, float(np.mean([v >= observed - 1e-12 for v in values]))
+
+
+def sign_flip_cross_product(x: np.ndarray, y: np.ndarray, negative: bool) -> tuple[float, float]:
+    """Uncentered cross product sum x_i y_i of paired B minus A differences and its exact one-sided p-value over the
+    2^n sign flips of y.
+
+    Relabeling an input's two meshes negates both of its differences and leaves x_i y_i unchanged, so the statistic
+    does not depend on which mesh is called A; a centered Pearson r over permuted pairings does. Under the null that y
+    is symmetric about zero independently of x, each sign of y_i is equally likely, which the flips enumerate."""
+    products = np.asarray(x, dtype=float) * np.asarray(y, dtype=float)
+    observed = float(products.sum())
+    signs = np.array(list(itertools.product((1.0, -1.0), repeat=len(products))))
+    values = signs @ products
+    if negative:
+        return observed, float(np.mean(values <= observed + 1e-15))
+    return observed, float(np.mean(values >= observed - 1e-15))
 
 
 def contrast_shrinkage(
@@ -137,6 +155,8 @@ def contrast_shrinkage(
         "tau_posterior_mean": float(weights @ tau_grid),
         "tau_90_interval": [float(tau_grid[np.searchsorted(cdf, 0.05)]), float(tau_grid[np.searchsorted(cdf, 0.95)])],
         "mean_expected_gap": float(gap.mean()),
+        # Choosing the winner of two meshes instead of either at random gains half the winner-minus-loser gap.
+        "mean_expected_gain_over_pair_average": float(gap.mean() / 2),
         "directional_bh_q": fdr_q,
         "signs_determined": determined,
         "_draw": {"d": d, "s": s, "weights": weights},

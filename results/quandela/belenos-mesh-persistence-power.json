@@ -1,0 +1,50 @@
+{
+ "bound_seconds": 257.14455822814955,
+ "credit_ceiling": 1.09,
+ "power": {
+  "mesh_sigma": 0.05150455979158212,
+  "replicates": 2000,
+  "rows": [
+   {
+    "indeterminate": 0.223,
+    "persists": 0.047,
+    "redrawn": 0.73,
+    "slope": 0.0
+   },
+   {
+    "indeterminate": 0.384,
+    "persists": 0.2905,
+    "redrawn": 0.3255,
+    "slope": 0.25
+   },
+   {
+    "indeterminate": 0.148,
+    "persists": 0.8035,
+    "redrawn": 0.0485,
+    "slope": 0.5
+   },
+   {
+    "indeterminate": 0.0005,
+    "persists": 0.9995,
+    "redrawn": 0.0,
+    "slope": 0.75
+   },
+   {
+    "indeterminate": 0.0,
+    "persists": 1.0,
+    "redrawn": 0.0,
+    "slope": 1.0
+   }
+  ],
+  "slot_shift_sd": 0.03
+ },
+ "schema": "belenos-mesh-persistence-power-v1",
+ "seed_source": {
+  "experiment": "belenos-mesh-persistence-power",
+  "flag": "--seed",
+  "script": "scripts/belenos_mesh_persistence.py",
+  "sources": [
+   "qrng:docs/evidence/anu_qrng/draw-2026-11-01T054809Z.json#2"
+  ]
+ }
+}

@@ -8,7 +8,14 @@ from typing import Any
 import numpy as np
 import pytest
 
-from mesh_selection import block_counts, contrast_shrinkage, exact_permutation_r, normal_cdf, replay_power
+from mesh_selection import (
+    block_counts,
+    contrast_shrinkage,
+    exact_permutation_r,
+    normal_cdf,
+    replay_power,
+    sign_flip_cross_product,
+)
 
 LABELS = ("p", "q", "r", "s", "t", "u")
 # docs/evidence/anu_qrng/draw-2026-10-31T193354Z.json: index 1 seeds the power simulation, indices 2 and 3 are
@@ -79,6 +86,21 @@ def test_exact_permutation_counts_every_pairing() -> None:
     r, p = exact_permutation_r(x, -x, negative=True)
     if r != pytest.approx(-1.0) or p != pytest.approx(1 / math.factorial(4)):
         raise AssertionError((r, p))
+
+
+def test_sign_flip_cross_product_is_label_invariant_and_counts_every_flip() -> None:
+    x = np.asarray([1.0, -2.0, 3.0, 0.5])
+    y = np.asarray([-0.5, 2.0, -3.0, -1.5])
+    total, p = sign_flip_cross_product(x, y, negative=True)
+    if total != pytest.approx(-14.25) or p != pytest.approx(1 / 16):
+        raise AssertionError((total, p))
+    relabeled = np.asarray([-1.0, 1.0, 1.0, 1.0])
+    if sign_flip_cross_product(x * relabeled, y * relabeled, negative=True) != (total, p):
+        raise AssertionError("relabeling one input changed the statistic")
+    if exact_permutation_r(x * relabeled, y * relabeled, negative=True)[0] == pytest.approx(
+        exact_permutation_r(x, y, negative=True)[0]
+    ):
+        raise AssertionError("the centered r was expected to depend on the labels in this fixture")
 
 
 def test_block_counts_pool_a_blocks_runs_and_refuse_a_second_seed() -> None:
