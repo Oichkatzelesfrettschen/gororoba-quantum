@@ -22,7 +22,8 @@ The vm1 tree's large outputs, all over F_32009 in Singular's `dp` ordering:
   polynomials, where P_4 is the 640 degree-4 products of the 17 Iso generators reduced modulo J. It serves only to
   re-verify the normal forms by membership.
 - `iso_d4/nf.txt` (447 MB): the normal forms of those 640 products modulo `sq.txt`. Their F_p rank, 640 over 141,676
-  monomials, is the measured h_4. The jet-truncated normal forms `trunc/iso_d4/jnf13.txt` (640 polynomials over 3,105
+  monomials, is the measured h_4. The jet-truncated normal forms of the A5 truncation ladder
+  (`trunc/iso_d4/jnf13.txt` in the A5 local working directory, outside these archives; 640 polynomials over 3,105
   monomials, rank 640) certify the same h_4 = 640 at a fraction of the size, together with the K2 count of 640.
 - `e8nm_a2/nf2.txt` (40 MB): the normal forms of the degree-2 products of the 21 E8-bar to N- generators modulo
   std(J + m*P_2); their rank is h_2 = 83, and their left kernel is the 148 quadric relations K2. The archive's
