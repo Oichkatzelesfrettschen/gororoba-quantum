@@ -36,6 +36,7 @@ def test_a_malformed_quarantine_is_refused(declaration: dict[str, str]) -> None:
         gate_quarantine.quarantined({"gates": [{"name": "g", "cmd": "true", "quarantine": declaration}]})
 
 
+@pytest.mark.audit
 def test_no_claim_cites_a_quarantined_gate() -> None:
     manifest = json.loads((ROOT / "ci/gates.json").read_text(encoding="utf-8"))
     state = json.loads((ROOT / "docs/state/research_state.json").read_text(encoding="utf-8"))
