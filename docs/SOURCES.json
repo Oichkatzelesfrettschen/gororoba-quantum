@@ -2243,6 +2243,18 @@
     },
     "docs/notes/papers/levratti-2026-sign-parity-zero-divisors.md": {
       "status": "journal-venue-unverified"
+    },
+    "docs/notes/papers/1404.7403.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.5705/ss.202017.0316",
+      "venue": "Statistica Sinica (2020)",
+      "receipt_url": "https://api.crossref.org/works/10.5705/ss.202017.0316"
+    },
+    "docs/notes/papers/efron-2011-tweedie-formula.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1198/jasa.2011.tm11181",
+      "venue": "Journal of the American Statistical Association 106(496), 1602-1614 (2011)",
+      "receipt_url": "https://api.crossref.org/works/10.1198/jasa.2011.tm11181"
     }
   },
   "web_sources": [
@@ -4736,6 +4748,24 @@
       "bytes": 5751,
       "retrieved_at_utc": "2026-10-30T23:34:43+00:00",
       "reading_scope": "Zenodo latest-version redirect target: record 21296777 (2026-07-10), a later version of the retained record; title, file name, size and license metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.5705/ss.202017.0316",
+      "note": "docs/notes/papers/1404.7403.md",
+      "sha256": "69a4eea49f9b82bd7d2ed5405804845faef57fe2126ddb2261b86933a6529ee3",
+      "bytes": 1750,
+      "retrieved_at_utc": "2026-11-01T01:59:20+00:00",
+      "reading_scope": "Weinstein and Yekutieli 2020, Statistica Sinica: bibliographic identity",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1198/jasa.2011.tm11181",
+      "note": "docs/notes/papers/efron-2011-tweedie-formula.md",
+      "sha256": "5b7cf20e5eada88ce198241f225098819a6a08e842c2e3f39855b03354728d22",
+      "bytes": 3728,
+      "retrieved_at_utc": "2026-11-01T01:59:12+00:00",
+      "reading_scope": "Efron 2011, Journal of the American Statistical Association 106(496), 1602-1614: bibliographic identity",
       "retention": "retrieval_receipt; response bytes are unretained"
     }
   ],
@@ -12012,6 +12042,83 @@
         "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope.",
         "evidence_path": "docs/evidence/source_rights/arxiv-2505.11747v4.html",
         "evidence_retrieved_at_utc": "2026-10-30T23:19:38+00:00"
+      }
+    },
+    {
+      "title": "Selective Sign-Determining Multiple Confidence Intervals with FCR Control",
+      "authors": [
+        "Weinstein, Asaf",
+        "Yekutieli, Daniel"
+      ],
+      "version": "v4, 2018-05-23",
+      "source_url": "https://arxiv.org/pdf/1404.7403v4",
+      "note": "docs/notes/papers/1404.7403.md",
+      "audited_at_utc": "2026-11-01T02:10:00+00:00",
+      "sha256": "a5838b78b02b80381412129a79eeae685d34ff34c9ecec22791bc611f2287530",
+      "bytes": 998556,
+      "pages": 34,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/1404.7403v4.pdf",
+      "local_cache_path": "docs/local_source_cache/1404.7403v4.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected metadata establishes no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "a5838b78b02b80381412129a79eeae685d34ff34c9ecec22791bc611f2287530",
+        "verified_at_utc": "2026-11-01T02:10:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1404.7403v4",
+        "evidence_sha256": "f1cf047b170b8e27dd0d8f1ac97f74acc98d4d8ac4878247d835ebfc45eceb26",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected metadata establishes no general downstream rehosting permission.",
+        "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1404.7403v4.html",
+        "evidence_retrieved_at_utc": "2026-11-01T02:03:48+00:00"
+      }
+    },
+    {
+      "title": "Tweedie's Formula and Selection Bias",
+      "authors": [
+        "Efron, Bradley"
+      ],
+      "version": "author manuscript, TeX build 2011-08-04",
+      "source_url": "https://efron.ckirby.su.domains/papers/2011TweediesFormula.pdf",
+      "note": "docs/notes/papers/efron-2011-tweedie-formula.md",
+      "audited_at_utc": "2026-11-01T02:10:00+00:00",
+      "sha256": "af27a444711d8d8c775ff8e6e3a19f7af32efe003fdb6ea9014af9782f2754c9",
+      "bytes": 440275,
+      "pages": 22,
+      "acquisition": "download_from_author_page",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/efron-2011-tweedie-formula.pdf",
+      "local_cache_path": "docs/local_source_cache/efron-2011-tweedie-formula.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "PMC copyright notice governing the deposited author manuscript PMC3325056 (NIHMS316433); no notice in the retained PDF",
+      "rights_reason": "The retained author manuscript carries no license, and the PMC deposit of the same manuscript carries only the PMC copyright notice, under which standard copyright applies.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "af27a444711d8d8c775ff8e6e3a19f7af32efe003fdb6ea9014af9782f2754c9",
+        "verified_at_utc": "2026-11-01T02:10:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://pmc.ncbi.nlm.nih.gov/about/copyright/",
+        "evidence_sha256": "f0346804e0c7fad81fadaeeab651c5321ed10d9e005d161241627c517bc3172d",
+        "evidence_locator": "PMC Copyright Notice: absent an explicit statement, standard copyright protection applies",
+        "evidence_summary": "PMC states that reuse beyond the license terms or fair use requires the copyright owners' written permission; the article record carries no license beyond that notice.",
+        "reading_scope": "The PMC copyright notice and the article record's copyright line; the note carries the content reading scope.",
+                "additional_evidence": {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3325056/",
+          "body_sha256": "08b76366f32e87dcf2d0cad75b249582ad64e1323deb6d487b2c66460c0d003a",
+          "response_bytes": 267839,
+          "retrieved_at_utc": "2026-10-31T19:48:36+00:00",
+          "notice": "PMC Copyright notice. PMCID: PMC3325056 NIHMSID: NIHMS316433",
+          "reading_scope": "Article record copyright line; the page carries the full manuscript text and is unretained here."
+        }
       }
     }
   ],

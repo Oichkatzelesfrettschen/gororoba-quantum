@@ -15,7 +15,7 @@ The canonical source library lives under `docs/`: paper descriptions in
 `evidence/`. [SOURCES.json](../SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
 license evidence. The library publishes 50 licensed PDFs and two aliases;
-205 external sources retain citations and optional ignored local reading copies.
+207 external sources retain citations and optional ignored local reading copies.
 Six licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](../PDF_SHA256SUMS) verifies the published PDF set from the
@@ -184,6 +184,8 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [skiouris-2026-aphanics-pathion](../notes/papers/skiouris-2026-aphanics-pathion.md) | Skiouris, Aphanics at the pathion level (Zenodo preprint, 2026): stratified Gram spectra and the Clifford triad checked | none | medium | none |
 | [1505.05210](../notes/papers/1505.05210.md) | Kustin, Polini and Ulrich, The equations defining blowup algebras of height three Gorenstein ideals (Algebra Number Theory 11, 2017) | none | low | none |
 | [1207.1060](../notes/papers/1207.1060.md) | Branco Correia and Zarzuela, Divisors of a module and blow up (J. Pure Appl. Algebra 217, 2013) | none | low | none |
+| [1404.7403](../notes/papers/1404.7403.md) | Weinstein and Yekutieli, Selective Sign-Determining Multiple Confidence Intervals with FCR Control (Statistica Sinica, 2020) | none | low | none |
+| [efron-2011-tweedie-formula](../notes/papers/efron-2011-tweedie-formula.md) | Efron, Tweedie's Formula and Selection Bias (J. Am. Stat. Assoc. 106, 2011) | none | low | none |
 | [2102.01682](../notes/2102.01682.md) | Corcoles et al., Dynamic phase estimation on superconducting qubits, PRL 127, 100501 (2021) | high | indirect | limited |
 | [2608.08232](../notes/2608.08232.md) | Koebisu, Dimension-32 determinant factorization and rank-stratum Question 4 (2026 preprint) | none | high | none |
 | [2608.26893](../notes/2608.26893.md) | Zhilina, Doubly alternative zero divisors (2023 journal; 2026 arXiv posting) | none | high | none |
