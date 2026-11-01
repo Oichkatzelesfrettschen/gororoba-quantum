@@ -19,12 +19,15 @@ reads:
 
 One QRNG value seeds a SeedSequence whose two children drive the power simulation and the mesh-error draws.
 
-Usage: belenos_best_mesh_first_principles.py --out PATH --seed qrng:<draw>#<index>
+Usage: belenos_best_mesh_first_principles.py --out PATH --seed qrng:<draw>#<index> [--run KEY RUN_DIR BLOCK ...]
+
+The estimators live in gororoba_quantum/mesh_selection.py with explicit inputs; this script selects the runs.
 """
 
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import json
 import sys
@@ -42,6 +45,7 @@ import qd_belenos_mesh as mesh  # noqa: E402
 import qd_teleportation_rehearsal as tr  # noqa: E402
 from qd_network_protocol import propagate  # noqa: E402
 
+import mesh_selection as ms  # noqa: E402
 import qrng_seeds  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
@@ -99,12 +103,12 @@ def compiled_row(item: tuple[str, int, Mapping[str, Any], str, Sequence[int]]) -
     }
 
 
-def compiled_section() -> list[dict[str, Any]]:
+def compiled_section(runs: Mapping[str, tuple[Path, str]]) -> list[dict[str, Any]]:
     items = []
-    for run, name in RUN_NAMES.items():
-        cases = json.loads((RUNS / name / "cases.json").read_text(encoding="utf-8"))
+    for run, (directory, _) in runs.items():
+        cases = json.loads((directory / "cases.json").read_text(encoding="utf-8"))
         layout = tuple(cases["layout"]["chip_modes"])
-        circuits = mesh.computed_circuits(RUNS / name)
+        circuits = mesh.computed_circuits(directory)
         if len(circuits) != len(cases["settings"]):
             raise ValueError(f"{run}: {len(circuits)} computed circuits for {len(cases['settings'])} settings")
         for index, (setting, text) in enumerate(zip(cases["settings"], circuits, strict=True)):
@@ -114,6 +118,20 @@ def compiled_section() -> list[dict[str, Any]]:
 
 LABELS = ("+Z", "-Z", "+X", "-X", "+Y", "-Y")
 BLOCKS = {"job-02": "A", "job-02-replay": "A", "job-03": "B"}
+DEFAULT_RUNS = {run: (RUNS / name, BLOCKS[run]) for run, name in RUN_NAMES.items()}
+
+
+def representatives(runs: Mapping[str, tuple[Path, str]]) -> dict[str, str]:
+    """The first run of each block, whose returned meshes stand for the block (a block's other runs replay its
+    seeds)."""
+    out: dict[str, str] = {}
+    for run, (_, block) in runs.items():
+        out.setdefault(block, run)
+    if sorted(out) != ["A", "B"]:
+        raise ValueError(f"the selected runs form blocks {sorted(out)}, not A and B")
+    return out
+
+
 TAU_GRID = np.linspace(0.0, 0.25, 1001)
 FDR_Q = 0.10
 ALPHA_ONE_SIDED = 0.05
@@ -124,48 +142,20 @@ DROPOUTS = (0, 1, 2, 3)
 JOB_COUNTS = (2, 4)
 
 
-def iterations() -> list[dict[str, Any]]:
-    """Every retained iteration with its run and block."""
+def iterations(runs: Mapping[str, tuple[Path, str]]) -> list[dict[str, Any]]:
+    """Every retained iteration of the selected runs with its run key and block."""
     rows: list[dict[str, Any]] = []
-    for run, name in RUN_NAMES.items():
-        analysis = json.loads((RUNS / name / "analysis.json").read_text(encoding="utf-8"))
-        rows.extend({**row, "run": run, "block_of_seed": BLOCKS[run]} for row in analysis["iterations"])
+    for run, (directory, block) in runs.items():
+        analysis = json.loads((directory / "analysis.json").read_text(encoding="utf-8"))
+        rows.extend({**row, "run": run, "block_of_seed": block} for row in analysis["iterations"])
     return rows
 
 
 def block_counts(rows: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, dict[str, float]]]:
-    """Per input and block: correct, accepted, samples and shots summed over the block's runs (job-02 pools with its
-    exact replay, which returned the same six meshes)."""
-    out: dict[str, dict[str, dict[str, float]]] = {label: {} for label in LABELS}
-    for row in rows:
-        cell = out[row["label"]].setdefault(
-            row["block_of_seed"],
-            {"correct": 0, "accepted": 0, "samples": 0, "shots": 0, "seed": row["compilation_seed"]},
-        )
-        if cell["seed"] != row["compilation_seed"]:
-            raise ValueError(f"{row['label']} block {row['block_of_seed']} mixes compilation seeds")
-        for key, field in (("correct", "correct"), ("accepted", "accepted"), ("samples", "samples")):
-            cell[key] += row[field]
-        cell["shots"] += row["nb_shots_used"]
-        for reason in tr.REJECTIONS:
-            cell[f"rejected_{reason}"] = cell.get(f"rejected_{reason}", 0) + row["rejected"][reason]
-    return out
+    return ms.block_counts(rows, LABELS, tr.REJECTIONS)
 
 
-def exact_permutation_r(x: np.ndarray, y: np.ndarray, negative: bool) -> tuple[float, float]:
-    """Pearson r of paired values and its exact one-sided permutation p-value over all pairings: P(r_perm <= r) for a
-    predicted negative association, P(r_perm >= r) for a positive one."""
-    import itertools
-
-    def pearson(a: np.ndarray, b: np.ndarray) -> float:
-        a, b = a - a.mean(), b - b.mean()
-        return float(a @ b / np.sqrt((a @ a) * (b @ b)))
-
-    observed = pearson(x, y)
-    values = [pearson(x, np.asarray(perm)) for perm in itertools.permutations(y)]
-    if negative:
-        return observed, float(np.mean([v <= observed + 1e-12 for v in values]))
-    return observed, float(np.mean([v >= observed - 1e-12 for v in values]))
+exact_permutation_r = ms.exact_permutation_r
 
 
 def acceptance_section(counts: Mapping[str, Mapping[str, Mapping[str, float]]]) -> dict[str, Any]:
@@ -220,148 +210,23 @@ def acceptance_section(counts: Mapping[str, Mapping[str, Mapping[str, float]]]) 
     }
 
 
-def normal_cdf(x: Any) -> Any:
-    from scipy.special import ndtr
-
-    return ndtr(x)
-
-
 def shrinkage(counts: Mapping[str, Mapping[str, Mapping[str, float]]]) -> dict[str, Any]:
-    """Normal-normal hierarchical shrinkage of the six block A minus block B correctness differences.
-
-    The A and B seeds of an input are exchangeable draws of the transpiler, so the prior on the true difference is
-    centered at zero: mu_i ~ N(0, tau^2), d_i | mu_i ~ N(mu_i, s_i^2) with s_i the binomial standard error. Tweedie's
-    formula for this prior gives E[mu_i | d_i, tau] = C_i d_i with C_i = tau^2 / (tau^2 + s_i^2) (Efron 2011, Eqs. 3.7
-    and 3.8). tau carries a uniform prior on TAU_GRID, so its estimation error enters every posterior moment, the
-    hierarchical counterpart of Efron's Eq. 7.26 regret term. The expected winner-minus-loser gap of input i is
-    E[sign(d_i) mu_i | data] = |d_i| E[C_i | data]."""
-    d = np.empty(len(LABELS))
-    s = np.empty(len(LABELS))
-    for i, label in enumerate(LABELS):
-        a, b = counts[label]["A"], counts[label]["B"]
-        pa, pb = a["correct"] / a["accepted"], b["correct"] / b["accepted"]
-        d[i] = pa - pb
-        s[i] = np.sqrt(pa * (1 - pa) / a["accepted"] + pb * (1 - pb) / b["accepted"])
-    z = d / s
-    n = len(LABELS)
-    variance = TAU_GRID[:, None] ** 2 + s[None, :] ** 2
-    log_post = np.sum(-0.5 * np.log(variance) - d[None, :] ** 2 / (2 * variance), axis=1)
-    weights = np.exp(log_post - log_post.max())
-    weights /= weights.sum()
-    factor = TAU_GRID[:, None] ** 2 / variance
-    mean_factor = weights @ factor
-    gap = np.abs(d) * mean_factor
-    gap_second = weights @ (factor * s**2 + factor**2 * d**2)
-    sign_right = weights @ normal_cdf(np.sqrt(factor) * np.abs(d) / s)
-    cdf = np.cumsum(weights)
-    p_values = 2 * (1 - normal_cdf(np.abs(z)))
-    order = np.argsort(p_values)
-    passed = [p_values[k] <= FDR_Q * (rank + 1) / n for rank, k in enumerate(order)]
-    determined = max((rank + 1 for rank, ok in enumerate(passed) if ok), default=0)
-    return {
-        "prior": "mu_i ~ N(0, tau^2), tau uniform on [0, 0.25]",
-        "inputs": {
-            label: {
-                "block_a": dict(counts[label]["A"]),
-                "block_b": dict(counts[label]["B"]),
-                "difference": float(d[i]),
-                "standard_error": float(s[i]),
-                "z": float(z[i]),
-                "two_sided_p": float(p_values[i]),
-                "winner_block": "A" if d[i] > 0 else "B",
-                "shrinkage_factor": float(mean_factor[i]),
-                "expected_gap": float(gap[i]),
-                "gap_posterior_sd": float(np.sqrt(gap_second[i] - gap[i] ** 2)),
-                "probability_winner_is_better": float(sign_right[i]),
-                "sign_determined_directional_bh": bool(i in {int(k) for k in order[:determined]}),
-            }
-            for i, label in enumerate(LABELS)
-        },
-        "chi_square_on_6": float(np.sum(z**2)),
-        "james_stein_factor": float(max(0.0, 1 - (n - 2) / np.sum(z**2))),
-        "tau_mle": float(TAU_GRID[np.argmax(log_post)]),
-        "tau_posterior_mean": float(weights @ TAU_GRID),
-        "tau_90_interval": [float(TAU_GRID[np.searchsorted(cdf, 0.05)]), float(TAU_GRID[np.searchsorted(cdf, 0.95)])],
-        "mean_expected_gap": float(gap.mean()),
-        "directional_bh_q": FDR_Q,
-        "signs_determined": determined,
-        "_draw": {"d": d, "s": s, "weights": weights},
-    }
+    return ms.contrast_shrinkage(counts, LABELS, TAU_GRID, FDR_Q)
 
 
 def replay_power(counts: Mapping[str, Any], shrink: Mapping[str, Any], seed: np.random.SeedSequence) -> dict[str, Any]:
-    """Posterior-predictive power of the winner-and-loser replay.
-
-    Each trial draws tau from its posterior, each input's true A-minus-B difference from its conditional posterior
-    N(C d, C s^2), and sets the winner and loser correctness at the input's observed two-block mean plus and minus
-    half the signed gap. Each mesh runs REPLAY_SAMPLES samples per job pair at its observed acceptance per sample, so
-    accepted counts and correct counts are binomial. The primary statistic is the summed contrast over the kept
-    inputs divided by its binomial standard error, one-sided at ALPHA_ONE_SIDED. A dropout removes inputs whose seed
-    returns a different mesh after the recalibration, as the preregistered mismatch branch does. Trials draw every
-    input first and evaluate as numpy arrays, so the record depends only on the seed."""
-    rng = np.random.default_rng(seed)
-    draw = shrink["_draw"]
-    d, s, weights = draw["d"], draw["s"], draw["weights"]
-    sign = np.sign(d)
-    mean_level = np.empty(len(LABELS))
-    accept = np.empty((2, len(LABELS)))
-    for i, label in enumerate(LABELS):
-        a, b = counts[label]["A"], counts[label]["B"]
-        mean_level[i] = 0.5 * (a["correct"] / a["accepted"] + b["correct"] / b["accepted"])
-        winner, loser = (a, b) if d[i] > 0 else (b, a)
-        accept[0, i] = winner["accepted"] / winner["samples"]
-        accept[1, i] = loser["accepted"] / loser["samples"]
-    tau = TAU_GRID[rng.choice(len(TAU_GRID), size=TRIALS, p=weights)]
-    factor = tau[:, None] ** 2 / (tau[:, None] ** 2 + s[None, :] ** 2)
-    true_difference = factor * d + np.sqrt(factor) * s * rng.standard_normal((TRIALS, len(LABELS)))
-    gap = sign * true_difference
-    tau_mle = TAU_GRID[int(np.argmax(weights))]
-    factor_mle = tau_mle**2 / (tau_mle**2 + s**2)
-    gap_mle = sign * (factor_mle * d + np.sqrt(factor_mle) * s * rng.standard_normal((TRIALS, len(LABELS))))
-    order = rng.random((TRIALS, len(LABELS))).argsort(axis=1)
-    uniforms = [rng.random((TRIALS, len(LABELS))) for _ in range(4 * len(JOB_COUNTS))]
-    out: dict[str, Any] = {
-        "seed_spawn_key": list(seed.spawn_key),
-        "trials": TRIALS,
-        "samples_per_iteration": REPLAY_SAMPLES,
-        "designs": [],
-    }
-    for j, jobs in enumerate(JOB_COUNTS):
-        samples = REPLAY_SAMPLES * jobs // 2
-        u = uniforms[4 * j : 4 * j + 4]
-        from scipy.stats import binom
-
-        scenarios = (
-            ("persistent mesh error", gap),
-            ("persistent mesh error, tau fixed at its maximum", gap_mle),
-            ("no persistent mesh error", 0.0 * gap),
-        )
-        for scenario, effect in scenarios:
-            p_win = np.clip(mean_level + effect / 2, 0.0, 1.0)
-            p_lose = np.clip(mean_level - effect / 2, 0.0, 1.0)
-            n_win = np.maximum(binom.ppf(u[0], samples, accept[0]), 1)
-            n_lose = np.maximum(binom.ppf(u[1], samples, accept[1]), 1)
-            c_win = binom.ppf(u[2], n_win, p_win)
-            c_lose = binom.ppf(u[3], n_lose, p_lose)
-            f_win, f_lose = c_win / n_win, c_lose / n_lose
-            contrast = f_win - f_lose
-            variance = f_win * (1 - f_win) / n_win + f_lose * (1 - f_lose) / n_lose
-            for dropped in DROPOUTS:
-                keep = order >= dropped
-                total = np.where(keep, contrast, 0.0).sum(axis=1)
-                spread = np.sqrt(np.where(keep, variance, 0.0).sum(axis=1))
-                statistic = np.divide(total, spread, out=np.zeros_like(total), where=spread > 0)
-                kept = len(LABELS) - dropped
-                out["designs"].append(
-                    {
-                        "jobs": jobs,
-                        "scenario": scenario,
-                        "pairs_dropped": dropped,
-                        "power": float(np.mean(statistic > Z_ONE_SIDED)),
-                        "mean_true_gap_kept": float(np.mean(np.where(keep, effect, 0.0).sum(axis=1) / kept)),
-                    }
-                )
-    return out
+    return ms.replay_power(
+        counts,
+        shrink,
+        seed,
+        labels=LABELS,
+        tau_grid=TAU_GRID,
+        trials=TRIALS,
+        samples_per_iteration=REPLAY_SAMPLES,
+        job_counts=JOB_COUNTS,
+        dropouts=DROPOUTS,
+        z_critical=Z_ONE_SIDED,
+    )
 
 
 def replay_budget(counts: Mapping[str, Any]) -> dict[str, Any]:
@@ -420,15 +285,14 @@ def source_score(
     return {"read": read, "reading": reading, "label": setting["label"], "overlap": overlap, **scores}
 
 
-def source_shift_section() -> dict[str, Any]:
+def source_shift_section(directory: Path) -> dict[str, Any]:
     """Predicted conditional fidelity of the six teleportation inputs at each calibration read, from the source model
     alone (no mesh error), under two readings of the processor record's HOM field: Perceval's own convention, which
     maps it to the source-model overlap (perceval.utils.noise_model, perfs "HOM (%)" / 100), and a raw HOM visibility,
     inverted through the same source model at the read's g2 (Ollivier et al. 2021, Eq. 1, separate the overlap from the
     multiphoton term). The spread between reads bounds the chip-wide correctness change the source explains."""
-    name = RUN_NAMES["job-02"]
-    cases = json.loads((RUNS / name / "cases.json").read_text(encoding="utf-8"))
-    circuit = json.loads((RUNS / name / "circuit.json").read_text(encoding="utf-8"))
+    cases = json.loads((directory / "cases.json").read_text(encoding="utf-8"))
+    circuit = json.loads((directory / "circuit.json").read_text(encoding="utf-8"))
     layout = tuple(cases["layout"]["chip_modes"])
     overlaps = {
         read: {"provider convention": f["hom"], "raw visibility": overlap_for_visibility(f["hom"], f["g2"])}
@@ -476,24 +340,25 @@ def noisy_unitary(arch: Sequence[Any], phases: np.ndarray, dphi: np.ndarray, dth
     return u
 
 
-def robustness_row(
-    item: tuple[str, str, str, Mapping[str, Any], tuple[int, ...], np.ndarray, np.ndarray],
-) -> dict[str, Any]:
-    """Mean conditional fidelity and accepted probability of one mesh under replicate error draws of one class."""
-    label, run, circuit_text, _, layout, dphi, dtheta = item
+@functools.lru_cache(maxsize=64)
+def decoded_mesh(circuit_text: str) -> tuple[Any, np.ndarray]:
+    """A returned mesh's architecture and heater phases, decoded once per worker process."""
     elements = mesh.decode(circuit_text)
     arch = mesh.run_architecture(elements)
-    phases = np.asarray(mesh.mesh_phases(arch, elements))
-    source = tr.source_state(layout)
-    fidelity, accepted = [], []
-    for k in range(dphi.shape[0]):
-        acc, cor = tr.scored(label, clicks_of(noisy_unitary(arch, phases, dphi[k], dtheta[k]), source), layout)
-        accepted.append(acc)
-        fidelity.append(cor / acc if acc > 0 else 0.0)
-    return {"label": label, "run": run, "fidelity": float(np.mean(fidelity)), "accepted": float(np.mean(accepted))}
+    return arch, np.asarray(mesh.mesh_phases(arch, elements))
 
 
-def structural_section(seed_sequence: np.random.SeedSequence) -> dict[str, Any]:
+def robustness_replicate(item: tuple[str, str, tuple[int, ...], np.ndarray, np.ndarray]) -> tuple[float, float]:
+    """Accepted probability and conditional fidelity of one mesh under one replicate draw of one error class."""
+    label, circuit_text, layout, dphi, dtheta = item
+    arch, phases = decoded_mesh(circuit_text)
+    acc, cor = tr.scored(label, clicks_of(noisy_unitary(arch, phases, dphi, dtheta), tr.source_state(layout)), layout)
+    return acc, cor / acc if acc > 0 else 0.0
+
+
+def structural_section(
+    seed_sequence: np.random.SeedSequence, runs: Mapping[str, tuple[Path, str]], blocks: Mapping[str, str]
+) -> dict[str, Any]:
     """Each mesh's sensitivity to the error classes the compiler does not model.
 
     The returned meshes are exact against the compiler's own coupler angles (the compiled section), so the
@@ -506,11 +371,11 @@ def structural_section(seed_sequence: np.random.SeedSequence) -> dict[str, Any]:
     before defining them, so their test on these meshes is not blind, and the replay is their first fresh test."""
     rng = np.random.default_rng(seed_sequence)
     items_meta = []
-    for run in ("job-02", "job-03"):
-        name = RUN_NAMES[run]
-        cases = json.loads((RUNS / name / "cases.json").read_text(encoding="utf-8"))
+    for run in (blocks["A"], blocks["B"]):
+        directory = runs[run][0]
+        cases = json.loads((directory / "cases.json").read_text(encoding="utf-8"))
         layout = tuple(cases["layout"]["chip_modes"])
-        for setting, text in zip(cases["settings"], mesh.computed_circuits(RUNS / name), strict=True):
+        for setting, text in zip(cases["settings"], mesh.computed_circuits(directory), strict=True):
             items_meta.append((setting["label"], run, text, setting, layout))
     arch0 = mesh.run_architecture(mesh.decode(items_meta[0][2]))
     n_phase = sum(1 for kind, _, _ in arch0 if kind == "ps")
@@ -522,14 +387,35 @@ def structural_section(seed_sequence: np.random.SeedSequence) -> dict[str, Any]:
         "coupler_sigma_rad": COUPLER_SIGMA,
         "replicates": NOISE_REPLICATES,
     }
+    # Every (mesh, replicate) pair is independent, so the pool maps over all of them; each mesh's replicate scores
+    # then average in replicate order.
     for name, (dphi, dtheta) in (("heater", heater), ("coupler", coupler)):
-        rows = ordered_map(robustness_row, [(*meta, dphi, dtheta) for meta in items_meta], min_items=1)
+        work = [
+            (label, text, layout, dphi[k], dtheta[k])
+            for label, _, text, _, layout in items_meta
+            for k in range(NOISE_REPLICATES)
+        ]
+        scores = ordered_map(robustness_replicate, work, min_items=1)
+        rows = []
+        for m, (label, run, *_rest) in enumerate(items_meta):
+            block = scores[m * NOISE_REPLICATES : (m + 1) * NOISE_REPLICATES]
+            rows.append(
+                {
+                    "label": label,
+                    "run": run,
+                    "fidelity": float(np.mean([f for _, f in block])),
+                    "accepted": float(np.mean([a for a, _ in block])),
+                }
+            )
         out[name] = rows
     return out
 
 
 def structural_test(
-    structural: Mapping[str, Any], counts: Mapping[str, Any], compiled: Sequence[Mapping[str, Any]]
+    structural: Mapping[str, Any],
+    counts: Mapping[str, Any],
+    compiled: Sequence[Mapping[str, Any]],
+    blocks: Mapping[str, str],
 ) -> dict[str, Any]:
     """Within each input, block B minus block A of each predictor against B minus A of observed correctness, with
     the exact one-sided permutation p in each predictor's physical direction: predicted fidelity up means observed
@@ -544,11 +430,13 @@ def structural_test(
     result: dict[str, Any] = {}
     for name in ("heater", "coupler"):
         by = {(row["label"], row["run"]): row for row in structural[name]}
-        delta = np.asarray([by[(label, "job-03")]["fidelity"] - by[(label, "job-02")]["fidelity"] for label in LABELS])
+        delta = np.asarray(
+            [by[(label, blocks["B"])]["fidelity"] - by[(label, blocks["A"])]["fidelity"] for label in LABELS]
+        )
         r, p = exact_permutation_r(delta, observed, negative=False)
         result[f"{name}_noise_fidelity"] = {"delta_b_minus_a": delta.tolist(), "r": r, "one_sided_p": p}
     power = {(row["label"], row["run"]): row["heater_phase_rad"] for row in compiled}
-    delta = np.asarray([power[(label, "job-03")] - power[(label, "job-02")] for label in LABELS])
+    delta = np.asarray([power[(label, blocks["B"])] - power[(label, blocks["A"])] for label in LABELS])
     r, p = exact_permutation_r(delta, observed, negative=True)
     result["heater_phase_sum"] = {"delta_b_minus_a": delta.tolist(), "r": r, "one_sided_p": p}
     result["observed_delta_b_minus_a"] = observed.tolist()
@@ -583,16 +471,26 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     parser.add_argument("--out", type=Path, required=True)
     qrng_seeds.add_seed_argument(parser, "--seed", help="power-simulation seed, qrng:<draw>#<index>")
+    parser.add_argument(
+        "--run",
+        nargs=3,
+        action="append",
+        metavar=("KEY", "RUN_DIR", "BLOCK"),
+        help="a retained run, its key in the record and its block (A or B); repeat per run. The first run of each "
+        "block stands for its meshes. Default: the job-02, job-02 replay and job-03 teleportation runs",
+    )
     args = parser.parse_args()
     if args.seed is None:
         parser.error("--seed is required")
-    counts = block_counts(iterations())
-    shift = source_shift_section()
+    runs = {key: (Path(directory), block) for key, directory, block in args.run} if args.run else DEFAULT_RUNS
+    blocks = representatives(runs)
+    counts = block_counts(iterations(runs))
+    shift = source_shift_section(runs[blocks["A"]][0])
     shrink = shrinkage(counts)
     power_seed, noise_seed = np.random.SeedSequence(args.seed).spawn(2)
     power = replay_power(counts, shrink, power_seed)
-    compiled = compiled_section()
-    structural = structural_section(noise_seed)
+    compiled = compiled_section(runs)
+    structural = structural_section(noise_seed, runs, blocks)
     shrink.pop("_draw")
     record = {
         "schema": "belenos-best-mesh-first-principles-v1",
@@ -604,7 +502,7 @@ def main() -> int:
         ),
         "compiled": compiled,
         "structural": structural,
-        "structural_test": structural_test(structural, counts, compiled),
+        "structural_test": structural_test(structural, counts, compiled, blocks),
         "shrinkage": shrink,
         "replay_power": power,
         "acceptance": acceptance_section(counts),

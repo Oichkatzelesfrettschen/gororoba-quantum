@@ -23,7 +23,7 @@ question here is whether that design measures something worth its credits.
 
 Block A pools job-02 with its exact replay (`...-job-02-replay`), which used the same seeds and meshes.
 
-| Input | Block A correct / accepted | Block B correct / accepted | z (B - A) | Expected gap after shrinkage | Winner sign determined |
+| Input | Block A correct / accepted | Block B correct / accepted | z (A - B) | Expected gap after shrinkage | Winner sign determined |
 |---|---|---|---|---|---|
 | +Z | 255 / 331 (0.770) | 85 / 97 (0.876) | -2.61 | 0.074 | yes |
 | -Z | 359 / 397 (0.904) | 231 / 271 (0.852) | +1.99 | 0.043 | yes |
