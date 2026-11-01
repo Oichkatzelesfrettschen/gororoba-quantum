@@ -5,7 +5,6 @@ fallback under GOROROBA_PINS_REQUIRED=1.
 
 from __future__ import annotations
 
-import json
 import re
 import sys
 from collections.abc import Callable
@@ -14,6 +13,7 @@ from tempfile import TemporaryDirectory
 from typing import Any
 from unittest.mock import patch
 
+import manifest
 import pinned_tool
 import pins
 
@@ -280,7 +280,7 @@ def test_each_mypy_invocation_writes_its_own_cache() -> None:
 def test_gate_lint_tools_are_pinned() -> None:
     # A bare ruff or mypy resolves through PATH, where a host install of
     # another release reports its own defects as gate failures.
-    gates = json.loads((pins.ROOT / "ci/gates.json").read_text(encoding="utf-8"))["gates"]
+    gates = manifest.all_gates(pins.ROOT)
     bare = re.compile(r"(?:(?:^|&&|\|\||;|\||\$\(|\bthen|\bxargs)\s*(?:\w+=\S+\s+)*|-m\s+)(?:ruff|mypy)\b")
     unpinned = [gate["name"] for gate in gates if bare.search(gate["cmd"])]
     if unpinned:

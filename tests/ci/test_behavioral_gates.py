@@ -8,11 +8,11 @@ group gates tests/ci/test_self_test_gates.py checks.
 
 from __future__ import annotations
 
-import json
 import re
 import shlex
 from pathlib import Path
 
+import manifest
 import pytest
 
 pytestmark = pytest.mark.audit
@@ -24,7 +24,7 @@ SPLIT = re.compile(r"core-behavior-\d\d")
 
 
 def gates() -> dict[str, dict[str, str]]:
-    return {gate["name"]: gate for gate in json.loads((ROOT / "ci/gates.json").read_text())["gates"]}
+    return {name: gate for name, (_, gate) in manifest.entries(ROOT).items()}
 
 
 def arguments(gate: dict[str, str]) -> list[str]:

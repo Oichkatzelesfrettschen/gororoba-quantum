@@ -7,10 +7,10 @@ for gates core-record-check-NN.
 from __future__ import annotations
 
 import importlib.util
-import json
 import re
 from pathlib import Path
 
+import manifest
 import pytest
 
 pytestmark = pytest.mark.audit
@@ -31,7 +31,7 @@ def test_each_group_has_one_gate(module: str, table: str, prefix: str) -> None:
     loaded = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(loaded)
     groups = {row[-1] for row in getattr(loaded, table)}
-    gates = json.loads((ROOT / "ci/gates.json").read_text())["gates"]
+    gates = manifest.all_gates(ROOT)
     selected: dict[int, list[str]] = {}
     for gate in gates:
         if module not in gate["cmd"] or gate["name"] == "core-615":

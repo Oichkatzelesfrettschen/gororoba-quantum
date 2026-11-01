@@ -14,6 +14,7 @@ from tempfile import TemporaryDirectory
 from typing import Any
 from unittest import mock
 
+import manifest
 import pytest
 import runner_image_records as records
 
@@ -211,8 +212,7 @@ def test_write_receipts_only_the_files_the_container_wrote(tmp_path: Path) -> No
 
 
 def test_every_replayed_record_is_declared_bound_float_free_or_exempt() -> None:
-    gates = json.loads((ROOT / "ci" / "gates.json").read_text())["gates"]
-    found = records.replay_problems(gates, records.read())
+    found = records.replay_problems(manifest.all_gates(ROOT), records.read())
     if found:
         raise AssertionError("\n".join(found))
 

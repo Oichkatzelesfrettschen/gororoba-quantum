@@ -27,6 +27,7 @@ RUNNER_FILES = (
     "ci/gate_inputs.py",
     "ci/gate_ledger.py",
     "ci/host_identity.py",
+    "ci/manifest.py",
     "ci/read_trace/sitecustomize.py",
     "ci/pins.py",
     "ci/requirements-replay.txt",

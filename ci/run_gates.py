@@ -1,4 +1,7 @@
-"""Run the repository gates listed in ci/gates.json, keep-going.
+"""Run the repository gates listed in ci/gates.json, or in the manifest --manifest names, keep-going.
+
+ci/gates.json lists what every pull request runs; ci/replays.json lists the replays and long checks that run on
+demand with ``--manifest ci/replays.json`` (ci/manifest.py is the only reader of both files).
 
 Each gate declares a shell command, working directory and measured duration.
 Execution shares detected affinity/cgroup CPU slots across concurrent gates:
@@ -59,6 +62,7 @@ from typing import Any
 import gate_inputs
 import gate_ledger
 import host_identity
+import manifest
 import pins
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -192,9 +196,10 @@ def select(
     tier: str,
     max_seconds: float | None = None,
     changed: list[str] | None = None,
+    listing: str = manifest.GATES,
 ) -> list[dict[str, Any]]:
-    """The gates of the tree at root in its ci/gates.json order, limited to tier and measured seconds."""
-    gates: list[dict[str, Any]] = json.loads((root / "ci" / "gates.json").read_text())["gates"]
+    """The gates of the tree at root in the file order of the manifest listing, limited to tier and measured seconds."""
+    gates = manifest.gates(root, listing)
     for gate in gates:
         if gate.get("runtime") is not None and gate["runtime"] not in REPLAY_INTERPRETERS:
             raise SystemExit(f"{gate['name']}: unregistered historical runtime")
@@ -420,6 +425,12 @@ def execute(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--manifest",
+        choices=manifest.MANIFESTS,
+        default=manifest.GATES,
+        help="the gate list to run: ci/gates.json (every pull request) or ci/replays.json (on demand)",
+    )
     parser.add_argument("--list", action="store_true", help="print the selected gates without running them")
     parser.add_argument(
         "--tier",
@@ -478,7 +489,7 @@ def main(argv: list[str] | None = None) -> int:
     if arguments.affected_by is not None and changed is not None:
         parser.error("--affected-by and --changed-files select differently; pass one")
     tier = "full" if arguments.affected_by is not None else arguments.tier
-    gates = select(ROOT, tier, arguments.max_seconds, changed)
+    gates = select(ROOT, tier, arguments.max_seconds, changed, arguments.manifest)
     if arguments.affected_by is not None:
         edited, listed = name_status(arguments.affected_by.read_bytes())
         traced = gate_ledger.load(arguments.affected_ledger) if arguments.affected_ledger is not None else None
@@ -504,7 +515,7 @@ def main(argv: list[str] | None = None) -> int:
         for gate in audit_only:
             print(f"AUDIT-ONLY {gate['name']}  a pr.yml job runs this command")
         print(f"affected: {len(reached)} gates reached by {len(edited)} changed paths, {len(gates)} selected")
-    selected = gate_inputs.expand_cases(ROOT, gates)
+    selected = manifest.expand_cases(ROOT, gates)
     if arguments.gates is not None:
         named = {name for name in arguments.gates.split(",") if name}
         selected = [gate for gate in selected if gate["name"] in named or gate.get("parent") in named]

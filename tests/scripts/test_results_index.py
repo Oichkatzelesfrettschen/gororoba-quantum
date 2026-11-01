@@ -36,6 +36,7 @@ class _Context:
             "ibm": _Provider({IBM_RUN: facts}, [{"job_id": "ibm-job", "run": IBM_RUN}]),
             "quandela": _Provider({QD_RUN: facts}),
         }
+        self.manifests = {"core-1": "ci/replays.json"}
 
 
 def _write(path: Path, value: object) -> None:
@@ -105,6 +106,11 @@ def test_joins_runs_jobs_acquisitions_and_claims(index: results_index.Index) -> 
         raise RuntimeError("a Kaggle kernel reference resolves to every run that pushed it")
     if sorted(row["path"] for row in index.claim("claim-a")["runs"]) != sorted([IBM_RUN, QD_RUN]):
         raise RuntimeError("a claim resolves to the runs of its acquisitions")
+    if index.claim("claim-a")["gate_manifests"] != {"core-1": "ci/replays.json"}:
+        raise RuntimeError("a claim names the manifest that lists each cited gate")
+    index.gate_manifests.clear()
+    if index.claim("claim-a")["gate_manifests"] != {"core-1": "unlisted"}:
+        raise RuntimeError("a cited gate that no manifest lists reads unlisted")
     bare = index.claim("claim-bare")
     if bare["runs"] or bare["evidence"] or bare["gates"] or bare["depends_on"] or bare["documents"]:
         raise RuntimeError(f"a claim omitting its optional fields reads them empty: {bare}")

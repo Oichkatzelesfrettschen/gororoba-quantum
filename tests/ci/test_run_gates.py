@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import patch
 
-import gate_inputs
+import manifest as manifests
 import pytest
 import run_gates
 
@@ -59,10 +59,10 @@ def runner(root: Path, **variables: str | None) -> Iterator[io.StringIO]:
 
 def test_gate_names_are_unique() -> None:
     # run_gates selects and reports gates by name, so two gates of one name make a shard result ambiguous.
-    names = [gate["name"] for gate in json.loads((ROOT / "ci/gates.json").read_text())["gates"]]
+    names = [gate["name"] for relative in manifests.MANIFESTS for gate in manifests.gates(ROOT, relative)]
     duplicates = sorted({name for name in names if names.count(name) > 1})
     if duplicates:
-        raise AssertionError(f"ci/gates.json names more than one gate {', '.join(duplicates)}")
+        raise AssertionError(f"the gate manifests name more than one gate {', '.join(duplicates)}")
 
 
 def test_pool_uses_every_cpu() -> None:
@@ -124,6 +124,19 @@ def test_requires_names_the_variable_that_forces_the_live_path(root: Path, expor
         raise AssertionError(f"GOROROBA_QI_REQUIRED exported={exported} gave status {status}:\n{output.getvalue()}")
 
 
+def test_manifest_option_runs_the_replay_manifest(root: Path) -> None:
+    manifest(root, [{"name": "pull-request", "cwd": ".", "cmd": "true", "seconds": 1.0}])
+    (root / "ci/replays.json").write_text(json.dumps({"gates": [{"name": "replay", "cwd": ".", "cmd": "true"}]}))
+
+    def listed(*options: str) -> list[str]:
+        with runner(root) as output:
+            run_gates.main([*options, "--list"])
+        return [line.split("\t", 1)[0] for line in output.getvalue().splitlines()]
+
+    if listed() != ["pull-request"] or listed("--manifest", "ci/replays.json") != ["replay"]:
+        raise AssertionError(f"--manifest chose {listed()} and {listed('--manifest', 'ci/replays.json')}")
+
+
 def test_gates_selects_by_name(root: Path) -> None:
     # --gates keeps the named gates of the tier and ignores a name the tree lacks.
     manifest(root, LISTED + QI)
@@ -141,8 +154,9 @@ def test_malformed_requires_is_refused(root: Path, malformed: Any) -> None:
         run_gates.select(root, "pr")
 
 
-def test_repository_manifest_selects() -> None:
-    run_gates.select(ROOT, "full")
+@pytest.mark.parametrize("listing", manifests.MANIFESTS)
+def test_repository_manifest_selects(listing: str) -> None:
+    run_gates.select(ROOT, "full", listing=listing)
 
 
 def test_historical_selection_needs_no_current_runtime(root: Path, tmp_path: Path) -> None:
@@ -249,8 +263,8 @@ def test_report_pending_writes_the_step_summary(tmp_path: Path) -> None:
 
 
 def test_repository_claims_cite_existing_gates() -> None:
-    names = {gate["name"] for gate in run_gates.select(ROOT, "full")}
-    expanded = {gate["name"] for gate in gate_inputs.expand_cases(ROOT, run_gates.select(ROOT, "full"))}
+    names = set(manifests.entries(ROOT))
+    expanded = {gate["name"] for gate in manifests.expand_cases(ROOT, manifests.all_gates(ROOT))}
     claims = json.loads((ROOT / "docs/state/research_state.json").read_text())["claims"]
     cited = {name for claim in claims for name in claim.get("gates", {})}
     missing = sorted(cited - names - expanded)
@@ -259,7 +273,7 @@ def test_repository_claims_cite_existing_gates() -> None:
 
 
 def test_audit_lane_gates_leave_the_pull_request_selection() -> None:
-    gates = json.loads((ROOT / "ci/gates.json").read_text())["gates"]
+    gates = manifests.gates(ROOT)
     audit_only = [gate["name"] for gate in gates if gate.get("lane") == "audit"]
     if "core-615" not in audit_only:
         raise AssertionError("the behavioral suite gate carries lane audit")

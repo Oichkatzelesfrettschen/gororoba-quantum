@@ -14,10 +14,11 @@ mutation to fail the check.
 from __future__ import annotations
 
 import argparse
-import json
 import re
 import sys
 from pathlib import Path
+
+import manifest
 
 ROOT = Path(__file__).resolve().parent.parent
 HEX40 = re.compile(r"[0-9a-f]{40}")
@@ -136,7 +137,7 @@ def check(root: Path) -> list[str]:
         for pattern in required:
             if pattern not in listed:
                 errors.append(f"the proofs.yml {event} paths lack {pattern}")
-    excluded = json.loads((root / "ci/gates.json").read_text(encoding="utf-8"))["excluded"]
+    excluded = manifest.read(root, manifest.GATES)["excluded"]
     for name in ("c881_exhaustive", "stiefel_witness"):
         entries = [e for e in excluded if f"docs/evidence/{name}/replay_rocq.sh" in e["cmd"]]
         if len(entries) != 1:

@@ -71,6 +71,7 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import Any, NoReturn
 
+import manifest
 import pins
 from host_identity import identity
 
@@ -255,7 +256,7 @@ def replay_interpreters(explicit: str | None, root: Path, label: str) -> tuple[d
     ran: such gates fail in both trees and would read as shared failures,
     hiding a gate the tree itself breaks.
     """
-    used = {gate.get("runtime") for gate in json.loads((root / "ci/gates.json").read_text())["gates"]}
+    used = {gate.get("runtime") for gate in manifest.gates(root)}
     found: dict[str, str] = {}
     refused: list[str] = []
     for runtime, (variable, _path) in pins.REPLAY_RUNTIMES.items():

@@ -21,10 +21,10 @@ record written by a host interpreter, whose libm and Python build differ from
 the runner's, never enters the ledger. Once the digest moves, ``add`` accepts
 only a set of paths that covers every bound record, so the ledger advances
 to the new image in one step after all of them are rewritten. ``check``
-verifies the ledger and the replay declarations of ci/gates.json; ``id``
+verifies the ledger and the replay declarations of ci/gates.json and ci/replays.json; ``id``
 prints the current digest.
 
-A gate that byte-compares a retained record names it in its ``replays``
+A gate of either manifest (ci/manifest.py) that byte-compares a retained record names it in its ``replays``
 list. ``replay_problems`` requires each gate whose command compares a record
 through ``ci/replay_check.py RETAINED``, ``| cmp - FILE`` or ``--out FILE``
 beside ``--check`` or ``--replay`` to declare that record, each declared
@@ -49,9 +49,10 @@ import time
 from pathlib import Path
 from typing import Any
 
+import manifest
+
 ROOT = Path(__file__).resolve().parent.parent
 LEDGER = ROOT / "ci" / "runner_image_records.json"
-GATES = ROOT / "ci" / "gates.json"
 SCHEMA = "runner-image-records-v1"
 # Receipts live beside the image and its pin venvs, outside every checkout, so a worktree's removal keeps them.
 RECEIPTS = (
@@ -298,7 +299,7 @@ def main(argv: list[str]) -> int:
         if not LEDGER.is_file():
             print(f"{LEDGER.relative_to(ROOT)} is missing")
             return 1
-        found = problems(ledger) + replay_problems(json.loads(GATES.read_text())["gates"], ledger)
+        found = problems(ledger) + replay_problems(manifest.all_gates(ROOT), ledger)
         for line in found:
             print(line)
         return 1 if found else 0

@@ -13,7 +13,7 @@ Subcommands:
   acquisition, backends, job ids and the claims citing it.
 - ``job ID``: the run, acquisition and claims that hold a provider job id.
 - ``claim ID``: a claim's acquisitions, their runs and job ids, its evidence
-  files, documents and gates.
+  files, documents and gates, each gate with the manifest (ci/gates.json or ci/replays.json) that lists it.
 - ``path PATH``: the run, acquisition and claims a repository file belongs to.
 - ``sqlite OUT``: the same relations as SQLite tables at OUT, a path outside
   the repository (default under ``${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum``),
@@ -116,6 +116,7 @@ class Index:
     def __init__(self) -> None:
         self.registry: dict[str, Any] = _json(research_state.REGISTRY)
         context = research_state.Context()
+        self.gate_manifests: dict[str, str] = context.manifests
         self.runs: dict[str, Run] = {}
         for name, provider in context.providers.items():
             for path, facts in provider.runs().items():
@@ -194,6 +195,7 @@ class Index:
             "evidence": [entry["path"] for entry in claim["evidence"]],
             "documents": claim["documents"],
             "gates": claim["gates"],
+            "gate_manifests": {gate: self.gate_manifests.get(gate, "unlisted") for gate in claim["gates"]},
             "runs": runs,
             "depends_on": claim["depends_on"],
         }
@@ -248,8 +250,12 @@ class Index:
                 ((c["id"], e["path"], e["sha256"]) for c in self.claims.values() for e in c["evidence"]),
             ),
             "claim_gates": (
-                "claim TEXT, gate TEXT, role TEXT",
-                ((c["id"], gate, role) for c in self.claims.values() for gate, role in c["gates"].items()),
+                "claim TEXT, gate TEXT, role TEXT, manifest TEXT",
+                (
+                    (c["id"], gate, role, self.gate_manifests.get(gate, "unlisted"))
+                    for c in self.claims.values()
+                    for gate, role in c["gates"].items()
+                ),
             ),
             "claim_dependencies": (
                 "claim TEXT, depends_on TEXT",
