@@ -37,6 +37,13 @@ SCHEMA = "algebra-device-conjectures-v1"
 # parallel.ordered_map keeps item order, so a behavior change in either fails the replay as a fact difference.
 # A freeze binds them by behavior, not by bytes, and leaves them out of the sources.
 EXECUTED_SOURCES = frozenset({"scripts/research_state.py", "gororoba_quantum/parallel.py"})
+# Requirement files pin the interpreter's tools and runtimes. Synthesis imports sympy, cd_core, parallel and
+# plan_records, whose behavior the derived bytes compare, and never the other pinned distributions, so a pin
+# change is provenance: the replay lists it beside drifted prose and fails only when a derived byte changes.
+TOOLING_SOURCES = frozenset({"ci/requirements-ci.txt", "requirements.txt"})
+# Result fields that describe the run that froze a bundle rather than its content; a replay takes them from the
+# retained result.json, so an interpreter patch release or an edit to this producer leaves a frozen bundle valid.
+PROVENANCE_FIELDS = ("producer_sha256", "versions")
 
 
 def require(condition: bool, message: str) -> None:
@@ -214,9 +221,11 @@ def _source_drift(source: dict[str, str]) -> bool:
 
 
 def drifted_prose(manifest: dict[str, Any]) -> list[str]:
-    """The prose sources whose bytes differ from the manifest's binding, or that no longer exist."""
-    prose = sorted(prose_paths(manifest))
-    rows = [source for source in manifest["sources"] if source["path"] in prose]
+    """The prose and tooling sources whose bytes differ from the manifest's binding, or that no longer exist."""
+    unverified = prose_paths(manifest) | TOOLING_SOURCES
+    rows = sorted(
+        (source for source in manifest["sources"] if source["path"] in unverified), key=lambda row: row["path"]
+    )
     return [row["path"] for row, drift in zip(rows, ordered_map(_source_drift, rows), strict=True) if drift]
 
 
@@ -248,8 +257,8 @@ def validate_manifest(manifest: dict[str, Any]) -> None:
         )
         # The predecessor is retained evidence: its manifest keeps its path and bytes.
         _verify_source({"path": predecessor["path"], "sha256": predecessor["manifest_sha256"]})
-    prose = prose_paths(manifest)
-    ordered_map(_verify_source, [row for row in manifest["sources"] if row["path"] not in prose], min_items=1)
+    unverified = prose_paths(manifest) | TOOLING_SOURCES
+    ordered_map(_verify_source, [row for row in manifest["sources"] if row["path"] not in unverified], min_items=1)
     _verify_source(manifest["census"])
     census = json.loads(local_path(manifest["census"]["path"]).read_text())
     require(
@@ -726,6 +735,11 @@ def _comparison_markdown(comparison: dict[str, Any]) -> list[str]:
     ]
 
 
+def with_retained_provenance(result: dict[str, Any], retained: dict[str, Any]) -> dict[str, Any]:
+    """The fresh result with PROVENANCE_FIELDS taken from the retained result, in the fresh key order."""
+    return {key: retained[key] if key in PROVENANCE_FIELDS else value for key, value in result.items()}
+
+
 def render(result: dict[str, Any]) -> str:
     lines = [
         "# Algebra-to-device conjecture synthesis",
@@ -777,7 +791,9 @@ def render(result: dict[str, Any]) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    parser.add_argument(
+        "--manifest", type=Path, help="default: the --check bundle's manifest.json, else " + DEFAULT_MANIFEST.name
+    )
     target = parser.add_mutually_exclusive_group(required=True)
     target.add_argument("--out", type=Path, help="write derived result.json and README.md in this directory")
     target.add_argument("--check", type=Path, help="compare derived bytes without writing")
@@ -789,6 +805,8 @@ def main() -> int:
         "--predecessor", type=Path, help="the manifest --freeze supersedes; the successor goes to a new --manifest"
     )
     args = parser.parse_args()
+    if args.manifest is None:
+        args.manifest = args.check / "manifest.json" if args.check else DEFAULT_MANIFEST
     if args.freeze:
         if args.reason is None or args.predecessor is None:
             parser.error("--freeze requires --reason and --predecessor")
@@ -805,6 +823,8 @@ def main() -> int:
         print("successor manifest frozen; generate derived outputs explicitly")
         return 0
     result = synthesis(load_manifest(args.manifest))
+    if args.check:
+        result = with_retained_provenance(result, json.loads((args.check / "result.json").read_text()))
     outputs = {"result.json": encode(result), "README.md": render(result)}
     destination = args.out or args.check
     if args.check:
@@ -816,7 +836,7 @@ def main() -> int:
             (destination / name).write_text(content)
     print(f"{SCHEMA}: {len(result['proposals'])} proposals; {len(result['acquisitions'])} acquisitions accounted for")
     for path in drifted_prose(load_manifest(args.manifest)):
-        print(f"prose source drifted since the freeze (the next --freeze rebinds it): {path}")
+        print(f"prose or tooling source drifted since the freeze (the next --freeze rebinds it): {path}")
     return 0
 
 
