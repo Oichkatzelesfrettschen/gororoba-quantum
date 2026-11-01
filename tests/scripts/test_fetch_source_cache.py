@@ -65,6 +65,11 @@ def test_documents_checkout_supplies_the_payload(tmp_path: Path) -> None:
         raise AssertionError("an absent documents file answers")
     (documents / "pdf").mkdir(parents=True)
     (documents / "pdf" / "paper-v1.pdf").write_bytes(PAYLOAD)
+    if fetch.documents_loader([documents])(entry) != (404, b""):
+        raise AssertionError("a file without a manifest row answers")
+    (documents / "manifest.tsv").write_text(
+        f"sha256\tbytes\tpath\n{entry['sha256']}\t{len(PAYLOAD)}\tpdf/paper-v1.pdf\n"
+    )
     if fetch.main(["--root", str(root), "--missing", "--from-documents", str(documents)]) != 0:
         raise AssertionError("restore from the documents checkout")
     if fetch.cached_error(root, entry) is not None:
