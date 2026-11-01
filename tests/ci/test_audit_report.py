@@ -7,7 +7,10 @@ from pathlib import Path
 from typing import Any
 
 import audit_report
+import gate_quarantine
+import pytest
 
+QUARANTINE = {"scope": "avx512", "reason": "last-bit drift"}
 SHARD = audit_report.SHARD_SCHEMA
 RECORDS: list[dict[str, Any]] = [
     {"schema": SHARD, "gates": [{"name": "core-1", "status": 0}, {"name": "core-2", "status": 1}]},
@@ -41,7 +44,14 @@ def test_report_names_citing_claims_and_failed_jobs() -> None:
         raise AssertionError(body)
 
 
-def test_an_unloadable_registry_still_lists_the_failing_gates(tmp_path: Path) -> None:
+def test_an_unloadable_registry_still_lists_the_failing_gates(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    manifest = tmp_path / "gates.json"
+    manifest.write_text(
+        json.dumps({"gates": [{"name": "core-9", "cmd": "true", "quarantine": QUARANTINE}]}), encoding="utf-8"
+    )
+    monkeypatch.setattr(gate_quarantine, "GATES", manifest)
     broken = tmp_path / "research_state.json"
     broken.write_text("<<<<<<< conflict", encoding="utf-8")
     shard = tmp_path / "gate-timings.json"
@@ -55,10 +65,12 @@ def test_an_unloadable_registry_still_lists_the_failing_gates(tmp_path: Path) ->
         raise AssertionError(body)
     if audit_report.main(["--run-url", "URL", "--research-state", str(broken), str(shard), str(truncated)]) != 0:
         raise AssertionError("main failed on an unreadable input")
+    if "| `core-9` | avx512 | last-bit drift |" not in capsys.readouterr().out:
+        raise AssertionError("main dropped the quarantine of its manifest")
 
 
 def test_report_lists_quarantined_gates_with_scope_and_reason() -> None:
-    held = {"core-9": {"scope": "avx512", "reason": "last-bit drift"}}
+    held = {"core-9": QUARANTINE}
     body = audit_report.report("URL", [], [RECORDS[0]], STATE, held)
     if "| `core-9` | avx512 | last-bit drift |" not in body:
         raise AssertionError(body)
