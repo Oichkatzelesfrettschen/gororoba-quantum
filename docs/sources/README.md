@@ -14,9 +14,10 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](../SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 50 licensed PDFs and two aliases;
-207 external sources retain citations and optional ignored local reading copies.
-Six licensed original software archives retain upstream notices under
+license evidence. The library publishes licensed PDFs and their aliases, and
+external sources retain citations and optional ignored local reading copies;
+`"$PYTHON" docs/verify_sources.py` prints the current count of each class.
+Licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](../PDF_SHA256SUMS) verifies the published PDF set from the
 repository root with `sha256sum -c docs/PDF_SHA256SUMS`.
@@ -47,7 +48,7 @@ those copies from the registered URLs or from checkouts of the owner's documents
 repositories gororoba-documents-public and gororoba-documents-private, which
 also hold their Markdown transcriptions, and admits a file only when its size
 and SHA-256 match the registry.
-[`reading-copies.md`](reading-copies.md), generated from the registry and
+`reading-copies.md`, rendered on demand and git-ignored ([generated views](../runbooks/generated-views.md)) from the registry and
 [`reading-copy-locations.tsv`](reading-copy-locations.tsv) by
 [`scripts/source_reading_copies.py`](../../scripts/source_reading_copies.py)
 and checked by the gate `sources-reading-copies-index`, links each external PDF

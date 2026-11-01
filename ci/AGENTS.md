@@ -227,15 +227,18 @@ A gate that fails in one audit scope only carries `"quarantine": {"scope":
 `ci/avx512_replay.sh` leaves it out, the audit report lists it with its reason,
 and `tests/ci/test_gate_quarantine.py` fails when a claim cites it.
 The library inventory `docs/state/hypercomplex-libraries` (documented in
-the central Python guide [docs/PYTHON.md](../docs/PYTHON.md)) maps each import
-through the regenerating interpreter's installed distributions, so it is
-written under the system python3, which holds every optional package:
-`PYTHON=python3 python3 scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries`.
-A change that adds a tracked Python file or an import regenerates it in the
-same change. The unmarked tests `test_retained_inventory_*` compare its import
-roots and their projection with the tree, which needs no installed
-distribution, and fail the `tests` check until it does; core-630 resolves the
-distributions in the audit.
+the central Python guide [docs/PYTHON.md](../docs/PYTHON.md)) retains authored
+roles, declared pins, source digests and the host-observed import-root
+mapping; the importing files and unresolved roots of each distribution are
+computed from `git ls-files` and each file's AST at check time
+(`current_imports`), so an import of an already mapped root regenerates
+nothing. An import of a root the mapping lacks fails the unmarked test
+`test_retained_inventory_maps_every_tracked_import_root` and core-630 until
+`GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 "$PYTHON"
+scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries`
+runs under the pinned CI venv extended with the new distribution (the
+regeneration keeps every retained mapping and host version). A change to a
+role, a declared pin or a hashed source regenerates it the same way.
 `parallel.default_threads()` and `workers()`
 share the affinity/quota-bounded `GOROROBA_WORKERS` cap. Spawned pool children
 receive one slot through a child-only initializer, so nested maps and simulator

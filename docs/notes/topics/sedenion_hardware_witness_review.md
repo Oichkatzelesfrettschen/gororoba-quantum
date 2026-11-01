@@ -4,7 +4,7 @@ Historical cutoff: the submit-free dry run of 2026-10-14. The execution
 statements below describe that cutoff. Later measured witnesses are owned by
 the [Kingston findings](../../../results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md)
 and [Tuna-17 experiment account](../quantum_inspire/experiments.md#zero-divisor-witness-on-tuna-17-preregistered).
-The [research registry](../../state/RESEARCH_STATE.md) binds their acquisitions
+The [research registry](../../state/research_state.json) binds their acquisitions
 and raw-analysis digests under the zero-divisor floor, contraction and secondary
 common-response claims.
 

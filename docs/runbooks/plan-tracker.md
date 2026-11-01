@@ -1,7 +1,8 @@
 # Plan tracker
 
 Planning records preserve next actions and evidence across interruptions. The
-[entrance](../state/plans.md) and [complete catalogue](../state/plan-catalogue.md) are generated.
+entrance (`docs/state/plans.md`) and complete catalogue (`docs/state/plan-catalogue.md`) render on demand
+and stay out of Git ([generated views](generated-views.md)).
 JSON under `docs/state/plans/` owns work status. Design prose explains mechanisms; the research registry
 owns scientific claims; provider approval records own execution authority.
 
@@ -83,25 +84,25 @@ before running them.
 ## Verification and concurrent work
 
 ```sh
-"$PYTHON" scripts/plan_tracker.py render --write
+"$PYTHON" scripts/plan_tracker.py render --write   # optional: the git-ignored entrance and catalogue
 "$PYTHON" scripts/plan_tracker.py check
 "$PYTHON" scripts/plan_tracker.py check --base origin/main
 "$PYTHON" scripts/plan_tracker.py review-merge BASE LEFT RIGHT
 ```
 
-`render` alone prints the entrance. `check` validates records, the retained inventory and generated views
-offline. `check --base REF` also holds each plan that the change since the merge base of REF and HEAD closes
+`render` alone prints the entrance. `check` validates records and the retained inventory offline and
+compares no rendered view. `check --base REF` also holds each plan that the change since the merge base of REF and HEAD closes
 or gives a receipt: the newest receipt of the plan and of each step must be fresh at HEAD, and each added
 receipt must name a revision HEAD descends from. A receipt names the commit it observed, so the evidence file
 of an observation can land in the commit after it. Plans the change leaves alone keep the warning-only
 revalidation flag. Gate `core-plan-tracker` runs `check --base origin/main` and names the record directory
-and both views as operands, so a pull request that edits only plan records still selects it. CLI mutations serialize through a worktree-local Git metadata lock and replace each record
+as its operand, so a pull request that edits only plan records still selects it. CLI mutations serialize through a worktree-local Git metadata lock and replace each record
 atomically. Manual editing and CLI mutation of the same record require coordination; manual editors do
 not acquire the CLI lock. Owners record responsibility, not a global task lock.
 
 `review-merge` exits 1 when both branches changed the same record differently, even in disjoint fields.
-Reconcile JSON by hand, regenerate Markdown, then check the combined tree. Cross-plan dependencies also
-receive combined validation. Generated Markdown is a disposable projection. Follow the repository's
+Reconcile JSON by hand, then check the combined tree. Cross-plan dependencies also
+receive combined validation. Generated Markdown is a disposable projection that no merge touches. Follow the repository's
 Codex review and merge procedure; tracker commands perform neither hosted writes nor provider operations.
 
 ## Discovery and migration

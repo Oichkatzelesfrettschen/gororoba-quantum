@@ -30,7 +30,7 @@ Main has 116 claims and 75 registered acquisitions: 15 IBM and 60 Quantum
 Inspire. This integration adds one proposed static-neighbor cross-check,
 for **117 claims and the same 75 acquisitions**. Open-branch additions are
 outside that merged census. The complete acquisition table, including
-failed jobs, remains in the [research state](../../state/RESEARCH_STATE.md).
+failed jobs, remains in the [research state](../../state/research_state.json).
 
 Work for this review consists of source inspection, secondary analysis,
 integration, local compiler checks and repository validation. All hardware

@@ -195,9 +195,13 @@ lives; read it before writing one.
   every reader reaches, never into sibling copies.
 - A new document gets its map row or an inbound link in the same change;
   `scripts/check_markdown_links.py` fails on a broken link or anchor.
-- Retained bytes are immutable: a file a ledger, record or digest binds keeps
-  its path and bytes, and a correction lands in a new document that the old
-  one's map row links.
+- Raw provider data (`raw/<job_id>/`), a record an approval hashes (an
+  approved plan, the `approved_run.sh` comparison record, a submitted case)
+  and a published replay bundle keep their path and bytes, and a correction
+  lands in a new document that the old one's map row links. A derived
+  analysis record or document that a ledger or digest binds is corrected in
+  place, in the change that refreshes the binding ledger or digest, since git
+  keeps its history and no approval or replay identity rests on it.
 - A move runs through `git mv` and updates every reference, ledger and gate
   in the same change. Session-local scratch stays in the ignored `docs/local/`.
 - JSON plan records own work status; run `scripts/plan_tracker.py check`
@@ -209,7 +213,10 @@ lives; read it before writing one.
 ## Reviews and merges
 
 - Codex is the only hosted reviewer, and it reviews only on request: the
-  operator posts the issue comment `@codex review` once, when the PR is a
+  operator posts the issue comment `@codex review` through
+  `scripts/codex_review_request.sh PR`, which refuses a request whose PR diff
+  equals the last reviewed head's or that would open a third round. The
+  operator requests once, when the PR is a
   merge candidate, and again only after a push that changed code in response
   to a finding or to the operator's own review; a clean round with no thread
   followed by green checks admits the merge, and a merge of main or a
@@ -218,7 +225,8 @@ lives; read it before writing one.
   operator answers every thread in one push and asks the owner whether the PR
   merges, because each further round has found new edge cases without
   converging (PR #712 ran eight). Copilot reviews are billed to the owner, so
-  no pull request requests one; when the Codex app reports exhausted
+  no pull request requests one, and `.coderabbit.yaml` keeps CodeRabbit
+  silent; when the Codex app reports exhausted
   code-review quota, the owner decides how the PR proceeds.
 - Reply to each thread's root comment beginning `Fixed in <commit>`,
   `Refuted:` followed by the refuting source line, or `Boundary:` followed by

@@ -11,6 +11,9 @@ selecting its own runs and blocks.
   Benjamini-Hochberg sign decisions (Weinstein and Yekutieli, arXiv 1404.7403, Definition 2).
 - replay_power is the posterior-predictive power of a winner-and-loser replay of the two blocks.
 - exact_permutation_r is Pearson r with its exact one-sided permutation p-value.
+- composition_test is the conditional Monte Carlo test that the two rows of 2 x K count tables share one
+  composition (multivariate hypergeometric reallocation given both margins); two_row_chi_square and
+  adjusted_residuals are its statistic and its per-cell residuals.
 """
 
 from __future__ import annotations
@@ -253,3 +256,63 @@ def replay_power(
     for designs in ordered_map(power_batch, batches, min_items=1):
         out["designs"].extend(designs)
     return out
+
+
+def two_row_chi_square(rows: np.ndarray, totals: np.ndarray) -> np.ndarray:
+    """Pearson chi-square of 2 x K tables whose first rows are ``rows`` (shape (..., K)) and whose column totals are
+    ``totals`` (shape (K,), every entry positive); the second row is totals minus the first."""
+    n = float(totals.sum())
+    first = rows.sum(axis=-1, keepdims=True)
+    expected_first = first * totals / n
+    expected_second = (n - first) * totals / n
+    second = totals - rows
+    out: np.ndarray = np.sum((rows - expected_first) ** 2 / expected_first, axis=-1) + np.sum(
+        (second - expected_second) ** 2 / expected_second, axis=-1
+    )
+    return out
+
+
+def adjusted_residuals(table: np.ndarray) -> np.ndarray:
+    """Adjusted standardized residuals (O - E) / sqrt(E (1 - r/N) (1 - c/N)) of a two-way table without empty rows or
+    columns (Agresti, Categorical Data Analysis, 3rd ed., Sec. 3.3.1)."""
+    n = float(table.sum())
+    r = table.sum(axis=1, keepdims=True)
+    c = table.sum(axis=0, keepdims=True)
+    expected = r * c / n
+    out: np.ndarray = (table - expected) / np.sqrt(expected * (1 - r / n) * (1 - c / n))
+    return out
+
+
+def reallocation_batch(item: tuple[np.ndarray, int, int, Any]) -> list[np.ndarray]:
+    """Chi-squares of ``draws`` multivariate hypergeometric reallocations of one table's first-row total over its
+    column totals: the conditional null of row homogeneity given both margins."""
+    totals, first_total, draws, seed = item
+    rng = np.random.default_rng(seed)
+    rows = rng.multivariate_hypergeometric(totals, first_total, size=draws)
+    return [two_row_chi_square(rows.astype(float), totals.astype(float))]
+
+
+def composition_test(tables: Sequence[np.ndarray], draws: int, seed: int | np.random.SeedSequence) -> dict[str, Any]:
+    """Conditional Monte Carlo test that the two rows of every 2 x K table share one composition.
+
+    Each table holds the counts of two blocks over categories; columns empty in both rows drop out. The statistic is
+    the sum of the tables' Pearson chi-squares. Each table's first row is reallocated over its column totals with its
+    own generator, spawned from ``seed`` before the map, and the reallocated chi-squares add draw by draw. The p-value
+    counts the observed sum among the draws, (1 + #{sum >= observed}) / (1 + draws)."""
+    kept = []
+    for table in tables:
+        if table.ndim != 2 or table.shape[0] != 2:
+            raise ValueError(f"composition_test takes 2 x K tables, not shape {table.shape}")
+        nonzero = table[:, table.sum(axis=0) > 0]
+        if nonzero.shape[1] < 2 or min(nonzero.sum(axis=1)) == 0:
+            raise ValueError("a table needs two nonempty rows over at least two categories")
+        kept.append(nonzero.astype(np.int64))
+    sequence = seed if isinstance(seed, np.random.SeedSequence) else np.random.SeedSequence(seed)
+    seeds = sequence.spawn(len(kept))
+    items = [(t.sum(axis=0), int(t[0].sum()), draws, s) for t, s in zip(kept, seeds, strict=True)]
+    nulls = ordered_map(reallocation_batch, items, min_items=1)
+    statistics = [float(two_row_chi_square(t[0].astype(float), t.sum(axis=0).astype(float))) for t in kept]
+    observed = float(sum(statistics))
+    total = np.sum(nulls, axis=0)
+    p = float((1 + np.count_nonzero(total >= observed - 1e-9)) / (1 + draws))
+    return {"statistic": observed, "per_table": statistics, "p": p, "draws": draws}
