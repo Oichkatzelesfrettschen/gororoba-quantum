@@ -37,17 +37,21 @@ Block A pools job-02 with its exact replay (`...-job-02-replay`), which used the
    reproduce their target click distribution within total variation 2.3e-4 and conditional fidelity 0.9999998 of the
    target, so the per-seed differences arise in the hardware that realizes a mesh, not in the decomposition.
 2. **The between-mesh spread is real but small.** The six differences give chi-square 20.5 on 6 degrees of freedom.
-   A normal-normal model with the between-mesh standard deviation tau carried as uncertain (Efron 2011, "Tweedie's
-   formula and selection bias", J. Am. Stat. Assoc. 106:1602, Eqs. 3.7-3.9;
+   A normal-normal model with the standard deviation tau of an input's true A minus B difference carried as
+   uncertain (Efron 2011, "Tweedie's formula and selection bias", J. Am. Stat. Assoc. 106:1602, Eqs. 3.7-3.9;
    [note](../notes/papers/efron-2011-tweedie-formula.md)) gives tau 0.057 at its maximum likelihood,
-   posterior mean 0.074, 90 % interval 0.029 to 0.143. The expected gain of the observed winner over the loser after
+   posterior mean 0.074, 90 % interval 0.029 to 0.143. Two independent meshes per input put the per-mesh standard
+   deviation of correctness at tau / sqrt(2), 0.040 at the maximum. The expected gain of the observed winner over the loser after
    shrinkage averages 0.046 over the inputs; choosing the winner instead of either mesh of the pair at random gains
    half of that, 0.023, the quantity a selection program buys. Directional Benjamini-Hochberg at q 0.10 (Weinstein and Yekutieli,
    [1404.7403](../notes/papers/1404.7403.md), Definition 2) fixes the winner's sign for +Z, -Z and +Y only.
 3. **A replay of the winners has modest power.** Posterior-predictive simulation (200,000 trials, 1,200 samples per
    iteration) gives power 0.73 with two six-iteration jobs and 0.87 with four, falling to 0.54 and 0.70 when three of
-   the six pairs drop out; size is 0.051 when no mesh error persists. The drafted case's expectation of 0.95 with four
-   jobs does not hold. Each job costs 5.0 credits at the lossiest mesh's 2,662 shots per sample.
+   the six pairs drop out; size is 0.051 when no mesh error persists. This simulates a replay of the two meshes in
+   hand; the draft's own Monte Carlo simulated its six-candidate screen and two confirm jobs and gave power 0.81 (0.97
+   at a mesh spread of 0.06), so the two figures answer different designs. Each job costs 5.0 credits at the lossiest
+   mesh's 2,662 shots per sample: a job bills 1 credit plus 1e-6 per shot of its largest iteration's `max_shots`
+   ([credit optimization](../runbooks/quandela-credit-optimization.md)), here 4,000,000.
 4. **Acceptance tends to move against correctness, short of significance.** Within an input, the mesh with the
    higher acceptance per sample reads the lower correctness in five of six inputs (r -0.75, direction stated
    beforehand), and more herald rejections go with higher correctness (r +0.87, direction found after looking). The
@@ -62,8 +66,10 @@ Block A pools job-02 with its exact replay (`...-job-02-replay`), which used the
    (04:27, 05:02 and 09:52 UTC: HOM 0.879, 0.886, 0.875; g2 0.014, 0.014, 0.012) moves the predicted mean conditional
    fidelity by at most 0.006 between reads. Perceval maps the reported HOM value directly to its overlap parameter, and
    its g2 penalty is smaller than the distinguishable-photon form of Ollivier et al. (arXiv:2005.01743, Eqs. 1-2);
-   either reading leaves the source-only prediction input-asymmetric (+Z 0.77, -Z 0.99). The +Z and +Y block-B meshes
-   exceed that prediction by about three standard errors, which a source term cannot produce.
+   either reading leaves the source-only prediction input-asymmetric (+Z 0.77, -Z 0.99). The model misses in both
+   directions: the +Z and +Y block-B meshes exceed it by about three standard errors, and both -Z meshes fall about
+   six below it. A source model that misses every -Z seed cannot attribute an absolute residual to a mesh; the
+   within-input A minus B contrasts, which share the source term, carry the mesh comparison.
 6. **No structural property of a mesh predicts the winner.** Robustness of each compiled mesh to heater noise (0.1 rad)
    and coupler noise (0.05 rad) and its total heater phase do not order the pairs (r -0.03, 0.18 and +0.54, the last
    opposite to the predicted direction).
@@ -93,7 +99,8 @@ selection can ever pay.
    broadly, with no single pattern, and the herald share does not act as a filter on wrong events.
 2. **A persistence case, written after that analysis.** Written as
    [belenos-mesh-persistence-case.md](belenos-mesh-persistence-case.md): a one-photon replay of one retained mode-swap
-   layout group, whose per-seed mesh error stands 7 binomial errors above the noise per block at 1.09 credits a job,
+   layout group, whose per-seed mesh deviations (standard deviation 0.057) stand about ten binomial errors above the
+   noise of each block at 1.09 credits a job,
    with a replay of the twelve job-02 and job-03 teleportation seeds as an optional second case. It needs the owner's
    approval of its written case like every provider job.
 
