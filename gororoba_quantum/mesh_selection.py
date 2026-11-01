@@ -21,6 +21,8 @@ from typing import Any
 
 import numpy as np
 
+from parallel import ordered_map
+
 
 def normal_cdf(x: Any) -> Any:
     from scipy.special import ndtr
@@ -138,6 +140,41 @@ def contrast_shrinkage(
     }
 
 
+def power_batch(item: tuple[Any, ...]) -> list[dict[str, Any]]:
+    """The replay designs of one job count and scenario: binomial accepted and correct counts from pre-drawn
+    uniforms, then the one-sided summed-contrast test at each dropout."""
+    from scipy.stats import binom
+
+    jobs, samples, scenario, effect, u, accept, mean_level, order, dropouts, z_critical = item
+    n = mean_level.shape[0]
+    p_win = np.clip(mean_level + effect / 2, 0.0, 1.0)
+    p_lose = np.clip(mean_level - effect / 2, 0.0, 1.0)
+    n_win = np.maximum(binom.ppf(u[0], samples, accept[0]), 1)
+    n_lose = np.maximum(binom.ppf(u[1], samples, accept[1]), 1)
+    c_win = binom.ppf(u[2], n_win, p_win)
+    c_lose = binom.ppf(u[3], n_lose, p_lose)
+    f_win, f_lose = c_win / n_win, c_lose / n_lose
+    contrast = f_win - f_lose
+    variance = f_win * (1 - f_win) / n_win + f_lose * (1 - f_lose) / n_lose
+    designs = []
+    for dropped in dropouts:
+        keep = order >= dropped
+        total = np.where(keep, contrast, 0.0).sum(axis=1)
+        spread = np.sqrt(np.where(keep, variance, 0.0).sum(axis=1))
+        statistic = np.divide(total, spread, out=np.zeros_like(total), where=spread > 0)
+        kept = n - dropped
+        designs.append(
+            {
+                "jobs": jobs,
+                "scenario": scenario,
+                "pairs_dropped": dropped,
+                "power": float(np.mean(statistic > z_critical)),
+                "mean_true_gap_kept": float(np.mean(np.where(keep, effect, 0.0).sum(axis=1) / kept)),
+            }
+        )
+    return designs
+
+
 def replay_power(
     counts: Mapping[str, Any],
     shrink: Mapping[str, Any],
@@ -160,13 +197,13 @@ def replay_power(
     kept inputs divided by its binomial standard error, one-sided against z_critical. A dropout removes inputs whose
     seed returns a different mesh after a recalibration. Trials draw every input first and evaluate as numpy arrays,
     so the record depends only on the seed."""
-    from scipy.stats import binom
 
     n = len(labels)
     rng = np.random.default_rng(seed)
     draw = shrink["_draw"]
     d, s, weights = draw["d"], draw["s"], draw["weights"]
-    sign = np.sign(d)
+    # The winner is A when d > 0 and B otherwise (contrast_shrinkage's winner_block), so a tie keeps a signed gap.
+    sign = np.where(d > 0, 1.0, -1.0)
     mean_level = np.empty(n)
     accept = np.empty((2, n))
     for i, label in enumerate(labels):
@@ -190,37 +227,29 @@ def replay_power(
         "samples_per_iteration": samples_per_iteration,
         "designs": [],
     }
-    for j, jobs in enumerate(job_counts):
-        samples = samples_per_iteration * jobs // 2
-        u = uniforms[4 * j : 4 * j + 4]
-        scenarios = (
-            ("persistent mesh error", gap),
-            ("persistent mesh error, tau fixed at its maximum", gap_mle),
-            ("no persistent mesh error", 0.0 * gap),
+    scenarios = (
+        ("persistent mesh error", gap),
+        ("persistent mesh error, tau fixed at its maximum", gap_mle),
+        ("no persistent mesh error", 0.0 * gap),
+    )
+    # Every (job count, scenario) batch is independent once its uniforms are drawn, so the pool maps over them and
+    # the designs keep the job-count, scenario, dropout order.
+    batches = [
+        (
+            jobs,
+            samples_per_iteration * jobs // 2,
+            scenario,
+            effect,
+            uniforms[4 * j : 4 * j + 4],
+            accept,
+            mean_level,
+            order,
+            tuple(dropouts),
+            z_critical,
         )
-        for scenario, effect in scenarios:
-            p_win = np.clip(mean_level + effect / 2, 0.0, 1.0)
-            p_lose = np.clip(mean_level - effect / 2, 0.0, 1.0)
-            n_win = np.maximum(binom.ppf(u[0], samples, accept[0]), 1)
-            n_lose = np.maximum(binom.ppf(u[1], samples, accept[1]), 1)
-            c_win = binom.ppf(u[2], n_win, p_win)
-            c_lose = binom.ppf(u[3], n_lose, p_lose)
-            f_win, f_lose = c_win / n_win, c_lose / n_lose
-            contrast = f_win - f_lose
-            variance = f_win * (1 - f_win) / n_win + f_lose * (1 - f_lose) / n_lose
-            for dropped in dropouts:
-                keep = order >= dropped
-                total = np.where(keep, contrast, 0.0).sum(axis=1)
-                spread = np.sqrt(np.where(keep, variance, 0.0).sum(axis=1))
-                statistic = np.divide(total, spread, out=np.zeros_like(total), where=spread > 0)
-                kept = n - dropped
-                out["designs"].append(
-                    {
-                        "jobs": jobs,
-                        "scenario": scenario,
-                        "pairs_dropped": dropped,
-                        "power": float(np.mean(statistic > z_critical)),
-                        "mean_true_gap_kept": float(np.mean(np.where(keep, effect, 0.0).sum(axis=1) / kept)),
-                    }
-                )
+        for j, jobs in enumerate(job_counts)
+        for scenario, effect in scenarios
+    ]
+    for designs in ordered_map(power_batch, batches, min_items=1):
+        out["designs"].extend(designs)
     return out

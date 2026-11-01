@@ -2748,6 +2748,7 @@
     "gororoba_quantum/maximal_experiments.py",
     "gororoba_quantum/measurement_sequence_analysis.py",
     "gororoba_quantum/measurement_sequence_scatter.py",
+    "gororoba_quantum/mesh_selection.py",
     "gororoba_quantum/modular_arithmetic.py",
     "gororoba_quantum/msq_envelope.py",
     "gororoba_quantum/msq_envelope_analysis.py",
@@ -6342,6 +6343,7 @@
     "gororoba_quantum/hypercomplex_dynamics.py",
     "gororoba_quantum/measurement_sequence_analysis.py",
     "gororoba_quantum/measurement_sequence_scatter.py",
+    "gororoba_quantum/mesh_selection.py",
     "gororoba_quantum/msq_envelope.py",
     "gororoba_quantum/msq_envelope_analysis.py",
     "gororoba_quantum/msq_envelope_null.py",
@@ -8877,6 +8879,7 @@
    "collections",
    "itertools",
    "numpy",
+   "parallel",
    "scipy",
    "typing"
   ],
