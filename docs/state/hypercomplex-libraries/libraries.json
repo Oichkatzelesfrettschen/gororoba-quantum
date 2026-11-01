@@ -2494,6 +2494,7 @@
     "gororoba_quantum/primorial_tomography.py",
     "gororoba_quantum/pub_shot_allocation_contracts.py",
     "gororoba_quantum/qet_ladder.py",
+    "gororoba_quantum/qi_joint_response.py",
     "gororoba_quantum/qpe_diagnostics.py",
     "gororoba_quantum/qpu_planning.py",
     "gororoba_quantum/qpu_planning_contracts.py",
@@ -2761,6 +2762,7 @@
     "gororoba_quantum/primorial_tomography.py",
     "gororoba_quantum/pub_shot_allocation_contracts.py",
     "gororoba_quantum/qet_ladder.py",
+    "gororoba_quantum/qi_joint_response.py",
     "gororoba_quantum/qpe_diagnostics.py",
     "gororoba_quantum/qpu_planning.py",
     "gororoba_quantum/qpu_planning_contracts.py",
@@ -8607,6 +8609,14 @@
    "sympy",
    "typing"
   ],
+  "gororoba_quantum/iqm_records.py": [
+   "__future__",
+   "dataclasses",
+   "hashlib",
+   "json",
+   "pathlib",
+   "typing"
+  ],
   "gororoba_quantum/jax_bridge.py": [
    "__future__",
    "collections",
@@ -9249,6 +9259,17 @@
    "typing",
    "unittest"
   ],
+  "gororoba_quantum/qd_records.py": [
+   "__future__",
+   "base64",
+   "dataclasses",
+   "hashlib",
+   "json",
+   "pathlib",
+   "re",
+   "typing",
+   "zlib"
+  ],
   "gororoba_quantum/qet_ladder.py": [
    "__future__",
    "collections",
@@ -9259,6 +9280,26 @@
    "qiskit",
    "typing"
   ],
+  "gororoba_quantum/qi_joint_response.py": [
+   "__future__",
+   "collections",
+   "dataclasses",
+   "decimal",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_records",
+   "typing"
+  ],
+  "gororoba_quantum/qi_records.py": [
+   "__future__",
+   "collections",
+   "dataclasses",
+   "hashlib",
+   "json",
+   "pathlib",
+   "typing"
+  ],
   "gororoba_quantum/qi_stack.py": [
    "__future__",
    "dataclasses",
@@ -9267,6 +9308,17 @@
    "os",
    "pathlib",
    "subprocess"
+  ],
+  "gororoba_quantum/qi_zz_preflight.py": [
+   "__future__",
+   "collections",
+   "dataclasses",
+   "json",
+   "parallel",
+   "pathlib",
+   "qi_records",
+   "tempfile",
+   "typing"
   ],
   "gororoba_quantum/qpe_diagnostics.py": [
    "__future__",
@@ -10081,6 +10133,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "sys",
    "typing"
   ],
@@ -10098,6 +10151,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -10115,6 +10169,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -10138,6 +10193,7 @@
    "pathlib",
    "photonic_compilation_audit",
    "qd_belenos_mesh",
+   "qd_records",
    "re",
    "scipy",
    "sys",
@@ -10323,6 +10379,7 @@
    "json",
    "parallel",
    "pathlib",
+   "qd_records",
    "sys",
    "typing"
   ],
@@ -10366,6 +10423,7 @@
    "numpy",
    "parallel",
    "pathlib",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -10597,6 +10655,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "sys",
    "typing"
   ],
@@ -10670,6 +10729,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -10795,6 +10855,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "sys",
    "tempfile",
    "typing"
@@ -10832,6 +10893,7 @@
    "parallel",
    "pathlib",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "tempfile",
@@ -10866,6 +10928,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "scipy",
    "sys",
    "typing"
@@ -10936,6 +10999,7 @@
    "parallel",
    "pathlib",
    "qd_platform",
+   "qd_records",
    "qi_readout_ringdown_cases",
    "scipy",
    "sys",
@@ -12180,6 +12244,7 @@
    "iqm_jobs",
    "iqm_platform",
    "iqm_probe_audit",
+   "iqm_records",
    "iqm_signed_probe",
    "iqm_sim",
    "json",
@@ -12201,6 +12266,7 @@
    "iqm_cancellation_probe",
    "iqm_jobs",
    "iqm_platform",
+   "iqm_records",
    "iqm_signed_probe",
    "iqm_signed_resolve",
    "iqm_sim",
@@ -12221,6 +12287,7 @@
    "datetime",
    "fcntl",
    "iqm_platform",
+   "iqm_records",
    "json",
    "math",
    "os",
@@ -12254,6 +12321,7 @@
    "iqm_jobs",
    "iqm_measurement_sequence",
    "iqm_platform",
+   "iqm_records",
    "json",
    "math",
    "numpy",
@@ -12270,6 +12338,7 @@
    "iqm_jobs",
    "iqm_measurement_sequence",
    "iqm_platform",
+   "iqm_records",
    "json",
    "math",
    "parallel",
@@ -12284,6 +12353,7 @@
    "functools",
    "iqm_jobs",
    "iqm_platform",
+   "iqm_records",
    "itertools",
    "json",
    "math",
@@ -12321,6 +12391,7 @@
    "fcntl",
    "hashlib",
    "http",
+   "iqm_records",
    "json",
    "os",
    "pathlib",
@@ -12358,6 +12429,7 @@
    "functools",
    "iqm_jobs",
    "iqm_platform",
+   "iqm_records",
    "iqm_signed_probe",
    "iqm_sim",
    "json",
@@ -12379,6 +12451,7 @@
    "argparse",
    "iqm_jobs",
    "iqm_platform",
+   "iqm_records",
    "iqm_sim",
    "json",
    "math",
@@ -12397,6 +12470,7 @@
    "iqm_cancellation_probe",
    "iqm_jobs",
    "iqm_platform",
+   "iqm_records",
    "iqm_signed_probe",
    "iqm_sim",
    "json",
@@ -13563,6 +13637,7 @@
    "pathlib",
    "qd_belenos_mesh",
    "qd_box_kite_analysis",
+   "qd_records",
    "random",
    "statistics",
    "sys",
@@ -13606,6 +13681,7 @@
    "pathlib",
    "qd_belenos_mesh",
    "qd_platform",
+   "qd_records",
    "sys",
    "typing"
   ],
@@ -13651,6 +13727,7 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_records",
    "sys",
    "tempfile",
    "typing"
@@ -13709,7 +13786,6 @@
    "fcntl",
    "fractions",
    "functools",
-   "hashlib",
    "http",
    "importlib",
    "io",
@@ -13721,6 +13797,7 @@
    "pathlib",
    "perceval",
    "qd_belenos_mesh",
+   "qd_records",
    "re",
    "shutil",
    "ssl",
@@ -14699,6 +14776,15 @@
    "tempfile",
    "typing"
   ],
+  "scripts/qi_zz_map_qx_analysis.py": [
+   "__future__",
+   "argparse",
+   "pathlib",
+   "qi_zz_map",
+   "qi_zz_map_qx",
+   "qi_zz_preflight",
+   "sys"
+  ],
   "scripts/qi_zz_map_qx_plans.py": [
    "__future__",
    "argparse",
@@ -15152,6 +15238,7 @@
    "plan_records",
    "qd_platform",
    "qi_platform",
+   "qi_records",
    "re",
    "sys",
    "typing"

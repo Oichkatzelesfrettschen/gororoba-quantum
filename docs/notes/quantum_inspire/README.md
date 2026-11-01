@@ -54,6 +54,14 @@ gate `core-record-check-05` (`tests/test_cli_record_checks.py`) rechecks every b
 - [results/quantum_inspire/](../../../results/quantum_inspire/): generated
   cases under `cases/` and every submitted run under `runs/`, each with its
   circuits, digests, receipt, raw shots, results and analysis.
+  `gororoba_quantum/qi_records.py` reads one run directory offline
+  (`read_run`) and applies the shared record rules: receipt binding, circuit
+  digests, job identities and raw shots against the histogram.
+  `scripts/research_state.py` and `scripts/results_index.py` consume it, and
+  an analyzer adds its own design conditions on top.
+  `gororoba_quantum/qi_joint_response.py` decodes the joint early/terminal
+  response of a destination-control run under an explicit `Layout` and
+  reproduces the retained Tuna-17 joint tables from the retained bytes.
 - [docs/state/RESEARCH_STATE.md](../../state/RESEARCH_STATE.md): the
   Quantum Inspire acquisitions and claims beside the IBM ones.
 

@@ -175,7 +175,6 @@ def channel(
 def job_data(directory: Path) -> dict[str, Any]:
     """Per-configuration meshes and per-setting block counts and in-block background of one run."""
     record = repeat.run_record(directory)
-    record["results"] = repeat.load(directory / "results.json")
     iterations = record["results"]["iterations"]
     groups = list(geometry.configurations(record).values())
     meshes = [_elements(iterations[members[0]]["result_fields"]["computed_circuit"]) for members in groups]

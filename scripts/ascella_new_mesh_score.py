@@ -78,6 +78,7 @@ import ascella_fixed_mesh_error as fixed  # noqa: E402
 import ascella_physical_models as models  # noqa: E402
 import ascella_response_geometry as geometry  # noqa: E402
 
+import qd_records  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 ALPHA = 0.01
@@ -149,17 +150,18 @@ NEW_SEED = Design(
 )
 
 
-def returned(path: Path) -> dict[str, Any]:
-    """Job name, manifest iteration count, provider status and duration, and whether every setting carries counts."""
-    manifest = json.loads((path / "cases.json").read_text(encoding="utf-8"))
-    results = json.loads((path / "results.json").read_text(encoding="utf-8"))
+def summarize(manifest: dict[str, Any], results: dict[str, Any], *, run: str, cases_sha256: str) -> dict[str, Any]:
+    """Job name, manifest iteration count, provider status and duration, and whether every setting carries counts.
+
+    The design's reading of one manifest and collection; returned applies it to a retained run after the shared
+    record rules of qd_records, and a test may apply it to a synthetic pair without a receipt."""
     status = results.get("status") or {}
     rows = repeat.attributed_rows(manifest, results)
     empty = sum(row is not None and sum(row[:4]) <= 0 for row in rows)
     return {
         "job": manifest["job"],
-        "run": path.relative_to(ROOT).as_posix() if path.is_relative_to(ROOT) else path.name,
-        "cases_sha256": hashlib.sha256((path / "cases.json").read_bytes()).hexdigest(),
+        "run": run,
+        "cases_sha256": cases_sha256,
         "requested_iterations": manifest["iterations"],
         "returned_iterations": sum(row is not None for row in rows),
         "empty_logical_block": empty,
@@ -167,6 +169,13 @@ def returned(path: Path) -> dict[str, Any]:
         "duration": status.get("duration"),
         "complete": status.get("status") == "completed" and all(row is not None for row in rows) and not empty,
     }
+
+
+def returned(path: Path) -> dict[str, Any]:
+    """summarize of one retained run, read through qd_records."""
+    record = qd_records.read_run(path)
+    run = path.relative_to(ROOT).as_posix() if path.is_relative_to(ROOT) else path.name
+    return summarize(record.manifest, record.collected, run=run, cases_sha256=record.cases_sha256)
 
 
 def acquisition(summaries: list[dict[str, Any]], frozen: dict[str, str], design: Design = NEW_SEED) -> None:

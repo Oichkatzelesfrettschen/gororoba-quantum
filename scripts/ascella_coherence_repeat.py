@@ -85,6 +85,7 @@ import qd_belenos_mesh as mesh  # noqa: E402
 from bdsc_certificate import close  # noqa: E402
 from photonic_compilation_audit import _elements  # noqa: E402
 
+import qd_records  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 CASES = ROOT / "results/quandela/cases/ascella_signed_coherence"
@@ -270,15 +271,18 @@ def attributed_rows(manifest: dict[str, Any], results: dict[str, Any]) -> list[l
 
 
 def run_record(directory: Path) -> dict[str, Any]:
-    """The collected counts, compiled circuits and plan-time dark rates of one run, in execution order."""
-    manifest = load(directory / "cases.json")
-    results = load(directory / "results.json")
+    """The collected counts, compiled circuits and plan-time dark rates of one run, in execution order.
+
+    qd_records.read_run binds the receipt, circuit, body, collection and raw result before any count is read."""
+    run = qd_records.read_run(directory)
+    manifest, results = run.manifest, run.collected
     rows = attributed_rows(manifest, results)
     require(all(row is not None for row in rows), f"{directory}: not every iteration carries counts")
     decoded = ordered_map(compiled, results["iterations"])
-    dark = load(directory / "submission.json")["perfs_at_plan"]["Dark counts (detection/s)"]
+    dark = run.submission["perfs_at_plan"]["Dark counts (detection/s)"]
     return {
         "manifest": manifest,
+        "results": results,
         "counts": np.asarray(rows, dtype=float),
         "probabilities": np.asarray([p for p, _ in decoded]),
         "phases": np.asarray([phases for _, phases in decoded]),
@@ -432,7 +436,7 @@ def analyze(directory: Path) -> dict[str, Any]:
     frozen = CASES / str(job) / "cases.json"
     require(frozen.is_file(), f"{directory}: job {job!r} has no case directory")
     require((directory / "cases.json").read_bytes() == frozen.read_bytes(), f"{directory}: cases.json is not {job}'s")
-    results = load(directory / "results.json")
+    results = qd_records.read_run(directory).collected
     rows, exclusions = run_analysis.attributed(manifest, results)
     return {
         "schema": "ascella-signed-coherence-analysis-v1",

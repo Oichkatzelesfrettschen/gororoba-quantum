@@ -6,7 +6,11 @@
 # round never completes on its own and a same-head request starts a new one
 # (docs/runbooks/codex-review-stalls.md). A pull request that conflicts with its
 # base gets no merge commit and no check runs, so the wait stops and names it.
-# Usage: scripts/codex_review_wait.sh PR DEADLINE_SECONDS LOG [STALL_SECONDS]
+# REVIEWED_HEAD names an earlier head of the same pull request whose completed
+# round stands: a merge of main or a regenerated view changed the head without
+# changing code, so the wait accepts that round's verdict, waits on the checks
+# of the current head, and never requests another review.
+# Usage: scripts/codex_review_wait.sh PR DEADLINE_SECONDS LOG [STALL_SECONDS] [REVIEWED_HEAD]
 # Exit: 0 review and checks done, 2 deadline, 3 consecutive poll failures,
 # 4 the pull request conflicts with its base, 5 the repeated request also stalled.
 set -eu
@@ -16,6 +20,11 @@ pr=$1
 deadline=$2
 log=$3
 stall=${4:-600}
+reviewed=${5:-}
+case "$reviewed" in
+    "" | [0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*) ;;
+    *) echo "REVIEWED_HEAD must be a commit sha of at least 7 hex digits" >&2; exit 2 ;;
+esac
 here=$(cd "$(dirname "$0")" && pwd)
 slug=$(git -C "$here" remote get-url origin | sed -E 's#^.*github\.com[:/]##; s#\.git$##')
 
@@ -45,12 +54,15 @@ while :; do
             exit 4
         fi
         short=$(printf '%.7s' "$head")
+        # The summary head whose completed round admits the merge: the current head, or the reviewed one.
+        accept=$short
+        if [ -n "$reviewed" ]; then accept=$(printf '%.7s' "$reviewed"); fi
         # A completed round reads a stable snapshot and a verdict for the latest request:
         # clean, or findings to read; pending means a newer request postdates the summary.
         case "$status" in
-            *review=done*"summary-head=$short"*snapshot=stable*verdict=clean-* | \
-                *review=done*"summary-head=$short"*snapshot=stable*verdict=open-threads* | \
-                *review=done*"summary-head=$short"*snapshot=stable*verdict=later-finding*)
+            *review=done*"summary-head=$accept"*snapshot=stable*verdict=clean-* | \
+                *review=done*"summary-head=$accept"*snapshot=stable*verdict=open-threads* | \
+                *review=done*"summary-head=$accept"*snapshot=stable*verdict=later-finding*)
                 if [ "$pending" = 0 ]; then
                     echo "$status"
                     gh api "repos/$slug/commits/$head/check-runs?per_page=100" \
@@ -59,15 +71,19 @@ while :; do
                 fi
                 ;;
             *)
-                # The repeated request is timed from when this script sent it: the summary can keep an older
-                # round-start until the bot picks the new request up.
-                now=$(date +%s)
-                if [ -n "$retried_at" ]; then
+                # A reviewed head stands; a changed head without changed code earns no request.
+                if [ -n "$reviewed" ]; then
+                    echo "$(date -u +%FT%TZ) reviewed head $reviewed has no completed round yet; no request" >>"$log"
+                elif [ -n "$retried_at" ]; then
+                    # The repeated request is timed from when this script sent it: the summary can keep an older
+                    # round-start until the bot picks the new request up.
+                    now=$(date +%s)
                     if [ $((now - retried_at)) -ge "$stall" ]; then
                         echo "PR $pr: the repeated request also showed no result after ${stall}s; last: $status"
                         exit 5
                     fi
                 else
+                    now=$(date +%s)
                     # The round starts at the later of the summary's round-start and the newest request, since the
                     # summary keeps an older round-start until the bot picks a new request up.
                     round=$(printf '%s\n' "$status" | sed -n 's/.* round-start=\([^ ]*\) .*/\1/p')

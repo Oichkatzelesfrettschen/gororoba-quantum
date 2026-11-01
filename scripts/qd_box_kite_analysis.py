@@ -53,7 +53,9 @@ from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
-from qd_platform import PlatformError, iteration_form, load_case, run_facts
+from qd_platform import PlatformError, iteration_form
+
+import qd_records
 
 SCHEMA = "qd-box-kite-analysis-v1"
 # A mesh analysis replays within qd_belenos_mesh.ANALYSIS_TOLERANCE; every other record replays byte for byte.
@@ -153,16 +155,15 @@ def acquisition_seconds(samples: int, physical_perf: Any, clock_mhz: Any) -> flo
     return samples / (float(physical_perf) * float(clock_mhz) * 1e6)
 
 
-def dark_expectation(run: Path, collected: dict[str, Any], width: int) -> list[float] | None:
+def dark_expectation(record: qd_records.Run, raw: bytes | None, width: int) -> list[float] | None:
     """Expected dark clicks per chip mode: the receipt's per-mode rates times the job's estimated acquisition
     seconds (acquisition_seconds)."""
-    submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
-    perfs = submission.get("perfs_at_plan", {})
+    perfs = record.submission.get("perfs_at_plan", {})
     rates = perfs.get("Dark counts (detection/s)")
-    raw = run / "raw/result.json"
-    if not isinstance(rates, list) or not raw.is_file():
+    if not isinstance(rates, list) or raw is None:
         return None
-    inner = json.loads(json.loads(raw.read_text(encoding="utf-8"))["results"])
+    collected = record.collected
+    inner = json.loads(json.loads(raw)["results"])
     seconds = acquisition_seconds(
         sum(collected.get("counts", {}).values()), inner.get("physical_perf"), perfs.get("Clock (MHz)")
     )
@@ -312,16 +313,17 @@ def compiled(collected: dict[str, Any]) -> dict[str, Any]:
 
 
 def analyze(run: Path) -> dict[str, Any]:
-    facts = run_facts(run)
-    manifest, circuit, cases_sha256 = load_case(run)
+    records = qd_records.load_run(run)
+    record = qd_records.validate_run(records)
+    manifest, circuit, cases_sha256 = record.manifest, record.circuit, record.cases_sha256
     if manifest.get("gate_form") == "mesh":
         import qd_belenos_mesh
 
         return {**qd_belenos_mesh.analyze_run(run, manifest, circuit), "cases_sha256": cases_sha256}
-    collected = json.loads((run / "results.json").read_text(encoding="utf-8"))
+    collected = record.collected
     counts = collected.get("counts", {})
     width = max((len(state.split(",")) for state in counts), default=0)
-    dark = dark_expectation(run, collected, width) if width else None
+    dark = dark_expectation(record, records.raw, width) if width else None
     blocks = []
     if iteration_form(manifest) == "seeded":
         if len(manifest["blocks"]) != 1:
@@ -337,7 +339,7 @@ def analyze(run: Path) -> dict[str, Any]:
     return {
         "schema": SCHEMA,
         "run": run.name,
-        "platform": facts["backends"][0],
+        "platform": record.submission["platform"],
         "job_id": collected["job_id"],
         "status": collected["status"]["status"],
         "cases_sha256": cases_sha256,
@@ -459,7 +461,7 @@ def runs_under(root: Path, exclude: list[str]) -> list[Path]:
     for run in sorted(path for path in root.iterdir() if (path / "cases.json").is_file()):
         if any(fnmatch.fnmatchcase(run.name, glob) for glob in exclude):
             continue
-        if json.loads((run / "cases.json").read_text(encoding="utf-8")).get("schema") in ANALYZED_CASE_SCHEMAS:
+        if (qd_records.load_run(run).manifest or {}).get("schema") in ANALYZED_CASE_SCHEMAS:
             selected.append(run)
     if not selected:
         raise SystemExit(f"{root}: no run directory holds an analyzed case schema")

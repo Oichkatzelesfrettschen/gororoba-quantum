@@ -123,8 +123,9 @@ def test_a_truncated_retained_run_is_partial(tmp_path: Path) -> None:
     (run / "cases.json").write_bytes((JOB_02 / "cases.json").read_bytes())
     results = json.loads((JOB_02 / "results.json").read_text(encoding="utf-8"))
     results["iterations"] = results["iterations"][:40]
-    (run / "results.json").write_text(json.dumps(results), encoding="utf-8")
-    summary = score.returned(run)
+    summary = score.summarize(
+        json.loads((JOB_02 / "cases.json").read_bytes()), results, run="truncated", cases_sha256=""
+    )
     if summary["complete"] or summary["returned_iterations"] != 40 or summary["requested_iterations"] != 64:
         raise AssertionError(f"a run returning 40 of 64 iterations must read partial: {summary}")
 
@@ -159,9 +160,8 @@ def test_a_run_without_counts_is_partial(tmp_path: Path) -> None:
     run = tmp_path / "empty"
     run.mkdir()
     manifest = {"job": "job-04", "iterations": 2, "settings": [{"name": "a"}, {"name": "b"}]}
-    (run / "cases.json").write_text(json.dumps(manifest), encoding="utf-8")
-    (run / "results.json").write_text(json.dumps({"partial": True, "status": {"status": "error"}}), encoding="utf-8")
-    summary = score.returned(run)
+    results = {"partial": True, "status": {"status": "error"}}
+    summary = score.summarize(manifest, results, run=run.name, cases_sha256="")
     if summary["complete"] or summary["returned_iterations"] != 0 or summary["status"] != "error":
         raise AssertionError(f"a run returning no counts must read partial: {summary}")
 
@@ -189,9 +189,8 @@ def test_a_non_finite_input_is_not_read() -> None:
         raise AssertionError("a NaN statistic must never reach a verdict")
 
 
-def synthetic_run(tmp_path: Path, counts: list[dict[str, int]], seeds: list[int], echoed: list[int]) -> Path:
-    run = tmp_path / "run"
-    run.mkdir()
+def synthetic_run(counts: list[dict[str, int]], seeds: list[int], echoed: list[int]) -> dict[str, object]:
+    """The summary of a receipt-less synthetic run: manifest and collection alone, the reader's rules not applied."""
     settings = [
         {"name": f"s{i}", "circuit_params": {"x0": 0.0}, "compilation_seed": seed} for i, seed in enumerate(seeds)
     ]
@@ -200,25 +199,23 @@ def synthetic_run(tmp_path: Path, counts: list[dict[str, int]], seeds: list[int]
         {"counts": c, "iteration": {"circuit_params": {"x0": 0.0}, "compilation_seed": e}}
         for c, e in zip(counts, echoed, strict=True)
     ]
-    (run / "cases.json").write_text(json.dumps(manifest), encoding="utf-8")
     results = {"iterations": entries, "status": {"status": "completed", "duration": 200}}
-    (run / "results.json").write_text(json.dumps(results), encoding="utf-8")
-    return run
+    return score.summarize(manifest, results, run="synthetic", cases_sha256="")
 
 
 LOGICAL = "1,0,0,0,0,0,0,0,0,0,0,0"
 OUTSIDE = "0,0,0,0,1,0,0,0,0,0,0,0"
 
 
-def test_a_setting_without_logical_block_counts_makes_the_run_partial(tmp_path: Path) -> None:
-    summary = score.returned(synthetic_run(tmp_path, [{LOGICAL: 5}, {OUTSIDE: 7}], [0, 11], [0, 11]))
+def test_a_setting_without_logical_block_counts_makes_the_run_partial() -> None:
+    summary = synthetic_run([{LOGICAL: 5}, {OUTSIDE: 7}], [0, 11], [0, 11])
     if summary["complete"] or summary["empty_logical_block"] != 1:
         raise AssertionError(f"an iteration with no logical-block count must make the run partial: {summary}")
 
 
-def test_a_swapped_compilation_seed_is_refused(tmp_path: Path) -> None:
+def test_a_swapped_compilation_seed_is_refused() -> None:
     with pytest.raises(ValueError, match="compilation_seed"):
-        score.returned(synthetic_run(tmp_path, [{LOGICAL: 5}, {LOGICAL: 7}], [0, 11], [11, 0]))
+        synthetic_run([{LOGICAL: 5}, {LOGICAL: 7}], [0, 11], [11, 0])
 
 
 def summary(job: str, duration: float = 200.0, complete: bool = True) -> dict[str, object]:

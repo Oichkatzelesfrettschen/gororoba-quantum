@@ -10,6 +10,20 @@ machinery.
 
 - The modules run as scripts from gororoba_quantum/ and form no installable
   package.
+- Reusable acquisition readers and analysis functions live in
+  gororoba_quantum/ and take explicit inputs (`qi_records.py` is the
+  Quantum Inspire reader); scripts select inputs and call them. Acquisition
+  facts, experiment definitions and analysis results stay distinct. A
+  compatible new acquisition reuses the existing reader and analyzer without
+  a copy of their implementation or a change to another module's
+  configuration; new code answers new scientific behavior or an unsupported
+  record format, never a new job id or path. A digest-bound historical
+  producer keeps its bytes, and a change that would alter its identity or
+  meaning lands in an explicitly versioned successor
+  (`qi_zz_map_qx_analysis.py` succeeds the `--analyze` mode of the pinned
+  `qi_zz_map_qx.py`). A superseded unpinned implementation leaves once its
+  callers migrate. Record integrity and scientific behavior are tested on
+  bounded fixtures; historical replays stay for end-to-end reproduction.
 - The `pr.yml` checks `lint`, `types`, `tests` and `gates` green on the head
   admit a merge. No local gate run or premerge replay is required before a
   push, which overrides the user-level guide's local replica of the slowest
@@ -32,8 +46,11 @@ machinery.
   [compute-flags](docs/runbooks/compute-flags.md).
 - Mock outcomes (`--native-dry-run` timing) never enter scientific analysis
   or measured visualizations.
-- A change to live_run.py or experiments.py also gets a dry run,
-  `"$PYTHON" live_run.py --out ../results/live`.
+- A change to live_run.py or experiments.py is proven by the `tests` check
+  and the gates its diff reaches; a live dry run (`"$PYTHON" live_run.py
+  --out ../results/live`, a record under results/live/) belongs to a change
+  of calibration admission, the approval comparison, the submission path or
+  execution readiness, and to every case that heads for `--submit`.
 - A change to `proofs/`, a replay bundle or its receipts follows the Rocq
   replay of [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates).
 
@@ -148,9 +165,11 @@ and after every monthly skill update
 ## Records
 
 - Raw files under `raw/<job_id>/` are never rewritten by a later collection
-  or analysis. A retained run enters docs/state/research_state.json, with a
-  claim citing it and a refreshed ledger or inventory, in the change that
-  retains it ([results-index](docs/runbooks/results-index.md)).
+  or analysis. A retained run enters docs/state/research_state.json with a
+  refreshed ledger or inventory in the change that retains it; the claim
+  that interprets it is a later change, and `research_state.py --check`
+  reports the acquisitions no claim cites yet
+  ([results-index](docs/runbooks/results-index.md)).
 - A record names an IBM Cloud instance only by a 12-hex sha256 of its CRN.
 - Tokens, account identifiers and local absolute paths stay out of every
   commit. The IBM credential lives in the qiskit account store,
@@ -187,8 +206,11 @@ lives; read it before writing one.
 ## Reviews and merges
 
 - Codex is the only hosted reviewer, and it reviews only on request: the
-  operator posts the issue comment `@codex review` right after opening a PR
-  and after every push that needs review. Copilot reviews are billed to the
+  operator posts the issue comment `@codex review` once, when the PR is a
+  merge candidate, and again only after a push that changed code in response
+  to a finding or to the operator's own review; a clean round with no thread
+  followed by green checks admits the merge, and a merge of main or a
+  regenerated view earns no new request. Copilot reviews are billed to the
   owner, so no pull request requests one; when the Codex app reports
   exhausted code-review quota, the owner decides how the PR proceeds.
 - Reply to each thread's root comment beginning `Fixed in <commit>`,
