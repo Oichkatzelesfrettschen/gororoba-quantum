@@ -95,16 +95,15 @@ takes no scope, PKCE or device flow, and Quandela publishes no client
 registration, so a third-party tool authenticates with a job token. The
 browser login itself, including SSO, is that OAuth flow.
 
-The token lives outside every checkout in `~/.config/quandela/cloud-token`,
-directory mode 700 and file mode 600, written by the user. Every consumer
-names it by path through `QUANDELA_TOKEN_FILE`, so the token enters no MCP
+The token file is named by path through `QUANDELA_TOKEN_FILE`, so the token enters no MCP
 registration, command line, log or record. Perceval code passes it
 explicitly, for example
 `QuandelaCommunicationLayer(name, token=Path(os.environ["QUANDELA_TOKEN_FILE"]).read_text().strip())`.
 Perceval also reads `PCVL_CLOUD_TOKEN` and its persistent configuration;
-`RemoteConfig.save()` writes the token in plain text to
-`~/.local/share/perceval-quandela/config.json`, and `RemoteConfig.get_url()`
-takes the API URL from that file, so the repository never calls `save()`.
+`RemoteConfig.save()` writes the token in plain text to the Perceval user data directory,
+and `RemoteConfig.get_url()` takes the API URL from that file, so the
+repository never calls `save()`. The token's location, modes, duration and
+permissions are recorded in the private gororoba-infrastructure repository.
 
 A token reaches the job and token routes only. `GET /api/platforms`,
 `/api/user` and the offer, notebook and credit routes the portal calls
@@ -160,14 +159,11 @@ Routes (`api/cloud-openapi.json`, cloud API v2.10.1-rc1 at capture):
 
 ### MCP tools
 
-`scripts/qd_mcp_server.py` runs on the interpreter
-`QD_PYTHON=${QD_PYTHON:-/usr/bin/python3}`, the system Python that carries
+`scripts/qd_mcp_server.py` runs on the interpreter `QD_PYTHON=${QD_PYTHON:-/usr/bin/python3}`, the system Python that carries
 mcp 1.29 (FastMCP), perceval-quandela and exqalibur. It registers as
-`quandela` at Claude Code user scope and in `~/.codex/config.toml`, launching
-`"$QD_PYTHON" -I "$REPO/scripts/qd_mcp_server.py"`, where `REPO` is the
-primary checkout, with `QUANDELA_TOKEN_FILE`; `-I` keeps the user site and
-`PYTHONPATH` out, and the server puts its own directory on `sys.path`. The
-Claude launcher in `~/.config/shell/codex-env.sh` loads it by default.
+`quandela`; `-I` keeps the user site and `PYTHONPATH` out, and the server
+puts its own directory on `sys.path`. The registration (launcher, environment
+and approval settings) is recorded in the private gororoba-infrastructure repository.
 
 Properties of the server that its code and gate hold:
 
@@ -232,24 +228,7 @@ the disagreement between public availability and the detailed Belenos calibratio
 unreadable per-job/notebook offer fees unknown. Historical plan and catalogue observations below retain
 their own source dates; they are neither a live balance nor an execution authorization.
 
-The account holds the free Explorer offer. Its plan page reads: low job
-priority, one running job at a time, one waiting job at a time, at most
-5 minutes per job, the embedded Jupyter notebook, the free simulator and
-free time slots on the QPU, and 200 free credits a month. The sources:
-
-| Fact | Value | Source |
-|---|---|---|
-| Free credit | 200 credits a month, "automatically reset at the beginning of the month", usable only under the Explorer offer | plan page; `offer/sources.json` (`free-credit-tooltip`, `monthly-quota-is`) |
-| Unused credit | not carried into a later month | `legal/cloud_terms-of-service.md` 13.3 |
-| Credit | "units of compute time" | `legal/cloud_terms-of-service.md` 1.6 |
-| Job limits | 1 running, 1 queued, 10 running Quantum Toolbox jobs | `catalogue.json`, `account.availability` |
-| Seconds per job | 300 on every Explorer platform | `catalogue.json`, `max_duration` |
-| Credits per shot | 1e-06 on `qpu:belenos` and `qpu:ascella`, 0 on every simulator | `catalogue.json`, `price_per_shot` |
-| Other prices an offer can carry | per job, per block of hours, per QRNG byte, per notebook second | `offer/sources.json` (`credits-for-one-job`, `credit-for-one-byte`, `credits-for-one-second`) |
-| Priority | Low; a token's priority runs 0 to 3 | plan page; `offer/sources.json` (`priorityTooltip`) |
-
-The calendar-month reset differs from IBM's rolling 28-day window: a credit
-spent on the last day of a month returns the next day.
+The account holds the free Explorer offer. Its plan, monthly credit grant and reset, unused-credit rule, job limits, per-job seconds, per-shot credit prices and priority are recorded in the private gororoba-infrastructure repository.
 
 The Explorer offer's per-job price, its QRNG price and its notebook price
 are not readable here. The portal renders them from the offer record
@@ -411,7 +390,7 @@ cancellation of another job.
 ## Runner
 
 ```sh
-export QUANDELA_TOKEN_FILE="$HOME/.config/quandela/cloud-token"
+export QUANDELA_TOKEN_FILE="${QUANDELA_TOKEN_FILE:?set to the token file}"
 RUN=results/quandela/runs/$(date -u +%Y-%m-%dT%H%M%SZ)-sim_belenos-box_kite_photonic_single-job-00
 mkdir -p "$RUN" && cp results/quandela/cases/box_kite_photonic_single/job-00/*.json "$RUN"/
 CASE="--platform sim:belenos --max-credits C --expected-seconds S --per-job-credits P"
