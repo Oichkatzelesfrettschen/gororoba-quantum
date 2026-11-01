@@ -1,18 +1,19 @@
 # Azure fiber-run work trees
 
-The complete working directories of the two Azure trial VMs that ran A_5 fiber computations, copied off each VM
+The complete working directories of the three Azure trial VMs that ran A_5 fiber computations, copied off each VM
 before it was deleted. Each archive holds the inputs, logs and outputs exactly as the VM left them.
 
 | Archive | sha256 | Bytes | Stored as |
 |---|---|---|---|
 | `vm1/vm1-work.tgz` (VM `gororoba-a5-fiber`, eastus) | `555a86abce09fc889356fdc60ab52bbd50ace127e30407d549aced03b21e82b0` | 405,302,105 | nine 45 MiB parts `vm1-work.tgz.part00` to `.part08` (listed in [split.txt](../../split.txt)) |
 | `vm2/vm2-work.tgz` (VM `gororoba-a5-fiber-2`, westus2) | `839900e3aa86124dc60440c257912d62d040b7a829b5902b0b4671856c4fbb1b` | 436,297 | one file |
+| `vm4/vm4-work.tgz` (VM `gororoba-a5-fiber-4`, swedencentral) | `b153c8a4fa3223d67d35e01d2c8b0bb20d9fcf4680de74c2d1012fe21a90bd8a` | 115,303 | one file |
 
 Restore and verify:
 
 ```sh
 cat vm1/vm1-work.tgz.part* > vm1-work.tgz
-sha256sum vm1-work.tgz vm2/vm2-work.tgz
+sha256sum vm1-work.tgz vm2/vm2-work.tgz vm4/vm4-work.tgz
 tar -xzf vm1-work.tgz -C vm1-work
 ```
 
@@ -31,5 +32,12 @@ The vm1 tree's large outputs, all over F_32009 in Singular's `dp` ordering:
   not relations); the kernel step that turns normal forms into relations ran in the distributed degree-2 runs,
   whose 148 relations in y(1..21) are retained as
   `../distribute/out/a5-e8-d2/e8nm_p1/d2/relations-d2.rel` and `../distribute/out/a5-e8-d2/e8nm_p2/d2/relations-d2.rel`.
+
+The vm4 tree holds one Singular job, the full standard basis for the degree-3 products of the 21 E8-bar to N-
+generators against 225 targets (`e8nm_d3/input.sing`, `gens.txt`, `targets.txt`, and the degree-2 relations it
+starts from in `previous-relations.rel`), run by `cg-run.sh` in a cgroup scope with no swap. It started
+2026-10-30T21:46:10Z and ended at its 129,600 s timeout (`e8nm_d3/exit` = 124, `all.done` 2026-11-01T09:46:11Z), so
+the tree carries inputs, the kernel log and a 30 s memory trace (`samples.tsv`, peak Singular RSS 49,760,004 KiB) and no
+normal forms; `out.log` records only the generator count, the target count and the products' build time (1,825 s).
 
 Each regenerates from the retained inputs in hours; the archives are the audit record of the runs as executed.
