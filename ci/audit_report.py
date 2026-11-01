@@ -4,7 +4,8 @@ Reads the shard timing records ci/run_gates.py writes with --timings (schema
 SHARD_SCHEMA, one ``status`` per gate) and docs/state/research_state.json,
 whose claims name the gates their evidence rests on, and lists every failing
 gate beside the claims that cite it, then each failing workflow job given on
-the command line.
+the command line. A gate that ci/gates.json quarantines
+(ci/gate_quarantine.py) is listed with its scope and reason, whether or not it failed.
 
 Usage: "$PYTHON" ci/audit_report.py --run-url URL [--failed-job NAME ...] TIMINGS...
 """
@@ -16,6 +17,8 @@ import json
 import sys
 from pathlib import Path
 from typing import Any
+
+import gate_quarantine
 
 ROOT = Path(__file__).resolve().parents[1]
 RESEARCH_STATE = ROOT / "docs/state/research_state.json"
@@ -52,7 +55,13 @@ def load(path: Path) -> dict[str, Any] | None:
     return document if isinstance(document, dict) else None
 
 
-def report(run_url: str, failed_jobs: list[str], records: list[dict[str, Any]], state: dict[str, Any] | None) -> str:
+def report(
+    run_url: str,
+    failed_jobs: list[str],
+    records: list[dict[str, Any]],
+    state: dict[str, Any] | None,
+    held: dict[str, dict[str, str]] | None = None,
+) -> str:
     gates = failing_gates(records)
     lines = [f"The scheduled audit run {run_url} failed.", ""]
     if gates:
@@ -65,6 +74,10 @@ def report(run_url: str, failed_jobs: list[str], records: list[dict[str, Any]], 
         lines.append("")
     if failed_jobs:
         lines.append("Failing jobs: " + ", ".join(f"`{job}`" for job in sorted(failed_jobs)) + ".")
+        lines.append("")
+    if held:
+        lines += ["Quarantined gates:", "", "| gate | scope | reason |", "| --- | --- | --- |"]
+        lines += [f"| `{gate}` | {d['scope']} | {d['reason']} |" for gate, d in sorted(held.items())]
         lines.append("")
     lines.append("Each cited claim is qualified until its gate passes again on main.")
     return "\n".join(lines) + "\n"
@@ -80,7 +93,9 @@ def main(argv: list[str]) -> int:
     loaded = {path: load(path) for path in arguments.timings}
     records = [record for record in loaded.values() if record is not None]
     unreadable = sorted(str(path) for path, record in loaded.items() if record is None)
-    body = report(arguments.run_url, arguments.failed_job, records, load(arguments.research_state))
+    manifest = load(gate_quarantine.GATES)
+    held = gate_quarantine.quarantined(manifest) if manifest is not None else None
+    body = report(arguments.run_url, arguments.failed_job, records, load(arguments.research_state), held)
     if unreadable:
         body += "\nUnreadable timing records: " + ", ".join(f"`{name}`" for name in unreadable) + ".\n"
     sys.stdout.write(body)

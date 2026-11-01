@@ -218,6 +218,14 @@ Only an AVX-512 CPU exercises the dispatch cap, so `ci/avx512_replay.sh` runs
 every such replay gate on an `avx512f` CPU and reports not run, exit 0, on any
 other; each CI gate shard runs it, since GitHub assigns runner CPUs of both
 kinds.
+A gate whose command ends in `ci/replay_check.py RETAINED --skip .tools.singular`
+compares a Singular producer's record without the version banner, whose build
+date differs between the distribution binary and the wheel binary; the
+singular-stack job asserts the 4.4.1 version tuple.
+A gate that fails in one audit scope only carries `"quarantine": {"scope":
+"avx512", "reason": TEXT}` in ci/gates.json ([ci/gate_quarantine.py](gate_quarantine.py)):
+`ci/avx512_replay.sh` leaves it out, the audit report lists it with its reason,
+and `tests/ci/test_gate_quarantine.py` fails when a claim cites it.
 The library inventory `docs/state/hypercomplex-libraries` (documented in
 the central Python guide [docs/PYTHON.md](../docs/PYTHON.md)) maps each import
 through the regenerating interpreter's installed distributions, so it is

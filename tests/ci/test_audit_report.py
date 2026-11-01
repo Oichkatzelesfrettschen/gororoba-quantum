@@ -55,3 +55,12 @@ def test_an_unloadable_registry_still_lists_the_failing_gates(tmp_path: Path) ->
         raise AssertionError(body)
     if audit_report.main(["--run-url", "URL", "--research-state", str(broken), str(shard), str(truncated)]) != 0:
         raise AssertionError("main failed on an unreadable input")
+
+
+def test_report_lists_quarantined_gates_with_scope_and_reason() -> None:
+    held = {"core-9": {"scope": "avx512", "reason": "last-bit drift"}}
+    body = audit_report.report("URL", [], [RECORDS[0]], STATE, held)
+    if "| `core-9` | avx512 | last-bit drift |" not in body:
+        raise AssertionError(body)
+    if "Quarantined" in audit_report.report("URL", [], [RECORDS[0]], STATE):
+        raise AssertionError("a report without quarantines named some")

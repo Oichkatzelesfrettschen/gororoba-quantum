@@ -7,7 +7,8 @@
 # numpy's dispatched loops above x86-64-v3 round differently from its AVX2
 # loops, and NPY_DISABLE_CPU_FEATURES caps the dispatch at x86-64-v3; only an
 # AVX-512 CPU exercises that cap, so only one tests that the runner-image
-# records replay there. A CPU without avx512f reports the check as not run and
+# records replay there. A gate that ci/gates.json quarantines for the avx512 scope
+# (ci/gate_quarantine.py) stays out of the selection. A CPU without avx512f reports the check as not run and
 # exits 0, and under GitHub Actions also writes a notice and a step summary.
 set -eu
 cd "$(dirname "$0")/.."
@@ -26,11 +27,7 @@ if ! grep -qw avx512f /proc/cpuinfo 2>/dev/null; then
     report "not run; the CPU flags lack avx512f ($model)"
     exit 0
 fi
-gates=$("$PYTHON" -B -c '
-import json
-names = [gate["name"] for gate in json.load(open("ci/gates.json"))["gates"] if "ci/replay_check.py" in gate["cmd"]]
-print(",".join(names))
-')
+gates=$("$PYTHON" -B ci/gate_quarantine.py avx512-replay-gates)
 if [ -z "$gates" ]; then
     echo "avx512 replay: ci/gates.json names no ci/replay_check.py gate" >&2
     exit 1
