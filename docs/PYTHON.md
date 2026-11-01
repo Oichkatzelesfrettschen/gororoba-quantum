@@ -10,7 +10,7 @@ prose:
 - [ci/requirements-replay.txt](../ci/requirements-replay.txt) (historical Qiskit 2.5.2 replays);
 - [packaging/qiskit-aer-cuda/build-requirements.txt](../packaging/qiskit-aer-cuda/build-requirements.txt) (qiskit-aer CUDA wheel packaging);
 - the build host's Arch packages in [python-stack.md](notes/build_host/python-stack.md), and the Qiskit-adjacent packages and `/opt` stacks beyond the core in [qiskit-packages/README.md](notes/qiskit-packages/README.md);
-- the host AWS Python packages and command-line programs in [python-packages.md](notes/aws/python-packages.md), and the project, plan, and credit rules in [aws/README.md](notes/aws/README.md);
+- the host AWS Python packages and command-line programs in [python-packages.md](notes/aws/python-packages.md), and the account's scope (a tooling cloud without Braket) in [aws/README.md](notes/aws/README.md);
 - the isolated provider environments: [Quantum Inspire](notes/quantum_inspire/README.md), [Open Quantum](notes/open_quantum/README.md), [Quandela](notes/quandela/README.md) ([quandela/python-stack.md](notes/quandela/python-stack.md)), [IQM](notes/iqm/README.md) ([iqm/python-stack-versions.json](notes/iqm/python-stack-versions.json)), and [Kaggle](notes/kaggle/README.md) ([kaggle_kernel/AGENTS.md](../kaggle_kernel/AGENTS.md)).
 
 The central [library register](state/hypercomplex-libraries/libraries.md) lists every
@@ -42,8 +42,8 @@ platform boundaries:
    - Local hypercomplex verification stack: 17 packages extracted and validated against
      `gororoba_quantum/cd_core.py` by `scripts/algebra_package_tables.py`.
    - AWS clients, console scripts, and local stand-ins on this interpreter are catalogued
-     in [python-packages.md](notes/aws/python-packages.md). The project, plan, and credit
-     rules are in [aws/README.md](notes/aws/README.md). A package enters the library
+     in [python-packages.md](notes/aws/python-packages.md). The account's scope is in
+     [aws/README.md](notes/aws/README.md). A package enters the library
      register when a scanned tree imports it.
 
 2. **Hosted CI / Pull-Request Verification (`ci/`)**
