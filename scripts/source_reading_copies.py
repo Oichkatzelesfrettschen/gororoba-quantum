@@ -10,10 +10,10 @@ its registered `source_url`, and that reading copy.
 
 Usage:
   "$PYTHON" scripts/source_reading_copies.py [--check]
+  "$PYTHON" scripts/source_reading_copies.py --locate DOCUMENTS_CHECKOUT...
 
 A plain run writes the git-ignored docs/sources/reading-copies.md; `--check` renders in memory, which validates the
 registry against the locations file, and compares no file.
-  "$PYTHON" scripts/source_reading_copies.py --locate DOCUMENTS_CHECKOUT...
 
 `--locate` rewrites the locations file from the manifests of the named checkouts, whose directory names are the
 repository names, then regenerates the index; every registered digest must resolve in exactly one of them.
