@@ -349,12 +349,12 @@ isa = transpile_to_IQM(circuit, backend, seed_transpiler=7)
 
 ## MCP
 
-`scripts/iqm_mcp_server.py` runs on the system Python (mcp 1.29) and imports
-nothing from the client stack. It serves read tools and `iqm_cancel_job`, which
-asks every time. `iqm_platform.py check` holds the tool set and annotations.
-The server submits nothing and books no timeslot. Its registration (server name
-`iqm`, launcher, environment) and per-client approval settings are recorded in
-the private gororoba-infrastructure repository.
+`scripts/iqm_mcp_server.py` runs on the system Python (mcp 2.3, MCPServer) and
+imports nothing from the client stack. It serves read tools and `iqm_cancel_job`,
+which asks every time. `iqm_platform.py check` holds the tool set and
+annotations. The server submits nothing and books no timeslot. Its registration
+(server name `iqm`, launcher, environment) and per-client approval settings are
+recorded in the private gororoba-infrastructure repository.
 
 Dictionary GET responses retain `_observation` with the exact request path and subsecond UTC start/end
 times. The interval belongs to that GET, rather than the calibration's creation timestamp or an atomic

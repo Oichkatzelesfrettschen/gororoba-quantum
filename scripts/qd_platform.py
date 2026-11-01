@@ -547,7 +547,7 @@ def facts_table(catalogue: dict[str, Any]) -> str:
 
 
 class ToolRecorder:
-    """Stands in for FastMCP: records each tool's name and annotations."""
+    """Stands in for MCPServer: records each tool's name and annotations."""
 
     def __init__(self, name: str) -> None:
         self.name = name
@@ -565,19 +565,18 @@ def mcp_surface(server: Path = MCP_SERVER) -> dict[str, dict[str, Any]]:
     """Tool names and annotations of the MCP server, loaded with mcp, anyio and pydantic replaced by stand-ins."""
     names = (
         "anyio",
+        "jsonschema",
         "mcp",
         "mcp.server",
-        "mcp.server.fastmcp",
-        "mcp.server.fastmcp.exceptions",
-        "mcp.server.fastmcp.server",
+        "mcp.server.mcpserver",
+        "mcp.server.mcpserver.exceptions",
         "mcp.server.stdio",
         "mcp.types",
         "pydantic",
     )
     modules = {name: ModuleType(name) for name in names}
-    modules["mcp.server.fastmcp"].FastMCP = ToolRecorder  # type: ignore[attr-defined]
-    modules["mcp.server.fastmcp.exceptions"].ToolError = RuntimeError  # type: ignore[attr-defined]
-    modules["mcp.server.fastmcp.server"].Settings = MagicMock()  # type: ignore[attr-defined]
+    modules["mcp.server.mcpserver"].MCPServer = ToolRecorder  # type: ignore[attr-defined]
+    modules["mcp.server.mcpserver.exceptions"].ToolError = RuntimeError  # type: ignore[attr-defined]
     modules["mcp.server.stdio"].stdio_server = MagicMock()  # type: ignore[attr-defined]
     modules["mcp.types"].ToolAnnotations = dict  # type: ignore[attr-defined]
     modules["mcp.types"].Tool = MagicMock()  # type: ignore[attr-defined]
@@ -624,7 +623,7 @@ def check_mcp(server: Path = MCP_SERVER) -> None:
     tools = mcp_surface(server)
     if tuple(sorted(tools)) != MCP_TOOLS:
         raise SystemExit(f"MCP tools {sorted(tools)} differ from {MCP_TOOLS}")
-    mutating = tuple(sorted(name for name, notes in tools.items() if notes.get("readOnlyHint") is not True))
+    mutating = tuple(sorted(name for name, notes in tools.items() if notes.get("read_only_hint") is not True))
     if mutating != MCP_MUTATING:
         raise SystemExit(f"MCP tools {mutating} change remote state, expected {MCP_MUTATING}")
 
