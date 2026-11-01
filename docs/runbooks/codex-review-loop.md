@@ -2,8 +2,13 @@
 
 Codex, the chatgpt-codex-connector app, supplies the default pull-request
 review. It reviews only on request: an issue comment `@codex review` asks for
-a review of the current head, so the operator posts one right after opening a
-PR and after every push that needs review. Codex is the only hosted reviewer.
+a review of the current head. The operator requests one when the PR is a merge
+candidate and again only after a push that changed code in response to a
+finding, at most two rounds per PR, through `scripts/codex_review_request.sh PR`:
+it refuses a request when the PR's own diff (`git patch-id --stable` of
+merge-base..head against current main) equals the last reviewed head's, so a
+merge of main earns none, and when two rounds were already requested. Codex is
+the only hosted reviewer.
 Copilot reviews are billed to the owner, so no pull request requests one; when
 the Codex app reports exhausted code-review quota, the owner decides how the
 PR proceeds. A round that never completes follows
@@ -61,8 +66,9 @@ PR proceeds. A round that never completes follows
    those markers, and lists every other open thread as unanswered. A comment
    such as "will fix" or a question resolves nothing. Never resolve a thread
    whose finding has not been read and answered.
-6. A push that fixed a finding gets one more request, and the loop starts
-   again at the wait. A PR leaves the loop when the current-head Codex status
+6. A push that fixed a finding gets one more request through
+   `scripts/codex_review_request.sh PR`, and the loop starts again at the
+   wait; a refused third round goes to the owner. A PR leaves the loop when the current-head Codex status
    reports `verdict=clean-comment...` or `verdict=clean-reaction...` and every
    review thread is resolved. A round that produced no thread ends the loop
    at once.

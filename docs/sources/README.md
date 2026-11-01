@@ -14,9 +14,10 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](../SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 50 licensed PDFs and two aliases;
-207 external sources retain citations and optional ignored local reading copies.
-Six licensed original software archives retain upstream notices under
+license evidence. The library publishes licensed PDFs and their aliases, and
+external sources retain citations and optional ignored local reading copies;
+`"$PYTHON" docs/verify_sources.py` prints the current count of each class.
+Licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](../PDF_SHA256SUMS) verifies the published PDF set from the
 repository root with `sha256sum -c docs/PDF_SHA256SUMS`.

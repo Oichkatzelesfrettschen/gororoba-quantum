@@ -95,7 +95,7 @@ column names the check that would let the sentence leave.
 | Secrets | No token, key, account identifier, CRN, email address or home path in a commit, log or memory; an IBM instance is a 12-hex sha256 of its CRN; the GitHub owner and the Kaggle slug stay because `collect` and `status` resolve them | a scanner in the `tests` job |
 | Spend and publication | Every provider job, paid upload, notebook session, timeslot and provider QRNG read waits for the owner's written case naming the question, why simulation cannot answer it, backend, shots, seconds and credits; IBM `--submit` goes through `scripts/approved_run.sh`; `GOROROBA_IBM_ACCOUNT` is fixed across a case's dry run, submit and collect; Open Quantum's public plan publishes the upload; free QRNG draws, calibration reads, transpilation, local simulation, retrieval and `--preserve-raw` need no case | harness denies on every submit entry point; launcher refusals for the routing split |
 | Other workers | No cancellation of a job this session did not submit without the cancellation-authority record | the validator in front of each cancel tool |
-| Retained data | A ledger- or digest-bound file keeps its path and bytes; a correction is a new file; `raw/<job_id>/` is never rewritten; external-only sources live in the private documents repository | the replay gates, selected by reach |
+| Retained data | Raw provider data, approval-hashed records and published replay bundles keep their path and bytes and a correction is a new file; a derived analysis that a ledger binds is corrected in place with its ledger; `raw/<job_id>/` is never rewritten; external-only sources live in the private documents repository | the replay gates, selected by reach |
 | Shared history | Merge commits; retarget a stacked PR before deleting its base; Codex is the only hosted reviewer and reviews once per head, a second time only after the operator review changed code; the four `pr.yml` checks admit a merge and no local gate run precedes a push | repository merge setting; the review scripts |
 | Claims | A mock timing never enters a claim or a figure; a new seed literal comes from a registered draw and a seed that reproduces a retained record keeps its value; hardware numbers and algebraic conventions come from the registered artifacts, never from recall | the claim checker; `ci/seed_provenance.py`, which already runs |
 | Routing | 14 qubits or fewer on Kaggle; 16 or more, or a device question, on IBM with a case saying why Aer cannot; 15 waits for a case naming the substrate | launcher refusals |
@@ -195,8 +195,9 @@ run on IBM with a case saying why Aer cannot; a 15-qubit run waits for a case na
 Other workers. A session cancels no job it did not submit without the cancellation-authority record of
 docs/runbooks/evidence-closure.md.
 
-Retained data. A file a ledger, record or digest binds keeps its path and bytes; a correction is a new
-file the old one's map row links. raw/<job_id>/ is never rewritten. External-only sources live only in
+Retained data. Raw provider data, a record an approval hashes and a published replay bundle keep their
+path and bytes; a correction is a new file the old one's map row links. A derived analysis that a ledger
+or digest binds is corrected in place in the change that refreshes its ledger or digest. raw/<job_id>/ is never rewritten. External-only sources live only in
 the private gororoba-documents-private repository.
 
 Shared history. Branch, pull request, merge commit (merge_method=merge). Retarget a stacked PR to main
