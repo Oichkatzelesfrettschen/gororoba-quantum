@@ -1223,3 +1223,28 @@ def test_replay_refuses_a_run_that_carries_an_input_in_two_blocks(tmp_path: Path
     run, repeat = replay_copies(tmp_path, "2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01")
     with pytest.raises(ValueError, match="repeats an input across blocks"):
         rehearsal.replay_record(run, repeat)
+
+
+def test_analysis_writers_keep_a_retained_record_and_refuse_a_departing_one(tmp_path: Path) -> None:
+    runs = ROOT / "results/quandela/runs"
+    names = (
+        "2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02",
+        "2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay",
+        "2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03",
+    )
+    for name in names:
+        (tmp_path / name).mkdir()
+        for file in (runs / name).iterdir():
+            if file.is_file():
+                (tmp_path / name / file.name).write_bytes(file.read_bytes())
+    job_02, replay, job_03 = (tmp_path / name for name in names)
+    retained = (job_03 / rehearsal.PAIR_ANALYSIS).read_bytes()
+    if rehearsal.analyze_pair(job_02, job_03) != 0 or (job_03 / rehearsal.PAIR_ANALYSIS).read_bytes() != retained:
+        raise AssertionError("a matching reanalysis rewrote the retained pair record")
+    with pytest.raises(ValueError):
+        rehearsal.analyze_pair(replay, job_03)
+    if (job_03 / rehearsal.PAIR_ANALYSIS).read_bytes() != retained:
+        raise AssertionError("a departing pair analysis replaced the retained record")
+    before = (job_02 / "analysis.json").read_bytes()
+    if rehearsal.analyze(job_02) != 0 or (job_02 / "analysis.json").read_bytes() != before:
+        raise AssertionError("a matching reanalysis rewrote the retained run record")

@@ -2091,7 +2091,7 @@ def analyze_pair(run_a: Path, run_b: Path, replay: bool = False) -> int:
         )
         print(f"{run_b.name}: {PAIR_ANALYSIS} replays, {record['status']}")
         return 0
-    write_json(target, record)
+    retain_record(target, record, f"{run_b.name}/{PAIR_ANALYSIS}")
     pooled_row = record["pooled"]
     print(
         f"{record['status']}: correctness {pooled_row['fidelity']} over {pooled_row['accepted']} accepted, lower "
@@ -2101,6 +2101,17 @@ def analyze_pair(run_a: Path, run_b: Path, replay: bool = False) -> int:
 
 
 REPLAY_ANALYSIS = "replay-analysis.json"
+
+
+def retain_record(target: Path, record: dict[str, Any], label: str) -> bool:
+    """Write an analysis record unless the target already holds one: a retained record keeps its bytes, and a fresh
+    analysis that departs from it beyond close()'s tolerance raises rather than replacing registered evidence.
+    Returns whether the record was written."""
+    if target.exists():
+        close(json.loads(json.dumps(record)), json.loads(target.read_text(encoding="utf-8")), label)
+        return False
+    write_json(target, record)
+    return True
 
 
 def replay_record(run: Path, repeat: Path) -> dict[str, Any]:
@@ -2170,7 +2181,7 @@ def analyze_replay(run: Path, repeat: Path, replay: bool = False) -> int:
         close(json.loads(json.dumps(record)), json.loads(target.read_text(encoding="utf-8")), f"{repeat.name}")
         print(f"{repeat.name}: {REPLAY_ANALYSIS} replays")
         return 0
-    write_json(target, record)
+    retain_record(target, record, f"{repeat.name}/{REPLAY_ANALYSIS}")
     print(
         f"meshes identical {record['meshes']['identical']}/{record['meshes']['compared']}; inputs differing: "
         f"{record['homogeneity']['differ'] or 'none'}"
@@ -2191,7 +2202,7 @@ def analyze(run: Path, replay: bool = False) -> int:
         outcome = f"verdict {record['verdict']}" if "verdict" in record else record["status"]
         print(f"{run.name}: analysis.json replays, {outcome}")
         return 0
-    write_json(run / "analysis.json", record)
+    retain_record(run / "analysis.json", record, f"{run.name}/analysis.json")
     if record["schema"] == "qd-teleportation-analysis-v2":
         pooled_row = record["pooled"]
         print(
