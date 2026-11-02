@@ -487,7 +487,7 @@ def quotient_data(
             os.replace(prior_basis, path("qB.prior.txt"))
         job = (singular, STD_SCRIPT.format(J=header_text["J"], N=N, **base), path("std.sing"), path("s.txt.part"),
                path("s.txt"))  # fmt: skip
-        computed["s.txt"] = run_singular(job)[1]
+        computed["s.txt"] = round(run_singular(job)[1], 1)
         os.replace(path("qB.txt.part"), path("qB.txt"))
         if prior_basis:
             # A recomputed standard basis must reproduce the basis the existing tables were written against.
