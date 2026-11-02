@@ -1,0 +1,139 @@
+name: proofs
+
+# The Rocq compile of the proof bundles, run when a pull request or a push to
+# main touches a proof source, a replay bundle, the replay driver or a pin.
+# The path filter leaves the workflow unrun on other changes, so it is not a
+# required check (a required check from a skipped workflow stays pending).
+# A pull request compiles the bundles that take under two minutes; a push to
+# main and a manual run add the Stiefel bundle, which takes about nine.
+# ci/check_rocq_ci_pins.py holds the path lists, the pin, the replay selection
+# and the open_gororoba fetch in agreement with the bundles.
+on:
+  pull_request:
+    paths:
+      - proofs/**
+      - docs/evidence/c881_exhaustive/**
+      - docs/evidence/cd-imaginary-sum-conference/**
+      - docs/evidence/cd-tower-basis-sign/**
+      - docs/evidence/cd-sign-row-anf/**
+      - docs/evidence/cd-associator-anf/**
+      - docs/evidence/cd-associator-census/**
+      - docs/evidence/cd-sign-python-semantics/**
+      - docs/evidence/cd-sign-python-translation/**
+      - docs/evidence/cd-associator-point-indicators/**
+      - docs/evidence/cd-annihilator-symmetry/**
+      - docs/evidence/cd-annihilator-symmetry-real/**
+      - docs/evidence/cd-tower-domain/**
+      - docs/evidence/folding_proofs/**
+      - docs/evidence/formal_certificates/**
+      - docs/evidence/stiefel_witness/**
+      - docs/evidence/rocq_kaggle_replay/**
+      - scripts/cd_sign_source_ast.py
+      - scripts/rocq_kaggle_replay.py
+      - scripts/cd_sign_rocq_ast.py
+      - gororoba_quantum/cd_core.py
+      - gororoba_quantum/parallel.py
+      - ci/open_gororoba.pin
+      - ci/fetch_open_gororoba.sh
+      - ci/rocq_toolchain.pin
+      - ci/install_rocq.sh
+      - .github/workflows/proofs.yml
+  push:
+    branches: [main]
+    paths:
+      - proofs/**
+      - docs/evidence/c881_exhaustive/**
+      - docs/evidence/cd-imaginary-sum-conference/**
+      - docs/evidence/cd-tower-basis-sign/**
+      - docs/evidence/cd-sign-row-anf/**
+      - docs/evidence/cd-associator-anf/**
+      - docs/evidence/cd-associator-census/**
+      - docs/evidence/cd-sign-python-semantics/**
+      - docs/evidence/cd-sign-python-translation/**
+      - docs/evidence/cd-associator-point-indicators/**
+      - docs/evidence/cd-annihilator-symmetry/**
+      - docs/evidence/cd-annihilator-symmetry-real/**
+      - docs/evidence/cd-tower-domain/**
+      - docs/evidence/folding_proofs/**
+      - docs/evidence/formal_certificates/**
+      - docs/evidence/stiefel_witness/**
+      - docs/evidence/rocq_kaggle_replay/**
+      - scripts/cd_sign_source_ast.py
+      - scripts/rocq_kaggle_replay.py
+      - scripts/cd_sign_rocq_ast.py
+      - gororoba_quantum/cd_core.py
+      - gororoba_quantum/parallel.py
+      - ci/open_gororoba.pin
+      - ci/fetch_open_gororoba.sh
+      - ci/rocq_toolchain.pin
+      - ci/install_rocq.sh
+      - .github/workflows/proofs.yml
+  workflow_dispatch:
+
+concurrency:
+  group: proofs-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  PYTHON: python3
+  PYTHONHASHSEED: "0"
+
+jobs:
+  rocq:
+    name: rocq
+    runs-on: ubuntu-26.04
+    timeout-minutes: 60
+    env:
+      OPAMROOT: ${{ github.workspace }}/.opam
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - name: Install system packages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq opam m4 pkg-config libgmp-dev git make gcc unzip bubblewrap ripgrep
+          command -v rg
+      - name: Restore the opam switch
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: .opam
+          key: opam-rocq-ubuntu-26.04-${{ runner.arch }}-${{ hashFiles('ci/rocq_toolchain.pin', 'ci/install_rocq.sh') }}
+      - name: Install the pinned Rocq toolchain
+        run: |
+          sh ci/install_rocq.sh > "$RUNNER_TEMP/opam_list.txt"
+          cat "$RUNNER_TEMP/opam_list.txt"
+      - name: Fetch the pinned gororoba-open sources
+        run: >-
+          sh ci/fetch_open_gororoba.sh "$RUNNER_TEMP/open_gororoba"
+          proofs
+          crates/algebra_analysis/src
+          crates/algebra_experimental/src/sedenion_subalgebras
+          crates/cd_kernel/src/cayley_dickson
+      - name: Replay the receipts
+        # A pull request replays the bundles under two minutes; pushes to main
+        # and manual runs add the Stiefel bundle.
+        run: |
+          set -eu
+          rocq=$(sed -n 's/^rocq //p' "$RUNNER_TEMP/opam_list.txt")
+          only="formal_certificates c881_exhaustive folding_proofs TargetFlipN21 cd-imaginary-sum-conference cd-tower-basis-sign cd-sign-row-anf cd-associator-anf cd-associator-census cd-sign-python-semantics cd-associator-point-indicators cd-sign-python-translation cd-annihilator-symmetry cd-annihilator-symmetry-real cd-tower-domain"
+          if [ "${{ github.event_name }}" != pull_request ]; then
+            only="$only stiefel_witness"
+          fi
+          # shellcheck disable=SC2086
+          "$PYTHON" scripts/rocq_kaggle_replay.py --rocq "$rocq" \
+            --gororoba-root "$RUNNER_TEMP/open_gororoba" \
+            --gororoba-commit "$(tr -d ' \t\r\n' < ci/open_gororoba.pin)" \
+            --only $only --out "$RUNNER_TEMP/rocq_replay.json"
+      - name: Show the replay record
+        if: always()
+        run: |
+          [ ! -f "$RUNNER_TEMP/rocq_replay.json" ] || "$PYTHON" -c 'import json,sys; r=json.load(open(sys.argv[1])); [print(k, v["returncode"], v["seconds"], v["warning_lines"], v["tail"][-600:], sep="\n") for k, v in r["replays"].items()]' "$RUNNER_TEMP/rocq_replay.json"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        if: always()
+        with:
+          name: rocq-replay
+          path: |
+            ${{ runner.temp }}/rocq_replay.json
+            ${{ runner.temp }}/opam_list.txt

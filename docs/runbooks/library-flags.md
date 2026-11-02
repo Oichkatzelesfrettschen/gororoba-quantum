@@ -55,7 +55,7 @@ site-packages: pacman's "Required By" misses direct links.
 | `OPENBLAS_NUM_THREADS`, `OMP_NUM_THREADS`, `MKL_NUM_THREADS`, `BLIS_NUM_THREADS`, `VECLIB_MAXIMUM_THREADS`, `NUMEXPR_NUM_THREADS`, `RAYON_NUM_THREADS`, `QISKIT_NUM_PROCS` | `parallel.py` sets each to 1 in a pool worker unless the caller already set it | `parallel.WORKER_THREAD_VARIABLES`, `WORKER_BLAS_THREADS` | leave to the pool for CPU-bound loops over independent items | a gate whose per-item matrices exceed about 256 x 256 and run faster with 2 BLAS threads per worker | verified, unmeasured |
 | `MALLOC_ARENA_MAX=2` or `GLIBC_TUNABLES=glibc.malloc.arena_max=2` | glibc arena count; `kaggle_run.py` sets the tunable | `scripts/kaggle_run.py`; [compute-flags.md](compute-flags.md) | 2 for every multithreaded C program | peak resident set and wall time with the default arena count | verified, unmeasured |
 | `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096` | static TLS room for the Qiskit and Aer extensions | [AGENTS.md](../../AGENTS.md) | always when importing qiskit | an import failure without it on the target interpreter | verified |
-| `MPLBACKEND=Agg` | non-interactive matplotlib backend | `matplotlib/__init__.py` reads it; `.github/workflows/ci.yml`, `kaggle_kernel/kernel_main.py` set it | `Agg` for every script and CI lane | none; the installed default is `qtagg` | verified |
+| `MPLBACKEND=Agg` | non-interactive matplotlib backend | `matplotlib/__init__.py` reads it; `ci/pr_checks.sh`, `kaggle_kernel/kernel_main.py` set it | `Agg` for every script and CI lane | none; the installed default is `qtagg` | verified |
 
 ## qiskit 2.5.2 and qiskit-aer 0.17.2
 

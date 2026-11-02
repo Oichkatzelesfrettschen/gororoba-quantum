@@ -125,7 +125,9 @@ def obligation(plan: dict[str, Any], step: dict[str, Any] | None = None) -> str:
     return digest({"plan": parent, "steps": [obligation(plan, item) for item in plan.get("steps", [])]})
 
 
-def check_receipts(root: Path, receipts: Any, scope: str) -> None:
+def check_receipts(root: Path, receipts: Any, scope: str, closed: bool = False) -> None:
+    """Check receipt shape; the cited local files must exist at HEAD unless the plan is closed, whose receipts are
+    history that their revision pins in Git."""
     require(isinstance(receipts, list), "receipts: list required")
     for receipt in receipts:
         require(isinstance(receipt, dict), "receipt: object required")
@@ -139,7 +141,8 @@ def check_receipts(root: Path, receipts: Any, scope: str) -> None:
         require(isinstance(receipt["evidence"], list) and bool(receipt["evidence"]), "receipt needs evidence")
         for evidence in receipt["evidence"]:
             require(isinstance(evidence, dict) and set(evidence) == {"ref", "sha256"}, "evidence needs ref and sha256")
-            reference(root, evidence["ref"])
+            if not closed or evidence["ref"].startswith("https://"):
+                reference(root, evidence["ref"])
             if not evidence["ref"].startswith("https://"):
                 selector(evidence["ref"])
             require(bool(HEX.fullmatch(evidence["sha256"])), "evidence digest needs SHA-256")
@@ -168,7 +171,10 @@ def selected_record(root: Path, reference: str) -> dict[str, Any] | None:
     match = selector(reference)
     if match is None:
         raise ValueError(f"evidence reference names no record: {reference}")
-    document = json_document(local_path(root, reference).read_bytes())
+    path = local_path(root, reference)
+    if not path.is_file():
+        return None
+    document = json_document(path.read_bytes())
     members = document.get(match["collection"]) if isinstance(document, dict) else None
     found = [
         member
@@ -180,9 +186,10 @@ def selected_record(root: Path, reference: str) -> dict[str, Any] | None:
 
 def evidence_digest(root: Path, reference: str) -> str | None:
     """The SHA-256 a local evidence reference binds: the checkout bytes of a file, or the digest() of a selected
-    record. None when a selector matches no single record, which reads as changed evidence."""
+    record. None when the file is gone or a selector matches no single record, which reads as changed evidence."""
     if selector(reference) is None:
-        return hashlib.sha256(local_path(root, reference).read_bytes()).hexdigest()
+        path = local_path(root, reference)
+        return hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
     record = selected_record(root, reference)
     return None if record is None else digest(record)
 
@@ -271,7 +278,7 @@ def _validate_one(item: tuple[str, dict[str, Any]]) -> None:
             text(step.get("reason"), "cancellation reason")
         if step["state"] == "done":
             require(bool(step.get("receipts")), "completed step needs receipt")
-        check_receipts(root, step.get("receipts", []), obligation(plan, step))
+        check_receipts(root, step.get("receipts", []), obligation(plan, step), plan["state"] == "closed")
     require(len({step["id"] for step in steps}) == len(steps), "duplicate step ID")
     if plan["state"] == "closed":
         require(all(step["state"] in {"done", "cancelled"} for step in steps), "closed plan has unfinished steps")
@@ -279,7 +286,7 @@ def _validate_one(item: tuple[str, dict[str, Any]]) -> None:
     if plan.get("disposition") == "completed" and plan["state"] == "closed":
         require(bool(steps) and all(step["state"] == "done" for step in steps), "completed plan needs all steps done")
         require(bool(plan.get("receipts")), "completed plan needs closure receipt")
-    check_receipts(root, plan.get("receipts", []), obligation(plan))
+    check_receipts(root, plan.get("receipts", []), obligation(plan), plan["state"] == "closed")
 
 
 def node_key(plan_id: str, value: str) -> str:

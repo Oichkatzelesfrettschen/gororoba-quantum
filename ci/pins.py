@@ -42,7 +42,7 @@ REPLAY_RUNTIMES = {"qiskit-2.5": ("REPLAY_PYTHON", ROOT / "ci" / "requirements-r
 REPLAY_VARIABLES = frozenset(variable for variable, _path in REPLAY_RUNTIMES.values())
 # The pin files of the current runtime, which every gate without a runtime field runs under.
 CURRENT_PINS = (ROOT / "requirements.txt", ROOT / "ci" / "requirements-ci.txt")
-# The setup-python version of .github/workflows/ci.yml, which each host environment is built on.
+# The setup-python version of .github/actions/pins-venv, which each host environment is built on.
 PYTHON_VERSION = "3.14.7"
 # Each runtime's host environment directory under the cache; "current" is the default runtime.
 HOST_ENVS = {"current": f"ci-py{PYTHON_VERSION}", "qiskit-2.5": f"replay-py{PYTHON_VERSION}"}
@@ -224,8 +224,8 @@ def resolve_current(
 
     An explicit $PYTHON is the caller's choice: it runs whatever it holds,
     with the differing pins named, unless PINS_REQUIRED demands every pin or
-    the run decides admission (``run_gates.py --changed-files``, the merge
-    verdict), whose gates count only under the pinned runtime. Without one,
+    the run decides admission (the premerge verdict), whose gates count only
+    under the pinned runtime. Without one,
     the running interpreter serves when it holds every pin, then the host
     environment; None means no interpreter holds them. A tree without pin
     files verifies nothing.
