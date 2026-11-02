@@ -189,9 +189,19 @@ The workstation's GPU (driver API on 2026-11-01: 16,375 MiB, compute capability 
 against 1 and 1 on the build host's RTX 4070 Ti. WSL therefore gives no HMM access to pageable memory, and the GPU
 and the CPU cannot touch a managed allocation at the same time. Managed allocations still oversubscribe the device: a
 20 GiB `cuMemAllocManaged` buffer took a full device memset and a CPU read-back in 17.4 s (infrastructure record
-`hosts/alienware.md`). The Layer 2 candidates there are explicit residency (pinned staging into a device digit cache)
-and managed memory with phase-separated access, each to be measured on this device. The WSL guest carries the driver library only (`/usr/lib/wsl/lib`), without the CUDA toolkit,
-CuPy or torch.
+`hosts/alienware.md`). Measured on 2026-11-02 (driver 610.74, WSL 3.0.3, kernel 6.18.54, Ubuntu 26.04): the attributes stand
+(`PAGEABLE_MEMORY_ACCESS = 0`, `CONCURRENT_MANAGED_ACCESS = 0`, `MANAGED_MEMORY = 1`, `HOST_REGISTER_SUPPORTED = 1`),
+as NVIDIA's WSL user guide states for concurrent access and full managed memory (section 5.1). Both Layer 2 candidates
+work. A 20 GiB managed buffer takes a host touch in 1.0 s, a device memset in 2.4 s and reads back correctly, and a
+2 GiB `malloc` buffer registered with `cuMemHostRegister` is written by the device in 0.62 s and seen by the host.
+The driver library is the only CUDA component the guest ships, but a user-space environment (torch 2.14.1+cu130, CuPy
+14.2.0 on CUDA runtime 13.2, python-flint 0.9.0) installs from wheels without a system toolkit, and Ubuntu 26.04's
+archive carries `cuda-toolkit-13-1` (13.1.1) with no driver, kernel module or DKMS package among its 89 packages.
+With that environment the probes reproduce exactly: the PLUQ rank matches FLINT on all 95 verify cases (sizes 256,
+1024 and 2048, every class and shape, modulo 32009), and at `n = 8192` and `16384` it takes 0.164 s and 0.584 s
+against 35.7 s and 248 s for FLINT on that host. The device-digit-cache product is exact at `n = 16384` (0.73 s,
+12.1 TOP/s), `n = 32768` (5.14 s, 13.7 TOP/s) and `n = 49152`, whose 18 GiB of operands exceed the device and force
+1,754 tile evictions (25.7 s, 9.2 TOP/s). Explicit residency is therefore the Layer 2 route on this device.
 
 ## Where the time goes in the fiber ranks
 
@@ -200,6 +210,31 @@ shorten. In quotient mode the Singular product export takes 99 percent of the wa
 10,250 of 10,313 s), which no GPU stage touches. In raw mode the linear-algebra closure takes 60 to 97 percent
 (E8-bar -> N- degree 3 at N = 11: 4,397 of 4,526 s, 34 GB resident), and that closure is the stage the exact PLUQ
 replaces.
+
+Engine v7 in quotient mode on E8-bar -> N- at degree 4 (laptop under WSL, `seconds` of each record) keeps that split:
+
+| N | Singular export | products | closure | share of linear algebra | rank r_N |
+| --- | --- | --- | --- | --- | --- |
+| 12 | 4,268 s | 243 s | 46 s | 6.3 % | 357 |
+| 13 | 11,708 s | 621 s | 93 s | 5.7 % | 440 |
+| 14 | 28,204 s | 1,654 s | 177 s | 6.1 % | 440 |
+
+Removing the linear algebra entirely bounds the speedup at 30,053 / 28,204 = 1.066 at N = 14 while the export runs
+as one Singular process (engines v7 and v8), whose time grows by 2.7x and then 2.4x per unit N. That export divides:
+it computes the standard basis of J + m^N and then one independent normal-form table per variable. At N = 15 the
+standard basis took 6,919 s and the first table a further 6,961 s (laptop file times), with Singular at 450 MB.
+Engine v9 (`fiber_rank_v9.py`) runs the tables as separate processes, and its parsed export equals the serial one
+(r_N = 268 from both at N = 11), so the export wall time falls toward the standard basis plus the slowest table and
+the linear-algebra share rises with it. The table times vary by a factor of 6 across variables at N = 11, so the
+gain at N = 15 is set by its slowest table, not yet measured. The quotient blocks hold about 5,800 columns at N = 14, where the measured PLUQ is
+roughly 40 times faster than FLINT, but the closure is 0.6 % of the wall time. Raw mode, the form whose closure the
+GPU does replace, needs the monomial space of degree below N in 9 variables: 92,378 monomials at N = 11 (34 GB
+resident) and 497,420 at N = 14, so a dense closure there grows by the square of that 5.4x ratio, to the order of a
+terabyte (estimate). The quotient-mode peak, 17.9 GiB at N = 14, also exceeds the 12 GiB card, so a device path
+would run through Layer 2, whose prefetch issue takes 57 % of the profiled CUDA API time. The workstation's RTX 4090
+(16 GiB) takes that spill under WSL through explicit residency rather than HMM, as the next section measures. The GPU
+pays where linear algebra dominates: raw-mode closures at moderate N (the 97 % case above), Macaulay-matrix degree
+ranks, and the exact kernel computations that test a named set of candidate relations.
 
 ## Order
 
