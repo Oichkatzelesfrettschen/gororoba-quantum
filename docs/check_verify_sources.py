@@ -255,6 +255,7 @@ class SourceRightsChecks(unittest.TestCase):
     def use_external_arxiv(self, identifier: str = "LicenseRef-arXiv-nonexclusive-distrib-1.0") -> None:
         previous_url = self.entry["rights"]["observed_license_url"]
         observed_url = LICENSE_URLS[identifier].replace("https://", "http://", 1)
+        self.entry["redistribution"] = "excluded_without_permission"
         self.entry["rights"].update(
             decision="external_only",
             license_identifier=identifier,
@@ -690,6 +691,86 @@ class SourceRightsChecks(unittest.TestCase):
     def test_versioned_arxiv_source_with_versionless_local_filename_passes(self) -> None:
         self.verify()
 
+    def use_pdf_notice(self) -> None:
+        self.entry["source_url"] = "https://cm.episciences.org/13124/pdf"
+        self.entry["rights"].update(
+            license_identifier="CC-BY-SA-4.0",
+            license_url=LICENSE_URLS["CC-BY-SA-4.0"],
+            evidence_url="https://cm.episciences.org/13124",
+            evidence_route="pdf-notice",
+        )
+        self.notice_record: dict[str, Any] = {
+            "schema": "pdf-license-notice-v1",
+            "pdf_sha256": self.digest,
+            "source_url": self.entry["source_url"],
+            "article_url": "https://cm.episciences.org/13124",
+            "page": 1,
+            "license_identifier": "CC-BY-SA-4.0",
+            "notice": "This is an open access article licensed under the CC BY-SA 4.0",
+            "metadata_conflicts": ["arXiv abstract page: arXiv non-exclusive distribution license"],
+        }
+        self.notice_path = self.root / "docs/evidence/source_rights/pdf-notice-cm-13124.json"
+        self.entry["rights"]["evidence_path"] = self.notice_path.relative_to(self.root).as_posix()
+        self.write_notice()
+
+    def write_notice(self) -> None:
+        raw = json.dumps(self.notice_record).encode()
+        self.notice_path.write_bytes(raw)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw).hexdigest()
+
+    def test_pdf_notice_grant_passes(self) -> None:
+        self.use_pdf_notice()
+        self.verify()
+
+    def test_pdf_notice_changed_capture_hash_is_rejected(self) -> None:
+        self.use_pdf_notice()
+        self.notice_path.write_bytes(self.notice_path.read_bytes() + b" ")
+        self.reject("captured PDF notice SHA-256")
+
+    def test_pdf_notice_without_license_text_is_rejected(self) -> None:
+        self.use_pdf_notice()
+        self.notice_record["notice"] = "This is an open access article"
+        self.write_notice()
+        self.reject("PDF notice names the license")
+
+    def test_pdf_notice_for_other_bytes_is_rejected(self) -> None:
+        self.use_pdf_notice()
+        self.notice_record["pdf_sha256"] = "3" * 64
+        self.write_notice()
+        self.reject("PDF notice identity")
+
+    def test_pdf_notice_substituted_article_is_rejected(self) -> None:
+        self.use_pdf_notice()
+        self.notice_record["article_url"] = "https://example.org/other"
+        self.write_notice()
+        self.reject("PDF notice article identity")
+
+    def use_licensed_external(self) -> None:
+        del self.entry["path"]
+        self.entry["status"] = "external_only"
+        self.entry["redistribution"] = "explicit_license_verified"
+        self.entry["rights"]["decision"] = "external_only"
+
+    def test_licensed_external_arxiv_record_passes(self) -> None:
+        self.use_licensed_external()
+        self.verify(published=False)
+
+    def test_licensed_external_pdf_notice_record_passes(self) -> None:
+        self.use_pdf_notice()
+        self.use_licensed_external()
+        self.verify(published=False)
+
+    def test_licensed_external_record_with_distribution_only_grant_is_rejected(self) -> None:
+        self.use_external_arxiv()
+        self.use_licensed_external()
+        self.reject("licensed external license allowlist", published=False)
+
+    def test_licensed_external_record_without_license_route_is_rejected(self) -> None:
+        self.use_licensed_external()
+        self.entry["source_url"] = "https://author.example.org/paper.pdf"
+        self.entry["rights"]["evidence_url"] = "https://author.example.org/paper"
+        self.reject("licensed external license evidence route", published=False)
+
     def test_cc0_grant_passes(self) -> None:
         self.entry["rights"].update(
             license_identifier="CC0-1.0",
@@ -875,6 +956,7 @@ class SourceRightsChecks(unittest.TestCase):
         self.reject("external-only rights decision", published=False)
 
     def test_external_arxiv_grant_mismatch_is_rejected(self) -> None:
+        self.entry["redistribution"] = "excluded_without_permission"
         self.entry["rights"].update(
             decision="external_only",
             license_identifier="LicenseRef-arXiv-nonexclusive-distrib-1.0",
@@ -883,6 +965,7 @@ class SourceRightsChecks(unittest.TestCase):
         self.reject("arXiv license identity", published=False)
 
     def test_legacy_arxiv_identifier_passes(self) -> None:
+        self.entry["redistribution"] = "excluded_without_permission"
         self.entry["source_url"] = "https://arxiv.org/pdf/math/0511691v1"
         self.entry["rights"].update(
             evidence_url="https://arxiv.org/abs/math/0511691v1",
