@@ -128,7 +128,8 @@ def test_chunk_parts_with_other_bounds_are_ignored(tmp_path: Path) -> None:
     out.mkdir()
     stale = out / f"qM1.r1-{D // 3}.txt"
     stale.write_text(",".join(["0"] * (D // 3)))
-    (out / (stale.name + ".sha256")).write_text(v9.file_sha256(str(stale)))
+    ident = v9.identity_sha256(v9.export_identity(HEADER, NAMES, P, 6))
+    (out / (stale.name + ".sha256")).write_text(f"{v9.file_sha256(str(stale))} {ident}")
     split = v9.quotient_data(HEADER, NAMES, P, 6, str(SINGULAR), str(out), chunks=4)
     _check(split[:3] == serial)
 
@@ -164,6 +165,28 @@ def test_kbase_order_and_indented_errors_block_publication(tmp_path: Path) -> No
     with pytest.raises(RuntimeError):
         v9.run_singular(broken)
     _check(not (tmp_path / "out").exists())
+
+
+def test_sidecar_from_another_export_refuses(tmp_path: Path) -> None:
+    (tmp_path / "qB.txt").write_text("1")
+    other = v9.identity_sha256(v9.export_identity(HEADER, NAMES, P, 7))
+    (tmp_path / "qB.txt.sha256").write_text(f"{v9.file_sha256(str(tmp_path / 'qB.txt'))} {other}")
+    with pytest.raises(SystemExit, match="another header"):
+        v9.quotient_data(HEADER, NAMES, P, 6, "Singular", str(tmp_path), adopt=True)
+
+
+@needs_singular
+def test_adoption_refuses_unrecorded_row_ranges(tmp_path: Path) -> None:
+    adopted = _adopted(tmp_path)
+    (adopted / "qM2.r1-1.txt").write_text("0")
+    with pytest.raises(SystemExit, match="row-range"):
+        v9.quotient_data(HEADER, NAMES, P, 6, str(SINGULAR), str(adopted), adopt=True)
+
+
+def test_failed_step_returns_instead_of_raising(tmp_path: Path) -> None:
+    step = v9.Step(str(tmp_path / "no-singular"), "", str(tmp_path / "s.sing"), str(tmp_path / "o"), None, "RESULT t")
+    name, _, error = v9.run_step(step)
+    _check(name == "o" and error is not None)
 
 
 def test_one_writer_per_export_dir(tmp_path: Path) -> None:

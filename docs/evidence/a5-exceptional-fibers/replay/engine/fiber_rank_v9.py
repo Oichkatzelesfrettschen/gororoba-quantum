@@ -418,6 +418,7 @@ class Step(NamedTuple):
     marker: str
     basis: str | None = None
     expect_basis: str | None = None
+    identity: str = ""
 
 
 def read_list(path: str, names: list[str], p: int) -> list[Poly]:
@@ -437,10 +438,10 @@ def file_sha256(path: str) -> str:
     return h.hexdigest()
 
 
-def publish(part: str, final: str) -> None:
-    """Rename part to final after writing final's sha256 sidecar, so every published export file has a record."""
+def publish(part: str, final: str, identity: str) -> None:
+    """Rename part to final after writing its sidecar: the file's sha256 and the sha256 of the export identity."""
     with open(final + ".sha256.part", "w") as f:
-        f.write(file_sha256(part))
+        f.write(f"{file_sha256(part)} {identity}")
     os.replace(final + ".sha256.part", final + ".sha256")
     os.replace(part, final)
 
@@ -469,8 +470,16 @@ def run_singular(step: Step) -> tuple[str, float]:
         if not same:
             raise RuntimeError(f"Singular export step {step.part}: kbase differs from {step.expect_basis}")
     if step.final is not None:
-        publish(step.part, step.final)
+        publish(step.part, step.final, step.identity)
     return os.path.basename(step.final or step.part), time.time() - t
+
+
+def run_step(step: Step) -> tuple[str, float, str | None]:
+    """run_singular returning its failure instead of raising, so the caller waits for every step before it raises."""
+    try:
+        return (*run_singular(step), None)
+    except (RuntimeError, OSError, subprocess.CalledProcessError) as e:
+        return os.path.basename(step.part), 0.0, f"{type(e).__name__}: {e}"
 
 
 def export_identity(header_text: dict[str, str], names: list[str], p: int, N: int) -> dict:
@@ -495,6 +504,10 @@ def adopt_serial_export(out: str, header_text: dict[str, str], names: list[str],
     ]
     if not all(x in text for x in needed):
         raise SystemExit("--adopt-export: q.sing does not name this header's ring, J, G, redSB and N")
+
+
+def identity_sha256(ident: dict) -> str:
+    return hashlib.sha256(json.dumps(ident, sort_keys=True).encode()).hexdigest()
 
 
 def write_manifest(mpath: str, record: dict) -> None:
@@ -561,9 +574,14 @@ def _quotient_data_locked(
     # A file without a record stays pending, out of the manifest, until its recomputation agrees, so every retry
     # verifies it again.
     pending = []
+    identity = identity_sha256(ident)
     for f in present:
         sidecar = path(f + ".sha256")
-        want = files.get(f) or (Path(sidecar).read_text().strip() if os.path.exists(sidecar) else None)
+        want = files.get(f)
+        if want is None and os.path.exists(sidecar):
+            want, _, producer = Path(sidecar).read_text().strip().partition(" ")
+            if producer != identity:
+                raise SystemExit(f"{f}.sha256 in --export-dir names another header, prime or N")
         got = file_sha256(path(f))
         if want is None:
             pending.append(f)
@@ -577,6 +595,8 @@ def _quotient_data_locked(
                              "--adopt-export")  # fmt: skip
         if "s.txt" in pending or ("qB.txt" in pending and os.path.exists(path("s.txt"))):
             raise SystemExit("--adopt-export verifies qB.txt by recomputing s.txt, so s.txt cannot be adopted")
+        if any(re.match(r"qM\d+\.r", f) for f in pending):
+            raise SystemExit("--adopt-export admits whole engine v8 tables; a row-range file needs its .sha256 sidecar")
         adopt_serial_export(out, header_text, names, p, N)
     write_manifest(mpath, {**ident, "files": files, "adopted": recorded.get("adopted", [])})
     adopted = sorted(set(pending) | set(recorded.get("adopted", [])))
@@ -595,11 +615,11 @@ def _quotient_data_locked(
                 os.replace(path("qB.txt.part"), path("qB.rejected.txt"))
                 os.remove(path("s.txt.part"))
                 raise SystemExit("recomputed kbase differs from the qB.txt in --export-dir (kept as qB.rejected.txt)")
-            publish(path("qB.txt.part"), path("qB.txt"))
+            publish(path("qB.txt.part"), path("qB.txt"), identity)
             pending = [f for f in pending if f != "qB.txt"]
         else:
-            publish(path("qB.txt.part"), path("qB.txt"))
-        publish(path("s.txt.part"), path("s.txt"))
+            publish(path("qB.txt.part"), path("qB.txt"), identity)
+        publish(path("s.txt.part"), path("s.txt"), identity)
         reused = [f for f in reused if f != "s.txt"]
     basis = [next(iter(q)) for q in read_list(path("qB.txt"), names, p)]
     D = len(basis)
@@ -611,7 +631,7 @@ def _quotient_data_locked(
 
     def checked(script: str, tag: str, final: str | None, marker: str) -> Step:
         return Step(singular, script, path(tag + ".sing"), path(tag + ".txt.part"), final, marker,
-                    path(tag + ".kbase.part"), path("qB.txt"))  # fmt: skip
+                    path(tag + ".kbase.part"), path("qB.txt"), identity)  # fmt: skip
 
     jobs, joins, checks = [], [], []
     bounds = [(1 + i * D // chunks, (i + 1) * D // chunks) for i in range(chunks)]
@@ -630,10 +650,10 @@ def _quotient_data_locked(
         parts = [path(f"qM{k}.r{lo}-{hi}.txt") if chunks > 1 else final for lo, hi in bounds]
         for (lo, hi), part in zip(bounds, parts, strict=True):
             if not os.path.exists(part):
-                tag = part[:-4]
-                script = load(tag) + TABLE_SCRIPT.format(k=k, lo=lo, hi=hi, part=part + ".part")
-                jobs.append(Step(singular, script, tag + ".sing", part + ".part", part, "RESULT table",
-                                 tag + ".kbase.part", path("qB.txt")))  # fmt: skip
+                stem = part[:-4]
+                script = load(stem) + TABLE_SCRIPT.format(k=k, lo=lo, hi=hi, part=part + ".part")
+                jobs.append(Step(singular, script, stem + ".sing", part + ".part", part, "RESULT table",
+                                 stem + ".kbase.part", path("qB.txt"), identity))  # fmt: skip
         if chunks > 1:
             joins.append((final, parts))
     gen_check = None
@@ -644,12 +664,19 @@ def _quotient_data_locked(
         gen_check = path("qG.check.txt.part")
         script = load("qG.check") + GENERATOR_SCRIPT.format(G=header_text["G"], N=N, part=gen_check)
         jobs.append(checked(script, "qG.check", None, "RESULT generators"))
-    for name, seconds in parallel.ordered_map(run_singular, jobs, min_items=2):
-        computed[name] = round(seconds, 1)
+    # Every step finishes before any failure raises, so no worker still writes once the directory lock is released.
+    failures = []
+    for name, seconds, error in parallel.ordered_map(run_step, jobs, min_items=2):
+        if error is None:
+            computed[name] = round(seconds, 1)
+        else:
+            failures.append(f"{name}: {error}")
+    if failures:
+        raise RuntimeError("Singular export steps failed: " + "; ".join(failures))
     for final, parts in joins:
         with open(final + ".part", "w") as joined:
             joined.write(",".join(flat_text(q) for q in parts))
-        publish(final + ".part", final)
+        publish(final + ".part", final, identity)
         for q in parts:
             os.remove(q)
             os.remove(q + ".sha256")
