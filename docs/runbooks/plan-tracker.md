@@ -73,6 +73,10 @@ receipt whose digest binds the ordered step obligations. `plan_records.obligatio
 digest for a closure patch. A completed falsification can record a rejected hypothesis. Artifact identity
 checks and substantive scientific validation have different evidentiary roles.
 
+A closed plan is history: its receipt revisions pin the bytes it observed, so its cited files need not exist at
+HEAD, its view carries no revalidation flag, and an edit or deletion elsewhere never calls for touching its
+receipts; freshness holds when a change closes a plan or adds a receipt to it.
+
 Changed evidence requests revalidation while preserving historical completion. Freshness reads only the
 newest receipt (latest `observed_at`) of the plan and of each step, so a revalidation reruns the acceptance
 and appends a receipt over the current bytes with `step ID STEP --receipt FILE` or `update ID --receipt
