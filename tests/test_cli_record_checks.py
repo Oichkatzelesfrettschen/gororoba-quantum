@@ -5,19 +5,17 @@ from, the code path of ``"$PYTHON" -B -W error SCRIPT ARGS``; the module imports
 instead of once per interpreter. ``main``'s result follows the entry point ``SystemExit(main())``: None
 or an integer 0 passes, and any other value or SystemExit code fails, as it fails the interpreter.
 
-A check stays on its own gate in ci/gates.json when a claim in docs/state/research_state.json cites
+A check stays on its own gate in ci/replays.json when a claim in docs/state/research_state.json cites
 that gate, when a script or a retained file names the gate (scripts/research_state.py --check, core-270;
 scripts/n21_exact_model_validation.py --check, core-485, named in retained case addenda), when it
 belongs to the sources suite, when its command carries more than one script invocation, or when its gate
 declares a runtime or a requirement (scripts/qi_toolchain_check.py --check, core-368, needs the
-Quantum Inspire stack that `--requires qi` selects).
+Quantum Inspire stack that GOROROBA_QI_REQUIRED makes it use).
 scripts/aer_blocking_probe.py keeps its gates for the reason tests/test_cli_self_tests.py states.
 
-Each row names a group, and gate ``core-record-check-NN`` of ci/gates.json runs group NN alone with
-``-k groupNN`` in one process. Gate core-615 skips this module; the groups pack each check's measured
-gate time to at most 27 s, under the 30 s pr wall budget of ci/AGENTS.md. Group 07 holds
-scripts/ascella_coherence_request.py alone, so its gate fits the 15 s that `ci/pr_checks.sh gates` selects and
-runs on every pull request whose diff reaches the request builder or its retained case.
+Each row names a group, and gate ``core-record-check-NN`` of ci/replays.json (run on demand with
+``ci/run_gates.py --manifest ci/replays.json``) runs group NN alone with ``-k groupNN`` in one process. Gate
+core-615 skips this module; the groups pack each check's measured gate time to at most 27 s.
 tests/ci/test_self_test_gates.py requires one gate per group and one group per gate.
 """
 
