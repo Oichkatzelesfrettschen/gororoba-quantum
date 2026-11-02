@@ -2,8 +2,8 @@
 
 Status: the sharded audit, the affected-replay selection (`ci/gate_inputs.py`, `ci/full_gate_inputs.json`), the gate
 ledger and its read tracer, and the timing merge (`ci/merge_gate_timings.py`, `ci/analyze_timings.py`) described below
-no longer exist. `pr.yml` runs every entry of `ci/gates.json` on each pull request and push to main, and the replays
-of `ci/replays.json` run on demand ([ci/AGENTS.md](../../ci/AGENTS.md)). The measurements and commands that follow
+no longer exist. `pr.yml` runs lint, types and the unit tests on each pull request and push to main, and every entry
+of `ci/gates.json` runs on demand ([ci/AGENTS.md](../../ci/AGENTS.md)). The measurements and commands that follow
 record the CI of the period they were taken in.
 
 The CI runner spent most of its time computing replays, with an uneven

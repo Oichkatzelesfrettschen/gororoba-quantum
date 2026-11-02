@@ -8,7 +8,7 @@ combination: one branch adds the record or its gate, the other adds or
 regenerates an input the record does not yet cover, and git merges both
 without a textual conflict. This script builds that combination before the
 merge: it checks out BASE (default origin/main) and the merge of REF into
-BASE in two detached worktrees, runs the pr-tier gates whose measured
+BASE in two detached worktrees, runs the gates whose measured
 seconds are at most --max-seconds in each tree through that tree's own
 ci/run_gates.py, with $PYTHON resolved to an absolute interpreter, and
 reports every gate that passes on BASE and fails on the merge, or that the
@@ -213,7 +213,7 @@ def results(
     environment = {**os.environ, "PYTHON": python, **(replay or {})}
     selection = ["--gates", ",".join(gates)] if gates is not None else []
     completed = subprocess.run(
-        [python, "-B", str(root / "ci/run_gates.py"), "--tier", "pr", "--max-seconds", str(max_seconds), *selection],
+        [python, "-B", str(root / "ci/run_gates.py"), "--max-seconds", str(max_seconds), *selection],
         cwd=root,
         env=environment,
         capture_output=True,

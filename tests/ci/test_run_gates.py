@@ -25,7 +25,6 @@ LISTED: list[dict[str, Any]] = [
     {"name": "fast", "cwd": ".", "cmd": "true", "seconds": 1.0},
     {"name": "slow", "cwd": ".", "cmd": "true", "seconds": 9.0},
     {"name": "unmeasured", "cwd": ".", "cmd": "true"},
-    {"name": "full-only", "cwd": ".", "cmd": "true", "seconds": 1.0, "tier": "full"},
 ]
 # A qi gate runs in every lane, on its replay path where the stack is absent, and takes its live path when
 # the caller exports GOROROBA_QI_REQUIRED.
@@ -55,14 +54,6 @@ def runner(root: Path, **variables: str | None) -> Iterator[io.StringIO]:
             else:
                 os.environ[name] = value
         yield output
-
-
-def test_gate_names_are_unique() -> None:
-    # run_gates selects and reports gates by name, so two gates of one name make a shard result ambiguous.
-    names = [gate["name"] for relative in manifests.MANIFESTS for gate in manifests.gates(ROOT, relative)]
-    duplicates = sorted({name for name in names if names.count(name) > 1})
-    if duplicates:
-        raise AssertionError(f"the gate manifests name more than one gate {', '.join(duplicates)}")
 
 
 def test_pool_uses_every_cpu() -> None:
@@ -105,14 +96,12 @@ def test_device_reaches_every_gate(root: Path, flag: list[str], device: str) -> 
         raise AssertionError(f"{flag} did not give every gate GOROROBA_AER_DEVICE={device}:\n{text}")
 
 
-@pytest.mark.parametrize(
-    ("tier", "limit", "wanted"), (("pr", 5.0, ["fast"]), ("pr", None, ["fast", "slow", "unmeasured"]))
-)
-def test_select_by_tier_and_measured_seconds(root: Path, tier: str, limit: float | None, wanted: list[str]) -> None:
+@pytest.mark.parametrize(("limit", "wanted"), ((5.0, ["fast"]), (None, ["fast", "slow", "unmeasured"])))
+def test_select_by_measured_seconds(root: Path, limit: float | None, wanted: list[str]) -> None:
     manifest(root, LISTED)
-    names = [gate["name"] for gate in run_gates.select(root, tier, limit)]
+    names = [gate["name"] for gate in run_gates.select(root, limit)]
     if names != wanted:
-        raise AssertionError(f"select({tier}, {limit}) chose {names}, not {wanted}")
+        raise AssertionError(f"select({limit}) chose {names}, not {wanted}")
 
 
 @pytest.mark.parametrize(("exported", "expected"), ((True, 0), (False, 1)))
@@ -124,24 +113,11 @@ def test_requires_names_the_variable_that_forces_the_live_path(root: Path, expor
         raise AssertionError(f"GOROROBA_QI_REQUIRED exported={exported} gave status {status}:\n{output.getvalue()}")
 
 
-def test_manifest_option_runs_the_replay_manifest(root: Path) -> None:
-    manifest(root, [{"name": "pull-request", "cwd": ".", "cmd": "true", "seconds": 1.0}])
-    (root / "ci/replays.json").write_text(json.dumps({"gates": [{"name": "replay", "cwd": ".", "cmd": "true"}]}))
-
-    def listed(*options: str) -> list[str]:
-        with runner(root) as output:
-            run_gates.main([*options, "--list"])
-        return [line.split("\t", 1)[0] for line in output.getvalue().splitlines()]
-
-    if listed() != ["pull-request"] or listed("--manifest", "ci/replays.json") != ["replay"]:
-        raise AssertionError(f"--manifest chose {listed()} and {listed('--manifest', 'ci/replays.json')}")
-
-
 def test_gates_selects_by_name(root: Path) -> None:
-    # --gates keeps the named gates of the tier and ignores a name the tree lacks.
+    # --gates keeps the named gates and ignores a name the tree lacks.
     manifest(root, LISTED + QI)
     with runner(root) as output:
-        run_gates.main(["--tier", "pr", "--list", "--gates", "qi-pr,fast,absent"])
+        run_gates.main(["--list", "--gates", "qi-pr,fast,absent"])
     names = [line.split("\t", 1)[0] for line in output.getvalue().splitlines()]
     if sorted(names) != ["fast", "qi-pr"]:
         raise AssertionError(f"--gates qi-pr,fast,absent listed {names}")
@@ -151,12 +127,11 @@ def test_gates_selects_by_name(root: Path) -> None:
 def test_malformed_requires_is_refused(root: Path, malformed: Any) -> None:
     manifest(root, [{"name": "malformed", "cwd": ".", "cmd": "true", "requires": malformed}])
     with pytest.raises(SystemExit):
-        run_gates.select(root, "pr")
+        run_gates.select(root)
 
 
-@pytest.mark.parametrize("listing", manifests.MANIFESTS)
-def test_repository_manifest_selects(listing: str) -> None:
-    run_gates.select(ROOT, "full", listing=listing)
+def test_repository_manifest_selects() -> None:
+    run_gates.select(ROOT)
 
 
 def test_historical_selection_needs_no_current_runtime(root: Path, tmp_path: Path) -> None:
@@ -216,8 +191,8 @@ def test_numeric_stack_names_a_failed_probe() -> None:
 
 
 def test_repository_claims_cite_existing_gates() -> None:
-    names = set(manifests.entries(ROOT))
-    expanded = {gate["name"] for gate in manifests.expand_cases(ROOT, manifests.all_gates(ROOT))}
+    names = set(manifests.commands(ROOT))
+    expanded = {gate["name"] for gate in manifests.expand_cases(ROOT, manifests.gates(ROOT))}
     claims = json.loads((ROOT / "docs/state/research_state.json").read_text())["claims"]
     cited = {name for claim in claims for name in claim.get("gates", {})}
     missing = sorted(cited - names - expanded)

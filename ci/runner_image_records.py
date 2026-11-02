@@ -21,7 +21,7 @@ record written by a host interpreter, whose libm and Python build differ from
 the runner's, never enters the ledger. Once the digest moves, ``add`` accepts
 only a set of paths that covers every bound record, so the ledger advances
 to the new image in one step after all of them are rewritten. ``check``
-verifies the ledger and the replay declarations of ci/gates.json and ci/replays.json; ``id``
+verifies the ledger and the replay declarations of ci/gates.json; ``id``
 prints the current digest.
 
 A gate of either manifest (ci/manifest.py) that byte-compares a retained record names it in its ``replays``
@@ -299,7 +299,7 @@ def main(argv: list[str]) -> int:
         if not LEDGER.is_file():
             print(f"{LEDGER.relative_to(ROOT)} is missing")
             return 1
-        found = problems(ledger) + replay_problems(manifest.all_gates(ROOT), ledger)
+        found = problems(ledger) + replay_problems(manifest.gates(ROOT), ledger)
         for line in found:
             print(line)
         return 1 if found else 0

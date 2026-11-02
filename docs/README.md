@@ -75,8 +75,8 @@ source to its reading copy beside its public source. `scripts/source_reading_cop
 resolves every registered digest through both manifests into
 [sources/reading-copy-locations.tsv](sources/reading-copy-locations.tsv), and a
 plain run renders that index on demand. The `sources`
-suite in ci/gates.json and ci/replays.json covers the source registry, the evidence replays and
-their checksum ledgers.
+suite in ci/gates.json covers the source registry, the evidence replays and their checksum
+ledgers on demand; no workflow runs it.
 
 ## Start here by task
 

@@ -212,7 +212,7 @@ def test_write_receipts_only_the_files_the_container_wrote(tmp_path: Path) -> No
 
 
 def test_every_replayed_record_is_declared_bound_float_free_or_exempt() -> None:
-    found = records.replay_problems(manifest.all_gates(ROOT), records.read())
+    found = records.replay_problems(manifest.gates(ROOT), records.read())
     if found:
         raise AssertionError("\n".join(found))
 

@@ -57,7 +57,7 @@ addopts = [
 ]
 filterwarnings = ["error"]
 markers = [
-    "audit: replays a retained record, checks the gate machinery or takes more than 3 s of CPU on the build host; pull requests deselect it and gate core-615 of ci/replays.json runs it",
+    "audit: replays a retained record, checks the gate machinery or takes more than 3 s of CPU on the build host; pull requests deselect it and gate core-615 of ci/gates.json runs it on demand",
 ]
 
 [tool.mypy]

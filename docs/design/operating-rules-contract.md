@@ -17,8 +17,8 @@ adopted below was re-read in the tree. The work record is
 here is [repository-layout-reconciliation](repository-layout-reconciliation.md).
 
 The measurements describe the CI as it stood when they were taken: a nightly and weekly audit, selection of
-gates by reach under a 900 s budget, and a gate ledger. That machinery is gone. `pr.yml` runs every gate of
-`ci/gates.json` on each pull request and each push to main, `ci/replays.json` holds the replays that run on demand,
+gates by reach under a 900 s budget, and a gate ledger. That machinery is gone. `pr.yml` runs lint, types and
+the unit tests on each pull request and each push to main, every gate of `ci/gates.json` runs on demand,
 and `proofs.yml` compiles the Rocq bundles when a proof path changes ([ci/AGENTS.md](../../ci/AGENTS.md)). The
 verdict column and the sections "What the CI is for" and "Falsifiers" below state the present rule.
 
@@ -32,7 +32,7 @@ either exists or is one check away.
 | A secret, account identifier or home path in history | none in the window; the rule is a hard boundary | prose in three paragraphs; no scanner in `ci/gates.json` | a `tests`-job scanner for tokens, CRNs, emails and home paths with an allowlist for the published GitHub owner and Kaggle slug |
 | Unapproved or misdirected spend of provider time | none; two sessions on one IBM instance blocked each other's audit | `scripts/approved_run.sh` refuses a drifted plan and sends nothing; a harness deny on force-push and recursive delete | a deny on every other submit entry point; launcher refusals for the 14/15/16-qubit routing; an Open Quantum client that refuses the public plan without a case flag |
 | Another worker's job cancelled | a Codex session once cancelled a shared-token Quandela job | `scripts/acquisition_decisions.py` validates a cancellation-authority record (`docs/runbooks/evidence-closure.md`) | the validator in front of every cancel tool, which is where the incident got through |
-| Retained data edited or lost | the nightly found three drifted evidence bindings after merges | `sha256sum -c` gates on every pull request and push to main; replays of `ci/replays.json` on demand | a replay run whenever a producer, an input or a pin changes |
+| Retained data edited or lost | the nightly found three drifted evidence bindings after merges | `sha256sum -c` gates and replays of `ci/gates.json` on demand | a replay run whenever a producer, an input or a pin changes |
 | A guess promoted to a claim | none in the window | `scripts/research_state.py --check`; the record schema | a claim check that rejects a measured figure built on a `--native-dry-run` sidecar; a schema that requires the probe arms and a null arm |
 | An irreproducible result | none in the window | `ci/seed_provenance.py` in the `tests` job; shrink-only `ci/reproduction_seeds.json`; `check_markdown_links.py`; `core-plan-tracker` | nothing; the checks are the rule |
 
@@ -60,7 +60,9 @@ procedure a runbook already describes.
 The CI answers one question on every pull request and every push to main: did this change break code that
 worked? It runs fast, pinned checks that compare exact values exactly and floating-point values within stated
 tolerances. Reproducing a retained historical record is a separate act, run by hand when an input changes (an
-interpreter, numpy, qiskit or Singular pin) from `ci/replays.json`. The audit that preceded this rule spent the
+interpreter, numpy, qiskit or Singular pin) from `ci/gates.json`, as is every check of data rather than code: a
+digest ledger, the source registry, the reading copies held in the gororoba-documents repositories, a research
+script run end to end. Each of those fails on state the pull request did not change. The audit that preceded this rule spent the
 full 504 measured minutes every night to police a ledger skip that no job performed, and every red night of its
 last week came from environment drift (a Singular banner date, last-bit float drift on AMD EPYC AVX-512
 runners, a timeout, one SIGSEGV), never from a code defect.
@@ -69,17 +71,17 @@ The purpose, stated so a researcher can read it, is three questions:
 
 | Question | Who answers it | When |
 |---|---|---|
-| Does this change keep the contracts of the tree? | `pr.yml`: `tests`, and `gates` running every entry of `ci/gates.json`; `lint` and `types` run beside them | every pull request and every push to main |
+| Does this change keep the contracts of the tree? | `pr.yml`: `tests` (unit tests on synthetic inputs, providers mocked); `lint` and `types` run beside it | every pull request and every push to main |
 | Does a proof still compile? | `proofs.yml`, path-filtered, not a required check | a pull request or push touching a proof path |
-| Do the retained artifacts behind each claim still replay? | `ci/run_gates.py --manifest ci/replays.json`, by hand | after a pin or producer change |
+| Do the retained artifacts behind each claim still replay? | `sh ci/pr_checks.sh gates`, by hand | after a pin or producer change |
 
 A gate no claim cites stays a contract check or leaves `ci/gates.json`; a claim cites a gate of either manifest.
 Ruff left the gate list because the `lint` job runs it.
 
 The Codex review proposed a classification of each gate by what it protects, one of `claim` (a current claim id),
 `immutable-binding` (a bound path), `supported-runtime` (an advertised environment), `ledger-sentinel` (a read the
-tracer cannot see) or `exploratory`, with a schedule per class. The tracer and the schedule are gone, and the
-split between `ci/gates.json` and `ci/replays.json` replaces the classification. The review also names the control-plane
+tracer cannot see) or `exploratory`, with a schedule per class. The tracer and the schedule are gone, and moving
+every gate out of the pull-request run to the on-demand `ci/gates.json` replaces the classification. The review also names the control-plane
 load the loop adds: `scripts/codex_review_wait.sh` polls status, mergeability and check runs every 90 s
 although branch protection already decides admission, so the waiter needs only the review signal.
 
@@ -161,8 +163,8 @@ loads into no session that is editing a circuit.
 
 1. Adopt the forty-line guide in the appendix as the replacement for the 203-line text of PR #692, with
    the runbooks it points at (recommended; the appendix is the diff).
-2. CI: every gate of `ci/gates.json` on each pull request and push to main, replays on demand from
-   `ci/replays.json`, no schedule, ruff out of the gate list (adopted).
+2. CI: lint, types and unit tests on each pull request and push to main; every gate of `ci/gates.json` on
+   demand; no schedule; ruff out of the gate list (adopted).
 3. One Codex round per head; a second only after the operator review changed code (recommended).
 4. The snapshot dry run in the `tests` job replaces the live dry run for refactors (recommended; the
    live read stays for admission, approval, submission and readiness changes).

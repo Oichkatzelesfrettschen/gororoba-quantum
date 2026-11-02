@@ -31,14 +31,14 @@ def test_each_group_has_one_gate(module: str, table: str, prefix: str) -> None:
     loaded = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(loaded)
     groups = {row[-1] for row in getattr(loaded, table)}
-    gates = manifest.all_gates(ROOT)
+    gates = manifest.gates(ROOT)
     selected: dict[int, list[str]] = {}
     for gate in gates:
         if module not in gate["cmd"] or gate["name"] == "core-615":
             continue
         match = re.fullmatch(rf'"\$PYTHON" -B -W error -m pytest -q {re.escape(module)} -k group(\d\d)', gate["cmd"])
-        if match is None or gate["name"] != f"{prefix}-{match.group(1)}" or gate.get("tier") != "pr":
-            raise AssertionError(f"{gate['name']}: a {prefix} gate is pr tier and runs one group: {gate['cmd']}")
+        if match is None or gate["name"] != f"{prefix}-{match.group(1)}":
+            raise AssertionError(f"{gate['name']}: a {prefix} gate runs one group: {gate['cmd']}")
         selected.setdefault(int(match.group(1)), []).append(gate["name"])
     if set(selected) != groups or any(len(names) != 1 for names in selected.values()):
         raise AssertionError(f"groups {sorted(groups)} need one gate each; gates select {selected}")

@@ -14,7 +14,7 @@ lint and type-check configuration only.
 **Pull requests.** [.github/workflows/pr.yml](../.github/workflows/pr.yml)
 runs on every pull-request push, on every push to main (so the merged result is
 checked once) and on `workflow_dispatch`, cancels the run a newer pull-request
-push replaces, and holds four jobs that call
+push replaces, and holds three jobs that call
 [ci/pr_checks.sh](pr_checks.sh) with its environment (loader TLS, one thread
 per native library, `GOROROBA_PINS_REQUIRED=1`):
 - `lint` installs the Ruff pin of ci/requirements-ci.txt and runs `ruff check`
@@ -23,20 +23,21 @@ per native library, `GOROROBA_PINS_REQUIRED=1`):
 - `types` runs mypy over the same directories from gororoba_quantum/;
 - `tests` runs `pytest -n auto --dist loadgroup -m "not audit"` over tests/
   under a 5-minute step timeout and writes the 25 slowest tests to the job
-  summary;
-- `gates` runs every entry of [ci/gates.json](gates.json) through
-  `ci/run_gates.py`, concurrently on the runner's CPUs: no selection by diff, no
-  budget and no ledger, so a green job states that every listed gate passed. A
-  gate that carries `"runtime": "qiskit-2.5"` runs under the replay venv, which
-  the job restores from the cache of an earlier run and builds on a miss.
-  Concurrent gates run mypy, so `ci/pinned_tool.py` gives each mypy
-  invocation its own `.mypy_cache/KEY` directory unless the caller names one.
-`lint`, `types` and `tests` time out at 8 minutes and `gates` at 30.
-`types`, `tests` and `gates` restore the pinned venv through
+  summary.
+
+Pull-request CI answers one question: does the change break the repository's
+own Python. Each test it runs builds its input or reads a small fixture and
+mocks every provider. A check of data rather than code (a retained-record
+replay, a `sha256sum -c` of committed files, a source-registry or reading-copy
+check against the gororoba-documents repositories, a research script run end to
+end) is an on-demand gate of [ci/gates.json](gates.json) (On-demand gates
+below), since it fails on state the pull request did not change.
+`lint`, `types` and `tests` time out at 8 minutes.
+`types` and `tests` restore the pinned venv through
 .github/actions/pins-venv, under a cache key that hashes the venv's inputs, and
 build it with ci/install_pins.sh on a miss; a push to main saves it where later
-pull requests restore it. Branch protection on main requires `lint`, `types`, `tests`
-and `gates` green on the head, for administrators too, without requiring the branch to
+pull requests restore it. Branch protection on main requires `lint`, `types` and `tests`
+green on the head, for administrators too, without requiring the branch to
 be current with main. A pull request that `GITHUB_TOKEN` opened starts no
 `pull_request` workflow, so its author dispatches pr.yml on the branch
 (scripts/qd_schedule_tick.sh does so when a schedule finishes); a branch whose
@@ -85,21 +86,18 @@ Run them through `"$PYTHON" ci/pinned_tool.py TOOL ARGS`, which uses the
 versions ci/requirements-ci.txt pins. Formatting is only ruff format; mypy
 checks types and ruff check catches defects, and neither rewrites code.
 
-[ci/gates.json](gates.json) lists each gate as one command with its
+[ci/gates.json](gates.json) lists each on-demand gate as one command with its
 working directory; [ci/run_gates.py](run_gates.py) runs them on
-a thread pool sized to the runner's CPUs and keeps going past failures, so a
-red run lists every failing gate. Every gate runs on every pull request and every
-push to main. A gate's `seconds` is the estimate that `ci/run_gates.py --max-seconds`
-and `ci/premerge_gates.py` filter by, and `"tier": "pr"` marks the gates
-`ci/premerge_gates.py` considers; an entry that takes more than 30 s of hosted wall belongs in
-[ci/replays.json](replays.json) (Replays below). Gate concurrency follows the runner's detected allocation.
+a thread pool sized to the CPUs and keeps going past failures, so a
+red run lists every failing gate. No workflow runs them. A gate's `seconds` is the
+estimate that `ci/run_gates.py --max-seconds` and `ci/premerge_gates.py` filter by.
+Gate concurrency follows the detected allocation.
 Disposable
 build trees, task virtual environments, package caches and probes belong in
 the system temporary directory, normally `/tmp`, so temporary-file cleanup
 can reclaim them. Keep durable code, evidence and documentation in the
 repository. Never create task repositories or scratch stores in
 `~/.local/share`. Preserve existing shared provider environments and credentials.
-Gate seconds are cost estimates, independent of tier membership.
 [CI runtime analysis](../docs/runbooks/ci-runtime.md) records the timing
 denominators and bottlenecks of the CI that preceded this one. Runner-spec logs
 record the allocation; the retained runs measured four affinity CPUs and
@@ -164,11 +162,11 @@ host process writes, then copies back and receipts each file the command
 wrote there. `ci/runner_image_records.json` binds the record to that
 image and its pins through `ci/runner_image_records.py add`, which refuses
 bytes without a receipt, and gate core-635 checks the ledger. A gate that
-byte-compares a retained record lists it under `"replays"` in its entry of ci/gates.json or ci/replays.json,
+byte-compares a retained record lists it under `"replays"` in its entry of ci/gates.json,
 and the unmarked pr test `test_every_replayed_record_is_declared_bound_float_free_or_exempt`
 requires each listed record (each file of a listed directory) to be bound in
 the ledger, float-free JSON, or covered by a reason under the ledger's
-`exempt` map, and each bound record to be listed by some gate of either manifest;
+`exempt` map, and each bound record to be listed by some gate;
 `ci/replay_check.py`, `| cmp -` and `--out` beside `--check` or `--replay`
 must be listed.
 `ci/replay_check.py` compares such a record with a fresh run bit for bit,
@@ -216,8 +214,6 @@ way with exit 2, since such gates fail on both trees and read as shared
 failures that hide a gate the branch breaks. Premerge otherwise exits 0 when
 every gate passes on the merge, 1 when the merge introduces a failure and 3
 when every failure also fails on the base.
-pr.yml installs the replay environment only when the gate plan requires it
-and passes it as `REPLAY_PYTHON`.
 
 **Host environments.** A system interpreter drifts from the pins as the host
 upgrades packages, so local runs use `sh ci/build_host_envs.sh`, which builds
@@ -366,8 +362,8 @@ on every pull request. The rules that keep that run small:
   below). A test that replays a retained record end to end, reads a large
   retained bundle, runs the gate machinery over the whole manifest, or takes
   more than 3 s on the build host carries `audit`, on the function or on the
-  module through `pytestmark = pytest.mark.audit`, and runs through gate
-  core-615 of ci/replays.json. Provider clients are mocked; no pull-request
+  module through `pytestmark = pytest.mark.audit`, and runs through the
+  on-demand gate core-615. Provider clients are mocked; no pull-request
   test reaches the network.
 - tests/conftest.py targets `CALL_BUDGET_SECONDS` (10 s) for the call phase
   of an unmarked test and fails it past `CALL_BUDGET_TOLERANCE` (1.5) times
@@ -385,23 +381,20 @@ on every pull request. The rules that keep that run small:
   2 minutes is the point to shrink or mark tests, well inside the 5-minute
   step timeout; the PR job adds no coverage or other plugin.
 The behavioral-suite gates select by path and ignore the marker, so they run
-every marked test they name. Gates core-behavior-01 and core-behavior-02 of
-ci/gates.json run on every pull request; core-behavior-03 (the segmented-sweep fits,
-a single node over 30 s) and core-615 of ci/replays.json run on demand. Gate core-615 runs
+every marked test they name; like every gate of ci/gates.json they run on demand.
+Gate core-615 runs
 `pytest -n auto --dist loadgroup` over tests/ in one process pool, so each worker
 imports the repository modules once, and with no `-m` filter it is the one runner of
 the audit-marked nodes that no other gate names; issue #291 carries the migration
 plan and its falsifier, a planted mutant per moved contract. core-615 ignores the
 paths its sibling gates `core-behavior-NN` run, each a list of test modules or
-directories sized under the 30 s pr budget, or a full gate for a test whose single
-node exceeds it (core-behavior-03);
+directories;
 tests/ci/test_behavioral_gates.py requires every ignored path on exactly one
 sibling and no module on two gates, so a new test module runs on core-615
 until a measurement moves it. tests/test_cli_self_tests.py and
 tests/test_cli_record_checks.py call scripts' `--self-test` and `--check`
 modes in process through each script's `main`, in groups that gates
-`core-self-test-NN` (ci/gates.json, every pull request) and `core-record-check-NN`
-(ci/replays.json, on demand) run one each (tests/ci/test_self_test_gates.py); a check a research-state claim cites, or
+`core-self-test-NN` and `core-record-check-NN` run one each (tests/ci/test_self_test_gates.py); a check a research-state claim cites, or
 whose gate name a script or retained file carries, or whose gate declares a
 `runtime` or `requires`, keeps its own gate. A test exercises a contract on a small fixed input
 and fails by an explicit raise. Plugin autoload is off (pyproject.toml), so
@@ -444,21 +437,21 @@ ledger rule on a bundle it builds.
   The files whose bytes retained evidence pins keep their asserts under
   per-file ignores.
 
-## Replays
+## On-demand gates
 
-[ci/replays.json](replays.json) holds the entries that reproduce a
-retained record byte for byte (the `ci/replay_check.py`, `--check`, `--replay`
-and `cmp` gates), the pytest wrappers that batch those checks
-(`core-record-check-NN`), the behavioral suite without its marker filter
-(`core-615`) and the full-tier checks whose hosted wall exceeds 30 s. Its entries
-keep the shape of ci/gates.json; the two files share one namespace of gate ids,
-and [ci/manifest.py](manifest.py) is the only reader of either, so a claim of
-docs/state/research_state.json cites a gate of either file and
-`scripts/research_state.py --check`, `ci/runner_image_records.py check` and
-`scripts/results_index.py` follow a gate that moves. No workflow runs
-ci/replays.json. A replay runs on demand, after a numpy, qiskit, Singular or
-interpreter pin changes or when a producer script or its input changes:
-`"$PYTHON" ci/run_gates.py --manifest ci/replays.json [--gates NAME,...]`, inside the
+[ci/gates.json](gates.json) holds the checks of data rather than code: the
+entries that reproduce a retained record byte for byte (the `ci/replay_check.py`,
+`--check`, `--replay` and `cmp` gates), the `sha256sum -c` source and evidence
+ledgers, the source-registry and reading-copy checks against the
+gororoba-documents repositories, the research scripts' `--self-test` runs, the
+pytest wrappers that batch them (`core-self-test-NN`, `core-record-check-NN`)
+and the behavioral suite without its marker filter (`core-615`).
+[ci/manifest.py](manifest.py) is the only reader of the file; a claim of
+docs/state/research_state.json cites a gate by its id. No workflow runs
+ci/gates.json. Run it after a numpy, qiskit, Singular or interpreter pin
+changes, when a producer script or its input changes, and after a source or
+the documents repositories move: `sh ci/pr_checks.sh gates [--gates NAME,...]`.
+A replay of a record that the runner-image ledger binds runs inside the
 runner image (`ci/runner_image.sh`, podman) for a record that the runner-image
 ledger binds, because those records are tied to the image's libm and Python
 build. A replay sets the environment its record names (the caps below, thread

@@ -104,7 +104,7 @@ def test_ledger_binds_its_bytes(entry: tuple[str, str]) -> None:
 def test_every_sha256sum_gate_ledger_is_listed() -> None:
     listed = {(cwd, name) for cwd, name in LEDGERS}
     unlisted = []
-    for gate in manifest.all_gates(ROOT):
+    for gate in manifest.gates(ROOT):
         words = gate["cmd"].split()
         if words[:2] == ["sha256sum", "-c"] and len(words) == 3 and (gate["cwd"], words[2]) not in listed:
             unlisted.append(gate["name"])

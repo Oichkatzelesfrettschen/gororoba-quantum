@@ -612,10 +612,7 @@ class Context:
 
     def __init__(self) -> None:
         self.providers: dict[str, Provider] = {name: adapter() for name, adapter in PROVIDERS.items()}
-        listed = manifest.entries(ROOT)
-        self.gates: dict[str, str] = {name: gate["cmd"] for name, (_, gate) in listed.items()}
-        # The manifest that lists each gate: ci/gates.json runs on every pull request, ci/replays.json on demand.
-        self.manifests: dict[str, str] = {name: where for name, (where, _) in listed.items()}
+        self.gates: dict[str, str] = manifest.commands(ROOT)
         self.digest: Callable[[Path], str] = digest
 
 
@@ -696,7 +693,7 @@ def validate(registry: dict[str, Any], context: Context, uncited: frozenset[str]
         gates = claim.setdefault("gates", {})
         require(isinstance(gates, dict), f"{owner}: gates map each gate to its role")
         for gate, role in gates.items():
-            require(gate in context.gates, f"{owner}: gate {gate} is in neither ci/gates.json nor ci/replays.json")
+            require(gate in context.gates, f"{owner}: gate {gate} is not in ci/gates.json")
             require(role in GATE_ROLES, f"{owner}: gate {gate} role must be one of {GATE_ROLES}")
             command = context.gates[gate]
             if role == "bytes":
@@ -1149,7 +1146,7 @@ def _mutations() -> Iterable[tuple[str, Callable[[dict[str, Any]], None], str]]:
 
         yield f"{kind} has only a regression gate", regression_only, "needs a replay gate"
     yield "kernel receipt outside the pinned evidence", receipt_unpinned, "pinned as evidence"
-    yield "unknown gate", unknown_gate, "is in neither ci/gates.json nor ci/replays.json"
+    yield "unknown gate", unknown_gate, "is not in ci/gates.json"
     yield "altered evidence bytes", altered_evidence, "digest differs"
     yield "altered record evidence", altered_record_evidence, "digest differs"
     yield "record evidence selecting no record", absent_record_evidence, "digest differs"

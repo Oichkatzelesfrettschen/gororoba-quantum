@@ -1,10 +1,10 @@
 name: pr
 
-# Pull-request acceptance and the check of the merged result through
-# ci/pr_checks.sh: Ruff, mypy, the pytest regression suite with the audit
-# marker deselected (pyproject.toml), and every gate of ci/gates.json. The
-# replays of ci/replays.json run on demand, and proofs.yml compiles a proof
-# change. A job or step that reaches its timeout fails.
+# Pull-request regression checks of the repository's own code through
+# ci/pr_checks.sh: Ruff, mypy and the pytest suite with the audit marker
+# deselected (pyproject.toml). The gates of ci/gates.json (record replays,
+# digest and source checks, research-script runs) run on demand, and
+# proofs.yml compiles a proof change. A job or step that reaches its timeout fails.
 # workflow_dispatch serves a pull request that GITHUB_TOKEN opened, whose
 # pull_request event starts no workflow; check runs attach to the dispatched
 # commit, which is that pull request's head.
@@ -73,52 +73,3 @@ jobs:
           name: pytest-durations
           path: ${{ runner.temp }}/pytest-report.xml
           if-no-files-found: ignore
-
-  gates:
-    name: gates
-    runs-on: ubuntu-26.04
-    timeout-minutes: 30
-    env:
-      REPLAY_VENV: /home/runner/.cache/gororoba-ci/replay-venv
-      # Gates that run pytest carry no per-test call bound; the tests job holds it.
-      GOROROBA_TEST_CALL_SECONDS: "0"
-    steps:
-      # core-ascella-predecessor-source-pin walks each frozen case's pinned revision to HEAD, so the
-      # checkout holds the whole history (the pack is about 915 MB).
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
-        with:
-          fetch-depth: 0
-      - name: Fetch main
-        run: git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
-      - uses: ./.github/actions/pins-venv
-      - name: Plan the historical replay environment
-        id: plan
-        run: >-
-          sh ci/pr_checks.sh gates
-          --plan "$RUNNER_TEMP/gate-plan.json" --github-output "$GITHUB_OUTPUT"
-      # Keyed by every file that decides the runtime; the first run that misses saves it.
-      - name: Restore the recorded compiler runtime
-        id: replay-cache
-        if: steps.plan.outputs.historical == 'true'
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
-        with:
-          path: ${{ env.REPLAY_VENV }}
-          key: replay-venv-ubuntu-26.04-${{ runner.arch }}-py3.14.7-${{ hashFiles('ci/requirements-replay.txt', 'ci/requirements-ci.txt', 'ci/install_pins.sh', 'ci/patches/**') }}
-      - name: Install the recorded compiler runtime
-        if: steps.plan.outputs.historical == 'true' && steps.replay-cache.outputs.cache-hit != 'true'
-        run: |
-          set -eu
-          "$pythonLocation/bin/python3" -m venv "$REPLAY_VENV"
-          PYTHON="$REPLAY_VENV/bin/python" REQUIREMENTS_FILE=ci/requirements-replay.txt sh ci/install_pins.sh
-      - name: Save the recorded compiler runtime
-        if: steps.plan.outputs.historical == 'true' && steps.replay-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
-        with:
-          path: ${{ env.REPLAY_VENV }}
-          key: ${{ steps.replay-cache.outputs.cache-primary-key }}
-      - name: Use the recorded compiler runtime
-        if: steps.plan.outputs.historical == 'true'
-        run: echo "REPLAY_PYTHON=$REPLAY_VENV/bin/python" >> "$GITHUB_ENV"
-      - name: Every gate
-        timeout-minutes: 20
-        run: sh ci/pr_checks.sh gates

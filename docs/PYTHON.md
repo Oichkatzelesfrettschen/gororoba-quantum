@@ -159,7 +159,7 @@ The repository audit recognizes four operational statuses across all Python dist
 Every interpreter starts with
 `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, which the Qiskit Rust
 and Aer OpenMP extensions need. Each gate's flags are the ones its command
-in [ci/gates.json](../ci/gates.json) or [ci/replays.json](../ci/replays.json) spells out; most pass `-B -W error` and
+in [ci/gates.json](../ci/gates.json) spells out; most pass `-B -W error` and
 many also run under `-O`, so a check raises explicitly instead of using
 `assert`.
 

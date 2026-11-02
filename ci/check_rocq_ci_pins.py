@@ -137,7 +137,7 @@ def check(root: Path) -> list[str]:
         for pattern in required:
             if pattern not in listed:
                 errors.append(f"the proofs.yml {event} paths lack {pattern}")
-    excluded = manifest.read(root, manifest.GATES)["excluded"]
+    excluded = manifest.read(root)["excluded"]
     for name in ("c881_exhaustive", "stiefel_witness"):
         entries = [e for e in excluded if f"docs/evidence/{name}/replay_rocq.sh" in e["cmd"]]
         if len(entries) != 1:

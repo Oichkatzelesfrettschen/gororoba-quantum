@@ -1,5 +1,5 @@
-"""Contract for ci/manifest.py: both manifests share one namespace of gate ids, a tree without ci/replays.json holds
-an empty replay manifest, a repeated id is refused, and registered cases split into independently named gates.
+"""Contract for ci/manifest.py: every entry of ci/gates.json carries the shared fields, a repeated id is refused,
+and registered cases split into independently named gates.
 """
 
 from __future__ import annotations
@@ -14,60 +14,33 @@ import pytest
 pytestmark = pytest.mark.audit
 
 ROOT = Path(__file__).resolve().parents[2]
-REQUIRED_FIELDS = {"cmd", "cwd", "name", "seconds", "tier"}
+REQUIRED_FIELDS = {"cmd", "cwd", "name", "seconds"}
 
 
-def write(root: Path, relative: str, listed: list[dict[str, Any]]) -> None:
-    (root / relative).parent.mkdir(parents=True, exist_ok=True)
-    (root / relative).write_text(json.dumps({"schema": manifest.SCHEMA, "gates": listed}))
-
-
-def test_repository_gate_ids_are_unique_across_both_manifests() -> None:
-    names = [gate["name"] for relative in manifest.MANIFESTS for gate in manifest.gates(ROOT, relative)]
-    if len(names) != len(set(names)):
-        raise AssertionError(
-            f"gate ids repeated across the manifests: {sorted({n for n in names if names.count(n) > 1})}"
-        )
-    if set(manifest.entries(ROOT)) != set(names):
-        raise AssertionError("entries() differs from the union of both manifests")
+def write(root: Path, listed: list[dict[str, Any]]) -> None:
+    (root / manifest.GATES).parent.mkdir(parents=True, exist_ok=True)
+    (root / manifest.GATES).write_text(json.dumps({"schema": manifest.SCHEMA, "gates": listed}))
 
 
 def test_repository_entries_carry_the_shared_shape() -> None:
-    for relative in manifest.MANIFESTS:
-        document = manifest.read(ROOT, relative)
-        if document["schema"] != manifest.SCHEMA:
-            raise AssertionError(f"{relative}: schema {document['schema']!r}")
-        for gate in document["gates"]:
-            if not REQUIRED_FIELDS <= set(gate) or gate["tier"] not in ("pr", "full"):
-                raise AssertionError(f"{relative}: {gate['name']} lacks {REQUIRED_FIELDS - set(gate)} or holds a tier")
+    document = manifest.read(ROOT)
+    if document["schema"] != manifest.SCHEMA:
+        raise AssertionError(f"schema {document['schema']!r}")
+    for gate in manifest.gates(ROOT):
+        if not REQUIRED_FIELDS <= set(gate):
+            raise AssertionError(f"{gate['name']} lacks {REQUIRED_FIELDS - set(gate)}")
 
 
-def test_a_tree_without_replays_holds_an_empty_replay_manifest(tmp_path: Path) -> None:
-    write(tmp_path, manifest.GATES, [{"name": "only", "cwd": ".", "cmd": "true"}])
-    if manifest.gates(tmp_path, manifest.REPLAYS) != [] or list(manifest.entries(tmp_path)) != ["only"]:
-        raise AssertionError("a missing ci/replays.json is not empty")
-
-
-def test_entries_name_the_manifest_of_each_gate(tmp_path: Path) -> None:
-    write(tmp_path, manifest.GATES, [{"name": "fast", "cwd": ".", "cmd": "true"}])
-    write(tmp_path, manifest.REPLAYS, [{"name": "slow", "cwd": ".", "cmd": "false"}])
-    found = manifest.entries(tmp_path)
-    if {name: where for name, (where, _) in found.items()} != {"fast": manifest.GATES, "slow": manifest.REPLAYS}:
-        raise AssertionError(found)
+def test_commands_map_each_gate_id(tmp_path: Path) -> None:
+    write(tmp_path, [{"name": "fast", "cwd": ".", "cmd": "true"}, {"name": "slow", "cwd": ".", "cmd": "false"}])
     if manifest.commands(tmp_path) != {"fast": "true", "slow": "false"}:
         raise AssertionError(manifest.commands(tmp_path))
 
 
-def test_a_gate_listed_in_both_manifests_is_refused(tmp_path: Path) -> None:
-    write(tmp_path, manifest.GATES, [{"name": "twice", "cwd": ".", "cmd": "true"}])
-    write(tmp_path, manifest.REPLAYS, [{"name": "twice", "cwd": ".", "cmd": "true"}])
-    with pytest.raises(ValueError, match="twice appears in ci/gates.json and ci/replays.json"):
-        manifest.entries(tmp_path)
-
-
-def test_an_unknown_manifest_path_is_refused(tmp_path: Path) -> None:
-    with pytest.raises(ValueError):
-        manifest.read(tmp_path, "ci/other.json")
+def test_a_repeated_gate_id_is_refused(tmp_path: Path) -> None:
+    write(tmp_path, [{"name": "twice", "cwd": ".", "cmd": "true"}, {"name": "twice", "cwd": ".", "cmd": "true"}])
+    with pytest.raises(ValueError, match="twice appears twice"):
+        manifest.gates(tmp_path)
 
 
 def test_case_expansion_names_one_gate_per_registered_case(tmp_path: Path) -> None:

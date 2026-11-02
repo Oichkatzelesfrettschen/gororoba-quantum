@@ -5,8 +5,8 @@
 #   sh ci/pr_checks.sh tests [ARG...]  pytest without the audit marker, over tests/ or the
 #                                      given paths; -m audit PATH selects the marked tests;
 #                                      TEST_REPORT names a JUnit XML file of every test's time
-#   sh ci/pr_checks.sh gates [ARG...]  every gate of ci/gates.json through ci/run_gates.py; ARG... passes
-#                                      through (--manifest ci/replays.json runs the on-demand replays)
+#   sh ci/pr_checks.sh gates [ARG...]  the on-demand gates of ci/gates.json through ci/run_gates.py;
+#                                      ARG... passes through (--gates NAME,... runs named gates)
 # PYTHON names an interpreter holding the pins; left unset, the host
 # environment sh ci/build_host_envs.sh builds serves. The environment below is
 # the one the hosted jobs run under.

@@ -1,7 +1,4 @@
-"""Run the repository gates listed in ci/gates.json, or in the manifest --manifest names, keep-going.
-
-ci/gates.json lists what every pull request runs; ci/replays.json lists the replays and long checks that run on
-demand with ``--manifest ci/replays.json`` (ci/manifest.py is the only reader of both files).
+"""Run the on-demand gates listed in ci/gates.json, keep-going (ci/manifest.py reads the file).
 
 Each gate declares a shell command, working directory and measured duration.
 Execution shares detected affinity/cgroup CPU slots across concurrent gates:
@@ -173,14 +170,9 @@ def allocated_workers(gate: dict[str, Any], capacity: int, caller_cap: str | Non
     return workers
 
 
-def select(
-    root: Path,
-    tier: str,
-    max_seconds: float | None = None,
-    listing: str = manifest.GATES,
-) -> list[dict[str, Any]]:
-    """The gates of the tree at root in the file order of the manifest listing, limited to tier and measured seconds."""
-    gates = manifest.gates(root, listing)
+def select(root: Path, max_seconds: float | None = None) -> list[dict[str, Any]]:
+    """The gates of the tree at root in file order, limited to measured seconds."""
+    gates = manifest.gates(root)
     for gate in gates:
         if gate.get("runtime") is not None and gate["runtime"] not in REPLAY_INTERPRETERS:
             raise SystemExit(f"{gate['name']}: unregistered historical runtime")
@@ -193,8 +185,6 @@ def select(
         valid = isinstance(named, list) and all(isinstance(name, str) for name in named)
         if not valid or not named or set(named) - REQUIREMENTS.keys() or len(set(named)) < len(named):
             raise SystemExit(f"{gate['name']}: requires must be a nonempty list of distinct {sorted(REQUIREMENTS)}")
-    if tier == "pr":
-        gates = [gate for gate in gates if gate.get("tier", "pr") == "pr"]
     if max_seconds is not None:
         gates = [gate for gate in gates if float(gate.get("seconds", 10.0)) <= max_seconds]
     return gates
@@ -283,19 +273,7 @@ def run_all(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--manifest",
-        choices=manifest.MANIFESTS,
-        default=manifest.GATES,
-        help="the gate list to run: ci/gates.json (every pull request) or ci/replays.json (on demand)",
-    )
     parser.add_argument("--list", action="store_true", help="print the selected gates without running them")
-    parser.add_argument(
-        "--tier",
-        choices=("pr", "full"),
-        default="full",
-        help="pr keeps the pr-tier gates, the set ci/premerge_gates.py runs; full keeps every gate",
-    )
     parser.add_argument(
         "--device",
         choices=("CPU", "GPU"),
@@ -307,37 +285,16 @@ def main(argv: list[str] | None = None) -> int:
         help="comma-separated gate names; a registered case gate matches by its own or its parent's name",
     )
     parser.add_argument("--timings", type=Path, help="write measured gate durations and run wall time as JSON")
-    parser.add_argument("--plan", type=Path, help="write the selected gates and historical environments, then exit")
-    parser.add_argument("--github-output", type=Path, help="append historical=true/false for a --plan step")
     parser.add_argument(
         "--replay-python",
         help="interpreter for historical-runtime gates; it must hold every pin of ci/requirements-replay.txt",
     )
     arguments = parser.parse_args(argv)
-    gates = select(ROOT, arguments.tier, arguments.max_seconds, arguments.manifest)
+    gates = select(ROOT, arguments.max_seconds)
     selected = manifest.expand_cases(ROOT, gates)
     if arguments.gates is not None:
         named = {name for name in arguments.gates.split(",") if name}
         selected = [gate for gate in selected if gate["name"] in named or gate.get("parent") in named]
-    if arguments.plan is not None:
-        environments = sorted({gate["runtime"] for gate in selected if gate.get("runtime")})
-        arguments.plan.write_text(
-            json.dumps(
-                {
-                    "schema": "gororoba-gate-plan-v1",
-                    "gates": selected,
-                    "environments": environments,
-                },
-                indent=2,
-            )
-            + "\n"
-        )
-        if arguments.github_output is not None:
-            with arguments.github_output.open("a") as output:
-                print(f"historical={str(bool(environments)).lower()}", file=output)
-        return 0
-    if arguments.github_output is not None:
-        parser.error("--github-output requires --plan")
     if arguments.list:
         for gate in selected:
             print(f"{gate['name']}\t{gate['cwd']}\t{gate['cmd']}")

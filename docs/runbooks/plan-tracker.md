@@ -54,7 +54,7 @@ receive no implicit freshness check; retain sanitized response files for reprodu
 An evidence `ref` names a whole file or one record of a shared JSON registry:
 `FILE.json#COLLECTION/FIELD=VALUE` selects the single object of the top-level array `COLLECTION` whose string
 `FIELD` equals `VALUE`, for example `docs/state/research_state.json#claims/id=a5-stiefel-universal`,
-`ci/replays.json#gates/name=core-690` or `docs/SOURCES.json#pdfs/path=docs/pdf/2103.12805v1.pdf`. Its digest is
+`ci/gates.json#gates/name=core-690` or `docs/SOURCES.json#pdfs/path=docs/pdf/2103.12805v1.pdf`. Its digest is
 `plan_records.digest` of that object (sorted-key JSON), so edits to other records of the registry leave the
 receipt fresh, while a changed, removed or duplicated record requests revalidation. Code, proofs and evidence
 bundles keep whole-file references. `digest REF...` prints the digest each reference binds:

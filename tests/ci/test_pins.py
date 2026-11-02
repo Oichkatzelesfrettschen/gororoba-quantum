@@ -280,7 +280,7 @@ def test_each_mypy_invocation_writes_its_own_cache() -> None:
 def test_gate_lint_tools_are_pinned() -> None:
     # A bare ruff or mypy resolves through PATH, where a host install of
     # another release reports its own defects as gate failures.
-    gates = manifest.all_gates(pins.ROOT)
+    gates = manifest.gates(pins.ROOT)
     bare = re.compile(r"(?:(?:^|&&|\|\||;|\||\$\(|\bthen|\bxargs)\s*(?:\w+=\S+\s+)*|-m\s+)(?:ruff|mypy)\b")
     unpinned = [gate["name"] for gate in gates if bare.search(gate["cmd"])]
     if unpinned:
