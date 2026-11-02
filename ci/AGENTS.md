@@ -27,11 +27,22 @@ per native library, `GOROROBA_PINS_REQUIRED=1`):
 
 Pull-request CI answers one question: does the change break the repository's
 own Python. Each test it runs builds its input or reads a small fixture and
-mocks every provider. A check of data rather than code (a retained-record
+mocks every provider service. A check of data rather than code (a retained-record
 replay, a `sha256sum -c` of committed files, a source-registry or reading-copy
 check against the gororoba-documents repositories, a research script run end to
 end) is an on-demand gate of [ci/gates.json](gates.json) (On-demand gates
 below), since it fails on state the pull request did not change.
+tests/providers/ holds the provider-library regressions, run in `tests` like
+any other test, so a pull request that bumps a pin in requirements.txt or
+ci/requirements-ci.txt runs them under the new versions. test_surface.py scans
+gororoba_quantum/, scripts/ and ci/ at run time and resolves every name the code
+imports from a pinned provider library (Qiskit, Aer, qiskit-ibm-runtime,
+samplomatic, Perceval, exqalibur, mcp); its `FOREIGN` map lists each file that
+runs under another provider's interpreter and imports a name the pins cannot
+resolve, with the reason. One file per library
+exercises the calls the code makes against answers fixed by construction (a Bell
+pair's support, the Hong-Ou-Mandel zero, a certain readout flip), locally and
+without credentials.
 `lint`, `types` and `tests` time out at 8 minutes.
 `types` and `tests` restore the pinned venv through
 .github/actions/pins-venv, under a cache key that hashes the venv's inputs, and

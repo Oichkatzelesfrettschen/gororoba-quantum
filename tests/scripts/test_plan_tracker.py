@@ -346,6 +346,37 @@ def test_check_base_holds_closed_and_receipted_plans_to_fresh_evidence(root: Pat
         invoke(root, "check", "--base", base)
 
 
+def test_closed_plans_are_history_and_closing_needs_fresh_evidence(root: Path) -> None:
+    (root / "registry.json").write_text('{"rows": [{"name": "replay", "cmd": "true"}]}\n')
+    item = plan()
+    step = item["steps"][0]
+    observed = receipt(root, item, step)
+    observed["evidence"].append(
+        {
+            "ref": "registry.json#rows/name=replay",
+            "sha256": records.evidence_digest(root, "registry.json#rows/name=replay"),
+        }
+    )
+    step.update(state="done", receipts=[observed])
+    tracker.publish(root, {}, item)
+    commit(root, "test: step done")
+    (root / "context.md").write_text("# Expanded context\n")
+    (root / "registry.json").unlink()
+    with pytest.raises(ValueError, match="missing reference"):
+        records.validate(root, {item["id"]: item})
+    commit(root, "test: move the evidence")
+    closing = receipt(root, item) | {"evidence": observed["evidence"]}
+    item.update(state="closed", disposition="completed", resolution="Finite claim refuted.", receipts=[closing])
+    records.validate(root, {item["id"]: item})
+    tracker.publish(root, {}, item)
+    commit(root, "test: close on moved evidence")
+    with pytest.raises(ValueError, match="revalidation required for context.md"):
+        invoke(root, "check", "--base", "HEAD~1")
+    if "revalidation required" in tracker.entry(root, {item["id"]: item}, item):
+        raise RuntimeError("a closed plan's view carries no revalidation flag")
+    invoke(root, "check", "--base", "HEAD")
+
+
 def test_record_selector_binds_one_registry_record(root: Path, capsys: pytest.CaptureFixture[str]) -> None:
     registry = root / "registry.json"
     claims = [{"id": "target", "status": "open"}, {"id": "neighbor", "status": "open"}]
