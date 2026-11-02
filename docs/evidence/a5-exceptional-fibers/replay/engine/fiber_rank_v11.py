@@ -1071,11 +1071,16 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
         chars = np.stack([(exps @ g) % 2 for g in gens], axis=1)
         return chars @ np.array([2**i for i in range(len(gens))], dtype=np.int64)
 
-    def estimate(basis: list[Monomial]) -> dict[str, int]:
+    def estimate(basis: list[Monomial], m: int = ngens) -> dict[str, int]:
+        """Selected arrays for m generators (the character components once known); product rows count every
+        degree level block_products keeps."""
         sizes = np.bincount(block_layout(basis), minlength=len(blocks))
         widest = int(sizes.max())
         gen_blocks = max(sum(int(sizes[b]) * int(sizes[b ^ c]) for b in blocks) for c in blocks)
-        rows = nprod + sum(len(v) for e, v in rset.wanted.items() if e < a.d) if rset else 2 * nprod
+        if rset:
+            rows = nprod + sum(len(v) for e, v in rset.wanted.items() if e < a.d)
+        else:
+            rows = sum(math.comb(m + e - 1, e) for e in range(1, a.d + 1))
         return {
             "generator_blocks": 8 * gen_blocks,
             "walk_temporaries": 2 * 8 * gen_blocks // len(blocks),
@@ -1083,8 +1088,8 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
             "echelon_bases": 2 * 8 * sum(int(sizes[b]) ** 2 for b in blocks),
         }
 
-    def preflight(basis: list[Monomial]) -> None:
-        est = estimate(basis)
+    def preflight(basis: list[Monomial], m: int = ngens) -> None:
+        est = estimate(basis, m)
         if a.max_gb and sum(est.values()) > a.max_gb * 2**30:
             raise SystemExit(f"preflight {sum(est.values()) / 2**30:.2f} GiB exceeds --max-gb {a.max_gb}: {est}")
 
@@ -1109,7 +1114,6 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
     pos = np.empty(D, dtype=np.int64)
     for b in blocks:
         pos[cols[b]] = np.arange(len(cols[b]))
-    preflight_bytes = sum(estimate(basis).values())
     t_p0 = time.time()
     lay = block_tables(tables, bidx, block_of, var_char, blocks)
     del tables
@@ -1132,13 +1136,16 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
             comps.append((v, c))
     gvecs = np.array([v for v, _ in comps])
     gchar = [c for _, c in comps]
+    preflight(basis, len(gchar))
+    preflight_bytes = sum(estimate(basis, len(gchar)).values())
     one_pos = int(lay.pos[bidx[tuple(0 for _ in basis[0])]])
     walk = order_walk(basis, lay)
     built = block_products(gvecs, gchar, one_pos, walk, lay, a.d, p, rset.wanted if rset else None)
     del walk
 
     def stack(built: dict[tuple[int, ...], tuple[int, np.ndarray]], ts: list[tuple[int, ...]], b: int) -> np.ndarray:
-        Y = np.array([built[t][1] for t in ts if built[t][0] == b]).reshape(-1, len(cols[b]))
+        picked = [built[t][1] for t in ts if built[t][0] == b]
+        Y = np.array(picked) if picked else np.zeros((0, len(cols[b])))
         return Y[np.any(Y != 0, axis=1)]
 
     rep_tuples = rset.reps if rset else sorted(built)

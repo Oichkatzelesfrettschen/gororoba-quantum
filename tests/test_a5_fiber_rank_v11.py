@@ -138,3 +138,25 @@ def test_a_receipt_with_a_mixed_generator_refuses(tmp_path: Path) -> None:
     )
     res = _run("fiber_rank_v11.py", header, 2, 6, "--k2-receipt", str(receipt))
     _check(res.get("returncode", 0) != 0 and "pure characters" in res["stderr"])
+
+
+@needs_singular
+def test_an_empty_character_block_runs(tmp_path: Path) -> None:
+    header = tmp_path / "h.sing"
+    header.write_text("ring r=32009,(t1,t2),dp;\nideal J=t1^2;\nideal G=t1;\n")
+    a, b = _run("fiber_rank_v10.py", header, 1, 1), _run("fiber_rank_v11.py", header, 1, 1)
+    _check("r_N" in b and a["r_N"] == b["r_N"] and _blocks(a) == _blocks(b))
+    _check(any(v["cols"] == 0 for v in b["per_block"].values()))
+
+
+@needs_singular
+def test_the_preflight_counts_every_level_of_the_component_products(tmp_path: Path) -> None:
+    header = tmp_path / "h.sing"
+    header.write_text(MIXED)
+    rec = _run("fiber_rank_v11.py", header, 3, 7)
+    sizes = [rec["per_block"][k]["cols"] for k in sorted(rec["per_block"])]
+    m = rec["generator_components"]
+    rows = sum(len(list(itertools.combinations_with_replacement(range(m), e))) for e in range(1, 4))
+    gen = max(sum(sizes[b] * sizes[b ^ c] for b in range(len(sizes))) for c in range(len(sizes)))
+    want = 8 * gen + 2 * 8 * gen // len(sizes) + 2 * 8 * rows * max(sizes) + 2 * 8 * sum(x * x for x in sizes)
+    _check(m == 5 and rec["preflight_bytes"] == want)
