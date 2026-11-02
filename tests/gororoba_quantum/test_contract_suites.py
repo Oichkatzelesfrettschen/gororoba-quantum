@@ -68,6 +68,13 @@ KERNEL_DETERMINANT_TASKS: tuple[tuple[int, dict[int, int | Fraction], int], ...]
 )
 
 
+# The two smallest point tasks of complex_skew_contracts.POINT_TASKS (name, coordinate entries, expected nullity).
+COMPLEX_SKEW_TASKS: tuple[tuple[str, dict[int, Fraction | int], int], ...] = (
+    ("nullity4", {1: 1, 10: Fraction(1, 4), 18: Fraction(5, 8), 25: Fraction(1, 8)}, 4),
+    ("nullity8", {1: 1, 10: 1}, 8),
+)
+
+
 # The runtime_contracts cases that ci/gates.json core-074 runs as shards and that fit the per-case budget.
 RUNTIME_CASES = (
     "dynamic_classification",
@@ -82,9 +89,7 @@ RUNTIME_CASES = (
     "result_register_order",
     "twirling_shot_contract",
     "capability_admission",
-    "discovered_capabilities",
     "target_and_bad_qubit_status",
-    "snapshot_and_fingerprint_coherence",
     "pub_fusion_contracts",
     "worker_quota",
     "unchanged_since_planning",
@@ -96,8 +101,6 @@ RUNTIME_CASES = (
     "placement_duplicate_branch_order",
     "static_placement_judge",
     "schema_discrimination",
-    "live_reselection",
-    "discovery_failure_isolation",
     "approved_backend_scope",
     "operator_qubit_exclusion",
     "compile_panic_isolation",
@@ -121,18 +124,21 @@ ON_DEMAND_RUNTIME_CASES: Mapping[str, str] = {
     "schema_lifecycle": "the record schema across plan, submit and collect",
     "every_job_revalidates": "every job revalidates the Target before it is sent",
     "packed_replica_split": "packed replicas of a dynamic circuit split into each replica's counts",
+    "discovered_capabilities": "snapshot discovery records the capabilities of a viable FakeFez backend",
+    "snapshot_and_fingerprint_coherence": "a FakeFez snapshot matches its properties and fingerprint",
+    "live_reselection": "a degraded FakeFez snapshot triggers live reselection",
+    "discovery_failure_isolation": "a refresh, properties, status or capabilities failure isolates its backend",
 }
 
 UNITS: tuple[Unit, ...] = (
-    Unit(
-        "complex_skew_contracts",
-        "audit",
-        size=lambda m: {
-            "dimensions": m.COEFFICIENT_DIMENSIONS[:3],
-            "tasks": m.POINT_TASKS[:2],
-            "cleared_indices": (1,),
-        },
+    *(Unit("complex_skew_contracts", "coefficient_control", f"coefficient_control_{d}", (d,)) for d in (4, 8, 16)),
+    *(
+        Unit("complex_skew_contracts", "point_control", f"point_control_{task[0]}", (task,))
+        for task in COMPLEX_SKEW_TASKS
     ),
+    Unit("complex_skew_contracts", "polynomial_controls", "polynomial_controls_pivot_1", ((1,),)),
+    Unit("complex_skew_contracts", "negative_controls"),
+    Unit("complex_skew_contracts", "local_obstruction_controls"),
     Unit("correction_case_contracts", "verify"),
     Unit("correction_circuits_contracts", "verify"),
     Unit("correction_collection_contracts", "verify_cli"),
@@ -162,13 +168,11 @@ UNITS: tuple[Unit, ...] = (
     Unit("pub_shot_runtime_contracts", "_verify_local_executor", size=lambda _m: {"backend_type": FakePrague}),
     Unit("qpu_case_allocation_contracts", "verify"),
     Unit("qpu_planning_contracts", "_verify_static_admission_only"),
-    Unit("qpu_planning_contracts", "_verify_prep_excitation_only"),
     Unit("qpu_planning_contracts", "_verify_pin_layout_only"),
     Unit("qpu_planning_contracts", "_verify_overlap_split_only"),
     Unit("qpu_planning_contracts", "_verify_ground_control_split_only"),
     Unit("qpu_planning_contracts", "_verify_ground_ramsey_sweep_only"),
     Unit("rank_sector_contracts", "main", exit_status=True),
-    Unit("replica_covariance_contracts", "_verify"),
     Unit("ripple_contracts", "_verify_sparse_runtime"),
     Unit("ripple_contracts", "_verify_archived_weights"),
     Unit("ripple_contracts", "_verify_native_walk_synthesis"),
@@ -180,7 +184,9 @@ UNITS: tuple[Unit, ...] = (
 # its gate.
 ON_DEMAND: Mapping[str, str] = {
     "algebra_planning_contracts": "the whole audit, whose rank-sector family compiles eight FakeFez lanes (core-095)",
-    "complex_skew_contracts": "coefficient dimensions 32 and 64, four larger point tasks, fourteen pivots (core-063)",
+    "complex_skew_contracts": (
+        "the audit composition, coefficient dimensions 32 and 64, four larger point tasks, fourteen pivots (core-063)"
+    ),
     "correction_planning_contracts": "three FakeFez Targets compiled and their discovery frontier walked (core-080)",
     "kernel_determinant_contracts": "the audit composition and the three largest point tasks (core-177, core-208)",
     "kernel_limit_contracts": "the four eight-nullity paths, whose pairwise intersections need all four (core-059)",
@@ -190,12 +196,14 @@ ON_DEMAND: Mapping[str, str] = {
     "qpu_planning_contracts": (
         "the default sequence (core-094), repetition delay (core-523), serialized-noise equivalence (core-548),"
         " heralded reuse in four cases (core-570), initialization herald (core-445), approved-prediction reuse"
-        " (core-549), window bracket (core-446), state-prep control (core-524) and the measurement-sequence"
+        " (core-549), window bracket (core-446), state-prep control (core-524), the prep-excitation check and the"
+        " measurement-sequence"
         " family, which no gate runs"
     ),
+    "replica_covariance_contracts": "the whole verification, 3.5 s of CPU on the build host (core-486)",
     "real_frontier_contracts": "the whole audit, whose last stage doubles a dimension-256 pencil (core-190)",
     "ripple_contracts": "verify_ripple_family's member checks and 859 statevector comparisons (core-100)",
-    "runtime_contracts": "the nine cases of ON_DEMAND_RUNTIME_CASES (core-074, core-521)",
+    "runtime_contracts": "the thirteen cases of ON_DEMAND_RUNTIME_CASES (core-074, core-521)",
 }
 
 

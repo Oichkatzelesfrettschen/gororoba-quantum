@@ -123,6 +123,7 @@ def point_control(task: tuple[str, dict[int, Fraction | int], int]) -> dict[str,
 
 
 def polynomial_controls(cleared_indices: Sequence[int] = range(1, 16)) -> dict[str, int]:
+    """The polynomial controls; cleared_indices selects the cleared pivots, every pivot by default."""
     entries = sp.symbols("s0:15", real=True)
     generic = sp.zeros(6)
     for value, (row, column) in zip(entries, combinations(range(6), 2), strict=True):
@@ -253,29 +254,21 @@ def local_obstruction_controls() -> dict[str, Any]:
     }
 
 
-COEFFICIENT_DIMENSIONS: tuple[int, ...] = (4, 8, 16, 32, 64)
-POINT_TASKS: tuple[tuple[str, dict[int, Fraction | int], int], ...] = (
-    ("nullity4", {1: 1, 10: Fraction(1, 4), 18: Fraction(5, 8), 25: Fraction(1, 8)}, 4),
-    ("nullity8", {1: 1, 10: 1}, 8),
-    ("nullity12", {1: 1, 18: 1}, 12),
-    ("nullity16", {1: 1, 10: 1, 18: 1, 25: -1}, 16),
-    ("dense_invertible", {index: Fraction(index + 1, 31) for index in range(32) if index not in (0, 16)}, 0),
-    ("origin", {}, 32),
-)
-
-
-def audit(
-    dimensions: Sequence[int] = COEFFICIENT_DIMENSIONS,
-    tasks: Sequence[tuple[str, dict[int, Fraction | int], int]] = POINT_TASKS,
-    cleared_indices: Sequence[int] = range(1, 16),
-) -> dict[str, Any]:
-    """Every exact control; the arguments select a subset of the dimensions, point tasks and cleared pivots."""
-    coefficient_checks = ordered_map(coefficient_control, list(dimensions), min_items=2)
+def audit() -> dict[str, Any]:
+    coefficient_checks = ordered_map(coefficient_control, [4, 8, 16, 32, 64], min_items=2)
+    tasks: list[tuple[str, dict[int, Fraction | int], int]] = [
+        ("nullity4", {1: 1, 10: Fraction(1, 4), 18: Fraction(5, 8), 25: Fraction(1, 8)}, 4),
+        ("nullity8", {1: 1, 10: 1}, 8),
+        ("nullity12", {1: 1, 18: 1}, 12),
+        ("nullity16", {1: 1, 10: 1, 18: 1, 25: -1}, 16),
+        ("dense_invertible", {index: Fraction(index + 1, 31) for index in range(32) if index not in (0, 16)}, 0),
+        ("origin", {}, 32),
+    ]
     return {
         "schema": "complex-skew-certificate-v1",
         "coefficient_checks": coefficient_checks,
-        "point_checks": ordered_map(point_control, list(tasks), min_items=2),
-        "polynomial_checks": polynomial_controls(cleared_indices),
+        "point_checks": ordered_map(point_control, tasks, min_items=2),
+        "polynomial_checks": polynomial_controls(),
         "negative_controls": negative_controls(),
         "local_obstruction_controls": local_obstruction_controls(),
         "qpu_executed": False,

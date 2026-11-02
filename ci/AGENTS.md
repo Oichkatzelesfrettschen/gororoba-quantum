@@ -410,8 +410,8 @@ modes in process through each script's `main`, in groups that gates
 whose gate name a script or retained file carries, or whose gate declares a
 `runtime` or `requires`, keeps its own gate. tests/gororoba_quantum/test_contract_suites.py
 runs the `gororoba_quantum/*_contracts.py` self-test suites in process, one case per independently runnable
-check and per `runtime_contracts.CONTRACT_CASES` entry, each within 6 s on the build host (the 3 s bound above
-yields to the 15 s call bound of tests/conftest.py at the hosted runner's twofold time); a check function takes its
+check and per `runtime_contracts.CONTRACT_CASES` entry, each within the 3 s bound above (a hosted run measured
+these cases at about 3.3 times the build host's time); a check function takes its
 size as a keyword argument whose default is the gate's full size, and a part that fits no budget stays on its
 gate, listed with its measured time in the file's `ON_DEMAND` tables. A test exercises a contract on a small
 fixed input and fails by an explicit raise. Plugin autoload is off (pyproject.toml), so
