@@ -114,7 +114,13 @@ author's probe archive.
 - [I] The nullity dichotomy, the kernel dimension 4 and the left-right equality restate results the repository already
   holds from [Biss, Dugger and Isaksen](../math-0511691.md), [Biss, Christensen, Dugger and Isaksen](../0905.2987.md),
   [Moreno](../math-0512517.md) and [Koebisu](2512.13002.md); the paper declares the same attribution. The new content is the
-  bundle and holonomy layer (Sections 6 to 9), whose claims the repository neither uses nor has verified.
+  bundle and holonomy layer (Sections 6 to 9). Its Theorem 6.4 (bundle nontriviality) is the repository's
+  `xi_R` result with priority: the kernel basis (e7 + e12, -e6 + e13, e5 + e14, -e4 + e15) of L_p0, p0 = e1 + e10 under
+  `cd_core` (nullity 4), carries the doubled action of the three stabilizer derivations of (e1, e2) by the same matrices
+  as span(e4, e5, e6, e7) = H^perp, so K = G_2 x_SU(2) K0 equals `xi_R = G_2 x_SU(2) H^perp`
+  ([residuals record](../../evidence/a5-kernel-bundles-residuals/README.md)). The stable-triviality sentence of the
+  proof infers stable triviality from vanishing characteristic classes alone, which does not suffice; the repository
+  proves it by xi_R + R^4 = R^8. The holonomy claims of Sections 7 to 9 remain unverified here.
 - [I] The aphanic criterion selects the imaginary sedenion zero divisors whose second component is imaginary; the
   repository's two-support corpus (`cd_core.sedenion_zero_divisor_corpus`, 336 ordered signed rows) is a finite subset of
   that locus. Matching the corpus rows to aphanic pairs is open.
@@ -125,7 +131,7 @@ author's probe archive.
 ## Relevance
 
 - [I] Calibration-aware compilation on IBM hardware: none.
-- [I] Cayley-Dickson structure: high for Theorem 3.1, Proposition 5.4 and Theorem 4.1 (checked above), low for the bundle layer.
+- [I] Cayley-Dickson structure: high for Theorem 3.1, Proposition 5.4 and Theorem 4.1 (checked above), high for Theorem 6.4 (verified against `xi_R`), low for the holonomy layer.
 - [I] Factoring resource estimates: none.
 
 ## Boundaries
