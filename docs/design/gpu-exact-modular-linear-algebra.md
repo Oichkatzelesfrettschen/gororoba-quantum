@@ -201,6 +201,26 @@ shorten. In quotient mode the Singular product export takes 99 percent of the wa
 (E8-bar -> N- degree 3 at N = 11: 4,397 of 4,526 s, 34 GB resident), and that closure is the stage the exact PLUQ
 replaces.
 
+Engine v7 in quotient mode on E8-bar -> N- at degree 4 (laptop under WSL, `seconds` of each record) keeps that split:
+
+| N | Singular export | products | closure | share of linear algebra | rank r_N |
+| --- | --- | --- | --- | --- | --- |
+| 12 | 4,268 s | 243 s | 46 s | 6.3 % | 357 |
+| 13 | 11,708 s | 621 s | 93 s | 5.7 % | 440 |
+| 14 | 28,204 s | 1,654 s | 177 s | 6.1 % | 440 |
+
+Removing the linear algebra entirely bounds the speedup at 30,053 / 28,204 = 1.066 at N = 14, so no GPU stage
+changes when a quotient-mode degree finishes; the single-threaded Singular standard basis of J + m^N sets it, growing
+by 2.7x and then 2.4x per unit N. The quotient blocks hold about 5,800 columns at N = 14, where the measured PLUQ is
+roughly 40 times faster than FLINT, but the closure is 0.6 % of the wall time. Raw mode, the form whose closure the
+GPU does replace, needs the monomial space of degree below N in 9 variables: 92,378 monomials at N = 11 (34 GB
+resident) and 497,420 at N = 14, so a dense closure there grows by the square of that 5.4x ratio, to the order of a
+terabyte (estimate). The quotient-mode peak, 17.9 GiB at N = 14, also exceeds the 12 GiB card, so a device path
+would run through Layer 2, whose prefetch issue takes 57 % of the profiled CUDA API time. The workstation's RTX 4090
+cannot take that spill under WSL (no pageable or concurrent managed access, no CUDA toolkit, CuPy or torch). The GPU
+pays where linear algebra dominates: raw-mode closures at moderate N (the 97 % case above), Macaulay-matrix degree
+ranks, and the exact kernel computations that test a named set of candidate relations.
+
 ## Order
 
 1. The exact INT8 product runs with an explicit device digit cache, pinned staging both ways and a reused result
