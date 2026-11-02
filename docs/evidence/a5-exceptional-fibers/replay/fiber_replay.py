@@ -1,7 +1,7 @@
 """Replay the truncated-rank certificates of the A_5 fiber registry.
 
-    replay.py plan            write manifest.json from ../claims.json and ../certificates.jsonl
-    replay.py run OUTDIR [--budget-gb G] [--only SUBSTRING]
+    fiber_replay.py plan           write manifest.json from ../claims.json and ../certificates.jsonl
+    fiber_replay.py run OUTDIR [--budget-gb G] [--only SUBSTRING]
 
 `plan` picks, for every fiber, prime and degree that a truncated rank certifies, the record with the smallest N; at
 that N it prefers quotient mode, whose memory peak is lower. Every entry replays on engine/fiber_rank_v8.py: its
