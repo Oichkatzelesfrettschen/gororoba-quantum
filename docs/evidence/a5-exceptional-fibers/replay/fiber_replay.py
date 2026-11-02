@@ -173,6 +173,14 @@ def run(outdir: Path, budget: float, only: str | None) -> int:
         raise SystemExit(
             "an entry's estimate exceeds the budget: " + ", ".join(e["id"] for e in pending if cap_gb(e) > budget)
         )
+
+    def stop(signum: int, _frame: object) -> None:
+        raise SystemExit(128 + signum)
+
+    # Each job runs in its own session and never sees the runner's signal, so SIGTERM and SIGHUP route through the
+    # cleanup below; Python's default action for them exits without running it.
+    for signum in (signal.SIGTERM, signal.SIGHUP):
+        signal.signal(signum, stop)
     try:
         while pending or running:
             used = sum(cap_gb(running[k][1]) for k in running)
@@ -206,6 +214,12 @@ def run(outdir: Path, budget: float, only: str | None) -> int:
         for proc, _e, _t in running.values():
             if proc.poll() is None:
                 os.killpg(proc.pid, signal.SIGTERM)
+        for proc, _e, _t in running.values():
+            try:
+                proc.wait(timeout=30)
+            except subprocess.TimeoutExpired:
+                os.killpg(proc.pid, signal.SIGKILL)
+                proc.wait()
     summary = {
         "reproduced": sum(1 for d in done if d["ok"]),
         "failed": [d["id"] for d in done if not d["ok"]],
