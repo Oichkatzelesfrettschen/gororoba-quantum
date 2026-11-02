@@ -558,23 +558,28 @@ def _quotient_data_locked(
         raise SystemExit(f"{EXPORT_MANIFEST} in --export-dir names another header, prime or N")
     files: dict[str, str] = dict(recorded.get("files", {}))
     present = sorted(f for f in os.listdir(out) if EXPORT_FILE.match(f))
-    adopted = []
+    # A file without a record stays pending, out of the manifest, until its recomputation agrees, so every retry
+    # verifies it again.
+    pending = []
     for f in present:
         sidecar = path(f + ".sha256")
         want = files.get(f) or (Path(sidecar).read_text().strip() if os.path.exists(sidecar) else None)
         got = file_sha256(path(f))
         if want is None:
-            adopted.append(f)
+            pending.append(f)
         elif got != want:
             raise SystemExit(f"{f} in --export-dir differs from its recorded sha256")
-        files[f] = got
-    if adopted:
+        else:
+            files[f] = got
+    if pending:
         if not adopt:
-            raise SystemExit(f"--export-dir holds export files without a sha256 record {adopted}; check them and pass "
+            raise SystemExit(f"--export-dir holds export files without a sha256 record {pending}; check them and pass "
                              "--adopt-export")  # fmt: skip
+        if "s.txt" in pending or ("qB.txt" in pending and os.path.exists(path("s.txt"))):
+            raise SystemExit("--adopt-export verifies qB.txt by recomputing s.txt, so s.txt cannot be adopted")
         adopt_serial_export(out, header_text, names, p, N)
-    adopted = sorted(set(adopted) | set(recorded.get("adopted", [])))
-    write_manifest(mpath, {**ident, "files": files, "adopted": adopted})
+    write_manifest(mpath, {**ident, "files": files, "adopted": recorded.get("adopted", [])})
+    adopted = sorted(set(pending) | set(recorded.get("adopted", [])))
     nv, base = len(names), {"p": p, "names": ",".join(names), "out": out}
     computed: dict[str, float] = {}
     reused = [f for f in present if not re.match(r"qM\d+\.r", f)]
@@ -590,7 +595,8 @@ def _quotient_data_locked(
                 os.replace(path("qB.txt.part"), path("qB.rejected.txt"))
                 os.remove(path("s.txt.part"))
                 raise SystemExit("recomputed kbase differs from the qB.txt in --export-dir (kept as qB.rejected.txt)")
-            os.remove(path("qB.txt.part"))
+            publish(path("qB.txt.part"), path("qB.txt"))
+            pending = [f for f in pending if f != "qB.txt"]
         else:
             publish(path("qB.txt.part"), path("qB.txt"))
         publish(path("s.txt.part"), path("s.txt"))
@@ -614,7 +620,7 @@ def _quotient_data_locked(
     for k in range(1, nv + 1):
         final = path(f"qM{k}.txt")
         if os.path.exists(final):
-            if f"qM{k}.txt" in adopted and f"qM{k}.txt" not in recorded.get("adopted", []):
+            if f"qM{k}.txt" in pending:
                 rows = ",".join(f"B[{i}]" for i in spots)
                 script = load(f"qM{k}.spot") + SPOT_SCRIPT.format(k=k, rows=rows, part=path(f"qM{k}.spot.txt.part"))
                 jobs.append(checked(script, f"qM{k}.spot", None, "RESULT spot"))
@@ -634,7 +640,7 @@ def _quotient_data_locked(
     if not os.path.exists(path("qG.txt")):
         script = load("qG") + GENERATOR_SCRIPT.format(G=header_text["G"], N=N, part=path("qG.txt.part"))
         jobs.append(checked(script, "qG", path("qG.txt"), "RESULT generators"))
-    elif "qG.txt" in adopted and "qG.txt" not in recorded.get("adopted", []):
+    elif "qG.txt" in pending:
         gen_check = path("qG.check.txt.part")
         script = load("qG.check") + GENERATOR_SCRIPT.format(G=header_text["G"], N=N, part=gen_check)
         jobs.append(checked(script, "qG.check", None, "RESULT generators"))

@@ -115,8 +115,9 @@ def test_basis_mismatch_refuses_every_retry(tmp_path: Path) -> None:
 def test_permuted_adopted_table_fails_its_spot_rows(tmp_path: Path) -> None:
     entries = _entries(_adopted(tmp_path / "probe") / "qM1.txt")
     adopted = _adopted(tmp_path / "run", table=",".join(reversed(entries)))
-    with pytest.raises(SystemExit):
-        v9.quotient_data(HEADER, NAMES, P, 6, str(SINGULAR), str(adopted), adopt=True)
+    for _ in range(2):
+        with pytest.raises(SystemExit, match="recomputed rows"):
+            v9.quotient_data(HEADER, NAMES, P, 6, str(SINGULAR), str(adopted), adopt=True)
 
 
 @needs_singular
