@@ -73,6 +73,14 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def fresh(witness: dict, fields: tuple[str, ...]) -> dict:
+    """Admit a witness only while every relation file it compared still holds the bytes it recorded."""
+    for field in fields:
+        if witness[field] is not None and sha(HERE / witness[field]) != witness.get(f"{field}_sha256"):
+            raise SystemExit(f"stale {witness['kind']} witness: {witness[field]} differs from the compared bytes")
+    return witness
+
+
 def header_file(rel: str) -> Path:
     p = W / rel
     return p if p.exists() else HERE / rel
@@ -324,8 +332,12 @@ def main() -> int:
     roots = [Path(a).resolve() for a in args if a != "--check"]
     wit = [json.loads(ln) for ln in (HERE / "witnesses.jsonl").read_text().splitlines() if ln.strip()]
     witness_ok = {w["legacy"] for w in wit if w["kind"] == "header-pair" and w["ok"]}
-    isos = [w for w in wit if w["kind"] == "sign-isomorphism" and w["ok"]]
-    spans = {(w["receipt"], w["k2_source"]) for w in wit if w["kind"] == "k2-span" and w["ok"]}
+    isos = [fresh(w, ("k2_to", "k2_from")) for w in wit if w["kind"] == "sign-isomorphism" and w["ok"]]
+    spans = {
+        (w["receipt"], w["k2_source"])
+        for w in wit
+        if w["kind"] == "k2-span" and w["ok"] and fresh(w, ("k2_source", "receipt_relations"))
+    }
     headers = known_headers(witness_ok)
     k2 = k2_table()
     recs, rejected = receipts(headers)

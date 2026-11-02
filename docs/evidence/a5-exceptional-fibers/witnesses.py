@@ -19,6 +19,7 @@ Two kinds of row:
   HF of that source from above.
 """
 
+import hashlib
 import json
 import os
 import subprocess
@@ -102,8 +103,14 @@ def sign_iso(prime: int, src: str, dst: str, flip: tuple[str, ...], k2_dst: Path
     return {
         "kind": "sign-isomorphism", "prime": prime, "from": STEM_NAME[src], "to": STEM_NAME[dst], "flip": list(flip),
         "J_signs": jsg, "G_signs": gsg, "k2_to": str(k2_dst.relative_to(HERE)) if k2_dst else None,
-        "k2_from": str(k2_src.relative_to(HERE)) if k2_src else None, "k2_mutual_remainders": vals, "ok": ok,
+        "k2_from": str(k2_src.relative_to(HERE)) if k2_src else None,
+        "k2_to_sha256": digest(k2_dst) if k2_dst else None, "k2_from_sha256": digest(k2_src) if k2_src else None,
+        "k2_mutual_remainders": vals, "ok": ok,
     }  # fmt: skip
+
+
+def digest(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def k2_span(fiber: str, prime: int, ngens: int, source: Path, receipt: Path) -> dict:
@@ -119,6 +126,7 @@ def k2_span(fiber: str, prime: int, ngens: int, source: Path, receipt: Path) -> 
     return {
         "kind": "k2-span", "fiber": fiber, "prime": prime, "k2_source": str(source.relative_to(HERE)),
         "receipt": str(receipt.relative_to(HERE)), "receipt_relations": str(rel.relative_to(HERE)),
+        "k2_source_sha256": digest(source), "receipt_relations_sha256": digest(rel),
         "mutual_remainders": vals, "ok": vals == [0, 0],
     }  # fmt: skip
 
