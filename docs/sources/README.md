@@ -36,7 +36,13 @@ from the versions of record, including the two explicitly named PDF aliases.
 Two open-access Nature-family versions of record (s41586-026-10423-9 and
 s41567-026-03466-2) carry article-level CC BY 4.0 grants and are retained.
 HTML-only sources and their reading scopes appear in the registry and notes.
-Explicit CC BY 4.0 or CC0 permission supports the published PDFs. ArXiv-only
+Explicit CC BY 4.0, CC BY-SA 4.0 or CC0 permission supports the published PDFs. A
+publisher's license notice printed on the PDF itself admits it through the `pdf-notice`
+route: a JSON capture under `docs/evidence/source_rights/` records the page, the notice
+verbatim, the PDF's sha256 and every metadata source that names a different license, and
+the verifier binds it to the published bytes (Chapman and Vishkautsan, Communications in
+Mathematics 33, is the first, published on its CC BY-SA 4.0 notice with the owner's
+approval on 2026-11-02). ArXiv-only
 hosting grants, personal-copy permissions, and sources without an established
 rehosting grant receive external records and ignored local copies under
 `local_source_cache/`. The registry retains first-party evidence URLs and hashes.
@@ -185,6 +191,47 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [skiouris-2026-aphanics-pathion](../notes/papers/skiouris-2026-aphanics-pathion.md) | Skiouris, Aphanics at the pathion level (Zenodo preprint, 2026): stratified Gram spectra and the Clifford triad checked | none | medium | none |
 | [1505.05210](../notes/papers/1505.05210.md) | Kustin, Polini and Ulrich, The equations defining blowup algebras of height three Gorenstein ideals (Algebra Number Theory 11, 2017) | none | low | none |
 | [1207.1060](../notes/papers/1207.1060.md) | Branco Correia and Zarzuela, Divisors of a module and blow up (J. Pure Appl. Algebra 217, 2013) | none | low | none |
+| [2302.07486](../notes/papers/2302.07486.md) | Kumar and Venugopal, Rees algebra of maximal order Pfaffians and its diagonal subalgebras (Comm. Algebra, 2024) | none | low | none |
+| [2104.13811](../notes/papers/2104.13811.md) | Cooper and Price, Bounding the degrees of the defining equations of Rees rings for determinantal and Pfaffian ideals (J. Algebra 606, 2022) | none | low | none |
+| [alg-geom-9707001](../notes/papers/alg-geom-9707001.md) | Bertram, A log version of Kodaira vanishing and complete skew forms (arXiv 1997) | none | low | none |
+| [1803.09011](../notes/papers/1803.09011.md) | Massarenti, Birational geometry of spaces of complete forms II, skew-forms (J. Algebra 546, 2020) | none | low | none |
+| [math-0105151](../notes/papers/math-0105151.md) | Ghorpade and Krattenthaler, The Hilbert series of Pfaffian rings (2003) | none | low | none |
+| [1308.0582](../notes/papers/1308.0582.md) | Jeffries, Montano and Varbaro, Multiplicities of classical varieties (Proc. LMS 110, 2015) | none | low | none |
+| [math-0302241](../notes/papers/math-0302241.md) | Corso, Ghezzi, Polini and Ulrich, Cohen-Macaulayness of special fiber rings (Comm. Algebra 31, 2003) | none | low | none |
+| [math-0212119](../notes/papers/math-0212119.md) | D'Cruz, Raghavan and Verma, Cohen-Macaulay fiber cones (1999) | none | medium | none |
+| [2512.16165](../notes/papers/2512.16165.md) | Ansaldi et al., Special fibers of coordinate sections of Hankel matrices (2025) | none | low | none |
+| [conca-herzog-valla-1996-sagbi-bases](../notes/papers/conca-herzog-valla-1996-sagbi-bases.md) | Conca, Herzog and Valla, Sagbi bases with applications to blow-up algebras (J. reine angew. Math. 474, 1996) | none | low | none |
+| [conca-herzog-trung-valla-1997-diagonal-subalgebras](../notes/papers/conca-herzog-trung-valla-1997-diagonal-subalgebras.md) | Conca, Herzog, Trung and Valla, Diagonal subalgebras of bigraded algebras (Amer. J. Math. 119, 1997) | none | low | none |
+| [math-0402345](../notes/papers/math-0402345.md) | Gannon, Monstrous moonshine: the first twenty-five years (Bull. LMS 38, 2006) | none | none | none |
+| [1208.6254](../notes/papers/1208.6254.md) | Carnahan, Generalized Moonshine IV: Monstrous Lie algebras (2016) | none | none | none |
+| [1812.08439](../notes/papers/1812.08439.md) | Cunha and Elduque, Codes, S-structures, and exceptional Lie algebras (Glasgow Math. J. 62, 2020) | none | low | none |
+| [2504.16513](../notes/papers/2504.16513.md) | Kollross, The bracket of the exceptional Lie algebra E8 (2026) | none | low | none |
+| [2009.00390](../notes/papers/2009.00390.md) | Dray, Huerta and Kincaid, The magic square of Lie groups: the 2 x 2 case (Lett. Math. Phys. 104, 2014) | none | low | none |
+| [math-0411104](../notes/papers/math-0411104.md) | Krutelevich, Jordan algebras, exceptional groups and Bhargava composition (J. Algebra 314, 2007) | none | low | none |
+| [2605.09333](../notes/papers/2605.09333.md) | Corradetti, Integral elements of Okubo algebra and the E8-lattice (2026) | none | low | none |
+| [2204.04996](../notes/papers/2204.04996.md) | Wilson, Dray and Manogue, An octonionic construction of E8 and the Lie algebra magic square (Innov. Incidence Geom. 20, 2023) | none | low | none |
+| [2401.10534](../notes/papers/2401.10534.md) | Dray, Manogue and Wilson, A new division algebra representation of E7 from E8 (J. Math. Phys. 65, 2024) | none | low | none |
+| [0909.0551](../notes/papers/0909.0551.md) | Baez and Huerta, Division algebras and supersymmetry I (2010) | none | low | none |
+| [1102.4857](../notes/papers/1102.4857.md) | Ferrara, Marrani and Yeranyan, Freudenthal duality and generalized special geometry (Phys. Lett. B 701, 2011) | none | none | none |
+| [1402.0206](../notes/papers/1402.0206.md) | Flaut, About some properties of algebras obtained by the Cayley-Dickson process (2014) | none | low | none |
+| [2311.16704](../notes/papers/2311.16704.md) | Chapman and Vishkautsan, Roots and right factors of polynomials and left eigenvalues over Cayley-Dickson algebras (Comm. Math. 33, 2025) | none | medium | none |
+| [1307.3641](../notes/papers/1307.3641.md) | Flaut and Shpakivskyi, Holomorphic functions in generalized Cayley-Dickson algebras (Adv. Appl. Clifford Algebras 25, 2015) | none | low | none |
+| [math-0403263](../notes/papers/math-0403263.md) | Cohn and Kumar, Optimality and uniqueness of the Leech lattice among lattices (Ann. Math. 170, 2009) | none | none | none |
+| [2307.02505](../notes/papers/2307.02505.md) | Tang and Tang, A unified sedenion model for three generations of leptons (2023) | none | medium | none |
+| [2304.01213](../notes/papers/2304.01213.md) | Singh, The exceptional Jordan algebra and its implications for gravitation and the weak force (2023) | none | low | none |
+| [2606.15235](../notes/papers/2606.15235.md) | Baez and Schwahn, The Standard Model gauge group from the exceptional Jordan algebra (2026) | none | low | none |
+| [hep-th-0301037](../notes/papers/hep-th-0301037.md) | Boya, Octonions and M-theory (GROUP 24, 2003) | none | low | none |
+| [2112.09698](../notes/papers/2112.09698.md) | D'Andrea, Landi and Lizzi, Tolerance relations and quantization (Lett. Math. Phys. 112, 2022) | none | low | none |
+| [2410.14267](../notes/papers/2410.14267.md) | Fox and Tkachev, Algebraic constructions of cubic minimal cones (2024) | none | low | none |
+| [2208.03285](../notes/papers/2208.03285.md) | Aurisano and Whitehead, End-to-end analysis using image classification (2022) | none | none | none |
+| [conway-norton-1979-monstrous-moonshine](../notes/papers/conway-norton-1979-monstrous-moonshine.md) | Conway and Norton, Monstrous moonshine (Bull. LMS 11, 1979) | none | none | none |
+| [0811.4523](../notes/papers/0811.4523.md) | Tuite, Exceptional vertex operator algebras and the Virasoro algebra (Contemp. Math. 497, 2009) | none | none | none |
+| [hep-th-0205068](../notes/papers/hep-th-0205068.md) | Gaberdiel, Olive and West, A class of Lorentzian Kac-Moody algebras (Nucl. Phys. B 645, 2002) | none | none | none |
+| [0810.2088](../notes/papers/0810.2088.md) | Connes, On the spectral characterization of manifolds (J. Noncommut. Geom. 7, 2013) | none | none | none |
+| [hep-th-9209099](../notes/papers/hep-th-9209099.md) | Lada and Stasheff, Introduction to SH Lie algebras for physicists (Int. J. Theor. Phys. 32, 1993) | none | none | none |
+| [math-ph-0507015](../notes/papers/math-ph-0507015.md) | Fernandez Nunez, Garcia Fuertes and Perelomov, Calogero-Sutherland model for E7 (J. Math. Phys. 46, 2005) | none | none | none |
+| [2207.14076](../notes/papers/2207.14076.md) | Lin, Topological modularity of Monstrous Moonshine (Ann. Henri Poincare 25, 2024) | none | none | none |
+| [math-0404517](../notes/papers/math-0404517.md) | Eisenbud, Green, Hulek and Popescu, Small schemes and varieties of minimal degree (Amer. J. Math. 128, 2006) | none | low | none |
 | [1404.7403](../notes/papers/1404.7403.md) | Weinstein and Yekutieli, Selective Sign-Determining Multiple Confidence Intervals with FCR Control (Statistica Sinica, 2020) | none | low | none |
 | [efron-2011-tweedie-formula](../notes/papers/efron-2011-tweedie-formula.md) | Efron, Tweedie's Formula and Selection Bias (J. Am. Stat. Assoc. 106, 2011) | none | low | none |
 | [2102.01682](../notes/2102.01682.md) | Corcoles et al., Dynamic phase estimation on superconducting qubits, PRL 127, 100501 (2021) | high | indirect | limited |
