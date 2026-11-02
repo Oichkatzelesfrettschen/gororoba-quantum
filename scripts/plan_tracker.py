@@ -49,7 +49,7 @@ def entry(root: Path, plans: dict[str, dict[str, Any]], plan: dict[str, Any]) ->
     )
     if blocked:
         detail += f" Blocked: {escaped('; '.join(blocked))}."
-    if records.receipt_freshness(root, plan):
+    if plan["state"] != "closed" and records.receipt_freshness(root, plan):
         detail += " Historical receipt inputs changed; revalidation required."
     return (
         f"- **[{plan['id']}](plans/{plan['id']}.json)** ({status}; {plan['reconciliation']['status']}): "
@@ -158,7 +158,8 @@ def closure_findings(root: Path, plans: dict[str, dict[str, Any]], base: str) ->
     The change runs from the merge base of ``base`` and HEAD, so a branch behind main answers only for its own
     records. Such a plan needs the newest receipt of the plan and of each step fresh at HEAD, and every added
     receipt names a revision HEAD descends from. A receipt the change adds and then supersedes keeps the bytes it
-    observed. Unchanged plans keep the revalidation flag of the generated views.
+    observed. Unchanged open plans keep the revalidation flag of the generated views; a closed plan the change
+    leaves alone is history its receipt revisions pin, and carries no flag.
     """
     head = git(root, "rev-parse", "HEAD")
     try:
