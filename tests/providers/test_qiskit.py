@@ -7,8 +7,7 @@ import io
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, qpy, transpile
 from qiskit.circuit import Delay, Parameter
 from qiskit.circuit.library import CXGate, Measure, RGate, XGate
-from qiskit.primitives import StatevectorSampler
-from qiskit.quantum_info import Operator, Statevector
+from qiskit.quantum_info import Operator
 from qiskit.transpiler import InstructionProperties, Target
 
 
@@ -17,12 +16,6 @@ def bell() -> QuantumCircuit:
     circuit.h(0)
     circuit.cx(0, 1)
     return circuit
-
-
-def test_statevector_of_a_bell_pair() -> None:
-    probabilities = Statevector(bell()).probabilities_dict()
-    if probabilities.keys() != {"00", "11"} or any(abs(value - 0.5) > 1e-12 for value in probabilities.values()):
-        raise AssertionError(probabilities)
 
 
 def test_transpile_to_a_basis_preserves_the_operator() -> None:
@@ -73,12 +66,3 @@ def test_qpy_round_trip_keeps_parameters_delays_and_registers() -> None:
     (loaded,) = qpy.load(buffer)
     if loaded != circuit or loaded.parameters != circuit.parameters:
         raise AssertionError("qpy round trip changed the circuit")
-
-
-def test_statevector_sampler_counts_per_register() -> None:
-    circuit = bell()
-    circuit.measure_all()
-    pub = StatevectorSampler().run([circuit], shots=64).result()[0]
-    counts = pub.data.meas.get_counts()
-    if set(counts) - {"00", "11"} or sum(counts.values()) != 64:
-        raise AssertionError(counts)

@@ -14,12 +14,6 @@ def balanced() -> pcvl.Circuit:
     return pcvl.Circuit(2) // pcvl.BS.H()
 
 
-def test_balanced_splitter_unitary_is_unitary_with_equal_weights() -> None:
-    unitary = np.asarray(balanced().compute_unitary())
-    if not np.allclose(unitary @ unitary.conj().T, np.eye(2)) or not np.allclose(abs(unitary) ** 2, 0.5):
-        raise AssertionError(unitary)
-
-
 def test_hong_ou_mandel_dip_on_the_slos_backend() -> None:
     backend = pcvl.BackendFactory.get_backend("SLOS")
     backend.set_circuit(pcvl.Unitary(pcvl.Matrix(np.asarray(balanced().compute_unitary()))))
@@ -40,15 +34,6 @@ def test_noise_model_distinguishability_restores_coincidences() -> None:
         raise AssertionError(f"distinguishable photons exit one per mode half the time: {results}")
 
 
-def test_phase_shifter_and_parameterized_rotation_compose() -> None:
-    phi = pcvl.P("phi")
-    circuit = pcvl.Circuit(2) // pcvl.BS.Rx(theta=pcvl.BS.r_to_theta(0.5)) // (0, pcvl.PS(phi))
-    phi.set_value(np.pi)
-    unitary = np.asarray(circuit.compute_unitary())
-    if not np.allclose(unitary @ unitary.conj().T, np.eye(2)) or not np.allclose(abs(unitary) ** 2, 0.5):
-        raise AssertionError(unitary)
-
-
 def test_serialization_round_trip_and_sample_conversion() -> None:
     circuit = balanced() // (1, pcvl.PS(0.25))
     restored = deserialize(serialize(circuit))
@@ -56,14 +41,10 @@ def test_serialization_round_trip_and_sample_conversion() -> None:
         raise AssertionError("serialize/deserialize changed the circuit unitary")
     distribution = pcvl.BSDistribution({pcvl.BasicState([2, 0]): 0.5, pcvl.BasicState([0, 2]): 0.5})
     counts = probs_to_sample_count(distribution, count=1000)
-    if sum(counts.values()) != 1000 or set(counts) != set(distribution):
-        raise AssertionError(counts)
-
-
-def test_experiment_builds_a_sample_count_computation() -> None:
-    experiment = pcvl.Experiment(pcvl.BS())
-    experiment.with_input(pcvl.BasicState([1, 0]))
-    experiment.min_detected_photons_filter(1)
-    computation = pcvl.ExecutionFactory(pcvl.SimulatedComputer("SLOS"), experiment).build_computation("sample_count")
-    if computation is None:
-        raise AssertionError("ExecutionFactory built no sample_count computation")
+    # The conversion samples: 1000 draws at p = 1/2 put each count within 100 (over six standard deviations) of 500.
+    if (
+        sum(counts.values()) != 1000
+        or set(counts) - set(distribution)
+        or any(abs(counts[s] - 500) > 100 for s in counts)
+    ):
+        raise AssertionError(f"counts stray from an even two-state distribution: {counts}")

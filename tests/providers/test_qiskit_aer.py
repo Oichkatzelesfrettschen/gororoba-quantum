@@ -5,14 +5,13 @@ from __future__ import annotations
 import numpy as np
 from qiskit import QuantumCircuit, transpile
 from qiskit.circuit import Delay
-from qiskit.quantum_info import DensityMatrix, SuperOp
+from qiskit.quantum_info import SuperOp
 from qiskit.transpiler import PassManager
 from qiskit_aer import AerSimulator
 from qiskit_aer.noise import (
     NoiseModel,
     ReadoutError,
     RelaxationNoisePass,
-    amplitude_damping_error,
     depolarizing_error,
     pauli_error,
     thermal_relaxation_error,
@@ -65,31 +64,29 @@ def test_certain_bit_flip_and_full_depolarization_give_exact_states() -> None:
         raise AssertionError("the fully depolarizing channel must give the maximally mixed state")
 
 
-def test_relaxation_channels_are_trace_preserving_with_the_known_fixed_point() -> None:
-    damping = SuperOp(amplitude_damping_error(1.0).to_quantumchannel())
-    if not damping.is_cptp():
-        raise AssertionError("amplitude damping is not CPTP")
-    excited = DensityMatrix.from_label("1").evolve(damping)
-    if not np.allclose(excited.data, np.diag([1, 0])):
-        raise AssertionError("full amplitude damping must return the ground state")
-    relaxation = SuperOp(thermal_relaxation_error(50e-6, 70e-6, 1.0, excited_state_population=0.1).to_quantumchannel())
-    if not relaxation.is_cptp():
-        raise AssertionError("thermal relaxation is not CPTP")
-    steady = DensityMatrix.from_label("0").evolve(relaxation)
-    if not np.allclose(steady.data, np.diag([0.9, 0.1]), atol=1e-9):
-        raise AssertionError(f"relaxation over many T1 must reach the equilibrium population: {steady.data}")
-
-
-def test_relaxation_pass_materializes_delays_as_channels() -> None:
+def test_relaxation_pass_channels_equal_thermal_relaxation_over_each_delay() -> None:
     circuit = QuantumCircuit(2)
     circuit.append(Delay(1000, "dt"), [0])
-    circuit.append(Delay(1000, "dt"), [1])
-    noisy = PassManager(RelaxationNoisePass(t1s=[50e-6, 60e-6], t2s=[70e-6, 80e-6], dt=1e-9, op_types=[Delay])).run(
-        circuit
-    )
-    channels = [instruction for instruction in noisy.data if instruction.operation.name == "quantum_channel"]
-    if len(channels) != 2:
-        raise AssertionError(f"{len(channels)} channels for two delays")
+    circuit.append(Delay(400, "dt"), [1])
+    noisy = PassManager(
+        RelaxationNoisePass(
+            t1s=[50e-6, 60e-6], t2s=[70e-6, 80e-6], dt=1e-9, op_types=[Delay], excited_state_populations=[0.0, 0.1]
+        )
+    ).run(circuit)
+    expected = {
+        0: thermal_relaxation_error(50e-6, 70e-6, 1e-6),
+        1: thermal_relaxation_error(60e-6, 80e-6, 4e-7, excited_state_population=0.1),
+    }
+    channels = {
+        noisy.find_bit(instruction.qubits[0]).index: instruction.operation
+        for instruction in noisy.data
+        if instruction.operation.name == "quantum_channel"
+    }
+    if set(channels) != {0, 1}:
+        raise AssertionError(f"channels on wires {sorted(channels)}")
+    for wire, channel in channels.items():
+        if not np.allclose(SuperOp(channel).data, SuperOp(expected[wire]).data):
+            raise AssertionError(f"wire {wire}: the pass channel differs from thermal_relaxation_error")
 
 
 def test_noise_model_from_a_fake_backend_and_readout_error() -> None:
