@@ -40,4 +40,5 @@ The registry and its checks sit beside `working/` and read only from it:
 | [k2_cm.py](k2_cm.py) | [k2-cm.jsonl](k2-cm.jsonl): Cohen-Macaulay test of each k[y]/K2 by a general linear system of parameters, and the linearly joined structure of E8-bar -> VB |
 | [degree-one/](degree-one/) | fresh degree-1 truncated ranks (N = 5) on the canonical headers |
 | [replay/](replay/) | the replay manifest of the certifying truncated-rank runs and its memory-scheduled runner |
+| [v10-comparison.jsonl](v10-comparison.jsonl) | fiber-rank engine v10 (`replay/engine/fiber_rank_v10.py --k2-receipt`, products indexed by the standard monomials of k[y]/K2) against engine v9 (all products) on 11 small-N cases of four fibers at both primes: r_N and every block rank equal |
 

@@ -368,6 +368,15 @@ output through `cell.model.outputs.toJSON()`.
    in the web UI frees the slot, and the next push is accepted (observed
    2026-10-29; the freed slot then queued again, so it proves the slot
    rule, not TPU assignment).
+1b. The same deletion has a public API route: kaggle 2.2.5 carries
+   `kaggle kernels delete OWNER/SLUG`, which calls
+   `kernels.KernelsApiService/DeleteKernel` (kagglesdk 0.1.38
+   `delete_kernel`, request fields `user_name` and `kernel_slug`). Whether it
+   frees the slot of a queued TPU version as the web UI does is untested; the
+   next stuck version decides it (the push after the delete is accepted, or
+   refused with the batch-session message). Deleting a kernel removes its
+   page and versions, so it waits for the owner's approval each time, and the
+   kernel's outputs are downloaded first.
 2. `kaggle kernels pull -m OWNER/SLUG` seconds after the push names an
    image; every CPU session here showed `gcr.io/kaggle-images/python`
    there, and what it shows for a real TPU VM is unobserved, so it is a hint
