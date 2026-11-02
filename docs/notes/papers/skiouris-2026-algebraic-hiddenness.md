@@ -2,9 +2,9 @@
 
 ## Source copy and license
 
-The unchanged [source PDF](https://zenodo.org/records/22016333) is retained under
+The unchanged [source PDF](https://zenodo.org/records/22016333) is kept in gororoba-documents-public under
 [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) as
-[skiouris-2026-algebraic-hiddenness.pdf](../../pdf/skiouris-2026-algebraic-hiddenness.pdf). The grant is the
+[skiouris-2026-algebraic-hiddenness.pdf](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/mathematics/cayley-dickson/skiouris-2026-algebraic-hiddenness.pdf). The grant is the
 `metadata.license` field of the author-linked [Zenodo record](https://zenodo.org/api/records/22016333), captured byte for
 byte in [zenodo-record-22016333.json](../../evidence/source_rights/zenodo-record-22016333.json). The deposited file's
 size and MD5 match the retained bytes. [SOURCES.json](../../SOURCES.json) binds the SHA-256, the evidence hash and the
