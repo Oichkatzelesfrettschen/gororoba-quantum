@@ -39,17 +39,28 @@ def octonion_product(a: list, b: list) -> list:
     return out
 
 
+def symbolic_derivation() -> sp.Matrix:
+    return sp.Matrix(8, 8, lambda i, j: sp.Symbol(f"d{i}_{j}"))
+
+
+def leibniz_equations(pair: tuple[int, int]) -> list:
+    """D(e_i e_j) - (D e_i) e_j - e_i (D e_j) for the symbolic 8 x 8 matrix D; sympy symbols compare by name."""
+    i, j = pair
+    d = symbolic_derivation()
+    lhs = d * sp.Matrix(octonion_product(unit(i, 8), unit(j, 8)))
+    rhs = sp.Matrix(octonion_product(list(d[:, i]), unit(j, 8))) + sp.Matrix(
+        octonion_product(unit(i, 8), list(d[:, j]))
+    )
+    return list(lhs - rhs)
+
+
 def stabilizer_derivations() -> list[sp.Matrix]:
     """Basis of {D in Der(O) : D e1 = D e2 = 0}, solved exactly from the cd_core octonion table."""
-    d = sp.Matrix(8, 8, lambda i, j: sp.Symbol(f"d{i}_{j}"))
-    eqs: list = []
-    for i in range(8):
-        for j in range(8):
-            lhs = d * sp.Matrix(octonion_product(unit(i, 8), unit(j, 8)))
-            rhs = sp.Matrix(octonion_product(list(d[:, i]), unit(j, 8))) + sp.Matrix(
-                octonion_product(unit(i, 8), list(d[:, j]))
-            )
-            eqs += list(lhs - rhs)
+    import parallel
+
+    d = symbolic_derivation()
+    pairs = [(i, j) for i in range(8) for j in range(8)]
+    eqs: list = [e for block in parallel.ordered_map(leibniz_equations, pairs) for e in block]
     eqs += list(d[:, 1]) + list(d[:, 2])
     (sol,) = sp.linsolve(eqs, list(d))
     free = sorted(set().union(*[x.free_symbols for x in sol]), key=str)
