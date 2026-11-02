@@ -166,10 +166,40 @@ kernels. Nsight Compute 2026.3 profiles the base-case elimination kernel.
 
 ## Delivery
 
-The code starts as a Python package (`numpy`, `torch` for `_int_mm` and `_scaled_mm`, `cupy` for `RawKernel`,
-prefetch and advise) under `~/Github`, with a test suite against FLINT and the measurement probes above. The
-replays import it as a pinned dependency. Publishing to PyPI waits for the owner's decision on name, license and
-contents. A Rust port fits `gororoba-open`, which already depends on `cudarc` 0.19 (cuBLAS, cuSOLVER, NVRTC).
+The measured code exists as probe scripts outside every repository, in the build cache
+`~/.cache/gororoba-quantum/a5-fiber-runs/probe/`, with copies of the final three in `~/.cache/gororoba-quantum/gpu-probes/`;
+no package under `~/Github` exists and no commit carries the code. The scripts that back the numbers above, by sha256
+prefix:
+
+| Script | sha256 prefix | Content |
+| --- | --- | --- |
+| `pluq.py` | f1f494dae86adbf6 | Layer 3: fused base-case `RawKernel`, recursive TRSM and PLUQ, rank against FLINT |
+| `modgemm13.py` | 390655d760c0543b | Layer 1 and 2: four-GEMM base-256 product, device digit cache, pinned staging, result arena |
+| `modgemm.py` to `modgemm12t.py` | (12 files) | the earlier product and HMM variants the measurements step through |
+| `int8_modgemm.py`, `gpu_types.py`, `fp8_uvm_probe.py`, `faulttest.py` | 63ea6f8352c711ab, aba1a61885d819f1, a0a7d75aa8334057, 61974f967a02be7a | number-type throughput, FP8 and UVM probes, first-touch fault rate |
+
+The library still needs a home with a test suite against FLINT; the replays then import it as a pinned dependency.
+A Rust port fits `gororoba-open`, which already depends on `cudarc` 0.19 (cuBLAS, cuSOLVER, NVRTC). Publishing to
+PyPI waits for the owner's decision on name, license and contents.
+
+## Second device: RTX 4090 Laptop GPU under WSL
+
+The workstation's GPU (driver API on 2026-11-01: 16,375 MiB, compute capability 8.9, 76 SMs, driver 13.3) reports
+`CU_DEVICE_ATTRIBUTE_CONCURRENT_MANAGED_ACCESS = 0` and `CU_DEVICE_ATTRIBUTE_PAGEABLE_MEMORY_ACCESS = 0` under WSL,
+against 1 and 1 on the build host's RTX 4070 Ti. WSL therefore gives no HMM access to pageable memory, and the GPU
+and the CPU cannot touch a managed allocation at the same time. Managed allocations still oversubscribe the device: a
+20 GiB `cuMemAllocManaged` buffer took a full device memset and a CPU read-back in 17.4 s (infrastructure record
+`hosts/alienware.md`). The Layer 2 candidates there are explicit residency (pinned staging into a device digit cache)
+and managed memory with phase-separated access, each to be measured on this device. The WSL guest carries the driver library only (`/usr/lib/wsl/lib`), without the CUDA toolkit,
+CuPy or torch.
+
+## Where the time goes in the fiber ranks
+
+The engine's own stage times (`fiber_rank_v6.py`, `seconds` field of every receipt) decide which stage a GPU can
+shorten. In quotient mode the Singular product export takes 99 percent of the wall time (X- degree 5 at N = 17:
+10,250 of 10,313 s), which no GPU stage touches. In raw mode the linear-algebra closure takes 60 to 97 percent
+(E8-bar -> N- degree 3 at N = 11: 4,397 of 4,526 s, 34 GB resident), and that closure is the stage the exact PLUQ
+replaces.
 
 ## Order
 

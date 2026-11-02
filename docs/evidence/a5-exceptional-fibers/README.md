@@ -7,7 +7,8 @@ the results, the hypotheses tested against them and what survives; this director
 here are diagnostic working data over F_32009 (and F_32029 where named) and enter the tracked claim record only
 through the [kernel-attachments ledger](../a5-kernel-attachments/README.md).
 
-Every file of the working directory is retained, with home paths written `~`, the session scratch directory
+Every file of the working directory is retained except cloud run-control files named `ip` or `known_hosts*`
+(public addresses and host keys, kept in the private infrastructure repository), with home paths written `~`, the session scratch directory
 `SCRATCH`, session identifiers `SESSION` or `UUID`, and the build host's name and owner handles replaced. Files
 above 50 MB are split into 45 MB parts named `FILE.part00`, `FILE.part01`, ...; `cat FILE.part* > FILE` restores
 the original bytes. The split files are listed in [split.txt](split.txt). `sh retain_working.sh SOURCE_DIR` applies the same scrub and
@@ -28,3 +29,15 @@ split and copies every file whose scrubbed bytes differ from the retained copy (
 | `azure-cases/` | the written cases under which cloud VMs ran |
 | [`azure-results/`](working/azure-results/README.md) | the complete work trees of Azure VMs `gororoba-a5-fiber`, `gororoba-a5-fiber-2` and `gororoba-a5-fiber-4`: archive hashes, restore command and the outputs they hold |
 | `*-brief.md`, `greater-picture-*.md`, `final-review-*.md`, `review-*.md` | consultant briefs and answers |
+
+The registry and its checks sit beside `working/` and read only from it:
+
+| File | Content |
+|---|---|
+| [build_registry.py](build_registry.py) | builds [claims.json](claims.json), [certificates.jsonl](certificates.jsonl) and [unbound.jsonl](unbound.jsonl) from the retained records; `--check` rebuilds in memory |
+| [witnesses.py](witnesses.py) | [witnesses.jsonl](witnesses.jsonl): header-pair identities, sign isomorphisms between paired fibers, and k2-span identities between each degree-2 receipt and each K2 source |
+| [k2_hilbert.py](k2_hilbert.py) | [k2-hilbert.jsonl](k2-hilbert.jsonl): HF(k[y]/K2, d) for d = 1 to 6 from the 14 retained K2 sources |
+| [k2_cm.py](k2_cm.py) | [k2-cm.jsonl](k2-cm.jsonl): Cohen-Macaulay test of each k[y]/K2 by a general linear system of parameters, and the linearly joined structure of E8-bar -> VB |
+| [degree-one/](degree-one/) | fresh degree-1 truncated ranks (N = 5) on the canonical headers |
+| [replay/](replay/) | the replay manifest of the certifying truncated-rank runs and its memory-scheduled runner |
+

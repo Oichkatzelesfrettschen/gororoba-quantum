@@ -2,7 +2,8 @@
 # Copy the local fiber working directory into working/, scrubbed, with files above 50 MB split into 45 MB parts.
 # Usage: sh retain_working.sh SOURCE_DIR [--dry-run]
 # A file is copied when its scrubbed bytes differ from the retained copy; the script prints each copied path and a
-# count. Scrubbing replaces the home directory with ~, the session scratch root with SCRATCH (or TMP, PROJECT and
+# count. Files named ip or known_hosts* (cloud run control: public addresses and host keys) are never retained.
+# Scrubbing replaces the home directory with ~, the session scratch root with SCRATCH (or TMP, PROJECT and
 # SESSION where a line break splits it), UUIDs with UUID, the
 # owner's mail handle with OWNER, the build host's name with build-host and the login name with USER.
 set -eu
@@ -26,7 +27,7 @@ scrub() {
 }
 copied=0
 cd "$src"
-find . -type f ! -name '*.pyc' ! -path '*/__pycache__/*' | LC_ALL=C sort > "$tmp/list"
+find . -type f ! -name '*.pyc' ! -path '*/__pycache__/*' ! -name ip ! -name 'known_hosts*' | LC_ALL=C sort > "$tmp/list"
 while IFS= read -r f; do
 	rel=${f#./}
 	out="$tmp/one"
