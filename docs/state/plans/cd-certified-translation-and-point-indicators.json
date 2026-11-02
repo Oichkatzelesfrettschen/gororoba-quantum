@@ -354,6 +354,42 @@
             }
           ],
           "scope_sha256": "f017030a979720e82164de11f317102a69afc0ca532de847d0dc064b8b65872b"
+        },
+        {
+          "result": "Revalidated after ci/check_rocq_ci_pins.py read ci/gates.json through the single-file ci/manifest.py: the check reports 15 bundles agreeing, tests/ci/test_rocq_ci_pins.py passes, and research_state.py --check, its self-test (74 mutations rejected) and check_markdown_links.py pass. No replay bundle changed byte, so the Rocq replays were not rerun.",
+          "observed_at": "2026-11-02T01:06:29Z",
+          "revision": "699e89fbd2aa0cdbd89571762a360b161e63a4ea",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-associator-point-indicators/source_hashes.sha256",
+              "sha256": "cadae5083d705508393a0bec03e05b74df245471102060819378c851eac2d7ff"
+            },
+            {
+              "ref": "docs/evidence/cd-sign-python-translation/source_hashes.sha256",
+              "sha256": "3241e2d39a2a6719782568ee0b42c96f3d634bf2e40bd3b5f976390aa4d9fc42"
+            },
+            {
+              "ref": "scripts/cd_sign_source_ast.py",
+              "sha256": "d7e1231563718aec1f2546a0c4b97f0c58bba29f9d402a0707304b4143009c4c"
+            },
+            {
+              "ref": "tests/scripts/test_cd_sign_source_ast.py",
+              "sha256": "9fe413b535e4c85fd85d853cc8d6143ac986a467c2ae9474133a4358d327a1ce"
+            },
+            {
+              "ref": "ci/check_rocq_ci_pins.py",
+              "sha256": "9c77f29e45cf76ca3d4a3db5e55bd93bfa6de2c4c8883a5cfa65b0d568b1273e"
+            },
+            {
+              "ref": "tests/ci/test_rocq_ci_pins.py",
+              "sha256": "9e7dd73f4fb37a560c5d21cfd60d67a6cda7958b0399bbdc3ee1e482c29e3b6b"
+            },
+            {
+              "ref": ".github/workflows/proofs.yml",
+              "sha256": "83b4faa57c01c68b295fa86c8acea79c52792b9fdf9d6dd4c3b4707100eb3018"
+            }
+          ],
+          "scope_sha256": "f017030a979720e82164de11f317102a69afc0ca532de847d0dc064b8b65872b"
         }
       ]
     }
