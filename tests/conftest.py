@@ -44,17 +44,20 @@ def create_perceval_data_directory() -> None:
 
     perceval.utils.persistent_data.PersistentData tests os.path.exists and then calls os.makedirs on import, and
     reports the FileExistsError of a worker that loses that race as a UserWarning, which filterwarnings = error
-    turns into a failure. A directory that already exists leaves every worker's import nothing to create.
+    turns into a failure. A directory that already exists leaves every worker's import nothing to create. Importing
+    perceval also creates the sub-directory perceval.runtime.legacy.job_group.JGRP_DIR_NAME the same way, so it is
+    created here too.
     """
     configured = os.environ.get("PCVL_PERSISTENT_PATH")
     if configured:
-        Path(configured).mkdir(parents=True, exist_ok=True)
-        return
-    try:
-        from platformdirs import PlatformDirs
-    except ImportError:
-        return  # without platformdirs no Perceval is installed to import
-    Path(PlatformDirs("perceval-quandela", "quandela").user_data_dir).mkdir(parents=True, exist_ok=True)
+        root = Path(configured)
+    else:
+        try:
+            from platformdirs import PlatformDirs
+        except ImportError:
+            return  # without platformdirs no Perceval is installed to import
+        root = Path(PlatformDirs("perceval-quandela", "quandela").user_data_dir)
+    (root / "job_group").mkdir(parents=True, exist_ok=True)
 
 
 # The call phase of a test outside the audit marker targets this many seconds
