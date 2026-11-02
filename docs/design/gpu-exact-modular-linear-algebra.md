@@ -219,9 +219,14 @@ Engine v7 in quotient mode on E8-bar -> N- at degree 4 (laptop under WSL, `secon
 | 13 | 11,708 s | 621 s | 93 s | 5.7 % | 440 |
 | 14 | 28,204 s | 1,654 s | 177 s | 6.1 % | 440 |
 
-Removing the linear algebra entirely bounds the speedup at 30,053 / 28,204 = 1.066 at N = 14, so no GPU stage
-changes when a quotient-mode degree finishes; the single-threaded Singular standard basis of J + m^N sets it, growing
-by 2.7x and then 2.4x per unit N. The quotient blocks hold about 5,800 columns at N = 14, where the measured PLUQ is
+Removing the linear algebra entirely bounds the speedup at 30,053 / 28,204 = 1.066 at N = 14 while the export runs
+as one Singular process (engines v7 and v8), whose time grows by 2.7x and then 2.4x per unit N. That export divides:
+it computes the standard basis of J + m^N and then one independent normal-form table per variable. At N = 15 the
+standard basis took 6,919 s and the first table a further 6,961 s (laptop file times), with Singular at 450 MB.
+Engine v9 (`fiber_rank_v9.py`) runs the tables as separate processes, and its parsed export equals the serial one
+(r_N = 268 from both at N = 11), so the export wall time falls toward the standard basis plus the slowest table and
+the linear-algebra share rises with it. The table times vary by a factor of 6 across variables at N = 11, so the
+gain at N = 15 is set by its slowest table, not yet measured. The quotient blocks hold about 5,800 columns at N = 14, where the measured PLUQ is
 roughly 40 times faster than FLINT, but the closure is 0.6 % of the wall time. Raw mode, the form whose closure the
 GPU does replace, needs the monomial space of degree below N in 9 variables: 92,378 monomials at N = 11 (34 GB
 resident) and 497,420 at N = 14, so a dense closure there grows by the square of that 5.4x ratio, to the order of a
