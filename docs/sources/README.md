@@ -19,8 +19,8 @@ external sources retain citations and optional ignored local reading copies;
 `"$PYTHON" docs/verify_sources.py` prints the current count of each class.
 Licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
-[PDF_SHA256SUMS](../PDF_SHA256SUMS) verifies the published PDF set from the
-repository root with `sha256sum -c docs/PDF_SHA256SUMS`.
+The repository hosts no PDF; `scripts/fetch_source_cache.py` restores any reading
+copy from the documents repositories and admits it only at its registered SHA-256.
 
 The `literature -> docs` compatibility link preserves historical paths used
 in source comments, verification manifests, and retained parallel-experiment checksum
@@ -36,8 +36,7 @@ from the versions of record, including the two explicitly named PDF aliases.
 Two open-access Nature-family versions of record (s41586-026-10423-9 and
 s41567-026-03466-2) carry article-level CC BY 4.0 grants and are retained.
 HTML-only sources and their reading scopes appear in the registry and notes.
-Explicit CC BY 4.0 or CC0 permission supports the published PDFs. The
-repository admits no new hosted document: a newly registered source whose license
+The repository hosts no document: a source whose license
 permits redistribution (CC BY 4.0, CC BY-SA 4.0 or CC0) receives an external record with
 `redistribution: explicit_license_verified`, its reading copy lives in
 gororoba-documents-public, and the verifier still checks its license capture. A
@@ -331,8 +330,8 @@ The [parallel-experiment synthesis](../notes/quantum_experiment_parallelism.md)
 connects these sources to fixed and varied companions, patch/time blocking,
 joint-shot inference, billed usage, and IQP claim boundaries. The
 [design and execution documentation note](../notes/quantum_experiment_design_sources.md)
-records NIST, Qiskit and IBM sources with capture hashes. The two retained parallel-experiment
-PDFs have [replayable checksums](../parallel_experiment_pdfs.sha256); direct,
+records NIST, Qiskit and IBM sources with capture hashes. The two openly licensed parallel-experiment
+PDFs live in gororoba-documents-public with registered checksums; direct,
 version-pinned retrieval links and reading scopes live in each paper note.
 The remaining parallel-experiment papers retain direct URLs, hashes, and
 reading notes as external sources. The Das notice expressly requires permission

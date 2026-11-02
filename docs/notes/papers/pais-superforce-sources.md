@@ -7,13 +7,13 @@ lives in [pais-superforce-preprints.md](pais-superforce-preprints.md) and its su
 [pais-patent-web-sources.md](pais-patent-web-sources.md). Tag convention: [P] marks a statement of the source's own
 record; [I] marks repository interpretation.
 
-## Retained PDFs (docs/pdf)
+## Openly licensed PDFs (gororoba-documents-public)
 
-| Source | Retained file | SHA-256 | Pages | Bytes | License evidence |
+| Source | Reading copy | SHA-256 | Pages | Bytes | License evidence |
 |---|---|---|---|---|---|
-| Pais, "SUPERFORCE -- the Fundamental Force of Unification", OSF preprint 9kebt_v1, published 2023-07-24, DOI 10.31219/osf.io/9kebt | `docs/pdf/pais-2023-superforce.pdf` | `8ea4fecbd504b2dfa73941f856befe5bee23b1ebffa8a6a8bbd19e185a675176` | 3 | 238900 | `https://api.osf.io/v2/preprints/9kebt_v1/` (capture `docs/evidence/source_rights/osf-9kebt_v1.json`): license id `563c1cf88c5e4a3877f9e96c`, which `https://api.osf.io/v2/licenses/563c1cf88c5e4a3877f9e96c/` names "CC0 1.0 Universal" |
-| Particle Data Group, Review of Particle Physics 2024, Phys. Rev. D 110, 030001, chapter 9 "Quantum Chromodynamics" (Huston, Rabbertz, Zanderighi) | `docs/pdf/rpp2024-rev-qcd.pdf` | `d06948c331663c2341c3f922e48cd29b4aac83f3bbff71fe3ac8d70cb4f40c51` | 64 | 1569596 | INSPIRE-HEP record 2817040, `https://inspirehep.net/api/literature?q=recid%3A2817040&fields=control_number,dois,titles,license` (capture `docs/evidence/source_rights/inspire-2817040.json`): the review's publication license entry reads "CC BY 4.0"; Crossref lists CC BY 4.0 (`vor`) for the DOI |
-| Fragkos and Pikovski, "Probing classical and quantum violations of the equivalence of active and passive gravitational mass", arXiv:2503.16198v1 | `docs/pdf/2503.16198v1.pdf` | `8b265152ee659c36933ed39d265784e2cc2ab12131732b654508f38d57539193` | 13 | 3350972 | exact-version arXiv abstract page `https://arxiv.org/abs/2503.16198v1` (capture `docs/evidence/source_rights/arxiv-2503.16198v1.html`): license link `http://creativecommons.org/licenses/by/4.0/` |
+| Pais, "SUPERFORCE -- the Fundamental Force of Unification", OSF preprint 9kebt_v1, published 2023-07-24, DOI 10.31219/osf.io/9kebt | [`pais-2023-superforce.pdf`](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/physics/gravitation/pais-2023-superforce.pdf) | `8ea4fecbd504b2dfa73941f856befe5bee23b1ebffa8a6a8bbd19e185a675176` | 3 | 238900 | `https://api.osf.io/v2/preprints/9kebt_v1/` (capture `docs/evidence/source_rights/osf-9kebt_v1.json`): license id `563c1cf88c5e4a3877f9e96c`, which `https://api.osf.io/v2/licenses/563c1cf88c5e4a3877f9e96c/` names "CC0 1.0 Universal" |
+| Particle Data Group, Review of Particle Physics 2024, Phys. Rev. D 110, 030001, chapter 9 "Quantum Chromodynamics" (Huston, Rabbertz, Zanderighi) | [`rpp2024-rev-qcd.pdf`](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/physics/particles-and-dark-matter/rpp2024-rev-qcd.pdf) | `d06948c331663c2341c3f922e48cd29b4aac83f3bbff71fe3ac8d70cb4f40c51` | 64 | 1569596 | INSPIRE-HEP record 2817040, `https://inspirehep.net/api/literature?q=recid%3A2817040&fields=control_number,dois,titles,license` (capture `docs/evidence/source_rights/inspire-2817040.json`): the review's publication license entry reads "CC BY 4.0"; Crossref lists CC BY 4.0 (`vor`) for the DOI |
+| Fragkos and Pikovski, "Probing classical and quantum violations of the equivalence of active and passive gravitational mass", arXiv:2503.16198v1 | [`2503.16198v1.pdf`](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/physics/gravitation/2503.16198v1.pdf) | `8b265152ee659c36933ed39d265784e2cc2ab12131732b654508f38d57539193` | 13 | 3350972 | exact-version arXiv abstract page `https://arxiv.org/abs/2503.16198v1` (capture `docs/evidence/source_rights/arxiv-2503.16198v1.html`): license link `http://creativecommons.org/licenses/by/4.0/` |
 
 Source URLs: the OSF file `https://osf.io/download/64be6e13903ac107b0dcc5e3/` (retrieved 2026-10-26T01:56:49Z; the PDF
 text states no license, so the OSF record carries the grant), `https://pdg.lbl.gov/2024/reviews/rpp2024-rev-qcd.pdf`
@@ -62,7 +62,7 @@ was downloaded.
 
 - [I] The Springer versions of record of Will 2014 and Buttazzo et al. 2013 need a browser session or an
   institutional route; a version of record under a CC BY 4.0 grant would replace the reading copies above and
-  publish under `docs/pdf/` through the Springer or SCOAP3 route.
+  move to gororoba-documents-public through the Springer or SCOAP3 route.
 - [I] `docs/local_source_cache/pais-2023-existence-of-the-superforce.pdf`, the Will reading copy and the Buttazzo
   preprint are candidates for the private documents repository under its rule that a file belongs there only when
   its rights record excludes redistribution.

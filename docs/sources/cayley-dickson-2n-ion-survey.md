@@ -35,8 +35,8 @@ registered sources depend on. Admission is capped at 20 new sources; a qualifyin
 retrievable copy and a source outside the license allowlist of `docs/verify_sources.py` stay in the table as not admitted.
 
 Admission follows [the rights policy](../SOURCES.json): the exact-version arXiv abstract page is captured under
-`docs/evidence/source_rights/`; a verified CC BY 4.0 or CC0 grant publishes the unchanged PDF under `docs/pdf/`, and every other
-copy stays in the ignored `docs/local_source_cache/`. Each admitted note tags statements `[P]` (paper) and `[I]` (repository
+`docs/evidence/source_rights/`; a verified CC BY 4.0 or CC0 grant files the unchanged PDF in gororoba-documents-public and every other
+in gororoba-documents-private, with the ignored `docs/local_source_cache/` holding local reading copies. Each admitted note tags statements `[P]` (paper) and `[I]` (repository
 inference), states the paper's multiplication convention, and replays the checkable statements against `cd_core`.
 
 ## Candidate table

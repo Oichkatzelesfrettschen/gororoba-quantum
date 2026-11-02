@@ -193,11 +193,11 @@ repository source notes, registered preprints, and verified platform artifacts:
 
 1. **Spatial Multiprogramming & Crosstalk Suppression:**
    - **Sarovar et al. (2020)**, *Detecting crosstalk errors in quantum information processors*,
-     [arXiv:1908.09855](https://arxiv.org/abs/1908.09855) (`docs/notes/papers/1908.09855.md`, `docs/pdf/1908.09855v3.pdf`):
+     [arXiv:1908.09855](https://arxiv.org/abs/1908.09855) (`docs/notes/papers/1908.09855.md`, [`1908.09855v3.pdf`](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/physics/quantum-characterization/1908.09855v3.pdf)):
      Establishes protocols for detecting crosstalk under concurrent drives; the $\text{dist}_G \ge 2$ guard band
      is enforced as a placement policy to separate concurrent execution subgraphs.
    - **Niu & Todri-Sanial (2021, 2023)**, *Enabling Multi-programming Mechanism for Quantum Computing in the NISQ Era*,
-     [arXiv:2102.05321](https://arxiv.org/abs/2102.05321) (Quantum 7, 925, 2023; `docs/notes/2102.05321.md`, `docs/pdf/2102.05321v3.pdf`)
+     [arXiv:2102.05321](https://arxiv.org/abs/2102.05321) (Quantum 7, 925, 2023; `docs/notes/2102.05321.md`, [`2102.05321v3.pdf`](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/computer-science/quantum-software-architecture/2102.05321v3.pdf))
      and *How Parallel Circuit Execution Can Be Useful for NISQ Computing?*, [arXiv:2112.00387](https://arxiv.org/abs/2112.00387)
      (`docs/notes/papers/2112.00387.md`, `docs/local_source_cache/2112.00387v1.pdf`): Provides the algorithmic basis for
      multi-programming partitioning, heavy-hex subgraph isolation, and independent classical register multiplexing.
@@ -216,13 +216,13 @@ repository source notes, registered preprints, and verified platform artifacts:
 
 3. **Fano-Plane Projective Geometry & Stabilizer Codes:**
    - **Levratti (2026)**, *Fano Duality, Projective Orthogonality, and the CSS Bridge* (`docs/notes/papers/levratti-2026-fano-css.md`,
-     `docs/pdf/levratti-2026-fano-css.pdf`) and *Active Stabilizers in Reed-Muller CSS Codes from Cayley-Dickson Zero-Divisors*
-     (`docs/notes/papers/levratti-2026-active-stabilizers.md`, `docs/pdf/levratti-2026-active-stabilizers.pdf`): Author-hosted
+     [`levratti-2026-fano-css.pdf`](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/mathematics/cayley-dickson/levratti-2026-fano-css.pdf)) and *Active Stabilizers in Reed-Muller CSS Codes from Cayley-Dickson Zero-Divisors*
+     (`docs/notes/papers/levratti-2026-active-stabilizers.md`, [`levratti-2026-active-stabilizers.pdf`](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/mathematics/cayley-dickson/levratti-2026-active-stabilizers.pdf)): Author-hosted
      manuscripts mapping the 7 points and 7 lines of the projective Fano plane $\text{PG}(2, 2)$ to octonionic triads
      and the Fano line incidence matrix whose line complements yield the Steane $[[7, 1, 3]]$ $Z$ stabilizers (`fano_plane_incidence_matrix`, `steane_z_syndrome_patch`).
    - **Corcoles et al. (2021)**, *Exploiting dynamic quantum circuits in a quantum algorithm with superconducting qubits*,
      [arXiv:2102.01682](https://arxiv.org/abs/2102.01682) (Phys. Rev. Lett. 127, 100501; `docs/notes/2102.01682.md`,
-     `docs/pdf/2102.01682.pdf`): Demonstrates physical dynamic circuits and feed-forward on superconducting transmons,
+     [`2102.01682.pdf`](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/computer-science/quantum-algorithms/2102.01682v1.pdf)): Demonstrates physical dynamic circuits and feed-forward on superconducting transmons,
      balancing mid-circuit measurement against coherent routing.
    - **Rudinger et al. (2022)**, *Characterizing mid-circuit measurements on a superconducting qubit using gate set tomography*,
      [arXiv:2103.03008](https://arxiv.org/abs/2103.03008) (2021; Phys. Rev. Applied 17, 014014, 2022; `docs/notes/papers/2103.03008.md`,

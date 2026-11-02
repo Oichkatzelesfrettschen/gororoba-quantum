@@ -1,4 +1,4 @@
-"""Exercise publication and optional-cache guards in isolated temporary fixtures."""
+"""Exercise the external-record, rights and optional-cache guards in isolated temporary fixtures."""
 
 from __future__ import annotations
 
@@ -21,6 +21,7 @@ from verify_sources import (
     verify_capture_inventory,
     verify_dmgaa_capture,
     verify_external_sources,
+    verify_no_hosted_documents,
     verify_source_archives,
     verify_source_rights,
 )
@@ -31,7 +32,7 @@ def rights_fixture(digest: str, *, external: bool = False) -> dict[str, Any]:
         "verified": True,
         "pdf_sha256": digest,
         "verified_at_utc": "2026-10-12T07:27:16+00:00",
-        "decision": "external_only" if external else "publish_under_explicit_license",
+        "decision": "external_only",
         "license_identifier": "NOASSERTION" if external else "CC-BY-4.0",
         "license_url": None if external else LICENSE_URLS["CC-BY-4.0"],
         "observed_license_url": "http://creativecommons.org/licenses/by/4.0/",
@@ -124,6 +125,25 @@ class WebSourceChecks(unittest.TestCase):
                     )
 
 
+class NoHostedDocumentChecks(unittest.TestCase):
+    def test_hosted_sections_and_paths_are_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            library = Path(directory)
+            verify_no_hosted_documents(library, {"external_pdfs": []})
+            for section in ("pdfs", "aliases"):
+                with self.subTest(section=section), self.assertRaisesRegex(ValueError, "hosted PDF sections"):
+                    verify_no_hosted_documents(library, {section: []})
+            for name in ("pdf", "PDF_SHA256SUMS", "parallel_experiment_pdfs.sha256"):
+                with self.subTest(path=name):
+                    (library / name).symlink_to(library / "missing")
+                    with self.assertRaisesRegex(ValueError, f"hosted document path: {re.escape(name)}"):
+                        verify_no_hosted_documents(library, {})
+                    (library / name).unlink()
+            (library / "pdf").mkdir()
+            with self.assertRaisesRegex(ValueError, "hosted document path: pdf"):
+                verify_no_hosted_documents(library, {})
+
+
 class ExternalSourceChecks(unittest.TestCase):
     def setUp(self) -> None:
         temporary = tempfile.TemporaryDirectory(prefix="external-source-check-")
@@ -136,8 +156,6 @@ class ExternalSourceChecks(unittest.TestCase):
         (self.root / "docs/notes").mkdir(parents=True)
         self.published.parent.mkdir()
         (self.root / ".gitignore").write_text("/docs/local_source_cache/\n")
-        for manifest in ("PDF_SHA256SUMS", "parallel_experiment_pdfs.sha256"):
-            (self.root / "docs" / manifest).write_text("")
         source_url = "https://example.org/external.pdf"
         (self.root / "docs/notes/external.md").write_text(f"{source_url}\n{self.digest}\n")
         self.registry: dict[str, Any] = {
@@ -163,26 +181,23 @@ class ExternalSourceChecks(unittest.TestCase):
         self.cache.parent.mkdir()
         self.cache.write_bytes(self.payload)
 
-    def reject(self, message: str, published_digests: set[str] | None = None) -> None:
+    def reject(self, message: str) -> None:
         with self.assertRaisesRegex(ValueError, "^" + re.escape(message) + "$"):
-            verify_external_sources(self.root, self.registry, published_digests or set())
+            verify_external_sources(self.root, self.registry)
 
     def test_absent_cache_is_optional(self) -> None:
-        self.assertEqual(verify_external_sources(self.root, self.registry, set()), 1)
+        self.assertEqual(verify_external_sources(self.root, self.registry), 1)
         self.assertFalse(self.cache.exists())
 
     def test_original_cache_is_verified(self) -> None:
         self.retain_cache()
-        self.assertEqual(verify_external_sources(self.root, self.registry, set()), 1)
+        self.assertEqual(verify_external_sources(self.root, self.registry), 1)
         self.assertEqual(self.cache.read_bytes(), self.payload)
 
     def test_modified_cache_digest_is_rejected(self) -> None:
         self.retain_cache()
         self.cache.write_bytes(self.payload[:-1] + b"!")
         self.reject("external-only cached PDF digest")
-
-    def test_external_digest_in_published_inventory_is_rejected(self) -> None:
-        self.reject("external-only PDF appears in the published inventory", {self.digest})
 
     def test_external_file_in_published_directory_is_rejected(self) -> None:
         self.published.write_bytes(self.payload)
@@ -199,16 +214,6 @@ class ExternalSourceChecks(unittest.TestCase):
         )
         self.reject("local source cache contains Git-tracked files")
 
-    def test_external_digest_in_checksum_manifest_is_rejected(self) -> None:
-        (self.root / "docs/parallel_experiment_pdfs.sha256").write_text(f"{self.digest}  docs/pdf/external.pdf\n")
-        self.reject("external-only digest in parallel_experiment_pdfs.sha256")
-
-    def test_cache_path_in_checksum_manifest_is_rejected(self) -> None:
-        (self.root / "docs/parallel_experiment_pdfs.sha256").write_text(
-            "0" * 64 + "  docs/local_source_cache/external.pdf\n"
-        )
-        self.reject("local cache path in parallel_experiment_pdfs.sha256")
-
     def test_missing_cache_ignore_rule_is_rejected(self) -> None:
         (self.root / ".gitignore").write_text("")
         self.reject("local cache ignore rule")
@@ -223,8 +228,7 @@ class SourceRightsChecks(unittest.TestCase):
         self.digest = hashlib.sha256(self.payload).hexdigest()
         self.registry = {"license_documents": license_documents_fixture()}
         self.entry: dict[str, Any] = {
-            "path": "docs/pdf/1904.00633.pdf",
-            "status": "retained",
+            "status": "external_only",
             "redistribution": "explicit_license_verified",
             "source_url": "https://arxiv.org/pdf/1904.00633v2",
             "sha256": self.digest,
@@ -267,12 +271,12 @@ class SourceRightsChecks(unittest.TestCase):
         )
         self.write_arxiv_capture()
 
-    def verify(self, *, published: bool = True) -> None:
-        verify_source_rights(self.entry, self.registry, root=self.root, published=published, payload=self.payload)
+    def verify(self) -> None:
+        verify_source_rights(self.entry, self.registry, root=self.root, payload=self.payload)
 
-    def reject(self, message: str, *, published: bool = True) -> None:
+    def reject(self, message: str) -> None:
         with self.assertRaisesRegex(ValueError, "^" + re.escape(message) + "$"):
-            self.verify(published=published)
+            self.verify()
 
     def use_zenodo(self) -> None:
         self.entry["source_url"] = "https://author.example.org/paper.pdf"
@@ -590,7 +594,7 @@ class SourceRightsChecks(unittest.TestCase):
     def test_nature_other_evidence_host_is_rejected(self) -> None:
         self.use_nature()
         self.entry["rights"]["evidence_url"] = "https://www.nature.com/news/s41586-026-10423-9"
-        self.reject("published Nature evidence route")
+        self.reject("licensed Nature evidence route")
 
     def test_nature_path_traversal_is_rejected(self) -> None:
         self.use_nature()
@@ -745,31 +749,19 @@ class SourceRightsChecks(unittest.TestCase):
         self.write_notice()
         self.reject("PDF notice article identity")
 
-    def use_licensed_external(self) -> None:
-        del self.entry["path"]
-        self.entry["status"] = "external_only"
-        self.entry["redistribution"] = "explicit_license_verified"
-        self.entry["rights"]["decision"] = "external_only"
-
-    def test_licensed_external_arxiv_record_passes(self) -> None:
-        self.use_licensed_external()
-        self.verify(published=False)
-
     def test_licensed_external_pdf_notice_record_passes(self) -> None:
         self.use_pdf_notice()
-        self.use_licensed_external()
-        self.verify(published=False)
+        self.verify()
 
     def test_licensed_external_record_with_distribution_only_grant_is_rejected(self) -> None:
         self.use_external_arxiv()
-        self.use_licensed_external()
-        self.reject("licensed external license allowlist", published=False)
+        self.entry["redistribution"] = "explicit_license_verified"
+        self.reject("licensed license allowlist")
 
     def test_licensed_external_record_without_license_route_is_rejected(self) -> None:
-        self.use_licensed_external()
         self.entry["source_url"] = "https://author.example.org/paper.pdf"
         self.entry["rights"]["evidence_url"] = "https://author.example.org/paper"
-        self.reject("licensed external license evidence route", published=False)
+        self.reject("licensed license evidence route")
 
     def test_cc0_grant_passes(self) -> None:
         self.entry["rights"].update(
@@ -819,17 +811,16 @@ class SourceRightsChecks(unittest.TestCase):
                 self.entry["rights"][field] = value
                 self.reject(message)
 
-    def test_publication_admission_mutations_are_rejected(self) -> None:
+    def test_licensed_admission_mutations_are_rejected(self) -> None:
         original = copy.deepcopy(self.entry)
         mutations: tuple[tuple[str, Any, str], ...] = (
-            ("status", "external_only", "published retention status"),
-            ("redistribution", "excluded_without_permission", "published redistribution status"),
-            ("decision", "external_only", "published rights decision"),
-            ("license_identifier", "LicenseRef-arXiv-nonexclusive-distrib-1.0", "published license allowlist"),
-            ("license_identifier", "CC-BY-NC-ND-4.0", "published license allowlist"),
-            ("license_url", LICENSE_URLS["CC0-1.0"], "published license URL"),
-            ("copy_status", "modified", "published copy status"),
-            ("conditions", "", "published license conditions"),
+            ("redistribution", "excluded_without_permission", "arXiv rights classification"),
+            ("decision", "publish_under_explicit_license", "external-only rights decision"),
+            ("license_identifier", "LicenseRef-arXiv-nonexclusive-distrib-1.0", "licensed license allowlist"),
+            ("license_identifier", "CC-BY-NC-ND-4.0", "licensed license allowlist"),
+            ("license_url", LICENSE_URLS["CC0-1.0"], "licensed license URL"),
+            ("copy_status", "modified", "licensed copy status"),
+            ("conditions", "", "licensed license conditions"),
         )
         for field, value, message in mutations:
             with self.subTest(field=field):
@@ -840,11 +831,11 @@ class SourceRightsChecks(unittest.TestCase):
 
     def test_changed_payload_is_rejected(self) -> None:
         self.payload += b"changed"
-        self.reject("published rights payload identity")
+        self.reject("rights payload identity")
 
-    def test_missing_payload_is_rejected(self) -> None:
+    def test_absent_reading_copy_passes(self) -> None:
         self.payload = b""
-        self.reject("published PDF payload")
+        self.verify()
 
     def test_missing_operative_license_document_is_rejected(self) -> None:
         del self.registry["license_documents"]["CC-BY-4.0"]
@@ -881,27 +872,27 @@ class SourceRightsChecks(unittest.TestCase):
         for identifier in set(LICENSE_URLS) - PUBLIC_LICENSES:
             with self.subTest(identifier=identifier):
                 self.use_external_arxiv(identifier)
-                self.verify(published=False)
+                self.verify()
 
     def test_external_arxiv_capture_without_observed_spelling_passes(self) -> None:
         self.use_external_arxiv()
         del self.entry["rights"]["observed_license_url"]
-        self.verify(published=False)
+        self.verify()
 
     def test_external_arxiv_capture_observed_spelling_is_checked_when_recorded(self) -> None:
         self.use_external_arxiv()
         self.entry["rights"]["observed_license_url"] = LICENSE_URLS["LicenseRef-arXiv-nonexclusive-distrib-1.0"]
-        self.reject("captured arXiv observed license identity", published=False)
+        self.reject("captured arXiv observed license identity")
 
     def test_external_arxiv_capture_tampering_is_rejected(self) -> None:
         self.use_external_arxiv()
         self.arxiv_path.write_bytes(self.arxiv_path.read_bytes() + b" ")
-        self.reject("captured arXiv evidence SHA-256", published=False)
+        self.reject("captured arXiv evidence SHA-256")
 
     def test_external_arxiv_capture_missing_file_is_rejected(self) -> None:
         self.use_external_arxiv()
         self.arxiv_path.unlink()
-        self.reject("captured arXiv evidence file", published=False)
+        self.reject("captured arXiv evidence file")
 
     def test_external_arxiv_capture_metadata_is_required(self) -> None:
         self.use_external_arxiv()
@@ -916,14 +907,14 @@ class SourceRightsChecks(unittest.TestCase):
             with self.subTest(field=field, value=value):
                 self.entry["rights"] = copy.deepcopy(original)
                 self.entry["rights"][field] = value
-                self.reject(message, published=False)
+                self.reject(message)
 
     def test_external_arxiv_capture_file_symlink_is_rejected(self) -> None:
         self.use_external_arxiv()
         target = self.root / "other.html"
         self.arxiv_path.rename(target)
         self.arxiv_path.symlink_to(target)
-        self.reject("captured arXiv evidence file", published=False)
+        self.reject("captured arXiv evidence file")
 
     def test_external_arxiv_capture_directory_symlink_is_rejected(self) -> None:
         self.use_external_arxiv()
@@ -931,7 +922,7 @@ class SourceRightsChecks(unittest.TestCase):
         target = self.root / "other-captures"
         directory.rename(target)
         directory.symlink_to(target, target_is_directory=True)
-        self.reject("captured arXiv evidence file", published=False)
+        self.reject("captured arXiv evidence file")
 
     def test_external_arxiv_semantic_mutations_are_rejected_after_rehash(self) -> None:
         self.use_external_arxiv()
@@ -950,10 +941,11 @@ class SourceRightsChecks(unittest.TestCase):
             with self.subTest(before=before):
                 self.arxiv_html = original.replace(before, after)
                 self.write_arxiv_capture()
-                self.reject(message, published=False)
+                self.reject(message)
 
     def test_external_publication_decision_is_rejected(self) -> None:
-        self.reject("external-only rights decision", published=False)
+        self.entry["rights"]["decision"] = "publish_under_explicit_license"
+        self.reject("external-only rights decision")
 
     def test_external_arxiv_grant_mismatch_is_rejected(self) -> None:
         self.entry["redistribution"] = "excluded_without_permission"
@@ -962,7 +954,7 @@ class SourceRightsChecks(unittest.TestCase):
             license_identifier="LicenseRef-arXiv-nonexclusive-distrib-1.0",
             license_url=LICENSE_URLS["CC-BY-4.0"],
         )
-        self.reject("arXiv license identity", published=False)
+        self.reject("arXiv license identity")
 
     def test_legacy_arxiv_identifier_passes(self) -> None:
         self.entry["redistribution"] = "excluded_without_permission"
@@ -975,7 +967,7 @@ class SourceRightsChecks(unittest.TestCase):
         )
         del self.entry["rights"]["evidence_path"]
         del self.entry["rights"]["evidence_retrieved_at_utc"]
-        self.verify(published=False)
+        self.verify()
 
     def test_matched_zenodo_deposit_passes(self) -> None:
         self.use_zenodo()
@@ -984,7 +976,7 @@ class SourceRightsChecks(unittest.TestCase):
     def test_unsupported_public_evidence_route_is_rejected(self) -> None:
         self.use_zenodo()
         self.entry["rights"]["evidence_url"] = "https://example.org/license"
-        self.reject("published license evidence route")
+        self.reject("licensed license evidence route")
 
     def test_missing_zenodo_file_is_rejected(self) -> None:
         self.use_zenodo()
@@ -1196,7 +1188,7 @@ class SourceRightsChecks(unittest.TestCase):
     def test_inspire_other_evidence_route_is_rejected(self) -> None:
         self.use_inspire()
         self.entry["rights"]["evidence_url"] = "https://inspirehep.net/literature/1747547"
-        self.reject("published INSPIRE evidence route")
+        self.reject("licensed INSPIRE evidence route")
 
     def test_pdg_chapter_of_licensed_review_passes(self) -> None:
         self.use_pdg()
@@ -1280,7 +1272,7 @@ class SourceRightsChecks(unittest.TestCase):
         self.reject("captured Crossref PDF DOI identity")
         self.use_crossref()
         self.entry["rights"]["evidence_url"] = "https://api.crossref.org/works?query=spglib"
-        self.reject("published Crossref evidence route")
+        self.reject("licensed Crossref evidence route")
         self.use_crossref()
         self.crossref_path.write_bytes(self.crossref_path.read_bytes() + b" ")
         self.reject("captured Crossref evidence SHA-256")
@@ -1319,7 +1311,7 @@ class SourceRightsChecks(unittest.TestCase):
     def test_osf_other_route_is_rejected(self) -> None:
         self.use_osf()
         self.entry["rights"]["evidence_url"] = "https://api.osf.io/v2/files/9kebt/"
-        self.reject("published OSF evidence route")
+        self.reject("licensed OSF evidence route")
 
     def test_coordinated_pdf_and_registry_replacement_is_rejected(self) -> None:
         self.use_zenodo()
@@ -1508,7 +1500,7 @@ class ExternalArticleCaptureChecks(unittest.TestCase):
         self.entry["rights"]["evidence_sha256"] = hashlib.sha256(payload).hexdigest()
 
     def verify(self) -> None:
-        verify_source_rights(self.entry, {}, root=self.root, published=False)
+        verify_source_rights(self.entry, {}, root=self.root)
 
     def reject(self, message: str) -> None:
         with self.assertRaisesRegex(ValueError, "^" + re.escape(message) + "$"):
@@ -1613,11 +1605,11 @@ class CaptureInventoryChecks(unittest.TestCase):
         self.directory = self.root / "docs/evidence/source_rights"
         self.directory.mkdir(parents=True)
         (self.directory / "README.md").write_text("Captured evidence and manual-audit boundary\n")
-        self.registry: dict[str, Any] = {"pdfs": [], "external_pdfs": []}
-        for section, filename in (("pdfs", "hosted.html"), ("external_pdfs", "external.html")):
+        self.registry: dict[str, Any] = {"external_pdfs": []}
+        for filename in ("external.html", "licensed.html"):
             capture = self.directory / filename
             capture.write_bytes(b"retained response")
-            self.registry[section].append(
+            self.registry["external_pdfs"].append(
                 {
                     "rights": {
                         "evidence_path": capture.relative_to(self.root).as_posix(),
@@ -1635,7 +1627,7 @@ class CaptureInventoryChecks(unittest.TestCase):
         self.assertEqual(verify_capture_inventory(self.root, self.registry), (2, 1))
 
     def test_duplicate_registered_capture_is_rejected(self) -> None:
-        self.registry["external_pdfs"].append(copy.deepcopy(self.registry["pdfs"][0]))
+        self.registry["external_pdfs"].append(copy.deepcopy(self.registry["external_pdfs"][1]))
         self.reject("duplicate source capture path")
 
     def test_missing_registered_capture_is_rejected(self) -> None:
@@ -2074,17 +2066,20 @@ class SourceArchiveChecks(unittest.TestCase):
                 self.reject("archive source route")
 
 
-class HostedArxivCaptureChecks(unittest.TestCase):
-    def test_all_registered_hosted_arxiv_captures(self) -> None:
+class LicensedArxivCaptureChecks(unittest.TestCase):
+    def test_all_registered_licensed_arxiv_captures(self) -> None:
         root = Path(__file__).resolve().parents[1]
         registry = json.loads((root / "docs/SOURCES.json").read_text())
-        entries = [entry for entry in registry["pdfs"] if entry["source_url"].startswith("https://arxiv.org/pdf/")]
+        entries = [
+            entry
+            for entry in registry["external_pdfs"]
+            if entry["redistribution"] == "explicit_license_verified"
+            and entry["source_url"].startswith("https://arxiv.org/pdf/")
+        ]
         self.assertTrue(entries)
         for entry in entries:
             with self.subTest(source=entry["source_url"]):
-                verify_source_rights(
-                    entry, registry, root=root, published=True, payload=(root / entry["path"]).read_bytes()
-                )
+                verify_source_rights(entry, registry, root=root)
 
 
 class DmgaaCaptureChecks(unittest.TestCase):

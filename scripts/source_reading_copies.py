@@ -1,6 +1,6 @@
 """The reading-copy index: every external-only PDF of docs/SOURCES.json with its note, public source and reading copy.
 
-docs/SOURCES.json lists under `external_pdfs` each PDF whose rights exclude redistribution from this repository; its
+docs/SOURCES.json lists under `external_pdfs` every PDF, since this repository hosts no document; its
 bytes live in the ignored `docs/local_source_cache/` and in one of the owner's workspace documents repositories,
 gororoba-documents-public for an openly licensed file and gororoba-documents-private otherwise, which
 scripts/fetch_source_cache.py restores from. Each documents repository names its files in `manifest.tsv` (columns
