@@ -69,6 +69,7 @@ Prints one JSON object.
 from __future__ import annotations
 
 import argparse
+import bisect
 import fcntl
 import functools
 import hashlib
@@ -848,7 +849,9 @@ def exps_to_tuple(e: list[int]) -> tuple[int, ...]:
 def load_receipt(path: str, header: str, p: int, ngens: int) -> tuple[str, dict]:
     """The relation file of a degree-2 membership receipt that certifies this header at this prime, and the receipt."""
     rec = json.loads(Path(path).read_text())
-    rel = os.path.join(os.path.dirname(path), rec["relation_file"])
+    # Retained receipts record relation_file either beside the receipt or relative to the repository root; the file
+    # sits beside the receipt in both spellings.
+    rel = os.path.join(os.path.dirname(path), os.path.basename(rec["relation_file"]))
     want = {
         "status": "degree-certified",
         "degree": 2,
@@ -904,6 +907,40 @@ def standard_monomials(
     return levels, leads
 
 
+def combo_rank(t: tuple[int, ...], n: int) -> int:
+    """Position of the nondecreasing tuple t in itertools.combinations_with_replacement(range(n), len(t))."""
+    d, m = len(t), n + len(t) - 1
+    r, prev = 0, -1
+    for i, x in enumerate(t):
+        s = x + i
+        r += sum(math.comb(m - 1 - v, d - 1 - i) for v in range(prev + 1, s))
+        prev = s
+    return r
+
+
+def combo_unrank(r: int, n: int, d: int) -> tuple[int, ...]:
+    """Inverse of combo_rank."""
+    m = n + d - 1
+    out, v = [], 0
+    for i in range(d):
+        while math.comb(m - 1 - v, d - 1 - i) <= r:
+            r -= math.comb(m - 1 - v, d - 1 - i)
+            v += 1
+        out.append(v - i)
+        v += 1
+    return tuple(out)
+
+
+def nonstandard_at(j: int, std_ranks: list[int]) -> int:
+    """Rank of the j-th (from 0) tuple outside the sorted standard ranks: the least fixed point of r = j + #{s <= r}."""
+    r = j
+    while True:
+        nxt = j + bisect.bisect_right(std_ranks, r)
+        if nxt == r:
+            return r
+        r = nxt
+
+
 def representatives(a: argparse.Namespace, p: int, ngens: int) -> Representatives:
     """Standard-monomial product tuples of k[y]/K2 for degrees 1..d, plus the nonstandard check products.
 
@@ -918,12 +955,13 @@ def representatives(a: argparse.Namespace, p: int, ngens: int) -> Representative
             if t[:-1] not in std_sets[e - 1]:
                 raise RuntimeError(f"standard monomial {t} has a nonstandard prefix: kbase is not an order ideal")
     reps = sorted(std_sets[a.d])
-    nonstd = [t for t in itertools.combinations_with_replacement(range(ngens), a.d) if t not in std_sets[a.d]]
+    std_ranks = sorted(combo_rank(t, ngens) for t in std_sets[a.d])
+    nonstd_count = math.comb(ngens + a.d - 1, a.d) - len(std_ranks)
     targeted = sorted({tuple(sorted(exps_to_tuple(v) + (0,) * (a.d - sum(v)))) for v in leads})
     if any(t in std_sets[a.d] for t in targeted):
         raise RuntimeError("a multiple of a leading monomial of K2 is standard: kbase and lead disagree")
-    take = min(a.checks, len(nonstd))
-    strided = [nonstd[(i * len(nonstd)) // take] for i in range(take)] if take else []
+    take = min(a.checks, nonstd_count)
+    strided = [combo_unrank(nonstandard_at((i * nonstd_count) // take, std_ranks), ngens, a.d) for i in range(take)]
     checks = targeted + [t for t in dict.fromkeys(strided) if t not in set(targeted)]
     wanted = {e: set(std_sets[e]) for e in std_sets}
     for t in checks:
@@ -935,7 +973,7 @@ def representatives(a: argparse.Namespace, p: int, ngens: int) -> Representative
         "generator_order_sha256": rec["generator_order_sha256"],
         "standard_counts": {str(e): len(std_sets[e]) for e in sorted(std_sets)},
         "built_rows": {str(e): len(wanted[e]) for e in sorted(wanted)},
-        "nonstandard": len(nonstd),
+        "nonstandard": nonstd_count,
         "checks_targeted": len(targeted),
         "checks_strided": len(checks) - len(targeted),
     }

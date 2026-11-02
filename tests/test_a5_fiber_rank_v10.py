@@ -142,3 +142,22 @@ def test_the_targeted_checks_alone_catch_a_false_relation(tmp_path: Path) -> Non
     ok = _run(true_header, 3, 9, "--k2-receipt", str(true_receipt), "--checks", "0")
     rec = json.loads(ok.stdout)["representatives"]
     _check(ok.returncode == 0 and rec["checks_targeted"] == 1 and rec["checks_strided"] == 0)
+
+
+def test_strided_selection_equals_the_enumerated_list() -> None:
+    for n, d in [(4, 3), (5, 2), (3, 5)]:
+        tuples = list(itertools.combinations_with_replacement(range(n), d))
+        _check([v10.combo_rank(t, n) for t in tuples] == list(range(len(tuples))))
+        _check([v10.combo_unrank(r, n, d) for r in range(len(tuples))] == tuples)
+        std = set(tuples[1::3])
+        nonstd = [t for t in tuples if t not in std]
+        ranks = sorted(v10.combo_rank(t, n) for t in std)
+        _check([v10.combo_unrank(v10.nonstandard_at(j, ranks), n, d) for j in range(len(nonstd))] == nonstd)
+
+
+def test_a_receipt_naming_its_relation_file_from_the_repository_root_resolves(tmp_path: Path) -> None:
+    header, receipt = _fixture(tmp_path, "y(1)*y(2)-y(3)^2")
+    rec = json.loads(receipt.read_text())
+    receipt.write_text(json.dumps({**rec, "relation_file": "docs/evidence/x/relations-d2.rel"}))
+    rel, _ = v10.load_receipt(str(receipt), str(header), P, 3)
+    _check(Path(rel) == tmp_path / "relations-d2.rel")
