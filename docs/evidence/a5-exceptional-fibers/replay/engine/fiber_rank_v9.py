@@ -419,6 +419,7 @@ class Step(NamedTuple):
     basis: str | None = None
     expect_basis: str | None = None
     identity: str = ""
+    owner: str = ""
 
 
 def read_list(path: str, names: list[str], p: int) -> list[Poly]:
@@ -438,16 +439,35 @@ def file_sha256(path: str) -> str:
     return h.hexdigest()
 
 
-def publish(part: str, final: str, identity: str) -> None:
-    """Rename part to final after writing its sidecar: the file's sha256 and the sha256 of the export identity."""
+def write_sidecar(source: str, final: str, identity: str) -> None:
+    """final.sha256: the sha256 of source's bytes and the sha256 of the export identity."""
     with open(final + ".sha256.part", "w") as f:
-        f.write(f"{file_sha256(part)} {identity}")
+        f.write(f"{file_sha256(source)} {identity}")
     os.replace(final + ".sha256.part", final + ".sha256")
+
+
+def publish(part: str, final: str, identity: str) -> None:
+    """Rename part to final after writing its sidecar, so every published export file has a record."""
+    write_sidecar(part, final, identity)
     os.replace(part, final)
 
 
 def run_singular(step: Step) -> tuple[str, float]:
-    """Run one export script; publish its output only on its exact RESULT line, no diagnostic, and a matching kbase."""
+    """Run one export script; publish its output only on its exact RESULT line, no diagnostic, and a matching kbase.
+
+    The step takes a shared lock on the export directory and hands the locked descriptor to Singular, so the lock lasts
+    until both the step and its Singular process have exited; a step whose owner token is no longer the directory's
+    belongs to a superseded run and does nothing.
+    """
+    out = os.path.dirname(step.part)
+    with open(os.path.join(out, ".lock"), "a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_SH)
+        if step.owner and Path(out, ".owner").read_text() != step.owner:
+            raise RuntimeError(f"Singular export step {step.part}: superseded by a later run")
+        return _run_singular_locked(step, lock.fileno())
+
+
+def _run_singular_locked(step: Step, lock_fd: int) -> tuple[str, float]:
     for stale in (step.part, step.basis):
         if stale and os.path.exists(stale):
             os.remove(stale)
@@ -459,6 +479,7 @@ def run_singular(step: Step) -> tuple[str, float]:
         capture_output=True,
         text=True,
         check=True,
+        pass_fds=(lock_fd,),
     )
     lines = [ln.strip() for ln in (res.stdout + "\n" + res.stderr).splitlines()]
     ok = any(ln == step.marker or ln.startswith(step.marker + " ") for ln in lines)
@@ -475,17 +496,11 @@ def run_singular(step: Step) -> tuple[str, float]:
 
 
 def run_step(step: Step) -> tuple[str, float, str | None]:
-    """run_singular returning its failure instead of raising, so the caller waits for every step before it raises.
-
-    The step holds a shared lock on the export directory until its Singular process has exited, so a new run's
-    exclusive lock fails while any step of an interrupted run is still writing.
-    """
-    with open(os.path.join(os.path.dirname(step.part), ".lock"), "a") as lock:
-        fcntl.flock(lock, fcntl.LOCK_SH)
-        try:
-            return (*run_singular(step), None)
-        except (RuntimeError, OSError, subprocess.CalledProcessError) as e:
-            return os.path.basename(step.part), 0.0, f"{type(e).__name__}: {e}"
+    """run_singular returning its failure instead of raising, so the caller waits for every step before it raises."""
+    try:
+        return (*run_singular(step), None)
+    except (RuntimeError, OSError, subprocess.CalledProcessError) as e:
+        return os.path.basename(step.part), 0.0, f"{type(e).__name__}: {e}"
 
 
 def export_identity(header_text: dict[str, str], names: list[str], p: int, N: int) -> dict:
@@ -546,14 +561,19 @@ def quotient_data(
     out = os.path.abspath(export_dir)
     os.makedirs(out, exist_ok=True)
     with open(os.path.join(out, ".lock"), "a") as lock:
-        # Exclusive admission, then a shared hold beside the shared locks of this run's steps: a later run's exclusive
-        # request fails while this process or any of its steps, including one outliving an interrupt, holds the file.
+        # Exclusive admission, then a shared hold beside the shared locks of this run's steps and their Singular
+        # processes: a later run's exclusive request fails while any of them is alive. The owner token, written under
+        # the exclusive lock, turns away a step of an interrupted run that starts after a later run's admission.
         try:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            fcntl.flock(lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
         except BlockingIOError:
             raise SystemExit(f"another process holds {out}") from None
-        return _quotient_data_locked(header_text, names, p, N, singular, out, adopt, chunks, preflight)
+        owner = f"{os.getpid()}.{time.time_ns()}"
+        with open(os.path.join(out, ".owner.part"), "w") as f:
+            f.write(owner)
+        os.replace(os.path.join(out, ".owner.part"), os.path.join(out, ".owner"))
+        fcntl.flock(lock, fcntl.LOCK_SH)
+        return _quotient_data_locked(header_text, names, p, N, singular, out, adopt, chunks, preflight, owner)
 
 
 def _quotient_data_locked(
@@ -566,6 +586,7 @@ def _quotient_data_locked(
     adopt: bool,
     chunks: int,
     preflight: Callable[[list[Monomial]], None] | None,
+    owner: str = "",
 ) -> tuple[list[Monomial], list[list[Poly]], list[Poly], dict]:
     path = functools.partial(os.path.join, out)
     for blocker in ("qB.rejected.txt", "qB.prior.txt"):
@@ -616,7 +637,7 @@ def _quotient_data_locked(
         raise SystemExit("--export-dir holds s.txt without qB.txt")
     if not os.path.exists(path("s.txt")):
         std_step = Step(singular, STD_SCRIPT.format(J=header_text["J"], N=N, **base), path("std.sing"),
-                    path("s.txt.part"), None, "RESULT std")  # fmt: skip
+                    path("s.txt.part"), None, "RESULT std", owner=owner)  # fmt: skip
         computed["s.txt"] = round(run_singular(std_step)[1], 1)
         if os.path.exists(path("qB.txt")):
             # A recomputed standard basis must reproduce the basis the existing files were written against.
@@ -640,7 +661,7 @@ def _quotient_data_locked(
 
     def checked(script: str, tag: str, final: str | None, marker: str) -> Step:
         return Step(singular, script, path(tag + ".sing"), path(tag + ".txt.part"), final, marker,
-                    path(tag + ".kbase.part"), path("qB.txt"), identity)  # fmt: skip
+                    path(tag + ".kbase.part"), path("qB.txt"), identity, owner)  # fmt: skip
 
     jobs, joins, checks = [], [], []
     bounds = [(1 + i * D // chunks, (i + 1) * D // chunks) for i in range(chunks)]
@@ -662,7 +683,7 @@ def _quotient_data_locked(
                 stem = part[:-4]
                 script = load(stem) + TABLE_SCRIPT.format(k=k, lo=lo, hi=hi, part=part + ".part")
                 jobs.append(Step(singular, script, stem + ".sing", part + ".part", part, "RESULT table",
-                                 stem + ".kbase.part", path("qB.txt"), identity))  # fmt: skip
+                                 stem + ".kbase.part", path("qB.txt"), identity, owner))  # fmt: skip
         if chunks > 1:
             joins.append((final, parts))
     gen_check = None
@@ -702,6 +723,8 @@ def _quotient_data_locked(
         if read_list(gen_check, names, p) != gens:
             raise SystemExit("adopted qG.txt differs from the recomputed generator normal forms")
         os.remove(gen_check)
+    for f in pending:
+        write_sidecar(path(f), path(f), identity)
     names_out = ["s.txt", "qB.txt", "qG.txt"] + [f"qM{k}.txt" for k in range(1, nv + 1)]
     files = {f: file_sha256(path(f)) for f in names_out}
     write_manifest(mpath, {**ident, "files": files, "adopted": adopted})

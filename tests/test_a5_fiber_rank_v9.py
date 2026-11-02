@@ -80,6 +80,10 @@ def test_adopted_partial_export_completes(tmp_path: Path) -> None:
     split = v9.quotient_data(HEADER, NAMES, P, 6, str(SINGULAR), str(adopted), adopt=True)
     _check(split[:3] == serial)
     _check("qM1.txt" in split[3]["reused"] and "qM1.txt" not in split[3]["computed_seconds"])
+    ident = v9.identity_sha256(v9.export_identity(HEADER, NAMES, P, 6))
+    for name in ("qB.txt", "qM1.txt"):
+        record = (adopted / (name + ".sha256")).read_text().split()
+        _check(record == [v9.file_sha256(str(adopted / name)), ident])
 
 
 def _adopted(tmp_path: Path, basis: str | None = None, table: str | None = None) -> Path:
@@ -187,6 +191,85 @@ def test_failed_step_returns_instead_of_raising(tmp_path: Path) -> None:
     step = v9.Step(str(tmp_path / "no-singular"), "", str(tmp_path / "s.sing"), str(tmp_path / "o"), None, "RESULT t")
     name, _, error = v9.run_step(step)
     _check(name == "o" and error is not None)
+
+
+@needs_singular
+def test_adopted_generators_are_recomputed(tmp_path: Path) -> None:
+    adopted = _adopted(tmp_path)
+    shutil.copy(tmp_path / "serial" / "qG.txt", adopted / "qG.txt")
+    gens = _entries(adopted / "qG.txt")
+    gens[0], gens[1] = gens[1], gens[0]
+    (adopted / "qG.txt").write_text(",".join(gens))
+    with pytest.raises(SystemExit, match="generator normal forms"):
+        v9.quotient_data(HEADER, NAMES, P, 6, str(SINGULAR), str(adopted), adopt=True)
+
+
+@needs_singular
+@pytest.mark.parametrize("target", ["qM2.txt", "qG.txt"])
+def test_production_steps_check_their_kbase(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, target: str) -> None:
+    """A table or generator process whose kbase order differs from qB.txt publishes nothing."""
+    out = tmp_path / "split"
+    v9.quotient_data(HEADER, NAMES, P, 6, str(SINGULAR), str(out), chunks=2)
+    for name in (target, target + ".sha256"):
+        (out / name).unlink()
+    reversed_load = v9.LOAD_SCRIPT.replace('write(":w {basis}",B);', 'ideal W=B[ncols(B)..1]; write(":w {basis}",W);')
+    monkeypatch.setattr(v9, "LOAD_SCRIPT", reversed_load)
+    with pytest.raises(RuntimeError, match="kbase differs"):
+        v9.quotient_data(HEADER, NAMES, P, 6, str(SINGULAR), str(out), chunks=2)
+    _check(not (out / target).exists())
+
+
+@needs_singular
+def test_more_chunks_than_rows(tmp_path: Path) -> None:
+    serial = _serial(tmp_path / "serial")
+    split = v9.quotient_data(HEADER, NAMES, P, 6, str(SINGULAR), str(tmp_path / "split"), chunks=len(serial[0]) + 5)
+    _check(split[:3] == serial)
+
+
+@needs_singular
+def test_export_only_stops_before_products(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys) -> None:
+    header = tmp_path / "h.sing"
+    header.write_text(f"ring r={P},({','.join(NAMES)}),dp;\nideal J={HEADER['J']};\nideal G={HEADER['G']};\n")
+    argv = ["v9", str(header), "2", "6", "--quotient", "--export-only", "--export-dir", str(tmp_path / "x"),
+            "--singular", str(SINGULAR)]  # fmt: skip
+    monkeypatch.setattr(sys, "argv", argv)
+    monkeypatch.setattr(v9, "table_products", lambda *a: pytest.fail("products ran under --export-only"))
+    v9.main()
+    _check(json.loads(capsys.readouterr().out)["mode"] == "quotient-export")
+
+
+def _fake_singular(tmp_path: Path, body: str) -> str:
+    exe = tmp_path / "fake-singular"
+    exe.write_text("#!/bin/sh\n" + body + "\n")
+    exe.chmod(0o755)
+    return str(exe)
+
+
+def test_singular_inherits_the_directory_lock(tmp_path: Path) -> None:
+    part = tmp_path / "o"
+    exe = _fake_singular(tmp_path, f'ls -l /proc/self/fd > "{part}"; echo "RESULT t"')
+    v9.run_singular(v9.Step(exe, "", str(tmp_path / "s.sing"), str(part), None, "RESULT t"))
+    _check(str(tmp_path / ".lock") in part.read_text())
+
+
+def test_superseded_step_does_nothing(tmp_path: Path) -> None:
+    (tmp_path / ".owner").write_text("later-run")
+    part = tmp_path / "o"
+    exe = _fake_singular(tmp_path, f'echo x > "{part}"; echo "RESULT t"')
+    name, _, error = v9.run_step(v9.Step(exe, "", str(tmp_path / "s.sing"), str(part), None, "RESULT t",
+                                         owner="earlier-run"))  # fmt: skip
+    _check(error is not None and "superseded" in error and not part.exists())
+
+
+@pytest.mark.parametrize("body", ['echo x > "{part}"; echo "RESULT other"', 'echo "RESULT t"'])
+def test_missing_marker_or_stale_part_fails(tmp_path: Path, body: str) -> None:
+    """A wrong marker fails; a stale .part left by an earlier run is removed, so a step that writes nothing fails."""
+    part = tmp_path / "o.part"
+    part.write_text("stale")
+    exe = _fake_singular(tmp_path, body.format(part=part))
+    with pytest.raises(RuntimeError):
+        v9.run_singular(v9.Step(exe, "", str(tmp_path / "s.sing"), str(part), str(tmp_path / "o"), "RESULT t"))
+    _check(not (tmp_path / "o").exists())
 
 
 @pytest.mark.parametrize("mode", [fcntl.LOCK_EX, fcntl.LOCK_SH])
