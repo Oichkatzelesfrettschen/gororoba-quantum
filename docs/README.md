@@ -238,6 +238,47 @@ differs from it only in the `cd_core.py` digest.
 | [levratti-2026-sign-parity-zero-divisors.md](notes/papers/levratti-2026-sign-parity-zero-divisors.md) | Levratti 2026 sign-parity classification: the closed count 336 x [n-1 choose 3]_2 equals 336 at 16 and 5040 at 32 dimensions under `cd_core`, weight-3 invertibility and kernel dimensions (hosted, CC BY 4.0) |
 | [1505.05210.md](notes/papers/1505.05210.md) | Kustin, Polini and Ulrich 2017 blowup algebras of height three Gorenstein ideals: Rees ideal J = L + I_d(B) + C(phi), the special fiber equations and the A_5 fiber-cone hypotheses it needs |
 | [1207.1060.md](notes/papers/1207.1060.md) | Branco Correia and Zarzuela 2013 divisors of a module and blow up: Fitting, determinant and Bourbaki ideals, analytic spread bounds and universal flattening |
+| [2302.07486.md](notes/papers/2302.07486.md) | Kumar and Venugopal 2023 Rees algebra of maximal order Pfaffians: linear type, the quadratic Rees relations, Koszul diagonals and the nonquadratic sparse 7 x 7 case against the A_5 fiber cones (hosted, CC BY 4.0) |
+| [2104.13811.md](notes/papers/2104.13811.md) | Cooper and Price 2021 degree bounds for Rees equations of determinantal and Pfaffian ideals: Proposition 5.1.2 and Theorems 5.4.3 and 5.4.5 and why no bound reaches the A_5 fiber-cone equations (hosted, CC BY 4.0) |
+| [alg-geom-9707001.md](notes/papers/alg-geom-9707001.md) | Bertram 1997 complete skew forms: the closure of the Pfaffian map and Theorem 3.3 as the container of the limiting kernels of the A_5 strata |
+| [1803.09011.md](notes/papers/1803.09011.md) | Massarenti 2020 spaces of complete skew-forms: Construction 2.3, Theorems 1.1 and 1.2 and the corank-one frame of the kernel map |
+| [math-0105151.md](notes/papers/math-0105151.md) | Ghorpade and Krattenthaler 2003 Hilbert series of Pfaffian rings: equation (9), Theorem 2 and the h-vector (1, 6, 6, 1) of the cone over G(2, 6) |
+| [1308.0582.md](notes/papers/1308.0582.md) | Jeffries, Montano and Varbaro 2015 j-multiplicity and fiber cone degree: Theorems 3.1 and 6.3 for the algebra of Pfaffians and why they fix only the ambient degree |
+| [math-0302241.md](notes/papers/math-0302241.md) | Corso, Ghezzi, Polini and Ulrich 2004 Cohen-Macaulay special fibers: Theorem 2.2 and the relation-count obstruction for the A_5 fibers |
+| [math-0212119.md](notes/papers/math-0212119.md) | D'Cruz, Raghavan and Verma 1999 Cohen-Macaulay fiber cones: the Hilbert series criterion of Theorem 2.1 and the numerator test on the tracked A_5 fiber Hilbert functions |
+| [2512.16165.md](notes/papers/2512.16165.md) | Ansaldi, Lira, Mostafazadehfard, Saloni and Seccia 2025 special fibers of Hankel coordinate sections: the Main Theorem and the method of identifying a fiber with that of 2-minors |
+| [conca-herzog-valla-1996-sagbi-bases.md](notes/papers/conca-herzog-valla-1996-sagbi-bases.md) | Conca, Herzog and Valla 1996 Sagbi bases and the blow-up algebras of rational normal scrolls (introduction read) |
+| [conca-herzog-trung-valla-1997-diagonal-subalgebras.md](notes/papers/conca-herzog-trung-valla-1997-diagonal-subalgebras.md) | Conca, Herzog, Trung and Valla 1997 diagonal subalgebras of bigraded algebras (JSTOR and Project MUSE downloads; abstract and definition read) |
+| [math-0402345.md](notes/papers/math-0402345.md) | Gannon 2006 moonshine survey: the moonshine module, Borcherds proof and the Norton series, as the citation for moonshine statements |
+| [1208.6254.md](notes/papers/1208.6254.md) | Carnahan 2016 monstrous Lie algebras and Norton's generalized moonshine conjecture (abstract and introduction read) |
+| [1812.08439.md](notes/papers/1812.08439.md) | Cunha and Elduque 2020 codes, S-structures and the exceptional Lie algebras E7 and E8 (abstract and introduction read) |
+| [2504.16513.md](notes/papers/2504.16513.md) | Kollross 2026 explicit E8 bracket from triality and oct-octonions (abstract and introduction read) |
+| [2009.00390.md](notes/papers/2009.00390.md) | Dray, Huerta and Kincaid 2014 the 2 x 2 magic square of Lie groups (abstract and introduction read) |
+| [math-0411104.md](notes/papers/math-0411104.md) | Krutelevich 2007 Freudenthal construction on cubic Jordan algebras and Bhargava composition (abstract and contents read) |
+| [2605.09333.md](notes/papers/2605.09333.md) | Corradetti 2026 Coxeter-Dickson order, para-octonions and the Okubo algebra on the E8 lattice (hosted, CC BY 4.0; abstract and introduction read) |
+| [2204.04996.md](notes/papers/2204.04996.md) | Wilson, Dray and Manogue 2023 3 x 3 matrix construction of E8 over octonions (abstract and introduction read) |
+| [2401.10534.md](notes/papers/2401.10534.md) | Dray, Manogue and Wilson 2024 E7 and its 56-dimensional representation inside E8: Albert algebra H_3(O), equations (15) to (20) |
+| [0909.0551.md](notes/papers/0909.0551.md) | Baez and Huerta 2010 division algebras and supersymmetry in dimensions 3, 4, 6 and 10 (abstract and introduction read) |
+| [1102.4857.md](notes/papers/1102.4857.md) | Ferrara, Marrani and Yeranyan 2011 Freudenthal duality in generalized special geometry (abstract read) |
+| [1402.0206.md](notes/papers/1402.0206.md) | Flaut 2014 survey of algebras from the Cayley-Dickson process over fields (abstract and introduction read) |
+| [2311.16704.md](notes/papers/2311.16704.md) | Chapman and Vishkautsan 2025 polynomial roots and left eigenvalues over Cayley-Dickson algebras; the doubling coincides with cd_core at gamma = -1; the PDF carries a CC BY-SA 4.0 notice |
+| [1307.3641.md](notes/papers/1307.3641.md) | Flaut and Shpakivskyi 2015 Dirac-operator holomorphic functions on Cayley-Dickson algebras (abstract and introduction read) |
+| [math-0403263.md](notes/papers/math-0403263.md) | Cohn and Kumar 2009 the Leech lattice is the densest lattice in R^24 and E8 in R^8 (abstract and introduction read) |
+| [2307.02505.md](notes/papers/2307.02505.md) | Tang and Tang 2023 sedenion model of lepton generations: the abstract's claim of three octonion subalgebra types, unverified (hosted, CC BY 4.0) |
+| [2304.01213.md](notes/papers/2304.01213.md) | Singh 2023 exceptional Jordan algebra essay on gravitation (abstract read; claims unverified) |
+| [2606.15235.md](notes/papers/2606.15235.md) | Baez and Schwahn 2026 Standard Model gauge group from F4 acting on Jordan subalgebras of h_3(O) (abstract and introduction read) |
+| [hep-th-0301037.md](notes/papers/hep-th-0301037.md) | Boya 2003 octonions in M-theory review (abstract and introduction read) |
+| [2112.09698.md](notes/papers/2112.09698.md) | D'Andrea, Landi and Lizzi 2022 tolerance algebras: Proposition 7 and the statement that Cayley-Dickson algebras of dimension 8 and above are not tolerance algebras |
+| [2410.14267.md](notes/papers/2410.14267.md) | Fox and Tkachev 2024 Hsiang and quasicomposition algebras and the tripling construction as an analogue of doubling (hosted, CC BY 4.0) |
+| [2208.03285.md](notes/papers/2208.03285.md) | Aurisano and Whitehead 2022 deep-learning image classification in high-energy physics; no hypercomplex content (hosted, CC BY 4.0) |
+| [conway-norton-1979-monstrous-moonshine.md](notes/papers/conway-norton-1979-monstrous-moonshine.md) | Conway and Norton 1979 monstrous moonshine: observations (A) to (G), the series J and T_m, and the degrees of Table 1 |
+| [0811.4523.md](notes/papers/0811.4523.md) | Tuite 2009 exceptional vertex operator algebras: abstract and introduction (Deligne series, Moonshine module, Griess algebra) |
+| [hep-th-0205068.md](notes/papers/hep-th-0205068.md) | Gaberdiel, Olive and West 2002 Lorentzian Kac-Moody algebras (abstract read) |
+| [0810.2088.md](notes/papers/0810.2088.md) | Connes 2013 Theorems 1.1 and 1.2 on spectral triples of manifolds |
+| [hep-th-9209099.md](notes/papers/hep-th-9209099.md) | Lada and Stasheff 1993 sh Lie structures: skew symmetric l_n of degree 2 - n (cochain) and n - 2 (chain) |
+| [math-ph-0507015.md](notes/papers/math-ph-0507015.md) | Fernandez Nunez, Garcia Fuertes and Perelomov 2005 E7 Calogero-Sutherland Hamiltonian (5), ground state and the kappa = 1 characters |
+| [2207.14076.md](notes/papers/2207.14076.md) | Lin 2024 orbifolds of the Monster CFT and topological modular forms (abstract read) |
+| [math-0404517.md](notes/papers/math-0404517.md) | Eisenbud, Green, Hulek and Popescu 2006 small schemes: Theorems 0.2 and 0.4 (2-regular = small = linearly joined varieties of minimal degree) applied to the E8-bar to VB fiber candidate |
 | [1404.7403.md](notes/papers/1404.7403.md) | Weinstein and Yekutieli 2020 selective sign-determining confidence intervals: BY FCR-adjusted selection (Definition 1), directional BH sign selection with FCR at most q (Definition 2, Theorem 1), selection on independent data (Theorem 3) |
 | [efron-2011-tweedie-formula.md](notes/papers/efron-2011-tweedie-formula.md) | Efron 2011 Tweedie's formula and selection bias: E{mu given z} = z + sigma^2 l'(z), the normal-normal and James-Stein forms (3.7)-(3.9), regret and the widened empirical Bayes interval (7.26) |
 | [2603.20495.md](notes/papers/2603.20495.md) | Chapman and Levin 2026 central products of Cayley-Dickson loops: associativity degree for 4 to 64 dimensions (hosted, CC BY 4.0) |
