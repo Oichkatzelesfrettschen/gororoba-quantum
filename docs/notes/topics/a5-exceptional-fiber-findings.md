@@ -380,7 +380,7 @@ measurement), *superseded* (replaced by a stronger or cheaper route).
 | F(I) = k[y]/K2 for E8-bar -> VB | survives through degree 5 at 32009 (h_5 = 266, r_16 by engine v7) | degree 6; degree 5 at a second prime |
 | F(I) = k[y]/K2 for X+- | survives through degree 5 at 32009 (h_4 = 240; h_5 = 417, r_19, r_20 and r_21 by engine v7) | degree 6; degree 5 at a second prime |
 | F(I) = k[y]/K2 for Iso | survives through degree 5 at both primes (h_5 = 1,316, r_16 by the linear-algebra truncated rank) and degree 4 at both primes (h_4 = 640 by the full std at 32009 and by the jet rank at N = 13 at both 32009 and 32029) | degree 6 |
-| F(I) = k[y]/K2 for W8 | survives through degree 4 (h_4 = 1,725 at 32029 and 32009, r_13 by the linear-algebra truncated rank; h_3 = 600 at 32029 and 32009 by the linear-algebra truncated rank; the 32009 K2 count 2,600 - 2,000 = 600 comes from the quadrics of the 32009 degree-2 run `runs/w8_a2`, which retains a log and no receipt, so at 32009 the registry reads `lower bound equals candidate count` until a receipted degree-2 run) | degree 5; a receipted W8 degree-2 run at 32009 |
+| F(I) = k[y]/K2 for W8 | survives through degree 4 (h_4 = 1,725 at 32029 and 32009, r_13 by the linear-algebra truncated rank; h_3 = 600 at 32029 and 32009 by the linear-algebra truncated rank; the 32009 upper bound rests on the degree-2 receipt `distribute/out/a5-w8-receipt-p1` (h_2 = 156, 144 relations, membership failures 0, 6,560 s products std, 325 s membership, 6.7 GB), whose relation file spans the K2 of `runs/w8_a2` by its k2-span witness; W8 -> N+ carries degrees 1 to 4 at both primes by the t9 sign isomorphism) | degree 5 |
 | F(I) = k[y]/K2 for E8-bar -> N+- | survives through degree 3 at both primes (h_3 = 225, r_11 in quotient and raw mode) | degree 4 |
 | k[y]/K2 is Cohen-Macaulay for E8-bar -> VB, Iso and W8 -> N- | survives (generic linear section length 7, 23, 50 equal to the degree at 32009 and at 32029; `k2_cm.py`) | none at either prime |
 | For E8-bar -> VB, Iso and W8, F(I) = k[y]/K2 in all degrees iff the analytic spread and multiplicity of F(I) are (4, 7), (5, 23), (6, 50) | survives (argument: the quadric ring is Cohen-Macaulay, so L/K2 is zero or of full dimension) | none; an argument |
@@ -441,10 +441,8 @@ measurement), *superseded* (replaced by a stronger or cheaper route).
   which checks engine and header consistency at the specialization the N- certificate already covers. Engine v8
   computes each variable's multiplication table with one ideal-wide normal form instead of one per standard monomial;
   at E8-bar -> N- N = 12 the exports are byte-identical and the tables take 52 s instead of about 3,115 s.
-- **Degree-2 membership receipt for W8 -> N- at 32009**, the one missing upper-bound receipt: with it the
-  truncated ranks r_10 = 600 and r_13 = 1,725 certify degrees 3 and 4 at 32009, and the t9 sign isomorphism carries
-  them to W8 -> N+. A fresh degree-2 replay for Iso and E8-bar follows, so the upper bound K2 contained in L rests on
-  a replay rather than on retained receipts alone.
+- **A fresh degree-2 replay for Iso and E8-bar**, so the upper bound K2 contained in L rests on a replay rather than
+  on retained receipts alone; the W8 -> N- receipt at 32009 now exists and certifies degrees 1 to 4 there.
 - **Iso and W8 -> N- support decomposition**: radical then `minAssChar` on the radical, chart by chart, with caps
   above 8,000 s on Iso charts 6, 9, 10, 14, 16 and on W8 piece 2.
 - **Remaining arc charts on E8-bar -> VB** (t5 = 1, t7 = 1, the locus k^2 + 3 = 0 and the singular points of the

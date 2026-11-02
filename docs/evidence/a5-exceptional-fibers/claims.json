@@ -939,7 +939,10 @@
   },
   {
    "certified_degrees": [
-    1
+    1,
+    2,
+    3,
+    4
    ],
    "degrees": [
     {
@@ -985,19 +988,118 @@
      "d": 2,
      "k2_count": 156,
      "lower_bounds": [],
-     "status": "open"
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1,
+       1
+      ],
+      "fiber": "W8 -> N-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
     },
     {
      "d": 3,
      "k2_count": 600,
      "lower_bounds": [],
-     "status": "open"
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1,
+       1
+      ],
+      "fiber": "W8 -> N-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
     },
     {
      "d": 4,
      "k2_count": 1725,
      "lower_bounds": [],
-     "status": "open"
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1,
+       1
+      ],
+      "fiber": "W8 -> N-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
     },
     {
      "d": 5,
@@ -1201,7 +1303,10 @@
   },
   {
    "certified_degrees": [
-    1
+    1,
+    2,
+    3,
+    4
    ],
    "degrees": [
     {
@@ -1223,8 +1328,15 @@
     {
      "d": 2,
      "k2_count": 156,
-     "lower_bounds": [],
-     "status": "open"
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json",
+       "rank": 156,
+       "sha256": "6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425"
+      }
+     ],
+     "status": "certified"
     },
     {
      "d": 3,
@@ -1276,7 +1388,7 @@
        "source": "a5-failed-runs/falsify/v8_gates.jsonl"
       }
      ],
-     "status": "lower bound equals candidate count"
+     "status": "certified"
     },
     {
      "d": 4,
@@ -1292,7 +1404,7 @@
        "source": "a5-failed-runs/falsify/laptop/v6/w8_d4_p1_v6.jsonl"
       }
      ],
-     "status": "lower bound equals candidate count"
+     "status": "certified"
     },
     {
      "d": 5,
@@ -1315,7 +1427,12 @@
     }
    ],
    "prime": 32009,
-   "upper_bound_d_ge_2": "none verified"
+   "upper_bound_d_ge_2": [
+    {
+     "receipt": "working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json",
+     "sha256": "6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425"
+    }
+   ]
   },
   {
    "certified_degrees": [
