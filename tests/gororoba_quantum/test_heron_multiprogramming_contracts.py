@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import math
-import sys
 import unittest
 from pathlib import Path
 
@@ -12,9 +11,7 @@ from qiskit.circuit import Parameter
 from qiskit.quantum_info import Statevector
 from qiskit_aer import AerSimulator
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "gororoba_quantum"))
-from heron_multiprogramming import (  # noqa: E402
+from heron_multiprogramming import (
     STEANE_Z_CHECKS,
     DisjointTile,
     HeronLattice,
@@ -30,7 +27,7 @@ from heron_multiprogramming import (  # noqa: E402
     steane_z_syndrome_patch,
 )
 
-SNAPSHOT = ROOT / "docs/evidence/heron_platform/targets.json"
+SNAPSHOT = Path(__file__).resolve().parents[2] / "docs/evidence/heron_platform/targets.json"
 
 
 def edge_circuit(tile: DisjointTile, flip: bool) -> QuantumCircuit:
@@ -162,14 +159,14 @@ class TestHeronMultiprogramming(unittest.TestCase):
         probe = self.lattice.route_to_tile(bell_delay_probe(delay_dt=40), tiles[1])
         wide = self.lattice.build_multiplexed_pub([patch, probe], tiles)
         self.assertEqual([c.name for c in wide.cregs], ["tile_0_syn", "tile_0_data", "tile_1_c"])
-        counts = AerSimulator().run(wide, shots=40, seed_simulator=7).result().get_counts()
+        counts = AerSimulator().run(wide, shots=40).result().get_counts()
         # Registers print last-added first: probe bits, corrected data, then syndrome 3 for X on data qubit 2.
         self.assertEqual(counts, {"00 0000000 011": 40})
 
     def test_feed_forward_body_is_observed(self) -> None:
         tiles = self.lattice.find_disjoint_tiles(k=5, max_tiles=2)
         wide = self.lattice.build_multiplexed_pub([edge_circuit(tiles[0], False), edge_circuit(tiles[1], True)], tiles)
-        counts = AerSimulator().run(wide, shots=20, seed_simulator=3).result().get_counts()
+        counts = AerSimulator().run(wide, shots=20).result().get_counts()
         self.assertEqual(counts, {"11 00": 20})
 
     def test_parameter_names_collide_only_across_objects(self) -> None:
@@ -231,14 +228,14 @@ class TestHeronMultiprogramming(unittest.TestCase):
         for sign, success in ((-1, 0.0), (1, 1.0)):
             witness = lcu_zero_product_witness(sign=sign)
             self.assertAlmostEqual(witness.metadata["p_success"], success)
-            counts = sim.run(transpile(witness, sim), shots=200, seed_simulator=1).result().get_counts()
+            counts = sim.run(transpile(witness, sim), shots=200).result().get_counts()
             self.assertEqual(counts.get("0", 0) / 200, success)
         self.assertAlmostEqual(lcu_zero_product_witness((1, 10), (2, 13), -1).metadata["p_success"], 0.5)
 
     def test_steane_syndrome_names_the_flipped_qubit(self) -> None:
         sim = AerSimulator()
         for error in (None, *range(7)):
-            counts = sim.run(steane_z_syndrome_patch(error), shots=20, seed_simulator=5).result().get_counts()
+            counts = sim.run(steane_z_syndrome_patch(error), shots=20).result().get_counts()
             syndrome = 0 if error is None else error + 1
             self.assertEqual(counts, {f"0000000 {syndrome:03b}": 20})
             if error is not None:
@@ -325,7 +322,7 @@ class TestHeronMultiprogramming(unittest.TestCase):
         for dd in ("CPMG2", "XY4"):
             for err_target in (None, 1):
                 qc = steane_z_syndrome_patch(err_target, dd_sequence=dd, idle_delay_dt=100)
-                counts = sim.run(qc, shots=50, seed_simulator=42).result().get_counts()
+                counts = sim.run(qc, shots=50).result().get_counts()
                 expected_syn = 0 if err_target is None else err_target + 1
                 self.assertEqual(counts, {f"0000000 {expected_syn:03b}": 50})
 
@@ -406,7 +403,7 @@ class TestHeronMultiprogramming(unittest.TestCase):
                     self.assertEqual([line[start + k][1] for k in (0, 2, 4)], [100, 200, 100])
                     windows += 1
         self.assertEqual(windows, 7)
-        counts = AerSimulator().run(routed, shots=40, seed_simulator=11).result().get_counts()
+        counts = AerSimulator().run(routed, shots=40).result().get_counts()
         self.assertEqual(counts, {"0000000 011": 40})
 
     def test_hoeffding_model_discrimination(self) -> None:
@@ -482,7 +479,3 @@ class TestHeronMultiprogramming(unittest.TestCase):
             bent_hidden_shift_circuit(5)  # Odd n must raise
         with self.assertRaises(ValueError):
             bent_hidden_shift_circuit(4, shift=[1, 0])  # Length mismatch
-
-
-if __name__ == "__main__":
-    unittest.main()

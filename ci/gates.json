@@ -1820,8 +1820,8 @@
     },
     {
       "suite": "core",
-      "cwd": "gororoba_quantum",
-      "cmd": "\"$PYTHON\" -W error test_heron_multiprogramming.py",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error -m pytest tests/gororoba_quantum/test_heron_multiprogramming_contracts.py",
       "name": "core-256",
       "seconds": 2.0
     },

@@ -9,8 +9,7 @@ beside itself runs from a byte-identical copy of its directory's modules under t
 writes nothing inside the checkout.
 
 A suite that a gate claim cites stays on its own gate (ci/gates.json, docs/state/research_state.json)
-and is absent here, so each suite runs once: gororoba_quantum/test_heron_multiprogramming.py (core-256)
-and docs/evidence/c881_exhaustive/check_replay.py (sources-188).
+and is absent here, so each suite runs once: docs/evidence/c881_exhaustive/check_replay.py (sources-188).
 """
 
 from __future__ import annotations
