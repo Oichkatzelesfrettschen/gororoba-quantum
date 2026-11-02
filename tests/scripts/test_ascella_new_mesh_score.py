@@ -129,6 +129,7 @@ def test_a_truncated_retained_run_is_partial(tmp_path: Path) -> None:
         raise AssertionError(f"a run returning 40 of 64 iterations must read partial: {summary}")
 
 
+@pytest.mark.audit
 def test_a_score_without_scored_meshes_replays() -> None:
     """Job-02's meshes all repeat job-03's, so nothing scores, and the record still replays against itself."""
     record = score.score(

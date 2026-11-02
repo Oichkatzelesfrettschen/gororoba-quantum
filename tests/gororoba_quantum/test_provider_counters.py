@@ -293,6 +293,7 @@ def test_record_view_reads_an_absent_result_as_unavailable() -> None:
         raise AssertionError(record.record())
 
 
+@pytest.mark.audit
 def test_record_view_agrees_with_the_counter_table_on_every_retained_run() -> None:
     import re
 

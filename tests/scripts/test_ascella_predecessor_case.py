@@ -192,6 +192,7 @@ def test_requested_separation_radius_and_credit_hold() -> None:
         raise AssertionError(registered["auto_retry"])
 
 
+@pytest.mark.audit
 def test_frozen_circuits_match_the_retained_blobs() -> None:
     identity = manifest()["preregistered"]["compilation_identity"]
     source_cases = json.loads((JOB00_RUN / "cases.json").read_text(encoding="utf-8"))

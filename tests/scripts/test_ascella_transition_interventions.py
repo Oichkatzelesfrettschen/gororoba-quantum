@@ -69,6 +69,7 @@ def test_intervention_metadata_preserves_a_decoded_result() -> None:
         raise AssertionError("metadata annotation must preserve the independently decoded result")
 
 
+@pytest.mark.audit
 def test_full_cases_bind_every_draw_index_operator_and_anchor() -> None:
     intervention = module()
     files = intervention.build_files()

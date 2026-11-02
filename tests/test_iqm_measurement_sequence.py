@@ -189,6 +189,7 @@ def test_estimator_sweep_passes_at_the_reduced_grid() -> None:
         raise AssertionError(f"the reduced grid ran {[row['label'] for row in rows]}")
 
 
+@pytest.mark.audit
 def test_retained_case_checks_and_holds_six_uncoupled_qubits() -> None:
     retained = case.ROOT / "results/iqm/cases" / case.CASE
     excerpt = case.load_json(retained / case.EXCERPT)
@@ -288,6 +289,7 @@ def test_tally_counts_match_a_shot_by_shot_loop() -> None:
         raise AssertionError("an outcome of 2 is counted")
 
 
+@pytest.mark.audit
 def test_retained_calibration_set_reproduces_the_selection_and_the_case() -> None:
     root = case.ROOT / "results/iqm"
     folder = root / "calibration-sets/garnet/be070414-7624-4943-ac7e-1e2678f05684"

@@ -7,6 +7,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 import primorial_cover as pc
 import primorial_table as pt
 
@@ -43,6 +45,7 @@ def test_carried_witness_covers_at_later_levels() -> None:
         raise AssertionError("gap 20 is missing at k = 6")
 
 
+@pytest.mark.audit
 def test_retained_record_agrees_through_k20() -> None:
     record = json.loads(RECORD.read_text(encoding="utf-8"))
     missing = {row["k"]: row["missing"] for row in record["rows"]}

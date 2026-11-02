@@ -16,6 +16,7 @@ def test_self_test_holds() -> None:
         raise AssertionError("the self-test summary changed")
 
 
+@pytest.mark.audit
 def test_retained_probe_matches_the_main_case() -> None:
     probe.check(probe.ROOT / "results/iqm/cases" / probe.CASE)
 
@@ -79,6 +80,7 @@ def qb11_replay() -> dict[str, Any]:
     return result
 
 
+@pytest.mark.audit
 def test_qb11_diagnostic_readings_fail_the_stop_rule() -> None:
     result = qb11_replay()
     row = result["qubits"][result["host"]]

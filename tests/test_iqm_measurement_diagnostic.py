@@ -31,6 +31,7 @@ def test_self_test_holds() -> None:
         raise AssertionError("the self-test summary changed")
 
 
+@pytest.mark.audit
 def test_retained_case_checks_and_rebuilds(tmp_path: Path) -> None:
     retained = case.ROOT / "results/iqm/cases" / case.CASE
     case.check(retained)

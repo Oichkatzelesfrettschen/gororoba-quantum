@@ -4,6 +4,7 @@ import pytest
 from photonic_repeat_readout import observation
 
 
+@pytest.mark.audit
 def test_pooled_directory_readout_preserves_every_retained_serial_result() -> None:
     import json
 
