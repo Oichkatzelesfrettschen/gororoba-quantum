@@ -14,7 +14,7 @@ lint and type-check configuration only.
 **Pull requests.** [.github/workflows/pr.yml](../.github/workflows/pr.yml)
 runs on every pull-request push, on every push to main (so the merged result is
 checked once) and on `workflow_dispatch`, cancels the run a newer pull-request
-push replaces, and holds three jobs that call
+push replaces, and holds four jobs that call
 [ci/pr_checks.sh](pr_checks.sh) with its environment (loader TLS, one thread
 per native library, `GOROROBA_PINS_REQUIRED=1`):
 - `lint` installs the Ruff pin of ci/requirements-ci.txt and runs `ruff check`
@@ -23,7 +23,9 @@ per native library, `GOROROBA_PINS_REQUIRED=1`):
 - `types` runs mypy over the same directories from gororoba_quantum/;
 - `tests` runs `pytest -n auto --dist loadgroup -m "not audit"` over tests/
   under a 5-minute step timeout and writes the 25 slowest tests to the job
-  summary.
+  summary, leaving out tests/gororoba_quantum/test_contract_suites.py;
+- `contracts` runs that file the same way in parallel with `tests`, so neither
+  pytest step approaches its timeout.
 
 Pull-request CI answers one question: does the change break the repository's
 own Python. Each test it runs builds its input or reads a small fixture and
@@ -44,11 +46,11 @@ resolve, with the reason. One file per library
 exercises the calls the code makes against answers fixed by construction (a Bell
 pair's support, the Hong-Ou-Mandel zero, a certain readout flip), locally and
 without credentials.
-`lint`, `types` and `tests` time out at 8 minutes.
-`types` and `tests` restore the pinned venv through
+`lint`, `types`, `tests` and `contracts` time out at 8 minutes.
+`types`, `tests` and `contracts` restore the pinned venv through
 .github/actions/pins-venv, under a cache key that hashes the venv's inputs, and
 build it with ci/install_pins.sh on a miss; a push to main saves it where later
-pull requests restore it. Branch protection on main requires `lint`, `types` and `tests`
+pull requests restore it. Branch protection on main requires `lint`, `types`, `tests` and `contracts`
 green on the head, for administrators too, without requiring the branch to
 be current with main. A pull request that `GITHUB_TOKEN` opened starts no
 `pull_request` workflow, so its author dispatches pr.yml on the branch
@@ -408,8 +410,13 @@ tests/test_cli_record_checks.py call scripts' `--self-test` and `--check`
 modes in process through each script's `main`, in groups that gates
 `core-self-test-NN` and `core-record-check-NN` run one each (tests/ci/test_self_test_gates.py); a check a research-state claim cites, or
 whose gate name a script or retained file carries, or whose gate declares a
-`runtime` or `requires`, keeps its own gate. A test exercises a contract on a small fixed input
-and fails by an explicit raise. Plugin autoload is off (pyproject.toml), so
+`runtime` or `requires`, keeps its own gate. tests/gororoba_quantum/test_contract_suites.py
+runs the `gororoba_quantum/*_contracts.py` self-test suites in process, one case per independently runnable
+check and per `runtime_contracts.CONTRACT_CASES` entry, each within the 3 s bound above (a hosted run measured
+these cases at about 3.3 times the build host's time); a check function takes its
+size as a keyword argument whose default is the gate's full size, and a part that fits no budget stays on its
+gate, listed with its measured time in the file's `ON_DEMAND` tables. A test exercises a contract on a small
+fixed input and fails by an explicit raise. Plugin autoload is off (pyproject.toml), so
 only the pinned xdist plugin loads, and a run writes nothing inside the
 checkout. tests/conftest.py sizes the pool by `parallel.workers()` and runs
 each test process in one slot. A test module imports a ci/ module by bare

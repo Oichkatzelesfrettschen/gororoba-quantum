@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Sequence
 from dataclasses import replace
 from fractions import Fraction
 from itertools import combinations
@@ -121,7 +122,8 @@ def point_control(task: tuple[str, dict[int, Fraction | int], int]) -> dict[str,
     }
 
 
-def polynomial_controls() -> dict[str, int]:
+def polynomial_controls(cleared_indices: Sequence[int] = range(1, 16)) -> dict[str, int]:
+    """The polynomial controls; cleared_indices selects the cleared pivots, every pivot by default."""
     entries = sp.symbols("s0:15", real=True)
     generic = sp.zeros(6)
     for value, (row, column) in zip(entries, combinations(range(6), 2), strict=True):
@@ -140,7 +142,7 @@ def polynomial_controls() -> dict[str, int]:
     )
     _, matrix = symbolic_operator(32)
     checked = 0
-    for index in range(1, 16):
+    for index in cleared_indices:
         pivot, cleared = cleared_pair_residual(32, index)
         free = tuple(position for position in range(16) if position not in (0, index))
         require(pivot == matrix[0, index], "cleared pivot differs")

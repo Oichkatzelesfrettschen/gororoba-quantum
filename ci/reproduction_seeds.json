@@ -375,42 +375,6 @@
    "count": 1
   },
   {
-   "path": "gororoba_quantum/test_heron_multiprogramming.py",
-   "name": "seed_simulator",
-   "value": 1,
-   "count": 1
-  },
-  {
-   "path": "gororoba_quantum/test_heron_multiprogramming.py",
-   "name": "seed_simulator",
-   "value": 3,
-   "count": 1
-  },
-  {
-   "path": "gororoba_quantum/test_heron_multiprogramming.py",
-   "name": "seed_simulator",
-   "value": 5,
-   "count": 1
-  },
-  {
-   "path": "gororoba_quantum/test_heron_multiprogramming.py",
-   "name": "seed_simulator",
-   "value": 7,
-   "count": 1
-  },
-  {
-   "path": "gororoba_quantum/test_heron_multiprogramming.py",
-   "name": "seed_simulator",
-   "value": 11,
-   "count": 1
-  },
-  {
-   "path": "gororoba_quantum/test_heron_multiprogramming.py",
-   "name": "seed_simulator",
-   "value": 42,
-   "count": 1
-  },
-  {
    "path": "gororoba_quantum/variance.py",
    "name": "default_rng",
    "value": 20261011,
