@@ -2,7 +2,7 @@ name: pr
 
 # Pull-request regression checks of the repository's own code through
 # ci/pr_checks.sh: Ruff, mypy and the pytest suite with the audit marker
-# deselected (pyproject.toml). The gates of ci/gates.json (record replays,
+# deselected (pyproject.toml), its contract suites in a parallel job. The gates of ci/gates.json (record replays,
 # digest and source checks, research-script runs) run on demand, and
 # proofs.yml compiles a proof change. A job or step that reaches its timeout fails.
 # workflow_dispatch serves a pull request that GITHUB_TOKEN opened, whose
@@ -71,5 +71,24 @@ jobs:
         if: always()
         with:
           name: pytest-durations
+          path: ${{ runner.temp }}/pytest-report.xml
+          if-no-files-found: ignore
+
+  contracts:
+    name: contracts
+    runs-on: ubuntu-26.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - uses: ./.github/actions/pins-venv
+      - name: pytest
+        timeout-minutes: 5
+        env:
+          TEST_REPORT: ${{ runner.temp }}/pytest-report.xml
+        run: sh ci/pr_checks.sh contracts
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        if: always()
+        with:
+          name: pytest-durations-contracts
           path: ${{ runner.temp }}/pytest-report.xml
           if-no-files-found: ignore

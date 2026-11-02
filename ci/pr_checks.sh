@@ -2,9 +2,12 @@
 # Pull-request checks, one command for .github/workflows/pr.yml and local runs:
 #   sh ci/pr_checks.sh lint            Ruff check and format over the code directories
 #   sh ci/pr_checks.sh types           mypy over the same directories
-#   sh ci/pr_checks.sh tests [ARG...]  pytest without the audit marker, over tests/ or the
-#                                      given paths; -m audit PATH selects the marked tests;
-#                                      TEST_REPORT names a JUnit XML file of every test's time
+#   sh ci/pr_checks.sh tests [ARG...]  pytest without the audit marker, over tests/ except the
+#                                      contract suites, or the given paths; -m audit PATH selects
+#                                      the marked tests; TEST_REPORT names a JUnit XML file of
+#                                      every test's time
+#   sh ci/pr_checks.sh contracts [ARG...]  the same pytest over
+#                                      tests/gororoba_quantum/test_contract_suites.py
 #   sh ci/pr_checks.sh gates [ARG...]  the on-demand gates of ci/gates.json through ci/run_gates.py;
 #                                      ARG... passes through (--gates NAME,... runs named gates)
 # PYTHON names an interpreter holding the pins; left unset, the host
@@ -71,8 +74,13 @@ types)
 	# shellcheck disable=SC2086
 	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel $typed_files
 	;;
-tests)
-	[ $# -ge 1 ] || set -- tests
+tests | contracts)
+	# The contract suites run in their own job beside tests, so neither job's pytest step reaches its timeout.
+	if [ "$check" = contracts ]; then
+		set -- tests/gororoba_quantum/test_contract_suites.py "$@"
+	else
+		[ $# -ge 1 ] || set -- tests --ignore=tests/gororoba_quantum/test_contract_suites.py
+	fi
 	log=$(mktemp)
 	code=$(mktemp)
 	trap 'rm -f "$log" "$code"' EXIT

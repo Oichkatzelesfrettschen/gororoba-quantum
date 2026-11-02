@@ -26,7 +26,7 @@ machinery.
   bounded fixtures; historical replays, digest and source checks live in
   ci/gates.json and run on demand ([ci/AGENTS.md](ci/AGENTS.md#on-demand-gates)),
   never in a workflow.
-- The `pr.yml` checks `lint`, `types` and `tests` green on the head
+- The `pr.yml` checks `lint`, `types`, `tests` and `contracts` green on the head
   admit a merge. No local gate run or premerge replay is required before a
   push, which overrides the user-level guide's local replica of the slowest
   CI lanes; `sh ci/pr_checks.sh tests PATH` runs touched tests under the
