@@ -341,7 +341,6 @@ def test_settle_arms_plant_their_gaps_at_the_stated_sizes(setup: nl.Setup) -> No
     check(any(lossy[n] != still[n] for n in still if "_measure_" in n), "the loss moved no measure member")
 
 
-@pytest.mark.audit
 def test_sparse_scale_evidence_covers_every_pool_of_the_layout(tmp_path: Path) -> None:
     import importlib.util
 

@@ -3,7 +3,7 @@
 # ${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/: the current runtime's venv
 # from requirements.txt and ci/requirements-ci.txt, and the qiskit-2.5 replay
 # venv from ci/requirements-replay.txt. Each sits on the setup-python version
-# of .github/workflows/ci.yml (pins.PYTHON_VERSION, which uv provides) and
+# of .github/actions/pins-venv (pins.PYTHON_VERSION, which uv provides) and
 # installs through ci/install_pins.sh, the installer CI's jobs run, so a local
 # gate sees the packages a hosted one does. A rerun installs into the existing
 # venvs and so repairs one whose packages drifted from the pins; a venv whose

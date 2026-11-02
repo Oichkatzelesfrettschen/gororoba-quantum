@@ -81,7 +81,7 @@ jobs:
         id: python
         with:
           python-version: "3.14.7"
-      # The key equals ci.yml's, so the watch reuses the gates' pinned environment.
+      # The key equals the pins-venv action's, so the watch reuses the gates' pinned environment.
       - name: Restore the pinned environment
         id: pins-cache
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
