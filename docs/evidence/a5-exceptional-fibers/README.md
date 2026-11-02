@@ -41,4 +41,5 @@ The registry and its checks sit beside `working/` and read only from it:
 | [degree-one/](degree-one/) | fresh degree-1 truncated ranks (N = 5) on the canonical headers |
 | [replay/](replay/) | the replay manifest of the certifying truncated-rank runs and its memory-scheduled runner |
 | [v10-comparison.jsonl](v10-comparison.jsonl) | fiber-rank engine v10 (`replay/engine/fiber_rank_v10.py --k2-receipt`, products indexed by the standard monomials of k[y]/K2) against engine v9 (all products) on 11 small-N cases of four fibers at both primes: r_N and every block rank equal |
+| [v11-comparison.jsonl](v11-comparison.jsonl) | fiber-rank engine v11 (`replay/engine/fiber_rank_v11.py`: per-block generator matrices built once, closure over per-block variable tables) against engine v9 on the v10 grid, the all-products and single-block paths, and E8-bar -> N- d = 4 at N = 15 (r 495, blocks 158, 137, 100, 100) |
 
