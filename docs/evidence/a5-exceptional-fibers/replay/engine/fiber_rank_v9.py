@@ -22,11 +22,16 @@ truncated monomial space is too large to hold densely.
 
 The quotient export does not depend on d. One Singular process computes the standard basis and writes it; then one
 process per variable table (or per standard-monomial range of it, --export-chunks) and one for the generators run in
-parallel, each reading the basis back. The parsed export equals that of engine v8's single serial export
-(test_split_export_equals_serial in tests/test_a5_fiber_rank_v9.py, where Singular is installed). --export-dir
-keeps them under a manifest of prime, variables, N and the sha256 of J and G, so later runs at any degree, or tables
-computed on another host and copied in, are reused; --adopt-export admits files copied from an engine v8 serial
-export after checking its script. The --max-gb preflight runs once the basis is known, before any table.
+parallel, each reading the basis back and publishing its output only when its own kbase equals qB.txt. The parsed
+export equals that of engine v8's single serial export (test_split_export_equals_serial in
+tests/test_a5_fiber_rank_v9.py, where Singular is installed). --export-dir keeps them under a manifest of prime,
+variables, N and the sha256 of J and G plus a sha256 record per file, so later runs at any degree, or tables computed
+on another host and copied in with their .sha256 sidecars, are reused; a recomputed standard basis is published only
+when its kbase equals the existing qB.txt. --adopt-export admits files without a record, copied from an engine v8
+serial export, after checking its script, recomputing every adopted table at 64 evenly spaced rows and recomputing
+the adopted generator normal forms; a byte change outside those rows passes adoption, so copy only files the producer
+has closed. --export-only stops after the export, the barrier before a products stage. The --max-gb preflight runs
+once the basis is known, before any table.
 
 Every generator of span(J) and span(G) is preserved by the diagonal sign group found by exhaustive search, so the
 ideal and the product span split into character blocks: a vector's projection onto a character lies in the same
@@ -45,7 +50,7 @@ between factors, `^` before exponents, variable names from the ring line); any o
 `write` emits that form only with `short=0` set in the current ring, which the quotient export sets before each write.
 
 Usage: fiber_rank_v9.py HEADER D N [--no-split] [--direct] [--quotient] [--chunk ROWS] [--export-dir DIR]
-    [--export-chunks C] [--adopt-export] [--max-gb G]
+    [--export-chunks C] [--adopt-export] [--export-only] [--max-gb G]
 HEADER is a Singular file with lines `ring r=P,(vars),dp;`, `ideal J=...;` and `ideal G=...;`.
 Prints one JSON object.
 """
@@ -53,6 +58,7 @@ Prints one JSON object.
 from __future__ import annotations
 
 import argparse
+import fcntl
 import functools
 import hashlib
 import itertools
@@ -66,6 +72,7 @@ import tempfile
 import time
 from collections.abc import Callable, Iterator
 from pathlib import Path
+from typing import NamedTuple
 
 import flint
 import numpy as np
@@ -346,9 +353,11 @@ def extend_products(item: Packed, gens: list[Poly], names: tuple[str, ...], p: i
 
 
 # The export runs as one standard-basis process and then independent table processes. Each table process reads the
-# reduced standard basis back from s.txt and marks it with attrib(s, "isSB", 1); without that attribute reduce treats
-# s as a plain generating set and the normal forms differ. kbase of the marked basis reproduces qB.txt index for index,
-# which the "? basis size" check enforces, so table rows stay paired with basis entries.
+# reduced standard basis back from s.txt and marks it with attrib(s, "isSB", 1), the documented assertion that kbase
+# and reduce consult; the attribute certifies nothing about the bytes, which the sha256 records bind. Every process
+# writes its own kbase, and its output is published only when that text equals qB.txt, so table rows pair with basis
+# entries index for index. Default reduce returns the fully reduced normal form, unique for a standard basis in a
+# global ordering, so a row range of a table equals the same rows of the whole table.
 STD_SCRIPT = """ring r={p},({names}),dp;
 ideal J={J};
 option(redSB);
@@ -366,7 +375,7 @@ option(redSB);
 execute("ideal s=" + read("{out}/s.txt") + ";");
 attrib(s,"isSB",1);
 ideal B=kbase(s);
-if(ncols(B)!={D}){{ "? basis size", ncols(B), {D}; quit; }}
+short=0; write(":w {basis}",B);
 """
 
 TABLE_SCRIPT = """ideal Bh=B[{lo}..{hi}];
@@ -374,6 +383,13 @@ ideal Mk=reduce(var({k})*Bh,s);
 if(ncols(Mk)!={hi}-{lo}+1){{ "? table length", ncols(Mk); quit; }}
 short=0; write(":w {part}",Mk);
 "RESULT table";
+quit;
+"""
+
+SPOT_SCRIPT = """ideal Bh={rows};
+ideal Mk=reduce(var({k})*Bh,s);
+short=0; write(":w {part}",Mk);
+"RESULT spot";
 quit;
 """
 
@@ -386,11 +402,31 @@ quit;
 """
 
 EXPORT_MANIFEST = "export.json"
+# Rows of an adopted table recomputed and compared, evenly spaced over the basis.
+ADOPTION_SPOT_ROWS = 64
+EXPORT_FILE = re.compile(r"^(s|qB|qG|qM\d+(\.r\d+-\d+)?)\.txt$")
+
+
+class Step(NamedTuple):
+    """One Singular export process. final None leaves the output staged at part for the caller to compare."""
+
+    singular: str
+    script: str
+    script_path: str
+    part: str
+    final: str | None
+    marker: str
+    basis: str | None = None
+    expect_basis: str | None = None
 
 
 def read_list(path: str, names: list[str], p: int) -> list[Poly]:
     text = Path(path).read_text().replace("\n", "")
     return [parse_poly(x, names, p) if x.strip() != "0" else {} for x in text.split(",")]
+
+
+def flat_text(path: str) -> str:
+    return Path(path).read_text().replace("\n", "")
 
 
 def file_sha256(path: str) -> str:
@@ -401,19 +437,40 @@ def file_sha256(path: str) -> str:
     return h.hexdigest()
 
 
-def run_singular(job: tuple[str, str, str, str, str]) -> tuple[str, float]:
-    """Run one export script; on its RESULT line, publish its output by renaming the .part file to the final name."""
-    singular, script, script_path, part, final = job
-    with open(script_path, "w") as f:
-        f.write(script)
+def publish(part: str, final: str) -> None:
+    """Rename part to final after writing final's sha256 sidecar, so every published export file has a record."""
+    with open(final + ".sha256.part", "w") as f:
+        f.write(file_sha256(part))
+    os.replace(final + ".sha256.part", final + ".sha256")
+    os.replace(part, final)
+
+
+def run_singular(step: Step) -> tuple[str, float]:
+    """Run one export script; publish its output only on its exact RESULT line, no diagnostic, and a matching kbase."""
+    for stale in (step.part, step.basis):
+        if stale and os.path.exists(stale):
+            os.remove(stale)
+    Path(step.script_path).write_text(step.script)
     t = time.time()
     res = subprocess.run(
-        [singular, "-q", "--no-rc", script_path], stdin=subprocess.DEVNULL, capture_output=True, text=True, check=True
+        [step.singular, "-q", "--no-rc", step.script_path],
+        stdin=subprocess.DEVNULL,
+        capture_output=True,
+        text=True,
+        check=True,
     )
-    if "RESULT " not in res.stdout or any(ln.startswith("? ") for ln in res.stdout.splitlines()):
-        raise RuntimeError(f"Singular export step {final} failed: " + res.stdout[-500:] + res.stderr[-500:])
-    os.replace(part, final)
-    return os.path.basename(final), time.time() - t
+    lines = [ln.strip() for ln in (res.stdout + "\n" + res.stderr).splitlines()]
+    ok = any(ln == step.marker or ln.startswith(step.marker + " ") for ln in lines)
+    if not ok or any(ln.startswith("?") for ln in lines) or not os.path.exists(step.part):
+        raise RuntimeError(f"Singular export step {step.part} failed: " + res.stdout[-500:] + res.stderr[-500:])
+    if step.basis is not None and step.expect_basis is not None:
+        same = flat_text(step.basis) == flat_text(step.expect_basis)
+        os.remove(step.basis)
+        if not same:
+            raise RuntimeError(f"Singular export step {step.part}: kbase differs from {step.expect_basis}")
+    if step.final is not None:
+        publish(step.part, step.final)
+    return os.path.basename(step.final or step.part), time.time() - t
 
 
 def export_identity(header_text: dict[str, str], names: list[str], p: int, N: int) -> dict:
@@ -433,10 +490,17 @@ def adopt_serial_export(out: str, header_text: dict[str, str], names: list[str],
         f"ring r={p},({','.join(names)}),dp;",
         f"ideal J={header_text['J']};",
         f"ideal G={header_text['G']};",
+        "option(redSB);",
         f"ideal s=std(J+maxideal({N}));",
     ]
     if not all(x in text for x in needed):
-        raise SystemExit("--adopt-export: q.sing does not name this header's ring, J, G and N")
+        raise SystemExit("--adopt-export: q.sing does not name this header's ring, J, G, redSB and N")
+
+
+def write_manifest(mpath: str, record: dict) -> None:
+    with open(mpath + ".part", "w") as f:
+        json.dump(record, f)
+    os.replace(mpath + ".part", mpath)
 
 
 def quotient_data(
@@ -453,90 +517,155 @@ def quotient_data(
     """Standard monomials of std(J + m^N) in dp, the multiplication tables of the variables, the reduced generators.
 
     The export does not depend on the degree d. With export_dir it persists there under a manifest of (prime,
-    variables, N, sha256 of J and G), and a later run at any degree reuses every finished file; files computed on
-    another host join by being copied into the directory. preflight runs on the basis before any table is computed.
+    variables, N, sha256 of J and G) and a sha256 record per file, and a later run at any degree reuses every finished
+    file whose bytes match their record; a file computed on another host joins by being copied in with its .sha256
+    sidecar. One process at a time holds the directory. preflight runs on the basis before any table is computed.
     """
     if export_dir is None:
         with tempfile.TemporaryDirectory() as tmp:
             return quotient_data(header_text, names, p, N, singular, tmp, False, chunks, preflight)
     out = os.path.abspath(export_dir)
     os.makedirs(out, exist_ok=True)
+    with open(os.path.join(out, ".lock"), "w") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise SystemExit(f"another process holds {out}") from None
+        return _quotient_data_locked(header_text, names, p, N, singular, out, adopt, chunks, preflight)
+
+
+def _quotient_data_locked(
+    header_text: dict[str, str],
+    names: list[str],
+    p: int,
+    N: int,
+    singular: str,
+    out: str,
+    adopt: bool,
+    chunks: int,
+    preflight: Callable[[list[Monomial]], None] | None,
+) -> tuple[list[Monomial], list[list[Poly]], list[Poly], dict]:
+    path = functools.partial(os.path.join, out)
+    for blocker in ("qB.rejected.txt", "qB.prior.txt"):
+        if os.path.exists(path(blocker)):
+            raise SystemExit(
+                f"{blocker} in --export-dir: an earlier recomputed kbase differed or its run stopped mid-check"
+            )
     ident = export_identity(header_text, names, p, N)
-    mpath = os.path.join(out, EXPORT_MANIFEST)
-    if os.path.exists(mpath):
-        recorded = json.loads(Path(mpath).read_text())
-        if {k: recorded.get(k) for k in ident} != ident:
-            raise SystemExit(f"{EXPORT_MANIFEST} in --export-dir names another header, prime or N")
-        for f, h in recorded.get("files", {}).items():
-            if os.path.exists(os.path.join(out, f)) and file_sha256(os.path.join(out, f)) != h:
-                raise SystemExit(f"{f} in --export-dir differs from the sha256 its manifest records")
-    elif any(f.startswith(("q", "s.")) and f.endswith(".txt") for f in os.listdir(out)):
+    mpath = path(EXPORT_MANIFEST)
+    recorded: dict = json.loads(Path(mpath).read_text()) if os.path.exists(mpath) else {}
+    if recorded and {k: recorded.get(k) for k in ident} != ident:
+        raise SystemExit(f"{EXPORT_MANIFEST} in --export-dir names another header, prime or N")
+    files: dict[str, str] = dict(recorded.get("files", {}))
+    present = sorted(f for f in os.listdir(out) if EXPORT_FILE.match(f))
+    adopted = []
+    for f in present:
+        sidecar = path(f + ".sha256")
+        want = files.get(f) or (Path(sidecar).read_text().strip() if os.path.exists(sidecar) else None)
+        got = file_sha256(path(f))
+        if want is None:
+            adopted.append(f)
+        elif got != want:
+            raise SystemExit(f"{f} in --export-dir differs from its recorded sha256")
+        files[f] = got
+    if adopted:
         if not adopt:
-            raise SystemExit("--export-dir holds export files without a manifest; check them and pass --adopt-export")
+            raise SystemExit(f"--export-dir holds export files without a sha256 record {adopted}; check them and pass "
+                             "--adopt-export")  # fmt: skip
         adopt_serial_export(out, header_text, names, p, N)
-    with open(mpath + ".part", "w") as f:
-        json.dump(ident, f)
-    os.replace(mpath + ".part", mpath)
+    adopted = sorted(set(adopted) | set(recorded.get("adopted", [])))
+    write_manifest(mpath, {**ident, "files": files, "adopted": adopted})
     nv, base = len(names), {"p": p, "names": ",".join(names), "out": out}
     computed: dict[str, float] = {}
-    reused = sorted(f for f in os.listdir(out) if f.startswith(("q", "s.")) and f.endswith(".txt"))
-    path = functools.partial(os.path.join, out)
+    reused = [f for f in present if not re.match(r"qM\d+\.r", f)]
+    if os.path.exists(path("s.txt")) and not os.path.exists(path("qB.txt")):
+        raise SystemExit("--export-dir holds s.txt without qB.txt")
     if not os.path.exists(path("s.txt")):
-        prior_basis = path("qB.txt") if os.path.exists(path("qB.txt")) else None
-        if prior_basis:
-            os.replace(prior_basis, path("qB.prior.txt"))
-        job = (singular, STD_SCRIPT.format(J=header_text["J"], N=N, **base), path("std.sing"), path("s.txt.part"),
-               path("s.txt"))  # fmt: skip
-        computed["s.txt"] = round(run_singular(job)[1], 1)
-        os.replace(path("qB.txt.part"), path("qB.txt"))
-        if prior_basis:
-            # A recomputed standard basis must reproduce the basis the existing tables were written against.
-            if Path(path("qB.txt")).read_text().replace("\n", "") != Path(path("qB.prior.txt")).read_text().replace(
-                "\n", ""
-            ):
-                raise SystemExit("recomputed kbase differs from the qB.txt already in --export-dir")
-            os.remove(path("qB.prior.txt"))
-        reused = [f for f in reused if f not in ("s.txt", "qB.txt")]
+        std_step = Step(singular, STD_SCRIPT.format(J=header_text["J"], N=N, **base), path("std.sing"),
+                    path("s.txt.part"), None, "RESULT std")  # fmt: skip
+        computed["s.txt"] = round(run_singular(std_step)[1], 1)
+        if os.path.exists(path("qB.txt")):
+            # A recomputed standard basis must reproduce the basis the existing files were written against.
+            if flat_text(path("qB.txt.part")) != flat_text(path("qB.txt")):
+                os.replace(path("qB.txt.part"), path("qB.rejected.txt"))
+                os.remove(path("s.txt.part"))
+                raise SystemExit("recomputed kbase differs from the qB.txt in --export-dir (kept as qB.rejected.txt)")
+            os.remove(path("qB.txt.part"))
+        else:
+            publish(path("qB.txt.part"), path("qB.txt"))
+        publish(path("s.txt.part"), path("s.txt"))
+        reused = [f for f in reused if f != "s.txt"]
     basis = [next(iter(q)) for q in read_list(path("qB.txt"), names, p)]
     D = len(basis)
     if preflight is not None:
         preflight(basis)
-    load = LOAD_SCRIPT.format(D=D, **base)
-    jobs, joins = [], []
+
+    def load(tag: str) -> str:
+        return LOAD_SCRIPT.format(basis=path(tag + ".kbase.part"), **base)
+
+    def checked(script: str, tag: str, final: str | None, marker: str) -> Step:
+        return Step(singular, script, path(tag + ".sing"), path(tag + ".txt.part"), final, marker,
+                    path(tag + ".kbase.part"), path("qB.txt"))  # fmt: skip
+
+    jobs, joins, checks = [], [], []
     bounds = [(1 + i * D // chunks, (i + 1) * D // chunks) for i in range(chunks)]
+    bounds = [(lo, hi) for lo, hi in bounds if lo <= hi]
+    spots = sorted({1 + i * (D - 1) // (ADOPTION_SPOT_ROWS - 1) for i in range(ADOPTION_SPOT_ROWS)}) if D > 1 else [1]
     for k in range(1, nv + 1):
         final = path(f"qM{k}.txt")
         if os.path.exists(final):
+            if f"qM{k}.txt" in adopted and f"qM{k}.txt" not in recorded.get("adopted", []):
+                rows = ",".join(f"B[{i}]" for i in spots)
+                script = load(f"qM{k}.spot") + SPOT_SCRIPT.format(k=k, rows=rows, part=path(f"qM{k}.spot.txt.part"))
+                jobs.append(checked(script, f"qM{k}.spot", None, "RESULT spot"))
+                checks.append((k, path(f"qM{k}.spot.txt.part")))
             continue
-        parts = [path(f"qM{k}.c{i}.txt") if chunks > 1 else final for i in range(len(bounds))]
+        # A part's name carries its row bounds, so a rerun with another chunk count reuses only identical ranges.
+        parts = [path(f"qM{k}.r{lo}-{hi}.txt") if chunks > 1 else final for lo, hi in bounds]
         for (lo, hi), part in zip(bounds, parts, strict=True):
-            if lo <= hi and not os.path.exists(part):
-                script = load + TABLE_SCRIPT.format(k=k, lo=lo, hi=hi, part=part + ".part")
-                jobs.append((singular, script, part[:-4] + ".sing", part + ".part", part))
+            if not os.path.exists(part):
+                tag = part[:-4]
+                script = load(tag) + TABLE_SCRIPT.format(k=k, lo=lo, hi=hi, part=part + ".part")
+                jobs.append(Step(singular, script, tag + ".sing", part + ".part", part, "RESULT table",
+                                 tag + ".kbase.part", path("qB.txt")))  # fmt: skip
         if chunks > 1:
-            joins.append((final, [q for (lo, hi), q in zip(bounds, parts, strict=True) if lo <= hi]))
+            joins.append((final, parts))
+    gen_check = None
     if not os.path.exists(path("qG.txt")):
-        script = load + GENERATOR_SCRIPT.format(G=header_text["G"], N=N, part=path("qG.txt.part"))
-        jobs.append((singular, script, path("qG.sing"), path("qG.txt.part"), path("qG.txt")))
+        script = load("qG") + GENERATOR_SCRIPT.format(G=header_text["G"], N=N, part=path("qG.txt.part"))
+        jobs.append(checked(script, "qG", path("qG.txt"), "RESULT generators"))
+    elif "qG.txt" in adopted and "qG.txt" not in recorded.get("adopted", []):
+        gen_check = path("qG.check.txt.part")
+        script = load("qG.check") + GENERATOR_SCRIPT.format(G=header_text["G"], N=N, part=gen_check)
+        jobs.append(checked(script, "qG.check", None, "RESULT generators"))
     for name, seconds in parallel.ordered_map(run_singular, jobs, min_items=2):
         computed[name] = round(seconds, 1)
     for final, parts in joins:
-        with open(final + ".part", "w") as f:
-            f.write(",".join(Path(q).read_text().replace("\n", "") for q in parts))
-        os.replace(final + ".part", final)
+        with open(final + ".part", "w") as joined:
+            joined.write(",".join(flat_text(q) for q in parts))
+        publish(final + ".part", final)
         for q in parts:
             os.remove(q)
+            os.remove(q + ".sha256")
     tables = [read_list(path(f"qM{k + 1}.txt"), names, p) for k in range(nv)]
     gens = read_list(path("qG.txt"), names, p)
     # The reader pairs table rows with basis entries by index, so each table keeps its zero normal forms in place.
     if any(len(tab) != D for tab in tables):
         raise RuntimeError("Singular quotient export: a multiplication table length differs from the basis size")
-    files = {f: file_sha256(path(f)) for f in ["s.txt", "qB.txt", "qG.txt"] + [f"qM{k}.txt" for k in range(1, nv + 1)]}
-    with open(mpath + ".part", "w") as f:
-        json.dump({**ident, "files": files}, f)
-    os.replace(mpath + ".part", mpath)
-    info = {"reused": reused, "computed_seconds": computed, "chunks": chunks, "files_sha256_16": {
-        f: h[:16] for f, h in files.items()}}  # fmt: skip
+    for k, spot in checks:
+        if read_list(spot, names, p) != [tables[k - 1][i - 1] for i in spots]:
+            raise SystemExit(f"adopted qM{k}.txt differs from recomputed rows {spots[0]}..{spots[-1]}")
+        os.remove(spot)
+    if gen_check is not None:
+        if read_list(gen_check, names, p) != gens:
+            raise SystemExit("adopted qG.txt differs from the recomputed generator normal forms")
+        os.remove(gen_check)
+    names_out = ["s.txt", "qB.txt", "qG.txt"] + [f"qM{k}.txt" for k in range(1, nv + 1)]
+    files = {f: file_sha256(path(f)) for f in names_out}
+    write_manifest(mpath, {**ident, "files": files, "adopted": adopted})
+    info = {"reused": reused, "computed_seconds": computed, "chunks": chunks, "adopted": adopted,
+            "adoption_spot_rows": len(spots) if checks else 0,
+            "files_sha256_16": {f: h[:16] for f, h in files.items()}}  # fmt: skip
     return basis, tables, gens, info
 
 
@@ -658,6 +787,13 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
     if len(gpolys) != ngens:
         raise RuntimeError("Singular quotient export: generator count differs from the header")
     D = len(basis)
+    if a.export_only:
+        return {
+            "mode": "quotient-export",
+            "dim_quotient": D,
+            "export": export,
+            "seconds": {"singular": round(t_sing, 1)},
+        }
     bidx = {m: i for i, m in enumerate(basis)}
     block_of = block_layout(basis)
     cols = {b: np.flatnonzero(block_of == b) for b in blocks}
@@ -784,6 +920,11 @@ def main() -> None:
         "q.sing script names this header, prime and N",
     )
     ap.add_argument(
+        "--export-only",
+        action="store_true",
+        help="quotient mode: finish and verify the export in --export-dir, then stop before the products",
+    )
+    ap.add_argument(
         "--direct",
         action="store_true",
         help="enumerate every monomial multiple of every generator instead of the closure",
@@ -798,8 +939,10 @@ def main() -> None:
         raise SystemExit(f"modulus {p} is not an odd prime: the character projectors need an invertible 2")
     if a.d < 0 or a.N < 1 or a.chunk < 1 or a.export_chunks < 1:
         raise SystemExit("need d >= 0, N >= 1, --chunk >= 1 and --export-chunks >= 1")
-    if (a.export_dir or a.adopt_export or a.export_chunks > 1) and not a.quotient:
-        raise SystemExit("--export-dir, --export-chunks and --adopt-export need --quotient")
+    if (a.export_dir or a.adopt_export or a.export_chunks > 1 or a.export_only) and not a.quotient:
+        raise SystemExit("--export-dir, --export-chunks, --adopt-export and --export-only need --quotient")
+    if a.export_only and not a.export_dir:
+        raise SystemExit("--export-only needs --export-dir")
     if a.direct and a.quotient:
         raise SystemExit("--direct and --quotient are exclusive: quotient mode has no direct enumeration")
     J = [parse_poly(s, names, p) for s in j_txt]
