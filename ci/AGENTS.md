@@ -408,8 +408,13 @@ tests/test_cli_record_checks.py call scripts' `--self-test` and `--check`
 modes in process through each script's `main`, in groups that gates
 `core-self-test-NN` and `core-record-check-NN` run one each (tests/ci/test_self_test_gates.py); a check a research-state claim cites, or
 whose gate name a script or retained file carries, or whose gate declares a
-`runtime` or `requires`, keeps its own gate. A test exercises a contract on a small fixed input
-and fails by an explicit raise. Plugin autoload is off (pyproject.toml), so
+`runtime` or `requires`, keeps its own gate. tests/gororoba_quantum/test_contract_suites.py
+runs the `gororoba_quantum/*_contracts.py` self-test suites in process, one case per independently runnable
+check and per `runtime_contracts.CONTRACT_CASES` entry, each within 6 s on the build host (the 3 s bound above
+yields to the 15 s call bound of tests/conftest.py at the hosted runner's twofold time); a check function takes its
+size as a keyword argument whose default is the gate's full size, and a part that fits no budget stays on its
+gate, listed with its measured time in the file's `ON_DEMAND` tables. A test exercises a contract on a small
+fixed input and fails by an explicit raise. Plugin autoload is off (pyproject.toml), so
 only the pinned xdist plugin loads, and a run writes nothing inside the
 checkout. tests/conftest.py sizes the pool by `parallel.workers()` and runs
 each test process in one slot. A test module imports a ci/ module by bare
