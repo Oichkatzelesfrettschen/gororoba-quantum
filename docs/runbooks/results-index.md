@@ -29,7 +29,10 @@ job is its `owner/slug/version` kernel reference.
 
 `sqlite [OUT]` writes the same relations (`runs`, `jobs`, `acquisitions`,
 `claims`, `claim_acquisitions`, `claim_evidence`, `claim_gates`,
-`claim_dependencies`) to a new SQLite file for ad hoc SQL. OUT defaults to
+`claim_dependencies`) to a new SQLite file for ad hoc SQL. `claim_gates` carries the
+manifest, `ci/gates.json` or `ci/replays.json`, that lists each cited gate, and
+`claim` prints the same mapping as `gate_manifests`, so a reader sees which
+cited checks run on every pull request and which run on demand. OUT defaults to
 `${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/results-index.sqlite` and must
 lie outside the repository and not exist; the file is a cache that the
 command rebuilds, never a reviewed artifact, because SQLite file bytes vary
@@ -44,8 +47,8 @@ sqlite3 /tmp/results-index.sqlite "SELECT a.provider, COUNT(*) FROM claim_acquis
 The command reads only what the registry and adapters already validate, so
 `scripts/research_state.py --check` failing makes the index refuse to build.
 `tests/scripts/test_results_index.py` checks the joins on a synthetic tree
-in the pull-request suite, and its `audit` test, in the nightly suite,
-requires on the retained tree that every acquisition owns its run, every job
+in the pull-request suite, and its `audit` test, which gate core-615 of
+`ci/replays.json` runs on demand, requires on the retained tree that every acquisition owns its run, every job
 resolves to its run, every claim resolves to the runs of its acquisitions,
 and a build leaves `git status` unchanged. The design choice against a committed catalog
 is argued in

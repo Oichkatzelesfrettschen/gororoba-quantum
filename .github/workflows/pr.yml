@@ -80,7 +80,7 @@ jobs:
     timeout-minutes: 30
     env:
       REPLAY_VENV: /home/runner/.cache/gororoba-ci/replay-venv
-      # Gates that run pytest carry the audit's unbounded call time.
+      # Gates that run pytest carry no per-test call bound; the tests job holds it.
       GOROROBA_TEST_CALL_SECONDS: "0"
     steps:
       # core-ascella-predecessor-source-pin walks each frozen case's pinned revision to HEAD, so the
