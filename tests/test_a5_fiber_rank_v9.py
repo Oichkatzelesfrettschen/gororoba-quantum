@@ -189,10 +189,12 @@ def test_failed_step_returns_instead_of_raising(tmp_path: Path) -> None:
     _check(name == "o" and error is not None)
 
 
-def test_one_writer_per_export_dir(tmp_path: Path) -> None:
-    with open(tmp_path / ".lock", "w") as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        with pytest.raises(SystemExit):
+@pytest.mark.parametrize("mode", [fcntl.LOCK_EX, fcntl.LOCK_SH])
+def test_one_writer_per_export_dir(tmp_path: Path, mode: int) -> None:
+    """An exclusive holder (a running coordinator) or a shared holder (a step outliving its coordinator) refuses."""
+    with open(tmp_path / ".lock", "a") as lock:
+        fcntl.flock(lock, mode | fcntl.LOCK_NB)
+        with pytest.raises(SystemExit, match="another process holds"):
             v9.quotient_data(HEADER, NAMES, P, 6, "Singular", str(tmp_path))
 
 

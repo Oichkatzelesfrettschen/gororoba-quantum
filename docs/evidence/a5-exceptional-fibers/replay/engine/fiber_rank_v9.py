@@ -475,11 +475,17 @@ def run_singular(step: Step) -> tuple[str, float]:
 
 
 def run_step(step: Step) -> tuple[str, float, str | None]:
-    """run_singular returning its failure instead of raising, so the caller waits for every step before it raises."""
-    try:
-        return (*run_singular(step), None)
-    except (RuntimeError, OSError, subprocess.CalledProcessError) as e:
-        return os.path.basename(step.part), 0.0, f"{type(e).__name__}: {e}"
+    """run_singular returning its failure instead of raising, so the caller waits for every step before it raises.
+
+    The step holds a shared lock on the export directory until its Singular process has exited, so a new run's
+    exclusive lock fails while any step of an interrupted run is still writing.
+    """
+    with open(os.path.join(os.path.dirname(step.part), ".lock"), "a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_SH)
+        try:
+            return (*run_singular(step), None)
+        except (RuntimeError, OSError, subprocess.CalledProcessError) as e:
+            return os.path.basename(step.part), 0.0, f"{type(e).__name__}: {e}"
 
 
 def export_identity(header_text: dict[str, str], names: list[str], p: int, N: int) -> dict:
@@ -539,9 +545,12 @@ def quotient_data(
             return quotient_data(header_text, names, p, N, singular, tmp, False, chunks, preflight)
     out = os.path.abspath(export_dir)
     os.makedirs(out, exist_ok=True)
-    with open(os.path.join(out, ".lock"), "w") as lock:
+    with open(os.path.join(out, ".lock"), "a") as lock:
+        # Exclusive admission, then a shared hold beside the shared locks of this run's steps: a later run's exclusive
+        # request fails while this process or any of its steps, including one outliving an interrupt, holds the file.
         try:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            fcntl.flock(lock, fcntl.LOCK_SH | fcntl.LOCK_NB)
         except BlockingIOError:
             raise SystemExit(f"another process holds {out}") from None
         return _quotient_data_locked(header_text, names, p, N, singular, out, adopt, chunks, preflight)
