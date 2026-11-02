@@ -157,6 +157,11 @@ def receipts(headers: dict[str, dict]) -> tuple[list[dict], list[dict]]:
             reasons.append(f"generator_count {r.get('generator_count')}")
         if "rank_h_d" not in r or "degree" not in r:
             reasons.append("no rank or degree")
+        # The membership check certifies the relation bytes it read; legacy receipts name the file relative to the
+        # repository root, and it sits beside the receipt.
+        relations = path.parent / Path(str(r.get("relation_file", "relations-d2.rel"))).name
+        if not relations.is_file() or sha(relations) != r.get("relation_sha256"):
+            reasons.append("relation file differs from the bytes the receipt checked")
         if reasons:
             bad.append({"path": rel, "reason": "; ".join(reasons)})
             continue
