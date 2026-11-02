@@ -144,7 +144,6 @@ def test_check_reproduces_the_retained_bytes(tmp_path: Path) -> None:
     )
 
 
-@pytest.mark.audit
 def test_schedule_uses_job00_columns_on_odd_target_slots() -> None:
     settings = manifest()["settings"]
     source = {row["name"]: row for row in json.loads((SOURCE / "cases.json").read_text(encoding="utf-8"))["settings"]}
@@ -164,7 +163,6 @@ def test_schedule_uses_job00_columns_on_odd_target_slots() -> None:
             raise AssertionError(row["name"])
 
 
-@pytest.mark.audit
 def test_requested_separation_radius_and_credit_hold() -> None:
     record = manifest()
     source = {row["name"]: row for row in json.loads((SOURCE / "cases.json").read_text(encoding="utf-8"))["settings"]}
@@ -194,7 +192,6 @@ def test_requested_separation_radius_and_credit_hold() -> None:
         raise AssertionError(registered["auto_retry"])
 
 
-@pytest.mark.audit
 def test_frozen_circuits_match_the_retained_blobs() -> None:
     identity = manifest()["preregistered"]["compilation_identity"]
     source_cases = json.loads((JOB00_RUN / "cases.json").read_text(encoding="utf-8"))

@@ -165,7 +165,6 @@ def test_pooled_sweep_rows_equal_the_serial_rows(monkeypatch: pytest.MonkeyPatch
         raise AssertionError("the pooled sweep rows differ from the serial ones")
 
 
-@pytest.mark.audit
 def test_pooled_diagnostic_projection_equals_the_serial_one(monkeypatch: pytest.MonkeyPatch) -> None:
     analysis = case.load_json(case.DIAGNOSTIC_ANALYSIS)
     excerpt = case.load_json(case.DIAGNOSTIC_EXCERPT)
@@ -190,7 +189,6 @@ def test_estimator_sweep_passes_at_the_reduced_grid() -> None:
         raise AssertionError(f"the reduced grid ran {[row['label'] for row in rows]}")
 
 
-@pytest.mark.audit
 def test_retained_case_checks_and_holds_six_uncoupled_qubits() -> None:
     retained = case.ROOT / "results/iqm/cases" / case.CASE
     excerpt = case.load_json(retained / case.EXCERPT)
@@ -201,7 +199,6 @@ def test_retained_case_checks_and_holds_six_uncoupled_qubits() -> None:
         raise AssertionError("the retained case holds an excluded qubit")
 
 
-@pytest.mark.audit
 def test_selection_rests_on_calibration_and_measured_failures_only() -> None:
     retained = case.ROOT / "results/iqm/cases" / case.CASE
     selection = case.load_json(retained / case.EXCERPT)["selection"]
@@ -215,7 +212,6 @@ def test_selection_rests_on_calibration_and_measured_failures_only() -> None:
         raise AssertionError("a chosen qubit exceeds the prx limit")
 
 
-@pytest.mark.audit
 def test_billing_fit_covers_the_measure_heavy_run_and_the_retained_case_keeps_its_model() -> None:
     if "per mid-circuit record" not in case.check_billing_fit():
         raise AssertionError("the billing fit lost its per-record term")
@@ -292,7 +288,6 @@ def test_tally_counts_match_a_shot_by_shot_loop() -> None:
         raise AssertionError("an outcome of 2 is counted")
 
 
-@pytest.mark.audit
 def test_retained_calibration_set_reproduces_the_selection_and_the_case() -> None:
     root = case.ROOT / "results/iqm"
     folder = root / "calibration-sets/garnet/be070414-7624-4943-ac7e-1e2678f05684"

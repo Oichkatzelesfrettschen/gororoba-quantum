@@ -94,7 +94,6 @@ def mismatches(cwd: Path, ledger: str) -> list[str]:
 
 
 @pytest.mark.parametrize("entry", LEDGERS, ids=ledger_id)
-@pytest.mark.audit
 def test_ledger_binds_its_bytes(entry: tuple[str, str]) -> None:
     cwd, ledger = entry
     found = mismatches(ROOT / cwd, ledger)
@@ -102,7 +101,6 @@ def test_ledger_binds_its_bytes(entry: tuple[str, str]) -> None:
         raise AssertionError(f"{ledger_id(entry)}: " + "; ".join(found))
 
 
-@pytest.mark.audit
 def test_every_sha256sum_gate_ledger_is_listed() -> None:
     listed = {(cwd, name) for cwd, name in LEDGERS}
     unlisted = []

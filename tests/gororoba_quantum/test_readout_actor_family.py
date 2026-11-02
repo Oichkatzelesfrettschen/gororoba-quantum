@@ -496,7 +496,6 @@ def test_full_width_approved_submit_collect_and_adjudicate(
         raise AssertionError("duplicate submission refusal must preserve the retained ledger bytes")
 
 
-@pytest.mark.audit
 def test_full_width_collection_includes_input_and_parsing_memory(
     environment: Any, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
