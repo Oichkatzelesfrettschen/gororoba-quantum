@@ -239,27 +239,31 @@ def jacobiator_zero_set(dims: tuple[int, ...] = (8, 16, 32)) -> dict[str, list[i
     return out
 
 
-def power_associativity(dims: tuple[int, ...] = (8, 16, 32, 64)) -> dict[str, bool]:
+def power_associative_at(dim: int) -> bool:
     """x^2 x = x x^2 and x^2 x^2 = (x^2 x) x hold exactly on a fixed integer element; the associator does not vanish."""
-    out = {}
-    for dim in dims:
-        x = [k + 1 for k in range(dim)]
-        x2 = cd_multiply_exact(dim, x, x)
-        left, right = cd_multiply_exact(dim, x2, x), cd_multiply_exact(dim, x, x2)
-        require(left == right, f"x^2 x differs from x x^2 at dimension {dim}")
-        require(cd_multiply_exact(dim, x2, x2) == cd_multiply_exact(dim, left, x), f"x^4 at dimension {dim}")
-        a, b, c = unit_sum(dim, 1), unit_sum(dim, 2), unit_sum(dim, 4)
-        assoc = [
-            p - q
-            for p, q in zip(
-                cd_multiply_exact(dim, cd_multiply_exact(dim, a, b), c),
-                cd_multiply_exact(dim, a, cd_multiply_exact(dim, b, c)),
-                strict=True,
-            )
-        ]
-        require(any(t != 0 for t in assoc), f"(e1 e2) e4 = e1 (e2 e4) at dimension {dim}")
-        out[str(dim)] = True
-    return out
+    x = [k + 1 for k in range(dim)]
+    x2 = cd_multiply_exact(dim, x, x)
+    left, right = cd_multiply_exact(dim, x2, x), cd_multiply_exact(dim, x, x2)
+    require(left == right, f"x^2 x differs from x x^2 at dimension {dim}")
+    require(cd_multiply_exact(dim, x2, x2) == cd_multiply_exact(dim, left, x), f"x^4 at dimension {dim}")
+    a, b, c = unit_sum(dim, 1), unit_sum(dim, 2), unit_sum(dim, 4)
+    assoc = [
+        p - q
+        for p, q in zip(
+            cd_multiply_exact(dim, cd_multiply_exact(dim, a, b), c),
+            cd_multiply_exact(dim, a, cd_multiply_exact(dim, b, c)),
+            strict=True,
+        )
+    ]
+    require(any(t != 0 for t in assoc), f"(e1 e2) e4 = e1 (e2 e4) at dimension {dim}")
+    return True
+
+
+def power_associativity(dims: tuple[int, ...] = (8, 16, 32, 64)) -> dict[str, bool]:
+    """Each dimension's exact power-associativity check, mapped through parallel.py in dimension order."""
+    import parallel
+
+    return {str(dim): ok for dim, ok in zip(dims, parallel.ordered_map(power_associative_at, list(dims)), strict=True)}
 
 
 def all_checks() -> dict[str, object]:
