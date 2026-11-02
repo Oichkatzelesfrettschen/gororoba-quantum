@@ -255,6 +255,7 @@ class SourceRightsChecks(unittest.TestCase):
     def use_external_arxiv(self, identifier: str = "LicenseRef-arXiv-nonexclusive-distrib-1.0") -> None:
         previous_url = self.entry["rights"]["observed_license_url"]
         observed_url = LICENSE_URLS[identifier].replace("https://", "http://", 1)
+        self.entry["redistribution"] = "excluded_without_permission"
         self.entry["rights"].update(
             decision="external_only",
             license_identifier=identifier,
@@ -744,6 +745,32 @@ class SourceRightsChecks(unittest.TestCase):
         self.write_notice()
         self.reject("PDF notice article identity")
 
+    def use_licensed_external(self) -> None:
+        del self.entry["path"]
+        self.entry["status"] = "external_only"
+        self.entry["redistribution"] = "explicit_license_verified"
+        self.entry["rights"]["decision"] = "external_only"
+
+    def test_licensed_external_arxiv_record_passes(self) -> None:
+        self.use_licensed_external()
+        self.verify(published=False)
+
+    def test_licensed_external_pdf_notice_record_passes(self) -> None:
+        self.use_pdf_notice()
+        self.use_licensed_external()
+        self.verify(published=False)
+
+    def test_licensed_external_record_with_distribution_only_grant_is_rejected(self) -> None:
+        self.use_external_arxiv()
+        self.use_licensed_external()
+        self.reject("licensed external license allowlist", published=False)
+
+    def test_licensed_external_record_without_license_route_is_rejected(self) -> None:
+        self.use_licensed_external()
+        self.entry["source_url"] = "https://author.example.org/paper.pdf"
+        self.entry["rights"]["evidence_url"] = "https://author.example.org/paper"
+        self.reject("licensed external license evidence route", published=False)
+
     def test_cc0_grant_passes(self) -> None:
         self.entry["rights"].update(
             license_identifier="CC0-1.0",
@@ -929,6 +956,7 @@ class SourceRightsChecks(unittest.TestCase):
         self.reject("external-only rights decision", published=False)
 
     def test_external_arxiv_grant_mismatch_is_rejected(self) -> None:
+        self.entry["redistribution"] = "excluded_without_permission"
         self.entry["rights"].update(
             decision="external_only",
             license_identifier="LicenseRef-arXiv-nonexclusive-distrib-1.0",
@@ -937,6 +965,7 @@ class SourceRightsChecks(unittest.TestCase):
         self.reject("arXiv license identity", published=False)
 
     def test_legacy_arxiv_identifier_passes(self) -> None:
+        self.entry["redistribution"] = "excluded_without_permission"
         self.entry["source_url"] = "https://arxiv.org/pdf/math/0511691v1"
         self.entry["rights"].update(
             evidence_url="https://arxiv.org/abs/math/0511691v1",

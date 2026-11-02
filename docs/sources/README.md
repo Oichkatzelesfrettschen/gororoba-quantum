@@ -36,13 +36,16 @@ from the versions of record, including the two explicitly named PDF aliases.
 Two open-access Nature-family versions of record (s41586-026-10423-9 and
 s41567-026-03466-2) carry article-level CC BY 4.0 grants and are retained.
 HTML-only sources and their reading scopes appear in the registry and notes.
-Explicit CC BY 4.0, CC BY-SA 4.0 or CC0 permission supports the published PDFs. A
-publisher's license notice printed on the PDF itself admits it through the `pdf-notice`
+Explicit CC BY 4.0 or CC0 permission supports the published PDFs. The
+repository admits no new hosted document: a newly registered source whose license
+permits redistribution (CC BY 4.0, CC BY-SA 4.0 or CC0) receives an external record with
+`redistribution: explicit_license_verified`, its reading copy lives in
+gororoba-documents-public, and the verifier still checks its license capture. A
+publisher's license notice printed on the PDF itself counts through the `pdf-notice`
 route: a JSON capture under `docs/evidence/source_rights/` records the page, the notice
-verbatim, the PDF's sha256 and every metadata source that names a different license, and
-the verifier binds it to the published bytes (Chapman and Vishkautsan, Communications in
-Mathematics 33, is the first, published on its CC BY-SA 4.0 notice with the owner's
-approval on 2026-11-02). ArXiv-only
+verbatim, the PDF's sha256 and every metadata source that names a different license
+(Chapman and Vishkautsan, Communications in Mathematics 33, on its CC BY-SA 4.0
+notice). ArXiv-only
 hosting grants, personal-copy permissions, and sources without an established
 rehosting grant receive external records and ignored local copies under
 `local_source_cache/`. The registry retains first-party evidence URLs and hashes.

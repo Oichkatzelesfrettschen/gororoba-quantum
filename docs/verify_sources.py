@@ -258,7 +258,7 @@ def verify_dmgaa_capture(entry: dict[str, Any], rights: dict[str, Any], raw_resp
 
 
 def verify_pdf_notice_evidence(root: Path, entry: dict[str, Any], rights: dict[str, Any], payload: bytes) -> None:
-    """Bind a recorded publisher license notice, printed on the PDF itself, to the published bytes.
+    """Bind a recorded publisher license notice, printed on the PDF itself, to the registered bytes.
 
     The capture is a JSON record of a primary-source reading: the page that prints the notice, the notice verbatim,
     the article page, and any metadata that names a different license, retained beside the decision.
@@ -276,7 +276,8 @@ def verify_pdf_notice_evidence(root: Path, entry: dict[str, Any], rights: dict[s
     except (UnicodeDecodeError, json.JSONDecodeError) as error:
         raise ValueError("captured PDF notice encoding") from error
     require(record.get("schema") == "pdf-license-notice-v1", "captured PDF notice schema")
-    require(record.get("pdf_sha256") == entry["sha256"] == hashlib.sha256(payload).hexdigest(), "PDF notice identity")
+    require(record.get("pdf_sha256") == entry["sha256"], "PDF notice identity")
+    require(not payload or hashlib.sha256(payload).hexdigest() == entry["sha256"], "PDF notice payload identity")
     require(record.get("source_url") == entry["source_url"], "PDF notice source identity")
     require(record.get("article_url") == rights["evidence_url"], "PDF notice article identity")
     page = record.get("page")
@@ -752,6 +753,9 @@ def verify_source_rights(
     for field in ("evidence_locator", "reading_scope", "evidence_summary", "license_identifier"):
         require_text(rights.get(field), f"rights {field}")
     identifier = rights["license_identifier"]
+    # An external record whose source license permits redistribution keeps that license checked; its reading copy
+    # lives in the owner's public documents repository.
+    licensed = published or entry.get("redistribution") == "explicit_license_verified"
     if published:
         require(entry.get("status") == "retained", "published retention status")
         require(entry.get("redistribution") == "explicit_license_verified", "published redistribution status")
@@ -764,7 +768,11 @@ def verify_source_rights(
         require(hashlib.sha256(payload).hexdigest() == entry["sha256"], "published rights payload identity")
     else:
         require(rights.get("decision") == "external_only", "external-only rights decision")
-        if rights.get("license_url") is not None:
+        if licensed:
+            require(identifier in PUBLIC_LICENSES, "licensed external license allowlist")
+            require(rights.get("license_url") == LICENSE_URLS[identifier], "licensed external license URL")
+            require_text(rights.get("conditions"), "licensed external license conditions")
+        elif rights.get("license_url") is not None:
             require_url(rights["license_url"], "external-only license URL")
     if identifier in LICENSE_URLS:
         verify_license_document(registry, identifier)
@@ -775,12 +783,12 @@ def verify_source_rights(
         if source is None:
             raise ValueError("arXiv source version")
         require(rights["evidence_url"] == f"https://arxiv.org/abs/{source[1]}", "arXiv evidence version")
-        allowed_identifiers = PUBLIC_LICENSES if published else set(LICENSE_URLS) - PUBLIC_LICENSES
+        allowed_identifiers = PUBLIC_LICENSES if licensed else set(LICENSE_URLS) - PUBLIC_LICENSES
         require(identifier in allowed_identifiers, "arXiv rights classification")
-        observed_url = rights.get("observed_license_url") if published else rights.get("license_url")
+        observed_url = rights.get("observed_license_url") if licensed else rights.get("license_url")
         observed_url = require_url(observed_url, "arXiv observed license URL")
         require(observed_url.replace("http://", "https://", 1) == LICENSE_URLS[identifier], "arXiv license identity")
-        if published or "evidence_path" in rights or "evidence_retrieved_at_utc" in rights:
+        if licensed or "evidence_path" in rights or "evidence_retrieved_at_utc" in rights:
             verify_arxiv_evidence(root, rights, source[1])
     elif published and urlsplit(rights["evidence_url"]).netloc == "drops.dagstuhl.de":
         document = re.fullmatch(
@@ -821,8 +829,10 @@ def verify_source_rights(
         if osf is None:
             raise ValueError("published OSF evidence route")
         verify_osf_evidence(root, entry, rights, osf[1])
-    elif published and rights.get("evidence_route") == "pdf-notice":
+    elif licensed and rights.get("evidence_route") == "pdf-notice":
         verify_pdf_notice_evidence(root, entry, rights, payload)
+    elif licensed and not published:
+        raise ValueError("licensed external license evidence route")
     elif published:
         record = re.fullmatch(r"https://zenodo\.org/api/records/([1-9]\d*)", rights["evidence_url"])
         if record is None:
@@ -896,7 +906,10 @@ def verify_external_sources(root: Path, registry: dict[str, Any], published_dige
     for entry in registry["external_pdfs"]:
         require("path" not in entry, "external-only PDF must not carry a published path")
         require(entry["status"] == "external_only", "external-only PDF status")
-        require(entry["redistribution"] == "excluded_without_permission", "external-only redistribution status")
+        require(
+            entry["redistribution"] in {"excluded_without_permission", "explicit_license_verified"},
+            "external-only redistribution status",
+        )
         require(bool(entry["rights_locator"]) and bool(entry["rights_reason"]), "external-only rights provenance")
         require(entry["source_url"].startswith(("https://", "http://")), "external-only source URL")
         digest = entry["sha256"]
