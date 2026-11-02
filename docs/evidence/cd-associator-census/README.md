@@ -69,7 +69,7 @@ sha256sum -c docs/evidence/cd-associator-census/source_hashes.sha256
 9.3.0 on OCaml 5.5.1, the switch of `ci/rocq_toolchain.pin`), compiles the
 five proof sources and [assumptions.v](assumptions.v) in temporary storage
 with `-w @all`, fails on any warning or compiler output, runs `rocq check`,
-and compares the outputs byte for byte with the receipts. The ci.yml job
-rocq-replay runs it beside the other Rocq bundles, and `source_hashes.sha256`
+and compares the outputs byte for byte with the receipts. The proofs.yml job
+rocq runs it beside the other Rocq bundles, and `source_hashes.sha256`
 binds the five proof sources and the receipts. The replay takes about 36 s
 on the build host.

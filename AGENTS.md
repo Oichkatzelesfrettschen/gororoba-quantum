@@ -23,8 +23,10 @@ machinery.
   (`qi_zz_map_qx_analysis.py` succeeds the `--analyze` mode of the pinned
   `qi_zz_map_qx.py`). A superseded unpinned implementation leaves once its
   callers migrate. Record integrity and scientific behavior are tested on
-  bounded fixtures; historical replays stay for end-to-end reproduction.
-- The `pr.yml` checks `lint`, `types`, `tests` and `gates` green on the head
+  bounded fixtures; historical replays, digest and source checks live in
+  ci/gates.json and run on demand ([ci/AGENTS.md](ci/AGENTS.md#on-demand-gates)),
+  never in a workflow.
+- The `pr.yml` checks `lint`, `types` and `tests` green on the head
   admit a merge. No local gate run or premerge replay is required before a
   push, which overrides the user-level guide's local replica of the slowest
   CI lanes; `sh ci/pr_checks.sh tests PATH` runs touched tests under the
@@ -47,12 +49,13 @@ machinery.
 - Mock outcomes (`--native-dry-run` timing) never enter scientific analysis
   or measured visualizations.
 - A change to live_run.py or experiments.py is proven by the `tests` check
-  and the gates its diff reaches; a live dry run (`"$PYTHON" live_run.py
+  and a local `sh ci/pr_checks.sh gates` run; a live dry run (`"$PYTHON" live_run.py
   --out ../results/live`, a record under results/live/) belongs to a change
   of calibration admission, the approval comparison, the submission path or
   execution readiness, and to every case that heads for `--submit`.
-- A change to `proofs/`, a replay bundle or its receipts follows the Rocq
-  replay of [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates).
+- A change to `proofs/`, a replay bundle or its receipts runs the Rocq
+  compile of `proofs.yml` (path-filtered, not a required check;
+  [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates)).
 
 ## Seeds
 

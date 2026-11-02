@@ -119,7 +119,7 @@ sha256sum -c docs/evidence/cd-tower-basis-sign/source_hashes.sha256
 proof sources and [assumptions.v](assumptions.v) in temporary storage with
 `-w @all`, fails on any warning or compiler output, runs `rocq check`, and
 compares the outputs byte for byte with [assumptions.txt](assumptions.txt)
-and [kernel.txt](kernel.txt). The ci.yml job rocq-replay runs it beside the
+and [kernel.txt](kernel.txt). The proofs.yml job rocq runs it beside the
 conference bundle. `source_hashes.sha256` binds both proof sources and the
 receipts, so the gate fails on an edit to either source without new receipts.
 The replay takes about 31 s on the build host.

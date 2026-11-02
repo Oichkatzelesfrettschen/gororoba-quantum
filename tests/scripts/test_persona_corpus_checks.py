@@ -104,7 +104,6 @@ def test_associator_columns_are_characters_with_trivial_mutations() -> None:
         raise AssertionError(f"associator characters {result}")
 
 
-@pytest.mark.audit
 def test_jordan_table_matches_the_sage_checked_albert_product() -> None:
     if claims.albert_table_cross_check()["pairs_checked"] != 729:
         raise AssertionError("Albert cross-check")

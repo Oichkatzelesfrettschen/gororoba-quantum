@@ -77,18 +77,17 @@ lives in its own environment, never in the repository's Python 3.14 stack:
 the lock `requirements-qi.txt` installs into a Python 3.13 venv (`QI_ENV`)
 whose interpreter is `QI_PYTHON`. The venv location is recorded in the private
 gororoba-infrastructure repository.
-No Arch package carries the stack. CI's `qi-stack` job installs the lock
+No Arch package carries the stack. A venv that installs the lock
 exactly (`pip install --no-deps` and `pip check`) under Python 3.13.15 beside
-Python 3.14.7 and exports `QI_PYTHON`; there qxelarator, libqasm and
-OpenSquirrel run locally with no credential, and no SDK call reaches the
+Python 3.14.7, with `QI_PYTHON` exported, runs qxelarator, libqasm and
+OpenSquirrel locally with no credential, and no SDK call reaches the
 network. gororoba_quantum/qi_stack.py reads `QI_PYTHON` from the environment
 alone and probes it once per process for the three modules at the lock's
 versions. A gate tagged `"requires": ["qi"]` compares a live run with its
-retained record where that probe passes; everywhere else (the gate shards,
+retained record where that probe passes; everywhere else (the hosted gates,
 premerge, a shell that has not exported `QI_PYTHON`)
 it replays the record and prints one line naming the replay.
-`ci/run_gates.py --requires qi` runs the tagged gates alone with
-`GOROROBA_QI_REQUIRED=1`, which makes a replay a failure.
+Exporting `GOROROBA_QI_REQUIRED=1` beside `QI_PYTHON` makes a replay a failure.
 
 | Package | Version | Role |
 |---|---|---|

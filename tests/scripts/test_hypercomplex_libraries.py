@@ -98,7 +98,6 @@ def test_runtime_manifest_and_dispatch_pin_discovery(tmp_path: Path) -> None:
         check_execution_coverage(record, tmp_path)
 
 
-@pytest.mark.audit
 def test_retained_execution_inventory_covers_authoritative_sources() -> None:
     record = json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
     check_execution_coverage(record, ROOT)

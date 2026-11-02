@@ -38,8 +38,8 @@ ignore = ["UP040"]
 # The behavioral suite under tests/ (core-615 and core-behavior-NN). Plugin
 # autoload is off, so a host's installed plugins never enter a run and xdist,
 # the one pinned plugin, loads by name. Each test process writes nothing inside the
-# checkout: the cache plugin is off and the gate runs under -B, so the gate
-# ledger can trace it; importlib mode imports test modules without placing
+# checkout: the cache plugin is off and the gate runs under -B;
+# importlib mode imports test modules without placing
 # their directories on sys.path.
 [tool.pytest.ini_options]
 minversion = "9.1"
@@ -57,7 +57,7 @@ addopts = [
 ]
 filterwarnings = ["error"]
 markers = [
-    "audit: replays retained evidence or checks the gate machinery; the scheduled audit runs it and pull requests deselect it",
+    "audit: replays a retained record, checks the gate machinery or takes more than 3 s of CPU on the build host; pull requests deselect it and gate core-615 of ci/gates.json runs it on demand",
 ]
 
 [tool.mypy]

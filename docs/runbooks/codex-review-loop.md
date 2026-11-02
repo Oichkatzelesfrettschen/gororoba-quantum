@@ -99,8 +99,8 @@ A PR merges after this sequence:
    the head that round reviewed, accepts its verdict, waits on the current
    head's checks and requests nothing (the plain form treats a new head as an
    unreviewed round and re-requests after the stall interval).
-3. The `pr.yml` checks `tests` and `gates` pass on the head (`lint` and
-   `types` run beside them). A push that changes the head reruns them; a red
+3. The `pr.yml` check `tests` passes on the head (`lint` and
+   `types` run beside them; `proofs.yml` runs when the diff touches a proof path). A push that changes the head reruns them; a red
    job gets its fix commit on the branch.
 4. GitHub reports mergeable_state clean.
 

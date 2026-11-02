@@ -1,8 +1,8 @@
 name: pinned venv
 description: >-
-  Restore the venv of requirements.txt and ci/requirements-ci.txt under ci.yml's
-  cache key, build it with ci/install_pins.sh on a miss, and export PYTHON and
-  PATH for it.
+  Restore the venv of requirements.txt and ci/requirements-ci.txt under a key
+  that hashes its inputs, build it with ci/install_pins.sh on a miss, and export
+  PYTHON and PATH for it.
 runs:
   using: composite
   steps:
@@ -10,7 +10,7 @@ runs:
       id: python
       with:
         python-version: "3.14.7"
-    # ci.yml's key, so a pull request restores the venv main's nightly run saved.
+    # The key hashes every input of the venv, so a run restores the venv an earlier run on main or on its branch saved.
     - name: Restore the pinned environment
       id: pins-cache
       uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24

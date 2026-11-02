@@ -80,8 +80,10 @@ from typing import Any, Protocol
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+sys.path.insert(1, str(ROOT / "ci"))
 
 import iqm_jobs  # noqa: E402
+import manifest  # noqa: E402
 import plan_records  # noqa: E402
 import qd_platform  # noqa: E402
 import qi_platform  # noqa: E402
@@ -100,7 +102,6 @@ QD_RUNS = ROOT / "results/quandela/runs"
 QD_CATALOGUE = ROOT / "docs/evidence/quandela/catalogue.json"
 IQM_RUNS = ROOT / "results/iqm/runs"
 IQM_CREDIT = ROOT / "docs/evidence/iqm/account/credit.json"
-GATES = ROOT / "ci/gates.json"
 SCHEMA = "research-state-v2"
 
 CLASSES: dict[str, dict[str, Any]] = {
@@ -611,8 +612,7 @@ class Context:
 
     def __init__(self) -> None:
         self.providers: dict[str, Provider] = {name: adapter() for name, adapter in PROVIDERS.items()}
-        gates = load_json(GATES)["gates"]
-        self.gates: dict[str, str] = {gate["name"]: gate["cmd"] for gate in gates}
+        self.gates: dict[str, str] = manifest.commands(ROOT)
         self.digest: Callable[[Path], str] = digest
 
 

@@ -5,7 +5,6 @@ fallback under GOROROBA_PINS_REQUIRED=1.
 
 from __future__ import annotations
 
-import json
 import re
 import sys
 from collections.abc import Callable
@@ -14,6 +13,7 @@ from tempfile import TemporaryDirectory
 from typing import Any
 from unittest.mock import patch
 
+import manifest
 import pinned_tool
 import pins
 
@@ -215,10 +215,10 @@ def test_lane_resolution() -> None:
 
 def test_host_environment_python_version() -> None:
     # The host environments sit on the Python CI's setup-python installs.
-    workflow = (pins.ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    action = (pins.ROOT / ".github/actions/pins-venv/action.yml").read_text(encoding="utf-8")
     script = (pins.ROOT / "ci/build_host_envs.sh").read_text(encoding="utf-8")
-    if f'python-version: "{pins.PYTHON_VERSION}"' not in workflow:
-        raise AssertionError(f"ci.yml installs no Python {pins.PYTHON_VERSION}")
+    if f'python-version: "{pins.PYTHON_VERSION}"' not in action:
+        raise AssertionError(f"the pins-venv action installs no Python {pins.PYTHON_VERSION}")
     if f"python_version={pins.PYTHON_VERSION}\n" not in script:
         raise AssertionError(f"ci/build_host_envs.sh builds on another Python than {pins.PYTHON_VERSION}")
 
@@ -280,7 +280,7 @@ def test_each_mypy_invocation_writes_its_own_cache() -> None:
 def test_gate_lint_tools_are_pinned() -> None:
     # A bare ruff or mypy resolves through PATH, where a host install of
     # another release reports its own defects as gate failures.
-    gates = json.loads((pins.ROOT / "ci/gates.json").read_text(encoding="utf-8"))["gates"]
+    gates = manifest.gates(pins.ROOT)
     bare = re.compile(r"(?:(?:^|&&|\|\||;|\||\$\(|\bthen|\bxargs)\s*(?:\w+=\S+\s+)*|-m\s+)(?:ruff|mypy)\b")
     unpinned = [gate["name"] for gate in gates if bare.search(gate["cmd"])]
     if unpinned:

@@ -158,7 +158,6 @@ def test_joint_shots_and_singular_readout_are_preserved_by_existing_analysis() -
         corrected(0.5, 0.5, 0.5)
 
 
-@pytest.mark.audit
 def test_manifest_rejects_cross_job_pairing_and_missing_selected_acquisition() -> None:
     module = implementation()
     manifest = module.load_manifest(module.DEFAULT_MANIFEST)

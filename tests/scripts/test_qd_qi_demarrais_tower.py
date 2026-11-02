@@ -33,7 +33,6 @@ def test_qd_demarrais_tower_self_test_and_check() -> None:
     qd_demarrais_tower.check_all_cases()
 
 
-@pytest.mark.audit
 def test_qd_demarrais_tower_synthetic_analysis(tmp_path: Path) -> None:
     case_dir = qd_demarrais_tower.CASE_ROOT / "ascella" / "job-dm3"
     cases = json.loads((case_dir / "cases.json").read_text(encoding="utf-8"))
@@ -127,7 +126,6 @@ def test_qi_demarrais_tower_check_and_synthetic_analysis(tmp_path: Path) -> None
         _check(abs(b_analysis[expected_key] - 1.0) < 1e-9, f"{batch_name} {expected_key} != 1.0")
 
 
-@pytest.mark.audit
 def test_qd_demarrais_tower_withholds_a_verdict_without_null_or_counts(tmp_path: Path) -> None:
     cases = json.loads(
         (qd_demarrais_tower.CASE_ROOT / "ascella" / "job-dm1" / "cases.json").read_text(encoding="utf-8")

@@ -76,7 +76,6 @@ def test_the_question_names_the_qubits_it_builds() -> None:
         raise AssertionError(case.list_of(["QB1", "QB2", "QB3"]))
 
 
-@pytest.mark.audit
 def test_build_refuses_qubits_other_than_the_window_probes() -> None:
     retained = case.seq.load_json(case.ROOT / "results/iqm/cases" / case.CASE / case.EXCERPT)
     other = {**retained, "qubits": {q: retained["qubits"][q] for q in list(retained["qubits"])[:5]}}

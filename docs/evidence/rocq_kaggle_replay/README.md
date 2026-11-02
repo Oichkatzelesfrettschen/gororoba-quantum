@@ -29,7 +29,7 @@ Stiefel source identities hold at both 7d95d228 and the earlier b977e43f.
 is version 1 of the kernel at b977e43f, which passed the other four replays
 before the folding bundle was re-pinned.
 
-The ci.yml job `rocq-replay` runs the same driver on a GitHub runner with
+The proofs.yml job `rocq` runs the same driver on a GitHub runner with
 `--rocq`, `--gororoba-root` and `--only`: the opam switch of
 `ci/rocq_toolchain.pin` comes from a cache keyed on that file, open_gororoba
 comes from `ci/fetch_open_gororoba.sh` at `ci/open_gororoba.pin`, and

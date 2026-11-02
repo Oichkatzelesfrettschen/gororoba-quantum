@@ -215,10 +215,6 @@
               "sha256": "c287fc57530d1be9672860d94413eabd45d24dc2c4f7477ed950ce2a3087366c"
             },
             {
-              "ref": "ci/rocq_changed.sh",
-              "sha256": "ffb41b72f2528a26380d892f0caae51ef2a9ac6f08a48b929e7482092e8e8d53"
-            },
-            {
               "ref": "scripts/rocq_kaggle_replay.py",
               "sha256": "9b63a9a243bdb92f20b53c16d77e05271bfd6356c2fd4fae43232f58c98deeb1"
             },
@@ -227,7 +223,7 @@
               "sha256": "ff14450765ebd34ae56bfd0f12d595976197d49337e6e83e2b7106c75b8bedf5"
             },
             {
-              "ref": ".github/workflows/ci.yml",
+              "ref": ".github/workflows/proofs.yml",
               "sha256": "9b76a5aac2357bb6657410041a05c792379072aae71453ca7afb23bec6423e87"
             },
             {
@@ -271,10 +267,6 @@
               "sha256": "c287fc57530d1be9672860d94413eabd45d24dc2c4f7477ed950ce2a3087366c"
             },
             {
-              "ref": "ci/rocq_changed.sh",
-              "sha256": "ffb41b72f2528a26380d892f0caae51ef2a9ac6f08a48b929e7482092e8e8d53"
-            },
-            {
               "ref": "scripts/rocq_kaggle_replay.py",
               "sha256": "9b63a9a243bdb92f20b53c16d77e05271bfd6356c2fd4fae43232f58c98deeb1"
             },
@@ -283,7 +275,7 @@
               "sha256": "ff14450765ebd34ae56bfd0f12d595976197d49337e6e83e2b7106c75b8bedf5"
             },
             {
-              "ref": ".github/workflows/ci.yml",
+              "ref": ".github/workflows/proofs.yml",
               "sha256": "9b76a5aac2357bb6657410041a05c792379072aae71453ca7afb23bec6423e87"
             },
             {
@@ -301,6 +293,162 @@
             {
               "ref": "docs/README.md",
               "sha256": "35a98fc4105e87fde8eb63b19f4bc17e2bf449a336f52c463521cc9e1e5d6dcb"
+            }
+          ],
+          "scope_sha256": "49a390d68dd1fb91375e9834225d21f246da2a1f15b3e5229bd56cf068f306d3"
+        },
+        {
+          "result": "Revalidated after the Rocq replay job moved from ci.yml to the path-filtered proofs.yml: ci/check_rocq_ci_pins.py reports 15 bundles agreeing including cd-tower-domain, tests/ci/test_rocq_ci_pins.py passes and check_markdown_links.py resolves every link. No replay bundle changed byte, so the Rocq replay was not rerun.",
+          "observed_at": "2026-11-01T22:47:42Z",
+          "revision": "cd7acbc8ae7b33b9f9673e44a95480780f84ebb7",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-tower-domain/replay_rocq.sh",
+              "sha256": "a0f6e78058cb67f933135f9297d483b9223824869e5b64d72a7c66ab457a106e"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/source_hashes.sha256",
+              "sha256": "f53479b57920961ef3d30ba14d02cc3c6e13abd7d5ba4a8b66735fdd4bb1caf5"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/README.md",
+              "sha256": "a7dce394ee40fbb4e4559d83292c87be7912e9adc07e810f5bd58c17ab4403c8"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-415",
+              "sha256": "c287fc57530d1be9672860d94413eabd45d24dc2c4f7477ed950ce2a3087366c"
+            },
+            {
+              "ref": "scripts/rocq_kaggle_replay.py",
+              "sha256": "9b63a9a243bdb92f20b53c16d77e05271bfd6356c2fd4fae43232f58c98deeb1"
+            },
+            {
+              "ref": "tests/test_evidence_ledgers.py",
+              "sha256": "ff14450765ebd34ae56bfd0f12d595976197d49337e6e83e2b7106c75b8bedf5"
+            },
+            {
+              "ref": ".github/workflows/proofs.yml",
+              "sha256": "83b4faa57c01c68b295fa86c8acea79c52792b9fdf9d6dd4c3b4707100eb3018"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "5091ed1c757bfb768137331856a75b6d4adfaded62f6e48d2d85489c8440974c"
+            },
+            {
+              "ref": "docs/notes/math-0511691.md",
+              "sha256": "275501f8a4ae7ed3a77e088e89ca0d92dd16d362e95c9827df32f51196bc3295"
+            },
+            {
+              "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+              "sha256": "f4916450e4f9ce2baff1a6c38e0b2d04352c35e852c6a80f402ff09f29c21044"
+            },
+            {
+              "ref": "docs/README.md",
+              "sha256": "4f65e5d3b5eb8daf338d88fc6f74d28da9913f40532033d6c326b99bbaa939be"
+            }
+          ],
+          "scope_sha256": "49a390d68dd1fb91375e9834225d21f246da2a1f15b3e5229bd56cf068f306d3"
+        },
+        {
+          "result": "Revalidated after tests/test_evidence_ledgers.py read the gate manifest through ci/manifest.py and its ledger rows moved to the pull-request suite: those rows and ci/check_rocq_ci_pins.py (15 bundles agreeing) pass and check_markdown_links.py resolves every link. No replay bundle changed byte, so the Rocq replay and the formalization.yaml schema check were not rerun.",
+          "observed_at": "2026-11-02T00:09:25Z",
+          "revision": "cd7acbc8ae7b33b9f9673e44a95480780f84ebb7",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-tower-domain/replay_rocq.sh",
+              "sha256": "a0f6e78058cb67f933135f9297d483b9223824869e5b64d72a7c66ab457a106e"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/source_hashes.sha256",
+              "sha256": "f53479b57920961ef3d30ba14d02cc3c6e13abd7d5ba4a8b66735fdd4bb1caf5"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/README.md",
+              "sha256": "a7dce394ee40fbb4e4559d83292c87be7912e9adc07e810f5bd58c17ab4403c8"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-415",
+              "sha256": "c287fc57530d1be9672860d94413eabd45d24dc2c4f7477ed950ce2a3087366c"
+            },
+            {
+              "ref": "scripts/rocq_kaggle_replay.py",
+              "sha256": "9b63a9a243bdb92f20b53c16d77e05271bfd6356c2fd4fae43232f58c98deeb1"
+            },
+            {
+              "ref": "tests/test_evidence_ledgers.py",
+              "sha256": "f6bf4a694dbc4679602c235e66cfc977f3329862d65b4b4c82933c988e06e2e4"
+            },
+            {
+              "ref": ".github/workflows/proofs.yml",
+              "sha256": "83b4faa57c01c68b295fa86c8acea79c52792b9fdf9d6dd4c3b4707100eb3018"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "5091ed1c757bfb768137331856a75b6d4adfaded62f6e48d2d85489c8440974c"
+            },
+            {
+              "ref": "docs/notes/math-0511691.md",
+              "sha256": "275501f8a4ae7ed3a77e088e89ca0d92dd16d362e95c9827df32f51196bc3295"
+            },
+            {
+              "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+              "sha256": "f4916450e4f9ce2baff1a6c38e0b2d04352c35e852c6a80f402ff09f29c21044"
+            },
+            {
+              "ref": "docs/README.md",
+              "sha256": "ca3435d272302315a3cda1c7d9e1f4b3187bda45adf2c48ae78c0bdbb834eb15"
+            }
+          ],
+          "scope_sha256": "49a390d68dd1fb91375e9834225d21f246da2a1f15b3e5229bd56cf068f306d3"
+        },
+        {
+          "result": "Revalidated after ci/gates.json folded the replay manifest back in and lost its tier keys, docs/README.md named the one manifest, and tests/test_evidence_ledgers.py read it through ci/manifest.py: the ledger tests and tests/ci pass under -m audit, ci/check_rocq_ci_pins.py reports 15 bundles agreeing and check_markdown_links.py resolves every link. No replay bundle changed byte, so the Rocq replay and the formalization.yaml schema check were not rerun.",
+          "observed_at": "2026-11-02T01:06:29Z",
+          "revision": "699e89fbd2aa0cdbd89571762a360b161e63a4ea",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-tower-domain/replay_rocq.sh",
+              "sha256": "a0f6e78058cb67f933135f9297d483b9223824869e5b64d72a7c66ab457a106e"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/source_hashes.sha256",
+              "sha256": "f53479b57920961ef3d30ba14d02cc3c6e13abd7d5ba4a8b66735fdd4bb1caf5"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/README.md",
+              "sha256": "a7dce394ee40fbb4e4559d83292c87be7912e9adc07e810f5bd58c17ab4403c8"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-415",
+              "sha256": "e98ab6cd4b9f1743048754d6ceedd2670479dcb96dc91e9abd474b00c0a564ff"
+            },
+            {
+              "ref": "scripts/rocq_kaggle_replay.py",
+              "sha256": "9b63a9a243bdb92f20b53c16d77e05271bfd6356c2fd4fae43232f58c98deeb1"
+            },
+            {
+              "ref": "tests/test_evidence_ledgers.py",
+              "sha256": "9de73ea9fe0b0c1b45da8bf2cb2ab4f77d41d198a3e08c2885671d23908e42f0"
+            },
+            {
+              "ref": ".github/workflows/proofs.yml",
+              "sha256": "83b4faa57c01c68b295fa86c8acea79c52792b9fdf9d6dd4c3b4707100eb3018"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "5091ed1c757bfb768137331856a75b6d4adfaded62f6e48d2d85489c8440974c"
+            },
+            {
+              "ref": "docs/notes/math-0511691.md",
+              "sha256": "275501f8a4ae7ed3a77e088e89ca0d92dd16d362e95c9827df32f51196bc3295"
+            },
+            {
+              "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+              "sha256": "f4916450e4f9ce2baff1a6c38e0b2d04352c35e852c6a80f402ff09f29c21044"
+            },
+            {
+              "ref": "docs/README.md",
+              "sha256": "0c3ee088d5aa1b1aed6ac7ac12894d4b708c9b3539b1524c70c23eebd9cc7b17"
             }
           ],
           "scope_sha256": "49a390d68dd1fb91375e9834225d21f246da2a1f15b3e5229bd56cf068f306d3"

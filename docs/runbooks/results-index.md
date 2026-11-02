@@ -44,8 +44,8 @@ sqlite3 /tmp/results-index.sqlite "SELECT a.provider, COUNT(*) FROM claim_acquis
 The command reads only what the registry and adapters already validate, so
 `scripts/research_state.py --check` failing makes the index refuse to build.
 `tests/scripts/test_results_index.py` checks the joins on a synthetic tree
-in the pull-request suite, and its `audit` test, in the nightly suite,
-requires on the retained tree that every acquisition owns its run, every job
+in the pull-request suite, and its `audit` test, which gate core-615 of
+`ci/gates.json` runs on demand, requires on the retained tree that every acquisition owns its run, every job
 resolves to its run, every claim resolves to the runs of its acquisitions,
 and a build leaves `git status` unchanged. The design choice against a committed catalog
 is argued in

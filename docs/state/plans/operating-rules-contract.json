@@ -2,7 +2,7 @@
   "schema": "work-plan-v1",
   "id": "operating-rules-contract",
   "kind": "implementation",
-  "summary": "Decompose the agent guide's rules to the failures they prevent, keep forty lines of boundaries as text, replace the rest with checks that exist or are named, and give the CI a stateable purpose: reached gates on pull requests, cited gates nightly, the exhaustive audit weekly.",
+  "summary": "Decompose the agent guide's rules to the failures they prevent, keep forty lines of boundaries as text, replace the rest with checks, and state the CI purpose: lint, types and unit tests per pull request and push to main, every gate of ci/gates.json on demand, no schedule.",
   "sources": [
     "docs/design/operating-rules-contract.md"
   ],
@@ -11,7 +11,7 @@
     "status": "verified",
     "note": "Every rule of the 203-line guide proposed in PR #692 was tabulated by two external reviews (Grok Build and Codex gpt-daybreak-blue-latest, 2026-10-30) against the operating data of PR #693; each file:line claim adopted in the design document was re-read in the tree (ci.yml triggers at lines 7-10 and 152, pr_checks.sh lines 105-106, run_gates.py line 256, gates core-000/001/002/039/615, audit_report.py citing_claims, research_state.py --add-acquisition)."
   },
-  "scope": "The root agent guide, ci/AGENTS.md as session context, the pr.yml gate selection and the ci.yml schedule, the Codex review cadence, the dry-run rule, the retention-claim coupling and the plan-record rule. Provider approval, the force-push and recursive-delete denies, immutability of bound bytes and the four pr.yml checks stay as hard constraints. The guide text itself changes only on the owner's decision and on top of PR #692.",
+  "scope": "The root agent guide, ci/AGENTS.md as session context, the pr.yml checks and the removed ci.yml schedule, the Codex review cadence, the dry-run rule, the retention-claim coupling and the plan-record rule. Provider approval, the force-push and recursive-delete denies, immutability of bound bytes and the three pr.yml checks stay as hard constraints. The guide text itself changes only on the owner's decision and on top of PR #692.",
   "owner": "repository maintainer",
   "next_action": "Owner removes lint and types from the required checks on main (the harness denies the PATCH from an agent); the forty-line guide lands on top of PR #692; the secret scanner, gate protection classes and snapshot dry run follow.",
   "related": [
@@ -34,19 +34,22 @@
       "id": "gate-protection-classes",
       "action": "every ci/gates.json gate declares claim, immutable-binding, supported-runtime, ledger-sentinel or exploratory; the 12 uncited red gates get a claim or leave; ruff gates core-000/001/002 leave because the lint job runs them",
       "acceptance": "a gate without a class fails the gates check; the scheduled audit is green or names a claim",
-      "state": "todo"
+      "state": "cancelled",
+      "reason": "Gate classes keyed to the schedule and the ledger tracer are deleted; moving every gate to the on-demand ci/gates.json replaces them."
     },
     {
       "id": "pr-gates-by-reach",
       "action": "ci/pr_checks.sh runs every reached gate inside the job budget longest first and reports an unfinished reached gate as pending by name instead of dropping it at 15 s; delivered together with the nightly split, the duplicate lint gates' removal and the unclaimed-acquisition report",
       "acceptance": "a diff reaching core-615 runs it on the pull request or reports it pending",
-      "state": "doing"
+      "state": "cancelled",
+      "reason": "Gate selection by reach, the 900 s budget and the pending list are deleted; no workflow runs ci/gates.json."
     },
     {
       "id": "nightly-cited-weekly-exhaustive",
       "action": "ci.yml runs claim, binding and runtime gates plus a rotating sentinel sample nightly and the exhaustive --ledger-audit weekly and on dispatch; the dormant pull_request and push branches gain a trigger or leave",
       "acceptance": "nightly wall time under 10 minutes; the weekly run reports the ledger audit",
-      "state": "todo"
+      "state": "cancelled",
+      "reason": "The scheduled audit, the tracer and the gate ledger are deleted; pr.yml runs lint, types and unit tests on each pull request and push to main, and ci/gates.json runs on demand."
     },
     {
       "id": "one-codex-round",
