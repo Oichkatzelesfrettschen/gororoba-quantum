@@ -33,13 +33,16 @@ def require(condition: bool, message: str) -> None:
 LICENSE_URLS = {
     "CC-BY-4.0": "https://creativecommons.org/licenses/by/4.0/",
     "CC0-1.0": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "CC-BY-SA-4.0": "https://creativecommons.org/licenses/by-sa/4.0/",
     "LicenseRef-arXiv-nonexclusive-distrib-1.0": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
     "LicenseRef-arXiv-assumed-1991-2003": "https://arxiv.org/licenses/assumed-1991-2003/",
     "CC-BY-NC-SA-3.0": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
     "CC-BY-NC-SA-4.0": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
     "CC-BY-NC-ND-4.0": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
 }
-PUBLIC_LICENSES = {"CC-BY-4.0", "CC0-1.0"}
+PUBLIC_LICENSES = {"CC-BY-4.0", "CC0-1.0", "CC-BY-SA-4.0"}
+# The printed form a publisher notice on the PDF must contain for the pdf-notice route.
+NOTICE_FORMS = {"CC-BY-4.0": "CC BY 4.0", "CC-BY-SA-4.0": "CC BY-SA 4.0", "CC0-1.0": "CC0 1.0"}
 ARXIV_VERSION = r"(?:\d{4}\.\d{4,5}|[a-zA-Z][a-zA-Z0-9.-]*/\d{7})v[1-9]\d*"
 
 
@@ -252,6 +255,37 @@ def verify_dmgaa_capture(entry: dict[str, Any], rights: dict[str, Any], raw_resp
     title = require_text(entry.get("title"), "captured DMGAA article registered title")
     headings = [re.sub(r"\s+", " ", text).strip() for text in re.findall(r"<h2[^>]*>(.*?)</h2>", html, re.I | re.S)]
     require(title.upper() in headings, "captured DMGAA article title identity")
+
+
+def verify_pdf_notice_evidence(root: Path, entry: dict[str, Any], rights: dict[str, Any], payload: bytes) -> None:
+    """Bind a recorded publisher license notice, printed on the PDF itself, to the published bytes.
+
+    The capture is a JSON record of a primary-source reading: the page that prints the notice, the notice verbatim,
+    the article page, and any metadata that names a different license, retained beside the decision.
+    """
+    relative = capture_relative_path(rights)
+    source = root / relative
+    require(
+        source.is_file() and not source.is_symlink() and source.resolve() == root.resolve() / relative,
+        "captured PDF notice file",
+    )
+    raw = source.read_bytes()
+    require(hashlib.sha256(raw).hexdigest() == rights["evidence_sha256"], "captured PDF notice SHA-256")
+    try:
+        record = require_mapping(json.loads(raw.decode("utf-8")), "captured PDF notice record")
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("captured PDF notice encoding") from error
+    require(record.get("schema") == "pdf-license-notice-v1", "captured PDF notice schema")
+    require(record.get("pdf_sha256") == entry["sha256"] == hashlib.sha256(payload).hexdigest(), "PDF notice identity")
+    require(record.get("source_url") == entry["source_url"], "PDF notice source identity")
+    require(record.get("article_url") == rights["evidence_url"], "PDF notice article identity")
+    page = record.get("page")
+    require(type(page) is int and page >= 1, "PDF notice page")
+    identifier = rights["license_identifier"]
+    require(record.get("license_identifier") == identifier, "PDF notice license identity")
+    notice = require_text(record.get("notice"), "PDF notice text")
+    require(identifier in NOTICE_FORMS and NOTICE_FORMS[identifier] in notice, "PDF notice names the license")
+    require(isinstance(record.get("metadata_conflicts"), list), "PDF notice metadata conflicts list")
 
 
 def verify_external_article_evidence(root: Path, entry: dict[str, Any], rights: dict[str, Any]) -> None:
@@ -787,6 +821,8 @@ def verify_source_rights(
         if osf is None:
             raise ValueError("published OSF evidence route")
         verify_osf_evidence(root, entry, rights, osf[1])
+    elif published and rights.get("evidence_route") == "pdf-notice":
+        verify_pdf_notice_evidence(root, entry, rights, payload)
     elif published:
         record = re.fullmatch(r"https://zenodo\.org/api/records/([1-9]\d*)", rights["evidence_url"])
         if record is None:
