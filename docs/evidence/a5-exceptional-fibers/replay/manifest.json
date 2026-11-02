@@ -19,6 +19,23 @@
    "est_source": "measured peak"
   },
   {
+   "id": "W8-N--32009-d4-N13-raw",
+   "fiber": "W8 -> N-",
+   "prime": 32009,
+   "d": 4,
+   "N": 13,
+   "mode": "raw",
+   "original_mode": "raw",
+   "expected_r_N": 1725,
+   "header": "working/inputs/w8_nm_fiber.sing",
+   "header_sha256_16": "59c26c9143dab52f",
+   "original_engine": "130f35904d21f5b4",
+   "original_seconds": 1320.1,
+   "original_source": "a5-failed-runs/falsify/laptop/v6/w8_d4_p1_v6.jsonl",
+   "est_gb": 11.97,
+   "est_source": "measured peak"
+  },
+  {
    "id": "Iso-32029-d5-N16-raw",
    "fiber": "Iso",
    "prime": 32029,
@@ -67,6 +84,23 @@
    "original_seconds": 3784.3,
    "original_source": "a5-failed-runs/kaggle-v7/bound/xm_d5_v7.jsonl",
    "est_gb": 4.99,
+   "est_source": "measured peak"
+  },
+  {
+   "id": "W8-N--32009-d3-N10-quotient",
+   "fiber": "W8 -> N-",
+   "prime": 32009,
+   "d": 3,
+   "N": 10,
+   "mode": "quotient",
+   "original_mode": "quotient",
+   "expected_r_N": 600,
+   "header": "working/build/inputs/p32009-r10754/w8-nm.sing",
+   "header_sha256_16": "585a946d2d75073e",
+   "original_engine": "130f35904d21f5b4",
+   "original_seconds": 884.3,
+   "original_source": "a5-failed-runs/reviews/codex-reaudit/w8-fresh.jsonl",
+   "est_gb": 3.83,
    "est_source": "measured peak"
   },
   {
