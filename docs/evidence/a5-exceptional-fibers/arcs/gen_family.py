@@ -166,6 +166,8 @@ def run_singular(script: Path, timeout: int = SINGULAR_TIMEOUT) -> str:
         )
     except subprocess.TimeoutExpired as exc:
         raise RuntimeError(f"{script.name}: Singular exceeded {timeout} s") from exc
+    if done.returncode != 0:
+        raise RuntimeError(f"{script.name}: Singular exited with status {done.returncode}: {done.stderr[-400:]}")
     return done.stdout + done.stderr
 
 

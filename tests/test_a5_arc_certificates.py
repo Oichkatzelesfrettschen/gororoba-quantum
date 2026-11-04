@@ -66,6 +66,7 @@ def test_relation_file_digest_binds_to_the_registry() -> None:
         T.k2_ideal(other)
 
 
+@pytest.mark.audit
 @pytest.mark.parametrize("name", sorted(T.TARGETS))
 def test_inputs_of_every_target_verify(name: str) -> None:
     target = T.TARGETS[name]
