@@ -10,6 +10,7 @@ usage: certify.py TARGET P1|P2 [OUT.json]    (reads families/ of the target dire
 
 from __future__ import annotations
 
+import dataclasses
 import itertools
 import json
 import re
@@ -117,6 +118,17 @@ class PointCheck:
         return bad
 
 
+@dataclasses.dataclass(frozen=True)
+class RankAt:
+    """Rank of the symbolic limit map's Jacobian at one parameter point."""
+
+    fj: Any
+    p: int
+
+    def __call__(self, pt: tuple[int, ...]) -> int:
+        return int(SF.jacobian_rank(self.fj, pt, self.p))
+
+
 def certify(
     target: Target,
     fam: Family,
@@ -151,7 +163,7 @@ def certify(
     for flag in flags:
         for key, value in flag.items():
             bad[key] += value
-    ranks = {str(pt): SF.jacobian_rank(fj, pt, p) for pt in RANK_POINTS}
+    ranks = {str(pt): rank for pt, rank in zip(RANK_POINTS, ordered_map(RankAt(fj, p), RANK_POINTS), strict=True)}
     return {
         "family_log": log_name,
         "component": comp,
