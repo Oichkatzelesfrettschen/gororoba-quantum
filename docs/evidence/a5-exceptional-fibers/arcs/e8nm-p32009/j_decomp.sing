@@ -1,0 +1,8 @@
+// dimension, degree and minimal primes of J (global dp ordering); the header defines ring r and the ideals J, G.
+LIB "primdec.lib";
+< "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/e8-nm.sing";
+ideal Js=std(J); "J gens", size(J), "dim", dim(Js), "deg", mult(Js);
+list L=minAssChar(J); "minimal primes of J:", size(L);
+int i; for (i=1;i<=size(L);i++) { ideal Q=std(L[i]); "prime", i, "dim", dim(Q), "deg", mult(Q); kill Q; }
+ideal M=std(maxideal(1)); for (i=1;i<=size(L);i++) { ideal Q=L[i]; "prime", i, "contained in the maximal ideal of the origin:", size(reduce(Q,M))==0; kill Q; }
+quit;

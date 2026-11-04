@@ -1,0 +1,20 @@
+{
+ "P1_near_e-1": {
+  "points": 270,
+  "in_own_P1": 270,
+  "in_own_P2": 0,
+  "in_own_K2": 270,
+  "in_other_P1": 0,
+  "in_other_P2": 0,
+  "in_other_K2": 0
+ },
+ "P2_first_order": {
+  "points": 270,
+  "in_own_P1": 0,
+  "in_own_P2": 270,
+  "in_own_K2": 270,
+  "in_other_P1": 0,
+  "in_other_P2": 270,
+  "in_other_K2": 270
+ }
+}

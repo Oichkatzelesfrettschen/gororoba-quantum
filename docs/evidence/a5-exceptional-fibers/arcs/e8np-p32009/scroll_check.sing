@@ -1,0 +1,17 @@
+// V(P2) is the cone over a rational normal scroll S(1,1,2) in P^6: eliminate the scroll parameters (s, t, l, mu)
+// from the parametrization and compare with P2 (global dp ordering; elimination by the block ordering of eliminate()).
+LIB "elim.lib";
+ring B=32009,(s,t,l,mu,y(1..21)),dp;
+number I=10754;
+ideal Par=y(1)+I*y(20), y(2), y(3)-s^2, y(4), y(5)+y(16), y(6), y(7), y(8), y(9), y(10)-I*mu*t, y(11)-l*t, y(12), y(13), y(14),
+  y(15)-I*y(16), y(16)-mu*s, y(17)+I*y(18), y(18)-l*s, y(19), y(20)-s*t, y(21)+I*t^2;
+ideal Im=eliminate(Par,s*t*l*mu); Im=std(Im);
+ring Y=32009,(y(1..21)),dp;
+ideal P2=y(19),y(17)+10754*y(18),y(15)-10754*y(16),y(14),y(13),y(12),y(9),y(8),y(7),y(6),y(5)+y(16),y(4),y(2),y(1)+10754*y(20),y(20)^2-10754*y(3)*y(21),y(11)*y(20)-10754*y(18)*y(21),y(10)*y(20)+y(16)*y(21),y(11)*y(16)+10754*y(10)*y(18),y(3)*y(11)-y(18)*y(20),y(3)*y(10)-10754*y(16)*y(20);
+ideal P2s=std(P2);
+setring B;
+map toB=Y,y(1),y(2),y(3),y(4),y(5),y(6),y(7),y(8),y(9),y(10),y(11),y(12),y(13),y(14),y(15),y(16),y(17),y(18),y(19),y(20),y(21);
+ideal P2B=toB(P2); P2B=std(P2B);
+"image ideal equals P2:", size(reduce(P2B,Im))==0 and size(reduce(Im,P2B))==0;
+"dim of image (affine cone)", dim(Im)-4, "deg", mult(Im);
+quit;
