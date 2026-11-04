@@ -2,6 +2,40 @@
  "schema": "a5-fiber-replay-v1",
  "entries": [
   {
+   "id": "E8-N--32029-d4-N15-quotient",
+   "fiber": "E8-bar -> N-",
+   "prime": 32029,
+   "d": 4,
+   "N": 15,
+   "mode": "quotient",
+   "original_mode": "quotient",
+   "expected_r_N": 495,
+   "header": "working/build/inputs/p32029-r9115/e8-nm.sing",
+   "header_sha256_16": "48bdcbe0fa17d04c",
+   "original_engine": "d4441012e6984663",
+   "original_seconds": 11149.4,
+   "original_source": "n15-laptop/e8nm_d4_n15_p32029_v9m.json",
+   "est_gb": 57.28,
+   "est_source": "1.3 x preflight estimate"
+  },
+  {
+   "id": "X--32029-d5-N19-quotient",
+   "fiber": "X-",
+   "prime": 32029,
+   "d": 5,
+   "N": 19,
+   "mode": "quotient",
+   "original_mode": "quotient",
+   "expected_r_N": 417,
+   "header": "working/build/inputs/p32029-r9115/xm-nm.sing",
+   "header_sha256_16": "98de6225b05399df",
+   "original_engine": "ea56c9cab5baf1d9",
+   "original_seconds": 825.2,
+   "original_source": "d5-p2/xm_d5_n19.json",
+   "est_gb": 13.11,
+   "est_source": "1.3 x preflight estimate"
+  },
+  {
    "id": "W8-N--32029-d4-N13-raw",
    "fiber": "W8 -> N-",
    "prime": 32029,
@@ -70,6 +104,23 @@
    "est_source": "measured peak"
   },
   {
+   "id": "E8-N--32009-d4-N15-quotient",
+   "fiber": "E8-bar -> N-",
+   "prime": 32009,
+   "d": 4,
+   "N": 15,
+   "mode": "quotient",
+   "original_mode": "quotient",
+   "expected_r_N": 495,
+   "header": "working/build/inputs/p32009-r10754/e8-nm.sing",
+   "header_sha256_16": "7d3521d0e8026e6f",
+   "original_engine": "7849cbc71ccf1787",
+   "original_seconds": 559.6,
+   "original_source": "n15-laptop/e8nm_d4_n15_p32009_v11.json",
+   "est_gb": 8.65,
+   "est_source": "1.3 x preflight estimate"
+  },
+  {
    "id": "X--32009-d5-N19-quotient",
    "fiber": "X-",
    "prime": 32009,
@@ -85,6 +136,23 @@
    "original_source": "a5-failed-runs/kaggle-v7/bound/xm_d5_v7.jsonl",
    "est_gb": 4.99,
    "est_source": "measured peak"
+  },
+  {
+   "id": "E8-VB-32029-d5-N16-quotient",
+   "fiber": "E8-bar -> VB",
+   "prime": 32029,
+   "d": 5,
+   "N": 16,
+   "mode": "quotient",
+   "original_mode": "quotient",
+   "expected_r_N": 266,
+   "header": "working/build/inputs/p32029-r9115/e8-vb.sing",
+   "header_sha256_16": "6b3cea4923b4e0e2",
+   "original_engine": "ea56c9cab5baf1d9",
+   "original_seconds": 749.8,
+   "original_source": "d5-p2/vb_d5_n16.json",
+   "est_gb": 4.65,
+   "est_source": "1.3 x preflight estimate"
   },
   {
    "id": "W8-N--32009-d3-N10-quotient",
