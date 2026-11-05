@@ -1,0 +1,6 @@
+LIB "primdec.lib"; option(redSB); system("--ticks-per-sec",1); int t0=rtimer;
+ring Y=32009,(y(1..17)),dp; execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/runs/s3/iso_k2.rel")+";"); K=std(K);
+"RESULT K dim", dim(K), "deg", mult(K);
+"RESULT colon y(2) equal", size(reduce(std(quotient(K,y(2))),K))==0;
+ideal Kc=std(subst(K,y(2),1)); ideal rc=std(radical(Kc)); "RESULT chart 2 radical", size(reduce(rc,Kc))==0, "s", rtimer-t0;
+quit;

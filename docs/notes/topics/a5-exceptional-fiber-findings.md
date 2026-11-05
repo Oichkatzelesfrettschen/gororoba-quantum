@@ -188,7 +188,7 @@ ran 40,000 s without a result. Taking the radical first and `minAssChar` decompo
 | E8-bar -> N+- | no | 16, 69, 195, 440 | two: (4, 11), (3, 4), computed on N+ and again on N- (9 and 14 linear generators, 12 s, Kaggle CPU), as the pair flip requires |
 | E8-bar -> VB | yes | 10, 34, 80, 155 | two: (3, 3), (3, 4) |
 | Iso | radical on 12 of 17 affine charts (8,000 s per chart); 5 charts unfinished | | one facstd piece, projective dimension 4, degree 23; prime split not reached (whole-ideal `minAssChar` and `minAssGTZ` each past 41,000 s) |
-| W8 -> N- | yes | 24, 156, 600 | K2 = P cap (K2 : P), checked by recomputing the intersection: P is prime of projective dimension 5 and degree 20 with 9 linear generators (the unique minimal prime of facstd piece 1, `minAssChar` 1,114 s; the global radical test took 24,548 s; the kernels report seconds in fields named `_ms`) and contains K2; K2 : P has projective dimension 5, degree 30 and 131 generators (quotient 26 ms); all at p = 32009, where K2 has the same Hilbert series as at 32029, so the degrees add to 50; P and K2, hence K2 : P, are fixed by the diagonal Klein four-group; K2 : P is not yet decomposed (`minAssChar` on facstd piece 2 ran past 41,000 s) |
+| W8 -> N- | yes | 24, 156, 600 | K2 = P cap (K2 : P), checked by recomputing the intersection: P is prime of projective dimension 5 and degree 20 with 9 linear generators (the unique minimal prime of facstd piece 1, `minAssChar` 1,114 s; the global radical test took 24,548 s; the kernels report seconds in fields named `_ms`) and contains K2; K2 : P has projective dimension 5, degree 30 and 131 generators (quotient 26 ms); all at p = 32009, where K2 has the same Hilbert series as at 32029, so the degrees add to 50; P and K2, hence K2 : P, are fixed by the diagonal Klein four-group; K2 : P is geometrically prime at p = 32009 (QRNG point sections, [structure/w8-kp](../../evidence/a5-exceptional-fibers/structure/w8-kp/README.md); `minAssChar` on facstd piece 2 had run past 41,000 s) |
 
 The quadric schemes V(K2) have projective dimension 3 and degree 12 (X-), 4 and 11 (E8-bar -> N+-), 5 and 50 (W8,
 h = 24, 156, 600, 1725), 3 and 7 (E8-bar -> VB, h = 10, 34, 80, 155). Each dimension where a germ bound exists
@@ -274,7 +274,9 @@ outside P, or the degrees could not add to 50). Because a Cohen-Macaulay k[y]/K2
 associated primes, F(I) = k[y]/K2 exactly when Proj F(I) contains V(P) and every component of V(K2 : P): a fiber
 inside V(P) has multiplicity at most 20, one inside V(K2 : P) at most 30, and set-theoretic equality forces
 multiplicity 50 since each component then counts at least once. Arc families reaching a general point of each
-top-dimensional component decide it, which makes the decomposition of K2 : P the prerequisite.
+top-dimensional component decide it. At p = 32009 K2 : P is geometrically prime of degree 30
+([structure/w8-kp](../../evidence/a5-exceptional-fibers/structure/w8-kp/README.md)), so the targets are exactly V(P) and
+V(K2 : P).
 
 **The fiber cone F(I) is Cohen-Macaulay.** Falsified for X- and E8-bar -> N+- if their analytic spread equals a. By
 D'Cruz, Raghavan and Verma (arXiv math/0212119, Theorem 2.1) a Cohen-Macaulay F(I) of dimension a has (1 - t)^a
@@ -337,10 +339,10 @@ non-reduced tangent cone; arcs on the normalization replace them.
   has 3 nilpotent linear directions; the fiber's support lies in that threefold and equals it only with an arc
   certificate, and the nilpotent part needs a scheme-theoretic construction rather than arcs.
 - Iso: Hilbert function equal to the quadric values through degree 5 at both primes (h_4 = 640 by two methods,
-  h_5 = 1,316); K2 radical on 12 of
-  17 charts; no prime decomposition yet.
+  h_5 = 1,316); K2 radical, Cohen-Macaulay and geometrically prime of degree 23 at both primes
+  ([structure/iso-k2](../../evidence/a5-exceptional-fibers/structure/iso-k2/sections/README.md)), so Iso arcs need the one target V(K2).
 - W8 -> N-: Hilbert function equal to the quadric values through degree 4 at both primes (h_4 = 1,725); K2 radical, equal to P cap (K2 : P) with P prime (5, 20) and K2 : P of projective dimension 5 and
-  degree 30, not yet decomposed; W8 -> N+ follows through the t9 isomorphism; F(I) = k[y]/K2 holds exactly when
+  degree 30, geometrically prime at 32009; h_5 = 4,116 at 32009 (r_16, two product sets); W8 -> N+ follows through the t9 isomorphism; F(I) = k[y]/K2 holds exactly when
   arcs reach every top-dimensional component of V(K2).
 - Coverage (`claims.json`): every pair is certified through degree 3 at both primes; through degree 4 for W8 and
   Iso at both primes and for X and E8-bar -> VB at 32009; through degree 5 for Iso at both primes and for X and
@@ -409,11 +411,11 @@ measurement), *superseded* (replaced by a stronger or cheaper route).
 | F(I) = k[y]/K2 for E8-bar -> VB | survives through degree 5 at 32009 (h_5 = 266, r_16 by engine v7) | degree 6; degree 5 at a second prime |
 | F(I) = k[y]/K2 for X+- | survives through degree 5 at 32009 (h_4 = 240; h_5 = 417, r_19, r_20 and r_21 by engine v7) | degree 6; degree 5 at a second prime |
 | F(I) = k[y]/K2 for Iso | survives through degree 5 at both primes (h_5 = 1,316, r_16 by the linear-algebra truncated rank) and degree 4 at both primes (h_4 = 640 by the full std at 32009 and by the jet rank at N = 13 at both 32009 and 32029) | degree 6 |
-| F(I) = k[y]/K2 for W8 | survives through degree 4 (h_4 = 1,725 at 32029 and 32009, r_13 by the linear-algebra truncated rank; h_3 = 600 at 32029 and 32009 by the linear-algebra truncated rank; the 32009 upper bound rests on the degree-2 receipt `distribute/out/a5-w8-receipt-p1` (h_2 = 156, 144 relations, membership failures 0, 6,560 s products std, 325 s membership, 6.7 GB), whose relation file spans the K2 of `runs/w8_a2` by its k2-span witness; W8 -> N+ carries degrees 1 to 4 at both primes by the t9 sign isomorphism) | degree 5 |
+| F(I) = k[y]/K2 for W8 | survives through degree 5 at 32009 (h_5 = 4,116 = HF(k[y]/K2, 5), r_16 by engine v11 with and without the degree-2 receipt, blocks 1017, 1005, 1047, 1047, [w8-n16-azure](../../evidence/a5-exceptional-fibers/w8-n16-azure/README.md)) and through degree 4 (h_4 = 1,725 at 32029 and 32009, r_13 by the linear-algebra truncated rank; h_3 = 600 at 32029 and 32009 by the linear-algebra truncated rank; the 32009 upper bound rests on the degree-2 receipt `distribute/out/a5-w8-receipt-p1` (h_2 = 156, 144 relations, membership failures 0, 6,560 s products std, 325 s membership, 6.7 GB), whose relation file spans the K2 of `runs/w8_a2` by its k2-span witness; W8 -> N+ carries degrees 1 to 4 at both primes by the t9 sign isomorphism) | degree 5 at 32029; degree 6 |
 | F(I) = k[y]/K2 for E8-bar -> N+- | survives through degree 4 at both primes (h_4 = 495, r_15 by engines v9 and v11, r_16 by v11 at 32009); degree 5 open with 861 <= h_5 <= 952: exact arc families reach both minimal primes of sqrt(K2) at both primes (`evidence/a5-exceptional-fibers/arcs/`), so L lies in sqrt(K2) and F(I) surjects onto k[y]/sqrt(K2), whose degree-5 value is 861; the truncated ranks r_15 = r_16 = 742 are a truncation plateau | the exact h_5, by a degree-5 receipt on the 91-dimensional space sqrt(K2)_5 / K2_5 |
 | k[y]/K2 is Cohen-Macaulay for E8-bar -> VB, Iso and W8 -> N- | survives (generic linear section length 7, 23, 50 equal to the degree at 32009 and at 32029; `k2_cm.py`) | none at either prime |
 | For E8-bar -> VB, Iso and W8, F(I) = k[y]/K2 in all degrees iff the analytic spread and multiplicity of F(I) are (4, 7), (5, 23), (6, 50) | survives (argument: the quadric ring is Cohen-Macaulay, so L/K2 is zero or of full dimension) | none; an argument |
-| For W8 -> N-, F(I) = k[y]/K2 iff Proj F(I) contains V(P) and every component of V(K2 : P) | survives (argument: K2 radical and Cohen-Macaulay, components of degree 20 and 30; a proper subfiber has multiplicity below 50) | none; an argument. Deciding it needs the decomposition of K2 : P and arcs to each component |
+| For W8 -> N-, F(I) = k[y]/K2 iff Proj F(I) contains V(P) and every component of V(K2 : P) | survives (argument: K2 radical and Cohen-Macaulay, components of degree 20 and 30; a proper subfiber has multiplicity below 50) | none; an argument. K2 : P is geometrically prime at 32009, so arcs to a general point of V(P) and of V(K2 : P) decide it |
 | Sign-paired fibers are isomorphic (every Y -> N+ with phi(Y) -> N-) | proved in every characteristic: phi(a, b) = (a, -b) is an automorphism of A_5 exchanging X+ and X-, N+ and N- and preserving W8, E8-bar, Iso, B9, V, VB, and L_phi(y) = phi L_y phi^-1 makes the kernel map equivariant (`evidence/a5-exceptional-fibers/structure/`); the hash-bound witnesses of `witnesses.jsonl` are instances and re-derive identically | none; a proof |
 | F(I) is Cohen-Macaulay for X+- and E8-bar -> N+- | refuted if the analytic spread is 4 and 5 (negative D'Cruz-Raghavan-Verma numerators in certified degrees) | the analytic spread |
 | The E8-bar -> VB fiber contains the degree-4 component | survives (certified over F_32009) | second-prime arc replay |

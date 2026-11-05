@@ -1,0 +1,6 @@
+LIB "primdec.lib"; option(redSB); system("--ticks-per-sec",1); int t0=rtimer;
+ring Y=32009,(y(1..17)),dp; execute("ideal K="+read("k2.rel")+";");
+ideal Kc=std(subst(K,y(1),1)); "RESULT chart 1 dim", dim(Kc), "s", rtimer-t0;
+ideal rc=std(radical(Kc)); "RESULT chart 1 radical", size(reduce(rc,Kc))==0, "s", rtimer-t0;
+write(":w chart1-radical.txt", rc);
+quit;

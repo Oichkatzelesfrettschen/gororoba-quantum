@@ -66,6 +66,21 @@ incidence with s above the germ dimension (V -> N+-, E8-bar -> Va+-, same-sign X
 Iso -> N+-, W8 -> N+-) therefore has a proper fiber, as recorded; smoothness of the source germ is neither needed nor
 sufficient.
 
+## Prime decompositions of the quadric schemes, and the components of the E8-bar base locus
+
+[iso-k2/chart-colon/](iso-k2/chart-colon/README.md) proves the Iso -> N- kernel K2 radical at p = 32009 and p = 32029:
+K2 : y_i = K2 for every coordinate and a reduced chart y_i = 1 embed k[y]/K2 in a Laurent ring over a reduced ring.
+[iso-k2/sections/](iso-k2/sections/README.md) proves it prime and geometrically prime at both primes from QRNG linear
+sections cut to 23 points: Cohen-Macaulay by an Artinian reduction of length 23 = degree, one Frobenius orbit of size
+23 in a section, and an orbit size prime to 23. [w8-kp/](w8-kp/README.md) proves the W8 -> N- residual K2 : P
+geometrically prime of degree 30 at p = 32009 by the same point sections (orbit partitions 3 + 3 + 24 and 8 + 22 share
+no proper subset sum; size-1 orbits exclude conjugate components), so V(K2) = V(P) cup V(K2 : P) with degrees 20 and
+30. [e8-base-components/](e8-base-components/provenance.txt) (`e8_base2.py`) pulls the nullity-12 closures back
+through E8-bar -> N- at both primes: B9 (dimension 3, degree 1), V (2, 4), VB (1, 1), Va- (1, 1), Va+ absent, F in
+each, with V(VB) inside V(B9) and V(V) and V(Va-) inside V(V), so the germ of the base locus at 0 has the two
+components B9 and V. Each section or pullback runs in seconds; the whole-ideal radical and `minAssChar` runs they
+replace stalled past 40,000 s.
+
 ## Falsifiers
 
 A basis pair failing the automorphism identity, an orbit representative whose phi-image leaves the predicted closure, a
