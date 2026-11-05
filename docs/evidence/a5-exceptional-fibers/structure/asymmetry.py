@@ -21,8 +21,11 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[1] / "a5-strata-regularity"))
+sys.path.insert(0, str(HERE.parents[3] / "gororoba_quantum"))
 
 import strata_regularity as sr  # noqa: E402
+
+import parallel  # noqa: E402
 
 BASE = sr.closure_ideals
 
@@ -35,10 +38,15 @@ def extended_ideals(mutation: str = "") -> dict[str, list[Any]]:
     return out
 
 
-def main() -> int:
+def germ(job: tuple[str, str, str]) -> dict[str, Any]:
+    """germ_job on the extended table; each worker installs the extension in its own process."""
     sr.closure_ideals = extended_ideals
+    return sr.germ_job(job)
+
+
+def main() -> int:
     jobs = [(closure, orbit, "") for closure in ("EhatMu", "MuEtaD", "MuEtaS") for orbit in ("Nm", "Np")]
-    rows = [sr.germ_job(job) for job in jobs]
+    rows = list(parallel.ordered_map(germ, jobs, min_items=2))
     (HERE / "logs").mkdir(exist_ok=True)
     (HERE / "logs" / "asymmetry.json").write_text(json.dumps(rows, indent=1) + "\n", encoding="utf-8")
     for row in rows:

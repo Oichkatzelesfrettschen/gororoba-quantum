@@ -291,7 +291,7 @@ column span fails the containment test, and deleting one generator of the `W8`-t
 and breaks both committed arc containments. A changed generator count, embedding rank, fiber component, arc
 containment or characteristic comparison falsifies the record.
 
-`E8bar->VB` stays open. Its minimal generator count is 10 against a germ of dimension 4 whose tangent cone is
+`E8bar->VB` stays open here as a Rees elimination; the exceptional-fiber track carries its Hilbert ladder: the fiber cone equals k[y]/K2 through degree 5 at p = 32009 and p = 32029 by the linear-algebra truncated rank ([exceptional-fiber evidence](../a5-exceptional-fibers/README.md)), and the open item there is whether the degree-3 component of V(K2) lies in the fiber. Its minimal generator count is 10 against a germ of dimension 4 whose tangent cone is
 non-reduced (`t8^2` lies in it, `t8` does not), so its fiber is a proper subvariety of `P^9`. Modulo 32003 the
 reduced Rees elimination exhausts 4 GiB; `slimgb` reaches a 15-minute timeout at 346 MB; plain `std` under 16 GiB
 reaches a 30-minute timeout at 14 GB; and the degree-by-degree fiber cone takes 107 s for degree 2 and exhausts

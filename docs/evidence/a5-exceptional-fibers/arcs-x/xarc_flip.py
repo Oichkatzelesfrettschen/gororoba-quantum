@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import itertools
 import sys
+from pathlib import Path
 
 from xarc_common import VARS, Header, Poly, load_headers
 
@@ -47,8 +48,8 @@ def matches(src: Header, dst: Header) -> list[tuple[tuple[int, ...], int, list[t
     return rows
 
 
-def main(prime: int) -> None:
-    headers = load_headers(prime)
+def main(prime: int, root: int | None = None, header_dir: Path | None = None) -> None:
+    headers = load_headers(prime, root, header_dir)
     for flips, j_hits, g_hits in matches(headers["xp-nm"], headers["xm-np"]):
         if j_hits >= MIN_MATCHING_J:
             print("flip", dict(zip(VARS, flips, strict=True)), "matching J gens", j_hits)

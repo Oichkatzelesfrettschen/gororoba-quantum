@@ -11,8 +11,9 @@ Every computation below runs over F_32009 with i = 10754 (a split prime, so the 
 extension field), in global monomial orderings, each Singular job in a cgroup scope with `MemoryMax` and
 `MemorySwapMax=0`. Results over F_p certify that reduction only; a characteristic-zero statement needs a specialization
 argument (a common model over a localization of Z[i] whose standard bases, membership identities and ranks specialize
-at the chosen prime), and agreement at a second prime is a consistency check rather than that argument. The run directories, logs and normal-form files are unretained working data in the
-git-ignored `docs/local/a5-failed-runs/`; a result enters the tracked record through the
+at the chosen prime), and agreement at a second prime is a consistency check rather than that argument. The retained run inputs, logs and records live under
+[`evidence/a5-exceptional-fibers/working/`](../../evidence/a5-exceptional-fibers/README.md), and a result enters the
+tracked record through that registry (claims.json, certificates.jsonl) or the
 [kernel-attachments evidence](../../evidence/a5-kernel-attachments/README.md) and its ledger.
 
 ## Pairs

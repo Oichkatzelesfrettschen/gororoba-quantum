@@ -362,8 +362,8 @@ def certify(h: Header, limit_log: str, phi_log: str, ctl_log: str) -> tuple[dict
     return result, details
 
 
-def main(prime: int, slug: str) -> None:
-    h = load_headers(prime)[slug]
+def main(prime: int, slug: str, root: int | None = None, header_dir: Path | None = None) -> None:
+    h = load_headers(prime, root, header_dir)[slug]
     logs = prime_dir("logs", prime)
     result, details = certify(
         h,

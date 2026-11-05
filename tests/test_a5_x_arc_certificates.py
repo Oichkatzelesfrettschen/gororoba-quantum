@@ -61,6 +61,7 @@ def test_header_directory_is_unique_per_prime() -> None:
         K.find_header_dir(99991)
 
 
+@pytest.mark.audit
 @pytest.mark.parametrize("prime", PRIMES)
 def test_headers_match_the_emission_receipt(prime: int) -> None:
     directory = K.find_header_dir(prime)
@@ -71,6 +72,7 @@ def test_headers_match_the_emission_receipt(prime: int) -> None:
         _check(digest == row["header_sha256"])
 
 
+@pytest.mark.audit
 @pytest.mark.parametrize("prime", PRIMES)
 def test_generated_scripts_equal_the_retained_scripts(prime: int) -> None:
     texts = G.scripts(_headers(prime))
@@ -174,6 +176,7 @@ def test_sign_change_of_t9_relates_the_two_incidences() -> None:
         _check(any(flips == t9_only and j_hits == 12 and len(g_hits) == 3 for flips, j_hits, g_hits in rows))
 
 
+@pytest.mark.audit
 @pytest.mark.parametrize(("prime", "slug"), CASES)
 def test_retained_records_certify_the_fiber(prime: int, slug: str) -> None:
     header = _headers(prime)[slug]
@@ -189,6 +192,7 @@ def test_retained_records_certify_the_fiber(prime: int, slug: str) -> None:
     _check(res["limit_map"]["F1"].endswith(" W^2"))
 
 
+@pytest.mark.audit
 @pytest.mark.parametrize("prime", PRIMES)
 def test_retained_ideal_checks_show_a_smooth_curve_germ(prime: int) -> None:
     logs = K.prime_dir("logs", prime)

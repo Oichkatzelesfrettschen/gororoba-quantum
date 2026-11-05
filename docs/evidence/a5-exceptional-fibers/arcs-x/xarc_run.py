@@ -88,13 +88,13 @@ def run(prime: int, root: int | None, header_dir: Path | None) -> None:
 
     flip_log = io.StringIO()
     with contextlib.redirect_stdout(flip_log):
-        xarc_flip.main(prime)
+        xarc_flip.main(prime, root, header_dir)
     (logs / "flip_check.log").write_text(flip_log.getvalue())
 
     for slug in INCIDENCES:
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
-            xarc_certify.main(prime, slug)
+            xarc_certify.main(prime, slug, root, header_dir)
         (logs / f"certify_{slug}.log").write_text(out.getvalue())
         print(out.getvalue(), end="")
 

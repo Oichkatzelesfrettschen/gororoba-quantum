@@ -6,7 +6,7 @@ import sys
 from fractions import Fraction
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "gororoba_quantum"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "gororoba_quantum"))
 from cd_core import cd_multiply_exact  # noqa: E402
 
 

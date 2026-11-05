@@ -7,8 +7,8 @@ membership of each image; nullity preserved."""
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "a5-strata-regularity"))
-sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "gororoba_quantum"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "a5-strata-regularity"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "gororoba_quantum"))
 import strata_regularity as sr  # noqa: E402
 
 
