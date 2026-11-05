@@ -24,7 +24,7 @@ Findings.
   and all 98,280 products) with the same per-block ranks of the closure space W, so the receipt path is confirmed on
   this instance: the 94,164 products the receipt drops add no rank, as its 265 sampled nonstandard checks showed.
 - The Singular stage is deterministic across hosts and worker counts: all ten export files agree byte for byte, so
-  the export kept on westus3 (`exports/w8nm-n16-rcpt`, 235 MB, retained outside the repository) is the export of either run.
+  the export kept on westus3 (`exports/w8nm-n16-rcpt`, 235 MB, 32 files; held in the local session tree, retention pending the owner's decision) is the export of either run.
 - The receipt halves the closure (1.95x) and the peak memory (0.54x) on half the VM; the products stage drops only
   1.12x for 24x fewer products, so most of that stage's cost is independent of the product count. Inference, not
   profiled: the per-generator multiplication tables dominate it, so a further speedup lies there rather than in

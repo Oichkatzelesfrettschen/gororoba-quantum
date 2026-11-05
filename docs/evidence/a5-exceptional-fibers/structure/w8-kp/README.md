@@ -8,7 +8,9 @@ component of V(K2 : P)) needs arcs into V(P) and into V(Q) only.
 Inputs. Q is `quotient.txt` (sha256 dd18bea7..., written by
 `check.sing`, whose log `check.log` records K2 = P cap (K2 : P), P prime of degree 20, K2 : P of projective dimension 5
 and degree 30). Premises from `docs/notes/topics/a5-exceptional-fiber-findings.md`: K2 radical (W8 row of the
-structure table), k[y]/K2 Cohen-Macaulay at 32009 (section "The quadric ring k[y]/K2 is Cohen-Macaulay"), so every
+structure table), k[y]/K2 Cohen-Macaulay at 32009 for `runs/w8_a2/w8_k2.rel` (`k2-cm.jsonl`; `same-k2.sing` and
+`same-k2.log` show that this K2, the K of `check.sing` and the degree-2 receipt relations
+`distribute/out/a5-w8-receipt-p1/w8_p1/d2/relations-d2.rel` contain one another, in the same coordinates y(1..24)) (section "The quadric ring k[y]/K2 is Cohen-Macaulay"), so every
 minimal prime of K2 has projective dimension 5 and none is embedded; Q, the intersection of the minimal primes of K2
 other than P, is radical and equidimensional of degree 30.
 
@@ -68,10 +70,12 @@ sha256 ed601263..., Cohen-Macaulay of degree 50 by `k2-cm.jsonl`) with 1,344 fur
 
 Every section is 50 distinct points, so K2 is radical at 32029 (a reduced Artinian reduction of a Cohen-Macaulay
 graded ring lifts reducedness along the regular sequence). The proper subset sums common to all eight partitions are
-17, 20, 30 and 33. `p-p32029-check.sing` adds the nine linear generators of P at 32009 with i = 10754 replaced by the
-32029 root 9115: K2 + Lambda has projective dimension 5 and degree 20, and section 1 cuts it to 20 distinct points
-with orbits 1, 1, 3, 15 (`p-p32029-check.log`). The 5-dimensional part of V(K2 + Lambda) is the union of the
-components of V(K2) inside V(Lambda), of total degree 20; with component degrees in {17, 20, 30, 33} that is one
+17, 20, 30 and 33. `p-p32029-check.sing` takes Lambda, the nine linear forms of P at 32009 with i = 10754 replaced by
+the 32029 root 9115 (a choice of linear space; nothing below needs Lambda to cut out a prime): K2 + Lambda has
+projective dimension 5 and degree 20, and section 1 cuts it to 20 distinct points with orbits 1, 1, 3, 15
+(`p-p32029-check.log`), a subset of the 50 points of section 1 of K2. The 20 distinct points make 20 the degree of the
+reduced 5-dimensional part of V(K2 + Lambda), excluding a doubled component of degree 10; that part is the union of
+the components of V(K2) inside V(Lambda), of total degree 20; with component degrees in {17, 20, 30, 33} that is one
 component of degree 20, and the rest, of degree 30, is one component. In section 1 the degree-20 component holds the
 orbits 1, 1, 3, 15 and the degree-30 component 1, 1, 28, so each has a size-1 orbit and is geometrically irreducible.
 So at p = 32029 as at p = 32009, K2 = P cap Q with P and Q geometrically prime of degrees 20 and 30.
