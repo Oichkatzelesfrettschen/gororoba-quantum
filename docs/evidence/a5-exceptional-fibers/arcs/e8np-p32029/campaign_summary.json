@@ -1,0 +1,218 @@
+{
+ "target": "e8np-p32029",
+ "fiber": "E8-bar -> N+",
+ "prime": 32029,
+ "i": 9115,
+ "sign_t9": -1,
+ "symbolic_families": {
+  "scan_k_rs": {
+   "total": 324,
+   "classes": {
+    "P2-only": 324
+   },
+   "x0_not_origin": 0
+  },
+  "scan_k_pq": {
+   "total": 324,
+   "classes": {
+    "P2-only": 324
+   },
+   "x0_not_origin": 0
+  },
+  "scan_near": {
+   "total": 648,
+   "classes": {
+    "P1-only": 193,
+    "P1-and-P2": 116,
+    "no-order": 15,
+    "P2-only": 324
+   },
+   "x0_not_origin": 0
+  }
+ },
+ "symbolic_totals": {
+  "P2-only": 972,
+  "P1-only": 193,
+  "P1-and-P2": 116,
+  "no-order": 15
+ },
+ "max_jacobian_rank_by_class": {
+  "P2-only": 4,
+  "P1-only": 5,
+  "P1-and-P2": 3
+ },
+ "families_with_jacobian_rank_5": [
+  "near_e-1_j2_a2_b1_c1_d1"
+ ],
+ "p1_only_families_with_rank_4": [
+  "near_e-1_j1_a1_b1_c1_d1",
+  "near_e-1_j1_a1_b2_c2_d2",
+  "near_e-1_j1_a1_b2_c2_d3",
+  "near_e-1_j1_a1_b2_c2_d4",
+  "near_e-1_j2_a2_b1_c1_d2",
+  "near_e-1_j2_a2_b1_c1_d3",
+  "near_e-1_j2_a2_b1_c1_d4",
+  "near_e-1_j2_a2_b1_c2_d1",
+  "near_e-1_j2_a2_b2_c1_d1",
+  "near_e-1_j2_a2_b2_c2_d2",
+  "near_e-1_j2_a2_b1_c3_d1",
+  "near_e-1_j2_a2_b3_c1_d1",
+  "near_e-1_j2_a2_b3_c3_d3",
+  "near_e-1_j2_a3_b1_c1_d1",
+  "near_e-1_j3_a2_b1_c1_d1"
+ ],
+ "families_without_order_up_to_7": [
+  "near_e-1_j2_a3_b3_c3_d2",
+  "near_e-1_j2_a3_b3_c3_d3",
+  "near_e-1_j2_a3_b3_c3_d4",
+  "near_e-1_j3_a3_b2_c2_d2",
+  "near_e-1_j3_a3_b2_c2_d3",
+  "near_e-1_j3_a3_b2_c2_d4",
+  "near_e-1_j3_a3_b2_c3_d2",
+  "near_e-1_j3_a3_b2_c3_d3",
+  "near_e-1_j3_a3_b2_c3_d4",
+  "near_e-1_j3_a3_b3_c2_d2",
+  "near_e-1_j3_a3_b3_c2_d3",
+  "near_e-1_j3_a3_b3_c2_d4",
+  "near_e-1_j3_a3_b3_c3_d2",
+  "near_e-1_j3_a3_b3_c3_d3",
+  "near_e-1_j3_a3_b3_c3_d4"
+ ],
+ "numeric_survey": {
+  "status: not-regular: pole of ord": 108,
+  "status: base point off V(G)": 216,
+  "other base point | neither | OUTSIDE K2": 120,
+  "line t1=t3 | P2 | in K2": 32,
+  "origin | P2 | in K2": 64
+ },
+ "numeric_survey_other_base_points": {
+  "distinct": 12,
+  "pattern_of_zero_coordinates": [
+   "000xxxx00",
+   "x0xxxxx00"
+  ],
+  "t1_eq_t3_t4_eq_t6_t5_eq_t7_and_t2_t8_t9_zero": true
+ },
+ "certificates": {
+  "P2": {
+   "family_log": "families/fam_p2_first_order_n2.log",
+   "component": "P2",
+   "order_nu": 2,
+   "points_checked": 270,
+   "grid_size": 270,
+   "failures": {
+    "not_regular": 0,
+    "off_origin": 0,
+    "J_nonzero": 0,
+    "order": 0,
+    "symbolic": 0,
+    "not_target": 0,
+    "not_K2": 0,
+    "in_other": 0
+   },
+   "jacobian_rank": {
+    "(3, 5, 7, 11, 2)": 4,
+    "(1, 2, 3, 4, 5)": 4,
+    "(7, 13, 1, 11, 10)": 4,
+    "(2, 9, 4, 6, 3)": 4,
+    "(5, 3, 8, 1, 7)": 4
+   },
+   "nonzero_coordinates": [
+    1,
+    3,
+    5,
+    10,
+    11,
+    15,
+    16,
+    17,
+    18,
+    20,
+    21
+   ]
+  },
+  "P1": {
+   "family_log": "families/fam_near_e-1_j2_a2_b1_c1_d1_n5.log",
+   "component": "P1",
+   "order_nu": 5,
+   "points_checked": 270,
+   "grid_size": 270,
+   "failures": {
+    "not_regular": 0,
+    "off_origin": 0,
+    "J_nonzero": 0,
+    "order": 0,
+    "symbolic": 0,
+    "not_target": 0,
+    "not_K2": 0,
+    "in_other": 0
+   },
+   "jacobian_rank": {
+    "(3, 5, 7, 11, 2)": 5,
+    "(1, 2, 3, 4, 5)": 5,
+    "(7, 13, 1, 11, 10)": 5,
+    "(2, 9, 4, 6, 3)": 5,
+    "(5, 3, 8, 1, 7)": 5
+   },
+   "nonzero_coordinates": [
+    1,
+    2,
+    3,
+    5,
+    8,
+    9,
+    10,
+    11,
+    13,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ]
+  }
+ },
+ "mutation_controls": {
+  "baseline": {
+   "nu": 5,
+   "inP1": true,
+   "inP2": false,
+   "inK2": true,
+   "J_residues": 0
+  },
+  "mutate_t9": {
+   "J_residues": 12
+  },
+  "mutate_G11": {
+   "nu": 4,
+   "inP1": false,
+   "inK2": true
+  },
+  "E_base_2": {
+   "nu": 3,
+   "inP1": false,
+   "inP2": true,
+   "inK2": true
+  }
+ },
+ "hilbert": {
+  "k2": {
+   "1": 21,
+   "2": 83,
+   "3": 225,
+   "4": 495,
+   "5": 952,
+   "6": 1666
+  },
+  "sqrt_k2": {
+   "1": 16,
+   "2": 69,
+   "3": 195,
+   "4": 440,
+   "5": 861,
+   "6": 1526
+  }
+ }
+}
