@@ -1,0 +1,150 @@
+[
+ {
+  "closure": "EhatMu",
+  "orbit": "Nm",
+  "mutation": "",
+  "slice_dim": 9,
+  "germ": {
+   "dim": 4,
+   "mult": 3,
+   "embdim": 7,
+   "quadric_rank": -1
+  },
+  "components": [
+   {
+    "dim": 4,
+    "mult": 2,
+    "embdim": 7,
+    "quadric_rank": -1
+   },
+   {
+    "dim": 4,
+    "mult": 1,
+    "embdim": 4,
+    "quadric_rank": -1
+   }
+  ],
+  "meets": {
+   "12": 3
+  },
+  "seconds": "0.1"
+ },
+ {
+  "closure": "EhatMu",
+  "orbit": "Np",
+  "mutation": "",
+  "slice_dim": 9,
+  "germ": {
+   "dim": 4,
+   "mult": 3,
+   "embdim": 7,
+   "quadric_rank": -1
+  },
+  "components": [
+   {
+    "dim": 4,
+    "mult": 2,
+    "embdim": 7,
+    "quadric_rank": -1
+   },
+   {
+    "dim": 4,
+    "mult": 1,
+    "embdim": 4,
+    "quadric_rank": -1
+   }
+  ],
+  "meets": {
+   "12": 3
+  },
+  "seconds": "0.1"
+ },
+ {
+  "closure": "MuEtaD",
+  "orbit": "Nm",
+  "mutation": "",
+  "slice_dim": 9,
+  "germ": {
+   "dim": 7,
+   "mult": 1,
+   "embdim": 7,
+   "quadric_rank": -1
+  },
+  "components": [
+   {
+    "dim": 7,
+    "mult": 1,
+    "embdim": 7,
+    "quadric_rank": -1
+   }
+  ],
+  "meets": {},
+  "seconds": "0.0"
+ },
+ {
+  "closure": "MuEtaD",
+  "orbit": "Np",
+  "mutation": "",
+  "slice_dim": 9,
+  "germ": {
+   "dim": 7,
+   "mult": 2,
+   "embdim": 8,
+   "quadric_rank": 7
+  },
+  "components": [
+   {
+    "dim": 7,
+    "mult": 2,
+    "embdim": 8,
+    "quadric_rank": 7
+   }
+  ],
+  "meets": {},
+  "seconds": "0.0"
+ },
+ {
+  "closure": "MuEtaS",
+  "orbit": "Nm",
+  "mutation": "",
+  "slice_dim": 9,
+  "germ": {
+   "dim": 7,
+   "mult": 2,
+   "embdim": 8,
+   "quadric_rank": 7
+  },
+  "components": [
+   {
+    "dim": 7,
+    "mult": 2,
+    "embdim": 8,
+    "quadric_rank": 7
+   }
+  ],
+  "meets": {},
+  "seconds": "0.0"
+ },
+ {
+  "closure": "MuEtaS",
+  "orbit": "Np",
+  "mutation": "",
+  "slice_dim": 9,
+  "germ": {
+   "dim": 7,
+   "mult": 1,
+   "embdim": 7,
+   "quadric_rank": -1
+  },
+  "components": [
+   {
+    "dim": 7,
+    "mult": 1,
+    "embdim": 7,
+    "quadric_rank": -1
+   }
+  ],
+  "meets": {},
+  "seconds": "0.0"
+ }
+]

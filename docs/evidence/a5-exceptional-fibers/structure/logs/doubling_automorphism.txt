@@ -1,0 +1,3 @@
+dim 8 basis pairs failing phi(xy) = phi(x)phi(y): 0
+dim 16 basis pairs failing phi(xy) = phi(x)phi(y): 0
+dim 32 basis pairs failing phi(xy) = phi(x)phi(y): 0
