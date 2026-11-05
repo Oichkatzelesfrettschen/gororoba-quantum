@@ -1,0 +1,24 @@
+inverse check m*u-1 mod s^4: 0
+x(s) = Phi(W s, R s, S s, K s) mod s^4:
+t1 K*s
+t2 -16013*W^3*s^3+16014*W^2*K*s^3-W^2*s^2+W*K*s^2+2*W*s
+t4 -16014*W*Rr*s^2-16014*Rr*s-16014*S*s
+t5 -16014*W*Rr*s^2-16014*Rr*s+16014*S*s
+t6 -16014*W*S*s^2-16014*Rr*s-16014*S*s
+t7 16014*W*S*s^2-16014*Rr*s+16014*S*s
+t9 16014*W^3*s^3-16014*W^2*s^2
+G 1 (x(s)) coefficients of s^0..s^3:
+  s^ 0 : 0
+  s^ 1 : 0
+  s^ 2 : 14305*W^2
+  s^ 3 : -14305*W^3+2024*W^2*K
+G 2 (x(s)) coefficients of s^0..s^3:
+  s^ 0 : 0
+  s^ 1 : 0
+  s^ 2 : 8*W*Rr+8*W*S
+  s^ 3 : -4*W^2*Rr+4*W^2*S+24*W*Rr*K+24*W*S*K
+G 3 (x(s)) coefficients of s^0..s^3:
+  s^ 0 : 0
+  s^ 1 : 0
+  s^ 2 : 8*W*Rr-8*W*S
+  s^ 3 : 4*W^2*Rr+4*W^2*S+24*W*Rr*K-24*W*S*K

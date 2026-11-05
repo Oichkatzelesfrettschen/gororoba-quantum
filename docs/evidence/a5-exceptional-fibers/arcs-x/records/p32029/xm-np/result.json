@@ -1,0 +1,72 @@
+{
+  "certified_P2": true,
+  "controls": {
+    "generator_perturbation": {
+      "failed_as_intended": true,
+      "failing_check": "replayed series equals the symbolic series of the unperturbed G",
+      "must_fail": true,
+      "perturbation": "G_2 replaced by G_2 + t2^2",
+      "points": 100,
+      "points_failing_series": 100
+    },
+    "j_sign_flip": {
+      "failed_as_intended": true,
+      "failing_check": "J(x(s)) = 0",
+      "must_fail": true,
+      "perturbation": "sign of the t9 term of J[12] flipped",
+      "points": 100,
+      "points_failing_J": 100,
+      "symbolic_nonzero_numerators": 1
+    },
+    "rank_collapse": {
+      "failed_as_intended": true,
+      "failing_check": "Jacobian rank of the limit map is 3",
+      "must_fail": true,
+      "perturbation": "G_3 replaced by a copy of G_2",
+      "ranks": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    }
+  },
+  "dphi_rank": {
+    "generic": 4,
+    "origin": 4
+  },
+  "family": "x(s) = Phi(w = W s, rho = R s, sigma = S s, t1 = K s): linear arcs through the origin of V(J)",
+  "grid_failures": 0,
+  "incidence": "X-->N+",
+  "input_sha256": "53306cce7d1063626a85fe9d7cf1696b22b498b3a9b2aa4147c6c571d4d9277c",
+  "jacobian_rank": 3,
+  "jacobian_rank_replay_at_points": [
+    3,
+    3,
+    3,
+    3,
+    3
+  ],
+  "jacobian_rank_symbolic_at_points": [
+    3,
+    3,
+    3,
+    3,
+    3
+  ],
+  "limit_map": {
+    "F1": "14305 W^2",
+    "F2": "8 W (R + S)",
+    "F3": "8 W (R - S)",
+    "jacobian_det_in_W_R_S": "-3662080*W**3"
+  },
+  "limit_order": 2,
+  "phi_points_with_J_nonzero": 0,
+  "points": 100,
+  "prime": 32029,
+  "root_of_minus_one": 9115,
+  "symbolic_J_of_Phi_vanishes": true,
+  "targets": 100,
+  "targets_hit": 100
+}

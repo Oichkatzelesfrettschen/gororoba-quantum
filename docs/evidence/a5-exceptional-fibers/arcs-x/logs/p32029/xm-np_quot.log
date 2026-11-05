@@ -1,0 +1,26 @@
+I'=(J+G):t2 computed, generators 111 global dim 3
+n 1 colength of I' + m^n: 1  (smooth curve germ: n)
+n 2 colength of I' + m^n: 2  (smooth curve germ: n)
+n 3 colength of I' + m^n: 3  (smooth curve germ: n)
+n 4 colength of I' + m^n: 4  (smooth curve germ: n)
+n 5 colength of I' + m^n: 5  (smooth curve germ: n)
+n 6 colength of I' + m^n: 6  (smooth curve germ: n)
+n 7 colength of I' + m^n: 7  (smooth curve germ: n)
+n 8 colength of I' + m^n: 8  (smooth curve germ: n)
+colength of (J+t2) + m^n for n=1..6 (smooth 3-fold germ: C(n+2,3)):
+n 1 1
+n 2 4
+n 3 10
+n 4 20
+n 5 35
+n 6 56
+G inside (J+t2) globally (number of nonzero remainders; the other branch t2 = 0, w = -2 lies off the origin): 3
+colength of (J+t2+G) + m^n against (J+t2) + m^n (equal: G lies in (J+t2) modulo m^n):
+n 1 1 1
+n 2 4 4
+n 3 10 10
+n 4 20 20
+n 5 35 35
+n 6 56 56
+n 7 84 84
+n 8 120 120
