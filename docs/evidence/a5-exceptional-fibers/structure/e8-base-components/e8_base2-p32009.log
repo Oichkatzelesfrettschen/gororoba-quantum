@@ -1,0 +1,75 @@
+// ** redefining i (int i=2;) e8_base2-p32009.sing:12
+RESULT prime 32009
+RESULT germ_dim 5
+RESULT B9_primes 1
+// ** redefining i (int i=1;) e8_base2-p32009.sing:131
+RESULT B9_dim_1 3
+RESULT B9_deg_1 1
+RESULT B9_F_inside_1 1
+RESULT V_primes 1
+// ** redefining i (int i=1;) e8_base2-p32009.sing:134
+RESULT V_dim_1 2
+RESULT V_deg_1 4
+RESULT V_F_inside_1 1
+RESULT VB_primes 1
+// ** redefining i (int i=1;) e8_base2-p32009.sing:137
+RESULT VB_dim_1 1
+RESULT VB_deg_1 1
+RESULT VB_F_inside_1 1
+RESULT Vam_primes 1
+// ** redefining i (int i=1;) e8_base2-p32009.sing:140
+RESULT Vam_dim_1 1
+RESULT Vam_deg_1 1
+RESULT Vam_F_inside_1 1
+RESULT Vap_primes 0
+// ** redefining i (int i=1;) e8_base2-p32009.sing:143
+// ** redefining i (int i=1;) e8_base2-p32009.sing:144
+RESULT V(B9_1) in V(V_1) 0
+// ** redefining i (int i=1;) e8_base2-p32009.sing:145
+// ** redefining j (int j=1;) e8_base2-p32009.sing:145
+RESULT V(B9_1) in V(VB_1) 0
+// ** redefining i (int i=1;) e8_base2-p32009.sing:146
+// ** redefining j (int j=1;) e8_base2-p32009.sing:146
+RESULT V(B9_1) in V(Vam_1) 0
+// ** redefining i (int i=1;) e8_base2-p32009.sing:147
+// ** redefining j (int j=1;) e8_base2-p32009.sing:147
+// ** redefining i (int i=1;) e8_base2-p32009.sing:148
+// ** redefining j (int j=1;) e8_base2-p32009.sing:148
+RESULT V(V_1) in V(B9_1) 0
+// ** redefining i (int i=1;) e8_base2-p32009.sing:149
+// ** redefining j (int j=1;) e8_base2-p32009.sing:149
+RESULT V(V_1) in V(VB_1) 0
+// ** redefining i (int i=1;) e8_base2-p32009.sing:150
+// ** redefining j (int j=1;) e8_base2-p32009.sing:150
+RESULT V(V_1) in V(Vam_1) 0
+// ** redefining i (int i=1;) e8_base2-p32009.sing:151
+// ** redefining j (int j=1;) e8_base2-p32009.sing:151
+// ** redefining i (int i=1;) e8_base2-p32009.sing:152
+// ** redefining j (int j=1;) e8_base2-p32009.sing:152
+RESULT V(VB_1) in V(B9_1) 1
+// ** redefining i (int i=1;) e8_base2-p32009.sing:153
+// ** redefining j (int j=1;) e8_base2-p32009.sing:153
+RESULT V(VB_1) in V(V_1) 1
+// ** redefining i (int i=1;) e8_base2-p32009.sing:154
+// ** redefining j (int j=1;) e8_base2-p32009.sing:154
+RESULT V(VB_1) in V(Vam_1) 0
+// ** redefining i (int i=1;) e8_base2-p32009.sing:155
+// ** redefining j (int j=1;) e8_base2-p32009.sing:155
+// ** redefining i (int i=1;) e8_base2-p32009.sing:156
+// ** redefining j (int j=1;) e8_base2-p32009.sing:156
+RESULT V(Vam_1) in V(B9_1) 0
+// ** redefining i (int i=1;) e8_base2-p32009.sing:157
+// ** redefining j (int j=1;) e8_base2-p32009.sing:157
+RESULT V(Vam_1) in V(V_1) 1
+// ** redefining i (int i=1;) e8_base2-p32009.sing:158
+// ** redefining j (int j=1;) e8_base2-p32009.sing:158
+RESULT V(Vam_1) in V(VB_1) 0
+// ** redefining i (int i=1;) e8_base2-p32009.sing:159
+// ** redefining j (int j=1;) e8_base2-p32009.sing:159
+// ** redefining i (int i=1;) e8_base2-p32009.sing:160
+// ** redefining i (int i=1;) e8_base2-p32009.sing:161
+// ** redefining i (int i=1;) e8_base2-p32009.sing:162
+// ** redefining i (int i=1;) e8_base2-p32009.sing:163
+RESULT done
+2.90 s 32172 KB
+p32009 exit 0

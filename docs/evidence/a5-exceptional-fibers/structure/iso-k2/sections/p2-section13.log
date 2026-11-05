@@ -1,0 +1,3 @@
+RESULT p32029 section 13 dim 1 deg 23
+RESULT p32029 section 13 affine vdim 23
+RESULT p32029 section 13 eliminant y(2) deg 23 factor degree^multiplicity  4^1 19^1 s 0

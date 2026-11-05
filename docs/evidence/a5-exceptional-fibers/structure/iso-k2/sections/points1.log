@@ -1,0 +1,19 @@
+RESULT points 1 dim 1 deg 23 s 0
+RESULT points 1 affine vdim 23
+RESULT points 1 eliminant y(2) deg 23 factor degree^multiplicity  7^1 16^1 s 0
+RESULT points 1 eliminant y(3) deg 23 factor degree^multiplicity  7^1 16^1 s 0
+RESULT points 1 eliminant y(4) deg 23 factor degree^multiplicity  7^1 16^1 s 0
+RESULT points 1 eliminant y(5) deg 23 factor degree^multiplicity  7^1 16^1 s 1
+RESULT points 1 eliminant y(6) deg 23 factor degree^multiplicity  7^1 16^1 s 1
+RESULT points 1 eliminant y(7) deg 23 factor degree^multiplicity  7^1 16^1 s 1
+RESULT points 1 eliminant y(8) deg 23 factor degree^multiplicity  7^1 16^1 s 1
+RESULT points 1 eliminant y(9) deg 23 factor degree^multiplicity  7^1 16^1 s 1
+RESULT points 1 eliminant y(10) deg 23 factor degree^multiplicity  7^1 16^1 s 1
+RESULT points 1 eliminant y(11) deg 23 factor degree^multiplicity  7^1 16^1 s 1
+RESULT points 1 eliminant y(12) deg 23 factor degree^multiplicity  7^1 16^1 s 1
+RESULT points 1 eliminant y(13) deg 23 factor degree^multiplicity  7^1 16^1 s 1
+RESULT points 1 eliminant y(14) deg 23 factor degree^multiplicity  7^1 16^1 s 1
+RESULT points 1 eliminant y(15) deg 23 factor degree^multiplicity  7^1 16^1 s 1
+RESULT points 1 eliminant y(16) deg 23 factor degree^multiplicity  7^1 16^1 s 1
+RESULT points 1 eliminant y(17) deg 23 factor degree^multiplicity  7^1 16^1 s 1
+exit 0
