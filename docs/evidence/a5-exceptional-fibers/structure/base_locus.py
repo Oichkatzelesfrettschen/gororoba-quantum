@@ -138,9 +138,10 @@ def run_one(job: tuple[str, str]) -> tuple[str, dict[str, str]]:
         timeout=TIMEOUT_SECONDS,
         check=False,
         cwd=sing.parent,
+        stdin=subprocess.DEVNULL,
     )
     (HERE / "logs" / f"{stem}.log").write_text(out.stdout + out.stderr, encoding="utf-8")
-    bad = [line for line in out.stdout.splitlines() if line.startswith("?")]
+    bad = [line for line in out.stdout.splitlines() if line.lstrip().startswith("?")]
     if out.returncode != 0 or bad:
         raise RuntimeError(f"{stem}: Singular exit {out.returncode}; {bad[:3]}")
     results = {}
