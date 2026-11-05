@@ -11,8 +11,9 @@ Every computation below runs over F_32009 with i = 10754 (a split prime, so the 
 extension field), in global monomial orderings, each Singular job in a cgroup scope with `MemoryMax` and
 `MemorySwapMax=0`. Results over F_p certify that reduction only; a characteristic-zero statement needs a specialization
 argument (a common model over a localization of Z[i] whose standard bases, membership identities and ranks specialize
-at the chosen prime), and agreement at a second prime is a consistency check rather than that argument. The run directories, logs and normal-form files are unretained working data in the
-git-ignored `docs/local/a5-failed-runs/`; a result enters the tracked record through the
+at the chosen prime), and agreement at a second prime is a consistency check rather than that argument. The retained run inputs, logs and records live under
+[`evidence/a5-exceptional-fibers/working/`](../../evidence/a5-exceptional-fibers/README.md), and a result enters the
+tracked record through that registry (claims.json, certificates.jsonl) or the
 [kernel-attachments evidence](../../evidence/a5-kernel-attachments/README.md) and its ledger.
 
 ## Pairs
@@ -23,7 +24,8 @@ git-ignored `docs/local/a5-failed-runs/`; a result enters the tracked record thr
 | Iso (Iso -> N+ and Iso -> N- share J and the span of G) | 17 | 4 |
 | E8-bar -> N+-, one isomorphism class | 21 | 4 |
 | W8 -> N-, W8 -> N+, one isomorphism class | 24 | 5 |
-| E8-bar -> VB | 10 | not derived |
+| E8-bar -> VB | 10 | 3 (germ (4, 2, 7) in `evidence/a5-strata-regularity/README.md`) |
+| X+ -> N-, X- -> N+, one isomorphism class | 3 | 3; the fiber is all of P^2 (`evidence/a5-exceptional-fibers/arcs-x/`) |
 
 ## Methods and their outcomes
 
@@ -299,7 +301,10 @@ needs its own arc families with two distinct limiting planes, or a positive-dime
 Grassmannian.
 
 **Sign-paired orbits have isomorphic fibers.** Survives for X+ with X-, W8 -> N+ with W8 -> N- and E8-bar -> N+ with
-E8-bar -> N- by explicit diagonal sign symmetries (t9 alone for the first two, t8 and t9 together for E8-bar). The X+ quadric ideal at 32029 (`working/runs/k2struct/xp_p2.sing`, radical plus `minAssChar`)
+E8-bar -> N- by explicit diagonal sign symmetries (t9 alone for the first two, t8 and t9 together for E8-bar). The
+doubling automorphism (a, b) -> (a, -b) of A_5 proves it for every pair in every characteristic: it exchanges X+ and X-,
+V^a_+ and V^a_-, N+ and N-, preserves the other closures and every nullity, and commutes with the kernel map
+(`evidence/a5-exceptional-fibers/structure/`). The X+ quadric ideal at 32029 (`working/runs/k2struct/xp_p2.sing`, radical plus `minAssChar`)
 reproduces the X- structure at 32009 line for line: K2 and its radical are projective threefolds of degree 12, K2 is
 not radical, h = 15, 51, 122, 240 for K2 and 12, 45, 112, 225 for the radical, and the single minimal prime has
 projective dimension 3, degree 12 and three linear generators. For E8-bar the pair flip explains the equal Hilbert
@@ -397,6 +402,10 @@ measurement), *superseded* (replaced by a stronger or cheaper route).
 
 | Hypothesis | Status | Deciding evidence or pending falsifier |
 |---|---|---|
+| F(I) = k[y1, y2, y3] for X+ -> N- and X- -> N+ (fiber P^2) | settled over F_32009 and F_32029: linear arcs give order-2 limit vectors of Jacobian rank 3 (`evidence/a5-exceptional-fibers/arcs-x/`); r_N = C(d+2, 2) for d = 5 to 9 at N = 20 (`x-opposite-ladder/`) | a Q(i) replay of the arc certificate for characteristic 0 |
+| The opposite-sign fiber is linear and the same-sign fiber is not because X+ is the smooth sheet of E8-bar n {mu' = 0} along N- and the multiplicity-2 sheet along N+ | survives over Q (`structure/asymmetry.py`: sheets (4, 1, 4) and (4, 2, 7), multiplicities 1 + 2 = 3 = mult(E8-bar), {mu' = 0, eta(d) = 0} smooth at N- and a rank-7 quadric cone at N+) | a germ tuple different from the table |
+| The kernel-map base locus near the target is the B9 slice, with residual the VB curve (X -> N opposite sign) or the origin (X, W8, Iso -> VB) | survives over F_32009, F_32029 and Q(i) (`structure/base_locus.py`); on X -> N- it gives I = t2 * I' and the P^2 of the blow-up along the VB curve; on X -> VB and B9 -> N+- the full P^2 is forced; on W8 -> VB and Iso -> VB the colon is not a factorization | a second prime through 0 or a residual of another dimension |
+| F(I) = k[y] exactly when the analytic spread equals s; s above the germ dimension forces a proper fiber | a theorem (Northcott and Rees 1954); predicts every proper fiber of the records (V -> N+-, E8-bar -> Va+-, same-sign X, E8-bar -> N+-, E8-bar -> VB, Iso -> N+-, W8 -> N+-); the earlier pattern "smooth germ gives P^(s-1)" is neither needed nor sufficient | none; a theorem |
 | F(I) = k[y]/K2 for E8-bar -> VB | survives through degree 5 at 32009 (h_5 = 266, r_16 by engine v7) | degree 6; degree 5 at a second prime |
 | F(I) = k[y]/K2 for X+- | survives through degree 5 at 32009 (h_4 = 240; h_5 = 417, r_19, r_20 and r_21 by engine v7) | degree 6; degree 5 at a second prime |
 | F(I) = k[y]/K2 for Iso | survives through degree 5 at both primes (h_5 = 1,316, r_16 by the linear-algebra truncated rank) and degree 4 at both primes (h_4 = 640 by the full std at 32009 and by the jet rank at N = 13 at both 32009 and 32029) | degree 6 |
@@ -405,7 +414,7 @@ measurement), *superseded* (replaced by a stronger or cheaper route).
 | k[y]/K2 is Cohen-Macaulay for E8-bar -> VB, Iso and W8 -> N- | survives (generic linear section length 7, 23, 50 equal to the degree at 32009 and at 32029; `k2_cm.py`) | none at either prime |
 | For E8-bar -> VB, Iso and W8, F(I) = k[y]/K2 in all degrees iff the analytic spread and multiplicity of F(I) are (4, 7), (5, 23), (6, 50) | survives (argument: the quadric ring is Cohen-Macaulay, so L/K2 is zero or of full dimension) | none; an argument |
 | For W8 -> N-, F(I) = k[y]/K2 iff Proj F(I) contains V(P) and every component of V(K2 : P) | survives (argument: K2 radical and Cohen-Macaulay, components of degree 20 and 30; a proper subfiber has multiplicity below 50) | none; an argument. Deciding it needs the decomposition of K2 : P and arcs to each component |
-| Sign-paired fibers share every certified degree (W8 -> N+, X+ at 32009, E8-bar -> N+ degrees 2 and 3 at 32009) | survives (generator-wise sign isomorphisms induce F(I+) ≅ F(I-); `witnesses.jsonl`, hash-bound) | a sign witness whose relation files no longer match their recorded sha256 |
+| Sign-paired fibers are isomorphic (every Y -> N+ with phi(Y) -> N-) | proved in every characteristic: phi(a, b) = (a, -b) is an automorphism of A_5 exchanging X+ and X-, N+ and N- and preserving W8, E8-bar, Iso, B9, V, VB, and L_phi(y) = phi L_y phi^-1 makes the kernel map equivariant (`evidence/a5-exceptional-fibers/structure/`); the hash-bound witnesses of `witnesses.jsonl` are instances and re-derive identically | none; a proof |
 | F(I) is Cohen-Macaulay for X+- and E8-bar -> N+- | refuted if the analytic spread is 4 and 5 (negative D'Cruz-Raghavan-Verma numerators in certified degrees) | the analytic spread |
 | The E8-bar -> VB fiber contains the degree-4 component | survives (certified over F_32009) | second-prime arc replay |
 | The E8-bar -> VB fiber contains the degree-3 component | open, favored by the Hilbert data | arcs in the remaining charts; a relation of degree 5 or more vanishing on the degree-4 component |

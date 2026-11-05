@@ -1,0 +1,6 @@
+EhatMu Nm {'dim': 4, 'mult': 3, 'embdim': 7, 'quadric_rank': -1} [(4, 2, 7), (4, 1, 4)] {'12': 3}
+EhatMu Np {'dim': 4, 'mult': 3, 'embdim': 7, 'quadric_rank': -1} [(4, 2, 7), (4, 1, 4)] {'12': 3}
+MuEtaD Nm {'dim': 7, 'mult': 1, 'embdim': 7, 'quadric_rank': -1} [(7, 1, 7)] {}
+MuEtaD Np {'dim': 7, 'mult': 2, 'embdim': 8, 'quadric_rank': 7} [(7, 2, 8)] {}
+MuEtaS Nm {'dim': 7, 'mult': 2, 'embdim': 8, 'quadric_rank': 7} [(7, 2, 8)] {}
+MuEtaS Np {'dim': 7, 'mult': 1, 'embdim': 7, 'quadric_rank': -1} [(7, 1, 7)] {}

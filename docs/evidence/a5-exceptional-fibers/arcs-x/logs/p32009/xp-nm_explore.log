@@ -1,0 +1,17 @@
+dim V(J) 4 global degree 6 J generators 12
+rank of the Jacobian of J at the origin 3
+0,0,0, 0, 0, 0, 0,
+0,0,0, 2, 0, -2,0,
+0,0,0, 0, 0, 0, 0,
+0,0,0, 0, 0, 0, 0,
+0,0,0, 0, 0, 0, 0,
+0,0,2, 0, -2,0, 0,
+0,0,0, -2,0, 2, 0,
+0,0,-2,0, 2, 0, 0,
+0,0,0, 0, 0, 0, 0,
+0,0,0, 0, 0, 0, 0,
+0,0,0, 0, 0, 0, 0,
+0,0,0, 0, 0, 0, -8
+minimal primes of J 1
+prime 1 dim 4 global degree 6
+J equals its minimal prime: 1
