@@ -1,0 +1,5 @@
+P1 equal: 0
+P2 equal: 1
+K2 equal: 0
+K2(N+) contained in K2(N-): 0  K2(N-) contained in K2(N+): 0
+P1(N+) in P1(N-): 0  P1(N+) in P2(N-): 0
