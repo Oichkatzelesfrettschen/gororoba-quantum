@@ -164,6 +164,28 @@ Cap: cgroup `MemoryMax` or the RSS watchdog. Singular's allocator reserves
 little beyond its resident set, so an address-space cap usually works, but the
 cgroup cap is the uniform rule.
 
+## Marker 1.10 (PDF transcription drafts)
+
+`marker_single` (marker-pdf 1.10.2 with surya-ocr 0.17.1, torch 2.12.1+cu130, venv `~/.venvs/marker`) converts a
+PDF to Markdown with layout, OCR and equation models, and selects CUDA on the build host by default
+(`TORCH_DEVICE=cuda`). Its models download on first use. `MODEL_CACHE_DIR` places them (3.3 GB). Surya stages each
+download through `tempfile`, so `TMPDIR` must sit on a volume with room for the 1.35 GB layout model. Both point at
+`~/.venvs/marker/model-cache`, because `~/.cache` and `/tmp` are 4 GiB overlays in agent shells, where a first run
+fails with `ENOSPC`.
+
+| Flag | Reason |
+|---|---|
+| `--output_format markdown` | the transcription format of the documents repositories |
+| `--disable_image_extraction` | figures stay in the PDF; the transcription carries text, tables and LaTeX |
+| `--paginate_output` | page separators (`{N}` followed by dashes, zero-based) give every note a page locator |
+| `--disable_tqdm` | keeps the per-paper log short |
+
+On born-digital arXiv PDFs, prose, tables and inline mathematics come out exact on the pages compared against their
+images. Display matrices can lose an arrow label or turn a product into a column separator. A transcription therefore
+records which pages were compared against page images, and a note checks every display equation it cites against the
+PDF. One job runs at a time: a 36-page paper peaks at 4.1 GB resident and about 7 GB of GPU memory. Cap: an RSS
+watchdog that kills the process group above 16 GiB, where the shell has no `systemd --user` manager.
+
 ## Substrate table
 
 | Substrate | Cores | Memory cap | Notes |
