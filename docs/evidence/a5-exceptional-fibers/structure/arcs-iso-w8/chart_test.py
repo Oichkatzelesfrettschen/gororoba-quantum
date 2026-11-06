@@ -37,6 +37,12 @@ def main() -> None:
         help="portfolio script: sat (iterated quotients) or elim (Rabinowitsch variable w); l0(z) - 1 added up front, "
         "option(noredTail), option(prot), every stage written to its own file",
     )
+    ap.add_argument(
+        "--coord",
+        type=int,
+        help="coordinate chart a0 = G_j, z_j = 1 (portfolio script, method sat); decides the case like the dense chart "
+        "because K2 contains no linear form",
+    )
     a = ap.parse_args()
     hdr = (ROOT / HEADERS[(a.fiber, a.prime)]).read_text()
     tvars = re.search(r"ring r=\d+,\((.*?)\)", hdr).group(1)  # type: ignore[union-attr]
@@ -49,6 +55,28 @@ def main() -> None:
     coeffs = [vals[k] for k in idx]
     l0 = "+".join(f"{c}*G[{j + 1}]" for j, c in enumerate(coeffs))
     lz = "+".join(f"{c}*z({j + 1})" for j, c in enumerate(coeffs))
+    if a.coord:
+        j = a.coord
+        tag = f"{a.fiber}-p{a.prime}-coord{j}"
+        out = HERE / f"chart-{tag}.sing"
+        out.write_text(
+            f"// coordinate blowup chart a0 = G_{j}, z({j}) = 1, method sat\n"
+            'LIB "elim.lib"; option(noredTail); option(prot); system("--ticks-per-sec",1); int t0=rtimer;\n'
+            f"ring r={a.prime},({tvars},z(1..{ngen})),dp; number I={num};\n"
+            f"ideal J={jtxt};\nideal G={gtxt};\n"
+            f"poly a0=G[{j}];\n"
+            f"ideal C=J; int i; for (i=1;i<={ngen};i++) {{ if (i!={j}) {{ C=C+(a0*z(i)-G[i]); }} }} C=C+(z({j})-1);\n"
+            'def SS=sat(C,ideal(a0)); ideal S; if (typeof(SS)=="list") { S=SS[1]; } else { S=SS; }\n'
+            f'"RESULT {tag} saturation done s", rtimer-t0;\n'
+            f'write(":w chart-sat-{tag}.txt", S);\n'
+            f'S=std(S); "RESULT {tag} chart dim", dim(S), "s", rtimer-t0;\n'
+            f'write(":w chart-std-{tag}.txt", S);\n'
+            f'ideal E=std(S+ideal({tvars})); "RESULT {tag} fiber over the origin in the chart: dim", dim(E), '
+            '"degree", mult(E), "s", rtimer-t0;\n'
+            f'write(":w chart-fiber-{tag}.txt", E);\nquit;\n'
+        )
+        print(out.relative_to(ROOT))
+        return
     if a.method:
         out = HERE / f"chart-{a.fiber}-p{a.prime}-{a.method}.sing"
         tag = f"{a.fiber}-p{a.prime}-{a.method}"

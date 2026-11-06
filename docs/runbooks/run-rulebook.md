@@ -81,3 +81,21 @@ the closest entry and say what changed.
 - Departures: none.
 - Outcome: V(P) certified at both primes; the Iso V(K2) and the W8 C30 not reached
   (`docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/README.md`).
+
+### Iso -> N- coordinate-chart saturation (the sparse chart after the dense chart stalled)
+
+- Question and decisive outcome: as the dense chart above, with a0 = G_j and z_j = 1; fiber dimension 4 means
+  F(I) = k[y]/K2, at most 3 means the analytic spread is at most 4. The log must show chart dimension 5.
+- Formulation: a coordinate chart decides equally (K2 contains no linear form, so y_j lies outside K2 and a
+  4-dimensional E0 meets D+(y_j) densely). G_16 and G_17 have 41 terms and G_2, G_4 49, against 665 for the dense
+  a0, so every a0 z_i is about 16 times sparser.
+- Host and tool versions: lab-a1 (aarch64, 2 cores, 11 GB), apt Singular 4.4.1; p = 32009 only until a result.
+- Launch line: `prlimit --as=5368709120 timeout 21600 nice -n 5 Singular -q --no-rc chart-iso-p32009-coordJ.sing
+  < /dev/null` under `/usr/bin/time -v`, j = 16 and j = 2, launched with `setsid nohup`.
+- Departures from the foundations: `sat` only, no Rabinowitsch twin (it grew 3.4 times faster in memory on the dense
+  chart); an address-space cap of 5 GB per process on the 11 GB host, because Singular's allocator reserves little
+  beyond its resident set and two processes share the host.
+- Parallelism: two single-threaded processes on two cores.
+- Checkpoints: `chart-sat-iso-p32009-coordJ.txt`, `chart-std-...`, `chart-fiber-...`.
+- End state: logs copied into `structure/arcs-iso-w8/chart-runs/lab-a1/`; no VM to end.
+- Outcome: pending.
