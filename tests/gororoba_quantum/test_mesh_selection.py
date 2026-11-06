@@ -219,6 +219,15 @@ def test_exact_upper_p_equals_brute_force_enumeration() -> None:
         raise AssertionError((exact_upper_p(per_block, observed), brute))
 
 
+def test_exact_upper_p_counts_a_sum_equal_to_the_observed_value() -> None:
+    # Every value is a binary fraction, so each sum is exact: 3 of the 6 sums reach 0.5 and 2 of those equal it.
+    per_block = [np.array([1.0, -1.0]), np.array([0.5, 0.0, -0.5])]
+    if exact_upper_p(per_block, 0.5) != pytest.approx(3 / 6):
+        raise AssertionError(exact_upper_p(per_block, 0.5))
+    if exact_upper_p(per_block, 0.75) != pytest.approx(2 / 6):
+        raise AssertionError(exact_upper_p(per_block, 0.75))
+
+
 def test_a_recurring_deviation_reads_persists_and_a_reversed_one_does_not() -> None:
     old = np.array(
         [

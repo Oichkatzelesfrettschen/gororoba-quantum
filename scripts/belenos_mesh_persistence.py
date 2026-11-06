@@ -148,10 +148,7 @@ def documents() -> dict[str, bytes]:
 
 def bound_seconds() -> float:
     """The duration bound of the mode-swap case for one 30,000-sample iteration, times the iterations."""
-    per = swap.SECONDS_PER_ITERATION + (swap.SAMPLES_PER_ITERATION - swap.MEASURED_SAMPLES) / (
-        swap.CLOCK_HZ * swap.MIN_GLOBAL_EFFICIENCY
-    )
-    return per * len(ORDER)
+    return swap.iteration_seconds() * len(ORDER)
 
 
 def credit_ceiling() -> float:
@@ -274,6 +271,12 @@ def analyze(run: Path) -> dict[str, Any]:
         for s, d, e in zip(manifest["settings"], digests, expected, strict=True)
     ]
     record: dict[str, Any] = {"schema": "belenos-mesh-persistence-v1", "identity": identity, "run": run.name}
+    unreported = [s["name"] for s, d in zip(manifest["settings"], digests, strict=True) if d is None]
+    if unreported:
+        # A result without computed_circuit carries no mesh to compare, which is no evidence of a changed mesh.
+        record["reading"] = "an iteration returned no computed_circuit"
+        record["unreported"] = unreported
+        return record
     if not all(row["same_mesh"] for row in identity):
         record["reading"] = "seed does not reproduce its mesh"
         return record
@@ -329,10 +332,14 @@ def main() -> int:
     if args.power:
         if args.seed is None or args.out is None:
             parser.error("--power needs --seed and --out")
-        analysis = json.loads(
-            next((ROOT / "results/quandela/runs").glob(RUN_GLOB)).joinpath("analysis.json").read_text()
-        )
-        sigma = float(analysis["mesh_variance"]["classes"]["half"]["sigma"])
+        # Every retained run of the mode-swap case carries the same half-block mesh sigma; the first in sorted
+        # order supplies it and a run that disagrees stops the calculation.
+        sigmas = [
+            float(json.loads((run / "analysis.json").read_text())["mesh_variance"]["classes"]["half"]["sigma"])
+            for run in sorted((ROOT / "results/quandela/runs").glob(RUN_GLOB))
+        ]
+        require(bool(sigmas) and len(set(sigmas)) == 1, f"the retained runs hold mesh sigmas {sorted(set(sigmas))}")
+        sigma = sigmas[0]
         record = {
             "schema": "belenos-mesh-persistence-power-v1",
             "seed_source": qrng_seeds.seed_record(

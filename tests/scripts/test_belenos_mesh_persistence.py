@@ -9,7 +9,10 @@ from pathlib import Path
 from typing import Any
 
 import belenos_mesh_persistence as bmp
+import numpy as np
 import pytest
+
+from mesh_selection import persistence
 
 
 def test_replay_rows_are_the_retained_packed_set_4_rows_in_order() -> None:
@@ -75,10 +78,11 @@ def test_analyze_matches_blocks_by_key_and_stops_on_a_changed_mesh(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     settings = json.loads((bmp.CASE / "cases.json").read_text(encoding="utf-8"))["settings"]
-    # The retained group lists blocks in reverse slot order, so a positional match would pair the wrong blocks.
+    # The retained group lists blocks in reverse slot order, and each block carries its own deviation pattern, so a
+    # positional match would pair unlike blocks and miss slope 1.
     keys = [(json.dumps(b["m"]), b["t"]) for b in settings[0]["blocks"]][::-1]
     total = 1000
-    old = {key: [300 + 40 * i + 25 * j for j in range(4)] for i, key in enumerate(keys)}
+    old = {key: [300 + 40 * i + 25 * ((j + i) % 4) for j in range(4)] for i, key in enumerate(keys)}
     group = {
         "digests": [mesh_digest(f"m{j}") for j in range(4)],
         "blocks": [
@@ -99,10 +103,33 @@ def test_analyze_matches_blocks_by_key_and_stops_on_a_changed_mesh(
     record = bmp.analyze(synthetic_run(tmp_path, [f"m{j}" for j in mesh_of], hits, total))
     if record["reading"] != "persists" or record["persistence"]["slope"] != pytest.approx(1.0):
         raise AssertionError(record)
-    changed = tmp_path / "changed"
-    changed.mkdir()
-    record = bmp.analyze(synthetic_run(changed, [f"m{j}" for j in (0, 9, 2, 3, 0)], hits, total))
-    if record["reading"] != "seed does not reproduce its mesh" or "persistence" in record:
+    # Slots 4 and 5 hold two blocks of four meshes; dropping slot 5 leaves five blocks.
+    secondary = record["secondary"]
+    if secondary["slots_4_and_5"]["dof"] != 5 or secondary["without_slot_5"]["dof"] != 14:
+        raise AssertionError(secondary)
+    if any(part["slope"] != pytest.approx(1.0) for part in secondary.values()):
+        raise AssertionError(secondary)
+    # A positional pairing of the new cells with the retained blocks would not recover the slope.
+    scrambled = np.array([[old[key][j] for j in range(4)] for key in keys[::-1]], dtype=float)
+    aligned = np.array([[old[key][j] for j in range(4)] for key in keys], dtype=float)
+    if persistence(aligned, scrambled, bmp.ALPHA)["slope"] == pytest.approx(1.0):
+        raise AssertionError("the fixture cannot tell key matching from positional matching")
+    for name, meshes in (("replicate", (0, 9, 2, 3, 0)), ("second-primary", (0, 1, 2, 3, 9))):
+        changed = tmp_path / name
+        changed.mkdir()
+        record = bmp.analyze(synthetic_run(changed, [f"m{j}" for j in meshes], hits, total))
+        if record["reading"] != "seed does not reproduce its mesh" or "persistence" in record:
+            raise AssertionError((name, record))
+    silent = tmp_path / "silent"
+    silent.mkdir()
+    run = synthetic_run(silent, [f"m{j}" for j in mesh_of], hits, total)
+    results = json.loads((run / "results.json").read_text(encoding="utf-8"))
+    del results["iterations"][2]["result_fields"]
+    (run / "results.json").write_text(json.dumps(results), encoding="utf-8")
+    record = bmp.analyze(run)
+    if record["reading"] != "an iteration returned no computed_circuit" or "persistence" in record:
+        raise AssertionError(record)
+    if record["unreported"] != [settings[2]["name"]]:
         raise AssertionError(record)
 
 
