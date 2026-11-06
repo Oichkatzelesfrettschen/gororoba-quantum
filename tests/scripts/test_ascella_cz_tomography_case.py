@@ -9,6 +9,8 @@ from typing import Any
 
 import ascella_cz_tomography_case as case
 import numpy as np
+import pytest
+from qd_platform import sha256_bytes
 
 
 def test_retained_request_rebuilds_and_binds() -> None:
@@ -168,8 +170,14 @@ def _write_run(
     iterations = iterations[: len(iterations) - drop]
     if reverse:
         iterations.reverse()
-    (directory / "results.json").write_text(json.dumps({"iterations": iterations}))
+    (directory / "raw").mkdir()
+    raw_result = f"synthetic raw result of {job}".encode()
+    (directory / "raw" / "result.json").write_bytes(raw_result)
+    (directory / "results.json").write_text(
+        json.dumps({"job_id": f"id-{job}", "result_sha256": sha256_bytes(raw_result), "iterations": iterations})
+    )
     submission = {
+        "job_id": f"id-{job}",
         "perfs_at_plan": {"HOM (%)": hom, "Transmittance (%)": transmittance},
         "submitted_utc": f"2026-11-01T{hour:02d}:00:00+00:00",
     }
@@ -260,3 +268,47 @@ def test_pooling_scales_by_transmittance_and_flags_drift(tmp_path: Path) -> None
     far_t = case.analyze(_runs(tmp_path / "t", transmittance=6.5), replicates=8)["process"]
     if {far_hom["status"], far_gap["status"], far_t["status"]} != {"descriptive"}:
         raise AssertionError("a drifted pool is not descriptive")
+
+
+def test_analysis_refuses_a_result_bound_to_another_job_or_raw_file(tmp_path: Path) -> None:
+    """results.json must name the submitted job and carry the digest of raw/result.json."""
+    foreign = "00000000-0000-0000-0000-000000000000"
+
+    def edited(label: str, file: str, change: dict[str, Any] | None) -> list[Path]:
+        runs = _runs(tmp_path / label)
+        path = runs[0] / file
+        data = json.loads(path.read_text())
+        if change is None:
+            data.pop("job_id")
+        else:
+            data.update(change)
+        path.write_text(json.dumps(data))
+        return runs
+
+    def raw_edit(label: str, data: bytes | None) -> list[Path]:
+        runs = _runs(tmp_path / label)
+        if data is None:
+            (runs[0] / "raw" / "result.json").unlink()
+        else:
+            (runs[0] / "raw" / "result.json").write_bytes(data)
+        return runs
+
+    def no_submission(label: str) -> list[Path]:
+        runs = _runs(tmp_path / label)
+        (runs[0] / "submission.json").unlink()
+        return runs
+
+    mutations = (
+        (edited("result-job", "results.json", {"job_id": foreign}), "names job"),
+        (edited("submission-job", "submission.json", {"job_id": foreign}), "names job"),
+        (edited("no-job", "submission.json", None), "records no job_id"),
+        (edited("digest", "results.json", {"result_sha256": "0" * 64}), "result_sha256"),
+        (raw_edit("raw-edit", b"edited"), "result_sha256"),
+        (raw_edit("raw-gone", None), "result_sha256"),
+        (no_submission("no-submission"), "no submission.json"),
+    )
+    for runs, message in mutations:
+        with pytest.raises(RuntimeError, match=message):
+            case.analyze(runs, replicates=1)
+    case.analyze(_runs(tmp_path / "clean"), replicates=1)
+

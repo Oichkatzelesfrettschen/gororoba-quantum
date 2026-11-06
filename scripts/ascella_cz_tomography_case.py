@@ -1254,9 +1254,10 @@ def parse_state(key: str) -> list[int]:
 
 
 def load_run(run: Path) -> dict[str, Any]:
-    """One collected run bound to its retained case: cases.json must equal the retained bytes, and each returned
-    iteration binds to the setting that has its echoed compilation_seed, one to one. An entry that is missing,
-    malformed or an error is counted and skipped."""
+    """One collected run bound to its retained case: cases.json must equal the retained bytes, results.json must name
+    the job that submission.json records and carry the sha256 of raw/result.json, and each returned iteration binds
+    to the setting that has its echoed compilation_seed, one to one. An entry that is missing, malformed or an error
+    is counted and skipped."""
     raw = (run / "cases.json").read_bytes()
     manifest = json.loads(raw)
     job = manifest.get("job")
@@ -1264,7 +1265,20 @@ def load_run(run: Path) -> dict[str, Any]:
     retained = (FAMILY_DIR / job / "cases.json").read_bytes()
     require(sha256_bytes(raw) == sha256_bytes(retained), f"{run}: cases.json differs from the retained {job}")
     results = json.loads((run / "results.json").read_text(encoding="utf-8"))
+    submission_path = run / "submission.json"
+    require(submission_path.is_file(), f"{run}: no submission.json to bind the result to its job")
+    submission = json.loads(submission_path.read_text(encoding="utf-8"))
+    job_id = submission.get("job_id")
+    require(isinstance(job_id, str) and bool(job_id), f"{run}: submission.json records no job_id")
+    require(results.get("job_id") == job_id, f"{run}: results.json names job {results.get('job_id')!r}, not {job_id}")
     entries = results.get("iterations") or []
+    raw_path = run / "raw" / "result.json"
+    digest = results.get("result_sha256")
+    if entries or digest is not None or raw_path.is_file():
+        require(
+            isinstance(digest, str) and raw_path.is_file() and sha256_bytes(raw_path.read_bytes()) == digest,
+            f"{run}: raw/result.json does not match the result_sha256 of results.json",
+        )
     require(len(entries) <= len(manifest["settings"]), f"{run}: {len(entries)} iterations for {job}")
     by_seed = {setting["compilation_seed"]: setting["name"] for setting in manifest["settings"]}
     tallies: dict[str, dict[str, Any]] = {}
@@ -1299,8 +1313,6 @@ def load_run(run: Path) -> dict[str, Any]:
             f"{run}: {name} reports nb_shots_used {shots!r} below its {samples} samples",
         )
         tallies[name] = {"eligible": eligible, "samples": samples, "shots": shots}
-    submission_path = run / "submission.json"
-    submission = json.loads(submission_path.read_text(encoding="utf-8")) if submission_path.exists() else {}
     return {
         "job": job,
         "cases_sha256": sha256_bytes(raw),
