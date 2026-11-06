@@ -1,0 +1,9 @@
+LIB "general.lib"; option(redSB); system("--ticks-per-sec",1); int t0=rtimer;
+ring Y=32029,(y(1..17)),dp; execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-iso/iso_p2/d2/relations-d2.rel")+";");
+ideal Z=std(K+ideal(15226*y(1)+14721*y(2)+4695*y(3)+21939*y(4)+24108*y(5)+11639*y(6)+25378*y(7)+10676*y(8)+31285*y(9)+27492*y(10)+30639*y(11)+2817*y(12)+13287*y(13)+20305*y(14)+23268*y(15)+17723*y(16)+13248*y(17),20463*y(1)+23236*y(2)+9566*y(3)+8780*y(4)+25031*y(5)+19535*y(6)+19980*y(7)+13885*y(8)+20872*y(9)+6170*y(10)+11062*y(11)+8975*y(12)+10521*y(13)+19096*y(14)+20715*y(15)+8239*y(16)+355*y(17),23908*y(1)+11194*y(2)+25453*y(3)+5536*y(4)+19144*y(5)+28434*y(6)+26412*y(7)+6101*y(8)+13028*y(9)+25740*y(10)+1578*y(11)+28338*y(12)+24658*y(13)+26512*y(14)+22129*y(15)+21615*y(16)+24576*y(17),21795*y(1)+1471*y(2)+19545*y(3)+25524*y(4)+14477*y(5)+26217*y(6)+21334*y(7)+24844*y(8)+23877*y(9)+3798*y(10)+14366*y(11)+15455*y(12)+27829*y(13)+17700*y(14)+25537*y(15)+14089*y(16)+15193*y(17)));
+"RESULT p32029 section 16 dim", dim(Z), "deg", mult(Z);
+ideal A=std(Z+ideal(y(1)-1));
+"RESULT p32029 section 16 affine vdim", vdim(A);
+int j; string fd; poly e=eliminate(A, product(maxideal(1))/y(2))[1]; list F=factorize(e); for (j=2;j<=size(F[1]);j++) { fd=fd+" "+string(deg(F[1][j]))+"^"+string(F[2][j]); }
+"RESULT p32029 section 16 eliminant y(2) deg", deg(e), "factor degree^multiplicity", fd, "s", rtimer-t0;
+quit;

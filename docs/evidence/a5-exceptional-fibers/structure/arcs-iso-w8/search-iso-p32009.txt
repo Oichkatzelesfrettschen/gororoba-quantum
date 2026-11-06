@@ -1,0 +1,4 @@
+rank, K2, Lam, Q = (4, True, None, None) families 28
+rank, K2, Lam, Q = (3, True, None, None) families 112
+rank, K2, Lam, Q = (2, True, None, None) families 304
+rank, K2, Lam, Q = (1, True, None, None) families 228

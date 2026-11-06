@@ -1,0 +1,134 @@
+2026-11-05T20:37:33Z
+cmdline: ~/venv/bin/python engine/fiber_rank_v11.py --quotient --max-gb 130 --singular ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Singular inputs/w8-nm.sing 5 16 
+    PID     ELAPSED     TIME   RSS
+   2139    03:43:05 07:45:06 34103252
+VmPeak:	48433716 kB
+VmHWM:	47972064 kB
+VmRSS:	34103252 kB
+Threads:	10
+utime_stime_ticks 2680140 110555 clk_tck 100
+7849cbc71ccf1787894c74182b6cd225ca8a485973f062d47f77c6b63ce12bbd  engine/fiber_rank_v11.py
+585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760  inputs/w8-nm.sing
+c82082438b89a2ebfaa44ae03493c5c1b920fdda31a459572cabcbce936bdd49  jobs.sh
+2.36 2.33 2.44 2/226 4314
+--- py-spy dump 2026-11-05T20:37:42Z
+Process 2139: ~/venv/bin/python engine/fiber_rank_v11.py --quotient --max-gb 130 --singular ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Singular inputs/w8-nm.sing 5 16
+Python v3.12.3 (/usr/bin/python3.12)
+
+Thread 2139 (active): "MainThread"
+    insert (fiber_rank_v11.py:336)
+        Arguments:
+            self: <Echelon at 0x7c3c8ce5a300>
+            X: <numpy.ndarray at 0x7c3c364175d0>
+            chunk: 4000
+        Locals:
+            start: <set at 0x7c3c73fba500>
+            s: 20000
+            Y: <numpy.ndarray at 0x7c3c36417450>
+            free: <numpy.ndarray at 0x7c3c364172d0>
+            Z: <numpy.ndarray at 0x7c3c36417570>
+            M: <flint.types.nmod_mat.nmod_mat at 0x7c3c73fac990>
+            R: <flint.types.nmod_mat.nmod_mat at 0x7c3c73facb70>
+            rk: 59
+            Rn: <numpy.ndarray at 0x7c3c364177b0>
+            Xr: <numpy.ndarray at 0x7c3c36416fd0>
+            q: <numpy.ndarray at 0x7c3c36417330>
+    quotient_rank (fiber_rank_v11.py:1194)
+        Arguments:
+            a: <cell at 0x7c3c745e29e0>
+            p: <cell at 0x7c3c741dc0a0>
+            names: ["t1", "t2", "t4", "t5", "t6", "t7", "t9"]
+            gens: <cell at 0x7c3c741dc520>
+        Locals:
+            n: 7
+            htext: ?
+            ngens: 24
+            k: <cell at 0x7c3c741dc040>
+            var_char: [0, 1, 3, 2, 3, 2, 0]
+            preflight: <function at 0x7c3c73fb2c00>
+            t_s0: 1793897668.4334712
+            basis: [(0, 0, 0, 0, 0, 0, 15), (0, 0, 0, 0, 0, 1, 14), (0, 0, 0, 0, 1, 0, 14), (0, 0, 0, 1, 0, 0, 14), (0, 0, 1, 0, 0, 0, 14), ...]
+            export: {"reused": [], ...}
+            t_sing: 688.1011703014374
+            D: 93024
+            m: (0, 0, 0, 0, 1, 0, 1)
+            bidx: {(0, 0, 0, 0, 0, 0, 15): 0, (0, 0, 0, 0, 0, 1, 14): 1, (0, 0, 0, 0, 1, 0, 14): 2, (0, 0, 0, 1, 0, 0, 14): 3, ...}
+            block_of: <numpy.ndarray at 0x7c3c488c4510>
+            b: 3
+            pos: <numpy.ndarray at 0x7c3c488c45d0>
+            t_p0: 1793898356.565738
+            lay: (<numpy.ndarray at 0x7c3c488c4510>, <numpy.ndarray at 0x7c3c488c4450>, {0: <numpy.ndarray at 0x7c3c488c48d0>, ...}, ...)
+            gvecs: <numpy.ndarray at 0x7c3c20427690>
+            f: 23
+            poly: {(1, 2, 1, 0, 2, 0, 2): 2, (1, 0, 1, 2, 2, 0, 2): 32007, (1, 0, 1, 0, 4, 0, 2): 32007, (1, 2, 0, 1, 1, 1, 2): 32007, ...}
+            c: 3
+            comps: [(<numpy.ndarray at 0x7c3c20427f90>, 2), (<numpy.ndarray at 0x7c3c20427ed0>, 3), (<numpy.ndarray at 0x7c3c20427f30>, 2), ...]
+            found: [3]
+            v: <numpy.ndarray at 0x7c3c204276f0>
+            gchar: [2, 3, 2, 3, 0, 1, 0, 3, 3, 2, 2, 3, 2, 0, 1, 2, 0, 1, 0, 3, 0, 1, 2, 3]
+            preflight_bytes: 104990954496
+            one_pos: 23375
+            stack: <function at 0x7c3c8ab5d120>
+            rep_tuples: [(0, 0, 0, 0, 0), (0, 0, 0, 0, 1), (0, 0, 0, 0, 2), (0, 0, 0, 0, 3), (0, 0, 0, 0, 4), (0, 0, 0, 0, 5), (0, 0, 0, 0, 6), ...]
+            nproducts: 98280
+            Q: {0: <numpy.ndarray at 0x7c3c364176f0>, 1: <numpy.ndarray at 0x7c3c36417690>, 2: <numpy.ndarray at 0x7c3c36417630>, ...}
+            C: {}
+            t_prod: 2472.9399638175964
+            dense_bytes: 121148734464
+            dense_closure: False
+            mats: [{0: <csr_matrix at 0x7c3c741dc710>, 1: <csr_matrix at 0x7c3c74172750>, 2: <csr_matrix at 0x7c3c747baab0>, ...}, {...}, ...]
+            table_mul: <function at 0x7c3c72416c00>
+            t0: 1793900829.5057495
+            W: {0: <Echelon at 0x7c3c741dcd10>, 1: <Echelon at 0x7c3c74426e10>, 2: <Echelon at 0x7c3c74427260>, ...}
+            tb: 3
+            new: {0: <numpy.ndarray at 0x7c3c364174b0>, 1: <numpy.ndarray at 0x7c3c36417210>, 2: <numpy.ndarray at 0x7c3c36416f70>, ...}
+            rounds: 5
+            start: {0: <set at 0x7c3c73fba180>, 1: <set at 0x7c3c73fba260>, 2: <set at 0x7c3c73fba340>, 3: <set at 0x7c3c73fba420>}
+            rows: <numpy.ndarray at 0x7c3c36417810>
+            s0: 0
+            X: <numpy.ndarray at 0x7c3c36417270>
+            t_close: 9263.51399731636
+            per_block: {"0": {"cols": 23376, "rank_W": 15364, "r_N": 1017}, "1": {"cols": 23136, "rank_W": 15264, "r_N": 1005}, "2": {...}}
+            total: 3069
+            before: 15315
+    main (fiber_rank_v11.py:1315)
+        Locals:
+            ap: <ArgumentParser at 0x7c3c741db740>
+            t0: 1793897668.1160011
+            p: 32009
+            names: ["t1", "t2", "t4", "t5", "t6", "t7", "t9"]
+            j_txt: ["t1^2*t9^2-2*t1^2*t9+2*t1*t9^2-t2^2-t4^2+t5^2+t6^2-t7^2-4*t1*t9"]
+            g_txt: ?
+            J: [{(2, 0, 0, 0, 0, 0, 2): 1, (2, 0, 0, 0, 0, 0, 1): 32007, (1, 0, 0, 0, 0, 0, 2): 2, (0, 2, 0, 0, 0, 0, 0): 32008, ...}]
+            G: [{(5, 1, 0, 0, 1, 0, 1): 2, (3, 3, 0, 0, 1, 0, 1): 2, (3, 1, 2, 0, 1, 0, 1): 4, (3, 1, 0, 2, 1, 0, 1): 32007, ...}, ...]
+            group: [(1, 2, 4), (1, 3, 5), (2, 3, 4, 5)]
+            gens: [<numpy.ndarray at 0x7c3c73ef4270>, <numpy.ndarray at 0x7c3c73ef4390>]
+    <module> (fiber_rank_v11.py:1446)
+Thread 2206 (idle): "Thread-1"
+    select (selectors.py:415)
+        Arguments:
+            self: <PollSelector at 0x7c3c7413a420>
+            timeout: None
+        Locals:
+            ready: []
+    wait (multiprocessing/connection.py:1136)
+        Arguments:
+            object_list: [<Connection at 0x7c3c889d7b90>, <Connection at 0x7c3c741dd940>, 11, 12, 13, 15]
+            timeout: None
+        Locals:
+            selector: <PollSelector at 0x7c3c7413a420>
+            obj: 15
+    wait_result_broken_or_wakeup (concurrent/futures/process.py:426)
+        Arguments:
+            self: <_ExecutorManagerThread at 0x7c3c74d5a0c0>
+        Locals:
+            result_reader: <Connection at 0x7c3c889d7b90>
+            wakeup_reader: <Connection at 0x7c3c741dd940>
+            readers: [<Connection at 0x7c3c889d7b90>, <Connection at 0x7c3c741dd940>]
+            worker_sentinels: [11, 12, 13, 15]
+    run (concurrent/futures/process.py:353)
+        Arguments:
+            self: <_ExecutorManagerThread at 0x7c3c74d5a0c0>
+        Locals:
+            cause: None
+            is_broken: False

@@ -1,0 +1,7 @@
+LIB "primdec.lib"; option(redSB); system("--ticks-per-sec",1); int t0=rtimer;
+ring Y=32029,(y(1..17)),dp; execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-iso/iso_p2/d2/relations-d2.rel")+";"); K=std(K);
+"RESULT p32029 K gens", ncols(K), "dim", dim(K), "deg", mult(K);
+int i; ideal Q; for (i=1; i<=17; i++) { Q=std(quotient(K, y(i))); "RESULT colon y(" + string(i) + ") equal", size(reduce(Q, K))==0; }
+ideal Kc=std(subst(K,y(2),1)); ideal rc=std(radical(Kc)); "RESULT chart 2 radical", size(reduce(rc,Kc))==0, "s", rtimer-t0;
+Kc=std(subst(K,y(3),1)); rc=std(radical(Kc)); "RESULT chart 3 radical", size(reduce(rc,Kc))==0, "s", rtimer-t0;
+quit;

@@ -1,0 +1,1667 @@
+// arc families on the iso -> N- slice at p = 32029
+option(redSB);
+LIB "matrix.lib";
+ring r=32029,(t2,t3,t4,t5,t6,t7),dp;
+number I=9115;
+ideal J=t2^2+t4^2-t5^2-t6^2+t7^2;
+ideal G=2*t3^4*t4*t5+2*t2*t3^3*t4*t6-2*t3^4*t5*t6-2*t3^2*t4^2*t5*t6-2*t2*t3^3*t6^2-2*t2*t3*t4^2*t6^2+2*t3^2*t4*t5*t6^2+2*t2*t3*t4*t6^3-2*t3^4*t4*t7+2*t3^2*t4*t5^2*t7+2*t3^4*t6*t7+2*t3^2*t4^2*t6*t7+2*t2*t3*t4*t5*t6*t7-2*t3^2*t5^2*t6*t7-2*t3^2*t4*t6^2*t7-2*t2*t3*t5*t6^2*t7-2*t3^2*t4*t5*t7^2+2*t3^2*t5*t6*t7^2+8*t3^3*t4*t5+6*t2*t3^2*t4*t6-8*t3^3*t5*t6-4*t3*t4^2*t5*t6-6*t2*t3^2*t6^2-2*t2*t4^2*t6^2+4*t3*t4*t5*t6^2+2*t2*t4*t6^3-8*t3^3*t4*t7+4*t3*t4*t5^2*t7+8*t3^3*t6*t7+4*t3*t4^2*t6*t7+2*t2*t4*t5*t6*t7-4*t3*t5^2*t6*t7-4*t3*t4*t6^2*t7-2*t2*t5*t6^2*t7-4*t3*t4*t5*t7^2+4*t3*t5*t6*t7^2+14*t3^2*t4*t5+8*t2*t3*t4*t6-14*t3^2*t5*t6-2*t4^2*t5*t6-8*t2*t3*t6^2+2*t4*t5*t6^2-14*t3^2*t4*t7+2*t4*t5^2*t7+14*t3^2*t6*t7+2*t4^2*t6*t7-2*t5^2*t6*t7-2*t4*t6^2*t7-2*t4*t5*t7^2+2*t5*t6*t7^2+12*t3*t4*t5+4*t2*t4*t6-12*t3*t5*t6-4*t2*t6^2-12*t3*t4*t7+12*t3*t6*t7+4*t4*t5-4*t5*t6-4*t4*t7+4*t6*t7,-13799*t3^4*t4^2-4431*t3^4*t4*t6+13799*t3^2*t4^3*t6-13799*t3^4*t6^2+4431*t3^2*t4^2*t6^2+13799*t3^2*t4*t6^3-13799*t2*t3^3*t4*t7-13799*t3^2*t4^2*t5*t7+13799*t2*t3^3*t6*t7+13799*t2*t3*t4^2*t6*t7-4431*t3^2*t4*t5*t6*t7-13799*t2*t3*t4*t6^2*t7-13799*t3^2*t5*t6^2*t7-13799*t2*t3*t4*t5*t7^2+13799*t2*t3*t5*t6*t7^2+8862*t3^3*t4^2+14305*t3^3*t4*t6-4431*t3*t4^3*t6+8862*t3^3*t6^2+8862*t3*t4^2*t6^2-4431*t3*t4*t6^3-9368*t2*t3^2*t4*t7+4431*t3*t4^2*t5*t7+9368*t2*t3^2*t6*t7+13799*t2*t4^2*t6*t7-8862*t3*t4*t5*t6*t7-13799*t2*t4*t6^2*t7+4431*t3*t5*t6^2*t7-13799*t2*t4*t5*t7^2+13799*t2*t5*t6*t7^2-506*t3^2*t4^2+1012*t3^2*t4*t6+13799*t4^3*t6-506*t3^2*t6^2+4431*t4^2*t6^2+13799*t4*t6^3+8862*t2*t3*t4*t7-13799*t4^2*t5*t7-8862*t2*t3*t6*t7-4431*t4*t5*t6*t7-13799*t5*t6^2*t7+13293*t3*t4^2+5443*t3*t4*t6+13293*t3*t6^2+4431*t2*t4*t7-4431*t2*t6*t7+4431*t4^2-8862*t4*t6+4431*t6^2,13799*t2*t3^4*t4-13799*t2*t3^4*t6-13799*t2*t3^2*t4^2*t6+13799*t3^3*t4*t5*t6+13799*t2*t3^2*t4*t6^2-13799*t3^3*t5*t6^2-13799*t3*t4^2*t5*t6^2+13799*t3*t4*t5*t6^3-13799*t3^3*t4^2*t7+13799*t2*t3^2*t4*t5*t7+13799*t3^3*t4*t6*t7+13799*t3*t4^3*t6*t7-13799*t2*t3^2*t5*t6*t7+13799*t3*t4*t5^2*t6*t7-13799*t3*t4^2*t6^2*t7-13799*t3*t5^2*t6^2*t7-13799*t3*t4^2*t5*t7^2+13799*t3*t4*t5*t6*t7^2-8862*t2*t3^3*t4+8862*t2*t3^3*t6+4431*t2*t3*t4^2*t6+9368*t3^2*t4*t5*t6-4431*t2*t3*t4*t6^2-9368*t3^2*t5*t6^2-13799*t4^2*t5*t6^2+13799*t4*t5*t6^3-9368*t3^2*t4^2*t7-4431*t2*t3*t4*t5*t7+9368*t3^2*t4*t6*t7+13799*t4^3*t6*t7+4431*t2*t3*t5*t6*t7+13799*t4*t5^2*t6*t7-13799*t4^2*t6^2*t7-13799*t5^2*t6^2*t7-13799*t4^2*t5*t7^2+13799*t4*t5*t6*t7^2+506*t2*t3^2*t4-506*t2*t3^2*t6-13799*t2*t4^2*t6-8862*t3*t4*t5*t6+13799*t2*t4*t6^2+8862*t3*t5*t6^2+8862*t3*t4^2*t7+13799*t2*t4*t5*t7-8862*t3*t4*t6*t7-13799*t2*t5*t6*t7-13293*t2*t3*t4+13293*t2*t3*t6-4431*t4*t5*t6+4431*t5*t6^2+4431*t4^2*t7-4431*t4*t6*t7-4431*t2*t4+4431*t2*t6,-13799*t3^4*t5^2-13799*t2*t3^3*t5*t6+13799*t3^2*t4*t5^2*t6+13799*t2*t3*t4*t5*t6^2-4431*t3^4*t5*t7-13799*t3^2*t5^3*t7+13799*t2*t3^3*t6*t7+4431*t3^2*t4*t5*t6*t7-13799*t2*t3*t5^2*t6*t7-13799*t2*t3*t4*t6^2*t7-13799*t3^4*t7^2-4431*t3^2*t5^2*t7^2+13799*t3^2*t4*t6*t7^2+13799*t2*t3*t5*t6*t7^2-13799*t3^2*t5*t7^3+8862*t3^3*t5^2-9368*t2*t3^2*t5*t6-4431*t3*t4*t5^2*t6+13799*t2*t4*t5*t6^2+14305*t3^3*t5*t7+4431*t3*t5^3*t7+9368*t2*t3^2*t6*t7+8862*t3*t4*t5*t6*t7-13799*t2*t5^2*t6*t7-13799*t2*t4*t6^2*t7+8862*t3^3*t7^2-8862*t3*t5^2*t7^2-4431*t3*t4*t6*t7^2+13799*t2*t5*t6*t7^2+4431*t3*t5*t7^3-506*t3^2*t5^2+8862*t2*t3*t5*t6+13799*t4*t5^2*t6+1012*t3^2*t5*t7-13799*t5^3*t7-8862*t2*t3*t6*t7+4431*t4*t5*t6*t7-506*t3^2*t7^2-4431*t5^2*t7^2+13799*t4*t6*t7^2-13799*t5*t7^3+13293*t3*t5^2+4431*t2*t5*t6+5443*t3*t5*t7-4431*t2*t6*t7+13293*t3*t7^2+4431*t5^2-8862*t5*t7+4431*t7^2,2*t2*t3^4*t5-2*t2*t3^2*t4*t5*t6+2*t3^3*t5^2*t6-2*t3*t4*t5^2*t6^2-2*t2*t3^4*t7-2*t3^3*t4*t5*t7+2*t2*t3^2*t5^2*t7+2*t2*t3^2*t4*t6*t7-2*t3^3*t5*t6*t7+2*t3*t4^2*t5*t6*t7+2*t3*t5^3*t6*t7+2*t3*t4*t5*t6^2*t7+2*t3^3*t4*t7^2-2*t2*t3^2*t5*t7^2-2*t3*t4*t5^2*t7^2-2*t3*t4^2*t6*t7^2-2*t3*t5^2*t6*t7^2+2*t3*t4*t5*t7^3+8*t2*t3^3*t5-4*t2*t3*t4*t5*t6+6*t3^2*t5^2*t6-2*t4*t5^2*t6^2-8*t2*t3^3*t7-6*t3^2*t4*t5*t7+4*t2*t3*t5^2*t7+4*t2*t3*t4*t6*t7-6*t3^2*t5*t6*t7+2*t4^2*t5*t6*t7+2*t5^3*t6*t7+2*t4*t5*t6^2*t7+6*t3^2*t4*t7^2-4*t2*t3*t5*t7^2-2*t4*t5^2*t7^2-2*t4^2*t6*t7^2-2*t5^2*t6*t7^2+2*t4*t5*t7^3+14*t2*t3^2*t5-2*t2*t4*t5*t6+8*t3*t5^2*t6-14*t2*t3^2*t7-8*t3*t4*t5*t7+2*t2*t5^2*t7+2*t2*t4*t6*t7-8*t3*t5*t6*t7+8*t3*t4*t7^2-2*t2*t5*t7^2+12*t2*t3*t5+4*t5^2*t6-12*t2*t3*t7-4*t4*t5*t7-4*t5*t6*t7+4*t4*t7^2+4*t2*t5-4*t2*t7,-13799*t3^5*t4*t6+13799*t3^5*t6^2-4431*t3^3*t4^2*t6^2+4431*t3^3*t4*t6^3-13799*t3*t4^3*t6^3+13799*t3*t4^2*t6^4+13799*t3^5*t5*t7+8862*t3^3*t4*t5*t6*t7-4431*t3^3*t5*t6^2*t7+9368*t3*t4^2*t5*t6^2*t7+4431*t3*t4*t5*t6^3*t7-13799*t3^5*t7^2-4431*t3^3*t5^2*t7^2-4431*t3^3*t4*t6*t7^2-9368*t3*t4*t5^2*t6*t7^2-13799*t3*t4^2*t6^2*t7^2+13799*t3*t5^2*t6^2*t7^2+4431*t3^3*t5*t7^3+13799*t3*t5^3*t7^3-4431*t3*t4*t5*t6*t7^3-13799*t3*t5^2*t7^4-4937*t3^4*t4*t6+4937*t3^4*t6^2-13293*t3^2*t4^2*t6^2+13293*t3^2*t4*t6^3-13799*t4^3*t6^3+13799*t4^2*t6^4+4937*t3^4*t5*t7-5443*t3^2*t4*t5*t6*t7-13293*t3^2*t5*t6^2*t7+9368*t4^2*t5*t6^2*t7+4431*t4*t5*t6^3*t7-4937*t3^4*t7^2-13293*t3^2*t5^2*t7^2-13293*t3^2*t4*t6*t7^2-9368*t4*t5^2*t6*t7^2-13799*t4^2*t6^2*t7^2+13799*t5^2*t6^2*t7^2+13293*t3^2*t5*t7^3+13799*t5^3*t7^3-4431*t4*t5*t6*t7^3-13799*t5^2*t7^4-5443*t3^3*t4*t6+5443*t3^3*t6^2+14305*t3*t4^2*t6^2-14305*t3*t4*t6^3+5443*t3^3*t5*t7+3419*t3*t4*t5*t6*t7+14305*t3*t5*t6^2*t7-5443*t3^3*t7^2+14305*t3*t5^2*t7^2+14305*t3*t4*t6*t7^2-14305*t3*t5*t7^3+3419*t3^2*t4*t6-3419*t3^2*t6^2-8862*t4^2*t6^2+8862*t4*t6^3-3419*t3^2*t5*t7-14305*t4*t5*t6*t7-8862*t5*t6^2*t7+3419*t3^2*t7^2-8862*t5^2*t7^2-8862*t4*t6*t7^2+8862*t5*t7^3-5443*t3*t4*t6+5443*t3*t6^2+5443*t3*t5*t7-5443*t3*t7^2+8862*t4*t6-8862*t6^2-8862*t5*t7+8862*t7^2,13799*t3^6*t4-13799*t3^6*t6+4431*t3^4*t4^2*t6-4431*t3^4*t4*t6^2+13799*t3^2*t4^3*t6^2-13799*t3^2*t4^2*t6^3-13799*t2*t3^5*t7-4431*t3^4*t4*t5*t7-4431*t2*t3^3*t4*t6*t7+4431*t3^4*t5*t6*t7+4431*t3^2*t4^2*t5*t6*t7-13799*t2*t3*t4^2*t6^2*t7-4431*t3^2*t4*t5*t6^2*t7+4431*t2*t3^3*t5*t7^2+13799*t3^2*t4*t5^2*t7^2-4431*t2*t3*t4*t5*t6*t7^2-13799*t3^2*t5^2*t6*t7^2-13799*t2*t3*t5^2*t7^3-13293*t3^5*t4+13293*t3^5*t6-14305*t3^3*t4^2*t6+14305*t3^3*t4*t6^2-4431*t3*t4^3*t6^2+4431*t3*t4^2*t6^3-4937*t2*t3^4*t7+14305*t3^3*t4*t5*t7-13293*t2*t3^2*t4*t6*t7-14305*t3^3*t5*t6*t7+8862*t3*t4^2*t5*t6*t7-13799*t2*t4^2*t6^2*t7-8862*t3*t4*t5*t6^2*t7+13293*t2*t3^2*t5*t7^2-4431*t3*t4*t5^2*t7^2-4431*t2*t4*t5*t6*t7^2+4431*t3*t5^2*t6*t7^2-13799*t2*t5^2*t7^3+14811*t3^4*t4-14811*t3^4*t6-5443*t3^2*t4^2*t6+5443*t3^2*t4*t6^2+13799*t4^3*t6^2-13799*t4^2*t6^3-5443*t2*t3^3*t7+5443*t3^2*t4*t5*t7+14305*t2*t3*t4*t6*t7-5443*t3^2*t5*t6*t7+4431*t4^2*t5*t6*t7-4431*t4*t5*t6^2*t7-14305*t2*t3*t5*t7^2+13799*t4*t5^2*t7^2-13799*t5^2*t6*t7^2-12281*t3^3*t4+12281*t3^3*t6-14305*t3*t4^2*t6+14305*t3*t4*t6^2+3419*t2*t3^2*t7+14305*t3*t4*t5*t7-8862*t2*t4*t6*t7-14305*t3*t5*t6*t7+8862*t2*t5*t7^2+1012*t3^2*t4-1012*t3^2*t6+4431*t4^2*t6-4431*t4*t6^2-5443*t2*t3*t7-4431*t4*t5*t7+4431*t5*t6*t7-8862*t3*t4+8862*t3*t6+8862*t2*t7,13799*t2*t3^5*t4+13799*t3^4*t4^2*t5-13799*t2*t3^5*t6-13799*t2*t3^3*t4^2*t6-13799*t3^4*t4*t5*t6-13799*t3^2*t4^3*t5*t6+13799*t2*t3^3*t4*t6^2+13799*t3^2*t4^2*t5*t6^2+13799*t3^4*t4^2*t7-13799*t3^4*t5^2*t7+13799*t3^2*t4^2*t5^2*t7+13799*t3^4*t4*t6*t7-13799*t3^2*t4^3*t6*t7-13799*t2*t3^3*t5*t6*t7+13799*t2*t3*t4^2*t5*t6*t7+4431*t3^4*t6^2*t7-13799*t3^2*t4^2*t6^2*t7-4431*t3^2*t4*t6^3*t7+13799*t3^2*t4^2*t5*t7^2-13799*t2*t3*t4*t5^2*t7^2-13799*t3^2*t5^3*t7^2-13799*t2*t3^3*t6*t7^2+13799*t3^2*t4*t5*t6*t7^2+13799*t2*t3*t4*t6^2*t7^2+4431*t3^2*t5*t6^2*t7^2+13799*t3^4*t7^3-13799*t3^2*t4*t6*t7^3-13799*t2*t3*t5*t6*t7^3+13799*t3^2*t5*t7^4+4937*t2*t3^4*t4-8862*t3^3*t4^2*t5-4937*t2*t3^4*t6-9368*t2*t3^2*t4^2*t6+8862*t3^3*t4*t5*t6+4431*t3*t4^3*t5*t6+9368*t2*t3^2*t4*t6^2-4431*t3*t4^2*t5*t6^2-8862*t3^3*t4^2*t7+8862*t3^3*t5^2*t7-4431*t3*t4^2*t5^2*t7-8862*t3^3*t4*t6*t7+4431*t3*t4^3*t6*t7-9368*t2*t3^2*t5*t6*t7+13799*t2*t4^2*t5*t6*t7-14305*t3^3*t6^2*t7+4431*t3*t4^2*t6^2*t7-8862*t3*t4*t6^3*t7-4431*t3*t4^2*t5*t7^2-13799*t2*t4*t5^2*t7^2+4431*t3*t5^3*t7^2-9368*t2*t3^2*t6*t7^2-4431*t3*t4*t5*t6*t7^2+13799*t2*t4*t6^2*t7^2+8862*t3*t5*t6^2*t7^2-8862*t3^3*t7^3+4431*t3*t4*t6*t7^3-13799*t2*t5*t6*t7^3-4431*t3*t5*t7^4+9874*t2*t3^3*t4+506*t3^2*t4^2*t5-9874*t2*t3^3*t6+4431*t2*t3*t4^2*t6-506*t3^2*t4*t5*t6-13799*t4^3*t5*t6-4431*t2*t3*t4*t6^2+13799*t4^2*t5*t6^2+506*t3^2*t4^2*t7+4431*t2*t3*t4*t5*t7-506*t3^2*t5^2*t7+13799*t4^2*t5^2*t7+506*t3^2*t4*t6*t7-13799*t4^3*t6*t7+4431*t2*t3*t5*t6*t7-1012*t3^2*t6^2*t7-13799*t4^2*t6^2*t7-4431*t4*t6^3*t7+13799*t4^2*t5*t7^2-13799*t5^3*t7^2+8862*t2*t3*t6*t7^2+13799*t4*t5*t6*t7^2+4431*t5*t6^2*t7^2+506*t3^2*t7^3-13799*t4*t6*t7^3+13799*t5*t7^4+9874*t2*t3^2*t4-13293*t3*t4^2*t5-9874*t2*t3^2*t6+13293*t3*t4*t5*t6-13293*t3*t4^2*t7+4431*t2*t4*t5*t7+13293*t3*t5^2*t7-13293*t3*t4*t6*t7-5443*t3*t6^2*t7+4431*t2*t6*t7^2-13293*t3*t7^3-8862*t2*t3*t4-4431*t4^2*t5+8862*t2*t3*t6+4431*t4*t5*t6-4431*t4^2*t7+4431*t5^2*t7-4431*t4*t6*t7+8862*t6^2*t7-4431*t7^3,2*t3^6*t4+2*t3^4*t4*t5^2-2*t3^6*t6-2*t3^4*t4^2*t6-2*t3^4*t5^2*t6-2*t3^2*t4^2*t5^2*t6+4*t3^4*t4*t6^2+2*t3^2*t4*t5^2*t6^2-2*t3^4*t6^3-2*t3^2*t4^2*t6^3+2*t3^2*t4*t6^4-2*t2*t3^5*t7+2*t3^4*t4*t5*t7-2*t2*t3^3*t5^2*t7+2*t3^2*t4*t5^3*t7+2*t2*t3^3*t4*t6*t7-2*t3^4*t5*t6*t7+2*t2*t3*t4*t5^2*t6*t7-2*t3^2*t5^3*t6*t7-2*t2*t3^3*t6^2*t7+2*t3^2*t4*t5*t6^2*t7+2*t2*t3*t4*t6^3*t7-2*t3^2*t5*t6^3*t7-2*t2*t3^3*t5*t7^2-2*t2*t3*t5^3*t7^2-2*t2*t3*t5*t6^2*t7^2+12*t3^5*t4+8*t3^3*t4*t5^2-12*t3^5*t6-8*t3^3*t4^2*t6-8*t3^3*t5^2*t6-4*t3*t4^2*t5^2*t6+16*t3^3*t4*t6^2+4*t3*t4*t5^2*t6^2-8*t3^3*t6^3-4*t3*t4^2*t6^3+4*t3*t4*t6^4-10*t2*t3^4*t7+8*t3^3*t4*t5*t7-6*t2*t3^2*t5^2*t7+4*t3*t4*t5^3*t7+6*t2*t3^2*t4*t6*t7-8*t3^3*t5*t6*t7+2*t2*t4*t5^2*t6*t7-4*t3*t5^3*t6*t7-6*t2*t3^2*t6^2*t7+4*t3*t4*t5*t6^2*t7+2*t2*t4*t6^3*t7-4*t3*t5*t6^3*t7-6*t2*t3^2*t5*t7^2-2*t2*t5^3*t7^2-2*t2*t5*t6^2*t7^2+30*t3^4*t4-2*t2*t3^3*t5+14*t3^2*t4*t5^2-30*t3^4*t6-10*t3^2*t4^2*t6+2*t2*t3*t4*t5*t6-14*t3^2*t5^2*t6-2*t4^2*t5^2*t6+24*t3^2*t4*t6^2+2*t4*t5^2*t6^2-14*t3^2*t6^3-2*t4^2*t6^3+2*t4*t6^4-22*t2*t3^3*t7+10*t3^2*t4*t5*t7-10*t2*t3*t5^2*t7+2*t4*t5^3*t7+6*t2*t3*t4*t6*t7-10*t3^2*t5*t6*t7-2*t5^3*t6*t7-8*t2*t3*t6^2*t7+2*t4*t5*t6^2*t7-2*t5*t6^3*t7-6*t2*t3*t5*t7^2+40*t3^3*t4-6*t2*t3^2*t5+12*t3*t4*t5^2-40*t3^3*t6-4*t3*t4^2*t6+2*t2*t4*t5*t6-12*t3*t5^2*t6+16*t3*t4*t6^2-12*t3*t6^3-26*t2*t3^2*t7+4*t3*t4*t5*t7-6*t2*t5^2*t7+2*t2*t4*t6*t7-4*t3*t5*t6*t7-4*t2*t6^2*t7-2*t2*t5*t7^2+28*t3^2*t4-8*t2*t3*t5+4*t4*t5^2-28*t3^2*t6-4*t5^2*t6+4*t4*t6^2-4*t6^3-16*t2*t3*t7+8*t3*t4-4*t2*t5-8*t3*t6-4*t2*t7,-2*t3^6*t4+2*t3^4*t4^3+2*t3^6*t6-2*t3^2*t4^4*t6-2*t3^4*t4*t6^2+2*t3^2*t4^3*t6^2+2*t2*t3^5*t7-2*t2*t3^3*t4^2*t7-2*t3^4*t4*t5*t7+2*t3^2*t4^3*t5*t7-2*t2*t3^3*t4*t6*t7+2*t2*t3*t4^3*t6*t7+2*t3^4*t5*t6*t7-2*t3^2*t4^2*t5*t6*t7+2*t3^4*t4*t7^2+2*t2*t3^3*t5*t7^2-2*t2*t3*t4^2*t5*t7^2-2*t3^4*t6*t7^2-2*t3^2*t4^2*t6*t7^2+2*t3^2*t4*t6^2*t7^2-2*t2*t3^3*t7^3+2*t3^2*t4*t5*t7^3+2*t2*t3*t4*t6*t7^3-2*t3^2*t5*t6*t7^3-2*t2*t3*t5*t7^4-12*t3^5*t4+8*t3^3*t4^3+12*t3^5*t6-4*t3*t4^4*t6-8*t3^3*t4*t6^2+4*t3*t4^3*t6^2+10*t2*t3^4*t7-6*t2*t3^2*t4^2*t7-8*t3^3*t4*t5*t7+4*t3*t4^3*t5*t7-6*t2*t3^2*t4*t6*t7+2*t2*t4^3*t6*t7+8*t3^3*t5*t6*t7-4*t3*t4^2*t5*t6*t7+8*t3^3*t4*t7^2+6*t2*t3^2*t5*t7^2-2*t2*t4^2*t5*t7^2-8*t3^3*t6*t7^2-4*t3*t4^2*t6*t7^2+4*t3*t4*t6^2*t7^2-6*t2*t3^2*t7^3+4*t3*t4*t5*t7^3+2*t2*t4*t6*t7^3-4*t3*t5*t6*t7^3-2*t2*t5*t7^4-30*t3^4*t4+14*t3^2*t4^3+30*t3^4*t6-4*t3^2*t4^2*t6-2*t4^4*t6-10*t3^2*t4*t6^2+2*t4^3*t6^2+24*t2*t3^3*t7-8*t2*t3*t4^2*t7-10*t3^2*t4*t5*t7+2*t4^3*t5*t7-8*t2*t3*t4*t6*t7+10*t3^2*t5*t6*t7-2*t4^2*t5*t6*t7+14*t3^2*t4*t7^2+8*t2*t3*t5*t7^2-14*t3^2*t6*t7^2-2*t4^2*t6*t7^2+2*t4*t6^2*t7^2-8*t2*t3*t7^3+2*t4*t5*t7^3-2*t5*t6*t7^3-40*t3^3*t4+12*t3*t4^3+40*t3^3*t6-8*t3*t4^2*t6-4*t3*t4*t6^2+32*t2*t3^2*t7-4*t2*t4^2*t7-4*t3*t4*t5*t7-4*t2*t4*t6*t7+4*t3*t5*t6*t7+12*t3*t4*t7^2+4*t2*t5*t7^2-12*t3*t6*t7^2-4*t2*t7^3-28*t3^2*t4+4*t4^3+28*t3^2*t6-4*t4^2*t6+24*t2*t3*t7+4*t4*t7^2-4*t6*t7^2-8*t3*t4+8*t3*t6+8*t2*t7,-2*t2*t3^4*t4^2-2*t3^5*t4*t5+2*t2*t3^4*t4*t6+2*t2*t3^2*t4^3*t6+2*t3^5*t5*t6+2*t3^3*t4^2*t5*t6-2*t2*t3^2*t4^2*t6^2-2*t3^3*t4*t5*t6^2-2*t3^5*t4*t7-2*t3^3*t4^3*t7+2*t2*t3^4*t5*t7-2*t2*t3^2*t4^2*t5*t7+2*t3^5*t6*t7+2*t3^3*t4^2*t6*t7+2*t3*t4^4*t6*t7+2*t3^3*t5^2*t6*t7-2*t3*t4^2*t5^2*t6*t7-2*t3*t4^2*t6^3*t7+2*t2*t3^4*t7^2-2*t3^3*t4*t5*t7^2-2*t3*t4^3*t5*t7^2+2*t2*t3^2*t5^2*t7^2+2*t3*t4*t5^3*t7^2-2*t2*t3^2*t4*t6*t7^2+2*t3^3*t5*t6*t7^2+2*t3*t4*t5*t6^2*t7^2-2*t3^3*t4*t7^3+2*t2*t3^2*t5*t7^3+2*t3*t4^2*t6*t7^3-2*t3*t4*t5*t7^4-8*t2*t3^3*t4^2-10*t3^4*t4*t5+8*t2*t3^3*t4*t6+4*t2*t3*t4^3*t6+10*t3^4*t5*t6+6*t3^2*t4^2*t5*t6-4*t2*t3*t4^2*t6^2-6*t3^2*t4*t5*t6^2-10*t3^4*t4*t7-6*t3^2*t4^3*t7+8*t2*t3^3*t5*t7-4*t2*t3*t4^2*t5*t7+10*t3^4*t6*t7+6*t3^2*t4^2*t6*t7+2*t4^4*t6*t7+6*t3^2*t5^2*t6*t7-2*t4^2*t5^2*t6*t7-2*t4^2*t6^3*t7+8*t2*t3^3*t7^2-6*t3^2*t4*t5*t7^2-2*t4^3*t5*t7^2+4*t2*t3*t5^2*t7^2+2*t4*t5^3*t7^2-4*t2*t3*t4*t6*t7^2+6*t3^2*t5*t6*t7^2+2*t4*t5*t6^2*t7^2-6*t3^2*t4*t7^3+4*t2*t3*t5*t7^3+2*t4^2*t6*t7^3-2*t4*t5*t7^4-14*t2*t3^2*t4^2-20*t3^3*t4*t5+14*t2*t3^2*t4*t6+2*t2*t4^3*t6+20*t3^3*t5*t6+4*t3*t4^2*t5*t6-2*t2*t4^2*t6^2-4*t3*t4*t5*t6^2-20*t3^3*t4*t7-8*t3*t4^3*t7+14*t2*t3^2*t5*t7-2*t2*t4^2*t5*t7+4*t3*t4*t5^2*t7+20*t3^3*t6*t7+4*t3*t4^2*t6*t7+4*t3*t5^2*t6*t7+4*t3*t4*t6^2*t7+14*t2*t3^2*t7^2-4*t3*t4*t5*t7^2+2*t2*t5^2*t7^2-2*t2*t4*t6*t7^2+4*t3*t5*t6*t7^2-8*t3*t4*t7^3+2*t2*t5*t7^3-12*t2*t3*t4^2-20*t3^2*t4*t5+12*t2*t3*t4*t6+20*t3^2*t5*t6-20*t3^2*t4*t7-4*t4^3*t7+12*t2*t3*t5*t7+4*t4*t5^2*t7+20*t3^2*t6*t7+4*t4*t6^2*t7+12*t2*t3*t7^2-4*t4*t7^3-4*t2*t4^2-8*t3*t4*t5+4*t2*t4*t6+8*t3*t5*t6-8*t3*t4*t7+4*t2*t5*t7+8*t3*t6*t7+4*t2*t7^2,13799*t3^5*t4^2+13799*t2*t3^4*t4*t5-13799*t3^3*t4^3*t6-13799*t2*t3^4*t5*t6-13799*t2*t3^2*t4^2*t5*t6-13799*t3^5*t6^2+13799*t2*t3^2*t4*t5*t6^2+13799*t3^3*t4*t6^3-13799*t2*t3^4*t4*t7-4431*t3^3*t4^2*t5*t7+13799*t2*t3^2*t4*t5^2*t7-13799*t3^3*t5^3*t7-13799*t2*t3^4*t6*t7+13799*t2*t3^2*t4^2*t6*t7-13799*t3*t4^3*t5*t6*t7-13799*t2*t3^2*t5^2*t6*t7+13799*t3*t4*t5^3*t6*t7+13799*t2*t3^2*t4*t6^2*t7+4431*t3^3*t5*t6^2*t7+13799*t3*t4*t5*t6^3*t7-13799*t2*t3^2*t4*t5*t7^2+13799*t3*t4^2*t5^2*t7^2-13799*t3*t5^4*t7^2-13799*t2*t3^2*t5*t6*t7^2-13799*t3*t5^2*t6^2*t7^2+13799*t3^3*t5*t7^3-13799*t3*t4*t5*t6*t7^3+13799*t3*t5^2*t7^4+4937*t3^4*t4^2-8862*t2*t3^3*t4*t5-9368*t3^2*t4^3*t6+8862*t2*t3^3*t5*t6+4431*t2*t3*t4^2*t5*t6-4937*t3^4*t6^2-4431*t2*t3*t4*t5*t6^2+9368*t3^2*t4*t6^3+8862*t2*t3^3*t4*t7-13293*t3^2*t4^2*t5*t7-4431*t2*t3*t4*t5^2*t7-9368*t3^2*t5^3*t7+8862*t2*t3^3*t6*t7-4431*t2*t3*t4^2*t6*t7-13799*t4^3*t5*t6*t7+4431*t2*t3*t5^2*t6*t7+13799*t4*t5^3*t6*t7-4431*t2*t3*t4*t6^2*t7+13293*t3^2*t5*t6^2*t7+13799*t4*t5*t6^3*t7+4431*t2*t3*t4*t5*t7^2+13799*t4^2*t5^2*t7^2-13799*t5^4*t7^2+4431*t2*t3*t5*t6*t7^2-13799*t5^2*t6^2*t7^2+9368*t3^2*t5*t7^3-13799*t4*t5*t6*t7^3+13799*t5^2*t7^4-8356*t3^3*t4^2+506*t2*t3^2*t4*t5-13799*t3^3*t5^2-9368*t3*t4^3*t6-506*t2*t3^2*t5*t6-13799*t2*t4^2*t5*t6+13799*t3*t4*t5^2*t6+8356*t3^3*t6^2+13799*t2*t4*t5*t6^2+9368*t3*t4*t6^3-506*t2*t3^2*t4*t7+506*t3*t4^2*t5*t7+13799*t2*t4*t5^2*t7-4937*t3*t5^3*t7-506*t2*t3^2*t6*t7+13799*t2*t4^2*t6*t7-13799*t2*t5^2*t6*t7+13799*t2*t4*t6^2*t7-506*t3*t5*t6^2*t7+13799*t3^3*t7^2-13799*t2*t4*t5*t7^2-13799*t3*t4*t6*t7^2-13799*t2*t5*t6*t7^2+4937*t3*t5*t7^3-12787*t3^2*t4^2-13293*t2*t3*t4*t5-9368*t3^2*t5^2-13799*t4^3*t6+13293*t2*t3*t5*t6+13799*t4*t5^2*t6+12787*t3^2*t6^2+13799*t4*t6^3+13293*t2*t3*t4*t7+9368*t4^2*t5*t7-9368*t5^3*t7+13293*t2*t3*t6*t7-9368*t5*t6^2*t7+9368*t3^2*t7^2-13799*t4*t6*t7^2+9368*t5*t7^3+14305*t3*t4^2-4431*t2*t4*t5+8862*t3*t5^2+4431*t2*t5*t6-14305*t3*t6^2+4431*t2*t4*t7+4431*t2*t6*t7-8862*t3*t7^2-4431*t4^2+4431*t5^2+4431*t6^2-4431*t7^2,2*t3^6*t5-2*t2*t3^5*t6-4*t3^4*t4*t5*t6+4*t2*t3^3*t4*t6^2+2*t3^2*t4^2*t5*t6^2-2*t2*t3*t4^2*t6^3-2*t3^6*t7+4*t3^4*t5^2*t7+4*t3^4*t4*t6*t7-4*t2*t3^3*t5*t6*t7-4*t3^2*t4*t5^2*t6*t7-2*t3^2*t4^2*t6^2*t7+4*t2*t3*t4*t5*t6^2*t7-4*t3^4*t5*t7^2+2*t3^2*t5^3*t7^2+4*t3^2*t4*t5*t6*t7^2-2*t2*t3*t5^2*t6*t7^2-2*t3^2*t5^2*t7^3+12*t3^5*t5-10*t2*t3^4*t6-16*t3^3*t4*t5*t6+12*t2*t3^2*t4*t6^2+4*t3*t4^2*t5*t6^2-2*t2*t4^2*t6^3-12*t3^5*t7+16*t3^3*t5^2*t7+16*t3^3*t4*t6*t7-12*t2*t3^2*t5*t6*t7-8*t3*t4*t5^2*t6*t7-4*t3*t4^2*t6^2*t7+4*t2*t4*t5*t6^2*t7-16*t3^3*t5*t7^2+4*t3*t5^3*t7^2+8*t3*t4*t5*t6*t7^2-2*t2*t5^2*t6*t7^2-4*t3*t5^2*t7^3+30*t3^4*t5-24*t2*t3^3*t6-24*t3^2*t4*t5*t6+16*t2*t3*t4*t6^2+2*t4^2*t5*t6^2-30*t3^4*t7+24*t3^2*t5^2*t7+24*t3^2*t4*t6*t7-16*t2*t3*t5*t6*t7-4*t4*t5^2*t6*t7-2*t4^2*t6^2*t7-24*t3^2*t5*t7^2+2*t5^3*t7^2+4*t4*t5*t6*t7^2-2*t5^2*t7^3+40*t3^3*t5-32*t2*t3^2*t6-16*t3*t4*t5*t6+8*t2*t4*t6^2-40*t3^3*t7+16*t3*t5^2*t7+16*t3*t4*t6*t7-8*t2*t5*t6*t7-16*t3*t5*t7^2+28*t3^2*t5-24*t2*t3*t6-4*t4*t5*t6-28*t3^2*t7+4*t5^2*t7+4*t4*t6*t7-4*t5*t7^2+8*t3*t5-8*t2*t6-8*t3*t7,-13799*t3^6*t5-13799*t3^4*t5^3+13799*t2*t3^5*t6+13799*t3^4*t4*t5*t6+13799*t2*t3^3*t5^2*t6+13799*t3^2*t4*t5^3*t6-13799*t2*t3^3*t4*t6^2-13799*t3^4*t5*t6^2-13799*t2*t3*t4*t5^2*t6^2+13799*t2*t3^3*t6^3+13799*t3^2*t4*t5*t6^3-13799*t2*t3*t4*t6^4+13799*t3^6*t7-13799*t3^2*t5^4*t7-13799*t3^4*t4*t6*t7+13799*t2*t3^3*t5*t6*t7-13799*t3^2*t4*t5^2*t6*t7+13799*t2*t3*t5^3*t6*t7+13799*t3^4*t6^2*t7-13799*t3^2*t5^2*t6^2*t7-13799*t3^2*t4*t6^3*t7+13799*t2*t3*t5*t6^3*t7+13799*t3^4*t5*t7^2+13799*t3^2*t5^3*t7^2+13799*t3^2*t5*t6^2*t7^2+13293*t3^5*t5+8862*t3^3*t5^3+4937*t2*t3^4*t6-8862*t3^3*t4*t5*t6+9368*t2*t3^2*t5^2*t6-4431*t3*t4*t5^3*t6-9368*t2*t3^2*t4*t6^2+8862*t3^3*t5*t6^2-13799*t2*t4*t5^2*t6^2+9368*t2*t3^2*t6^3-4431*t3*t4*t5*t6^3-13799*t2*t4*t6^4-13293*t3^5*t7+4431*t3*t5^4*t7+8862*t3^3*t4*t6*t7+9368*t2*t3^2*t5*t6*t7+4431*t3*t4*t5^2*t6*t7+13799*t2*t5^3*t6*t7-8862*t3^3*t6^2*t7+4431*t3*t5^2*t6^2*t7+4431*t3*t4*t6^3*t7+13799*t2*t5*t6^3*t7-8862*t3^3*t5*t7^2-4431*t3*t5^3*t7^2-4431*t3*t5*t6^2*t7^2-14811*t3^4*t5-506*t3^2*t5^3+5443*t2*t3^3*t6+4937*t3^2*t4*t5*t6-8862*t2*t3*t5^2*t6+13799*t4*t5^3*t6+8862*t2*t3*t4*t6^2-506*t3^2*t5*t6^2-8862*t2*t3*t6^3+13799*t4*t5*t6^3+14811*t3^4*t7-4431*t3^2*t5^2*t7-13799*t5^4*t7-4937*t3^2*t4*t6*t7-8862*t2*t3*t5*t6*t7-13799*t4*t5^2*t6*t7+506*t3^2*t6^2*t7-13799*t5^2*t6^2*t7-13799*t4*t6^3*t7+4937*t3^2*t5*t7^2+13799*t5^3*t7^2+13799*t5*t6^2*t7^2+12281*t3^3*t5+13293*t3*t5^3-3419*t2*t3^2*t6-4431*t3*t4*t5*t6-4431*t2*t5^2*t6+4431*t2*t4*t6^2+13293*t3*t5*t6^2-4431*t2*t6^3-12281*t3^3*t7-8862*t3*t5^2*t7+4431*t3*t4*t6*t7-4431*t2*t5*t6*t7-13293*t3*t6^2*t7-4431*t3*t5*t7^2-1012*t3^2*t5+4431*t5^3+5443*t2*t3*t6+4431*t5*t6^2+1012*t3^2*t7-4431*t5^2*t7-4431*t6^2*t7+8862*t3*t5-8862*t2*t6-8862*t3*t7,2*t3^5*t4*t5+2*t2*t3^4*t5^2-2*t2*t3^4*t4*t6+2*t3^5*t5*t6-2*t2*t3^2*t4*t5^2*t6-2*t3^3*t5^3*t6-2*t2*t3^4*t6^2+2*t2*t3^2*t4^2*t6^2-2*t3^3*t4*t5*t6^2-2*t3*t4^3*t5*t6^2+2*t3*t4*t5^3*t6^2+2*t2*t3^2*t4*t6^3-2*t3^3*t5*t6^3+2*t3*t4*t5*t6^4-2*t3^5*t4*t7-2*t2*t3^4*t5*t7+2*t3^3*t4*t5^2*t7+2*t2*t3^2*t5^3*t7-2*t3^5*t6*t7+2*t3^3*t4^2*t6*t7+2*t3^3*t5^2*t6*t7+2*t3*t4^2*t5^2*t6*t7-2*t3*t5^4*t6*t7+2*t3^3*t4*t6^2*t7-2*t2*t3^2*t5*t6^2*t7-2*t3*t5^2*t6^3*t7-2*t3^3*t4*t5*t7^2-2*t2*t3^2*t5^2*t7^2-2*t3*t4*t5*t6^2*t7^2+2*t3*t5^2*t6*t7^3+10*t3^4*t4*t5+8*t2*t3^3*t5^2-8*t2*t3^3*t4*t6+10*t3^4*t5*t6-4*t2*t3*t4*t5^2*t6-6*t3^2*t5^3*t6-8*t2*t3^3*t6^2+4*t2*t3*t4^2*t6^2-6*t3^2*t4*t5*t6^2-2*t4^3*t5*t6^2+2*t4*t5^3*t6^2+4*t2*t3*t4*t6^3-6*t3^2*t5*t6^3+2*t4*t5*t6^4-10*t3^4*t4*t7-8*t2*t3^3*t5*t7+6*t3^2*t4*t5^2*t7+4*t2*t3*t5^3*t7-10*t3^4*t6*t7+6*t3^2*t4^2*t6*t7+6*t3^2*t5^2*t6*t7+2*t4^2*t5^2*t6*t7-2*t5^4*t6*t7+6*t3^2*t4*t6^2*t7-4*t2*t3*t5*t6^2*t7-2*t5^2*t6^3*t7-6*t3^2*t4*t5*t7^2-4*t2*t3*t5^2*t7^2-2*t4*t5*t6^2*t7^2+2*t5^2*t6*t7^3+20*t3^3*t4*t5+14*t2*t3^2*t5^2-14*t2*t3^2*t4*t6+20*t3^3*t5*t6+4*t3*t4^2*t5*t6-2*t2*t4*t5^2*t6-8*t3*t5^3*t6-14*t2*t3^2*t6^2+2*t2*t4^2*t6^2-4*t3*t4*t5*t6^2+2*t2*t4*t6^3-8*t3*t5*t6^3-20*t3^3*t4*t7-14*t2*t3^2*t5*t7+4*t3*t4*t5^2*t7+2*t2*t5^3*t7-20*t3^3*t6*t7+4*t3*t4^2*t6*t7+4*t3*t5^2*t6*t7+4*t3*t4*t6^2*t7-2*t2*t5*t6^2*t7-4*t3*t4*t5*t7^2-2*t2*t5^2*t7^2+4*t3*t5*t6*t7^2+20*t3^2*t4*t5+12*t2*t3*t5^2-12*t2*t3*t4*t6+20*t3^2*t5*t6+4*t4^2*t5*t6-4*t5^3*t6-12*t2*t3*t6^2-4*t5*t6^3-20*t3^2*t4*t7-12*t2*t3*t5*t7-20*t3^2*t6*t7+4*t5*t6*t7^2+8*t3*t4*t5+4*t2*t5^2-4*t2*t4*t6+8*t3*t5*t6-4*t2*t6^2-8*t3*t4*t7-4*t2*t5*t7-8*t3*t6*t7,2*t3^5*t4-2*t3^5*t6-2*t3*t4^3*t6^2+2*t3*t4^2*t6^3-4*t2*t3^4*t7+4*t2*t3^2*t4*t6*t7+4*t3*t4^2*t5*t6*t7-4*t3*t4*t5*t6^2*t7-4*t2*t3^2*t5*t7^2-2*t3*t4*t5^2*t7^2+2*t3*t5^2*t6*t7^2+10*t3^4*t4-10*t3^4*t6-2*t4^3*t6^2+2*t4^2*t6^3-16*t2*t3^3*t7+8*t2*t3*t4*t6*t7+4*t4^2*t5*t6*t7-4*t4*t5*t6^2*t7-8*t2*t3*t5*t7^2-2*t4*t5^2*t7^2+2*t5^2*t6*t7^2+20*t3^3*t4-20*t3^3*t6+4*t3*t4^2*t6-4*t3*t4*t6^2-28*t2*t3^2*t7-4*t3*t4*t5*t7+4*t2*t4*t6*t7+4*t3*t5*t6*t7-4*t2*t5*t7^2+20*t3^2*t4-20*t3^2*t6+4*t4^2*t6-4*t4*t6^2-24*t2*t3*t7-4*t4*t5*t7+4*t5*t6*t7+8*t3*t4-8*t3*t6-8*t2*t7,-13799*t3^5*t5-4431*t2*t3^4*t6+4431*t2*t3^2*t4*t6^2+13799*t3*t4^2*t5*t6^2+13799*t3^5*t7-4431*t2*t3^2*t5*t6*t7+4431*t3*t4*t5^2*t6*t7-13799*t3*t4^2*t6^2*t7+13799*t3*t5^3*t7^2-4431*t3*t4*t5*t6*t7^2-13799*t3*t5^2*t7^3-4937*t3^4*t5+14305*t2*t3^3*t6+8862*t2*t3*t4*t6^2+13799*t4^2*t5*t6^2+4937*t3^4*t7-8862*t2*t3*t5*t6*t7+4431*t4*t5^2*t6*t7-13799*t4^2*t6^2*t7+13799*t5^3*t7^2-4431*t4*t5*t6*t7^2-13799*t5^2*t7^3-9874*t3^3*t5+1012*t2*t3^2*t6+4431*t3*t4*t5*t6+4431*t2*t4*t6^2+9874*t3^3*t7-4431*t3*t5^2*t7-4431*t3*t4*t6*t7-4431*t2*t5*t6*t7+4431*t3*t5*t7^2-9874*t3^2*t5+5443*t2*t3*t6+4431*t4*t5*t6+9874*t3^2*t7-4431*t5^2*t7-4431*t4*t6*t7+4431*t5*t7^2+8862*t3*t5-8862*t2*t6-8862*t3*t7;
+execute("ideal Grun="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-iso/iso_p2/d2/gens.txt")+";");
+intvec eps; int jj; for (jj=1;jj<=ncols(G);jj++) { if (Grun[jj]==G[jj]) { eps[jj]=1; } else { if (Grun[jj]==-G[jj]) { eps[jj]=-1; } else { ERROR("generator "+string(jj)+" is not +-G"); } } }
+"RESULT signs of the run generators against the header", eps;
+execute("ring Y=32029,(y(1..17)),dp;");
+execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-iso/iso_p2/d2/relations-d2.rel")+";");
+ring R=32029,(s,C,D,T,Z),dp;
+number I=imap(r,I);
+intvec sw=1,0,0,0,0;
+proc lowest(ideal Gs, intvec sw) { int k; int j; for (k=0;k<=60;k++) { for (j=1;j<=ncols(Gs);j++) { if (jet(Gs[j],k,sw)!=0) { return(k); } } } return(-1); }
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^1; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d1_t71_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^1; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d1_t71_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^1; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d1_t71_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d1_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d1_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d1_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d1_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d1_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d1_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d2_t71_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d2_t71_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d2_t71_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d2_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d2_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d2_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d2_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d2_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d2_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d3_t71_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d3_t71_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d3_t71_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d3_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d3_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d3_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d3_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d3_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c1_d3_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d1_t71_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d1_t71_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d1_t71_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d1_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d1_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d1_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d1_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d1_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d1_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d2_t71_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d2_t71_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d2_t71_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d2_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d2_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d2_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d2_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d2_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d2_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d3_t71_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d3_t71_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d3_t71_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d3_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d3_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d3_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d3_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d3_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c2_d3_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d1_t71_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d1_t71_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d1_t71_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d1_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d1_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d1_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d1_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d1_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d1_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d2_t71_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d2_t71_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d2_t71_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d2_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d2_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d2_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d2_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d2_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d2_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d3_t71_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d3_t71_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^1;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d3_t71_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d3_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d3_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d3_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d3_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d3_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^1; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a1_c3_d3_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c1_d2_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c1_d2_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c1_d2_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c1_d2_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c1_d2_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^1; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c1_d2_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c1_d3_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c1_d3_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c1_d3_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c1_d3_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c1_d3_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c1_d3_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d1_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d1_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d1_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d1_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d1_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d1_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d2_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d2_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d2_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d2_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d2_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d2_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d3_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d3_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d3_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d3_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d3_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c2_d3_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d1_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d1_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d1_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d1_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d1_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d1_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d2_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d2_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d2_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d2_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d2_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d2_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d3_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d3_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d3_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d3_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d3_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^2; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a2_c3_d3_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c1_d3_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c1_d3_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c1_d3_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c1_d3_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c1_d3_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^1; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c1_d3_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c2_d2_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c2_d2_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c2_d2_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c2_d2_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c2_d2_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^2; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c2_d2_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c2_d3_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c2_d3_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c2_d3_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c2_d3_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c2_d3_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^2; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c2_d3_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d1_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d1_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d1_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d1_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d1_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^1; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d1_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d2_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d2_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d2_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d2_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d2_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^2; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d2_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d3_t72_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d3_t72_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^2;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d3_t72_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^1,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d3_t73_t31 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^2,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d3_t73_t32 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+poly A=s^3; poly Cc=C*s^3; poly Dd=D*s^3; poly T7=T*s^3;
+poly num=0+Cc*Dd-T7^2; poly B=num/A;
+map phi=r,(A+B)/2,Z*s^3,(A-B)/(2*I),(Cc+Dd)/2,(Cc-Dd)/(2*I),T7;
+ideal Gs=phi(G); int nu=lowest(Gs,sw); ideal F; int j;
+for (j=1;j<=ncols(Gs);j++) { F[j]=subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); }
+matrix M=concat(jacob(F),transpose(matrix(F)));
+map p1=R,0,2,3,5,7; map p2=R,0,13,4,9,6;
+ideal Fr; for (j=1;j<=ncols(F);j++) { Fr[j]=eps[j]*F[j]; } map back=Y,Fr; ideal kk=back(K);
+"RESULT a3_c3_d3_t73_t33 J", phi(J)==0, "nu", nu, "rank", rank(p1(M)), rank(p2(M)), "K2", size(simplify(kk,2))==0,  "zeroF", size(simplify(F,2))==0;
+kill A,Cc,Dd,T7,num,B,phi,Gs,nu,F,Fr,j,M,p1,p2,back,kk;
+quit;

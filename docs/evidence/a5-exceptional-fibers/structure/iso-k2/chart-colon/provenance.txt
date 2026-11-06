@@ -1,0 +1,5 @@
+singular Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Jun 30 2026 11:57:00
+53852d5c62b4a7333929abdef66a26db3b9f02f4dc1fd412e9a6e719418b38c5  docs/evidence/a5-exceptional-fibers/working/runs/s3/iso_k2.rel
+aca94290c281278aedbb2c9bc59bb07c8ae3be00d615b2a11a884950fd8548ce  same.sing
+3d2293acd1da7164427e955363288324a702d6d122a8b71fe3c142fbcba2d026  chart2-bound.sing
+457d33a42c79e6550ce9285c0cd36d704ed4a43b8d5b5183234ce1c13e7be697  iso-global.sing

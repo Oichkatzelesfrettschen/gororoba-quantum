@@ -11,6 +11,9 @@ beside the run's log. A run launched without it gets stopped and relaunched.
 
 [library-flags.md](library-flags.md) is the per-library companion: the environment
 variables, API options and build facts of every package the repository imports.
+[computer-algebra.md](computer-algebra.md) holds the formulation foundations (which
+computation to run at all), and the [run rulebook](run-rulebook.md) records each long
+run's specific choices and every departure from these foundations, with the reason.
 
 ## Why the review exists
 
@@ -162,7 +165,34 @@ hosts.
 
 Cap: cgroup `MemoryMax` or the RSS watchdog. Singular's allocator reserves
 little beyond its resident set, so an address-space cap usually works, but the
-cgroup cap is the uniform rule.
+cgroup cap is the uniform rule. Several processes sharing one host share one
+watchdog that stops only the largest process when available memory runs low, so
+one runaway computation does not end the others.
+
+Foundations for a long Singular run:
+
+- Parallelism is a portfolio of independent single-threaded processes: different
+  primes, different algorithms for the same ideal (`sat` against the Rabinowitsch
+  elimination), or different QRNG choices. Count physical cores, not hyperthreads:
+  a process sharing a core runs slower, which a portfolio accepts only for the
+  cross-check it buys.
+- `option(prot)` writes a progress trace to the log, so a timeout or memory death
+  shows the stage it reached. On the membership-rank products `redSB` std was
+  measured fastest (table below); `option(noredTail)` is a hypothesis for
+  saturations and eliminations until a row measures it.
+- Write each stage's result to its own file, named by the run's fiber, prime and
+  method, the moment it exists; never a fixed name two concurrent runs share.
+- Launch a remote job with `setsid nohup sh -c '...' > /dev/null 2>&1 < /dev/null &`
+  so the ssh session returns; a wrapper timeout around an ssh that keeps the job's
+  descriptors open exits 124 while the job itself runs on.
+
+Cloud lifecycle: copy every result, compare sha256 between the VM and the local
+copy, and only then end the VM. `az vm deallocate` stops compute billing and keeps
+the OS disk with every result, for a later copy when no watcher was online; a guest
+OS `shutdown` leaves the VM allocated and billed; `az group delete` removes the
+results with the VM and follows only a verified copy. A DevTestLab auto-shutdown
+schedule deallocates: set it past the last job's time limit as the backstop for an
+absent watcher, never inside a run.
 
 ## Marker 1.10 (PDF transcription drafts)
 
@@ -211,7 +241,7 @@ The pipeline and benchmark live in gororoba-infrastructure `transcribe/` (its RE
 | Substrate | Cores | Memory cap | Notes |
 |---|---|---|---|
 | Build host | 6 cores, 12 threads | `systemd-run --user --scope -p MemoryMax` | the owner keeps it mostly idle |
-| Azure Standard_FX4mds_v2 | 2 cores, 4 threads | `systemd-run --user --scope -p MemoryMax`, lingering on | 84 GB; two jobs share 2 physical cores; a DevTestLab daily auto-shutdown schedule (`shutdown-computevm-NAME`) deallocates the VM and kills every job, so the launcher disables it at creation (`az vm auto-shutdown --off`) and confirms no schedule remains; a watcher that deallocates the VM at one job's end ends every other job on it, so it checks every job's marker first or co-located jobs run on separate VMs |
+| Azure Standard_FX4mds_v2 | 2 cores, 4 threads | `systemd-run --user --scope -p MemoryMax`, lingering on | 84 GB; two jobs share 2 physical cores; a DevTestLab daily auto-shutdown schedule (`shutdown-computevm-NAME`) deallocates the VM and kills every job, so the launcher either disables it (`az vm auto-shutdown --off`, confirming no schedule remains) or sets it past the last job's time limit as the backstop for an absent watcher; a watcher that deallocates the VM at one job's end ends every other job on it, so it checks every job's marker first or co-located jobs run on separate VMs |
 | Windows compute workstation (WSL) | 16 cores, 32 threads | none: the owner keeps no arbitrary memory cap on its jobs | 54 GB visible to WSL; one `systemd --user` unit per job |
 | Kaggle CPU kernel | 4 vCPU (treated as 2 cores) | RSS watchdog in the kernel script, reading cgroup `memory.max` less `memory.current` | 31.35 GiB total, 29.5 GiB cgroup headroom; a job fits below about 27 GiB ([substrates](../notes/kaggle/substrates.md#weekly-budget-and-tandem-capacity)) |
 
@@ -250,6 +280,7 @@ kept, so the table records every combination tried and why it lost.
 | msolve 0.11.0 (`/usr/bin/msolve`), Singular 4.4.1 | build host, each alone | dp/grevlex standard basis of J + m^N for E8-bar->N- at p = 32009, N = 7, 8, 9 (m^N given as C(N+8, 8) monomial generators to msolve) | msolve `-t 4 -g 1` (exact sparse linear algebra, the default `-l 2`), cgroup 16 GiB; Singular `option(redSB); std` | msolve 8.5, 33.1, 93.5 s at peak 0.47, 1.76, 6.24 GB; Singular 1.7, 6.0, 16.9 s at 18-35 MB; leading ideals equal at all three N (916, 1,376 and 1,996 elements); msolve at N = 11 (75,598 generators) hit a 20 GiB cgroup kill within 8 s | an msolve or other F4 run that beats Singular's std on J + m^N | superseded for this workload: F4 on four threads runs 5-6x slower than one-thread std and its memory grows about 3.5x per N; msolve serves as an independent leading-ideal check at small N |
 | qiskit 2.5.2 `transpile` | build host, offline Heron r2 Targets (ibm_fez, ibm_kingston, ibm_marrakesh) | 7 families of `experiments.experiment_groups()` at 3-5 qubits, two dynamic; 8 ANU QRNG seeds per setting | `optimization_level=3`, default layout and routing (the `live_run.OPT_LEVEL` setting) | median routed cz equal to level 2 in every family (for example 98 against 291, 163, 98 at levels 0, 1, 2 on `design_c_32_1_16`); level 2 within 1-3 depth; `layout_method="dense"` worse by 1-53 cz; `routing_method="sabre"` identical to the default; seed spread up to 27 cz exceeds every level-2-versus-3 difference | a level, layout or routing setting with a lower median cz on these families, or a family above 5 qubits where level 3 and level 2 differ | current best; seed selection is the remaining lever |
 | Singular 4.4.1 and python-flint 0.9.0 through `parallel.py` (`docs/evidence/a5-exceptional-fibers/arcs/replay.sh`) | build host, 12 CPUs, beside other sessions' Singular jobs | arc certificates of E8-bar->N- and E8-bar->N+ at p = 32009 and 32029: minimal primes of sqrt(K2), 1,296 symbolic arc families, 270-point numeric certificates and a 540-arc survey per target | `ulimit -v 8388608`, `GOROROBA_WORKERS=3`, Singular stdin closed, 900 s timeout per script, `PYTHON` of `ci-py3.14.7-qiskit261` | 8 min 4 s for the four targets (106-136 s each), a second replay byte-identical to the first; peak resident set not measured | a replay of the same four targets under 8 min with equal records | current best |
+| Singular 4.4.1 (passagemath-singular 10.8.13) | Azure FX4mds_v2 (2 cores, 4 threads, 84 GB), four processes | saturation of a blowup chart of Iso -> N- with dense a0 = l0(G) (17 QRNG coefficients), 23 variables, p = 32009 and 32029 | `option(noredTail)`, `option(prot)`, l0(z) - 1 added first; `sat` of elim.lib against `eliminate(C + (1 - w a0), w)` with (dp(1), dp(23)); `timeout 28800`, shared RSS watchdog | no run finished: elimination 29.7 GB at 3:21 and 52.1 GB at 7:29 (watchdog), sat 15.1-15.8 GB at the 8 h limit; bases of 20,000-37,000 elements; lab-a1 sat died at 5.2 GB (57 min) and 10.5 GB (3:26) | a saturation of this chart finishing in 8 h on 84 GB | superseded: dense chart too large; `sat` grows about 3.4x slower in memory than the Rabinowitsch elimination here |
 | marker-pdf 1.10.2 (surya-ocr 0.17.1, torch 2.12.1+cu130) | build host, RTX 4070 Ti 12 GiB, one job at a time | 20 born-digital arXiv PDFs, 724 pages, to Markdown transcriptions | `TORCH_DEVICE=cuda`, `MODEL_CACHE_DIR` and `TMPDIR` on the main disk, `--output_format markdown --disable_image_extraction --paginate_output --disable_tqdm`, RSS watchdog 16 GiB | 6,862 s for the 20 (9.5 s per page, 145-746 s per paper), peak resident 5.4 GiB; prose, tables and inline mathematics exact on the 12 pages of 2609.28901 compared against their images, where two display equations came out garbled | a setting that converts the same pages faster with no more display errors | current best |
 | marker-pdf 1.10.2 with `--force_ocr` | same | 2403.18833v1, 12 scanned pages with an embedded OCR layer | the flags above plus `--force_ocr` | 135 s; prose correct where the default run inherited the embedded layer's errors; against the page images, one strict inequality for a non-strict one (Eq. 22), a dropped norm in a table, most equation numbers dropped and one invented reference title | a run on the same pages with fewer image-check corrections | current best for scanned PDFs with an OCR layer |
 | math OCR on five display equations with known ground truth (2609.28901 Eqs. 3 and 7, 1602.06402 p. 102, 2408.08292 Eq. 145, 2111.08152 Eq. E10) | build host; Ollama on the GPU, the rest on CPU | one equation per item, criteria per equation | Marker 1.10.2; pix2tex 0.1.4 on tight crops; Nougat-base on whole pages; qwythos-9b on tight crops | exactly right: Marker 1 of 5, pix2tex 0 of 5, Nougat 3 of 5 (one with an invented equation number), qwythos-9b 4 of 5 (Eq. 3 with its matrices and rotated labels right, "A =" misread); 5-91 s per item for qwythos, 21-197 s per page for Nougat | an engine that gets Eq. 3 right, or a test set on which qwythos falls below Nougat | superseded by the 180-equation row |
@@ -277,3 +308,8 @@ Record answers beside the run log:
    the mathematics.
 9. The measured-combinations row this run starts from, or a note that none
    exists; after the run, the row it adds, replaces or supersedes.
+10. Checkpoints: the file each stage writes and its run-specific name.
+11. End state: the verified copy, then deallocate or delete, and the backstop
+    when no watcher is online.
+12. The [run rulebook](run-rulebook.md) entry for a run over 30 minutes, a cloud
+    VM, or any departure from these foundations.

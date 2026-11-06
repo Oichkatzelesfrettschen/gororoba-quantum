@@ -1,0 +1,9 @@
+w8 n13 exit 0
+w8 n14 exit 0
+w8 done
+w8 n15 exit 0
+w8 n16 exit 1
+w8b done
+iso exit 1
+all done
+w8r n16 exit 0
