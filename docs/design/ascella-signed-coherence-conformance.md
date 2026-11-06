@@ -2155,8 +2155,8 @@ across twelve days and the update: the slope estimates about 89 % of the full-pe
 exclude full persistence. The dark-output ranks agree between the jobs (Spearman 0.58, exploratory), and the
 predecessor transition carries none (Spearman -0.07).
 [First principles](../evidence/ascella-order-coefficients/long-horizon-first-principles.md) separates the
-compiler, the analysis and the chip as sources of the persistent error, keeps the chip, and scores a per-seed
-correction out of sample.
+returned circuit model, the analysis and the implementation path as sources of the persistent error, keeps the
+implementation path, and scores a per-seed correction retrospectively on job-08.
 
 **Review.** Codex, an Opus agent and grok reviewed the case before acquisition; the
 [reconciliation](../archive/reviews/ascella-long-horizon-seed-repeat-reconciliation.md) records the unitary mesh

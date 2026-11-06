@@ -16,3 +16,18 @@ after its progress notes without a report. Each finding was checked against the 
 
 Both reviewers found the sampled Monte Carlo p-values valid with the identity in the reference set, the bisection
 monotone, the exact path unchanged, and the request, budget, seeds and power model consistent with the written case.
+
+## Second review: the first-principles findings
+
+`codex` on gpt-daybreak-blue reviewed commit `782b189ad`
+([report](ascella-long-horizon-seed-repeat-review2-codex-daybreak-blue.md)). It reproduced the by-name r 0.924550,
+position-paired r -0.199119 and the 7.71-fold variance factor, found every seed echo, digest binding and the X
+statistic's construction sound, and confirmed the dense-operand mode count. Its four findings each survived a check
+against the files and are fixed in the findings note:
+
+| Finding | Resolution |
+|---|---|
+| "Chip" attribution exceeds the evidence: `computed_circuit` is the provider's reported model, not a readback of the implemented unitary | The note refutes a returned-model mismatch and supports an implementation-path error; firmware, heater mapping and chip stay unseparated until telemetry exists |
+| The per-seed correction was defined after job-08 and called out of sample | Labeled retrospective; the estimator stays frozen and scores on the next acquisition; the last residual term reads unexplained |
+| "A redrawn share would lower r, which it does not" overstates the test | Replaced by the 99 % Fisher interval 0.862 to 0.960 and "not detected at this precision" |
+| The ledger closes nonlinear drift, longer-memory carryover and mesh-dependent overdispersion that no control tested | The ledger names the bounded controls that passed and keeps the rest open |
