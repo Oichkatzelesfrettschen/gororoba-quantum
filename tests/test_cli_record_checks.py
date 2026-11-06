@@ -70,6 +70,7 @@ RECORD_CHECKS = (
     ("scripts/cd_one_sided_inverses.py", ".", "--check docs/evidence/cd-one-sided-inverses/record.json", 8),
     ("scripts/ascella_coherence_request.py", ".", "--check", 7),
     ("scripts/ascella_cz_tomography_case.py", ".", "--check", 7),
+    ("scripts/ascella_cz_served_mesh.py", ".", "--check", 8),
     ("scripts/heron_feedforward_latency.py", ".", "--check", 7),
     ("scripts/box_kite_follow_design.py", ".", "--check docs/evidence/box_kite_follow_design/design.json", 5),
     ("scripts/bdsc_ascella_control.py", ".", "--check", 5),

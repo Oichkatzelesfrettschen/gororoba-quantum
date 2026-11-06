@@ -114,10 +114,12 @@ Estimates:
    Student-t interval over the 10 seed-level table means (one mean of four inputs per seed index, 9 degrees of
    freedom), so it carries mesh variance and shot noise together.
 4. **Bound conditions.** Input independence: for every setting, the 95 % interval of its eligible events per shot
-   divided by its table's mean lies inside [0.9, 1.1]. One process: for every setting, the nominal unitary of each
-   served mesh, with the designed preparation and readout rotations removed, equals the nominal two-photon gate of
-   every other setting within the tolerance the no-hardware calculation below fixes before the data. Each condition
-   is reported with its measured values whether it holds or fails.
+   divided by its table's mean lies inside [0.9, 1.1]. One process: every served mesh reproduces its setting's
+   designed two-photon law, with a total variation distance of at most 2e-3 between the served and designed
+   eligible-outcome distributions and a served-to-designed eligible probability inside [0.995, 1.005]. A setting
+   fixes only the two photon-input columns of its unitary, so the condition compares those laws rather than a gate
+   with the rotations removed; when it holds, every setting is nominally served the designed CZ between its
+   designed rotations. Each condition is reported with its measured values whether it holds or fails.
 5. **Bound.** When both conditions hold, the case reports [L, U] with L the 95 % lower limit of F_ZX + F_XZ - 1
    and U the 95 % upper limit of min(F_ZX, F_XZ), conditional on the hypothesis that physical error, which the
    nominal unitaries do not see, is the same across settings. When either fails, the case reports F_ZX and F_XZ
@@ -134,22 +136,38 @@ Readings fixed before the data:
 | Mesh variance exceeds the binomial variance in more than half of the settings | The tomography interval, which covers shot noise only, is too narrow, whatever the bound reads. |
 | A between-job anchor test fails | The jobs are reported separately and no pooled bound is claimed. |
 
-## What needs no hardware
+## What the retained tomography runs already show
 
-The retained tomography runs return the `computed_circuit` of all 144 iterations. Decoding each mesh and computing
-its nominal unitary gives the designed-against-served law of every setting, as the Belenos suppression-law analysis
-did for its eight meshes. That calculation separates the transpiler's nominal error from the physical phase error of
-the chip, costs no credit, and runs before the case is built: a nominal spread that already explains the
-non-positive fit changes the seed count this design needs. The spread of the nominal two-photon gate across the
-144 retained meshes also fixes the tolerance of the one-process condition before any new data exist.
+`scripts/ascella_cz_served_mesh.py` decodes the `computed_circuit` of all 144 retained iterations (the decoder agrees
+with Perceval's deserializer to 3e-16) and retains
+[ascella-cz-served-mesh.json](../../results/quandela/ascella-cz-served-mesh.json); its `--check` runs in
+`tests/test_cli_record_checks.py`.
+
+- **The transpiler serves the designed law.** Over the 144 meshes the served and designed eligible-outcome
+  distributions differ by a total variation distance of at most 7.6e-4 (median 1.7e-4), and the served eligible
+  probability lies within 0.9990 to 1.0015 of the designed one. Compilation error therefore explains neither the
+  non-positive Choi matrix of the tomography fit nor its distance from the ideal gate; that distance is physical
+  (source, loss, phase error), and the seed count stays at ten, since the ensemble measures physical mesh variance.
+  The one-process tolerances above are about three times these maxima, fixed before any new data.
+- **The chance of an eligible event varies between settings.** Eligible events per shot range from 0.79 to 1.31
+  times their mean over the 144 settings, against a binomial spread of about 4 % at roughly 600 eligible events per
+  setting. Averaged over the nine readouts of each input, the 16 inputs range from 0.88 to 1.20. For the inputs of
+  this design that the tomography also prepared, |0,+> reads 0.921 and |1,+> 1.118 (0.903 and 1.096 of their mean),
+  |+,0> reads 1.032 and |+,1> 0.920 (1.057 and 0.943 of their mean). The ZX pair sits at the edge of the [0.9, 1.1]
+  rule at its point values, so its interval is likely to cross the edge and withhold the bound.
+
+The forecast from the retained data is therefore descriptive truth-table scores without a bound, unless the analysis
+corrects the eligible chance by input. hypothesis: the variation follows the transmission of each rail's path through
+the compiled mesh, which a correction would have to measure per mesh; no retained record separates it from source or
+detector effects.
 
 ## Limits
 
 - The input-independence condition divides by the shot count, the quantity the tomography fit assumed equal across
   settings; a click probability that varies with the setting for reasons other than the input therefore reads as a
   failed condition and withholds the bound.
-- The one-process condition checks the nominal unitaries only. Physical phase error that differs between meshes
-  passes it, so a reported bound stays conditional on that hypothesis.
+- The one-process condition checks the nominal two-photon laws only. Physical phase error that differs between
+  meshes passes it, so a reported bound stays conditional on that hypothesis.
 - Ten seeds sample the mesh ensemble thinly; the Student-t interval states that honestly and a wide interval is a
   valid outcome.
 - The truth tables bound the process fidelity only under the two conditions and give no Choi matrix. A full
@@ -160,8 +178,11 @@ non-positive fit changes the seed count this design needs. The spread of the nom
 
 ## Before a submission
 
-1. Run the no-hardware served-mesh calculation on the retained tomography runs and record it.
-2. Build the case script with `--build`, `--check`, `--forecast` and `--analyze`, its tests, and the frozen
+1. The no-hardware served-mesh calculation is retained (section "What the retained tomography runs already show").
+2. Decide at the final review whether the case runs for descriptive scores, which the retained data forecast, or adds
+   a preregistered correction of the eligible chance by input, which needs its own calibration settings and a
+   design change before the build.
+3. Build the case script with `--build`, `--check`, `--forecast` and `--analyze`, its tests, and the frozen
    requests; draw the seeds; forecast both tables under Perceval's noise model at the live HOM and g2.
-3. Register Hofmann 2005 as a retrieval receipt in the source registry.
-4. Review the written case adversarially, then ask the owner for approval of the two jobs.
+4. Register Hofmann 2005 as a retrieval receipt in the source registry.
+5. Review the written case adversarially, then ask the owner for approval of the two jobs.
