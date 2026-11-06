@@ -73,4 +73,6 @@ the `mem.log` lines before each stop and the absence of any RESULT line in the l
 `option(prot)` traces end at standard bases of 20,000-37,000 elements, still growing. The dense a0, a combination of all
 17 generators, makes every a0 z_i a polynomial with hundreds of terms; the next formulation is a coordinate chart
 a0 = G_j, z_j = 1, which decides the case equally (y_j lies outside K2 because K2 contains no linear form, so a
-4-dimensional E0 meets D+(y_j) densely). The flag review of the Azure portfolio is `chart-runs/azure/flags.md`.
+4-dimensional E0 meets D+(y_j) densely). The flag review of the Azure portfolio is `chart-runs/azure/flags.md`. The coordinate charts a0 = G_16 and a0 = G_2 (`chart-iso-p32009-coord16.sing`,
+`-coord2.sing`, 41 and 49 terms against 665) then died at a 5 GB cap after 34 min on lab-a1, faster than the dense
+chart, so sparsity of a0 does not shrink this saturation.
