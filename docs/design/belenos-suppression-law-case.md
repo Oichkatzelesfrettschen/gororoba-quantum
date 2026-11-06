@@ -81,8 +81,9 @@ three-click probability per pulse. The winner is the window of chip modes 16 to 
 Dark clicks on the six window detectors complete a three-click event only from a two-click real event: that
 probability is about 5.5e-3 per pulse times the window's 2.7e-6 dark clicks per pulse, below 5e-4 of the 3.35e-5
 accepted events per pulse, so the models leave window dark counts out. The collected data hold a larger class: 249 of
-3,200 samples (7.8 %) are three-click events with a click outside the window, and the dark rates of chip modes 22 and
-23, where 203 of those clicks sit, are 0.0 and 0.2 per second, so dark counts do not account for them (Limits). The
+3,200 samples (7.8 %) are three-click events with a click outside the window. Of the 248 with two window clicks, 203
+have the outside click on chip mode 22 or 23, whose dark rates in both runs' `perfs_at_plan` are 0.2 and 0.1 per
+second, so dark counts do not account for them (Limits). The
 window of modes 0 to 5 passes the balance limit and scores lower, the window of modes 6 to 11 exceeds the
 balance limit, and the region of modes 16 to 23 also carried the teleportation rehearsal.
 
@@ -145,9 +146,10 @@ the physical mesh adds an effect that nothing here measures (hypothesis: it exce
 independent review's Monte Carlo perturbation of the unitary by exp(i eps H) with random Hermitian H (not retained or
 reproduced here) raised the mean s from 0.001 to 0.114 as the single-photon column error grew from 0.010 to 0.102
 (total variation distance), with a spread of about half the shift. At the operating point (HOM 0.886, g2 0.014) the
-sign of the effect on the noisy forecast is not fixed: the nominal matrices of the eight meshes the service returned
-move the indistinguishable periodic forecast by under 2e-6, three of the four periodic meshes below the requested
-0.200184 (recomputed from the returned `computed_circuit` blobs through the source columns of each window block, not
+sign of the effect on the noisy forecast is not fixed: the nominal matrices of the four periodic meshes the service
+returned move the indistinguishable periodic forecast by under 2e-6 (largest +1.6e-6), three of the four below the
+requested 0.200184, and the nominal matrices of the four control meshes move the indistinguishable control forecast by
+under 1.2e-5 (largest +1.14e-5, all above the requested 0.644970) (recomputed from the returned `computed_circuit` blobs through the source columns of each window block, not
 retained in a script). A returned `computed_circuit` is the nominal compiled matrix and not the phases the chip
 applied, so physical mesh error stays a confound. An observed s above the forecast therefore does not show partial
 distinguishability, and one below it does not show a higher HOM. The paired contrast s(control) - s(periodic) is +0.436
@@ -184,10 +186,10 @@ least 200 accepted events (half of its 400 samples); a smaller one is reported a
   mesh error can. The analysis reports the HOM at which the forecast curve reaches the observed mean, and the HOMs at which it
   reaches the two one-sided 99 % limits of that mean, under the Perceval source model and the forecast g2. These are
   model-conditional inverses of a point estimate and of its interval and bound nothing, because the HOM mapping and the
-  g2 figure move s by the same order and the physical mesh error is unmeasured (hypothesis: it exceeds the nominal 2e-6
+  g2 figure move s by the same order and the physical mesh error is unmeasured (hypothesis: it exceeds the nominal
   shifts). Each counted iteration returns its served mesh in `result_fields.computed_circuit`, which
-  `photonic_compilation_audit._elements` decodes; the nominal forecast per served mesh differs from the requested one by
-  under 2e-6, and a forecast per served mesh inside the analysis is a follow-up, not part of this rule.
+  `photonic_compilation_audit._elements` decodes; the nominal indistinguishable forecast of each of the four periodic served meshes differs
+  from the requested one by under 2e-6 and that of each of the four control meshes by under 1.2e-5, and a forecast per served mesh inside the analysis is a follow-up, not part of this rule.
 - **Undecided.** Fewer than four counted iterations in either arm, including a cut-short job whose lost iterations
   come back as `missing`, `malformed` or `error` entries; the analysis tallies and skips those.
 
@@ -214,7 +216,7 @@ indistinguishability if the upper bound of s_periodic exceeds about 0.50 or the 
 below 0.10; the distinguishable and mean-field models then describe the chip. The expected upper bound under the
 forecast is 0.25, so the sample size leaves the first rule a margin of 0.25. The level rule is a consistency check, not
 a falsifier of the Perceval overlap mapping: g2 moves s by the same order as the HOM mapping, and the physical mesh
-error is unmeasured (the nominal returned meshes move s by under 2e-6).
+error is unmeasured (the nominal returned periodic meshes move s by under 2e-6 and the control meshes by under 1.2e-5).
 
 **What the rules reject.** The absolute rule puts the upper 99 % bound of s_periodic at least 0.10 below the smaller
 null forecast, so it rejects the fully distinguishable null (0.602) and the mean-field null (0.727) when the data sit
@@ -286,19 +288,24 @@ at the live HOM and approved the case on 2026-10-31 (the `approval` field of eac
   analysis reports the HOM inverses of the periodic mean and of its limits beside the plan's HOM and reaches no
   conclusion about the source model.
 - The server re-transpiles every circuit, so each iteration realizes the Fourier matrix with a compilation phase error
-  that the case does not model. The returned meshes' nominal matrices move the forecast by under 2e-6, and the applied
+  that the case does not model. The nominal matrices of the four periodic returned meshes move the periodic forecast
+  by under 2e-6 and those of the four control meshes move the control forecast by under 1.2e-5, and the applied
   phases are not authenticated, so the error enters the between-iteration spread the interval carries and stays a
   confound of the level rule and the HOM inverses. The primary rules have a margin of about 0.25 against it.
 - The suppressed fraction is conditional on three clicks inside modes 16 to 21, one per mode. Three-click events with a
   click outside the window are 249 of 3,200 samples (7.8 %; 106 periodic, 143 control), 248 of them two window clicks
-  plus one click on another mode (203 on chip modes 22 and 23); the cause is not identified, and the window slot of
-  the missing click is not recorded, so each such event completes to a triple in four ways. Assigning every such event
-  to the suppressed side or the allowed side of its completions moves the periodic mean between 0.190 and 0.226 (upper
-  99 % limit 0.268 to 0.345, against the 0.502 limit of the absolute rule), the control mean between 0.605 and 0.688,
-  and the lower 99 % limit of the paired contrast to no less than 0.223 (against 0.10); a uniform assignment over the
-  four completions gives a periodic mean of 0.208. Every rule holds under each assignment and the level reading
-  moves from 0.028 below the forecast to between 0.010 below and 0.026 above (recomputed from `results.json`, not
-  retained in a script).
+  plus one click on another mode (203 with the outside click on chip mode 22 or 23); the cause is not identified, and
+  the window slot of the missing click is not recorded, so each such event completes to a triple in four ways. The
+  retained analysis does not compute the following bound. It comes from the retained `results.json` files by
+  enumerating all 2^8 corner assignments, each of the eight iterations having all of its 248 events on the allowed
+  side or all on the suppressed side of their completions. Over the corners the periodic mean moves between 0.190 and
+  0.226 and the control mean between 0.605 and 0.688 (a mean is linear in the assignment, so its extremes sit at
+  corners). The lower 99 % limit of the paired contrast, concave in the eight fractions, has its minimum at a corner:
+  0.171, against 0.10. The periodic upper 99 % limit, convex, has its maximum at a corner: 0.361, against the 0.502
+  limit of the absolute rule. Every rule therefore holds under each assignment, and the level reading moves from 0.028
+  below the forecast to between 0.010 below and 0.026 above. The remaining event, with one window click and two
+  outside clicks, lies outside the enumeration and moves the periodic mean by at most 0.0006. A uniform assignment
+  over the four completions gives a periodic mean of 0.208.
 - The control is setting-independent only for fully distinguishable or symmetric partial distinguishability. If one
   source's demultiplexed photons differ in overlap from the others, the control forecast shifts (with one photon
   distinguishable, s_control is 0.50 or 0.75 by port), while the periodic forecast stays 0.75. At HOM 0.879 the
@@ -322,8 +329,8 @@ complete.
 | periodic | 0.135, 0.179, 0.174, 0.199 | 0.172 | upper 0.233 | 0.200 | 0.602 |
 | control | 0.646, 0.717, 0.659, 0.609 | 0.658 | | 0.645 | 0.602 |
 
-The paired contrast reads +0.486 with lower bound 0.368, against 0 for distinguishable photons and -0.138 for the
-mean-field sampler. Both rules hold, and the verdict is suppression at the level the indistinguishable forecast
+The paired contrast reads +0.486 with lower bound 0.368, against 0 for distinguishable photons at the requested
+matrices and -0.138 for the mean-field sampler. Both rules hold, and the verdict is suppression at the level the indistinguishable forecast
 predicts. The HOM at which the indistinguishable forecast equals the periodic mean is 0.910, a model-conditional
 point estimate above the platform's reported 88.6 %. The inverses of the one-sided 99 % limits of the periodic
 fraction are 0.857 (at the upper limit 0.233) and 0.959 (at the lower limit 0.111); the interval contains the
