@@ -536,7 +536,8 @@ differs from it only in the `cd_core.py` digest.
 | [vectorized-fits.md](runbooks/vectorized-fits.md) | batched classical fits across replicates |
 | [codex-review-loop.md](runbooks/codex-review-loop.md) | Codex review rounds, reply markers, stacked PRs, merge sequence and the REST/GraphQL split |
 | [qiskit-skills.md](runbooks/qiskit-skills.md) | installed Qiskit agent skills, upstream pin, monthly check and when to invoke the migration skill |
-| [computer-algebra.md](runbooks/computer-algebra.md) | global monomial orderings and local invariants through the deformation to the normal cone |
+| [computer-algebra.md](runbooks/computer-algebra.md) | computer-algebra foundations: global orderings, local invariants by the normal cone, the cheapest decisive computation for radicality, Cohen-Macaulayness, components and fibers, numeric search before symbolic certification, saturation rules and Singular pitfalls |
+| [run-rulebook.md](runbooks/run-rulebook.md) | per-run record on top of the foundations: question and decisive outcome, formulation, launch line, departures and why, parallelism, limits, checkpoints, end state, outcome |
 | [null-shards.md](runbooks/null-shards.md) | the successor null through one pool, Kaggle kernels and hosted-runner shards |
 | [idle-falsifier.md](runbooks/idle-falsifier.md) | the local idle falsifier through resumable per-run parts and hosted-runner jobs |
 
