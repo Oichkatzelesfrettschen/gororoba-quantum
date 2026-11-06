@@ -6,7 +6,7 @@ at those versions, except the linters.
 
 | Arch package | Pin it carries |
 |---|---|
-| python-qiskit | qiskit 2.6.1, packaged without `check()`, whose test base turns every DeprecationWarning into an error and so fails the circuit-library tests on an mpmath DeprecationWarning. The suite (`stestr run -E test_equivalence_draw`, as in `check()`) run against the installed package with that base class reporting DeprecationWarning and QiskitWarning as warnings gives 63429 passed, 31 skipped and 0 failed on python-qiskit-aer-cuda 0.18.2-3, whose provider patch removes the duplicate `aer_simulator` registration ([qiskit-aer.md](../qiskit-packages/qiskit-aer.md)) |
+| python-qiskit | qiskit 2.6.2 from the local recipe in gororoba-infrastructure `packaging/python-qiskit`, whose `check()` runs the full suite (65,012 passed, 31 skipped, C tests 34/34) after a test-only `sitecustomize` stops `unittest`'s `assertWarns` from reaching mpmath 1.4's deprecated shim modules |
 | python-qiskit-ibm-runtime | qiskit-ibm-runtime 0.51.0; `check()` passes against qiskit 2.6.1 (2049 passed, 7 skipped) |
 | python-qiskit-aer-cuda (provides python-qiskit-aer) | qiskit-aer 0.18.2, pkgrel 3 (unique provider names, [qiskit-aer.md](../qiskit-packages/qiskit-aer.md)): CUDA Thrust backend for sm_89 with cuQuantum, so `AerSimulator(device="GPU", cuStateVec_enable=True)` runs |
 | cuquantum | cuquantum 26.09.0.8 for CUDA 13, repackaged from the vendor archive: libcustatevec.so.1 1.15.0 and libcutensornet.so.2 2.14.0, the two libraries python-qiskit-aer-cuda 0.18.2-3 links |

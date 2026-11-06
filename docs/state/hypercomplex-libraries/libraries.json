@@ -3323,7 +3323,7 @@
     "docs/notes/open_quantum/requirements-oq.txt": "2.14.1",
     "docs/notes/qbraid/requirements-qbraid.txt": "2.14.1",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.13.4",
-    "requirements.txt": "2.14.1",
+    "requirements.txt": "2.14.2",
     "IQM retained environment": "2.12.5"
    },
    "observed_host_version": "2.14.1",
@@ -3552,7 +3552,7 @@
   {
    "distribution": "pytest",
    "declared_versions": {
-    "ci/requirements-ci.txt": "9.1.1",
+    "ci/requirements-ci.txt": "9.2.0",
     "IQM retained environment": "9.1.1"
    },
    "observed_host_version": "9.1.1",
@@ -3777,7 +3777,7 @@
     "docs/notes/ionq/requirements-ionq.txt": "2.6.1",
     "docs/notes/open_quantum/requirements-oq.txt": "2.5.2",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.3.1",
-    "requirements.txt": "2.6.1",
+    "requirements.txt": "2.6.2",
     "scripts/kaggle_run.py:84:KERNEL_PINS": "2.6.1",
     "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "2.6.1",
     "IQM retained environment": "2.1.2"
@@ -4912,7 +4912,7 @@
   {
    "distribution": "ruff",
    "declared_versions": {
-    "ci/requirements-ci.txt": "0.17.1"
+    "ci/requirements-ci.txt": "0.17.3"
    },
    "observed_host_version": "0.17.1",
    "role": "Pinned lint and format gate.",
@@ -5976,7 +5976,7 @@
   "docs/notes/qiskit-ecosystem.md": "ccdcb14e5702cdcd248ae4510d3c950eecf734cba851e7509b3e07bc20ca6608",
   "docs/notes/packages/candidates.md": "9686e4e3cabe939651db5bf5b64b46fcd5a361e8f5d23fa430de6627dcd9d11b",
   "ci/requirements-browser.txt": "6f9875723235ece07415e7d19103f2ec61ec35e1392d23fbd1c1290e043eaeb8",
-  "ci/requirements-ci.txt": "39f271c5f7577e825bd06489f279fdb97582abe50cda79e6b8ac06c90824248d",
+  "ci/requirements-ci.txt": "7855a9c9f9979a52821192cae1e54facef423d7bdfa45a5d4657c43871138e41",
   "ci/requirements-replay.txt": "e5e98e830c7d6f06cca129bc4a9cd4bda6cc44cde0fc0b0d8d427e0ab0801496",
   "docs/notes/bluequbit/requirements-bluequbit.txt": "9e2df74f3a0f821bdb8093a61944e284ed6f5bb93c4b6dd9092ea612f048c422",
   "docs/notes/ionq/requirements-ionq.txt": "f3c90a4ec3ed32cf753c37bc2c9c4ff97fd348d646f3769c18e28d3e915202ff",
@@ -5987,7 +5987,7 @@
   "docs/notes/quafu/requirements-quafu.txt": "0792aae81e6f09210b366b8a4db405e74c35435207f1e67ddc3b61707db9e61f",
   "docs/notes/quantum_inspire/requirements-qi.txt": "95deb5311e97df0c191622f407f6f4ab747459c1e97e5d2cbf4d36b959654d88",
   "packaging/qiskit-aer-cuda/build-requirements.txt": "10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352",
-  "requirements.txt": "49a450b4495470d5a42522602b6c59bc0b6ac81822a530109ce9a774c286527b",
+  "requirements.txt": "ad649be295735350bc228ab2cf8b0a0fd1606ac0e98ed76df174d9f7800c0c2b",
   "scripts/kaggle_run.py": "a6c47bd2dd5151a05fa5aacd760975c85d7934ee8c768194f1826e8723ef5e54",
   "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "91341759b26f68f39d0764b256139b147f538e39824de48eb3acc0ea828da1d2",
   "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",

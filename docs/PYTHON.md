@@ -31,11 +31,14 @@ platform boundaries:
 
 1. **Build Host (Arch Linux / CachyOS System Environment, `$PYTHON`)**
    - Python 3.14 (system interpreter).
-   - Package management: Arch system packages (`pacman`, `paru`) and custom PKGBUILDs
-     in `~/Github/PKGBUILDs`, all linking the system OpenBLAS (`blas-openblas`) as BLAS and LAPACK.
+   - Package management: Arch system packages (`pacman`, `paru` for AUR recipes) and the workspace's own
+     recipes in gororoba-infrastructure `packaging/`, all linking the system OpenBLAS (`blas-openblas`) as
+     BLAS and LAPACK. `/etc/makepkg.conf` builds with `-march=native -O3`, LTO and Rust `target-cpu=native`.
+     The pins in `requirements.txt` and `ci/requirements-ci.txt` equal the installed system packages, so a
+     package upgrade on the host and its pin bump land together.
    - Hardware acceleration: NVIDIA RTX 4070 Ti (SM 89), CUDA 13.4.3, cuQuantum 26.09.0.8
      (libcustatevec.so.1 and libcutensornet.so.2), and cutensor 2.8.1.0.
-   - Locally compiled packages: `python-qiskit` (2.6.1), `python-qiskit-aer-cuda` (0.18.2-3 with cuStateVec support and unique provider names),
+   - Locally compiled packages: `python-qiskit` (2.6.2), `python-qiskit-aer-cuda` (0.18.2-3 with cuStateVec support and unique provider names),
      `python-samplomatic` (0.21.0), and `python-qiskit-ibm-runtime` (0.51.0); the library wiring
      is in [python-stack.md](notes/build_host/python-stack.md).
    - Computer algebra: System `sagemath` (10.10) for exact algebraic geometry and
@@ -50,7 +53,7 @@ platform boundaries:
 2. **Hosted CI / Pull-Request Verification (`ci/`)**
    - Python 3.14.7 container environment.
    - Strictly locked dependencies from `requirements.txt` and `ci/requirements-ci.txt`.
-   - Tool pinning: `ci/pinned_tool.py` runs pinned `ruff==0.17.1` and `mypy==2.4.0` via uv.
+   - Tool pinning: `ci/pinned_tool.py` runs pinned `ruff==0.17.3` and `mypy==2.4.0` via uv.
    - Browser checks: `ci/requirements-browser.txt` installs `playwright==1.64.0` for
      headless validation of rendered explorer artifacts.
 
@@ -61,13 +64,13 @@ platform boundaries:
      bit-for-bit equivalence of retained historical evidence, circuit routing, and receipts.
 
 4. **Isolated Provider Virtual Environments**
-   - **Quantum Inspire (`QI_PYTHON`, Python 3.13)**: Located in `~/.local/share/quantum_inspire/`
-     or `QI_ENV`. Isolates `quantuminspire`, `qxelarator`, `libqasm`, `opensquirrel`, and
+   - **Quantum Inspire (`QI_PYTHON`, Python 3.13)**: Located in `~/.local/share/quantuminspire/venv`
+     or `QI_ENV`; the `quantum-inspire` MCP server runs on it. Isolates `quantuminspire`, `qxelarator`, `libqasm`, `opensquirrel`, and
      `qiskit-quantuminspire` from main Qiskit versions.
-   - **Open Quantum (`OQ_PYTHON`, `OQ_ENV`)**: Located in `~/.local/share/open_quantum/`. Runs
+   - **Open Quantum (`OQ_PYTHON`, `OQ_ENV`)**: Located in `~/.local/share/openquantum/venv`. Runs
      `openquantum-sdk`, `openquantum-sdk-qiskit`, and `openquantum-mcp`.
-   - **Quandela (`QD_PYTHON`)**: Dedicated environment in `~/.local/share/quandela/` for the
-     Quandela MCP server (`scripts/qd_mcp_server.py`). Perceval itself runs on `$PYTHON`.
+   - **Quandela**: Perceval, exqalibur and the Quandela MCP server (`scripts/qd_mcp_server.py`) all run on
+     `$PYTHON`; `QD_PYTHON` overrides the server's interpreter and the build host leaves it unset.
    - **IQM Resonance (`iqm-python`)**: Independent Python 3.13 environment under
      `/opt/iqm-resonance-stack` running IQM OS 4.7 (`iqm-client`, `qiskit 2.1.2`, `cirq-core`,
      `qrisp`, `iqm-pulla`, `iqm-pulse`).
@@ -145,6 +148,7 @@ The repository audit recognizes four operational statuses across all Python dist
 | --- | --- | --- |
 | `$PYTHON`, exported | default-stack scripts, gates and dry runs; a provider-dependent script or gate half runs under its provider interpreter below | [AGENTS.md](../AGENTS.md) "Layout and gates" |
 | `--replay-python` or `REPLAY_PYTHON` | gates marked `"runtime": "qiskit-2.5"`; with neither, the running interpreter serves when it holds every replay pin, and an unresolved runtime exits 127 | [ci/AGENTS.md](../ci/AGENTS.md) |
+| `${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/ci-py3.14.7` and `replay-py3.14.7` | `sh ci/pr_checks.sh` lanes and gates when `$PYTHON` differs from the pins (Arch's pytest-xdist reports a git `3.8.1.dev0` version, so the system interpreter never matches exactly); `sh ci/build_host_envs.sh` builds both from the pin files through CI's installer, and `XDG_CACHE_HOME` relocates them for a branch whose pins differ from main's | [ci/AGENTS.md](../ci/AGENTS.md) |
 | `QI_PYTHON` (Python 3.13) | Quantum Inspire SDK, qxelarator, cQASM, OpenSquirrel | [quantum_inspire/README.md](notes/quantum_inspire/README.md) |
 | `OQ_PYTHON` | Open Quantum SDK | [open_quantum/README.md](notes/open_quantum/README.md) |
 | `QD_PYTHON` | the Quandela MCP server; Perceval itself runs on `$PYTHON` | [quandela/README.md](notes/quandela/README.md) |
@@ -168,7 +172,7 @@ many also run under `-O`, so a check raises explicitly instead of using
 
 | Manifest / Register | Scope and purpose | Verification gate |
 | --- | --- | --- |
-| [requirements.txt](../requirements.txt) | Primary runtime dependencies (Qiskit 2.6.1, Aer 0.18.2, runtime 0.51.0, FLINT, SymPy, SciPy, NumPy) | `sh ci/pr_checks.sh tests` |
+| [requirements.txt](../requirements.txt) | Primary runtime dependencies (Qiskit 2.6.2, Aer 0.18.2, runtime 0.51.0, FLINT, SymPy, SciPy, NumPy) | `sh ci/pr_checks.sh tests` |
 | [ci/requirements-ci.txt](../ci/requirements-ci.txt) | CI gate tools, testing plugins, Quandela adapters, CVXPY/Clarabel solvers, MCP | `sh ci/pr_checks.sh lint\|types\|tests` |
 | [ci/requirements-browser.txt](../ci/requirements-browser.txt) | Headless Playwright browser automation for measured explorer verification | `scripts/validate_measured_explorer.py` |
 | [ci/requirements-replay.txt](../ci/requirements-replay.txt) | Pinned Qiskit 2.5.2 compiler stack for bit-for-bit historical replay | `ci/run_gates.py --replay-python` |
@@ -218,7 +222,7 @@ pyadic.
 ## Qiskit-adjacent packages and stacks
 
 The build host carries these distributions beyond the pinned core of
-requirements.txt, each built from a PKGBUILD in `~/Github/PKGBUILDs`. This
+requirements.txt, each built from a recipe in gororoba-infrastructure `packaging/` or from its AUR recipe. This
 table registers them. Each linked note in
 [notes/qiskit-packages/](notes/qiskit-packages/README.md) gives the package's
 usage, commands, flags, hazards and connections, and that directory's README
@@ -228,7 +232,7 @@ probes after any upgrade.
 
 | Surface | Interpreter | Core it carries | Packages |
 |---|---|---|---|
-| system, `$PYTHON` | Python 3.14 | qiskit 2.6.1, runtime 0.51.0, Aer 0.18.2 (CUDA build) | [qiskit-aer](notes/qiskit-packages/qiskit-aer.md), [ibm-quantum-schemas](notes/qiskit-packages/ibm-quantum-schemas.md), [qiskit-noise-learning](notes/qiskit-packages/qiskit-noise-learning.md), [pauli-prop and qiskit-addon-slc](notes/qiskit-packages/qiskit-addon-slc.md), [qiskit-serverless and qiskit-ibm-catalog](notes/qiskit-packages/qiskit-functions.md), [qiskit-connector](notes/qiskit-packages/qiskit-connector.md), [qiskit-resume](notes/qiskit-packages/qiskit-resume.md), [qiskit-waveform-sim](notes/qiskit-packages/qiskit-waveform-sim.md), [qcog](notes/qiskit-packages/qcog.md), [qubasic](notes/qiskit-packages/qubasic.md), [eigenkit](notes/qiskit-packages/eigenkit.md), [quantum-al](notes/qiskit-packages/quantum-al.md), [perceval-quandela and perceval-interop](notes/qiskit-packages/perceval-interop.md) |
+| system, `$PYTHON` | Python 3.14 | qiskit 2.6.2, runtime 0.51.0, Aer 0.18.2 (CUDA build) | [qiskit-aer](notes/qiskit-packages/qiskit-aer.md), [ibm-quantum-schemas](notes/qiskit-packages/ibm-quantum-schemas.md), [qiskit-noise-learning](notes/qiskit-packages/qiskit-noise-learning.md), [pauli-prop and qiskit-addon-slc](notes/qiskit-packages/qiskit-addon-slc.md), [qiskit-serverless and qiskit-ibm-catalog](notes/qiskit-packages/qiskit-functions.md), [qiskit-connector](notes/qiskit-packages/qiskit-connector.md), [qiskit-resume](notes/qiskit-packages/qiskit-resume.md), [qiskit-waveform-sim](notes/qiskit-packages/qiskit-waveform-sim.md), [qcog](notes/qiskit-packages/qcog.md), [qubasic](notes/qiskit-packages/qubasic.md), [eigenkit](notes/qiskit-packages/eigenkit.md), [quantum-al](notes/qiskit-packages/quantum-al.md), [perceval-quandela and perceval-interop](notes/qiskit-packages/perceval-interop.md) |
 | `quantuminspire-qiskit-stack` | `qi-stack-python`, Python 3.13 | qiskit 2.3.0, Aer 0.17.2 | [quantuminspire, qiskit-quantuminspire, pennylane-quantuminspire](notes/qiskit-packages/quantum-inspire-family.md) |
 | `qiskit-debugger-stack` | `qiskit-debugger-python`, Python 3.11 | qiskit 0.43.2 (terra 0.24.1), Aer 0.12.1 | [qiskit-debugger](notes/qiskit-packages/qiskit-debugger.md) |
 | `quantum-pipeline-stack` | `quantum-pipeline-python`, Python 3.13 | qiskit 2.6.1, runtime 0.51.0, Aer 0.17.2 | [quantum-pipeline](notes/qiskit-packages/quantum-pipeline.md) |
