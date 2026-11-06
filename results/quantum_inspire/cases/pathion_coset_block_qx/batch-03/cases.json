@@ -256,7 +256,9 @@
   "pattern": "ba and bb read opposite signs in their two differing bins at 3.0 se",
   "null": "b0 selector contrast within 3.0 se of zero",
   "cocycle_free": "xor_ba selector contrast below -3.0 se and ba selector contrast above 3.0 se",
-  "depth": "contraction per CZ implied by each template visibility against RHO_BAND, reported with its CZ"
+  "depth": "contraction per CZ implied by each template visibility against RHO_BAND, reported with its CZ",
+  "cross_platform": "D(y) = c_T(y) / V_T - c_I(label(y)) / V_I of ba, bb and b0 within 3.0 combined standard errors on at least 7 of 8 bins, against each of ibm_fez and ibm_marrakesh (IBM_RECORDS); the Tuna ratio is the readout_corrected one, the raw ratio is reported",
+  "drift": "a readout circuit moving a register qubit by more than 0.02 against the previous circuit of its kind (e01 on readout-0, e10 on readout-1) stops the series and fails the rule"
  },
  "batch": "batch-03",
  "circuits": [

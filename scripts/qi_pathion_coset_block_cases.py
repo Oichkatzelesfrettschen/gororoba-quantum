@@ -39,11 +39,20 @@ Preregistered decisions (Z_RESOLVE standard errors; raw counts, pooled over a te
 - null: the b0 selector contrast lies within Z_RESOLVE standard errors of zero;
 - cocycle-free: the xor_ba selector contrast is negative at Z_RESOLVE and the ba selector contrast positive;
 - depth: the contraction per CZ implied by each template's visibility lies inside or outside the retained band
-  RHO_BAND, reported with the template's routed CZ.
+  RHO_BAND, reported with the template's routed CZ;
+- cross-platform: the readout-corrected Tuna ratio c(y) / V of ba, bb and b0 differs from the measured IBM ratio
+  c(k) / V_I of the same algebra labels (ibm_fez and ibm_marrakesh coset-map runs, IBM_RECORDS) by at most Z_RESOLVE
+  combined standard errors on at least CROSS_BINS_MIN of 8 bins against each device, D(y) = 0 being the prediction;
+- drift: no readout circuit moves a register qubit by more than 0.02 against the previous circuit of its kind
+  (qi_pathion_coset_block_series.DRIFT_STOP); the series gate stops before the next batch is submitted.
 
 Usage: "$PYTHON" scripts/qi_pathion_coset_block_cases.py
        (--write DIR | --check DIR | --select-region | --qx-conformance RUN_DIR | --analyze RUN_DIR... --out FILE
         | --self-test)
+--analyze scores the collected batches of one series: the preregistered decisions, per-template c(y), visibility,
+nullity estimate N_hat and selector contrast with delta-method errors, the comparison with the measured IBM runs
+and the drift rule; a stopped series reports its batches and drift only, and a QX series reports the control verdict
+that qi_pathion_coset_block_series.py --submit-next needs before the first Tuna-17 batch.
 --write DIR writes DIR/pathion_coset_block_tuna_17/ and DIR/pathion_coset_block_qx/ (batch-NN/ cases under a series
 cases.json); --check regenerates both and compares bytes and file sets; --qx-conformance reads a local qxelarator run
 of the Tuna series (scripts/qx_local_series.py) and compares each circuit with its ideal law. Bit strings put qubit 0
@@ -66,10 +75,12 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
 import qi_cancellation_cases as kcc  # noqa: E402
+import qi_pathion_coset_block_series as pcs  # noqa: E402
 import qi_zero_divisor_cases as zd  # noqa: E402
 
 import parallel  # noqa: E402
 import pathion_coset_block as pcb  # noqa: E402
+import pathion_kernel_map as pkm  # noqa: E402
 from qrng_seeds import read_record  # noqa: E402
 
 TUNA_SERIES = "pathion_coset_block_tuna_17"
@@ -81,6 +92,7 @@ QX_SHOTS = 2048
 GRID = kcc.GRID
 BASIS = kcc.BASIS
 Z_RESOLVE = 3.0
+ANALYSIS_SCHEMA = "qi-pathion-coset-block-analysis-v2"
 # The ANU QRNG draw whose 64 values seed every routing candidate; it belongs to this case's manifest.
 DRAW = "docs/evidence/anu_qrng/draw-2026-11-06T184327Z.json"
 CANDIDATES = 16
@@ -257,8 +269,7 @@ def retained_readout(region: tuple[int, ...]) -> dict[int, tuple[float, float]]:
     return {q: (float(np.mean(zero[q])), 1.0 - float(np.mean(one[q]))) for q in region if zero[q] and one[q]}
 
 
-def bit(shot: str, qubit: int) -> int:
-    return int(shot[len(shot) - 1 - qubit])
+bit = pcs.bit
 
 
 def confusion(readout: list[tuple[float, float]]) -> np.ndarray:
@@ -300,6 +311,226 @@ def forecast(ideal: dict[bool, np.ndarray], cz: int, rho: float, readout: list[t
         "se_per_bin_two_replicates": [round(s, 6) for s in sigma],
         "z_per_bin": [round(float(abs(c) / s), 2) for c, s in zip(per_bin, sigma, strict=True)],
         "selector_se": math.sqrt(2 * 0.25 / (SHOTS * 2)),
+    }
+
+
+# Cross-platform reference: the measured IBM coset-map runs ---------------------------------------------------
+
+IBM_GROUP = "pathion_coset_map"
+IBM_RECORDS = {
+    "ibm_fez": {
+        "collect": "results/live/2026-11-06T201037.234804Z/collect.json",
+        "job": "dbn3a55t7fqc73ais42g",
+        "sha256": "bbb2415b53e07e97e745b3da472114afb84cb0fc8be34686a39b7fac18d15051",
+    },
+    "ibm_marrakesh": {
+        "collect": "results/live/2026-11-06T200832.558771Z/collect.json",
+        "job": "dbn38t0ou4as73b3q1n0",
+        "sha256": "003031ac080ca40af9c20924109b5659c38b06554591eb65ef1f68e853c76093",
+    },
+}
+# The cross-platform rule decides on the readout-corrected Tuna ratio c(y) / V: a device that contracts every bin
+# alike and then misassigns each bit reads a raw ratio that departs from the ideal sign by its assignment asymmetry,
+# which the correction from the series' own readout circuits removes.
+CROSS_STATISTIC = "readout_corrected"
+CROSS_BINS_MIN = 7
+# A QX control arm passes when its total variation distance to the ideal law of record stays within this factor of
+# the sampling floor expected under that law.
+CONTROL_FLOOR_FACTOR = 2.0
+REPLICATES = 2
+
+
+def operand_tag(block_key: str) -> str:
+    return pkm.operand_tag(BLOCKS[block_key].operand)
+
+
+@cache
+def ideal_block_contrast(operand: tuple[int, int, int], basis: tuple[int, ...], k0: int) -> np.ndarray:
+    block = pcb.Block(f"k{k0}", operand, basis, k0)
+    return pcb.output_contrast(
+        pcb.block_law(pcb.block_circuit(block, True, measure=False)),
+        pcb.block_law(pcb.block_circuit(block, False, measure=False)),
+    )
+
+
+@cache
+def ibm_reference(device: str) -> dict[str, dict[str, Any]]:
+    """Measured IBM per-output ratio c(k) / V of every coset block of each primary operand, keyed by operand tag.
+
+    The collect record holds, per member `cmap_<operand>_k<coset>_{plus,minus}`, one 16-outcome law per replica
+    (index y + 8 s, data bits first). Per replica: c(y) = P_plus(s = 0 | y) - P_minus(s = 0 | y), V the mean of c
+    times the ideal sign, and the ratio c / V; a bin's ratio is the mean over replicas. `ratio_se` is the standard
+    error of that mean and `ratio_spread` the standard deviation over replicas, which `labels[...]["se"]` carries:
+    the Tuna block is one placement, so the IBM ratio it is compared with is one placement's draw from the
+    replica distribution, and the tolerance of D is that spread (the IBM ratio departs from the ideal sign by its
+    own readout asymmetry and noise, which the replica spread brackets). `labels` maps the algebra output index of
+    each bin to its entry, so a Tuna block with another basis compares by label."""
+    spec = IBM_RECORDS[device]
+    path = ROOT / spec["collect"]
+    if hashlib.sha256(path.read_bytes()).hexdigest() != spec["sha256"]:
+        raise ValueError(f"{path} differs from the retained record its digest pins")
+    group = next(
+        g for g in json.loads(path.read_text(encoding="utf-8")) if isinstance(g, dict) and g.get("group") == IBM_GROUP
+    )
+    if group["backend"] != device or group["job_id"] != spec["job"]:
+        raise ValueError(f"{path} is not the {device} job {spec['job']}")
+    measured = group["measured"]
+    out: dict[str, dict[str, Any]] = {}
+    for key in PRIMARY:
+        operand = BLOCKS[key].operand
+        basis = pcb.default_basis(operand)
+        labels: dict[int, dict[str, Any]] = {}
+        blocks: dict[int, dict[str, Any]] = {}
+        replicas = 0
+        for k0 in pcb.cosets(basis):
+            ideal = ideal_block_contrast(operand, basis, k0)
+            sign = np.sign(ideal)
+            prefix = f"cmap_{pkm.operand_tag(operand)}_k{k0}"
+            plus, minus = np.array(measured[f"{prefix}_plus"]), np.array(measured[f"{prefix}_minus"])
+            c = np.array([pcb.output_contrast(p, m) for p, m in zip(plus, minus, strict=True)])
+            visibility = (c * sign).mean(axis=1)
+            ratio = c / visibility[:, None]
+            nullity = c.sum(axis=1) / 2.0 / visibility
+            replicas = len(c)
+            root = math.sqrt(replicas)
+            block = pcb.Block(f"k{k0}", operand, basis, k0)
+            blocks[k0] = {
+                "visibility": float(visibility.mean()),
+                "visibility_se": float(visibility.std(ddof=1) / root),
+                "nullity_estimate": float(nullity.mean()),
+                "nullity_se": float(nullity.std(ddof=1) / root),
+                "nullity_ideal": float(ideal.sum() / 2.0),
+                "bin_labels": pcb.output_labels(block),
+                "c": [float(x) for x in c.mean(axis=0)],
+                "ratio": [float(x) for x in ratio.mean(axis=0)],
+                "ratio_se": [float(x) for x in ratio.std(axis=0, ddof=1) / root],
+                "ratio_spread": [float(x) for x in ratio.std(axis=0, ddof=1)],
+            }
+            for y, label in enumerate(pcb.output_labels(block)):
+                labels[label] = {
+                    "coset": k0,
+                    "bin": y,
+                    "ratio": blocks[k0]["ratio"][y],
+                    "se": blocks[k0]["ratio_spread"][y],
+                    "se_mean": blocks[k0]["ratio_se"][y],
+                    "visibility": blocks[k0]["visibility"],
+                }
+        if sorted(labels) != list(range(pkm.DIM)):
+            raise ValueError(f"{device} {key}: the coset blocks do not cover the 32 output labels once")
+        out[operand_tag(key)] = {"replicas": replicas, "blocks": blocks, "labels": labels}
+    return out
+
+
+def contrast_outputs(counts: np.ndarray, sign: np.ndarray, matrix: np.ndarray | None) -> np.ndarray:
+    """c(y) of the 8 bins, c / V, V and the nullity estimate N_hat from stacked [plus, minus] counts of 16 outcomes.
+
+    V is the mean of c times the ideal sign and N_hat = (sum of c) / (2 V); `matrix`, when given, is the joint
+    assignment matrix the counts are corrected with first."""
+    plus, minus = counts[:16], counts[16:]
+    if matrix is not None:
+        plus, minus = np.linalg.solve(matrix, plus), np.linalg.solve(matrix, minus)
+    c = pcb.output_contrast(plus / plus.sum(), minus / minus.sum())
+    v = float(np.mean(c * sign))
+    return np.concatenate([c, c / v, [v, c.sum() / 2.0 / v]])
+
+
+def contrast_statistics(
+    plus: np.ndarray, minus: np.ndarray, sign: np.ndarray, matrix: np.ndarray | None = None
+) -> dict[str, Any]:
+    """c(y), c / V, V and N_hat of an arm pair with standard errors by the delta method.
+
+    The counts of each arm are multinomial, so the covariance is N (diag p - p p^T) per arm; the Jacobian of
+    contrast_outputs is a central difference of one count, which is deterministic and needs no random draw."""
+    x = np.concatenate([plus, minus]).astype(float)
+    base = contrast_outputs(x, sign, matrix)
+    jac = np.empty((base.size, x.size))
+    for i in range(x.size):
+        up, down = x.copy(), x.copy()
+        up[i] += 1.0
+        down[i] -= 1.0
+        jac[:, i] = (contrast_outputs(up, sign, matrix) - contrast_outputs(down, sign, matrix)) / 2.0
+    cov = np.zeros((x.size, x.size))
+    for low, arm in ((0, plus), (16, minus)):
+        p = arm / arm.sum()
+        cov[low : low + 16, low : low + 16] = arm.sum() * (np.diag(p) - np.outer(p, p))
+    se = np.sqrt(np.einsum("ij,jk,ik->i", jac, cov, jac))
+    return {
+        "c": [float(v) for v in base[:8]],
+        "c_se": [float(v) for v in se[:8]],
+        "ratio": [float(v) for v in base[8:16]],
+        "ratio_se": [float(v) for v in se[8:16]],
+        "visibility": float(base[16]),
+        "visibility_se": float(se[16]),
+        "nullity_estimate": float(base[17]),
+        "nullity_se": float(se[17]),
+    }
+
+
+def cross_platform(
+    statistics: dict[str, Any], labels: list[int], reference: dict[str, Any], z_limit: float = Z_RESOLVE
+) -> dict[str, Any]:
+    """D(y) = c_T(y) / V_T - c_I(label(y)) / V_I on the 8 bins of a Tuna block, against one IBM device.
+
+    `labels` is the block's algebra index of each bin (the case's label table), `reference` one operand's entry of
+    ibm_reference; the Tuna side carries its delta-method error, the IBM side the replica spread, and the bins are
+    compared at the quadrature sum.
+    The prediction is D = 0 within z_limit combined standard errors on at least CROSS_BINS_MIN of the 8 bins;
+    `z_of_mean` reports the same difference against the standard error of the IBM mean instead of its spread."""
+    ibm = [reference["labels"][label] for label in labels]
+    tuna = statistics["ratio"]
+    difference = [t - i["ratio"] for t, i in zip(tuna, ibm, strict=True)]
+    se = [math.hypot(s, i["se"]) for s, i in zip(statistics["ratio_se"], ibm, strict=True)]
+    z = [float(v) for v in z_score(difference, se)]
+    se_mean = [math.hypot(s, i["se_mean"]) for s, i in zip(statistics["ratio_se"], ibm, strict=True)]
+    z_mean = [float(v) for v in z_score(difference, se_mean)]
+    return {
+        "labels": list(labels),
+        "tuna_ratio": list(tuna),
+        "ibm_ratio": [i["ratio"] for i in ibm],
+        "ibm_coset": [i["coset"] for i in ibm],
+        "difference": difference,
+        "se": se,
+        "z": z,
+        "z_of_mean": z_mean,
+        "bins_within": int(sum(abs(v) <= z_limit for v in z)),
+    }
+
+
+def refutation_probability(difference: list[float], se: list[float], tuna_se: list[float]) -> float:
+    """Probability that a device obeying the model reads fewer than CROSS_BINS_MIN of 8 bins inside Z_RESOLVE
+    combined standard errors, by exact enumeration of the independent bins.
+
+    Each bin reads D ~ Normal(difference, tuna_se) around the predicted difference, because the IBM ratio is a
+    fixed measured number; a bin fails when |D| exceeds Z_RESOLVE * se."""
+
+    def cdf(x: float) -> float:
+        return 0.5 * math.erfc(-x / math.sqrt(2.0))
+
+    fail = [
+        cdf((-Z_RESOLVE * s - d) / t) + cdf((-Z_RESOLVE * s + d) / t)
+        for d, s, t in zip(difference, se, tuna_se, strict=True)
+    ]
+    # Poisson-binomial law of the number of failing bins; the rule holds up to len(fail) - CROSS_BINS_MIN of them.
+    law = np.array([1.0])
+    for q in fail:
+        law = np.convolve(law, [1.0 - q, q])
+    return float(law[len(fail) - CROSS_BINS_MIN + 1 :].sum())
+
+
+def model_statistics(
+    template: dict[str, Any], rho: float, readout: list[tuple[float, float]]
+) -> dict[str, dict[str, Any]]:
+    """Expected raw and readout-corrected statistics of the contraction model at pooled replicates: the law
+    of record contracted by rho^cz, misassigned by the retained readout, as expected counts at 2 x SHOTS per arm."""
+    retention = rho ** template["cz"]
+    matrix = confusion(readout)
+    ideal = template["ideal"]
+    law = {p: matrix @ (retention * ideal[p] + (1 - retention) / ideal[p].size) for p in (False, True)}
+    counts = {p: law[p] * REPLICATES * SHOTS for p in law}
+    sign = np.sign(pcb.output_contrast(ideal[True], ideal[False]))
+    return {
+        "raw": contrast_statistics(counts[True], counts[False], sign),
+        "readout_corrected": contrast_statistics(counts[True], counts[False], sign, matrix),
     }
 
 
@@ -370,6 +601,86 @@ def predictions(plan: dict[str, Any]) -> dict[str, Any]:
         roles = t["roles"]
         per_bit = [readout[plan["region"][roles[k]]] for k in ("d0", "d1", "d2", "selector")]
         out["templates"][name] = {f"rho_{rho}": forecast(t["ideal"], t["cz"], rho, per_bit) for rho in RHO_BAND}
+    out["ibm_measured"] = {device: ibm_summary(device) for device in IBM_RECORDS}
+    out["cross_platform"] = cross_platform_prediction(plan, readout)
+    return out
+
+
+def rounded(values: list[float]) -> list[float]:
+    return [round(float(v), 6) for v in values]
+
+
+def ibm_summary(device: str) -> dict[str, Any]:
+    """The measured IBM values the cross-platform rule compares against, per operand and coset block."""
+    spec = IBM_RECORDS[device]
+    reference = ibm_reference(device)
+    return {
+        "collect": spec["collect"],
+        "collect_sha256": spec["sha256"],
+        "job": spec["job"],
+        "operands": {
+            tag: {
+                "replicas": entry["replicas"],
+                "blocks": {
+                    f"k{k0}": {
+                        "bin_labels": block["bin_labels"],
+                        "visibility": round(block["visibility"], 6),
+                        "visibility_se": round(block["visibility_se"], 6),
+                        "c": rounded(block["c"]),
+                        "ratio": rounded(block["ratio"]),
+                        "ratio_se": rounded(block["ratio_se"]),
+                        "ratio_spread": rounded(block["ratio_spread"]),
+                        "nullity_estimate": round(block["nullity_estimate"], 6),
+                        "nullity_se": round(block["nullity_se"], 6),
+                        "nullity_ideal": block["nullity_ideal"],
+                    }
+                    for k0, block in sorted(entry["blocks"].items())
+                },
+            }
+            for tag, entry in reference.items()
+        },
+    }
+
+
+def cross_platform_prediction(plan: dict[str, Any], readout: dict[int, tuple[float, float]]) -> dict[str, Any]:
+    """The preregistered D(y) of each primary template against each measured IBM device, under the contraction
+    model of the Tuna block: the expected D from the modeled ratio and the measured IBM ratio, with the number
+    of bins inside the combined error. The decision statistic is CROSS_STATISTIC; the raw ratio is reported."""
+    out: dict[str, Any] = {
+        "rule": f"D(y) = c_T(y) / V_T - c_I(label(y)) / V_I within {Z_RESOLVE} combined standard errors on at least "
+        f"{CROSS_BINS_MIN} of 8 bins of each primary template, against each IBM device; the Tuna ratio is "
+        f"{CROSS_STATISTIC}, assignment from the series' own readout circuits",
+        "statistic": CROSS_STATISTIC,
+        "templates": {},
+    }
+    survive = {f"rho_{rho}": 1.0 for rho in RHO_BAND}
+    for name in PRIMARY:
+        t = plan["templates"][name]
+        labels = pcb.output_labels(BLOCKS[t["block"]])
+        roles = t["roles"]
+        per_bit = [readout[plan["region"][roles[k]]] for k in ("d0", "d1", "d2", "selector")]
+        entry: dict[str, Any] = {"labels": labels}
+        for device in IBM_RECORDS:
+            reference = ibm_reference(device)[operand_tag(t["block"])]
+            cell: dict[str, Any] = {}
+            for rho in RHO_BAND:
+                model = model_statistics(t, rho, per_bit)
+                cell[f"rho_{rho}"] = {
+                    statistic: {
+                        key: value if key in ("labels", "ibm_coset", "bins_within") else rounded(value)
+                        for key, value in cross_platform(model[statistic], labels, reference).items()
+                    }
+                    for statistic in model
+                }
+                compared = cross_platform(model[CROSS_STATISTIC], labels, reference)
+                refuted = refutation_probability(
+                    compared["difference"], compared["se"], model[CROSS_STATISTIC]["ratio_se"]
+                )
+                cell[f"rho_{rho}"]["refutation_probability"] = round(refuted, 6)
+                survive[f"rho_{rho}"] *= 1.0 - refuted
+            entry[device] = cell
+        out["templates"][name] = entry
+    out["refutation_probability_any_pair"] = {rho: round(1.0 - kept, 6) for rho, kept in survive.items()}
     return out
 
 
@@ -486,6 +797,11 @@ def preregistered() -> dict[str, str]:
         "null": f"b0 selector contrast within {Z_RESOLVE} se of zero",
         "cocycle_free": f"xor_ba selector contrast below -{Z_RESOLVE} se and ba selector contrast above {Z_RESOLVE} se",
         "depth": "contraction per CZ implied by each template visibility against RHO_BAND, reported with its CZ",
+        "cross_platform": f"D(y) = c_T(y) / V_T - c_I(label(y)) / V_I of ba, bb and b0 within {Z_RESOLVE} combined "
+        f"standard errors on at least {CROSS_BINS_MIN} of 8 bins, against each of ibm_fez and ibm_marrakesh "
+        f"(IBM_RECORDS); the Tuna ratio is the {CROSS_STATISTIC} one, the raw ratio is reported",
+        "drift": f"a readout circuit moving a register qubit by more than {pcs.DRIFT_STOP} against the previous "
+        "circuit of its kind (e01 on readout-0, e10 on readout-1) stops the series and fails the rule",
     }
 
 
@@ -595,14 +911,66 @@ def register_assignment(shots: dict[str, list[str]]) -> dict[int, tuple[float, f
     }
 
 
+Z_EXACT = 1.0e6
+
+
+def z_score(value: Any, error: Any) -> Any:
+    """value / error, elementwise; a statistic with no sampling variance (an emulator bin whose counts are all one
+    outcome) reads +-Z_EXACT in the direction of its sign and 0 at zero, so a record stays finite JSON."""
+    value, error = np.asarray(value, dtype=float), np.asarray(error, dtype=float)
+    safe = np.where(error > 0, error, 1.0)
+    return np.where(error > 0, value / safe, np.sign(value) * Z_EXACT)
+
+
+def control_floor(law: np.ndarray, shots: int) -> float:
+    """Expected total variation distance of `shots` draws from `law`: the sum of the mean absolute deviations
+    sqrt(2 p (1 - p) / (pi N)) of each outcome, halved."""
+    return float(0.5 * np.sum(np.sqrt(2.0 * law * (1.0 - law) / (math.pi * shots))))
+
+
+def qx_control(arms: dict[str, tuple[list[str], dict[str, int], list[float]]]) -> dict[str, Any]:
+    """Each arm's observed law against its ideal law of record at CONTROL_FLOOR_FACTOR times the sampling floor.
+
+    `arms` maps "batch/file" to (shots, roles, ideal law); the verdict is the QX dry run's preregistered pass."""
+    report: dict[str, Any] = {}
+    for key, (listed, roles, ideal) in sorted(arms.items()):
+        counts = outcome_counts(listed, roles)
+        law = np.array(ideal)
+        tvd = 0.5 * float(np.abs(counts / counts.sum() - law).sum())
+        floor = control_floor(law, len(listed))
+        report[key] = {"tvd": tvd, "floor": floor, "ok": tvd <= CONTROL_FLOOR_FACTOR * floor}
+    return {
+        "arms": report,
+        "factor": CONTROL_FLOOR_FACTOR,
+        "pass": bool(report) and all(v["ok"] for v in report.values()),
+    }
+
+
+def drift_decision(drift: dict[str, Any]) -> dict[str, Any]:
+    """The readout-bracket drift rule: no readout circuit moves a register qubit by more than the threshold
+    against the previous circuit of its kind; a flag stops the series and fails the rule."""
+    return {
+        "threshold": drift["threshold"],
+        "max_abs_delta": drift["max_abs_delta"],
+        "flagged": drift["flagged"],
+        "holds": not drift["flagged"],
+    }
+
+
 def evaluate(
-    shots: dict[str, list[str]], manifest: dict[str, Any], executed: dict[str, str] | None = None
+    shots: dict[str, list[str]],
+    manifest: dict[str, Any],
+    executed: dict[str, str] | None = None,
+    references: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Preregistered decisions from shot lists keyed by "batch/file"; manifest is any batch's cases.json."""
+    """Preregistered decisions from shot lists keyed by "batch/file"; manifest is any batch's cases.json.
+
+    `references` maps an IBM device to its ibm_reference table (default: the retained measured runs)."""
     templates = manifest["templates"]
     rows: dict[str, dict[str, Any]] = {}
     ideal_c = {n: np.array(t["ideal_c"]) for n, t in templates.items()}
     assignment = register_assignment(shots)
+    ibm = {device: ibm_reference(device) for device in IBM_RECORDS} if references is None else references
     for name, t in templates.items():
         roles = t["roles"]
         plus = np.zeros(16)
@@ -622,16 +990,16 @@ def evaluate(
         selector, selector_se = selector_stat(plus, minus)
         sign = np.sign(ideal_c[name])
         decided = np.abs(ideal_c[name]) > 0.5
-        z_signed = c * sign / se
+        z_signed = z_score(c * sign, se)
         visibility = float(np.mean(c[decided] * sign[decided]))
         cz = t["cz"]
+        statistics: dict[str, Any] = {"raw": contrast_statistics(plus, minus, sign)}
         corrected_visibility = float("nan")
         if assignment is not None:
             keys = ("d0", "d1", "d2", "selector")
             matrix = confusion([assignment[roles[k]] for k in keys])
-            fixed = [np.linalg.solve(matrix, counts) for counts in (plus, minus)]
-            c_fixed = pcb.output_contrast(fixed[0] / fixed[0].sum(), fixed[1] / fixed[1].sum())
-            corrected_visibility = float(np.mean(c_fixed[decided] * sign[decided]))
+            statistics["readout_corrected"] = contrast_statistics(plus, minus, sign, matrix)
+            corrected_visibility = statistics["readout_corrected"]["visibility"]
         implied = corrected_visibility ** (1.0 / cz) if corrected_visibility > 0 else float("nan")
         position = "below" if implied < RHO_BAND[0] else "above" if implied > RHO_BAND[1] else "inside"
         rows[name] = {
@@ -647,32 +1015,64 @@ def evaluate(
             "visibility_readout_corrected": corrected_visibility,
             "contraction_per_cz_implied": implied,
             "against_rho_band": position if implied == implied else "not read",
+            "statistics": statistics,
         }
+        if name in PRIMARY:
+            rows[name]["nullity_ideal"] = float(ideal_c[name].sum() / 2.0)
     ba, bb, b0, xor = rows["ba"], rows["bb"], rows["b0"], rows["xor_ba"]
     differing = [y for y in range(8) if ideal_c["ba"][y] != ideal_c["bb"][y]]
     pattern_z = [
         min(
-            abs(ba["c"][y]) / ba["se"][y] if ba["c"][y] * ideal_c["ba"][y] > 0 else 0.0,
-            abs(bb["c"][y]) / bb["se"][y] if bb["c"][y] * ideal_c["bb"][y] > 0 else 0.0,
+            abs(float(z_score(ba["c"][y], ba["se"][y]))) if ba["c"][y] * ideal_c["ba"][y] > 0 else 0.0,
+            abs(float(z_score(bb["c"][y], bb["se"][y]))) if bb["c"][y] * ideal_c["bb"][y] > 0 else 0.0,
         )
         for y in differing
     ]
+    cross: dict[str, Any] = {"statistic": CROSS_STATISTIC, "bins_min": CROSS_BINS_MIN, "devices": {}}
+    for device, reference in ibm.items():
+        per_template: dict[str, Any] = {}
+        for name in PRIMARY:
+            stats = rows[name]["statistics"]
+            if CROSS_STATISTIC not in stats:
+                per_template[name] = {"read": False}
+                continue
+            labels = manifest["labels"][templates[name]["block"]]["ibm_data_index_of_bin"]
+            tag = pkm.operand_tag(tuple(templates[name]["operand"]))
+            per_template[name] = {
+                "read": True,
+                **{s: cross_platform(stats[s], labels, reference[tag]) for s in stats},
+            }
+        cross["devices"][device] = {
+            "templates": per_template,
+            "holds": all(
+                v["read"] and v[CROSS_STATISTIC]["bins_within"] >= CROSS_BINS_MIN for v in per_template.values()
+            ),
+        }
+    cross["holds"] = bool(cross["devices"]) and all(d["holds"] for d in cross["devices"].values())
+    drift = pcs.reference_drift(
+        [(key.split("/")[0], key.split("/")[1], shots[key]) for key in shots if key.split("/")[1] in pcs.READOUT_KIND],
+        pcs.register_qubits(manifest),
+    )
     decisions = {
         "resolution": {
             "ba": ba["bins_with_ideal_sign"] >= 6,
             "bb": bb["bins_with_ideal_sign"] >= 6,
         },
-        "pattern": {"bins": differing, "z": pattern_z, "resolved": all(z >= Z_RESOLVE for z in pattern_z)},
+        "pattern": {"bins": differing, "z": pattern_z, "resolved": bool(all(z >= Z_RESOLVE for z in pattern_z))},
         "null": {
-            "z": b0["selector_contrast"] / b0["selector_se"],
-            "holds": abs(b0["selector_contrast"]) <= Z_RESOLVE * b0["selector_se"],
+            "z": float(z_score(b0["selector_contrast"], b0["selector_se"])),
+            "holds": bool(abs(b0["selector_contrast"]) <= Z_RESOLVE * b0["selector_se"]),
         },
         "cocycle_free": {
-            "xor_z": xor["selector_contrast"] / xor["selector_se"],
-            "ba_z": ba["selector_contrast"] / ba["selector_se"],
-            "resolved": xor["selector_contrast"] <= -Z_RESOLVE * xor["selector_se"]
-            and ba["selector_contrast"] >= Z_RESOLVE * ba["selector_se"],
+            "xor_z": float(z_score(xor["selector_contrast"], xor["selector_se"])),
+            "ba_z": float(z_score(ba["selector_contrast"], ba["selector_se"])),
+            "resolved": bool(
+                xor["selector_contrast"] <= -Z_RESOLVE * xor["selector_se"]
+                and ba["selector_contrast"] >= Z_RESOLVE * ba["selector_se"]
+            ),
         },
+        "cross_platform": cross,
+        "drift": drift_decision(drift),
     }
     order: dict[str, str] | None = None
     if executed is not None:
@@ -684,68 +1084,74 @@ def evaluate(
     return {
         "templates": rows,
         "decisions": decisions,
+        "references": drift,
+        "stopped": not decisions["drift"]["holds"],
         "all_decisions_met": bool(
             all(decisions["resolution"].values())
             and decisions["pattern"]["resolved"]
             and decisions["null"]["holds"]
             and decisions["cocycle_free"]["resolved"]
+            and decisions["cross_platform"]["holds"]
+            and decisions["drift"]["holds"]
         ),
         "executed_order": order,
     }
 
 
-def cross_platform(
-    tuna: dict[str, Any], ibm_c: list[float], ibm_visibility: float, block_key: str, template: str
-) -> dict[str, Any]:
-    """Tuna c(y) / V_tuna against IBM c(k) / V_ibm on the block's 8 output bins (k = the label table's data index).
+def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> dict[str, Any]:
+    """Score collected batches of one series: decisions, per-block statistics, the IBM comparison and the drift rule.
 
-    ibm_c is the full 32-bin c(k) of the IBM operand pair; the model-branch values of its record are noise-model
-    output, measured values come from its collected record."""
-    block = BLOCKS[block_key]
-    labels = pcb.output_labels(block)
-    row = tuna["templates"][template]
-    ratio_tuna = [c / row["visibility"] for c in row["c"]]
-    ratio_ibm = [ibm_c[k] / ibm_visibility for k in labels]
-    se = [s / abs(row["visibility"]) for s in row["se"]]
-    return {
-        "labels": labels,
-        "tuna_ratio": ratio_tuna,
-        "ibm_ratio": ratio_ibm,
-        "difference_over_tuna_se": [(a - b) / s for a, b, s in zip(ratio_tuna, ratio_ibm, se, strict=True)],
-    }
-
-
-def analyze(run_dirs: list[Path]) -> dict[str, Any]:
+    A series that holds fewer batches than the case (a stopped run) reports its drift and batch list only. A QX
+    series (backend type 1) reports the control verdict a Tuna-17 submission needs."""
     shared: dict[str, Any] | None = None
     shots: dict[str, list[str]] = {}
     executed: dict[str, str] = {}
-    for run_dir in sorted(run_dirs):
-        cases = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+    digests: dict[str, str] = {}
+    arms: dict[str, tuple[list[str], dict[str, int], list[float]]] = {}
+    for run_dir in sorted(run_dirs, key=lambda p: p.name):
+        series_name = pcs.series_of(run_dir)
+        case_batch = None if case_root is None else case_root / series_name / f"batch-{run_dir.name[-2:]}"
+        run = pcs.load_run(run_dir, case_batch)
+        cases = run["cases"]
         fields = {k: v for k, v in cases.items() if k not in ("batch", "circuits")}
         if shared is None:
             shared = fields
         elif fields != shared:
             raise ValueError(f"{run_dir}/cases.json describes a different series")
-        results = json.loads((run_dir / "results.json").read_text(encoding="utf-8"))
-        receipt = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
-        if receipt["cases_sha256"] != hashlib.sha256((run_dir / "cases.json").read_bytes()).hexdigest():
-            raise ValueError(f"{run_dir}/cases.json is not the case its submission receipt binds")
-        jobs = {job["file"]: job for job in results["jobs"]}
-        if any(job["status"] != "completed" for job in jobs.values()):
-            raise ValueError(f"{run_dir}: a job did not complete")
+        digests[cases["batch"]] = pcs.file_sha256(run_dir / "cases.json")
         for row in cases["circuits"]:
-            listed = json.loads((run_dir / "raw" / f"{row['file']}.json").read_text(encoding="utf-8"))
-            if len(listed) != cases["shots"]:
-                raise ValueError(f"{run_dir}/{row['file']}: {len(listed)} shots, not {cases['shots']}")
             key = f"{cases['batch']}/{row['file']}"
-            shots[key] = listed
-            executed[key] = jobs[row["file"]]["queued_at"]
+            shots[key] = run["shots"][row["file"]]
+            executed[key] = run["jobs"][row["file"]]["queued_at"]
+            if row["kind"] == "arm":
+                arms[key] = (shots[key], cases["templates"][row["template"]]["roles"], row["ideal"])
     if shared is None:
         raise ValueError("an analysis needs its run directories")
     expected = sorted(row["batch"] for row in batch_plan())
-    if sorted({k.split("/")[0] for k in shots}) != expected:
-        raise ValueError(f"the runs hold other batches than {expected}")
-    return {"schema": "qi-pathion-coset-block-analysis-v1", **evaluate(shots, shared)}
+    held = sorted({k.split("/")[0] for k in shots})
+    emulator = shared["backend_type_id"] == 1
+    claim_kind = pcs.CONTROL_KIND if emulator else "hardware acquisition"
+    head: dict[str, Any] = {
+        "schema": ANALYSIS_SCHEMA,
+        "claim_kind": claim_kind,
+        "backend": shared["backend"],
+        "batch_cases_sha256": digests,
+    }
+    if emulator:
+        head["qx_control"] = qx_control(arms)
+    if held != expected:
+        drift = pcs.reference_drift(
+            [(k.split("/")[0], k.split("/")[1], v) for k, v in shots.items() if k.split("/")[1] in pcs.READOUT_KIND],
+            pcs.register_qubits(shared),
+        )
+        return {
+            **head,
+            "complete": False,
+            "batches": held,
+            "references": drift,
+            "stopped": bool(drift["flagged"]),
+        }
+    return {**head, "complete": True, **evaluate(shots, shared, executed)}
 
 
 def qx_conformance(run_dir: Path, bound: float = 0.025) -> dict[str, Any]:
@@ -797,11 +1203,20 @@ def self_test() -> str:
         if rounding_gap(t) > 0.05:
             raise RuntimeError("grid rounding moved a law by more than 0.05")
 
-    def device(retention: float, swap: tuple[str, str] | None = None, offset_b0: float = 0.0) -> dict[str, list[str]]:
+    def device(
+        retention: float,
+        swap: tuple[str, str] | None = None,
+        offset_b0: float = 0.0,
+        drift: tuple[str, float] | None = None,
+    ) -> dict[str, list[str]]:
         out: dict[str, list[str]] = {}
         for rel in files:
             if rel.endswith("readout-0.cq") or rel.endswith("readout-1.cq"):
                 out[rel] = [("0" if rel.endswith("readout-0.cq") else "1") * NQUBITS] * SHOTS
+                if drift is not None and rel == drift[0]:
+                    flipped = format(int(out[rel][0], 2) ^ (1 << manifest["region"][0]), f"0{NQUBITS}b")
+                    moved = int(drift[1] * SHOTS)
+                    out[rel] = [flipped] * moved + out[rel][moved:]
                 continue
             if not rel.endswith(".cq"):
                 continue
@@ -846,11 +1261,17 @@ def self_test() -> str:
     dead = evaluate(device(0.02), manifest)
     if dead["all_decisions_met"]:
         raise RuntimeError("a device at retention 0.02 resolves the map")
+    steady = evaluate(device(0.5, drift=("batch-02/readout-0.cq", 0.019)), manifest)
+    if not steady["decisions"]["drift"]["holds"]:
+        raise RuntimeError("a readout bracket moving 0.019 trips the 0.02 drift stop")
+    drifted = evaluate(device(0.5, drift=("batch-02/readout-0.cq", 0.05)), manifest)
+    if drifted["decisions"]["drift"]["holds"] or not drifted["stopped"] or drifted["all_decisions_met"]:
+        raise RuntimeError("a readout bracket moving 0.05 left the drift rule standing")
     return (
         f"qi pathion coset block: region {plan['region']}, routed CZ "
         + ", ".join(f"{n} {t['cz']}" for n, t in plan["templates"].items())
         + f"; {len(angles)} Rz on the pi/36 grid; honest device resolves every decision, a cocycle-free circuit in "
-        "the ba slot, a b0 selector offset and a retention of 0.02 each fail one"
+        "the ba slot, a b0 selector offset, a retention of 0.02 and a readout bracket drift of 0.05 each fail one"
     )
 
 

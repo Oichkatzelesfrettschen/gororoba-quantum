@@ -1,8 +1,8 @@
 # Written case: A_5 coset-block kernel map on Tuna-17
 
-Status: awaiting the owner's approval. Nothing is submitted, booked or charged until the owner approves this case;
-the QX dry run and each Tuna-17 batch then follow the procedure in
-[usage.md](usage.md#run-on-tuna-17). The case series is retained under
+Status: the owner has approved executing this case; each submission quotes that approval (`--approval`). Nothing is
+submitted yet. The QX dry run and each Tuna-17 batch follow the procedure in
+[usage.md](usage.md#run-on-tuna-17), through the series gate of `scripts/qi_pathion_coset_block_series.py`. The case series is retained under
 `results/quantum_inspire/cases/pathion_coset_block_tuna_17/` (hardware) and `results/quantum_inspire/cases/pathion_coset_block_qx/`
 (emulator twin), built by `scripts/qi_pathion_coset_block_cases.py` from
 `gororoba_quantum/pathion_coset_block.py`. The platform and program context is in
@@ -113,8 +113,8 @@ shots, so the block is the largest piece of the map the device can resolve.
   an order of its own; the analysis reads the executed order from the provider start times and reports it.
 - Limits applied ([usage.md](usage.md#queue-rules-the-faq-governs)): at most 3 circuits per hardware batch, no batch queued while another
   account job on a hardware type is unfinished, the FAQ's 3 queued jobs, a pause of 30 s between batches (60, 90 and 120 s after a platform failure),
-  300 s per job, bracket drift stop at 0.02 between successive readout references of one kind (applied by hand after each
-  collect; the generator has no drift check).
+  300 s per job, bracket drift stop at 0.02 between successive readout references of one kind (`qi_pathion_coset_block_series.py`
+  `--submit-next` refuses the next batch after a flagged drift, and `--sanity` reports it after a collect).
 - Own execution time: 2.62 s per job plus 0.534 ms per shot gives 11.4 s per job and 273 s for 24 jobs (up to 15.4 s
   per job, 370 s, at the slowest retained per-job time); 7 pauses add 210 s (840 s at the 120 s step), so the series
   needs 8 to 20 minutes of its own time.
@@ -165,25 +165,68 @@ z of 19 to 26; the retained per-qubit assignment lifts it to 26 to 48. Resolutio
 
 ## Cross-platform comparison with the IBM map
 
-`results/live/2026-11-06T180755.872625Z/CASE.md` preregisters that the IBM map's per-output contrast c(k) on the block's 8 output
-bins, divided by that IBM circuit's visibility V_I, predicts the Tuna-17 block's c(y) divided by its visibility V_T. Bin y of a
-block maps to the IBM data outcome k(y) = (k0 XOR i) XOR (the XOR of the basis vectors named by the bits of y), and to the IBM outcome index
-k(y) + 32 s for selector value s (`labels` in every `cases.json`; `pathion_coset_block.output_labels`):
+The IBM coset-map case (`results/live/2026-11-06T194735.738910Z/CASE.md`) ran the same block circuits on ibm_fez and
+ibm_marrakesh: group `pathion_coset_map`, one 4-qubit circuit pair per coset of `pathion_coset_block.default_basis(operand)`
+(m followed by the two lowest extending vectors), 17 replicas on ibm_fez (job `dbn3a55t7fqc73ais42g`, record
+`results/live/2026-11-06T201037.234804Z/collect.json`) and 11 on ibm_marrakesh (job `dbn38t0ou4as73b3q1n0`, record
+`results/live/2026-11-06T200832.558771Z/collect.json`), 16384 shots per replica. `prediction.json` carries their
+sha256 digests, and the analysis refuses a changed file. A Tuna block uses another basis and coset than the IBM blocks, so the two
+sides compare by algebra output label: bin y of a Tuna block maps to the algebra index k(y) = (k0 XOR i) XOR (the XOR of the
+basis vectors named by the bits of y) (`pathion_coset_block.output_labels`; `labels` in every `cases.json`), and the four IBM
+cosets of an operand cover all 32 labels once.
 
-| Block | k(y), bins 0 to 7 |
-|---|---|
-| `ba`, operand e1 + e18 | 0, 19, 2, 17, 12, 31, 14, 29 |
-| `bb`, operand e1 + e26 | 1, 26, 3, 24, 8, 19, 10, 17 |
-| `b0`, operand e1 + e17 | 1, 17, 0, 16, 3, 19, 2, 18 |
+| Block | k(y), Tuna bins 0 to 7 | IBM cosets holding these labels |
+|---|---|---|
+| `ba`, operand e1 + e18 | 0, 19, 2, 17, 12, 31, 14, 29 | k0 and k12 of V = span(19, 1, 2) |
+| `bb`, operand e1 + e26 | 1, 26, 3, 24, 8, 19, 10, 17 | k0 and k8 of V = span(27, 1, 2) |
+| `b0`, operand e1 + e17 | 1, 17, 0, 16, 3, 19, 2, 18 | k0 of V = span(16, 1, 2) |
 
-Ideal c(k) is +-1 on every bin and the rounded circuits stay within 0.004 of it, so the preregistered ratio on both platforms equals the
-ideal sign of the bin; the statistic of interest is the departure D(y) = c_T(y) / V_T - c_I(k(y)) / V_I, whose prediction is 0 within the
-standard error sqrt(se_T^2 + se_I^2) on each bin. The IBM record is in state `planned`, so its numbers are noise-model output (model branch):
-visibilities 0.525 [0.463, 0.587] for e1 + e18, 0.497 [0.433, 0.561] for e1 + e26 and 0.582 [0.525, 0.639] for e1 + e17 on ibm_fez, calibration 2026-11-06T09:17:14-08:00; that record retains per-operand summaries
-and no per-bin values, so the model branch predicts the IBM c(k) as V_I times the ideal sign. The Tuna-17 prediction of c_T(y) is the table above. Both
-sides are predicted to match the ideal sign up to the readout asymmetry of their own device, which the visibility division removes only when the
-contraction is common to every bin. `cross_platform` in the generator computes D(y) from an analysis and the IBM c(k) of a collected IBM record.
-The comparison needs a collected IBM run; a Tuna-17 run alone fixes c_T(y) / V_T.
+Measured IBM values (`prediction.json`, `ibm_measured`; per replica c(y) = P_plus(s = 0 | y) - P_minus(s = 0 | y), V the mean of c times the ideal
+sign over the block's 8 bins, ratio c / V; the mean over replicas, with `ratio_se` the standard error of that mean and `ratio_spread` the standard deviation over replicas):
+
+| Operand | Coset | V ibm_fez | V ibm_marrakesh | N_hat ibm_fez | N_hat ibm_marrakesh | Ideal N_b |
+|---|---|---|---|---|---|---|
+| e1 + e18 | k0 | 0.747 +- 0.021 | 0.740 +- 0.026 | 0.018 +- 0.011 | 0.017 +- 0.015 | 0 |
+| e1 + e18 | k4, k8, k12 | 0.826 to 0.831 | 0.838 to 0.841 | 4 (set by the signs, all aligned) | 4 | 4 |
+| e1 + e26 | k0, k8 | 0.778, 0.748 | 0.761, 0.743 | 2.068, 2.056 | 2.087, 2.097 | 2 |
+| e1 + e26 | k4, k12 | 0.801, 0.793 | 0.794, 0.795 | 0.061, 0.062 | 0.047, 0.049 | 0 |
+| e1 + e17 | k0 | 0.759 +- 0.021 | 0.748 +- 0.025 | 0.026 +- 0.012 | 0.029 +- 0.024 | 0 |
+| e1 + e17 | k4, k8, k12 | 0.877 to 0.878 | 0.895 to 0.900 | 0.004 to 0.011 | 0.051 to 0.054 | 0 |
+
+The per-label ratios c_I / V_I lie within 0.051 of the ideal sign over the labels the three blocks cover on ibm_fez (largest: -0.949 on label 1 of
+e1 + e17; e1 + e18 reads -0.969, 0.983, -1.027, 1.039 on its four k0 labels) and within 0.067 on ibm_marrakesh (largest: 1.067 on label 19 of
+e1 + e26). The standard error of the mean is 0.003 to 0.009 on ibm_fez and the spread over replicas 0.024 to 0.035 (0.025 to 0.066 on ibm_marrakesh).
+
+The statistic is D(y) = c_T(y) / V_T - c_I(k(y)) / V_I with the standard error sqrt(se_T^2 + se_I^2); the Tuna error is the delta-method
+propagation of the multinomial counts of both arms through c, V and the ratio (`contrast_statistics`), and the IBM error is the
+standard deviation of the per-replica ratios, not the error of their mean (the combined replica interval): the Tuna block is one placement, so
+the IBM ratio it meets is one placement's draw, and the spread brackets the IBM readout asymmetry that offsets its mean ratio from the ideal sign by up to
+0.067. The error of the mean would put the same offsets at 2.2 to 2.4 standard errors on single bins (`z_of_mean` in `prediction.json`). The prediction is D = 0, because both
+devices carry the same compiled sign network and contract a bin alike. Two Tuna ratios are computed: the raw one, and the readout-corrected one, whose assignment matrix comes from the series' own
+readout-0 and readout-1 circuits (`register_assignment`). The decision uses the corrected ratio. A device that contracts the 16-outcome
+law toward uniform and then misassigns each bit reads a raw ratio that departs from the ideal sign by its assignment asymmetry (the larger
+e10 than e01 of q4, q11 and q12), and the correction removes exactly that: under the model the corrected ratio is +-1 on every bin. The raw
+ratio sits at the edge of the rule under the model alone: `ba` against ibm_fez reads 7 and 6 of 8 bins inside 3 combined standard errors at rho 0.955 and 0.9654
+(largest |z| 4.2 and 4.7, on bin 2, where the modeled c / V is -0.87), and `bb` against ibm_marrakesh reads 8 and 7. The raw D is reported beside the corrected one.
+
+Predicted corrected D(y) under the contraction model at rho 0.955 to 0.9654 (`cross_platform` in `prediction.json`; the model
+ratio is +-1, so D = sign - c_I / V_I):
+
+| Block | Device | Predicted D(y), bins 0 to 7 | Combined se | Largest abs z |
+|---|---|---|---|---|
+| `ba` | ibm_fez | -0.031, 0.017, 0.027, -0.039, 0.010, 0.005, 0.006, -0.001 | 0.025 to 0.045 | 1.0 to 1.2 |
+| `ba` | ibm_marrakesh | -0.029, -0.002, 0.023, -0.032, 0.004, 0.006, 0.027, 0.009 | 0.029 to 0.071 | 0.7 to 0.8 |
+| `bb` | ibm_fez | -0.044, -0.015, 0.002, -0.014, 0.014, -0.029, -0.040, -0.010 | 0.032 to 0.055 | 0.8 to 0.9 |
+| `bb` | ibm_marrakesh | -0.041, -0.014, -0.003, -0.015, -0.020, -0.065, -0.044, 0.009 | 0.037 to 0.059 | 1.2 to 1.3 |
+| `b0` | ibm_fez | -0.051, 0.027, -0.010, -0.008, 0.014, -0.019, 0.021, -0.027 | 0.030 to 0.044 | 1.2 to 1.3 |
+| `b0` | ibm_marrakesh | -0.037, 0.039, 0.010, -0.027, -0.011, -0.012, 0.010, -0.029 | 0.040 to 0.057 | 0.7 to 0.8 |
+
+Every block reads 8 of 8 bins inside 3 combined standard errors under the model. The chance that a device obeying the model reads fewer than 7 of 8
+bins on at least one of the six block-and-device pairs is 5e-5 at rho 0.955 and 1e-5 at rho 0.9654 (`refutation_probability_any_pair`, exact enumeration over
+independent bins with the Tuna delta-method error as the only random term; `refutation_probability` per pair). The model-branch IBM numbers of the earlier draft (visibilities 0.50 to 0.58 from a noise model of
+the full six-qubit map) are replaced by these measured values. The rule tests a common contraction across the 8 bins of a block and the sign
+pattern; it is blind to a contraction common to the whole block, which `V_T` absorbs, and its power against a single misrouted bin is a deviation of about
+0.1 to 0.2 in the ratio (3 combined standard errors of 0.03 to 0.07), against the 2.0 that a flipped sign produces.
 
 ## Preregistered decisions
 
@@ -201,10 +244,16 @@ the depth reading.
 5. Depth, reported and not decided: the contraction per CZ implied by each template's readout-corrected visibility, against 0.955 to 0.9654,
    with the routed CZ beside it. It places the 20 to 22 CZ point between the 9 CZ ladder and the 45 CZ series; `xor_ba` (4 CZ) supplies no depth
    comparison.
-6. Cross-platform: D(y) of the previous section, at least 7 of 8 bins per block within 3 standard errors of zero, once the IBM record is collected.
+6. Cross-platform: the readout-corrected D(y) of the previous section, at least 7 of 8 bins within 3 combined standard errors of zero for each of
+   `ba`, `bb` and `b0`, against each of ibm_fez and ibm_marrakesh separately (both devices must hold).
+7. Readout drift, a stop and a rule: each readout circuit is compared with the previous circuit of its kind (e01 from readout-0, e10 from readout-1) on
+   the four register qubits; a change above 0.02 stops the series before the next batch is submitted and counts as a failed rule in the analysis.
 
-Each decision has a refusal in the generator's `--self-test`: a cocycle-free circuit in the `ba` slot, a `b0` selector offset and a device
-at retention 0.02 each fail the corresponding rule, and an honest device at retention 0.5 passes all four.
+Each decision has a refusal in the generator's `--self-test`: a cocycle-free circuit in the `ba` slot, a `b0` selector offset, a device
+at retention 0.02 and a readout bracket moving 0.05 each fail the corresponding rule, and an honest device at retention 0.5 passes every one of them
+(including the comparison with the measured IBM runs). `tests/scripts/test_qi_pathion_coset_block_series.py` scores synthetic series built from the
+ideal laws (a contracted device, a drifting bracket, a `bb` slot carrying the `ba` laws, a partial series, a short shot list and the QX control) and
+exercises every refusal of `--submit-next`.
 
 Mutation and null arms not in the series, with the reason: a single flipped SELECT sign (the IBM case carries it at six qubits; its block
 form moves the selector contrast by 0.25 and one bin pattern), the oracle of another operand, and the quarter-turn twin each cost
@@ -213,19 +262,33 @@ two more batches for a question the cocycle-free control and the `ba` and `bb` p
 ## Command sequence after approval
 
 1. `"$PYTHON" scripts/qi_pathion_coset_block_cases.py --check results/quantum_inspire/cases`
-2. QX dry run of `pathion_coset_block_qx` through `qi_platform.py submit` (QX needs no pause), analysis against the ideals, then Tuna-17
-   batch 00 to 07 one at a time with the procedure in [usage.md](usage.md#run-on-tuna-17): copy to
-   `results/quantum_inspire/runs/<UTC stamp>-pathion_coset_block_tuna_17-batch-NN/`,
-   `"$QI_PYTHON" scripts/qi_platform.py submit RUN_DIR --backend-type-id 7 --approval "QUOTE"`, `collect`, the pause. A platform failure stops the
-   series and raises the pause one step.
-3. `"$PYTHON" scripts/qi_pathion_coset_block_cases.py --analyze RUN_DIR... --out FILE` after all eight batches.
+2. QX dry run, one batch at a time (the series gate copies the next batch into
+   `results/quantum_inspire/runs/<UTC stamp>-pathion_coset_block_qx-batch-NN/`, applies the order and shot checks and submits it through
+   `qi_platform.submit`; QX needs no pause):
+   `RUN=$("$QI_PYTHON" scripts/qi_pathion_coset_block_series.py --submit-next results/quantum_inspire/cases/pathion_coset_block_qx --approval "QUOTE")`
+   then `"$QI_PYTHON" scripts/qi_platform.py collect "$RUN" --poll 15 --timeout 3600`, eight times. Analyze with
+   `"$PYTHON" scripts/qi_pathion_coset_block_cases.py --analyze results/quantum_inspire/runs/*-pathion_coset_block_qx-batch-* --out results/quantum_inspire/pathion_coset_block_qx_analysis.json`;
+   its `qx_control.pass` (every arm within 2 times its sampling floor of the ideal law of record) gates the hardware series.
+3. Tuna-17 batches 00 to 07, the same two commands with the hardware series and the control analysis:
+   `RUN=$("$QI_PYTHON" scripts/qi_pathion_coset_block_series.py --submit-next results/quantum_inspire/cases/pathion_coset_block_tuna_17 --control results/quantum_inspire/pathion_coset_block_qx_analysis.json --approval "QUOTE")`
+   then `collect`. Before it sends, `--submit-next` requires every earlier batch collected with completed jobs, full shot lists and case bytes equal to the
+   series, refuses when the readout-bracket drift exceeds 0.02 (`--sanity RUN_DIR...` prints the same report), waits out the account's hardware pause
+   (30 s, raised one step of the ladder through `QI_HARDWARE_PAUSE_SECONDS` after a platform failure, which stops the series) and writes `series-gate.json` into the
+   run directory. The drift of the last batch is read by the analysis or by `--sanity`, because no later submission follows it.
+4. `"$PYTHON" scripts/qi_pathion_coset_block_cases.py --analyze results/quantum_inspire/runs/*-pathion_coset_block_tuna_17-batch-* --out results/quantum_inspire/pathion_coset_block_tuna_17_analysis.json`
+   scores the decisions, per-template c(y), visibility, N_hat and selector contrast, the comparison with both IBM devices and the drift rule; a series
+   stopped before batch 07 reports its batches and drift only.
 
 ## Not run and open
 
-- Not run: every provider job, including the QX dry run, and the IBM comparison (the IBM record is `planned` and holds no measured per-bin values).
+- Not run: every provider job, including the QX dry run. The IBM comparison uses the measured ibm_fez and ibm_marrakesh records and needs no further job.
 - Open before a merge: the retained record of `qi_toolchain_check.py` (gate core-368) names exactly the current case files, so it needs the regeneration
   `"$QI_PYTHON" scripts/qi_toolchain_check.py` for the 48 new circuits; a gate entry for `--check` and `--self-test` of the generator and for
-  `tests/gororoba_quantum/test_pathion_coset_block.py` in `ci/gates.json`; the QX local replay record; the registration of the run in
-  `docs/state/research_state.json` after the acquisition.
+  `tests/gororoba_quantum/test_pathion_coset_block.py` and `tests/scripts/test_qi_pathion_coset_block_series.py` in `ci/gates.json`; the QX local replay record; the registration of the run in
+  `docs/state/research_state.json` after the acquisition. `--submit-next` compares no live backend topology or gate-set digest, because the cases carry none;
+  `qi_platform.submit` checks the backend's identifier, status, capacity and queue.
+- Residual risk: the readout-corrected ratio uses an assignment pooled over the whole series, and the drift stop admits a change of up to 0.02 between successive references of
+  one kind; a shift of about 0.01 in an assignment rate moves the corrected ratio by roughly the standard error of one bin (0.03 to 0.04), so a drift near the stop
+  limit can shift the cross-platform statistic by one standard error without a rule firing.
 - Residual risk: q8 is the star center and no retained single-qubit record covers q8 beside q4, q11 and q12 at once; the readout assignment above is from 2026-10-23
   and the series measures its own; the control circuit is not depth-matched, and the model's per-CZ contraction toward uniform treats every error as depolarizing.
