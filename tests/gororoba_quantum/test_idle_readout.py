@@ -473,6 +473,19 @@ def test_a_record_that_disagrees_with_the_group_definition_or_the_pub_map_refuse
         live_run._archived_entries(stripped, isas)
 
 
+def test_idle_readout_pin_admission_refuses_a_missing_pin_and_a_wrong_path_count() -> None:
+    """The unmarked counterpart of the audited planning check: plan() applies live_run.check_pin_required to the
+    registered idle_readout group, which refuses a missing pin and a pin whose path count matches no body tuple."""
+    _expect("idle_readout" in live_run.PIN_REQUIRED_CAMPAIGNS, "idle_readout pin requirement")
+    groups = [ir.idle_readout_group()]
+    with pytest.raises(live_run.LiveRunError, match="runs on the paths --pin-layout names"):
+        live_run.check_pin_required(["idle_readout"], groups, None)
+    with pytest.raises(live_run.LiveRunError, match=r"one body to each of \[30\]"):
+        live_run.check_pin_required(["idle_readout"], groups, {"backend": "viable", "qubits": [0, 1]})
+    paths = [[2 * k, 2 * k + 1] for k in range(30)]
+    live_run.check_pin_required(["idle_readout"], groups, {"backend": "viable", "qubits": paths[0], "replicas": paths})
+
+
 @pytest.mark.audit
 def test_idle_readout_runs_only_on_a_pin_that_names_one_path_per_body() -> None:
     from runtime_contracts import _fixture_args, _ProbeBackend, _ProbeService
