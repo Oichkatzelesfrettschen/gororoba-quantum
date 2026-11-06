@@ -197,10 +197,11 @@ for the workflow of [quandela-scheduled-runs](../runbooks/quandela-scheduled-run
 the chip returns; `qd_schedule.py pin` then plans it read-only, and the merge of `enabled: true` with the pinned body
 is the submission act the approval covers. Its plan check, `belenos_mesh_persistence.py --plan-check`, refuses a plan
 of another case, platform or ceiling and a record whose photon rate would push five iterations past the 270 s margin:
-each iteration takes 50 s for its first 6,000 samples and 1 / (clock x efficiency) per further sample, so the
-efficiency must reach 24,000 / (clock x 4 s), and the check scales job-00's lowest global efficiency 0.0034 by the
+the measured 50 s iteration already holds 6,000 samples at job-00's photon rate, which a slower record stretches
+too, so the check charges the 50 s as setup plus 1 / (clock x efficiency) for each of the 30,000 samples. The
+efficiency must reach 30,000 / (clock x 4 s), and the check scales job-00's lowest global efficiency 0.0034 by the
 record's Transmittance (%) against job-00's plan-time 4.89 % (hypothesis: the global efficiency follows the record
-transmittance). At 4.94 MHz the floor is 1.75 %; the record of 2026-11-06 reads 5.23 %. The matched check runs
+transmittance). At 4.94 MHz the floor is 2.18 %; the record of 2026-11-06 reads 5.23 %. The matched check runs
 `--analyze` on the collected run.
 
 ## Optional second case: the teleportation replay

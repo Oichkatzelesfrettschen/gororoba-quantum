@@ -364,7 +364,15 @@ def test_the_plan_check_admits_the_case_and_refuses_a_slow_record() -> None:
     }
     if "inside the written case" not in bmp.plan_check(plan):
         raise AssertionError("the retained figures were refused")
-    floor = bmp.transmittance_floor(float(retained["perfs_at_plan"]["Clock (MHz)"]))
+    clock = float(retained["perfs_at_plan"]["Clock (MHz)"])
+    floor = bmp.transmittance_floor(clock)
+    # At the floor, the measured iteration as setup plus every sample at the scaled efficiency fills the margin.
+    efficiency = bmp.swap.MIN_GLOBAL_EFFICIENCY * floor / float(retained["perfs_at_plan"]["Transmittance (%)"])
+    seconds = len(bmp.ORDER) * (
+        bmp.swap.SECONDS_PER_ITERATION + bmp.swap.SAMPLES_PER_ITERATION / (clock * 1e6 * efficiency)
+    )
+    if seconds != pytest.approx(bmp.swap.DURATION_MARGIN * bmp.swap.MAX_DURATION):
+        raise AssertionError(f"five iterations at the floor take {seconds} s")
     slow = {**plan["perfs_at_plan"], "Transmittance (%)": 0.99 * floor}
     for mutated in (
         {**plan, "perfs_at_plan": slow},

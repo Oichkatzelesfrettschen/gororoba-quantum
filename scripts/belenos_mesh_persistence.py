@@ -174,12 +174,13 @@ EFFICIENCY_RUN = "results/quandela/runs/2026-10-31T060538Z-qpu_belenos-belenos_m
 def transmittance_floor(clock_mhz: float) -> float:
     """The record transmittance (%) at which the case's iterations still fit DURATION_MARGIN x MAX_DURATION.
 
-    Each iteration takes swap.SECONDS_PER_ITERATION for its first MEASURED_SAMPLES samples and 1 / (clock x efficiency)
-    per further sample. hypothesis: the global efficiency scales with the record's Transmittance (%) from job-00's
-    plan-time value, which job-00's MIN_GLOBAL_EFFICIENCY accompanied."""
+    The measured swap.SECONDS_PER_ITERATION already holds its first MEASURED_SAMPLES samples at job-00's efficiency,
+    and a slower record stretches those too, so the floor charges the whole measured iteration as setup and every one
+    of SAMPLES_PER_ITERATION samples at 1 / (clock x efficiency). hypothesis: the global efficiency scales with the
+    record's Transmittance (%) from job-00's plan-time value, which job-00's MIN_GLOBAL_EFFICIENCY accompanied."""
     slack = swap.DURATION_MARGIN * swap.MAX_DURATION / len(ORDER) - swap.SECONDS_PER_ITERATION
     require(slack > 0, "the measured iteration alone exceeds the duration margin")
-    efficiency = (swap.SAMPLES_PER_ITERATION - swap.MEASURED_SAMPLES) / (clock_mhz * 1e6 * slack)
+    efficiency = swap.SAMPLES_PER_ITERATION / (clock_mhz * 1e6 * slack)
     retained = json.loads((ROOT / EFFICIENCY_RUN / "submission.json").read_text(encoding="utf-8"))["perfs_at_plan"]
     return float(retained["Transmittance (%)"]) * efficiency / swap.MIN_GLOBAL_EFFICIENCY
 
