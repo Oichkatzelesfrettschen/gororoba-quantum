@@ -4,7 +4,8 @@ The approval covers a rule and bounds, and the submit plans afresh on the calibr
 the fresh plan in $RUN (the dry run's directory) to the case: both orientations of every operand route to the same
 two-qubit gate count (they are one parametrized circuit), no replica touches the excluded qubits, at least
 MIN_REPLICAS replicas are placed, and the estimated charge 2 + shots * sum(rep_delay + scheduled duration) stays within
-the per-job ceiling. Exit 0 admits the plan; any failure exits 1 and names it.
+the per-job ceiling. Arguments GROUP MIN_REPLICAS CEILING_SECONDS override the kernel-map defaults, so the
+coset-block campaign uses the same check. Exit 0 admits the plan; any failure exits 1 and names it.
 """
 
 from __future__ import annotations
@@ -45,12 +46,19 @@ def failures(record: dict) -> list[str]:
 
 
 def main() -> int:
+    global GROUP, MIN_REPLICAS, CEILING_SECONDS
+    if len(sys.argv) > 1:
+        GROUP = sys.argv[1]
+    if len(sys.argv) > 2:
+        MIN_REPLICAS = int(sys.argv[2])
+    if len(sys.argv) > 3:
+        CEILING_SECONDS = float(sys.argv[3])
     run = Path(os.environ["RUN"])
     found = failures(json.loads((run / "record.json").read_text()))
     for line in found:
-        print(f"pathion_kernel_map check: {line}", file=sys.stderr)
+        print(f"{GROUP} check: {line}", file=sys.stderr)
     if not found:
-        print("pathion_kernel_map check: plan admitted")
+        print(f"{GROUP} check: plan admitted")
     return 1 if found else 0
 
 

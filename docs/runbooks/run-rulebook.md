@@ -122,3 +122,8 @@ the closest entry and say what changed.
   changed the memory curve, because the saturation's work is removing the junk V(J + G) x (z-space cut by Lambda), of
   dimension 15 over L0, not the curve. The next formulation saturates by one function per component of V(J + G)
   (`chart-iso-p32009-slice-junk.sing`).
+
+- Junk saturation outcome (2026-11-06): the slice-junk run also stopped with "no more memory" at 9.4 GB after
+  3 h 16 min inside the saturation, so replacing a0 by one saturating function per component of V(J + G) does not
+  bring the sliced chart under the 11 GB lab host; the next attempt needs a host above that ceiling and a written
+  case.

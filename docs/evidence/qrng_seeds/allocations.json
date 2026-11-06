@@ -1287,6 +1287,118 @@
    "experiment": "belenos-mesh-persistence-power"
   },
   {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T165145Z.json",
+   "index": 3,
+   "value": 22130,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-11-06T180755.872625Z",
+   "resubmissions": [
+    "2026-11-06T183051.978364Z"
+   ],
+   "envelope": "results/live/2026-11-06T180755.872625Z/CASE.md"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T165145Z.json",
+   "index": 4,
+   "value": 58833,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-11-06T180755.872625Z",
+   "resubmissions": [
+    "2026-11-06T183051.978364Z"
+   ],
+   "envelope": "results/live/2026-11-06T180755.872625Z/CASE.md"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T184402Z.json",
+   "index": 0,
+   "value": 60833,
+   "script": "scripts/ascella_pathion_four_term_blocks.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-four-term-blocks"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T184402Z.json",
+   "index": 1,
+   "value": 49488,
+   "script": "scripts/ascella_pathion_four_term_blocks.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-four-term-blocks"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T184402Z.json",
+   "index": 2,
+   "value": 31980,
+   "script": "scripts/ascella_pathion_four_term_blocks.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-four-term-blocks"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T184402Z.json",
+   "index": 3,
+   "value": 33986,
+   "script": "scripts/ascella_pathion_four_term_blocks.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-four-term-blocks"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T184402Z.json",
+   "index": 4,
+   "value": 54843,
+   "script": "scripts/ascella_pathion_four_term_blocks.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-four-term-blocks"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T184402Z.json",
+   "index": 5,
+   "value": 2117,
+   "script": "scripts/ascella_pathion_four_term_blocks.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-four-term-blocks"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T184402Z.json",
+   "index": 6,
+   "value": 26198,
+   "script": "scripts/ascella_pathion_four_term_blocks.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-four-term-blocks"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T184402Z.json",
+   "index": 7,
+   "value": 25334,
+   "script": "scripts/ascella_pathion_four_term_blocks.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-four-term-blocks"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T184402Z.json",
+   "index": 8,
+   "value": 39707,
+   "script": "scripts/ascella_pathion_four_term_blocks.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-four-term-blocks"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T184402Z.json",
+   "index": 9,
+   "value": 103,
+   "script": "scripts/ascella_pathion_four_term_blocks.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-four-term-blocks"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T184402Z.json",
+   "index": 10,
+   "value": 37337,
+   "script": "scripts/ascella_pathion_four_term_blocks.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-four-term-blocks"
+  },
+  {
    "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
    "index": 0,
    "value": 34509,
