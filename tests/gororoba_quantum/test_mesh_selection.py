@@ -326,6 +326,30 @@ def test_the_slope_bound_inverts_the_enumerated_relabeling_test() -> None:
         raise AssertionError("tied retained deviations give a finite bound")
 
 
+def test_the_slope_bound_is_finite_for_nearly_tied_retained_shares() -> None:
+    new = np.array([[0.50, 0.58, 0.47], [0.49, 0.51, 0.60]])
+    e_new = new - new.mean(axis=1, keepdims=True)
+    # A gap of 1e-6 between two retained shares holds the swap of those meshes in the count up to a slope near
+    # 8e4, far beyond a fixed number of steps from the estimate; the bound is that slope.
+    old = np.array([[0.60, 0.600001, 0.41], [0.45, 0.55, 0.58]])
+    e_old = old - old.mean(axis=1, keepdims=True)
+    upper = slope_upper_bound(e_old, e_new, ALPHA)
+    if not 200.0 < upper < 1e5:
+        raise AssertionError(upper)
+    # The enumeration forms the residuals at the slope itself and resolves this bound to about one part in 1e4.
+    if enumerated_lower_p(old, new, upper * 0.99) < ALPHA or enumerated_lower_p(old, new, upper * 1.01) >= ALPHA:
+        raise AssertionError((upper, enumerated_lower_p(old, new, upper * 0.99)))
+    # At a gap of 1e-12 the bound exceeds 1e12, where adjacent floats lie further apart than the tolerance: the
+    # bisection ends on adjacent floats with a finite value.
+    old[0, 1] = 0.60 + 1e-12
+    e_old = old - old.mean(axis=1, keepdims=True)
+    upper = slope_upper_bound(e_old, e_new, ALPHA)
+    if not 1e12 < upper < 2e12 or slope_lower_p(e_old, e_new, upper) < ALPHA:
+        raise AssertionError(upper)
+    if slope_lower_p(e_old, e_new, math.inf) != pytest.approx(1 / 36):
+        raise AssertionError(slope_lower_p(e_old, e_new, math.inf))
+
+
 def test_the_slope_bound_brackets_downward_and_holds_when_one_block_is_louder() -> None:
     old = np.array([[0.60, 0.52, 0.41], [0.45, 0.55, 0.58]])
     quiet = np.array([[0.58, 0.50, 0.47], [0.49, 0.51, 0.60]])

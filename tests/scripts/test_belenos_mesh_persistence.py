@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import itertools
 import json
 from fractions import Fraction
 from pathlib import Path
@@ -36,21 +37,25 @@ def test_the_case_fits_its_duration_margin_and_credit_ceiling() -> None:
 
 
 def synthetic_counts(setting: dict[str, Any], hits: dict[tuple[str, int], int], total: int) -> dict[str, int]:
-    """Counts whose single-click share on each block's algebra modes is hits[block] / total: one state per block
-    clicks that block's first algebra mode and every other block's first dilation mode, and one state clicks every
-    block's first dilation mode."""
+    """Counts whose single-click share on each block's algebra modes is hits[block] / total. Shot i of total clicks
+    a block's first algebra mode when i < hits[block] and its first dilation mode otherwise, so every block holds
+    one click per shot, several blocks click algebra modes in one shot, and each count is a number of shots."""
+    if not all(0 <= hit <= total for hit in hits.values()):
+        raise ValueError((hits, total))
 
-    def state(algebra_block: tuple[str, int] | None) -> str:
+    def state(algebra_blocks: set[tuple[str, int]]) -> str:
         modes = [0] * bmp.swap.MODES
         for block in setting["blocks"]:
             key = (json.dumps(block["m"]), block["t"])
-            role = "label_0" if key == algebra_block else "dilation"
+            role = "label_0" if key in algebra_blocks else "dilation"
             modes[block["offset"] + block["roles"].index(role)] = 1
         return ",".join(map(str, modes))
 
-    counts = {state(key): hit for key, hit in hits.items()}
-    counts[state(None)] = total - sum(hits.values())
-    return counts
+    edges = sorted({0, total, *hits.values()})
+    return {
+        state({key for key, hit in hits.items() if hit > start}): stop - start
+        for start, stop in itertools.pairwise(edges)
+    }
 
 
 def synthetic_run(tmp_path: Path, meshes: list[str], hits: list[dict[tuple[str, int], int]], total: int) -> Path:

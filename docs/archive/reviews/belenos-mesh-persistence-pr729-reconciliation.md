@@ -108,6 +108,16 @@ that misdated the spent seed, and test mutations that survived; the tolerance, t
 the tests in this pull request are the corrected forms. It confirmed the monotonicity of q(b), the bisection
 against exact enumeration, and every quoted number against the record.
 
+The hosted Copilot review of these resolutions found three defects, each confirmed against the source and fixed.
+`slope_upper_bound` searched 64 fixed steps and returned infinity for retained shares 1e-6 apart, whose bound is
+finite near a slope of 8e4; it now reads the two limits of q(b) to decide an infinite bound and doubles its reach
+to the bracket otherwise. Its bisection could stall where adjacent floats lie further apart than the tolerance;
+it now ends on adjacent floats. `slope_terms` writes the relabeled excess as rise + b lost, with lost half the
+squared displacement of the retained deviations, so a near tie keeps its small positive value and an exact tie
+is exactly zero. The synthetic-count fixture of the script tests gave 2,575 marginal hits to 1,000 shots through a
+negative count; it now nests the blocks' hits over the shots. The audit replay reproduces the power record
+unchanged under the rewritten test.
+
 ## Open
 
 - The within-block relabeling test would turn liberal for retained deviations that are coherent across slots; the

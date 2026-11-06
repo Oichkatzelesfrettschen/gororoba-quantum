@@ -377,6 +377,34 @@ def exact_lower_p(per_block: Sequence[np.ndarray], observed: float) -> float:
     return exact_upper_p([-values for values in per_block], -observed)
 
 
+def slope_terms(e_old: np.ndarray, e_new: np.ndarray) -> tuple[list[np.ndarray], list[np.ndarray]]:
+    """Per block and relabeling, the two coefficients of the slope test: ``rise``, the relabeled cross product of
+    e_new with e_old minus the observed one, and ``lost``, the block's sum of e_old^2 minus the relabeled sum.
+
+    Under a slope b the relabeled cross product of the residuals e_new - b e_old exceeds the observed one by
+    rise + b lost, summed over the blocks. lost is nonnegative, and exactly zero for a relabeling that permutes
+    equal retained deviations, so that relabeling's term holds at every slope."""
+    m = e_old.shape[1]
+    perms = np.array(list(itertools.permutations(range(m))))
+    rise, lost = [], []
+    for old, new in zip(e_old, e_new, strict=True):
+        cross = new[perms] @ old
+        rise.append(cross - cross[0])
+        # Half the squared displacement equals the difference of the two sums and keeps a near tie's small value.
+        lost.append(0.5 * ((old[perms] - old) ** 2).sum(axis=1))
+    return rise, lost
+
+
+def slope_terms_p(rise: Sequence[np.ndarray], lost: Sequence[np.ndarray], slope: float) -> float:
+    """Share of relabelings with sum of rise + slope lost at or below zero; an infinite slope takes the limit, in
+    which a relabeling with positive lost leaves the count (plus infinity) or always joins it (minus infinity)."""
+    if math.isinf(slope):
+        values = [np.where(change > 0, slope, base) for base, change in zip(rise, lost, strict=True)]
+    else:
+        values = [base + slope * change for base, change in zip(rise, lost, strict=True)]
+    return exact_lower_p(values, 0.0)
+
+
 def slope_lower_p(e_old: np.ndarray, e_new: np.ndarray, slope: float) -> float:
     """Exact one-sided p-value of the hypothesis that the persistence slope is at least ``slope``.
 
@@ -385,37 +413,39 @@ def slope_lower_p(e_old: np.ndarray, e_new: np.ndarray, slope: float) -> float:
     block's error size. The p-value is the share of within-block relabelings of the
     residuals whose cross product with e_old lies at or below the observed one. It never increases with b: the
     observed cross product minus a relabeled one falls linearly in b at the rate sum e_old^2 minus the relabeled
-    sum, which is nonnegative."""
-    residual = e_new - slope * e_old
-    return exact_lower_p(relabeled_values(e_old, residual), float((e_old * residual).sum()))
+    sum, which is nonnegative (slope_terms)."""
+    return slope_terms_p(*slope_terms(e_old, e_new), slope)
 
 
 def slope_upper_bound(e_old: np.ndarray, e_new: np.ndarray, alpha: float, tolerance: float = 1e-9) -> float:
-    """The largest slope that slope_lower_p does not reject at level alpha, by bisection to ``tolerance``; plus or
-    minus infinity when no slope within 64 steps above or below the estimate brackets it.
+    """The largest slope that slope_lower_p does not reject at level alpha, by bisection to ``tolerance`` or to
+    adjacent floats; plus infinity when the p-value stays at or above alpha in the limit of large slopes, which
+    takes tied retained deviations, and minus infinity when it lies below alpha in the limit of small ones.
 
     The set of slopes with slope_lower_p >= alpha is a closed half line, so the bound lies below a value u exactly
     when slope_lower_p(u) < alpha."""
+    rise, lost = slope_terms(e_old, e_new)
+    if slope_terms_p(rise, lost, math.inf) >= alpha:
+        return math.inf
+    if slope_terms_p(rise, lost, -math.inf) < alpha:
+        return -math.inf
     sxx = float((e_old**2).sum())
     beta = float((e_old * e_new).sum()) / sxx
     step = 1.0 + abs(beta) + math.sqrt(float((e_new**2).sum()) / sxx)
-    low, high = beta, beta + step
-    # Tied retained deviations can keep the p-value at or above alpha for every slope; the bound is then infinite.
-    for _ in range(64):
-        if slope_lower_p(e_old, e_new, low) >= alpha:
-            break
-        low -= step
-    else:
-        return -math.inf
-    for _ in range(64):
-        if slope_lower_p(e_old, e_new, high) < alpha:
-            break
-        high += step
-    else:
-        return math.inf
+    # The two limits bracket a finite bound, and a doubling reach meets it however small the smallest positive lost.
+    low, reach = beta, step
+    while slope_terms_p(rise, lost, low) < alpha:
+        low, reach = beta - reach, 2.0 * reach
+    high, reach = beta + step, 2.0 * step
+    while slope_terms_p(rise, lost, high) >= alpha:
+        low, high, reach = high, beta + reach, 2.0 * reach
+    if math.isinf(low) or math.isinf(high):
+        return low if math.isinf(low) else high
     while high - low > tolerance:
-        middle = 0.5 * (low + high)
-        if slope_lower_p(e_old, e_new, middle) >= alpha:
+        middle = low + 0.5 * (high - low)
+        if not low < middle < high:
+            break
+        if slope_terms_p(rise, lost, middle) >= alpha:
             low = middle
         else:
             high = middle
