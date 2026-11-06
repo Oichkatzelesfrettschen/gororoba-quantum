@@ -154,7 +154,8 @@ Perceval 1.3.1 provides `perceval.algorithm.ProcessTomography` and `ProcessTomog
 object and run their own preparation and measurement settings; neither offers an entry point for counts from a
 retained run (`dir()` of the classes lists none), so the case carries its own estimator.
 
-Requirements (`--check` and `tests/scripts/test_ascella_cz_tomography_case.py`): the noiseless rates of all 144
+Requirements (`--check`, which gate `core-record-check-07` runs on demand with the rebuild of both retained requests,
+and `tests/scripts/test_ascella_cz_tomography_case.py`): the noiseless rates of all 144
 settings give F_pro = 1 to 1e-9; a depolarized CZ gives the analytic F = (1 - p) + p/16; and a postselected map
 M rho M^dagger with M = CZ diag(1, 0.8, 0.6, 0.5), whose success probability depends on the input, gives its exact
 F = |Tr(CZ^dagger M)|^2 / (4 Tr M^dagger M) under the primary estimator, where the conditional estimator misses it.

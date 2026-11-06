@@ -13,9 +13,15 @@ import pytest
 from qd_platform import expected_iterations, result_summary, sha256_bytes
 
 
-def test_retained_request_rebuilds_and_binds() -> None:
-    if case.check() != 0:
-        raise AssertionError("the frozen request does not check")
+def test_gate_settings_noise_limit_and_estimator_checks_hold() -> None:
+    """The bounded part of --check: the CZ block, the 144 folded settings, the noiseless forecast limit and the
+    estimator recoveries. The rebuild of both retained requests runs as an on-demand record check
+    (tests/test_cli_record_checks.py)."""
+    case.check_gate()
+    case.check_settings()
+    case.check_noise_limit()
+    if abs(case.check_estimator() - 1.0) > 1e-9:
+        raise AssertionError("the noiseless process fidelity is not 1")
 
 
 def test_ideal_process_fidelity_is_one() -> None:
