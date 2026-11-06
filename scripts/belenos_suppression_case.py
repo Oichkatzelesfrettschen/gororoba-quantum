@@ -37,6 +37,7 @@ import json
 import math
 import sys
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -460,6 +461,39 @@ def compositions(total: int) -> list[tuple[int, ...]]:
     return [occ for occ in itertools.product(range(total + 1), repeat=WINDOW) if sum(occ) == total]
 
 
+@dataclass(frozen=True)
+class MeanFieldPattern:
+    """One emission pattern's inputs to the phase average: the occupied input slots, the square roots of their photon
+    numbers, the photon number, and the multinomial factor and occupation counts of every output composition."""
+
+    inputs: list[int]
+    roots: np.ndarray
+    total: int
+    factor: np.ndarray
+    counts: np.ndarray
+
+
+@dataclass(frozen=True)
+class MeanFieldCell:
+    """Per-output multinomial terms of one phase-grid cell, for the cell item (pattern index, cell) of every pattern.
+
+    The phases of the free inputs are grid roots of unity picked by the cell; the first occupied input carries the
+    global phase. An instance pickles by value, so a worker unpickles the unitary and the pattern tables once."""
+
+    unitary: np.ndarray
+    phases: np.ndarray
+    patterns: list[MeanFieldPattern]
+
+    def __call__(self, item: tuple[int, tuple[int, ...]]) -> np.ndarray:
+        index, cell = item
+        pattern = self.patterns[index]
+        free = len(pattern.inputs) - 1
+        phi = np.concatenate(([1.0 + 0j], self.phases[list(cell)])) if free else np.asarray([1.0 + 0j])
+        amplitude = self.unitary[:, pattern.inputs] @ (pattern.roots * phi)
+        probability = np.abs(amplitude) ** 2 / pattern.total
+        return np.asarray(pattern.factor * np.prod(probability[None, :] ** pattern.counts, axis=1))
+
+
 def mean_field_distribution(
     unitary: np.ndarray, emission: Mapping[tuple[int, ...], float], grid: int = PHASE_GRID
 ) -> dict[tuple[int, ...], float]:
@@ -469,28 +503,40 @@ def mean_field_distribution(
     output k with probability |sum_j U[k, j] sqrt(n_j) e^{i phi_j}|^2 / N, and the distribution averages over the
     phases phi_j. The first occupied input carries the global phase. |amplitude|^2 has degree at most one in each
     e^{+-i phi_j}, so a product of N <= MAX_EMITTED of them averages exactly on a uniform grid of more than N points per
-    free phase."""
-    out: dict[tuple[int, ...], float] = {}
+    free phase.
+
+    The (pattern, cell) items are independent and map through parallel.ordered_map; the reduction runs in item order,
+    so each output probability accumulates the cells in grid order and each pattern folds into the result in emission
+    order, the arithmetic of the serial loop bit for bit."""
     phases = np.exp(2j * np.pi * np.arange(grid) / grid)
-    for pattern, weight in emission.items():
+    tables: list[MeanFieldPattern] = []
+    cells: list[list[tuple[int, ...]]] = []
+    outputs: dict[int, list[tuple[int, ...]]] = {}
+    for pattern in emission:
         inputs = [slot for slot, count in enumerate(pattern) if count]
         total = sum(pattern)
         require(total <= MAX_EMITTED, f"emission pattern {pattern} exceeds {MAX_EMITTED} photons")
-        free = len(inputs) - 1
-        mixtures: dict[tuple[int, ...], float] = {}
-        cells = list(itertools.product(range(grid), repeat=free))
-        outputs = compositions(total)
+        if total not in outputs:
+            outputs[total] = compositions(total)
+        occupations = outputs[total]
         factor = np.asarray(
-            [math.factorial(total) / math.prod(math.factorial(c) for c in occ) for occ in outputs], dtype=float
+            [math.factorial(total) / math.prod(math.factorial(c) for c in occ) for occ in occupations], dtype=float
         )
-        counts = np.asarray(outputs, dtype=int)
-        for cell in cells:
-            phi = np.concatenate(([1.0 + 0j], phases[list(cell)])) if free else np.asarray([1.0 + 0j])
-            amplitude = unitary[:, inputs] @ (np.sqrt([pattern[j] for j in inputs]) * phi)
-            probability = np.abs(amplitude) ** 2 / total
-            terms = factor * np.prod(probability[None, :] ** counts, axis=1)
-            for occ, value in zip(outputs, terms, strict=True):
-                mixtures[occ] = mixtures.get(occ, 0.0) + float(value) / len(cells)
+        tables.append(
+            MeanFieldPattern(
+                inputs, np.sqrt([pattern[j] for j in inputs]), total, factor, np.asarray(occupations, dtype=int)
+            )
+        )
+        cells.append(list(itertools.product(range(grid), repeat=len(inputs) - 1)))
+    items = [(index, cell) for index, grid_cells in enumerate(cells) for cell in grid_cells]
+    terms = iter(ordered_map(MeanFieldCell(unitary, phases, tables), items))
+    out: dict[tuple[int, ...], float] = {}
+    for (pattern, weight), grid_cells in zip(emission.items(), cells, strict=True):
+        occupations = outputs[sum(pattern)]
+        mixtures: dict[tuple[int, ...], float] = {}
+        for _ in grid_cells:
+            for occ, value in zip(occupations, next(terms), strict=True):
+                mixtures[occ] = mixtures.get(occ, 0.0) + float(value) / len(grid_cells)
         for occ, value in mixtures.items():
             out[occ] = out.get(occ, 0.0) + weight * value
     return out

@@ -141,6 +141,48 @@ def test_mean_field_average_is_exact_on_its_grid() -> None:
         raise AssertionError("the mean-field distribution is not normalized")
 
 
+def _serial_mean_field(
+    unitary: np.ndarray, emission: dict[tuple[int, ...], float], grid: int
+) -> dict[tuple[int, ...], float]:
+    """The phase average as one serial loop over patterns, cells and outputs, the arithmetic the item map reproduces."""
+    import itertools
+    import math
+
+    out: dict[tuple[int, ...], float] = {}
+    phases = np.exp(2j * np.pi * np.arange(grid) / grid)
+    for pattern, weight in emission.items():
+        inputs = [slot for slot, count in enumerate(pattern) if count]
+        total = sum(pattern)
+        cells = list(itertools.product(range(grid), repeat=len(inputs) - 1))
+        outputs = case.compositions(total)
+        factor = [math.factorial(total) / math.prod(math.factorial(c) for c in occ) for occ in outputs]
+        mixtures: dict[tuple[int, ...], float] = {}
+        for cell in cells:
+            phi = np.concatenate(([1.0 + 0j], phases[list(cell)]))
+            amplitude = unitary[:, inputs] @ (np.sqrt([pattern[j] for j in inputs]) * phi)
+            probability = np.abs(amplitude) ** 2 / total
+            for occ, scale in zip(outputs, factor, strict=True):
+                term = scale * float(np.prod(probability ** np.asarray(occ)))
+                mixtures[occ] = mixtures.get(occ, 0.0) + term / len(cells)
+        for occ, value in mixtures.items():
+            out[occ] = out.get(occ, 0.0) + weight * value
+    return out
+
+
+def test_mean_field_item_map_reproduces_the_serial_average() -> None:
+    """Mapping the (pattern, cell) items and reducing in order matches a serial loop to rounding, key order included."""
+    emission: dict[tuple[int, ...], float] = {
+        (1, 0, 1, 0, 1, 0): 0.9,
+        (2, 0, 1, 0, 1, 0): 0.07,
+        (1, 0, 2, 0, 2, 0): 0.03,
+    }
+    unitary = case.window_unitary("periodic", SLOTS)
+    mapped = case.mean_field_distribution(unitary, emission)
+    serial = _serial_mean_field(unitary, emission, case.PHASE_GRID)
+    if list(mapped) != list(serial) or max(abs(mapped[o] - serial[o]) for o in mapped) > 1e-15:
+        raise AssertionError("the mapped phase average differs from the serial loop")
+
+
 @pytest.mark.audit
 def test_full_check() -> None:
     if case.check() != 0:
