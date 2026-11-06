@@ -60,6 +60,13 @@ def main() -> None:
         help="sliced chart: add l0(z) - 1 and four QRNG forms l1..l4(z) (from this draw) before saturating; "
         "the fiber over the origin is then finite and is compared with V(K2) cut by the same forms",
     )
+    ap.add_argument(
+        "--junk",
+        action="store_true",
+        help="with --slice-draw: saturate by one function per component of V(J + G) (t2 for L0, a generator nonzero at "
+        "the origin for each other component) in place of a0; V(C) minus V(a0) is the graph and V(C) meets V(a0) only "
+        "over V(J + G), so the saturation removes exactly the junk",
+    )
     a = ap.parse_args()
     hdr = (ROOT / HEADERS[(a.fiber, a.prime)]).read_text()
     tvars = re.search(r"ring r=\d+,\((.*?)\)", hdr).group(1)  # type: ignore[union-attr]
@@ -78,7 +85,7 @@ def main() -> None:
         forms = [
             "+".join(f"{sv[k]}*z({j + 1})" for j, k in enumerate(sidx[f * ngen : (f + 1) * ngen])) for f in range(4)
         ]
-        tag = f"{a.fiber}-p{a.prime}-slice"
+        tag = f"{a.fiber}-p{a.prime}-slice" + ("-junk" if a.junk else "")
         gens = GENS[(a.fiber, a.prime)]
         k2 = K2[(a.fiber, a.prime)]
         out = HERE / f"chart-{tag}.sing"
@@ -103,8 +110,22 @@ def main() -> None:
             ' for (jj=2;jj<=size(fs[1]);jj++) { fd=fd+" "+string(deg(fs[1][jj]))+"^"+string(fs[2][jj]); }\n'
             f'"RESULT {tag} K2 slice eliminant of z(2): deg", deg(els[1]), "factors", fd;\n'
             f"ideal C=J; int i; for (i=1;i<={ngen};i++) {{ C=C+(a0*z(i)-G[i]); }} C=C+Lam;\n"
-            'def SS=sat(C,ideal(a0)); ideal S; if (typeof(SS)=="list") { S=SS[1]; } else { S=SS; }\n'
-            f'"RESULT {tag} saturation done s", rtimer-t0;\n'
+            + (
+                'LIB "primdec.lib"; list mp=minAssGTZ(J+G); ideal H; int q;\n'
+                "for (q=1;q<=size(mp);q++) { if (size(reduce(mp[q],std(maxideal(1))))==0) {\n"
+                "  if (size(reduce(ideal(t2),std(mp[q])))!=0) { "
+                'ERROR("t2 does not vanish on the component through 0"); }\n'
+                "  H=H+t2; } else { int g; int found=0; for (g=1;g<=ncols(mp[q]);g++) { if (found==0) {\n"
+                "  if (jet(mp[q][g],0)!=0) { H=H+mp[q][g]; found=1; } } }\n"
+                '  if (found==0) { ERROR("no generator nonzero at the origin"); } kill g,found; } }\n'
+                f'"RESULT {tag} components of V(J+G)", size(mp), "saturating factors", ncols(H);\n'
+                'ideal S=C; for (q=1;q<=ncols(H);q++) { def SQ=sat(S,ideal(H[q])); if (typeof(SQ)=="list") { S=SQ[1]; }'
+                " else { S=SQ; } kill SQ;\n"
+                f'  "RESULT {tag} saturated by factor", q, "s", rtimer-t0; }}\n'
+                if a.junk
+                else 'def SS=sat(C,ideal(a0)); ideal S; if (typeof(SS)=="list") { S=SS[1]; } else { S=SS; }\n'
+            )
+            + f'"RESULT {tag} saturation done s", rtimer-t0;\n'
             f'write(":w chart-sat-{tag}.txt", S);\n'
             f'S=std(S); "RESULT {tag} sliced chart dim", dim(S), "s", rtimer-t0;\n'
             f"ideal E=std(S+ideal({tvars}));\n"

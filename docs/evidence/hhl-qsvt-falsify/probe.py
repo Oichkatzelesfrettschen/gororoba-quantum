@@ -17,6 +17,7 @@ import flint
 import numpy as np
 
 sys.path.insert(0, "gororoba_quantum")
+import parallel  # noqa: E402
 import qrng_seeds  # noqa: E402
 from cd_core import left_mult_matrix, sedenion_zero_divisors  # noqa: E402
 
@@ -63,32 +64,35 @@ def stats(name: str, v: np.ndarray) -> dict[str, object]:
     }
 
 
+def stats_case(case: tuple[str, np.ndarray]) -> dict[str, object]:
+    return stats(*case)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     qrng_seeds.add_seed_argument(ap, "--seed", required=True, help="matrix and vector draws, qrng:<draw>#<index>")
     qrng_seeds.add_seed_argument(ap, "--seed-transpiler", required=True, help="transpiler seed, qrng:<draw>#<index>")
     args = ap.parse_args()
     rng = np.random.default_rng(args.seed)
-    rows: list[dict[str, object]] = []
-    for t in range(5):
-        rows.append(stats(f"gaussian-{t}", rng.standard_normal(DIM)))
+    # Every random input is drawn first, in one fixed order; the independent statistics are then mapped in parallel.
+    cases: list[tuple[str, np.ndarray]] = [(f"gaussian-{t}", rng.standard_normal(DIM)) for t in range(5)]
     for _ in range(3):  # sparse: 2 basis elements, like a box-kite zero-divisor support
         v = np.zeros(DIM)
         i, j = rng.choice(DIM, 2, replace=False)
         v[i], v[j] = 1.0, rng.choice([-1.0, 1.0])
-        rows.append(stats(f"two-term-{i}-{j}", v))
+        cases.append((f"two-term-{i}-{j}", v))
     # Sedenion zero divisors embedded in A_5 (the sedenions are the first 16 coordinates of A_5)
     zd = sedenion_zero_divisors()[0]
     (za, zb), _second, _sign = zd
-    v = np.zeros(DIM)
-    v[za], v[zb] = 1.0, 1.0
-    rows.append(stats(f"sedenion-zd-{za}+{zb}", v))
-    v = np.zeros(DIM)
-    v[za], v[zb] = 1.0, -1.0
-    rows.append(stats(f"sedenion-zd-{za}-{zb}", v))
+    for sign, label in ((1.0, "+"), (-1.0, "-")):
+        v = np.zeros(DIM)
+        v[za], v[zb] = 1.0, sign
+        cases.append((f"sedenion-zd-{za}{label}{zb}", v))
+    g = rng.standard_normal((DIM, DIM))
+    b = rng.standard_normal(DIM)
+    rows: list[dict[str, object]] = list(parallel.ordered_map(stats_case, cases, min_items=2))
 
     # random dense SPD 32x32 as in the proposal's demonstration
-    g = rng.standard_normal((DIM, DIM))
     spd = g @ g.T + DIM * np.eye(DIM)
     s = np.linalg.svd(spd, compute_uv=False)
     c = pauli_terms(spd)
@@ -105,7 +109,6 @@ def main() -> None:
     from qiskit import QuantumCircuit, transpile  # noqa: E402
     from qiskit.circuit.library import StatePreparation  # noqa: E402
 
-    b = rng.standard_normal(DIM)
     b /= np.linalg.norm(b)
     qc = QuantumCircuit(5)
     qc.append(StatePreparation(b), range(5))

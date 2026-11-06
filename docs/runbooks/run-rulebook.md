@@ -118,4 +118,7 @@ the closest entry and say what changed.
 - Departures from the foundations: an address-space cap of 9 GB on the 11 GB host (one process).
 - Checkpoints: `chart-sat-iso-p32009-slice.txt`, `chart-fiber-iso-p32009-slice.txt`.
 - End state: logs copied into `structure/arcs-iso-w8/chart-runs/lab-a1/`.
-- Outcome: pending.
+- Outcome: "no more memory" at 9.4 GB after 3 h 14 min, inside the saturation; slicing by four z-forms barely
+  changed the memory curve, because the saturation's work is removing the junk V(J + G) x (z-space cut by Lambda), of
+  dimension 15 over L0, not the curve. The next formulation saturates by one function per component of V(J + G)
+  (`chart-iso-p32009-slice-junk.sing`).

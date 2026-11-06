@@ -308,24 +308,47 @@ def weighted(fiber: str, w: dict[str, int], extra: int) -> tuple[dict, list[str]
     return co, params
 
 
+class WeightedFamily:
+    """One weighted family's evaluation, picklable for parallel.ordered_map; each worker builds its Slice once."""
+
+    def __init__(self, fiber: str, p: int, extra: int, n: int) -> None:
+        self.fiber, self.p, self.extra, self.n = fiber, p, extra, n
+        self._slice: Slice | None = None
+
+    def __getstate__(self) -> dict:
+        return {"fiber": self.fiber, "p": self.p, "extra": self.extra, "n": self.n, "_slice": None}
+
+    def __call__(self, w: dict[str, int]) -> dict | None:
+        if self._slice is None:
+            self._slice = Slice(self.fiber, self.p)
+        co, params = weighted(self.fiber, w, self.extra)
+        vals = [(97 * k + 31) % self.p + 2 for k in range(len(params))]
+        try:
+            r = self._slice.arc(co, params, vals, self.n)
+        except ValueError:
+            return None
+        if r.get("nu") is None or not r["exact"] or r["J_zero_through"] < self.n:
+            return None
+        return r
+
+
 def search(fiber: str, p: int, extra: int = 2, n: int = 16) -> None:
     import itertools
 
-    sl = Slice(fiber, p)
+    sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+    import parallel
+
     names = ["a", "c", "d", "t7"] + (["t3"] if fiber == "iso" else ["t1", "t9"])
-    best: dict[tuple, int] = {}
+    families = []
     for ws in itertools.product(range(1, 5), repeat=len(names)):
         w = dict(zip(names, ws, strict=True))
         orders = [w["c"] + w["d"], 2 * w["t7"]] + ([w["t1"] + w["t9"]] if fiber == "w8" else [])
-        if min(orders) <= w["a"]:
-            continue
-        co, params = weighted(fiber, w, extra)
-        vals = [(97 * k + 31) % p + 2 for k in range(len(params))]
-        try:
-            r = sl.arc(co, params, vals, n)
-        except ValueError:
-            continue
-        if r.get("nu") is None or not r["exact"] or r["J_zero_through"] < n:
+        if min(orders) > w["a"]:
+            families.append(w)
+    results = parallel.ordered_map(WeightedFamily(fiber, p, extra, n), families)
+    best: dict[tuple, int] = {}
+    for w, r in zip(families, results, strict=True):
+        if r is None:
             continue
         key = (r["rank"], r["K2"], r.get("Lam"), r.get("Q"))
         best[key] = best.get(key, 0) + 1
