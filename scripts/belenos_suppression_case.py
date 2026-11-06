@@ -113,7 +113,7 @@ MIN_ITERATIONS = 4
 # An iteration counts toward its arm only with at least this many accepted events (half of SAMPLES_PER_ITERATION).
 MIN_EVENTS = 200
 # The lower 1 - ALPHA bound of s_control - s_periodic must reach this margin; the contrast is 0 for distinguishable
-# photons whatever the detector efficiencies, since every Fourier entry has modulus 1/sqrt(6).
+# photons whatever the detector efficiencies, since every requested Fourier entry has modulus 1/sqrt(6).
 CONTRAST_MARGIN = 0.10
 # job-01 is submitted only after job-00 is collected with at least this many accepted events (half of 1600).
 MIN_JOB_YIELD = 800
@@ -358,6 +358,8 @@ def job_documents(job: str, start: int, sources: tuple[int, ...]) -> dict[str, b
 
 
 def preregistration() -> dict[str, Any]:
+    """The preregistered text. The sha256 of each cases.json binds every string below, so a change of wording belongs
+    to a successor case."""
     return {
         "statistic": "s = events in the suppressed set / collision-free three-click events inside the window",
         "suppressed_set": "the 12 collision-free outputs whose slot labels do not sum to a multiple of 3",
@@ -901,17 +903,50 @@ def heterogeneity(rows: Sequence[tuple[int, int]]) -> dict[str, Any] | None:
     return {"chi_square": chi, "degrees": len(rows) - 1, "p": float(stats.chi2.sf(chi, len(rows) - 1))}
 
 
-def run_forecast(run: Path, retained: Mapping[str, Any]) -> dict[str, Any]:
-    """The forecast at the run's perfs_at_plan when submission.json holds a full performance record, else the retained
-    forecast of the case."""
+# The fields of a perfs_at_plan record that forecast() reads.
+PERFS_FIELDS = (
+    "HOM (%)",
+    "g2 (%)",
+    "Transmittance (%)",
+    "Clock (MHz)",
+    "Dark counts (detection/s)",
+    "Transmission per mode (%)",
+)
+
+
+def is_finite(value: Any) -> bool:
+    return isinstance(value, int | float) and not isinstance(value, bool) and math.isfinite(value)
+
+
+def complete_perfs(run: Path) -> dict[str, Any]:
+    """The perfs_at_plan record of a run's submission.json, which must hold every field forecast() reads.
+
+    The forecast depends on the chip state of the job, so a run without a full record raises and no other run's or the
+    case's figures stand in for it."""
     path = run / "submission.json"
-    if path.exists():
-        perfs = json.loads(path.read_text(encoding="utf-8")).get("perfs_at_plan")
-        if isinstance(perfs, dict) and "Transmission per mode (%)" in perfs:
-            manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
-            layout = manifest["layout"]
-            return forecast(perfs, int(layout["window_start"]), tuple(layout["source_modes"]))
-    return dict(retained)
+    require(path.is_file(), f"{run.name}: submission.json is missing, so the run has no perfs_at_plan to forecast from")
+    perfs = json.loads(path.read_text(encoding="utf-8")).get("perfs_at_plan")
+    require(isinstance(perfs, dict), f"{run.name}: submission.json holds no perfs_at_plan record")
+    missing = [field for field in PERFS_FIELDS if field not in perfs]
+    require(not missing, f"{run.name}: perfs_at_plan lacks {missing}")
+    per_mode = perfs["Transmission per mode (%)"]
+    require(isinstance(per_mode, dict), f"{run.name}: perfs_at_plan holds no per-mode transmission record")
+    columns = [per_mode.get("t_out"), per_mode.get("t_in"), perfs["Dark counts (detection/s)"]]
+    scalars = [perfs["HOM (%)"], perfs["g2 (%)"], perfs["Transmittance (%)"], perfs["Clock (MHz)"]]
+    require(
+        all(isinstance(column, list) and len(column) == MODES for column in columns)
+        and all(is_finite(value) for value in scalars)
+        and all(is_finite(value) for column in columns for value in column)
+        and min(columns[0]) > 0,
+        f"{run.name}: perfs_at_plan is not a finite {MODES}-mode performance record",
+    )
+    return dict(perfs)
+
+
+def run_forecast(run: Path, manifest: Mapping[str, Any]) -> dict[str, Any]:
+    """The forecast of the run's manifest layout at the run's own perfs_at_plan."""
+    layout = manifest["layout"]
+    return forecast(complete_perfs(run), int(layout["window_start"]), tuple(layout["source_modes"]))
 
 
 def mean_over(forecasts: Sequence[Mapping[str, Any]], arm: str, model: str) -> float:
@@ -936,31 +971,38 @@ EXCLUSIONS = ("outside_window", "collision", "more_than_three", "fewer_than_thre
 def bound_setting(settings: Sequence[Mapping[str, Any]], entry: Any) -> int:
     """The index of the one setting a result iteration binds to by its compilation_seed, which the case makes unique.
 
-    A result iteration that names no seed, names a seed no setting holds, or carries circuit_params that differ from
-    its setting's raises, so a dropped or reordered iteration never moves counts between arms."""
+    A result iteration that names no seed, names a seed no setting holds, or omits circuit_params or carries ones that
+    differ from its setting's raises, so a dropped or reordered iteration never moves counts between arms."""
     iteration = entry.get("iteration") if isinstance(entry, dict) else None
     seed = iteration.get("compilation_seed") if isinstance(iteration, dict) else None
     matches = [i for i, setting in enumerate(settings) if seed is not None and setting["compilation_seed"] == seed]
     require(len(matches) == 1, f"a result iteration with compilation_seed {seed!r} binds to {len(matches)} settings")
     values = iteration.get("circuit_params") if isinstance(iteration, dict) else None
-    if values is not None:
-        expected = settings[matches[0]]["circuit_params"]
-        require(
-            sorted(values) == sorted(expected) and all(abs(values[k] - expected[k]) < BODY_TOLERANCE for k in expected),
-            f"{settings[matches[0]]['name']}: the result iteration's circuit_params differ from the setting's",
-        )
+    expected = settings[matches[0]]["circuit_params"]
+    require(
+        isinstance(values, dict)
+        and sorted(values) == sorted(expected)
+        and all(is_finite(values[k]) and abs(values[k] - expected[k]) < BODY_TOLERANCE for k in expected),
+        f"{settings[matches[0]]['name']}: the result iteration's circuit_params are absent or differ from its setting",
+    )
     return matches[0]
 
 
-def analyze(runs: Sequence[Path], retained: Mapping[str, Any] | None = None) -> dict[str, Any]:
+def retained_manifests() -> dict[str, Path]:
+    """The retained case manifests by sha256; a run's cases.json binds to one of them byte for byte."""
+    return {sha256_bytes(path.read_bytes()): path for path in sorted(CASES.glob("*/cases.json"))}
+
+
+def analyze(runs: Sequence[Path]) -> dict[str, Any]:
     """Preregistered endpoints of the collected runs of both jobs: per-arm suppressed fractions with their
     between-iteration intervals, the three models' forecasts and the decision.
 
-    Each job name appears once and every compilation seed once across the runs, so a repeat of a failed job
-    supersedes the original and never pools with it. Iterations that carry no counts (missing, malformed, error) and
-    iterations below MIN_EVENTS accepted events are tallied and do not count toward their arm."""
-    if retained is None:
-        retained = json.loads((CASES / FORECAST).read_text(encoding="utf-8"))
+    The cases.json of each run is byte-identical to a manifest retained under CASES, so the job identity, layout, arm
+    labels and suppressed set are the preregistered ones. Each job name appears once and every compilation seed once
+    across the runs, so a repeat of a failed job, retained as its own manifest, supersedes the original and never
+    pools with it. Iterations that carry no counts (missing, malformed, error) and iterations below MIN_EVENTS
+    accepted events are tallied and do not count toward their arm."""
+    retained = retained_manifests()
     per_arm: dict[str, list[dict[str, Any]]] = {arm: [] for arm in ARMS}
     below_floor: list[dict[str, Any]] = []
     uncounted = dict.fromkeys(UNCOUNTED, 0)
@@ -969,7 +1011,10 @@ def analyze(runs: Sequence[Path], retained: Mapping[str, Any] | None = None) -> 
     seeds: set[int] = set()
     yields: dict[str, int] = {}
     for run in runs:
-        manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+        manifest_bytes = (run / "cases.json").read_bytes()
+        digest = sha256_bytes(manifest_bytes)
+        require(digest in retained, f"{run.name}: cases.json (sha256 {digest}) is no manifest retained under {FAMILY}")
+        manifest = json.loads(manifest_bytes)
         results = json.loads((run / "results.json").read_text(encoding="utf-8"))
         job = manifest["job"]
         require(job not in jobs, f"{run.name} repeats job {job} already read from {jobs.get(job)}")
@@ -978,7 +1023,7 @@ def analyze(runs: Sequence[Path], retained: Mapping[str, Any] | None = None) -> 
         require(not run_seeds & seeds, f"{run.name} reuses compilation seeds of another run")
         seeds |= run_seeds
         start = int(manifest["layout"]["window_start"])
-        forecasts.append(run_forecast(run, retained))
+        forecasts.append(run_forecast(run, manifest))
         # Both arms score the periodic setting's suppressed set; the control's own set is empty.
         suppressed = {
             tuple(out)
@@ -1064,10 +1109,12 @@ def decide(record: Mapping[str, Any], forecasts: Sequence[Mapping[str, Any]]) ->
     suppression observed needs both rules: the upper 1 - ALPHA bound of the periodic fraction lies at least
     NULL_MARGIN below the smaller of the distinguishable and mean-field forecasts, and the lower 1 - ALPHA bound of
     the paired contrast s_control - s_periodic reaches CONTRAST_MARGIN (the contrast is 0 for distinguishable photons
-    at any detector efficiencies). control valid: the control fraction lies within CONTROL_TOLERANCE of the
-    indistinguishable forecast of the control. level: the periodic fraction lies within max(FORECAST_TOLERANCE, 3 se)
-    of the indistinguishable forecast; compile error and g2 raise s, so only a fraction below the forecast is
-    unambiguous."""
+    at any detector efficiencies for the requested matrices; on the served meshes it stays below 1e-5). control valid:
+    the control fraction lies within CONTROL_TOLERANCE of the indistinguishable forecast of the control. level: the
+    periodic fraction lies within max(FORECAST_TOLERANCE, 3 se) of the indistinguishable forecast. The HOM mapping,
+    the g2 figure and the physical mesh error each move s by the same order, so the level words the verdict and the
+    HOM inverses of the periodic mean and of its two one-sided limits are model-conditional values, not bounds on the
+    effective HOM."""
     periodic, control = record["summary"]["periodic"], record["summary"]["control"]
     forecast_row = record["forecast"]
     out: dict[str, Any] = {
