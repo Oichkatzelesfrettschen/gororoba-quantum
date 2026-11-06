@@ -2940,6 +2940,13 @@
       "run": "results/live/2026-11-06T183538.809814Z",
       "family": "pathion kernel map (A_5, dimension 32)",
       "question": "Does ibm_fez resolve the pair-resolved kernel map of two-term A_5 operands (nullity 0 to 12, twins, mutations) through one compiled SELECT, and which prediction of the visibility at 136 to 173 routed CZ survives?"
+    },
+    {
+      "id": "ibm-fez-pathion-coset-map",
+      "provider": "ibm",
+      "run": "results/live/2026-11-06T201037.234804Z",
+      "family": "pathion coset-block map (A_5, dimension 32)",
+      "question": "Does ibm_fez resolve the coset-block kernel map of the six two-term A_5 operands at 1 to 20 routed CZ, does the i ^ j-dependent loss persist at low depth, and do ibm_fez and ibm_marrakesh agree?"
     }
   ],
   "claims": [
@@ -14575,6 +14582,33 @@
       ],
       "assumptions": [],
       "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-pathion-coset-map-fez",
+      "statement": "Coset blocks of the A_5 kernel map (four 4-qubit blocks per operand, 1 to 20 routed CZ) on ibm_fez recover the nullity of all six two-term operands with every one of 32 per-output signs correct (readout-corrected N_hat -0.04, 4.02, 4.03, 8.00, 11.98, 11.99 for nullity 0, 4, 4, 8, 12, 12), the quarter-turn twin (difference 0.008 [-0.018, 0.033]) and the cocycle-free control (-1.96 against -2); the i ^ j-dependent loss of the full six-qubit map does not recur on the same qubits at this depth.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "N_hat is exact under a bin-independent contraction; the raw values carry a +0.05 to +0.25 bias that the readout correction removes; ibm_marrakesh's matching run awaits retention.",
+      "evidence": [
+        {
+          "path": "results/live/2026-11-06T201037.234804Z/collect.json",
+          "sha256": "bbb2415b53e07e97e745b3da472114afb84cb0fc8be34686a39b7fac18d15051"
+        }
+      ],
+      "documents": [
+        "results/live/PATHION_KERNEL_MAP_FINDINGS.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "ibm-fez-pathion-coset-map"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-pathion-kernel-map-fez"
+      ],
       "supersedes": [],
       "superseded_by": null
     }

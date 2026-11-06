@@ -1311,6 +1311,34 @@
    "envelope": "results/live/2026-11-06T180755.872625Z/CASE.md"
   },
   {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T165145Z.json",
+   "index": 7,
+   "value": 4110,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-11-06T194735.738910Z",
+   "resubmissions": [
+    "2026-11-06T194735.851653Z",
+    "2026-11-06T200151.093434Z",
+    "2026-11-06T200151.405088Z"
+   ],
+   "envelope": "results/live/2026-11-06T194735.738910Z/CASE.md"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T165145Z.json",
+   "index": 8,
+   "value": 38675,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-11-06T194735.738910Z",
+   "resubmissions": [
+    "2026-11-06T194735.851653Z",
+    "2026-11-06T200151.093434Z",
+    "2026-11-06T200151.405088Z"
+   ],
+   "envelope": "results/live/2026-11-06T194735.738910Z/CASE.md"
+  },
+  {
    "record": "docs/evidence/anu_qrng/draw-2026-11-06T184402Z.json",
    "index": 0,
    "value": 60833,
