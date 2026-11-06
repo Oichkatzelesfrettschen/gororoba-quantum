@@ -231,14 +231,17 @@ lives; read it before writing one.
 
 ## Reviews and merges
 
-- Hosted review runs in a fixed order, each stage once per PR: Codex, then
-  Copilot, then the owner. When the PR is a merge candidate the operator
-  requests the Codex review through `scripts/codex_review_request.sh PR`,
-  which posts `@codex review` and refuses a request whose PR diff equals the
-  last reviewed head's or that would open a second round, then answers and
-  resolves every thread in one push. The operator then requests the Copilot
-  review once with `gh pr edit PR --add-reviewer @copilot` and answers and
-  resolves its threads in one push. The operator then reports the PR's
+- Hosted review runs in a fixed order, each stage at most once per PR: Codex,
+  then Copilot only when the Codex round needed a fix, then the owner. When
+  the PR is a merge candidate the operator requests the Codex review through
+  `scripts/codex_review_request.sh PR`, which posts `@codex review` and
+  refuses a request whose PR diff equals the last reviewed head's or that
+  would open a second round, then answers and resolves every thread in one
+  push. When that push fixed at least one Codex finding, the fixed head has
+  had no hosted review, so the operator requests the Copilot review once with
+  `gh pr edit PR --add-reviewer @copilot` and answers and resolves its
+  threads in one push; a Codex round with no thread, or whose threads were
+  all refuted or bounded, earns no Copilot request. The operator then reports the PR's
   state to the owner, who decides the merge or a further round: further
   automated rounds have found new edge cases without converging (PR #712 ran
   eight). A merge of main or a regenerated view earns no request,
