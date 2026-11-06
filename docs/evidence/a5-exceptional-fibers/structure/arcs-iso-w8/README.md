@@ -30,7 +30,7 @@ family (`num-w8-p32009-basic.txt`: nu 2, rank 6, K2 vanishing, Lambda vanishing,
 | Family class | Script and record | Iso max rank (5 needed) | W8 max rank, component |
 |---|---|---:|---|
 | single-term weighted arcs, every order 1-3 with b(0) = 0 | `scan-*-p*.sing/.log` (165 Iso, 443 W8 families per prime) | 4 | 6, in V(P) only |
-| weighted arcs with free coefficients through three further orders, orders 1-4 | `arcs_num.py weighted`, `search-*-p32009.txt` | 4 | see `search-w8-p32009.txt` |
+| weighted arcs with free coefficients through two further orders, orders 1-4 | `arcs_num.py weighted`, `search-*-p32009.txt` (complete, tallies at the end) | 4 | 6 in C20 only; all 2,406 valid families have limits in V(Lambda) |
 | generic multi-term arcs; arcs with leading direction in L0 | `num-*-p32009-basic.txt` | 4; 2 | 6 in V(P); 4 |
 | Puiseux arcs u s^k + ... with u in L0 | `num-*-p32009-puiseux.txt` | 2 | 4, in V(P) cap V(K2 : P) |
 | L0 directions with t4 = t6 = 0 | `num-*-p32009-t4zero.txt` | 2 | 2 |

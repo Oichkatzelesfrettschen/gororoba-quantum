@@ -31,6 +31,12 @@ def main() -> None:
     ap.add_argument("fiber", choices=["iso", "w8"])
     ap.add_argument("prime", type=int, choices=[32009, 32029])
     ap.add_argument("draw", help="ANU QRNG draw file; values below the prime are taken in index order")
+    ap.add_argument(
+        "--method",
+        choices=["sat", "elim"],
+        help="portfolio script: sat (iterated quotients) or elim (Rabinowitsch variable w); l0(z) - 1 added up front, "
+        "option(noredTail), option(prot), every stage written to its own file",
+    )
     a = ap.parse_args()
     hdr = (ROOT / HEADERS[(a.fiber, a.prime)]).read_text()
     tvars = re.search(r"ring r=\d+,\((.*?)\)", hdr).group(1)  # type: ignore[union-attr]
@@ -43,6 +49,41 @@ def main() -> None:
     coeffs = [vals[k] for k in idx]
     l0 = "+".join(f"{c}*G[{j + 1}]" for j, c in enumerate(coeffs))
     lz = "+".join(f"{c}*z({j + 1})" for j, c in enumerate(coeffs))
+    if a.method:
+        out = HERE / f"chart-{a.fiber}-p{a.prime}-{a.method}.sing"
+        tag = f"{a.fiber}-p{a.prime}-{a.method}"
+        nall = len(tvars.split(",")) + ngen
+        ring = (
+            f"ring r={a.prime},({tvars},z(1..{ngen})),dp;"
+            if a.method == "sat"
+            else f"ring r={a.prime},(w,{tvars},z(1..{ngen})),(dp(1),dp({nall}));"
+        )
+        sat = (
+            'def SS=sat(C,ideal(a0)); ideal S; if (typeof(SS)=="list") { S=SS[1]; } else { S=SS; }\n'
+            if a.method == "sat"
+            else "ideal S=eliminate(C+ideal(1-w*a0),w);\n"
+        )
+        out.write_text(
+            f"// blowup chart a0 = l0(G), method {a.method}; "
+            f"l0 coefficients in chart-{a.fiber}-p{a.prime}-coefficients.json\n"
+            'LIB "elim.lib"; option(noredTail); option(prot); system("--ticks-per-sec",1); int t0=rtimer;\n'
+            f"{ring} number I={num};\n"
+            f"ideal J={jtxt};\nideal G={gtxt};\n"
+            f"poly a0={l0};\n"
+            f"ideal C=J; int i; for (i=1;i<={ngen};i++) {{ C=C+(a0*z(i)-G[i]); }} C=C+({lz}-1);\n"
+            f"{sat}"
+            f'"RESULT {tag} saturation done s", rtimer-t0;\n'
+            f'write(":w chart-sat-{tag}.txt", S);\n'
+            f"ring rr={a.prime},({tvars},z(1..{ngen})),dp; number I={num}; ideal S=imap(r,S);\n"
+            f'S=std(S); "RESULT {tag} chart dim", dim(S), "s", rtimer-t0;\n'
+            f'"RESULT {tag} l0(z) = 1 in the chart", reduce({lz}-1,S)==0;\n'
+            f'write(":w chart-std-{tag}.txt", S);\n'
+            f'ideal E=std(S+ideal({tvars})); "RESULT {tag} fiber over the origin in the chart: dim", dim(E), '
+            '"degree", mult(E), "s", rtimer-t0;\n'
+            f'write(":w chart-fiber-{tag}.txt", E);\nquit;\n'
+        )
+        print(out.relative_to(ROOT))
+        return
     out = HERE / f"chart-{a.fiber}-p{a.prime}.sing"
     out.write_text(
         f"// blowup chart a0 = l0(G), l0 from {a.draw} zero-based indices {idx[0]}..{idx[-1]} (values < p in order)\n"
