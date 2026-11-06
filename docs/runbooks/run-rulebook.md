@@ -56,8 +56,11 @@ the closest entry and say what changed.
 - End state: the local watcher waits for `all done`, requires no Singular running, copies a tarball of out/ and the
   checkpoints, compares sha256, unpacks it, then `az vm deallocate` (the disk and its results stay; compute billing
   stops). A guest OS shutdown would leave the VM allocated and billed.
-- Outcome: pending; recorded in `docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/README.md` and as a
-  measured-combinations row.
+- Outcome: no saturation finished. Elimination: stopped by the watchdog at 29.7 GB after 3 h 21 min (32029) and
+  52.1 GB after 7 h 29 min (32009). sat: 8 h limit at 15.1 and 15.8 GB. The `prot` traces show standard bases of
+  20,000-37,000 elements still growing. The dense a0 = l0(G) makes every a0 z_i a polynomial with hundreds of terms;
+  the next formulation takes a0 = a single generator G_j (a coordinate chart, equally decisive because K2 contains no
+  linear form). Results copied with sha256 verification; VM deallocated, disk kept.
 
 ### Point sections of a quadric scheme (radical, components, geometric irreducibility)
 
