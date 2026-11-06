@@ -1280,8 +1280,8 @@
   },
   {
    "record": "docs/evidence/anu_qrng/draw-2026-11-01T054809Z.json",
-   "index": 2,
-   "value": 21344,
+   "index": 3,
+   "value": 58377,
    "script": "scripts/belenos_mesh_persistence.py",
    "flag": "--seed",
    "experiment": "belenos-mesh-persistence-power"
@@ -1744,6 +1744,13 @@
    "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
    "index": 58,
    "reason": "Compilation identifier for sedenion-lcu setting fixture; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "scripts/belenos_mesh_persistence.py",
+   "value": 21344,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-01T054809Z.json",
+   "index": 2,
+   "reason": "seeded the power record of the mesh-persistence case at commit 2bb86624c, under a Student-t slope bound that the review replaced before the pull request merged; the script cites the value so that it stays consumed"
   }
  ],
  "owned": [

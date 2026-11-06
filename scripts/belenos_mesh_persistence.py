@@ -6,7 +6,7 @@ twice, and three replicate seeds). This case replays the packed layout of block 
 are all half blocks (p_algebra 1/2, the class with the larger mesh error), with the same circuit parameters and
 compilation seeds, and asks two questions in order:
 
-1. Identity: does each seed return its retained `computed_circuit` after the chip's recalibrations?
+1. Identity: does each seed return the mesh of its retained `computed_circuit` after the chip's recalibrations?
 2. Persistence: when it does, does each mesh's deviation from its block's four-mesh mean recur?
 
 Usage:
@@ -65,6 +65,11 @@ POWER_SLOPES = (0.0, 0.25, 0.5, 0.75, 1.0)
 POWER_REPLICATES = 2000
 # A slot-level detection change common to every mesh of a block; the centered statistic cancels it.
 SLOT_SHIFT_SD = 0.03
+READINGS = ("persists", "recurs below the useful slope", "redrawn", "indeterminate")
+# Largest entry difference between two decoded mesh unitaries that still reads as one mesh. Phases rounded to
+# single precision move an entry by 4.5e-7, and a difference of 1e-4 moves a share by at most 2e-4 against a
+# binomial error near 0.005; the meshes of two seeds of one layout differ by at least 1.2 in the retained window.
+MESH_TOLERANCE = 1e-4
 
 
 def require(condition: bool, message: str) -> None:
@@ -98,24 +103,29 @@ def settings() -> list[dict[str, Any]]:
 
 def preregistered() -> dict[str, Any]:
     return {
-        "question": "whether each retained compilation seed of the packed set-4 layout group returns its retained "
-        "computed_circuit after the chip's recalibrations, and whether each mesh's deviation from its block's "
+        "question": "whether each retained compilation seed of the packed set-4 layout group returns the mesh of its "
+        "retained computed_circuit after the chip's recalibrations, and whether each mesh's deviation from its block's "
         "four-mesh mean recurs",
         "observable": swap.preregistered()["observable"],
-        "identity": "per seed, the sha256 of the returned computed_circuit against the retained digest of the same "
-        "circuit_params and compilation_seed; both primary repeats must return the primary digest. Any mismatch "
-        "reads 'seed does not reproduce its mesh' and withholds the persistence statistic",
+        "identity": "per seed, the unitary decoded from the returned computed_circuit against the unitary decoded "
+        "from the retained computed_circuit of the same circuit_params and compilation_seed; one mesh when the "
+        f"largest entry difference is at most {MESH_TOLERANCE:g}, with the sha256 comparison of the serialized "
+        "circuits recorded beside it; both primary repeats must return the primary mesh. Any mismatch reads 'seed "
+        "does not reproduce its mesh' and withholds the persistence statistic",
         "drift": "per block, the two-sample z of the two new primary repeats; D = sum z^2 on 6 degrees of freedom; "
         f"drift detected at p < {DRIFT_ALPHA} withholds the persistence reading",
         "statistic": "per block b and mesh j (the pooled primary repeats, then each replicate), e = a - mean over "
         "the four meshes of a, in the retained window and in the new one; T = sum over b and j of e_old e_new",
         "null": "no persistence: within each block the new mesh labels are exchangeable; the exact one-sided "
         "p-value is the share of the 24^6 within-block relabelings with T at or above the observed T",
-        "slope": "beta = T / sum e_old^2, the regression through the origin of e_new on e_old, with its one-sided "
-        f"{1 - ALPHA:.2f} upper bound beta + t(0.95, dof) s / sqrt(sum e_old^2), s^2 the residual variance on "
-        "24 - 6 - 1 = 17 degrees of freedom",
-        "reading": f"persists when p < {ALPHA}; redrawn when p >= {ALPHA} and the upper bound on beta is below "
-        f"{USEFUL_SLOPE}; indeterminate otherwise",
+        "slope": "beta = T / sum e_old^2, the regression through the origin of e_new on e_old. For a slope b the "
+        "residuals e_new - b e_old are exchangeable within each block and independent between blocks, and q(b) "
+        "is the share of the 24^6 "
+        "within-block relabelings of the residuals whose cross product with e_old lies at or below the observed "
+        f"one; the one-sided {1 - ALPHA:.2f} upper bound on beta is the largest b with q(b) >= {ALPHA}",
+        "reading": f"q({USEFUL_SLOPE}) < {ALPHA} places the upper bound on beta below {USEFUL_SLOPE}: recurs below "
+        f"the useful slope when also p < {ALPHA}, redrawn when p >= {ALPHA}. With q({USEFUL_SLOPE}) >= {ALPHA}: "
+        f"persists when p < {ALPHA} and beta >= {USEFUL_SLOPE}; indeterminate otherwise",
         "secondary": "the same T restricted to slots 4 and 5 (chip modes 16 to 23, the teleportation layout's modes) "
         "and with slot 5 excluded, reported without a reading",
     }
@@ -194,7 +204,43 @@ def retained_group() -> dict[str, Any]:
         )
     first = out[0]["digests"]
     require(all(b["digests"] == first for b in out), "the blocks of one iteration report different digests")
-    return {"blocks": out, "digests": first}
+    return {"blocks": out, "digests": first, "circuits": retained_circuits(runs, first)}
+
+
+def circuit_digest(circuit: Any) -> str:
+    return hashlib.sha256(json.dumps(circuit, sort_keys=True).encode()).hexdigest()
+
+
+def retained_circuits(runs: Sequence[Path], digests: Sequence[str]) -> list[Any]:
+    """The retained computed_circuit of each mesh in MESHES order, each held to the digest of its cells."""
+    found: dict[tuple[str, int], Any] = {}
+    for item in swap.load_runs(list(runs)):
+        bound, _ = swap.bind_iterations(item["manifest"]["settings"], item["results"])
+        for index, setting in enumerate(item["manifest"]["settings"]):
+            if setting["block_set"] == BLOCK_SET and setting["layout"] == LAYOUT and index in bound:
+                fields = bound[index].get("result_fields") or {}
+                found[(setting["arm"], setting["repeat"])] = fields.get("computed_circuit")
+    circuits = [found[(arm, repeat or 0)] for arm, repeat in MESHES]
+    require(
+        [circuit_digest(c) for c in circuits] == list(digests), "a retained computed_circuit departs from its digest"
+    )
+    return circuits
+
+
+def mesh_unitary(circuit: Any) -> np.ndarray:
+    """The unitary of a returned computed_circuit, decoded by Perceval's deserializer."""
+    from perceval.serialization import deserialize
+
+    return np.asarray(deserialize(circuit).compute_unitary())
+
+
+def mesh_distance(first: Any, second: Any) -> float:
+    """Largest entry difference between two computed circuits' unitaries: 0 for equal serialized circuits, and
+    infinite for two mode counts."""
+    if first == second:
+        return 0.0
+    a, b = mesh_unitary(first), mesh_unitary(second)
+    return float(np.abs(a - b).max()) if a.shape == b.shape else math.inf
 
 
 # Statistic ------------------------------------------------------------------------------------------------------
@@ -207,40 +253,60 @@ def shares(cells: Sequence[Mapping[str, int]]) -> np.ndarray:
 
 
 # Power ----------------------------------------------------------------------------------------------------------
+# Index 2 of docs/evidence/anu_qrng/draw-2026-11-01T054809Z.json (21344) is spent: it seeded the power record of
+# this case under a slope bound the case no longer uses, and its reserved row in the seed ledger keeps the value
+# out of later use.
 
 
 def power_trial(item: tuple[np.ndarray, np.ndarray]) -> str:
     old, new = item
-    return persistence_reading(persistence(old, new, ALPHA), ALPHA, USEFUL_SLOPE)
+    return persistence_reading(persistence(old, new, ALPHA, USEFUL_SLOPE, bound=False), ALPHA, USEFUL_SLOPE)
+
+
+def error_models(sigma: float, e_old: np.ndarray) -> list[tuple[str, np.ndarray, float]]:
+    """The fresh-error models of the power record: a name, the error size of each block, and the share of the
+    error variance that one term per mesh carries across all blocks."""
+    flat = np.full(e_old.shape[0], sigma)
+    spreads = e_old.std(axis=1, ddof=1)
+    return [
+        ("one error size for every block", flat, 0.0),
+        ("each block's retained spread", spreads, 0.0),
+        ("one error size, half of its variance shared by a mesh's blocks", flat, 0.5),
+        ("one error size, all of its variance shared by a mesh's blocks", flat, 1.0),
+    ]
 
 
 def power(seed: Any, sigma: float) -> dict[str, Any]:
-    """Reading frequencies under a persistence slope beta at the retained counts.
+    """Reading frequencies under a persistence slope beta at the retained counts, per fresh-error model.
 
     The new true share of block b and mesh j is the retained block mean plus a slot shift d_b ~ N(0, SLOT_SHIFT_SD^2)
-    plus beta e_old + sqrt(1 - beta^2) eta, eta ~ N(0, sigma^2) a fresh mesh error, then a binomial draw at the
-    retained count of that cell (the primary cell pools two repeats)."""
+    plus beta e_old + sqrt(1 - beta^2) eta, then a binomial draw at the retained count of that cell (the primary cell
+    pools two repeats). The fresh mesh error eta has the model's block size s_b and shared share w:
+    eta = s_b (sqrt(w) u_j + sqrt(1 - w) v_bj) with u and v standard normal. Every model and slope draws from its
+    own child of the seed."""
     group = retained_group()["blocks"]
     old = np.array([shares(b["cells"]) for b in group])
     counts = np.array([[c["n"] for c in b["cells"]] for b in group])
     e_old = centered(old)
     means = old.mean(axis=1, keepdims=True)
-    rows = []
-    for beta, child in zip(POWER_SLOPES, np.random.SeedSequence(seed).spawn(len(POWER_SLOPES)), strict=True):
-        rng = np.random.default_rng(child)
-        shape = (POWER_REPLICATES, *old.shape)
-        shift = rng.normal(0.0, SLOT_SHIFT_SD, (POWER_REPLICATES, old.shape[0], 1))
-        eta = rng.normal(0.0, sigma, shape)
-        truth = np.clip(means + shift + beta * e_old + math.sqrt(1 - beta**2) * eta, 0.0, 1.0)
-        new = rng.binomial(np.broadcast_to(counts, shape), truth) / counts
-        readings = ordered_map(power_trial, [(old, new[i]) for i in range(POWER_REPLICATES)], min_items=64)
-        rows.append(
-            {
-                "slope": beta,
-                **{r: readings.count(r) / POWER_REPLICATES for r in ("persists", "redrawn", "indeterminate")},
-            }
-        )
-    return {"replicates": POWER_REPLICATES, "mesh_sigma": sigma, "slot_shift_sd": SLOT_SHIFT_SD, "rows": rows}
+    models = error_models(sigma, e_old)
+    children = iter(np.random.SeedSequence(seed).spawn(len(models) * len(POWER_SLOPES)))
+    shape = (POWER_REPLICATES, *old.shape)
+    out = []
+    for name, sizes, shared in models:
+        rows = []
+        for beta in POWER_SLOPES:
+            rng = np.random.default_rng(next(children))
+            shift = rng.normal(0.0, SLOT_SHIFT_SD, (POWER_REPLICATES, old.shape[0], 1))
+            per_mesh = rng.normal(0.0, 1.0, (POWER_REPLICATES, 1, old.shape[1]))
+            per_cell = rng.normal(0.0, 1.0, shape)
+            eta = sizes[:, None] * (math.sqrt(shared) * per_mesh + math.sqrt(1 - shared) * per_cell)
+            truth = np.clip(means + shift + beta * e_old + math.sqrt(1 - beta**2) * eta, 0.0, 1.0)
+            new = rng.binomial(np.broadcast_to(counts, shape), truth) / counts
+            readings = ordered_map(power_trial, [(old, new[i]) for i in range(POWER_REPLICATES)], min_items=64)
+            rows.append({"slope": beta, **{r: readings.count(r) / POWER_REPLICATES for r in READINGS}})
+        out.append({"error": name, "block_sizes": [float(x) for x in sizes], "shared_share": shared, "rows": rows})
+    return {"replicates": POWER_REPLICATES, "mesh_sigma": sigma, "slot_shift_sd": SLOT_SHIFT_SD, "models": out}
 
 
 # Analysis -------------------------------------------------------------------------------------------------------
@@ -260,23 +326,32 @@ def analyze(run: Path) -> dict[str, Any]:
     work = [(setting, bound[index]["counts"]) for index, setting in enumerate(manifest["settings"])]
     reduced = ordered_map(swap.iteration_shares, work, min_items=1)
     new_cells: dict[int, dict[tuple[str, int], dict[str, Any]]] = {}
-    digests = []
+    circuits = []
     for index, block_cells in enumerate(reduced):
-        circuit = (bound[index].get("result_fields") or {}).get("computed_circuit")
-        digests.append(hashlib.sha256(json.dumps(circuit, sort_keys=True).encode()).hexdigest() if circuit else None)
+        circuits.append((bound[index].get("result_fields") or {}).get("computed_circuit"))
         new_cells[index] = {share["key"]: share for share in block_cells}
-    expected = [retained["digests"][0], *retained["digests"][1:], retained["digests"][0]]
-    identity = [
-        {"setting": s["name"], "same_mesh": d == e}
-        for s, d, e in zip(manifest["settings"], digests, expected, strict=True)
-    ]
-    record: dict[str, Any] = {"schema": "belenos-mesh-persistence-v1", "identity": identity, "run": run.name}
-    unreported = [s["name"] for s, d in zip(manifest["settings"], digests, strict=True) if d is None]
+    record: dict[str, Any] = {"schema": "belenos-mesh-persistence-v2", "run": run.name}
+    unreported = [s["name"] for s, c in zip(manifest["settings"], circuits, strict=True) if not c]
     if unreported:
         # A result without computed_circuit carries no mesh to compare, which is no evidence of a changed mesh.
         record["reading"] = "an iteration returned no computed_circuit"
         record["unreported"] = unreported
         return record
+    # The decoded unitary decides the identity, so a change of the provider's serialization alone keeps the mesh;
+    # the digest comparison is recorded beside it.
+    expected = [retained["circuits"][0], *retained["circuits"][1:], retained["circuits"][0]]
+    identity = []
+    for setting, circuit, kept in zip(manifest["settings"], circuits, expected, strict=True):
+        distance = mesh_distance(circuit, kept)
+        identity.append(
+            {
+                "setting": setting["name"],
+                "same_mesh": distance <= MESH_TOLERANCE,
+                "same_bytes": circuit_digest(circuit) == circuit_digest(kept),
+                "unitary_distance": distance,
+            }
+        )
+    record["identity"] = identity
     if not all(row["same_mesh"] for row in identity):
         record["reading"] = "seed does not reproduce its mesh"
         return record
@@ -307,11 +382,12 @@ def analyze(run: Path) -> dict[str, Any]:
         record["reading"] = "drift within the new job withholds the reading"
         return record
     o, n = np.array(old), np.array(new)
-    record["persistence"] = persistence(o, n, ALPHA)
+    record["persistence"] = persistence(o, n, ALPHA, USEFUL_SLOPE)
     slots = np.array([b["slot"] for b in blocks])
+    late = slots >= 4
     record["secondary"] = {
-        "slots_4_and_5": persistence(o[slots >= 4], n[slots >= 4], ALPHA) if (slots >= 4).sum() >= 2 else None,
-        "without_slot_5": persistence(o[slots != 5], n[slots != 5], ALPHA),
+        "slots_4_and_5": persistence(o[late], n[late], ALPHA, USEFUL_SLOPE) if late.sum() >= 2 else None,
+        "without_slot_5": persistence(o[slots != 5], n[slots != 5], ALPHA, USEFUL_SLOPE),
     }
     record["reading"] = persistence_reading(record["persistence"], ALPHA, USEFUL_SLOPE)
     return record
@@ -341,7 +417,7 @@ def main() -> int:
         require(bool(sigmas) and len(set(sigmas)) == 1, f"the retained runs hold mesh sigmas {sorted(set(sigmas))}")
         sigma = sigmas[0]
         record = {
-            "schema": "belenos-mesh-persistence-power-v1",
+            "schema": "belenos-mesh-persistence-power-v2",
             "seed_source": qrng_seeds.seed_record(
                 "scripts/belenos_mesh_persistence.py", "--seed", "belenos-mesh-persistence-power", args.seed_source
             ),

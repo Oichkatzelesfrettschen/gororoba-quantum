@@ -8653,14 +8653,14 @@
   "sha256": "5684737d7bfa2f0aa5ccec77d3de506a1f8978070b36f3ceb69c876c36621e66"
  },
  "preregistered": {
-  "question": "whether each retained compilation seed of the packed set-4 layout group returns its retained computed_circuit after the chip's recalibrations, and whether each mesh's deviation from its block's four-mesh mean recurs",
+  "question": "whether each retained compilation seed of the packed set-4 layout group returns the mesh of its retained computed_circuit after the chip's recalibrations, and whether each mesh's deviation from its block's four-mesh mean recurs",
   "observable": "per block and iteration, a = (samples with exactly one click in the block's slot that land on an algebra mode) / (samples with exactly one click in the slot), the observable of scripts/qd_packed_mode_swap_analysis.py",
-  "identity": "per seed, the sha256 of the returned computed_circuit against the retained digest of the same circuit_params and compilation_seed; both primary repeats must return the primary digest. Any mismatch reads 'seed does not reproduce its mesh' and withholds the persistence statistic",
+  "identity": "per seed, the unitary decoded from the returned computed_circuit against the unitary decoded from the retained computed_circuit of the same circuit_params and compilation_seed; one mesh when the largest entry difference is at most 0.0001, with the sha256 comparison of the serialized circuits recorded beside it; both primary repeats must return the primary mesh. Any mismatch reads 'seed does not reproduce its mesh' and withholds the persistence statistic",
   "drift": "per block, the two-sample z of the two new primary repeats; D = sum z^2 on 6 degrees of freedom; drift detected at p < 0.01 withholds the persistence reading",
   "statistic": "per block b and mesh j (the pooled primary repeats, then each replicate), e = a - mean over the four meshes of a, in the retained window and in the new one; T = sum over b and j of e_old e_new",
   "null": "no persistence: within each block the new mesh labels are exchangeable; the exact one-sided p-value is the share of the 24^6 within-block relabelings with T at or above the observed T",
-  "slope": "beta = T / sum e_old^2, the regression through the origin of e_new on e_old, with its one-sided 0.95 upper bound beta + t(0.95, dof) s / sqrt(sum e_old^2), s^2 the residual variance on 24 - 6 - 1 = 17 degrees of freedom",
-  "reading": "persists when p < 0.05; redrawn when p >= 0.05 and the upper bound on beta is below 0.5; indeterminate otherwise",
+  "slope": "beta = T / sum e_old^2, the regression through the origin of e_new on e_old. For a slope b the residuals e_new - b e_old are exchangeable within each block and independent between blocks, and q(b) is the share of the 24^6 within-block relabelings of the residuals whose cross product with e_old lies at or below the observed one; the one-sided 0.95 upper bound on beta is the largest b with q(b) >= 0.05",
+  "reading": "q(0.5) < 0.05 places the upper bound on beta below 0.5: recurs below the useful slope when also p < 0.05, redrawn when p >= 0.05. With q(0.5) >= 0.05: persists when p < 0.05 and beta >= 0.5; indeterminate otherwise",
   "secondary": "the same T restricted to slots 4 and 5 (chip modes 16 to 23, the teleportation layout's modes) and with slot 5 excluded, reported without a reading"
  }
 }

@@ -18,8 +18,9 @@ selecting its own runs and blocks.
   adjusted_residuals are its statistic and its per-cell residuals.
 - persistence is the recurrence test of each mesh's deviation from its block mean between two windows: the cross
   product of the block-centered shares, its exact one-sided p-value over within-block relabelings
-  (relabeled_values, exact_upper_p) and the slope through the origin with a one-sided upper bound;
-  persistence_reading turns that record into a reading under caller-supplied thresholds.
+  (relabeled_values, exact_upper_p) and the slope through the origin with the one-sided upper bound that inverts
+  the same relabeling test (slope_lower_p, slope_upper_bound); persistence_reading turns that record into a reading
+  under caller-supplied thresholds.
 """
 
 from __future__ import annotations
@@ -371,29 +372,88 @@ def exact_upper_p(per_block: Sequence[np.ndarray], observed: float) -> float:
     return float(count.sum() / (left.size * right.size))
 
 
-def persistence(old: np.ndarray, new: np.ndarray, alpha: float) -> dict[str, Any]:
-    """The cross product of block-centered shares, its exact relabeling p-value and the slope with its upper bound.
+def exact_lower_p(per_block: Sequence[np.ndarray], observed: float) -> float:
+    """P(sum of one independent draw per block <= observed), the mirror of exact_upper_p."""
+    return exact_upper_p([-values for values in per_block], -observed)
+
+
+def slope_lower_p(e_old: np.ndarray, e_new: np.ndarray, slope: float) -> float:
+    """Exact one-sided p-value of the hypothesis that the persistence slope is at least ``slope``.
+
+    Under a slope b the residuals e_new - b e_old carry the fresh error alone. With that error exchangeable within
+    each block and independent between blocks, the labels of each block relabel independently, whatever the
+    block's error size. The p-value is the share of within-block relabelings of the
+    residuals whose cross product with e_old lies at or below the observed one. It never increases with b: the
+    observed cross product minus a relabeled one falls linearly in b at the rate sum e_old^2 minus the relabeled
+    sum, which is nonnegative."""
+    residual = e_new - slope * e_old
+    return exact_lower_p(relabeled_values(e_old, residual), float((e_old * residual).sum()))
+
+
+def slope_upper_bound(e_old: np.ndarray, e_new: np.ndarray, alpha: float, tolerance: float = 1e-9) -> float:
+    """The largest slope that slope_lower_p does not reject at level alpha, by bisection to ``tolerance``; plus or
+    minus infinity when no slope within 64 steps above or below the estimate brackets it.
+
+    The set of slopes with slope_lower_p >= alpha is a closed half line, so the bound lies below a value u exactly
+    when slope_lower_p(u) < alpha."""
+    sxx = float((e_old**2).sum())
+    beta = float((e_old * e_new).sum()) / sxx
+    step = 1.0 + abs(beta) + math.sqrt(float((e_new**2).sum()) / sxx)
+    low, high = beta, beta + step
+    # Tied retained deviations can keep the p-value at or above alpha for every slope; the bound is then infinite.
+    for _ in range(64):
+        if slope_lower_p(e_old, e_new, low) >= alpha:
+            break
+        low -= step
+    else:
+        return -math.inf
+    for _ in range(64):
+        if slope_lower_p(e_old, e_new, high) < alpha:
+            break
+        high += step
+    else:
+        return math.inf
+    while high - low > tolerance:
+        middle = 0.5 * (low + high)
+        if slope_lower_p(e_old, e_new, middle) >= alpha:
+            low = middle
+        else:
+            high = middle
+    return low
+
+
+def persistence(
+    old: np.ndarray, new: np.ndarray, alpha: float, useful_slope: float, bound: bool = True
+) -> dict[str, Any]:
+    """The cross product of block-centered shares, its exact relabeling p-value, the slope and its upper bound.
 
     old and new hold one row per block and one column per mesh. The slope is the regression through the origin of
-    the new centered shares on the old ones; its one-sided 1 - alpha upper bound uses the residual variance on
-    (cells - blocks - 1) degrees of freedom."""
-    from scipy.stats import t
-
+    the new centered shares on the old ones. useful_slope_p is slope_lower_p at useful_slope, and the one-sided
+    1 - alpha upper bound inverts that test over the slope (slope_upper_bound), so both need exchangeability
+    within a block only and hold when the blocks differ in error size. bound=False leaves the bisection out for a
+    caller that needs the reading alone."""
     e_old, e_new = centered(old), centered(new)
     observed = float((e_old * e_new).sum())
-    p = exact_upper_p(relabeled_values(e_old, e_new), observed)
-    sxx = float((e_old**2).sum())
-    beta = observed / sxx
-    dof = e_old.size - e_old.shape[0] - 1
-    s2 = float(((e_new - beta * e_old) ** 2).sum()) / dof
-    upper = beta + float(t.ppf(1 - alpha, dof)) * math.sqrt(s2 / sxx)
-    return {"statistic": observed, "p_value": p, "slope": beta, "slope_upper": upper, "dof": dof}
+    result = {
+        "statistic": observed,
+        "p_value": exact_upper_p(relabeled_values(e_old, e_new), observed),
+        "slope": observed / float((e_old**2).sum()),
+        "useful_slope_p": slope_lower_p(e_old, e_new, useful_slope),
+    }
+    if bound:
+        result["slope_upper"] = slope_upper_bound(e_old, e_new, alpha)
+    return result
 
 
 def persistence_reading(result: Mapping[str, Any], alpha: float, useful_slope: float) -> str:
-    """persists when the p-value is below alpha; redrawn when the slope's upper bound is below useful_slope."""
-    if result["p_value"] < alpha:
+    """The reading of a persistence record under caller-supplied thresholds.
+
+    useful_slope_p below alpha places the slope's upper bound below useful_slope: it reads recurs below the useful
+    slope when the p-value also shows a slope above zero, and redrawn otherwise. A p-value below alpha with a slope
+    estimate of at least useful_slope reads persists. Every other record is indeterminate."""
+    above_zero = result["p_value"] < alpha
+    if result["useful_slope_p"] < alpha:
+        return "recurs below the useful slope" if above_zero else "redrawn"
+    if above_zero and result["slope"] >= useful_slope:
         return "persists"
-    if result["slope_upper"] < useful_slope:
-        return "redrawn"
     return "indeterminate"

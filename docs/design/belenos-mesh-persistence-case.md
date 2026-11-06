@@ -2,7 +2,7 @@
 
 `scripts/belenos_mesh_persistence.py` builds one `qpu:belenos` job that replays four retained compiled meshes after
 the chip's recalibrations. It asks whether a compilation seed is still a hardware setting a day later: whether it
-returns the same `computed_circuit`, and whether that mesh's error comes back. No job of this case has been sent; it
+returns the mesh of its retained `computed_circuit`, and whether that mesh's error comes back. No job of this case has been sent; it
 waits for the owner's approval of the written case below.
 
 ## Question
@@ -63,13 +63,20 @@ cell.
 `analysis.json` is written to the run directory; the frozen `cases.json` must match the run's byte for byte, and all
 five iterations must return counts.
 
-- **Identity, the first decision.** Each returned `computed_circuit` is hashed (sha256 of its sorted JSON) and compared
-  with the retained digest of the same circuit parameters and seed; both primary repeats must return the primary
-  digest. Any mismatch reads **seed does not reproduce its mesh** and withholds everything below. That reading alone
-  answers the program's question: a seed that does not survive a recalibration cannot carry a selected mesh.
+- **Identity, the first decision.** Perceval's deserializer decodes each returned `computed_circuit` to its 24-mode
+  unitary, which is compared with the unitary of the retained `computed_circuit` of the same circuit parameters and
+  seed; the two are one mesh when their largest entry difference is at most 1e-4. Phases rounded to single
+  precision move an entry by 4.5e-7, a difference of 1e-4 moves a share by at most 2e-4 against a binomial error
+  near 0.005, and two seeds of one layout differ by at least 1.2 in the retained window, where the repeats of one
+  request returned byte-identical circuits. A change of
+  the provider's serialization alone therefore keeps the mesh, and `analysis.json` records the sha256 comparison of
+  the serialized circuits beside each unitary distance. Both primary repeats must return the primary mesh. Any
+  mismatch reads **seed does not reproduce its mesh** and withholds everything below. That reading alone answers
+  the program's question: a seed that does not survive a recalibration cannot carry a selected mesh. An iteration
+  that returns no `computed_circuit` reads **an iteration returned no computed_circuit** and decides nothing.
 - **Drift within the new job.** Per block, the two-sample z of the two new primary repeats; D = sum z^2 on 6 degrees
-  of freedom. D with p < 0.01 withholds the reading. The retained packed repeats of set 4, which straddled two jobs,
-  give D 13.1 (p 0.04).
+  of freedom. D with p < 0.01 withholds the reading, and so does an iteration without single-click counts in a
+  block. The retained packed repeats of set 4, which straddled two jobs, give D 13.1 (p 0.04).
 - **Statistic.** Per block b and mesh j (the pooled primary, then each replicate), e = a - (mean of a over the four
   meshes of b), in the retained window and in the new one. Centering removes every change common to a block's four
   meshes, among them a change of the slot's detection efficiency. T = sum over b and j of e_old e_new.
@@ -77,10 +84,16 @@ five iterations must return counts.
   is the share of the 24^6 within-block relabelings whose T reaches the observed T, enumerated by splitting the six
   blocks into two halves.
 - **Slope.** beta = T / sum e_old^2 regresses the new deviations on the old ones; beta 1 is full persistence and 0 a
-  fresh draw. Its one-sided 95 % upper bound uses the residual variance on 24 - 6 - 1 = 17 degrees of freedom.
-- **Reading.** **persists** when p < 0.05; **redrawn** when p >= 0.05 and the upper bound on beta is below 0.5,
-  half of a mesh's deviation recurring being the least that makes a selected seed worth keeping; **indeterminate**
-  otherwise.
+  fresh draw. Under a slope b the residuals e_new - b e_old hold the fresh error alone; with that error
+  exchangeable within each block and independent between blocks, each block's labels relabel independently,
+  whatever the block's error size. q(b) is the share of the 24^6 within-block
+  relabelings of those residuals whose cross product with e_old lies at or below the observed one; it never rises
+  with b, and the one-sided 95 % upper bound on beta is the largest b with q(b) >= 0.05
+  (`mesh_selection.slope_upper_bound`).
+- **Reading.** Half of a mesh's deviation recurring (beta 0.5) is the least that makes a selected seed worth
+  keeping. q(0.5) < 0.05 places the upper bound on beta below 0.5: the reading is **recurs below the useful
+  slope** when p < 0.05 also shows a slope above zero, and **redrawn** when p >= 0.05. With q(0.5) >= 0.05 the
+  reading is **persists** when p < 0.05 and the estimate beta is at least 0.5, and **indeterminate** otherwise.
 - **Secondary, no reading.** The same T and beta on slots 4 and 5 (chip modes 16 to 23, the modes of the teleportation
   layout `(18, 19, 20, 17, 22, 23, 16, 21)`) and with slot 5 excluded, since slot 5 carried the mode-swap case's
   heaviest mesh error (slot homogeneity p 2.5e-8).
@@ -88,31 +101,56 @@ five iterations must return counts.
 ## Power
 
 [`results/quandela/belenos-mesh-persistence-power.json`](../../results/quandela/belenos-mesh-persistence-power.json),
-from `--power --seed qrng:docs/evidence/anu_qrng/draw-2026-11-01T054809Z.json#2`, runs the analysis's own functions on
-2,000 simulated jobs per slope. The new true share of each cell is the retained block mean, plus a slot shift with
-standard deviation 0.03 common to the block's meshes, plus beta times the retained deviation, plus sqrt(1 - beta^2)
-times a fresh mesh error of standard deviation 0.0515, then a binomial draw at the retained count of the cell.
+from `--power --seed qrng:docs/evidence/anu_qrng/draw-2026-11-01T054809Z.json#3`, runs the analysis's own functions on
+2,000 simulated jobs per slope and fresh-error model. The new true share of each cell is the retained block mean,
+plus a slot shift with standard deviation 0.03 common to the block's meshes, plus beta times the retained deviation,
+plus sqrt(1 - beta^2) times a fresh mesh error, then a binomial draw at the retained count of the cell. The fresh
+error takes four forms: the half-block class size 0.0515 in every block; each block's own retained spread (0.028 to
+0.082); and the class size with half, then all, of its variance carried by one term per mesh across the six blocks.
 
-| Slope beta | persists | redrawn | indeterminate |
-|---|---|---|---|
-| 0 (fresh mesh error) | 0.047 | 0.730 | 0.223 |
-| 0.25 | 0.291 | 0.326 | 0.384 |
-| 0.5 | 0.804 | 0.049 | 0.148 |
-| 0.75 | 0.9995 | 0 | 0.0005 |
-| 1 (full persistence) | 1 | 0 | 0 |
+One error size for every block:
 
-Under this simulation's single error size for every block, the test holds its size (0.047 at beta 0), a useful
-persistence (beta 0.5 or more) reads persists in at least 80 % of jobs and redrawn in under 5 %, and a fresh draw
-reads redrawn in 73 %. A slope near 0.25, a weak persistence that would not repay selection, splits three ways:
-persists 0.291, redrawn 0.326, indeterminate 0.384.
+| Slope beta | persists | recurs below the useful slope | redrawn | indeterminate |
+|---|---|---|---|---|
+| 0 (fresh mesh error) | 0.0095 | 0 | 0.6815 | 0.309 |
+| 0.25 | 0.116 | 0.003 | 0.2755 | 0.6055 |
+| 0.5 | 0.4945 | 0.006 | 0.0425 | 0.457 |
+| 0.75 | 0.9645 | 0 | 0 | 0.0355 |
+| 1 (full persistence) | 1 | 0 | 0 | 0 |
 
-The retained blocks differ in spread: the standard deviation of a block's four centered shares runs from 0.028 to
-0.082. The slope bound pools one residual variance over the six blocks, so the redrawn and persists columns above
-hold for equal block spreads only. The review of this case
-([reconciliation](../archive/reviews/belenos-mesh-persistence-pr729-reconciliation.md)) measured the departure
-with an unledgered diagnosis and leaves the choice of a bound that holds under unequal spreads, and a restated
-table, to the owner before the case is approved. The relabeling p-value needs exchangeability within a block only
-and keeps its size there.
+Each block's retained spread:
+
+| Slope beta | persists | recurs below the useful slope | redrawn | indeterminate |
+|---|---|---|---|---|
+| 0 (fresh mesh error) | 0.0245 | 0.0005 | 0.54 | 0.435 |
+| 0.25 | 0.1555 | 0.0015 | 0.239 | 0.604 |
+| 0.5 | 0.445 | 0.003 | 0.0525 | 0.4995 |
+| 0.75 | 0.913 | 0 | 0.001 | 0.086 |
+| 1 (full persistence) | 1 | 0 | 0 | 0 |
+
+The two decisive error rates over all four models:
+
+| Fresh-error model | persists at beta 0 | redrawn at beta 0.5 |
+|---|---|---|
+| one error size for every block | 0.0095 | 0.0425 |
+| each block's retained spread | 0.0245 | 0.0525 |
+| half of the variance shared by a mesh's blocks | 0.0035 | 0.0305 |
+| all of the variance shared by a mesh's blocks | 0 | 0.0015 |
+
+A fresh draw reads persists in at most 2.5 % of jobs. Redrawn at the useful slope stays within sampling error of
+0.05 (one standard error is 0.005 at 2,000 jobs) when blocks differ in spread, and falls below it when a mesh's
+error is shared across blocks, where the test turns conservative. A useful
+persistence of beta 0.75 reads persists in 91 to 98 % of jobs and below the useful slope in at most 0.1 %. Beta 0.5,
+the threshold itself, reads persists in 45 to 50 % and indeterminate in 46 to 50 %, since the estimate falls on
+either side of it. A weak persistence of beta 0.25 reads persists in 8 to 16 % of jobs, so the optional
+teleportation replay below opens for it in at most one job in six, and indeterminate in 53 to 61 %. A fresh draw
+reads redrawn in 54 to 73 %.
+
+The first version of this case bounded the slope with a Student-t interval on one residual variance pooled over the
+six blocks; under the retained block spreads that bound read redrawn at beta 0.5 in 8 % of jobs against a nominal
+5 %, and persists carried no slope floor. The review of this case
+([reconciliation](../archive/reviews/belenos-mesh-persistence-pr729-reconciliation.md)) records the measurement and
+the replacement.
 
 ## Duration and credits
 
@@ -131,9 +169,9 @@ The mode-swap bound gives at most 51.4 s per 30,000-sample iteration, 257 s for 
 
 ## Written case
 
-- *What it measures.* Whether the four retained compilation seeds of the packed set-4 group return their retained
-  `computed_circuit` after the chip's recalibrations, and whether each mesh's deviation from its block's four-mesh
-  mean recurs (persistence slope beta, exact within-block relabeling test).
+- *What it measures.* Whether the four retained compilation seeds of the packed set-4 group return the mesh of
+  their retained `computed_circuit` after the chip's recalibrations, and whether each mesh's deviation from its block's four-mesh
+  mean recurs (persistence slope beta, exact within-block relabeling test and the upper bound that inverts it).
 - *Why a simulation cannot answer it.* The deviations are the chip's realized mesh and detection error; an ideal or
   noise-model simulation gives every mesh the target share, and whether the provider's compiler returns the same
   mesh after a recalibration is a property of the service.
@@ -145,15 +183,15 @@ The mode-swap bound gives at most 51.4 s per 30,000-sample iteration, 257 s for 
   `collect`, and `scripts/belenos_mesh_persistence.py --analyze RUN`. The plan records the platform's HOM, g2 and
   transmittance.
 - *Stopping rule.* A job that errors, is cut short, or runs longer than 270 s is resubmitted only on the owner's
-  further approval. An identity mismatch ends the program question with that reading; a persists or redrawn reading
-  ends the case. An indeterminate reading may justify a second job replaying the swapped layout of set 4 (the same
+  further approval. An identity mismatch ends the program question with that reading; a persists, recurs below
+  the useful slope or redrawn reading ends the case. An indeterminate reading may justify a second job replaying the swapped layout of set 4 (the same
   six half blocks on other slots, 1.09 credits), only on the owner's further approval.
 
 ## Optional second case: the teleportation replay
 
 Only if this case reads **persists**, a replay of the twelve job-02 and job-03 teleportation seeds asks whether the
 teleportation meshes in particular keep their errors. Grounded in the reviews of the design investigation, it would
-run two six-iteration jobs of 1,200 samples (block A's seeds, then block B's after its hashes match), 4.0 to 5.0
+run two six-iteration jobs of 1,200 samples (block A's seeds, then block B's after its meshes match), 4.0 to 5.0
 credits each at a `max_shots` of 3,000,000 to 4,000,000 per iteration, 8 to 10 credits in all. Its primary
 observable would be acceptance per sample within each input (the six A minus B acceptance differences carry
 chi-square 65.9 on 6 degrees of freedom, against 20.5 for correctness), with correctness and correct events per sample
