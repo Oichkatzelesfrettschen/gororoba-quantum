@@ -8,14 +8,14 @@
 # - fewer than MAX_ROUNDS rounds were requested, where a round is a request
 #   separated from the previous counted request by at least one pushed commit
 #   (a same-head repeat after a stalled round counts once).
-# A refusal names its reason and exits 3; the owner decides a third round.
+# A refusal names its reason and exits 3; the owner decides a further round.
 # Usage: scripts/codex_review_request.sh PR [MAX_ROUNDS]
 # Exit: 0 requested, 2 usage or lookup failure, 3 refused.
 set -eu
 
 [ "$#" -ge 1 ] || { echo "usage: $0 PR [MAX_ROUNDS]" >&2; exit 2; }
 pr=$1
-max=${2:-2}
+max=${2:-1}
 here=$(cd "$(dirname "$0")" && pwd)
 repo=$(git -C "$here" rev-parse --show-toplevel)
 slug=$(git -C "$repo" remote get-url origin | sed -E 's#^.*github\.com[:/]##; s#\.git$##')

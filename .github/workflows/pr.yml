@@ -38,10 +38,12 @@ jobs:
       - name: ruff
         run: sh ci/pr_checks.sh lint
 
+  # A job's limit covers its checkout as well as its step: actions/checkout of this tree has taken up to
+  # 4 min 21 s on a hosted runner, so each limit below is that time plus the step's own limit, with margin.
   types:
     name: types
     runs-on: ubuntu-26.04
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
       - uses: ./.github/actions/pins-venv
@@ -52,7 +54,7 @@ jobs:
   tests:
     name: tests
     runs-on: ubuntu-26.04
-    timeout-minutes: 8
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
       - uses: ./.github/actions/pins-venv
@@ -77,7 +79,7 @@ jobs:
   contracts:
     name: contracts
     runs-on: ubuntu-26.04
-    timeout-minutes: 8
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
       - uses: ./.github/actions/pins-venv
