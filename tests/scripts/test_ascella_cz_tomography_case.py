@@ -10,7 +10,7 @@ from typing import Any
 import ascella_cz_tomography_case as case
 import numpy as np
 import pytest
-from qd_platform import sha256_bytes
+from qd_platform import expected_iterations, result_summary, sha256_bytes
 
 
 def test_retained_request_rebuilds_and_binds() -> None:
@@ -128,6 +128,20 @@ def test_absolute_rate_estimator_recovers_a_map_with_input_dependent_success() -
         raise AssertionError("the conditional estimator no longer differs, so the test shows nothing")
 
 
+ONE_CLICK = ",".join(["1"] + ["0"] * 11)
+
+
+def _raw_entry(entry: dict[str, Any]) -> dict[str, Any]:
+    """The raw /result entry from which qd_platform.result_summary reads a fixture iteration. A missing entry has
+    none: result_summary appends it after the answered ones."""
+    if "counts" in entry:
+        serialized = ";".join(f"|{state}>={count}" for state, count in entry["counts"].items())
+        return {"results": f":PCVL:BSCount:{{{serialized}}}", "iteration": entry["iteration"], **entry["result_fields"]}
+    if "error" in entry:
+        return {"results": entry["error"], "iteration": {}}
+    return {"results": None}
+
+
 def _write_run(
     directory: Path,
     job: str,
@@ -165,11 +179,17 @@ def _write_run(
     iterations = iterations[: len(iterations) - drop]
     if reverse:
         iterations.reverse()
+    answered = [_raw_entry(entry) for entry in iterations if "missing" not in entry]
+    complete = not drop and all("counts" in entry for entry in iterations)
+    shots = 10**7
+    answer = {"job_id": f"id-{job}", "shots": shots, "results": json.dumps({"results_list": answered})}
+    raw_result = json.dumps(answer).encode()
     (directory / "raw").mkdir()
-    raw_result = f"synthetic raw result of {job}".encode()
     (directory / "raw" / "result.json").write_bytes(raw_result)
+    status = {"status": "completed" if complete else "canceled", "shots": shots}
+    summary = result_summary(raw_result, f"id-{job}", status, complete, expected_iterations(manifest))
     (directory / "results.json").write_text(
-        json.dumps({"job_id": f"id-{job}", "result_sha256": sha256_bytes(raw_result), "iterations": iterations})
+        json.dumps({"job_id": f"id-{job}", "status": status, "result_sha256": sha256_bytes(raw_result), **summary})
     )
     submission = {
         "job_id": f"id-{job}",
@@ -216,11 +236,11 @@ def test_seed_binding_refuses_unknown_and_repeated_seeds(tmp_path: Path) -> None
     manifest = json.loads((case.FAMILY_DIR / case.JOBS[1] / "cases.json").read_text())
     first = manifest["settings"][0]["compilation_seed"]
     repeated = {
-        1: {"iteration": {"compilation_seed": first}, "counts": {"1": 1}, "result_fields": {"nb_shots_used": 5}}
+        1: {"iteration": {"compilation_seed": first}, "counts": {ONE_CLICK: 1}, "result_fields": {"nb_shots_used": 5}}
     }
     absent = max(setting["compilation_seed"] for setting in manifest["settings"]) + 1
     unknown = {
-        1: {"iteration": {"compilation_seed": absent}, "counts": {"1": 1}, "result_fields": {"nb_shots_used": 5}}
+        1: {"iteration": {"compilation_seed": absent}, "counts": {ONE_CLICK: 1}, "result_fields": {"nb_shots_used": 5}}
     }
     for label, bad in (("repeated", repeated), ("unknown", unknown)):
         runs = _runs(tmp_path / label, entries=bad)
@@ -266,7 +286,7 @@ def test_pooling_scales_by_transmittance_and_flags_drift(tmp_path: Path) -> None
 
 
 def test_analysis_refuses_a_result_bound_to_another_job_or_raw_file(tmp_path: Path) -> None:
-    """results.json must name the submitted job and carry the digest of raw/result.json."""
+    """results.json must name the submitted job, carry the digest of raw/result.json and equal its summary."""
     foreign = "00000000-0000-0000-0000-000000000000"
 
     def edited(label: str, file: str, change: dict[str, Any] | None) -> list[Path]:
@@ -288,6 +308,16 @@ def test_analysis_refuses_a_result_bound_to_another_job_or_raw_file(tmp_path: Pa
             (runs[0] / "raw" / "result.json").write_bytes(data)
         return runs
 
+    def swapped_counts(label: str) -> list[Path]:
+        runs = _runs(tmp_path / label)
+        path = runs[0] / "results.json"
+        data = json.loads(path.read_text())
+        first = data["iterations"][0]
+        second = next(entry for entry in data["iterations"] if entry["counts"] != first["counts"])
+        first["counts"], second["counts"] = second["counts"], first["counts"]
+        path.write_text(json.dumps(data))
+        return runs
+
     def no_submission(label: str) -> list[Path]:
         runs = _runs(tmp_path / label)
         (runs[0] / "submission.json").unlink()
@@ -301,6 +331,8 @@ def test_analysis_refuses_a_result_bound_to_another_job_or_raw_file(tmp_path: Pa
         (raw_edit("raw-edit", b"edited"), "result_sha256"),
         (raw_edit("raw-gone", None), "result_sha256"),
         (no_submission("no-submission"), "no submission.json"),
+        (swapped_counts("swapped-counts"), "differs from the raw result"),
+        (edited("shots-used", "results.json", {"shots_used": 1}), "differs from the raw result"),
     )
     for runs, message in mutations:
         with pytest.raises(RuntimeError, match=message):

@@ -62,7 +62,16 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from hypercomplex_cases import encoded, photonic_template  # noqa: E402
-from qd_platform import PlatformError, load_case, payload, sha256_bytes, template_experiment  # noqa: E402
+from qd_platform import (  # noqa: E402
+    PlatformError,
+    expected_iterations,
+    load_case,
+    payload,
+    predates,
+    result_summary,
+    sha256_bytes,
+    template_experiment,
+)
 
 from parallel import ordered_map  # noqa: E402
 
@@ -1305,9 +1314,9 @@ def parse_state(key: str) -> list[int]:
 
 def load_run(run: Path) -> dict[str, Any]:
     """One collected run bound to its retained case: cases.json must equal the retained bytes, results.json must name
-    the job that submission.json records and carry the sha256 of raw/result.json, and each returned iteration binds
-    to the setting that has its echoed compilation_seed, one to one. An entry that is missing, malformed or an error
-    is counted and skipped."""
+    the job that submission.json records, carry the sha256 of raw/result.json and equal the qd_platform.result_summary
+    of those raw bytes, and each returned iteration binds to the setting that has its echoed compilation_seed, one to
+    one. An entry that is missing, malformed or an error is counted and skipped."""
     raw = (run / "cases.json").read_bytes()
     manifest = json.loads(raw)
     job = manifest.get("job")
@@ -1329,6 +1338,22 @@ def load_run(run: Path) -> dict[str, Any]:
             isinstance(digest, str) and raw_path.is_file() and sha256_bytes(raw_path.read_bytes()) == digest,
             f"{run}: raw/result.json does not match the result_sha256 of results.json",
         )
+        status = results.get("status")
+        require(isinstance(status, dict), f"{run}: results.json records no job status")
+        try:
+            summary = result_summary(
+                raw_path.read_bytes(),
+                job_id,
+                status,
+                status.get("status") == "completed",
+                expected_iterations(manifest),
+            )
+        except PlatformError as error:
+            raise RuntimeError(f"{run}: raw/result.json is unreadable: {error}") from error
+        differing = sorted(
+            key for key, value in summary.items() if results.get(key) != value and not predates(results, summary, key)
+        )
+        require(not differing, f"{run}: results.json differs from the raw result in {differing}")
     require(len(entries) <= len(manifest["settings"]), f"{run}: {len(entries)} iterations for {job}")
     by_seed = {setting["compilation_seed"]: setting["name"] for setting in manifest["settings"]}
     tallies: dict[str, dict[str, Any]] = {}
