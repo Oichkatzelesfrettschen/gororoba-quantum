@@ -139,9 +139,9 @@ Forecast at the platform read (HOM 87.9 %, g2 1.4 %, Transmittance 5.37 %), reta
 
 The indistinguishable periodic forecast moves with g2 (0.188 at half g2, 0.246 at double) and with HOM:
 0.38, 0.34, 0.29, 0.24, 0.18, 0.12 and 0.06 at HOM 0.70, 0.75, 0.80, 0.85, 0.90, 0.95 and 1.00. At g2 1.4 % and HOM 1.00
-the fraction is still 0.058, so the g2 tail alone leaks 0.058. The slope is about -1.2 per unit HOM. Three effects move
-s by the same order and are not separable in this case: the HOM visibility, the g2 tail (about +-0.03) and compilation
-error. The ideal fraction is 0, so a perturbed Fourier matrix adds weight to the suppressed set at zero g2 and full HOM; an
+the fraction is still 0.058, so the g2 tail alone leaks 0.058. The slope is about -1.2 per unit HOM. The HOM visibility
+and the g2 tail (about +-0.03) move s by the same order and are not separable in this case, and the compilation error of
+the physical mesh adds an effect that nothing here measures (hypothesis: it exceeds the nominal shifts below). The ideal fraction is 0, so a perturbed Fourier matrix adds weight to the suppressed set at zero g2 and full HOM; an
 independent review's Monte Carlo perturbation of the unitary by exp(i eps H) with random Hermitian H (not retained or
 reproduced here) raised the mean s from 0.001 to 0.114 as the single-photon column error grew from 0.010 to 0.102
 (total variation distance), with a spread of about half the shift. At the operating point (HOM 0.886, g2 0.014) the
@@ -180,14 +180,14 @@ least 200 accepted events (half of its 400 samples); a smaller one is reported a
   control whatever the periodic arm shows.
 - **Level.** The periodic mean lies within max(0.05, 3 se) of the indistinguishable forecast: suppression at the
   predicted level. Below it is suppression stronger than predicted. Above it is suppression weaker than predicted,
-  and the case cannot attribute the excess to partial distinguishability: the g2 figure and compilation error move s
-  too. The analysis reports the HOM at which the forecast curve reaches the observed mean, and the HOMs at which it
+  and the case cannot attribute the excess to partial distinguishability: the g2 figure moves s too, and the physical
+  mesh error can. The analysis reports the HOM at which the forecast curve reaches the observed mean, and the HOMs at which it
   reaches the two one-sided 99 % limits of that mean, under the Perceval source model and the forecast g2. These are
-  model-conditional inverses of a point estimate and of its interval and bound nothing, because the HOM mapping, the g2
-  figure and the physical mesh error each move s by the same order. Each counted
-  iteration returns its served mesh in `result_fields.computed_circuit`, which `photonic_compilation_audit._elements`
-  decodes; a forecast per served mesh would remove the compilation confound and is a follow-up, not part of this
-  rule.
+  model-conditional inverses of a point estimate and of its interval and bound nothing, because the HOM mapping and the
+  g2 figure move s by the same order and the physical mesh error is unmeasured (hypothesis: it exceeds the nominal 2e-6
+  shifts). Each counted iteration returns its served mesh in `result_fields.computed_circuit`, which
+  `photonic_compilation_audit._elements` decodes; the nominal forecast per served mesh differs from the requested one by
+  under 2e-6, and a forecast per served mesh inside the analysis is a follow-up, not part of this rule.
 - **Undecided.** Fewer than four counted iterations in either arm, including a cut-short job whose lost iterations
   come back as `missing`, `malformed` or `error` entries; the analysis tallies and skips those.
 
@@ -213,7 +213,8 @@ accepted events per arm at the modeled yield, binomial error 0.010). It is wrong
 indistinguishability if the upper bound of s_periodic exceeds about 0.50 or the lower bound of the paired contrast falls
 below 0.10; the distinguishable and mean-field models then describe the chip. The expected upper bound under the
 forecast is 0.25, so the sample size leaves the first rule a margin of 0.25. The level rule is a consistency check, not
-a falsifier of the Perceval overlap mapping: compilation error and g2 move s by the same order as the HOM mapping.
+a falsifier of the Perceval overlap mapping: g2 moves s by the same order as the HOM mapping, and the physical mesh
+error is unmeasured (the nominal returned meshes move s by under 2e-6).
 
 **What the rules reject.** The absolute rule puts the upper 99 % bound of s_periodic at least 0.10 below the smaller
 null forecast, so it rejects the fully distinguishable null (0.602) and the mean-field null (0.727) when the data sit

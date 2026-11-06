@@ -1109,12 +1109,12 @@ def decide(record: Mapping[str, Any], forecasts: Sequence[Mapping[str, Any]]) ->
     suppression observed needs both rules: the upper 1 - ALPHA bound of the periodic fraction lies at least
     NULL_MARGIN below the smaller of the distinguishable and mean-field forecasts, and the lower 1 - ALPHA bound of
     the paired contrast s_control - s_periodic reaches CONTRAST_MARGIN (the contrast is 0 for distinguishable photons
-    at any detector efficiencies for the requested matrices; on the served meshes it stays below 1e-5). control valid:
+    at any detector efficiencies for the requested matrices). control valid:
     the control fraction lies within CONTROL_TOLERANCE of the indistinguishable forecast of the control. level: the
-    periodic fraction lies within max(FORECAST_TOLERANCE, 3 se) of the indistinguishable forecast. The HOM mapping,
-    the g2 figure and the physical mesh error each move s by the same order, so the level words the verdict and the
-    HOM inverses of the periodic mean and of its two one-sided limits are model-conditional values, not bounds on the
-    effective HOM."""
+    periodic fraction lies within max(FORECAST_TOLERANCE, 3 se) of the indistinguishable forecast. The HOM mapping
+    and the g2 figure move s by the same order and the applied mesh phases can move it too (hypothesis: the nominal
+    returned matrices do not bound that error), so the level words the verdict and the HOM inverses of the periodic
+    mean and of its two one-sided limits are model-conditional values, not bounds on the effective HOM."""
     periodic, control = record["summary"]["periodic"], record["summary"]["control"]
     forecast_row = record["forecast"]
     out: dict[str, Any] = {
