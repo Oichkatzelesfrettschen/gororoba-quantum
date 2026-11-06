@@ -33,9 +33,16 @@ Charge per job = 1 + price_per_shot x S, with price_per_shot = 1e-6 on
 qpu:belenos and qpu:ascella and 0 on the simulators, and
 
 - S = the shots the job actually used, for a one-computation job;
-- S = the largest iteration's `max_shots`, used or not, for an iterated job.
+- S = the smaller of the shots the job used over all its iterations and the
+  largest iteration's `max_shots`, for an iterated job.
 
-A simulator job costs 1 credit whatever it samples.
+Every job therefore costs 1 credit on a QPU and on a simulator alike, and a
+QPU job adds one millionth of a credit per billed shot. A simulator job costs
+1 credit whatever it samples. An iterated job whose total shots exceed its
+largest `max_shots` pays that ceiling; one that stays below it pays the shots
+it used. `scripts/qd_platform.py` `plan` prices `estimated_credits` with the
+smaller of the billed shots and the estimate, so `estimated_credits` predicts
+the charge and `credit_ceiling` bounds it.
 
 Evidence: every retained run under `results/quandela/runs/` holds the usage
 report before submission (`submission.json`) and after collection
@@ -52,6 +59,14 @@ report before submission (`submission.json`) and after collection
 | c1eb1cbb | iterated | 9 | up to 60000 | 120000 | 1.12 |
 | every sim:belenos job | single or iterated | 1 to 16 | any | any | 1.0 |
 
+On qpu:ascella the job of run
+`2026-10-30T190300Z-qpu_ascella-a5-kernel-slice` used 60,000 shots over six
+iterations under a largest `max_shots` of 100,000 and was charged 1.06
+credits, where the ceiling alone gives 1.10; the 15 other retained
+qpu:ascella jobs with a usage report on both sides used more shots than
+their largest `max_shots` and were charged that ceiling (1.016384 to
+1.262144 credits).
+
 The 16 measured qpu:belenos charges and 1.01 for job 7419efb8, whose
 before-report predates retention, sum to 17.2255, the qpu:belenos total of
 the usage report read on 2026-10-21. The rule reproduces every credit spent
@@ -66,6 +81,7 @@ record the same rule from the first iterated jobs.
 | Duration of one job | 300 s (`max_duration` of the Explorer row), counted from `start_time` | `qd_platforms`, `plan` refuses a longer case; see "Job shape on qpu:belenos" |
 | Time per iteration on qpu:belenos | grows with the photon count: about 7 to 9 s for one photon, 46 to 50 s for six | "Job shape on qpu:belenos"; one-photon: 6.3 s plus 26 us per sample (c1eb1cbb: 9 iterations, 166000 samples, 61 s predicted and measured; 46b810ae: 157 s predicted, 149 s measured) |
 | Time per one-computation job | 13 to 15 s whatever its samples | aa4218f1, a5f0a8a4 |
+| Time per iteration on qpu:ascella | about 3.0 s whatever its shots: 2.9 to 3.2 s over jobs of 5 to 96 iterations, so a job fills the 300 s at about 100 iterations | `status.duration` of `results.json` over the iteration count in the retained qpu:ascella runs (96 iterations in 288 and 289 s, 64 in 186 s, 5 in 16 s) |
 | Time per iteration on sim:belenos | about 13 to 14 s | 1d7160c1 and 32b28fe8, 16 iterations in 212 and 230 s |
 | Transmittance behind the rates | 2.69 to 2.95 % | `perfs_at_plan` of the retained runs; the rate scales with it |
 | Jobs in flight | 1 running and 1 queued | `qd_availability` |
