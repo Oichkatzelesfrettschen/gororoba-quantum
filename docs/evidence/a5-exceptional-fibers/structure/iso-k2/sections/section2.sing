@@ -1,0 +1,9 @@
+LIB "primdec.lib"; option(redSB); system("--ticks-per-sec",1); int t0=rtimer;
+ring Y=32009,(y(1..17)),dp; execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/runs/s3/iso_k2.rel")+";");
+ideal L=26046*y(1)+6896*y(2)+31551*y(3)+15957*y(4)+26391*y(5)+21135*y(6)+29064*y(7)+7313*y(8)+28763*y(9)+23842*y(10)+13636*y(11)+11909*y(12)+293*y(13)+19820*y(14)+10337*y(15)+12217*y(16)+11770*y(17),22860*y(1)+15104*y(2)+6719*y(3)+7255*y(4)+15187*y(5)+29904*y(6)+31440*y(7)+28149*y(8)+9470*y(9)+12686*y(10)+14500*y(11)+29333*y(12)+8594*y(13)+12334*y(14)+23553*y(15)+25343*y(16)+11016*y(17),25013*y(1)+18864*y(2)+8463*y(3)+9462*y(4)+8185*y(5)+22327*y(6)+11541*y(7)+25229*y(8)+28948*y(9)+30992*y(10)+15990*y(11)+27293*y(12)+2693*y(13)+9464*y(14)+17408*y(15)+18290*y(16)+8179*y(17);
+ideal S=std(K+L);
+"RESULT section 2 dim", dim(S), "deg", mult(S), "s", rtimer-t0;
+ideal rS=std(radical(S)); "RESULT section 2 radical", size(reduce(rS,S))==0, "s", rtimer-t0;
+list P=minAssChar(S); "RESULT section 2 primes", size(P), "s", rtimer-t0;
+int i; for (i=1;i<=size(P);i++) { ideal Q=std(P[i]); "RESULT section 2 prime", i, "dim", dim(Q), "deg", mult(Q); kill Q; }
+quit;

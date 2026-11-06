@@ -423,6 +423,62 @@
    "index": 1
   },
   {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 63889,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 65328,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 18934,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 51115,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 3
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 51480,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 4
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 31486,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 5
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 50307,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 6
+  },
+  {
+   "path": "scripts/belenos_suppression_case.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 51095,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T034820Z.json",
+   "index": 7
+  },
+  {
    "path": "scripts/qd_teleportation_rehearsal.py",
    "name": "JOB_02_COMPILATION_SEEDS",
    "value": 19918,
@@ -1279,6 +1335,14 @@
    "experiment": "belenos-herald-leak-composition"
   },
   {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-01T054809Z.json",
+   "index": 3,
+   "value": 58377,
+   "script": "scripts/belenos_mesh_persistence.py",
+   "flag": "--seed",
+   "experiment": "belenos-mesh-persistence-power"
+  },
+  {
    "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
    "index": 0,
    "value": 34509,
@@ -1736,6 +1800,13 @@
    "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
    "index": 58,
    "reason": "Compilation identifier for sedenion-lcu setting fixture; repeated arms reproduce that named mesh."
+  },
+  {
+   "path": "scripts/belenos_mesh_persistence.py",
+   "value": 21344,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-01T054809Z.json",
+   "index": 2,
+   "reason": "seeded the power record of the mesh-persistence case at commit 2bb86624c, under a Student-t slope bound that the review replaced before the pull request merged; the script cites the value so that it stays consumed"
   }
  ],
  "owned": [

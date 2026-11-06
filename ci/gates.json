@@ -4153,6 +4153,19 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/belenos_suppression_case.py --check",
+      "name": "core-belenos-suppression-law-case-check",
+      "seconds": 8.0,
+      "replays": [
+        "results/quandela/cases/belenos_suppression_law/job-00/cases.json",
+        "results/quandela/cases/belenos_suppression_law/job-00/circuit.json",
+        "results/quandela/cases/belenos_suppression_law/job-01/cases.json",
+        "results/quandela/cases/belenos_suppression_law/job-01/circuit.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_qet_ladder.py --self-test",
       "name": "core-696",
       "seconds": 6.0

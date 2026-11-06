@@ -11,14 +11,22 @@ selecting its own runs and blocks.
   Benjamini-Hochberg sign decisions (Weinstein and Yekutieli, arXiv 1404.7403, Definition 2).
 - replay_power is the posterior-predictive power of a winner-and-loser replay of the two blocks.
 - exact_permutation_r is Pearson r with its exact one-sided permutation p-value.
+- sign_flip_cross_product is the label-invariant counterpart for within-input B minus A differences: the uncentered
+  cross product with its exact one-sided p-value over sign flips of the second difference.
 - composition_test is the conditional Monte Carlo test that the two rows of 2 x K count tables share one
   composition (multivariate hypergeometric reallocation given both margins); two_row_chi_square and
   adjusted_residuals are its statistic and its per-cell residuals.
+- persistence is the recurrence test of each mesh's deviation from its block mean between two windows: the cross
+  product of the block-centered shares, its exact one-sided p-value over within-block relabelings
+  (relabeled_values, exact_upper_p) and the slope through the origin with the one-sided upper bound that inverts
+  the same relabeling test (slope_lower_p, slope_upper_bound); persistence_reading turns that record into a reading
+  under caller-supplied thresholds.
 """
 
 from __future__ import annotations
 
 import itertools
+import math
 from collections.abc import Mapping, Sequence
 from typing import Any
 
@@ -70,6 +78,22 @@ def exact_permutation_r(x: np.ndarray, y: np.ndarray, negative: bool) -> tuple[f
     if negative:
         return observed, float(np.mean([v <= observed + 1e-12 for v in values]))
     return observed, float(np.mean([v >= observed - 1e-12 for v in values]))
+
+
+def sign_flip_cross_product(x: np.ndarray, y: np.ndarray, negative: bool) -> tuple[float, float]:
+    """Uncentered cross product sum x_i y_i of paired B minus A differences and its exact one-sided p-value over the
+    2^n sign flips of y.
+
+    Relabeling an input's two meshes negates both of its differences and leaves x_i y_i unchanged, so the statistic
+    does not depend on which mesh is called A; a centered Pearson r over permuted pairings does. Under the null that y
+    is symmetric about zero independently of x, each sign of y_i is equally likely, which the flips enumerate."""
+    products = np.asarray(x, dtype=float) * np.asarray(y, dtype=float)
+    observed = float(products.sum())
+    signs = np.array(list(itertools.product((1.0, -1.0), repeat=len(products))))
+    values = signs @ products
+    if negative:
+        return observed, float(np.mean(values <= observed + 1e-15))
+    return observed, float(np.mean(values >= observed - 1e-15))
 
 
 def contrast_shrinkage(
@@ -137,6 +161,8 @@ def contrast_shrinkage(
         "tau_posterior_mean": float(weights @ tau_grid),
         "tau_90_interval": [float(tau_grid[np.searchsorted(cdf, 0.05)]), float(tau_grid[np.searchsorted(cdf, 0.95)])],
         "mean_expected_gap": float(gap.mean()),
+        # Choosing the winner of two meshes instead of either at random gains half the winner-minus-loser gap.
+        "mean_expected_gain_over_pair_average": float(gap.mean() / 2),
         "directional_bh_q": fdr_q,
         "signs_determined": determined,
         "_draw": {"d": d, "s": s, "weights": weights},
@@ -316,3 +342,148 @@ def composition_test(tables: Sequence[np.ndarray], draws: int, seed: int | np.ra
     total = np.sum(nulls, axis=0)
     p = float((1 + np.count_nonzero(total >= observed - 1e-9)) / (1 + draws))
     return {"statistic": observed, "per_table": statistics, "p": p, "draws": draws}
+
+
+def centered(shares: np.ndarray) -> np.ndarray:
+    """Each block's shares minus its mean over the meshes (rows are blocks)."""
+    return shares - shares.mean(axis=1, keepdims=True)
+
+
+def relabeled_values(e_old: np.ndarray, e_new: np.ndarray) -> list[np.ndarray]:
+    """Per block, the block's cross product under each of the m! relabelings of the new meshes."""
+    m = e_old.shape[1]
+    perms = np.array(list(itertools.permutations(range(m))))
+    return [e_new[b][perms] @ e_old[b] for b in range(e_old.shape[0])]
+
+
+def exact_upper_p(per_block: Sequence[np.ndarray], observed: float) -> float:
+    """P(sum of one independent draw per block >= observed), exact by splitting the blocks in two halves."""
+    half = len(per_block) // 2
+
+    def sums(parts: Sequence[np.ndarray]) -> np.ndarray:
+        total = np.zeros(1)
+        for values in parts:
+            total = (total[:, None] + values[None, :]).ravel()
+        return total
+
+    left, right = sums(per_block[:half]), np.sort(sums(per_block[half:]))
+    tol = 1e-12
+    count = right.size - np.searchsorted(right, observed - left - tol, side="left")
+    return float(count.sum() / (left.size * right.size))
+
+
+def exact_lower_p(per_block: Sequence[np.ndarray], observed: float) -> float:
+    """P(sum of one independent draw per block <= observed), the mirror of exact_upper_p."""
+    return exact_upper_p([-values for values in per_block], -observed)
+
+
+def slope_terms(e_old: np.ndarray, e_new: np.ndarray) -> tuple[list[np.ndarray], list[np.ndarray]]:
+    """Per block and relabeling, the two coefficients of the slope test: ``rise``, the relabeled cross product of
+    e_new with e_old minus the observed one, and ``lost``, the block's sum of e_old^2 minus the relabeled sum.
+
+    Under a slope b the relabeled cross product of the residuals e_new - b e_old exceeds the observed one by
+    rise + b lost, summed over the blocks. lost is nonnegative, and exactly zero for a relabeling that permutes
+    equal retained deviations, so that relabeling's term holds at every slope."""
+    m = e_old.shape[1]
+    perms = np.array(list(itertools.permutations(range(m))))
+    rise, lost = [], []
+    for old, new in zip(e_old, e_new, strict=True):
+        cross = new[perms] @ old
+        rise.append(cross - cross[0])
+        # Half the squared displacement equals the difference of the two sums and keeps a near tie's small value.
+        lost.append(0.5 * ((old[perms] - old) ** 2).sum(axis=1))
+    return rise, lost
+
+
+def slope_terms_p(rise: Sequence[np.ndarray], lost: Sequence[np.ndarray], slope: float) -> float:
+    """Share of relabelings with sum of rise + slope lost at or below zero; an infinite slope takes the limit, in
+    which a relabeling with positive lost leaves the count (plus infinity) or always joins it (minus infinity)."""
+    if math.isinf(slope):
+        values = [np.where(change > 0, slope, base) for base, change in zip(rise, lost, strict=True)]
+    else:
+        values = [base + slope * change for base, change in zip(rise, lost, strict=True)]
+    return exact_lower_p(values, 0.0)
+
+
+def slope_lower_p(e_old: np.ndarray, e_new: np.ndarray, slope: float) -> float:
+    """Exact one-sided p-value of the hypothesis that the persistence slope is at least ``slope``.
+
+    Under a slope b the residuals e_new - b e_old carry the fresh error alone. With that error exchangeable within
+    each block and independent between blocks, the labels of each block relabel independently, whatever the
+    block's error size. The p-value is the share of within-block relabelings of the
+    residuals whose cross product with e_old lies at or below the observed one. It never increases with b: the
+    observed cross product minus a relabeled one falls linearly in b at the rate sum e_old^2 minus the relabeled
+    sum, which is nonnegative (slope_terms)."""
+    return slope_terms_p(*slope_terms(e_old, e_new), slope)
+
+
+def slope_upper_bound(e_old: np.ndarray, e_new: np.ndarray, alpha: float, tolerance: float = 1e-9) -> float:
+    """The largest slope that slope_lower_p does not reject at level alpha, by bisection to ``tolerance`` or to
+    adjacent floats; plus infinity when the p-value stays at or above alpha in the limit of large slopes, which
+    takes tied retained deviations, and minus infinity when it lies below alpha in the limit of small ones.
+
+    The set of slopes with slope_lower_p >= alpha is a closed half line, so the bound lies below a value u exactly
+    when slope_lower_p(u) < alpha."""
+    rise, lost = slope_terms(e_old, e_new)
+    if slope_terms_p(rise, lost, math.inf) >= alpha:
+        return math.inf
+    if slope_terms_p(rise, lost, -math.inf) < alpha:
+        return -math.inf
+    sxx = float((e_old**2).sum())
+    beta = float((e_old * e_new).sum()) / sxx
+    step = 1.0 + abs(beta) + math.sqrt(float((e_new**2).sum()) / sxx)
+    # The two limits bracket a finite bound, and a doubling reach meets it however small the smallest positive lost.
+    low, reach = beta, step
+    while slope_terms_p(rise, lost, low) < alpha:
+        low, reach = beta - reach, 2.0 * reach
+    high, reach = beta + step, 2.0 * step
+    while slope_terms_p(rise, lost, high) >= alpha:
+        low, high, reach = high, beta + reach, 2.0 * reach
+    if math.isinf(low) or math.isinf(high):
+        return low if math.isinf(low) else high
+    while high - low > tolerance:
+        middle = low + 0.5 * (high - low)
+        if not low < middle < high:
+            break
+        if slope_terms_p(rise, lost, middle) >= alpha:
+            low = middle
+        else:
+            high = middle
+    return low
+
+
+def persistence(
+    old: np.ndarray, new: np.ndarray, alpha: float, useful_slope: float, bound: bool = True
+) -> dict[str, Any]:
+    """The cross product of block-centered shares, its exact relabeling p-value, the slope and its upper bound.
+
+    old and new hold one row per block and one column per mesh. The slope is the regression through the origin of
+    the new centered shares on the old ones. useful_slope_p is slope_lower_p at useful_slope, and the one-sided
+    1 - alpha upper bound inverts that test over the slope (slope_upper_bound), so both need exchangeability
+    within a block only and hold when the blocks differ in error size. bound=False leaves the bisection out for a
+    caller that needs the reading alone."""
+    e_old, e_new = centered(old), centered(new)
+    observed = float((e_old * e_new).sum())
+    result = {
+        "statistic": observed,
+        "p_value": exact_upper_p(relabeled_values(e_old, e_new), observed),
+        "slope": observed / float((e_old**2).sum()),
+        "useful_slope_p": slope_lower_p(e_old, e_new, useful_slope),
+    }
+    if bound:
+        result["slope_upper"] = slope_upper_bound(e_old, e_new, alpha)
+    return result
+
+
+def persistence_reading(result: Mapping[str, Any], alpha: float, useful_slope: float) -> str:
+    """The reading of a persistence record under caller-supplied thresholds.
+
+    useful_slope_p below alpha places the slope's upper bound below useful_slope: it reads recurs below the useful
+    slope when the p-value also shows a slope above zero, and redrawn otherwise. A p-value below alpha with a slope
+    estimate of at least useful_slope reads persists. Every other record is indeterminate."""
+    above_zero = result["p_value"] < alpha
+    if result["useful_slope_p"] < alpha:
+        return "recurs below the useful slope" if above_zero else "redrawn"
+    if above_zero and result["slope"] >= useful_slope:
+        return "persists"
+    return "indeterminate"

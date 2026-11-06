@@ -1,0 +1,7 @@
+RESULT gens check.sing K 144 w8_k2.rel 144 receipt relations-d2.rel 144
+RESULT K in A 1 A in K 1
+RESULT K in B 1 B in K 1
+RESULT A in B 1 B in A 1
+RESULT K projdim 5 degree 50
+exit 0
+Singular Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Jun 

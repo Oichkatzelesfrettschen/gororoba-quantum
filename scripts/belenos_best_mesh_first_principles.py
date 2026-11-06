@@ -192,6 +192,9 @@ def acceptance_section(counts: Mapping[str, Mapping[str, Mapping[str, float]]]) 
         deltas_h.append(herald["B"] - herald["A"])
     r_af, p_af = exact_permutation_r(np.asarray(deltas_a), np.asarray(deltas_f), negative=True)
     r_hf, p_hf = exact_permutation_r(np.asarray(deltas_h), np.asarray(deltas_f), negative=False)
+    # The permutation r above depends on which mesh of an input is called A; the sign-flip cross product does not.
+    x_af, q_af = ms.sign_flip_cross_product(np.asarray(deltas_a), np.asarray(deltas_f), negative=True)
+    x_hf, q_hf = ms.sign_flip_cross_product(np.asarray(deltas_h), np.asarray(deltas_f), negative=False)
     winner_block = {label: "A" if deltas_f[i] < 0 else "B" for i, label in enumerate(LABELS)}
     winners = [counts[label][winner_block[label]] for label in LABELS]
     losers = [counts[label]["B" if winner_block[label] == "A" else "A"] for label in LABELS]
@@ -199,10 +202,16 @@ def acceptance_section(counts: Mapping[str, Mapping[str, Mapping[str, float]]]) 
         "inputs": rows,
         "acceptance_correctness_r": r_af,
         "acceptance_correctness_one_sided_permutation_p": p_af,
+        "acceptance_correctness_cross_product": x_af,
+        "acceptance_correctness_one_sided_sign_flip_p": q_af,
         "herald_correctness_r": r_hf,
         "herald_correctness_one_sided_permutation_p": p_hf,
+        "herald_correctness_cross_product": x_hf,
+        "herald_correctness_one_sided_sign_flip_p": q_hf,
         "winner_mean_acceptance_per_sample": float(np.mean([c["accepted"] / c["samples"] for c in winners])),
         "loser_mean_acceptance_per_sample": float(np.mean([c["accepted"] / c["samples"] for c in losers])),
+        "winner_mean_correct_per_sample": float(np.mean([c["correct"] / c["samples"] for c in winners])),
+        "loser_mean_correct_per_sample": float(np.mean([c["correct"] / c["samples"] for c in losers])),
         "status": (
             "exploratory: the acceptance direction was stated before the computation, the herald direction follows"
             " from it, and neither test was preregistered"

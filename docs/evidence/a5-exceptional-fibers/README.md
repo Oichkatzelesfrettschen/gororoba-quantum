@@ -27,6 +27,7 @@ split and copies every file whose scrubbed bytes differ from the retained copy (
 | `kaggle-tpu/`, `kaggle-pack-a/` | Kaggle TPU and CPU kernels, their outputs and research |
 | `distribute/` | the Kaggle distribution brief, its peer review, the kernel generator and watcher |
 | `azure-cases/` | the written cases under which cloud VMs ran |
+| `exports/w8nm-n16-rcpt/` | manifest of the Singular export of W8 -> N- at N = 16, p = 32009 (`export.json`, producing scripts, `qG.txt`, full sha256 of each table); the 235 MB tables are regenerated from it ([w8-n16-azure](w8-n16-azure/README.md)) |
 | [`azure-results/`](working/azure-results/README.md) | the complete work trees of Azure VMs `gororoba-a5-fiber`, `gororoba-a5-fiber-2` and `gororoba-a5-fiber-4`: archive hashes, restore command and the outputs they hold |
 | `*-brief.md`, `greater-picture-*.md`, `final-review-*.md`, `review-*.md` | consultant briefs and answers |
 
@@ -34,6 +35,7 @@ The registry and its checks sit beside `working/` and read only from it:
 
 | File | Content |
 |---|---|
+| [ledger.py](ledger.py) | [ledger.tsv](ledger.tsv): the claim ledger of the program, one row per equation, structural statement, method or operational finding with its status after falsification, basis, evidence paths and falsifier; `--check`, `--summary`, `--open` |
 | [build_registry.py](build_registry.py) | builds [claims.json](claims.json), [certificates.jsonl](certificates.jsonl) and [unbound.jsonl](unbound.jsonl) from the retained records; `--check` rebuilds in memory |
 | [witnesses.py](witnesses.py) | [witnesses.jsonl](witnesses.jsonl): header-pair identities, sign isomorphisms between paired fibers, and k2-span identities between each degree-2 receipt and each K2 source |
 | [k2_hilbert.py](k2_hilbert.py) | [k2-hilbert.jsonl](k2-hilbert.jsonl): HF(k[y]/K2, d) for d = 1 to 6 from the 14 retained K2 sources |
@@ -49,3 +51,4 @@ The registry and its checks sit beside `working/` and read only from it:
 | [arcs-x/](arcs-x/README.md) | exact formal-arc certificates for X+ -> N- and X- -> N+ at p = 32009 and p = 32029: linear arcs of the slice leave it with order-2 limit vectors (a1 W^2, a2 W (R + S), a3 W (R - S)) of Jacobian rank 3, so the reduced exceptional fiber is P^2 and F(I) = k[y1,y2,y3]; one implementation parameterized by the header's prime and root of -1, the per-prime logs, Singular scripts and records, and a replay command |
 | [x-opposite-ladder/](x-opposite-ladder/README.md) | engine v11 truncated ranks r_N = 21, 28, 36, 45, 55 = C(d+2, 2) for d = 5 to 9 at N = 20 on the X+ -> N- and X- -> N+ headers (both incidences at p = 32009, X+ -> N- at p = 32029), corroborating the P^2 fiber of [arcs-x/](arcs-x/README.md); the degree-10 truncation to 0 and the measured Hilbert-Samuel ladder |
 | [structure/](structure/README.md) | exact structure checks: the doubling automorphism (a, b) -> (a, -b) of A_5 exchanges X+ and X-, N+ and N- and proves the sign-pair fiber identities in every characteristic; E8-bar cut by mu' = 0 splits along N+- into a smooth and a multiplicity-2 sheet (the same-sign / opposite-sign difference); the kernel-map base locus is the B9 slice with residual the VB curve or the origin, at p = 32009, p = 32029 and over Q(i) |
+| [w8-n16-azure/](w8-n16-azure/README.md) | W8 -> N- degree 5 at N = 16 and p = 32009 with engine v11 on two Azure VMs: the receipt-bound run (4,116 standard representatives) and the unreceipted run (98,280 products) both give r_16 = 4116 with blocks 1017, 1005, 1047, 1047 = HF(k[y]/K2, 5), identical closure ranks and Singular exports with matching 64-bit SHA-256 prefixes, so h_5 = 4116 there |

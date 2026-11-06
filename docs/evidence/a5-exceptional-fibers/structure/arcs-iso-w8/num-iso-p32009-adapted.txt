@@ -1,0 +1,10 @@
+adapted contact 2 t9 from 1 extra 1 {'params': 10, 'nu': 3, 'J_zero_through': 24, 'rank': 2, 'K2': True}
+adapted contact 2 t9 from 1 extra 2 {'params': 15, 'nu': 3, 'J_zero_through': 24, 'rank': 2, 'K2': True}
+adapted contact 2 t9 from 1 extra 3 {'params': 20, 'nu': 3, 'J_zero_through': 24, 'rank': 2, 'K2': True}
+adapted contact 3 t9 from 1 extra 1 {'params': 10, 'nu': 4, 'J_zero_through': 24, 'rank': 2, 'K2': True}
+adapted contact 3 t9 from 1 extra 2 {'params': 15, 'nu': 4, 'J_zero_through': 24, 'rank': 2, 'K2': True}
+adapted contact 3 t9 from 1 extra 3 {'params': 20, 'nu': 4, 'J_zero_through': 24, 'rank': 2, 'K2': True}
+adapted contact 4 t9 from 1 extra 1 {'params': 10, 'nu': 5, 'J_zero_through': 24, 'rank': 2, 'K2': True}
+adapted contact 4 t9 from 1 extra 2 {'params': 15, 'nu': 5, 'J_zero_through': 24, 'rank': 2, 'K2': True}
+adapted contact 4 t9 from 1 extra 3 {'params': 20, 'nu': 5, 'J_zero_through': 24, 'rank': 2, 'K2': True}
+invalid arcs dropped (not through the origin, J not vanishing, or inexact): 0

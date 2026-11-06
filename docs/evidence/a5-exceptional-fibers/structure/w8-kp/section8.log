@@ -1,0 +1,3 @@
+RESULT section 8 dim 0 vdim 30 s 0
+RESULT section 8 eliminant deg 30 factor degree^multiplicity  1^1 4^1 12^1 13^1 s 0
+exit 0

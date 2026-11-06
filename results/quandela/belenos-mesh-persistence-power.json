@@ -1,0 +1,216 @@
+{
+ "bound_seconds": 257.14455822814955,
+ "credit_ceiling": 1.09,
+ "power": {
+  "mesh_sigma": 0.05150455979158212,
+  "models": [
+   {
+    "block_sizes": [
+     0.05150455979158212,
+     0.05150455979158212,
+     0.05150455979158212,
+     0.05150455979158212,
+     0.05150455979158212,
+     0.05150455979158212
+    ],
+    "error": "one error size for every block",
+    "rows": [
+     {
+      "indeterminate": 0.309,
+      "persists": 0.0095,
+      "recurs below the useful slope": 0.0,
+      "redrawn": 0.6815,
+      "slope": 0.0
+     },
+     {
+      "indeterminate": 0.6055,
+      "persists": 0.116,
+      "recurs below the useful slope": 0.003,
+      "redrawn": 0.2755,
+      "slope": 0.25
+     },
+     {
+      "indeterminate": 0.457,
+      "persists": 0.4945,
+      "recurs below the useful slope": 0.006,
+      "redrawn": 0.0425,
+      "slope": 0.5
+     },
+     {
+      "indeterminate": 0.0355,
+      "persists": 0.9645,
+      "recurs below the useful slope": 0.0,
+      "redrawn": 0.0,
+      "slope": 0.75
+     },
+     {
+      "indeterminate": 0.0,
+      "persists": 1.0,
+      "recurs below the useful slope": 0.0,
+      "redrawn": 0.0,
+      "slope": 1.0
+     }
+    ],
+    "shared_share": 0.0
+   },
+   {
+    "block_sizes": [
+     0.028048049025123183,
+     0.038048051220220494,
+     0.06641208490117319,
+     0.0656855567413121,
+     0.08195312668168299,
+     0.040213774644060285
+    ],
+    "error": "each block's retained spread",
+    "rows": [
+     {
+      "indeterminate": 0.435,
+      "persists": 0.0245,
+      "recurs below the useful slope": 0.0005,
+      "redrawn": 0.54,
+      "slope": 0.0
+     },
+     {
+      "indeterminate": 0.604,
+      "persists": 0.1555,
+      "recurs below the useful slope": 0.0015,
+      "redrawn": 0.239,
+      "slope": 0.25
+     },
+     {
+      "indeterminate": 0.4995,
+      "persists": 0.445,
+      "recurs below the useful slope": 0.003,
+      "redrawn": 0.0525,
+      "slope": 0.5
+     },
+     {
+      "indeterminate": 0.086,
+      "persists": 0.913,
+      "recurs below the useful slope": 0.0,
+      "redrawn": 0.001,
+      "slope": 0.75
+     },
+     {
+      "indeterminate": 0.0,
+      "persists": 1.0,
+      "recurs below the useful slope": 0.0,
+      "redrawn": 0.0,
+      "slope": 1.0
+     }
+    ],
+    "shared_share": 0.0
+   },
+   {
+    "block_sizes": [
+     0.05150455979158212,
+     0.05150455979158212,
+     0.05150455979158212,
+     0.05150455979158212,
+     0.05150455979158212,
+     0.05150455979158212
+    ],
+    "error": "one error size, half of its variance shared by a mesh's blocks",
+    "rows": [
+     {
+      "indeterminate": 0.2665,
+      "persists": 0.0035,
+      "recurs below the useful slope": 0.005,
+      "redrawn": 0.725,
+      "slope": 0.0
+     },
+     {
+      "indeterminate": 0.6,
+      "persists": 0.0885,
+      "recurs below the useful slope": 0.0145,
+      "redrawn": 0.297,
+      "slope": 0.25
+     },
+     {
+      "indeterminate": 0.4565,
+      "persists": 0.5035,
+      "recurs below the useful slope": 0.0095,
+      "redrawn": 0.0305,
+      "slope": 0.5
+     },
+     {
+      "indeterminate": 0.0295,
+      "persists": 0.9705,
+      "recurs below the useful slope": 0.0,
+      "redrawn": 0.0,
+      "slope": 0.75
+     },
+     {
+      "indeterminate": 0.0,
+      "persists": 1.0,
+      "recurs below the useful slope": 0.0,
+      "redrawn": 0.0,
+      "slope": 1.0
+     }
+    ],
+    "shared_share": 0.5
+   },
+   {
+    "block_sizes": [
+     0.05150455979158212,
+     0.05150455979158212,
+     0.05150455979158212,
+     0.05150455979158212,
+     0.05150455979158212,
+     0.05150455979158212
+    ],
+    "error": "one error size, all of its variance shared by a mesh's blocks",
+    "rows": [
+     {
+      "indeterminate": 0.266,
+      "persists": 0.0,
+      "recurs below the useful slope": 0.004,
+      "redrawn": 0.73,
+      "slope": 0.0
+     },
+     {
+      "indeterminate": 0.534,
+      "persists": 0.077,
+      "recurs below the useful slope": 0.1095,
+      "redrawn": 0.2795,
+      "slope": 0.25
+     },
+     {
+      "indeterminate": 0.494,
+      "persists": 0.501,
+      "recurs below the useful slope": 0.0035,
+      "redrawn": 0.0015,
+      "slope": 0.5
+     },
+     {
+      "indeterminate": 0.021,
+      "persists": 0.979,
+      "recurs below the useful slope": 0.0,
+      "redrawn": 0.0,
+      "slope": 0.75
+     },
+     {
+      "indeterminate": 0.0,
+      "persists": 1.0,
+      "recurs below the useful slope": 0.0,
+      "redrawn": 0.0,
+      "slope": 1.0
+     }
+    ],
+    "shared_share": 1.0
+   }
+  ],
+  "replicates": 2000,
+  "slot_shift_sd": 0.03
+ },
+ "schema": "belenos-mesh-persistence-power-v2",
+ "seed_source": {
+  "experiment": "belenos-mesh-persistence-power",
+  "flag": "--seed",
+  "script": "scripts/belenos_mesh_persistence.py",
+  "sources": [
+   "qrng:docs/evidence/anu_qrng/draw-2026-11-01T054809Z.json#3"
+  ]
+ }
+}

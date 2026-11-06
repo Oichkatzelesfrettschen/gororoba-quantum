@@ -58,9 +58,29 @@ the run whose collect.json records `result_unavailable` and counts it in the
 usage-window sum. A job cancelled before it ran has no running timestamp and
 bills zero; both scripts record it as an unexecuted cancellation that needs
 no archive or collection and adds nothing to the window, while a CANCELLED
-job with a running timestamp or a charge follows the failed-job rule. The
-zero-charge shape is inferred from the service's billing rules; no retained
-job has shown it.
+job with a running timestamp or a charge follows the failed-job rule.
+
+`results/live/qpu-job-retention-audit.f59f9992321c.json` retains four such
+jobs on `ibm_kingston`, all of 2026-10-29, each with status CANCELLED,
+`final_qpu_charge_seconds` 0 and a null running timestamp; three of them
+stayed queued 17 h 13 min before the operator cancelled them. Their usage
+never settles to `final`: three carry no usage status in the audit, since
+`job.metrics()` reported no usage and `live_run.py` records that as
+`missing`, and the fourth (`dbhkprlep8hs73amc680`) still reads `pending`. A
+poll loop that exits only when every job's usage reads `final` therefore
+never ends for such a job. A watcher treats a CANCELLED job with a null
+running timestamp and no charge as settled whatever its usage status reads,
+the shape `inventory_retained_runs.unexecuted_cancellations` accepts.
+
+A completed job's charge tracks the modeled seconds, and its wall time does
+not. Measured on `ibm_fez` on 2026-10-29
+(`results/live/2026-10-29T191606.826758Z`): three jobs modeled at
+3.128005632, 3.783365632 and 4.084241408 s in
+[readout-information-context-and-budget.md](../../design/readout-information-context-and-budget.md)
+were charged 3, 4 and 4 QPU seconds, each the modeled value rounded to the
+nearest integer, while their running intervals in the retention audit lasted
+6.2, 7.8 and 14.3 s. Three jobs on one backend fix the rounding rule only
+coarsely.
 
 ## Inventory freshness
 

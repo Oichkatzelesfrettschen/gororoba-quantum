@@ -1,0 +1,7 @@
+RESULT K_in_P 1
+RESULT P projdim 5 degree 20 K projdim 5 K degree 50
+RESULT image a equals P 1 K invariant 1
+RESULT image b equals P 1 K invariant 1
+RESULT image ab equals P 1 K invariant 1
+RESULT quotient K:P projdim 5 degree 30 gens 131 ms 26
+RESULT K equals P cap (K:P) 1
