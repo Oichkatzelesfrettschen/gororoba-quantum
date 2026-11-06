@@ -1767,8 +1767,14 @@ def retain_bytes(path: Path, data: bytes) -> None:
 def run_facts(directory: Path) -> dict[str, Any]:
     """qd_records.read_run's facts plus the credit charge, the account fact the token usage reports bind."""
     run = read_run(directory)
+    reported = run.summary is not None and "shots_used" in run.summary
     charge = charged(
-        run.submission, run.collected, run.shots, run.manifest, interim_usage(directory, run.submission, run.collected)
+        run.submission,
+        run.collected,
+        run.shots,
+        run.manifest,
+        interim_usage(directory, run.submission, run.collected),
+        reported,
     )
     return {**run.facts, "charge": charge}
 
@@ -1818,6 +1824,7 @@ def charged(
     shots: int,
     manifest: dict[str, Any] | None = None,
     interim: list[Any] | None = None,
+    reported: bool = True,
 ) -> float:
     """The credits a run consumed: the first later usage report holding exactly one more job, minus the one before.
 
@@ -1831,6 +1838,12 @@ def charged(
     the billing rule: the recorded per-job price plus the price per shot times
     the shots used by a one-computation job, or times the smaller of the shots
     used and the largest iteration's max_shots of an iterated one.
+
+    reported says that shots is a shots-used figure of the result. A run whose
+    result carries none (an iteration that failed without nb_shots_used, or a job
+    that returned no result) passes a stand-in shots, and an iterated job then
+    bills the largest iteration's max_shots in full, so the stand-in cannot lower
+    the bill below the cap.
     """
     first = submission.get("usage_before")
     before, jobs_before = usage_total(first), usage_jobs(first)
@@ -1864,7 +1877,8 @@ def charged(
     price = submission["platform_at_plan"]["price_per_shot"]
     billed = shots
     if manifest is not None and iteration_form(manifest) != "single":
-        billed = min(shots, max(budget for _, budget in iteration_budgets(manifest)))
+        cap = max(budget for _, budget in iteration_budgets(manifest))
+        billed = min(shots, cap) if reported else cap
     return round(float(submission.get("per_job_credits", 0)) + billed * price, 6)
 
 
@@ -1907,6 +1921,17 @@ def charge_self_test() -> None:
     got = charged(submission, {"collected_utc": cases[1][0], "usage_after": cases[1][1]}, 60000, under)
     if got != 1.06:
         raise SystemExit(f"self-test: charged() read {got} for 60000 shots under a 100000 cap across a reset, not 1.06")
+    # An iterated job whose result reports no shots used bills the cap whatever stand-in shots it passes.
+    for stand_in in (0, 60000, 3600000):
+        got = charged(
+            submission, {"collected_utc": cases[1][0], "usage_after": cases[1][1]}, stand_in, under, None, False
+        )
+        if got != 1.1:
+            raise SystemExit(f"self-test: charged() read {got} for an iterated job without shots used, not 1.1")
+    # A reported figure keeps min(shots used, cap) beside the unreported cap.
+    got = charged(submission, {"collected_utc": cases[1][0], "usage_after": cases[1][1]}, 60000, under, None, True)
+    if got != 1.06:
+        raise SystemExit(f"self-test: charged() read {got} for 60000 reported shots under a 100000 cap, not 1.06")
     # A job canceled before it started costs nothing even when another job shares its usage window; one
     # canceled after its start keeps the billing rule.
     for start, want in ((None, 0.0), (1792667218.0, 1.01)):
