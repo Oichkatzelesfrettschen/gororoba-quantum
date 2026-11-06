@@ -81,6 +81,11 @@ each, with V(VB) inside V(B9) and V(V) and V(Va-) inside V(V), so the germ of th
 components B9 and V. Each section or pullback runs in seconds; the whole-ideal radical and `minAssChar` runs they
 replace stalled past 40,000 s.
 
+[arcs-iso-w8/](arcs-iso-w8/README.md) certifies by an explicit arc family, symbolically at both primes, that V(P)
+lies in the fiber over the origin of W8 -> N-, so the analytic spread of I is 6 and F(I) = k[y]/K2 for W8 hinges on
+the multiplicity (50 or 20); it records the arc families searched for the Iso V(K2) and the W8 V(K2 : P) without
+reaching them, the base locus L0 that explains the ranks, and the one-chart test that decides the Iso case.
+
 ## Falsifiers
 
 A basis pair failing the automorphism identity, an orbit representative whose phi-image leaves the predicted closure, a

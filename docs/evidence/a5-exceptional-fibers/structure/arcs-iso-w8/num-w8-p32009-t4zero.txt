@@ -1,0 +1,10 @@
+t4zero order 2 extra 1 t9 3 {'nu': 2, 'J_zero_through': 20, 'rank': 2, 'K2': True, 'lower_zero_at_point': True, 'exact': True, 'Lam': True, 'Q': True}
+t4zero order 2 extra 1 t9 4 {'nu': 2, 'J_zero_through': 20, 'rank': 2, 'K2': True, 'lower_zero_at_point': True, 'exact': True, 'Lam': True, 'Q': True}
+t4zero order 2 extra 1 t9 5 {'nu': 2, 'J_zero_through': 20, 'rank': 2, 'K2': True, 'lower_zero_at_point': True, 'exact': True, 'Lam': True, 'Q': True}
+t4zero order 2 extra 2 t9 3 {'nu': 2, 'J_zero_through': 20, 'rank': 2, 'K2': True, 'lower_zero_at_point': True, 'exact': True, 'Lam': True, 'Q': True}
+t4zero order 2 extra 2 t9 4 {'nu': 2, 'J_zero_through': 20, 'rank': 2, 'K2': True, 'lower_zero_at_point': True, 'exact': True, 'Lam': True, 'Q': True}
+t4zero order 2 extra 2 t9 5 {'nu': 2, 'J_zero_through': 20, 'rank': 2, 'K2': True, 'lower_zero_at_point': True, 'exact': True, 'Lam': True, 'Q': True}
+t4zero order 2 extra 3 t9 3 {'nu': 2, 'J_zero_through': 20, 'rank': 2, 'K2': True, 'lower_zero_at_point': True, 'exact': True, 'Lam': True, 'Q': True}
+t4zero order 2 extra 3 t9 4 {'nu': 2, 'J_zero_through': 20, 'rank': 2, 'K2': True, 'lower_zero_at_point': True, 'exact': True, 'Lam': True, 'Q': True}
+t4zero order 2 extra 3 t9 5 {'nu': 2, 'J_zero_through': 20, 'rank': 2, 'K2': True, 'lower_zero_at_point': True, 'exact': True, 'Lam': True, 'Q': True}
+invalid arcs dropped (not through the origin, J not vanishing, or inexact): 18
