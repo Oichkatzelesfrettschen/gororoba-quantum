@@ -220,6 +220,15 @@ lives; read it before writing one.
   reference tables, procedures and measurements live in the docs they
   describe, with a pointer.
 
+## Worktrees
+
+- Each session edits in its own worktree under `~/worktrees/gororoba-quantum/<branch>`. The primary checkout stays on
+  clean main, because sessions sharing one checkout share its staging area, and one session's commit sweeps in
+  another's uncommitted files.
+- `main` changes only through a pull request whose `pr.yml` checks pass, merged as below. After the merge the session
+  pulls main in the primary checkout, removes its worktree with `git worktree remove`, and deletes the branch locally
+  and on the remote.
+
 ## Reviews and merges
 
 - Hosted review runs in a fixed order, each stage once per PR: Codex, then
