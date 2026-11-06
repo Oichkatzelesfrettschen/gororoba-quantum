@@ -2954,6 +2954,20 @@
       "run": "results/live/2026-11-06T200832.558771Z",
       "family": "pathion coset-block map (A_5, dimension 32)",
       "question": "Does ibm_marrakesh resolve the coset-block kernel map of the six two-term A_5 operands at 1 to 20 routed CZ, does the i ^ j-dependent loss persist at low depth, and do ibm_fez and ibm_marrakesh agree?"
+    },
+    {
+      "id": "qd-sim-ascella-pathion-four-term-blocks",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-06T215025Z-sim_ascella-ascella_pathion_four_term_blocks-sim-00",
+      "family": "pathion four-term coset blocks (A_5, dimension 32)",
+      "question": "Does sim:ascella reproduce the ideal levels of the D = 32-only four-term coset blocks within 0.01 (the gate before the QPU job)?"
+    },
+    {
+      "id": "qd-qpu-ascella-pathion-four-term-blocks",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-06T215343Z-qpu_ascella-ascella_pathion_four_term_blocks-job-00",
+      "family": "pathion four-term coset blocks (A_5, dimension 32)",
+      "question": "Does qpu:ascella realize the 4 x 4 coset blocks of the four classes that exist only at D = 32, with the anchor and dark normalization, mutation arms and the preregistered 0.07 tolerance?"
     }
   ],
   "claims": [
