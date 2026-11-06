@@ -497,17 +497,49 @@ def valid(r: dict, n: int) -> bool:
     return r.get("nu") not in (None, 0) and r.get("J_zero_through", -1) >= n - 2 and r.get("exact", True)
 
 
+class ModeCase:
+    """One explicit-family or adapted-arc evaluation, picklable for parallel.ordered_map; each worker builds its Slice
+    once. A case is ("arc", co, params, n, catch) or ("adapted", k, extra, k9, n)."""
+
+    def __init__(self, fiber: str, p: int) -> None:
+        self.fiber, self.p = fiber, p
+        self._slice: Slice | None = None
+
+    def __getstate__(self) -> dict:
+        return {"fiber": self.fiber, "p": self.p, "_slice": None}
+
+    def __call__(self, case: tuple) -> dict:
+        if self._slice is None:
+            self._slice = Slice(self.fiber, self.p)
+        if case[0] == "adapted":
+            _, k, extra, k9, n = case
+            return adapted_arc(self._slice, k, extra, k9, n=n)
+        _, co, params, n, catch = case
+        vals = [(97 * j + 31) % self.p + 2 for j in range(len(params))]
+        try:
+            return self._slice.arc(co, params, vals, n)
+        except ValueError:
+            if catch:
+                return {"nu": None}
+            raise
+
+
 def cli() -> None:
     import argparse
+
+    sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+    import parallel
 
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("fiber", choices=sorted(FIBERS))
     ap.add_argument("prime", type=int, choices=sorted(ROOTS))
     ap.add_argument("mode", choices=["basic", "weighted", "puiseux", "t4zero", "adapted"])
     a = ap.parse_args()
-    sl = Slice(a.fiber, a.prime)
-    p = a.prime
-    rows: list[tuple[str, dict, int]] = []
+    if a.mode == "weighted":
+        search(a.fiber, a.prime)
+        return
+    # every family is specified first; the independent evaluations are then mapped in parallel
+    cases: list[tuple[str, tuple, int]] = []
     if a.mode == "basic":
         for kind in ("generic", "L0"):
             for top in (1, 2, 3, 4):
@@ -515,11 +547,7 @@ def cli() -> None:
                     continue
                 for o9 in (2, 3) if (a.fiber == "w8" and kind == "L0") else (2,):
                     co, params = family(kind, a.fiber, top, o9)
-                    vals = [(97 * k + 31) % p + 2 for k in range(len(params))]
-                    rows.append((f"{kind} top {top} t9 order {o9}", sl.arc(co, params, vals, 14), 14))
-    elif a.mode == "weighted":
-        search(a.fiber, p)
-        return
+                    cases.append((f"{kind} top {top} t9 order {o9}", ("arc", co, params, 14, False), 14))
     elif a.mode in ("puiseux", "t4zero"):
         for k in (2, 3, 4):
             for extra in (1, 2, 3):
@@ -530,18 +558,15 @@ def cli() -> None:
                         co, params = l0_puiseux(a.fiber, k, extra, o9)
                     else:
                         co, params = l0_t4zero(a.fiber, k, extra, o9)
-                    vals = [(97 * j + 31) % p + 2 for j in range(len(params))]
-                    try:
-                        rows.append((f"{a.mode} order {k} extra {extra} t9 {o9}", sl.arc(co, params, vals, 20), 20))
-                    except ValueError:
-                        rows.append((f"{a.mode} order {k} extra {extra} t9 {o9}", {"nu": None}, 20))
+                    cases.append((f"{a.mode} order {k} extra {extra} t9 {o9}", ("arc", co, params, 20, True), 20))
     else:
         for k in (2, 3, 4):
             for k9 in [1] if a.fiber == "iso" else [2, k, k + 1, 2 * k]:
                 for extra in (1, 2, 3):
-                    rows.append((f"adapted contact {k} t9 from {k9} extra {extra}", adapted_arc(sl, k, extra, k9), 24))
+                    cases.append((f"adapted contact {k} t9 from {k9} extra {extra}", ("adapted", k, extra, k9, 24), 24))
+    results = parallel.ordered_map(ModeCase(a.fiber, a.prime), [c for _, c, _ in cases], min_items=2)
     bad = 0
-    for tag, r, n in rows:
+    for (tag, _, n), r in zip(cases, results, strict=True):
         if valid(r, n):
             print(tag, r, flush=True)
         else:

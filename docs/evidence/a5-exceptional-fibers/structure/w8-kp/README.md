@@ -61,11 +61,15 @@ All eliminants have degree equal to vdim and every factor has multiplicity 1.
    V(Lambda). Section 1 cuts K2 + Lambda (degree 20) in 20 distinct points, a subset of the section-1 points of K2, so
    that union has degree exactly 20 (the 20 distinct points exclude a doubled component of degree 10) and owns the
    section-1 orbits 1, 1, 1, 2, 15 (32009) or 1, 1, 3, 15 (32029). Splitting 20 into allowed degrees with those orbits
-   is impossible, so it is one F_p-component C20. The remaining orbits, 1, 1, 5, 25 (32009) or 1, 1, 28 (32029), sum to
-   30, which has no split into allowed degrees, so the rest is one F_p-component C30.
+   is impossible, so it is one F_p-component C20. The remaining section-1 orbits, 5, 25 (32009) or 1, 1, 28 (32029), sum
+   to 30, which has no split into allowed degrees, so the rest is one F_p-component C30.
 6. Geometric irreducibility. If an F_p-component split over the algebraic closure into r > 1 conjugate components,
-   Frobenius would permute them cyclically and, by step 3, every orbit on it would have size divisible by r. Each of
-   C20 and C30 owns an orbit of size 1 in section 1.
+   Frobenius would permute them cyclically and, by step 3, every orbit on it would have size divisible by r. C20 owns
+   an orbit of size 1 in section 1 at both primes, and C30 owns one in section 1 at 32029. At 32009, C30's section-1
+   orbits 5 and 25 leave r = 5 open, so section 2 decides it: its orbits are 2, 11, 17, 20
+   (`k2-p32009-section2.log`), C30 owns a Frobenius-stable set of 30 of its points, the only subset summing to 30 is
+   2, 11, 17, and gcd(2, 11, 17) = 1 forces r = 1. The sections of K2 : P below give a second, independent
+   certificate at 32009 (an orbit of size 1 in six of eight sections).
 7. The ideals of check.sing at 32009. P contains K2 and Lambda, so V(P) lies in V(K2 + Lambda); V(P) has projective
    dimension 5 and degree at most 20, so its reduced 5-dimensional part is C20 and V(P) = C20, rad P = I(C20). Since K2
    is radical, K2 = I(C20) cap I(C30), and K2 : P = (I(C20) : P) cap (I(C30) : P) = (1) cap I(C30) = I(C30), because P

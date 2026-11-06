@@ -104,7 +104,7 @@ def main() -> None:
             f'ring Y={a.prime},(y(1..{ngen})),dp; execute("ideal K="+read("{k2}")+";");\n'
             "setring r; ideal epz; for (jj=1;jj<=ncols(G);jj++) { epz[jj]=eps[jj]*z(jj); } map toz=Y,epz;\n"
             "ideal Kz=toz(K);\n"
-            "ideal KS=std(Kz+Lam+ideal(t2,t3,t4,t5,t6,t7));\n"
+            f"ideal KS=std(Kz+Lam+ideal({tvars}));\n"
             f'"RESULT {tag} K2 slice: dim", dim(KS), "vdim", vdim(KS), "s", rtimer-t0;\n'
             "poly sepv=z(2); ideal els=eliminate(KS, product(maxideal(1))/sepv); list fs=factorize(els[1]); string fd;"
             ' for (jj=2;jj<=size(fs[1]);jj++) { fd=fd+" "+string(deg(fs[1][jj]))+"^"+string(fs[2][jj]); }\n'
