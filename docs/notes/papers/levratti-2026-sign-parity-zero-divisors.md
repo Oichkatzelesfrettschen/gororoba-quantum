@@ -2,9 +2,9 @@
 
 ## Source copy and license
 
-The unchanged [source PDF](https://zenodo.org/records/20315751) is retained under
+The unchanged [source PDF](https://zenodo.org/records/20315751) is kept in gororoba-documents-public under
 [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) as
-[levratti-2026-sign-parity-zero-divisors.pdf](../../pdf/levratti-2026-sign-parity-zero-divisors.pdf). The grant is the
+[levratti-2026-sign-parity-zero-divisors.pdf](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/mathematics/cayley-dickson/levratti-2026-sign-parity-zero-divisors.pdf). The grant is the
 `metadata.license` field of the author-linked [Zenodo record](https://zenodo.org/api/records/20315751), captured byte for
 byte in [zenodo-record-20315751.json](../../evidence/source_rights/zenodo-record-20315751.json); the deposited file's size
 and MD5 match the retained bytes. [SOURCES.json](../../SOURCES.json) binds the SHA-256, the evidence hash and the reading

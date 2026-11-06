@@ -1,0 +1,5 @@
+ring r=32009,(x1,x2,x3,x4),dp;
+ideal I=x1*x1,x1*x2,x1*x3;
+int n;
+for (n=2; n<=14; n=n+2) { ideal Q=std(I+maxideal(n)); "n", n, "colength", vdim(Q); kill Q; }
+quit;

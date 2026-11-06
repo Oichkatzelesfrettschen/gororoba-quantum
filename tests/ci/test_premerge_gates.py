@@ -24,11 +24,8 @@ pytestmark = pytest.mark.audit
 
 RUNNER_FILES = (
     "ci/run_gates.py",
-    "ci/gate_inputs.py",
-    "ci/gate_ledger.py",
-    "ci/gate_quarantine.py",
     "ci/host_identity.py",
-    "ci/read_trace/sitecustomize.py",
+    "ci/manifest.py",
     "ci/pins.py",
     "ci/requirements-replay.txt",
     "gororoba_quantum/parallel.py",
@@ -68,7 +65,7 @@ def repo(tmp_path: Path) -> Path:
         git(repo, *MERGE_IDENTITY, "commit", "-q", "-m", message)
 
     def gates(*extra: dict[str, Any]) -> str:
-        listed = [{"name": "always", "cwd": ".", "cmd": "true", "seconds": 0.1, "tier": "pr"}, *extra]
+        listed = [{"name": "always", "cwd": ".", "cmd": "true", "seconds": 0.1}, *extra]
         return json.dumps({"gates": listed})
 
     record_gate = {"name": "record", "cwd": ".", "cmd": 'test "$(cat input)" = "$(cat record)"', "seconds": 0.1}

@@ -54,7 +54,7 @@ receive no implicit freshness check; retain sanitized response files for reprodu
 An evidence `ref` names a whole file or one record of a shared JSON registry:
 `FILE.json#COLLECTION/FIELD=VALUE` selects the single object of the top-level array `COLLECTION` whose string
 `FIELD` equals `VALUE`, for example `docs/state/research_state.json#claims/id=a5-stiefel-universal`,
-`ci/gates.json#gates/name=core-690` or `docs/SOURCES.json#pdfs/path=docs/pdf/2103.12805v1.pdf`. Its digest is
+`ci/gates.json#gates/name=core-690` or `docs/SOURCES.json#external_pdfs/sha256=e1cf74159d98ce9846fc86e56f0f3e41a21e6d094d2c028635989e9d07223fc5`. Its digest is
 `plan_records.digest` of that object (sorted-key JSON), so edits to other records of the registry leave the
 receipt fresh, while a changed, removed or duplicated record requests revalidation. Code, proofs and evidence
 bundles keep whole-file references. `digest REF...` prints the digest each reference binds:
@@ -72,6 +72,10 @@ needs `superseded_by`. All children must be terminal. Completed plans require al
 receipt whose digest binds the ordered step obligations. `plan_records.obligation(plan)` calculates that
 digest for a closure patch. A completed falsification can record a rejected hypothesis. Artifact identity
 checks and substantive scientific validation have different evidentiary roles.
+
+A closed plan is history: its receipt revisions pin the bytes it observed, so its cited files need not exist at
+HEAD, its view carries no revalidation flag, and an edit or deletion elsewhere never calls for touching its
+receipts; freshness holds when a change closes a plan or adds a receipt to it.
 
 Changed evidence requests revalidation while preserving historical completion. Freshness reads only the
 newest receipt (latest `observed_at`) of the plan and of each step, so a revalidation reruns the acceptance

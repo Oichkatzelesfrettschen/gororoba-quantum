@@ -444,8 +444,8 @@ def _verify_recorded_shots(record: dict[str, Any]) -> None:
     _require(runtime._recorded_job_shots(legacy, legacy_job) == legacy["shots"], "legacy uniform fallback rejected")
 
 
-def _verify_local_executor() -> list[dict[str, Any]]:
-    backend = FakeFez()
+def _verify_local_executor(backend_type: Callable[[], Any] = FakeFez) -> list[dict[str, Any]]:
+    backend = backend_type()
     circuits = []
     for row_index in range(2):
         components = []

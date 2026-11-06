@@ -13,7 +13,7 @@ adds source-level connections for multiprogramming, simultaneous/context
 characterization, drift, blocked designs, execution accounting and IQP
 hardness. It distinguishes established methods from candidate diagnostic
 implementations and keeps the experiment priorities below intact. The
-[PDF checksum set](../parallel_experiment_pdfs.sha256) and per-paper notes
+registered checksums in [SOURCES.json](../SOURCES.json) and per-paper notes
 provide retrieval and reading provenance.
 
 ## Ledger

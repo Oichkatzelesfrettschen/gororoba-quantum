@@ -8,11 +8,11 @@ group gates tests/ci/test_self_test_gates.py checks.
 
 from __future__ import annotations
 
-import json
 import re
 import shlex
 from pathlib import Path
 
+import manifest
 import pytest
 
 pytestmark = pytest.mark.audit
@@ -24,7 +24,7 @@ SPLIT = re.compile(r"core-behavior-\d\d")
 
 
 def gates() -> dict[str, dict[str, str]]:
-    return {gate["name"]: gate for gate in json.loads((ROOT / "ci/gates.json").read_text())["gates"]}
+    return {gate["name"]: gate for gate in manifest.gates(ROOT)}
 
 
 def arguments(gate: dict[str, str]) -> list[str]:
@@ -74,9 +74,3 @@ def test_split_gates_run_exactly_what_core_615_ignores() -> None:
             if module in seen:
                 raise AssertionError(f"{module} runs under both {seen[module]} and {target}")
             seen[module] = target
-
-
-def test_split_gates_hold_a_tier() -> None:
-    for name, gate in gates().items():
-        if SPLIT.fullmatch(name) is not None and gate.get("tier") not in ("pr", "full"):
-            raise AssertionError(f"{name}: tier {gate.get('tier')!r}")

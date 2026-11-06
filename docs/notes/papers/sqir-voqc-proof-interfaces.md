@@ -105,7 +105,7 @@ separate source-specific redistribution evidence. The pinned SQIR code has
 an MIT license. Neither paper inherits that software license.
 Rights evidence: https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ITP.2021.21
 
-[Retained unchanged PDF](../../pdf/LIPIcs.ITP.2021.21.pdf).
+[Unchanged reading copy in gororoba-documents-public](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/computer-science/quantum-software-architecture/LIPIcs.ITP.2021.21.pdf).
 
 External VOQC arXiv:1912.02250v3 PDF (https://arxiv.org/pdf/1912.02250v3):
 SHA-256 `677fecb0313df458b7b82ed0da22d80327baaa4dc001d37e4f8284a4f52d44c5`; 5,586,016 bytes; 36 PDF pages.

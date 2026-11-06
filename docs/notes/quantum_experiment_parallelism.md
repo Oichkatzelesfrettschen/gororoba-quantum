@@ -123,12 +123,13 @@ it supplies neither an exhaustive novelty search nor a general optimality proof.
 ## Retrieve and verify source identities
 
 Each linked per-paper note gives the direct PDF URL, inspected version,
-SHA-256 and reading scope. The two published PDFs in this comparison live
-under `docs/pdf/`; the compatibility link preserves their historical
-`literature/pdf/` paths. From the repository root, verify that set with:
+SHA-256 and reading scope. The two openly licensed PDFs in this comparison live in
+gororoba-documents-public. From the repository root, restore and verify them with:
 
 ```sh
-sha256sum -c docs/parallel_experiment_pdfs.sha256
+"$PYTHON" scripts/fetch_source_cache.py --file 1908.09855v3.pdf --file 2102.05321v3.pdf \
+    --from-documents ../gororoba-documents-public
+"$PYTHON" scripts/fetch_source_cache.py --check --file 1908.09855v3.pdf --file 2102.05321v3.pdf
 ```
 
 Sarovar and QuMC carry verified CC BY 4.0 grants. The other eight papers

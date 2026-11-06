@@ -32,6 +32,18 @@ sequence) are standard and enter as written arguments; the producer covers the r
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/xi_real_type.py --check` (about 10 s, exact).
 
+Prior computation: Skiouris, "Algebraic Hiddenness in the Sedenion Algebra" (Zenodo record 22016333, published
+2026-08-19; [note](../../notes/papers/skiouris-2026-algebraic-hiddenness.md)), Theorem 6.4, proves the sedenion
+kernel bundle K = G2 x_SU(2) H over the aphanic slice V_2(R^7) topologically nontrivial by the same restriction to the
+S^5 fiber of S^5 -> V_2(R^7) -> S^6. The two bundles are equal: Skiouris's kernel basis (e7 + e12, -e6 + e13, e5 + e14,
+-e4 + e15) at p0 = e1 + e2 l (equation (25), Theorem 6.3) carries the doubled action of the three stabilizer
+derivations by the same three 4 x 4 matrices as (e4, e5, e6, e7) carries on H^perp, so e4, e5, e6, e7 -> v1, v2, v3,
+v4 is an SU(2)-equivariant isomorphism and K = G2 x_SU(2) K0 = xi_R (replay:
+`"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/skiouris_intertwiner.py --check`, exact, under 1 s). The priority of the
+nontriviality statement belongs to that paper; the record here adds the exact `cd_core` representation certificate and
+the stable-triviality identity xi_R + R^4 = R^8 (Skiouris's stable-triviality sentence infers it from vanishing
+characteristic classes alone, which does not suffice).
+
 ## Smaller reductions on nullity 12
 
 The residual has two readings, and the record now settles one and bounds the other.

@@ -2,13 +2,14 @@
 # Pull-request checks, one command for .github/workflows/pr.yml and local runs:
 #   sh ci/pr_checks.sh lint            Ruff check and format over the code directories
 #   sh ci/pr_checks.sh types           mypy over the same directories
-#   sh ci/pr_checks.sh tests [ARG...]  pytest without the audit marker, over tests/ or the
-#                                      given paths; -m audit PATH selects the marked tests;
-#                                      TEST_REPORT names a JUnit XML file of every test's time
-#   sh ci/pr_checks.sh gates [ARG...]  the ci/gates.json gates the branch's diff from
-#                                      origin/main reaches, of at most GATES_MAX_SECONDS
-#                                      measured seconds of reached gates per run (default 900); GATES_LEDGER names an
-#                                      audit ledger whose read sets widen the selection
+#   sh ci/pr_checks.sh tests [ARG...]  pytest without the audit marker, over tests/ except the
+#                                      contract suites, or the given paths; -m audit PATH selects
+#                                      the marked tests; TEST_REPORT names a JUnit XML file of
+#                                      every test's time
+#   sh ci/pr_checks.sh contracts [ARG...]  the same pytest over
+#                                      tests/gororoba_quantum/test_contract_suites.py
+#   sh ci/pr_checks.sh gates [ARG...]  the on-demand gates of ci/gates.json through ci/run_gates.py;
+#                                      ARG... passes through (--gates NAME,... runs named gates)
 # PYTHON names an interpreter holding the pins; left unset, the host
 # environment sh ci/build_host_envs.sh builds serves. The environment below is
 # the one the hosted jobs run under.
@@ -73,8 +74,13 @@ types)
 	# shellcheck disable=SC2086
 	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel $typed_files
 	;;
-tests)
-	[ $# -ge 1 ] || set -- tests
+tests | contracts)
+	# The contract suites run in their own job beside tests, so neither job's pytest step reaches its timeout.
+	if [ "$check" = contracts ]; then
+		set -- tests/gororoba_quantum/test_contract_suites.py "$@"
+	else
+		[ $# -ge 1 ] || set -- tests --ignore=tests/gororoba_quantum/test_contract_suites.py
+	fi
 	log=$(mktemp)
 	code=$(mktemp)
 	trap 'rm -f "$log" "$code"' EXIT
@@ -98,20 +104,7 @@ tests)
 	exit "$status"
 	;;
 gates)
-	# A record that binds its producer's digest, or a check whose input a change edits, fails only in
-	# the gate that replays it; this lane runs the reached gates cheapest first inside a budget of
-	# measured seconds and names every reached gate the budget could not hold as PENDING, so a green
-	# lane states what it did not run; the audit keeps every gate.
-	base=$(git merge-base origin/main HEAD) || {
-		echo "pr_checks.sh gates: no merge base with origin/main; fetch main" >&2
-		exit 2
-	}
-	diff=$(mktemp)
-	trap 'rm -f "$diff"' EXIT
-	git diff --no-renames --name-status -z "$base" HEAD >"$diff"
-	"$PYTHON" ci/run_gates.py --affected-by "$diff" --affected-base "$base" \
-		${GATES_LEDGER:+--affected-ledger "$GATES_LEDGER"} \
-		--budget-seconds "${GATES_BUDGET_SECONDS:-900}" "$@"
+	"$PYTHON" ci/run_gates.py "$@"
 	;;
 *)
 	echo "pr_checks.sh: unknown check $check" >&2

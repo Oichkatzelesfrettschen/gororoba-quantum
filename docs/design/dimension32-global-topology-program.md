@@ -14,8 +14,11 @@ that will carry it. The plan record `dimension32-global-topology` in `docs/state
 (`out_of_denominator_residuals` in [bundle-invariants-result.json](../evidence/a5-kernel-bundles/bundle-invariants-result.json)).
 Each is independent of the exceptional-fiber computations and runs now.
 
-**Real type of the quaternionic four-plane `xi_R` over `V_2(R^7)`.** Settled: `xi_R` is actually nontrivial, with
-the exact producer check and the written argument in
+**Real type of the quaternionic four-plane `xi_R` over `V_2(R^7)`.** Settled: `xi_R` is actually nontrivial. The
+statement is prior work: Skiouris, Algebraic hiddenness in the sedenion algebra (Zenodo record 22016333, 2026-08-19),
+Theorem 6.4, proves the same bundle nontrivial by the same restriction to `S^5`
+([note](../notes/papers/skiouris-2026-algebraic-hiddenness.md)). The repository supplies the exact `cd_core`
+representation check and the written argument in
 [the residuals record](../evidence/a5-kernel-bundles-residuals/README.md) (gate core-756). The argument:
 
 1. `G_2` acts transitively on orthonormal pairs `(a, b)` of imaginary octonions with stabilizer the `SU(2)` that fixes

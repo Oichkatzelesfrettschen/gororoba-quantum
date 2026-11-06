@@ -32,9 +32,9 @@ does not rerun its Rust diagnostics or Rocq proofs. The measurement-design
 note names the subset used for the prepared quantum acquisition.
 
 Third-party papers retain separate copyright and retrieval provenance. The
-[source library](../../INDEX.md) publishes explicitly licensed copies under
-`docs/pdf/` and keeps reading copies without established publication permission
-under ignored `docs/local_source_cache/`. The source repository's GPL notice
+[source library](../../INDEX.md) registers every paper as an external record: explicitly
+licensed copies live in gororoba-documents-public, the rest in gororoba-documents-private,
+with optional local reading copies under ignored `docs/local_source_cache/`. The source repository's GPL notice
 does not grant redistribution rights over its paper corpus.
 
 The [switching checker](check_signed_kite_switching.py) and its

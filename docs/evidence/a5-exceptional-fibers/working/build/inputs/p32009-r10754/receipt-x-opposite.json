@@ -1,0 +1,70 @@
+{
+  "i_root": 10754,
+  "incidences": [
+    {
+      "candidate_count": 69,
+      "eliminated": [
+        "t8",
+        "t3"
+      ],
+      "generator_count": 3,
+      "header_file": "xp-nm.sing",
+      "header_sha256": "54d3166188cb56a45e2b0d4d0be6da73bbf757de0d6dedc6586d396e201cf280",
+      "incidence": "X+->N-",
+      "peak_rss_kib": 78044,
+      "route": "nullity16",
+      "selected_indices_one_based": [
+        68,
+        96,
+        78
+      ],
+      "slug": "xp-nm",
+      "variables": [
+        "t1",
+        "t2",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t9"
+      ],
+      "wall_seconds": 1.2
+    },
+    {
+      "candidate_count": 69,
+      "eliminated": [
+        "t8",
+        "t3"
+      ],
+      "generator_count": 3,
+      "header_file": "xm-np.sing",
+      "header_sha256": "b47b99e772a0878d7d0aba3473d67f46944a46fb91a0189c840ec541f078f500",
+      "incidence": "X-->N+",
+      "peak_rss_kib": 78044,
+      "route": "nullity16",
+      "selected_indices_one_based": [
+        68,
+        96,
+        78
+      ],
+      "slug": "xm-np",
+      "variables": [
+        "t1",
+        "t2",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t9"
+      ],
+      "wall_seconds": 1.2
+    }
+  ],
+  "prime": 32009,
+  "producer_sha256": "dfe6a7c2f415e9d53f400df569b8e50f983bd751b8746316d3a27bea4fc8d759",
+  "schema": "a5-fiber-inputs-v1",
+  "tools": {
+    "python_flint": "0.9.0",
+    "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22"
+  }
+}

@@ -2,9 +2,9 @@
 
 ## Source copy and license
 
-The unchanged [source PDF](https://zenodo.org/records/22082732) is retained under
+The unchanged [source PDF](https://zenodo.org/records/22082732) is kept in gororoba-documents-public under
 [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) as
-[skiouris-2026-aphanics-pathion.pdf](../../pdf/skiouris-2026-aphanics-pathion.pdf). The grant is the `metadata.license`
+[skiouris-2026-aphanics-pathion.pdf](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/mathematics/cayley-dickson/skiouris-2026-aphanics-pathion.pdf). The grant is the `metadata.license`
 field of the author-linked [Zenodo record](https://zenodo.org/api/records/22082732), captured byte for byte in
 [zenodo-record-22082732.json](../../evidence/source_rights/zenodo-record-22082732.json); the deposited file's size and MD5
 match the retained bytes. [SOURCES.json](../../SOURCES.json) binds the SHA-256, the evidence hash and the reading scope.

@@ -75,8 +75,8 @@ source to its reading copy beside its public source. `scripts/source_reading_cop
 resolves every registered digest through both manifests into
 [sources/reading-copy-locations.tsv](sources/reading-copy-locations.tsv), and a
 plain run renders that index on demand. The `sources`
-suite in ci/gates.json covers the source registry, the evidence replays and
-their checksum ledgers.
+suite in ci/gates.json covers the source registry, the evidence replays and their checksum
+ledgers on demand; no workflow runs it.
 
 ## Start here by task
 
@@ -238,6 +238,47 @@ differs from it only in the `cd_core.py` digest.
 | [levratti-2026-sign-parity-zero-divisors.md](notes/papers/levratti-2026-sign-parity-zero-divisors.md) | Levratti 2026 sign-parity classification: the closed count 336 x [n-1 choose 3]_2 equals 336 at 16 and 5040 at 32 dimensions under `cd_core`, weight-3 invertibility and kernel dimensions (hosted, CC BY 4.0) |
 | [1505.05210.md](notes/papers/1505.05210.md) | Kustin, Polini and Ulrich 2017 blowup algebras of height three Gorenstein ideals: Rees ideal J = L + I_d(B) + C(phi), the special fiber equations and the A_5 fiber-cone hypotheses it needs |
 | [1207.1060.md](notes/papers/1207.1060.md) | Branco Correia and Zarzuela 2013 divisors of a module and blow up: Fitting, determinant and Bourbaki ideals, analytic spread bounds and universal flattening |
+| [2302.07486.md](notes/papers/2302.07486.md) | Kumar and Venugopal 2023 Rees algebra of maximal order Pfaffians: linear type, the quadratic Rees relations, Koszul diagonals and the nonquadratic sparse 7 x 7 case against the A_5 fiber cones (hosted, CC BY 4.0) |
+| [2104.13811.md](notes/papers/2104.13811.md) | Cooper and Price 2021 degree bounds for Rees equations of determinantal and Pfaffian ideals: Proposition 5.1.2 and Theorems 5.4.3 and 5.4.5 and why no bound reaches the A_5 fiber-cone equations (hosted, CC BY 4.0) |
+| [alg-geom-9707001.md](notes/papers/alg-geom-9707001.md) | Bertram 1997 complete skew forms: the closure of the Pfaffian map and Theorem 3.3 as the container of the limiting kernels of the A_5 strata |
+| [1803.09011.md](notes/papers/1803.09011.md) | Massarenti 2020 spaces of complete skew-forms: Construction 2.3, Theorems 1.1 and 1.2 and the corank-one frame of the kernel map |
+| [math-0105151.md](notes/papers/math-0105151.md) | Ghorpade and Krattenthaler 2003 Hilbert series of Pfaffian rings: equation (9), Theorem 2 and the h-vector (1, 6, 6, 1) of the cone over G(2, 6) |
+| [1308.0582.md](notes/papers/1308.0582.md) | Jeffries, Montano and Varbaro 2015 j-multiplicity and fiber cone degree: Theorems 3.1 and 6.3 for the algebra of Pfaffians and why they fix only the ambient degree |
+| [math-0302241.md](notes/papers/math-0302241.md) | Corso, Ghezzi, Polini and Ulrich 2004 Cohen-Macaulay special fibers: Theorem 2.2 and the relation-count obstruction for the A_5 fibers |
+| [math-0212119.md](notes/papers/math-0212119.md) | D'Cruz, Raghavan and Verma 1999 Cohen-Macaulay fiber cones: the Hilbert series criterion of Theorem 2.1 and the numerator test on the tracked A_5 fiber Hilbert functions |
+| [2512.16165.md](notes/papers/2512.16165.md) | Ansaldi, Lira, Mostafazadehfard, Saloni and Seccia 2025 special fibers of Hankel coordinate sections: the Main Theorem and the method of identifying a fiber with that of 2-minors |
+| [conca-herzog-valla-1996-sagbi-bases.md](notes/papers/conca-herzog-valla-1996-sagbi-bases.md) | Conca, Herzog and Valla 1996 Sagbi bases and the blow-up algebras of rational normal scrolls (introduction read) |
+| [conca-herzog-trung-valla-1997-diagonal-subalgebras.md](notes/papers/conca-herzog-trung-valla-1997-diagonal-subalgebras.md) | Conca, Herzog, Trung and Valla 1997 diagonal subalgebras of bigraded algebras (JSTOR and Project MUSE downloads; abstract and definition read) |
+| [math-0402345.md](notes/papers/math-0402345.md) | Gannon 2006 moonshine survey: the moonshine module, Borcherds proof and the Norton series, as the citation for moonshine statements |
+| [1208.6254.md](notes/papers/1208.6254.md) | Carnahan 2016 monstrous Lie algebras and Norton's generalized moonshine conjecture (abstract and introduction read) |
+| [1812.08439.md](notes/papers/1812.08439.md) | Cunha and Elduque 2020 codes, S-structures and the exceptional Lie algebras E7 and E8 (abstract and introduction read) |
+| [2504.16513.md](notes/papers/2504.16513.md) | Kollross 2026 explicit E8 bracket from triality and oct-octonions (abstract and introduction read) |
+| [2009.00390.md](notes/papers/2009.00390.md) | Dray, Huerta and Kincaid 2014 the 2 x 2 magic square of Lie groups (abstract and introduction read) |
+| [math-0411104.md](notes/papers/math-0411104.md) | Krutelevich 2007 Freudenthal construction on cubic Jordan algebras and Bhargava composition (abstract and contents read) |
+| [2605.09333.md](notes/papers/2605.09333.md) | Corradetti 2026 Coxeter-Dickson order, para-octonions and the Okubo algebra on the E8 lattice (hosted, CC BY 4.0; abstract and introduction read) |
+| [2204.04996.md](notes/papers/2204.04996.md) | Wilson, Dray and Manogue 2023 3 x 3 matrix construction of E8 over octonions (abstract and introduction read) |
+| [2401.10534.md](notes/papers/2401.10534.md) | Dray, Manogue and Wilson 2024 E7 and its 56-dimensional representation inside E8: Albert algebra H_3(O), equations (15) to (20) |
+| [0909.0551.md](notes/papers/0909.0551.md) | Baez and Huerta 2010 division algebras and supersymmetry in dimensions 3, 4, 6 and 10 (abstract and introduction read) |
+| [1102.4857.md](notes/papers/1102.4857.md) | Ferrara, Marrani and Yeranyan 2011 Freudenthal duality in generalized special geometry (abstract read) |
+| [1402.0206.md](notes/papers/1402.0206.md) | Flaut 2014 survey of algebras from the Cayley-Dickson process over fields (abstract and introduction read) |
+| [2311.16704.md](notes/papers/2311.16704.md) | Chapman and Vishkautsan 2025 polynomial roots and left eigenvalues over Cayley-Dickson algebras; the doubling coincides with cd_core at gamma = -1; the PDF carries a CC BY-SA 4.0 notice |
+| [1307.3641.md](notes/papers/1307.3641.md) | Flaut and Shpakivskyi 2015 Dirac-operator holomorphic functions on Cayley-Dickson algebras (abstract and introduction read) |
+| [math-0403263.md](notes/papers/math-0403263.md) | Cohn and Kumar 2009 the Leech lattice is the densest lattice in R^24 and E8 in R^8 (abstract and introduction read) |
+| [2307.02505.md](notes/papers/2307.02505.md) | Tang and Tang 2023 sedenion model of lepton generations: the abstract's claim of three octonion subalgebra types, unverified (hosted, CC BY 4.0) |
+| [2304.01213.md](notes/papers/2304.01213.md) | Singh 2023 exceptional Jordan algebra essay on gravitation (abstract read; claims unverified) |
+| [2606.15235.md](notes/papers/2606.15235.md) | Baez and Schwahn 2026 Standard Model gauge group from F4 acting on Jordan subalgebras of h_3(O) (abstract and introduction read) |
+| [hep-th-0301037.md](notes/papers/hep-th-0301037.md) | Boya 2003 octonions in M-theory review (abstract and introduction read) |
+| [2112.09698.md](notes/papers/2112.09698.md) | D'Andrea, Landi and Lizzi 2022 tolerance algebras: Proposition 7 and the statement that Cayley-Dickson algebras of dimension 8 and above are not tolerance algebras |
+| [2410.14267.md](notes/papers/2410.14267.md) | Fox and Tkachev 2024 Hsiang and quasicomposition algebras and the tripling construction as an analogue of doubling (hosted, CC BY 4.0) |
+| [2208.03285.md](notes/papers/2208.03285.md) | Aurisano and Whitehead 2022 deep-learning image classification in high-energy physics; no hypercomplex content (hosted, CC BY 4.0) |
+| [conway-norton-1979-monstrous-moonshine.md](notes/papers/conway-norton-1979-monstrous-moonshine.md) | Conway and Norton 1979 monstrous moonshine: observations (A) to (G), the series J and T_m, and the degrees of Table 1 |
+| [0811.4523.md](notes/papers/0811.4523.md) | Tuite 2009 exceptional vertex operator algebras: abstract and introduction (Deligne series, Moonshine module, Griess algebra) |
+| [hep-th-0205068.md](notes/papers/hep-th-0205068.md) | Gaberdiel, Olive and West 2002 Lorentzian Kac-Moody algebras (abstract read) |
+| [0810.2088.md](notes/papers/0810.2088.md) | Connes 2013 Theorems 1.1 and 1.2 on spectral triples of manifolds |
+| [hep-th-9209099.md](notes/papers/hep-th-9209099.md) | Lada and Stasheff 1993 sh Lie structures: skew symmetric l_n of degree 2 - n (cochain) and n - 2 (chain) |
+| [math-ph-0507015.md](notes/papers/math-ph-0507015.md) | Fernandez Nunez, Garcia Fuertes and Perelomov 2005 E7 Calogero-Sutherland Hamiltonian (5), ground state and the kappa = 1 characters |
+| [2207.14076.md](notes/papers/2207.14076.md) | Lin 2024 orbifolds of the Monster CFT and topological modular forms (abstract read) |
+| [math-0404517.md](notes/papers/math-0404517.md) | Eisenbud, Green, Hulek and Popescu 2006 small schemes: Theorems 0.2 and 0.4 (2-regular = small = linearly joined varieties of minimal degree) applied to the E8-bar to VB fiber candidate |
 | [1404.7403.md](notes/papers/1404.7403.md) | Weinstein and Yekutieli 2020 selective sign-determining confidence intervals: BY FCR-adjusted selection (Definition 1), directional BH sign selection with FCR at most q (Definition 2, Theorem 1), selection on independent data (Theorem 3) |
 | [efron-2011-tweedie-formula.md](notes/papers/efron-2011-tweedie-formula.md) | Efron 2011 Tweedie's formula and selection bias: E{mu given z} = z + sigma^2 l'(z), the normal-normal and James-Stein forms (3.7)-(3.9), regret and the widened empirical Bayes interval (7.26) |
 | [2603.20495.md](notes/papers/2603.20495.md) | Chapman and Levin 2026 central products of Cayley-Dickson loops: associativity degree for 4 to 64 dimensions (hosted, CC BY 4.0) |
@@ -319,12 +360,34 @@ differs from it only in the `cd_core.py` digest.
 | [2001.09190.md](notes/papers/2001.09190.md) | Vepsäläinen et al. 2020 -- ionizing radiation limits transmon T1 to about 4 ms; power density and shield test |
 | [2402.03208.md](notes/papers/2402.03208.md) | Harrington et al. 2025 -- cosmic rays cause 17.1 % of correlated qubit errors; coincidence rates, qubit participation, recovery times |
 | [2104.05219.md](notes/papers/2104.05219.md) | McEwen et al. 2022 -- chip-wide cosmic-ray error bursts, one per 10 s, 25 ms recovery, 26 qubits |
+| [2111.08152.md](notes/papers/2111.08152.md) | Costa, An, Sanders, Su, Babbush and Berry 2021: discrete adiabatic theorem and the O(kappa log(1/epsilon)) quantum linear-system solver |
+| [2305.11352.md](notes/papers/2305.11352.md) | Jennings, Lostaglio, Pallister, Sornborger and Subasi 2023: randomized adiabatic quantum linear solver with an explicit 837 kappa query bound |
+| [2406.12086.md](notes/papers/2406.12086.md) | Dalzell 2024: kernel-reflection quantum linear-system solver with an explicit 56 kappa leading constant |
+| [2410.18178.md](notes/papers/2410.18178.md) | Low and Su 2024: quantum linear-system algorithm with optimal state-preparation queries (Tunable VTAA) |
+| [2601.16697.md](notes/papers/2601.16697.md) | Mori, Kikuchi, Benedetti and Rosenkranz 2026: Omega(kappa sqrt(s)) lower bound for sparse quantum linear-system solvers |
+| [2609.22445.md](notes/papers/2609.22445.md) | Patel 2026: joint Omega(kappa sqrt(s) log(1/epsilon)) lower bound for sparse quantum linear-system solvers |
+| [2502.11239.md](notes/papers/2502.11239.md) | Tu, Dubynskyi, Mohammadisiahroudi, Riashchentceva, Cheng, Ryashchentsev, Terlaky and Liu 2025: fault-tolerant space, time and energy estimates for HHL against conjugate gradient |
+| [2411.02522.md](notes/papers/2411.02522.md) | Morales, Pira, Schleich, Koor, Costa, An, Aspuru-Guzik, Lin, Rebentrost and Berry 2024: survey and taxonomy of quantum linear-system solvers |
+| [1910.06151.md](notes/papers/1910.06151.md) | Chia, Gilyen, Li, Lin, Tang and Wang 2019: dequantized singular value transformation for low-rank inputs under sampling access |
+| [1712.06239.md](notes/papers/1712.06239.md) | Chen and Gao 2017: Macaulay-matrix HHL for Boolean polynomial systems, runtime in the condition number |
+| [2111.00405.md](notes/papers/2111.00405.md) | Ding, Gheorghiu, Gilyen, Hallgren and Li 2021: condition-number lower bound that limits Macaulay-matrix HHL against Grover search |
+| [2510.05588.md](notes/papers/2510.05588.md) | Li 2025: instance-aware quantum linear-system algorithm and its polynomial-system application |
+| [1712.07211.md](notes/papers/1712.07211.md) | Faugere, Horan, Kahrobaei, Kaplan, Kashefi and Perret 2017: Grover-accelerated hybrid solver for Boolean multivariate quadratic systems, O(2^(0.462n)) gates |
+| [2609.28901.md](notes/papers/2609.28901.md) | Lee, Jeong and Kim 2026: garbage-free reversible Gaussian elimination over GF(p^l), same field-operation count as classical elimination |
+| [2608.23929.md](notes/papers/2608.23929.md) | Maeda and Yano 2026: quantum additive-error torus point counting of a Laurent polynomial over F_q, and its #P-hardness |
+| [math-0411623.md](notes/papers/math-0411623.md) | Kedlaya 2004: quantum algorithm for zeta functions of curves over F_q, polynomial in genus and log q |
+| [quant-ph-0405081.md](notes/papers/quant-ph-0405081.md) | van Dam 2004: zeros of finite-field zeta functions as eigenvalues of efficient unitaries (Fermat hypersurfaces) |
+| [2408.08292.md](notes/papers/2408.08292.md) | Jordan, Shutty, Wootters, Zalcman, Schmidhuber, King, Isakov, Khattar and Babbush 2024: decoded quantum interferometry: optimization over F_p reduced to decoding |
+| [quant-ph-0409035.md](notes/papers/quant-ph-0409035.md) | Buhrman and Spalek 2004: quantum walk verification of matrix products in O(n^(5/3)) time over an integral domain |
+| [1103.0842.md](notes/papers/1103.0842.md) | Belovs 2011: span program for the rank problem (query complexity) |
 
 ### Algebra and proofs
 
 | File | Contents |
 |---|---|
 | [topics/a5-exceptional-fiber-findings.md](notes/topics/a5-exceptional-fiber-findings.md) | A_5 exceptional fibers of the nullity-8 closures along their boundary orbits: Hilbert functions by degree-by-degree membership rank, quadric-scheme structure, formal-arc support certificate, retired elimination routes, and the hypotheses that survive falsification |
+| [topics/quantum-linear-algebra-fit-a5.md](notes/topics/quantum-linear-algebra-fit-a5.md) | quantum linear algebra of 2024-2026 against each in-flight A_5 fiber computation: real-amplitude QLSS bounds, Macaulay-matrix and Grover polynomial-system solvers, reversible elimination over GF(p^l), point-count approximation over F_q, and the F_2 rank collapse that blinds a qubit-native probe to zero divisors |
+| [topics/finite-field-qlsa-alternatives.md](notes/topics/finite-field-qlsa-alternatives.md) | a finite-field quantum linear-system proposal for the fiber program, refuted claim by claim (isotropic vectors for kernels, non-unitary oracle, register size, misattributed citations) |
 | [topics/box-kites/README.md](notes/topics/box-kites/README.md) | box-kite experiment program index |
 | [bdsc-pauli-readout.md](notes/topics/bdsc-pauli-readout.md) | BDSC target and blade effects as three-term four-qubit Pauli sums; local readout and 13-basis cover |
 | [algebra-hardware-probe-principles.md](notes/topics/algebra-hardware-probe-principles.md) | first principles of algebra hardware probes: mutation test, eigen-observable, interleaving, null arm, noisy coherent response; findings ledger of the Garnet runs |
@@ -370,6 +433,7 @@ differs from it only in the `cd_core.py` digest.
 | [relativistic-metrology-scale.md](notes/topics/relativistic-metrology-scale.md) | the Belenos light cone as a mode-reachability set; relativistic and astronomical phases against the measured device instabilities, with the falsifiers of an astronomical coupling |
 | [pais-claims-falsification.md](notes/topics/pais-claims-falsification.md) | the Pais Superforce (c^4/G as unification) decomposed into Planck-unit identities, the measured alpha_s(M_Pl) shortfall, the Friedmann identity and the active-mass and Cherenkov refutations of permittivity engineering; the Pais patent equations against Maxwell, QED and general-relativity bounds; the NAWCAD null; the QET passivity ladder and its information-excess endpoint as the QPU-testable mechanism |
 | [persona-corpus-verified-results.md](notes/topics/persona-corpus-verified-results.md) | what survives of an LLM-persona corpus once checked from first principles: E8, triality and the Albert algebra (f4 derivations, e6 norm group, magic-square rows), corrected L-infinity, spectral-triple and affine definitions, the Sugawara central charge, the Coulomb gas and the Kac determinant with its constant to level 5, verified Casimir, QED and zero-point figures; the runs they admit (two-photon octonion associator on Ascella, QX-checked QET ladder on Tuna-17, IQM and IBM follow-ups), corrections to earlier notes, the quaternion encoding of the sl(2) bracket in the Ascella order interferometer, Cl(8) from octonion left multiplication failing on the 42 sedenion zero-divisor pairs, the associator characters with a Cl(0,3) mutation, the two independent decompositions reconciled by definition, and the removed claims |
+| [chatgpt-archive-verified-results.md](notes/topics/chatgpt-archive-verified-results.md) | what survives of four ChatGPT brainstorm conversations (moonshine and pulsars, E7 and E8, L-infinity algebras and spectral triples, sedenion research articles) once checked against held sources and by computation, the claims that fail, the reference audit of the whole export (arXiv ids and DOIs resolved, fabricated and placeholder citations), and the results with repository content: the XOR-line Jacobiator zero set and the tolerance-algebra corollary |
 | [open_gororoba_survey_deep_notes.md](notes/topics/open_gororoba_survey_deep_notes.md) | deep notes on the gororoba-open Rocq corpus |
 | [prior_work_synthesis.md](notes/prior_work_synthesis.md) | what is known, what is new, labeled per claim |
 | [koebisu_rank_stratum_research.md](notes/koebisu_rank_stratum_research.md) | dimension-32 rank question |

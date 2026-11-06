@@ -1,6 +1,6 @@
-"""Restore the ignored reading copies of external-only sources from their registered URLs.
+"""Restore the ignored reading copies of registered sources from their URLs or the documents repositories.
 
-docs/SOURCES.json lists every external-only PDF under ``external_pdfs`` with
+docs/SOURCES.json lists every PDF, all of them external, under ``external_pdfs`` with
 its ``source_url``, ``sha256``, ``bytes`` and ``local_cache_path`` under the
 ignored docs/local_source_cache/. ``git worktree remove`` deletes ignored
 files, so a reading copy lives in the checkout that reads it and is restored

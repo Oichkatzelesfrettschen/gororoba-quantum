@@ -116,7 +116,6 @@ def test_job_05_size_follows_job_04_duration_alone(
         raise AssertionError(f"job-04 at {duration} s, complete {complete}, must admit {expected}")
 
 
-@pytest.mark.audit
 def test_a_truncated_retained_run_is_partial(tmp_path: Path) -> None:
     run = tmp_path / "truncated"
     run.mkdir()
