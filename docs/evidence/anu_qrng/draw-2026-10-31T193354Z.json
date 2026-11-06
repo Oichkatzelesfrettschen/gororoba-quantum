@@ -1,0 +1,18 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=8&type=uint16",
+ "retrieved_utc": "2026-10-31T193354Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"8\", \"data\": [9719, 50187, 54229, 19256, 29161, 41001, 17321, 7212]}",
+ "raw_sha256": "5a1524065e9abb587594fe2b5da9d9883f8f7fb9ee97d36ba27e49bbdc79a0c6",
+ "type": "uint16",
+ "values": [
+  9719,
+  50187,
+  54229,
+  19256,
+  29161,
+  41001,
+  17321,
+  7212
+ ]
+}

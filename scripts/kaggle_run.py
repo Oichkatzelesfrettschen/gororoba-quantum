@@ -140,7 +140,8 @@ CPU_KERNEL_PINS = ("qiskit==2.6.1", "qiskit-aer==0.18.2", "qiskit-ibm-runtime==0
 # reads the same package manuals, workflow and substrate notes as the host:
 # every tracked file under each directory except the captured upstream
 # references, which are hash-pinned copies of pages the kernel never reads
-# and which alone exceed half of KERNEL_SOURCE_LIMIT.
+# and which alone exceed half of KERNEL_SOURCE_LIMIT, and the wheel build
+# recipes, which run on the build host or in their own kernel.
 KERNEL_DOCS = (
     "docs/notes/kaggle",
     "docs/notes/packages",
@@ -148,7 +149,7 @@ KERNEL_DOCS = (
     "docs/notes/qiskit-ecosystem.md",
     "docs/notes/qiskit-ecosystem-install-plan.md",
 )
-KERNEL_DOC_CAPTURES = ("docs/notes/kaggle/site", "docs/notes/kaggle/cli")
+KERNEL_DOC_CAPTURES = ("docs/notes/kaggle/site", "docs/notes/kaggle/cli", "docs/notes/kaggle/recipes")
 # Opt-in package groups (``push --with GROUP``), each pinned to the version of
 # the build host's Arch package, so a kernel and the host import the same
 # releases. The kernel installs them under a constraints file that holds

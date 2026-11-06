@@ -10,7 +10,23 @@ machinery.
 
 - The modules run as scripts from gororoba_quantum/ and form no installable
   package.
-- The `pr.yml` checks `lint`, `types`, `tests` and `gates` green on the head
+- Reusable acquisition readers and analysis functions live in
+  gororoba_quantum/ and take explicit inputs (`qi_records.py` is the
+  Quantum Inspire reader); scripts select inputs and call them. Acquisition
+  facts, experiment definitions and analysis results stay distinct. A
+  compatible new acquisition reuses the existing reader and analyzer without
+  a copy of their implementation or a change to another module's
+  configuration; new code answers new scientific behavior or an unsupported
+  record format, never a new job id or path. A digest-bound historical
+  producer keeps its bytes, and a change that would alter its identity or
+  meaning lands in an explicitly versioned successor
+  (`qi_zz_map_qx_analysis.py` succeeds the `--analyze` mode of the pinned
+  `qi_zz_map_qx.py`). A superseded unpinned implementation leaves once its
+  callers migrate. Record integrity and scientific behavior are tested on
+  bounded fixtures; historical replays, digest and source checks live in
+  ci/gates.json and run on demand ([ci/AGENTS.md](ci/AGENTS.md#on-demand-gates)),
+  never in a workflow.
+- The `pr.yml` checks `lint`, `types`, `tests` and `contracts` green on the head
   admit a merge. No local gate run or premerge replay is required before a
   push, which overrides the user-level guide's local replica of the slowest
   CI lanes; `sh ci/pr_checks.sh tests PATH` runs touched tests under the
@@ -33,12 +49,13 @@ machinery.
 - Mock outcomes (`--native-dry-run` timing) never enter scientific analysis
   or measured visualizations.
 - A change to live_run.py or experiments.py is proven by the `tests` check
-  and the gates its diff reaches; a live dry run (`"$PYTHON" live_run.py
+  and a local `sh ci/pr_checks.sh gates` run; a live dry run (`"$PYTHON" live_run.py
   --out ../results/live`, a record under results/live/) belongs to a change
   of calibration admission, the approval comparison, the submission path or
   execution readiness, and to every case that heads for `--submit`.
-- A change to `proofs/`, a replay bundle or its receipts follows the Rocq
-  replay of [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates).
+- A change to `proofs/`, a replay bundle or its receipts runs the Rocq
+  compile of `proofs.yml` (path-filtered, not a required check;
+  [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates)).
 
 ## Seeds
 
@@ -137,7 +154,8 @@ registered repository artifact (`docs/notes/ibm_quantum/`,
   acquisition decision statements and cancellation authority follow
   [evidence-closure](docs/runbooks/evidence-closure.md).
 - Tokens and keys live outside every checkout and never enter a commit, log
-  or memory. Provider environments, MCP names and key files:
+  or memory; the private gororoba-infrastructure repository records where
+  each lives. Provider interpreters and MCP names:
   [providers](docs/notes/providers.md).
 
 ## Qiskit skills
@@ -158,15 +176,17 @@ and after every monthly skill update
   ([results-index](docs/runbooks/results-index.md)).
 - A record names an IBM Cloud instance only by a 12-hex sha256 of its CRN.
 - Tokens, account identifiers and local absolute paths stay out of every
-  commit. The IBM credential lives in the qiskit account store,
-  `~/.qiskit/qiskit-ibm.json`. Account identifiers are credentials, account
+  commit. The IBM credential lives in the qiskit account store, whose
+  location the private gororoba-infrastructure repository records. Account identifiers are credentials, account
   and instance ids, CRNs and email addresses. A public platform handle (the
   GitHub owner in every repository URL, the Kaggle username in a kernel or
   dataset slug `owner/slug`) names published work, and records keep it so
   `collect` and `status` resolve the kernel.
-- External-only sources (`redistribution: excluded_without_permission`) go
-  only to the owner's private repository gororoba-quantum-documents, never
-  into this tree ([docs/README.md](docs/README.md#source-cache-and-reading-copies)).
+- External-only sources (`redistribution: excluded_without_permission`) stay
+  out of this tree. Their reading copies live in the owner's documents
+  repositories, gororoba-documents-public when the file's own license allows
+  redistribution and gororoba-documents-private otherwise
+  ([docs/README.md](docs/README.md#source-cache-and-reading-copies)).
 
 ## Documents
 
@@ -178,9 +198,13 @@ lives; read it before writing one.
   every reader reaches, never into sibling copies.
 - A new document gets its map row or an inbound link in the same change;
   `scripts/check_markdown_links.py` fails on a broken link or anchor.
-- Retained bytes are immutable: a file a ledger, record or digest binds keeps
-  its path and bytes, and a correction lands in a new document that the old
-  one's map row links.
+- Raw provider data (`raw/<job_id>/`), a record an approval hashes (an
+  approved plan, the `approved_run.sh` comparison record, a submitted case)
+  and a published replay bundle keep their path and bytes, and a correction
+  lands in a new document that the old one's map row links. A derived
+  analysis record or document that a ledger or digest binds is corrected in
+  place, in the change that refreshes the binding ledger or digest, since git
+  keeps its history and no approval or replay identity rests on it.
 - A move runs through `git mv` and updates every reference, ledger and gate
   in the same change. Session-local scratch stays in the ignored `docs/local/`.
 - JSON plan records own work status; run `scripts/plan_tracker.py check`
@@ -192,13 +216,21 @@ lives; read it before writing one.
 ## Reviews and merges
 
 - Codex is the only hosted reviewer, and it reviews only on request: the
-  operator posts the issue comment `@codex review` once, when the PR is a
+  operator posts the issue comment `@codex review` through
+  `scripts/codex_review_request.sh PR`, which refuses a request whose PR diff
+  equals the last reviewed head's or that would open a third round. The
+  operator requests once, when the PR is a
   merge candidate, and again only after a push that changed code in response
   to a finding or to the operator's own review; a clean round with no thread
   followed by green checks admits the merge, and a merge of main or a
-  regenerated view earns no new request. Copilot reviews are billed to the
-  owner, so no pull request requests one; when the Codex app reports
-  exhausted code-review quota, the owner decides how the PR proceeds.
+  regenerated view earns no new request. A PR gets at most two automated
+  review rounds, counted from its first request: after the second round the
+  operator answers every thread in one push and asks the owner whether the PR
+  merges, because each further round has found new edge cases without
+  converging (PR #712 ran eight). Copilot reviews are billed to the owner, so
+  no pull request requests one, and `.coderabbit.yaml` keeps CodeRabbit
+  silent; when the Codex app reports exhausted
+  code-review quota, the owner decides how the PR proceeds.
 - Reply to each thread's root comment beginning `Fixed in <commit>`,
   `Refuted:` followed by the refuting source line, or `Boundary:` followed by
   the documented limit and the follow-up issue, then run

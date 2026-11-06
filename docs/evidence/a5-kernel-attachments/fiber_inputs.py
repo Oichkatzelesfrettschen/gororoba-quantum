@@ -42,13 +42,15 @@ LOCAL_BASE = Path("docs/local/a5-failed-runs")
 class Spec:
     slug: str
     incidence: str
-    computed: str  # path relative to the local base
+    computed: str | None  # path relative to the local base; None for an incidence with no earlier input to compare
     route: str = "nullity16"  # producer whose phase-one script emits the input
 
 
 SPECS = (
     Spec("xp-np", "X+->N+", "kaggle-pack-a/xp_np/input.sing"),
     Spec("xm-nm", "X-->N-", "kaggle-pack-a/xm_nm/input.sing"),
+    Spec("xp-nm", "X+->N-", None),
+    Spec("xm-np", "X-->N+", None),
     Spec("iso-np", "Iso->N+", "inputs/iso_K2.sing"),
     Spec("iso-nm", "Iso->N-", "inputs/iso_K2.sing"),
     Spec("e8-np", "E8bar->N+", "inputs/e8_np_fiber.sing"),
@@ -284,6 +286,8 @@ def _compare_script(prime: int, root: int, variables: list[str], computed: dict[
 
 def compare(slug: str, emitted: dict[str, Any], prime: int, root: int, base: Path) -> dict[str, Any]:
     spec = SPEC_BY_SLUG[slug]
+    if spec.computed is None:
+        raise RuntimeError(f"{slug} has no earlier input to compare")
     path = base / LOCAL_BASE / spec.computed
     text = path.read_text(encoding="utf-8")
     computed = _parse_computed(text)
@@ -334,7 +338,7 @@ def compare(slug: str, emitted: dict[str, Any], prime: int, root: int, base: Pat
 
 def _worker(slug: str, *, prime: int, root: int, cache: Path, base: Path, do_compare: bool) -> dict[str, Any]:
     emitted = _emit_one(slug, prime=prime, root=root, cache=cache)
-    if do_compare:
+    if do_compare and SPEC_BY_SLUG[slug].computed is not None:
         emitted["comparison"] = compare(slug, emitted, prime, root, base)
     return emitted
 

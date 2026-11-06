@@ -49,6 +49,7 @@ if str(ROOT / "scripts") not in sys.path:
 from hypercomplex_cases import encoded, photonic_template  # noqa: E402
 from qd_platform import sha256_bytes, template_experiment  # noqa: E402
 
+import qd_records  # noqa: E402
 from demarrais_structures import (  # noqa: E402
     box_kite_12mode_unitary,
     certify_cowbird_octonion_egg,
@@ -510,8 +511,8 @@ def check_all_cases(jobs: Sequence[str] = JOB_NAMES) -> int:
 
 
 def analyze_run(run_dir: Path) -> dict[str, Any]:
-    manifest = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
-    results = json.loads((run_dir / "results.json").read_text(encoding="utf-8"))
+    records = qd_records.load_run(run_dir)
+    manifest, results = records.json_of("cases.json"), records.json_of("results.json")
     entries = results.get("iterations")
     if not isinstance(entries, list):
         # qd_platform.collect writes results.json with `counts` as a list of dicts when template iterations run

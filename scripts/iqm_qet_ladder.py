@@ -82,6 +82,7 @@ from iqm_jobs import CASE_SCHEMA, JOB_SECONDS, dump  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 from iqm_signed_probe import relaxation as aer_relaxation  # noqa: E402
 
+import iqm_records  # noqa: E402
 import qet_ladder as ql  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
@@ -1622,19 +1623,20 @@ def analyze(run_dirs: Sequence[Path]) -> dict[str, Any]:
     if len(run_dirs) != 1:
         raise ValueError("the analysis reads exactly one run")
     run_dir = run_dirs[0]
+    records = iqm_records.load_run(run_dir)
     facts = iqm_jobs.run_facts(run_dir)
-    submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
+    submission = records.json_of("submission.json")
     if submission["qc"] != QC or submission["job"] != JOB:
         raise ValueError(
             f"{run_dir}: the analysis reads the {JOB} job on {QC}, not {submission['job']} on {submission['qc']}"
         )
-    case = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
-    record = json.loads((run_dir / "raw/job.json").read_bytes())
+    case = records.json_of("cases.json")
+    record = records.json_of("raw/job.json")
     compiled = record["compilation"]["calibration_set_id"]
     prediction = json.loads((run_dir / "prediction.json").read_text(encoding="utf-8"))
     if sha256((run_dir / "prediction.json").read_bytes()) != case["prediction_sha256"]:
         raise ValueError(f"{run_dir}/prediction.json is not the prediction cases.json binds")
-    measurements = json.loads((run_dir / "raw/measurements.json").read_bytes())
+    measurements = records.json_of("raw/measurements.json")
     out = endpoints_of_run(case, measurements)
     row = next(r for r in case["jobs"] if r["job"] == JOB)
     planned = row["shots"]

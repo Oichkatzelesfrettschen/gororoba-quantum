@@ -11,7 +11,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Area | Owns | Entry |
 |---|---|---|
 | Rules | agent doctrine, gate machinery, provider tables | [AGENTS.md](../AGENTS.md), [ci/AGENTS.md](../ci/AGENTS.md) |
-| Sources and papers | PDFs, licenses, one note per source, verifier, reading-copy links | [INDEX.md](INDEX.md), [sources/README.md](sources/README.md), [sources/reading-copies.md](sources/reading-copies.md) |
+| Sources and papers | PDFs, licenses, one note per source, verifier, reading-copy links | [INDEX.md](INDEX.md), [sources/README.md](sources/README.md), [reading-copy-locations.tsv](sources/reading-copy-locations.tsv) |
 | Algebra and proofs | Cayley-Dickson conventions, rank strata, Rocq certificates | [algebra_circuit_rules.md](notes/algebra_circuit_rules.md) |
 | A5 and photonic candidates | Exact rank witnesses, heralding limits and retained Ascella and Belenos results | [A5 photonic cross-checks](evidence/a5-photonic-crosschecks/README.md) |
 | Circuit and QPU design | circuit designs, claim boundaries, QPU budgets | [DESIGN_NOTES.md](../gororoba_quantum/DESIGN_NOTES.md) |
@@ -26,8 +26,8 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Quafu | BAQIS ScQ superconducting QPUs and a 10-qubit simulator | [quafu/README.md](notes/quafu/README.md) |
 | Origin Quantum | Wukong 180 QPU and four simulators; 60 s registration grant | [originquantum/README.md](notes/originquantum/README.md) |
 | Planck Technologies | account closed; audited SDK, key rejected and simulator returns random bits | [planck/README.md](notes/planck/README.md) |
-| AWS | free-plan project; always-free bands, credit-metered usage, the five $20 activity rewards, and the host Python packages; Braket unavailable | [aws/README.md](notes/aws/README.md) |
-| Azure | free-trial subscription; Quantum workspace with free Quantinuum, Pasqal and Rigetti emulator plans; 4-vCPU trial compute | [azure/README.md](notes/azure/README.md) |
+| AWS | free-plan project, a tooling cloud with Braket unavailable; the host Python packages | [aws/README.md](notes/aws/README.md) |
+| Azure | Quantum workspace with free Quantinuum, Pasqal and Rigetti emulator plans | [azure/README.md](notes/azure/README.md) |
 | zbMATH Open | REST, OAI-PMH and citation-matching client; API audit with replayable findings | [zbmath/README.md](notes/zbmath/README.md) |
 | QRNG seed sources | ANU, Outshift and Quandela draws for every new seed | [qrng/README.md](notes/qrng/README.md) |
 | Simulation | Kaggle CPU and GPU kernels, host Aer build | [kaggle/README.md](notes/kaggle/README.md) |
@@ -35,10 +35,10 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Packages and tools | hypercomplex stack, quantum tool manuals, Aer packaging | [packages/README.md](notes/packages/README.md) |
 | Python | interpreters, library roles, optimization ladder | [PYTHON.md](PYTHON.md) |
 | CI and gates | gate list, ledger, runtime measurements | [ci/AGENTS.md](../ci/AGENTS.md) |
-| Planning | work records, next actions, blockers and completion receipts | [planning entrance](state/plans.md), [commands](runbooks/plan-tracker.md), [migration evidence](evidence/plan-reconciliation/README.md) |
+| Planning | work records, next actions, blockers and completion receipts | [plan records](state/plans/), [commands](runbooks/plan-tracker.md), [migration evidence](evidence/plan-reconciliation/README.md) |
 | Repository layout | measured checkout shape, producer-side record slimming, document and code homes, package hierarchy waves, owner decisions | [layout reconciliation](design/repository-layout-reconciliation.md) |
 | Operating rules | the six failures the rules prevent, the operating data, the forty-line contract, checks that replace text, falsifiers, what the CI is for | [operating rules contract](design/operating-rules-contract.md) |
-| State and records | claim registry, run census, roadmap | [RESEARCH_STATE.md](state/RESEARCH_STATE.md) |
+| State and records | claim registry, run census, roadmap, on-demand renders | [research_state.json](state/research_state.json), [generated views](runbooks/generated-views.md) |
 | Evidence closure | source-relative job identities, denominators, dependencies and acquisition decisions | [derived view](evidence/evidence-closure/README.md), [operator procedure](runbooks/evidence-closure.md), [derivation-led synthesis source](notes/topics/algebra_measurement_synthesis.tex) |
 | Results index and archive copies | run, job, acquisition and claim lookups; Software Heritage and git bundle copies | [results index](runbooks/results-index.md), [archive copies](runbooks/repository-archive.md), [archive observations](evidence/repository-archive/README.md) |
 | Archive | handoffs, handbacks, review reports | [archive/reviews/README.md](archive/reviews/README.md) |
@@ -56,17 +56,27 @@ date or phase label appears only under `docs/archive/`.
 
 ## Source cache and reading copies
 
-External-only sources (`redistribution: excluded_without_permission`) keep their
-reading copies and Markdown transcriptions in the owner's private repository
-[gororoba-quantum-documents](https://github.com/Oichkatzelesfrettschen/gororoba-quantum-documents),
-cloned beside this checkout; only that repository receives those files.
-`"$PYTHON" scripts/fetch_source_cache.py --missing --from-documents DIR`
-restores the ignored `docs/local_source_cache/` from it, and the same command
-without `--from-documents` fetches the registered URLs.
-[sources/reading-copies.md](sources/reading-copies.md), regenerated by
-`scripts/source_reading_copies.py` after every registry change, links each one
-beside its public source. The `sources` suite in ci/gates.json covers the
-source registry, the evidence replays and their checksum ledgers.
+External-only sources (`redistribution: excluded_without_permission`) stay out of
+this tree and keep their reading copies in the owner's workspace documents
+repositories, cloned beside this checkout:
+[gororoba-documents-public](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public)
+when the file's own license allows redistribution, and
+[gororoba-documents-private](https://github.com/Oichkatzelesfrettschen/gororoba-documents-private)
+otherwise. Both file every document under `<field>/<subject>/` by the public
+repository's `TAXONOMY.md`, keep a Markdown transcription beside its PDF, and
+list every file with its sha256, license, license evidence and kind in
+`manifest.tsv`.
+`"$PYTHON" scripts/fetch_source_cache.py --missing --from-documents DIR`,
+repeatable for both checkouts, restores the ignored `docs/local_source_cache/`
+by sha256, and the same command without `--from-documents` fetches the
+registered URLs.
+The git-ignored `sources/reading-copies.md` ([generated views](runbooks/generated-views.md)) links each
+source to its reading copy beside its public source. `scripts/source_reading_copies.py --locate`
+resolves every registered digest through both manifests into
+[sources/reading-copy-locations.tsv](sources/reading-copy-locations.tsv), and a
+plain run renders that index on demand. The `sources`
+suite in ci/gates.json covers the source registry, the evidence replays and their checksum
+ledgers on demand; no workflow runs it.
 
 ## Start here by task
 
@@ -142,7 +152,7 @@ sample and exposure counter counts, traces each to its scientific sinks and reco
 [current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized
 density interventions and a separately labeled trapped-ion qualification; every generated program remains
 unsubmitted and native-unadmitted. Its [implementation plan](design/provider-api-billing-research-plan.md)
-retains the historical checklist; the [planning catalogue](state/plan-catalogue.md) owns reconciled work status.
+retains the historical checklist; the [plan records](state/plans/) own reconciled work status.
 The [publication-status ledger](SOURCES.json) distinguishes journal identities from preprint versions;
 the [bibliographic reconciliation](notes/papers/hypercomplex_quantum_crossref_records.md) records reading scopes.
 
@@ -170,14 +180,14 @@ differs from it only in the `cd_core.py` digest.
 | IBM hardware run | [AGENTS.md](../AGENTS.md) "QPU time and calibration", [qpu-submission.md](notes/ibm_quantum/qpu-submission.md), [QPU_EXECUTION_ROADMAP.md](../gororoba_quantum/QPU_EXECUTION_ROADMAP.md) |
 | Quantum Inspire run | [README](notes/quantum_inspire/README.md), [usage.md](notes/quantum_inspire/usage.md), [tuna-17-run-design.md](notes/quantum_inspire/tuna-17-run-design.md) |
 | Open Quantum run | [README](notes/open_quantum/README.md), `scripts/oq_platform.py` estimate |
-| Quandela run | [README](notes/quandela/README.md), [platform-specifications.md](notes/quandela/platform-specifications.md), [strategy.md](notes/quandela/strategy.md) |
+| Quandela run | [README](notes/quandela/README.md), [platform-specifications.md](notes/quandela/platform-specifications.md), [strategy.md](notes/quandela/strategy.md) (section 1b: building and running a case), [credit optimization](runbooks/quandela-credit-optimization.md) (job shape and cost) |
 | IQM run | [README](notes/iqm/README.md), [os-4.7.md](notes/iqm/os-4.7.md) |
 | Simulation and Kaggle | [README](notes/kaggle/README.md), [substrates.md](notes/kaggle/substrates.md), [gpu-runbook.md](notes/kaggle/gpu-runbook.md) |
 | Algebra and proofs | `gororoba_quantum/cd_core.py`, [algebra_circuit_rules.md](notes/algebra_circuit_rules.md), [formal_certificates](evidence/formal_certificates/README.md) |
 | Sources and papers | [INDEX.md](INDEX.md), [SOURCES.json](SOURCES.json), `verify_sources.py` |
 | CI and gates | [ci/AGENTS.md](../ci/AGENTS.md), [ci-runtime.md](runbooks/ci-runtime.md) |
 | Pull-request reviews | [AGENTS.md](../AGENTS.md) "Reviews and merges", [codex-review-loop.md](runbooks/codex-review-loop.md), [codex-review-stalls.md](runbooks/codex-review-stalls.md), `scripts/codex_review_wait.sh` |
-| State and records | [RESEARCH_STATE.md](state/RESEARCH_STATE.md), [QPU_RUN_CENSUS.md](state/QPU_RUN_CENSUS.md), [AGENTS.md](../AGENTS.md) "Records" |
+| State and records | [research_state.json](state/research_state.json), [QPU_RUN_CENSUS.md](state/QPU_RUN_CENSUS.md), [AGENTS.md](../AGENTS.md) "Records" |
 
 ## Files by area
 
@@ -228,6 +238,49 @@ differs from it only in the `cd_core.py` digest.
 | [levratti-2026-sign-parity-zero-divisors.md](notes/papers/levratti-2026-sign-parity-zero-divisors.md) | Levratti 2026 sign-parity classification: the closed count 336 x [n-1 choose 3]_2 equals 336 at 16 and 5040 at 32 dimensions under `cd_core`, weight-3 invertibility and kernel dimensions (hosted, CC BY 4.0) |
 | [1505.05210.md](notes/papers/1505.05210.md) | Kustin, Polini and Ulrich 2017 blowup algebras of height three Gorenstein ideals: Rees ideal J = L + I_d(B) + C(phi), the special fiber equations and the A_5 fiber-cone hypotheses it needs |
 | [1207.1060.md](notes/papers/1207.1060.md) | Branco Correia and Zarzuela 2013 divisors of a module and blow up: Fitting, determinant and Bourbaki ideals, analytic spread bounds and universal flattening |
+| [2302.07486.md](notes/papers/2302.07486.md) | Kumar and Venugopal 2023 Rees algebra of maximal order Pfaffians: linear type, the quadratic Rees relations, Koszul diagonals and the nonquadratic sparse 7 x 7 case against the A_5 fiber cones (hosted, CC BY 4.0) |
+| [2104.13811.md](notes/papers/2104.13811.md) | Cooper and Price 2021 degree bounds for Rees equations of determinantal and Pfaffian ideals: Proposition 5.1.2 and Theorems 5.4.3 and 5.4.5 and why no bound reaches the A_5 fiber-cone equations (hosted, CC BY 4.0) |
+| [alg-geom-9707001.md](notes/papers/alg-geom-9707001.md) | Bertram 1997 complete skew forms: the closure of the Pfaffian map and Theorem 3.3 as the container of the limiting kernels of the A_5 strata |
+| [1803.09011.md](notes/papers/1803.09011.md) | Massarenti 2020 spaces of complete skew-forms: Construction 2.3, Theorems 1.1 and 1.2 and the corank-one frame of the kernel map |
+| [math-0105151.md](notes/papers/math-0105151.md) | Ghorpade and Krattenthaler 2003 Hilbert series of Pfaffian rings: equation (9), Theorem 2 and the h-vector (1, 6, 6, 1) of the cone over G(2, 6) |
+| [1308.0582.md](notes/papers/1308.0582.md) | Jeffries, Montano and Varbaro 2015 j-multiplicity and fiber cone degree: Theorems 3.1 and 6.3 for the algebra of Pfaffians and why they fix only the ambient degree |
+| [math-0302241.md](notes/papers/math-0302241.md) | Corso, Ghezzi, Polini and Ulrich 2004 Cohen-Macaulay special fibers: Theorem 2.2 and the relation-count obstruction for the A_5 fibers |
+| [math-0212119.md](notes/papers/math-0212119.md) | D'Cruz, Raghavan and Verma 1999 Cohen-Macaulay fiber cones: the Hilbert series criterion of Theorem 2.1 and the numerator test on the tracked A_5 fiber Hilbert functions |
+| [2512.16165.md](notes/papers/2512.16165.md) | Ansaldi, Lira, Mostafazadehfard, Saloni and Seccia 2025 special fibers of Hankel coordinate sections: the Main Theorem and the method of identifying a fiber with that of 2-minors |
+| [conca-herzog-valla-1996-sagbi-bases.md](notes/papers/conca-herzog-valla-1996-sagbi-bases.md) | Conca, Herzog and Valla 1996 Sagbi bases and the blow-up algebras of rational normal scrolls (introduction read) |
+| [conca-herzog-trung-valla-1997-diagonal-subalgebras.md](notes/papers/conca-herzog-trung-valla-1997-diagonal-subalgebras.md) | Conca, Herzog, Trung and Valla 1997 diagonal subalgebras of bigraded algebras (JSTOR and Project MUSE downloads; abstract and definition read) |
+| [math-0402345.md](notes/papers/math-0402345.md) | Gannon 2006 moonshine survey: the moonshine module, Borcherds proof and the Norton series, as the citation for moonshine statements |
+| [1208.6254.md](notes/papers/1208.6254.md) | Carnahan 2016 monstrous Lie algebras and Norton's generalized moonshine conjecture (abstract and introduction read) |
+| [1812.08439.md](notes/papers/1812.08439.md) | Cunha and Elduque 2020 codes, S-structures and the exceptional Lie algebras E7 and E8 (abstract and introduction read) |
+| [2504.16513.md](notes/papers/2504.16513.md) | Kollross 2026 explicit E8 bracket from triality and oct-octonions (abstract and introduction read) |
+| [2009.00390.md](notes/papers/2009.00390.md) | Dray, Huerta and Kincaid 2014 the 2 x 2 magic square of Lie groups (abstract and introduction read) |
+| [math-0411104.md](notes/papers/math-0411104.md) | Krutelevich 2007 Freudenthal construction on cubic Jordan algebras and Bhargava composition (abstract and contents read) |
+| [2605.09333.md](notes/papers/2605.09333.md) | Corradetti 2026 Coxeter-Dickson order, para-octonions and the Okubo algebra on the E8 lattice (hosted, CC BY 4.0; abstract and introduction read) |
+| [2204.04996.md](notes/papers/2204.04996.md) | Wilson, Dray and Manogue 2023 3 x 3 matrix construction of E8 over octonions (abstract and introduction read) |
+| [2401.10534.md](notes/papers/2401.10534.md) | Dray, Manogue and Wilson 2024 E7 and its 56-dimensional representation inside E8: Albert algebra H_3(O), equations (15) to (20) |
+| [0909.0551.md](notes/papers/0909.0551.md) | Baez and Huerta 2010 division algebras and supersymmetry in dimensions 3, 4, 6 and 10 (abstract and introduction read) |
+| [1102.4857.md](notes/papers/1102.4857.md) | Ferrara, Marrani and Yeranyan 2011 Freudenthal duality in generalized special geometry (abstract read) |
+| [1402.0206.md](notes/papers/1402.0206.md) | Flaut 2014 survey of algebras from the Cayley-Dickson process over fields (abstract and introduction read) |
+| [2311.16704.md](notes/papers/2311.16704.md) | Chapman and Vishkautsan 2025 polynomial roots and left eigenvalues over Cayley-Dickson algebras; the doubling coincides with cd_core at gamma = -1; the PDF carries a CC BY-SA 4.0 notice |
+| [1307.3641.md](notes/papers/1307.3641.md) | Flaut and Shpakivskyi 2015 Dirac-operator holomorphic functions on Cayley-Dickson algebras (abstract and introduction read) |
+| [math-0403263.md](notes/papers/math-0403263.md) | Cohn and Kumar 2009 the Leech lattice is the densest lattice in R^24 and E8 in R^8 (abstract and introduction read) |
+| [2307.02505.md](notes/papers/2307.02505.md) | Tang and Tang 2023 sedenion model of lepton generations: the abstract's claim of three octonion subalgebra types, unverified (hosted, CC BY 4.0) |
+| [2304.01213.md](notes/papers/2304.01213.md) | Singh 2023 exceptional Jordan algebra essay on gravitation (abstract read; claims unverified) |
+| [2606.15235.md](notes/papers/2606.15235.md) | Baez and Schwahn 2026 Standard Model gauge group from F4 acting on Jordan subalgebras of h_3(O) (abstract and introduction read) |
+| [hep-th-0301037.md](notes/papers/hep-th-0301037.md) | Boya 2003 octonions in M-theory review (abstract and introduction read) |
+| [2112.09698.md](notes/papers/2112.09698.md) | D'Andrea, Landi and Lizzi 2022 tolerance algebras: Proposition 7 and the statement that Cayley-Dickson algebras of dimension 8 and above are not tolerance algebras |
+| [2410.14267.md](notes/papers/2410.14267.md) | Fox and Tkachev 2024 Hsiang and quasicomposition algebras and the tripling construction as an analogue of doubling (hosted, CC BY 4.0) |
+| [2208.03285.md](notes/papers/2208.03285.md) | Aurisano and Whitehead 2022 deep-learning image classification in high-energy physics; no hypercomplex content (hosted, CC BY 4.0) |
+| [conway-norton-1979-monstrous-moonshine.md](notes/papers/conway-norton-1979-monstrous-moonshine.md) | Conway and Norton 1979 monstrous moonshine: observations (A) to (G), the series J and T_m, and the degrees of Table 1 |
+| [0811.4523.md](notes/papers/0811.4523.md) | Tuite 2009 exceptional vertex operator algebras: abstract and introduction (Deligne series, Moonshine module, Griess algebra) |
+| [hep-th-0205068.md](notes/papers/hep-th-0205068.md) | Gaberdiel, Olive and West 2002 Lorentzian Kac-Moody algebras (abstract read) |
+| [0810.2088.md](notes/papers/0810.2088.md) | Connes 2013 Theorems 1.1 and 1.2 on spectral triples of manifolds |
+| [hep-th-9209099.md](notes/papers/hep-th-9209099.md) | Lada and Stasheff 1993 sh Lie structures: skew symmetric l_n of degree 2 - n (cochain) and n - 2 (chain) |
+| [math-ph-0507015.md](notes/papers/math-ph-0507015.md) | Fernandez Nunez, Garcia Fuertes and Perelomov 2005 E7 Calogero-Sutherland Hamiltonian (5), ground state and the kappa = 1 characters |
+| [2207.14076.md](notes/papers/2207.14076.md) | Lin 2024 orbifolds of the Monster CFT and topological modular forms (abstract read) |
+| [math-0404517.md](notes/papers/math-0404517.md) | Eisenbud, Green, Hulek and Popescu 2006 small schemes: Theorems 0.2 and 0.4 (2-regular = small = linearly joined varieties of minimal degree) applied to the E8-bar to VB fiber candidate |
+| [1404.7403.md](notes/papers/1404.7403.md) | Weinstein and Yekutieli 2020 selective sign-determining confidence intervals: BY FCR-adjusted selection (Definition 1), directional BH sign selection with FCR at most q (Definition 2, Theorem 1), selection on independent data (Theorem 3) |
+| [efron-2011-tweedie-formula.md](notes/papers/efron-2011-tweedie-formula.md) | Efron 2011 Tweedie's formula and selection bias: E{mu given z} = z + sigma^2 l'(z), the normal-normal and James-Stein forms (3.7)-(3.9), regret and the widened empirical Bayes interval (7.26) |
 | [2603.20495.md](notes/papers/2603.20495.md) | Chapman and Levin 2026 central products of Cayley-Dickson loops: associativity degree for 4 to 64 dimensions (hosted, CC BY 4.0) |
 | [2501.00123.md](notes/papers/2501.00123.md) | Chapman, Levin, Vishne and Zaninelli 2024 loops with involution: the automorphism-group statement of the abstract against exact counts |
 | [1707.07318.md](notes/papers/1707.07318.md) | Bales 2017 the eight doubling products: `P3T` equals `cd_core`, four of the eight are not octonionic, and the twist rules reproduce to 64 dimensions |
@@ -307,12 +360,34 @@ differs from it only in the `cd_core.py` digest.
 | [2001.09190.md](notes/papers/2001.09190.md) | Vepsäläinen et al. 2020 -- ionizing radiation limits transmon T1 to about 4 ms; power density and shield test |
 | [2402.03208.md](notes/papers/2402.03208.md) | Harrington et al. 2025 -- cosmic rays cause 17.1 % of correlated qubit errors; coincidence rates, qubit participation, recovery times |
 | [2104.05219.md](notes/papers/2104.05219.md) | McEwen et al. 2022 -- chip-wide cosmic-ray error bursts, one per 10 s, 25 ms recovery, 26 qubits |
+| [2111.08152.md](notes/papers/2111.08152.md) | Costa, An, Sanders, Su, Babbush and Berry 2021: discrete adiabatic theorem and the O(kappa log(1/epsilon)) quantum linear-system solver |
+| [2305.11352.md](notes/papers/2305.11352.md) | Jennings, Lostaglio, Pallister, Sornborger and Subasi 2023: randomized adiabatic quantum linear solver with an explicit 837 kappa query bound |
+| [2406.12086.md](notes/papers/2406.12086.md) | Dalzell 2024: kernel-reflection quantum linear-system solver with an explicit 56 kappa leading constant |
+| [2410.18178.md](notes/papers/2410.18178.md) | Low and Su 2024: quantum linear-system algorithm with optimal state-preparation queries (Tunable VTAA) |
+| [2601.16697.md](notes/papers/2601.16697.md) | Mori, Kikuchi, Benedetti and Rosenkranz 2026: Omega(kappa sqrt(s)) lower bound for sparse quantum linear-system solvers |
+| [2609.22445.md](notes/papers/2609.22445.md) | Patel 2026: joint Omega(kappa sqrt(s) log(1/epsilon)) lower bound for sparse quantum linear-system solvers |
+| [2502.11239.md](notes/papers/2502.11239.md) | Tu, Dubynskyi, Mohammadisiahroudi, Riashchentceva, Cheng, Ryashchentsev, Terlaky and Liu 2025: fault-tolerant space, time and energy estimates for HHL against conjugate gradient |
+| [2411.02522.md](notes/papers/2411.02522.md) | Morales, Pira, Schleich, Koor, Costa, An, Aspuru-Guzik, Lin, Rebentrost and Berry 2024: survey and taxonomy of quantum linear-system solvers |
+| [1910.06151.md](notes/papers/1910.06151.md) | Chia, Gilyen, Li, Lin, Tang and Wang 2019: dequantized singular value transformation for low-rank inputs under sampling access |
+| [1712.06239.md](notes/papers/1712.06239.md) | Chen and Gao 2017: Macaulay-matrix HHL for Boolean polynomial systems, runtime in the condition number |
+| [2111.00405.md](notes/papers/2111.00405.md) | Ding, Gheorghiu, Gilyen, Hallgren and Li 2021: condition-number lower bound that limits Macaulay-matrix HHL against Grover search |
+| [2510.05588.md](notes/papers/2510.05588.md) | Li 2025: instance-aware quantum linear-system algorithm and its polynomial-system application |
+| [1712.07211.md](notes/papers/1712.07211.md) | Faugere, Horan, Kahrobaei, Kaplan, Kashefi and Perret 2017: Grover-accelerated hybrid solver for Boolean multivariate quadratic systems, O(2^(0.462n)) gates |
+| [2609.28901.md](notes/papers/2609.28901.md) | Lee, Jeong and Kim 2026: garbage-free reversible Gaussian elimination over GF(p^l), same field-operation count as classical elimination |
+| [2608.23929.md](notes/papers/2608.23929.md) | Maeda and Yano 2026: quantum additive-error torus point counting of a Laurent polynomial over F_q, and its #P-hardness |
+| [math-0411623.md](notes/papers/math-0411623.md) | Kedlaya 2004: quantum algorithm for zeta functions of curves over F_q, polynomial in genus and log q |
+| [quant-ph-0405081.md](notes/papers/quant-ph-0405081.md) | van Dam 2004: zeros of finite-field zeta functions as eigenvalues of efficient unitaries (Fermat hypersurfaces) |
+| [2408.08292.md](notes/papers/2408.08292.md) | Jordan, Shutty, Wootters, Zalcman, Schmidhuber, King, Isakov, Khattar and Babbush 2024: decoded quantum interferometry: optimization over F_p reduced to decoding |
+| [quant-ph-0409035.md](notes/papers/quant-ph-0409035.md) | Buhrman and Spalek 2004: quantum walk verification of matrix products in O(n^(5/3)) time over an integral domain |
+| [1103.0842.md](notes/papers/1103.0842.md) | Belovs 2011: span program for the rank problem (query complexity) |
 
 ### Algebra and proofs
 
 | File | Contents |
 |---|---|
 | [topics/a5-exceptional-fiber-findings.md](notes/topics/a5-exceptional-fiber-findings.md) | A_5 exceptional fibers of the nullity-8 closures along their boundary orbits: Hilbert functions by degree-by-degree membership rank, quadric-scheme structure, formal-arc support certificate, retired elimination routes, and the hypotheses that survive falsification |
+| [topics/quantum-linear-algebra-fit-a5.md](notes/topics/quantum-linear-algebra-fit-a5.md) | quantum linear algebra of 2024-2026 against each in-flight A_5 fiber computation: real-amplitude QLSS bounds, Macaulay-matrix and Grover polynomial-system solvers, reversible elimination over GF(p^l), point-count approximation over F_q, and the F_2 rank collapse that blinds a qubit-native probe to zero divisors |
+| [topics/finite-field-qlsa-alternatives.md](notes/topics/finite-field-qlsa-alternatives.md) | a finite-field quantum linear-system proposal for the fiber program, refuted claim by claim (isotropic vectors for kernels, non-unitary oracle, register size, misattributed citations) |
 | [topics/box-kites/README.md](notes/topics/box-kites/README.md) | box-kite experiment program index |
 | [bdsc-pauli-readout.md](notes/topics/bdsc-pauli-readout.md) | BDSC target and blade effects as three-term four-qubit Pauli sums; local readout and 13-basis cover |
 | [algebra-hardware-probe-principles.md](notes/topics/algebra-hardware-probe-principles.md) | first principles of algebra hardware probes: mutation test, eigen-observable, interleaving, null arm, noisy coherent response; findings ledger of the Garnet runs |
@@ -358,6 +433,7 @@ differs from it only in the `cd_core.py` digest.
 | [relativistic-metrology-scale.md](notes/topics/relativistic-metrology-scale.md) | the Belenos light cone as a mode-reachability set; relativistic and astronomical phases against the measured device instabilities, with the falsifiers of an astronomical coupling |
 | [pais-claims-falsification.md](notes/topics/pais-claims-falsification.md) | the Pais Superforce (c^4/G as unification) decomposed into Planck-unit identities, the measured alpha_s(M_Pl) shortfall, the Friedmann identity and the active-mass and Cherenkov refutations of permittivity engineering; the Pais patent equations against Maxwell, QED and general-relativity bounds; the NAWCAD null; the QET passivity ladder and its information-excess endpoint as the QPU-testable mechanism |
 | [persona-corpus-verified-results.md](notes/topics/persona-corpus-verified-results.md) | what survives of an LLM-persona corpus once checked from first principles: E8, triality and the Albert algebra (f4 derivations, e6 norm group, magic-square rows), corrected L-infinity, spectral-triple and affine definitions, the Sugawara central charge, the Coulomb gas and the Kac determinant with its constant to level 5, verified Casimir, QED and zero-point figures; the runs they admit (two-photon octonion associator on Ascella, QX-checked QET ladder on Tuna-17, IQM and IBM follow-ups), corrections to earlier notes, the quaternion encoding of the sl(2) bracket in the Ascella order interferometer, Cl(8) from octonion left multiplication failing on the 42 sedenion zero-divisor pairs, the associator characters with a Cl(0,3) mutation, the two independent decompositions reconciled by definition, and the removed claims |
+| [chatgpt-archive-verified-results.md](notes/topics/chatgpt-archive-verified-results.md) | what survives of four ChatGPT brainstorm conversations (moonshine and pulsars, E7 and E8, L-infinity algebras and spectral triples, sedenion research articles) once checked against held sources and by computation, the claims that fail, the reference audit of the whole export (arXiv ids and DOIs resolved, fabricated and placeholder citations), and the results with repository content: the XOR-line Jacobiator zero set and the tolerance-algebra corollary |
 | [open_gororoba_survey_deep_notes.md](notes/topics/open_gororoba_survey_deep_notes.md) | deep notes on the gororoba-open Rocq corpus |
 | [prior_work_synthesis.md](notes/prior_work_synthesis.md) | what is known, what is new, labeled per claim |
 | [koebisu_rank_stratum_research.md](notes/koebisu_rank_stratum_research.md) | dimension-32 rank question |
@@ -372,6 +448,8 @@ differs from it only in the `cd_core.py` digest.
 |---|---|
 | [design/ascella-two-photon-associator-case.md](design/ascella-two-photon-associator-case.md) | written case for one qpu:ascella job: two photons through L_a L_b against L_(ab) (a = (e6+e7)/sqrt2, b = (e5+e7)/sqrt2) with a quaternion control; the associator appears only in two-photon interference; preregistered Delta endpoints, HOM-visibility model, credits, seconds and the HOM-floor decision |
 | [design/ascella-cz-process-tomography-case.md](design/ascella-cz-process-tomography-case.md) | written case for two qpu:ascella jobs of 72 template iterations: process tomography of the postselected Ralph CZ on two dual-rail qubits (16 Pauli-eigenstate inputs x 9 readouts, 144 settings, one service-compiled mesh each); linear inversion of absolute outcome rates over nb_shots_used with a QRNG-seeded bootstrap; forecast process fidelity 0.786 under Perceval's noise model at the live HOM and g2; 4.0 credits ceiling; HOM below the 90 % floor awaits the owner |
+| [design/belenos-associator-visibility-case.md](design/belenos-associator-visibility-case.md) | written case for two qpu:belenos jobs: the Ascella associator closure design on the teleportation source pairs (18, 20) and (20, 22), measuring in-situ two-photon visibility against the reported HOM and the 0.81 that reproduces teleportation job-01's correctness; forecast table, credits and seconds |
+| [design/belenos-mode-swap-interleaved-case.md](design/belenos-mode-swap-interleaved-case.md) | written case for nine qpu:belenos jobs (job-00 cut after set 0; job-03 to job-10 five iterations each): the packed and swapped box-kite layouts interleaved with mesh-identical primary repeats and replicate compilation seeds, testing placement in claim qd-belenos-packed-mode-swap against the measured per-seed mesh variance and drift; analysis rules, Monte Carlo rates, credits and seconds |
 | [design/ascella-associator-thermal-seismograph.md](design/ascella-associator-thermal-seismograph.md) | written prospective case for one 32-iteration qpu:ascella job: two photons through octonion associator and quaternion control under counterbalanced Hot (pi), Cold (0), and Wrapped (2*pi) predecessor phase conditioning with 12-mode spatial sentinel monitoring |
 | [design/tuna-order-pilot-adversarial-admission.md](design/tuna-order-pilot-adversarial-admission.md) | descriptive pilot preregistration, adversarial findings and execution admission |
 | [design/hypercomplex-operator-evidence.md](design/hypercomplex-operator-evidence.md) | algebra falsifiers, operator encodings, library roles and device evidence |
@@ -412,11 +490,14 @@ differs from it only in the `cd_core.py` digest.
 | [design/bdsc-qualification.md](design/bdsc-qualification.md) | Belenos dark-subspace certificate: provider contracts and qualification measurements; [principal-angle replay](notes/quandela/bdsc.md) |
 | [design/quantum-experiment-conformance.md](design/quantum-experiment-conformance.md) | five evidence-gated proposals: dimension-six transitions, sedenion heralding, Fano and projection counterexamples, quarter-mass amplification |
 | [design/ascella-belenos-entanglement-teleportation.md](design/ascella-belenos-entanglement-teleportation.md) | Ascella-Belenos entanglement and teleportation: claim levels, gates, ideal dual-rail instrument ([qd_network_protocol.py](../scripts/qd_network_protocol.py)), decision statistics, the single-chip Belenos rehearsal case ([qd_teleportation_rehearsal.py](../scripts/qd_teleportation_rehearsal.py)) and the unsent provider request |
+| [design/belenos-best-mesh-design-investigation.md](design/belenos-best-mesh-design-investigation.md) | design investigation of a per-input best-mesh screen and replay on qpu:belenos from the retained job-02 and job-03 data: exact compiler, between-mesh spread and shrinkage, replay power, the acceptance filter, source shift and structural predictors; verdict and the persistence question it leaves ([script](../scripts/belenos_best_mesh_first_principles.py)) |
+| [design/belenos-best-mesh-teleportation-case.md](design/belenos-best-mesh-teleportation-case.md) | unapproved draft case, superseded by the design investigation above: screen six compilation seeds per teleportation input on qpu:belenos, select the best mesh per input, replay it in two confirm jobs; four built screen cases, no job sent ([script](../scripts/belenos_teleportation_best_mesh.py)) |
+| [design/belenos-herald-leak-analysis.md](design/belenos-herald-leak-analysis.md) | preregistered offline analysis of the herald rejections of the split teleportation rehearsal on qpu:belenos: whether a compiled mesh changes where herald clicks land, against a same-mesh null arm |
 | [runbooks/bdsc-qualification-case.md](runbooks/bdsc-qualification-case.md) | order, prerequisites and stop conditions of the BDSC six-state consistency case |
 | [runbooks/bdsc-tuna17-pauli-pilot.md](runbooks/bdsc-tuna17-pauli-pilot.md) | build, dry run and submission order of the Tuna-17 four-qubit Pauli readout pilot |
-| [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela billing rule measured per job, packing limits and cost planning |
+| [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela job sizing for case design: the billing rule measured per job, the per-iteration time of each qpu:belenos job shape, packing limits, the shape rule and cost planning |
 | [runbooks/quandela-scheduled-runs.md](runbooks/quandela-scheduled-runs.md) | unattended submission of approved, spaced Quandela jobs from a committed schedule through GitHub Actions |
-| [runbooks/provider-credits.md](runbooks/provider-credits.md) | read-only daily snapshot of every provider's free allotment, alert thresholds and the systemd user timer |
+| [runbooks/generated-views.md](runbooks/generated-views.md) | the plan, research-state and reading-copy views that render on demand, their commands and why none is committed |
 | [runbooks/classical-compute-pool.md](runbooks/classical-compute-pool.md) | free classical capacity per substrate (build host, Kaggle, GitHub Actions, Azure trial), what pooling across machines buys, tool installs per substrate, measured memory of the A_5 Rees eliminations |
 | [runbooks/critical-peer-review.md](runbooks/critical-peer-review.md) | reviewer checklist for quantum-hardware results: preregistration, multiplicity, effect size, dependent correlations, drift, provenance, simulation boundary and claim wording |
 | [QUANTUM_DISPATCH.md](../plans/QUANTUM_DISPATCH.md) | quantum dispatch plan |
@@ -440,7 +521,7 @@ differs from it only in the `cd_core.py` digest.
 
 | File | Contents |
 |---|---|
-| [providers.md](notes/providers.md) | provider interpreters, venvs, MCP server names and key files, with the guide of each provider |
+| [providers.md](notes/providers.md) | provider interpreter variables and MCP server names, with the guide of each provider |
 | [tuna17-bipartite-designs.md](notes/quantum_inspire/tuna17-bipartite-designs.md) | Tuna-17 cubic Walsh classes and box-kite packing |
 | [quandela/literature.md](notes/quandela/literature.md) | published methods for characterizing a Belenos-class mesh |
 | [quandela/quickstart.md](notes/quandela/quickstart.md) | Quandela Cloud quick start |

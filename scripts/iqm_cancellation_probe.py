@@ -69,6 +69,7 @@ from iqm_signed_probe import (  # noqa: E402
 )
 from qi_readout_ringdown_cases import fsum_rows, libm_map  # noqa: E402
 
+import iqm_records  # noqa: E402
 import kernel_cancellation as kc  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
@@ -699,10 +700,11 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
     if len(set(jobs)) != len(jobs):
         raise ValueError("two run directories hold one job; each acquisition counts once")
     for run_dir in sorted(run_dirs):
+        records = iqm_records.load_run(run_dir)
         facts = iqm_jobs.run_facts(run_dir)
-        submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
-        record = json.loads((run_dir / "raw/job.json").read_bytes())
-        case = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+        submission = records.json_of("submission.json")
+        record = records.json_of("raw/job.json")
+        case = records.json_of("cases.json")
         if facts["statuses"] != {"completed": 1}:
             raise ValueError(f"{run_dir}: the job is {sorted(facts['statuses'])}; the analysis reads completed jobs")
         # Mock outcomes never enter the analysis, and every run must compile against the predicted set.
@@ -718,7 +720,7 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
             raise ValueError(f"{run_dir}: holds no {CASE} job named {submission['job']}")
         row = rows[0]
         names = [Path(entry["file"]).stem for entry in row["circuits"]]
-        for name, (ones, n) in tally(names, json.loads((run_dir / "raw/measurements.json").read_bytes())).items():
+        for name, (ones, n) in tally(names, records.json_of("raw/measurements.json")).items():
             before = counts.get(name, (0, 0))
             counts[name] = (before[0] + ones, before[1] + n)
         runs.append(

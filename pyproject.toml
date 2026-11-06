@@ -6,7 +6,12 @@ line-length = 120
 target-version = "py314"
 src = ["gororoba_quantum"]
 # Retained third-party bytes bound by their SHA256SUMS; their replay gates run them.
-extend-exclude = ["docs/evidence/reviewer_associator_audit/audit.py"]
+# A retained Kaggle kernel keeps the bytes the session ran.
+extend-exclude = [
+    "docs/evidence/reviewer_associator_audit/audit.py",
+    "results/kaggle/2026-10-31T012131Z-gororoba-memory-probe-t4/kernel/memory-probe.py",
+    "results/kaggle/2026-10-31T075059Z-gororoba-aer-cu13-native/kernel/aer-cu13-native.py",
+]
 
 # Quantum Inspire shares these modules with its pinned Python 3.13 interpreter.
 [tool.ruff.per-file-target-version]
@@ -33,8 +38,8 @@ ignore = ["UP040"]
 # The behavioral suite under tests/ (core-615 and core-behavior-NN). Plugin
 # autoload is off, so a host's installed plugins never enter a run and xdist,
 # the one pinned plugin, loads by name. Each test process writes nothing inside the
-# checkout: the cache plugin is off and the gate runs under -B, so the gate
-# ledger can trace it; importlib mode imports test modules without placing
+# checkout: the cache plugin is off and the gate runs under -B;
+# importlib mode imports test modules without placing
 # their directories on sys.path.
 [tool.pytest.ini_options]
 minversion = "9.1"
@@ -52,7 +57,7 @@ addopts = [
 ]
 filterwarnings = ["error"]
 markers = [
-    "audit: replays retained evidence or checks the gate machinery; the scheduled audit runs it and pull requests deselect it",
+    "audit: replays a retained record, checks the gate machinery or takes more than 3 s of CPU on the build host; pull requests deselect it and gate core-615 of ci/gates.json runs it on demand",
 ]
 
 [tool.mypy]

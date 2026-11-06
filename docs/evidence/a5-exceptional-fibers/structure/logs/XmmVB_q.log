@@ -1,0 +1,10 @@
+// ** redefining i (int i=2;) XmmVB_q.sing:11
+RESULT germ_dim 3
+RESULT base_primes 1
+// ** redefining i (int i=1;) XmmVB_q.sing:24
+RESULT base_dim 2
+RESULT base_equals_b9 1
+// ** redefining i (int i=1;) XmmVB_q.sing:29
+RESULT residual_primes 1
+RESULT residual_dim 0
+RESULT residual_equals_vb 1

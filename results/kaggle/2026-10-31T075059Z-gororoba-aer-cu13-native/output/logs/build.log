@@ -1,0 +1,933 @@
+* Getting build dependencies for wheel...
+running egg_info
+creating qiskit_aer_gpu_cu13.egg-info
+writing qiskit_aer_gpu_cu13.egg-info/PKG-INFO
+writing dependency_links to qiskit_aer_gpu_cu13.egg-info/dependency_links.txt
+writing requirements to qiskit_aer_gpu_cu13.egg-info/requires.txt
+writing top-level names to qiskit_aer_gpu_cu13.egg-info/top_level.txt
+writing manifest file 'qiskit_aer_gpu_cu13.egg-info/SOURCES.txt'
+reading manifest file 'qiskit_aer_gpu_cu13.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+warning: no files found matching '*cpp' under directory 'qiskit_aer'
+warning: no previously-included files found matching 'src/third-party/*/lib/*.a'
+warning: no previously-included files found matching 'src/third-party/*/lib/*.lib'
+adding license file 'LICENSE.txt'
+writing manifest file 'qiskit_aer_gpu_cu13.egg-info/SOURCES.txt'
+WARNING License classifiers are deprecated.
+!!
+
+        ********************************************************************************
+        Please consider removing the following classifiers in favor of a SPDX license expression:
+
+        License :: OSI Approved :: Apache Software License
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+* Building wheel...
+
+
+--------------------------------------------------------------------------------
+-- Trying 'Ninja' generator
+--------------------------------
+---------------------------
+----------------------
+-----------------
+------------
+-------
+--
+The --no-warn-unused-cli option is deprecated.  Use -Wno-unused-cli instead.
+-- The C compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (0.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: /kaggle/tmp/work/src/qiskit-aer-0.18.2/_cmake_test_compile/build
+--
+-------
+------------
+-----------------
+----------------------
+---------------------------
+--------------------------------
+-- Trying 'Ninja' generator - success
+--------------------------------------------------------------------------------
+
+Configuring Project
+  Working directory:
+    /kaggle/tmp/work/src/qiskit-aer-0.18.2/_skbuild/linux-x86_64-3.13/cmake-build
+  Command:
+    /kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cmake/data/bin/cmake /kaggle/tmp/work/src/qiskit-aer-0.18.2 -G Ninja -DCMAKE_MAKE_PROGRAM:FILEPATH=/kaggle/tmp/work/venv-build/bin/ninja --no-warn-unused-cli -DCMAKE_INSTALL_PREFIX:PATH=/kaggle/tmp/work/src/qiskit-aer-0.18.2/_skbuild/linux-x86_64-3.13/cmake-install -DPYTHON_VERSION_STRING:STRING=3.13.15 -DSKBUILD:INTERNAL=TRUE -DCMAKE_MODULE_PATH:PATH=/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/skbuild/resources/cmake -DPYTHON_EXECUTABLE:PATH=/kaggle/tmp/work/venv-build/bin/python -DPYTHON_INCLUDE_DIR:PATH=/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/include/python3.13 -DPYTHON_LIBRARY:PATH=/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/libpython3.13.so -DPython_EXECUTABLE:PATH=/kaggle/tmp/work/venv-build/bin/python -DPython_ROOT_DIR:PATH=/kaggle/tmp/work/venv-build -DPython_FIND_REGISTRY:STRING=NEVER -DPython_INCLUDE_DIR:PATH=/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/include/python3.13 -DPython3_EXECUTABLE:PATH=/kaggle/tmp/work/venv-build/bin/python -DPython3_ROOT_DIR:PATH=/kaggle/tmp/work/venv-build -DPython3_FIND_REGISTRY:STRING=NEVER -DPython3_INCLUDE_DIR:PATH=/root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/include/python3.13 -DCMAKE_MAKE_PROGRAM:FILEPATH=/kaggle/tmp/work/venv-build/bin/ninja -DCMAKE_BUILD_TYPE:STRING=Release
+
+The --no-warn-unused-cli option is deprecated.  Use -Wno-unused-cli instead.
+CMake Warning (deprecated) at CMakeLists.txt:11 (cmake_minimum_required):
+  Compatibility with CMake < 3.10 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value.  Or, use the <min>...<max> syntax
+  to tell CMake that the project requires at least <min> but has been updated
+  to work with policies introduced by <max> or earlier.
+This warning is for project developers.  Use -Wno-author or -Wno-deprecated
+to suppress it.
+
+-- The CXX compiler identification is GNU 13.3.0
+-- The C compiler identification is GNU 13.3.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Performing Test flag_supported
+-- Performing Test flag_supported - Success
+-- Performing Test flag_supported
+-- Performing Test flag_supported - Success
+-- Performing Test flag_supported
+-- Performing Test flag_supported - Success
+-- Performing Test flag_supported
+-- Performing Test flag_supported - Success
+-- Performing Test flag_supported
+-- Performing Test flag_supported - Success
+-- Performing Test flag_supported
+-- Performing Test flag_supported - Success
+-- Performing Test flag_supported
+-- Performing Test flag_supported - Success
+-- Performing Test flag_supported
+-- Performing Test flag_supported - Success
+-- Performing Test flag_supported
+-- Performing Test flag_supported - Success
+-- Performing Test flag_supported
+-- Performing Test flag_supported - Success
+-- nlohmann_json 3.11.3 NOT found! Looking for any other version available.
+-- Found nlohmann_json: /kaggle/tmp/work/src/json-prefix/lib/cmake/nlohmann_json/nlohmann_jsonConfig.cmake (found version "3.10.2")
+-- nlohmann_json version found: 3.10.2. WARNING: This version may not work!!!
+-- Using system-provided nlohmann_json library
+-- spdlog 1.14.1 NOT found! Looking for any other version available.
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- spdlog version found: 1.12.0. WARNING: This version may not work!!!
+-- Using system-provided spdlog library
+-- Looking for OpenMP support...
+-- OpenMP found!
+-- OpenMP_CXX_FLAGS = -fopenmp
+-- OpenMP_EXE_LINKER_FLAGS = 
+-- Looking for OpenBLAS library...
+-- BLAS library found: /usr/lib/x86_64-linux-gnu/libopenblas.so
+-- Performing Test flag_supported
+-- Performing Test flag_supported - Success
+-- Thrust library: Looking for CUDA backend...
+CMake Warning (policy) at CMakeLists.txt:277 (find_package):
+  Policy CMP0146 is not set: The FindCUDA module is removed.  Run "cmake
+  --help-policy CMP0146" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+This warning is for project developers.  Use -Wno-author or -Wno-policy to
+suppress it.
+
+-- Found CUDA: /usr/local/cuda-13.0 (found version "13.0")
+-- Thrust library: CUDA found!
+-- CMAKE_CUDA_ARCHITECTURES = 75;89
+-- Found Python: /kaggle/tmp/work/venv-build/bin/python (found version "3.13.15") found components: Interpreter
+-- PYTHON_SITE_PATH = /kaggle/tmp/work/venv-build/lib/python3.13/site-packages
+CMake Warning (policy) at cmake/FindPybind11.cmake:1 (find_package):
+  Policy CMP0148 is not set: The FindPythonInterp and FindPythonLibs modules
+  are removed.  Run "cmake --help-policy CMP0148" for policy details.  Use
+  the cmake_policy command to set the policy and suppress this warning.
+Call Stack (most recent call first):
+  qiskit_aer/backends/wrappers/CMakeLists.txt:2 (find_package)
+This warning is for project developers.  Use -Wno-author or -Wno-policy to
+suppress it.
+
+-- Found PythonLibs: /root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/lib/libpython3.13.so (found version "3.13.15")
+-- /root/.local/share/uv/python/cpython-3.13.15-linux-x86_64-gnu/include/python3.13
+-- PYTHON EXECUTABLE: /kaggle/tmp/work/venv-build/bin/python
+-- PYCOMM RAW: /kaggle/tmp/work/venv-build/lib/python3.13/site-packages/pybind11/include
+-- PYBIND INCLUDES: /kaggle/tmp/work/venv-build/lib/python3.13/site-packages/pybind11/include
+-- The CUDA compiler identification is NVIDIA 13.0.88 with host compiler GNU 13.3.0
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /usr/local/cuda-13.0/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- Configuring done (5.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /kaggle/tmp/work/src/qiskit-aer-0.18.2/_skbuild/linux-x86_64-3.13/cmake-build
+[1/4] Building CUDA object qiskit_aer/backends/wrappers/CMakeFiles/controller_wrappers.dir/__/__/__/src/simulators/statevector/qv_avx2.cpp.o
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/statevector/qv_avx2.cpp:162:127: warning: ignoring attributes on template argument ‘__m256d’ [-Wignored-attributes]
+  162 | template <typename FloatType>
+      |                                                                                                                               ^
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/statevector/qv_avx2.cpp:162:127: warning: ignoring attributes on template argument ‘__m256’ [-Wignored-attributes]
+[2/4] Building CUDA object qiskit_aer/backends/wrappers/CMakeFiles/controller_wrappers.dir/bindings.cc.o
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/matrix_product_state/svd.cpp(627): warning #68-D: integer conversion resulted in a change of sign
+      lwork = -1;
+              ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/matrix_product_state/svd.cpp(627): warning #68-D: integer conversion resulted in a change of sign
+      lwork = -1;
+              ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/matrix_product_state/matrix_product_state_tensor.hpp(551): warning #177-D: variable "omp_limit" was declared but never referenced
+    uint_t omp_limit = left_rows * right_columns;
+           ^
+
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/matrix_product_state/svd.cpp(627): warning #68-D: integer conversion resulted in a change of sign
+      lwork = -1;
+              ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/matrix_product_state/matrix_product_state_tensor.hpp(551): warning #177-D: variable "omp_limit" was declared but never referenced
+    uint_t omp_limit = left_rows * right_columns;
+           ^
+
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/framework/pybind_json.hpp: In function ‘void std::to_json(json_t&, const pybind11::handle&)’:
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/framework/pybind_json.hpp:262:53: warning: ‘pybind11::handle pybind11::detail::object_api<Derived>::get_type() const [with Derived = pybind11::handle]’ is deprecated: Call py::type::handle_of(h) or py::type::of(h) instead of h.get_type() [-Wdeprecated-declarations]
+  262 |     auto type_str = std::string(py::str(obj.get_type()));
+      |                                         ~~~~~~~~~~~~^~
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/pybind11/include/pybind11/pytypes.h:216:1: note: declared here
+  216 |     handle get_type() const;
+      | ^   ~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/framework/pybind_json.hpp:282:117: warning: ‘pybind11::handle pybind11::detail::object_api<Derived>::get_type() const [with Derived = pybind11::handle]’ is deprecated: Call py::type::handle_of(h) or py::type::of(h) instead of h.get_type() [-Wdeprecated-declarations]
+  282 |       throw std::runtime_error(
+      |                                                                                                                     ^ 
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/pybind11/include/pybind11/pytypes.h:2647:1: note: declared here
+ 2647 | handle object_api<D>::get_type() const {
+      | ^~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/statevector/chunk/thrust_kernels.hpp: At global scope:
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/statevector/chunk/thrust_kernels.hpp:276:63: warning: ‘template<class Iterator> struct thrust::THRUST_300001_SM_750_890_NS::iterator_difference’ is deprecated: Use cuda::std::iterator_traits<>::difference_t or cuda::std::iter_difference_t instead [-Wdeprecated-declarations]
+  276 |   typedef typename thrust::iterator_difference<Iterator>::type difference_type;
+      |                                                               ^~~~~~~~~~~~~~~~~  
+/usr/local/cuda-13.0/targets/x86_64-linux/include/cccl/thrust/iterator/iterator_traits.h:140:107: note: declared here
+  140 | struct CCCL_DEPRECATED_BECAUSE("Use cuda::std::iterator_traits<>::difference_t or cuda::std::iter_difference_t instead")
+      |                                                                                                           ^~~~~~~~~~~~~~     
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp: In member function ‘void AER::TensorNetwork::RawTensorData<data_t>::release_cuTensorNet()’:
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:213:55: warning: ‘cutensornetStatus_t cutensornetDestroyNetworkDescriptor(cutensornetNetworkDescriptor_t)’ is deprecated: please use cutensornetDestroyNetwork instead [-Wdeprecated-declarations]
+  213 |     HANDLE_ERROR(cutensornetDestroyNetworkDescriptor(tn_desc_));
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:259:1: note: declared here
+  259 | cutensornetStatus_t cutensornetDestroyNetworkDescriptor(cutensornetNetworkDescriptor_t networkDesc);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:214:53: warning: ‘cutensornetStatus_t cutensornetDestroyContractionPlan(cutensornetContractionPlan_t)’ is deprecated: please use  instead [-Wdeprecated-declarations]
+  214 |     HANDLE_ERROR(cutensornetDestroyContractionPlan(plan_));
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:884:1: note: declared here
+  884 | cutensornetStatus_t cutensornetDestroyContractionPlan(cutensornetContractionPlan_t plan);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:220:67: warning: ‘cutensornetStatus_t cutensornetDestroyContractionAutotunePreference(cutensornetContractionAutotunePreference_t)’ is deprecated: please use cutensornetDestroyNetworkAutotunePreference instead [-Wdeprecated-declarations]
+  220 |       HANDLE_ERROR(
+      |                                                                   ^              
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:1040:1: note: declared here
+ 1040 | cutensornetStatus_t cutensornetDestroyContractionAutotunePreference(cutensornetContractionAutotunePreference_t autotunePreference);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp: In member function ‘void AER::TensorNetwork::RawTensorData<data_t>::create_contraction_descriptor(AER::uint_t, std::vector<int*>&, std::vector<int>&, std::vector<long int*>&, std::vector<long int*>&, std::vector<int>&, std::vector<long int>&)’:
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:474:41: warning: ‘cutensornetStatus_t cutensornetCreateNetworkDescriptor(cutensornetHandle_t, int32_t, const int32_t*, const int64_t* const*, const int64_t* const*, const int32_t* const*, const cutensornetTensorQualifiers_t*, int32_t, const int64_t*, const int64_t*, const int32_t*, cudaDataType_t, cutensornetComputeType_t, void**)’ is deprecated: please use cutensornetCreateNetwork instead [-Wdeprecated-declarations]
+  474 |   err = cutensornetCreateNetworkDescriptor(
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~                                                                                                                                                                                                   
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:181:1: note: declared here
+  181 | cutensornetStatus_t cutensornetCreateNetworkDescriptor(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp: In member function ‘void AER::TensorNetwork::RawTensorData<data_t>::create_contraction_plan(bool)’:
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:573:39: warning: ‘cutensornetStatus_t cutensornetCreateContractionPlan(cutensornetHandle_t, cutensornetNetworkDescriptor_t, cutensornetContractionOptimizerInfo_t, cutensornetWorkspaceDescriptor_t, void**)’ is deprecated: please use cutensornetNetworkPrepareContraction instead [-Wdeprecated-declarations]
+  573 |   err = cutensornetCreateContractionPlan(hTensorNet_, tn_desc_, optimizer_info_,
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                    
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:855:1: note: declared here
+  855 | cutensornetStatus_t cutensornetCreateContractionPlan(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:584:53: warning: ‘cutensornetStatus_t cutensornetCreateContractionAutotunePreference(cutensornetHandle_t, void**)’ is deprecated: please use cutensornetCreateNetworkAutotunePreference instead [-Wdeprecated-declarations]
+  584 |     err = cutensornetCreateContractionAutotunePreference(hTensorNet_,
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~              
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:944:1: note: declared here
+  944 | cutensornetStatus_t cutensornetCreateContractionAutotunePreference(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:591:59: warning: ‘cutensornetStatus_t cutensornetContractionAutotunePreferenceSetAttribute(cutensornetHandle_t, cutensornetContractionAutotunePreference_t, cutensornetContractionAutotunePreferenceAttributes_t, const void*, size_t)’ is deprecated: please use cutensornetNetworkAutotunePreferenceSetAttribute instead [-Wdeprecated-declarations]
+  591 |     err = cutensornetContractionAutotunePreferenceSetAttribute(
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~                                                                                                                                  
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:1010:1: note: declared here
+ 1010 | cutensornetContractionAutotunePreferenceSetAttribute(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp: In instantiation of ‘void AER::TensorNetwork::RawTensorData<data_t>::release_cuTensorNet() [with data_t = float]’:
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:184:1:   required from ‘AER::TensorNetwork::RawTensorData<data_t>::~RawTensorData() [with data_t = float]’
+/usr/include/c++/13/bits/stl_construct.h:88:17:   required from ‘constexpr void std::destroy_at(_Tp*) [with _Tp = AER::TensorNetwork::RawTensorData<float>]’
+/usr/include/c++/13/bits/stl_construct.h:149:16:   required from ‘constexpr void std::_Destroy(_Tp*) [with _Tp = AER::TensorNetwork::RawTensorData<float>]’
+/usr/include/c++/13/bits/stl_construct.h:163:14:   required from ‘static constexpr void std::_Destroy_aux<<anonymous> >::__destroy(_ForwardIterator, _ForwardIterator) [with _ForwardIterator = AER::TensorNetwork::RawTensorData<float>*; bool <anonymous> = false]’
+/usr/include/c++/13/bits/stl_construct.h:193:40:   required from ‘constexpr void std::_Destroy(_ForwardIterator, _ForwardIterator) [with _ForwardIterator = AER::TensorNetwork::RawTensorData<float>*]’
+/usr/include/c++/13/bits/alloc_traits.h:948:14:   required from ‘constexpr void std::_Destroy(_ForwardIterator, _ForwardIterator, allocator<_T2>&) [with _ForwardIterator = AER::TensorNetwork::RawTensorData<float>*; _Tp = AER::TensorNetwork::RawTensorData<float>]’
+/usr/include/c++/13/bits/stl_vector.h:735:14:   required from ‘constexpr std::vector<_Tp, _Alloc>::~vector() [with _Tp = AER::TensorNetwork::RawTensorData<float>; _Alloc = std::allocator<AER::TensorNetwork::RawTensorData<float> >]’
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:898:76:   required from ‘AER::TensorNetwork::TensorNetContractor_cuTensorNet<data_t>::TensorNetContractor_cuTensorNet() [with data_t = float]’
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net.hpp:1120:15:   required from ‘std::vector<double> AER::TensorNetwork::TensorNet<data_t>::probabilities(const AER::reg_t&) const [with data_t = float; AER::reg_t = std::vector<long unsigned int>]’
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net.hpp:1094:1:   required from here
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:213:55: warning: ‘cutensornetStatus_t cutensornetDestroyNetworkDescriptor(cutensornetNetworkDescriptor_t)’ is deprecated: please use cutensornetDestroyNetwork instead [-Wdeprecated-declarations]
+  213 |     HANDLE_ERROR(cutensornetDestroyNetworkDescriptor(tn_desc_));
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:259:1: note: declared here
+  259 | cutensornetStatus_t cutensornetDestroyNetworkDescriptor(cutensornetNetworkDescriptor_t networkDesc);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:213:55: warning: ‘cutensornetStatus_t cutensornetDestroyNetworkDescriptor(cutensornetNetworkDescriptor_t)’ is deprecated: please use cutensornetDestroyNetwork instead [-Wdeprecated-declarations]
+  213 |     HANDLE_ERROR(cutensornetDestroyNetworkDescriptor(tn_desc_));
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:259:1: note: declared here
+  259 | cutensornetStatus_t cutensornetDestroyNetworkDescriptor(cutensornetNetworkDescriptor_t networkDesc);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:214:53: warning: ‘cutensornetStatus_t cutensornetDestroyContractionPlan(cutensornetContractionPlan_t)’ is deprecated: please use  instead [-Wdeprecated-declarations]
+  214 |     HANDLE_ERROR(cutensornetDestroyContractionPlan(plan_));
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:884:1: note: declared here
+  884 | cutensornetStatus_t cutensornetDestroyContractionPlan(cutensornetContractionPlan_t plan);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:214:53: warning: ‘cutensornetStatus_t cutensornetDestroyContractionPlan(cutensornetContractionPlan_t)’ is deprecated: please use  instead [-Wdeprecated-declarations]
+  214 |     HANDLE_ERROR(cutensornetDestroyContractionPlan(plan_));
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:884:1: note: declared here
+  884 | cutensornetStatus_t cutensornetDestroyContractionPlan(cutensornetContractionPlan_t plan);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:220:67: warning: ‘cutensornetStatus_t cutensornetDestroyContractionAutotunePreference(cutensornetContractionAutotunePreference_t)’ is deprecated: please use cutensornetDestroyNetworkAutotunePreference instead [-Wdeprecated-declarations]
+  220 |       HANDLE_ERROR(
+      |                                                                   ^              
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:1040:1: note: declared here
+ 1040 | cutensornetStatus_t cutensornetDestroyContractionAutotunePreference(cutensornetContractionAutotunePreference_t autotunePreference);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:220:67: warning: ‘cutensornetStatus_t cutensornetDestroyContractionAutotunePreference(cutensornetContractionAutotunePreference_t)’ is deprecated: please use cutensornetDestroyNetworkAutotunePreference instead [-Wdeprecated-declarations]
+  220 |       HANDLE_ERROR(
+      |                                                                   ^              
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:1040:1: note: declared here
+ 1040 | cutensornetStatus_t cutensornetDestroyContractionAutotunePreference(cutensornetContractionAutotunePreference_t autotunePreference);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp: In instantiation of ‘void AER::TensorNetwork::RawTensorData<data_t>::release_cuTensorNet() [with data_t = double]’:
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:184:1:   required from ‘AER::TensorNetwork::RawTensorData<data_t>::~RawTensorData() [with data_t = double]’
+/usr/include/c++/13/bits/stl_construct.h:88:17:   required from ‘constexpr void std::destroy_at(_Tp*) [with _Tp = AER::TensorNetwork::RawTensorData<double>]’
+/usr/include/c++/13/bits/stl_construct.h:149:16:   required from ‘constexpr void std::_Destroy(_Tp*) [with _Tp = AER::TensorNetwork::RawTensorData<double>]’
+/usr/include/c++/13/bits/stl_construct.h:163:14:   required from ‘static constexpr void std::_Destroy_aux<<anonymous> >::__destroy(_ForwardIterator, _ForwardIterator) [with _ForwardIterator = AER::TensorNetwork::RawTensorData<double>*; bool <anonymous> = false]’
+/usr/include/c++/13/bits/stl_construct.h:193:40:   required from ‘constexpr void std::_Destroy(_ForwardIterator, _ForwardIterator) [with _ForwardIterator = AER::TensorNetwork::RawTensorData<double>*]’
+/usr/include/c++/13/bits/alloc_traits.h:948:14:   required from ‘constexpr void std::_Destroy(_ForwardIterator, _ForwardIterator, allocator<_T2>&) [with _ForwardIterator = AER::TensorNetwork::RawTensorData<double>*; _Tp = AER::TensorNetwork::RawTensorData<double>]’
+/usr/include/c++/13/bits/stl_vector.h:735:14:   required from ‘constexpr std::vector<_Tp, _Alloc>::~vector() [with _Tp = AER::TensorNetwork::RawTensorData<double>; _Alloc = std::allocator<AER::TensorNetwork::RawTensorData<double> >]’
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:898:76:   required from ‘AER::TensorNetwork::TensorNetContractor_cuTensorNet<data_t>::TensorNetContractor_cuTensorNet() [with data_t = double]’
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net.hpp:1120:15:   required from ‘std::vector<double> AER::TensorNetwork::TensorNet<data_t>::probabilities(const AER::reg_t&) const [with data_t = double; AER::reg_t = std::vector<long unsigned int>]’
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net.hpp:1094:1:   required from here
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:213:55: warning: ‘cutensornetStatus_t cutensornetDestroyNetworkDescriptor(cutensornetNetworkDescriptor_t)’ is deprecated: please use cutensornetDestroyNetwork instead [-Wdeprecated-declarations]
+  213 |     HANDLE_ERROR(cutensornetDestroyNetworkDescriptor(tn_desc_));
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:259:1: note: declared here
+  259 | cutensornetStatus_t cutensornetDestroyNetworkDescriptor(cutensornetNetworkDescriptor_t networkDesc);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:213:55: warning: ‘cutensornetStatus_t cutensornetDestroyNetworkDescriptor(cutensornetNetworkDescriptor_t)’ is deprecated: please use cutensornetDestroyNetwork instead [-Wdeprecated-declarations]
+  213 |     HANDLE_ERROR(cutensornetDestroyNetworkDescriptor(tn_desc_));
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:259:1: note: declared here
+  259 | cutensornetStatus_t cutensornetDestroyNetworkDescriptor(cutensornetNetworkDescriptor_t networkDesc);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:214:53: warning: ‘cutensornetStatus_t cutensornetDestroyContractionPlan(cutensornetContractionPlan_t)’ is deprecated: please use  instead [-Wdeprecated-declarations]
+  214 |     HANDLE_ERROR(cutensornetDestroyContractionPlan(plan_));
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:884:1: note: declared here
+  884 | cutensornetStatus_t cutensornetDestroyContractionPlan(cutensornetContractionPlan_t plan);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:214:53: warning: ‘cutensornetStatus_t cutensornetDestroyContractionPlan(cutensornetContractionPlan_t)’ is deprecated: please use  instead [-Wdeprecated-declarations]
+  214 |     HANDLE_ERROR(cutensornetDestroyContractionPlan(plan_));
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:884:1: note: declared here
+  884 | cutensornetStatus_t cutensornetDestroyContractionPlan(cutensornetContractionPlan_t plan);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:220:67: warning: ‘cutensornetStatus_t cutensornetDestroyContractionAutotunePreference(cutensornetContractionAutotunePreference_t)’ is deprecated: please use cutensornetDestroyNetworkAutotunePreference instead [-Wdeprecated-declarations]
+  220 |       HANDLE_ERROR(
+      |                                                                   ^              
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:1040:1: note: declared here
+ 1040 | cutensornetStatus_t cutensornetDestroyContractionAutotunePreference(cutensornetContractionAutotunePreference_t autotunePreference);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:220:67: warning: ‘cutensornetStatus_t cutensornetDestroyContractionAutotunePreference(cutensornetContractionAutotunePreference_t)’ is deprecated: please use cutensornetDestroyNetworkAutotunePreference instead [-Wdeprecated-declarations]
+  220 |       HANDLE_ERROR(
+      |                                                                   ^              
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:1040:1: note: declared here
+ 1040 | cutensornetStatus_t cutensornetDestroyContractionAutotunePreference(cutensornetContractionAutotunePreference_t autotunePreference);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp: In instantiation of ‘void AER::TensorNetwork::RawTensorData<data_t>::create_contraction_descriptor(AER::uint_t, std::vector<int*>&, std::vector<int>&, std::vector<long int*>&, std::vector<long int*>&, std::vector<int>&, std::vector<long int>&) [with data_t = double; AER::uint_t = long unsigned int]’:
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:1038:50:   required from ‘void AER::TensorNetwork::TensorNetContractor_cuTensorNet<data_t>::setup_contraction(bool) [with data_t = double]’
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:1026:1:   required from here
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:474:41: warning: ‘cutensornetStatus_t cutensornetCreateNetworkDescriptor(cutensornetHandle_t, int32_t, const int32_t*, const int64_t* const*, const int64_t* const*, const int32_t* const*, const cutensornetTensorQualifiers_t*, int32_t, const int64_t*, const int64_t*, const int32_t*, cudaDataType_t, cutensornetComputeType_t, void**)’ is deprecated: please use cutensornetCreateNetwork instead [-Wdeprecated-declarations]
+  474 |   err = cutensornetCreateNetworkDescriptor(
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~                                                                                                                                                                                                   
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:181:1: note: declared here
+  181 | cutensornetStatus_t cutensornetCreateNetworkDescriptor(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:474:41: warning: ‘cutensornetStatus_t cutensornetCreateNetworkDescriptor(cutensornetHandle_t, int32_t, const int32_t*, const int64_t* const*, const int64_t* const*, const int32_t* const*, const cutensornetTensorQualifiers_t*, int32_t, const int64_t*, const int64_t*, const int32_t*, cudaDataType_t, cutensornetComputeType_t, void**)’ is deprecated: please use cutensornetCreateNetwork instead [-Wdeprecated-declarations]
+  474 |   err = cutensornetCreateNetworkDescriptor(
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~                                                                                                                                                                                                   
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:181:1: note: declared here
+  181 | cutensornetStatus_t cutensornetCreateNetworkDescriptor(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp: In instantiation of ‘void AER::TensorNetwork::RawTensorData<data_t>::create_contraction_plan(bool) [with data_t = double]’:
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:1042:44:   required from ‘void AER::TensorNetwork::TensorNetContractor_cuTensorNet<data_t>::setup_contraction(bool) [with data_t = double]’
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:1026:1:   required from here
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:573:39: warning: ‘cutensornetStatus_t cutensornetCreateContractionPlan(cutensornetHandle_t, cutensornetNetworkDescriptor_t, cutensornetContractionOptimizerInfo_t, cutensornetWorkspaceDescriptor_t, void**)’ is deprecated: please use cutensornetNetworkPrepareContraction instead [-Wdeprecated-declarations]
+  573 |   err = cutensornetCreateContractionPlan(hTensorNet_, tn_desc_, optimizer_info_,
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                    
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:855:1: note: declared here
+  855 | cutensornetStatus_t cutensornetCreateContractionPlan(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:573:39: warning: ‘cutensornetStatus_t cutensornetCreateContractionPlan(cutensornetHandle_t, cutensornetNetworkDescriptor_t, cutensornetContractionOptimizerInfo_t, cutensornetWorkspaceDescriptor_t, void**)’ is deprecated: please use cutensornetNetworkPrepareContraction instead [-Wdeprecated-declarations]
+  573 |   err = cutensornetCreateContractionPlan(hTensorNet_, tn_desc_, optimizer_info_,
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                    
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:855:1: note: declared here
+  855 | cutensornetStatus_t cutensornetCreateContractionPlan(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:584:53: warning: ‘cutensornetStatus_t cutensornetCreateContractionAutotunePreference(cutensornetHandle_t, void**)’ is deprecated: please use cutensornetCreateNetworkAutotunePreference instead [-Wdeprecated-declarations]
+  584 |     err = cutensornetCreateContractionAutotunePreference(hTensorNet_,
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~              
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:944:1: note: declared here
+  944 | cutensornetStatus_t cutensornetCreateContractionAutotunePreference(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:584:53: warning: ‘cutensornetStatus_t cutensornetCreateContractionAutotunePreference(cutensornetHandle_t, void**)’ is deprecated: please use cutensornetCreateNetworkAutotunePreference instead [-Wdeprecated-declarations]
+  584 |     err = cutensornetCreateContractionAutotunePreference(hTensorNet_,
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~              
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:944:1: note: declared here
+  944 | cutensornetStatus_t cutensornetCreateContractionAutotunePreference(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:591:59: warning: ‘cutensornetStatus_t cutensornetContractionAutotunePreferenceSetAttribute(cutensornetHandle_t, cutensornetContractionAutotunePreference_t, cutensornetContractionAutotunePreferenceAttributes_t, const void*, size_t)’ is deprecated: please use cutensornetNetworkAutotunePreferenceSetAttribute instead [-Wdeprecated-declarations]
+  591 |     err = cutensornetContractionAutotunePreferenceSetAttribute(
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~                                                                                                                                  
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:1010:1: note: declared here
+ 1010 | cutensornetContractionAutotunePreferenceSetAttribute(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:591:59: warning: ‘cutensornetStatus_t cutensornetContractionAutotunePreferenceSetAttribute(cutensornetHandle_t, cutensornetContractionAutotunePreference_t, cutensornetContractionAutotunePreferenceAttributes_t, const void*, size_t)’ is deprecated: please use cutensornetNetworkAutotunePreferenceSetAttribute instead [-Wdeprecated-declarations]
+  591 |     err = cutensornetContractionAutotunePreferenceSetAttribute(
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~                                                                                                                                  
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:1010:1: note: declared here
+ 1010 | cutensornetContractionAutotunePreferenceSetAttribute(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:600:37: warning: ‘cutensornetStatus_t cutensornetContractionAutotune(cutensornetHandle_t, cutensornetContractionPlan_t, const void* const*, void*, cutensornetWorkspaceDescriptor_t, cutensornetContractionAutotunePreference_t, cudaStream_t)’ is deprecated: please use cutensornetNetworkAutotuneContraction instead [-Wdeprecated-declarations]
+  600 |     err = cutensornetContractionAutotune(
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~                                                                                                                        
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:904:1: note: declared here
+  904 | cutensornetStatus_t cutensornetContractionAutotune(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:600:37: warning: ‘cutensornetStatus_t cutensornetContractionAutotune(cutensornetHandle_t, cutensornetContractionPlan_t, const void* const*, void*, cutensornetWorkspaceDescriptor_t, cutensornetContractionAutotunePreference_t, cudaStream_t)’ is deprecated: please use cutensornetNetworkAutotuneContraction instead [-Wdeprecated-declarations]
+  600 |     err = cutensornetContractionAutotune(
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~                                                                                                                        
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:904:1: note: declared here
+  904 | cutensornetStatus_t cutensornetContractionAutotune(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp: In instantiation of ‘void AER::TensorNetwork::RawTensorData<data_t>::create_contraction_descriptor(AER::uint_t, std::vector<int*>&, std::vector<int>&, std::vector<long int*>&, std::vector<long int*>&, std::vector<int>&, std::vector<long int>&) [with data_t = float; AER::uint_t = long unsigned int]’:
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:1038:50:   required from ‘void AER::TensorNetwork::TensorNetContractor_cuTensorNet<data_t>::setup_contraction(bool) [with data_t = float]’
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:1026:1:   required from here
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:474:41: warning: ‘cutensornetStatus_t cutensornetCreateNetworkDescriptor(cutensornetHandle_t, int32_t, const int32_t*, const int64_t* const*, const int64_t* const*, const int32_t* const*, const cutensornetTensorQualifiers_t*, int32_t, const int64_t*, const int64_t*, const int32_t*, cudaDataType_t, cutensornetComputeType_t, void**)’ is deprecated: please use cutensornetCreateNetwork instead [-Wdeprecated-declarations]
+  474 |   err = cutensornetCreateNetworkDescriptor(
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~                                                                                                                                                                                                   
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:181:1: note: declared here
+  181 | cutensornetStatus_t cutensornetCreateNetworkDescriptor(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:474:41: warning: ‘cutensornetStatus_t cutensornetCreateNetworkDescriptor(cutensornetHandle_t, int32_t, const int32_t*, const int64_t* const*, const int64_t* const*, const int32_t* const*, const cutensornetTensorQualifiers_t*, int32_t, const int64_t*, const int64_t*, const int32_t*, cudaDataType_t, cutensornetComputeType_t, void**)’ is deprecated: please use cutensornetCreateNetwork instead [-Wdeprecated-declarations]
+  474 |   err = cutensornetCreateNetworkDescriptor(
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~                                                                                                                                                                                                   
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:181:1: note: declared here
+  181 | cutensornetStatus_t cutensornetCreateNetworkDescriptor(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp: In instantiation of ‘void AER::TensorNetwork::RawTensorData<data_t>::create_contraction_plan(bool) [with data_t = float]’:
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:1042:44:   required from ‘void AER::TensorNetwork::TensorNetContractor_cuTensorNet<data_t>::setup_contraction(bool) [with data_t = float]’
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:1026:1:   required from here
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:573:39: warning: ‘cutensornetStatus_t cutensornetCreateContractionPlan(cutensornetHandle_t, cutensornetNetworkDescriptor_t, cutensornetContractionOptimizerInfo_t, cutensornetWorkspaceDescriptor_t, void**)’ is deprecated: please use cutensornetNetworkPrepareContraction instead [-Wdeprecated-declarations]
+  573 |   err = cutensornetCreateContractionPlan(hTensorNet_, tn_desc_, optimizer_info_,
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                    
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:855:1: note: declared here
+  855 | cutensornetStatus_t cutensornetCreateContractionPlan(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:573:39: warning: ‘cutensornetStatus_t cutensornetCreateContractionPlan(cutensornetHandle_t, cutensornetNetworkDescriptor_t, cutensornetContractionOptimizerInfo_t, cutensornetWorkspaceDescriptor_t, void**)’ is deprecated: please use cutensornetNetworkPrepareContraction instead [-Wdeprecated-declarations]
+  573 |   err = cutensornetCreateContractionPlan(hTensorNet_, tn_desc_, optimizer_info_,
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                    
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:855:1: note: declared here
+  855 | cutensornetStatus_t cutensornetCreateContractionPlan(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:584:53: warning: ‘cutensornetStatus_t cutensornetCreateContractionAutotunePreference(cutensornetHandle_t, void**)’ is deprecated: please use cutensornetCreateNetworkAutotunePreference instead [-Wdeprecated-declarations]
+  584 |     err = cutensornetCreateContractionAutotunePreference(hTensorNet_,
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~              
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:944:1: note: declared here
+  944 | cutensornetStatus_t cutensornetCreateContractionAutotunePreference(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:584:53: warning: ‘cutensornetStatus_t cutensornetCreateContractionAutotunePreference(cutensornetHandle_t, void**)’ is deprecated: please use cutensornetCreateNetworkAutotunePreference instead [-Wdeprecated-declarations]
+  584 |     err = cutensornetCreateContractionAutotunePreference(hTensorNet_,
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~              
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:944:1: note: declared here
+  944 | cutensornetStatus_t cutensornetCreateContractionAutotunePreference(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:591:59: warning: ‘cutensornetStatus_t cutensornetContractionAutotunePreferenceSetAttribute(cutensornetHandle_t, cutensornetContractionAutotunePreference_t, cutensornetContractionAutotunePreferenceAttributes_t, const void*, size_t)’ is deprecated: please use cutensornetNetworkAutotunePreferenceSetAttribute instead [-Wdeprecated-declarations]
+  591 |     err = cutensornetContractionAutotunePreferenceSetAttribute(
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~                                                                                                                                  
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:1010:1: note: declared here
+ 1010 | cutensornetContractionAutotunePreferenceSetAttribute(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:591:59: warning: ‘cutensornetStatus_t cutensornetContractionAutotunePreferenceSetAttribute(cutensornetHandle_t, cutensornetContractionAutotunePreference_t, cutensornetContractionAutotunePreferenceAttributes_t, const void*, size_t)’ is deprecated: please use cutensornetNetworkAutotunePreferenceSetAttribute instead [-Wdeprecated-declarations]
+  591 |     err = cutensornetContractionAutotunePreferenceSetAttribute(
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~                                                                                                                                  
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:1010:1: note: declared here
+ 1010 | cutensornetContractionAutotunePreferenceSetAttribute(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:600:37: warning: ‘cutensornetStatus_t cutensornetContractionAutotune(cutensornetHandle_t, cutensornetContractionPlan_t, const void* const*, void*, cutensornetWorkspaceDescriptor_t, cutensornetContractionAutotunePreference_t, cudaStream_t)’ is deprecated: please use cutensornetNetworkAutotuneContraction instead [-Wdeprecated-declarations]
+  600 |     err = cutensornetContractionAutotune(
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~                                                                                                                        
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:904:1: note: declared here
+  904 | cutensornetStatus_t cutensornetContractionAutotune(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:600:37: warning: ‘cutensornetStatus_t cutensornetContractionAutotune(cutensornetHandle_t, cutensornetContractionPlan_t, const void* const*, void*, cutensornetWorkspaceDescriptor_t, cutensornetContractionAutotunePreference_t, cudaStream_t)’ is deprecated: please use cutensornetNetworkAutotuneContraction instead [-Wdeprecated-declarations]
+  600 |     err = cutensornetContractionAutotune(
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~                                                                                                                        
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:904:1: note: declared here
+  904 | cutensornetStatus_t cutensornetContractionAutotune(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp: In instantiation of ‘void AER::TensorNetwork::RawTensorData<data_t>::contract(AER::uint_t, AER::uint_t) [with data_t = double; AER::uint_t = long unsigned int]’:
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:1078:32:   required from ‘void AER::TensorNetwork::TensorNetContractor_cuTensorNet<data_t>::contract_all() [with data_t = double]’
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:1085:1:   required from ‘void AER::TensorNetwork::TensorNetContractor_cuTensorNet<data_t>::contract(std::vector<std::complex<_Tp> >&) [with data_t = double]’
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:1083:1:   required from here
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:632:32: warning: ‘cutensornetStatus_t cutensornetContractSlices(cutensornetHandle_t, cutensornetContractionPlan_t, const void* const*, void*, int32_t, cutensornetWorkspaceDescriptor_t, cutensornetSliceGroup_t, cudaStream_t)’ is deprecated: please use cutensornetNetworkContract instead [-Wdeprecated-declarations]
+  632 |   err = cutensornetContractSlices(hTensorNet_, plan_, dev_data_ptr_.data(),
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                                                
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:1139:1: note: declared here
+ 1139 | cutensornetStatus_t cutensornetContractSlices(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:632:32: warning: ‘cutensornetStatus_t cutensornetContractSlices(cutensornetHandle_t, cutensornetContractionPlan_t, const void* const*, void*, int32_t, cutensornetWorkspaceDescriptor_t, cutensornetSliceGroup_t, cudaStream_t)’ is deprecated: please use cutensornetNetworkContract instead [-Wdeprecated-declarations]
+  632 |   err = cutensornetContractSlices(hTensorNet_, plan_, dev_data_ptr_.data(),
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                                                
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:1139:1: note: declared here
+ 1139 | cutensornetStatus_t cutensornetContractSlices(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp: In instantiation of ‘void AER::TensorNetwork::RawTensorData<data_t>::contract(AER::uint_t, AER::uint_t) [with data_t = float; AER::uint_t = long unsigned int]’:
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:1078:32:   required from ‘void AER::TensorNetwork::TensorNetContractor_cuTensorNet<data_t>::contract_all() [with data_t = float]’
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:1085:1:   required from ‘void AER::TensorNetwork::TensorNetContractor_cuTensorNet<data_t>::contract(std::vector<std::complex<_Tp> >&) [with data_t = float]’
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:1083:1:   required from here
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:632:32: warning: ‘cutensornetStatus_t cutensornetContractSlices(cutensornetHandle_t, cutensornetContractionPlan_t, const void* const*, void*, int32_t, cutensornetWorkspaceDescriptor_t, cutensornetSliceGroup_t, cudaStream_t)’ is deprecated: please use cutensornetNetworkContract instead [-Wdeprecated-declarations]
+  632 |   err = cutensornetContractSlices(hTensorNet_, plan_, dev_data_ptr_.data(),
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                                                
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:1139:1: note: declared here
+ 1139 | cutensornetStatus_t cutensornetContractSlices(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/simulators/tensor_network/tensor_net_contractor_cuTensorNet.hpp:632:32: warning: ‘cutensornetStatus_t cutensornetContractSlices(cutensornetHandle_t, cutensornetContractionPlan_t, const void* const*, void*, int32_t, cutensornetWorkspaceDescriptor_t, cutensornetSliceGroup_t, cudaStream_t)’ is deprecated: please use cutensornetNetworkContract instead [-Wdeprecated-declarations]
+  632 |   err = cutensornetContractSlices(hTensorNet_, plan_, dev_data_ptr_.data(),
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                                                
+/kaggle/tmp/work/venv-build/lib/python3.13/site-packages/cuquantum/include/cutensornet.h:1139:1: note: declared here
+ 1139 | cutensornetStatus_t cutensornetContractSlices(const cutensornetHandle_t handle,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/noise/noise_model.hpp: In function ‘AER::Noise::NoiseModel::NoiseOps AER::Noise::NoiseModel::sample_noise_at_runtime(const AER::Operations::Op&, AER::RngEngine&) const’:
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/noise/noise_model.hpp:305:30: warning: ‘this’ pointer is null [-Wnonnull]
+  305 |   sample_noise_at_runtime(op, noise_before, noise_after, rng);
+      |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+/kaggle/tmp/work/src/qiskit-aer-0.18.2/src/noise/noise_model.hpp:320:6: note: in a call to non-static member function ‘void AER::Noise::NoiseModel::sample_noise_at_runtime(const AER::Operations::Op&, NoiseOps&, NoiseOps&, AER::RngEngine&) const’
+  320 | void NoiseModel::sample_noise_at_runtime(const Operations::Op &op,
+      |      ^~~~~~~~~~
+[3/4] Linking CXX shared module qiskit_aer/backends/wrappers/controller_wrappers.cpython-313-x86_64-linux-gnu.so
+[3/4] Install the project...
+-- Install configuration: "Release"
+-- Installing: /kaggle/tmp/work/src/qiskit-aer-0.18.2/_skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/controller_wrappers.cpython-313-x86_64-linux-gnu.so
+
+copying qiskit_aer/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/__init__.py
+copying qiskit_aer/version.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/version.py
+copying qiskit_aer/aererror.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/aererror.py
+copying qiskit_aer/aerprovider.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/aerprovider.py
+creating directory _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/primitives
+copying qiskit_aer/primitives/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/primitives/__init__.py
+copying qiskit_aer/primitives/estimator.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/primitives/estimator.py
+copying qiskit_aer/primitives/estimator_v2.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/primitives/estimator_v2.py
+copying qiskit_aer/primitives/sampler_v2.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/primitives/sampler_v2.py
+copying qiskit_aer/primitives/sampler.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/primitives/sampler.py
+creating directory _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise
+copying qiskit_aer/noise/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/__init__.py
+copying qiskit_aer/noise/noise_model.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/noise_model.py
+copying qiskit_aer/noise/noiseerror.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/noiseerror.py
+copying qiskit_aer/backends/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/__init__.py
+copying qiskit_aer/backends/name_mapping.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/name_mapping.py
+copying qiskit_aer/backends/backend_utils.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/backend_utils.py
+copying qiskit_aer/backends/statevector_simulator.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/statevector_simulator.py
+copying qiskit_aer/backends/compatibility.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/compatibility.py
+copying qiskit_aer/backends/backendconfiguration.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/backendconfiguration.py
+copying qiskit_aer/backends/aerbackend.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/aerbackend.py
+copying qiskit_aer/backends/backendproperties.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/backendproperties.py
+copying qiskit_aer/backends/aer_simulator.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/aer_simulator.py
+copying qiskit_aer/backends/qasm_simulator.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/qasm_simulator.py
+copying qiskit_aer/backends/aer_compiler.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/aer_compiler.py
+copying qiskit_aer/backends/unitary_simulator.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/unitary_simulator.py
+creating directory _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/utils
+copying qiskit_aer/utils/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/utils/__init__.py
+copying qiskit_aer/utils/noise_transformation.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/utils/noise_transformation.py
+copying qiskit_aer/utils/noise_model_inserter.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/utils/noise_model_inserter.py
+creating directory _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/quantum_info
+copying qiskit_aer/quantum_info/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/quantum_info/__init__.py
+creating directory _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/jobs
+copying qiskit_aer/jobs/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/jobs/__init__.py
+copying qiskit_aer/jobs/aerjob.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/jobs/aerjob.py
+copying qiskit_aer/jobs/utils.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/jobs/utils.py
+creating directory _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library
+copying qiskit_aer/library/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/__init__.py
+copying qiskit_aer/library/default_qubits.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/default_qubits.py
+creating directory _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/passes
+copying qiskit_aer/noise/passes/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/passes/__init__.py
+copying qiskit_aer/noise/passes/relaxation_noise_pass.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/passes/relaxation_noise_pass.py
+copying qiskit_aer/noise/passes/local_noise_pass.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/passes/local_noise_pass.py
+creating directory _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/device
+copying qiskit_aer/noise/device/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/device/__init__.py
+copying qiskit_aer/noise/device/models.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/device/models.py
+copying qiskit_aer/noise/device/parameters.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/device/parameters.py
+creating directory _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors
+copying qiskit_aer/noise/errors/readout_error.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors/readout_error.py
+copying qiskit_aer/noise/errors/quantum_error.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors/quantum_error.py
+copying qiskit_aer/noise/errors/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors/__init__.py
+copying qiskit_aer/noise/errors/pauli_lindblad_error.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors/pauli_lindblad_error.py
+copying qiskit_aer/noise/errors/pauli_error.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors/pauli_error.py
+copying qiskit_aer/noise/errors/standard_errors.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors/standard_errors.py
+copying qiskit_aer/noise/errors/base_quantum_error.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors/base_quantum_error.py
+creating directory _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/quantum_info/states
+copying qiskit_aer/quantum_info/states/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/quantum_info/states/__init__.py
+copying qiskit_aer/quantum_info/states/aer_densitymatrix.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/quantum_info/states/aer_densitymatrix.py
+copying qiskit_aer/quantum_info/states/aer_state.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/quantum_info/states/aer_state.py
+copying qiskit_aer/quantum_info/states/aer_statevector.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/quantum_info/states/aer_statevector.py
+creating directory _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/control_flow_instructions
+copying qiskit_aer/library/control_flow_instructions/mark.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/control_flow_instructions/mark.py
+copying qiskit_aer/library/control_flow_instructions/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/control_flow_instructions/__init__.py
+copying qiskit_aer/library/control_flow_instructions/jump.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/control_flow_instructions/jump.py
+copying qiskit_aer/library/control_flow_instructions/store.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/control_flow_instructions/store.py
+creating directory _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions
+copying qiskit_aer/library/save_instructions/save_state.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_state.py
+copying qiskit_aer/library/save_instructions/save_clifford.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_clifford.py
+copying qiskit_aer/library/save_instructions/save_probabilities.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_probabilities.py
+copying qiskit_aer/library/save_instructions/save_stabilizer.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_stabilizer.py
+copying qiskit_aer/library/save_instructions/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/__init__.py
+copying qiskit_aer/library/save_instructions/save_expectation_value.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_expectation_value.py
+copying qiskit_aer/library/save_instructions/save_density_matrix.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_density_matrix.py
+copying qiskit_aer/library/save_instructions/save_data.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_data.py
+copying qiskit_aer/library/save_instructions/save_matrix_product_state.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_matrix_product_state.py
+copying qiskit_aer/library/save_instructions/save_unitary.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_unitary.py
+copying qiskit_aer/library/save_instructions/save_superop.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_superop.py
+copying qiskit_aer/library/save_instructions/save_statevector.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_statevector.py
+copying qiskit_aer/library/save_instructions/save_amplitudes.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_amplitudes.py
+creating directory _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions
+copying qiskit_aer/library/set_instructions/__init__.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions/__init__.py
+copying qiskit_aer/library/set_instructions/set_superop.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions/set_superop.py
+copying qiskit_aer/library/set_instructions/set_statevector.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions/set_statevector.py
+copying qiskit_aer/library/set_instructions/set_unitary.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions/set_unitary.py
+copying qiskit_aer/library/set_instructions/set_matrix_product_state.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions/set_matrix_product_state.py
+copying qiskit_aer/library/set_instructions/set_density_matrix.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions/set_density_matrix.py
+copying qiskit_aer/library/set_instructions/set_stabilizer.py -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions/set_stabilizer.py
+copying /kaggle/tmp/work/src/qiskit-aer-0.18.2/qiskit_aer/library/instructions_table.csv -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/instructions_table.csv
+copying /kaggle/tmp/work/src/qiskit-aer-0.18.2/qiskit_aer/VERSION.txt -> _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/VERSION.txt
+
+running bdist_wheel
+running build
+running build_py
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/version.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/aererror.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/aerprovider.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/primitives
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/primitives/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/primitives
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/primitives/estimator.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/primitives
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/primitives/estimator_v2.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/primitives
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/primitives/sampler_v2.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/primitives
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/primitives/sampler.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/primitives
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/noise_model.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/noiseerror.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/name_mapping.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/backend_utils.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/statevector_simulator.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/compatibility.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/backendconfiguration.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/aerbackend.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/backendproperties.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/aer_simulator.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/qasm_simulator.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/aer_compiler.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/unitary_simulator.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/utils
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/utils/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/utils
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/utils/noise_transformation.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/utils
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/utils/noise_model_inserter.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/utils
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/quantum_info
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/quantum_info/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/quantum_info
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/jobs
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/jobs/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/jobs
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/jobs/aerjob.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/jobs
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/jobs/utils.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/jobs
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/default_qubits.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/passes
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/passes/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/passes
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/passes/relaxation_noise_pass.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/passes
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/passes/local_noise_pass.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/passes
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/device
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/device/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/device
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/device/models.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/device
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/device/parameters.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/device
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors/readout_error.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors/quantum_error.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors/pauli_lindblad_error.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors/pauli_error.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors/standard_errors.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/noise/errors/base_quantum_error.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/quantum_info/states
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/quantum_info/states/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/quantum_info/states
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/quantum_info/states/aer_densitymatrix.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/quantum_info/states
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/quantum_info/states/aer_state.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/quantum_info/states
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/quantum_info/states/aer_statevector.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/quantum_info/states
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/control_flow_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/control_flow_instructions/mark.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/control_flow_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/control_flow_instructions/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/control_flow_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/control_flow_instructions/jump.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/control_flow_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/control_flow_instructions/store.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/control_flow_instructions
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_state.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_clifford.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_probabilities.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_stabilizer.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_expectation_value.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_density_matrix.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_data.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_matrix_product_state.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_unitary.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_superop.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_statevector.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/save_instructions/save_amplitudes.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions
+creating _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions/set_superop.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions/set_statevector.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions/set_unitary.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions/set_matrix_product_state.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions/set_density_matrix.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/set_instructions/set_stabilizer.py -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/VERSION.txt -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/backends/controller_wrappers.cpython-313-x86_64-linux-gnu.so -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/cmake-install/qiskit_aer/library/instructions_table.csv -> _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library
+copied 74 files
+running build_ext
+installing to _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel
+running install
+running install_lib
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer/primitives
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/primitives/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/primitives
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/primitives/estimator.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/primitives
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/primitives/estimator_v2.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/primitives
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/primitives/sampler_v2.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/primitives
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/primitives/sampler.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/primitives
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer/noise
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer/noise/passes
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/passes/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise/passes
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/passes/relaxation_noise_pass.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise/passes
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/passes/local_noise_pass.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise/passes
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/noise_model.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer/noise/device
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/device/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise/device
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/device/models.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise/device
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/device/parameters.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise/device
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors/readout_error.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors/quantum_error.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors/pauli_lindblad_error.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors/pauli_error.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors/standard_errors.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/errors/base_quantum_error.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise/errors
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/noise/noiseerror.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/noise
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/version.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends/name_mapping.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends/backend_utils.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends/statevector_simulator.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends/compatibility.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends/controller_wrappers.cpython-313-x86_64-linux-gnu.so -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends/backendconfiguration.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends/aerbackend.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends/backendproperties.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends/aer_simulator.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends/qasm_simulator.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends/aer_compiler.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/backends/unitary_simulator.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/backends
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/VERSION.txt -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer/utils
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/utils/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/utils
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/utils/noise_transformation.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/utils
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/utils/noise_model_inserter.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/utils
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer/quantum_info
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/quantum_info/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/quantum_info
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer/quantum_info/states
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/quantum_info/states/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/quantum_info/states
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/quantum_info/states/aer_densitymatrix.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/quantum_info/states
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/quantum_info/states/aer_state.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/quantum_info/states
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/quantum_info/states/aer_statevector.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/quantum_info/states
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer/jobs
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/jobs/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/jobs
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/jobs/aerjob.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/jobs
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/jobs/utils.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/jobs
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer/library
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/default_qubits.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer/library/control_flow_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/control_flow_instructions/mark.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/control_flow_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/control_flow_instructions/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/control_flow_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/control_flow_instructions/jump.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/control_flow_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/control_flow_instructions/store.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/control_flow_instructions
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions/save_state.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions/save_clifford.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions/save_probabilities.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions/save_stabilizer.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions/save_expectation_value.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions/save_density_matrix.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions/save_data.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions/save_matrix_product_state.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions/save_unitary.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions/save_superop.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions/save_statevector.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/save_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/save_instructions/save_amplitudes.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/save_instructions
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions/__init__.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions/set_superop.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions/set_statevector.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions/set_unitary.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions/set_matrix_product_state.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions/set_density_matrix.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/set_instructions/set_stabilizer.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library/set_instructions
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/library/instructions_table.csv -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer/library
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/aererror.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer
+copying _skbuild/linux-x86_64-3.13/setuptools/lib.linux-x86_64-cpython-313/qiskit_aer/aerprovider.py -> _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer
+copied 77 files
+running install_egg_info
+running egg_info
+writing qiskit_aer_gpu_cu13.egg-info/PKG-INFO
+writing dependency_links to qiskit_aer_gpu_cu13.egg-info/dependency_links.txt
+writing requirements to qiskit_aer_gpu_cu13.egg-info/requires.txt
+writing top-level names to qiskit_aer_gpu_cu13.egg-info/top_level.txt
+reading manifest file 'qiskit_aer_gpu_cu13.egg-info/SOURCES.txt'
+reading manifest template 'MANIFEST.in'
+warning: no files found matching '*cpp' under directory 'qiskit_aer'
+warning: no previously-included files found matching 'src/third-party/*/lib/*.a'
+warning: no previously-included files found matching 'src/third-party/*/lib/*.lib'
+adding license file 'LICENSE.txt'
+writing manifest file 'qiskit_aer_gpu_cu13.egg-info/SOURCES.txt'
+Copying qiskit_aer_gpu_cu13.egg-info to _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/./qiskit_aer_gpu_cu13-0.18.2-py3.13.egg-info
+running install_scripts
+copied 0 files
+creating _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel/qiskit_aer_gpu_cu13-0.18.2.dist-info/WHEEL
+creating '/kaggle/tmp/work/src/raw-dist/.tmp-4rr7y1pt/qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-linux_x86_64.whl' and adding '_skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel' to it
+adding 'qiskit_aer/VERSION.txt'
+adding 'qiskit_aer/__init__.py'
+adding 'qiskit_aer/aererror.py'
+adding 'qiskit_aer/aerprovider.py'
+adding 'qiskit_aer/version.py'
+adding 'qiskit_aer/backends/__init__.py'
+adding 'qiskit_aer/backends/aer_compiler.py'
+adding 'qiskit_aer/backends/aer_simulator.py'
+adding 'qiskit_aer/backends/aerbackend.py'
+adding 'qiskit_aer/backends/backend_utils.py'
+adding 'qiskit_aer/backends/backendconfiguration.py'
+adding 'qiskit_aer/backends/backendproperties.py'
+adding 'qiskit_aer/backends/compatibility.py'
+adding 'qiskit_aer/backends/controller_wrappers.cpython-313-x86_64-linux-gnu.so'
+adding 'qiskit_aer/backends/name_mapping.py'
+adding 'qiskit_aer/backends/qasm_simulator.py'
+adding 'qiskit_aer/backends/statevector_simulator.py'
+adding 'qiskit_aer/backends/unitary_simulator.py'
+adding 'qiskit_aer/jobs/__init__.py'
+adding 'qiskit_aer/jobs/aerjob.py'
+adding 'qiskit_aer/jobs/utils.py'
+adding 'qiskit_aer/library/__init__.py'
+adding 'qiskit_aer/library/default_qubits.py'
+adding 'qiskit_aer/library/instructions_table.csv'
+adding 'qiskit_aer/library/control_flow_instructions/__init__.py'
+adding 'qiskit_aer/library/control_flow_instructions/jump.py'
+adding 'qiskit_aer/library/control_flow_instructions/mark.py'
+adding 'qiskit_aer/library/control_flow_instructions/store.py'
+adding 'qiskit_aer/library/save_instructions/__init__.py'
+adding 'qiskit_aer/library/save_instructions/save_amplitudes.py'
+adding 'qiskit_aer/library/save_instructions/save_clifford.py'
+adding 'qiskit_aer/library/save_instructions/save_data.py'
+adding 'qiskit_aer/library/save_instructions/save_density_matrix.py'
+adding 'qiskit_aer/library/save_instructions/save_expectation_value.py'
+adding 'qiskit_aer/library/save_instructions/save_matrix_product_state.py'
+adding 'qiskit_aer/library/save_instructions/save_probabilities.py'
+adding 'qiskit_aer/library/save_instructions/save_stabilizer.py'
+adding 'qiskit_aer/library/save_instructions/save_state.py'
+adding 'qiskit_aer/library/save_instructions/save_statevector.py'
+adding 'qiskit_aer/library/save_instructions/save_superop.py'
+adding 'qiskit_aer/library/save_instructions/save_unitary.py'
+adding 'qiskit_aer/library/set_instructions/__init__.py'
+adding 'qiskit_aer/library/set_instructions/set_density_matrix.py'
+adding 'qiskit_aer/library/set_instructions/set_matrix_product_state.py'
+adding 'qiskit_aer/library/set_instructions/set_stabilizer.py'
+adding 'qiskit_aer/library/set_instructions/set_statevector.py'
+adding 'qiskit_aer/library/set_instructions/set_superop.py'
+adding 'qiskit_aer/library/set_instructions/set_unitary.py'
+adding 'qiskit_aer/noise/__init__.py'
+adding 'qiskit_aer/noise/noise_model.py'
+adding 'qiskit_aer/noise/noiseerror.py'
+adding 'qiskit_aer/noise/device/__init__.py'
+adding 'qiskit_aer/noise/device/models.py'
+adding 'qiskit_aer/noise/device/parameters.py'
+adding 'qiskit_aer/noise/errors/__init__.py'
+adding 'qiskit_aer/noise/errors/base_quantum_error.py'
+adding 'qiskit_aer/noise/errors/pauli_error.py'
+adding 'qiskit_aer/noise/errors/pauli_lindblad_error.py'
+adding 'qiskit_aer/noise/errors/quantum_error.py'
+adding 'qiskit_aer/noise/errors/readout_error.py'
+adding 'qiskit_aer/noise/errors/standard_errors.py'
+adding 'qiskit_aer/noise/passes/__init__.py'
+adding 'qiskit_aer/noise/passes/local_noise_pass.py'
+adding 'qiskit_aer/noise/passes/relaxation_noise_pass.py'
+adding 'qiskit_aer/primitives/__init__.py'
+adding 'qiskit_aer/primitives/estimator.py'
+adding 'qiskit_aer/primitives/estimator_v2.py'
+adding 'qiskit_aer/primitives/sampler.py'
+adding 'qiskit_aer/primitives/sampler_v2.py'
+adding 'qiskit_aer/quantum_info/__init__.py'
+adding 'qiskit_aer/quantum_info/states/__init__.py'
+adding 'qiskit_aer/quantum_info/states/aer_densitymatrix.py'
+adding 'qiskit_aer/quantum_info/states/aer_state.py'
+adding 'qiskit_aer/quantum_info/states/aer_statevector.py'
+adding 'qiskit_aer/utils/__init__.py'
+adding 'qiskit_aer/utils/noise_model_inserter.py'
+adding 'qiskit_aer/utils/noise_transformation.py'
+adding 'qiskit_aer_gpu_cu13-0.18.2.dist-info/licenses/LICENSE.txt'
+adding 'qiskit_aer_gpu_cu13-0.18.2.dist-info/METADATA'
+adding 'qiskit_aer_gpu_cu13-0.18.2.dist-info/WHEEL'
+adding 'qiskit_aer_gpu_cu13-0.18.2.dist-info/top_level.txt'
+adding 'qiskit_aer_gpu_cu13-0.18.2.dist-info/RECORD'
+removing _skbuild/linux-x86_64-3.13/setuptools/bdist.linux-x86_64/wheel
+WARNING License classifiers are deprecated.
+!!
+
+        ********************************************************************************
+        Please consider removing the following classifiers in favor of a SPDX license expression:
+
+        License :: OSI Approved :: Apache Software License
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+Successfully built qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-linux_x86_64.whl

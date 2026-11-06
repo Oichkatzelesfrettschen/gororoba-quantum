@@ -1,0 +1,337 @@
+{
+ "break_even_ratio": {
+  "ratio": null,
+  "status": "not-evaluated"
+ },
+ "comparisons": [
+  {
+   "assumptions": [
+    "one label-blind trace-nonincreasing instrument acts on every input",
+    "equal optical attempts per input (uniform priors), since unequal priors raise the six-state value",
+    "the input source emits at most two copies per attempt (Perceval's truncated source model)",
+    "the classical device may postselect on photon number with no acceptance constraint"
+   ],
+   "bound": 0.75,
+   "label": "vetoed-blocks-differ",
+   "margin": 0.037473633432573705,
+   "name": "two-copy"
+  },
+  {
+   "assumptions": [
+    "one label-blind trace-nonincreasing instrument acts on every input",
+    "single-copy inputs: acceptance blind to photon number",
+    "each input's optical attempts lie within the ratio of the modeled profile"
+   ],
+   "bound": 0.705390453,
+   "label": "vetoed-blocks-differ",
+   "margin": 0.08208318043257368,
+   "name": "attempt-box",
+   "ratio": 1.1
+  }
+ ],
+ "homogeneity": {
+  "alpha_per_input": 0.0016666666666666668,
+  "differ": [
+   "+Z",
+   "-Z"
+  ],
+  "tests": {
+   "+X": {
+    "dof": 6,
+    "p_value": 0.532050996888082,
+    "statistic": 5.09214029775843,
+    "status": "consistent"
+   },
+   "+Y": {
+    "dof": 6,
+    "p_value": 0.05226760216796612,
+    "statistic": 12.470043502462124,
+    "status": "consistent"
+   },
+   "+Z": {
+    "dof": 6,
+    "p_value": 1.3404134493548033e-05,
+    "statistic": 32.44522441193991,
+    "status": "differ"
+   },
+   "-X": {
+    "dof": 6,
+    "p_value": 0.0028896029691996374,
+    "statistic": 19.896271397586034,
+    "status": "consistent"
+   },
+   "-Y": {
+    "dof": 6,
+    "p_value": 0.20884170526822407,
+    "statistic": 8.42117267781419,
+    "status": "consistent"
+   },
+   "-Z": {
+    "dof": 5,
+    "p_value": 3.860407425108193e-09,
+    "statistic": 47.82278945641552,
+    "status": "differ"
+   }
+  }
+ },
+ "iterations": [
+  {
+   "accepted": 163,
+   "accepted_per_sample": 0.13583333333333333,
+   "basis": "Z",
+   "block": "A",
+   "compilation_seed": 19918,
+   "correct": 122,
+   "label": "+Z",
+   "nb_shots_used": 2145161,
+   "physical_perf": 7.822561849531373e-05,
+   "rejected": {
+    "excess": 0,
+    "herald": 801,
+    "outside": 2,
+    "pattern": 24,
+    "receiver": 210
+   },
+   "samples": 1200,
+   "wrong": 41
+  },
+  {
+   "accepted": 206,
+   "accepted_per_sample": 0.17166666666666666,
+   "basis": "Z",
+   "block": "A",
+   "compilation_seed": 52848,
+   "correct": 187,
+   "label": "-Z",
+   "nb_shots_used": 2715281,
+   "physical_perf": 6.528364257487992e-05,
+   "rejected": {
+    "excess": 0,
+    "herald": 839,
+    "outside": 8,
+    "pattern": 18,
+    "receiver": 129
+   },
+   "samples": 1200,
+   "wrong": 19
+  },
+  {
+   "accepted": 124,
+   "accepted_per_sample": 0.10333333333333333,
+   "basis": "X",
+   "block": "A",
+   "compilation_seed": 30689,
+   "correct": 101,
+   "label": "+X",
+   "nb_shots_used": 2204789,
+   "physical_perf": 7.836589032953122e-05,
+   "rejected": {
+    "excess": 2,
+    "herald": 926,
+    "outside": 1,
+    "pattern": 18,
+    "receiver": 129
+   },
+   "samples": 1200,
+   "wrong": 23
+  },
+  {
+   "accepted": 100,
+   "accepted_per_sample": 0.08333333333333333,
+   "basis": "X",
+   "block": "A",
+   "compilation_seed": 50293,
+   "correct": 86,
+   "label": "-X",
+   "nb_shots_used": 2089764,
+   "physical_perf": 8.372825381586935e-05,
+   "rejected": {
+    "excess": 1,
+    "herald": 960,
+    "outside": 14,
+    "pattern": 4,
+    "receiver": 121
+   },
+   "samples": 1200,
+   "wrong": 14
+  },
+  {
+   "accepted": 146,
+   "accepted_per_sample": 0.12166666666666667,
+   "basis": "Y",
+   "block": "A",
+   "compilation_seed": 57001,
+   "correct": 122,
+   "label": "+Y",
+   "nb_shots_used": 2202339,
+   "physical_perf": 8.111977101092619e-05,
+   "rejected": {
+    "excess": 2,
+    "herald": 875,
+    "outside": 7,
+    "pattern": 15,
+    "receiver": 155
+   },
+   "samples": 1200,
+   "wrong": 24
+  },
+  {
+   "accepted": 148,
+   "accepted_per_sample": 0.12333333333333334,
+   "basis": "Y",
+   "block": "A",
+   "compilation_seed": 12608,
+   "correct": 109,
+   "label": "-Y",
+   "nb_shots_used": 2191811,
+   "physical_perf": 7.843416047883525e-05,
+   "rejected": {
+    "excess": 2,
+    "herald": 878,
+    "outside": 2,
+    "pattern": 12,
+    "receiver": 158
+   },
+   "samples": 1200,
+   "wrong": 39
+  },
+  {
+   "accepted": 157,
+   "accepted_per_sample": 0.13083333333333333,
+   "basis": "Y",
+   "block": "B",
+   "compilation_seed": 56057,
+   "correct": 112,
+   "label": "-Y",
+   "nb_shots_used": 2301330,
+   "physical_perf": 7.567789148608214e-05,
+   "rejected": {
+    "excess": 1,
+    "herald": 843,
+    "outside": 3,
+    "pattern": 28,
+    "receiver": 168
+   },
+   "samples": 1200,
+   "wrong": 45
+  },
+  {
+   "accepted": 140,
+   "accepted_per_sample": 0.11666666666666667,
+   "basis": "Y",
+   "block": "B",
+   "compilation_seed": 55550,
+   "correct": 127,
+   "label": "+Y",
+   "nb_shots_used": 2086810,
+   "physical_perf": 8.395198525472534e-05,
+   "rejected": {
+    "excess": 0,
+    "herald": 924,
+    "outside": 5,
+    "pattern": 9,
+    "receiver": 122
+   },
+   "samples": 1200,
+   "wrong": 13
+  },
+  {
+   "accepted": 133,
+   "accepted_per_sample": 0.11083333333333334,
+   "basis": "X",
+   "block": "B",
+   "compilation_seed": 595,
+   "correct": 117,
+   "label": "-X",
+   "nb_shots_used": 2181782,
+   "physical_perf": 8.100426798432353e-05,
+   "rejected": {
+    "excess": 1,
+    "herald": 952,
+    "outside": 2,
+    "pattern": 12,
+    "receiver": 100
+   },
+   "samples": 1200,
+   "wrong": 16
+  },
+  {
+   "accepted": 131,
+   "accepted_per_sample": 0.10916666666666666,
+   "basis": "X",
+   "block": "B",
+   "compilation_seed": 59482,
+   "correct": 96,
+   "label": "+X",
+   "nb_shots_used": 2408909,
+   "physical_perf": 7.139633113124972e-05,
+   "rejected": {
+    "excess": 1,
+    "herald": 907,
+    "outside": 3,
+    "pattern": 24,
+    "receiver": 134
+   },
+   "samples": 1200,
+   "wrong": 35
+  },
+  {
+   "accepted": 271,
+   "accepted_per_sample": 0.24046140195208518,
+   "basis": "Z",
+   "block": "B",
+   "compilation_seed": 7821,
+   "correct": 231,
+   "label": "-Z",
+   "nb_shots_used": 3000000,
+   "physical_perf": 5.404319255233015e-05,
+   "rejected": {
+    "excess": 0,
+    "herald": 669,
+    "outside": 2,
+    "pattern": 50,
+    "receiver": 135
+   },
+   "samples": 1127,
+   "wrong": 40
+  },
+  {
+   "accepted": 97,
+   "accepted_per_sample": 0.08083333333333333,
+   "basis": "Z",
+   "block": "B",
+   "compilation_seed": 19846,
+   "correct": 85,
+   "label": "+Z",
+   "nb_shots_used": 2043758,
+   "physical_perf": 8.416034207966395e-05,
+   "rejected": {
+    "excess": 3,
+    "herald": 876,
+    "outside": 0,
+    "pattern": 16,
+    "receiver": 208
+   },
+   "samples": 1200,
+   "wrong": 12
+  }
+ ],
+ "iterations_without_counts": [],
+ "partial": false,
+ "pooled": {
+  "accepted": 1816,
+  "alpha": 0.01,
+  "correct": 1495,
+  "fidelity": 0.823237885462555,
+  "lambda": 0.15640669882347025,
+  "lower_bound": 0.7874736334325737
+ },
+ "rule": "descriptive-v2",
+ "runs": [
+  "2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02",
+  "2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03"
+ ],
+ "schema": "qd-teleportation-analysis-v2",
+ "status": "blocks differ: +Z, -Z",
+ "uncounted_iterations": []
+}

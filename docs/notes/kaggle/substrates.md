@@ -62,7 +62,31 @@ session, each with its own 4-core host or TPU VM. A classical algebra job
 that needs RAM rather than an accelerator gains only from the hosts: a CPU
 or GPU session gives about 30 GiB and 4 cores, so jobs larger than that
 stay on the build host (62 GiB) or an approved cloud VM, and GPU hours spent
-on CPU-only work buy nothing a CPU session lacks.
+on CPU-only work buy nothing a CPU session lacks. The usable ceiling is the
+session cgroup's `memory.max` less `memory.current`, measured at 29.5 GiB
+of headroom on a fresh session ([Managed memory past VRAM](#managed-memory-past-vram)),
+so a job that peaks under about 27 GiB with a 2 GiB margin and finishes
+inside the 12 h run limit fits one CPU session, five at once and unmetered.
+That rule covers the Singular and FLINT stages of the A_5 exceptional-fiber
+program as well as qubit simulation; a Singular `std` is single-threaded
+CPU work, so it goes to a CPU session, never a GPU one. Each such job runs
+under a resource limit set below the ceiling (`ulimit -v` or a cgroup
+`memory.max` from the kernel script) so an overrun ends the job with its
+partial output saved rather than drawing the session's OOM kill. Measured
+peaks of A_5 jobs on the 82 GiB Azure VMs decide placement:
+
+| A_5 job | Peak resident memory | Kaggle CPU session |
+| --- | --- | --- |
+| Chart-5 normalization and Hensel arcs of the E8-bar to VB fiber | 3.2 GiB | fits |
+| Isotropic fiber, membership rank at degree 4 | 18.9 GiB, still rising at 5.5 h | fits so far; settles at completion |
+| E8-bar to N- fiber, membership rank at degree 3 | 21.4 GiB, still rising at 5.1 h | fits so far; settles at completion |
+| W8 fiber, membership rank at degree 3 | 39.0 GiB | exceeds; stays on an 82 GiB VM |
+| X- fiber, degree 2 | 2 GiB (build host) | fits |
+
+The degree-3 and degree-4 rows carry peaks read at the stated elapsed time
+from each job's cgroup `memory.peak`; a row whose job is still running
+records a lower bound, and its final peak decides whether a repeat or a
+neighboring degree moves to Kaggle.
 
 ## Qubit size guide
 
@@ -206,6 +230,66 @@ on a T4 or the build host's RTX 4070 Ti. Measured on the T4 x2 (gate core-451):
   statevector-30 shot. Wide feed-forward work stays a few-shot measurement.
 - A 15-qubit run is decision-gated under the root AGENTS.md rule: an
   approved case names this Kaggle route, the build host, or Tuna-17.
+
+## Managed memory past VRAM
+
+`results/kaggle/2026-10-31T012131Z-gororoba-memory-probe-t4` (kernel
+`probablyeric/memory-probe` version 3, T4 x2 shape, one GPU used)
+
+The kernel was pushed with the `kaggle` CLI rather than `scripts/kaggle_run.py`,
+so the run directory holds the kernel and its output with no submission or
+collection receipt, and the measurement enters no research-state claim; a
+substrate measurement guides placement and carries no scientific result.
+
+The probe measures three memory regimes in turn: host RAM with numpy and
+scipy, device memory with CuPy, and CUDA managed memory
+(`cupy.cuda.malloc_managed`, which calls `cudaMallocManaged`) sized past the
+T4's memory so the driver pages the overflow to host RAM. Each managed size
+runs in its own subprocess, because pages a process frees stay charged to
+the session cgroup until that process exits, and each subprocess starts only
+when the cgroup headroom exceeds its size plus 2 GiB. The pass criterion is
+an exact device-side sum of an array filled with ones, then of the same
+array scaled by two.
+
+| Quantity | Measured |
+| --- | --- |
+| Host | 4 logical CPUs, 31.35 GiB total, 29.5 GiB cgroup headroom |
+| numpy 2.1.3, float64 4096 x 4096 matmul / LU (scipy 1.16.3) | 1.21 s / 0.77 s |
+| T4 memory (CuPy 14.0.1) | 14.56 GiB total, 14 GiB largest single allocation in 1 GiB steps |
+| CuPy float32 4096 x 4096 matmul | 0.048 s |
+| `cudaDevAttrPageableMemoryAccess` | 0: the GPU cannot address ordinary `malloc` memory (heterogeneous memory management needs the open kernel module or ATS) |
+| `cudaDevAttrConcurrentManagedAccess` | 1: managed allocations oversubscribe device memory |
+
+| Managed size | Residence | Fill | Sum | Scale and sum |
+| --- | --- | --- | --- | --- |
+| 4 GiB | device | 1.63 s | 0.11 s | 0.17 s |
+| 8 GiB | device | 1.62 s | 1.52 s | 1.46 s |
+| 12 GiB | device | 2.29 s | 2.20 s | 2.30 s |
+| 14 GiB | device, at the limit | 2.50 s | 2.43 s | 2.56 s |
+| 16 GiB | spilled to host | 3.04 s | 7.02 s | 12.15 s |
+| 20 GiB | spilled | 4.3 s | 8.73 s | 15.73 s |
+| 24 GiB | spilled | 5.4 s | 11.09 s | 19.45 s |
+| 26 GiB | spilled | 6.0 s | 11.41 s | 21.02 s |
+
+Every sum is exact, and no size failed. A pass over a spilled array costs
+about 0.44 s per GiB against 0.17 s per GiB resident, so streaming work
+past device memory runs at roughly a third of resident speed, with no cliff.
+The ceiling of a managed allocation is the cgroup headroom less the margin,
+about 27 GiB; 26 GiB was the largest size tried. A GPU job that holds
+between 14.5 and 27 GiB therefore runs on one T4 through managed memory, and
+for a statevector that is one qubit beyond device memory. Aer's own
+automatic blocking places a 16 GiB state in host memory and draws the OOM
+kill ([T4 x2 GPU kernel](#t4-x2-gpu-kernel)), so an Aer run past one T4
+uses [cache blocking across both GPUs](#cache-blocking-across-both-t4s) rather than relying on
+oversubscription.
+
+Two earlier versions of the probe drew the session's OOM kill and recorded
+nothing past the kill: a guard that read `/proc/meminfo` saw the machine's
+free memory rather than the cgroup limit, and one process that allocated
+and freed every size in turn accumulated the charge of its freed managed
+pages. A kernel script on Kaggle reads `memory.max` and `memory.current`
+from `/sys/fs/cgroup` for its memory guard, saves each step's result as it
+completes, and isolates each large allocation in a subprocess.
 
 ## Small dynamic circuits: CPU against GPU
 

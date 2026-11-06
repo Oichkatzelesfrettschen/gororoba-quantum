@@ -2,7 +2,7 @@
 
 ## Source copy and license
 
-The unchanged [source PDF](https://www.informationalidentityboundary.info/public/paper5.pdf) is retained under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/).
+The unchanged [source PDF](https://www.informationalidentityboundary.info/public/paper5.pdf) is kept in gororoba-documents-public under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/).
 The [source-specific license evidence](https://zenodo.org/api/records/20431754) identifies the grant.
 [SOURCES.json](../../SOURCES.json) binds the source bytes, evidence hash and reading scope.
 
@@ -22,7 +22,7 @@ independent of the repository's own retained QPU evidence.
 - The page links DOI https://doi.org/10.5281/zenodo.20431754.
   The source-rights audit verifies the linked CC BY 4.0 record and the
   deposited PDF against the retained byte count, SHA-256 and record MD5.
-- Retained PDF: [9-page manuscript](../../pdf/levratti-2026-active-stabilizers.pdf),
+- Reading copy in gororoba-documents-public: [9-page manuscript](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/mathematics/cayley-dickson/levratti-2026-active-stabilizers.pdf),
   390731 bytes, retrieved 12 October 2026 UTC; SHA-256
   `7bd01b5fda24b2de56b10bf9404efaa968e48d467350f1b8f361ef9ed36c3a9b`.
 - The earlier page-only assessment identifies HTML SHA-256

@@ -87,7 +87,8 @@ and stop with a named error under an interpreter that lacks it:
   and JAX fixed; `pin_groups.json` records what installed. Every bundle
   carries the usage guides in `KERNEL_DOCS` (docs/notes/kaggle,
   docs/notes/packages, docs/notes/quantum-tools and the Qiskit ecosystem
-  audit). A `Tpu*` machine is pushed as a notebook with latest image
+  audit), less the captured `site/` and `cli/` pages and the wheel build
+  `recipes/`, which the kernel never reads (`KERNEL_DOC_CAPTURES`). A `Tpu*` machine is pushed as a notebook with latest image
   pinning, no `docker_image` and no notebook `kaggle` block, with the CPU
   build of Aer; batch pushes have not reached a TPU (next section).
 - `status RUN_DIR` and `collect RUN_DIR` poll the kernel and download the
@@ -232,7 +233,7 @@ id:
 ```
 
 The script calls the MCP server over HTTP with the bearer header that
-`~/.config/shell/kaggle-mcp-headers.sh` prints, so it needs no MCP tools in
+the Kaggle MCP header helper prints, so it needs no MCP tools in
 the agent session; a session with the Kaggle MCP loaded can call
 `cancel_notebook_session` directly with the same id. The version moves to
 CANCEL_REQUESTED, then CANCEL_ACKNOWLEDGED, and the quota's reserved time

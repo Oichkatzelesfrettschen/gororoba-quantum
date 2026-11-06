@@ -2,7 +2,7 @@
 
 This note records the Python packages installed on the build host for the
 project in [the AWS account note](README.md). Credits, always-free bands, and
-the five activity rewards stay in [free-plan-usage.md](free-plan-usage.md).
+the five activity rewards are recorded in the private gororoba-infrastructure repository.
 The recipes themselves live outside this repository, in
 `~/Github/PKGBUILDs`, with the build plan in
 `~/Github/PKGBUILDs/aws-python-plan.md`.
@@ -1685,6 +1685,6 @@ service functions, `pyathena.connect`, `redshift_connector.connect`,
 `awslocal`, `SecretCache`, `provide_token`, `SchemaRegistryClient`,
 `EncryptionSDKClient` with a KMS provider, `LocalSimulator` pointed at
 `braket.aws`, `sagemaker.core` job methods, and `localstack` start are
-service or daemon calls. On this project they follow the free-plan rules in
-[free-plan-usage.md](free-plan-usage.md). Braket's service API, including
+service or daemon calls. On this project they follow the account's free-plan rules, recorded in
+the private gororoba-infrastructure repository. Braket's service API, including
 device search, is denied. The local simulator is the Braket path that ran.

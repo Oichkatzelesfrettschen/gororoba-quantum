@@ -1,0 +1,20 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=10&type=uint16",
+ "retrieved_utc": "2026-10-31T051136Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"10\", \"data\": [25506, 59555, 30521, 43387, 59603, 13108, 18076, 53193, 3029, 46479]}",
+ "raw_sha256": "dd39d690a67f1f1e5fa72da0859585318d089964d9e7ab05b23bdd1b69c3e4a6",
+ "type": "uint16",
+ "values": [
+  25506,
+  59555,
+  30521,
+  43387,
+  59603,
+  13108,
+  18076,
+  53193,
+  3029,
+  46479
+ ]
+}

@@ -1,0 +1,8 @@
+XpmNm_q germ_dim=4 base_primes=1 base_dim=3 base_equals_b9=1 residual_primes=1 residual_dim=1 residual_equals_vb=1
+XmmNp_q germ_dim=4 base_primes=1 base_dim=3 base_equals_b9=1 residual_primes=1 residual_dim=1 residual_equals_vb=1
+B9mNm_q germ_dim=3 base_primes=1 base_dim=0 base_equals_b9=0
+B9mNp_q germ_dim=3 base_primes=1 base_dim=0 base_equals_b9=0
+XpmVB_q germ_dim=3 base_primes=1 base_dim=2 base_equals_b9=1 residual_primes=1 residual_dim=0 residual_equals_vb=1
+XmmVB_q germ_dim=3 base_primes=1 base_dim=2 base_equals_b9=1 residual_primes=1 residual_dim=0 residual_equals_vb=1
+W8mVB_q germ_dim=5 base_primes=1 base_dim=2 base_equals_b9=1 residual_primes=1 residual_dim=0 residual_equals_vb=1
+IsomVB_q germ_dim=4 base_primes=1 base_dim=2 base_equals_b9=1 residual_primes=1 residual_dim=0 residual_equals_vb=1

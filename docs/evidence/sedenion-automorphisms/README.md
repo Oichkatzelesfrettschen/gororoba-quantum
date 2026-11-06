@@ -17,7 +17,7 @@ evaluates from the integer pair tower of
 | [gresnigt_table5_printed.json](gresnigt_table5_printed.json) | the 11 printed cells and their exchanged partners, transcribed from page 54 of arXiv 2609.10569v1 (PDF SHA-256 in the record) |
 | [upstream/gresnigt-table5-erratum.md](upstream/gresnigt-table5-erratum.md) | the erratum report for the author |
 
-The `rocq-replay` job of ci.yml replays only the bundles that carry a `replay_rocq.sh`, so CI never recompiles
+The `rocq` job of proofs.yml replays only the bundles that carry a `replay_rocq.sh`, so CI never recompiles
 `TowerTable.v`; the test binds `cd_core` to the retained `tower_table.txt`. A change to
 `CdImaginarySumConference.v` or `CdTowerBasisSign.v` reruns the script below by hand.
 

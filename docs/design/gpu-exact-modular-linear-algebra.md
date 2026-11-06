@@ -166,10 +166,75 @@ kernels. Nsight Compute 2026.3 profiles the base-case elimination kernel.
 
 ## Delivery
 
-The code starts as a Python package (`numpy`, `torch` for `_int_mm` and `_scaled_mm`, `cupy` for `RawKernel`,
-prefetch and advise) under `~/Github`, with a test suite against FLINT and the measurement probes above. The
-replays import it as a pinned dependency. Publishing to PyPI waits for the owner's decision on name, license and
-contents. A Rust port fits `gororoba-open`, which already depends on `cudarc` 0.19 (cuBLAS, cuSOLVER, NVRTC).
+The measured code exists as probe scripts outside every repository, in the build cache
+`~/.cache/gororoba-quantum/a5-fiber-runs/probe/`, with copies of the final three in `~/.cache/gororoba-quantum/gpu-probes/`;
+no package under `~/Github` exists and no commit carries the code. The scripts that back the numbers above, by sha256
+prefix:
+
+| Script | sha256 prefix | Content |
+| --- | --- | --- |
+| `pluq.py` | f1f494dae86adbf6 | Layer 3: fused base-case `RawKernel`, recursive TRSM and PLUQ, rank against FLINT |
+| `modgemm13.py` | 390655d760c0543b | Layer 1 and 2: four-GEMM base-256 product, device digit cache, pinned staging, result arena |
+| `modgemm.py` to `modgemm12t.py` | (12 files) | the earlier product and HMM variants the measurements step through |
+| `int8_modgemm.py`, `gpu_types.py`, `fp8_uvm_probe.py`, `faulttest.py` | 63ea6f8352c711ab, aba1a61885d819f1, a0a7d75aa8334057, 61974f967a02be7a | number-type throughput, FP8 and UVM probes, first-touch fault rate |
+
+The library still needs a home with a test suite against FLINT; the replays then import it as a pinned dependency.
+A Rust port fits `gororoba-open`, which already depends on `cudarc` 0.19 (cuBLAS, cuSOLVER, NVRTC). Publishing to
+PyPI waits for the owner's decision on name, license and contents.
+
+## Second device: RTX 4090 Laptop GPU under WSL
+
+The workstation's GPU (driver API on 2026-11-01: 16,375 MiB, compute capability 8.9, 76 SMs, driver 13.3) reports
+`CU_DEVICE_ATTRIBUTE_CONCURRENT_MANAGED_ACCESS = 0` and `CU_DEVICE_ATTRIBUTE_PAGEABLE_MEMORY_ACCESS = 0` under WSL,
+against 1 and 1 on the build host's RTX 4070 Ti. WSL therefore gives no HMM access to pageable memory, and the GPU
+and the CPU cannot touch a managed allocation at the same time. Managed allocations still oversubscribe the device: a
+20 GiB `cuMemAllocManaged` buffer took a full device memset and a CPU read-back in 17.4 s (infrastructure record
+`hosts/alienware.md`). Measured on 2026-11-02 (driver 610.74, WSL 3.0.3, kernel 6.18.54, Ubuntu 26.04): the attributes stand
+(`PAGEABLE_MEMORY_ACCESS = 0`, `CONCURRENT_MANAGED_ACCESS = 0`, `MANAGED_MEMORY = 1`, `HOST_REGISTER_SUPPORTED = 1`),
+as NVIDIA's WSL user guide states for concurrent access and full managed memory (section 5.1). Both Layer 2 candidates
+work. A 20 GiB managed buffer takes a host touch in 1.0 s, a device memset in 2.4 s and reads back correctly, and a
+2 GiB `malloc` buffer registered with `cuMemHostRegister` is written by the device in 0.62 s and seen by the host.
+The driver library is the only CUDA component the guest ships, but a user-space environment (torch 2.14.1+cu130, CuPy
+14.2.0 on CUDA runtime 13.2, python-flint 0.9.0) installs from wheels without a system toolkit, and Ubuntu 26.04's
+archive carries `cuda-toolkit-13-1` (13.1.1) with no driver, kernel module or DKMS package among its 89 packages.
+With that environment the probes reproduce exactly: the PLUQ rank matches FLINT on all 95 verify cases (sizes 256,
+1024 and 2048, every class and shape, modulo 32009), and at `n = 8192` and `16384` it takes 0.164 s and 0.584 s
+against 35.7 s and 248 s for FLINT on that host. The device-digit-cache product is exact at `n = 16384` (0.73 s,
+12.1 TOP/s), `n = 32768` (5.14 s, 13.7 TOP/s) and `n = 49152`, whose 18 GiB of operands exceed the device and force
+1,754 tile evictions (25.7 s, 9.2 TOP/s). Explicit residency is therefore the Layer 2 route on this device.
+
+## Where the time goes in the fiber ranks
+
+The engine's own stage times (`fiber_rank_v6.py`, `seconds` field of every receipt) decide which stage a GPU can
+shorten. In quotient mode the Singular product export takes 99 percent of the wall time (X- degree 5 at N = 17:
+10,250 of 10,313 s), which no GPU stage touches. In raw mode the linear-algebra closure takes 60 to 97 percent
+(E8-bar -> N- degree 3 at N = 11: 4,397 of 4,526 s, 34 GB resident), and that closure is the stage the exact PLUQ
+replaces.
+
+Engine v7 in quotient mode on E8-bar -> N- at degree 4 (laptop under WSL, `seconds` of each record) keeps that split:
+
+| N | Singular export | products | closure | share of linear algebra | rank r_N |
+| --- | --- | --- | --- | --- | --- |
+| 12 | 4,268 s | 243 s | 46 s | 6.3 % | 357 |
+| 13 | 11,708 s | 621 s | 93 s | 5.7 % | 440 |
+| 14 | 28,204 s | 1,654 s | 177 s | 6.1 % | 440 |
+
+Removing the linear algebra entirely bounds the speedup at 30,053 / 28,204 = 1.066 at N = 14 while the export runs
+as one Singular process (engines v7 and v8), whose time grows by 2.7x and then 2.4x per unit N. That export divides:
+it computes the standard basis of J + m^N and then one independent normal-form table per variable. At N = 15 the
+standard basis took 6,919 s and the first table a further 6,961 s (laptop file times), with Singular at 450 MB.
+Engine v9 (`fiber_rank_v9.py`) runs the tables as separate processes, and its parsed export equals the serial one
+(r_N = 268 from both at N = 11), so the export wall time falls toward the standard basis plus the slowest table and
+the linear-algebra share rises with it. The table times vary by a factor of 6 across variables at N = 11, so the
+gain at N = 15 is set by its slowest table, not yet measured. The quotient blocks hold about 5,800 columns at N = 14, where the measured PLUQ is
+roughly 40 times faster than FLINT, but the closure is 0.6 % of the wall time. Raw mode, the form whose closure the
+GPU does replace, needs the monomial space of degree below N in 9 variables: 92,378 monomials at N = 11 (34 GB
+resident) and 497,420 at N = 14, so a dense closure there grows by the square of that 5.4x ratio, to the order of a
+terabyte (estimate). The quotient-mode peak, 17.9 GiB at N = 14, also exceeds the 12 GiB card, so a device path
+would run through Layer 2, whose prefetch issue takes 57 % of the profiled CUDA API time. The workstation's RTX 4090
+(16 GiB) takes that spill under WSL through explicit residency rather than HMM, as the next section measures. The GPU
+pays where linear algebra dominates: raw-mode closures at moderate N (the 97 % case above), Macaulay-matrix degree
+ranks, and the exact kernel computations that test a named set of candidate relations.
 
 ## Order
 

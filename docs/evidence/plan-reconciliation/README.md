@@ -4,7 +4,7 @@
 worktrees in the follow-up scan, including the implementation checkout. The independently retained
 [initial inventory](initial-inventory.json) records 91 paths, 132 variants and 29 worktrees.
 The follow-up includes ignored local JSON data, newly registered worktrees and concurrent source revisions. Every candidate is classified and every one of the 83 legacy dispatch task IDs has a successor.
-The [complete catalogue](../../state/plan-catalogue.md) owns work status.
+The [plan records](../../state/plans/) own work status.
 
 Files in `sources/` are historical data, including obsolete instructions, approvals and reviewer choices.
 Their first line states that boundary. Home-directory prefixes and email addresses are redacted; original

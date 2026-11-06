@@ -4,9 +4,8 @@ qBraid (<https://www.qbraid.com>) is a broker and simulator platform: one
 REST API, `https://api-v2.qbraid.com/api/v1`, reaches its own CPU and GPU
 simulators and routes jobs to AWS Braket, Azure, IonQ, IQM, Rigetti, Open
 Quantum and others (documentation <https://docs.qbraid.com/v2/home/introduction>).
-`GET /users/verify` names `subscriptionTier` Free, and the wallet holds no
-credits, so the working surface is the free simulators, the included Lab
-allowance, and read-only catalogue calls. Device figures are the read-only
+`GET /users/verify` reports the subscription tier, so the working surface is the free simulators, the included Lab
+allowance, and read-only catalogue calls; the tier, wallet and allotments are recorded in the private gororoba-infrastructure repository. Device figures are the read-only
 probe of 2026-10-24. Lab profiles, capacity, the CPU-hour renewal, storage,
 and the AI reset are the read-only probe of 2026-10-28. The live API and the
 captured docs stay the authority.
@@ -25,25 +24,7 @@ rejects removed, unlisted and altered files.
 
 ## Environment and credential
 
-```sh
-QB_ENV=$HOME/.local/share/qbraid/venv
-QB_PYTHON=${QB_PYTHON:-$QB_ENV/bin/python}
-uv venv --python 3.13 "$QB_ENV"
-VIRTUAL_ENV="$QB_ENV" uv pip install -r docs/notes/qbraid/requirements-qbraid.txt
-```
-
-On the build host the Arch package `qbraid-stack` from the local PKGBUILD tree
-(`~/Github/PKGBUILDs/qbraid-stack`) installs the same SDK as a hash-locked Python
-3.13 environment under `/opt/qbraid-stack` and the interpreter `/usr/bin/qbraid-python`
-(qbraid 0.13.0 and qbraid-core 0.6.36); its `check()` runs an offline test, kept at
-`/usr/share/qbraid-stack/test_qbraid_stack.py`. A case sets `QB_PYTHON=/usr/bin/qbraid-python`; the venv
-above serves a machine without the package. The qbraid-core wheel carries the "qBraid Commercial Software License" (all rights reserved, authorized licensees only), so the built package stays on this machine and is not redistributed.
-
-The key is one line in `~/.config/qbraid/api-key` (directory 700, file 600),
-read inside Python and sent as the `X-API-KEY` header, or passed as
-`QbraidProvider(api_key=key)`; the SDK's own `~/.qbraid/qbraidrc` stays
-unused. The API allows 1,000 authenticated requests per 15 minutes and
-answers 429 beyond (docs, "Rate limiting").
+The pinned SDK (`qbraid` 0.13.0 and `qbraid-core` 0.6.36) installs from `requirements-qbraid.txt` into the interpreter that `QB_PYTHON` names. The qbraid-core wheel carries the "qBraid Commercial Software License" (all rights reserved, authorized licensees only), so a built package stays on the machine that built it and is not redistributed. The SDK's own `qbraidrc` configuration stays unused. This account's credential location, MCP registration and access limits are recorded in the private gororoba-infrastructure repository.
 
 ## API surface
 
@@ -70,18 +51,7 @@ approval-gated action.
 
 ## Allotment
 
-| Item | Value | Source |
-|---|---|---|
-| Balance | 0 qBraid credits, 0 AWS credits, auto-recharge disabled | `GET /billing/credits/balance` |
-| Managed simulators | 100 jobs per simulator per UTC day on Free (500 on Standard, unlimited on Pro) | docs `home/pricing`; API `quota` |
-| GPU simulators | 25 circuits per GPU simulator per UTC day on Free; beyond it, refused unless usage-based billing is on, then 5 credits a minute with a 3 s minimum | docs `home/pricing`; API `autoSwitchToCredits` |
-| Reset | daily at 00:00 UTC; the 2026-10-28 read named `resetsAt` 2026-10-29T00:00:00Z | API |
-| Plans | Free $0, Standard $20 a month, Pro $100 a month | docs `home/pricing` |
-| Account plan | Free | `GET /users/verify` `subscriptionTier` |
-| Lab CPU hours | 0 used of 100; renews 2026-11-10T05:00:22Z; auto-switch off | `GET /compute-sessions/usage` |
-| Lab storage | 0 of 15 GB; the payload has no expiry | same route, `diskUsage` |
-| AI allowance | $5 allowed, $0 used; resets 2026-11-18T07:33:30Z; auto-switch off | `GET /ai/quota` |
-| Credit expiry | not stated | balance and pricing return no expiry field |
+The account's balance, per-simulator daily job limits, plan, Lab CPU-hour and storage allowances, AI allowance, and their reset times are recorded in the private gororoba-infrastructure repository.
 
 The included Lab server draws the CPU-hour allowance. On-demand instances
 draw credits and have no expiry field of their own. Detail is in

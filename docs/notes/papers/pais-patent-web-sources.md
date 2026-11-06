@@ -5,8 +5,8 @@
 Retrieved 2026-10-25 between 19:37:58Z and 19:47:39Z. Each SHA-256 identifies the bytes served at
 retrieval; Google Patents and the news pages are mutable, so the hash names the inspected copy only.
 The journal records are Crossref DOI metadata. The arXiv PDF of Ejlli et al. is the version-pinned v2,
-1595078 bytes. The journal version of record of Ejlli et al. is retained as
-[docs/pdf/s10052-019-7542-5.pdf](s10052-019-7542-5.md), and the five patent documents have official PDFs
+1595078 bytes. The journal version of record of Ejlli et al. is kept in gororoba-documents-public as
+[s10052-019-7542-5.pdf](s10052-019-7542-5.md), and the five patent documents have official PDFs
 cached for reading under external-only decisions ([Mapping](#mapping-to-this-repository)); no PDF of the Pais
 journal papers is retained. The JASON report JSR-08-506
 (Eardley et al., October 2008) on high-frequency gravitational waves returned an HTTP 202 challenge with an

@@ -1,0 +1,2216 @@
+{
+ "boundary": "finite-field results at the named prime; a characteristic-zero statement needs a specialization argument; equality in finitely many degrees leaves F(I) = k[y]/K2 open",
+ "fibers": [
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 21,
+     "lower_bounds": [
+      {
+       "N": 5,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "ab6dd0ef6281b0d0",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 21,
+       "source": "degree-one/d1-e8-np-32009.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 2,
+     "k2_count": 83,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1
+      ],
+      "fiber": "E8-bar -> N-",
+      "flip": [
+       "t8",
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 3,
+     "k2_count": 225,
+     "lower_bounds": [
+      {
+       "N": 11,
+       "engine": "130f35904d21f5b4",
+       "header": "a8f90b44267c302e",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 225,
+       "source": "a5-failed-runs/falsify/laptop/v6/e8np_d3_p1_raw_v6.jsonl"
+      }
+     ],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1
+      ],
+      "fiber": "E8-bar -> N-",
+      "flip": [
+       "t8",
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 4,
+     "k2_count": 495,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1
+      ],
+      "fiber": "E8-bar -> N-",
+      "flip": [
+       "t8",
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 5,
+     "k2_count": 952,
+     "lower_bounds": [],
+     "status": "open"
+    },
+    {
+     "d": 6,
+     "k2_count": 1666,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "E8-bar -> N+",
+   "k2_sources": [
+    {
+     "path": "working/runs/e8_a2/e8_k2.rel",
+     "sha256": "bbe9bb734af739d735ca4ca4938b85fce9ed87c07b7373ec5353c47335be0652"
+    }
+   ],
+   "prime": 32009,
+   "upper_bound_d_ge_2": "none verified"
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 21,
+     "lower_bounds": [
+      {
+       "N": 5,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "966c836537e2ef8e",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 21,
+       "source": "degree-one/d1-e8-np-32029.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 2,
+     "k2_count": 83,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-e8-d2/e8np_p2/d2/receipt-d2.json",
+       "rank": 83,
+       "sha256": "6669e232bf332a537ed94c3411550da89b2b8bd1bcdaa81b57ae160496407d81"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 3,
+     "k2_count": 225,
+     "lower_bounds": [
+      {
+       "N": 11,
+       "engine": "130f35904d21f5b4",
+       "header": "fefdacab7fff6ea7",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 225,
+       "source": "a5-failed-runs/falsify/e8np_d3_p2_v6.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 4,
+     "k2_count": 495,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1
+      ],
+      "fiber": "E8-bar -> N-",
+      "flip": [
+       "t8",
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 5,
+     "k2_count": 952,
+     "lower_bounds": [],
+     "status": "open"
+    },
+    {
+     "d": 6,
+     "k2_count": 1666,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "E8-bar -> N+",
+   "k2_sources": [
+    {
+     "path": "working/distribute/out/a5-e8-d2/e8np_p2/d2/relations-upto-d2.rel",
+     "sha256": "3c2294f7dee43a1471cec20a7af5c259741b50a02216bbe92074d127dc34694a"
+    }
+   ],
+   "prime": 32029,
+   "upper_bound_d_ge_2": [
+    {
+     "receipt": "working/distribute/out/a5-e8-d2/e8np_p2/d2/receipt-d2.json",
+     "sha256": "6669e232bf332a537ed94c3411550da89b2b8bd1bcdaa81b57ae160496407d81"
+    }
+   ]
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 21,
+     "lower_bounds": [
+      {
+       "N": 5,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "7d3521d0e8026e6f",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 21,
+       "source": "degree-one/d1-e8-nm-32009.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 2,
+     "k2_count": 83,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-e8-d2/e8nm_p1/d2/receipt-d2.json",
+       "rank": 83,
+       "sha256": "7a4e45b11a1e4ab56d944d04e36d9e4440dfc7a413bece48b4374c2f4cfecfd7"
+      },
+      {
+       "N": 8,
+       "engine": "130f35904d21f5b4",
+       "header": "7d3521d0e8026e6f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 83,
+       "source": "a5-failed-runs/reviews/codex-reaudit/e8-control-N8.jsonl"
+      },
+      {
+       "N": 8,
+       "engine": "130f35904d21f5b4",
+       "header": "f6ad8f9c7cc69b3f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 83,
+       "source": "a5-failed-runs/falsify/receipts-v6.jsonl"
+      },
+      {
+       "N": 8,
+       "engine": "130f35904d21f5b4",
+       "header": "f6ad8f9c7cc69b3f",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 83,
+       "source": "a5-failed-runs/falsify/receipts-v6.jsonl"
+      },
+      {
+       "N": 8,
+       "engine": "7849cbc71ccf1787",
+       "header": "7d3521d0e8026e6f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 83,
+       "source": "a5-failed-runs/v11-build/out/e8nm-p1-d2-n8.v11.json"
+      },
+      {
+       "N": 8,
+       "engine": "939b394c3c7459b5",
+       "header": "7d3521d0e8026e6f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 83,
+       "source": "a5-failed-runs/v10-compare/out/e8nm-p1-d2-n8.v10b.json"
+      },
+      {
+       "N": 8,
+       "engine": "a197799d97287b78",
+       "header": "7d3521d0e8026e6f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 83,
+       "source": "a5-failed-runs/falsify/v7_gates.jsonl"
+      },
+      {
+       "N": 8,
+       "engine": "d4441012e6984663",
+       "header": "7d3521d0e8026e6f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 83,
+       "source": "a5-failed-runs/v10-compare/out/e8nm-p1-d2-n8.v9.json"
+      },
+      {
+       "N": 8,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "7d3521d0e8026e6f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 83,
+       "source": "a5-failed-runs/falsify/v8_gates.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 3,
+     "k2_count": 225,
+     "lower_bounds": [
+      {
+       "N": 11,
+       "engine": "130f35904d21f5b4",
+       "header": "d9d7a00ee18d171b",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 225,
+       "source": "a5-failed-runs/falsify/e8nm_d3_v6.jsonl"
+      },
+      {
+       "N": 11,
+       "engine": "130f35904d21f5b4",
+       "header": "d9d7a00ee18d171b",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 225,
+       "source": "a5-failed-runs/falsify/laptop/v6/e8nm_d3_raw_v6.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 4,
+     "k2_count": 495,
+     "lower_bounds": [
+      {
+       "N": 15,
+       "engine": "7849cbc71ccf1787",
+       "header": "7d3521d0e8026e6f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 495,
+       "source": "n15-laptop/e8nm_d4_n15_p32009_v11.json"
+      },
+      {
+       "N": 15,
+       "engine": "d4441012e6984663",
+       "header": "7d3521d0e8026e6f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 495,
+       "source": "n15-laptop/e8nm_d4_n15_p32009_v9m.json"
+      },
+      {
+       "N": 16,
+       "engine": "7849cbc71ccf1787",
+       "header": "7d3521d0e8026e6f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 495,
+       "source": "n16-laptop/e8nm_d4_n16_p32009.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 5,
+     "k2_count": 952,
+     "lower_bounds": [],
+     "status": "open"
+    },
+    {
+     "d": 6,
+     "k2_count": 1666,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "E8-bar -> N-",
+   "k2_sources": [
+    {
+     "path": "working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-upto-d2.rel",
+     "sha256": "e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6"
+    }
+   ],
+   "prime": 32009,
+   "upper_bound_d_ge_2": [
+    {
+     "receipt": "working/distribute/out/a5-e8-d2/e8nm_p1/d2/receipt-d2.json",
+     "sha256": "7a4e45b11a1e4ab56d944d04e36d9e4440dfc7a413bece48b4374c2f4cfecfd7"
+    }
+   ]
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 21,
+     "lower_bounds": [
+      {
+       "N": 5,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "48bdcbe0fa17d04c",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 21,
+       "source": "degree-one/d1-e8-nm-32029.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 2,
+     "k2_count": 83,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-e8-d2/e8nm_p2/d2/receipt-d2.json",
+       "rank": 83,
+       "sha256": "5573ef662aef6fba9be48eb382651c0f05911058c01f91564920e136a8e9c629"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 3,
+     "k2_count": 225,
+     "lower_bounds": [
+      {
+       "N": 11,
+       "engine": "130f35904d21f5b4",
+       "header": "2f8c9727fc2e4484",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 225,
+       "source": "a5-failed-runs/falsify/laptop/v6/e8nm_d3_p2_raw_v6.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 4,
+     "k2_count": 495,
+     "lower_bounds": [
+      {
+       "N": 15,
+       "engine": "d4441012e6984663",
+       "header": "48bdcbe0fa17d04c",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 495,
+       "source": "n15-laptop/e8nm_d4_n15_p32029_v9m.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 5,
+     "k2_count": 952,
+     "lower_bounds": [],
+     "status": "open"
+    },
+    {
+     "d": 6,
+     "k2_count": 1666,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "E8-bar -> N-",
+   "k2_sources": [
+    {
+     "path": "working/distribute/out/a5-e8-d2/e8nm_p2/d2/relations-upto-d2.rel",
+     "sha256": "bfd7470cfa57467ea510e8b89a34bcefed60ebb86dbf423c22cef945d2ed831b"
+    }
+   ],
+   "prime": 32029,
+   "upper_bound_d_ge_2": [
+    {
+     "receipt": "working/distribute/out/a5-e8-d2/e8nm_p2/d2/receipt-d2.json",
+     "sha256": "5573ef662aef6fba9be48eb382651c0f05911058c01f91564920e136a8e9c629"
+    }
+   ]
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 10,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/build/logs/mine/vb1.json/receipt-d1.json",
+       "rank": 10,
+       "sha256": "269dc4eaa6a738e2d5d631fa12d03d68e7ca594a9a2c7cca98756493b1fff387"
+      },
+      {
+       "method": "membership rank",
+       "path": "working/build/logs/part-b/vb/receipt-d1.json",
+       "rank": 10,
+       "sha256": "2933e3121fd642c7f558c9879a2894e4a2107dac2e0de39226cf917364fbe787"
+      },
+      {
+       "method": "membership rank",
+       "path": "working/build/logs/part-b/vb2/receipt-d1.json",
+       "rank": 10,
+       "sha256": "58610d12dabcbafcd8e3d7b84acb2b679ca69ab6a0af15b83dab372a1869d8ed"
+      },
+      {
+       "N": 5,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "4dbcb4676ca0821a",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 10,
+       "source": "degree-one/d1-e8-vb-32009.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 2,
+     "k2_count": 34,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/build/logs/mine/vb2.json/receipt-d2.json",
+       "rank": 34,
+       "sha256": "d7619b574fc725d62b19f277c17ba174479dc74d111e0817f0f825dd986fc28d"
+      },
+      {
+       "method": "membership rank",
+       "path": "working/build/logs/part-b/vb/receipt-d2.json",
+       "rank": 34,
+       "sha256": "b70ed7818a3bf98da14ed556db4f98a8892ecfa942969b695ac4a2638f3dc397"
+      },
+      {
+       "method": "membership rank",
+       "path": "working/build/logs/part-b/vb2/receipt-d2.json",
+       "rank": 34,
+       "sha256": "8d53883826eb86c679796ccc2df0a9330060a95e1979be0d96f2d6dd0b63cc04"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 3,
+     "k2_count": 80,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/build/logs/mine/vb3.json/receipt-d3.json",
+       "rank": 80,
+       "sha256": "961de8345458d9688f6c29f20e4bb5ea9d0c38d837ebf5f163ad99ada4b97450"
+      },
+      {
+       "method": "membership rank",
+       "path": "working/build/logs/part-b/vb/receipt-d3.json",
+       "rank": 80,
+       "sha256": "8f6717f4cf336d320c071e31d3aef3f5e1e766df0489c2b181cd0a5e016782e7"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 4,
+     "k2_count": 155,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/build/logs/mine/vb4/receipt-d4.json",
+       "rank": 155,
+       "sha256": "261b1fd7339b728db5e4c6e9f3970d4b1ca177c68bdca20a9f377636f541b1d9"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 5,
+     "k2_count": 266,
+     "lower_bounds": [
+      {
+       "N": 16,
+       "engine": "a197799d97287b78",
+       "header": "4dbcb4676ca0821a",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 266,
+       "source": "a5-failed-runs/falsify/laptop/v7/vb_d5_v7.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 6,
+     "k2_count": 420,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "E8-bar -> VB",
+   "k2_sources": [
+    {
+     "path": "working/runs/e8vb_a2/k2.rel",
+     "sha256": "977af3c02824113271dc94ae36d5c2c862af6d36a46bf5da23f476a30b39d0ed"
+    }
+   ],
+   "prime": 32009,
+   "upper_bound_d_ge_2": [
+    {
+     "receipt": "working/build/logs/mine/vb2.json/receipt-d2.json",
+     "sha256": "d7619b574fc725d62b19f277c17ba174479dc74d111e0817f0f825dd986fc28d"
+    },
+    {
+     "receipt": "working/build/logs/part-b/vb/receipt-d2.json",
+     "sha256": "b70ed7818a3bf98da14ed556db4f98a8892ecfa942969b695ac4a2638f3dc397"
+    },
+    {
+     "receipt": "working/build/logs/part-b/vb2/receipt-d2.json",
+     "sha256": "8d53883826eb86c679796ccc2df0a9330060a95e1979be0d96f2d6dd0b63cc04"
+    }
+   ]
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    5
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 10,
+     "lower_bounds": [
+      {
+       "N": 5,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "6b3cea4923b4e0e2",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 10,
+       "source": "degree-one/d1-e8-vb-32029.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 2,
+     "k2_count": 34,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-p2-small/vb_p2/d2/receipt-d2.json",
+       "rank": 34,
+       "sha256": "2869b180c8c683e31a24dc5ad11bd5de7dc8b990c36eeb33689517a7be05e00c"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 3,
+     "k2_count": 80,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-p2-small/vb_p2/d3/receipt-d3.json",
+       "rank": 80,
+       "sha256": "4dff1bb77aff8891f34e2ec60fff5dcd51331676a15b56743982e18de3faa9a7"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 4,
+     "k2_count": 155,
+     "lower_bounds": [],
+     "status": "open"
+    },
+    {
+     "d": 5,
+     "k2_count": 266,
+     "lower_bounds": [
+      {
+       "N": 16,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "6b3cea4923b4e0e2",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 266,
+       "source": "d5-p2/vb_d5_n16.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 6,
+     "k2_count": 420,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "E8-bar -> VB",
+   "k2_sources": [
+    {
+     "path": "working/distribute/out/a5-p2-small/vb_p2/d2/relations-upto-d2.rel",
+     "sha256": "e65cbd06cbcef44195409f776541d28e0f7a39f50347eea54b21a15f7c5a95ac"
+    }
+   ],
+   "prime": 32029,
+   "upper_bound_d_ge_2": [
+    {
+     "receipt": "working/distribute/out/a5-p2-small/vb_p2/d2/receipt-d2.json",
+     "sha256": "2869b180c8c683e31a24dc5ad11bd5de7dc8b990c36eeb33689517a7be05e00c"
+    }
+   ]
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 17,
+     "lower_bounds": [
+      {
+       "N": 5,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "a2043188e06aed26",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 17,
+       "source": "degree-one/d1-iso-np-32009.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 2,
+     "k2_count": 85,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-iso-d4/iso_p1/d2/receipt-d2.json",
+       "rank": 85,
+       "sha256": "ddf02dd155427c71913356f0425f32b74c5914c5b76636e049ac987e7bd88082"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 3,
+     "k2_count": 265,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-iso-d4/iso_p1/d3/receipt-d3.json",
+       "rank": 265,
+       "sha256": "61ffbc6b63e011912c06b3e71009846792373b63fc0e527a6568d94bebcc6d24"
+      },
+      {
+       "N": 10,
+       "engine": "130f35904d21f5b4",
+       "header": "982b0f329104552d",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 265,
+       "source": "a5-failed-runs/falsify/receipts-v6.jsonl"
+      },
+      {
+       "N": 10,
+       "engine": "130f35904d21f5b4",
+       "header": "982b0f329104552d",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 265,
+       "source": "a5-failed-runs/falsify/receipts-v6.jsonl"
+      },
+      {
+       "N": 10,
+       "engine": "4f2002e0a25dbdec",
+       "header": "982b0f329104552d",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 265,
+       "source": "a5-failed-runs/reviews/codex-engine-review/iso-N10.jsonl"
+      },
+      {
+       "N": 11,
+       "engine": "130f35904d21f5b4",
+       "header": "982b0f329104552d",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 265,
+       "source": "a5-failed-runs/falsify/receipts-v6.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 4,
+     "k2_count": 640,
+     "lower_bounds": [
+      {
+       "N": 13,
+       "engine": "130f35904d21f5b4",
+       "header": "982b0f329104552d",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 640,
+       "source": "a5-failed-runs/falsify/receipts-v6.jsonl"
+      },
+      {
+       "N": 13,
+       "engine": "b485972290a98971",
+       "header": "982b0f329104552d",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 640,
+       "source": "a5-failed-runs/falsify/v5_validation.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 5,
+     "k2_count": 1316,
+     "lower_bounds": [
+      {
+       "N": 16,
+       "engine": "130f35904d21f5b4",
+       "header": "982b0f329104552d",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 1316,
+       "source": "a5-failed-runs/falsify/laptop/v6/iso_d5_v6.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 6,
+     "k2_count": 2422,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "Iso",
+   "k2_sources": [
+    {
+     "path": "working/distribute/out/a5-iso-d4/iso_p1/d2/relations-upto-d2.rel",
+     "sha256": "e5d2792f13332ffaabaaba7970f239b64bcf88325f5691e693555ade60cf0bfc"
+    },
+    {
+     "path": "working/runs/s3/iso_k2.rel",
+     "sha256": "53852d5c62b4a7333929abdef66a26db3b9f02f4dc1fd412e9a6e719418b38c5"
+    }
+   ],
+   "prime": 32009,
+   "upper_bound_d_ge_2": [
+    {
+     "receipt": "working/distribute/out/a5-iso-d4/iso_p1/d2/receipt-d2.json",
+     "sha256": "ddf02dd155427c71913356f0425f32b74c5914c5b76636e049ac987e7bd88082"
+    }
+   ]
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 17,
+     "lower_bounds": [
+      {
+       "N": 5,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "0243e3184ea64cf5",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 17,
+       "source": "degree-one/d1-iso-np-32029.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 2,
+     "k2_count": 85,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-p2-iso/iso_p2/d2/receipt-d2.json",
+       "rank": 85,
+       "sha256": "94f06be6f52f0c71e2572f5e6c7dead1a7f813fb13c72f7c307c0ef4a5ba3776"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 3,
+     "k2_count": 265,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-p2-iso/iso_p2/d3/receipt-d3.json",
+       "rank": 265,
+       "sha256": "cc8eff4a52c0e1b87bbfd6fed8df21172e5eb5c8a933c877f7e170de1ed9741a"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 4,
+     "k2_count": 640,
+     "lower_bounds": [
+      {
+       "N": 13,
+       "engine": "130f35904d21f5b4",
+       "header": "12c2026acce4afa7",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 640,
+       "source": "a5-failed-runs/falsify/receipts-v6.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 5,
+     "k2_count": 1316,
+     "lower_bounds": [
+      {
+       "N": 16,
+       "engine": "130f35904d21f5b4",
+       "header": "12c2026acce4afa7",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 1316,
+       "source": "a5-failed-runs/falsify/laptop/v6/iso_d5_p2_v6.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 6,
+     "k2_count": 2422,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "Iso",
+   "k2_sources": [
+    {
+     "path": "working/distribute/out/a5-p2-iso/iso_p2/d2/relations-upto-d2.rel",
+     "sha256": "fd3cd56049cacb8250e00c15228907f440322de2a53b2d14dc86cc534c910fee"
+    }
+   ],
+   "prime": 32029,
+   "upper_bound_d_ge_2": [
+    {
+     "receipt": "working/distribute/out/a5-p2-iso/iso_p2/d2/receipt-d2.json",
+     "sha256": "94f06be6f52f0c71e2572f5e6c7dead1a7f813fb13c72f7c307c0ef4a5ba3776"
+    }
+   ]
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 24,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1,
+       1
+      ],
+      "fiber": "W8 -> N-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 2,
+     "k2_count": 156,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1,
+       1
+      ],
+      "fiber": "W8 -> N-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 3,
+     "k2_count": 600,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1,
+       1
+      ],
+      "fiber": "W8 -> N-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 4,
+     "k2_count": 1725,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1,
+       1
+      ],
+      "fiber": "W8 -> N-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 5,
+     "k2_count": 4116,
+     "lower_bounds": [],
+     "status": "open"
+    },
+    {
+     "d": 6,
+     "k2_count": 8624,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "W8 -> N+",
+   "k2_sources": [],
+   "prime": 32009,
+   "upper_bound_d_ge_2": "transported"
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 24,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1,
+       1
+      ],
+      "fiber": "W8 -> N-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 2,
+     "k2_count": 156,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1,
+       1
+      ],
+      "fiber": "W8 -> N-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 3,
+     "k2_count": 600,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1,
+       1
+      ],
+      "fiber": "W8 -> N-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 4,
+     "k2_count": 1725,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1,
+       1
+      ],
+      "fiber": "W8 -> N-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 5,
+     "k2_count": 4116,
+     "lower_bounds": [],
+     "status": "open"
+    },
+    {
+     "d": 6,
+     "k2_count": 8624,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "W8 -> N+",
+   "k2_sources": [],
+   "prime": 32029,
+   "upper_bound_d_ge_2": "transported"
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 24,
+     "lower_bounds": [
+      {
+       "N": 5,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "585a946d2d75073e",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 24,
+       "source": "degree-one/d1-w8-nm-32009.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 2,
+     "k2_count": 156,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json",
+       "rank": 156,
+       "sha256": "6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 3,
+     "k2_count": 600,
+     "lower_bounds": [
+      {
+       "N": 10,
+       "engine": "130f35904d21f5b4",
+       "header": "585a946d2d75073e",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 600,
+       "source": "a5-failed-runs/reviews/codex-reaudit/w8-fresh.jsonl"
+      },
+      {
+       "N": 10,
+       "engine": "130f35904d21f5b4",
+       "header": "59c26c9143dab52f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 600,
+       "source": "a5-failed-runs/falsify/receipts-v6.jsonl"
+      },
+      {
+       "N": 10,
+       "engine": "4f2002e0a25dbdec",
+       "header": "59c26c9143dab52f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 600,
+       "source": "a5-failed-runs/falsify/w8_quotient.jsonl"
+      },
+      {
+       "N": 10,
+       "engine": "a197799d97287b78",
+       "header": "585a946d2d75073e",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 600,
+       "source": "a5-failed-runs/falsify/v7_gates.jsonl"
+      },
+      {
+       "N": 10,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "585a946d2d75073e",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 600,
+       "source": "a5-failed-runs/falsify/v8_gates.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 4,
+     "k2_count": 1725,
+     "lower_bounds": [
+      {
+       "N": 13,
+       "engine": "130f35904d21f5b4",
+       "header": "59c26c9143dab52f",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 1725,
+       "source": "a5-failed-runs/falsify/laptop/v6/w8_d4_p1_v6.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 5,
+     "k2_count": 4116,
+     "lower_bounds": [],
+     "status": "open"
+    },
+    {
+     "d": 6,
+     "k2_count": 8624,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "W8 -> N-",
+   "k2_sources": [
+    {
+     "path": "working/runs/w8_a2/w8_k2.rel",
+     "sha256": "31feaac8cace8050dfbd42ead4cdc3fb669382d0253f687429d2f1583f2e8df2"
+    }
+   ],
+   "prime": 32009,
+   "upper_bound_d_ge_2": [
+    {
+     "receipt": "working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json",
+     "sha256": "6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425"
+    }
+   ]
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 24,
+     "lower_bounds": [
+      {
+       "N": 5,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "20d00f15fd8f35c9",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 24,
+       "source": "degree-one/d1-w8-nm-32029.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 2,
+     "k2_count": 156,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-p2-w8/w8_p2/d2/receipt-d2.json",
+       "rank": 156,
+       "sha256": "b5ec8fbeaadc55cbcafdac278a36d50d07df1459611bba370041b722de62f846"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 3,
+     "k2_count": 600,
+     "lower_bounds": [
+      {
+       "N": 10,
+       "engine": "130f35904d21f5b4",
+       "header": "e3b426730d222721",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 600,
+       "source": "a5-failed-runs/falsify/receipts-v6.jsonl"
+      },
+      {
+       "N": 10,
+       "engine": "130f35904d21f5b4",
+       "header": "e3b426730d222721",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 600,
+       "source": "a5-failed-runs/falsify/receipts-v6.jsonl"
+      },
+      {
+       "N": 10,
+       "engine": "b485972290a98971",
+       "header": "e3b426730d222721",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 600,
+       "source": "a5-failed-runs/falsify/v5_validation.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 4,
+     "k2_count": 1725,
+     "lower_bounds": [
+      {
+       "N": 13,
+       "engine": "130f35904d21f5b4",
+       "header": "e3b426730d222721",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 1725,
+       "source": "a5-failed-runs/falsify/laptop/v6/w8_d4_v6.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 5,
+     "k2_count": 4116,
+     "lower_bounds": [],
+     "status": "open"
+    },
+    {
+     "d": 6,
+     "k2_count": 8624,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "W8 -> N-",
+   "k2_sources": [
+    {
+     "path": "working/distribute/out/a5-p2-w8/w8_p2/d2/relations-upto-d2.rel",
+     "sha256": "ed601263b5da77273c0f7751d03a8a5e4ae6219c1e75da8576bb1155598fd40c"
+    }
+   ],
+   "prime": 32029,
+   "upper_bound_d_ge_2": [
+    {
+     "receipt": "working/distribute/out/a5-p2-w8/w8_p2/d2/receipt-d2.json",
+     "sha256": "b5ec8fbeaadc55cbcafdac278a36d50d07df1459611bba370041b722de62f846"
+    }
+   ]
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 15,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "fiber": "X-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 2,
+     "k2_count": 51,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "fiber": "X-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 3,
+     "k2_count": 122,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "fiber": "X-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 4,
+     "k2_count": 240,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "fiber": "X-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 5,
+     "k2_count": 417,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "fiber": "X-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 6,
+     "k2_count": 665,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "X+",
+   "k2_sources": [],
+   "prime": 32009,
+   "upper_bound_d_ge_2": "transported"
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    5
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 15,
+     "lower_bounds": [
+      {
+       "N": 5,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "5e7ff045b8ad7532",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 15,
+       "source": "degree-one/d1-xp-np-32029.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 2,
+     "k2_count": 51,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-p2-small/xp_p2/d2/receipt-d2.json",
+       "rank": 51,
+       "sha256": "adc64b1f6fa40510ee0a36ab7255c8f0846b0a36763ba28b1afba4e909c69d8c"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 3,
+     "k2_count": 122,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-p2-small/xp_p2/d3/receipt-d3.json",
+       "rank": 122,
+       "sha256": "adbcec0334ad7c079ad140a1b7f7e5bf617eeb720374f7db39e39dc18ea0cd9a"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 4,
+     "k2_count": 240,
+     "lower_bounds": [],
+     "status": "open"
+    },
+    {
+     "d": 5,
+     "k2_count": 417,
+     "lower_bounds": [],
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "fiber": "X-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
+    },
+    {
+     "d": 6,
+     "k2_count": 665,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "X+",
+   "k2_sources": [
+    {
+     "path": "working/distribute/out/a5-p2-small/xp_p2/d2/relations-upto-d2.rel",
+     "sha256": "85fdced79dfd830c0fad13da9c71fcbbd0b197418462c299f375a59952b4f8eb"
+    }
+   ],
+   "prime": 32029,
+   "upper_bound_d_ge_2": [
+    {
+     "receipt": "working/distribute/out/a5-p2-small/xp_p2/d2/receipt-d2.json",
+     "sha256": "adc64b1f6fa40510ee0a36ab7255c8f0846b0a36763ba28b1afba4e909c69d8c"
+    }
+   ]
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 15,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/build/logs/mine/xm1/receipt-d1.json",
+       "rank": 15,
+       "sha256": "c2a79595d650888fe79cb784f5bd34716727ad4332c3ad345f4a3b0d8db77ee9"
+      },
+      {
+       "N": 5,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "f437c9ea4f9e8861",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 15,
+       "source": "degree-one/d1-xm-nm-32009.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 2,
+     "k2_count": 51,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/build/logs/mine/xm2/receipt-d2.json",
+       "rank": 51,
+       "sha256": "87f3e143c3d3acbff6136ef36789b9920a14dd16e94e1bb3bef2660acd55fa66"
+      },
+      {
+       "method": "membership rank",
+       "path": "working/build/logs/part-b/xm/receipt-d2.json",
+       "rank": 51,
+       "sha256": "002d492e9e5fa602ccba3bdead2dc4af8500530ad1335ce96b4beb0e0348f9f8"
+      },
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-xm-d4/xm_p1/d2/receipt-d2.json",
+       "rank": 51,
+       "sha256": "97f9ed40689d130e043b4a9abfec9e40978db77a905f938288a30404e951da97"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 3,
+     "k2_count": 122,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-xm-d4/xm_p1/d3/receipt-d3.json",
+       "rank": 122,
+       "sha256": "7b9be151f183d9a37b01a175b3ffaf99b15cc3b34ae3ba19ff8f16a103f18590"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 4,
+     "k2_count": 240,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-xm-d4/xm_p1/d4/receipt-d4.json",
+       "rank": 240,
+       "sha256": "78251b24736055990db27231ff9f1267692245a8d2a0f2cac259ca0295660f15"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 5,
+     "k2_count": 417,
+     "lower_bounds": [
+      {
+       "N": 19,
+       "engine": "a197799d97287b78",
+       "header": "f437c9ea4f9e8861",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 417,
+       "source": "a5-failed-runs/kaggle-v7/bound/xm_d5_v7.jsonl"
+      },
+      {
+       "N": 20,
+       "engine": "a197799d97287b78",
+       "header": "f437c9ea4f9e8861",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 417,
+       "source": "a5-failed-runs/kaggle-v7/bound/xm_d5_v7.jsonl"
+      },
+      {
+       "N": 21,
+       "engine": "a197799d97287b78",
+       "header": "f437c9ea4f9e8861",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 417,
+       "source": "a5-failed-runs/kaggle-v7/bound/xm_d5_v7.jsonl"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 6,
+     "k2_count": 665,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "X-",
+   "k2_sources": [
+    {
+     "path": "working/distribute/out/a5-xm-d4/xm_p1/d2/relations-upto-d2.rel",
+     "sha256": "596c48a75c5101f4aeca9da7cd89888f5270abf628aa6f1567160f778e583245"
+    }
+   ],
+   "prime": 32009,
+   "upper_bound_d_ge_2": [
+    {
+     "receipt": "working/build/logs/mine/xm2/receipt-d2.json",
+     "sha256": "87f3e143c3d3acbff6136ef36789b9920a14dd16e94e1bb3bef2660acd55fa66"
+    },
+    {
+     "receipt": "working/build/logs/part-b/xm/receipt-d2.json",
+     "sha256": "002d492e9e5fa602ccba3bdead2dc4af8500530ad1335ce96b4beb0e0348f9f8"
+    },
+    {
+     "receipt": "working/distribute/out/a5-xm-d4/xm_p1/d2/receipt-d2.json",
+     "sha256": "97f9ed40689d130e043b4a9abfec9e40978db77a905f938288a30404e951da97"
+    }
+   ]
+  },
+  {
+   "certified_degrees": [
+    1,
+    2,
+    3,
+    5
+   ],
+   "degrees": [
+    {
+     "d": 1,
+     "k2_count": 15,
+     "lower_bounds": [
+      {
+       "N": 5,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "98de6225b05399df",
+       "method": "truncated rank",
+       "mode": "raw",
+       "rank": 15,
+       "source": "degree-one/d1-xm-nm-32029.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 2,
+     "k2_count": 51,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-p2-small/xm_p2/d2/receipt-d2.json",
+       "rank": 51,
+       "sha256": "1a055b607ef29c01ca6a1bd0339212bc93f4676e5b35387f5b33acbaa0619ee7"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 3,
+     "k2_count": 122,
+     "lower_bounds": [
+      {
+       "method": "membership rank",
+       "path": "working/distribute/out/a5-p2-small/xm_p2/d3/receipt-d3.json",
+       "rank": 122,
+       "sha256": "e876c28b2fd6659cdfd4f1f6c7d635217f3487b0aa79611817ab844e1775d034"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 4,
+     "k2_count": 240,
+     "lower_bounds": [],
+     "status": "open"
+    },
+    {
+     "d": 5,
+     "k2_count": 417,
+     "lower_bounds": [
+      {
+       "N": 19,
+       "engine": "ea56c9cab5baf1d9",
+       "header": "98de6225b05399df",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 417,
+       "source": "d5-p2/xm_d5_n19.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 6,
+     "k2_count": 665,
+     "lower_bounds": [],
+     "status": "open"
+    }
+   ],
+   "fiber": "X-",
+   "k2_sources": [
+    {
+     "path": "working/distribute/out/a5-p2-small/xm_p2/d2/relations-upto-d2.rel",
+     "sha256": "1fea3714381f564a6a628c21efbce504311a98e10ca8ff7d9ed284357fed8903"
+    }
+   ],
+   "prime": 32029,
+   "upper_bound_d_ge_2": [
+    {
+     "receipt": "working/distribute/out/a5-p2-small/xm_p2/d2/receipt-d2.json",
+     "sha256": "1a055b607ef29c01ca6a1bd0339212bc93f4676e5b35387f5b33acbaa0619ee7"
+    }
+   ]
+  }
+ ],
+ "schema": "a5-fiber-claims-v2",
+ "statement": "h_d = HF(k[y]/K2, d) at the named prime for every degree marked certified (h_1 = #G at d = 1)"
+}

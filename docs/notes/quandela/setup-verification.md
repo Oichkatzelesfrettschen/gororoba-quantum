@@ -28,53 +28,7 @@ The PKGBUILDs live in `~/Github/PKGBUILDs`. Their `pkgver` and `sha256sums` matc
 
 ## Configuration
 
-| Item | Value | How it was checked |
-| --- | --- | --- |
-| Token file | `~/.config/quandela/cloud-token`, mode 600 | `stat` on the file and its directory |
-| Token directory | `~/.config/quandela`, mode 700, owner the build user | `stat` |
-| `QUANDELA_TOKEN_FILE` | the token file above; set in both MCP registrations; unset in the interactive shell | environment check and registration check |
-| `PCVL_CLOUD_TOKEN` | unset | environment check |
-| Perceval persistent config | `~/.local/share/perceval-quandela/config.json` is absent, so Perceval holds no plaintext token | `test -e` |
-| `QD_PYTHON` | unset; the registrations use `/usr/bin/python3` | registration check |
-
-The token file's contents were not read or printed by any check on this page. The token reached the MCP server and the verification script through `QUANDELA_TOKEN_FILE` only.
-
-### MCP registrations
-
-`quandela` is registered in two places, with the same command:
-
-- **Claude Code, user scope** (`~/.claude.json`): command `/usr/bin/python3`, arguments `-I` and the path to `scripts/qd_mcp_server.py` in the primary checkout, environment `QUANDELA_TOKEN_FILE`.
-- **Codex** (`~/.codex/config.toml`): the same command and arguments, an `env` table with `QUANDELA_TOKEN_FILE`, and `enabled_tools` listing the eight tools below.
-
-The primary checkout is `$REPO`, the first entry of `git worktree list` and the checkout that tracks `main`. A worktree has its own path, so a registration must name the primary checkout.
-
-The Claude Code registration, as the CLI accepts it (`claude mcp add --help`; not executed, because the existing registration works):
-
-```sh
-claude mcp add --scope user -e QUANDELA_TOKEN_FILE="$HOME/.config/quandela/cloud-token" \
-    quandela -- /usr/bin/python3 -I "$REPO/scripts/qd_mcp_server.py"
-```
-
-The Codex configuration has one `[mcp_servers.quandela]` table, an `[mcp_servers.quandela.env]` table, and one `[mcp_servers.quandela.tools.<name>]` table per tool with an `approval_mode`.
-
-### Approval policy
-
-| Tool | Effect | Claude Code (user settings) | Codex |
-| --- | --- | --- | --- |
-| `qd_platforms` | read | allow | approve |
-| `qd_platform` | read | allow | approve |
-| `qd_availability` | read | allow | approve |
-| `qd_usage` | read | allow | approve |
-| `qd_job_status` | read | allow | approve |
-| `qd_job_result` | read | allow | approve |
-| `qd_simulate_local` | local simulation, no credits | allow | approve |
-| `qd_cancel_job` | cancels a job | ask | prompt |
-
-Codex's default for any other tool is `prompt`. The table matches the README's tool table and was read from `~/.claude/settings.json` and `~/.codex/config.toml`.
-
-### Project permissions
-
-The token is read by the MCP server and the scripts, each in its own process, through the path `QUANDELA_TOKEN_FILE` names. No agent permission rule needs to read it. The token directory's protection is an open item below.
+The token file, token directory, `QUANDELA_TOKEN_FILE`, `PCVL_CLOUD_TOKEN`, Perceval persistent configuration and `QD_PYTHON` checks, the MCP registrations for Claude Code and Codex, and the approval policy table are recorded in the private gororoba-infrastructure repository.
 
 ## Verification record
 
@@ -96,8 +50,8 @@ The checks ran on 2026-10-19 (Pacific). Checks 9 to 11 ran against the primary c
 | 12 | Pacman pins against the README table | `pacman -Q` and the PKGBUILD `pkgver` and `sha256sums` | match |
 | 13 | Token permissions | `stat` | 600 on the file, 700 on the directory |
 | 14 | Perceval plaintext config absent | `test -e` | absent |
-| 15 | MCP registrations | read `~/.claude.json` and `~/.codex/config.toml` (keys and values other than the token) | match this page |
-| 16 | Approval policy | read `~/.claude/settings.json` and `~/.codex/config.toml` | match the table above |
+| 15 | MCP registrations | read the Claude Code and Codex MCP configuration (keys and values other than the token) | match the registration record in the private gororoba-infrastructure repository |
+| 16 | Approval policy | read the Claude Code and Codex permission settings | match the approval policy recorded in the private gororoba-infrastructure repository |
 
 Check 10 is expected behavior, not a fault. `-I` keeps the script's directory off `sys.path`, and `qd_platform.py` imports `oq_platform` from `scripts/`. The CLI runs under plain `$PYTHON`, which is how the gates and the runner invoke it. The MCP server runs under `-I` and places its own directory on `sys.path`, so it imports `oq_platform`; check 7 exercised that path through the registered server.
 
@@ -111,17 +65,11 @@ Check 5's estimate depends on the processor figures, which changed between reads
 - The snapshot refresh ran on 2026-10-20 at 08:51 UTC from the user's shell, not by an agent. The branch's snapshot logic reproduced the committed catalogue offline from the same responses (see [calibration.md](calibration.md), open item 2).
 - The checks in the table above predate the `plan` HOM warning, the `PlatformError` on a missing architecture, and the architecture carry in `snapshot`. For those changes, `qd_platform.py --self-test`, `ruff format --check`, `ruff check` and `mypy` pass under Python 3.14.7. The core-502 and core-503 gates and the pr-tier run happen on the PR head before merge.
 - The tier-full gates (core-513, core-515, core-534, core-537 and the others marked `full`).
-- The `claude mcp add` command above. It is shown from the CLI's help text and was not executed.
+- The `claude mcp add` registration command, recorded in the private gororoba-infrastructure repository. It was shown from the CLI's help text and was not executed.
 
 ## Open items
 
-1. **Token-directory deny, not yet in place.** The user-level settings file (`permissions.deny`) needs these entries, so that agent sessions cannot read or write the token directory with the file tools:
-
-   ```json
-   "Read(~/.config/quandela/**)",
-   "Edit(~/.config/quandela/**)",
-   "Write(~/.config/quandela/**)"
-   ```
+1. **Token-directory deny, not yet in place.** The settings entries that stop agent sessions from reading or writing the token directory are recorded in the private gororoba-infrastructure repository.
 
 2. **Codex server not exercised.** The configuration is verified; a live launch is not.
 3. **Snapshot refresh.** Done on 2026-10-20 at 08:51 UTC, with the Belenos chip carried from 2026-10-17. See [calibration.md](calibration.md), open item 2.

@@ -1,17 +1,13 @@
 # IBM account access and the job inventory
 
 The repository reaches IBM Quantum through qiskit-ibm-runtime 0.51.0 only.
-No IBM MCP server is registered: `claude mcp list` shows the quantum-inspire,
-openquantum, quandela and kaggle servers connected, and on 2026-10-19
-qi_backends, qi_jobs, get_credits, qd_availability and get_accelerator_quota
-each answered, so every IBM read is a script call under the repository's
-Python.
+No IBM MCP server is registered, so every IBM read is a script call under the
+repository's Python. The MCP servers that are registered are recorded in the private gororoba-infrastructure repository.
 
 ## Accounts
 
-`QiskitRuntimeService.saved_accounts()` lists two saved accounts in
-`~/.qiskit/qiskit-ibm.json`: `default-ibm-quantum-platform` (primary) and
-`backup-ibm-quantum-platform`. `gororoba_quantum/ibm_account.py`
+`QiskitRuntimeService.saved_accounts()` lists two saved accounts, a primary and a backup.
+`gororoba_quantum/ibm_account.py`
 (`open_service`) selects one through `GOROROBA_IBM_ACCOUNT`; unset or empty
 opens the default. Each account is a separate IBM Cloud instance with its own
 600 s rolling quota and its own inventory file (the `--self-test` of gate `core-self-test-05` (`tests/test_cli_self_tests.py`)).

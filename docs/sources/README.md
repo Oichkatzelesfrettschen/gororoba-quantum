@@ -14,12 +14,13 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](../SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 50 licensed PDFs and two aliases;
-205 external sources retain citations and optional ignored local reading copies.
-Six licensed original software archives retain upstream notices under
+license evidence. The library publishes licensed PDFs and their aliases, and
+external sources retain citations and optional ignored local reading copies;
+`"$PYTHON" docs/verify_sources.py` prints the current count of each class.
+Licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
-[PDF_SHA256SUMS](../PDF_SHA256SUMS) verifies the published PDF set from the
-repository root with `sha256sum -c docs/PDF_SHA256SUMS`.
+The repository hosts no PDF; `scripts/fetch_source_cache.py` restores any reading
+copy from the documents repositories and admits it only at its registered SHA-256.
 
 The `literature -> docs` compatibility link preserves historical paths used
 in source comments, verification manifests, and retained parallel-experiment checksum
@@ -35,7 +36,15 @@ from the versions of record, including the two explicitly named PDF aliases.
 Two open-access Nature-family versions of record (s41586-026-10423-9 and
 s41567-026-03466-2) carry article-level CC BY 4.0 grants and are retained.
 HTML-only sources and their reading scopes appear in the registry and notes.
-Explicit CC BY 4.0 or CC0 permission supports the published PDFs. ArXiv-only
+The repository hosts no document: a source whose license
+permits redistribution (CC BY 4.0, CC BY-SA 4.0 or CC0) receives an external record with
+`redistribution: explicit_license_verified`, its reading copy lives in
+gororoba-documents-public, and the verifier still checks its license capture. A
+publisher's license notice printed on the PDF itself counts through the `pdf-notice`
+route: a JSON capture under `docs/evidence/source_rights/` records the page, the notice
+verbatim, the PDF's sha256 and every metadata source that names a different license
+(Chapman and Vishkautsan, Communications in Mathematics 33, on its CC BY-SA 4.0
+notice). ArXiv-only
 hosting grants, personal-copy permissions, and sources without an established
 rehosting grant receive external records and ignored local copies under
 `local_source_cache/`. The registry retains first-party evidence URLs and hashes.
@@ -43,14 +52,15 @@ Downloaded documents retain their authors' notices and licenses; repository
 licensing does not relabel third-party papers. The source verifier checks local
 copies when present and permits a fresh checkout without those optional files.
 [`scripts/fetch_source_cache.py`](../../scripts/fetch_source_cache.py) restores
-those copies from the registered URLs or from a checkout of the owner's private
-gororoba-quantum-documents repository, which also holds their Markdown
-transcriptions, and admits a file only when its size and SHA-256 match the
-registry.
-[`reading-copies.md`](reading-copies.md), generated from the registry by
+those copies from the registered URLs or from checkouts of the owner's documents
+repositories gororoba-documents-public and gororoba-documents-private, which
+also hold their Markdown transcriptions, and admits a file only when its size
+and SHA-256 match the registry.
+`reading-copies.md`, rendered on demand and git-ignored ([generated views](../runbooks/generated-views.md)) from the registry and
+[`reading-copy-locations.tsv`](reading-copy-locations.tsv) by
 [`scripts/source_reading_copies.py`](../../scripts/source_reading_copies.py)
 and checked by the gate `sources-reading-copies-index`, links each external PDF
-to its note, its public source and its copy in that private repository.
+to its note, its public source and its copy in one of those repositories.
 
 The [Cayley-Dickson survey at dimension 16 and above](cayley-dickson-2n-ion-survey.md) records every candidate source and its disposition.
 
@@ -183,6 +193,49 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [skiouris-2026-aphanics-pathion](../notes/papers/skiouris-2026-aphanics-pathion.md) | Skiouris, Aphanics at the pathion level (Zenodo preprint, 2026): stratified Gram spectra and the Clifford triad checked | none | medium | none |
 | [1505.05210](../notes/papers/1505.05210.md) | Kustin, Polini and Ulrich, The equations defining blowup algebras of height three Gorenstein ideals (Algebra Number Theory 11, 2017) | none | low | none |
 | [1207.1060](../notes/papers/1207.1060.md) | Branco Correia and Zarzuela, Divisors of a module and blow up (J. Pure Appl. Algebra 217, 2013) | none | low | none |
+| [2302.07486](../notes/papers/2302.07486.md) | Kumar and Venugopal, Rees algebra of maximal order Pfaffians and its diagonal subalgebras (Comm. Algebra, 2024) | none | low | none |
+| [2104.13811](../notes/papers/2104.13811.md) | Cooper and Price, Bounding the degrees of the defining equations of Rees rings for determinantal and Pfaffian ideals (J. Algebra 606, 2022) | none | low | none |
+| [alg-geom-9707001](../notes/papers/alg-geom-9707001.md) | Bertram, A log version of Kodaira vanishing and complete skew forms (arXiv 1997) | none | low | none |
+| [1803.09011](../notes/papers/1803.09011.md) | Massarenti, Birational geometry of spaces of complete forms II, skew-forms (J. Algebra 546, 2020) | none | low | none |
+| [math-0105151](../notes/papers/math-0105151.md) | Ghorpade and Krattenthaler, The Hilbert series of Pfaffian rings (2003) | none | low | none |
+| [1308.0582](../notes/papers/1308.0582.md) | Jeffries, Montano and Varbaro, Multiplicities of classical varieties (Proc. LMS 110, 2015) | none | low | none |
+| [math-0302241](../notes/papers/math-0302241.md) | Corso, Ghezzi, Polini and Ulrich, Cohen-Macaulayness of special fiber rings (Comm. Algebra 31, 2003) | none | low | none |
+| [math-0212119](../notes/papers/math-0212119.md) | D'Cruz, Raghavan and Verma, Cohen-Macaulay fiber cones (1999) | none | medium | none |
+| [2512.16165](../notes/papers/2512.16165.md) | Ansaldi et al., Special fibers of coordinate sections of Hankel matrices (2025) | none | low | none |
+| [conca-herzog-valla-1996-sagbi-bases](../notes/papers/conca-herzog-valla-1996-sagbi-bases.md) | Conca, Herzog and Valla, Sagbi bases with applications to blow-up algebras (J. reine angew. Math. 474, 1996) | none | low | none |
+| [conca-herzog-trung-valla-1997-diagonal-subalgebras](../notes/papers/conca-herzog-trung-valla-1997-diagonal-subalgebras.md) | Conca, Herzog, Trung and Valla, Diagonal subalgebras of bigraded algebras (Amer. J. Math. 119, 1997) | none | low | none |
+| [math-0402345](../notes/papers/math-0402345.md) | Gannon, Monstrous moonshine: the first twenty-five years (Bull. LMS 38, 2006) | none | none | none |
+| [1208.6254](../notes/papers/1208.6254.md) | Carnahan, Generalized Moonshine IV: Monstrous Lie algebras (2016) | none | none | none |
+| [1812.08439](../notes/papers/1812.08439.md) | Cunha and Elduque, Codes, S-structures, and exceptional Lie algebras (Glasgow Math. J. 62, 2020) | none | low | none |
+| [2504.16513](../notes/papers/2504.16513.md) | Kollross, The bracket of the exceptional Lie algebra E8 (2026) | none | low | none |
+| [2009.00390](../notes/papers/2009.00390.md) | Dray, Huerta and Kincaid, The magic square of Lie groups: the 2 x 2 case (Lett. Math. Phys. 104, 2014) | none | low | none |
+| [math-0411104](../notes/papers/math-0411104.md) | Krutelevich, Jordan algebras, exceptional groups and Bhargava composition (J. Algebra 314, 2007) | none | low | none |
+| [2605.09333](../notes/papers/2605.09333.md) | Corradetti, Integral elements of Okubo algebra and the E8-lattice (2026) | none | low | none |
+| [2204.04996](../notes/papers/2204.04996.md) | Wilson, Dray and Manogue, An octonionic construction of E8 and the Lie algebra magic square (Innov. Incidence Geom. 20, 2023) | none | low | none |
+| [2401.10534](../notes/papers/2401.10534.md) | Dray, Manogue and Wilson, A new division algebra representation of E7 from E8 (J. Math. Phys. 65, 2024) | none | low | none |
+| [0909.0551](../notes/papers/0909.0551.md) | Baez and Huerta, Division algebras and supersymmetry I (2010) | none | low | none |
+| [1102.4857](../notes/papers/1102.4857.md) | Ferrara, Marrani and Yeranyan, Freudenthal duality and generalized special geometry (Phys. Lett. B 701, 2011) | none | none | none |
+| [1402.0206](../notes/papers/1402.0206.md) | Flaut, About some properties of algebras obtained by the Cayley-Dickson process (2014) | none | low | none |
+| [2311.16704](../notes/papers/2311.16704.md) | Chapman and Vishkautsan, Roots and right factors of polynomials and left eigenvalues over Cayley-Dickson algebras (Comm. Math. 33, 2025) | none | medium | none |
+| [1307.3641](../notes/papers/1307.3641.md) | Flaut and Shpakivskyi, Holomorphic functions in generalized Cayley-Dickson algebras (Adv. Appl. Clifford Algebras 25, 2015) | none | low | none |
+| [math-0403263](../notes/papers/math-0403263.md) | Cohn and Kumar, Optimality and uniqueness of the Leech lattice among lattices (Ann. Math. 170, 2009) | none | none | none |
+| [2307.02505](../notes/papers/2307.02505.md) | Tang and Tang, A unified sedenion model for three generations of leptons (2023) | none | medium | none |
+| [2304.01213](../notes/papers/2304.01213.md) | Singh, The exceptional Jordan algebra and its implications for gravitation and the weak force (2023) | none | low | none |
+| [2606.15235](../notes/papers/2606.15235.md) | Baez and Schwahn, The Standard Model gauge group from the exceptional Jordan algebra (2026) | none | low | none |
+| [hep-th-0301037](../notes/papers/hep-th-0301037.md) | Boya, Octonions and M-theory (GROUP 24, 2003) | none | low | none |
+| [2112.09698](../notes/papers/2112.09698.md) | D'Andrea, Landi and Lizzi, Tolerance relations and quantization (Lett. Math. Phys. 112, 2022) | none | low | none |
+| [2410.14267](../notes/papers/2410.14267.md) | Fox and Tkachev, Algebraic constructions of cubic minimal cones (2024) | none | low | none |
+| [2208.03285](../notes/papers/2208.03285.md) | Aurisano and Whitehead, End-to-end analysis using image classification (2022) | none | none | none |
+| [conway-norton-1979-monstrous-moonshine](../notes/papers/conway-norton-1979-monstrous-moonshine.md) | Conway and Norton, Monstrous moonshine (Bull. LMS 11, 1979) | none | none | none |
+| [0811.4523](../notes/papers/0811.4523.md) | Tuite, Exceptional vertex operator algebras and the Virasoro algebra (Contemp. Math. 497, 2009) | none | none | none |
+| [hep-th-0205068](../notes/papers/hep-th-0205068.md) | Gaberdiel, Olive and West, A class of Lorentzian Kac-Moody algebras (Nucl. Phys. B 645, 2002) | none | none | none |
+| [0810.2088](../notes/papers/0810.2088.md) | Connes, On the spectral characterization of manifolds (J. Noncommut. Geom. 7, 2013) | none | none | none |
+| [hep-th-9209099](../notes/papers/hep-th-9209099.md) | Lada and Stasheff, Introduction to SH Lie algebras for physicists (Int. J. Theor. Phys. 32, 1993) | none | none | none |
+| [math-ph-0507015](../notes/papers/math-ph-0507015.md) | Fernandez Nunez, Garcia Fuertes and Perelomov, Calogero-Sutherland model for E7 (J. Math. Phys. 46, 2005) | none | none | none |
+| [2207.14076](../notes/papers/2207.14076.md) | Lin, Topological modularity of Monstrous Moonshine (Ann. Henri Poincare 25, 2024) | none | none | none |
+| [math-0404517](../notes/papers/math-0404517.md) | Eisenbud, Green, Hulek and Popescu, Small schemes and varieties of minimal degree (Amer. J. Math. 128, 2006) | none | low | none |
+| [1404.7403](../notes/papers/1404.7403.md) | Weinstein and Yekutieli, Selective Sign-Determining Multiple Confidence Intervals with FCR Control (Statistica Sinica, 2020) | none | low | none |
+| [efron-2011-tweedie-formula](../notes/papers/efron-2011-tweedie-formula.md) | Efron, Tweedie's Formula and Selection Bias (J. Am. Stat. Assoc. 106, 2011) | none | low | none |
 | [2102.01682](../notes/2102.01682.md) | Corcoles et al., Dynamic phase estimation on superconducting qubits, PRL 127, 100501 (2021) | high | indirect | limited |
 | [2608.08232](../notes/2608.08232.md) | Koebisu, Dimension-32 determinant factorization and rank-stratum Question 4 (2026 preprint) | none | high | none |
 | [2608.26893](../notes/2608.26893.md) | Zhilina, Doubly alternative zero divisors (2023 journal; 2026 arXiv posting) | none | high | none |
@@ -272,13 +325,33 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [1910.06343](../notes/papers/1910.06343.md) | Eisert et al., Quantum certification and benchmarking, Nat. Rev. Phys. 2, 382 (2020) | low | none | none |
 | [2407.08828](../notes/papers/2407.08828.md) | Proctor et al., Benchmarking quantum computers, Nat. Rev. Phys. 7, 105 (2025) | medium | none | low |
 | [quantum-journal-referee-instructions](../notes/papers/quantum-journal-referee-instructions.md) | Quantum journal, guidelines for referees and editorial policies (web pages) | none | none | none |
+| [2111.08152](../notes/papers/2111.08152.md) | Costa, An, Sanders, Su, Babbush and Berry, Optimal scaling quantum linear systems solver via discrete adiabatic theorem (2021) | none | none | none |
+| [2305.11352](../notes/papers/2305.11352.md) | Jennings, Lostaglio, Pallister, Sornborger and Subasi, Randomized adiabatic quantum linear solver algorithm with optimal complexity scaling and detailed running costs (2023) | none | none | none |
+| [2406.12086](../notes/papers/2406.12086.md) | Dalzell, A shortcut to an optimal quantum linear system solver (2024) | none | none | none |
+| [2410.18178](../notes/papers/2410.18178.md) | Low and Su, Quantum linear system algorithm with optimal queries to initial state preparation (2024) | none | none | none |
+| [2601.16697](../notes/papers/2601.16697.md) | Mori, Kikuchi, Benedetti and Rosenkranz, Sparsity-dependent complexity lower bound of quantum linear system solvers (2026) | none | none | none |
+| [2609.22445](../notes/papers/2609.22445.md) | Patel, A near-optimal joint lower bound for sparse quantum linear system solvers (2026) | none | none | none |
+| [2502.11239](../notes/papers/2502.11239.md) | Tu, Dubynskyi, Mohammadisiahroudi, Riashchentceva, Cheng, Ryashchentsev, Terlaky and Liu, Towards identifying possible fault-tolerant advantage of quantum linear system algorithms in terms of space, time and energy (2025) | none | none | low |
+| [2411.02522](../notes/papers/2411.02522.md) | Morales, Pira, Schleich, Koor, Costa, An, Aspuru-Guzik, Lin, Rebentrost and Berry, Quantum linear system solvers: a survey of algorithms and applications (2024) | none | none | none |
+| [1910.06151](../notes/papers/1910.06151.md) | Chia, Gilyen, Li, Lin, Tang and Wang, Sampling-based sublinear low-rank matrix arithmetic framework for dequantizing quantum machine learning (2019) | none | none | none |
+| [1712.06239](../notes/papers/1712.06239.md) | Chen and Gao, Quantum algorithms for Boolean equation solving and quantum algebraic attack on cryptosystems (2017) | none | none | low |
+| [2111.00405](../notes/papers/2111.00405.md) | Ding, Gheorghiu, Gilyen, Hallgren and Li, Limitations of the Macaulay matrix approach for using the HHL algorithm to solve multivariate polynomial systems (2021) | none | none | low |
+| [2510.05588](../notes/papers/2510.05588.md) | Li, A new quantum linear system algorithm beyond the condition number and its application to solving multivariate polynomial systems (2025) | none | none | none |
+| [1712.07211](../notes/papers/1712.07211.md) | Faugere, Horan, Kahrobaei, Kaplan, Kashefi and Perret, Fast quantum algorithm for solving multivariate quadratic equations (2017) | none | none | low |
+| [2609.28901](../notes/papers/2609.28901.md) | Lee, Jeong and Kim, A quantum circuit for Gaussian elimination (2026) | none | low | low |
+| [2608.23929](../notes/papers/2608.23929.md) | Maeda and Yano, Quantum algorithms and hardness for point-count approximation over finite fields (2026) | none | none | none |
+| [math/0411623](../notes/papers/math-0411623.md) | Kedlaya, Quantum computation of zeta functions of curves (2004) | none | none | low |
+| [quant-ph/0405081](../notes/papers/quant-ph-0405081.md) | van Dam, Quantum computing and zeroes of zeta functions (2004) | none | none | none |
+| [2408.08292](../notes/papers/2408.08292.md) | Jordan, Shutty, Wootters, Zalcman, Schmidhuber, King, Isakov, Khattar and Babbush, Optimization by decoded quantum interferometry (2024) | none | none | none |
+| [quant-ph/0409035](../notes/papers/quant-ph-0409035.md) | Buhrman and Spalek, Quantum verification of matrix products (2004) | none | none | none |
+| [1103.0842](../notes/papers/1103.0842.md) | Belovs, Span-program-based quantum algorithm for the rank problem (2011) | none | none | none |
 
 The [parallel-experiment synthesis](../notes/quantum_experiment_parallelism.md)
 connects these sources to fixed and varied companions, patch/time blocking,
 joint-shot inference, billed usage, and IQP claim boundaries. The
 [design and execution documentation note](../notes/quantum_experiment_design_sources.md)
-records NIST, Qiskit and IBM sources with capture hashes. The two retained parallel-experiment
-PDFs have [replayable checksums](../parallel_experiment_pdfs.sha256); direct,
+records NIST, Qiskit and IBM sources with capture hashes. The two openly licensed parallel-experiment
+PDFs live in gororoba-documents-public with registered checksums; direct,
 version-pinned retrieval links and reading scopes live in each paper note.
 The remaining parallel-experiment papers retain direct URLs, hashes, and
 reading notes as external sources. The Das notice expressly requires permission

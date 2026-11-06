@@ -36,8 +36,7 @@ record bibliographic facts and measurements of the retrieved file.
   not grant permission to republish the file on repository servers.
 - Local verification: `docs/verify_sources.py` accepts an absent cache and
   checks the exact PDF bytes against the external record when present.
-  The verifier rejects Git-tracked cache files and external-only content
-  in the published PDF inventory.
+  The verifier rejects Git-tracked cache files and any hosted PDF.
 - Reading scope: abstract and citation on PDF p. 1; methodology in Sec. 3
   (pp. 4-5); allocation discussion in Secs. 4.1-4.2 (pp. 5-7); Sec. 5
   scheduling text and Algorithm 2 (p. 8); Secs. 6.1-6.3 and Algorithm 3
