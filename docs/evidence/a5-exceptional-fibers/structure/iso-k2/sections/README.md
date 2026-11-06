@@ -25,11 +25,13 @@ y_1 != 0; for every coordinate y_2..y_17 the eliminant (minimal polynomial) has 
 4. Domainhood lifts across each homogeneous nonzerodivisor of the regular sequence, so k[y]/K2 is a domain: K2 is prime
    over F_32009.
 5. The geometric components of the F_32009-irreducible V(K2) form one Frobenius orbit of m components of equal degree,
-   so m divides 23. With m = 23 every point of V(K2) would have Frobenius orbit size divisible by 23; section 1 has an
-   orbit of size 7. So m = 1: V(K2) is geometrically irreducible, and K2 (radical over a perfect field) stays prime over
+   so m divides 23. Section 1 is 23 distinct points, and a linear space of complementary dimension meets each of the
+   m conjugate components in at most 23/m points, so equality forces each component to own exactly 23/m of them,
+   disjoint from the others; Frobenius then moves every point of section 1 to the next component, and with m = 23
+   every orbit of section 1 would have size divisible by 23. Section 1 has an orbit of size 7. So m = 1: V(K2) is geometrically irreducible, and K2 (radical over a perfect field) stays prime over
    the algebraic closure.
 
-**Cohen-Macaulay check at both primes** (`cm1.sing`, `cm2.sing`): K2 + (four section forms) + (y_1) has dimension 0
+**Cohen-Macaulay check at both primes** (`cm1.sing`, `cm2.sing`, logs `cm1.log`, `cm2.log`; also `k2-cm.jsonl`): K2 + (four section forms) + (y_1) has dimension 0
 and length 23 = deg K2 at p = 32009 (section 2) and p = 32029 (section 10). A linear system of parameters of colength
 equal to the multiplicity makes k[y]/K2 Cohen-Macaulay and the five forms a regular sequence, which also gives y_1 a
 nonzerodivisor on the one-dimensional quotient in step 2.
@@ -51,4 +53,3 @@ use the generator list of their runs, whose generators 6 to 15 are the negatives
 (`../../arcs-iso-w8/scan-iso-p*.log`, `RESULT signs`). The automorphism y_j -> -y_j for j = 6..15 carries one K2 onto
 the other, so radicality, primality, degree and the Cohen-Macaulay property hold in either coordinate system; the sign
 matters only when K2 is evaluated at G.
-

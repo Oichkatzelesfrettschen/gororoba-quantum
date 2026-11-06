@@ -10,7 +10,7 @@ ring is reduced, so A is reduced when the affine chart C is reduced.
 |---|---|---|
 | The chart file and the Azure radical script carry one ideal | `same.sing` | `iso_k2.rel` (sha256 53852d5c...) and the ideal of `iso-global.sing` (the stopped global radical job) contain each other |
 | Every coordinate is a nonzerodivisor | `colon.sing`, `colon.log` | K : y_i = K for i = 1..17, about 1 s in total; K has dim 5, degree 23 |
-| Chart y_2 = 1 and chart y_3 = 1 are reduced | `chart2.sing`, `chart3.sing` (laptop), `chart2.log`, `chart3.log` | radical(Kc) reduces to 0 modulo Kc in 1 s and 5 s |
+| Chart y_2 = 1 and chart y_3 = 1 are reduced | `chart2-bound.sing` (reads the digest-bound `iso_k2.rel`), `chart3.sing` (laptop), `chart2-bound.log`, `chart3.log`; `chart2.sing` read a cwd-relative copy | radical(Kc) reduces to 0 modulo Kc in 1 s and 5 s |
 | Second prime p = 32029 | `p32029.sing`, `p32029.log` (relations of `a5-p2-iso/iso_p2/d2/`, 68 quadrics, degree-certified) | K : y_i = K for every coordinate; charts y_2 = 1 and y_3 = 1 reduced in 2 s and 9 s |
 | Retained corroboration | `chart-iso-long-summary.json` (Kaggle kernels from `working/distribute/make_kernel.py`) | 12 of 17 coordinate charts reduced (1-5, 7, 8, 11-13, 15, 17); the 8,000 s timeouts fell in the minAssChar step after the radical |
 

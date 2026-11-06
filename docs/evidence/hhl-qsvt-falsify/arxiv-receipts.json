@@ -1,0 +1,13 @@
+{
+ "retrieved_utc": "2026-11-06",
+ "source": "arXiv API (arxiv_get), id, title and authors as returned",
+ "records": [
+  {"id": "0811.3171v3", "title": "Quantum algorithm for solving linear systems of equations", "authors": ["Aram W. Harrow", "Avinatan Hassidim", "Seth Lloyd"]},
+  {"id": "1806.01838v1", "title": "Quantum singular value transformation and beyond: exponential improvements for quantum matrix arithmetics", "authors": ["Andras Gilyen", "Yuan Su", "Guang Hao Low", "Nathan Wiebe"]},
+  {"id": "2111.08152v1", "title": "Optimal scaling quantum linear systems solver via discrete adiabatic theorem", "authors": ["Pedro C. S. Costa", "Dong An", "Yuval R. Sanders", "Yuan Su", "Ryan Babbush", "Dominic W. Berry"]},
+  {"id": "1301.2340v4", "title": "Preconditioned quantum linear system algorithm", "authors": ["B. D. Clader", "B. C. Jacobs", "C. R. Sprouse"]},
+  {"id": "1511.02306v2", "title": "Quantum algorithm for systems of linear equations with exponentially improved dependence on precision", "authors": ["Andrew M. Childs", "Robin Kothari", "Rolando D. Somma"]},
+  {"id": "quant-ph/0407010v1", "title": "Transformation of quantum states using uniformly controlled rotations", "authors": ["Mikko Mottonen", "Juha J. Vartiainen", "Ville Bergholm", "Martti M. Salomaa"]},
+  {"id": "1103.0842v1", "title": "Span-program-based quantum algorithm for the rank problem", "authors": ["Aleksandrs Belovs"]}
+ ]
+}

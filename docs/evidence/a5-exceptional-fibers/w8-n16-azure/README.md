@@ -13,7 +13,7 @@ re-hashed after the verified copy (`unreceipted/teardown.log`).
 | per block rank_W | 15364 / 15264 / 15315 / 15315 | 15364 / 15264 / 15315 / 15315 |
 | per block cols | 23376 / 23136 / 23256 / 23256 | same |
 | dim quotient, closure rounds, tables | 93024, 5, sparse | 93024, 5, sparse |
-| Singular export, sha256/16 of all 10 files | s.txt 47e95f5c..., qG c2d5f4d6..., qM1-7, qB | identical, file by file |
+| Singular export, sha256/16 of all 10 files | s.txt 47e95f5c..., qG c2d5f4d6..., qM1-7, qB | matching 64-bit SHA-256 prefixes, file by file |
 | seconds: Singular / products / closure / total | 752 / 2,201 / 4,751 / 7,841 | 688 / 2,473 / 9,264 / 13,429 |
 | wall, peak RSS, preflight | 2:10:41, 24.9 GiB, 58.9 GiB | 3:43:48, 45.7 GiB, 97.8 GiB |
 | VM cost (wall x hourly rate) | 2.18 h x $0.547 = $1.19 | 3.73 h x $1.094 = $4.08 |
@@ -23,7 +23,8 @@ Findings.
 - h_5(F(W8)) = 4116 = HF(k[y]/K2, 5) at p = 32009, reached by two product sets (the 4,116 standard representatives
   and all 98,280 products) with the same per-block ranks of the closure space W, so the receipt path is confirmed on
   this instance: the 94,164 products the receipt drops add no rank, as its 265 sampled nonstandard checks showed.
-- The Singular stage is deterministic across hosts and worker counts: all ten export files agree byte for byte, so
+- The Singular stage is deterministic across hosts and worker counts: all ten export files have matching 64-bit SHA-256 prefixes (the full hashes survive only for the
+  retained receipt-run export, `.sha256` files beside each table), so
   the export kept on westus3 ([`working/exports/w8nm-n16-rcpt/`](../working/exports/w8nm-n16-rcpt/export.json), 235 MB; `qM7.txt` is split into 45 MB parts listed in `split.txt`, every data file matches its `.sha256`, and the scripts carry `~` for the VM home) is the export of either run.
 - The receipt halves the closure (1.95x) and the peak memory (0.54x) on half the VM; the products stage drops only
   1.12x for 24x fewer products, so most of that stage's cost is independent of the product count. Inference, not

@@ -3,3 +3,6 @@ e8_base2-p32009.sing sha256 236ccf3a411d2262849a6a1b83aa08034b25ad29cfbc494fa142
 e8_base2-p32029.sing sha256 da7ef3984e150c561f2c6dac5280b7c8de9f6f9ace087b31537e91f9f9a3057e
 Singular: passagemath 4.4.1 (laptop a5env), timeout 900, nice 10; 2.90 s / 3.04 s, 32 MB each
 containment test: V(P_X) in V(P_Y) iff reduce(P_Y, std(P_X)) == 0 for primes P_X, P_Y through 0; every unlisted pair printed 0
+premise V(F) = union of the five pulled-back nullity-12 closures: F is the Schur-coordinate ideal of the nullity >= 12
+locus (structure/base_locus.py, module docstring), and the regularity record gives R_12 = V cup B9
+(docs/evidence/a5-strata-regularity/README.md: "R_12 = V u B9", and "R_12 is the union of the orbits of V, B9, VB, V^a_+ and V^a_-")

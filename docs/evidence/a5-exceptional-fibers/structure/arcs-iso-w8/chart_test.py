@@ -58,6 +58,12 @@ def main() -> None:
         '"degree", mult(E), "s", rtimer-t0;\n'
         'write(":w chart-sat.txt", S);\nquit;\n'
     )
+    ledger = {
+        "draw": a.draw,
+        "rule": f"uint16 values < {a.prime} in index order, zero-based; l0 = sum c_j G_j",
+        "coefficients": [[k, vals[k]] for k in idx],
+    }
+    (HERE / f"chart-{a.fiber}-p{a.prime}-coefficients.json").write_text(json.dumps(ledger, indent=1) + "\n")
     print(out.relative_to(ROOT), "indices", idx[0], "..", idx[-1])
 
 

@@ -9,14 +9,21 @@ D = Path("docs/evidence/a5-exceptional-fibers/structure/iso-k2/sections")
 first, count, draws = int(sys.argv[1]), int(sys.argv[2]), sys.argv[3:]
 draw = ",".join(draws)
 vals = [x for d in draws for x in json.load(open(d))["values"]]
+local = [(d, i) for d in draws for i in range(len(json.load(open(d))["values"]))]
 need = 68 * count
 idx = [i for i in range(len(vals)) if vals[i] < 32029][:need]
 if len(idx) < need:
     raise SystemExit(f"only {len(idx)} usable values")
 v = [vals[i] for i in idx]
-rel = Path("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-iso/iso_p2/d2/relations-d2.rel").resolve()
+rel = "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-iso/iso_p2/d2/relations-d2.rel"
 sections: list[list[str]] = []
-rec = {"draw": draw, "rule": "uint16 values < 32029 in index order, zero-based", "indices": idx, "sections": sections}
+rec = {
+    "draw": draw,
+    "rule": "uint16 values < 32029 in index order over the concatenated draws, zero-based",
+    "indices": idx,
+    "coefficients_by_draw": [[local[i][0], local[i][1], vals[i]] for i in idx],
+    "sections": sections,
+}
 for s in range(count):
     forms = [
         "+".join(f"{a}*y({j + 1})" for j, a in enumerate(v[(4 * s + f) * 17 : (4 * s + f + 1) * 17])) for f in range(4)
