@@ -405,6 +405,9 @@ rows stay, so the ledger records what was tried and what it cost as well as what
 `"$PYTHON" docs/evidence/a5-exceptional-fibers/ledger.py --check` validates it (status vocabulary, unique ids,
 existing evidence paths), `--summary` counts it, and `--open` lists what remains to decide. A new result enters the
 ledger in the change that retains its evidence; the sections above explain the results the ledger rows cite.
+The per-degree rows h_d (every fiber, prime and degree d = 1..6) come from `claims.json` with three corrections the
+registry cannot yet carry (#753): W8 -> N- h_5 = 4116 at 32009 (two product sets), its transport to W8 -> N+ by the
+t9 sign isomorphism, and the arc lower bound 861 <= h_5 for E8-bar -> N+- at both primes.
 
 ## Work in progress
 
