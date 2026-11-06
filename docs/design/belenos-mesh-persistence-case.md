@@ -187,6 +187,22 @@ The mode-swap bound gives at most 51.4 s per 30,000-sample iteration, 257 s for 
   the useful slope or redrawn reading ends the case. An indeterminate reading may justify a second job replaying the swapped layout of set 4 (the same
   six half blocks on other slots, 1.09 credits), only on the owner's further approval.
 
+## Scheduled submission
+
+The owner approved this case on 2026-11-06, while `qpu:belenos` read `unreachable` (Explorer availability 0 % on
+2026-11-02 to 2026-11-04 and 2026-11-06, 2.19 % on 2026-11-05) and its processor record lacked `specs.architecture`,
+so `qd_platform.py plan` refuses it. The schedule
+[`belenos-mesh-persistence.json`](../../results/quandela/schedules/belenos-mesh-persistence.json) carries the job
+for the workflow of [quandela-scheduled-runs](../runbooks/quandela-scheduled-runs.md), disabled and unpinned until
+the chip returns; `qd_schedule.py pin` then plans it read-only, and the merge of `enabled: true` with the pinned body
+is the submission act the approval covers. Its plan check, `belenos_mesh_persistence.py --plan-check`, refuses a plan
+of another case, platform or ceiling and a record whose photon rate would push five iterations past the 270 s margin:
+each iteration takes 50 s for its first 6,000 samples and 1 / (clock x efficiency) per further sample, so the
+efficiency must reach 24,000 / (clock x 4 s), and the check scales job-00's lowest global efficiency 0.0034 by the
+record's Transmittance (%) against job-00's plan-time 4.89 % (hypothesis: the global efficiency follows the record
+transmittance). At 4.94 MHz the floor is 1.75 %; the record of 2026-11-06 reads 5.23 %. The matched check runs
+`--analyze` on the collected run.
+
 ## Optional second case: the teleportation replay
 
 Only if this case reads **persists**, a replay of the twelve job-02 and job-03 teleportation seeds asks whether the

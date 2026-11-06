@@ -14,6 +14,7 @@ Usage:
   belenos_mesh_persistence.py --check          rebuild the case and compare it byte for byte
   belenos_mesh_persistence.py --power --seed qrng:<draw>#<index> --out PATH
   belenos_mesh_persistence.py --analyze RUN    write RUN/analysis.json from a collected run
+  belenos_mesh_persistence.py --plan-check PLAN  refuse a scheduler plan outside the written case
 """
 
 from __future__ import annotations
@@ -163,6 +164,47 @@ def bound_seconds() -> float:
 
 def credit_ceiling() -> float:
     return 1.0 + swap.SHOTS_PER_ITERATION * 1e-6
+
+
+# The mode-swap job-00 whose lowest global efficiency (swap.MIN_GLOBAL_EFFICIENCY) the duration bound takes; its
+# plan-time record transmittance scales that efficiency to another record (plan_check).
+EFFICIENCY_RUN = "results/quandela/runs/2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved-job-00"
+
+
+def transmittance_floor(clock_mhz: float) -> float:
+    """The record transmittance (%) at which the case's iterations still fit DURATION_MARGIN x MAX_DURATION.
+
+    Each iteration takes swap.SECONDS_PER_ITERATION for its first MEASURED_SAMPLES samples and 1 / (clock x efficiency)
+    per further sample. hypothesis: the global efficiency scales with the record's Transmittance (%) from job-00's
+    plan-time value, which job-00's MIN_GLOBAL_EFFICIENCY accompanied."""
+    slack = swap.DURATION_MARGIN * swap.MAX_DURATION / len(ORDER) - swap.SECONDS_PER_ITERATION
+    require(slack > 0, "the measured iteration alone exceeds the duration margin")
+    efficiency = (swap.SAMPLES_PER_ITERATION - swap.MEASURED_SAMPLES) / (clock_mhz * 1e6 * slack)
+    retained = json.loads((ROOT / EFFICIENCY_RUN / "submission.json").read_text(encoding="utf-8"))["perfs_at_plan"]
+    return float(retained["Transmittance (%)"]) * efficiency / swap.MIN_GLOBAL_EFFICIENCY
+
+
+def plan_check(plan: Mapping[str, Any]) -> str:
+    """Refuse a scheduler plan that leaves the written case: another case, platform or ceiling, an admitted status
+    other than running, or a record whose clock and transmittance put the iterations past the duration margin."""
+    require(plan.get("cases_sha256") == sha256_bytes((CASE / "cases.json").read_bytes()), "the plan holds another case")
+    require(plan.get("platform") == "qpu:belenos", f"the plan targets {plan.get('platform')}")
+    ceiling = plan.get("credit_ceiling")
+    require(
+        isinstance(ceiling, int | float) and not isinstance(ceiling, bool) and 0 <= ceiling <= credit_ceiling(),
+        f"credit ceiling {ceiling!r} exceeds {credit_ceiling()}",
+    )
+    require(plan.get("admitted_statuses") in ([], ["running"]), f"admitted statuses {plan.get('admitted_statuses')}")
+    perfs = plan.get("perfs_at_plan") or {}
+    figures = [perfs.get("Clock (MHz)"), perfs.get("Transmittance (%)")]
+    require(
+        all(isinstance(v, int | float) and not isinstance(v, bool) and math.isfinite(v) and v > 0 for v in figures),
+        f"the record lacks a positive clock or transmittance: {figures!r}",
+    )
+    clock, transmittance = (float(v) for v in figures if isinstance(v, int | float))
+    floor = transmittance_floor(clock)
+    require(transmittance >= floor, f"transmittance {transmittance} % below the duration floor {floor:.2f} %")
+    return f"plan inside the written case: transmittance {transmittance} % against the floor {floor:.2f} %"
 
 
 def build(check_only: bool) -> int:
@@ -400,11 +442,18 @@ def main() -> int:
     mode.add_argument("--check", action="store_true")
     mode.add_argument("--power", action="store_true")
     mode.add_argument("--analyze", type=Path, metavar="RUN")
+    mode.add_argument("--plan-check", type=Path, metavar="PLAN")
     qrng_seeds.add_seed_argument(parser, "--seed", help="power-simulation seed, qrng:<draw>#<index>")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
     if args.build or args.check:
         return build(check_only=args.check)
+    if args.plan_check:
+        try:
+            print(plan_check(json.loads(args.plan_check.read_text(encoding="utf-8"))))
+        except (ValueError, OSError) as error:
+            raise SystemExit(str(error)) from None
+        return 0
     if args.power:
         if args.seed is None or args.out is None:
             parser.error("--power needs --seed and --out")

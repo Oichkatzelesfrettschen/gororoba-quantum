@@ -349,3 +349,27 @@ def test_retained_results_replayed_through_analyze_read_full_persistence(tmp_pat
     record = bmp.analyze(replay)
     if record["reading"] != "persists" or record["persistence"]["slope"] != pytest.approx(1.0):
         raise AssertionError(record)
+
+
+def test_the_plan_check_admits_the_case_and_refuses_a_slow_record() -> None:
+    """A plan of the frozen case at the retained figures passes; a transmittance below the duration floor, another
+    case or a raised ceiling is refused."""
+    retained = json.loads((bmp.ROOT / bmp.EFFICIENCY_RUN / "submission.json").read_text(encoding="utf-8"))
+    plan = {
+        "cases_sha256": bmp.sha256_bytes((bmp.CASE / "cases.json").read_bytes()),
+        "platform": "qpu:belenos",
+        "credit_ceiling": bmp.credit_ceiling(),
+        "admitted_statuses": ["running"],
+        "perfs_at_plan": retained["perfs_at_plan"],
+    }
+    if "inside the written case" not in bmp.plan_check(plan):
+        raise AssertionError("the retained figures were refused")
+    floor = bmp.transmittance_floor(float(retained["perfs_at_plan"]["Clock (MHz)"]))
+    slow = {**plan["perfs_at_plan"], "Transmittance (%)": 0.99 * floor}
+    for mutated in (
+        {**plan, "perfs_at_plan": slow},
+        {**plan, "cases_sha256": "0" * 64},
+        {**plan, "credit_ceiling": bmp.credit_ceiling() + 0.01},
+    ):
+        with pytest.raises(SystemExit):
+            bmp.plan_check(mutated)
