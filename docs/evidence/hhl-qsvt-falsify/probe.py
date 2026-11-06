@@ -13,6 +13,7 @@ import json
 import sys
 from pathlib import Path
 
+import flint
 import numpy as np
 
 sys.path.insert(0, "gororoba_quantum")
@@ -51,6 +52,10 @@ def stats(name: str, v: np.ndarray) -> dict[str, object]:
         "sigma_min": float(s[-1]),
         "kappa": float(s[0] / s[-1]) if s[-1] > 1e-12 * s[0] else "inf",
         "rank": int((s > 1e-10 * s[0]).sum()),
+        # exact integer rank (python-flint fmpz_mat) when a has integer coordinates
+        "rank_exact": int(flint.fmpz_mat([[int(round(x)) for x in row] for row in m]).rank())
+        if np.allclose(v, np.round(v))
+        else None,
         "pauli_terms": int(nz.sum()),
         "lcu_ancillas": int(np.ceil(np.log2(nz.sum()))),
         "alpha_l1": float(np.abs(c).sum()),

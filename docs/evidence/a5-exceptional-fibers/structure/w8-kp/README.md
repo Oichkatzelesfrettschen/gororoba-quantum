@@ -1,81 +1,87 @@
-# W8 -> N-: K2 : P is geometrically prime at p = 32009
+# W8 -> N-: the quadric scheme is two geometric primes, of degrees 20 and 30, at p = 32009 and p = 32029
 
-Claim. Over F_32009 the W8 -> N- degree-2 kernel K2 equals P cap Q with P prime (projective dimension 5, degree 20)
-and Q = K2 : P prime and geometrically prime (projective dimension 5, degree 30). So V(K2) has exactly two components,
-V(P) and V(Q), and the criterion of the findings note (F(I) = k[y]/K2 exactly when Proj F(I) contains V(P) and every
-component of V(K2 : P)) needs arcs into V(P) and into V(Q) only.
+Claim. At p = 32009 and at p = 32029 the W8 -> N- degree-2 kernel K2 is radical and V(K2) = C20 cup C30 with C20 and
+C30 geometrically irreducible of projective dimension 5 and degrees 20 and 30. At 32009, with P the ideal of
+`check.sing`, V(P) = C20 (so rad P = I(C20)) and K2 : P = I(C30), prime and geometrically prime; at 32029 the two
+primes are named I(C20) and I(C30) and are not asserted to be coefficientwise reductions of the 32009 ideals. The
+criterion of the findings note (F(I) = k[y]/K2 exactly when Proj F(I) contains every component of V(K2)) therefore
+needs arcs into C20 and C30 only.
 
-Inputs. Q is `quotient.txt` (sha256 dd18bea7..., written by
-`check.sing`, whose log `check.log` records K2 = P cap (K2 : P), P prime of degree 20, K2 : P of projective dimension 5
-and degree 30). Premises from `docs/notes/topics/a5-exceptional-fiber-findings.md`: K2 radical (W8 row of the
-structure table), k[y]/K2 Cohen-Macaulay at 32009 for `runs/w8_a2/w8_k2.rel` (`k2-cm.jsonl`; `same-k2.sing` and
-`same-k2.log` show that this K2, the K of `check.sing` and the degree-2 receipt relations
-`distribute/out/a5-w8-receipt-p1/w8_p1/d2/relations-d2.rel` contain one another, in the same coordinates y(1..24)) (section "The quadric ring k[y]/K2 is Cohen-Macaulay"), so every
-minimal prime of K2 has projective dimension 5 and none is embedded; Q, the intersection of the minimal primes of K2
-other than P, is radical and equidimensional of degree 30.
+## Inputs and coordinates
 
-Sections. `build.py` takes 1,344 ANU QRNG values (draws `docs/evidence/anu_qrng/draw-2026-11-05T223710Z.json`,
-`T223713Z`, `T223715Z`; uint16 values below 32009 in draw order then index order, each used once; first and last index
-of each section in `coefficients.json`). Section s adds five forms L1..L5, the chart l0 = 1 for a sixth form and
-t = u for a seventh. Singular 4.4.1 (passagemath, laptop), under 1 s each; logs `section1.log` .. `section8.log`,
-script digests `sha256.txt`.
+K2 at 32009 is `working/runs/w8_a2/w8_k2.rel` (sha256 31feaac8...), Cohen-Macaulay of degree 50 (`k2-cm.jsonl`);
+`same-k2.sing` and `same-k2.log` show that it, the K of `check.sing` and the degree-2 receipt relations
+`working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/relations-d2.rel` contain one another in the same coordinates
+y(1..24) (the generators G_1..G_24 of the header). K2 at 32029 is
+`working/distribute/out/a5-p2-w8/w8_p2/d2/relations-upto-d2.rel` (sha256 ed601263...), Cohen-Macaulay of degree 50.
+`check.log` records that P contains K2 and the nine linear forms Lambda (`P-p32009.txt`, first nine generators), that P
+has projective dimension 5 and degree 20, and that K2 = P cap (K2 : P) with K2 : P (`quotient.txt`, sha256
+dd18bea7...) of projective dimension 5 and degree 30. No primality of P is used below.
 
-| Section | dim, vdim | eliminant of t: degree, factor degrees (all multiplicity 1) |
+## Sections of the whole V(K2)
+
+`build_k2_sections.py PRIME 8 DRAWS` writes eight sections and the Lambda check per prime from 1,344 ANU QRNG values
+(32009: draws `draw-2026-11-06T003103Z.json`, `T003106Z`, `T003108Z`; 32029: `draw-2026-11-05T224545Z.json`,
+`T224548Z`, `T224550Z`; the draw file and zero-based index of every coefficient in `coefficients-k2-pP.json`). A section
+adds five forms L1..L5, the chart l0 = 1 for a sixth form and t = u for a seventh. Singular 4.4.1 (passagemath,
+laptop), about 2 s each; logs `k2-pP-sectionS.log`, `p-pP-check.log`.
+
+| Section | 32009: vdim, factor degrees of the eliminant of t | 32029: vdim, factor degrees |
 |---|---|---|
-| 1 | 0, 30 | 30: 3, 3, 24 |
-| 2 | 0, 30 | 30: 1, 7, 8, 14 |
-| 3 | 0, 30 | 30: 1, 2, 7, 7, 13 |
-| 4 | 0, 30 | 30: 1, 3, 5, 21 |
-| 5 | 0, 30 | 30: 1, 3, 5, 21 |
-| 6 | 0, 30 | 30: 1, 3, 3, 23 |
-| 7 | 0, 30 | 30: 8, 22 |
-| 8 | 0, 30 | 30: 1, 4, 12, 13 |
+| 1 | 50: 1, 1, 1, 2, 5, 15, 25 | 50: 1, 1, 1, 1, 3, 15, 28 |
+| 2 | 50: 2, 11, 17, 20 | 50: 7, 10, 13, 20 |
+| 3 | 50: 1, 1, 3, 3, 3, 5, 5, 8, 10, 11 | 50: 1, 2, 8, 9, 12, 18 |
+| 4 | 50: 1, 1, 4, 5, 9, 10, 20 | 50: 1, 1, 1, 1, 2, 5, 7, 13, 19 |
+| 5 | 50: 1, 1, 2, 4, 7, 7, 28 | 50: 1, 1, 12, 16, 20 |
+| 6 | 50: 1, 1, 4, 5, 19, 20 | 50: 1, 3, 3, 6, 14, 23 |
+| 7 | 50: 1, 1, 1, 17, 30 | 50: 1, 1, 2, 5, 8, 9, 10, 14 |
+| 8 | 50: 1, 1, 1, 1, 2, 2, 3, 3, 7, 7, 8, 14 | 50: 1, 4, 4, 16, 25 |
+| K2 + Lambda | projective dimension 5, degree 20; section 1: 20: 1, 1, 1, 2, 15 | 5, 20; section 1: 20: 1, 1, 3, 15 |
 
-Proof.
+All eliminants have degree equal to vdim and every factor has multiplicity 1.
 
-1. Reduced section. A squarefree eliminant of degree 30 = vdim makes A = k[y, t]/(Q + L + (l0 - 1) + (t - u)) equal
-   to k[t]/(e): 30 distinct points of V(Q) in the chart l0 != 0, all cut by L, and Frobenius acts on them with orbits
-   the factor degrees of e.
-2. Each component contributes exactly its degree, disjointly. Let V(Q) = V_1 cup ... cup V_m over the algebraic closure
-   (Q stays radical and equidimensional there, F_p being perfect). A linear space of complementary dimension meets
-   V_i in at most deg V_i points when the intersection is finite, so the 30 points are at most sum deg V_i = 30, and
-   equality forces each V_i to meet it in deg V_i points, disjoint from the other V_j.
-3. F_p-irreducible. An F_p-component of degree d then owns a Frobenius-stable set of d section points, so d is a subset
-   sum of orbit sizes in every section. Section 1 allows proper d in {3, 6, 24, 27}, section 7 allows {8, 22}; the sets
-   are disjoint, so V(Q) is F_p-irreducible and, Q being radical, Q is prime over F_32009.
-4. Geometrically prime. If Q split over the algebraic closure into r > 1 conjugate components, Frobenius would permute
-   them cyclically and, by step 2, move each section point off its own component, so every orbit size would be a
-   multiple of r. Sections 2, 3, 4, 5, 6 and 8 each have an orbit of size 1, so r = 1.
+## Proof (at each prime)
 
-Scope. The section below carries the decomposition to p = 32029. It rests on
-the two premises above, both recorded in the findings note at 32009. Characteristic 0 is not addressed.
+1. Reduced section. A squarefree eliminant of degree vdim makes the point scheme k[t]/(e): vdim distinct points in
+   the chart l0 != 0, on which Frobenius acts with orbits the factor degrees.
+2. K2 radical. A = k[y]/K2 is Cohen-Macaulay of dimension 6, so the general forms L1..L5 are a regular sequence and
+   B = A/(L1..L5) is Cohen-Macaulay of dimension 1; l0 avoids its minimal primes (the section is finite and of full
+   length 50 = deg K2, so no point lies at l0 = 0), so l0 is a nonzerodivisor on B and B embeds in
+   B[1/l0] = (B/(l0 - 1))[l0, 1/l0], which is reduced by step 1. Reducedness lifts from A/(L1..L_k) to A/(L1..L_(k-1))
+   along the homogeneous nonzerodivisor L_k (a nilpotent a lies in L_k A, a = L_k b with b nilpotent of lower degree),
+   so A is reduced.
+3. Each component contributes exactly its degree, disjointly. Over the algebraic closure V(K2) = V_1 cup ... cup V_m
+   is equidimensional of degree 50 (K2 radical, A Cohen-Macaulay, F_p perfect). A linear space of complementary
+   dimension meets V_i in at most deg V_i points when the intersection is finite, so 50 distinct points force each V_i
+   to contribute exactly deg V_i points, disjoint from the others; an F_p-component of degree d owns a
+   Frobenius-stable set of d section points, so d is a subset sum of orbit sizes in every section.
+4. Possible degrees. The proper subset sums common to the eight sections are 2, 19, 20, 30, 31, 48 at 32009 and
+   17, 20, 30, 33 at 32029.
+5. The degree-20 component. The 5-dimensional part of V(K2 + Lambda) is the union of the components of V(K2) inside
+   V(Lambda). Section 1 cuts K2 + Lambda (degree 20) in 20 distinct points, a subset of the section-1 points of K2, so
+   that union has degree exactly 20 (the 20 distinct points exclude a doubled component of degree 10) and owns the
+   section-1 orbits 1, 1, 1, 2, 15 (32009) or 1, 1, 3, 15 (32029). Splitting 20 into allowed degrees with those orbits
+   is impossible, so it is one F_p-component C20. The remaining orbits, 1, 1, 5, 25 (32009) or 1, 1, 28 (32029), sum to
+   30, which has no split into allowed degrees, so the rest is one F_p-component C30.
+6. Geometric irreducibility. If an F_p-component split over the algebraic closure into r > 1 conjugate components,
+   Frobenius would permute them cyclically and, by step 3, every orbit on it would have size divisible by r. Each of
+   C20 and C30 owns an orbit of size 1 in section 1.
+7. The ideals of check.sing at 32009. P contains K2 and Lambda, so V(P) lies in V(K2 + Lambda); V(P) has projective
+   dimension 5 and degree at most 20, so its reduced 5-dimensional part is C20 and V(P) = C20, rad P = I(C20). Since K2
+   is radical, K2 = I(C20) cap I(C30), and K2 : P = (I(C20) : P) cap (I(C30) : P) = (1) cap I(C30) = I(C30), because P
+   lies in I(C20) and not in the prime I(C30). This needs no primality of P.
 
-## The same decomposition at p = 32029
+## Corroboration: sections of K2 : P at 32009
 
-`build_k2_p32029.py` cuts the whole V(K2) at p = 32029 (`working/distribute/out/a5-p2-w8/w8_p2/d2/relations-upto-d2.rel`,
-sha256 ed601263..., Cohen-Macaulay of degree 50 by `k2-cm.jsonl`) with 1,344 further QRNG values (draws
-`draw-2026-11-05T224545Z.json`, `T224548Z`, `T224550Z`; indices in `coefficients-k2-p32029.json`). Logs
-`k2-p32029-section1.log` .. `k2-p32029-section8.log`, about 2 s each:
+`build.py` cuts V(K2 : P) itself (`quotient.txt`) with 1,344 further QRNG values (draws
+`draw-2026-11-05T223710Z.json`, `T223713Z`, `T223715Z`; the draw file and index of every coefficient in
+`coefficients.json`); logs `section1.log` .. `section8.log`.
 
-| Section | vdim | eliminant of t: degree, factor degrees |
-|---|---|---|
-| 1 | 50 | 50: 1, 1, 1, 1, 3, 15, 28 |
-| 2 | 50 | 50: 7, 10, 13, 20 |
-| 3 | 50 | 50: 1, 2, 8, 9, 12, 18 |
-| 4 | 50 | 50: 1, 1, 1, 1, 2, 5, 7, 13, 19 |
-| 5 | 50 | 50: 1, 1, 12, 16, 20 |
-| 6 | 50 | 50: 1, 3, 3, 6, 14, 23 |
-| 7 | 50 | 50: 1, 1, 2, 5, 8, 9, 10, 14 |
-| 8 | 50 | 50: 1, 4, 4, 16, 25 |
+| Section | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|---|---|---|---|---|---|---|---|
+| factor degrees (degree 30 = vdim, squarefree) | 3, 3, 24 | 1, 7, 8, 14 | 1, 2, 7, 7, 13 | 1, 3, 5, 21 | 1, 3, 5, 21 | 1, 3, 3, 23 | 8, 22 | 1, 4, 12, 13 |
 
-Every section is 50 distinct points, so K2 is radical at 32029 (a reduced Artinian reduction of a Cohen-Macaulay
-graded ring lifts reducedness along the regular sequence). The proper subset sums common to all eight partitions are
-17, 20, 30 and 33. `p-p32029-check.sing` takes Lambda, the nine linear forms of P at 32009 with i = 10754 replaced by
-the 32029 root 9115 (a choice of linear space; nothing below needs Lambda to cut out a prime): K2 + Lambda has
-projective dimension 5 and degree 20, and section 1 cuts it to 20 distinct points with orbits 1, 1, 3, 15
-(`p-p32029-check.log`), a subset of the 50 points of section 1 of K2. The 20 distinct points make 20 the degree of the
-reduced 5-dimensional part of V(K2 + Lambda), excluding a doubled component of degree 10; that part is the union of
-the components of V(K2) inside V(Lambda), of total degree 20; with component degrees in {17, 20, 30, 33} that is one
-component of degree 20, and the rest, of degree 30, is one component. In section 1 the degree-20 component holds the
-orbits 1, 1, 3, 15 and the degree-30 component 1, 1, 28, so each has a size-1 orbit and is geometrically irreducible.
-So at p = 32029 as at p = 32009, K2 = P cap Q with P and Q geometrically prime of degrees 20 and 30.
+Sections 1 and 7 share no proper subset sum (3, 6, 24, 27 against 8, 22) and six sections have an orbit of size 1, so
+V(K2 : P) is geometrically irreducible of degree 30, which agrees with K2 : P = I(C30).
+
+Scope. Finite fields F_32009 and F_32029; characteristic 0 is not addressed.

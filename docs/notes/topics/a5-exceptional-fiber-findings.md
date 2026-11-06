@@ -188,7 +188,7 @@ ran 40,000 s without a result. Taking the radical first and `minAssChar` decompo
 | E8-bar -> N+- | no | 16, 69, 195, 440 | two: (4, 11), (3, 4), computed on N+ and again on N- (9 and 14 linear generators, 12 s, Kaggle CPU), as the pair flip requires |
 | E8-bar -> VB | yes | 10, 34, 80, 155 | two: (3, 3), (3, 4) |
 | Iso | radical on 12 of 17 affine charts (8,000 s per chart); 5 charts unfinished | | one facstd piece, projective dimension 4, degree 23; prime split not reached (whole-ideal `minAssChar` and `minAssGTZ` each past 41,000 s) |
-| W8 -> N- | yes | 24, 156, 600 | K2 = P cap (K2 : P), checked by recomputing the intersection: P is prime of projective dimension 5 and degree 20 with 9 linear generators (the unique minimal prime of facstd piece 1, `minAssChar` 1,114 s; the global radical test took 24,548 s; the kernels report seconds in fields named `_ms`) and contains K2; K2 : P has projective dimension 5, degree 30 and 131 generators (quotient 26 ms); all at p = 32009, where K2 has the same Hilbert series as at 32029, so the degrees add to 50; P and K2, hence K2 : P, are fixed by the diagonal Klein four-group; K2 : P is geometrically prime at p = 32009 and p = 32029, and K2 radical at 32029 (QRNG point sections, [structure/w8-kp](../../evidence/a5-exceptional-fibers/structure/w8-kp/README.md); `minAssChar` on facstd piece 2 had run past 41,000 s) |
+| W8 -> N- | yes | 24, 156, 600 | K2 = P cap (K2 : P), checked by recomputing the intersection: P is of projective dimension 5 and degree 20 with 9 linear generators (the unique minimal prime of facstd piece 1, `minAssChar` 1,114 s; the global radical test took 24,548 s; the kernels report seconds in fields named `_ms`) and contains K2; K2 : P has projective dimension 5, degree 30 and 131 generators (quotient 26 ms); all at p = 32009, where K2 has the same Hilbert series as at 32029, so the degrees add to 50; P and K2, hence K2 : P, are fixed by the diagonal Klein four-group; K2 : P is geometrically prime at p = 32009 and p = 32029, and K2 radical at 32029 (QRNG point sections, [structure/w8-kp](../../evidence/a5-exceptional-fibers/structure/w8-kp/README.md); `minAssChar` on facstd piece 2 had run past 41,000 s) |
 
 The quadric schemes V(K2) have projective dimension 3 and degree 12 (X-), 4 and 11 (E8-bar -> N+-), 5 and 50 (W8,
 h = 24, 156, 600, 1725), 3 and 7 (E8-bar -> VB, h = 10, 34, 80, 155). Each dimension where a germ bound exists
@@ -269,7 +269,7 @@ For W8 -> N- the criterion becomes geometric. Each certified degree d <= 4 is a 
 bounds h_d from below, and the 144 degree-2 relations of the membership receipt, all in L, bound it from above by the
 K2 count, so every relation of F(I) through degree 4 lies in the ideal of the 144 quadrics, and a relation outside K2,
 if one exists, starts in degree 5 or later, where no finite ladder closes the question. V(K2) has projective dimension
-5, the germ bound, and K2 = P cap (K2 : P) is radical with P prime of degree 20 and K2 : P of degree 30 (K2 : P lies
+5, the germ bound, and K2 = P cap (K2 : P) is radical with rad P prime of degree 20 and K2 : P of degree 30 (K2 : P lies
 outside P, or the degrees could not add to 50). Because a Cohen-Macaulay k[y]/K2 has only top-dimensional
 associated primes, F(I) = k[y]/K2 exactly when Proj F(I) contains V(P) and every component of V(K2 : P): a fiber
 inside V(P) has multiplicity at most 20, one inside V(K2 : P) at most 30, and set-theoretic equality forces
@@ -341,8 +341,8 @@ non-reduced tangent cone; arcs on the normalization replace them.
 - Iso: Hilbert function equal to the quadric values through degree 5 at both primes (h_4 = 640 by two methods,
   h_5 = 1,316); K2 radical, Cohen-Macaulay and geometrically prime of degree 23 at both primes
   ([structure/iso-k2](../../evidence/a5-exceptional-fibers/structure/iso-k2/sections/README.md)), so Iso arcs need the one target V(K2).
-- W8 -> N-: Hilbert function equal to the quadric values through degree 4 at both primes (h_4 = 1,725); K2 radical, equal to P cap (K2 : P) with P prime (5, 20) and K2 : P of projective dimension 5 and
-  degree 30, geometrically prime at both primes; h_5 = 4,116 at 32009 (r_16, two product sets); W8 -> N+ follows through the t9 isomorphism; F(I) = k[y]/K2 holds exactly when
+- W8 -> N-: Hilbert function equal to the quadric values through degree 4 at both primes (h_4 = 1,725); K2 radical, equal to P cap (K2 : P) with V(P) the geometrically irreducible degree-20 component and K2 : P of projective
+  dimension 5 and degree 30, geometrically prime, at both primes (structure/w8-kp, no primality of P used); h_5 = 4,116 at 32009 (r_16, two product sets); W8 -> N+ follows through the t9 isomorphism; F(I) = k[y]/K2 holds exactly when
   arcs reach every top-dimensional component of V(K2); arcs reach V(P) at both primes (analytic spread 6), and V(K2 : P)
   stays open.
 - Coverage (`claims.json`): every pair is certified through degree 3 at both primes; through degree 4 for W8 and

@@ -40,8 +40,7 @@ def main() -> None:
         sections.append(
             {
                 "section": s + 1,
-                "first": [chunk[0][0], chunk[0][1]],
-                "last": [chunk[-1][0], chunk[-1][1]],
+                "coefficients": [[[c[0], c[1], c[2]] for c in chunk[k * NV : (k + 1) * NV]] for k in range(7)],
                 "forms": forms,
             }
         )

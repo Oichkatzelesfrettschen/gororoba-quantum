@@ -24,7 +24,7 @@ c["points_forms"] = {
 }
 c["indices_note"] = "all indices are zero-based"
 (D / "coefficients.json").write_text(json.dumps(c, indent=1))
-rel = Path("docs/evidence/a5-exceptional-fibers/working/runs/s3/iso_k2.rel").resolve()
+rel = "docs/evidence/a5-exceptional-fibers/working/runs/s3/iso_k2.rel"
 for s in range(2):
     L = ",".join(c["sections"][s] + [f4[s]])
     (D / f"points{s + 1}.sing").write_text(

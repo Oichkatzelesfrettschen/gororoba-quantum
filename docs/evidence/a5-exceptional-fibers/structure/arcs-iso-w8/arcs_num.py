@@ -329,6 +329,9 @@ def search(fiber: str, p: int, extra: int = 2, n: int = 16) -> None:
             continue
         key = (r["rank"], r["K2"], r.get("Lam"), r.get("Q"))
         best[key] = best.get(key, 0) + 1
+        done = sum(best.values())
+        if done % 500 == 0:
+            print("progress", done, "valid families; tallies", dict(sorted(best.items(), reverse=True)), flush=True)
         if r["rank"] >= (5 if fiber == "iso" else 6):
             print("HIT", w, r, flush=True)
     for key in sorted(best, reverse=True):

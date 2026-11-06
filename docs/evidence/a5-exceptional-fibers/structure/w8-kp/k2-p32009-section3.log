@@ -1,0 +1,3 @@
+RESULT k2 p32009 section 3 dim 0 vdim 50 s 1
+RESULT k2 p32009 section 3 eliminant deg 50 factor degree^multiplicity  1^1 1^1 3^1 3^1 3^1 5^1 5^1 8^1 10^1 11^1 s 2
+exit 0

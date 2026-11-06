@@ -17,9 +17,9 @@ linear forms Lambda vanish on F identically; the rank of [dF | F] is 6 at two pa
 
 A rank at a point bounds from below the dimension of the cone of limits, so the closure Y of the limits is an
 irreducible cone of dimension at least 6 inside V(K2) (dimension 6). At 32009 Y lies in V(P), which is geometrically
-prime of affine dimension 6, so Y = V(P). At 32029 Y lies in V(K2 + Lambda), whose 6-dimensional part is the
-degree-20 component (`../w8-kp/README.md`), so Y is that component. Hence L lies in P (at 32029, in the degree-20
-prime), h_d >= HF(k[y]/P, d) for every d, and dim F(I) = 6 = dim k[y]/K2: the analytic spread of I is 6. With the
+irreducible of affine dimension 6 (`../w8-kp/README.md`: V(P) = C20, rad P = I(C20)), so Y = V(P). At 32029 Y lies in V(K2 + Lambda), whose 6-dimensional part is the
+degree-20 component (`../w8-kp/README.md`), so Y is that component. The 32029 step depends on the decomposition at 32029 in the same README. Hence L lies in
+I(C20) = rad P (at 32029, in the degree-20 prime), h_d >= HF(k[y]/I(C20), d) for every d, and dim F(I) = 6 = dim k[y]/K2: the analytic spread of I is 6. With the
 findings-note criterion (K2 radical and Cohen-Macaulay), F(I) = k[y]/K2 in every degree now hinges on the
 multiplicity alone: e(F(I)) = 50 exactly when V(K2 : P) also lies in E0, and 20 otherwise. The numeric engine
 `arcs_num.py` (exact truncated series over F_p with dual parts, a code path separate from Singular) reproduces this
