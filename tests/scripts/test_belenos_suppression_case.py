@@ -92,14 +92,20 @@ def test_window_choice_and_seeds() -> None:
         raise AssertionError("job-01 does not swap the arms of job-00")
 
 
-def test_retained_jobs_rebuild_and_bind() -> None:
+@pytest.mark.audit
+def test_retained_job_files_equal_the_builders_bytes() -> None:
+    """Replay of the retained case files: the builder reproduces every one byte for byte."""
+    for job, files in case.documents(16, (16, 18, 20)).items():
+        for name, data in files.items():
+            if (case.CASES / job / name).read_bytes() != data:
+                raise AssertionError(f"{job}/{name} differs from the builder's bytes")
+
+
+def test_built_jobs_bind_to_the_template() -> None:
     from qd_platform import template_experiment
 
     start, sources = 16, (16, 18, 20)
     for job, files in case.documents(start, sources).items():
-        for name, data in files.items():
-            if (case.CASES / job / name).read_bytes() != data:
-                raise AssertionError(f"{job}/{name} differs from the builder's bytes")
         manifest, circuit = json.loads(files["cases.json"]), json.loads(files["circuit.json"])
         experiment, settings = template_experiment(manifest, circuit)
         if experiment is None or [s["arm"] for s in settings] != list(case.JOB_ORDER[job]):

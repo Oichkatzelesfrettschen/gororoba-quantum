@@ -4153,6 +4153,13 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/belenos_suppression_case.py --check",
+      "name": "core-belenos-suppression-law-case-check",
+      "seconds": 8.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/iqm_qet_ladder.py --self-test",
       "name": "core-696",
       "seconds": 6.0
