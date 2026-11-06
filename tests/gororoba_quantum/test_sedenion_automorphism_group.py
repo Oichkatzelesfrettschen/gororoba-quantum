@@ -188,6 +188,7 @@ def results() -> dict[str, dict]:
     return dict(zip(names, parallel.ordered_map(run_census, names, min_items=1), strict=True))
 
 
+@pytest.mark.audit
 def test_octonion_automorphisms_are_the_derivation_group_alone(results: dict[str, dict]) -> None:
     result = results["octonion"]
     if len(result["derivations"]) != 14 or len(result["commutant"]) != 2:
@@ -196,6 +197,7 @@ def test_octonion_automorphisms_are_the_derivation_group_alone(results: dict[str
         raise AssertionError(f"the commutant of Der(O) holds automorphisms {result['automorphisms']}")
 
 
+@pytest.mark.audit
 def test_sedenion_automorphisms_are_g2_times_s3(results: dict[str, dict]) -> None:
     result = results["sedenion"]
     der = result["derivations"]
@@ -216,6 +218,7 @@ def test_sedenion_automorphisms_are_g2_times_s3(results: dict[str, dict]) -> Non
             raise AssertionError(f"a nontrivial S3 element lies in the diagonal G2: {m}")
 
 
+@pytest.mark.audit
 def test_printed_gresnigt_table_loses_psi(results: dict[str, dict]) -> None:
     printed = printed_gresnigt_table()
     # epsilon scales e_p by a character of p, an automorphism of every table e_p e_q = +-e_(p XOR q).

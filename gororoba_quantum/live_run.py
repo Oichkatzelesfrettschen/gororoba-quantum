@@ -3911,6 +3911,27 @@ def pinned_campaign_choices(
     )
 
 
+def check_pin_required(campaigns: list[str], groups: list[Group], pin: dict | None) -> None:
+    """Refuse a pin-required campaign without --pin-layout, or with a path count that no patterned member's body
+    tuple matches: a patterned member assigns its bodies to replicas by index, so the replicas are the pinned paths
+    in pin order and their count is the tuple length of every such member."""
+    for campaign in sorted(set(campaigns) & PIN_REQUIRED_CAMPAIGNS):
+        bodies = {
+            len(member.replica_bodies)
+            for group in groups
+            if group.name == campaign
+            for member in group.members
+            if member.replica_bodies is not None
+        }
+        if pin is None:
+            raise LiveRunError(f"{campaign} runs on the paths --pin-layout names")
+        if bodies and len(pin.get("replicas", [pin["qubits"]])) not in bodies:
+            raise LiveRunError(
+                f"{campaign} assigns one body to each of {sorted(bodies)} pinned paths; "
+                f"--pin-layout names {len(pin.get('replicas', [pin['qubits']]))}"
+            )
+
+
 def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[Choice], dict[str, Any]]:
     # The ET adapter constructs its complete family. Building every unrelated
     # standalone circuit before backend discovery consumes time and memory
@@ -3982,24 +4003,7 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                 raise LiveRunError(
                     f"{idle_campaigns[0]} runs without dynamical decoupling or twirling; omit --dd and --twirl"
                 )
-            for campaign in sorted(set(campaigns) & PIN_REQUIRED_CAMPAIGNS):
-                # A patterned member assigns its bodies to replicas by index, so the replicas are the
-                # pinned paths in pin order and their count is the tuple length of every such member.
-                pin = getattr(args, "pin_layout", None)
-                bodies = {
-                    len(member.replica_bodies)
-                    for group in groups
-                    if group.name == campaign
-                    for member in group.members
-                    if member.replica_bodies is not None
-                }
-                if pin is None:
-                    raise LiveRunError(f"{campaign} runs on the paths --pin-layout names")
-                if bodies and len(pin.get("replicas", [pin["qubits"]])) not in bodies:
-                    raise LiveRunError(
-                        f"{campaign} assigns one body to each of {sorted(bodies)} pinned paths; "
-                        f"--pin-layout names {len(pin.get('replicas', [pin['qubits']]))}"
-                    )
+            check_pin_required(campaigns, groups, getattr(args, "pin_layout", None))
             if idle_campaigns and (pin := getattr(args, "pin_layout", None)) is not None:
                 paths = len(pin.get("replicas", [pin["qubits"]]))
                 if args.max_replicas != paths:
