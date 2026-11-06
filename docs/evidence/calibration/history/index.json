@@ -537,6 +537,19 @@
     }
    ],
    "retrieved_utc": "2026-10-28T01:13Z"
+  },
+  {
+   "job_id": "dbn38t0ou4as73b3q1n0",
+   "run": "results/live/2026-11-06T200832.558771Z",
+   "backend": "ibm_marrakesh",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-11-06T20:11:40.418051+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_marrakesh/20261106T1110170800.json"
+    }
+   ],
+   "retrieved_utc": "2026-11-06T21:25Z"
   }
  ],
  "current": {
@@ -648,6 +661,10 @@
   "docs/evidence/calibration/history/ibm_marrakesh/20261020T1917370700.json": {
    "calibration": "2026-10-20T19:17:37-07:00",
    "sha256": "5fc7e4d3310d219945ab0486bc44148e72d06d00d2d83f0ac910ac9d7565dd0e"
+  },
+  "docs/evidence/calibration/history/ibm_marrakesh/20261106T1110170800.json": {
+   "calibration": "2026-11-06T11:10:17-08:00",
+   "sha256": "f06c6667721b2b22b876fb04fc3c3a6033f02605346b249e98b2f022b0331ad5"
   }
  }
 }
