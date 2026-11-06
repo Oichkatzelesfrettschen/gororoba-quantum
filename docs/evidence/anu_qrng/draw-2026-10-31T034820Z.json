@@ -1,0 +1,18 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=8&type=uint16",
+ "retrieved_utc": "2026-10-31T034820Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"8\", \"data\": [63889, 65328, 18934, 51115, 51480, 31486, 50307, 51095]}",
+ "raw_sha256": "3f3f53f1709add4aeba2fb5ba268e7e9fab4ab10ec8fd11b1cdcc7349684ef69",
+ "type": "uint16",
+ "values": [
+  63889,
+  65328,
+  18934,
+  51115,
+  51480,
+  31486,
+  50307,
+  51095
+ ]
+}
