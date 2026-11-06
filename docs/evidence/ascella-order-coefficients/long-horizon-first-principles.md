@@ -87,8 +87,8 @@ which makes the reduction a prospective result or refutes it.
 
 ## What remains
 
-- **Attribution.** The persistent error sits in the implementation path; separating firmware, heater mapping and chip
-  needs telemetry the cloud interface does not return.
+- **Attribution.** The persistent error sits in the implementation path; see "What the interface returns" for the
+  data that could separate its stages.
 - **Redrawn share.** Bounded only by the r interval above; a variance-component fit or a third run bounds it.
 - **Correction.** The per-seed table is retrospective until it scores on a fresh acquisition.
 
@@ -114,6 +114,32 @@ The literature treats the interferometer layer the same way: element-level chara
 compilation corrects fixed MZI errors (arXiv:2103.04993), and variance-based calibration leaves residual phase errors
 of 0.1 to 0.2 rad (arXiv:2607.14759). The cloud interface exposes neither the voltages nor the element calibration, so
 the per-seed table is the black-box version of that correction, available at the seed level.
+
+## What the interface returns
+
+The cloud interface returns granular chip data, and none of it carries the per-mesh error.
+
+- **Returned per element:** the processor record's `specs.architecture` and every served `computed_circuit` carry
+  each fixed beam splitter's calibrated angle (`BS.Rx(theta=1.4535)` and `1.4467` on Ascella's first cell, against
+  pi/2 for a balanced splitter) beside the commanded phases.
+- **Returned per mode and per job:** input and output transmission and dark counts per mode in the processor record,
+  and per iteration a noise model (g2, indistinguishability, transmittance) and `physical_perf`.
+- **Static:** the architecture string has one digest (`26ce122dbfff`) on 2026-10-25 and 2026-11-06, shared by
+  `qpu:ascella` and `sim:ascella`, and the served circuits are byte-identical across job-02, job-03 and job-08, while
+  the per-mesh error's amplitude changed by about 11 % and HOM moved from 86.96 % to 88.98 %. A simulation of the
+  served meshes under this model spreads z at counting noise alone, so the per-element calibration the interface
+  returns does not contain the persistent error.
+- **Absent:** the published OpenAPI document (`/openapi.json`, 35 paths, Quandela Cloud Api v2.10.1-rc1) and the
+  processor routes it omits carry no heater voltage, voltage-to-phase coefficient, calibration timestamp or measured
+  unitary; `GET /api/jobs/{job_id}/data` returns job metadata and the submitted payload, and
+  `GET /api/jobs/{job_id}/status` returns progress.
+
+The hardware remains measurable through ordinary jobs. Single photons injected on each source input (six on Ascella,
+twelve on Belenos) give the moduli |U_ij|^2 of the implemented unitary's input columns, and two-photon interference
+between inputs gives the relative phases without calibrated detectors (Laing and O'Brien, arXiv:1208.2868). Fitting
+per-shifter phase offsets against the returned beam-splitter angles then locates the error element by element, as
+an independent witness of the implemented unitary; it still measures the firmware and the chip together, since the
+voltage-to-phase map lies inside them. Each such characterization is a provider job under its own written case.
 
 ## Higher Cayley-Dickson algebras: what folds onto 12 and 24 modes, and what it gains
 
