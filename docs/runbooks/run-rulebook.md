@@ -101,3 +101,21 @@ the closest entry and say what changed.
 - Outcome: both runs died with "no more memory" at the 5 GB cap after 34 min (j = 16 and j = 2), inside the
   saturation: faster memory growth than the dense chart on the same host (5.2 GB after 57 min). The sparser a0 does
   not shrink the saturation; the chart's size comes from the blowup itself, not from the density of a0.
+
+### Iso -> N- sliced blowup chart (a finite fiber over the origin)
+
+- Question and decisive outcome: the dense chart of the entries above, with l0(z) - 1 and four QRNG forms l1..l4(z)
+  added before saturating. Bl is irreducible of dimension 5 and its exceptional divisor V(a0) is Cartier, so general
+  z-forms meet no component of it entirely and (C + Lambda) : a0^inf is Bl cut by Lambda; the fiber over the origin is
+  E0 cut by Lambda. All 23 points of V(K2) cut by Lambda means E0 = V(K2); no point means dim E0 <= 3. Points found lie in
+  E0 deterministically; the full verdict rests on the genericity of one QRNG slice, so it is recorded as survives (one
+  slice) until a second slice and an arc family upgrade it.
+- Formulation: the cheapest decisive chart; the K2 cut by the same forms is checked generic first (vdim 23, squarefree
+  eliminant of z(2) of degree 23, factors 1, 2, 3, 5, 12).
+- Host and tool versions: lab-a1 (aarch64, 2 cores, 11 GB), apt Singular 4.4.1, p = 32009.
+- Launch line: `prlimit --as=9663676416 timeout 21600 nice -n 5 Singular -q --no-rc chart-iso-p32009-slice.sing
+  < /dev/null` under `/usr/bin/time -v`, one process, `setsid nohup`.
+- Departures from the foundations: an address-space cap of 9 GB on the 11 GB host (one process).
+- Checkpoints: `chart-sat-iso-p32009-slice.txt`, `chart-fiber-iso-p32009-slice.txt`.
+- End state: logs copied into `structure/arcs-iso-w8/chart-runs/lab-a1/`.
+- Outcome: pending.

@@ -18,6 +18,18 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[4]
 W = "docs/evidence/a5-exceptional-fibers/working"
+GENS = {
+    ("iso", 32009): f"{W}/distribute/out/a5-iso-d4/iso_p1/d2/gens.txt",
+    ("iso", 32029): f"{W}/distribute/out/a5-p2-iso/iso_p2/d2/gens.txt",
+    ("w8", 32009): f"{W}/distribute/out/a5-w8-receipt-p1/w8_p1/d2/gens.txt",
+    ("w8", 32029): f"{W}/distribute/out/a5-p2-w8/w8_p2/d2/gens.txt",
+}
+K2 = {
+    ("iso", 32009): f"{W}/runs/s3/iso_k2.rel",
+    ("iso", 32029): f"{W}/distribute/out/a5-p2-iso/iso_p2/d2/relations-d2.rel",
+    ("w8", 32009): f"{W}/runs/w8_a2/w8_k2.rel",
+    ("w8", 32029): f"{W}/distribute/out/a5-p2-w8/w8_p2/d2/relations-upto-d2.rel",
+}
 HEADERS = {
     ("iso", 32009): f"{W}/build/inputs/p32009-r10754/iso-nm.sing",
     ("iso", 32029): f"{W}/build/inputs/p32029-r9115/iso-nm.sing",
@@ -43,6 +55,11 @@ def main() -> None:
         help="coordinate chart a0 = G_j, z_j = 1 (portfolio script, method sat); decides the case like the dense chart "
         "because K2 contains no linear form",
     )
+    ap.add_argument(
+        "--slice-draw",
+        help="sliced chart: add l0(z) - 1 and four QRNG forms l1..l4(z) (from this draw) before saturating; "
+        "the fiber over the origin is then finite and is compared with V(K2) cut by the same forms",
+    )
     a = ap.parse_args()
     hdr = (ROOT / HEADERS[(a.fiber, a.prime)]).read_text()
     tvars = re.search(r"ring r=\d+,\((.*?)\)", hdr).group(1)  # type: ignore[union-attr]
@@ -55,6 +72,56 @@ def main() -> None:
     coeffs = [vals[k] for k in idx]
     l0 = "+".join(f"{c}*G[{j + 1}]" for j, c in enumerate(coeffs))
     lz = "+".join(f"{c}*z({j + 1})" for j, c in enumerate(coeffs))
+    if a.slice_draw:
+        sv = json.loads((ROOT / a.slice_draw).read_text())["values"]
+        sidx = [k for k, v in enumerate(sv) if v < a.prime][: 4 * ngen]
+        forms = [
+            "+".join(f"{sv[k]}*z({j + 1})" for j, k in enumerate(sidx[f * ngen : (f + 1) * ngen])) for f in range(4)
+        ]
+        tag = f"{a.fiber}-p{a.prime}-slice"
+        gens = GENS[(a.fiber, a.prime)]
+        k2 = K2[(a.fiber, a.prime)]
+        out = HERE / f"chart-{tag}.sing"
+        out.write_text(
+            f"// sliced blowup chart: a0 = l0(G) as chart-{a.fiber}-p{a.prime}.sing, plus l1..l4 from {a.slice_draw}\n"
+            'LIB "elim.lib"; LIB "general.lib"; option(noredTail); option(prot); system("--ticks-per-sec",1);\n'
+            "int t0=rtimer;\n"
+            f"ring r={a.prime},({tvars},z(1..{ngen})),dp; number I={num};\n"
+            f"ideal J={jtxt};\nideal G={gtxt};\n"
+            f'execute("ideal Grun="+read("{gens}")+";");\n'
+            "intvec eps; int jj; for (jj=1;jj<=ncols(G);jj++) { if (Grun[jj]==G[jj]) { eps[jj]=1; } else {"
+            ' if (Grun[jj]==-G[jj]) { eps[jj]=-1; } else { ERROR("generator is not +-G"); } } }\n'
+            f"poly a0={l0};\n"
+            f"ideal Lam={lz}-1,{','.join(forms)};\n"
+            # K2 in the header's coordinates: y_j of the run is eps_j G_j, so substitute y_j -> eps_j z_j
+            f'ring Y={a.prime},(y(1..{ngen})),dp; execute("ideal K="+read("{k2}")+";");\n'
+            "setring r; ideal epz; for (jj=1;jj<=ncols(G);jj++) { epz[jj]=eps[jj]*z(jj); } map toz=Y,epz;\n"
+            "ideal Kz=toz(K);\n"
+            "ideal KS=std(Kz+Lam+ideal(t2,t3,t4,t5,t6,t7));\n"
+            f'"RESULT {tag} K2 slice: dim", dim(KS), "vdim", vdim(KS), "s", rtimer-t0;\n'
+            "poly sepv=z(2); ideal els=eliminate(KS, product(maxideal(1))/sepv); list fs=factorize(els[1]); string fd;"
+            ' for (jj=2;jj<=size(fs[1]);jj++) { fd=fd+" "+string(deg(fs[1][jj]))+"^"+string(fs[2][jj]); }\n'
+            f'"RESULT {tag} K2 slice eliminant of z(2): deg", deg(els[1]), "factors", fd;\n'
+            f"ideal C=J; int i; for (i=1;i<={ngen};i++) {{ C=C+(a0*z(i)-G[i]); }} C=C+Lam;\n"
+            'def SS=sat(C,ideal(a0)); ideal S; if (typeof(SS)=="list") { S=SS[1]; } else { S=SS; }\n'
+            f'"RESULT {tag} saturation done s", rtimer-t0;\n'
+            f'write(":w chart-sat-{tag}.txt", S);\n'
+            f'S=std(S); "RESULT {tag} sliced chart dim", dim(S), "s", rtimer-t0;\n'
+            f"ideal E=std(S+ideal({tvars}));\n"
+            f'"RESULT {tag} fiber over the origin: dim", dim(E), "vdim", vdim(E), "s", rtimer-t0;\n'
+            f'write(":w chart-fiber-{tag}.txt", E);\n'
+            f'"RESULT {tag} K2 vanishes on the fiber", size(reduce(Kz,E))==0, "fiber inside the K2 slice",'
+            ' size(reduce(KS,E))==0, "K2 slice inside the fiber", size(reduce(E,KS))==0;\n'
+            "quit;\n"
+        )
+        ledger = {
+            "draw": a.slice_draw,
+            "rule": f"uint16 values < {a.prime} in index order, zero-based; l1..l4 in order",
+            "coefficients": [[k, sv[k]] for k in sidx],
+        }
+        (HERE / f"chart-{tag}-coefficients.json").write_text(json.dumps(ledger, indent=1) + "\n")
+        print(out.relative_to(ROOT))
+        return
     if a.coord:
         j = a.coord
         tag = f"{a.fiber}-p{a.prime}-coord{j}"
