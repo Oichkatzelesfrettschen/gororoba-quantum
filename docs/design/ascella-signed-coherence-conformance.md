@@ -2141,3 +2141,7 @@ send the frozen request, `qd_platform.py collect RUN` retrieves it, and the read
 
 **Stopping rule.** A job that errors or is cut short is resubmitted only on the owner's further approval. Every
 reading of S closes the case.
+
+**Review.** Codex, an Opus agent and grok reviewed the case before acquisition; the
+[reconciliation](../archive/reviews/ascella-long-horizon-seed-repeat-reconciliation.md) records the unitary mesh
+identity and the separate seed values it led to.
