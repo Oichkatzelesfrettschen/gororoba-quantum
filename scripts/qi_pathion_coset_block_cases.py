@@ -70,6 +70,7 @@ import qi_zero_divisor_cases as zd  # noqa: E402
 
 import parallel  # noqa: E402
 import pathion_coset_block as pcb  # noqa: E402
+import qi_records  # noqa: E402
 from qrng_seeds import read_record  # noqa: E402
 
 TUNA_SERIES = "pathion_coset_block_tuna_17"
@@ -570,7 +571,7 @@ def bin_contrast(plus: np.ndarray, minus: np.ndarray) -> tuple[np.ndarray, np.nd
 
 def selector_stat(plus: np.ndarray, minus: np.ndarray) -> tuple[float, float]:
     n_plus, n_minus = plus.sum(), minus.sum()
-    p, m = plus[:8].sum() / n_plus, minus[:8].sum() / n_minus
+    p, m = float(plus[:8].sum() / n_plus), float(minus[:8].sum() / n_minus)
     return p - m, math.sqrt(p * (1 - p) / n_plus + m * (1 - m) / n_minus)
 
 
@@ -595,6 +596,26 @@ def register_assignment(shots: dict[str, list[str]]) -> dict[int, tuple[float, f
     }
 
 
+def signed_z(c: float, se: float, sign: float) -> float:
+    """Contrast c along the ideal sign in standard errors. A bin whose sampled selector outcomes are deterministic in
+    both arms has se 0 and decides by an exact sign match: +inf when c carries the ideal sign, -inf when it carries
+    the opposite sign, 0 when c or the ideal sign is zero."""
+    along = c * sign
+    if se > 0:
+        return along / se
+    return math.inf if along > 0 else -math.inf if along < 0 else 0.0
+
+
+def ratio_or_none(value: float, se: float) -> float | None:
+    """value / se for a report, None when se is 0 (a deterministic statistic has no finite z)."""
+    return value / se if se > 0 else None
+
+
+def pattern_bins(ideal_a: np.ndarray, ideal_b: np.ndarray) -> list[int]:
+    """The preregistered pattern bins: those where the two templates' ideal contrasts carry opposite signs."""
+    return [y for y in range(len(ideal_a)) if np.sign(ideal_a[y]) * np.sign(ideal_b[y]) < 0]
+
+
 def evaluate(
     shots: dict[str, list[str]], manifest: dict[str, Any], executed: dict[str, str] | None = None
 ) -> dict[str, Any]:
@@ -602,6 +623,7 @@ def evaluate(
     templates = manifest["templates"]
     rows: dict[str, dict[str, Any]] = {}
     ideal_c = {n: np.array(t["ideal_c"]) for n, t in templates.items()}
+    along_ideal: dict[str, list[float]] = {}
     assignment = register_assignment(shots)
     for name, t in templates.items():
         roles = t["roles"]
@@ -622,7 +644,8 @@ def evaluate(
         selector, selector_se = selector_stat(plus, minus)
         sign = np.sign(ideal_c[name])
         decided = np.abs(ideal_c[name]) > 0.5
-        z_signed = c * sign / se
+        z_raw = [signed_z(float(c[y]), float(se[y]), float(sign[y])) for y in range(8)]
+        along_ideal[name] = z_raw
         visibility = float(np.mean(c[decided] * sign[decided]))
         cz = t["cz"]
         corrected_visibility = float("nan")
@@ -638,8 +661,9 @@ def evaluate(
             "files": replicate_rows,
             "c": [float(x) for x in c],
             "se": [float(x) for x in se],
-            "z_signed": [float(x) for x in z_signed],
-            "bins_with_ideal_sign": int(np.sum(z_signed >= Z_RESOLVE)),
+            "z_signed": [None if math.isinf(z) else float(z) for z in z_raw],
+            "deterministic_bins": [bool(se[y] == 0) for y in range(8)],
+            "bins_with_ideal_sign": int(sum(z >= Z_RESOLVE for z in z_raw)),
             "selector_contrast": selector,
             "selector_se": selector_se,
             "visibility": visibility,
@@ -649,27 +673,25 @@ def evaluate(
             "against_rho_band": position if implied == implied else "not read",
         }
     ba, bb, b0, xor = rows["ba"], rows["bb"], rows["b0"], rows["xor_ba"]
-    differing = [y for y in range(8) if ideal_c["ba"][y] != ideal_c["bb"][y]]
-    pattern_z = [
-        min(
-            abs(ba["c"][y]) / ba["se"][y] if ba["c"][y] * ideal_c["ba"][y] > 0 else 0.0,
-            abs(bb["c"][y]) / bb["se"][y] if bb["c"][y] * ideal_c["bb"][y] > 0 else 0.0,
-        )
-        for y in differing
-    ]
+    differing = pattern_bins(ideal_c["ba"], ideal_c["bb"])
+    pattern_z = [max(min(along_ideal["ba"][y], along_ideal["bb"][y]), 0.0) for y in differing]
     decisions = {
         "resolution": {
             "ba": ba["bins_with_ideal_sign"] >= 6,
             "bb": bb["bins_with_ideal_sign"] >= 6,
         },
-        "pattern": {"bins": differing, "z": pattern_z, "resolved": all(z >= Z_RESOLVE for z in pattern_z)},
+        "pattern": {
+            "bins": differing,
+            "z": [None if math.isinf(z) else z for z in pattern_z],
+            "resolved": bool(differing) and all(z >= Z_RESOLVE for z in pattern_z),
+        },
         "null": {
-            "z": b0["selector_contrast"] / b0["selector_se"],
+            "z": ratio_or_none(b0["selector_contrast"], b0["selector_se"]),
             "holds": abs(b0["selector_contrast"]) <= Z_RESOLVE * b0["selector_se"],
         },
         "cocycle_free": {
-            "xor_z": xor["selector_contrast"] / xor["selector_se"],
-            "ba_z": ba["selector_contrast"] / ba["selector_se"],
+            "xor_z": ratio_or_none(xor["selector_contrast"], xor["selector_se"]),
+            "ba_z": ratio_or_none(ba["selector_contrast"], ba["selector_se"]),
             "resolved": xor["selector_contrast"] <= -Z_RESOLVE * xor["selector_se"]
             and ba["selector_contrast"] >= Z_RESOLVE * ba["selector_se"],
         },
@@ -694,6 +716,22 @@ def evaluate(
     }
 
 
+def law_shots(law: np.ndarray, roles: dict[str, int], shots: int) -> list[str]:
+    """Bit strings of the expected counts of a 16-outcome law over (d0, d1, d2, selector), by largest remainder, so
+    the series carries no sampling noise and no random seed."""
+    expected = law / law.sum() * shots
+    counts = np.floor(expected).astype(int)
+    for v in np.argsort(counts - expected)[: shots - counts.sum()]:
+        counts[v] += 1
+    strings: list[str] = []
+    for v, count in enumerate(counts):
+        value = 0
+        for k, key in enumerate(("d0", "d1", "d2", "selector")):
+            value |= (v >> k & 1) << roles[key]
+        strings += [format(value, f"0{NQUBITS}b")] * int(count)
+    return strings
+
+
 def cross_platform(
     tuna: dict[str, Any], ibm_c: list[float], ibm_visibility: float, block_key: str, template: str
 ) -> dict[str, Any]:
@@ -716,36 +754,40 @@ def cross_platform(
 
 
 def analyze(run_dirs: list[Path]) -> dict[str, Any]:
+    """Read each collected batch through qi_records (receipt, circuit and job identities, raw shots against the
+    recorded histogram), require every job completed, and evaluate the pooled series; the queue timestamp of each
+    job is the `queued_at` of its recorded job metadata."""
     shared: dict[str, Any] | None = None
     shots: dict[str, list[str]] = {}
     executed: dict[str, str] = {}
+    batches: list[str] = []
     for run_dir in sorted(run_dirs):
-        cases = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+        record = qi_records.load_run(run_dir)
+        acquisition = qi_records.validate_run(record, str(run_dir))
+        cases = record["cases"]
         fields = {k: v for k, v in cases.items() if k not in ("batch", "circuits")}
         if shared is None:
             shared = fields
         elif fields != shared:
             raise ValueError(f"{run_dir}/cases.json describes a different series")
-        results = json.loads((run_dir / "results.json").read_text(encoding="utf-8"))
-        receipt = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
-        if receipt["cases_sha256"] != hashlib.sha256((run_dir / "cases.json").read_bytes()).hexdigest():
-            raise ValueError(f"{run_dir}/cases.json is not the case its submission receipt binds")
-        jobs = {job["file"]: job for job in results["jobs"]}
-        if any(job["status"] != "completed" for job in jobs.values()):
-            raise ValueError(f"{run_dir}: a job did not complete")
-        for row in cases["circuits"]:
-            listed = json.loads((run_dir / "raw" / f"{row['file']}.json").read_text(encoding="utf-8"))
-            if len(listed) != cases["shots"]:
-                raise ValueError(f"{run_dir}/{row['file']}: {len(listed)} shots, not {cases['shots']}")
-            key = f"{cases['batch']}/{row['file']}"
-            shots[key] = listed
-            executed[key] = jobs[row["file"]]["queued_at"]
+        if not acquisition.completed:
+            raise ValueError(f"{run_dir}: a job did not complete: {dict(acquisition.statuses)}")
+        if cases["batch"] in batches:
+            raise ValueError(f"{run_dir}: batch {cases['batch']} appears twice")
+        batches.append(cases["batch"])
+        queued = {row["file"]: row["job"]["queued_at"] for row in record["results"]["jobs"]}
+        for job in acquisition.jobs:
+            if job.raw is None or len(job.raw) != cases["shots"]:
+                raise ValueError(f"{run_dir}/{job.file}: not {cases['shots']} raw shots")
+            key = f"{cases['batch']}/{job.file}"
+            shots[key] = list(job.raw)
+            executed[key] = queued[job.file]
     if shared is None:
         raise ValueError("an analysis needs its run directories")
     expected = sorted(row["batch"] for row in batch_plan())
-    if sorted({k.split("/")[0] for k in shots}) != expected:
+    if sorted(batches) != expected:
         raise ValueError(f"the runs hold other batches than {expected}")
-    return {"schema": "qi-pathion-coset-block-analysis-v1", **evaluate(shots, shared)}
+    return {"schema": "qi-pathion-coset-block-analysis-v1", **evaluate(shots, shared, executed)}
 
 
 def qx_conformance(run_dir: Path, bound: float = 0.025) -> dict[str, Any]:
@@ -815,23 +857,15 @@ def self_test() -> str:
             if template == "b0" and offset_b0 and plus:
                 law = np.concatenate([law[:8] * (1 + offset_b0), law[8:] * (1 - offset_b0)])
             roles = manifest["templates"][template]["roles"]
-            # Expected counts by largest remainder: the logic test carries no sampling noise and no random seed.
-            expected = law / law.sum() * SHOTS
-            counts = np.floor(expected).astype(int)
-            for v in np.argsort(counts - expected)[: SHOTS - counts.sum()]:
-                counts[v] += 1
-            strings = []
-            for v, count in enumerate(counts):
-                value = 0
-                for k, key in enumerate(("d0", "d1", "d2", "selector")):
-                    value |= (v >> k & 1) << roles[key]
-                strings += [format(value, f"0{NQUBITS}b")] * int(count)
-            out[rel] = strings
+            out[rel] = law_shots(law, roles, SHOTS)
         return out
 
     honest = evaluate(device(0.5), manifest)
     if not honest["all_decisions_met"]:
         raise RuntimeError(f"an honest device at retention 0.5 fails a decision: {honest['decisions']}")
+    exact = evaluate(device(1.0), manifest)
+    if not exact["all_decisions_met"] or not any(any(r["deterministic_bins"]) for r in exact["templates"].values()):
+        raise RuntimeError(f"a noiseless device leaves a decision unmet or no deterministic bin: {exact['decisions']}")
     implied = honest["templates"]["ba"]["contraction_per_cz_implied"]
     if abs(implied - 0.5 ** (1 / plan["templates"]["ba"]["cz"])) > 2e-3:
         raise RuntimeError(f"a device of retention 0.5 implies {implied} per CZ")

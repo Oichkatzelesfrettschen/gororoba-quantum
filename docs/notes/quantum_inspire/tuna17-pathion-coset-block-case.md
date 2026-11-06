@@ -188,11 +188,12 @@ The comparison needs a collected IBM run; a Tuna-17 run alone fixes c_T(y) / V_T
 ## Preregistered decisions
 
 All use raw counts pooled over a template's two replicates and Z_RESOLVE = 3.0 standard errors; the readout-corrected visibility enters only
-the depth reading.
+the depth reading. A bin whose sampled selector outcomes are deterministic in both arms has standard error 0 and counts as resolved
+when its contrast carries the ideal sign exactly (`signed_z`); the report lists such bins under `deterministic_bins` with a null z.
 
 1. Resolution: `ba` and `bb` each read the ideal sign at 3 standard errors on at least 6 of their 8 bins. Failure refutes
    "Tuna-17 realizes the compiled A_5 block map at 20 to 22 CZ" (predicted z 26 to 47, so the margin is a factor of 9).
-2. Pattern: `ba` and `bb` read opposite signs at 3 standard errors in both of the bins (2 and 6) where their ideal c(y) differ; their selector
+2. Pattern: `ba` and `bb` read opposite signs at 3 standard errors in both of the bins (2 and 6) where their ideal c(y) carry opposite signs; their selector
    contrasts agree to 1e-4 by construction (0.5), so only the pattern separates the two cocycles.
 3. Null: the `b0` selector contrast lies within 3 standard errors (0.012) of zero. A selector offset that adds to one arm shows here; the earlier
    retained control carried a signed response of -0.0167 +- 0.0039 at 45 CZ, which this rule would flag if it recurred.
