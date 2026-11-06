@@ -153,6 +153,49 @@ def test_analyze_withholds_the_reading_when_the_primary_repeats_drift(
         raise AssertionError(record["drift"])
 
 
+def test_analyze_withholds_the_reading_when_an_iteration_has_no_counts_in_a_block(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    settings = json.loads((bmp.CASE / "cases.json").read_text(encoding="utf-8"))["settings"]
+    keys = [(json.dumps(b["m"]), b["t"]) for b in settings[0]["blocks"]]
+    total = 1000
+    old = {key: [300 + 40 * i + 25 * j for j in range(4)] for i, key in enumerate(keys)}
+    group = {
+        "digests": [mesh_digest(f"m{j}") for j in range(4)],
+        "blocks": [
+            {
+                "block": list(key),
+                "slot": i,
+                "cells": [
+                    {"hit": old[key][j] * 2 if j == 0 else old[key][j], "n": 2 * total if j == 0 else total}
+                    for j in range(4)
+                ],
+            }
+            for i, key in enumerate(keys)
+        ],
+    }
+    monkeypatch.setattr(bmp, "retained_group", lambda: group)
+    mesh_of = [0, 1, 2, 3, 0]
+    hits = [{key: old[key][j] for key in keys} for j in mesh_of]
+    run = synthetic_run(tmp_path, [f"m{j}" for j in mesh_of], hits, total)
+    # Blank the first block's modes in every state of the second primary repeat: that block then has no
+    # single-click sample, while every other block keeps its counts.
+    results = json.loads((run / "results.json").read_text(encoding="utf-8"))
+    block = settings[4]["blocks"][0]
+    blanked: dict[str, int] = {}
+    for state, count in results["iterations"][4]["counts"].items():
+        modes = state.split(",")
+        modes[block["offset"] : block["offset"] + len(block["roles"])] = ["0"] * len(block["roles"])
+        blanked[",".join(modes)] = blanked.get(",".join(modes), 0) + count
+    results["iterations"][4]["counts"] = blanked
+    (run / "results.json").write_text(json.dumps(results), encoding="utf-8")
+    record = bmp.analyze(run)
+    if record["reading"] != "an iteration returned no single-click counts in a block" or "persistence" in record:
+        raise AssertionError(record)
+    if record["missing"] != {"block": list(keys[0]), "settings": [settings[4]["name"]]} or "drift" in record:
+        raise AssertionError(record)
+
+
 @pytest.mark.audit
 def test_the_power_record_replays_from_its_ledgered_seed() -> None:
     """results/quandela/belenos-mesh-persistence-power.json follows from its seed draw and the retained counts."""

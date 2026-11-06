@@ -283,9 +283,17 @@ def analyze(run: Path) -> dict[str, Any]:
     for block in retained["blocks"]:
         key = (block["block"][0], block["block"][1])
         firsts = [new_cells[i][key] for i in range(len(ORDER))]
+        empty = [manifest["settings"][i]["name"] for i in range(len(ORDER)) if firsts[i]["n"] == 0]
+        if empty:
+            # A share and a drift contrast need a count: an iteration without single-click counts in a block is a
+            # missing cell, and the reading is withheld rather than computed on the cells that remain.
+            record["reading"] = "an iteration returned no single-click counts in a block"
+            record["missing"] = {"block": block["block"], "settings": empty}
+            return record
         primary = swap.merge([firsts[0], firsts[4]])
         cells = [primary, firsts[1], firsts[2], firsts[3]]
         z = swap.two_sample_z((firsts[0]["hit"], firsts[0]["n"]), (firsts[4]["hit"], firsts[4]["n"]))
+        # With both counts positive, two_sample_z returns None only for two equal and certain shares: no drift.
         drift += (z or 0.0) ** 2
         old.append(shares(block["cells"]))
         new.append(shares(cells))
