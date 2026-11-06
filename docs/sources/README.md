@@ -325,6 +325,26 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [1910.06343](../notes/papers/1910.06343.md) | Eisert et al., Quantum certification and benchmarking, Nat. Rev. Phys. 2, 382 (2020) | low | none | none |
 | [2407.08828](../notes/papers/2407.08828.md) | Proctor et al., Benchmarking quantum computers, Nat. Rev. Phys. 7, 105 (2025) | medium | none | low |
 | [quantum-journal-referee-instructions](../notes/papers/quantum-journal-referee-instructions.md) | Quantum journal, guidelines for referees and editorial policies (web pages) | none | none | none |
+| [2111.08152](../notes/papers/2111.08152.md) | Costa, An, Sanders, Su, Babbush and Berry, Optimal scaling quantum linear systems solver via discrete adiabatic theorem (2021) | none | none | none |
+| [2305.11352](../notes/papers/2305.11352.md) | Jennings, Lostaglio, Pallister, Sornborger and Subasi, Randomized adiabatic quantum linear solver algorithm with optimal complexity scaling and detailed running costs (2023) | none | none | none |
+| [2406.12086](../notes/papers/2406.12086.md) | Dalzell, A shortcut to an optimal quantum linear system solver (2024) | none | none | none |
+| [2410.18178](../notes/papers/2410.18178.md) | Low and Su, Quantum linear system algorithm with optimal queries to initial state preparation (2024) | none | none | none |
+| [2601.16697](../notes/papers/2601.16697.md) | Mori, Kikuchi, Benedetti and Rosenkranz, Sparsity-dependent complexity lower bound of quantum linear system solvers (2026) | none | none | none |
+| [2609.22445](../notes/papers/2609.22445.md) | Patel, A near-optimal joint lower bound for sparse quantum linear system solvers (2026) | none | none | none |
+| [2502.11239](../notes/papers/2502.11239.md) | Tu, Dubynskyi, Mohammadisiahroudi, Riashchentceva, Cheng, Ryashchentsev, Terlaky and Liu, Towards identifying possible fault-tolerant advantage of quantum linear system algorithms in terms of space, time and energy (2025) | none | none | low |
+| [2411.02522](../notes/papers/2411.02522.md) | Morales, Pira, Schleich, Koor, Costa, An, Aspuru-Guzik, Lin, Rebentrost and Berry, Quantum linear system solvers: a survey of algorithms and applications (2024) | none | none | none |
+| [1910.06151](../notes/papers/1910.06151.md) | Chia, Gilyen, Li, Lin, Tang and Wang, Sampling-based sublinear low-rank matrix arithmetic framework for dequantizing quantum machine learning (2019) | none | none | none |
+| [1712.06239](../notes/papers/1712.06239.md) | Chen and Gao, Quantum algorithms for Boolean equation solving and quantum algebraic attack on cryptosystems (2017) | none | none | low |
+| [2111.00405](../notes/papers/2111.00405.md) | Ding, Gheorghiu, Gilyen, Hallgren and Li, Limitations of the Macaulay matrix approach for using the HHL algorithm to solve multivariate polynomial systems (2021) | none | none | low |
+| [2510.05588](../notes/papers/2510.05588.md) | Li, A new quantum linear system algorithm beyond the condition number and its application to solving multivariate polynomial systems (2025) | none | none | none |
+| [1712.07211](../notes/papers/1712.07211.md) | Faugere, Horan, Kahrobaei, Kaplan, Kashefi and Perret, Fast quantum algorithm for solving multivariate quadratic equations (2017) | none | none | low |
+| [2609.28901](../notes/papers/2609.28901.md) | Lee, Jeong and Kim, A quantum circuit for Gaussian elimination (2026) | none | low | low |
+| [2608.23929](../notes/papers/2608.23929.md) | Maeda and Yano, Quantum algorithms and hardness for point-count approximation over finite fields (2026) | none | none | none |
+| [math/0411623](../notes/papers/math-0411623.md) | Kedlaya, Quantum computation of zeta functions of curves (2004) | none | none | low |
+| [quant-ph/0405081](../notes/papers/quant-ph-0405081.md) | van Dam, Quantum computing and zeroes of zeta functions (2004) | none | none | none |
+| [2408.08292](../notes/papers/2408.08292.md) | Jordan, Shutty, Wootters, Zalcman, Schmidhuber, King, Isakov, Khattar and Babbush, Optimization by decoded quantum interferometry (2024) | none | none | none |
+| [quant-ph/0409035](../notes/papers/quant-ph-0409035.md) | Buhrman and Spalek, Quantum verification of matrix products (2004) | none | none | none |
+| [1103.0842](../notes/papers/1103.0842.md) | Belovs, Span-program-based quantum algorithm for the rank problem (2011) | none | none | none |
 
 The [parallel-experiment synthesis](../notes/quantum_experiment_parallelism.md)
 connects these sources to fixed and varied companions, patch/time blocking,
