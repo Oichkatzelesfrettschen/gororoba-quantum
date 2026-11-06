@@ -774,6 +774,7 @@ def test_prepare_refuses_a_case_whose_expected_seconds_exceed_max_duration(
         raise AssertionError("a refused preparation retained a file")
 
 
+@pytest.mark.audit
 @pytest.mark.filterwarnings("ignore:Solution may be inaccurate:UserWarning")
 def test_prepare_derives_a_case_that_builds_checks_simulates_and_analyzes(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]

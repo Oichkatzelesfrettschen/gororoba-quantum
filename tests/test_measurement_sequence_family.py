@@ -419,8 +419,9 @@ def _compare_member_compiles(monkeypatch: pytest.MonkeyPatch, workers: str, plug
 
 
 # A spawned pool of four starts four interpreters that each import Qiskit, which on a contended pull-request runner
-# pushes the full 50-member compile to the per-test budget; that case runs in the audit, and an eight-member
-# counterpart keeps the four-worker order and equality check in every pull request.
+# pushes the full 50-member compile to the per-test budget; those cases run in the audit, and a two-worker,
+# two-member comparison keeps the pooled order, layout and equality check for both plugin settings in every pull
+# request.
 @pytest.mark.parametrize("plugin", (None, "ibm_dynamic_circuits"))
 @pytest.mark.parametrize("workers", ("1", pytest.param("4", marks=pytest.mark.audit)))
 def test_member_compilations_match_the_serial_compile(
@@ -429,6 +430,14 @@ def test_member_compilations_match_the_serial_compile(
     _compare_member_compiles(monkeypatch, workers, plugin, 50)
 
 
+@pytest.mark.parametrize("plugin", (None, "ibm_dynamic_circuits"))
+def test_two_worker_member_compilations_match_the_serial_compile(
+    monkeypatch: pytest.MonkeyPatch, plugin: str | None
+) -> None:
+    _compare_member_compiles(monkeypatch, "2", plugin, 2)
+
+
+@pytest.mark.audit
 @pytest.mark.parametrize("plugin", (None, "ibm_dynamic_circuits"))
 def test_four_worker_member_compilations_match_the_serial_compile(
     monkeypatch: pytest.MonkeyPatch, plugin: str | None

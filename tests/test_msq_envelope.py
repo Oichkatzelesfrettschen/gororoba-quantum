@@ -867,6 +867,7 @@ def null_fixture() -> NullFixture:
     return NullFixture()
 
 
+@pytest.mark.audit
 @pytest.mark.xdist_group("msq-null-batch")
 def test_batched_qubit_rows_equal_scalar_rows_and_the_sum_mutant_differs(null_fixture: NullFixture) -> None:
     import msq_envelope_null as null
@@ -879,6 +880,37 @@ def test_batched_qubit_rows_equal_scalar_rows_and_the_sum_mutant_differs(null_fi
             rows = null.evaluate_qubit_rows(q, fixture.planned[q], [d.counts[q] for d in fixture.drawn])
             found += [m for a, b in zip(fixture.rows[q], rows, strict=True) if (m := first_difference(a, b))]
         return found
+
+    check(mismatches() == [], "every field of every row has the scalar bits")
+    original = null.neumaier_rows
+    try:
+        null.neumaier_rows = lambda terms: sum(terms[1:], terms[0] + 0.0)
+        check(len(mismatches()) > 0, "uncompensated sums change a field of a row")
+    finally:
+        null.neumaier_rows = original
+
+
+def test_batched_qubit_rows_equal_scalar_rows_for_one_context_and_the_sum_mutant_differs() -> None:
+    """The small counterpart of the audit test over the width-8 block: one context, two drawn count sets."""
+    import measurement_sequence_analysis as msa
+    import msq_envelope_null as null
+
+    floor, reason = msa.bound_floor({"ibm_kingston"})
+    if floor is None:
+        raise AssertionError(str(reason))
+    context = null.null_contexts(1)[0]
+    planned = msa.with_planning({0: context}, floor)[0]
+    generator = np.random.default_rng(null.NULL_SEED)
+    counts = []
+    for factor in (0.9, 1.4):
+        model = msa.device_model(planned, p_init=0.0, sx_error=factor * planned["sx_error"])
+        expected = msa.device_counts({0: model}, {0: planned}, msa.FIXTURE_SHOTS)[0]["final"]
+        counts.append({"final": {n: (int(generator.binomial(t, k / t)), t) for n, (k, t) in expected.items()}})
+
+    def mismatches() -> list[str]:
+        rows = null.evaluate_qubit_rows(0, planned, counts)
+        scalar = [msa.evaluate_qubit((0, item, planned)) for item in counts]
+        return [m for a, b in zip(scalar, rows, strict=True) if (m := first_difference(a, b))]
 
     check(mismatches() == [], "every field of every row has the scalar bits")
     original = null.neumaier_rows
@@ -916,6 +948,8 @@ def test_batched_implied_loss_keeps_the_scalar_bits_inside_and_at_the_bracket_ed
     check(any(low < e < high for e in expected), "the cases reach the root solve")
 
 
+@pytest.mark.xdist_group("msq-null-batch")
+@pytest.mark.audit
 @pytest.mark.xdist_group("msq-null-batch")
 def test_batched_block_equals_scalar_replicates(null_fixture: NullFixture) -> None:
     import msq_envelope_null as null

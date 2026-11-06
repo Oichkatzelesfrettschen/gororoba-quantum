@@ -92,7 +92,7 @@ Uses: every module; `threadpoolctl` in `ci/runner_specs.py` and
 | Knob | Meaning | Verified by | Recommended | Falsifier | Status |
 |---|---|---|---|---|---|
 | `OPENBLAS_NUM_THREADS` | OpenBLAS threads, identical on the host, Kaggle, Azure and CI | `threadpoolctl` reports the value | 1 inside `parallel.py` workers; physical cores (6 on the host, 2 on a Standard_FX4mds_v2, 2 on Kaggle) for one large dense call | the BLAS rows of compute-flags.md Measured combinations | measured on the host |
-| `threadpoolctl.threadpool_limits(limits=, user_api=)` | runtime thread bound per API | `threadpoolctl` 3.7.0 module; used in `ci/runner_specs.py` | bound inside a function instead of mutating the environment | none | verified |
+| `threadpoolctl.threadpool_limits(limits=, user_api=)` | runtime thread bound per API | `threadpoolctl` 3.8.0 module; used in `ci/runner_specs.py` | bound inside a function instead of mutating the environment | none | verified |
 | `NPY_DISABLE_CPU_FEATURES` | numpy dispatch mask; `ci/run_gates.py` sets it for the runner-image ledger's records | `scripts/numerics_fingerprint.py`, `ci/run_gates.py` | unset for a native run; set exactly as `ci/run_gates.py` does only when replaying a ledger record | a ledger replay bit mismatch without it | verified use |
 | `NPY_PROMOTION_STATE` | accepted only as `weak` in numpy 2.5 | `numpy/__init__.py` line 913 | leave unset | a numpy that accepts another value | verified |
 | `scipy.optimize.linprog(method=)` | `highs` is the default | `scipy/optimize/_linprog.py` | `highs` | n/a | verified |
