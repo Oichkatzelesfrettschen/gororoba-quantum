@@ -1,0 +1,8 @@
+generic top 1 t9 order 2 {'nu': 2, 'J_zero_through': 14, 'rank': 4, 'K2': True, 'lower_zero_at_point': True, 'exact': True}
+generic top 2 t9 order 2 {'nu': 2, 'J_zero_through': 14, 'rank': 4, 'K2': True, 'lower_zero_at_point': True, 'exact': True}
+generic top 3 t9 order 2 {'nu': 2, 'J_zero_through': 14, 'rank': 4, 'K2': True, 'lower_zero_at_point': True, 'exact': True}
+generic top 4 t9 order 2 {'nu': 2, 'J_zero_through': 14, 'rank': 4, 'K2': True, 'lower_zero_at_point': True, 'exact': True}
+L0 top 2 t9 order 2 {'nu': 3, 'J_zero_through': 14, 'rank': 2, 'K2': True, 'lower_zero_at_point': True, 'exact': True}
+L0 top 3 t9 order 2 {'nu': 3, 'J_zero_through': 14, 'rank': 2, 'K2': True, 'lower_zero_at_point': True, 'exact': True}
+L0 top 4 t9 order 2 {'nu': 3, 'J_zero_through': 14, 'rank': 2, 'K2': True, 'lower_zero_at_point': True, 'exact': True}
+invalid arcs dropped (not through the origin, J not vanishing, or inexact): 0

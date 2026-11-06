@@ -45,3 +45,10 @@ prime there too. Orbit partitions of the other sections (for the record): 1+1+1+
 
 **Consequence.** The Iso arc certificates need one component, V(K2) itself (degree 23, projective dimension 4).
 Not covered: characteristic 0.
+
+Coordinates. The K2 relation files of the Iso runs (`runs/s3/iso_k2.rel`, `distribute/out/a5-p2-iso/.../relations-d2.rel`)
+use the generator list of their runs, whose generators 6 to 15 are the negatives of the header's G_6..G_15
+(`../../arcs-iso-w8/scan-iso-p*.log`, `RESULT signs`). The automorphism y_j -> -y_j for j = 6..15 carries one K2 onto
+the other, so radicality, primality, degree and the Cohen-Macaulay property hold in either coordinate system; the sign
+matters only when K2 is evaluated at G.
+
