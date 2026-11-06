@@ -35,16 +35,25 @@ qpu:belenos and qpu:ascella and 0 on the simulators, and
 
 - S = the shots the job actually used, for a one-computation job;
 - S = the smaller of the shots the job used over all its iterations and the
-  largest iteration's `max_shots`, for an iterated job.
+  largest iteration's `max_shots`, for a completed iterated job.
 
 Every completed job therefore costs 1 credit on a QPU and on a simulator
 alike, and a QPU job adds one millionth of a credit per billed shot. A
 completed simulator job costs 1 credit whatever it samples. A job that ended
-in `error` or `canceled` can leave the usage report's credits unchanged: 11
-retained one-job windows read a zero credit delta (seven errors and four
-cancellations), so the rule states the charge of a completed job only. An
+in `error` or `canceled` can leave the usage report's credits unchanged. Of the
+149 retained runs whose own usage report before submission and after
+collection differ by exactly one job within one calendar month, 11 read a zero
+credit delta (seven errors and four cancellations); with the sibling runs'
+pre-submission reports that `charged()` also takes as the later report, 151
+runs form one-job windows and 13 read zero (eight errors and five
+cancellations). No completed job reads zero under either window, so the rule
+states the charge of a completed job only. An
 iterated job whose total shots exceed its largest `max_shots` pays that
-ceiling; one that stays below it pays the shots it used.
+ceiling; one that stays below it pays the shots it used. When no usage delta
+isolates a charge and the result reports no shots used (a failed iteration
+that omits `nb_shots_used`, or no result), `qd_platform.py` `charged()` bills
+the largest `max_shots` in full, so a stand-in shot count never lowers the
+bill.
 `scripts/qd_platform.py` `plan` prices `estimated_credits` with the smaller of
 the billed shots and the estimate, so `estimated_credits` predicts the charge
 and `credit_ceiling` bounds it.
@@ -158,9 +167,9 @@ counts from `start_time`):
   photons detected together costs many shots: about 1 for one photon, 74
   for two (6de00147, 04f3d55a) and 1,800 for three (f918c870, e7f527ce),
   roughly 24 times more per added photon at transmittance near 5 %. The
-  shot ceiling of the largest iteration bills at 1e-6 per shot, so a
+  shot ceiling of the largest iteration caps the bill at 1e-6 per shot, so a
   three-photon iteration of 1,200 samples carries a 3,000,000-shot ceiling
-  and a 4-credit job. Extrapolated, a four-photon coincidence costs about
+  and a job of at most 4 credits. Extrapolated, a four-photon coincidence costs about
   43,000 shots per sample and a six-photon one about 25 million (medium
   confidence until a four-photon job measures the factor), so six
   interfering photons all detected cannot fit one sample into a job, while
@@ -171,8 +180,11 @@ counts from `start_time`):
   calibration windows before the start never count. A cut job reports the
   cut plus its teardown (318 s for 708bb40d, 339 s for dc348230).
 - **A cut.** The service stops the iteration in progress at 300 s, returns
-  every completed iteration with counts (the rest as missing entries) and
-  bills the full ceiling (dc348230: 1.018 credits for 6 of 12 iterations).
+  every completed iteration with counts (the rest as missing entries). A
+  cut job, dc348230 (canceled with a reported duration of 339 s after 6 of 12
+  iterations), billed 1.018 credits: 1 plus its 18,000-shot ceiling, since its
+  six returned iterations alone used 36,000 shots. The billing rule above
+  covers completed jobs, and this observation agrees with its cap.
   Put the iteration the analysis can best spare last, so a cut costs it
   rather than a reference iteration.
 - **Shape rule.** Take k = floor(0.9 x 300 / t) iterations at the measured
