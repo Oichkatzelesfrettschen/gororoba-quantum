@@ -1695,7 +1695,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_record_checks.py -k group07",
       "name": "core-record-check-07",
-      "seconds": 9.5,
+      "seconds": 20.0,
       "replays": [
         "docs/evidence/heron_platform/feedforward-latency.json"
       ]
@@ -4148,6 +4148,19 @@
       "replays": [
         "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json",
         "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/secondary-analysis.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/belenos_suppression_case.py --check",
+      "name": "core-belenos-suppression-law-case-check",
+      "seconds": 8.0,
+      "replays": [
+        "results/quandela/cases/belenos_suppression_law/job-00/cases.json",
+        "results/quandela/cases/belenos_suppression_law/job-00/circuit.json",
+        "results/quandela/cases/belenos_suppression_law/job-01/cases.json",
+        "results/quandela/cases/belenos_suppression_law/job-01/circuit.json"
       ]
     },
     {

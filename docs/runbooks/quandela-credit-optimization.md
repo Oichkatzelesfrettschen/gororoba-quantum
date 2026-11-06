@@ -6,10 +6,11 @@ long each job shape takes on `qpu:belenos`. The end-to-end procedure for
 designing, reviewing and running a case is
 [strategy.md](../notes/quandela/strategy.md) section 1b.
 
-Quandela Cloud bills per job, not per sample. A job costs 1 credit plus 1e-6
-per shot of its largest iteration, so a case's credits are set by its job
-count; packing settings into the iterations of a few jobs costs an order of
-magnitude less than one job per setting. This runbook states the measured
+Quandela Cloud bills per job, not per sample. A completed job costs 1 credit
+plus 1e-6 per billed shot, the shots used capped at its largest iteration's
+`max_shots`, so a case's credits are set by its job count; packing settings
+into the iterations of a few jobs costs an order of magnitude less than one
+job per setting. This runbook states the measured
 rule, the limits that bound packing, the pitfalls that change what a job
 does, and the arithmetic for planning a case. The price figures are the
 Explorer offer on this account; the live `qd_platforms` row and the portal
@@ -33,9 +34,29 @@ Charge per job = 1 + price_per_shot x S, with price_per_shot = 1e-6 on
 qpu:belenos and qpu:ascella and 0 on the simulators, and
 
 - S = the shots the job actually used, for a one-computation job;
-- S = the largest iteration's `max_shots`, used or not, for an iterated job.
+- S = the smaller of the shots the job used over all its iterations and the
+  largest iteration's `max_shots`, for a completed iterated job.
 
-A simulator job costs 1 credit whatever it samples.
+Every completed job therefore costs 1 credit on a QPU and on a simulator
+alike, and a QPU job adds one millionth of a credit per billed shot. A
+completed simulator job costs 1 credit whatever it samples. A job that ended
+in `error` or `canceled` can leave the usage report's credits unchanged. Of the
+149 retained runs whose own usage report before submission and after
+collection differ by exactly one job within one calendar month, 11 read a zero
+credit delta (seven errors and four cancellations); with the sibling runs'
+pre-submission reports that `charged()` also takes as the later report, 151
+runs form one-job windows and 13 read zero (eight errors and five
+cancellations). No completed job reads zero under either window, so the rule
+states the charge of a completed job only. An
+iterated job whose total shots exceed its largest `max_shots` pays that
+ceiling; one that stays below it pays the shots it used. When no usage delta
+isolates a charge and the result reports no shots used (a failed iteration
+that omits `nb_shots_used`, or no result), `qd_platform.py` `charged()` bills
+the largest `max_shots` in full, so a stand-in shot count never lowers the
+bill.
+`scripts/qd_platform.py` `plan` prices `estimated_credits` with the smaller of
+the billed shots and the estimate, so `estimated_credits` predicts the charge
+and `credit_ceiling` bounds it.
 
 Evidence: every retained run under `results/quandela/runs/` holds the usage
 report before submission (`submission.json`) and after collection
@@ -52,6 +73,22 @@ report before submission (`submission.json`) and after collection
 | c1eb1cbb | iterated | 9 | up to 60000 | 120000 | 1.12 |
 | every sim:belenos job | single or iterated | 1 to 16 | any | any | 1.0 |
 
+Across every retained run under `results/quandela/runs/` (151 hold a usage
+report on both sides: 136 completed, 8 error and 7 canceled), each of the 136
+completed jobs sits in a window whose job counter advanced by exactly one
+within one calendar month, and the rule reproduces every one of those 136
+charges to 5e-6 credits. On qpu:ascella, 38 completed iterated jobs have such
+a window. Twenty-seven used at least their largest `max_shots` and were
+charged that ceiling (1.016384 to 2.6 credits, among them the two jobs of the
+CZ process tomography at 1.4 and 2.6). Eleven used fewer shots and were
+charged what they used: the job of run
+`2026-10-30T190300Z-qpu_ascella-a5-kernel-slice` used 60,000 shots over six
+iterations under a largest `max_shots` of 100,000 and was charged 1.06
+credits, where the ceiling alone gives 1.10, and ten jobs of 65,536 shots
+under a largest `max_shots` of 131,072 (the `ascella-context-single-*` and
+`ascella-sedenion-cancellation-*` runs) were charged 1.065536, where the
+ceiling gives 1.131072.
+
 The 16 measured qpu:belenos charges and 1.01 for job 7419efb8, whose
 before-report predates retention, sum to 17.2255, the qpu:belenos total of
 the usage report read on 2026-10-21. The rule reproduces every credit spent
@@ -66,6 +103,7 @@ record the same rule from the first iterated jobs.
 | Duration of one job | 300 s (`max_duration` of the Explorer row), counted from `start_time` | `qd_platforms`, `plan` refuses a longer case; see "Job shape on qpu:belenos" |
 | Time per iteration on qpu:belenos | grows with the photon count: about 7 to 9 s for one photon, 46 to 50 s for six | "Job shape on qpu:belenos"; one-photon: 6.3 s plus 26 us per sample (c1eb1cbb: 9 iterations, 166000 samples, 61 s predicted and measured; 46b810ae: 157 s predicted, 149 s measured) |
 | Time per one-computation job | 13 to 15 s whatever its samples | aa4218f1, a5f0a8a4 |
+| Time per iteration on qpu:ascella | about 3.0 s whatever its shots: 2.9 to 3.2 s over jobs of 5 to 96 iterations, so a job fills the 300 s at about 100 iterations | `status.duration` of `results.json` over the iteration count in the retained qpu:ascella runs (96 iterations in 288 and 289 s, 64 in 186 s, 5 in 16 s) |
 | Time per iteration on sim:belenos | about 13 to 14 s | 1d7160c1 and 32b28fe8, 16 iterations in 212 and 230 s |
 | Transmittance behind the rates | 2.69 to 2.95 % | `perfs_at_plan` of the retained runs; the rate scales with it |
 | Jobs in flight | 1 running and 1 queued | `qd_availability` |
@@ -129,9 +167,9 @@ counts from `start_time`):
   photons detected together costs many shots: about 1 for one photon, 74
   for two (6de00147, 04f3d55a) and 1,800 for three (f918c870, e7f527ce),
   roughly 24 times more per added photon at transmittance near 5 %. The
-  shot ceiling of the largest iteration bills at 1e-6 per shot, so a
+  shot ceiling of the largest iteration caps the bill at 1e-6 per shot, so a
   three-photon iteration of 1,200 samples carries a 3,000,000-shot ceiling
-  and a 4-credit job. Extrapolated, a four-photon coincidence costs about
+  and a job of at most 4 credits. Extrapolated, a four-photon coincidence costs about
   43,000 shots per sample and a six-photon one about 25 million (medium
   confidence until a four-photon job measures the factor), so six
   interfering photons all detected cannot fit one sample into a job, while
@@ -142,8 +180,11 @@ counts from `start_time`):
   calibration windows before the start never count. A cut job reports the
   cut plus its teardown (318 s for 708bb40d, 339 s for dc348230).
 - **A cut.** The service stops the iteration in progress at 300 s, returns
-  every completed iteration with counts (the rest as missing entries) and
-  bills the full ceiling (dc348230: 1.018 credits for 6 of 12 iterations).
+  every completed iteration with counts (the rest as missing entries). A
+  cut job, dc348230 (canceled with a reported duration of 339 s after 6 of 12
+  iterations), billed 1.018 credits: 1 plus its 18,000-shot ceiling, since its
+  six returned iterations alone used 36,000 shots. The billing rule above
+  covers completed jobs, and this observation agrees with its cap.
   Put the iteration the analysis can best spare last, so a cut costs it
   rather than a reference iteration.
 - **Shape rule.** Take k = floor(0.9 x 300 / t) iterations at the measured
@@ -188,9 +229,11 @@ credits more.
   (`pcvl_version` and `software_versions` equal) and records the basis in
   the plan ([calibration.md](../notes/quandela/calibration.md), "Record
   fields Perceval reads").
-- **Credit ceiling in plan.** `plan` charges the price per shot on the
-  largest iteration's `max_shots`, as the service bills, so a written
-  case's `--max-credits` and `--per-job-credits` follow the rule above.
+- **Credit ceiling in plan.** `plan` prices `credit_ceiling` with the
+  largest iteration's `max_shots`, the most the rule above can bill, so a
+  written case's `--max-credits` and `--per-job-credits` cover it;
+  `estimated_credits` prices the smaller of those billed shots and Perceval's
+  shot estimate.
 - **Mitigation default.** `mitigations = None` applies whatever default the
   server holds: DetectorBalancing on sim:belenos, none on qpu:ascella, and
   undeclared on qpu:belenos since its record lost `default_mitigations`.
@@ -204,12 +247,14 @@ credits more.
   from the record, Perceval treats any requested mitigation as unknown to
   the server and runs its correction on the client, splitting the job into
   sub-computations.
-- **Simulator jobs are not free.** A sim:belenos job costs 1 credit; a
+- **Simulator jobs are not free.** A completed sim:belenos job costs 1 credit; a
   local Perceval SLOS run of the same experiment costs nothing and checks
   the circuit's ideal output.
-- **Unused shot budget is billed on iterated jobs.** A max_shots far above
-  the samples an iteration needs is charged in full; set it from the
-  expected filter pass rate.
+- **The shot budget caps the bill of an iterated job.** A job pays the
+  smaller of the shots it used and its largest iteration's `max_shots`, so a
+  `max_shots` far above the samples an iteration needs is charged only when
+  the job's total shots reach it; set it from the expected filter pass rate
+  so the ceiling stays near the expected charge.
 
 ## Before a submission
 

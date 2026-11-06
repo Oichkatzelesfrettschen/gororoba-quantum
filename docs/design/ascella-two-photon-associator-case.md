@@ -162,8 +162,8 @@ detectors and a 300 s `max_duration` ([quandela/README.md](../notes/quandela/REA
 all of this.
 
 **Credits.** The ceiling is 1.262144 credits: the 1.0 per-job price plus 262144 billed shots at 1e-6. The service
-bills the largest iteration's shot cap ([billing runbook](../runbooks/quandela-credit-optimization.md)). The
-expected charge is the same or less. The monthly free grant is 200 credits, reset on the first of the month (UTC).
+bills the smaller of the shots used and the largest iteration's shot cap
+([billing runbook](../runbooks/quandela-credit-optimization.md)), so the expected charge is the same or less. The monthly free grant is 200 credits, reset on the first of the month (UTC).
 
 **Seconds.** The expected value is unmeasured; the bound passed to `plan` is 280 s against the 300 s
 `max_duration`.
