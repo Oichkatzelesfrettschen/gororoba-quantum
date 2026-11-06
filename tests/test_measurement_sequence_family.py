@@ -429,6 +429,7 @@ def test_member_compilations_match_the_serial_compile(
     _compare_member_compiles(monkeypatch, workers, plugin, 50)
 
 
+@pytest.mark.audit
 @pytest.mark.parametrize("plugin", (None, "ibm_dynamic_circuits"))
 def test_four_worker_member_compilations_match_the_serial_compile(
     monkeypatch: pytest.MonkeyPatch, plugin: str | None

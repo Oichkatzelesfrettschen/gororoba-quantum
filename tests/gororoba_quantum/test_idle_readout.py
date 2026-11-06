@@ -473,6 +473,7 @@ def test_a_record_that_disagrees_with_the_group_definition_or_the_pub_map_refuse
         live_run._archived_entries(stripped, isas)
 
 
+@pytest.mark.audit
 def test_idle_readout_runs_only_on_a_pin_that_names_one_path_per_body() -> None:
     from runtime_contracts import _fixture_args, _ProbeBackend, _ProbeService
 
