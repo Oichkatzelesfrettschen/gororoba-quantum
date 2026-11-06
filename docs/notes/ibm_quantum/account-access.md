@@ -12,6 +12,12 @@ repository's Python. The MCP servers that are registered are recorded in the pri
 opens the default. Each account is a separate IBM Cloud instance with its own
 600 s rolling quota and its own inventory file (the `--self-test` of gate `core-self-test-05` (`tests/test_cli_self_tests.py`)).
 
+Under IBM Quantum's free rules as the owner states them (2026-11-06), the 180-minute quantum-time program opens only
+after these accounts are drained, so their remaining seconds are spent on preregistered cases rather than held: a
+case that drains an account sets `--reserve-seconds` and `--min-remaining-seconds` low enough to use the balance, and
+the retention audit records a below-reserve balance as `account_reserve_met: false`
+(`scripts/reconcile_qpu_inventory.py`) instead of refusing the job.
+
 ## Read surfaces
 
 Every surface below is read-only and spends no quota. A probe of each, on
