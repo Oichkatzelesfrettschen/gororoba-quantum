@@ -48,7 +48,9 @@ the closest entry and say what changed.
   cores and 4 threads, so each shares a core; the portfolio trades per-process speed for two independent
   algorithms per prime.
 - Memory and time limits: lab-a1 runs under `prlimit --as` 5 GB and 10 GB stopped with "Singular error: no more
-  memory" (p = 32029 at 5.2 GB after 57 min); Azure: none per process, 8 h each.
+  memory" (p = 32029 at 5.2 GB after 57 min, p = 32009 at 10.5 GB after 3 h 26 min); Azure: none per process,
+  8 h each; at 1 h 47 min the p = 32009 processes held 25.5 GB each (about 14 GB/h) and the p = 32029 processes
+  7.8 GB each.
 - Checkpoints: `chart-sat-iso-pP-METHOD.txt` (saturation), `chart-std-...` (its standard basis), `chart-fiber-...`
   (the fiber ideal), each written as it exists.
 - End state: the local watcher waits for `all done`, requires no Singular running, copies a tarball of out/ and the
