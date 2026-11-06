@@ -17,6 +17,7 @@ from mesh_selection import (
     normal_cdf,
     persistence,
     persistence_reading,
+    relabelings_of,
     replay_power,
     sign_flip_cross_product,
     slope_lower_p,
@@ -407,3 +408,18 @@ def test_reading_thresholds_are_strict_and_supplied_by_the_caller() -> None:
     wrong = {name: got for name, (got, want) in readings.items() if got != want}
     if wrong:
         raise AssertionError(wrong)
+
+
+def test_a_full_sample_of_relabelings_reproduces_the_enumerated_reading() -> None:
+    """Passing all m! relabelings with the identity first reproduces the enumerated p-values and slope bound, and a
+    sample whose row 0 is not the identity is refused."""
+    rng = np.random.default_rng(FIXTURE_SEED)
+    old = rng.normal(size=(1, 5))
+    new = 0.8 * old + 0.3 * rng.normal(size=(1, 5))
+    every = np.array(list(itertools.permutations(range(5))))
+    exact = persistence(old, new, 0.05, 0.5)
+    sampled = persistence(old, new, 0.05, 0.5, relabelings=every)
+    if exact != sampled:
+        raise AssertionError(f"{exact} differs from {sampled}")
+    with pytest.raises(ValueError, match="identity in row 0"):
+        relabelings_of(5, every[::-1])

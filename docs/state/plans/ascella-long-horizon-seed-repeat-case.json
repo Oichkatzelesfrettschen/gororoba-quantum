@@ -1,0 +1,53 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-long-horizon-seed-repeat-case",
+  "kind": "investigation",
+  "summary": "Run one qpu:ascella job (job-08) that repeats job-02's 64 seeded settings twelve days and one compiler update after job-03, and read whether each served mesh keeps its analyzer error by the Belenos mesh-persistence rule.",
+  "sources": [
+    "docs/design/ascella-signed-coherence-conformance.md",
+    "docs/design/belenos-mesh-persistence-case.md",
+    "scripts/ascella_coherence_request.py",
+    "scripts/ascella_long_horizon_reading.py",
+    "docs/evidence/ascella-order-coefficients/seed-repeat-reading.json",
+    "docs/evidence/ascella-order-coefficients/heater-coupling.json"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The readings below are fixed before acquisition. Job-03 reproduced job-02's per-mesh X errors nine hours later at the attenuation ceiling (seed-repeat-reading.json: r 0.885, ceiling 0.880, anchors steady). Job-02 ran under mosaiq-arcturus 2.1.5.2.post4 and hardware-core 3.9.3 (its platform-before catalogue); the processor record of 2026-11-06 reads mosaiq-arcturus 2.1.5.2.post11 and hardware-core-quandela 3.9.11. A sim:ascella run of job-02's request on 2026-11-06 served 57 distinct meshes, none equal to the QPU's, with a perturbed X spread equal to its counting noise, so mesh identity and the per-mesh error are properties of the QPU service that no simulation reads."
+  },
+  "scope": "Job-08 submits job-02's 64 settings of theta2-x-arm0 at 32,768 samples per iteration with job-02's compilation seeds under the same setting names. The 8 seed-0 anchors keep every eighth position; the 56 perturbed meshes take the off-stride positions in the order of values 0..55 of docs/evidence/anu_qrng/draw-2026-11-06T175610Z.json, value 56 seeds the reading's relabelings and value 57 the power record. scripts/ascella_long_horizon_reading.py reads job-03 (reference) against job-08 at alpha 0.01: M, mesh identity, the settings whose computed_circuit equals job-03's; with fewer than four identical perturbed meshes nothing else is read and the result is that the service redraws the meshes. A, anchor control, the difference of the anchor means in counting standard errors. S, persistence, the primary reading: mesh_selection.persistence on the identical perturbed meshes as one block with 20,000 sampled relabelings plus the identity, slope of job-08's centered X on job-03's through the origin, its one-sided 99 % upper bound, read by mesh_selection.persistence_reading at alpha 0.01 and useful slope 0.5 (persists, recurs below the useful slope, redrawn, indeterminate). P1, reproduction, secondary: Pearson r against the attenuation ceiling at 16,384 and 32,768 samples and its Fisher-z 0.01 bound. P2: job-02's R1 anchor-ratio test on job-08. The same script reads job-02 against job-08 as the secondary pair; its job-02 against job-03 rehearsal reads persists (slope 0.914, upper bound 1.071). Power (long-horizon-power.json, 400 Gaussian replicates per slope): a fully persistent error reads persists in 1.00, slope 0.75 in 0.98, slope 0.5 indeterminate 0.64 and persists 0.34, a redrawn error reads redrawn in 0.89.",
+  "owner": "ascella signed-coherence analysis",
+  "next_action": "Submit job-08 on qpu:ascella under the owner's approval, collect it, and write the reading records.",
+  "related": [
+    "ascella-seed-repeat-case",
+    "ascella-mesh-response-decomposition",
+    "ascella-signed-coherence-conformance"
+  ],
+  "steps": [
+    {
+      "id": "request-builder",
+      "action": "Register job-08 in ascella_coherence_request.py with job-02's seeds by name, anchors at stride 8, the perturbed meshes in the new draw's order, and freeze its body against the live qpu:ascella command set without sending it.",
+      "acceptance": "--check rebuilds every registered job to its retained bytes and validates job-08's frozen body.",
+      "state": "doing"
+    },
+    {
+      "id": "sim-rehearsal",
+      "action": "Run job-02's and job-08's requests on sim:ascella, read their served meshes and X spread, and rehearse the reading on the retained job-02 and job-03 pair.",
+      "acceptance": "Both sim runs retained; the rehearsal reproduces seed-repeat-reading.json's M, A and P1.",
+      "state": "todo",
+      "depends_on": [
+        "request-builder"
+      ]
+    },
+    {
+      "id": "acquisition-and-reading",
+      "action": "Submit job-08 on approval, collect, retain, and write the job-03 and job-02 readings against it.",
+      "acceptance": "A retained run and two reading records with every fixed reading.",
+      "state": "todo",
+      "depends_on": [
+        "sim-rehearsal"
+      ]
+    }
+  ]
+}

@@ -145,6 +145,10 @@ COMPILATION_DESIGN = "docs/evidence/ascella-order-coefficients/compilation-desig
 # positions: the k-th off-stride position takes the mesh of the k-th smallest value, ties by index.
 REPEAT_ORDER_DRAW = "docs/evidence/anu_qrng/draw-2026-10-26T033936Z.json"
 REPEAT_PLAN = "docs/state/plans/ascella-seed-repeat-case.json"
+# The ANU QRNG draw whose values 0..55 place job-02's 56 perturbed meshes on the long-horizon repeat's off-stride
+# positions, by the same rule as REPEAT_ORDER_DRAW; value 56 seeds that reading's relabelings.
+LONG_REPEAT_ORDER_DRAW = "docs/evidence/anu_qrng/draw-2026-11-06T175610Z.json"
+LONG_REPEAT_PLAN = "docs/state/plans/ascella-long-horizon-seed-repeat-case.json"
 # The ANU QRNG draw whose nonzero values, job-02's seeds and repeats skipped, seed the new-seed jobs: a job takes its
 # perturbed positions' seeds from such values in index order, starting at its draw_start.
 NEW_SEED_DRAW = "docs/evidence/anu_qrng/draw-2026-10-26T174307Z.json"
@@ -172,6 +176,7 @@ class Job:
     seed_draw: str = SEED_DRAW
     draw_start: int = 0
     iterations: int = 64
+    repeat_plan: str = REPEAT_PLAN
 
 
 JOBS = {
@@ -198,6 +203,11 @@ JOBS = {
         )
         for count, seconds in ((88, 266.0), (96, 290.0))
     },
+    # The line through job-04 (80 iterations in 243 s) and job-05-i88 (88 in 265 s) puts 64 iterations of 32,768
+    # samples at 199 s.
+    "job-08": Job(
+        "job-08", 32768, 32768, 1.032768, 205.0, True, True, LONG_REPEAT_ORDER_DRAW, repeat_plan=LONG_REPEAT_PLAN
+    ),
 }
 STAGED = ("cases.json", "circuit.json")
 # qd_platform.snapshot's catalogue and qd_platform.observe's raw route answers
@@ -469,7 +479,7 @@ def documents(job: Job) -> dict[str, bytes]:
             "of the k-th smallest draw value, ties by index",
         }
         manifest["preregistered"] = {
-            "plan": REPEAT_PLAN,
+            "plan": job.repeat_plan,
             "repeats": "job-02",
             "family_alpha": 0.01,
             "interpretation": "reproduction of each served mesh's analyzer response at a repeated compilation seed",
@@ -665,7 +675,7 @@ def refusal(item: tuple[str, dict[str, Any], dict[str, Any]]) -> str:
     label, candidate, mesh = item
     try:
         validate(candidate, mesh)
-    except (ValueError, PlatformError):
+    except ValueError, PlatformError:
         return label
     raise ValueError(f"validate accepts the {label}")
 

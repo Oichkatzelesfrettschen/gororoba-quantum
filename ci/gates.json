@@ -3837,6 +3837,20 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_long_horizon_reading.py results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/long-horizon-rehearsal-02-03.json --check",
+      "name": "core-ascella-signed-coherence-long-horizon-rehearsal-replay",
+      "seconds": 15.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_long_horizon_reading.py --power docs/evidence/ascella-order-coefficients/long-horizon-power.json --check",
+      "name": "core-ascella-signed-coherence-long-horizon-power-replay",
+      "seconds": 120.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/ascella_heater_coupling.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 docs/evidence/ascella-order-coefficients/heater-coupling.json --check",
       "name": "core-ascella-signed-coherence-heater-coupling-replay",
       "seconds": 885.0
