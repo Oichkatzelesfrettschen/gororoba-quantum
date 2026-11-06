@@ -206,6 +206,24 @@ and the Kaggle noise-snapshot rule.
   `research_state.py --check` gate while a retained run is missing from the
   registry.
 
+## Queue depth and wait
+
+A backend's `pending_jobs` count does not bound the wait for a job's start.
+`live_run.py` `ineligible_reason` applies `--max-pending` as a plain ceiling
+on that count. Measured on 2026-10-29: `ibm_kingston` reported 78 pending
+jobs at plan time, under the readout-actor case's ceiling of 100, and the
+three approved jobs stayed QUEUED with no running timestamp from 01:58 UTC
+until the operator cancelled them at 19:11 UTC, 17 h 13 min later
+(`results/live/qpu-job-retention-audit.f59f9992321c.json`). The three
+replacement jobs on `ibm_fez` ran from creation to finish within 25 s
+(19:16:09.95 to 19:16:34.76 UTC, run
+`results/live/2026-10-29T191606.826758Z`). A case that needs a start within
+hours sets its ceiling from a same-day observation of the backend, and a
+stalled job gives a case no authority over another worker's job on the
+shared queue. Hypothesis: queue position on a shared backend is not
+first-in-first-out, or its depth drains unevenly; one backend pair on one
+day cannot separate the two.
+
 ## Dynamic-circuit job split
 
 The Qiskit skill `migrate-qiskit-ibm-runtime` ran circuits through the
