@@ -16,11 +16,16 @@ selecting its own runs and blocks.
 - composition_test is the conditional Monte Carlo test that the two rows of 2 x K count tables share one
   composition (multivariate hypergeometric reallocation given both margins); two_row_chi_square and
   adjusted_residuals are its statistic and its per-cell residuals.
+- persistence is the recurrence test of each mesh's deviation from its block mean between two windows: the cross
+  product of the block-centered shares, its exact one-sided p-value over within-block relabelings
+  (relabeled_values, exact_upper_p) and the slope through the origin with a one-sided upper bound;
+  persistence_reading turns that record into a reading under caller-supplied thresholds.
 """
 
 from __future__ import annotations
 
 import itertools
+import math
 from collections.abc import Mapping, Sequence
 from typing import Any
 
@@ -336,3 +341,59 @@ def composition_test(tables: Sequence[np.ndarray], draws: int, seed: int | np.ra
     total = np.sum(nulls, axis=0)
     p = float((1 + np.count_nonzero(total >= observed - 1e-9)) / (1 + draws))
     return {"statistic": observed, "per_table": statistics, "p": p, "draws": draws}
+
+
+def centered(shares: np.ndarray) -> np.ndarray:
+    """Each block's shares minus its mean over the meshes (rows are blocks)."""
+    return shares - shares.mean(axis=1, keepdims=True)
+
+
+def relabeled_values(e_old: np.ndarray, e_new: np.ndarray) -> list[np.ndarray]:
+    """Per block, the block's cross product under each of the m! relabelings of the new meshes."""
+    m = e_old.shape[1]
+    perms = np.array(list(itertools.permutations(range(m))))
+    return [e_new[b][perms] @ e_old[b] for b in range(e_old.shape[0])]
+
+
+def exact_upper_p(per_block: Sequence[np.ndarray], observed: float) -> float:
+    """P(sum of one independent draw per block >= observed), exact by splitting the blocks in two halves."""
+    half = len(per_block) // 2
+
+    def sums(parts: Sequence[np.ndarray]) -> np.ndarray:
+        total = np.zeros(1)
+        for values in parts:
+            total = (total[:, None] + values[None, :]).ravel()
+        return total
+
+    left, right = sums(per_block[:half]), np.sort(sums(per_block[half:]))
+    tol = 1e-12
+    count = right.size - np.searchsorted(right, observed - left - tol, side="left")
+    return float(count.sum() / (left.size * right.size))
+
+
+def persistence(old: np.ndarray, new: np.ndarray, alpha: float) -> dict[str, Any]:
+    """The cross product of block-centered shares, its exact relabeling p-value and the slope with its upper bound.
+
+    old and new hold one row per block and one column per mesh. The slope is the regression through the origin of
+    the new centered shares on the old ones; its one-sided 1 - alpha upper bound uses the residual variance on
+    (cells - blocks - 1) degrees of freedom."""
+    from scipy.stats import t
+
+    e_old, e_new = centered(old), centered(new)
+    observed = float((e_old * e_new).sum())
+    p = exact_upper_p(relabeled_values(e_old, e_new), observed)
+    sxx = float((e_old**2).sum())
+    beta = observed / sxx
+    dof = e_old.size - e_old.shape[0] - 1
+    s2 = float(((e_new - beta * e_old) ** 2).sum()) / dof
+    upper = beta + float(t.ppf(1 - alpha, dof)) * math.sqrt(s2 / sxx)
+    return {"statistic": observed, "p_value": p, "slope": beta, "slope_upper": upper, "dof": dof}
+
+
+def persistence_reading(result: Mapping[str, Any], alpha: float, useful_slope: float) -> str:
+    """persists when the p-value is below alpha; redrawn when the slope's upper bound is below useful_slope."""
+    if result["p_value"] < alpha:
+        return "persists"
+    if result["slope_upper"] < useful_slope:
+        return "redrawn"
+    return "indeterminate"

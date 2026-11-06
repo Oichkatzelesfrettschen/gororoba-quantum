@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import itertools
 import json
 import math
 import sys
@@ -36,9 +35,10 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import belenos_mode_swap_interleaved as swap  # noqa: E402
 from qd_platform import sha256_bytes  # noqa: E402
-from scipy.stats import chi2, t  # noqa: E402
+from scipy.stats import chi2  # noqa: E402
 
 import qrng_seeds  # noqa: E402
+from mesh_selection import centered, persistence, persistence_reading  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 FAMILY = "belenos_mesh_persistence"
@@ -201,55 +201,8 @@ def retained_group() -> dict[str, Any]:
 
 
 # Statistic ------------------------------------------------------------------------------------------------------
-
-
-def centered(shares: np.ndarray) -> np.ndarray:
-    """Each block's shares minus its mean over the meshes (rows are blocks)."""
-    return shares - shares.mean(axis=1, keepdims=True)
-
-
-def relabeled_values(e_old: np.ndarray, e_new: np.ndarray) -> list[np.ndarray]:
-    """Per block, T_b under each of the m! relabelings of the new meshes."""
-    m = e_old.shape[1]
-    perms = np.array(list(itertools.permutations(range(m))))
-    return [e_new[b][perms] @ e_old[b] for b in range(e_old.shape[0])]
-
-
-def exact_upper_p(per_block: Sequence[np.ndarray], observed: float) -> float:
-    """P(sum of one independent draw per block >= observed), exact by splitting the blocks in two halves."""
-    half = len(per_block) // 2
-
-    def sums(parts: Sequence[np.ndarray]) -> np.ndarray:
-        total = np.zeros(1)
-        for values in parts:
-            total = (total[:, None] + values[None, :]).ravel()
-        return total
-
-    left, right = sums(per_block[:half]), np.sort(sums(per_block[half:]))
-    tol = 1e-12
-    count = right.size - np.searchsorted(right, observed - left - tol, side="left")
-    return float(count.sum() / (left.size * right.size))
-
-
-def persistence(old: np.ndarray, new: np.ndarray) -> dict[str, Any]:
-    """T, its exact within-block relabeling p-value and the slope with its one-sided upper bound."""
-    e_old, e_new = centered(old), centered(new)
-    observed = float((e_old * e_new).sum())
-    p = exact_upper_p(relabeled_values(e_old, e_new), observed)
-    sxx = float((e_old**2).sum())
-    beta = observed / sxx
-    dof = e_old.size - e_old.shape[0] - 1
-    s2 = float(((e_new - beta * e_old) ** 2).sum()) / dof
-    upper = beta + float(t.ppf(1 - ALPHA, dof)) * math.sqrt(s2 / sxx)
-    return {"statistic": observed, "p_value": p, "slope": beta, "slope_upper": upper, "dof": dof}
-
-
-def read(result: Mapping[str, Any]) -> str:
-    if result["p_value"] < ALPHA:
-        return "persists"
-    if result["slope_upper"] < USEFUL_SLOPE:
-        return "redrawn"
-    return "indeterminate"
+# The statistic lives in gororoba_quantum/mesh_selection.py (centered, persistence, persistence_reading); this
+# script supplies the case's thresholds ALPHA and USEFUL_SLOPE.
 
 
 def shares(cells: Sequence[Mapping[str, int]]) -> np.ndarray:
@@ -261,7 +214,7 @@ def shares(cells: Sequence[Mapping[str, int]]) -> np.ndarray:
 
 def power_trial(item: tuple[np.ndarray, np.ndarray]) -> str:
     old, new = item
-    return read(persistence(old, new))
+    return persistence_reading(persistence(old, new, ALPHA), ALPHA, USEFUL_SLOPE)
 
 
 def power(seed: Any, sigma: float) -> dict[str, Any]:
@@ -306,13 +259,15 @@ def analyze(run: Path) -> dict[str, Any]:
     retained = retained_group()
     # block_shares returns a setting's blocks in slot order; the retained group is keyed by block, so cells match
     # by block key, never by position.
+    # Each iteration's histogram reduces independently, so the reductions run through parallel.ordered_map.
+    work = [(setting, bound[index]["counts"]) for index, setting in enumerate(manifest["settings"])]
+    reduced = ordered_map(swap.iteration_shares, work, min_items=1)
     new_cells: dict[int, dict[tuple[str, int], dict[str, Any]]] = {}
     digests = []
-    for index, setting in enumerate(manifest["settings"]):
-        entry = bound[index]
-        circuit = (entry.get("result_fields") or {}).get("computed_circuit")
+    for index, block_cells in enumerate(reduced):
+        circuit = (bound[index].get("result_fields") or {}).get("computed_circuit")
         digests.append(hashlib.sha256(json.dumps(circuit, sort_keys=True).encode()).hexdigest() if circuit else None)
-        new_cells[index] = {share["key"]: share for share in swap.block_shares(setting, entry["counts"])}
+        new_cells[index] = {share["key"]: share for share in block_cells}
     expected = [retained["digests"][0], *retained["digests"][1:], retained["digests"][0]]
     identity = [
         {"setting": s["name"], "same_mesh": d == e}
@@ -341,13 +296,13 @@ def analyze(run: Path) -> dict[str, Any]:
         record["reading"] = "drift within the new job withholds the reading"
         return record
     o, n = np.array(old), np.array(new)
-    record["persistence"] = persistence(o, n)
+    record["persistence"] = persistence(o, n, ALPHA)
     slots = np.array([b["slot"] for b in blocks])
     record["secondary"] = {
-        "slots_4_and_5": persistence(o[slots >= 4], n[slots >= 4]) if (slots >= 4).sum() >= 2 else None,
-        "without_slot_5": persistence(o[slots != 5], n[slots != 5]),
+        "slots_4_and_5": persistence(o[slots >= 4], n[slots >= 4], ALPHA) if (slots >= 4).sum() >= 2 else None,
+        "without_slot_5": persistence(o[slots != 5], n[slots != 5], ALPHA),
     }
-    record["reading"] = read(record["persistence"])
+    record["reading"] = persistence_reading(record["persistence"], ALPHA, USEFUL_SLOPE)
     return record
 
 
