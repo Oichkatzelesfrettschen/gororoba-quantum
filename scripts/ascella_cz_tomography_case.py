@@ -51,7 +51,7 @@ import math
 import sys
 from collections.abc import Mapping, Sequence
 from datetime import datetime
-from functools import cache
+from functools import cache, partial
 from pathlib import Path
 from typing import Any
 
@@ -919,23 +919,32 @@ def coverage_seeds() -> list[tuple[int, int]]:
     return usable[:COVERAGE_DATASETS]
 
 
+def coverage_dataset(arrays: Mapping[str, np.ndarray], value: int) -> tuple[float, dict[str, list[float]]]:
+    """The primary fidelity and the interval of each type for the synthetic dataset that draw value `value` seeds.
+
+    The value spawns the dataset's own sampling and bootstrap streams, so datasets share no generator and map
+    independently."""
+    sampling, resampling = dataset_streams(value)
+    eligible, samples, shots = sampled_dataset(arrays, sampling)
+    scale = np.ones(len(arrays["any"]))
+    found = tomography(eligible, samples, shots, scale, resampling, COVERAGE_REPLICATES, conditional=False)
+    return found["process_fidelity"], found["process_fidelity_intervals"]
+
+
 def coverage_study(arrays: Mapping[str, np.ndarray], seeds: Sequence[tuple[int, int]]) -> dict[str, Any]:
     """How often each interval type covers the physical (absolute-rate) fidelity across synthetic datasets, with the
     exact binomial interval of each coverage.
 
-    Every dataset takes one draw value; its replicates are drawn before one pool maps the estimator over them."""
+    Every dataset takes one draw value and its own generator streams; parallel.ordered_map runs the datasets over the
+    pool and returns them in seed order, so the sums below do not depend on the pool size."""
     from scipy.stats import binomtest
 
-    scale = np.ones(len(arrays["any"]))
     truth = estimate_rates(exact_rates(arrays))["process_fidelity"]
     hits = {"percentile": 0, "basic": 0}
     biases = []
-    for _, value in seeds:
-        sampling, resampling = dataset_streams(value)
-        eligible, samples, shots = sampled_dataset(arrays, sampling)
-        found = tomography(eligible, samples, shots, scale, resampling, COVERAGE_REPLICATES, conditional=False)
-        biases.append(found["process_fidelity"] - truth)
-        for kind, (low, high) in found["process_fidelity_intervals"].items():
+    for fidelity, found in ordered_map(partial(coverage_dataset, arrays), [value for _, value in seeds], min_items=1):
+        biases.append(fidelity - truth)
+        for kind, (low, high) in found.items():
             hits[kind] += low <= truth <= high
     count = len(seeds)
     return {
