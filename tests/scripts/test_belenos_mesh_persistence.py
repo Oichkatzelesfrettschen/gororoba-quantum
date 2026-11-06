@@ -359,7 +359,7 @@ def test_the_plan_check_admits_the_case_and_refuses_a_slow_record() -> None:
         "cases_sha256": bmp.sha256_bytes((bmp.CASE / "cases.json").read_bytes()),
         "platform": "qpu:belenos",
         "credit_ceiling": bmp.credit_ceiling(),
-        "admitted_statuses": ["running"],
+        "admitted_statuses": ["available", "running"],
         "perfs_at_plan": retained["perfs_at_plan"],
     }
     if "inside the written case" not in bmp.plan_check(plan):
@@ -370,6 +370,8 @@ def test_the_plan_check_admits_the_case_and_refuses_a_slow_record() -> None:
         {**plan, "perfs_at_plan": slow},
         {**plan, "cases_sha256": "0" * 64},
         {**plan, "credit_ceiling": bmp.credit_ceiling() + 0.01},
+        {**plan, "admitted_statuses": ["running"]},
+        {**plan, "admitted_statuses": ["available", "maintenance"]},
     ):
         with pytest.raises(SystemExit):
             bmp.plan_check(mutated)

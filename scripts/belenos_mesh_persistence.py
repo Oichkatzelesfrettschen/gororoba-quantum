@@ -194,7 +194,9 @@ def plan_check(plan: Mapping[str, Any]) -> str:
         isinstance(ceiling, int | float) and not isinstance(ceiling, bool) and 0 <= ceiling <= credit_ceiling(),
         f"credit ceiling {ceiling!r} exceeds {credit_ceiling()}",
     )
-    require(plan.get("admitted_statuses") in ([], ["running"]), f"admitted statuses {plan.get('admitted_statuses')}")
+    # qd_platform.plan always admits available and appends the statuses the case names, here running.
+    admitted = plan.get("admitted_statuses")
+    require(admitted in (["available"], ["available", "running"]), f"admitted statuses {admitted}")
     perfs = plan.get("perfs_at_plan") or {}
     figures = [perfs.get("Clock (MHz)"), perfs.get("Transmittance (%)")]
     require(
