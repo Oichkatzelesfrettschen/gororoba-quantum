@@ -61,6 +61,23 @@ jobs:
       # ci/seed_provenance.py compares the reproduction-seed baseline with main's.
       - name: Fetch main
         run: git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+      # Diagnostic: the runner's CPU, and the 576 x 256 design-matrix SVD of
+      # scripts/ascella_cz_tomography_case.py under each OpenBLAS kernel.
+      - name: Runner CPU and SVD probe
+        timeout-minutes: 3
+        run: |
+          lscpu | grep -E 'Model name|^CPU\(s\)|Hypervisor'
+          grep -m1 flags /proc/cpuinfo | tr ' ' '\n' | grep -E 'avx512f|shstk|ibt|amx_tile|avx2|fma' | tr '\n' ' '; echo
+          uname -r; ldd --version | head -1; ulimit -s
+          py=$HOME/.cache/gororoba-ci/pins-venv/bin/python
+          export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+          export NPY_DISABLE_CPU_FEATURES="X86_V4 AVX512_ICL AVX512_SPR"
+          for core in Haswell Zen SkylakeX Sandybridge Nehalem auto; do
+            status=0
+            if [ "$core" = auto ]; then unset OPENBLAS_CORETYPE; else export OPENBLAS_CORETYPE=$core; fi
+            OPENBLAS_VERBOSE=2 "$py" -X faulthandler -c "import sys; sys.path.insert(0, 'scripts'); import ascella_cz_tomography_case as m; print(m.design_pseudoinverse().shape)" >probe.log 2>&1 || status=$?
+            echo "core=$core exit=$status $(grep -m1 '^Core:' probe.log) $(grep -m1 -o 'at +0x[0-9a-f]*' probe.log | tail -1)"
+          done
       # Several times the measured hosted pytest time; the prune point of
       # ci/AGENTS.md (Behavioral suite) sits well inside it.
       - name: pytest
