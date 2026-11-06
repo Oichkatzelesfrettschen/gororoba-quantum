@@ -63,12 +63,14 @@ job with a running timestamp or a charge follows the failed-job rule.
 `results/live/qpu-job-retention-audit.f59f9992321c.json` retains four such
 jobs on `ibm_kingston`, all of 2026-10-29, each with status CANCELLED,
 `final_qpu_charge_seconds` 0 and a null running timestamp; three of them
-stayed queued 17 h 13 min before the operator cancelled them. Such a job
-reports no usage in `job.metrics()`, so `live_run.py` records its
-`usage_status` as `missing` and the status never becomes `final`. A poll
-loop that exits only when every job's usage reads `final` therefore never
-ends for it: a watcher treats a CANCELLED job with a null running timestamp
-and `missing` usage as settled.
+stayed queued 17 h 13 min before the operator cancelled them. Their usage
+never settles to `final`: three carry no usage status in the audit, since
+`job.metrics()` reported no usage and `live_run.py` records that as
+`missing`, and the fourth (`dbhkprlep8hs73amc680`) still reads `pending`. A
+poll loop that exits only when every job's usage reads `final` therefore
+never ends for such a job. A watcher treats a CANCELLED job with a null
+running timestamp and no charge as settled whatever its usage status reads,
+the shape `inventory_retained_runs.unexecuted_cancellations` accepts.
 
 A completed job's charge tracks the modeled seconds, and its wall time does
 not. Measured on `ibm_fez` on 2026-10-29
