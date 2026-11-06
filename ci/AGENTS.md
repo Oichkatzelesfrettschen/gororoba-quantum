@@ -174,8 +174,11 @@ both caps, through
 it runs `ci/runner_image.sh` (podman) over a snapshot of the tree, which no
 host process writes, then copies back and receipts each file the command
 wrote there. `ci/runner_image_records.json` binds the record to that
-image and its pins through `ci/runner_image_records.py add`, which refuses
-bytes without a receipt, and gate core-635 checks the ledger. A gate that
+image and its arithmetic pins (`ARITHMETIC_PINS`: numpy, scipy, sympy,
+python-flint, the Qiskit and Perceval stacks and the other packages a replayed
+producer imports; a lint, type or test tool pin leaves the digest in place)
+through `ci/runner_image_records.py add`, which refuses bytes without a
+receipt, and gate core-635 checks the ledger. A gate that
 byte-compares a retained record lists it under `"replays"` in its entry of ci/gates.json,
 and the unmarked pr test `test_every_replayed_record_is_declared_bound_float_free_or_exempt`
 requires each listed record (each file of a listed directory) to be bound in

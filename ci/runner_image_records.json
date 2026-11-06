@@ -1,6 +1,6 @@
 {
  "schema": "runner-image-records-v1",
- "image": "80b63700ebfa2cfd4bf734b743d7e3b46932ea46fde4fbe786df4e529e639b33",
+ "image": "8e85cd4d31d082825dd60bc6dd5f97b9e6deac6bd6fe1dba6b3f6b777c5fbb60",
  "records": {
   "docs/evidence/ghost_runs/report.json": "85b07a3681e702b983d636e98f6437c80eeed0c9577b781b54832fa5670913de",
   "docs/evidence/ibm-fez-actor-pilot/analysis.json": "e1c79886827420c8491f906c5b5b3e68570a9c2461f42b0e2b721910cf06c4b7",
