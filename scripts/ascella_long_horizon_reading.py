@@ -122,18 +122,8 @@ def ceiling(samples_old: int, samples_new: int, meshes: int) -> dict[str, float]
 
 
 def anchor_control(z_old: np.ndarray, v_old: np.ndarray, z_new: np.ndarray, v_new: np.ndarray) -> dict[str, Any]:
-    mean_old = float((z_old / v_old).sum() / (1 / v_old).sum())
-    mean_new = float((z_new / v_new).sum() / (1 / v_new).sum())
-    error = math.sqrt(1 / float((1 / v_old).sum()) + 1 / float((1 / v_new).sum()))
-    z = (mean_new - mean_old) / error
-    return {
-        "reference_mean": mean_old,
-        "repeat_mean": mean_new,
-        "difference": mean_new - mean_old,
-        "standard_error": error,
-        "z": z,
-        "reading": "moved" if abs(z) >= float(stats.norm.ppf(1 - ALPHA / 2)) else "steady",
-    }
+    shift = seed_repeat.anchor_shift(z_old, v_old, z_new, v_new)
+    return {"reference_mean": shift.pop("mean_old"), "repeat_mean": shift.pop("mean_new"), **shift}
 
 
 def relabelings(meshes: int, generator: np.random.Generator) -> np.ndarray:

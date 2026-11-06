@@ -74,19 +74,29 @@ def fixed_bound(meshes: int) -> dict[str, float]:
     return {"ceiling": ceiling, "bound": bound}
 
 
-def anchor_control(z2: np.ndarray, v2: np.ndarray, z3: np.ndarray, v3: np.ndarray) -> dict[str, Any]:
-    mean2 = float((z2 / v2).sum() / (1 / v2).sum())
-    mean3 = float((z3 / v3).sum() / (1 / v3).sum())
-    error = math.sqrt(1 / float((1 / v2).sum()) + 1 / float((1 / v3).sum()))
-    z = (mean3 - mean2) / error
+def anchor_shift(z_old: np.ndarray, v_old: np.ndarray, z_new: np.ndarray, v_new: np.ndarray) -> dict[str, Any]:
+    """Inverse-variance anchor means of two runs, their difference in standard errors and the ALPHA reading."""
+    mean_old = float((z_old / v_old).sum() / (1 / v_old).sum())
+    mean_new = float((z_new / v_new).sum() / (1 / v_new).sum())
+    error = math.sqrt(1 / float((1 / v_old).sum()) + 1 / float((1 / v_new).sum()))
+    z = (mean_new - mean_old) / error
     critical = float(stats.norm.ppf(1 - ALPHA / 2))
     return {
-        "job_02_mean": mean2,
-        "job_03_mean": mean3,
-        "difference": mean3 - mean2,
+        "mean_old": mean_old,
+        "mean_new": mean_new,
+        "difference": mean_new - mean_old,
         "standard_error": error,
         "z": z,
         "reading": "moved" if abs(z) >= critical else "steady",
+    }
+
+
+def anchor_control(z2: np.ndarray, v2: np.ndarray, z3: np.ndarray, v3: np.ndarray) -> dict[str, Any]:
+    shift = anchor_shift(z2, v2, z3, v3)
+    return {
+        "job_02_mean": shift.pop("mean_old"),
+        "job_03_mean": shift.pop("mean_new"),
+        **shift,
     }
 
 

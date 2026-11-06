@@ -36,6 +36,7 @@ def test_a_power_replicate_depends_only_on_its_seed() -> None:
         raise AssertionError(f"replicate read {first}")
 
 
+@pytest.mark.audit
 def test_mesh_identity_reads_unitaries_not_serialized_strings() -> None:
     """The sim:ascella replay of job-02 serves job-02's QPU meshes: every unitary lies within MESH_TOLERANCE, while no
     serialized string is byte-equal."""
@@ -54,3 +55,23 @@ def test_mesh_identity_reads_unitaries_not_serialized_strings() -> None:
     distances = [long_horizon.mesh_distance(pair) for pair in pairs]
     if sum(left == right for left, right in pairs) != 0 or max(distances) > long_horizon.MESH_TOLERANCE:
         raise AssertionError(f"largest distance {max(distances)}")
+
+
+def test_mesh_distance_admits_float_jitter_and_refuses_a_moved_phase() -> None:
+    """A serialized mesh re-serialized with one phase nudged by 1e-9 differs as a string but reads as the same mesh;
+    a phase moved by 1e-3 reads as another mesh."""
+    from perceval import BS, PS, Circuit
+    from perceval.serialization import serialize
+
+    def mesh(phase: float) -> str:
+        return str(serialize(Circuit(2) // BS.Rx(theta=1.4535) // (1, PS(phase)) // BS.Rx(theta=1.4467)))
+
+    base, jitter, moved = mesh(0.7), mesh(0.7 + 1e-9), mesh(0.7 + 1e-3)
+    if base == jitter:
+        raise AssertionError("a 1e-9 phase change left the serialized string unchanged")
+    if long_horizon.mesh_distance((base, base)) != 0.0:
+        raise AssertionError("equal strings must read distance zero")
+    if long_horizon.mesh_distance((base, jitter)) > long_horizon.MESH_TOLERANCE:
+        raise AssertionError("float jitter read as another mesh")
+    if long_horizon.mesh_distance((base, moved)) <= long_horizon.MESH_TOLERANCE:
+        raise AssertionError("a moved phase read as the same mesh")
