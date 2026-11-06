@@ -25,9 +25,9 @@ no further bookkeeping.
 
 | order | source | adapter and evidence | physical source | quota | credential | approval |
 |---|---|---|---|---|---|---|
-| 1 | ANU Quantum Numbers (aqn, keyed) | `scripts/anu_qrng.py draw` (default), `docs/evidence/anu_qrng/` | vacuum-fluctuation homodyne (ANU) | 100 requests a calendar month, 1 a second; up to 1024 uint16 values a request | `~/.config/anu-qrng/api-key` (mode 600) or `ANU_QRNG_KEY_FILE` | none |
+| 1 | ANU Quantum Numbers (aqn, keyed) | `scripts/anu_qrng.py draw` (default), `docs/evidence/anu_qrng/` | vacuum-fluctuation homodyne (ANU) | 100 requests a calendar month, 1 a second; up to 1024 uint16 values a request | the key file `ANU_QRNG_KEY_FILE` names (default location in the private gororoba-infrastructure repository) | none |
 | 2 | ANU legacy (keyless) | `scripts/anu_qrng.py draw --source legacy`, same directory | same generator | 1 request a minute; ANU will scale it back and retire it | none | none |
-| 3 | Cisco Outshift QRNG | `scripts/outshift_qrng.py draw`, `docs/evidence/outshift_qrng/` | Outshift's quantum generator, offered as-is | 100000 bits a month; 1 to 10000 bits a block, 1 to 1000 blocks a request | `~/.config/outshift-qrng/api-key` (mode 600) or `OUTSHIFT_QRNG_KEY_FILE` | none |
+| 3 | Cisco Outshift QRNG | `scripts/outshift_qrng.py draw`, `docs/evidence/outshift_qrng/` | Outshift's quantum generator, offered as-is | 100000 bits a month; 1 to 10000 bits a block, 1 to 1000 blocks a request | the key file `OUTSHIFT_QRNG_KEY_FILE` names (default location in the private gororoba-infrastructure repository) | none |
 | 4 | Quandela Cloud QRNG | `scripts/quandela_qrng.py draw --approved-case FILE`, `docs/evidence/quandela_qrng/` | photonic entanglement; every generating job reports its CHSH value and min-entropy | priced per byte through the account's offer, charged in entity credits | the job token file `QUANDELA_TOKEN_FILE` names | an approved written case per draw (AGENTS.md, Hardware services) |
 
 The ANU draw and the Outshift draw are free and need no approval. The Outshift
@@ -46,10 +46,8 @@ the count it requests.
 
 Each key lives in a mode-600 file outside every checkout; an adapter refuses
 a key file that group or others can read, and no record, URL or log carries a
-key. To install or rotate a key without echoing it, write it from the
-clipboard: `sh -c 'umask 077; mkdir -p ~/.config/outshift-qrng; wl-paste -n >
-~/.config/outshift-qrng/api-key'`. A key that appeared in a chat, a terminal
-log or a commit is revoked at its service and replaced.
+key. A key that appeared in a chat, a terminal log or a commit is revoked at its
+service and replaced. The key file locations and the install procedure are recorded in the private gororoba-infrastructure repository.
 
 ## Candidates outside the table
 

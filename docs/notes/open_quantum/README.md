@@ -22,12 +22,7 @@ the captures below record what they said when read.
 The SDK and the MCP server need their own environment: openquantum-mcp 0.2.0
 requires `mcp<2`, while the Quantum Inspire environment runs mcp 2.3.0.
 
-```sh
-OQ_ENV=$HOME/.local/share/openquantum/venv
-OQ_PYTHON=${OQ_PYTHON:-$OQ_ENV/bin/python}
-uv venv --python 3.14 "$OQ_ENV"
-VIRTUAL_ENV="$OQ_ENV" uv pip install -r docs/notes/open_quantum/requirements-oq.txt
-```
+The pinned environment installs from `requirements-oq.txt` into a Python 3.14 venv (`OQ_ENV`) whose interpreter is `OQ_PYTHON`; the venv location is recorded in the private gororoba-infrastructure repository.
 
 | Package | Version | wheel sha256 | Role |
 |---|---|---|---|
@@ -41,18 +36,14 @@ Cirq and Qrisp plugins are not installed.
 
 An SDK key is a Client ID and Client Secret created at
 https://www.openquantum.com/settings/keys (two keys per account; the secret is
-shown once). The key lives outside every checkout as
-`~/.config/openquantum/sdk-key.json`, `{"client_id": ..., "client_secret": ...}`,
-directory mode 700 and file mode 600, and every consumer names it by path
-through `OPENQUANTUM_SDK_KEY`, so the secret enters no MCP registration,
+shown once). Every consumer names the key file by path through
+`OPENQUANTUM_SDK_KEY`, so the secret enters no MCP registration,
 command line or log. `openquantum_sdk.credentials.resolve_env_credentials`
 resolves, first match winning: an explicit token, an explicit client pair, the
 key file (`sdk_key_path` or `OPENQUANTUM_SDK_KEY`), `OPENQUANTUM_TOKEN`, then
 `OPENQUANTUM_CLIENT_ID` with `OPENQUANTUM_CLIENT_SECRET`. The MCP server
-accepts client credentials only. `save_account` writes
-`~/.config/OpenQuantum/accounts.json` (or `~/.openquantum/accounts.json`
-without platformdirs) and puts the secret in the system keyring when one is
-available; the repository does not use it.
+accepts client credentials only. `save_account` writes an accounts file and puts the secret in the system keyring when one is
+available; the repository does not use it. The key file location, format and modes are recorded in the private gororoba-infrastructure repository.
 
 ## Interfaces
 
@@ -71,23 +62,13 @@ schemas) and uploads nothing.
 
 ### MCP tools
 
-The server registers as `openquantum` at Claude Code user scope and in
-`~/.codex/config.toml`, both launching `"$OQ_PYTHON" -I -m openquantum_mcp`
-with `OPENQUANTUM_SDK_KEY`, `OPENQUANTUM_MCP_MAX_CREDITS=1`,
-`OPENQUANTUM_MCP_WAIT_TIMEOUT_SECONDS=45` and
-`OPENQUANTUM_MCP_PREP_TIMEOUT_SECONDS=120`. The Claude launcher in
-`~/.config/shell/codex-env.sh` loads it by default
-(`CLAUDE_MCP_SERVERS` defaults to `kaggle,quantum-inspire,openquantum`).
-`catalogue.json` retains every tool's description and input schema.
+The server registers as `openquantum`. `catalogue.json` retains every tool's description and input schema. Its registration (launcher, spend cap, timeouts, per-client settings) is recorded in the private gororoba-infrastructure repository.
 
 The [API/billing audit](../../evidence/provider-api-audit/README.md) found information loss in the vendor
 server: missing physical/job-width counts, nested execution constraints omitted by the summary, filtering
 after a premature pagination cutoff, and JSON error strings returned as protocol success.
 `scripts/oq_mcp_server.py` provides the reviewed repository adapter without editing the installed package.
-To deploy the adapter, replace the launcher with `"$OQ_PYTHON" -I scripts/oq_mcp_server.py`, using the
-canonical script's absolute path in client registration, retain every existing credential/cap/timeout
-environment setting, and reconnect the owning session. The registration description above records the
-vendor launcher; a process already running that launcher retains vendor behavior until replaced.
+The client registration that selects the adapter or the vendor launcher, and the reconnect a launcher change needs, are recorded in the private gororoba-infrastructure repository.
 
 The adapter keeps all thirteen input schemas and delegates mutation/spend decisions to the original vendor
 tools. Catalogue responses distinguish `physical_qubits` from `max_qubits_per_job`, retain nested limits,
@@ -122,7 +103,7 @@ holds the three tools closed and an interactive session asks.
 Source facts of openquantum-mcp 0.2.0 that bind its use:
 
 - `openquantum_mcp.safety.evaluate_spend` rejects a quote above
-  `OPENQUANTUM_MCP_MAX_CREDITS` (default 10, here 1), passes a zero-cost job,
+  `OPENQUANTUM_MCP_MAX_CREDITS` (default 10), passes a zero-cost job,
   passes a Public job whose cost the Spark balance covers without
   `confirm_spend`, and demands `confirm_spend=true` for any spend that reaches
   Full credits. The model sets `confirm_spend`, so the harness prompt on
@@ -160,8 +141,7 @@ Source facts of openquantum-mcp 0.2.0 that bind its use:
 
 ## Accounts, credits and public runs
 
-The live account (`catalogue.json`, `account`) holds one organization,
-25 Spark Credits, 0 Full Credits and no jobs.
+The live account (`catalogue.json`, `account`): its organization, credit balances and job count are recorded in the private gororoba-infrastructure repository.
 
 | Item | Rule | Source |
 |---|---|---|

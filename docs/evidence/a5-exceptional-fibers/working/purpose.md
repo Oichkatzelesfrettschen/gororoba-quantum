@@ -10,11 +10,12 @@ closed equations of every rank stratum, a Whitney stratification by orbits of H 
 model (item 7) is glued from.
 
 **Where the runs enter.** Each run takes a nullity-8 orbit closure Y (W8, E8-bar, Iso, X_+, X_-) and a smaller orbit
-Z in its closure (N_+, N_-, VB, ...), with I the ideal of Z on Y (generators G, ambient relation J). The fiber cone
+Z in its closure (N_+, N_-, VB, ...), with I = (G) the Pfaffian kernel-coordinate ideal on Y (ambient relation J);
+its zero set is the nullity >= 12 locus of Y (the B9 slice near the target for X, W8 and Iso; E8-bar adds V and V^a), so I is not the ideal of Z. The fiber cone
 F(I) = sum_d I^d / m I^d (the special fiber of the Rees algebra at a point of Z, after the normal-cone translation)
 is the coordinate ring of the exceptional fiber of the blow-up of Y along Z over that point: the set of limiting
 directions by which Y approaches Z. Its Hilbert function h_d, its degree and its relation degrees (for example the
-K2 relations of degree 23 on Iso) describe that limit set. Item 6 needs exactly this set: the program doc (gap N3,
+degree 23 of the scheme V(K2) on Iso, cut out by quadrics) describe that limit set. Item 6 needs exactly this set: the program doc (gap N3,
 lines 38-40) says a nullity-12 boundary orbit carries the nullity-8 kernel representation plus two extra dimensions
 and that "the shape of that specialization is the attaching data", and the nullity-8 record finds boundary limits
 path-dependent, so the attaching datum is the whole limit set, not one inclusion. The fiber cone is its algebraic

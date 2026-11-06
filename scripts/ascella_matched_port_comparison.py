@@ -25,6 +25,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
+import qd_records  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 RUNS = ROOT / "results/quandela/runs"
@@ -33,9 +34,8 @@ PORTS = 12
 
 def load(run: str) -> tuple[dict[str, Any], dict[str, Any]]:
     """(cases.json, results.json) of one retained run."""
-    path = RUNS / run
-    cases = json.loads((path / "cases.json").read_text(encoding="utf-8"))
-    results = json.loads((path / "results.json").read_text(encoding="utf-8"))
+    record = qd_records.read_run(RUNS / run)
+    cases, results = record.manifest, record.collected
     if results.get("partial") is not False or len(results["iterations"]) != len(cases["settings"]):
         raise ValueError(f"{run}: results are partial or do not match the settings")
     return cases, results

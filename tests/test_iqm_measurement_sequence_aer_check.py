@@ -15,7 +15,6 @@ def test_bloch_model_matches_aer() -> None:
         raise AssertionError("the Aer check summary changed")
 
 
-@pytest.mark.audit
 def test_pooled_comparison_equals_the_serial_one(monkeypatch: pytest.MonkeyPatch) -> None:
     calibration = check.iqm_sim.Calibration.from_directory(check.case.CALIBRATION_DIR)
     qubit = "QB1"

@@ -16,7 +16,7 @@ no literature priority for the complete experimental architecture.
 Every source is registered in [SOURCES.json](../../SOURCES.json). The arXiv
 grant of most of them permits no rehosting, so their PDFs live in the ignored
 `docs/local_source_cache/` and the verifier checks them where present. The
-CC BY sources are retained under `docs/pdf/`.
+CC BY sources live in gororoba-documents-public.
 
 ## Established algebra
 
@@ -75,8 +75,8 @@ role the gap plays in Davis-Kahan.
 | Source | Repository copy | What the certificate takes |
 |---|---|---|
 | Lundeen et al., Tomography of quantum detectors, Nature Physics 5 (2009), 27-30, DOI 10.1038/nphys1133 | [note](../papers/0807.2444.md), arXiv 0807.2444v1 ("Measuring measurement"), cache | Detector tomography: known probe states reconstruct an unknown effect |
-| Nielsen, Gamble, Rudinger, Scholten, Young, Blume-Kohout, Gate Set Tomography, Quantum 5 (2021), 557, DOI 10.22331/q-2021-10-05-557 | [note](../papers/2009.07301.md), `docs/pdf/2009.07301.pdf` (CC BY 4.0) | Why a known preparation frame is a premise and what removing it costs |
-| Chen, Zeng, Zhao, Ma, Zhou, Quantum Subspace Verification for Error Correction Codes, PRX Quantum 6 (2025), 040353, DOI 10.1103/fyw6-lq1l | [note](../papers/2410.12551.md), `docs/pdf/2410.12551v1.pdf` (CC BY 4.0) | Subspace verification from spectral gaps and Bernoulli counts |
+| Nielsen, Gamble, Rudinger, Scholten, Young, Blume-Kohout, Gate Set Tomography, Quantum 5 (2021), 557, DOI 10.22331/q-2021-10-05-557 | [note](../papers/2009.07301.md), [`2009.07301.pdf`](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/physics/quantum-characterization/2009.07301v2.pdf) (CC BY 4.0) | Why a known preparation frame is a premise and what removing it costs |
+| Chen, Zeng, Zhao, Ma, Zhou, Quantum Subspace Verification for Error Correction Codes, PRX Quantum 6 (2025), 040353, DOI 10.1103/fyw6-lq1l | [note](../papers/2410.12551.md), [`2410.12551v1.pdf`](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/main/physics/quantum-error-correction/2410.12551v1.pdf) (CC BY 4.0) | Subspace verification from spectral gaps and Bernoulli counts |
 
 The certificate is detector tomography of one outcome restricted to two
 blocks. The 160-setting bank is a tomographically complete probe set for A

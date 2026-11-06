@@ -182,6 +182,21 @@ device GPU, and every cuStateVec row reports `cuStateVec_enable` true; gate
   a wheel whose recorded recipe digest matches the running recipe. Its
   sha256, `29f79654...c875`, is `AER_GPU_WHEELS["cu13"]` in
   `scripts/kaggle_run.py`.
+- **Native Kaggle build.** `docs/notes/kaggle/recipes/build_aer_gpu_cu13_native_kaggle.sh`
+  replays the recipe's build, check and GPU check on a Kaggle T4 session
+  from NVIDIA's CUDA 13.0 apt packages, for a host without podman or a
+  GPU. Three image facts shape it: the Kaggle image ships its own NVIDIA apt
+  entry, which apt refuses beside `cuda-keyring`'s with a different
+  Signed-By key, so the script disables it first; the image's `uv` ignores
+  `VIRTUAL_ENV`, so every `uv pip` call names `--python VENV`; and the build
+  imports `build`, `setuptools` and `skbuild` before starting. Kernel
+  `probablyeric/aer-cu13-native` built the wheel in 483 s
+  (`results/kaggle/2026-10-31T075059Z-gororoba-aer-cu13-native`), sha256
+  `190bcd2b...28323`, with every library resolved in `ldd` and the Bell check
+  passing on statevector, cuStateVec statevector and tensor_network on a
+  Tesla T4 (driver 580.178.04). Its bytes differ from the podman wheel, so
+  `AER_GPU_WHEELS["cu13"]` keeps the podman sha256 and the native wheel
+  serves as a reproduction of the build, never as the pinned artifact.
 - **Library chain.** `GPU_AER_PINS["cu13"]` adds the nine CUDA 13 wheels of
   `docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt`: the CUDA 13.0.3
   toolkit libraries under `site-packages/nvidia/cu13/lib`, custatevec-cu13

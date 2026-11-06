@@ -5,10 +5,7 @@
 One account type exists, free, with access to the hardware backends, the
 emulator backends and storage for jobs and results (KB,
 [managing-your-account](site/kbase_managing-your-account.md),
-<https://www.quantum-inspire.com/kbase/managing-your-account/>). The API
-shows one team marked `individual_user` with one active member of role
-`member` (catalogue.json, which retains no team, member or user identifier
-in any form, since a hash of a small integer id reverses by enumeration).
+<https://www.quantum-inspire.com/kbase/managing-your-account/>). The account's team and member layout is recorded in the private gororoba-infrastructure repository (`catalogue.json` retains no team, member or user identifier in any form, since a hash of a small integer id reverses by enumeration).
 
 ## Metered usage: the transaction ledger
 

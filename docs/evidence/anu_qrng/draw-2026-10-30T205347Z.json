@@ -1,0 +1,22 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=12&type=uint16",
+ "retrieved_utc": "2026-10-30T205347Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"12\", \"data\": [19918, 52848, 30689, 50293, 57001, 12608, 56057, 55550, 595, 59482, 7821, 19846]}",
+ "raw_sha256": "63eea120700797397954bb4ab89fcd28e8b1f05a8de71888b4324e362e3dec2d",
+ "type": "uint16",
+ "values": [
+  19918,
+  52848,
+  30689,
+  50293,
+  57001,
+  12608,
+  56057,
+  55550,
+  595,
+  59482,
+  7821,
+  19846
+ ]
+}

@@ -10,16 +10,17 @@ prose:
 - [ci/requirements-replay.txt](../ci/requirements-replay.txt) (historical Qiskit 2.5.2 replays);
 - [packaging/qiskit-aer-cuda/build-requirements.txt](../packaging/qiskit-aer-cuda/build-requirements.txt) (qiskit-aer CUDA wheel packaging);
 - the build host's Arch packages in [python-stack.md](notes/build_host/python-stack.md), and the Qiskit-adjacent packages and `/opt` stacks beyond the core in [qiskit-packages/README.md](notes/qiskit-packages/README.md);
-- the host AWS Python packages and command-line programs in [python-packages.md](notes/aws/python-packages.md), and the project, plan, and credit rules in [aws/README.md](notes/aws/README.md);
+- the host AWS Python packages and command-line programs in [python-packages.md](notes/aws/python-packages.md), and the account's scope (a tooling cloud without Braket) in [aws/README.md](notes/aws/README.md);
 - the isolated provider environments: [Quantum Inspire](notes/quantum_inspire/README.md), [Open Quantum](notes/open_quantum/README.md), [Quandela](notes/quandela/README.md) ([quandela/python-stack.md](notes/quandela/python-stack.md)), [IQM](notes/iqm/README.md) ([iqm/python-stack-versions.json](notes/iqm/python-stack-versions.json)), and [Kaggle](notes/kaggle/README.md) ([kaggle_kernel/AGENTS.md](../kaggle_kernel/AGENTS.md)).
 
 The central [library register](state/hypercomplex-libraries/libraries.md) lists every
 distribution (362 distributions across all source surfaces) with its role, and its sibling
-[libraries.json](state/hypercomplex-libraries/libraries.json) records each
-tracked file that imports it (`imported_by`); gate
+[libraries.json](state/hypercomplex-libraries/libraries.json) retains the roles,
+pins and import-root mapping behind it; gate
 core-630 (`scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check`)
-compares it with a fresh AST scan of `gororoba_quantum/`, `scripts/`, `ci/` and
-`kaggle_kernel/`, so a new import in those trees enters the register in the same change.
+computes the files that import each distribution from an AST scan of `gororoba_quantum/`,
+`scripts/`, `ci/` and `kaggle_kernel/` at check time and fails an import root that the
+mapping does not cover, so a new distribution enters the register in the same change.
 
 
 ## Multi-environment architecture
@@ -42,8 +43,8 @@ platform boundaries:
    - Local hypercomplex verification stack: 17 packages extracted and validated against
      `gororoba_quantum/cd_core.py` by `scripts/algebra_package_tables.py`.
    - AWS clients, console scripts, and local stand-ins on this interpreter are catalogued
-     in [python-packages.md](notes/aws/python-packages.md). The project, plan, and credit
-     rules are in [aws/README.md](notes/aws/README.md). A package enters the library
+     in [python-packages.md](notes/aws/python-packages.md). The account's scope is in
+     [aws/README.md](notes/aws/README.md). A package enters the library
      register when a scanned tree imports it.
 
 2. **Hosted CI / Pull-Request Verification (`ci/`)**
@@ -172,8 +173,8 @@ many also run under `-O`, so a check raises explicitly instead of using
 | [ci/requirements-browser.txt](../ci/requirements-browser.txt) | Headless Playwright browser automation for measured explorer verification | `scripts/validate_measured_explorer.py` |
 | [ci/requirements-replay.txt](../ci/requirements-replay.txt) | Pinned Qiskit 2.5.2 compiler stack for bit-for-bit historical replay | `ci/run_gates.py --replay-python` |
 | [packaging/qiskit-aer-cuda/build-requirements.txt](../packaging/qiskit-aer-cuda/build-requirements.txt) | Build tools (`build`, `scikit-build`, `pybind11`, `wheel`) for native Aer CUDA package | [notes/build_host/custatevec.md](notes/build_host/custatevec.md) |
-| [state/hypercomplex-libraries/libraries.md](state/hypercomplex-libraries/libraries.md) | Exhaustive 362-distribution register of roles, host presence, and citations | `python3 scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check` |
-| [state/hypercomplex-libraries/libraries.json](state/hypercomplex-libraries/libraries.json) | Machine-readable AST import scan, declared pins, and unresolved roots | `test_retained_inventory_*` in behavioral suite |
+| [state/hypercomplex-libraries/libraries.md](state/hypercomplex-libraries/libraries.md) | Exhaustive 362-distribution register of roles, host presence, and citations | `"$PYTHON" scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check` |
+| [state/hypercomplex-libraries/libraries.json](state/hypercomplex-libraries/libraries.json) | Machine-readable declared pins, roles and import-root mapping; importers computed at check time | `test_retained_inventory_*` in behavioral suite |
 
 
 ## Libraries by job

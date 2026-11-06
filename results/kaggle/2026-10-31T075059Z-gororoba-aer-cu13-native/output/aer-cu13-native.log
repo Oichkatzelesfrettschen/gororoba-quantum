@@ -1,0 +1,82 @@
+[{"stream_name":"stderr","time":0.644561833,"data":"/kaggle/src/script.py:6: DeprecationWarning: Python 3.14 will, by default, filter extracted tar archives and reject files or modify their metadata. Use the filter argument to control this behavior.\n"}
+,{"stream_name":"stderr","time":0.644596418,"data":"  tarfile.open(fileobj=io.BytesIO(base64.b64decode(PAYLOAD))).extractall(R)\n"}
+,{"stream_name":"stdout","time":484.108557121,"data":"exclude libcustatevec.so.1 --exclude libcutensornet.so.2 --exclude libcutensor.so.2 --exclude libcutensorMg.so.2 --exclude libcuda.so.1 -w /kaggle/tmp/work/dist /kaggle/tmp/work/src/raw-dist/qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-linux_x86_64.whl\n"}
+,{"stream_name":"stdout","time":484.108631575,"data":"INFO:auditwheel.main_repair:Repairing qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-linux_x86_64.whl\n"}
+,{"stream_name":"stdout","time":484.108638441,"data":"INFO:auditwheel.lddtree:Excluding libcusolver.so.12\n"}
+,{"stream_name":"stdout","time":484.108643082,"data":"INFO:auditwheel.lddtree:Excluding libcusparse.so.12\n"}
+,{"stream_name":"stdout","time":484.108647558,"data":"INFO:auditwheel.lddtree:Excluding libcublas.so.13\n"}
+,{"stream_name":"stdout","time":484.108651864,"data":"INFO:auditwheel.lddtree:Excluding libcublasLt.so.13\n"}
+,{"stream_name":"stdout","time":484.108656173,"data":"INFO:auditwheel.lddtree:Excluding libnvJitLink.so.13\n"}
+,{"stream_name":"stdout","time":484.108660459,"data":"INFO:auditwheel.lddtree:Excluding libcutensor.so.2\n"}
+,{"stream_name":"stdout","time":484.108664752,"data":"INFO:auditwheel.lddtree:Excluding libcustatevec.so.1\n"}
+,{"stream_name":"stdout","time":484.108669071,"data":"INFO:auditwheel.lddtree:Excluding libcutensornet.so.2\n"}
+,{"stream_name":"stdout","time":484.108673418,"data":"INFO:auditwheel.lddtree:Excluding libcudart.so.13\n"}
+,{"stream_name":"stdout","time":484.108677667,"data":"INFO:auditwheel.wheel_abi:setting libc to glibc\n"}
+,{"stream_name":"stdout","time":484.108681982,"data":"INFO:auditwheel.wheeltools:Previous filename tags: linux_x86_64\n"}
+,{"stream_name":"stdout","time":484.108686596,"data":"INFO:auditwheel.wheeltools:New filename tags: manylinux_2_39_x86_64\n"}
+,{"stream_name":"stdout","time":484.108696207,"data":"INFO:auditwheel.wheeltools:Previous WHEEL info tags: cp313-cp313-linux_x86_64\n"}
+,{"stream_name":"stdout","time":484.108699636,"data":"INFO:auditwheel.wheeltools:New WHEEL info tags: cp313-cp313-manylinux_2_39_x86_64\n"}
+,{"stream_name":"stdout","time":484.108702694,"data":"INFO:auditwheel.main_repair:\n"}
+,{"stream_name":"stdout","time":484.108705628,"data":"Fixed-up wheel written to /kaggle/tmp/work/dist/qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-manylinux_2_39_x86_64.whl\n"}
+,{"stream_name":"stdout","time":484.108709048,"data":"+ auditwheel show /kaggle/tmp/work/dist/qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-manylinux_2_39_x86_64.whl\n"}
+,{"stream_name":"stdout","time":484.108712046,"data":"+ cp /kaggle/tmp/work/dist/qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-manylinux_2_39_x86_64.whl /kaggle/working/\n"}
+,{"stream_name":"stdout","time":484.108715089,"data":"+ cd /kaggle/working\n"}
+,{"stream_name":"stdout","time":484.108718034,"data":"+ sha256sum ./qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-manylinux_2_39_x86_64.whl\n"}
+,{"stream_name":"stdout","time":484.108724725,"data":"+ tv=/kaggle/tmp/work/venv-test\n"}
+,{"stream_name":"stdout","time":484.10872791,"data":"+ uv venv --python 3.13.15 /kaggle/tmp/work/venv-test\n"}
+,{"stream_name":"stdout","time":484.108735758,"data":"warning: The `--system` flag has no effect, `uv venv` always ignores virtual environments when finding a Python interpreter; did you mean `--no-managed-python`?\n"}
+,{"stream_name":"stdout","time":484.108739139,"data":"Using CPython 3.13.15\n"}
+,{"stream_name":"stdout","time":484.108754653,"data":"Creating virtual environment at: /kaggle/tmp/work/venv-test\n"}
+,{"stream_name":"stdout","time":484.108758194,"data":"Activate with: source /kaggle/tmp/work/venv-test/bin/activate\n"}
+,{"stream_name":"stdout","time":484.108762549,"data":"+ uv pip install --python /kaggle/tmp/work/venv-test/bin/python -c /kaggle/tmp/recipe/aer-gpu-cu13-runtime-pins.txt -c /kaggle/tmp/recipe/requirements.txt /kaggle/tmp/work/dist/qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-manylinux_2_39_x86_64.whl qiskit numpy scipy\n"}
+,{"stream_name":"stdout","time":484.108765509,"data":"Using Python 3.13.15 environment at: /kaggle/tmp/work/venv-test\n"}
+,{"stream_name":"stdout","time":484.10876826,"data":"Resolved 21 packages in 259ms\n"}
+,{"stream_name":"stdout","time":484.108770638,"data":"Downloading numpy (15.9MiB)\n"}
+,{"stream_name":"stdout","time":484.10877302,"data":"Downloading scipy (33.7MiB)\n"}
+,{"stream_name":"stdout","time":484.108775451,"data":"Downloading rustworkx (2.3MiB)\n"}
+,{"stream_name":"stdout","time":484.108777833,"data":"Downloading qiskit (9.1MiB)\n"}
+,{"stream_name":"stdout","time":484.108780121,"data":" Downloaded rustworkx\n"}
+,{"stream_name":"stdout","time":484.108782427,"data":" Downloaded qiskit\n"}
+,{"stream_name":"stdout","time":484.10878472,"data":" Downloaded numpy\n"}
+,{"stream_name":"stdout","time":484.108787535,"data":" Downloaded scipy\n"}
+,{"stream_name":"stdout","time":484.108789961,"data":"Prepared 12 packages in 733ms\n"}
+,{"stream_name":"stdout","time":484.108792288,"data":"Installed 21 packages in 44ms\n"}
+,{"stream_name":"stdout","time":484.108794598,"data":" + custatevec-cu13==1.15.0\n"}
+,{"stream_name":"stdout","time":484.108797003,"data":" + cutensor-cu13==2.8.1\n"}
+,{"stream_name":"stdout","time":484.108799299,"data":" + cutensornet-cu13==2.14.0\n"}
+,{"stream_name":"stdout","time":484.108801679,"data":" + dill==0.4.1\n"}
+,{"stream_name":"stdout","time":484.108804138,"data":" + numpy==2.5.4\n"}
+,{"stream_name":"stdout","time":484.108806483,"data":" + nvidia-cublas==13.1.1.3\n"}
+,{"stream_name":"stdout","time":484.108808799,"data":" + nvidia-cuda-nvrtc==13.0.88\n"}
+,{"stream_name":"stdout","time":484.108811205,"data":" + nvidia-cuda-runtime==13.0.96\n"}
+,{"stream_name":"stdout","time":484.108813521,"data":" + nvidia-cusolver==12.0.4.66\n"}
+,{"stream_name":"stdout","time":484.108815882,"data":" + nvidia-cusparse==12.6.3.3\n"}
+,{"stream_name":"stdout","time":484.108818188,"data":" + nvidia-nvjitlink==13.0.88\n"}
+,{"stream_name":"stdout","time":484.108820476,"data":" + psutil==7.2.2\n"}
+,{"stream_name":"stdout","time":484.108822821,"data":" + python-dateutil==3.0.0\n"}
+,{"stream_name":"stdout","time":484.108825234,"data":" + qiskit==2.6.1\n"}
+,{"stream_name":"stdout","time":484.108827632,"data":" + qiskit-aer-gpu-cu13==0.18.2 (from file:///kaggle/tmp/work/dist/qiskit_aer_gpu_cu13-0.18.2-cp313-cp313-manylinux_2_39_x86_64.whl)\n"}
+,{"stream_name":"stdout","time":484.108830261,"data":" + rustworkx==0.18.1\n"}
+,{"stream_name":"stdout","time":484.108832566,"data":" + scipy==1.18.1\n"}
+,{"stream_name":"stdout","time":484.108834909,"data":" + six==1.17.0\n"}
+,{"stream_name":"stdout","time":484.108837246,"data":" + stevedore==5.9.1\n"}
+,{"stream_name":"stdout","time":484.108839598,"data":" + typing-extensions==4.16.0\n"}
+,{"stream_name":"stdout","time":484.108841959,"data":" + tzdata==2026.6\n"}
+,{"stream_name":"stdout","time":484.108844259,"data":"+ ls /kaggle/tmp/work/venv-test/lib/python3.13/site-packages/qiskit_aer/backends/controller_wrappers.cpython-313-x86_64-linux-gnu.so\n"}
+,{"stream_name":"stdout","time":484.108846766,"data":"+ mod=/kaggle/tmp/work/venv-test/lib/python3.13/site-packages/qiskit_aer/backends/controller_wrappers.cpython-313-x86_64-linux-gnu.so\n"}
+,{"stream_name":"stdout","time":484.108851728,"data":"+ ldd /kaggle/tmp/work/venv-test/lib/python3.13/site-packages/qiskit_aer/backends/controller_wrappers.cpython-313-x86_64-linux-gnu.so\n"}
+,{"stream_name":"stdout","time":484.108854336,"data":"+ cuobjdump --list-elf /kaggle/tmp/work/venv-test/lib/python3.13/site-packages/qiskit_aer/backends/controller_wrappers.cpython-313-x86_64-linux-gnu.so\n"}
+,{"stream_name":"stdout","time":484.108856849,"data":"+ grep -q not found /kaggle/working/logs/ldd.txt\n"}
+,{"stream_name":"stdout","time":484.10885922,"data":"+ nvidia-smi --query-gpu=name,driver_version,compute_cap --format=csv\n"}
+,{"stream_name":"stdout","time":484.108861625,"data":"+ /kaggle/tmp/work/venv-test/bin/python -I /kaggle/tmp/recipe/gpu_check.py\n"}
+,{"stream_name":"stdout","time":484.108864026,"data":"+ echo BUILD_AND_GPU_CHECK_OK\n"}
+,{"stream_name":"stdout","time":484.108866435,"data":"BUILD_AND_GPU_CHECK_OK\n"}
+,{"stream_name":"stdout","time":484.108868766,"data":"\n"}
+,{"stream_name":"stdout","time":484.108871007,"data":"rc 0\n"}
+,{"stream_name":"stderr","time":486.14892172,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":486.148969295,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":486.447096884,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":486.447143429,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":487.735228739,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":488.633822136,"data":"[NbConvertApp] Writing 284468 bytes to __results__.html\n"}
+]

@@ -3,8 +3,8 @@
 The server calls the IQM Server REST and GraphQL APIs through iqm_platform.Client
 with the API token of the file IQM_TOKENS_FILE names, reread on every call, so
 a token that iqm_platform.py refresh installs serves the next call without a
-restart. It runs under the build host's system Python, which carries mcp 1.29
-(FastMCP); it imports nothing from the iqm-resonance-stack package. Reads
+restart. It runs under the build host's system Python, which carries mcp 2.3
+(MCPServer); it imports nothing from the iqm-resonance-stack package. Reads
 return JSON-serializable structures; a failed call raises ToolError, so the
 MCP result carries isError with the route and the service's message.
 
@@ -33,14 +33,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import anyio  # noqa: E402
 from iqm_platform import API, Client, PlatformError, read_tokens, tokens_path  # noqa: E402
-from mcp.server.fastmcp import FastMCP  # noqa: E402
-from mcp.server.fastmcp.exceptions import ToolError  # noqa: E402
-from mcp.server.fastmcp.server import Settings  # noqa: E402
+from mcp.server.mcpserver import MCPServer  # noqa: E402
+from mcp.server.mcpserver.exceptions import ToolError  # noqa: E402
 from mcp.types import ToolAnnotations  # noqa: E402
 from pydantic import Field  # noqa: E402
 
-READ = ToolAnnotations(readOnlyHint=True, openWorldHint=True)
-MUTATE = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=True, openWorldHint=True)
+READ = ToolAnnotations(read_only_hint=True, open_world_hint=True)
+MUTATE = ToolAnnotations(read_only_hint=False, destructive_hint=True, idempotent_hint=True, open_world_hint=True)
 QC_ARTIFACTS = (
     "about",
     "channel-properties",
@@ -68,10 +67,7 @@ Locus = Annotated[
     ),
 ]
 
-# Settings refers to FastMCP before that class is declared in the SDK module.
-# Resolve the forward reference after import and before settings sources inspect it.
-Settings.model_rebuild()
-server = FastMCP("iqm")
+server = MCPServer("iqm")
 
 
 def client() -> Client:

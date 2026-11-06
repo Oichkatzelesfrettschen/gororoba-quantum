@@ -1,0 +1,26 @@
+J generators: 12 nonzero images: 11 nonzero numerators of J(Phi): 0
+inverse relation u*m-1: w*u+u-1
+G 1 cleared numerator degree 23 terms 471
+G 2 cleared numerator degree 18 terms 278
+G 3 cleared numerator degree 21 terms 537
+gcd h of the three numerators:
+w^6*rho*sig*s1+w^6*rho*sig+6*w^5*rho*sig*s1+16014*w^6*s1^2-w^5*s1^3+6*w^5*rho*sig-w^6*s1+15*w^4*rho*sig*s1-6*w^5*s1^2-5*w^4*s1^3+16014*w^6+15*w^4*rho*sig-10*w^5*s1+20*w^3*rho*sig*s1-21*w^4*s1^2-10*w^3*s1^3-5*w^5+20*w^3*rho*sig-32*w^4*s1+14*w^2*rho*sig*s1-34*w^3*s1^2-10*w^2*s1^3-16*w^4+14*w^2*rho*sig-48*w^3*s1+4*w*rho*sig*s1-30*w^2*s1^2-4*w*s1^3-24*w^3+4*w*rho*sig-40*w^2*s1-12*w*s1^2-20*w^2-16*w*s1-8*w
+factors of h:
+[1]:
+   _[1]=-1
+   _[2]=w
+   _[3]=w+2
+   _[4]=s1+1
+   _[5]=-w^4*rho*sig-4*w^3*rho*sig-16014*w^4*s1+w^3*s1^2-16014*w^4-7*w^2*rho*sig+4*w^3*s1+3*w^2*s1^2+4*w^3-6*w*rho*sig+8*w^2*s1+4*w*s1^2+8*w^2-2*rho*sig+8*w*s1+2*s1^2+8*w+4*s1+4
+[2]:
+   1,1,1,1,1
+G''  1  exact division remainder h*q-G: 0  degree 14 terms 95
+G''  1  jet of degree 1: -13799*w
+G''  1  constant term: 0
+G''  2  exact division remainder h*q-G: 0  degree 9 terms 52
+G''  2  jet of degree 1: -rho-sig
+G''  2  constant term: 0
+G''  3  exact division remainder h*q-G: 0  degree 12 terms 100
+G''  3  jet of degree 1: -rho+sig
+G''  3  constant term: 0
+gcd12 = 1  gcd23 = 1

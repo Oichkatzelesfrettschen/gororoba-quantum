@@ -3,7 +3,6 @@
 import io
 import subprocess
 import sys
-from datetime import timedelta
 from pathlib import Path
 from typing import cast
 
@@ -73,7 +72,7 @@ qd_mcp_server.serve()
     async def exercise() -> None:
         parameters = StdioServerParameters(command=sys.executable, args=["-I", "-W", "error", "-c", bootstrap])
         async with stdio_client(parameters) as (reader, writer):
-            async with ClientSession(reader, writer, read_timeout_seconds=timedelta(seconds=30)) as session:
+            async with ClientSession(reader, writer, read_timeout_seconds=30.0) as session:
                 await session.initialize()
                 tools = (await session.list_tools()).tools
                 if len(tools) != 10:
@@ -85,14 +84,14 @@ qd_mcp_server.serve()
                     {"real": [[1.0]], "input_photons": [1], "hardware_config": {}},
                 ):
                     result = await session.call_tool("qd_simulate_local", arguments)
-                    if not result.isError:
+                    if not result.is_error:
                         failures.append(arguments)
                 if failures:
                     raise AssertionError(f"the MCP transport accepted schema-invalid arguments: {failures}")
                 result = await session.call_tool("qd_simulate_local", {"real": [[1.0]], "input_photons": [1]})
-                if result.isError or result.structuredContent is None:
+                if result.is_error or result.structured_content is None:
                     raise AssertionError(f"valid identity simulation failed: {result}")
-                if result.structuredContent["probabilities"] != {"|1>": 1.0}:
+                if result.structured_content["probabilities"] != {"|1>": 1.0}:
                     raise AssertionError(f"identity simulation changed photon state: {result}")
 
     anyio.run(exercise)

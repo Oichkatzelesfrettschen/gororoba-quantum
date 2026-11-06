@@ -62,9 +62,8 @@ directory belongs to other applications and is outside this runbook.
 
 ## Never cleaned
 
-The cleanup never touches credentials: `~/.qiskit/qiskit-ibm.json`,
-`~/.quantuminspire/`, `~/.config/<provider>/` key files, `~/.config/kaggle/`
-and the model-proxy environment file. It also never touches worktrees under
+The cleanup never touches a credential; the private gororoba-infrastructure
+repository records where each one lives. It also never touches worktrees under
 `~/worktrees/<repo>/`; a worktree leaves through `git worktree remove`
 ([AGENTS.md](../../AGENTS.md) and the user guide's branching rules).
 

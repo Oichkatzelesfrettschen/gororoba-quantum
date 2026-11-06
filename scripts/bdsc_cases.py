@@ -53,6 +53,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import bdsc_certificate as cert  # noqa: E402
 
 import bdsc  # noqa: E402
+import qd_records  # noqa: E402
 
 CASE = ROOT / "docs/evidence/bdsc/qualification_case.json"
 TARGET = ROOT / "docs/evidence/bdsc/target.json"
@@ -331,11 +332,12 @@ def readout(runs: list[Path], contract: dict[str, Any] | None = None) -> dict[st
     tallies: dict[int, dict[str, int]] = {}
     draws: dict[str, list[int]] = {}
     for run in runs:
-        manifest_bytes = (run / "cases.json").read_bytes()
+        records = qd_records.load_run(run)
+        manifest_bytes = records.bytes_of("cases.json")
         manifest = json.loads(manifest_bytes)
-        result = json.loads((run / "results.json").read_text(encoding="utf-8"))
-        submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
-        body_bytes = (run / "job-body.json").read_bytes()
+        result = records.json_of("results.json")
+        submission = records.json_of("submission.json")
+        body_bytes = records.bytes_of("job-body.json")
         # The qualification question concerns the QPU: a simulator run of the same manifests answers nothing here.
         platform = submission.get("platform")
         require(

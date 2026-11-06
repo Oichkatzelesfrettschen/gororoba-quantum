@@ -1,0 +1,10 @@
+// ** redefining i (int i=2;) XpmNm_p32029.sing:13
+RESULT germ_dim 4
+RESULT base_primes 1
+// ** redefining i (int i=1;) XpmNm_p32029.sing:129
+RESULT base_dim 3
+RESULT base_equals_b9 1
+// ** redefining i (int i=1;) XpmNm_p32029.sing:134
+RESULT residual_primes 1
+RESULT residual_dim 1
+RESULT residual_equals_vb 1

@@ -169,12 +169,10 @@ entries read `<area>.<method>`, reached as `kaggle.<area>.<client>.<method>`
 | CLI | `KaggleApi.authenticate`: an access token (`KAGGLE_API_TOKEN`, else `~/.kaggle/access_token`), then a legacy key (`KAGGLE_USERNAME` and `KAGGLE_KEY`, else `~/.kaggle/kaggle.json`), then the OAuth credentials `kaggle auth login` writes to `~/.kaggle/credentials.json`, then anonymous access where a command allows it |
 | kagglesdk | `KaggleHttpClient` sends `Authorization: Bearer` with the access token (`KAGGLE_API_TOKEN`, else `~/.kaggle/access_token`), else basic auth from `~/.kaggle/kaggle.json`; `KaggleApi().authenticate()` then `api.build_kaggle_client()` gives a client carrying the CLI's resolved credentials |
 | kagglehub | the same access-token lookup, then `KAGGLE_USERNAME` and `KAGGLE_KEY`, then `~/.kaggle/kaggle.json`, then Colab secrets; `credentials.json` is not read |
-| MCP | `Authorization: Bearer` with the same `KGAT` access token; Claude Code registers the server as an HTTP MCP server at `https://www.kaggle.com/mcp` whose `headersHelper` runs `~/.config/shell/kaggle-mcp-headers.sh`, because Kaggle's OAuth discovery leads Claude Code's own sign-in into a failing client-secret flow; `scripts/kaggle_sessions.py` calls the same helper |
+| MCP | `Authorization: Bearer` with the same `KGAT` access token, supplied by a `headersHelper` because Kaggle's OAuth discovery leads Claude Code's own sign-in into a failing client-secret flow; `scripts/kaggle_sessions.py` calls the same helper |
 | Web API | a signed-in browser session: cookies plus the page's `XSRF-TOKEN` echoed as `x-xsrf-token` |
 
-This host keeps `~/.kaggle/access_token` and `~/.kaggle/credentials.json`
-at mode 600 and no `kaggle.json`, so the CLI, kagglesdk, kagglehub and the
-MCP helper all authenticate with the access token. kagglesdk sends every
+On this host the CLI, kagglesdk, kagglehub and the MCP helper all authenticate with the access token; the credential files are recorded in the private gororoba-infrastructure repository. kagglesdk sends every
 call as `POST https://api.kaggle.com/v1/<service>/<Rpc>` with the request as
 JSON (`KaggleHttpClient._prepare_request`); the REST path and HTTP method a
 request type declares (`endpoint_path()`, `method()`) are metadata the
@@ -195,30 +193,7 @@ client does not send.
 
 ## MCP permission policy on this host
 
-`~/.claude/settings.json` (user scope) classifies every served tool:
-
-- **Allow** (4 rules, 60 tools): `mcp__kaggle__get_*`, `list_*`,
-  `search_*` and `download_*`.
-- **Ask** (18 rules): `authorize`, `save_notebook`,
-  `create_notebook_session`, `cancel_notebook_session`, `create_dataset`,
-  `create_dataset_version`, `create_dataset_version_by_id`,
-  `upload_dataset_file`, `update_dataset_metadata`, `create_model`,
-  `create_model_variation`, `create_model_variation_version`,
-  `update_model`, `update_model_variation`,
-  `create_benchmark_task_from_prompt`, `create_benchmark_arena_settings`,
-  `update_benchmark_arena_settings`, `update_benchmark_arena_combinations`.
-  Thirteen of them match served tools; `create_dataset`,
-  `create_dataset_version`, `create_dataset_version_by_id`,
-  `create_model_variation` and `create_model_variation_version` appear in
-  the captured [site/mcp.md](site/mcp.md) and not in the live tool list.
-- **Deny** (3 rules): `submit_to_competition`,
-  `create_code_competition_submission`,
-  `start_competition_submission_upload`. A Claude Code session lists the
-  other 73 tools.
-
-The repository's untracked `.claude/settings.local.json` also allows
-`mcp__kaggle__save_notebook` and `mcp__kaggle__cancel_notebook_session`,
-which the user scope lists under ask.
+The user-scope Claude Code permission rules that allow, ask for and deny each served tool are recorded in the private gororoba-infrastructure repository.
 
 ## Live tool list against the captured documentation
 

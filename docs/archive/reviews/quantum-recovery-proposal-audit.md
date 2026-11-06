@@ -145,7 +145,7 @@ run, written case and approval before any submission.
      tau at most 100 ns and delta at most 2 pi x 100 kHz, delta tau is at most 0.063. The
      exact detuned-rotation flip probability at N = 16 (ideal sin(THETA/32)^2 = 0.0076) then
      moves by -2.5e-6 per step, or -4e-5 summed over the sixteen steps. The retained Tuna-17 tails stay within about 33 kHz
-     ([ringdown claims](../../state/RESEARCH_STATE.md)). The sequence therefore reads
+     ([ringdown claims](../../state/research_state.json)). The sequence therefore reads
      measurement-induced transitions, which the calibration noise model omits because it
      treats a mid-circuit measurement as projective, up to that bound. A departure larger
      than the bound still needs a settle-gap control before it is read as

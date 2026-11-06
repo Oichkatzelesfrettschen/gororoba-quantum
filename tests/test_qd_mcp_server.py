@@ -129,7 +129,7 @@ def test_qd_plan_runs_plan_only_and_refuses_outside_paths(monkeypatch: object) -
     import asyncio
 
     import pytest
-    from mcp.server.fastmcp.exceptions import ToolError
+    from mcp.server.mcpserver.exceptions import ToolError
 
     calls: list[tuple[object, ...]] = []
 

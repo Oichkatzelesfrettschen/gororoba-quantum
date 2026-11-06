@@ -9,27 +9,7 @@ service stays the authority.
 
 ## Environment and credential
 
-```sh
-QF_ENV=$HOME/.local/share/quafu/venv
-QF_PYTHON=${QF_PYTHON:-$QF_ENV/bin/python}
-uv venv --python 3.12 "$QF_ENV"
-VIRTUAL_ENV="$QF_ENV" uv pip install -r docs/notes/quafu/requirements-quafu.txt
-```
-
-On the build host the Arch package `quafu-stack` from the local PKGBUILD tree
-(`~/Github/PKGBUILDs/quafu-stack`) installs the same SDK as a hash-locked Python
-3.11 environment under `/opt/quafu-stack` and the interpreter `/usr/bin/quafu-python`
-(pyquafu 0.4.5 with numpy 1.26.4); its `check()` runs an offline test, kept at
-`/usr/share/quafu-stack/test_quafu_stack.py`. A case sets `QF_PYTHON=/usr/bin/quafu-python`; the venv
-above serves a machine without the package. pyquafu still pins `numpy<2` on its master branch, and upstream issue ScQ-Cloud/pyquafu#179 records the import failure under numpy 2, so the package runs Python 3.11, where every pin installs from a published wheel.
-
-The lock pins `pyquafu` 0.4.5, which requires `numpy<2` (1.26.4 here).
-NumPy 1.26.4 ships wheels for CPython 3.9 to 3.12 only, so the environment
-runs Python 3.12; on 3.13 the install falls back to a source build. The
-API token is one line in `~/.config/quafu/api-token` (directory 700, file
-600), read inside Python and sent as the header `api_token: <token>`.
-`User(api_token=...)` writes no token file when the token is passed in; the
-SDK's own token directory stays unused.
+The lock pins `pyquafu` 0.4.5, which requires `numpy<2` (1.26.4 here), installed from `requirements-quafu.txt` into the interpreter that `QF_PYTHON` names. NumPy 1.26.4 ships wheels for CPython 3.9 to 3.12 only, so the environment runs Python 3.12; on 3.13 the install falls back to a source build. pyquafu still pins `numpy<2` on its master branch, and upstream issue ScQ-Cloud/pyquafu#179 records the import failure under numpy 2. `User(api_token=...)` writes no token file when the token is passed in; the SDK's own token directory stays unused. This account's credential location, MCP registration and access limits are recorded in the private gororoba-infrastructure repository.
 
 ## API surface
 
@@ -63,9 +43,8 @@ The token API exposes no balance, quota or reset cycle, and no page
 publishes a daily limit, a shot maximum, a runtime limit or a price. The
 service describes itself as open access ("shares open access to
 super-conducting quantum (ScQ) computing resources with public users from
-all around the world", <https://scq-cloud.github.io/>), and the web app
-directs requests for more quota to quafu-support@baqis.ac.cn. The SDK
-defaults to 1000 shots. The account's quota is read in the browser.
+all around the world", <https://scq-cloud.github.io/>). The SDK defaults to
+1000 shots. The account's quota and the quota-request path are recorded in the private gororoba-infrastructure repository.
 
 ## Data terms
 

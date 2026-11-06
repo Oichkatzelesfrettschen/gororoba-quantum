@@ -1,0 +1,16 @@
+{
+ "schema": "pdf-license-notice-v1",
+ "pdf_sha256": "090f88a7cfca84c5afd0d07d70182d264ca7b30ba8999733302f2dd293a8e4bd",
+ "source_url": "https://cm.episciences.org/13124/pdf",
+ "article_url": "https://cm.episciences.org/13124",
+ "doi": "10.46298/cm.12613",
+ "page": 1,
+ "license_identifier": "CC-BY-SA-4.0",
+ "notice": "This is an open access article licensed under the CC BY-SA 4.0",
+ "decision_basis": "The publisher's notice printed on these exact bytes grants CC BY-SA 4.0 to every recipient; the owner approved publication on it on 2026-11-02.",
+ "metadata_conflicts": [
+  "arXiv abstract page https://arxiv.org/abs/2311.16704v4 (capture sha256 e77723b613740c4cc032f1e0e6afdd05ba6d6c27c9206f435dac2d25694b5eed, retrieved 2026-11-02T04:33:53+00:00): arXiv non-exclusive distribution license 1.0",
+  "Crossref https://api.crossref.org/works/10.46298/cm.12613: license content-version vor https://arxiv.org/licenses/nonexclusive-distrib/1.0",
+  "Journal article page https://cm.episciences.org/13124: Licence arXiv.org - Non-exclusive license to distribute"
+ ]
+}

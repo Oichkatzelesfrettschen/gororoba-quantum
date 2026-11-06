@@ -44,6 +44,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from hypercomplex_cases import encoded, photonic_template  # noqa: E402
 from qd_platform import sha256_bytes, template_experiment  # noqa: E402
 
+import qd_records  # noqa: E402
 from cd_core import cd_sign  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
@@ -298,8 +299,8 @@ def check() -> int:
 
 def analyze(run: Path) -> dict[str, Any]:
     """Preregistered endpoints of a collected run: per-block Delta with its standard error, and the decisions."""
-    manifest = json.loads((run / "cases.json").read_text())
-    results = json.loads((run / "results.json").read_text())
+    records = qd_records.load_run(run)
+    manifest, results = records.json_of("cases.json"), records.json_of("results.json")
     entries = results.get("iterations") or []
     tallies: dict[str, dict[str, list[int]]] = {b: {"LaLb": [0, 0, 0], "Lab": [0, 0, 0]} for b in PAIRS}
     excluded = {"three_or_more_clicks": 0, "two_clicks_outside_block": 0, "fewer_than_two_clicks": 0}

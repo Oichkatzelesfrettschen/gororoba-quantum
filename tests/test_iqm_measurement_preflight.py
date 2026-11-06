@@ -11,7 +11,6 @@ import iqm_measurement_preflight as probe
 import pytest
 
 
-@pytest.mark.audit
 def test_self_test_holds() -> None:
     if "measurement preflight" not in probe.self_test():
         raise AssertionError("the self-test summary changed")
@@ -22,7 +21,6 @@ def test_retained_probe_matches_the_main_case() -> None:
     probe.check(probe.ROOT / "results/iqm/cases" / probe.CASE)
 
 
-@pytest.mark.audit
 def test_analyze_reads_a_run_directory_and_stops_on_a_collapsed_qubit(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

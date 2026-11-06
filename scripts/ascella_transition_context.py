@@ -23,6 +23,7 @@ from experiment_analysis import binomial_interval, decode_photonic_counts, remot
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+import qd_records  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 SOURCE = Path(
@@ -288,11 +289,9 @@ def _comparison_job(arguments: tuple[str, str, str, dict[str, Any], dict[str, An
 
 def read_run(directory: Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Bind the provider receipt and every returned iterator entry to the submitted operator."""
-    qd.run_facts(directory)
-    manifest, _, _ = qd.load_case(directory)
-    body = _read(directory / "job-body.json")
+    run = qd_records.read_run(directory)
+    manifest, body, result = run.manifest, run.body, run.collected
     validate_sent_body(body, manifest, PROFILE)
-    result = _read(directory / "results.json")
     duration = result.get("status", {}).get("duration")
     if (
         result.get("status", {}).get("status") != "completed"

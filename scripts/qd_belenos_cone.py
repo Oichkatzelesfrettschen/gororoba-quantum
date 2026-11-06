@@ -69,9 +69,12 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
 
 import qd_belenos_mesh as mesh_lib  # noqa: E402
 from qd_box_kite_analysis import wilson  # noqa: E402
+
+import qd_records  # noqa: E402
 
 SCHEMA = "qd-belenos-cone-reading-v2"
 CONE_FLOOR = 1e-6
@@ -154,15 +157,15 @@ def cell(
 
 
 def run_cells(run: Path) -> list[dict[str, Any]]:
-    manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+    records = qd_records.load_run(run)
+    manifest = records.json_of("cases.json")
     (block,) = manifest["blocks"]
     low, width = block["offset"], len(block["roles"])
     labels = [low + k for k, role in enumerate(block["roles"]) if role.startswith("label")]
-    submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
-    perfs = submission["perfs_at_plan"]
+    perfs = records.json_of("submission.json")["perfs_at_plan"]
     clock = float(perfs["Clock (MHz)"])
     rates = [float(r) for r in perfs["Dark counts (detection/s)"]]
-    outer = json.loads((run / "raw/result.json").read_text(encoding="utf-8"))
+    outer = records.json_of("raw/result.json")
     inner = mesh_lib.raw_result(run)
     duration = float(outer["duration"])
     job_samples = sum(sum(mesh_lib.bscount(e["results"]).values()) for e in inner.get("results_list") or [inner])
@@ -284,13 +287,14 @@ def reading(rule: dict[str, Any], row: dict[str, Any]) -> str:
 
 
 def readout(run: Path) -> dict[str, Any]:
-    manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+    records = qd_records.load_run(run)
+    manifest = records.json_of("cases.json")
     rule = manifest["preregistered"]
     (row,) = run_cells(run)
     return {
         "schema": READOUT_SCHEMA,
         "run": run.name,
-        "cases_sha256": mesh_lib.sha256(run / "cases.json"),
+        "cases_sha256": qd_records.sha256_bytes(records.bytes_of("cases.json")),
         "rule": rule,
         "cell": row,
         "verdict": reading(rule, row),
@@ -448,7 +452,8 @@ def readout_series(runs: list[Path]) -> dict[str, Any]:
     jobs: dict[str, Any] = {}
     rules = []
     for run in runs:
-        manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+        records = qd_records.load_run(run)
+        manifest = records.json_of("cases.json")
         rule = manifest["preregistered"]
         rules.append(rule)
         role = SERIES_ROLES[manifest["job"]]
@@ -461,10 +466,10 @@ def readout_series(runs: list[Path]) -> dict[str, Any]:
         arm: dict[str, Any] = {
             "run": run.name,
             "job": manifest["job"],
-            "cases_sha256": mesh_lib.sha256(run / "cases.json"),
+            "cases_sha256": qd_records.sha256_bytes(records.bytes_of("cases.json")),
             "payload_entries": returned,
             "submitted_utc": json.loads((run / "submission-state.json").read_text(encoding="utf-8"))["submitted_utc"],
-            "collected_utc": json.loads((run / "results.json").read_text(encoding="utf-8"))["collected_utc"],
+            "collected_utc": records.json_of("results.json")["collected_utc"],
         }
         if returned != sent:
             arm |= {"cells": [], "problems": [f"{returned} results_list entries for {sent} sent"], "readings": ["void"]}

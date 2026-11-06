@@ -1,0 +1,20 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=10&type=uint16",
+ "retrieved_utc": "2026-10-31T043029Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"10\", \"data\": [41251, 50785, 63940, 45911, 11390, 34773, 25508, 5306, 15866, 64854]}",
+ "raw_sha256": "b0262ee59667972ea214f417714b1eec3d6e0d10c9faa968ffc1edf5d8d31e60",
+ "type": "uint16",
+ "values": [
+  41251,
+  50785,
+  63940,
+  45911,
+  11390,
+  34773,
+  25508,
+  5306,
+  15866,
+  64854
+ ]
+}

@@ -126,37 +126,9 @@ publish neither queue lengths nor job throughput, which `qi_backends` and
 
 ## Registration
 
-```sh
-QI_PY=$HOME/.local/share/quantuminspire/venv/bin/python
-SRV=$HOME/Projects/IBMQuantum/scripts/qi_mcp_server.py
-claude mcp add --transport stdio --scope user quantum-inspire -- "$QI_PY" -I "$SRV"
-codex mcp add quantum_inspire -- "$QI_PY" -I "$SRV"
-```
-
-User scope makes the server available in every project
-(`~/.claude.json` top level; `~/.codex/config.toml` `[mcp_servers.quantum_inspire]`).
-Each host registers it once, since every registration starts its own server
-per session: Codex under `quantum_inspire` alone. Antigravity runs without it
-by default; a session that needs it adds the entry to
-`~/.gemini/config/mcp_config.json` under `mcpServers`:
-
-```json
-"quantum-inspire": {
-  "command": "/home/USER/.local/share/quantuminspire/venv/bin/python",
-  "args": ["-I", "/home/USER/Projects/IBMQuantum/scripts/qi_mcp_server.py"],
-  "disabled": false
-}
-```
-The path names the primary checkout, so the server connects once the
-branch carrying it is merged there. `-I` isolates the interpreter from the
-working directory; the script adds its own directory to `sys.path` for
-`qi_platform`.
-
-Claude Code permission rules in `~/.claude/settings.json`: allow
-`mcp__quantum-inspire__qi_{backends,backend,hardware_status,performance_dashboard,performance_query,usage,jobs,job,results,run_local}`,
-ask for `mcp__quantum-inspire__qi_compile` and `mcp__quantum-inspire__qi_submit_case`.
-The shell launcher loads `CLAUDE_MCP_SERVERS` (default
-`kaggle,quantum-inspire`); `CLAUDE_MCP_SERVERS=` starts with none.
+The server registers as `quantum-inspire` at Claude Code user scope and as `quantum_inspire` in Codex. `-I` isolates the interpreter from the working
+directory; the script adds its own directory to `sys.path` for
+`qi_platform`. The launch commands, the Antigravity entry, the permission rules and the launcher's server list are recorded in the private gororoba-infrastructure repository.
 
 Quantum Inspire authentication belongs to the SDK: `codex mcp login` and
 Claude's MCP OAuth do not replace `qi login`.

@@ -84,10 +84,9 @@ def _provider_jobs(name: str, provider: Any, run: str) -> list[str]:
     """Provider job ids of one run, from the records the adapter validated."""
     if name == "ibm":
         return sorted(str(job["job_id"]) for job in provider.jobs if job["run"] == run)
-    submission = _json(ROOT / run / "submission.json")
     if name == "quantum_inspire":
-        return [str(job["job"]) for job in submission["jobs"]]
-    return [str(submission["job_id"])]
+        return [str(job.job_id) for job in provider.acquisitions[run].jobs]
+    return [str(_json(ROOT / run / "submission.json")["job_id"])]
 
 
 def _kaggle_runs() -> list[Run]:

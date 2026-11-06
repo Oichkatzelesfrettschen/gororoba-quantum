@@ -60,15 +60,35 @@ def test_mismatch_writes_nothing(tmp_path: Path, answer: tuple[int, bytes], reas
 def test_documents_checkout_supplies_the_payload(tmp_path: Path) -> None:
     root, entry = make_root(tmp_path / "repo")
     documents = tmp_path / "documents"
-    loader = fetch.documents_loader(documents)
+    loader = fetch.documents_loader([documents])
     if loader(entry) != (404, b""):
         raise AssertionError("an absent documents file answers")
     (documents / "pdf").mkdir(parents=True)
     (documents / "pdf" / "paper-v1.pdf").write_bytes(PAYLOAD)
+    if fetch.documents_loader([documents])(entry) != (404, b""):
+        raise AssertionError("a file without a manifest row answers")
+    (documents / "manifest.tsv").write_text(
+        f"sha256\tbytes\tpath\n{entry['sha256']}\t{len(PAYLOAD)}\tpdf/paper-v1.pdf\n"
+    )
     if fetch.main(["--root", str(root), "--missing", "--from-documents", str(documents)]) != 0:
         raise AssertionError("restore from the documents checkout")
     if fetch.cached_error(root, entry) is not None:
         raise AssertionError("the documents copy differs")
+
+
+def test_manifest_row_selects_the_file_by_digest(tmp_path: Path) -> None:
+    root, entry = make_root(tmp_path / "repo")
+    empty, documents = tmp_path / "public", tmp_path / "private"
+    (empty / "pdf").mkdir(parents=True)
+    (empty / "manifest.tsv").write_text("sha256\tbytes\tpath\n")
+    (documents / "pdf").mkdir(parents=True)
+    (documents / "pdf" / "renamed.pdf").write_bytes(PAYLOAD)
+    (documents / "manifest.tsv").write_text(
+        f"sha256\tbytes\tpath\n{entry['sha256']}\t{len(PAYLOAD)}\tpdf/renamed.pdf\n"
+    )
+    argv = ["--root", str(root), "--missing", "--from-documents", str(empty), "--from-documents", str(documents)]
+    if fetch.main(argv) != 0 or fetch.cached_error(root, entry) is not None:
+        raise AssertionError("the manifest row does not resolve the renamed copy")
 
 
 def test_selection_refuses_unknown_names(tmp_path: Path) -> None:

@@ -45,6 +45,7 @@ import iqm_sim  # noqa: E402
 from iqm_jobs import CASE_SCHEMA, dump  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 
+import iqm_records  # noqa: E402
 import signed_kernel_probe as skp  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
@@ -306,8 +307,9 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
     if names != ["strong", "weak"]:
         raise ValueError(f"the analysis reads exactly one strong and one weak run, not {names}")
     for run_dir in run_dirs:
-        submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
-        compiled = json.loads((run_dir / "raw/job.json").read_bytes())["compilation"]["calibration_set_id"]
+        records = iqm_records.load_run(run_dir)
+        submission = records.json_of("submission.json")
+        compiled = records.json_of("raw/job.json")["compilation"]["calibration_set_id"]
         if submission["qc"] != QC or compiled != prediction["calibration_set"]:
             raise ValueError(
                 f"{run_dir}: ran on {submission['qc']} against {compiled}, not {QC} against the prediction's set"
@@ -318,12 +320,13 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
     if len(set(jobs)) != len(jobs):
         raise ValueError("two run directories hold one job; each acquisition counts once")
     for run_dir in sorted(run_dirs):
+        records = iqm_records.load_run(run_dir)
         facts = iqm_jobs.run_facts(run_dir)
-        submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
-        record = json.loads((run_dir / "raw/job.json").read_bytes())
-        case = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+        submission = records.json_of("submission.json")
+        record = records.json_of("raw/job.json")
+        case = records.json_of("cases.json")
         row = [r for r in case["jobs"] if r["job"] == submission["job"]][0]
-        measured = json.loads((run_dir / "raw/measurements.json").read_bytes())
+        measured = records.json_of("raw/measurements.json")
         kept = 0
         for entry, circuit in zip(row["circuits"], measured, strict=True):
             t = float(entry["file"].split("/t")[1].rsplit("-", 1)[0])

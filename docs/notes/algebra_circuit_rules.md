@@ -73,7 +73,7 @@ seeded rational vectors plus the two determinant-256 controls `e0+e9` and
 orthogonality control `e1+e9`. The replay is a bounded implementation check;
 the written source arguments supply the all-real identity.
 
-The [research registry](../state/RESEARCH_STATE.md) records publication
+The [research registry](../state/research_state.json) records publication
 provenance, repository-written proofs, exact finite certificates, Rocq proofs
 and open questions separately. Sparse dimension-32 rank counts describe their
 coefficient family; a global continuous-locus classification remains open.

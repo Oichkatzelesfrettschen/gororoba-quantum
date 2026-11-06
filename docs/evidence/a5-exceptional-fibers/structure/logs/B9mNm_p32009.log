@@ -1,0 +1,6 @@
+// ** redefining i (int i=2;) B9mNm_p32009.sing:12
+RESULT germ_dim 3
+RESULT base_primes 1
+// ** redefining i (int i=1;) B9mNm_p32009.sing:24
+RESULT base_dim 0
+RESULT base_equals_b9 0

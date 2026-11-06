@@ -130,8 +130,10 @@ def decoded_result(value: str) -> Any:
 
 
 def build_server() -> Any:
-    from mcp.server.fastmcp import FastMCP
-    from mcp.server.fastmcp.exceptions import ToolError
+    # The vendor openquantum_mcp package imports mcp.server.fastmcp and requires mcp<2, so this adapter
+    # runs under the OQ_PYTHON environment's mcp 1.x; the ignores keep a type check under mcp 2.x clean.
+    from mcp.server.fastmcp import FastMCP  # type: ignore[attr-defined,unused-ignore]
+    from mcp.server.fastmcp.exceptions import ToolError  # type: ignore[import-not-found,unused-ignore]
     from mcp.types import ToolAnnotations
     from openquantum_mcp import server as vendor
     from openquantum_mcp.auth import redact_secrets
@@ -165,7 +167,10 @@ def build_server() -> Any:
         server.add_tool(
             wrap(name, getattr(vendor, name)),
             name=name,
-            annotations=ToolAnnotations(readOnlyHint=name not in WRITES, openWorldHint=True),
+            # mcp 1.x ToolAnnotations declares camelCase fields.
+            annotations=ToolAnnotations(  # type: ignore[call-arg,unused-ignore]
+                readOnlyHint=name not in WRITES, openWorldHint=True
+            ),
         )
     return server
 

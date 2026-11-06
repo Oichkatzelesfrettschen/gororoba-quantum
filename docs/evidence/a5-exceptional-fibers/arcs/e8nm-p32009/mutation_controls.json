@@ -1,0 +1,23 @@
+{
+ "baseline": {
+  "nu": 5,
+  "inP1": true,
+  "inP2": false,
+  "inK2": true,
+  "J_residues": 0
+ },
+ "mutate_t9": {
+  "J_residues": 12
+ },
+ "mutate_G11": {
+  "nu": 4,
+  "inP1": false,
+  "inK2": true
+ },
+ "E_base_2": {
+  "nu": 3,
+  "inP1": false,
+  "inP2": true,
+  "inK2": true
+ }
+}

@@ -1,0 +1,4 @@
+ELF file    1: controller_wrappers.cpython-313-x86_64-linux-gnu.1.sm_75.cubin
+ELF file    2: controller_wrappers.cpython-313-x86_64-linux-gnu.2.sm_89.cubin
+ELF file    3: controller_wrappers.cpython-313-x86_64-linux-gnu.3.sm_75.cubin
+ELF file    4: controller_wrappers.cpython-313-x86_64-linux-gnu.4.sm_89.cubin

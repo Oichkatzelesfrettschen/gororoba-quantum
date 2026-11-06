@@ -360,7 +360,7 @@ approval; each needs the dry run, analysis and case of
 
 Three jobs on 14 calibration-qualified pairs (backup instance, 110 s in total; claims
 `kingston-qet-ladder-margin-and-feedforward`, `kingston-qet-window-phase-static` and
-`kingston-qet-compensated-information-excess` in [the registry](../../state/RESEARCH_STATE.md)):
+`kingston-qet-compensated-information-excess` in [the registry](../../state/research_state.json)):
 
 - [E] **[The ladder](../../../results/live/2026-10-25T203822.040562Z/FINDINGS.md).** Feed-forward executes the
   selected branch (`q_eff` median -0.05), but the channel floor margin is -0.160 +- 0.052 against +0.057 predicted.
