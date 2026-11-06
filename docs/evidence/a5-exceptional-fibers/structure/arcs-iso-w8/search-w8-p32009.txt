@@ -1,0 +1,19 @@
+HIT {'a': 1, 'c': 1, 'd': 1, 't7': 1, 't1': 1, 't9': 1} {'nu': 2, 'J_zero_through': 16, 'rank': 6, 'K2': True, 'lower_zero_at_point': True, 'exact': True, 'Lam': True, 'Q': False}
+progress 500 valid families; tallies {(6, True, True, False): 1, (5, True, True, False): 10, (4, True, True, True): 33, (4, True, True, False): 36, (3, True, True, True): 108, (3, True, True, False): 54, (2, True, True, True): 162, (2, True, True, False): 24, (1, True, True, True): 72}
+progress 1000 valid families; tallies {(6, True, True, False): 1, (5, True, True, False): 12, (4, True, True, True): 39, (4, True, True, False): 54, (3, True, True, True): 162, (3, True, True, False): 107, (2, True, True, True): 321, (2, True, True, False): 76, (1, True, True, True): 228}
+HIT {'a': 2, 'c': 2, 'd': 2, 't7': 2, 't1': 2, 't9': 2} {'nu': 4, 'J_zero_through': 16, 'rank': 6, 'K2': True, 'lower_zero_at_point': True, 'exact': True, 'Lam': True, 'Q': False}
+progress 1500 valid families; tallies {(6, True, True, False): 2, (5, True, True, False): 19, (4, True, True, True): 55, (4, True, True, False): 72, (3, True, True, True): 225, (3, True, True, False): 154, (2, True, True, True): 479, (2, True, True, False): 121, (1, True, True, True): 340, (1, True, True, False): 33}
+HIT {'a': 3, 'c': 3, 'd': 3, 't7': 3, 't1': 3, 't9': 3} {'nu': 6, 'J_zero_through': 16, 'rank': 6, 'K2': True, 'lower_zero_at_point': True, 'exact': True, 'Lam': True, 'Q': False}
+progress 2000 valid families; tallies {(6, True, True, False): 3, (5, True, True, False): 21, (4, True, True, True): 59, (4, True, True, False): 78, (3, True, True, True): 266, (3, True, True, False): 196, (2, True, True, True): 646, (2, True, True, False): 174, (1, True, True, True): 495, (1, True, True, False): 62}
+HIT {'a': 4, 'c': 4, 'd': 4, 't7': 4, 't1': 4, 't9': 4} {'nu': 8, 'J_zero_through': 16, 'rank': 6, 'K2': True, 'lower_zero_at_point': True, 'exact': True, 'Lam': True, 'Q': False}
+rank, K2, Lam, Q = (6, True, True, False) families 4
+rank, K2, Lam, Q = (5, True, True, False) families 24
+rank, K2, Lam, Q = (4, True, True, True) families 62
+rank, K2, Lam, Q = (4, True, True, False) families 84
+rank, K2, Lam, Q = (3, True, True, True) families 288
+rank, K2, Lam, Q = (3, True, True, False) families 216
+rank, K2, Lam, Q = (2, True, True, True) families 771
+rank, K2, Lam, Q = (2, True, True, False) families 228
+rank, K2, Lam, Q = (1, True, True, True) families 651
+rank, K2, Lam, Q = (1, True, True, False) families 78
+exit 0
