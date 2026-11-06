@@ -397,76 +397,14 @@ copies live in the owner's documents repositories.
 
 ## Ledger of hypotheses
 
-Status vocabulary: *survives* (consistent with every test that ran, with the falsifier named), *open* (no deciding
-test yet), *refuted* (a measurement or argument contradicts it), *rejected* (dropped on an argument without a
-measurement), *superseded* (replaced by a stronger or cheaper route).
-
-### Standing
-
-| Hypothesis | Status | Deciding evidence or pending falsifier |
-|---|---|---|
-| F(I) = k[y1, y2, y3] for X+ -> N- and X- -> N+ (fiber P^2) | settled over F_32009 and F_32029: linear arcs give order-2 limit vectors of Jacobian rank 3 (`evidence/a5-exceptional-fibers/arcs-x/`); r_N = C(d+2, 2) for d = 5 to 9 at N = 20 (`x-opposite-ladder/`) | a Q(i) replay of the arc certificate for characteristic 0 |
-| The opposite-sign fiber is linear and the same-sign fiber is not because X+ is the smooth sheet of E8-bar n {mu' = 0} along N- and the multiplicity-2 sheet along N+ | survives over Q (`structure/asymmetry.py`: sheets (4, 1, 4) and (4, 2, 7), multiplicities 1 + 2 = 3 = mult(E8-bar), {mu' = 0, eta(d) = 0} smooth at N- and a rank-7 quadric cone at N+) | a germ tuple different from the table |
-| The kernel-map base locus near the target is the B9 slice, with residual the VB curve (X -> N opposite sign) or the origin (X, W8, Iso -> VB) | survives over F_32009, F_32029 and Q(i) (`structure/base_locus.py`); on X -> N- it gives I = t2 * I' and the P^2 of the blow-up along the VB curve; on X -> VB and B9 -> N+- the full P^2 is forced; on W8 -> VB and Iso -> VB the colon is not a factorization | a second prime through 0 or a residual of another dimension |
-| F(I) = k[y] exactly when the analytic spread equals s; s above the germ dimension forces a proper fiber | a theorem (Northcott and Rees 1954); predicts every proper fiber of the records (V -> N+-, E8-bar -> Va+-, same-sign X, E8-bar -> N+-, E8-bar -> VB, Iso -> N+-, W8 -> N+-); the earlier pattern "smooth germ gives P^(s-1)" is neither needed nor sufficient | none; a theorem |
-| F(I) = k[y]/K2 for E8-bar -> VB | survives through degree 5 at 32009 (h_5 = 266, r_16 by engine v7) | degree 6; degree 5 at a second prime |
-| F(I) = k[y]/K2 for X+- | survives through degree 5 at 32009 (h_4 = 240; h_5 = 417, r_19, r_20 and r_21 by engine v7) | degree 6; degree 5 at a second prime |
-| F(I) = k[y]/K2 for Iso | survives through degree 5 at both primes (h_5 = 1,316, r_16 by the linear-algebra truncated rank) and degree 4 at both primes (h_4 = 640 by the full std at 32009 and by the jet rank at N = 13 at both 32009 and 32029) | degree 6 |
-| F(I) = k[y]/K2 for W8 | survives through degree 5 at 32009 (h_5 = 4,116 = HF(k[y]/K2, 5), r_16 by engine v11 with and without the degree-2 receipt, blocks 1017, 1005, 1047, 1047, [w8-n16-azure](../../evidence/a5-exceptional-fibers/w8-n16-azure/README.md)) and through degree 4 (h_4 = 1,725 at 32029 and 32009, r_13 by the linear-algebra truncated rank; h_3 = 600 at 32029 and 32009 by the linear-algebra truncated rank; the 32009 upper bound rests on the degree-2 receipt `distribute/out/a5-w8-receipt-p1` (h_2 = 156, 144 relations, membership failures 0, 6,560 s products std, 325 s membership, 6.7 GB), whose relation file spans the K2 of `runs/w8_a2` by its k2-span witness; W8 -> N+ carries degrees 1 to 4 at both primes by the t9 sign isomorphism) | degree 5 at 32029; degree 6 |
-| F(I) = k[y]/K2 for E8-bar -> N+- | survives through degree 4 at both primes (h_4 = 495, r_15 by engines v9 and v11, r_16 by v11 at 32009); degree 5 open with 861 <= h_5 <= 952: exact arc families reach both minimal primes of sqrt(K2) at both primes (`evidence/a5-exceptional-fibers/arcs/`), so L lies in sqrt(K2) and F(I) surjects onto k[y]/sqrt(K2), whose degree-5 value is 861; the truncated ranks r_15 = r_16 = 742 are a truncation plateau | the exact h_5, by a degree-5 receipt on the 91-dimensional space sqrt(K2)_5 / K2_5 |
-| k[y]/K2 is Cohen-Macaulay for E8-bar -> VB, Iso and W8 -> N- | survives (generic linear section length 7, 23, 50 equal to the degree at 32009 and at 32029; `k2_cm.py`) | none at either prime |
-| For E8-bar -> VB, Iso and W8, F(I) = k[y]/K2 in all degrees iff the analytic spread and multiplicity of F(I) are (4, 7), (5, 23), (6, 50) | survives (argument: the quadric ring is Cohen-Macaulay, so L/K2 is zero or of full dimension) | none; an argument |
-| For W8 -> N-, F(I) = k[y]/K2 iff Proj F(I) contains V(P) and every component of V(K2 : P) | survives (argument: K2 radical and Cohen-Macaulay, components of degree 20 and 30; a proper subfiber has multiplicity below 50) | none; an argument. K2 : P is geometrically prime at both primes; an explicit arc family reaches V(P) at both primes ([arcs-iso-w8](../../evidence/a5-exceptional-fibers/structure/arcs-iso-w8/README.md)), so the analytic spread is 6 and the question is whether V(K2 : P) lies in the fiber (multiplicity 50 or 20) |
-| Sign-paired fibers are isomorphic (every Y -> N+ with phi(Y) -> N-) | proved in every characteristic: phi(a, b) = (a, -b) is an automorphism of A_5 exchanging X+ and X-, N+ and N- and preserving W8, E8-bar, Iso, B9, V, VB, and L_phi(y) = phi L_y phi^-1 makes the kernel map equivariant (`evidence/a5-exceptional-fibers/structure/`); the hash-bound witnesses of `witnesses.jsonl` are instances and re-derive identically | none; a proof |
-| F(I) is Cohen-Macaulay for X+- and E8-bar -> N+- | refuted if the analytic spread is 4 and 5 (negative D'Cruz-Raghavan-Verma numerators in certified degrees) | the analytic spread |
-| The E8-bar -> VB fiber contains the degree-4 component | survives (certified over F_32009) | second-prime arc replay |
-| The E8-bar -> VB fiber contains the degree-3 component | open, favored by the Hilbert data | arcs in the remaining charts; a relation of degree 5 or more vanishing on the degree-4 component |
-| The E8-bar -> VB fiber is reduced | survives at the quadric level | an embedded or nilpotent relation in a later degree |
-| Every fiber has dimension at most 3 | refuted: W8 -> VB has all of P^4 (`evidence/a5-kernel-attachments/README.md`), and for E8-bar -> N+- at 32009 and 32029 the reduced exceptional fiber over the base point is Proj(k[y]/sqrt(K2)), the union of a fourfold of degree 11 and the rational normal scroll S(1,1,2), and an arc family with Jacobian rank 5 reaches the fourfold (`evidence/a5-exceptional-fibers/arcs/`) | none at these primes; a characteristic-zero statement needs task 42 |
-| k[y]/K2 is Cohen-Macaulay for X- and E8-bar -> N- | refuted at 32009 | X- depth 1 (projective dimension 14 of 15); E8-bar -> N- linear-section length 20 against degree 11, which no Cohen-Macaulay ring allows |
-| V(K2) of E8-bar -> VB is a linearly joined union of two minimal-degree threefolds | survives (computed: spans P^5 and P^6 meeting in a P^2, components meeting there; 2-regular by the linear resolution) | none: same at 32009 and 32029 (`k2_cm.py`) |
-| F(I) of E8-bar -> VB is Cohen-Macaulay iff F(I) = k[y]/K2 | survives (argument: analytic spread 4 from the certified component, multiplicity bound 7 both ways) | none; an argument |
-| The X- fiber support is one irreducible three-fold of degree 12 in a P^11 | survives for V(K2) only: F(I) is a quotient of k[y]/K2, so the fiber support may be a proper closed subset | arc certificate inside the P^11 |
-| X+ and X- fibers correspond under t9 -> -t9 | survives (exact coefficient check) | none; proven for the inputs |
-| E8-bar -> N+ and N- fibers correspond under t8 -> -t8, t9 -> -t9 | survives (generator-by-generator sign identity at the three producer specializations (p, i) = (32009, 10754), (32009, 21255) and (32029, 9115); the moved N- quadrics span the N+ quadrics at 32009 and 32029) | the producer's Q(i) generators compared directly |
-| W8 -> N+ and W8 -> N- fibers correspond under t9 -> -t9 | survives (exact coefficient check) | none; proven for the inputs |
-| Results at 32009 hold at a second prime | survives: at p = 32029, E8-bar -> VB 34, 80; X- and X+ 51, 122 with 69 quadrics; Iso 85, 265, 640 with 68 quadrics, all equal to 32009; at 32029 also W8 -> N- 156 and E8-bar -> N+- 83 with 148 quadrics each, and E8-bar -> N+- 225 in degree 3 | a third prime, and any higher degree at 32029 |
-| J is radical and prime through the origin | survives on all five pairs checked | none; checked |
-| The pivot is a nonzerodivisor modulo J | survives on every pivot used | none; checked |
-| Kernel-plane limits along the arcs have generic nullity 8 | open | the limit computation |
-| Arcs on the normalization certify every reduced component | survives on E8-bar -> VB's degree-4 component | a component no normalized arc reaches |
-| The jet-truncated rank reaches h_d at practical N | survives on Iso degree 4 (r_13 = 640, the K2 count) | W8 degree 3 at N = 10 to 14 against 600 (degree-3 driver at 32029); positive control: Iso degree 3 climbs r_9 = 216, r_10 = r_11 = 265 to the known h_3 (independent review), so a ladder that misses a known value at large N exposes a defect |
-| Every pair carries a diagonal Klein four-group of sign symmetries and no larger termwise diagonal group | survives (exhaustive search over all sign vectors at 32009; Smith invariants 1, ..., 1, 2, 2 at all 27 headers of the three specializations) | an input regeneration that breaks span invariance |
-
-### Refuted, rejected or superseded
-
-| Hypothesis | Status | Evidence |
-|---|---|---|
-| The fiber cone F(I) is reduced, for X- and E8-bar -> N+- | refuted | 3 and 5 nilpotent linear forms (radical h_1 = 12 vs 15, 16 vs 21); reducedness of Proj F(I) is open |
-| V(K2) of E8-bar -> VB is irreducible (a 2 x 7 scroll) | refuted | two minimal primes, degrees 3 and 4 |
-| V(K2) of E8-bar -> N+- is equidimensional | refuted | primes of projective dimension 4 and 3 |
-| One limiting kernel per boundary point (path independence) | refuted for the nullity-8 record's instances | path-dependent limits there; each of the five fibers needs its own arc certificate |
-| One-point transport of the fiber by H-transitivity | rejected | the split boost has no kernel lift |
-| The regularity of k[y]/K2 bounds the missing relations | rejected | a new relation of F(I) can appear in any degree |
-| Pivot saturation completes the full fiber on this hardware | refuted | six stalls after the pivot, up to 12 h and 72 GB |
-| Pivot saturation is the only completion route | superseded | certified candidate ideal, dense arc family, bounded Hilbert function, unmixed candidate |
-| A certified candidate ideal L verifies cheaply | refuted for one presentation on E8-bar -> VB | std(L) in 18 variables past 3 GB in 14 minutes; a reduced presentation, bounded membership or saturation witnesses stay untested |
-| Full Rees-graph elimination by msolve fits a session | refuted for the full graph | degree-7 F4 step on E8-bar -> N+; 209 GB and degree 16 of at least 19 on E8-bar -> VB; a fixed-degree homogenized or Macaulay slice after symmetry and presolve stays untested |
-| `minAssGTZ` decomposes the quadric scheme directly | refuted | Iso 40,000 s without result; radical first plus `minAssChar` takes 1 s on X- |
-| The local `ds` syzygy is required for h_d | superseded | global membership in J + m P_d, 17 s against 25,459 s |
-| Order-1 Hensel arcs certify E8-bar -> VB | refuted | det M = 0 over the non-reduced tangent cone |
-| Torus multigrading forces toric components | rejected | a grading splits blocks without forcing toric components; not tested |
-| The naive leading-form test (lowest m-adic forms of the products independent modulo the tangent cone of J) certifies a degree | fails to certify on the instances run | ranks 137 of 265 (Iso degree 3) and 53 of 240 (X- degree 4) from mixed m-adic orders 2 and 3; weighted initial-ideal routes stay open |
-| An untruncated std(J + m P_3) for W8 fits a 78 GB scope on an 84 GB VM | refuted | cgroup OOM at the 78 GiB limit (77.8 GiB resident) after 61,304 s |
-| E8-bar -> N- needs computations of its own because no diagonal sign change carries N+ onto it | refuted | only t9 -> -t9 was tried (combined G rank 41 of 42); the full 2^9 sign search finds the pair flip t8 -> -t8, t9 -> -t9, which maps every generator to plus or minus its partner. The degree-2 run on N- (13,827 s on Kaggle), its quadric decomposition, the stopped N- Rees saturation and the 36 h N- cloud run duplicated N+ work |
-| The W8 degree-3 jet std at N = 10 fits a 24 GB scope | refuted | kernel OOM kill at the 24 GB limit after 5,449 s, inside std of J + m P_3 + m^10 |
-| A truncated rank plateau below the K2 count refutes convergence | rejected | Krull intersection gives eventual convergence with no N computed in advance; only equality with the K2 count certifies |
-| GPU or TPU rank computation is the bottleneck | superseded by the stage times | standard-basis routes had no matrix stage; the linear-algebra truncated rank spends 60 to 97 percent of its raw-mode time in closure (E8-bar -> N+- degree 3 at N = 11: 4,397 of 4,526 s) and 99 percent of its quotient-mode time in the Singular product export, which a GPU does not shorten |
-| A 4 GiB per-call cap caused the producer's "no more memory" exits | refuted | the cause is `RLIMIT_AS` inherited from a Python helper |
-| Raising the per-call cap to 16 GiB fixed those exits | refuted | the cap never governed while `RLIMIT_AS` was set |
-| The cancelled msolve TPU kernel held the account's TPU slot | refuted | the web UI showed it ended; deleting the queued smoke kernel freed the slot |
-| The value 155 is a product 54 x 12 of earlier counts | refuted | 155 is h_4 of k[y]/K2 for E8-bar -> VB |
-| Iso and W8 quadric schemes decompose chart by chart within 45 minutes per chart | refuted | 40 of 41 charts stopped at the 45-minute cap, 18 inside `radical` and 22 inside `minAssChar` (called on the original ideal rather than on its radical); the charts give affine dimension 5 (Iso) and 6 (W8) with radical certificates on 9 and 14 charts; W8 chart 10 finished with one prime of affine dimension 6 and 37 linear generators |
+The claim ledger is [ledger.tsv](../../evidence/a5-exceptional-fibers/ledger.tsv): one row per claim of the program
+(equations, structural statements, methods and operational findings), with its status after justification and
+falsification (proved, certified, survives, open, refuted, rejected, superseded, stalled, boundary), the deciding
+basis in words, the evidence paths, the falsifier and the date of the last change. Refuted, superseded and stalled
+rows stay, so the ledger records what was tried and what it cost as well as what survives.
+`"$PYTHON" docs/evidence/a5-exceptional-fibers/ledger.py --check` validates it (status vocabulary, unique ids,
+existing evidence paths), `--summary` counts it, and `--open` lists what remains to decide. A new result enters the
+ledger in the change that retains its evidence; the sections above explain the results the ledger rows cite.
 
 ## Work in progress
 

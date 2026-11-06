@@ -35,6 +35,7 @@ The registry and its checks sit beside `working/` and read only from it:
 
 | File | Content |
 |---|---|
+| [ledger.py](ledger.py) | [ledger.tsv](ledger.tsv): the claim ledger of the program, one row per equation, structural statement, method or operational finding with its status after falsification, basis, evidence paths and falsifier; `--check`, `--summary`, `--open` |
 | [build_registry.py](build_registry.py) | builds [claims.json](claims.json), [certificates.jsonl](certificates.jsonl) and [unbound.jsonl](unbound.jsonl) from the retained records; `--check` rebuilds in memory |
 | [witnesses.py](witnesses.py) | [witnesses.jsonl](witnesses.jsonl): header-pair identities, sign isomorphisms between paired fibers, and k2-span identities between each degree-2 receipt and each K2 source |
 | [k2_hilbert.py](k2_hilbert.py) | [k2-hilbert.jsonl](k2-hilbert.jsonl): HF(k[y]/K2, d) for d = 1 to 6 from the 14 retained K2 sources |
