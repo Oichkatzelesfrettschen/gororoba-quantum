@@ -98,4 +98,6 @@ the closest entry and say what changed.
 - Parallelism: two single-threaded processes on two cores.
 - Checkpoints: `chart-sat-iso-p32009-coordJ.txt`, `chart-std-...`, `chart-fiber-...`.
 - End state: logs copied into `structure/arcs-iso-w8/chart-runs/lab-a1/`; no VM to end.
-- Outcome: pending.
+- Outcome: both runs died with "no more memory" at the 5 GB cap after 34 min (j = 16 and j = 2), inside the
+  saturation: faster memory growth than the dense chart on the same host (5.2 GB after 57 min). The sparser a0 does
+  not shrink the saturation; the chart's size comes from the blowup itself, not from the density of a0.
