@@ -350,12 +350,19 @@ def centered(shares: np.ndarray) -> np.ndarray:
 
 
 def relabelings_of(m: int, relabelings: np.ndarray | None) -> np.ndarray:
-    """The relabelings a test enumerates: all m! permutations, or a caller's sample of them whose row 0 is the
-    identity, which keeps the observed labeling inside the reference set so the p-value stays valid."""
+    """The relabelings a test enumerates: all m! permutations, or a caller's nonempty integer sample of them whose
+    every row is a permutation of range(m) and whose row 0 is the identity, which keeps the observed labeling inside
+    the reference set so the p-value stays valid."""
     if relabelings is None:
         return np.array(list(itertools.permutations(range(m))))
-    if relabelings.ndim != 2 or relabelings.shape[1] != m or not np.array_equal(relabelings[0], np.arange(m)):
-        raise ValueError(f"sampled relabelings need {m} columns and the identity in row 0")
+    if relabelings.ndim != 2 or relabelings.shape[0] == 0 or relabelings.shape[1] != m:
+        raise ValueError(f"sampled relabelings need at least one row of {m} columns")
+    if not np.issubdtype(relabelings.dtype, np.integer):
+        raise ValueError(f"sampled relabelings need integer labels, not {relabelings.dtype}")
+    if not np.array_equal(np.sort(relabelings, axis=1), np.broadcast_to(np.arange(m), relabelings.shape)):
+        raise ValueError(f"every sampled relabeling must be a permutation of range({m})")
+    if not np.array_equal(relabelings[0], np.arange(m)):
+        raise ValueError(f"sampled relabelings need the identity in row 0, not {relabelings[0]}")
     return relabelings
 
 

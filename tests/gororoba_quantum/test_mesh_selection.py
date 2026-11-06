@@ -412,7 +412,8 @@ def test_reading_thresholds_are_strict_and_supplied_by_the_caller() -> None:
 
 def test_a_full_sample_of_relabelings_reproduces_the_enumerated_reading() -> None:
     """Passing all m! relabelings with the identity first reproduces the enumerated p-values and slope bound, and a
-    sample whose row 0 is not the identity is refused."""
+    sample that is empty, non-integer, holds a row that is no permutation, or whose row 0 is not the identity is
+    refused."""
     rng = np.random.default_rng(FIXTURE_SEED)
     old = rng.normal(size=(1, 5))
     new = 0.8 * old + 0.3 * rng.normal(size=(1, 5))
@@ -423,6 +424,14 @@ def test_a_full_sample_of_relabelings_reproduces_the_enumerated_reading() -> Non
         raise AssertionError(f"{exact} differs from {sampled}")
     with pytest.raises(ValueError, match="identity in row 0"):
         relabelings_of(5, every[::-1])
+    with pytest.raises(ValueError, match="at least one row"):
+        relabelings_of(5, every[:0])
+    with pytest.raises(ValueError, match="integer labels"):
+        relabelings_of(5, every[:3].astype(float))
+    repeated = every[:3].copy()
+    repeated[1] = [0, 1, 2, 4, 4]
+    with pytest.raises(ValueError, match="permutation of range"):
+        relabelings_of(5, repeated)
 
 
 def test_a_partial_sample_of_relabelings_keeps_the_test_monotone_and_the_bound_inverted() -> None:

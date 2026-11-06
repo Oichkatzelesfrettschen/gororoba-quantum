@@ -27,7 +27,9 @@ served circuit's own ideal z, from its unitary and computed input, has mean 0.90
 across the 56 perturbed meshes, against an observed per-mesh standard deviation of 0.0114, 0.0117 and 0.0104 in
 job-02, job-03 and job-08; the served ideals are identical in all three jobs and correlate with the observed
 deviations at r = -0.10. A `sim:ascella` run that served the same meshes on 2026-11-06 spread its z at counting noise
-(0.00211 against 0.00203). The returned circuit model implements the target to 1e-4. These fields are the
+(0.00211 against 0.00203). The returned circuit model reproduces the target z with a spread of 9.8e-5 (standard
+deviation), a hundredth of the observed per-mesh spread; the control checks z, the statistic the reading uses, and
+certifies no other element of the unitary. These fields are the
 provider's reported model, not a readback of the applied voltages or of the implemented unitary (the design's
 "Open problems after job-00" section), so the test excludes an error in that model and leaves every later stage open.
 
@@ -77,7 +79,7 @@ which makes the reduction a prospective result or refutes it.
 | Assumption | Check | State |
 |---|---|---|
 | A seed selects one served mesh | 64 of 64 settings byte-identical across job-02, job-03 and job-08, and across stacks within 2.4e-7 | holds |
-| The served circuit implements the target | served ideal z within 1e-4 of the logical ideal | holds |
+| The served circuit implements the target | served ideal z: mean 0.904500 against the logical 0.904508, standard deviation 9.8e-5 across the 56 meshes, r = -0.10 with the observed deviations | holds for z, the statistic the reading uses; no other element of the unitary is checked |
 | Each z is attributed to its mesh | echoed seed and parameters, 64 of 64 per job | holds |
 | A shared linear drift or one-step predecessor effect does not mimic persistence | position pairing r -0.20, anticorrelated positions, detrended r 0.91, predecessor-transition rank correlation -0.07 | the bounded controls pass; nonlinear drift, longer-memory carryover and predecessor-mesh interactions remain untested |
 | The counting variance is multinomial | anchor z standard deviation 0.0020 and 0.0015 against counting 0.0031 and 0.0021 | holds for the anchor mesh; mesh-dependent overdispersion remains untested |
@@ -106,9 +108,9 @@ which makes the reduction a prospective result or refutes it.
 |---|---|---|---|
 | Source | one quantum-dot source demultiplexed onto inputs 0, 2, 4, 6, 8, 10 | one source onto 12 inputs (0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22) through an active demultiplexer and fibre delays (arXiv:2605.10471) | one photon per iteration here: HOM visibility does not enter; g2 (2 %) adds rare multi-photon events |
 | Interferometer | 12-mode universal mesh | 24-mode universal mesh with thermal, voltage-controlled phase shifters (arXiv:2605.10471) | the compiled phases set the realized unitary; a heater's voltage-to-phase map and thermal crosstalk realize each mesh with its own error, the leading candidate for the persistent per-mesh error, which the data place in the implementation path without separating firmware from chip |
-| Compiler | the seed selects one of many meshes for the same logical unitary; byte-identical across the 2026-11 update | the same, with sim and QPU meshes differing (strategy section 7) | the served circuits hit the target within 1e-4 in z, so the compiler adds no measurable error |
+| Compiler | the seed selects one of many meshes for the same logical unitary; byte-identical across the 2026-11 update | the same, with sim and QPU meshes differing (strategy section 7) | the served circuits' ideal z spreads 9.8e-5 (standard deviation) around the target, a hundredth of the observed spread and uncorrelated with it, so the returned model adds no measurable error to z |
 | Detection | 12 threshold detectors, clock 13.33 MHz | 24 threshold detectors, some quasi number-resolving, clock 4.94 MHz | dark counts and detector balance set the counting floor; they are time-ordered, not mesh-ordered |
-| Loss | transmittance about 5.5 % | about 5.2 % | lowers the rate, not z, which conditions on block clicks |
+| Loss | transmittance about 5.5 % | about 5.2 % | a mode-independent loss factor lowers the rate and cancels in z, which conditions on block clicks; mode-dependent transmission reweights the four block modes as the detector_efficiency family of `scripts/ascella_physical_models.py` does, and a per-mesh difference in it belongs to the implementation-path error the data do not separate |
 
 The literature treats the interferometer layer the same way: element-level characterization followed by compensated
 compilation corrects fixed MZI errors (arXiv:2103.04993), and variance-based calibration leaves residual phase errors
