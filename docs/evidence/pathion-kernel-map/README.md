@@ -3,8 +3,9 @@
 Left multiplication by a two-term operand e_i + t e_j of the 32-dimensional Cayley-Dickson algebra A_5 pairs the 32
 basis states into 16 XOR pairs {k, k XOR m}, m = i XOR j, and its nullity N is the number of pairs on which the
 signed permutation K = L_i^T (t L_j) carries equal signs (`gororoba_quantum/pathion_kernel_map.py`; N = 0, 4, 8, 12
-for two-term operands, Biss, Dugger and Isaksen, math/0511691, Theorem 14.6, and Skiouris, Aphanics at the Pathion
-Level, Proposition 2.2, for 0, 4 and 12). The pairs' outputs are disjoint, so the operator splits over the cosets of
+for two-term operands, among the A_5 annihilator dimensions 0, 4, 8, 12, 16 of Biss, Dugger and Isaksen,
+math/0511691, Theorem 1.2; Skiouris, Aphanics at the Pathion Level, Proposition 2.2, gives 12 and 4 for the pairs
+with i < 16 < j). The pairs' outputs are disjoint, so the operator splits over the cosets of
 any subgroup V of (Z/2)^5 that contains m, and N is the sum of the coset blocks' nullities.
 
 ## What a hardware run can test

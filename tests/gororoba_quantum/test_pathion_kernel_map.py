@@ -94,3 +94,34 @@ def test_uniform_contraction_preserves_the_nullity_ratios() -> None:
     _expect(abs(summary["nullity_ratio_12_over_4"] - 3.0) < 1e-9, "depolarized 12/4 ratio")
     _expect(abs(summary["kmap_e1pe18_contrast_ratio"] - visibility) < 1e-9, "contrast ratio reads the visibility")
     _expect(summary["kmap_e1pe18_sign_agreement"] == 32.0, "a depolarized device keeps every output sign")
+
+
+def test_nullity_estimate_cancels_a_per_circuit_visibility() -> None:
+    group = pkm.pathion_kernel_map_group()
+    prefixes = sorted({m.name.rsplit("_", 1)[0] for m in group.members if m.name != "kmap_skeleton"})
+    visibility = {prefix: 0.15 + 0.05 * k for k, prefix in enumerate(prefixes)}
+    noisy = {}
+    for m in group.members:
+        v = visibility.get(m.name.rsplit("_", 1)[0], 0.5)
+        noisy[m.name] = v * m.ideal + (1 - v) / m.ideal.size
+    summary = group.summarize(noisy)
+    for prefix in prefixes:
+        _expect(
+            abs(summary[f"{prefix}_nullity_estimate"] - summary[f"{prefix}_nullity_ideal"]) < 1e-9,
+            f"{prefix}: estimate {summary[f'{prefix}_nullity_estimate']} against {summary[f'{prefix}_nullity_ideal']}",
+        )
+        _expect(abs(summary[f"{prefix}_visibility"] - visibility[prefix]) < 1e-9, f"{prefix}: visibility estimate")
+    _expect(abs(summary["kmap_flip3_e1pe18_nullity_ideal"] - 12) == 1, "the flip moves the ideal half-sum by one")
+    _expect(abs(summary["kmap_e1pe17_nullity_estimate"]) < 1e-9, "the N = 0 estimate")
+
+
+def test_arms_share_one_template_and_the_data_marginal_is_uniform() -> None:
+    group = pkm.pathion_kernel_map_group()
+    by_prefix: dict[str, list] = {}
+    for m in group.members:
+        if m.name != "kmap_skeleton":
+            by_prefix.setdefault(m.name.rsplit("_", 1)[0], []).append(m)
+            marginal = m.ideal[: pkm.DIM] + m.ideal[pkm.DIM :]
+            _expect(bool(np.allclose(marginal, 1 / pkm.DIM)), f"{m.name}: data marginal is not uniform")
+    for prefix, pair in by_prefix.items():
+        _expect(len(pair) == 2 and pair[0].circuit is pair[1].circuit, f"{prefix}: arms do not share a template")
