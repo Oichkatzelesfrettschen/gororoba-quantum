@@ -1,12 +1,13 @@
 # Ascella postselected CZ process tomography case
 
 This is the written case for two qpu:ascella jobs of 72 template iterations each. The jobs measure the process
-fidelity of the postselected Ralph CZ gate as the service compiles it, by quantum process tomography on two dual-rail
-qubits carried by two photons. [scripts/ascella_cz_tomography_case.py](../../scripts/ascella_cz_tomography_case.py)
+fidelity of one least-squares Choi fit to 144 tomography settings of the postselected Ralph CZ gate, each setting
+through its own service-compiled mesh ([Limits](#limits)), by quantum process tomography on two dual-rail qubits
+carried by two photons. [scripts/ascella_cz_tomography_case.py](../../scripts/ascella_cz_tomography_case.py)
 builds the frozen requests in
 [results/quandela/cases/ascella_cz_tomography](../../results/quandela/cases/ascella_cz_tomography/job-00/cases.json),
-checks them, forecasts the outcome under Perceval's noise model and analyzes the collected runs. Nothing has been
-sent, and each job waits for the owner's approval of this case.
+checks them, forecasts the outcome under Perceval's noise model and analyzes the collected runs. Both jobs ran
+on 2026-10-31 under the owner's approval of this case ([Outcome](#outcome)).
 
 ## The gate
 
@@ -208,9 +209,11 @@ interval, preregistered in `cases.json`.
 
 ## Written acquisition case
 
-**What it measures.** The process fidelity to the ideal CZ and the success-weighted average fidelity of the postselected
-Ralph CZ as qpu:ascella compiles it, over 144 settings, with a bootstrap interval, and how far it falls below the
-source-limited forecast.
+**What it measures.** The process fidelity to the ideal CZ and the success-weighted average fidelity of one
+least-squares Choi fit to the 144 settings of the postselected Ralph CZ, each setting through its own mesh as
+qpu:ascella compiles it, with a bootstrap interval, and how far the fit falls below the source-limited forecast. The
+fit describes this set of settings and compilations and is not shown to equal the mean process of those meshes
+([Limits](#limits)).
 
 **Why simulation cannot answer it.** Local SLOS and Perceval's noise model return the law of the designed unitary at
 modeled source figures. The question is the device:
@@ -260,10 +263,11 @@ in 243 s, 84 in 248 s, 96 in 288 s), so 72 iterations need about 216 s.
   truncation as undecided.
 
 **HOM rule: an owner decision.** Strategy design rule 1 ([strategy.md](../notes/quandela/strategy.md)) holds
-two-photon cases until the live HOM exceeds 90 %. The live read is 87.54 %, and `plan` prints that warning for both
-jobs. The owner's waiver for the associator case covered that case only. The gate's fidelity depends on the
-indistinguishability directly (forecast above), so the owner chooses between running at 87.54 % to measure the gate as
-the device stands and waiting for a recovered HOM.
+two-photon cases until the live HOM exceeds 90 %. The live read was 87.54 %, and `plan` printed that warning for both
+jobs. The owner's waiver for the associator case covered that case only. The fidelity of the fit depends on the
+indistinguishability directly (forecast above), so the choice was between running at 87.54 % and waiting for a
+recovered HOM. Both `submission.json` receipts record the owner's approval "at HOM 87.54 %", so the owner chose to run;
+the plan reads at submission show HOM 87.56 % ([Outcome](#outcome)).
 
 **Stopping rule.**
 - A terminal error with no counted iteration allows one resubmission of the identical body under the same approval,
