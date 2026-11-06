@@ -12,4 +12,3 @@ distribute/out/a5-xm-d4/xm_p1/d4/sq.txt
 azure-results/vm1/vm1-work.tgz
 distribute/out/a5-w8-receipt-p1/w8_p1/d2/nf-d2.txt
 distribute/out/a5-w8-receipt-p1/w8_p1/d2/sq.txt
-exports/w8nm-n16-rcpt/qM7.txt

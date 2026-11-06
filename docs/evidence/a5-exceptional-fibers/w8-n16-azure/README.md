@@ -25,7 +25,13 @@ Findings.
   this instance: the 94,164 products the receipt drops add no rank, as its 265 sampled nonstandard checks showed.
 - The Singular stage is deterministic across hosts and worker counts: all ten export files have matching 64-bit SHA-256 prefixes (the full hashes survive only for the
   retained receipt-run export, `.sha256` files beside each table), so
-  the export kept on westus3 ([`working/exports/w8nm-n16-rcpt/`](../working/exports/w8nm-n16-rcpt/export.json), 235 MB; `qM7.txt` is split into 45 MB parts listed in `split.txt`, every data file matches its `.sha256`, and the scripts carry `~` for the VM home) is the export of either run.
+  the export of the receipt run is the export of either run. Its manifest stays in the repository
+  ([`working/exports/w8nm-n16-rcpt/`](../working/exports/w8nm-n16-rcpt/export.json): `export.json`, the producing `.sing`
+  scripts, `qG.txt` and the full sha256 of every table); the tables themselves (235 MB) are not retained, because
+  checking them out pushed the `tests` job past its time limit. Regenerate them with
+  `"$PYTHON" docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py --quotient --export-only
+  --export-dir DIR --singular SINGULAR docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing 5 16`
+  (about 12 min of Singular) and check each table against its `.sha256`.
 - The receipt halves the closure (1.95x) and the peak memory (0.54x) on half the VM; the products stage drops only
   1.12x for 24x fewer products, so most of that stage's cost is independent of the product count. Inference, not
   profiled: the per-generator multiplication tables dominate it, so a further speedup lies there rather than in

@@ -27,7 +27,7 @@ split and copies every file whose scrubbed bytes differ from the retained copy (
 | `kaggle-tpu/`, `kaggle-pack-a/` | Kaggle TPU and CPU kernels, their outputs and research |
 | `distribute/` | the Kaggle distribution brief, its peer review, the kernel generator and watcher |
 | `azure-cases/` | the written cases under which cloud VMs ran |
-| `exports/w8nm-n16-rcpt/` | the Singular export (standard basis, multiplication tables qM1-qM7, qG, qB) of W8 -> N- at N = 16, p = 32009, reusable for any degree at that N; its tables' 64-bit SHA-256 prefixes match the unreceipted run's export |
+| `exports/w8nm-n16-rcpt/` | manifest of the Singular export of W8 -> N- at N = 16, p = 32009 (`export.json`, producing scripts, `qG.txt`, full sha256 of each table); the 235 MB tables are regenerated from it ([w8-n16-azure](w8-n16-azure/README.md)) |
 | [`azure-results/`](working/azure-results/README.md) | the complete work trees of Azure VMs `gororoba-a5-fiber`, `gororoba-a5-fiber-2` and `gororoba-a5-fiber-4`: archive hashes, restore command and the outputs they hold |
 | `*-brief.md`, `greater-picture-*.md`, `final-review-*.md`, `review-*.md` | consultant briefs and answers |
 
