@@ -380,6 +380,21 @@ differs from it only in the `cd_core.py` digest.
 | [2408.08292.md](notes/papers/2408.08292.md) | Jordan, Shutty, Wootters, Zalcman, Schmidhuber, King, Isakov, Khattar and Babbush 2024: decoded quantum interferometry: optimization over F_p reduced to decoding |
 | [quant-ph-0409035.md](notes/papers/quant-ph-0409035.md) | Buhrman and Spalek 2004: quantum walk verification of matrix products in O(n^(5/3)) time over an integral domain |
 | [1103.0842.md](notes/papers/1103.0842.md) | Belovs 2011: span program for the rank problem (query complexity) |
+| [0811.3171.md](notes/papers/0811.3171.md) | Harrow, Hassidim and Lloyd 2009: HHL algorithm, estimating x^dagger M x for a sparse system in poly(log N, kappa) time |
+| [1511.02306.md](notes/papers/1511.02306.md) | Childs, Kothari and Somma 2017: Fourier and Chebyshev series inversion giving poly(log(1/epsilon)) precision for sparse linear systems |
+| [1810.12030.md](notes/papers/1810.12030.md) | van Apeldoorn and Gribling 2018: Omega(n) quantum query lower bound for Simon's problem restricted to linear functions over F_p |
+| [2102.11349.md](notes/papers/2102.11349.md) | Childs, Hung and Li 2021: Omega(n) quantum query bounds for trace, determinant, rank testing and linear systems with matrix-vector product access |
+| [2404.15407.md](notes/papers/2404.15407.md) | Hayakawa, Chen and Hsieh 2026: oriented-simplex quantum walk encoding the combinatorial Laplacian and a projector onto harmonic homology |
+| [2412.12762.md](notes/papers/2412.12762.md) | Daskin 2025: eigenvalue perturbation of linear combinations of permutations under bit-flip and phase-flip errors |
+| [2506.01432.md](notes/papers/2506.01432.md) | Nghiem 2026: block-encoded Laplacians, Betti number estimation and homology tracking and testing for quantum topological data analysis |
+| [2508.21667.md](notes/papers/2508.21667.md) | Setty 2026: coherent-permutation index mapping for sparse block encodings and IBM-backend circuit-depth analysis |
+| [2603.16492.md](notes/papers/2603.16492.md) | Li, Zhang and Zhang 2026: (11/12) 2^n C-NOT state preparation and a single-ancilla block encoding with alpha equal to the spectral norm |
+| [2605.27430.md](notes/papers/2605.27430.md) | Daskin 2026: phased Birkhoff-von Neumann decomposition cutting LCU terms from O(N^2) to O(N log(N/epsilon)) with alpha equal to 1 |
+| [2609.12777.md](notes/papers/2609.12777.md) | Strelchuk, Subramanian and Wesolowski 2026: planted-clique reduction giving average-case hardness of additive Betti number estimation |
+| [2609.28058.md](notes/papers/2609.28058.md) | Nghiem, Babbush, Zalcman, Berry, Phan, Wei and Hayakawa 2026: Mayer homology (d^N = 0) Betti number estimation and a resource estimate of sixty million Toffoli gates |
+| [2609.28112.md](notes/papers/2609.28112.md) | Nghiem, Berry and Phan 2026: NP-hardness of p-torsion in clique-complex homology and a one-sided quantum torsion witness |
+| [2610.03686.md](notes/papers/2610.03686.md) | Summer and Jamet 2026: permute-act-unpermute block encoding with 8 S N T gates, separating the support address from the operator label |
+| [2611.03348.md](notes/papers/2611.03348.md) | Rua Munoz, Mahecha Gomez and Pineda Montoya 2025: quaternionic quantum computation is polynomially equivalent to the complex model; octonionic obstructions and mitigations |
 
 ### Algebra and proofs
 
