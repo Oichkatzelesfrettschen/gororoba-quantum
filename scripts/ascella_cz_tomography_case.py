@@ -8,18 +8,26 @@ implements diag(1, 1, 1, -1) / 3, a success probability of 1/9.
 Process tomography uses the four Pauli eigenstates |0>, |1>, |+>, |+i> on each qubit (16 inputs) and the 9 product
 Pauli readouts (3 x 3), 144 settings. Each setting folds its input preparations and its readout rotations into one
 6 x 6 unitary around the CZ block, and photonic_template (hypercomplex_cases) decomposes it into the same
-nearest-neighbor Rx/phase mesh. The service re-transpiles every iteration under its own compilation_seed, so the
-estimate is the average over 144 service-compiled meshes, not one fixed gate. The 144 settings split into two jobs by
-the parity of the input pair, 72 iterations each, in input-major order.
+nearest-neighbor Rx/phase mesh. The service re-transpiles every iteration under its own compilation_seed, so each
+setting is observed through its own compiled mesh. The fit below is the least-squares Choi matrix of the 144 outcome
+tables; it equals the mean of the 144 meshes' processes only when every mesh realizes one process, which the data do
+not test. The 144 settings split into two jobs by the parity of the input pair, 72 iterations each, in input-major
+order.
 
 An event is eligible when it carries exactly two threshold clicks across all twelve returned modes, one on a control
 rail and one on a target rail. The four eligible rail pairs of a setting give that setting's readout outcomes. The
 primary estimator divides each setting's eligible events by the iteration's nb_shots_used (a shot is a detection event
 of at least one photon, so under uniform loss the chance of one is the same for every setting), inverts the 144 x 4
-absolute rates linearly onto the 16 x 16 Choi matrix, projects onto the nearest positive matrix and reports
-F = <Phi_CZ| J |Phi_CZ> / (4 Tr J), the process fidelity of the trace-non-increasing postselected map, and the average
-gate fidelity (4 F + 1) / 5, with a bootstrap interval whose seed is a value of a retained QRNG draw. The conditional
-reconstruction (per-setting normalization, nearest CPTP map) stays as a descriptive companion.
+absolute rates linearly onto the 16 x 16 Choi matrix and reports, for the unprojected fit, F = <Phi_CZ| J |Phi_CZ> /
+(4 Tr J), the process fidelity of the trace-non-increasing postselected map, and (4 F + 1) / 5, the success-weighted
+Haar average of that map's conditional fidelity (the output key keeps the name average_gate_fidelity that the
+preregistered cases.json fixes). Each carries a bootstrap interval whose seed is a value of a retained QRNG draw. The
+fidelity of the nearest positive matrix of the same trace and the conditional reconstruction (per-setting
+normalization, nearest CPTP map) stay as descriptive companions.
+
+The absolute rates assume one chance of at least one click per attempt for every setting, and pooling the two jobs
+assumes one device state across both. The data verify neither: the pooling record compares the plan reads and the
+submission gap, and `decided` states that those tolerances held.
 
 --check rebuilds both jobs in memory and compares them with the retained files, proves the CZ block and the folded
 settings by permanents and by Perceval's SLOS backend, binds every iteration through qd_platform.template_experiment,
@@ -88,7 +96,8 @@ SEED_RULE = (
 # Per-iteration budgets of one job (docs/design/ascella-cz-process-tomography-case.md, written case).
 SAMPLES_PER_ITERATION = 4000
 # max_shots per iteration of each job: the largest Perceval estimate of the job's settings (shot-estimate.json) times
-# SHOT_MARGIN, rounded up to SHOT_QUANTUM. A job bills its largest iteration's max_shots.
+# SHOT_MARGIN, rounded up to SHOT_QUANTUM. A job bills the smaller of its shots used and its largest iteration's
+# max_shots (docs/runbooks/quandela-credit-optimization.md), so that cap bounds the charge.
 JOB_SHOTS = {"job-00": 400000, "job-01": 1600000}
 SHOT_MARGIN = 1.25
 SHOT_QUANTUM = 100000
@@ -573,7 +582,10 @@ def process_fidelity(choi: np.ndarray) -> float:
     return float(np.real(vector.conj() @ choi @ vector) / 16)
 
 
-def average_gate_fidelity(fidelity: float) -> float:
+def success_weighted_average_fidelity(fidelity: float) -> float:
+    """(d F + 1) / (d + 1) at d = 4: the Haar average of a trace-decreasing map's conditional fidelity, weighted by
+    the success probability of each input. The unweighted Haar average of the conditional fidelity is a different,
+    nonlinear quantity; the two agree for a trace-preserving map."""
     return (4 * fidelity + 1) / 5
 
 
@@ -583,7 +595,7 @@ def estimate(frequencies: np.ndarray) -> dict[str, Any]:
     fidelity = process_fidelity(projected)
     return {
         "process_fidelity": fidelity,
-        "average_gate_fidelity": average_gate_fidelity(fidelity),
+        "average_gate_fidelity": success_weighted_average_fidelity(fidelity),
         "linear_inversion_fidelity": process_fidelity(raw),
         "choi": projected,
     }
@@ -636,7 +648,7 @@ def estimate_rates(rates: np.ndarray) -> dict[str, Any]:
     values = np.linalg.eigvalsh((raw + raw.conj().T) / 2)
     return {
         "process_fidelity": fidelity,
-        "average_gate_fidelity": average_gate_fidelity(fidelity),
+        "average_gate_fidelity": success_weighted_average_fidelity(fidelity),
         "projected_process_fidelity": trace_normalized_fidelity(projected),
         "min_eigenvalue_over_trace": float(values[0] / np.real(np.trace(raw))),
         "choi": raw,
@@ -699,7 +711,9 @@ def tomography(
     batch = resampled_rates(eligible, samples, shots, scale, generator, replicates)
     fidelities = [float(f) for f in batch_fidelity(batch)]
     process = intervals(point["process_fidelity"], fidelities, BOOTSTRAP_LEVEL)
-    gate = intervals(point["average_gate_fidelity"], [average_gate_fidelity(f) for f in fidelities], BOOTSTRAP_LEVEL)
+    gate = intervals(
+        point["average_gate_fidelity"], [success_weighted_average_fidelity(f) for f in fidelities], BOOTSTRAP_LEVEL
+    )
     out: dict[str, Any] = {
         "process_fidelity": point["process_fidelity"],
         "process_fidelity_interval": process[INTERVAL_KIND],

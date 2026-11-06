@@ -53,9 +53,13 @@ sent, and each job waits for the owner's approval of this case.
 ## Compilation seeds and the compiled object
 
 The service re-transpiles every circuit ([strategy.md](../notes/quandela/strategy.md), "The server re-transpiles every
-circuit"), so each setting is compiled into its own mesh under its own `compilation_seed`. The measured object is the
-service-compiled average gate: the mean of the process over 144 meshes, not one fixed physical gate. Preparation,
-readout and gate errors do not separate, because each compiled mesh carries all three.
+circuit"), so each setting is compiled into its own mesh under its own `compilation_seed`. The estimator below fits one Choi
+matrix to the 144 outcome tables, each taken through its own compiled mesh. When every mesh realizes one process, the
+fit is that process. When the meshes differ, the least-squares fit projects the stacked mesh-specific tables onto one
+Choi matrix and need not equal the mean of the meshes' processes: with the ideal CZ in 143 settings and the identity in
+setting `in-++-YY`, the arithmetic-mean fidelity is 0.9948 and the fit reads 0.9375. The fit therefore describes this
+set of 144 settings and compilations. Preparation, readout and gate errors do not separate, because each compiled mesh
+carries all three.
 
 Every compilation seed and the bootstrap seed come from one ANU QRNG draw,
 [draw-2026-10-31T034409Z.json](../evidence/anu_qrng/draw-2026-10-31T034409Z.json) (200 uint16 values). The rule is
@@ -89,12 +93,22 @@ same for all 144 settings (the model gives 0.1147 for every setting at the live 
 iteration's `nb_shots_used` is therefore an absolute rate, proportional to the probability that the postselected gate
 succeeds with that outcome.
 
+The case assumes that click chance is common to all settings, and the data cannot verify it. A setting-dependent click
+probability (mode-dependent detector efficiency, light the compiled mesh sends outside the window) rescales that
+setting's four rates, and the fit absorbs the rescaling into the process. Rescaling the rates of the ideal-CZ setting
+`in-++-YY` by 0.90 moves the fitted fidelity from 1 to 0.99375, and rescaling `in-00-XX` by 0.90 raises it to 1.0026,
+so the unprojected fidelity is not bounded by 1.
+
 1. **Rates.** Each iteration gives four absolute rates, its eligible events per outcome over `nb_shots_used`.
 2. **Linear inversion.** A least-squares inversion (unweighted) maps the 144 x 4 rates to the 16 x 16 Choi matrix
    J = sum_ij |i><j| x Lambda(|i><j|). The postselected gate succeeds with an input-dependent probability, so J is
    trace non-increasing and keeps its trace, the mean eligible rate.
-3. **Fidelity.** F_pro = <Phi_CZ| J |Phi_CZ> / (4 Tr J) and F_avg = (4 F_pro + 1) / 5. Both the numerator and the trace
-   are linear in the rates, so F_pro is a ratio of two linear functionals and carries no projection bias.
+3. **Fidelity.** F_pro = <Phi_CZ| J |Phi_CZ> / (4 Tr J) and F_sw = (4 F_pro + 1) / 5. Both the numerator and the trace
+   are linear in the rates, so F_pro is a ratio of two linear functionals and carries no projection bias. F_sw is the
+   Haar average of the conditional fidelity weighted by each input's success probability; it equals the average gate
+   fidelity for a trace-preserving map, while for a trace-decreasing map the unweighted Haar average is a different,
+   nonlinear quantity (for the filter diag(1, 0, 0, 0): 0.25 against F_sw = 0.4). The analysis keeps the key
+   `average_gate_fidelity` that the frozen `cases.json` names.
 4. **Interval.** The bootstrap resamples every iteration parametrically: its samples multinomially over the four
    eligible outcomes and the rest, and its shots as the samples plus a negative binomial count of failures at the
    observed sample share. It draws 500 replicates from one generator before the estimator maps over them and reports
@@ -123,10 +137,16 @@ pool is preregistered in `cases.json`:
   most 0.3 percentage points, and the two submissions lie at most 12 hours apart. Otherwise the pooled estimate is
   reported as descriptive.
 - A missing setting, or a pair of runs that is not both jobs, leaves the estimate undecided.
+- The tolerances compare plan reads and test no stationarity. The parity split aliases any job effect with input
+  dependence, and neither plan read carries a calibration identifier or a control sensitive to phase, mode-dependent
+  loss, readout or mesh drift. The two plan reads are equal (HOM 87.56 %, g2 1.8 %, transmittance 5.81 %, clock
+  13.33 MHz, dark counts) and the submissions lie 284 s apart; `decided` records that the tolerances held, and
+  cross-job stationarity stays unverified.
 
 **Binding.** `--analyze` binds each returned iteration to the setting that has its echoed `compilation_seed`, one to
-one. It requires each run's `cases.json` to equal the retained case byte for byte and the two runs to be distinct
-jobs. An entry that is missing, malformed or an error (the kinds `qd_platform.result_summary` writes for a cut-short
+one. It requires each run's `cases.json` to equal the retained case byte for byte, the two runs to be distinct
+jobs, and each `results.json` to name the job its `submission.json` records and to carry the sha256 of
+`raw/result.json`. An entry that is missing, malformed or an error (the kinds `qd_platform.result_summary` writes for a cut-short
 job) is counted and skipped without raising.
 
 Perceval 1.3.1 provides `perceval.algorithm.ProcessTomography` and `ProcessTomographyMLE`. Both take a computer
@@ -151,7 +171,7 @@ Per variant the table lists the primary estimator's value at the exact absolute 
 conditional estimator's value beside it, and one synthetic dataset of 4000 samples per iteration sampled under its own
 draw value and analyzed as a device run would be:
 
-| Variant | Estimand F_pro | Conditional | Estimand F_avg | Sampled F_pro | 95 % interval | Sampled F_avg | 95 % interval |
+| Variant | Estimand F_pro | Conditional | Estimand F_sw | Sampled F_pro | 95 % interval | Sampled F_sw | 95 % interval |
 |---|---|---|---|---|---|---|---|
 | indistinguishability only (HOM) | 0.834 | 0.823 | 0.867 | 0.833 | 0.813 to 0.852 | 0.867 | 0.851 to 0.881 |
 | source only (HOM, g2) | 0.823 | 0.812 | 0.858 | 0.821 | 0.802 to 0.841 | 0.857 | 0.841 to 0.872 |
@@ -159,8 +179,8 @@ draw value and analyzed as a device run would be:
 | source, loss and dark counts | 0.786 | 0.783 | 0.829 | 0.768 | 0.749 to 0.788 | 0.815 | 0.799 to 0.831 |
 | g2-corrected overlap, loss and dark counts | 0.826 | 0.821 | 0.861 | 0.832 | 0.812 to 0.854 | 0.866 | 0.849 to 0.883 |
 
-The forecast of record is the source, loss and dark counts variant: 0.786 process fidelity and 0.829 average gate
-fidelity at the live figures, about 99000 eligible events in all (690 per setting on average).
+The forecast of record is the source, loss and dark counts variant: 0.786 process fidelity and 0.829 success-weighted
+average fidelity at the live figures, about 99000 eligible events in all (690 per setting on average).
 - The HOM visibility of 87.54 % alone takes the gate to 0.834; g2 on top takes it to 0.823; loss and dark counts take
   it to 0.786. The two-photon interference in the beam splitters of the gate is as sensitive to distinguishability as
   the HOM test.
@@ -188,8 +208,8 @@ interval, preregistered in `cases.json`.
 
 ## Written acquisition case
 
-**What it measures.** The process fidelity to the ideal CZ and the average gate fidelity of the postselected Ralph CZ
-as qpu:ascella compiles it, over 144 settings, with a bootstrap interval, and how far it falls below the
+**What it measures.** The process fidelity to the ideal CZ and the success-weighted average fidelity of the postselected
+Ralph CZ as qpu:ascella compiles it, over 144 settings, with a bootstrap interval, and how far it falls below the
 source-limited forecast.
 
 **Why simulation cannot answer it.** Local SLOS and Perceval's noise model return the law of the designed unitary at
@@ -218,7 +238,9 @@ splitter that sends them to separate modes with probability 1/9; threshold detec
 click, so job-01's setting in-10-ZZ needs about six times the mean estimate. The forecast expects about 99000
 eligible events in all.
 
-**Credits.** A job bills its largest iteration's `max_shots` ([billing runbook](../runbooks/quandela-credit-optimization.md)).
+**Credits.** A completed job bills 1 credit plus 1e-6 per shot, the shots used capped at its largest iteration's
+`max_shots` ([billing runbook](../runbooks/quandela-credit-optimization.md)). The expected shots of 72 iterations
+(12.4 and 14.5 million) far exceed one iteration's cap, so the charge equals the cap.
 - job-00: 1 + 400000 x 1e-6 = 1.4 credits, expected and ceiling.
 - job-01: 1 + 1600000 x 1e-6 = 2.6 credits, expected and ceiling.
 - Total: 4.0 credits against the 200-credit monthly free grant.
@@ -285,7 +307,7 @@ shot, the connected source modes 0 and 2, and Perceval's estimate within the job
 Quandela token file and network access to `api.cloud.quandela.com`.
 
 **Analysis.** `--analyze` pools both runs under the rules of the estimator section and writes the process fidelity and
-average gate fidelity with their 95 % intervals, the pooling status, the descriptive projected and conditional
+success-weighted average fidelity with their 95 % intervals, the pooling status, the descriptive projected and conditional
 fidelities, the forecast values, the eligible events per setting, the exclusions by cause and the uncounted iterations
 by kind. A pooled estimate needs all 144 settings with eligible events; otherwise the process reads `undecided`. After
 collection the retained runs enter `docs/state/research_state.json` and the strategy run log in the change that
@@ -311,11 +333,24 @@ decided.
 | Quantity | Estimate | 95 % percentile interval |
 |---|---|---|
 | Process fidelity (primary, unprojected) | 0.849 | 0.828 to 0.869 |
-| Average gate fidelity | 0.879 | 0.863 to 0.895 |
+| Success-weighted average fidelity | 0.879 | 0.863 to 0.895 |
 | Projected process fidelity (descriptive) | 0.811 | |
 | Conditional process fidelity (descriptive) | 0.819 | |
 
-The primary estimate lies above every forecast variant, including indistinguishability alone (0.834) and the full
-source, loss and dark-count model (0.786). Under the Perceval model that places the in-situ photon overlap above the
-reported HOM, as the Ascella associator case's in-situ visibility (0.892 at HOM 0.890) and the Belenos suppression
-case's HOM lower bound (0.910 at HOM 0.886) also indicate.
+The point estimate 0.849 lies above every forecast point: indistinguishability alone 0.834, g2-corrected overlap 0.826,
+source only 0.823, source and loss 0.790 and the full source, loss and dark-count model 0.786. The 95 % percentile
+interval, 0.828 to 0.869, lies above the last four points and contains the indistinguishability-only forecast 0.834; the
+interval of the success-weighted average fidelity, 0.863 to 0.895, likewise contains that variant's 0.867. The data
+therefore do not separate the device from the indistinguishability-only forecast, and they give no estimate of an
+in-situ photon overlap above the reported HOM.
+
+## Limits
+
+- The fit is one Choi matrix of 144 mesh-specific outcome tables. It is not the mean process of the 144 compiled
+  meshes (the counterexample under "Compilation seeds and the compiled object").
+- The absolute rates assume that the chance of at least one click per attempt is the same for every setting. The data
+  verify no setting-independent any-click probability.
+- The pooled estimate assumes one device state across both jobs. The data verify cross-job stationarity only through
+  equal plan reads and a 284 s submission gap.
+- The interval covers sampling error under those three assumptions and is silent about their failure. A design that
+  compiles all settings through one common mesh, or per-setting attempt counts, would test them.
