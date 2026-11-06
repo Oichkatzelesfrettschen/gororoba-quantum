@@ -1,0 +1,7 @@
+2026-11-06T05:01:21Z MemAvailable 3793844 kB: stopping largest Singular 2099
+2026-11-06T05:01:23Z iso-p32029-elim exit 0
+2026-11-06T09:09:26Z MemAvailable 3977892 kB: stopping largest Singular 2098
+2026-11-06T09:09:28Z iso-p32009-elim exit 0
+2026-11-06T09:40:07Z iso-p32029-sat exit 124
+2026-11-06T09:40:08Z iso-p32009-sat exit 124
+2026-11-06T09:40:26Z all done

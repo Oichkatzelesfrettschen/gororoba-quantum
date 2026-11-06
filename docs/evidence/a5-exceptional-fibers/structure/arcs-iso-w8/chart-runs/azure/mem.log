@@ -1,0 +1,3052 @@
+2026-11-06T01:40:12Z
+MemAvailable:   84122644 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       00:05 434880 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sing
+   2099       00:05 434956 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sing
+   2100       00:05 177084 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sing
+   2101       00:05 181340 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sing
+2026-11-06T01:41:12Z
+MemAvailable:   80603100 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       01:05 1861216 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       01:05 1856060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       01:05 509200 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sing
+   2101       01:05 525672 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sing
+2026-11-06T01:42:12Z
+MemAvailable:   79307716 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       02:05 2064052 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       02:05 2024156 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       02:05 973500 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sing
+   2101       02:05 988056 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sing
+2026-11-06T01:43:12Z
+MemAvailable:   78712256 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       03:05 2115232 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       03:05 2114528 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       03:05 1187320 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       03:05 1203868 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:44:12Z
+MemAvailable:   77447108 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       04:05 2627032 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       04:05 2613564 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       04:05 1318464 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       04:05 1349344 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:45:12Z
+MemAvailable:   77104776 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       05:05 2705472 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       05:05 2733416 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       05:05 1394888 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       05:05 1398544 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:46:12Z
+MemAvailable:   76819040 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       06:05 2791520 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       06:05 2807200 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       06:05 1468044 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       06:05 1472300 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:47:12Z
+MemAvailable:   76486928 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       07:05 2912024 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       07:05 2913736 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       07:05 1523356 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       07:05 1523516 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:48:12Z
+MemAvailable:   75797808 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       08:05 3358916 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       08:05 3009456 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       08:05 1602880 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       08:05 1595200 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:49:12Z
+MemAvailable:   75267012 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       09:05 3328196 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       09:05 3360260 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       09:05 1697468 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       09:05 1691484 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:50:12Z
+MemAvailable:   75156224 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       10:05 3344580 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       10:05 3327268 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       10:05 1769164 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       10:05 1765228 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:51:13Z
+MemAvailable:   74306448 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       11:05 3668232 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       11:05 3614712 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       11:05 1869556 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       11:05 1867668 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:52:13Z
+MemAvailable:   73842576 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       12:05 3844508 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       12:05 3700392 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       12:05 1978052 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       12:05 1976468 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:53:13Z
+MemAvailable:   73083452 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       13:05 4092356 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       13:05 4048636 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       13:05 2067184 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       13:05 2063200 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:54:13Z
+MemAvailable:   72625708 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       14:05 4241676 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       14:05 4146956 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       14:05 2164964 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       14:05 2163172 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:55:13Z
+MemAvailable:   71654532 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       15:05 4581456 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       15:05 4521640 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       15:05 2289588 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       15:05 2291616 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:56:13Z
+MemAvailable:   70624632 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       16:05 4970152 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       16:05 4921136 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       16:05 2417688 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       16:05 2418800 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:57:13Z
+MemAvailable:   69833548 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       17:05 5294736 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       17:05 5150244 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       17:05 2535412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       17:05 2538252 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:58:13Z
+MemAvailable:   69306732 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       18:05 5425812 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       18:05 5397052 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       18:05 2612676 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       18:05 2614448 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T01:59:13Z
+MemAvailable:   68706780 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       19:05 5686280 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       19:05 5589804 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       19:05 2680840 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       19:05 2687144 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:00:13Z
+MemAvailable:   68208092 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       20:05 5823184 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       20:05 5808276 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       20:05 2751688 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       20:05 2764252 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:01:13Z
+MemAvailable:   66710196 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       21:06 6677828 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       21:06 6278908 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       21:06 2824244 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       21:06 2840788 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:02:13Z
+MemAvailable:   63944716 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       22:06 8072708 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       22:06 7484404 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       22:06 2906176 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       22:06 2906336 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:03:13Z
+MemAvailable:   62707328 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       23:06 8360488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       23:06 8332204 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       23:06 2938960 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       23:06 2985136 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:04:13Z
+MemAvailable:   62136268 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       24:06 8478472 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       24:06 8457676 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       24:06 3013756 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       24:06 3064096 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:05:13Z
+MemAvailable:   61530296 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       25:06 8605872 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       25:06 8557688 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       25:06 3262604 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       25:06 3359044 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:06:13Z
+MemAvailable:   60635568 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       26:06 9017132 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       26:06 8639620 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       26:06 3447796 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       26:06 3576188 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:07:13Z
+MemAvailable:   59491384 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       27:06 9196016 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       27:06 9176316 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       27:06 3713272 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       27:06 3745944 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:08:13Z
+MemAvailable:   59222640 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       28:06 9228184 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2099       28:06 9217644 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2100       28:06 3798256 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       28:06 3856952 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:09:13Z
+MemAvailable:   55948076 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       29:06 11163960 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       29:06 10163688 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       29:06 3937692 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       29:06 4104804 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:10:13Z
+MemAvailable:   51824372 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       30:06 12553272 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       30:06 12422832 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       30:06 4215256 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       30:06 4285076 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:11:13Z
+MemAvailable:   50127120 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       31:06 13291480 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       31:06 13227836 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       31:06 4312872 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       31:06 4344484 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:12:13Z
+MemAvailable:   48989608 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       32:06 13793880 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       32:06 13751368 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       32:06 4360160 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       32:06 4408232 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:13:14Z
+MemAvailable:   47978916 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       33:06 14201456 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       33:06 14196272 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       33:06 4440844 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       33:06 4482352 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:14:14Z
+MemAvailable:   47505616 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       34:06 14363476 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       34:06 14362448 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       34:06 4510492 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       34:06 4562020 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:15:14Z
+MemAvailable:   46822976 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       35:06 14645416 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       35:06 14650680 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       35:06 4566636 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       35:06 4608980 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:16:14Z
+MemAvailable:   46210952 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       36:06 14871192 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       36:06 14907568 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       36:06 4629308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       36:06 4690416 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:17:14Z
+MemAvailable:   45339904 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       37:06 15236292 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       37:06 15247356 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       37:06 4703076 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       37:06 4758520 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:18:14Z
+MemAvailable:   44849968 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       38:06 15411684 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       38:06 15461012 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       38:06 4764508 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       38:06 4808116 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:19:14Z
+MemAvailable:   44484128 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       39:06 15546048 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       39:06 15537928 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       39:06 4815724 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       39:06 4916264 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:20:14Z
+MemAvailable:   43969948 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       40:06 15677108 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       40:06 15728744 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       40:06 4924296 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       40:06 5000248 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:21:14Z
+MemAvailable:   43297248 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       41:06 15899444 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       41:06 16023672 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       41:06 5005728 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       41:06 5069892 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:22:14Z
+MemAvailable:   42812640 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       42:06 16100160 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       42:06 16171136 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       42:06 5075880 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       42:06 5123156 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:23:14Z
+MemAvailable:   42637176 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       43:07 16168736 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       43:07 16169088 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       43:07 5131188 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       43:07 5186656 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:24:14Z
+MemAvailable:   42504268 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       44:07 16169796 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       44:07 16169088 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       44:07 5196736 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       44:07 5248108 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:25:14Z
+MemAvailable:   41913544 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       45:07 16374608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       45:07 16447636 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       45:07 5260240 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       45:07 5297272 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:26:14Z
+MemAvailable:   41196944 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       46:07 16713532 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       46:07 16706196 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       46:07 5311452 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       46:07 5351616 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:27:14Z
+MemAvailable:   41075356 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       47:07 16714596 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       47:07 16713892 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       47:07 5361660 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       47:07 5401748 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:28:14Z
+MemAvailable:   40986192 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       48:07 16704356 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       48:07 16701796 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       48:07 5411828 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       48:07 5462584 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:29:14Z
+MemAvailable:   40844168 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       49:07 16683876 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       49:07 16713892 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       49:07 5478512 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       49:07 5553312 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:30:14Z
+MemAvailable:   40618732 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       50:07 16697596 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       50:07 16772752 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       50:07 5561344 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       50:07 5622948 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:31:14Z
+MemAvailable:   40124200 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       51:07 16857960 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       51:07 16995032 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       51:07 5622788 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       51:07 5678256 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:32:14Z
+MemAvailable:   39871116 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       52:07 16997232 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       52:07 16996528 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       52:07 5686288 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       52:07 5737660 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:33:14Z
+MemAvailable:   39770184 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       53:07 16987208 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       53:07 16976048 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       53:07 5737500 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       53:07 5799104 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:34:14Z
+MemAvailable:   39620204 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       54:07 16999280 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       54:07 16992432 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       54:07 5798944 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       54:07 5860560 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:35:15Z
+MemAvailable:   39523748 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       55:07 16989040 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       55:07 16978296 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       55:07 5860400 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       55:07 5919896 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:36:15Z
+MemAvailable:   39442524 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       56:07 16978728 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       56:07 16969904 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       56:07 5909520 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       56:07 5973212 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:37:15Z
+MemAvailable:   39311324 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       57:07 16978800 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       57:07 16986288 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       57:07 5972332 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       57:07 6034660 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:38:15Z
+MemAvailable:   39197908 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       58:07 16989040 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       58:07 16992432 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       58:07 6022212 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       58:07 6085868 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:39:15Z
+MemAvailable:   38882856 kB
+    PID     ELAPSED   RSS COMMAND
+   2098       59:07 16985964 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099       59:07 17186200 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100       59:07 6085568 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101       59:07 6139128 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:40:15Z
+MemAvailable:   37960176 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:00:07 17429504 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:00:07 17566268 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:00:07 6132728 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:00:07 6184192 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:41:15Z
+MemAvailable:   37415764 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:01:07 17685548 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:01:07 17761404 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:01:07 6173788 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:01:07 6233488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:42:15Z
+MemAvailable:   37055808 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:02:07 17841048 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:02:07 17877384 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:02:07 6220904 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:02:07 6270228 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:43:15Z
+MemAvailable:   36710008 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:03:07 17968216 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:03:07 18004380 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:03:07 6261872 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:03:07 6324856 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:44:15Z
+MemAvailable:   36407156 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:04:08 18083756 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:04:08 18087556 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:04:08 6307224 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:04:08 6382848 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:45:15Z
+MemAvailable:   35371460 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:05:08 18252952 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:05:08 18845204 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:05:08 6363936 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:05:08 6440216 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:46:15Z
+MemAvailable:   33520788 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:06:08 19395688 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:06:08 19439324 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:06:08 6417528 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:06:08 6491420 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:47:15Z
+MemAvailable:   30277564 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:07:08 20848084 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:07:08 21115696 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:07:08 6470776 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:07:08 6542620 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:48:15Z
+MemAvailable:   29302836 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:08:08 21425680 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:08:08 21424976 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:08:08 6511740 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:08:08 6584916 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:49:15Z
+MemAvailable:   28860008 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:09:08 21591624 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:09:08 21607416 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:09:08 6562940 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:09:08 6636588 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:50:15Z
+MemAvailable:   28350448 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:10:08 21823068 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:10:08 21795736 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:10:08 6605528 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:10:08 6677792 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:51:15Z
+MemAvailable:   28182728 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:11:08 21837404 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:11:08 21844892 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:11:08 6655104 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:11:08 6728992 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:52:15Z
+MemAvailable:   27378888 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:12:08 22259716 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:12:08 22150068 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:12:08 6698112 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:12:08 6769236 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:53:15Z
+MemAvailable:   26726584 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:13:08 22486672 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:13:08 22485964 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:13:08 6739072 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:13:08 6819108 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:54:15Z
+MemAvailable:   26211076 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:14:08 22730392 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:14:08 22668244 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:14:08 6788228 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:14:08 6853924 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:55:15Z
+MemAvailable:   25712128 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:15:08 22904492 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:15:08 22903784 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:15:08 6829188 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:15:08 6896700 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:56:16Z
+MemAvailable:   25434732 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:16:08 23023284 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:16:08 22989808 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:16:08 6865340 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:16:08 6940852 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:57:16Z
+MemAvailable:   25057684 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:17:08 23146172 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:17:08 23145464 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:17:08 6909180 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:17:08 6992504 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:58:16Z
+MemAvailable:   24741588 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:18:08 23277260 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:18:08 23251976 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:18:08 6951864 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:18:08 7030504 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T02:59:16Z
+MemAvailable:   24290616 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:19:08 23453532 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:19:08 23434264 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:19:08 7001788 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:19:08 7067744 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:00:16Z
+MemAvailable:   23960628 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:20:08 23570304 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:20:08 23569448 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:20:08 7039484 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:20:08 7104160 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:01:16Z
+MemAvailable:   23698356 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:21:08 23670512 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:21:08 23667756 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:21:08 7075992 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:21:08 7134512 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:02:16Z
+MemAvailable:   23487324 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:22:08 23742204 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:22:08 23741496 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:22:08 7111820 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:22:08 7168892 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:03:16Z
+MemAvailable:   23457248 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:23:08 23714144 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:23:08 23723064 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:23:08 7145416 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:23:08 7202368 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:04:16Z
+MemAvailable:   23193792 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:24:08 23813300 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:24:08 23837764 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:24:08 7180008 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:24:08 7233596 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:05:16Z
+MemAvailable:   23133068 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:25:08 23816264 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:25:08 23829572 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:25:08 7215548 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:25:08 7261016 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:06:16Z
+MemAvailable:   22730376 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:26:09 23980196 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:26:09 23985232 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:26:09 7246428 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:26:09 7310944 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:07:16Z
+MemAvailable:   22327996 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:27:09 24131356 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:27:09 24130648 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:27:09 7289236 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:27:09 7361844 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:08:16Z
+MemAvailable:   22142704 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:28:09 24190752 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:28:09 24192096 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:28:09 7322772 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:28:09 7397096 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:09:16Z
+MemAvailable:   21855272 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:29:09 24291156 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:29:09 24288736 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:29:09 7373972 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:29:09 7419192 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:10:16Z
+MemAvailable:   21486860 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:30:09 24444764 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:30:09 24444060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:30:09 7408792 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:30:09 7451960 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:11:16Z
+MemAvailable:   21250148 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:31:09 24538980 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:31:09 24536224 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:31:09 7435416 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:31:09 7478588 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:12:16Z
+MemAvailable:   20940872 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:32:09 24663916 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:32:09 24663208 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:32:09 7466136 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:32:09 7492924 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:13:16Z
+MemAvailable:   20741736 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:33:09 24749940 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:33:09 24749232 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:33:09 7478424 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:33:09 7517500 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:14:16Z
+MemAvailable:   20490876 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:34:09 24848252 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:34:09 24847544 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:34:09 7505052 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:34:09 7542076 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:15:16Z
+MemAvailable:   20329304 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:35:09 24909692 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:35:09 24908988 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:35:09 7531676 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:35:09 7560516 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:16:16Z
+MemAvailable:   20022976 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:36:09 25032396 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:36:09 25038020 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:36:09 7548064 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:36:09 7603524 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:17:16Z
+MemAvailable:   19827340 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:37:09 25100168 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:37:09 25097504 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:37:09 7586980 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:37:09 7617864 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:18:17Z
+MemAvailable:   19659340 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:38:09 25165704 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:38:09 25165000 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:38:09 7603364 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:38:09 7644492 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:19:17Z
+MemAvailable:   19413008 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:39:09 25274256 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:39:09 25273552 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:39:09 7615656 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:39:09 7658832 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:20:17Z
+MemAvailable:   19259980 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:40:09 25329560 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:40:09 25328852 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:40:09 7644332 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:40:09 7671124 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:21:17Z
+MemAvailable:   19141284 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:41:09 25362328 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:41:09 25361620 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:41:09 7670964 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:41:09 7701852 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:22:17Z
+MemAvailable:   19037916 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:42:09 25409440 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:42:09 25408732 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:42:09 7670968 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:42:09 7718236 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:23:17Z
+MemAvailable:   18883016 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:43:09 25460640 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:43:09 25459932 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:43:09 7701692 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:43:09 7734620 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:24:17Z
+MemAvailable:   18854956 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:44:09 25460640 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:44:09 25455836 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:44:09 7720124 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:44:09 7751048 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:25:17Z
+MemAvailable:   18754104 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:45:09 25503652 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:45:09 25490604 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:45:09 7734460 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:45:09 7765480 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:26:17Z
+MemAvailable:   18630496 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:46:09 25540520 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:46:09 25539812 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:46:09 7750852 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:46:09 7780196 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:27:17Z
+MemAvailable:   18557624 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:47:09 25561000 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:47:09 25564388 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:47:09 7765320 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:47:09 7795316 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:28:17Z
+MemAvailable:   18075896 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:48:10 25817020 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:48:10 25785592 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:48:10 7781704 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:48:10 7773676 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:29:17Z
+MemAvailable:   17561108 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:49:10 26097620 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:49:10 25955964 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:49:10 7800136 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:49:10 7816684 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:30:17Z
+MemAvailable:   17184760 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:50:10 26226656 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:50:10 26162460 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:50:10 7816272 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:50:10 7845380 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:31:17Z
+MemAvailable:   16762592 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:51:10 26380268 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:51:10 26381612 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:51:10 7845220 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:51:10 7861420 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:32:17Z
+MemAvailable:   16749660 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:52:10 26382316 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:52:10 26379564 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:52:10 7845220 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:52:10 7863812 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:33:17Z
+MemAvailable:   16519708 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:53:10 26513400 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:53:10 26453296 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:53:10 7863652 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:53:10 7880196 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:34:17Z
+MemAvailable:   16229336 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:54:10 26638340 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:54:10 26578236 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:54:10 7880036 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:54:10 7896584 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:35:17Z
+MemAvailable:   15997796 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:55:10 26728460 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:55:10 26712680 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:55:10 7896420 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:55:10 7896584 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:36:17Z
+MemAvailable:   15831812 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:56:10 26794004 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:56:10 26793300 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:56:10 7896420 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:56:10 7912968 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:37:17Z
+MemAvailable:   15666872 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:57:10 26857496 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:57:10 26854740 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:57:10 7912808 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:57:10 7931400 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:38:17Z
+MemAvailable:   15506876 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:58:10 26920992 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:58:10 26920284 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:58:10 7931240 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:58:10 7944540 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:39:17Z
+MemAvailable:   15369612 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    01:59:10 26982436 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    01:59:10 26981728 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    01:59:10 7947624 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    01:59:10 7947784 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:40:18Z
+MemAvailable:   15339088 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:00:10 26982436 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:00:10 26981728 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:00:10 7947624 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:00:10 7972376 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:41:18Z
+MemAvailable:   14728332 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:01:10 27268368 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:01:10 27267216 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:01:10 7982456 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:01:10 7982616 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:42:18Z
+MemAvailable:   14611112 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:02:10 27297912 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:02:10 27297208 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:02:10 7982456 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:02:10 8035884 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:43:18Z
+MemAvailable:   14332596 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:03:10 27312256 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:03:10 27311548 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:03:10 8078816 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:03:10 8185392 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:44:18Z
+MemAvailable:   13891112 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:04:10 27408516 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:04:10 27415996 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:04:10 8215992 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:04:10 8295092 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:45:18Z
+MemAvailable:   12798376 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:05:10 27867300 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:05:10 27864544 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:05:10 8306068 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:05:10 8388168 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:46:18Z
+MemAvailable:   12466568 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:06:10 27947176 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:06:10 27936228 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:06:10 8404396 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:06:10 8473536 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:47:18Z
+MemAvailable:   12253156 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:07:10 27979948 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:07:10 27979240 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:07:10 8488376 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:07:10 8524892 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:48:18Z
+MemAvailable:   12149308 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:08:10 27994284 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:08:10 27993576 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:08:10 8524868 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:08:10 8560676 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:49:18Z
+MemAvailable:   11727188 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:09:10 28174524 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:09:10 28173816 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:09:10 8560516 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:09:10 8597084 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:50:18Z
+MemAvailable:   11535352 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:10:11 28158140 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:10:11 28173816 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:10:11 8596924 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:10:11 8762980 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:51:18Z
+MemAvailable:   11254160 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:11:11 28176572 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:11:11 28151288 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:11:11 8762816 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:11:11 8881768 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:52:18Z
+MemAvailable:   11004896 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:12:11 28176572 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:12:11 28175864 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:12:11 8881604 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:12:11 8967784 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:53:18Z
+MemAvailable:   10928808 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:13:11 28166796 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:13:11 28173816 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:13:11 8967624 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:13:11 8990584 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:54:18Z
+MemAvailable:   10859840 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:14:11 28174524 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:14:11 28175864 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:14:11 8981876 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:14:11 9027248 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:55:18Z
+MemAvailable:   10792964 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:15:11 28164284 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:15:11 28175864 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:15:11 9018004 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:15:11 9065168 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:56:18Z
+MemAvailable:   10704932 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:16:11 28176572 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:16:11 28175864 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:16:11 9055692 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:16:11 9102956 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:57:18Z
+MemAvailable:   10642444 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:17:11 28176572 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:17:11 28167672 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:17:11 9094604 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:17:11 9140872 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:58:18Z
+MemAvailable:   10564992 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:18:11 28174524 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:18:11 28175864 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:18:11 9131592 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:18:11 9178736 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T03:59:18Z
+MemAvailable:   10484848 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:19:11 28176572 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:19:11 28173816 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:19:11 9168332 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:19:11 9216012 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:00:18Z
+MemAvailable:   10414172 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:20:11 28156252 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:20:11 28153336 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:20:11 9197008 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:20:11 9295476 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:01:18Z
+MemAvailable:   10304320 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:21:11 28174524 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:21:11 28173816 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:21:11 9234140 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:21:11 9344632 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:02:19Z
+MemAvailable:    9904300 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:22:11 28442824 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:22:11 28173816 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:22:11 9344472 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:22:11 9367940 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:03:19Z
+MemAvailable:    9457740 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:23:11 28505572 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:23:11 28491272 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:23:11 9358488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:23:11 9406084 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:04:19Z
+MemAvailable:    9156904 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:24:11 28651736 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:24:11 28579340 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:24:11 9386452 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:24:11 9442952 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:05:19Z
+MemAvailable:    9017276 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:25:11 28653784 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:25:11 28651032 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:25:11 9424356 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:25:11 9479824 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:06:19Z
+MemAvailable:    8814480 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:26:11 28799200 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:26:11 28640792 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:26:11 9461228 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:26:11 9517252 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:07:19Z
+MemAvailable:    8518476 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:27:11 28864748 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:27:11 28798496 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:27:11 9498416 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:27:11 9540244 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:08:19Z
+MemAvailable:    8308532 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:28:11 28938476 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:28:11 28868136 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:28:11 9526772 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:28:11 9583264 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:09:19Z
+MemAvailable:    8155644 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:29:11 28934380 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:29:11 28937772 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:29:11 9569784 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:29:11 9617852 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:10:19Z
+MemAvailable:    8025356 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:30:11 29010168 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:30:11 28938832 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:30:11 9596408 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:30:11 9655900 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:11:19Z
+MemAvailable:    7916440 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:31:11 28988608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:31:11 29007412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:31:11 9627128 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:31:11 9688280 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:12:19Z
+MemAvailable:    7804560 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:32:12 29010168 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:32:12 28997944 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:32:12 9654100 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:32:12 9758372 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:13:19Z
+MemAvailable:    7685972 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:33:12 29010168 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:33:12 29007412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:33:12 9746696 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:33:12 9774760 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:14:19Z
+MemAvailable:    7647852 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:34:12 29010168 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:34:12 29007412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:34:12 9758212 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:34:12 9800088 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:15:19Z
+MemAvailable:    7657860 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:35:12 28999460 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:35:12 28945972 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:35:12 9782796 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:35:12 9832124 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:16:19Z
+MemAvailable:    7546872 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:36:12 29008120 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:36:12 29006264 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:36:12 9807380 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:36:12 9855404 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:17:19Z
+MemAvailable:    7474548 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:37:12 29008120 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:37:12 29007412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:37:12 9838600 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:37:12 9890236 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:18:19Z
+MemAvailable:    7410508 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:38:12 29008120 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:38:12 29007412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:38:12 9862688 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:38:12 9926352 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:19:19Z
+MemAvailable:    7380204 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:39:12 28989688 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:39:12 28997028 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:39:12 9897508 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:39:12 9952980 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:20:19Z
+MemAvailable:    7289796 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:40:12 29008120 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:40:12 29007412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:40:12 9926192 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:40:12 9986308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+2026-11-06T04:21:19Z
+MemAvailable:    7222632 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:41:12 29008120 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:41:12 29007412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:41:12 9961768 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:41:12 10012380 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:22:19Z
+MemAvailable:    7179232 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:42:12 29008120 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:42:12 28999220 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:42:12 9986816 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Sin
+   2101    02:42:12 10042556 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:23:19Z
+MemAvailable:    7121212 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:43:12 29006776 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:43:12 29007412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:43:12 10016320 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:43:12 10058592 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:24:20Z
+MemAvailable:    7065588 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:44:12 29008120 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:44:12 29007412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:44:12 10042320 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:44:12 10088488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:25:20Z
+MemAvailable:    7035092 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:45:12 29008120 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:45:12 29004388 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:45:12 10057540 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:45:12 10114152 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:26:20Z
+MemAvailable:    6966432 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:46:12 29008120 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:46:12 29007412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:46:12 10085948 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:46:12 10149648 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:27:20Z
+MemAvailable:    6933952 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:47:12 29008120 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:47:12 28989712 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:47:12 10112028 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:47:12 10173408 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:28:20Z
+MemAvailable:    6480376 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:48:12 29247756 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:48:12 29138496 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:48:12 10145188 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:48:12 10193824 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:29:20Z
+MemAvailable:    6111496 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:49:12 29384988 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:49:12 29304396 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:49:12 10165864 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:49:12 10221308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:30:20Z
+MemAvailable:    6144956 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:50:12 29327644 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:50:12 29324888 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:50:12 10186352 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:50:12 10225152 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:31:20Z
+MemAvailable:    5754368 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:51:12 29458716 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:51:12 29458012 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:51:12 10204784 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:51:12 10315540 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:32:20Z
+MemAvailable:    5700812 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:52:12 29464860 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:52:12 29400668 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:52:12 10221168 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:52:12 10417944 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:33:20Z
+MemAvailable:    5701360 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:53:12 29401372 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:53:12 29390428 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:53:12 10270324 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:53:12 10445084 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:34:20Z
+MemAvailable:    5394020 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:54:13 29464860 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:54:13 29462108 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:54:13 10407544 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:54:13 10475288 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:35:20Z
+MemAvailable:    5417860 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:55:13 29400216 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:55:13 29464156 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:55:13 10423928 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:55:13 10502744 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:36:20Z
+MemAvailable:    5389012 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:56:13 29452576 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:56:13 29392476 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:56:13 10454684 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:56:13 10522400 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:37:20Z
+MemAvailable:    5219916 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:57:13 29473056 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:57:13 29470300 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:57:13 10483836 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:57:13 10553124 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:38:20Z
+MemAvailable:    5116680 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:58:13 29524260 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:58:13 29465660 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:58:13 10514044 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:58:13 10582252 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:39:20Z
+MemAvailable:    5105572 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    02:59:13 29485348 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    02:59:13 29484644 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    02:59:13 10542728 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    02:59:13 10608308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:40:20Z
+MemAvailable:    5073152 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:00:13 29473060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:00:13 29472356 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:00:13 10562336 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:00:13 10645308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:41:20Z
+MemAvailable:    5009296 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:01:13 29473060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:01:13 29470308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:01:13 10589840 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:01:13 10678080 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:42:20Z
+MemAvailable:    4942456 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:02:13 29471012 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:02:13 29464164 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:02:13 10634900 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:02:13 10698564 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:43:20Z
+MemAvailable:    4855256 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:03:13 29471012 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:03:13 29470308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:03:13 10667680 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:03:13 10760012 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:44:20Z
+MemAvailable:    4807572 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:04:13 29473060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:04:13 29472356 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:04:13 10686116 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:04:13 10764108 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:45:20Z
+MemAvailable:    4778952 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:05:13 29462780 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:05:13 29470308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:05:13 10741416 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:05:13 10764108 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:46:21Z
+MemAvailable:    4706440 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:06:13 29473060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:06:13 29472356 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:06:13 10763948 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:06:13 10800972 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:47:21Z
+MemAvailable:    4720612 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:07:13 29473060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:07:13 29453924 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:07:13 10763948 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:07:13 10813260 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:48:21Z
+MemAvailable:    4663548 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:08:13 29471012 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:08:13 29470308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:08:13 10800812 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:08:13 10813260 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:49:21Z
+MemAvailable:    4644748 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:09:13 29471012 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:09:13 29472356 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:09:13 10813100 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:09:13 10813260 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:50:21Z
+MemAvailable:    4618464 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:10:13 29473060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:10:13 29462116 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:10:13 10813100 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:10:13 10849092 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:51:21Z
+MemAvailable:    4609180 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:11:13 29462500 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:11:13 29470308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:11:13 10813100 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:11:13 10858320 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:52:21Z
+MemAvailable:    4558300 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:12:13 29473060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:12:13 29470308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:12:13 10847916 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:12:13 10858320 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:53:21Z
+MemAvailable:    4529616 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:13:13 29471012 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:13:13 29470308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:13:13 10856324 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:13:13 10872656 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:54:21Z
+MemAvailable:    4525684 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:14:13 29473060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:14:13 29472356 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:14:13 10858104 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:14:13 10874708 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:55:21Z
+MemAvailable:    4519788 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:15:13 29460772 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:15:13 29468684 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:15:13 10858104 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:15:13 10884948 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:56:21Z
+MemAvailable:    4474392 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:16:14 29471012 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:16:14 29470308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:16:14 10872492 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:16:14 10907480 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:57:21Z
+MemAvailable:    4436732 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:17:14 29471012 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:17:14 29470308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:17:14 10884788 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:17:14 10932060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:58:21Z
+MemAvailable:    4416188 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:18:14 29450532 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:18:14 29470308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:18:14 10907320 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:18:14 10954596 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T04:59:21Z
+MemAvailable:    4349832 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:19:14 29473060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:19:14 29470308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:19:14 10931900 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:19:14 10975080 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:00:21Z
+MemAvailable:    4124224 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:20:14 29557100 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:20:14 29587116 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:20:14 10954432 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:20:14 10985324 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:01:21Z
+MemAvailable:    3793844 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:21:14 29694340 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2099    03:21:14 29732552 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:21:14 10974920 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:21:14 11009900 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:02:21Z
+MemAvailable:   33438084 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:22:14 29792660 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:22:14 10999500 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:22:14 11030388 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:03:21Z
+MemAvailable:   33294860 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:23:14 29882784 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:23:14 11022032 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:23:14 11050872 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:04:21Z
+MemAvailable:   33206488 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:24:14 29938092 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:24:14 11044560 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:24:14 11075452 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:05:21Z
+MemAvailable:   33143368 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:25:14 29962668 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:25:14 11060952 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:25:14 11093888 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:06:21Z
+MemAvailable:   33081276 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:26:14 29983152 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:26:14 11089632 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:26:14 11108224 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:07:21Z
+MemAvailable:   33013604 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:27:14 29985200 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:27:14 11108064 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:27:14 11141000 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:08:21Z
+MemAvailable:   32963528 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:28:14 30000096 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:28:14 11140836 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:28:14 11153288 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:09:21Z
+MemAvailable:   32932788 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:29:14 30005680 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:29:14 11153124 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:29:14 11165576 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:10:21Z
+MemAvailable:   32855640 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:30:14 30038452 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:30:14 11165416 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:30:14 11200400 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:11:21Z
+MemAvailable:   32809296 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:31:14 30060984 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:31:14 11175660 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:31:14 11214744 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:12:21Z
+MemAvailable:   32757328 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:32:14 30075320 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:32:14 11200416 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:32:14 11230880 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:13:21Z
+MemAvailable:   32724060 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:33:14 30052792 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:33:14 11216628 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:33:14 11245468 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:14:21Z
+MemAvailable:   32671176 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:34:14 30089656 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:34:14 11228916 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:34:14 11255708 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:15:21Z
+MemAvailable:   32670700 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:35:14 30087608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:35:14 11230964 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:35:14 11272100 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:16:21Z
+MemAvailable:   32625372 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:36:14 30103996 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:36:14 11245304 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:36:14 11286436 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:17:22Z
+MemAvailable:   32602112 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:37:14 30082816 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:37:14 11259644 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:37:14 11298728 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:18:22Z
+MemAvailable:   31132680 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:38:14 31529552 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:38:14 11273988 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:38:14 11319216 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:19:22Z
+MemAvailable:   30987900 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:39:14 31649476 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:39:14 11286276 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:39:14 11319216 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:20:22Z
+MemAvailable:   30881116 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:40:14 31744620 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:40:14 11287820 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:40:14 11335600 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:21:22Z
+MemAvailable:   30765904 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:41:14 31824496 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:41:14 11302660 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:41:14 11349936 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:22:22Z
+MemAvailable:   30739992 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:42:14 31830644 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:42:14 11319052 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:42:14 11364272 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:23:22Z
+MemAvailable:   30714568 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:43:14 31830644 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:43:14 11331340 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:43:14 11378608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:24:22Z
+MemAvailable:   30678844 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:44:14 31851128 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:44:14 11333388 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:44:14 11378608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:25:22Z
+MemAvailable:   30591348 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:45:14 31918712 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:45:14 11349776 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:45:14 11394996 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:26:22Z
+MemAvailable:   30591544 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:46:14 31916664 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:46:14 11349776 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:46:14 11409332 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:27:22Z
+MemAvailable:   30627276 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:47:14 31838840 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:47:14 11364112 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:47:14 11425716 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:28:22Z
+MemAvailable:   30487548 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:48:14 31949436 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:48:14 11378448 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:48:14 11440056 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:29:22Z
+MemAvailable:   30415796 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:49:14 32008828 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:49:14 11378448 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:49:14 11441928 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:30:22Z
+MemAvailable:   30452784 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:50:14 31935544 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:50:14 11394832 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:50:14 11454392 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:31:22Z
+MemAvailable:   28070804 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:51:14 34298880 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:51:14 11409168 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:51:14 11470784 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:32:22Z
+MemAvailable:   27978456 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:52:14 34362372 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:52:14 11409168 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:52:14 11491268 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:33:22Z
+MemAvailable:   27571512 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:53:14 34636220 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:53:14 11425552 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:53:14 11608640 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:34:22Z
+MemAvailable:   27417756 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:54:14 34702428 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:54:14 11439896 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:54:14 11683092 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:35:22Z
+MemAvailable:   26676448 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:55:14 35409048 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:55:14 11439896 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:55:14 11726296 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:36:22Z
+MemAvailable:   25576288 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:56:14 36463272 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:56:14 11454232 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:56:14 11755264 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:37:22Z
+MemAvailable:   24769152 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:57:14 37238128 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:57:14 11454232 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:57:14 11784196 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:38:22Z
+MemAvailable:   24488968 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:58:14 37434748 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:58:14 11470620 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:58:14 11835404 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:39:22Z
+MemAvailable:   23989940 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    03:59:14 37922208 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    03:59:14 11451620 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    03:59:14 11866132 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:40:22Z
+MemAvailable:   23772416 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:00:14 37997988 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:00:14 11557724 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:00:14 11896860 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:41:22Z
+MemAvailable:   23679664 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:01:15 37942692 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:01:15 11646788 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:01:15 11964452 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:42:22Z
+MemAvailable:   23695808 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:02:15 37861332 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:02:15 11693904 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:02:15 11964452 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:43:22Z
+MemAvailable:   23570520 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:03:15 37930404 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:03:15 11726676 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:03:15 12007460 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:44:22Z
+MemAvailable:   23201924 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:04:15 38225332 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:04:15 11753712 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:04:15 12050468 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:45:22Z
+MemAvailable:   22322516 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:05:15 39071240 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:05:15 11775304 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:05:15 12052516 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:46:22Z
+MemAvailable:   22205984 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:06:15 39095828 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:06:15 11796328 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:06:15 12093484 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:47:22Z
+MemAvailable:   22033144 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:07:15 39206420 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:07:15 11847532 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:07:15 12134444 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:48:22Z
+MemAvailable:   22057116 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:08:15 39161364 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:08:15 11874160 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:08:15 12136492 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:49:22Z
+MemAvailable:   22000120 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:09:15 39163412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:09:15 11896700 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:09:15 12146736 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:50:22Z
+MemAvailable:   21710144 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:10:15 39382568 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:10:15 11964288 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:10:15 12171316 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:51:22Z
+MemAvailable:   21617784 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:11:15 39448104 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:11:15 11964288 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:11:15 12202048 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:52:22Z
+MemAvailable:   21548400 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:12:15 39450152 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:12:15 12007296 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:12:15 12232772 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:53:22Z
+MemAvailable:   21646712 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:13:15 39326308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:13:15 12007296 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:13:15 12259400 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:54:22Z
+MemAvailable:   21133112 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:14:15 39767704 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:14:15 12051752 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:14:15 12283988 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:55:22Z
+MemAvailable:   21058336 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:15:15 39761560 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:15:15 12052356 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:15:15 12351572 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:56:22Z
+MemAvailable:   21023024 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:16:15 39763608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:16:15 12093320 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:16:15 12351572 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:57:22Z
+MemAvailable:   21031216 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:17:15 39749272 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:17:15 12093320 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:17:15 12351572 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:58:22Z
+MemAvailable:   20964104 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:18:15 39761560 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:18:15 12136328 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:18:15 12365912 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T05:59:22Z
+MemAvailable:   20681244 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:19:15 40013488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:19:15 12136328 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:19:15 12378200 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:00:22Z
+MemAvailable:   20518368 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:20:15 40176008 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:20:15 12146576 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:20:15 12398688 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:01:22Z
+MemAvailable:   20338848 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:21:15 40298180 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:21:15 12160916 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:21:15 12433508 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:02:22Z
+MemAvailable:   20248580 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:22:15 40275652 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:22:15 12173208 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:22:15 12527724 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:03:22Z
+MemAvailable:   20224104 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:23:15 40218308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:23:15 12212124 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:23:15 12574828 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:04:22Z
+MemAvailable:   20105280 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:24:15 40296132 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:24:15 12232608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:24:15 12574828 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:05:22Z
+MemAvailable:   20111588 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:25:15 40255336 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:25:15 12263336 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:25:15 12574828 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:06:22Z
+MemAvailable:   20075040 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:26:15 40277704 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:26:15 12283824 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:26:15 12574828 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:07:22Z
+MemAvailable:   20001852 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:27:15 40285896 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:27:15 12351412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:27:15 12574828 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:08:22Z
+MemAvailable:   20068668 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:28:15 40281800 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:28:15 12351412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:28:15 12513388 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:09:22Z
+MemAvailable:   19953168 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:29:15 40367816 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:29:15 12351412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:29:15 12537964 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:10:22Z
+MemAvailable:   19941080 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:30:15 40369864 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:30:15 12351412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:30:15 12550256 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:11:23Z
+MemAvailable:   19807992 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:31:15 40363720 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:31:15 12365752 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:31:15 12673140 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:12:23Z
+MemAvailable:   19855952 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:32:15 40296136 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:32:15 12378040 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:32:15 12673140 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:13:23Z
+MemAvailable:   19909612 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:33:15 40229412 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:33:15 12398524 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:33:15 12673140 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:14:23Z
+MemAvailable:   19321392 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:34:15 40802020 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:34:15 12419068 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:34:15 12673140 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:15:23Z
+MemAvailable:   19293528 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:35:15 40810216 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:35:15 12433344 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:35:15 12673140 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:16:23Z
+MemAvailable:   19122944 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:36:15 40879852 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:36:15 12537800 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:36:15 12673140 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:17:23Z
+MemAvailable:   19129828 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:37:15 40879852 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:37:15 12574664 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:37:15 12626040 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:18:23Z
+MemAvailable:   19077688 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:38:15 40918768 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:38:15 12574664 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:38:15 12648568 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:19:23Z
+MemAvailable:   19048028 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:39:15 40918768 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:39:15 12574664 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:39:15 12660856 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:20:23Z
+MemAvailable:   19035164 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:40:15 40918768 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:40:15 12574664 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:40:15 12685440 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:21:23Z
+MemAvailable:   18885240 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:41:15 40914672 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:41:15 12574664 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:41:15 12832904 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:22:23Z
+MemAvailable:   18887236 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:42:15 40918768 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:42:15 12574664 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:42:15 12832904 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:23:23Z
+MemAvailable:   18919584 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:43:15 40922864 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:43:15 12513224 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:43:15 12832904 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:24:23Z
+MemAvailable:   18915896 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:44:15 40918768 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:44:15 12537800 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:44:15 12832904 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:25:23Z
+MemAvailable:   18994708 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:45:15 40826608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:45:15 12550096 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:45:15 12832904 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:26:23Z
+MemAvailable:   18866044 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:46:15 40821700 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:46:15 12672980 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:46:15 12832904 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:27:23Z
+MemAvailable:   18960692 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:47:15 40820464 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:47:15 12672980 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:47:15 12748936 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:28:23Z
+MemAvailable:   18976728 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:48:15 40789744 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:48:15 12672980 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:48:15 12773516 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:29:23Z
+MemAvailable:   18909736 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:49:15 40843516 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:49:15 12672980 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:49:15 12783760 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:30:23Z
+MemAvailable:   18870336 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:50:15 40845040 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:50:15 12672980 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:50:15 12808340 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:31:23Z
+MemAvailable:   18794104 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:51:15 40914672 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:51:15 12672980 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:51:15 12820632 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:32:23Z
+MemAvailable:   18774464 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:52:15 40914672 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:52:15 12672980 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:52:15 12843164 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:33:23Z
+MemAvailable:   18835804 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:53:15 40908528 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:53:15 12625880 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:53:15 12855456 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:34:23Z
+MemAvailable:   18752724 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:54:15 40845040 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:54:15 12638168 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:54:15 12986536 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:35:23Z
+MemAvailable:   18732432 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:55:15 40845040 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:55:15 12648408 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:55:15 12990632 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:36:23Z
+MemAvailable:   18735632 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:56:16 40816368 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:56:16 12672984 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:56:16 12990632 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:37:23Z
+MemAvailable:   18621916 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:57:16 40924912 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:57:16 12685276 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:57:16 12990632 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:38:23Z
+MemAvailable:   18198232 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:58:16 41182972 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:58:16 12830692 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:58:16 12990632 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:39:23Z
+MemAvailable:   18175440 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    04:59:16 41180924 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    04:59:16 12830692 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    04:59:16 12990632 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:40:23Z
+MemAvailable:   18050668 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:00:16 41262848 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:00:16 12830692 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:00:16 13054124 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:41:23Z
+MemAvailable:   18066496 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:01:16 41252608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:01:16 12830692 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:01:16 13054124 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:42:23Z
+MemAvailable:   18055640 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:02:16 41260800 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:02:16 12830692 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:02:16 13054124 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:43:23Z
+MemAvailable:   18062332 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:03:16 41260800 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:03:16 12830692 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:03:16 13054124 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:44:23Z
+MemAvailable:   18054248 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:04:16 41256704 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:04:16 12830692 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:04:16 13054124 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:45:23Z
+MemAvailable:   18151336 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:05:16 41262848 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:05:16 12753332 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:05:16 13054124 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:46:23Z
+MemAvailable:   18135028 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:06:16 41256704 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:06:16 12773352 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:06:16 13054124 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:47:23Z
+MemAvailable:   18103840 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:07:16 41246464 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:07:16 12783596 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:07:16 13097132 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:48:23Z
+MemAvailable:   18096004 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:08:16 41232128 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:08:16 12795884 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:08:16 13101228 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:49:23Z
+MemAvailable:   17884336 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:09:16 41219840 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:09:16 12820468 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:09:16 13101228 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:50:23Z
+MemAvailable:   17727272 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:10:16 41250560 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:10:16 12832760 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:10:16 13101228 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:51:23Z
+MemAvailable:   18014644 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:11:16 41256704 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:11:16 12843000 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:11:16 13101228 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:52:23Z
+MemAvailable:   17985820 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:12:16 41252608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:12:16 12867580 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:12:16 13101228 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:53:23Z
+MemAvailable:   17860312 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:13:16 41250560 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:13:16 12992516 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:13:16 13101228 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:54:23Z
+MemAvailable:   17797140 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:14:16 41246464 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:14:16 12992516 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:14:16 13170868 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:55:23Z
+MemAvailable:   17943868 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:15:16 41100012 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:15:16 12992516 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:15:16 13170868 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:56:23Z
+MemAvailable:   17848436 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:16:16 41178880 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:16:16 12992516 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:16:16 13170868 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:57:23Z
+MemAvailable:   17799116 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:17:16 41228032 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:17:16 12992516 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:17:16 13170868 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:58:23Z
+MemAvailable:   17946176 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:18:16 41129728 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:18:16 12965892 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:18:16 13170868 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T06:59:23Z
+MemAvailable:   17730192 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:19:16 41252608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:19:16 13053960 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:19:16 13170868 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:00:23Z
+MemAvailable:   17736148 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:20:16 41252608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:20:16 13053960 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:20:16 13170868 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:01:23Z
+MemAvailable:   17803328 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:21:16 41248512 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:21:16 13053960 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:21:16 13109428 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:02:23Z
+MemAvailable:   17833636 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:22:16 41213612 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:22:16 13053960 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:22:16 13109432 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:03:23Z
+MemAvailable:   17834556 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:23:16 41215744 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:23:16 13053960 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:23:16 13134008 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:04:23Z
+MemAvailable:   17797704 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:24:16 41215744 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:24:16 13053960 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:24:16 13146300 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:05:24Z
+MemAvailable:   16595768 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:25:16 42356696 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:25:16 13096968 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:25:16 13168828 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:06:24Z
+MemAvailable:   16331164 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:26:16 42600488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:26:16 13100796 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:26:16 13181116 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:07:24Z
+MemAvailable:   16118788 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:27:16 42790980 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:27:16 13101064 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:27:16 13205696 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:08:24Z
+MemAvailable:   16066156 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:28:16 42829892 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:28:16 13101064 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:28:16 13217992 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:09:24Z
+MemAvailable:   15997280 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:29:16 42879056 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:29:16 13101064 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:29:16 13237628 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:10:24Z
+MemAvailable:   15963092 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:30:16 42905684 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:30:16 13101064 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:30:16 13252816 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:11:24Z
+MemAvailable:   15934948 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:31:16 42915996 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:31:16 13101064 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:31:16 13275388 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:12:24Z
+MemAvailable:   15884280 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:32:16 42897496 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:32:16 13147540 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:32:16 13287632 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:13:24Z
+MemAvailable:   15740188 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:33:16 42965088 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:33:16 13172752 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:33:16 13342940 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:14:24Z
+MemAvailable:   15602408 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:34:16 42961480 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:34:16 13172752 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:34:16 13455584 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:15:24Z
+MemAvailable:   15590524 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:35:16 42977376 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:35:16 13172752 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:35:16 13455584 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:16:24Z
+MemAvailable:   15555132 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:36:16 43016292 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:36:16 13172752 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:36:16 13455584 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:17:24Z
+MemAvailable:   15502096 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:37:16 43067500 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:37:16 13172752 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:37:16 13455584 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:18:24Z
+MemAvailable:   15477348 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:38:16 43125796 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:38:16 13172752 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:38:16 13455584 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:19:24Z
+MemAvailable:   15472020 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:39:16 43165824 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:39:16 13096976 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:39:16 13455584 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:20:24Z
+MemAvailable:   14826260 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:40:16 43872448 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:40:16 13096976 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:40:16 13371616 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:21:24Z
+MemAvailable:   13968744 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:41:16 44744964 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:41:16 13109268 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:41:16 13388000 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:22:24Z
+MemAvailable:   13944724 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:42:16 44763400 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:42:16 13121556 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:42:16 13400292 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:23:24Z
+MemAvailable:   13659472 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:43:16 44996896 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:43:16 13146136 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:43:16 13410532 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:24:24Z
+MemAvailable:   13376600 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:44:16 45121840 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:44:16 13156376 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:44:16 13558000 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:25:24Z
+MemAvailable:   13453672 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:45:16 45060400 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:45:16 13168664 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:45:16 13558000 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:26:24Z
+MemAvailable:   13196580 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:46:16 45306176 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:46:16 13180952 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:46:16 13558000 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:27:24Z
+MemAvailable:   13190676 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:47:16 45281600 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:47:16 13203808 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:47:16 13558000 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:28:24Z
+MemAvailable:   13177992 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:48:16 45281600 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:48:16 13217828 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:48:16 13558000 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:29:24Z
+MemAvailable:   13196576 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:49:16 45228352 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:49:16 13228068 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:49:16 13558000 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:30:24Z
+MemAvailable:   13134004 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:50:17 45277508 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:50:17 13240356 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:50:17 13558000 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:31:24Z
+MemAvailable:   12896148 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:51:17 45470032 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:51:17 13262892 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:51:17 13609200 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:32:24Z
+MemAvailable:   12890944 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:52:17 45467984 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:52:17 13277228 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:52:17 13609200 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:33:24Z
+MemAvailable:   12860040 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:53:17 45478224 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:53:17 13287468 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:53:17 13609200 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:34:24Z
+MemAvailable:   12949572 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:54:17 45390160 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:54:17 13301812 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:54:17 13609200 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:35:24Z
+MemAvailable:   12687780 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:55:17 45484368 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:55:17 13455420 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:55:17 13609200 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:36:24Z
+MemAvailable:   12603876 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:56:17 45566292 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:56:17 13455420 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:56:17 13609200 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:37:24Z
+MemAvailable:   12738124 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:57:17 45492576 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:57:17 13455420 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:57:17 13529328 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:38:24Z
+MemAvailable:   12178168 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:58:17 45935060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:58:17 13455420 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:58:17 13660404 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:39:24Z
+MemAvailable:   12134748 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    05:59:17 45984216 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    05:59:17 13455420 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    05:59:17 13660404 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:40:24Z
+MemAvailable:   12063668 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:00:17 46053852 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:00:17 13455420 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:00:17 13660404 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:41:24Z
+MemAvailable:   12227592 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:01:17 45986268 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:01:17 13363260 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:01:17 13660404 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:42:24Z
+MemAvailable:   12144476 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:02:17 46051804 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:02:17 13375548 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:02:17 13660404 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:43:24Z
+MemAvailable:   12171148 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:03:17 46008796 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:03:17 13387836 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:03:17 13660404 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:44:24Z
+MemAvailable:   12179232 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:04:17 46055900 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:04:17 13406272 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:04:17 13576436 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:45:24Z
+MemAvailable:   12000956 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:05:17 46078428 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:05:17 13553740 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:05:17 13588732 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:46:24Z
+MemAvailable:   11978736 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:06:17 46096860 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:06:17 13555788 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:06:17 13598972 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:47:24Z
+MemAvailable:   11998984 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:07:17 46062044 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:07:17 13555788 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:07:17 13611264 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:48:24Z
+MemAvailable:   11979588 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:08:17 46062044 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:08:17 13555788 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:08:17 13633792 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:49:24Z
+MemAvailable:   11512752 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:09:17 46369536 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:09:17 13555788 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:09:17 13789444 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:50:24Z
+MemAvailable:   11434000 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:10:17 46445260 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:10:17 13555788 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:10:17 13789444 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:51:24Z
+MemAvailable:   11335696 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:11:17 46545420 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:11:17 13555788 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:11:17 13789444 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:52:24Z
+MemAvailable:   11241764 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:12:17 46592524 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:12:17 13609040 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:12:17 13789444 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:53:24Z
+MemAvailable:   11138256 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:13:17 46690840 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:13:17 13609040 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:13:17 13789444 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:54:24Z
+MemAvailable:   11229088 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:14:17 46565892 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:14:17 13609040 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:14:17 13789444 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:55:24Z
+MemAvailable:   11097404 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:15:17 46707964 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:15:17 13609040 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:15:17 13789444 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:56:24Z
+MemAvailable:   11125924 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:16:17 46645784 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:16:17 13609040 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:16:17 13840652 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:57:24Z
+MemAvailable:   10974356 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:17:17 46803484 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:17:17 13609040 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:17:17 13840652 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:58:24Z
+MemAvailable:   10896972 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:18:17 46832164 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:18:17 13660240 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:18:17 13840652 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T07:59:25Z
+MemAvailable:   10858436 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:19:17 46848548 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:19:17 13660240 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:19:17 13840652 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:00:25Z
+MemAvailable:   10920876 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:20:17 46780964 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:20:17 13660240 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:20:17 13840652 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:01:25Z
+MemAvailable:   10993672 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:21:17 46693092 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:21:17 13660240 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:21:17 13840652 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:02:25Z
+MemAvailable:   10841020 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:22:17 46930488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:22:17 13660240 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:22:17 13748492 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:03:25Z
+MemAvailable:   10702988 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:23:17 47078036 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:23:17 13660240 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:23:17 13760780 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:04:25Z
+MemAvailable:   10594680 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:24:17 47162016 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:24:17 13660240 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:24:17 13776704 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:05:25Z
+MemAvailable:   10548984 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:25:17 47268520 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:25:17 13576272 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:25:17 13795604 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:06:25Z
+MemAvailable:   10529392 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:26:17 47270568 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:26:17 13588568 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:26:17 13805848 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:07:25Z
+MemAvailable:   10465568 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:27:17 47315624 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:27:17 13598808 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:27:17 13830424 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:08:25Z
+MemAvailable:   10420780 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:28:17 47327912 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:28:17 13623388 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:28:17 13840668 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:09:25Z
+MemAvailable:   10388624 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:29:17 47338152 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:29:17 13633628 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:29:17 13865248 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:10:25Z
+MemAvailable:   10233592 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:30:17 47338152 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:30:17 13789280 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:30:17 13875488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:11:25Z
+MemAvailable:   10256352 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:31:17 47299240 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:31:17 13789280 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:31:17 13887776 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:12:25Z
+MemAvailable:   10155060 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:32:17 47372972 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:32:17 13789280 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:32:17 13910308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:13:25Z
+MemAvailable:   10097920 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:33:17 47420076 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:33:17 13789280 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:33:17 13922596 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:14:25Z
+MemAvailable:    9976932 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:34:17 47489708 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:34:17 13789280 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:34:17 13945128 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:15:25Z
+MemAvailable:    9973488 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:35:17 47489708 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:35:17 13789280 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:35:17 13955372 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:16:25Z
+MemAvailable:   10014208 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:36:17 47420076 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:36:17 13789280 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:36:17 13979316 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:17:25Z
+MemAvailable:    9955164 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:37:17 47418028 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:37:17 13840488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:37:17 13990192 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:18:25Z
+MemAvailable:    9945108 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:38:17 47420076 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:38:17 13840488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:38:17 14000436 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:19:25Z
+MemAvailable:    9891000 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:39:17 47424172 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:39:17 13840488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:39:17 14025016 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:20:25Z
+MemAvailable:    9547592 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:40:17 47768264 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:40:17 13840488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:40:17 14037308 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:21:25Z
+MemAvailable:    9539748 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:41:17 47762724 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:41:17 13840488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:41:17 14059844 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:22:25Z
+MemAvailable:    9553488 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:42:17 47760072 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:42:17 13840488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:42:17 14070084 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:23:25Z
+MemAvailable:    9490928 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:43:18 47805132 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:43:18 13840488 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:43:18 14092620 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:24:25Z
+MemAvailable:    9365140 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:44:18 47994452 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:44:18 13748328 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:44:18 14104908 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:25:25Z
+MemAvailable:    9476708 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:45:18 47852256 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:45:18 13760616 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:45:18 14117196 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:26:25Z
+MemAvailable:    9288996 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:46:18 48024288 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:46:18 13772908 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:46:18 14139732 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:27:25Z
+MemAvailable:    9140876 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:47:18 48141040 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:47:18 13783152 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:47:18 14149972 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:28:25Z
+MemAvailable:    9031124 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:48:18 48216820 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:48:18 13805684 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:48:18 14162264 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:29:25Z
+MemAvailable:    9059528 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:49:18 48138996 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:49:18 13817972 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:49:18 14184792 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:30:25Z
+MemAvailable:    8988176 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:50:18 48212724 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:50:18 13830260 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:50:18 14197084 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:31:25Z
+MemAvailable:    8942776 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:51:18 48226092 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:51:18 13840504 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:51:18 14215764 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:32:25Z
+MemAvailable:    8777456 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:52:18 48339708 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:52:18 13852796 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:52:18 14229864 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:33:25Z
+MemAvailable:    8674240 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:53:18 48429828 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:53:18 13865084 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:53:18 14242152 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:34:25Z
+MemAvailable:    8652684 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:54:18 48431876 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:54:18 13887612 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:54:18 14226096 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:35:25Z
+MemAvailable:    8638308 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:55:18 48431876 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:55:18 13897856 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:55:18 14247736 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:36:25Z
+MemAvailable:    8628564 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:56:18 48409348 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:56:18 13910144 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:56:18 14268784 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:37:25Z
+MemAvailable:    8599816 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:57:18 48407300 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:57:18 13922432 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:57:18 14289556 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:38:25Z
+MemAvailable:    8438944 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:58:18 48362244 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:58:18 13932672 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:58:18 14479772 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:39:25Z
+MemAvailable:    8415252 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    06:59:18 48354052 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    06:59:18 13955208 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    06:59:18 14479772 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:40:25Z
+MemAvailable:    8343864 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:00:18 48421636 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:00:18 13967496 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:00:18 14479772 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:41:25Z
+MemAvailable:    8393560 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:01:18 48356912 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:01:18 13979788 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:01:18 14479772 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:42:25Z
+MemAvailable:    8320860 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:02:18 48417908 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:02:18 13990028 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:02:18 14479772 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:43:25Z
+MemAvailable:    8197392 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:03:18 48526088 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:03:18 14012560 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:03:18 14479772 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:44:25Z
+MemAvailable:    8116548 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:04:18 48571148 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:04:18 14024856 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:04:18 14500252 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:45:25Z
+MemAvailable:    8104860 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:05:18 48532236 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:05:18 14037144 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:05:18 14535068 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:46:25Z
+MemAvailable:    8005144 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:06:18 48610060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:06:18 14057632 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:06:18 14535068 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:47:25Z
+MemAvailable:    7996224 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:07:18 48608012 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:07:18 14069920 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:07:18 14535068 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:48:25Z
+MemAvailable:    8073840 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:08:18 48517900 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:08:18 14082212 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:08:18 14535068 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:49:25Z
+MemAvailable:    7946260 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:09:18 48610060 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:09:18 14104748 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:09:18 14535068 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:50:25Z
+MemAvailable:    8008848 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:10:18 48536332 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:10:18 14117036 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:10:18 14535068 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:51:25Z
+MemAvailable:    7967176 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:11:18 48583436 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:11:18 14127280 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:11:18 14535068 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:52:26Z
+MemAvailable:    8095228 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:12:18 48519948 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:12:18 14139568 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:12:18 14449056 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:53:26Z
+MemAvailable:    7996836 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:13:18 48614156 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:13:18 14149808 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:13:18 14463392 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:54:26Z
+MemAvailable:    7951876 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:14:18 48605964 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:14:18 14162100 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:14:18 14475700 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:55:26Z
+MemAvailable:    7404760 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:15:18 49161116 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:15:18 14174452 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:15:18 14487988 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:56:26Z
+MemAvailable:    7102328 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:16:18 49408964 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:16:18 14194944 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:16:18 14500280 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:57:26Z
+MemAvailable:    6812352 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:17:18 49691628 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:17:18 14207164 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:17:18 14512572 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:58:26Z
+MemAvailable:    5926060 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:18:18 50529380 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:18:18 14219456 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:18:18 14522812 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T08:59:26Z
+MemAvailable:    5668312 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:19:18 50748532 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:19:18 14229700 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:19:18 14535104 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:00:26Z
+MemAvailable:    5583672 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:20:18 50852988 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:20:18 14213320 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:20:18 14547396 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:01:26Z
+MemAvailable:    5486908 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:21:18 50945156 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:21:18 14231760 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:21:18 14557636 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:02:26Z
+MemAvailable:    5547112 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:22:18 50832516 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:22:18 14249364 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:22:18 14580168 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:03:26Z
+MemAvailable:    4835300 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:23:18 51520692 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:23:18 14266592 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:23:18 14592460 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:04:26Z
+MemAvailable:    4224900 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:24:18 52042976 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:24:18 14282216 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:24:18 14613596 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:05:26Z
+MemAvailable:    4067328 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:25:18 52047072 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:25:18 14479608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:25:18 14588368 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:06:26Z
+MemAvailable:    4071708 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:26:18 52045024 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:26:18 14479608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:26:18 14607800 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:07:26Z
+MemAvailable:    4035704 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:27:18 52042976 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:27:18 14479608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:27:18 14629348 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:08:26Z
+MemAvailable:    4019520 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:28:18 52037184 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:28:18 14479608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:28:18 14684644 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:09:26Z
+MemAvailable:    3977892 kB
+    PID     ELAPSED   RSS COMMAND
+   2098    07:29:18 52036832 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2100    07:29:18 14479608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:29:18 14698984 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:10:26Z
+MemAvailable:   56092520 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:30:18 14479608 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:30:18 14715372 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:11:26Z
+MemAvailable:   56022536 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:31:18 14534544 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:31:18 14731756 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:12:26Z
+MemAvailable:   56023628 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:32:18 14534908 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:32:18 14745692 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:13:26Z
+MemAvailable:   56023640 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:33:18 14534908 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:33:18 14746092 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:14:26Z
+MemAvailable:   55917324 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:34:18 14534908 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:34:18 14832000 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:15:26Z
+MemAvailable:   55847636 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:35:18 14534908 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:35:18 14905588 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:16:26Z
+MemAvailable:   55884376 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:36:19 14452992 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:36:19 14965300 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:17:26Z
+MemAvailable:   55810572 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:37:19 14475540 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:37:19 14998912 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:18:26Z
+MemAvailable:   55768884 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:38:19 14487828 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:38:19 15047884 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:19:26Z
+MemAvailable:   55665596 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:39:19 14511552 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:39:19 15114840 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:20:26Z
+MemAvailable:   55590256 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:40:19 14522648 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:40:19 15161960 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:21:26Z
+MemAvailable:   55542268 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:41:19 14547232 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:41:19 15211636 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:22:26Z
+MemAvailable:   55501556 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:42:19 14557472 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:42:19 15241336 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:23:26Z
+MemAvailable:   55444300 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:43:19 14580008 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:43:19 15269964 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:24:26Z
+MemAvailable:   55405956 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:44:19 14592300 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:44:19 15302240 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:25:26Z
+MemAvailable:   55347152 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:45:19 14614828 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:45:19 15332688 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:26:26Z
+MemAvailable:   55330964 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:46:19 14591360 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:46:19 15354844 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:27:26Z
+MemAvailable:   55255868 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:47:19 14646120 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:47:19 15391712 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:28:26Z
+MemAvailable:   55235872 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:48:19 14633280 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:48:19 15420988 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:29:26Z
+MemAvailable:   55151932 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:49:19 14690628 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:49:19 15450880 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:30:26Z
+MemAvailable:   55053004 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:50:19 14715208 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:50:19 15524840 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:31:26Z
+MemAvailable:   55044220 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:51:19 14715208 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:51:19 15537128 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:32:26Z
+MemAvailable:   54964092 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:52:19 14731592 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:52:19 15604716 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:33:26Z
+MemAvailable:   54910936 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:53:19 14745928 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:53:19 15643632 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:34:26Z
+MemAvailable:   54850836 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:54:19 14797148 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:54:19 15645680 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:35:26Z
+MemAvailable:   54700348 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:55:19 14882392 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:55:19 15688688 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:36:26Z
+MemAvailable:   54586204 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:56:19 14957260 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:56:19 15731700 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:37:26Z
+MemAvailable:   54544412 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:57:19 14997864 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:57:19 15731700 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:38:26Z
+MemAvailable:   54484680 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:58:19 15040928 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:58:19 15748092 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+2026-11-06T09:39:26Z
+MemAvailable:   54403288 kB
+    PID     ELAPSED   RSS COMMAND
+   2100    07:59:19 15108528 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
+   2101    07:59:19 15776768 ~/venv/lib/python3.12/site-packages/sage_wheels/bin/Si
