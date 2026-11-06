@@ -95,19 +95,14 @@ def test_retained_forecast_interval_kind_has_nominal_coverage() -> None:
         raise AssertionError("the coverage study lacks 200 datasets or its binomial interval")
 
 
-def _choi_rates(choi: np.ndarray) -> np.ndarray:
-    coefficients = np.array([float(np.real(np.trace(element @ choi))) for element in case.hermitian_basis()])
-    return np.asarray(case.design_matrix() @ coefficients)
-
-
 def test_depolarized_gate_is_recovered() -> None:
     """Outcome frequencies of (1 - p) CZ + p (completely depolarizing) give the analytic F = (1 - p) + p / 16."""
     p = 0.2
     vector = case.ideal_choi_vector()
     choi = (1 - p) * np.outer(vector, vector.conj()) + p * np.eye(16) / 4
     expected = (1 - p) + p / 16
-    conditional = case.estimate(_choi_rates(choi))
-    primary = case.estimate_rates(_choi_rates(choi))
+    conditional = case.estimate(case.choi_rates(choi))
+    primary = case.estimate_rates(case.choi_rates(choi))
     for found in (conditional["process_fidelity"], primary["process_fidelity"]):
         if abs(found - expected) > 1e-9:
             raise AssertionError(f"fidelity {found} against {expected}")
@@ -120,7 +115,7 @@ def test_absolute_rate_estimator_recovers_a_map_with_input_dependent_success() -
     operator = case.ideal_cz() @ np.diag([1.0, 0.8, 0.6, 0.5])
     vector = np.sum([np.kron(np.eye(4)[i], operator[:, i]) for i in range(4)], axis=0)
     choi = np.outer(vector, vector.conj())
-    rates = _choi_rates(choi)
+    rates = case.choi_rates(choi)
     expected = abs(np.trace(case.ideal_cz().conj().T @ operator)) ** 2 / (
         4 * np.real(np.trace(operator.conj().T @ operator))
     )
@@ -312,3 +307,15 @@ def test_analysis_refuses_a_result_bound_to_another_job_or_raw_file(tmp_path: Pa
             case.analyze(runs, replicates=1)
     case.analyze(_runs(tmp_path / "clean"), replicates=1)
 
+
+def test_check_recoveries_fails_when_the_estimator_is_biased(monkeypatch: pytest.MonkeyPatch) -> None:
+    case.check_recoveries()
+    original = case.estimate_rates
+
+    def biased(rates: np.ndarray) -> dict[str, Any]:
+        out = original(rates)
+        return {**out, "process_fidelity": out["process_fidelity"] * 0.99}
+
+    monkeypatch.setattr(case, "estimate_rates", biased)
+    with pytest.raises(RuntimeError):
+        case.check_recoveries()

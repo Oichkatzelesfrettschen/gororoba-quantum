@@ -23,10 +23,11 @@ reconstruction (per-setting normalization, nearest CPTP map) stays as a descript
 
 --check rebuilds both jobs in memory and compares them with the retained files, proves the CZ block and the folded
 settings by permanents and by Perceval's SLOS backend, binds every iteration through qd_platform.template_experiment,
-and requires the noiseless process fidelity 1. --forecast recomputes the retained noise forecast under Perceval's
-NoiseModel at the platform read in the case directory. --estimate retains Perceval's shot estimate (a read-only
-platform call). --analyze OUT.json RUN... pools collected runs into the process estimate. Submission uses the generic
-runner, scripts/qd_platform.py plan/submit/collect, with the written case's arguments.
+and requires the noiseless process fidelity 1, the analytic fidelity of a depolarized CZ and the exact fidelity of a
+postselected map whose success probability depends on the input. --forecast recomputes the retained noise forecast
+under Perceval's NoiseModel at the platform read in the case directory. --estimate retains Perceval's shot estimate (a
+read-only platform call). --analyze OUT.json RUN... pools collected runs into the process estimate. Submission uses
+the generic runner, scripts/qd_platform.py plan/submit/collect, with the written case's arguments.
 
 Usage:
   "$PYTHON" scripts/ascella_cz_tomography_case.py [--check | --build | --forecast | --estimate]
@@ -1077,10 +1078,44 @@ def check_noise_limit() -> None:
         require(gap < BODY_TOLERANCE, f"{row['name']}: the noiseless forecast departs from the ideal by {gap:.2e}")
 
 
+def choi_rates(choi: np.ndarray) -> np.ndarray:
+    """The (576,) outcome rates the design predicts for a Choi matrix: Tr[(rho_in^T x E_outcome) J] per setting."""
+    coefficients = np.array([float(np.real(np.trace(element @ choi))) for element in hermitian_basis()])
+    return np.asarray(design_matrix() @ coefficients)
+
+
+def check_recoveries() -> None:
+    """A depolarized CZ, (1 - p) CZ + p (completely depolarizing), has the analytic process fidelity
+    (1 - p) + p / 16 under both estimators. The postselected map M rho M^dagger with M = CZ diag(1, 0.8, 0.6, 0.5)
+    succeeds with an input-dependent probability and has the exact F = |Tr(CZ^dagger M)|^2 / (4 Tr M^dagger M) under
+    the primary estimator, which the per-setting normalization of the conditional estimator misses."""
+    p = 0.2
+    vector = ideal_choi_vector()
+    depolarized = choi_rates((1 - p) * np.outer(vector, vector.conj()) + p * np.eye(16) / 4)
+    for name, found in (
+        ("conditional", estimate(depolarized)["process_fidelity"]),
+        ("primary", estimate_rates(depolarized)["process_fidelity"]),
+    ):
+        require(abs(found - ((1 - p) + p / 16)) < BODY_TOLERANCE, f"{name} depolarized fidelity {found}")
+    operator = ideal_cz() @ np.diag([1.0, 0.8, 0.6, 0.5])
+    state = np.sum([np.kron(np.eye(4)[i], operator[:, i]) for i in range(4)], axis=0)
+    rates = choi_rates(np.outer(state, state.conj()))
+    expected = abs(np.trace(ideal_cz().conj().T @ operator)) ** 2 / (
+        4 * np.real(np.trace(operator.conj().T @ operator))
+    )
+    primary = estimate_rates(rates)["process_fidelity"]
+    require(abs(primary - expected) < BODY_TOLERANCE, f"input-dependent success: primary {primary}, exact {expected}")
+    outcomes = rates.reshape(len(schedule()), 4)
+    conditional = estimate((outcomes / outcomes.sum(axis=1)[:, None]).reshape(-1))["process_fidelity"]
+    require(
+        abs(conditional - expected) > 1e-3, "the conditional estimator no longer differs on input-dependent success"
+    )
+
+
 def check_estimator() -> float:
     """The noiseless rates of all 144 settings reproduce the ideal CZ Choi matrix and process fidelity 1 under the
-    primary estimator and the conditional one; a trace non-increasing map with input-dependent success keeps its
-    exact fidelity under the primary estimator."""
+    primary estimator and the conditional one, and check_recoveries holds: a depolarized CZ keeps its analytic
+    fidelity and a map with input-dependent success keeps its exact fidelity under the primary estimator."""
     rates = ideal_frequencies() / 9.0
     point = estimate_rates(rates)
     require(
@@ -1097,6 +1132,7 @@ def check_estimator() -> float:
     require(abs(conditional["process_fidelity"] - 1.0) < BODY_TOLERANCE, "ideal conditional fidelity")
     gram = float(np.max(np.abs(partial_trace_output(conditional["choi"]) - np.eye(4))))
     require(gram < BODY_TOLERANCE, f"the ideal Choi matrix is not trace preserving ({gram:.2e})")
+    check_recoveries()
     return float(point["process_fidelity"])
 
 
