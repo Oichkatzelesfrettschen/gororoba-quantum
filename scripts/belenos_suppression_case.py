@@ -918,11 +918,12 @@ def is_finite(value: Any) -> bool:
     return isinstance(value, int | float) and not isinstance(value, bool) and math.isfinite(value)
 
 
-def complete_perfs(run: Path) -> dict[str, Any]:
+def complete_perfs(run: Path, start: int) -> dict[str, Any]:
     """The perfs_at_plan record of a run's submission.json, which must hold every field forecast() reads.
 
     The forecast depends on the chip state of the job, so a run without a full record raises and no other run's or the
-    case's figures stand in for it."""
+    case's figures stand in for it. detection_efficiency() divides by the largest t_out and the forecast reads the
+    WINDOW modes from `start`, so t_out needs a positive maximum and positive values on those modes."""
     path = run / "submission.json"
     require(path.is_file(), f"{run.name}: submission.json is missing, so the run has no perfs_at_plan to forecast from")
     perfs = json.loads(path.read_text(encoding="utf-8")).get("perfs_at_plan")
@@ -937,7 +938,8 @@ def complete_perfs(run: Path) -> dict[str, Any]:
         all(isinstance(column, list) and len(column) == MODES for column in columns)
         and all(is_finite(value) for value in scalars)
         and all(is_finite(value) for column in columns for value in column)
-        and min(columns[0]) > 0,
+        and max(columns[0]) > 0
+        and all(value > 0 for value in columns[0][start : start + WINDOW]),
         f"{run.name}: perfs_at_plan is not a finite {MODES}-mode performance record",
     )
     return dict(perfs)
@@ -946,7 +948,8 @@ def complete_perfs(run: Path) -> dict[str, Any]:
 def run_forecast(run: Path, manifest: Mapping[str, Any]) -> dict[str, Any]:
     """The forecast of the run's manifest layout at the run's own perfs_at_plan."""
     layout = manifest["layout"]
-    return forecast(complete_perfs(run), int(layout["window_start"]), tuple(layout["source_modes"]))
+    start = int(layout["window_start"])
+    return forecast(complete_perfs(run, start), start, tuple(layout["source_modes"]))
 
 
 def mean_over(forecasts: Sequence[Mapping[str, Any]], arm: str, model: str) -> float:

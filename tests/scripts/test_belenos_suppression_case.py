@@ -483,6 +483,39 @@ def test_a_run_without_its_own_perfs_is_refused(tmp_path: Path, edit: Any) -> No
         case.analyze(runs)
 
 
+def _zero_t_out(mode: int) -> Any:
+    def edit(record: dict[str, Any]) -> None:
+        record["perfs_at_plan"]["Transmission per mode (%)"]["t_out"][mode] = 0.0
+
+    return edit
+
+
+def test_a_dead_detector_outside_the_window_leaves_the_forecast_intact(tmp_path: Path) -> None:
+    """The forecast reads t_out on the window modes and its maximum, so a zero elsewhere is a valid record."""
+    runs = _runs(tmp_path, {"periodic": 0.21, "control": 0.64})
+    start = json.loads((runs[1] / "cases.json").read_text(encoding="utf-8"))["layout"]["window_start"]
+    _submission(runs[1], _zero_t_out(start + case.WINDOW))
+    _submission(runs[1], _zero_t_out(start - 1))
+    case.analyze(runs)
+
+
+@pytest.mark.parametrize("offset", [0, case.WINDOW - 1])
+def test_a_dead_detector_inside_the_window_is_refused(tmp_path: Path, offset: int) -> None:
+    runs = _runs(tmp_path, {"periodic": 0.21, "control": 0.64})
+    start = json.loads((runs[1] / "cases.json").read_text(encoding="utf-8"))["layout"]["window_start"]
+    _submission(runs[1], _zero_t_out(start + offset))
+    with pytest.raises(ValueError, match="perfs_at_plan"):
+        case.analyze(runs)
+
+
+def test_a_record_without_a_positive_t_out_is_refused(tmp_path: Path) -> None:
+    runs = _runs(tmp_path, {"periodic": 0.21, "control": 0.64})
+    for mode in range(case.MODES):
+        _submission(runs[1], _zero_t_out(mode))
+    with pytest.raises(ValueError, match="perfs_at_plan"):
+        case.analyze(runs)
+
+
 def test_the_hom_inverses_bracket_the_point_estimate(tmp_path: Path) -> None:
     """The inverses of the periodic mean and of its two one-sided limits order as the fractions do, descending."""
     runs = _runs(tmp_path, {"periodic": 0.20, "control": 0.64})
