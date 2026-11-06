@@ -476,6 +476,7 @@ def standalone_campaign_groups() -> list[Group]:
     from idle_penalty import idle_penalty_group
     from idle_readout import idle_readout_group
     from maximal_experiments import spectator_wavefront_ramsey_group
+    from pathion_kernel_map import pathion_kernel_map_group
     from primorial_campaigns import coherence_probe_group, gap88_group
     from qet_ladder import qet_compensated_ladder_group, qet_frame_diagnostic_group, qet_ladder_group
     from qubit_baseline import qubit_baseline_group
@@ -496,6 +497,7 @@ def standalone_campaign_groups() -> list[Group]:
         qet_compensated_ladder_group(),
         idle_penalty_group(),
         idle_readout_group(),
+        pathion_kernel_map_group(),
     ]
 
 
