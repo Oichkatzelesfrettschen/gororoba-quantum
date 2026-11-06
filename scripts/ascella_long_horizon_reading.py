@@ -7,9 +7,12 @@ job-03 is the retrospective rehearsal of the same rule on the retained nine-hour
 name fixes the compilation seed. Per iteration the block-conditioned X statistic z and its multinomial variance v
 come from ascella_compilation_reading.x_statistics, as in scripts/ascella_seed_repeat_reading.py.
 
-- M, mesh identity: the settings whose computed_circuit equals the reference's under the same name, anchors and
-  perturbed counted apart. Every other reading uses the identical subset; with fewer than four identical perturbed
-  meshes nothing else is read.
+- M, mesh identity: the settings whose served unitary (the deserialized computed_circuit) lies within
+  MESH_TOLERANCE of the reference's under the same name in largest entry modulus, anchors and perturbed counted
+  apart, with the byte-equal count beside it. The serialized phases of one mesh differ in their low bits between
+  compile stacks (the sim:ascella replay of job-02 lies within 2.4e-7 of the QPU's job-02 unitaries and equals none
+  of their strings), so a byte comparison would read float jitter as a redrawn mesh. Every other reading uses the
+  identical subset; with fewer than four identical perturbed meshes nothing else is read.
 - A, anchor control: the difference of the runs' inverse-variance anchor means of z over its standard error; at or
   above the two-sided ALPHA normal quantile it reads "moved".
 - S, persistence (primary): mesh_selection.persistence on the identical perturbed meshes as one block, the
@@ -29,8 +32,9 @@ come from ascella_compilation_reading.x_statistics, as in scripts/ascella_seed_r
 Exploratory, outside the decision: the Spearman correlation of the identical perturbed meshes' block mode-2 fractions
 between the runs, and that of each mesh's z change with the change of its predecessor's L1 heater-phase distance.
 
-One numpy generator seeded with value PERMUTATION_INDEX of the order draw that the repeat's cases.json names draws the
-S relabelings, then the P1 relabelings, then the P2 labelings.
+One numpy generator per pair, seeded with the LONG_REPEAT_ORDER_DRAW value PAIR_INDEX names, draws the S
+relabelings, then the P1 relabelings, then the P2 labelings; the request consumes values 0..55 and the power record
+value POWER_INDEX, so every value seeds one use.
 
 --power OUT [--check] writes the design's power record: POWER_REPLICATES Gaussian replicates per true slope in
 POWER_SLOPES of 56 meshes whose reference z is a true error of variance s_c^2 plus counting noise at the reference's
@@ -68,18 +72,33 @@ from parallel import ordered_map  # noqa: E402
 ALPHA = 0.01
 USEFUL_SLOPE = 0.5
 RELABELINGS = 20000
-# The request consumes values 0..55 of its order draw; value 56 seeds the relabelings.
-PERMUTATION_INDEX = 56
+# A served unitary within this largest entry modulus of the reference's is the same mesh: above the 2.4e-7 jitter
+# between compile stacks and far below one heater step.
+MESH_TOLERANCE = 1e-6
 SPREAD_RECORD = "docs/evidence/ascella-order-coefficients/heater-coupling.json"
 SPREAD_SAMPLES = 8192
 PAIRS = {("job-02", "job-03"), ("job-02", "job-08"), ("job-03", "job-08")}
 PLAN = "docs/state/plans/ascella-long-horizon-seed-repeat-case.json"
 LONG_REPEAT_ORDER_DRAW = "docs/evidence/anu_qrng/draw-2026-11-06T175610Z.json"
 POWER_INDEX = 57
+PAIR_INDEX = {("job-03", "job-08"): 56, ("job-02", "job-08"): 58, ("job-02", "job-03"): 59}
 POWER_SLOPES = (0.0, 0.25, 0.5, 0.75, 1.0)
 POWER_REPLICATES = 400
 POWER_RELABELINGS = 2000
 POWER_MESHES = 56
+
+
+def served_unitary(text: str) -> np.ndarray:
+    """The unitary of one serialized computed_circuit."""
+    from perceval.serialization import deserialize
+
+    return np.asarray(deserialize(text).compute_unitary(), dtype=np.complex128)
+
+
+def mesh_distance(item: tuple[str, str]) -> float:
+    """Largest entry modulus of the difference of two served unitaries; zero for equal strings."""
+    left, right = item
+    return 0.0 if left == right else float(np.max(np.abs(served_unitary(left) - served_unitary(right))))
 
 
 def samples_of(data: dict[str, Any]) -> int:
@@ -170,13 +189,14 @@ def build(old_dir: Path, new_dir: Path) -> dict[str, Any]:
     index_old = {name: i for i, name in enumerate(names_old)}
     anchor_new = reading.anchors_of(new)
     served_old, served_new = seed_repeat.served(old), seed_repeat.served(new)
-    identical = [served_new[i] == served_old[index_old[name]] for i, name in enumerate(names_new)]
+    pairs = [(served_new[i], served_old[index_old[name]]) for i, name in enumerate(names_new)]
+    distances = ordered_map(mesh_distance, pairs)
+    identical = [distance <= MESH_TOLERANCE for distance in distances]
+    byte_equal = [left == right for left, right in pairs]
     z_old, v_old = reading.x_statistics(old)
     z_new, v_new = reading.x_statistics(new)
-    draw = new["record"]["manifest"]["compilation_order"]["draw"]
-    generator = np.random.default_rng(
-        int(json.loads((ROOT / draw).read_text(encoding="utf-8"))["values"][PERMUTATION_INDEX])
-    )
+    draw, seed_index = LONG_REPEAT_ORDER_DRAW, PAIR_INDEX[pair]
+    generator = np.random.default_rng(int(json.loads((ROOT / draw).read_text(encoding="utf-8"))["values"][seed_index]))
     keep = np.array(identical)
     anchors = [i for i in range(len(names_new)) if anchor_new[i] and identical[i]]
     perturbed = [i for i in range(len(names_new)) if not anchor_new[i] and identical[i]]
@@ -189,12 +209,15 @@ def build(old_dir: Path, new_dir: Path) -> dict[str, Any]:
         "samples": [samples_of(old), samples_of(new)],
         "alpha": ALPHA,
         "seed_draw": draw,
-        "seed_index": PERMUTATION_INDEX,
+        "seed_index": seed_index,
         "mesh_identity": {
+            "tolerance": MESH_TOLERANCE,
             "anchors_identical": len(anchors),
             "anchors": int(anchor_new.sum()),
             "perturbed_identical": len(perturbed),
             "perturbed": int((~anchor_new).sum()),
+            "byte_equal": int(sum(byte_equal)),
+            "largest_identical_distance": max((d for d in distances if d <= MESH_TOLERANCE), default=0.0),
         },
     }
     if len(perturbed) < 4:

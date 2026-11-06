@@ -2939,7 +2939,7 @@
       "provider": "quandela",
       "run": "results/quandela/runs/2026-11-06T175319Z-sim_ascella-ascella_signed_coherence-job-02-sim-replay",
       "family": "ascella_signed_coherence",
-      "question": "Does the Ascella simulator serve the QPU's meshes for job-02's compilation seeds?"
+      "question": "Does the Ascella simulator, after the 2026-11 software update, serve the unitaries the QPU served for job-02's compilation seeds?"
     },
     {
       "id": "qd-sim-ascella-signed-coherence-job-08-sim",

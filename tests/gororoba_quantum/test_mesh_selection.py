@@ -423,3 +423,21 @@ def test_a_full_sample_of_relabelings_reproduces_the_enumerated_reading() -> Non
         raise AssertionError(f"{exact} differs from {sampled}")
     with pytest.raises(ValueError, match="identity in row 0"):
         relabelings_of(5, every[::-1])
+
+
+def test_a_partial_sample_of_relabelings_keeps_the_test_monotone_and_the_bound_inverted() -> None:
+    """With a partial sample of relabelings (identity first) the useful-slope p-value never rises with the slope,
+    the observed labeling keeps every p-value at or above 1 / (sample size), and the upper bound sits where the
+    sampled test switches from accepting to rejecting."""
+    rng = np.random.default_rng(FIXTURE_SEED)
+    m = 40
+    old = rng.normal(size=(1, m))
+    new = 0.7 * old + 0.5 * rng.normal(size=(1, m))
+    sample = np.vstack([np.arange(m)[None, :], rng.permuted(np.tile(np.arange(m), (999, 1)), axis=1)])
+    values = [slope_lower_p(old - old.mean(), new - new.mean(), b, sample) for b in np.linspace(-1.0, 3.0, 41)]
+    if any(later > earlier for earlier, later in itertools.pairwise(values)) or min(values) < 1 / 1000:
+        raise AssertionError(f"sampled p-values {values}")
+    e_old, e_new = old - old.mean(), new - new.mean()
+    bound = slope_upper_bound(e_old, e_new, 0.05, relabelings=sample)
+    if not (slope_lower_p(e_old, e_new, bound, sample) >= 0.05 > slope_lower_p(e_old, e_new, bound + 1e-6, sample)):
+        raise AssertionError(f"bound {bound} does not invert the sampled test")

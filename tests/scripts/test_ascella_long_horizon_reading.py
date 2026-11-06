@@ -34,3 +34,23 @@ def test_a_power_replicate_depends_only_on_its_seed() -> None:
     first = long_horizon.power_replicate((1.0, seed))
     if first != long_horizon.power_replicate((1.0, seed)) or first != "persists":
         raise AssertionError(f"replicate read {first}")
+
+
+def test_mesh_identity_reads_unitaries_not_serialized_strings() -> None:
+    """The sim:ascella replay of job-02 serves job-02's QPU meshes: every unitary lies within MESH_TOLERANCE, while no
+    serialized string is byte-equal."""
+    runs = ROOT / "results/quandela/runs"
+    texts = [
+        [
+            row["result_fields"]["computed_circuit"]
+            for row in json.loads((runs / run / "results.json").read_text())["iterations"]
+        ]
+        for run in (
+            "2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02",
+            "2026-11-06T175319Z-sim_ascella-ascella_signed_coherence-job-02-sim-replay",
+        )
+    ]
+    pairs = list(zip(*texts, strict=True))
+    distances = [long_horizon.mesh_distance(pair) for pair in pairs]
+    if sum(left == right for left, right in pairs) != 0 or max(distances) > long_horizon.MESH_TOLERANCE:
+        raise AssertionError(f"largest distance {max(distances)}")

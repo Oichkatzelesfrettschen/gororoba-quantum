@@ -675,7 +675,7 @@ def refusal(item: tuple[str, dict[str, Any], dict[str, Any]]) -> str:
     label, candidate, mesh = item
     try:
         validate(candidate, mesh)
-    except ValueError, PlatformError:
+    except (ValueError, PlatformError):
         return label
     raise ValueError(f"validate accepts the {label}")
 

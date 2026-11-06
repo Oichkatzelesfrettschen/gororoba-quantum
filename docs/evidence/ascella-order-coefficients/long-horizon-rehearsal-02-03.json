@@ -9,7 +9,7 @@
   "z": 1.4796478315220933
  },
  "dependence": {
-  "p": 0.0002999850007499625,
+  "p": 0.00014999250037498125,
   "permutations": 20000,
   "ratio": 36.828115920668495,
   "reading": "compilation dependent"
@@ -35,8 +35,11 @@
  "mesh_identity": {
   "anchors": 8,
   "anchors_identical": 8,
+  "byte_equal": 64,
+  "largest_identical_distance": 0.0,
   "perturbed": 56,
-  "perturbed_identical": 56
+  "perturbed_identical": 56,
+  "tolerance": 1e-06
  },
  "persistence": {
   "alpha": 0.01,
@@ -46,7 +49,7 @@
   "reading": "persists",
   "relabelings": 20000,
   "slope": 0.9135678159260759,
-  "slope_upper": 1.0710185448177878,
+  "slope_upper": 1.073877971893502,
   "statistic": 0.006504747711842287,
   "useful_slope": 0.5,
   "useful_slope_p": 1.0
@@ -71,6 +74,6 @@
   16384
  ],
  "schema": "ascella-long-horizon-reading-v1",
- "seed_draw": "docs/evidence/anu_qrng/draw-2026-10-26T033936Z.json",
- "seed_index": 56
+ "seed_draw": "docs/evidence/anu_qrng/draw-2026-11-06T175610Z.json",
+ "seed_index": 59
 }
