@@ -37,33 +37,36 @@ def test_digest_follows_arithmetic_pins_and_ignores_tool_pins() -> None:
         root = Path(directory)
         copy_inputs(root)
         before = records.image_id(root)
-        ci_pins = root / "ci" / "requirements-ci.txt"
-        text = ci_pins.read_text()
-        # A tool pin, an added unrelated pin and a rewritten comment leave the digest in place.
-        for tool in ("ruff", "mypy", "pytest", "pytest-xdist", "threadpoolctl", "mcp", "matplotlib"):
-            ci_pins.write_text(text.replace(pin_line(text, tool), f"{tool}==999.0"))
+        originals = {name: (root / name).read_text() for name in records.PIN_FILES}
+
+        def with_pin(name: str, version: str) -> None:
+            """Rewrite both pin files from their original text with exactly one pin changed."""
+            holders = [
+                file for file, text in originals.items() if any(x.startswith(f"{name}==") for x in text.splitlines())
+            ]
+            if len(holders) != 1:
+                raise AssertionError(f"{name} is pinned in {holders}")
+            for file, text in originals.items():
+                changed = text.replace(pin_line(text, name), f"{name}=={version}") if file == holders[0] else text
+                (root / file).write_text(changed)
+
+        # A tool pin leaves the digest in place.
+        for tool in ("ruff", "mypy", "pytest", "pytest-xdist", "threadpoolctl", "mcp", "matplotlib", "pydantic"):
+            with_pin(tool, "999.0")
             if records.image_id(root) != before:
                 raise AssertionError(f"a {tool} pin moved the image digest")
-        pydantic = root / "requirements.txt"
-        base = pydantic.read_text()
-        pydantic.write_text(base.replace(pin_line(base, "pydantic"), "pydantic==999.0"))
-        if records.image_id(root) != before:
-            raise AssertionError("a pydantic pin moved the image digest")
-        pydantic.write_text(base)
-        ci_pins.write_text("# a rewritten comment\n\n" + text.replace("\n", "  # note\n") + "extra-package==1.0\n")
+        # An added unrelated pin and a rewritten comment leave it in place too.
+        for file, text in originals.items():
+            (root / file).write_text(
+                "# a rewritten comment\n\n" + text.replace("\n", "  # note\n") + "extra-package==1.0\n"
+            )
         if records.image_id(root) != before:
             raise AssertionError("a comment edit or an unrelated pin moved the image digest")
         # Each arithmetic pin moves it, whichever pin file holds the line.
         for name in records.ARITHMETIC_PINS:
-            target = ci_pins if any(line.startswith(f"{name}==") for line in text.splitlines()) else pydantic
-            source = target.read_text() if target is pydantic else text
-            ci_pins.write_text(text)
-            pydantic.write_text(base)
-            target.write_text(source.replace(pin_line(source, name), f"{name}==999.0"))
+            with_pin(name, "999.0")
             if records.image_id(root) == before:
                 raise AssertionError(f"a {name} pin left the image digest unchanged")
-        ci_pins.write_text(text)
-        pydantic.write_text(base)
 
 
 @pytest.mark.audit

@@ -300,7 +300,7 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
         return answer
     try:
         return json.loads(answer) if answer else None
-    except json.JSONDecodeError, UnicodeDecodeError:
+    except (json.JSONDecodeError, UnicodeDecodeError):
         raise UnansweredError(f"{method} {route}: answer is not usable JSON") from None
 
 
@@ -479,7 +479,7 @@ def observed(host: str, route: str, auth: bool) -> dict[str, Any]:
         return {**entry, "unanswered": f"answer exceeds {RESULT_LIMIT} bytes"}
     try:
         value = json.loads(answer)
-    except json.JSONDecodeError, UnicodeDecodeError:
+    except (json.JSONDecodeError, UnicodeDecodeError):
         # A non-JSON answer (the RSS feed, an HTML home page) is kept as text with its digest.
         return {**entry, "sha256": sha256_bytes(answer), "text": answer.decode("utf-8", errors="replace")}
     cleaned = scrub(value)
@@ -2595,7 +2595,7 @@ def check(directory: Path, agents: list[Path] | None = None, server: Path = MCP_
     for name, stamp in catalogue["architecture_observed_utc"].items():
         try:
             datetime.datetime.fromisoformat(stamp)
-        except TypeError, ValueError:
+        except (TypeError, ValueError):
             raise SystemExit(f"{name}: architecture_observed_utc {stamp!r} is not an ISO timestamp") from None
     for row in catalogue["explorer_platforms"]:
         name = row["name"]

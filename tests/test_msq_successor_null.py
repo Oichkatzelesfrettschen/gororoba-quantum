@@ -604,6 +604,95 @@ def test_upper_bound_of_zero_fires_crosses_the_ceiling_at_299() -> None:
     check(nl.upper_bound(5, 5) == 1.0, "all fires bound at one")
 
 
+# --- the arm runner on deterministic rows ------------------------------------------------------------------
+# run_arms, run_arm and merge_records read the setup only for its identity fields, so these tests run them on a
+# stand-in setup with `analyse_block` and `case_statistics` replaced by pure functions of (seed, case, index): they
+# hold the sharding, per-case stopping and pooling rules in every pull request while the tests above that draw real
+# replicates on the shared setup run in the audit.
+
+
+class _StubSetup:
+    width = 8
+    shots = 4096
+    sparse_scale: dict[int, float] = {}
+    digests = {"snapshot_sha256": "s", "plateau_sha256": "p", "sparse_scale_sha256": "c"}
+
+
+def _stub_rows(monkeypatch: pytest.MonkeyPatch) -> list[tuple[str, int, list[int]]]:
+    """Replace the replicate analysis by rows that count a verdict on every third index shifted by the case; the
+    returned list records each block the runner asks for."""
+    asked: list[tuple[str, int, list[int]]] = []
+
+    def block(item: Any) -> list[dict[str, Any]]:
+        _, case, seed, indices = item
+        asked.append((case.label, seed, list(indices)))
+        return [
+            {"i": i, "counted": int((i + case.active + seed) % 3 == 0), "tag": f"{seed}:{case.label}:{i}"}
+            for i in indices
+        ]
+
+    monkeypatch.setenv("GOROROBA_WORKERS", "1")
+    monkeypatch.setattr(nl, "analyse_block", block)
+    monkeypatch.setattr(nl, "case_statistics", lambda arm, rows: {"n": len(rows)})
+    monkeypatch.setattr(nl, "ROUND", 1)
+    return asked
+
+
+def _stub_setup() -> nl.Setup:
+    return _StubSetup()  # type: ignore[return-value]
+
+
+def test_stub_shards_merge_to_the_bytes_of_one_run(monkeypatch: pytest.MonkeyPatch) -> None:
+    _stub_rows(monkeypatch)
+    cases = [small("gamma", 8, 0.0), small("gamma", 9, 0.0)]
+    run = nl.ArmRun("carryover-positive", 7, 40, cases=cases, needed=4, setup=_stub_setup())
+    whole = nl.merge_records(nl.run_arms(None, [run]))
+    for shards in (2, 3):
+        parts = [nl.run_arms(None, [run], shard, shards)[0] for shard in range(shards)]
+        check(nl.dumps(nl.merge_records(parts)) == nl.dumps(whole), f"{shards} shards differ from one run")
+        check(
+            all(
+                sorted(r["i"] for r in part["cases"]["8-qubits"]["rows"]) == list(range(shard, 40, shards))
+                for shard, part in enumerate(parts)
+            ),
+            "a shard holds indices off its residue",
+        )
+    one = nl.run_arm(_stub_setup(), "carryover-positive", 7, 40, cases=cases, needed=4)
+    check(nl.dumps(nl.merge_records([one])) == nl.dumps(whole), "run_arm differs from run_arms of one arm")
+
+
+def test_stub_each_case_stops_at_its_own_verdict_count(monkeypatch: pytest.MonkeyPatch) -> None:
+    asked = _stub_rows(monkeypatch)
+    cases = [small("gamma", 8, 0.0), small("gamma", 9, 0.0)]
+    run = nl.ArmRun("carryover-positive", 7, 60, cases=cases, needed=3, setup=_stub_setup())
+    (record,) = nl.run_arms(None, [run])
+    merged = nl.merge_records([record])
+    for label, case in merged["cases"].items():
+        total = 0
+        for k, row in enumerate(case["rows"]):
+            total += row["counted"]
+            check(total < 3 or k == len(case["rows"]) - 1, f"{label}: rows run past the third verdict")
+        check(total == 3, f"{label}: {total} verdicts")
+    lengths = {label: len(case["rows"]) for label, case in merged["cases"].items()}
+    check(len(set(lengths.values())) == 2, f"both cases stopped at one length: {lengths}")
+    # A case that reached its count asks for no further block while the other runs on.
+    short = min(lengths, key=lambda label: lengths[label])
+    last = max(i for label, _, indices in asked if label == short for i in indices)
+    check(last < 59, f"{short} ran to the cap")
+
+
+def test_stub_one_pool_writes_each_arm_the_bytes_of_its_own_run(monkeypatch: pytest.MonkeyPatch) -> None:
+    _stub_rows(monkeypatch)
+    setup = _stub_setup()
+    gamma = nl.ArmRun("carryover-positive", 3, 30, cases=[small("gamma", 9, 0.0)], needed=2)
+    settle = nl.ArmRun("settle-common", 5, 12, cases=[small("settle-common", 8, 0.0)])
+    joint = [nl.dumps(nl.merge_records([record])) for record in nl.run_arms(setup, [gamma, settle])]
+    alone = [nl.dumps(nl.merge_records([nl.run_arms(setup, [run])[0]])) for run in (gamma, settle)]
+    check(joint == alone, "an arm's record depends on the arms it shares the pool with")
+    with pytest.raises(ValueError, match="twice"):
+        nl.run_arms(setup, [gamma, gamma])
+
+
 @pytest.mark.audit
 def test_two_shards_merge_to_the_bytes_of_one_run(setup: nl.Setup) -> None:
     cases = [small("gamma", 8, 0.0)]

@@ -1287,7 +1287,7 @@ def _compile_primary(qc: QuantumCircuit, snap: Snapshot, seed: int) -> QuantumCi
         for layout in component_layouts(snap, qc.num_qubits):
             try:
                 return _compile(qc, snap, seed, layout)
-            except QiskitError, ValueError:
+            except (QiskitError, ValueError):
                 continue
         raise
 
@@ -4364,7 +4364,7 @@ def consume_approval(
     except FileExistsError:
         try:
             earlier = json.loads(marker.read_text())
-        except OSError, ValueError:
+        except (OSError, ValueError):
             earlier = {}
         raise LiveRunError(
             f"the approved record {approved_dir.name} was already consumed by run "
@@ -4512,7 +4512,7 @@ def approved_is_envelope(approved_dir: Path | None) -> bool:
         return False
     try:
         approved = json.loads((Path(approved_dir) / "record.json").read_text())
-    except OSError, ValueError:
+    except (OSError, ValueError):
         return False
     return is_envelope_family(approved.get("family_configuration", {}).get("name"))
 
@@ -4620,7 +4620,7 @@ def approved_envelope_schema(approved_dir: Path | None) -> str | None:
     try:
         approved = json.loads((Path(approved_dir) / "record.json").read_text())
         return str(approved["envelope"]["contract"]["schema"])
-    except OSError, ValueError, KeyError, TypeError:
+    except (OSError, ValueError, KeyError, TypeError):
         return None
 
 
@@ -4637,7 +4637,7 @@ def envelope_flag_schema(args: argparse.Namespace) -> str:
         first_dir = Path(args.envelope_fallback)
         try:
             approved = fallback_approved_dir(first_dir, json.loads((first_dir / "record.json").read_text()))
-        except OSError, ValueError, KeyError:
+        except (OSError, ValueError, KeyError):
             approved = None
     return approved_envelope_schema(approved) or msq_envelope.ENVELOPE_SCHEMA
 
@@ -5102,7 +5102,7 @@ def _optional_repetition_delay(backend: Any) -> float | None:
     """The backend's configured repetition delay in seconds, or None for a fixed repetition rate."""
     try:
         return qpu_planning.repetition_delay(backend)
-    except ValueError, AttributeError:
+    except (ValueError, AttributeError):
         return None
 
 
