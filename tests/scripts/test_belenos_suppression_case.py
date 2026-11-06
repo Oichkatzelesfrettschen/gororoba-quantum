@@ -262,8 +262,11 @@ def test_decision_reads_suppression_at_the_forecast(tmp_path: Path) -> None:
         raise AssertionError(decision)
     if not decision["control_valid"] or not decision["suppression_observed"] or decision["level"] != "at":
         raise AssertionError(decision)
-    if not 0.8 < decision["hom_lower_bound"] < 0.95:
-        raise AssertionError(f"HOM lower bound {decision['hom_lower_bound']}")
+    if "hom_lower_bound" in decision:
+        raise AssertionError("the HOM inverse of a point estimate carries no bound name")
+    low, point, high = (decision[k] for k in ("hom_at_periodic_upper", "hom_at_periodic_mean", "hom_at_periodic_lower"))
+    if not low <= point <= high or abs(point - 0.879) > 0.005:
+        raise AssertionError(f"HOM inverses {low} {point} {high}")
     if (
         record["pooled"]["periodic"]["events"] != 4 * 400
         or record["excluded_events"]["periodic"]["outside_window"] == 0
@@ -478,6 +481,32 @@ def test_a_run_without_its_own_perfs_is_refused(tmp_path: Path, edit: Any) -> No
     _submission(runs[1], edit)
     with pytest.raises(ValueError, match="perfs_at_plan"):
         case.analyze(runs)
+
+
+def test_the_hom_inverses_bracket_the_point_estimate(tmp_path: Path) -> None:
+    """The inverses of the periodic mean and of its two one-sided limits order as the fractions do, descending."""
+    runs = _runs(tmp_path, {"periodic": 0.20, "control": 0.64})
+    spread = {"job-00": (0.14, 0.18), "job-01": (0.17, 0.20)}
+
+    def vary(run: Path, fractions: tuple[float, float]) -> None:
+        manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+        results = json.loads((run / "results.json").read_text(encoding="utf-8"))
+        seen = iter(fractions * 2)
+        for setting, entry in zip(manifest["settings"], results["iterations"], strict=True):
+            if setting["arm"] == "periodic":
+                entry["counts"] = _counts(next(seen))
+        (run / "results.json").write_text(json.dumps(results))
+
+    for run in runs:
+        vary(run, spread[json.loads((run / "cases.json").read_text(encoding="utf-8"))["job"]])
+    decision = case.analyze(runs)["decision"]
+    summary = case.analyze(runs)["summary"]["periodic"]
+    low, point, high = (decision[k] for k in ("hom_at_periodic_upper", "hom_at_periodic_mean", "hom_at_periodic_lower"))
+    if not (summary["lower"] < summary["mean"] < summary["upper"] and low < point < high):
+        raise AssertionError((summary, low, point, high))
+    forecasts = [case.run_forecast(run, json.loads((run / "cases.json").read_text(encoding="utf-8"))) for run in runs]
+    if abs(case.interpolated_hom(summary["mean"], forecasts) - point) > 1e-12:
+        raise AssertionError("the point estimate is not the inverse of the periodic mean")
 
 
 def test_a_run_without_a_submission_record_is_refused(tmp_path: Path) -> None:

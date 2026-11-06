@@ -1073,7 +1073,7 @@ def analyze(runs: Sequence[Path]) -> dict[str, Any]:
         hits = sum(row["suppressed"] for row in rows)
         pooled[arm] = {"events": events, "suppressed": hits, "fraction": hits / events if events else None}
     record: dict[str, Any] = {
-        "schema": "qd-belenos-suppression-analysis-v1",
+        "schema": "qd-belenos-suppression-analysis-v2",
         "runs": [run.name for run in runs],
         "iterations": per_arm,
         "below_event_floor": below_floor,
@@ -1142,7 +1142,9 @@ def decide(record: Mapping[str, Any], forecasts: Sequence[Mapping[str, Any]]) ->
     out["level_deviation"] = deviation
     out["level_tolerance"] = tolerance
     out["level"] = "at" if abs(deviation) <= tolerance else ("above" if deviation > 0 else "below")
-    out["hom_lower_bound"] = interpolated_hom(periodic["mean"], forecasts)
+    out["hom_at_periodic_mean"] = interpolated_hom(periodic["mean"], forecasts)
+    out["hom_at_periodic_upper"] = interpolated_hom(periodic["upper"], forecasts)
+    out["hom_at_periodic_lower"] = interpolated_hom(periodic["lower"], forecasts)
     if not out["control_valid"]:
         out["verdict"] = "invalid control: the detectors or the selection deplete or inflate the suppressed set"
     elif not out["suppression_observed"]:
