@@ -2947,6 +2947,13 @@
       "run": "results/live/2026-11-06T201037.234804Z",
       "family": "pathion coset-block map (A_5, dimension 32)",
       "question": "Does ibm_fez resolve the coset-block kernel map of the six two-term A_5 operands at 1 to 20 routed CZ, does the i ^ j-dependent loss persist at low depth, and do ibm_fez and ibm_marrakesh agree?"
+    },
+    {
+      "id": "ibm-marrakesh-pathion-coset-map",
+      "provider": "ibm",
+      "run": "results/live/2026-11-06T200832.558771Z",
+      "family": "pathion coset-block map (A_5, dimension 32)",
+      "question": "Does ibm_marrakesh resolve the coset-block kernel map of the six two-term A_5 operands at 1 to 20 routed CZ, does the i ^ j-dependent loss persist at low depth, and do ibm_fez and ibm_marrakesh agree?"
     }
   ],
   "claims": [
@@ -14608,6 +14615,33 @@
       "assumptions": [],
       "depends_on": [
         "hw-pathion-kernel-map-fez"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-pathion-coset-map-marrakesh",
+      "statement": "The same coset-block kernel map on ibm_marrakesh recovers the nullity of all six two-term A_5 operands with all 32 per-output signs (readout-corrected N_hat 0.14, 4.05, 4.04, 8.04, 11.99, 11.87 for nullity 0, 4, 4, 8, 12, 12), the twin (difference 0.014 [-0.017, 0.045]) and the cocycle-free control (-1.85 against -2), in agreement with ibm_fez on every operand.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Retained with the account below the inventory's 60 s reserve (account_reserve_met false); N_hat is exact under a bin-independent contraction.",
+      "evidence": [
+        {
+          "path": "results/live/2026-11-06T200832.558771Z/collect.json",
+          "sha256": "003031ac080ca40af9c20924109b5659c38b06554591eb65ef1f68e853c76093"
+        }
+      ],
+      "documents": [
+        "results/live/PATHION_KERNEL_MAP_FINDINGS.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "ibm-marrakesh-pathion-coset-map"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-pathion-coset-map-fez"
       ],
       "supersedes": [],
       "superseded_by": null

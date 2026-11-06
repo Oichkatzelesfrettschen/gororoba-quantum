@@ -54,6 +54,9 @@ CAMPAIGN_CEILING_SECONDS = 180
 CAMPAIGN_CUTOFF = "2026-10-14T00:00:00Z"
 
 
+# Spending policy, recorded and not enforced here: submissions keep their reserve through live_run's
+# --reserve-seconds and --min-remaining-seconds, and a retention audit records what already ran, so a balance below
+# the reserve reads account_reserve_met = false instead of refusing to retain the job.
 ACCOUNT_RESERVE_SECONDS = 60
 FAILED_STATUSES = frozenset({"ERROR", "CANCELLED"})
 
@@ -701,7 +704,6 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
     require(all(type(value) is int and value >= 0 for value in quota), "account usage fields are not whole seconds")
     limit, consumed, remaining = quota
     require(consumed + remaining == limit, "account usage consumed and remaining seconds do not sum to the limit")
-    require(remaining >= ACCOUNT_RESERVE_SECONDS, "account remaining seconds fall below the retained reserve")
     jobs = snapshot["jobs"]
     identities = [job["job_id"] for job in jobs]
     require(len(identities) == len(set(identities)), "duplicate service job identity")
@@ -791,6 +793,7 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         "unallocated_campaign_seconds": str(Decimal(CAMPAIGN_CEILING_SECONDS) - campaign),
         "later_program_charge_seconds": str(later),
         "account_reserve_seconds": ACCOUNT_RESERVE_SECONDS,
+        "account_reserve_met": snapshot["account_usage"]["usage_remaining_seconds"] >= ACCOUNT_RESERVE_SECONDS,
         "usage_window_charge_seconds": str(in_window),
         "account_usage_observation": snapshot["account_usage"],
         "awaiting_observation": sorted(awaiting),

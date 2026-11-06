@@ -67,8 +67,8 @@ check `pathion_kernel_map_check.py pathion_coset_map 8 30`:
   18 s charged; acquisition `ibm-fez-pathion-coset-map`.
 - ibm_marrakesh, primary account: binding dry run `2026-11-06T200151.093434Z`, run
   [2026-11-06T200832.558771Z](2026-11-06T200832.558771Z/collect.json), job `dbn38t0ou4as73b3q1n0`, 11 replicas,
-  24 s charged. Its retention waits for the primary account to return above the 60 s reserve of
-  `scripts/reconcile_qpu_inventory.py` (44 s after this run; the case planned with a 20 s reserve).
+  24 s charged; acquisition `ibm-marrakesh-pathion-coset-map`, retained with the primary account at 44 s, below the
+  inventory's 60 s reserve, which the audit now records (`account_reserve_met`) rather than enforcing at retention.
 
 | Operand (ideal N) | Fez N_hat [interval] | Fez readout-corrected | Marrakesh N_hat [interval] | Marrakesh readout-corrected | Signs |
 |---|---|---|---|---|---|
