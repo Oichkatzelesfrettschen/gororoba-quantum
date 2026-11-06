@@ -5,12 +5,15 @@ from __future__ import annotations
 import copy
 import json
 import shutil
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
 import belenos_suppression_case as case
 import numpy as np
 import pytest
+
+import qd_records
 
 SLOTS = (0, 2, 4)
 # The twelve collision-free outputs of the six-mode Fourier matrix that three photons on ports 0, 2 and 4 never reach.
@@ -198,6 +201,15 @@ def test_full_check() -> None:
 # ---------------------------------------------------------------- analysis
 
 
+# Accepted events per iteration. With the three excluded events, the four iterations of a job stay within the
+# manifests' max_samples of 1600, which qd_records.read_run enforces.
+EVENTS = 300
+# nb_shots_used of each fixture iteration, above its sample count; the answer's shots is the manifests' per-iteration
+# max_shots.
+USED_SHOTS = 1_000_000
+ANSWER_SHOTS = 1_500_000
+
+
 def _key(modes: set[int]) -> str:
     return ",".join("1" if mode in modes else "0" for mode in range(case.MODES))
 
@@ -206,7 +218,7 @@ def _state(slots: tuple[int, ...], start: int = 16) -> str:
     return _key({start + slot for slot in slots})
 
 
-def _counts(fraction: float, events: int = 400) -> dict[str, int]:
+def _counts(fraction: float, events: int = EVENTS) -> dict[str, int]:
     """Events split between the 12 suppressed and the 8 allowed outputs, plus events the selection excludes."""
     hits = round(fraction * events)
     counts: dict[str, int] = {}
@@ -219,9 +231,15 @@ def _counts(fraction: float, events: int = 400) -> dict[str, int]:
     return counts
 
 
-def _entry(setting: dict[str, Any], fractions: dict[str, float]) -> dict[str, Any]:
+def _bscount(counts: dict[str, int]) -> str:
+    """The serialized Perceval BSCount of the service's raw answer."""
+    return ":PCVL:BSCount:{" + ";".join(f"|{state}>={n}" for state, n in counts.items() if n) + "}"
+
+
+def _entry(setting: dict[str, Any], fraction: float) -> dict[str, Any]:
+    """One iteration of the raw answer: its serialized counts, the shots it used and the iteration it echoes."""
     iteration = {"compilation_seed": setting["compilation_seed"], "circuit_params": setting["circuit_params"]}
-    return {"counts": _counts(fractions[setting["arm"]]), "iteration": iteration}
+    return {"results": _bscount(_counts(fraction)), "nb_shots_used": USED_SHOTS, "iteration": iteration}
 
 
 def _perfs() -> dict[str, Any]:
@@ -247,28 +265,85 @@ def _cached_forecast(monkeypatch: pytest.MonkeyPatch) -> None:
 _FORECASTS: dict[str, Any] = {}
 
 
+def _write(path: Path, value: Any) -> bytes:
+    data = json.dumps(value).encode()
+    path.write_bytes(data)
+    return data
+
+
 def _run(
     tmp_path: Path,
     name: str,
-    fractions: dict[str, float],
+    fractions: Mapping[str, float | tuple[float, ...]],
     iterations: int | None = None,
     order: list[int] | None = None,
+    status: str = "completed",
+    edit: Any = None,
 ) -> Path:
-    manifest = json.loads((case.CASES / f"{name}/cases.json").read_text(encoding="utf-8"))
-    entries = [_entry(setting, fractions) for setting in manifest["settings"][:iterations]]
+    """A run directory in the collector's format that qd_records.read_run accepts, for the case's job `name`.
+
+    The files bound by digest (cases.json, circuit.json) keep their retained bytes. The raw answer holds one entry per
+    chosen setting, results.json is derived from it as the collector derives it, and the receipt binds the manifest,
+    the body and the answer. A fraction given as a tuple supplies that arm's iterations in turn. `edit` changes the
+    raw entries before the answer is serialized; a status other than completed marks a cut-short job."""
+    manifest_bytes = (case.CASES / name / "cases.json").read_bytes()
+    manifest = json.loads(manifest_bytes)
+    seen: dict[str, int] = {}
+
+    def fraction(setting: dict[str, Any]) -> float:
+        value = fractions[setting["arm"]]
+        position = seen[setting["arm"]] = seen.get(setting["arm"], -1) + 1
+        return value[position] if isinstance(value, tuple) else value
+
+    entries = [_entry(setting, fraction(setting)) for setting in manifest["settings"][:iterations]]
     if order is not None:
         entries = [entries[k] for k in order]
+    if edit is not None:
+        edit(entries)
     run = tmp_path / name
-    run.mkdir()
-    # The manifest keeps its retained bytes, which the analysis binds by sha256.
-    shutil.copyfile(case.CASES / name / "cases.json", run / "cases.json")
-    (run / "results.json").write_text(json.dumps({"iterations": entries}))
-    (run / "submission.json").write_text(json.dumps({"perfs_at_plan": _perfs()}))
+    (run / "raw").mkdir(parents=True)
+    (run / "cases.json").write_bytes(manifest_bytes)
+    shutil.copyfile(case.CASES / name / "circuit.json", run / "circuit.json")
+    job_id = f"fixture-{name}"
+    body = {"payload": {"command": "sample_count"}}
+    _write(run / "job-body.json", body)
+    _write(
+        run / "submission.json",
+        {
+            "schema": qd_records.SUBMISSION_SCHEMA,
+            "cases_sha256": qd_records.sha256_bytes(manifest_bytes),
+            "job_id": job_id,
+            "platform": case.PLATFORM,
+            "approval": "fixture approval",
+            "submitted_utc": "2026-01-01T00:00:00+00:00",
+            "body_sha256": qd_records.sha256_bytes(json.dumps(body, sort_keys=True).encode()),
+            "perfs_at_plan": _perfs(),
+        },
+    )
+    answer = {"job_id": job_id, "shots": ANSWER_SHOTS, "results": json.dumps({"results_list": entries})}
+    raw = _write(run / "raw/result.json", answer)
+    state = {"status": status, "shots": ANSWER_SHOTS}
+    summary = qd_records.result_summary(
+        raw, job_id, state, status == "completed", qd_records.expected_iterations(manifest)
+    )
+    _write(
+        run / "results.json",
+        {
+            "schema": qd_records.COLLECTION_SCHEMA,
+            "job_id": job_id,
+            "status": state,
+            "collected_utc": "2026-01-01T00:01:00+00:00",
+            "data": {"payload": body["payload"]},
+            "result_sha256": qd_records.sha256_bytes(raw),
+            **summary,
+        },
+    )
     return run
 
 
 def _analyze(tmp_path: Path, fractions: dict[str, float], iterations: int | None = None) -> dict[str, Any]:
-    runs = [_run(tmp_path, job, fractions, iterations) for job in case.JOB_ORDER]
+    status = "completed" if iterations is None else "canceled"
+    runs = [_run(tmp_path, job, fractions, iterations, status=status) for job in case.JOB_ORDER]
     return case.analyze(runs)
 
 
@@ -282,7 +357,7 @@ def test_tally_separates_the_excluded_causes() -> None:
     counts[_state((0, 1, 2)).replace("1", "2", 1)] = 5
     counts[_key({16})] = 7
     tally = case.tally_iteration(counts, 16, {tuple(out) for out in SUPPRESSED})
-    if tally["suppressed"] != 200 or tally["allowed"] != 200:
+    if tally["suppressed"] != EVENTS // 2 or tally["allowed"] != EVENTS // 2:
         raise AssertionError(f"accepted tally {tally}")
     if tally["outside_window"] < 3 or tally["collision"] != 5 or tally["fewer_than_three"] != 7:
         raise AssertionError(f"excluded tally {tally}")
@@ -316,7 +391,7 @@ def test_decision_reads_suppression_at_the_forecast(tmp_path: Path) -> None:
     if not low <= point <= high or abs(point - 0.879) > 0.005:
         raise AssertionError(f"HOM inverses {low} {point} {high}")
     if (
-        record["pooled"]["periodic"]["events"] != 4 * 400
+        record["pooled"]["periodic"]["events"] != 4 * EVENTS
         or record["excluded_events"]["periodic"]["outside_window"] == 0
     ):
         raise AssertionError(record["pooled"])
@@ -380,7 +455,7 @@ def test_result_iterations_bind_to_settings_by_seed(tmp_path: Path) -> None:
     runs = {
         "straight": [_run(straight, job, fractions) for job in case.JOB_ORDER],
         "shuffled": [_run(shuffled, job, fractions, order=[2, 0, 3, 1]) for job in case.JOB_ORDER],
-        "dropped": [_run(dropped, job, fractions, order=[0, 2, 3]) for job in case.JOB_ORDER],
+        "dropped": [_run(dropped, job, fractions, order=[0, 2, 3], status="canceled") for job in case.JOB_ORDER],
     }
     base = case.analyze(runs["straight"])
     moved = case.analyze(runs["shuffled"])
@@ -388,7 +463,7 @@ def test_result_iterations_bind_to_settings_by_seed(tmp_path: Path) -> None:
         raise AssertionError("reordering the result iterations moved counts between arms")
     short = case.analyze(runs["dropped"])
     periodic, control = short["pooled"]["periodic"], short["pooled"]["control"]
-    if periodic["events"] != 3 * 400 or control["events"] != 3 * 400:
+    if periodic["events"] != 3 * EVENTS or control["events"] != 3 * EVENTS:
         raise AssertionError(f"dropped middle iteration: {short['pooled']}")
     if abs(periodic["fraction"] - 0.20) > 1e-9 or abs(control["fraction"] - 0.64) > 1e-9:
         raise AssertionError(f"counts moved between arms: {short['pooled']}")
@@ -397,36 +472,44 @@ def test_result_iterations_bind_to_settings_by_seed(tmp_path: Path) -> None:
 
 
 def test_unbound_result_iteration_is_refused(tmp_path: Path) -> None:
-    run = _run(tmp_path, "job-00", {"periodic": 0.2, "control": 0.64})
-    results = json.loads((run / "results.json").read_text(encoding="utf-8"))
-    results["iterations"][1]["iteration"]["compilation_seed"] += 1
-    (run / "results.json").write_text(json.dumps(results))
+
+    def shift_seed(entries: list[dict[str, Any]]) -> None:
+        entries[1]["iteration"]["compilation_seed"] += 1
+
+    run = _run(tmp_path, "job-00", {"periodic": 0.2, "control": 0.64}, edit=shift_seed)
     with pytest.raises(ValueError, match="binds to 0 settings"):
         case.analyze([run])
 
 
-def _runs(tmp_path: Path, fractions: dict[str, float]) -> list[Path]:
+def _runs(tmp_path: Path, fractions: dict[str, Any], **per_job: dict[str, Any]) -> list[Path]:
+    """One run per job; per_job maps a job name to the keyword arguments of its _run."""
     runs = []
     for job in case.JOB_ORDER:
         parent = tmp_path / f"runs-{job}"
         parent.mkdir()
-        runs.append(_run(parent, job, fractions))
+        runs.append(_run(parent, job, fractions, **per_job.get(job.replace("-", "_"), {})))
     return runs
 
 
-def _rewrite(run: Path, edit: Any) -> None:
-    results = json.loads((run / "results.json").read_text(encoding="utf-8"))
-    edit(results["iterations"])
-    (run / "results.json").write_text(json.dumps(results))
+def _lose_last(entries: list[dict[str, Any]]) -> None:
+    entries.pop()
 
 
-@pytest.mark.parametrize("entry", [{"missing": True}, {"malformed": True}, {"error": "worker failed"}])
-def test_cut_short_job_reads_undecided(tmp_path: Path, entry: dict[str, Any]) -> None:
-    """qd_platform.result_summary appends an entry without counts or iteration for each lost iteration."""
-    runs = _runs(tmp_path, {"periodic": 0.21, "control": 0.64})
-    _rewrite(runs[1], lambda iterations: iterations.__setitem__(3, dict(entry)))
+def _unreadable_last(entries: list[dict[str, Any]]) -> None:
+    entries[-1] = {"results": None}
+
+
+def _error_last(entries: list[dict[str, Any]]) -> None:
+    entries[-1] = {"results": "worker failed"}
+
+
+@pytest.mark.parametrize(
+    ("kind", "lose"), [("missing", _lose_last), ("malformed", _unreadable_last), ("error", _error_last)]
+)
+def test_cut_short_job_reads_undecided(tmp_path: Path, kind: str, lose: Any) -> None:
+    """qd_records.result_summary appends an entry without counts for each iteration a cut-short job lost."""
+    runs = _runs(tmp_path, {"periodic": 0.21, "control": 0.64}, job_01={"status": "error", "edit": lose})
     record = case.analyze(runs)
-    kind = next(iter(entry))
     if record["decision"]["verdict"] != "undecided" or record["uncounted_iterations"][kind] != 1:
         raise AssertionError(record["decision"], record["uncounted_iterations"])
     if record["summary"]["control"]["iterations"] != 3 or record["summary"]["periodic"]["iterations"] != 4:
@@ -453,6 +536,8 @@ def test_a_repeat_under_another_name_cannot_reuse_seeds(tmp_path: Path, monkeypa
     manifest["settings"][0]["compilation_seed"] = original["settings"][0]["compilation_seed"]
     (family / "job-01/cases.json").write_text(json.dumps(manifest))
     shutil.copyfile(family / "job-01/cases.json", runs[1] / "cases.json")
+    digest = qd_records.sha256_bytes((runs[1] / "cases.json").read_bytes())
+    _submission(runs[1], lambda record: record.__setitem__("cases_sha256", digest))
     monkeypatch.setattr(case, "CASES", family)
     with pytest.raises(ValueError, match="reuses compilation seeds"):
         case.analyze(runs)
@@ -566,26 +651,17 @@ def test_a_record_without_a_positive_t_out_is_refused(tmp_path: Path) -> None:
 
 def test_the_hom_inverses_bracket_the_point_estimate(tmp_path: Path) -> None:
     """The inverses of the periodic mean and of its two one-sided limits order as the fractions do, descending."""
-    runs = _runs(tmp_path, {"periodic": 0.20, "control": 0.64})
-    spread = {"job-00": (0.14, 0.18), "job-01": (0.17, 0.20)}
-
-    def vary(run: Path, fractions: tuple[float, float]) -> None:
-        manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
-        results = json.loads((run / "results.json").read_text(encoding="utf-8"))
-        seen = iter(fractions * 2)
-        for setting, entry in zip(manifest["settings"], results["iterations"], strict=True):
-            if setting["arm"] == "periodic":
-                entry["counts"] = _counts(next(seen))
-        (run / "results.json").write_text(json.dumps(results))
-
-    for run in runs:
-        vary(run, spread[json.loads((run / "cases.json").read_text(encoding="utf-8"))["job"]])
+    runs = []
+    for job, spread in {"job-00": (0.14, 0.18), "job-01": (0.17, 0.20)}.items():
+        parent = tmp_path / job
+        parent.mkdir()
+        runs.append(_run(parent, job, {"periodic": spread, "control": 0.64}))
     decision = case.analyze(runs)["decision"]
     summary = case.analyze(runs)["summary"]["periodic"]
     low, point, high = (decision[k] for k in ("hom_at_periodic_upper", "hom_at_periodic_mean", "hom_at_periodic_lower"))
     if not (summary["lower"] < summary["mean"] < summary["upper"] and low < point < high):
         raise AssertionError((summary, low, point, high))
-    forecasts = [case.run_forecast(run, json.loads((run / "cases.json").read_text(encoding="utf-8"))) for run in runs]
+    forecasts = [case.run_forecast(qd_records.read_run(run), run.name) for run in runs]
     if abs(case.interpolated_hom(summary["mean"], forecasts) - point) > 1e-12:
         raise AssertionError("the point estimate is not the inverse of the periodic mean")
 
@@ -593,7 +669,55 @@ def test_the_hom_inverses_bracket_the_point_estimate(tmp_path: Path) -> None:
 def test_a_run_without_a_submission_record_is_refused(tmp_path: Path) -> None:
     runs = _runs(tmp_path, {"periodic": 0.21, "control": 0.64})
     (runs[0] / "submission.json").unlink()
-    with pytest.raises(ValueError, match="submission.json is missing"):
+    with pytest.raises(qd_records.RecordError, match="no submission.json"):
+        case.analyze(runs)
+
+
+def _count_up(results: dict[str, Any]) -> None:
+    counts = results["iterations"][0]["counts"]
+    counts[next(iter(counts))] += 1
+
+
+def _swap_iterations(results: dict[str, Any]) -> None:
+    iterations = results["iterations"]
+    iterations[0], iterations[1] = iterations[1], iterations[0]
+
+
+def _change_payload(body: dict[str, Any]) -> None:
+    body["payload"]["command"] = "other"
+
+
+def _change_circuit(circuit: dict[str, Any]) -> None:
+    circuit["input_state"][0] = 1
+
+
+@pytest.mark.parametrize(
+    ("name", "edit", "message"),
+    [
+        ("results.json", _count_up, "results.json differs from the raw result"),
+        ("results.json", _swap_iterations, "results.json differs from the raw result"),
+        ("job-body.json", _change_payload, "job-body.json differs from the body the receipt sent"),
+        ("circuit.json", _change_circuit, "circuit.json differs from its cases.json sha256"),
+    ],
+)
+def test_a_record_that_differs_from_its_receipt_or_raw_result_is_refused(
+    tmp_path: Path, name: str, edit: Any, message: str
+) -> None:
+    """qd_records.read_run binds results.json to raw/result.json, and the body and circuit to the receipt."""
+    runs = _runs(tmp_path, {"periodic": 0.21, "control": 0.64})
+    path = runs[0] / name
+    record = json.loads(path.read_text(encoding="utf-8"))
+    edit(record)
+    path.write_text(json.dumps(record))
+    with pytest.raises(qd_records.RecordError, match=message):
+        case.analyze(runs)
+
+
+def test_an_altered_raw_result_is_refused(tmp_path: Path) -> None:
+    runs = _runs(tmp_path, {"periodic": 0.21, "control": 0.64})
+    raw = runs[0] / "raw/result.json"
+    raw.write_bytes(raw.read_bytes() + b" ")
+    with pytest.raises(qd_records.RecordError, match="raw/result.json differs from its recorded sha256"):
         case.analyze(runs)
 
 
@@ -614,10 +738,8 @@ def test_the_forecast_follows_the_run_perfs(tmp_path: Path) -> None:
 
 @pytest.mark.parametrize("mutation", ["omit", "shift", "unit_key", "nan"])
 def test_an_iteration_must_echo_its_circuit_params(tmp_path: Path, mutation: str) -> None:
-    run = _run(tmp_path, "job-00", {"periodic": 0.21, "control": 0.64})
-
-    def edit(iterations: list[dict[str, Any]]) -> None:
-        params = iterations[1]["iteration"]
+    def edit(entries: list[dict[str, Any]]) -> None:
+        params = entries[1]["iteration"]
         if mutation == "omit":
             del params["circuit_params"]
         elif mutation == "shift":
@@ -629,14 +751,17 @@ def test_an_iteration_must_echo_its_circuit_params(tmp_path: Path, mutation: str
             first = next(iter(params["circuit_params"]))
             params["circuit_params"][first] = float("nan")
 
-    _rewrite(run, edit)
+    run = _run(tmp_path, "job-00", {"periodic": 0.21, "control": 0.64}, edit=edit)
     with pytest.raises(ValueError, match="circuit_params"):
         case.analyze([run])
 
 
 def test_an_iteration_below_the_event_floor_does_not_count(tmp_path: Path) -> None:
-    runs = _runs(tmp_path, {"periodic": 0.21, "control": 0.64})
-    _rewrite(runs[1], lambda iterations: iterations.__setitem__(0, {**iterations[0], "counts": _counts(0.0, 3)}))
+
+    def starve(entries: list[dict[str, Any]]) -> None:
+        entries[0]["results"] = _bscount(_counts(0.0, 3))
+
+    runs = _runs(tmp_path, {"periodic": 0.21, "control": 0.64}, job_01={"edit": starve})
     record = case.analyze(runs)
     if record["decision"]["verdict"] != "undecided" or len(record["below_event_floor"]) != 1:
         raise AssertionError(record["decision"], record["below_event_floor"])

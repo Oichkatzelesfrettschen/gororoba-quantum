@@ -22,8 +22,8 @@ detectors and the event selection leave the suppressed set undepleted.
 qd_platform.template_experiment, recomputes the suppressed set from permanents and the label-sum rule, compares the
 compiled unitary with Perceval's SLOS backend and compares the retained forecast. --build writes the case files.
 --forecast writes noise-model.json from the case's platform read. --estimate writes shot-estimate.json from a live
-processor read under the platform read's figures. --analyze RUN [RUN ...] reads collected runs and writes the
-preregistered endpoints beside each.
+processor read under the platform read's figures. --analyze RUN [RUN ...] reads collected runs through
+qd_records.read_run and writes the preregistered endpoints beside each.
 
 Usage:
   "$PYTHON" scripts/belenos_suppression_case.py [--check|--build|--forecast|--estimate|--analyze RUN [RUN ...]]
@@ -51,6 +51,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from hypercomplex_cases import encoded, photonic_template  # noqa: E402
 from qd_platform import sha256_bytes, template_experiment  # noqa: E402
 
+import qd_records  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 PLATFORM = "qpu:belenos"
@@ -964,20 +965,19 @@ def is_finite(value: Any) -> bool:
     return isinstance(value, int | float) and not isinstance(value, bool) and math.isfinite(value)
 
 
-def complete_perfs(run: Path, start: int) -> dict[str, Any]:
-    """The perfs_at_plan record of a run's submission.json, which must hold every field forecast() reads.
+def complete_perfs(run: qd_records.Run, name: str, start: int) -> dict[str, Any]:
+    """The perfs_at_plan record of a run's receipt, which must hold every field forecast() reads.
 
     The forecast depends on the chip state of the job, so a run without a full record raises and no other run's or the
     case's figures stand in for it. detection_efficiency() divides by the largest t_out and the forecast reads the
     WINDOW modes from `start`, so t_out needs a positive maximum and positive values on those modes."""
-    path = run / "submission.json"
-    require(path.is_file(), f"{run.name}: submission.json is missing, so the run has no perfs_at_plan to forecast from")
-    perfs = json.loads(path.read_text(encoding="utf-8")).get("perfs_at_plan")
-    require(isinstance(perfs, dict), f"{run.name}: submission.json holds no perfs_at_plan record")
+    perfs = run.submission.get("perfs_at_plan")
+    if not isinstance(perfs, dict):
+        raise ValueError(f"{name}: submission.json holds no perfs_at_plan record")
     missing = [field for field in PERFS_FIELDS if field not in perfs]
-    require(not missing, f"{run.name}: perfs_at_plan lacks {missing}")
+    require(not missing, f"{name}: perfs_at_plan lacks {missing}")
     per_mode = perfs["Transmission per mode (%)"]
-    require(isinstance(per_mode, dict), f"{run.name}: perfs_at_plan holds no per-mode transmission record")
+    require(isinstance(per_mode, dict), f"{name}: perfs_at_plan holds no per-mode transmission record")
     columns = [per_mode.get("t_out"), per_mode.get("t_in"), perfs["Dark counts (detection/s)"]]
     scalars = [perfs["HOM (%)"], perfs["g2 (%)"], perfs["Transmittance (%)"], perfs["Clock (MHz)"]]
     require(
@@ -986,16 +986,16 @@ def complete_perfs(run: Path, start: int) -> dict[str, Any]:
         and all(is_finite(value) for column in columns for value in column)
         and max(columns[0]) > 0
         and all(value > 0 for value in columns[0][start : start + WINDOW]),
-        f"{run.name}: perfs_at_plan is not a finite {MODES}-mode performance record",
+        f"{name}: perfs_at_plan is not a finite {MODES}-mode performance record",
     )
     return dict(perfs)
 
 
-def run_forecast(run: Path, manifest: Mapping[str, Any]) -> dict[str, Any]:
+def run_forecast(run: qd_records.Run, name: str) -> dict[str, Any]:
     """The forecast of the run's manifest layout at the run's own perfs_at_plan."""
-    layout = manifest["layout"]
+    layout = run.manifest["layout"]
     start = int(layout["window_start"])
-    return forecast(complete_perfs(run, start), start, tuple(layout["source_modes"]))
+    return forecast(complete_perfs(run, name, start), start, tuple(layout["source_modes"]))
 
 
 def mean_over(forecasts: Sequence[Mapping[str, Any]], arm: str, model: str) -> float:
@@ -1046,8 +1046,10 @@ def analyze(runs: Sequence[Path]) -> dict[str, Any]:
     """Preregistered endpoints of the collected runs of both jobs: per-arm suppressed fractions with their
     between-iteration intervals, the three models' forecasts and the decision.
 
-    The cases.json of each run is byte-identical to a manifest retained under CASES, so the job identity, layout, arm
-    labels and suppressed set are the preregistered ones. Each job name appears once and every compilation seed once
+    Each run passes qd_records.read_run before any count is scored, which binds the receipt, the circuit, the submitted
+    body and the raw result to results.json and raises qd_records.RecordError on a mismatch. The cases.json of each run
+    is byte-identical to a manifest retained under CASES, so the job identity, layout, arm labels and suppressed set
+    are the preregistered ones. Each job name appears once and every compilation seed once
     across the runs, so a repeat of a failed job, retained as its own manifest, supersedes the original and never
     pools with it. Iterations that carry no counts (missing, malformed, error) and iterations below MIN_EVENTS
     accepted events are tallied and do not count toward their arm."""
@@ -1060,11 +1062,11 @@ def analyze(runs: Sequence[Path]) -> dict[str, Any]:
     seeds: set[int] = set()
     yields: dict[str, int] = {}
     for run in runs:
-        manifest_bytes = (run / "cases.json").read_bytes()
-        digest = sha256_bytes(manifest_bytes)
+        records = qd_records.load_run(run)
+        digest = sha256_bytes(records.bytes_of("cases.json"))
         require(digest in retained, f"{run.name}: cases.json (sha256 {digest}) is no manifest retained under {FAMILY}")
-        manifest = json.loads(manifest_bytes)
-        results = json.loads((run / "results.json").read_text(encoding="utf-8"))
+        validated = qd_records.validate_run(records)
+        manifest, results = validated.manifest, validated.collected
         job = manifest["job"]
         require(job not in jobs, f"{run.name} repeats job {job} already read from {jobs.get(job)}")
         jobs[job] = run.name
@@ -1072,7 +1074,7 @@ def analyze(runs: Sequence[Path]) -> dict[str, Any]:
         require(not run_seeds & seeds, f"{run.name} reuses compilation seeds of another run")
         seeds |= run_seeds
         start = int(manifest["layout"]["window_start"])
-        forecasts.append(run_forecast(run, manifest))
+        forecasts.append(run_forecast(validated, run.name))
         # Both arms score the periodic setting's suppressed set; the control's own set is empty.
         suppressed = {
             tuple(out)
