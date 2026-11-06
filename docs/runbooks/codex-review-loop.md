@@ -1,18 +1,19 @@
 # Codex review loop, stacked PRs and merging
 
-Codex, the chatgpt-codex-connector app, supplies the default pull-request
-review. It reviews only on request: an issue comment `@codex review` asks for
-a review of the current head. The operator requests one when the PR is a merge
-candidate and again only after a push that changed code in response to a
-finding, at most two rounds per PR, through `scripts/codex_review_request.sh PR`:
-it refuses a request when the PR's own diff (`git patch-id --verbatim` of
-merge-base..head against current main, without context lines) equals the last reviewed head's, so a
-merge of main earns none, and when two rounds were already requested. Codex is
-the only hosted reviewer.
-Copilot reviews are billed to the owner, so no pull request requests one; when
-the Codex app reports exhausted code-review quota, the owner decides how the
-PR proceeds. A round that never completes follows
-[codex-review-stalls.md](codex-review-stalls.md).
+Hosted review runs in a fixed order, each stage once per PR: Codex, then
+Copilot, then the owner (AGENTS.md, "Reviews and merges").
+
+Codex, the chatgpt-codex-connector app, reviews only on request: an issue
+comment `@codex review` asks for a review of the current head. The operator
+requests one when the PR is a merge candidate, through
+`scripts/codex_review_request.sh PR`: it refuses a request when the PR's own
+diff (`git patch-id --verbatim` of merge-base..head against current main,
+without context lines) equals the last reviewed head's, so a merge of main
+earns none, and when a round was already requested. Copilot reviews on
+request as well: `gh pr edit PR --add-reviewer @copilot`, once, after the
+Codex threads are resolved. When the Codex app reports exhausted code-review
+quota, the owner decides how the PR proceeds. A round that never completes
+follows [codex-review-stalls.md](codex-review-stalls.md).
 
 - *Progress.* The bot keeps one summary comment per PR, marked
   `codex-pull-request-review-summary`, which reads Running while a review is in
@@ -66,12 +67,15 @@ PR proceeds. A round that never completes follows
    those markers, and lists every other open thread as unanswered. A comment
    such as "will fix" or a question resolves nothing. Never resolve a thread
    whose finding has not been read and answered.
-6. A push that fixed a finding gets one more request through
-   `scripts/codex_review_request.sh PR`, and the loop starts again at the
-   wait; a refused third round goes to the owner. A PR leaves the loop when the current-head Codex status
-   reports `verdict=clean-comment...` or `verdict=clean-reaction...` and every
-   review thread is resolved. A round that produced no thread ends the loop
-   at once.
+6. The Codex round ends when every thread is answered and resolved; a round
+   that produced no thread ends at once. The push that fixed its findings
+   earns no second Codex request: `scripts/codex_review_request.sh PR`
+   refuses one and names the owner.
+7. Request the Copilot review with `gh pr edit PR --add-reviewer @copilot`
+   and work its threads through steps 2 to 5, in one push.
+8. Report to the owner: the head, the checks, each reviewer's findings and
+   their dispositions, and anything left open. The owner decides the merge
+   or a further round.
 
 ## Stacked PRs
 
@@ -88,13 +92,9 @@ PR proceeds. A round that never completes follows
 A PR merges after this sequence:
 1. The operator reviews the whole PR diff against origin/main, every commit
    regardless of author, and fixes what that review finds.
-2. Codex reviews the head; every thread is fixed, refuted or bounded and
-   resolved (One round above). A push that changed code after that round
-   gets one more request, up to the cap of two automated rounds per PR
-   counted from its first request; after the second round the operator
-   answers every thread in one push and asks the owner whether the PR merges
-   instead of requesting a third. A merge of main or a regenerated view earns
-   no request:
+2. Codex reviews the head once, then Copilot reviews the head once; every
+   thread of each is fixed, refuted or bounded and resolved (One round
+   above). A merge of main or a regenerated view earns no request:
    `scripts/codex_review_wait.sh PR DEADLINE LOG 600 REVIEWED_HEAD` names
    the head that round reviewed, accepts its verdict, waits on the current
    head's checks and requests nothing (the plain form treats a new head as an
@@ -103,6 +103,7 @@ A PR merges after this sequence:
    `types` run beside them; `proofs.yml` runs when the diff touches a proof path). A push that changes the head reruns them; a red
    job gets its fix commit on the branch.
 4. GitHub reports mergeable_state clean.
+5. The owner, consulted with the report of step 8 above, says to merge.
 
 Then, bottom-up, for each PR:
 1. Merge it with a merge commit:

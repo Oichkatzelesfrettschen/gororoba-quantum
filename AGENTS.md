@@ -6,6 +6,13 @@ maps every document, [docs/PYTHON.md](docs/PYTHON.md) holds the interpreter
 and dependency inventory, and [ci/AGENTS.md](ci/AGENTS.md) holds the gate
 machinery.
 
+The workspace guide, `AGENTS.md` in the directory above the primary checkout
+(kept in the private gororoba-infrastructure repository as
+`workspace/AGENTS.md`), holds the rules shared by every gororoba repository:
+ownership, the boundaries between repositories, shared checkouts and the
+pull-request shape. Read it together with this file; this file governs where
+the two differ.
+
 ## Layout and gates
 
 - The modules run as scripts from gororoba_quantum/ and form no installable
@@ -215,22 +222,19 @@ lives; read it before writing one.
 
 ## Reviews and merges
 
-- Codex is the only hosted reviewer, and it reviews only on request: the
-  operator posts the issue comment `@codex review` through
-  `scripts/codex_review_request.sh PR`, which refuses a request whose PR diff
-  equals the last reviewed head's or that would open a third round. The
-  operator requests once, when the PR is a
-  merge candidate, and again only after a push that changed code in response
-  to a finding or to the operator's own review; a clean round with no thread
-  followed by green checks admits the merge, and a merge of main or a
-  regenerated view earns no new request. A PR gets at most two automated
-  review rounds, counted from its first request: after the second round the
-  operator answers every thread in one push and asks the owner whether the PR
-  merges, because each further round has found new edge cases without
-  converging (PR #712 ran eight). Copilot reviews are billed to the owner, so
-  no pull request requests one, and `.coderabbit.yaml` keeps CodeRabbit
-  silent; when the Codex app reports exhausted
-  code-review quota, the owner decides how the PR proceeds.
+- Hosted review runs in a fixed order, each stage once per PR: Codex, then
+  Copilot, then the owner. When the PR is a merge candidate the operator
+  requests the Codex review through `scripts/codex_review_request.sh PR`,
+  which posts `@codex review` and refuses a request whose PR diff equals the
+  last reviewed head's or that would open a second round, then answers and
+  resolves every thread in one push. The operator then requests the Copilot
+  review once with `gh pr edit PR --add-reviewer @copilot` and answers and
+  resolves its threads in one push. The operator then reports the PR's
+  state to the owner, who decides the merge or a further round: further
+  automated rounds have found new edge cases without converging (PR #712 ran
+  eight). A merge of main or a regenerated view earns no request,
+  `.coderabbit.yaml` keeps CodeRabbit silent, and when the Codex app reports
+  exhausted code-review quota the owner decides how the PR proceeds.
 - Reply to each thread's root comment beginning `Fixed in <commit>`,
   `Refuted:` followed by the refuting source line, or `Boundary:` followed by
   the documented limit and the follow-up issue, then run
