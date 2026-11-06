@@ -7,6 +7,7 @@ repository-relative; a branch name stands for its worktree.
 
 | Report | Subject |
 |---|---|
+| [2026-10-30-belenos-suppression-law-case-review.md](2026-10-30-belenos-suppression-law-case-review.md) | Adversarial review of the Belenos three-photon suppression-law case at its first three commits: partial and repeated jobs, compile-error bias, the accepted-event floor, the timing model and the paired contrast |
 | [2026-10-30-quandela-run-audit.md](2026-10-30-quandela-run-audit.md) | Ascella and Belenos run inventory, repeats, simulation pairs, mode-swap replay, across-time claim gap and live processor state |
 | [layout-reconciliation/brief.md](layout-reconciliation/brief.md) | Peer-review brief for the repository layout reconciliation: measured storage classes, options and seven questions (2026-10-30) |
 | [layout-reconciliation/review-codex-daybreak-blue.md](layout-reconciliation/review-codex-daybreak-blue.md) | Codex gpt-daybreak-blue-latest review: lifecycle retention, sparse profiles, clone-size ranking, archive resolver, import-graph refutation of the prefix cut |
