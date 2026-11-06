@@ -57,6 +57,20 @@ local failed-runs archive.
 is a unit is A = k[t, z]/((J, a0 z_i - G_i) : a0^infinity), and A/(t) is an affine piece of E0. For Iso, K2 is prime
 with no linear form (h_1 = 17), so V(K2) meets every chart densely: dim A/(t) = 4 gives E0 = V(K2) and F(I) = k[y]/K2
 in every degree; dim A/(t) <= 3 gives dim E0 <= 3, an analytic spread of at most 4, and a relation of L outside K2 in
-some degree of at least 6 (L agrees with K2 through degree 5). The charts at 32009 and 32029
-(`chart-iso-p32009.sing`, `chart-iso-p32029.sing`, same QRNG form) are running; this section records their results
-when they finish.
+some degree of at least 6 (L agrees with K2 through degree 5). No chart saturation has finished, so the test has not
+decided the case. Runs, all with the same QRNG form (`chart-iso-pP-coefficients.json`), logs under `chart-runs/`:
+
+| Host | Script | Outcome |
+|---|---|---|
+| lab-a1 (aarch64, 11 GB) | `chart-iso-p32029.sing` (sat) | "no more memory" at 5.2 GB (prlimit 5 GB) after 57 min |
+| lab-a1 | `chart-iso-p32009.sing` (sat) | "no more memory" at 10.5 GB (prlimit 10 GB) after 3 h 26 min |
+| Azure FX4mds_v2 (84 GB) | `chart-iso-p32029-elim.sing` | stopped by the memory watchdog at 29.7 GB after 3 h 21 min |
+| Azure FX4mds_v2 | `chart-iso-p32009-elim.sing` | stopped by the memory watchdog at 52.1 GB after 7 h 29 min |
+| Azure FX4mds_v2 | `chart-iso-p32029-sat.sing`, `chart-iso-p32009-sat.sing` | 8 h limit (exit 124) at 15.1 and 15.8 GB |
+
+`chart-runs/azure/events` lists the two watchdog stops as `exit 0` because Singular exits 0 on the watchdog's SIGTERM;
+the `mem.log` lines before each stop and the absence of any RESULT line in the logs show neither finished. The
+`option(prot)` traces end at standard bases of 20,000-37,000 elements, still growing. The dense a0, a combination of all
+17 generators, makes every a0 z_i a polynomial with hundreds of terms; the next formulation is a coordinate chart
+a0 = G_j, z_j = 1, which decides the case equally (y_j lies outside K2 because K2 contains no linear form, so a
+4-dimensional E0 meets D+(y_j) densely). The flag review of the Azure portfolio is `chart-runs/azure/flags.md`.
