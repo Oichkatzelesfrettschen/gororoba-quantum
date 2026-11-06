@@ -360,12 +360,34 @@ differs from it only in the `cd_core.py` digest.
 | [2001.09190.md](notes/papers/2001.09190.md) | Vepsäläinen et al. 2020 -- ionizing radiation limits transmon T1 to about 4 ms; power density and shield test |
 | [2402.03208.md](notes/papers/2402.03208.md) | Harrington et al. 2025 -- cosmic rays cause 17.1 % of correlated qubit errors; coincidence rates, qubit participation, recovery times |
 | [2104.05219.md](notes/papers/2104.05219.md) | McEwen et al. 2022 -- chip-wide cosmic-ray error bursts, one per 10 s, 25 ms recovery, 26 qubits |
+| [2111.08152.md](notes/papers/2111.08152.md) | Costa, An, Sanders, Su, Babbush and Berry 2021: discrete adiabatic theorem and the O(kappa log(1/epsilon)) quantum linear-system solver |
+| [2305.11352.md](notes/papers/2305.11352.md) | Jennings, Lostaglio, Pallister, Sornborger and Subasi 2023: randomized adiabatic quantum linear solver with an explicit 837 kappa query bound |
+| [2406.12086.md](notes/papers/2406.12086.md) | Dalzell 2024: kernel-reflection quantum linear-system solver with an explicit 56 kappa leading constant |
+| [2410.18178.md](notes/papers/2410.18178.md) | Low and Su 2024: quantum linear-system algorithm with optimal state-preparation queries (Tunable VTAA) |
+| [2601.16697.md](notes/papers/2601.16697.md) | Mori, Kikuchi, Benedetti and Rosenkranz 2026: Omega(kappa sqrt(s)) lower bound for sparse quantum linear-system solvers |
+| [2609.22445.md](notes/papers/2609.22445.md) | Patel 2026: joint Omega(kappa sqrt(s) log(1/epsilon)) lower bound for sparse quantum linear-system solvers |
+| [2502.11239.md](notes/papers/2502.11239.md) | Tu, Dubynskyi, Mohammadisiahroudi, Riashchentceva, Cheng, Ryashchentsev, Terlaky and Liu 2025: fault-tolerant space, time and energy estimates for HHL against conjugate gradient |
+| [2411.02522.md](notes/papers/2411.02522.md) | Morales, Pira, Schleich, Koor, Costa, An, Aspuru-Guzik, Lin, Rebentrost and Berry 2024: survey and taxonomy of quantum linear-system solvers |
+| [1910.06151.md](notes/papers/1910.06151.md) | Chia, Gilyen, Li, Lin, Tang and Wang 2019: dequantized singular value transformation for low-rank inputs under sampling access |
+| [1712.06239.md](notes/papers/1712.06239.md) | Chen and Gao 2017: Macaulay-matrix HHL for Boolean polynomial systems, runtime in the condition number |
+| [2111.00405.md](notes/papers/2111.00405.md) | Ding, Gheorghiu, Gilyen, Hallgren and Li 2021: condition-number lower bound that limits Macaulay-matrix HHL against Grover search |
+| [2510.05588.md](notes/papers/2510.05588.md) | Li 2025: instance-aware quantum linear-system algorithm and its polynomial-system application |
+| [1712.07211.md](notes/papers/1712.07211.md) | Faugere, Horan, Kahrobaei, Kaplan, Kashefi and Perret 2017: Grover-accelerated hybrid solver for Boolean multivariate quadratic systems, O(2^(0.462n)) gates |
+| [2609.28901.md](notes/papers/2609.28901.md) | Lee, Jeong and Kim 2026: garbage-free reversible Gaussian elimination over GF(p^l), same field-operation count as classical elimination |
+| [2608.23929.md](notes/papers/2608.23929.md) | Maeda and Yano 2026: quantum additive-error torus point counting of a Laurent polynomial over F_q, and its #P-hardness |
+| [math-0411623.md](notes/papers/math-0411623.md) | Kedlaya 2004: quantum algorithm for zeta functions of curves over F_q, polynomial in genus and log q |
+| [quant-ph-0405081.md](notes/papers/quant-ph-0405081.md) | van Dam 2004: zeros of finite-field zeta functions as eigenvalues of efficient unitaries (Fermat hypersurfaces) |
+| [2408.08292.md](notes/papers/2408.08292.md) | Jordan, Shutty, Wootters, Zalcman, Schmidhuber, King, Isakov, Khattar and Babbush 2024: decoded quantum interferometry: optimization over F_p reduced to decoding |
+| [quant-ph-0409035.md](notes/papers/quant-ph-0409035.md) | Buhrman and Spalek 2004: quantum walk verification of matrix products in O(n^(5/3)) time over an integral domain |
+| [1103.0842.md](notes/papers/1103.0842.md) | Belovs 2011: span program for the rank problem (query complexity) |
 
 ### Algebra and proofs
 
 | File | Contents |
 |---|---|
 | [topics/a5-exceptional-fiber-findings.md](notes/topics/a5-exceptional-fiber-findings.md) | A_5 exceptional fibers of the nullity-8 closures along their boundary orbits: Hilbert functions by degree-by-degree membership rank, quadric-scheme structure, formal-arc support certificate, retired elimination routes, and the hypotheses that survive falsification |
+| [topics/quantum-linear-algebra-fit-a5.md](notes/topics/quantum-linear-algebra-fit-a5.md) | quantum linear algebra of 2024-2026 against each in-flight A_5 fiber computation: real-amplitude QLSS bounds, Macaulay-matrix and Grover polynomial-system solvers, reversible elimination over GF(p^l), point-count approximation over F_q, and the F_2 rank collapse that blinds a qubit-native probe to zero divisors |
+| [topics/finite-field-qlsa-alternatives.md](notes/topics/finite-field-qlsa-alternatives.md) | a finite-field quantum linear-system proposal for the fiber program, refuted claim by claim (isotropic vectors for kernels, non-unitary oracle, register size, misattributed citations) |
 | [topics/box-kites/README.md](notes/topics/box-kites/README.md) | box-kite experiment program index |
 | [bdsc-pauli-readout.md](notes/topics/bdsc-pauli-readout.md) | BDSC target and blade effects as three-term four-qubit Pauli sums; local readout and 13-basis cover |
 | [algebra-hardware-probe-principles.md](notes/topics/algebra-hardware-probe-principles.md) | first principles of algebra hardware probes: mutation test, eigen-observable, interleaving, null arm, noisy coherent response; findings ledger of the Garnet runs |
