@@ -2154,6 +2154,9 @@ upper bound 0.946 against 0.845; anchors steady at z 2.29). Each served mesh the
 across twelve days and the update: the slope estimates about 89 % of the full-persistence value and the bound does not
 exclude full persistence. The dark-output ranks agree between the jobs (Spearman 0.58, exploratory), and the
 predecessor transition carries none (Spearman -0.07).
+[First principles](../evidence/ascella-order-coefficients/long-horizon-first-principles.md) separates the
+compiler, the analysis and the chip as sources of the persistent error, keeps the chip, and scores a per-seed
+correction out of sample.
 
 **Review.** Codex, an Opus agent and grok reviewed the case before acquisition; the
 [reconciliation](../archive/reviews/ascella-long-horizon-seed-repeat-reconciliation.md) records the unitary mesh
