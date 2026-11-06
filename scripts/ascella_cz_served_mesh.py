@@ -7,9 +7,11 @@ designed unitary of the setting, setting_unitary embedded at chip modes 0..5.
 
 Photons enter chip modes 0 and 2 only, so a setting fixes two columns of the unitary and leaves the other ten free to
 the transpiler. The eligible amplitudes are the four permanents of one photon on each rail pair, (0, 2), (0, 3),
-(1, 2) and (1, 3), with modes 4..11 empty. The readout rotation is part of every setting's unitary, so the click
-statistics of a setting depend on the moduli of those amplitudes alone; the transpiler fits a phase on each output
-mode freely, and a phase-sensitive overlap of the amplitudes measures that freedom rather than an error.
+(1, 2) and (1, 3), with modes 4..11 empty. The readout rotation is part of every setting's unitary, so for
+indistinguishable photons the click statistics of a setting depend on the moduli of those amplitudes alone; the
+transpiler fits a phase on each output mode freely, and a phase-sensitive overlap of the amplitudes measures that
+freedom rather than an error. Distinguishable photons follow the sum of the squared moduli of the two products of
+each permanent instead; tests/scripts/test_ascella_cz_served_mesh.py holds that law to the same tolerance.
 
 Per setting the record keeps the total variation distance between the served and designed distributions over the
 four eligible outcomes (nominal_tvd), the ratio of served to designed eligible probability (success_ratio) and the
