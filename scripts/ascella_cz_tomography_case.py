@@ -1020,6 +1020,34 @@ def forecast_bytes() -> bytes:
     return (json.dumps(forecast(), indent=1, sort_keys=True) + "\n").encode()
 
 
+def first_difference(retained: Any, recomputed: Any, path: str = "") -> str | None:
+    """The first path where two JSON trees differ: keys, lengths, strings and integers exactly, floats beyond
+    TOLERANCE absolute. Measured with numpy 2.5.4 on an x86-64 host other than the one that built forecast.json:
+    its recomputed floats differ from the retained ones by up to 2e-15, with or without the ci/run_gates.py
+    OpenBLAS and numpy caps."""
+    if isinstance(retained, dict) and isinstance(recomputed, dict):
+        if retained.keys() != recomputed.keys():
+            return f"{path or '/'}: keys {sorted(retained.keys() ^ recomputed.keys())} differ"
+        for key in retained:
+            found = first_difference(retained[key], recomputed[key], f"{path}/{key}")
+            if found:
+                return found
+        return None
+    if isinstance(retained, list) and isinstance(recomputed, list):
+        if len(retained) != len(recomputed):
+            return f"{path}: {len(retained)} retained items, {len(recomputed)} recomputed"
+        for index, (left, right) in enumerate(zip(retained, recomputed, strict=True)):
+            found = first_difference(left, right, f"{path}/{index}")
+            if found:
+                return found
+        return None
+    if isinstance(retained, float) and isinstance(recomputed, float) and abs(retained - recomputed) <= TOLERANCE:
+        return None
+    if type(retained) is not type(recomputed) or retained != recomputed:
+        return f"{path}: retained {retained!r}, recomputed {recomputed!r}"
+    return None
+
+
 # ---------------------------------------------------------------- checks
 
 
@@ -1247,9 +1275,10 @@ def check() -> int:
 
 
 def check_forecast() -> int:
-    retained = (FAMILY_DIR / FORECAST).read_bytes()
-    require(forecast_bytes() == retained, f"{FORECAST} differs from the recomputed forecast")
-    variants = json.loads(retained)["variants"]
+    retained = json.loads((FAMILY_DIR / FORECAST).read_text(encoding="utf-8"))
+    difference = first_difference(retained, json.loads(forecast_bytes()))
+    require(difference is None, f"{FORECAST} differs from the recomputed forecast at {difference}")
+    variants = retained["variants"]
     for name, row in variants.items():
         print(
             f"{name}: estimand {row['estimand_process_fidelity']:.4f} "

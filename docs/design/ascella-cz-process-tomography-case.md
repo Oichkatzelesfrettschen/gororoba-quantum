@@ -323,7 +323,7 @@ retains them.
 | Check | Result |
 |---|---|
 | `ascella_cz_tomography_case.py --check` | passes: CZ block, 144 folded settings, SLOS agreement, noiseless limit, ideal fidelity 1, both jobs bound, modeled seconds inside the bounds |
-| `ascella_cz_tomography_case.py --forecast` | recomputes forecast.json byte for byte |
+| `ascella_cz_tomography_case.py --forecast` | recomputes forecast.json: identical keys, strings and integers, every float within 1e-12 (`first_difference`); a recomputation on a second x86-64 host differs from the retained floats by up to 2e-15 |
 | `qd_platform.py plan` on job-00 and job-01 | passes: ceilings 1.4 and 2.6, HOM warning at 87.54 %; retained as `plan-read.json` in each job directory |
 | `ci/seed_provenance.py --check`, `anu_qrng.py check` | pass: the manifests and forecast own both draws, no literal seed |
 

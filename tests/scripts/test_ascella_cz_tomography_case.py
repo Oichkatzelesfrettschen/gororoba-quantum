@@ -129,6 +129,23 @@ def test_dataset_whose_score_exceeds_one_gets_an_interval_that_contains_it() -> 
         raise AssertionError(f"gate fidelity interval {low}, {high} excludes {found['average_gate_fidelity']}")
 
 
+def test_forecast_comparison_admits_last_digit_drift_only() -> None:
+    retained = {"a": [1, 0.8490000000000001, "x"], "b": {"c": True}}
+    if case.first_difference(retained, {"a": [1, 0.849 + 2e-15, "x"], "b": {"c": True}}) is not None:
+        raise AssertionError("a 2e-15 float difference fails the forecast comparison")
+    changed = (
+        {"a": [1, 0.8491, "x"], "b": {"c": True}},
+        {"a": [1, 0.849, "y"], "b": {"c": True}},
+        {"a": [2, 0.849, "x"], "b": {"c": True}},
+        {"a": [1, 0.849], "b": {"c": True}},
+        {"a": [1, 0.849, "x"], "b": {"c": 1}},
+        {"a": [1, 0.849, "x"], "b": {}},
+    )
+    for recomputed in changed:
+        if case.first_difference(retained, recomputed) is None:
+            raise AssertionError(f"the forecast comparison accepts {recomputed}")
+
+
 def test_retained_forecast_interval_kind_has_nominal_coverage() -> None:
     forecast = json.loads((case.FAMILY_DIR / case.FORECAST).read_text())
     study = forecast["coverage_study"]
