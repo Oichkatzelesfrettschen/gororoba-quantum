@@ -64,15 +64,13 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from hypercomplex_cases import encoded, photonic_template  # noqa: E402
 from qd_platform import (  # noqa: E402
     PlatformError,
-    expected_iterations,
     load_case,
     payload,
-    predates,
-    result_summary,
     sha256_bytes,
     template_experiment,
 )
 
+import qd_records  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 PLATFORM = "qpu:ascella"
@@ -1313,47 +1311,17 @@ def parse_state(key: str) -> list[int]:
 
 
 def load_run(run: Path) -> dict[str, Any]:
-    """One collected run bound to its retained case: cases.json must equal the retained bytes, results.json must name
-    the job that submission.json records, carry the sha256 of raw/result.json and equal the qd_platform.result_summary
-    of those raw bytes, and each returned iteration binds to the setting that has its echoed compilation_seed, one to
-    one. An entry that is missing, malformed or an error is counted and skipped."""
-    raw = (run / "cases.json").read_bytes()
-    manifest = json.loads(raw)
+    """One collected run bound to its retained case. qd_records.read_run binds the receipt (cases.json digest,
+    approval, platform), the circuit, the submitted body, the collection and the raw result first. Then cases.json must
+    equal the retained bytes of the job it names, and each returned iteration binds to the setting that has its echoed
+    compilation_seed, one to one. An entry that is missing, malformed or an error is counted and skipped."""
+    record = qd_records.read_run(run)
+    manifest, submission, results = record.manifest, record.submission, record.collected
     job = manifest.get("job")
     require(manifest.get("family") == FAMILY and job in JOBS, f"{run}: not a run of {FAMILY}")
-    retained = (FAMILY_DIR / job / "cases.json").read_bytes()
-    require(sha256_bytes(raw) == sha256_bytes(retained), f"{run}: cases.json differs from the retained {job}")
-    results = json.loads((run / "results.json").read_text(encoding="utf-8"))
-    submission_path = run / "submission.json"
-    require(submission_path.is_file(), f"{run}: no submission.json to bind the result to its job")
-    submission = json.loads(submission_path.read_text(encoding="utf-8"))
-    job_id = submission.get("job_id")
-    require(isinstance(job_id, str) and bool(job_id), f"{run}: submission.json records no job_id")
-    require(results.get("job_id") == job_id, f"{run}: results.json names job {results.get('job_id')!r}, not {job_id}")
+    retained = (FAMILY_DIR / str(job) / "cases.json").read_bytes()
+    require(record.cases_sha256 == sha256_bytes(retained), f"{run}: cases.json differs from the retained {job}")
     entries = results.get("iterations") or []
-    raw_path = run / "raw" / "result.json"
-    digest = results.get("result_sha256")
-    if entries or digest is not None or raw_path.is_file():
-        require(
-            isinstance(digest, str) and raw_path.is_file() and sha256_bytes(raw_path.read_bytes()) == digest,
-            f"{run}: raw/result.json does not match the result_sha256 of results.json",
-        )
-        status = results.get("status")
-        require(isinstance(status, dict), f"{run}: results.json records no job status")
-        try:
-            summary = result_summary(
-                raw_path.read_bytes(),
-                job_id,
-                status,
-                status.get("status") == "completed",
-                expected_iterations(manifest),
-            )
-        except PlatformError as error:
-            raise RuntimeError(f"{run}: raw/result.json is unreadable: {error}") from error
-        differing = sorted(
-            key for key, value in summary.items() if results.get(key) != value and not predates(results, summary, key)
-        )
-        require(not differing, f"{run}: results.json differs from the raw result in {differing}")
     require(len(entries) <= len(manifest["settings"]), f"{run}: {len(entries)} iterations for {job}")
     by_seed = {setting["compilation_seed"]: setting["name"] for setting in manifest["settings"]}
     tallies: dict[str, dict[str, Any]] = {}
@@ -1390,7 +1358,7 @@ def load_run(run: Path) -> dict[str, Any]:
         tallies[name] = {"eligible": eligible, "samples": samples, "shots": shots}
     return {
         "job": job,
-        "cases_sha256": sha256_bytes(raw),
+        "cases_sha256": record.cases_sha256,
         "tallies": tallies,
         "uncounted": uncounted,
         "excluded": excluded,

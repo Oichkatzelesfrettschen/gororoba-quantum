@@ -145,9 +145,9 @@ pool is preregistered in `cases.json`:
   cross-job stationarity stays unverified.
 
 **Binding.** `--analyze` binds each returned iteration to the setting that has its echoed `compilation_seed`, one to
-one. It requires each run's `cases.json` to equal the retained case byte for byte, the two runs to be distinct
-jobs, and each `results.json` to name the job its `submission.json` records and to carry the sha256 of
-`raw/result.json`. An entry that is missing, malformed or an error (the kinds `qd_platform.result_summary` writes for a cut-short
+one. It reads each run through `qd_records.read_run`, which binds the receipt (its `cases_sha256`, approval and
+platform), the circuit, the submitted body, `results.json` and the sha256 of `raw/result.json`. It then requires each
+run's `cases.json` to equal the retained case byte for byte and the two runs to be distinct jobs. An entry that is missing, malformed or an error (the kinds `qd_platform.result_summary` writes for a cut-short
 job) is counted and skipped without raising.
 
 Perceval 1.3.1 provides `perceval.algorithm.ProcessTomography` and `ProcessTomographyMLE`. Both take a computer

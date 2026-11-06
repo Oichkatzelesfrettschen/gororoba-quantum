@@ -153,9 +153,14 @@ def _write_run(
     hour: int = 0,
     entries: dict[int, dict] | None = None,
 ) -> None:
-    raw = (case.FAMILY_DIR / job / "cases.json").read_bytes()
+    """A run directory in the collector's format that qd_records.read_run accepts: the retained case and circuit, the
+    body the receipt hashes, the receipt with its approval, the collection and the raw result."""
+    template = case.FAMILY_DIR / job
+    raw = (template / "cases.json").read_bytes()
     manifest = json.loads(raw)
     (directory / "cases.json").write_bytes(raw)
+    circuit = manifest["circuit"]["file"]
+    (directory / circuit).write_bytes((template / circuit).read_bytes())
     iterations = []
     for setting in manifest["settings"]:
         counts = {}
@@ -163,8 +168,8 @@ def _write_run(
             vector = [0] * case.MODES
             vector[case.C0 + outcome // 2] = 1
             vector[case.T0 + outcome % 2] = 1
-            if round(4000 * probability):
-                counts[",".join(str(v) for v in vector)] = round(4000 * probability)
+            if round(3980 * probability):
+                counts[",".join(str(v) for v in vector)] = round(3980 * probability)
         counts[",".join(["1"] * 3 + ["0"] * 9)] = 11
         iterations.append(
             {
@@ -186,13 +191,30 @@ def _write_run(
     raw_result = json.dumps(answer).encode()
     (directory / "raw").mkdir()
     (directory / "raw" / "result.json").write_bytes(raw_result)
+    payload = {"fixture": job}
+    body = {"payload": payload}
+    (directory / "job-body.json").write_text(json.dumps(body))
     status = {"status": "completed" if complete else "canceled", "shots": shots}
     summary = result_summary(raw_result, f"id-{job}", status, complete, expected_iterations(manifest))
     (directory / "results.json").write_text(
-        json.dumps({"job_id": f"id-{job}", "status": status, "result_sha256": sha256_bytes(raw_result), **summary})
+        json.dumps(
+            {
+                "schema": "qd-collection-v1",
+                "job_id": f"id-{job}",
+                "status": status,
+                "data": {"payload": payload},
+                "result_sha256": sha256_bytes(raw_result),
+                **summary,
+            }
+        )
     )
     submission = {
+        "schema": "qd-submission-v1",
+        "cases_sha256": sha256_bytes(raw),
         "job_id": f"id-{job}",
+        "platform": case.PLATFORM,
+        "approval": "fixture approval",
+        "body_sha256": sha256_bytes(json.dumps(body, sort_keys=True).encode()),
         "perfs_at_plan": {"HOM (%)": hom, "Transmittance (%)": transmittance},
         "submitted_utc": f"2026-11-01T{hour:02d}:00:00+00:00",
     }
@@ -252,14 +274,20 @@ def test_seed_binding_refuses_unknown_and_repeated_seeds(tmp_path: Path) -> None
 
 
 def test_a_run_must_equal_the_retained_case_and_the_runs_must_differ(tmp_path: Path) -> None:
+    """An edited cases.json fails the receipt digest, and one whose receipt follows the edit fails the retained
+    bytes."""
     runs = _runs(tmp_path / "a")
-    (runs[0] / "cases.json").write_bytes((runs[0] / "cases.json").read_bytes() + b" ")
-    for pair in (runs, [runs[1], runs[1]]):
-        try:
-            case.analyze(pair, replicates=8)
-        except RuntimeError:
-            continue
-        raise AssertionError("an edited case or a repeated job is accepted")
+    edited = (runs[0] / "cases.json").read_bytes() + b" "
+    (runs[0] / "cases.json").write_bytes(edited)
+    with pytest.raises(RuntimeError, match="cases.json differs from submission.json"):
+        case.analyze(runs, replicates=8)
+    receipt = json.loads((runs[0] / "submission.json").read_text())
+    receipt["cases_sha256"] = sha256_bytes(edited)
+    (runs[0] / "submission.json").write_text(json.dumps(receipt))
+    with pytest.raises(RuntimeError, match="differs from the retained job-00"):
+        case.analyze(runs, replicates=8)
+    with pytest.raises(RuntimeError, match="not distinct jobs"):
+        case.analyze([runs[1], runs[1]], replicates=8)
 
 
 def test_partial_record_returns_undecided_and_counts_uncounted_entries(tmp_path: Path) -> None:
@@ -285,18 +313,16 @@ def test_pooling_scales_by_transmittance_and_flags_drift(tmp_path: Path) -> None
         raise AssertionError("a drifted pool is not descriptive")
 
 
-def test_analysis_refuses_a_result_bound_to_another_job_or_raw_file(tmp_path: Path) -> None:
-    """results.json must name the submitted job, carry the digest of raw/result.json and equal its summary."""
+def test_analysis_reads_each_run_through_the_shared_record_reader(tmp_path: Path) -> None:
+    """qd_records.read_run binds the receipt, circuit, submitted body, collection and raw result before any count is
+    read, so each edit below is refused with the reader's message."""
     foreign = "00000000-0000-0000-0000-000000000000"
 
-    def edited(label: str, file: str, change: dict[str, Any] | None) -> list[Path]:
+    def edited(label: str, file: str, change: dict[str, Any]) -> list[Path]:
         runs = _runs(tmp_path / label)
         path = runs[0] / file
         data = json.loads(path.read_text())
-        if change is None:
-            data.pop("job_id")
-        else:
-            data.update(change)
+        data.update(change)
         path.write_text(json.dumps(data))
         return runs
 
@@ -323,16 +349,34 @@ def test_analysis_refuses_a_result_bound_to_another_job_or_raw_file(tmp_path: Pa
         (runs[0] / "submission.json").unlink()
         return runs
 
+    def appended(label: str, file: str) -> list[Path]:
+        runs = _runs(tmp_path / label)
+        path = runs[0] / file
+        path.write_bytes(path.read_bytes() + b"\n")
+        return runs
+
+    def other_body(label: str) -> list[Path]:
+        runs = _runs(tmp_path / label)
+        (runs[0] / "job-body.json").write_text(json.dumps({"payload": {"fixture": "another"}}))
+        return runs
+
     mutations = (
-        (edited("result-job", "results.json", {"job_id": foreign}), "names job"),
-        (edited("submission-job", "submission.json", {"job_id": foreign}), "names job"),
-        (edited("no-job", "submission.json", None), "records no job_id"),
-        (edited("digest", "results.json", {"result_sha256": "0" * 64}), "result_sha256"),
-        (raw_edit("raw-edit", b"edited"), "result_sha256"),
-        (raw_edit("raw-gone", None), "result_sha256"),
+        (edited("result-job", "results.json", {"job_id": foreign}), "names another job or schema"),
+        (edited("submission-job", "submission.json", {"job_id": foreign}), "names another job or schema"),
+        (
+            edited("case-digest", "submission.json", {"cases_sha256": "0" * 64}),
+            "cases.json differs from submission.json",
+        ),
+        (edited("no-approval", "submission.json", {"approval": " "}), "records no approval"),
+        (edited("body-digest", "submission.json", {"body_sha256": "0" * 64}), "job-body.json differs from the body"),
+        (other_body("other-body"), "job-body.json differs from the body"),
+        (appended("circuit", "circuit.json"), "circuit.json differs from its cases.json sha256"),
+        (edited("digest", "results.json", {"result_sha256": "0" * 64}), "raw/result.json differs from its recorded"),
+        (raw_edit("raw-edit", b"edited"), "raw/result.json differs from its recorded"),
+        (raw_edit("raw-gone", None), "raw/result.json differs from its recorded"),
         (no_submission("no-submission"), "no submission.json"),
-        (swapped_counts("swapped-counts"), "differs from the raw result"),
-        (edited("shots-used", "results.json", {"shots_used": 1}), "differs from the raw result"),
+        (swapped_counts("swapped-counts"), "results.json differs from the raw result"),
+        (edited("shots-used", "results.json", {"shots_used": 1}), "results.json differs from the raw result"),
     )
     for runs, message in mutations:
         with pytest.raises(RuntimeError, match=message):
