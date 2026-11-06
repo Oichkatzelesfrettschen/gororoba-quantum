@@ -86,14 +86,56 @@ fits the amplitude would lower it further; it needs a held-out run to score.
 - **Transfer.** Belenos replays the same question for its own meshes in
   [belenos-mesh-persistence-case.md](../../design/belenos-mesh-persistence-case.md), held until the chip returns.
 
-## Higher Cayley-Dickson algebras and accuracy
+## Hardware layers and where the persistent error enters
 
-The 32- and 64-dimensional work in the repository
-([dimension-32 program](../../design/dimension32-global-topology-program.md)) classifies the topology of zero-divisor
-rank strata; it makes no hardware prediction. A one-photon encoding of an n-dimensional left multiplication L_a
-needs n modes, so a 32- or 64-dimensional operator exceeds Ascella's 12 modes and Belenos's 24, and a multi-photon
-encoding runs through postselected gates at rates far below these jobs'. The per-mesh error is a property of how the
-chip realizes a commanded mesh and appears whatever algebra the mesh encodes; the higher algebras supply mutation
-tests and null arms that decide an algebraic question, never a lower hardware error. The accuracy levers this data
-supports are the per-seed correction above, averaging over seeds (the error variance falls as one over the number of
-meshes, Quandela's CompilationAveraging), and choosing low-error seeds from a measured table.
+| Layer | Ascella | Belenos | Error it contributes to these jobs |
+|---|---|---|---|
+| Source | one quantum-dot source demultiplexed onto inputs 0, 2, 4, 6, 8, 10 | one source onto 12 inputs (0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22) through an active demultiplexer and fibre delays (arXiv:2605.10471) | one photon per iteration here: HOM visibility does not enter; g2 (2 %) adds rare multi-photon events |
+| Interferometer | 12-mode universal mesh | 24-mode universal mesh with thermal, voltage-controlled phase shifters (arXiv:2605.10471) | the compiled phases set the realized unitary; a heater's voltage-to-phase map and thermal crosstalk realize each mesh with its own error, the persistent per-mesh error measured here |
+| Compiler | the seed selects one of many meshes for the same logical unitary; byte-identical across the 2026-11 update | the same, with sim and QPU meshes differing (strategy section 7) | the served circuits hit the target within 1e-4 in z, so the compiler adds no measurable error |
+| Detection | 12 threshold detectors, clock 13.33 MHz | 24 threshold detectors, some quasi number-resolving, clock 4.94 MHz | dark counts and detector balance set the counting floor; they are time-ordered, not mesh-ordered |
+| Loss | transmittance about 5.5 % | about 5.2 % | lowers the rate, not z, which conditions on block clicks |
+
+The literature treats the interferometer layer the same way: element-level characterization followed by compensated
+compilation corrects fixed MZI errors (arXiv:2103.04993), and variance-based calibration leaves residual phase errors
+of 0.1 to 0.2 rad (arXiv:2607.14759). The cloud interface exposes neither the voltages nor the element calibration, so
+the per-seed table is the black-box version of that correction, available at the seed level.
+
+## Higher Cayley-Dickson algebras: what folds onto 12 and 24 modes, and what it gains
+
+**The fold is exact for coset-supported operands.** gororoba-open proves, at every tower order, that an operand
+supported on one coset `anchor + G` of an XOR subgroup `G` of the basis cube gives a left multiplication that maps each
+coset sector to the sector shifted by the anchor and vanishes across all others (`sparse_cross_sector_zero` and
+`sparse_block_intertwining` in `proofs/theories/CDSparseBlockTransport.v`), and that its kernel is the direct sum of
+the per-sector kernels (`sparse_kernel_decomposition`). A two-term operand `e_i + s e_j` spans `G = {0, i xor j}`, so
+`L_a` at D = 32 or 64 is 16 or 32 two-by-two sign blocks; `RationalSignBlockRanks.v` certifies each such block's rank
+as 1 or 2, and `SparsePhotonicCertificates.v` checks the retained photonic witnesses. With `cd_core` the off-block
+entries of `L_(e3+e10)` vanish exactly at D = 16, 32 and 64 and the block ranks sum to rank `L_a` (12/16, 24/32,
+48/64). The 84/84 box-kite program uses this collapse: 32 one-photon configurations, each a four-mode Halmos dilation
+exact over Q(sqrt 2), carry all 336, 5040 and 52080 signed two-label zero products at D = 16, 32 and 64
+([strategy section 8](../../notes/quandela/strategy.md#8-the-8484-box-kite-program),
+`docs/evidence/box_kite_census/two_blade_blocks.json`). A two-label 32- or 64-dimensional zero product therefore runs
+on Ascella and Belenos today, three Ascella blocks or six Belenos blocks per setting.
+
+**The fold fails for dense operands.** An operand whose support differences span the whole cube is one block of size
+D. A one-photon encoding carries one photon over the modes, so it needs D modes, and a non-orthogonal L_a beyond the
+octonions needs a dilation besides (the program's one-hot D = 32 encoding needs 34 modes). Moreno's H-blocks
+(`C1548_MorVlambdaHBlock.v`) split a sedenion kernel into four-dimensional pieces only after an orthogonal change of
+basis that itself spans all D modes, and the Schur complement of the doubling formula reduces a rank question to a
+16-dimensional operator classically without shortening the interferometer. A multi-photon dual-rail encoding of 32 or
+64 dimensions fits 10 or 12 modes but needs postselected entangling gates: Ascella's vendor rate formula gives five photons
+about 5 per second (13.33 MHz x 0.0525^5, [platform specifications](../../notes/quandela/platform-specifications.md)),
+and each postselected CZ keeps one ninth of what reaches it, so ten gates leave about 1.5e-9 per second; the Belenos
+three-photon rehearsal returned no three-click sample in 7.2 million shots.
+
+**What the persistence result adds.** A rank-one block sends its kernel vector to a dark port, so a zero product's
+certificate is a dark-port null, and its floor is the mesh's error at that port. On Belenos the 84/84 program's dark
+configurations read algebra share 0.048 at seed 0 and move by a median of 0.043 across seeds (dark-11: 0.184, 0.061,
+0.017); on Ascella each mesh's dark-port share persists between job-03 and job-08 (r = 0.63) and its X error persists
+at 98.8 % of the attenuation ceiling. If Belenos meshes persist as Ascella's do (the
+[Belenos persistence case](../../design/belenos-mesh-persistence-case.md) tests it), a measured table over a few seeds
+per configuration lets each of the 32 configurations run on its lowest-error seed and subtract its persistent offset,
+which on Ascella cut the per-mesh variance 7.7-fold out of sample. The algebra also supplies its own replicates: the
+thousands of zero products that share one configuration have the same ideal, so they calibrate the hardware rather
+than adding unknowns. The higher algebras therefore improve accuracy through block folding, built-in replication and
+seed selection; they leave the chip's per-mesh error itself unchanged.
