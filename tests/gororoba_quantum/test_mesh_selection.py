@@ -2,13 +2,26 @@
 
 from __future__ import annotations
 
+import itertools
 import math
 from typing import Any
 
 import numpy as np
 import pytest
 
-from mesh_selection import block_counts, contrast_shrinkage, exact_permutation_r, normal_cdf, replay_power
+from mesh_selection import (
+    block_counts,
+    contrast_shrinkage,
+    exact_permutation_r,
+    exact_upper_p,
+    normal_cdf,
+    persistence,
+    persistence_reading,
+    replay_power,
+    sign_flip_cross_product,
+    slope_lower_p,
+    slope_upper_bound,
+)
 
 LABELS = ("p", "q", "r", "s", "t", "u")
 # docs/evidence/anu_qrng/draw-2026-10-31T193354Z.json: index 1 seeds the power simulation, indices 2 and 3 are
@@ -79,6 +92,21 @@ def test_exact_permutation_counts_every_pairing() -> None:
     r, p = exact_permutation_r(x, -x, negative=True)
     if r != pytest.approx(-1.0) or p != pytest.approx(1 / math.factorial(4)):
         raise AssertionError((r, p))
+
+
+def test_sign_flip_cross_product_is_label_invariant_and_counts_every_flip() -> None:
+    x = np.asarray([1.0, -2.0, 3.0, 0.5])
+    y = np.asarray([-0.5, 2.0, -3.0, -1.5])
+    total, p = sign_flip_cross_product(x, y, negative=True)
+    if total != pytest.approx(-14.25) or p != pytest.approx(1 / 16):
+        raise AssertionError((total, p))
+    relabeled = np.asarray([-1.0, 1.0, 1.0, 1.0])
+    if sign_flip_cross_product(x * relabeled, y * relabeled, negative=True) != (total, p):
+        raise AssertionError("relabeling one input changed the statistic")
+    if exact_permutation_r(x * relabeled, y * relabeled, negative=True)[0] == pytest.approx(
+        exact_permutation_r(x, y, negative=True)[0]
+    ):
+        raise AssertionError("the centered r was expected to depend on the labels in this fixture")
 
 
 def test_block_counts_pool_a_blocks_runs_and_refuse_a_second_seed() -> None:
@@ -178,3 +206,204 @@ def test_the_composition_test_replays_from_its_seed_and_refuses_bad_tables() -> 
     for bad in (np.ones((3, 4), dtype=int), np.array([[0, 0, 0], [1, 2, 3]])):
         with pytest.raises(ValueError):
             composition_test([bad], 10, REALLOCATION_SEED)
+
+
+# Thresholds of the Belenos mesh-persistence case, supplied explicitly as its script supplies them.
+ALPHA = 0.05
+USEFUL_SLOPE = 0.5
+
+
+def test_exact_upper_p_equals_brute_force_enumeration() -> None:
+    per_block = [np.array([0.3, -0.1, 0.2]), np.array([1.0, -1.0]), np.array([0.5, 0.0, -0.5, 0.25])]
+    observed = 0.6
+    brute = np.mean([sum(c) >= observed - 1e-12 for c in itertools.product(*per_block)])
+    if exact_upper_p(per_block, observed) != pytest.approx(brute):
+        raise AssertionError((exact_upper_p(per_block, observed), brute))
+
+
+def test_exact_upper_p_counts_a_sum_equal_to_the_observed_value() -> None:
+    # Every value is a binary fraction, so each sum is exact: 3 of the 6 sums reach 0.5 and 2 of those equal it.
+    per_block = [np.array([1.0, -1.0]), np.array([0.5, 0.0, -0.5])]
+    if exact_upper_p(per_block, 0.5) != pytest.approx(3 / 6):
+        raise AssertionError(exact_upper_p(per_block, 0.5))
+    if exact_upper_p(per_block, 0.75) != pytest.approx(2 / 6):
+        raise AssertionError(exact_upper_p(per_block, 0.75))
+
+
+def test_a_recurring_deviation_reads_persists_and_a_reversed_one_reads_redrawn() -> None:
+    old = np.array(
+        [
+            [0.60, 0.52, 0.48, 0.40],
+            [0.45, 0.55, 0.50, 0.58],
+            [0.62, 0.50, 0.41, 0.47],
+            [0.51, 0.44, 0.60, 0.53],
+            [0.39, 0.47, 0.52, 0.58],
+            [0.55, 0.61, 0.43, 0.49],
+        ]
+    )
+    same = persistence(old, old + 0.03, ALPHA, USEFUL_SLOPE)
+    if (
+        same["slope"] != pytest.approx(1.0)
+        or same["p_value"] > 0.01
+        or same["slope_upper"] != pytest.approx(1.0, abs=1e-6)
+        or persistence_reading(same, ALPHA, USEFUL_SLOPE) != "persists"
+    ):
+        raise AssertionError(same)
+    mirrored = old.mean(axis=1, keepdims=True) - (old - old.mean(axis=1, keepdims=True))
+    flipped = persistence(old, mirrored, ALPHA, USEFUL_SLOPE)
+    if flipped["slope"] != pytest.approx(-1.0) or persistence_reading(flipped, ALPHA, USEFUL_SLOPE) != "redrawn":
+        raise AssertionError(flipped)
+    if flipped["slope_upper"] >= USEFUL_SLOPE or flipped["useful_slope_p"] >= ALPHA:
+        raise AssertionError(flipped)
+
+
+def test_persistence_p_value_equals_enumeration_of_the_whole_statistic() -> None:
+    """Every within-block relabeling of two blocks of three meshes, with the statistic recomputed from the shares."""
+    old = np.array([[0.60, 0.52, 0.41], [0.45, 0.55, 0.58]])
+    new = np.array([[0.58, 0.50, 0.47], [0.49, 0.51, 0.60]])
+    e_old = old - old.mean(axis=1, keepdims=True)
+    e_new = new - new.mean(axis=1, keepdims=True)
+    observed = float((e_old * e_new).sum())
+    orders = [list(order) for order in itertools.permutations(range(3))]
+    values = [
+        float((e_old[0] * e_new[0][first]).sum() + (e_old[1] * e_new[1][second]).sum())
+        for first in orders
+        for second in orders
+    ]
+    # No relabeling other than the identity lies within 1e-6 of the observed value, so the count has no tie to break.
+    if sum(abs(value - observed) < 1e-6 for value in values) != 1:
+        raise AssertionError(sorted(values))
+    brute = sum(value > observed - 1e-9 for value in values) / len(values)
+    result = persistence(old, new, ALPHA, USEFUL_SLOPE)
+    if result["statistic"] != pytest.approx(observed) or result["p_value"] != pytest.approx(brute):
+        raise AssertionError((result, observed, brute))
+
+
+def enumerated_lower_p(old: np.ndarray, new: np.ndarray, slope: float) -> float:
+    """The share of within-block relabelings of the residuals new - slope old (both centered) whose cross product
+    with the centered old shares lies at or below the observed one, over two blocks of three meshes."""
+    e_old = old - old.mean(axis=1, keepdims=True)
+    residual = new - new.mean(axis=1, keepdims=True) - slope * e_old
+    observed = float((e_old * residual).sum())
+    orders = [list(order) for order in itertools.permutations(range(3))]
+    values = [
+        float((e_old[0] * residual[0][first]).sum() + (e_old[1] * residual[1][second]).sum())
+        for first in orders
+        for second in orders
+    ]
+    return sum(value <= observed + 1e-12 for value in values) / len(values)
+
+
+def test_the_slope_bound_inverts_the_enumerated_relabeling_test() -> None:
+    old = np.array([[0.60, 0.52, 0.41], [0.45, 0.55, 0.58]])
+    new = np.array([[0.58, 0.50, 0.47], [0.49, 0.51, 0.60]])
+    e_old = old - old.mean(axis=1, keepdims=True)
+    e_new = new - new.mean(axis=1, keepdims=True)
+    slopes = (-1.0, 0.0, 0.3, 0.5, 0.9, 1.4, 3.0)
+    exact = [slope_lower_p(e_old, e_new, slope) for slope in slopes]
+    if exact != pytest.approx([enumerated_lower_p(old, new, slope) for slope in slopes]):
+        raise AssertionError(exact)
+    if any(later > earlier for earlier, later in itertools.pairwise(exact)):
+        raise AssertionError(("the p-value rises with the slope", exact))
+    # 36 relabelings: the identity alone gives 1/36, below alpha 0.05, so the bound is finite.
+    result = persistence(old, new, ALPHA, USEFUL_SLOPE)
+    upper = result["slope_upper"]
+    if enumerated_lower_p(old, new, upper) < ALPHA or enumerated_lower_p(old, new, upper + 1e-6) >= ALPHA:
+        raise AssertionError((upper, enumerated_lower_p(old, new, upper), enumerated_lower_p(old, new, upper + 1e-6)))
+    if upper <= result["slope"] or result["useful_slope_p"] != pytest.approx(
+        enumerated_lower_p(old, new, USEFUL_SLOPE)
+    ):
+        raise AssertionError(result)
+    if slope_upper_bound(e_old, e_new, 0.20) >= upper:
+        raise AssertionError("a larger alpha does not tighten the one-sided upper bound")
+    if (result["useful_slope_p"] < ALPHA) != (upper < USEFUL_SLOPE):
+        raise AssertionError("the p-value at the useful slope and the bound disagree on redrawn")
+    if "slope_upper" in persistence(old, new, ALPHA, USEFUL_SLOPE, bound=False):
+        raise AssertionError("bound=False still computes the bound")
+    # Two tied retained deviations per block leave 4 of 36 relabelings unchanged at every slope: no finite bound.
+    tied = np.array([[0.60, 0.60, 0.41], [0.45, 0.58, 0.58]])
+    if slope_upper_bound(tied - tied.mean(axis=1, keepdims=True), e_new, ALPHA) != math.inf:
+        raise AssertionError("tied retained deviations give a finite bound")
+
+
+def test_the_slope_bound_is_finite_for_nearly_tied_retained_shares() -> None:
+    new = np.array([[0.50, 0.58, 0.47], [0.49, 0.51, 0.60]])
+    e_new = new - new.mean(axis=1, keepdims=True)
+    # A gap of 1e-6 between two retained shares holds the swap of those meshes in the count up to a slope near
+    # 8e4, far beyond a fixed number of steps from the estimate; the bound is that slope.
+    old = np.array([[0.60, 0.600001, 0.41], [0.45, 0.55, 0.58]])
+    e_old = old - old.mean(axis=1, keepdims=True)
+    upper = slope_upper_bound(e_old, e_new, ALPHA)
+    if not 200.0 < upper < 1e5:
+        raise AssertionError(upper)
+    # The enumeration forms the residuals at the slope itself and resolves this bound to about one part in 1e4.
+    if enumerated_lower_p(old, new, upper * 0.99) < ALPHA or enumerated_lower_p(old, new, upper * 1.01) >= ALPHA:
+        raise AssertionError((upper, enumerated_lower_p(old, new, upper * 0.99)))
+    # At a gap of 1e-12 the bound exceeds 1e12, where adjacent floats lie further apart than the tolerance: the
+    # bisection ends on adjacent floats with a finite value.
+    old[0, 1] = 0.60 + 1e-12
+    e_old = old - old.mean(axis=1, keepdims=True)
+    upper = slope_upper_bound(e_old, e_new, ALPHA)
+    if not 1e12 < upper < 2e12 or slope_lower_p(e_old, e_new, upper) < ALPHA:
+        raise AssertionError(upper)
+    if slope_lower_p(e_old, e_new, math.inf) != pytest.approx(1 / 36):
+        raise AssertionError(slope_lower_p(e_old, e_new, math.inf))
+
+
+def test_the_slope_bound_brackets_downward_and_holds_when_one_block_is_louder() -> None:
+    old = np.array([[0.60, 0.52, 0.41], [0.45, 0.55, 0.58]])
+    quiet = np.array([[0.58, 0.50, 0.47], [0.49, 0.51, 0.60]])
+    loud = quiet.copy()
+    loud[1] = 0.5 + 8.0 * (quiet[1] - quiet[1].mean())
+    e_old = old - old.mean(axis=1, keepdims=True)
+    for new in (quiet, loud):
+        e_new = new - new.mean(axis=1, keepdims=True)
+        # At alpha 0.9 the test already rejects the slope estimate, so the bound lies below it.
+        for alpha in (ALPHA, 0.9):
+            upper = slope_upper_bound(e_old, e_new, alpha)
+            if enumerated_lower_p(old, new, upper) < alpha or enumerated_lower_p(old, new, upper + 1e-6) >= alpha:
+                raise AssertionError((new, alpha, upper))
+        estimate = float((e_old * e_new).sum() / (e_old**2).sum())
+        if slope_lower_p(e_old, e_new, estimate) >= 0.9 or slope_upper_bound(e_old, e_new, 0.9) >= estimate:
+            raise AssertionError("alpha 0.9 does not place the bound below the estimate")
+
+
+def test_reading_thresholds_are_strict_and_supplied_by_the_caller() -> None:
+    below = math.nextafter(ALPHA, 0.0)
+    under = math.nextafter(USEFUL_SLOPE, 0.0)
+
+    def reading(p_value: float, slope: float, useful_slope_p: float, alpha: float, useful: float) -> str:
+        return persistence_reading(
+            {"p_value": p_value, "slope": slope, "useful_slope_p": useful_slope_p}, alpha, useful
+        )
+
+    low = "recurs below the useful slope"
+    readings = {
+        "p below alpha, slope at the useful slope": (
+            reading(below, USEFUL_SLOPE, 0.9, ALPHA, USEFUL_SLOPE),
+            "persists",
+        ),
+        "p below alpha, slope under the useful slope, bound above it": (
+            reading(below, under, ALPHA, ALPHA, USEFUL_SLOPE),
+            "indeterminate",
+        ),
+        "p below alpha, bound under the useful slope": (reading(below, under, below, ALPHA, USEFUL_SLOPE), low),
+        "a bound under the useful slope outranks the estimate": (reading(below, 0.9, below, ALPHA, USEFUL_SLOPE), low),
+        "p at alpha, bound under the useful slope": (reading(ALPHA, 0.1, below, ALPHA, USEFUL_SLOPE), "redrawn"),
+        "p at alpha, p at the useful slope at alpha": (
+            reading(ALPHA, 0.1, ALPHA, ALPHA, USEFUL_SLOPE),
+            "indeterminate",
+        ),
+        "p at alpha, slope above the useful slope": (reading(ALPHA, 0.9, 0.9, ALPHA, USEFUL_SLOPE), "indeterminate"),
+        "alpha 0.10 admits p 0.07": (reading(0.07, 0.9, 0.9, 0.10, USEFUL_SLOPE), "persists"),
+        "alpha 0.05 refuses p 0.07": (reading(0.07, 0.9, 0.9, ALPHA, USEFUL_SLOPE), "indeterminate"),
+        "alpha 0.10 reads p 0.07 at the useful slope as redrawn": (
+            reading(0.5, 0.1, 0.07, 0.10, USEFUL_SLOPE),
+            "redrawn",
+        ),
+        "useful slope 0.3 admits slope 0.4": (reading(below, 0.4, 0.9, ALPHA, 0.3), "persists"),
+        "useful slope 0.5 refuses slope 0.4": (reading(below, 0.4, 0.9, ALPHA, USEFUL_SLOPE), "indeterminate"),
+    }
+    wrong = {name: got for name, (got, want) in readings.items() if got != want}
+    if wrong:
+        raise AssertionError(wrong)
