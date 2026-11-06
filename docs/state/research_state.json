@@ -2947,6 +2947,13 @@
       "run": "results/quandela/runs/2026-11-06T175944Z-sim_ascella-ascella_signed_coherence-job-08-sim",
       "family": "ascella_signed_coherence",
       "question": "How far does the Ascella simulator spread the X statistic of job-08's 56 seeded meshes beyond counting noise?"
+    },
+    {
+      "id": "qd-qpu-ascella-signed-coherence-job-08",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08",
+      "family": "ascella_signed_coherence",
+      "question": "Does each served mesh of job-02's seeds keep its per-mesh analyzer error twelve days and one software update after job-03?"
     }
   ],
   "claims": [

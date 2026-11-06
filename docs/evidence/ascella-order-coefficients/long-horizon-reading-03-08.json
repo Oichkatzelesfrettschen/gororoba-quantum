@@ -1,0 +1,79 @@
+{
+ "alpha": 0.01,
+ "anchor_control": {
+  "difference": 0.0011697978748202997,
+  "reading": "steady",
+  "reference_mean": 0.8857896603556595,
+  "repeat_mean": 0.8869594582304798,
+  "standard_error": 0.0013341567903780245,
+  "z": 0.8768068965034052
+ },
+ "dependence": {
+  "p": 4.999750012499375e-05,
+  "permutations": 20000,
+  "ratio": 52.1653366425358,
+  "reading": "compilation dependent"
+ },
+ "exploratory": {
+  "dark_output_spearman": {
+   "p": 2.4074268211591463e-06,
+   "rho": 0.583102635427202
+  },
+  "predecessor_transition_spearman": {
+   "p": 0.6223230227489298,
+   "rho": -0.06726365454227791
+  },
+  "x_means": {
+   "reference_perturbed": 0.8868815580178863,
+   "repeat_perturbed": 0.8888347228617715
+  }
+ },
+ "jobs": [
+  "job-03",
+  "job-08"
+ ],
+ "mesh_identity": {
+  "anchors": 8,
+  "anchors_identical": 8,
+  "byte_equal": 64,
+  "largest_identical_distance": 0.0,
+  "perturbed": 56,
+  "perturbed_identical": 56,
+  "tolerance": 1e-06
+ },
+ "persistence": {
+  "alpha": 0.01,
+  "attenuated_full_persistence": 0.9162647146989115,
+  "meshes": 56,
+  "p_value": 4.999750012499375e-05,
+  "reading": "persists",
+  "relabelings": 20000,
+  "slope": 0.8152129503114183,
+  "slope_upper": 0.9242398651194272,
+  "statistic": 0.006189168715111533,
+  "useful_slope": 0.5,
+  "useful_slope_p": 1.0
+ },
+ "plan": "docs/state/plans/ascella-long-horizon-seed-repeat-case.json",
+ "reading": "persists",
+ "reproduction": {
+  "bound": 0.8822351770326792,
+  "ceiling": 0.9360697453941994,
+  "meshes": 56,
+  "p": 4.999750012499375e-05,
+  "r": 0.9245501760662466,
+  "reading": "fixed per mesh",
+  "relabelings": 20000
+ },
+ "runs": [
+  "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03",
+  "results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08"
+ ],
+ "samples": [
+  16384,
+  32768
+ ],
+ "schema": "ascella-long-horizon-reading-v1",
+ "seed_draw": "docs/evidence/anu_qrng/draw-2026-11-06T175610Z.json",
+ "seed_index": 56
+}

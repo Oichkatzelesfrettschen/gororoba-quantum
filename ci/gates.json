@@ -3851,6 +3851,20 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_long_horizon_reading.py results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08 docs/evidence/ascella-order-coefficients/long-horizon-reading-03-08.json --check",
+      "name": "core-ascella-signed-coherence-long-horizon-reading-03-08-replay",
+      "seconds": 15.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_long_horizon_reading.py results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08 docs/evidence/ascella-order-coefficients/long-horizon-reading-02-08.json --check",
+      "name": "core-ascella-signed-coherence-long-horizon-reading-02-08-replay",
+      "seconds": 15.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/ascella_heater_coupling.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 docs/evidence/ascella-order-coefficients/heater-coupling.json --check",
       "name": "core-ascella-signed-coherence-heater-coupling-replay",
       "seconds": 885.0

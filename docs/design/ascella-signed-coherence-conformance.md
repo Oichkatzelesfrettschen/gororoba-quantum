@@ -2142,6 +2142,19 @@ send the frozen request, `qd_platform.py collect RUN` retrieves it, and the read
 **Stopping rule.** A job that errors or is cut short is resubmitted only on the owner's further approval. Every
 reading of S closes the case.
 
+**Outcome.** Job-08 (`fbdd5956`) ran on 2026-11-06 from 19:09:50 UTC for 194 s at HOM 88.98 %, g2 2 % and
+transmittance 5.59 %, retained as [`2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08`](../../results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08/). Every one of the 64 settings
+returned job-03's mesh byte for byte, so the software update left these compilations unchanged. Against job-03
+([reading](../evidence/ascella-order-coefficients/long-horizon-reading-03-08.json)) the anchors stay steady (z 0.88),
+S reads **persists**: slope 0.815 with one-sided 99 % upper bound 0.924, beside the 0.916 a fully persistent error
+reaches through job-03's counting noise, and p 5e-5 at the sample's floor; P1 reads fixed per mesh (r 0.925, ceiling
+0.936, bound 0.882) and P2 compilation dependent. Against job-02
+([reading](../evidence/ascella-order-coefficients/long-horizon-reading-02-08.json)) S also reads persists (slope 0.810,
+upper bound 0.946 against 0.845; anchors steady at z 2.29). Each served mesh therefore keeps most of its analyzer error
+across twelve days and the update: the slope estimates about 89 % of the full-persistence value and the bound does not
+exclude full persistence. The dark-output ranks agree between the jobs (Spearman 0.58, exploratory), and the
+predecessor transition carries none (Spearman -0.07).
+
 **Review.** Codex, an Opus agent and grok reviewed the case before acquisition; the
 [reconciliation](../archive/reviews/ascella-long-horizon-seed-repeat-reconciliation.md) records the unitary mesh
 identity and the separate seed values it led to.

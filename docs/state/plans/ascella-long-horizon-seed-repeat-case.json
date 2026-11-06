@@ -11,14 +11,14 @@
     "docs/evidence/ascella-order-coefficients/seed-repeat-reading.json",
     "docs/evidence/ascella-order-coefficients/heater-coupling.json"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "verified",
     "note": "The readings below are fixed before acquisition. Job-03 reproduced job-02's per-mesh X errors nine hours later at the attenuation ceiling (seed-repeat-reading.json: r 0.885, ceiling 0.880, anchors steady). Job-02 ran under mosaiq-arcturus 2.1.5.2.post4 and hardware-core 3.9.3 (its platform-before catalogue); the processor record of 2026-11-06 reads mosaiq-arcturus 2.1.5.2.post11 and hardware-core-quandela 3.9.11. A sim:ascella run of job-02's request on 2026-11-06 served job-02's QPU meshes (every unitary within 2.4e-7, no serialized string byte-equal), so the update left these compilations unchanged and mesh identity reads unitaries; a sim:ascella run of job-08's request spread its perturbed X at its counting noise, so the per-mesh error is a property of the chip."
   },
   "scope": "Job-08 submits job-02's 64 settings of theta2-x-arm0 at 32,768 samples per iteration with job-02's compilation seeds under the same setting names. The 8 seed-0 anchors keep every eighth position; the 56 perturbed meshes take the off-stride positions in the order of values 0..55 of docs/evidence/anu_qrng/draw-2026-11-06T175610Z.json, value 56 seeds the job-03 against job-08 reading, 57 the power record, 58 the job-02 against job-08 reading and 59 the rehearsal. scripts/ascella_long_horizon_reading.py reads job-03 (reference) against job-08 at alpha 0.01: M, mesh identity, the settings whose served unitary lies within 1e-6 of job-03's (largest entry modulus), with the byte-equal count beside it; with fewer than four identical perturbed meshes nothing else is read and the result is that the service redraws the meshes. A, anchor control, the difference of the anchor means in counting standard errors. S, persistence, the primary reading: mesh_selection.persistence on the identical perturbed meshes as one block with 20,000 sampled relabelings plus the identity, slope of job-08's centered X on job-03's through the origin, its one-sided 99 % upper bound, read by mesh_selection.persistence_reading at alpha 0.01 and useful slope 0.5 (persists, recurs below the useful slope, redrawn, indeterminate). P1, reproduction, secondary: Pearson r against the attenuation ceiling at 16,384 and 32,768 samples and its Fisher-z 0.01 bound. P2: job-02's R1 anchor-ratio test on job-08. The same script reads job-02 against job-08 as the secondary pair; its job-02 against job-03 rehearsal reads persists (slope 0.914, upper bound 1.074). Power (long-horizon-power.json, 400 Gaussian replicates per slope): a fully persistent error reads persists in 1.00, slope 0.75 in 0.98, slope 0.5 indeterminate 0.64 and persists 0.34, a redrawn error reads redrawn in 0.89.",
   "owner": "ascella signed-coherence analysis",
-  "next_action": "Submit job-08 on qpu:ascella under the owner's approval, collect it, and write the reading records.",
+  "next_action": "None; a claim that interprets job-08 against job-02 and job-03 is a later change.",
   "related": [
     "ascella-seed-repeat-case",
     "ascella-mesh-response-decomposition",
@@ -84,10 +84,56 @@
       "id": "acquisition-and-reading",
       "action": "Submit job-08 on approval, collect, retain, and write the job-03 and job-02 readings against it.",
       "acceptance": "A retained run and two reading records with every fixed reading.",
-      "state": "doing",
+      "state": "done",
       "depends_on": [
         "sim-rehearsal"
+      ],
+      "receipts": [
+        {
+          "result": "Job fbdd5956 completed (194 s) and is retained; all 64 meshes return byte-identical; against job-03 the anchors stay steady and S reads persists (slope 0.815, upper bound 0.924, full persistence 0.916), P1 fixed per mesh (r 0.925); against job-02 S also reads persists.",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08/results.json",
+              "sha256": "7a3e3169e8f01085c96dbc454788ca51cb3e712b8d84e66a04c9277939d90fc0"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/long-horizon-reading-03-08.json",
+              "sha256": "b53f5405b88888a5aed151a98538fc4d428f3c84162ef2e19d9eaf743f1faea3"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/long-horizon-reading-02-08.json",
+              "sha256": "597052848d64f16634d6b60f3b2582d306d4d98c1fc6f22d8574a99f2762eafc"
+            }
+          ],
+          "observed_at": "2026-11-06T19:17:41+00:00",
+          "revision": "3bd2753dc76b0a4b5ad44f31926ef94ab98f495b",
+          "scope_sha256": "69afa64732c06a3a65479f5e6348b74d5243d6145edd6ce68a52885117c18d61"
+        }
       ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "Job-08 returned every served mesh byte-identical after the software update, and against job-03 the per-mesh analyzer error reads persists (slope 0.815, upper bound 0.924 beside full persistence 0.916; P1 fixed per mesh, r 0.925).",
+  "receipts": [
+    {
+      "result": "Job fbdd5956 completed (194 s) and is retained; all 64 meshes return byte-identical; against job-03 the anchors stay steady and S reads persists (slope 0.815, upper bound 0.924, full persistence 0.916), P1 fixed per mesh (r 0.925); against job-02 S also reads persists.",
+      "evidence": [
+        {
+          "ref": "results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08/results.json",
+          "sha256": "7a3e3169e8f01085c96dbc454788ca51cb3e712b8d84e66a04c9277939d90fc0"
+        },
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/long-horizon-reading-03-08.json",
+          "sha256": "b53f5405b88888a5aed151a98538fc4d428f3c84162ef2e19d9eaf743f1faea3"
+        },
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/long-horizon-reading-02-08.json",
+          "sha256": "597052848d64f16634d6b60f3b2582d306d4d98c1fc6f22d8574a99f2762eafc"
+        }
+      ],
+      "observed_at": "2026-11-06T19:17:41+00:00",
+      "revision": "3bd2753dc76b0a4b5ad44f31926ef94ab98f495b",
+      "scope_sha256": "4535863841c08645b00e99917d4ca818fa2b80bd25a74b55bb37c3e177e27015"
     }
   ]
 }
