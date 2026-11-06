@@ -391,7 +391,7 @@ def l0_t4zero(fiber: str, oa: int, extra: int, o9: int = 2) -> tuple[dict, list[
     return co, params
 
 
-def adapted_arc(sl: Slice, k: int, extra: int, k9: int, vals_seed: int = 0, n: int = 24) -> dict:
+def adapted_arc(sl: Slice, k: int, extra: int, k9: int, point_shift: int = 0, n: int = 24) -> dict:
     """Arcs tangent to L0 with normal contact k: t3 or t1, t4, t5 of order 1 (free series through order 1 + extra);
     w1 = t2 and w3 = t5 - t7 (and t9 on W8, from order k9) of order k with free coefficients through k + extra;
     w2 = t4 - t6 solved from J by fixed-point iteration, w2 = (rest) / (2 t4) with rest of order >= k + 1."""
@@ -416,7 +416,7 @@ def adapted_arc(sl: Slice, k: int, extra: int, k9: int, vals_seed: int = 0, n: i
     if sl.fiber == "w8":
         spec["t9"] = free_series("t9", k9, k9 + extra)
     m = len(params)
-    vals = [(97 * j + 31 + vals_seed) % p + 2 for j in range(m)]
+    vals = [(97 * j + 31 + point_shift) % p + 2 for j in range(m)]
     pidx = {q: j for j, q in enumerate(params)}
 
     def jet(name: str) -> Jet:
