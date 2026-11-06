@@ -11,6 +11,9 @@ beside the run's log. A run launched without it gets stopped and relaunched.
 
 [library-flags.md](library-flags.md) is the per-library companion: the environment
 variables, API options and build facts of every package the repository imports.
+[computer-algebra.md](computer-algebra.md) holds the formulation foundations (which
+computation to run at all), and the [run rulebook](run-rulebook.md) records each long
+run's specific choices and every departure from these foundations, with the reason.
 
 ## Why the review exists
 
@@ -162,14 +165,41 @@ hosts.
 
 Cap: cgroup `MemoryMax` or the RSS watchdog. Singular's allocator reserves
 little beyond its resident set, so an address-space cap usually works, but the
-cgroup cap is the uniform rule.
+cgroup cap is the uniform rule. Several processes sharing one host share one
+watchdog that stops only the largest process when available memory runs low, so
+one runaway computation does not end the others.
+
+Foundations for a long Singular run:
+
+- Parallelism is a portfolio of independent single-threaded processes: different
+  primes, different algorithms for the same ideal (`sat` against the Rabinowitsch
+  elimination), or different QRNG choices. Count physical cores, not hyperthreads:
+  a process sharing a core runs slower, which a portfolio accepts only for the
+  cross-check it buys.
+- `option(prot)` writes a progress trace to the log, so a timeout or memory death
+  shows the stage it reached. On the membership-rank products `redSB` std was
+  measured fastest (table below); `option(noredTail)` is a hypothesis for
+  saturations and eliminations until a row measures it.
+- Write each stage's result to its own file, named by the run's fiber, prime and
+  method, the moment it exists; never a fixed name two concurrent runs share.
+- Launch a remote job with `setsid nohup sh -c '...' > /dev/null 2>&1 < /dev/null &`
+  so the ssh session returns; a wrapper timeout around an ssh that keeps the job's
+  descriptors open exits 124 while the job itself runs on.
+
+Cloud lifecycle: copy every result, compare sha256 between the VM and the local
+copy, and only then end the VM. `az vm deallocate` stops compute billing and keeps
+the OS disk with every result, for a later copy when no watcher was online; a guest
+OS `shutdown` leaves the VM allocated and billed; `az group delete` removes the
+results with the VM and follows only a verified copy. A DevTestLab auto-shutdown
+schedule deallocates: set it past the last job's time limit as the backstop for an
+absent watcher, never inside a run.
 
 ## Substrate table
 
 | Substrate | Cores | Memory cap | Notes |
 |---|---|---|---|
 | Build host | 6 cores, 12 threads | `systemd-run --user --scope -p MemoryMax` | the owner keeps it mostly idle |
-| Azure Standard_FX4mds_v2 | 2 cores, 4 threads | `systemd-run --user --scope -p MemoryMax`, lingering on | 84 GB; two jobs share 2 physical cores; a DevTestLab daily auto-shutdown schedule (`shutdown-computevm-NAME`) deallocates the VM and kills every job, so the launcher disables it at creation (`az vm auto-shutdown --off`) and confirms no schedule remains; a watcher that deallocates the VM at one job's end ends every other job on it, so it checks every job's marker first or co-located jobs run on separate VMs |
+| Azure Standard_FX4mds_v2 | 2 cores, 4 threads | `systemd-run --user --scope -p MemoryMax`, lingering on | 84 GB; two jobs share 2 physical cores; a DevTestLab daily auto-shutdown schedule (`shutdown-computevm-NAME`) deallocates the VM and kills every job, so the launcher either disables it (`az vm auto-shutdown --off`, confirming no schedule remains) or sets it past the last job's time limit as the backstop for an absent watcher; a watcher that deallocates the VM at one job's end ends every other job on it, so it checks every job's marker first or co-located jobs run on separate VMs |
 | Windows compute workstation (WSL) | 16 cores, 32 threads | none: the owner keeps no arbitrary memory cap on its jobs | 54 GB visible to WSL; one `systemd --user` unit per job |
 | Kaggle CPU kernel | 4 vCPU (treated as 2 cores) | RSS watchdog in the kernel script, reading cgroup `memory.max` less `memory.current` | 31.35 GiB total, 29.5 GiB cgroup headroom; a job fits below about 27 GiB ([substrates](../notes/kaggle/substrates.md#weekly-budget-and-tandem-capacity)) |
 
@@ -231,3 +261,8 @@ Record answers beside the run log:
    the mathematics.
 9. The measured-combinations row this run starts from, or a note that none
    exists; after the run, the row it adds, replaces or supersedes.
+10. Checkpoints: the file each stage writes and its run-specific name.
+11. End state: the verified copy, then deallocate or delete, and the backstop
+    when no watcher is online.
+12. The [run rulebook](run-rulebook.md) entry for a run over 30 minutes, a cloud
+    VM, or any departure from these foundations.
