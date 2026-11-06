@@ -92,6 +92,43 @@ def test_basic_interval_reflects_the_percentile_interval_about_the_point() -> No
         raise AssertionError(f"basic interval {found['basic']} against percentile {found['percentile']}")
 
 
+def test_intervals_keep_endpoints_above_one_for_the_unprojected_score() -> None:
+    """The unprojected fit F = <Phi_CZ| J |Phi_CZ> / (4 Tr J) exceeds 1 under a setting-dependent click probability,
+    so no endpoint stops at 1."""
+    values = list(np.linspace(0.99, 1.02, 201))
+    found = case.intervals(1.0026, values, 0.95)
+    low, high = found["percentile"]
+    if not 1.0 < high <= 1.02 or abs(high - np.percentile(values, 97.5)) > 1e-12:
+        raise AssertionError(f"percentile interval {found['percentile']} is clipped")
+    if not found["basic"][1] > 1.0:
+        raise AssertionError(f"basic interval {found['basic']} is clipped")
+    if abs(found["basic"][0] - (2 * 1.0026 - high)) > 1e-12 or abs(found["basic"][1] - (2 * 1.0026 - low)) > 1e-12:
+        raise AssertionError(f"basic interval {found['basic']} is not the reflection of the percentile interval")
+
+
+def test_dataset_whose_score_exceeds_one_gets_an_interval_that_contains_it() -> None:
+    """Rescaling the rates of setting in-00-XX by 0.90 moves the fit of the ideal CZ rates to 1.0026
+    (docs/design/ascella-cz-process-tomography-case.md): the point, both interval kinds and the gate fidelity
+    interval keep the values above 1."""
+    rows = case.schedule()
+    eligible = np.round(4000 * np.asarray([case.ideal_outcomes(row) for row in rows]))
+    samples = np.full(len(rows), 4000.0)
+    shots = np.full(len(rows), 36000.0)
+    scale = np.asarray([0.90 if row["name"] == "in-00-XX" else 1.0 for row in rows])
+    found = case.tomography(
+        eligible, samples, shots, scale, np.random.default_rng(case.seed_plan()[1][1]), replicates=50, conditional=False
+    )
+    point = found["process_fidelity"]
+    if not 1.0 < point < 1.01:
+        raise AssertionError(f"the rescaled ideal rates give {point}, not a score above 1")
+    for kind, (low, high) in found["process_fidelity_intervals"].items():
+        if not (low <= point <= high and high > 1.0):
+            raise AssertionError(f"{kind} interval {low}, {high} excludes the score {point}")
+    low, high = found["average_gate_fidelity_interval"]
+    if not (low <= found["average_gate_fidelity"] <= high and high > 1.0):
+        raise AssertionError(f"gate fidelity interval {low}, {high} excludes {found['average_gate_fidelity']}")
+
+
 def test_retained_forecast_interval_kind_has_nominal_coverage() -> None:
     forecast = json.loads((case.FAMILY_DIR / case.FORECAST).read_text())
     study = forecast["coverage_study"]
@@ -243,7 +280,10 @@ def test_analysis_pools_both_jobs(tmp_path: Path) -> None:
     if abs(process["process_fidelity"] - 1.0) > 1e-3 or process["bootstrap"]["replicates"] != 8:
         raise AssertionError(f"pooled ideal counts give {process}")
     low, high = process["process_fidelity_interval"]
-    if not low <= high <= 1.0 + 1e-9 or record["excluded_by_cause"]["three_or_more_clicks"] != 144 * 11:
+    if (
+        not low <= process["process_fidelity"] <= high
+        or record["excluded_by_cause"]["three_or_more_clicks"] != 144 * 11
+    ):
         raise AssertionError(f"interval {low}, {high}; exclusions {record['excluded_by_cause']}")
     if process["status"] != "decided" or abs(process["conditional_process_fidelity"] - 1.0) > 1e-3:
         raise AssertionError(

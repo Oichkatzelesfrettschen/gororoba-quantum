@@ -695,12 +695,10 @@ def resampled_rates(
 
 def intervals(point: float, replicate_values: Sequence[float], level: float) -> dict[str, list[float]]:
     """The percentile interval of the replicates and the basic interval (2 point - q_high, 2 point - q_low), which
-    reflects the replicates' bias about the point. Both stop at 1, the bound of both fidelities."""
+    reflects the replicates' bias about the point. The unprojected fit is not bounded by 1 (a setting-dependent click
+    probability rescales its rates), so neither endpoint is clipped and the interval keeps the estimand."""
     low, high = (float(q) for q in np.percentile(replicate_values, [50 * (1 - level), 50 * (1 + level)]))
-    return {
-        "percentile": [min(1.0, low), min(1.0, high)],
-        "basic": [min(1.0, 2 * point - high), min(1.0, 2 * point - low)],
-    }
+    return {"percentile": [low, high], "basic": [2 * point - high, 2 * point - low]}
 
 
 def tomography(
