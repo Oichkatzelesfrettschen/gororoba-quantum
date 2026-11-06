@@ -186,6 +186,20 @@ records which pages were compared against page images, and a note checks every d
 PDF. One job runs at a time: a 36-page paper peaks at 4.1 GB resident and about 7 GB of GPU memory. Cap: an RSS
 watchdog that kills the process group above 16 GiB, where the shell has no `systemd --user` manager.
 
+Marker reads a PDF's text layer wherever one exists, so a scanned PDF that carries an embedded OCR layer inherits that
+layer's errors ("estímate", "de" for dc, "curren!" in 2403.18833v1). `--force_ocr` makes Surya read the page images
+instead; it also needs `--paginate_output` and the same cache variables.
+
+Second engine for display mathematics. Where arXiv holds the authors' TeX source, that LaTeX is the authority. Without
+one, Marker's display equations are compared with a second engine and every disagreement goes to a page-image check,
+because on five test equations with known ground truth Marker reproduced one exactly (measured row below):
+
+| Engine | Environment | Input | Failure seen |
+|---|---|---|---|
+| qwythos-9b (Ollama, vision, GPU) | `ollama` local, prompt for exact LaTeX, `temperature` 0, `think` false | one tightly cropped equation | misreads a glyph ("A =" as "4"), drops a row of a multi-line display |
+| Nougat-base (`facebook/nougat-base`, CPU) | `~/.venvs/mathocr` (torch 2.15.0+cpu, transformers 5.22.1), `HF_HOME` and `TMPDIR` on the main disk | the whole page at 96 dpi | invents equation numbers, garbles some matrix rows |
+| pix2tex 0.1.4 (CPU) | `~/.venvs/mathocr` | one tightly cropped equation | fails on wide or multi-line displays; superseded by the two above |
+
 ## Substrate table
 
 | Substrate | Cores | Memory cap | Notes |
@@ -231,6 +245,8 @@ kept, so the table records every combination tried and why it lost.
 | qiskit 2.5.2 `transpile` | build host, offline Heron r2 Targets (ibm_fez, ibm_kingston, ibm_marrakesh) | 7 families of `experiments.experiment_groups()` at 3-5 qubits, two dynamic; 8 ANU QRNG seeds per setting | `optimization_level=3`, default layout and routing (the `live_run.OPT_LEVEL` setting) | median routed cz equal to level 2 in every family (for example 98 against 291, 163, 98 at levels 0, 1, 2 on `design_c_32_1_16`); level 2 within 1-3 depth; `layout_method="dense"` worse by 1-53 cz; `routing_method="sabre"` identical to the default; seed spread up to 27 cz exceeds every level-2-versus-3 difference | a level, layout or routing setting with a lower median cz on these families, or a family above 5 qubits where level 3 and level 2 differ | current best; seed selection is the remaining lever |
 | Singular 4.4.1 and python-flint 0.9.0 through `parallel.py` (`docs/evidence/a5-exceptional-fibers/arcs/replay.sh`) | build host, 12 CPUs, beside other sessions' Singular jobs | arc certificates of E8-bar->N- and E8-bar->N+ at p = 32009 and 32029: minimal primes of sqrt(K2), 1,296 symbolic arc families, 270-point numeric certificates and a 540-arc survey per target | `ulimit -v 8388608`, `GOROROBA_WORKERS=3`, Singular stdin closed, 900 s timeout per script, `PYTHON` of `ci-py3.14.7-qiskit261` | 8 min 4 s for the four targets (106-136 s each), a second replay byte-identical to the first; peak resident set not measured | a replay of the same four targets under 8 min with equal records | current best |
 | marker-pdf 1.10.2 (surya-ocr 0.17.1, torch 2.12.1+cu130) | build host, RTX 4070 Ti 12 GiB, one job at a time | 20 born-digital arXiv PDFs, 724 pages, to Markdown transcriptions | `TORCH_DEVICE=cuda`, `MODEL_CACHE_DIR` and `TMPDIR` on the main disk, `--output_format markdown --disable_image_extraction --paginate_output --disable_tqdm`, RSS watchdog 16 GiB | 6,862 s for the 20 (9.5 s per page, 145-746 s per paper), peak resident 5.4 GiB; prose, tables and inline mathematics exact on the 12 pages of 2609.28901 compared against their images, where two display equations came out garbled | a setting that converts the same pages faster with no more display errors | current best |
+| marker-pdf 1.10.2 with `--force_ocr` | same | 2403.18833v1, 12 scanned pages with an embedded OCR layer | the flags above plus `--force_ocr` | 135 s; prose correct where the default run inherited the embedded layer's errors; against the page images, one strict inequality for a non-strict one (Eq. 22), a dropped norm in a table, most equation numbers dropped and one invented reference title | a run on the same pages with fewer image-check corrections | current best for scanned PDFs with an OCR layer |
+| math OCR on five display equations with known ground truth (2609.28901 Eqs. 3 and 7, 1602.06402 p. 102, 2408.08292 Eq. 145, 2111.08152 Eq. E10) | build host; Ollama on the GPU, the rest on CPU | one equation per item, criteria per equation | Marker 1.10.2; pix2tex 0.1.4 on tight crops; Nougat-base on whole pages; qwythos-9b on tight crops | exactly right: Marker 1 of 5, pix2tex 0 of 5, Nougat 3 of 5 (one with an invented equation number), qwythos-9b 4 of 5 (Eq. 3 with its matrices and rotated labels right, "A =" misread); 5-91 s per item for qwythos, 21-197 s per page for Nougat | an engine that gets Eq. 3 right, or a test set on which qwythos falls below Nougat | qwythos-9b is the second engine; Nougat the fallback without a GPU |
 
 A row records the tool version, the host, the workload, the full launch line
 with environment, wall time, peak resident set, the furthest stage reached,
