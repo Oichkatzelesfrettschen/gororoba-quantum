@@ -78,6 +78,18 @@ jobs:
             OPENBLAS_VERBOSE=2 "$py" -X faulthandler -c "import sys; sys.path.insert(0, 'scripts'); import ascella_cz_tomography_case as m; print(m.design_pseudoinverse().shape)" >probe.log 2>&1 || status=$?
             echo "core=$core exit=$status $(grep -m1 '^Core:' probe.log) $(grep -m1 -o 'at +0x[0-9a-f]*' probe.log | tail -1)"
           done
+          export OPENBLAS_CORETYPE=Haswell
+          "$py" -c "print([l.strip() for l in open('/proc/self/status') if 'x86_Thread' in l])"
+          for tun in "glibc.cpu.hwcaps=-SHSTK" "glibc.cpu.x86_shstk=off" "glibc.cpu.hwcaps=-AVX512F"; do
+            status=0
+            GLIBC_TUNABLES="glibc.rtld.optional_static_tls=4096:$tun" "$py" -X faulthandler -c "import sys; print([l.strip() for l in open('/proc/self/status') if 'x86_Thread' in l]); sys.path.insert(0, 'scripts'); import ascella_cz_tomography_case as m; print(m.design_pseudoinverse().shape)" >probe.log 2>&1 || status=$?
+            echo "Haswell with $tun exit=$status $(grep -m1 x86_Thread probe.log)"
+          done
+          for shape in "576,256" "256,256" "64,64" "2000,300"; do
+            status=0
+            "$py" -X faulthandler -c "import numpy as np; a = np.random.default_rng(1).normal(size=($shape)); np.linalg.svd(a); print((a.T @ a).shape)" >probe.log 2>&1 || status=$?
+            echo "Haswell random svd and gemm shape=$shape exit=$status"
+          done
       # Several times the measured hosted pytest time; the prune point of
       # ci/AGENTS.md (Behavioral suite) sits well inside it.
       - name: pytest
