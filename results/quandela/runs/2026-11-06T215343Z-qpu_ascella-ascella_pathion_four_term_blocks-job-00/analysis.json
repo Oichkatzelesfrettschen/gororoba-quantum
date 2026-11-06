@@ -1,0 +1,4609 @@
+{
+  "admission": {
+    "conditions": [
+      {
+        "condition": "anchor and dark levels",
+        "limit": {
+          "anchor_floor": 0.9,
+          "dark_ceiling": 0.05
+        },
+        "status": "pass",
+        "value": {
+          "a_anchor": 0.9988847770957178,
+          "a_dark": 0.002289493326373585
+        }
+      },
+      {
+        "condition": "segment dark spread",
+        "limit": 0.03,
+        "status": "pass",
+        "value": {
+          "by_segment": {
+            "anchor-early": 0.0016720839626227133,
+            "anchor-late": 0.001319510833156633,
+            "b12-2": 0.00047167257266538345,
+            "b12-3": 0.000991347384225077,
+            "b12-6": 0.0007616561327049422,
+            "b12-7": 0.0002156621001902278,
+            "c8-4": 0.0001806913703833648,
+            "c8-5": 0.002094461703718371,
+            "c8-6": 0.0005019784304161187,
+            "c8-7": 0.0011588938030587894,
+            "reference-b12-0": 0.0012354789062342718
+          },
+          "max": 0.002094461703718371
+        }
+      },
+      {
+        "condition": "anchor drift",
+        "limit": 0.03,
+        "status": "pass",
+        "value": {
+          "difference": 3.407537640942593e-08,
+          "early": 0.9988847810809985,
+          "late": 0.9988847470056221
+        }
+      },
+      {
+        "condition": "repeated arm pairs",
+        "limit": 2,
+        "status": "pass",
+        "value": {
+          "exceeding": 0,
+          "pairs_evaluated": 44,
+          "pairs_total": 44
+        }
+      },
+      {
+        "condition": "sentinel share",
+        "limit": 0.05,
+        "status": "pass",
+        "value": {
+          "iteration": 1,
+          "max": 0.002471923828125,
+          "returned_iterations": 88
+        }
+      },
+      {
+        "condition": "null levels",
+        "limit": {
+          "level": 0.07,
+          "pair": 0.07
+        },
+        "status": "pass",
+        "value": {
+          "E0": 0.2813340259105353,
+          "E1": 0.24942714857474566,
+          "ideal": 0.25,
+          "max_offset": 0.0313340259105353,
+          "pair_difference": 0.031906877335789646
+        }
+      }
+    ],
+    "failed": [],
+    "unevaluated": [],
+    "verdict": "admitted"
+  },
+  "artifact_sha256": {
+    "cases.json": "61befd8f8f7bf68f4758127804230142cdfd3943f3a6ef84f76c0dcbbbf053a5",
+    "circuit.json": "8d05c0fcf57c7a2a3a5c7933d5c6ad128d4970cf4119598b4ea0c84bf2795fa2",
+    "job-body.json": "8878fb4fb7207501db727f77ea68e2e2893c7e5cc14db93f424e165a829a08fb",
+    "raw/result.json": "0417850a36c4224a814ab2ffceda2e27fb7d9b3f6ff34f14d71ecb704e00bf2c",
+    "results.json": "69d9e5d221562afc8f30c509b13c5d408c0375595877333ca5205fbaef9f3e4a",
+    "submission.json": "fecd8d4b0a9312779d150fa8060a4b6c717d90d31543b068651a1d28192a76ed"
+  },
+  "backend": "qpu:ascella",
+  "caveats": [],
+  "charge": 1.032768,
+  "classes": [
+    {
+      "arms": {
+        "C": {
+          "b12-2": {
+            "a_prime": -0.0015462319450408786,
+            "deviation": -0.0015462319450408786,
+            "ideal": 3.0814879110195774e-33,
+            "within_tolerance": true
+          },
+          "b12-7": {
+            "a_prime": -0.0008562856572454518,
+            "deviation": -0.0008562856572454518,
+            "ideal": 3.0814879110195774e-33,
+            "within_tolerance": true
+          }
+        },
+        "F": {
+          "b12-2": {
+            "a_prime": 0.25346586138581273,
+            "deviation": 0.0034658613858127296,
+            "ideal": 0.25,
+            "within_tolerance": true
+          },
+          "b12-7": {
+            "a_prime": 0.24565136294140744,
+            "deviation": -0.004348637058592564,
+            "ideal": 0.25,
+            "within_tolerance": true
+          }
+        },
+        "N": {
+          "b12-2": {
+            "a_prime": 0.5284118630289849,
+            "deviation": -0.03408813697101509,
+            "ideal": 0.5625,
+            "within_tolerance": true
+          },
+          "b12-7": {
+            "a_prime": 0.5469359421415684,
+            "deviation": -0.015564057858431624,
+            "ideal": 0.5625,
+            "within_tolerance": true
+          }
+        },
+        "T": {
+          "b12-2": {
+            "a_prime": 0.74189445569092,
+            "deviation": -0.008105544309079837,
+            "ideal": 0.7499999999999999,
+            "within_tolerance": true
+          },
+          "b12-7": {
+            "a_prime": 0.7570733825294048,
+            "deviation": 0.007073382529404926,
+            "ideal": 0.7499999999999999,
+            "within_tolerance": true
+          }
+        }
+      },
+      "blocks": [
+        [
+          "B12",
+          2
+        ],
+        [
+          "B12",
+          7
+        ]
+      ],
+      "class": "B12 blocks 2, 7",
+      "class_id": 13119,
+      "range_attributes_failure": false,
+      "range_exceeds_tolerance": false,
+      "segments": [
+        "b12-2",
+        "b12-7"
+      ],
+      "t_levels": {
+        "b12-2": 0.74189445569092,
+        "b12-7": 0.7570733825294048
+      },
+      "t_mean": 0.7494839191101624,
+      "t_range": 0.015178926838484763
+    },
+    {
+      "arms": {
+        "C": {
+          "b12-6": {
+            "a_prime": 0.07891526731427093,
+            "deviation": -0.0044180660190624305,
+            "ideal": 0.08333333333333336,
+            "within_tolerance": true
+          }
+        },
+        "F": {
+          "b12-3": {
+            "a_prime": 0.08921364265722508,
+            "deviation": 0.005880309323891844,
+            "ideal": 0.08333333333333323,
+            "within_tolerance": true
+          },
+          "b12-6": {
+            "a_prime": 0.08193386174531299,
+            "deviation": -0.0013994715880202707,
+            "ideal": 0.08333333333333326,
+            "within_tolerance": true
+          }
+        },
+        "N": {
+          "b12-3": {
+            "a_prime": 0.5891700362519442,
+            "deviation": 0.0058367029186109365,
+            "ideal": 0.5833333333333333,
+            "within_tolerance": true
+          },
+          "b12-6": {
+            "a_prime": 0.5480828963340045,
+            "deviation": -0.03525043699932884,
+            "ideal": 0.5833333333333334,
+            "within_tolerance": true
+          }
+        },
+        "T": {
+          "b12-3": {
+            "a_prime": 0.7370459615422931,
+            "deviation": -0.012954038457706818,
+            "ideal": 0.7499999999999999,
+            "within_tolerance": true
+          },
+          "b12-6": {
+            "a_prime": 0.7326440731092349,
+            "deviation": -0.01735592689076526,
+            "ideal": 0.7500000000000001,
+            "within_tolerance": true
+          }
+        }
+      },
+      "blocks": [
+        [
+          "B12",
+          3
+        ],
+        [
+          "B12",
+          6
+        ]
+      ],
+      "class": "B12 blocks 3, 6",
+      "class_id": 4607,
+      "range_attributes_failure": false,
+      "range_exceeds_tolerance": false,
+      "segments": [
+        "b12-3",
+        "b12-6"
+      ],
+      "t_levels": {
+        "b12-3": 0.7370459615422931,
+        "b12-6": 0.7326440731092349
+      },
+      "t_mean": 0.7348450173257639,
+      "t_range": 0.004401888433058221
+    },
+    {
+      "arms": {
+        "C": {
+          "c8-4": {
+            "a_prime": 0.9525189041992574,
+            "deviation": 0.005305308699299238,
+            "ideal": 0.9472135954999582,
+            "within_tolerance": true
+          },
+          "c8-6": {
+            "a_prime": 0.059251439447174564,
+            "deviation": 0.006465034947132582,
+            "ideal": 0.05278640450004198,
+            "within_tolerance": true
+          }
+        },
+        "F": {
+          "c8-4": {
+            "a_prime": 0.07407724183781587,
+            "deviation": 0.004978941275310539,
+            "ideal": 0.06909830056250534,
+            "within_tolerance": true
+          },
+          "c8-5": {
+            "a_prime": 0.06396140060275284,
+            "deviation": -0.0051368999597525,
+            "ideal": 0.06909830056250534,
+            "within_tolerance": true
+          },
+          "c8-6": {
+            "a_prime": 0.06861647609034462,
+            "deviation": -0.000481824472160719,
+            "ideal": 0.06909830056250534,
+            "within_tolerance": true
+          },
+          "c8-7": {
+            "a_prime": 0.06296291953136754,
+            "deviation": -0.006135381031137796,
+            "ideal": 0.06909830056250534,
+            "within_tolerance": true
+          }
+        },
+        "N": {
+          "c8-4": {
+            "a_prime": 0.4634601517733789,
+            "deviation": 0.011205903179641985,
+            "ideal": 0.4522542485937369,
+            "within_tolerance": true
+          },
+          "c8-6": {
+            "a_prime": 0.459109258180715,
+            "deviation": 0.0068550095869781,
+            "ideal": 0.4522542485937369,
+            "within_tolerance": true
+          }
+        },
+        "T": {
+          "c8-4": {
+            "a_prime": 0.631115676135591,
+            "deviation": -0.023392821051882673,
+            "ideal": 0.6545084971874737,
+            "within_tolerance": true
+          },
+          "c8-5": {
+            "a_prime": 0.6291631050488173,
+            "deviation": -0.025345392138656386,
+            "ideal": 0.6545084971874737,
+            "within_tolerance": true
+          },
+          "c8-6": {
+            "a_prime": 0.6303902478976338,
+            "deviation": -0.024118249289839966,
+            "ideal": 0.6545084971874737,
+            "within_tolerance": true
+          },
+          "c8-7": {
+            "a_prime": 0.6771821958983555,
+            "deviation": 0.022673698710881762,
+            "ideal": 0.6545084971874737,
+            "within_tolerance": true
+          }
+        }
+      },
+      "blocks": [
+        [
+          "C8",
+          4
+        ],
+        [
+          "C8",
+          5
+        ],
+        [
+          "C8",
+          6
+        ],
+        [
+          "C8",
+          7
+        ]
+      ],
+      "class": "C8 blocks 4 to 7",
+      "class_id": 4415,
+      "range_attributes_failure": false,
+      "range_exceeds_tolerance": false,
+      "segments": [
+        "c8-4",
+        "c8-5",
+        "c8-6",
+        "c8-7"
+      ],
+      "t_levels": {
+        "c8-4": 0.631115676135591,
+        "c8-5": 0.6291631050488173,
+        "c8-6": 0.6303902478976338,
+        "c8-7": 0.6771821958983555
+      },
+      "t_mean": 0.6419628062450994,
+      "t_range": 0.04801909084953815
+    },
+    {
+      "a_anchor": 0.9988847770957178,
+      "blocks": [],
+      "class": "A16 blocks 4 to 7 (rank 1, anchor only)",
+      "class_id": 65535,
+      "early_t_raw": 0.9988847810809985,
+      "late_t_raw": 0.9988847470056221,
+      "note": "a rank-1 block reads identically in any click basis, so it anchors the scale and tests no sign",
+      "segments": [
+        "anchor-early",
+        "anchor-late"
+      ],
+      "t_levels": {}
+    }
+  ],
+  "conformance": {
+    "outlier_allowance": 1,
+    "outliers": [],
+    "pathion_t_expected": 8,
+    "pathion_t_within": 8,
+    "readings_expected": 18,
+    "readings_present": 18,
+    "reference_expected": 2,
+    "reference_within": 2,
+    "verdict": "pass"
+  },
+  "definitions": {
+    "a": "clicks in the success modes over clicks in the success and failure modes, per iteration or pooled",
+    "a_anchor": "mean of the returned anchor T iteration readings",
+    "a_dark": "mean of the pooled dark readings of every segment",
+    "a_prime": "(a - a_dark) / (a_anchor - a_dark)",
+    "odds_corrected": "a_prime with its odds divided by r; r is the odds of the normalized pooled null level over the odds of the null ideal",
+    "pooling": "the two iterations of one arm in one segment add their clicks",
+    "raw_tests": "dark spread, anchor drift, repeated pairs and null levels use raw a",
+    "sentinel_share": "clicks in the sentinel modes over the iteration's returned events (samples)"
+  },
+  "ideal_departure": {
+    "max_pooled_raw": 0.03482701040584846
+  },
+  "instrument": {
+    "a_anchor": 0.9988847770957178,
+    "a_dark": 0.002289493326373585,
+    "anchor_iterations_used": [
+      0,
+      3,
+      84,
+      87
+    ],
+    "branch_odds_ratio": 1.0760269845517132,
+    "normalization_denominator": 0.9965952837693441
+  },
+  "interpretation": "Conformance of programmed operator blocks to their interference law on one 12-mode mesh; the client computes every cd_core sign, so the chip does not compute the algebra.",
+  "iterations": [
+    {
+      "a": 0.9987779542954907,
+      "events": 32768,
+      "failure": 40,
+      "index": 0,
+      "invalid_events": {
+        "other_photon_number": 6,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.05126481730416717,
+      "name": "a16-b4-i00-T",
+      "port_counts": [
+        7469,
+        8279,
+        9725,
+        7219,
+        2,
+        15,
+        17,
+        6,
+        9,
+        14,
+        3,
+        4
+      ],
+      "returned": true,
+      "sentinel": 30,
+      "sentinel_share": 0.00091552734375,
+      "shots_used": 32768,
+      "success": 32692
+    },
+    {
+      "a": 0.004406634432951833,
+      "events": 32768,
+      "failure": 32534,
+      "index": 1,
+      "invalid_events": {
+        "other_photon_number": 9,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.008782667237896986,
+      "name": "a16-b4-i01-D",
+      "port_counts": [
+        10,
+        4,
+        7,
+        123,
+        16463,
+        16052,
+        9,
+        10,
+        58,
+        16,
+        2,
+        5
+      ],
+      "returned": true,
+      "sentinel": 81,
+      "sentinel_share": 0.002471923828125,
+      "shots_used": 32768,
+      "success": 144
+    },
+    {
+      "a": 0.0035168195718654435,
+      "events": 32768,
+      "failure": 32585,
+      "index": 2,
+      "invalid_events": {
+        "other_photon_number": 6,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.01449541284403661,
+      "name": "a16-b4-i02-D",
+      "port_counts": [
+        8,
+        4,
+        7,
+        96,
+        16689,
+        15876,
+        11,
+        9,
+        48,
+        6,
+        3,
+        5
+      ],
+      "returned": true,
+      "sentinel": 62,
+      "sentinel_share": 0.00189208984375,
+      "shots_used": 32768,
+      "success": 115
+    },
+    {
+      "a": 0.9989916274521787,
+      "events": 32768,
+      "failure": 33,
+      "index": 3,
+      "invalid_events": {
+        "other_photon_number": 11,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.04632402371203325,
+      "name": "a16-b4-i03-T",
+      "port_counts": [
+        7667,
+        8371,
+        9475,
+        7180,
+        4,
+        15,
+        4,
+        10,
+        12,
+        9,
+        4,
+        6
+      ],
+      "returned": true,
+      "sentinel": 31,
+      "sentinel_share": 0.000946044921875,
+      "shots_used": 32768,
+      "success": 32693
+    },
+    {
+      "a": 0.4941162086988416,
+      "events": 32768,
+      "failure": 16551,
+      "index": 4,
+      "invalid_events": {
+        "other_photon_number": 15,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.024459760980529988,
+      "name": "b12-b0-i04-T",
+      "port_counts": [
+        4174,
+        4613,
+        3897,
+        3482,
+        8,
+        5,
+        8257,
+        8281,
+        13,
+        15,
+        2,
+        6
+      ],
+      "returned": true,
+      "sentinel": 36,
+      "sentinel_share": 0.0010986328125,
+      "shots_used": 32768,
+      "success": 16166
+    },
+    {
+      "a": 0.0013442913445968654,
+      "events": 32768,
+      "failure": 32687,
+      "index": 5,
+      "invalid_events": {
+        "other_photon_number": 6,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.025037426293116605,
+      "name": "b12-b0-i05-D",
+      "port_counts": [
+        4,
+        15,
+        19,
+        6,
+        11,
+        10,
+        15546,
+        17120,
+        12,
+        16,
+        0,
+        3
+      ],
+      "returned": true,
+      "sentinel": 31,
+      "sentinel_share": 0.000946044921875,
+      "shots_used": 32768,
+      "success": 44
+    },
+    {
+      "a": 0.0011608015640273705,
+      "events": 32768,
+      "failure": 32698,
+      "index": 6,
+      "invalid_events": {
+        "other_photon_number": 8,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.027370478983382185,
+      "name": "b12-b0-i06-F",
+      "port_counts": [
+        6,
+        12,
+        16,
+        4,
+        14,
+        8,
+        15472,
+        17204,
+        6,
+        11,
+        2,
+        5
+      ],
+      "returned": true,
+      "sentinel": 24,
+      "sentinel_share": 0.000732421875,
+      "shots_used": 32768,
+      "success": 38
+    },
+    {
+      "a": 0.0010387071151437388,
+      "events": 32768,
+      "failure": 32699,
+      "index": 7,
+      "invalid_events": {
+        "other_photon_number": 5,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02857972077108726,
+      "name": "b12-b0-i07-F",
+      "port_counts": [
+        5,
+        10,
+        15,
+        4,
+        7,
+        8,
+        15431,
+        17253,
+        11,
+        10,
+        5,
+        4
+      ],
+      "returned": true,
+      "sentinel": 30,
+      "sentinel_share": 0.00091552734375,
+      "shots_used": 32768,
+      "success": 34
+    },
+    {
+      "a": 0.0007637552317233373,
+      "events": 32768,
+      "failure": 32708,
+      "index": 8,
+      "invalid_events": {
+        "other_photon_number": 6,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.029801729141844643,
+      "name": "b12-b0-i08-D",
+      "port_counts": [
+        3,
+        8,
+        10,
+        4,
+        11,
+        14,
+        15391,
+        17292,
+        11,
+        13,
+        2,
+        3
+      ],
+      "returned": true,
+      "sentinel": 29,
+      "sentinel_share": 0.000885009765625,
+      "shots_used": 32768,
+      "success": 25
+    },
+    {
+      "a": 0.49546163014577793,
+      "events": 32768,
+      "failure": 16509,
+      "index": 9,
+      "invalid_events": {
+        "other_photon_number": 17,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.022202866660554346,
+      "name": "b12-b0-i09-T",
+      "port_counts": [
+        4148,
+        4523,
+        3905,
+        3636,
+        16,
+        1,
+        8093,
+        8399,
+        9,
+        11,
+        4,
+        6
+      ],
+      "returned": true,
+      "sentinel": 30,
+      "sentinel_share": 0.00091552734375,
+      "shots_used": 32768,
+      "success": 16212
+    },
+    {
+      "a": 0.7416959511077158,
+      "events": 32768,
+      "failure": 8453,
+      "index": 10,
+      "invalid_events": {
+        "other_photon_number": 13,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03782467532467532,
+      "name": "b12-b2-i10-T",
+      "port_counts": [
+        12,
+        8958,
+        7717,
+        7585,
+        2297,
+        2225,
+        1868,
+        2063,
+        11,
+        10,
+        3,
+        6
+      ],
+      "returned": true,
+      "sentinel": 30,
+      "sentinel_share": 0.00091552734375,
+      "shots_used": 32768,
+      "success": 24272
+    },
+    {
+      "a": 0.001802407282947394,
+      "events": 32768,
+      "failure": 32675,
+      "index": 11,
+      "invalid_events": {
+        "other_photon_number": 5,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.025294800513227706,
+      "name": "b12-b2-i11-D",
+      "port_counts": [
+        29,
+        11,
+        3,
+        16,
+        17130,
+        6,
+        15539,
+        0,
+        7,
+        8,
+        6,
+        8
+      ],
+      "returned": true,
+      "sentinel": 29,
+      "sentinel_share": 0.000885009765625,
+      "shots_used": 32768,
+      "success": 59
+    },
+    {
+      "a": 0.2558494715620991,
+      "events": 32768,
+      "failure": 24362,
+      "index": 12,
+      "invalid_events": {
+        "other_photon_number": 10,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.028717204881416894,
+      "name": "b12-b2-i12-F",
+      "port_counts": [
+        2040,
+        2331,
+        2115,
+        1890,
+        11561,
+        4230,
+        4685,
+        3886,
+        5,
+        7,
+        4,
+        4
+      ],
+      "returned": true,
+      "sentinel": 20,
+      "sentinel_share": 0.0006103515625,
+      "shots_used": 32768,
+      "success": 8376
+    },
+    {
+      "a": 0.0007332274227056092,
+      "events": 32768,
+      "failure": 32708,
+      "index": 13,
+      "invalid_events": {
+        "other_photon_number": 10,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.026640596358303854,
+      "name": "b12-b2-i13-C",
+      "port_counts": [
+        2,
+        10,
+        8,
+        4,
+        8233,
+        8546,
+        7311,
+        8618,
+        8,
+        8,
+        6,
+        4
+      ],
+      "returned": true,
+      "sentinel": 26,
+      "sentinel_share": 0.00079345703125,
+      "shots_used": 32768,
+      "success": 24
+    },
+    {
+      "a": 0.5297928252765385,
+      "events": 32768,
+      "failure": 15388,
+      "index": 14,
+      "invalid_events": {
+        "other_photon_number": 19,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03681705677443016,
+      "name": "b12-b2-i14-N",
+      "port_counts": [
+        84,
+        1745,
+        8232,
+        7277,
+        5321,
+        3578,
+        3271,
+        3218,
+        8,
+        9,
+        3,
+        3
+      ],
+      "returned": true,
+      "sentinel": 23,
+      "sentinel_share": 0.000701904296875,
+      "shots_used": 32768,
+      "success": 17338
+    },
+    {
+      "a": 0.5280119745845552,
+      "events": 32768,
+      "failure": 15451,
+      "index": 15,
+      "invalid_events": {
+        "other_photon_number": 10,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.039772727272727314,
+      "name": "b12-b2-i15-N",
+      "port_counts": [
+        65,
+        1743,
+        8292,
+        7185,
+        5363,
+        3482,
+        3263,
+        3343,
+        11,
+        5,
+        3,
+        3
+      ],
+      "returned": true,
+      "sentinel": 22,
+      "sentinel_share": 0.00067138671875,
+      "shots_used": 32768,
+      "success": 17285
+    },
+    {
+      "a": 0.0007638252367858234,
+      "events": 32768,
+      "failure": 32705,
+      "index": 16,
+      "invalid_events": {
+        "other_photon_number": 13,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02471738466238952,
+      "name": "b12-b2-i16-C",
+      "port_counts": [
+        6,
+        6,
+        9,
+        4,
+        8148,
+        8669,
+        7408,
+        8480,
+        6,
+        9,
+        7,
+        3
+      ],
+      "returned": true,
+      "sentinel": 25,
+      "sentinel_share": 0.000762939453125,
+      "shots_used": 32768,
+      "success": 25
+    },
+    {
+      "a": 0.2539347819443171,
+      "events": 32768,
+      "failure": 24412,
+      "index": 17,
+      "invalid_events": {
+        "other_photon_number": 16,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.024576941822237422,
+      "name": "b12-b2-i17-F",
+      "port_counts": [
+        1978,
+        2314,
+        2082,
+        1935,
+        11481,
+        4215,
+        4833,
+        3883,
+        7,
+        11,
+        4,
+        9
+      ],
+      "returned": true,
+      "sentinel": 31,
+      "sentinel_share": 0.000946044921875,
+      "shots_used": 32768,
+      "success": 8309
+    },
+    {
+      "a": 0.0018332365791805432,
+      "events": 32768,
+      "failure": 32669,
+      "index": 18,
+      "invalid_events": {
+        "other_photon_number": 8,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.0262916679397475,
+      "name": "b12-b2-i18-D",
+      "port_counts": [
+        22,
+        10,
+        5,
+        23,
+        17148,
+        10,
+        15504,
+        7,
+        7,
+        11,
+        5,
+        8
+      ],
+      "returned": true,
+      "sentinel": 31,
+      "sentinel_share": 0.000946044921875,
+      "shots_used": 32768,
+      "success": 60
+    },
+    {
+      "a": 0.741620069056131,
+      "events": 32768,
+      "failure": 8456,
+      "index": 19,
+      "invalid_events": {
+        "other_photon_number": 13,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03865119014880679,
+      "name": "b12-b2-i19-T",
+      "port_counts": [
+        9,
+        9021,
+        7640,
+        7601,
+        2279,
+        2189,
+        1903,
+        2085,
+        8,
+        10,
+        6,
+        4
+      ],
+      "returned": true,
+      "sentinel": 28,
+      "sentinel_share": 0.0008544921875,
+      "shots_used": 32768,
+      "success": 24271
+    },
+    {
+      "a": 0.6303756456887857,
+      "events": 32768,
+      "failure": 12093,
+      "index": 20,
+      "invalid_events": {
+        "other_photon_number": 21,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03014561396932218,
+      "name": "c8-b4-i20-T",
+      "port_counts": [
+        7472,
+        3156,
+        7123,
+        2873,
+        4140,
+        1780,
+        4473,
+        1700,
+        10,
+        12,
+        2,
+        6
+      ],
+      "returned": true,
+      "sentinel": 30,
+      "sentinel_share": 0.00091552734375,
+      "shots_used": 32768,
+      "success": 20624
+    },
+    {
+      "a": 0.002078239608801956,
+      "events": 32768,
+      "failure": 32652,
+      "index": 21,
+      "invalid_events": {
+        "other_photon_number": 12,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02921760391198027,
+      "name": "c8-b4-i21-D",
+      "port_counts": [
+        35,
+        4,
+        7,
+        22,
+        17238,
+        7,
+        15404,
+        3,
+        10,
+        14,
+        7,
+        5
+      ],
+      "returned": true,
+      "sentinel": 36,
+      "sentinel_share": 0.0010986328125,
+      "shots_used": 32768,
+      "success": 68
+    },
+    {
+      "a": 0.0779903428885765,
+      "events": 32768,
+      "failure": 30170,
+      "index": 22,
+      "invalid_events": {
+        "other_photon_number": 16,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03196290704595405,
+      "name": "c8-b4-i22-F",
+      "port_counts": [
+        1227,
+        6,
+        1290,
+        29,
+        14757,
+        3577,
+        8535,
+        3301,
+        8,
+        10,
+        6,
+        6
+      ],
+      "returned": true,
+      "sentinel": 30,
+      "sentinel_share": 0.00091552734375,
+      "shots_used": 32768,
+      "success": 2552
+    },
+    {
+      "a": 0.952321281212751,
+      "events": 32768,
+      "failure": 1560,
+      "index": 23,
+      "invalid_events": {
+        "other_photon_number": 15,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03887920708541401,
+      "name": "c8-b4-i23-C",
+      "port_counts": [
+        7786,
+        8835,
+        7895,
+        6643,
+        399,
+        380,
+        367,
+        414,
+        14,
+        11,
+        3,
+        6
+      ],
+      "returned": true,
+      "sentinel": 34,
+      "sentinel_share": 0.00103759765625,
+      "shots_used": 32768,
+      "success": 31159
+    },
+    {
+      "a": 0.4627722953774709,
+      "events": 32768,
+      "failure": 17584,
+      "index": 24,
+      "invalid_events": {
+        "other_photon_number": 16,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02986374188561695,
+      "name": "c8-b4-i24-N",
+      "port_counts": [
+        1478,
+        2955,
+        7956,
+        2758,
+        7635,
+        2188,
+        5196,
+        2565,
+        7,
+        9,
+        2,
+        3
+      ],
+      "returned": true,
+      "sentinel": 21,
+      "sentinel_share": 0.000640869140625,
+      "shots_used": 32768,
+      "success": 15147
+    },
+    {
+      "a": 0.46557096596810654,
+      "events": 32768,
+      "failure": 17494,
+      "index": 25,
+      "invalid_events": {
+        "other_photon_number": 10,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.026240057243507087,
+      "name": "c8-b4-i25-N",
+      "port_counts": [
+        1481,
+        3012,
+        7905,
+        2842,
+        7585,
+        2166,
+        5248,
+        2495,
+        8,
+        10,
+        5,
+        1
+      ],
+      "returned": true,
+      "sentinel": 24,
+      "sentinel_share": 0.000732421875,
+      "shots_used": 32768,
+      "success": 15240
+    },
+    {
+      "a": 0.950809654750993,
+      "events": 32768,
+      "failure": 1610,
+      "index": 26,
+      "invalid_events": {
+        "other_photon_number": 8,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03908567871875305,
+      "name": "c8-b4-i26-C",
+      "port_counts": [
+        7761,
+        8886,
+        7884,
+        6589,
+        390,
+        416,
+        389,
+        415,
+        8,
+        14,
+        4,
+        4
+      ],
+      "returned": true,
+      "sentinel": 30,
+      "sentinel_share": 0.00091552734375,
+      "shots_used": 32768,
+      "success": 31120
+    },
+    {
+      "a": 0.07423927654894293,
+      "events": 32768,
+      "failure": 30302,
+      "index": 27,
+      "invalid_events": {
+        "other_photon_number": 12,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.028382567833523515,
+      "name": "c8-b4-i27-F",
+      "port_counts": [
+        1181,
+        1,
+        1223,
+        25,
+        14853,
+        3521,
+        8657,
+        3271,
+        5,
+        11,
+        4,
+        4
+      ],
+      "returned": true,
+      "sentinel": 24,
+      "sentinel_share": 0.000732421875,
+      "shots_used": 32768,
+      "success": 2430
+    },
+    {
+      "a": 0.002139364303178484,
+      "events": 32768,
+      "failure": 32650,
+      "index": 28,
+      "invalid_events": {
+        "other_photon_number": 14,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.0240831295843519,
+      "name": "c8-b4-i28-D",
+      "port_counts": [
+        40,
+        5,
+        10,
+        15,
+        17072,
+        4,
+        15572,
+        2,
+        14,
+        12,
+        2,
+        6
+      ],
+      "returned": true,
+      "sentinel": 34,
+      "sentinel_share": 0.00103759765625,
+      "shots_used": 32768,
+      "success": 70
+    },
+    {
+      "a": 0.6321371805844235,
+      "events": 32768,
+      "failure": 12035,
+      "index": 29,
+      "invalid_events": {
+        "other_photon_number": 16,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02944155748217525,
+      "name": "c8-b4-i29-T",
+      "port_counts": [
+        7608,
+        3172,
+        7070,
+        2831,
+        4071,
+        1828,
+        4348,
+        1788,
+        13,
+        15,
+        3,
+        5
+      ],
+      "returned": true,
+      "sentinel": 36,
+      "sentinel_share": 0.0010986328125,
+      "shots_used": 32768,
+      "success": 20681
+    },
+    {
+      "a": 0.7321090264621402,
+      "events": 32768,
+      "failure": 8767,
+      "index": 30,
+      "invalid_events": {
+        "other_photon_number": 21,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03576412230846005,
+      "name": "b12-b3-i30-T",
+      "port_counts": [
+        6331,
+        6255,
+        5945,
+        5428,
+        14,
+        3348,
+        2456,
+        2949,
+        7,
+        3,
+        4,
+        7
+      ],
+      "returned": true,
+      "sentinel": 21,
+      "sentinel_share": 0.000640869140625,
+      "shots_used": 32768,
+      "success": 23959
+    },
+    {
+      "a": 0.001313498487949415,
+      "events": 32768,
+      "failure": 32694,
+      "index": 31,
+      "invalid_events": {
+        "other_photon_number": 10,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.007651892354217087,
+      "name": "b12-b3-i31-D",
+      "port_counts": [
+        8,
+        15,
+        6,
+        14,
+        24,
+        16549,
+        16118,
+        3,
+        7,
+        10,
+        1,
+        3
+      ],
+      "returned": true,
+      "sentinel": 21,
+      "sentinel_share": 0.000640869140625,
+      "shots_used": 32768,
+      "success": 43
+    },
+    {
+      "a": 0.09100354479892434,
+      "events": 32768,
+      "failure": 29746,
+      "index": 32,
+      "invalid_events": {
+        "other_photon_number": 8,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.017777472191663247,
+      "name": "b12-b3-i32-F",
+      "port_counts": [
+        842,
+        713,
+        869,
+        554,
+        6,
+        14746,
+        7222,
+        7772,
+        18,
+        12,
+        1,
+        5
+      ],
+      "returned": true,
+      "sentinel": 36,
+      "sentinel_share": 0.0010986328125,
+      "shots_used": 32768,
+      "success": 2978
+    },
+    {
+      "a": 0.5895460797799175,
+      "events": 32768,
+      "failure": 13428,
+      "index": 33,
+      "invalid_events": {
+        "other_photon_number": 15,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.027523004218617506,
+      "name": "b12-b3-i33-N",
+      "port_counts": [
+        716,
+        5986,
+        6762,
+        5823,
+        42,
+        5491,
+        3757,
+        4138,
+        18,
+        9,
+        5,
+        6
+      ],
+      "returned": true,
+      "sentinel": 38,
+      "sentinel_share": 0.00115966796875,
+      "shots_used": 32768,
+      "success": 19287
+    },
+    {
+      "a": 0.5893610516661572,
+      "events": 32768,
+      "failure": 13432,
+      "index": 34,
+      "invalid_events": {
+        "other_photon_number": 22,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02351639524447882,
+      "name": "b12-b3-i34-N",
+      "port_counts": [
+        792,
+        6013,
+        6508,
+        5965,
+        43,
+        5392,
+        3700,
+        4297,
+        23,
+        7,
+        3,
+        3
+      ],
+      "returned": true,
+      "sentinel": 36,
+      "sentinel_share": 0.0010986328125,
+      "shots_used": 32768,
+      "success": 19278
+    },
+    {
+      "a": 0.0913952209252582,
+      "events": 32768,
+      "failure": 29735,
+      "index": 35,
+      "invalid_events": {
+        "other_photon_number": 6,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.012716556775561504,
+      "name": "b12-b3-i35-F",
+      "port_counts": [
+        808,
+        770,
+        844,
+        569,
+        9,
+        14750,
+        7370,
+        7606,
+        8,
+        18,
+        4,
+        6
+      ],
+      "returned": true,
+      "sentinel": 36,
+      "sentinel_share": 0.0010986328125,
+      "shots_used": 32768,
+      "success": 2991
+    },
+    {
+      "a": 0.0012827952719831404,
+      "events": 32768,
+      "failure": 32699,
+      "index": 36,
+      "invalid_events": {
+        "other_photon_number": 7,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.009697321401301296,
+      "name": "b12-b3-i36-D",
+      "port_counts": [
+        6,
+        10,
+        5,
+        21,
+        35,
+        16606,
+        16053,
+        5,
+        9,
+        5,
+        4,
+        2
+      ],
+      "returned": true,
+      "sentinel": 20,
+      "sentinel_share": 0.0006103515625,
+      "shots_used": 32768,
+      "success": 42
+    },
+    {
+      "a": 0.7415431627196333,
+      "events": 32768,
+      "failure": 8458,
+      "index": 37,
+      "invalid_events": {
+        "other_photon_number": 16,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.033001018589253805,
+      "name": "b12-b3-i37-T",
+      "port_counts": [
+        6369,
+        6372,
+        6030,
+        5496,
+        9,
+        3275,
+        2393,
+        2781,
+        9,
+        10,
+        1,
+        7
+      ],
+      "returned": true,
+      "sentinel": 27,
+      "sentinel_share": 0.000823974609375,
+      "shots_used": 32768,
+      "success": 24267
+    },
+    {
+      "a": 0.6252444390124664,
+      "events": 32768,
+      "failure": 12265,
+      "index": 38,
+      "invalid_events": {
+        "other_photon_number": 20,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03657729278845792,
+      "name": "c8-b5-i38-T",
+      "port_counts": [
+        7511,
+        3167,
+        7079,
+        2706,
+        4451,
+        1997,
+        4287,
+        1530,
+        8,
+        6,
+        2,
+        4
+      ],
+      "returned": true,
+      "sentinel": 20,
+      "sentinel_share": 0.0006103515625,
+      "shots_used": 32768,
+      "success": 20463
+    },
+    {
+      "a": 0.004705163458600672,
+      "events": 32768,
+      "failure": 32576,
+      "index": 39,
+      "invalid_events": {
+        "other_photon_number": 11,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.019095630919645445,
+      "name": "c8-b5-i39-D",
+      "port_counts": [
+        8,
+        60,
+        34,
+        52,
+        16828,
+        7,
+        15740,
+        1,
+        6,
+        13,
+        3,
+        5
+      ],
+      "returned": true,
+      "sentinel": 27,
+      "sentinel_share": 0.000823974609375,
+      "shots_used": 32768,
+      "success": 154
+    },
+    {
+      "a": 0.0652320107599193,
+      "events": 32768,
+      "failure": 30580,
+      "index": 40,
+      "invalid_events": {
+        "other_photon_number": 17,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.0174906392945916,
+      "name": "c8-b5-i40-F",
+      "port_counts": [
+        970,
+        18,
+        1135,
+        11,
+        14632,
+        3213,
+        9225,
+        3510,
+        12,
+        17,
+        3,
+        5
+      ],
+      "returned": true,
+      "sentinel": 37,
+      "sentinel_share": 0.001129150390625,
+      "shots_used": 32768,
+      "success": 2134
+    },
+    {
+      "a": 0.06683364897061518,
+      "events": 32768,
+      "failure": 30550,
+      "index": 41,
+      "invalid_events": {
+        "other_photon_number": 13,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.0097637324154209,
+      "name": "c8-b5-i41-F",
+      "port_counts": [
+        1012,
+        16,
+        1157,
+        3,
+        14360,
+        3316,
+        9385,
+        3489,
+        5,
+        5,
+        2,
+        5
+      ],
+      "returned": true,
+      "sentinel": 17,
+      "sentinel_share": 0.000518798828125,
+      "shots_used": 32768,
+      "success": 2188
+    },
+    {
+      "a": 0.0040628054740957965,
+      "events": 32768,
+      "failure": 32603,
+      "index": 42,
+      "invalid_events": {
+        "other_photon_number": 4,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.019855816226783816,
+      "name": "c8-b5-i42-D",
+      "port_counts": [
+        6,
+        36,
+        32,
+        59,
+        16874,
+        6,
+        15718,
+        5,
+        5,
+        14,
+        3,
+        6
+      ],
+      "returned": true,
+      "sentinel": 28,
+      "sentinel_share": 0.0008544921875,
+      "shots_used": 32768,
+      "success": 133
+    },
+    {
+      "a": 0.633377135348226,
+      "events": 32768,
+      "failure": 11997,
+      "index": 43,
+      "invalid_events": {
+        "other_photon_number": 14,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.0283605605044243,
+      "name": "c8-b5-i43-T",
+      "port_counts": [
+        7619,
+        3181,
+        7173,
+        2753,
+        4195,
+        1962,
+        4293,
+        1547,
+        13,
+        10,
+        3,
+        5
+      ],
+      "returned": true,
+      "sentinel": 31,
+      "sentinel_share": 0.000946044921875,
+      "shots_used": 32768,
+      "success": 20726
+    },
+    {
+      "a": 0.7333883237100174,
+      "events": 32768,
+      "failure": 8727,
+      "index": 44,
+      "invalid_events": {
+        "other_photon_number": 13,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.020997540708153992,
+      "name": "b12-b6-i44-T",
+      "port_counts": [
+        5977,
+        5737,
+        6011,
+        6281,
+        3099,
+        2790,
+        6,
+        2832,
+        12,
+        5,
+        3,
+        2
+      ],
+      "returned": true,
+      "sentinel": 22,
+      "sentinel_share": 0.00067138671875,
+      "shots_used": 32768,
+      "success": 24006
+    },
+    {
+      "a": 0.001803123376424926,
+      "events": 32768,
+      "failure": 32662,
+      "index": 45,
+      "invalid_events": {
+        "other_photon_number": 10,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.011139635096726446,
+      "name": "b12-b6-i45-D",
+      "port_counts": [
+        15,
+        22,
+        9,
+        13,
+        16645,
+        15996,
+        19,
+        2,
+        12,
+        11,
+        6,
+        8
+      ],
+      "returned": true,
+      "sentinel": 37,
+      "sentinel_share": 0.001129150390625,
+      "shots_used": 32768,
+      "success": 59
+    },
+    {
+      "a": 0.08395710488527695,
+      "events": 32768,
+      "failure": 29983,
+      "index": 46,
+      "invalid_events": {
+        "other_photon_number": 13,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.029178222706528978,
+      "name": "b12-b6-i46-F",
+      "port_counts": [
+        697,
+        983,
+        590,
+        478,
+        15480,
+        7113,
+        9,
+        7381,
+        7,
+        14,
+        1,
+        2
+      ],
+      "returned": true,
+      "sentinel": 24,
+      "sentinel_share": 0.000732421875,
+      "shots_used": 32768,
+      "success": 2748
+    },
+    {
+      "a": 0.08100012226433549,
+      "events": 32768,
+      "failure": 30066,
+      "index": 47,
+      "invalid_events": {
+        "other_photon_number": 15,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.017532194412368217,
+      "name": "b12-b6-i47-C",
+      "port_counts": [
+        596,
+        758,
+        741,
+        555,
+        6059,
+        6572,
+        670,
+        16765,
+        5,
+        22,
+        6,
+        4
+      ],
+      "returned": true,
+      "sentinel": 37,
+      "sentinel_share": 0.001129150390625,
+      "shots_used": 32768,
+      "success": 2650
+    },
+    {
+      "a": 0.5480117280557083,
+      "events": 32768,
+      "failure": 14799,
+      "index": 48,
+      "invalid_events": {
+        "other_photon_number": 12,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.04969916315435839,
+      "name": "b12-b6-i48-N",
+      "port_counts": [
+        752,
+        6540,
+        5468,
+        5183,
+        5696,
+        4668,
+        108,
+        4327,
+        8,
+        2,
+        1,
+        3
+      ],
+      "returned": true,
+      "sentinel": 14,
+      "sentinel_share": 0.00042724609375,
+      "shots_used": 32768,
+      "success": 17943
+    },
+    {
+      "a": 0.5490010386753834,
+      "events": 32768,
+      "failure": 14763,
+      "index": 49,
+      "invalid_events": {
+        "other_photon_number": 14,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.049008675994379004,
+      "name": "b12-b6-i49-N",
+      "port_counts": [
+        806,
+        6494,
+        5485,
+        5186,
+        5702,
+        4607,
+        101,
+        4353,
+        7,
+        6,
+        2,
+        5
+      ],
+      "returned": true,
+      "sentinel": 20,
+      "sentinel_share": 0.0006103515625,
+      "shots_used": 32768,
+      "success": 17971
+    },
+    {
+      "a": 0.0808720112517581,
+      "events": 32768,
+      "failure": 30061,
+      "index": 50,
+      "invalid_events": {
+        "other_photon_number": 14,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.0237647507821296,
+      "name": "b12-b6-i50-C",
+      "port_counts": [
+        586,
+        652,
+        782,
+        625,
+        5901,
+        6809,
+        622,
+        16729,
+        17,
+        19,
+        9,
+        3
+      ],
+      "returned": true,
+      "sentinel": 48,
+      "sentinel_share": 0.00146484375,
+      "shots_used": 32768,
+      "success": 2645
+    },
+    {
+      "a": 0.08393168138348253,
+      "events": 32768,
+      "failure": 29982,
+      "index": 51,
+      "invalid_events": {
+        "other_photon_number": 10,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.022763394792023616,
+      "name": "b12-b6-i51-F",
+      "port_counts": [
+        708,
+        938,
+        605,
+        496,
+        15300,
+        7247,
+        12,
+        7423,
+        9,
+        11,
+        4,
+        5
+      ],
+      "returned": true,
+      "sentinel": 29,
+      "sentinel_share": 0.000885009765625,
+      "shots_used": 32768,
+      "success": 2747
+    },
+    {
+      "a": 0.00125263511655617,
+      "events": 32768,
+      "failure": 32690,
+      "index": 52,
+      "invalid_events": {
+        "other_photon_number": 12,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.016177324249182324,
+      "name": "b12-b6-i52-D",
+      "port_counts": [
+        4,
+        16,
+        8,
+        13,
+        16830,
+        15836,
+        20,
+        4,
+        7,
+        10,
+        4,
+        4
+      ],
+      "returned": true,
+      "sentinel": 25,
+      "sentinel_share": 0.000762939453125,
+      "shots_used": 32768,
+      "success": 41
+    },
+    {
+      "a": 0.7314896867838044,
+      "events": 32768,
+      "failure": 8787,
+      "index": 53,
+      "invalid_events": {
+        "other_photon_number": 18,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02040679908326982,
+      "name": "b12-b6-i53-T",
+      "port_counts": [
+        5923,
+        5695,
+        6122,
+        6198,
+        3115,
+        2781,
+        5,
+        2886,
+        8,
+        8,
+        5,
+        4
+      ],
+      "returned": true,
+      "sentinel": 25,
+      "sentinel_share": 0.000762939453125,
+      "shots_used": 32768,
+      "success": 23938
+    },
+    {
+      "a": 0.6293896512729606,
+      "events": 32768,
+      "failure": 12126,
+      "index": 54,
+      "invalid_events": {
+        "other_photon_number": 17,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.026720778982525516,
+      "name": "c8-b6-i54-T",
+      "port_counts": [
+        7126,
+        2869,
+        7617,
+        2981,
+        4593,
+        1739,
+        4059,
+        1735,
+        9,
+        8,
+        10,
+        5
+      ],
+      "returned": true,
+      "sentinel": 32,
+      "sentinel_share": 0.0009765625,
+      "shots_used": 32768,
+      "success": 20593
+    },
+    {
+      "a": 0.0017110208072351736,
+      "events": 32768,
+      "failure": 32673,
+      "index": 55,
+      "invalid_events": {
+        "other_photon_number": 12,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.01764490207461256,
+      "name": "c8-b6-i55-D",
+      "port_counts": [
+        16,
+        8,
+        15,
+        17,
+        16861,
+        19,
+        15787,
+        6,
+        9,
+        8,
+        3,
+        7
+      ],
+      "returned": true,
+      "sentinel": 27,
+      "sentinel_share": 0.000823974609375,
+      "shots_used": 32768,
+      "success": 56
+    },
+    {
+      "a": 0.07005377001099841,
+      "events": 32768,
+      "failure": 30439,
+      "index": 56,
+      "invalid_events": {
+        "other_photon_number": 15,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03090801042810867,
+      "name": "c8-b6-i56-F",
+      "port_counts": [
+        1351,
+        7,
+        919,
+        16,
+        14484,
+        3614,
+        8784,
+        3557,
+        8,
+        6,
+        2,
+        5
+      ],
+      "returned": true,
+      "sentinel": 21,
+      "sentinel_share": 0.000640869140625,
+      "shots_used": 32768,
+      "success": 2293
+    },
+    {
+      "a": 0.06150696651185529,
+      "events": 32768,
+      "failure": 30715,
+      "index": 57,
+      "invalid_events": {
+        "other_photon_number": 14,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02765215995325942,
+      "name": "c8-b6-i57-C",
+      "port_counts": [
+        414,
+        619,
+        586,
+        394,
+        7887,
+        7653,
+        8177,
+        6998,
+        8,
+        9,
+        6,
+        3
+      ],
+      "returned": true,
+      "sentinel": 26,
+      "sentinel_share": 0.00079345703125,
+      "shots_used": 32768,
+      "success": 2013
+    },
+    {
+      "a": 0.46034219370608004,
+      "events": 32768,
+      "failure": 17663,
+      "index": 58,
+      "invalid_events": {
+        "other_photon_number": 14,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.020982686928815143,
+      "name": "c8-b6-i58-N",
+      "port_counts": [
+        1124,
+        3146,
+        8089,
+        2708,
+        7354,
+        2557,
+        5270,
+        2482,
+        9,
+        8,
+        5,
+        2
+      ],
+      "returned": true,
+      "sentinel": 24,
+      "sentinel_share": 0.000732421875,
+      "shots_used": 32768,
+      "success": 15067
+    },
+    {
+      "a": 0.45932897390454075,
+      "events": 32768,
+      "failure": 17694,
+      "index": 59,
+      "invalid_events": {
+        "other_photon_number": 16,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.023851587070328435,
+      "name": "c8-b6-i59-N",
+      "port_counts": [
+        1105,
+        3251,
+        8042,
+        2634,
+        7407,
+        2532,
+        5268,
+        2487,
+        6,
+        12,
+        4,
+        4
+      ],
+      "returned": true,
+      "sentinel": 26,
+      "sentinel_share": 0.00079345703125,
+      "shots_used": 32768,
+      "success": 15032
+    },
+    {
+      "a": 0.061171512338138286,
+      "events": 32768,
+      "failure": 30741,
+      "index": 60,
+      "invalid_events": {
+        "other_photon_number": 11,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.025253187871354076,
+      "name": "c8-b6-i60-C",
+      "port_counts": [
+        435,
+        587,
+        554,
+        427,
+        7884,
+        7711,
+        8171,
+        6975,
+        4,
+        6,
+        1,
+        2
+      ],
+      "returned": true,
+      "sentinel": 13,
+      "sentinel_share": 0.000396728515625,
+      "shots_used": 32768,
+      "success": 2003
+    },
+    {
+      "a": 0.07129106187929718,
+      "events": 32768,
+      "failure": 30392,
+      "index": 61,
+      "invalid_events": {
+        "other_photon_number": 17,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.030325120767072784,
+      "name": "c8-b6-i61-F",
+      "port_counts": [
+        1377,
+        4,
+        918,
+        34,
+        14457,
+        3647,
+        8802,
+        3486,
+        7,
+        7,
+        2,
+        10
+      ],
+      "returned": true,
+      "sentinel": 26,
+      "sentinel_share": 0.00079345703125,
+      "shots_used": 32768,
+      "success": 2333
+    },
+    {
+      "a": 0.00186401833460657,
+      "events": 32768,
+      "failure": 32664,
+      "index": 62,
+      "invalid_events": {
+        "other_photon_number": 11,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.01847211611917479,
+      "name": "c8-b6-i62-D",
+      "port_counts": [
+        24,
+        17,
+        7,
+        13,
+        16880,
+        23,
+        15758,
+        3,
+        8,
+        8,
+        6,
+        10
+      ],
+      "returned": true,
+      "sentinel": 32,
+      "sentinel_share": 0.0009765625,
+      "shots_used": 32768,
+      "success": 61
+    },
+    {
+      "a": 0.6316770565945483,
+      "events": 32768,
+      "failure": 12053,
+      "index": 63,
+      "invalid_events": {
+        "other_photon_number": 18,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.024086983735686136,
+      "name": "c8-b6-i63-T",
+      "port_counts": [
+        7222,
+        2916,
+        7532,
+        3001,
+        4521,
+        1687,
+        4132,
+        1713,
+        8,
+        8,
+        3,
+        7
+      ],
+      "returned": true,
+      "sentinel": 26,
+      "sentinel_share": 0.00079345703125,
+      "shots_used": 32768,
+      "success": 20671
+    },
+    {
+      "a": 0.7537219895448014,
+      "events": 32768,
+      "failure": 8056,
+      "index": 64,
+      "invalid_events": {
+        "other_photon_number": 23,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.020929503836629823,
+      "name": "b12-b7-i64-T",
+      "port_counts": [
+        8199,
+        8292,
+        49,
+        8115,
+        2428,
+        2161,
+        1525,
+        1942,
+        8,
+        16,
+        7,
+        3
+      ],
+      "returned": true,
+      "sentinel": 34,
+      "sentinel_share": 0.00103759765625,
+      "shots_used": 32768,
+      "success": 24655
+    },
+    {
+      "a": 0.0025968471220823657,
+      "events": 32768,
+      "failure": 32647,
+      "index": 65,
+      "invalid_events": {
+        "other_photon_number": 8,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.019949896126115033,
+      "name": "b12-b7-i65-D",
+      "port_counts": [
+        43,
+        6,
+        22,
+        14,
+        16919,
+        13,
+        15713,
+        2,
+        10,
+        10,
+        4,
+        4
+      ],
+      "returned": true,
+      "sentinel": 28,
+      "sentinel_share": 0.0008544921875,
+      "shots_used": 32768,
+      "success": 85
+    },
+    {
+      "a": 0.24726517142333312,
+      "events": 32768,
+      "failure": 24634,
+      "index": 66,
+      "invalid_events": {
+        "other_photon_number": 19,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.030659511059635127,
+      "name": "b12-b7-i66-F",
+      "port_counts": [
+        2212,
+        1563,
+        2021,
+        2296,
+        11871,
+        3606,
+        5175,
+        3982,
+        9,
+        9,
+        1,
+        4
+      ],
+      "returned": true,
+      "sentinel": 23,
+      "sentinel_share": 0.000701904296875,
+      "shots_used": 32768,
+      "success": 8092
+    },
+    {
+      "a": 0.0012834224598930481,
+      "events": 32768,
+      "failure": 32683,
+      "index": 67,
+      "invalid_events": {
+        "other_photon_number": 19,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02470588235294137,
+      "name": "b12-b7-i67-C",
+      "port_counts": [
+        12,
+        4,
+        15,
+        11,
+        8078,
+        7476,
+        8271,
+        8858,
+        6,
+        8,
+        2,
+        8
+      ],
+      "returned": true,
+      "sentinel": 24,
+      "sentinel_share": 0.000732421875,
+      "shots_used": 32768,
+      "success": 42
+    },
+    {
+      "a": 0.5486828433469837,
+      "events": 32768,
+      "failure": 14768,
+      "index": 68,
+      "invalid_events": {
+        "other_photon_number": 17,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.0174251154674804,
+      "name": "b12-b7-i68-N",
+      "port_counts": [
+        2124,
+        7799,
+        11,
+        8020,
+        5096,
+        3410,
+        3126,
+        3136,
+        10,
+        9,
+        4,
+        6
+      ],
+      "returned": true,
+      "sentinel": 29,
+      "sentinel_share": 0.000885009765625,
+      "shots_used": 32768,
+      "success": 17954
+    },
+    {
+      "a": 0.5460435832390965,
+      "events": 32768,
+      "failure": 14853,
+      "index": 69,
+      "invalid_events": {
+        "other_photon_number": 16,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.01975596589583493,
+      "name": "b12-b7-i69-N",
+      "port_counts": [
+        2128,
+        7675,
+        13,
+        8050,
+        5123,
+        3422,
+        3142,
+        3166,
+        17,
+        11,
+        1,
+        4
+      ],
+      "returned": true,
+      "sentinel": 33,
+      "sentinel_share": 0.001007080078125,
+      "shots_used": 32768,
+      "success": 17866
+    },
+    {
+      "a": 0.001588805035289804,
+      "events": 32768,
+      "failure": 32677,
+      "index": 70,
+      "invalid_events": {
+        "other_photon_number": 5,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.026413883711693165,
+      "name": "b12-b7-i70-C",
+      "port_counts": [
+        19,
+        3,
+        21,
+        9,
+        7894,
+        7606,
+        8202,
+        8975,
+        8,
+        10,
+        4,
+        12
+      ],
+      "returned": true,
+      "sentinel": 34,
+      "sentinel_share": 0.00103759765625,
+      "shots_used": 32768,
+      "success": 52
+    },
+    {
+      "a": 0.2469437652811736,
+      "events": 32768,
+      "failure": 24640,
+      "index": 71,
+      "invalid_events": {
+        "other_photon_number": 13,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.030223477904746214,
+      "name": "b12-b7-i71-F",
+      "port_counts": [
+        2207,
+        1590,
+        2000,
+        2283,
+        11806,
+        3597,
+        5190,
+        4047,
+        7,
+        14,
+        4,
+        10
+      ],
+      "returned": true,
+      "sentinel": 35,
+      "sentinel_share": 0.001068115234375,
+      "shots_used": 32768,
+      "success": 8080
+    },
+    {
+      "a": 0.0024134665322457457,
+      "events": 32768,
+      "failure": 32654,
+      "index": 72,
+      "invalid_events": {
+        "other_photon_number": 7,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.022683530382183025,
+      "name": "b12-b7-i72-D",
+      "port_counts": [
+        38,
+        5,
+        26,
+        10,
+        17005,
+        17,
+        15624,
+        8,
+        7,
+        17,
+        0,
+        4
+      ],
+      "returned": true,
+      "sentinel": 28,
+      "sentinel_share": 0.0008544921875,
+      "shots_used": 32768,
+      "success": 79
+    },
+    {
+      "a": 0.7598472116119175,
+      "events": 32768,
+      "failure": 7859,
+      "index": 73,
+      "invalid_events": {
+        "other_photon_number": 14,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.023319327731092368,
+      "name": "b12-b7-i73-T",
+      "port_counts": [
+        8113,
+        8595,
+        29,
+        8129,
+        2356,
+        2055,
+        1491,
+        1957,
+        10,
+        10,
+        2,
+        7
+      ],
+      "returned": true,
+      "sentinel": 29,
+      "sentinel_share": 0.000885009765625,
+      "shots_used": 32768,
+      "success": 24866
+    },
+    {
+      "a": 0.6766754230557762,
+      "events": 32768,
+      "failure": 10585,
+      "index": 74,
+      "invalid_events": {
+        "other_photon_number": 11,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03829312003834384,
+      "name": "c8-b7-i74-T",
+      "port_counts": [
+        7711,
+        3398,
+        7266,
+        3778,
+        3971,
+        1454,
+        3598,
+        1562,
+        6,
+        8,
+        3,
+        2
+      ],
+      "returned": true,
+      "sentinel": 19,
+      "sentinel_share": 0.000579833984375,
+      "shots_used": 32768,
+      "success": 22153
+    },
+    {
+      "a": 0.0010999083409715857,
+      "events": 32768,
+      "failure": 32694,
+      "index": 75,
+      "invalid_events": {
+        "other_photon_number": 11,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.038741216009776785,
+      "name": "c8-b7-i75-D",
+      "port_counts": [
+        6,
+        11,
+        12,
+        7,
+        17582,
+        13,
+        15097,
+        2,
+        8,
+        12,
+        4,
+        3
+      ],
+      "returned": true,
+      "sentinel": 27,
+      "sentinel_share": 0.000823974609375,
+      "shots_used": 32768,
+      "success": 36
+    },
+    {
+      "a": 0.06397018390664141,
+      "events": 32768,
+      "failure": 30640,
+      "index": 76,
+      "invalid_events": {
+        "other_photon_number": 12,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02560846746910784,
+      "name": "c8-b7-i76-F",
+      "port_counts": [
+        1110,
+        35,
+        939,
+        10,
+        14451,
+        3610,
+        8959,
+        3620,
+        8,
+        5,
+        3,
+        6
+      ],
+      "returned": true,
+      "sentinel": 22,
+      "sentinel_share": 0.00067138671875,
+      "shots_used": 32768,
+      "success": 2094
+    },
+    {
+      "a": 0.06610635696821517,
+      "events": 32768,
+      "failure": 30557,
+      "index": 77,
+      "invalid_events": {
+        "other_photon_number": 13,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.021735973275337626,
+      "name": "c8-b7-i77-F",
+      "port_counts": [
+        1077,
+        42,
+        1035,
+        9,
+        14384,
+        3625,
+        9018,
+        3530,
+        13,
+        13,
+        4,
+        5
+      ],
+      "returned": true,
+      "sentinel": 35,
+      "sentinel_share": 0.001068115234375,
+      "shots_used": 32768,
+      "success": 2163
+    },
+    {
+      "a": 0.0011612982091559196,
+      "events": 32768,
+      "failure": 32684,
+      "index": 78,
+      "invalid_events": {
+        "other_photon_number": 12,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.04043151396613883,
+      "name": "c8-b7-i78-D",
+      "port_counts": [
+        7,
+        8,
+        11,
+        12,
+        17624,
+        16,
+        15038,
+        6,
+        12,
+        14,
+        4,
+        4
+      ],
+      "returned": true,
+      "sentinel": 34,
+      "sentinel_share": 0.00103759765625,
+      "shots_used": 32768,
+      "success": 38
+    },
+    {
+      "a": 0.6776569088797898,
+      "events": 32768,
+      "failure": 10549,
+      "index": 79,
+      "invalid_events": {
+        "other_photon_number": 18,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.039824100827696066,
+      "name": "c8-b7-i79-T",
+      "port_counts": [
+        7699,
+        3415,
+        7322,
+        3741,
+        3926,
+        1388,
+        3605,
+        1630,
+        8,
+        12,
+        0,
+        4
+      ],
+      "returned": true,
+      "sentinel": 24,
+      "sentinel_share": 0.000732421875,
+      "shots_used": 32768,
+      "success": 22177
+    },
+    {
+      "a": 0.28078697339076775,
+      "events": 32768,
+      "failure": 23542,
+      "index": 80,
+      "invalid_events": {
+        "other_photon_number": 11,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.039199828365831385,
+      "name": "b12-b2-i80-E0",
+      "port_counts": [
+        2094,
+        2754,
+        2490,
+        1853,
+        22089,
+        287,
+        865,
+        301,
+        10,
+        8,
+        3,
+        3
+      ],
+      "returned": true,
+      "sentinel": 24,
+      "sentinel_share": 0.000732421875,
+      "shots_used": 32768,
+      "success": 9191
+    },
+    {
+      "a": 0.2499159920574309,
+      "events": 32768,
+      "failure": 24554,
+      "index": 81,
+      "invalid_events": {
+        "other_photon_number": 9,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.0180018207355766,
+      "name": "b12-b2-i81-E1",
+      "port_counts": [
+        2103,
+        1886,
+        2451,
+        1741,
+        259,
+        23251,
+        331,
+        713,
+        7,
+        8,
+        2,
+        7
+      ],
+      "returned": true,
+      "sentinel": 24,
+      "sentinel_share": 0.000732421875,
+      "shots_used": 32768,
+      "success": 8181
+    },
+    {
+      "a": 0.24893818559599107,
+      "events": 32768,
+      "failure": 24580,
+      "index": 82,
+      "invalid_events": {
+        "other_photon_number": 9,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.018485806503498663,
+      "name": "b12-b2-i82-E1",
+      "port_counts": [
+        2134,
+        1835,
+        2424,
+        1754,
+        303,
+        23246,
+        312,
+        719,
+        11,
+        13,
+        4,
+        4
+      ],
+      "returned": true,
+      "sentinel": 32,
+      "sentinel_share": 0.0009765625,
+      "shots_used": 32768,
+      "success": 8147
+    },
+    {
+      "a": 0.28188124560706534,
+      "events": 32768,
+      "failure": 23499,
+      "index": 83,
+      "invalid_events": {
+        "other_photon_number": 12,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.040076546221603955,
+      "name": "b12-b2-i83-E0",
+      "port_counts": [
+        2140,
+        2752,
+        2499,
+        1833,
+        22075,
+        272,
+        861,
+        291,
+        12,
+        10,
+        2,
+        9
+      ],
+      "returned": true,
+      "sentinel": 33,
+      "sentinel_share": 0.001007080078125,
+      "shots_used": 32768,
+      "success": 9224
+    },
+    {
+      "a": 0.9987779916292426,
+      "events": 32768,
+      "failure": 40,
+      "index": 84,
+      "invalid_events": {
+        "other_photon_number": 6,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.0475819509363639,
+      "name": "a16-b4-i84-T",
+      "port_counts": [
+        7683,
+        8410,
+        9474,
+        7126,
+        4,
+        19,
+        12,
+        5,
+        6,
+        16,
+        6,
+        1
+      ],
+      "returned": true,
+      "sentinel": 29,
+      "sentinel_share": 0.000885009765625,
+      "shots_used": 32768,
+      "success": 32693
+    },
+    {
+      "a": 0.0037014377485469563,
+      "events": 32768,
+      "failure": 32569,
+      "index": 85,
+      "invalid_events": {
+        "other_photon_number": 10,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.010798409299479866,
+      "name": "a16-b4-i85-D",
+      "port_counts": [
+        9,
+        4,
+        3,
+        105,
+        16564,
+        15992,
+        9,
+        4,
+        47,
+        6,
+        8,
+        7
+      ],
+      "returned": true,
+      "sentinel": 68,
+      "sentinel_share": 0.0020751953125,
+      "shots_used": 32768,
+      "success": 121
+    },
+    {
+      "a": 0.003516604489022078,
+      "events": 32768,
+      "failure": 32587,
+      "index": 86,
+      "invalid_events": {
+        "other_photon_number": 10,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.006299308910769908,
+      "name": "a16-b4-i86-D",
+      "port_counts": [
+        8,
+        2,
+        3,
+        102,
+        16426,
+        16145,
+        7,
+        9,
+        35,
+        7,
+        6,
+        8
+      ],
+      "returned": true,
+      "sentinel": 56,
+      "sentinel_share": 0.001708984375,
+      "shots_used": 32768,
+      "success": 115
+    },
+    {
+      "a": 0.9989915350059592,
+      "events": 32768,
+      "failure": 33,
+      "index": 87,
+      "invalid_events": {
+        "other_photon_number": 14,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.04270696452036793,
+      "name": "a16-b4-i87-T",
+      "port_counts": [
+        7861,
+        8375,
+        9351,
+        7103,
+        2,
+        21,
+        7,
+        3,
+        9,
+        12,
+        3,
+        7
+      ],
+      "returned": true,
+      "sentinel": 31,
+      "sentinel_share": 0.000946044921875,
+      "shots_used": 32768,
+      "success": 32690
+    }
+  ],
+  "job_id": "f3a11b5f-b045-42be-9205-de7da91cbfec",
+  "job_status": "completed",
+  "mesh_spread": {
+    "B12": {
+      "attributes_failure_to_mesh_variance": false,
+      "exceeds_tolerance": false,
+      "range": 0.024429309420169965,
+      "t_levels": {
+        "b12-2": 0.74189445569092,
+        "b12-3": 0.7370459615422931,
+        "b12-6": 0.7326440731092349,
+        "b12-7": 0.7570733825294048
+      }
+    },
+    "C8": {
+      "attributes_failure_to_mesh_variance": false,
+      "exceeds_tolerance": false,
+      "range": 0.04801909084953815,
+      "t_levels": {
+        "c8-4": 0.631115676135591,
+        "c8-5": 0.6291631050488173,
+        "c8-6": 0.6303902478976338,
+        "c8-7": 0.6771821958983555
+      }
+    }
+  },
+  "mutation": {
+    "failures": [],
+    "readings_expected": 11,
+    "readings_present": 11,
+    "verdict": "pass",
+    "within": 11
+  },
+  "null": {
+    "E0": 0.2813340259105353,
+    "E1": 0.24942714857474566,
+    "ideal": 0.25,
+    "max_offset": 0.0313340259105353,
+    "pair_difference": 0.031906877335789646
+  },
+  "platform": "qpu:ascella",
+  "readings": [
+    {
+      "a": 0.9988847810809985,
+      "a_prime": 1.0000000039988959,
+      "a_prime_odds_corrected": 1.0000000039988959,
+      "arm": "T",
+      "block": 4,
+      "deviation": 3.998895881096587e-09,
+      "failure": 73,
+      "ideal": 1.0,
+      "iterations": [
+        0,
+        3
+      ],
+      "operand": "A16",
+      "raw_departure_from_ideal": 0.0011152189190014594,
+      "role": "anchor",
+      "segment": "anchor-early",
+      "success": 65385,
+      "true_top_level": 1.0,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.003961577288996298,
+      "a_prime": 0.0016777963832003311,
+      "a_prime_odds_corrected": 0.0015594360787656231,
+      "arm": "D",
+      "block": 4,
+      "deviation": 0.0016777963832003311,
+      "failure": 65119,
+      "ideal": 0.0,
+      "iterations": [
+        1,
+        2
+      ],
+      "operand": "A16",
+      "raw_departure_from_ideal": 0.003961577288996298,
+      "role": "anchor",
+      "segment": "anchor-early",
+      "success": 259,
+      "true_top_level": 1.0,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.49478896054280386,
+      "a_prime": 0.4941820167497564,
+      "a_prime_odds_corrected": 0.4758816014474022,
+      "arm": "T",
+      "block": 0,
+      "deviation": -0.005817983250243686,
+      "failure": 33060,
+      "ideal": 0.5000000000000001,
+      "iterations": [
+        4,
+        9
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.005211039457196254,
+      "role": "reference",
+      "segment": "reference-b12-0",
+      "success": 32378,
+      "true_top_level": 0.4999999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.0010540144201393131,
+      "a_prime": -0.0012396997320330645,
+      "a_prime_odds_corrected": -0.0012396997320330645,
+      "arm": "D",
+      "block": 0,
+      "deviation": -0.0012396997320330645,
+      "failure": 65395,
+      "ideal": 0.0,
+      "iterations": [
+        5,
+        8
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.0010540144201393131,
+      "role": "reference",
+      "segment": "reference-b12-0",
+      "success": 69,
+      "true_top_level": 0.4999999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.0010997571369655867,
+      "a_prime": -0.001193800742171037,
+      "a_prime_odds_corrected": -0.001193800742171037,
+      "arm": "F",
+      "block": 0,
+      "deviation": -0.001193800742171037,
+      "failure": 65397,
+      "ideal": 0.0,
+      "iterations": [
+        6,
+        7
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.0010997571369655867,
+      "role": "reference",
+      "segment": "reference-b12-0",
+      "success": 72,
+      "true_top_level": 0.4999999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.7416580089225692,
+      "a_prime": 0.74189445569092,
+      "a_prime_odds_corrected": 0.7276164481482595,
+      "arm": "T",
+      "block": 2,
+      "deviation": -0.008105544309079837,
+      "failure": 16909,
+      "ideal": 0.7499999999999999,
+      "iterations": [
+        10,
+        19
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.008341991077430722,
+      "role": "pathion",
+      "segment": "b12-2",
+      "success": 48543,
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.0018178207537082015,
+      "a_prime": -0.0004732839702807074,
+      "a_prime_odds_corrected": -0.0004732839702807074,
+      "arm": "D",
+      "block": 2,
+      "deviation": -0.0004732839702807074,
+      "failure": 65344,
+      "ideal": 0.0,
+      "iterations": [
+        11,
+        18
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.0018178207537082015,
+      "role": "pathion",
+      "segment": "b12-2",
+      "success": 119,
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.25489237538000886,
+      "a_prime": 0.25346586138581273,
+      "a_prime_odds_corrected": 0.2398526093375363,
+      "arm": "F",
+      "block": 2,
+      "deviation": 0.0034658613858127296,
+      "failure": 48774,
+      "ideal": 0.25,
+      "iterations": [
+        12,
+        17
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.004892375380008862,
+      "role": "pathion",
+      "segment": "b12-2",
+      "success": 16685,
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.0007485258623323455,
+      "a_prime": -0.0015462319450408786,
+      "a_prime_odds_corrected": -0.0015462319450408786,
+      "arm": "C",
+      "block": 2,
+      "deviation": -0.0015462319450408786,
+      "failure": 65413,
+      "follows_true_top_level": false,
+      "ideal": 3.0814879110195774e-33,
+      "iterations": [
+        13,
+        16
+      ],
+      "mutation_failure": null,
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.0007485258623323455,
+      "role": "pathion",
+      "segment": "b12-2",
+      "success": 49,
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.5289022639088327,
+      "a_prime": 0.5284118630289849,
+      "a_prime_odds_corrected": 0.5101222342697093,
+      "arm": "N",
+      "block": 2,
+      "deviation": -0.03408813697101509,
+      "failure": 30839,
+      "follows_true_top_level": false,
+      "ideal": 0.5625,
+      "iterations": [
+        14,
+        15
+      ],
+      "mutation_failure": null,
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.03359773609116734,
+      "role": "pathion",
+      "segment": "b12-2",
+      "success": 34623,
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.6312563996760044,
+      "a_prime": 0.631115676135591,
+      "a_prime_odds_corrected": 0.6138987847787768,
+      "arm": "T",
+      "block": 4,
+      "deviation": -0.023392821051882673,
+      "failure": 24128,
+      "ideal": 0.6545084971874737,
+      "iterations": [
+        20,
+        29
+      ],
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.023252097511469283,
+      "role": "pathion",
+      "segment": "c8-4",
+      "success": 41305,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.00210880195599022,
+      "a_prime": -0.00018130867497179998,
+      "a_prime_odds_corrected": -0.00018130867497179998,
+      "arm": "D",
+      "block": 4,
+      "deviation": -0.00018130867497179998,
+      "failure": 65302,
+      "ideal": 0.0,
+      "iterations": [
+        21,
+        28
+      ],
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.00210880195599022,
+      "role": "pathion",
+      "segment": "c8-4",
+      "success": 138,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.07611452317658203,
+      "a_prime": 0.07407724183781587,
+      "a_prime_odds_corrected": 0.06920551185609435,
+      "arm": "F",
+      "block": 4,
+      "deviation": 0.004978941275310539,
+      "failure": 60472,
+      "ideal": 0.06909830056250534,
+      "iterations": [
+        22,
+        27
+      ],
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.007016222614076695,
+      "role": "pathion",
+      "segment": "c8-4",
+      "success": 4982,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.9515653409524973,
+      "a_prime": 0.9525189041992574,
+      "a_prime_odds_corrected": 0.9490928266439465,
+      "arm": "C",
+      "block": 4,
+      "deviation": 0.005305308699299238,
+      "failure": 3170,
+      "follows_true_top_level": false,
+      "ideal": 0.9472135954999582,
+      "iterations": [
+        23,
+        26
+      ],
+      "mutation_failure": null,
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.004351745452539135,
+      "role": "pathion",
+      "segment": "c8-4",
+      "success": 62279,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.4641716947987474,
+      "a_prime": 0.4634601517733789,
+      "a_prime_odds_corrected": 0.445295862587768,
+      "arm": "N",
+      "block": 4,
+      "deviation": 0.011205903179641985,
+      "failure": 35078,
+      "follows_true_top_level": false,
+      "ideal": 0.4522542485937369,
+      "iterations": [
+        24,
+        25
+      ],
+      "mutation_failure": null,
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.011917446205010507,
+      "role": "pathion",
+      "segment": "c8-4",
+      "success": 30387,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.7368260225206643,
+      "a_prime": 0.7370459615422931,
+      "a_prime_odds_corrected": 0.7226000289113607,
+      "arm": "T",
+      "block": 3,
+      "deviation": -0.012954038457706818,
+      "failure": 17225,
+      "ideal": 0.7499999999999999,
+      "iterations": [
+        30,
+        37
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.013173977479335575,
+      "role": "pathion",
+      "segment": "b12-3",
+      "success": 48226,
+      "true_top_level": 0.7499999999999997,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.001298145942148508,
+      "a_prime": -0.0009947341718050094,
+      "a_prime_odds_corrected": -0.0009947341718050094,
+      "arm": "D",
+      "block": 3,
+      "deviation": -0.0009947341718050094,
+      "failure": 65393,
+      "ideal": 0.0,
+      "iterations": [
+        31,
+        36
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.001298145942148508,
+      "role": "pathion",
+      "segment": "b12-3",
+      "success": 85,
+      "true_top_level": 0.7499999999999997,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.09119938884644767,
+      "a_prime": 0.08921364265722508,
+      "a_prime_odds_corrected": 0.08343616074746583,
+      "arm": "F",
+      "block": 3,
+      "deviation": 0.005880309323891844,
+      "failure": 59481,
+      "ideal": 0.08333333333333323,
+      "iterations": [
+        32,
+        35
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.007866055513114437,
+      "role": "pathion",
+      "segment": "b12-3",
+      "success": 5969,
+      "true_top_level": 0.7499999999999997,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.5894535727932747,
+      "a_prime": 0.5891700362519442,
+      "a_prime_odds_corrected": 0.5713251725121543,
+      "arm": "N",
+      "block": 3,
+      "deviation": 0.0058367029186109365,
+      "failure": 26860,
+      "follows_true_top_level": false,
+      "ideal": 0.5833333333333333,
+      "iterations": [
+        33,
+        34
+      ],
+      "mutation_failure": null,
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.006120239459941446,
+      "role": "pathion",
+      "segment": "b12-3",
+      "success": 38565,
+      "true_top_level": 0.7499999999999997,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.6293104765397014,
+      "a_prime": 0.6291631050488173,
+      "a_prime_odds_corrected": 0.6119111210077416,
+      "arm": "T",
+      "block": 5,
+      "deviation": -0.025345392138656386,
+      "failure": 24262,
+      "ideal": 0.6545084971874737,
+      "iterations": [
+        38,
+        43
+      ],
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.025198020647772323,
+      "role": "pathion",
+      "segment": "c8-5",
+      "success": 41189,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.004383955030091956,
+      "a_prime": 0.002101617113615723,
+      "a_prime_odds_corrected": 0.00195341683803175,
+      "arm": "D",
+      "block": 5,
+      "deviation": 0.002101617113615723,
+      "failure": 65179,
+      "ideal": 0.0,
+      "iterations": [
+        39,
+        42
+      ],
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.004383955030091956,
+      "role": "pathion",
+      "segment": "c8-5",
+      "success": 287,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.06603312351035874,
+      "a_prime": 0.06396140060275284,
+      "a_prime_odds_corrected": 0.05971204141467524,
+      "arm": "F",
+      "block": 5,
+      "deviation": -0.0051368999597525,
+      "failure": 61130,
+      "ideal": 0.06909830056250534,
+      "iterations": [
+        40,
+        41
+      ],
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.003065177052146595,
+      "role": "pathion",
+      "segment": "c8-5",
+      "success": 4322,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.7324391212685997,
+      "a_prime": 0.7326440731092349,
+      "a_prime_odds_corrected": 0.7180488225147686,
+      "arm": "T",
+      "block": 6,
+      "deviation": -0.01735592689076526,
+      "failure": 17514,
+      "ideal": 0.7500000000000001,
+      "iterations": [
+        44,
+        53
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.017560878731400442,
+      "role": "pathion",
+      "segment": "b12-6",
+      "success": 47944,
+      "true_top_level": 0.7499999999999996,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.0015278371936686427,
+      "a_prime": -0.0007642582150541492,
+      "a_prime_odds_corrected": -0.0007642582150541492,
+      "arm": "D",
+      "block": 6,
+      "deviation": -0.0007642582150541492,
+      "failure": 65352,
+      "ideal": 0.0,
+      "iterations": [
+        45,
+        52
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.0015278371936686427,
+      "role": "pathion",
+      "segment": "b12-6",
+      "success": 100,
+      "true_top_level": 0.7499999999999996,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.08394439352276199,
+      "a_prime": 0.08193386174531299,
+      "a_prime_odds_corrected": 0.07658817557565263,
+      "arm": "F",
+      "block": 6,
+      "deviation": -0.0013994715880202707,
+      "failure": 59965,
+      "ideal": 0.08333333333333326,
+      "iterations": [
+        46,
+        51
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.0006110601894287332,
+      "role": "pathion",
+      "segment": "b12-6",
+      "success": 5495,
+      "true_top_level": 0.7499999999999996,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.08093607654917306,
+      "a_prime": 0.07891526731427093,
+      "a_prime_odds_corrected": 0.07375070496051761,
+      "arm": "C",
+      "block": 6,
+      "deviation": -0.0044180660190624305,
+      "failure": 60127,
+      "follows_true_top_level": false,
+      "ideal": 0.08333333333333336,
+      "iterations": [
+        47,
+        50
+      ],
+      "mutation_failure": null,
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.0023972567841602926,
+      "role": "pathion",
+      "segment": "b12-6",
+      "success": 5295,
+      "true_top_level": 0.7499999999999996,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.5485063229274849,
+      "a_prime": 0.5480828963340045,
+      "a_prime_odds_corrected": 0.5298774236306825,
+      "arm": "N",
+      "block": 6,
+      "deviation": -0.03525043699932884,
+      "failure": 29562,
+      "follows_true_top_level": false,
+      "ideal": 0.5833333333333334,
+      "iterations": [
+        48,
+        49
+      ],
+      "mutation_failure": null,
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.03482701040584846,
+      "role": "pathion",
+      "segment": "b12-6",
+      "success": 35914,
+      "true_top_level": 0.7499999999999996,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.6305334413153432,
+      "a_prime": 0.6303902478976338,
+      "a_prime_odds_corrected": 0.6131602517316862,
+      "arm": "T",
+      "block": 6,
+      "deviation": -0.024118249289839966,
+      "failure": 24179,
+      "ideal": 0.6545084971874737,
+      "iterations": [
+        54,
+        63
+      ],
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.023975055872130557,
+      "role": "pathion",
+      "segment": "c8-6",
+      "success": 41264,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.0017875148959574662,
+      "a_prime": -0.0005036933633857116,
+      "a_prime_odds_corrected": -0.0005036933633857116,
+      "arm": "D",
+      "block": 6,
+      "deviation": -0.0005036933633857116,
+      "failure": 65337,
+      "ideal": 0.0,
+      "iterations": [
+        55,
+        62
+      ],
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.0017875148959574662,
+      "role": "pathion",
+      "segment": "c8-6",
+      "success": 117,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.070672349786883,
+      "a_prime": 0.06861647609034462,
+      "a_prime_odds_corrected": 0.06407902251377966,
+      "arm": "F",
+      "block": 6,
+      "deviation": -0.000481824472160719,
+      "failure": 60831,
+      "ideal": 0.06909830056250534,
+      "iterations": [
+        56,
+        61
+      ],
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.0015740492243776633,
+      "role": "pathion",
+      "segment": "c8-6",
+      "success": 4626,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.06133919843597263,
+      "a_prime": 0.059251439447174564,
+      "a_prime_odds_corrected": 0.055296507369745715,
+      "arm": "C",
+      "block": 6,
+      "deviation": 0.006465034947132582,
+      "failure": 61456,
+      "follows_true_top_level": false,
+      "ideal": 0.05278640450004198,
+      "iterations": [
+        57,
+        60
+      ],
+      "mutation_failure": null,
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.008552793935930648,
+      "role": "pathion",
+      "segment": "c8-6",
+      "success": 4016,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.45983561476411633,
+      "a_prime": 0.459109258180715,
+      "a_prime_odds_corrected": 0.44097534139511274,
+      "arm": "N",
+      "block": 6,
+      "deviation": 0.0068550095869781,
+      "failure": 35357,
+      "follows_true_top_level": false,
+      "ideal": 0.4522542485937369,
+      "iterations": [
+        58,
+        59
+      ],
+      "mutation_failure": null,
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.007581366170379411,
+      "role": "pathion",
+      "segment": "c8-6",
+      "success": 30099,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.756785255822483,
+      "a_prime": 0.7570733825294048,
+      "a_prime_odds_corrected": 0.7433445679142383,
+      "arm": "T",
+      "block": 7,
+      "deviation": 0.007073382529404926,
+      "failure": 15915,
+      "ideal": 0.7499999999999999,
+      "iterations": [
+        64,
+        73
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.006785255822483127,
+      "role": "pathion",
+      "segment": "b12-7",
+      "success": 49521,
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.0025051554265638127,
+      "a_prime": 0.00021639887695890547,
+      "a_prime_odds_corrected": 0.00020111222933544268,
+      "arm": "D",
+      "block": 7,
+      "deviation": 0.00021639887695890547,
+      "failure": 65301,
+      "ideal": 0.0,
+      "iterations": [
+        65,
+        72
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.0025051554265638127,
+      "role": "pathion",
+      "segment": "b12-7",
+      "success": 164,
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.2471044830852917,
+      "a_prime": 0.24565136294140744,
+      "a_prime_odds_corrected": 0.23232720003563923,
+      "arm": "F",
+      "block": 7,
+      "deviation": -0.004348637058592564,
+      "failure": 49274,
+      "ideal": 0.25,
+      "iterations": [
+        66,
+        71
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.002895516914708296,
+      "role": "pathion",
+      "segment": "b12-7",
+      "success": 16172,
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.0014361230788034346,
+      "a_prime": -0.0008562856572454518,
+      "a_prime_odds_corrected": -0.0008562856572454518,
+      "arm": "C",
+      "block": 7,
+      "deviation": -0.0008562856572454518,
+      "failure": 65360,
+      "follows_true_top_level": false,
+      "ideal": 3.0814879110195774e-33,
+      "iterations": [
+        67,
+        70
+      ],
+      "mutation_failure": null,
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.0014361230788034346,
+      "role": "pathion",
+      "segment": "b12-7",
+      "success": 94,
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.5473632737886035,
+      "a_prime": 0.5469359421415684,
+      "a_prime_odds_corrected": 0.5287239943873033,
+      "arm": "N",
+      "block": 7,
+      "deviation": -0.015564057858431624,
+      "failure": 29621,
+      "follows_true_top_level": false,
+      "ideal": 0.5625,
+      "iterations": [
+        68,
+        69
+      ],
+      "mutation_failure": null,
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.0151367262113965,
+      "role": "pathion",
+      "segment": "b12-7",
+      "success": 35820,
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.6771660760112428,
+      "a_prime": 0.6771821958983555,
+      "a_prime_odds_corrected": 0.660960336123681,
+      "arm": "T",
+      "block": 7,
+      "deviation": 0.022673698710881762,
+      "failure": 21134,
+      "ideal": 0.6545084971874737,
+      "iterations": [
+        74,
+        79
+      ],
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.022657578823769065,
+      "role": "pathion",
+      "segment": "c8-7",
+      "success": 44330,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.0011305995233147955,
+      "a_prime": -0.0011628529874991946,
+      "a_prime_odds_corrected": -0.0011628529874991946,
+      "arm": "D",
+      "block": 7,
+      "deviation": -0.0011628529874991946,
+      "failure": 65378,
+      "ideal": 0.0,
+      "iterations": [
+        75,
+        78
+      ],
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.0011305995233147955,
+      "role": "pathion",
+      "segment": "c8-7",
+      "success": 74,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.0650380419836832,
+      "a_prime": 0.06296291953136754,
+      "a_prime_odds_corrected": 0.05877573040568127,
+      "arm": "F",
+      "block": 7,
+      "deviation": -0.006135381031137796,
+      "failure": 61197,
+      "ideal": 0.06909830056250534,
+      "iterations": [
+        76,
+        77
+      ],
+      "operand": "C8",
+      "raw_departure_from_ideal": 0.00406025857882214,
+      "role": "pathion",
+      "segment": "c8-7",
+      "success": 4257,
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.2813340259105353,
+      "a_prime": 0.2799978457942862,
+      "a_prime_odds_corrected": 0.2654663271807913,
+      "arm": "E0",
+      "block": 2,
+      "deviation": 0.029997845794286215,
+      "failure": 47041,
+      "ideal": 0.25,
+      "iterations": [
+        80,
+        83
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.0313340259105353,
+      "role": "null",
+      "segment": "null-b12-2",
+      "success": 18415,
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.24942714857474566,
+      "a_prime": 0.24798196346428883,
+      "a_prime_odds_corrected": 0.23457069731473565,
+      "arm": "E1",
+      "block": 2,
+      "deviation": -0.0020180365357111707,
+      "failure": 49134,
+      "ideal": 0.25,
+      "iterations": [
+        81,
+        82
+      ],
+      "operand": "B12",
+      "raw_departure_from_ideal": 0.0005728514252543448,
+      "role": "null",
+      "segment": "null-b12-2",
+      "success": 16328,
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.9988847470056221,
+      "a_prime": 0.9999999698071061,
+      "a_prime_odds_corrected": 0.9999999675116316,
+      "arm": "T",
+      "block": 4,
+      "deviation": -3.019289385175483e-08,
+      "failure": 73,
+      "ideal": 1.0,
+      "iterations": [
+        84,
+        87
+      ],
+      "operand": "A16",
+      "raw_departure_from_ideal": 0.0011152529943778688,
+      "role": "anchor",
+      "segment": "anchor-late",
+      "success": 65383,
+      "true_top_level": 1.0,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.003609004159530218,
+      "a_prime": 0.0013240187412546752,
+      "a_prime_odds_corrected": 0.0012305849503444772,
+      "arm": "D",
+      "block": 4,
+      "deviation": 0.0013240187412546752,
+      "failure": 65156,
+      "ideal": 0.0,
+      "iterations": [
+        85,
+        86
+      ],
+      "operand": "A16",
+      "raw_departure_from_ideal": 0.003609004159530218,
+      "role": "anchor",
+      "segment": "anchor-late",
+      "success": 236,
+      "true_top_level": 1.0,
+      "within_tolerance": true
+    }
+  ],
+  "repeated_pairs": [
+    {
+      "arm": "T",
+      "difference": 0.00021367315668807674,
+      "exceeds": false,
+      "iterations": [
+        0,
+        3
+      ],
+      "segment": "anchor-early"
+    },
+    {
+      "arm": "D",
+      "difference": 0.0008898148610863893,
+      "exceeds": false,
+      "iterations": [
+        1,
+        2
+      ],
+      "segment": "anchor-early"
+    },
+    {
+      "arm": "T",
+      "difference": 0.0013454214469363346,
+      "exceeds": false,
+      "iterations": [
+        4,
+        9
+      ],
+      "segment": "reference-b12-0"
+    },
+    {
+      "arm": "D",
+      "difference": 0.0005805361128735281,
+      "exceeds": false,
+      "iterations": [
+        5,
+        8
+      ],
+      "segment": "reference-b12-0"
+    },
+    {
+      "arm": "F",
+      "difference": 0.00012209444888363176,
+      "exceeds": false,
+      "iterations": [
+        6,
+        7
+      ],
+      "segment": "reference-b12-0"
+    },
+    {
+      "arm": "T",
+      "difference": 7.588205158481909e-05,
+      "exceeds": false,
+      "iterations": [
+        10,
+        19
+      ],
+      "segment": "b12-2"
+    },
+    {
+      "arm": "D",
+      "difference": 3.0829296233149135e-05,
+      "exceeds": false,
+      "iterations": [
+        11,
+        18
+      ],
+      "segment": "b12-2"
+    },
+    {
+      "arm": "F",
+      "difference": 0.0019146896177819617,
+      "exceeds": false,
+      "iterations": [
+        12,
+        17
+      ],
+      "segment": "b12-2"
+    },
+    {
+      "arm": "C",
+      "difference": 3.05978140802142e-05,
+      "exceeds": false,
+      "iterations": [
+        13,
+        16
+      ],
+      "segment": "b12-2"
+    },
+    {
+      "arm": "N",
+      "difference": 0.0017808506919833045,
+      "exceeds": false,
+      "iterations": [
+        14,
+        15
+      ],
+      "segment": "b12-2"
+    },
+    {
+      "arm": "T",
+      "difference": 0.0017615348956377952,
+      "exceeds": false,
+      "iterations": [
+        20,
+        29
+      ],
+      "segment": "c8-4"
+    },
+    {
+      "arm": "D",
+      "difference": 6.112469437652814e-05,
+      "exceeds": false,
+      "iterations": [
+        21,
+        28
+      ],
+      "segment": "c8-4"
+    },
+    {
+      "arm": "F",
+      "difference": 0.0037510663396335686,
+      "exceeds": false,
+      "iterations": [
+        22,
+        27
+      ],
+      "segment": "c8-4"
+    },
+    {
+      "arm": "C",
+      "difference": 0.0015116264617579533,
+      "exceeds": false,
+      "iterations": [
+        23,
+        26
+      ],
+      "segment": "c8-4"
+    },
+    {
+      "arm": "N",
+      "difference": 0.0027986705906356546,
+      "exceeds": false,
+      "iterations": [
+        24,
+        25
+      ],
+      "segment": "c8-4"
+    },
+    {
+      "arm": "T",
+      "difference": 0.00943413625749312,
+      "exceeds": false,
+      "iterations": [
+        30,
+        37
+      ],
+      "segment": "b12-3"
+    },
+    {
+      "arm": "D",
+      "difference": 3.0703215966274575e-05,
+      "exceeds": false,
+      "iterations": [
+        31,
+        36
+      ],
+      "segment": "b12-3"
+    },
+    {
+      "arm": "F",
+      "difference": 0.0003916761263338675,
+      "exceeds": false,
+      "iterations": [
+        32,
+        35
+      ],
+      "segment": "b12-3"
+    },
+    {
+      "arm": "N",
+      "difference": 0.00018502811376031048,
+      "exceeds": false,
+      "iterations": [
+        33,
+        34
+      ],
+      "segment": "b12-3"
+    },
+    {
+      "arm": "T",
+      "difference": 0.008132696335759637,
+      "exceeds": false,
+      "iterations": [
+        38,
+        43
+      ],
+      "segment": "c8-5"
+    },
+    {
+      "arm": "D",
+      "difference": 0.0006423579845048757,
+      "exceeds": false,
+      "iterations": [
+        39,
+        42
+      ],
+      "segment": "c8-5"
+    },
+    {
+      "arm": "F",
+      "difference": 0.0016016382106958799,
+      "exceeds": false,
+      "iterations": [
+        40,
+        41
+      ],
+      "segment": "c8-5"
+    },
+    {
+      "arm": "T",
+      "difference": 0.0018986369262129488,
+      "exceeds": false,
+      "iterations": [
+        44,
+        53
+      ],
+      "segment": "b12-6"
+    },
+    {
+      "arm": "D",
+      "difference": 0.0005504882598687559,
+      "exceeds": false,
+      "iterations": [
+        45,
+        52
+      ],
+      "segment": "b12-6"
+    },
+    {
+      "arm": "F",
+      "difference": 2.54235017944221e-05,
+      "exceeds": false,
+      "iterations": [
+        46,
+        51
+      ],
+      "segment": "b12-6"
+    },
+    {
+      "arm": "C",
+      "difference": 0.00012811101257739765,
+      "exceeds": false,
+      "iterations": [
+        47,
+        50
+      ],
+      "segment": "b12-6"
+    },
+    {
+      "arm": "N",
+      "difference": 0.00098931061967511,
+      "exceeds": false,
+      "iterations": [
+        48,
+        49
+      ],
+      "segment": "b12-6"
+    },
+    {
+      "arm": "T",
+      "difference": 0.0022874053215876655,
+      "exceeds": false,
+      "iterations": [
+        54,
+        63
+      ],
+      "segment": "c8-6"
+    },
+    {
+      "arm": "D",
+      "difference": 0.00015299752737139632,
+      "exceeds": false,
+      "iterations": [
+        55,
+        62
+      ],
+      "segment": "c8-6"
+    },
+    {
+      "arm": "F",
+      "difference": 0.0012372918682987677,
+      "exceeds": false,
+      "iterations": [
+        56,
+        61
+      ],
+      "segment": "c8-6"
+    },
+    {
+      "arm": "C",
+      "difference": 0.000335454173717005,
+      "exceeds": false,
+      "iterations": [
+        57,
+        60
+      ],
+      "segment": "c8-6"
+    },
+    {
+      "arm": "N",
+      "difference": 0.001013219801539289,
+      "exceeds": false,
+      "iterations": [
+        58,
+        59
+      ],
+      "segment": "c8-6"
+    },
+    {
+      "arm": "T",
+      "difference": 0.006125222067116076,
+      "exceeds": false,
+      "iterations": [
+        64,
+        73
+      ],
+      "segment": "b12-7"
+    },
+    {
+      "arm": "D",
+      "difference": 0.00018338058983662,
+      "exceeds": false,
+      "iterations": [
+        65,
+        72
+      ],
+      "segment": "b12-7"
+    },
+    {
+      "arm": "F",
+      "difference": 0.00032140614215953045,
+      "exceeds": false,
+      "iterations": [
+        66,
+        71
+      ],
+      "segment": "b12-7"
+    },
+    {
+      "arm": "C",
+      "difference": 0.00030538257539675594,
+      "exceeds": false,
+      "iterations": [
+        67,
+        70
+      ],
+      "segment": "b12-7"
+    },
+    {
+      "arm": "N",
+      "difference": 0.002639260107887176,
+      "exceeds": false,
+      "iterations": [
+        68,
+        69
+      ],
+      "segment": "b12-7"
+    },
+    {
+      "arm": "T",
+      "difference": 0.0009814858240135838,
+      "exceeds": false,
+      "iterations": [
+        74,
+        79
+      ],
+      "segment": "c8-7"
+    },
+    {
+      "arm": "D",
+      "difference": 6.13898681843339e-05,
+      "exceeds": false,
+      "iterations": [
+        75,
+        78
+      ],
+      "segment": "c8-7"
+    },
+    {
+      "arm": "F",
+      "difference": 0.002136173061573751,
+      "exceeds": false,
+      "iterations": [
+        76,
+        77
+      ],
+      "segment": "c8-7"
+    },
+    {
+      "arm": "E0",
+      "difference": 0.0010942722162975982,
+      "exceeds": false,
+      "iterations": [
+        80,
+        83
+      ],
+      "segment": "null-b12-2"
+    },
+    {
+      "arm": "E1",
+      "difference": 0.0009778064614398285,
+      "exceeds": false,
+      "iterations": [
+        81,
+        82
+      ],
+      "segment": "null-b12-2"
+    },
+    {
+      "arm": "T",
+      "difference": 0.00021354337671652956,
+      "exceeds": false,
+      "iterations": [
+        84,
+        87
+      ],
+      "segment": "anchor-late"
+    },
+    {
+      "arm": "D",
+      "difference": 0.00018483325952487828,
+      "exceeds": false,
+      "iterations": [
+        85,
+        86
+      ],
+      "segment": "anchor-late"
+    }
+  ],
+  "schema": "ascella-pathion-four-term-blocks-analysis-v1",
+  "thresholds": {
+    "anchor_drift": 0.03,
+    "anchor_floor": 0.9,
+    "dark_ceiling": 0.05,
+    "dark_spread": 0.03,
+    "level_tolerance": 0.07,
+    "mutation_separation": 0.1,
+    "null_level_tolerance": 0.07,
+    "null_pair_spread": 0.07,
+    "outlier_fraction": 0.1,
+    "repeat_failures": 2,
+    "repeat_spread": 0.03,
+    "sentinel_share": 0.05
+  }
+}

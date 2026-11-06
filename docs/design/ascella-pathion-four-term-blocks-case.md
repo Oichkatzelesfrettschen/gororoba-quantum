@@ -143,7 +143,7 @@ No job, session, upload or credit. Local Perceval SLOS runs and the repository `
 - the MCP `qd_plan` tool: it refused the worktree path (it resolves case directories against the checkout that serves it);
 - a QPU plan while the Explorer row reads `available`: both QPU plans on these bytes read `running`;
 - the dashboard balance and the platform queue depth, which need the dashboard session;
-- an analysis and collection script for the returned runs (the kernel slice has `ascella_a5_kernel_analysis.py`); the readout section and thresholds above fix what it computes;
+- a scoring of real returned runs: [scripts/ascella_pathion_four_term_blocks_analysis.py](../../scripts/ascella_pathion_four_term_blocks_analysis.py) applies the readout and thresholds above to a collected run directory (`--sim-gate` returns the simulator stop decision as its exit status), and [its test](../../tests/scripts/test_ascella_pathion_four_term_blocks_analysis.py) covers ideal, contracted, drifting, flipped-block and cut synthetic returns only;
 - the full `sh ci/pr_checks.sh tests` lane (the targeted tests of this case and the kernel slice ran, with `ruff`, `mypy`, `ci/seed_provenance.py --check`, `scripts/check_markdown_links.py` and `scripts/hypercomplex_libraries.py --check`);
 - Belenos, which is `unreachable`;
 - the 32-input resolution of each operand and the eigenvalue-ladder inputs, outside this case.

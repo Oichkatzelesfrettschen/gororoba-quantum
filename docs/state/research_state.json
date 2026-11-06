@@ -14645,6 +14645,32 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "hw-ascella-pathion-four-term-blocks",
+      "statement": "qpu:ascella realizes the 4 x 4 coset blocks of the three four-term block classes that occur only at D = 32 (B12 blocks 2 and 7 and blocks 3 and 6, Gram spectrum {0,0,4,12}, ideal 0.75; C8 blocks 4 to 7, spectrum {0,1.528,4,10.472}, ideal 0.6545) within the preregistered 0.07 tolerance after anchor-and-dark normalization: all 8 pathion readings and both D = 16 reference readings conform, all 11 mutation readings read their mutated level, anchor 0.9989, dark 0.0023, anchor drift 3e-8.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Instrument conformance for one-photon encodings of the blocks, not a new algebraic result; the C8 class spreads 0.048 (three blocks 0.024 low, one 0.023 high), under its 0.05 flag.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-11-06T215343Z-qpu_ascella-ascella_pathion_four_term_blocks-job-00/analysis.json",
+          "sha256": "81624d7ed0d1818592d03c0b474a5a987339b8add7945f8f3cfb02eef384a84d"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-pathion-four-term-blocks-case.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-pathion-four-term-blocks",
+        "qd-qpu-ascella-pathion-four-term-blocks"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }
