@@ -101,9 +101,18 @@ times a fresh mesh error of standard deviation 0.0515, then a binomial draw at t
 | 0.75 | 0.9995 | 0 | 0.0005 |
 | 1 (full persistence) | 1 | 0 | 0 |
 
-The test holds its size (0.047 at beta 0), a useful persistence (beta 0.5 or more) reads persists in at least 80 % of
-jobs and redrawn in under 5 %, and a fresh draw reads redrawn in 73 %. A slope near 0.25, a weak persistence that
-would not repay selection, is the region where one job leaves the answer indeterminate.
+Under this simulation's single error size for every block, the test holds its size (0.047 at beta 0), a useful
+persistence (beta 0.5 or more) reads persists in at least 80 % of jobs and redrawn in under 5 %, and a fresh draw
+reads redrawn in 73 %. A slope near 0.25, a weak persistence that would not repay selection, splits three ways:
+persists 0.291, redrawn 0.326, indeterminate 0.384.
+
+The retained blocks differ in spread: the standard deviation of a block's four centered shares runs from 0.028 to
+0.082. The slope bound pools one residual variance over the six blocks, so the redrawn and persists columns above
+hold for equal block spreads only. The review of this case
+([reconciliation](../archive/reviews/belenos-mesh-persistence-pr729-reconciliation.md)) measured the departure
+with an unledgered diagnosis and leaves the choice of a bound that holds under unequal spreads, and a restated
+table, to the owner before the case is approved. The relabeling p-value needs exchangeability within a block only
+and keeps its size there.
 
 ## Duration and credits
 
