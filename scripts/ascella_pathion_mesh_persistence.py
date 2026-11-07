@@ -36,12 +36,15 @@ correlation input that is non-finite or constant) or "unresolved":
   sent;
 - admission: the predecessor's anchor floor, dark ceiling and sentinel share on the replay anchors and darks;
 - persistence: Pearson r of the 46 calibrated replay mirror differences with the original ones. The cutoff is the
-  first percentile of r under a fixed-mesh model (PERSISTENCE_CUTOFF: both jobs resampled from the original job's
-  per-iteration click laws at SAMPLES with their own calibration rows; persistence_plan.json). r at or above it
+  first percentile of r under a fixed-mesh model with between-job efficiency drift (PERSISTENCE_CUTOFF: both jobs
+  resampled from the original job's per-iteration click laws at SAMPLES with their own calibration rows, the replay's
+  mode shares multiplied by a random per-mode ratio of the spread measured between the two retained pathion jobs;
+  persistence_plan.json, which also records the no-drift and measured-drift quantiles). r at or above it
   excludes a redraw of the per-mesh errors between the jobs ("fixed per mesh"); r below it with relabeling p < ALPHA
-  reads "partly fixed"; otherwise "not reproduced". A time-ordered control reads within the job: the same r on the
-  replay's early half and late half, and the early and late replayed anchors (positions 0, 1 and the last two)
-  within the predecessor's 0.03 drift band; drift within the job is read only from that control;
+  reads "partly fixed"; otherwise "not reproduced". A time-ordered control reads within the job: per-iteration
+  persistence (l_hat - ideal against the original twin) on the replay's early half and late half, reported, and the
+  early and late replayed anchors (positions 0, 1 and the last two) within the predecessor's 0.03 drift band; drift
+  within the job is read only from that control;
 - anchor replay: the replayed B/A within anchor_replay_band of 1.082 excludes a change of the anchor pair's error;
 - fresh anchors (engineering thresholds whose classification rates persistence_plan.json records): median within
   fresh_band of the mode-fit 0.992 with standard deviation above spread_floor excludes a slot efficiency of 1.08
@@ -50,8 +53,10 @@ correlation input that is non-finite or constant) or "unresolved":
 - fresh failing settings: the aligned mean A = mean over the nine failing items of sign(original raw d) x fresh raw d,
   against the original mean |raw d| 0.0376 and the per-mesh raw spread 0.025 (standard error 0.0084 for nine items).
   A at or above aligned_block excludes a purely per-mesh failure ("follows the design"); A below aligned_mesh excludes
-  a design-tied failure at the original size ("follows the mesh"); between them "unresolved". The carried fraction
-  A / 0.0376 is reported with its 99 percent interval, so a partial carrier reads as a fraction;
+  a design-tied failure at the original size ("follows the mesh"); between them "unresolved". The two labels assume
+  the two extreme readings (all of the failure tied to the design, or none); under a mixture the carried fraction
+  A / 0.0376 with its 99 percent interval (half-width about 0.58 for nine items) is the reading, and the labels split
+  it at one half;
 - frozen map: the per-shifter gain and offset maps of c1_static.npz (x_, a_, c_ with _gain_all and _offset_all, frozen
   in commit cc8d8107c before this case) applied to each fresh iteration's returned circuit (BS.Rx convention checked)
   predict its raw slot levels; Pearson r of predicted against observed departures from the ideal, centered within
@@ -138,7 +143,7 @@ PERMUTATIONS = 20000
 # freezes the persistence cutoff; the test rebuilds the record and checks the constant against it.
 PLAN_DRAW = "docs/evidence/anu_qrng/draw-2026-11-07T165920Z.json"
 PERSISTENCE_PLAN = "results/quandela/cases/ascella_pathion_mesh_persistence/persistence_plan.json"
-PERSISTENCE_CUTOFF = 0.9919
+PERSISTENCE_CUTOFF = 0.988
 PREREGISTERED: dict[str, Any] = {
     "anchor_replay_band": 0.02,
     "fresh_band": 0.03,

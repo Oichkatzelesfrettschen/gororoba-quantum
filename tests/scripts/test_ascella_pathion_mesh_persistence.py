@@ -124,7 +124,11 @@ def test_a_replay_of_the_original_counts_reads_fixed_per_mesh(tmp_path: Path, mo
     run = synthetic_run(tmp_path)
     monkeypatch.setattr(reading, "ROOT", tmp_path)
     monkeypatch.setattr(case, "ORIGINAL_RUN", str(ORIGINAL))
-    for relative in (DRAW.relative_to(ROOT), Path("docs/evidence/pathion-kernel-map/conjectures/c1_static.npz")):
+    for relative in (
+        DRAW.relative_to(ROOT),
+        Path("docs/evidence/pathion-kernel-map/conjectures/c1_static.npz"),
+        (CASES / "job-00" / "cases.json").relative_to(ROOT),
+    ):
         (tmp_path / relative).parent.mkdir(parents=True, exist_ok=True)
         (tmp_path / relative).write_bytes((ROOT / relative).read_bytes())
     report = reading.analyze(run)
@@ -137,9 +141,17 @@ def test_a_replay_of_the_original_counts_reads_fixed_per_mesh(tmp_path: Path, mo
     # The synthetic fresh items copy the original meshes' counts, so their error follows the design by construction.
     check(report["fresh_failing"]["reading"] == "follows the design", "fresh failing reading")
     check(report["fresh_failing"]["carried_fraction"] == pytest.approx(1.0, abs=1e-3), "carried fraction")
-    check(not report["within_job_control"]["drift_within_job"], "no drift within the job")
+    control = report["within_job_control"]
+    check(not control["drift_within_job"], "no drift within the job")
+    for half in ("early_half_r", "late_half_r"):
+        check(control[half] == pytest.approx(1.0), f"{half} reads the replay of the original counts")
     for model in ("gain", "offset"):
         check(report["frozen_maps"][model]["n_seed_blocks"] == 16, f"{model}: 16 seed blocks")
+
+
+def test_a_foreign_manifest_is_not_read(tmp_path: Path) -> None:
+    run = synthetic_run(tmp_path, "sim-00")
+    check(reading.analyze(run)["reading"].startswith("not read"), "a run of another manifest is not read")
 
 
 def test_spec_check_bounds_published_imperfections() -> None:

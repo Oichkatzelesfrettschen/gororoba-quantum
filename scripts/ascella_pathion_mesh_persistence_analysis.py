@@ -205,32 +205,65 @@ def aligned_power() -> dict[str, float]:
     }
 
 
+# Per-mode efficiency ratio (log) of the two-block job over the four-term job, modes 0 to 7, each fitted against its
+# ideal laws by mode_efficiency_fit's EM on iterations with at least 0.05 ideal weight in those modes. It also absorbs
+# each job's own per-mesh errors, so it bounds the between-job efficiency drift from above.
+MEASURED_MODE_DRIFT = (0.0192, 0.0091, 0.0189, 0.0034, -0.0034, 0.0115, -0.0342, -0.0244)
+
+
+def resampled_r(
+    settings: list[dict[str, Any]],
+    laws: list[np.ndarray],
+    modes: dict[str, Any],
+    rng: np.random.Generator,
+    replicates: int,
+    drift: str,
+) -> np.ndarray:
+    """r between two jobs drawn from the same per-mesh laws; the replay side carries the named efficiency drift."""
+    values = []
+    measured = np.zeros(len(laws[0]))
+    measured[: len(MEASURED_MODE_DRIFT)] = MEASURED_MODE_DRIFT
+    sd = float(np.std(MEASURED_MODE_DRIFT, ddof=1))
+    for _ in range(replicates):
+        if drift == "none":
+            factor = np.ones(len(laws[0]))
+        elif drift == "measured":
+            factor = np.exp(measured)
+        else:
+            factor = np.ones(len(laws[0]))
+            factor[: len(MEASURED_MODE_DRIFT)] = np.exp(rng.normal(0.0, sd, len(MEASURED_MODE_DRIFT)))
+        jobs = []
+        for side in range(2):
+            rows = []
+            for i, (s, p) in enumerate(zip(settings, laws, strict=True)):
+                q = p * factor / float(np.sum(p * factor)) if side == 1 else p
+                rows.append(row_from_counts(i, s, rng.multinomial(case.SAMPLES, q), modes))
+            jobs.append(rows)
+        r, _, _ = persistence_r(jobs[0], settings, jobs[1], settings)
+        values.append(np.nan if r is None else r)
+    return np.array(values)
+
+
 def persistence_plan(replicates: int = 2000) -> dict[str, Any]:
-    """Fixed-mesh distribution of the persistence r, and fresh-anchor classification rates.
+    """Distribution of the persistence r under a fixed-mesh model with and without between-job efficiency drift, and
+    the fresh-anchor classification rates.
 
     Fixed-mesh model: the original job's per-iteration click law (its observed port shares) is each mesh's true law;
     the original and the replay are two independent multinomial draws at SAMPLES from those laws, each calibrated with
     its own anchor and dark rows, so the statistic carries heteroskedastic counting noise and both runs' calibration
-    noise. The cutoff is the first percentile of r. Fresh anchors: seven B/A drawn normal around the per-mesh reading
-    (0.992, sd 0.025 from the original no-division mirror rms) and around the slot reading (1.082, the counting sd
+    noise. Drift scenarios multiply the replay's mode-0-to-7 shares by the measured per-mode ratio (MEASURED_MODE_DRIFT)
+    or by a random ratio of the same spread drawn per replicate. The cutoff is the first percentile of r under the
+    random-drift scenario, the widest of the three. Fresh anchors: seven B/A drawn normal around the per-mesh reading
+    (0.992, sd 0.025 from the original no-division mirror rms) and the slot reading (1.082, the counting sd
     sqrt(2) x level_se(1)), each classified by the preregistered rule."""
     manifest, settings, rows = original()
     draw = json.loads((ROOT / case.PLAN_DRAW).read_bytes())["values"]
     rng = np.random.default_rng(draw[0])
     modes = modes_of(manifest)
     laws = [np.array(r["port_counts"], float) / sum(r["port_counts"]) for r in rows]
-    values = []
-    for _ in range(replicates):
-        pair = [
-            [
-                row_from_counts(i, s, rng.multinomial(case.SAMPLES, p), modes)
-                for i, (s, p) in enumerate(zip(settings, laws, strict=True))
-            ]
-            for _ in range(2)
-        ]
-        r, _, _ = persistence_r(pair[0], settings, pair[1], settings)
-        values.append(np.nan if r is None else r)
-    v = np.array(values)
+    scenarios = {
+        name: resampled_r(settings, laws, modes, rng, replicates, name) for name in ("none", "measured", "random")
+    }
     rng2 = np.random.default_rng(draw[1])
     th = case.PREREGISTERED
     rates: dict[str, dict[str, float]] = {}
@@ -243,9 +276,13 @@ def persistence_plan(replicates: int = 2000) -> dict[str, Any]:
     return {
         "replicates": replicates,
         "plan_draw": case.PLAN_DRAW,
-        "r_quantiles": {str(q): float(np.nanquantile(v, q)) for q in (0.001, 0.01, 0.05, 0.5)},
-        "non_finite": int(np.sum(~np.isfinite(v))),
-        "persistence_cutoff": round(float(np.nanquantile(v, 0.01)), 4),
+        "measured_mode_drift": list(MEASURED_MODE_DRIFT),
+        "r_quantiles": {
+            name: {str(q): float(np.nanquantile(v, q)) for q in (0.001, 0.01, 0.05, 0.5)}
+            for name, v in scenarios.items()
+        },
+        "non_finite": {name: int(np.sum(~np.isfinite(v))) for name, v in scenarios.items()},
+        "persistence_cutoff": round(float(np.nanquantile(scenarios["random"], 0.01)), 4),
         "fresh_anchor_classification": rates,
         "aligned_mean": aligned_power(),
     }
@@ -346,6 +383,9 @@ def map_score(
 
 
 def analyze(run: Path) -> dict[str, Any]:
+    frozen = ROOT / "results/quandela/cases/ascella_pathion_mesh_persistence/job-00/cases.json"
+    if (run / "cases.json").read_bytes() != frozen.read_bytes():
+        return {"schema": SCHEMA, "reading": "not read: cases.json differs from the frozen job-00 case"}
     manifest, settings, rows = load(run)
     reg = manifest["preregistered"]
     th = reg["thresholds"]
@@ -391,16 +431,24 @@ def analyze(run: Path) -> dict[str, Any]:
     entry["raw_r"] = finite_r(np.array([raw_old[k] for k in keys]), np.array([raw_new[k] for k in keys]))
     report["persistence"] = entry
 
-    # Time-ordered control inside the job: early and late replay halves, early and late replayed anchors.
+    # Time-ordered control inside the job. Each half of the palindrome reads a design in one orientation only, so the
+    # halves score per-iteration persistence: (l_hat - ideal) of each replay iteration and slot against its original
+    # twin under original_name, calibrated with each job's own anchors.
     positions = sorted(s["observation_index"] for s in r_set)
     middle = positions[len(positions) // 2]
-    old_cal_d = mirror(o_rows, o_set, o_cal, "l_hat")
+    twin = {s["name"]: (row, s) for row, s in zip(o_rows, o_set, strict=True)}
     halves: dict[str, float | None] = {}
     for label, late in (("early", False), ("late", True)):
-        hr = [(r, s) for r, s in zip(r_rows, r_set, strict=True) if (s["observation_index"] >= middle) == late]
-        new = mirror([r for r, _ in hr], [s for _, s in hr], cal, "l_hat")
-        ks = sorted(set(new) & set(old_cal_d))
-        halves[label] = finite_r(np.array([old_cal_d[k] for k in ks]), np.array([new[k] for k in ks]))
+        new_dep, old_dep = [], []
+        for row, setting in zip(r_rows, r_set, strict=True):
+            if setting["role"] not in ("sign", "null") or (setting["observation_index"] >= middle) != late:
+                continue
+            o_row, o_setting = twin[setting["original_name"]]
+            lv, olv = an.slot_levels(row, cal), an.slot_levels(o_row, o_cal)
+            for k, slot in enumerate(an.SLOTS):
+                new_dep.append(lv[slot]["l_hat"] - setting["ideal_levels"][k])
+                old_dep.append(olv[slot]["l_hat"] - o_setting["ideal_levels"][k])
+        halves[label] = finite_r(np.array(old_dep), np.array(new_dep))
     anchors = sorted(
         (s["observation_index"], 2 * r["slot"][an.SLOTS[s["orientation"]]] / r["total"])
         for r, s in zip(r_rows, r_set, strict=True)
