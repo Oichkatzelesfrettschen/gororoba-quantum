@@ -6,10 +6,10 @@ four-qubit circuits that compile onto one layout, so each fused PUB reads one bl
 
 ``cflip`` twins carry X on every qubit just before the measurement. The ideal law of a twin is the base law with every
 outcome index complemented, and the summary complements the observed distribution back before it applies the base
-estimator. A population bias that acts at the readout or by relaxation toward |0> changes sign under the flip, so half
-the difference of the base and twin half-sums (the odd part) holds it, and half their sum (the even part) holds
-effects that do not depend on which basis state carries the contrast: a compile-dependent coherent error, a
-state-preparation offset, crosstalk.
+estimator. A population bias that acts after the X, the asymmetry of the readout channel, changes sign under the flip,
+so half the difference of the base and twin half-sums (the odd part) holds it. Everything that acts before the X reaches
+the complemented twin exactly as it reaches the base, so half their sum (the even part) holds relaxation during the
+gates, state-preparation excitation, a compile-dependent coherent error and crosstalk.
 
 ``crep`` repeats run a block's two arms a second time on the same template and binding. The group lists them in mirror
 order, so the arms of the null block read +, -, ..., -, + in the member list. Within one arm the repeat difference has

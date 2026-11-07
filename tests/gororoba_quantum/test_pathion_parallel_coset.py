@@ -99,6 +99,33 @@ def test_readout_asymmetry_is_odd_under_the_flip_and_symmetric_contraction_is_ze
     _expect(abs(sym[f"cmap_{pkm.operand_tag(NONNULL)}_nullity_estimate"] - 12.0) < 1e-9, "N_hat holds at V = 0.8")
 
 
+def test_population_bias_before_the_x_is_even_under_the_flip() -> None:
+    """A classical bit-flip bias acting before the X lands on both members in the base frame, so the flip leaves it in
+    the even part; the same bias after the X (the readout channel) lands in the odd part."""
+    e01, e10 = 0.005, 0.030
+
+    def before_x(name: str, law: np.ndarray) -> np.ndarray:
+        if name.startswith("cflip_"):
+            return ppc.deflip(ppc.apply_readout(ppc.deflip(law), e01, e10))
+        return ppc.apply_readout(law, e01, e10)
+
+    def after_x(name: str, law: np.ndarray) -> np.ndarray:
+        return ppc.apply_readout(law, e01, e10)
+
+    early = GROUP.summarize(_distributions(before_x))
+    late = GROUP.summarize(_distributions(after_x))
+    base = early[_null_key("nullity_estimate")]
+    _expect(base > 0.05, f"the base null estimate reads {base}")
+    _expect(abs(early[_null_key("odd_half_sum")]) < 1e-12, f"odd part {early[_null_key('odd_half_sum')]} before the X")
+    _expect(
+        abs(early[_null_key("even_nullity")] - base) < 1e-12,
+        f"even nullity {early[_null_key('even_nullity')]} vs {base}",
+    )
+    _expect(
+        abs(late[_null_key("even_half_sum")]) < 0.02 * abs(late[_null_key("odd_half_sum")]), "bias after the X is odd"
+    )
+
+
 def test_readout_asymmetry_leaves_within_arm_repeat_at_zero() -> None:
     summary = GROUP.summarize(_distributions(lambda name, law: ppc.apply_readout(law, 0.005, 0.030)))
     for key in ("within_minus_half_sum", "within_plus_half_sum", "pair_half_sum_gap"):
