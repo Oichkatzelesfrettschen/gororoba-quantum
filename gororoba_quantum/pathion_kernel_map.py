@@ -46,6 +46,8 @@ skeleton, whose selector reads s = 0 with certainty.
 
 from __future__ import annotations
 
+import functools
+
 import flint
 import numpy as np
 from qiskit import QuantumCircuit
@@ -83,30 +85,46 @@ def operand_tag(operand: tuple[int, int, int]) -> str:
     return f"e{i}{'p' if t > 0 else 'm'}e{j}"
 
 
-def _left(m: int) -> np.ndarray:
-    return np.array(cd_core.left_mult_matrix(DIM, cd_core.basis(DIM, m)))
+def data_qubits(dim: int) -> int:
+    """Number of data qubits of the map on the algebra of dimension dim, a power of two; the selector follows them.
+
+    Every function that builds the map or its operand data takes ``dim`` as a keyword, 32 by default."""
+    if dim < 2 or dim & (dim - 1):
+        raise ValueError(f"dimension {dim} is not a power of two")
+    return dim.bit_length() - 1
 
 
-def nullity(operand: tuple[int, int, int]) -> int:
+@functools.cache
+def _left_matrix(dim: int, m: int) -> np.ndarray:
+    matrix = np.array(cd_core.left_mult_matrix(dim, cd_core.basis(dim, m)))
+    matrix.flags.writeable = False
+    return matrix
+
+
+def _left(m: int, dim: int = DIM) -> np.ndarray:
+    return _left_matrix(dim, m)
+
+
+def nullity(operand: tuple[int, int, int], *, dim: int = DIM) -> int:
     """Exact nullity of L_(e_i + t e_j) from the integer rank of its cd_core matrix (python-flint fmpz_mat)."""
     i, j, t = operand
-    matrix = (_left(i) + t * _left(j)).astype(int).tolist()
-    return DIM - int(flint.fmpz_mat(matrix).rank())
+    matrix = (_left(i, dim) + t * _left(j, dim)).astype(int).tolist()
+    return dim - int(flint.fmpz_mat(matrix).rank())
 
 
-def aligned_pairs(operand: tuple[int, int, int]) -> int:
+def aligned_pairs(operand: tuple[int, int, int], *, dim: int = DIM) -> int:
     i, j, t = operand
-    k_matrix = _left(i).T @ (t * _left(j))
+    k_matrix = _left(i, dim).T @ (t * _left(j, dim))
     m = i ^ j
-    return sum(1 for k in range(DIM) if k < k ^ m and k_matrix[k ^ m, k] == k_matrix[k, k ^ m])
+    return sum(1 for k in range(dim) if k < k ^ m and k_matrix[k ^ m, k] == k_matrix[k, k ^ m])
 
 
-def orientation_signs(operand: tuple[int, int, int], plus: bool) -> list[float]:
+def orientation_signs(operand: tuple[int, int, int], plus: bool, *, dim: int = DIM) -> list[float]:
     i, j, t = operand
-    k_matrix = _left(i).T @ (t * _left(j))
+    k_matrix = _left(i, dim).T @ (t * _left(j, dim))
     m = i ^ j
-    signs = [1.0] * DIM
-    for k in range(DIM):
+    signs = [1.0] * dim
+    for k in range(dim):
         if k < k ^ m:
             s_k = float(k_matrix[k ^ m, k])
             signs[k ^ m] = s_k if plus else -s_k
@@ -120,32 +138,34 @@ def upper_bit(operand: tuple[int, int, int]) -> int:
     return (i ^ j).bit_length() - 1
 
 
-def _select(i: int, j: int, flip_input: int | None) -> QuantumCircuit:
+def _select(i: int, j: int, flip_input: int | None, dim: int = DIM) -> QuantumCircuit:
     """select_lcu.select_circuit, or the same layers with the joint sign at (selector 1, data flip_input) negated
     inside its one diagonal, so the mutation adds no gate."""
     if flip_input is None:
-        return select_circuit(DIM, i, j)
-    signs = joint_select_signs(DIM, i, j)
-    signs[DIM + flip_input] = -signs[DIM + flip_input]
-    qc = QuantumCircuit(WIDTH, name=f"select_{i}_{j}_flip{flip_input}")
-    qc.append(DiagonalGate(signs), range(WIDTH))
-    for b in range(DATA):
+        return select_circuit(dim, i, j)
+    data = data_qubits(dim)
+    signs = joint_select_signs(dim, i, j)
+    signs[dim + flip_input] = -signs[dim + flip_input]
+    qc = QuantumCircuit(data + 1, name=f"select_{i}_{j}_flip{flip_input}")
+    qc.append(DiagonalGate(signs), range(data + 1))
+    for b in range(data):
         if i >> b & 1:
             qc.x(b)
-    for b in range(DATA):
+    for b in range(data):
         if (i ^ j) >> b & 1:
-            qc.cx(DATA, b)
+            qc.cx(data, b)
     return qc
 
 
-def _cocycle_free_select(i: int, j: int) -> QuantumCircuit:
-    qc = QuantumCircuit(WIDTH, name=f"xor_select_{i}_{j}")
-    for b in range(DATA):
+def _cocycle_free_select(i: int, j: int, dim: int = DIM) -> QuantumCircuit:
+    data = data_qubits(dim)
+    qc = QuantumCircuit(data + 1, name=f"xor_select_{i}_{j}")
+    for b in range(data):
         if i >> b & 1:
             qc.x(b)
-    for b in range(DATA):
+    for b in range(data):
         if (i ^ j) >> b & 1:
-            qc.cx(DATA, b)
+            qc.cx(data, b)
     return qc
 
 
@@ -156,23 +176,28 @@ def kernel_map_template(
     flip_input: int | None = None,
     skeleton: bool = False,
     measure: bool = True,
+    dim: int = DIM,
 ) -> QuantumCircuit:
     """Both orientations of one operand as one circuit: the minus oracle, then P(ORIENTATION) on qubit upper_bit."""
     i, j, t = operand
-    qc = QuantumCircuit(WIDTH, WIDTH if measure else 0)
-    qc.h(range(DATA))
-    qc.append(DiagonalGate(orientation_signs(operand, False)), range(DATA))
+    data = data_qubits(dim)
+    width = data + 1
+    qc = QuantumCircuit(width, width if measure else 0)
+    qc.h(range(data))
+    qc.append(DiagonalGate(orientation_signs(operand, False, dim=dim)), range(data))
     qc.p(ORIENTATION, upper_bit(operand))
-    qc.h(DATA)
+    qc.h(data)
     if not skeleton:
         if t < 0:
-            qc.z(DATA)
+            qc.z(data)
         qc.compose(
-            _cocycle_free_select(i, j) if cocycle_free else _select(i, j, flip_input), range(WIDTH), inplace=True
+            _cocycle_free_select(i, j, dim) if cocycle_free else _select(i, j, flip_input, dim),
+            range(width),
+            inplace=True,
         )
-    qc.h(DATA)
+    qc.h(data)
     if measure:
-        qc.measure(range(WIDTH), range(WIDTH))
+        qc.measure(range(width), range(width))
     return qc
 
 
@@ -182,20 +207,21 @@ def kernel_map_circuit(operand: tuple[int, int, int], plus: bool, **options: boo
 
 
 def ideal_law(circuit: QuantumCircuit) -> np.ndarray:
-    """Outcome law indexed y + 32 s (data clbits 0-4, selector clbit 5)."""
+    """Outcome law indexed y + dim s (data clbits first, selector clbit last; dim 32 has data clbits 0-4)."""
     return np.asarray(Statevector(circuit.remove_final_measurements(inplace=False)).probabilities())
 
 
 def selector_zero(law: np.ndarray) -> float:
-    return float(law[:DIM].sum())
+    return float(law[: law.size // 2].sum())
 
 
 def output_contrast(plus_law: np.ndarray, minus_law: np.ndarray) -> np.ndarray:
     """c(y) = P_plus(s = 0 | y) - P_minus(s = 0 | y); an output with no weight in an arm reads 0."""
+    half = plus_law.size // 2
 
     def conditional(law: np.ndarray) -> np.ndarray:
-        total = law[:DIM] + law[DIM:]
-        return np.divide(law[:DIM], total, out=np.zeros(DIM), where=total > 0)
+        total = law[:half] + law[half:]
+        return np.divide(law[:half], total, out=np.zeros(half), where=total > 0)
 
     return conditional(plus_law) - conditional(minus_law)
 
