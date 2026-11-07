@@ -1,0 +1,10 @@
+observed anchors: efficiency A 1.0064 B 1.0886 B/A 1.0818
+none_all    model anchors: A 1.0737 B 1.0620 B/A 0.9891; share of the observed B/A excess over efficiency-only +0.00
+gain1_all   model anchors: A 1.0729 B 1.0722 B/A 0.9993; share of the observed B/A excess over efficiency-only +0.11
+theta1_all  model anchors: A 1.0934 B 1.0606 B/A 0.9700; share of the observed B/A excess over efficiency-only -0.21
+offset_all  model anchors: A 1.0320 B 1.0460 B/A 1.0135; share of the observed B/A excess over efficiency-only +0.26
+gain_all    model anchors: A 1.0293 B 1.0628 B/A 1.0325; share of the observed B/A excess over efficiency-only +0.47
+offset_o0   model anchors: A 1.0143 B 1.0505 B/A 1.0357; share of the observed B/A excess over efficiency-only +0.50
+offset_o1   model anchors: A 1.0405 B 1.0708 B/A 1.0291; share of the observed B/A excess over efficiency-only +0.43
+gain_o0     model anchors: A 1.0045 B 1.0578 B/A 1.0531; share of the observed B/A excess over efficiency-only +0.69
+gain_o1     model anchors: A 1.0307 B 1.0819 B/A 1.0497; share of the observed B/A excess over efficiency-only +0.65
