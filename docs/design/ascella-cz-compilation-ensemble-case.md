@@ -62,7 +62,9 @@ correct rate is the same quotient for the eligible events on the ideal output. T
 
   then holds for the trace-normalized process fidelity F of that map whatever its success depends on. Checked
   numerically: no violation over 20 000 and, independently, 200 000 random trace-non-increasing CP maps, and on both
-  counterexamples below.
+  counterexamples below. Hofmann proves the bound for one map's raw output probabilities (Eqs. (15) and (16)); the normalization to
+  the trace-normalized fidelity of a postselected map is this design's linearity argument, which the paper does not
+  contain ([source note](../notes/papers/quant-ph-0409083.md), "Relation to the ascella CZ ensemble case").
 - **Per-input score** F'_ZX, F'_XZ: the mean over the four inputs of each setting's correct over eligible events. It
   equals the rate-weighted score when success is equal within a table and violates the bound otherwise. The Kraus
   operator (CZ / 3) diag(1, 0.1, 0.1, 0.1) gives F' = 0.7995 on both tables, a claimed lower bound of 0.599 above its
