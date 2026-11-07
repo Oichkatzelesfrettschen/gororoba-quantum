@@ -130,6 +130,27 @@ def block_law(circuit: QuantumCircuit) -> np.ndarray:
     return np.asarray(Statevector(circuit.remove_final_measurements(inplace=False)).probabilities())
 
 
+def block_law_closed_form(block: Block, plus: bool, *, cocycle_free: bool = False) -> np.ndarray:
+    """``block_law`` of the same circuit from its amplitudes, with no state-vector evolution.
+
+    After H on the data qubits and the oracle diagonal the data amplitudes are psi = orientation * f0 / sqrt(2^d); the
+    selector H splits them into low = psi / sqrt 2 on s = 0 and high = f0 f1 psi / sqrt 2 on s = 1, the CNOT moves the
+    selector-1 amplitudes from x to x XOR 1, and the final selector H returns (low +- high) / sqrt 2 on s = 0, 1."""
+    i, j, t = block.operand
+    labels = input_labels(block)
+    orientation = pkm.orientation_signs(block.operand, plus, dim=block.dim)
+    signs = joint_select_signs(block.dim, i, j)
+    f0 = np.array([signs[k] for k in labels])
+    f1 = np.array([signs[k + block.dim] for k in labels]) * (-1.0 if t < 0 else 1.0)
+    if cocycle_free:
+        f0 = np.ones(1 << block.d)
+        f1 = np.full(1 << block.d, -1.0 if t < 0 else 1.0)
+    psi = np.array([orientation[k] for k in labels]) * f0 / np.sqrt(float(1 << block.d))
+    low = psi / np.sqrt(2.0)
+    high = (psi * f0 * f1 / np.sqrt(2.0))[np.arange(1 << block.d) ^ 1]
+    return np.concatenate([(low + high) / np.sqrt(2.0), (low - high) / np.sqrt(2.0)]) ** 2
+
+
 def selector_contrast(plus_law: np.ndarray, minus_law: np.ndarray) -> float:
     half = plus_law.size // 2
     return float(plus_law[:half].sum() - minus_law[:half].sum())

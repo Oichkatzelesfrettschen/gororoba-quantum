@@ -105,6 +105,15 @@ def _left(m: int, dim: int = DIM) -> np.ndarray:
     return _left_matrix(dim, m)
 
 
+@functools.cache
+def _k_matrix(operand: tuple[int, int, int], dim: int) -> np.ndarray:
+    """K = L_i^T (t L_j), the signed XOR permutation of the operand's pairs, read-only."""
+    i, j, t = operand
+    matrix = _left(i, dim).T @ (t * _left(j, dim))
+    matrix.flags.writeable = False
+    return matrix
+
+
 def nullity(operand: tuple[int, int, int], *, dim: int = DIM) -> int:
     """Exact nullity of L_(e_i + t e_j) from the integer rank of its cd_core matrix (python-flint fmpz_mat)."""
     i, j, t = operand
@@ -113,15 +122,15 @@ def nullity(operand: tuple[int, int, int], *, dim: int = DIM) -> int:
 
 
 def aligned_pairs(operand: tuple[int, int, int], *, dim: int = DIM) -> int:
-    i, j, t = operand
-    k_matrix = _left(i, dim).T @ (t * _left(j, dim))
+    i, j, _ = operand
+    k_matrix = _k_matrix(operand, dim)
     m = i ^ j
     return sum(1 for k in range(dim) if k < k ^ m and k_matrix[k ^ m, k] == k_matrix[k, k ^ m])
 
 
 def orientation_signs(operand: tuple[int, int, int], plus: bool, *, dim: int = DIM) -> list[float]:
-    i, j, t = operand
-    k_matrix = _left(i, dim).T @ (t * _left(j, dim))
+    i, j, _ = operand
+    k_matrix = _k_matrix(operand, dim)
     m = i ^ j
     signs = [1.0] * dim
     for k in range(dim):
