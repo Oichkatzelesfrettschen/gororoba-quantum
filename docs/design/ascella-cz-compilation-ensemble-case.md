@@ -1,7 +1,9 @@
 # Ascella postselected CZ: compilation ensemble with interleaved anchors
 
-Status: proposed design. No builder, frozen request or forecast exists, nothing has been sent, and each job waits
-for the owner's approval of a written case built from this design.
+Status: built, not sent. [`scripts/ascella_cz_ensemble_case.py`](../../scripts/ascella_cz_ensemble_case.py) freezes
+both requests, the platform read, the shot estimate, the plan reads and the forecast under
+`results/quandela/cases/ascella_cz_ensemble/` (section "The built case"). Each job waits for the owner's approval of the
+written case.
 
 ## What the experiment asks
 
@@ -204,3 +206,46 @@ Perceval's deserializer on all 144 meshes.
    g2, and simulate the false-alarm rate of estimates 1 and 2 at that forecast.
 3. Register Hofmann 2005 as a retrieval receipt in the source registry.
 4. Review the built case adversarially, then ask the owner for approval of the two jobs.
+
+## The built case
+
+`scripts/ascella_cz_ensemble_case.py --check` rebuilds both requests byte for byte, binds every iteration through
+`qd_platform.template_experiment`, and holds the schedule above: the anchors at iterations 0-3, 14-17, 28-31, 42-45
+and 56-59 under one seed each, the same four in both jobs, and every ensemble setting once in every segment plus one
+replicate in a second segment, so each appears in every pair of adjacent segments. `--forecast` recomputes
+`forecast.json` within 1e-12 (gate `core-ascella-cz-ensemble-forecast`); `--check` runs in gate
+`core-record-check-07`. The shared readout, eligibility rule and noise model are those of
+[`ascella_cz_tomography_case.py`](../../scripts/ascella_cz_tomography_case.py); the iterated-job charge is stated by
+`billing_rule_v2.RULE`.
+
+- **Seeds and order.** One ANU QRNG draw,
+  [draw-2026-11-07T164259Z.json](../evidence/anu_qrng/draw-2026-11-07T164259Z.json) (320 uint16 values, no zero and
+  no repeat), seeds everything in index order: indices 0 to 3 the anchors, 4 to 83 the ensemble (ten per setting in
+  table order, seed index s = 1 to 10, s <= 5 in job-00), 84 the analysis Monte Carlo stream, 85 the forecast's
+  false-alarm study, and 86 to 261 the order keys (88 per job); indices 262 to 319 are owned and unused. The manifests
+  name the draw without an index, so the case owns it whole.
+- **Platform read** (2026-11-07, read-only): HOM 88.88 %, g2 2.0 %, transmittance 5.57 %, clock 13.33 MHz. The
+  photon inputs sit on chip modes 0 and 2, both connected sources; the window stays at chip modes 0 to 5 for
+  comparison with the tomography fit, although the read's darkest connected window starts at mode 2 (623 against 681
+  dark counts per second, about 4e-6 dark clicks per attempt).
+- **Shots.** Perceval's estimate for 4000 samples reaches 251 328 shots at most (`shot-estimate.json`); times 1.25,
+  rounded up to the 100 000-shot quantum, each iteration's `max_shots` is 400 000, so each job's credit ceiling is
+  1.4 and both jobs' 2.8, inside the 6-credit ceiling of this design.
+- **Plan reads** (`plan-read.json`, `qd_platform.py plan --admit-status running`, since qpu:ascella read `running`):
+  ceiling 1.4 credits and 11 728 650 estimated shots per job; the modeled job takes 188 s expected and 197 s with
+  every iteration at its cap. Both plans warn that HOM 88.98 % sits below strategy.md design rule 1's 90 %, as the
+  tomography's pre-build plan did at 87.54 %.
+- **Forecast** under Perceval's NoiseModel at the read, with loss and dark counts: F_ZX = F_XZ = 0.8635, F' = 0.8766,
+  Hofmann interval [0.727, 0.864]; indistinguishability alone gives 0.900. The thinnest settings expect 447 eligible
+  events per iteration, above the floor of 200.
+- **Tomography prediction** (estimate 5): the unprojected fit recomputed from the two retained runs reproduces the
+  retained process fidelity 0.849328 within 1e-12 and predicts F_ZX = 0.888 and F_XZ = 0.882, above the noise
+  forecast.
+- **False alarms.** Over 200 synthetic datasets at the forecast law, with each iteration stopping at its samples and
+  its shots drawn as the samples plus a negative binomial count, the drift family rejects in 0.005 of datasets and the
+  mesh-variance family in 0.010, at the 0.01 level; `--check` refuses a family rate above 0.02.
+- **Binding.** The two retained tomography runs echo `circuit_params` equal to their manifests in all 144 iterations,
+  the property the binding rule requires.
+- **HOM reading.** The read's 88.88 % differs from the 87.56 % at which both tomography jobs were submitted by more
+  than one point; if the submission plans hold that difference, estimate 5 states it beside each comparison
+  (`hom_difference_points` of the analysis, against the job-00 tomography submission).

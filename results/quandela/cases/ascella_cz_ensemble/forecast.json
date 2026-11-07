@@ -1,0 +1,637 @@
+{
+ "expected_by_setting": {
+  "in-+0-XZ": {
+   "eligible_events_per_iteration": 974.8878408411307,
+   "shots_per_iteration": 230255.71619182584
+  },
+  "in-+1-XZ": {
+   "eligible_events_per_iteration": 447.2094457342625,
+   "shots_per_iteration": 136408.69576151125
+  },
+  "in--0-XZ": {
+   "eligible_events_per_iteration": 974.9430837528887,
+   "shots_per_iteration": 230269.5505122966
+  },
+  "in--1-XZ": {
+   "eligible_events_per_iteration": 447.2275700483323,
+   "shots_per_iteration": 136413.37700494725
+  },
+  "in-0+-ZX": {
+   "eligible_events_per_iteration": 447.13303035437747,
+   "shots_per_iteration": 136410.44354719328
+  },
+  "in-0--ZX": {
+   "eligible_events_per_iteration": 447.1365236405174,
+   "shots_per_iteration": 136411.34595369286
+  },
+  "in-1+-ZX": {
+   "eligible_events_per_iteration": 975.0053327745384,
+   "shots_per_iteration": 230250.73472484588
+  },
+  "in-1--ZX": {
+   "eligible_events_per_iteration": 975.0159826244059,
+   "shots_per_iteration": 230253.40133708104
+  }
+ },
+ "false_alarm": {
+  "datasets": 200,
+  "drift_family_rate": 0.005,
+  "drift_test_rate_at_unadjusted_alpha": [
+   0.02,
+   0.025,
+   0.01,
+   0.005,
+   0.015,
+   0.03,
+   0.005,
+   0.0,
+   0.02,
+   0.005,
+   0.02,
+   0.005,
+   0.015,
+   0.005,
+   0.01,
+   0.0
+  ],
+  "mesh_family_rate": 0.01,
+  "mesh_test_rate_at_unadjusted_alpha": [
+   0.02,
+   0.015,
+   0.01,
+   0.005,
+   0.015,
+   0.0,
+   0.01,
+   0.01
+  ],
+  "monte_carlo_tables": 100000,
+  "seed": {
+   "draw": "docs/evidence/anu_qrng/draw-2026-11-07T164259Z.json",
+   "index": 85
+  },
+  "variant": "source, loss and dark counts"
+ },
+ "read": {
+  "clock_mhz": 13.33,
+  "g2": 0.02,
+  "hom": 0.8887999999999999,
+  "path": "platform-read/ascella-perfs.json",
+  "sha256": "9b80ceefebd142971fa0d4ae06aa849e522bd62dfce9dde92e2fc6e87108250b",
+  "transmittance": 0.0557
+ },
+ "samples_per_iteration": 4000,
+ "schema": "qd-cz-ensemble-forecast-v1",
+ "settings": {
+  "in-+0-XZ": {
+   "g2-corrected overlap, loss and dark counts": {
+    "any_click_probability": 0.10942708695391322,
+    "eligible_probabilities": [
+     0.0003585447021030058,
+     1.5787592482732074e-07,
+     7.773323567188515e-05,
+     3.217381583225713e-07
+    ],
+    "sample_probability": 0.0018744137768627854
+   },
+   "indistinguishability only": {
+    "any_click_probability": 0.9999999999999999,
+    "eligible_probabilities": [
+     0.11111111111111112,
+     0.0,
+     0.02471111111111111,
+     0.0
+    ],
+    "sample_probability": 0.5802666666666666
+   },
+   "source and loss": {
+    "any_click_probability": 0.10931095660451934,
+    "eligible_probabilities": [
+     0.00035796340751897857,
+     0.0,
+     0.00010376257527992939,
+     0.0
+    ],
+    "sample_probability": 0.0018878362461831433
+   },
+   "source only": {
+    "any_click_probability": 0.9999999999999999,
+    "eligible_probabilities": [
+     0.11068882719431762,
+     0.0,
+     0.027384331883758765,
+     0.0
+    ],
+    "sample_probability": 0.5859584909478431
+   },
+   "source, loss and dark counts": {
+    "any_click_probability": 0.10942708695391329,
+    "eligible_probabilities": [
+     0.00035854200828831995,
+     1.578759248273209e-07,
+     0.00010428571951638474,
+     3.216196236588759e-07
+    ],
+    "sample_probability": 0.0019009662607072856
+   }
+  },
+  "in-+1-XZ": {
+   "g2-corrected overlap, loss and dark counts": {
+    "any_click_probability": 0.10942708695391334,
+    "eligible_probabilities": [
+     2.3615054301901803e-07,
+     2.3615054301901797e-07,
+     6.902100708472402e-06,
+     0.00035137711790723003
+    ],
+    "sample_probability": 0.003208800915309067
+   },
+   "indistinguishability only": {
+    "any_click_probability": 1.0,
+    "eligible_probabilities": [
+     0.0,
+     0.0,
+     0.0,
+     0.1111111111111111
+    ],
+    "sample_probability": 1.0
+   },
+   "source and loss": {
+    "any_click_probability": 0.10931095660451941,
+    "eligible_probabilities": [
+     0.0,
+     0.0,
+     6.640183529555754e-06,
+     0.00035113335115841165
+    ],
+    "sample_probability": 0.0031957746757030254
+   },
+   "source only": {
+    "any_click_probability": 1.0000000000000004,
+    "eligible_probabilities": [
+     0.0,
+     0.0,
+     0.0,
+     0.10960438083761039
+    ],
+    "sample_probability": 1.0000000000000004
+   },
+   "source, loss and dark counts": {
+    "any_click_probability": 0.10942708695391336,
+    "eligible_probabilities": [
+     2.3615054301901808e-07,
+     2.3615054301901803e-07,
+     6.902100708472404e-06,
+     0.0003513771179072301
+    ],
+    "sample_probability": 0.0032088009153090676
+   }
+  },
+  "in--0-XZ": {
+   "g2-corrected overlap, loss and dark counts": {
+    "any_click_probability": 0.10942708695391322,
+    "eligible_probabilities": [
+     7.795812201078673e-05,
+     3.2173815832257133e-07,
+     0.0003583180676016783,
+     1.578759248273208e-07
+    ],
+    "sample_probability": 0.0018742994863974066
+   },
+   "indistinguishability only": {
+    "any_click_probability": 0.9999999999999999,
+    "eligible_probabilities": [
+     0.024711111111111114,
+     0.0,
+     0.11111111111111112,
+     0.0
+    ],
+    "sample_probability": 0.5802666666666666
+   },
+   "source and loss": {
+    "any_click_probability": 0.10931095660451931,
+    "eligible_probabilities": [
+     0.00010376257527992937,
+     0.0,
+     0.00035796340751897846,
+     0.0
+    ],
+    "sample_probability": 0.0018878362461831428
+   },
+   "source only": {
+    "any_click_probability": 0.9999999999999996,
+    "eligible_probabilities": [
+     0.027384331883758755,
+     0.0,
+     0.11068882719431758,
+     0.0
+    ],
+    "sample_probability": 0.5859584909478429
+   },
+   "source, loss and dark counts": {
+    "any_click_probability": 0.10942708695391326,
+    "eligible_probabilities": [
+     0.000104510688530724,
+     3.216196236588759e-07,
+     0.00035831545647810087,
+     1.578759248273209e-07
+    ],
+    "sample_probability": 0.0019008520529173439
+   }
+  },
+  "in--1-XZ": {
+   "g2-corrected overlap, loss and dark counts": {
+    "any_click_probability": 0.10942708695391334,
+    "eligible_probabilities": [
+     7.012257194797189e-06,
+     0.0003514894193997748,
+     1.260354021730714e-07,
+     1.260354021730713e-07
+    ],
+    "sample_probability": 0.003208690800168221
+   },
+   "indistinguishability only": {
+    "any_click_probability": 1.0,
+    "eligible_probabilities": [
+     0.0,
+     0.1111111111111111,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0
+   },
+   "source and loss": {
+    "any_click_probability": 0.10931095660451941,
+    "eligible_probabilities": [
+     6.640183529555752e-06,
+     0.0003511333511584116,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 0.003195774675703025
+   },
+   "source only": {
+    "any_click_probability": 1.0000000000000002,
+    "eligible_probabilities": [
+     0.0,
+     0.10960438083761039,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0000000000000002
+   },
+   "source, loss and dark counts": {
+    "any_click_probability": 0.10942708695391336,
+    "eligible_probabilities": [
+     7.012257194797191e-06,
+     0.00035148941939977486,
+     1.2603540217307142e-07,
+     1.2603540217307134e-07
+    ],
+    "sample_probability": 0.0032086908001682213
+   }
+  },
+  "in-0+-ZX": {
+   "g2-corrected overlap, loss and dark counts": {
+    "any_click_probability": 0.10942708695391339,
+    "eligible_probabilities": [
+     0.00035146777091928436,
+     1.57875924827321e-07,
+     6.902100708472405e-06,
+     1.5787592482732108e-07
+    ],
+    "sample_probability": 0.003208759801915178
+   },
+   "indistinguishability only": {
+    "any_click_probability": 0.9999999999999999,
+    "eligible_probabilities": [
+     0.11111111111111109,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 0.9999999999999999
+   },
+   "source and loss": {
+    "any_click_probability": 0.10931095660451941,
+    "eligible_probabilities": [
+     0.0003511333511584116,
+     0.0,
+     6.640183529555754e-06,
+     0.0
+    ],
+    "sample_probability": 0.003195774675703025
+   },
+   "source only": {
+    "any_click_probability": 1.0000000000000002,
+    "eligible_probabilities": [
+     0.10960438083761039,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0000000000000002
+   },
+   "source, loss and dark counts": {
+    "any_click_probability": 0.10942708695391336,
+    "eligible_probabilities": [
+     0.0003514677709192843,
+     1.5787592482732097e-07,
+     6.902100708472404e-06,
+     1.5787592482732103e-07
+    ],
+    "sample_probability": 0.0032087598019151778
+   }
+  },
+  "in-0--ZX": {
+   "g2-corrected overlap, loss and dark counts": {
+    "any_click_probability": 0.10942708695391339,
+    "eligible_probabilities": [
+     1.366489097244879e-07,
+     0.0003514894193997749,
+     1.3664890972448801e-07,
+     6.923335693788026e-06
+    ],
+    "sample_probability": 0.003208738574900076
+   },
+   "indistinguishability only": {
+    "any_click_probability": 1.0,
+    "eligible_probabilities": [
+     0.0,
+     0.1111111111111111,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0
+   },
+   "source and loss": {
+    "any_click_probability": 0.10931095660451942,
+    "eligible_probabilities": [
+     0.0,
+     0.00035113335115841165,
+     0.0,
+     6.640183529555755e-06
+    ],
+    "sample_probability": 0.0031957746757030254
+   },
+   "source only": {
+    "any_click_probability": 1.0000000000000004,
+    "eligible_probabilities": [
+     0.0,
+     0.1096043808376104,
+     0.0,
+     0.0
+    ],
+    "sample_probability": 1.0000000000000004
+   },
+   "source, loss and dark counts": {
+    "any_click_probability": 0.10942708695391339,
+    "eligible_probabilities": [
+     1.366489097244879e-07,
+     0.0003514894193997749,
+     1.36648909724488e-07,
+     6.923335693788026e-06
+    ],
+    "sample_probability": 0.0032087385749000755
+   }
+  },
+  "in-1+-ZX": {
+   "g2-corrected overlap, loss and dark counts": {
+    "any_click_probability": 0.10942708695391326,
+    "eligible_probabilities": [
+     4.812553964825018e-07,
+     2.3615054301901776e-07,
+     7.773323567188516e-05,
+     0.0003583727721287177
+    ],
+    "sample_probability": 0.0018744549042045474
+   },
+   "indistinguishability only": {
+    "any_click_probability": 1.0,
+    "eligible_probabilities": [
+     0.0,
+     0.0,
+     0.02471111111111112,
+     0.1111111111111111
+    ],
+    "sample_probability": 0.5802666666666666
+   },
+   "source and loss": {
+    "any_click_probability": 0.10931095660451934,
+    "eligible_probabilities": [
+     0.0,
+     0.0,
+     0.00010376257527992939,
+     0.0003579634075189783
+    ],
+    "sample_probability": 0.0018878362461831424
+   },
+   "source only": {
+    "any_click_probability": 0.9999999999999997,
+    "eligible_probabilities": [
+     0.0,
+     0.0,
+     0.027384331883758762,
+     0.11068882719431754
+    ],
+    "sample_probability": 0.5859584909478428
+   },
+   "source, loss and dark counts": {
+    "any_click_probability": 0.10942708695391329,
+    "eligible_probabilities": [
+     4.81078092531764e-07,
+     2.3615054301901784e-07,
+     0.00010428571951638474,
+     0.00035837013709596864
+    ],
+    "sample_probability": 0.0019010073880490466
+   }
+  },
+  "in-1--ZX": {
+   "g2-corrected overlap, loss and dark counts": {
+    "any_click_probability": 0.10942708695391327,
+    "eligible_probabilities": [
+     2.3615054301901776e-07,
+     4.812553964825019e-07,
+     0.0003583290835501486,
+     7.777658725528788e-05
+    ],
+    "sample_probability": 0.0018744328723076069
+   },
+   "indistinguishability only": {
+    "any_click_probability": 1.0,
+    "eligible_probabilities": [
+     0.0,
+     0.0,
+     0.11111111111111109,
+     0.024711111111111118
+    ],
+    "sample_probability": 0.5802666666666666
+   },
+   "source and loss": {
+    "any_click_probability": 0.10931095660451937,
+    "eligible_probabilities": [
+     0.0,
+     0.0,
+     0.0003579634075189784,
+     0.00010376257527992942
+    ],
+    "sample_probability": 0.001887836246183143
+   },
+   "source only": {
+    "any_click_probability": 0.9999999999999999,
+    "eligible_probabilities": [
+     0.0,
+     0.0,
+     0.11068882719431757,
+     0.02738433188375877
+    ],
+    "sample_probability": 0.585958490947843
+   },
+   "source, loss and dark counts": {
+    "any_click_probability": 0.10942708695391332,
+    "eligible_probabilities": [
+     2.361505430190179e-07,
+     4.810780925317642e-07,
+     0.00035832646445785424,
+     0.00010432908703722126
+    ],
+    "sample_probability": 0.0019009853720895404
+   }
+  }
+ },
+ "tomography_prediction": {
+  "XZ": {
+   "F": 0.8822651873563385,
+   "F_prime": 0.8856727955025254
+  },
+  "ZX": {
+   "F": 0.8878397587566252,
+   "F_prime": 0.8922121007175684
+  },
+  "process_fidelity": 0.8493279646017844,
+  "rates": {
+   "in-+0-XZ": [
+    0.00274486921248108,
+    0.00015342060831944555,
+    0.0006567255371722608,
+    -3.08853895231799e-05
+   ],
+   "in-+1-XZ": [
+    -2.1240552892991617e-05,
+    -8.796985532290876e-06,
+    0.0001080147557989,
+    0.003061594465540744
+   ],
+   "in--0-XZ": [
+    0.0006258541380144871,
+    -0.00014904310372486118,
+    0.002972837435622878,
+    0.00012354394625155654
+   ],
+   "in--1-XZ": [
+    0.00010289576683653138,
+    0.003244840618942864,
+    -0.0001272036492945819,
+    0.00017128926107103245
+   ],
+   "in-0+-ZX": [
+    0.002956480771235226,
+    0.0001037596023079878,
+    0.00014110641214339607,
+    -5.5741061306191406e-05
+   ],
+   "in-0--ZX": [
+    0.00012696508173170128,
+    0.002997758273737108,
+    -0.00017754732469719747,
+    0.0001678556910047143
+   ],
+   "in-1+-ZX": [
+    6.839860231395521e-05,
+    4.7529382213206355e-05,
+    0.0004332682191676791,
+    0.003266358917660188
+   ],
+   "in-1--ZX": [
+    6.471435631679438e-05,
+    0.00010967060071622478,
+    0.002879518020754088,
+    0.0004986205197849941
+   ]
+  },
+  "retained_analysis": "results/quandela/ascella-cz-tomography-analysis.json"
+ },
+ "variants": {
+  "g2-corrected overlap, loss and dark counts": {
+   "XZ": {
+    "F": 0.892339842410605,
+    "F_prime": 0.9001319023039348
+   },
+   "ZX": {
+    "F": 0.892295937001106,
+    "F_prime": 0.9001316745054962
+   },
+   "hofmann_interval": [
+    0.7846357794117109,
+    0.892295937001106
+   ]
+  },
+  "indistinguishability only": {
+   "XZ": {
+    "F": 0.8999280057595391,
+    "F_prime": 0.9090314136125655
+   },
+   "ZX": {
+    "F": 0.8999280057595391,
+    "F_prime": 0.9090314136125655
+   },
+   "hofmann_interval": [
+    0.7998560115190783,
+    0.8999280057595391
+   ]
+  },
+  "source and loss": {
+   "XZ": {
+    "F": 0.8652802638028968,
+    "F_prime": 0.8783563267716712
+   },
+   "ZX": {
+    "F": 0.8652802638028969,
+    "F_prime": 0.8783563267716712
+   },
+   "hofmann_interval": [
+    0.7305605276057938,
+    0.8652802638028968
+   ]
+  },
+  "source only": {
+   "XZ": {
+    "F": 0.8894355463435207,
+    "F_prime": 0.9008339779193663
+   },
+   "ZX": {
+    "F": 0.8894355463435206,
+    "F_prime": 0.9008339779193661
+   },
+   "hofmann_interval": [
+    0.7788710926870412,
+    0.8894355463435206
+   ]
+  },
+  "source, loss and dark counts": {
+   "XZ": {
+    "F": 0.8635170279402437,
+    "F_prime": 0.8766149238499532
+   },
+   "ZX": {
+    "F": 0.8634746335383269,
+    "F_prime": 0.876627016963272
+   },
+   "hofmann_interval": [
+    0.7269916614785705,
+    0.8634746335383269
+   ]
+  }
+ }
+}
