@@ -1,0 +1,3947 @@
+{
+  "admission": {
+    "conditions": [
+      {
+        "condition": "anchor and dark levels",
+        "limit": {
+          "anchor_floor": 0.9,
+          "dark_ceiling": 0.05
+        },
+        "status": "pass",
+        "value": {
+          "anchor": {
+            "A": 1.0036614093562564,
+            "B": 1.0418623475598114
+          },
+          "dark": {
+            "A": 0.002313241974271863,
+            "B": 0.001320761919303737
+          },
+          "efficiency_vs_failure_mode": {
+            "A": 1.0063620354076064,
+            "B": 1.0886325712620124
+          }
+        }
+      },
+      {
+        "condition": "anchor drift",
+        "limit": 0.03,
+        "status": "pass",
+        "value": {
+          "A": 0.0054590744155627036,
+          "B": 0.0028216050995772957
+        }
+      },
+      {
+        "condition": "dark drift",
+        "limit": 0.03,
+        "status": "pass",
+        "value": {
+          "A": 0.0008093942515147749,
+          "B": 0.00022911452550552418
+        }
+      },
+      {
+        "condition": "sentinel share",
+        "limit": 0.05,
+        "status": "pass",
+        "value": {
+          "iteration": 27,
+          "max": 0.00078582763671875,
+          "returned_iterations": 52
+        }
+      },
+      {
+        "condition": "null levels",
+        "limit": {
+          "level": 0.07,
+          "pair": 0.07
+        },
+        "status": "pass",
+        "value": {
+          "levels": [
+            0.25688356473927143,
+            0.26694228614432525
+          ],
+          "max_offset": 0.016942286144325247,
+          "pair_difference": 0.010058721405053817
+        }
+      },
+      {
+        "condition": "mirror agreement",
+        "limit": 0.07,
+        "status": "fail",
+        "value": {
+          "allowance": 4,
+          "exceeding": 9,
+          "readings": 46
+        }
+      }
+    ],
+    "failed": [
+      "mirror agreement"
+    ],
+    "unevaluated": [],
+    "verdict": "instrument not admitted"
+  },
+  "artifact_sha256": {
+    "cases.json": "63e270d72df8f3faad285244df062717d0688515f997f42086764890febe19fa",
+    "circuit.json": "8f34c960de556007b5e3405cc0b190c97876f6baf9bab46aa25728e9f5e196aa",
+    "job-body.json": "26c879b4034795c9a8fe14b9778dc978d26b897c95f92596c7cf8ffe6daf0f30",
+    "raw/result.json": "7110392653cbef4f8a165247c5a0c715902bac996d384535e55769e371cf5fbf",
+    "results.json": "98d2197ed34da6a7b9783c22af5bef4215f8dce267b9b37c3664b4df557e6609",
+    "submission.json": "0be2291c10ce5fc1ccf8d95a13edf3bd559689aab9b9f3420a87f78034cf54bc"
+  },
+  "backend": "qpu:ascella",
+  "c8_spread": {
+    "cell_readings": {
+      "c8-4/slot A": 1,
+      "c8-4/slot B": 1,
+      "c8-5/slot A": 1,
+      "c8-5/slot B": 1,
+      "c8-6/slot A": 2,
+      "c8-6/slot B": 2,
+      "c8-7/slot A": 4,
+      "c8-7/slot B": 4
+    },
+    "cells": {
+      "c8-4/slot A": 0.03010652321157914,
+      "c8-4/slot B": -0.020924314519256026,
+      "c8-5/slot A": 0.021601856327532754,
+      "c8-5/slot B": -0.05244815828351901,
+      "c8-6/slot A": 0.013927133082223653,
+      "c8-6/slot B": -0.02438050926301566,
+      "c8-7/slot A": 0.0056798641435514,
+      "c8-7/slot B": -0.027466873062129554
+    },
+    "contrast": {
+      "A": {
+        "block_7_deviation": 0.0056798641435514,
+        "contrast": -0.01619864006356045,
+        "low_blocks_mean_deviation": 0.02187850420711185
+      },
+      "B": {
+        "block_7_deviation": -0.027466873062129554,
+        "contrast": 0.005117454293134011,
+        "low_blocks_mean_deviation": -0.032584327355263565
+      }
+    },
+    "predecessor_contrast": 0.046959186204341474,
+    "slot_swing_by_block": {
+      "c8-4": -0.051030837730835166,
+      "c8-5": -0.07405001461105176,
+      "c8-6": -0.03830764234523931,
+      "c8-7": -0.033146737205680954
+    },
+    "slots_reproducing": [],
+    "slots_reversed": [],
+    "threshold": 0.023479593102170737,
+    "verdict": "not reproduced"
+  },
+  "c8_spread_under_mode_efficiencies": {
+    "cell_readings": {
+      "c8-4/slot A": 1,
+      "c8-4/slot B": 1,
+      "c8-5/slot A": 1,
+      "c8-5/slot B": 1,
+      "c8-6/slot A": 2,
+      "c8-6/slot B": 2,
+      "c8-7/slot A": 4,
+      "c8-7/slot B": 4
+    },
+    "cells": {
+      "c8-4/slot A": 0.005111181951538923,
+      "c8-4/slot B": -0.006127622829697699,
+      "c8-5/slot A": 0.005111181951538368,
+      "c8-5/slot B": -0.006127622829697588,
+      "c8-6/slot A": 0.003946069113727579,
+      "c8-6/slot B": -0.005453790119208435,
+      "c8-7/slot A": 0.004440944252837753,
+      "c8-7/slot B": -0.005406428148063025
+    },
+    "contrast": {
+      "A": {
+        "block_7_deviation": 0.004440944252837753,
+        "contrast": -0.00028186675276387074,
+        "low_blocks_mean_deviation": 0.004722811005601624
+      },
+      "B": {
+        "block_7_deviation": -0.005406428148063025,
+        "contrast": 0.0004965837781382154,
+        "low_blocks_mean_deviation": -0.00590301192620124
+      }
+    },
+    "predecessor_contrast": 0.046959186204341474,
+    "slot_swing_by_block": {
+      "c8-4": -0.011238804781236622,
+      "c8-5": -0.011238804781235956,
+      "c8-6": -0.009399859232936014,
+      "c8-7": -0.009847372400900778
+    },
+    "slots_reproducing": [],
+    "slots_reversed": [],
+    "threshold": 0.023479593102170737,
+    "verdict": "not reproduced"
+  },
+  "calibration": {
+    "anchor_raw": {
+      "A": 1.0036614093562564,
+      "B": 1.0418623475598114
+    },
+    "anchor_rows": {
+      "A": [
+        0,
+        51
+      ],
+      "B": [
+        1,
+        50
+      ]
+    },
+    "dark": {
+      "A": 0.0011566209871359315,
+      "B": 0.0006603809596518685
+    },
+    "dark_rows": [
+      2,
+      49
+    ],
+    "efficiency": {
+      "A": 1.0063620354076064,
+      "B": 1.0886325712620124
+    }
+  },
+  "caveats": [],
+  "charge": 1.131072,
+  "conformance": {
+    "outlier_allowance": 2,
+    "outliers": [],
+    "readings_expected": 25,
+    "readings_present": 25,
+    "t_expected": 16,
+    "t_within": 16,
+    "verdict": "not interpreted"
+  },
+  "crosstalk": {
+    "max_excess": 0.0030926646712096865,
+    "readings_expected": 8,
+    "readings_present": 8,
+    "rows": [
+      {
+        "a": 0.0022451317296678123,
+        "excess_over_dark": 0.0009243698103640753,
+        "iteration": 0,
+        "partner_level": 1.0,
+        "sentinel_scale": 0.0013427734375,
+        "setting": "anchor",
+        "slot": "B",
+        "within_sentinel_scale": true
+      },
+      {
+        "a": 0.0031157643932277945,
+        "excess_over_dark": 0.0008025224189559315,
+        "iteration": 1,
+        "partner_level": 1.0,
+        "sentinel_scale": 0.0015462239583333333,
+        "setting": "anchor",
+        "slot": "A",
+        "within_sentinel_scale": true
+      },
+      {
+        "a": 0.0032834202548850423,
+        "excess_over_dark": 0.0009701782806131793,
+        "iteration": 4,
+        "partner_level": 0.6545084971874737,
+        "sentinel_scale": 0.0015462239583333333,
+        "setting": "i-f-TD",
+        "slot": "A",
+        "within_sentinel_scale": true
+      },
+      {
+        "a": 0.0027035283335879027,
+        "excess_over_dark": 0.0013827664142841657,
+        "iteration": 15,
+        "partner_level": 0.7499999999999999,
+        "sentinel_scale": 0.00152587890625,
+        "setting": "c-d-TD",
+        "slot": "B",
+        "within_sentinel_scale": true
+      },
+      {
+        "a": 0.004123774322631884,
+        "excess_over_dark": 0.001810532348360021,
+        "iteration": 36,
+        "partner_level": 0.7499999999999999,
+        "sentinel_scale": 0.00164794921875,
+        "setting": "c-d-TD",
+        "slot": "A",
+        "within_sentinel_scale": false
+      },
+      {
+        "a": 0.0044134265905134236,
+        "excess_over_dark": 0.0030926646712096865,
+        "iteration": 47,
+        "partner_level": 0.6545084971874737,
+        "sentinel_scale": 0.0016276041666666665,
+        "setting": "i-f-TD",
+        "slot": "B",
+        "within_sentinel_scale": false
+      },
+      {
+        "a": 0.0023060652570651885,
+        "excess_over_dark": -7.176717206674489e-06,
+        "iteration": 50,
+        "partner_level": 1.0,
+        "sentinel_scale": 0.0015462239583333333,
+        "setting": "anchor",
+        "slot": "A",
+        "within_sentinel_scale": true
+      },
+      {
+        "a": 0.0020157134022035414,
+        "excess_over_dark": 0.0006949514828998044,
+        "iteration": 51,
+        "partner_level": 1.0,
+        "sentinel_scale": 0.0011393229166666665,
+        "setting": "anchor",
+        "slot": "B",
+        "within_sentinel_scale": true
+      }
+    ],
+    "verdict": "not interpreted"
+  },
+  "definitions": {
+    "a": "twice the clicks of a slot's four modes over the clicks of modes 0..8, per iteration",
+    "a_prime": "(a - a_dark) / (a_anchor - a_dark) with the slot's own anchor and dark",
+    "l_hat": "calibrated level: the slot's dark-subtracted clicks over its efficiency relative to the failure mode, in the same ratio; the efficiency is a / (2 - a) of the slot's dark-subtracted anchor level",
+    "pooling": "the two slot orientations of one block item average their calibrated levels"
+  },
+  "ideal_departure": {
+    "max_pooled": 0.034212395078505486
+  },
+  "independence": {
+    "groups": {
+      "independence-b12": {
+        "exceeds": false,
+        "levels": {
+          "c-d-TC": 0.7600582149921187,
+          "c-d-TD": 0.7562136222668525,
+          "c-d-TN": 0.7157876049214944,
+          "c-d-TT": 0.7434788081715809
+        },
+        "partner_arms": {
+          "c-d-TC": "C",
+          "c-d-TD": "D",
+          "c-d-TN": "N",
+          "c-d-TT": "T"
+        },
+        "range": 0.04427061007062427,
+        "settings": 4,
+        "settings_expected": 4,
+        "uncalibrated_range": 0.05339253641041175
+      },
+      "independence-c8": {
+        "exceeds": false,
+        "levels": {
+          "i-f-TC": 0.6412824148688199,
+          "i-f-TD": 0.6769968868951334,
+          "i-f-TN": 0.6294743070867602,
+          "i-f-TT": 0.626706362062025
+        },
+        "partner_arms": {
+          "i-f-TC": "C",
+          "i-f-TD": "D",
+          "i-f-TN": "N",
+          "i-f-TT": "T"
+        },
+        "range": 0.05029052483310836,
+        "settings": 4,
+        "settings_expected": 4,
+        "uncalibrated_range": 0.06039863424556102
+      }
+    },
+    "verdict": "not interpreted"
+  },
+  "interpretation": "Conformance of programmed operator blocks to their interference law on one 12-mode mesh with two blocks per photon; the client computes every cd_core sign, so the chip does not compute the algebra.",
+  "iterations": [
+    {
+      "events": 131072,
+      "failure": 65267,
+      "index": 0,
+      "invalid_events": {
+        "other_photon_number": 56,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.026441389843451818,
+      "name": "anchor-o0-i00",
+      "port_counts": [
+        17699,
+        18354,
+        14017,
+        15466,
+        24,
+        41,
+        67,
+        15,
+        65267,
+        37,
+        10,
+        19
+      ],
+      "returned": true,
+      "sentinel": 66,
+      "sentinel_share": 0.0005035400390625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 65536,
+        "B": 147
+      },
+      "total": 130950
+    },
+    {
+      "events": 131072,
+      "failure": 62621,
+      "index": 1,
+      "invalid_events": {
+        "other_photon_number": 49,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.025218218057687463,
+      "name": "anchor-o1-i01",
+      "port_counts": [
+        48,
+        21,
+        25,
+        110,
+        16983,
+        18852,
+        16211,
+        16076,
+        62621,
+        47,
+        10,
+        19
+      ],
+      "returned": true,
+      "sentinel": 76,
+      "sentinel_share": 0.000579833984375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 204,
+        "B": 68122
+      },
+      "total": 130947
+    },
+    {
+      "events": 131072,
+      "failure": 130709,
+      "index": 2,
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.002076637069498653,
+      "name": "dark-o0-i02",
+      "port_counts": [
+        50,
+        18,
+        81,
+        29,
+        16,
+        30,
+        28,
+        20,
+        130709,
+        46,
+        20,
+        25
+      ],
+      "returned": true,
+      "sentinel": 91,
+      "sentinel_share": 0.00069427490234375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 178,
+        "B": 94
+      },
+      "total": 130981
+    },
+    {
+      "events": 131072,
+      "failure": 46392,
+      "index": 3,
+      "invalid_events": {
+        "other_photon_number": 58,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.04005509550812389,
+      "name": "i-f-TT-o0-i03",
+      "port_counts": [
+        14028,
+        7321,
+        13782,
+        5575,
+        17623,
+        6120,
+        13804,
+        6299,
+        46392,
+        38,
+        15,
+        17
+      ],
+      "returned": true,
+      "sentinel": 70,
+      "sentinel_share": 0.0005340576171875,
+      "shots_used": 131072,
+      "slot": {
+        "A": 40706,
+        "B": 43846
+      },
+      "total": 130944
+    },
+    {
+      "events": 131072,
+      "failure": 83974,
+      "index": 4,
+      "invalid_events": {
+        "other_photon_number": 35,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03153195493250385,
+      "name": "i-f-TD-o1-i04",
+      "port_counts": [
+        78,
+        10,
+        38,
+        89,
+        18934,
+        5970,
+        15785,
+        6083,
+        83974,
+        43,
+        20,
+        13
+      ],
+      "returned": true,
+      "sentinel": 76,
+      "sentinel_share": 0.000579833984375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 215,
+        "B": 46772
+      },
+      "total": 130961
+    },
+    {
+      "events": 131072,
+      "failure": 32786,
+      "index": 5,
+      "invalid_events": {
+        "other_photon_number": 49,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.01657298222032121,
+      "name": "e-b-TT-o0-i05",
+      "port_counts": [
+        18345,
+        16163,
+        22,
+        15510,
+        93,
+        16392,
+        15480,
+        16145,
+        32786,
+        49,
+        22,
+        16
+      ],
+      "returned": true,
+      "sentinel": 87,
+      "sentinel_share": 0.00066375732421875,
+      "shots_used": 131072,
+      "slot": {
+        "A": 50040,
+        "B": 48110
+      },
+      "total": 130936
+    },
+    {
+      "events": 131072,
+      "failure": 130608,
+      "index": 6,
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.0028629669499095184,
+      "name": "b-i-CC-o1-i06",
+      "port_counts": [
+        27,
+        17,
+        48,
+        78,
+        16,
+        48,
+        82,
+        59,
+        130608,
+        45,
+        20,
+        24
+      ],
+      "returned": true,
+      "sentinel": 89,
+      "sentinel_share": 0.00067901611328125,
+      "shots_used": 131072,
+      "slot": {
+        "A": 170,
+        "B": 205
+      },
+      "total": 130983
+    },
+    {
+      "events": 131072,
+      "failure": 100858,
+      "index": 7,
+      "invalid_events": {
+        "other_photon_number": 24,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.017232164671390195,
+      "name": "e-g-CN-o0-i07",
+      "port_counts": [
+        37,
+        12,
+        36,
+        73,
+        2807,
+        7478,
+        13976,
+        5699,
+        100858,
+        41,
+        15,
+        16
+      ],
+      "returned": true,
+      "sentinel": 72,
+      "sentinel_share": 0.00054931640625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 158,
+        "B": 29960
+      },
+      "total": 130976
+    },
+    {
+      "events": 131072,
+      "failure": 61304,
+      "index": 8,
+      "invalid_events": {
+        "other_photon_number": 66,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03496508052126186,
+      "name": "b-i-NN-o1-i08",
+      "port_counts": [
+        2871,
+        6613,
+        17831,
+        5656,
+        46,
+        4994,
+        15444,
+        16171,
+        61304,
+        38,
+        17,
+        21
+      ],
+      "returned": true,
+      "sentinel": 76,
+      "sentinel_share": 0.000579833984375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 32971,
+        "B": 36655
+      },
+      "total": 130930
+    },
+    {
+      "events": 131072,
+      "failure": 56220,
+      "index": 9,
+      "invalid_events": {
+        "other_photon_number": 62,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.018622348632402246,
+      "name": "e-c-NN-o0-i09",
+      "port_counts": [
+        3440,
+        16244,
+        36,
+        14700,
+        1842,
+        13092,
+        12394,
+        12955,
+        56220,
+        44,
+        28,
+        15
+      ],
+      "returned": true,
+      "sentinel": 87,
+      "sentinel_share": 0.00066375732421875,
+      "shots_used": 131072,
+      "slot": {
+        "A": 34420,
+        "B": 40283
+      },
+      "total": 130923
+    },
+    {
+      "events": 131072,
+      "failure": 119411,
+      "index": 10,
+      "invalid_events": {
+        "other_photon_number": 14,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.012061919684821891,
+      "name": "d-i-FF-o1-i10",
+      "port_counts": [
+        2441,
+        45,
+        2681,
+        17,
+        1491,
+        1561,
+        1770,
+        1556,
+        119411,
+        47,
+        17,
+        21
+      ],
+      "returned": true,
+      "sentinel": 85,
+      "sentinel_share": 0.00064849853515625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 5184,
+        "B": 6378
+      },
+      "total": 130973
+    },
+    {
+      "events": 131072,
+      "failure": 69445,
+      "index": 11,
+      "invalid_events": {
+        "other_photon_number": 51,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.027220350884233517,
+      "name": "e-h-FT-o0-i11",
+      "port_counts": [
+        4949,
+        4123,
+        4413,
+        3605,
+        16369,
+        6905,
+        14705,
+        6429,
+        69445,
+        39,
+        18,
+        21
+      ],
+      "returned": true,
+      "sentinel": 78,
+      "sentinel_share": 0.0005950927734375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 17090,
+        "B": 44408
+      },
+      "total": 130943
+    },
+    {
+      "events": 131072,
+      "failure": 26276,
+      "index": 12,
+      "invalid_events": {
+        "other_photon_number": 66,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.027908552366120675,
+      "name": "i-f-TC-o1-i12",
+      "port_counts": [
+        16897,
+        16232,
+        15149,
+        13928,
+        13927,
+        7256,
+        15368,
+        5912,
+        26276,
+        38,
+        13,
+        10
+      ],
+      "returned": true,
+      "sentinel": 61,
+      "sentinel_share": 0.00046539306640625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 62206,
+        "B": 42463
+      },
+      "total": 130945
+    },
+    {
+      "events": 131072,
+      "failure": 55662,
+      "index": 13,
+      "invalid_events": {
+        "other_photon_number": 61,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.045846203698140436,
+      "name": "i-f-TN-o0-i13",
+      "port_counts": [
+        13869,
+        5910,
+        17030,
+        5675,
+        2191,
+        6641,
+        14282,
+        9679,
+        55662,
+        41,
+        13,
+        18
+      ],
+      "returned": true,
+      "sentinel": 72,
+      "sentinel_share": 0.00054931640625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 42484,
+        "B": 32793
+      },
+      "total": 130939
+    },
+    {
+      "events": 131072,
+      "failure": 30943,
+      "index": 14,
+      "invalid_events": {
+        "other_photon_number": 66,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03909096551197343,
+      "name": "c-d-TT-o1-i14",
+      "port_counts": [
+        12353,
+        11345,
+        15651,
+        11117,
+        12764,
+        13225,
+        11026,
+        12491,
+        30943,
+        37,
+        28,
+        26
+      ],
+      "returned": true,
+      "sentinel": 91,
+      "sentinel_share": 0.00069427490234375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 50466,
+        "B": 49506
+      },
+      "total": 130915
+    },
+    {
+      "events": 131072,
+      "failure": 78659,
+      "index": 15,
+      "invalid_events": {
+        "other_photon_number": 57,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03703795631586983,
+      "name": "c-d-TD-o0-i15",
+      "port_counts": [
+        13653,
+        12010,
+        10870,
+        15571,
+        91,
+        45,
+        18,
+        23,
+        78659,
+        33,
+        19,
+        23
+      ],
+      "returned": true,
+      "sentinel": 75,
+      "sentinel_share": 0.00057220458984375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 52104,
+        "B": 177
+      },
+      "total": 130940
+    },
+    {
+      "events": 131072,
+      "failure": 72285,
+      "index": 16,
+      "invalid_events": {
+        "other_photon_number": 48,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03203610048340169,
+      "name": "c-d-TC-o1-i16",
+      "port_counts": [
+        1490,
+        1793,
+        1586,
+        1756,
+        13024,
+        13805,
+        12182,
+        13026,
+        72285,
+        39,
+        15,
+        23
+      ],
+      "returned": true,
+      "sentinel": 77,
+      "sentinel_share": 0.00058746337890625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 6625,
+        "B": 52037
+      },
+      "total": 130947
+    },
+    {
+      "events": 131072,
+      "failure": 43867,
+      "index": 17,
+      "invalid_events": {
+        "other_photon_number": 69,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.039825127357157604,
+      "name": "c-d-TN-o0-i17",
+      "port_counts": [
+        10267,
+        13573,
+        14395,
+        9898,
+        1842,
+        11445,
+        12718,
+        12926,
+        43867,
+        42,
+        16,
+        14
+      ],
+      "returned": true,
+      "sentinel": 72,
+      "sentinel_share": 0.00054931640625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 48133,
+        "B": 38931
+      },
+      "total": 130931
+    },
+    {
+      "events": 131072,
+      "failure": 47043,
+      "index": 18,
+      "invalid_events": {
+        "other_photon_number": 59,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02820074906650134,
+      "name": "g-h-TT-o1-i18",
+      "port_counts": [
+        15181,
+        5953,
+        15851,
+        5195,
+        12864,
+        6585,
+        15502,
+        6772,
+        47043,
+        41,
+        13,
+        13
+      ],
+      "returned": true,
+      "sentinel": 67,
+      "sentinel_share": 0.00051116943359375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 42180,
+        "B": 41723
+      },
+      "total": 130946
+    },
+    {
+      "events": 131072,
+      "failure": 94672,
+      "index": 19,
+      "invalid_events": {
+        "other_photon_number": 16,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.0349291930681732,
+      "name": "a-g-TC-o0-i19",
+      "port_counts": [
+        10335,
+        7182,
+        9191,
+        9344,
+        91,
+        54,
+        106,
+        15,
+        94672,
+        36,
+        14,
+        16
+      ],
+      "returned": true,
+      "sentinel": 66,
+      "sentinel_share": 0.0005035400390625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 36052,
+        "B": 266
+      },
+      "total": 130990
+    },
+    {
+      "events": 131072,
+      "failure": 126143,
+      "index": 20,
+      "invalid_events": {
+        "other_photon_number": 5,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.01058756683393397,
+      "name": "a-h-CC-o1-i20",
+      "port_counts": [
+        905,
+        1564,
+        1259,
+        1023,
+        19,
+        20,
+        20,
+        34,
+        126143,
+        48,
+        17,
+        15
+      ],
+      "returned": true,
+      "sentinel": 80,
+      "sentinel_share": 0.0006103515625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 4751,
+        "B": 93
+      },
+      "total": 130987
+    },
+    {
+      "events": 131072,
+      "failure": 75471,
+      "index": 21,
+      "invalid_events": {
+        "other_photon_number": 38,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02682097897694145,
+      "name": "a-h-NN-o0-i21",
+      "port_counts": [
+        57,
+        9442,
+        10075,
+        7921,
+        1544,
+        6231,
+        14423,
+        5795,
+        75471,
+        47,
+        12,
+        16
+      ],
+      "returned": true,
+      "sentinel": 75,
+      "sentinel_share": 0.00057220458984375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 27495,
+        "B": 27993
+      },
+      "total": 130959
+    },
+    {
+      "events": 131072,
+      "failure": 125114,
+      "index": 22,
+      "invalid_events": {
+        "other_photon_number": 7,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.010265483567156378,
+      "name": "a-f-FF-o1-i22",
+      "port_counts": [
+        2503,
+        61,
+        2550,
+        64,
+        104,
+        182,
+        375,
+        31,
+        125114,
+        47,
+        16,
+        18
+      ],
+      "returned": true,
+      "sentinel": 81,
+      "sentinel_share": 0.00061798095703125,
+      "shots_used": 131072,
+      "slot": {
+        "A": 5178,
+        "B": 692
+      },
+      "total": 130984
+    },
+    {
+      "events": 131072,
+      "failure": 105330,
+      "index": 23,
+      "invalid_events": {
+        "other_photon_number": 27,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03857746729507408,
+      "name": "b-g-FF-o0-i23",
+      "port_counts": [
+        5986,
+        4648,
+        5840,
+        3795,
+        2607,
+        87,
+        2673,
+        17,
+        105330,
+        32,
+        13,
+        17
+      ],
+      "returned": true,
+      "sentinel": 62,
+      "sentinel_share": 0.0004730224609375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 20269,
+        "B": 5384
+      },
+      "total": 130983
+    },
+    {
+      "events": 131072,
+      "failure": 120189,
+      "index": 24,
+      "invalid_events": {
+        "other_photon_number": 7,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.013578582799650515,
+      "name": "c-h-FF-o1-i24",
+      "port_counts": [
+        1941,
+        30,
+        3155,
+        70,
+        2112,
+        899,
+        1403,
+        1183,
+        120189,
+        51,
+        14,
+        18
+      ],
+      "returned": true,
+      "sentinel": 83,
+      "sentinel_share": 0.00063323974609375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 5196,
+        "B": 5597
+      },
+      "total": 130982
+    },
+    {
+      "events": 131072,
+      "failure": 95795,
+      "index": 25,
+      "invalid_events": {
+        "other_photon_number": 23,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.020444337764271982,
+      "name": "b-f-EE-o0-i25",
+      "port_counts": [
+        4292,
+        4685,
+        4449,
+        4239,
+        4776,
+        4494,
+        3850,
+        4393,
+        95795,
+        44,
+        15,
+        17
+      ],
+      "returned": true,
+      "sentinel": 76,
+      "sentinel_share": 0.000579833984375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 17665,
+        "B": 17513
+      },
+      "total": 130973
+    },
+    {
+      "events": 131072,
+      "failure": 94936,
+      "index": 26,
+      "invalid_events": {
+        "other_photon_number": 29,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.030704994578579996,
+      "name": "b-f-EE-o1-i26",
+      "port_counts": [
+        5022,
+        4359,
+        5348,
+        4023,
+        3953,
+        5280,
+        3566,
+        4475,
+        94936,
+        43,
+        18,
+        20
+      ],
+      "returned": true,
+      "sentinel": 81,
+      "sentinel_share": 0.00061798095703125,
+      "shots_used": 131072,
+      "slot": {
+        "A": 18752,
+        "B": 17274
+      },
+      "total": 130962
+    },
+    {
+      "events": 131072,
+      "failure": 120324,
+      "index": 27,
+      "invalid_events": {
+        "other_photon_number": 8,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.009417690750236843,
+      "name": "c-h-FF-o0-i27",
+      "port_counts": [
+        1883,
+        1278,
+        1734,
+        1318,
+        2448,
+        120,
+        1817,
+        39,
+        120324,
+        62,
+        21,
+        20
+      ],
+      "returned": true,
+      "sentinel": 103,
+      "sentinel_share": 0.00078582763671875,
+      "shots_used": 131072,
+      "slot": {
+        "A": 6213,
+        "B": 4424
+      },
+      "total": 130961
+    },
+    {
+      "events": 131072,
+      "failure": 107993,
+      "index": 28,
+      "invalid_events": {
+        "other_photon_number": 22,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.01886342874809887,
+      "name": "b-g-FF-o1-i28",
+      "port_counts": [
+        2829,
+        42,
+        2435,
+        17,
+        4568,
+        4696,
+        3698,
+        4686,
+        107993,
+        46,
+        19,
+        21
+      ],
+      "returned": true,
+      "sentinel": 86,
+      "sentinel_share": 0.0006561279296875,
+      "shots_used": 131072,
+      "slot": {
+        "A": 5323,
+        "B": 17648
+      },
+      "total": 130964
+    },
+    {
+      "events": 131072,
+      "failure": 126000,
+      "index": 29,
+      "invalid_events": {
+        "other_photon_number": 5,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.006161612776377527,
+      "name": "a-f-FF-o0-i29",
+      "port_counts": [
+        62,
+        22,
+        33,
+        39,
+        2702,
+        173,
+        1924,
+        39,
+        126000,
+        35,
+        18,
+        20
+      ],
+      "returned": true,
+      "sentinel": 73,
+      "sentinel_share": 0.00055694580078125,
+      "shots_used": 131072,
+      "slot": {
+        "A": 156,
+        "B": 4838
+      },
+      "total": 130994
+    },
+    {
+      "events": 131072,
+      "failure": 72425,
+      "index": 30,
+      "invalid_events": {
+        "other_photon_number": 54,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.04046009213415928,
+      "name": "a-h-NN-o1-i30",
+      "port_counts": [
+        2181,
+        7197,
+        17318,
+        6271,
+        103,
+        8984,
+        7319,
+        9138,
+        72425,
+        40,
+        17,
+        25
+      ],
+      "returned": true,
+      "sentinel": 82,
+      "sentinel_share": 0.0006256103515625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 32967,
+        "B": 25544
+      },
+      "total": 130936
+    },
+    {
+      "events": 131072,
+      "failure": 126931,
+      "index": 31,
+      "invalid_events": {
+        "other_photon_number": 3,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.007212335688697253,
+      "name": "a-h-CC-o0-i31",
+      "port_counts": [
+        87,
+        12,
+        31,
+        149,
+        826,
+        620,
+        1530,
+        800,
+        126931,
+        42,
+        16,
+        25
+      ],
+      "returned": true,
+      "sentinel": 83,
+      "sentinel_share": 0.00063323974609375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 279,
+        "B": 3776
+      },
+      "total": 130986
+    },
+    {
+      "events": 131072,
+      "failure": 95926,
+      "index": 32,
+      "invalid_events": {
+        "other_photon_number": 21,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02220783360180782,
+      "name": "a-g-TC-o1-i32",
+      "port_counts": [
+        89,
+        112,
+        7,
+        43,
+        9442,
+        9064,
+        7592,
+        8712,
+        95926,
+        35,
+        15,
+        14
+      ],
+      "returned": true,
+      "sentinel": 64,
+      "sentinel_share": 0.00048828125,
+      "shots_used": 131072,
+      "slot": {
+        "A": 251,
+        "B": 34810
+      },
+      "total": 130987
+    },
+    {
+      "events": 131072,
+      "failure": 44742,
+      "index": 33,
+      "invalid_events": {
+        "other_photon_number": 52,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02274166293622359,
+      "name": "g-h-TT-o0-i33",
+      "port_counts": [
+        15479,
+        6196,
+        16604,
+        5064,
+        17110,
+        5463,
+        14788,
+        5505,
+        44742,
+        40,
+        11,
+        18
+      ],
+      "returned": true,
+      "sentinel": 69,
+      "sentinel_share": 0.00052642822265625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 43343,
+        "B": 42866
+      },
+      "total": 130951
+    },
+    {
+      "events": 131072,
+      "failure": 41642,
+      "index": 34,
+      "invalid_events": {
+        "other_photon_number": 62,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03871225197427719,
+      "name": "c-d-TN-o1-i34",
+      "port_counts": [
+        1105,
+        16422,
+        11915,
+        12760,
+        11213,
+        12530,
+        10890,
+        12457,
+        41642,
+        49,
+        13,
+        14
+      ],
+      "returned": true,
+      "sentinel": 76,
+      "sentinel_share": 0.000579833984375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 42202,
+        "B": 47090
+      },
+      "total": 130934
+    },
+    {
+      "events": 131072,
+      "failure": 75137,
+      "index": 35,
+      "invalid_events": {
+        "other_photon_number": 35,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.015189699413489787,
+      "name": "c-d-TC-o0-i35",
+      "port_counts": [
+        11843,
+        12166,
+        14027,
+        12151,
+        1363,
+        1291,
+        1479,
+        1487,
+        75137,
+        56,
+        15,
+        22
+      ],
+      "returned": true,
+      "sentinel": 93,
+      "sentinel_share": 0.00070953369140625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 50187,
+        "B": 5620
+      },
+      "total": 130944
+    },
+    {
+      "events": 131072,
+      "failure": 80920,
+      "index": 36,
+      "invalid_events": {
+        "other_photon_number": 43,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.010952820967101448,
+      "name": "c-d-TD-o1-i36",
+      "port_counts": [
+        61,
+        32,
+        48,
+        129,
+        13420,
+        12297,
+        12223,
+        11818,
+        80920,
+        46,
+        14,
+        21
+      ],
+      "returned": true,
+      "sentinel": 81,
+      "sentinel_share": 0.00061798095703125,
+      "shots_used": 131072,
+      "slot": {
+        "A": 270,
+        "B": 49758
+      },
+      "total": 130948
+    },
+    {
+      "events": 131072,
+      "failure": 32437,
+      "index": 37,
+      "invalid_events": {
+        "other_photon_number": 60,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.029548787193743563,
+      "name": "c-d-TT-o0-i37",
+      "port_counts": [
+        12008,
+        12753,
+        12604,
+        11639,
+        15302,
+        12311,
+        9612,
+        12270,
+        32437,
+        40,
+        12,
+        24
+      ],
+      "returned": true,
+      "sentinel": 76,
+      "sentinel_share": 0.000579833984375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 49004,
+        "B": 49495
+      },
+      "total": 130936
+    },
+    {
+      "events": 131072,
+      "failure": 59173,
+      "index": 38,
+      "invalid_events": {
+        "other_photon_number": 42,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.030361644161243963,
+      "name": "i-f-TN-o1-i38",
+      "port_counts": [
+        2185,
+        6558,
+        16336,
+        5055,
+        17326,
+        5725,
+        12952,
+        5641,
+        59173,
+        40,
+        22,
+        17
+      ],
+      "returned": true,
+      "sentinel": 79,
+      "sentinel_share": 0.00060272216796875,
+      "shots_used": 131072,
+      "slot": {
+        "A": 30134,
+        "B": 41644
+      },
+      "total": 130951
+    },
+    {
+      "events": 131072,
+      "failure": 27762,
+      "index": 39,
+      "invalid_events": {
+        "other_photon_number": 59,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03075641425643075,
+      "name": "i-f-TC-o0-i39",
+      "port_counts": [
+        13697,
+        6699,
+        16278,
+        5723,
+        13816,
+        15574,
+        15178,
+        16237,
+        27762,
+        24,
+        11,
+        14
+      ],
+      "returned": true,
+      "sentinel": 49,
+      "sentinel_share": 0.00037384033203125,
+      "shots_used": 131072,
+      "slot": {
+        "A": 42397,
+        "B": 60805
+      },
+      "total": 130964
+    },
+    {
+      "events": 131072,
+      "failure": 68095,
+      "index": 40,
+      "invalid_events": {
+        "other_photon_number": 41,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.03826525577538224,
+      "name": "e-h-FT-o1-i40",
+      "port_counts": [
+        14697,
+        7546,
+        16641,
+        5340,
+        5199,
+        4597,
+        4191,
+        4627,
+        68095,
+        47,
+        38,
+        13
+      ],
+      "returned": true,
+      "sentinel": 98,
+      "sentinel_share": 0.0007476806640625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 44224,
+        "B": 18614
+      },
+      "total": 130933
+    },
+    {
+      "events": 131072,
+      "failure": 119560,
+      "index": 41,
+      "invalid_events": {
+        "other_photon_number": 13,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.015139061014822897,
+      "name": "d-i-FF-o0-i41",
+      "port_counts": [
+        2007,
+        1385,
+        1777,
+        1182,
+        3073,
+        44,
+        1919,
+        54,
+        119560,
+        35,
+        12,
+        11
+      ],
+      "returned": true,
+      "sentinel": 58,
+      "sentinel_share": 0.0004425048828125,
+      "shots_used": 131072,
+      "slot": {
+        "A": 6351,
+        "B": 5090
+      },
+      "total": 131001
+    },
+    {
+      "events": 131072,
+      "failure": 54614,
+      "index": 42,
+      "invalid_events": {
+        "other_photon_number": 62,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.024507768410120083,
+      "name": "e-c-NN-o1-i42",
+      "port_counts": [
+        1880,
+        14179,
+        11942,
+        11097,
+        4626,
+        16569,
+        56,
+        15984,
+        54614,
+        28,
+        22,
+        13
+      ],
+      "returned": true,
+      "sentinel": 63,
+      "sentinel_share": 0.00048065185546875,
+      "shots_used": 131072,
+      "slot": {
+        "A": 39098,
+        "B": 37235
+      },
+      "total": 130947
+    },
+    {
+      "events": 131072,
+      "failure": 62171,
+      "index": 43,
+      "invalid_events": {
+        "other_photon_number": 56,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.029491796705286018,
+      "name": "b-i-NN-o0-i43",
+      "port_counts": [
+        42,
+        4733,
+        18382,
+        15413,
+        2489,
+        6717,
+        14940,
+        6068,
+        62171,
+        37,
+        9,
+        15
+      ],
+      "returned": true,
+      "sentinel": 61,
+      "sentinel_share": 0.00046539306640625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 38570,
+        "B": 30214
+      },
+      "total": 130955
+    },
+    {
+      "events": 131072,
+      "failure": 98714,
+      "index": 44,
+      "invalid_events": {
+        "other_photon_number": 26,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.021387390800679605,
+      "name": "e-g-CN-o1-i44",
+      "port_counts": [
+        4047,
+        5774,
+        16404,
+        5908,
+        31,
+        16,
+        15,
+        57,
+        98714,
+        42,
+        24,
+        14
+      ],
+      "returned": true,
+      "sentinel": 80,
+      "sentinel_share": 0.0006103515625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 32133,
+        "B": 119
+      },
+      "total": 130966
+    },
+    {
+      "events": 131072,
+      "failure": 130584,
+      "index": 45,
+      "invalid_events": {
+        "other_photon_number": 1,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.0029472398259143572,
+      "name": "b-i-CC-o0-i45",
+      "port_counts": [
+        30,
+        11,
+        42,
+        84,
+        12,
+        71,
+        81,
+        55,
+        130584,
+        54,
+        22,
+        25
+      ],
+      "returned": true,
+      "sentinel": 101,
+      "sentinel_share": 0.00077056884765625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 167,
+        "B": 219
+      },
+      "total": 130970
+    },
+    {
+      "events": 131072,
+      "failure": 31900,
+      "index": 46,
+      "invalid_events": {
+        "other_photon_number": 66,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.028609534793135383,
+      "name": "e-b-TT-o1-i46",
+      "port_counts": [
+        27,
+        17273,
+        18180,
+        15462,
+        14458,
+        17324,
+        41,
+        16266,
+        31900,
+        30,
+        16,
+        29
+      ],
+      "returned": true,
+      "sentinel": 75,
+      "sentinel_share": 0.00057220458984375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 50942,
+        "B": 48089
+      },
+      "total": 130931
+    },
+    {
+      "events": 131072,
+      "failure": 86012,
+      "index": 47,
+      "invalid_events": {
+        "other_photon_number": 28,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.0197869424303845,
+      "name": "i-f-TD-o0-i47",
+      "port_counts": [
+        15984,
+        6361,
+        16893,
+        5425,
+        68,
+        72,
+        17,
+        132,
+        86012,
+        47,
+        18,
+        15
+      ],
+      "returned": true,
+      "sentinel": 80,
+      "sentinel_share": 0.0006103515625,
+      "shots_used": 131072,
+      "slot": {
+        "A": 44663,
+        "B": 289
+      },
+      "total": 130964
+    },
+    {
+      "events": 131072,
+      "failure": 44249,
+      "index": 48,
+      "invalid_events": {
+        "other_photon_number": 63,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.026236823243982858,
+      "name": "i-f-TT-o1-i48",
+      "port_counts": [
+        16835,
+        6157,
+        15089,
+        5800,
+        16811,
+        5662,
+        13850,
+        6481,
+        44249,
+        37,
+        22,
+        16
+      ],
+      "returned": true,
+      "sentinel": 75,
+      "sentinel_share": 0.00057220458984375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 43881,
+        "B": 42804
+      },
+      "total": 130934
+    },
+    {
+      "events": 131072,
+      "failure": 130785,
+      "index": 49,
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.001557382680988482,
+      "name": "dark-o0-i49",
+      "port_counts": [
+        26,
+        13,
+        47,
+        39,
+        18,
+        17,
+        20,
+        24,
+        130785,
+        41,
+        21,
+        21
+      ],
+      "returned": true,
+      "sentinel": 83,
+      "sentinel_share": 0.00063323974609375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 125,
+        "B": 79
+      },
+      "total": 130989
+    },
+    {
+      "events": 131072,
+      "failure": 62495,
+      "index": 50,
+      "invalid_events": {
+        "other_photon_number": 37,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.02561297810765201,
+      "name": "anchor-o1-i50",
+      "port_counts": [
+        31,
+        17,
+        15,
+        88,
+        17279,
+        18664,
+        16200,
+        16170,
+        62495,
+        48,
+        14,
+        14
+      ],
+      "returned": true,
+      "sentinel": 76,
+      "sentinel_share": 0.000579833984375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 151,
+        "B": 68313
+      },
+      "total": 130959
+    },
+    {
+      "events": 131072,
+      "failure": 64935,
+      "index": 51,
+      "invalid_events": {
+        "other_photon_number": 45,
+        "zero_click": 0
+      },
+      "label_law_distance": 0.026786464179093212,
+      "name": "anchor-o0-i51",
+      "port_counts": [
+        17892,
+        18227,
+        14060,
+        15725,
+        22,
+        38,
+        55,
+        17,
+        64935,
+        28,
+        14,
+        14
+      ],
+      "returned": true,
+      "sentinel": 56,
+      "sentinel_share": 0.00042724609375,
+      "shots_used": 131072,
+      "slot": {
+        "A": 65904,
+        "B": 132
+      },
+      "total": 130971
+    }
+  ],
+  "job_id": "db6355f7-87d5-4e7a-91f5-b898c33c839a",
+  "job_status": "completed",
+  "mode_efficiency": [
+    1.0149955746104165,
+    1.0546435368353664,
+    1.0378028905107806,
+    0.9408641375783565,
+    1.0341424604933194,
+    1.0454948734849794,
+    0.9262000709046074,
+    1.0120324964287224,
+    0.9440322245498833
+  ],
+  "mutation": {
+    "failures": [],
+    "readings_expected": 17,
+    "readings_present": 17,
+    "verdict": "not interpreted",
+    "within": 17
+  },
+  "platform": "qpu:ascella",
+  "readings": [
+    {
+      "a": 0.6377785093471835,
+      "a_prime": 0.6228330819003738,
+      "arm": "T",
+      "block": "C8/7",
+      "code": "i",
+      "complete": true,
+      "deviation": -0.027802135125448713,
+      "group": "independence-c8",
+      "ideal": 0.6545084971874737,
+      "item": 0,
+      "l_hat": 0.626706362062025,
+      "mirror_difference": 0.016951751983022345,
+      "orientations": {
+        "0": {
+          "a": 0.6217314271749755,
+          "a_prime": 0.6185842301186478,
+          "iteration": 3,
+          "l_hat": 0.6351822380535362,
+          "se": 0.0025730232102165757,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.6538255915193915,
+          "a_prime": 0.6270819336820996,
+          "iteration": 48,
+          "l_hat": 0.6182304860705139,
+          "se": 0.0025542699494821115,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.001812784006379453,
+      "setting": "i-f-TT",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.6699837440672318,
+      "a_prime": 0.6546965658168633,
+      "arm": "T",
+      "block": "C8/4",
+      "code": "f",
+      "complete": true,
+      "deviation": 0.004591104346161501,
+      "group": "independence-c8",
+      "ideal": 0.6545084971874737,
+      "item": 1,
+      "l_hat": 0.6590996015336352,
+      "mirror_difference": 0.051030837730835166,
+      "orientations": {
+        "0": {
+          "a": 0.6696908602150538,
+          "a_prime": 0.6423290597120472,
+          "iteration": 3,
+          "l_hat": 0.6335841826682177,
+          "se": 0.0025712884674831183,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.6702766279194098,
+          "a_prime": 0.6670640719216794,
+          "iteration": 48,
+          "l_hat": 0.6846150203990529,
+          "se": 0.0026225479229122334,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0018363878941404885,
+      "setting": "i-f-TT",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.6981771435927445,
+      "a_prime": 0.682013213291549,
+      "arm": "T",
+      "block": "C8/7",
+      "code": "i",
+      "complete": true,
+      "deviation": 0.02248838970765965,
+      "group": "independence-c8",
+      "ideal": 0.6545084971874737,
+      "item": 0,
+      "l_hat": 0.6769968868951334,
+      "mirror_difference": 0.002465806826622341,
+      "orientations": {
+        "0": {
+          "a": 0.6820653003878928,
+          "a_prime": 0.6788368726841798,
+          "iteration": 47,
+          "l_hat": 0.6782297903084445,
+          "se": 0.0026163174930114263,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.7142889867975962,
+          "a_prime": 0.6851895538989181,
+          "iteration": 4,
+          "l_hat": 0.6757639834818222,
+          "se": 0.0026140219324676905,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.001849204415935385,
+      "setting": "i-f-TD",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.003848423422699233,
+      "a_prime": 0.001970520168074356,
+      "arm": "D",
+      "block": "C8/4",
+      "code": "f",
+      "complete": true,
+      "deviation": 0.001923634147923807,
+      "group": "independence-c8",
+      "ideal": 0.0,
+      "item": 1,
+      "l_hat": 0.001923634147923807,
+      "mirror_difference": 0.0018578161870354184,
+      "orientations": {
+        "0": {
+          "a": 0.0044134265905134236,
+          "a_prime": 0.0029721682572695926,
+          "iteration": 47,
+          "l_hat": 0.002852542241441516,
+          "se": 0.00020856678300281583,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.0032834202548850423,
+          "a_prime": 0.0009688720788791191,
+          "iteration": 4,
+          "l_hat": 0.0009947260544060977,
+          "se": 0.00012322185014422874,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.00012112362210269973,
+      "setting": "i-f-TD",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.7494565010790976,
+      "a_prime": 0.732842086729478,
+      "arm": "T",
+      "block": "B12/7",
+      "code": "e",
+      "complete": true,
+      "deviation": -0.009361342799553474,
+      "group": "control-b12",
+      "ideal": 0.7499999999999999,
+      "item": 0,
+      "l_hat": 0.7406386572004464,
+      "mirror_difference": 0.08659090717236018,
+      "orientations": {
+        "0": {
+          "a": 0.7643428850736238,
+          "a_prime": 0.7610036827566894,
+          "iteration": 5,
+          "l_hat": 0.7839341107866266,
+          "se": 0.0026982910920819616,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.7345701170845713,
+          "a_prime": 0.7046804907022666,
+          "iteration": 46,
+          "l_hat": 0.6973432036142664,
+          "se": 0.0026340077515045,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.0018853893266772951,
+      "setting": "e-b-TT",
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.7565065786018255,
+      "a_prime": 0.7398771670001858,
+      "arm": "T",
+      "block": "B12/2",
+      "code": "b",
+      "complete": true,
+      "deviation": -0.0021183341902092367,
+      "group": "control-b12",
+      "ideal": 0.7499999999999999,
+      "item": 1,
+      "l_hat": 0.7478816658097907,
+      "mirror_difference": 0.10056598946904827,
+      "orientations": {
+        "0": {
+          "a": 0.73486283375084,
+          "a_prime": 0.7049618025405517,
+          "iteration": 5,
+          "l_hat": 0.6975986710752665,
+          "se": 0.0026341815459922746,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.778150323452811,
+          "a_prime": 0.7747925314598199,
+          "iteration": 46,
+          "l_hat": 0.7981646605443148,
+          "se": 0.002706745915957094,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0018884772881078461,
+      "setting": "e-b-TT",
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.002840189767490336,
+      "a_prime": 0.0009877790817771053,
+      "arm": "C",
+      "block": "B12/2",
+      "code": "b",
+      "complete": true,
+      "deviation": 0.0009505798330380662,
+      "group": "",
+      "ideal": 3.0814879110195774e-33,
+      "item": 0,
+      "l_hat": 0.0009505798330380662,
+      "mirror_difference": 0.0014293384622126447,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.002550202336412919,
+          "a_prime": 0.0002366413300186953,
+          "iteration": 45,
+          "l_hat": 0.00023591060193174372,
+          "se": 6.0017402864895765e-05,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.003130177198567753,
+          "a_prime": 0.0017389168335355152,
+          "iteration": 6,
+          "l_hat": 0.0016652490641443885,
+          "se": 0.00015939190196743094,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 8.515848028740636e-05,
+      "setting": "b-i-CC",
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.002970017008333526,
+      "a_prime": 0.0011134047716819479,
+      "arm": "C",
+      "block": "C8/7",
+      "code": "i",
+      "complete": true,
+      "deviation": 0.0010717836817036289,
+      "group": "",
+      "ideal": 0.0,
+      "item": 1,
+      "l_hat": 0.0010717836817036289,
+      "mirror_difference": 0.0015810458823720787,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.003344277315415744,
+          "a_prime": 0.0019446751807294922,
+          "iteration": 45,
+          "l_hat": 0.0018623066228896682,
+          "se": 0.000168559170883367,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.0025957567012513073,
+          "a_prime": 0.00028213436263440365,
+          "iteration": 6,
+          "l_hat": 0.0002812607405175896,
+          "se": 6.552869959260481e-05,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 9.042428401594614e-05,
+      "setting": "b-i-CC",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.002114960651781618,
+      "a_prime": 0.00028821939373822213,
+      "arm": "C",
+      "block": "B12/7",
+      "code": "e",
+      "complete": true,
+      "deviation": 0.0002792342358275162,
+      "group": "",
+      "ideal": 3.0814879110195774e-33,
+      "item": 0,
+      "l_hat": 0.0002792342358275162,
+      "mirror_difference": 0.0003567861493108575,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.0024126557537258735,
+          "a_prime": 9.927993348599907e-05,
+          "iteration": 7,
+          "l_hat": 0.00010084116117208744,
+          "se": 3.923982901667063e-05,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.0018172655498373625,
+          "a_prime": 0.00047715885399044524,
+          "iteration": 44,
+          "l_hat": 0.00045762731048294497,
+          "se": 8.358762612106824e-05,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 4.616994536983187e-05,
+      "setting": "e-g-CN",
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.4740979533468679,
+      "a_prime": 0.46306557341539206,
+      "arm": "N",
+      "block": "C8/5",
+      "code": "g",
+      "complete": true,
+      "deviation": 0.005096628805824233,
+      "group": "",
+      "ideal": 0.4522542485937369,
+      "item": 1,
+      "l_hat": 0.45735087739956115,
+      "mirror_difference": 0.05920446819166808,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.45748839482042514,
+          "a_prime": 0.43839442766751735,
+          "iteration": 7,
+          "l_hat": 0.42774864330372714,
+          "se": 0.002265997612638978,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.49070751187331063,
+          "a_prime": 0.4877367191632668,
+          "iteration": 44,
+          "l_hat": 0.4869531114953952,
+          "se": 0.002371867827653667,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0016401602187243838,
+      "setting": "e-g-CN",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.5744874114689373,
+      "a_prime": 0.5613934029301716,
+      "arm": "N",
+      "block": "B12/2",
+      "code": "b",
+      "complete": true,
+      "deviation": -0.0008566213569325409,
+      "group": "",
+      "ideal": 0.5625,
+      "item": 0,
+      "l_hat": 0.5616433786430675,
+      "mirror_difference": 0.06950408001244057,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.5890573097628956,
+          "a_prime": 0.5859541035788388,
+          "iteration": 43,
+          "l_hat": 0.5963954186492877,
+          "se": 0.0025282993640206573,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.559917513174979,
+          "a_prime": 0.5368327022815044,
+          "iteration": 8,
+          "l_hat": 0.5268913386368471,
+          "se": 0.0024347722163242077,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.0017550223231836365,
+      "setting": "b-i-NN",
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.48254206055210813,
+      "a_prime": 0.4714239728513426,
+      "arm": "N",
+      "block": "C8/7",
+      "code": "i",
+      "complete": true,
+      "deviation": 0.019684261570040273,
+      "group": "",
+      "ideal": 0.4522542485937369,
+      "item": 1,
+      "l_hat": 0.4719385101637772,
+      "mirror_difference": 0.07918828911563297,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.46144095299912186,
+          "a_prime": 0.442192986257815,
+          "iteration": 43,
+          "l_hat": 0.43234436560596073,
+          "se": 0.0022749884346618264,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.5036431681050944,
+          "a_prime": 0.5006549594448702,
+          "iteration": 8,
+          "l_hat": 0.5115326547215937,
+          "se": 0.002411497151279488,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0016576256278540513,
+      "setting": "b-i-NN",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.5472543064211601,
+      "a_prime": 0.5340317203966402,
+      "arm": "N",
+      "block": "B12/7",
+      "code": "e",
+      "complete": true,
+      "deviation": -0.027018448760261826,
+      "group": "",
+      "ideal": 0.5625,
+      "item": 0,
+      "l_hat": 0.5354815512397382,
+      "mirror_difference": 0.0001123904056608005,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.5258052443039039,
+          "a_prime": 0.5227871976819981,
+          "iteration": 9,
+          "l_hat": 0.5354253560369078,
+          "se": 0.0024473565671659873,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.5687033685384163,
+          "a_prime": 0.5452762431112822,
+          "iteration": 42,
+          "l_hat": 0.5355377464425686,
+          "se": 0.0024472951971962684,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.001730520727199649,
+      "setting": "e-c-NN",
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.6062634839444261,
+      "a_prime": 0.5920837653241732,
+      "arm": "N",
+      "block": "B12/3",
+      "code": "c",
+      "complete": true,
+      "deviation": 0.010637144075037908,
+      "group": "",
+      "ideal": 0.5833333333333333,
+      "item": 1,
+      "l_hat": 0.5939704774083712,
+      "mirror_difference": 0.026774371470531078,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.6153693392299291,
+          "a_prime": 0.5901240140562439,
+          "iteration": 9,
+          "l_hat": 0.5805832916731056,
+          "se": 0.0025088763006066643,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.5971576286589231,
+          "a_prime": 0.5940435165921024,
+          "iteration": 42,
+          "l_hat": 0.6073576631436367,
+          "se": 0.002541524367745975,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0017856235888053479,
+      "setting": "e-c-NN",
+      "true_top_level": 0.7499999999999997,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.09717760564935826,
+      "a_prime": 0.09342528374929884,
+      "arm": "F",
+      "block": "B12/6",
+      "code": "d",
+      "complete": true,
+      "deviation": 0.008329208486092962,
+      "group": "",
+      "ideal": 0.08333333333333326,
+      "item": 0,
+      "l_hat": 0.09166254181942622,
+      "mirror_difference": 0.005762058495425854,
+      "orientations": {
+        "0": {
+          "a": 0.09696109190006183,
+          "a_prime": 0.09452042057783548,
+          "iteration": 41,
+          "l_hat": 0.09454357106713915,
+          "se": 0.0011726764589431058,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.09739411939865468,
+          "a_prime": 0.09233014692076219,
+          "iteration": 10,
+          "l_hat": 0.0887815125717133,
+          "se": 0.0011382182667135014,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.0008171154906192314,
+      "setting": "d-i-FF",
+      "true_top_level": 0.7499999999999996,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.07843534216497688,
+      "a_prime": 0.07507848203849467,
+      "arm": "F",
+      "block": "C8/7",
+      "code": "i",
+      "complete": true,
+      "deviation": 0.004581141566253721,
+      "group": "",
+      "ideal": 0.06909830056250534,
+      "item": 1,
+      "l_hat": 0.07367944212875906,
+      "mirror_difference": 0.006283079016663445,
+      "orientations": {
+        "0": {
+          "a": 0.07770933046312624,
+          "a_prime": 0.07341231681461471,
+          "iteration": 41,
+          "l_hat": 0.07053790262042733,
+          "se": 0.0010192766878954005,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.07916135386682752,
+          "a_prime": 0.07674464726237462,
+          "iteration": 10,
+          "l_hat": 0.07682098163709078,
+          "se": 0.0010620840691552215,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0007360277740072604,
+      "setting": "d-i-FF",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.27267911719702814,
+      "a_prime": 0.2651746767685288,
+      "arm": "F",
+      "block": "B12/7",
+      "code": "e",
+      "complete": true,
+      "deviation": 0.014567241643105355,
+      "group": "",
+      "ideal": 0.25,
+      "item": 0,
+      "l_hat": 0.26456724164310536,
+      "mirror_difference": 0.0010342956799760383,
+      "orientations": {
+        "0": {
+          "a": 0.2610296083028493,
+          "a_prime": 0.25836804296051097,
+          "iteration": 11,
+          "l_hat": 0.2650843894830934,
+          "se": 0.0018740885647798061,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.28432862609120696,
+          "a_prime": 0.2719813105765466,
+          "iteration": 40,
+          "l_hat": 0.26405009380311734,
+          "se": 0.0018710577752922711,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.0013241096203789264,
+      "setting": "e-h-FT",
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.6769004651286448,
+      "a_prime": 0.6614424340800086,
+      "arm": "T",
+      "block": "C8/6",
+      "code": "h",
+      "complete": true,
+      "deviation": 0.00582317177380931,
+      "group": "",
+      "ideal": 0.6545084971874737,
+      "item": 1,
+      "l_hat": 0.660331668961283,
+      "mirror_difference": 0.038257171279512336,
+      "orientations": {
+        "0": {
+          "a": 0.6782798622301307,
+          "a_prime": 0.6505834169944522,
+          "iteration": 11,
+          "l_hat": 0.6412030833215269,
+          "se": 0.0025794905076330227,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.6755210680271589,
+          "a_prime": 0.672301451165565,
+          "iteration": 40,
+          "l_hat": 0.6794602546010392,
+          "se": 0.0026177803771391625,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0018375626099471907,
+      "setting": "e-h-FT",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.6480113721522587,
+      "a_prime": 0.6331511573555919,
+      "arm": "T",
+      "block": "C8/7",
+      "code": "i",
+      "complete": true,
+      "deviation": -0.013226082318653853,
+      "group": "independence-c8",
+      "ideal": 0.6545084971874737,
+      "item": 0,
+      "l_hat": 0.6412824148688199,
+      "mirror_difference": 0.05522885255998611,
+      "orientations": {
+        "0": {
+          "a": 0.647460370788919,
+          "a_prime": 0.6442785335108551,
+          "iteration": 39,
+          "l_hat": 0.668896841148813,
+          "se": 0.0026074108234325102,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.6485623735155982,
+          "a_prime": 0.6220237812003289,
+          "iteration": 12,
+          "l_hat": 0.6136679885888269,
+          "se": 0.0025489182125091507,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.0018231549067628514,
+      "setting": "i-f-TC",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.9393423080681027,
+      "a_prime": 0.9188234155632148,
+      "arm": "C",
+      "block": "C8/4",
+      "code": "f",
+      "complete": true,
+      "deviation": -0.016798280279397892,
+      "group": "independence-c8",
+      "ideal": 0.9472135954999582,
+      "item": 1,
+      "l_hat": 0.9304153152205603,
+      "mirror_difference": 0.08335976670810619,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.928575791820653,
+          "a_prime": 0.891127315522498,
+          "iteration": 39,
+          "l_hat": 0.8887354318665072,
+          "se": 0.0027461168664084388,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.9501088243155523,
+          "a_prime": 0.9465195156039315,
+          "iteration": 12,
+          "l_hat": 0.9720951985746134,
+          "se": 0.0027623988616328364,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.001947562920339372,
+      "setting": "i-f-TC",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.6424685071295011,
+      "a_prime": 0.6278515714873651,
+      "arm": "T",
+      "block": "C8/7",
+      "code": "i",
+      "complete": true,
+      "deviation": -0.025034190100713505,
+      "group": "independence-c8",
+      "ideal": 0.6545084971874737,
+      "item": 0,
+      "l_hat": 0.6294743070867602,
+      "mirror_difference": 0.05794053745309302,
+      "orientations": {
+        "0": {
+          "a": 0.6489128525496606,
+          "a_prime": 0.6457290597194755,
+          "iteration": 13,
+          "l_hat": 0.6584445758133067,
+          "se": 0.0025973436372142083,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.6360241617093416,
+          "a_prime": 0.6099740832552547,
+          "iteration": 38,
+          "l_hat": 0.6005040383602137,
+          "se": 0.00253331608926291,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.0018141033858283446,
+      "setting": "i-f-TN",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.4805614721412106,
+      "a_prime": 0.46870410532886864,
+      "arm": "N",
+      "block": "C8/4",
+      "code": "f",
+      "complete": true,
+      "deviation": 0.01721549240935316,
+      "group": "independence-c8",
+      "ideal": 0.4522542485937369,
+      "item": 1,
+      "l_hat": 0.4694697410030901,
+      "mirror_difference": 0.0016110925251219266,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.5008897272775873,
+          "a_prime": 0.48010475722675966,
+          "iteration": 13,
+          "l_hat": 0.47027528726565104,
+          "se": 0.002343949281540383,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.4602332170048339,
+          "a_prime": 0.45730345343097756,
+          "iteration": 38,
+          "l_hat": 0.4686641947405291,
+          "se": 0.0023410554293239647,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0016563996164574001,
+      "setting": "i-f-TN",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.7524129439500347,
+      "a_prime": 0.7353857157493775,
+      "arm": "T",
+      "block": "B12/3",
+      "code": "c",
+      "complete": true,
+      "deviation": -0.006521191828419037,
+      "group": "independence-b12",
+      "ideal": 0.7499999999999999,
+      "item": 0,
+      "l_hat": 0.7434788081715809,
+      "mirror_difference": 0.049642248986062065,
+      "orientations": {
+        "0": {
+          "a": 0.7485183601148653,
+          "a_prime": 0.7452004631830903,
+          "iteration": 37,
+          "l_hat": 0.7682999326646119,
+          "se": 0.002688365698163174,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.7563075277852042,
+          "a_prime": 0.7255709683156647,
+          "iteration": 14,
+          "l_hat": 0.7186576836785499,
+          "se": 0.0026521550862624735,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.0018882026327071122,
+      "setting": "c-d-TT",
+      "true_top_level": 0.7499999999999997,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.7634958699066007,
+      "a_prime": 0.7464591616714286,
+      "arm": "T",
+      "block": "B12/6",
+      "code": "d",
+      "complete": true,
+      "deviation": 0.00490427339695898,
+      "group": "independence-b12",
+      "ideal": 0.7500000000000001,
+      "item": 1,
+      "l_hat": 0.7549042733969591,
+      "mirror_difference": 0.07316717775923942,
+      "orientations": {
+        "0": {
+          "a": 0.7560182073684854,
+          "a_prime": 0.7252929204022401,
+          "iteration": 37,
+          "l_hat": 0.7183206845173393,
+          "se": 0.0026516691698216643,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.770973532444716,
+          "a_prime": 0.767625402940617,
+          "iteration": 14,
+          "l_hat": 0.7914878622765787,
+          "se": 0.0027030428653539037,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0018932637242420399,
+      "setting": "c-d-TT",
+      "true_top_level": 0.7499999999999996,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.7779056066660166,
+      "a_prime": 0.7607752524404902,
+      "arm": "T",
+      "block": "B12/3",
+      "code": "c",
+      "complete": true,
+      "deviation": 0.006213622266852625,
+      "group": "independence-b12",
+      "ideal": 0.7499999999999999,
+      "item": 0,
+      "l_hat": 0.7562136222668525,
+      "mirror_difference": 0.07154428223338094,
+      "orientations": {
+        "0": {
+          "a": 0.7958454253856728,
+          "a_prime": 0.7924638095519599,
+          "iteration": 15,
+          "l_hat": 0.791985763383543,
+          "se": 0.002703077797848118,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.7599657879463604,
+          "a_prime": 0.7290866953290204,
+          "iteration": 36,
+          "l_hat": 0.720441481150162,
+          "se": 0.0026532611416840695,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.0018938336956548008,
+      "setting": "c-d-TD",
+      "true_top_level": 0.7499999999999997,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.0034136513281098936,
+      "a_prime": 0.001568492898722663,
+      "arm": "D",
+      "block": "B12/6",
+      "code": "d",
+      "complete": true,
+      "deviation": 0.00156784649791842,
+      "group": "independence-b12",
+      "ideal": 0.0,
+      "item": 1,
+      "l_hat": 0.00156784649791842,
+      "mirror_difference": 0.0005841401435476071,
+      "orientations": {
+        "0": {
+          "a": 0.0027035283335879027,
+          "a_prime": 0.0013288910634292434,
+          "iteration": 15,
+          "l_hat": 0.0012757764261446165,
+          "se": 0.00013954926588148958,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.004123774322631884,
+          "a_prime": 0.0018080947340160828,
+          "iteration": 36,
+          "l_hat": 0.0018599165696922236,
+          "se": 0.00016846522366072364,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0001093783904515882,
+      "setting": "c-d-TD",
+      "true_top_level": 0.7499999999999996,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.7806604947966234,
+      "a_prime": 0.7628716600177106,
+      "arm": "T",
+      "block": "B12/3",
+      "code": "c",
+      "complete": true,
+      "deviation": 0.010058214992118786,
+      "group": "independence-b12",
+      "ideal": 0.7499999999999999,
+      "item": 0,
+      "l_hat": 0.7600582149921187,
+      "mirror_difference": 0.010421451938134596,
+      "orientations": {
+        "0": {
+          "a": 0.7665414222873901,
+          "a_prime": 0.7631992599648789,
+          "iteration": 35,
+          "l_hat": 0.765268940961186,
+          "se": 0.0026862747410454774,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.7947795673058565,
+          "a_prime": 0.7625440600705423,
+          "iteration": 16,
+          "l_hat": 0.7548474890230514,
+          "se": 0.0026791257906190803,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.001896957233725846,
+      "setting": "c-d-TC",
+      "true_top_level": 0.7499999999999997,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.09351209846221278,
+      "a_prime": 0.08998205295360295,
+      "arm": "C",
+      "block": "B12/6",
+      "code": "d",
+      "complete": true,
+      "deviation": 0.006660477521904004,
+      "group": "independence-b12",
+      "ideal": 0.08333333333333336,
+      "item": 1,
+      "l_hat": 0.08999381085523736,
+      "mirror_difference": 0.02351426918061729,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.08583822091886607,
+          "a_prime": 0.08122448940619459,
+          "iteration": 35,
+          "l_hat": 0.07823667626492872,
+          "se": 0.0010715497633003617,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.10118597600555951,
+          "a_prime": 0.09873961650101133,
+          "iteration": 16,
+          "l_hat": 0.10175094544554601,
+          "se": 0.0012145014738410018,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0008098198449641481,
+      "setting": "c-d-TC",
+      "true_top_level": 0.7499999999999996,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.7272679583862116,
+      "a_prime": 0.710970734014448,
+      "arm": "T",
+      "block": "B12/3",
+      "code": "c",
+      "complete": true,
+      "deviation": -0.034212395078505486,
+      "group": "independence-b12",
+      "ideal": 0.7499999999999999,
+      "item": 0,
+      "l_hat": 0.7157876049214944,
+      "mirror_difference": 0.06741990229604888,
+      "orientations": {
+        "0": {
+          "a": 0.7352422268217611,
+          "a_prime": 0.7319422042422321,
+          "iteration": 17,
+          "l_hat": 0.7494975560695188,
+          "se": 0.0026755073015402604,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.7192936899506621,
+          "a_prime": 0.689999263786664,
+          "iteration": 34,
+          "l_hat": 0.68207765377347,
+          "se": 0.0026202070073866055,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.0018724198302032264,
+      "setting": "c-d-TN",
+      "true_top_level": 0.7499999999999997,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.6196548797062691,
+      "a_prime": 0.60584625980441,
+      "arm": "N",
+      "block": "B12/6",
+      "code": "d",
+      "complete": true,
+      "deviation": 0.027169471949322177,
+      "group": "independence-b12",
+      "ideal": 0.5833333333333334,
+      "item": 1,
+      "l_hat": 0.6105028052826555,
+      "mirror_difference": 0.09917138447848484,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.5946796404212906,
+          "a_prime": 0.5702404273796933,
+          "iteration": 17,
+          "l_hat": 0.5609171130434132,
+          "se": 0.0024829673397300635,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.6446301189912474,
+          "a_prime": 0.6414520922291267,
+          "iteration": 34,
+          "l_hat": 0.660088497521898,
+          "se": 0.0025990397536638683,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0017972294268742742,
+      "setting": "c-d-TN",
+      "true_top_level": 0.7499999999999996,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.6496139253432907,
+      "a_prime": 0.634964219086352,
+      "arm": "T",
+      "block": "C8/5",
+      "code": "g",
+      "complete": true,
+      "deviation": -0.015423150977993183,
+      "group": "control-c8",
+      "ideal": 0.6545084971874737,
+      "item": 0,
+      "l_hat": 0.6390853462094805,
+      "mirror_difference": 0.07405001461105176,
+      "orientations": {
+        "0": {
+          "a": 0.6619727989858802,
+          "a_prime": 0.6587714228671155,
+          "iteration": 33,
+          "l_hat": 0.6761103535150065,
+          "se": 0.0026144496142472317,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.6372550517007011,
+          "a_prime": 0.6111570153055886,
+          "iteration": 18,
+          "l_hat": 0.6020603389039547,
+          "se": 0.002535234313862245,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.0018209036089001298,
+      "setting": "g-h-TT",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.6494613297154694,
+      "a_prime": 0.6344839599836359,
+      "arm": "T",
+      "block": "C8/6",
+      "code": "h",
+      "complete": true,
+      "deviation": -0.016276547954601317,
+      "group": "control-c8",
+      "ideal": 0.6545084971874737,
+      "item": 1,
+      "l_hat": 0.6382319492328724,
+      "mirror_difference": 0.03835811341096629,
+      "orientations": {
+        "0": {
+          "a": 0.6546876312513841,
+          "a_prime": 0.6279103866184251,
+          "iteration": 33,
+          "l_hat": 0.6190528925273893,
+          "se": 0.002555041693050807,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.6442350281795549,
+          "a_prime": 0.6410575333488467,
+          "iteration": 18,
+          "l_hat": 0.6574110059383556,
+          "se": 0.0025962344495735245,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0018213093758598698,
+      "setting": "g-h-TT",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.5409786797060034,
+      "a_prime": 0.5284641985684434,
+      "arm": "T",
+      "block": "B12/0",
+      "code": "a",
+      "complete": true,
+      "deviation": 0.02268281960667462,
+      "group": "",
+      "ideal": 0.5000000000000001,
+      "item": 0,
+      "l_hat": 0.5226828196066747,
+      "mirror_difference": 0.04798882964676654,
+      "orientations": {
+        "0": {
+          "a": 0.5504542331475685,
+          "a_prime": 0.5474030003034871,
+          "iteration": 19,
+          "l_hat": 0.546677234430058,
+          "se": 0.0024627904541908714,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.5315031262644384,
+          "a_prime": 0.5095253968333997,
+          "iteration": 32,
+          "l_hat": 0.49868840478329146,
+          "se": 0.002390759866792024,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.0017161781348331163,
+      "setting": "a-g-TC",
+      "true_top_level": 0.4999999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.00394691005925705,
+      "a_prime": 0.0020754954617955242,
+      "arm": "C",
+      "block": "C8/5",
+      "code": "g",
+      "complete": true,
+      "deviation": 0.0020362549744055674,
+      "group": "",
+      "ideal": 4.930380657631324e-32,
+      "item": 1,
+      "l_hat": 0.0020362549744055674,
+      "mirror_difference": 0.0009809629611612306,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.004061378731200855,
+          "a_prime": 0.0026338368881337164,
+          "iteration": 19,
+          "l_hat": 0.0025267364549861828,
+          "se": 0.00019629145288280105,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.0038324413873132446,
+          "a_prime": 0.001517154035457332,
+          "iteration": 32,
+          "l_hat": 0.0015457734938249521,
+          "se": 0.00015356984039152565,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.00012461343261534807,
+      "setting": "a-g-TC",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.002839992747361386,
+      "a_prime": 0.0010197472631536203,
+      "arm": "C",
+      "block": "B12/0",
+      "code": "a",
+      "complete": true,
+      "deviation": 0.0010168892195729449,
+      "group": "",
+      "ideal": 0.0,
+      "item": 0,
+      "l_hat": 0.0010168892195729449,
+      "mirror_difference": 0.0018511098998221706,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.004259997251614677,
+          "a_prime": 0.0019441342589487007,
+          "iteration": 31,
+          "l_hat": 0.0019424441694840303,
+          "se": 0.00017213367053392096,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.0014199882431080947,
+          "a_prime": 9.536026735853972e-05,
+          "iteration": 20,
+          "l_hat": 9.133426966185962e-05,
+          "se": 3.7342884681335035e-05,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 8.806885313180242e-05,
+      "setting": "a-h-CC",
+      "true_top_level": 0.4999999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.06509828324572883,
+      "a_prime": 0.062136557544523685,
+      "arm": "C",
+      "block": "C8/6",
+      "code": "h",
+      "complete": true,
+      "deviation": 0.008158004337732512,
+      "group": "",
+      "ideal": 0.05278640450004198,
+      "item": 1,
+      "l_hat": 0.060944408837774494,
+      "mirror_difference": 0.017965583619106655,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.057655016566655976,
+          "a_prime": 0.05413935918060935,
+          "iteration": 31,
+          "l_hat": 0.05196161702822117,
+          "se": 0.0008790784701170105,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.0725415499248017,
+          "a_prime": 0.07013375590843803,
+          "iteration": 20,
+          "l_hat": 0.06992720064732783,
+          "se": 0.0010150695936203286,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0006714062176722455,
+      "setting": "a-h-CC",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.4050388825247421,
+      "a_prime": 0.3953654924091696,
+      "arm": "N",
+      "block": "B12/0",
+      "code": "a",
+      "complete": true,
+      "deviation": 0.01891357592728199,
+      "group": "",
+      "ideal": 0.37500000000000006,
+      "item": 0,
+      "l_hat": 0.39391357592728204,
+      "mirror_difference": 0.05942845816373593,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.4199024122053467,
+          "a_prime": 0.4170269481022349,
+          "iteration": 21,
+          "l_hat": 0.42362780500915004,
+          "se": 0.00225815597749055,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.39017535284413757,
+          "a_prime": 0.3737040367161044,
+          "iteration": 30,
+          "l_hat": 0.3641993468454141,
+          "se": 0.002133070626207819,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.0015531627985393964,
+      "setting": "a-h-NN",
+      "true_top_level": 0.4999999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.46553341830948997,
+      "a_prime": 0.45507643820449967,
+      "arm": "N",
+      "block": "C8/6",
+      "code": "h",
+      "complete": true,
+      "deviation": 0.0015055611437178595,
+      "group": "",
+      "ideal": 0.4522542485937369,
+      "item": 1,
+      "l_hat": 0.4537598097374548,
+      "mirror_difference": 0.10816694795205278,
+      "mutation_failure": null,
+      "orientations": {
+        "0": {
+          "a": 0.4275078459670584,
+          "a_prime": 0.4095819810847965,
+          "iteration": 21,
+          "l_hat": 0.3996763357614284,
+          "se": 0.0022099907508684397,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.5035589906519216,
+          "a_prime": 0.5005708953242028,
+          "iteration": 30,
+          "l_hat": 0.5078432837134812,
+          "se": 0.002405705942262137,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0016333615796540128,
+      "setting": "a-h-NN",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.006473982250180218,
+      "a_prime": 0.004476824227934348,
+      "arm": "F",
+      "block": "B12/0",
+      "code": "a",
+      "complete": true,
+      "deviation": 0.00429093180144065,
+      "group": "",
+      "ideal": 0.0,
+      "item": 0,
+      "l_hat": 0.00429093180144065,
+      "mirror_difference": 0.0084449843007882,
+      "orientations": {
+        "0": {
+          "a": 0.002381788478861627,
+          "a_prime": 6.845421684745111e-05,
+          "iteration": 29,
+          "l_hat": 6.843965104654998e-05,
+          "se": 3.232479343621251e-05,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.01056617602149881,
+          "a_prime": 0.008885194239021246,
+          "iteration": 22,
+          "l_hat": 0.00851342395183475,
+          "se": 0.00035977559303394395,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.00018061240932838743,
+      "setting": "a-f-FF",
+      "true_top_level": 0.4999999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.07646453513487927,
+      "a_prime": 0.07318261350200389,
+      "arm": "F",
+      "block": "C8/4",
+      "code": "f",
+      "complete": true,
+      "deviation": 0.002606272209747504,
+      "group": "",
+      "ideal": 0.06909830056250534,
+      "item": 1,
+      "l_hat": 0.07170457277225284,
+      "mirror_difference": 0.00949262045020742,
+      "orientations": {
+        "0": {
+          "a": 0.07386597859443944,
+          "a_prime": 0.06971870963761657,
+          "iteration": 29,
+          "l_hat": 0.06695826254714912,
+          "se": 0.0009940243007643928,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.07906309167531912,
+          "a_prime": 0.07664651736639119,
+          "iteration": 22,
+          "l_hat": 0.07645088299735654,
+          "se": 0.0010595800401030984,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0007264286220777345,
+      "setting": "a-f-FF",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.2894998613346152,
+      "a_prime": 0.2822514958578616,
+      "arm": "F",
+      "block": "B12/2",
+      "code": "b",
+      "complete": true,
+      "deviation": 0.028348521417370875,
+      "group": "",
+      "ideal": 0.25,
+      "item": 0,
+      "l_hat": 0.2783485214173709,
+      "mirror_difference": 0.05750857645770455,
+      "orientations": {
+        "0": {
+          "a": 0.30949054457448677,
+          "a_prime": 0.3067637337404103,
+          "iteration": 23,
+          "l_hat": 0.30710280964622316,
+          "se": 0.001992276996149334,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.2695091780947436,
+          "a_prime": 0.2577392579753128,
+          "iteration": 28,
+          "l_hat": 0.24959423318851862,
+          "se": 0.0018264621453060832,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.0013514003475674698,
+      "setting": "b-g-FF",
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.08174932816006214,
+      "a_prime": 0.07830337457541443,
+      "arm": "F",
+      "block": "C8/5",
+      "code": "g",
+      "complete": true,
+      "deviation": 0.008035038212073839,
+      "group": "",
+      "ideal": 0.06909830056250534,
+      "item": 1,
+      "l_hat": 0.07713333877457917,
+      "mirror_difference": 0.004752037381820021,
+      "orientations": {
+        "0": {
+          "a": 0.08220914164433553,
+          "a_prime": 0.07773680633363708,
+          "iteration": 23,
+          "l_hat": 0.07475732008366916,
+          "se": 0.0010482433983386111,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.08128951467578877,
+          "a_prime": 0.07886994281719178,
+          "iteration": 28,
+          "l_hat": 0.07950935746548918,
+          "se": 0.0010797898829719818,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0007524560474753869,
+      "setting": "b-g-FF",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.0901726670359271,
+      "a_prime": 0.08665419113314929,
+      "arm": "F",
+      "block": "B12/3",
+      "code": "c",
+      "complete": true,
+      "deviation": 0.001739764400073715,
+      "group": "",
+      "ideal": 0.08333333333333323,
+      "item": 0,
+      "l_hat": 0.08507309773340695,
+      "mirror_difference": 0.014711778520840962,
+      "orientations": {
+        "0": {
+          "a": 0.09488320950511984,
+          "a_prime": 0.09244533574458054,
+          "iteration": 27,
+          "l_hat": 0.09242898699382743,
+          "se": 0.0011603084699917288,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.08546212456673435,
+          "a_prime": 0.08086304652171802,
+          "iteration": 24,
+          "l_hat": 0.07771720847298647,
+          "se": 0.0010679758365483964,
+          "slot": "B"
+        }
+      },
+      "role": "sign",
+      "se": 0.0007884935213725274,
+      "setting": "c-h-FF",
+      "true_top_level": 0.7499999999999997,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.07345062223844284,
+      "a_prime": 0.07029132067115482,
+      "arm": "F",
+      "block": "C8/6",
+      "code": "h",
+      "complete": true,
+      "deviation": -4.6695180824160576e-05,
+      "group": "",
+      "ideal": 0.06909830056250534,
+      "item": 1,
+      "l_hat": 0.06905160538168117,
+      "mirror_difference": 0.015819084141355452,
+      "orientations": {
+        "0": {
+          "a": 0.06756209864005315,
+          "a_prime": 0.06366044148055304,
+          "iteration": 27,
+          "l_hat": 0.061142063311003456,
+          "se": 0.0009514194998683842,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.07933914583683255,
+          "a_prime": 0.07692219986175658,
+          "iteration": 24,
+          "l_hat": 0.07696114745235891,
+          "se": 0.0010629772938216182,
+          "slot": "A"
+        }
+      },
+      "role": "sign",
+      "se": 0.0007132881240968017,
+      "setting": "c-h-FF",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.2667759836716278,
+      "a_prime": 0.2596655575405383,
+      "arm": "E0",
+      "block": "B12/2",
+      "code": "b",
+      "complete": true,
+      "deviation": 0.0068835647392714305,
+      "group": "",
+      "ideal": 0.25,
+      "item": 0,
+      "l_hat": 0.25688356473927143,
+      "mirror_difference": 0.024996207548162508,
+      "orientations": {
+        "0": {
+          "a": 0.26975025386911805,
+          "a_prime": 0.26707694746579286,
+          "iteration": 25,
+          "l_hat": 0.2693816685133527,
+          "se": 0.001886660606294976,
+          "slot": "A"
+        },
+        "1": {
+          "a": 0.26380171347413756,
+          "a_prime": 0.2522541676152838,
+          "iteration": 26,
+          "l_hat": 0.2443854609651902,
+          "se": 0.0018100043456508084,
+          "slot": "B"
+        }
+      },
+      "role": "null",
+      "se": 0.0013072493999444154,
+      "setting": "b-f-EE",
+      "true_top_level": 0.7499999999999999,
+      "within_tolerance": true
+    },
+    {
+      "a": 0.27690115559928574,
+      "a_prime": 0.26970887294689827,
+      "arm": "E1",
+      "block": "C8/4",
+      "code": "f",
+      "complete": true,
+      "deviation": 0.016942286144325247,
+      "group": "",
+      "ideal": 0.25,
+      "item": 1,
+      "l_hat": 0.26694228614432525,
+      "mirror_difference": 0.038311121191539815,
+      "orientations": {
+        "0": {
+          "a": 0.2674291647896895,
+          "a_prime": 0.25574028615740724,
+          "iteration": 25,
+          "l_hat": 0.24778672554855533,
+          "se": 0.0018207135055475514,
+          "slot": "B"
+        },
+        "1": {
+          "a": 0.28637314640888195,
+          "a_prime": 0.2836774597363893,
+          "iteration": 26,
+          "l_hat": 0.28609784674009514,
+          "se": 0.0019349852435494612,
+          "slot": "A"
+        }
+      },
+      "role": "null",
+      "se": 0.0013284545120211514,
+      "setting": "b-f-EE",
+      "true_top_level": 0.6545084971874743,
+      "within_tolerance": true
+    }
+  ],
+  "same_class_pair_differences": [
+    {
+      "blocks": [
+        "C8/7",
+        "C8/4"
+      ],
+      "difference_by_orientation": {
+        "0": 0.001598055385318542,
+        "1": -0.06638453432853897
+      },
+      "keeps_sign": false,
+      "setting": "i-f-TT"
+    },
+    {
+      "blocks": [
+        "B12/7",
+        "B12/2"
+      ],
+      "difference_by_orientation": {
+        "0": 0.08633543971136004,
+        "1": -0.1008214569300484
+      },
+      "keeps_sign": false,
+      "setting": "e-b-TT"
+    },
+    {
+      "blocks": [
+        "B12/3",
+        "B12/6"
+      ],
+      "difference_by_orientation": {
+        "0": 0.049979248147272615,
+        "1": -0.07283017859802887
+      },
+      "keeps_sign": false,
+      "setting": "c-d-TT"
+    },
+    {
+      "blocks": [
+        "C8/5",
+        "C8/6"
+      ],
+      "difference_by_orientation": {
+        "0": 0.057057460987617215,
+        "1": -0.055350667034400836
+      },
+      "keeps_sign": false,
+      "setting": "g-h-TT"
+    }
+  ],
+  "schema": "ascella-pathion-coset-block-pairs-analysis-v1",
+  "thresholds": {
+    "anchor_drift": 0.03,
+    "anchor_floor": 0.9,
+    "bright_partner_level": 0.5,
+    "contrast_fraction": 0.5,
+    "crosstalk_ceiling": 0.03,
+    "dark_ceiling": 0.05,
+    "dark_drift": 0.03,
+    "independence_range": 0.07,
+    "level_tolerance": 0.07,
+    "mirror_fraction": 0.1,
+    "mirror_spread": 0.07,
+    "mutation_separation": 0.1,
+    "null_level_tolerance": 0.07,
+    "null_pair_spread": 0.07,
+    "outlier_fraction": 0.1,
+    "sentinel_share": 0.05
+  }
+}
