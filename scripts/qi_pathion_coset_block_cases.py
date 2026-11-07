@@ -1152,19 +1152,12 @@ def law_shots(law: np.ndarray, roles: dict[str, int], shots: int) -> list[str]:
     return strings
 
 
-def validate_runs(run_dirs: list[Path]) -> None:
-    """Apply the shared Quantum Inspire record rules to each collected batch before it is scored.
-
-    qi_records.read_run checks the receipt, the circuit and job identities and the raw shots against the recorded
-    outcome histogram of a qi-collection-v1 collection; a job that did not complete stops the series."""
-    for run_dir in run_dirs:
-        acquisition = qi_records.read_run(run_dir, str(run_dir))
-        if not acquisition.completed:
-            raise ValueError(f"{run_dir}: a job did not complete: {dict(acquisition.statuses)}")
-
-
 def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> dict[str, Any]:
     """Score collected batches of one series: decisions, per-block statistics, the IBM comparison and the drift rule.
+
+    Each batch is read through qi_records (receipt, circuit and job identities, raw shots against the recorded
+    histogram) and then through pcs.load_run (binding to the series case); a job that did not complete stops the
+    series.
 
     A series that holds fewer batches than the case (a stopped run) reports its drift and batch list only. A QX
     series (backend type 1) reports the control verdict a Tuna-17 submission needs."""
@@ -1174,6 +1167,9 @@ def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> di
     digests: dict[str, str] = {}
     arms: dict[str, tuple[list[str], dict[str, int], list[float]]] = {}
     for run_dir in sorted(run_dirs, key=lambda p: p.name):
+        acquisition = qi_records.read_run(run_dir, str(run_dir))
+        if not acquisition.completed:
+            raise ValueError(f"{run_dir}: a job did not complete: {dict(acquisition.statuses)}")
         series_name = pcs.series_of(run_dir)
         case_batch = None if case_root is None else case_root / series_name / f"batch-{run_dir.name[-2:]}"
         run = pcs.load_run(run_dir, case_batch)
@@ -1358,7 +1354,6 @@ def main() -> int:
     else:
         if args.out is None:
             parser.error("--analyze needs --out")
-        validate_runs(args.analyze)
         args.out.write_text(json.dumps(analyze(args.analyze), indent=1, sort_keys=True) + "\n", encoding="utf-8")
         print(f"wrote {args.out}")
     return 0

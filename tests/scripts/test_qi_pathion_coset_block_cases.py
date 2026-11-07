@@ -1,7 +1,7 @@
 """Analysis of the Tuna coset-block series: the shared reader, the sign-selected pattern bins, deterministic bins.
 
 analyze binds each run to the committed case byte for byte; the bounded fixture rewrites the manifest at SHOTS shots,
-so these tests pass case_root=None and exercise the shared qi_records rules through cb.validate_runs.
+so these tests pass case_root=None; analyze applies the shared qi_records rules to every batch.
 
 The fixture is the committed case (eight batches, 24 circuits) with a bounded shot count: each batch directory is
 copied, its manifest is rewritten at SHOTS shots, and a v2 receipt and a qi-collection-v1 collection (every job
@@ -98,7 +98,6 @@ def _manifest() -> dict[str, Any]:
 
 def test_analyze_reads_the_nested_job_metadata_through_the_shared_reader(tmp_path: Path) -> None:
     runs = _series(tmp_path, 0.9)
-    cb.validate_runs(runs)
     report = cb.analyze(runs, case_root=None)
     _check(report["schema"] == cb.ANALYSIS_SCHEMA and report["complete"], "schema")
     order = report["executed_order"]
@@ -114,7 +113,7 @@ def test_analyze_rejects_a_batch_the_shared_reader_rejects(tmp_path: Path) -> No
     shots[0] = "0" * cb.NQUBITS if shots[0] != "0" * cb.NQUBITS else "1" * cb.NQUBITS
     raw.write_text(_text(shots), encoding="utf-8")
     with pytest.raises(ValueError, match="differs from the recorded outcome histogram"):
-        cb.validate_runs(runs)
+        cb.analyze(runs, case_root=None)
 
 
 def test_analyze_rejects_a_job_that_did_not_complete(tmp_path: Path) -> None:
@@ -126,8 +125,6 @@ def test_analyze_rejects_a_job_that_did_not_complete(tmp_path: Path) -> None:
     (runs[1] / "results.json").write_text(_text(collection), encoding="utf-8")
     (runs[1] / "raw" / f"{row['file']}.json").unlink()
     with pytest.raises(ValueError, match="did not complete"):
-        cb.validate_runs(runs)
-    with pytest.raises(SystemExit, match="is cancelled: the series stops"):
         cb.analyze(runs, case_root=None)
 
 

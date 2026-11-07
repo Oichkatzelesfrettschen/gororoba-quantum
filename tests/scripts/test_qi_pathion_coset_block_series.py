@@ -2,15 +2,16 @@
 
 Each fixture builds run directories from the retained case files with largest-remainder expected counts of the
 ideal laws of record (no random draw), at a chosen retention, in the layout qi_platform.collect writes
-(submission.json, results.json with a job record per file, raw/<file>.json shot lists). The IBM side is the retained
-measured ibm_fez and ibm_marrakesh coset-map records.
+(a qi-submission-v2 receipt with its approval, a qi-collection-v1 results.json with a job record and outcome histogram
+per file, raw/<file>.json shot lists), so every fixture passes the shared qi_records rules that analyze applies.
+The IBM side is the retained measured ibm_fez and ibm_marrakesh coset-map records.
 """
 
 from __future__ import annotations
 
-import hashlib
 import json
 import shutil
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -18,6 +19,8 @@ import numpy as np
 import pytest
 import qi_pathion_coset_block_cases as gen
 import qi_pathion_coset_block_series as pcs
+
+import qi_records
 
 CASES = pcs.CASES_ROOT
 TUNA = pcs.TUNA_SERIES
@@ -72,7 +75,7 @@ def build_series(
         run = runs / f"2026-11-07T000000Z-{series}-batch-{n:02d}"
         shutil.copytree(case_batch, run)
         (run / "raw").mkdir()
-        jobs = []
+        submitted, collected = [], []
         for k, row in enumerate(cases["circuits"]):
             width, total = cases["nqubits"], cases["shots"]
             if row["kind"] == "readout":
@@ -87,17 +90,37 @@ def build_series(
             if short == f"batch-{n:02d}/{row['file']}":
                 listed = listed[:-1]
             (run / "raw" / f"{row['file']}.json").write_text(json.dumps(listed), encoding="utf-8")
-            jobs.append(
-                {
-                    "file": row["file"],
-                    "job": {"id": 100 * n + k, "status": "completed", "queued_at": f"2026-11-07T00:{n:02d}:{k:02d}Z"},
-                    "results": [],
-                }
-            )
-        (run / "results.json").write_text(json.dumps({"schema": "test", "jobs": jobs}), encoding="utf-8")
-        digest = hashlib.sha256((run / "cases.json").read_bytes()).hexdigest()
-        (run / "submission.json").write_text(
-            json.dumps({"state": "enqueued", "cases_sha256": digest}), encoding="utf-8"
+            job_id = 100 * n + k
+            submitted.append({"file": row["file"], "job": job_id, "sha256": row["sha256"]})
+            job = {
+                "id": job_id,
+                "created_on": f"2026-11-07T00:{n:02d}:00Z",
+                "status": "completed",
+                "batch_job_id": 77 + n,
+                "queued_at": f"2026-11-07T00:{n:02d}:{k:02d}Z",
+                "number_of_shots": cases["shots"],
+            }
+            result = {
+                "job_id": job_id,
+                "shots_requested": cases["shots"],
+                "shots_done": len(listed),
+                "results": dict(sorted(Counter(listed).items())),
+            }
+            collected.append({"file": row["file"], "job": job, "results": [result], "logs": ""})
+        receipt = {
+            "schema": "qi-submission-v2",
+            "state": "enqueued",
+            "approval": "fixture",
+            "backend": cases["backend"],
+            "backend_type_id": cases["backend_type_id"],
+            "cases_sha256": qi_records.digest((run / "cases.json").read_bytes()),
+            "batch_job": 77 + n,
+            "shots": cases["shots"],
+            "jobs": submitted,
+        }
+        (run / "submission.json").write_text(json.dumps(receipt), encoding="utf-8")
+        (run / "results.json").write_text(
+            json.dumps({"schema": "qi-collection-v1", "transactions": [], "jobs": collected}), encoding="utf-8"
         )
     return runs
 
