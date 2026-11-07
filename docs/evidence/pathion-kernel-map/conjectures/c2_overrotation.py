@@ -35,9 +35,9 @@ def angle(selector: float, eps: float, minus: float, plus: float) -> float:
 
 
 def with_error(selector: float, se: float, eps: float, minus: float, plus: float) -> tuple[float, float]:
-    centre = angle(selector, eps, minus, plus)
+    center = angle(selector, eps, minus, plus)
     spread = abs(angle(selector + se, eps, minus, plus) - angle(selector - se, eps, minus, plus)) / 2
-    return centre, spread
+    return center, spread
 
 
 mech = json.loads((HERE / "c2_mech.json").read_text())["rows"]
