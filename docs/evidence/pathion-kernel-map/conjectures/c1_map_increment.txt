@@ -1,0 +1,3 @@
+fresh readings 64; efficiency-only model r 0.484
+gain   full model r 0.446; increment over efficiencies r 0.055; joint coefficients efficiency-only 0.56, gain 0.16
+offset full model r 0.444; increment over efficiencies r 0.213; joint coefficients efficiency-only 0.52, offset 0.25

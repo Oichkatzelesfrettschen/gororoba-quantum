@@ -416,10 +416,14 @@ does not follow the block or slot design (A5-201). Seven fresh anchor seeds give
 below the mode-fit band, and a slot efficiency of 1.08 is excluded (A5-203). hypothesis: the mode-fit 0.992 is itself a
 mixture of mesh errors, so the center of the anchor-ratio distribution is near 0.95 rather than 0.99.
 
-Static map. The per-shifter gain map frozen from the original job (`c1_static.npz`, commit cc8d8107c) predicts the
-fresh iterations' raw departures at r 0.446 with seed-block relabeling p 0.0016, share 0.20 of the resolvable variance;
-the offset map reads r 0.444, p 0.011, above the preregistered 0.005 (A5-202). The gain map is a partial carrier of the
-order the signed-coherence program measured on its own family's unseen meshes (shares 0.025 to 0.105 there).
+Static map. The per-shifter gain model frozen from the original job (`c1_static.npz`, commit cc8d8107c) predicts the
+fresh iterations' raw departures at r 0.446 with seed-block relabeling p 0.0016, the preregistered "map carries"; the
+offset model reads r 0.444, p 0.011, above the preregistered 0.005. Each frozen model carries its own per-mode
+efficiencies beside its shifter vector, and a post-hoc diagnostic
+([c1_map_increment.txt](../../docs/evidence/pathion-kernel-map/conjectures/c1_map_increment.txt), r values only) reads the
+efficiency-only model at r 0.484 on the same 64 readings, with shifter-map increments of r 0.055 (gain) and 0.213
+(offset) over it: the frozen per-mode efficiencies carry the result and a static per-shifter map adds little (A5-202,
+refuted as a carrier beyond the efficiencies).
 
 Consequence for the pathion block cases. Each served mesh carries a fixed error of rms about 0.025 in level that a
 seed-specific table removes, and one anchor mesh per slot puts that mesh's error into every reading of its slot. A
