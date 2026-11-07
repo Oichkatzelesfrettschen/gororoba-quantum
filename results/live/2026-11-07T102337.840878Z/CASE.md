@@ -252,8 +252,8 @@ source tree at 5334661ce. The check's last argument is the account's `usage_rema
 ## Limits of this case
 
 - The groups need exactly 17 (ibm_fez) and 16 (ibm_kingston) placements, because a per-placement member names one body
-  per placement. A calibration at submit time that admits fewer placements makes `live_run` refuse the entry before any
-  job is sent, and the binding dry run inside `approved_run.sh` writes no record that the check admits. The fallback on
+  per placement. A calibration at submit time that admits fewer placements makes `live_run` refuse the entry during the
+  binding dry run, so `approved_run.sh` stops before any submit. The fallback on
   ibm_fez is `pathion_wide_coset` at 16 placements under a new approval; ibm_kingston below 16 placements has no
   fallback in this case.
 - `summary_per_replica` in `record.json` and `collect.json` holds each placement's scaled contribution (the block's
