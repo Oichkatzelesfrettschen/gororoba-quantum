@@ -3002,56 +3002,56 @@
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-00",
       "family": "pathion coset-block kernel map (A_5, dimension 32)",
-      "question": "On the QX emulator, do the coset-block circuits of e1+e10 (ba), e1+e27 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
     },
     {
       "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-01",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-01",
       "family": "pathion coset-block kernel map (A_5, dimension 32)",
-      "question": "On the QX emulator, do the coset-block circuits of e1+e10 (ba), e1+e27 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
     },
     {
       "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-02",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-02",
       "family": "pathion coset-block kernel map (A_5, dimension 32)",
-      "question": "On the QX emulator, do the coset-block circuits of e1+e10 (ba), e1+e27 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
     },
     {
       "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-03",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-03",
       "family": "pathion coset-block kernel map (A_5, dimension 32)",
-      "question": "On the QX emulator, do the coset-block circuits of e1+e10 (ba), e1+e27 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
     },
     {
       "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-04",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-04",
       "family": "pathion coset-block kernel map (A_5, dimension 32)",
-      "question": "On the QX emulator, do the coset-block circuits of e1+e10 (ba), e1+e27 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
     },
     {
       "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-05",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-05",
       "family": "pathion coset-block kernel map (A_5, dimension 32)",
-      "question": "On the QX emulator, do the coset-block circuits of e1+e10 (ba), e1+e27 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
     },
     {
       "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-06",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-06",
       "family": "pathion coset-block kernel map (A_5, dimension 32)",
-      "question": "On the QX emulator, do the coset-block circuits of e1+e10 (ba), e1+e27 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
     },
     {
       "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-07",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-07",
       "family": "pathion coset-block kernel map (A_5, dimension 32)",
-      "question": "On the QX emulator, do the coset-block circuits of e1+e10 (ba), e1+e27 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
     },
     {
       "id": "qi-pathion-coset-block-tuna-17-2026-11-06t221626-batch-00",
@@ -14901,7 +14901,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "N_hat is exact under a bin-independent contraction; the raw values carry a +0.05 to +0.25 bias that the readout correction removes; ibm_marrakesh's matching run awaits retention.",
+      "boundary": "N_hat is exact under a bin-independent contraction; the raw values carry a +0.05 to +0.25 bias that the readout correction removes; the matching ibm_marrakesh run is retained as claim hw-pathion-coset-map-marrakesh.",
       "evidence": [
         {
           "path": "results/live/2026-11-06T201037.234804Z/collect.json",
