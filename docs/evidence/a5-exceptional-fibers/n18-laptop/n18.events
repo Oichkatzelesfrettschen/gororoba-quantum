@@ -1,0 +1,5 @@
+2026-11-05T17:35:16Z replay unit finished; laptop free
+2026-11-05T17:35:16Z start p=32009 d=5
+2026-11-07T02:29:03Z exit 0 p=32009 d=5 r=952
+2026-11-07T02:29:03Z p=32009 blocks 215 197 270 270 moved invariants ok
+2026-11-07T02:29:03Z start p=32009 d=4
